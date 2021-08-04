@@ -2,130 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251E23DFDBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 288D23DFDC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235982AbhHDJL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 05:11:59 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3575 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235831AbhHDJLz (ORCPT
+        id S236313AbhHDJPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 05:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232428AbhHDJPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 05:11:55 -0400
-Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GfmFX5zKfz6DKYv;
-        Wed,  4 Aug 2021 17:11:28 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 4 Aug 2021 11:11:41 +0200
-Received: from [10.47.90.65] (10.47.90.65) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 4 Aug 2021
- 10:11:40 +0100
-Subject: Re: [PATCH] perf test: Make metric testing more robust.
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <eranian@google.com>
-References: <20210804072547.1728924-1-irogers@google.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <74ddb02a-1cdc-24fc-781e-4c87feb638fa@huawei.com>
-Date:   Wed, 4 Aug 2021 10:11:13 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Wed, 4 Aug 2021 05:15:43 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B20DC061799
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 02:15:31 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id a19so2135070oiw.6
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 02:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=h7Zb2A6Dh35OWvvMLuElewoKlDVEdIPG861c8z8d7jg=;
+        b=Y+FPojpZ7vt4c9aS5JxHtYi18I/UZ1MIAtfN7XmXFNAKWkhc8z6zThket2NIo8OWzv
+         o6BoeEfJUNOU/E2EOlgL44Q4WYwKCgL8OwzFH99F9XMQm5SSel14hNwv+AqmKFh46L1C
+         1kYt5Y5qZQQCbd/dwLuOkWY6OJGph/xf8u3TjomeEOCGyff7QYW73X1eNuTNkYLQvGv5
+         ZR/cHEpvqFQSWRV4hjpDNnphgts54ZHQ3cccgNqDNaVhI4CSKEqCcv+xmT4QLqpNVaTx
+         QEFAj5r7cAVU0Tga+T52yaijY0x26+uG/kZiDest7zF2s/PQqIlz4mKUa2LMtIjVXg41
+         0Xaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=h7Zb2A6Dh35OWvvMLuElewoKlDVEdIPG861c8z8d7jg=;
+        b=ZH/oPX7YIP1S24nUqhsrca+YkaE+bvbL5qO9iNfBAEn21T8sJjQMYy8CFeWVkXMN7O
+         Fzf2AfOXCVZD/ptdnsK/glhT7iDLCvehZKCIlZFDH13qSFtBPqdutfFKXuHkxznbFUIT
+         FBnWJdiJ5olWD10VxWf6+TamdkYazbz4ADxr9vBSz3MfVnI9API/ewtcOdHQjSbDIwsj
+         a9KK+JOMvg21aTdn91ezFz19kyD088EwqifXpHBRbUj9EA6LtF6oMOqDid+CgvBP3HLF
+         D4ZCqsWgZAu4+1MA7jj9I4aCUFDc4WFUxB/fEetaijbXudyUrvkp64AuYZG1/4CTxSh4
+         c2XA==
+X-Gm-Message-State: AOAM530gJs3ejqQfnNP1diB8tKDuzTeGJOMJfqarx6rsomoV0BDyUaWb
+        AwOQGWpRZRxFm+6A5p64pEjXkA==
+X-Google-Smtp-Source: ABdhPJyiGrsvu72TeAV4c1kVT/RJj6hoqjS/aWTa8gUe1f/N1n3nzIaS/JrvT7jZLpDJKjpFi8eRxg==
+X-Received: by 2002:aca:6704:: with SMTP id z4mr17441159oix.89.1628068530413;
+        Wed, 04 Aug 2021 02:15:30 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x8sm260465oof.27.2021.08.04.02.15.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 02:15:29 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 02:15:26 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 10/16] tmpfs: fcntl(fd, F_MEM_LOCK) to memlock a tmpfs
+ file
+In-Reply-To: <YQieHio1oUKCfgqq@casper.infradead.org>
+Message-ID: <7077b94a-d894-4d97-4b3e-23f516d58591@google.com>
+References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com> <54e03798-d836-ae64-f41-4a1d46bc115b@google.com> <YQieHio1oUKCfgqq@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210804072547.1728924-1-irogers@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.90.65]
-X-ClientProxiedBy: lhreml751-chm.china.huawei.com (10.201.108.201) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2021 08:25, Ian Rogers wrote:
-> When testing metric expressions we fake counter values from 1 going
-> upward. For some metrics this can yield negative values that are clipped
-> to zero, and then cause divide by zero failures. A workaround for this
-> case is to try a second time with counter values going in the opposite
-> direction.
+On Tue, 3 Aug 2021, Matthew Wilcox wrote:
+> On Fri, Jul 30, 2021 at 12:55:22AM -0700, Hugh Dickins wrote:
+> > A new uapi to lock the files on tmpfs in memory, to protect against swap
+> > without mapping the files. This commit introduces two new commands to
+> > fcntl and shmem: F_MEM_LOCK and F_MEM_UNLOCK. The locking will be
+> > charged against RLIMIT_MEMLOCK of uid in namespace of the caller.
 > 
-> This case was seen in a metric like:
->    event1 / max(event2 - event3, 0)
+> It's not clear to me why this is limited to shmfs.  Would it not also
+> make sense for traditional filesystems, eg to force chrome's text pages
+> to stay in the page cache, no matter how much memory the tabs allocate?
 
-is this the standard method to make the metric evaluation fail when 
-results are not as expected? In this example, event2 should be greater 
-than event3 always. Dividing by max(x, 0) would seem a bit silly.
+Right: if VFS people would like this to be available for all filesystems,
+that's fine by me - it's just that we have not given thought to other
+filesystems, and the demand was for tmpfs, so that was where to start.
+I'm more confident adding fields to shmem inode than to generic inode.
 
-thanks,
-John
+(Plus tmpfs does have a stronger claim on CAP_IPC_LOCK etc, but there's
+no real reason why that cannot be extended to similar use by other FSs).
 
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->   tools/perf/tests/pmu-events.c | 32 ++++++++++++++++++++++++++------
->   1 file changed, 26 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-> index b8aff8fb50d8..6c1cd58605c1 100644
-> --- a/tools/perf/tests/pmu-events.c
-> +++ b/tools/perf/tests/pmu-events.c
-> @@ -600,8 +600,18 @@ static int test_parsing(void)
->   			}
->   
->   			if (expr__parse(&result, &ctx, pe->metric_expr, 0)) {
-> -				expr_failure("Parse failed", map, pe);
-> -				ret++;
-> +				/*
-> +				 * Parsing failed, make numbers go from large to
-> +				 * small which can resolve divide by zero
-> +				 * issues.
-> +				 */
-> +				k = 1024;
-> +				hashmap__for_each_entry((&ctx.ids), cur, bkt)
-> +					expr__add_id_val(&ctx, strdup(cur->key), k--);
-> +				if (expr__parse(&result, &ctx, pe->metric_expr, 0)) {
-> +					expr_failure("Parse failed", map, pe);
-> +					ret++;
-> +				}
->   			}
->   			expr__ctx_clear(&ctx);
->   		}
-> @@ -656,10 +666,20 @@ static int metric_parse_fake(const char *str)
->   		}
->   	}
->   
-> -	if (expr__parse(&result, &ctx, str, 0))
-> -		pr_err("expr__parse failed\n");
-> -	else
-> -		ret = 0;
-> +	ret = 0;
-> +	if (expr__parse(&result, &ctx, str, 0)) {
-> +		/*
-> +		 * Parsing failed, make numbers go from large to small which can
-> +		 * resolve divide by zero issues.
-> +		 */
-> +		i = 1024;
-> +		hashmap__for_each_entry((&ctx.ids), cur, bkt)
-> +			expr__add_id_val(&ctx, strdup(cur->key), i--);
-> +		if (expr__parse(&result, &ctx, str, 0)) {
-> +			pr_err("expr__parse failed\n");
-> +			ret = -1;
-> +		}
-> +	}
->   
->   out:
->   	expr__ctx_clear(&ctx);
-> 
+hugetlbfs and ramfs, where the files are already memlocked?  Not worth a
+special case, I think: if someone uses up memlock quota on them, so be it.
 
+It looks as if tmpfs would still want its own special case, just to
+handle the FALLOC_FL_KEEP_SIZE issue (see 12/16): tmpfs has beyond-i_size
+pages in memory, but accounts them evictable; whereas I doubt any storage
+filesystems would be using memory for them.
+
+To be clear: I'm not intending to extend this to other filesystems at
+the moment; but happy to do so if that's the consensus.
+
+Hugh
