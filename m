@@ -2,202 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09913DF8FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 02:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBC53DF902
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 02:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbhHDAsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 20:48:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230443AbhHDAsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 20:48:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E3D760E96;
-        Wed,  4 Aug 2021 00:48:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628038099;
-        bh=qryCkmtCCzYl6IUItcfTqmNU85mlOle7WLkyevLkkQU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=YMFSrp0pxERpVxJIsi0mP6fod+3AAVF++IhN3kwTwoCMAsv2Pvj4UVUxePV71Ko8Y
-         kWL+HnKGEdlYG604a0kKO71fwRmuVBMYIH+BGwl8rh0CHS03p3k9xcFhn/gZ30zzM2
-         W/OODDvO+BE4pNSjCmQIGYQEhFBwPuVV8v7NwQdyplnrnGhsKkVmjB3u1StMyeMqpu
-         g+6pgaFEmZBHaVOFQDv5xEdIRpUdfJ0wq79dYAfz6Ldwi1/fGCiZvRbZnhobzYqpCL
-         mSPMT7pI0OuBkyiYSjgBtitQWC6fSviW15INdf5iq9k83eywYiKcXCzCFffkVWST8C
-         emqfm6KNt7MgQ==
-Subject: Re: [PATCH] f2fs: compress: do sanity check on cluster
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>
-References: <20210803103952.737222-1-chao@kernel.org>
- <YQmKQVxQwJL2GU09@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <275b4ec7-d7fd-b169-ff43-3ceec37b47b9@kernel.org>
-Date:   Wed, 4 Aug 2021 08:48:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S231459AbhHDAt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 20:49:57 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47784 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229878AbhHDAtz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 20:49:55 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1740nTfV026154
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 3 Aug 2021 20:49:29 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id EB7B915C3DEA; Tue,  3 Aug 2021 20:49:28 -0400 (EDT)
+Date:   Tue, 3 Aug 2021 20:49:28 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "Leonidas P. Papadakos" <papadakospan@gmail.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        zajec5@gmail.com, "Darrick J. Wong" <djwong@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
+Message-ID: <YQnkGMxZCgCWXQPf@mit.edu>
+References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
+ <20210716114635.14797-1-papadakospan@gmail.com>
+ <CAHk-=whfeq9gyPWK3yao6cCj7LKeU3vQEDGJ3rKDdcaPNVMQzQ@mail.gmail.com>
+ <YQnHxIU+EAAxIjZA@mit.edu>
+ <YQnU5m/ur+0D5MfJ@casper.infradead.org>
+ <YQnZgq3gMKGI1Nig@mit.edu>
+ <CAHk-=wiSwzrWOSN5UCrej3YcLRPmW5tViGSA5p2m-hiyKnQiMg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YQmKQVxQwJL2GU09@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiSwzrWOSN5UCrej3YcLRPmW5tViGSA5p2m-hiyKnQiMg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/4 2:26, Jaegeuk Kim wrote:
-> On 08/03, Chao Yu wrote:
->> This patch adds f2fs_sanity_check_cluster() to support doing
->> sanity check on cluster of compressed file, it will be triggered
->> from below two paths:
->>
->> - __f2fs_cluster_blocks()
->> - f2fs_map_blocks(F2FS_GET_BLOCK_FIEMAP)
->>
->> And it can detect below three kind of cluster insanity status.
->>
->> C: COMPRESS_ADDR
->> N: NULL_ADDR or NEW_ADDR
->> V: valid blkaddr
->> *: any value
->>
->> 1. [*|C|*|*]
->> 2. [C|*|C|*]
->> 3. [C|N|N|V]
->>
->> Signed-off-by: Chao Yu <chao@kernel.org>
->> ---
->>   fs/f2fs/compress.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++
->>   fs/f2fs/data.c     | 21 ++++++++++++------
->>   fs/f2fs/f2fs.h     |  1 +
->>   3 files changed, 68 insertions(+), 7 deletions(-)
->>
->> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->> index 455561826c7d..4aa166d3d9bf 100644
->> --- a/fs/f2fs/compress.c
->> +++ b/fs/f2fs/compress.c
->> @@ -898,6 +898,54 @@ static bool cluster_has_invalid_data(struct compress_ctx *cc)
->>   	return false;
->>   }
->>   
->> +bool f2fs_sanity_check_cluster(struct dnode_of_data *dn)
->> +{
->> +	struct f2fs_sb_info *sbi = F2FS_I_SB(dn->inode);
->> +	unsigned int cluster_size = F2FS_I(dn->inode)->i_cluster_size;
->> +	bool compressed = dn->data_blkaddr == COMPRESS_ADDR;
->> +	int cluster_end = 0;
->> +	int i;
->> +	char *reason = "";
->> +
->> +	if (!compressed)
->> +		return false;
->> +
->> +	/* [..., COMPR_ADDR, ...] */
->> +	if (dn->ofs_in_node % cluster_size) {
->> +		reason = "[*|C|*|*]";
->> +		goto out;
->> +	}
->> +
->> +	for (i = 1; i < cluster_size; i++) {
->> +		block_t blkaddr = data_blkaddr(dn->inode, dn->node_page,
->> +							dn->ofs_in_node + i);
->> +
->> +		/* [COMPR_ADDR, ..., COMPR_ADDR] */
->> +		if (blkaddr == COMPRESS_ADDR) {
->> +			reason = "[C|*|C|*]";
->> +			goto out;
->> +		}
->> +		if (compressed) {
->> +			if (!__is_valid_data_blkaddr(blkaddr)) {
->> +				if (!cluster_end)
->> +					cluster_end = i;
->> +				continue;
->> +			}
->> +			/* [COMPR_ADDR, NULL_ADDR or NEW_ADDR, valid_blkaddr] */
->> +			if (cluster_end) {
->> +				reason = "[C|N|N|V]";
->> +				goto out;
->> +			}
->> +		}
->> +	}
->> +	return false;
->> +out:
->> +	f2fs_warn(sbi, "access invalid cluster, ino:%lu, nid:%u, ofs_in_node:%u, reason:%s",
->> +			dn->inode->i_ino, dn->nid, dn->ofs_in_node, reason);
->> +	set_sbi_flag(sbi, SBI_NEED_FSCK);
->> +	return true;
->> +}
->> +
->>   static int __f2fs_cluster_blocks(struct inode *inode,
->>   				unsigned int cluster_idx, bool compr)
->>   {
->> @@ -915,6 +963,11 @@ static int __f2fs_cluster_blocks(struct inode *inode,
->>   		goto fail;
->>   	}
->>   
->> +	if (f2fs_sanity_check_cluster(&dn)) {
->> +		ret = -EFSCORRUPTED;
->> +		goto fail;
->> +	}
->> +
->>   	if (dn.data_blkaddr == COMPRESS_ADDR) {
->>   		int i;
->>   
->> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->> index 948083c88d17..75dda2035f68 100644
->> --- a/fs/f2fs/data.c
->> +++ b/fs/f2fs/data.c
->> @@ -1558,13 +1558,20 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
->>   			}
->>   			if (flag == F2FS_GET_BLOCK_PRECACHE)
->>   				goto sync_out;
->> -			if (flag == F2FS_GET_BLOCK_FIEMAP &&
->> -						blkaddr == NULL_ADDR) {
->> -				if (map->m_next_pgofs)
->> -					*map->m_next_pgofs = pgofs + 1;
->> -				goto sync_out;
->> -			}
->> -			if (flag != F2FS_GET_BLOCK_FIEMAP) {
->> +			if (flag == ) {
->> +				if (blkaddr == NULL_ADDR) {
->> +					if (map->m_next_pgofs)
->> +						*map->m_next_pgofs = pgofs + 1;
->> +					goto sync_out;
->> +				}
->> +#ifdef CONFIG_F2FS_FS_COMPRESSION
->> +				if (f2fs_compressed_file(inode) &&
->> +					f2fs_sanity_check_cluster(&dn)) {
->> +					err = -EFSCORRUPTED;
+On Tue, Aug 03, 2021 at 05:10:22PM -0700, Linus Torvalds wrote:
+> The user-space FUSE thing does indeed work reasonably well.
 > 
-> I prefer to give the block map as is instead of giving an error, since this\
-
-It looks the policy is not consistent with the one we did in
-f2fs_is_valid_blkaddr().
-
-> takes away to debug the problem from user-land.
-
-We can debug through "dump.f2fs -i" command? also once f2fs_sanity_check_cluster()
-fails, it will print kernel message for further debuging.
-
-Thanks,
-
+> It performs horribly badly if you care about things like that, though.
 > 
->> +					goto sync_out;
->> +				}
->> +#endif
->> +			} else {
->>   				/* for defragment case */
->>   				if (map->m_next_pgofs)
->>   					*map->m_next_pgofs = pgofs + 1;
->> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->> index 20389b9b3eac..86d416ffad61 100644
->> --- a/fs/f2fs/f2fs.h
->> +++ b/fs/f2fs/f2fs.h
->> @@ -4060,6 +4060,7 @@ void f2fs_end_read_compressed_page(struct page *page, bool failed,
->>   							block_t blkaddr);
->>   bool f2fs_cluster_is_empty(struct compress_ctx *cc);
->>   bool f2fs_cluster_can_merge_page(struct compress_ctx *cc, pgoff_t index);
->> +bool f2fs_sanity_check_cluster(struct dnode_of_data *dn);
->>   void f2fs_compress_ctx_add_page(struct compress_ctx *cc, struct page *page);
->>   int f2fs_write_multi_pages(struct compress_ctx *cc,
->>   						int *submitted,
->> -- 
->> 2.22.1
+> In fact, your own numbers kind of show that:
+> 
+>   ntfs/default: 670 tests, 55 failures, 211 skipped, 34783 seconds
+>   ntfs3/default: 664 tests, 67 failures, 206 skipped, 8106 seconds
+> 
+> and that's kind of the point of ntfs3.
+
+Sure, although if you run fstress in parallel ntfs3 will lock up, the
+system hard, and it has at least one lockdep deadlock complaints.
+It's not up to me, but personally, I'd feel better if *someone* at
+Paragon Software responded to Darrrick and my queries about their
+quality assurance, and/or made commitments that they would at least
+*try* to fix the problems that about 5 minutes of testing using
+fstests turned up trivially.
+
+I can even give them patches and configsto make it trivially easy for
+them to run fstests using KVM or GCE....
+
+				- Ted
