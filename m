@@ -2,141 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1364B3E02B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B19D3E02C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238512AbhHDOGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:06:24 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48934 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237979AbhHDOGX (ORCPT
+        id S238573AbhHDOGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238562AbhHDOGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:06:23 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 47AF420143;
-        Wed,  4 Aug 2021 14:06:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628085970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tzr6CcVcxQ4M0p4KnYKpLMG7rXzzmshzIZI/+DXMCH0=;
-        b=D/vUzQDVPNLmg00YzT/BO9mLp1AE9VuI7R8HMeEjLO7qnARwEzTbXZoEF9Lm083QeNE4vf
-        kwjQLQvQFnftgRb7vklHnAncR3DtXLecPlOh8wwdJNHWA9/ms6C+qiA89/XnAcQa6Gn+OM
-        6xFg06EpWkGsitkLnovIAJSGwEVGqAY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628085970;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tzr6CcVcxQ4M0p4KnYKpLMG7rXzzmshzIZI/+DXMCH0=;
-        b=Y+G5DfX5Bv8N9PU4vLxJccmM0K4Le1ObVzXHnR9/xWFI/G3BruPQQ4qQ4bPLwbqqlrdiQe
-        iOfQP3tWRnmwr3DQ==
-Received: from quack2.suse.cz (unknown [10.163.43.118])
-        by relay2.suse.de (Postfix) with ESMTP id E83F6A3B8C;
-        Wed,  4 Aug 2021 14:06:09 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5678D1E62D6; Wed,  4 Aug 2021 16:06:04 +0200 (CEST)
-Date:   Wed, 4 Aug 2021 16:06:04 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>
-Subject: Re: [PATCH] ext4: Convert from atomic_t to refcount_t on
- ext4_io_end->count
-Message-ID: <20210804140604.GF4578@quack2.suse.cz>
-References: <1626674355-55795-1-git-send-email-xiyuyang19@fudan.edu.cn>
+        Wed, 4 Aug 2021 10:06:45 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3923FC06179A
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:06:33 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id j1so3128487pjv.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7jonaqYUQJ0diYuQBbvYjToEHMp/OqMbSlxfrN33MdQ=;
+        b=Ap9tlhDdEp/AJBj4+9xnNJYAH05TJNTE9T/+nvoyXzwrPO1vwIm/fsmsBTew+7/Y6Q
+         PFi4tXAMw3L70vXk2NpKBWTLjk4dLFPXjGTrMEzXYBH4YAwrlY++hdW5jnskj90WpIRT
+         TYt1DbcqyZcutqm7YwT24ePu7gI09rK/BdDHs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7jonaqYUQJ0diYuQBbvYjToEHMp/OqMbSlxfrN33MdQ=;
+        b=DJulrY1Gf8aqphwbhrlYIzB5tRjYFzGUFAh2F81hjmoP/jNhdvu9MswDwSOZZear47
+         YO/zGR8cCDPzBa83x+BOlxEGdoP4mfgEQ1fF7iJuH9BwI9rRcilqa3jNJY8XQes+PStZ
+         zC+wNrZTf5/cfZwrpkTs2ke3J8Pa1MIFH1tZ/4JBDjvjrvYO37XwCbSRzzBIU+jkvIxQ
+         Ph5Br9IrFfslgMeSZ+mqk2YIuv93QKJWr6EKyUna+908835Qku1lbN/zeFwJozM9FaMB
+         dBQMLjgYxlsmZZtKDhSskOZX0AjMPYi4BNJRifqoEwJbw2pJ8nX8Or7VQ9Wsz6XHdQoe
+         gucw==
+X-Gm-Message-State: AOAM533+Kc9Wh/GS/a2hsA6d0alo9hHc23E0FJ3S7hDnIXWS1vCLmbX5
+        EiNDAnaajOkG71B9NK6XCxIjESjpYfJK0oBaLt5MOg==
+X-Google-Smtp-Source: ABdhPJyBXL0MlcNDm9Hj6VmY9zZtlebY6O+dFuoHiEnNNkxOsmsy453mYWi6o74BLFoLuQVRX6FtB/RCRaV0q3U05UU=
+X-Received: by 2002:a17:90a:e513:: with SMTP id t19mr10011223pjy.144.1628085992692;
+ Wed, 04 Aug 2021 07:06:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1626674355-55795-1-git-send-email-xiyuyang19@fudan.edu.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1627635002-24521-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1627635002-24521-8-git-send-email-chunfeng.yun@mediatek.com>
+ <CAATdQgDWkohpzgr=z+uzro4m9Bd=v88DNnJ-M88-5-0annhH_w@mail.gmail.com> <1628054384.14982.12.camel@mhfsdcap03>
+In-Reply-To: <1628054384.14982.12.camel@mhfsdcap03>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Wed, 4 Aug 2021 22:06:21 +0800
+Message-ID: <CAATdQgA9WeKr2UkrcAKY1rP22GtT0bMezdWkb-wyF9Yjx2p_9w@mail.gmail.com>
+Subject: Re: [PATCH 08/11] usb: xhci-mtk: update fs bus bandwidth by bw_budget_table
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Eddie Hung <eddie.hung@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 19-07-21 13:59:14, Xiyu Yang wrote:
-> refcount_t type and corresponding API can protect refcounters from
-> accidental underflow and overflow and further use-after-free situations.
-> 
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Hi,
 
-Looks good. Feel free to add:
+On Wed, Aug 4, 2021 at 1:19 PM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+>
+> On Tue, 2021-08-03 at 14:05 +0800, Ikjoon Jang wrote:
+> > Hi Chunfeng,
+> >
+> > On Fri, Jul 30, 2021 at 4:51 PM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+> > >
+> > > Use @bw_budget_table[] to update fs bus bandwidth due to
+> > > not all microframes consume @bw_cost_per_microframe, see
+> > > setup_sch_info().
+> > >
+> > > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> > > ---
+> > >  drivers/usb/host/xhci-mtk-sch.c | 17 +++++++----------
+> > >  1 file changed, 7 insertions(+), 10 deletions(-)
+> > >
+> > > diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
+> > > index 0bb1a6295d64..10c0f0f6461f 100644
+> > > --- a/drivers/usb/host/xhci-mtk-sch.c
+> > > +++ b/drivers/usb/host/xhci-mtk-sch.c
+> > > @@ -458,8 +458,8 @@ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
+> > >                  * Compared with hs bus, no matter what ep type,
+> > >                  * the hub will always delay one uframe to send data
+> > >                  */
+> > > -               for (j = 0; j < sch_ep->cs_count; j++) {
+> > > -                       tmp = tt->fs_bus_bw[base + j] + sch_ep->bw_cost_per_microframe;
+> > > +               for (j = 0; j < sch_ep->num_budget_microframes; j++) {
+> > > +                       tmp = tt->fs_bus_bw[base + j] + sch_ep->bw_budget_table[j];
+> > >                         if (tmp > FS_PAYLOAD_MAX)
+> > >                                 return -ESCH_BW_OVERFLOW;
+> > >                 }
+> > > @@ -534,21 +534,18 @@ static void update_sch_tt(struct mu3h_sch_ep_info *sch_ep, bool used)
+> > >  {
+> > >         struct mu3h_sch_tt *tt = sch_ep->sch_tt;
+> > >         u32 base, num_esit;
+> > > -       int bw_updated;
+> > >         int i, j;
+> > >
+> > >         num_esit = XHCI_MTK_MAX_ESIT / sch_ep->esit;
+> > >
+> > > -       if (used)
+> > > -               bw_updated = sch_ep->bw_cost_per_microframe;
+> > > -       else
+> > > -               bw_updated = -sch_ep->bw_cost_per_microframe;
+> > > -
+> > >         for (i = 0; i < num_esit; i++) {
+> > >                 base = sch_ep->offset + i * sch_ep->esit;
+> > >
+> > > -               for (j = 0; j < sch_ep->cs_count; j++)
+> > > -                       tt->fs_bus_bw[base + j] += bw_updated;
+> > > +               for (j = 0; j < sch_ep->num_budget_microframes; j++)
+> > > +                       if (used)
+> > > +                               tt->fs_bus_bw[base + j] += sch_ep->bw_budget_table[j];
+> > > +                       else
+> > > +                               tt->fs_bus_bw[base + j] -= sch_ep->bw_budget_table[j];
+> >
+> > I agree that xhci-mtk-sch still has more rooms for tt periodic bandwidth
+> > but I think this approach could trigger a problem.
+> See updat_bus_bw(), when add fs ep's bandwidth, it uses
+> bw_budget_table[], so prefer to use the same way
+>
+> >
+> > for example, if there are two endpoints scheduled in the same u-frame index,
+> > * ep1out  = iso 192bytes bw_budget_table[] = { 188, 188, 0, ...} --> y0
+> > * ep2in = int 64bytes, bw_budget_table[] = { 0, 0, 64, ... }  --> y0
+> >
+> > (If this is possible allocation from this patch),
+> > I guess xhci-mtk could have some problems on internal scheduling?
+>
+> Test it on dvt env. don't encounter issues;
+>
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+As you can see In the above example, this patch starts to allow that allocation.
+Do you mean that we don't have to worry about such a case (on all MTK
+platforms)?
 
-								Honza
+thanks
 
-> ---
->  fs/ext4/ext4.h    | 3 ++-
->  fs/ext4/page-io.c | 8 ++++----
->  2 files changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 3c51e243450d..e5b3575da7e9 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -17,6 +17,7 @@
->  #ifndef _EXT4_H
->  #define _EXT4_H
->  
-> +#include <linux/refcount.h>
->  #include <linux/types.h>
->  #include <linux/blkdev.h>
->  #include <linux/magic.h>
-> @@ -241,7 +242,7 @@ typedef struct ext4_io_end {
->  	struct bio		*bio;		/* Linked list of completed
->  						 * bios covering the extent */
->  	unsigned int		flag;		/* unwritten or not */
-> -	atomic_t		count;		/* reference counter */
-> +	refcount_t		count;		/* reference counter */
->  	struct list_head	list_vec;	/* list of ext4_io_end_vec */
->  } ext4_io_end_t;
->  
-> diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-> index f038d578d8d8..9cb261714991 100644
-> --- a/fs/ext4/page-io.c
-> +++ b/fs/ext4/page-io.c
-> @@ -279,14 +279,14 @@ ext4_io_end_t *ext4_init_io_end(struct inode *inode, gfp_t flags)
->  		io_end->inode = inode;
->  		INIT_LIST_HEAD(&io_end->list);
->  		INIT_LIST_HEAD(&io_end->list_vec);
-> -		atomic_set(&io_end->count, 1);
-> +		refcount_set(&io_end->count, 1);
->  	}
->  	return io_end;
->  }
->  
->  void ext4_put_io_end_defer(ext4_io_end_t *io_end)
->  {
-> -	if (atomic_dec_and_test(&io_end->count)) {
-> +	if (refcount_dec_and_test(&io_end->count)) {
->  		if (!(io_end->flag & EXT4_IO_END_UNWRITTEN) ||
->  				list_empty(&io_end->list_vec)) {
->  			ext4_release_io_end(io_end);
-> @@ -300,7 +300,7 @@ int ext4_put_io_end(ext4_io_end_t *io_end)
->  {
->  	int err = 0;
->  
-> -	if (atomic_dec_and_test(&io_end->count)) {
-> +	if (refcount_dec_and_test(&io_end->count)) {
->  		if (io_end->flag & EXT4_IO_END_UNWRITTEN) {
->  			err = ext4_convert_unwritten_io_end_vec(io_end->handle,
->  								io_end);
-> @@ -314,7 +314,7 @@ int ext4_put_io_end(ext4_io_end_t *io_end)
->  
->  ext4_io_end_t *ext4_get_io_end(ext4_io_end_t *io_end)
->  {
-> -	atomic_inc(&io_end->count);
-> +	refcount_inc(&io_end->count);
->  	return io_end;
->  }
->  
-> -- 
-> 2.7.4
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Thanks
+>
+> >
+> > >         }
+> > >
+> > >         if (used)
+> >
+> > > --
+> > > 2.18.0
+> > >
+>
