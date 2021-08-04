@@ -2,116 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5203E3DFD15
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D46B13DFD18
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236632AbhHDIj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:39:28 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:62537 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236477AbhHDIj0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:39:26 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 04 Aug 2021 01:39:14 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 Aug 2021 01:39:11 -0700
-X-QCInternal: smtphost
-Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 04 Aug 2021 14:08:36 +0530
-Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
-        id EAE404C72; Wed,  4 Aug 2021 01:38:34 -0700 (PDT)
-From:   Kalyan Thota <kalyan_t@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        dianders@chromium.org, mkrishn@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, rnayak@codeaurora.org,
-        stable@vger.kernel.org
-Subject: [Resend v3] drm/msm/disp/dpu1: add safe lut config in dpu driver
-Date:   Wed,  4 Aug 2021 01:38:33 -0700
-Message-Id: <1628066313-9717-1-git-send-email-kalyan_t@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S236650AbhHDIkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:40:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:57608 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236477AbhHDIks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 04:40:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C39831B;
+        Wed,  4 Aug 2021 01:40:36 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 025663F66F;
+        Wed,  4 Aug 2021 01:40:34 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 09:40:32 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Cc:     sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, avajid@codeaurora.org,
+        adharmap@codeaurora.org
+Subject: Re: [PATCH] firmware: arm_scmi: Free mailbox channels if probe fails
+Message-ID: <20210804084032.GS6592@e120937-lin>
+References: <1628029342-3638-1-git-send-email-rishabhb@codeaurora.org>
+ <20210804083358.GR6592@e120937-lin>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210804083358.GR6592@e120937-lin>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add safe lut configuration for all the targets in dpu
-driver as per QOS recommendation.
+On Wed, Aug 04, 2021 at 09:33:58AM +0100, Cristian Marussi wrote:
+> On Tue, Aug 03, 2021 at 03:22:22PM -0700, Rishabh Bhatnagar wrote:
+> > Mailbox channels for the base protocol are setup during probe.
+> > There can be a scenario where probe fails to acquire the base
+> > protocol due to a timeout leading to cleaning up of all device
+> > managed memory including the scmi_mailbox structure setup during
+> > mailbox_chan_setup function.
+> > [   12.735104]arm-scmi soc:qcom,scmi: timed out in resp(caller: version_get+0x84/0x140)
+> > [   12.735224]arm-scmi soc:qcom,scmi: unable to communicate with SCMI
+> > [   12.735947]arm-scmi: probe of soc:qcom,scmi failed with error -110
+> > 
+> > Now when a message arrives at cpu slightly after the timeout, the mailbox
+> > controller will try to call the rx_callback of the client and might end
+> > up accessing freed memory.
+> > [   12.758363][    C0] Call trace:
+> > [   12.758367][    C0]  rx_callback+0x24/0x160
+> > [   12.758372][    C0]  mbox_chan_received_data+0x44/0x94
+> > [   12.758386][    C0]  __handle_irq_event_percpu+0xd4/0x240
+> > This patch frees the mailbox channels setup during probe and adds some more
+> > error handling in case the probe fails.
+> > 
+> > Change-Id: I1214ec2c4c92c4a3ca5fa73de11e0e403b13b46a
+> > Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+> 
+> Hi Rishabh,
+> 
+> Good catch, thanks for this.
+> 
 
-Issue reported on SC7280:
+Hi again,
 
-With wait-for-safe feature in smmu enabled, RT client
-buffer levels are checked to be safe before smmu invalidation.
-Since display was always set to unsafe it was delaying the
-invalidaiton process thus impacting the performance on NRT clients
-such as eMMC and NVMe.
+sorry forgot one thing.
 
-Validated this change on SC7280, With this change eMMC performance
-has improved significantly.
+> > ---
+> >  drivers/firmware/arm_scmi/driver.c | 11 +++++++++--
+> >  1 file changed, 9 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> > index 9b2e8d4..518c7b9 100644
+> > --- a/drivers/firmware/arm_scmi/driver.c
+> > +++ b/drivers/firmware/arm_scmi/driver.c
+> > @@ -1430,7 +1430,7 @@ static int scmi_probe(struct platform_device *pdev)
+> >  
+> >  	ret = scmi_xfer_info_init(info);
+> >  	if (ret)
+> > -		return ret;
+> > +		goto clear_txrx_setup;
+> >  
+> >  	if (scmi_notification_init(handle))
+> >  		dev_err(dev, "SCMI Notifications NOT available.\n");
+> > @@ -1443,7 +1443,7 @@ static int scmi_probe(struct platform_device *pdev)
+> >  	ret = scmi_protocol_acquire(handle, SCMI_PROTOCOL_BASE);
+> >  	if (ret) {
+> >  		dev_err(dev, "unable to communicate with SCMI\n");
+> > -		return ret;
+> > +		goto notification_exit;
+> >  	}
+> >  
+> >  	mutex_lock(&scmi_list_mutex);
+> > @@ -1482,6 +1482,13 @@ static int scmi_probe(struct platform_device *pdev)
+> >  	}
+> >  
+> >  	return 0;
+> > +
+> > +notification_exit:
+> > +	scmi_notification_exit(&info->handle);
+> > +clear_txrx_setup:
+> > +	idr_for_each(&info->tx_idr, info->desc->ops->chan_free, &info->tx_idr);
+> > +	idr_for_each(&info->rx_idr, info->desc->ops->chan_free, &info->rx_idr);
+> > +	return ret;
+> >  }
+> >  
+> 
+> Shouldn't we also clear the internal IDRs memory allocs after these
+> idr_for_each() adding a couple of:
+> 
+> 	idr_destroy(&info->tx_idr);
+> 
+> 	idr_destroy(&info->rx_idr);
+> 
+> like scmi_remove() does ?
+> 
 
-Changes in v2:
-- Add fixes tag (Sai)
-- CC stable kernel (Dimtry)
+Maybe it could be worth at this point unifying this common "cleanup-all-channels"
+logic shared between scmi_probe()-error-path and scmi_remove() into its own
+helper function to call from both sites.
 
-Changes in v3:
-- Correct fixes tag with appropriate hash (stephen)
-- Resend patch adding reviewed by tag
-
-Fixes: 591e34a091d1 ("drm/msm/disp/dpu1: add support for display for SC7280 target")
-Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org> (sc7280, sc7180)
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-index d01c4c9..2e482cd 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-@@ -974,6 +974,7 @@ static const struct dpu_perf_cfg sdm845_perf_data = {
- 	.amortizable_threshold = 25,
- 	.min_prefill_lines = 24,
- 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
-+	.safe_lut_tbl = {0xfff0, 0xf000, 0xffff},
- 	.qos_lut_tbl = {
- 		{.nentry = ARRAY_SIZE(sdm845_qos_linear),
- 		.entries = sdm845_qos_linear
-@@ -1001,6 +1002,7 @@ static const struct dpu_perf_cfg sc7180_perf_data = {
- 	.min_dram_ib = 1600000,
- 	.min_prefill_lines = 24,
- 	.danger_lut_tbl = {0xff, 0xffff, 0x0},
-+	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
- 	.qos_lut_tbl = {
- 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
- 		.entries = sc7180_qos_linear
-@@ -1028,6 +1030,7 @@ static const struct dpu_perf_cfg sm8150_perf_data = {
- 	.min_dram_ib = 800000,
- 	.min_prefill_lines = 24,
- 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
-+	.safe_lut_tbl = {0xfff8, 0xf000, 0xffff},
- 	.qos_lut_tbl = {
- 		{.nentry = ARRAY_SIZE(sm8150_qos_linear),
- 		.entries = sm8150_qos_linear
-@@ -1056,6 +1059,7 @@ static const struct dpu_perf_cfg sm8250_perf_data = {
- 	.min_dram_ib = 800000,
- 	.min_prefill_lines = 35,
- 	.danger_lut_tbl = {0xf, 0xffff, 0x0},
-+	.safe_lut_tbl = {0xfff0, 0xff00, 0xffff},
- 	.qos_lut_tbl = {
- 		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
- 		.entries = sc7180_qos_linear
-@@ -1084,6 +1088,7 @@ static const struct dpu_perf_cfg sc7280_perf_data = {
- 	.min_dram_ib = 1600000,
- 	.min_prefill_lines = 24,
- 	.danger_lut_tbl = {0xffff, 0xffff, 0x0},
-+	.safe_lut_tbl = {0xff00, 0xff00, 0xffff},
- 	.qos_lut_tbl = {
- 		{.nentry = ARRAY_SIZE(sc7180_qos_macrotile),
- 		.entries = sc7180_qos_macrotile
--- 
-2.7.4
-
+Thanks,
+Cristian
