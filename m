@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636233E0612
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F129B3E0613
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239420AbhHDQkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:40:49 -0400
-Received: from mail-wm1-f51.google.com ([209.85.128.51]:55885 "EHLO
-        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhHDQkq (ORCPT
+        id S239424AbhHDQmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229862AbhHDQm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:40:46 -0400
-Received: by mail-wm1-f51.google.com with SMTP id x17so1566757wmc.5;
-        Wed, 04 Aug 2021 09:40:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ntN9WY4zmMZ23iXHsqDbV7BPHjIIMx7cF5b4w8slmdM=;
-        b=E9rg148APKDCUiGyWGvz8xK7eXKnUuSmsPzc/AUGcBJtSYqullHi1lFZJDp/ycgc6u
-         gDftB3d1CFPtCpkgZT1nxu53Yuo5/wrEUe8knor6+MMVtqD79vydw/CIHB/4zICuLiVm
-         IHOigZGoQPDnsaH8OqZuNlw6ctTm1vPQc7mCwwwXvCfDK3c7Wc5VzpwCY/7SCdsmeNr/
-         ii4pGv20F3IFPVEdCqj7XHtSeR2G97J2v7Zm0JPD4VVwsHwlLv+5FIFYPRBVG1ZsMI/d
-         lBqT8NHRl9uH7crOq6I4gp+2/++WI4u5n0Fzj860AgPiCCOpSlqrSR9Ur3mkmrj4++0P
-         rZoA==
-X-Gm-Message-State: AOAM531W4AkjHP9mSqC8367rvh49S2nsZKX/yL0uWFws0E9M5+vea8lL
-        c83r5TBTvzfZqJo+er7ObTI=
-X-Google-Smtp-Source: ABdhPJynlr56hUIGm77MB/+XdHVmQE9WJCF4/cvFGzgNtcIZYCGID8+vnvr9j88n+a8CO1dHLsp2uw==
-X-Received: by 2002:a05:600c:219:: with SMTP id 25mr484815wmi.49.1628095231907;
-        Wed, 04 Aug 2021 09:40:31 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id v12sm3125785wrq.59.2021.08.04.09.40.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 09:40:30 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 16:40:29 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Michael Kelley <mikelley@microsoft.com>, will@kernel.org,
-        mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-efi@vger.kernel.org, wei.liu@kernel.org, kys@microsoft.com,
-        sthemmin@microsoft.com, ardb@kernel.org
-Subject: Re: [PATCH v12 5/5] Drivers: hv: Enable Hyper-V code to be built on
- ARM64
-Message-ID: <20210804164029.6xmloksmssrdsmvo@liuwe-devbox-debian-v2>
-References: <1628092359-61351-1-git-send-email-mikelley@microsoft.com>
- <1628092359-61351-6-git-send-email-mikelley@microsoft.com>
- <20210804161040.GC4857@arm.com>
+        Wed, 4 Aug 2021 12:42:28 -0400
+Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017C4C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 09:42:15 -0700 (PDT)
+Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
+        (envelope-from <bert@biot.com>)
+        id 1mBJy9-007Etz-Jq
+        for linux-kernel@vger.kernel.org; Wed, 04 Aug 2021 18:42:13 +0200
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.4
+Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8]
+        by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <bert@biot.com>)
+        id 1mBJxs-007Esc-7G; Wed, 04 Aug 2021 18:41:56 +0200
+Subject: Re: [PATCH 3/5] ARM: dts: Add basic support for EcoNet EN7523
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
+        John Crispin <john@phrozen.org>, Felix Fietkau <nbd@nbd.name>
+References: <20210730134552.853350-1-bert@biot.com>
+ <20210730134552.853350-4-bert@biot.com>
+ <20210730144627.GB19569@C02TD0UTHF1T.local>
+From:   Bert Vermeulen <bert@biot.com>
+Message-ID: <d0ff051b-280c-4021-f4ee-7bfda5e356d3@biot.com>
+Date:   Wed, 4 Aug 2021 18:41:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804161040.GC4857@arm.com>
+In-Reply-To: <20210730144627.GB19569@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 05:10:41PM +0100, Catalin Marinas wrote:
-> On Wed, Aug 04, 2021 at 08:52:39AM -0700, Michael Kelley wrote:
-> > Update drivers/hv/Kconfig so CONFIG_HYPERV can be selected on
-> > ARM64, causing the Hyper-V specific code to be built. Exclude the
-> > Hyper-V enlightened clocks/timers code from being built for ARM64.
-> > 
-> > Signed-off-by: Michael Kelley <mikelley@microsoft.com>
-> > Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-> > Acked-by: Marc Zyngier <maz@kernel.org>
-> > Acked-by: Mark Rutland <mark.rutland@arm.com>
-> > 
-> > ---
-> >  drivers/hv/Kconfig | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
-> > index 66c794d..e509d5d 100644
-> > --- a/drivers/hv/Kconfig
-> > +++ b/drivers/hv/Kconfig
-> > @@ -4,7 +4,8 @@ menu "Microsoft Hyper-V guest support"
-> >  
-> >  config HYPERV
-> >  	tristate "Microsoft Hyper-V client drivers"
-> > -	depends on X86 && ACPI && X86_LOCAL_APIC && HYPERVISOR_GUEST
-> > +	depends on ACPI && ((X86 && X86_LOCAL_APIC && HYPERVISOR_GUEST) \
-> > +		|| (ARM64 && !CPU_BIG_ENDIAN))
-> >  	select PARAVIRT
-> >  	select X86_HV_CALLBACK_VECTOR
+On 7/30/21 4:46 PM, Mark Rutland wrote:
+> On Fri, Jul 30, 2021 at 03:45:50PM +0200, Bert Vermeulen wrote:
+>> +	timer {
+>> +		compatible = "arm,armv8-timer";
 > 
-> Does this need to be:
+> This should be "arm,armv7-timer".
 > 
-> 	select X86_HV_CALLBACK_VECTOR if X86
+>> +		interrupt-parent = <&gic>;
+>> +		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+>> +			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+>> +			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+>> +			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
 > 
-> I haven't checked whether it gives a warning on arm64 but that symbol
-> doesn't exist.
-> 
-> Anyway, I can fix it up locally.
+> GICv3 doesn't have a cpumask in its PPI description, so the
+> GIC_CPU_MASK_SIMPLE() bits should be removed.
 
-I can fix it up while I queue these patches.
+Ok, will fix.
 
-Wei.
+>> +		clock-frequency = <25000000>;
+> 
+> Please have your FW configure CNTFRQ on each CPU; the clock-frequency
+> property in the DT is a workaround for broken FW, and it's *vastly*
+> preferable for FW to configure this correctly (e.g. as it means VMs
+> should "just work").
+
+I've since got hold of the modified U-Boot that runs on my eval board, and 
+indeed it doesn't set CNTFRQ. So the kernel does need this, for the moment.
+
+I may get a chance to upstream support for this SoC in U-Boot, but I can't 
+control what people are going to ship with their board. Is it ok to leave 
+this in?
+
+
+-- 
+Bert Vermeulen
+bert@biot.com
