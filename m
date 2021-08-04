@@ -2,144 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EFD3DFCAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A1E3DFCB0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236266AbhHDIUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:20:21 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55254 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236179AbhHDIUU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:20:20 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 23284221B6;
-        Wed,  4 Aug 2021 08:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628065207; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lcx+B/N18widrHuZLHZiL32C9ltYEwiglNQ7MtBx6bI=;
-        b=Jz6JUhuuz7lMa83tROXofHjvK6VlFINTkD2AvYV+6HVr2SktLKcDdH9zAp57oWhD4+RA2r
-        qR60UBMt4MzPJR003RRtd0H8VxT2G6GjZ9BqRYKtBsMnBXtKwQJ3NehFCWNcdZdfm7mA5b
-        1ttlxk0tghKuGH5ti/JmAyyHrRHfx/k=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 30FC6A3B95;
-        Wed,  4 Aug 2021 08:20:06 +0000 (UTC)
-Date:   Wed, 4 Aug 2021 10:20:05 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Roman Gushchin <guro@fb.com>, Miaohe Lin <linmiaohe@huawei.com>,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        shakeelb@google.com, willy@infradead.org, alexs@kernel.org,
-        richard.weiyang@gmail.com, songmuchun@bytedance.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
-Message-ID: <YQpNtfjl0rHH8Mgf@dhcp22.suse.cz>
-References: <20210729125755.16871-1-linmiaohe@huawei.com>
- <20210729125755.16871-3-linmiaohe@huawei.com>
- <YQNsxVPsRSBZcfGG@carbon.lan>
- <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
- <YQlPiLY0ieRb704V@cmpxchg.org>
+        id S236323AbhHDIUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:20:49 -0400
+Received: from mail-eopbgr1310055.outbound.protection.outlook.com ([40.107.131.55]:63792
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236291AbhHDIUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 04:20:48 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gOYi6juEiR0KLXoTt4I5XdjovvabcMA3gPhXK3qo4OsH1DtKkqxKbhEOl9Z03CEBawPZiwdq1xUrrP9oJIMaR/xkrs59lwJWBNIvufZUtfQwYYBc/aJiQDKIPLP7eUT8SwDiizxRhS4SbaNxUVvw4C4gJYX+2lc/ZzQG8/r7xfjnJxSTl2o7H63o/4VebOebHg/vQezu30Upbo1YYdpd2+nQ/61XdgRw0l1XRURoJGriZN1OHHostRmO7muOic+4plxVHguCs97D/SinxpqYQvjCuh//8nI7BL+mI9/YRwmXklAVE7oVaGuhr7FptyslOekw/0UIaUE9LBMuaSZepA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PBeWr+L5Rrwtz2/0uDiix7MZXZyzzmmY3dUilSf/PX4=;
+ b=LOvKviSqyFNwhZm1WsLOo1tWQJxp+TGBUGMUy3alNCuxOzb2+EgFMQI502WkLx96iuSYOC3JOo+yM6okt3a975sOGWwo/iB3C1rZosVm1qgCcwuyeOOCR23CYuuvQYRgFd1QGv6SZ4LycgC6yD6vnYRPVA3H6eg2YIGwDrf3jxwiBNHZbM9FEaV5/7dtBx9nttugK0Rm6Dioy7tInf/XWWPajLcWJeCESSvuZEZaZI7XaAsd6QuN9lfrzYP5s+waROibCFLMBOmpsBh1YCUSWhTvnkthqZ5ogfsGAiHnjuzjE++zLqMhjrvAxLso5srQZpNP2Qz0pt/Cm3NrnnV+DA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PBeWr+L5Rrwtz2/0uDiix7MZXZyzzmmY3dUilSf/PX4=;
+ b=JsHXNKevZmFtWTgpydneqMZzRSTUTI+wMuK8VHJ3qy0KTzVs6V5SeYfvovAu6kfrshZ1s/CuFxiz/VFoINbpewA1TPUqk8beNriHU7LsjUb//mWtGMo+I5dQUOkqMOQiptu7H4ZI/AHL78Zgm4/UorvlUZgQsnFGXxriJgZA/C4=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=oppo.com;
+Received: from HKAPR02MB4356.apcprd02.prod.outlook.com (2603:1096:203:d6::16)
+ by HK0PR02MB2660.apcprd02.prod.outlook.com (2603:1096:203:63::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.26; Wed, 4 Aug
+ 2021 08:20:33 +0000
+Received: from HKAPR02MB4356.apcprd02.prod.outlook.com
+ ([fe80::d4ab:76fc:6326:a0eb]) by HKAPR02MB4356.apcprd02.prod.outlook.com
+ ([fe80::d4ab:76fc:6326:a0eb%5]) with mapi id 15.20.4394.015; Wed, 4 Aug 2021
+ 08:20:33 +0000
+From:   zhangkui <zhangkui@oppo.com>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     zhangkui <zhangkui@oppo.com>
+Subject: [PATCH] mm/madvise: add MADV_WILLNEED to process_madvise()
+Date:   Wed,  4 Aug 2021 16:20:10 +0800
+Message-Id: <20210804082010.12482-1-zhangkui@oppo.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-ClientProxiedBy: HK2PR04CA0073.apcprd04.prod.outlook.com
+ (2603:1096:202:15::17) To HKAPR02MB4356.apcprd02.prod.outlook.com
+ (2603:1096:203:d6::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQlPiLY0ieRb704V@cmpxchg.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (58.252.5.71) by HK2PR04CA0073.apcprd04.prod.outlook.com (2603:1096:202:15::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16 via Frontend Transport; Wed, 4 Aug 2021 08:20:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ebb74758-0909-4fd6-5c34-08d95720baa1
+X-MS-TrafficTypeDiagnostic: HK0PR02MB2660:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HK0PR02MB2660E8C5748483FF3943D861B8F19@HK0PR02MB2660.apcprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EAaxfwFCg2SAGeQPbasoEc9c9v33cKW+E2cO8E41eo4lXoKPXKLvhroZOQzZYu3fYjHioMFREm+odhy6Pz86rIGR/KZ0OvOuf+EtCWkMu1JXq7FDBOnZ3LnjNphBGShW1cxbpW+JclvtgVVZzvlPr/MVQP22KlGK9dUb2K2TFHwCuaoPOhuWrMeBoNeCjqVhyI2qvI+EKQ+3ByZTMV8My3GIvgnrC96cM5K7yXuVslRt30HT+hDZ/lmjeh0F/Zf5C9whr6h+3y8U1nRisaLnrH0pShCNRsAtUAIiuQewtVfJ648xcyjdTYH/83SnU2OIphbONiBOT0r/IwQOQ9QYRttNHKAek6yNMQsVddwTRVQehAevEKtGRb+LRL/9iEh/IdQ3zYIeHAIQaHTV7Y8uZ5wfp7YjrWr6SP8yEh9zO3wgk7ZCvNWFu6Edum+0uOi1XEumopH0Fok9SrdOXVPdlVmx/QgnF+JbBFSOoG0Mvu5yEIGxvPf4MjrFy4lSJ3ZcGz9nCxEgaUuBFoHdBSwB90GF3qgpk2dscWx035YmYR1oDLkusZj/u27v/lP7DkACqxyXkv0YLwKckv/Y6UAqJnOaSG8GbIinNyVtpm6LIRvJ+T3pqPGQHFDr1XmZJ6QN8m77MDvjuFcxY5qxykGh34iDBe+vQaGWvRL2W/Diq5IT7JhQwF0FNtHdVxq0sz0TdxMfRvBzpEI8G4h5iAucLidSnzE/dkHBm7f5P1ZBdYE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HKAPR02MB4356.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(39860400002)(396003)(136003)(376002)(86362001)(8936002)(8676002)(1076003)(36756003)(2906002)(38100700002)(316002)(956004)(38350700002)(107886003)(2616005)(6512007)(186003)(66946007)(5660300002)(66476007)(26005)(52116002)(478600001)(4326008)(6666004)(6486002)(66556008)(83380400001)(6506007)(11606007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hPrFS5nUjZCH0qDxjwC1adFNchpW/C+2ZDrR0zxfBC9+gnqdMuYLdLuPuutI?=
+ =?us-ascii?Q?sx0CJD1tn5WyEidqrN15O1WiwZHAAxdCaJcTakcIe89U+gtq2CESqcx33FlB?=
+ =?us-ascii?Q?BcoG4l23ebGML94igGcC2dC5PZ2iT7QB0acGSV5T2R+iuU3pQY+rNqnzAtrU?=
+ =?us-ascii?Q?19HWVJRBnpvsG5RBUdPE3UyNXrOYGg/bA9DtuCi//jUc9M9Wz2WVfaHC9EoO?=
+ =?us-ascii?Q?TcH+ossQbUqJ9btJiORRpN9hC96e8IhNHpj44TO+V0FPlFr/pVEm+OkEKW2D?=
+ =?us-ascii?Q?h50LiYUdVOXCQUl0wylL4SP73x18nZhU7EifI9AD02Jzc44Xtu6Dk34zZswm?=
+ =?us-ascii?Q?zTUyLWKhHzzGmo4G3htuxjScjgEJW5Sb7135kWBF3IbkjsvsA4HnD68znC2l?=
+ =?us-ascii?Q?qE5/o+fsADzyuPNVMmB0JmvLWBvR9UrqZhHHxioFelAWlaV1sHljgCBD1hQf?=
+ =?us-ascii?Q?Oox8UmyFWcRXS4VRWoUwUd1Q+/QrmGbwRD53APMoL/Hcurlt2sjjCDk+AxuN?=
+ =?us-ascii?Q?2NL5hesnXh2s9zpJF7SogFsXe69I5HdMWDPJXJNCJn9KyMgnjBNGVIvDnsCN?=
+ =?us-ascii?Q?AlCAsNetw05n9fEISE7PkztPWf2eTxTXGI3cQnp949ZKY3JLk+Pu6/yPfzXQ?=
+ =?us-ascii?Q?VekJtadXLE5ydLApi0rjdJdKG53cT1CCYYaKNh9mzkTbVI/cVF89v+drrOtF?=
+ =?us-ascii?Q?PjlcJnOAUO7FcR9gnYShxmhstdszyFIIAo8079/o/KlhkK2o9DDYjiDhWrUq?=
+ =?us-ascii?Q?KgEeOlKmY3qJCne4WAJVp1njw357iL+0k6goDbMyjzckpwcEMq1EYVQovCuK?=
+ =?us-ascii?Q?YT3pOVKl2wj3kn9JfPsT9oI4fwUiAijzsPhiQLXPPFaqgL6g6Nlm7qCoN53c?=
+ =?us-ascii?Q?Qm3W/vVFWEHwK6V5CGFOJBnq4Mlbmc0QxgOxNhmLw1yiIBBkGLQRsVAUyDR1?=
+ =?us-ascii?Q?ZPCXr+jaV98frcM1IsjtI+vKYB77Hat0vksYQ5FUFKw6qkMEBOeiE0UZfQ0k?=
+ =?us-ascii?Q?uTdlcz6PCJNodh1PPZeO5EaJ+EOlWr5sFFa27YLDTig6g3YP8TtF9WOaatQU?=
+ =?us-ascii?Q?9Vh574e+nYznAb4dQr3V++lU1UoDo9dL0BLzWWLOH8w2nYrJMEp3lwDMDZaW?=
+ =?us-ascii?Q?scmKxOR2Gmc9r6OqvKyp5xPwmTr3/+/OXTfn8ebOY0Tv16E9FPSHsUg1U0zk?=
+ =?us-ascii?Q?ox4D4uTjG6nvMylI3TVcjCHSediJVzoQnUAYVUIxhIsWhxNjhUjZYyZOlcEF?=
+ =?us-ascii?Q?QHa9OJ6UIf9AWXkC8MZY7ZOHpyWNZqTjf5EHdjj7LeAKLWRdeTHhqyzCgCeu?=
+ =?us-ascii?Q?nUmIGw1wk2EGYk8ouWjxITFg?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ebb74758-0909-4fd6-5c34-08d95720baa1
+X-MS-Exchange-CrossTenant-AuthSource: HKAPR02MB4356.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2021 08:20:33.2736
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: os6idkcYdusfrDJRDSEmsn2uj8bIpl6bMQgHFHh7QRWX9SAMK7Zde25Rt/lp89QgPuDUjF2xxBBdCeSIUj8tVw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR02MB2660
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 03-08-21 10:15:36, Johannes Weiner wrote:
-[...]
-> git history shows we tried to remove it once:
-> 
-> commit 8521fc50d433507a7cdc96bec280f9e5888a54cc
-> Author: Michal Hocko <mhocko@suse.cz>
-> Date:   Tue Jul 26 16:08:29 2011 -0700
-> 
->     memcg: get rid of percpu_charge_mutex lock
-> 
-> but it turned out that the lock did in fact protect a data structure:
-> the stock itself. Specifically stock->cached:
-> 
-> commit 9f50fad65b87a8776ae989ca059ad6c17925dfc3
-> Author: Michal Hocko <mhocko@suse.cz>
-> Date:   Tue Aug 9 11:56:26 2011 +0200
-> 
->     Revert "memcg: get rid of percpu_charge_mutex lock"
-> 
->     This reverts commit 8521fc50d433507a7cdc96bec280f9e5888a54cc.
-> 
->     The patch incorrectly assumes that using atomic FLUSHING_CACHED_CHARGE
->     bit operations is sufficient but that is not true.  Johannes Weiner has
->     reported a crash during parallel memory cgroup removal:
-> 
->       BUG: unable to handle kernel NULL pointer dereference at 0000000000000018
->       IP: [<ffffffff81083b70>] css_is_ancestor+0x20/0x70
->       Oops: 0000 [#1] PREEMPT SMP
->       Pid: 19677, comm: rmdir Tainted: G        W   3.0.0-mm1-00188-gf38d32b #35 ECS MCP61M-M3/MCP61M-M3
->       RIP: 0010:[<ffffffff81083b70>]  css_is_ancestor+0x20/0x70
->       RSP: 0018:ffff880077b09c88  EFLAGS: 00010202
->       Process rmdir (pid: 19677, threadinfo ffff880077b08000, task ffff8800781bb310)
->       Call Trace:
->        [<ffffffff810feba3>] mem_cgroup_same_or_subtree+0x33/0x40
->        [<ffffffff810feccf>] drain_all_stock+0x11f/0x170
->        [<ffffffff81103211>] mem_cgroup_force_empty+0x231/0x6d0
->        [<ffffffff811036c4>] mem_cgroup_pre_destroy+0x14/0x20
->        [<ffffffff81080559>] cgroup_rmdir+0xb9/0x500
->        [<ffffffff81114d26>] vfs_rmdir+0x86/0xe0
->        [<ffffffff81114e7b>] do_rmdir+0xfb/0x110
->        [<ffffffff81114ea6>] sys_rmdir+0x16/0x20
->        [<ffffffff8154d76b>] system_call_fastpath+0x16/0x1b
-> 
->     We are crashing because we try to dereference cached memcg when we are
->     checking whether we should wait for draining on the cache.  The cache is
->     already cleaned up, though.
-> 
->     There is also a theoretical chance that the cached memcg gets freed
->     between we test for the FLUSHING_CACHED_CHARGE and dereference it in
->     mem_cgroup_same_or_subtree:
-> 
->             CPU0                    CPU1                         CPU2
->       mem=stock->cached
->       stock->cached=NULL
->                                   clear_bit
->                                                             test_and_set_bit
->       test_bit()                    ...
->       <preempted>             mem_cgroup_destroy
->       use after free
-> 
->     The percpu_charge_mutex protected from this race because sync draining
->     is exclusive.
-> 
->     It is safer to revert now and come up with a more parallel
->     implementation later.
-> 
-> I didn't remember this one at all!
+There is a usecase in Android that an app process's memory is swapped out
+by process_madvise() with MADV_PAGEOUT, such as the memory is swapped to
+zram or a backing device. When the process is scheduled to running, like
+switch to foreground, multiple page faults may cause the app dropped
+frames.
+To reduce the problem, SMS can read-ahead memory of the process immediately
+when the app switches to forground.
+Calling process_madvise() with MADV_WILLNEED can meet this need.
 
-Me neither. Thanks for looking that up!
+Signed-off-by: zhangkui <zhangkui@oppo.com>
+---
+ mm/madvise.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> However, when you look at the codebase from back then, there was no
-> rcu-protection for memcg lifetime, and drain_stock() didn't double
-> check stock->cached inside the work. Hence the crash during a race.
-> 
-> The drain code is different now: drain_local_stock() disables IRQs
-> which holds up rcu, and then calls drain_stock() and drain_obj_stock()
-> which both check stock->cached one more time before the deref.
-> 
-> With workqueue managing concurrency, and rcu ensuring memcg lifetime
-> during the drain, this lock indeed seems unnecessary now.
-> 
-> Unless I'm missing something, it should just be removed instead.
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 6d3d348b17f4..b9681fb3fbb5 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -1046,6 +1046,7 @@ process_madvise_behavior_valid(int behavior)
+        switch (behavior) {
+        case MADV_COLD:
+        case MADV_PAGEOUT:
++       case MADV_WILLNEED:
+                return true;
+        default:
+                return false;
+--
+2.25.1
 
-I do not think you are missing anything. We can drop the lock and
-simplify the code. The above information would be great to have in the
-changelog.
+________________________________
+OPPO
 
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+=E6=9C=AC=E7=94=B5=E5=AD=90=E9=82=AE=E4=BB=B6=E5=8F=8A=E5=85=B6=E9=99=84=E4=
+=BB=B6=E5=90=AB=E6=9C=89OPPO=E5=85=AC=E5=8F=B8=E7=9A=84=E4=BF=9D=E5=AF=86=
+=E4=BF=A1=E6=81=AF=EF=BC=8C=E4=BB=85=E9=99=90=E4=BA=8E=E9=82=AE=E4=BB=B6=E6=
+=8C=87=E6=98=8E=E7=9A=84=E6=94=B6=E4=BB=B6=E4=BA=BA=E4=BD=BF=E7=94=A8=EF=BC=
+=88=E5=8C=85=E5=90=AB=E4=B8=AA=E4=BA=BA=E5=8F=8A=E7=BE=A4=E7=BB=84=EF=BC=89=
+=E3=80=82=E7=A6=81=E6=AD=A2=E4=BB=BB=E4=BD=95=E4=BA=BA=E5=9C=A8=E6=9C=AA=E7=
+=BB=8F=E6=8E=88=E6=9D=83=E7=9A=84=E6=83=85=E5=86=B5=E4=B8=8B=E4=BB=A5=E4=BB=
+=BB=E4=BD=95=E5=BD=A2=E5=BC=8F=E4=BD=BF=E7=94=A8=E3=80=82=E5=A6=82=E6=9E=9C=
+=E6=82=A8=E9=94=99=E6=94=B6=E4=BA=86=E6=9C=AC=E9=82=AE=E4=BB=B6=EF=BC=8C=E8=
+=AF=B7=E7=AB=8B=E5=8D=B3=E4=BB=A5=E7=94=B5=E5=AD=90=E9=82=AE=E4=BB=B6=E9=80=
+=9A=E7=9F=A5=E5=8F=91=E4=BB=B6=E4=BA=BA=E5=B9=B6=E5=88=A0=E9=99=A4=E6=9C=AC=
+=E9=82=AE=E4=BB=B6=E5=8F=8A=E5=85=B6=E9=99=84=E4=BB=B6=E3=80=82
+
+This e-mail and its attachments contain confidential information from OPPO,=
+ which is intended only for the person or entity whose address is listed ab=
+ove. Any use of the information contained herein in any way (including, but=
+ not limited to, total or partial disclosure, reproduction, or disseminatio=
+n) by persons other than the intended recipient(s) is prohibited. If you re=
+ceive this e-mail in error, please notify the sender by phone or email imme=
+diately and delete it!
