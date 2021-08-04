@@ -2,186 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0887E3E0345
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C623E0332
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238962AbhHDOcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:32:20 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:42934 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237013AbhHDO24 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S237725AbhHDObJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:31:09 -0400
+Received: from mga18.intel.com ([134.134.136.126]:6023 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238801AbhHDO24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Aug 2021 10:28:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1628087325; x=1659623325;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=D6ii/u0govjCm682RH3I0wZetDpJcPbhqh6iE1CrIu0=;
-  b=w+ZubufUYvMKa2RCuvKaAXRYDbmWcSv+eEIuX4Yx1+vnfqFhQYLMPtQo
-   UyvjJoyjLlq9N0nr56JdSOhe6uv966eT4x/qmwEY5kAG36OmtCUL4B8pP
-   O8EstomcliWcPGjvGFc0CCO+eB4euyuqYREF1Hm5Wd593nmrv9QXy+p1Z
-   EYCuk90imx9wuDiLbf1pyRCofDWYMQKT4diHlPxHyH9cfmpXzG605hgGN
-   ISq4AipCo+jaYtj39wymQmocgCKB9JAze5VhvQw2npC1zMv+Wbs7wrNZL
-   LFnO6ltM5as3xlV2sqmAx5R1uD/21CAoZ4C5S+X5ZpVTYQY5+PE9tSIiU
-   g==;
-IronPort-SDR: cMNhvWe1d11Uf+9EPoYLCd7JXMqm4xUU7aPt7KVrSMPCBy/lOVjPWpx5vpHj4KaiPPFTqLvLqb
- bv49YdtaLPQoO6SpuOCFAaNx2agMPZluq0KNB2nzvsGZv3oKCuvVpPSxEbrxirEHxdMGQIse5y
- iRGCxxh7x50fZx0Zy47oiK0moexBeTG04zA0cghGBQomFSyJlqogGNLiSJsMx+41G4JTenkl30
- NpkL7wFZzgmQ8G/aGDu2cY20P8l4xNclMPBgmRBbJlxMInuAoDytpQL3ZaIp8pBdCYWXMog9Ul
- 3Th+Aw1gnsE8OhCLPpPcrrqy
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="201113448"
 X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="131030110"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Aug 2021 07:28:24 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 4 Aug 2021 07:28:22 -0700
-Received: from CHE-LT-I21427LX.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Wed, 4 Aug 2021 07:28:17 -0700
-Message-ID: <d10aa31f1258aa2975e3837acb09f26265da91eb.camel@microchip.com>
-Subject: Re: [PATCH v3 net-next 05/10] net: dsa: microchip: add DSA support
- for microchip lan937x
-From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC:     Andrew Lunn <andrew@lunn.ch>, <netdev@vger.kernel.org>,
-        <robh+dt@kernel.org>, <UNGLinuxDriver@microchip.com>,
-        <Woojung.Huh@microchip.com>, <hkallweit1@gmail.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
-        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
-Date:   Wed, 4 Aug 2021 19:58:15 +0530
-In-Reply-To: <20210804104625.d2qw3gr7algzppz5@skbuf>
-References: <20210723173108.459770-1-prasanna.vengateshan@microchip.com>
-         <20210723173108.459770-6-prasanna.vengateshan@microchip.com>
-         <20210731150416.upe5nwkwvwajhwgg@skbuf>
-         <49678cce02ac03edc6bbbd1afb5f67606ac3efc2.camel@microchip.com>
-         <20210802121550.gqgbipqdvp5x76ii@skbuf> <YQfvXTEbyYFMLH5u@lunn.ch>
-         <20210802135911.inpu6khavvwsfjsp@skbuf>
-         <50eb24a1e407b651eda7aeeff26d82d3805a6a41.camel@microchip.com>
-         <20210803235401.rctfylazg47cjah5@skbuf>
-         <20210804095954.GN22278@shell.armlinux.org.uk>
-         <20210804104625.d2qw3gr7algzppz5@skbuf>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-1 
+   d="scan'208";a="201113448"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 07:28:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
+   d="scan'208";a="668090950"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 04 Aug 2021 07:28:13 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id B68C9B9; Wed,  4 Aug 2021 17:28:42 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Subject: [PATCH v2 1/1] Bluetooth: hci_bcm: Fix kernel doc comments
+Date:   Wed,  4 Aug 2021 17:28:37 +0300
+Message-Id: <20210804142837.67820-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-08-04 at 13:46 +0300, Vladimir Oltean wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
-> content is safe
-> 
-> The problem is that I have no clear migration path for the drivers I
-> maintain, like sja1105, and I suspect that others might be in the exact
-> same situation.
-> 
-> Currently, if the sja1105 needs to add internal delays in a MAC-to-MAC
-> (fixed-link) setup, it does that based on the phy-mode string. So
-> "rgmii-id" + "fixed-link" means for sja1105 "add RX and TX RGMII
-> internal delays", even though the documentation now says "the MAC should
-> not add the RX or TX delays in this case".
-> 
-> There are 2 cases to think about, old driver with new DT blob and new
-> driver with old DT blob. If breakage is involved, I am not actually very
-> interested in doing the migration, because even though the interpretation
-> of the phy-mode string is inconsistent between the phy-handle and fixed-link
-> case (which was deliberate), at least it currently does all that I need it to.
-> 
-> I am not even clear what is the expected canonical behavior for a MAC
-> driver. It parses rx-internal-delay-ps and tx-internal-delay-ps, and
-> then what? It treats all "rgmii*" phy-mode strings identically? Or is it
-> an error to have "rgmii-rxid" for phy-mode and non-zero rx-internal-delay-ps?
-> If it is an error, should all MAC drivers check for it? And if it is an
-> error, does it not make migration even more difficult (adding an
-> rx-internal-delay-ps property to a MAC OF node which already uses
-> "rgmii-id" would be preferable to also having to change the "rgmii-id"
-> to "rgmii", because an old kernel might also need to work with that DT
-> blob, and that will ignore the new rx-internal-delay-ps property).
+Kernel doc validator complains about few missed parameter descriptions.
+Fill the gap by describing them.
 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: sent separately of the initial series
+ drivers/bluetooth/hci_bcm.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Considering the PHY is responsible to add internal delays w.r.to phy-mode, "*-
-tx-internal-delay-ps" approach that i was applying to different connections as
-shown below by bringing up different examples.
-
-1) Fixed-link MAC-MAC: 
-       port@4 {
-            .....
-            phy-mode = "rgmii";
-            rx-internal-delay-ps = <xxx>;
-            tx-internal-delay-ps = <xxx>;
-            ethernet = <&ethernet>;
-            fixed-link {
-           	......
-            };
-          };
-
-2) Fixed-link MAC-Unknown:
-        port@5 {
-            ......
-            phy-mode = "rgmii-id";
-            rx-internal-delay-ps = <xxx>;
-            tx-internal-delay-ps = <xxx>;
-            fixed-link {
-           .	....
-            };
-          };
-
-3) Fixed-link :
-        port@5 {
-            ......
-            phy-mode = "rgmii-id";
-            fixed-link {
-              .....
-            };
-          };
-
-From above examples,
-	a) MAC node is responsible to add RGMII delay by parsing "*-internal-
-delay-ps" for (1) & (2). Its a known item in this discussion.
-	b) Is rgmii-* to be ignored by the MAC in (2) and just apply the delays
-from MAC side? Because if its forced to have "rgmii", would it become just -
->interface=*_MODE_RGMII and affects legacy?
-	c) if MAC follows standard delay, then it needs to be validated against
-"*-internal-delay-ps", may be validating against single value and throw an
-error. Might be okay.
-	d) For 3), Neither MAC nor other side will apply delays. Expected.
-
-
-3) MAC-PHY
-
-	i) &test3 {
-		phy-handle = <&phy0>;
-		phy-mode = "rgmii-id";
-		phy0: ethernet-phy@xx {
-			.....
-			rx-internal-delay = <xxx>;
-			tx-internal-delay = <xxx>;
-		};
-	  };
-
-	ii) &test4 {
-		phy-handle = <&phy0>;
-		phy-mode = "rgmii";
-        	rx-internal-delay-ps = <xxx>;
-        	tx-internal-delay-ps = <xxx>;
-		phy0: ethernet-phy@xx {
-			reg = <x>;
-	        };
-	     };
-
-
-For 3(i), I assume phy would apply internal delay values by checking its phydev-
->interface.
-For 3(ii), MAC would apply the delays.
-
-Overall, only (b) need a right decision? or any other items are missed?
-
-
-Prasanna V
+diff --git a/drivers/bluetooth/hci_bcm.c b/drivers/bluetooth/hci_bcm.c
+index ed99fcde2523..fd0acadb9102 100644
+--- a/drivers/bluetooth/hci_bcm.c
++++ b/drivers/bluetooth/hci_bcm.c
+@@ -51,6 +51,7 @@
+ /**
+  * struct bcm_device_data - device specific data
+  * @no_early_set_baudrate: Disallow set baudrate before driver setup()
++ * @drive_rts_on_open: drive RTS signal on ->open() when platform requires it
+  */
+ struct bcm_device_data {
+ 	bool	no_early_set_baudrate;
+@@ -77,6 +78,8 @@ struct bcm_device_data {
+  * @btlp: Apple ACPI method to toggle BT_WAKE pin ("Bluetooth Low Power")
+  * @btpu: Apple ACPI method to drive BT_REG_ON pin high ("Bluetooth Power Up")
+  * @btpd: Apple ACPI method to drive BT_REG_ON pin low ("Bluetooth Power Down")
++ * @gpio_count: internal counter for GPIO resources associated with ACPI device
++ * @gpio_int_idx: index in _CRS for GpioInt() resource
+  * @txco_clk: external reference frequency clock used by Bluetooth device
+  * @lpo_clk: external LPO clock used by Bluetooth device
+  * @supplies: VBAT and VDDIO supplies used by Bluetooth device
+@@ -88,10 +91,13 @@ struct bcm_device_data {
+  *	set to 0 if @init_speed is already the preferred baudrate
+  * @irq: interrupt triggered by HOST_WAKE_BT pin
+  * @irq_active_low: whether @irq is active low
++ * @irq_acquired: flag to show if IRQ handler has been assigned
+  * @hu: pointer to HCI UART controller struct,
+  *	used to disable flow control during runtime suspend and system sleep
+  * @is_suspended: whether flow control is currently disabled
+  * @no_early_set_baudrate: don't set_baudrate before setup()
++ * @drive_rts_on_open: drive RTS signal on ->open() when platform requires it
++ * @pcm_int_params: keep the initial PCM configuration
+  */
+ struct bcm_device {
+ 	/* Must be the first member, hci_serdev.c expects this. */
+-- 
+2.30.2
 
