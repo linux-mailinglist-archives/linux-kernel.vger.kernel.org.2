@@ -2,136 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBA33DFADC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3CFD3DFADF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235067AbhHDFC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 01:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234955AbhHDFC0 (ORCPT
+        id S235100AbhHDFDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 01:03:20 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:12443 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230120AbhHDFDS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 01:02:26 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3EFC0613D5
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 22:02:14 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id b7so1928853edu.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 22:02:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=N+beALY95MrjF7EQlWQ+7qrLEnnewleV96sjHNxuEQs=;
-        b=1rLCLS4VnBkloqKEKCZnZytWQey60VsL3htB4tjjDdGtlLAiqoh4sNKJRTSD6PwHMR
-         9vnNHw1iSS/Fx6i0RCE4RQQ4vyqq5rtIc36Im9QY2RqHEKf/w7Ug3oZhwlGcXQQVWu+G
-         DaqQtL3jX0bh/ha8PFkv/P+nkTaCYS0lRvDdZ7eTBoSHDgR6igcI7RQpNA/OnHviNAOp
-         B3a2lMoBgB2yx2PIRIb70LzX8dilNPja4adYWApEFw1rdfLmQVuZMJXeYvIXWxCdUk2b
-         bPhkn+mywOFmHQT2BPGuByMD4SU6R+J4yLdJWCNVm7lh1t2vV6tsAG7vZpgywjnOueBE
-         IJ+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=N+beALY95MrjF7EQlWQ+7qrLEnnewleV96sjHNxuEQs=;
-        b=brcNfyzTPJbQsqq7roUjU44Uv8eTSJOCFBIkQ7V5wMBu19un9WDsgslLF0uq8MSD37
-         gSZ+5yjYRkR3BID8QXpfyTEOjroyIX1RPTCHRh5d7cTUMGQcxn0i0YrmdQImxzOyvGvl
-         3NaD8bM+kaV5ohf6O5JEyLredtoxtglA7nFH107Nbx09wTCwxE/CngPIDuXqot5mV4Vo
-         XEpQJ1w3cSkTOYxmAgSVriPzuXz1Bm6apxD/TtIRa3mCvB/u4lztPkSUyAsvCWIe8izb
-         +slkiq+Y5ohJKYQ1j6xUPjsM1fVnls1+Dh9VdJ8YibSlnoZ2SK8dX1hsK7kNvbFOsAdl
-         zcbQ==
-X-Gm-Message-State: AOAM533v+TrujyzEJyZSItawi73QScUun5ekh3gN2A5FXwkWPR7GJV1G
-        Bx2ATHg2fL4WQkSD1h7+hlts1V7dchZq/JGX2emB
-X-Google-Smtp-Source: ABdhPJyt1k/RSWy83+1+OmhkaAmWeFnxG6MZmwR66lsbk5H/EN4omlE0NKvZ4kUYOjDCLtkcwCUQ7smkV99GEEOO3As=
-X-Received: by 2002:aa7:c50a:: with SMTP id o10mr29218603edq.118.1628053332808;
- Tue, 03 Aug 2021 22:02:12 -0700 (PDT)
+        Wed, 4 Aug 2021 01:03:18 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gfffm4sVzzcfZ0;
+        Wed,  4 Aug 2021 12:59:28 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 4 Aug 2021 13:03:02 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 4 Aug 2021 13:03:01 +0800
+Subject: Re: [PATCH v2] lib: Use PFN_PHYS() in devmem_is_allowed()
+To:     Palmer Dabbelt <palmerdabbelt@google.com>
+CC:     <wangliang101@huawei.com>, <mcgrof@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>, <linux@armlinux.org.uk>,
+        <linux-arm-kernel@lists.infradead.org>, <stable@vger.kernel.org>,
+        <wangle6@huawei.com>, <kepler.chenxin@huawei.com>,
+        <nixiaoming@huawei.com>
+References: <mhng-e101fb5a-2f16-45a0-8436-454ac2bf4223@palmerdabbelt-glaptop>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <4c0ec8b2-6b9c-d8da-dd84-29937c968636@huawei.com>
+Date:   Wed, 4 Aug 2021 13:03:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-References: <20210729073503.187-1-xieyongji@bytedance.com> <20210729073503.187-2-xieyongji@bytedance.com>
- <43d88942-1cd3-c840-6fec-4155fd544d80@redhat.com> <CACycT3vcpwyA3xjD29f1hGnYALyAd=-XcWp8+wJiwSqpqUu00w@mail.gmail.com>
- <6e05e25e-e569-402e-d81b-8ac2cff1c0e8@arm.com>
-In-Reply-To: <6e05e25e-e569-402e-d81b-8ac2cff1c0e8@arm.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Wed, 4 Aug 2021 13:02:01 +0800
-Message-ID: <CACycT3sm2r8NMMUPy1k1PuSZZ3nM9aic-O4AhdmRRCwgmwGj4Q@mail.gmail.com>
-Subject: Re: [PATCH v10 01/17] iova: Export alloc_iova_fast() and free_iova_fast()
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Jason Wang <jasowang@redhat.com>, kvm <kvm@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Liu Xiaodong <xiaodong.liu@intel.com>,
-        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        songmuchun@bytedance.com, Jens Axboe <axboe@kernel.dk>,
-        He Zhe <zhe.he@windriver.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, bcrl@kvack.org,
-        netdev@vger.kernel.org, Joe Perches <joe@perches.com>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <mhng-e101fb5a-2f16-45a0-8436-454ac2bf4223@palmerdabbelt-glaptop>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 6:54 PM Robin Murphy <robin.murphy@arm.com> wrote:
+
+On 2021/8/4 8:20, Palmer Dabbelt wrote:
+> On Fri, 30 Jul 2021 00:04:05 PDT (-0700), wangkefeng.wang@huawei.com 
+> wrote:
+>>
+>> On 2021/7/30 14:49, Liang Wang wrote:
+>>> The physical address may exceed 32 bits on ARM(when ARM_LPAE enabled),
+>>> use PFN_PHYS() in devmem_is_allowed(), or the physical address may
+>>> overflow and be truncated.
+>>>
+>>> This bug was initially introduced from v2.6.37, and the function was 
+>>> moved
+>>> to lib when v5.10.
+>>>
+>>> Fixes: 087aaffcdf9c ("ARM: implement CONFIG_STRICT_DEVMEM by 
+>>> disabling access to RAM via /dev/mem")
+>>> Fixes: 527701eda5f1 ("lib: Add a generic version of 
+>>> devmem_is_allowed()")
+>>> Cc: stable@vger.kernel.org # v2.6.37
+>>> Signed-off-by: Liang Wang <wangliang101@huawei.com>
+>> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>> ---
+>>> v2: update subject and changelog
+>>>   lib/devmem_is_allowed.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+...
+> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
 >
-> On 2021-08-03 09:54, Yongji Xie wrote:
-> > On Tue, Aug 3, 2021 at 3:41 PM Jason Wang <jasowang@redhat.com> wrote:
-> >>
-> >>
-> >> =E5=9C=A8 2021/7/29 =E4=B8=8B=E5=8D=883:34, Xie Yongji =E5=86=99=E9=81=
-=93:
-> >>> Export alloc_iova_fast() and free_iova_fast() so that
-> >>> some modules can use it to improve iova allocation efficiency.
-> >>
-> >>
-> >> It's better to explain why alloc_iova() is not sufficient here.
-> >>
-> >
-> > Fine.
+> I only see the reply so I'm assuming this is going in through some 
+> other tree, but LMK if you want it via the RISC-V tree as IIRC we're 
+> using it too.
+
+Hi Palmer,  there is a v3 with changelog updated,
+
+https://lore.kernel.org/lkml/20210731025057.78825-1-wangliang101@huawei.com/
+
+
 >
-> What I fail to understand from the later patches is what the IOVA domain
-> actually represents. If the "device" is a userspace process then
-> logically the "IOVA" would be the userspace address, so presumably
-> somewhere you're having to translate between this arbitrary address
-> space and actual usable addresses - if you're worried about efficiency
-> surely it would be even better to not do that?
+> Thanks!
+> .
 >
-
-Yes, userspace daemon needs to translate the "IOVA" in a DMA
-descriptor to the VA (from mmap(2)). But this actually doesn't affect
-performance since it's an identical mapping in most cases.
-
-> Presumably userspace doesn't have any concern about alignment and the
-> things we have to worry about for the DMA API in general, so it's pretty
-> much just allocating slots in a buffer, and there are far more effective
-> ways to do that than a full-blown address space manager.
-
-Considering iova allocation efficiency, I think the iova allocator is
-better here. In most cases, we don't even need to hold a spin lock
-during iova allocation.
-
-> If you're going
-> to reuse any infrastructure I'd have expected it to be SWIOTLB rather
-> than the IOVA allocator. Because, y'know, you're *literally implementing
-> a software I/O TLB* ;)
->
-
-But actually what we can reuse in SWIOTLB is the IOVA allocator. And
-the IOVA management in SWIOTLB is not what we want. For example,
-SWIOTLB allocates and uses contiguous memory for bouncing, which is
-not necessary in VDUSE case. And VDUSE needs coherent mapping which is
-not supported by the SWIOTLB. Besides, the SWIOTLB works in singleton
-mode (designed for platform IOMMU) , but VDUSE is based on on-chip
-IOMMU (supports multiple instances). So I still prefer to reuse the
-IOVA allocator to implement a MMU-based software IOTLB.
-
-Thanks,
-Yongji
