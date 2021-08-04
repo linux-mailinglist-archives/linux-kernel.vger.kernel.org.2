@@ -2,61 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE823E095E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 22:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F373E0962
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 22:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240869AbhHDUaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 16:30:05 -0400
-Received: from mga04.intel.com ([192.55.52.120]:25594 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239715AbhHDUaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 16:30:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="212145738"
-X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="212145738"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 13:29:51 -0700
-X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="512220913"
-Received: from bguvendi-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.99.93])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 13:29:50 -0700
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQrqhYEL64CSLRTy@kroah.com>
- <CAPcyv4iEEDCz5719d0vNi=zi=6oN5vctcVfY5P=WQ9j_Zpz6eA@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <0601aa0f-25a9-217c-efa3-8925fa1923cf@linux.intel.com>
-Date:   Wed, 4 Aug 2021 13:29:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S240884AbhHDUaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 16:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240871AbhHDUaU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 16:30:20 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFA7C06179A
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 13:30:06 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id u2so4318070plg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 13:30:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ay2VkZp1QSgjgUuaKlnv5Qoem62OrDMpCDFTC9mEKKs=;
+        b=h7uefQRXljacHpvf0siGwYGLJf0aZg9wL7lcZZD8SAP8NjZ/OatK0tjPjxlwXe7IMK
+         7xlwDJ96zOb5RrRMABauPXT1M/okb7U1zyItTZ4Qvh9n+DzioYOhUbOveIWEqhahz1oF
+         WzK7+e+VBfH+31jV+jd76JPm2uM3+y24jwTti6Hs+LAhbLSlPQd7EbC3/aCstk6R19Xw
+         q1IMZV8pNKwyIHlKt/fr0tSbGMYktdvBSycYWVNIAENTj39hF5VkmONe29adwj35Zezd
+         NG070KRGEFXwBno8lVsOlGDUqHcxynthQu6Y/1kZxqPcG2jQwGHUu5XEr8J79OHlbOqt
+         Px1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ay2VkZp1QSgjgUuaKlnv5Qoem62OrDMpCDFTC9mEKKs=;
+        b=aBHMX7XgFDddmqiCXWuxyls+EvacU91kgkrl3UzMb87ESTr8D8YL4bCHFUB8z9gxQK
+         OfZaJaet0RPftmPEFYjnzzERTw1iSsW+U3rKJ6lGjKOzaczHgMTcetQJl7X/E6zG+YBv
+         dpIAICJOTU/QSd2pWhWOjLu+tqBXKnWKtPSeLxnPCxiaSylhxX2gMmNqG8fRsG2N0K/T
+         9w1eMLDtrolPm4kSXXQJjTqHyG9gKqoC03JJCw0KfRucnWHMxPzjeTDERcfJJYAZ3GK0
+         ZtLtVB1/lfvfJQG9q9SDQlEmQQhEu33ZV5gAnRe2dOJAv59+3bb/cAPjqAgEf7lds92G
+         D4Pw==
+X-Gm-Message-State: AOAM531GIRC+WgSuldZbz8bhIdFLt3QbczUjqtlK8IOHpy+UYS64/R7F
+        U4uFoo/d2C7x7iDGpeAFX8bApAWM78Hh7EE2Xn3sjQ==
+X-Google-Smtp-Source: ABdhPJy/uPKrEp0nPLVvxOUcb/sdhHBtDi1SSscb0nok7vJYVZmxgN45gHrXgDwd/ykefzZ6jcQJRES2Sk1Ld1I48jc=
+X-Received: by 2002:a17:90a:1208:: with SMTP id f8mr11602671pja.73.1628109005619;
+ Wed, 04 Aug 2021 13:30:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4iEEDCz5719d0vNi=zi=6oN5vctcVfY5P=WQ9j_Zpz6eA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210726183816.1343022-1-erdemaktas@google.com>
+ <20210726183816.1343022-2-erdemaktas@google.com> <e1651746-aa46-31e7-e1c0-99f3faaf1586@intel.com>
+ <ede70f11e713ee0140c0e684c3d46b3aa1176e5e.camel@redhat.com>
+ <42a812a9-7f17-2a26-d289-1f921408a469@intel.com> <c82a3abe00d387985ac806c8ff062cc29e192bbd.camel@redhat.com>
+In-Reply-To: <c82a3abe00d387985ac806c8ff062cc29e192bbd.camel@redhat.com>
+From:   Erdem Aktas <erdemaktas@google.com>
+Date:   Wed, 4 Aug 2021 13:29:54 -0700
+Message-ID: <CAAYXXYx_CFKBhFjqfz_wyh6bPPbWpTPCDfGmmLGqiugvfqA3Dg@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/4] KVM: selftests: Add support for creating
+ non-default type VMs
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Xiaoyao Li <xiaoyao.li@intel.com>, linux-kselftest@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
+        David Matlack <dmatlack@google.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Zhenzhong Duan <zhenzhong.duan@intel.com>,
+        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
+        Like Xu <like.xu@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thank you all for all that great feedback! I will include them in my v2.
 
+On Wed, Aug 4, 2021 at 7:46 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
+>
+> > > > Can we pass KVM_X86_LEGACY_VM (whatever name when it's upstreamed)
+> > > > instead of 0?
+> > >
+I was originally thinking of doing this but Sean has suggested that we
+should use 0 to make it  arch-agnostic for creating default VMs.
++Sean Christopherson : What do you think?
 
-On 8/4/21 1:11 PM, Dan Williams wrote:
->> You added a sysfs file without Documentation/ABI/ update as well?
->>
->> {sigh}
-> Argh, my fault, that one slipped through in the internal review.
+>
+> KVM_X86_NORMAL_VM is a very good name IMHO as well.
+> Thanks!
 
-Sorry, I will add this in next version.
+Sounds good to me.
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+> For example:
+>
+> struct vm_options {
+>         enum vm_guest_mode mode;
+>         uint64_t phy_pages;
+>         int perm;
+>         int type;
+> };
+>
+> struct kvm_vm *vm_create(const struct vm_options *options)
+> {
+>         ...
+> }
+>
+
+I liked this idea, I will see if I can include it in my v2.
+
+Thank you so much again.
+-Erdem
