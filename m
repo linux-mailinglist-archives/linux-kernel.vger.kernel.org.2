@@ -2,91 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674E83E0744
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D911C3E0749
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239140AbhHDSKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 14:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238061AbhHDSKw (ORCPT
+        id S240078AbhHDSM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 14:12:28 -0400
+Received: from mail-oo1-f51.google.com ([209.85.161.51]:43926 "EHLO
+        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238061AbhHDSM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 14:10:52 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145CFC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 11:10:40 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id y18so3855321oiv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 11:10:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nO7o2mnROm6vfrwIFqpPmkud04mZHjdO1289sNb+Hw0=;
-        b=SZUpBRULSN2CSoeeNZ16bWEwfw9BT+28HqCpb79v4tkTQVtEcEpowHLFyE3bARU+AP
-         yGdSakKCvE0yDTm+5/FXktniQT1fh4tM5N6EyJST9UfZfk+TPXOGrvJHms6ly5oEEDlW
-         x4qFcMj+jtEgKWEF+Or+aa1mGmQ7M8LVkrIoNmt3g4K4iFSxmvEeBPZyE6iTnHzguDeT
-         CbRdfdJxgQueqUiMUKrdYwMTdbEOnMwHu3Z8sPJFQqChjc7AKfOfiAs8dPS8TSk3m0w0
-         PxvqCnaG+EvQ1hQBXxpDAQan/W4lIx8PF5yLP+FftLVHl5RUOtL5ZpriNZKTKPdm+FwX
-         Zk1A==
+        Wed, 4 Aug 2021 14:12:27 -0400
+Received: by mail-oo1-f51.google.com with SMTP id y16-20020a4ad6500000b0290258a7ff4058so683199oos.10;
+        Wed, 04 Aug 2021 11:12:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:cc:references:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nO7o2mnROm6vfrwIFqpPmkud04mZHjdO1289sNb+Hw0=;
-        b=IjvHKwlaGYNAWZ+edwOeIjS2GeFJwrsQ2ygajIGHHG4LwXb850CYD6ur8Ot5YrHD3G
-         zo4oN5cIdpcR/UF9222E3bv/OdJiqyOq0nJBlUC7ZXjaQnCQIItoedxqv5Jv4wwx7fNn
-         mo9lsS8N71bjJVdoJTrkRjaau2stFBfV6gzLxRbYikpBRZmgL07woCwPrnmNyCi7b3cf
-         GnOxlGS2P+ZxJy1S749rzhSXIhNbTZOX9bQ19OO9yjAFwMMkHG6Ln5F1oyGm1OVRA8IZ
-         pwVW8ZOX5ajInOCm8B8eiJAIRhhsaK7wQGFFAKRsU+Zl7XzRLzep83HPCR3rXuhSOEFJ
-         jH1A==
-X-Gm-Message-State: AOAM533lOkFWfd/lvbfX3gURrGkEBO/CebZroFZhB5ul+aF9YOdTLa5i
-        Hn6y6Z5jVkL7WuNxbvPoWH4+ilTcH6k=
-X-Google-Smtp-Source: ABdhPJxQfR3eULiGVYmQ466ZqjtzMkAdnUNOO6e49aXKcmE3YmWTf2uZ4d9Ehn4RPBezXBwuACTC0g==
-X-Received: by 2002:aca:f089:: with SMTP id o131mr547234oih.37.1628100639168;
-        Wed, 04 Aug 2021 11:10:39 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
-        by smtp.gmail.com with ESMTPSA id d7sm431522oon.18.2021.08.04.11.10.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 11:10:38 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: [PATCH] staging: r8188eu: core: Remove rtw_mfree_all_stainfo()
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>
-References: <20210802005517.12815-1-fmdefrancesco@gmail.com>
- <20210804130136.GJ1931@kadam>
- <CAP71bdUDEX=B6Km9wZO1AyHpVzqqkGNw6xNvspBz3qUABSKMEQ@mail.gmail.com>
-Message-ID: <406c6f84-a2f6-1a0e-3a52-9406df41973c@lwfinger.net>
-Date:   Wed, 4 Aug 2021 13:10:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0g4tHgIgUJb7cYcVp4RPbDV68RXFdnmQz+5rqu8K6KQ=;
+        b=dFu83rfsWzIhY1+Xxhxo+5m5GGpTnJSOfbqQmvB3z0Q5Z29jbNdJTm4tHb4ksxY0bJ
+         unJYHlGEiQbo/YjQThUCx3DCXcO47LrvEbb+HoHm/M0BXgcJZVHhn01FKjtqNKDXGJPk
+         CULCUTaeGc8ReHxLJ5CC5ybBAt2n7FuEmXQuqpyJub7PRNFhWZ/YFrhEJrhN3sIgGmJf
+         yAlaeT4doBqckEPhfzPvHl3voaRAnPy2qxK05cxlaV8z6h7E5leeVvhnREjjc9phA45X
+         7O3uroHLSOm8mZSEBoXCCKonVqmu5DlAj6iVLEDkmJBcBO5cTYY2C9pv1vfRTu+kqP5j
+         HJKA==
+X-Gm-Message-State: AOAM533UWHrbcafI+/DBlJZxi52dneZ4KRnTthyTUzcW9knrPUG2kWGy
+        LkDAsy0HO63miLmxZM5MFeycR1CCS71X59D+34Q=
+X-Google-Smtp-Source: ABdhPJwWA3EjVz2OhP8f4hzMiCCOOMDNgw5W0+G/YYjPR77VcU4n0aNcNzPIL5D2aSj5GmFG6GAp9NbGK7Cy5pPY7qU=
+X-Received: by 2002:a4a:9c05:: with SMTP id y5mr571625ooj.2.1628100733952;
+ Wed, 04 Aug 2021 11:12:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAP71bdUDEX=B6Km9wZO1AyHpVzqqkGNw6xNvspBz3qUABSKMEQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210731195034.979084-1-dmitry.baryshkov@linaro.org> <20210731195034.979084-4-dmitry.baryshkov@linaro.org>
+In-Reply-To: <20210731195034.979084-4-dmitry.baryshkov@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 4 Aug 2021 20:12:02 +0200
+Message-ID: <CAJZ5v0jVJpfzO9zWYSmKjCNeqfREc3OLC5aR8k1NRLnwnh57oA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] clk: qcom: use devm_pm_runtime_enable and devm_pm_clk_create
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/21 10:09 AM, Larry Finger wrote:
-> In other Realtek drivers, the while loop has a call to rtw_mfree_stainfo(psta). 
-> That routine does not exist in this driver, but I think it should. In a few rare 
-> instances, the driver leaks some memory - this missing code may explain that. In 
-> any case, this patch should be dropped as the fix will require testing.
+On Sat, Jul 31, 2021 at 9:50 PM Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> Use two new helpers instead of pm_runtime_enable() and pm_clk_create(),
+> removing the need for calling pm_runtime_disable and pm_clk_destroy().
+>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-After looking at the original code for several other drivers, routine 
-rtw_mfree_stainfo() just ends up calling a couple of routines that free a 
-spinlock. That operation for Windows and FreeBSD is not trivial, but for Linux, 
-the routine does nothing. Thus, despite its name, rtw_mfree_stainfo() does not 
-free anything, and it can be deleted.
+This needs some ACKs if you want me to apply it.
 
-The original patch is
-
-Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
-
-Larry
-
+> ---
+>  drivers/clk/qcom/camcc-sc7180.c       | 25 +++++++++------------
+>  drivers/clk/qcom/lpass-gfm-sm8250.c   | 21 ++++++++----------
+>  drivers/clk/qcom/lpasscorecc-sc7180.c | 18 ++-------------
+>  drivers/clk/qcom/mss-sc7180.c         | 30 +++++++------------------
+>  drivers/clk/qcom/q6sstop-qcs404.c     | 32 ++++++++-------------------
+>  drivers/clk/qcom/turingcc-qcs404.c    | 30 +++++++------------------
+>  6 files changed, 46 insertions(+), 110 deletions(-)
+>
+> diff --git a/drivers/clk/qcom/camcc-sc7180.c b/drivers/clk/qcom/camcc-sc7180.c
+> index 9bcf2f8ed4de..ce73ee9037cb 100644
+> --- a/drivers/clk/qcom/camcc-sc7180.c
+> +++ b/drivers/clk/qcom/camcc-sc7180.c
+> @@ -1652,32 +1652,35 @@ static int cam_cc_sc7180_probe(struct platform_device *pdev)
+>         struct regmap *regmap;
+>         int ret;
+>
+> -       pm_runtime_enable(&pdev->dev);
+> -       ret = pm_clk_create(&pdev->dev);
+> +       ret = devm_pm_runtime_enable(&pdev->dev);
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       ret = devm_pm_clk_create(&pdev->dev);
+>         if (ret < 0)
+>                 return ret;
+>
+>         ret = pm_clk_add(&pdev->dev, "xo");
+>         if (ret < 0) {
+>                 dev_err(&pdev->dev, "Failed to acquire XO clock\n");
+> -               goto disable_pm_runtime;
+> +               return ret;
+>         }
+>
+>         ret = pm_clk_add(&pdev->dev, "iface");
+>         if (ret < 0) {
+>                 dev_err(&pdev->dev, "Failed to acquire iface clock\n");
+> -               goto disable_pm_runtime;
+> +               return ret;
+>         }
+>
+>         ret = pm_runtime_get(&pdev->dev);
+>         if (ret)
+> -               goto destroy_pm_clk;
+> +               return ret;
+>
+>         regmap = qcom_cc_map(pdev, &cam_cc_sc7180_desc);
+>         if (IS_ERR(regmap)) {
+>                 ret = PTR_ERR(regmap);
+>                 pm_runtime_put(&pdev->dev);
+> -               goto destroy_pm_clk;
+> +               return ret;
+>         }
+>
+>         clk_fabia_pll_configure(&cam_cc_pll0, regmap, &cam_cc_pll0_config);
+> @@ -1689,18 +1692,10 @@ static int cam_cc_sc7180_probe(struct platform_device *pdev)
+>         pm_runtime_put(&pdev->dev);
+>         if (ret < 0) {
+>                 dev_err(&pdev->dev, "Failed to register CAM CC clocks\n");
+> -               goto destroy_pm_clk;
+> +               return ret;
+>         }
+>
+>         return 0;
+> -
+> -destroy_pm_clk:
+> -       pm_clk_destroy(&pdev->dev);
+> -
+> -disable_pm_runtime:
+> -       pm_runtime_disable(&pdev->dev);
+> -
+> -       return ret;
+>  }
+>
+>  static const struct dev_pm_ops cam_cc_pm_ops = {
+> diff --git a/drivers/clk/qcom/lpass-gfm-sm8250.c b/drivers/clk/qcom/lpass-gfm-sm8250.c
+> index f5e31e692b9b..96f476f24eb2 100644
+> --- a/drivers/clk/qcom/lpass-gfm-sm8250.c
+> +++ b/drivers/clk/qcom/lpass-gfm-sm8250.c
+> @@ -251,15 +251,18 @@ static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
+>         if (IS_ERR(cc->base))
+>                 return PTR_ERR(cc->base);
+>
+> -       pm_runtime_enable(dev);
+> -       err = pm_clk_create(dev);
+> +       err = devm_pm_runtime_enable(dev);
+>         if (err)
+> -               goto pm_clk_err;
+> +               return err;
+> +
+> +       err = devm_pm_clk_create(dev);
+> +       if (err)
+> +               return err;
+>
+>         err = of_pm_clk_add_clks(dev);
+>         if (err < 0) {
+>                 dev_dbg(dev, "Failed to get lpass core voting clocks\n");
+> -               goto clk_reg_err;
+> +               return err;
+>         }
+>
+>         for (i = 0; i < data->onecell_data->num; i++) {
+> @@ -273,22 +276,16 @@ static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
+>
+>                 err = devm_clk_hw_register(dev, &data->gfm_clks[i]->hw);
+>                 if (err)
+> -                       goto clk_reg_err;
+> +                       return err;
+>
+>         }
+>
+>         err = devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get,
+>                                           data->onecell_data);
+>         if (err)
+> -               goto clk_reg_err;
+> +               return err;
+>
+>         return 0;
+> -
+> -clk_reg_err:
+> -       pm_clk_destroy(dev);
+> -pm_clk_err:
+> -       pm_runtime_disable(dev);
+> -       return err;
+>  }
+>
+>  static const struct of_device_id lpass_gfm_clk_match_table[] = {
+> diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
+> index 2e0ecc38efdd..ac09b7b840ab 100644
+> --- a/drivers/clk/qcom/lpasscorecc-sc7180.c
+> +++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
+> @@ -356,32 +356,18 @@ static const struct qcom_cc_desc lpass_audio_hm_sc7180_desc = {
+>         .num_gdscs = ARRAY_SIZE(lpass_audio_hm_sc7180_gdscs),
+>  };
+>
+> -static void lpass_pm_runtime_disable(void *data)
+> -{
+> -       pm_runtime_disable(data);
+> -}
+> -
+> -static void lpass_pm_clk_destroy(void *data)
+> -{
+> -       pm_clk_destroy(data);
+> -}
+> -
+>  static int lpass_create_pm_clks(struct platform_device *pdev)
+>  {
+>         int ret;
+>
+>         pm_runtime_use_autosuspend(&pdev->dev);
+>         pm_runtime_set_autosuspend_delay(&pdev->dev, 500);
+> -       pm_runtime_enable(&pdev->dev);
+>
+> -       ret = devm_add_action_or_reset(&pdev->dev, lpass_pm_runtime_disable, &pdev->dev);
+> +       ret = devm_pm_runtime_enable(&pdev->dev);
+>         if (ret)
+>                 return ret;
+>
+> -       ret = pm_clk_create(&pdev->dev);
+> -       if (ret)
+> -               return ret;
+> -       ret = devm_add_action_or_reset(&pdev->dev, lpass_pm_clk_destroy, &pdev->dev);
+> +       ret = devm_pm_clk_create(&pdev->dev);
+>         if (ret)
+>                 return ret;
+>
+> diff --git a/drivers/clk/qcom/mss-sc7180.c b/drivers/clk/qcom/mss-sc7180.c
+> index 673fa1a4f734..5a1407440662 100644
+> --- a/drivers/clk/qcom/mss-sc7180.c
+> +++ b/drivers/clk/qcom/mss-sc7180.c
+> @@ -73,36 +73,23 @@ static int mss_sc7180_probe(struct platform_device *pdev)
+>  {
+>         int ret;
+>
+> -       pm_runtime_enable(&pdev->dev);
+> -       ret = pm_clk_create(&pdev->dev);
+> +       ret = devm_pm_runtime_enable(&pdev->dev);
+>         if (ret)
+> -               goto disable_pm_runtime;
+> +               return ret;
+> +
+> +       ret = devm_pm_clk_create(&pdev->dev);
+> +       if (ret)
+> +               return ret;
+>
+>         ret = pm_clk_add(&pdev->dev, "cfg_ahb");
+>         if (ret < 0) {
+>                 dev_err(&pdev->dev, "failed to acquire iface clock\n");
+> -               goto destroy_pm_clk;
+> +               return ret;
+>         }
+>
+>         ret = qcom_cc_probe(pdev, &mss_sc7180_desc);
+>         if (ret < 0)
+> -               goto destroy_pm_clk;
+> -
+> -       return 0;
+> -
+> -destroy_pm_clk:
+> -       pm_clk_destroy(&pdev->dev);
+> -
+> -disable_pm_runtime:
+> -       pm_runtime_disable(&pdev->dev);
+> -
+> -       return ret;
+> -}
+> -
+> -static int mss_sc7180_remove(struct platform_device *pdev)
+> -{
+> -       pm_clk_destroy(&pdev->dev);
+> -       pm_runtime_disable(&pdev->dev);
+> +               return ret;
+>
+>         return 0;
+>  }
+> @@ -119,7 +106,6 @@ MODULE_DEVICE_TABLE(of, mss_sc7180_match_table);
+>
+>  static struct platform_driver mss_sc7180_driver = {
+>         .probe          = mss_sc7180_probe,
+> -       .remove         = mss_sc7180_remove,
+>         .driver         = {
+>                 .name           = "sc7180-mss",
+>                 .of_match_table = mss_sc7180_match_table,
+> diff --git a/drivers/clk/qcom/q6sstop-qcs404.c b/drivers/clk/qcom/q6sstop-qcs404.c
+> index 723f932fbf7d..507386bee07d 100644
+> --- a/drivers/clk/qcom/q6sstop-qcs404.c
+> +++ b/drivers/clk/qcom/q6sstop-qcs404.c
+> @@ -159,15 +159,18 @@ static int q6sstopcc_qcs404_probe(struct platform_device *pdev)
+>         const struct qcom_cc_desc *desc;
+>         int ret;
+>
+> -       pm_runtime_enable(&pdev->dev);
+> -       ret = pm_clk_create(&pdev->dev);
+> +       ret = devm_pm_runtime_enable(&pdev->dev);
+>         if (ret)
+> -               goto disable_pm_runtime;
+> +               return ret;
+> +
+> +       ret = devm_pm_clk_create(&pdev->dev);
+> +       if (ret)
+> +               return ret;
+>
+>         ret = pm_clk_add(&pdev->dev, NULL);
+>         if (ret < 0) {
+>                 dev_err(&pdev->dev, "failed to acquire iface clock\n");
+> -               goto destroy_pm_clk;
+> +               return ret;
+>         }
+>
+>         q6sstop_regmap_config.name = "q6sstop_tcsr";
+> @@ -175,30 +178,14 @@ static int q6sstopcc_qcs404_probe(struct platform_device *pdev)
+>
+>         ret = qcom_cc_probe_by_index(pdev, 1, desc);
+>         if (ret)
+> -               goto destroy_pm_clk;
+> +               return ret;
+>
+>         q6sstop_regmap_config.name = "q6sstop_cc";
+>         desc = &q6sstop_qcs404_desc;
+>
+>         ret = qcom_cc_probe_by_index(pdev, 0, desc);
+>         if (ret)
+> -               goto destroy_pm_clk;
+> -
+> -       return 0;
+> -
+> -destroy_pm_clk:
+> -       pm_clk_destroy(&pdev->dev);
+> -
+> -disable_pm_runtime:
+> -       pm_runtime_disable(&pdev->dev);
+> -
+> -       return ret;
+> -}
+> -
+> -static int q6sstopcc_qcs404_remove(struct platform_device *pdev)
+> -{
+> -       pm_clk_destroy(&pdev->dev);
+> -       pm_runtime_disable(&pdev->dev);
+> +               return ret;
+>
+>         return 0;
+>  }
+> @@ -209,7 +196,6 @@ static const struct dev_pm_ops q6sstopcc_pm_ops = {
+>
+>  static struct platform_driver q6sstopcc_qcs404_driver = {
+>         .probe          = q6sstopcc_qcs404_probe,
+> -       .remove         = q6sstopcc_qcs404_remove,
+>         .driver         = {
+>                 .name   = "qcs404-q6sstopcc",
+>                 .of_match_table = q6sstopcc_qcs404_match_table,
+> diff --git a/drivers/clk/qcom/turingcc-qcs404.c b/drivers/clk/qcom/turingcc-qcs404.c
+> index 4cfbbf5bf4d9..4543bda793f4 100644
+> --- a/drivers/clk/qcom/turingcc-qcs404.c
+> +++ b/drivers/clk/qcom/turingcc-qcs404.c
+> @@ -110,36 +110,23 @@ static int turingcc_probe(struct platform_device *pdev)
+>  {
+>         int ret;
+>
+> -       pm_runtime_enable(&pdev->dev);
+> -       ret = pm_clk_create(&pdev->dev);
+> +       ret = devm_pm_runtime_enable(&pdev->dev);
+>         if (ret)
+> -               goto disable_pm_runtime;
+> +               return ret;
+> +
+> +       ret = devm_pm_clk_create(&pdev->dev);
+> +       if (ret)
+> +               return ret;
+>
+>         ret = pm_clk_add(&pdev->dev, NULL);
+>         if (ret < 0) {
+>                 dev_err(&pdev->dev, "failed to acquire iface clock\n");
+> -               goto destroy_pm_clk;
+> +               return ret;
+>         }
+>
+>         ret = qcom_cc_probe(pdev, &turingcc_desc);
+>         if (ret < 0)
+> -               goto destroy_pm_clk;
+> -
+> -       return 0;
+> -
+> -destroy_pm_clk:
+> -       pm_clk_destroy(&pdev->dev);
+> -
+> -disable_pm_runtime:
+> -       pm_runtime_disable(&pdev->dev);
+> -
+> -       return ret;
+> -}
+> -
+> -static int turingcc_remove(struct platform_device *pdev)
+> -{
+> -       pm_clk_destroy(&pdev->dev);
+> -       pm_runtime_disable(&pdev->dev);
+> +               return ret;
+>
+>         return 0;
+>  }
+> @@ -156,7 +143,6 @@ MODULE_DEVICE_TABLE(of, turingcc_match_table);
+>
+>  static struct platform_driver turingcc_driver = {
+>         .probe          = turingcc_probe,
+> -       .remove         = turingcc_remove,
+>         .driver         = {
+>                 .name   = "qcs404-turingcc",
+>                 .of_match_table = turingcc_match_table,
+> --
+> 2.30.2
+>
