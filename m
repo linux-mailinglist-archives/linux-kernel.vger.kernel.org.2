@@ -2,140 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CACA3E0444
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE543E0449
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239130AbhHDPd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:33:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
+        id S239145AbhHDPgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239115AbhHDPd4 (ORCPT
+        with ESMTP id S239060AbhHDPgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:33:56 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9E5C061799
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 08:33:44 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id z3so3385057plg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 08:33:44 -0700 (PDT)
+        Wed, 4 Aug 2021 11:36:44 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78409C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 08:36:30 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id h18so2039041ilc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 08:36:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wbpJGFJvkzZydOUQtVC29IDIfUVRd4suNfnW9QERB1s=;
-        b=ghjlb3IIlrpXwg9tf/3YPnZxi59R8nep+PS0uvgImD5ovEeb1R9C8KN5TD0CqkzPIl
-         C+MZlUN3uG/hpoG4HSOibtxj1dn8X1EucpL3+qt1lK3atvdHx7h4o1kVNUCF88RQp5Yd
-         AHCshzjKU0fTgCOBav3Kq7H/xvuk/UHJZhir1dX8OXuE8Ks8OxqwFof4CwiMTrn8rUB5
-         xHdXl98hETf3tAYgQ5Xe8ZzsPzINRG4vrb8gniGmie/IrhKfXJhqbiylR0ajA+Yfr8w3
-         cmLJH07SROXVr0xlbhRQeGuwv4h43WJ+QAkQkwW4bzACh1PS9MzEyRsRIyaks4hUSPtF
-         ik1g==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u8h55U4qoehATygi5+Ft5WQ5HVz6ZG81uzdeR4iTjOU=;
+        b=op3v78XipVbN95/CiqQKf2+Y7ayrCj86rUrh6192Jtd9L5xZ9yTwK1UBBNiGqBxs5l
+         4INi6y+6wskh7LvQZJ3GWLgMZz1lhqkNuVsrM92zvFzs9aq4tpcjQbtjw+Hdy6VwnAsx
+         Vy0czEdkvMf2kHRYcvA941ueDl75RGSLIpzpq7lQJfVr8i5Dgsv9nIEsvmTkcxixBilH
+         Pb9L0aZmYVmTVJw64XnsQp10WZHR4QtUdVD+NtZScOexcvMqYVqTY0ipauBsBI66DUbR
+         qQ9ugn7WUqrxGx25ESTaRy8j1L6W4IdErRnZScIAt1xGcBw4vr/OKJs6XNrWGFUY2KEC
+         BwzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wbpJGFJvkzZydOUQtVC29IDIfUVRd4suNfnW9QERB1s=;
-        b=okvbZz4+M4D7EpDufg1zJDdZ1PC2YeBIBDlEpSOWSXCJHuHedMaRLc4QA4a8wt20m+
-         hqek8RbkzMUXI/QZ0kdgUj/cojDP4Ar+8bOufauCHkNMgmCVCFFyDvU+LaWRCkGMY5RA
-         de/5oFhWeIjc3V29Ltwg801N0qC37jBarI54R0E2lC2RhgRtPYBIHQG0fwMk3vJevSI/
-         /8WH4vSrNyOtO0C0A1J6g25T/Aj7G3TSLtmwRF2I3VGXiZ7Ic1l71mn7iFmdVSDAayTn
-         DQMDB2UjEo61ee83hL2qsVF3A5JPUDpqOgodcEYZpxvN5JG+/al/zAQpxmgoc0/tkKAT
-         kWXQ==
-X-Gm-Message-State: AOAM530L07lYQbvKntt6sE9/wdMmpQV2kyVfTRkImgqoFLnIsespJYMu
-        qrennJvBAXcrMKNdkv35a2sEtA==
-X-Google-Smtp-Source: ABdhPJz+jPJPIq2h8V9H/5cEj7w9hHV/H2WUf6f+RgjDCV4oPt733HkSZIkPpwyAlT1+bzkyTE6/TQ==
-X-Received: by 2002:a17:902:d4cc:b029:12b:9b9f:c38d with SMTP id o12-20020a170902d4ccb029012b9b9fc38dmr23444486plg.41.1628091223364;
-        Wed, 04 Aug 2021 08:33:43 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id x19sm3996157pgk.37.2021.08.04.08.33.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u8h55U4qoehATygi5+Ft5WQ5HVz6ZG81uzdeR4iTjOU=;
+        b=UR8/JseY6t9teUNr11tKhqMDB/ArTd4IFcQ3hyhAVfccO+eu7SI/2wZILuZWyCcJsx
+         tzMjt5UZMC07PVPqieHE/na6QEI73LtCJ/U/VhzVU7y09fEZ/ajlgLTOwvNjPXU68MCy
+         U57M/7xupnlNvhgKU+Swucxbwmbh4ty5LfKT/MafO9/gaXkXn/ThTJ9669e15pw/V52u
+         5EPV6lMkjM3UadVw0P5wwx/VCL/LYXaTH6te/9ZvvUEFcgphhEL5wSOQJGuhRC70/teW
+         wcCe6LyIN6v9d57+ePCdq0uZEDRu9cP5pIKM/PZPIr2gmtfIDqxAhyc0sYh85v5nOEhB
+         zndA==
+X-Gm-Message-State: AOAM531qL0gE4ZjveiLQy9UauoYKCI6yhocqzBZLxeEBAATqnxufqR0k
+        eKwxsJeLQay884zCdIadD8a71w==
+X-Google-Smtp-Source: ABdhPJyX3Ru1fYMxPgfSiamCOnSpdCn7xGH1QHstchFqfWKBX3Mz6kbiGRro7DUpaUku1gyD/ReenA==
+X-Received: by 2002:a92:da0d:: with SMTP id z13mr106772ilm.95.1628091389859;
+        Wed, 04 Aug 2021 08:36:29 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id z11sm1687480ioh.14.2021.08.04.08.36.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 08:33:42 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 15:33:39 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 01/37] KVM: VMX: Flush all EPTP/VPID contexts on
- remote TLB flush
-Message-ID: <YQqzU26ok3MXCzs8@google.com>
-References: <20200320212833.3507-1-sean.j.christopherson@intel.com>
- <20200320212833.3507-2-sean.j.christopherson@intel.com>
- <CAJhGHyCPyu6BVZwqvySeT2LSr81Xospdv2O=ssvTQv0Rvky0UA@mail.gmail.com>
- <YQljNBBp/EousNBk@google.com>
- <CAJhGHyDbCbP3+oN-EpX_KLYKpzDhotpwASAxMSRScGjtdRNOtA@mail.gmail.com>
+        Wed, 04 Aug 2021 08:36:29 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/6] net: ipa: more work toward runtime PM
+Date:   Wed,  4 Aug 2021 10:36:20 -0500
+Message-Id: <20210804153626.1549001-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJhGHyDbCbP3+oN-EpX_KLYKpzDhotpwASAxMSRScGjtdRNOtA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021, Lai Jiangshan wrote:
-> The optimization I considered yesterday is "ept_sync_global() V.S.
-> ept_sync_context(this_vcpu's)" in the case: when the VM is using EPT and
-> doesn't allow nested VMs.  (And I failed to express it yesterday)
-> 
-> In this case, the vCPU uses only one single root_hpa,
+The first two patches in this series are basically bug fixes, but in
+practice I don't think we've seen the problems they might cause.
 
-This is not strictly guaranteed.  kvm_mmu_page_role tracks efer.NX, cr0.wp, and
-cr4.SMEP/SMAP (if cr0.wp=0), which means that KVM will create a a different root
-if the guest toggles any of those bits.  I'm pretty sure that can be changed and
-will look into doing so in the near future[*], but even that wouldn't guarantee
-a single root.
+The third patch moves clock and interconnect related error messages
+around a bit, reporting better information and doing so in the
+functions where they are enabled or disabled (rather than those
+functions' callers).
 
-SMM is also incorporated in the page role and will result in a different roots
-for SMM vs. non-SMM.  This is mandatory because SMM has its own memslot view.
+The last three patches move power-related code into "ipa_clock.c",
+as a step toward generalizing the purpose of that source file.
 
-A CPUID.MAXPHYADDR change can also change the role, but in this case zapping all
-roots will always be the correct/desired behavior.
+					-Alex
 
-[*] https://lkml.kernel.org/r/YQGj8gj7fpWDdLg5@google.com
+Alex Elder (6):
+  net: ipa: don't suspend/resume modem if not up
+  net: ipa: reorder netdev pointer assignments
+  net: ipa: improve IPA clock error messages
+  net: ipa: move IPA power operations to ipa_clock.c
+  net: ipa: move ipa_suspend_handler()
+  net: ipa: move IPA flags field
 
-> and I think ept sync for single context is enough for both cases you listed below.
-> 
-> When the context is flushed, the TLB for the vCPU is clean to run.
-> 
-> If kvm changes the mmu->root_hpa, it is kvm's responsibility to request
-> another flush which is implemented.
+ drivers/net/ipa/ipa.h       |  12 ---
+ drivers/net/ipa/ipa_clock.c | 147 +++++++++++++++++++++++++++++++-----
+ drivers/net/ipa/ipa_clock.h |  15 ++++
+ drivers/net/ipa/ipa_main.c  |  97 ++----------------------
+ drivers/net/ipa/ipa_modem.c |  30 +++++---
+ 5 files changed, 172 insertions(+), 129 deletions(-)
 
-KVM needs to flush when it allocates a new root, largely because it has no way
-of knowing if some other entity previously created a CR3/EPTP at that HPA, but
-KVM isn't strictly required to flush when switching to a previous/cached root.
+-- 
+2.27.0
 
-Currently this is a moot point because kvm_post_set_cr0(), kvm_post_set_cr4(),
-set_efer(), and kvm_smm_changed() all do kvm_mmu_reset_context() instead of
-attempting a fast PGD switch, but I am hoping to change this as well, at least
-for the non-SMM cases.
-
-> In other words, KVM_REQ_TLB_FLUSH == KVM_REQ_TLB_FLUSH_CURRENT in this case.
-> And before this patch, kvm flush only the single context rather than global.
-> 
-> >
-> > Use #1 is remote flushes from the MMU, which don't strictly require a global flush,
-> > but KVM would need to propagate more information (mmu_role?) in order for responding
-> > vCPUs to determine what contexts needs to be flushed.  And practically speaking,
-> > for MMU flushes there's no meaningful difference when using TDP without nested
-> > guests as the common case will be that each vCPU has a single active EPTP and
-> > that EPTP will be affected by the MMU changes, i.e. needs to be flushed.
-> 
-> I don't see when we need "to determine what contexts" since the vcpu is
-> using only one context in this case which is the assumption in my mind,
-> could you please correct me if I'm wrong.
-
-As it exists today, I believe you're correct that KVM will only ever have a
-single reachable TDP root, but only because of overzealous kvm_mmu_reset_context()
-usage.  The SMM case in particular could be optimized to not zap all roots (whether
-or not it's worth optimizing is another question).
-
-All that said, the easiest way to query the number of reachable roots would be to
-check the previous/cached root.
-
-But, even if we can guarantee there's exactly one reachable root, I would be
-surprised if doing INVEPT.context instead of INVEPT.global actually provided any
-meaningful performance benefit.  Using INVEPT.context is safe if and only if there
-are no other TLB entries for this vCPU, and KVM must invalidate on pCPU migration,
-so there can't be collateral damage in that sense.
-
-That leaves the latency of INVEPT as the only possible performance delta, and that
-will be uarch specific.  It's entirely possible INVEPT.global is slower, but again
-I would be surprised if it is so much slower than INVEPT.context that it actually
-impacts guest performance given that its use is limited to slow paths.
