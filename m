@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFEF3E05CD
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFAA3E05CC
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237194AbhHDQWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:22:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236975AbhHDQWq (ORCPT
+        id S237091AbhHDQWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:22:47 -0400
+Received: from smtprelay0154.hostedemail.com ([216.40.44.154]:36738 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236749AbhHDQWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Aug 2021 12:22:46 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C91DC0613D5;
-        Wed,  4 Aug 2021 09:22:34 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 18:22:31 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628094152;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VYAu+x/wAlGvb/Mk3k0JT/DRiAXNKYQWd63guiFfZG4=;
-        b=dsSnqlrsS+kJGLUNtVOx6VUnKY0gldGjRifRsZbHXPISJH09MPnHz3WctVMULa7tYoMvA5
-        Aw8dpbFZL70KCt/8aFaSmC1cRnWSst7lKyBn8Uxm1QBX3GMpyKRlMh2AvI5cShNnklVEud
-        BAd8zHi3lPHiI/K3k052RN3J4FCy6JLvVVDT0MT+I36lC3Wo5g2QJgaEy6qtugWakCWIbu
-        LV6GS318yt7LQIEc0Jglcpreoka/H+AB5KnwalHW2WDPzbt0ONP2YYiI9tgbL0r+mEoTgY
-        DXa/FIJPtPSEKqrZUuMByDOxMQJLPlZuu+blzvBNA43eqrcylrkHkcp6Y91DSQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628094152;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VYAu+x/wAlGvb/Mk3k0JT/DRiAXNKYQWd63guiFfZG4=;
-        b=tvu6dZTlyWOa8Np7RFGAqI1yqmsyEgi0kwXBBq0DDkKGUX+qN8rK5Fx1BFI9e0bsXLjfHQ
-        Ylqds5yuk40P7iCg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <wagi@monom.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org
-Subject: Re: [ANNOUNCE] v5.14-rc4-rt4
-Message-ID: <20210804162231.rfj5i736lqc4nsio@linutronix.de>
-References: <20210804104803.4nwxi74sa2vwiujd@linutronix.de>
- <20210804110057.chsvt7l5xpw7bo5r@linutronix.de>
- <20210804131731.GG8057@worktop.programming.kicks-ass.net>
- <4f549344-1040-c677-6a6a-53e243c5f364@kernel.dk>
- <feebf183-2e33-36b5-4538-62a40b2a58b6@kernel.dk>
- <20210804153308.oasahcxjmcw7vivo@linutronix.de>
- <f2d0a028-fe85-28ff-9cea-8ab1d26a15d0@kernel.dk>
- <20210804154743.niogqvnladdkfgi2@linutronix.de>
- <7c946918-ae0d-6195-6a78-b019f9bc1fd3@kernel.dk>
- <20210804121704.1587c41b@oasis.local.home>
+Received: from omf08.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 05B16182331CE;
+        Wed,  4 Aug 2021 16:22:33 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf08.hostedemail.com (Postfix) with ESMTPA id 6C0E71A29F6;
+        Wed,  4 Aug 2021 16:22:32 +0000 (UTC)
+Message-ID: <2d594d0b06401887debd5ec462edcffdc813318a.camel@perches.com>
+Subject: Re: [PATCH] get_maintainer: Append parenthesis back to trimmed
+ subsystem name
+From:   Joe Perches <joe@perches.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 04 Aug 2021 09:22:31 -0700
+In-Reply-To: <20210804160949.592227-1-kai.heng.feng@canonical.com>
+References: <20210804160949.592227-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210804121704.1587c41b@oasis.local.home>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 6C0E71A29F6
+X-Spam-Status: No, score=5.07
+X-Stat-Signature: ztnketacw4su1hmsag9us5zshb99755u
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/eZrSB/Pnseq3IyCJxQT3hFmhSyNOHdgw=
+X-HE-Tag: 1628094152-530424
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-04 12:17:04 [-0400], Steven Rostedt wrote:
-> Perhaps in this situation, we could open code it to:
+On Thu, 2021-08-05 at 00:09 +0800, Kai-Heng Feng wrote:
+> When a closing parenthesis gets trimmed, there can be unmatched
+> parenthesis in the subsystem name. This doesn't play well with
+> git-send-email:
+> (cc-cmd) Adding cc: intel-gfx@lists.freedesktop.org (open list:INTEL DRM DRIVERS (excluding Poulsbo, Moorestow...) from: 'scripts/get_maintainer.pl'
+> Unmatched () '(open list:INTEL DRM DRIVERS (excluding Poulsbo, Moorestow...)' '' at /usr/lib/git-core/git-send-email line 554.
+> error: unable to extract a valid address from: intel-gfx@lists.freedesktop.org (open list:INTEL DRM DRIVERS (excluding Poulsbo, Moorestow...)
 > 
->   	if (stall_hash != -1U) {
-> 		raw_spin_unlock(&wqe->lock);
-> 
-> 		/* On RT the spin_lock_irq() does not disable interrupts */
-> 		if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> 			local_irq_enable();
+> So append parenthesis back if it was trimmed to make git-send-email
+> work again:
+> (cc-cmd) Adding cc: intel-gfx@lists.freedesktop.org (open list:INTEL DRM DRIVERS (excluding Poulsbo, Mooresto...)) from: 'scripts/get_maintainer.pl'
 
-no preemption happens here with NEED_RESCHED set.
+Probably better just to add --norolestats to the invoking command-line.
 
->  		io_wait_on_hash(wqe, stall_hash);
+> diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
+[]
+> @@ -1252,9 +1252,10 @@ sub get_subsystem_name {
+>  
 > 
-> 		if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> 			local_irq_disable();
-> 		raw_spin_lock(&wqe->lock);
->  	}
-> 
-> Note, I haven't looked at the rest of the code to know the ripple
-> effect of this, but I'm just suggesting the idea.
-> 
+>      my $subsystem = $typevalue[$start];
+>      if ($output_section_maxlen && length($subsystem) > $output_section_maxlen) {
+> -	$subsystem = substr($subsystem, 0, $output_section_maxlen - 3);
+> +	my $parenthesis = substr($subsystem, -1) eq ")";
+> +	$subsystem = substr($subsystem, 0, $output_section_maxlen - ($parenthesis ? 4 : 3));
+>  	$subsystem =~ s/\s*$//;
+> -	$subsystem = $subsystem . "...";
+> +	$subsystem = $subsystem . "..." . ($parenthesis ? ")" : "");
 
-Sebastian
+Given an $output_section_maxlen number of possible parentheses, this should
+probably use a while...
+
+
