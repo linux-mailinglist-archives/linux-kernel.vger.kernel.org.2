@@ -2,137 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556DC3DFA07
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE563DFA0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhHDDdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 23:33:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229571AbhHDDdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 23:33:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81E5D61037;
-        Wed,  4 Aug 2021 03:33:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628047982;
-        bh=L4lrzLbH/aV3W5MjROtpuPqG8ncWOO07RWA08kmI+ts=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=YFUuXXyxGoUyT/b0+YHP3RTRGNkE+kReB/vVxSbZ9sv/8Vuip8FzQgUGMK/AZrmnt
-         QSVtIyrxIGicFU7jbEp6fBH+dXKLBhMtr0o12DNRs4d7RapJG/F7KveUqSJgm8NCCv
-         Lvzcn6+28XC6Vc2F13mb5tu2I+4p8hHCdAyDYK9z5C4NBry6n3+hAhoGxLBcKC0zNc
-         Mc+ziXtOOHrqwh9zBbeE4zZ2U9EB3dx4kxGR+sqL3Cq+68gLDq9Chf0ug8cEg2FzRJ
-         q8+ebDbGgtLc6n75TobFfTL1rzI8YEzC6shta9zzjDbU/SM2i+3fKAVKOKwwl/LAnn
-         r+3xLXV9TxERg==
-Subject: Re: [PATCH v3] f2fs: Reduce the scope of setting fsck tag when
- de->name_len is zero
-To:     =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>
-Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <AJcAmwDXD1QzgUCoyu2cQKql.3.1626784315314.Hmail.frank.li@vivo.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <2c59c14b-008c-aee9-6775-13b47fbd252f@kernel.org>
-Date:   Wed, 4 Aug 2021 11:32:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234883AbhHDDek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 23:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229571AbhHDDei (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 23:34:38 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBFFC061764
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 20:34:26 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id z11so1681941edb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 20:34:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+e6DPYxoCf6AU7W6hFgz8oUIxu2RVyG8qZ3vU3T53vQ=;
+        b=VTUqP21iOcicWyeyykdjreY5cLu2zNhZ5ll+GVwVpBFWPeL6XXyoVR25M9dV/zqWTW
+         8akmIk6Qm5yo9tkeiZgQ/5LqoIhkS7Y+W/X+rf675EOU70c+61O9piSaRxAudad1SmgP
+         R7nNCwj7sREPaH++fifDzhWE0gHk3GnsZM2UjxcQs5Fp0eThsJURQYNwBFNVmZIzDRZs
+         /1I9VlGOuIQFu8jaBsONbQ0FfIbjbeZEYWJdlLLap1Bt/U3oWqf2qn3I76eT0gAyVWH7
+         CqurzLuxjlXllEOT8TW+4Tc/b4igWeVOATZsnpbp62eThBbSZzWAOfSL1+12oWhiL/zI
+         zmoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+e6DPYxoCf6AU7W6hFgz8oUIxu2RVyG8qZ3vU3T53vQ=;
+        b=TFAwwXB8p7G1t/91T1fCWByG2AfSmW+CwriQlVqBUrvBncZ79YLqK+5e8DY4UCfz6H
+         Hismsa72Jx/Mwj015w2jK5TShn5vd5ik3Mz3JpkBR4YLGSTIutd/dbPx09t/9YZtyeUO
+         HiU+rXqBYXtjGefSsj8mPj6Zp4Fv0bGwkbGv53ehiaefcssONVU+Qu2teOAOVIop9Ygp
+         i10n7vhDPNMtu+IaWk66jNwCRCNxW5FjTidpWCPAR9Dgw8NsCMzPu7Lvjoal3t+cHZ1N
+         nf6R41BbCM0KikgDW2wfxeooP3SY8Xq8ugyr8WwNFevexFB/LxMDZkr8dDIfW8xlXd1x
+         XtoA==
+X-Gm-Message-State: AOAM533XkP//t2fkIlDHABQkKhMB+7Bd7Xfrmx03fciEusEQSzWsYYSG
+        CnqBUJBozEfrTwnM3XjCL+0bqek/FijjfkukcxgOtQ==
+X-Google-Smtp-Source: ABdhPJzJw4KgkJbenDZ3eRyuNArJv7PEx7sB7gl7qawjuImMGLaiTrCbHJ72Qq8vfr5+K6TKfCVpe7qITXjle8uYEuw=
+X-Received: by 2002:aa7:c50d:: with SMTP id o13mr29112216edq.153.1628048065144;
+ Tue, 03 Aug 2021 20:34:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AJcAmwDXD1QzgUCoyu2cQKql.3.1626784315314.Hmail.frank.li@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1627828548.git.zhansayabagdaulet@gmail.com> <5de9beffc409b660229695e0ad921825903156d6.1627828548.git.zhansayabagdaulet@gmail.com>
+In-Reply-To: <5de9beffc409b660229695e0ad921825903156d6.1627828548.git.zhansayabagdaulet@gmail.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Tue, 3 Aug 2021 23:33:49 -0400
+Message-ID: <CA+CK2bBpzdWMYoJdR2EQNNCrRn+Pg1Gs2oBqLR65JW3UUnWt0w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] selftests: vm: add KSM merging time test
+To:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, shuah@kernel.org,
+        linux-mm <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Yangtao,
+On Sun, Aug 1, 2021 at 11:43 AM Zhansaya Bagdauletkyzy
+<zhansayabagdaulet@gmail.com> wrote:
+>
+> Add ksm_merge_time() function to determine speed and time needed for
+> merging. The total spent time is shown in seconds while speed is
+> in MB/s. User must specify the size of duplicated memory area (in MB)
+> before running the test.
+>
+> The test is run as follows: ./ksm_tests -P -s 100
+> The output:
+>         Total size:    100 MB
+>         Total time:    0.309561 s
+>         Average speed: 323 MB/s
+>
+> Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+> ---
+>  tools/testing/selftests/vm/ksm_tests.c | 76 ++++++++++++++++++++++++--
+>  1 file changed, 72 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/testing/selftests/vm/ksm_tests.c b/tools/testing/selftests/vm/ksm_tests.c
+> index cdeb4a028538..91c6ff496655 100644
+> --- a/tools/testing/selftests/vm/ksm_tests.c
+> +++ b/tools/testing/selftests/vm/ksm_tests.c
+> @@ -7,6 +7,7 @@
+>  #include <numa.h>
+>
+>  #include "../kselftest.h"
+> +#include "../../../../include/vdso/time64.h"
+>
+>  #define KSM_SYSFS_PATH "/sys/kernel/mm/ksm/"
+>  #define KSM_FP(s) (KSM_SYSFS_PATH s)
+> @@ -15,6 +16,7 @@
+>  #define KSM_PROT_STR_DEFAULT "rw"
+>  #define KSM_USE_ZERO_PAGES_DEFAULT false
+>  #define KSM_MERGE_ACROSS_NODES_DEFAULT true
+> +#define MB_TO_B 1000000ul
 
-I did some cleanup in your patch, and resend for you, please
-note that. :)
+We should calculate everything in true megabytes.
 
-Thanks,
+#define MB (1ul << 20)
 
-On 2021/7/20 20:31, 李扬韬 wrote:
-> HI Chao，
-> 
-> From: Chao Yu <chao@kernel.org>
-> Date: 2021-07-20 18:23:15
-> To:  Yangtao Li <frank.li@vivo.com>,jaegeuk@kernel.org
-> Cc:  linux-f2fs-devel@lists.sourceforge.net,linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH v3] f2fs: Reduce the scope of setting fsck tag when de->name_len is zero>On 2021/7/20 15:06, Yangtao Li wrote:
->>> I recently found a case where de->name_len is 0 in f2fs_fill_dentries() easily reproduced,
->>> and finally set the fsck flag.
->>>
->>> Thread A					Thread B
->>>
->>> f2fs_readdir
->>> 	f2fs_read_inline_dir
->>> 		ctx->pos = d.max
->>> 						f2fs_add_dentry
->>> 							f2fs_add_inline_entry
->>> 								do_convert_inline_dir
->>> 							f2fs_add_regular_entry
->>> f2fs_readdir
->>> 	f2fs_fill_dentries
->>> 		set_sbi_flag(sbi, SBI_NEED_FSCK)
->>>
->>> Process A opens the folder, and has been reading without closing it. During this period,
->>> Process B created a file under the folder (occupying multiple f2fs_dir_entry, exceeding
->>> the d.max of the inline dir). After creation, process A uses the d.max of inline dir to
->>> read it again, and it will read that de->name_len is 0.
->>>
->>> And Chao pointed out that w/o inline conversion, the race condition still can happen as below
->>>
->>> dir_entry1: A
->>> dir_entry2: B
->>> dir_entry3: C
->>> free slot: _
->>> ctx->pos: ^
->>>
->>> Before:
->>> AAAABBBB___
->>> 	 ^
->>
->> please use blank instead of tab before '^'
-> 
-> I don't know exactly what happened. In fact, in v2, spaces were used. Then it was changed to tab in v3.
-> 
->>
->>> Thread B delete dir_entry2, and create dir_entry3.
->>>
->>> After:
->>> AAAACCCCC__
->>> 	 ^
->>
->> Ditto
->>
->>>
->>> In these scenarios, the file system is not damaged, and it's hard to avoid it. But we can bypass
->>> tagging FSCK flag if:
->>> a) bit_pos (:= ctx->pos % d->max) is non-zero & b) before bit_pos moves to first
->>> valid dir_entry.
->>>
->>> Signed-off-by: Yangtao Li <frank.li@vivo.com>
->>> ---
->>>    fs/f2fs/dir.c | 14 +++++++++-----
->>>    1 file changed, 9 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
->>> index 456651682daf..bfe942733b5e 100644
->>> --- a/fs/f2fs/dir.c
->>> +++ b/fs/f2fs/dir.c
->>> @@ -1000,6 +1000,7 @@ int f2fs_fill_dentries(struct dir_context *ctx, struct f2fs_dentry_ptr *d,
->>>    	struct f2fs_sb_info *sbi = F2FS_I_SB(d->inode);
->>>    	struct blk_plug plug;
->>>    	bool readdir_ra = sbi->readdir_ra == 1;
->>> +	bool found_valid_dirent  = false;
->>
->> One more blank before '='.
->>
->> bool found_valid_dirent = false;
->>
-> 
-> OK.
-> 
-> Thx，
-> 
-> 
-> 
+Also, print in MiB/s.
+
+>
+>  struct ksm_sysfs {
+>         unsigned long max_page_sharing;
+> @@ -30,7 +32,8 @@ enum ksm_test_name {
+>         CHECK_KSM_MERGE,
+>         CHECK_KSM_UNMERGE,
+>         CHECK_KSM_ZERO_PAGE_MERGE,
+> -       CHECK_KSM_NUMA_MERGE
+> +       CHECK_KSM_NUMA_MERGE,
+> +       KSM_MERGE_TIME
+>  };
+>
+>  static int ksm_write_sysfs(const char *file_path, unsigned long val)
+> @@ -86,13 +89,16 @@ static int str_to_prot(char *prot_str)
+>  static void print_help(void)
+>  {
+>         printf("usage: ksm_tests [-h] <test type> [-a prot] [-p page_count] [-l timeout]\n"
+> -              "[-z use_zero_pages] [-m merge_across_nodes]\n");
+> +              "[-z use_zero_pages] [-m merge_across_nodes] [-s size]\n");
+>
+>         printf("Supported <test type>:\n"
+>                " -M (page merging)\n"
+>                " -Z (zero pages merging)\n"
+>                " -N (merging of pages in different NUMA nodes)\n"
+> -              " -U (page unmerging)\n\n");
+> +              " -U (page unmerging)\n"
+> +              " -P evaluate merging time and speed.\n"
+> +              "    For this test, the size of duplicated memory area (in MB)\n"
+> +              "    must be provided using -s option\n\n");
+>
+>         printf(" -a: specify the access protections of pages.\n"
+>                "     <prot> must be of the form [rwx].\n"
+> @@ -105,6 +111,7 @@ static void print_help(void)
+>                "     Default: %d\n", KSM_USE_ZERO_PAGES_DEFAULT);
+>         printf(" -m: change merge_across_nodes tunable\n"
+>                "     Default: %d\n", KSM_MERGE_ACROSS_NODES_DEFAULT);
+> +       printf(" -s: the size of duplicated memory area (in MB)\n");
+>
+>         exit(0);
+>  }
+> @@ -407,6 +414,49 @@ static int check_ksm_numa_merge(int mapping, int prot, int timeout, bool merge_a
+>         return KSFT_FAIL;
+>  }
+>
+> +static int ksm_merge_time(int mapping, int prot, int timeout, size_t map_size)
+> +{
+> +       void *map_ptr;
+> +       struct timespec start_time, end_time;
+> +       long scan_time_s, scan_time_ns;
+
+Should be "unsigned long".
+
+> +       int avg_speed;
+No needed, see below.
+
+> +
+> +       map_size *= MB_TO_B;
+> +
+> +       map_ptr = allocate_memory(NULL, prot, mapping, '*', map_size);
+> +       if (!map_ptr)
+> +               return KSFT_FAIL;
+> +
+> +       if (clock_gettime(CLOCK_MONOTONIC_RAW, &start_time)) {
+> +               perror("clock_gettime");
+> +               goto err_out;
+> +       }
+> +       if (ksm_merge_pages(map_ptr, map_size, start_time, timeout))
+> +               goto err_out;
+> +       if (clock_gettime(CLOCK_MONOTONIC_RAW, &end_time)) {
+> +               perror("clock_gettime");
+> +               goto err_out;
+> +       }
+> +
+> +       scan_time_ns = (end_time.tv_sec - start_time.tv_sec) * NSEC_PER_SEC +
+> +                      (end_time.tv_nsec - start_time.tv_nsec);
+
+> +       scan_time_s = scan_time_ns / NSEC_PER_SEC;
+> +       scan_time_ns %= NSEC_PER_SEC;
+> +       avg_speed = map_size / (scan_time_s * USEC_PER_SEC + scan_time_ns / NSEC_PER_USEC);
+
+Please remove the above three lines, and replace with bellow suggestions:
+
+> +
+> +       printf("Total size:    %lu MB\n", map_size / MB_TO_B);
+
+printf("Total size:    %lu MiB\n", map_size / MB);
+
+> +       printf("Total time:    %ld.%06ld s\n", scan_time_s, scan_time_ns / NSEC_PER_USEC);
+
+printf("Total time:    %ld.%09ld s\n", scan_time_ns / NSEC_PER_SEC,
+scan_time_ns % NSEC_PER_SEC));
+
+> +       printf("Average speed: %d MB/s\n", avg_speed);
+
+The following would give a much better precision:
+printf("Average speed:  %.3f MiB/s\n", (map_size / MB) /
+((double)scan_time_ns / NSEC_PER_SEC));
+
+> +
+> +       munmap(map_ptr, map_size);
+> +       return KSFT_PASS;
+> +
+> +err_out:
+> +       printf("Not OK\n");
+> +       munmap(map_ptr, map_size);
+> +       return KSFT_FAIL;
+> +}
+> +
+>  int main(int argc, char *argv[])
+>  {
+>         int ret, opt;
+> @@ -418,8 +468,9 @@ int main(int argc, char *argv[])
+>         int test_name = CHECK_KSM_MERGE;
+>         bool use_zero_pages = KSM_USE_ZERO_PAGES_DEFAULT;
+>         bool merge_across_nodes = KSM_MERGE_ACROSS_NODES_DEFAULT;
+> +       long size_MB = 0;
+>
+> -       while ((opt = getopt(argc, argv, "ha:p:l:z:m:MUZN")) != -1) {
+> +       while ((opt = getopt(argc, argv, "ha:p:l:z:m:s:MUZNP")) != -1) {
+>                 switch (opt) {
+>                 case 'a':
+>                         prot = str_to_prot(optarg);
+> @@ -453,6 +504,12 @@ int main(int argc, char *argv[])
+>                         else
+>                                 merge_across_nodes = 1;
+>                         break;
+> +               case 's':
+> +                       size_MB = atoi(optarg);
+> +                       if (size_MB <= 0) {
+> +                               printf("Size must be greater than 0\n");
+> +                               return KSFT_FAIL;
+> +                       }
+>                 case 'M':
+>                         break;
+>                 case 'U':
+> @@ -464,6 +521,9 @@ int main(int argc, char *argv[])
+>                 case 'N':
+>                         test_name = CHECK_KSM_NUMA_MERGE;
+>                         break;
+> +               case 'P':
+> +                       test_name = KSM_MERGE_TIME;
+> +                       break;
+>                 default:
+>                         return KSFT_FAIL;
+>                 }
+> @@ -505,6 +565,14 @@ int main(int argc, char *argv[])
+>                 ret = check_ksm_numa_merge(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
+>                                            merge_across_nodes, page_size);
+>                 break;
+> +       case KSM_MERGE_TIME:
+> +               if (size_MB == 0) {
+> +                       printf("Option '-s' is required.\n");
+> +                       return KSFT_FAIL;
+> +               }
+> +               ret = ksm_merge_time(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
+> +                                    size_MB);
+> +               break;
+>         }
+>
+>         if (ksm_restore(&ksm_sysfs_old)) {
+> --
+> 2.25.1
+>
