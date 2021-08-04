@@ -2,151 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F693DF9E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA033DF9F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233714AbhHDDDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 23:03:21 -0400
-Received: from mga04.intel.com ([192.55.52.120]:26646 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230088AbhHDDDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 23:03:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="211971562"
-X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
-   d="scan'208";a="211971562"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 20:03:08 -0700
-X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
-   d="scan'208";a="521655496"
-Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.249.168.129]) ([10.249.168.129])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 20:03:02 -0700
-Subject: Re: [PATCH V9 00/18] KVM: x86/pmu: Add *basic* support to enable
- guest PEBS via DS
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     pbonzini@redhat.com, bp@alien8.de, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, kan.liang@linux.intel.com, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        like.xu.linux@gmail.com, boris.ostrvsky@oracle.com
-References: <20210722054159.4459-1-lingshan.zhu@intel.com>
- <YQF7lwM6qzYso0Gg@hirez.programming.kicks-ass.net>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-Message-ID: <9ee8c1a8-6de5-06eb-dc55-b0b2a444387b@intel.com>
-Date:   Wed, 4 Aug 2021 11:03:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S234726AbhHDDXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 23:23:14 -0400
+Received: from sender4-of-o51.zoho.com ([136.143.188.51]:21137 "EHLO
+        sender4-of-o51.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230438AbhHDDXN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 23:23:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1628046428; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=Vuage8/C+0ND4RkBkK9rjTzEw0c+3+844ZAbeU86DOUv3Orm2ug5KyKzUNjU3ikQPuapyQNTEDLC8jivur82DRMJKrVcjIqrrLzhgfdYbgGkVB/mVsP4XdwjTJADWWKtkfIZhCXvuUgMCJsPPnbrBskGf3NPHZnCk6r1cVHXpoE=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1628046428; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=NqBoRvAywN9Gro5Luow8D32ZnnwnjQtyZoS2PTsrkg8=; 
+        b=IRUeiSYoa0vgA7aLs5iuh+apYPA0fAZxVphemSvUTFgCuEK7qxsfvhGyvzKqvsE0RFw9qr3Dvwr7XTsuCuSbgLEp52SUQfClX8enQaIhZmOgXsNj4ohQxDwGu6oV0Ar8a5xJ7pjwf7FgTTQ+MYExgCZJOebzipcFA6o0Khro2/o=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=apertussolutions.com;
+        spf=pass  smtp.mailfrom=dpsmith@apertussolutions.com;
+        dmarc=pass header.from=<dpsmith@apertussolutions.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1628046428;
+        s=zoho; d=apertussolutions.com; i=dpsmith@apertussolutions.com;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        bh=NqBoRvAywN9Gro5Luow8D32ZnnwnjQtyZoS2PTsrkg8=;
+        b=dGHgOyjB0tncSAk5AgH6KZewkMuP+lGQpyH/cgkWCQsKowieQE0s6iHIeYy1IoMd
+        2EKcnFuCn7an+PgXLD25TrZg8/WKRH7gjjRYNwBXGnB98O10jtanBzYc2dx6841yEZK
+        vdvyoUNze6sJz7CvUY6QbLe3sJ9NKE142agJGoW0=
+Received: from [10.10.1.171] (static-72-81-132-2.bltmmd.fios.verizon.net [72.81.132.2]) by mx.zohomail.com
+        with SMTPS id 1628046423716382.0922528096655; Tue, 3 Aug 2021 20:07:03 -0700 (PDT)
+Subject: Re: [PATCH v2 12/12] iommu: Do not allow IOMMU passthrough with
+ Secure Launch
+To:     Andy Lutomirski <luto@kernel.org>,
+        Ross Philipson <ross.philipson@oracle.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, trenchboot-devel@googlegroups.com
+References: <1624032777-7013-1-git-send-email-ross.philipson@oracle.com>
+ <1624032777-7013-13-git-send-email-ross.philipson@oracle.com>
+ <53edcf0e-c094-876c-ac3d-7c9752e9ea99@arm.com>
+ <34d05f0e-b24c-b8cf-c521-8b30cc1df532@oracle.com>
+ <CALCETrUdEvLFKuvU7z_ut6cEfAgJogNp3oBXL-EdDLU=W+VeKA@mail.gmail.com>
+From:   "Daniel P. Smith" <dpsmith@apertussolutions.com>
+Message-ID: <7fd6733d-ad0b-90d8-7579-5d5a282964a5@apertussolutions.com>
+Date:   Tue, 3 Aug 2021 23:05:28 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YQF7lwM6qzYso0Gg@hirez.programming.kicks-ass.net>
+In-Reply-To: <CALCETrUdEvLFKuvU7z_ut6cEfAgJogNp3oBXL-EdDLU=W+VeKA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/28/2021 11:45 PM, Peter Zijlstra wrote:
-> On Thu, Jul 22, 2021 at 01:41:41PM +0800, Zhu Lingshan wrote:
->> The guest Precise Event Based Sampling (PEBS) feature can provide an
->> architectural state of the instruction executed after the guest instruction
->> that exactly caused the event. It needs new hardware facility only available
->> on Intel Ice Lake Server platforms. This patch set enables the basic PEBS
->> feature for KVM guests on ICX.
+On 6/21/21 5:15 PM, Andy Lutomirski wrote:
+> On Mon, Jun 21, 2021 at 10:51 AM Ross Philipson
+> <ross.philipson@oracle.com> wrote:
 >>
->> We can use PEBS feature on the Linux guest like native:
+>> On 6/18/21 2:32 PM, Robin Murphy wrote:
+>>> On 2021-06-18 17:12, Ross Philipson wrote:
+>>>> @@ -2761,7 +2762,10 @@ void iommu_set_default_passthrough(bool cmd_line)
+>>>>    {
+>>>>        if (cmd_line)
+>>>>            iommu_cmd_line |= IOMMU_CMD_LINE_DMA_API;
+>>>> -    iommu_def_domain_type = IOMMU_DOMAIN_IDENTITY;
+>>>> +
+>>>> +    /* Do not allow identity domain when Secure Launch is configured */
+>>>> +    if (!(slaunch_get_flags() & SL_FLAG_ACTIVE))
+>>>> +        iommu_def_domain_type = IOMMU_DOMAIN_IDENTITY;
+>>>
+>>> Quietly ignoring the setting and possibly leaving iommu_def_domain_type
+>>> uninitialised (note that 0 is not actually a usable type) doesn't seem
+>>> great. AFAICS this probably warrants similar treatment to the
 >>
->>     # echo 0 > /proc/sys/kernel/watchdog (on the host)
->>     # perf record -e instructions:ppp ./br_instr a
->>     # perf record -c 100000 -e instructions:pp ./br_instr a
-> Why does the host need to disable the watchdog? IIRC ICL has multiple
-> PEBS capable counters. Also, I think the watchdog ends up on a fixed
-> counter by default anyway.
->
->> Like Xu (17):
->>    perf/core: Use static_call to optimize perf_guest_info_callbacks
->>    perf/x86/intel: Add EPT-Friendly PEBS for Ice Lake Server
->>    perf/x86/intel: Handle guest PEBS overflow PMI for KVM guest
->>    perf/x86/core: Pass "struct kvm_pmu *" to determine the guest values
->>    KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit when vPMU is enabled
->>    KVM: x86/pmu: Introduce the ctrl_mask value for fixed counter
->>    KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS
->>    KVM: x86/pmu: Reprogram PEBS event to emulate guest PEBS counter
->>    KVM: x86/pmu: Adjust precise_ip to emulate Ice Lake guest PDIR counter
->>    KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to support guest DS
->>    KVM: x86/pmu: Add PEBS_DATA_CFG MSR emulation to support adaptive PEBS
->>    KVM: x86: Set PEBS_UNAVAIL in IA32_MISC_ENABLE when PEBS is enabled
->>    KVM: x86/pmu: Move pmc_speculative_in_use() to arch/x86/kvm/pmu.h
->>    KVM: x86/pmu: Disable guest PEBS temporarily in two rare situations
->>    KVM: x86/pmu: Add kvm_pmu_cap to optimize perf_get_x86_pmu_capability
->>    KVM: x86/cpuid: Refactor host/guest CPU model consistency check
->>    KVM: x86/pmu: Expose CPUIDs feature bits PDCM, DS, DTES64
+>> Ok so I guess it would be better to set it to IOMMU_DOMAIN_DMA event
+>> though passthrough was requested. Or perhaps something more is needed here?
 >>
->> Peter Zijlstra (Intel) (1):
->>    x86/perf/core: Add pebs_capable to store valid PEBS_COUNTER_MASK value
-> Looks good:
->
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->
-> How do we want to route this, all through the KVM tree?
-I will send a V10 patchset then ping Paolo.
->
-> One little nit I had; would something like the below (on top perhaps)
-> make the code easier to read?
-V10 will include this change.
+>>> mem_encrypt_active() case - there doesn't seem a great deal of value in
+>>> trying to save users from themselves if they care about measured boot
+>>> yet explicitly pass options which may compromise measured boot. If you
+>>> really want to go down that route there's at least the sysfs interface
+>>> you'd need to nobble as well, not to mention the various ways of
+>>> completely disabling IOMMUs...
+>>
+>> Doing a secure launch with the kernel is not a general purpose user use
+>> case. A lot of work is done to secure the environment. Allowing
+>> passthrough mode would leave the secure launch kernel exposed to DMA. I
+>> think what we are trying to do here is what we intend though there may
+>> be a better way or perhaps it is incomplete as you suggest.
+>>
+> 
+> I don't really like all these special cases.  Generically, what you're
+> trying to do is (AFAICT) to get the kernel to run in a mode in which
+> it does its best not to trust attached devices.  Nothing about this is
+> specific to Secure Launch.  There are plenty of scenarios in which
+> this the case:
+> 
+>   - Virtual devices in a VM host outside the TCB, e.g. VDUSE, Xen
+> device domains (did I get the name right), whatever tricks QEMU has,
+> etc.
+>   - SRTM / DRTM technologies (including but not limited to Secure
+> Launch -- plain old Secure Boot can work like this too).
+>   - Secure guest technologies, including but not limited to TDX and SEV.
+>   - Any computer with a USB-C port or other external DMA-capable port.
+>   - Regular computers in which the admin wants to enable this mode for
+> whatever reason.
+> 
+> Can you folks all please agree on a coordinated way for a Linux kernel
+> to configure itself appropriately?  Or to be configured via initramfs,
+> boot option, or some other trusted source of configuration supplied at
+> boot time?  We don't need a whole bunch of if (TDX), if (SEV), if
+> (secure launch), if (I have a USB-C port with PCIe exposed), if
+> (running on Xen), and similar checks all over the place.
 
-Thanks,
-Zhu Lingshan
->
-> ---
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -3921,9 +3921,12 @@ static struct perf_guest_switch_msr *int
->   	struct kvm_pmu *kvm_pmu = (struct kvm_pmu *)data;
->   	u64 intel_ctrl = hybrid(cpuc->pmu, intel_ctrl);
->   	u64 pebs_mask = cpuc->pebs_enabled & x86_pmu.pebs_capable;
-> +	int global_ctrl, pebs_enable;
->   
->   	*nr = 0;
-> -	arr[(*nr)++] = (struct perf_guest_switch_msr){
-> +
-> +	global_ctrl = (*nr)++;
-> +	arr[global_ctrl] = (struct perf_guest_switch_msr){
->   		.msr = MSR_CORE_PERF_GLOBAL_CTRL,
->   		.host = intel_ctrl & ~cpuc->intel_ctrl_guest_mask,
->   		.guest = intel_ctrl & (~cpuc->intel_ctrl_host_mask | ~pebs_mask),
-> @@ -3966,23 +3969,23 @@ static struct perf_guest_switch_msr *int
->   		};
->   	}
->   
-> -	arr[*nr] = (struct perf_guest_switch_msr){
-> +	pebs_enable = (*nr)++;
-> +	arr[pebs_enable] = (struct perf_guest_switch_msr){
->   		.msr = MSR_IA32_PEBS_ENABLE,
->   		.host = cpuc->pebs_enabled & ~cpuc->intel_ctrl_guest_mask,
->   		.guest = pebs_mask & ~cpuc->intel_ctrl_host_mask,
->   	};
->   
-> -	if (arr[*nr].host) {
-> +	if (arr[pebs_enable].host) {
->   		/* Disable guest PEBS if host PEBS is enabled. */
-> -		arr[*nr].guest = 0;
-> +		arr[pebs_enable].guest = 0;
->   	} else {
->   		/* Disable guest PEBS for cross-mapped PEBS counters. */
-> -		arr[*nr].guest &= ~kvm_pmu->host_cross_mapped_mask;
-> +		arr[pebs_enable].guest &= ~kvm_pmu->host_cross_mapped_mask;
->   		/* Set hw GLOBAL_CTRL bits for PEBS counter when it runs for guest */
-> -		arr[0].guest |= arr[*nr].guest;
-> +		arr[global_ctrl].guest |= arr[pebs_enable].guest;
->   	}
->   
-> -	++(*nr);
->   	return arr;
->   }
->   
->
->
->
+Hey Andy,
 
+On behalf of Ross and myself I wanted to follow up on the points raised 
+here. While there is an interest to ensure a system is properly 
+configured we should not be blocking the user from configuring the 
+system as they desire. Instead we are taking the approach to document 
+the SecureLaunch capability, in particular the recommend way to 
+configure the kernel to appropriately use the capability using the 
+already existing methods such as using kernel parameters. Hopefully that 
+will address the concerns in the short term. Looking forward, we do have 
+a vested interest in ensuring there is an ability to configure access 
+control for security and safety critical solutions and would be grateful 
+if we would be included in any discussions or working groups that might 
+be looking into unifying how all these security technologies should be 
+configuring the Linux kernel.
+
+V/r,
+Daniel P. Smith
