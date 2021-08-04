@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74BEB3E027A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13ED03E0286
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238448AbhHDNyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238406AbhHDNyY (ORCPT
+        id S238522AbhHDNzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:55:48 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:55959 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238511AbhHDNzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:54:24 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED829C061798
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 06:54:10 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id x7so1715152ilh.10
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 06:54:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g50hMA8civVRQsXmP2D/YUX+vZIHViVyDmuVOssC7Q4=;
-        b=w30c93KUxVwBZ3VBYyjcQ5MRZNYgMyjG3joOSYAjPkcGbx20slrAlpUcwJK3ymPSY0
-         Esfmr/2LqmnuJibtqthwzXWppseDwGodWk8FQBv4oA2HIEaUMYhKwHs7qHw9RYXYeZ+0
-         mMLj5dniy1j9q/Dn3FdV5KNnUFUYxsJN4InedxNviIgAR4VseFUFx/t4w0g9n4wZ/xNl
-         Yhqh1oAnX3I3z9BWONJoUg2HVip7b6ro0yufEN961cNy9T041HFIAkkJMDFk+LsgxNkd
-         qXJ20dR9Eum9RlUnXtBs3vATn0Qofa9xvOUNWEGtEtun1j6h4MOxwGAseJIoKJYT00O4
-         O2lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g50hMA8civVRQsXmP2D/YUX+vZIHViVyDmuVOssC7Q4=;
-        b=f94KMZOz5Nut6zllcN1lTKqjNz+jhkIG/tH79eUxT+Ne1Y6QWsMjKr2ZfSnJkSNrkB
-         ATP7aE8pGz3g9e14OZhTcCZULnoxs2uBvJgxXj3EriquXTb0W3LlnOwHzJszxZA/FMNe
-         pZzg9RsqNnphLDVUIltvEQd31/RV2yH3c4HwfUjNrTaMwLI9ckbwZ8FfSEpnHizKPphF
-         UwZUe03GS4b/hrfQRgSsz2gzfKHyq87pZgw/JsNKbYu5v9p8tFgZcSDXrd+PSlY0v3QE
-         VnGIUJ61gdKVUwNOcMH6cljv71V+Cgx0brASjBk14nn/PDpHihMaPCNzio/iztvOdy//
-         zkhQ==
-X-Gm-Message-State: AOAM531PeWg0yJPh2Ps8XFRB1CzjhQpFA0f5NFpf3SfHC/xvFZzkyDDX
-        hDvWY2C+/JRQU6ItIIqjSAe/Nw==
-X-Google-Smtp-Source: ABdhPJzex53u8AjjVTmpXuIDf7FPBhso4k/tfZ8vBiCbthjtgJhftF6AheWv9bgVaAaMPr4Dg/tvgw==
-X-Received: by 2002:a92:dacf:: with SMTP id o15mr211090ilq.27.1628085250311;
-        Wed, 04 Aug 2021 06:54:10 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id w8sm1062088ill.50.2021.08.04.06.54.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 06:54:09 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net: ipa: fix IPA v4.9 interconnects
-Date:   Wed,  4 Aug 2021 08:54:07 -0500
-Message-Id: <20210804135407.1358606-1-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
+        Wed, 4 Aug 2021 09:55:40 -0400
+Received: from mail-wm1-f53.google.com ([209.85.128.53]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MxmBc-1n4jGi12SM-00zFI1; Wed, 04 Aug 2021 15:55:26 +0200
+Received: by mail-wm1-f53.google.com with SMTP id d131-20020a1c1d890000b02902516717f562so1516857wmd.3;
+        Wed, 04 Aug 2021 06:55:26 -0700 (PDT)
+X-Gm-Message-State: AOAM5303ILmV8BKgi/SZR040uPX1afQSYRfNM2WqhFLZ/NkHbLFnuELr
+        1P0XtHM4pY7gVDLK214FKC+eme/6d3jk+VDGbUM=
+X-Google-Smtp-Source: ABdhPJwDFsHBF22f8Wqozeaut6UIlHtczJbkX0G3MU6rJlQNmQa5Uqm62X/H+k4KrenEDbOxO68Jg/vZ6B5uO0dsHAk=
+X-Received: by 2002:a1c:208e:: with SMTP id g136mr9939159wmg.142.1628085325875;
+ Wed, 04 Aug 2021 06:55:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210804043439.11757-1-o.rempel@pengutronix.de>
+In-Reply-To: <20210804043439.11757-1-o.rempel@pengutronix.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 4 Aug 2021 15:55:10 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0285V=N5HPS5grOTQ+q1HF8J6_PsxCLgLvYMsD0hVeUg@mail.gmail.com>
+Message-ID: <CAK8P3a0285V=N5HPS5grOTQ+q1HF8J6_PsxCLgLvYMsD0hVeUg@mail.gmail.com>
+Subject: Re: [PATCH v34 0/3] Mainline imx6 based SKOV boards
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, SoC Team <soc@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:XCcqNK5JlckTjb+hLwBfXaYnPANPzABvZEDtzdK+Nq1duykj8Yl
+ JpgV7CdAM614Pw4RFFYrxrtUonHIUVwjZUNlE8kdmuRKXbcL2y/+gFq3YJHPo6OQPOV1iQD
+ qDEf26kgaXd7r435Y8V2DZfXNxUPo/hAjR+lAYyZgKJtKGGTody5+s+TYEurVC9heTzv4bM
+ mN7n8kESsJ6MOCvpd8Fhg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RKqE8Qi0Uk8=:kcPh2urtWp7BEfU81ZdsZ0
+ R/vM2+n3ukG/dErbrTno828CmJTfvEDlyvvDrO7Z1E8DYxScNA8ORZ7oBA/PWRQRmBtsnI9O0
+ OQCdD153bGLdOZ69R6fqemmddAFd9Iag9Govsft0O07Ba/9p3PryZNsHqnnV+WDa5A8h5Qyez
+ S4Wl6oIojW+jRlWpunzlsBegb4m1zdj26SIdbJ6Mo60dU/4y4IfImBZ4HZ3uXrdJ9i5+7i6fc
+ eAnnUWRYSNlfWDm4S8fxkVRiquA0GY4PqQuCK6Hh463R1BXSiOBqVIfwpb4U2EMI/5NGvmwEE
+ EwZqkRqDYIUCfYf57egRm9DDSutREP/+L6FGo0YW9kgTgSzuqDFQtY0aT3HnQ7z+sz6JI02HF
+ 2bWDVYD6vKbwZfg7l+Om+l3luKNdfO421juGUuq7C/kyf1X6NwUsvdNbzs1Sou+2Cj3pV1+UG
+ en3dmSg4dLuG9Enw8dDOqbkdfPQULW3NRtnghDsfGSRT1ixO6qh1yo1OChX0G8Gfyv2fUoii7
+ V2b74ZpvHPTScdj6h8Yvf/5KNzxhKep7HNgJmahvXbvzE1VA/k6FAI/VxX3avGEXRx31vmoxx
+ f6Hv9T99bzGONqPUpBbjm1FDFToZ0Bk6FqFfIzyF7om/EhlW6dkU4a96nyiMTQq0FRZfa21lZ
+ ap+TM9z52R6U/rJ9q24qUNlZOBuWmjU8hmH9/9UtdV/+T/UuHagyqUiIHp8ckaHYZC9hWD9gc
+ l+x9xpdUi1YtVEf/kGK4Q7B7YeIgJmfNo94SrAdqrbA7Tu7Rj2oeacecYDPJujsALEdPyvTqZ
+ hm/0jmuPg6owEKNjx8x+/sExHuFd9UFFnfUeG06XIt29p+WjhfjUehcg6mgkRmBuz0ucQwmOr
+ Ban567U62oYSTHVZLqdycSmT9ukyQjcP7egUHP65WKciGS6Spr2W4xjJNcD8J3kbgc3/vrVWS
+ R2lrXn2Ay87RVFaHijfbOtpnLghtuGyzOYSmvHIkNrjtjZ3haSYip
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Three interconnects are defined for IPA version 4.9, but there
-should only be two.  They should also use names that match what's
-used for other platforms (and specified in the Device Tree binding).
+On Wed, Aug 4, 2021 at 6:36 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+>
+> changes v4:
+> - add vref-supply to adc@0
+> - split gpio assignment for the mdio node
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_data-v4.9.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+Hi Oleksij,
 
-diff --git a/drivers/net/ipa/ipa_data-v4.9.c b/drivers/net/ipa/ipa_data-v4.9.c
-index 6ab928266b5c1..8d83e14819e29 100644
---- a/drivers/net/ipa/ipa_data-v4.9.c
-+++ b/drivers/net/ipa/ipa_data-v4.9.c
-@@ -418,18 +418,13 @@ static const struct ipa_mem_data ipa_mem_data = {
- /* Interconnect rates are in 1000 byte/second units */
- static const struct ipa_interconnect_data ipa_interconnect_data[] = {
- 	{
--		.name			= "ipa_to_llcc",
-+		.name			= "memory",
- 		.peak_bandwidth		= 600000,	/* 600 MBps */
- 		.average_bandwidth	= 150000,	/* 150 MBps */
- 	},
--	{
--		.name			= "llcc_to_ebi1",
--		.peak_bandwidth		= 1804000,	/* 1.804 GBps */
--		.average_bandwidth	= 150000,	/* 150 MBps */
--	},
- 	/* Average rate is unused for the next interconnect */
- 	{
--		.name			= "appss_to_ipa",
-+		.name			= "config",
- 		.peak_bandwidth		= 74000,	/* 74 MBps */
- 		.average_bandwidth	= 0,		/* unused */
- 	},
--- 
-2.27.0
+I've dropped the series from the soc patchwork, since this looks like
+something that
+should go through the i.MX tree. Please make it clear from the cover
+letter and from
+the 'to' list what you want to happen with the patches, and who should take care
+of them.
 
+Any patches that are meant for platform maintainers should not get sent to
+soc@kernel.org. If you think you need me to review the patches, you can
+send them cc my personal address.
+
+      Arnd
