@@ -2,129 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE283DFD4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC443DFD50
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236772AbhHDIvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:51:19 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:13274 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236692AbhHDIvS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:51:18 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GflhN2Y9tz82dS;
-        Wed,  4 Aug 2021 16:46:12 +0800 (CST)
-Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 4 Aug 2021 16:51:03 +0800
-Received: from [10.174.185.179] (10.174.185.179) by
- dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 4 Aug 2021 16:51:01 +0800
-Subject: Re: [PATCH 3/5] ARM: remove zte zx platform
-To:     Arnd Bergmann <arnd@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <soc@kernel.org>
-CC:     Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
-        "Arnd Bergmann" <arnd@arndb.de>
-References: <20210120124812.2800027-1-arnd@kernel.org>
- <20210120124812.2800027-4-arnd@kernel.org>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <2ce5cd86-ed0d-3e5f-2ab4-717e055dfef4@huawei.com>
-Date:   Wed, 4 Aug 2021 16:51:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S236774AbhHDIwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:52:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235216AbhHDIwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 04:52:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 194F160F6F;
+        Wed,  4 Aug 2021 08:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628067150;
+        bh=0iArU+ki2EYLRkNMmkYJbqoFHfcp+tUcOVzag8zIBck=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nobG9Gllv7N13jdGBP2jfG+ONsBdT6IEGWHjH/Oco3P/JFwCN0PDsDGkujbmZMAWe
+         BjdWUIvxBxnrqLftwh2D1cgQCKWkSUFW+wAM8uCwY04CZqKsKvZXc8GshDWm8MEyHO
+         aVcxw8Jd9apy8lEE+nRmqu0UieVsEssGfDd0ytPsynRejgJwh38QPDeGuT8XvI3VEX
+         dbH27biK1A5t4lHo3eKTfkopJBkymdBCTrrmItFkO0/OsoHYpCRVLJ/oSTmosIqe0M
+         knvdgIaQWoWde1rvTUFyE1H4qcwsPEQq4w4hxLwZ1Ozu4YIXbvRS+we8YRaSMCJfbC
+         9rSgjWs9x5jIA==
+Received: by mail-wm1-f42.google.com with SMTP id o7-20020a05600c5107b0290257f956e02dso3385465wms.1;
+        Wed, 04 Aug 2021 01:52:30 -0700 (PDT)
+X-Gm-Message-State: AOAM53316txzQsabJyuRzstgjNIjWx3j/mN2e5Pet6S6rU6yhrf7gNmp
+        q8aHFyJk9bzV7zWYqIh27p3NT+j5FX2aBfpYPLg=
+X-Google-Smtp-Source: ABdhPJwRBm+5B/otZTXkzrYbrncm3ie0XIHr+qNno/ecewugZENntEn3MDOC/UJz0gQwsZXJwdMVY0wo/wfqtPO74RM=
+X-Received: by 2002:a05:600c:3641:: with SMTP id y1mr17262306wmq.43.1628067148644;
+ Wed, 04 Aug 2021 01:52:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210120124812.2800027-4-arnd@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.185.179]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema764-chm.china.huawei.com (10.1.198.206)
-X-CFilter-Loop: Reflected
+References: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
+ <CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com>
+ <CAK8P3a1D5DzmNGsEPQomkyMCmMrtD6pQ11JRMh78vbY53edp-Q@mail.gmail.com>
+ <CAK8P3a0MNbx-iuzW_-=0ab6-TTZzwV-PT_6gAC1Gp5PgYyHcrA@mail.gmail.com>
+ <db043b76-880d-5fad-69cf-96abcd9cd34f@huawei.com> <CAK8P3a3HHeP+Gw_k2P7Qtig0OmErf0HN30G22+qHic_uZTh11Q@mail.gmail.com>
+ <a74dfb1f-befd-92ce-4c30-233cb08e04d3@huawei.com> <CAK8P3a3B4FCaPPHhzBdpkv0fsjE0jREwGFCdPeHEDHxxRBEjng@mail.gmail.com>
+ <5e8dfbd2-a6c0-6d02-53e9-1f29aebcc44e@huawei.com>
+In-Reply-To: <5e8dfbd2-a6c0-6d02-53e9-1f29aebcc44e@huawei.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 4 Aug 2021 10:52:12 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a08Zcyx0J4_LGAfU_AtUyEK+XtQJxYBQ52VXfWu8-o8_w@mail.gmail.com>
+Message-ID: <CAK8P3a08Zcyx0J4_LGAfU_AtUyEK+XtQJxYBQ52VXfWu8-o8_w@mail.gmail.com>
+Subject: Re: [GIT PULL 1/2] asm-generic: rework PCI I/O space access
+To:     John Garry <john.garry@huawei.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/20 20:48, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The ZTE ZX set-top-box SoC platform was added in 2015 by Jun Nie, with
-> Baoyou Xie and Shawn Guo subsequently becoming maintainers after the
-> addition of the 64-bit variant.
-> 
-> However, the only machines that were ever supported upstream are the
-> reference designs, not actual set-top-box devices that would benefit
-> from this support. All ZTE set-top-boxes from the past few years seem
-> to be based on third-party SoCs. While there is very little information
-> about zx296702 and zx296718 on the web, I found some references to other
-> chips from the same family, such as zx296716 and zx296719, which were
-> never submitted for upstream support. Finally, there is no support for
-> the GPU on either of them, with the lima and panfrost device drivers
-> having been added after work on the zx platform had stopped.
-> 
-> Shawn confirmed that he has not seen any interest in this platform for
-> the past four years, and that it can be removed.
-> 
-> Thanks to Jun and Shawn for maintaining this platform over the past
-> five years.
-> 
-> Cc: Jun Nie <jun.nie@linaro.org>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Wed, Aug 4, 2021 at 9:55 AM John Garry <john.garry@huawei.com> wrote:
+>
+> On 03/08/2021 13:15, Arnd Bergmann wrote:
+> >> That seems reasonable. And asm-generic io.h should be ifdef'ed by
+> >> HAS_IOPORT. In your patch you had it under CONFIG_IOPORT - was that
+> >> intentional?
+> > No, that was a typo. Thanks for pointing this out.
+> >
+> >> On another point, I noticed SCSI driver AHA152x depends on ISA, but is
+> >> not an isa driver - however it does use port IO. Would such dependencies
+> >> need to be changed to depend on HAS_IOPORT?
+> > I'm not sure what you mean here. As far as I can tell, AHA152x is an ISA
+> > driver in the sense that it is a driver for ISA add-on cards. However, it
+> > is not a 'struct isa_driver' in the sense that AHA1542 is, AHA152x  is even
+> > older and uses the linux-2.4 style initialization using a module_init()
+> > function that does the probing.
+>
+> ok, fine. So I just wonder what the ISA kconfig dependency gets us for
+> aha152x. I experimented by removing the kconfig dependency and enabling
+> for the arm64 (which does not have CONFIG_ISA) std defconfig and it
+> built fine.
 
-[...]
+The point of CONFIG_ISA is to only build drivers for ISA add-on cards
+on architectures that can have such slots. For ISA drivers in particular,
+we don't want them to be loaded on machines that don't have them
+because of the various ways this can cause trouble with hardwired
+port and irq numbers.
 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index aeef69cbc7ec..54b5e6dee017 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2704,40 +2704,6 @@ S:	Maintained
->  F:	arch/arm/mach-pxa/include/mach/z2.h
->  F:	arch/arm/mach-pxa/z2.c
->   
-> -ARM/ZTE ARCHITECTURE
-> -M:	Jun Nie <jun.nie@linaro.org>
-> -M:	Shawn Guo <shawnguo@kernel.org>
-> -L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-> -S:	Maintained
+> >> Yeah, that sounds the same as what I was thinking. Maybe IOPORT_NATIVE
+> >> could work as a name. I would think that only x86/ia64 would define it.
+> >> A concern though is that someone could argue that is a functional
+> >> dependency, rather than just a build dependency.
+> > You can have those on a number of platforms, such as early
+> > PowerPC CHRP or pSeries systems, a number of MIPS workstations
+> > including recent Loongson machines, and many Alpha platforms.
+> >
+>
+> hmmm... if some machines under an arch support "native" port IO and some
+> don't, then if we use a common multi-platform defconfig which defines
+> HARDCODED_IOPORT, then we still build for platforms without "native"
+> port IO, which is not ideal.
 
-[...]
+Correct, but that's not a problem I'm trying to solve at this point. The
+machines that have those are extremely rare, so almost all configurations
+that one would encounter in practice do not suffer from it, and solving it
+reliably would be really hard.
 
-> -F:	include/dt-bindings/clock/zx2967*.h
-
-include/dt-bindings/clock/zx296718-clock.h hadn't been removed.
-
-> -F:	include/dt-bindings/soc/zte,*.h
-
-include/dt-bindings/soc/zte,pm_domains.h neither.
-
-> -DRM DRIVERS FOR ZTE ZX
-> -M:	Shawn Guo <shawnguo@kernel.org>
-> -L:	dri-devel@lists.freedesktop.org
-> -S:	Maintained
-> -T:	git git://anongit.freedesktop.org/drm/drm-misc
-> -F:	Documentation/devicetree/bindings/display/zte,vou.txt
-> -F:	drivers/gpu/drm/zte/
-
-The whole zxdrm driver is still in tree, which smells like a leftover.
-
-> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-> index 6eecdef538bd..ec3c0cb27d1e 100644
-> --- a/arch/arm64/Kconfig.platforms
-> +++ b/arch/arm64/Kconfig.platforms
-> @@ -317,12 +317,6 @@ config ARCH_XGENE
->  	help
->  	  This enables support for AppliedMicro X-Gene SOC Family
->  
-> -config ARCH_ZX
-> -	bool "ZTE ZX SoC Family"
-> -	select PINCTRL
-> -	help
-> -	  This enables support for ZTE ZX SoC Family
-
-And ARCH_ZX is still selected in arm64's defconfig (which is why I
-jumped in this series).
+       Arnd
