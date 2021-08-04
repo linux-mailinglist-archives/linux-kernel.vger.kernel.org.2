@@ -2,131 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A913E045E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9453E0466
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239160AbhHDPj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239127AbhHDPj5 (ORCPT
+        id S239193AbhHDPlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:41:16 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2436 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230361AbhHDPlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:39:57 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A94C061799
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 08:39:45 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d17so3385149plr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 08:39:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YbLaP7zp/TBT+Q7+YqQffDvYzau3V52aHChBMgMbfhI=;
-        b=O9WXF1x4pvMjKxlTU3T4bxsSBX432kH8pc9YOpQ6e8fQ3W9tAgW2ZNiA1vVTaqbXFR
-         QrVLwLQajtIxevyUqGS8cHTvDLITW3qRbYSUy0mivce+ZTkIXQJ7K/7l8u/yb3AXzHtK
-         Dz/4nJykAql2ogjXcVmhNwpd5BCVFPzYxscR80yYU6+SsvR0FeFR6hMt5fkXsofc8s94
-         bTum2C5YLVtLkRQ0K/0gs8yHGMb/wBksx1/1e4ajK+y6u+dz7Q3Ie9Fq2Y+xTqm/Lt7K
-         KCzI5U3NAnO/dOWFOclnYzZRyenKqZAd+YQFD/FzHfKpUwywUvto+K3b0vysaAWrinPi
-         BUUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YbLaP7zp/TBT+Q7+YqQffDvYzau3V52aHChBMgMbfhI=;
-        b=gif1rwOatCjFlH6mpL6f9OqeM+sOORYVml5/OoCbj2FXiC4jBraLFkP5jCrn9V3deZ
-         SMgHdO8fadsua4zj8QAMplwjjHQ5eLD2WoHMIoEs/7JMsSKfp8w/T6uMSsUH4DvMcbwg
-         /bokuDzhYT89lzCEW+nifk4bSN9TNBQrvOjQ6AYUUPicEVpk1OQVFuU+bbMuQbjZU6k1
-         wXNfYmjIZsNRdr74PZ6OtWeuv6nC3oDb0JxXSC1Iizgf89iVMO/dHuX1E4/LDspDSobx
-         2PpkMCmKYMX9VXeelU64xRSupOvXtqrAEWqTJyVfifbPDXEz65prTnAm9EYOtaJMywJN
-         z8Nw==
-X-Gm-Message-State: AOAM531oXlVI4U/FNhiiqa5/4n17gaMjePL/X+t9dISYOGFtwlPF8ulH
-        P7ocLj33uAx3Yn4VntlKhHcyKw==
-X-Google-Smtp-Source: ABdhPJzJ4WJ1Q+2KzH0H51gzmk4Pg0T96RDMTv8KoFMK4qpCkO3eDRYnLJ4MvuGElG0swKVF6fN9Hg==
-X-Received: by 2002:a17:902:6bc5:b029:12c:c275:ae10 with SMTP id m5-20020a1709026bc5b029012cc275ae10mr2368835plt.81.1628091584814;
-        Wed, 04 Aug 2021 08:39:44 -0700 (PDT)
-Received: from [192.168.1.116] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id pi14sm6364106pjb.38.2021.08.04.08.39.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 08:39:44 -0700 (PDT)
-Subject: Re: [PATCH] io-wq: remove GFP_ATOMIC allocation off schedule out path
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-rt-users@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <a673a130-e0e4-5aa8-4165-f35d1262fc6a@kernel.dk>
- <20210804153323.anggq6oto6x7g2rs@beryllium.lan>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <230f62ec-536b-476f-c59d-347fe7826b09@kernel.dk>
-Date:   Wed, 4 Aug 2021 09:39:42 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 4 Aug 2021 11:41:14 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 174FYOis193846;
+        Wed, 4 Aug 2021 11:41:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=QFfUJN4ET8VWY7yaS4y7s3d7yVgFJ3J+VHp39obfvis=;
+ b=OCSszvDyYFFgJVIxk8hb76tnMHqeZtaQMJ1QFowsu9VgIZkshCqNwSsammf5WQkeI0zT
+ A5hwLZ/mmA4O63WpRxmGgf5ECp9PCMayYT+7LEUUJ7VkmRJhIeJtrkiuLaXAqv7AfPhd
+ uihrhm0u7Z/y4Gy43qt9kJcyz3ce/UrzrDEdwujlfjEKQGe2K+S5moNJvJ5vcESpLJRD
+ +NVtPTBf3xssus4m3wkf3fMGnzaXwpZ7DItOQs9OCRL1FcCdsvfd8UD09wB9wF0xg1LM
+ cVqef2h7/LUvR24mzqRAmNdRxaHnoudMbdoYactaIh51TovgR1KVCRSPh3LxPOFHsqr8 8Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a76d84yqw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Aug 2021 11:41:00 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 174FYNRj193571;
+        Wed, 4 Aug 2021 11:41:00 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a76d84yq4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Aug 2021 11:41:00 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 174FYXBI001184;
+        Wed, 4 Aug 2021 15:40:58 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma02fra.de.ibm.com with ESMTP id 3a4x58rhgt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Aug 2021 15:40:58 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 174FerhS44433764
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 4 Aug 2021 15:40:53 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 591624C063;
+        Wed,  4 Aug 2021 15:40:53 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA74A4C05A;
+        Wed,  4 Aug 2021 15:40:52 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.2.150])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  4 Aug 2021 15:40:52 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulrich.Weigand@de.ibm.com
+Subject: [PATCH v3 00/14] KVM: s390: pv: implement lazy destroy
+Date:   Wed,  4 Aug 2021 17:40:32 +0200
+Message-Id: <20210804154046.88552-1-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210804153323.anggq6oto6x7g2rs@beryllium.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: LQ9Qs6KshTSbzNK-25DsHKQ2_hE6nP1i
+X-Proofpoint-GUID: KF7W9iXifi0jgCjpT-tEz3DcV9zmH2eD
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-04_03:2021-08-04,2021-08-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0
+ clxscore=1015 mlxlogscore=999 impostorscore=0 suspectscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108040089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/21 9:33 AM, Daniel Wagner wrote:
-> On Wed, Aug 04, 2021 at 08:43:43AM -0600, Jens Axboe wrote:
->> Daniel reports that the v5.14-rc4-rt4 kernel throws a BUG when running
->> stress-ng:
->>
->> | [   90.202543] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
->> | [   90.202549] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 2047, name: iou-wrk-2041
->> | [   90.202555] CPU: 5 PID: 2047 Comm: iou-wrk-2041 Tainted: G        W         5.14.0-rc4-rt4+ #89
->> | [   90.202559] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
->> | [   90.202561] Call Trace:
->> | [   90.202577]  dump_stack_lvl+0x34/0x44
->> | [   90.202584]  ___might_sleep.cold+0x87/0x94
->> | [   90.202588]  rt_spin_lock+0x19/0x70
->> | [   90.202593]  ___slab_alloc+0xcb/0x7d0
->> | [   90.202598]  ? newidle_balance.constprop.0+0xf5/0x3b0
->> | [   90.202603]  ? dequeue_entity+0xc3/0x290
->> | [   90.202605]  ? io_wqe_dec_running.isra.0+0x98/0xe0
->> | [   90.202610]  ? pick_next_task_fair+0xb9/0x330
->> | [   90.202612]  ? __schedule+0x670/0x1410
->> | [   90.202615]  ? io_wqe_dec_running.isra.0+0x98/0xe0
->> | [   90.202618]  kmem_cache_alloc_trace+0x79/0x1f0
->> | [   90.202621]  io_wqe_dec_running.isra.0+0x98/0xe0
->> | [   90.202625]  io_wq_worker_sleeping+0x37/0x50
->> | [   90.202628]  schedule+0x30/0xd0
->> | [   90.202630]  schedule_timeout+0x8f/0x1a0
->> | [   90.202634]  ? __bpf_trace_tick_stop+0x10/0x10
->> | [   90.202637]  io_wqe_worker+0xfd/0x320
->> | [   90.202641]  ? finish_task_switch.isra.0+0xd3/0x290
->> | [   90.202644]  ? io_worker_handle_work+0x670/0x670
->> | [   90.202646]  ? io_worker_handle_work+0x670/0x670
->> | [   90.202649]  ret_from_fork+0x22/0x30
->>
->> which is due to the RT kernel not liking a GFP_ATOMIC allocation inside
->> a raw spinlock. Besides that not working on RT, doing any kind of
->> allocation from inside schedule() is kind of nasty and should be avoided
->> if at all possible.
->>
->> This particular path happens when an io-wq worker goes to sleep, and we
->> need a new worker to handle pending work. We currently allocate a small
->> data item to hold the information we need to create a new worker, but we
->> can instead include this data in the io_worker struct itself and just
->> protect it with a single bit lock. We only really need one per worker
->> anyway, as we will have run pending work between to sleep cycles.
->>
->> https://lore.kernel.org/lkml/20210804082418.fbibprcwtzyt5qax@beryllium.lan/
->> Reported-by: Daniel Wagner <dwagner@suse.de>
->> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> 
-> I applied this patch on top of v5.14-rc4-rt4 and with it all looks
-> good.
-> 
-> Tested-by: Daniel Wagner <dwagner@suse.de>
+Previously, when a protected VM was rebooted or when it was shut down,
+its memory was made unprotected, and then the protected VM itself was
+destroyed. Looping over the whole address space can take some time,
+considering the overhead of the various Ultravisor Calls (UVCs). This
+means that a reboot or a shutdown would take a potentially long amount
+of time, depending on the amount of used memory.
 
-Great, thanks for testing!
+This patchseries implements a deferred destroy mechanism for protected
+guests. When a protected guest is destroyed, its memory is cleared in
+background, allowing the guest to restart or terminate significantly
+faster than before.
+
+There are 2 possibilities when a protected VM is torn down:
+* it still has an address space associated (reboot case)
+* it does not have an address space anymore (shutdown case)
+
+For the reboot case, the reference count of the mm is increased, and
+then a background thread is started to clean up. Once the thread went
+through the whole address space, the protected VM is actually
+destroyed.
+
+For the shutdown case, a list of pages to be destroyed is formed when
+the mm is torn down. Instead of just unmapping the pages when the
+address space is being torn down, they are also set aside. Later when
+KVM cleans up the VM, a thread is started to clean up the pages from
+the list.
+
+This means that the same address space can have memory belonging to
+more than one protected guest, although only one will be running, the
+others will in fact not even have any CPUs.
+
+When a guest is destroyed, its memory still counts towards its memory
+control group until it's actually freed (I tested this experimentally)
+
+When the system runs out of memory, if a guest has terminated and its
+memory is being cleaned asynchronously, the OOM killer will wait a
+little and then see if memory has been freed. This has the practical
+effect of slowing down memory allocations when the system is out of
+memory to give the cleanup thread time to cleanup and free memory, and
+avoid an actual OOM situation.
+
+v2->v3
+* added definitions for CC return codes for the UVC instruction
+* improved make_secure_pte:
+  - renamed rc to cc
+  - added comments to explain why returning -EAGAIN is ok
+* fixed kvm_s390_pv_replace_asce and kvm_s390_pv_remove_old_asce:
+  - renamed
+  - added locking
+  - moved to gmap.c
+* do proper error management in do_secure_storage_access instead of
+  trying again hoping to get a different exception
+* fix outdated patch descriptions
+
+v1->v2
+* rebased on a more recent kernel
+* improved/expanded some patch descriptions
+* improves/expanded some comments
+* added patch 1, which prevents stall notification when the system is
+  under heavy load.
+* rename some members of struct deferred_priv to improve readability
+* avoid an use-after-free bug of the struct mm in case of shutdown
+* add missing return when lazy destroy is disabled
+* add support for OOM notifier
+
+Claudio Imbrenda (14):
+  KVM: s390: pv: add macros for UVC CC values
+  KVM: s390: pv: avoid stall notifications for some UVCs
+  KVM: s390: pv: leak the ASCE page when destroy fails
+  KVM: s390: pv: properly handle page flags for protected guests
+  KVM: s390: pv: handle secure storage violations for protected guests
+  KVM: s390: pv: handle secure storage exceptions for normal guests
+  KVM: s390: pv: refactor s390_reset_acc
+  KVM: s390: pv: usage counter instead of flag
+  KVM: s390: pv: add export before import
+  KVM: s390: pv: lazy destroy for reboot
+  KVM: s390: pv: extend lazy destroy to handle shutdown
+  KVM: s390: pv: module parameter to fence lazy destroy
+  KVM: s390: pv: add OOM notifier for lazy destroy
+  KVM: s390: pv: avoid export before import if possible
+
+ arch/s390/include/asm/gmap.h        |   6 +-
+ arch/s390/include/asm/mmu.h         |   3 +
+ arch/s390/include/asm/mmu_context.h |   2 +
+ arch/s390/include/asm/pgtable.h     |  16 +-
+ arch/s390/include/asm/uv.h          |  31 +++-
+ arch/s390/kernel/uv.c               | 162 +++++++++++++++++++-
+ arch/s390/kvm/kvm-s390.c            |   6 +-
+ arch/s390/kvm/kvm-s390.h            |   2 +-
+ arch/s390/kvm/pv.c                  | 223 ++++++++++++++++++++++++++--
+ arch/s390/mm/fault.c                |  20 ++-
+ arch/s390/mm/gmap.c                 | 141 ++++++++++++++----
+ 11 files changed, 555 insertions(+), 57 deletions(-)
 
 -- 
-Jens Axboe
+2.31.1
 
