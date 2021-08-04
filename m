@@ -2,94 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D803E0A47
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 037413E0A49
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235257AbhHDWT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 18:19:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235175AbhHDWT4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 18:19:56 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53950C061798
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 15:19:43 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id v9-20020a9d60490000b02904f06fc590dbso3134206otj.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 15:19:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fIeDGb81HEa/IJ5OXkRbKetCo9gTIt6kKZjhA2DPOzc=;
-        b=M8ipkm04J9ZGePM4PMk62q3rG4n6ksWm61P98tEQF81wH9EEavJbqwECZ5uEzr4Q27
-         /w0ohBflOWp5rFFxsBFYZJhdj8Zfs8oyTl1rVVfP1ulP5J1OxcSFcbqVRUJ3CkGbXa81
-         +bwl73Zcr8ByhEiE1ws7/8ebdlmUKCJ1+zkQH/kDL3MKeuoyszmspyHAljmZuL8xSrKB
-         DdZNU6o+pMeLUgRwFCv/R6zYHVBF9UFwxfW6gQ4DD8WVkxoE6jTp1hrRAAfl28Ypi9ko
-         zwfomSxHWKmmT34MnujIrqAL4hRjlhkcRD0nifc8NdOrrPvqNu71S8y3ClRaAmxRszBC
-         Y5hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fIeDGb81HEa/IJ5OXkRbKetCo9gTIt6kKZjhA2DPOzc=;
-        b=sXgp1WAmWACvey6WgwQnnvSXFGvvsYNmWPOBWwKJM5E1qVnBt/1CACoD5AsgRCSIeU
-         kx+NqkBQfge1kfzP31cYH5HSjJmv+vdNt8ixqjnFjm8N77WuIKpo+r59BaNHuPa+zWeD
-         1ArRQ41w2DWERJA4qG1+td0yYK7Md7UZsjdSRkhmLlr2FcfJneeIRKcmeUkqElbzDuF1
-         UD2wdQRinF+7cYMlQm7XLIg13YISZbeptk7CC3HqpNQWpjOnocAmKq6f6z/IClAOSj9A
-         uMVyZVBYFhX24JR5qOZtmDiGcAviWF6kFvSFYvww9wnjJApaLjOUdex0AngBzWy31x/l
-         nMvQ==
-X-Gm-Message-State: AOAM530jfcfEEgfNsTW530vpLeFhS4SffPiJLFIbyJDDAlgWz7C6X7n+
-        x/KplCMfTBFXWVNmN2guwK6amGdPy3mlQXtDvtSmuQ==
-X-Google-Smtp-Source: ABdhPJxiWFtLtbQZDHzmp15IKxv8wOz2ClzTL6LLruJYPn66EMJRznjCSucbOVPpnEq+m9gMByWN53k3qOuogdTVC98=
-X-Received: by 2002:a9d:63c6:: with SMTP id e6mr1313817otl.295.1628115582214;
- Wed, 04 Aug 2021 15:19:42 -0700 (PDT)
+        id S232951AbhHDWX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 18:23:26 -0400
+Received: from mga17.intel.com ([192.55.52.151]:14736 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230236AbhHDWXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 18:23:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="194300043"
+X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
+   d="scan'208";a="194300043"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 15:23:08 -0700
+X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
+   d="scan'208";a="512252564"
+Received: from bguvendi-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.99.93])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 15:23:07 -0700
+Subject: Re: [PATCH v5 11/12] x86/tdx: Don't write CSTAR MSR on Intel
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YQrdFLPaUnC8Q5bn@google.com>
+ <4c1ee7b9-9941-fdc4-73f5-3d2ef0530556@linux.intel.com>
+ <2f2f0bfa-4881-81dc-65a3-1e5c7cbf85c0@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <a177ac69-552d-9cd1-7125-6cb92d07d604@linux.intel.com>
+Date:   Wed, 4 Aug 2021 15:23:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210804214609.1096003-1-seanjc@google.com>
-In-Reply-To: <20210804214609.1096003-1-seanjc@google.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 4 Aug 2021 15:19:30 -0700
-Message-ID: <CALMp9eSxuoLf4hopA_=y_FohCAnLRjQuQ_PeGKO325UJ5J+qLA@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86/mmu: Fix per-cpu counter corruption on 32-bit builds
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2f2f0bfa-4881-81dc-65a3-1e5c7cbf85c0@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 2:46 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> Take a signed 'long' instead of an 'unsigned long' for the number of
-> pages to add/subtract to the total number of pages used by the MMU.  This
-> fixes a zero-extension bug on 32-bit kernels that effectively corrupts
-> the per-cpu counter used by the shrinker.
->
-> Per-cpu counters take a signed 64-bit value on both 32-bit and 64-bit
-> kernels, whereas kvm_mod_used_mmu_pages() takes an unsigned long and thus
-> an unsigned 32-bit value on 32-bit kernels.  As a result, the value used
-> to adjust the per-cpu counter is zero-extended (unsigned -> signed), not
-> sign-extended (signed -> signed), and so KVM's intended -1 gets morphed to
-> 4294967295 and effectively corrupts the counter.
->
-> This was found by a staggering amount of sheer dumb luck when running
-> kvm-unit-tests on a 32-bit KVM build.  The shrinker just happened to kick
-> in while running tests and do_shrink_slab() logged an error about trying
-> to free a negative number of objects.  The truly lucky part is that the
-> kernel just happened to be a slightly stale build, as the shrinker no
-> longer yells about negative objects as of commit 18bb473e5031 ("mm:
-> vmscan: shrink deferred objects proportional to priority").
->
->  vmscan: shrink_slab: mmu_shrink_scan+0x0/0x210 [kvm] negative objects to delete nr=-858993460
->
-> Fixes: bc8a3d8925a8 ("kvm: mmu: Fix overflow on kvm mmu page limit calculation")
-> Cc: stable@vger.kernel.org
-> Cc: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-Ouch!
 
-Reviewed-by: Jim Mattson <jmattson@google.com>
+
+On 8/4/21 2:48 PM, Dave Hansen wrote:
+>> No, #GP is triggered by guest.
+> ...
+>>> Regardless of #GP versus #VE, "Table 16.2 MSR Virtualization" needs
+>>> to state the actual behavior.
+>> Even in this case, it will trigger #VE. But since CSTAR MSR is not
+>> supported, write to it will fail and leads to #VE fault.
+> Sathya, I think there might be a mixup of terminology here that's
+> confusing.  I'm confused by this exchange.
+> 
+> In general, we refer to hardware exceptions by their architecture names:
+> #GP for general protection fault, #PF for page fault, #VE for
+> Virtualization Exception.
+> 
+> Those hardware exceptions are wired up to software handlers:
+> #GP lands in asm_exc_general_protection
+> #PF ends up in exc_page_fault
+> #VE ends up in exc_virtualization_exception
+> ... and more of course
+> 
+> But, to add to the confusion, the #VE handler
+> (exc_virtualization_exception()) itself calls (or did once upon a time
+> call) do_general_protection() when it can't handle something.
+> do_general_protection() is (was?)*ALSO*  called by the #GP handler.
+> 
+> So, is that what you meant?  By "#GP is triggered by guest", you mean
+> that a write to the CSTAR MSR and the resulting #VE will end up being
+> handled in a way that is similar to how a #GP hardware exception would
+> have been handled?
+> 
+> If that's what you meant, I'm not_sure_  that's totally accurate.  Could
+> you elaborate on this a bit?  It also would be really handy if you were
+> able to adopt the terminology I talked about above.  It will really make
+> things less confusing.
+
+
+In TDX guest, MSR write will trigger #VE which will be handled by
+exc_virtualization_exception()->tdg_handle_virtualization_exception().
+Internally this exception handler emulates the "MSR write" using
+hypercalls. But if the hypercall returns failure, then it means we
+failed to handle the #VE exception. In such cases,
+exc_virtualization_exception() handler will trigger #GP like behavior
+using ve_raise_fault(). ve_raise_fault() is the customized version of
+do_general_protection(). This what I meant by guest triggers #GP(0).
+
+Since CSTAR_MSR is not supported/used in Intel platforms, instead of
+going through all these processes before triggering the failure, we
+have added the exception for it before it is used.
+
+Following are the implementation details:
+
+static void ve_raise_fault(struct pt_regs *regs, long error_code)
+{
+         struct task_struct *tsk = current;
+
+         if (user_mode(regs)) {
+                 tsk->thread.error_code = error_code;
+                 tsk->thread.trap_nr = X86_TRAP_VE;
+
+                 /*
+                  * Not fixing up VDSO exceptions similar to #GP handler
+                  * because we don't expect the VDSO to trigger #VE.
+                  */
+                 show_signal(tsk, SIGSEGV, "", VEFSTR, regs, error_code);
+                 force_sig(SIGSEGV);
+                 return;
+         }
+
+         if (fixup_exception(regs, X86_TRAP_VE, error_code, 0))
+                 return;
+
+         tsk->thread.error_code = error_code;
+         tsk->thread.trap_nr = X86_TRAP_VE;
+
+         /*
+          * To be potentially processing a kprobe fault and to trust the result
+          * from kprobe_running(), we have to be non-preemptible.
+          */
+         if (!preemptible() &&
+             kprobe_running() &&
+             kprobe_fault_handler(regs, X86_TRAP_VE))
+                 return;
+
+         notify_die(DIE_GPF, VEFSTR, regs, error_code, X86_TRAP_VE, SIGSEGV);
+
+         die_addr(VEFSTR, regs, error_code, 0);
+}
+
+
+DEFINE_IDTENTRY(exc_virtualization_exception)
+{
+         struct ve_info ve;
+         int ret;
+
+         RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
+
+         inc_irq_stat(tdg_ve_count);
+
+         /*
+          * NMIs/Machine-checks/Interrupts will be in a disabled state
+          * till TDGETVEINFO TDCALL is executed. This prevents #VE
+          * nesting issue.
+          */
+         ret = tdg_get_ve_info(&ve);
+
+         cond_local_irq_enable(regs);
+
+         if (!ret)
+                 ret = tdg_handle_virtualization_exception(regs, &ve);
+         /*
+          * If tdg_handle_virtualization_exception() could not process
+          * it successfully, treat it as #GP(0) and handle it.
+          */
+         if (ret)
+                 ve_raise_fault(regs, 0);
+
+         cond_local_irq_disable(regs);
+
+}
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
