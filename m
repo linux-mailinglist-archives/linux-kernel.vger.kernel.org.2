@@ -2,220 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5243DFA2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 06:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFC13DFA36
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 06:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232924AbhHDEFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 00:05:48 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:48474
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229464AbhHDEFp (ORCPT
+        id S230019AbhHDERz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 00:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229562AbhHDERw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 00:05:45 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id C72D73F34D
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 04:05:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628049925;
-        bh=K8QqgejufW6QBHrbYxY5VgQSp4ONTbxOf5CTX7mBoLY=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=q+hcqWJLEUQAY/kg+kfyyUD2amNalVJ26hp0lX60i7LXeUxNHOwjDkWeeOUz21nfm
-         MLcGQSiRtmSbEnzcrSBwVCUeVVT6G9dW96va4t/MeJKtH9XhCGj6jpSEjL7gMZUohj
-         WXTUSSpdCiN04v7CsL3dM8SsLKnpyoyx89HcYr7sqQn+K8B5MhLKrdfooykHY2QtY3
-         9WGXdb2f8rrksUis2snyuWjcOYHRuFn0Tk6U73kpO7tF0UiWQPSxggc1ccoDRgy7zx
-         koSMeZZVI/FUXYrzs9efeQFdBuzWUJNd/hWqVPFiIQ4Bjut+hZ6ODRsx+oJmXU3ZTk
-         wGJpq3IIBzfGg==
-Received: by mail-ed1-f72.google.com with SMTP id d12-20020a50fe8c0000b02903a4b519b413so785946edt.9
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 21:05:25 -0700 (PDT)
+        Wed, 4 Aug 2021 00:17:52 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75D8C0613D5
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 21:17:40 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so1782602pjh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 21:17:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vKtpxFfXXonzxQpVSnSTmoh4P23uDt+JR975j7vzGY4=;
+        b=or4MtC5Pa4CHAc3sHN8vhHOBNZECV0NeNG52atUIvJ97vUKZ7iKFlI7i7xyi2oWoCl
+         OLZ9Z1MyXwztCijqG5Jjc4zOlgeEeMtkXCqA9JED/mzH0JY3F1oR3EYJCmxag21gKGek
+         24xvgcmy2Ke9tggxbTUUqWLns8bFbF1za4wLPM/FwEVUSa2g6U+Thg/IU3R5kdAPou+n
+         0CGaRnD5rejAOKudXbqqgJBtsCgWJh/QLXTR3yg9XELegw3OADOY/BRn40MXwJVugREE
+         7Gv5yx3UkMy4+0NU9dEpuDDUgoJXg81Igw7QbMICjaMxN6VMLWCGS0VsYK2lTjNZDuaR
+         o05Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K8QqgejufW6QBHrbYxY5VgQSp4ONTbxOf5CTX7mBoLY=;
-        b=KRMCDoandanG0BDKAgOHD72eyHcNIpKQkkarzj7BuBYWFIpRY0g7lCMF6W86h65rCB
-         utvY8E42G4SMbjctSVaTt30qR3o34scPBe5qTvw/H787B8dmhlpWDh+kCwa685eMUXS/
-         FV9Apj5eHlQZQNU4shBz+xurNbShgilfl9o9294qL8I9pQu9hmmTPqmwt9FJ2j0NZPvv
-         0PDy2y/CBSDMK/dxlBzkqgLdn6Tb4JLde7V/JaK01rUUjjGNjYQG/KDyWmRKcSxDSvfi
-         PTLyijC7RYcMrX2DfGXfUuJYL9sqTda5GH8QkVgt+GnwTgQsI6GhWG/nMb7CmuCLKhSH
-         3Nkg==
-X-Gm-Message-State: AOAM532RPceaS9TK8JQ7AQPHb0N6v//OtYPxOCTGO5grJyfjFGqE79CI
-        ObPj339SRmGvadwgh4i8416v9Uw24xXywsm5Ui+R46XESDUoUZxav6SwKSpdzk5Nvrd2xMjiPTw
-        1ZgzRm/65K9RcvqlSjSLO+lp+n3WSlbqmnl9A5e0LNQNgkW2cTDl1Ts+x6Q==
-X-Received: by 2002:aa7:c50d:: with SMTP id o13mr29221420edq.153.1628049925366;
-        Tue, 03 Aug 2021 21:05:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPpYJiPgLknSuDZM0Ba9u14AjqWyOXZKkeW43iLJtYDXVL8CggnubSMbP5TmbTHk9vFfIu5YymNDqZ51mvHrE=
-X-Received: by 2002:aa7:c50d:: with SMTP id o13mr29221409edq.153.1628049925125;
- Tue, 03 Aug 2021 21:05:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210803152823.515849-1-kai.heng.feng@canonical.com> <f5f553ad-904d-dac5-dac5-3d7e266ab2fb@gmail.com>
-In-Reply-To: <f5f553ad-904d-dac5-dac5-3d7e266ab2fb@gmail.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Wed, 4 Aug 2021 12:05:10 +0800
-Message-ID: <CAAd53p52G6R-ydsy72faAZ5yphb8-vSeYcvz1kog46eGFh+hLQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] r8169: Implement dynamic ASPM mechanism
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     nic_swsd <nic_swsd@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:8169 10/100/1000 GIGABIT ETHERNET DRIVER" 
-        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=vKtpxFfXXonzxQpVSnSTmoh4P23uDt+JR975j7vzGY4=;
+        b=f2us1UO+r5kTGavdHXTHGAGVoEuy48MK2cYSb5ym9emY8pHReilRUxZ2F6p7uWo9qS
+         8bC38e4Douq4gCsy+RmavWYNDiz0p2zaNcHiNDGeMB6pcxjecl8fBhXSOvuoges7Q2zM
+         q9TwX/meiNwucSxQ8Bn8/rObwe+VVVL3+b+HehvCmDeR7vRcPfSY/uHIq2prHQoLOR1f
+         w04SkfUhGPY1IVcn4OZnc+v/JK4vEudL5nLl0ao9ZexaXJEDLI8bktX25F3OQfqzhyn7
+         RKCYrmBm5WYe8WWlNbepZmpuOt/AmdFhlDBTzsfj0hzZeIPx+03edo/OK7ft/QnfpYLL
+         B+jg==
+X-Gm-Message-State: AOAM531R+W7ZHyPgGVoVj5rP3zVh35H/8g7+eW+ymGqYD0U1BpEd/zkv
+        S0s7iAwT7kZo8IL5MH+GP5Pigg==
+X-Google-Smtp-Source: ABdhPJxT/EuDDdw2vtXk3B6b9kWmMENSSLMKvYVu3SKC68N0WAiRQo8hVGeu4ERHg/s9uOaxjUO/bA==
+X-Received: by 2002:a05:6a00:188e:b029:3c3:1142:15f2 with SMTP id x14-20020a056a00188eb02903c3114215f2mr8894882pfh.36.1628050660207;
+        Tue, 03 Aug 2021 21:17:40 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id k25sm751605pfa.213.2021.08.03.21.17.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 21:17:39 -0700 (PDT)
+Date:   Tue, 03 Aug 2021 21:17:39 -0700 (PDT)
+X-Google-Original-Date: Tue, 03 Aug 2021 21:13:20 PDT (-0700)
+Subject:     Re: [PATCH -next] riscv: Implement thread_struct whitelist for hardened usercopy
+In-Reply-To: <20210702045422.3527469-1-tongtiangen@huawei.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tongtiangen@huawei.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     tongtiangen@huawei.com
+Message-ID: <mhng-f83de915-bef2-4624-9e0f-40fa9fd9560b@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 3:57 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+On Thu, 01 Jul 2021 21:54:21 PDT (-0700), tongtiangen@huawei.com wrote:
+> This whitelists the FPU register state portion of the thread_struct for
+> copying to userspace, instead of the default entire struct.
 >
-> On 03.08.2021 17:28, Kai-Heng Feng wrote:
-> > r8169 NICs on some platforms have abysmal speed when ASPM is enabled.
-> > Same issue can be observed with older vendor drivers.
-> >
-> > The issue is however solved by the latest vendor driver. There's a new
+> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+> ---
+>  arch/riscv/Kconfig                 | 1 +
+>  arch/riscv/include/asm/processor.h | 8 ++++++++
+>  2 files changed, 9 insertions(+)
 >
-> Is there any errata document from Realtek recommending this workaround?
-> Any prove that it solves the issues in all cases of ASPM issues we've
-> seen so far?
-
-Actually I don't know. Let me ask Realtek.
-
-> Also your heuristics logic seems to be different from the one in r8168.
-> The vendor driver considers also rx packets.
-
-rx packets are accumulated in rtl_rx().
-
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 821081bdb8b8..5c26c0726944 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -70,6 +70,7 @@ config RISCV
+>  	select HAVE_ARCH_MMAP_RND_BITS if MMU
+>  	select HAVE_ARCH_SECCOMP_FILTER
+>  	select HAVE_ARCH_TRACEHOOK
+> +	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
+>  	select HAVE_ASM_MODVERSIONS
+>  	select HAVE_CONTEXT_TRACKING
+>  	select HAVE_DEBUG_KMEMLEAK
+> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+> index 021ed64ee608..46b492c78cbb 100644
+> --- a/arch/riscv/include/asm/processor.h
+> +++ b/arch/riscv/include/asm/processor.h
+> @@ -37,6 +37,14 @@ struct thread_struct {
+>  	unsigned long bad_cause;
+>  };
 >
-> In addition you use this logic also for chip versions not covered by
-> r8168, like RTL8125. Any info from Realtek regarding these chip versions?
+> +/* Whitelist the fstate from the task_struct for hardened usercopy */
+> +static inline void arch_thread_struct_whitelist(unsigned long *offset,
+> +						unsigned long *size)
+> +{
+> +	*offset = offsetof(struct thread_struct, fstate);
+> +	*size = sizeof_field(struct thread_struct, fstate);
+> +}
+> +
+>  #define INIT_THREAD {					\
+>  	.sp = sizeof(init_stack) + (long)&init_stack,	\
+>  }
 
-Right, maybe 8125 doesn't need dynamic ASPM. Let me ask them...
-
->
-> > mechanism, which disables r8169's internal ASPM when the NIC has
-> > substantial network traffic, and vice versa.
-> >
-> 10 packets per second I wouldn't call substantial traffic.
-
-I'll change the wording in v2.
-
-> I'm afraid we may open a can of worms and may be bothered
-> with bug reports and complaints again.
-
-Let's hope this time it works.
-
->
-> > So implement the same mechanism here to resolve the issue.
-> >
-> For me this risk is too high to re-enable ASPM for a lot of chip
-> versions w/o any official errata and workaround information.
-> I propose you make this change downstream, and if there are no
-> user complaints after some months I may consider to have something
-> like that in the mainline driver.
-
-Sure, let's see how it works in downstream kernel first.
-
->
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
-> >  drivers/net/ethernet/realtek/r8169_main.c | 36 +++++++++++++++++++++++
-> >  1 file changed, 36 insertions(+)
-> >
-> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> > index c7af5bc3b8af..e257d3cd885e 100644
-> > --- a/drivers/net/ethernet/realtek/r8169_main.c
-> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> > @@ -624,6 +624,10 @@ struct rtl8169_private {
-> >
-> >       unsigned supports_gmii:1;
-> >       unsigned aspm_manageable:1;
-> > +     unsigned aspm_enabled:1;
-> > +     struct timer_list aspm_timer;
-> > +     u32 aspm_packet_count;
-> > +
-> >       dma_addr_t counters_phys_addr;
-> >       struct rtl8169_counters *counters;
-> >       struct rtl8169_tc_offsets tc_offset;
-> > @@ -2671,6 +2675,8 @@ static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
-> >               RTL_W8(tp, Config5, RTL_R8(tp, Config5) & ~ASPM_en);
-> >       }
-> >
-> > +     tp->aspm_enabled = enable;
-> > +
-> >       udelay(10);
-> >  }
-> >
-> > @@ -4408,6 +4414,7 @@ static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
-> >
-> >       dirty_tx = tp->dirty_tx;
-> >
-> > +     tp->aspm_packet_count += tp->cur_tx - dirty_tx;
-> >       while (READ_ONCE(tp->cur_tx) != dirty_tx) {
-> >               unsigned int entry = dirty_tx % NUM_TX_DESC;
-> >               u32 status;
-> > @@ -4552,6 +4559,8 @@ static int rtl_rx(struct net_device *dev, struct rtl8169_private *tp, int budget
-> >               rtl8169_mark_to_asic(desc);
-> >       }
-> >
-> > +     tp->aspm_packet_count += count;
-> > +
-> >       return count;
-> >  }
-> >
-> > @@ -4659,8 +4668,31 @@ static int r8169_phy_connect(struct rtl8169_private *tp)
-> >       return 0;
-> >  }
-> >
-> > +#define ASPM_PACKET_THRESHOLD 10
-> > +#define ASPM_TIMER_INTERVAL 1000
-> > +
-> > +static void rtl8169_aspm_timer(struct timer_list *timer)
-> > +{
-> > +     struct rtl8169_private *tp = from_timer(tp, timer, aspm_timer);
-> > +     bool enable;
-> > +
-> > +     enable = tp->aspm_packet_count <= ASPM_PACKET_THRESHOLD;
-> > +
-> > +     if (tp->aspm_enabled != enable) {
-> > +             rtl_unlock_config_regs(tp);
-> > +             rtl_hw_aspm_clkreq_enable(tp, enable);
-> > +             rtl_lock_config_regs(tp);
->
-> All this in interrupt context w/o locking?
-
-Sorry, I forgot the timer is in interrupt context.
-Or is it safe to use workqueue for rtl_{,un}lock_config_regs() and
-rtl_hw_aspm_clkreq_enable()?
-
-Kai-Heng
-
->
-> > +     }
-> > +
-> > +     tp->aspm_packet_count = 0;
-> > +
-> > +     mod_timer(timer, jiffies + msecs_to_jiffies(ASPM_TIMER_INTERVAL));
-> > +}
-> > +
-> >  static void rtl8169_down(struct rtl8169_private *tp)
-> >  {
-> > +     del_timer_sync(&tp->aspm_timer);
-> > +
-> >       /* Clear all task flags */
-> >       bitmap_zero(tp->wk.flags, RTL_FLAG_MAX);
-> >
-> > @@ -4687,6 +4719,10 @@ static void rtl8169_up(struct rtl8169_private *tp)
-> >       rtl_reset_work(tp);
-> >
-> >       phy_start(tp->phydev);
-> > +
-> > +     timer_setup(&tp->aspm_timer, rtl8169_aspm_timer, 0);
-> > +     mod_timer(&tp->aspm_timer,
-> > +               jiffies + msecs_to_jiffies(ASPM_TIMER_INTERVAL));
-> >  }
-> >
-> >  static int rtl8169_close(struct net_device *dev)
-> >
->
+Thanks, this is on for-next.
