@@ -2,209 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A01353E0882
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD18F3E0889
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239181AbhHDTOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 15:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbhHDTOh (ORCPT
+        id S240536AbhHDTQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 15:16:22 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:40366 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239207AbhHDTQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 15:14:37 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF815C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 12:14:24 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id bh26so2507847oib.10
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 12:14:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=UZonuGJ8VkYNHwmXwXzIo4frsEbKWL+ZSdo9g+DHA+s=;
-        b=jz0juuoU5oMYzXMJnZ49V1KjTBb+/sIFW7jz62HZdyMUEb6ax/HZvcaExC+rpi5ebb
-         O4qFAPqcUGhO2EHXke5ZQJBTi8DMnlXEJEkql3dz2BJ2Vocny2cHiaZhLA7edonIKISr
-         Eoli/andtyxutBhtc7hsumpL5sD54uL41Rxcjsc7qQMLATHDL9FhYDK/lqTIPLk2mM/h
-         uM/weRUDD3FxCTiOF0X2fPhjGTFNfVClHS7PKisHl5Xxqe2DL+ylFtzOQSWE93JzC1IT
-         kNEtBExtz1rrEAd6Oq4Iuzf81G6kLsu8jwoV5omz/8VMu+fNaBBx/czEfhKanjJJI1tV
-         KqgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=UZonuGJ8VkYNHwmXwXzIo4frsEbKWL+ZSdo9g+DHA+s=;
-        b=YPtlWxQoI/Nd3Px0aBeMDbfZblFS8UVYd1jxvSHjOWksF3iNhXBHsBAzkPuXc17ejY
-         GgXP5Tp7PfCI25AD3uJekw88jQhkoBoi4XWWwKH+/nXJ4U0jHgiFEa6zC7AD19qbR0Ke
-         PdkHgrv+iLtaaQiISSf0dfs3t43UNqcIR6wa9rhuC5B0v4L/sAkuSvtffpaT6rbqBd6l
-         RRWVqkLBbqLNhxpq7BXX/WWyhj3oiZXQjEVp9t+3Tp7Oy99/euuT9hfX9X/X1VTPqFCQ
-         dEpw//fyy00mudgU9fXudb0f01Qw0toPIMKTSl8UdOkXdPHUgVt2FPCKcIHPYJlyl9aj
-         O5vA==
-X-Gm-Message-State: AOAM533s0V8d3HyoTeJLw+EVX0+cKiHCotdT9pFnPmEUmo/Lji8WxK4u
-        FmGW3D8k/xRpUlnLSP85NZk=
-X-Google-Smtp-Source: ABdhPJxboCfMPqjCisomWfpecWMmEdOgxl4PfC8mdqkDA0MH0QfqzXXVd6QFY8P9gB/pG3tXSRvCVQ==
-X-Received: by 2002:a05:6808:695:: with SMTP id k21mr723188oig.52.1628104463383;
-        Wed, 04 Aug 2021 12:14:23 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x8sm450927oof.27.2021.08.04.12.14.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 12:14:22 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 4 Aug 2021 12:14:21 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH -next/-mmotm] kernel/user.c: fix build when POLL not
- enabled
-Message-ID: <20210804191421.GA1900577@roeck-us.net>
-References: <20210803204609.32329-1-rdunlap@infradead.org>
- <1628051945.fens3r99ox.astroid@bobo.none>
+        Wed, 4 Aug 2021 15:16:18 -0400
+Received: from mailhost.synopsys.com (sv1-mailhost1.synopsys.com [10.205.2.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 57A89C0CD6;
+        Wed,  4 Aug 2021 19:16:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1628104565; bh=QNBcV08QVOLccNUG2RaWflwIhkYnYjRy+AJtEG7BCbM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=j+zH2QZqMB8dlQi0ifUZfqfjzQb3+v7Ci6eYugBIrUptM30jGgkoH+f+5DWjc/XEw
+         IbU4qIzBI2fG0Pt265Ih/kmMylP7PXIN0N1zQyQi3lsTRQJpC2v4xEfI94DbGzrbCv
+         ZIRw28CDf8Rnlcx38GpDpJpTMXStH44CeQWqsAbgPzWrC1aEl4oN+OynLOUIMri5bI
+         5Ov3ztKGWJf2YgzqVbUp2ZJZhQe4MrgZJtJdugc2ndbAuWmSRFpOMH2vXX8OGnTPAx
+         J4683Ztg4lFNBUieT8tMLv3QyBs0ONSok5enMQyz/VKby7b6vRWmcvH09Nan7Nhruk
+         8rrLMs4iX2E8w==
+Received: from vineetg-Latitude-7400.internal.synopsys.com (snps-fugpbdpduq.internal.synopsys.com [10.202.17.37])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by mailhost.synopsys.com (Postfix) with ESMTPSA id 112D3A0090;
+        Wed,  4 Aug 2021 19:16:02 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To:     linux-snps-arc@lists.infradead.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Vladimir Isaev <Vladimir.Isaev@synopsys.com>,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: [PATCH 00/11] ARC atomics update
+Date:   Wed,  4 Aug 2021 12:15:43 -0700
+Message-Id: <20210804191554.1252776-1-vgupta@synopsys.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1628051945.fens3r99ox.astroid@bobo.none>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 02:59:23PM +1000, Nicholas Piggin wrote:
-> Excerpts from Randy Dunlap's message of August 4, 2021 6:46 am:
-> > Fix build errors in kernel/user.c when CONFIG_EPOLL is not set/enabled.
-> > 
-> > ../kernel/user.c: In function ‘free_user’:
-> > ../kernel/user.c:141:30: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
-> >   percpu_counter_destroy(&up->epoll_watches);
-> >                               ^~~~~~~~~~~~~
-> > In file included from ../include/linux/sched/user.h:7:0,
-> >                  from ../kernel/user.c:17:
-> > ../kernel/user.c: In function ‘alloc_uid’:
-> > ../kernel/user.c:189:33: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
-> >    if (percpu_counter_init(&new->epoll_watches, 0, GFP_KERNEL)) {
-> >                                  ^
-> > ../kernel/user.c:203:33: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
-> >     percpu_counter_destroy(&new->epoll_watches);
-> >                                  ^~~~~~~~~~~~~
-> > In file included from ../include/linux/sched/user.h:7:0,
-> >                  from ../kernel/user.c:17:
-> > ../kernel/user.c: In function ‘uid_cache_init’:
-> > ../kernel/user.c:225:37: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
-> >   if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
-> >                                      ^
-> > Also fix type: "cpunter" -> "counter" in a panic message.
-> 
-> Gah, thanks Randy. The ifdefs aren't horrible but could I suggest a 
-> slight tweak?
-> 
-> --
-> From: Randy Dunlap <rdunlap@infradead.org>
-> Subject: [PATCH] kernel/user.c: fix build when EPOLL not enabled
-> 
-> Fix build errors in kernel/user.c when CONFIG_EPOLL is not set/enabled.
-> 
-> ../kernel/user.c: In function ‘free_user’:
-> ../kernel/user.c:141:30: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
->   percpu_counter_destroy(&up->epoll_watches);
->                               ^~~~~~~~~~~~~
-> In file included from ../include/linux/sched/user.h:7:0,
->                  from ../kernel/user.c:17:
-> ../kernel/user.c: In function ‘alloc_uid’:
-> ../kernel/user.c:189:33: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
->    if (percpu_counter_init(&new->epoll_watches, 0, GFP_KERNEL)) {
->                                  ^
-> ../kernel/user.c:203:33: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
->     percpu_counter_destroy(&new->epoll_watches);
->                                  ^~~~~~~~~~~~~
-> In file included from ../include/linux/sched/user.h:7:0,
->                  from ../kernel/user.c:17:
-> ../kernel/user.c: In function ‘uid_cache_init’:
-> ../kernel/user.c:225:37: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
->   if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
->                                      ^
-> Also fix type: "cpunter" -"counter" in a panic message.
-> 
-> Fixes: e75b89477811 ("fs/epoll: use a per-cpu counter for user's watches count")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> [np: move ifdefs into wrapper functions, slightly improve panic message]
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Nick Piggin <npiggin@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> ---
->  kernel/user.c | 25 ++++++++++++++++++++-----
->  1 file changed, 20 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/user.c b/kernel/user.c
-> index a2673f940506..57d53568cb33 100644
-> --- a/kernel/user.c
-> +++ b/kernel/user.c
-> @@ -129,6 +129,21 @@ static struct user_struct *uid_hash_find(kuid_t uid, struct hlist_head *hashent)
->  	return NULL;
->  }
->  
-> +static int user_epoll_alloc(struct user_struct *up)
-> +{
-> +#ifdef CONFIG_EPOLL
-> +	return percpu_counter_init(&up->epoll_watches, 0, GFP_KERNEL);
-> +#endif
-> +	return 0;
+Hi,
 
-#else
-	return 0;
-#endif
+This series contains long due update to ARC atomics, discussed back
+in 2018 [1] and [2]. I had them for arc64 port and decided to post them
+here for some review and inclusion, after Mark's rework.
 
-> +}
-> +
-> +static void user_epoll_free(struct user_struct *up)
-> +{
-> +#ifdef CONFIG_EPOLL
-> +	percpu_counter_destroy(&up->epoll_watches);
-> +#endif
-> +}
-> +
->  /* IRQs are disabled and uidhash_lock is held upon function entry.
->   * IRQ state (as stored in flags) is restored and uidhash_lock released
->   * upon function exit.
-> @@ -138,7 +153,7 @@ static void free_user(struct user_struct *up, unsigned long flags)
->  {
->  	uid_hash_remove(up);
->  	spin_unlock_irqrestore(&uidhash_lock, flags);
-> -	percpu_counter_destroy(&up->epoll_watches);
-> +	user_epoll_free(up);
->  	kmem_cache_free(uid_cachep, up);
->  }
->  
-> @@ -186,7 +201,7 @@ struct user_struct *alloc_uid(kuid_t uid)
->  
->  		new->uid = uid;
->  		refcount_set(&new->__count, 1);
-> -		if (percpu_counter_init(&new->epoll_watches, 0, GFP_KERNEL)) {
-> +		if (user_epoll_alloc(new)) {
->  			kmem_cache_free(uid_cachep, new);
->  			return NULL;
->  		}
-> @@ -200,7 +215,7 @@ struct user_struct *alloc_uid(kuid_t uid)
->  		spin_lock_irq(&uidhash_lock);
->  		up = uid_hash_find(uid, hashent);
->  		if (up) {
-> -			percpu_counter_destroy(&new->epoll_watches);
-> +			user_epoll_free(new);
->  			kmem_cache_free(uid_cachep, new);
->  		} else {
->  			uid_hash_insert(new, hashent);
-> @@ -222,8 +237,8 @@ static int __init uid_cache_init(void)
->  	for(n = 0; n < UIDHASH_SZ; ++n)
->  		INIT_HLIST_HEAD(uidhash_table + n);
->  
-> -	if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
-> -		panic("percpu cpunter alloc failed");
-> +	if (user_epoll_alloc(&root_user))
-> +		panic("root_user epoll percpu counter alloc failed");
->  
->  	/* Insert the root user immediately (init already runs as root) */
->  	spin_lock_irq(&uidhash_lock);
-> -- 
-> 2.23.0
-> 
+The main changes are use of relaxed atomics and generic bitops. Latter
+does cause some cogen bloat on ARC due to signed args but that can be
+reviewd seperately consider cross-arch impact.
+
+The changes survive glibc testsuite with no regressions whatsoever.
+
+Please review and provide any feedback.
+
+Thx,
+-Vineet
+
+[1] https://lore.kernel.org/r/20180830144344.GW24142@hirez.programming.kicks-ass.net
+[2] https://lore.kernel.org/r/20180830135749.GA13005@arm.com
+
+
+Vineet Gupta (10):
+  ARC: atomics: disintegrate header
+  ARC: atomic: !LLSC: remove hack in atomic_set() for for UP
+  ARC: atomic: !LLSC: use int data type consistently
+  ARC: atomic64: LLSC: elide unused atomic_{and,or,xor,andnot}_return
+  ARC: atomics: implement relaxed variants
+  ARC: bitops: fls/ffs to take int (vs long) per asm-generic defines
+  ARC: xchg: !LLSC: remove UP micro-optimization/hack
+  ARC: cmpxchg/xchg: rewrite as macros to make type safe
+  ARC: cmpxchg/xchg: implement relaxed variants (LLSC config only)
+  ARC: atomic_cmpxchg/atomic_xchg: implement relaxed variants
+
+Will Deacon (1):
+  ARC: switch to generic bitops
+
+ arch/arc/include/asm/atomic-llsc.h     |  97 ++++++
+ arch/arc/include/asm/atomic-spinlock.h | 102 ++++++
+ arch/arc/include/asm/atomic.h          | 444 ++-----------------------
+ arch/arc/include/asm/atomic64-arcv2.h  | 250 ++++++++++++++
+ arch/arc/include/asm/bitops.h          | 188 +----------
+ arch/arc/include/asm/cmpxchg.h         | 233 ++++++-------
+ arch/arc/include/asm/smp.h             |  14 -
+ arch/arc/kernel/smp.c                  |   2 -
+ 8 files changed, 588 insertions(+), 742 deletions(-)
+ create mode 100644 arch/arc/include/asm/atomic-llsc.h
+ create mode 100644 arch/arc/include/asm/atomic-spinlock.h
+ create mode 100644 arch/arc/include/asm/atomic64-arcv2.h
+
+-- 
+2.25.1
+
