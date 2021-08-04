@@ -2,114 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85553E0631
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E9B3E0634
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239698AbhHDQ52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239555AbhHDQ51 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:57:27 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24F1C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 09:57:14 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so6425140pji.5
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 09:57:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=n/ydrZoBnTnGVePnkLl67Uygiapkqd3aQOEpbd0KF1Q=;
-        b=eCRQdH5apsetsVkiAmtu3sr/Ir5ypuLwjrJmExN+1AfyfcCL5tkENpCuUELQvR76UV
-         /a4tBIT5VSaBmVDtXyqspVeHh/2JkwH1JqvFnr97JKlfTbJjutUYozHYFvUiNtNe4y7I
-         oUBS5Ec7JN0Ygiv0ZbvaKxj9RAzk8i+QHgTsE/EEHZPAUnERtjUfab5cEiOh5Yo/eX8J
-         wpOnI0JHH0ow1jgHA9xGygu02GzlRkLQo3Bb+2LJx3bUcJFquUoFsUN42b8G37pJz7Zk
-         Jzk/RoH47YXFZqfImcTRy3H9dB3xGO1oTnq99LZMGcWGb9kTZCkDoobNqFTkNsJLYhZ7
-         cLjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n/ydrZoBnTnGVePnkLl67Uygiapkqd3aQOEpbd0KF1Q=;
-        b=Z6QYlQebxXVs6uB2DUThhCNDY8T2tHwViq0sTIHIqmoydLAv5abLQuj6er1JDT9PoI
-         LV6p4Zr0HBvDWME/JL8Tusk86ERqrPHUyTwX5+9noifbDxNT7F8CPV3Rb/7rRmwz9UPU
-         IUi8HYCAbh7paYTKpeca9XLSWV1v+UjOOhsVl3BsqcvwmKmQrD5SUnCE8hidKMzT5fli
-         nM8xLkQRZbuugsDfhbFl+gMl4FGhgXMyckO71AWGOrk4zerQetv9qFJGG2EjiLJ08NUt
-         tSgvD/wQoHZTmx8iwNu82jlLeXZsBbXYCjHiIu5kbuK3/qE4t85yvZtY4TwVrquiMf1d
-         9RIg==
-X-Gm-Message-State: AOAM531uFCmq50o7XIeQDHesORik0vz9MQfRpsud/o3+meb+XSp5NeDH
-        R4P9FSIcIe+wujToCs/cDugnIg==
-X-Google-Smtp-Source: ABdhPJwASPd1DN5CHX6YbOTJFLlYKFjsk0OLfbOytoFl/99XNsWjh2j7HqHE8qkJosCaZnHZ9sCB6g==
-X-Received: by 2002:a17:90b:344:: with SMTP id fh4mr104771pjb.29.1628096234326;
-        Wed, 04 Aug 2021 09:57:14 -0700 (PDT)
-Received: from [192.168.1.116] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id 19sm3440765pfw.203.2021.08.04.09.57.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 09:57:13 -0700 (PDT)
-Subject: Re: [ANNOUNCE] v5.14-rc4-rt4
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <wagi@monom.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org
-References: <4f549344-1040-c677-6a6a-53e243c5f364@kernel.dk>
- <feebf183-2e33-36b5-4538-62a40b2a58b6@kernel.dk>
- <20210804153308.oasahcxjmcw7vivo@linutronix.de>
- <f2d0a028-fe85-28ff-9cea-8ab1d26a15d0@kernel.dk>
- <20210804154743.niogqvnladdkfgi2@linutronix.de>
- <7c946918-ae0d-6195-6a78-b019f9bc1fd3@kernel.dk>
- <20210804155747.cwayhjsdjc4zaubd@linutronix.de>
- <c3fa07d1-a3c4-6775-f419-4875eb41bc88@kernel.dk>
- <20210804122029.6c5c837a@oasis.local.home>
- <4ffb8f7c-085c-f6cc-e308-3f75b24b8e47@kernel.dk>
- <20210804164735.sq6sjejusa37abkw@linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <71d37a7d-af53-945e-0c49-3cb902487df4@kernel.dk>
-Date:   Wed, 4 Aug 2021 10:57:11 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S239731AbhHDQ5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:57:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239699AbhHDQ5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 12:57:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEAA860F22;
+        Wed,  4 Aug 2021 16:57:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628096239;
+        bh=BZy+HEkH9FAzU9PozXojRO24J4CnT+rFIv2for6U6TI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=snLxppcEJcFZxee6OfLcMMyXWEJsgMLkKJn4WNDaAbrubTlqglMzJW20/o1RlTAvZ
+         Y6Ipw9kb2KLqKytaR+RbioHk/TZgvPoHI2MnIUk8e876ntTa/NG3G8itMUN8pv/DIm
+         VwDZGz4NXPelaRnX1ExWRYe0rSKuPCyPQ48yJB7wOXzgajqFz0OdDW/SXjW1OziNKV
+         V7K94D88pl/A3gA4xY15QUKp2seEwbqv0WHss7vlRENerPq2yNtCf52dKFIFYl1qXx
+         /GNfAD7JUbaM6usepQQfkf+Jrk6p/Rl+AuPUZsI1dbNuuwjIvf525jhKt7v6cpNdZf
+         vGqgB/67bk/hg==
+Date:   Wed, 4 Aug 2021 09:57:16 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Lukasz Czapnik <lukasz.czapnik@intel.com>,
+        Marcin Kubiak <marcin.kubiak@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jian Shen <shenjian15@huawei.com>,
+        Petr Vorel <petr.vorel@gmail.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
+ statistics
+Message-ID: <20210804095716.35387fcd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210804155327.337-1-alexandr.lobakin@intel.com>
+References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
+        <20210803163641.3743-4-alexandr.lobakin@intel.com>
+        <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
+        <20210804053650.22aa8a5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210804155327.337-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210804164735.sq6sjejusa37abkw@linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/21 10:47 AM, Sebastian Andrzej Siewior wrote:
-> On 2021-08-04 10:22:59 [-0600], Jens Axboe wrote:
->>
->> In that regard, I do still consider those patches out-of-tree, which
->> they are. And while I'm more sympathetic to them compared to other
->> out-of-tree code as there's a long term plan to get it all in, it's
->> still out-of-tree. Best solution here is probably to just carry that
->> particular change in the RT patchset for now.
+On Wed,  4 Aug 2021 17:53:27 +0200 Alexander Lobakin wrote:
+> From: Jakub Kicinski <kuba@kernel.org>
+> Date: Wed, 4 Aug 2021 05:36:50 -0700
 > 
-> So today in the morning I learned that there is a memory allocation in
-> an IRQ-off section and now, a patch later, it is almost gone. So that
-> makes me actually happy :)
+> > On Tue, 03 Aug 2021 16:57:22 -0700 Saeed Mahameed wrote:  
+> > > On Tue, 2021-08-03 at 13:49 -0700, Jakub Kicinski wrote:  
+> > > > On Tue,  3 Aug 2021 18:36:23 +0200 Alexander Lobakin wrote:    
+> > > > > Most of the driver-side XDP enabled drivers provide some statistics
+> > > > > on XDP programs runs and different actions taken (number of passes,
+> > > > > drops, redirects etc.).    
+> > > > 
+> > > > Could you please share the statistics to back that statement up?
+> > > > Having uAPI for XDP stats is pretty much making the recommendation 
+> > > > that drivers should implement such stats. The recommendation from
+> > > > Alexei and others back in the day (IIRC) was that XDP programs should
+> > > > implement stats, not the drivers, to avoid duplication.  
+> 
+> Well, 20+ patches in the series with at least half of them is
+> drivers conversion. Plus mlx5. Plus we'll about to land XDP
+> statistics for all Intel drivers, just firstly need to get a
+> common infra for them (the purpose of this series).
 
-1 out of 2 is better than 0 ;-)
+Great, do you have impact of the stats on Intel drivers?
+(Preferably from realistic scenarios where CPU cache is actually 
+under pressure, not { return XDP_PASS; }). Numbers win arguments.
 
-> The spin_lock_irq() vs local_irq_disable() + spin_lock() is documented
-> in Documentation/locking/locktypes.rst.
-> That said I have no problem by carrying that patch in the RT-patchset
-> and revisit it later.
+> Also, introducing IEEE and rmon stats didn't make a statement that
+> all drivers should really expose them, right?
 
-Right, I suspect that was added as a pre RT patch dump at some point.
-It's a newer thing. Is it actually possible to set PREEMPT_RT in the
-mainline kernel? Looks like it depends on ARCH_SUPPORTS_RT and nobody
-sets that.
+That's not relevant. IEEE and RMON stats are read from HW, they have 
+no impact on the SW fast path.
 
-So I agree that just carrying your solution in the RT patchset is fine
-for now, we can revisit later.
+> > > There are stats "mainly errors*"  that are not even visible or reported
+> > > to the user prog,   
+> 
+> Not really. Many drivers like to count the number of redirects,
+> xdp_xmits and stuff (incl. mlx5). Nevertheless, these stats aren't
+> the same as something you can get from inside an XDP prog, right.
+> 
+> > Fair point, exceptions should not be performance critical.
+> >   
+> > > for that i had an idea in the past to attach an
+> > > exception_bpf_prog provided by the user, where driver/stack will report
+> > > errors to this special exception_prog.  
+> > 
+> > Or maybe we should turn trace_xdp_exception() into a call which
+> > unconditionally collects exception stats? I think we can reasonably
+> > expect the exception_bpf_prog to always be attached, right?  
+> 
+> trace_xdp_exception() is again a error path, and would restrict us
+> to have only "bad" statistics.
+> 
+> > > > > Regarding that it's almost pretty the same across all the drivers
+> > > > > (which is obvious), we can implement some sort of "standardized"
+> > > > > statistics using Ethtool standard stats infra to eliminate a lot
+> > > > > of code and stringsets duplication, different approaches to count
+> > > > > these stats and so on.    
+> > > > 
+> > > > I'm not 100% sold on the fact that these should be ethtool stats. 
+> > > > Why not rtnl_fill_statsinfo() stats? Current ethtool std stats are 
+> > > > all pretty Ethernet specific, and all HW stats. Mixing HW and SW
+> > > > stats
+> > > > is what we're trying to get away from.  
+> 
+> I was trying to introduce as few functional changes as possible,
+> including that all the current drivers expose XDP stats through
+> Ethtool.
 
--- 
-Jens Axboe
+You know this, but for the benefit of others - ethtool -S does not 
+dump standard stats from the netlink API, and ethtool -S --goups does
+not dump "old" stats. So users will need to use different commands
+to get to the two, anyway.
+
+> I don't say it's a 100% optimal way, but lots of different scripts
+> and monitoring tools are already based on this fact and there can
+> be some negative impact. There'll be for sure due to that std stats
+> is a bit different thing and different drivers count and name XDP
+> stats differently (breh).
+
+That's concerning. I'd much rather you didn't convert all the drivers
+than convert them before someone makes 100% sure the meaning of the
+stats is equivalent.
+
+> BTW, I'm fine with rtnl xstats. A nice reminder, thanks. If there
+> won't be much cons like "don't touch our Ethtool stats", I would
+> prefer this one instead of Ethtool standard stats way.
+
+You'll have to leave the ethtool -S ones in place anyway, right?
+New drivers would not include them but I don't think there's much
+we can (or should) do for the existing ones.
+
+> > > XDP is going to always be eBPF based ! why not just report such stats
+> > > to a special BPF_MAP ? BPF stack can collect the stats from the driver
+> > > and report them to this special MAP upon user request.  
+> > 
+> > Do you mean replacing the ethtool-netlink / rtnetlink etc. with
+> > a new BPF_MAP? I don't think adding another category of uAPI thru 
+> > which netdevice stats are exposed would do much good :( Plus it 
+> > doesn't address the "yet another cacheline" concern.  
+> 
+> + this makes obtaining/tracking the statistics much harder. For now,
+> all you need is `ethtool -S devname` (mainline) or
+> `ethtool -S devname --groups xdp` (this series), and obtaining rtnl
+> xstats is just a different command to invoke. BPF_MAP-based stats
+> are a completely different story then.
+> 
+> > To my understanding the need for stats recognizes the fact that (in
+> > large organizations) fleet monitoring is done by different teams than
+> > XDP development. So XDP team may have all the stats they need, but the
+> > team doing fleet monitoring has no idea how to get to them.
+> > 
+> > To bridge the two worlds we need a way for the infra team to ask the
+> > XDP for well-defined stats. Maybe we should take a page from the BPF
+> > iterators book and create a program type for bridging the two worlds?
+> > Called by networking core when duping stats to extract from the
+> > existing BPF maps all the relevant stats and render them into a well
+> > known struct? Users' XDP design can still use a single per-cpu map with
+> > all the stats if they so choose, but there's a way to implement more
+> > optimal designs and still expose well-defined stats.
+> > 
+> > Maybe that's too complex, IDK.  
+> 
+> Thanks,
+> Al
 
