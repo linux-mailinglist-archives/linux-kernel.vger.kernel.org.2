@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496353E045C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A913E045E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239128AbhHDPjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
+        id S239160AbhHDPj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239064AbhHDPjq (ORCPT
+        with ESMTP id S239127AbhHDPj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:39:46 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AEF7C061798
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 08:39:33 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so4202463pjd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 08:39:33 -0700 (PDT)
+        Wed, 4 Aug 2021 11:39:57 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A94C061799
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 08:39:45 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d17so3385149plr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 08:39:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9HvhKBIAckU62s2Uuatx7EBu63Q7v4yQnE6VGQx/1B8=;
-        b=RXFWQwB0uXR3QN0OYi9F3PH/TF24Ek/4S5Hl5GykHL0A/xQCZgMrXoLhz/Eldmkl56
-         Kq//r6LQZnNPvm+lqNljCdysmpVjqoSCxBaxFgPEY6j9Ulym7/fgyd1V6N6AxkcZris7
-         2oRbJHWuwrqoMAazMJZnlr57T/i9GpDUDkdST+SviEoj47u7AOVgFDd/nJpa6y8dBwMN
-         uu9hxu4eqUCuPlZjswQXcxFIS6WgjKMaI8bikSUxieMiKXJ6wTFkDEouGTsbCIhLmeCS
-         Sq5okn2S44fBX1q0fnAAoTsnS/TqmGuB+KuYzhRIDoXum9/rEx+uUeD9GdRi1eIebURt
-         Q9Ow==
+        bh=YbLaP7zp/TBT+Q7+YqQffDvYzau3V52aHChBMgMbfhI=;
+        b=O9WXF1x4pvMjKxlTU3T4bxsSBX432kH8pc9YOpQ6e8fQ3W9tAgW2ZNiA1vVTaqbXFR
+         QrVLwLQajtIxevyUqGS8cHTvDLITW3qRbYSUy0mivce+ZTkIXQJ7K/7l8u/yb3AXzHtK
+         Dz/4nJykAql2ogjXcVmhNwpd5BCVFPzYxscR80yYU6+SsvR0FeFR6hMt5fkXsofc8s94
+         bTum2C5YLVtLkRQ0K/0gs8yHGMb/wBksx1/1e4ajK+y6u+dz7Q3Ie9Fq2Y+xTqm/Lt7K
+         KCzI5U3NAnO/dOWFOclnYzZRyenKqZAd+YQFD/FzHfKpUwywUvto+K3b0vysaAWrinPi
+         BUUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=9HvhKBIAckU62s2Uuatx7EBu63Q7v4yQnE6VGQx/1B8=;
-        b=VjlCJ7h01XgUVa7yXAk77qAgwUYuzDi/nb9oMHblaXlDcQRP5sNX58UamyfU8GwaSt
-         Flr8ky8qF7DwXAPWMg2Ty179pWlwo0Y/xMFpj3m2bo//T48HU7uzefYApCKZrIXfUl4e
-         dSnxf2NCs8dGYJFsS7z1l+MvohzQfnuQKPr8Ik3ismLzthcvaH5Ntze12e7xnlndo5F2
-         fqo5YYhcRYQuxQ5pIIG5SNjX0mN+69Sl+sVsYLdEvvSfQt1svjefzRi8aSrPM5CIJT7R
-         aDE9TlwrpGwZP/seuunwMlKO6yxFyoFRu6KrXFRGKMuFmGYpD2RcJOVbzSWLTFVlvL49
-         fjHg==
-X-Gm-Message-State: AOAM532UxKYcW0Crx/qVJBvzSs50h2Z0Rd8uHuZZni6A6HjOFtnDb0sf
-        oxSqMiNHQv4d35Ua/ujQFIMmbDVRLGLG5zyJ
-X-Google-Smtp-Source: ABdhPJwhyUlyEkVnqX8yuM7QqcstA/PNNT2jsrCxqQR3DMv0RG7ftFCD6gMMj42hfWrbvwwNCN+8vQ==
-X-Received: by 2002:a17:902:8544:b029:12c:5752:b0ef with SMTP id d4-20020a1709028544b029012c5752b0efmr23388086plo.18.1628091572841;
-        Wed, 04 Aug 2021 08:39:32 -0700 (PDT)
+        bh=YbLaP7zp/TBT+Q7+YqQffDvYzau3V52aHChBMgMbfhI=;
+        b=gif1rwOatCjFlH6mpL6f9OqeM+sOORYVml5/OoCbj2FXiC4jBraLFkP5jCrn9V3deZ
+         SMgHdO8fadsua4zj8QAMplwjjHQ5eLD2WoHMIoEs/7JMsSKfp8w/T6uMSsUH4DvMcbwg
+         /bokuDzhYT89lzCEW+nifk4bSN9TNBQrvOjQ6AYUUPicEVpk1OQVFuU+bbMuQbjZU6k1
+         wXNfYmjIZsNRdr74PZ6OtWeuv6nC3oDb0JxXSC1Iizgf89iVMO/dHuX1E4/LDspDSobx
+         2PpkMCmKYMX9VXeelU64xRSupOvXtqrAEWqTJyVfifbPDXEz65prTnAm9EYOtaJMywJN
+         z8Nw==
+X-Gm-Message-State: AOAM531oXlVI4U/FNhiiqa5/4n17gaMjePL/X+t9dISYOGFtwlPF8ulH
+        P7ocLj33uAx3Yn4VntlKhHcyKw==
+X-Google-Smtp-Source: ABdhPJzJ4WJ1Q+2KzH0H51gzmk4Pg0T96RDMTv8KoFMK4qpCkO3eDRYnLJ4MvuGElG0swKVF6fN9Hg==
+X-Received: by 2002:a17:902:6bc5:b029:12c:c275:ae10 with SMTP id m5-20020a1709026bc5b029012cc275ae10mr2368835plt.81.1628091584814;
+        Wed, 04 Aug 2021 08:39:44 -0700 (PDT)
 Received: from [192.168.1.116] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id y2sm3310366pfe.146.2021.08.04.08.39.31
+        by smtp.gmail.com with ESMTPSA id pi14sm6364106pjb.38.2021.08.04.08.39.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 08:39:32 -0700 (PDT)
-Subject: Re: [ANNOUNCE] v5.14-rc4-rt4
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <wagi@monom.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Wed, 04 Aug 2021 08:39:44 -0700 (PDT)
+Subject: Re: [PATCH] io-wq: remove GFP_ATOMIC allocation off schedule out path
+To:     Daniel Wagner <dwagner@suse.de>
+Cc:     io-uring <io-uring@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <20210802162750.santic4y6lzcet5c@linutronix.de>
- <20210804082418.fbibprcwtzyt5qax@beryllium.lan>
- <20210804104340.fhdjwn3hruymu3ml@linutronix.de>
- <20210804104803.4nwxi74sa2vwiujd@linutronix.de>
- <20210804110057.chsvt7l5xpw7bo5r@linutronix.de>
- <20210804131731.GG8057@worktop.programming.kicks-ass.net>
- <4f549344-1040-c677-6a6a-53e243c5f364@kernel.dk>
- <feebf183-2e33-36b5-4538-62a40b2a58b6@kernel.dk>
- <20210804153308.oasahcxjmcw7vivo@linutronix.de>
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <a673a130-e0e4-5aa8-4165-f35d1262fc6a@kernel.dk>
+ <20210804153323.anggq6oto6x7g2rs@beryllium.lan>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f2d0a028-fe85-28ff-9cea-8ab1d26a15d0@kernel.dk>
-Date:   Wed, 4 Aug 2021 09:39:30 -0600
+Message-ID: <230f62ec-536b-476f-c59d-347fe7826b09@kernel.dk>
+Date:   Wed, 4 Aug 2021 09:39:42 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210804153308.oasahcxjmcw7vivo@linutronix.de>
+In-Reply-To: <20210804153323.anggq6oto6x7g2rs@beryllium.lan>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -80,37 +72,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/21 9:33 AM, Sebastian Andrzej Siewior wrote:
-> On 2021-08-04 08:23:55 [-0600], Jens Axboe wrote:
->> Totally untested, but I think the principle is sound. I'll run it through
->> some testing.
+On 8/4/21 9:33 AM, Daniel Wagner wrote:
+> On Wed, Aug 04, 2021 at 08:43:43AM -0600, Jens Axboe wrote:
+>> Daniel reports that the v5.14-rc4-rt4 kernel throws a BUG when running
+>> stress-ng:
+>>
+>> | [   90.202543] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
+>> | [   90.202549] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 2047, name: iou-wrk-2041
+>> | [   90.202555] CPU: 5 PID: 2047 Comm: iou-wrk-2041 Tainted: G        W         5.14.0-rc4-rt4+ #89
+>> | [   90.202559] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+>> | [   90.202561] Call Trace:
+>> | [   90.202577]  dump_stack_lvl+0x34/0x44
+>> | [   90.202584]  ___might_sleep.cold+0x87/0x94
+>> | [   90.202588]  rt_spin_lock+0x19/0x70
+>> | [   90.202593]  ___slab_alloc+0xcb/0x7d0
+>> | [   90.202598]  ? newidle_balance.constprop.0+0xf5/0x3b0
+>> | [   90.202603]  ? dequeue_entity+0xc3/0x290
+>> | [   90.202605]  ? io_wqe_dec_running.isra.0+0x98/0xe0
+>> | [   90.202610]  ? pick_next_task_fair+0xb9/0x330
+>> | [   90.202612]  ? __schedule+0x670/0x1410
+>> | [   90.202615]  ? io_wqe_dec_running.isra.0+0x98/0xe0
+>> | [   90.202618]  kmem_cache_alloc_trace+0x79/0x1f0
+>> | [   90.202621]  io_wqe_dec_running.isra.0+0x98/0xe0
+>> | [   90.202625]  io_wq_worker_sleeping+0x37/0x50
+>> | [   90.202628]  schedule+0x30/0xd0
+>> | [   90.202630]  schedule_timeout+0x8f/0x1a0
+>> | [   90.202634]  ? __bpf_trace_tick_stop+0x10/0x10
+>> | [   90.202637]  io_wqe_worker+0xfd/0x320
+>> | [   90.202641]  ? finish_task_switch.isra.0+0xd3/0x290
+>> | [   90.202644]  ? io_worker_handle_work+0x670/0x670
+>> | [   90.202646]  ? io_worker_handle_work+0x670/0x670
+>> | [   90.202649]  ret_from_fork+0x22/0x30
+>>
+>> which is due to the RT kernel not liking a GFP_ATOMIC allocation inside
+>> a raw spinlock. Besides that not working on RT, doing any kind of
+>> allocation from inside schedule() is kind of nasty and should be avoided
+>> if at all possible.
+>>
+>> This particular path happens when an io-wq worker goes to sleep, and we
+>> need a new worker to handle pending work. We currently allocate a small
+>> data item to hold the information we need to create a new worker, but we
+>> can instead include this data in the io_worker struct itself and just
+>> protect it with a single bit lock. We only really need one per worker
+>> anyway, as we will have run pending work between to sleep cycles.
+>>
+>> https://lore.kernel.org/lkml/20210804082418.fbibprcwtzyt5qax@beryllium.lan/
+>> Reported-by: Daniel Wagner <dwagner@suse.de>
+>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
 > 
-> This is needed:
+> I applied this patch on top of v5.14-rc4-rt4 and with it all looks
+> good.
 > 
-> diff --git a/fs/io-wq.c b/fs/io-wq.c
-> index 1192ee2abd982..77ec6896edaa5 100644
-> --- a/fs/io-wq.c
-> +++ b/fs/io-wq.c
-> @@ -428,9 +428,9 @@ static struct io_wq_work *io_get_next_work(struct io_wqe *wqe)
->  	}
->  
->  	if (stall_hash != -1U) {
-> -		raw_spin_unlock(&wqe->lock);
-> +		raw_spin_unlock_irq(&wqe->lock);
->  		io_wait_on_hash(wqe, stall_hash);
-> -		raw_spin_lock(&wqe->lock);
-> +		raw_spin_lock_irq(&wqe->lock);
->  	}
->  
->  	return NULL;
-> 
-> 
-> otherwise the spinlock_t lock in io_wait_on_hash() is acquired with
-> disabled interrupts which is a no-no on -RT.
-> With that it all looks good as far as I can tell.
-> Thank you.
+> Tested-by: Daniel Wagner <dwagner@suse.de>
 
-I'm confused, the waitqueue locks are always IRQ disabling.
+Great, thanks for testing!
 
 -- 
 Jens Axboe
