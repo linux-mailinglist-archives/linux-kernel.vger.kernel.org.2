@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC763DFB3A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A065B3DFB0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235442AbhHDFsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 01:48:32 -0400
-Received: from mga18.intel.com ([134.134.136.126]:30792 "EHLO mga18.intel.com"
+        id S235295AbhHDF2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 01:28:10 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:59155 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235012AbhHDFsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 01:48:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="201040671"
-X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
-   d="asc'?scan'208";a="201040671"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 22:48:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
-   d="asc'?scan'208";a="479969434"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.143])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Aug 2021 22:48:14 -0700
-Date:   Wed, 4 Aug 2021 13:26:06 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Wang, Zhi A" <zhi.a.wang@intel.com>
-Subject: Re: refactor the i915 GVT support
-Message-ID: <20210804052606.GG13928@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20210721155355.173183-1-hch@lst.de>
- <DM4PR11MB55496531B246A4604FC86998CAE49@DM4PR11MB5549.namprd11.prod.outlook.com>
- <20210722112636.wj277vqhg4dez5ug@sirius.home.kraxel.org>
- <20210727121224.GA2145868@nvidia.com>
- <DM4PR11MB5549EC882AA6076F3468274DCAEA9@DM4PR11MB5549.namprd11.prod.outlook.com>
- <20210728175925.GU1721383@nvidia.com>
- <20210729072022.GB31896@lst.de>
- <20210803094315.GF13928@zhen-hp.sh.intel.com>
- <20210803143058.GA1721383@nvidia.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="1SVgZ+3xbDF9VW5n"
-Content-Disposition: inline
-In-Reply-To: <20210803143058.GA1721383@nvidia.com>
+        id S234848AbhHDF2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 01:28:09 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GfgHc6CJbz9sWD;
+        Wed,  4 Aug 2021 07:27:56 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 89zdXhFFSDJE; Wed,  4 Aug 2021 07:27:56 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GfgHc55vXz9sVr;
+        Wed,  4 Aug 2021 07:27:56 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 884418B790;
+        Wed,  4 Aug 2021 07:27:56 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 8xXxtg3H94Qb; Wed,  4 Aug 2021 07:27:56 +0200 (CEST)
+Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 52AE18B764;
+        Wed,  4 Aug 2021 07:27:56 +0200 (CEST)
+Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 2705E663E1; Wed,  4 Aug 2021 05:27:56 +0000 (UTC)
+Message-Id: <b36623df00ef3d2296f928487b6e23f93a217afa.1628054802.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc: Remove MSR_PR check in
+ interrupt_exit_{user/kernel}_prepare()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed,  4 Aug 2021 05:27:56 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In those hot functions that are called at every interrupt, any saved
+cycle is worth it.
 
---1SVgZ+3xbDF9VW5n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+interrupt_exit_user_prepare() and interrupt_exit_kernel_prepare() are
+called from three places:
+- From entry_32.S
+- From interrupt_64.S
+- From interrupt_exit_user_restart() and interrupt_exit_kernel_restart()
 
-On 2021.08.03 11:30:58 -0300, Jason Gunthorpe wrote:
-> On Tue, Aug 03, 2021 at 05:43:15PM +0800, Zhenyu Wang wrote:
-> > Acked-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-> >=20
-> > Thanks a lot for this effort!
->=20
-> Great, do we have a submission plan for this? how much does it clash
-> with my open_device/etc patch? ie does the whole thing have to go
-> through the vfio tree?
->=20
+In entry_32.S, there are inambiguously called based on MSR_PR:
 
-I think Alex would determine when to merge open_device series, gvt part
-can be through vfio tree without problem. For this refactor, I would first
-merge for gvt staging to do more regression testing before sending through
-i915 tree.
+	interrupt_return:
+		lwz	r4,_MSR(r1)
+		addi	r3,r1,STACK_FRAME_OVERHEAD
+		andi.	r0,r4,MSR_PR
+		beq	.Lkernel_interrupt_return
+		bl	interrupt_exit_user_prepare
+	...
+	.Lkernel_interrupt_return:
+		bl	interrupt_exit_kernel_prepare
 
-Thanks
+In interrupt_64.S, that's similar:
 
---1SVgZ+3xbDF9VW5n
-Content-Type: application/pgp-signature; name="signature.asc"
+	interrupt_return_\srr\():
+		ld	r4,_MSR(r1)
+		andi.	r0,r4,MSR_PR
+		beq	interrupt_return_\srr\()_kernel
+	interrupt_return_\srr\()_user: /* make backtraces match the _kernel variant */
+		addi	r3,r1,STACK_FRAME_OVERHEAD
+		bl	interrupt_exit_user_prepare
+	...
+	interrupt_return_\srr\()_kernel:
+		addi	r3,r1,STACK_FRAME_OVERHEAD
+		bl	interrupt_exit_kernel_prepare
 
------BEGIN PGP SIGNATURE-----
+In interrupt_exit_user_restart() and interrupt_exit_kernel_restart(),
+MSR_PR is verified respectively by BUG_ON(!user_mode(regs)) and
+BUG_ON(user_mode(regs)) prior to calling interrupt_exit_user_prepare()
+and interrupt_exit_kernel_prepare().
 
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYQok3wAKCRCxBBozTXgY
-J5caAJ40TmBXSY9oMyHAvup4EhMUzcv+fACgkIVPVmaSfgOPAjUn4UZv/iNQst0=
-=tcld
------END PGP SIGNATURE-----
+The verification in interrupt_exit_user_prepare() and
+interrupt_exit_kernel_prepare() are therefore useless and can be removed.
 
---1SVgZ+3xbDF9VW5n--
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/interrupt.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index 21bbd615ca41..f26caf911ab5 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -465,7 +465,6 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs)
+ 
+ 	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x))
+ 		BUG_ON(!(regs->msr & MSR_RI));
+-	BUG_ON(!(regs->msr & MSR_PR));
+ 	BUG_ON(arch_irq_disabled_regs(regs));
+ 	CT_WARN_ON(ct_state() == CONTEXT_USER);
+ 
+@@ -499,7 +498,6 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs)
+ 	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x) &&
+ 	    unlikely(!(regs->msr & MSR_RI)))
+ 		unrecoverable_exception(regs);
+-	BUG_ON(regs->msr & MSR_PR);
+ 	/*
+ 	 * CT_WARN_ON comes here via program_check_exception,
+ 	 * so avoid recursion.
+-- 
+2.25.0
+
