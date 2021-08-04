@@ -2,167 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318A73E02D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD033E02D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238628AbhHDOJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:09:59 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:17236 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238555AbhHDOJ4 (ORCPT
+        id S238631AbhHDOLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238412AbhHDOLH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:09:56 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210804140942euoutp02de1287c6c1cafcacf91e10efd3402f84~YH8HXqbmu2386923869euoutp02d
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:09:42 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210804140942euoutp02de1287c6c1cafcacf91e10efd3402f84~YH8HXqbmu2386923869euoutp02d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1628086182;
-        bh=m5cyyo60a8j1iH/dVWQLYkbI/ZFi/aG+i1z6H4Obo1g=;
-        h=From:Subject:To:Cc:Date:In-Reply-To:References:From;
-        b=lm8Utu4hLUZNguwrjCQbDacZSNRMWvVj/YshPr//xzraDSDfnG2YuhCe1xZX6y11A
-         f2g5lILsXTkan0sezukf+FmAFS3tWpcsfw2J91hkI/2qtAxrAXaGRKwimwkMaYPLz4
-         X8JA4DzWQAiFx6BN8PxIiiOWs59YK6I1y+eQ/5S4=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210804140942eucas1p2a22adcabc3c207f3cb2b512fc69c0789~YH8G3abOR2902329023eucas1p2R;
-        Wed,  4 Aug 2021 14:09:42 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id E6.5E.56448.5AF9A016; Wed,  4
-        Aug 2021 15:09:41 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210804140941eucas1p2d4d4ec491074530c714797523aec05ea~YH8GCdgqR2900629006eucas1p2Q;
-        Wed,  4 Aug 2021 14:09:41 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210804140941eusmtrp2870860b802248745446daabbb22d7d96~YH8GBdQCp1266512665eusmtrp2j;
-        Wed,  4 Aug 2021 14:09:41 +0000 (GMT)
-X-AuditID: cbfec7f5-d53ff7000002dc80-b4-610a9fa56c7b
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id E5.45.31287.5AF9A016; Wed,  4
-        Aug 2021 15:09:41 +0100 (BST)
-Received: from [192.168.0.14] (unknown [106.210.131.79]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210804140939eusmtip131e5008e60b206fa2a8cf3eef6e9f59e~YH8ESoAh92281322813eusmtip1x;
-        Wed,  4 Aug 2021 14:09:39 +0000 (GMT)
-From:   "a.hajda" <a.hajda@samsung.com>
-Subject: Re: [PATCH v2 0/8] drm/bridge: Make panel and bridge probe order
- consistent
-To:     Maxime Ripard <maxime@cerno.tech>, Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Robert Foss <robert.foss@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Message-ID: <cc638e20-aa7c-7014-f70b-1bb68e629d87@samsung.com>
-Date:   Wed, 4 Aug 2021 16:09:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
-        Thunderbird/78.11.0
+        Wed, 4 Aug 2021 10:11:07 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B96AC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:10:55 -0700 (PDT)
+Received: from pd956d63d.dip0.t-ipconnect.de ([217.86.214.61] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1mBHba-0000Bs-VO; Wed, 04 Aug 2021 16:10:47 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH v2] staging: r8188eu: remove RT_TRACE and DBG_88E prints from usb_intf.c
+Date:   Wed,  4 Aug 2021 16:10:31 +0200
+Message-Id: <20210804141031.12303-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210801173023.1370-1-martin@kaiser.cx>
+References: <20210801173023.1370-1-martin@kaiser.cx>
 MIME-Version: 1.0
-In-Reply-To: <20210728133229.2247965-1-maxime@cerno.tech>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCKsWRmVeSWpSXmKPExsWy7djPc7pL53MlGmxbaGPRe+4kk8XyM+uY
-        La58fc9m8Xz+OkaLk2+uslh0TlzCbnF51xw2i4Uft7JYzPjxj9HiUF+0xadZD5ktVvzcymjx
-        c9c8FostbyayOvB5vL/Ryu5x59x5No+ds+6ye8zumMnqsXjPSyaPExMuMXncubaHzWP7twes
-        HvNOBnrc7z7O5LFk2lU2j82nqz0+b5IL4I3isklJzcksSy3St0vgyvi5dwtbwTuBijcLFzM3
-        MJ7g7WLk5JAQMJFYsesCcxcjF4eQwApGid07lrBAOF8YJV5/7IDKfGaU2HF2P2MXIwdYy+2l
-        whDx5YwSsx9sYIdw3jJK3Dr5CqyITUBVYvEZN5AVwgJhEjMWrAKrERH4zSzR0P2PDSTBLOAo
-        cXPqMVYQm1fATmLBvffMIL0sAioSM9ZFgIRFBSIlzu9ewAJRIihxcuYTMJtTwFLi6qMGFogx
-        4hK3nsxngrDlJba/nQN2tITAKU6JV88XMEP86SLx5P8OdghbWOLV8S1QtozE/50QzRIC9RL3
-        V7RANXcwSmzdsBOq2VrizrlfbCDHMQtoSqzfpQ8RdpR403aZCRIofBI33gpC3MAnMWnbdGaI
-        MK9ER5sQRLWixP2zW6EGikssvfCVbQKj0iwkn81C8s0sJN/MQti7gJFlFaN4amlxbnpqsXFe
-        arlecWJucWleul5yfu4mRmBCPP3v+NcdjCtefdQ7xMjEwXiIUYKDWUmEN/QGR6IQb0piZVVq
-        UX58UWlOavEhRmkOFiVx3l1b18QLCaQnlqRmp6YWpBbBZJk4OKUamBpmdT3PWJp270PN3Qmz
-        xForSv49vdHrc0ZUIOxB/MQAjudns3h5jhvkzg1Y8f8Aa/kG1aOJxzb+FtZ0y1i43l2ZedcW
-        96mPj0/OXetjLj4vsaVfb8cqO3Z/vh6fv56eF844s99cnqf68fgS751pjCc3TtVisPHy7nzR
-        dPGi+8cfXI1ykVoZAkeaLbuUXigFF8ntqtHRUXNkFV+r6HQuqm+LGvP5vOA98+c+KVlidGnG
-        /NxPuT/cohRcLkQdtQrosY/vM4m6OOnT5VdMX48ElEpLXko8WpEcplzbqbWbL2G+efzfpnWH
-        tBq2CLvbp/5s+Dep6nudsIG+gNiGX1U7Ije4lb5eM4nDX0et4d0SJZbijERDLeai4kQAEymL
-        9vcDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKIsWRmVeSWpSXmKPExsVy+t/xu7pL53MlGhzZzGnRe+4kk8XyM+uY
-        La58fc9m8Xz+OkaLk2+uslh0TlzCbnF51xw2i4Uft7JYzPjxj9HiUF+0xadZD5ktVvzcymjx
-        c9c8FostbyayOvB5vL/Ryu5x59x5No+ds+6ye8zumMnqsXjPSyaPExMuMXncubaHzWP7twes
-        HvNOBnrc7z7O5LFk2lU2j82nqz0+b5IL4I3SsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQz
-        NDaPtTIyVdK3s0lJzcksSy3St0vQy/i5dwtbwTuBijcLFzM3MJ7g7WLk4JAQMJG4vVS4i5GL
-        Q0hgKaNEf9815i5GTqC4uMTu+W+hbGGJP9e62CCKXjNKrD53hA2kmU1AVWLxGTeQGmGBMIkZ
-        C1axg9giAn+ZJSa81gWxmQUcJW5OPcYKYgsJWEhc2LENzOYVsJNYcO89M8gYFgEViRnrIkDC
-        ogKREp8XvIIqEZQ4OfMJC4jNKWApcfVRAwvESDOJeZsfMkPY4hK3nsxngrDlJba/ncM8gVFo
-        FpL2WUhaZiFpmYWkZQEjyypGkdTS4tz03GJDveLE3OLSvHS95PzcTYzA+N927OfmHYzzXn3U
-        O8TIxMF4iFGCg1lJhDf0BkeiEG9KYmVValF+fFFpTmrxIUZToHcmMkuJJucDE1BeSbyhmYGp
-        oYmZpYGppZmxkjjv1rlr4oUE0hNLUrNTUwtSi2D6mDg4pRqYKq+famZ9Ex2ia+KWJiD9Skdx
-        6V3NbYt2v086sX1tyxLG7Ad+7//Ny25W/GF94tyM9ddDNlivz/9wy9RdXb8vTqnIkCFneVnl
-        Tvu9Vts2d65s7ZewO3Kr6ETx4cLo/rUfFRsmPmt4sv/oUpVqrjj3/qxMHj2XKdKnk7mfF0TH
-        /km9fMGtZqHBd759m0pTmHazSO5e1PNjntMC2dwJZ6LlvhVc/chUmDGrQSH94n7xr6vmT7Gq
-        9W5X4hb7Pf/dT/7pjypLz4aWB55ZIb5Kou/TR4c7MX6adT2fBCoFLczPJpc/ZygVfmE3wanP
-        1/Bh4OO2kmWMLjv9V20rtbyp7KAQr/JYwSGzgvGVZb5S4AYlluKMREMt5qLiRADxOvneiAMA
-        AA==
-X-CMS-MailID: 20210804140941eucas1p2d4d4ec491074530c714797523aec05ea
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210804140941eucas1p2d4d4ec491074530c714797523aec05ea
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210804140941eucas1p2d4d4ec491074530c714797523aec05ea
-References: <20210728133229.2247965-1-maxime@cerno.tech>
-        <CGME20210804140941eucas1p2d4d4ec491074530c714797523aec05ea@eucas1p2.samsung.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+We should use the standard mechanism for debug prints. Remove the
+prints that use driver-specific macros.
 
-I have been busy with other tasks, and I did not follow the list last 
-time, so sorry for my late response.
+Handle errors from the usb_autopm_get_interface call instead of just
+showing a debug print.
 
-On 28.07.2021 15:32, Maxime Ripard wrote:
-> Hi,
-> 
-> We've encountered an issue with the RaspberryPi DSI panel that prevented the
-> whole display driver from probing.
-> 
-> The issue is described in detail in the commit 7213246a803f ("drm/vc4: dsi:
-> Only register our component once a DSI device is attached"), but the basic idea
-> is that since the panel is probed through i2c, there's no synchronization
-> between its probe and the registration of the MIPI-DSI host it's attached to.
-> 
-> We initially moved the component framework registration to the MIPI-DSI Host
-> attach hook to make sure we register our component only when we have a DSI
-> device attached to our MIPI-DSI host, and then use lookup our DSI device in our
-> bind hook.
-> 
-> However, all the DSI bridges controlled through i2c are only registering their
-> associated DSI device in their bridge attach hook, meaning with our change
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+---
+v2:
+ - bring back usb_autopm_get_interface, handle errors
 
+ drivers/staging/r8188eu/os_dep/usb_intf.c | 128 ++--------------------
+ 1 file changed, 10 insertions(+), 118 deletions(-)
 
-I guess this is incorrect. I have promoted several times the pattern 
-that device driver shouldn't expose its interfaces (for example 
-component_add, drm_panel_add, drm_bridge_add) until it gathers all 
-required dependencies. In this particular case bridges should defer 
-probe until DSI bus becomes available. I guess this way the patch you 
-reverts would work.
+diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
+index bc7f4bd7ce0b..4d4741a4875b 100644
+--- a/drivers/staging/r8188eu/os_dep/usb_intf.c
++++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
+@@ -120,7 +120,6 @@ static u8 rtw_init_intf_priv(struct dvobj_priv *dvobj)
+ 
+ 	dvobj->usb_alloc_vendor_req_buf = rtw_zmalloc(MAX_USB_IO_CTL_SIZE);
+ 	if (!dvobj->usb_alloc_vendor_req_buf) {
+-		DBG_88E("alloc usb_vendor_req_buf failed... /n");
+ 		rst = _FAIL;
+ 		goto exit;
+ 	}
+@@ -192,19 +191,13 @@ static struct dvobj_priv *usb_dvobj_init(struct usb_interface *usb_intf)
+ 		pdvobjpriv->ep_num[i] = ep_num;
+ 	}
+ 
+-	if (pusbd->speed == USB_SPEED_HIGH) {
++	if (pusbd->speed == USB_SPEED_HIGH)
+ 		pdvobjpriv->ishighspeed = true;
+-		DBG_88E("USB_SPEED_HIGH\n");
+-	} else {
++	else
+ 		pdvobjpriv->ishighspeed = false;
+-		DBG_88E("NON USB_SPEED_HIGH\n");
+-	}
+ 
+-	if (rtw_init_intf_priv(pdvobjpriv) == _FAIL) {
+-		RT_TRACE(_module_os_intfs_c_, _drv_err_,
+-			 ("\n Can't INIT rtw_init_intf_priv\n"));
++	if (rtw_init_intf_priv(pdvobjpriv) == _FAIL)
+ 		goto free_dvobj;
+-	}
+ 
+ 	/* 3 misc */
+ 	sema_init(&(pdvobjpriv->usb_suspend_sema), 0);
+@@ -241,7 +234,6 @@ static void usb_dvobj_deinit(struct usb_interface *usb_intf)
+ 				 * on sitesurvey for the first time when
+ 				 * device is up . Reset usb port for sitesurvey
+ 				 * fail issue. */
+-				DBG_88E("usb attached..., try to reset usb device\n");
+ 				usb_reset_device(interface_to_usbdev(usb_intf));
+ 			}
+ 		}
+@@ -262,25 +254,11 @@ static void chip_by_usb_id(struct adapter *padapter,
+ 
+ static void usb_intf_start(struct adapter *padapter)
+ {
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+usb_intf_start\n"));
+-
+ 	rtw_hal_inirp_init(padapter);
+-
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-usb_intf_start\n"));
+ }
+ 
+ static void usb_intf_stop(struct adapter *padapter)
+ {
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+usb_intf_stop\n"));
+-
+-	/* disabel_hw_interrupt */
+-	if (!padapter->bSurpriseRemoved) {
+-		/* device still exists, so driver can do i/o operation */
+-		/* TODO: */
+-		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
+-			 ("SurpriseRemoved == false\n"));
+-	}
+-
+ 	/* cancel in irp */
+ 	rtw_hal_inirp_deinit(padapter);
+ 
+@@ -288,16 +266,11 @@ static void usb_intf_stop(struct adapter *padapter)
+ 	rtw_write_port_cancel(padapter);
+ 
+ 	/* todo:cancel other irps */
+-
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-usb_intf_stop\n"));
+ }
+ 
+ static void rtw_dev_unload(struct adapter *padapter)
+ {
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_dev_unload\n"));
+-
+ 	if (padapter->bup) {
+-		DBG_88E("===> rtw_dev_unload\n");
+ 		padapter->bDriverStopped = true;
+ 		if (padapter->xmitpriv.ack_tx)
+ 			rtw_ack_tx_done(&padapter->xmitpriv, RTW_SCTX_DONE_DRV_STOP);
+@@ -315,14 +288,7 @@ static void rtw_dev_unload(struct adapter *padapter)
+ 		}
+ 
+ 		padapter->bup = false;
+-	} else {
+-		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
+-			 ("r871x_dev_unload():padapter->bup == false\n"));
+ 	}
+-
+-	DBG_88E("<=== rtw_dev_unload\n");
+-
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-rtw_dev_unload\n"));
+ }
+ 
+ static void process_spec_devid(const struct usb_device_id *pdid)
+@@ -355,16 +321,12 @@ int rtw_hw_suspend(struct adapter *padapter)
+ 
+ 	if ((!padapter->bup) || (padapter->bDriverStopped) ||
+ 	    (padapter->bSurpriseRemoved)) {
+-		DBG_88E("padapter->bup=%d bDriverStopped=%d bSurpriseRemoved = %d\n",
+-			padapter->bup, padapter->bDriverStopped,
+-			padapter->bSurpriseRemoved);
+ 		goto error_exit;
+ 	}
+ 
+ 	if (padapter) { /* system suspend */
+ 		LeaveAllPowerSaveMode(padapter);
+ 
+-		DBG_88E("==> rtw_hw_suspend\n");
+ 		_enter_pwrlock(&pwrpriv->lock);
+ 		pwrpriv->bips_processing = true;
+ 		/* s1. */
+@@ -407,7 +369,6 @@ int rtw_hw_suspend(struct adapter *padapter)
+ 		return 0;
+ 
+ error_exit:
+-	DBG_88E("%s, failed\n", __func__);
+ 	return -1;
+ }
+ 
+@@ -418,7 +379,6 @@ int rtw_hw_resume(struct adapter *padapter)
+ 
+ 
+ 	if (padapter) { /* system resume */
+-		DBG_88E("==> rtw_hw_resume\n");
+ 		_enter_pwrlock(&pwrpriv->lock);
+ 		pwrpriv->bips_processing = true;
+ 		rtw_reset_drv_sw(padapter);
+@@ -450,7 +410,6 @@ int rtw_hw_resume(struct adapter *padapter)
+ 
+ 	return 0;
+ error_exit:
+-	DBG_88E("%s, Open net dev failed\n", __func__);
+ 	return -1;
+ }
+ 
+@@ -466,13 +425,8 @@ static int rtw_suspend(struct usb_interface *pusb_intf, pm_message_t message)
+ 	u32 start_time = jiffies;
+ 
+ 
+-	DBG_88E("==> %s (%s:%d)\n", __func__, current->comm, current->pid);
+-
+ 	if ((!padapter->bup) || (padapter->bDriverStopped) ||
+ 	    (padapter->bSurpriseRemoved)) {
+-		DBG_88E("padapter->bup=%d bDriverStopped=%d bSurpriseRemoved = %d\n",
+-			padapter->bup, padapter->bDriverStopped,
+-			padapter->bSurpriseRemoved);
+ 		goto exit;
+ 	}
+ 
+@@ -492,12 +446,6 @@ static int rtw_suspend(struct usb_interface *pusb_intf, pm_message_t message)
+ 
+ 	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE) &&
+ 	    check_fwstate(pmlmepriv, _FW_LINKED)) {
+-		DBG_88E("%s:%d %s(%pM), length:%d assoc_ssid.length:%d\n",
+-			__func__, __LINE__,
+-			pmlmepriv->cur_network.network.Ssid.Ssid,
+-			pmlmepriv->cur_network.network.MacAddress,
+-			pmlmepriv->cur_network.network.Ssid.SsidLength,
+-			pmlmepriv->assoc_ssid.SsidLength);
+ 
+ 		pmlmepriv->to_roaming = 1;
+ 	}
+@@ -518,10 +466,7 @@ static int rtw_suspend(struct usb_interface *pusb_intf, pm_message_t message)
+ 		rtw_indicate_disconnect(padapter);
+ 
+ exit:
+-	DBG_88E("<===  %s return %d.............. in %dms\n", __func__
+-		, ret, rtw_get_passing_time_ms(start_time));
+-
+-		return ret;
++	return ret;
+ }
+ 
+ static int rtw_resume(struct usb_interface *pusb_intf)
+@@ -545,8 +490,6 @@ int rtw_resume_process(struct adapter *padapter)
+ 	int ret = -1;
+ 	u32 start_time = jiffies;
+ 
+-	DBG_88E("==> %s (%s:%d)\n", __func__, current->comm, current->pid);
+-
+ 	if (padapter) {
+ 		pnetdev = padapter->pnetdev;
+ 		pwrpriv = &padapter->pwrctrlpriv;
+@@ -559,7 +502,6 @@ int rtw_resume_process(struct adapter *padapter)
+ 	if (pwrpriv)
+ 		pwrpriv->bkeepfwalive = false;
+ 
+-	DBG_88E("bkeepfwalive(%x)\n", pwrpriv->bkeepfwalive);
+ 	if (pm_netdev_open(pnetdev, true) != 0)
+ 		goto exit;
+ 
+@@ -569,7 +511,6 @@ int rtw_resume_process(struct adapter *padapter)
+ 	_exit_pwrlock(&pwrpriv->lock);
+ 
+ 	if (padapter->pid[1] != 0) {
+-		DBG_88E("pid[1]:%d\n", padapter->pid[1]);
+ 		rtw_signal_process(padapter->pid[1], SIGUSR2);
+ 	}
+ 
+@@ -579,9 +520,6 @@ int rtw_resume_process(struct adapter *padapter)
+ exit:
+ 	if (pwrpriv)
+ 		pwrpriv->bInSuspend = false;
+-	DBG_88E("<===  %s return %d.............. in %dms\n", __func__,
+-		ret, rtw_get_passing_time_ms(start_time));
+-
+ 
+ 	return ret;
+ }
+@@ -643,27 +581,21 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
+ 	rtw_hal_read_chip_info(padapter);
+ 
+ 	/* step 5. */
+-	if (rtw_init_drv_sw(padapter) == _FAIL) {
+-		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
+-			 ("Initialize driver software resource Failed!\n"));
++	if (rtw_init_drv_sw(padapter) == _FAIL)
+ 		goto free_hal_data;
+-	}
+ 
+ #ifdef CONFIG_PM
+ 	if (padapter->pwrctrlpriv.bSupportRemoteWakeup) {
+ 		dvobj->pusbdev->do_remote_wakeup = 1;
+ 		pusb_intf->needs_remote_wakeup = 1;
+ 		device_init_wakeup(&pusb_intf->dev, 1);
+-		DBG_88E("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~~~~\n");
+-		DBG_88E("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~[%d]~~~\n",
+-			device_may_wakeup(&pusb_intf->dev));
+ 	}
+ #endif
+ 
+ 	/* 2012-07-11 Move here to prevent the 8723AS-VAU BT auto
+ 	 * suspend influence */
+ 	if (usb_autopm_get_interface(pusb_intf) < 0)
+-			DBG_88E("can't get autopm:\n");
++		goto free_hal_data;
+ 
+ 	/*  alloc dev name after read efuse. */
+ 	rtw_init_netdev_name(pnetdev, padapter->registrypriv.ifname);
+@@ -673,21 +605,10 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
+ 				  padapter->eeprompriv.mac_addr);
+ #endif
+ 	memcpy(pnetdev->dev_addr, padapter->eeprompriv.mac_addr, ETH_ALEN);
+-	DBG_88E("MAC Address from pnetdev->dev_addr =  %pM\n",
+-		pnetdev->dev_addr);
+ 
+ 	/* step 6. Tell the network stack we exist */
+-	if (register_netdev(pnetdev) != 0) {
+-		RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("register_netdev() failed\n"));
++	if (register_netdev(pnetdev) != 0)
+ 		goto free_hal_data;
+-	}
+-
+-	DBG_88E("bDriverStopped:%d, bSurpriseRemoved:%d, bup:%d, hw_init_completed:%d\n"
+-		, padapter->bDriverStopped
+-		, padapter->bSurpriseRemoved
+-		, padapter->bup
+-		, padapter->hw_init_completed
+-	);
+ 
+ 	status = _SUCCESS;
+ 
+@@ -731,8 +652,6 @@ static void rtw_usb_if1_deinit(struct adapter *if1)
+ 	rtw_cancel_all_timer(if1);
+ 
+ 	rtw_dev_unload(if1);
+-	DBG_88E("+r871xu_dev_remove, hw_init_completed=%d\n",
+-		if1->hw_init_completed);
+ 	rtw_handle_dualmac(if1, 0);
+ 	rtw_free_drv_sw(if1);
+ 	if (pnetdev)
+@@ -745,31 +664,20 @@ static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device
+ 	int status;
+ 	struct dvobj_priv *dvobj;
+ 
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_drv_init\n"));
+-
+ 	/* step 0. */
+ 	process_spec_devid(pdid);
+ 
+ 	/* Initialize dvobj_priv */
+ 	dvobj = usb_dvobj_init(pusb_intf);
+-	if (!dvobj) {
+-		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
+-			 ("initialize device object priv Failed!\n"));
++	if (!dvobj)
+ 		goto exit;
+-	}
+ 
+ 	if1 = rtw_usb_if1_init(dvobj, pusb_intf, pdid);
+-	if (!if1) {
+-		DBG_88E("rtw_init_primarystruct adapter Failed!\n");
++	if (!if1)
+ 		goto free_dvobj;
+-	}
+ 
+-	if (ui_pid[1] != 0) {
+-		DBG_88E("ui_pid[1]:%d\n", ui_pid[1]);
++	if (ui_pid[1] != 0)
+ 		rtw_signal_process(ui_pid[1], SIGUSR2);
+-	}
+-
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-871x_drv - drv_init, success!\n"));
+ 
+ 	status = _SUCCESS;
+ 
+@@ -791,9 +699,6 @@ static void rtw_dev_remove(struct usb_interface *pusb_intf)
+ 	struct dvobj_priv *dvobj = usb_get_intfdata(pusb_intf);
+ 	struct adapter *padapter = dvobj->if1;
+ 
+-	DBG_88E("+rtw_dev_remove\n");
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+dev_remove()\n"));
+-
+ 	if (usb_drv->drv_registered)
+ 		padapter->bSurpriseRemoved = true;
+ 
+@@ -805,19 +710,10 @@ static void rtw_dev_remove(struct usb_interface *pusb_intf)
+ 	rtw_usb_if1_deinit(padapter);
+ 
+ 	usb_dvobj_deinit(pusb_intf);
+-
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-dev_remove()\n"));
+-	DBG_88E("-r871xu_dev_remove, done\n");
+-
+-	return;
+ }
+ 
+ static int __init rtw_drv_entry(void)
+ {
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_drv_entry\n"));
+-
+-	DBG_88E(DRV_NAME " driver version=%s\n", DRIVERVERSION);
+-
+ 	rtw_suspend_lock_init();
+ 
+ 	_rtw_mutex_init(&usb_drv->hw_init_mutex);
+@@ -828,16 +724,12 @@ static int __init rtw_drv_entry(void)
+ 
+ static void __exit rtw_drv_halt(void)
+ {
+-	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_drv_halt\n"));
+-	DBG_88E("+rtw_drv_halt\n");
+-
+ 	rtw_suspend_lock_uninit();
+ 
+ 	usb_drv->drv_registered = false;
+ 	usb_deregister(&usb_drv->usbdrv);
+ 
+ 	_rtw_mutex_free(&usb_drv->hw_init_mutex);
+-	DBG_88E("-rtw_drv_halt\n");
+ }
+ 
+ module_init(rtw_drv_entry);
+-- 
+2.20.1
 
-I advised few times this pattern in case of DSI hosts, apparently I 
-didn't notice the similar issue can appear in case of bridges. Or there 
-is something I have missed???
-
-Anyway there are already eleven(?) bridge drivers using this pattern. I 
-wonder if fixing it would be difficult, or if it expose other issues???
-The patches should be quite straightforward - move 
-of_find_mipi_dsi_host_by_node and mipi_dsi_device_register_full to probe 
-time.
-
-Finally I think that if we will not fix these bridge drivers we will 
-encounter another set of issues with new platforms connecting "DSI host 
-drivers assuming this pattern" and "i2c/dsi device drivers assuming 
-pattern already present in the bridges".
-
-Regards
-Andrzej
