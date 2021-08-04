@@ -2,93 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332CB3E08BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BD33E08C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240696AbhHDTZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 15:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239149AbhHDTZb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 15:25:31 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F8AC0613D5;
-        Wed,  4 Aug 2021 12:25:18 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id dw2-20020a17090b0942b0290177cb475142so10277996pjb.2;
-        Wed, 04 Aug 2021 12:25:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=8tScWghgvJJh7qP0I7QtmtkqfDVG51M4clJmbqjqTgQ=;
-        b=ZnWDBhWD++BadgftH7K1nhIu2/kbIlPAPqdk+KB6rfYR5zfxlulCtK7SEiI4yDjNZ/
-         hbn9YQKl9HZgkfFJ8VbfAUJgDBB6IhSMmEetQSpJeL5L1dMQ6b2+AwGtM/M0CRaAnV4T
-         AGh9x8Ar6SXDGXB63J10IWsQqid+kJlau/jM02Qq0Cs8XuPr//0ebtyvHr8uK5mWPMn3
-         s32HWGi8uC/baMql3bTwSBk/SQc5C8f4DvjP9NoM1HNnE6XOb5edhNOhUiBFcpX377Ep
-         dTbmOvsA0jA5hCcWcYUrTwY/ScM98xdw+oO8nbnMz0YEulseqrDXVwsV3S/XZ4V5g6Pt
-         0XuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=8tScWghgvJJh7qP0I7QtmtkqfDVG51M4clJmbqjqTgQ=;
-        b=dZoMfL6RzmNmxMp8sVWDzJU4hWgTjwdh5Ux4i5vyUpn8n9/ZGrKqvCuQ5gl4zPgwmE
-         gIVTBI0kEWWA5FUSHIrGiWTv1BRDRQD1FotzEpDCFLtkH9jchPZNr/2iP5ccI9I9/bPW
-         us4vDof3iUrf0aU3ri3I2/ahn3QZTlD9ff3OM/mxJYgfMXOrpoJidoNxcoF2MtknYcLu
-         AJkDbwqfkS8FAB621K3GJ4IjURddokoxDtU4FbS6OUD206xDJUaDLDwA/yRwTDftbEVk
-         gv1ueNTpL2WbGXn6HnDOSMlVAOBNgJeT1YOnMFyVmJOjkpX4E+qUBYXr/YDiJaabc3w5
-         p9Bg==
-X-Gm-Message-State: AOAM5318yJ70zuhXLeJaYuxjHR9dP9LvcMcDEOcsJFy/y+SvArFzL2lS
-        r0jMsZ8fO3Aum0u75z/kpEw=
-X-Google-Smtp-Source: ABdhPJx0gs2g+l3cKaYQROekq31B6IDUQtjH2jtMxXo5ZNNWny99f2By5M16OcZlWUQd6Tpg68QEVw==
-X-Received: by 2002:a62:54c5:0:b029:3a9:d3d9:4fe8 with SMTP id i188-20020a6254c50000b02903a9d3d94fe8mr1252177pfb.36.1628105118275;
-        Wed, 04 Aug 2021 12:25:18 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:2003:b021:6001:8ce1:3e29:705e])
-        by smtp.gmail.com with ESMTPSA id e4sm1071027pgt.22.2021.08.04.12.25.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Aug 2021 12:25:18 -0700 (PDT)
-From:   Raag Jadav <raagjadav@gmail.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Raag Jadav <raagjadav@gmail.com>
-Subject: [PATCH v2 2/2] dt-bindings: at24: add ON Semi CAT24C04 and CAT24C05
-Date:   Thu,  5 Aug 2021 00:54:46 +0530
-Message-Id: <1628105086-8172-3-git-send-email-raagjadav@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628105086-8172-1-git-send-email-raagjadav@gmail.com>
-References: <1628105086-8172-1-git-send-email-raagjadav@gmail.com>
+        id S240680AbhHDT1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 15:27:40 -0400
+Received: from mga01.intel.com ([192.55.52.88]:42490 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237768AbhHDT1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 15:27:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="235953155"
+X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
+   d="scan'208";a="235953155"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 12:27:22 -0700
+X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
+   d="scan'208";a="671072064"
+Received: from cmalmber-mobl1.amr.corp.intel.com (HELO [10.212.219.120]) ([10.212.219.120])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 12:27:18 -0700
+Subject: Re: [PATCH V2 03/14] x86/set_memory: Add x86_set_memory_enc static
+ call support
+To:     Tianyu Lan <ltykernel@gmail.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        Tianyu.Lan@microsoft.com, rppt@kernel.org,
+        kirill.shutemov@linux.intel.com, akpm@linux-foundation.org,
+        brijesh.singh@amd.com, thomas.lendacky@amd.com, pgonda@google.com,
+        david@redhat.com, krish.sadhukhan@oracle.com, saravanand@fb.com,
+        aneesh.kumar@linux.ibm.com, xen-devel@lists.xenproject.org,
+        martin.b.radev@gmail.com, ardb@kernel.org, rientjes@google.com,
+        tj@kernel.org, keescook@chromium.org,
+        michael.h.kelley@microsoft.com
+Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com
+References: <20210804184513.512888-1-ltykernel@gmail.com>
+ <20210804184513.512888-4-ltykernel@gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5823af8a-7dbb-dbb0-5ea2-d9846aa2a36a@intel.com>
+Date:   Wed, 4 Aug 2021 12:27:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210804184513.512888-4-ltykernel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings for ON Semi CAT24C04 and CAT24C05 eeproms,
-which are compatible with Atmel AT24C04.
+On 8/4/21 11:44 AM, Tianyu Lan wrote:
+> +static int default_set_memory_enc(unsigned long addr, int numpages, bool enc);
+> +DEFINE_STATIC_CALL(x86_set_memory_enc, default_set_memory_enc);
+> +
+>  #define CPA_FLUSHTLB 1
+>  #define CPA_ARRAY 2
+>  #define CPA_PAGES_ARRAY 4
+> @@ -1981,6 +1985,11 @@ int set_memory_global(unsigned long addr, int numpages)
+>  }
+>  
+>  static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+> +{
+> +	return static_call(x86_set_memory_enc)(addr, numpages, enc);
+> +}
+> +
+> +static int default_set_memory_enc(unsigned long addr, int numpages, bool enc)
+>  {
+>  	struct cpa_data cpa;
+>  	int ret;
 
-Signed-off-by: Raag Jadav <raagjadav@gmail.com>
----
- Documentation/devicetree/bindings/eeprom/at24.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+It doesn't make a lot of difference to add this infrastructure and then
+ignore it for the existing in-tree user:
 
-diff --git a/Documentation/devicetree/bindings/eeprom/at24.yaml b/Documentation/devicetree/bindings/eeprom/at24.yaml
-index 914a423..4c5396a 100644
---- a/Documentation/devicetree/bindings/eeprom/at24.yaml
-+++ b/Documentation/devicetree/bindings/eeprom/at24.yaml
-@@ -98,6 +98,12 @@ properties:
-           - const: nxp,se97b
-           - const: atmel,24c02
-       - items:
-+          - const: onnn,cat24c04
-+          - const: atmel,24c04
-+      - items:
-+          - const: onnn,cat24c05
-+          - const: atmel,24c04
-+      - items:
-           - const: renesas,r1ex24002
-           - const: atmel,24c02
-       - items:
--- 
-2.7.4
+> static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+> {
+>         struct cpa_data cpa;
+>         int ret;
+> 
+>         /* Nothing to do if memory encryption is not active */
+>         if (!mem_encrypt_active())
+>                 return 0;
+
+Shouldn't the default be to just "return 0"?  Then on
+mem_encrypt_active() systems, do the bulk of what is in
+__set_memory_enc_dec() today.
 
