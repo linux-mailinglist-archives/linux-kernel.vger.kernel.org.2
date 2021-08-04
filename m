@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C333E0247
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A30F3E0261
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238121AbhHDNrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238139AbhHDNrg (ORCPT
+        id S238212AbhHDNtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:49:47 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16044 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238497AbhHDNth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:47:36 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C03C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 06:47:22 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id v8-20020a0568301bc8b02904d5b4e5ca3aso1634813ota.13
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 06:47:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+AoFXgsKTP3ruB8NfNUz2FtlRkR+ZhDok1NEQZlDiiA=;
-        b=RT/1HuaVluljWGOZGTF1ZYEw5QbLs+weqdbJrRWNabvzA9da8wWUZ4iIYOQhz4hwaW
-         M11z0HsoUiMCmh8FRm/C/nd8JhZKSPNm7opsrWKSOez5saNiCO39/ujbxXhSaSTdUVQr
-         lv6lAbG4EPz7swc1Hgd8Gvgoi1mXCQL6bntcmlWKpWXUo1i9MSg0K/FDqNau7Y4olnPj
-         Y94ear22tULX+Ty4AjSiBjAV8gYfY8VDnIbHE0fQv0mWWwP5bVDCY3Dcd8yXYiVQDAaW
-         +pCdZua0z3uD9957A4LB8WQGIrJmfEn4YtQvE3h+XxADlulJQmKS4hBxFn85/gpk6Z+1
-         Abfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+AoFXgsKTP3ruB8NfNUz2FtlRkR+ZhDok1NEQZlDiiA=;
-        b=nAzoq4oVcdixFMiAIBDC1ri58eVgeya8FfHOYCNHMcPhNAXjNfIgRd2F/9kpmvV4le
-         FNr6aRqzfp7KWltdQ7LvoVUQW+GrUFPS/ptRg8ZDNpYZmHXMpWgnhZ5vers6kX7xmBqZ
-         7TA8aOGaaiaYgbqtiOA/4I0rf2UuFZe/UYuhnmF+Rx3CHEz2dEitS+F2yIopyFY9KtqK
-         5GFb/GKqN1zX3q5zjscmtk8x0vcYTSVi90VDiaNSgzxnM6CNa/2XcPlbmpZsGbB1CULI
-         AvRjui0bjAzs/4ag/dLVr0v0zK7dZdgz2N7MweOyoexRU4fYC1cMANoSud5ADza7KFyj
-         ljAA==
-X-Gm-Message-State: AOAM532/SKQh1JINoVwyuZNK4upCkjZD7EIe7h9/gGjVTeZ0nCbVL5h+
-        uPriReAq5G1HGkbp9HQqyGqpOCmmIzg=
-X-Google-Smtp-Source: ABdhPJzzTI1WmHb/8kQMI+idfHOuCXtawVTq+2pv3ONB0t0RWqCtiNEaBZqjwP9k9RkHJy3ymHtNtA==
-X-Received: by 2002:a9d:5c14:: with SMTP id o20mr789862otk.36.1628084841782;
-        Wed, 04 Aug 2021 06:47:21 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
-        by smtp.gmail.com with ESMTPSA id t27sm447990oij.34.2021.08.04.06.47.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 06:47:21 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: [PATCH 1/6] staging: r8188eu: Remove wrappers for kalloc() and
- kzalloc()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     gregkh@linuxfoundation.org, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210802151546.31797-1-Larry.Finger@lwfinger.net>
- <20210802151546.31797-2-Larry.Finger@lwfinger.net>
- <20210804131550.GL1931@kadam>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <3fd8841a-ff5a-154a-666c-66e9a773dfac@lwfinger.net>
-Date:   Wed, 4 Aug 2021 08:47:19 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 4 Aug 2021 09:49:37 -0400
+Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GftL54WjczZwkN;
+        Wed,  4 Aug 2021 21:45:49 +0800 (CST)
+Received: from huawei.com (10.175.104.82) by dggeme766-chm.china.huawei.com
+ (10.3.19.112) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 4 Aug
+ 2021 21:49:22 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <jhansen@vmware.com>, <vdasa@vmware.com>, <arnd@arndb.de>,
+        <gregkh@linuxfoundation.org>, <dtor@vmware.com>,
+        <georgezhang@vmware.com>, <acking@vmware.com>
+CC:     <pv-drivers@vmware.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] VMCI: fix NULL pointer dereference when unmapping queue pair
+Date:   Wed, 4 Aug 2021 21:48:53 +0800
+Message-ID: <20210804134853.3175473-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210804131550.GL1931@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme766-chm.china.huawei.com (10.3.19.112)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/21 8:15 AM, Dan Carpenter wrote:
-> On Mon, Aug 02, 2021 at 10:15:41AM -0500, Larry Finger wrote:
->> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c.rej b/drivers/staging/r8188eu/core/rtw_br_ext.c.rej
->> new file mode 100644
->> index 000000000000..18113389acce
->> --- /dev/null
->> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c.rej
->        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> ;)  Something went wrong.
+I got a NULL pointer dereference report when doing fuzz test:
 
-I submitted v2 with this problem fixed. Sorry for the confusion.
+Call Trace:
+  qp_release_pages+0xae/0x130
+  qp_host_unregister_user_memory.isra.25+0x2d/0x80
+  vmci_qp_broker_unmap+0x191/0x320
+  ? vmci_host_do_alloc_queuepair.isra.9+0x1c0/0x1c0
+  vmci_host_unlocked_ioctl+0x59f/0xd50
+  ? do_vfs_ioctl+0x14b/0xa10
+  ? tomoyo_file_ioctl+0x28/0x30
+  ? vmci_host_do_alloc_queuepair.isra.9+0x1c0/0x1c0
+  __x64_sys_ioctl+0xea/0x120
+  do_syscall_64+0x34/0xb0
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Larry
+When a queue pair is created by the following call, it will not
+register the user memory if the page_store is NULL, and the
+entry->state will be set to VMCIQPB_CREATED_NO_MEM.
 
+vmci_host_unlocked_ioctl
+  vmci_host_do_alloc_queuepair
+    vmci_qp_broker_alloc
+      qp_broker_alloc
+        qp_broker_create // set entry->state = VMCIQPB_CREATED_NO_MEM;
+
+When unmapping this queue pair, qp_host_unregister_user_memory() will
+be called to unregister the non-existent user memory, which will
+result in a null pointer reference. It will also change
+VMCIQPB_CREATED_NO_MEM to VMCIQPB_CREATED_MEM, which should not be
+present in this operation.
+
+If the qp broker has mem, there no need to register or unregister
+the user memory when mapping or unmapping the qp broker.
+
+Fixes: 06164d2b72aa ("VMCI: queue pairs implementation.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ drivers/misc/vmw_vmci/vmci_queue_pair.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+index 880c33ab9f47..0c6fb4c0d5ac 100644
+--- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
++++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+@@ -2243,7 +2243,8 @@ int vmci_qp_broker_map(struct vmci_handle handle,
+ 
+ 	result = VMCI_SUCCESS;
+ 
+-	if (context_id != VMCI_HOST_CONTEXT_ID) {
++	if (context_id != VMCI_HOST_CONTEXT_ID &&
++	    QPBROKERSTATE_HAS_MEM(entry)) {
+ 		struct vmci_qp_page_store page_store;
+ 
+ 		page_store.pages = guest_mem;
+@@ -2350,7 +2351,8 @@ int vmci_qp_broker_unmap(struct vmci_handle handle,
+ 		goto out;
+ 	}
+ 
+-	if (context_id != VMCI_HOST_CONTEXT_ID) {
++	if (context_id != VMCI_HOST_CONTEXT_ID &&
++	    QPBROKERSTATE_HAS_MEM(entry)) {
+ 		qp_acquire_queue_mutex(entry->produce_q);
+ 		result = qp_save_headers(entry);
+ 		if (result < VMCI_SUCCESS)
+-- 
+2.17.1
 
