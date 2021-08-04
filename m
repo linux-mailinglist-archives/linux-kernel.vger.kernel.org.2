@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13ED03E0286
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604383E028C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238522AbhHDNzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:55:48 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:55959 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238511AbhHDNzk (ORCPT
+        id S238094AbhHDN7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230325AbhHDN7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:55:40 -0400
-Received: from mail-wm1-f53.google.com ([209.85.128.53]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MxmBc-1n4jGi12SM-00zFI1; Wed, 04 Aug 2021 15:55:26 +0200
-Received: by mail-wm1-f53.google.com with SMTP id d131-20020a1c1d890000b02902516717f562so1516857wmd.3;
-        Wed, 04 Aug 2021 06:55:26 -0700 (PDT)
-X-Gm-Message-State: AOAM5303ILmV8BKgi/SZR040uPX1afQSYRfNM2WqhFLZ/NkHbLFnuELr
-        1P0XtHM4pY7gVDLK214FKC+eme/6d3jk+VDGbUM=
-X-Google-Smtp-Source: ABdhPJwDFsHBF22f8Wqozeaut6UIlHtczJbkX0G3MU6rJlQNmQa5Uqm62X/H+k4KrenEDbOxO68Jg/vZ6B5uO0dsHAk=
-X-Received: by 2002:a1c:208e:: with SMTP id g136mr9939159wmg.142.1628085325875;
- Wed, 04 Aug 2021 06:55:25 -0700 (PDT)
+        Wed, 4 Aug 2021 09:59:38 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74DBC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 06:59:25 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id k4so2416367wrc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 06:59:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C8AVWyR2/nU5NIf312f2J5aD2AcP4YWEdaMMUYDNvZQ=;
+        b=0DzaXrDnbqZ/EIwUGa4zxn1I2cVvf1w4L1g2rlLfhCHtVWcASETR7t4UQiJyhQh0Op
+         WT18dAxniDN002X7En7j36OymTUdH51EVypI9Hz4R/g9LXiMA3XdqeXH4M78qOsNvaRU
+         3l3xGfuCIoYbdVclBsxsBB7/D5iE/X9HtYSScjTbqGzGr1PCsh8SwFXIplu1NQ6nEtAK
+         nEZkgmxIeUOEcLlcbcbqjuLKdUwcxtl2BEOab1Du4NneowbFUG4hp3BNqwtnNH1+HLpH
+         rt+gZbbRYRF1eh95SQN11MfZ/3lah3jAUIvdsEgsAUN2yrTHk0laNlihVS2pRxVfg/eq
+         wgSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C8AVWyR2/nU5NIf312f2J5aD2AcP4YWEdaMMUYDNvZQ=;
+        b=AsXkinnr3wD+wmmJSrj8fakqyVMB5USVgy3yazao1XfY690PjfkPd5qAd/d9Wr3sBZ
+         gkdu0YvKPK4bh+MJz4oN5YLu703/atEYNx0vMwFttalhxWXS2XI9OiN4NLpxZBdPpCPj
+         +AIz1k6raS7YoHlhBh1u5UD4m4NG3v5MyPWqFa+U5TUeUVO7uzIWHa593t4eBVbTUdHS
+         TEp+RrKOoAAlSqXBXipzVMvBZDdDAczHL48NH4QqDHHWUHSfCYvThgMA4QdwvqSYTIHL
+         luGYuXWu1hPGwdTGsf9jTunjsiXWtzCWKZl0pnhao6ZUPmoatHHAnfss5RPH0DpQbMjo
+         4IYQ==
+X-Gm-Message-State: AOAM533FcZ5z7HYNZ648lsa8RycwCiku5P9KHFiF7wfbY7+ss8kgadQW
+        iVRZQA31tdyTf234WrWhB5acGg==
+X-Google-Smtp-Source: ABdhPJwhH+IrL5qDPqg0/PiBZf7SiY9LChCd5dJcrcOKywNuI+ir6xENLzMaG2fRYlW5Ab67k9FwWw==
+X-Received: by 2002:a5d:63cf:: with SMTP id c15mr28949764wrw.230.1628085564164;
+        Wed, 04 Aug 2021 06:59:24 -0700 (PDT)
+Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
+        by smtp.gmail.com with ESMTPSA id g16sm3071637wro.63.2021.08.04.06.59.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 06:59:23 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [GIT PULL] gpio: fixes for v5.14-rc5
+Date:   Wed,  4 Aug 2021 15:59:22 +0200
+Message-Id: <20210804135922.13050-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210804043439.11757-1-o.rempel@pengutronix.de>
-In-Reply-To: <20210804043439.11757-1-o.rempel@pengutronix.de>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 4 Aug 2021 15:55:10 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0285V=N5HPS5grOTQ+q1HF8J6_PsxCLgLvYMsD0hVeUg@mail.gmail.com>
-Message-ID: <CAK8P3a0285V=N5HPS5grOTQ+q1HF8J6_PsxCLgLvYMsD0hVeUg@mail.gmail.com>
-Subject: Re: [PATCH v34 0/3] Mainline imx6 based SKOV boards
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Olof Johansson <olof@lixom.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, SoC Team <soc@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Sam Ravnborg <sam@ravnborg.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:XCcqNK5JlckTjb+hLwBfXaYnPANPzABvZEDtzdK+Nq1duykj8Yl
- JpgV7CdAM614Pw4RFFYrxrtUonHIUVwjZUNlE8kdmuRKXbcL2y/+gFq3YJHPo6OQPOV1iQD
- qDEf26kgaXd7r435Y8V2DZfXNxUPo/hAjR+lAYyZgKJtKGGTody5+s+TYEurVC9heTzv4bM
- mN7n8kESsJ6MOCvpd8Fhg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RKqE8Qi0Uk8=:kcPh2urtWp7BEfU81ZdsZ0
- R/vM2+n3ukG/dErbrTno828CmJTfvEDlyvvDrO7Z1E8DYxScNA8ORZ7oBA/PWRQRmBtsnI9O0
- OQCdD153bGLdOZ69R6fqemmddAFd9Iag9Govsft0O07Ba/9p3PryZNsHqnnV+WDa5A8h5Qyez
- S4Wl6oIojW+jRlWpunzlsBegb4m1zdj26SIdbJ6Mo60dU/4y4IfImBZ4HZ3uXrdJ9i5+7i6fc
- eAnnUWRYSNlfWDm4S8fxkVRiquA0GY4PqQuCK6Hh463R1BXSiOBqVIfwpb4U2EMI/5NGvmwEE
- EwZqkRqDYIUCfYf57egRm9DDSutREP/+L6FGo0YW9kgTgSzuqDFQtY0aT3HnQ7z+sz6JI02HF
- 2bWDVYD6vKbwZfg7l+Om+l3luKNdfO421juGUuq7C/kyf1X6NwUsvdNbzs1Sou+2Cj3pV1+UG
- en3dmSg4dLuG9Enw8dDOqbkdfPQULW3NRtnghDsfGSRT1ixO6qh1yo1OChX0G8Gfyv2fUoii7
- V2b74ZpvHPTScdj6h8Yvf/5KNzxhKep7HNgJmahvXbvzE1VA/k6FAI/VxX3avGEXRx31vmoxx
- f6Hv9T99bzGONqPUpBbjm1FDFToZ0Bk6FqFfIzyF7om/EhlW6dkU4a96nyiMTQq0FRZfa21lZ
- ap+TM9z52R6U/rJ9q24qUNlZOBuWmjU8hmH9/9UtdV/+T/UuHagyqUiIHp8ckaHYZC9hWD9gc
- l+x9xpdUi1YtVEf/kGK4Q7B7YeIgJmfNo94SrAdqrbA7Tu7Rj2oeacecYDPJujsALEdPyvTqZ
- hm/0jmuPg6owEKNjx8x+/sExHuFd9UFFnfUeG06XIt29p+WjhfjUehcg6mgkRmBuz0ucQwmOr
- Ban567U62oYSTHVZLqdycSmT9ukyQjcP7egUHP65WKciGS6Spr2W4xjJNcD8J3kbgc3/vrVWS
- R2lrXn2Ay87RVFaHijfbOtpnLghtuGyzOYSmvHIkNrjtjZ3haSYip
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 6:36 AM Oleksij Rempel <o.rempel@pengutronix.de> wrote:
->
-> changes v4:
-> - add vref-supply to adc@0
-> - split gpio assignment for the mdio node
+Linus,
 
-Hi Oleksij,
+Please pull the following GPIO fixes for the next rc.
 
-I've dropped the series from the soc patchwork, since this looks like
-something that
-should go through the i.MX tree. Please make it clear from the cover
-letter and from
-the 'to' list what you want to happen with the patches, and who should take care
-of them.
+Thanks!
+Bartosz
 
-Any patches that are meant for platform maintainers should not get sent to
-soc@kernel.org. If you think you need me to review the patches, you can
-send them cc my personal address.
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-      Arnd
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.14-rc5
+
+for you to fetch changes up to 9b87f43537acfa24b95c236beba0f45901356eb2:
+
+  gpio: tqmx86: really make IRQ optional (2021-08-02 17:17:27 +0200)
+
+----------------------------------------------------------------
+gpio fixes for v5.14-rc5
+
+- revert a patch intruducing breakage in interrupt handling in gpio-mpc8xxx
+- correctly handle missing IRQs in gpio-tqmx86 by really making them optional
+
+----------------------------------------------------------------
+Matthias Schiffer (1):
+      gpio: tqmx86: really make IRQ optional
+
+Rasmus Villemoes (1):
+      Revert "gpio: mpc8xxx: change the gpio interrupt flags."
+
+ drivers/gpio/gpio-mpc8xxx.c | 2 +-
+ drivers/gpio/gpio-tqmx86.c  | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
