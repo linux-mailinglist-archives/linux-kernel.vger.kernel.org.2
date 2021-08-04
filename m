@@ -2,233 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B572E3E0A21
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01FD33E0A24
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234336AbhHDVsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42570 "EHLO
+        id S234613AbhHDVse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234313AbhHDVsO (ORCPT
+        with ESMTP id S229911AbhHDVsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:48:14 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C16C061798
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:48:01 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id z128so5891473ybc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:48:01 -0700 (PDT)
+        Wed, 4 Aug 2021 17:48:32 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905E7C061798
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:48:19 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id e5so4240873ljp.6
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:48:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KRoLUTCoSR0bH9PoFJhlJID9z3ogqrNBELOHgMdcgZI=;
-        b=Tm8u/fBt2jfvpCHpu9LdTriauh41G7MbJ/k7/1kIxQJdpa0yL5ppkHMPaney174HJd
-         F6BZJC1Vsr/w7a7elTuygtEl5Za6qZXAeUwWCleO++VdpvXuAyb7fABAnQ50RViJA+Rk
-         dcae/D+aSZvnrw/jEB/+s+7RcLa0fEu8ezV0O+bFyQCJkEDQX/RzBXux6m6GBamCdgHw
-         cQRCd2tdHpEiCCIsOvV7DoZpQvCzcwI9UiQkNOuioJR+ekL4lwsLvmJUUNieqvjYv9Iv
-         EifQp/eG9NxFAeUFAlt+Jp4ORTFA89cWUoh4p2ndaj1SuptzLudhkG77S/1fT4e3tM2q
-         XDIw==
+         :cc;
+        bh=p61PC16bUuso/Amoh3NYJjFdJNg2Vvrhz9NsPLJI2kI=;
+        b=rvH4kgg0GfGFnEqKfX34PZtd4ehblaAK7jJ9hyMOOGjVH+azWRtio4V2hO76ltXawm
+         I0l+U5lkfhILEgFrFhOdJTeWg0PQTfkwCjIapcPmvhX7ztYsdP73TtGkdGjd8oxtDa3z
+         7AXLy8EEvJyiJYDX5NA8ik/RnHMGGKMh+5qV7rzmdz1DQncFm+SdXJTPs46Aj66RFWYv
+         rnDHtR7lWptKqcCbkeEiPh7DbVVOrNlL0bGh45HkONt82MA8ndGc2tlEcpXEGKEuiUr6
+         ud42MPgiwPzmCXvss7OVmDfvE3zkTgQAX+hn0I5kTHVP2WxXNw4a4KPDc/fn9G+C/rEh
+         OUaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KRoLUTCoSR0bH9PoFJhlJID9z3ogqrNBELOHgMdcgZI=;
-        b=ETnEILjAhDUa6ZPNyoHm/ICQfJj6687SKc8tFLDMlcxhG5BYIev7+Wi+H9ky9B130K
-         OljK1wagj4e3BuLTV9D28AEIAFvW6spejUfh4NH22n/Zf+6fNjbnHCYMIVr32q9S1eAz
-         r39GgtTJWMxT7diR/jejrj71eKvQnSnSvE6whU/ot/HEAzYINKPHt4cucsMGZYRCxarN
-         iacQEByoNu9lya0h2Dhwjl0WUMXgDfTJnwNv6vJRA95oq6M7F4JAgygkvu+QGw3evIp+
-         vp6H8YZeRGVtxvGu7nI0Fk7pR/1sOWMNm+dcstDt4u9LDwknzEjFS2fBMrihpnv9DJx7
-         Bmzw==
-X-Gm-Message-State: AOAM533yM0waTYS7Qj2EHSuZQg2fpCzU5VpO/8jysS/HLygAko4DME3w
-        /buIPH8wyeM0TAgyPN3+8o1aft5ilvqcj4jtcFpfRQ==
-X-Google-Smtp-Source: ABdhPJyISe+k/AN2pZLmSpbnlxpKTFVJtkTu7zHA3NBj4rQd64Knpc3lIPzo5Kq7m4F3BIdTEkaeICAMhnx91j5z/EU=
-X-Received: by 2002:a25:81ce:: with SMTP id n14mr2063907ybm.32.1628113680544;
- Wed, 04 Aug 2021 14:48:00 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=p61PC16bUuso/Amoh3NYJjFdJNg2Vvrhz9NsPLJI2kI=;
+        b=mpPSxFxH5UdrZwuLMkrZiwkUfcPZT5moXNkdk/7xt6tdk5D0Hxz+SV0KkIm5ysvl7g
+         rRsBZ6Lt0lvKXEdjx/A1ULmnx7Mc2ACLWzY06nrHJwAgFuXOyJijursHvANlmHx74n5B
+         K1TaT2k1q8qZFkzme67En39j6h7lHTq38aWLQUQFlIP3NIQk9yYxG9nPZdjigfnO3tfn
+         AuvcXcpUV3mSALOP1vrFKCzWwooJWs1AS6FkkW6CcBhx0W2Kp+k11f4RZektA5xGpXr3
+         jryDStkMubX3F0+1i2AZ8SdgmKWLYfVV8vesb5Otyd7cfMlHuPxgh1r2zQb4oKNw0RPk
+         Woyw==
+X-Gm-Message-State: AOAM533qe2yuYWaFUMmc9EyYZzJRcNzPls1/JtbFXnvM5wHnL5MU7lsc
+        54sugZgOBF5QkaJam7wpFGvUQaXjq0I3Jb43em6QUw==
+X-Google-Smtp-Source: ABdhPJwGgHKbETvILP+pVn9YEjSNQhACoXNI8lG+ruWmThNwylH3Op3qp1odulRPt5jvlWyOgQyUV9eqUIcRkkoQkZs=
+X-Received: by 2002:a2e:95cc:: with SMTP id y12mr859265ljh.387.1628113697696;
+ Wed, 04 Aug 2021 14:48:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201020072532.949137-1-narmstrong@baylibre.com>
- <20201020072532.949137-2-narmstrong@baylibre.com> <7hsga8kb8z.fsf@baylibre.com>
- <CAF2Aj3g6c8FEZb3e1by6sd8LpKLaeN5hsKrrQkZUvh8hosiW9A@mail.gmail.com>
- <87r1hwwier.wl-maz@kernel.org> <7h7diwgjup.fsf@baylibre.com>
- <87im0m277h.wl-maz@kernel.org> <CAGETcx9OukoWM_qprMse9aXdzCE=GFUgFEkfhhNjg44YYsOQLw@mail.gmail.com>
- <87sfzpwq4f.wl-maz@kernel.org> <CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com>
-In-Reply-To: <CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 4 Aug 2021 14:47:24 -0700
-Message-ID: <CAGETcx8bpWQEnkpJ0YW9GqX8WE0ewT45zqkbWWdZ0ktJBhG4yQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build as
- a module
-To:     Marc Zyngier <maz@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-Cc:     Kevin Hilman <khilman@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
+References: <20210801200617.623745-4-posk@google.com> <605a9d20-8fe4-ec9a-97b4-bc6db38da62f@uwaterloo.ca>
+In-Reply-To: <605a9d20-8fe4-ec9a-97b4-bc6db38da62f@uwaterloo.ca>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Wed, 4 Aug 2021 14:48:06 -0700
+Message-ID: <CAPNVh5fjcJHKJOuQP+UebpYf+GBMDkj5me1c=EzS9cpDSTbzfA@mail.gmail.com>
+Subject: Re: [PATCH 3/4 v0.4] sched/umcg: add Documentation/userspace-api/umcg.rst
+To:     Thierry Delisle <tdelisle@uwaterloo.ca>
+Cc:     posk@posk.io, avagin@google.com, bsegall@google.com,
+        jannh@google.com, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        peterz@infradead.org, pjt@google.com, tglx@linutronix.de,
+        Peter Buhr <pabuhr@uwaterloo.ca>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 11:20 AM Saravana Kannan <saravanak@google.com> wrot=
-e:
+On Wed, Aug 4, 2021 at 12:13 PM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
 >
-> On Wed, Aug 4, 2021 at 1:50 AM Marc Zyngier <maz@kernel.org> wrote:
-> >
-> > On Wed, 04 Aug 2021 02:36:45 +0100,
-> > Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > Hi Saravana,
-> >
-> > Thanks for looking into this.
+> These state transition descriptions are very helpful, but what is not
+> clear is the details of these transitions when there are concurrent
+> wake/waits. I do not know enough about the kernel code to be able to
+> read the implementation and answer my own questions.
 >
-> You are welcome. I just don't want people to think fw_devlink is broken :=
-)
->
-> >
-> > [...]
-> >
-> > > > Saravana, could you please have a look from a fw_devlink perspectiv=
-e?
-> > >
-> > > Sigh... I spent several hours looking at this and wrote up an analysi=
-s
-> > > and then realized I might be looking at the wrong DT files.
-> > >
-> > > Marc, can you point me to the board file in upstream that corresponds
-> > > to the platform in which you see this issue? I'm not asking for [1],
-> > > but the actual final .dts (not .dtsi) file that corresponds to the
-> > > platform/board/system.
-> >
-> > The platform I can reproduce this on is described in
-> > arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts. It is an
-> > intricate maze of inclusion, node merge and other DT subtleties. I
-> > suggest you look at the decompiled version to get a view of the
-> > result.
->
-> Thanks. After decompiling it, it looks something like (stripped a
-> bunch of reg and address properties and added the labels back):
->
-> eth_phy: mdio-multiplexer@4c000 {
->         compatible =3D "amlogic,g12a-mdio-mux";
->         clocks =3D <0x02 0x13 0x1e 0x02 0xb1>;
->         clock-names =3D "pclk\0clkin0\0clkin1";
->         mdio-parent-bus =3D <0x22>;
->
->         ext_mdio: mdio@0 {
->                 reg =3D <0x00>;
->
->                 ethernet-phy@0 {
->                         max-speed =3D <0x3e8>;
->                         interrupt-parent =3D <0x23>;
->                         interrupts =3D <0x1a 0x08>;
->                         phandle =3D <0x16>;
->                 };
->         };
->
->         int_mdio: mdio@1 {
->                 ...
->         }
-> }
->
-> And phandle 0x23 refers to the gpio_intc interrupt controller with the
-> modular driver.
->
-> > > Based on your error messages, it's failing for mdio@0 which
-> > > corresponds to ext_mdio. But none of the board dts files in upstream
-> > > have a compatible property for "ext_mdio". Which means fw_devlink
-> > > _should_ propagate the gpio_intc IRQ dependency all the way up to
-> > > eth_phy.
-> > >
-> > > Also, in the failing case, can you run:
-> > > ls -ld supplier:*
-> > >
-> > > in the /sys/devices/....<something>/ folder that corresponds to the
-> > > "eth_phy: mdio-multiplexer@4c000" DT node and tell me what it shows?
-> >
-> > Here you go:
-> >
-> > root@tiger-roach:~# find /sys/devices/ -name 'supplier*'|grep -i mdio |=
- xargs ls -ld
-> > lrwxrwxrwx 1 root root 0 Aug  4 09:47 /sys/devices/platform/soc/ff60000=
-0.bus/ff64c000.mdio-multiplexer/supplier:platform:ff63c000.system-controlle=
-r:clock-controller -> ../../../../virtual/devlink/platform:ff63c000.system-=
-controller:clock-controller--platform:ff64c000.mdio-multiplexer
->
-> As we discussed over chat, this was taken after the mdio-multiplexer
-> driver "successfully" probes this device. This will cause
-> SYNC_STATE_ONLY device links created by fw_devlink to be deleted
-> (because they are useless after a device probes). So, this doesn't
-> show the info I was hoping to demonstrate.
->
-> In any case, one can see that fw_devlink properly created the device
-> link for the clocks dependency. So fw_devlink is parsing this node
-> properly. But it doesn't create a similar probe order enforcing device
-> link between the mdio-multiplexer and the gpio_intc because the
-> dependency is only present in a grand child DT node (ethernet-phy@0
-> under ext_mdio). So fw_devlink is working as intended.
->
-> I spent several hours squinting at the code/DT yesterday. Here's what
-> is going on and causing the problem:
->
-> The failing driver in this case is
-> drivers/net/mdio/mdio-mux-meson-g12a.c. And the only DT node it's
-> handling is what I pasted above in this email. In the failure case,
-> the call flow is something like this:
->
-> g12a_mdio_mux_probe()
-> -> mdio_mux_init()
-> -> of_mdiobus_register(ext_mdio DT node)
-> -> of_mdiobus_register_phy(ext_mdio DT node)
-> -> several calls deep fwnode_mdiobus_phy_device_register(ethernet_phy DT =
-node)
-> -> Tried to get the IRQ listed in ethernet_phy and fails with
-> -EPROBE_DEFER because the IRQ driver isn't loaded yet.
->
-> The error is propagated correctly all the way up to of_mdiobus_register()=
-, but
-> mdio_mux_init() ignores the -EPROBE_DEFER from of_mdiobus_register() and =
-just
-> continues on with the rest of the stuff and returns success as long as
-> one of the child nodes (in this case int_mdio) succeeds.
->
-> Since the probe returns 0 without really succeeding, networking stuff
-> just fails badly after this. So, IMO, the real problem is with
-> mdio_mux_init() not propagating up the -EPROBE_DEFER. I gave Marc a
-> quick hack (pasted at the end of this email) to test my theory and he
-> confirmed that it fixes the issue (a few deferred probes later, things
-> work properly).
->
-> Andrew, I don't see any good reason for mdio_mux_init() not
-> propagating the errors up correctly (at least for EPROBE_DEFER). I'll
-> send a patch to fix this. Please let me know if there's a reason it
-> has to stay as-is.
+> For example, imagine two worker threads W1 and W2. W1 adds itself to a
+> concurrent list and calls umcg_wait(next_tid = 0). W2 pops from the list
+> and calls umcg_wait(UMCG_WAIT_WAKE_ONLY | UMCG_WAIT_WF_CURRENT_CPU) on the
+> popped worker, W1 in this example.
 
-I sent out the proper fix as a series:
-https://lore.kernel.org/lkml/20210804214333.927985-1-saravanak@google.com/T=
-/#t
+All _umcg_ state changes here happen in the userspace before
+sys_umcg_wait() is called. So:
 
-Marc, can you give it a shot please?
+W1: cmpxchg W1:RUNNING => W1:IDLE
+ - if OK, call sys_umcg_wait()
+ - if failed, do something else (notes below)
 
--Saravana
+W2: cmpxchg W1:IDLE => W1:RUNNING
+ - if OK, lock itself, set W2:next_tid to W1, call sys_umcg_wait()
+(will not block nor spin), restore next_tid and state/unlock upon
+syscall return
+ - if failed, do something else
+
+So assuming the cmpxchg() calls succeeded, sys_umcg_wait() will be called.
+
+W1 sys_umcg_wait(): (W1 sleeping):
+- (1) mark itself as TASK_INTERRUPTIBLE (sleeping)
+- (2) check _umcg_ state
+  - (a) if UMCG_RUNNING, mark itself as TASK_RUNNING, return to userspace
+  - (b) if still UMCG_IDLE, sleep
+- (3) upon wakeup, go to step (1)
+
+W2 sys_umcg_wait(): (wake W1):
+- call try_to_wake_up(W1): if W1 is INTERRUPTIBLE, change it to
+TASK_RUNNING, wake
+- return
+
+Note the ordering and interplay of UMCG state changes
+(UMCG_IDLE/UMCG_RUNNING) and TASK state changes
+(TASK_INTERRUPTIBLE/TASK_RUNNING).
+
+As you can see, W2 does not block nor spin. W1 will either catch
+_umcg_ state change to UMCG_RUNNING and abort, or ttwu() will wake it
+_after_ it is marked as UMCG_RUNNING.
+
+Now what happens if cmpxchg() calls above fail? That means that W1 is
+still running when W2 tries to change its state RUNNING => IDLE. This
+is a race in the userspace, and two options are available:
+- the userspace spins waiting for W1 to become IDLE (note that the
+userspace spins, not the kernel)
+- the userspace "queues the wakeup" and returns; the sleeper (W1) sees
+wakeup_queued and does not go to sleep; this is the solution I
+have/use. See the previous version here:
+https://lore.kernel.org/patchwork/patch/1433971/, search for
+UMCG_TF_WAKEUP_QUEUED.
+
+In the current version 0.4 WAKEUP_QUEUED is a purely userspace flag,
+so it is not documented in the _kernel API_ doc. I'll post the
+userspace parts (libumcg, selftests) a bit later. In short, wait/wake
+races do not result in spinning, and sometimes even elide syscalls by
+using WAKEUP_QUEUED userspace state flag.
 
 >
-> -Saravana
+> If W1 calls umcg_wait first, W2 context-switches to W1 and W2's state
+> changes to IDLE. My understanding is that wake detection/block does not
+> apply to this case.
 >
-> index 110e4ee85785..d973a267151f 100644
-> --- a/drivers/net/mdio/mdio-mux.c
-> +++ b/drivers/net/mdio/mdio-mux.c
-> @@ -170,6 +170,9 @@ int mdio_mux_init(struct device *dev,
->                                 child_bus_node);
->                         mdiobus_free(cb->mii_bus);
->                         devm_kfree(dev, cb);
-> +                       /* Not a final fix. I think it can cause UAF issu=
-es. */
-> +                       mdio_mux_uninit(pb);
-> +                       return r;
->                 } else {
->                         cb->next =3D pb->children;
->                         pb->children =3D cb;
+> If W2 calls umcg_wait first, what happens? I can imagine two different
+> behaviour in this case:
+>
+> 1. W2 waits for W1 to call umcg_wait, by spinning or blocking, and then
+>     execution proceed like the first ordering.
+>
+> 2. W2 sets W1's state to RUNNING. When W1 eventually calls umcg_wait, it
+>     simply notices the state change and returns without context-switching.
+>     In this case, W1 is not migrated to W2's CPU.
+>
+> Behaviour 1 makes me uncomfortable since it means umcg_wait must wait for
+> cooperation that potentially never comes.
+>
+> But in Behaviour 2, the state of W2 after both calls to umcg_wait is not
+> clear to me, either. I could imagine that W2 is set to IDLE, but since W1
+> is not migrated, W2 could also simply be left RUNNING.
+>
+> Which behaviour is correct and in what state does W2 end up?
+
+W2 will always end up RUNNING, as everything here is about W1. W2 will
+never sleep nor spin. Just a couple of atomic ops and maybe a syscall
+that does the same.
+
+>
+> Thierry
+>
