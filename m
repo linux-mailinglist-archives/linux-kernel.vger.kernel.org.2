@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12B93E040D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A8A3E0411
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238920AbhHDPWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
+        id S238953AbhHDPWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238324AbhHDPWE (ORCPT
+        with ESMTP id S238324AbhHDPWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:22:04 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E34CC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 08:21:51 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id h10so1619481qth.5
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 08:21:51 -0700 (PDT)
+        Wed, 4 Aug 2021 11:22:40 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C63C0613D5;
+        Wed,  4 Aug 2021 08:22:28 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id r16-20020a0568304190b02904f26cead745so1579411otu.10;
+        Wed, 04 Aug 2021 08:22:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=PVQ1V3ExogsGaCtov6jk1dJHF06/mvxhxmainNfgf8Y=;
-        b=WhDDPEFlFUnZ/n4mkY5wKuDd9D4NlnpC53nPyhaUXTsS9ANdhKzdNVx5fakLYg2ld5
-         53GgyApWfpJWTWn512PJAEbrjzkH1y6DcLkbSv2qLBD9Qp6s79jweDq44mCbnJeSulGL
-         WMiUkGI5b+AsRhjGG1rnpemgEjwWKyOWN33wp7OWMq/D0VuLpRLrLJlXxBVAUrmslAbI
-         JCDt2vljmNoDdhI3HK6gynnaCSn8i1E1Ua/ZiIq4ia1LBLlm1Zz/bQwBCUxfKmy24Dgn
-         qU15RgjA75W5WwHdDOF6zqkIj19IRt3f14tZD1T5Op7jFviKOqpCdNSW7BYRhvpDGETc
-         jA3g==
+        bh=GHXzGOHsNUaU15+3cUdFR4m7Br9N2/ukxtu8/mdLTWs=;
+        b=AA6gM4dB2aRjdZjmdJ3U38VkuOrOUA8UqEnwP4IH7ewdi0Bq0gsKxpQFz67uY7Z2cb
+         M3f/GEDzpNZaqs26wb2mNEwDXaGrBO5qfnxB/F8xpZJt3evRsKlj26XhCG2fr/sgGmfn
+         hBb6SJNw8ix4QwaM4yvM+edq9ig+G3g/8iknv1uJP+xjcFw1YI4K7PfozWHuES2oWsuY
+         EDDZ685BcWPlpf90CVB0/83K+1a3w/UapDnceSruvFX/Ck/c4Y7kiQc5vw79LppDQKwe
+         Z/q7SnsDjyV8ZAuVqcLKuoRp1CRtr4dI+PiC00jtKCq0VshBpAuGOX/0rBcrn6pqG9ql
+         ui4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PVQ1V3ExogsGaCtov6jk1dJHF06/mvxhxmainNfgf8Y=;
-        b=hGwgyc1DP2GTEZtIjtq/SwFA5PaFMUJWvW0052J8DI6reMzigWwCIZezrHUkwUp6hy
-         fpOEJJZ8dhnlPqsOQIcKBUXRoDlQlYrZ+Tp/OCyMo6BXrQ6MmzlLqL4qM1voDo3PBIoV
-         NXAYghd1P02O5KqcGO1QAo+rVK62zFrev8mEuwNWIxw96yAgJZMfLeYuI7kpqAHZoL2R
-         nm5AnXp94N8ETAAJtIDLMgk7L0rQYgDurHpbbhBf67rw2ldROfQPOq4brxMiphnMchsE
-         5IU3xFb4zFkD3ayMKADJd1Dp6xvU2xVOk+RLvOmt9mpf1jJ3kk2FaSEuFDnHZ/qGXV0Z
-         ZWRw==
-X-Gm-Message-State: AOAM533CG7hnxeolZ8nyo1j3fffWbVYMJfwRRTjSCgkJ4/ye0rcFU9Ms
-        3puuDOhptoerV8jJ+lIMbLI71A==
-X-Google-Smtp-Source: ABdhPJzIvP8prj+GuCuMKLyFZYhXKJCHI+G2lNJeGYxKjjOccHbhkJhB2OzLb/YU60cvxkm3wxDViw==
-X-Received: by 2002:ac8:5b95:: with SMTP id a21mr104029qta.275.1628090510844;
-        Wed, 04 Aug 2021 08:21:50 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id c16sm988323qtv.32.2021.08.04.08.21.49
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=GHXzGOHsNUaU15+3cUdFR4m7Br9N2/ukxtu8/mdLTWs=;
+        b=FV8jWAD+8TvsNMhbPyxWmyGuBXfVKbW6rxOqqtcylFupvoOuioSuP9nXOPJ4Rzl3Zf
+         POhRLwbrzPHNHZeY32/vxRTLLExLXzU5aZdSc5iS8/erIOhc8xJXcSwSSsMJvWTemx8s
+         NJnSy/PMZLSly8QNEFgyFF2ilbDRFRLngbALDxzAggcXoqnR7/fpQUSZB65UdZreuodi
+         rsljqLO6l6p3eSfMiZYm4f5hv/zbjw0YIt0m+OcXIgIUSYkCPI+l67jfcTOrzPo1qMld
+         he9AeVuXsWJ6H3lR85uWr43AhF5P6L026iErZawe1DOhVhpTYuEQ89vPei4n6E+FKJDB
+         prvg==
+X-Gm-Message-State: AOAM530ldWFeKeVuDVAOyLorKjpxGWhAY7LlY9tRWIVouY70Eas4/DVj
+        moXQC/aNT9rfiFUL/PCDL6A=
+X-Google-Smtp-Source: ABdhPJz4xY6/XN0asdQC63nYaXpDF8JZCZNayLgrSAn+1yZwMW2B32kv3oncbDLICHz5o4vkLvKh4Q==
+X-Received: by 2002:a9d:7844:: with SMTP id c4mr169495otm.213.1628090544337;
+        Wed, 04 Aug 2021 08:22:24 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bd20sm504570oib.1.2021.08.04.08.22.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 08:21:50 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mBIiK-00CeGf-Ja; Wed, 04 Aug 2021 12:21:48 -0300
-Date:   Wed, 4 Aug 2021 12:21:48 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jann Horn <jannh@google.com>
-Cc:     Liam Howlett <liam.howlett@oracle.com>,
-        Luigi Rizzo <lrizzo@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH] Add mmap_assert_locked() annotations to find_vma*()
-Message-ID: <20210804152148.GI543798@ziepe.ca>
-References: <20210731175341.3458608-1-lrizzo@google.com>
- <20210803160803.GG543798@ziepe.ca>
- <CAMOZA0JKjRFUHbs3zc4kiGcuXxR0arCN=oPZZsLCa4qHvRrH_A@mail.gmail.com>
- <20210803230725.ao3i2emejyyor36n@revolver>
- <CAG48ez2TEP0hsRjLACVmRppMEk6Z9aREcGL498EKhdBBXSRsoA@mail.gmail.com>
+        Wed, 04 Aug 2021 08:22:23 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 4 Aug 2021 08:22:22 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Anton Blanchard <anton@ozlabs.org>
+Subject: Re: [PATCH v1] fs/epoll: use a per-cpu counter for user's watches
+ count
+Message-ID: <20210804152222.GA3717568@roeck-us.net>
+References: <20210802032013.2751916-1-npiggin@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG48ez2TEP0hsRjLACVmRppMEk6Z9aREcGL498EKhdBBXSRsoA@mail.gmail.com>
+In-Reply-To: <20210802032013.2751916-1-npiggin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 04:42:23PM +0200, Jann Horn wrote:
-> Since I haven't sent a new version of my old series for almost a year,
-> I think it'd be fine to take Luigi's patch for now, and undo it at a
-> later point when/if we want to actually use proper locking here
-> because we're worried about concurrent access to the MM.
+On Mon, Aug 02, 2021 at 01:20:13PM +1000, Nicholas Piggin wrote:
+> This counter tracks the number of watches a user has, to compare against
+> the 'max_user_watches' limit. This causes a scalability bottleneck on
+> SPECjbb2015 on large systems as there is only one user. Changing to a
+> per-cpu counter increases throughput of the benchmark by about 30% on a
+> 16-socket, > 1000 thread system.
+> 
+> Reported-by: Anton Blanchard <anton@ozlabs.org>
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 
-IIRC one of the major points of that work was not "proper locking" but
-to have enough locking to be complatible with lockdep so we could add
-assertions like in get_user_pages and find_vma.
+With all tinyconfig builds (and all other builds with CONFIG_EPOLL=n),
+this patch results in:
 
-Jason
+kernel/user.c: In function 'free_user':
+kernel/user.c:141:35: error: 'struct user_struct' has no member named 'epoll_watches'
+  141 |         percpu_counter_destroy(&up->epoll_watches);
+      |                                   ^~
+kernel/user.c: In function 'alloc_uid':
+kernel/user.c:189:45: error: 'struct user_struct' has no member named 'epoll_watches'
+  189 |                 if (percpu_counter_init(&new->epoll_watches, 0, GFP_KERNEL)) {
+      |                                             ^~
+kernel/user.c:203:52: error: 'struct user_struct' has no member named 'epoll_watches'
+  203 |                         percpu_counter_destroy(&new->epoll_watches);
+      |                                                    ^~
+kernel/user.c: In function 'uid_cache_init':
+kernel/user.c:225:43: error: 'struct user_struct' has no member named 'epoll_watches'
+  225 |         if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
+      |                                           ^
+
+Guenter
