@@ -2,246 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634B63E0420
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBE33E0424
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238982AbhHDPZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:25:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42169 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238988AbhHDPZ1 (ORCPT
+        id S239026AbhHDP0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:26:34 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:13424 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238988AbhHDP0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:25:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628090708;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gYL7WTiLrXdvlISyfYPUBkceFpd6GfwZ8nIKez1uy+s=;
-        b=Q8/wvdtCpnqLziKgjJt3fdapDgGkIjtGZdvXyEJmRNXOctN/LOZlzhh/zC+pQoVyZAqhHa
-        IfXqRZc1UsfJO4wZS9augBQZ4w/U2Me0r2Qdd1YTNFg/z8rR72+EhdIdDC/+RLZh3L//IC
-        TpEO/PZUJr2DEq5DjyTwqWs8ABJEMEE=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-383-MCOqVDOpMSSUalwvXCG06Q-1; Wed, 04 Aug 2021 11:25:07 -0400
-X-MC-Unique: MCOqVDOpMSSUalwvXCG06Q-1
-Received: by mail-wm1-f71.google.com with SMTP id w25-20020a1cf6190000b0290252505ddd56so398299wmc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 08:25:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gYL7WTiLrXdvlISyfYPUBkceFpd6GfwZ8nIKez1uy+s=;
-        b=bY7Xe+DEGwsg7dUXLRXhW5jk0fVgAwMS/iubGB8tu4MApGH5GHnH9Lme6TNINnx6k1
-         6h/AH3qbubk+u4+PKAfMkNYhSCw3y3tlB/GbpN65POE+fWbngOpf/oirL+OGzB51QI5r
-         D6EQ35IoX+KuzqsY02rd4aJeq5+2bALX2rbtkkx4ssQJUHuo52ku1+aeP+PcWSy835gn
-         I9Ch9I/uOPKjyicPSVQywn5gpru2IDjZZCQkRyMluHyzZDxMnTDXlrupW9dc+D7JRWJp
-         YfZYKxYXJ/2H+uV8H4CDBZGNNvWsG2/t8e284Kz8EgMZ9Ud1StnUqhqfPRvh3+/CWk6/
-         PiOA==
-X-Gm-Message-State: AOAM532BihEk0BOz94r3A/0dJPEr3/cDev4+DHO1WGd5kqNyy8pBY4Nr
-        +0pHc0VR8OoFhGZEOdGgTEPesjJ7RO+3l+kx93/u0N487ImS40KPFUdqrbd/rJqp5wlVjjtSYWS
-        PFkRoU5El2cvN2HlVcUhESIXGiwapKoKEwxZ71ztk
-X-Received: by 2002:a05:600c:5108:: with SMTP id o8mr146214wms.97.1628090706475;
-        Wed, 04 Aug 2021 08:25:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwGPp6F/pqnoLzgNlPa34lpo9Fxz5ei5sfxO6QxFSlOC9E6qS0pKNJg4a4S7jUPOSWKzwWMmB1rxcCP3pTCg+4=
-X-Received: by 2002:a05:600c:5108:: with SMTP id o8mr146202wms.97.1628090706302;
- Wed, 04 Aug 2021 08:25:06 -0700 (PDT)
+        Wed, 4 Aug 2021 11:26:24 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 174FLTf9002630;
+        Wed, 4 Aug 2021 17:25:47 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=S9ert6QnYVEygDRWb10g0bL7/eEDQa3oDWEm42+oZ6s=;
+ b=UylDzC2ymHe/7lMboKLJCiD1HFOUNh83+4hWNfiK7WpdZyR2CLuujZSu3XNrV6Tt3E3x
+ BRCHQvGYH6//NI6qXtKNivNjXWnJnEbWXMBV9MMWmnisQNVNrqd72FeMZMztpnXsUR2z
+ q9WwYQl2tLjcRD++azgWr32uv488g5j5ustfnpCg8oslT4bLzowgBJigY0hpoUiZ0uJb
+ itPx53GK4gPzA8uUVdBpK/dE1QQx4K+fAyPENdUr1L09T03uWi9geaze7557Zz0ULtT0
+ 3wvUdUgQe1FhP5sU7eIDtrhL9T8kwT0tpXY69FiM7EBFtwI1ym9aVqs1JgtZUc99j7fq hw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3a7ruwskhb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 04 Aug 2021 17:25:47 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 21AC410002A;
+        Wed,  4 Aug 2021 17:25:46 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F178522D16E;
+        Wed,  4 Aug 2021 17:25:45 +0200 (CEST)
+Received: from lmecxl0573.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 4 Aug
+ 2021 17:25:45 +0200
+Subject: Re: [PATCH 0/4] ARM: dts: sti: remove clk_ignore_unused from bootargs
+To:     Arnd Bergmann <arnd@arndb.de>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>, SoC Team <soc@kernel.org>
+References: <20210803124506.23365-1-patrice.chotard@foss.st.com>
+ <CAK8P3a06_vUXghtvp4jTMEc4jV7RW8XmbUmgfrsoH_BSZ+awJQ@mail.gmail.com>
+From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
+Message-ID: <09ee0256-5f51-513c-52f2-441e0e41aea9@foss.st.com>
+Date:   Wed, 4 Aug 2021 17:25:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210803191818.993968-1-agruenba@redhat.com> <20210803191818.993968-6-agruenba@redhat.com>
-In-Reply-To: <20210803191818.993968-6-agruenba@redhat.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Wed, 4 Aug 2021 17:24:55 +0200
-Message-ID: <CAHc6FU7YLUivXXa00dX1=DC1XaYLnh_j3QDvYcRoAji14WAyAQ@mail.gmail.com>
-Subject: Re: [PATCH v5 05/12] iov_iter: Introduce fault_in_iov_iter_writeable
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, ocfs2-devel@oss.oracle.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAK8P3a06_vUXghtvp4jTMEc4jV7RW8XmbUmgfrsoH_BSZ+awJQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-04_03:2021-08-04,2021-08-04 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 9:18 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
-> Introduce a new fault_in_iov_iter_writeable helper for safely faulting in an
-> iterator for writing.  Uses get_user_pages() to fault in the pages without
-> actually writing to them, which would be destructive.
->
-> We'll use fault_in_iov_iter_writeable in gfs2 once we've determined that the
-> iterator passed to .read_iter isn't in memory.
->
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> ---
->  include/linux/pagemap.h |  1 +
->  include/linux/uio.h     |  1 +
->  lib/iov_iter.c          | 41 +++++++++++++++++++++++++++
->  mm/gup.c                | 61 +++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 104 insertions(+)
->
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 7c9edc9694d9..a629807edb8c 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -737,6 +737,7 @@ extern void add_page_wait_queue(struct page *page, wait_queue_entry_t *waiter);
->   * Fault in userspace address range.
->   */
->  size_t fault_in_writeable(char __user *uaddr, size_t size);
-> +size_t fault_in_safe_writeable(const char __user *uaddr, size_t size);
->  size_t fault_in_readable(const char __user *uaddr, size_t size);
->
->  int add_to_page_cache_locked(struct page *page, struct address_space *mapping,
-> diff --git a/include/linux/uio.h b/include/linux/uio.h
-> index 12d30246c2e9..ffa431aeb067 100644
-> --- a/include/linux/uio.h
-> +++ b/include/linux/uio.h
-> @@ -120,6 +120,7 @@ size_t copy_page_from_iter_atomic(struct page *page, unsigned offset,
->  void iov_iter_advance(struct iov_iter *i, size_t bytes);
->  void iov_iter_revert(struct iov_iter *i, size_t bytes);
->  size_t fault_in_iov_iter_readable(const struct iov_iter *i, size_t bytes);
-> +size_t fault_in_iov_iter_writeable(const struct iov_iter *i, size_t bytes);
->  size_t iov_iter_single_seg_count(const struct iov_iter *i);
->  size_t copy_page_to_iter(struct page *page, size_t offset, size_t bytes,
->                          struct iov_iter *i);
-> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-> index c0fa1618561c..4ffc76801eaa 100644
-> --- a/lib/iov_iter.c
-> +++ b/lib/iov_iter.c
-> @@ -471,6 +471,47 @@ size_t fault_in_iov_iter_readable(const struct iov_iter *i, size_t size)
->  }
->  EXPORT_SYMBOL(fault_in_iov_iter_readable);
->
-> +/*
-> + * fault_in_iov_iter_writeable - fault in iov iterator for writing
-> + * @i: iterator
-> + * @size: maximum length
-> + *
-> + * Faults in the iterator using get_user_pages(), i.e., without triggering
-> + * hardware page faults.  This is primarily useful when we know that some or
-> + * all of the pages in @i aren't in memory.
-> + *
-> + * Returns the number of bytes faulted in, or 0 if no bytes could be faulted in
-> + * (i.e., because the address is invalid).
-> + *
-> + * Always returns the number of avaliable bytes for non-user space iterators.
-> + */
-> +size_t fault_in_iov_iter_writeable(const struct iov_iter *i, size_t size)
-> +{
-> +       if (size > i->count)
-> +               size = i->count;
-> +
-> +       if (iter_is_iovec(i)) {
-> +               const struct iovec *p;
-> +               size_t bytes = size;
-> +               size_t skip;
-> +
-> +               for (p = i->iov, skip = i->iov_offset; bytes; p++, skip = 0) {
-> +                       size_t len = min(bytes, p->iov_len - skip);
-> +                       size_t ret;
-> +
-> +                       if (unlikely(!len))
-> +                               continue;
-> +                       ret = fault_in_safe_writeable(p->iov_base + skip, len);
-> +                       bytes -= ret;
-> +                       if (ret != len)
-> +                               break;
-> +               }
-> +               return size - bytes;
-> +       }
-> +       return size;
-> +}
-> +EXPORT_SYMBOL(fault_in_iov_iter_writeable);
-> +
->  void iov_iter_init(struct iov_iter *i, unsigned int direction,
->                         const struct iovec *iov, unsigned long nr_segs,
->                         size_t count)
-> diff --git a/mm/gup.c b/mm/gup.c
-> index d04984d5d93c..7218e27c2481 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1694,6 +1694,67 @@ size_t fault_in_writeable(char __user *uaddr, size_t size)
->  }
->  EXPORT_SYMBOL(fault_in_writeable);
->
-> +/**
-> + * fault_in_safe_writeable - fault in an address range for writing
-> + * @uaddr: start of address range
-> + * @size: length of address range
-> + *
-> + * Faults in an address range using get_user_pages, i.e., without triggering
-> + * hardware page faults.  This is primarily useful when we know that some or
-> + * all of the pages in the address range aren't in memory.
-> + *
-> + * Other than fault_in_writeable(), this function is non-destructive.
-> + *
-> + * Note that we don't pin or otherwise hold the pages referenced that we fault
-> + * in.  There's no guarantee that they'll stay in memory for any duration of
-> + * time.
-> + *
-> + * Returns the number of bytes faulted in from @uaddr.
-> + */
-> +size_t fault_in_safe_writeable(const char __user *uaddr, size_t size)
-> +{
-> +       unsigned long start = (unsigned long)uaddr;
-> +       unsigned long end, nstart, nend;
-> +       struct mm_struct *mm = current->mm;
-> +       struct vm_area_struct *vma = NULL;
-> +       int locked = 0;
-> +
-> +       /* FIXME: Protect against overflow! */
-> +
-> +       end = PAGE_ALIGN(start + size);
-> +       for (nstart = start & PAGE_MASK; nstart < end; nstart = nend) {
-> +               unsigned long nr_pages;
-> +               long ret;
-> +
-> +               if (!locked) {
-> +                       locked = 1;
-> +                       mmap_read_lock(mm);
-> +                       vma = find_vma(mm, nstart);
-> +               } else if (nstart >= vma->vm_end)
-> +                       vma = vma->vm_next;
-> +               if (!vma || vma->vm_start >= end)
-> +                       break;
-> +               nend = min(end, vma->vm_end);
-> +               if (vma->vm_flags & (VM_IO | VM_PFNMAP))
-> +                       continue;
+Hi Arnd
 
-Shouldn't we disallow read()ing into those kinds of vmas? If we skip
-over them here and then the actual write results in -EFAULT, we'll end
-up in a loop.
+On 8/4/21 3:50 PM, Arnd Bergmann wrote:
+> On Tue, Aug 3, 2021 at 2:45 PM <patrice.chotard@foss.st.com> wrote:
+>>
+>> From: Patrice Chotard <patrice.chotard@foss.st.com>
+>>
+>> Remove clk_ignore_unused from bootargs from STi boards DT.
+> 
+> The patches look good to me, but I'm not sure what you expect me to do
+> here, as you have added soc@kernel.org to Cc:, and other addresses to To:
 
-> +               if (nstart < vma->vm_start)
-> +                       nstart = vma->vm_start;
+Sorry, i wasn't aware that soc@kernel.org must only be used for pull request.
 
-Likewise, shouldn't we fail for memory ranges not covered by a vma?
+> 
+> I have dropped them from patchwork for the moment. When you want
+> them to be applied to the soc tree, please resend or send a pull request
+> to:soc@kernel.org, until then, please leave out that address so it does
+> not get into patchwork.
+> 
+>       Arnd
+> 
 
-> +               nr_pages = (nend - nstart) / PAGE_SIZE;
-> +               ret = __get_user_pages_locked(mm, nstart, nr_pages,
-> +                                             NULL, NULL, &locked,
-> +                                             FOLL_TOUCH | FOLL_WRITE);
-> +               if (ret <= 0)
-> +                       break;
-> +               nend = nstart + ret * PAGE_SIZE;
-> +       }
-> +       if (locked)
-> +               mmap_read_unlock(mm);
-> +       if (nstart > start)
-> +               return min(nstart - start, size);
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL(fault_in_safe_writeable);
-> +
->  size_t fault_in_readable(const char __user *uaddr, size_t size)
->  {
->         const char __user *start = uaddr, *end;
-> --
-> 2.26.3
->
+Yes my intention is to submit a STi pull request with this patchset and another one.
 
-Thanks,
-Andreas
-
+Thanks
+Patrice
