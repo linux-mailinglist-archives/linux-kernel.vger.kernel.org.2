@@ -2,107 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A73423E05F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AAE3E0601
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237636AbhHDQ3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:29:17 -0400
-Received: from mail-io1-f43.google.com ([209.85.166.43]:37731 "EHLO
-        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237669AbhHDQ3K (ORCPT
+        id S238234AbhHDQf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229743AbhHDQf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:29:10 -0400
-Received: by mail-io1-f43.google.com with SMTP id l20so908482iom.4;
-        Wed, 04 Aug 2021 09:28:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VKjRz072HGEgP1rwlJIh26JWC9tcVy1uWT48FAiuTh0=;
-        b=m4E2wfH91B5GM7A0QgkhuCeAtSnNHY/dJ8SW0/UBiK1AdQsiVysV0f6GUXYhzcnSaq
-         LZOnpc32XR71YT63yOwst/WOm/yhJAxuTJtI/S8FTJgVwXn4YrjrKbU0Teh/X2QzHxda
-         ACdmLHNyk70Rz0+bR+BYp0Ct/nd2bhDvFHgAvszd8rUDpO7Zo1WsFWHnoSKa0Mz/FDBV
-         ynkno4QwGIELfAT0tV2Aw2sEpmL8oSK7shHfZ3gf5ZvXoLlUOjRUqCG+If45wJTJ3ouV
-         USfmzodoUq8U9hTTVKyrKqOTrHZsRVBsI5QoIeDyWnGGryb/JxpKqINUNwOtcqAvwSCl
-         Ig+A==
-X-Gm-Message-State: AOAM530qNy6ZZmnAdiuypeO8uM42ZYiXitysLCp2S9uu3PVBwr6AXDkG
-        UGnT9SwM2sanYI1CEGPpwQ==
-X-Google-Smtp-Source: ABdhPJzM54EOzxkXV7o01ZjhBshqyv3YcG0rFRh3qFfZory8ZzZ/FUEYNWqi9A9W3x8CZlLwLtvqcQ==
-X-Received: by 2002:a02:7348:: with SMTP id a8mr302327jae.116.1628094536294;
-        Wed, 04 Aug 2021 09:28:56 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id u16sm1764975iob.41.2021.08.04.09.28.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 09:28:55 -0700 (PDT)
-Received: (nullmailer pid 1331554 invoked by uid 1000);
-        Wed, 04 Aug 2021 16:28:53 -0000
-Date:   Wed, 4 Aug 2021 10:28:53 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, linux-phy@lists.infradead.org
-Subject: Re: [PATCH v3 0/4] DT schema changes for HiKey970 PCIe hardware to
- work
-Message-ID: <YQrARd7wgYS1nywt@robh.at.kernel.org>
-References: <cover.1627965261.git.mchehab+huawei@kernel.org>
- <CAL_JsqLjw=+szXWJjGe86tMc51NA-5j=jVSXUAWuKeZRuJNJUg@mail.gmail.com>
- <20210804085045.3dddbb9c@coco.lan>
+        Wed, 4 Aug 2021 12:35:28 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 26AA7C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 09:35:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=xh604dbpsnnyAOf8SN+G2bUQr6IW6+e6nF19LETYIVw=; b=UE2pDEgw/gfbh
+        fU+0NbSEIaCrT5hqYME/yyrSBnfX9BMkfHZoAvNfcNpb4GtatGjPbBYj36jFz8TE
+        Am2Iy1HgYGMaDN+dDl0A0j2ON42A8q2UWkjP0FJkFUdq9lwWBoTfD42yTTrS1tFv
+        3KzoC3gXt6SMJsquLEapn9ncmmRiGQ=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDHzna+wQphv+mUAA--.32067S2;
+        Thu, 05 Aug 2021 00:35:10 +0800 (CST)
+Date:   Thu, 5 Aug 2021 00:29:08 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: Keep the riscv Kconfig selects sorted
+Message-ID: <20210805002908.2597836f@xhacker>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804085045.3dddbb9c@coco.lan>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygDHzna+wQphv+mUAA--.32067S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7GFyfCF13AFWfXF4UJFWDurg_yoW8JrWfpr
+        nYkwnrJFWjkrs5GF4Fk3y8uF1UJFn5GrW3GrW3Gay5AF93CrZrZryqqFnFqryUXaykJrn3
+        CF9Y93WUtFs8ZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUySb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC2
+        0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
+        0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
+        14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20x
+        vaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
+        Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jnNVgUUUUU=
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 08:50:45AM +0200, Mauro Carvalho Chehab wrote:
-> Em Tue, 3 Aug 2021 16:11:42 -0600
-> Rob Herring <robh+dt@kernel.org> escreveu:
-> 
-> > On Mon, Aug 2, 2021 at 10:39 PM Mauro Carvalho Chehab
-> > <mchehab+huawei@kernel.org> wrote:
-> > >
-> > > Hi Rob,
-> > >
-> > > That's the third version of the DT bindings for Kirin 970 PCIE and its
-> > > corresponding PHY.
-> > >
-> > > It is identical to v2, except by:
-> > >         -          pcie@7,0 { // Lane 7: Ethernet
-> > >         +          pcie@7,0 { // Lane 6: Ethernet  
-> > 
-> > Can you check whether you have DT node links in sysfs for the PCI
-> > devices? If you don't, then something is wrong still in the topology
-> > or the PCI core is failing to set the DT node pointer in struct
-> > device. Though you don't rely on that currently, we want the topology
-> > to match. It's possible this never worked on arm/arm64 as mainly
-> > powerpc relied on this.
-> >
-> > I'd like some way to validate the DT matches the PCI topology. We
-> > could have a tool that generates the DT structure based on the PCI
-> > topology.
-> 
-> The of_node node link is on those places:
-> 
-> 	$ find /sys/devices/platform/soc/f4000000.pcie/ -name of_node
-> 	/sys/devices/platform/soc/f4000000.pcie/of_node
-> 	/sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/of_node
-> 	/sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/pci_bus/0000:01/of_node
-> 	/sys/devices/platform/soc/f4000000.pcie/pci0000:00/pci_bus/0000:00/of_node
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Looks like we're missing some... 
+Move three Kconfig selects: ARCH_STACKWALK, ARCH_SUPPORTS_ATOMIC_RMW
+and ARCH_SUPPORTS_DEBUG_PAGEALLOC to the right place.
 
-It's not immediately obvious to me what's wrong here. Only the root 
-bus is getting it's DT node set. The relevant code is pci_scan_device(), 
-pci_set_of_node() and pci_set_bus_of_node(). Give me a few days to try 
-to reproduce and debug it.
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-In the mean time, I applied the series but haven't pushed it out.
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 8fcceb8eda07..f133ac72572f 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -13,9 +13,6 @@ config 32BIT
+ config RISCV
+ 	def_bool y
+ 	select ARCH_CLOCKSOURCE_INIT
+-	select ARCH_SUPPORTS_ATOMIC_RMW
+-	select ARCH_SUPPORTS_DEBUG_PAGEALLOC if MMU
+-	select ARCH_STACKWALK
+ 	select ARCH_HAS_BINFMT_FLAT
+ 	select ARCH_HAS_DEBUG_VM_PGTABLE
+ 	select ARCH_HAS_DEBUG_VIRTUAL if MMU
+@@ -33,6 +30,9 @@ config RISCV
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
+ 	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
++	select ARCH_STACKWALK
++	select ARCH_SUPPORTS_ATOMIC_RMW
++	select ARCH_SUPPORTS_DEBUG_PAGEALLOC if MMU
+ 	select ARCH_SUPPORTS_HUGETLBFS if MMU
+ 	select ARCH_USE_MEMTEST
+ 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+-- 
+2.32.0
 
-Rob
+
