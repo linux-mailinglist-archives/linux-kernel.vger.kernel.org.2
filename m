@@ -2,304 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E1B3DFAEA
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239273DFAEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235065AbhHDFIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 01:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40108 "EHLO
+        id S235130AbhHDFJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 01:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbhHDFIi (ORCPT
+        with ESMTP id S229910AbhHDFJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 01:08:38 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B031C061798
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 22:08:25 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id dl20-20020ad44e140000b0290347c39b05c0so1004365qvb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 22:08:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=US53yUumKIui9w1wi7h47KWAiBIOlXWNaoToSkpc1pg=;
-        b=UfoVVUuES1P/lVZ9QL0hAzNDEYLDv8AIgZlWDbZCkThBbyrA0vWA7P+KJC2qcfBeab
-         hiJl6q2F0Za/8aWdXRVZHy2geMriNgg9zlBpg171+aVykSMALiUxNPREoINyV9f4NIMb
-         ujazt3kw344RDxLykZC6uOJUae5Vclh+crRcuCMF5YcSY1C/200iPw+rHn0oxV8pD3T9
-         Qr9nRFOdeYwWex0EuVtZ65gFiva3xViD78jd3m75/+s/CO/xN94pIEX2l+zb+l4jpY9m
-         7pPkpF75idk3DdBY6IQVDPPZ5yVrlJo2oHXRfmf/cVNL8qlbmLKbqkJkJCxmYv8nPmQv
-         pIyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=US53yUumKIui9w1wi7h47KWAiBIOlXWNaoToSkpc1pg=;
-        b=jMwSvgsdTLvKWVKVAyfH4xG1BuaeiR9QVB3C/sTvQqMTa5kwDic4nu7BmyAWg9HLfu
-         UIw0jh1EqHnrZsAYtenSp+DX4fiYEg4WxHAQ6dh5FkAkL7+RZLHHohGyaY36X9tbRAK2
-         1wyymLCqdBaEGiNWj7lIcnxfNCeX+SQ8r8EbijKgXZ12xhucouGqOwrhtTC0PyoxxZG3
-         POymG0p/LXP4O64Lks/d9Z8R8ZtnqDOHsqW8XiOworAnqNMG7I1RKXK7dWZKx+lP4iQI
-         EVrQBiHgLa2+OL3nLD8I5LrqJgkSFuoBCdPM5Xnn0AZbvvNcxFHBxB9tB3qL5KvS7WXo
-         T8Ow==
-X-Gm-Message-State: AOAM533ZF8sUOMr3Tej0Qs2E5Tm2J5D7SN9SLU1QsjbfY523fj37WlFT
-        LN/gua14EueKwgTZM+SzQIv4YdyzV4jwZw==
-X-Google-Smtp-Source: ABdhPJwMf8PjpVbnV9c7rr8gDqcZbCB5yISn0C/o6Xq+r0xAaOQypE4amrtrxDVMZxvmVAsgy1+0J6be7po2JQ==
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:f5f1:74e0:8689:e610])
- (user=davidgow job=sendgmr) by 2002:a05:6214:2428:: with SMTP id
- gy8mr25480478qvb.49.1628053704859; Tue, 03 Aug 2021 22:08:24 -0700 (PDT)
-Date:   Tue,  3 Aug 2021 22:08:08 -0700
-Message-Id: <20210804050809.628266-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH v2] kunit: Print test statistics on failure
-From:   David Gow <davidgow@google.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     David Gow <davidgow@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Rae Moar <rmoar@google.com>, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 4 Aug 2021 01:09:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF3FC0613D5
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 22:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=x2kveh6MX8WtvBCZHJLiO2ubdj35EJ/bK6xFlP58AM0=; b=EcUr6r2kiwO98YS4yCDVWJSCTj
+        OmZq+ocMZHLs55m53dYBvYG1gQGfk6CwVIoahemncr6ApbVRc00/frS3brqwV3mbR8otrb5D2ip9X
+        XLGi49dvTmDBxnHGpvE/Sl1G0akbZDB7UAT4+kBFTNkilKVr0nCQsO5QErrW/hXN7V9+PF45Qtrgq
+        iBZRxqWpP8KOC+GyYRgPCyAhaEmcSec/cGY6+ecu5mz7/vyuG6osoqIfiyKn27ZcaGBlXZ330bfas
+        upwjTU7rVZKZxIeEce82ro5ufRroPjhUbYvn4+EtLP9Gk/8PfRhx7u6vfQYjHxCfRttSOquK2KUx+
+        xxi6d6lg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mB99N-005Qpl-1i; Wed, 04 Aug 2021 05:09:14 +0000
+Subject: Re: [PATCH -next/-mmotm] kernel/user.c: fix build when POLL not
+ enabled
+To:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>
+References: <20210803204609.32329-1-rdunlap@infradead.org>
+ <1628051945.fens3r99ox.astroid@bobo.none>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <06ea8c29-ed66-7014-53bd-7760b7eac632@infradead.org>
+Date:   Tue, 3 Aug 2021 22:09:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <1628051945.fens3r99ox.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a number of tests fail, it can be useful to get higher-level
-statistics of how many tests are failing (or how many parameters are
-failing in parameterised tests), and in what cases or suites. This is
-already done by some non-KUnit tests, so add support for automatically
-generating these for KUnit tests.
+On 8/3/21 9:59 PM, Nicholas Piggin wrote:
+> Excerpts from Randy Dunlap's message of August 4, 2021 6:46 am:
+>> Fix build errors in kernel/user.c when CONFIG_EPOLL is not set/enabled.
+>>
+>> ../kernel/user.c: In function ‘free_user’:
+>> ../kernel/user.c:141:30: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
+>>    percpu_counter_destroy(&up->epoll_watches);
+>>                                ^~~~~~~~~~~~~
+>> In file included from ../include/linux/sched/user.h:7:0,
+>>                   from ../kernel/user.c:17:
+>> ../kernel/user.c: In function ‘alloc_uid’:
+>> ../kernel/user.c:189:33: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
+>>     if (percpu_counter_init(&new->epoll_watches, 0, GFP_KERNEL)) {
+>>                                   ^
+>> ../kernel/user.c:203:33: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
+>>      percpu_counter_destroy(&new->epoll_watches);
+>>                                   ^~~~~~~~~~~~~
+>> In file included from ../include/linux/sched/user.h:7:0,
+>>                   from ../kernel/user.c:17:
+>> ../kernel/user.c: In function ‘uid_cache_init’:
+>> ../kernel/user.c:225:37: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
+>>    if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
+>>                                       ^
+>> Also fix type: "cpunter" -> "counter" in a panic message.
+> 
+> Gah, thanks Randy. The ifdefs aren't horrible but could I suggest a
+> slight tweak?
 
-This change adds a 'kunit.stats_enabled' switch which has three values:
-- 0: No stats are printed (current behaviour)
-- 1: Stats are printed only for tests/suites with more than one
-     subtest (new default)
-- 2: Always print test statistics
+Sure, no problem. Thanks.
 
-For parameterised tests, the summary line looks as follows:
-"    # inode_test_xtimestamp_decoding: pass:16 fail:0 skip:0 total:16"
-For test suites, there are two lines looking like this:
-"# ext4_inode_test: pass:1 fail:0 skip:0 total:1"
-"# Totals: pass:16 fail:0 skip:0 total:16"
+> 
+> --
+> From: Randy Dunlap <rdunlap@infradead.org>
+> Subject: [PATCH] kernel/user.c: fix build when EPOLL not enabled
+> 
+> Fix build errors in kernel/user.c when CONFIG_EPOLL is not set/enabled.
+> 
+> ../kernel/user.c: In function ‘free_user’:
+> ../kernel/user.c:141:30: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
+>    percpu_counter_destroy(&up->epoll_watches);
+>                                ^~~~~~~~~~~~~
+> In file included from ../include/linux/sched/user.h:7:0,
+>                   from ../kernel/user.c:17:
+> ../kernel/user.c: In function ‘alloc_uid’:
+> ../kernel/user.c:189:33: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
+>     if (percpu_counter_init(&new->epoll_watches, 0, GFP_KERNEL)) {
+>                                   ^
+> ../kernel/user.c:203:33: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
+>      percpu_counter_destroy(&new->epoll_watches);
+>                                   ^~~~~~~~~~~~~
+> In file included from ../include/linux/sched/user.h:7:0,
+>                   from ../kernel/user.c:17:
+> ../kernel/user.c: In function ‘uid_cache_init’:
+> ../kernel/user.c:225:37: error: ‘struct user_struct’ has no member named ‘epoll_watches’; did you mean ‘nr_watches’?
+>    if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
+>                                       ^
+> Also fix type: "cpunter" -"counter" in a panic message.
+> 
+> Fixes: e75b89477811 ("fs/epoll: use a per-cpu counter for user's watches count")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> [np: move ifdefs into wrapper functions, slightly improve panic message]
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Nick Piggin <npiggin@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> ---
+>   kernel/user.c | 25 ++++++++++++++++++++-----
+>   1 file changed, 20 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/user.c b/kernel/user.c
+> index a2673f940506..57d53568cb33 100644
+> --- a/kernel/user.c
+> +++ b/kernel/user.c
+> @@ -129,6 +129,21 @@ static struct user_struct *uid_hash_find(kuid_t uid, struct hlist_head *hashent)
+>   	return NULL;
+>   }
+>   
+> +static int user_epoll_alloc(struct user_struct *up)
+> +{
+> +#ifdef CONFIG_EPOLL
+> +	return percpu_counter_init(&up->epoll_watches, 0, GFP_KERNEL);
+> +#endif
+> +	return 0;
+> +}
+> +
+> +static void user_epoll_free(struct user_struct *up)
+> +{
+> +#ifdef CONFIG_EPOLL
+> +	percpu_counter_destroy(&up->epoll_watches);
+> +#endif
+> +}
+> +
+>   /* IRQs are disabled and uidhash_lock is held upon function entry.
+>    * IRQ state (as stored in flags) is restored and uidhash_lock released
+>    * upon function exit.
+> @@ -138,7 +153,7 @@ static void free_user(struct user_struct *up, unsigned long flags)
+>   {
+>   	uid_hash_remove(up);
+>   	spin_unlock_irqrestore(&uidhash_lock, flags);
+> -	percpu_counter_destroy(&up->epoll_watches);
+> +	user_epoll_free(up);
+>   	kmem_cache_free(uid_cachep, up);
+>   }
+>   
+> @@ -186,7 +201,7 @@ struct user_struct *alloc_uid(kuid_t uid)
+>   
+>   		new->uid = uid;
+>   		refcount_set(&new->__count, 1);
+> -		if (percpu_counter_init(&new->epoll_watches, 0, GFP_KERNEL)) {
+> +		if (user_epoll_alloc(new)) {
+>   			kmem_cache_free(uid_cachep, new);
+>   			return NULL;
+>   		}
+> @@ -200,7 +215,7 @@ struct user_struct *alloc_uid(kuid_t uid)
+>   		spin_lock_irq(&uidhash_lock);
+>   		up = uid_hash_find(uid, hashent);
+>   		if (up) {
+> -			percpu_counter_destroy(&new->epoll_watches);
+> +			user_epoll_free(new);
+>   			kmem_cache_free(uid_cachep, new);
+>   		} else {
+>   			uid_hash_insert(new, hashent);
+> @@ -222,8 +237,8 @@ static int __init uid_cache_init(void)
+>   	for(n = 0; n < UIDHASH_SZ; ++n)
+>   		INIT_HLIST_HEAD(uidhash_table + n);
+>   
+> -	if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
+> -		panic("percpu cpunter alloc failed");
+> +	if (user_epoll_alloc(&root_user))
+> +		panic("root_user epoll percpu counter alloc failed");
+>   
+>   	/* Insert the root user immediately (init already runs as root) */
+>   	spin_lock_irq(&uidhash_lock);
+> 
 
-The first line gives the number of direct subtests, the second "Totals"
-line is the accumulated sum of all tests and test parameters.
 
-This format is based on the one used by kselftest[1].
-
-[1]: https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/kselftest.h#L109
-
-Signed-off-by: David Gow <davidgow@google.com>
----
-
-This is the long-awaited v2 of the test statistics patch:
-https://lore.kernel.org/linux-kselftest/20201211072319.533803-1-davidgow@google.com/
-
-It updates the patch to apply on current mainline kernels, takes skipped
-tests into account, changes the output format to better match what
-kselftest uses, and addresses some of the comments from v1.
-
-Please let me know what you think, in particular:
-- Is this sufficient to assuage any worries about porting tests to
-  KUnit?
-- Are we printing too many stats by default: for a lot of existing tests
-  many of them are useless. I'm particuarly curious about the separate
-  "Totals" line, versus the per-suite line -- is that useful? Should it
-  only be printed when the totals differ?
-- Is the output format sufficiently legible for people and/or tools
-  which may want to parse it?
-
-Cheers,
--- David
-
-Changelog:
-
-Changes since v1:
-https://lore.kernel.org/linux-kselftest/20201211072319.533803-1-davidgow@google.com/
-- Rework to use a new struct kunit_result_stats, with helper functions
-  for adding results, accumulating them over nested structures, etc.
-- Support skipped tests, report them separately from failures and
-  passes.
-- New output format to better match kselftest:
-  - "pass:n fail:n skip:n total:n"
-- Changes to stats_enabled parameter:
-  - Now a module parameter, with description
-  - Default "1" option now prints even when no tests fail.
-- Improved parser fix which doesn't break crashed test detection.
-
----
- lib/kunit/test.c                    | 109 ++++++++++++++++++++++++++++
- tools/testing/kunit/kunit_parser.py |   2 +-
- 2 files changed, 110 insertions(+), 1 deletion(-)
-
-diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-index d79ecb86ea57..f246b847024e 100644
---- a/lib/kunit/test.c
-+++ b/lib/kunit/test.c
-@@ -10,6 +10,7 @@
- #include <kunit/test-bug.h>
- #include <linux/kernel.h>
- #include <linux/kref.h>
-+#include <linux/moduleparam.h>
- #include <linux/sched/debug.h>
- #include <linux/sched.h>
- 
-@@ -51,6 +52,51 @@ void __kunit_fail_current_test(const char *file, int line, const char *fmt, ...)
- EXPORT_SYMBOL_GPL(__kunit_fail_current_test);
- #endif
- 
-+/*
-+ * KUnit statistic mode:
-+ * 0 - disabled
-+ * 1 - only when there is more than one subtest
-+ * 2 - enabled
-+ */
-+static int kunit_stats_enabled = 1;
-+module_param_named(stats_enabled, kunit_stats_enabled, int, 0644);
-+MODULE_PARM_DESC(stats_enabled,
-+		  "Print test stats: never (0), only for multiple subtests (1), or always (2)");
-+
-+struct kunit_result_stats {
-+	unsigned long passed;
-+	unsigned long skipped;
-+	unsigned long failed;
-+	unsigned long total;
-+};
-+
-+static bool kunit_should_print_stats(struct kunit_result_stats stats)
-+{
-+	if (kunit_stats_enabled == 0)
-+		return false;
-+
-+	if (kunit_stats_enabled == 2)
-+		return true;
-+
-+	return (stats.total > 1);
-+}
-+
-+static void kunit_print_test_stats(struct kunit *test,
-+				   struct kunit_result_stats stats)
-+{
-+	if (!kunit_should_print_stats(stats))
-+		return;
-+
-+	kunit_log(KERN_INFO, test,
-+		  KUNIT_SUBTEST_INDENT
-+		  "# %s: pass:%lu fail:%lu skip:%lu total:%lu",
-+		  test->name,
-+		  stats.passed,
-+		  stats.failed,
-+		  stats.skipped,
-+		  stats.total);
-+}
-+
- /*
-  * Append formatted message to log, size of which is limited to
-  * KUNIT_LOG_SIZE bytes (including null terminating byte).
-@@ -393,15 +439,69 @@ static void kunit_run_case_catch_errors(struct kunit_suite *suite,
- 		test_case->status = KUNIT_SUCCESS;
- }
- 
-+static void kunit_print_suite_stats(struct kunit_suite *suite,
-+				    struct kunit_result_stats suite_stats,
-+				    struct kunit_result_stats param_stats)
-+{
-+	if (kunit_should_print_stats(suite_stats)) {
-+		kunit_log(KERN_INFO, suite,
-+			  "# %s: pass:%lu fail:%lu skip:%lu total:%lu",
-+			  suite->name,
-+			  suite_stats.passed,
-+			  suite_stats.failed,
-+			  suite_stats.skipped,
-+			  suite_stats.total);
-+	}
-+
-+	if (kunit_should_print_stats(param_stats)) {
-+		kunit_log(KERN_INFO, suite,
-+			  "# Totals: pass:%lu fail:%lu skip:%lu total:%lu",
-+			  param_stats.passed,
-+			  param_stats.failed,
-+			  param_stats.skipped,
-+			  param_stats.total);
-+	}
-+}
-+
-+static void kunit_update_stats(struct kunit_result_stats *stats,
-+			       enum kunit_status status)
-+{
-+	switch (status) {
-+	case KUNIT_SUCCESS:
-+		stats->passed++;
-+		break;
-+	case KUNIT_SKIPPED:
-+		stats->skipped++;
-+		break;
-+	case KUNIT_FAILURE:
-+		stats->failed++;
-+		break;
-+	}
-+
-+	stats->total++;
-+}
-+
-+static void kunit_accumulate_stats(struct kunit_result_stats *total,
-+				   struct kunit_result_stats add)
-+{
-+	total->passed += add.passed;
-+	total->skipped += add.skipped;
-+	total->failed += add.failed;
-+	total->total += add.total;
-+}
-+
- int kunit_run_tests(struct kunit_suite *suite)
- {
- 	char param_desc[KUNIT_PARAM_DESC_SIZE];
- 	struct kunit_case *test_case;
-+	struct kunit_result_stats suite_stats = { 0 };
-+	struct kunit_result_stats total_stats = { 0 };
- 
- 	kunit_print_subtest_start(suite);
- 
- 	kunit_suite_for_each_test_case(suite, test_case) {
- 		struct kunit test = { .param_value = NULL, .param_index = 0 };
-+		struct kunit_result_stats param_stats = { 0 };
- 		test_case->status = KUNIT_SKIPPED;
- 
- 		if (test_case->generate_params) {
-@@ -431,14 +531,23 @@ int kunit_run_tests(struct kunit_suite *suite)
- 				test.param_value = test_case->generate_params(test.param_value, param_desc);
- 				test.param_index++;
- 			}
-+
-+			kunit_update_stats(&param_stats, test.status);
-+
- 		} while (test.param_value);
- 
-+		kunit_print_test_stats(&test, param_stats);
-+
- 		kunit_print_ok_not_ok(&test, true, test_case->status,
- 				      kunit_test_case_num(suite, test_case),
- 				      test_case->name,
- 				      test.status_comment);
-+
-+		kunit_update_stats(&suite_stats, test_case->status);
-+		kunit_accumulate_stats(&total_stats, param_stats);
- 	}
- 
-+	kunit_print_suite_stats(suite, suite_stats, total_stats);
- 	kunit_print_subtest_end(suite);
- 
- 	return 0;
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-index b88db3f51dc5..c699f778da06 100644
---- a/tools/testing/kunit/kunit_parser.py
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -137,7 +137,7 @@ def print_log(log) -> None:
- 	for m in log:
- 		print_with_timestamp(m)
- 
--TAP_ENTRIES = re.compile(r'^(TAP|[\s]*ok|[\s]*not ok|[\s]*[0-9]+\.\.[0-9]+|[\s]*#).*$')
-+TAP_ENTRIES = re.compile(r'^(TAP|[\s]*ok|[\s]*not ok|[\s]*[0-9]+\.\.[0-9]+|[\s]*# (Subtest:|.*: kunit test case crashed!)).*$')
- 
- def consume_non_diagnostic(lines: LineStream) -> None:
- 	while lines and not TAP_ENTRIES.match(lines.peek()):
 -- 
-2.32.0.554.ge1b32706d8-goog
+~Randy
 
