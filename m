@@ -2,69 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A445D3E02F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770963E02F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238684AbhHDOUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:20:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238677AbhHDOUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:20:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BFC260F25
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:19:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628086789;
-        bh=UhV/SQfdLBYTc9D9nBIqPDxNpUescq5pja8sCC7bUhg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GqW+Ix8bE9Xpa1PchSe10rwy9phm1XMd4MtWpBN7X3eojLy8JN6KQp9n/43TFtwni
-         80y7yvlPbt9DWFp/kScILAMs5dZoVWsxp5peA10/x5cfZa5vObdwIDWpX0jkQFvYaT
-         2MgpL23FyoaDUNhgSS2nyNLYahv0fdWor9n5QSwmUSsJLUvt7JoCZyDZ33EVspregL
-         jDwdyiYhAt5flGpgHfIHdpgTM1ACwW61TYHC6twk5Khz9kuXn/Gp2H4ZEQb28P8yN1
-         FPN6Bs7CKtVW8/Ig8CE1Yf1LpEy2t7/uIkXgk1gg65UZJGajHvq52xvBjKFLdOLOay
-         vieUvKuAW7pSw==
-Received: by mail-wr1-f47.google.com with SMTP id l18so2460729wrv.5
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:19:49 -0700 (PDT)
-X-Gm-Message-State: AOAM531zr1zDMgQC4yOe1lMn6VqX56TXtOXuqmk9/ljgL7TAcmrI4n/k
-        uy0KebWAVi5vY9KC8YDcpqrtZZRIPTtylDzdhG0=
-X-Google-Smtp-Source: ABdhPJz4webvoPA0EIBz9Nqvki0G4OjA8pvIy/LkSY3nQYdB4tbtdSxD94XNSCYZc0/wF2Fsa+T9PiEhNiWOJgXVQLE=
-X-Received: by 2002:adf:e107:: with SMTP id t7mr29131713wrz.165.1628086788270;
- Wed, 04 Aug 2021 07:19:48 -0700 (PDT)
+        id S238676AbhHDOVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237114AbhHDOV2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 10:21:28 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34676C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:21:16 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1mBHlf-0000JZ-53; Wed, 04 Aug 2021 16:21:11 +0200
+Date:   Wed, 4 Aug 2021 16:21:11 +0200
+From:   Martin Kaiser <lists@kaiser.cx>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: remove RT_TRACE and DBG_88E prints
+ from ioctl_linux.c
+Message-ID: <20210804142111.pukmtsxaqdixll3r@viti.kaiser.cx>
+References: <20210802073917.8647-1-martin@kaiser.cx>
+ <20210804131214.GK1931@kadam>
 MIME-Version: 1.0
-References: <CAK8P3a0i0WP24Z0TScmPqKxmM2ovtKnmm+qZq6+Tc1ju+hma0w@mail.gmail.com>
- <20210804141049.499767-1-kherbst@redhat.com>
-In-Reply-To: <20210804141049.499767-1-kherbst@redhat.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 4 Aug 2021 16:19:32 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a136c_L3yVn-841Sbfib9UMOf1M-pk+2SqWt0wD2zfRKQ@mail.gmail.com>
-Message-ID: <CAK8P3a136c_L3yVn-841Sbfib9UMOf1M-pk+2SqWt0wD2zfRKQ@mail.gmail.com>
-Subject: Re: [PATCH] depend on BACKLIGHT_CLASS_DEVICE for more devices
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lyude Paul <lyude@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        ML nouveau <nouveau@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210804131214.GK1931@kadam>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 4:10 PM Karol Herbst <kherbst@redhat.com> wrote:
->
-> playing around a little bit with this, I think the original "select
-> BACKLIGHT_CLASS_DEVICE" is fine. Atm we kind of have this weird mix of
-> drivers selecting and others depending on it. We could of course convert
-> everything over to depend, and break those cycling dependency issues with
-> this.
->
-> Anyway this change on top of my initial patch is enough to make Kconfig
-> happy and has the advantage of not having to mess with the deps of nouveau
-> too much.
+Thus wrote Dan Carpenter (dan.carpenter@oracle.com):
 
-Looks good to me. We'd probably want to make the BACKLIGHT_CLASS_DEVICE
-option itself 'default FB || DRM' though, to ensure that defconfigs
-keep working.
+> On Mon, Aug 02, 2021 at 09:39:17AM +0200, Martin Kaiser wrote:
+> > @@ -4203,7 +3940,6 @@ static int rtw_dbg_port(struct net_device *dev,
+> >  			u16 start_value = 0;
+> >  			u32 write_num = extra_arg;
+> >  			int i;
+> > -			u8 final;
+> >  			struct xmit_frame	*xmit_frame;
 
-      Arnd
+> >  			xmit_frame = rtw_IOL_accquire_xmit_frame(padapter);
+> > @@ -4216,12 +3952,6 @@ static int rtw_dbg_port(struct net_device *dev,
+> >  				rtw_IOL_append_WB_cmd(xmit_frame, reg, i+start_value, 0xFF);
+> >  			if (_SUCCESS != rtw_IOL_exec_cmds_sync(padapter, xmit_frame, 5000, 0))
+> >  				ret = -EPERM;
+> > -
+> > -			final = rtw_read8(padapter, reg);
+> > -			if (start_value+write_num-1 == final)
+> > -				DBG_88E("continuous IOL_CMD_WB_REG to 0x%x %u times Success, start:%u, final:%u\n", reg, write_num, start_value, final);
+> > -			else
+> > -				DBG_88E("continuous IOL_CMD_WB_REG to 0x%x %u times Fail, start:%u, final:%u\n", reg, write_num, start_value, final);
+> >  		}
+
+> I don't have a problem with the patch but these tests don't make any
+> sense now that we don't print a Success/Fail at the end.  (We should
+> probably delete the whole function and all the related code)
+
+I removed the IOL tests (case 0x78) in v2, similar to the rtl8723bs
+driver.
+
+Thanks,
+Martin
