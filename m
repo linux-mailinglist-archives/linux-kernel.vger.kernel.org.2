@@ -2,98 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94D73DF8C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 02:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6167E3DF8C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 02:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233295AbhHDAKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 20:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58376 "EHLO
+        id S234602AbhHDAOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 20:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233118AbhHDAKw (ORCPT
+        with ESMTP id S233118AbhHDAOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 20:10:52 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C09AC061757
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 17:10:41 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id l4so589116ljq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 17:10:41 -0700 (PDT)
+        Tue, 3 Aug 2021 20:14:10 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808F6C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 17:13:57 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id k2so1006386plk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 17:13:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dZroPpcFs5zl1u34pH41pVd3sjk7aZJY+DvQA0DPFYI=;
-        b=CAeLh4KV0yVGHTEzyzBNcmMyjMClbLqxkGgftdacvLmb1YBxEp8QtWRe9x/ntinyRS
-         XzTQ+xZ8BdFgo0T7APnudiiz0VpL87rUWhaK6bdaYd9tDO/+mPi8MmIHZW4N+4C2p35j
-         dGtY6FBJt6YdqH+elWqxz1mgcr/jmScQCovTs=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wO/UCtLUJfMOPjFMa3FSun6AI/QRILAfUuJo3JZX0fg=;
+        b=elUaJCZRN3EO363usLpZzl18/cT4gFkB8vJu0xifJ1pgI1aUrEwF1Aqb+xcIKk/tWe
+         F4M9gbUoH/bTNrYPDgLVjcH6VX3wI4WVUnvOTqn9eO7lk4e6C6U6/tJxIq0iqid3CNAM
+         tdn+YdjOqgVfxep2mr8/UdSG58R7slkT9E4PRRsAOWYTo2q0Rd7QX5ozV5SM9BQHBSvJ
+         //qGYGz0QyfsyHpNbei2+30YDoTYCq3N5jQF7u2VpvXEUnWVXD2u+S6nSgJreV8wS4UA
+         aY3W+PYNOCq3f7ehtIHPs2OVTy6sEsbrMdO4174E/NAnxKOYqYeDsx2+ccMiFyU1uZWc
+         sGpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dZroPpcFs5zl1u34pH41pVd3sjk7aZJY+DvQA0DPFYI=;
-        b=Ww8M2lTf6mkFfzqBu29lIZ/zop9VAJEDQHKUsV0JVWzYEnn+NPveWtCKXKSRF3XY9M
-         nmTCoHOlPsVKvnR/wZMQvq75BNBiQypswikujCjRJqgbgkCwOAvPSy0PmGrPAa9E7rjw
-         ZZkn1ST3fiUf0htWX4LGn9zBGARPQl2str5C25ZtTaYgGhxDxfvjKDGEKftA3qLYEgjC
-         EjmIIWLD2YbDacP3YMbLYTOSjbiAeJmje7sUUIJ7nrV9P70xoophCEkK3FqXXHPfDQ19
-         OSaRzF4HEyNUWMViCbaF71bZ7gxCx8iWOhreAiFjyVNryaKM/mOrdMGvdhv8tFuA5kjK
-         X6tA==
-X-Gm-Message-State: AOAM531m2F7sJjU881CqUx9CXq4nO1K43zzlBLiJK+AN0x9JGABjRYTK
-        fR+13l6iSKFVvH733QHrDY4BXaPzIAVbmMWm
-X-Google-Smtp-Source: ABdhPJy3lEdh/P7ionKgbAr1c0LnW53eWWVsta08wD9ZGZNGr8J765SbQaaVwNPTmVE33xUTmb75Iw==
-X-Received: by 2002:a2e:5741:: with SMTP id r1mr16469782ljd.190.1628035839319;
-        Tue, 03 Aug 2021 17:10:39 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id u15sm32307lfk.12.2021.08.03.17.10.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 17:10:38 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id b6so1386687lff.10
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 17:10:38 -0700 (PDT)
-X-Received: by 2002:a05:6512:3f82:: with SMTP id x2mr17850839lfa.421.1628035838330;
- Tue, 03 Aug 2021 17:10:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wO/UCtLUJfMOPjFMa3FSun6AI/QRILAfUuJo3JZX0fg=;
+        b=dPXnHkVQnW/eMXQGw9L1so8mo//B7rJRxiSMeXbYvEwbBB4819EUG8PMVCIyaf1HMP
+         m5WdVkFhHUdJKOFlnYz1VDmBEYhYT8XU5KqCamlSScSSptLZH14kFaITUjHHZ3bOhBoq
+         KfW/yQjyFeEXrqDYCxDpvfIlJ929yaGXwINflZFmXOZF3w+NJdPxblgpygTR+ZLBkzSP
+         2m1mfAbhEiVuP/LwWx16jt9kpFAWrPg9VJy+j6CpF4aO06h1DNhiUst8/1uniIWA2RLb
+         tAkGRTQyYziW6S0ezZkTYYMNRtwc09wAbJjegik74q70kqO6kefvbYzFL24GDdfjU4iE
+         Nebw==
+X-Gm-Message-State: AOAM530m2S6Rcy8JkLlhkOV5+L6AfRmd9/jca+7E7xfTzWE/AmpGxZG1
+        QXFaNMJym1lbvH7W8wEdmPg=
+X-Google-Smtp-Source: ABdhPJzMNGF6LbiWAOwhuFjMYSP/ZflXBkO7SxTufDjoadatczNXyqXq+8wERU7Xjp0WAkz8gDPfcA==
+X-Received: by 2002:a62:e90b:0:b029:30e:4530:8dca with SMTP id j11-20020a62e90b0000b029030e45308dcamr24704562pfh.17.1628036037014;
+        Tue, 03 Aug 2021 17:13:57 -0700 (PDT)
+Received: from localhost.localdomain ([2001:8003:d90f:f801:7164:b4e6:b90b:c4d5])
+        by smtp.gmail.com with ESMTPSA id x189sm382302pfx.99.2021.08.03.17.13.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 17:13:56 -0700 (PDT)
+From:   "Scott J. Crouch" <scottjcrouch@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     scottjcrouch@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8723bs: Remove initialisation of globals to 0
+Date:   Wed,  4 Aug 2021 10:13:34 +1000
+Message-Id: <20210804001335.16742-1-scottjcrouch@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
- <20210716114635.14797-1-papadakospan@gmail.com> <CAHk-=whfeq9gyPWK3yao6cCj7LKeU3vQEDGJ3rKDdcaPNVMQzQ@mail.gmail.com>
- <YQnHxIU+EAAxIjZA@mit.edu> <YQnU5m/ur+0D5MfJ@casper.infradead.org> <YQnZgq3gMKGI1Nig@mit.edu>
-In-Reply-To: <YQnZgq3gMKGI1Nig@mit.edu>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 3 Aug 2021 17:10:22 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiSwzrWOSN5UCrej3YcLRPmW5tViGSA5p2m-hiyKnQiMg@mail.gmail.com>
-Message-ID: <CAHk-=wiSwzrWOSN5UCrej3YcLRPmW5tViGSA5p2m-hiyKnQiMg@mail.gmail.com>
-Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Leonidas P. Papadakos" <papadakospan@gmail.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        zajec5@gmail.com, "Darrick J. Wong" <djwong@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 5:04 PM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> TBH, I had forgotten that we had an in-kernel ntfs implementation.
+This fixes the following checkpatch.pl errors:
 
-Well, that's the one we are comparing to, so forgetting it is a bit of
-an oversight.
+    ERROR: do not initialise globals to {0,NULL}
 
-> Whenver I've ever needed to access ntfs files, I've always used the
-> ntfs-3g FUSE package.
+Signed-off-by: Scott J. Crouch <scottjcrouch@gmail.com>
+---
+ drivers/staging/rtl8723bs/os_dep/os_intfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The user-space FUSE thing does indeed work reasonably well.
+diff --git a/drivers/staging/rtl8723bs/os_dep/os_intfs.c b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
+index b9efc1dfe6c7..a6d3c6fa900d 100644
+--- a/drivers/staging/rtl8723bs/os_dep/os_intfs.c
++++ b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
+@@ -111,7 +111,7 @@ static int rtw_hwpwrp_detect; /* HW power  ping detect 0:disable , 1:enable */
+ 
+ static int rtw_hw_wps_pbc;
+ 
+-int rtw_mc2u_disable = 0;
++int rtw_mc2u_disable;
+ 
+ static int rtw_80211d;
+ 
+@@ -122,7 +122,7 @@ static char *ifname = "wlan%d";
+ module_param(ifname, charp, 0644);
+ MODULE_PARM_DESC(ifname, "The default name to allocate for first interface");
+ 
+-char *rtw_initmac = NULL;  /*  temp mac address if users want to use instead of the mac address in Efuse */
++char *rtw_initmac;  /*  temp mac address if users want to use instead of the mac address in Efuse */
+ 
+ module_param(rtw_initmac, charp, 0644);
+ module_param(rtw_channel_plan, int, 0644);
+-- 
+2.32.0
 
-It performs horribly badly if you care about things like that, though.
-
-In fact, your own numbers kind of show that:
-
-  ntfs/default: 670 tests, 55 failures, 211 skipped, 34783 seconds
-  ntfs3/default: 664 tests, 67 failures, 206 skipped, 8106 seconds
-
-and that's kind of the point of ntfs3.
-
-           Linus
