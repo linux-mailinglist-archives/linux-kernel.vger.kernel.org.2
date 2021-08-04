@@ -2,122 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE073E0854
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83AFF3E0860
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239574AbhHDSxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 14:53:55 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:50092 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238726AbhHDSxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 14:53:54 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mBM1J-0002cI-Lo; Wed, 04 Aug 2021 20:53:37 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     joro@8bytes.org, will@kernel.org,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
-        john.garry@huawei.com, dianders@chromium.org, rajatja@google.com,
-        chenxiang66@hisilicon.com
-Subject: Re: [PATCH v3 08/25] iommu/rockchip: Drop IOVA cookie management
-Date:   Wed, 04 Aug 2021 20:53:36 +0200
-Message-ID: <4512656.mogB4TqSGs@diego>
-In-Reply-To: <0d25511c58981ecd0a1f3006dc1c30a73fb7d377.1628094601.git.robin.murphy@arm.com>
-References: <cover.1628094600.git.robin.murphy@arm.com> <0d25511c58981ecd0a1f3006dc1c30a73fb7d377.1628094601.git.robin.murphy@arm.com>
+        id S240364AbhHDS4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 14:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239650AbhHDS4m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 14:56:42 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F81C061799
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 11:56:28 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id z6-20020a0568302906b02904f268d34f86so2256106otu.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 11:56:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=VcqvjU1bhq3QLbhM94VyWBNxMowkTRxB2SS37S2YMHU=;
+        b=eow6uihoHcyolO28gBNzCMo+OcLJeolWeLIfML7V5HBkrGBB2+RPREORTfmPViraQc
+         Utis+pBR22PU8tP3USQ7Vn4auPnVqU04uhgMtRgeHLloRRdcMsaJTc0wdBSyOIf7hiW0
+         jA6mZMzCH/w9Oczg1HXmHbHAvA4Dl7a6lj8Ig=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=VcqvjU1bhq3QLbhM94VyWBNxMowkTRxB2SS37S2YMHU=;
+        b=UhZpwzA+yOH+rwXy8zLwTGmnU8HrAonTDsSYCXWSYGb0TDurFP18TMT71WC8eiiNNz
+         yz1jmoGsWluGxZt4lZ8dW3tEeEba67hD3c+tKgW/yyTxCHu2VDRnZ23TfLduymqmPBvi
+         jU5o/H5+Iqb6woKEmQij8pcrZjG3qnN+dWNB2YCbOW0zTSh2xZxING8jZwj0M3hgVBJy
+         tlTITmStDnGn3Ss619DnyB4budTFtroBqayX8aF+VwhGl4H+bPzRZJhVIUk45O/obPpS
+         7DQ26wfTjyXTD/JVsLWXYZSjfDSwuUvubjxH28Lro05m1wMAYh/1jkLipHbTVZAvnh4D
+         7RBw==
+X-Gm-Message-State: AOAM530ZCBmXYSobJkPZu9Esb/E62loyzGj8Q8lzD05BnV7ikN7PaYBf
+        Je2c89Y3duA09YVEtD9lV00UvesrspL8cwFLdUjjww==
+X-Google-Smtp-Source: ABdhPJzr7nO7f94SsRcOCzg0xCQZV6WBYtk8lxSr4M4jRgk8usQPXYX9eUO1QierzYm6lnMFOVeugytO9vsj9NDOexc=
+X-Received: by 2002:a05:6830:1490:: with SMTP id s16mr850033otq.233.1628103387954;
+ Wed, 04 Aug 2021 11:56:27 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 4 Aug 2021 11:56:27 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <1627581885-32165-2-git-send-email-sibis@codeaurora.org>
+References: <1627581885-32165-1-git-send-email-sibis@codeaurora.org> <1627581885-32165-2-git-send-email-sibis@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 4 Aug 2021 11:56:27 -0700
+Message-ID: <CAE-0n53YRQamHMcb1T0oRkSO0_Shhskzpr4oX60UpiEB8ZY63A@mail.gmail.com>
+Subject: Re: [PATCH 1/4] dt-bindings: cpufreq: cpufreq-qcom-hw: Add compatible
+ for SM8250/8350
+To:     Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org,
+        mka@chromium.org, robh+dt@kernel.org
+Cc:     viresh.kumar@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dianders@chromium.org, tdas@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 4. August 2021, 19:15:36 CEST schrieb Robin Murphy:
-> The core code bakes its own cookies now.
-> 
-> CC: Heiko Stuebner <heiko@sntech.de>
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-
-
-On a Rockchip rk3288 (arm32), rk3399 (arm64) and px30 (arm64)
-with the graphics pipeline using the iommu
-
-Tested-by: Heiko Stuebner <heiko@sntech.de>
-Acked-by: Heiko Stuebner <heiko@sntech.de>
-
-
-Works now nicely on both arm32 and arm64
-
-
-Thanks
-Heiko
-
-
-> 
+Quoting Sibi Sankar (2021-07-29 11:04:42)
+> Re-arranging the register regions to support per core L3 DCVS would lead
+> to bindings breakage when using an older dt with a newer kernel. So,
+> document the EPSS compatible for SM8250/SM8350 SoCs and use them in the
+> CPUFreq-hw driver to prevent such breakages.
+>
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 > ---
-> 
-> v3: Also remove unneeded include
-> ---
->  drivers/iommu/rockchip-iommu.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
-> 
-> diff --git a/drivers/iommu/rockchip-iommu.c b/drivers/iommu/rockchip-iommu.c
-> index 9febfb7f3025..5cb260820eda 100644
-> --- a/drivers/iommu/rockchip-iommu.c
-> +++ b/drivers/iommu/rockchip-iommu.c
-> @@ -10,7 +10,6 @@
->  #include <linux/compiler.h>
->  #include <linux/delay.h>
->  #include <linux/device.h>
-> -#include <linux/dma-iommu.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/errno.h>
->  #include <linux/interrupt.h>
-> @@ -1074,10 +1073,6 @@ static struct iommu_domain *rk_iommu_domain_alloc(unsigned type)
->  	if (!rk_domain)
->  		return NULL;
->  
-> -	if (type == IOMMU_DOMAIN_DMA &&
-> -	    iommu_get_dma_cookie(&rk_domain->domain))
-> -		goto err_free_domain;
-> -
->  	/*
->  	 * rk32xx iommus use a 2 level pagetable.
->  	 * Each level1 (dt) and level2 (pt) table has 1024 4-byte entries.
-> @@ -1085,7 +1080,7 @@ static struct iommu_domain *rk_iommu_domain_alloc(unsigned type)
->  	 */
->  	rk_domain->dt = (u32 *)get_zeroed_page(GFP_KERNEL | GFP_DMA32);
->  	if (!rk_domain->dt)
-> -		goto err_put_cookie;
-> +		goto err_free_domain;
->  
->  	rk_domain->dt_dma = dma_map_single(dma_dev, rk_domain->dt,
->  					   SPAGE_SIZE, DMA_TO_DEVICE);
-> @@ -1106,9 +1101,6 @@ static struct iommu_domain *rk_iommu_domain_alloc(unsigned type)
->  
->  err_free_dt:
->  	free_page((unsigned long)rk_domain->dt);
-> -err_put_cookie:
-> -	if (type == IOMMU_DOMAIN_DMA)
-> -		iommu_put_dma_cookie(&rk_domain->domain);
->  err_free_domain:
->  	kfree(rk_domain);
->  
-> @@ -1137,8 +1129,6 @@ static void rk_iommu_domain_free(struct iommu_domain *domain)
->  			 SPAGE_SIZE, DMA_TO_DEVICE);
->  	free_page((unsigned long)rk_domain->dt);
->  
-> -	if (domain->type == IOMMU_DOMAIN_DMA)
-> -		iommu_put_dma_cookie(&rk_domain->domain);
->  	kfree(rk_domain);
->  }
->  
-> 
 
-
-
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
