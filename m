@@ -2,130 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2303E06F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFF73E06F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238296AbhHDRuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 13:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44968 "EHLO
+        id S239958AbhHDRvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 13:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbhHDRuM (ORCPT
+        with ESMTP id S239914AbhHDRvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:50:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD13C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 10:49:59 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628099397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qqRttOyqAIJ+Hf5wxxzP7SWcoUH4TPpXSQNKqt43lrA=;
-        b=zKK9SQQXV9TXrFCbujnF+6zKp6d/ZdMxjHAKVmCjP/tt6L5boCgx3Rb53eKj3GuB/eRBQn
-        SnXdEWY3sqSmFXnMhN3mLvp1fwf4YuwSdnAy5bPzGwu2NJiK6kAbo3gD2BcsZqjx6FYr46
-        rPBgS+C7EQq3Ek9zbYyH6auSc6KdUWp9zBhvuH5qhU0GjkEbIfRpiGE7WpfX8vJ8OQ1YDs
-        I9smDF66IWzTXFwxf0GolOovFSOR8VxDwC0Bz7o1XvA7nWCHwmfG8NwpGz1UjpodJM1SPY
-        Rx+In4BN09Bv/LwWGPzu9AHvkzSJCz6+kRzejVYb2AlqMBjZraCr/eb5/BDm5g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628099397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qqRttOyqAIJ+Hf5wxxzP7SWcoUH4TPpXSQNKqt43lrA=;
-        b=yMGOSfVwNsG601jxWcEZCABiu7vnxZKiXvWT9JSVABtH53+MI9cWFfo/bUWTiG+piq1new
-        0vfcaWBs3OigkQCQ==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [patch 62/63] locking/rtmutex: Add adaptive spinwait mechanism
-In-Reply-To: <20210804123030.GD8057@worktop.programming.kicks-ass.net>
-References: <20210730135007.155909613@linutronix.de>
- <20210730135208.637100512@linutronix.de>
- <20210804123030.GD8057@worktop.programming.kicks-ass.net>
-Date:   Wed, 04 Aug 2021 19:49:56 +0200
-Message-ID: <87y29h14mz.ffs@tglx>
+        Wed, 4 Aug 2021 13:51:02 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3992C061799;
+        Wed,  4 Aug 2021 10:50:48 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so9927660pjs.0;
+        Wed, 04 Aug 2021 10:50:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UBg423yx32A1qO4m1utyUDRqy/ul+Eqo8Zka5xgwqa0=;
+        b=ghdtmD1sDvLYG1dGFNfSvjKModtvS3BXqFvv1opCp5yU9rR8u10EjvSFOHCtaFb1rQ
+         rGH0JZOujXN+imECE3RMlpyO/pedLKDOEAKbJGSc/TvJm5ee063zbuZUHmz5mUHlug6f
+         bJDDc/Sy+Sp3LF/nP/Fe4lkcy7EiRjjPTSKRmoqfKh+0YrfDvuiKQcRPgKE/+zYQhz/X
+         u4rICXJbnnYaPrs8sbnmAUz+QkJlXYnkf+qXYAgeRw3Wd9WZHQ4oZ+4OVfu/qwiuomjn
+         6x30dJPXnbhiqZBvTGvsdgUJ8gQCi8qNYc23Cn262ZJ8jHrulG5Hw0aJnufLnkglyyZY
+         cVrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UBg423yx32A1qO4m1utyUDRqy/ul+Eqo8Zka5xgwqa0=;
+        b=UsoFdxd07M0VaECQb3ST9EQq781yFx6CM4s7OoINQv7PatSDkfXwOpIQCqzZ644SbA
+         pZHVVe1OhKTUCMqtNMYs8PPiBJvtafamUQiztKCdxYiuCukBv4MSWfCLhIP9RmOTnJFF
+         6dh5ev2XEX7m8hhD9PP/33GdykX26eebl6eb51E7/xsLZuCvh3LEroETA9+D1IV/XTwm
+         nrD8D3FDm8zcf7F4OuP7/NBjtvreX66WwcddsGtsbifjHfEvu6qNL47LNAuxYhKYtX2y
+         7e9+1m4U3W9Mo3fPkKgKvMIBapL3spHlp5bK5NbAGfTxKgVemJBGTQ1US0hDacLChtRx
+         O0Pg==
+X-Gm-Message-State: AOAM531a5/Qly8vurQ1GMd5kOwU6nBzaUZp8pBKQnex+ZJhmgdIDyhx6
+        /9rfoMPCfr4tksGkHvWiVWt6fsLRW2P+dvwtil/44jK4Vsg=
+X-Google-Smtp-Source: ABdhPJwFCIZ/GJHp2dPMuOHwQcylFMLbuhLGTITuPt96w+fdzKmRLOXA+duG1rQArJPTxeV3nlJx6rb799CpjN3W5ac=
+X-Received: by 2002:a63:154a:: with SMTP id 10mr212645pgv.428.1628099448194;
+ Wed, 04 Aug 2021 10:50:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1931ca440b47344fe357d5438aeab4b439943d10.1627936393.git.peilin.ye@bytedance.com>
+ <672e6f13-bf58-d542-6712-e6f803286373@iogearbox.net> <CAM_iQpUb-zbBUGdYxCwxBJSKJ=6Gm3hFwFP+nc+43E_hofuK1w@mail.gmail.com>
+ <e2a8ac28-f6ee-25e7-6cb9-cc28369b030a@iogearbox.net>
+In-Reply-To: <e2a8ac28-f6ee-25e7-6cb9-cc28369b030a@iogearbox.net>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed, 4 Aug 2021 10:50:37 -0700
+Message-ID: <CAM_iQpU-Z5qQOW=0FV4uXo__EDmyMqycgiuyykfHD8TN+-xZ-w@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/2] net/sched: sch_ingress: Support clsact
+ egress mini-Qdisc option
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Peilin Ye <peilin.ye@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04 2021 at 14:30, Peter Zijlstra wrote:
-> On Fri, Jul 30, 2021 at 03:51:09PM +0200, Thomas Gleixner wrote:
->> From: Steven Rostedt <rostedt@goodmis.org>
->> 
->> Going to sleep when a spinlock or rwlock is contended can be quite
->> inefficient when the contention time is short and the lock owner is running
->> on a different CPU. The MCS mechanism is not applicable to rtmutex based
->> locks, so provide a simple adaptive spinwait mechanism for the RT specific
->> spin/rwlock implementations.
+On Tue, Aug 3, 2021 at 1:08 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> A better Changelog would explain *why* OSQ does not apply. I'm thinking
-> this ie because the (spin) waiters can be of different priorities and we
-> need to ensure the highest prio waiter gets to win?
+> On 8/3/21 2:08 AM, Cong Wang wrote:
+> > On Mon, Aug 2, 2021 at 2:11 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> >>
+> >> NAK, just use clsact qdisc in the first place which has both ingress and egress
+> >> support instead of adding such hack. You already need to change your scripts for
+> >> clsact-on, so just swap 'tc qdisc add dev eth0 ingress' to 'tc qdisc add dev eth0
+> >> clsact' w/o needing to change kernel.
+> >
+> > If we were able to change the "script" as easily as you described,
+> > you would not even see such a patch. The fact is it is not under
+> > our control, the most we can do is change the qdisc after it is
+> > created by the "script", ideally without interfering its traffic,
+> > hence we have such a patch.
+> >
+> > (BTW, it is actually not a script, it is a cloud platform.)
 >
-> AFAICT that isn't true even without OSQ, you just get a thundering herd
-> and the higher prio waiter has a better chance of winning the race but
-> all bets are off either way around.
+> Sigh, so you're trying to solve a non-technical issue with one cloud provider by
+> taking a detour for unnecessarily extending the kernel instead with functionality
+> that already exists in another qdisc (and potentially waiting few years until they
+> eventually upgrade). I presume Bytedance should be a big enough entity to make a
+> case for that provider to change it. After all swapping ingress with clsact for
+> such script is completely transparent and there is nothing that would break. (Fwiw,
+> from all the major cloud providers we have never seen such issue in our deployments.)
 
-Will do.
+Well, it is both non-technical and technical at the same time.
 
->> +#ifdef CONFIG_SMP
->
-> Existing convention would make that:
->
-> #ifdef CONFIG_RTMUTEX_SPIN_ON_OWNER
->
-> But I suppose that's indeed not required if we don't use OSQ.
+The non-technical part is that it is really hard to convince people from
+other team to restart their services just for a kernel change, people are just
+not happy to take risks.
 
-Right.
+The technical part is the bad design of clsact. It is too late to complain,
+but it should not create two _conceptual_  qdiscs (actually just one struct
+Qdisc) at the same time. If it only created just egress, we would
+not even bother changing ingress at all. Sigh.
 
->> +/*
->> + * Note that owner is a speculative pointer and dereferencing relies
->> + * on rcu_read_lock() and the check against the lock owner.
->> + */
->> +static bool rtlock_adaptive_spinwait(struct rt_mutex_base *lock,
->> +				     struct task_struct *owner)
->
-> similarly, this would be:
->
->   rt_mutex_spin_on_owner()
-
-Duh.
->
-> Esp. when this will be on rtmutex unconditionally, you want to mirror
-> the full set of conditions we also have on mutex_spin_on_owner():
->
-> 	|| need_resched() || vcpu_is_preempted(task_cpu(owner))
-
-Sure.
-
->> +			res = false;
->> +			break;
->> +		}
->> +		cpu_relax();
->> +	}
->> +	rcu_read_unlock();
->> +	return res;
->> +}
->
-> Additionally, we could consider adding something that would compare the
-> current prio to the top_waiter prio and terminate the loop if we're
-> found to be of lower prio, but lifetime issues are probably going to
-> make that 'interesting'.
-
-It's only the top priority waiter which can spin. If all of them start
-spinning then everything goes down the drain.
-
-Thanks,
-
-        tglx
+Thanks.
