@@ -2,78 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA5C3DFB22
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 514B13DFB29
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235358AbhHDFfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 01:35:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44662 "EHLO mail.kernel.org"
+        id S235366AbhHDFiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 01:38:07 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:38998 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234557AbhHDFfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 01:35:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCF9160E53;
-        Wed,  4 Aug 2021 05:35:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628055334;
-        bh=zVIHpj4NEn3dWWrU+4ksWTCCeJIRZY5B89FYQw8NrlI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q5Xmb145HSFUIH+RiVI6S3uS3c6MjuMY31DaNkJfHUifebiy7CjX2Dq/HoCe3nW6n
-         UCfI4wGYc6Pd03NqqGPUgyJd4YE3yJtCtuCvcirUAE4RSXAbkwB2aDfCMzxYuV0+1a
-         eU3w7SJ7y344LkBWlW0KXyx9iFsPavfNWAafE2GKkTfKs/hr2amNMzA65er7+SAmaC
-         fgquKnKdneMnv6PUd0GMOTkS/AUIuUzBSmqutD5hGl/fzwZote9OWzfKFLCxbZB//P
-         H+NFHKpPQg+N7Eljr4sRioChzWhuR8LMJyuZHcBNHPT/TMq7hYVjpn9Ztc/D5gqGBR
-         vpYKLMqPpnjNg==
-Date:   Wed, 4 Aug 2021 08:35:30 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx5: return the EFAULT per ibv_advise_mr(3)
-Message-ID: <YQonIu3VMTlGj0TJ@unreal>
-References: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
- <20210803162507.GA2892108@nvidia.com>
- <YQmDZpbCy3uTS5jv@unreal>
- <20210803181341.GE1721383@nvidia.com>
+        id S234557AbhHDFiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 01:38:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628055473; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=XdIMy/+KYlx0LiNJkuSBANk6R6Hn89TlHZhiYcNm2Ec=;
+ b=nZNN40QKzq3rUdvk1OJSJPSzShI8uU78wMlJg3H8alKwC88qcQffaQKF8aqYj13rM7TSfs6p
+ UxvaoTBZ2ottUFEluheBBV+zbLs3rGSonrlbMGF/usUNuryaF2zepw5G8/Dl65h7R3jovcJW
+ utNfuhOXwF7YEe1VVONLP3rOf5w=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 610a27a6041a739c46d95c00 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Aug 2021 05:37:42
+ GMT
+Sender: kalyan_t=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A9293C43217; Wed,  4 Aug 2021 05:37:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kalyan_t)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BDDD1C433D3;
+        Wed,  4 Aug 2021 05:37:40 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803181341.GE1721383@nvidia.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 04 Aug 2021 11:07:40 +0530
+From:   kalyan_t@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, rnayak@codeaurora.org,
+        stable@vger.kernel.org
+Subject: Re: [Freedreno] [v2] drm/msm/disp/dpu1: add safe lut config in dpu
+ driver
+In-Reply-To: <CAE-0n52+PvNpz5uqf3O_NsfQ4q2taeZmdSdoM3fGDLp5aQVj-A@mail.gmail.com>
+References: <1627987307-29347-1-git-send-email-kalyan_t@codeaurora.org>
+ <CAE-0n52+PvNpz5uqf3O_NsfQ4q2taeZmdSdoM3fGDLp5aQVj-A@mail.gmail.com>
+Message-ID: <b6aca5dda4e100694a3d8cb39cfc650d@codeaurora.org>
+X-Sender: kalyan_t@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 03:13:41PM -0300, Jason Gunthorpe wrote:
-> On Tue, Aug 03, 2021 at 08:56:54PM +0300, Leon Romanovsky wrote:
-> > On Tue, Aug 03, 2021 at 01:25:07PM -0300, Jason Gunthorpe wrote:
-> > > On Sun, Aug 01, 2021 at 05:20:50PM +0800, Li Zhijian wrote:
-> > > > ibv_advise_mr(3) says:
-> > > > EFAULT In one of the following: o When the range requested is out of the  MR  bounds,
-> > > >        or  when  parts of it are not part of the process address space. o One of the
-> > > >        lkeys provided in the scatter gather list is invalid or with wrong write access
-> > > > 
-> > > > Actually get_prefetchable_mr() will return NULL if it see above conditions
-> > > 
-> > > No, get_prefetchable_mr() returns NULL if the mkey is invalid
-> > 
-> > And what is this?
-> >   1701 static struct mlx5_ib_mr *                         
-> >   1702 get_prefetchable_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
-> >   1703                     u32 lkey)
-> > 
-> > ...
-> > 
-> >   1721         /* prefetch with write-access must be supported by the MR */
-> >   1722         if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
-> >   1723             !mr->umem->writable) {
-> >   1724                 mr = NULL;
-> >   1725                 goto end;
-> >   1726         }
+On 2021-08-04 01:43, Stephen Boyd wrote:
+> Quoting Kalyan Thota (2021-08-03 03:41:47)
+>> Add safe lut configuration for all the targets in dpu
+>> driver as per QOS recommendation.
+>> 
+>> Issue reported on SC7280:
+>> 
+>> With wait-for-safe feature in smmu enabled, RT client
+>> buffer levels are checked to be safe before smmu invalidation.
+>> Since display was always set to unsafe it was delaying the
+>> invalidaiton process thus impacting the performance on NRT clients
+>> such as eMMC and NVMe.
+>> 
+>> Validated this change on SC7280, With this change eMMC performance
+>> has improved significantly.
+>> 
+>> Changes in v1:
+>> - Add fixes tag (Sai)
+>> - CC stable kernel (Dimtry)
+>> 
+>> Fixes: cfacf946a464d4(drm/msm/disp/dpu1: add support for display for 
+>> SC7280 target)
 > 
-> I would say that is an invalid mkey
-
-I see it is as wrong write access.
-
-Thanks
-
+> This is wrong format and commit hash
 > 
-> Jason
+My bad, i'll fix it right away
+- KT
+
+> Fixes: 591e34a091d1 ("drm/msm/disp/dpu1: add support for display for
+> SC7280 target")
+> 
+>> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+>> Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org> 
+>> (sc7280, sc7180)
