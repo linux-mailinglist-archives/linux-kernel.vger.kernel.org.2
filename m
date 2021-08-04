@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01D83E0787
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668093E078E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240204AbhHDSY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 14:24:29 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:58035 "EHLO pegase2.c-s.fr"
+        id S240224AbhHDS01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 14:26:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235223AbhHDSY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 14:24:26 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Gg0WH6QzDz9sWW;
-        Wed,  4 Aug 2021 20:24:11 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 0L_DWaTW1BYS; Wed,  4 Aug 2021 20:24:11 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gg0WH5NCTz9sWL;
-        Wed,  4 Aug 2021 20:24:11 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9108D8B7AE;
-        Wed,  4 Aug 2021 20:24:11 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id HDyRtP5JMZTt; Wed,  4 Aug 2021 20:24:11 +0200 (CEST)
-Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 52B188B7A1;
-        Wed,  4 Aug 2021 20:24:11 +0200 (CEST)
-Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 0620766190; Wed,  4 Aug 2021 18:24:10 +0000 (UTC)
-Message-Id: <75287841cbb8740edd44880fe60be66d489160d9.1628097995.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/smp: Fix OOPS in topology_init()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed,  4 Aug 2021 18:24:10 +0000 (UTC)
+        id S238954AbhHDS00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 14:26:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F93960F01;
+        Wed,  4 Aug 2021 18:26:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628101573;
+        bh=eu6gWKfDmcUbAsKPH2f98nE1iXPAlJY+n+Fd2RCc0qI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WcuxIXe8HqZSlthoPccmW/9rpFkgs/smn4gNWXZW26NJYaeZ/aigatRBRlf/LUtka
+         RpuZHE0bswz3UjBZRMFab4UWa9KNI0a7VoMkYyNrgLEinXNtBYci6sOxztURQ2ehry
+         MLWOCa7AElc8q3u/QDt37KbUW3vq92aLDHRumCJYtVzmZqkbmUOQ7raMZhk26bPxTz
+         lF/pRcJ7/FB64DJh1jxWEiPzRCMETZQAhnkifJjjHwv3ImnGQ7s7oMCcht/ypvFy6n
+         7ImOn78NTrRSX2k4XZ44khSD2ua79Sj4ImLj9y+R7+dVF6uKSHy5zwwVHNpLPucZvz
+         TR5sxoqUoGEig==
+Date:   Wed, 4 Aug 2021 11:26:10 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Brian Cain <bcain@codeaurora.org>
+Subject: Re: [PATCH] Hexagon: Export raw I/O routines for modules
+Message-ID: <YQrbwnDf7KaiSMzF@Ryzen-9-3900X.localdomain>
+References: <20210708233849.3140194-1-nathan@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210708233849.3140194-1-nathan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running an SMP kernel on an UP platform not prepared for it,
-I encountered the following OOPS:
+Andrew, could you pick this up? Brian gave his ack and we just got a
+0day report about this:
 
-	BUG: Kernel NULL pointer dereference on read at 0x00000034
-	Faulting instruction address: 0xc0a04110
-	Oops: Kernel access of bad area, sig: 11 [#1]
-	BE PAGE_SIZE=4K SMP NR_CPUS=2 CMPCPRO
-	Modules linked in:
-	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-pmac-00001-g230fedfaad21 #5234
-	NIP:  c0a04110 LR: c0a040d8 CTR: c0a04084
-	REGS: e100dda0 TRAP: 0300   Not tainted  (5.13.0-pmac-00001-g230fedfaad21)
-	MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 84000284  XER: 00000000
-	DAR: 00000034 DSISR: 20000000
-	GPR00: c0006bd4 e100de60 c1033320 00000000 00000000 c0942274 00000000 00000000
-	GPR08: 00000000 00000000 00000001 00000063 00000007 00000000 c0006f30 00000000
-	GPR16: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000005
-	GPR24: c0c67d74 c0c67f1c c0c60000 c0c67d70 c0c0c558 1efdf000 c0c00020 00000000
-	NIP [c0a04110] topology_init+0x8c/0x138
-	LR [c0a040d8] topology_init+0x54/0x138
-	Call Trace:
-	[e100de60] [80808080] 0x80808080 (unreliable)
-	[e100de90] [c0006bd4] do_one_initcall+0x48/0x1bc
-	[e100def0] [c0a0150c] kernel_init_freeable+0x1c8/0x278
-	[e100df20] [c0006f44] kernel_init+0x14/0x10c
-	[e100df30] [c00190fc] ret_from_kernel_thread+0x14/0x1c
-	Instruction dump:
-	7c692e70 7d290194 7c035040 7c7f1b78 5529103a 546706fe 5468103a 39400001
-	7c641b78 40800054 80c690b4 7fb9402e <81060034> 7fbeea14 2c080000 7fa3eb78
-	---[ end trace b246ffbc6bbbb6fb ]---
+https://lore.kernel.org/r/202108041936.52T4sUU6-lkp@intel.com/
 
-Fix it by checking smp_ops before using it, as already done in
-several other places in the arch/powerpc/kernel/smp.c
+If you need me to resend this, I can.
 
-Fixes: 39f87561454d ("powerpc/smp: Move ppc_md.cpu_die() to smp_ops.cpu_offline_self()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Cheers,
+Nathan
 
-diff --git a/arch/powerpc/kernel/sysfs.c b/arch/powerpc/kernel/sysfs.c
-index 5ff0e55d0db1..defecb3b1b15 100644
---- a/arch/powerpc/kernel/sysfs.c
-+++ b/arch/powerpc/kernel/sysfs.c
-@@ -1167,7 +1167,7 @@ static int __init topology_init(void)
- 		 * CPU.  For instance, the boot cpu might never be valid
- 		 * for hotplugging.
- 		 */
--		if (smp_ops->cpu_offline_self)
-+		if (smp_ops && smp_ops->cpu_offline_self)
- 			c->hotpluggable = 1;
- #endif
- 
--- 
-2.25.0
-
+On Thu, Jul 08, 2021 at 04:38:50PM -0700, Nathan Chancellor wrote:
+> When building ARCH=hexagon allmodconfig, the following errors occur:
+> 
+> ERROR: modpost: "__raw_readsl" [drivers/i3c/master/svc-i3c-master.ko] undefined!
+> ERROR: modpost: "__raw_writesl" [drivers/i3c/master/dw-i3c-master.ko] undefined!
+> ERROR: modpost: "__raw_readsl" [drivers/i3c/master/dw-i3c-master.ko] undefined!
+> ERROR: modpost: "__raw_writesl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
+> ERROR: modpost: "__raw_readsl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
+> 
+> Export these symbols so that modules can use them without any errors.
+> 
+> Fixes: 013bf24c3829 ("Hexagon: Provide basic implementation and/or stubs for I/O routines.")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+> 
+> It would be nice if this could get into 5.14 at some point so that we
+> can build ARCH=hexagon allmodconfig in our CI.
+> 
+>  arch/hexagon/lib/io.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/hexagon/lib/io.c b/arch/hexagon/lib/io.c
+> index d35d69d6588c..55f75392857b 100644
+> --- a/arch/hexagon/lib/io.c
+> +++ b/arch/hexagon/lib/io.c
+> @@ -27,6 +27,7 @@ void __raw_readsw(const void __iomem *addr, void *data, int len)
+>  		*dst++ = *src;
+>  
+>  }
+> +EXPORT_SYMBOL(__raw_readsw);
+>  
+>  /*
+>   * __raw_writesw - read words a short at a time
+> @@ -47,6 +48,7 @@ void __raw_writesw(void __iomem *addr, const void *data, int len)
+>  
+>  
+>  }
+> +EXPORT_SYMBOL(__raw_writesw);
+>  
+>  /*  Pretty sure len is pre-adjusted for the length of the access already */
+>  void __raw_readsl(const void __iomem *addr, void *data, int len)
+> @@ -62,6 +64,7 @@ void __raw_readsl(const void __iomem *addr, void *data, int len)
+>  
+>  
+>  }
+> +EXPORT_SYMBOL(__raw_readsl);
+>  
+>  void __raw_writesl(void __iomem *addr, const void *data, int len)
+>  {
+> @@ -76,3 +79,4 @@ void __raw_writesl(void __iomem *addr, const void *data, int len)
+>  
+>  
+>  }
+> +EXPORT_SYMBOL(__raw_writesl);
+> 
+> base-commit: f55966571d5eb2876a11e48e798b4592fa1ffbb7
+> -- 
+> 2.32.0.93.g670b81a890
