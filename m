@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590FB3E018C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D843E018E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238278AbhHDNAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:00:02 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:12445 "EHLO
+        id S237322AbhHDNCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:02:21 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7922 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236532AbhHDNAB (ORCPT
+        with ESMTP id S236532AbhHDNCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:00:01 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GfsDr2dv3zckpk;
-        Wed,  4 Aug 2021 20:56:12 +0800 (CST)
+        Wed, 4 Aug 2021 09:02:18 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GfsH839dZz83XM;
+        Wed,  4 Aug 2021 20:58:12 +0800 (CST)
 Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 4 Aug 2021 20:59:46 +0800
+ 15.1.2176.2; Wed, 4 Aug 2021 21:02:03 +0800
 Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
  (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 4 Aug
- 2021 20:59:45 +0800
+ 2021 21:01:56 +0800
 From:   YueHaibing <yuehaibing@huawei.com>
-To:     <liangwenpeng@huawei.com>, <liweihang@huawei.com>,
-        <dledford@redhat.com>, <jgg@ziepe.ca>, <chenglang@huawei.com>
-CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] RDMA/hns: Fix return in hns_roce_rereg_user_mr()
-Date:   Wed, 4 Aug 2021 20:59:39 +0800
-Message-ID: <20210804125939.20516-1-yuehaibing@huawei.com>
+To:     <chris@chrisdown.name>, <pmladek@suse.com>,
+        <senozhatsky@chromium.org>, <rostedt@goodmis.org>,
+        <john.ogness@linutronix.de>
+CC:     <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] printk/index: Fix -Wunused-function warning
+Date:   Wed, 4 Aug 2021 21:01:05 +0800
+Message-ID: <20210804130105.18732-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  dggema769-chm.china.huawei.com (10.1.198.211)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If re-registering an MR in hns_roce_rereg_user_mr(), we should
-return NULL instead of pass 0 to ERR_PTR.
+If CONFIG_MODULES is n, we got this:
 
-Fixes: 4e9fc1dae2a9 ("RDMA/hns: Optimize the MR registration process")
+kernel/printk/index.c:146:13: warning: ‘pi_remove_file’ defined but not used [-Wunused-function]
+
+Move it inside #ifdef block to fix this warning.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_mr.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ kernel/printk/index.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index 006c84bb3f9f..7089ac780291 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -352,7 +352,9 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
- free_cmd_mbox:
- 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
- 
--	return ERR_PTR(ret);
-+	if (ret)
-+		return ERR_PTR(ret);
-+	return NULL;
+diff --git a/kernel/printk/index.c b/kernel/printk/index.c
+index 58d27272f992..d3709408debe 100644
+--- a/kernel/printk/index.c
++++ b/kernel/printk/index.c
+@@ -143,12 +143,12 @@ static void pi_create_file(struct module *mod)
+ 				       mod, &dfs_index_fops);
  }
  
- int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
++#ifdef CONFIG_MODULES
+ static void pi_remove_file(struct module *mod)
+ {
+ 	debugfs_remove(debugfs_lookup(pi_get_module_name(mod), dfs_index));
+ }
+ 
+-#ifdef CONFIG_MODULES
+ static int pi_module_notify(struct notifier_block *nb, unsigned long op,
+ 			    void *data)
+ {
 -- 
 2.17.1
 
