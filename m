@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3BCC3E0644
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3541D3E0648
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239771AbhHDRAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 13:00:50 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:33410 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239640AbhHDRAt (ORCPT
+        id S239555AbhHDRCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 13:02:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37162 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239785AbhHDRCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:00:49 -0400
-Received: by mail-oi1-f180.google.com with SMTP id 26so3673942oiy.0;
-        Wed, 04 Aug 2021 10:00:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XxImQQRd4D1ugKiTX4wzCD+33Wg69xMML2J4wGzPmQU=;
-        b=bMfdquAM2XPq+dUDEdB1u8SiOtImCU9c20C0k+TfbTLTNJ5mllBYDlWh7m/MFEGT3v
-         5KzjA6F2lRcD14UhZMAFO/6ULyvu2JRHPsvU0EbkDBdB9urTLcU3lmB8rD549Ty/zpnh
-         bwbw9x+wTf1QRu53AyLHl1fokPqVAl2mm8JOpcg3Kp+b3FQGO3hwHJ5hGwvw4CzntgUf
-         GZT4Zkx1lBKs/8ZiyDqYf/PHgo908lWBsulLb47UMBTZHA0kvojPhTQGusUgtYoyI9m7
-         7elmEZEwSElzOyd/00juwYbBMh0dVMSEWt2cEZfKk4m4jCak1bBsSbBTRvUh34TA9urz
-         AJAg==
-X-Gm-Message-State: AOAM532GOFExtvDp8d5N18+rxu+z5olqEstf+0TgWaFAW3byDcQJoMY7
-        rPWJfovMJSHRjTSsVApSfBCB+4SZyAUUb75CQ64=
-X-Google-Smtp-Source: ABdhPJx5JQpQu99HXyDJXrqIFjHkd4lBZL8Mm/gOHKvlGj/KmDBTmbAGVD0Uiumul4r+DCDkygVWzU8btsx8DtiHmEI=
-X-Received: by 2002:a05:6808:198c:: with SMTP id bj12mr350174oib.71.1628096435307;
- Wed, 04 Aug 2021 10:00:35 -0700 (PDT)
+        Wed, 4 Aug 2021 13:02:16 -0400
+Date:   Wed, 4 Aug 2021 19:02:00 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628096522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=njdHwlZDNfjTmyv+M6Q8FrVV+kOhpgWcui0QMoTuTlY=;
+        b=u8vUlaDJbguz6JokRpafuQNrTWuOJE0ZyBa+x2B1kj+D+vYyxSZQ61UhN3XfL6GE78Grbs
+        CXskFh2Bh5MTTNLOsgKzF1k2hjn58hdbXcUjfcZuThYeyg8tMt/TKKdX6TLUWgSLBHDyms
+        1TwHjOxv7l8LjHsIJnMA+sPhJD9WEF5cIzCetxL0JwCnnapRfaUgANrM4D+Rw/BQUJTbzr
+        2DrUS7nX2XwDqa4/+M3x+i6cGqPTXp3IfYt7QlOJhK8aS+RX3IYvji7KNOKKXxsMZJT3jn
+        7v+ZYJ/K/pVn8HNn714bsbtkCoD+RRVQc2rDGYZVmFAjjMFiPm++BW37LNAagw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628096522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=njdHwlZDNfjTmyv+M6Q8FrVV+kOhpgWcui0QMoTuTlY=;
+        b=D9QspVkqfxHyT3Xxinc58/7+zTOYxyTgm6M+Lma++Lh3IO6EfB9cigCyzSvfXZ8EKNLD0A
+        muJGAISFxTvnFSBA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Wagner <wagi@monom.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org
+Subject: Re: [ANNOUNCE] v5.14-rc4-rt4
+Message-ID: <20210804170200.tvocf4hodvzz632g@linutronix.de>
+References: <20210804153308.oasahcxjmcw7vivo@linutronix.de>
+ <f2d0a028-fe85-28ff-9cea-8ab1d26a15d0@kernel.dk>
+ <20210804154743.niogqvnladdkfgi2@linutronix.de>
+ <7c946918-ae0d-6195-6a78-b019f9bc1fd3@kernel.dk>
+ <20210804155747.cwayhjsdjc4zaubd@linutronix.de>
+ <c3fa07d1-a3c4-6775-f419-4875eb41bc88@kernel.dk>
+ <20210804122029.6c5c837a@oasis.local.home>
+ <4ffb8f7c-085c-f6cc-e308-3f75b24b8e47@kernel.dk>
+ <20210804164735.sq6sjejusa37abkw@linutronix.de>
+ <71d37a7d-af53-945e-0c49-3cb902487df4@kernel.dk>
 MIME-Version: 1.0
-References: <20210721101658.9235-1-ray.huang@amd.com> <20210803001339.GG2563957@hr-amd>
-In-Reply-To: <20210803001339.GG2563957@hr-amd>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 4 Aug 2021 19:00:23 +0200
-Message-ID: <CAJZ5v0gMqFBDubQyG3YSnt1RcGzfjnxvLtTNpCdqZDjdAMJh=w@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: enhance the sequency of governor change
-To:     Huang Rui <ray.huang@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <71d37a7d-af53-945e-0c49-3cb902487df4@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 2:13 AM Huang Rui <ray.huang@amd.com> wrote:
->
-> Ping~
+On 2021-08-04 10:57:11 [-0600], Jens Axboe wrote:
+> > The spin_lock_irq() vs local_irq_disable() + spin_lock() is documented
+> > in Documentation/locking/locktypes.rst.
+> > That said I have no problem by carrying that patch in the RT-patchset
+> > and revisit it later.
+> 
+> Right, I suspect that was added as a pre RT patch dump at some point.
+> It's a newer thing. Is it actually possible to set PREEMPT_RT in the
+> mainline kernel? Looks like it depends on ARCH_SUPPORTS_RT and nobody
+> sets that.
 
-I prefer the existing code, sorry.
+Yes. It is upstream now. The documentation and CONFIG_PREEMPT_RT symbol.
+The Kconfig symbol has already users outside of the -RT patch.
 
-> On Wed, Jul 21, 2021 at 06:16:58PM +0800, Huang, Ray wrote:
-> > Keep the "success" case of governor change in the mainline of the
-> > function not in "if" case. And using restart_old_gov flag to indicate
-> > the fallback case to old governor. This is more readable and no function
-> > change.
-> >
-> > Signed-off-by: Huang Rui <ray.huang@amd.com>
-> > ---
-> >  drivers/cpufreq/cpufreq.c | 23 +++++++++++++++--------
-> >  1 file changed, 15 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> > index 802abc925b2a..4f7005ddb70c 100644
-> > --- a/drivers/cpufreq/cpufreq.c
-> > +++ b/drivers/cpufreq/cpufreq.c
-> > @@ -2545,18 +2545,25 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
-> >       /* start new governor */
-> >       policy->governor = new_gov;
-> >       ret = cpufreq_init_governor(policy);
-> > -     if (!ret) {
-> > -             ret = cpufreq_start_governor(policy);
-> > -             if (!ret) {
-> > -                     pr_debug("governor change\n");
-> > -                     sched_cpufreq_governor_change(policy, old_gov);
-> > -                     return 0;
-> > -             }
-> > +     if (ret)
-> > +             goto restart_old_gov;
-> > +
-> > +     ret = cpufreq_start_governor(policy);
-> > +     if (ret) {
-> >               cpufreq_exit_governor(policy);
-> > +             goto restart_old_gov;
-> >       }
-> >
-> > +     pr_debug("governor change\n");
-> > +
-> > +     sched_cpufreq_governor_change(policy, old_gov);
-> > +
-> > +     return 0;
-> > +
-> > +restart_old_gov:
-> >       /* new governor failed, so re-start old one */
-> > -     pr_debug("starting governor %s failed\n", policy->governor->name);
-> > +     pr_debug("starting governor %s failed\n",
-> > +              policy->governor->name);
-> >       if (old_gov) {
-> >               policy->governor = old_gov;
-> >               if (cpufreq_init_governor(policy))
-> > --
+You can't enable it yet since we require a few things which are on their
+way.
+
+Having the symbol and the documentation helped to convince some people
+:) 
+
+> So I agree that just carrying your solution in the RT patchset is fine
+> for now, we can revisit later.
+
+Okay.
+
+Sebastian
