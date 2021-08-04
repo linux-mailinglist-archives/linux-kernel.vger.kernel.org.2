@@ -2,76 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 006783E0302
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F1D3E0303
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238735AbhHDOXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:23:54 -0400
-Received: from mail-il1-f182.google.com ([209.85.166.182]:38903 "EHLO
-        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238701AbhHDOXg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:23:36 -0400
-Received: by mail-il1-f182.google.com with SMTP id h18so1824876ilc.5;
-        Wed, 04 Aug 2021 07:23:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lTaA7ZYHhzmYfTmfzRRp4FRXAEfJEDOsTjIWl9+Hssc=;
-        b=YLtZgc35NlAuLyosqUcsQRbPN4nZjASQjUs7COIgJGqT98Mo84zDjN9tAXrwF1GBtK
-         zvuiP8J+GzcD6Ojsyo1mH5dWsLuMYsiaQ69k1W42Fy0ur/0amJyUPST+pOwsbnkDTEoI
-         LdsrIM48M2hV+6slwx9OH4+okR3qBy8qpOUAhPxkfveSjLL+WAJXps7akpvH6/fGmQV3
-         cgMZcPIg35OJyNRGALFcd+92M114v2/+QIrwPDRJj484p6yoVPRR3fUTYdP/6oPSeofn
-         j4OCR8J+69vrXwneZ+o1w0NfdGIVaBLPrTTzNnoer/Irfo8TJeCnvMqItc6lR8NeAasf
-         Zisw==
-X-Gm-Message-State: AOAM531oRzASzd3fsBIBwiqST7nuwJWMOiQhKSo0uRMHoFdwh4OVqS/u
-        YkypOMdVIP6QNggZcrAFMw==
-X-Google-Smtp-Source: ABdhPJzw3DsMPyrOtt1yGTBwjo1oUxTt8cIFbawDLIaXsTRb7KTM34+LDbsZ+0MZzsQgAzDoMmW6QA==
-X-Received: by 2002:a92:d3cb:: with SMTP id c11mr409039ilh.178.1628086997189;
-        Wed, 04 Aug 2021 07:23:17 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id g11sm1151785ilc.83.2021.08.04.07.23.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 07:23:16 -0700 (PDT)
-Received: (nullmailer pid 1148630 invoked by uid 1000);
-        Wed, 04 Aug 2021 14:23:14 -0000
-Date:   Wed, 4 Aug 2021 08:23:14 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Xiaowei Song <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mauro.chehab@huawei.com,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>, linuxarm@huawei.com
-Subject: Re: [PATCH v4 2/4] dt-bindings: PCI: kirin: Convert kirin-pcie.txt
- to yaml
-Message-ID: <YQqi0ke6Q7CfShcC@robh.at.kernel.org>
-References: <cover.1628061310.git.mchehab+huawei@kernel.org>
- <081c179ef2e0ddf11566144cd5967b15268565b4.1628061310.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <081c179ef2e0ddf11566144cd5967b15268565b4.1628061310.git.mchehab+huawei@kernel.org>
+        id S237905AbhHDOYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:24:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238696AbhHDOXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 10:23:53 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E331C60C3E;
+        Wed,  4 Aug 2021 14:23:40 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mBHo2-002w7n-UP; Wed, 04 Aug 2021 15:23:39 +0100
+Date:   Wed, 04 Aug 2021 15:23:38 +0100
+Message-ID: <87mtpxwaol.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Huacai Chen <chenhuacai@gmail.com>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Chen Zhu <zhuchen@loongson.cn>
+Subject: Re: [PATCH 2/9] irqchip/loongson-pch-pic: Improve edge triggered interrupt support
+In-Reply-To: <CAAhV-H51iX1DC54wczkwwambtfWutqg-hfoZ-A7DSxTonmruHA@mail.gmail.com>
+References: <20210706030904.1411775-1-chenhuacai@loongson.cn>
+        <20210706030904.1411775-3-chenhuacai@loongson.cn>
+        <878s2j8udi.wl-maz@kernel.org>
+        <CAAhV-H51iX1DC54wczkwwambtfWutqg-hfoZ-A7DSxTonmruHA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: chenhuacai@gmail.com, chenhuacai@loongson.cn, tglx@linutronix.de, linux-kernel@vger.kernel.org, lixuefeng@loongson.cn, jiaxun.yang@flygoat.com, zhuchen@loongson.cn
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Aug 2021 09:18:55 +0200, Mauro Carvalho Chehab wrote:
-> Convert the file into a JSON description at the yaml format.
+On Fri, 09 Jul 2021 04:00:58 +0100,
+Huacai Chen <chenhuacai@gmail.com> wrote:
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  .../bindings/pci/hisilicon,kirin-pcie.yaml    | 86 +++++++++++++++++++
->  .../devicetree/bindings/pci/kirin-pcie.txt    | 50 -----------
->  .../devicetree/bindings/pci/snps,dw-pcie.yaml |  2 +-
->  MAINTAINERS                                   |  2 +-
->  4 files changed, 88 insertions(+), 52 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
->  delete mode 100644 Documentation/devicetree/bindings/pci/kirin-pcie.txt
+> Hi, Marc,
 > 
+> On Tue, Jul 6, 2021 at 9:06 PM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Tue, 06 Jul 2021 04:08:57 +0100,
+> > Huacai Chen <chenhuacai@loongson.cn> wrote:
+> > >
+> > > Edge-triggered mode and level-triggered mode need different handlers,
+> > > and edge-triggered mode need a specific ack operation. So improve it.
+> > >
+> >
+> > Is this a fix? How does it work currently?
+> Yes, some devices (e.g., RTC) is edge-triggered, they need
+> handle_edge_irq(). Currently we don't use RTC interrupt in the
+> upstream kernel on Loongson platform, so it "works".
 
-Applied, thanks!
+If you want me to queue this independently of the full LoongArch
+series, please resend it with a Fixes: tag.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
