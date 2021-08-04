@@ -2,110 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76573E0012
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 13:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2717C3E0010
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 13:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237376AbhHDLVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 07:21:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237482AbhHDLVh (ORCPT
+        id S237458AbhHDLVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 07:21:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30113 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235764AbhHDLVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 07:21:37 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D7FC06179B
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 04:21:23 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id p5so1813732wro.7
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 04:21:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=m3Udre+J49huHIZ5aCaOfLGfaPv+Y/oIDQGc1oL/nzk=;
-        b=m5+lER8SHkuEkoYjXnlsemTpJAZh8p/KxNM8bIPdPMjLwa6I0zDhTCttM+Ejzcy3DQ
-         /le3Rpihi/cQuW3u/n49NfnnJxCORmMlqXDa0bBjTV4DKadG6M+yIv/txjV77csXZpj4
-         8JJZel1JEFPWa0cenr+K/5UrmIMQJRmxtBC9h3U/oXfy8wPBdisZG5j78Z2LJwOCy/vR
-         WBE7HmfDSUlGVlfvWya8DEMvgCh6xZPSiOpgtSwPbS71uaLiKtrUk9x/wL9pjPJcDn55
-         jXFwLRQeO080iun5VR9nX4zgPM7TKWM16Yx0fjvyK7STn0JWBr+ik5qSB6tUd1cx/IDe
-         F6aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=m3Udre+J49huHIZ5aCaOfLGfaPv+Y/oIDQGc1oL/nzk=;
-        b=ISRTI/d19hvn1EGVpnTWOtgG9UtvFgAaANVroM3N0WU0sgc2PGP1Jw600qqjWgYIX5
-         HUnBn3OjaikdFrUad4c5yOtjPoOyWxk/VjZ3hX6MsnN92vSHsDU/kBrr0AxAW2wuN+md
-         59cA+hJssFc/hcK30TDaBvBeTAKrQZWAm2aTZqrR06OAUx+nLKrU6k4UErCslFau3xnA
-         an72TjDM5k2HPrKYazNXKyiSCxOIYEGd8HqIWFUaP47gMDa3KAk7jobBNnmmMBo38DCZ
-         LI9tiEVIAQPgMtV85RXmimg1Gv1/ruTy/GI8oDcWl1cCd97UhkNjfvNXhcstB//U+JAK
-         hVOA==
-X-Gm-Message-State: AOAM533Qnri9e1n+TP3h0M9qzhgYiL43wI+K1v3owqoCUwFsB13V3U1r
-        7EqUpIPnSMpjER/UAp5KKb1nBerzNgkjXg==
-X-Google-Smtp-Source: ABdhPJyrf+s52V4b7YbOxf3F300f5NCbA2yGUzTHP2D7dvNV50iCrgjcTayTRz/wKD8aGeygtC4h2w==
-X-Received: by 2002:adf:d091:: with SMTP id y17mr18944879wrh.311.1628076081548;
-        Wed, 04 Aug 2021 04:21:21 -0700 (PDT)
-Received: from icebear.localdomain ([170.253.11.129])
-        by smtp.gmail.com with ESMTPSA id y192sm5555384wmy.1.2021.08.04.04.21.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 04:21:21 -0700 (PDT)
-From:   "=?UTF-8?q?Sergio=20Migu=C3=A9ns=20Iglesias?=" <lonyelon@gmail.com>
-X-Google-Original-From: =?UTF-8?q?Sergio=20Migu=C3=A9ns=20Iglesias?= <sergio@lony.xyz>
-To:     airlied@linux.ie
-Cc:     daniel@ffwll.ch, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Sergio=20Migu=C3=A9ns=20Iglesias?= <sergio@lony.xyz>
-Subject: [PATCH] DRM: gpu: radeon: Fixed coding style issues
-Date:   Wed,  4 Aug 2021 13:20:53 +0200
-Message-Id: <20210804112053.263887-1-sergio@lony.xyz>
-X-Mailer: git-send-email 2.32.0
+        Wed, 4 Aug 2021 07:21:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628076063;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Go3xSyOZAVuhtZkvJhM1Zcpvk93XR2WRi/A1Qg4IR2c=;
+        b=f9W+3axovbnOdIujWJ+nAL2XGlwasyHGrNd0Gk970/xhN9pvhP4tsQqtnuXfBGXLkUa5+p
+        rFdBBT9Qj2Eoa8eWDZr8NW7MwOtgDnVfL34nREnT0kkuvfRucnJgY6Xi3pcqykMOPwwmem
+        ELwT6n4V55rQhrAqayoJkLkXJ+u6bbY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-GuF6KnNRNtmO4YVzzdNdzQ-1; Wed, 04 Aug 2021 07:21:02 -0400
+X-MC-Unique: GuF6KnNRNtmO4YVzzdNdzQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0BA9587D542;
+        Wed,  4 Aug 2021 11:21:01 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E306717B73;
+        Wed,  4 Aug 2021 11:20:58 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
+Subject: [PATCH] KVM: selftests: fix hyperv_clock test
+Date:   Wed,  4 Aug 2021 14:20:57 +0300
+Message-Id: <20210804112057.409498-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed braces, an unnecessary if statement and added a missing space.
+The test was mistakenly using addr_gpa2hva on a gva
+and that happened to work accidentally.
 
-Signed-off-by: Sergio Miguéns Iglesias <sergio@lony.xyz>
+commit 106a2e766eae ("KVM: selftests:
+Lower the min virtual address for misc page allocations")
+revealed this bug.
+
+Fixes: 106a2e766eae ("KVM: selftests: Lower the min virtual address for misc page allocations")
+
+Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 ---
- drivers/gpu/drm/radeon/radeon_fb.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ tools/testing/selftests/kvm/x86_64/hyperv_clock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_fb.c b/drivers/gpu/drm/radeon/radeon_fb.c
-index 0b206b052972..6640b7c947fe 100644
---- a/drivers/gpu/drm/radeon/radeon_fb.c
-+++ b/drivers/gpu/drm/radeon/radeon_fb.c
-@@ -54,6 +54,7 @@ radeonfb_open(struct fb_info *info, int user)
- 	struct radeon_fbdev *rfbdev = info->par;
- 	struct radeon_device *rdev = rfbdev->rdev;
- 	int ret = pm_runtime_get_sync(rdev->ddev->dev);
-+
- 	if (ret < 0 && ret != -EACCES) {
- 		pm_runtime_mark_last_busy(rdev->ddev->dev);
- 		pm_runtime_put_autosuspend(rdev->ddev->dev);
-@@ -196,9 +197,8 @@ static int radeonfb_create_pinned_object(struct radeon_fbdev *rfbdev,
- 		radeon_bo_check_tiling(rbo, 0, 0);
- 	ret = radeon_bo_kmap(rbo, NULL);
- 	radeon_bo_unreserve(rbo);
--	if (ret) {
-+	if (ret)
- 		goto out_unref;
--	}
+diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_clock.c b/tools/testing/selftests/kvm/x86_64/hyperv_clock.c
+index bab10ae787b6..e0b2bb1339b1 100644
+--- a/tools/testing/selftests/kvm/x86_64/hyperv_clock.c
++++ b/tools/testing/selftests/kvm/x86_64/hyperv_clock.c
+@@ -215,7 +215,7 @@ int main(void)
+ 	vcpu_set_hv_cpuid(vm, VCPU_ID);
  
- 	*gobj_p = gobj;
- 	return 0;
-@@ -294,9 +294,6 @@ static int radeonfb_create(struct drm_fb_helper *helper,
- 	return 0;
- 
- out:
--	if (rbo) {
--
--	}
- 	if (fb && ret) {
- 		drm_gem_object_put(gobj);
- 		drm_framebuffer_unregister_private(fb);
+ 	tsc_page_gva = vm_vaddr_alloc_page(vm);
+-	memset(addr_gpa2hva(vm, tsc_page_gva), 0x0, getpagesize());
++	memset(addr_gva2hva(vm, tsc_page_gva), 0x0, getpagesize());
+ 	TEST_ASSERT((addr_gva2gpa(vm, tsc_page_gva) & (getpagesize() - 1)) == 0,
+ 		"TSC page has to be page aligned\n");
+ 	vcpu_args_set(vm, VCPU_ID, 2, tsc_page_gva, addr_gva2gpa(vm, tsc_page_gva));
 -- 
-2.32.0
+2.26.3
 
