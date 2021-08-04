@@ -2,104 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB423E0132
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5697A3E0137
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238120AbhHDMar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 08:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
+        id S238058AbhHDMc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 08:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238087AbhHDMaq (ORCPT
+        with ESMTP id S237177AbhHDMc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 08:30:46 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B080C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 05:30:33 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id o5so3465757ejy.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 05:30:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OLftcCiR2oyNljE54bb27thfQzh14DolSH3s1/1P/+w=;
-        b=m45M4wRFC7Zc0J8Gwu3B4lPC/LXioJnqS9oEvr8DV3PmhE8fuVLvxh2rsNNgG4v0Cm
-         xYXf9abkKtsKsE81rL/F36DrUNI8wfirBIIb1vhYV4GMbweNlS1fRdoA//UOJo08J+UN
-         4n/fhk04AuQMYX0JaAYM58M/sqO/GTx94iIHhMa3Zv4OtVVJ2n4qKDnmkFdL24mz4niS
-         BOXXBAOse1NH0nopBEkHzcnWRainTbLcj8CVaJs1XzpG2vnDlDm3x3A1YWYPJQvhFBR0
-         uNBaOm8lE7xm1I+njc8XdoXuu7NqGcZih78DLF98n5d9OhkUT58ZmwLy+Z9XmMr8F3ZR
-         N6zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OLftcCiR2oyNljE54bb27thfQzh14DolSH3s1/1P/+w=;
-        b=H1qJnCzWnLQRNWoHzuS33QdmwaNZf5+jovsGRfucvA2UJgIVMbrSHzg/uD70CO/KZz
-         KIsjnHdCZAwyqG0JhUAa3XfLpb1FXnIFkfpxopB0gPz9pgcGh/l23j7+l0Hp4OWDwpUG
-         eMqoJCExU2FKRz5ogtG9v/X2Trk0QhpkB4bu7FFtYFPZ6qJA2FCVOVubXwBDRwYZveFC
-         F9BOPs1cyEjPnGOncUK6TyCtQQ8Ieg8MxO/S4P5DTGV8BT/5FLa0yfpjCpipLh5+1wvq
-         CoeAW6jMOA3j5DRvZNRseROMzNc+SoU1NqUMml0BYu+7tpK38dVCMh9v27N1AZ3vlIsF
-         aI1g==
-X-Gm-Message-State: AOAM532ggcwkuMvoeeMz7/YOz8K0C7WRuUq0CK0O+JcWCrAdwx5PatIl
-        mHlJ5orU2LB1/9CNHuXp6c0=
-X-Google-Smtp-Source: ABdhPJxP6xt6XhnuBtGwOrh2MyWhOJiuzzj9Ab5gP5VWwMnYmfC9koqioV/vQw1tMV0IM1YDaR4mWQ==
-X-Received: by 2002:a17:906:c252:: with SMTP id bl18mr25700532ejb.519.1628080232108;
-        Wed, 04 Aug 2021 05:30:32 -0700 (PDT)
-Received: from pek-vx-bsp2.wrs.com (ec2-44-242-66-180.us-west-2.compute.amazonaws.com. [44.242.66.180])
-        by smtp.gmail.com with ESMTPSA id f5sm627590ejj.45.2021.08.04.05.30.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 05:30:31 -0700 (PDT)
-From:   Bin Meng <bmeng.cn@gmail.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <Conor.Dooley@microchip.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Bin Meng <bin.meng@windriver.com>
-Subject: [PATCH v2 2/2] riscv: dts: microchip: Add ethernet0 to the aliases node
-Date:   Wed,  4 Aug 2021 20:30:15 +0800
-Message-Id: <20210804123015.807929-2-bmeng.cn@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210804123015.807929-1-bmeng.cn@gmail.com>
-References: <20210804123015.807929-1-bmeng.cn@gmail.com>
+        Wed, 4 Aug 2021 08:32:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94531C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 05:32:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WAtd0bMm+QJTC6OmCzQe2owPEYP0icmuK9JKTFVEuSg=; b=ZwEpRshGGfuGOlZhZXbT9HcJNm
+        X9alfZ8hDTf2jrZkdvvRtXPjNhXFz9UWybV+EXrBs4vUZezKosu/k9e+5+wYME1wUHhcWDIoLniAQ
+        VB/4jL9ctmrZacQ4Of5KWkAM8Ges6Kki76GhjDZiCaowTdKVgPI0hf7cWO9tLyqrfASb3/Bd17lOM
+        efc2TSgYRDyGNcDBbIXfoMiscYkMmEJERwe8AgK4EqBken0K10MRgWAtDIZHgCYSMdvPik7786WwR
+        SVXEJiYkQU/lAp/JmoyUnD5WkmemCwss8Ht/lVWWmNerY9QEbiinH4uMDrlx7fOcXVAIkmLN87j20
+        GxRHJXIw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mBG2a-005pdS-Oj; Wed, 04 Aug 2021 12:30:37 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 64C019862B0; Wed,  4 Aug 2021 14:30:30 +0200 (CEST)
+Date:   Wed, 4 Aug 2021 14:30:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [patch 62/63] locking/rtmutex: Add adaptive spinwait mechanism
+Message-ID: <20210804123030.GD8057@worktop.programming.kicks-ass.net>
+References: <20210730135007.155909613@linutronix.de>
+ <20210730135208.637100512@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730135208.637100512@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bin Meng <bin.meng@windriver.com>
+On Fri, Jul 30, 2021 at 03:51:09PM +0200, Thomas Gleixner wrote:
+> From: Steven Rostedt <rostedt@goodmis.org>
+> 
+> Going to sleep when a spinlock or rwlock is contended can be quite
+> inefficient when the contention time is short and the lock owner is running
+> on a different CPU. The MCS mechanism is not applicable to rtmutex based
+> locks, so provide a simple adaptive spinwait mechanism for the RT specific
+> spin/rwlock implementations.
 
-U-Boot expects this alias to be in place in order to fix up the mac
-address of the ethernet node.
+A better Changelog would explain *why* OSQ does not apply. I'm thinking
+this ie because the (spin) waiters can be of different priorities and we
+need to ensure the highest prio waiter gets to win?
 
-Note on the Icicle Kit board, currently only emac1 is enabled so it
-becomes the 'ethernet0'.
+AFAICT that isn't true even without OSQ, you just get a thundering herd
+and the higher prio waiter has a better chance of winning the race but
+all bets are off either way around.
 
-Signed-off-by: Bin Meng <bin.meng@windriver.com>
+> [ tglx: Provide a contemporary changelog ]
 
----
+It might be best to squash this and the next patch, this back and forth
+doesn't make much sense at this point.
 
-Changes in v2:
-- move the aliases node to board dts
+> +#ifdef CONFIG_SMP
 
- arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts | 4 ++++
- 1 file changed, 4 insertions(+)
+Existing convention would make that:
 
-diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-index ec79944065c9..baea7d204639 100644
---- a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-+++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-@@ -14,6 +14,10 @@ / {
- 	model = "Microchip PolarFire-SoC Icicle Kit";
- 	compatible = "microchip,mpfs-icicle-kit";
- 
-+	aliases {
-+		ethernet0 = &emac1;
-+	};
-+
- 	chosen {
- 		stdout-path = &serial0;
- 	};
--- 
-2.25.1
+#ifdef CONFIG_RTMUTEX_SPIN_ON_OWNER
 
+But I suppose that's indeed not required if we don't use OSQ.
+
+> +/*
+> + * Note that owner is a speculative pointer and dereferencing relies
+> + * on rcu_read_lock() and the check against the lock owner.
+> + */
+> +static bool rtlock_adaptive_spinwait(struct rt_mutex_base *lock,
+> +				     struct task_struct *owner)
+
+similarly, this would be:
+
+  rt_mutex_spin_on_owner()
+
+> +{
+> +	bool res = true;
+> +
+> +	rcu_read_lock();
+> +	for (;;) {
+> +		/* Owner changed. Trylock again */
+> +		if (owner != rt_mutex_owner(lock))
+> +			break;
+> +		/*
+> +		 * Ensure that owner->on_cpu is dereferenced _after_
+> +		 * checking the above to be valid.
+> +		 */
+> +		barrier();
+> +		if (!owner->on_cpu) {
+
+Esp. when this will be on rtmutex unconditionally, you want to mirror
+the full set of conditions we also have on mutex_spin_on_owner():
+
+	|| need_resched() || vcpu_is_preempted(task_cpu(owner))
+
+> +			res = false;
+> +			break;
+> +		}
+> +		cpu_relax();
+> +	}
+> +	rcu_read_unlock();
+> +	return res;
+> +}
+
+Additionally, we could consider adding something that would compare the
+current prio to the top_waiter prio and terminate the loop if we're
+found to be of lower prio, but lifetime issues are probably going to
+make that 'interesting'.
