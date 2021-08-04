@@ -2,229 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C873E0376
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63993E037C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237908AbhHDOjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:39:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235304AbhHDOjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:39:33 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 75DE360F01;
-        Wed,  4 Aug 2021 14:39:20 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mBI3C-002wKH-E9; Wed, 04 Aug 2021 15:39:18 +0100
-Date:   Wed, 04 Aug 2021 15:39:17 +0100
-Message-ID: <87lf5hw9yi.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jerome Forissier <jerome@forissier.org>,
-        Etienne Carriere <etienne.carriere@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+        id S238030AbhHDOkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:40:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237523AbhHDOkE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 10:40:04 -0400
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88889C06179A
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:39:51 -0700 (PDT)
+Received: by mail-vk1-xa32.google.com with SMTP id d15so483720vka.13
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:39:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rDKZtg82NP3ddCZ+CbKtTQlVqMfRo/3JfYFc/Sav3bE=;
+        b=Rb4w2JW9NDUtFI5B1DdY4p2VknlohGp3Ak2rkEyHilaSfQWGfO0PvM1LI8VTGSK58E
+         E5E1B7V9pL3lsFa9AlJN5av9Qj+fCiZP+6tceSKxdI88Ba47f90C3X8Z4yv2iUc+dHm0
+         I4ldJ6XAhqprsW6XOH5F45fxk02OUBmUTwEKyL9gV6aedQ/k3CI1uHi8cB5PtGBQKZG6
+         Odz6nToeGDrD5vdlizhxdCzailrpXe2J3KfMjoivaI8rPBD1almFcOU+6j2dUPFr0uer
+         zfNkuOoXistHWz3jiy1hDLDplsrrln/1yOHA4dOaP9Z9uNs+SeRuriIj+AuA6y67mGyN
+         xNTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rDKZtg82NP3ddCZ+CbKtTQlVqMfRo/3JfYFc/Sav3bE=;
+        b=uKm0eG8Zs7nrQ91Q2z36zh1Ldk4QoUGYpYhbzPYD91LeZp+y1hhI+lJ16NxIrD002W
+         zr1Y1uEYmJH8U3UA+Yb1Kwl+avAfJWAebMpNtoLle3nJesL/ioxYlh29eQL0cuF6lAV4
+         kGsVCsRyhlxuWtggMwh+QFaMSiXeXbskbPOgznplliy2ouhHt4u4O5fY8HsOKcemYggb
+         2c53FpnkxzjoMML7wBfD3ydBXczk2Go4gpE5d54dFRlR2Bl4XKQG4+4n76xNkddwsY2s
+         qXIkajcSuPXSg3Re7oeCHk12QbZGLOkf8at5F5jOvcfZUTbpi8HumRlrAG7yDrLEumSE
+         nFsA==
+X-Gm-Message-State: AOAM5330bVDxAomPAje4sOTZ5SL1JAo25D6vA3lVrplQ48bDntPR9qZ6
+        xPAWgd+M+Nu/r89Fr425SkcfgpW0oelTxhZehLfdLg==
+X-Google-Smtp-Source: ABdhPJxlsfrubol74U2vzDZDlR75ZOAD7I215GfcgIYKIkBbyLzJAazUw8L/PPcVieLCSBWNf4qgTYF7TKl9M+mp1Eo=
+X-Received: by 2002:a05:6122:549:: with SMTP id y9mr5395608vko.7.1628087990034;
+ Wed, 04 Aug 2021 07:39:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-13-semen.protsenko@linaro.org> <15871f8ced3c757fad1ab3b6e62c4e64@misterjones.org>
+In-Reply-To: <15871f8ced3c757fad1ab3b6e62c4e64@misterjones.org>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Wed, 4 Aug 2021 17:39:38 +0300
+Message-ID: <CAPLW+4=v4bDcuxGVqs06mobGj34At4cD+vg48b4dPujarS07Tg@mail.gmail.com>
+Subject: Re: [PATCH 12/12] arm64: dts: exynos: Add Exynos850 SoC support
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v3 1/6] docs: staging/tee.rst: add a section on OP-TEE notifications
-In-Reply-To: <CAHUa44HCEr_HKU0Fz10HPZYMowXVkx5JtnXMVTXd29wAv-dTCg@mail.gmail.com>
-References: <20210723094422.2150313-1-jens.wiklander@linaro.org>
-        <20210723094422.2150313-2-jens.wiklander@linaro.org>
-        <87zgud1giz.wl-maz@kernel.org>
-        <CAHUa44EhP5NCH6S27+Af8ePxAup9nJnrwGr_nMRUFumXOTh7uQ@mail.gmail.com>
-        <87eebkdumr.wl-maz@kernel.org>
-        <CAHUa44HCEr_HKU0Fz10HPZYMowXVkx5JtnXMVTXd29wAv-dTCg@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: jens.wiklander@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, op-tee@lists.trustedfirmware.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, jerome@forissier.org, etienne.carriere@linaro.org, sumit.garg@linaro.org, vincent.guittot@linaro.org, robh+dt@kernel.org, corbet@lwn.net, ardb@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 15:57:07 +0100,
-Jens Wiklander <jens.wiklander@linaro.org> wrote:
-> 
-> On Tue, Jul 27, 2021 at 10:32 AM Marc Zyngier <maz@kernel.org> wrote:
-> >
-> > On Tue, 27 Jul 2021 08:46:39 +0100,
-> > Jens Wiklander <jens.wiklander@linaro.org> wrote:
-> > >
-> > > On Fri, Jul 23, 2021 at 12:16 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > >
-> > > > On Fri, 23 Jul 2021 10:44:17 +0100,
-> > > > Jens Wiklander <jens.wiklander@linaro.org> wrote:
-> > > > >
-> > > > > Adds a section on notifications used by OP-TEE, synchronous and
-> > > > > asynchronous.
-> > > > >
-> > > > > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > > > > ---
-> > > > >  Documentation/staging/tee.rst | 27 +++++++++++++++++++++++++++
-> > > > >  1 file changed, 27 insertions(+)
-> > > > >
-> > > > > diff --git a/Documentation/staging/tee.rst b/Documentation/staging/tee.rst
-> > > > > index 4d4b5f889603..37bdd097336f 100644
-> > > > > --- a/Documentation/staging/tee.rst
-> > > > > +++ b/Documentation/staging/tee.rst
-> > > > > @@ -184,6 +184,33 @@ order to support device enumeration. In other words, OP-TEE driver invokes this
-> > > > >  application to retrieve a list of Trusted Applications which can be registered
-> > > > >  as devices on the TEE bus.
-> > > > >
-> > > > > +OP-TEE notifications
-> > > > > +--------------------
-> > > > > +
-> > > > > +There are two kinds of notifications that secure world can use to make
-> > > > > +normal world aware of some event.
-> > > > > +
-> > > > > +1. Synchronous notifications delivered with ``OPTEE_RPC_CMD_NOTIFICATION``
-> > > > > +   using the ``OPTEE_RPC_NOTIFICATION_SEND`` parameter.
-> > > > > +2. Asynchronous notifications delivered with a combination of a non-secure
-> > > > > +   interrupt and a fast call from the non-secure interrupt handler.
-> > > > > +
-> > > > > +Synchronous notifications are limited by depending on RPC for delivery,
-> > > > > +this is only usable when secure world is entered with a yielding call via
-> > > > > +``OPTEE_SMC_CALL_WITH_ARG``. This excludes such notifications from secure
-> > > > > +world interrupt handlers.
-> > > > > +
-> > > > > +An asynchronous notification is delivered via a non-secure interrupt to an
-> > > > > +interrupt handler registered in the OP-TEE driver. The actual notification
-> > > > > +value are retrieved with the fast call ``OPTEE_SMC_GET_ASYNC_NOTIF_VALUE``.
-> > > > > +
-> > > > > +One notification value ``OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_BOTTOM_HALF`` has a
-> > > > > +special meaning. When this value is received it means that normal world is
-> > > > > +supposed to make a yielding call ``OPTEE_MSG_CMD_DO_BOTTOM_HALF``. This
-> > > > > +call is done from the thread assisting the interrupt handler. This is a
-> > > > > +building block for OP-TEE OS in secure world to implement the top half and
-> > > > > +bottom half style of device drivers.
-> > > > > +
-> > > >
-> > > > What I find missing here is a description of the trigger for this
-> > > > interrupt, and how it influences the way the kernel drivers interacts
-> > > > with the secure side:
-> > > >
-> > > > - if it is edge triggered, this is 'fire and forget'. The interrupt
-> > > >   will be consumed by the kernel handler, and whether it eventually
-> > > >   calls into the secure side has no impact on the interrupt flow.
-> > > >
-> > > > - if it is level triggered, then the interrupt may be asserted until
-> > > >   the kernel calls into the secure side, which may then drop the line
-> > > >   level if no other requests are pending.
-> > > >
-> > > > These are evidently two very different flows, and you need to pick a
-> > > > side. Note that not all interrupt controllers support both signalling
-> > > > modes, so you are likely to leave something behind. Or you can try and
-> > > > support both flows, but that may make the driver slightly more
-> > > > complex.
-> > > >
-> > > > Either way, this needs specifying, here and in the DT binding.
-> > >
-> > > In the example I'm using a level triggered interrupt which is
-> > > triggered by writing to GICD_ISPENDR by secure world. Reading of
-> > > GICC_IAR should clear the interrupt,the GICv2 reference manual is
-> > > quite clear on that.
-> >
-> > No, it merely activates it. You can't transition an interrupt from
-> > pending to inactive (unless you clear it using GICD_ICPENDR). If you
-> > have spotted something else in the GICv2 architecture manual, please
-> > say so and I'll get it fixed 15 years after the facts. The fact that
-> > GICC_IAR consumes a pending bit introduced by a write to ISPENDR is an
-> > implementation detail, see below.
-> 
-> I was looking at figure 4-10 "Logic of the pending status of a
-> level-sensitive interrupt".
-> 
-> >
-> > It is also a flawed approach, as this behaviour is IMPDEF on GICv3
-> > (see 4.5 "Shared Peripheral Interrupts" in the GICv3 arch spec). Given
-> > that GICv2 is pretty much a dead horse (TFFT!), I can't see this approach
-> > being successful in the long run.
-> 
-> OK, thanks.
-> 
-> >
-> > > So, if I understand it correctly, it will for
-> > > this purpose work in the same way as an edge triggered interrupt. If
-> > > this wouldn't be the case in some configuration and the interrupt must
-> > > be cleared by some other action that would be a job for the receiver
-> > > of OPTEE_SMC_GET_ASYNC_NOTIF_VALUE, that is, a secure world problem.
-> > > The normal world flow should be the same.
-> >
-> > You are assuming that the secure side will use GICD_ISPENDR, and
-> > that's a leap of faith.
-> 
-> Not in this case with upstream OP-TEE. If we need to signal in a
-> different way we can do that instead.
-> What happens downstream we have no control over, but that's perhaps
-> not so different from the kernel.
-> 
-> > An implementation should use, say, a GPIO to
-> > drive the interrupt line and give it proper level semantics.
-> 
-> I'm not so keen on that since we often don't touch GPIO at all in
-> OP-TEE and this would then mean more platform specific code. We may
-> even need to synchronize some hardware access with the normal world
-> and then we'd be back at square one again.
+Hi Marc,
 
-I'm trying to make a general statement here. OP-TEE may not do any of
-this. Yet. Other TEE implementations may do it because there is no
-free SPI in the system, for example. The problem is that interrupt
-signalling is a *device* thing, even if the device is actually some SW
-running on the secure side, and I would like the TEE to behave as
-such.
-
-> > > Now that we describe the interrupt configuration in device tree it
-> > > must use something that mirrors the secure world expectations. I don't
-> > > see a point in restricting what's allowed as long it doesn't need code
-> > > changes in the kernel too. Does this make any sense?
+On Fri, 30 Jul 2021 at 19:50, Marc Zyngier <maz@kernel.org> wrote:
+>
+> On 2021-07-30 15:49, Sam Protsenko wrote:
+> > Samsung Exynos850 is ARMv8-based mobile-oriented SoC.
 > >
-> > And that's the crucial point: what *are* the expectations of the
-> > secure side?
-> 
-> That should be up to the OP-TEE port of that particular platform to
-> decide and advise which device tree configuration to use.
-> 
-> > You seem to assume edge semantics, but that's unclear at
-> > best.
-> 
-> Fair enough, edge semantics solves the problem here.
-> 
+> > Features:
+> >  * CPU: Cortex-A55 Octa (8 cores), up to 2 GHz
+> >  * Memory interface: LPDDR4/4x 2 channels (12.8 GB/s)
+> >  * SD/MMC: SD 3.0, eMMC5.1 DDR 8-bit
+> >  * Modem: 4G LTE, 3G, GSM/GPRS/EDGE
+> >  * RF: Quad GNSS, WiFi 5 (802.11ac), Bluetooth 5.0
+> >  * GPU: Mali-G52 MP1
+> >  * Codec: 1080p 60fps H64, HEVC, JPEG HW Codec
+> >  * Display: Full HD+ (2520x1080)@60fps LCD
+> >  * Camera: 16+5MP/13+8MP ISP, MIPI CSI 4/4/2, FD, DRC
+> >  * Connectivity: USB 2.0 DRD, USI (SPI/UART/I2C), HSI2C, I3C, ADC,
+> > Audio
 > >
-> > > If I just expand a bit above explaining that the interrupt handler
-> > > must call OPTEE_SMC_GET_ASYNC_NOTIF_VALUE as part of clearing the
-> > > interrupt even if it might be cleared anyway in some configurations.
-> > > Would that make it more clear, good enough even :-) ?
+> > This patch adds minimal SoC support. Particular board device tree files
+> > can include exynos850.dtsi file to get SoC related nodes, and then
+> > reference those nodes further as needed.
 > >
-> > This is an interrupt, please document it in terms of interrupt
-> > signalling.
-> 
-> In this file, Documentation/staging/tee.rst ? A pointer to a good
-> example of what you're expecting would be much appreciated.
-> There's also the file drivers/tee/optee/optee_smc.h, this is where the
-> ABI to OP-TEE is defined.
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >  .../boot/dts/exynos/exynos850-pinctrl.dtsi    | 782 ++++++++++++++++++
+> >  arch/arm64/boot/dts/exynos/exynos850-usi.dtsi |  30 +
+> >  arch/arm64/boot/dts/exynos/exynos850.dtsi     | 245 ++++++
+> >  3 files changed, 1057 insertions(+)
+> >  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+> >  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-usi.dtsi
+> >  create mode 100644 arch/arm64/boot/dts/exynos/exynos850.dtsi
+> >
+> > diff --git a/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+> > b/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+> > new file mode 100644
+> > index 000000000000..4cf0a22cc6db
+>
+> [...]
+>
+> > +     gic: interrupt-controller@12a00000 {
+> > +             compatible = "arm,cortex-a15-gic", "arm,cortex-a9-gic";
+>
+> One thing for sure, it cannot be both. And given that it is
+> an A55-based SoC, it isn't either. It is more likely a GIC400.
+>
 
-This file is fine, but repeating in the DT binding that edge
-signalling is what is expected would be good.
+Yes, it's GIC-400, thanks for pointing that out. Will fix that in v2.
 
-Thanks,
+> > +             #interrupt-cells = <3>;
+> > +             #address-cells = <0>;
+> > +             interrupt-controller;
+> > +             reg = <0x0 0x12a01000 0x1000>,
+> > +                   <0x0 0x12a02000 0x1000>,
+>
+> This is wrong. It is architecturally set to 8kB.
+>
 
-	M.
+Nice catch! Actually there is an error (typo?) in SoC's TRM, saying
+that Virtual Interface Control Register starts at 0x3000 offset (from
+0x12a00000), where it obviously should be 0x4000, that's probably
+where this dts error originates from. Btw, I'm also seeing the same
+error in exynos7.dtsi. Though I don't have a TRM for Exynos7 SoCs, so
+not sure if I should go ahead and fix that too. Anyway, for Exynos850,
+I'll fix that in v2 series.
 
--- 
-Without deviation from the norm, progress is not possible.
+> > +                   <0x0 0x12a04000 0x2000>,
+> > +                   <0x0 0x12a06000 0x2000>;
+> > +             interrupts = <GIC_PPI 9
+> > +                             (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+>
+> 4? With 8 CPUs?
+>
+
+Will be fixed in v2, thanks.
+
+> I also find it curious that you went through the unusual
+> (and IMO confusing) effort to allocate a name to each and
+> every SPI in the system, but didn't do it for any on the PPIs...
+>
+
+Yeah, after some consideration I removed the whole interrupts header
+and used hard-coded values instead. I probably felt it would be right
+thing to have, just because there is no public TRM for Exynos850, thus
+documenting interrupts somewhere would be nice. But that reasoning is
+wrong, as trying to mix that kind of documentation with code just
+clutters it. The right thing to do is probably just provide a public
+TRM, but that's not for me to decide, alas :) Anyway, will be fixed in
+v2.
+
+>
+> > +     };
+> > +
+> > +     timer {
+> > +             compatible = "arm,armv8-timer";
+> > +             interrupts = <GIC_PPI 13
+> > +                             (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+> > +                          <GIC_PPI 14
+> > +                             (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+> > +                          <GIC_PPI 11
+> > +                             (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+> > +                          <GIC_PPI 10
+> > +                             (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>;
+> > +             clock-frequency = <26000000>;
+>
+> No, please. Fix the firmware to program CNTFRQ_EL0 on each
+> and every CPU. This isn't 2012 anymore.
+>
+
+Ok, will remove that property in v2. Though it looks like CNTFRQ_EL0
+register can be only changed in EL3 execution level, so I'll have to
+ask the vendor to fix their BL31 or whatever. But that might take some
+time, so I'll have to keep "clock-frequency" workaround in my local
+tree for now, to make scheduler work.
+
+> You are also missing the hypervisor virtual timer interrupt.
+>
+
+Checked SoC TRM, there is no PPI for hypervisor virtual timer
+interrupt, and no mentioning of it at all. Likewise, I checked ARMv8
+ARM and TRM, almost no description of it. Also, I checked other
+platforms, and seems like everyone does the same (having only 4
+interrupts). And I wasn't able to find any documentation on that, so I
+guess I'll leave it as is, if you don't mind.
+
+> > +             use-clocksource-only;
+> > +             use-physical-timer;
+>
+> Thankfully, these two properties do not exist.
+>
+
+Yeah, that's just some leftover from vendor's kernel, overlook by
+me... Will remove in v2, thanks.
+
+> Thanks,
+>
+>          M.
+> --
+> Jazz is not dead. It just smells funny...
