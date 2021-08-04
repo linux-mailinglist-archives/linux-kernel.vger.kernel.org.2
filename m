@@ -2,159 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2243E02A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9593E02A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238553AbhHDODU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:03:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
+        id S238570AbhHDODj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238536AbhHDODQ (ORCPT
+        with ESMTP id S238541AbhHDODh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:03:16 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B1DC0613D5;
-        Wed,  4 Aug 2021 07:03:03 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id l18so2394575wrv.5;
-        Wed, 04 Aug 2021 07:03:03 -0700 (PDT)
+        Wed, 4 Aug 2021 10:03:37 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515D7C0613D5;
+        Wed,  4 Aug 2021 07:03:24 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id dw2-20020a17090b0942b0290177cb475142so8876560pjb.2;
+        Wed, 04 Aug 2021 07:03:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=19plOpPW+WVmw0cGjj3q24slWnf3YHJuW1TftKQHmww=;
-        b=FDUQYip0F00orvtkAkIcR8qVk3zv/e3ZQ5O0oxkQ72xrb2I84rrvuEftw3nY8nyu8I
-         n4kmGGki9xlL4IqZZC2CXDbb1X1f0teTyHkAH+pbrxXkeNu0DMild6XLdq4QvT+vbQxO
-         u2gsNHlCQU6i6o6b7/PXHu9dxM3JovsXf6zAoC3UGJx82OHEHLEn5Tbsz333HhuWf1rW
-         eRZGk6qsgJ5FrAhZnGK10g9hUnWyxoidZ8sgnhHzMqixSaDndmpgq9DIpVHidSOstYL4
-         VILszrfoqM1wIa3bwB/Vi/rEocfZh2eTWAYDz0/R2QiLZ7ruV68242mLf+Ptufrm9Buc
-         09qA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=USBicg/0dV73mfpcCzd1ZEB7FRKa+oevryChnbcskw0=;
+        b=osWu0Ak7PxOAxHfIDeok5gAVR7kJNLQELy9diVumDJujF6m/H0u3qwhuuTp0u9o8gv
+         Wb/M+XOPf15ZN03FS0rYayZ5RdarCiFRP/Mq0NZ0h6SVGTcJ42bWOB3ew41ACUur+noe
+         PWUk18uWbBHX54nZ3uQtz0yKteplPxXuYvUP9S1vrm/AQC6eLb0D87ZO8QCRj14d5nzF
+         UwUh5q/oqDVGuBsd5M1khNq8vL+bprSqQazUbYbD0qvy/DratQ2Utq+O2ZS6IFfyvT48
+         G2BJmVG+3Ku5KYB+kfua4keFpKipWbhvBGp0mw22pR71KP/eHH0jtveLlXp387bgM6Zi
+         U3ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=19plOpPW+WVmw0cGjj3q24slWnf3YHJuW1TftKQHmww=;
-        b=PLZVAYwONrKtgerY7hvJ4nAAvh8IGe8pvWTGo6CSIh9iPTbPXab5D4G4DK8H0NIOEH
-         i2qE+FnggllsAQAwvWEkGeqwSVSFLVHskQOuM7hfz7hiWgMgT0b5D5P+4OMPVxg3oowR
-         TLye9bOsa7p2OOmmZ23fFTS7vUr6fTVSLOA/3XOmy0i41rbFTMrU3WfNW28jyx8vO3jT
-         MruFMkud5rwwHt1KKKCTZvGJsOMhBinGntFSDg3wycfhmOR7iovtOJyXG6TlH2aveN2F
-         vw62Hl5aHthTcyRH1LxYGAO+ykry3usCfqq5aWpfO/0fiUKPpq5v/SCF0auz+s6cVucA
-         dwfg==
-X-Gm-Message-State: AOAM533FdxbkOVelaWvUMPOOZvrNrH6ttaseRQhe/Vtr1ouGfCPMGpeE
-        6PJnWD8NrLXHAtwkbM/HIss=
-X-Google-Smtp-Source: ABdhPJzrgSNIUtASBt18jfFqj4fSRQ5BFiwT4yllI7pX4XWLIC3af4Re6vBNJy6vUhU0ie7Hqhmc3w==
-X-Received: by 2002:a5d:540d:: with SMTP id g13mr28634456wrv.329.1628085782448;
-        Wed, 04 Aug 2021 07:03:02 -0700 (PDT)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id f5sm2752654wrs.5.2021.08.04.07.03.00
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=USBicg/0dV73mfpcCzd1ZEB7FRKa+oevryChnbcskw0=;
+        b=TchkxNGMjodv7JcRTPrgSw4cOZuwOeq93uvlKW4Et8PGHgkzup545AWjFOM+/c9ykU
+         6l9HVAXyiDbDjd67aGOZ4SnF4fij99f8f/gMV1iM8G/I9Hw1GxsF/BJB61xn1R3r2BKA
+         jRQ8akF+6b9AvOQR0pzQyIUWKBtbcLQxgmAZa37enF4Z3Qt8SS6sqIRjF0AGZiKST60a
+         w1xS/IZgsgySK88aMAb+hYZnJBnLfpTNH63YPZIxN0HaGET7Q3nDNCOJSbIqFcpR/LnP
+         j8g+fW4dJjY+eWHPaT/avTzRlxb+pKLi1d8F47X46oNT8aJM79IsdjYl0tBeOvf7SJuP
+         NFfA==
+X-Gm-Message-State: AOAM533RfflddBoO5OE56Rd3dpEWWVxC04CkNbm9AnLOiefO2neFrwAO
+        gq//DFEQr4t3boDceuc1k/M=
+X-Google-Smtp-Source: ABdhPJxhoa44dALM0xlv5t0YodiQrJYOi9l4Yb6jVAaXf4TFsFfRwYQiDkTuZ4u7XmHk2KMowVunBA==
+X-Received: by 2002:aa7:8e51:0:b029:332:920f:1430 with SMTP id d17-20020aa78e510000b0290332920f1430mr28172289pfr.1.1628085803736;
+        Wed, 04 Aug 2021 07:03:23 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:20f:6a87:f508:aab5:2fa7:36da])
+        by smtp.googlemail.com with ESMTPSA id z2sm4048408pgz.43.2021.08.04.07.03.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 07:03:01 -0700 (PDT)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>
-Subject: [PATCH] arm64: dts: meson: add audio playback to vega-s95 dtsi
-Date:   Wed,  4 Aug 2021 14:02:58 +0000
-Message-Id: <20210804140258.4666-1-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 04 Aug 2021 07:03:22 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     Michael.Hennerich@analog.com, jic23@kernel.org,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lars@metafoo.de,
+        Dragos.Bogdan@analog.com, Darius.Berghe@analog.com
+Cc:     Puranjay Mohan <puranjay12@gmail.com>
+Subject: [PATCH v8 0/3] iio: accel: add support for ADXL355
+Date:   Wed,  4 Aug 2021 19:33:06 +0530
+Message-Id: <20210804140309.31468-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.30.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial support limited to HDMI i2s and SPDIF (LPCM).
+Add the dt-bindings and the driver for ADXL355 3-axis MEMS Accelerometer.
 
-Tested-by: Oleg Ivanov <150balbes@yandex.ru>
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
----
- .../boot/dts/amlogic/meson-gxbb-vega-s95.dtsi | 61 +++++++++++++++++++
- 1 file changed, 61 insertions(+)
+Changes since v7:
+1. Update MAINTAINERS to show all driver files.
+2. Set CONFIGS for buffered support in Kconfig.
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi
-index 9b0b81f191f1..66daf3af34c3 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi
-@@ -4,6 +4,7 @@
-  */
- 
- #include "meson-gxbb.dtsi"
-+#include <dt-bindings/sound/meson-aiu.h>
- 
- / {
- 	compatible = "tronsmart,vega-s95", "amlogic,meson-gxbb";
-@@ -17,6 +18,13 @@
- 		stdout-path = "serial0:115200n8";
- 	};
- 
-+	spdif_dit: audio-codec-0 {
-+		#sound-dai-cells = <0>;
-+		compatible = "linux,spdif-dit";
-+		status = "okay";
-+		sound-name-prefix = "DIT";
-+	};
-+
- 	leds {
- 		compatible = "gpio-leds";
- 
-@@ -97,6 +105,59 @@
- 		clocks = <&wifi32k>;
- 		clock-names = "ext_clock";
- 	};
-+
-+	sound {
-+		compatible = "amlogic,gx-sound-card";
-+		model = "VEGA-S95";
-+		assigned-clocks = <&clkc CLKID_MPLL0>,
-+				  <&clkc CLKID_MPLL1>,
-+				  <&clkc CLKID_MPLL2>;
-+		assigned-clock-parents = <0>, <0>, <0>;
-+		assigned-clock-rates = <294912000>,
-+				       <270950400>,
-+				       <393216000>;
-+		status = "okay";
-+
-+		dai-link-0 {
-+			sound-dai = <&aiu AIU_CPU CPU_I2S_FIFO>;
-+		};
-+
-+		dai-link-1 {
-+			sound-dai = <&aiu AIU_CPU CPU_SPDIF_FIFO>;
-+		};
-+
-+		dai-link-2 {
-+			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
-+			dai-format = "i2s";
-+			mclk-fs = <256>;
-+
-+			codec-0 {
-+				sound-dai = <&aiu AIU_HDMI CTRL_I2S>;
-+			};
-+		};
-+
-+		dai-link-3 {
-+			sound-dai = <&aiu AIU_CPU CPU_SPDIF_ENCODER>;
-+
-+			codec-0 {
-+				sound-dai = <&spdif_dit>;
-+			};
-+		};
-+
-+		dai-link-4 {
-+			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
-+
-+			codec-0 {
-+				sound-dai = <&hdmi_tx>;
-+			};
-+		};
-+	};
-+};
-+
-+&aiu {
-+	status = "okay";
-+	pinctrl-0 = <&spdif_out_y_pins>;
-+	pinctrl-names = "default";
- };
- 
- &cec_AO {
+Changes since v6:
+1. Use interrupt-names property in device tree document.
+2. Add triggered buffer support.
+3. Use a static table for offset and data registers.
+4. Fix coding style issues.
+5. move defines from header to c file.
+
+Changes since v5:
+1. Used get_unaligned_be24() and  get_unaligned_be16() to parse
+acceleration and temperature data. This solves sparse errors and also
+make the code more understandable.
+
+Changes since v4:
+1. Fix errors reported by sparse.
+
+Changes since v3:
+1. Fix errors in yaml DT doc.
+2. Change SPDX-License-Identifier to GPL-2.0-only OR BSD-2-Clause
+
+Changes since v2:
+1. Add separate DT binding doc in yaml.
+2. Use ____cacheline_aligned buffer for regmap_bulk_read/write calls.
+3. Make code consistent by using same style in switch case.
+4. Use FIELD_PREP in place of custom macros.
+5. Make Kconfig description more informative.
+
+Changes since v1:
+1. Remove the declarations for static regmap structures from adxl355.h.
+This was missed in the v1 and caused errors.
+2. Make switch case statements consistent by directly returning from
+each case rather than saving the return in a variable.
+3. Some coding style changes.
+
+Changes since v0:
+1. Move adxl355_hpf_3db_table to adxl355_data structure. This is done to make
+sure that each device gets its own table.
+2. Make local regmap definitions private to adxl355_core.c.
+3. Other minor coding style changes.
+
+Puranjay Mohan (3):
+  dt-bindings: iio: accel: Add DT binding doc for ADXL355
+  iio: accel: Add driver support for ADXL355
+  iio: accel: adxl355: Add triggered buffer support
+
+ .../bindings/iio/accel/adi,adxl355.yaml       |  88 +++
+ MAINTAINERS                                   |  10 +
+ drivers/iio/accel/Kconfig                     |  33 +
+ drivers/iio/accel/Makefile                    |   3 +
+ drivers/iio/accel/adxl355.h                   |  19 +
+ drivers/iio/accel/adxl355_core.c              | 682 ++++++++++++++++++
+ drivers/iio/accel/adxl355_i2c.c               |  65 ++
+ drivers/iio/accel/adxl355_spi.c               |  67 ++
+ 8 files changed, 967 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+ create mode 100644 drivers/iio/accel/adxl355.h
+ create mode 100644 drivers/iio/accel/adxl355_core.c
+ create mode 100644 drivers/iio/accel/adxl355_i2c.c
+ create mode 100644 drivers/iio/accel/adxl355_spi.c
+
 -- 
-2.17.1
+2.30.1
 
