@@ -2,182 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 151963DFBE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 09:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 479F13DFBE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 09:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235607AbhHDHRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 03:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235219AbhHDHRV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 03:17:21 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F51DC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 00:17:09 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id h13so1070100wrp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 00:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XNEs/6yr9b8hBQJj2GN/2tEZCeGoJUsw90alOL/69is=;
-        b=MRfa7s2FlqWOZN1LdWG9uuA2LDK4JWa35Hl4QjcgjFTI6pryHaQWkcpUdTW9ls6cUh
-         wU/tM9FUyC5q4Hs7TpxT5/kRxdkcJUp0QgLu0QMLU/TgjjYbGEPjBeVJCu2aybz6/x96
-         P9wN8SKOi+yNj2hmcKkKnxLElr+ajPmy36P9Ldz2zFvolMi/qlmLZ2MF8bCYsvWHjVyW
-         ASZLShSWvUGBBklIwdSJ+VhMMOhjx90ZrUk96mRak3VNf9bIg5yTfwgrahOH9QD/GWAr
-         bICzY7dttw78c8vG73H8QPTvHElx6JB5fryzSD0RL5eoWWk/sogoyswO5lF/haQ8gwu1
-         A8Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XNEs/6yr9b8hBQJj2GN/2tEZCeGoJUsw90alOL/69is=;
-        b=KIiIyqF8qQ1tumcYxv8qCx2kmMu0y+hFX0k+rxX5JbHaz7yRHlvYerfnKCmSaiIYcZ
-         J85AHmhZLLS7tkdozVAPvFyp0E/iznmBWmBn7g7xowOrDwuyYwPrfnQ5OmDTavCe3yyV
-         3H1NjRUdSQeeIkSsmJoYruZRrKxKkI8SG3QPcTi8mX+NnCBne6lss8eMvuT/1X4cfqBs
-         XzYuaI6q8SmK5r21y8/5MQcJWUGbtjVwS/FLnL3S5QJ2/k/n+u/7Y0O0etPD3XFplnJe
-         O+vOzkOhOYWPwPym3mWRi5ZxpAXaHXdf2LopVCLjXMv1n/mJE3OaciSJFTYQ6xUaUCPL
-         Z57g==
-X-Gm-Message-State: AOAM533yYY5YnviiSW2VkxujiQuPnWvURifKSJ0dfQteUKMqsP4L1PWm
-        92OlI75CmUvZ8gDm34LXSQNCAfpZlnuU3agUnQjnGQ==
-X-Google-Smtp-Source: ABdhPJziyxjW3/zAe6HvyWFtZ1PxzUYuOaOmP44elbzWWY60sj71QIHYVTXI1bP8qaCoQecHSM5/k92hfV7UFYOU8Ew=
-X-Received: by 2002:a5d:640f:: with SMTP id z15mr27704351wru.325.1628061427914;
- Wed, 04 Aug 2021 00:17:07 -0700 (PDT)
+        id S235652AbhHDHSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 03:18:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235545AbhHDHSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 03:18:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9848460F14;
+        Wed,  4 Aug 2021 07:17:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628061475;
+        bh=IixKMnv4O7hFfMTSpcTjyF2I3jrmDmNM+Hc0Ua/fAa4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=W0N6Ern1kdEGBDZDXf1v0GLERfwVGk7Qsy5BDmxec6IA4/IbQuXjXVAW6VT/RKCna
+         F60B1XcT1KX+i7uV1f/op4oUq4VUvHKTFLe33uDoZH41nCsct3f3SFnAh/78bel5cw
+         yT9/kWnUA6MG/G8UVsXrGIPwV2AsRBZvP8GoIGopGkOqXyBIS3YC4jLEGewFGHJM0n
+         2tkC1/4GGugGSowGBbqJuJmx2I5AgQGH4oaVXCiQqIcUZfHQE06LN+xCNpHgXDbryi
+         Ih2wD730zQSofvLkQpff2bYa4NSeOAHR/V4TzRgjESjPEo5/zpy1BCaGMLIe85TpWS
+         re0CC8d5+yGLg==
+Subject: Re: [PATCH v2 3/3] erofs: convert all uncompressed cases to iomap
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        linux-erofs@lists.ozlabs.org
+Cc:     linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Liu Bo <bo.liu@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>,
+        Huang Jianan <huangjianan@oppo.com>,
+        Tao Ma <boyu.mt@taobao.com>
+References: <20210730194625.93856-1-hsiangkao@linux.alibaba.com>
+ <20210730194625.93856-4-hsiangkao@linux.alibaba.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <76f9241e-5e7b-1de4-6cef-c92aa1de7498@kernel.org>
+Date:   Wed, 4 Aug 2021 15:17:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210727055450.2742868-1-anup.patel@wdc.com> <20210727055450.2742868-12-anup.patel@wdc.com>
- <38734ad1008a46169dcd89e1ded9ac62@huawei.com>
-In-Reply-To: <38734ad1008a46169dcd89e1ded9ac62@huawei.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 4 Aug 2021 12:46:20 +0530
-Message-ID: <CAAhSdy2jCQQScw9KMwHy-c7Mgkaq5xB95qmjypJEYbb+0q3_Tg@mail.gmail.com>
-Subject: Re: [PATCH v19 11/17] RISC-V: KVM: Implement MMU notifiers
-To:     "limingwang (A)" <limingwang@huawei.com>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210730194625.93856-4-hsiangkao@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 6:49 PM limingwang (A) <limingwang@huawei.com> wrote:
->
-> > diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c index
-> > fa9a4f9b9542..4b294113c63b 100644
-> > --- a/arch/riscv/kvm/mmu.c
-> > +++ b/arch/riscv/kvm/mmu.c
-> > @@ -300,7 +300,8 @@ static void stage2_op_pte(struct kvm *kvm, gpa_t
-> > addr,
-> >       }
-> >  }
-> >
-> > -static void stage2_unmap_range(struct kvm *kvm, gpa_t start, gpa_t size)
-> > +static void stage2_unmap_range(struct kvm *kvm, gpa_t start,
-> > +                            gpa_t size, bool may_block)
-> >  {
-> >       int ret;
-> >       pte_t *ptep;
-> > @@ -325,6 +326,13 @@ static void stage2_unmap_range(struct kvm *kvm,
-> > gpa_t start, gpa_t size)
-> >
-> >  next:
-> >               addr += page_size;
-> > +
-> > +             /*
-> > +              * If the range is too large, release the kvm->mmu_lock
-> > +              * to prevent starvation and lockup detector warnings.
-> > +              */
-> > +             if (may_block && addr < end)
-> > +                     cond_resched_lock(&kvm->mmu_lock);
-> >       }
-> >  }
-> >
-> > @@ -405,7 +413,6 @@ static int stage2_ioremap(struct kvm *kvm, gpa_t gpa,
-> > phys_addr_t hpa,
-> >  out:
-> >       stage2_cache_flush(&pcache);
-> >       return ret;
-> > -
-> >  }
-> >
-> >  void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm, @@
-> > -547,7 +554,7 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
-> >       spin_lock(&kvm->mmu_lock);
-> >       if (ret)
-> >               stage2_unmap_range(kvm, mem->guest_phys_addr,
-> > -                                mem->memory_size);
-> > +                                mem->memory_size, false);
-> >       spin_unlock(&kvm->mmu_lock);
-> >
-> >  out:
-> > @@ -555,6 +562,73 @@ int kvm_arch_prepare_memory_region(struct kvm
-> > *kvm,
-> >       return ret;
-> >  }
-> >
-> > +bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
-> > +{
-> > +     if (!kvm->arch.pgd)
-> > +             return 0;
-> > +
-> > +     stage2_unmap_range(kvm, range->start << PAGE_SHIFT,
-> > +                        (range->end - range->start) << PAGE_SHIFT,
-> > +                        range->may_block);
-> > +     return 0;
-> > +}
-> > +
-> > +bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range) {
-> > +     int ret;
-> > +     kvm_pfn_t pfn = pte_pfn(range->pte);
-> > +
-> > +     if (!kvm->arch.pgd)
-> > +             return 0;
-> > +
-> > +     WARN_ON(range->end - range->start != 1);
-> > +
-> > +     ret = stage2_map_page(kvm, NULL, range->start << PAGE_SHIFT,
-> > +                           __pfn_to_phys(pfn), PAGE_SIZE, true, true);
-> > +     if (ret) {
-> > +             kvm_err("Failed to map stage2 page (error %d)\n", ret);
-> > +             return 1;
-> > +     }
->
-> Hi, Anup
->
-> I think that it is not appropriate to add kvm_err here, because stage2_set_pte function
-> may apply for memory based on the pcache parameter. If the value of pcache is NULL,
-> stage2_set_pte function considers that there is not enough memory and here an invalid
-> error log is generated.
->
-> As an example, this error log is printed when a VM is migrating. But finally the VM migration
-> is successful. And if the kvm_err is added to the same position in the ARM architecture, the
-> same error log is also printed.
+On 2021/7/31 3:46, Gao Xiang wrote:
+> Since tail-packing inline has been supported by iomap now, let's
+> convert all EROFS uncompressed data I/O to iomap, which is pretty
+> straight-forward.
+> 
+> Cc: linux-fsdevel@vger.kernel.org
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> ---
+>   fs/erofs/data.c | 288 ++++++++----------------------------------------
+>   1 file changed, 49 insertions(+), 239 deletions(-)
+> 
+> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+> index 911521293b20..6b98156bb5ca 100644
+> --- a/fs/erofs/data.c
+> +++ b/fs/erofs/data.c
+> @@ -9,29 +9,6 @@
+>   #include <linux/dax.h>
+>   #include <trace/events/erofs.h>
+>   
+> -static void erofs_readendio(struct bio *bio)
+> -{
+> -	struct bio_vec *bvec;
+> -	blk_status_t err = bio->bi_status;
+> -	struct bvec_iter_all iter_all;
+> -
+> -	bio_for_each_segment_all(bvec, bio, iter_all) {
+> -		struct page *page = bvec->bv_page;
+> -
+> -		/* page is already locked */
+> -		DBG_BUGON(PageUptodate(page));
+> -
+> -		if (err)
+> -			SetPageError(page);
+> -		else
+> -			SetPageUptodate(page);
+> -
+> -		unlock_page(page);
+> -		/* page could be reclaimed now */
+> -	}
+> -	bio_put(bio);
+> -}
+> -
+>   struct page *erofs_get_meta_page(struct super_block *sb, erofs_blk_t blkaddr)
+>   {
+>   	struct address_space *const mapping = sb->s_bdev->bd_inode->i_mapping;
+> @@ -109,206 +86,6 @@ static int erofs_map_blocks_flatmode(struct inode *inode,
+>   	return err;
+>   }
+>   
+> -static inline struct bio *erofs_read_raw_page(struct bio *bio,
+> -					      struct address_space *mapping,
+> -					      struct page *page,
+> -					      erofs_off_t *last_block,
+> -					      unsigned int nblocks,
+> -					      unsigned int *eblks,
+> -					      bool ra)
+> -{
+> -	struct inode *const inode = mapping->host;
+> -	struct super_block *const sb = inode->i_sb;
+> -	erofs_off_t current_block = (erofs_off_t)page->index;
+> -	int err;
+> -
+> -	DBG_BUGON(!nblocks);
+> -
+> -	if (PageUptodate(page)) {
+> -		err = 0;
+> -		goto has_updated;
+> -	}
+> -
+> -	/* note that for readpage case, bio also equals to NULL */
+> -	if (bio &&
+> -	    (*last_block + 1 != current_block || !*eblks)) {
+> -submit_bio_retry:
+> -		submit_bio(bio);
+> -		bio = NULL;
+> -	}
+> -
+> -	if (!bio) {
+> -		struct erofs_map_blocks map = {
+> -			.m_la = blknr_to_addr(current_block),
+> -		};
+> -		erofs_blk_t blknr;
+> -		unsigned int blkoff;
+> -
+> -		err = erofs_map_blocks_flatmode(inode, &map, EROFS_GET_BLOCKS_RAW);
+> -		if (err)
+> -			goto err_out;
+> -
+> -		/* zero out the holed page */
+> -		if (!(map.m_flags & EROFS_MAP_MAPPED)) {
+> -			zero_user_segment(page, 0, PAGE_SIZE);
+> -			SetPageUptodate(page);
+> -
+> -			/* imply err = 0, see erofs_map_blocks */
+> -			goto has_updated;
+> -		}
+> -
+> -		/* for RAW access mode, m_plen must be equal to m_llen */
+> -		DBG_BUGON(map.m_plen != map.m_llen);
+> -
+> -		blknr = erofs_blknr(map.m_pa);
+> -		blkoff = erofs_blkoff(map.m_pa);
+> -
+> -		/* deal with inline page */
+> -		if (map.m_flags & EROFS_MAP_META) {
+> -			void *vsrc, *vto;
+> -			struct page *ipage;
+> -
+> -			DBG_BUGON(map.m_plen > PAGE_SIZE);
+> -
+> -			ipage = erofs_get_meta_page(inode->i_sb, blknr);
+> -
+> -			if (IS_ERR(ipage)) {
+> -				err = PTR_ERR(ipage);
+> -				goto err_out;
+> -			}
+> -
+> -			vsrc = kmap_atomic(ipage);
+> -			vto = kmap_atomic(page);
+> -			memcpy(vto, vsrc + blkoff, map.m_plen);
+> -			memset(vto + map.m_plen, 0, PAGE_SIZE - map.m_plen);
+> -			kunmap_atomic(vto);
+> -			kunmap_atomic(vsrc);
+> -			flush_dcache_page(page);
+> -
+> -			SetPageUptodate(page);
+> -			/* TODO: could we unlock the page earlier? */
+> -			unlock_page(ipage);
+> -			put_page(ipage);
+> -
+> -			/* imply err = 0, see erofs_map_blocks */
+> -			goto has_updated;
+> -		}
+> -
+> -		/* pa must be block-aligned for raw reading */
+> -		DBG_BUGON(erofs_blkoff(map.m_pa));
+> -
+> -		/* max # of continuous pages */
+> -		if (nblocks > DIV_ROUND_UP(map.m_plen, PAGE_SIZE))
+> -			nblocks = DIV_ROUND_UP(map.m_plen, PAGE_SIZE);
+> -
+> -		*eblks = bio_max_segs(nblocks);
+> -		bio = bio_alloc(GFP_NOIO, *eblks);
+> -
+> -		bio->bi_end_io = erofs_readendio;
+> -		bio_set_dev(bio, sb->s_bdev);
+> -		bio->bi_iter.bi_sector = (sector_t)blknr <<
+> -			LOG_SECTORS_PER_BLOCK;
+> -		bio->bi_opf = REQ_OP_READ | (ra ? REQ_RAHEAD : 0);
+> -	}
+> -
+> -	err = bio_add_page(bio, page, PAGE_SIZE, 0);
+> -	/* out of the extent or bio is full */
+> -	if (err < PAGE_SIZE)
+> -		goto submit_bio_retry;
+> -	--*eblks;
+> -	*last_block = current_block;
+> -	return bio;
+> -
+> -err_out:
+> -	/* for sync reading, set page error immediately */
+> -	if (!ra) {
+> -		SetPageError(page);
+> -		ClearPageUptodate(page);
+> -	}
+> -has_updated:
+> -	unlock_page(page);
+> -
+> -	/* if updated manually, continuous pages has a gap */
+> -	if (bio)
+> -		submit_bio(bio);
+> -	return err ? ERR_PTR(err) : NULL;
+> -}
+> -
+> -/*
+> - * since we dont have write or truncate flows, so no inode
+> - * locking needs to be held at the moment.
+> - */
+> -static int erofs_raw_access_readpage(struct file *file, struct page *page)
+> -{
+> -	erofs_off_t last_block;
+> -	unsigned int eblks;
+> -	struct bio *bio;
+> -
+> -	trace_erofs_readpage(page, true);
+> -
+> -	bio = erofs_read_raw_page(NULL, page->mapping,
+> -				  page, &last_block, 1, &eblks, false);
+> -
+> -	if (IS_ERR(bio))
+> -		return PTR_ERR(bio);
+> -
+> -	if (bio)
+> -		submit_bio(bio);
+> -	return 0;
+> -}
+> -
+> -static void erofs_raw_access_readahead(struct readahead_control *rac)
+> -{
+> -	erofs_off_t last_block;
+> -	unsigned int eblks;
+> -	struct bio *bio = NULL;
+> -	struct page *page;
+> -
+> -	trace_erofs_readpages(rac->mapping->host, readahead_index(rac),
+> -			readahead_count(rac), true);
+> -
+> -	while ((page = readahead_page(rac))) {
+> -		prefetchw(&page->flags);
+> -
+> -		bio = erofs_read_raw_page(bio, rac->mapping, page, &last_block,
+> -				readahead_count(rac), &eblks, true);
+> -
+> -		/* all the page errors are ignored when readahead */
+> -		if (IS_ERR(bio)) {
+> -			pr_err("%s, readahead error at page %lu of nid %llu\n",
+> -			       __func__, page->index,
+> -			       EROFS_I(rac->mapping->host)->nid);
+> -
+> -			bio = NULL;
+> -		}
+> -
+> -		put_page(page);
+> -	}
+> -
+> -	if (bio)
+> -		submit_bio(bio);
+> -}
+> -
+> -static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
+> -{
+> -	struct inode *inode = mapping->host;
+> -	struct erofs_map_blocks map = {
+> -		.m_la = blknr_to_addr(block),
+> -	};
+> -
+> -	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
+> -		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
+> -
+> -		if (block >> LOG_SECTORS_PER_BLOCK >= blks)
+> -			return 0;
+> -	}
+> -
+> -	if (!erofs_map_blocks_flatmode(inode, &map, EROFS_GET_BLOCKS_RAW))
+> -		return erofs_blknr(map.m_pa);
+> -
+> -	return 0;
+> -}
+> -
+>   static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>   		unsigned int flags, struct iomap *iomap, struct iomap *srcmap)
+>   {
+> @@ -327,6 +104,7 @@ static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>   	iomap->offset = map.m_la;
+>   	iomap->length = map.m_llen;
+>   	iomap->flags = 0;
+> +	iomap->private = NULL;
+>   
+>   	if (!(map.m_flags & EROFS_MAP_MAPPED)) {
+>   		iomap->type = IOMAP_HOLE;
+> @@ -336,20 +114,61 @@ static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>   		return 0;
+>   	}
+>   
+> -	/* that shouldn't happen for now */
+>   	if (map.m_flags & EROFS_MAP_META) {
+> -		DBG_BUGON(1);
+> -		return -ENOTBLK;
+> +		struct page *ipage;
+> +
+> +		iomap->type = IOMAP_INLINE;
+> +		ipage = erofs_get_meta_page(inode->i_sb,
+> +					    erofs_blknr(map.m_pa));
 
-Okay, I have converted kvm_err() to kvm_debug(). In the future, we can totally
-remove it as well.
+Error handling for erofs_get_meta_page()?
 
-Please try riscv_kvm_v20 branch at:
-https://github.com/avpatel/linux.git
+Thanks
 
-Regards,
-Anup
-
->
-> Mingwang
->
-> > +     return 0;
-> > +}
-> > +
->
+> +		iomap->inline_data = page_address(ipage) +
+> +					erofs_blkoff(map.m_pa);
+> +		iomap->private = ipage;
+> +	} else {
+> +		iomap->type = IOMAP_MAPPED;
+> +		iomap->addr = map.m_pa;
+>   	}
+> -	iomap->type = IOMAP_MAPPED;
+> -	iomap->addr = map.m_pa;
+>   	return 0;
+>   }
+>   
+> +static int erofs_iomap_end(struct inode *inode, loff_t pos, loff_t length,
+> +		ssize_t written, unsigned flags, struct iomap *iomap)
+> +{
+> +	struct page *ipage = iomap->private;
+> +
+> +	if (ipage) {
+> +		DBG_BUGON(iomap->type != IOMAP_INLINE);
+> +		unlock_page(ipage);
+> +		put_page(ipage);
+> +	} else {
+> +		DBG_BUGON(iomap->type == IOMAP_INLINE);
+> +	}
+> +	return written;
+> +}
+> +
+>   const struct iomap_ops erofs_iomap_ops = {
+>   	.iomap_begin = erofs_iomap_begin,
+> +	.iomap_end = erofs_iomap_end,
+>   };
+>   
+> +/*
+> + * since we dont have write or truncate flows, so no inode
+> + * locking needs to be held at the moment.
+> + */
+> +static int erofs_readpage(struct file *file, struct page *page)
+> +{
+> +	return iomap_readpage(page, &erofs_iomap_ops);
+> +}
+> +
+> +static void erofs_readahead(struct readahead_control *rac)
+> +{
+> +	return iomap_readahead(rac, &erofs_iomap_ops);
+> +}
+> +
+> +static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
+> +{
+> +	return iomap_bmap(mapping, block, &erofs_iomap_ops);
+> +}
+> +
+>   static int erofs_prepare_dio(struct kiocb *iocb, struct iov_iter *to)
+>   {
+>   	struct inode *inode = file_inode(iocb->ki_filp);
+> @@ -365,15 +184,6 @@ static int erofs_prepare_dio(struct kiocb *iocb, struct iov_iter *to)
+>   
+>   	if (align & blksize_mask)
+>   		return -EINVAL;
+> -
+> -	/*
+> -	 * Temporarily fall back tail-packing inline to buffered I/O instead
+> -	 * since tail-packing inline support relies on an iomap core update.
+> -	 */
+> -	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE &&
+> -	    iocb->ki_pos + iov_iter_count(to) >
+> -			rounddown(inode->i_size, EROFS_BLKSIZ))
+> -		return 1;
+>   	return 0;
+>   }
+>   
+> @@ -409,8 +219,8 @@ static ssize_t erofs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+>   
+>   /* for uncompressed (aligned) files and raw access for other files */
+>   const struct address_space_operations erofs_raw_access_aops = {
+> -	.readpage = erofs_raw_access_readpage,
+> -	.readahead = erofs_raw_access_readahead,
+> +	.readpage = erofs_readpage,
+> +	.readahead = erofs_readahead,
+>   	.bmap = erofs_bmap,
+>   	.direct_IO = noop_direct_IO,
+>   };
+> 
