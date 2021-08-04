@@ -2,125 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77983E0409
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9B33E040B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238846AbhHDPVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238750AbhHDPUz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:20:55 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A04CC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 08:20:42 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id x17so1425093wmc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 08:20:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wkTZ3Cvpq95tTZxxGhMCSQ7ZSKfjC1tE+mWWe/3jYYM=;
-        b=qUZNQdiUlWR4fZqQO2qEpJtqRJQ4OvzIr7Kuz9UvfnzaGHos0+g8dvDCMYOlI5J7GU
-         eeasVfDunhWAcLlMXsqm2G+7tMA4Tzwj+S8NId/qQa71KiYOCauH4JQ8SyB8aLK/YNdL
-         B7NKOYK+N4ZYH9L7tlrd5tkaYuAnrJna9N6lZCUSpA4un6DJCTEZER4MySW9f2alcjoD
-         adI9r0igmhMxhG98XiyJoix/FjnxEvEs+dyMVVkaJtjz/IVDBwkjCmEoDWcuW17yRy3X
-         0AxR5OTFG6mqSwU6Vp0VkcNjL8y/xZlU5ihBkwmRic9rvY2yPICUqX80937llq8ad+Ob
-         CjiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wkTZ3Cvpq95tTZxxGhMCSQ7ZSKfjC1tE+mWWe/3jYYM=;
-        b=TuyamI+r871NmN8l4UcDWcZGhXPz5WbYym0ZbVBvMAhPjphQFUklgqIewQdUPxNdEB
-         U9T6Meum4KzK0x1AVLuX2EQBJ0HK9OmlxNqu4ue1IKgtSNRJoLTS0BIKuHyhnXPl0POy
-         4aTAFo4cx8CC7ak9hDC7V2U1vBH7BXDpR/yYD2OSYqpY8/j83tI89yxAXo8pnvLtlVO+
-         B2r1lT6p7aAfz0ZZ96jUpcnF8osx9YXG1icsAMhP3IZ+/azl7Hsd0S0UrtCIUYrz5fvZ
-         CHc7vQiMS8zw1vZF7Urxzg1kUB2YloyknKvbHw1R+LwT79tMhHWTh1tlCWgQKydt+Sxf
-         BJEw==
-X-Gm-Message-State: AOAM532i4VlTRXP6IkW+IA8+qtifbCWyangrwq9s8Qgsa1y91/NP0WQN
-        E13S0BHzHlHAyVKaSTjAP/Oat7dmtRhzag==
-X-Google-Smtp-Source: ABdhPJxlJgsrspf5ejM/fhtSz3NsEDL5vJUuMjql93SBjwME2huq7rwsShUGxl7Fjxqnn1rhr3EBSw==
-X-Received: by 2002:a1c:f30a:: with SMTP id q10mr154955wmq.138.1628090440673;
-        Wed, 04 Aug 2021 08:20:40 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id l4sm2876434wrw.32.2021.08.04.08.20.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 08:20:40 -0700 (PDT)
-Subject: Re: [PATCH] ASoC: qcom: apq8016_sbc: Add SEC_MI2S support
-To:     Vincent Knecht <vincent.knecht@mailoo.org>, tiwai@suse.com,
-        perex@perex.cz
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        broonie@kernel.org, lgirdwood@gmail.com, bgoswami@codeaurora.org,
-        stephan@gerhold.net
-References: <20210801072951.1403241-1-vincent.knecht@mailoo.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <c1ef8096-0aa6-9b26-951d-cb673d03cf50@linaro.org>
-Date:   Wed, 4 Aug 2021 16:20:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238885AbhHDPVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:21:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238324AbhHDPVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 11:21:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E35A60295;
+        Wed,  4 Aug 2021 15:21:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628090482;
+        bh=ResC44EGJwfafk1EP1TTehAscV+PxNhFSYCS7gE+NbQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=o+YAX3nM7ZsbINM78zsss9kmETucTr8eDJ9XhnmF7IP3KkvYQ3LrpWozYDakmvuqB
+         S3yXsaByYojvDBAEfD7SKPIP+AuODwWjLhiTquQFwiOYruaq+Aj16RfopXAKd/j3yl
+         RXJXhPIV3Is/ghDJpWSSwzmKI+TGdMME/TRcZ0n4xX/H3NHR930cx13Cv6BCSqEYcw
+         +RiNUYvXiT6ChCAgwC2XvaSnGKXemw3kK1vZIaIY4Td6Lwk8kP7TEapAuLnWfphqcC
+         6JxTuPdxgDJFPMbZFGzPWN9rtKMofElwX6pQKmmJR81MfSWbtCsJFt9oVLYPr/Vuc5
+         9251zhWAfSnvA==
+Received: by mail-wm1-f44.google.com with SMTP id a192-20020a1c7fc90000b0290253b32e8796so3895239wmd.0;
+        Wed, 04 Aug 2021 08:21:22 -0700 (PDT)
+X-Gm-Message-State: AOAM531Q3BKJvxRkSlaX9PBzSZFoXB5qBlFQjOyIINDnW2EGIV31x8N9
+        AMVVGA3PFXgjrnQpPj0Sg0NjYPl+S5EAdY4GszI=
+X-Google-Smtp-Source: ABdhPJyhsDZiH6C0oIXqOf2mYVpZRorsqoPP39EpX0oNA364INwgFOyHPCUYK+yr5luDHjm6eIbPPD+iF8pKEjFkMH0=
+X-Received: by 2002:a05:600c:3b08:: with SMTP id m8mr10383643wms.84.1628090481196;
+ Wed, 04 Aug 2021 08:21:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210801072951.1403241-1-vincent.knecht@mailoo.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210804121318.337276-1-arnd@kernel.org> <20210804142814.GB1645@hoboy.vegasvil.org>
+In-Reply-To: <20210804142814.GB1645@hoboy.vegasvil.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 4 Aug 2021 17:21:05 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1EBwd+DvqnQSHL03zqaoRz_bhxj6TGw2ivpWLDT7jorw@mail.gmail.com>
+Message-ID: <CAK8P3a1EBwd+DvqnQSHL03zqaoRz_bhxj6TGw2ivpWLDT7jorw@mail.gmail.com>
+Subject: Re: [PATCH net-next v3] ethernet: fix PTP_1588_CLOCK dependencies
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Shannon Nelson <snelson@pensando.io>, drivers@pensando.io,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Simon Horman <simon.horman@netronome.com>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Intel Wired LAN <intel-wired-lan@lists.osuosl.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 4, 2021 at 4:28 PM Richard Cochran <richardcochran@gmail.com> wrote:
+> > @@ -87,8 +87,8 @@ config E1000E_HWTS
+> >  config IGB
+> >       tristate "Intel(R) 82575/82576 PCI-Express Gigabit Ethernet support"
+> >       depends on PCI
+> > -     imply PTP_1588_CLOCK
+> > -     select I2C
+> > +     depends on PTP_1588_CLOCK_OPTIONAL
+> > +     depends on I2C
+>
+> This little i2c bit sneaks in, but I guess you considered any possible
+> trouble with it?
 
+Good catch!
 
-On 01/08/2021 08:29, Vincent Knecht wrote:
-> This patch adds external codec support on secondary mi2s.
-> It is used for headphones on some devices, eg. alcatel-idol347.
-> 
-> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
-> ---
->   sound/soc/qcom/apq8016_sbc.c | 12 ++++++++++++
->   1 file changed, 12 insertions(+)
-> 
-> diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-> index 08a05f0ecad7..53460272eb1e 100644
-> --- a/sound/soc/qcom/apq8016_sbc.c
-> +++ b/sound/soc/qcom/apq8016_sbc.c
-> @@ -30,6 +30,11 @@ struct apq8016_sbc_data {
->   #define MIC_CTRL_QUA_WS_SLAVE_SEL_10	BIT(17)
->   #define MIC_CTRL_TLMM_SCLK_EN		BIT(1)
->   #define	SPKR_CTL_PRI_WS_SLAVE_SEL_11	(BIT(17) | BIT(16))
-> +#define SPKR_CTL_TLMM_MCLK_EN		BIT(1)
-> +#define SPKR_CTL_TLMM_SCLK_EN		BIT(2)
-> +#define SPKR_CTL_TLMM_DATA1_EN		BIT(3)
-> +#define SPKR_CTL_TLMM_WS_OUT_SEL	BIT(6)
-> +#define SPKR_CTL_TLMM_WS_EN_SEL		BIT(18)
+I did need this with v2, as it was causing a circular dependency against
+(IIRC) CONFIG_MLXSW_I2C, but I'm fairly sure it's not needed any
+more after everything else uses 'depends on' now.
 
-Can you please add suffix to these defines something like:
-#define SPKR_CTL_TLMM_WS_EN_SEL_SECONDARY	BIT(18)
-so it becomes more obvious, As we have 4 possible values for this field 
-[18:19]
-same for WS_OUT_SEL.
+I'm happy to resend a v4 without that change, as it doesn't belong in here,
+or we just leave it because it is correct after all, depending on what the Intel
+ethernet people prefer.
 
-Also you should make sure that other bits in this fields are cleared 
-before writing.
+> Acked-by: Richard Cochran <richardcochran@gmail.com>
 
---srini
+Thanks,
 
->   #define DEFAULT_MCLK_RATE		9600000
->   
->   static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
-> @@ -53,6 +58,13 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
->   			MIC_CTRL_TLMM_SCLK_EN,
->   			pdata->mic_iomux);
->   		break;
-> +	case MI2S_SECONDARY:
-> +		/* Configure the Sec MI2S to TLMM */
-> +		writel(readl(pdata->spkr_iomux) | SPKR_CTL_TLMM_MCLK_EN |
-> +			SPKR_CTL_TLMM_SCLK_EN | SPKR_CTL_TLMM_DATA1_EN |
-> +			SPKR_CTL_TLMM_WS_OUT_SEL | SPKR_CTL_TLMM_WS_EN_SEL,
-> +			pdata->spkr_iomux);
-> +		break;
->   	case MI2S_TERTIARY:
->   		writel(readl(pdata->mic_iomux) | MIC_CTRL_TER_WS_SLAVE_SEL |
->   			MIC_CTRL_TLMM_SCLK_EN,
-> 
+      Arnd
