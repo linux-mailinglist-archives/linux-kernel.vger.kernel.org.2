@@ -2,120 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A5E3DFCC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BED03DFCD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236399AbhHDI0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236320AbhHDI0c (ORCPT
+        id S236434AbhHDI2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:28:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56397 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236401AbhHDI2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:26:32 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F68C06179B
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 01:26:19 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id k4so685973wms.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 01:26:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=wshwpEouxlj43w/LQBqY2ZUR+r5ng5wTSfjhEdV7ZQ8=;
-        b=REbwzykdm7OHhYkHKTa4GjtmoAm/i/ozHj6HEKSDN2l8DI9yMhJjoD3frpiGcgtfuf
-         B6k4/3bLIv/vNdP6tho5LYyF0rZUupRmPJCOued8whJH/JUG2rWSdfbelUmXEH/ZI/v+
-         2SflUax0cVIuf5qFUmtGeSjNmD177hOaOC1u31X3/1MZEBQLCJRSwk6AwezncWp08aGl
-         Rz6HuxNepkU8dv72WwgMjJnDtKHfA1zczbGIhz4JCvDjHDc/zxSFeRsjxGheGvW8bTGG
-         jsYxYwMJy8H34keULSi4tRMVafjaS+eTGn93fl/EP8YVVkhsVZxL9hp4Hl8UgT+5kuWC
-         DtRA==
+        Wed, 4 Aug 2021 04:28:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628065677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VzZ2fz11QFkhGxgNVXLaPyQv4vbgyLKy/JcMqXEwSCE=;
+        b=G6m8oA3op9pu+76PZVZ8PHY/jWhpglbO+cAwI3S0z/PqxPFwTv9Yh8r2LfVlqWOgDH06C9
+        lNbB9mQpPk0xLukYBxK6dOhlmCf/o+NX4XoHUl/j5GuS5ot+RyDfjnu6KNO3NzUz1XsQ1k
+        KzJZDVxJTgj6V6k2lDzDLfMVBWj6Lj8=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-601-Rwuq0cj2P8-j5Te2UXN8vA-1; Wed, 04 Aug 2021 04:27:56 -0400
+X-MC-Unique: Rwuq0cj2P8-j5Te2UXN8vA-1
+Received: by mail-pj1-f72.google.com with SMTP id s20-20020a17090a5d14b0290177ee10728cso1814398pji.9
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 01:27:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wshwpEouxlj43w/LQBqY2ZUR+r5ng5wTSfjhEdV7ZQ8=;
-        b=XsSsN99Z9CIj3Pi+9pd01IF9CLsptPwxAGjwZcuHt28HS0qtRxxdLhDFPRfkq23/M8
-         b2DPIBA65qJx8cftKtV78bixUijjaWeDsjKYcEPYOjik3y1Lfj299i2wmZC49kCyiE9V
-         tUQw33LP9hQ9fu4MAmMTOdvaWSaZmnMh96gNy0UEuLiXChUi4KOGPD3VWPsx1PK1ZQea
-         Wczh8VlEGo7IPyM+lU8jfrS6HlDDB+1ifYNliwO3Vuv4E7ZpfYhL3FJmabv9eEL+62f5
-         abu5+HgTzCW25k8cVOvX0wMwq79hFJ+zr6Rjm6CtWFVVCRr3FJ2dXP4NBMUG8fwU22v7
-         3dzg==
-X-Gm-Message-State: AOAM531uVU0IIis+S9cmMMPTMRsGfFWJbkOSUmot7trLj5lN7qCTK+1P
-        E/Qg8iBAsB1ngN3MGg7abow6tA==
-X-Google-Smtp-Source: ABdhPJxSza4YTAHvrQmEe3o94FSosfOKLqFVTx3EseeNpvxzLFtyvsyQMNLyS8I4Tj4Yqe7BtrbYsA==
-X-Received: by 2002:a7b:cb44:: with SMTP id v4mr26665661wmj.169.1628065578184;
-        Wed, 04 Aug 2021 01:26:18 -0700 (PDT)
-Received: from google.com ([109.180.115.228])
-        by smtp.gmail.com with ESMTPSA id j6sm5060494wmq.29.2021.08.04.01.26.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 01:26:17 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 09:26:15 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Satya Tangirala <satyat@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v9 0/9] add support for direct I/O with fscrypt using
- blk-crypto
-Message-ID: <YQpPJ8To7NN2AIuq@google.com>
-References: <20210604210908.2105870-1-satyat@google.com>
- <CAF2Aj3h-Gt3bOxH4wXB7aeQ3jVzR3TEqd3uLsh4T9Q=e6W6iqQ@mail.gmail.com>
- <YPmFSw4JbWnIozSZ@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=VzZ2fz11QFkhGxgNVXLaPyQv4vbgyLKy/JcMqXEwSCE=;
+        b=EY9R4U/9uwIeOt4KUUB0xelOLvr2UktjhGWHh4QKVQJD3cgeWDu7aJGh5+agshimhS
+         5G77VrbT/oqn1YyaNajFCfu/C7oy6p5wFE5zOia/y2tNtlktN5uQMR0GHkM35VlISDJD
+         zUkFdAwB6+9Vr7mxy1H/2nUu0BAgYZ1yBDdh7yF4+jfkMlalM2YKsDxWH4bqDFNvLVBK
+         XIOeSWX+RjM6YWiJr6Tf91umX73jepeMrgnNuljbuiiRWFS10TxHfQcttSoIy6ptGZq0
+         ONSQAS750KF5n1aJmN3LnCZQQQM0Cn+DHXCGfWNKhAeND1Q5EIfP3RpQqCB5pkJkvWra
+         zH9A==
+X-Gm-Message-State: AOAM530JtSAh7vaB2IzpbWICG3nf8zk/imuCOjwJ/oMWMXLBW6YRO+Ww
+        pHBn8z1KMTac7gcYDv7AsC5P0Rg9IAeMIE8NV0CvHK+Bm9+SFphuod4VNbQXkoFEAF57fdawfRm
+        pWo5ITbJlMXSCaBgpouH2HIY4Q2BtHKLXlDhQli3m3nYk1mdi2T8WQNnAFkGfqZ2v7Oogi9w/AW
+        fz
+X-Received: by 2002:a65:620a:: with SMTP id d10mr1146374pgv.120.1628065675502;
+        Wed, 04 Aug 2021 01:27:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyXILAtwY28td6fRSflYoyigX2PjP4ZVbOPHaGCmnbiB1lEKAblvPX4KIAKHqSTrKqVGtkG2Q==
+X-Received: by 2002:a65:620a:: with SMTP id d10mr1146334pgv.120.1628065675198;
+        Wed, 04 Aug 2021 01:27:55 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id l2sm1714190pfc.157.2021.08.04.01.27.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 01:27:54 -0700 (PDT)
+Subject: Re: [PATCH v10 02/17] file: Export receive_fd() to modules
+To:     Yongji Xie <xieyongji@bytedance.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        He Zhe <zhe.he@windriver.com>,
+        Liu Xiaodong <xiaodong.liu@intel.com>,
+        Joe Perches <joe@perches.com>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210729073503.187-1-xieyongji@bytedance.com>
+ <20210729073503.187-3-xieyongji@bytedance.com>
+ <a0ab081a-db06-6b7a-b22e-4ace96a5c7db@redhat.com>
+ <CACycT3sdx8nA8fh3pjO_=pbiM+Bs5y+h4fuGkFQEsRSaBnph7Q@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <0a37dce4-0012-c2d1-bb06-5e9409815b93@redhat.com>
+Date:   Wed, 4 Aug 2021 16:27:42 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <CACycT3sdx8nA8fh3pjO_=pbiM+Bs5y+h4fuGkFQEsRSaBnph7Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YPmFSw4JbWnIozSZ@gmail.com>
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Jul 2021, Eric Biggers wrote:
 
-> Hi Lee,
-> 
-> On Thu, Jul 22, 2021 at 12:23:47PM +0100, Lee Jones wrote:
-> > 
-> > No review after 7 weeks on the list.
-> > 
-> > Is there anything Satya can do to help expedite this please?
-> > 
-> 
-> This series is basically ready, but I can't apply it because it depends on the
-> other patch series
-> "[PATCH v4 0/9] ensure bios aren't split in middle of crypto data unit"
-> (https://lkml.kernel.org/linux-block/20210707052943.3960-1-satyaprateek2357@gmail.com/T/#u).
-> I will be re-reviewing that other patch series soon, but it primary needs review
-> by the people who work more regularly with the block layer, and it will have to
-> go in through the block tree (I can't apply it to the fscrypt tree).
-> 
-> The original version of this series didn't require so many block layer changes,
-> but it would have only allowed direct I/O with user buffer pointers aligned to
-> the filesystem block size, which was too controversial with other filesystem
-> developers; see the long discussion at
-> https://lkml.kernel.org/linux-fscrypt/20200720233739.824943-1-satyat@google.com/T/#u.
-> 
-> In addition, it was requested that we not add features to the "legacy" direct
-> I/O implementation (fs/direct-io.c), so I have a patch series in progress
-> "[PATCH 0/9] f2fs: use iomap for direct I/O"
-> (https://lkml.kernel.org/linux-f2fs-devel/20210716143919.44373-1-ebiggers@kernel.org/T/#u)
-> which will change f2fs to use iomap.
-> 
-> Also please understand that Satya has left Google, so any further work from him
-> on this is happening on a personal capacity in his free time.
+在 2021/8/3 下午5:01, Yongji Xie 写道:
+> On Tue, Aug 3, 2021 at 3:46 PM Jason Wang <jasowang@redhat.com> wrote:
+>>
+>> 在 2021/7/29 下午3:34, Xie Yongji 写道:
+>>> Export receive_fd() so that some modules can use
+>>> it to pass file descriptor between processes without
+>>> missing any security stuffs.
+>>>
+>>> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+>>> ---
+>>>    fs/file.c            | 6 ++++++
+>>>    include/linux/file.h | 7 +++----
+>>>    2 files changed, 9 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/fs/file.c b/fs/file.c
+>>> index 86dc9956af32..210e540672aa 100644
+>>> --- a/fs/file.c
+>>> +++ b/fs/file.c
+>>> @@ -1134,6 +1134,12 @@ int receive_fd_replace(int new_fd, struct file *file, unsigned int o_flags)
+>>>        return new_fd;
+>>>    }
+>>>
+>>> +int receive_fd(struct file *file, unsigned int o_flags)
+>>> +{
+>>> +     return __receive_fd(file, NULL, o_flags);
+>>
+>> Any reason that receive_fd_user() can live in the file.h?
+>>
+> Since no modules use it.
+>
+> Thanks,
+> Yongji
 
-Thanks for the update Eric.  I'll push this to the back of my queue
-and check back with you at a later date.  Hopefully we see some
-interest from the other maintainers sooner, rather than later.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Ok.
+
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+>
+
