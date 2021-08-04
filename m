@@ -2,101 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16C73E07AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8D83E07B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240309AbhHDSek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 14:34:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40969 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240289AbhHDSej (ORCPT
+        id S240321AbhHDShA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 14:37:00 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:44364
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240313AbhHDSg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 14:34:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628102065;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hlb+xRZV+z9q4u5VqbS/pgDyaJDNtQ939RsvQHMzgbU=;
-        b=VtbidKvVOxjgMZAFSUZjIdNMZtEDk39JN/G0yOA5fMBTC430MRKABprLGeKHRbw+Omv4vL
-        PfRR88ZfXgtBvrVsNDrJCV1V3pQS1jVM8VhEG2hVQ8fr+rBvihvuyJFc/AfwUK7bNCA1Qp
-        vA/ytcxjYt4t/K7YohsSY1NSPU9m9ic=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-450-Hme70hdnMPG0-ChmzJrBpw-1; Wed, 04 Aug 2021 14:34:22 -0400
-X-MC-Unique: Hme70hdnMPG0-ChmzJrBpw-1
-Received: by mail-qk1-f197.google.com with SMTP id i15-20020a05620a150fb02903b960837cbfso2582836qkk.10
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 11:34:22 -0700 (PDT)
+        Wed, 4 Aug 2021 14:36:58 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 17F023F36D
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 18:36:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628102204;
+        bh=kLWUtHA3a5xY5N4esWD+HgIy7cu1PUh6hkksxjyOzDA=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=QEiioed295tlhKw5C0JyTnJTg/9K+9RKyHvE5KwGfbSQmRS9btrYGJdQi5/ofnBbe
+         9Fyyu6sl8y/vDp0pbM3g0sO0W1pVWwdvocgJ/GvuLfeJQaHwIteuu/db9j4To3Fujk
+         t/Etl26CDchJKRyblq9tPQqanCia0K22e0NTivexFbqxhElGBDalzsQ1T56aH0WZKs
+         xsUR8InbVrVdwOhN6Vmqb8n1VMC8a6tPJ22Q+gPLXIN3+0suIhEv7sRifxKH1JcRy1
+         rpjLwhf4yZfazOdjOMi6SY1tNDG5ZqmKu7Oop2BazqBSaR5yJK/mthsLnvB0yXNg9i
+         ihOajgbuYBcdg==
+Received: by mail-ed1-f69.google.com with SMTP id y19-20020a0564021713b02903bbfec89ebcso1874809edu.16
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 11:36:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hlb+xRZV+z9q4u5VqbS/pgDyaJDNtQ939RsvQHMzgbU=;
-        b=aDNWEbPbKkRJIZaVri7sHomRDXkBZsYfx1UMoKLnOskdPs5PZzbEoPf/XUxMi0/kl2
-         eNNRo2X9sxDLKswxJjojPujIHfEkkj6/OOz2QhM/mnskygvstLjdedaG0mb/UI2A/5Iv
-         fRk93n0wMNCe/vim0mO/jAhpPIHvHubxdNv86lHmxkk68oaScwXvd3GztcdWEBCmdhsy
-         mRaiu+3q61Ddwp2PyjpTB5bxl+hIQOhYDi7RC1A8fzai8CfAxLxmOjezRNkYS05OKtMt
-         QqIu8OBBPQmGqviHENZXyU8wyx2Qj4Rcsx6nkWx3HsGRJ4ElX4ofv5eNlqiidivwwWAH
-         3s4w==
-X-Gm-Message-State: AOAM533Qw1AHbNxGzRBU+c+mf/FULfRiSQFc6yPdEBIcrwp1/ePr6JXV
-        ORZ2PKtLfm5lT+1tML0mggJ8WL0Dv8gNbqpic+e7I9O37GO/aUIyFQzBejJNGvba1cV3KZanjJW
-        yZlGXURrUbTazyZWpl0wInLIK
-X-Received: by 2002:a05:620a:1913:: with SMTP id bj19mr753126qkb.341.1628102062033;
-        Wed, 04 Aug 2021 11:34:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy+PwbFy5Egs9sds3sq3/LK8jhuOPC4aazyRm72gTOAQ0jaeZaTEJk9zhhLIOTsTiygYfAhrg==
-X-Received: by 2002:a05:620a:1913:: with SMTP id bj19mr753102qkb.341.1628102061816;
-        Wed, 04 Aug 2021 11:34:21 -0700 (PDT)
-Received: from treble ([68.74.140.199])
-        by smtp.gmail.com with ESMTPSA id g13sm1237020qtj.2.2021.08.04.11.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 11:34:21 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 11:34:19 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: linux-next: objtool hang/loop?
-Message-ID: <20210804183419.k7p3tvqerwgzxpuz@treble>
-References: <be49b820-434f-cebe-0902-3d5177239233@infradead.org>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kLWUtHA3a5xY5N4esWD+HgIy7cu1PUh6hkksxjyOzDA=;
+        b=ifjFVi+Mcu/G0Hg6ec/ZQLRb5DAV9R2btvLAfwtR1Y93MTzbZ8lOOVUBL4opog9RMY
+         YWSYJ1wRF8U0FDT+X8CNBpcicFvkKP0b0jmZY9uZCm4Oa3g2kb/c7l3VcVDd7jlnEl+z
+         j8dLSRv9wrSV2BRlf0TXs/XkJimvTGaYDC6rsKa1vUemwaHsvFJ6o36ia1YCk6TBNyPz
+         Cc2R09AOJ/VcUTDHYo8pWLb+uR3CuKKD6hXGmg0uI0MsaPmJmbgrKmgMDMfu+FuA/0M1
+         j/8S6Sfz2ONyA80BctoBqmWqGXtpU8ryNTQ7M+E2b7vGZFYk5qYhD8rnPd450poN2vVN
+         EHnA==
+X-Gm-Message-State: AOAM533eZtNFRsYsnFKVWn8cHeX8jH1D85r95xUwLwhsZFEsHmAcqkKp
+        3W5ay0dAfAvMl7DrYdv/wAuzeFmNZpnw8oH691J5oR1/K5Ymn1mOugylCa/NWbx4084/ZOB1H2F
+        rs2Ug4GEQoNgZ2hPw2JVxI1M4FHxc8Rfdq4h6IWqbvA==
+X-Received: by 2002:a17:906:9c84:: with SMTP id fj4mr572948ejc.356.1628102203674;
+        Wed, 04 Aug 2021 11:36:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy9TZSrCE1ZT+ckWS9kno03EUR0eItVE1fmPjRT2brkptWJ/N8BEt1UTXE4ubRLwSxkR5ISYw==
+X-Received: by 2002:a17:906:9c84:: with SMTP id fj4mr572916ejc.356.1628102203469;
+        Wed, 04 Aug 2021 11:36:43 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.43.172])
+        by smtp.gmail.com with ESMTPSA id cm1sm1248761edb.68.2021.08.04.11.36.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 11:36:42 -0700 (PDT)
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-13-semen.protsenko@linaro.org>
+ <15871f8ced3c757fad1ab3b6e62c4e64@misterjones.org>
+ <CAPLW+4=v4bDcuxGVqs06mobGj34At4cD+vg48b4dPujarS07Tg@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH 12/12] arm64: dts: exynos: Add Exynos850 SoC support
+Message-ID: <bf21badb-804f-45f0-c02b-80ff57ab9931@canonical.com>
+Date:   Wed, 4 Aug 2021 20:36:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <CAPLW+4=v4bDcuxGVqs06mobGj34At4cD+vg48b4dPujarS07Tg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <be49b820-434f-cebe-0902-3d5177239233@infradead.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 07:25:21PM -0700, Randy Dunlap wrote:
-> Hi Josh & Peter,
+On 04/08/2021 16:39, Sam Protsenko wrote:
+> Hi Marc,
 > 
-> Yesterday (2021-07-27), one of my x86_64 randconfig build ran for
-> over 2 hours (it's a slow core i5 laptop and spinning rust media).
-> I killed it and reran the .config file today on linux-next-20210728.
-> I killed this one after 30 minutes on its last message:
->   OBJTOOL vmlinux.o
+> On Fri, 30 Jul 2021 at 19:50, Marc Zyngier <maz@kernel.org> wrote:
+>>
+>> On 2021-07-30 15:49, Sam Protsenko wrote:
+>>> Samsung Exynos850 is ARMv8-based mobile-oriented SoC.
+>>>
+>>> Features:
+>>>  * CPU: Cortex-A55 Octa (8 cores), up to 2 GHz
+>>>  * Memory interface: LPDDR4/4x 2 channels (12.8 GB/s)
+>>>  * SD/MMC: SD 3.0, eMMC5.1 DDR 8-bit
+>>>  * Modem: 4G LTE, 3G, GSM/GPRS/EDGE
+>>>  * RF: Quad GNSS, WiFi 5 (802.11ac), Bluetooth 5.0
+>>>  * GPU: Mali-G52 MP1
+>>>  * Codec: 1080p 60fps H64, HEVC, JPEG HW Codec
+>>>  * Display: Full HD+ (2520x1080)@60fps LCD
+>>>  * Camera: 16+5MP/13+8MP ISP, MIPI CSI 4/4/2, FD, DRC
+>>>  * Connectivity: USB 2.0 DRD, USI (SPI/UART/I2C), HSI2C, I3C, ADC,
+>>> Audio
+>>>
+>>> This patch adds minimal SoC support. Particular board device tree files
+>>> can include exynos850.dtsi file to get SoC related nodes, and then
+>>> reference those nodes further as needed.
+>>>
+>>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+>>> ---
+>>>  .../boot/dts/exynos/exynos850-pinctrl.dtsi    | 782 ++++++++++++++++++
+>>>  arch/arm64/boot/dts/exynos/exynos850-usi.dtsi |  30 +
+>>>  arch/arm64/boot/dts/exynos/exynos850.dtsi     | 245 ++++++
+>>>  3 files changed, 1057 insertions(+)
+>>>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+>>>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-usi.dtsi
+>>>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850.dtsi
+>>>
+>>> diff --git a/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+>>> b/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+>>> new file mode 100644
+>>> index 000000000000..4cf0a22cc6db
+>>
+>> [...]
+>>
+>>> +     gic: interrupt-controller@12a00000 {
+>>> +             compatible = "arm,cortex-a15-gic", "arm,cortex-a9-gic";
+>>
+>> One thing for sure, it cannot be both. And given that it is
+>> an A55-based SoC, it isn't either. It is more likely a GIC400.
+>>
 > 
-> This is a .config with # CONFIG_MODULES is not set.
-> vmlinux.o is 253 MB in size.
-> I see that using verbose make (V=1) won't help me any here.
+> Yes, it's GIC-400, thanks for pointing that out. Will fix that in v2.
 > 
-> The problematic (if it is a problem: maybe I didn't wait long
-> enough?) .config file is attached.  The gzipped vmlinux.o file is at:
->   http://www.infradead.org/~rdunlap/vmlinux.o.gz
+>>> +             #interrupt-cells = <3>;
+>>> +             #address-cells = <0>;
+>>> +             interrupt-controller;
+>>> +             reg = <0x0 0x12a01000 0x1000>,
+>>> +                   <0x0 0x12a02000 0x1000>,
+>>
+>> This is wrong. It is architecturally set to 8kB.
+>>
 > 
-> If there is a problem, I can test any patches...
+> Nice catch! Actually there is an error (typo?) in SoC's TRM, saying
+> that Virtual Interface Control Register starts at 0x3000 offset (from
+> 0x12a00000), where it obviously should be 0x4000, that's probably
+> where this dts error originates from. Btw, I'm also seeing the same
+> error in exynos7.dtsi.
 
-Hi Randy,
+What's the error exactly? The "Virtual interface control register"
+offset (3rd region) is set properly to 0x4000 on Exynos7. Also one for
+the Exynos5433 looks correct.
 
-I'm guessing your laptop doesn't have a lot of RAM.  I ran
+> Though I don't have a TRM for Exynos7 SoCs, so
+> not sure if I should go ahead and fix that too. Anyway, for Exynos850,
+> I'll fix that in v2 series.
 
-  /usr/bin/time -v tools/objtool/objtool check --noinstr --vmlinux --no-fp --uaccess vmlinux.o
 
-It showed a max RSS of 6.5GB.
+However while we are at addresses - why are you using address-cells 2?
+It adds everywhere additional 0x0 before actual address.
 
-Can you try this patch from Peter?  It halves the memory usage.
 
-  https://lkml.kernel.org/r/20210507164925.GC54801@worktop.programming.kicks-ass.net
-
--- 
-Josh
-
+Best regards,
+Krzysztof
