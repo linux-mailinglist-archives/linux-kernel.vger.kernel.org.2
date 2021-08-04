@@ -2,194 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80FD3DF962
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839A43DF95B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbhHDBvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 21:51:02 -0400
-Received: from mga17.intel.com ([192.55.52.151]:49171 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229820AbhHDBvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 21:51:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="194107912"
-X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
-   d="scan'208";a="194107912"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 18:50:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
-   d="scan'208";a="441460492"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by fmsmga007.fm.intel.com with ESMTP; 03 Aug 2021 18:50:47 -0700
-Date:   Wed, 4 Aug 2021 09:44:55 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, "Wu, Hao" <hao.wu@intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>
-Subject: Re: [PATCH] fpga: region: handle compat_id as an uuid
-Message-ID: <20210804014455.GB461389@yilunxu-OptiPlex-7050>
-References: <20210726202650.4074614-1-trix@redhat.com>
- <6f30a4c6-61a0-bb57-9f13-bcad3f3589b8@intel.com>
- <ba28bac6-9c6d-de73-523f-b8ba4bef84de@redhat.com>
- <DM6PR11MB38199F872DC94971D9C8A53885EA9@DM6PR11MB3819.namprd11.prod.outlook.com>
- <YQL4qyAmqj322HTz@epycbox.lan>
- <a5b4b303-7d9b-27d7-4c1e-cd29fea8cdb9@redhat.com>
- <20210730014859.GA436611@yilunxu-OptiPlex-7050>
- <dd2bc08b-3610-b14f-59fc-ab444845d0f7@redhat.com>
- <20210803033224.GA461389@yilunxu-OptiPlex-7050>
- <fa35d07e-f455-a9c9-1d01-b115d114de9b@redhat.com>
+        id S231542AbhHDBp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 21:45:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229820AbhHDBpz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 21:45:55 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAB8C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 18:45:42 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id a20so1317470plm.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 18:45:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vNRaHSjm+7RgDJm/dANaaa1Byd60xBWxjojsFb0do0o=;
+        b=Mp6mia+HG2mtMdqaolb2nl+HRUpIXgBSCat+o2FWXeZW8+nSOlwB47V8YSQ0HTUkM6
+         /m64aBvS0GF71Ew/IlyVSKfsP2dn6XiDTOMdnDmJdvH0kFteMwC/Vq+orNNQTrX0IGuc
+         uOJ/gopdHrNfoNe691bsKcnzIKGhHaOSqX2FGMThGp+W8QZHvfoaPWsQe18nhNCSrCnt
+         IDj4KHH7qfZqfK35IGf6KkOSjLjXDC2proTiFN3sZP39mebU7GMueHoi2SULQXa942uy
+         uxyDHPOOBZyGAK/tCJWtj+R0f6ASx0+WUCw8R8jcUv8FJH2BSmBOnod4801y7qU2dYkm
+         4p5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vNRaHSjm+7RgDJm/dANaaa1Byd60xBWxjojsFb0do0o=;
+        b=XmP8o+/lS7EBV2q494vLZXPnnuWMoxEtAxh8ctO2AlR+AXyOhWFMJgXx3Oh1LV+sz3
+         Hcxn63EY+lqS7adxfvkiUu2739MJ7UTDN5SaD5nl0ZVAzpul5tCfjzztAZ9KY3Dt7ywW
+         nZcNbq+29mG1iMkJoq0gSO7TGwKYH6EoU0H/wurF8ioEl7jJ5gIbktIr7zuslYCYHbgw
+         2yHACqTfkpKo/ZqHhpYuPNV07XKSl6mj8dk8VAQFHVCojn7hn5rZvZvHxDHgDxfSwAgE
+         Qmqq4+RNPtDDB7jT/YwIdsoqNPHF9Hj+sMC0I2DXXHSBfDcxX6YcbKuJOFMdUIYB0Coy
+         K2/Q==
+X-Gm-Message-State: AOAM5308n17XSNJKNuH2TNSv+qSrLIs1llHJmMog55qtSw6qipd1knC1
+        fu0brUJnOCNHMYMQ8oou+gk=
+X-Google-Smtp-Source: ABdhPJzvR7WL4YbOVs8dGOps/kNt0aGMdVazGuJMy9N1YWA78Orj60RxPGiOlM59xnaKqvoAV/QUjA==
+X-Received: by 2002:a17:90b:344:: with SMTP id fh4mr24879918pjb.29.1628041541758;
+        Tue, 03 Aug 2021 18:45:41 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.49])
+        by smtp.gmail.com with ESMTPSA id z124sm476074pgb.6.2021.08.03.18.45.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 18:45:40 -0700 (PDT)
+From:   Tuo Li <islituo@gmail.com>
+To:     mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com
+Cc:     ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
+        baijiaju1990@gmail.com, Tuo Li <islituo@gmail.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH v2] ocfs2: quota_local: fix possible uninitialized-variable access in ocfs2_local_read_info()
+Date:   Tue,  3 Aug 2021 18:45:10 -0700
+Message-Id: <20210804014510.29430-1-islituo@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fa35d07e-f455-a9c9-1d01-b115d114de9b@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 05:21:54AM -0700, Tom Rix wrote:
-> 
-> On 8/2/21 8:32 PM, Xu Yilun wrote:
-> > On Fri, Jul 30, 2021 at 05:07:00AM -0700, Tom Rix wrote:
-> > > On 7/29/21 6:48 PM, Xu Yilun wrote:
-> > > > On Thu, Jul 29, 2021 at 12:16:47PM -0700, Tom Rix wrote:
-> > > > > On 7/29/21 11:51 AM, Moritz Fischer wrote:
-> > > > > > On Wed, Jul 28, 2021 at 01:36:56AM +0000, Wu, Hao wrote:
-> > > > > > > > On 7/26/21 3:12 PM, Russ Weight wrote:
-> > > > > > > > > On 7/26/21 1:26 PM, trix@redhat.com wrote:
-> > > > > > > > > > From: Tom Rix <trix@redhat.com>
-> > > > > > > > > > 
-> > > > > > > > > > An fpga region's compat_id is exported by the sysfs
-> > > > > > > > > > as a 128 bit hex string formed by concatenating two
-> > > > > > > > > > 64 bit values together.
-> > > > > > > > > > 
-> > > > > > > > > > The only user of compat_id is dfl.  Its user library
-> > > > > > > > > > opae converts this value into a uuid.
-> > > > > > > > > > 
-> > > > > > > > > > ex/
-> > > > > > > > > > $ cat /sys/class/fpga_region/region1/compat_id
-> > > > > > > > > > f3c9941350814aadbced07eb84a6d0bb
-> > > > > > > > > > 
-> > > > > > > > > > Is reported as
-> > > > > > > > > > $ fpgainfo bmc
-> > > > > > > > > > ...
-> > > > > > > > > > Pr Interface Id                  : f3c99413-5081-4aad-bced-07eb84a6d0bb
-> > > > > > > > > > 
-> > > > > > > > > > Storing a uuid as 2 64 bit values is vendor specific.
-> > > > > > > > > > And concatenating them together is vendor specific.
-> > > > > > > > > > 
-> > > > > > > > > > It is better to store and print out as a vendor neutral uuid.
-> > > > > > > > > > 
-> > > > > > > > > > Change fpga_compat_id from a struct to a union.
-> > > > > > > > > > Keep the old 64 bit values for dfl.
-> > > > > > > > > > Sysfs output is now
-> > > > > > > > > > f3c99413-5081-4aad-bced-07eb84a6d0bb
-> > > > > > > > > I'm fowarding feedback from Tim Whisonant, one of the OPAE userspace
-> > > > > > > > > developers:
-> > > > > > > > > 
-> > > > > > > > > I think that this change to the sysfs for the compat_id node will
-> > > > > > > > > end up breaking the SDK, which does not expect the '-' characters to
-> > > > > > > > > be included when parsing the sysfs value. Currently, it is parsed as
-> > > > > > > > > a raw hex string without regard to any '-' characters. This goes for
-> > > > > > > > > any "guid" currently exported by sysfs and for what we read in the
-> > > > > > > > > device MMIO space.
-> > > > > > > > Yes, it will.
-> > > > > > > > 
-> > > > > > > > And there are other places, like dfl-afu-main.c:afu_id_show()
-> > > > > > > > 
-> > > > > > > > outputs raw hex that sdk turns into a uuid.
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > Some options.
-> > > > > > > > 
-> > > > > > > > If no one but dfl will ever use it, then v1 of patchset.
-> > > > > > > > 
-> > > > > > > > If others can use it but don't want to change dfl, then v2 of patchset,
-> > > > > > > > my favorite.
-> > > > > > > > 
-> > > > > > > > Or this one for uuid for everyone, what have been v3 but changed too much.
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > could dfl change generally to output uuid's to the sysfs ?
-> > > > > > > > 
-> > > > > > > > this would be generally helpful and a one time disruption to the sdk.
-> > > > > > > This change limited the output format to uuid_t, but if any hardware doesn't
-> > > > > > > use uuid_t on hardware may have to convert it back from the sysfs output in
-> > > > > > > userspace. Leave it to print hardware values (e.g. from register), and convert
-> > > > > > > it in userspace should be fine too I think.
-> > > > > > I'm not entirely sure. I seem to recall there being examples of sysfs
-> > > > > > files returning different things for different drivers.
-> > > > > > 
-> > > > > > That being said it seems largely cosmetic to add the '-' in between.
-> > > > > > 
-> > > > > > If it breaks userspace, I'm against it. If you *need* it make a
-> > > > > > compat_uuid entry or something in that case?
-> > > > > My gripe is
-> > > > > 
-> > > > > For a nominally common interface, compat_id has a vendor specific output.
-> > > > > 
-> > > > > If for example another vendor wanted to use this field but their natural
-> > > > > format was an OF string.
-> > > > > 
-> > > > > 16 bytes of raw hex would not work for them, so they would roll their own.
-> > > > > 
-> > > > > which defeats the purpose of a common interface.
-> > > > > 
-> > > > > 
-> > > > > The language in the docs as-is is vague on the output format.
-> > > > > 
-> > > > > DFL is the only user of the interface.
-> > > > > 
-> > > > > So ver 2
-> > > > > 
-> > > > > https://lore.kernel.org/linux-fpga/4ab7dd2d-c215-6333-6860-6f7d0ac64c3d@redhat.com/
-> > > > > 
-> > > > > Keeps the output as-is for dfl, so nothing breaks in userspace
-> > > > > 
-> > > > > And adds flexibility for vendors to output their appropriate natural form.
-> > > > > 
-> > > > > So compat_id becomes generally useful.
-> > > > Mixing types seems be strongly against in Documentation/filesystems/sysfs.rst.
-> > > > So in my opinion there should be a determined format for the output. The
-> > > > concern for this patch is which one is a better format, uuid style or
-> > > > 128 bit raw hex?
-> > > > 
-> > > > And I vote for 128 bit raw hex, as other vendors may not use uuid_t as
-> > > > the identifier, may be an OF string. So we don't have to force them
-> > > > decorate it as the uuid style.
-> > > So you would be ok with v2 of this patchset ?
-> > No. I prefer we keep the current implementation. I mean 128 bit raw hex
-> > could be a more compatible output format for all vendors, uuid style,
-> > string style or others.
-> 
-> How would 128 bit raw hex be compatible if a vendor's natural format was an
-> OF string ?
-> 
-> Why would they even use compat_id ?
+A memory block is allocated through kmalloc(), and its return value is
+assigned to the pointer oinfo. If the return value of
+ocfs2_global_read_info() at line 709 is less than zero,
+oinfo->dqi_gqinode may be not initialized. However, it is accessed at
+line 775:
+  iput(oinfo->dqi_gqinode);
 
-As I mentioned before, I assume there should be a unified output format
-for all vendors. So we need to choose one from raw hex, uuid_t, string
-and all other formats. Raw hex is the fundamental format, which could be
-further interpreted by user as a uuid_t, a string or other objects.
+To fix this possible uninitialized-variable access, replace kmalloc()
+with kzalloc() when allocating memory for oinfo.
 
-Thanks,
-Yilun
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+---
+v2:
+* Replace kzalloc() with NULL assignment to oinfo->dqi_gqinode.
+  Thank Joseph Qi for helpful advice.
+---
+ fs/ocfs2/quota_local.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> Tom
-> 
-> > 
-> > Thanks,
-> > Yilun
-> > 
-> > > Tom
-> > > 
-> > > > Thanks
-> > > > Yilun
-> > > > 
-> > > > > Tom
-> > > > > 
-> > > > > 
-> > > > > > - Moritz
-> > > > > > 
+diff --git a/fs/ocfs2/quota_local.c b/fs/ocfs2/quota_local.c
+index b1a8b046f4c2..de5aae584d5d 100644
+--- a/fs/ocfs2/quota_local.c
++++ b/fs/ocfs2/quota_local.c
+@@ -703,6 +703,7 @@ static int ocfs2_local_read_info(struct super_block *sb, int type)
+ 	oinfo->dqi_type = type;
+ 	INIT_LIST_HEAD(&oinfo->dqi_chunk);
+ 	oinfo->dqi_rec = NULL;
++	oinfo->dqi_gqinode = NULL;
+ 	oinfo->dqi_lqi_bh = NULL;
+ 	oinfo->dqi_libh = NULL;
+ 
+-- 
+2.25.1
+
