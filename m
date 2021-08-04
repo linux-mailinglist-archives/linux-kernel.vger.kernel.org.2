@@ -2,110 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EFF73E06F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DA03E06F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239958AbhHDRvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 13:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239914AbhHDRvC (ORCPT
+        id S239971AbhHDRwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 13:52:08 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:21834 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230328AbhHDRwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:51:02 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3992C061799;
-        Wed,  4 Aug 2021 10:50:48 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so9927660pjs.0;
-        Wed, 04 Aug 2021 10:50:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UBg423yx32A1qO4m1utyUDRqy/ul+Eqo8Zka5xgwqa0=;
-        b=ghdtmD1sDvLYG1dGFNfSvjKModtvS3BXqFvv1opCp5yU9rR8u10EjvSFOHCtaFb1rQ
-         rGH0JZOujXN+imECE3RMlpyO/pedLKDOEAKbJGSc/TvJm5ee063zbuZUHmz5mUHlug6f
-         bJDDc/Sy+Sp3LF/nP/Fe4lkcy7EiRjjPTSKRmoqfKh+0YrfDvuiKQcRPgKE/+zYQhz/X
-         u4rICXJbnnYaPrs8sbnmAUz+QkJlXYnkf+qXYAgeRw3Wd9WZHQ4oZ+4OVfu/qwiuomjn
-         6x30dJPXnbhiqZBvTGvsdgUJ8gQCi8qNYc23Cn262ZJ8jHrulG5Hw0aJnufLnkglyyZY
-         cVrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UBg423yx32A1qO4m1utyUDRqy/ul+Eqo8Zka5xgwqa0=;
-        b=UsoFdxd07M0VaECQb3ST9EQq781yFx6CM4s7OoINQv7PatSDkfXwOpIQCqzZ644SbA
-         pZHVVe1OhKTUCMqtNMYs8PPiBJvtafamUQiztKCdxYiuCukBv4MSWfCLhIP9RmOTnJFF
-         6dh5ev2XEX7m8hhD9PP/33GdykX26eebl6eb51E7/xsLZuCvh3LEroETA9+D1IV/XTwm
-         nrD8D3FDm8zcf7F4OuP7/NBjtvreX66WwcddsGtsbifjHfEvu6qNL47LNAuxYhKYtX2y
-         7e9+1m4U3W9Mo3fPkKgKvMIBapL3spHlp5bK5NbAGfTxKgVemJBGTQ1US0hDacLChtRx
-         O0Pg==
-X-Gm-Message-State: AOAM531a5/Qly8vurQ1GMd5kOwU6nBzaUZp8pBKQnex+ZJhmgdIDyhx6
-        /9rfoMPCfr4tksGkHvWiVWt6fsLRW2P+dvwtil/44jK4Vsg=
-X-Google-Smtp-Source: ABdhPJwFCIZ/GJHp2dPMuOHwQcylFMLbuhLGTITuPt96w+fdzKmRLOXA+duG1rQArJPTxeV3nlJx6rb799CpjN3W5ac=
-X-Received: by 2002:a63:154a:: with SMTP id 10mr212645pgv.428.1628099448194;
- Wed, 04 Aug 2021 10:50:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <1931ca440b47344fe357d5438aeab4b439943d10.1627936393.git.peilin.ye@bytedance.com>
- <672e6f13-bf58-d542-6712-e6f803286373@iogearbox.net> <CAM_iQpUb-zbBUGdYxCwxBJSKJ=6Gm3hFwFP+nc+43E_hofuK1w@mail.gmail.com>
- <e2a8ac28-f6ee-25e7-6cb9-cc28369b030a@iogearbox.net>
-In-Reply-To: <e2a8ac28-f6ee-25e7-6cb9-cc28369b030a@iogearbox.net>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Wed, 4 Aug 2021 10:50:37 -0700
-Message-ID: <CAM_iQpU-Z5qQOW=0FV4uXo__EDmyMqycgiuyykfHD8TN+-xZ-w@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] net/sched: sch_ingress: Support clsact
- egress mini-Qdisc option
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Peilin Ye <peilin.ye@bytedance.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 4 Aug 2021 13:52:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628099514; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=lPc0mCqa9JMqaOZK2NgzpKEcvbQpfvM5irA/LJHPa3Y=; b=l1rA+D5ytWJ2UBL8TJ94K7mvZ4HhXDhNJuQs1mvM6vmkprIt6jEh0Bsj4UvinvYvp2p12a1V
+ 72kRrn/32dOHL9/LMheDeL+EWQCAadoP8nTwxPWqx/9hjxAbZE+YwWWLnsFGKBTeQXM35Cjh
+ 6HLZRRKLYzTySgtKIc/V6RrnhqQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 610ad3b5041a739c46a0f97a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Aug 2021 17:51:49
+ GMT
+Sender: rishabhb=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A4847C4338A; Wed,  4 Aug 2021 17:51:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4578EC433F1;
+        Wed,  4 Aug 2021 17:51:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4578EC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rishabhb@codeaurora.org
+From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
+To:     sudeep.holla@arm.com, cristian.marussi@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        avajid@codeaurora.org, adharmap@codeaurora.org,
+        Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Subject: [PATCH v2] firmware: arm_scmi: Free mailbox channels if probe fails
+Date:   Wed,  4 Aug 2021 10:51:39 -0700
+Message-Id: <1628099499-27394-1-git-send-email-rishabhb@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 1:08 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 8/3/21 2:08 AM, Cong Wang wrote:
-> > On Mon, Aug 2, 2021 at 2:11 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >>
-> >> NAK, just use clsact qdisc in the first place which has both ingress and egress
-> >> support instead of adding such hack. You already need to change your scripts for
-> >> clsact-on, so just swap 'tc qdisc add dev eth0 ingress' to 'tc qdisc add dev eth0
-> >> clsact' w/o needing to change kernel.
-> >
-> > If we were able to change the "script" as easily as you described,
-> > you would not even see such a patch. The fact is it is not under
-> > our control, the most we can do is change the qdisc after it is
-> > created by the "script", ideally without interfering its traffic,
-> > hence we have such a patch.
-> >
-> > (BTW, it is actually not a script, it is a cloud platform.)
->
-> Sigh, so you're trying to solve a non-technical issue with one cloud provider by
-> taking a detour for unnecessarily extending the kernel instead with functionality
-> that already exists in another qdisc (and potentially waiting few years until they
-> eventually upgrade). I presume Bytedance should be a big enough entity to make a
-> case for that provider to change it. After all swapping ingress with clsact for
-> such script is completely transparent and there is nothing that would break. (Fwiw,
-> from all the major cloud providers we have never seen such issue in our deployments.)
+Mailbox channels for the base protocol are setup during probe.
+There can be a scenario where probe fails to acquire the base
+protocol due to a timeout leading to cleaning up of all device
+managed memory including the scmi_mailbox structure setup during
+mailbox_chan_setup function.
+[   12.735104]arm-scmi soc:qcom,scmi: timed out in resp(caller: version_get+0x84/0x140)
+[   12.735224]arm-scmi soc:qcom,scmi: unable to communicate with SCMI
+[   12.735947]arm-scmi: probe of soc:qcom,scmi failed with error -110
 
-Well, it is both non-technical and technical at the same time.
+Now when a message arrives at cpu slightly after the timeout, the mailbox
+controller will try to call the rx_callback of the client and might end
+up accessing freed memory.
+[   12.758363][    C0] Call trace:
+[   12.758367][    C0]  rx_callback+0x24/0x160
+[   12.758372][    C0]  mbox_chan_received_data+0x44/0x94
+[   12.758386][    C0]  __handle_irq_event_percpu+0xd4/0x240
+This patch frees the mailbox channels setup during probe and adds some more
+error handling in case the probe fails.
 
-The non-technical part is that it is really hard to convince people from
-other team to restart their services just for a kernel change, people are just
-not happy to take risks.
+Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+---
+ drivers/firmware/arm_scmi/driver.c | 35 ++++++++++++++++++++++++-----------
+ 1 file changed, 24 insertions(+), 11 deletions(-)
 
-The technical part is the bad design of clsact. It is too late to complain,
-but it should not create two _conceptual_  qdiscs (actually just one struct
-Qdisc) at the same time. If it only created just egress, we would
-not even bother changing ingress at all. Sigh.
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 9b2e8d4..aab2ac1 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -1390,6 +1390,21 @@ void scmi_protocol_device_unrequest(const struct scmi_device_id *id_table)
+ 	mutex_unlock(&scmi_requested_devices_mtx);
+ }
+ 
++static int cleanup_txrx_channels(struct scmi_info *info)
++{
++	int ret;
++	struct idr *idr = &info->tx_idr;
++
++	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
++	idr_destroy(&info->tx_idr);
++
++	idr = &info->rx_idr;
++	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
++	idr_destroy(&info->rx_idr);
++
++	return ret;
++}
++
+ static int scmi_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+@@ -1430,7 +1445,7 @@ static int scmi_probe(struct platform_device *pdev)
+ 
+ 	ret = scmi_xfer_info_init(info);
+ 	if (ret)
+-		return ret;
++		goto clear_txrx_setup;
+ 
+ 	if (scmi_notification_init(handle))
+ 		dev_err(dev, "SCMI Notifications NOT available.\n");
+@@ -1443,7 +1458,7 @@ static int scmi_probe(struct platform_device *pdev)
+ 	ret = scmi_protocol_acquire(handle, SCMI_PROTOCOL_BASE);
+ 	if (ret) {
+ 		dev_err(dev, "unable to communicate with SCMI\n");
+-		return ret;
++		goto notification_exit;
+ 	}
+ 
+ 	mutex_lock(&scmi_list_mutex);
+@@ -1482,6 +1497,12 @@ static int scmi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	return 0;
++
++notification_exit:
++	scmi_notification_exit(&info->handle);
++clear_txrx_setup:
++	cleanup_txrx_channels(info);
++	return ret;
+ }
+ 
+ void scmi_free_channel(struct scmi_chan_info *cinfo, struct idr *idr, int id)
+@@ -1493,7 +1514,6 @@ static int scmi_remove(struct platform_device *pdev)
+ {
+ 	int ret = 0, id;
+ 	struct scmi_info *info = platform_get_drvdata(pdev);
+-	struct idr *idr = &info->tx_idr;
+ 	struct device_node *child;
+ 
+ 	mutex_lock(&scmi_list_mutex);
+@@ -1517,14 +1537,7 @@ static int scmi_remove(struct platform_device *pdev)
+ 	idr_destroy(&info->active_protocols);
+ 
+ 	/* Safe to free channels since no more users */
+-	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
+-	idr_destroy(&info->tx_idr);
+-
+-	idr = &info->rx_idr;
+-	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
+-	idr_destroy(&info->rx_idr);
+-
+-	return ret;
++	return cleanup_txrx_channels(info);
+ }
+ 
+ static ssize_t protocol_version_show(struct device *dev,
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-Thanks.
