@@ -2,131 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A453E08F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D583E08FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236829AbhHDTs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 15:48:58 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:46084 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234805AbhHDTsz (ORCPT
+        id S240793AbhHDTtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 15:49:22 -0400
+Received: from sonic304-25.consmr.mail.gq1.yahoo.com ([98.137.68.206]:39144
+        "EHLO sonic304-25.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237015AbhHDTs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 15:48:55 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:38462)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mBMsb-00G5UJ-3o; Wed, 04 Aug 2021 13:48:41 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:43610 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mBMsa-00AESH-1k; Wed, 04 Aug 2021 13:48:40 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210730062854.3601635-1-svens@linux.ibm.com>
-        <YQn+GomdRCoYc/E8@Ryzen-9-3900X.localdomain>
-Date:   Wed, 04 Aug 2021 14:47:57 -0500
-In-Reply-To: <YQn+GomdRCoYc/E8@Ryzen-9-3900X.localdomain> (Nathan Chancellor's
-        message of "Tue, 3 Aug 2021 19:40:26 -0700")
-Message-ID: <875ywlat5e.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 4 Aug 2021 15:48:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1628106523; bh=LNGh9NHIhb5fA7uCyCadJ4uM36CMeld28J3HJ9dwjns=; h=Date:From:Subject:To:Cc:References:In-Reply-To:From:Subject:Reply-To; b=CLDhvI13HpJEMniuJqb6+nLsr39dWq/zjg5QBwSM03CZJI4HJpuoIzHSSbJcKQ1q2AlRoZ5YqnLnCS+ce834/AmfOCDEfwy6jxNyBpu7bFzvzDSK1mGsIpI3Kp9oeEo/fv6QDdQo4vEPHxGZJUDh5jqlIgNpIj5aez6R3KemSqTWSr/VslVmfjnuGWb1i9LSJKuZq6aCdwL0CsCFYSo/h6TeAMDGMC3VwppC43Qc/qbzQCW4uQL0NmTSFrhYzbZplwyifdDWEdNriT3l8HYO09q6WEp/otnOY/womgFllOm2f5EnIeI6QyyMZm7nkiG01+aWd82CF5e1jHEmn2ajxw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1628106523; bh=ezAPH3oF+ePWSWtV7ABJHkMKCQtAWa8f30ZU7dsUQ1e=; h=X-Sonic-MF:Date:From:Subject:To:From:Subject; b=rTp38fxwi6dWBi8uNTD3Q0xSTbYn38faOh2F586vSxtGoLtTEDqGWMBXbE90Zl5dNk9na6BYiuaeQH20YWKcHQG/IWNvBLPpTL3BeO0V1tLmPcNbj1ZoLcHD4pgeqO1te1pFJgDJdvII4A9TLevmXSKgJqEb5wupwbpBcqRH6wsR3BPV2oH5wPEbv3ezt0bFPpMVGKvOKPIKtXo5BhVXOQcMhu6oxasiDmvZwLpbC8/xwo29C2/toe/cGLlE0xvJ9p/FfeDFaWh7kjtLvpxhBgABeqUYI/kG9OGAbsM/gd2/C5LwlpKYO8MS11XXrkU+dBNLRQ6CwSOo54u4zv8uRQ==
+X-YMail-OSG: wXcBCvIVM1m9uQstF84zyKIGA_LCrsjroEX274nOn5MOKuIKuekLdqZmOSfxHa.
+ f78uIy4.FMsLrDq1Zm89XUtyhoTsL08c8Cp_AxgkgQv_wA5msgWP4KTGmnI5SOXRw.x1DTpUElIS
+ Q1BDesYx72WCSvqqb.bTABrHqA0ry30wgKgSAKhoRZ0cFTgGiGVhr7y3fMaHg.yo7r.YcjECipDA
+ L.DHqVuonKDnLiRYLXYy6BZs5TSQu_9v7m76C1pC6tV8zb9McUou65zABEiAdqHP9ftjUHy.sm9S
+ SR1cNcWpTUlxKfppHifNOLYj3p93YUk7AdtVwGY_5Vyut03wGSJh9vQUti5V4XFR3ISVW54M24v4
+ TNmpYa2ePjLBSUJKYlUV1kawRMYOQ3OLkLCAlp7MIKbZALQueKwgOGUyiR_vRg4hOhs1XLHMjHat
+ 4wJrpeSR6nKVlKZEd9EOgWTXpLAedzOGaa69AB8ZYB0veqPEGRtz3Gi39AnxEOqYuWTFJyZwDiSf
+ f6nAw3WAvAEj19O0KBoGYDNcOlbcMx7ZYD.fpA66E45elFh_zh6FqlILKqpdGaZr1I4prLgy1dzt
+ H917pBTpFCEPsZzJ51EbJ7BEoMe4IrO39ZK700f710.MU9HKpADJI0klc2gINp5eXxy8BwxWWXgp
+ rIKY_LPpJ3frDoagUSJgYasOCvWWiJ6R7ctII5jSozCgcV2nkTl9Mlkr3S54bHaGJSjoVjDyo2cO
+ OdAje1sHqtkF.vHVDsTj9mDxOj5VOszkh8cY88Pg8lxyYnc7lnqH2GcKgnMjMMu7GuKGSpy..JMc
+ E5tEvbNNGP.xOtG2QObWvgzz9lbgzjsRXcIkzEQRlXP7bcN1FWYLJgALJvYxtgA6Z6w_Zu5xGbvU
+ hlrNxrcWyFlYzFZrA6sKnVVXX4po6xiTGSbKQWx1obfO3513Ioky51uyi.ZORz16zLEMMr44VSaG
+ YPgBX35u59ZWcPS1PJHKM1Z8Dj28aaD9JSA7OGXbnGiDmHPOYA7uktOI.b5XOCV4KCiNpnrWA8SY
+ 4.IQxbEJ8i3U9piK0H2V51fPsbu1OnzibBvzc3rqs34Mpu.cwS3v88PFH4x2HLAW9CuBFhKv65h0
+ pD13mWmtUH3GDo2wtvlXP3zJo8wRkseIh2LZZ9_RXhzUvvLXT60uvxqFfAXquGpk6q5pT0TltzSC
+ p2anQrceT.xB.GEOiDK6wrEUJnlCqdSICq84TK07GiHIpH_OuySCQGTsB_OWs81fwWMGj5YygLvy
+ rMD3nC5OgnhpU18YLwkoBy9kuA9Chz9KGVmGFRN1CIlG9Kcezvyd8f2ERFkSINfBZEMZzkfm7jT4
+ oPGMw5_ZFJRSLAojgPgILGdHRBCh76k6669pFLbj2dsR5VJ1tgqszpVFy8C4h2ZhiWIo1mNg9NMO
+ 1zTYcDNhF_PHubqm6HVS1VykWr19LpGAvHG1gCmkYeV1I9Wd_.JVbngd7VsRovFx49Na2ORBdd.k
+ BBZZbmMetQJxrdySKwpXIL3t9vvn_gXdYvzJyaucisYRIjYwolZSGa9.T1VsgO1XCP9Ing9cCnDF
+ 573zymw.rGu9_SP6J.K6RFpf.5HvRn0AOAV6Q98MxjTk0EevQ_SK_rqxi3FfcHdcqSXWlIQnfSjC
+ vae2.d.pmVC0oIB9sZOPy7rkpQLo2UP30zvoetK5Wi8fpiSnKcuDfw9S219s_K0o5C8rDvwTysb0
+ jf0hwCbacoXmDrIyamaaV9IPTwlZYCteyBhWSGDxZA_H3aYP_WYU4q40MqSI_QptppWbFunLUq1l
+ XqJWc7pzJ_RX66FyurILq9gsyQVi2CRXsNfOXDbP4lgA_fbLaffAziCRiK8b_qhF8mZSDUhqqwQp
+ Sy.i7bzy0YuVnH29omr6IDdZ9MGQqD9C_e3Gb5twn21z4EyOSdFG9D_rOMLHyIcZ_RPiKs_mQXCj
+ GxBAH97g1pHaZpvBcAHladkRBL1od8CH4Si9SrBNxkXJBpsMwburXTNGcZNsmg8J12a2BjcxX8GP
+ I4cD7mkEVsqe8F4JBb6XVyfGafwEVHXMKPzDA1AQlA0UISFWop8qzJhJ5vXB.UTE3Fhkf9LOnaL6
+ mITg5bp7QXv._cJeIZMcUYrajCfaWX0JiLRKjf.cLX1XkNDANdZdn_RqeFdawPBoF_ORLPZFXC4m
+ 6eyQ3f7K2d5kIcBK6kO3zDHlJw_KE.iuMrGfEyTT8KiMFR44LNIzSfniDQRkDI3LeM1cKIZPSBeN
+ EZIV5FBa6QR9YW1rAcmbKif9L3.TOyvkz.RNYil2LNOgFyjOdRxuRJ6UA7HcfOIyys0_r7kdI2CH
+ J95szLl4.FORK7I7FfE75Gwu7gbSKHfvlkgRUYFMTc4SSNW.DTg4oPxJf3_mkePP30gp7N51l_Hb
+ qf9oy36ItO_3oe5lkqzUBE.Pi7K2Ti7d49nVFHVo6SeM79Tyc49bisf0QN1lBVaJGvFrex77edV5
+ 5A.gdWuh74EwGYjBU948wkqUmk2DNPn2A70EyeG5quQMVroGvGf0WCcfLj8sp4iZAObl0X9Vf8nu
+ 8XpJZRfeJsJcTUvylXM71iDKLLVteSuJyMIDmpaxJ8ZCmvjmo4mTjzTSDn6L6nuFMc25qtEUxDHE
+ 5RMRfPK3cJNgTS2UZ5VgjhIxjysZ8Y0L5yRSd_mFrezBFvki5eA8GTwXa.ClnNRZUgcPqhITLO.4
+ qv.pfV5_N12StjdoDgb_nvzXC_yJVoYyuVdJR3.h4FwBWeC.p6oPXgz8JZ4wGBDzH3ysaWvqtuIv
+ D69IxyKJXR.fMyh2fSyaxihqDEdrFIY.o9LqJ_9x6jKPnp7BRKyUbIms2PgzQY1aw0mjbjfa6Sde
+ cpyNnx1VvdpyWUifwVuVC5bnktUXEj_DRV.ZrKsmaexgbTM4IPodxK0UyFp81vS3Nwv79HFjC47g
+ NDaOPAFguQoDxESuidKXLaR0U_4wslg9hRU2OTQEGaOG0VtgZvMgYRsMO37Myutp_SN7NOiG38og
+ udjd.YoTtd464y4419Czn8UdBDfL2SsR0hx0_GEbY52QUi.j3f2pvB9Q0FCwUpp0S7W.V9jgu0qy
+ KSscoI40ekYsEw4gmIMzFYbMnC1tBzzidEQk5U.45sS3csmAAQ3toAxPLV8htacqpiCdT8_GgMG0
+ xleeiMQ88k97O9gqTAsxBmyTHa5E0sl1C40ynKJkrl7U6elPM_Jt9_3PX9178lA.Yfhi3XaBnllt
+ ql_XBJhzcBi4D8PzM1AmmE86_JIe6LGT7icQR.ULFCXbKaiW_OlvU7G82ihwbId9ft3cVLbLDPz0
+ ujWD1phtpI2g5n9Sn1ElGXV6gMhzRKPeFdz.QJ_9JimUr_gYvTuWCcIdboqDmkxDKx_64gpJqGqr
+ 99ffk7odGVb1An.zu0Cf9BfV4G7BVZfOgrtLqNkyvhQTJACVgQIoQsc3PPUuCTwpaevjzZBpPt3E
+ qzFO_qQNtOdofvHSkx1CeNR.Td9lwuAi.nUtaoN4GCSAQMzLKRyhs44C5RGvxuXA5nRN4hX1wqRU
+ XKkcOGDMM0ZFXQ6FzDlATWDu5_Bk5mO.HukIHl1xUZnklCwnr1eqh_TRVGkZwr2Oo4p6Hc_0.zVC
+ U0_QsoHMnEXrolX.0Nslqzz4P08kpmFGPhm4zUSNLyFQVDhjFhwDKkgDNfX.iAXi1lIP1m2iw7TD
+ AdnxGvD4pr7PrjJECD4oKlUS4duLFK0iUoeLk0su.RXZYVqHsiXBefDIsLt.pRiADvWiPiPTu7Sv
+ Ykiudmt.ss7wU9uVUW.PQqWb_0iQ_Ha8R0xUSp8vFDBOZdUaA10CB51tEBkuiHRwZNP2mN5diXwI
+ CzSTpILKUrMCTw7YIEiB_qCcOtNA.mAAvpf0tHUyzIwiNRxigxfRiTUd2AOZDa0.pRxS2zb51uYk
+ UUu8PpLUZHTbX
+X-Sonic-MF: <alex_y_xu@yahoo.ca>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.gq1.yahoo.com with HTTP; Wed, 4 Aug 2021 19:48:43 +0000
+Received: by kubenode548.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 2961fbab5bea3292d10f4f927ac96299;
+          Wed, 04 Aug 2021 19:48:40 +0000 (UTC)
+Date:   Wed, 04 Aug 2021 15:48:36 -0400
+From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: Re: [REGRESSION?] Simultaneous writes to a reader-less, non-full pipe
+ can hang
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     acrichton@mozilla.com, Christian Brauner <christian@brauner.io>,
+        David Howells <dhowells@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        keyrings@vger.kernel.org, Linux API <linux-api@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-usb@vger.kernel.org,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ian Kent <raven@themaw.net>
+References: <1628086770.5rn8p04n6j.none.ref@localhost>
+        <1628086770.5rn8p04n6j.none@localhost>
+        <CAHk-=wiLr55zHUWNzmp3DeoO0DUaYp7vAzQB5KUCni5FpwC7Uw@mail.gmail.com>
+In-Reply-To: <CAHk-=wiLr55zHUWNzmp3DeoO0DUaYp7vAzQB5KUCni5FpwC7Uw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mBMsa-00AESH-1k;;;mid=<875ywlat5e.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19DF2GFSI/LRYKxEBZpK6iMObDDI8QO/9M=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XM_B_SpammyWords,
-        XM_B_SpammyWords2 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4921]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-        *  0.8 XM_B_SpammyWords2 Two or more commony used spammy words
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Nathan Chancellor <nathan@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 455 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 13 (2.8%), b_tie_ro: 11 (2.4%), parse: 1.29
-        (0.3%), extract_message_metadata: 5 (1.2%), get_uri_detail_list: 2.5
-        (0.5%), tests_pri_-1000: 5.0 (1.1%), tests_pri_-950: 1.79 (0.4%),
-        tests_pri_-900: 1.34 (0.3%), tests_pri_-90: 134 (29.5%), check_bayes:
-        132 (28.9%), b_tokenize: 9 (2.0%), b_tok_get_all: 8 (1.8%),
-        b_comp_prob: 3.2 (0.7%), b_tok_touch_all: 107 (23.5%), b_finish: 1.10
-        (0.2%), tests_pri_0: 253 (55.7%), check_dkim_signature: 0.76 (0.2%),
-        check_dkim_adsp: 3.4 (0.7%), poll_dns_idle: 0.71 (0.2%), tests_pri_10:
-        5 (1.1%), tests_pri_500: 24 (5.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v3] ucounts: add missing data type changes
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Message-Id: <1628105897.vb3ko0vb06.none@localhost>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: WebService/1.1.18749 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nathan Chancellor <nathan@kernel.org> writes:
+Excerpts from Linus Torvalds's message of August 4, 2021 12:31 pm:
+> Your program is buggy.
+>=20
+> On Wed, Aug 4, 2021 at 8:37 AM Alex Xu (Hello71) <alex_y_xu@yahoo.ca> wro=
+te:
+>>
+>>     pipe(pipefd);
+>>     printf("init buffer: %d\n", fcntl(pipefd[1], F_GETPIPE_SZ));
+>>     printf("new buffer:  %d\n", fcntl(pipefd[1], F_SETPIPE_SZ, 0));
+>=20
+> Yeah, what did you expect this to do? You said you want a minimal
+> buffer, you get a really small buffer.
+>=20
+> Then you try to write multiple messages to the pipe that you just said
+> should have a minimum size.
+>=20
+> Don't do that then.
+>=20
+>> /proc/x/stack shows that the remaining thread is hanging at pipe.c:560.
+>> It looks like not only there needs to be space in the pipe, but also
+>> slots.
+>=20
+> Correct. The fullness of a pipe is not about whether it has the
+> possibility of merging more bytes into an existing not-full slot, but
+> about whether it has empty slots left.
+>=20
+> Part of that is simply the POSIX pipe guarantees - a write of size
+> PIPE_BUF or less is guaranteed to be atomic, so it mustn't be split
+> among buffers.
+>=20
+> So a pipe must not be "writable" unless it has space for at least that
+> much (think select/poll, which don't know the size of the write).
+>=20
+> The fact that we might be able to reuse a partially filled buffer for
+> smaller writes is simply not relevant to that issue.
+>=20
+> And yes, we could have different measures of "could write" for
+> different writes, but we just don't have or want that complexity.
+>=20
+> Please don't mess with F_SETPIPE_SZ unless you have a really good
+> reason to do so, and actually understand what you are doing.
+>=20
+> Doing a F_SETPIPE_SZ, 0 basically means "I want the mimimum pipe size
+> possible". And that one accepts exactly one write at a time.
+>=20
+> Of course, the exact semantics are much more complicated than that
+> "exactly one write". The pipe write code will optimistically merge
+> writes into a previous buffer, which means that depending on the
+> pattern of your writes, the exact number of bytes you can write will
+> be very different.
+>=20
+> But that "merge writes into a previous buffer" only appends to the
+> buffer - not _reuse_ it - so when each buffer is one page in size,
+> what happens is that you can merge up to 4096 bytes worth of writes,
+> but then after that the pipe write will want a new buffer - even if
+> the old buffer is now empty because of old reads.
+>=20
+> That's why your test program won't block immediately: both writers
+> will actually start out happily doing writes into that one buffer that
+> is allocated, but at some point that buffer ends, and it wants to
+> allocate a new buffer.
+>=20
+> But you told it not to allocate more buffers, and the old buffer is
+> never completely empty because your readers never read _everythign_,
+> so it will hang, waiting for you to empty the one minimal buffer it
+> allocated. And that will never happen.
+>=20
+> There's a very real reason why we do *not* by default say "pipes can
+> only ever use only one buffer".
+>=20
+> I don't think this is a regression, but if you have an actual
+> application - not a test program - that does crazy things like this
+> and used to work (I'm not sure it has ever worked, though), we can
+> look into making it work again.
+>=20
+> That said, I suspect the way to make it work is to just say "the
+> minimum pipe size is two slots" rather than change the "we want at
+> least one empty slot". Exactly because of that whole "look, we must
+> not consider a pipe that doesn't have a slot writable".
+>=20
+> Because clearly people don't understand how subtle F_SETPIPE_SZ is.
+> It's not really a "byte count", even though that is how it's
+> expressed.
+>=20
+>                    Linus
+>=20
 
-> On Fri, Jul 30, 2021 at 08:28:54AM +0200, Sven Schnelle wrote:
->> commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
->> changed the data type of ucounts/ucounts_max to long, but missed to
->> adjust a few other places. This is noticeable on big endian platforms
->> from user space because the /proc/sys/user/max_*_names files all
->> contain 0.
->> 
->> Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
->> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
->
-> This patch in -next as commit e43fc41d1f7f ("ucounts: add missing data type
-> changes") causes Windows Subsystem for Linux to fail to start:
->
-> [error 0x8007010b when launching `wsl.exe -d Arch'] Could not access starting
-> directory "\\wsl$\Arch\home\nathan"
->
-> Specifically, it is the change to max_user_watches in
-> fs/notify/inotify/inotify_user.c, as the below diff gets me back to working.
-> Unfortunately, I have no additional information to offer beyond that as WSL's
-> init is custom and closed source (as far as I am aware) and there are no real
-> debugging utilities.
+I agree that if this only affects programs which intentionally adjust=20
+the pipe buffer size, then it is not a huge issue. The problem,=20
+admittedly buried very close to the bottom of my email, is that the=20
+kernel will silently provide one-page pipe buffers if the user has=20
+exceeded 16384 (by default) pipe buffer pages allocated. Try this=20
+slightly more complicated program:
 
-Could you try this patch and tell us what value is being set?
+#define _GNU_SOURCE
+#include <fcntl.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdio.h>
+#include <unistd.h>
 
-The only think I can imagine is that someone wants unlimited watches and
-sets the value to a ridiculously large value and the interpretation of
-that value winds up being different between int and long.
+static int pipefd[2];
 
-This should allow you to read either dmesg or the kernel's log as it
-boots up and see what value is being written.  From there it should
-be relatively straight forward to figure out what is going on.
+void *thread_start(void *arg) {
+    char buf[1];
+    int i;
+    for (i =3D 0; i < 1000000; i++) {
+        read(pipefd[0], buf, sizeof(buf));
+        if (write(pipefd[1], buf, sizeof(buf)) =3D=3D -1)
+            break;
+    }
+    printf("done %d\n", i);
+    return NULL;
+}
 
-Thank you,
-Eric
+int main() {
+    signal(SIGPIPE, SIG_IGN);
+    // pretend there are a very large number of make processes running
+    for (int i =3D 0; i < 1025; i++)
+    {
+        pipe(pipefd);
+        write(pipefd[1], "aa", 2);
+    }
+    printf("%d %d\n", pipefd[0], pipefd[1]);
+    printf("init buffer: %d\n", fcntl(pipefd[1], F_GETPIPE_SZ));
+    //printf("new buffer:  %d\n", fcntl(pipefd[1], F_SETPIPE_SZ, 0));
+    pthread_t thread1, thread2;
+    pthread_create(&thread1, NULL, thread_start, NULL);
+    pthread_create(&thread2, NULL, thread_start, NULL);
+    sleep(3);
+    close(pipefd[0]);
+    close(pipefd[1]);
+    pthread_join(thread1, NULL);
+    pthread_join(thread2, NULL);
+}
 
+You may need to raise your RLIMIT_NOFILE before running the program.
 
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 272f4a272f8c..733c4cfa1f60 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -975,6 +975,14 @@ int proc_dointvec_minmax(struct ctl_table *table, int write,
- 		.min = (int *) table->extra1,
- 		.max = (int *) table->extra2,
- 	};
-+#if 1
-+	size_t lenv = *lenp;
-+	if (write && (lenv > 0) && (lenv < INT_MAX)) {
-+		int len = lenv;
-+		printk(KERN_EMERG "intvec: %s <- %*.*s\n",
-+			table->procname, len, len, (char *)buffer);
-+	}
-+#endif
- 	return do_proc_dointvec(table, write, buffer, lenp, ppos,
- 				do_proc_dointvec_minmax_conv, &param);
- }
+With default settings (fs.pipe-user-pages-soft =3D 16384) the init buffer=20
+will be 4096, no mangling required. I think this could be probably be=20
+solved if the kernel instead reduced over-quota pipes to two pages=20
+instead of one page. If someone wants to set a one-page pipe buffer,=20
+then they can suffer the consequences, but the kernel shouldn't silently=20
+hand people that footgun.
+
+Regards,
+Alex.
