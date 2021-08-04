@@ -2,141 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2233DF8EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 02:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C383DF8F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 02:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234882AbhHDAYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 20:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234780AbhHDAYf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 20:24:35 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE88C061799;
-        Tue,  3 Aug 2021 17:24:08 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id y7so619767ljp.3;
-        Tue, 03 Aug 2021 17:24:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1g5MuhzsF54hdSj2ImZwAhfofgvtlBzMFMtIoIyIQ14=;
-        b=C923nqazjsYX2Om3f9YHX28wT7y2y9fyoyMX7/1B3yNMUXYqkA0oiyOR4qWxhNPiM0
-         giEEqxAo7L/2+PTgH9GtKsxzjtigEyd+jvFd0hBbD9xc0ejR3h5LUn232ckIvEWtRJgX
-         QWuTRNeyzV+BxUU4rB8fK5CpyNUTLKGXRBbZO1SqOq0pIHICa9c53WnBccQiymQ9pL/q
-         UWa7kZwygzR6l7plU9a/ZmUczNAX5U39/35LMasH/kh0oiohjhXeemi8bL4SmbgqSYg/
-         9M2vXHHcSziFZIFNZM3Wyc9+CcEIK2Imq1Cgng7masCi+/TKLxjq5c+G+iTtes5fXmmN
-         t1eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1g5MuhzsF54hdSj2ImZwAhfofgvtlBzMFMtIoIyIQ14=;
-        b=CpDHd7AExEdOKxxBHnvwsJThc/IeL48CIChd71NeddNZpXNHcB7dbnWeSMWbMZoOxk
-         PmIxQUPDqeKALhYp0loIW43LsGLbpH76IcJzkJGEFuX/TSI0S4YMBmOzznIWPKAzJ9Px
-         J2S+kbRuG6tUxqqL3cBOXCxRVThXLk8jlBZtDtXYJa1pVKt8TNRMhDyS9SDZUMTEvFWP
-         gyRj6FnusiJc23vwcQgIRDo8C8K7a20TrnewIFdbdUrEfecgUwnDOQe9B6i3QX7C8844
-         Z4JNqqMBcpuI5BStNvxHAxR/8XUitpmFowmgf4W+GxfgRDX+E1QL5FfVt31xe9Z1/pWW
-         fH7A==
-X-Gm-Message-State: AOAM531ZcnHXxBpHrbuPiHuoysuF+jBXvp87/5oz5+bgIuTjh5Z55zE7
-        RnqeaCPcAdf5o5x5YnsvBnJxPjX1bCOJZA==
-X-Google-Smtp-Source: ABdhPJy6XR4zq66mb+NBu5WQrZaQXgMILdNI42Uon6XuiuuPp2xYvSMpGAdfRntCklqtCJ9BfHQjTQ==
-X-Received: by 2002:a2e:9b4e:: with SMTP id o14mr16373512ljj.270.1628036647079;
-        Tue, 03 Aug 2021 17:24:07 -0700 (PDT)
-Received: from akaWolf-PC.. (broadband-5-228-138-51.ip.moscow.rt.ru. [5.228.138.51])
-        by smtp.gmail.com with ESMTPSA id t17sm40992ljk.102.2021.08.03.17.24.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 17:24:06 -0700 (PDT)
-From:   Artjom Vejsel <akawolf0@gmail.com>
-Cc:     thierry.reding@gmail.com, sam@ravnborg.org,
-        dri-devel@lists.freedesktop.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        paul@crapouillou.net, akawolf0@gmail.com
-Subject: [PATCH v4 3/3] drm/panel-simple: add Gopher 2b LCD panel
-Date:   Wed,  4 Aug 2021 03:23:53 +0300
-Message-Id: <20210804002353.76385-4-akawolf0@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210804002353.76385-1-akawolf0@gmail.com>
-References: <20210804002353.76385-1-akawolf0@gmail.com>
+        id S234850AbhHDAdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 20:33:00 -0400
+Received: from mga09.intel.com ([134.134.136.24]:55954 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234792AbhHDAc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 20:32:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="213799588"
+X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
+   d="scan'208";a="213799588"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 17:32:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
+   d="scan'208";a="667604504"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 03 Aug 2021 17:32:46 -0700
+Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
+        by linux.intel.com (Postfix) with ESMTP id 93F7C58093B;
+        Tue,  3 Aug 2021 17:32:46 -0700 (PDT)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     irenic.rajneesh@gmail.com, novikov@ispras.ru,
+        gayatri.kammela@intel.com, hdegoede@redhat.com,
+        mgross@linux.intel.com, andy.shevchenko@gmail.com
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: intel_pmc_core: Prevent possibile overflow
+Date:   Tue,  3 Aug 2021 17:30:39 -0700
+Message-Id: <20210804003039.359138-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <facd47b64a5efa4e0e70cd29586173e44a8929c2.camel@linux.intel.com>
+References: <facd47b64a5efa4e0e70cd29586173e44a8929c2.camel@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Gopher 2b LCD panel is used in Gopher 2b handhelds.
-It's simple panel with NewVision NV3047 driver, but SPI lines are not connected.
-It has no specific name, since it's unique to that handhelds.
-lot name at AliExpress: 4.3 inch 40PIN TFT LCD Screen COG NV3047 Drive IC 480(RGB)*272 No Touch 24Bit RGB Interface
+Low Power Mode (LPM) priority is encoded in 4 bits. Yet, this value is used
+as an index to an array whose element size was less than 16, leading to the
+possibility of overflow should we read a larger than expected priority. Set
+the array size to 16 to prevent this.
 
-Signed-off-by: Artjom Vejsel <akawolf0@gmail.com>
+Reported-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 ---
- drivers/gpu/drm/panel/panel-simple.c | 43 ++++++++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
+ drivers/platform/x86/intel_pmc_core.c | 2 +-
+ drivers/platform/x86/intel_pmc_core.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 9b286bd4444f..2c391ed6ec1a 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -3563,6 +3563,46 @@ static const struct panel_desc qd43003c0_40 = {
- 	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
- };
+diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+index b0e486a6bdfb..2a761fe98277 100644
+--- a/drivers/platform/x86/intel_pmc_core.c
++++ b/drivers/platform/x86/intel_pmc_core.c
+@@ -1451,7 +1451,7 @@ DEFINE_SHOW_ATTRIBUTE(pmc_core_pkgc);
  
-+static const struct drm_display_mode qishenglong_gopher2b_lcd_modes[] = {
-+	{ /* 60 Hz */
-+		.clock = 10800,
-+		.hdisplay = 480,
-+		.hsync_start = 480 + 77,
-+		.hsync_end = 480 + 77 + 41,
-+		.htotal = 480 + 77 + 41 + 2,
-+		.vdisplay = 272,
-+		.vsync_start = 272 + 16,
-+		.vsync_end = 272 + 16 + 10,
-+		.vtotal = 272 + 16 + 10 + 2,
-+		.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
-+	},
-+	{ /* 50 Hz */
-+		.clock = 10800,
-+		.hdisplay = 480,
-+		.hsync_start = 480 + 17,
-+		.hsync_end = 480 + 17 + 41,
-+		.htotal = 480 + 17 + 41 + 2,
-+		.vdisplay = 272,
-+		.vsync_start = 272 + 116,
-+		.vsync_end = 272 + 116 + 10,
-+		.vtotal = 272 + 116 + 10 + 2,
-+		.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
-+	},
-+};
-+
-+static const struct panel_desc qishenglong_gopher2b_lcd = {
-+	.modes = qishenglong_gopher2b_lcd_modes,
-+	.num_modes = ARRAY_SIZE(qishenglong_gopher2b_lcd_modes),
-+	.bpc = 8,
-+	.size = {
-+		.width = 95,
-+		.height = 54,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
-+	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE,
-+	.connector_type = DRM_MODE_CONNECTOR_DPI,
-+};
-+
- static const struct display_timing rocktech_rk070er9427_timing = {
- 	.pixelclock = { 26400000, 33300000, 46800000 },
- 	.hactive = { 800, 800, 800 },
-@@ -4651,6 +4691,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "qiaodian,qd43003c0-40",
- 		.data = &qd43003c0_40,
-+	}, {
-+		.compatible = "qishenglong,gopher2b-lcd",
-+		.data = &qishenglong_gopher2b_lcd,
- 	}, {
- 		.compatible = "rocktech,rk070er9427",
- 		.data = &rocktech_rk070er9427,
+ static void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev)
+ {
+-	u8 lpm_priority[LPM_MAX_NUM_MODES];
++	u8 lpm_priority[LPM_MAX_PRI];
+ 	u32 lpm_en;
+ 	int mode, i, p;
+ 
+diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel_pmc_core.h
+index e8dae9c6c45f..b98c2b44c938 100644
+--- a/drivers/platform/x86/intel_pmc_core.h
++++ b/drivers/platform/x86/intel_pmc_core.h
+@@ -190,6 +190,7 @@ enum ppfear_regs {
+ #define LPM_MAX_NUM_MODES			8
+ #define GET_X2_COUNTER(v)			((v) >> 1)
+ #define LPM_STS_LATCH_MODE			BIT(31)
++#define LPM_MAX_PRI				16	/* size of 4 bits */
+ 
+ #define TGL_PMC_SLP_S0_RES_COUNTER_STEP		0x7A
+ #define TGL_PMC_LTR_THC0			0x1C04
 -- 
-2.32.0
+2.25.1
 
