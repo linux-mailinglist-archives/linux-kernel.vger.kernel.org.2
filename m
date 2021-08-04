@@ -2,167 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976523E0A3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D803E0A47
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235105AbhHDWFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 18:05:16 -0400
-Received: from esa.hc503-62.ca.iphmx.com ([216.71.135.51]:8674 "EHLO
-        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231249AbhHDWFM (ORCPT
+        id S235257AbhHDWT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 18:19:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235175AbhHDWT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 18:05:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
-  t=1628114699; x=1659650699;
-  h=to:cc:references:subject:in-reply-to:from:message-id:
-   date:mime-version;
-  bh=L9nJV2YSSJWQgya0qOZuNRNyTlFsERQnSEL4wHqvqwI=;
-  b=DtRX71VVpT2PqDuVh4qrFL4Ch2rGWx/gVv99H+6yVDl53YjYXYQzh69e
-   2YTHFRgPAEf3One9DKxrOu1sQAMaBcjVkx1KenOdAmBvsk0aXaJhmtkmR
-   sLDPUikcuITz2O+zlJRUXfl24LLDreeU3tpwOT3jxrLAcur0BlW8NFOAz
-   Q=;
-Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
-  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Aug 2021 18:04:57 -0400
-Received: from [10.42.0.123] (10.32.139.159) by connhm04.connect.uwaterloo.ca
- (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 4 Aug
- 2021 18:04:57 -0400
-To:     <posk@posk.io>
-CC:     <avagin@google.com>, <bsegall@google.com>, <jannh@google.com>,
-        <linux-api@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mingo@redhat.com>, <peterz@infradead.org>, <pjt@google.com>,
-        <posk@google.com>, <tdelisle@uwaterloo.ca>, <tglx@linutronix.de>,
-        Peter Buhr <pabuhr@uwaterloo.ca>
-References: <20210801200617.623745-5-posk@google.com>
-Subject: Re: [PATCH 4/4 v0.4] sched/umcg: RFC: implement UMCG syscalls
-In-Reply-To: <20210801200617.623745-5-posk@google.com>
-From:   Thierry Delisle <tdelisle@uwaterloo.ca>
-Message-ID: <3530714d-125b-e0f5-45b2-72695e2fc4ee@uwaterloo.ca>
-Date:   Wed, 4 Aug 2021 18:04:57 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 4 Aug 2021 18:19:56 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53950C061798
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 15:19:43 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id v9-20020a9d60490000b02904f06fc590dbso3134206otj.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 15:19:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fIeDGb81HEa/IJ5OXkRbKetCo9gTIt6kKZjhA2DPOzc=;
+        b=M8ipkm04J9ZGePM4PMk62q3rG4n6ksWm61P98tEQF81wH9EEavJbqwECZ5uEzr4Q27
+         /w0ohBflOWp5rFFxsBFYZJhdj8Zfs8oyTl1rVVfP1ulP5J1OxcSFcbqVRUJ3CkGbXa81
+         +bwl73Zcr8ByhEiE1ws7/8ebdlmUKCJ1+zkQH/kDL3MKeuoyszmspyHAljmZuL8xSrKB
+         DdZNU6o+pMeLUgRwFCv/R6zYHVBF9UFwxfW6gQ4DD8WVkxoE6jTp1hrRAAfl28Ypi9ko
+         zwfomSxHWKmmT34MnujIrqAL4hRjlhkcRD0nifc8NdOrrPvqNu71S8y3ClRaAmxRszBC
+         Y5hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fIeDGb81HEa/IJ5OXkRbKetCo9gTIt6kKZjhA2DPOzc=;
+        b=sXgp1WAmWACvey6WgwQnnvSXFGvvsYNmWPOBWwKJM5E1qVnBt/1CACoD5AsgRCSIeU
+         kx+NqkBQfge1kfzP31cYH5HSjJmv+vdNt8ixqjnFjm8N77WuIKpo+r59BaNHuPa+zWeD
+         1ArRQ41w2DWERJA4qG1+td0yYK7Md7UZsjdSRkhmLlr2FcfJneeIRKcmeUkqElbzDuF1
+         UD2wdQRinF+7cYMlQm7XLIg13YISZbeptk7CC3HqpNQWpjOnocAmKq6f6z/IClAOSj9A
+         uMVyZVBYFhX24JR5qOZtmDiGcAviWF6kFvSFYvww9wnjJApaLjOUdex0AngBzWy31x/l
+         nMvQ==
+X-Gm-Message-State: AOAM530jfcfEEgfNsTW530vpLeFhS4SffPiJLFIbyJDDAlgWz7C6X7n+
+        x/KplCMfTBFXWVNmN2guwK6amGdPy3mlQXtDvtSmuQ==
+X-Google-Smtp-Source: ABdhPJxiWFtLtbQZDHzmp15IKxv8wOz2ClzTL6LLruJYPn66EMJRznjCSucbOVPpnEq+m9gMByWN53k3qOuogdTVC98=
+X-Received: by 2002:a9d:63c6:: with SMTP id e6mr1313817otl.295.1628115582214;
+ Wed, 04 Aug 2021 15:19:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-        boundary="------------80684090183B5F7F3FBA5261"
-Content-Language: en-US
-X-Originating-IP: [10.32.139.159]
-X-ClientProxiedBy: connhm03.connect.uwaterloo.ca (172.16.137.67) To
- connhm04.connect.uwaterloo.ca (172.16.137.68)
+References: <20210804214609.1096003-1-seanjc@google.com>
+In-Reply-To: <20210804214609.1096003-1-seanjc@google.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 4 Aug 2021 15:19:30 -0700
+Message-ID: <CALMp9eSxuoLf4hopA_=y_FohCAnLRjQuQ_PeGKO325UJ5J+qLA@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86/mmu: Fix per-cpu counter corruption on 32-bit builds
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---------------80684090183B5F7F3FBA5261
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+On Wed, Aug 4, 2021 at 2:46 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Take a signed 'long' instead of an 'unsigned long' for the number of
+> pages to add/subtract to the total number of pages used by the MMU.  This
+> fixes a zero-extension bug on 32-bit kernels that effectively corrupts
+> the per-cpu counter used by the shrinker.
+>
+> Per-cpu counters take a signed 64-bit value on both 32-bit and 64-bit
+> kernels, whereas kvm_mod_used_mmu_pages() takes an unsigned long and thus
+> an unsigned 32-bit value on 32-bit kernels.  As a result, the value used
+> to adjust the per-cpu counter is zero-extended (unsigned -> signed), not
+> sign-extended (signed -> signed), and so KVM's intended -1 gets morphed to
+> 4294967295 and effectively corrupts the counter.
+>
+> This was found by a staggering amount of sheer dumb luck when running
+> kvm-unit-tests on a 32-bit KVM build.  The shrinker just happened to kick
+> in while running tests and do_shrink_slab() logged an error about trying
+> to free a negative number of objects.  The truly lucky part is that the
+> kernel just happened to be a slightly stale build, as the shrinker no
+> longer yells about negative objects as of commit 18bb473e5031 ("mm:
+> vmscan: shrink deferred objects proportional to priority").
+>
+>  vmscan: shrink_slab: mmu_shrink_scan+0x0/0x210 [kvm] negative objects to delete nr=-858993460
+>
+> Fixes: bc8a3d8925a8 ("kvm: mmu: Fix overflow on kvm mmu page limit calculation")
+> Cc: stable@vger.kernel.org
+> Cc: Ben Gardon <bgardon@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Ouch!
 
-I have attached an atomic stack implementation I wrote. I believe it would
-be applicable here. It is very similar except the kernel side no longer
-needs a retry loop, the looping is moved to the user-space after the pop.
-Using it instead of the code you have in enqueue_idle_worker means the
-timeout is no longer needed.
-
- > - ``uint64_t idle_server_tid_ptr``: points to a pointer variable in the
- >   userspace that points to an idle server, i.e. a server in IDLE 
-state waiting
- >   in sys_umcg_wait(); read-only; workers must have this field set; 
-not used
- >   in servers.
- >
- >   When a worker's blocking operation in the kernel completes, the kernel
- >   changes the worker's state from ``BLOCKED`` to ``IDLE``, adds the 
-worker
- >   to the list of idle workers, and checks whether
- >   ``*idle_server_tid_ptr`` is not zero. If not, the kernel tries to 
-cmpxchg()
- >   it with zero; if cmpxchg() succeeds, the kernel will then wake the 
-server.
- >   See `State transitions`_ below for more details.
-
-In this case, I believe cmpxchg is not necessary and xchg suffices.
-
-
---------------80684090183B5F7F3FBA5261
-Content-Type: text/x-csrc; charset="UTF-8"; name="atomic_stack.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="atomic_stack.c"
-
-// This is free and unencumbered software released into the public domain.
-//
-// Anyone is free to copy, modify, publish, use, compile, sell, or
-// distribute this software, either in source code form or as a compiled
-// binary, for any purpose, commercial or non-commercial, and by any
-// means.
-//
-// In jurisdictions that recognize copyright laws, the author or authors
-// of this software dedicate any and all copyright interest in the
-// software to the public domain. We make this dedication for the benefit
-// of the public at large and to the detriment of our heirs and
-// successors. We intend this dedication to be an overt act of
-// relinquishment in perpetuity of all present and future rights to this
-// software under copyright law.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-// IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-// OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
-//
-// For more information, please refer to <https://unlicense.org>
-
-#include <assert.h>
-#include <stdbool.h>
-
-struct node {
-	struct node * volatile next;
-};
-
-// Two sentinels, the values do not matter but must be different
-// and unused by real addresses.
-static struct node * const STACK_NO_VAL  = 0;
-static struct node * const STACK_PENDING = 1;
-
-// push a node to the stack
-static inline void atomic_stack_push(struct node * volatile * head, struct node * n) {
-	/* paranoid */ assert( n->next == STACK_NO_VAL );
-	// Mark as pending so if it gets poped before the assignment to next
-	// the reader knows this isn't necessarily the end of the list
-	n->next = STACK_PENDING;
-
-	// actually add the node to the list
-	struct node * e = __atomic_exchange_n(head, n, __ATOMIC_SEQ_CST);
-
-	// update the next field
-	__atomic_store_n(&n->next, e, __ATOMIC_RELAXED);
-}
-
-// Pop all nodes from the stack
-// Once popped, nodes should be iterate on using atomic_stack_next
-static inline struct node * atomic_stack_pop_all(struct node * volatile * head) {
-	// Steal the entire list for ourselves atomically
-	// Nodes can still have pending next fields but everyone should agree
-	// the nodes are ours.
-	return __atomic_exchange_n(head, STACK_NO_VAL, __ATOMIC_SEQ_CST);
-}
-
-// from a given node, advance to the next node, waiting for pending nodes
-// to be resolved
-// if clear is set, the nodes that are advanced from are unlinked before the
-// previous node is returned
-static inline struct node * atomic_stack_next(struct node * n, bool clear) {
-	// Wait until the next field is pending
-	while(STACK_PENDING == __atomic_load_n(&n->next, __ATOMIC_RELAXED)) asm volatile("pause" : : :);
-
-	// The field is no longer pending, any subsequent concurrent write to that field
-	// should now be dependent on the next read.
-	struct node * r = n->next;
-
-	// For convenience, unlink the node if desired and return.
-	if(clear) n->next = STACK_NO_VAL;
-	return r;
-}
-
---------------80684090183B5F7F3FBA5261--
+Reviewed-by: Jim Mattson <jmattson@google.com>
