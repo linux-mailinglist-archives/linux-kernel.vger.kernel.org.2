@@ -2,91 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49FF3E0970
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 22:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364DA3E0977
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 22:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240899AbhHDUel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 16:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
+        id S240903AbhHDUkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 16:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231968AbhHDUeg (ORCPT
+        with ESMTP id S231460AbhHDUkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 16:34:36 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78585C061799
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 13:34:23 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id kk23so1106923qvb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 13:34:23 -0700 (PDT)
+        Wed, 4 Aug 2021 16:40:31 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999F8C061798
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 13:40:17 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id c16so4369542plh.7
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 13:40:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=h3URnXzA6Smvye6C/6i5qyn1fy++8nfwykxUppqU1pk=;
-        b=gPbCicQYAGpeNOqDegdPFGk+hOrbEuokmjrQ85DpjFcn16ku6hN+HzbFgTht0V2TJg
-         l0MQm4G9tX+9XVaZah6P6fCYi9ojl58ZKP6KUY7myyfRA8B4+ynKi1AayE/nAqMXX5kg
-         o5IId1773mDMkbLlYs4uxEJ7XzI0FcXwpivmaH8QVTowcr2is3an07Nya0EyPQG7OE1v
-         R6SGuEP6lttOiHoEpbxVilwDi43sJ9cpUU6EVe1GwKpVI9vYfiIwBFl3DXlCCIGHJUEH
-         p1Gjhhcbbt3otjWFBMWwEsiV+ZV7ehWsCFaAJQU72eQddr9fpB1fKFv1FaAC4Tv/RgMx
-         6e1w==
+        bh=dit+/Sp1lC6totPcj+YpQn69uliJHNZ4tY9ArlksPHo=;
+        b=TyhICT6tJ0ec1RQ9pgr0YmqC90JE7hdXdP9UHrKdA7/bYeqUiHI+/nBKIv/P4hiOw+
+         e/Yv7wWWzyvnpq21xxdocilZp1rd8PFDdUuAP4+tOm45At8VQXSL9nMgJ+fEe1uuLlDb
+         lExEJV936MlFwfML+b9yOzDzNo075cp1cjL3CsLlyTAk4hjENo2fCoHh8pnhn3GkRWyt
+         0+taDDBsLRajHbuYiY6LbKPw2+6/KZ7q/5R1TpIMEtP7ZFK/ov9y0fk89ftNF/aXQwXD
+         zh/LtCSF+KdYyVSdQE7yfEZUKZMt0CuZe+qQC9ZCX2h6evLEU05WEnfrOVgtXYGmnzH/
+         JL/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h3URnXzA6Smvye6C/6i5qyn1fy++8nfwykxUppqU1pk=;
-        b=OIyFfRu3+NFSNAMgwvqh+kunL51qeCLdeo6nDiDc+WBLggF8LLaGQgEnCAD9rBrqNW
-         d8+DMFxJVEUMOjhYPUjYtphHnCFIYSaga8WCY43NRU4qiO1dmY4AVdvIksoxJ4TL2Uso
-         0dtPplMXDpHyWoLZ92VM21jE4F9l65iOyFDJPdWoZSg4rJ9mi8u2Ag1T9q6Sq/BHkoOE
-         gsZPRilO/64rbnS7TTqlX3CVa27fH486Uu9wy5ZBCcblr5HF4DVjU5NYQfN/PK17XeBX
-         Lr6JM3OQEAW/6mQg9ziQzzZQYkevh4Li/IbCESGEVqUWC8VXtpHU+sKoPwam+CEHGkP7
-         X9Rg==
-X-Gm-Message-State: AOAM5315otu7xPlLpL9mbLLTYwBw2TgT26+wJ+qC+w1ije2Uo274tJEz
-        kIL8R5CSzyqZx/WEIZ65B6cxtg==
-X-Google-Smtp-Source: ABdhPJwj+0aqaWHXrY6r0IkvWxsOQ0sQh4dja9i2liBox7l0KSX6K0iApH4QeU+AJibo9SkXVFsm4w==
-X-Received: by 2002:a05:6214:c6f:: with SMTP id t15mr1413038qvj.52.1628109262339;
-        Wed, 04 Aug 2021 13:34:22 -0700 (PDT)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id f15sm1326625qtv.60.2021.08.04.13.34.21
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=dit+/Sp1lC6totPcj+YpQn69uliJHNZ4tY9ArlksPHo=;
+        b=Ylxmg3G/kAOIjWMhgcnWGdCzyXKHrpVMfunPhL6d8moKNS1KqJYDupdMLqLDI8ZoRu
+         KQPAcV3tQMfSq15/zVHVD7VYEn176fRTFyFkDif5VkHX7b85VgnR6eNtL+HF5aQopgz9
+         NT6z9hj5U9BtUs1W8ziNZ+NgeUogP2MISA1/WROaebQN2PDHzMoDGZuLJqphbdN40YMX
+         ONZRIE7FvsMRzdZQaUbamamZo1Yg73n6BFopoQmAWbByb5zMD8PnyHS3SnItHGkflvKl
+         cYHTcmz2OzG5hjLwvQFvolqgENkCabiCKDJl0v8hQBJIzGraEcA0Loje5BOg7M5Y3QdZ
+         8x5Q==
+X-Gm-Message-State: AOAM5329oALTHn/gVBNXekutPwsM/d0nWhSjS+wft3CQ3SpZ49SUqYbq
+        C5Nu65V9YlOXFH+4ZS8eOzF5Jg==
+X-Google-Smtp-Source: ABdhPJwnTJVkLHdHiuNAm+IAtSRcOGH2SY6t5oaxIRPc4QRcH3junRf7HX4/2yey0W5WRXV6OeJy9g==
+X-Received: by 2002:a17:90a:df05:: with SMTP id gp5mr916796pjb.165.1628109617098;
+        Wed, 04 Aug 2021 13:40:17 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id ms8sm7067173pjb.36.2021.08.04.13.40.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 13:34:21 -0700 (PDT)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [Patch v2] cpufreq: blocklist Qualcomm sm8150 in cpufreq-dt-platdev
-Date:   Wed,  4 Aug 2021 16:34:20 -0400
-Message-Id: <20210804203420.2641463-1-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+        Wed, 04 Aug 2021 13:40:16 -0700 (PDT)
+Date:   Wed, 04 Aug 2021 13:40:16 -0700 (PDT)
+X-Google-Original-Date: Wed, 04 Aug 2021 13:40:14 PDT (-0700)
+Subject:     Re: [PATCH] riscv: use the generic string routines
+In-Reply-To: <CAFnufp1QpMc87+-hwPa887iQQGCjjkGNanVSKOUsE-0ti82jrA@mail.gmail.com>
+CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, Atish Patra <Atish.Patra@wdc.com>,
+        kernel@esmil.dk, akira.tsukamoto@gmail.com, drew@beagleboard.org,
+        bmeng.cn@gmail.com, David.Laight@aculab.com, guoren@kernel.org,
+        Christoph Hellwig <hch@infradead.org>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     mcroce@linux.microsoft.com, mcroce@linux.microsoft.com
+Message-ID: <mhng-7b8d3a12-e223-4b69-a35a-617b0d7ac8f7@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Qualcomm sm8150 platform uses the qcom-cpufreq-hw driver, so
-add it to the cpufreq-dt-platdev driver's blocklist.
+On Tue, 03 Aug 2021 09:54:34 PDT (-0700), mcroce@linux.microsoft.com wrote:
+> On Mon, Jul 19, 2021 at 1:44 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+>>
+>> From: Matteo Croce <mcroce@microsoft.com>
+>>
+>> Use the generic routines which handle alignment properly.
+>>
+>> These are the performances measured on a BeagleV machine for a
+>> 32 mbyte buffer:
+>>
+>> memcpy:
+>> original aligned:        75 Mb/s
+>> original unaligned:      75 Mb/s
+>> new aligned:            114 Mb/s
+>> new unaligned:          107 Mb/s
+>>
+>> memset:
+>> original aligned:       140 Mb/s
+>> original unaligned:     140 Mb/s
+>> new aligned:            241 Mb/s
+>> new unaligned:          241 Mb/s
+>>
+>> TCP throughput with iperf3 gives a similar improvement as well.
+>>
+>> This is the binary size increase according to bloat-o-meter:
+>>
+>> add/remove: 0/0 grow/shrink: 4/2 up/down: 432/-36 (396)
+>> Function                                     old     new   delta
+>> memcpy                                        36     324    +288
+>> memset                                        32     148    +116
+>> strlcpy                                      116     132     +16
+>> strscpy_pad                                   84      96     +12
+>> strlcat                                      176     164     -12
+>> memmove                                       76      52     -24
+>> Total: Before=1225371, After=1225767, chg +0.03%
+>>
+>> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+>> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+>> ---
+>
+> Hi,
+>
+> can someone have a look at this change and share opinions?
 
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
-
-v1->v2: Replaced "blacklist" in subject header with "blocklist".
-
- drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index 9d5a38a91f10..231e585f6ba2 100644
---- a/drivers/cpufreq/cpufreq-dt-platdev.c
-+++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-@@ -141,6 +141,7 @@ static const struct of_device_id blocklist[] __initconst = {
- 	{ .compatible = "qcom,sc7280", },
- 	{ .compatible = "qcom,sc8180x", },
- 	{ .compatible = "qcom,sdm845", },
-+	{ .compatible = "qcom,sm8150", },
- 
- 	{ .compatible = "st,stih407", },
- 	{ .compatible = "st,stih410", },
--- 
-2.25.1
-
+This LGTM.  How are the generic string routines landing?  I'm happy to 
+take this into my for-next, but IIUC we need the optimized generic 
+versions first so we don't have a performance regression falling back to 
+the trivial ones for a bit.  Is there a shared tag I can pull in?
