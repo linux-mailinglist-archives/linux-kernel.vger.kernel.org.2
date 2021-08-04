@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E954A3DFAF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0E53DFAF4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235224AbhHDFOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 01:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
+        id S235203AbhHDFOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 01:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235129AbhHDFOl (ORCPT
+        with ESMTP id S229910AbhHDFOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 01:14:41 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82875C0613D5
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 22:14:27 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id c16so1741617plh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 22:14:27 -0700 (PDT)
+        Wed, 4 Aug 2021 01:14:40 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1374FC061798
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 22:14:29 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id e21so1758565pla.5
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 22:14:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=QuJ/DSgDGn0JlMMJQHxu7ihQz9wjd0GmZ+lCLjhFct4=;
-        b=OiIpX8UaAcRZdo72FpN9duyjItlWATx3iEX6M2+EgThDjf90KrCQoB8A/UIGf23Djv
-         C3hfXE6XYCcuMioHL91Vxw8945xlO7E2a3nINqCzoeKdPohaswaa89GLPjPDeoKtO6Dd
-         DlrqcsjNWxR+v+TpeVsty09l84drfWyY+Fz2CaMEmvN3KsAmBJ0+K5gQCE3IOwVvW7tc
-         BMBB5e/ggUXPJXAglralmVCd/EbGi5F1XQdK1XuU7b+lpn+22Q67yhDcPaKFhctvkl+/
-         t72+pWNq/NQ0dRoQtpIJdl6w7T+voDWLyDbI/fQCFthZeNDfWDxDG5hGI55+1mSsz12n
-         YkFQ==
+        bh=TgttGRrn42Wk3tVPMIYmGm1GfuxDDOvbYQ1YEYQrY5s=;
+        b=Cfvijs9NjDh9/cHQq4TuO/oE5weZBw1NKPW07ktsuth/aPd0GMJmrt4+CvVvSnq/c5
+         RD1zlyeKdVcJqAUyL0yuwyoYcS4uTw2HSsoBgc6+ffWoNW76wY05eQ4Zimo13HH5aVoQ
+         BCdEqLza0BvdY5gZEK/YB1i/yXKn8se0sjeZITBtYE8/jA+/tC3F9tuucqfBzGF62lYG
+         1sU4HEv6bNnc4BnfpXgEkoRLDGFR/AF8guh+J04VaaXdG3svY85wBUhz8Pd+wCI4eSYQ
+         5U0wy0Ucy9BdWiI1WXlJIRdStsdE3oJKvxK7ufMdE4VuRotrJk5iytZnI6gZ2XMaH9Rz
+         OqpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=QuJ/DSgDGn0JlMMJQHxu7ihQz9wjd0GmZ+lCLjhFct4=;
-        b=AI19vtNn9JsnYeUBik7eWrGFZtgYqsavZWrDHJxFaUyK/yOaDE/Yax6W/7Ph1hf2yI
-         mL75A7hyTclyQ/pdvCNf2XtYH6G1KIWI6kPRNxPYUxjDaDED7icy7eoFkrvw/gGHHvGM
-         1h3CdqRnPhDGg67fBzYHAJZP24ObUPDoM/ni9EblKeuI48qMchxFpRqU4DLYFBQH+PZP
-         iPhj/li8gdBG/gJ698VmbhkPLfHnskRWXnSNF1OdCIUgCb89hgJkuqOnLtCqAZVLd2vr
-         WO9vgzi1TV1Q2T3mTHY/waT1wqj5uLzQZHy3QDxg33Ye9EvqT4ERtoyiaDGIRwy6sv5E
-         ZiDQ==
-X-Gm-Message-State: AOAM531+KrxULTCf4btfBNak69x+Xdlffvdgi2X1EojkY+c2NREXhUhJ
-        3hN/sukX/W9tZVOdnuNNjZpZ3A==
-X-Google-Smtp-Source: ABdhPJytoWTQUBCl4vFgy0Xbp2cMHVqzyHGt/l5Ixy1g0Ti4uEzBniEzsIbU1B43UtIZFPH2WyMnmg==
-X-Received: by 2002:a63:1352:: with SMTP id 18mr1302291pgt.348.1628054066921;
-        Tue, 03 Aug 2021 22:14:26 -0700 (PDT)
+        bh=TgttGRrn42Wk3tVPMIYmGm1GfuxDDOvbYQ1YEYQrY5s=;
+        b=JYCg6s5kT7gZehTqUkVRf1ERKTQKhu+tOuz93jHj7174uTxxM+8LdlWRWlwBDvaji2
+         Jvt05WXavryo1Q2rWydr/d4agJ5cKyfuP4v7/CJDucYp3yr9aifCyikn0Mg7qyYkJgX/
+         MTKV9ABnd88/CKDWv8K55/uvcA7nCP/HkqAm9Gqs+qKWU6INjpNlr5glyoldCDEcfoQR
+         xjnw2fGixLB39Y2bx5GagcSAdPx6TXG1oLAz2ucY6VKOcb0H8T8e8j1TqmCqxp//yNpf
+         3nbUoMJEFPqgog8e+HguZda0yty35IDWcrfvq6llzCeLDXZlGoQVb3Ry4xHHmUyYobK+
+         VRbA==
+X-Gm-Message-State: AOAM532/a4+WbcTEbn2tgHEmzZQqws1m4Yo0gzNYDWDP534KnfHAfgx4
+        C2iE3BJcEOb6r81UsZkh7Q/K9Q==
+X-Google-Smtp-Source: ABdhPJwqL4AK2HoFKfE6/E3/tmh2ol5nX6WaH9kwoRTC543TL+kYoaJbR4i8jXRVxTsiuiG1oM3MOA==
+X-Received: by 2002:a17:90a:8404:: with SMTP id j4mr8003213pjn.66.1628054068622;
+        Tue, 03 Aug 2021 22:14:28 -0700 (PDT)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id c2sm253954pfi.80.2021.08.03.22.14.25
+        by smtp.gmail.com with ESMTPSA id f66sm1007015pfa.21.2021.08.03.22.14.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 22:14:26 -0700 (PDT)
-Date:   Tue, 03 Aug 2021 22:14:26 -0700 (PDT)
-X-Google-Original-Date: Tue, 03 Aug 2021 21:37:34 PDT (-0700)
-Subject:     Re: [PATCH] riscv: Disable STACKPROTECTOR_PER_TASK if GCC_PLUGIN_RANDSTRUCT is enabled
-In-Reply-To: <mhng-1b892781-2ee8-476b-90b8-44b5cca45cf9@palmerdabbelt-glaptop>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@roeck-us.net, guoren@linux.alibaba.com
+        Tue, 03 Aug 2021 22:14:28 -0700 (PDT)
+Date:   Tue, 03 Aug 2021 22:14:28 -0700 (PDT)
+X-Google-Original-Date: Tue, 03 Aug 2021 22:14:23 PDT (-0700)
+Subject:     Re: [PATCH v3] lib: Use PFN_PHYS() in devmem_is_allowed()
+In-Reply-To: <668986ec-bdc5-482f-39ed-8e059008016d@huawei.com>
+CC:     wangliang101@huawei.com, mcgrof@kernel.org,
+        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org,
+        stable@vger.kernel.org, wangle6@huawei.com,
+        kepler.chenxin@huawei.com, nixiaoming@huawei.com
 From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     linux@roeck-us.net
-Message-ID: <mhng-5b3c9fa7-2e28-4788-9013-3a988ac5280d@palmerdabbelt-glaptop>
+To:     wangkefeng.wang@huawei.com
+Message-ID: <mhng-9a8d70d0-a3d6-4e2b-8bad-46bf87abc80c@palmerdabbelt-glaptop>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -65,42 +67,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021 17:58:13 PDT (-0700), Palmer Dabbelt wrote:
-> On Tue, 06 Jul 2021 09:26:21 PDT (-0700), linux@roeck-us.net wrote:
->> riscv uses the value of TSK_STACK_CANARY to set
->> stack-protector-guard-offset. With GCC_PLUGIN_RANDSTRUCT enabled, that
->> value is non-deterministic, and with riscv:allmodconfig often results
->> in build errors such as
->>
->> cc1: error: '8120' is not a valid offset in '-mstack-protector-guard-offset='
->>
->> Enable STACKPROTECTOR_PER_TASK only if GCC_PLUGIN_RANDSTRUCT is disabled
->> to fix the problem.
->>
->> Fixes: fea2fed201ee5 ("riscv: Enable per-task stack canaries")
->> Cc: Guo Ren <guoren@linux.alibaba.com>
->> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
->> ---
->>  arch/riscv/Kconfig | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->> index 469a70bd8da6..3afb84fa2190 100644
->> --- a/arch/riscv/Kconfig
->> +++ b/arch/riscv/Kconfig
->> @@ -486,6 +486,7 @@ config CC_HAVE_STACKPROTECTOR_TLS
->>
->>  config STACKPROTECTOR_PER_TASK
->>  	def_bool y
->> +	depends on !GCC_PLUGIN_RANDSTRUCT
->>  	depends on STACKPROTECTOR && CC_HAVE_STACKPROTECTOR_TLS
->>
->>  config PHYS_RAM_BASE_FIXED
+On Tue, 03 Aug 2021 22:01:46 PDT (-0700), wangkefeng.wang@huawei.com wrote:
 >
-> Thanks, this is on fixes.  I do an allmodconfig build and haven't seen
-> these failures, is there something special I need to do to get this
-> working?  I know nothing about GCC plugins...
+> On 2021/7/31 10:50, Liang Wang wrote:
+>> The physical address may exceed 32 bits on 32-bit systems with
+>> more than 32 bits of physcial address,use PFN_PHYS() in devmem_is_allowed(),
+>> or the physical address may overflow and be truncated.
+>> We found this bug when mapping a high addresses through devmem tool,
+>> when CONFIG_STRICT_DEVMEM is enabled on the ARM with ARM_LPAE and devmem
+>> is used to map a high address that is not in the iomem address range,
+>> an unexpected error indicating no permission is returned.
+>>
+>> This bug was initially introduced from v2.6.37, and the function was moved
+>> to lib when v5.11.
+>>
+>> Cc: Luis Chamberlain <mcgrof@kernel.org>
+>> Fixes: 087aaffcdf9c ("ARM: implement CONFIG_STRICT_DEVMEM by disabling access to RAM via /dev/mem")
+>> Fixes: 527701eda5f1 ("lib: Add a generic version of devmem_is_allowed()")
+>> Cc: stable@vger.kernel.org # v2.6.37
+>> Signed-off-by: Liang Wang <wangliang101@huawei.com>
+> Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-Sorry, looks like I screwed something up and I didn't actually merge 
-this onto fixes.  Not sure what happened, but this time it should 
-actually be on fixes.
+Weird, it's still only your replies that are coming through.  Given that 
+this only manifests on 32-bit Arm systems, I'm going to leave this up to 
+them for now.
+
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
