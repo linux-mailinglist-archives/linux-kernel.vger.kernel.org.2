@@ -2,136 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108503E0A6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD073E0A72
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhHDWeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 18:34:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229674AbhHDWeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 18:34:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 934E66104F;
-        Wed,  4 Aug 2021 22:33:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628116438;
-        bh=0dsbEmAguaSfHlozxbO03jG4cUL4rS7RbChy6uYIzB4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Z+kQZHeg13krHlaBS4u37wzE0TuHStij2oh+bIs7ldGzauoqqf2YKFN5fvitdEX/V
-         nqKax6KBKKUiepCqjGpdPgluxwscIC6VyNJ5wskwLDn/S3JcbiwyfWo3MwocEwGR4g
-         YXe1SKF/yc/e8zLJUYya70ZrRNhnumxRIwUOTtevSyAZIm6/HgxLvqBW+c0JDsP3b9
-         FhZMOJtHL/w2VezQnUZeJwK9B/Cj0qSTlMXgB4Zr/g6cebW9NhpuWJl2PpU7BsaGFw
-         gCp2qMhi5fXDxDioV0+1lBRD2b9HDL8z2kHKdAkLT0FbBWnWK0YgVFPL89jqGmS1H8
-         tvoQBghUxM58g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5944E5C22D9; Wed,  4 Aug 2021 15:33:58 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 15:33:58 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Yanfei Xu <yanfei.xu@windriver.com>
-Subject: Re: [PATCH rcu 02/18] rcu: Fix stall-warning deadlock due to
- non-release of rcu_node ->lock
-Message-ID: <20210804223358.GZ4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-2-paulmck@kernel.org>
- <20210803142458.teveyn6t2gwifdcp@e107158-lin.cambridge.arm.com>
- <20210803155226.GQ4397@paulmck-ThinkPad-P17-Gen-1>
- <20210803161221.igae6y6xa6mlzltn@e107158-lin.cambridge.arm.com>
- <20210803162855.GT4397@paulmck-ThinkPad-P17-Gen-1>
- <20210804135017.g6tfaubvygki2osk@e107158-lin.cambridge.arm.com>
+        id S229944AbhHDWfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 18:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhHDWe7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 18:34:59 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA41C061799
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 15:34:46 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id y11-20020a4ade0b0000b029024b4146e2f5so850151oot.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 15:34:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UZJcNHJO4LQR36ixWf/ziwUjfQuMb7Mm0UXvd1Hg4gg=;
+        b=tYW3NQDOaoOAmJhieZdnjoNjyaKSHVE6lyBu/OX7HVPsqfng6qLWGieMImgOnYOTJi
+         cYngNaDNRi+IYluKEdjg2VZop0ieSPcf9B+mXmwNjeBrVp1v/38uzGbg7XC8EZm1aFpf
+         tiFQ8nlYg0YZzyumw/O9+hiqvT0Jw8ihLS6nbGMrj7vqKue0Uq1+aldnBbWl7OoZPXuz
+         kqWQZnQISxU2gZWw8cPt8ezEhjDk3bDetIIylfrpL7z3qftYHAcdSCW9pJSXTLw4UY2z
+         6YacG1MWStILNWzVOCNFqRAS0EY3KK/v9lETqF5C99PjApimrc+i7Gj6c0v1XBuA8Z++
+         0qYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UZJcNHJO4LQR36ixWf/ziwUjfQuMb7Mm0UXvd1Hg4gg=;
+        b=WrHCiQcJfyhv1JM05KcA7uNFjKgkCYR7RVVTn0GyQs4BAfICBqowToF8it+99b9mOY
+         U1dF0QRWxaHzqn3HiJe2iNwiQUzpw8BP4zdKCnaK432YOsdgg91DKB9qnoOQO9hJ5417
+         G4apyoMmr0BruVN05af+/MbYCdyOMpwekAo9br7bQDDz51MQfCRw+CxflWBgGFhNPswM
+         aTKeiviCpHLmkfd2OD6nsnlbBCVWk0UAUzONo21b1yhwjnXgVa5bRWSHB+jMoi32u6uD
+         IlVZXZ7KrjviUA055O4d3uIUX5HxyjNz6qOnykkxBSowqxPAOzAkdlpUx0gx2sqBreQY
+         L+6A==
+X-Gm-Message-State: AOAM53026F6TCiKdX7IOrynQpnyOZsv36WXvBWffE0FoUsWEZPWCxRRS
+        hAoxLHHo4tNRTJ7AdhjvfHRZLg==
+X-Google-Smtp-Source: ABdhPJzoI974+mp/rfGo+7Xq9nqrA8eJ6Be/tx/TkRzTQ2z3SwevKn0NJ4P732tpLcSoO/FyWG+urg==
+X-Received: by 2002:a4a:d812:: with SMTP id f18mr1073419oov.50.1628116485417;
+        Wed, 04 Aug 2021 15:34:45 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r15sm455538otn.33.2021.08.04.15.34.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 15:34:45 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 17:34:43 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Kees Cook <keescook@chromium.org>, Andy Gross <agross@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-hardening@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3] drivers/soc: Remove all strcpy() uses
+Message-ID: <YQsWA0iyol+EWoPd@builder.lan>
+References: <20210801131958.6144-1-len.baker@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210804135017.g6tfaubvygki2osk@e107158-lin.cambridge.arm.com>
+In-Reply-To: <20210801131958.6144-1-len.baker@gmx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 02:50:17PM +0100, Qais Yousef wrote:
-> On 08/03/21 09:28, Paul E. McKenney wrote:
-> > On Tue, Aug 03, 2021 at 05:12:21PM +0100, Qais Yousef wrote:
-> > > On 08/03/21 08:52, Paul E. McKenney wrote:
-> > > > On Tue, Aug 03, 2021 at 03:24:58PM +0100, Qais Yousef wrote:
-> > > > > Hi
-> > > > > 
-> > > > > On 07/21/21 13:21, Paul E. McKenney wrote:
-> > > > > > From: Yanfei Xu <yanfei.xu@windriver.com>
-> > > > > > 
-> > > > > > If rcu_print_task_stall() is invoked on an rcu_node structure that does
-> > > > > > not contain any tasks blocking the current grace period, it takes an
-> > > > > > early exit that fails to release that rcu_node structure's lock.  This
-> > > > > > results in a self-deadlock, which is detected by lockdep.
-> > > > > > 
-> > > > > > To reproduce this bug:
-> > > > > > 
-> > > > > > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --trust-make --configs "TREE03" --kconfig "CONFIG_PROVE_LOCKING=y" --bootargs "rcutorture.stall_cpu=30 rcutorture.stall_cpu_block=1 rcutorture.fwd_progress=0 rcutorture.test_boost=0"
-> > > > > > 
-> > > > > > This will also result in other complaints, including RCU's scheduler
-> > > > > > hook complaining about blocking rather than preemption and an rcutorture
-> > > > > > writer stall.
-> > > > > > 
-> > > > > > Only a partial RCU CPU stall warning message will be printed because of
-> > > > > > the self-deadlock.
-> > > > > > 
-> > > > > > This commit therefore releases the lock on the rcu_print_task_stall()
-> > > > > > function's early exit path.
-> > > > > > 
-> > > > > > Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-> > > > > > Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> > > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > > > ---
-> > > > > 
-> > > > > We are seeing similar stall/deadlock issue on android 5.10 kernel, is the fix
-> > > > > relevant here? Trying to apply the patches and test, but the problem is tricky
-> > > > > to reproduce so thought worth asking first.
-> > > > 
-> > > > Looks like the relevant symptoms to me, so I suggest trying this series
-> > > > from -rcu:
-> > > > 
-> > > > 8baded711edc ("rcu: Fix to include first blocked task in stall warning")
-> > > > f6b3995a8b56 ("rcu: Fix stall-warning deadlock due to non-release of rcu_node ->lock")
-> > > 
-> > > Great thanks. These are the ones we picked as the rest was a bit tricky to
-> > > apply on 5.10.
-> > > 
-> > > While at it, we see these errors too though they look harmless. They happen
-> > > all the time
-> > > 
-> > > 	[  595.292685] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #02!!!"}
-> > > 	[  595.301467] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > > 	[  595.389353] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > > 	[  595.397454] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > > 	[  595.417112] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > > 	[  595.425215] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > > 	[  595.438807] NOHZ tick-stop error: Non-RCU local softirq work is pending, handler #08!!!"}
-> > > 
-> > > I used to see them on mainline a while back but seem to have been fixed.
-> > > Something didn't get backported to 5.10 perhaps?
-> > 
-> > I believe that you need at least this one:
-> > 
-> > 47c218dcae65 ("tick/sched: Prevent false positive softirq pending warnings on RT")
-> 
-> After looking at the content of the patch, it's not related. We don't run with
-> PREEMPT_RT.
-> 
-> I think we're hitting a genuine issue, most likely due to out-of-tree changes
-> done by Android to fix RT latency problems against softirq (surprise surprise).
-> 
-> Thanks for your help and sorry for the noise.
+On Sun 01 Aug 08:19 CDT 2021, Len Baker wrote:
 
-No problem!
+> strcpy() performs no bounds checking on the destination buffer. This
+> could result in linear overflows beyond the end of the buffer, leading
+> to all kinds of misbehaviors. The safe replacement is strscpy().
+> 
+> Moreover, when the size of the destination buffer cannot be obtained
+> using "sizeof", use the memcpy function instead of strscpy.
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
-But I used to see this very frequently in non-PREEMPT_RT rcutorture runs,
-and there was a patch from Thomas that made them go away.  So it might
-be worth looking at has patches in this area since 5.10.  Maybe I just
-got confused and picked the wrong one.
+Forgot one thing, it's unclear who should pick this patch up and there's
+definitely a chance that it will cause merge conflicts regardless of
+whom of us end up picking it.
 
-							Thanx, Paul
+Could you please split it so that the qcom, renesas and ti pieces can be
+picked up by respective maintainer?
+
+Thanks,
+Bjorn
+
+> ---
+> This is a task of the KSPP [1]
+> 
+> [1] https://github.com/KSPP/linux/issues/88
+> 
+> Changelog v1 -> v2
+> - Change the "area_name_size" variable for a shorter name (Geert
+>   Uytterhoeven).
+> - Add the "Reviewed-by: Geert Uytterhoeven" tag.
+> - Use the memcpy function instead of strscpy function when the
+>   size of the destination buffer cannot be obtained with "sizeof"
+>   (David Laight, Robin Murphy).
+> 
+> Changelog v2 -> v3
+> - Remove the "Reviewed-by: Geert Uytterhoeven" tag since the code
+>   has changed after the v1 review (use of memcpy instead of
+>   strscpy).
+> 
+>  drivers/soc/qcom/pdr_interface.c    | 13 +++++++------
+>  drivers/soc/renesas/r8a779a0-sysc.c |  6 ++++--
+>  drivers/soc/renesas/rcar-sysc.c     |  6 ++++--
+>  drivers/soc/ti/knav_dma.c           |  2 +-
+>  4 files changed, 16 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/soc/qcom/pdr_interface.c b/drivers/soc/qcom/pdr_interface.c
+> index 915d5bc3d46e..cf119fde749d 100644
+> --- a/drivers/soc/qcom/pdr_interface.c
+> +++ b/drivers/soc/qcom/pdr_interface.c
+> @@ -131,7 +131,7 @@ static int pdr_register_listener(struct pdr_handle *pdr,
+>  		return ret;
+> 
+>  	req.enable = enable;
+> -	strcpy(req.service_path, pds->service_path);
+> +	strscpy(req.service_path, pds->service_path, sizeof(req.service_path));
+> 
+>  	ret = qmi_send_request(&pdr->notifier_hdl, &pds->addr,
+>  			       &txn, SERVREG_REGISTER_LISTENER_REQ,
+> @@ -257,7 +257,7 @@ static int pdr_send_indack_msg(struct pdr_handle *pdr, struct pdr_service *pds,
+>  		return ret;
+> 
+>  	req.transaction_id = tid;
+> -	strcpy(req.service_path, pds->service_path);
+> +	strscpy(req.service_path, pds->service_path, sizeof(req.service_path));
+> 
+>  	ret = qmi_send_request(&pdr->notifier_hdl, &pds->addr,
+>  			       &txn, SERVREG_SET_ACK_REQ,
+> @@ -406,7 +406,7 @@ static int pdr_locate_service(struct pdr_handle *pdr, struct pdr_service *pds)
+>  		return -ENOMEM;
+> 
+>  	/* Prepare req message */
+> -	strcpy(req.service_name, pds->service_name);
+> +	strscpy(req.service_name, pds->service_name, sizeof(req.service_name));
+>  	req.domain_offset_valid = true;
+>  	req.domain_offset = 0;
+> 
+> @@ -531,8 +531,8 @@ struct pdr_service *pdr_add_lookup(struct pdr_handle *pdr,
+>  		return ERR_PTR(-ENOMEM);
+> 
+>  	pds->service = SERVREG_NOTIFIER_SERVICE;
+> -	strcpy(pds->service_name, service_name);
+> -	strcpy(pds->service_path, service_path);
+> +	strscpy(pds->service_name, service_name, sizeof(pds->service_name));
+> +	strscpy(pds->service_path, service_path, sizeof(pds->service_path));
+>  	pds->need_locator_lookup = true;
+> 
+>  	mutex_lock(&pdr->list_lock);
+> @@ -587,7 +587,8 @@ int pdr_restart_pd(struct pdr_handle *pdr, struct pdr_service *pds)
+>  			break;
+> 
+>  		/* Prepare req message */
+> -		strcpy(req.service_path, pds->service_path);
+> +		strscpy(req.service_path, pds->service_path,
+> +			sizeof(req.service_path));
+>  		addr = pds->addr;
+>  		break;
+>  	}
+> diff --git a/drivers/soc/renesas/r8a779a0-sysc.c b/drivers/soc/renesas/r8a779a0-sysc.c
+> index d464ffa1be33..7410b9fa9846 100644
+> --- a/drivers/soc/renesas/r8a779a0-sysc.c
+> +++ b/drivers/soc/renesas/r8a779a0-sysc.c
+> @@ -404,19 +404,21 @@ static int __init r8a779a0_sysc_pd_init(void)
+>  	for (i = 0; i < info->num_areas; i++) {
+>  		const struct r8a779a0_sysc_area *area = &info->areas[i];
+>  		struct r8a779a0_sysc_pd *pd;
+> +		size_t n;
+> 
+>  		if (!area->name) {
+>  			/* Skip NULLified area */
+>  			continue;
+>  		}
+> 
+> -		pd = kzalloc(sizeof(*pd) + strlen(area->name) + 1, GFP_KERNEL);
+> +		n = strlen(area->name) + 1;
+> +		pd = kzalloc(sizeof(*pd) + n, GFP_KERNEL);
+>  		if (!pd) {
+>  			error = -ENOMEM;
+>  			goto out_put;
+>  		}
+> 
+> -		strcpy(pd->name, area->name);
+> +		memcpy(pd->name, area->name, n);
+>  		pd->genpd.name = pd->name;
+>  		pd->pdr = area->pdr;
+>  		pd->flags = area->flags;
+> diff --git a/drivers/soc/renesas/rcar-sysc.c b/drivers/soc/renesas/rcar-sysc.c
+> index 53387a72ca00..b0a80de34c98 100644
+> --- a/drivers/soc/renesas/rcar-sysc.c
+> +++ b/drivers/soc/renesas/rcar-sysc.c
+> @@ -396,19 +396,21 @@ static int __init rcar_sysc_pd_init(void)
+>  	for (i = 0; i < info->num_areas; i++) {
+>  		const struct rcar_sysc_area *area = &info->areas[i];
+>  		struct rcar_sysc_pd *pd;
+> +		size_t n;
+> 
+>  		if (!area->name) {
+>  			/* Skip NULLified area */
+>  			continue;
+>  		}
+> 
+> -		pd = kzalloc(sizeof(*pd) + strlen(area->name) + 1, GFP_KERNEL);
+> +		n = strlen(area->name) + 1;
+> +		pd = kzalloc(sizeof(*pd) + n, GFP_KERNEL);
+>  		if (!pd) {
+>  			error = -ENOMEM;
+>  			goto out_put;
+>  		}
+> 
+> -		strcpy(pd->name, area->name);
+> +		memcpy(pd->name, area->name, n);
+>  		pd->genpd.name = pd->name;
+>  		pd->ch.chan_offs = area->chan_offs;
+>  		pd->ch.chan_bit = area->chan_bit;
+> diff --git a/drivers/soc/ti/knav_dma.c b/drivers/soc/ti/knav_dma.c
+> index 591d14ebcb11..5f9816d317a5 100644
+> --- a/drivers/soc/ti/knav_dma.c
+> +++ b/drivers/soc/ti/knav_dma.c
+> @@ -691,7 +691,7 @@ static int dma_init(struct device_node *cloud, struct device_node *dma_node)
+>  	dma->max_rx_flow = max_rx_flow;
+>  	dma->max_tx_chan = min(max_tx_chan, max_tx_sched);
+>  	atomic_set(&dma->ref_count, 0);
+> -	strcpy(dma->name, node->name);
+> +	strscpy(dma->name, node->name, sizeof(dma->name));
+>  	spin_lock_init(&dma->lock);
+> 
+>  	for (i = 0; i < dma->max_tx_chan; i++) {
+> --
+> 2.25.1
+> 
