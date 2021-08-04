@@ -2,92 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2A03E04A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977C03E04A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239275AbhHDPqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:46:34 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:47331 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239114AbhHDPqd (ORCPT
+        id S239257AbhHDPpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:45:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44446 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239114AbhHDPpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:46:33 -0400
-Received: from localhost ([31.220.117.74]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MFbFW-1mMo4q39oM-00HAZQ; Wed, 04 Aug 2021 17:45:30 +0200
-Date:   Wed, 4 Aug 2021 17:45:28 +0200
-From:   Andreas Klinger <ak@it-klinger.de>
-To:     devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jiri Kosina <trivial@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Slawomir Stepien <sst@poczta.fm>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>
-Subject: [PATCH v2 0/2] iio: chemical: Add support for sgp40 gas sensor
-Message-ID: <20210804154526.GA3207@arbad>
+        Wed, 4 Aug 2021 11:45:47 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6778422225;
+        Wed,  4 Aug 2021 15:45:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628091933; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZTHKDhy7QKob/eaRcBJjwJXlWU+Io0cHwVpOGaPMVAE=;
+        b=BLM9Ki0iW/lyKNlI//dF7LJpvNsYWNaE1UC6O14ECEQd7hn3Y8CWxKb7m56jDkECrafNvI
+        oxsMD+ZdCl1xaKsydE9buHZ/rj91rXmBlOsajYA2qIIERRyq37daGWc96Hc8aLvKBKylMt
+        oSzVFv4sX1CPNkWDqMZIOJ8wITn8BNw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628091933;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZTHKDhy7QKob/eaRcBJjwJXlWU+Io0cHwVpOGaPMVAE=;
+        b=Gah5GKirZCHXMkuoEdbh9za5yIowYUpZ7AqVSUcapFGz5k63dnttc2np+KSr4cez4Ij5Lk
+        GFyeAd9GxzwJsUDA==
+Received: from quack2.suse.cz (jack.udp.ovpn2.nue.suse.de [10.163.43.118])
+        by relay2.suse.de (Postfix) with ESMTP id 53C37A3B84;
+        Wed,  4 Aug 2021 15:45:33 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 944F11F2B83; Wed,  4 Aug 2021 17:45:30 +0200 (CEST)
+Date:   Wed, 4 Aug 2021 17:45:30 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Wang Jianchao <jianchao.wan9@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tytso@mit.edu, adilger.kernel@dilger.ca
+Subject: Re: [PATCH V3 4/5] ext4: get discard out of jbd2 commit kthread
+ contex
+Message-ID: <20210804154530.GL4578@quack2.suse.cz>
+References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
+ <20210724074124.25731-5-jianchao.wan9@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210724074124.25731-5-jianchao.wan9@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:h1Ad/GJR8B0E6z5jsKRm1/B98CL151ul96gdS5ZJNAowTXJZm/1
- IaA5vjeJsNWMdyxQAWPfHG/m+1Heq+YxmpjJ1GmhfGVHgquBU2zAmrB5jy1VqJ0BYLShpa5
- aqtPfEP8ssjHrA/VRs3dYIpSvhMLoQ1EZvS3TI9s0tXD3qMOA6BTZUrWXQXtYh2j23xXEVd
- E+HWkANUp6+OIryeGJv7A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:FbfamShZD4I=:1RLz8ycCkdbfviYcUAmZbI
- SFvRmTvZWfKrDtmsR2d3JpfxDX5J/2XPgE2YUB1WcEITQkF3VkqRCfPNFZpHFaGI2Ton0RLw/
- snGi29zEhzs2ymxEUa+93aMK//vorQfUYq4Mhd7QLoF+uKcky1D5o+B6+AvZsgsM7HlrbuAJk
- uS/BWwDV9YCVPgpGh0ud0mgPSXA1ZO+X/dWj5rH8wwxA2qso+1gjXSHP6Ha3r0qqGQuCQ0zyZ
- 6e2E3sGLEzGPvQvgq6nTOaLGJtbU5QWtiepZghnPSVmtQWgYdqdFn6pQY/bTdXwMeQut+Up9d
- 2/p+axZi8dtrvhYQzNGOODyR2EBSvgLL/UCtZFTpIjW9ts6k+jqSc7x56bcClpmZTeWpy2VN3
- URY56ZwK2PmCw6A9EYMbCzKkeJ1eFgV5CMXLUoaYjksWqtI2Y9DMrtQGf6Gnp7fsALI/Gi5Ha
- zov0pBGMmcPJpOmIIGdEvddHVCPFx/ta5Au4+11jKr1nOCeZopH5ztcTgX15blP40AE41ROp2
- Um9p+41LdE2GPpnZQVTSExmR67rW54D5syfro9Xb6hCuvQi2MwsF8nHV2FhDZ1aZtj3U2fByr
- L9GMuCcVFz3suZHSTHd6MkvR8cNuAgsiAubO1DBn1epKiBHPowosZpQ3gucfH2R9lM5BP+5SQ
- 7PoPz4Mf6qrgw4sJkidNmprLQtn5avRMbBGQFLaPJhFzIf6flhW+Xqq/x6V3qGI2yoMS52sxQ
- 1OqSrTgQGwarQKSXH25YoMDuli/Jwi4ztn2to+2iOZ98ADwnxfXT1SZWPoJR7j1FC9ouWdpTM
- Pd1LmnlDzil/Y3XFkZQtRwnvEc9Ph3dsQ25nv4oR5C5aXBdS1yj58o9iJZ1P2YuasbEsJoG
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set adds support for sensirion sgp40 gas sensor.
+On Sat 24-07-21 15:41:23, Wang Jianchao wrote:
+> From: Wang Jianchao <wangjianchao@kuaishou.com>
+> 
+> Right now, discard is issued and waited to be completed in jbd2
+> commit kthread context after the logs are committed. When large
+> amount of files are deleted and discard is flooding, jbd2 commit
+> kthread can be blocked for long time. Then all of the metadata
+> operations can be blocked to wait the log space.
+> 
+> One case is the page fault path with read mm->mmap_sem held, which
+> wants to update the file time but has to wait for the log space.
+> When other threads in the task wants to do mmap, then write mmap_sem
+> is blocked. Finally all of the following read mmap_sem requirements
+> are blocked, even the ps command which need to read the /proc/pid/
+> -cmdline. Our monitor service which needs to read /proc/pid/cmdline
+> used to be blocked for 5 mins.
+> 
+> This patch frees the blocks back to buddy after commit and then do
+> discard in a async kworker context in fstrim fashion, namely,
+>  - mark blocks to be discarded as used if they have not been allocated
+>  - do discard
+>  - mark them free
+> After this, jbd2 commit kthread won't be blocked any more by discard
+> and we won't get NOSPC even if the discard is slow or throttled.
+> 
+> Link: https://marc.info/?l=linux-kernel&m=162143690731901&w=2
+> Suggested-by: Theodore Ts'o <tytso@mit.edu>
+> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
 
-Many thanks for the in-depth reviews, especially of Jonathan who triggered
-some important improvements for v2:
-- provide more precision for voc value; this in turn triggered the folling
-  point:
-- rework of e^x calculation with an optimization on the interesting range
-  between e^(-6) and e^6
-- restructure use of endian types
-- use __packed structures for sent telegrams
-- optimize usage of mutex
-- optimize switch-cases
-- replace attributes by read_raw() and write_raw() values
-- add documentation in Documentation/ABI/testing/sysfs-bus-iio-sgp40 as
-  well as in the source code
+Looks good to me. Just one small comment below. With that addressed feel
+free to add:
 
-Andreas Klinger (2):
-  dt-bindings: iio: chemical: Add trivial DT binding for sgp40
-  iio: chemical: Add driver support for sgp40
+Reviewed-by: Jan Kara <jack@suse.cz>
 
- .../ABI/testing/sysfs-bus-iio-chemical-sgp40  |  31 ++
- .../devicetree/bindings/trivial-devices.yaml  |   2 +
- MAINTAINERS                                   |   6 +
- drivers/iio/chemical/Kconfig                  |  11 +
- drivers/iio/chemical/Makefile                 |   1 +
- drivers/iio/chemical/sgp40.c                  | 372 ++++++++++++++++++
- 6 files changed, 423 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-chemical-sgp40
- create mode 100644 drivers/iio/chemical/sgp40.c
 
+> @@ -3474,6 +3530,14 @@ int ext4_mb_release(struct super_block *sb)
+>  	struct kmem_cache *cachep = get_groupinfo_cache(sb->s_blocksize_bits);
+>  	int count;
+>  
+> +	if (test_opt(sb, DISCARD)) {
+> +		/*
+> +		 * wait the discard work to drain all of ext4_free_data
+> +		 */
+> +		queue_work(ext4_discard_wq, &sbi->s_discard_work);
+
+Do we really need to queue the work here? The filesystem should be
+quiescent by now, we take care to queue the work whenever we add item to
+empty list. So it should be enough to have flush_work() here and then
+possibly
+
+	WARN_ON_ONCE(!list_empty(&sbi->s_discard_list))
+
+Or am I missing something?
+
+								Honza
+
+> +		flush_work(&sbi->s_discard_work);
+> +	}
+> +
 -- 
-2.20.1
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
