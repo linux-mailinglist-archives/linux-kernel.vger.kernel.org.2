@@ -2,156 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48133DFB7D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C461F3DFB7F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235609AbhHDGi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 02:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235419AbhHDGi1 (ORCPT
+        id S235630AbhHDGis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 02:38:48 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:16860 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235419AbhHDGir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 02:38:27 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DE7C0613D5;
-        Tue,  3 Aug 2021 23:38:14 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id m13so2615662lfg.13;
-        Tue, 03 Aug 2021 23:38:14 -0700 (PDT)
+        Wed, 4 Aug 2021 02:38:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1628059115; x=1659595115;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=nYxIV+NBTCWjTLi94/suldUwke/rcH2VdKHKBGrlzvU=;
+  b=cMCtF8fRszEP3aLVEqpKcQAi6Pjrh27E9jiHYNyJtHSs5chSvQLw8FR7
+   2bnga9lGVHhbXntE0N2CyLJv6TQrX2e34NRrFaD0kX5qS+ynqVSX8t+DQ
+   PSjG9MsdsEReZkLJJ6r5JYtJIs3YoIqYdw4SZtlaQoQmTtQcwftID1DFv
+   17+HAV9/cb8Q6MVBOdzLHHs3/bCyCKpbS0bFStAlmqjU0h25x7n5cq5vg
+   gVhFIr8ywBGmZ76/TvFuJQ45cYbrvxOYsJoYg8kiKBqFQWFLeGT+MK3pn
+   uM4FoW0H+QyyKw0NUOeGOHxDqaXyDWZSVm9b3hMmjUUDOywMQafR5mOJH
+   g==;
+X-IronPort-AV: E=Sophos;i="5.84,293,1620662400"; 
+   d="scan'208";a="287839708"
+Received: from mail-bn1nam07lp2049.outbound.protection.outlook.com (HELO NAM02-BN1-obe.outbound.protection.outlook.com) ([104.47.51.49])
+  by ob1.hgst.iphmx.com with ESMTP; 04 Aug 2021 14:38:33 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gn57vCetV8R7vywyjMT/Qp+cW/tllZo/MZ47R9aRHWmNfE9BftVhwSGIFd4yts29HSV5Adek7pxvWbCqR6mHmFbdO5pFy6zFF+E4d8IvEAIFE/36ejXYilGy1Iftsscvsv7A9iYKOvWjpN8toRKlq+9ddJUrmeAnEZjJUVvcln3b9NJsm3UeHtIYlIaMSV1hKz/vm4XTfMraDkCqqlFEIMZNRnVNzaGV0i6XSgqVm5lgL5tro4JPTzmuI2lUbjCvG63SFxNVnBx+wjhWYpZWpvkroorEw90KXmF1AB9rJQj2EJF5CBYm57Q3yHzyuPGBRPSxlpkK6u28zq8ABSZppQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M0ozNMrXhhH/izb5koAe3YDb71giXKh8i3Kk+PS/Yw4=;
+ b=ZycObIdM2CdMmq7qIpiheyCe8cJe9Y2lnxvtySSIp9ZzGO+uEDbWDzXTc/5ehzksrgYY3L63O5LpJKEhn590+2IVOg8ESyapSRETjY8LS9i21MiTWhiKE7usM2mUdPnd7vwe4fDaeMJoUYT3XosNrLAwBDQK/zKu0cnNUmIf+xv0dd+UpOUdQ3i8JJKEaShS4JP+z2ZP/Mda5fBMwgFuUsRze8g/8S9NJnA+K+h7ntiH+0QrPONiZNl5sW8R4MBIySchm6tpCs6nhuMWH0a4+S05I5pdc6rg6rNU8Nz1FNbVwmyiEVn86OJWxcYJqRHXqaHt9xISI5SfDfoXYtVVEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RGi+UjdGgDWz1eAwnozhR2gWINzZqIgqVqUuObzwmS0=;
-        b=uVHrBHbnhwooKsFvpB0aHMp3qXRizv+vurz5f5TvQJJwPreqwud/BDLt049mR1ZnXP
-         NhVK8+OK7z0GN0d0kQKgdp7uGDiOO4xXtgGyhT0X3XGw/YChw+mMA22yJRtefz+KtmOt
-         SXuRF5wfqocpk2X6LWe2TYfmRF62f2taLKOO23e3c4+6BcNefO14vRug+aA4w7DAwXbd
-         et4ufESMrUps29kq4a6y4fF0m3GsXdkj65u5bDm0xi7FqWMD4sCZTGAiDI8dPYzi8RXm
-         a8izzXT6Pp4CJ/gzFkoOFQQz46dtMSzGR0CrbhFKfVZJB2MPKmjntPw2QWluKSgbnxaj
-         jVPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RGi+UjdGgDWz1eAwnozhR2gWINzZqIgqVqUuObzwmS0=;
-        b=RfLZOgoBKeG5mG8riBVPt/m17+KLbV9GQL87AvgnPcZnMMXtIXtz5g7kz+roWo2WPs
-         diY5N0dMIZY0VAfSaOCZrAIOwboSnKIGSqGXrZCvjQ5p4qTeBFKyUUjutRNHp/S1NhmK
-         g+JqB+2cSrANrHkry0AcBk0ZbNK6AGr29avF72r385Jx7mwE5UPfhOCbijw8Iwz4IVl2
-         TZ1pgASSXFPpRtanUCdz+rTBUsz+yLaRzDdBPzyITZvtEkSQwhJP2wRileVO1nCoDOoN
-         2Z5HHB30w81KtFy/GKOH2hnx8PtXMZV/A+wefhOnuamXUJLtHM/bOcamlwJFY1P8VJ9q
-         HemQ==
-X-Gm-Message-State: AOAM532JVVTDVdPXwQlOMF2XJvAGVLoZa3hUqF1ExY1a/fiiV4RyyQ9x
-        cB49vqjoEGikr8HphobD4+E=
-X-Google-Smtp-Source: ABdhPJx1S4jrbszhB/Y7mKBHxW+sz5YOBXMVfcOWSmA5w3yYP3ZrB3blHuE8lWd20wbcWxbT3wpaMQ==
-X-Received: by 2002:a05:6512:23a4:: with SMTP id c36mr14995274lfv.539.1628059093007;
-        Tue, 03 Aug 2021 23:38:13 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id h11sm105805lfc.4.2021.08.03.23.38.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 23:38:12 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 09:38:10 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Leonidas P. Papadakos" <papadakospan@gmail.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        zajec5@gmail.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
-Message-ID: <20210804063810.dvnqgxnaoajy3ehe@kari-VirtualBox>
-References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
- <20210716114635.14797-1-papadakospan@gmail.com>
- <CAHk-=whfeq9gyPWK3yao6cCj7LKeU3vQEDGJ3rKDdcaPNVMQzQ@mail.gmail.com>
- <YQnHxIU+EAAxIjZA@mit.edu>
- <YQnU5m/ur+0D5MfJ@casper.infradead.org>
- <YQnZgq3gMKGI1Nig@mit.edu>
- <CAHk-=wiSwzrWOSN5UCrej3YcLRPmW5tViGSA5p2m-hiyKnQiMg@mail.gmail.com>
- <YQnkGMxZCgCWXQPf@mit.edu>
- <20210804010351.GM3601466@magnolia>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M0ozNMrXhhH/izb5koAe3YDb71giXKh8i3Kk+PS/Yw4=;
+ b=HbNTCQ02IoPH573k8eC5CoM2WFyhW3CQi8z7WCxS+PMrC7X4/P2KO8JZYhtud+Rdu/eiKlFsgIJcbstu3UGm72pY76ehaocF2357goo8SpYl7cRVjayEPXwvwmQtW78JVMR0belZjNXKqO96UzCVCIgZiPoMeAnzyyEES+d1Lkc=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB6589.namprd04.prod.outlook.com (2603:10b6:5:1ba::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4373.18; Wed, 4 Aug 2021 06:38:32 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::ccfd:eb59:ccfe:66e4]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::ccfd:eb59:ccfe:66e4%7]) with mapi id 15.20.4373.026; Wed, 4 Aug 2021
+ 06:38:32 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Bean Huo <huobean@gmail.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "cang@codeaurora.org" <cang@codeaurora.org>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] scsi: ufs: Remove useless if-state in
+ ufshcd_add_command_trace
+Thread-Topic: [PATCH] scsi: ufs: Remove useless if-state in
+ ufshcd_add_command_trace
+Thread-Index: AQHXh8ld0Lx2t1dhZ0+LdbWRaSJCIKti5lcg
+Date:   Wed, 4 Aug 2021 06:38:32 +0000
+Message-ID: <DM6PR04MB65755981B606ECC00D1F198BFCF19@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210802180803.100033-1-huobean@gmail.com>
+In-Reply-To: <20210802180803.100033-1-huobean@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d1208a3f-71c0-4c29-6f5c-08d957127a96
+x-ms-traffictypediagnostic: DM6PR04MB6589:
+x-microsoft-antispam-prvs: <DM6PR04MB65893FDC2985097BD701B8BFFCF19@DM6PR04MB6589.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:415;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oJ+Vp/TvtGsuUOi7m1Ii7wmGFrQe7RaRbDKKPTH+kG55yCwqX8dxXBxs6gWq699Xpzq/KDgCMBo/Xe9kt9rmsGzV88tPcj04iz9LSylcqF+bWRUEEMysrrvI0ObMY5Z4qGkY4CGr2kjp7VTVc2NzrPymGewShmbETjMNPGHa0SbgRnAAaK0e5Yl0l63tGs+wlByO+Ri6q64zjbWNzsTndkb/qM6rqFKQPRHdtbNyXI1Nbf1D7bAUa/7Paz/TC2swvFhaI38LjZbGgdETVNfJYAzNKQss/88sYc9nimbj09Jfo0EO/Sw27o+sptSSa7EwsJE+eZj8p1sZcUbsS93tgxJazajM4n6E6DtiDser7ljHkJ5ZbrsvpT2umOlGtHiak5hqTN5ayI71TODkTrq9o7/nSqpo5590Xllc312VFaOe21L0pI2etKNwJalfDKTW0Z2/CxB6ytBgf4dlKm6rR4uATJH6fEFWhjiyUdIjPwTRFEAJApWUwkZzNGyguS/9Um3pP0egdRzFttU6QiIs2WzpR5UXuaBiPIQoh3e0W5MyCi/Xj3X2MZDDTXl0jDpFrbsY0b4CuihfxBC1NX2cG9p4+3YkjYLqp55PRY4NQXLK7qs+pS3muXtWTFSFyfqjoEn8WZyJSGZxtCTTIoUIrusxoot2m4VfE3bKA/AkDojxV+Pg4x/sroZpiVCULxN+WfnFtqCnDtlq0ckzRrdTJA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(136003)(396003)(346002)(2906002)(83380400001)(478600001)(7696005)(8936002)(110136005)(33656002)(4744005)(54906003)(76116006)(66476007)(5660300002)(8676002)(66556008)(66446008)(66946007)(4326008)(64756008)(55016002)(26005)(38070700005)(71200400001)(6506007)(52536014)(186003)(38100700002)(9686003)(86362001)(122000001)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?A/rAsMlJYJf1H3272KjouGAAnCAq8LtlGojaxoKYvG/BeVLK4sw53T2mALBw?=
+ =?us-ascii?Q?jrtR6URHcbaethBzdCi5WNlE2vUe8S/5pFrXAZxX7m+zuPUhXujK3VnVM3Zn?=
+ =?us-ascii?Q?qSCmEowIG3SbbPSDQoNEmmTb6RM//rQZ2P61nmiCD5U33rXcgWAwpeL2Ah+v?=
+ =?us-ascii?Q?6I8U2G8T/dTHGPP5AVPR74djnAoKN3QLfslS7yrSmxM2O6F3pt1rCtOS4b2k?=
+ =?us-ascii?Q?vMKvtsZeMmIVGgMSoNMgToZ6WalZ4VJkP0PyxV+oM8kI0kBXHNPirgr9Mq9d?=
+ =?us-ascii?Q?ertNktC55OY8JJcyEyA52XDC07epwHkX0jQksOLTPrQ/5EdfpTTUJ34op7QT?=
+ =?us-ascii?Q?FeKrRVJS2KJQp4A8HdowBlqprN9uFq8q+N9aYKzPIP3JHeS9cCDZensQv/LY?=
+ =?us-ascii?Q?pzZmZrgXCdTmtCzMGxLQEbIBYNB5qhVFXoLyJh2TQXUFccENJ/VZS65jbpXX?=
+ =?us-ascii?Q?wq1rE8bCareApsUK+Cr0mw0X4Xr3t5H4NYIh8SFeuVaz4vIIzomRIjrUvH4V?=
+ =?us-ascii?Q?Vo1+t6ffIRNDVLRpa8B6ywl15KL4lQwPfso9W1fU319MnFSzxESq0gjuYQyZ?=
+ =?us-ascii?Q?+GO3Tak6VJ8XMuRDt1xu1Hb6Q7GMe+O2/+AcuslON6gPiIp65kp4i8+ReBuU?=
+ =?us-ascii?Q?zbNd2kl0L3yabH88jYI2LxEdvJzuCRBmXnaGNFqIOdjCcIt373GwbdWL184e?=
+ =?us-ascii?Q?7XmWCEBnjyXmozCgSlr2QG/Kjo0qYPOk0SSTkEpm11pm1W2lC4U8vj1nkTMg?=
+ =?us-ascii?Q?X4EFwFDxDHyrAuBO8KdtgXkZ54FpSWtSTnysHWuUzaNsFFuE/PcdSp2h7xMz?=
+ =?us-ascii?Q?abE+ZIsJpRKVFbuTzkmFHrXWKXAmlNuFwC81jEYiqmpldi1oMn1My+wBSTYN?=
+ =?us-ascii?Q?In34HiIIfVnHDW8b7QLPwu2UnLrDBJRk0k8xyxWU0rF8ZxjIHC0AvfF5yU32?=
+ =?us-ascii?Q?5Spue9/SVN8Lpp4y4GIIT32jKoVhihCFmeodfM6nX5bHerm6R7gvpOh/Ws4T?=
+ =?us-ascii?Q?mmDs041bGbftJtPS4QLVCjl7pwFPZWwP7IDEpS6ItXb1abICcrCOuzF4G6vW?=
+ =?us-ascii?Q?vXSWBatvAFetJo4Hx4HwcnHerYwFkw0ag/BF8QPlfgE77kxgduLB0RaYcCbf?=
+ =?us-ascii?Q?CUKkJ3s+JY9Mri7b3kpoAqGbqEnR4UDD7epyzkfkt0CTvLJEclaF6n6eN7ZU?=
+ =?us-ascii?Q?eo8dnqqD/3J6j83OwRCUfC4dyFS+fsy+CR0P0Q+XFA9/jrj88tu7gsQUeJXn?=
+ =?us-ascii?Q?vlHKk0TukAtwl4Gmk3YazYnsXHIzWlzyHEg7W04SLtmUwCzm6TQ6lTTzo+eN?=
+ =?us-ascii?Q?e8MI8brWQoosAIUppyorHC76?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804010351.GM3601466@magnolia>
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1208a3f-71c0-4c29-6f5c-08d957127a96
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Aug 2021 06:38:32.5550
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rL2lgI++KsgE/UAOj5xigtiA4rDdE3KfZz67zv1kxEIRJlN+L6ZfCFxqJGghikjU5Ut8rGwPPWKctT0EphKuCQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6589
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 06:03:51PM -0700, Darrick J. Wong wrote:
-> On Tue, Aug 03, 2021 at 08:49:28PM -0400, Theodore Ts'o wrote:
-> > On Tue, Aug 03, 2021 at 05:10:22PM -0700, Linus Torvalds wrote:
-> > > The user-space FUSE thing does indeed work reasonably well.
-> > > 
-> > > It performs horribly badly if you care about things like that, though.
-> > > 
-> > > In fact, your own numbers kind of show that:
-> > > 
-> > >   ntfs/default: 670 tests, 55 failures, 211 skipped, 34783 seconds
-> > >   ntfs3/default: 664 tests, 67 failures, 206 skipped, 8106 seconds
-> > > 
-> > > and that's kind of the point of ntfs3.
-> > 
-> > Sure, although if you run fstress in parallel ntfs3 will lock up, the
-> > system hard, and it has at least one lockdep deadlock complaints.
-> > It's not up to me, but personally, I'd feel better if *someone* at
-> > Paragon Software responded to Darrrick and my queries about their
-> > quality assurance, and/or made commitments that they would at least
-> > *try* to fix the problems that about 5 minutes of testing using
-> > fstests turned up trivially.
-> 
-> <cough> Yes, my aim was to gauge their interest in actively QAing the
-> driver's current problems so that it doesn't become one of the shabby
-> Linux filesystem drivers, like <cough>ntfs.
-> 
-> Note I didn't even ask for a particular percentage of passing tests,
-> because I already know that non-Unix filesystems fail the tests that
-> look for the more Unix-specific behaviors.
-> 
-> I really only wanted them to tell /us/ what the baseline is.  IMHO the
-> silence from them is a lot more telling.  Both generic/013 and
-> generic/475 are basic "try to create files and read and write data to
-> them" exercisers; failing those is a red flag.
-> 
+>=20
+> From: Bean Huo <beanhuo@micron.com>
+>=20
+> ufshcd_add_cmd_upiu_trace() will be called anyway, so move if-state down,
+> make code simpler.
+>=20
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
 
-Konstantin has wrote about these thing see below.
 
-On Thu, 20 Aug 2020 10:20:26 +0000, Konstantin Komarov wrote: 
-> xfstests are being one of our standard test suites among others.
-> Currently we have the 'generic/339' and 'generic/013' test cases
-> failing, working on it now. Other tests either pass or being skipped
-> (due to missing features e.g. reflink). 
-Source:
-https://lore.kernel.org/linux-fsdevel/7538540ab82e4b398a0203564a1f1b23@paragon-software.com/
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c index
+> 064a44e628d6..02f54153fd6d 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -380,14 +380,11 @@ static void ufshcd_add_command_trace(struct
+> ufs_hba *hba, unsigned int tag,
+>         if (!cmd)
+>                 return;
+>=20
+> -       if (!trace_ufshcd_command_enabled()) {
+> -               /* trace UPIU W/O tracing command */
+> -               ufshcd_add_cmd_upiu_trace(hba, tag, str_t);
+> -               return;
+> -       }
+> -
+>         /* trace UPIU also */
+>         ufshcd_add_cmd_upiu_trace(hba, tag, str_t);
+> +       if (!trace_ufshcd_command_enabled())
+> +               return;
+> +
+>         opcode =3D cmd->cmnd[0];
+>         lba =3D scsi_get_lba(cmd);
+>=20
+> --
+> 2.25.1
 
-Also code tells that xfstests is being used in Paragon. In ntfs3/file.c:
-
-/*
-* Unwritten area
-* NTFS is not able to store several unwritten areas
-* Activate 'ntfs_sparse_cluster' to zero new allocated clusters
-*
-* Dangerous in case:
-* 1G of sparsed clusters + 1 cluster of data =>
-* valid_size == 1G + 1 cluster
-* fallocate(1G) will zero 1G and this can be very long
-* xfstest 016/086 will fail without 'ntfs_sparse_cluster'
-*/
-/*ntfs_sparse_cluster(inode, NULL, vcn,
- *	              min(vcn_v - vcn, clen));
- */
-
-I'm just bringing this thing up because so many has asked and Konstantin
-has not responded recently. Hopefully he will soon. Of course is it
-little bit worrying that example generic/013 still fails after almoust
-year has passed and Konstantin said he is working on it. And it seems that
-more tests fails than beginning of review process.
-
-> --D
-> 
-> > I can even give them patches and configsto make it trivially easy for
-> > them to run fstests using KVM or GCE....
-> > 
-> > 				- Ted
