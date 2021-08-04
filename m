@@ -2,95 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0953DFB67
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D79853DFB65
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235563AbhHDGVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 02:21:36 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36882 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232618AbhHDGVf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 02:21:35 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id BA5C822139;
-        Wed,  4 Aug 2021 06:21:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628058081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J26bRC9AqL9yzAXTcNmpFXfcnAuaPb5GeWdDw/9Ibro=;
-        b=PrH3TePlw7r5kZOL2S/iTUbxAUPK0XpagG2SryHdrg0f8+d1Srw0oXSrsPXXpXzrBiLWAr
-        JC0zwPOk5NYaUwnBlfO7vYOiLjZPq45XJbCZrvj9Ck0uAyMA52dSopLxTZnlGrIZ2dsNS7
-        qRsHFG/D6pACnxLt5b8rF7EiuBaZKlg=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id F2469A3B84;
-        Wed,  4 Aug 2021 06:21:20 +0000 (UTC)
-Date:   Wed, 4 Aug 2021 08:21:12 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v4 1/2] mm: introduce process_mrelease system call
-Message-ID: <YQox2Ems40WXmJ3z@dhcp22.suse.cz>
-References: <20210802221431.2251210-1-surenb@google.com>
- <YQkAqwZIF+AnpexA@dhcp22.suse.cz>
- <CAJuCfpGiYAdvOydimHbK73oKS-ZfMMBtADXxWCYpxkX2qJX08g@mail.gmail.com>
- <CAJuCfpEjb+o_TuQqxYALcvpr+4kq7tVNjq7A3oahB=1=JPyWtw@mail.gmail.com>
+        id S235549AbhHDGVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 02:21:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232618AbhHDGVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 02:21:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABA7560EC0;
+        Wed,  4 Aug 2021 06:21:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628058079;
+        bh=15mNVwPUZUnKdrckow9HJOnc4KPgvOEMNmgHx4cAbZ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HeHmUCcLuz4CbK9g9lysNY0//odzKqGg6axDLC3d48mGI6Lef68GbJ+GNzGGCeVtu
+         Y0tbjbd9hrPp6o967QS2QcFHUJSGjDvk43T8126eYVOCbfm2IcHrbNUmkLPxUM0ASF
+         2tTgG3z8l+M76Z6wBBcn3YznuFAvs3oJFgrfJXm0=
+Date:   Wed, 4 Aug 2021 08:21:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/67] 5.10.56-rc1 review
+Message-ID: <YQox3CvsEz6kW9R+@kroah.com>
+References: <20210802134339.023067817@linuxfoundation.org>
+ <20210803192607.GA14540@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJuCfpEjb+o_TuQqxYALcvpr+4kq7tVNjq7A3oahB=1=JPyWtw@mail.gmail.com>
+In-Reply-To: <20210803192607.GA14540@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 03-08-21 15:09:43, Suren Baghdasaryan wrote:
-> On Tue, Aug 3, 2021 at 10:27 AM Suren Baghdasaryan <surenb@google.com> wrote:
-[...]
-> > > > +     if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
-> > > > +             mm = task->mm;
-> > > > +             mmget(mm);
-> > > > +     }
-> > > > +     task_unlock(task);
-> > > > +     if (!mm) {
-> > >
-> > > Do we want to treat MMF_OOM_SKIP as a failure?
-> >
-> > Yeah, I don't think we want to create additional contention if
-> > oom-killer is already working on this mm. Should we return EBUSY in
-> > this case? Other possible options is ESRCH, indicating that this
-> > process is a goner, so don't bother. WDYT?
+On Tue, Aug 03, 2021 at 09:26:07PM +0200, Pavel Machek wrote:
+> Hi!
 > 
-> After considering this some more I think ESRCH would be more
-> appropriate. EBUSY might be understood as "I need to retry at a better
-> time", which is not what we want here.
+> > This is the start of the stable review cycle for the 5.10.56 release.
+> > There are 67 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> 
+> Not sure what went wrong, but 50 or so patches disappeared from the queue:
+> 
+> 48156f3dce81b215b9d6dd524ea34f7e5e029e6b (origin/queue/5.10) btrfs: fix lost inode on log replay after mix of fsync, rename and inode eviction
+> 474a423936753742c112e265b5481dddd8c02f33 btrfs: fix race causing unnecessary inode logging during link and rename
+> 2fb9fc485825505e31b634b68d4c05e193a224da Revert "drm/i915: Propagate errors on awaiting already signaled fences"
+> b1c92988bfcb7aa46bdf8198541f305c9ff2df25 drm/i915: Revert "drm/i915/gem: Asynchronous cmdparser"
+> 11fe69a17195cf58eff523f26f90de50660d0100 (tag: v5.10.55) Linux 5.10.55
+> 984e93b8e20731f83e453dd056f8a3931b4a66e5 ipv6: ip6_finish_output2: set
+> sk into newly allocated nskb
 
-Why cannot we simply return 0 in that case. The work has been done
-already by the kernel so why should we tell the caller that there was
-something wrong?
+Look at commit e87bda470c72 ("move 5.10 patches back into -rc and queued
+patches") as an example of what happened here.
 
--- 
-Michal Hocko
-SUSE Labs
+The "queue" branches are odd and auto-generated and not all that smart
+at times.  Stick to the -rc branches that I announce if you want to be
+sure you are testing the proper thing.
+
+thanks,
+
+greg k-h
