@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A473DFC70
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 948703DFC72
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236097AbhHDIFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:05:49 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7920 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236045AbhHDIFq (ORCPT
+        id S236122AbhHDIHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:07:15 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:50022 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236089AbhHDIHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:05:46 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gfkj12P05z83qs;
-        Wed,  4 Aug 2021 16:01:41 +0800 (CST)
-Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 4 Aug 2021 16:05:32 +0800
-Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
- (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 4 Aug
- 2021 16:05:31 +0800
-Subject: Re: [PATCH 0/2] coresight: ultrasoc: Add support for System Memory
- Buffer device
-To:     Linuxarm <linuxarm@huawei.com>, <mathieu.poirier@linaro.org>,
-        <suzuki.poulose@arm.com>, <mike.leach@linaro.org>
-CC:     <coresight@lists.linaro.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210719111737.47891-1-liuqi115@huawei.com>
-From:   "liuqi (BA)" <liuqi115@huawei.com>
-Message-ID: <41661d60-d8ef-9d50-57eb-8964c6f6eef8@huawei.com>
-Date:   Wed, 4 Aug 2021 16:05:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 4 Aug 2021 04:07:13 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AvB1CAq5mbF3wPcJIFQPXwPTXdLJyesId70hD?=
+ =?us-ascii?q?6qkRc20wTiX8ra2TdZsguyMc9wx6ZJhNo7G90cq7MBbhHPxOkOos1N6ZNWGIhI?=
+ =?us-ascii?q?LCFvAB0WKN+V3dMhy73utc+IMlSKJmFeD3ZGIQse/KpCW+DPYsqePqzJyV?=
+X-IronPort-AV: E=Sophos;i="5.84,293,1620662400"; 
+   d="scan'208";a="112378081"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 04 Aug 2021 16:06:59 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id ED6DE4D0D49B;
+        Wed,  4 Aug 2021 16:06:53 +0800 (CST)
+Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Wed, 4 Aug 2021 16:06:53 +0800
+Received: from [192.168.122.212] (10.167.226.45) by
+ G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Wed, 4 Aug 2021 16:06:53 +0800
+Subject: Re: RDMA/rpma + fsdax(ext4) was broken since 36f30e486d
+From:   =?UTF-8?B?TGksIFpoaWppYW4v5p2OIOaZuuWdmg==?= 
+        <lizhijian@cn.fujitsu.com>
+To:     Yishai Hadas <yishaih@nvidia.com>, <linux-rdma@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?WWFuZywgWGlhby/mnagg5pmT?= <yangx.jy@fujitsu.com>
+References: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
+Message-ID: <68169bc5-075f-8260-eedc-80fdf4b0accd@cn.fujitsu.com>
+Date:   Wed, 4 Aug 2021 16:06:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210719111737.47891-1-liuqi115@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
+In-Reply-To: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.203]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema757-chm.china.huawei.com (10.1.198.199)
-X-CFilter-Loop: Reflected
+X-yoursite-MailScanner-ID: ED6DE4D0D49B.A0A37
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gentle ping...
-Hi Mathieu and Suzuki, can you have a look at this patchset? thanks.
+convert to text and send again
 
-On 2021/7/19 19:17, Qi Liu wrote:
-> This patchset add support for SMB(System Memory Buffer) device, SMB
-> obtains CPU instructions from Coresight ETM device and stores these
-> messages in system memory.
-> SMB is developed by Ultrasoc technology, which is acquired by Siemens,
-> and we still use "Ultrasoc" to name document and driver.
-> 
-> Change since RFC:
-> - Move ultrasoc driver to drivers/hwtracing/coresight.
-> - Remove ultrasoc-axi-com.c, as AXI-COM doesn't need to be configured in
->    basic tracing function.
-> - Remove ultrasoc.c as SMB does not need to register with the ultrasoc core.
-> - Address the comments from Mathieu and Suzuki.
-> - Link: https://lists.linaro.org/pipermail/coresight/2021-June/006535.html
-> 
-> Qi Liu (2):
->    Documentation: tracing: Documentation for ultrasoc SMB drivers
->    coresight: ultrasoc: Add System Memory Buffer driver
-> 
->   .../trace/coresight/ultrasoc-trace.rst        | 193 +++++
->   MAINTAINERS                                   |   7 +
->   drivers/hwtracing/coresight/Kconfig           |   3 +
->   drivers/hwtracing/coresight/Makefile          |   2 +
->   drivers/hwtracing/coresight/ultrasoc/Kconfig  |  12 +
->   drivers/hwtracing/coresight/ultrasoc/Makefile |   6 +
->   .../coresight/ultrasoc/ultrasoc-smb.c         | 722 ++++++++++++++++++
->   .../coresight/ultrasoc/ultrasoc-smb.h         | 142 ++++
->   8 files changed, 1087 insertions(+)
->   create mode 100644 Documentation/trace/coresight/ultrasoc-trace.rst
->   create mode 100644 drivers/hwtracing/coresight/ultrasoc/Kconfig
->   create mode 100644 drivers/hwtracing/coresight/ultrasoc/Makefile
->   create mode 100644 drivers/hwtracing/coresight/ultrasoc/ultrasoc-smb.c
->   create mode 100644 drivers/hwtracing/coresight/ultrasoc/ultrasoc-smb.h
-> 
+2021/8/4 15:55, Li, Zhijian wrote:
+>
+> Hey all:
+>
+> Recently, i reported a issue to rpmahttps://github.com/pmem/rpma/issues/1142
+> where we found that the native rpma + fsdax example failed in recent kernel.
+>
+> Below is the bisect log
+>
+> [lizhijian@yl linux]$ git bisect log
+> git bisect start
+> # good: [bbf5c979011a099af5dc76498918ed7df445635b] Linux 5.9
+> git bisect good bbf5c979011a099af5dc76498918ed7df445635b
+> # bad: [2c85ebc57b3e1817b6ce1a6b703928e113a90442] Linux 5.10
+> git bisect bad 2c85ebc57b3e1817b6ce1a6b703928e113a90442
+> # good: [4d0e9df5e43dba52d38b251e3b909df8fa1110be] lib, uaccess: add failure injection to usercopy functions
+> git bisect good 4d0e9df5e43dba52d38b251e3b909df8fa1110be
+> # bad: [6694875ef8045cdb1e6712ee9b68fe08763507d8] ext4: indicate that fast_commit is available via /sys/fs/ext4/feature/...
+> git bisect bad 6694875ef8045cdb1e6712ee9b68fe08763507d8
+> # good: [14c914fcb515c424177bb6848cc2858ebfe717a8] Merge tag 'wireless-drivers-next-2020-10-02' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next
+> git bisect good 14c914fcb515c424177bb6848cc2858ebfe717a8
+> # good: [6f78b9acf04fbf9ede7f4265e7282f9fb39d2c8c] Merge tag 'mtd/for-5.10' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux
+> git bisect good 6f78b9acf04fbf9ede7f4265e7282f9fb39d2c8c
+> # bad: [bbe85027ce8019c73ab99ad1c2603e2dcd1afa49] Merge tag 'xfs-5.10-merge-5' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux
+> git bisect bad bbe85027ce8019c73ab99ad1c2603e2dcd1afa49
+> # bad: [9d9af1007bc08971953ae915d88dc9bb21344b53] Merge tag 'perf-tools-for-v5.10-2020-10-15' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux
+> git bisect bad 9d9af1007bc08971953ae915d88dc9bb21344b53
+> # good: [21c2fe94abb2abe894e6aabe6b4e84a255c8d339] RDMA/mthca: Combine special QP struct with mthca QP
+> git bisect good 21c2fe94abb2abe894e6aabe6b4e84a255c8d339
+> # good: [dbaa1b3d9afba3c050d365245a36616ae3f425a7] Merge branch 'perf/urgent' into perf/core
+> git bisect good dbaa1b3d9afba3c050d365245a36616ae3f425a7
+> # bad: [c7a198c700763ac89abbb166378f546aeb9afb33] RDMA/ucma: Fix use after free in destroy id flow
+> git bisect bad c7a198c700763ac89abbb166378f546aeb9afb33
+> # bad: [5ce2dced8e95e76ff7439863a118a053a7fc6f91] RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces
+> git bisect bad 5ce2dced8e95e76ff7439863a118a053a7fc6f91
+> # bad: [a03bfc37d59de316436c46f5691c5a972ed57c82] RDMA/mlx5: Sync device with CPU pages upon ODP MR registration
+> git bisect bad a03bfc37d59de316436c46f5691c5a972ed57c82
+> # good: [a6f0b08dbaf289c3c57284e16ac8043140f2139b] RDMA/core: Remove ucontext->closing
+> git bisect good a6f0b08dbaf289c3c57284e16ac8043140f2139b
+> # bad: [36f30e486dce22345c2dd3a3ba439c12cd67f6ba] IB/core: Improve ODP to use hmm_range_fault()
+> git bisect bad 36f30e486dce22345c2dd3a3ba439c12cd67f6ba
+> # good: [2ee9bf346fbfd1dad0933b9eb3a4c2c0979b633e] RDMA/addr: Fix race with netevent_callback()/rdma_addr_cancel()
+> git bisect good 2ee9bf346fbfd1dad0933b9eb3a4c2c0979b633e
+> # first bad commit: [36f30e486dce22345c2dd3a3ba439c12cd67f6ba] IB/core: Improve ODP to use hmm_range_fault()
+>
+> Note: some commit have to apply a extra patch to avoid a kernel panic.
+> > git cherry-pick d4c5da5 # dax: Fix stack overflow when mounting fsdax pmem device
+>
+>
+> Thanks
+> Li
+>
+>
+
 
