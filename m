@@ -2,193 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B733E09F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF653E09F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhHDVRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229862AbhHDVRQ (ORCPT
+        id S230151AbhHDVRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:17:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43016 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230063AbhHDVRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:17:16 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD371C0613D5;
-        Wed,  4 Aug 2021 14:17:01 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id y34so6785524lfa.8;
-        Wed, 04 Aug 2021 14:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ELMel+NgXNUbVBDl1ElReQSMK+VjDTt4MWlrQL3F4JE=;
-        b=ovv9rOYVc7un9bnovJ98Ejbubj5lJJuDwAN/+gUDQwKXQKQh0gHvBTfXfWs50XX8dF
-         08HAjDIM+/o510AMsTFC3o01a0ViL2DKp5sHpA34VD6A8EMXNq4VPSONpfmcYxRDMA7O
-         uPgtoU4CwOoafa5BgZJhPeuQu2qfKq56+2F8nt0S/3KQK7rD/TFKxfteAeCTBNZPlysS
-         tRsl2Gv24sUzPGF/Ce8gRpmYnqJNC7zOwBw2dHkD8Xpkj5sejZNveRPNxCVj9Bf7C/DE
-         f8nG/BroJSt4FAfX3yeaaKErBd5SNm8XV8vpPD/gAEolxB2eJGk1LAliGhDGn/iIzDPU
-         v4Jg==
+        Wed, 4 Aug 2021 17:17:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628111859;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v0xCOqT4DwRRgK+FhR6M4QKvtKCg8O1LkYdACEO8VNE=;
+        b=U+xU5qSQvjtvxga05PQnG7eOhU+L7EW1pN1gUSMPThJjszOtATRgQHYyTuFbYKUmxVlcW4
+        GJb+sWxLttohwHSJO5HUkbU6064crAjmukRiQJzrHKPJGvJ7B/RtD+SP0gyI6e09d/hNkq
+        ClJhw7TwTABaulX6GjU+uxryPsSjpuI=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-125-TU1AacxuMo6qgIM332nkgg-1; Wed, 04 Aug 2021 17:17:38 -0400
+X-MC-Unique: TU1AacxuMo6qgIM332nkgg-1
+Received: by mail-qk1-f200.google.com with SMTP id h186-20020a37b7c30000b02903b914d9e335so2791974qkf.17
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:17:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ELMel+NgXNUbVBDl1ElReQSMK+VjDTt4MWlrQL3F4JE=;
-        b=GKt/C88f59oWkNve3U/fWa5/FtOK+WabyDpddp5Rr41JFe5kGpgCWhO9iv4vE1G5ec
-         BMNyBNQsZtYgGfGYpfmSWXHlSaDoaeh2pqeST+n50jeoRiJBhYL6QfdzG6tHtkstgdJI
-         CfBpqlRGUX/Y6gsdflJUogVJXeXzMYQHXgJ9GziSSXY3jw9kIAUwzfzzFTCJe5hiL3Ml
-         gsn7+fxx7Y3IYXthfDPG9Q7IlE2MsB3K8lqffbZ9kTflmXVnGYXZAIrGQMVty0MJTYg6
-         mM0qd+VNGIuXQQOUzKs9NqyOlHuc195slhhfQYX6WyHutUO9hEk8F9EbD7QzDP9Cgzn5
-         V2OA==
-X-Gm-Message-State: AOAM531Qin+NKU1aMYQ/qgX67/mWNn4XEo5nndBvr5aYG72daxlF/6TF
-        7yJ1eM/ANlbpA+RGx/hp1GXIqqC/b0g=
-X-Google-Smtp-Source: ABdhPJxAjLTFmcOIodga4Y5U7tbSQyXBlsRLNHi9hRMvJM0pP9EsNVVaxWcT1fcobPzFinvr3P/oWA==
-X-Received: by 2002:ac2:5315:: with SMTP id c21mr832592lfh.570.1628111819990;
-        Wed, 04 Aug 2021 14:16:59 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-65-182.dynamic.spd-mgts.ru. [46.138.65.182])
-        by smtp.googlemail.com with ESMTPSA id m16sm301501lfr.259.2021.08.04.14.16.59
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=v0xCOqT4DwRRgK+FhR6M4QKvtKCg8O1LkYdACEO8VNE=;
+        b=ChfeGM6/lkDRtpjyqfoNOzF6NZsouxE3jmiHGdfx26QFS0WgYPMntjUqHQPEEbdsjq
+         C2aJysisFAJ98lFgyhUrs5EeAnfb9mI3kN9cFQM/7onzX281wOFnPIx0UBO81gxP/3aS
+         t2dd1z77XXnlOLd3u4gaCp4NLbxXX24vJMIbtHpE0aKglsIpZ2iuEf14eb3OU2ypG0UG
+         p4SZ/Yp+RJeNsziBRXj46Pf+/W2p3RdJQuvg//bE2z+m45FIMCrjWARsLjhGvkX3UiC8
+         +bC38X5Sy9E082D3k5YvJ1lRMk62FN9vcMARtiyP/DD1VNPfGK0N+/t7qDdKWtBIH2tw
+         GXrQ==
+X-Gm-Message-State: AOAM5321CNSY7IewlyTH0WagqQc1yv5onpir45M1JQbvXk1JYJmnMYMx
+        b+sUEsySwLY+pwAHQEGctz7j9BtZZqHcMrZqitio/Z8i2lo1w8ko1ol+6zeTyxg+fYkkq0luR8P
+        Mjq3UVGgaDsmDSQxkQvJwHlOS
+X-Received: by 2002:a05:6214:e67:: with SMTP id jz7mr1635484qvb.0.1628111858266;
+        Wed, 04 Aug 2021 14:17:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy2e0s41ebl8AJKs7FLLqqmyKr34IbfdQMCKuUHiE8IpjkZf/s2CF8BgoKY4kS0tgO1AUCaVw==
+X-Received: by 2002:a05:6214:e67:: with SMTP id jz7mr1635475qvb.0.1628111858089;
+        Wed, 04 Aug 2021 14:17:38 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id w26sm1932346qki.6.2021.08.04.14.17.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 14:16:59 -0700 (PDT)
-Subject: Re: [PATCH v7 02/37] soc/tegra: pmc: Implement attach_dev() of power
- domain drivers
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-References: <20210701232728.23591-1-digetx@gmail.com>
- <20210701232728.23591-3-digetx@gmail.com>
- <CAPDyKFrtWDYJo_NjS8306Z9ykbg7XZ55jC9hKEBMGkcrx1=4kQ@mail.gmail.com>
- <1034458d-78e0-5036-e278-6fee5d0d75ac@gmail.com>
- <CAPDyKFoafAk72Kw6X7626Niduaii0V5VM4dGSWmq+e3JTh7VRg@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a5dfdf59-f5b5-d28e-6b02-b0c860ba8d80@gmail.com>
-Date:   Thu, 5 Aug 2021 00:16:58 +0300
+        Wed, 04 Aug 2021 14:17:37 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [patch 22/63] locking/spinlock: Split the lock types header
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+References: <20210730135007.155909613@linutronix.de>
+ <20210730135206.416779376@linutronix.de>
+Message-ID: <977ef5db-17b4-646d-cbb8-b0ca301b55ea@redhat.com>
+Date:   Wed, 4 Aug 2021 17:17:36 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFoafAk72Kw6X7626Niduaii0V5VM4dGSWmq+e3JTh7VRg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210730135206.416779376@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-04.08.2021 12:59, Ulf Hansson пишет:
-> On Mon, 2 Aug 2021 at 20:23, Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> 02.08.2021 17:48, Ulf Hansson пишет:
->> ...
->>>> +       if (!list_empty(&genpd->child_links)) {
->>>> +               link = list_first_entry(&genpd->child_links, struct gpd_link,
->>>> +                                       child_node);
->>>> +               core_genpd = link->parent;
->>>> +       } else {
->>>> +               core_genpd = genpd;
->>>> +       }
->>>
->>> This looks a bit odd to me. A genpd provider shouldn't need to walk
->>> these links as these are considered internals to genpd. Normally this
->>> needs lockings, etc.
->>>
->>> Why exactly do you need this?
->>
->> We have a chain of PMC domain -> core domain, both domains are created
->> and liked together by this PMC driver. Devices are attached to either
->> PMC domain or to core domain. PMC domain doesn't handle the performance
->> changes, performance requests go down to the core domain.
-> 
-> Did I get this right? The core domain is the parent to the PMC domain?
+On 7/30/21 9:50 AM, Thomas Gleixner wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
+>
+> Move raw_spinlock into its own file. Prepare for RT 'sleeping spinlocks' to
+> avoid header recursion as RT locks require rtmutex.h which in turn requires
+> the raw spinlock types.
+>
+> No functional change.
+>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>   include/linux/rwlock_types.h       |    4 ++
+>   include/linux/spinlock.h           |    4 ++
+>   include/linux/spinlock_types.h     |   19 ----------
+>   include/linux/spinlock_types_raw.h |   65 +++++++++++++++++++++++++++++++++++++
+>   4 files changed, 74 insertions(+), 18 deletions(-)
+>   create mode 100644 include/linux/spinlock_types_raw.h
+> ---
+> --- a/include/linux/rwlock_types.h
+> +++ b/include/linux/rwlock_types.h
+> @@ -1,6 +1,10 @@
+>   #ifndef __LINUX_RWLOCK_TYPES_H
+>   #define __LINUX_RWLOCK_TYPES_H
+>   
+> +#if !defined(__LINUX_SPINLOCK_TYPES_H)
+> +# error "Do not include directly, include spinlock_types.h"
+> +#endif
+> +
+>   /*
+>    * include/linux/rwlock_types.h - generic rwlock type definitions
+>    *				  and initializers
+> --- a/include/linux/spinlock.h
+> +++ b/include/linux/spinlock.h
+> @@ -12,6 +12,8 @@
+>    *  asm/spinlock_types.h: contains the arch_spinlock_t/arch_rwlock_t and the
+>    *                        initializers
+>    *
+> + *  linux/spinlock_types_raw:
+> + *			  The raw types and initializers
+>    *  linux/spinlock_types.h:
+>    *                        defines the generic type and initializers
+>    *
+> @@ -31,6 +33,8 @@
+>    *                        contains the generic, simplified UP spinlock type.
+>    *                        (which is an empty structure on non-debug builds)
+>    *
+> + *  linux/spinlock_types_raw:
+> + *			  The raw RT types and initializers
+>    *  linux/spinlock_types.h:
+>    *                        defines the generic type and initializers
+>    *
+> --- a/include/linux/spinlock_types.h
+> +++ b/include/linux/spinlock_types.h
+> @@ -9,24 +9,7 @@
+>    * Released under the General Public License (GPL).
+>    */
+>   
+> -#if defined(CONFIG_SMP)
+> -# include <asm/spinlock_types.h>
+> -#else
+> -# include <linux/spinlock_types_up.h>
+> -#endif
+> -
+> -#include <linux/lockdep_types.h>
+> -
+> -typedef struct raw_spinlock {
+> -	arch_spinlock_t raw_lock;
+> -#ifdef CONFIG_DEBUG_SPINLOCK
+> -	unsigned int magic, owner_cpu;
+> -	void *owner;
+> -#endif
+> -#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> -	struct lockdep_map dep_map;
+> -#endif
+> -} raw_spinlock_t;
+> +#include <linux/spinlock_types_raw.h>
+>   
+>   #define SPINLOCK_MAGIC		0xdead4ead
+>   
 
-You got this right.
+Most of the code in spinlock_types.h are moved into 
+spinlock_types_raw.h. However, macros like SPINLOCK_MAGIC and those that 
+followed are not removed from spinlock_types.h in this patch leading to 
+the same set of macro definitions in two different files. Should we 
+eliminate the duplicate macro definitions either from spinlock_types.h 
+or from spinlock_types_raw.h?
 
->>
->> This is needed in order to translate the device's OPP into performance
->> state of the core domain, based on the domain to which device is attached.
-> 
-> So, the PMC domain doesn't have an OPP table associated with it, but
-> some of its attached devices may still have available OPPs, which
-> should be managed through the parent domain (core domain). Correct?
+Cheers,
+Longman
 
-Yes, the OPPs are specified only for the core domain.
-
-> Is there a DT patch in the series that I can look at that shows how
-> this is encoded?
-
-See patches which are adding domains and OPPs to DTs:
-
-https://patchwork.ozlabs.org/project/linux-tegra/patch/20210701232728.23591-34-digetx@gmail.com/
-
-https://patchwork.ozlabs.org/project/linux-tegra/patch/20210701232728.23591-35-digetx@gmail.com/
-
-> Hmm, I have the feeling that we should try to manage in some generic
-> way in genpd, rather than having to deal with it here.
-
-Still it requires a platform-specific knowledge. It could be some new
-genpd hook for the initialization. But I don't know what other platforms
-may want to initialize, so it's not clear to me how to make it generic.
-
->>>> +
->>>> +       pd_opp_table = dev_pm_opp_get_opp_table(&core_genpd->dev);
->>>> +       if (IS_ERR(pd_opp_table)) {
->>>> +               dev_err(&genpd->dev, "failed to get OPP table of %s: %pe\n",
->>>> +                       dev_name(&core_genpd->dev), pd_opp_table);
->>>> +               ret = PTR_ERR(pd_opp_table);
->>>> +               goto put_dev_opp;
->>>> +       }
->>>> +
->>>> +       pd_opp = dev_pm_opp_xlate_required_opp(opp_table, pd_opp_table, opp);
->>>> +       if (IS_ERR(pd_opp)) {
->>>> +               dev_err(&genpd->dev,
->>>> +                       "failed to xlate required OPP for %luHz of %s: %pe\n",
->>>> +                       rate, dev_name(dev), pd_opp);
->>>> +               ret = PTR_ERR(pd_opp);
->>>> +               goto put_pd_opp_table;
->>>> +       }
->>>> +
->>>> +       /*
->>>> +        * The initialized state will be applied by GENPD core on the first
->>>> +        * RPM-resume of the device.  This means that drivers don't need to
->>>> +        * explicitly initialize performance state.
->>>> +        */
->>>> +       state = pm_genpd_opp_to_performance_state(&core_genpd->dev, pd_opp);
->>>> +       gpd_data->rpm_pstate = state;
->>>
->>> Could the above be replaced with Rajendra's suggestion [1], which
->>> changes genpd to internally during attach, to set a default
->>> performance state when there is a "required-opp" specified in the
->>> device  node?
->>
->> It's not a "static" performance level here, but any level depending on
->> h/w state left from bootloader and etc. The performance level
->> corresponds to the voltage of the core domain, hence we need to
->> initialize the voltage vote before device is resumed.
-> 
-> Why not let the driver deal with this instead? It should be able to
-> probe its device, no matter what state the bootloader has put the
-> device into.
-> 
-> To me, it sounds like a call to dev_pm_genpd_set_performance_state()
-> (perhaps via dev_pm_opp_set_opp() or dev_pm_opp_set_rate()) from the
-> driver itself, should be sufficient?
-
-We did that in a previous versions of this series where drivers were
-calling devm_tegra_core_dev_init_opp_table() helper during the probe to
-initialize performance state of the domain. Moving OPP state
-initialization into central place made drivers cleaner by removing the
-boilerplate code.
-
-I can revert back to the previous variant, although this variant works
-well too.
-
-> I understand that it means the domain may change the OPP during boot,
-> without respecting a vote for a device that has not been probed yet.
-> But is there a problem with this?
-
-Domains themselves don't change OPP, there is no problem with that. The
-point is to have cleaner code in the drivers.
