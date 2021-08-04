@@ -2,158 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6683B3E0ABD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D69E3E0AC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235314AbhHDXMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 19:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
+        id S235456AbhHDXOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 19:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhHDXME (ORCPT
+        with ESMTP id S230514AbhHDXOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 19:12:04 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4FDC06179A
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 16:11:51 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id u10so4883348oiw.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 16:11:51 -0700 (PDT)
+        Wed, 4 Aug 2021 19:14:00 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA0BC061798
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 16:13:47 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id b1-20020a17090a8001b029017700de3903so6972187pjn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 16:13:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=TaWq51EqywyuKb/DYdfCbIFAEoPpPDGd0uhGmHXUj0A=;
-        b=QQOAum8eTzRYtMGTKCUzlhfYrrHG+LFJpDkyNcTh2ZGR2PvgVcwX0msgO9Z+kFAaax
-         jrjisKpNSlCdwHTDeH84VeaDyJ0Ar546tPGnwVYGsvnB86KDIH6ofSR/ZNAR89jBM3qs
-         KbgRASuSGueGYICoRHoJHg7U/qKKccA2opcHuSfCob6xvsi/72/HeN+ll2gXRzXriMth
-         LG/GdxjYrqQGMbD/0Gk83BfuuH0BbWRLbyPPyBpEdu/2I2zlZ4so6aNV9Mvk5TUKEX+k
-         4pHiKCRt7fr3/kjFEjbxCyauhU7+0TPZG1bYxK9FozGe/DKk9A9vlQqKpthhd+x67xEW
-         Ysbg==
+        bh=hhzTmvNlWX5cKj6uzpJv9KHQQbPrBdXTpixCjT3/PRY=;
+        b=CljRFbd5fhdRHtTbrFsjmE9HHVOxjA6WE3njAiFdB1gI6+JOk5KVge64dGAItgJVAI
+         fgriTirhsOb+gXeVyHe6z/iUnGJspAQ2mJhT+o2awWo0dAqLDv7Pob5x2bKcY3ihPKZm
+         0Gea0WZIVPuz96wmRUocfThv0ABdgr1lHO6LNxxkEhomg4GW2rF/JPa57f1KPmCSOvwg
+         DtjxHxiXYEo06yiX5I0BAwkxeQ90Coxmon5FV2UgdsbpAd9Y91ZNftnWjVjHAvAvidfu
+         qb0tBzwv5w6ZPv+Mx1JOhPavS5d/aOVQQrdoAZXrZCb83B+0Bra9rRoJLdbVfSGDDU58
+         0RFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=TaWq51EqywyuKb/DYdfCbIFAEoPpPDGd0uhGmHXUj0A=;
-        b=UmleeabHLok7Vd2Rm7FixwPCaNVtEvWyCvME1zqiea6fZEvKOi8t0jRXLSLiY8pYkp
-         1OgHz3mW8Gfkax8wMa4lR/f090FKTvnpIzAwhOvGCmYPQMC6kx74LUSLw7JZcn+UeOb1
-         AfwdjjWsoyp0vqE5/VfiBYTok903T89Se6Il6fzhbwOrt0we/61OjFLi6wJNeRuIESFM
-         VkkUX6mnCnTOCkGp6u9BJhu3bOLAEE3Jc2kvEUiPYGlQwcRG2HeqkWzr4D8pGlkLkYrS
-         p0DHth1Ckz8LzgR9I2/CL3Dw9GtLfDpyqidJCwINf72nyYQuAW88fuKVxee+Tk8dl1Ae
-         rv4A==
-X-Gm-Message-State: AOAM532sCed9zFD/+sOwrI2HSmAcpBYmpZ0R0Okkfk2exOqM6oo9DEjS
-        gXOZb/kFNe/47gVCac5a79uZ0w==
-X-Google-Smtp-Source: ABdhPJwUZLe2IQMgeO//fmZvAc15YbwcKsnB78yHqFio6xKY3oH/0UdbPuQfHF9jaAiV2v6HEloYoA==
-X-Received: by 2002:a05:6808:4d0:: with SMTP id a16mr1240203oie.166.1628118710409;
-        Wed, 04 Aug 2021 16:11:50 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id u18sm748726oif.9.2021.08.04.16.11.49
+        bh=hhzTmvNlWX5cKj6uzpJv9KHQQbPrBdXTpixCjT3/PRY=;
+        b=WxJBzahw1dnjDegVHDFt/zL6rRbcN/VvBFdHh5e+x0J5OMgkTWVyI9SAeDGrhHbFH/
+         5V+5lpo0n9WQubI/HUyIZT0W4eST7yInaa8dKMdhJKhy3QuvbcEvwZpI7suWRHEF2XgG
+         FWuzcdd+ajDwlT1z4Swhb25fogZLbIUls7epshrLPrryyvja+mSEwsSWlmy+VreweS1m
+         7AZuYW+QV6+2UAxT+mq/w5rqZlrxUjtwvtevj+7k5yycCECkUuH3u9SYVhLZQICWUnZr
+         VUNKq5W8dooE3X+A420yBMeiCioBTtzvbs9Mm7SEIIRzNr8ptshKznzWKSHYGlbduVzr
+         WF0Q==
+X-Gm-Message-State: AOAM531rkfNt84rr5pJs/umNmuq4/z/wN2BJJxcTXWmBV3qAFGz7mOji
+        DkQZCssbcM9oaF1AlDBa4NmRCQ==
+X-Google-Smtp-Source: ABdhPJyM4JA7mt02CDJlruQVu5XDPKIQJxwCbXXn/wTHD7VWYf0SV3iqKmzCPDVbVd+hbS+HZZvZ/Q==
+X-Received: by 2002:a17:90a:8404:: with SMTP id j4mr12028214pjn.66.1628118826210;
+        Wed, 04 Aug 2021 16:13:46 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id g19sm7279988pjl.25.2021.08.04.16.13.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 16:11:49 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 18:11:48 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     sboyd@kernel.org, robh+dt@kernel.org, mka@chromium.org,
-        viresh.kumar@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dianders@chromium.org, tdas@codeaurora.org
-Subject: Re: [PATCH 2/4] cpufreq: qcom: Re-arrange register offsets to
- support per core L3 DCVS
-Message-ID: <YQsetKGjlmQRxytX@builder.lan>
-References: <1627581885-32165-1-git-send-email-sibis@codeaurora.org>
- <1627581885-32165-3-git-send-email-sibis@codeaurora.org>
+        Wed, 04 Aug 2021 16:13:45 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 23:13:42 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Erdem Aktas <erdemaktas@google.com>
+Cc:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Connor Kuehl <ckuehl@redhat.com>, x86 <x86@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>,
+        isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Kai Huang <kai.huang@linux.intel.com>,
+        Chao Gao <chao.gao@intel.com>
+Subject: Re: [RFC PATCH v2 05/69] KVM: TDX: Add architectural definitions for
+ structures and values
+Message-ID: <YQsfJsZskiI2968+@google.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <d29b2ac2090f20e8de96888742feb413f597f1dc.1625186503.git.isaku.yamahata@intel.com>
+ <CAAYXXYy=fn9dUMjY6b6wgCHSTLewnTZLKb00NMupDXSWbNC9OQ@mail.gmail.com>
+ <1057bbfe-c73e-a182-7696-afc59a4786d8@intel.com>
+ <CAAYXXYwDuRMQ16X3mshkGcBQXhvgoxPTCu8UGggYgfCzHOWwtQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1627581885-32165-3-git-send-email-sibis@codeaurora.org>
+In-Reply-To: <CAAYXXYwDuRMQ16X3mshkGcBQXhvgoxPTCu8UGggYgfCzHOWwtQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 29 Jul 13:04 CDT 2021, Sibi Sankar wrote:
-
-> Qualcomm SoCs (starting with SM8350) support per core voting for L3 cache
-> frequency. So, re-arrange the cpufreq register offsets to allow access for
-> the L3 interconnect to implement per core control. Also prevent binding
-> breakage caused by register offset shuffling by using the SM8250/SM8350
-> EPSS compatible.
+On Wed, Aug 04, 2021, Erdem Aktas wrote:
+> On Mon, Aug 2, 2021 at 6:25 AM Xiaoyao Li <xiaoyao.li@intel.com> wrote:
+> > > Is this information correct and is this included in the spec? I tried
+> > > to find it but somehow I do not see it clearly defined.
+> > >
+> > >> +#define TDX1_NR_TDCX_PAGES             4
+> > >> +#define TDX1_NR_TDVPX_PAGES            5
+> > >> +
+> > >> +#define TDX1_MAX_NR_CPUID_CONFIGS      6
+> > > Why is this just 6? I am looking at the CPUID table in the spec and
+> > > there are already more than 6 CPUID leaves there.
+> >
+> > This is the number of CPUID config reported by TDH.SYS.INFO. Current KVM
+> > only reports 6 leaves.
 > 
-> Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
->  drivers/cpufreq/qcom-cpufreq-hw.c | 23 +++++++++++++++++++----
->  1 file changed, 19 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-> index f86859bf76f1..74ef3b38343b 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> @@ -28,6 +28,7 @@ struct qcom_cpufreq_soc_data {
->  	u32 reg_volt_lut;
->  	u32 reg_perf_state;
->  	u8 lut_row_size;
-> +	bool skip_enable;
+> I, personally, still think that it should be enumerated, rather than
+> hardcoded. It is not clear to me why it is 6 and nothing in the spec
+> says it will not change.
 
-This should probably be called "skip_enable_check".
+It's both hardcoded and enumerated.  KVM's hardcoded value is specifically the
+maximum value expected for TDX-Module modules supporting the so called "1.0" spec.
+It's certainly possible a spec change could bump the maximum, but KVM will refuse
+to use a module with higher maximums until Linux/KVM is updated to play nice with
+the new module.
 
->  };
->  
->  struct qcom_cpufreq_data {
-> @@ -257,19 +258,31 @@ static const struct qcom_cpufreq_soc_data qcom_soc_data = {
->  	.reg_volt_lut = 0x114,
->  	.reg_perf_state = 0x920,
->  	.lut_row_size = 32,
-> +	.skip_enable = false,
->  };
->  
->  static const struct qcom_cpufreq_soc_data epss_soc_data = {
-> +	.reg_freq_lut = 0x0,
-> +	.reg_volt_lut = 0x100,
-> +	.reg_perf_state = 0x220,
-> +	.lut_row_size = 4,
-> +	.skip_enable = true,
+Having hardcoded maximum allows for simpler and more efficient code, as loops and
+arrays can be statically defined instead of having to pass around the enumerated
+values.
 
-This change is not compatible with existing DTBs.
+And we'd want sanity checking anyways, e.g. if the TDX-module pulled a stupid and
+reported that it needs 4000 TDCX pages.  This approach gives KVM documented values
+to sanity check, e.g. instead of arbitrary magic numbers.
 
-Regards,
-Bjorn
+The downside of this approach is that KVM will need to be updated to play nice
+with a new module if any of these maximums are raised.  But, IMO that's acceptable
+because I can't imagine a scenario where anyone would want to load a TDX module
+without first testing the daylights out of the specific kernel+TDX combination,
+especially a TDX-module that by definition includes new features.
 
-> +};
-> +
-> +static const struct qcom_cpufreq_soc_data epss_sm8250_soc_data = {
->  	.reg_enable = 0x0,
->  	.reg_freq_lut = 0x100,
->  	.reg_volt_lut = 0x200,
->  	.reg_perf_state = 0x320,
->  	.lut_row_size = 4,
-> +	.skip_enable = false,
->  };
->  
->  static const struct of_device_id qcom_cpufreq_hw_match[] = {
->  	{ .compatible = "qcom,cpufreq-hw", .data = &qcom_soc_data },
->  	{ .compatible = "qcom,cpufreq-epss", .data = &epss_soc_data },
-> +	{ .compatible = "qcom,sm8250-cpufreq-epss", .data = &epss_sm8250_soc_data },
-> +	{ .compatible = "qcom,sm8350-cpufreq-epss", .data = &epss_sm8250_soc_data },
->  	{}
->  };
->  MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
-> @@ -334,10 +347,12 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
->  	data->res = res;
->  
->  	/* HW should be in enabled state to proceed */
-> -	if (!(readl_relaxed(base + data->soc_data->reg_enable) & 0x1)) {
-> -		dev_err(dev, "Domain-%d cpufreq hardware not enabled\n", index);
-> -		ret = -ENODEV;
-> -		goto error;
-> +	if (!data->soc_data->skip_enable) {
-> +		if (!(readl_relaxed(base + data->soc_data->reg_enable) & 0x1)) {
-> +			dev_err(dev, "Domain-%d cpufreq hardware not enabled\n", index);
-> +			ret = -ENODEV;
-> +			goto error;
-> +		}
->  	}
->  
->  	qcom_get_related_cpus(index, policy->cpus);
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+> > >> +#define TDX1_MAX_NR_CMRS               32
+> > >> +#define TDX1_MAX_NR_TDMRS              64
+> > >> +#define TDX1_MAX_NR_RSVD_AREAS         16
+> > >> +#define TDX1_PAMT_ENTRY_SIZE           16
+> > >> +#define TDX1_EXTENDMR_CHUNKSIZE                256
+> > >
+> > > I believe all of the defined variables above need to be enumerated
+> > > with TDH.SYS.INFO.
+
+And they are, though I believe the code for doing the actual SEAMCALL wasn't
+posted in this series.  The output is sanity checked by tdx_hardware_enable():
+
++	tdx_caps.tdcs_nr_pages = tdsysinfo->tdcs_base_size / PAGE_SIZE;
++	if (tdx_caps.tdcs_nr_pages != TDX1_NR_TDCX_PAGES)
++		return -EIO;
++
++	tdx_caps.tdvpx_nr_pages = tdsysinfo->tdvps_base_size / PAGE_SIZE - 1;
++	if (tdx_caps.tdvpx_nr_pages != TDX1_NR_TDVPX_PAGES)
++		return -EIO;
++
++	tdx_caps.attrs_fixed0 = tdsysinfo->attributes_fixed0;
++	tdx_caps.attrs_fixed1 = tdsysinfo->attributes_fixed1;
++	tdx_caps.xfam_fixed0 =	tdsysinfo->xfam_fixed0;
++	tdx_caps.xfam_fixed1 = tdsysinfo->xfam_fixed1;
++
++	tdx_caps.nr_cpuid_configs = tdsysinfo->num_cpuid_config;
++	if (tdx_caps.nr_cpuid_configs > TDX1_MAX_NR_CPUID_CONFIGS)
++		return -EIO;
++
