@@ -2,141 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975BC3E0390
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE813E0393
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238252AbhHDOmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:42:45 -0400
-Received: from mga05.intel.com ([192.55.52.43]:48481 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238191AbhHDOmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:42:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="299522001"
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="299522001"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 07:42:29 -0700
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="511998985"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.255.28.78]) ([10.255.28.78])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 07:42:23 -0700
-Subject: Re: [RFC PATCH 1/4] KVM: selftests: Add support for creating
- non-default type VMs
-To:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        linux-kselftest@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
-        David Matlack <dmatlack@google.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Yanan Wang <wangyanan55@huawei.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Zhenzhong Duan <zhenzhong.duan@intel.com>,
-        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>
-References: <20210726183816.1343022-1-erdemaktas@google.com>
- <20210726183816.1343022-2-erdemaktas@google.com>
- <e1651746-aa46-31e7-e1c0-99f3faaf1586@intel.com>
- <ede70f11e713ee0140c0e684c3d46b3aa1176e5e.camel@redhat.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <42a812a9-7f17-2a26-d289-1f921408a469@intel.com>
-Date:   Wed, 4 Aug 2021 22:42:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S238262AbhHDOnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238191AbhHDOnE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 10:43:04 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C742C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:42:51 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id l4so2867375ljq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=epkSZNOyyPNAWPQz+jmngcd1GrS/+wWE4RVIUtrB7vM=;
+        b=S4cBM6DpryzJ0dCWjdd4PwjY0cPQgQET23yLihuRJ9AyMfKWHeL+VbFZt+9zkGmt0m
+         WzzcB1kb8eF6do2K5Jir9StwEMXk7WITNQiTl4gEmrSYkI0BotdknWsfgKJj+1fJnJf2
+         neWVuI/A9qzqPOzZ7YT8RH8kB7+bKNwjt1bYT8Gn5zRvNl2k6TrPgzmUhhtoxTj2Oyzv
+         X2Xj1eY0ZFkNxWN9X1RMtU4dJUREUpEmbVVU9kRJHCIAkvA5dSEVYHfoUL5bC9kM650F
+         0y8JejK6927mdMM2YZkEHTnnyERfsexGghvgU24BYpVhaCR1Mk6bwWvnmAqhMGOaEnho
+         /QYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=epkSZNOyyPNAWPQz+jmngcd1GrS/+wWE4RVIUtrB7vM=;
+        b=Ldwxi+jqpdcVb87osteLp4wUlPSlAfqrjkq7mJY3gBIx0E3qjL1QVxbcogm0pY9NMh
+         GVJrTXOupC0g2JoWvsX0S9iXIgqBbkfc9IzVn6mYqxfvqQ8UxIFCSDHy354qGbytrQRi
+         H9Zx1U2ARQNlDJp8FNcljX0PIoxIgcUqOJLhJY+E9ZHUihCNhdhzUo2VyPOQx/yg6Fi8
+         VAlvD6lEZmPVIBcldSE7Pp9LuG5dElqo9HDL3PytXpbkJBfDME7QXx9ZJVfKQZcrJ62M
+         wQZuvpxdMv+BAzLx/hJqsoLM57YwLuEt0gvm1LwP+E7KovslyPwMwFDq8yzTOrFNRAZM
+         pbAA==
+X-Gm-Message-State: AOAM531fET8q+wYXHK86Sm0eB9uogf4tLkX56G/6LZ9ECg9PBM4E+l8t
+        Tvl48luIt9RU3bGseNgudzPVFMWKtPZErPjTRRBTKg==
+X-Google-Smtp-Source: ABdhPJyoi1uyaThbAN9PmOfRK/CqCAX1nXZFV8Reju/RQckBL2bo3ds1H0EXbeX+qhFdou5j8BYdO8qJXAHX//s4qr8=
+X-Received: by 2002:a2e:a817:: with SMTP id l23mr18320916ljq.86.1628088169741;
+ Wed, 04 Aug 2021 07:42:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ede70f11e713ee0140c0e684c3d46b3aa1176e5e.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210731175341.3458608-1-lrizzo@google.com> <20210803160803.GG543798@ziepe.ca>
+ <CAMOZA0JKjRFUHbs3zc4kiGcuXxR0arCN=oPZZsLCa4qHvRrH_A@mail.gmail.com> <20210803230725.ao3i2emejyyor36n@revolver>
+In-Reply-To: <20210803230725.ao3i2emejyyor36n@revolver>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 4 Aug 2021 16:42:23 +0200
+Message-ID: <CAG48ez2TEP0hsRjLACVmRppMEk6Z9aREcGL498EKhdBBXSRsoA@mail.gmail.com>
+Subject: Re: [PATCH] Add mmap_assert_locked() annotations to find_vma*()
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     Luigi Rizzo <lrizzo@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/2021 10:24 PM, Maxim Levitsky wrote:
-> On Wed, 2021-08-04 at 14:09 +0800, Xiaoyao Li wrote:
->> On 7/27/2021 2:37 AM, Erdem Aktas wrote:
->>> Currently vm_create function only creates KVM_X86_LEGACY_VM type VMs.
->>> Changing the vm_create function to accept type parameter to create
->>> new VM types.
->>>
->>> Signed-off-by: Erdem Aktas <erdemaktas@google.com>
->>> Reviewed-by: Sean Christopherson <seanjc@google.com>
->>> Reviewed-by: Peter Gonda <pgonda@google.com>
->>> Reviewed-by: Marc Orr <marcorr@google.com>
->>> Reviewed-by: Sagi Shahar <sagis@google.com>
->>> ---
->>>    .../testing/selftests/kvm/include/kvm_util.h  |  1 +
->>>    tools/testing/selftests/kvm/lib/kvm_util.c    | 29 +++++++++++++++++--
->>>    2 files changed, 27 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
->>> index d53bfadd2..c63df42d6 100644
->>> --- a/tools/testing/selftests/kvm/include/kvm_util.h
->>> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
->>> @@ -88,6 +88,7 @@ int vcpu_enable_cap(struct kvm_vm *vm, uint32_t vcpu_id,
->>>    void vm_enable_dirty_ring(struct kvm_vm *vm, uint32_t ring_size);
->>>    
->>>    struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm);
->>> +struct kvm_vm *__vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm, int type);
->>>    void kvm_vm_free(struct kvm_vm *vmp);
->>>    void kvm_vm_restart(struct kvm_vm *vmp, int perm);
->>>    void kvm_vm_release(struct kvm_vm *vmp);
->>> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
->>> index e5fbf16f7..70caa3882 100644
->>> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
->>> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
->>> @@ -180,13 +180,36 @@ _Static_assert(sizeof(vm_guest_mode_params)/sizeof(struct vm_guest_mode_params)
->>>     * Return:
->>>     *   Pointer to opaque structure that describes the created VM.
->>>     *
->>> - * Creates a VM with the mode specified by mode (e.g. VM_MODE_P52V48_4K).
->>> + * Wrapper VM Create function to create a VM with default type (0).
->>
->> Can we pass KVM_X86_LEGACY_VM (whatever name when it's upstreamed)
->> instead of 0?
-> 
-> To be honest I would prefer this to be called something like KVM_X86_STANDARD_VM,
-> or something.
-> 
-> I don't think that normal unencrypted virtualization is already legacy, even if TDX
-> docs claim that.
+On Wed, Aug 4, 2021 at 1:07 AM Liam Howlett <liam.howlett@oracle.com> wrote:
+> * Luigi Rizzo <lrizzo@google.com> [210803 17:49]:
+> > On Tue, Aug 3, 2021 at 6:08 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Sat, Jul 31, 2021 at 10:53:41AM -0700, Luigi Rizzo wrote:
+> > > > find_vma() and variants need protection when used.
+> > > > This patch adds mmap_assert_lock() calls in the functions.
+> > > >
+> > > > To make sure the invariant is satisfied, we also need to add a
+> > > > mmap_read_loc() around the get_user_pages_remote() call in
+> > > > get_arg_page(). The lock is not strictly necessary because the mm
+> > > > has been newly created, but the extra cost is limited because
+> > > > the same mutex was also acquired shortly before in __bprm_mm_init(),
+> > > > so it is hot and uncontended.
+> > > >
+> > > > Signed-off-by: Luigi Rizzo <lrizzo@google.com>
+> > > >  fs/exec.c | 2 ++
+> > > >  mm/mmap.c | 2 ++
+> > > >  2 files changed, 4 insertions(+)
+> > > >
+> > > > diff --git a/fs/exec.c b/fs/exec.c
+> > > > index 38f63451b928..ac7603e985b4 100644
+> > > > +++ b/fs/exec.c
+> > > > @@ -217,8 +217,10 @@ static struct page *get_arg_page(struct linux_binprm *bprm, unsigned long pos,
+> > > >        * We are doing an exec().  'current' is the process
+> > > >        * doing the exec and bprm->mm is the new process's mm.
+> > > >        */
+> > > > +     mmap_read_lock(bprm->mm);
+> > > >       ret = get_user_pages_remote(bprm->mm, pos, 1, gup_flags,
+> > > >                       &page, NULL, NULL);
+> > > > +     mmap_read_unlock(bprm->mm);
+> > > >       if (ret <= 0)
+> > > >               return NULL;
+> > >
+> > > Wasn't Jann Horn working on something like this too?
+> > >
+> > > https://lore.kernel.org/linux-mm/20201016225713.1971256-1-jannh@google.com/
+> > >
+> > > IIRC it was very tricky here, are you sure it is OK to obtain this lock
+> > > here?
+> >
+> > I cannot comment on Jann's patch series but no other thread knows
+> > about this mm at this point in the code so the lock is definitely
+> > safe to acquire (shortly before there was also a write lock acquired
+> > on the same mm, in the same conditions).
+>
+> If there is no other code that knows about this mm, then does one need
+> the lock at all?  Is this just to satisfy the new check you added?
+>
+> If you want to make this change, I would suggest writing it in a way to
+> ensure the call to expand_downwards() in the same function also holds
+> the lock.  I believe this is technically required as well?  What do you
+> think?
 
-I'm not proposing to use this specific name introduced in TDX RFC 
-series, but proposing to use the name defined in KVM in the future 
-instead of hard-coded 0.
+The call to expand_downwards() takes a VMA pointer as argument, and
+the mmap lock is the only thing that normally prevents concurrent
+freeing of VMA structs. Taking a lock there would be of limited utility - either
+the lock is not necessary because nobody else can access the MM, or
+the lock is insufficient because someone could have freed the VMA
+pointer before the lock was taken. So I think that taking a lock
+around the expand_downwards() call would just be obfuscating things,
+unless you specifically want to prevent concurrent *reads* while
+concurrent *writes* are impossible.
 
-Yes, KVM_X86_STANDARD_VM or KVM_X86_NORMAL_VM (proposed by Paolo) is 
-better than KVM_X86_LEGACY_VM.
-
-> Just my personal opinion.
-> 
-> Best regards,
-> 	Maxim Levitsky
-> 
->>
->>> + */
->>> +struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
->>> +{
->>> +	return __vm_create(mode, phy_pages, perm, 0);
->>> +}
->>> +
->>
->>
-> 
-> 
-
+Since I haven't sent a new version of my old series for almost a year,
+I think it'd be fine to take Luigi's patch for now, and undo it at a
+later point when/if we want to actually use proper locking here
+because we're worried about concurrent access to the MM.
