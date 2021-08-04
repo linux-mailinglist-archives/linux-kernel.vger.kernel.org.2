@@ -2,132 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E853E072D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5C83E0739
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238534AbhHDSHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 14:07:14 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:34550 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhHDSHN (ORCPT
+        id S240037AbhHDSJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 14:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240015AbhHDSJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 14:07:13 -0400
-Received: by mail-ot1-f49.google.com with SMTP id e13-20020a056830200db02904f06fa2790cso2440710otp.1;
-        Wed, 04 Aug 2021 11:07:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SYqG4QXoSp28eXqQGcJnRQ+yb/Mnrr/VGHid3OstWEM=;
-        b=BZt3alAl9T4ch9/PjpSbppW/C+pxLSjnuDMsWnRGqsIvYSyMTwy+ueKL4AprUJH9ks
-         u3WxW9GCPmBCw/zfYc1jp1AWJ8pYWFJ4JAu5jZ4YZVsWQ+SJlFOt9DhFLws+t3ClgghW
-         qwZxK++fgL/+dwQuYe4u10QVQRd8IsnUJUU4WZcWTBoz7eC55LPjsSdxlbSLYFyBKbvX
-         gdlOkPDhkYhBU7rhgiVWH3YbPpdI9DJYQW4PWBBFv2/dAfXzBWURUqoAZ1h7Ugwesbfe
-         law8AaGdQXyJoNMJjUF8LHpJmIDyxL8LCN5DjLdOypLblJNvmH6sPDPvohG/oPVgYbU/
-         j7FQ==
-X-Gm-Message-State: AOAM530pNU/YtjrFZrrWM3cTfYe8NBppZN1jJNM3tkCc0raYSnFb4zBy
-        aWwuaIZ16idUo2spg4GnEAWO2rxPbtjviNgFuoo=
-X-Google-Smtp-Source: ABdhPJzfkepS4uxITjIGI3lPF2wXivJvih2RRS4BkNi5QoB0chen1jcEDWhaltCu67IBdWxRsFvLP7NXLSTRKEv02hI=
-X-Received: by 2002:a05:6830:9a:: with SMTP id a26mr712161oto.260.1628100419994;
- Wed, 04 Aug 2021 11:06:59 -0700 (PDT)
+        Wed, 4 Aug 2021 14:09:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AE5C0613D5;
+        Wed,  4 Aug 2021 11:08:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HpBw3SJs+17F/1MWyg77w4ci6hzkc6ALjrYnSEiZYhE=; b=G/k6vjPcW/kzCpzvsN+sYmzFSv
+        CdcEZ/91s4KWsHu/Dvn8P1s/6KeMdlTu43jvU0OuYhldWPXIDlVEXXHf9isG+KQU6HscnaFCMGezT
+        9gIRhmuGjCfHo7MSWi/woP4LCM6zTJr8AW3/hGysYZyRRvJT2GCiGWgou1VLOKUr5SyCG0JfpsWDT
+        GNHv3IeZBAEJ3yUGwBHxC5rou7wM3RE0w8C5yEDYXCCU3UxXFPaecn3DWWVUn/cj+g6hbaMhGiYV9
+        iYK/wiKpaUOsewEQkGL2EB6WpPw9yUv51rxF2PMy1lvV/zY5eQkUHx7U20AhlZamiAP4AFMkxZOAu
+        3Dxf2Qbw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mBLJG-0069Rj-ET; Wed, 04 Aug 2021 18:08:14 +0000
+Date:   Wed, 4 Aug 2021 19:08:06 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v1] driver: base: Add driver filter support
+Message-ID: <YQrXhnHJCsTxiRcP@casper.infradead.org>
+References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-References: <20210731195034.979084-1-dmitry.baryshkov@linaro.org> <20210731195034.979084-2-dmitry.baryshkov@linaro.org>
-In-Reply-To: <20210731195034.979084-2-dmitry.baryshkov@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 4 Aug 2021 20:06:49 +0200
-Message-ID: <CAJZ5v0gWD8WSQU4oPMSdZFM9VpNpc4TAFJ=_wQLB60XFxw-Ciw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] PM: runtime: add devm_pm_runtime_enable helper
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 31, 2021 at 9:50 PM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> A typical code pattern for pm_runtime_enable() call is to call it in the
-> _probe function and to call pm_runtime_disable() both from _probe error
-> path and from _remove function. For some drivers the whole remove
-> function would consist of the call to pm_remove_disable().
->
-> Add helper function to replace this bolierplate piece of code. Calling
-> devm_pm_runtime_enable() removes the need for calling
-> pm_runtime_disable() both in the probe()'s error path and in the
-> remove() function.
->
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  drivers/base/power/runtime.c | 17 +++++++++++++++++
->  include/linux/pm_runtime.h   |  4 ++++
->  2 files changed, 21 insertions(+)
->
-> diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> index 8a66eaf731e4..ec94049442b9 100644
-> --- a/drivers/base/power/runtime.c
-> +++ b/drivers/base/power/runtime.c
-> @@ -1447,6 +1447,23 @@ void pm_runtime_enable(struct device *dev)
->  }
->  EXPORT_SYMBOL_GPL(pm_runtime_enable);
->
-> +static void pm_runtime_disable_action(void *data)
-> +{
-> +       pm_runtime_disable(data);
-> +}
-> +
-> +/**
-> + * devm_pm_runtime_enable - devres-enabled version of pm_runtime_enable.
-> + * @dev: Device to handle.
-> + */
-> +int devm_pm_runtime_enable(struct device *dev)
-> +{
-> +       pm_runtime_enable(dev);
-> +
-> +       return devm_add_action_or_reset(dev, pm_runtime_disable_action, dev);
+On Wed, Aug 04, 2021 at 10:43:22AM -0700, Kuppuswamy Sathyanarayanan wrote:
+> +/* Driver allow list */
+> +static LIST_HEAD(driver_allow_list);
+> +/* Driver deny list */
+> +static LIST_HEAD(driver_deny_list);
 
-When exactly is pm_runtime_disable_action() going to run by this rule?
- When the device goes away or when the driver is unbound from it?
-
-> +}
-> +EXPORT_SYMBOL_GPL(devm_pm_runtime_enable);
-> +
->  /**
->   * pm_runtime_forbid - Block runtime PM of a device.
->   * @dev: Device to handle.
-> diff --git a/include/linux/pm_runtime.h b/include/linux/pm_runtime.h
-> index aab8b35e9f8a..222da43b7096 100644
-> --- a/include/linux/pm_runtime.h
-> +++ b/include/linux/pm_runtime.h
-> @@ -59,6 +59,8 @@ extern void pm_runtime_put_suppliers(struct device *dev);
->  extern void pm_runtime_new_link(struct device *dev);
->  extern void pm_runtime_drop_link(struct device_link *link);
->
-> +extern int devm_pm_runtime_enable(struct device *dev);
-> +
->  /**
->   * pm_runtime_get_if_in_use - Conditionally bump up runtime PM usage counter.
->   * @dev: Target device.
-> @@ -253,6 +255,8 @@ static inline void __pm_runtime_disable(struct device *dev, bool c) {}
->  static inline void pm_runtime_allow(struct device *dev) {}
->  static inline void pm_runtime_forbid(struct device *dev) {}
->
-> +static inline int devm_pm_runtime_enable(struct device *dev) { return 0; }
-> +
->  static inline void pm_suspend_ignore_children(struct device *dev, bool enable) {}
->  static inline void pm_runtime_get_noresume(struct device *dev) {}
->  static inline void pm_runtime_put_noidle(struct device *dev) {}
-> --
-> 2.30.2
->
+Why use a doubly-linked-list here?  An allocating xarray should perform
+much better and use less memory.
