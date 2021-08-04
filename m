@@ -2,185 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C66D53E0A0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89703E0A13
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232630AbhHDVlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:41:05 -0400
-Received: from mga05.intel.com ([192.55.52.43]:20975 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231893AbhHDVlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:41:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="299608443"
-X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="299608443"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 14:40:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="467271217"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga008.jf.intel.com with ESMTP; 04 Aug 2021 14:40:49 -0700
-Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
-        by linux.intel.com (Postfix) with ESMTP id CD07958090B;
-        Wed,  4 Aug 2021 14:40:49 -0700 (PDT)
-From:   "David E. Box" <david.e.box@linux.intel.com>
-To:     irenic.rajneesh@gmail.com, novikov@ispras.ru,
-        gayatri.kammela@intel.com, hdegoede@redhat.com,
-        mgross@linux.intel.com, andy.shevchenko@gmail.com
-Cc:     "David E. Box" <david.e.box@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] platform/x86: intel_pmc_core: Prevent possibile overflow
-Date:   Wed,  4 Aug 2021 14:38:43 -0700
-Message-Id: <20210804213843.498937-1-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S233191AbhHDVny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhHDVnw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 17:43:52 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4AAC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:43:39 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id e11-20020a05620a208bb02903b854c43335so2868383qka.21
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Pb12EbU06/c4uVcHA6PnZi5HH8DX1Z5yrhOe7RMfqqs=;
+        b=rVcP18G61i62cfcA5J1OwAZ5xcfbbwinKlYYRIG0v+c+YMvnKA1w6xawMCCJV5CS7p
+         4p053u+v5L+Kra5xP+9qUWJ64eL0hrUP9YqUh8UVdOVoTVcSKpiA6EnC5JYyw/pMzOBC
+         YkP1Rb8ve0dLLAe/aUSEHKQX8Mv7dYWy8WQmD0Kc+C5wQs9uIXPhEUaAMGyY2bGq+bXw
+         pqTZgC5QcokVFPC6/oyGnhyouTwHsWY+GZgPeMxB6PMQg4E9SWkyGGl0zpUA6KX5HwdG
+         5BJuw8uEeN1nfmdZ1fbP6qYK9JIS4HAIh1Eopsg2YotgR84XuazpdacrfSoRFT5DJL6s
+         8ByA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Pb12EbU06/c4uVcHA6PnZi5HH8DX1Z5yrhOe7RMfqqs=;
+        b=F4lA++u+B0rKKSq+jv5tfgQJnOL0AIDIzQ5S++O7jWS5XwCoPZGP/qxHbP9HL3J0RU
+         15ohB9o/Im2cDDlO7AV/dWhmWD/4Jb/JqdJNxB3Yr2pJMUsrNyi+rQIUsydm1MUaT9Y/
+         ZyncArAZhjE2Xs+2x5ZpB05rU3i/ejuYM6Nwg+ejqx22TIBTy5eLY8m2I891GZBy+gcT
+         g+9ZEa04PJiVQWFrBf+F8MCq0ErOpcQidkxmX+AJOucZyFpgHq3XRpFsZY+AWPlbjthq
+         oYDTP575LGsD/C/p3EvL7KVefhaf0x3DGu1XkxhZtVrCa0T0kpJrnqET2zqguV4y7ExA
+         RAbw==
+X-Gm-Message-State: AOAM532+QQYqS5hfswappV6O6SaoFbUYGBmWaBep6JMX/uxCMQKaM39w
+        F0t+7VLIjpAolkvP+9Jbjr3pmDpiy1hlg04=
+X-Google-Smtp-Source: ABdhPJzUCDviw5bxbZkssyN3i3ZDHllO0p7OWjzr8ahlGNY9GwvlB5r2sJCY3z0O2HCPTEmzAeDT2H2e23bk8q8=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:ffe5:1245:526e:3189])
+ (user=saravanak job=sendgmr) by 2002:a0c:f807:: with SMTP id
+ r7mr1741921qvn.14.1628113418097; Wed, 04 Aug 2021 14:43:38 -0700 (PDT)
+Date:   Wed,  4 Aug 2021 14:43:29 -0700
+Message-Id: <20210804214333.927985-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH v1 0/3] Clean up and fix error handling in mdio_mux_init()
+From:   Saravana Kannan <saravanak@google.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>, kernel-team@android.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Low Power Mode (LPM) priority is encoded in 4 bits. Yet, this value is used
-as an index to an array whose element size was less than 16, leading to the
-possibility of overflow should we read a larger than expected priority.  In
-addition to the overflow, bad values can lead to incorrect state reporting.
-So rework the priority code to prevent the overflow and perform some
-validation of the register. Use the priority register values if they give
-an ordering of unique numbers between 0 and the maximum number of states.
-Otherwise, use a default ordering instead.
+This patch series was started due to -EPROBE_DEFER not being handled
+correctly in mdio_mux_init() and causing issues [1]. While at it, I also
+did some more error handling fixes and clean ups. The -EPROBE_DEFER fix is
+the last patch.
 
-Reported-by: Evgeny Novikov <novikov@ispras.ru>
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
----
+Ideally, in the last patch we'd treat any error similar to -EPROBE_DEFER
+but I'm not sure if it'll break any board/platforms where some child
+mdiobus never successfully registers. If we treated all errors similar to
+-EPROBE_DEFER, then none of the child mdiobus will work and that might be a
+regression. If people are sure this is not a real case, then I can fix up
+the last patch to always fail the entire mdio-mux init if any of the child
+mdiobus registration fails.
 
-v2:	Remove lpm_priority size increase. Instead, remove that array and
-	create 2 new local arrays, one to save priority levels in mode order,
-	and one to save modes in priority order. Use the mode_order list to
-	validate that no priority level is above the maximum and to validate
-	that they are all unique values. Then we can safely create a
-	priority_order list that will be the basis of how we report substate
-	information.
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc: Kevin Hilman <khilman@baylibre.com>
+[1] - https://lore.kernel.org/lkml/CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com/#t
 
- drivers/platform/x86/intel_pmc_core.c | 65 +++++++++++++++++++++------
- drivers/platform/x86/intel_pmc_core.h |  4 ++
- 2 files changed, 56 insertions(+), 13 deletions(-)
+Saravana Kannan (3):
+  net: mdio-mux: Delete unnecessary devm_kfree
+  net: mdio-mux: Don't ignore memory allocation errors
+  net: mdio-mux: Handle -EPROBE_DEFER correctly
 
-diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
-index b0e486a6bdfb..0f623c422d4e 100644
---- a/drivers/platform/x86/intel_pmc_core.c
-+++ b/drivers/platform/x86/intel_pmc_core.c
-@@ -1449,11 +1449,15 @@ static int pmc_core_pkgc_show(struct seq_file *s, void *unused)
- }
- DEFINE_SHOW_ATTRIBUTE(pmc_core_pkgc);
- 
--static void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev)
-+static void pmc_core_get_low_power_modes(struct platform_device *pdev)
- {
--	u8 lpm_priority[LPM_MAX_NUM_MODES];
-+	struct pmc_dev *pmcdev = platform_get_drvdata(pdev);
-+	u8 pri_order[LPM_MAX_NUM_MODES] = LPM_DEFAULT_PRI;
-+	u8 mode_order[LPM_MAX_NUM_MODES];
-+	u32 lpm_pri;
- 	u32 lpm_en;
--	int mode, i, p;
-+	int mode, i, j, p;
-+	bool bad_pri_reg = false;
- 
- 	/* Use LPM Maps to indicate support for substates */
- 	if (!pmcdev->map->lpm_num_maps)
-@@ -1462,24 +1466,59 @@ static void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev)
- 	lpm_en = pmc_core_reg_read(pmcdev, pmcdev->map->lpm_en_offset);
- 	pmcdev->num_lpm_modes = hweight32(lpm_en);
- 
--	/* Each byte contains information for 2 modes (7:4 and 3:0) */
--	for (mode = 0; mode < LPM_MAX_NUM_MODES; mode += 2) {
--		u8 priority = pmc_core_reg_read_byte(pmcdev,
--				pmcdev->map->lpm_priority_offset + (mode / 2));
--		int pri0 = GENMASK(3, 0) & priority;
--		int pri1 = (GENMASK(7, 4) & priority) >> 4;
-+	/* Read 32 bit LPM_PRI register */
-+	lpm_pri = pmc_core_reg_read(pmcdev, pmcdev->map->lpm_priority_offset);
-+	if (!lpm_pri)
-+		bad_pri_reg = true;
-+
-+	if (!bad_pri_reg) {
-+		/*
-+		 * Each byte contains gives the priority level for 2 modes (7:4 and 3:0).
-+		 * In a 32 bit register this allows for describing 8 modes. Store the
-+		 * levels and look for values out of range.
-+		 */
-+		for (mode = 0; mode < 8; mode++) {
-+			int level = GENMASK(3, 0) & lpm_pri;
- 
--		lpm_priority[pri0] = mode;
--		lpm_priority[pri1] = mode + 1;
-+			if (level >= LPM_MAX_NUM_MODES) {
-+				bad_pri_reg = true;
-+				break;
-+			}
-+
-+			mode_order[mode] = level;
-+			lpm_pri >>= 4;
-+		}
- 	}
- 
-+	if (!bad_pri_reg) {
-+		/* Check that we have unique values */
-+		for (i = 0; i < LPM_MAX_NUM_MODES - 1; i++)
-+			for (j = i + 1; j < LPM_MAX_NUM_MODES; j++)
-+				if (mode_order[i] == mode_order[j]) {
-+					bad_pri_reg = true;
-+					break;
-+				}
-+	}
-+
-+	/*
-+	 * If bad_pri_reg is false, then mode_order must contain unique values for
-+	 * all priority levels from 0 to LPM_MAX_NUM_MODES and this loop with properly
-+	 * overwrite our default ordering. Otherwise just use the default.
-+	 */
-+	if (!bad_pri_reg)
-+		/* Get list of modes in priority order */
-+		for (mode = 0; mode < LPM_MAX_NUM_MODES; mode++)
-+			pri_order[mode_order[mode]] = mode;
-+	else
-+		dev_warn(&pdev->dev, "Assuming a default substate order for this platform\n");
-+
- 	/*
- 	 * Loop though all modes from lowest to highest priority,
- 	 * and capture all enabled modes in order
- 	 */
- 	i = 0;
- 	for (p = LPM_MAX_NUM_MODES - 1; p >= 0; p--) {
--		int mode = lpm_priority[p];
-+		int mode = pri_order[p];
- 
- 		if (!(BIT(mode) & lpm_en))
- 			continue;
-@@ -1675,7 +1714,7 @@ static int pmc_core_probe(struct platform_device *pdev)
- 	mutex_init(&pmcdev->lock);
- 
- 	pmcdev->pmc_xram_read_bit = pmc_core_check_read_lock_bit(pmcdev);
--	pmc_core_get_low_power_modes(pmcdev);
-+	pmc_core_get_low_power_modes(pdev);
- 	pmc_core_do_dmi_quirks(pmcdev);
- 
- 	if (pmcdev->map == &tgl_reg_map)
-diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel_pmc_core.h
-index e8dae9c6c45f..9aaadb0f87df 100644
---- a/drivers/platform/x86/intel_pmc_core.h
-+++ b/drivers/platform/x86/intel_pmc_core.h
-@@ -188,6 +188,10 @@ enum ppfear_regs {
- #define ICL_PMC_SLP_S0_RES_COUNTER_STEP		0x64
- 
- #define LPM_MAX_NUM_MODES			8
-+
-+/* Must contain LPM_MAX_NUM_MODES elements */
-+#define LPM_DEFAULT_PRI				{ 7, 5, 2, 6, 4, 3, 1, 0 }
-+
- #define GET_X2_COUNTER(v)			((v) >> 1)
- #define LPM_STS_LATCH_MODE			BIT(31)
- 
+ drivers/net/mdio/mdio-mux.c | 37 ++++++++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 13 deletions(-)
+
 -- 
-2.25.1
+2.32.0.554.ge1b32706d8-goog
 
