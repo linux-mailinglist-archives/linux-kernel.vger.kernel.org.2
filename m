@@ -2,135 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9713E09EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011763E09F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhHDVQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:16:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42724 "EHLO mail.kernel.org"
+        id S230295AbhHDVUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:20:30 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:54646 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229910AbhHDVQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:16:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 511C160EE8;
-        Wed,  4 Aug 2021 21:16:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628111770;
-        bh=VXiqPxF0kjv6nWSjkMwVKlsBbYuZtRFsnuWf5zouccE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hF5WVeKONzt1hdOekY4f2881K2Sh+Ch7vjgKV6wOGs8H/ZI02DdgNePxokRg6nZ2g
-         YtdajtoC+X18GwemzS9BkcDiDCnLPUeaFpRlYCz3DDSl1/a4g8MJ9bN17wdBdwLwCC
-         MLLkT03bB+gYpEji0BT8GHoaOw+dBtJ6oXfRGuxoBGWusX/QfowVexx3mXLa8ZwM5g
-         rysUJxqP6p1h5H2y3viHY5yQtFQPGQ1MZbUVUHSr1+MKltHPns5/vGC1s29gbu6/PJ
-         0ODp45SjlCA63Xds+2sne77khLEs7CtXlD61Ahe0GVAcjaywqq+bgahYDb6eIeZIsp
-         QlxQB8elpYh9w==
-Date:   Wed, 4 Aug 2021 16:18:50 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] net/ipv4/igmp: Use struct_size() helper
-Message-ID: <20210804211850.GA42046@embeddedor>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S230014AbhHDVU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 17:20:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628112016; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=uCGICzJv+N4Cscfb4VHB7mulhy2uYSQDb+HMunR6BxM=; b=XIK5OQYMw71APGXxJOxI66ANO93SDOgAp0P1zh72nBRL0Eo+dq+1imKx9Xlyf6fguYtD/Dlk
+ mPjNriCbZjel3DkIRAgX5hToxARy/yF8QreMKFmUppRDkCbjjjfjn2/Sb7uaWKYLdWJgtfTY
+ mA/r9ajP6IAAwm5xB4XBjLhrAKA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 610b0487041a739c46c1a6ae (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Aug 2021 21:20:07
+ GMT
+Sender: rishabhb=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C823AC4338A; Wed,  4 Aug 2021 21:20:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 78CBDC433D3;
+        Wed,  4 Aug 2021 21:20:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 78CBDC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rishabhb@codeaurora.org
+From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
+To:     sudeep.holla@arm.com, cristian.marussi@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        avajid@codeaurora.org, adharmap@codeaurora.org,
+        Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Subject: [PATCH v3] firmware: arm_scmi: Free mailbox channels if probe fails
+Date:   Wed,  4 Aug 2021 14:19:59 -0700
+Message-Id: <1628111999-21595-1-git-send-email-rishabhb@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace IP_SFLSIZE() with struct_size() helper in order to avoid any
-potential type mistakes or integer overflows that, in the worst
-scenario, could lead to heap overflows.
+Mailbox channels for the base protocol are setup during probe.
+There can be a scenario where probe fails to acquire the base
+protocol due to a timeout leading to cleaning up of all device
+managed memory including the scmi_mailbox structure setup during
+mailbox_chan_setup function.
+[   12.735104]arm-scmi soc:qcom,scmi: timed out in resp(caller: version_get+0x84/0x140)
+[   12.735224]arm-scmi soc:qcom,scmi: unable to communicate with SCMI
+[   12.735947]arm-scmi: probe of soc:qcom,scmi failed with error -110
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Now when a message arrives at cpu slightly after the timeout, the mailbox
+controller will try to call the rx_callback of the client and might end
+up accessing freed memory.
+[   12.758363][    C0] Call trace:
+[   12.758367][    C0]  rx_callback+0x24/0x160
+[   12.758372][    C0]  mbox_chan_received_data+0x44/0x94
+[   12.758386][    C0]  __handle_irq_event_percpu+0xd4/0x240
+This patch frees the mailbox channels setup during probe and adds some more
+error handling in case the probe fails.
+
+Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
 ---
- include/linux/igmp.h |  3 ---
- net/ipv4/igmp.c      | 20 +++++++++++++-------
- 2 files changed, 13 insertions(+), 10 deletions(-)
+ drivers/firmware/arm_scmi/driver.c | 35 ++++++++++++++++++++++++-----------
+ 1 file changed, 24 insertions(+), 11 deletions(-)
 
-diff --git a/include/linux/igmp.h b/include/linux/igmp.h
-index 64ce8cd1cfaf..93c262ecbdc9 100644
---- a/include/linux/igmp.h
-+++ b/include/linux/igmp.h
-@@ -41,9 +41,6 @@ struct ip_sf_socklist {
- 	__be32			sl_addr[];
- };
- 
--#define IP_SFLSIZE(count)	(sizeof(struct ip_sf_socklist) + \
--	(count) * sizeof(__be32))
--
- #define IP_SFBLOCK	10	/* allocate this many at once */
- 
- /* ip_mc_socklist is real list now. Speed is not argument;
-diff --git a/net/ipv4/igmp.c b/net/ipv4/igmp.c
-index a5f4ecb02e97..cca84d2b13d6 100644
---- a/net/ipv4/igmp.c
-+++ b/net/ipv4/igmp.c
-@@ -2233,7 +2233,7 @@ static int ip_mc_leave_src(struct sock *sk, struct ip_mc_socklist *iml,
- 			iml->sfmode, psf->sl_count, psf->sl_addr, 0);
- 	RCU_INIT_POINTER(iml->sflist, NULL);
- 	/* decrease mem now to avoid the memleak warning */
--	atomic_sub(IP_SFLSIZE(psf->sl_max), &sk->sk_omem_alloc);
-+	atomic_sub(struct_size(psf, sl_addr, psf->sl_max), &sk->sk_omem_alloc);
- 	kfree_rcu(psf, rcu);
- 	return err;
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 9b2e8d4..ead3bd3 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -1390,6 +1390,21 @@ void scmi_protocol_device_unrequest(const struct scmi_device_id *id_table)
+ 	mutex_unlock(&scmi_requested_devices_mtx);
  }
-@@ -2382,7 +2382,8 @@ int ip_mc_source(int add, int omode, struct sock *sk, struct
  
- 		if (psl)
- 			count += psl->sl_max;
--		newpsl = sock_kmalloc(sk, IP_SFLSIZE(count), GFP_KERNEL);
-+		newpsl = sock_kmalloc(sk, struct_size(newpsl, sl_addr, count),
-+				      GFP_KERNEL);
- 		if (!newpsl) {
- 			err = -ENOBUFS;
- 			goto done;
-@@ -2393,7 +2394,8 @@ int ip_mc_source(int add, int omode, struct sock *sk, struct
- 			for (i = 0; i < psl->sl_count; i++)
- 				newpsl->sl_addr[i] = psl->sl_addr[i];
- 			/* decrease mem now to avoid the memleak warning */
--			atomic_sub(IP_SFLSIZE(psl->sl_max), &sk->sk_omem_alloc);
-+			atomic_sub(struct_size(psl, sl_addr, psl->sl_max),
-+				   &sk->sk_omem_alloc);
- 			kfree_rcu(psl, rcu);
- 		}
- 		rcu_assign_pointer(pmc->sflist, newpsl);
-@@ -2468,8 +2470,9 @@ int ip_mc_msfilter(struct sock *sk, struct ip_msfilter *msf, int ifindex)
- 		goto done;
++static int scmi_cleanup_txrx_channels(struct scmi_info *info)
++{
++	int ret;
++	struct idr *idr = &info->tx_idr;
++
++	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
++	idr_destroy(&info->tx_idr);
++
++	idr = &info->rx_idr;
++	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
++	idr_destroy(&info->rx_idr);
++
++	return ret;
++}
++
+ static int scmi_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+@@ -1430,7 +1445,7 @@ static int scmi_probe(struct platform_device *pdev)
+ 
+ 	ret = scmi_xfer_info_init(info);
+ 	if (ret)
+-		return ret;
++		goto clear_txrx_setup;
+ 
+ 	if (scmi_notification_init(handle))
+ 		dev_err(dev, "SCMI Notifications NOT available.\n");
+@@ -1443,7 +1458,7 @@ static int scmi_probe(struct platform_device *pdev)
+ 	ret = scmi_protocol_acquire(handle, SCMI_PROTOCOL_BASE);
+ 	if (ret) {
+ 		dev_err(dev, "unable to communicate with SCMI\n");
+-		return ret;
++		goto notification_exit;
  	}
- 	if (msf->imsf_numsrc) {
--		newpsl = sock_kmalloc(sk, IP_SFLSIZE(msf->imsf_numsrc),
--							   GFP_KERNEL);
-+		newpsl = sock_kmalloc(sk, struct_size(newpsl, sl_addr,
-+						      msf->imsf_numsrc),
-+				      GFP_KERNEL);
- 		if (!newpsl) {
- 			err = -ENOBUFS;
- 			goto done;
-@@ -2480,7 +2483,9 @@ int ip_mc_msfilter(struct sock *sk, struct ip_msfilter *msf, int ifindex)
- 		err = ip_mc_add_src(in_dev, &msf->imsf_multiaddr,
- 			msf->imsf_fmode, newpsl->sl_count, newpsl->sl_addr, 0);
- 		if (err) {
--			sock_kfree_s(sk, newpsl, IP_SFLSIZE(newpsl->sl_max));
-+			sock_kfree_s(sk, newpsl,
-+				     struct_size(newpsl, sl_addr,
-+						 newpsl->sl_max));
- 			goto done;
- 		}
- 	} else {
-@@ -2493,7 +2498,8 @@ int ip_mc_msfilter(struct sock *sk, struct ip_msfilter *msf, int ifindex)
- 		(void) ip_mc_del_src(in_dev, &msf->imsf_multiaddr, pmc->sfmode,
- 			psl->sl_count, psl->sl_addr, 0);
- 		/* decrease mem now to avoid the memleak warning */
--		atomic_sub(IP_SFLSIZE(psl->sl_max), &sk->sk_omem_alloc);
-+		atomic_sub(struct_size(psl, sl_addr, psl->sl_max),
-+			   &sk->sk_omem_alloc);
- 		kfree_rcu(psl, rcu);
- 	} else
- 		(void) ip_mc_del_src(in_dev, &msf->imsf_multiaddr, pmc->sfmode,
+ 
+ 	mutex_lock(&scmi_list_mutex);
+@@ -1482,6 +1497,12 @@ static int scmi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	return 0;
++
++notification_exit:
++	scmi_notification_exit(&info->handle);
++clear_txrx_setup:
++	scmi_cleanup_txrx_channels(info);
++	return ret;
+ }
+ 
+ void scmi_free_channel(struct scmi_chan_info *cinfo, struct idr *idr, int id)
+@@ -1493,7 +1514,6 @@ static int scmi_remove(struct platform_device *pdev)
+ {
+ 	int ret = 0, id;
+ 	struct scmi_info *info = platform_get_drvdata(pdev);
+-	struct idr *idr = &info->tx_idr;
+ 	struct device_node *child;
+ 
+ 	mutex_lock(&scmi_list_mutex);
+@@ -1517,14 +1537,7 @@ static int scmi_remove(struct platform_device *pdev)
+ 	idr_destroy(&info->active_protocols);
+ 
+ 	/* Safe to free channels since no more users */
+-	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
+-	idr_destroy(&info->tx_idr);
+-
+-	idr = &info->rx_idr;
+-	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
+-	idr_destroy(&info->rx_idr);
+-
+-	return ret;
++	return scmi_cleanup_txrx_channels(info);
+ }
+ 
+ static ssize_t protocol_version_show(struct device *dev,
 -- 
-2.27.0
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
