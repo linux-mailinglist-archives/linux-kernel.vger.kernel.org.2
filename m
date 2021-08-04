@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC763E00D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD813E00D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237986AbhHDMHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S238007AbhHDMHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 08:07:14 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:49500
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237987AbhHDMHL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Aug 2021 08:07:11 -0400
-Received: from mga06.intel.com ([134.134.136.31]:49804 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234765AbhHDMHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 08:07:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="274958502"
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="274958502"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 05:06:56 -0700
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="511886792"
-Received: from dfuxbrum-mobl.ger.corp.intel.com (HELO [10.251.175.67]) ([10.251.175.67])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 05:06:53 -0700
-Subject: Re: [Intel-wired-lan] [PATCH v2] igc: fix page fault when thunderbolt
- is unplugged
-To:     Aaron Ma <aaron.ma@canonical.com>, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210702045120.22855-1-aaron.ma@canonical.com>
- <20210713130036.741188-1-aaron.ma@canonical.com>
-From:   "Fuxbrumer, Dvora" <dvorax.fuxbrumer@linux.intel.com>
-Message-ID: <567b12f8-359a-5268-e020-edcf2dd46937@linux.intel.com>
-Date:   Wed, 4 Aug 2021 15:06:44 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 83E143F22C;
+        Wed,  4 Aug 2021 12:06:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628078818;
+        bh=I5iMEiYeK7cuE7cXx3He18rSygUas33plv7CQH+qomo=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=oKgu7LLaNOTt74RaPSZyRHkmp5yWtEGV147IXE6ePMGAtzEwc0Q3bi7MTOcmT1zqP
+         zdl5NTXsCx0JnZ+RrgfaS6r1pKra/92ZJNnZWQvnKXDM3Zk+pwmLJV4h+tOS3mEETb
+         Pe6Jlmu3qrq3qWjcBLYim9LMX5qln+CNNWofZH2ieZPKA028GXTKaqaYtPfLbA8jXq
+         UZOORXeRoiIy+BKStZp5cILJ/iFT9yk7qsPqufOmIYbUPhx+TDhT4EYaRScEW4MJOj
+         4a8JHR7c4nYX+zDZGcKtBtgF3Tc9btIjbja0mcBvaooRkmYMazEHPXG9anUjIm16mJ
+         B0Az3PkkL0amw==
+From:   Colin King <colin.king@canonical.com>
+To:     "Eric W . Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] kernel/user.c: Fix spelling mistake "cpunter" -> "counter"
+Date:   Wed,  4 Aug 2021 13:06:58 +0100
+Message-Id: <20210804120658.110124-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210713130036.741188-1-aaron.ma@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/2021 16:00, Aaron Ma wrote:
-> After unplug thunerbolt dock with i225, pciehp interrupt is triggered,
-> remove call will read/write mmio address which is already disconnected,
-> then cause page fault and make system hang.
-> 
-> Check PCI state to remove device safely.
-> 
-> Trace:
-> BUG: unable to handle page fault for address: 000000000000b604
-> Oops: 0000 [#1] SMP NOPTI
-> RIP: 0010:igc_rd32+0x1c/0x90 [igc]
-> Call Trace:
-> igc_ptp_suspend+0x6c/0xa0 [igc]
-> igc_ptp_stop+0x12/0x50 [igc]
-> igc_remove+0x7f/0x1c0 [igc]
-> pci_device_remove+0x3e/0xb0
-> __device_release_driver+0x181/0x240
-> 
-> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
-> ---
->   drivers/net/ethernet/intel/igc/igc_main.c | 32 ++++++++++++++---------
->   drivers/net/ethernet/intel/igc/igc_ptp.c  |  3 ++-
->   2 files changed, 21 insertions(+), 14 deletions(-)
-> 
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
+From: Colin Ian King <colin.king@canonical.com>
+
+There is a spelling mistake in a panic message. Fix it.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ kernel/user.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/user.c b/kernel/user.c
+index a2673f940506..7fc40af8d8ac 100644
+--- a/kernel/user.c
++++ b/kernel/user.c
+@@ -223,7 +223,7 @@ static int __init uid_cache_init(void)
+ 		INIT_HLIST_HEAD(uidhash_table + n);
+ 
+ 	if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
+-		panic("percpu cpunter alloc failed");
++		panic("percpu counter alloc failed");
+ 
+ 	/* Insert the root user immediately (init already runs as root) */
+ 	spin_lock_irq(&uidhash_lock);
+-- 
+2.31.1
+
