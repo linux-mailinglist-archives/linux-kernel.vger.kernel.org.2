@@ -2,147 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323083DFB5D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0953DFB67
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235519AbhHDGTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 02:19:42 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:14498 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234500AbhHDGTm (ORCPT
+        id S235563AbhHDGVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 02:21:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36882 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232618AbhHDGVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 02:19:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628057970; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=MvT690lgnJQyLYZVI6U25Gaz7oGo0Bzcm+74dXOx2iY=; b=WHMbG/5ofgFeOo1NH6/F1H+B4DtcRfoo8i1JhH5KxG4vgXBiZ0JZjRCjdahgGvwmI5kpANdy
- +VNKuyw2JAEy95epmg2IQCU8xTuL3nTnc+bpsjsX6paNrwx3IqCSvVRL6kq1EmznyxH3GnNL
- OqCpmDVyiTQkJHLIWq5tp+VDM8M=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 610a31703341038a23603d7e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Aug 2021 06:19:28
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 06D47C4338A; Wed,  4 Aug 2021 06:19:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.9] (cpe-75-80-185-151.san.res.rr.com [75.80.185.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Wed, 4 Aug 2021 02:21:35 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id BA5C822139;
+        Wed,  4 Aug 2021 06:21:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1628058081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J26bRC9AqL9yzAXTcNmpFXfcnAuaPb5GeWdDw/9Ibro=;
+        b=PrH3TePlw7r5kZOL2S/iTUbxAUPK0XpagG2SryHdrg0f8+d1Srw0oXSrsPXXpXzrBiLWAr
+        JC0zwPOk5NYaUwnBlfO7vYOiLjZPq45XJbCZrvj9Ck0uAyMA52dSopLxTZnlGrIZ2dsNS7
+        qRsHFG/D6pACnxLt5b8rF7EiuBaZKlg=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3E02C433F1;
-        Wed,  4 Aug 2021 06:19:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C3E02C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH] usb: dwc3: gadget: Avoid runtime resume if disabling
- pullup
-To:     Felipe Balbi <balbi@kernel.org>, Jack Pham <jackp@codeaurora.org>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1627691374-15711-1-git-send-email-wcheng@codeaurora.org>
- <20210802213301.GG25299@jackp-linux.qualcomm.com> <87tuk7558p.fsf@kernel.org>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <affc3877-43af-8816-247f-fe4631486f1c@codeaurora.org>
-Date:   Tue, 3 Aug 2021 23:19:25 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        by relay2.suse.de (Postfix) with ESMTPS id F2469A3B84;
+        Wed,  4 Aug 2021 06:21:20 +0000 (UTC)
+Date:   Wed, 4 Aug 2021 08:21:12 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v4 1/2] mm: introduce process_mrelease system call
+Message-ID: <YQox2Ems40WXmJ3z@dhcp22.suse.cz>
+References: <20210802221431.2251210-1-surenb@google.com>
+ <YQkAqwZIF+AnpexA@dhcp22.suse.cz>
+ <CAJuCfpGiYAdvOydimHbK73oKS-ZfMMBtADXxWCYpxkX2qJX08g@mail.gmail.com>
+ <CAJuCfpEjb+o_TuQqxYALcvpr+4kq7tVNjq7A3oahB=1=JPyWtw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87tuk7558p.fsf@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpEjb+o_TuQqxYALcvpr+4kq7tVNjq7A3oahB=1=JPyWtw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/3/2021 12:58 AM, Felipe Balbi wrote:
+On Tue 03-08-21 15:09:43, Suren Baghdasaryan wrote:
+> On Tue, Aug 3, 2021 at 10:27 AM Suren Baghdasaryan <surenb@google.com> wrote:
+[...]
+> > > > +     if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
+> > > > +             mm = task->mm;
+> > > > +             mmget(mm);
+> > > > +     }
+> > > > +     task_unlock(task);
+> > > > +     if (!mm) {
+> > >
+> > > Do we want to treat MMF_OOM_SKIP as a failure?
+> >
+> > Yeah, I don't think we want to create additional contention if
+> > oom-killer is already working on this mm. Should we return EBUSY in
+> > this case? Other possible options is ESRCH, indicating that this
+> > process is a goner, so don't bother. WDYT?
 > 
-> Jack Pham <jackp@codeaurora.org> writes:
-> 
->> Hi Wesley,
->>
->> On Fri, Jul 30, 2021 at 05:29:34PM -0700, Wesley Cheng wrote:
->>> If the device is already in the runtime suspended state, any call to
->>> the pullup routine will issue a runtime resume on the DWC3 core
->>> device.  If the USB gadget is disabling the pullup, then avoid having
->>> to issue a runtime resume, as DWC3 gadget has already been
->>> halted/stopped.
->>>
->>> This fixes an issue where the following condition occurs:
->>>
->>> usb_gadget_remove_driver()
->>> -->usb_gadget_disconnect()
->>>  -->dwc3_gadget_pullup(0)
->>>   -->pm_runtime_get_sync() -> ret = 0
->>>   -->pm_runtime_put() [async]
->>> -->usb_gadget_udc_stop()
->>>  -->dwc3_gadget_stop()
->>>   -->dwc->gadget_driver = NULL
->>> ...
->>>
->>> dwc3_suspend_common()
->>> -->dwc3_gadget_suspend()
->>>  -->DWC3 halt/stop routine skipped, driver_data == NULL
->>>
->>> This leads to a situation where the DWC3 gadget is not properly
->>> stopped, as the runtime resume would have re-enabled EP0 and event
->>> interrupts, and since we avoided the DWC3 gadget suspend, these
->>> resources were never disabled.
->>>
->>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
->>> ---
->>>  drivers/usb/dwc3/gadget.c | 11 +++++++++++
->>>  1 file changed, 11 insertions(+)
->>>
->>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
->>> index a29a4ca..5d08454 100644
->>> --- a/drivers/usb/dwc3/gadget.c
->>> +++ b/drivers/usb/dwc3/gadget.c
->>> @@ -2435,6 +2435,17 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
->>>  	}
->>>  
->>>  	/*
->>> +	 * Avoid issuing a runtime resume if the device is already in the
->>> +	 * suspended state during gadget disconnect.  DWC3 gadget was already
->>> +	 * halted/stopped during runtime suspend.
->>> +	 */
->>> +	if (!is_on) {
->>> +		pm_runtime_barrier(dwc->dev);
->>> +		if (pm_runtime_suspended(dwc->dev))
->>> +			return 0;
->>> +	}
->>> +
->>> +	/*
->>>  	 * Check the return value for successful resume, or error.  For a
->>>  	 * successful resume, the DWC3 runtime PM resume routine will handle
->>>  	 * the run stop sequence, so avoid duplicate operations here.
+> After considering this some more I think ESRCH would be more
+> appropriate. EBUSY might be understood as "I need to retry at a better
+> time", which is not what we want here.
 
-Hi Jack/Felipe,
-
->>
->> Should this also go to stable with Fixes: 77adb8bdf422 ("usb: dwc3:
->> gadget: Allow runtime suspend if UDC unbinded") ?
-> 
-> sounds like a good idea.
-> 
-
-Sure, will update the commit text with the fixes tag.  Thanks!
-
-Regards,
-Wesley Cheng
+Why cannot we simply return 0 in that case. The work has been done
+already by the kernel so why should we tell the caller that there was
+something wrong?
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Michal Hocko
+SUSE Labs
