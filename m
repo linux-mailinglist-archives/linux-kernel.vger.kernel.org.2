@@ -2,118 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977C03E04A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932953E04A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239257AbhHDPpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:45:47 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44446 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239114AbhHDPpr (ORCPT
+        id S239310AbhHDPqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:46:52 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:56389 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239114AbhHDPqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:45:47 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6778422225;
-        Wed,  4 Aug 2021 15:45:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628091933; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZTHKDhy7QKob/eaRcBJjwJXlWU+Io0cHwVpOGaPMVAE=;
-        b=BLM9Ki0iW/lyKNlI//dF7LJpvNsYWNaE1UC6O14ECEQd7hn3Y8CWxKb7m56jDkECrafNvI
-        oxsMD+ZdCl1xaKsydE9buHZ/rj91rXmBlOsajYA2qIIERRyq37daGWc96Hc8aLvKBKylMt
-        oSzVFv4sX1CPNkWDqMZIOJ8wITn8BNw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628091933;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZTHKDhy7QKob/eaRcBJjwJXlWU+Io0cHwVpOGaPMVAE=;
-        b=Gah5GKirZCHXMkuoEdbh9za5yIowYUpZ7AqVSUcapFGz5k63dnttc2np+KSr4cez4Ij5Lk
-        GFyeAd9GxzwJsUDA==
-Received: from quack2.suse.cz (jack.udp.ovpn2.nue.suse.de [10.163.43.118])
-        by relay2.suse.de (Postfix) with ESMTP id 53C37A3B84;
-        Wed,  4 Aug 2021 15:45:33 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 944F11F2B83; Wed,  4 Aug 2021 17:45:30 +0200 (CEST)
-Date:   Wed, 4 Aug 2021 17:45:30 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Wang Jianchao <jianchao.wan9@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tytso@mit.edu, adilger.kernel@dilger.ca
-Subject: Re: [PATCH V3 4/5] ext4: get discard out of jbd2 commit kthread
- contex
-Message-ID: <20210804154530.GL4578@quack2.suse.cz>
-References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
- <20210724074124.25731-5-jianchao.wan9@gmail.com>
+        Wed, 4 Aug 2021 11:46:50 -0400
+Received: from localhost ([31.220.117.74]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MlL5x-1msJTQ3krt-00lmxR; Wed, 04 Aug 2021 17:45:53 +0200
+Date:   Wed, 4 Aug 2021 17:45:50 +0200
+From:   Andreas Klinger <ak@it-klinger.de>
+To:     devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jiri Kosina <trivial@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Slawomir Stepien <sst@poczta.fm>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>
+Subject: [PATCH v2 1/2] dt-bindings: iio: chemical: Add trivial DT binding
+ for sgp40
+Message-ID: <20210804154549.GA3223@arbad>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210724074124.25731-5-jianchao.wan9@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:CrKk4+CxORokZ0dQnPDoLkZhQSIy79eAhrhmCbP4jWiq/4RmT0D
+ j++vDpnnsqQpILdizZJrPyVsKF17StHJYz8xmL9Ha2ZOsAUaL6cDL1RcflxGxfYK6dPQhIB
+ 5xHnGskA88HC21C2sY6FstrBYGHbvQJVxDB3tIGNPGrScROzlFNCGvBCYwXK1L6Nwh+6LI/
+ GdAWuMWY9GUe98mmsvelQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zkV8I4A8ESU=:PgkqEc9D3JTp9FpcQ80kL3
+ 5u2JD4X7VpRjh9PUZGVzGbP51p6ddjujrLtrcSc/e8AjL/u/2gv/OZgftllLZ9AleCPaskzLe
+ uoYDo4sli50+5V7kN+uXuA8Hq6bxAASWJaXVHEiOq5tpo0G2Y6J3kznHRuFhYVO3j1ocxITIJ
+ xVwSyn6s7E91zE+ucQZU2Mtk/6u61KhFAwrvcP5oAQpDKfwuYhFPyLrHq/XOFN+lRSPYrbAtK
+ TzRlGyNTdp7pPO2e8Vl1rUWrXA3boOcNfMkjI9fy0QBFcz9SRU/mxJkW3K/3IORzl8mPqXFGe
+ CW2Zv5duY1CT2gfemjIlJi7e8EiluYDsOWmS0HY3vBVjVUjFB1AgReF82lQhWQU/kuNZfcRaU
+ KV8+gMqavWqOmTm0u71rUyQWJQvnBDf21dUhEAyo3komD59iLBDvjI+b8yBMq1VMpOSwS/chq
+ NY5AtNHLLONq8WqYlex0AjHnsDHcS2IMRguH3tJlFwUbztJQki9/uKr0hdqJ3b4YgAH0+DdaV
+ bFwvQ5JYiAdGJ673sSZ5sSLYi9Gp2405aI83atwU+fJ/ZR+QV9GG/qC3kJxbuXd7f+R0eOpRM
+ GVKKC01jBAsDOSo1Vk7CJYzh4BlPBrVizkUuIE2eeb759D1mvzkwlKL48U/E8tRFLpcYDJaDz
+ BgMgjbCuNvwGxMomCzCxxnJ8HpKAYvm4aKySyeZSvNStWjP2jxEGuZx4Lur2Bs+ghLWzCpghn
+ QzO8eZulbPAgrOzPl7CAZVh/0VygLsWDPHKb1fzCqirVA+ylMGanR2SW054lwGjKPArlduyIr
+ Bt7jZNSpbpAv1MsTldPPy2DBzXBQz4U7ogFrXBQs6HUMK8DgT/T9TuQuc0heYwBuVyeanq+
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 24-07-21 15:41:23, Wang Jianchao wrote:
-> From: Wang Jianchao <wangjianchao@kuaishou.com>
-> 
-> Right now, discard is issued and waited to be completed in jbd2
-> commit kthread context after the logs are committed. When large
-> amount of files are deleted and discard is flooding, jbd2 commit
-> kthread can be blocked for long time. Then all of the metadata
-> operations can be blocked to wait the log space.
-> 
-> One case is the page fault path with read mm->mmap_sem held, which
-> wants to update the file time but has to wait for the log space.
-> When other threads in the task wants to do mmap, then write mmap_sem
-> is blocked. Finally all of the following read mmap_sem requirements
-> are blocked, even the ps command which need to read the /proc/pid/
-> -cmdline. Our monitor service which needs to read /proc/pid/cmdline
-> used to be blocked for 5 mins.
-> 
-> This patch frees the blocks back to buddy after commit and then do
-> discard in a async kworker context in fstrim fashion, namely,
->  - mark blocks to be discarded as used if they have not been allocated
->  - do discard
->  - mark them free
-> After this, jbd2 commit kthread won't be blocked any more by discard
-> and we won't get NOSPC even if the discard is slow or throttled.
-> 
-> Link: https://marc.info/?l=linux-kernel&m=162143690731901&w=2
-> Suggested-by: Theodore Ts'o <tytso@mit.edu>
-> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
+Add devicetree binding for Sensirion sgp40 gas sensor to trivial
+devices.
 
-Looks good to me. Just one small comment below. With that addressed feel
-free to add:
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Andreas Klinger <ak@it-klinger.de>
+---
+ Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-
-> @@ -3474,6 +3530,14 @@ int ext4_mb_release(struct super_block *sb)
->  	struct kmem_cache *cachep = get_groupinfo_cache(sb->s_blocksize_bits);
->  	int count;
->  
-> +	if (test_opt(sb, DISCARD)) {
-> +		/*
-> +		 * wait the discard work to drain all of ext4_free_data
-> +		 */
-> +		queue_work(ext4_discard_wq, &sbi->s_discard_work);
-
-Do we really need to queue the work here? The filesystem should be
-quiescent by now, we take care to queue the work whenever we add item to
-empty list. So it should be enough to have flush_work() here and then
-possibly
-
-	WARN_ON_ONCE(!list_empty(&sbi->s_discard_list))
-
-Or am I missing something?
-
-								Honza
-
-> +		flush_work(&sbi->s_discard_work);
-> +	}
-> +
+diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+index 919a4bf03a5a..be313b6b4f81 100644
+--- a/Documentation/devicetree/bindings/trivial-devices.yaml
++++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+@@ -269,6 +269,8 @@ properties:
+           - sensirion,sgpc3
+             # Sensirion multi-pixel gas sensor with I2C interface
+           - sensirion,sgp30
++            # Sensirion gas sensor with I2C interface
++          - sensirion,sgp40
+             # Sensortek 3 axis accelerometer
+           - sensortek,stk8312
+             # Sensortek 3 axis accelerometer
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.20.1
