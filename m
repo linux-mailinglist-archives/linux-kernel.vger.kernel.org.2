@@ -2,138 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6DE3E04AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 908F23E04BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239336AbhHDPsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:48:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239114AbhHDPr7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:47:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5639AC0613D5;
-        Wed,  4 Aug 2021 08:47:46 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 17:47:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628092064;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L8OdJeF6JX172ja4DHg/13gB0TcQV9nvDbrJGCXaKxI=;
-        b=eAJ0WYaBxEx94IoYGhNmJgpLXavP/dbnM4waqvyYkxxDEaZpXaU5Bu9UaIgu/gURL/wq1K
-        FF5Mhaz113Rqt6wD18suN+6rk06HMZrXkfKMH/G+ZPKCNkpNm3FycGTA+asDYSG1lovGuc
-        mRW5nRnEzCvJY3Bx5OheXTFFrbm0f97rev6evqRCp5NqatlxkVVh2dgD3JNRHdkHWiIvpf
-        JfFuCL4VeHoyj4ABaFMukk/HEP8tl0sLYec+94i9lsHZOI6t+k7XUhTFON3G44k0Nv/M9i
-        DcsISUB9DC+u9690yPCZuLCNz8ugL9Up+w8x7WUG3/QWg4F08k/sAqEYip3ipw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628092064;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L8OdJeF6JX172ja4DHg/13gB0TcQV9nvDbrJGCXaKxI=;
-        b=hMQgg0lYWq9HDBfvQ1C8h3Lc1r6amaA3itFJgjy5MXMF+3tEHcRWcy4Iav8yuWNnPh6oON
-        s2YQC/j9qyh1utDA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <wagi@monom.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.14-rc4-rt4
-Message-ID: <20210804154743.niogqvnladdkfgi2@linutronix.de>
-References: <20210802162750.santic4y6lzcet5c@linutronix.de>
- <20210804082418.fbibprcwtzyt5qax@beryllium.lan>
- <20210804104340.fhdjwn3hruymu3ml@linutronix.de>
- <20210804104803.4nwxi74sa2vwiujd@linutronix.de>
- <20210804110057.chsvt7l5xpw7bo5r@linutronix.de>
- <20210804131731.GG8057@worktop.programming.kicks-ass.net>
- <4f549344-1040-c677-6a6a-53e243c5f364@kernel.dk>
- <feebf183-2e33-36b5-4538-62a40b2a58b6@kernel.dk>
- <20210804153308.oasahcxjmcw7vivo@linutronix.de>
- <f2d0a028-fe85-28ff-9cea-8ab1d26a15d0@kernel.dk>
+        id S239421AbhHDPsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:48:55 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:15478 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231506AbhHDPsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 11:48:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628092119; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=U04zS4aQmZ0a5D68P4sb04QFg2j4jgMCiJPHHK81Tac=;
+ b=CX8gTTzJmPoI/jN5zw6pOMlOK5MUkuaBichgkElwFzsIYuJbWoVNZlpNuiLGRa+5W6Wg1/sa
+ TE/2DKptkGaP/rq5QKz8PzDDRVtBssC7Nk1hJjCjyJxAHhv/C4cAwqwZwR/GRYwtksZJZ39O
+ OitjA7nKxfvou9zYISzbms+18c4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 610ab6b51a9008a23e1c2062 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Aug 2021 15:48:05
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 92BE9C43145; Wed,  4 Aug 2021 15:48:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2AD84C433F1;
+        Wed,  4 Aug 2021 15:48:04 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f2d0a028-fe85-28ff-9cea-8ab1d26a15d0@kernel.dk>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 04 Aug 2021 08:48:04 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
+        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drm/msm/dp: update is_connected status base on sink
+ count at dp_pm_resume()
+In-Reply-To: <CAE-0n51yNrmrqgDrkj2+c2Bx-bYxNs1m2pQBxvVkSpBH2hxzoA@mail.gmail.com>
+References: <1628007913-29892-1-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n51yNrmrqgDrkj2+c2Bx-bYxNs1m2pQBxvVkSpBH2hxzoA@mail.gmail.com>
+Message-ID: <ab2a7aadb6ada58246ec972c4938c627@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-04 09:39:30 [-0600], Jens Axboe wrote:
-> I'm confused, the waitqueue locks are always IRQ disabling.
+On 2021-08-03 12:05, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-08-03 09:25:13)
+>> Currently at dp_pm_resume() is_connected state is decided base on hpd 
+>> connection
+>> status only. This will put is_connected in wrongly "true" state at the 
+>> scenario
+>> that dongle attached to DUT but without hmdi cable connecting to it. 
+>> Fix this
+>> problem by adding read sink count from dongle and decided is_connected 
+>> state base
+>> on both sink count and hpd connection status.
+>> 
+>> Changes in v2:
+>> -- remove dp_get_sink_count() cand call drm_dp_read_sink_count()
+>> 
+>> Changes in v3:
+>> -- delete status local variable from dp_pm_resume()
+>> 
+>> Fixes: d9aa6571b28ba ("drm/msm/dp: check sink_count before update 
+>> is_connected status")
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> ---
+>>  drivers/gpu/drm/msm/dp/dp_display.c | 18 +++++++++++++++---
+>>  1 file changed, 15 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
+>> b/drivers/gpu/drm/msm/dp/dp_display.c
+>> index 78c5301..0f39256 100644
+>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>> @@ -1313,7 +1313,7 @@ static int dp_pm_resume(struct device *dev)
+>>         struct platform_device *pdev = to_platform_device(dev);
+>>         struct msm_dp *dp_display = platform_get_drvdata(pdev);
+>>         struct dp_display_private *dp;
+>> -       u32 status;
+>> +       int sink_count = 0;
+>> 
+>>         dp = container_of(dp_display, struct dp_display_private, 
+>> dp_display);
+>> 
+>> @@ -1327,14 +1327,26 @@ static int dp_pm_resume(struct device *dev)
+>> 
+>>         dp_catalog_ctrl_hpd_config(dp->catalog);
+>> 
+>> -       status = dp_catalog_link_is_connected(dp->catalog);
+>> +       /*
+>> +        * set sink to normal operation mode -- D0
+>> +        * before dpcd read
+>> +        */
+>> +       dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+>> +
+>> +       /* if sink conencted, do dpcd read sink count */
+> 
+> s/conencted/connected/
+> 
+> This also just says what the code is doing. Why do we only read the 
+> sink
+> count if the link is connected? Can we read the sink count even if the
+> link isn't connected and then consider sink count as 0 if trying to 
+> read
+> fails?
+> 
+yes, we can do that.
+But it will suffer aux time out and retry.
+i think it is better to avoid this overhead by check connection first.
 
-spin_lock_irq() does not disable interrupts on -RT. The patch above
-produces:
-
-| BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
-| in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 2020, name: iou-wrk-2018
-| 1 lock held by iou-wrk-2018/2020:
-|  #0: ffff888111a47de8 (&hash->wait){+.+.}-{0:0}, at: io_worker_handle_work+0x443/0x630
-| irq event stamp: 10
-| hardirqs last  enabled at (9): [<ffffffff81c47818>] _raw_spin_unlock_irqrestore+0x28/0x70
-| hardirqs last disabled at (10): [<ffffffff81c4769e>] _raw_spin_lock_irq+0x3e/0x40
-| softirqs last  enabled at (0): [<ffffffff81077238>] copy_process+0x8f8/0x2020
-| softirqs last disabled at (0): [<0000000000000000>] 0x0
-| CPU: 5 PID: 2020 Comm: iou-wrk-2018 Tainted: G        W         5.14.0-rc4-rt4+ #97
-| Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-| Call Trace:
-|  dump_stack_lvl+0x45/0x59
-|  ___might_sleep.cold+0xa6/0xb6
-|  rt_spin_lock+0x35/0xc0
-|  ? io_worker_handle_work+0x443/0x630
-|  io_worker_handle_work+0x443/0x630
-|  io_wqe_worker+0xb4/0x340
-|  ? lockdep_hardirqs_on_prepare+0xd4/0x170
-|  ? _raw_spin_unlock_irqrestore+0x28/0x70
-|  ? _raw_spin_unlock_irqrestore+0x28/0x70
-|  ? io_worker_handle_work+0x630/0x630
-|  ? rt_mutex_slowunlock+0x2ba/0x310
-|  ? io_worker_handle_work+0x630/0x630
-|  ret_from_fork+0x22/0x30
-
-
-But indeed, you are right, my snippet breaks non-RT. So this then maybe:
-
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index 57d3cdddcdb3e..0b931ac3c83e6 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -384,7 +384,7 @@ static void io_wait_on_hash(struct io_wqe *wqe, unsigned int hash)
- {
- 	struct io_wq *wq = wqe->wq;
- 
--	spin_lock(&wq->hash->wait.lock);
-+	spin_lock_irq(&wq->hash->wait.lock);
- 	if (list_empty(&wqe->wait.entry)) {
- 		__add_wait_queue(&wq->hash->wait, &wqe->wait);
- 		if (!test_bit(hash, &wq->hash->map)) {
-@@ -392,7 +392,7 @@ static void io_wait_on_hash(struct io_wqe *wqe, unsigned int hash)
- 			list_del_init(&wqe->wait.entry);
- 		}
- 	}
--	spin_unlock(&wq->hash->wait.lock);
-+	spin_unlock_irq(&wq->hash->wait.lock);
- }
- 
- static struct io_wq_work *io_get_next_work(struct io_wqe *wqe)
-@@ -430,9 +430,9 @@ static struct io_wq_work *io_get_next_work(struct io_wqe *wqe)
- 	}
- 
- 	if (stall_hash != -1U) {
--		raw_spin_unlock(&wqe->lock);
-+		raw_spin_unlock_irq(&wqe->lock);
- 		io_wait_on_hash(wqe, stall_hash);
--		raw_spin_lock(&wqe->lock);
-+		raw_spin_lock_irq(&wqe->lock);
- 	}
- 
- 	return NULL;
-
-(this is on-top of the patch you sent earlier and Daniel Cc: me on after
-I checked that the problem/warning still exists).
-
-Sebastian
+>> +       if (dp_catalog_link_is_connected(dp->catalog)) {
+>> +               sink_count = drm_dp_read_sink_count(dp->aux);
+>> +               if (sink_count < 0)
+>> +                       sink_count = 0;
+>> +       }
+>> 
+>> +       dp->link->sink_count = sink_count;
+>>         /*
+>>          * can not declared display is connected unless
+>>          * HDMI cable is plugged in and sink_count of
+>>          * dongle become 1
+>>          */
+>> -       if (status && dp->link->sink_count)
+>> +       if (dp->link->sink_count)
+>>                 dp->dp_display.is_connected = true;
+>>         else
+>>                 dp->dp_display.is_connected = false;
