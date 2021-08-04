@@ -2,122 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263B93E0047
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 13:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF5C3E004B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 13:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237740AbhHDLfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 07:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
+        id S237766AbhHDLfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 07:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237592AbhHDLfe (ORCPT
+        with ESMTP id S237719AbhHDLfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 07:35:34 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB21C061798
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 04:35:21 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id v16so823032vss.7
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 04:35:21 -0700 (PDT)
+        Wed, 4 Aug 2021 07:35:37 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBCBC06179A
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 04:35:25 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id a1so807603vsd.12
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 04:35:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zFmNv8bWnnhaUEfEbtd/dIDab8KFB9ZFGv6zOrp9yb4=;
-        b=iu0kyRPpYLdd/jKrXz1byoUVslMvTNXKDP5os4v7jpIA9Q4eZ9ui2ItYYzm14Ep4dl
-         ovQWvTdkAoGV/HM55AZMcYojzijUvBsmwjyLPGu0ajgS9yg+HSdYM/DjDuTE17r2kwku
-         A+KsLof1HDrPTHh9X4WNRSZ47BKMaPTBXgjUPbKDxD5p3F1e9ikCH9SB/1sGkt0AhztT
-         M73vqhZO16i6VffkAeO6/HB5YHRQsL1u+GxNm9q+8l7dx+BQdsx+PgRnG85naHFHwF+S
-         Txfpfm+vz2kG5lnH4z1nUXucc4va+QumoW539vaWHuhUsrmG7osUGfM8sVu4nHtsY2kb
-         9xfw==
+        bh=InP9peXlbtO4mCujwrny7kM0O4CUejd3WqIqrBu9ksc=;
+        b=o68yKhc9ieL+VmBlW63oQ8KmiqHu0FYv9FpbS6zYFsgRfcJQHcACeSJUOl4VAq9YOt
+         YlSDDhs1zO5s9IPU1Fu9n5SZyw1yKJxmGljdQJIV+CJNfy6IcWx+azo2mN/rgB/B8CFI
+         TpJufHSABZZjmLkERZAMy9Va8tjyxbbXpbzDibecxNtw8tmj5QCiNADDpGr1pXxJU0P8
+         2jSNLnPqvadEU9Bk1GJjk8sIZbxiozy9Ic9E4O3um6zvJ2d12wod0bj/Pw/8w2k2HcUn
+         TJf1lVXF3s9gFF8CNH/Uc7uPq5FWPto4cKMvAFpL5M1res+bquhtTUp98b/exyb3ctH+
+         6Cog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zFmNv8bWnnhaUEfEbtd/dIDab8KFB9ZFGv6zOrp9yb4=;
-        b=eYJlNq9sPc717seTD+rsEdVPeMYWuG4W/nyGbctDk04u+KtwvlPjhwaoDVZhqRiaDp
-         HdRR2zfQ07LWw1F5pl08SnAwWn30OTYadj6crDebIp+Q5OUhFMYZPgtxFz4+nxikCeI0
-         v+KmZQtf6r9kTGpPSGmOJhE7TBusqnrwCOp5rLVfDSrpdOFO3A3UKL3W70DpUuToIW5j
-         xtDN20hJ/Ic/gcvHS3Vp2U1cd1wyJGDh7JdQiMB8sQCH0iYJYqZcSWyQJOAtz6BVb34f
-         Y8RcKPrh1Lo1kBXNK08hPe7fl4hdrvBQ8uPQjyOrpVi1A1O69gQnyGqQ495bhjnQoUD5
-         Jz0w==
-X-Gm-Message-State: AOAM532jKABW9+uVPikwx6BIyZcZqPP4WnwZIHxA+2QoydAqMVeabco5
-        +lsRfaUm/+A4LoZbRMIXTLADd3y/7hoL/7OFeXDvmA==
-X-Google-Smtp-Source: ABdhPJyCx3nRY/4KqOLvHiEA42E1G/VVl/48vDkQI4N1BE+4zhkOavjC4jVwnhhJLmbbutkiekBOZaTnqYfqHAut40o=
-X-Received: by 2002:a67:7c14:: with SMTP id x20mr9769573vsc.42.1628076920860;
- Wed, 04 Aug 2021 04:35:20 -0700 (PDT)
+        bh=InP9peXlbtO4mCujwrny7kM0O4CUejd3WqIqrBu9ksc=;
+        b=UvSujMSMtj4NsOQXnBDc3KKQULW6XeIM7Hyo77RT/cjvmDTTGIFVZ811mmEvmEc2qT
+         GJmiItrkNADER8p6XgwGCocaks/cTEi0LX0ZtKaUbHQNTWvCMpjzk6xM1ITEb2BaD+yW
+         V6iWY24wWtWKF/4O0Fbcqcokv98x/c2ki7uTPvCQ/DGiR9AC0g53Kf3wC9ovn4zo0RRi
+         pTEIzF9wmRt+ZPbc5EAUZ6iVcFTrqws5ByIcCDCHfMp5Nmg5zrehzLg/L+GwEcjq2LmY
+         DJBSDYZ7fLcWiyaVQR0RNr9qgkFhvmmUjm33v91G2FPdQsCwVbd8eOgbIkGMMtnwHwiL
+         NDUg==
+X-Gm-Message-State: AOAM5302W5E2a1x0OQ4f+taR2EywF6Un9CQ47YVofkLP3M/XPJNbId4j
+        IfY28hOmM3eMF/FswEtpOnzVuSw39CGXburcynH6RA==
+X-Google-Smtp-Source: ABdhPJwjxMMu79egWeArYZVYGe8Sfh77udOSKtpAPVikzuZZeFQt/iS4OaDskliFjW1aRgdUNHIkNA27PrDj9G34X/E=
+X-Received: by 2002:a67:7c11:: with SMTP id x17mr5354731vsc.55.1628076924623;
+ Wed, 04 Aug 2021 04:35:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210701143353.13188-1-yann.gautier@foss.st.com>
-In-Reply-To: <20210701143353.13188-1-yann.gautier@foss.st.com>
+References: <20210702134229.357717-1-ulf.hansson@linaro.org>
+In-Reply-To: <20210702134229.357717-1-ulf.hansson@linaro.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 4 Aug 2021 13:34:44 +0200
-Message-ID: <CAPDyKFoCABbyKaejhzAqM9hv7Emg4WyfbtORoW_XMnmoxKSVAQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mmci: stm32: check when the voltage switch procedure
- should be done
-To:     Yann Gautier <yann.gautier@foss.st.com>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+Date:   Wed, 4 Aug 2021 13:34:47 +0200
+Message-ID: <CAPDyKFo78aJgcajxL6fcPb7xB16R_S6VyuwEp7tG84+CPSkKTw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] mmc: core: Avoid hogging the CPU while polling for busy
+To:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Christian Lohle <CLoehle@hyperstone.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 1 Jul 2021 at 16:34, Yann Gautier <yann.gautier@foss.st.com> wrote:
+On Fri, 2 Jul 2021 at 15:42, Ulf Hansson <ulf.hansson@linaro.org> wrote:
 >
-> From: Christophe Kerello <christophe.kerello@foss.st.com>
+> Step by step, code that have been dealing sending CMD13 to poll the card for
+> busy, have been moved to use the common mmc_poll_for_busy() loop. This helps to
+> avoid hogging the CPU, for example, as it inserts a small delay in between each
+> polling attempt. Additionally, it avoids open coding.
 >
-> If the card has not been power cycled, it may still be using 1.8V
-> signaling. This situation is detected in mmc_sd_init_card function and
-> should be handled in mmci stm32 variant.
-> The host->pwr_reg variable is also correctly protected with spin locks.
+> This series takes the next and final step, by moving the mmc block device layer
+> from its own busy polling loop, into using the common code.
 >
-> Fixes: 94b94a93e355 ("mmc: mmci_sdmmc: Implement signal voltage callbacks")
+> Please test and review!
 >
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
+> Kind regards
+> Uffe
+>
+> Ulf Hansson (3):
+>   mmc: core: Avoid hogging the CPU while polling for busy in the I/O err
+>     path
+>   mmc: core: Avoid hogging the CPU while polling for busy for mmc ioctls
+>   mmc: core: Avoid hogging the CPU while polling for busy after I/O
+>     writes
+>
+>  drivers/mmc/core/block.c   | 74 +++++++++++++++++---------------------
+>  drivers/mmc/core/mmc_ops.c |  5 ++-
+>  drivers/mmc/core/mmc_ops.h |  1 +
+>  3 files changed, 37 insertions(+), 43 deletions(-)
+>
 
-Applied for fixes and by adding stable tag, thanks!
+This series has been applied for next. If you encounter any
+regressions (performance related as well), please report them!
 
 Kind regards
 Uffe
-
-
-> ---
->  drivers/mmc/host/mmci_stm32_sdmmc.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
-> index 51db30acf4dc..fdaa11f92fe6 100644
-> --- a/drivers/mmc/host/mmci_stm32_sdmmc.c
-> +++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
-> @@ -479,8 +479,9 @@ static int sdmmc_post_sig_volt_switch(struct mmci_host *host,
->         u32 status;
->         int ret = 0;
->
-> -       if (ios->signal_voltage == MMC_SIGNAL_VOLTAGE_180) {
-> -               spin_lock_irqsave(&host->lock, flags);
-> +       spin_lock_irqsave(&host->lock, flags);
-> +       if (ios->signal_voltage == MMC_SIGNAL_VOLTAGE_180 &&
-> +           host->pwr_reg & MCI_STM32_VSWITCHEN) {
->                 mmci_write_pwrreg(host, host->pwr_reg | MCI_STM32_VSWITCH);
->                 spin_unlock_irqrestore(&host->lock, flags);
->
-> @@ -492,9 +493,11 @@ static int sdmmc_post_sig_volt_switch(struct mmci_host *host,
->
->                 writel_relaxed(MCI_STM32_VSWENDC | MCI_STM32_CKSTOPC,
->                                host->base + MMCICLEAR);
-> +               spin_lock_irqsave(&host->lock, flags);
->                 mmci_write_pwrreg(host, host->pwr_reg &
->                                   ~(MCI_STM32_VSWITCHEN | MCI_STM32_VSWITCH));
->         }
-> +       spin_unlock_irqrestore(&host->lock, flags);
->
->         return ret;
->  }
-> --
-> 2.17.1
->
