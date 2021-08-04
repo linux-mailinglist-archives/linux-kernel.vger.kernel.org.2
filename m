@@ -2,417 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD033E02D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8383E02D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238631AbhHDOLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238412AbhHDOLH (ORCPT
+        id S238643AbhHDOLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:11:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57733 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238412AbhHDOLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:11:07 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B96AC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:10:55 -0700 (PDT)
-Received: from pd956d63d.dip0.t-ipconnect.de ([217.86.214.61] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1mBHba-0000Bs-VO; Wed, 04 Aug 2021 16:10:47 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v2] staging: r8188eu: remove RT_TRACE and DBG_88E prints from usb_intf.c
-Date:   Wed,  4 Aug 2021 16:10:31 +0200
-Message-Id: <20210804141031.12303-1-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210801173023.1370-1-martin@kaiser.cx>
-References: <20210801173023.1370-1-martin@kaiser.cx>
+        Wed, 4 Aug 2021 10:11:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628086258;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vDjxvCXPaN+5/k0w+fY3Yqj54cOWLInWRCxwK9/1kSg=;
+        b=EpP0DAWBkj3Jdr+nxA3DC3cW+vQyQOZ+paLoBqlgvzYWRwbayFf5/TDe1xX1ZoJcdwu3o/
+        VtDq061+ZC708JTVbvqHewVqz30NbALs6Iya5APB7PemwKLkL5lMlvfUFGEN1d/Ml3zvXa
+        3RrJ7fgunbFMivg06/ik3RoJl3BpUcQ=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-517-IQFKcsIPPAWSJAWLMAPC_Q-1; Wed, 04 Aug 2021 10:10:57 -0400
+X-MC-Unique: IQFKcsIPPAWSJAWLMAPC_Q-1
+Received: by mail-wr1-f70.google.com with SMTP id l12-20020a5d6d8c0000b029015488313d96so867514wrs.15
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:10:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vDjxvCXPaN+5/k0w+fY3Yqj54cOWLInWRCxwK9/1kSg=;
+        b=BXrIXV94AOXoV+VZpssovZ1eg6OKKYBQWhH/FmvDMBGe49p/LOwZEN0GmFF6aJtI7l
+         auZFE3yhfgGD1WirmAPTca0HC8Qqs2sNN3kuOm2HSl7bRffQ1WoqLWbOhqoGnO31BUMN
+         pBLGdbKtftom9bMq1hGtDe0Wc3BrVVXhnFFVriT0zHf984lUpjWkYzsuVAjwDxxm3mFw
+         TpJ2FMYTzGeC/w9rRVp6pQ/qLZrNqg0k/m6ZvzuT34FezmyozHY8aw7Pne09SkRaaZ8T
+         Sqo03g+sQntBV67muBKUdQ3tqO7OD3WneCpy4wvPfNhHBvaf8EFgR5U6BhpUGfpC9yXz
+         z+WQ==
+X-Gm-Message-State: AOAM531yuEoCpUnkiHXoqYgZp/EMoJeGhpajvIOAEDTCFNS+4zCfo9ZC
+        DTfBQjv6VOSJkJoDwvXZDIqqzexE4FxjTyYe2zBIezu/S3q8t3CyGDa2pAEBSrZJq+DgZbCUMxI
+        IpjiI9ep46SKeEYSGuW8jucGHK+PiWPTTlS/K1DJebZqBpMxues1f6Ry2uudYB1VJS844k5MbXG
+        U=
+X-Received: by 2002:a7b:c255:: with SMTP id b21mr28240817wmj.100.1628086255284;
+        Wed, 04 Aug 2021 07:10:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwv/BscaEU9xSkgsqbKKdLLWxpw8zS8J8c7lgfIoTdZVleH/nu5P0+UGoxW5ZzSsXcTq5LHQw==
+X-Received: by 2002:a7b:c255:: with SMTP id b21mr28240785wmj.100.1628086255032;
+        Wed, 04 Aug 2021 07:10:55 -0700 (PDT)
+Received: from kherbst.pingu.com (ip1f10bb48.dynamic.kabel-deutschland.de. [31.16.187.72])
+        by smtp.gmail.com with ESMTPSA id j140sm2484098wmj.37.2021.08.04.07.10.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 07:10:54 -0700 (PDT)
+From:   Karol Herbst <kherbst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Karol Herbst <kherbst@redhat.com>, Arnd Bergmann <arnd@kernel.org>,
+        Lyude Paul <lyude@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>, nouveau@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH] depend on BACKLIGHT_CLASS_DEVICE for more devices
+Date:   Wed,  4 Aug 2021 16:10:49 +0200
+Message-Id: <20210804141049.499767-1-kherbst@redhat.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <CAK8P3a0i0WP24Z0TScmPqKxmM2ovtKnmm+qZq6+Tc1ju+hma0w@mail.gmail.com>
+References: <CAK8P3a0i0WP24Z0TScmPqKxmM2ovtKnmm+qZq6+Tc1ju+hma0w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should use the standard mechanism for debug prints. Remove the
-prints that use driver-specific macros.
+playing around a little bit with this, I think the original "select
+BACKLIGHT_CLASS_DEVICE" is fine. Atm we kind of have this weird mix of
+drivers selecting and others depending on it. We could of course convert
+everything over to depend, and break those cycling dependency issues with
+this.
 
-Handle errors from the usb_autopm_get_interface call instead of just
-showing a debug print.
+Anyway this change on top of my initial patch is enough to make Kconfig
+happy and has the advantage of not having to mess with the deps of nouveau
+too much.
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+Cc: Arnd Bergmann <arnd@kernel.org>
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: nouveau@lists.freedesktop.org
+Cc: dri-devel@lists.freedesktop.org
 ---
-v2:
- - bring back usb_autopm_get_interface, handle errors
+ drivers/gpu/drm/bridge/Kconfig    | 2 +-
+ drivers/gpu/drm/fsl-dcu/Kconfig   | 2 +-
+ drivers/gpu/drm/gud/Kconfig       | 2 +-
+ drivers/gpu/drm/nouveau/Kconfig   | 2 +-
+ drivers/platform/x86/Kconfig      | 4 ++--
+ drivers/staging/olpc_dcon/Kconfig | 2 +-
+ drivers/usb/misc/Kconfig          | 2 +-
+ drivers/video/fbdev/Kconfig       | 2 +-
+ 8 files changed, 9 insertions(+), 9 deletions(-)
 
- drivers/staging/r8188eu/os_dep/usb_intf.c | 128 ++--------------------
- 1 file changed, 10 insertions(+), 118 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-index bc7f4bd7ce0b..4d4741a4875b 100644
---- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-+++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-@@ -120,7 +120,6 @@ static u8 rtw_init_intf_priv(struct dvobj_priv *dvobj)
+diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+index 431b6e12a81f..dc68532ede38 100644
+--- a/drivers/gpu/drm/bridge/Kconfig
++++ b/drivers/gpu/drm/bridge/Kconfig
+@@ -173,9 +173,9 @@ config DRM_NXP_PTN3460
+ config DRM_PARADE_PS8622
+ 	tristate "Parade eDP/LVDS bridge"
+ 	depends on OF
++	depends on BACKLIGHT_CLASS_DEVICE
+ 	select DRM_PANEL
+ 	select DRM_KMS_HELPER
+-	select BACKLIGHT_CLASS_DEVICE
+ 	help
+ 	  Parade eDP-LVDS bridge chip driver.
  
- 	dvobj->usb_alloc_vendor_req_buf = rtw_zmalloc(MAX_USB_IO_CTL_SIZE);
- 	if (!dvobj->usb_alloc_vendor_req_buf) {
--		DBG_88E("alloc usb_vendor_req_buf failed... /n");
- 		rst = _FAIL;
- 		goto exit;
- 	}
-@@ -192,19 +191,13 @@ static struct dvobj_priv *usb_dvobj_init(struct usb_interface *usb_intf)
- 		pdvobjpriv->ep_num[i] = ep_num;
- 	}
+diff --git a/drivers/gpu/drm/fsl-dcu/Kconfig b/drivers/gpu/drm/fsl-dcu/Kconfig
+index d7dd8ba90e3a..79bfd7e6f6dc 100644
+--- a/drivers/gpu/drm/fsl-dcu/Kconfig
++++ b/drivers/gpu/drm/fsl-dcu/Kconfig
+@@ -2,7 +2,7 @@
+ config DRM_FSL_DCU
+ 	tristate "DRM Support for Freescale DCU"
+ 	depends on DRM && OF && ARM && COMMON_CLK
+-	select BACKLIGHT_CLASS_DEVICE
++	depends on BACKLIGHT_CLASS_DEVICE
+ 	select DRM_KMS_HELPER
+ 	select DRM_KMS_CMA_HELPER
+ 	select DRM_PANEL
+diff --git a/drivers/gpu/drm/gud/Kconfig b/drivers/gpu/drm/gud/Kconfig
+index 1c8601bf4d91..91a118928af7 100644
+--- a/drivers/gpu/drm/gud/Kconfig
++++ b/drivers/gpu/drm/gud/Kconfig
+@@ -3,10 +3,10 @@
+ config DRM_GUD
+ 	tristate "GUD USB Display"
+ 	depends on DRM && USB
++	depends on BACKLIGHT_CLASS_DEVICE
+ 	select LZ4_COMPRESS
+ 	select DRM_KMS_HELPER
+ 	select DRM_GEM_SHMEM_HELPER
+-	select BACKLIGHT_CLASS_DEVICE
+ 	help
+ 	  This is a DRM display driver for GUD USB Displays or display
+ 	  adapters.
+diff --git a/drivers/gpu/drm/nouveau/Kconfig b/drivers/gpu/drm/nouveau/Kconfig
+index 2e159b0ea7fb..afb3eede8e2b 100644
+--- a/drivers/gpu/drm/nouveau/Kconfig
++++ b/drivers/gpu/drm/nouveau/Kconfig
+@@ -2,12 +2,12 @@
+ config DRM_NOUVEAU
+ 	tristate "Nouveau (NVIDIA) cards"
+ 	depends on DRM && PCI && MMU
++	depends on BACKLIGHT_CLASS_DEVICE
+ 	select IOMMU_API
+ 	select FW_LOADER
+ 	select DRM_KMS_HELPER
+ 	select DRM_TTM
+ 	select DRM_TTM_HELPER
+-	select BACKLIGHT_CLASS_DEVICE
+ 	select ACPI_VIDEO if ACPI && X86 && INPUT
+ 	select X86_PLATFORM_DEVICES if ACPI && X86
+ 	select ACPI_WMI if ACPI && X86
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 7d385c3b2239..278368985fb2 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -838,7 +838,7 @@ config SAMSUNG_LAPTOP
+ config SAMSUNG_Q10
+ 	tristate "Samsung Q10 Extras"
+ 	depends on ACPI
+-	select BACKLIGHT_CLASS_DEVICE
++	depends on BACKLIGHT_CLASS_DEVICE
+ 	help
+ 	  This driver provides support for backlight control on Samsung Q10
+ 	  and related laptops, including Dell Latitude X200.
+@@ -935,7 +935,7 @@ config ACPI_CMPC
+ 	tristate "CMPC Laptop Extras"
+ 	depends on ACPI && INPUT
+ 	depends on RFKILL || RFKILL=n
+-	select BACKLIGHT_CLASS_DEVICE
++	depends on BACKLIGHT_CLASS_DEVICE
+ 	help
+ 	  Support for Intel Classmate PC ACPI devices, including some
+ 	  keys as input device, backlight device, tablet and accelerometer
+diff --git a/drivers/staging/olpc_dcon/Kconfig b/drivers/staging/olpc_dcon/Kconfig
+index d1a0dea09ef0..a9f36538d7ab 100644
+--- a/drivers/staging/olpc_dcon/Kconfig
++++ b/drivers/staging/olpc_dcon/Kconfig
+@@ -4,7 +4,7 @@ config FB_OLPC_DCON
+ 	depends on OLPC && FB
+ 	depends on I2C
+ 	depends on GPIO_CS5535 && ACPI
+-	select BACKLIGHT_CLASS_DEVICE
++	depends on BACKLIGHT_CLASS_DEVICE
+ 	help
+ 	  In order to support very low power operation, the XO laptop uses a
+ 	  secondary Display CONtroller, or DCON.  This secondary controller
+diff --git a/drivers/usb/misc/Kconfig b/drivers/usb/misc/Kconfig
+index 8f1144359012..6f769a1616f0 100644
+--- a/drivers/usb/misc/Kconfig
++++ b/drivers/usb/misc/Kconfig
+@@ -132,7 +132,7 @@ config USB_FTDI_ELAN
  
--	if (pusbd->speed == USB_SPEED_HIGH) {
-+	if (pusbd->speed == USB_SPEED_HIGH)
- 		pdvobjpriv->ishighspeed = true;
--		DBG_88E("USB_SPEED_HIGH\n");
--	} else {
-+	else
- 		pdvobjpriv->ishighspeed = false;
--		DBG_88E("NON USB_SPEED_HIGH\n");
--	}
+ config USB_APPLEDISPLAY
+ 	tristate "Apple Cinema Display support"
+-	select BACKLIGHT_CLASS_DEVICE
++	depends on BACKLIGHT_CLASS_DEVICE
+ 	help
+ 	  Say Y here if you want to control the backlight of Apple Cinema
+ 	  Displays over USB. This driver provides a sysfs interface.
+diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
+index d33c5cd684c0..b4d5837b61de 100644
+--- a/drivers/video/fbdev/Kconfig
++++ b/drivers/video/fbdev/Kconfig
+@@ -187,7 +187,7 @@ config FB_MACMODES
+ config FB_BACKLIGHT
+ 	tristate
+ 	depends on FB
+-	select BACKLIGHT_CLASS_DEVICE
++	depends on BACKLIGHT_CLASS_DEVICE
  
--	if (rtw_init_intf_priv(pdvobjpriv) == _FAIL) {
--		RT_TRACE(_module_os_intfs_c_, _drv_err_,
--			 ("\n Can't INIT rtw_init_intf_priv\n"));
-+	if (rtw_init_intf_priv(pdvobjpriv) == _FAIL)
- 		goto free_dvobj;
--	}
- 
- 	/* 3 misc */
- 	sema_init(&(pdvobjpriv->usb_suspend_sema), 0);
-@@ -241,7 +234,6 @@ static void usb_dvobj_deinit(struct usb_interface *usb_intf)
- 				 * on sitesurvey for the first time when
- 				 * device is up . Reset usb port for sitesurvey
- 				 * fail issue. */
--				DBG_88E("usb attached..., try to reset usb device\n");
- 				usb_reset_device(interface_to_usbdev(usb_intf));
- 			}
- 		}
-@@ -262,25 +254,11 @@ static void chip_by_usb_id(struct adapter *padapter,
- 
- static void usb_intf_start(struct adapter *padapter)
- {
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+usb_intf_start\n"));
--
- 	rtw_hal_inirp_init(padapter);
--
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-usb_intf_start\n"));
- }
- 
- static void usb_intf_stop(struct adapter *padapter)
- {
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+usb_intf_stop\n"));
--
--	/* disabel_hw_interrupt */
--	if (!padapter->bSurpriseRemoved) {
--		/* device still exists, so driver can do i/o operation */
--		/* TODO: */
--		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
--			 ("SurpriseRemoved == false\n"));
--	}
--
- 	/* cancel in irp */
- 	rtw_hal_inirp_deinit(padapter);
- 
-@@ -288,16 +266,11 @@ static void usb_intf_stop(struct adapter *padapter)
- 	rtw_write_port_cancel(padapter);
- 
- 	/* todo:cancel other irps */
--
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-usb_intf_stop\n"));
- }
- 
- static void rtw_dev_unload(struct adapter *padapter)
- {
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_dev_unload\n"));
--
- 	if (padapter->bup) {
--		DBG_88E("===> rtw_dev_unload\n");
- 		padapter->bDriverStopped = true;
- 		if (padapter->xmitpriv.ack_tx)
- 			rtw_ack_tx_done(&padapter->xmitpriv, RTW_SCTX_DONE_DRV_STOP);
-@@ -315,14 +288,7 @@ static void rtw_dev_unload(struct adapter *padapter)
- 		}
- 
- 		padapter->bup = false;
--	} else {
--		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
--			 ("r871x_dev_unload():padapter->bup == false\n"));
- 	}
--
--	DBG_88E("<=== rtw_dev_unload\n");
--
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-rtw_dev_unload\n"));
- }
- 
- static void process_spec_devid(const struct usb_device_id *pdid)
-@@ -355,16 +321,12 @@ int rtw_hw_suspend(struct adapter *padapter)
- 
- 	if ((!padapter->bup) || (padapter->bDriverStopped) ||
- 	    (padapter->bSurpriseRemoved)) {
--		DBG_88E("padapter->bup=%d bDriverStopped=%d bSurpriseRemoved = %d\n",
--			padapter->bup, padapter->bDriverStopped,
--			padapter->bSurpriseRemoved);
- 		goto error_exit;
- 	}
- 
- 	if (padapter) { /* system suspend */
- 		LeaveAllPowerSaveMode(padapter);
- 
--		DBG_88E("==> rtw_hw_suspend\n");
- 		_enter_pwrlock(&pwrpriv->lock);
- 		pwrpriv->bips_processing = true;
- 		/* s1. */
-@@ -407,7 +369,6 @@ int rtw_hw_suspend(struct adapter *padapter)
- 		return 0;
- 
- error_exit:
--	DBG_88E("%s, failed\n", __func__);
- 	return -1;
- }
- 
-@@ -418,7 +379,6 @@ int rtw_hw_resume(struct adapter *padapter)
- 
- 
- 	if (padapter) { /* system resume */
--		DBG_88E("==> rtw_hw_resume\n");
- 		_enter_pwrlock(&pwrpriv->lock);
- 		pwrpriv->bips_processing = true;
- 		rtw_reset_drv_sw(padapter);
-@@ -450,7 +410,6 @@ int rtw_hw_resume(struct adapter *padapter)
- 
- 	return 0;
- error_exit:
--	DBG_88E("%s, Open net dev failed\n", __func__);
- 	return -1;
- }
- 
-@@ -466,13 +425,8 @@ static int rtw_suspend(struct usb_interface *pusb_intf, pm_message_t message)
- 	u32 start_time = jiffies;
- 
- 
--	DBG_88E("==> %s (%s:%d)\n", __func__, current->comm, current->pid);
--
- 	if ((!padapter->bup) || (padapter->bDriverStopped) ||
- 	    (padapter->bSurpriseRemoved)) {
--		DBG_88E("padapter->bup=%d bDriverStopped=%d bSurpriseRemoved = %d\n",
--			padapter->bup, padapter->bDriverStopped,
--			padapter->bSurpriseRemoved);
- 		goto exit;
- 	}
- 
-@@ -492,12 +446,6 @@ static int rtw_suspend(struct usb_interface *pusb_intf, pm_message_t message)
- 
- 	if (check_fwstate(pmlmepriv, WIFI_STATION_STATE) &&
- 	    check_fwstate(pmlmepriv, _FW_LINKED)) {
--		DBG_88E("%s:%d %s(%pM), length:%d assoc_ssid.length:%d\n",
--			__func__, __LINE__,
--			pmlmepriv->cur_network.network.Ssid.Ssid,
--			pmlmepriv->cur_network.network.MacAddress,
--			pmlmepriv->cur_network.network.Ssid.SsidLength,
--			pmlmepriv->assoc_ssid.SsidLength);
- 
- 		pmlmepriv->to_roaming = 1;
- 	}
-@@ -518,10 +466,7 @@ static int rtw_suspend(struct usb_interface *pusb_intf, pm_message_t message)
- 		rtw_indicate_disconnect(padapter);
- 
- exit:
--	DBG_88E("<===  %s return %d.............. in %dms\n", __func__
--		, ret, rtw_get_passing_time_ms(start_time));
--
--		return ret;
-+	return ret;
- }
- 
- static int rtw_resume(struct usb_interface *pusb_intf)
-@@ -545,8 +490,6 @@ int rtw_resume_process(struct adapter *padapter)
- 	int ret = -1;
- 	u32 start_time = jiffies;
- 
--	DBG_88E("==> %s (%s:%d)\n", __func__, current->comm, current->pid);
--
- 	if (padapter) {
- 		pnetdev = padapter->pnetdev;
- 		pwrpriv = &padapter->pwrctrlpriv;
-@@ -559,7 +502,6 @@ int rtw_resume_process(struct adapter *padapter)
- 	if (pwrpriv)
- 		pwrpriv->bkeepfwalive = false;
- 
--	DBG_88E("bkeepfwalive(%x)\n", pwrpriv->bkeepfwalive);
- 	if (pm_netdev_open(pnetdev, true) != 0)
- 		goto exit;
- 
-@@ -569,7 +511,6 @@ int rtw_resume_process(struct adapter *padapter)
- 	_exit_pwrlock(&pwrpriv->lock);
- 
- 	if (padapter->pid[1] != 0) {
--		DBG_88E("pid[1]:%d\n", padapter->pid[1]);
- 		rtw_signal_process(padapter->pid[1], SIGUSR2);
- 	}
- 
-@@ -579,9 +520,6 @@ int rtw_resume_process(struct adapter *padapter)
- exit:
- 	if (pwrpriv)
- 		pwrpriv->bInSuspend = false;
--	DBG_88E("<===  %s return %d.............. in %dms\n", __func__,
--		ret, rtw_get_passing_time_ms(start_time));
--
- 
- 	return ret;
- }
-@@ -643,27 +581,21 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
- 	rtw_hal_read_chip_info(padapter);
- 
- 	/* step 5. */
--	if (rtw_init_drv_sw(padapter) == _FAIL) {
--		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
--			 ("Initialize driver software resource Failed!\n"));
-+	if (rtw_init_drv_sw(padapter) == _FAIL)
- 		goto free_hal_data;
--	}
- 
- #ifdef CONFIG_PM
- 	if (padapter->pwrctrlpriv.bSupportRemoteWakeup) {
- 		dvobj->pusbdev->do_remote_wakeup = 1;
- 		pusb_intf->needs_remote_wakeup = 1;
- 		device_init_wakeup(&pusb_intf->dev, 1);
--		DBG_88E("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~~~~\n");
--		DBG_88E("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~[%d]~~~\n",
--			device_may_wakeup(&pusb_intf->dev));
- 	}
- #endif
- 
- 	/* 2012-07-11 Move here to prevent the 8723AS-VAU BT auto
- 	 * suspend influence */
- 	if (usb_autopm_get_interface(pusb_intf) < 0)
--			DBG_88E("can't get autopm:\n");
-+		goto free_hal_data;
- 
- 	/*  alloc dev name after read efuse. */
- 	rtw_init_netdev_name(pnetdev, padapter->registrypriv.ifname);
-@@ -673,21 +605,10 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
- 				  padapter->eeprompriv.mac_addr);
- #endif
- 	memcpy(pnetdev->dev_addr, padapter->eeprompriv.mac_addr, ETH_ALEN);
--	DBG_88E("MAC Address from pnetdev->dev_addr =  %pM\n",
--		pnetdev->dev_addr);
- 
- 	/* step 6. Tell the network stack we exist */
--	if (register_netdev(pnetdev) != 0) {
--		RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("register_netdev() failed\n"));
-+	if (register_netdev(pnetdev) != 0)
- 		goto free_hal_data;
--	}
--
--	DBG_88E("bDriverStopped:%d, bSurpriseRemoved:%d, bup:%d, hw_init_completed:%d\n"
--		, padapter->bDriverStopped
--		, padapter->bSurpriseRemoved
--		, padapter->bup
--		, padapter->hw_init_completed
--	);
- 
- 	status = _SUCCESS;
- 
-@@ -731,8 +652,6 @@ static void rtw_usb_if1_deinit(struct adapter *if1)
- 	rtw_cancel_all_timer(if1);
- 
- 	rtw_dev_unload(if1);
--	DBG_88E("+r871xu_dev_remove, hw_init_completed=%d\n",
--		if1->hw_init_completed);
- 	rtw_handle_dualmac(if1, 0);
- 	rtw_free_drv_sw(if1);
- 	if (pnetdev)
-@@ -745,31 +664,20 @@ static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device
- 	int status;
- 	struct dvobj_priv *dvobj;
- 
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_drv_init\n"));
--
- 	/* step 0. */
- 	process_spec_devid(pdid);
- 
- 	/* Initialize dvobj_priv */
- 	dvobj = usb_dvobj_init(pusb_intf);
--	if (!dvobj) {
--		RT_TRACE(_module_hci_intfs_c_, _drv_err_,
--			 ("initialize device object priv Failed!\n"));
-+	if (!dvobj)
- 		goto exit;
--	}
- 
- 	if1 = rtw_usb_if1_init(dvobj, pusb_intf, pdid);
--	if (!if1) {
--		DBG_88E("rtw_init_primarystruct adapter Failed!\n");
-+	if (!if1)
- 		goto free_dvobj;
--	}
- 
--	if (ui_pid[1] != 0) {
--		DBG_88E("ui_pid[1]:%d\n", ui_pid[1]);
-+	if (ui_pid[1] != 0)
- 		rtw_signal_process(ui_pid[1], SIGUSR2);
--	}
--
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-871x_drv - drv_init, success!\n"));
- 
- 	status = _SUCCESS;
- 
-@@ -791,9 +699,6 @@ static void rtw_dev_remove(struct usb_interface *pusb_intf)
- 	struct dvobj_priv *dvobj = usb_get_intfdata(pusb_intf);
- 	struct adapter *padapter = dvobj->if1;
- 
--	DBG_88E("+rtw_dev_remove\n");
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+dev_remove()\n"));
--
- 	if (usb_drv->drv_registered)
- 		padapter->bSurpriseRemoved = true;
- 
-@@ -805,19 +710,10 @@ static void rtw_dev_remove(struct usb_interface *pusb_intf)
- 	rtw_usb_if1_deinit(padapter);
- 
- 	usb_dvobj_deinit(pusb_intf);
--
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("-dev_remove()\n"));
--	DBG_88E("-r871xu_dev_remove, done\n");
--
--	return;
- }
- 
- static int __init rtw_drv_entry(void)
- {
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_drv_entry\n"));
--
--	DBG_88E(DRV_NAME " driver version=%s\n", DRIVERVERSION);
--
- 	rtw_suspend_lock_init();
- 
- 	_rtw_mutex_init(&usb_drv->hw_init_mutex);
-@@ -828,16 +724,12 @@ static int __init rtw_drv_entry(void)
- 
- static void __exit rtw_drv_halt(void)
- {
--	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("+rtw_drv_halt\n"));
--	DBG_88E("+rtw_drv_halt\n");
--
- 	rtw_suspend_lock_uninit();
- 
- 	usb_drv->drv_registered = false;
- 	usb_deregister(&usb_drv->usbdrv);
- 
- 	_rtw_mutex_free(&usb_drv->hw_init_mutex);
--	DBG_88E("-rtw_drv_halt\n");
- }
- 
- module_init(rtw_drv_entry);
+ config FB_MODE_HELPERS
+ 	bool "Enable Video Mode Handling Helpers"
 -- 
-2.20.1
+2.31.1
 
