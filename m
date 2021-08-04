@@ -2,255 +2,568 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A913E0627
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DFD3E0625
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239676AbhHDQus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:50:48 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3582 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhHDQur (ORCPT
+        id S239639AbhHDQug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:50:36 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37082 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229798AbhHDQuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:50:47 -0400
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GfyQy4lRhz6DKBl;
-        Thu,  5 Aug 2021 00:50:18 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 4 Aug 2021 18:50:32 +0200
-Received: from localhost (10.47.91.83) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 4 Aug 2021
- 17:50:31 +0100
-Date:   Wed, 4 Aug 2021 17:50:02 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Andrea Merello <andrea.merello@gmail.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matt Ranostay <matt.ranostay@konsulko.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        "Andrea Merello" <andrea.merello@iit.it>
-Subject: Re: [PATCH 2/4] iio: imu: add Bosch Sensortec BNO055 core driver
-Message-ID: <20210804175002.000059c5@Huawei.com>
-In-Reply-To: <CAN8YU5OrXy0c5D+5141izDJHxqSakGsbrnkug2M56qczxK0BfQ@mail.gmail.com>
-References: <20210715141742.15072-1-andrea.merello@gmail.com>
-        <20210715141742.15072-3-andrea.merello@gmail.com>
-        <20210717163236.1553fbfa@jic23-huawei>
-        <CAN8YU5NctVMPfNZn7ya-Jw7yE=NQDBq1aweWn0fX0Rp1p1P=aw@mail.gmail.com>
-        <20210724180823.692b203f@jic23-huawei>
-        <CAN8YU5PcrR-xM5A=3jd50=UaY9wWDJZGBqajmvM8Te1Ly14Hew@mail.gmail.com>
-        <20210731190103.6e2a3d41@jic23-huawei>
-        <CAN8YU5OrXy0c5D+5141izDJHxqSakGsbrnkug2M56qczxK0BfQ@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Wed, 4 Aug 2021 12:50:32 -0400
+Date:   Wed, 4 Aug 2021 18:50:17 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628095818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=tVd70eF6NLba+68AmdFY6c+xF7prcEQdaIe7+uZfyXA=;
+        b=iOO2k1UKRISm+IoYZ3nvpo7sxvQMKzJzZBqx6IJu4xJURFcDGVlrad79+ZaieWH8tEy7vU
+        OVK0xwCUP619f1nrPt80HSw86Rhh5d66z/vGRBrXF2+87RT9BDn1D9W4gd0wUw+3x26zQ9
+        49nBsCueWE7VbUdP3i9cnWyLo6uMG+2q4qwBJwV+WEy3jpassWQboYPTNrNEuwsKZySzN+
+        NAC4f0FcXFdLciM4t2c3GnBGxPfe23Nk+1rXUk5SybynwfcvAfw9Kr7uLqvLRbjeXxr/1Y
+        7NqziWrgeq9RKkUFZnk0atSKqZhRP7jcAy1GoHQhmSIIYMHLqsHG7IDkEr/JVw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628095818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=tVd70eF6NLba+68AmdFY6c+xF7prcEQdaIe7+uZfyXA=;
+        b=v+VIvASqgBO6kE6aNAwTM7HmmSp+v+Qdni+qAa6HV6e9nQKgUq6cYgEjRRxBhV4oIkt9qQ
+        wb4UjeIQ0YJpLvBg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v5.14-rc4-rt5
+Message-ID: <20210804165017.nizmbj3m7hkqzqop@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.91.83]
-X-ClientProxiedBy: lhreml747-chm.china.huawei.com (10.201.108.197) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Aug 2021 12:06:46 +0200
-Andrea Merello <andrea.merello@gmail.com> wrote:
+Dear RT folks!
 
-> Il giorno sab 31 lug 2021 alle ore 19:58 Jonathan Cameron
-> <jic23@kernel.org> ha scritto:
-> >
-> > On Mon, 26 Jul 2021 16:36:49 +0200
-> > Andrea Merello <andrea.merello@gmail.com> wrote:
-> >  
-> > > just a few of in-line comment below; OK for all the rest of your
-> > > comment, thanks!
-> > >  
-> > > > > > > +static int bno055_reg_write(struct bno055_priv *priv,
-> > > > > > > +                         unsigned int reg, unsigned int val)
-> > > > > > > +{
-> > > > > > > +     int res = regmap_write(priv->regmap, reg, val);
-> > > > > > > +
-> > > > > > > +     if (res && res != -ERESTARTSYS) {  
-> > > > > >
-> > > > > > I think Andy asked about these, so I won't repeat...
-> > > > > > Nice to get rid of those and just be able to make the regmap calls inline though...  
-> > > > >
-> > > > > Ok for inline. I've just answered in another mail to Andy's comments
-> > > > > for the rest.  
-> > >
-> > > Indeed, so far I couldn't understand what do you really mean. Should I
-> > > move those check+dev_err() inside the regmap core layer ?  
-> >
-> > Better to move any necessary print to the caller of the reg_write() where any
-> > error message can often give more information.  Adding wrappers just to print
-> > an error message normally mostly serves to make the code a little harder to
-> > review.  
-> 
-> Isn't this like doing a cut-and-paste of check+dev_err() in more than
-> a dozen places in the code?
-> 
-> If you just want more information about the caller then we could
-> macroize those functions, so they can also print the caller code line
-> number (or they could accept an additional argument, which is the code
-> line number to print, and then a macro helper that adds that last
-> argument can be used to invoke them).. But this wouldn't address your
-> second point..
-It's a trade off between reviewability which these wrappers make worse
-and short code.
+I'm pleased to announce the v5.14-rc4-rt5 patch set. 
 
-My personal preference is don't bother with messages on simple reg read /write
-failures.  If it happens you either get an error reported to userspace and
-can do some more debug, or the driver doesn't probe - again, more debug to 
-be done even if you know it was a read or write.
+Changes since v5.14-rc4-rt4:
 
-> 
-> > >  
-> > > > > > > +     /*
-> > > > > > > +      * Start in fusion mode (all data available), but with magnetometer auto
-> > > > > > > +      * calibration switched off, in order not to overwrite magnetometer
-> > > > > > > +      * calibration data in case one want to keep it untouched.  
-> > > > > >
-> > > > > > Why might you? good to have a default that is what people most commonly want...
-> > > > > > If there is a usecase for this then it may be better to have a 'disable autocalibration
-> > > > > > and manually reload a fixed calibration' path.  
-> > > > >
-> > > > > I'm not sure whether disabling autocalibration for magnetometer is
-> > > > > just a matter of saving some power, or whether this has the purpose of
-> > > > > carefully doing the calibration far from magnetic disturbances,
-> > > > > avoiding screwing the calibration every time you briefly pass by a
-> > > > > piece of iron. I think I found some clues for this second
-> > > > > interpretation poking on the internet, but I don't know whether they
-> > > > > were right.  
-> > > >
-> > > > It's possible if the calibration routines have much faster response than
-> > > > you'd normally expect.  
-> > >
-> > > This HW function is called "Fast Magnetometer Calibration".. But I
-> > > don't know how fast is it..  
-> >
-> > Nice  - got to love informative datasheets :)
-> >  
-> > >
-> > >  
-> > > > > > > +     &iio_dev_attr_in_accel_filter_low_pass_3db_frequency_available.dev_attr.attr,
-> > > > > > > +     &iio_dev_attr_in_anglvel_range_available.dev_attr.attr,  
-> > > > > >
-> > > > > > Hmm. Range typically maps to something else (normally scale, but these smart
-> > > > > > sensors can do weird things)  
-> > > > >
-> > > > > Here the scaling doesn't change, just the range. I *think* that by
-> > > > > changing range you also get better or worse precision.  
-> > > >
-> > > > oh goody.  Make sure the default is maximum range + when you document this
-> > > > we will have to be careful to make it clear we don't want this to be used in
-> > > > drivers where scale is an option.  Perhaps we just put it in a device
-> > > > specific ABI file.
-> > > >  
-> > >
-> > > The default is to run the IMU with fusion mode enabled; in this mode
-> > > those parameters are locked by the HW to a given value (which is not
-> > > the maximum e.g. in case of accelerometer range).
-> > >
-> > > If the user disables the fusion mode, then those parameters become
-> > > tweakable, but shouldn't they just remain at their previous values
-> > > (the one set by fusion mode), unless the user change also them?  
-> >
-> > That makes sense to me.
-> >  
-> > >
-> > > I.o.w the only chance we have for assigning them a "default" value is
-> > > when the fusion is switched off, but this would mean that switching
-> > > off fusion mode also has a side effect on those values (which I'm
-> > > unsure if we really want to happen).  
-> >
-> > Thanks for the explanation.  Ok. Fine to have the range here, but please
-> > sanity check we have appropriate ABI documentation in the main ABI doc
-> > Documentation/ABI/testing/sysfs-bus-iio.  
-> 
-> So you are inclined to generalize this thing, rather than keeping it
-> as bno055 specific..
+  - The locking bits haven been updated (Thomas Gleixner addressed Peter
+    Zijlstra's review comments).
 
-My mistake.  I thought we had it already defined but seems we have avoided
-it even though we have gotten close a few times ;)
+  - Daniel Wagner reported a warning in the block/fs-wq code. Patch by
+    Jens Axboe.
 
-sysfs-bus-iio-bno055 should be fine
+Known issues
+     - netconsole triggers WARN.
 
-> 
-> > One thing to think about is how range would generalize.   These sensors are
-> > symmetric, but not all are - a range that is higher in postive than negative
-> > is definitely possible.  Perhaps we need to name it to make it clear we are
-> > talking magnitude here?  
-> 
-> I'm open to suggestions here.
+     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
 
-It's challenging to define a clean way of specifying two linked values.
-We could define rangemax, rangemin and rely on the fact that any bit of IIO
-ABI can affect other bits, but that's messy given our only current user
-doesn't care.
+     - A RCU and ARM64 warning has been fixed by Valentin Schneider. It is
+       still not clear if the RCU related change is correct.
 
+The delta patch against v5.14-rc4-rt4 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/incr/patch-5.14-rc4-rt4-rt5.patch.xz
 
-> 
-> The word "range" in my mind just recalls the idea of a minimum/maximum
-> interval in which the sensor works, without recalling me the idea of
-> "scaling" or changes to the unit too much; this is why I originally
-> chosen this name, but that might be just mine personal taste.
+You can get this release via the git tree at:
 
-We may regret it but let's stick with your range definition as is, with suitable
-docs and keeping it device specific for now.
+    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.14-rc4-rt5
 
-> 
-> > Ideally it should state something about range should be used only when it has no
-> > affect on scaling.  Hopefully we'll not get a device where it has an affect
-> > but it's non linear as that doesn't make any sense.  I'd imagine a range
-> > control in hardware either is proportional to the scale, or has no affect on
-> > it as here.  
-> 
-> I may have a wrong memory here, but I think I've seen something like
-> this on some current-sense chips, which were available for various
-> current ranges, but their output scale changed in non linear way wrt
-> the range.
-> 
-> Or I can imagine a device in which you can set the internal amplifier
-> gain, and this will affect both the scale (because of the amplifier
-> gain itself) and the range (because the amplifier output does saturate
-> at a different voltage) with a linear relationship, but there is also
-> another bound: the physical sensor attached to the amplifier
-> mechanically clamp to a given max value, that happen to be less than
-> the saturation point of the amp at is minimum gain. This would lead to
-> a non-linear net relationship between scale and range because at the
-> minimum gain the range doesn't extends as much as you would expect.
-> 
-> .. But even in non linear cases, just having the scale may be OK..
-> Maybe we can just say that range can be used only if there are at
-> least two values for which we have the same scale value; otherwise
-> just having the scale attribute would suffice and thus we stick on
-> that.. We may think about allowing a RO range attribute, alongside the
-> scale attribute, for non obvious cases.
+The RT patch against v5.14-rc4 can be found here:
 
-For read only, you can use the read_avail approach to provide a range
-for the actual channel.  We do this for various in kernel consumer
-users that need to know the range of values they might get.
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patch-5.14-rc4-rt5.patch.xz
 
-That is only ever read only though, because of the difficulty of
-allowing rights to two bounds together.
+The split quilt queue is available at:
 
-So we have devices where changing the scale will result in
-inX_raw_avail changing (IIRC) and that's not necessarily linear.
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patches-5.14-rc4-rt5.tar.xz
 
-Jonathan
+Sebastian
 
-> 
-> 
-> > Thanks,
-> >
-> > Jonathan
-> >  
-> > >
-> > > Andrea  
-> >  
-
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index cf086b01c6c67..0b931ac3c83e6 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -51,6 +51,10 @@ struct io_worker {
+ 
+ 	struct completion ref_done;
+ 
++	unsigned long create_state;
++	struct callback_head create_work;
++	int create_index;
++
+ 	struct rcu_head rcu;
+ };
+ 
+@@ -261,42 +265,46 @@ static void io_wqe_inc_running(struct io_worker *worker)
+ 	atomic_inc(&acct->nr_running);
+ }
+ 
+-struct create_worker_data {
+-	struct callback_head work;
+-	struct io_wqe *wqe;
+-	int index;
+-};
+-
+ static void create_worker_cb(struct callback_head *cb)
+ {
+-	struct create_worker_data *cwd;
++	struct io_worker *worker;
+ 	struct io_wq *wq;
+ 
+-	cwd = container_of(cb, struct create_worker_data, work);
+-	wq = cwd->wqe->wq;
+-	create_io_worker(wq, cwd->wqe, cwd->index);
+-	kfree(cwd);
++	worker = container_of(cb, struct io_worker, create_work);
++	wq = worker->wqe->wq;
++	create_io_worker(wq, worker->wqe, worker->create_index);
++	clear_bit_unlock(0, &worker->create_state);
++	io_worker_release(worker);
+ }
+ 
+-static void io_queue_worker_create(struct io_wqe *wqe, struct io_wqe_acct *acct)
++static void io_queue_worker_create(struct io_wqe *wqe, struct io_worker *worker,
++				   struct io_wqe_acct *acct)
+ {
+-	struct create_worker_data *cwd;
+ 	struct io_wq *wq = wqe->wq;
+ 
+ 	/* raced with exit, just ignore create call */
+ 	if (test_bit(IO_WQ_BIT_EXIT, &wq->state))
+ 		goto fail;
++	if (!io_worker_get(worker))
++		goto fail;
++	/*
++	 * create_state manages ownership of create_work/index. We should
++	 * only need one entry per worker, as the worker going to sleep
++	 * will trigger the condition, and waking will clear it once it
++	 * runs the task_work.
++	 */
++	if (test_bit(0, &worker->create_state) ||
++	    test_and_set_bit_lock(0, &worker->create_state))
++		goto fail_release;
+ 
+-	cwd = kmalloc(sizeof(*cwd), GFP_ATOMIC);
+-	if (cwd) {
+-		init_task_work(&cwd->work, create_worker_cb);
+-		cwd->wqe = wqe;
+-		cwd->index = acct->index;
+-		if (!task_work_add(wq->task, &cwd->work, TWA_SIGNAL))
+-			return;
++	init_task_work(&worker->create_work, create_worker_cb);
++	worker->create_index = acct->index;
++	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL))
++		return;
+ 
+-		kfree(cwd);
+-	}
++	clear_bit_unlock(0, &worker->create_state);
++fail_release:
++	io_worker_release(worker);
+ fail:
+ 	atomic_dec(&acct->nr_running);
+ 	io_worker_ref_put(wq);
+@@ -314,7 +322,7 @@ static void io_wqe_dec_running(struct io_worker *worker)
+ 	if (atomic_dec_and_test(&acct->nr_running) && io_wqe_run_queue(wqe)) {
+ 		atomic_inc(&acct->nr_running);
+ 		atomic_inc(&wqe->wq->worker_refs);
+-		io_queue_worker_create(wqe, acct);
++		io_queue_worker_create(wqe, worker, acct);
+ 	}
+ }
+ 
+@@ -376,7 +384,7 @@ static void io_wait_on_hash(struct io_wqe *wqe, unsigned int hash)
+ {
+ 	struct io_wq *wq = wqe->wq;
+ 
+-	spin_lock(&wq->hash->wait.lock);
++	spin_lock_irq(&wq->hash->wait.lock);
+ 	if (list_empty(&wqe->wait.entry)) {
+ 		__add_wait_queue(&wq->hash->wait, &wqe->wait);
+ 		if (!test_bit(hash, &wq->hash->map)) {
+@@ -384,7 +392,7 @@ static void io_wait_on_hash(struct io_wqe *wqe, unsigned int hash)
+ 			list_del_init(&wqe->wait.entry);
+ 		}
+ 	}
+-	spin_unlock(&wq->hash->wait.lock);
++	spin_unlock_irq(&wq->hash->wait.lock);
+ }
+ 
+ static struct io_wq_work *io_get_next_work(struct io_wqe *wqe)
+@@ -422,9 +430,9 @@ static struct io_wq_work *io_get_next_work(struct io_wqe *wqe)
+ 	}
+ 
+ 	if (stall_hash != -1U) {
+-		raw_spin_unlock(&wqe->lock);
++		raw_spin_unlock_irq(&wqe->lock);
+ 		io_wait_on_hash(wqe, stall_hash);
+-		raw_spin_lock(&wqe->lock);
++		raw_spin_lock_irq(&wqe->lock);
+ 	}
+ 
+ 	return NULL;
+@@ -973,12 +981,12 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
+ 
+ static bool io_task_work_match(struct callback_head *cb, void *data)
+ {
+-	struct create_worker_data *cwd;
++	struct io_worker *worker;
+ 
+ 	if (cb->func != create_worker_cb)
+ 		return false;
+-	cwd = container_of(cb, struct create_worker_data, work);
+-	return cwd->wqe->wq == data;
++	worker = container_of(cb, struct io_worker, create_work);
++	return worker->wqe->wq == data;
+ }
+ 
+ void io_wq_exit_start(struct io_wq *wq)
+@@ -995,12 +1003,13 @@ static void io_wq_exit_workers(struct io_wq *wq)
+ 		return;
+ 
+ 	while ((cb = task_work_cancel_match(wq->task, io_task_work_match, wq)) != NULL) {
+-		struct create_worker_data *cwd;
++		struct io_worker *worker;
+ 
+-		cwd = container_of(cb, struct create_worker_data, work);
+-		atomic_dec(&cwd->wqe->acct[cwd->index].nr_running);
++		worker = container_of(cb, struct io_worker, create_work);
++		atomic_dec(&worker->wqe->acct[worker->create_index].nr_running);
+ 		io_worker_ref_put(wq);
+-		kfree(cwd);
++		clear_bit_unlock(0, &worker->create_state);
++		io_worker_release(worker);
+ 	}
+ 
+ 	rcu_read_lock();
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 95ece02529e29..d3daccb0097ea 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -119,8 +119,6 @@ struct task_group;
+ 
+ #define task_is_stopped(task)		((READ_ONCE(task->__state) & __TASK_STOPPED) != 0)
+ 
+-#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
+-
+ /*
+  * Special states are those that do not use the normal wait-loop pattern. See
+  * the comment with set_special_state().
+@@ -128,51 +126,36 @@ struct task_group;
+ #define is_special_task_state(state)				\
+ 	((state) & (__TASK_STOPPED | __TASK_TRACED | TASK_PARKED | TASK_DEAD))
+ 
+-#define __set_current_state(state_value)			\
+-	do {							\
+-		WARN_ON_ONCE(is_special_task_state(state_value));\
+-		current->task_state_change = _THIS_IP_;		\
+-		WRITE_ONCE(current->__state, (state_value));	\
+-	} while (0)
+-
+-#define set_current_state(state_value)				\
+-	do {							\
+-		WARN_ON_ONCE(is_special_task_state(state_value));\
+-		current->task_state_change = _THIS_IP_;		\
+-		smp_store_mb(current->__state, (state_value));	\
+-	} while (0)
+-
+-#define set_special_state(state_value)					\
++#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
++# debug_normal_state_change(state_value)				\
++	do {								\
++		WARN_ON_ONCE(is_special_task_state(state_value));	\
++		current->task_state_change = _THIS_IP_;			\
++	} while (0)
++
++# debug_special_state_change(state_value)				\
+ 	do {								\
+-		unsigned long flags; /* may shadow */			\
+ 		WARN_ON_ONCE(!is_special_task_state(state_value));	\
+-		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
+ 		current->task_state_change = _THIS_IP_;			\
+-		WRITE_ONCE(current->__state, (state_value));		\
+-		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
+ 	} while (0)
+ 
+-
+-#define current_save_and_set_rtlock_wait_state()			\
+-	do {								\
+-		raw_spin_lock(&current->pi_lock);			\
+-		current->saved_state = current->__state;		\
++# debug_rtlock_wait_set_state()						 \
++	do {								 \
+ 		current->saved_state_change = current->task_state_change;\
+-		current->task_state_change = _THIS_IP_;			\
+-		WRITE_ONCE(current->__state, TASK_RTLOCK_WAIT);		\
+-		raw_spin_unlock(&current->pi_lock);			\
+-	} while (0);
++		current->task_state_change = _THIS_IP_;			 \
++	} while (0)
+ 
+-#define current_restore_rtlock_saved_state()				\
+-	do {								\
+-		raw_spin_lock(&current->pi_lock);			\
++# debug_rtlock_wait_restore_state()					 \
++	do {								 \
+ 		current->task_state_change = current->saved_state_change;\
+-		WRITE_ONCE(current->__state, current->saved_state);	\
+-		current->saved_state = TASK_RUNNING;			\
+-		raw_spin_unlock(&current->pi_lock);			\
+-	} while (0);
+-
++	} while (0)
+ #else
++# debug_normal_state_change(cond)	do { } while (0)
++# debug_special_state_change(cond)	do { } while (0)
++# debug_rtlock_wait_set_state()		do { } while (0)
++# debug_rtlock_wait_restore_state()	do { } while (0)
++#endif
++
+ /*
+  * set_current_state() includes a barrier so that the write of current->state
+  * is correctly serialised wrt the caller's subsequent test of whether to
+@@ -211,21 +194,29 @@ struct task_group;
+  * Also see the comments of try_to_wake_up().
+  */
+ #define __set_current_state(state_value)				\
+-	WRITE_ONCE(current->__state, (state_value))
++	do {								\
++		debug_normal_state_change((state_value));		\
++		WRITE_ONCE(current->__state, (state_value));		\
++	} while (0)
+ 
+ #define set_current_state(state_value)					\
+-	smp_store_mb(current->__state, (state_value))
++	do {								\
++		debug_normal_state_change((state_value));		\
++		smp_store_mb(current->__state, (state_value));		\
++	} while (0)
+ 
+ /*
+  * set_special_state() should be used for those states when the blocking task
+  * can not use the regular condition based wait-loop. In that case we must
+- * serialize against wakeups such that any possible in-flight TASK_RUNNING stores
+- * will not collide with our state change.
++ * serialize against wakeups such that any possible in-flight TASK_RUNNING
++ * stores will not collide with our state change.
+  */
+ #define set_special_state(state_value)					\
+ 	do {								\
+ 		unsigned long flags; /* may shadow */			\
++									\
+ 		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
++		debug_special_state_change((state_value));		\
+ 		WRITE_ONCE(current->__state, (state_value));		\
+ 		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
+ 	} while (0)
+@@ -257,22 +248,24 @@ struct task_group;
+  */
+ #define current_save_and_set_rtlock_wait_state()			\
+ 	do {								\
++		lockdep_assert_irqs_disabled();				\
+ 		raw_spin_lock(&current->pi_lock);			\
+ 		current->saved_state = current->__state;		\
++		debug_rtlock_wait_set_state();				\
+ 		WRITE_ONCE(current->__state, TASK_RTLOCK_WAIT);		\
+ 		raw_spin_unlock(&current->pi_lock);			\
+ 	} while (0);
+ 
+ #define current_restore_rtlock_saved_state()				\
+ 	do {								\
++		lockdep_assert_irqs_disabled();				\
+ 		raw_spin_lock(&current->pi_lock);			\
++		debug_rtlock_wait_restore_state();			\
+ 		WRITE_ONCE(current->__state, current->saved_state);	\
+ 		current->saved_state = TASK_RUNNING;			\
+ 		raw_spin_unlock(&current->pi_lock);			\
+ 	} while (0);
+ 
+-#endif
+-
+ #define get_current_state()	READ_ONCE(current->__state)
+ 
+ /* Task command name length: */
+diff --git a/kernel/futex.c b/kernel/futex.c
+index c4e28bd37abcb..c05a33a2f865c 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -227,10 +227,62 @@ struct futex_q {
+ #endif
+ } __randomize_layout;
+ 
++/*
++ * On PREEMPT_RT, the hash bucket lock is a 'sleeping' spinlock with an
++ * underlying rtmutex. The task which is about to be requeued could have
++ * just woken up (timeout, signal). After the wake up the task has to
++ * acquire hash bucket lock, which is held by the requeue code.  As a task
++ * can only be blocked on _ONE_ rtmutex at a time, the proxy lock blocking
++ * and the hash bucket lock blocking would collide and corrupt state.
++ *
++ * On !PREEMPT_RT this is not a problem and everything could be serialized
++ * on hash bucket lock, but aside of having the benefit of common code,
++ * this allows to avoid doing the requeue when the task is already on the
++ * way out and taking the hash bucket lock of the original uaddr1 when the
++ * requeue has been completed.
++ *
++ * The following state transitions are valid:
++ *
++ * On the waiter side:
++ *   Q_REQUEUE_PI_NONE		-> Q_REQUEUE_PI_IGNORE
++ *   Q_REQUEUE_PI_IN_PROGRESS	-> Q_REQUEUE_PI_WAIT
++ *
++ * On the requeue side:
++ *   Q_REQUEUE_PI_NONE		-> Q_REQUEUE_PI_INPROGRESS
++ *   Q_REQUEUE_PI_IN_PROGRESS	-> Q_REQUEUE_PI_DONE/LOCKED
++ *   Q_REQUEUE_PI_IN_PROGRESS	-> Q_REQUEUE_PI_NONE (requeue failed)
++ *   Q_REQUEUE_PI_WAIT		-> Q_REQUEUE_PI_DONE/LOCKED
++ *   Q_REQUEUE_PI_WAIT		-> Q_REQUEUE_PI_IGNORE (requeue failed)
++ *
++ * The requeue side ignores a waiter with state Q_REQUEUE_PI_IGNORE as this
++ * signals that the waiter is already on the way out. It also means that
++ * the waiter is still on the 'wait' futex, i.e. uaddr1.
++ *
++ * The waiter side signals early wakeup to the requeue side either through
++ * setting state to Q_REQUEUE_PI_IGNORE or to Q_REQUEUE_PI_WAIT depending
++ * on the current state. In case of Q_REQUEUE_PI_IGNORE it can immediately
++ * proceed to take the hash bucket lock of uaddr1. If it set state to WAIT,
++ * which means the wakeup is interleaving with a requeue in progress it has
++ * to wait for the requeue side to change the state. Either to DONE/LOCKED
++ * or to IGNORE. DONE/LOCKED means the waiter q is now on the uaddr2 futex
++ * and either blocked (DONE) or has acquired it (LOCKED). IGNORE is set by
++ * the requeue side when the requeue attempt failed via deadlock detection
++ * and therefore the waiter q is still on the uaddr1 futex.
++ */
++enum {
++	Q_REQUEUE_PI_NONE		=  0,
++	Q_REQUEUE_PI_IGNORE,
++	Q_REQUEUE_PI_IN_PROGRESS,
++	Q_REQUEUE_PI_WAIT,
++	Q_REQUEUE_PI_DONE,
++	Q_REQUEUE_PI_LOCKED,
++};
++
+ static const struct futex_q futex_q_init = {
+ 	/* list gets initialized in queue_me()*/
+-	.key = FUTEX_KEY_INIT,
+-	.bitset = FUTEX_BITSET_MATCH_ANY
++	.key		= FUTEX_KEY_INIT,
++	.bitset		= FUTEX_BITSET_MATCH_ANY,
++	.requeue_state	= ATOMIC_INIT(Q_REQUEUE_PI_NONE),
+ };
+ 
+ /*
+@@ -1799,57 +1851,6 @@ void requeue_futex(struct futex_q *q, struct futex_hash_bucket *hb1,
+ 	q->key = *key2;
+ }
+ 
+-/*
+- * On PREEMPT_RT, the hash bucket lock is a 'sleeping' spinlock with an
+- * underlying rtmutex. The task which is about to be requeued could have
+- * just woken up (timeout, signal). After the wake up the task has to
+- * acquire hash bucket lock, which is held by the requeue code.  As a task
+- * can only be blocked on _ONE_ rtmutex at a time, the proxy lock blocking
+- * and the hash bucket lock blocking would collide and corrupt state.
+- *
+- * On !PREEMPT_RT this is not a problem and everything could be serialized
+- * on hash bucket lock, but aside of having the benefit of common code,
+- * this allows to avoid doing the requeue when the task is already on the
+- * way out and taking the hash bucket lock of the original uaddr1 when the
+- * requeue has been completed.
+- *
+- * The following state transitions are valid:
+- *
+- * On the waiter side:
+- *   Q_REQUEUE_PI_NONE		-> Q_REQUEUE_PI_IGNORE
+- *   Q_REQUEUE_PI_IN_PROGRESS	-> Q_REQUEUE_PI_WAIT
+- *
+- * On the requeue side:
+- *   Q_REQUEUE_PI_NONE		-> Q_REQUEUE_PI_INPROGRESS
+- *   Q_REQUEUE_PI_IN_PROGRESS	-> Q_REQUEUE_PI_DONE/LOCKED
+- *   Q_REQUEUE_PI_IN_PROGRESS	-> Q_REQUEUE_PI_NONE (requeue failed)
+- *   Q_REQUEUE_PI_WAIT		-> Q_REQUEUE_PI_DONE/LOCKED
+- *   Q_REQUEUE_PI_WAIT		-> Q_REQUEUE_PI_IGNORE (requeue failed)
+- *
+- * The requeue side ignores a waiter with state Q_REQUEUE_PI_IGNORE as this
+- * signals that the waiter is already on the way out. It also means that
+- * the waiter is still on the 'wait' futex, i.e. uaddr1.
+- *
+- * The waiter side signals early wakeup to the requeue side either through
+- * setting state to Q_REQUEUE_PI_IGNORE or to Q_REQUEUE_PI_WAIT depending
+- * on the current state. In case of Q_REQUEUE_PI_IGNORE it can immediately
+- * proceed to take the hash bucket lock of uaddr1. If it set state to WAIT,
+- * which means the wakeup is interleaving with a requeue in progress it has
+- * to wait for the requeue side to change the state. Either to DONE/LOCKED
+- * or to IGNORE. DONE/LOCKED means the waiter q is now on the uaddr2 futex
+- * and either blocked (DONE) or has acquired it (LOCKED). IGNORE is set by
+- * the requeue side when the requeue attempt failed via deadlock detection
+- * and therefore the waiter q is still on the uaddr1 futex.
+- */
+-enum {
+-	Q_REQUEUE_PI_NONE		=  0,
+-	Q_REQUEUE_PI_IGNORE,
+-	Q_REQUEUE_PI_IN_PROGRESS,
+-	Q_REQUEUE_PI_WAIT,
+-	Q_REQUEUE_PI_DONE,
+-	Q_REQUEUE_PI_LOCKED,
+-};
+-
+ static inline bool futex_requeue_pi_prepare(struct futex_q *q,
+ 					    struct futex_pi_state *pi_state)
+ {
+@@ -1889,14 +1890,20 @@ static inline void futex_requeue_pi_complete(struct futex_q *q, int locked)
+ 
+ 	old = atomic_read_acquire(&q->requeue_state);
+ 	do {
++		if (old == Q_REQUEUE_PI_IGNORE)
++			return;
++
+ 		if (locked >= 0) {
+ 			/* Requeue succeeded. Set DONE or LOCKED */
++			WARN_ON_ONCE(old != Q_REQUEUE_PI_IN_PROGRESS &&
++				     old != Q_REQUEUE_PI_WAIT)
+ 			new = Q_REQUEUE_PI_DONE + locked;
+ 		} else if (old == Q_REQUEUE_PI_IN_PROGRESS) {
+ 			/* Deadlock, no early wakeup interleave */
+ 			new = Q_REQUEUE_PI_NONE;
+ 		} else {
+ 			/* Deadlock, early wakeup interleave. */
++			WARN_ON_ONCE(old != Q_REQUEUE_PI_IN_WAIT);
+ 			new = Q_REQUEUE_PI_IGNORE;
+ 		}
+ 	} while (!atomic_try_cmpxchg(&q->requeue_state, &old, new));
+diff --git a/kernel/locking/rtmutex_api.c b/kernel/locking/rtmutex_api.c
+index c1ee78691057c..6875d9ee04704 100644
+--- a/kernel/locking/rtmutex_api.c
++++ b/kernel/locking/rtmutex_api.c
+@@ -224,7 +224,7 @@ void __sched rt_mutex_init_proxy_locked(struct rt_mutex_base *lock,
+ 	 * the wait_lock of the rtmutex associated to the pi_futex held.
+ 	 * spin_unlock() in turn takes wait_lock of the rtmutex on which
+ 	 * the spinlock is based which makes lockdep notice a lock
+-	 * recursion. Give the futex/rtmutex wait_lock a seperate key.
++	 * recursion. Give the futex/rtmutex wait_lock a separate key.
+ 	 */
+ 	lockdep_set_class(&lock->wait_lock, &pi_futex_key);
+ 	rt_mutex_set_owner(lock, proxy_owner);
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index a742e9dc9a7cb..f501d5ac9c9b9 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3638,7 +3638,7 @@ bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
+ 
+ #ifdef CONFIG_PREEMPT_RT
+ 	/*
+-	 * Saved state preserves the task state accross blocking on
++	 * Saved state preserves the task state across blocking on
+ 	 * a RT lock.  If the state matches, set p::saved_state to
+ 	 * TASK_RUNNING, but do not wake the task because it waits
+ 	 * for a lock wakeup. Also indicate success because from
+diff --git a/localversion-rt b/localversion-rt
+index ad3da1bcab7e8..0efe7ba1930e1 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt4
++-rt5
