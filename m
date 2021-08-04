@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3362F3DFDAD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B568C3DFDB4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235306AbhHDJKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 05:10:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53394 "EHLO mail.kernel.org"
+        id S237025AbhHDJK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 05:10:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235532AbhHDJKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 05:10:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 71A3260F14;
-        Wed,  4 Aug 2021 09:10:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628068205;
-        bh=wU1sePW5LQXTiqR5t/F90MthP19CVS/q0HOaY27mMJk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=RrFqIriGRFPCHujc9wbcKGJVV+vHRSxljufZS9B/Q/N4M33MwyBVf6vxKzOa66Rju
-         juE3Q+o45Z0YjvNE0zHntBiBAP27geTMpSOFBS4/7giVBUVlSX8qf6wlRz2rCtYIgR
-         j4iRwXqPpOq2Dtdl7PVFeveNB0f7ava3AC7CI8oWY21F77m/v3H4KDEEbUiLZllJTU
-         J3ZuXBgfJ5jUbe2iDArN5dE9HbPAEUW8KwjlPWRmuDpaTyv6O3NtxT0takhHawR84S
-         Pzh8pAnMp2J0bjeIAY5T9wnBmM9ZSRhRe35MURkMGixnXVyq3lH0N5T7PB4/28VNBY
-         iI92mZUi0VDKQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6733260A72;
-        Wed,  4 Aug 2021 09:10:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S236979AbhHDJKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 05:10:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5787E60240;
+        Wed,  4 Aug 2021 09:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628068209;
+        bh=9X4hL8TfLuspjEJ70He/hj+tn4fH/H3eNlS2f2ndoxM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rXGa+WHPnySCeMTNtLIsO/kdHKYiEZq1T6/faJZEnj+zhHUAyq7pWT+Z3fJxMBEtM
+         IHh+amcv6TJagOcUhRdnb2Uz3kx5ZH2lH8zztQF3hk1Xi0VHDkrHV5aa+GXCn++0KC
+         /9DlvY0Uw7IBsSwlM8FwcztWIceVscmOQU/BtPJE=
+Date:   Wed, 4 Aug 2021 11:10:06 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Kalyan Thota <kalyan_t@codeaurora.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, rnayak@codeaurora.org,
+        stable@vger.kernel.org
+Subject: Re: [v3] drm/msm/disp/dpu1: add safe lut config in dpu driver
+Message-ID: <YQpZbosqlBo9EkG6@kroah.com>
+References: <1628064990-6990-1-git-send-email-kalyan_t@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: sched: fix lockdep_set_class() typo error for
- sch->seqlock
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162806820541.32022.5420198468163406896.git-patchwork-notify@kernel.org>
-Date:   Wed, 04 Aug 2021 09:10:05 +0000
-References: <1627988301-55801-1-git-send-email-linyunsheng@huawei.com>
-In-Reply-To: <1627988301-55801-1-git-send-email-linyunsheng@huawei.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, pabeni@redhat.com,
-        ap420073@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1628064990-6990-1-git-send-email-kalyan_t@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Tue, 3 Aug 2021 18:58:21 +0800 you wrote:
-> According to comment in qdisc_alloc(), sch->seqlock's lockdep
-> class key should be set to qdisc_tx_busylock, due to possible
-> type error, sch->busylock's lockdep class key is set to
-> qdisc_tx_busylock, which is duplicated because sch->busylock's
-> lockdep class key is already set in qdisc_alloc().
+On Wed, Aug 04, 2021 at 01:16:30AM -0700, Kalyan Thota wrote:
+> Add safe lut configuration for all the targets in dpu
+> driver as per QOS recommendation.
 > 
-> So fix it by replacing sch->busylock with sch->seqlock.
+> Issue reported on SC7280:
 > 
-> [...]
+> With wait-for-safe feature in smmu enabled, RT client
+> buffer levels are checked to be safe before smmu invalidation.
+> Since display was always set to unsafe it was delaying the
+> invalidaiton process thus impacting the performance on NRT clients
+> such as eMMC and NVMe.
+> 
+> Validated this change on SC7280, With this change eMMC performance
+> has improved significantly.
+> 
+> Changes in v1:
+> - Add fixes tag (Sai)
+> - CC stable kernel (Dimtry)
+> 
+> Changes in v2:
+> - Correct fixes tag with appropriate hash (stephen)
+> 
+> Fixes: 591e34a091d1 (drm/msm/disp/dpu1: add support for display
+> for SC7280 target)
+> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+> Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org> (sc7280, sc7180)
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 
-Here is the summary with links:
-  - [net] net: sched: fix lockdep_set_class() typo error for sch->seqlock
-    https://git.kernel.org/netdev/net/c/06f5553e0f0c
+<formletter>
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-
+</formletter>
