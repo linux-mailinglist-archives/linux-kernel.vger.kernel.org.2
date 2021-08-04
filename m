@@ -2,108 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062BB3DFFEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 13:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075523DFFF1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 13:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237771AbhHDLGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 07:06:43 -0400
-Received: from mga05.intel.com ([192.55.52.43]:31103 "EHLO mga05.intel.com"
+        id S237270AbhHDLIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 07:08:47 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:35592 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237455AbhHDLGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 07:06:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="299487430"
-X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
-   d="scan'208";a="299487430"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 04:06:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
-   d="scan'208";a="419398163"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by orsmga006.jf.intel.com with ESMTP; 04 Aug 2021 04:06:22 -0700
-Subject: Re: [PATCH v4 3/5] mmc: sdhci: fix SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Suneel Garapati <suneel.garapati@xilinx.com>,
-        Kevin Liu <kliu5@marvell.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Al Cooper <alcooperx@gmail.com>
-References: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
- <b343556a93c2741b502723f63af189283235bc9a.1627204633.git.mirq-linux@rere.qmqm.pl>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <8c03b995-f449-8f12-a4cf-8fc4978f05c7@intel.com>
-Date:   Wed, 4 Aug 2021 14:06:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S236765AbhHDLIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 07:08:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628075313; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
+ Subject: Sender; bh=UVTxmTbmqtIP0faK96taKsK1cEYi8KSQOq1LNUgnXtI=; b=BMzdqPUR7evp2oEhCoev/jQ5Algkeita6k6oOTu3ByCx4rYpE3BWPeAv6mhKc8pk3hL3slUH
+ 6r0j+s7yPdjwXlP3xsRljGwVS5JxUVicLZsTc1VTaJyA3VyPLJd+3zYXEaOwJHopqvG6FhXP
+ QQXS58ijdAXRFiqAKhEhCdT6SBQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 610a75205c73bba6fb3a57df (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Aug 2021 11:08:16
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E6450C43217; Wed,  4 Aug 2021 11:08:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.102] (unknown [49.207.203.214])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F06DDC433D3;
+        Wed,  4 Aug 2021 11:08:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F06DDC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v5 1/2] PM / Domains: Add support for 'required-opps' to
+ set default perf state
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>
+References: <1626764876-10229-1-git-send-email-rnayak@codeaurora.org>
+ <1626764876-10229-2-git-send-email-rnayak@codeaurora.org>
+ <CAPDyKFrzHD6rXP5TnqrAVnrZExc2JLFe3HoGF+yM_tsaZYwh8g@mail.gmail.com>
+ <35950d34-5cab-1b09-9864-49217a83f68d@codeaurora.org>
+Message-ID: <6fe7d326-1822-5a49-cca7-df9a2739dca8@codeaurora.org>
+Date:   Wed, 4 Aug 2021 16:38:09 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <b343556a93c2741b502723f63af189283235bc9a.1627204633.git.mirq-linux@rere.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <35950d34-5cab-1b09-9864-49217a83f68d@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/21 12:20 pm, Michał Mirosław wrote:
-> Fix returned clock rate for SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN case.
-> This fixes real_div value that was calculated as 1 (meaning no division)
-> instead of 2 with the quirk enabled.
+
+On 8/3/2021 10:08 AM, Rajendra Nayak wrote:
 > 
-> Cc: stable@kernel.vger.org
-> Fixes: d1955c3a9a1d ("mmc: sdhci: add quirk SDHCI_QUIRK_CLOCK_DIV_ZERO_BROKEN")
-> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-
-Notwithstanding comment below:
-
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-
-
-> ---
-> v4: no changes
-> v3: updated commit message
-> v2: no changes
-> ---
->  drivers/mmc/host/sdhci.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+> On 8/2/2021 6:29 PM, Ulf Hansson wrote:
+>> On Tue, 20 Jul 2021 at 09:12, Rajendra Nayak <rnayak@codeaurora.org> wrote:
+>>>
+>>> Some devices within power domains with performance states do not
+>>> support DVFS, but still need to vote on a default/static state
+>>> while they are active. They can express this using the 'required-opps'
+>>> property in device tree, which points to the phandle of the OPP
+>>> supported by the corresponding power-domains.
+>>>
+>>> Add support to parse this information from DT and then set the
+>>> specified performance state during attach and drop it on detach.
+>>> runtime suspend/resume callbacks already have logic to drop/set
+>>> the vote as needed and should take care of dropping the default
+>>> perf state vote on runtime suspend and restore it back on runtime
+>>> resume.
+>>>
+>>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>>> ---
+>>>   drivers/base/power/domain.c | 28 +++++++++++++++++++++++++---
+>>>   include/linux/pm_domain.h   |  1 +
+>>>   2 files changed, 26 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+>>> index a934c67..f454031 100644
+>>> --- a/drivers/base/power/domain.c
+>>> +++ b/drivers/base/power/domain.c
+>>> @@ -2598,6 +2598,12 @@ static void genpd_dev_pm_detach(struct device *dev, bool power_off)
+>>>
+>>>          dev_dbg(dev, "removing from PM domain %s\n", pd->name);
+>>>
+>>> +       /* Drop the default performance state */
+>>> +       if (dev_gpd_data(dev)->default_pstate) {
+>>> +               dev_pm_genpd_set_performance_state(dev, 0);
+>>> +               dev_gpd_data(dev)->default_pstate = 0;
+>>> +       }
+>>> +
+>>>          for (i = 1; i < GENPD_RETRY_MAX_MS; i <<= 1) {
+>>>                  ret = genpd_remove_device(pd, dev);
+>>>                  if (ret != -EAGAIN)
+>>> @@ -2635,9 +2641,10 @@ static void genpd_dev_pm_sync(struct device *dev)
+>>>   static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>>>                                   unsigned int index, bool power_on)
+>>>   {
+>>> +       struct device_node *np;
+>>>          struct of_phandle_args pd_args;
+>>>          struct generic_pm_domain *pd;
+>>> -       int ret;
+>>> +       int ret, pstate;
+>>>
+>>>          ret = of_parse_phandle_with_args(dev->of_node, "power-domains",
+>>>                                  "#power-domain-cells", index, &pd_args);
+>>> @@ -2675,10 +2682,25 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>>>                  genpd_unlock(pd);
+>>>          }
+>>>
+>>> -       if (ret)
+>>> +       if (ret) {
+>>>                  genpd_remove_device(pd, dev);
+>>> +               return -EPROBE_DEFER;
+>>> +       }
+>>> +
+>>> +       /* Set the default performance state */
+>>> +       np = base_dev->of_node;
+>>
+>> Please use dev->of_node instead (it is set to the same of_node as
+>> base_dev by the callers of __genpd_dev_pm_attach) as it's more
+>> consistent with existing code.
+>>
+>>> +       if (of_parse_phandle(np, "required-opps", index)) {
+>>> +               pstate = of_get_required_opp_performance_state(np, index);
+>>> +               if (pstate < 0) {
+>>> +                       ret = pstate;
+>>> +                       dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
+>>> +                               pd->name, ret);
+>>> +               }
+>>> +               dev_pm_genpd_set_performance_state(dev, pstate);
+>>> +               dev_gpd_data(dev)->default_pstate = pstate;
+>>
+>> This doesn't look entirely correct to me. If we fail to translate a
+>> required opp to a performance state, we shouldn't try to set it.
 > 
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index 3ab60e7f936b..0993f7d0ce8e 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -1903,9 +1903,12 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
->  
->  		if (!host->clk_mul || switch_base_clk) {
->  			/* Version 3.00 divisors must be a multiple of 2. */
-> -			if (host->max_clk <= clock)
-> +			if (host->max_clk <= clock) {
->  				div = 1;
-> -			else {
-> +				if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
-> +					&& host->max_clk <= 25000000)
-
-It is preferred to line break after '&&' and line up e.g.
-
-				if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN) &&
-				    host->max_clk <= 25000000)
-
-
-> +					div = 2;
-> +			} else {
->  				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
->  				     div += 2) {
->  					if ((host->max_clk / div) <= clock)
-> @@ -1914,9 +1917,6 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
->  			}
->  			real_div = div;
->  			div >>= 1;
-> -			if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
-> -				&& !div && host->max_clk <= 25000000)
-> -				div = 1;
->  		}
->  	} else {
->  		/* Version 2.00 divisors must be a power of 2. */
+> yeah, that does not seem right at all :(
 > 
+>> Perhaps it's also easier to call
+>> of_get_required_opp_performance_state() unconditionally of whether a
+>> "required-opps" specifier exists. If it fails with the translation,
+>> then we just skip setting a default state and continue with returning
+>> 1.
+>>
+>> Would that work?
 
+Looks like calling of_get_required_opp_performance_state() unconditionally
+makes it spit out a pr_err() in case the node is missing "required-opps" property,
+so I posted a v6 [1] with the check in place and adding the missing else
+condition.
+
+[1] https://lore.kernel.org/patchwork/project/lkml/list/?series=510727
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
