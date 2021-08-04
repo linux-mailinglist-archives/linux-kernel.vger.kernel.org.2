@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E853DF9E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E8A3DF9EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233947AbhHDDGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 23:06:10 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:16041 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbhHDDGJ (ORCPT
+        id S234744AbhHDDLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 23:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234044AbhHDDL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 23:06:09 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gfc3f0zt1zZxJP;
-        Wed,  4 Aug 2021 11:02:22 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 4 Aug 2021 11:05:49 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 4 Aug 2021 11:05:48 +0800
-Subject: Re: [PATCH 5.10 00/67] 5.10.56-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210802134339.023067817@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <97854714-3f7e-5ac5-c104-ccc7b114cbd7@huawei.com>
-Date:   Wed, 4 Aug 2021 11:05:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 3 Aug 2021 23:11:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA3AC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 20:11:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:Subject:From:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=b7ea5nZ+ckbjTfjPzMM7oA1gBGqNWHn29Te70wk2vTk=; b=CIpWxlF2JRoECOxo8dm2l2bNxJ
+        PN5XKNWTxw29IfkeRxl4tV8tbzI8SGoF7vr0JqPeEyXtw1z8zDeiybZb/wbwcIOsr+gfpKD4DcyTs
+        WysDWtE6Ay/gaKRBYnfXTktSVft8GGPgDAyRzUegpSVDdTvzDtoA7t+/9vigLAFk6p4E5BpUI60dL
+        f5sPF2o+Rl8/3h9KsmkVAsPcRwrw4L7NPFn1Zmdi6jj+COQb+c0YxxMz5fN/NkNSyDFhirKST2kGO
+        x0E5j8B7DXKjSa/ggSMBkFLqQI8hwYvgNaaP4xJbotk5+vjDE5W7CdZ6pszzU98jBN294Q8aIrnvZ
+        X7Fg8DbQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mB7ID-005LsP-15; Wed, 04 Aug 2021 03:10:14 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: make[2]: *** [arch/powerpc/Makefile.postlink:31: vmlinux] Error 1
+To:     kernel test robot <lkp@intel.com>, Feng Tang <feng.tang@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <202107301612.rQ29n76B-lkp@intel.com>
+Message-ID: <c3e9247d-95cd-718c-d8a5-f0cd5e5a3598@infradead.org>
+Date:   Tue, 3 Aug 2021 20:10:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210802134339.023067817@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <202107301612.rQ29n76B-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/8/2 21:44, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.56 release.
-> There are 67 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 7/30/21 1:29 AM, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   764a5bc89b12b82c18ce7ca5d7c1b10dd748a440
+> commit: cf536e185869d4815d506e777bcca6edd9966a6e Makefile: extend 32B aligned debug option to 64B aligned
+> date:   10 weeks ago
+> config: powerpc64-randconfig-c023-20210730 (attached as .config)
+> compiler: powerpc-linux-gcc (GCC) 10.3.0
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cf536e185869d4815d506e777bcca6edd9966a6e
+>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>          git fetch --no-tags linus master
+>          git checkout cf536e185869d4815d506e777bcca6edd9966a6e
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross ARCH=powerpc64
 > 
-> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
-> Anything received after that time might be too late.
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.56-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+> All errors (new ones prefixed by >>):
 > 
-> thanks,
+>>> make[2]: *** [arch/powerpc/Makefile.postlink:31: vmlinux] Error 1
 > 
-> greg k-h
-> 
+> ---
 
-Tested on arm64 and x86 for 5.10.56-rc1,
+Hi ktr/lkp,
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.56-rc1
-Commit: f9063e43ccbb353c5b2cafe59c6b9534aa7ddc14
-Compiler: gcc version 7.3.0 (GCC)
+This is not "All errors". I suggest that you improve your output by
+(also) grepping for "ERROR:", so that the following lines would be
+included here:
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+ERROR: start_text address is c000000000000200, should be c000000000000100
+ERROR: try to enable LD_HEAD_STUB_CATCH config option
+ERROR: see comments in arch/powerpc/tools/head_check.sh
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8906
-passed: 8906
-failed: 0
-timeout: 0
---------------------------------------------------------------------
 
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+and yes, enabling LD_HEAD_STUB_CATCH does fix this build error.
+
+thanks.
+-- 
+~Randy
+
