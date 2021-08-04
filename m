@@ -2,76 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E783E09D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33383E09D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238844AbhHDVIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33612 "EHLO
+        id S233273AbhHDVKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231602AbhHDVIH (ORCPT
+        with ESMTP id S229577AbhHDVKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:08:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A18C0613D5;
-        Wed,  4 Aug 2021 14:07:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bpxyDpnvly9eIlMQTFPJ1aBcN9lOvzkoVYTJFUDJnqo=; b=iLoMBWKjIEusVQoTWW/PDbf4E6
-        UpBvg0/6a7I3wA1o0hOk+3nIixZMjbuU7AvdPcOKwOHcxBJJxKPbw+sVrBvYmdHKAJC1+7ivKtRCW
-        kw51BIbzdxEgabH2EqeEkojnf/p8N6qRwm3jfLoqiPMn8bw2ImSKR1bKk7RxwBR0/1nD2ktoveeXy
-        uw3t0cctv1UXtLL2gLzkOW3aGA4l1asOPtBeBC/leUQBRFaTPM5o48yWRjN2ja0OMNj7WPlSdJNQM
-        QChffB6AwMrUaPh+iaThHIffvV/O4P3Wk29gLPuGRqg/qsmyay8NgDlcmM5YfEFD+KLW87Vjcrsla
-        9NH6/B2g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBO6W-006IQp-Ga; Wed, 04 Aug 2021 21:07:16 +0000
-Date:   Wed, 4 Aug 2021 22:07:08 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-Message-ID: <YQsBfAVPomaC97Rm@casper.infradead.org>
-References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQrqhYEL64CSLRTy@kroah.com>
- <CAPcyv4iEEDCz5719d0vNi=zi=6oN5vctcVfY5P=WQ9j_Zpz6eA@mail.gmail.com>
+        Wed, 4 Aug 2021 17:10:01 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5CCC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:09:48 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id m13so4043219iol.7
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:09:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8DDuDp9xj9y+rrWppusE6gmVYzLBup1vgAlMNghHvaM=;
+        b=Ld8ZFNDhBPYA6MmzixECIwGagdHr+WHiXBuRCjBzq/WE+lj/QdGsoYwBV+K0FS7D49
+         1ApQygsfhan/neAA87N9r1/9OIAKKyjGLdqe7hfnXrFAtOrIRcQtxCWv6Ts0tspIwSs1
+         OkeBCXmcWwRljXSxA8SnwLvF5S6gbTHKIoYc4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8DDuDp9xj9y+rrWppusE6gmVYzLBup1vgAlMNghHvaM=;
+        b=CBY3JkYVpvdoIJsluE4GN1j9ekybKNRtb7NnOYSU585YODua3G8Y8ZAn+7g5Tr3qq6
+         xJBVhKeL3LsmiPKd/w8aZP5vA/jAQbfH08rzaNQA8A+wz6p/Tqsf/oF2TRQa61OkqmT4
+         6Exxf2r3Gnab8gcQCx5GF5vvn87KRA6ytlvSkrfSKY908sLydMkZn9hkCFJWJmY//X5c
+         Gh5JdQ/z+M+Bz+eLAwOZI7E/X2EOaVwMVfLT0HnKhGuwCECE/o1KSoJ/in+o9513MVbh
+         uU/edk8esgGNxGaUtqEhsqyaK7PVFsF85hOLcwpAtEPmua32eCHUFaW+DzcDwYn32mnU
+         yRyA==
+X-Gm-Message-State: AOAM532gU3shANBlPPpEflbS7Nh7zDx1O7c2WUaUDGF9P+bMAH7U2rXd
+        YJHHNRJG995Sfw/s62Y5B8DM4OVlmtw9epzJo0JXiQ==
+X-Google-Smtp-Source: ABdhPJw0mOybeM3dYriDbE4P+cjOY+Ld7jhKBY/sqQWK+2paixaaMl+3LFKS8qESFm8OeL4h8HNsBdJD8DsTjptakuw=
+X-Received: by 2002:a5d:9d19:: with SMTP id j25mr80888ioj.84.1628111387933;
+ Wed, 04 Aug 2021 14:09:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4iEEDCz5719d0vNi=zi=6oN5vctcVfY5P=WQ9j_Zpz6eA@mail.gmail.com>
+References: <20210405202857.1265308-1-gwendal@google.com> <CAPUE2uvZzXUoG+Fr7c3q0ysMUz0eb36PrdknG37FkG1v2h7zUg@mail.gmail.com>
+ <CAE_wzQ-bMhrH7pcwNRRTgLFD3opYE2UriU_N=-bu+neq8MHFrQ@mail.gmail.com>
+In-Reply-To: <CAE_wzQ-bMhrH7pcwNRRTgLFD3opYE2UriU_N=-bu+neq8MHFrQ@mail.gmail.com>
+From:   Gwendal Grignou <gwendal@chromium.org>
+Date:   Wed, 4 Aug 2021 14:09:37 -0700
+Message-ID: <CAPUE2utqRi9+Rb3UPE6FFRVoKDE5z+NFk1TL5Nmb7CW-VpBK=A@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] platform/chrome: Update cros_ec sysfs attribute
+ after sensors are found
+To:     Dmitry Torokhov <dtor@chromium.org>
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Gwendal Grignou <gwendal@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 01:11:27PM -0700, Dan Williams wrote:
-> On Wed, Aug 4, 2021 at 12:29 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> > Why not just make distros that want to support this type of platform,
-> > also provide these tiny kernel images?  Why are you pushing this work on
-> > the kernel community instead?
-> 
-> In fact, these questions are where I started when first encountering
-> this proposal. Andi has addressed the single kernel image constraint,
-> but I want to pick up on this "pushing work to the kernel community"
-> contention. The small list of vetted drivers that a TDX guest needs
-> will be built-in and maintained in the kernel by the protected guest
-> developer community, so no "pushing work" there. However, given that
-> any driver disable mechanism needs to touch the driver core I
-> advocated to go ahead and make this a general purpose capability to
-> pick up where this [1] conversation left off. I.e. a general facility
-> for the corner cases that modprobe and kernel config policy can not
-> reach. Corner cases like VMM attacking the VM, or broken hardware with
-> a built-in driver that can't be unbound after the fact.
+The v2 patches I submitted were wrong, as cros_ec sysfs driver is
+modifying the attributes of the class driver, not its own. I repost a
+patch that takes that into account.
+Gwendal.
 
-I don't understand how this defends against a hypervisor attacking a
-guest.  If the hardware exists, the hypervisor can access it, regardless
-of whether the driver is default-disabled by configuration.
+On Sun, May 30, 2021 at 10:36 PM Dmitry Torokhov <dtor@chromium.org> wrote:
+>
+> Hi Gwendal,
+>
+> On Thu, May 27, 2021 at 2:01 PM Gwendal Grignou <gwendal@chromium.org> wrote:
+> >
+> > [+dtor]
+> > Is this change acceptable? I was worried it could break when
+> > asynchronous probing is used [https://lwn.net/Articles/629895/], but
+> > since all probes are deferred in a single thread, it is safe.
+>
+> I think this is a bit awkward that we need to poke a separate sub-driver.
+>
+> Have you considered having cros_ec_sensorhub.c create its own
+> attribute group (it does not have to have a name and it looks like one
+> can register as many unnamed groups as they want) and have wake angle
+> show and store methods directly in cros_ec_sensorhub.c?
+>
+> Thanks,
+> Dmitry
