@@ -2,65 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CD73DF944
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E653DF947
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233588AbhHDBbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 21:31:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233484AbhHDBbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 21:31:41 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 810E960E09;
-        Wed,  4 Aug 2021 01:31:27 +0000 (UTC)
-Date:   Tue, 3 Aug 2021 21:31:26 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Kate Carcia <kcarcia@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Gabriele Paoloni <gabriele.paoloni@intel.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>, linux-doc@vger.kernel.org
-Subject: Re: [RFC PATCH 01/16] rv: Add Runtime Verification (RV) interface
-Message-ID: <20210803213126.37a6da31@rorschach.local.home>
-In-Reply-To: <f834d8e7-1027-9573-63ff-eedc49884b78@redhat.com>
-References: <cover.1621414942.git.bristot@redhat.com>
-        <ad69b06e9e3a5ec9ad2a49d290b719a96dcc471e.1621414942.git.bristot@redhat.com>
-        <90c917eb-f0a8-3ef5-b63d-d88c1f6919a1@infradead.org>
-        <f834d8e7-1027-9573-63ff-eedc49884b78@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233638AbhHDBdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 21:33:55 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7777 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233477AbhHDBdy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 21:33:54 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GfZ5B2QZ4zYkYR;
+        Wed,  4 Aug 2021 09:33:34 +0800 (CST)
+Received: from [127.0.0.1] (10.40.188.87) by dggeml757-chm.china.huawei.com
+ (10.1.199.137) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 4 Aug
+ 2021 09:33:39 +0800
+Subject: Re: [PATCH v5 0/3] PCI: Add a quirk to enable SVA for HiSilicon chip
+To:     Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        jean-philippe <jean-philippe@linaro.org>,
+        <kenneth-lee-2012@foxmail.com>
+References: <1626144876-11352-1-git-send-email-zhangfei.gao@linaro.org>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   Zhou Wang <wangzhou1@hisilicon.com>
+Message-ID: <8e821546-d8ee-7b61-c0b5-e9c13cf7e7cf@hisilicon.com>
+Date:   Wed, 4 Aug 2021 09:33:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1626144876-11352-1-git-send-email-zhangfei.gao@linaro.org>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.188.87]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 08:54:39 +0200
-Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
-
-> > No need for default y. There are other reasons to use DEBUG_KERNEL
-> > without wanting RV turned on.  
+On 2021/7/13 10:54, Zhangfei Gao wrote:
+> HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
+> actually on the AMBA bus. These fake PCI devices have PASID capability
+> though not supporting TLP.
 > 
-> yes, you are right, I will remove it.
+> Add a quirk to set pasid_no_tlp and dma-can-stall for these devices.
+> 
+> v5:
+> no change, base on 5.14-rc1
+> 
+> v4: 
+> Applied to Linux 5.13-rc2, and build successfully with only these three patches.
+> 
+> v3:
+> https://lore.kernel.org/linux-pci/1615258837-12189-1-git-send-email-zhangfei.gao@linaro.org/
+> Rebase to Linux 5.12-rc1
+> Change commit msg adding:
+> Property dma-can-stall depends on patchset
+> https://lore.kernel.org/linux-iommu/20210302092644.2553014-1-jean-philippe@linaro.org/
+> 
+> By the way the patchset can directly applied on 5.12-rc1 and build successfully though
+> without the dependent patchset.
+> 
+> v2:
+> Add a new pci_dev bit: pasid_no_tlp, suggested by Bjorn 
+> "Apparently these devices have a PASID capability.  I think you should
+> add a new pci_dev bit that is specific to this idea of "PASID works
+> without TLP prefixes" and then change pci_enable_pasid() to look at
+> that bit as well as eetlp_prefix_path."
+> https://lore.kernel.org/linux-pci/20210112170230.GA1838341@bjorn-Precision-5520/
+> 
+> Zhangfei Gao (3):
+>   PCI: PASID can be enabled without TLP prefix
+>   PCI: Add a quirk to set pasid_no_tlp for HiSilicon chips
+>   PCI: Set dma-can-stall for HiSilicon chips
+> 
+>  drivers/pci/ats.c    |  2 +-
+>  drivers/pci/quirks.c | 27 +++++++++++++++++++++++++++
+>  include/linux/pci.h  |  1 +
+>  3 files changed, 29 insertions(+), 1 deletion(-)
+> 
 
-Can you send a new updated version. I'd like to review whatever you
-have as the latest.
+If there is no more comment, could we take this series in this loop?
 
-Thanks!
+Best,
+Zhou
 
--- Steve
+
