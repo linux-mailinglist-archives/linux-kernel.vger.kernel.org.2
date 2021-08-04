@@ -2,113 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04443DFEB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0473DFEBF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237353AbhHDKCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 06:02:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2352 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237322AbhHDKCn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 06:02:43 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1749YBTD061927;
-        Wed, 4 Aug 2021 06:02:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=Si2RaYEKACLc9gmdxcROUfh0ObjMKmBVxrlDiI0m+P8=;
- b=ceTPa6JehcJh6u1IYa79vhNqhiaGEvErhoJJwneWRZm+xq2iVBK4Mk38NPYU9KVZ/Mf1
- KYSvDyHeOxx6tCwuHj3UuxzLmaNYtSLdhP9hfaAKWjY3m1xyKTMcnnae9R+k/UcJtkwR
- q5WhXH8JZLp21nxIZ9rlyesSZeLFEd2g6HjYw9ADdXSfLh1WM0t1ZAu6ELQDjOrptdzz
- 7nrXCTbauVmIEdtBykdtE47gjV56EHEucs502RZIoQl5ISYJHvP1XP8eM/yoDUOAqeGT
- 6NoPtkyLRJQX4K+V5/d0a+tjSyeKdtg6eMfHIhuo48naWKi7ffOv6qDQNYK8/hWVz+qt zA== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a7cfc8erg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Aug 2021 06:02:06 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1749vMqE017669;
-        Wed, 4 Aug 2021 10:02:03 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03fra.de.ibm.com with ESMTP id 3a4x58r3j6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Aug 2021 10:02:03 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 174A1x8A47448328
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 4 Aug 2021 10:01:59 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3D132A407B;
-        Wed,  4 Aug 2021 10:01:59 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 01E0DA4040;
-        Wed,  4 Aug 2021 10:01:56 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Wed,  4 Aug 2021 10:01:55 +0000 (GMT)
-Date:   Wed, 4 Aug 2021 15:31:55 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
+        id S237373AbhHDKC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 06:02:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237347AbhHDKCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 06:02:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E224061004;
+        Wed,  4 Aug 2021 10:02:34 +0000 (UTC)
+Date:   Wed, 4 Aug 2021 11:02:32 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Len Brown <lenb@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>
-Subject: Re: [PATCH v2 1/2] sched/topology: Skip updating masks for
- non-online nodes
-Message-ID: <20210804100155.GE4072958@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20210701041552.112072-1-srikar@linux.vnet.ibm.com>
- <20210701041552.112072-2-srikar@linux.vnet.ibm.com>
- <875yxu85wi.mognet@arm.com>
- <20210712124856.GA3836887@linux.vnet.ibm.com>
- <87zguqmay9.mognet@arm.com>
- <20210723143914.GI3836887@linux.vnet.ibm.com>
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v3] memblock: make memblock_find_in_range method private
+Message-ID: <20210804100231.GA4857@arm.com>
+References: <20210803064218.6611-1-rppt@kernel.org>
+ <20210803180526.GD5786@arm.com>
+ <YQmT+Z9QhcwI43GK@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210723143914.GI3836887@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: kyLPPIU7EN9hswyoUw8Cy49AOnuzhdLT
-X-Proofpoint-GUID: kyLPPIU7EN9hswyoUw8Cy49AOnuzhdLT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-04_03:2021-08-04,2021-08-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 malwarescore=0 phishscore=0 bulkscore=0 clxscore=1015
- priorityscore=1501 spamscore=0 mlxscore=0 impostorscore=0 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108040047
+In-Reply-To: <YQmT+Z9QhcwI43GK@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Srikar Dronamraju <srikar@linux.vnet.ibm.com> [2021-07-23 20:09:14]:
-
-> * Valentin Schneider <valentin.schneider@arm.com> [2021-07-13 17:32:14]:
+On Tue, Aug 03, 2021 at 10:07:37PM +0300, Mike Rapoport wrote:
+> On Tue, Aug 03, 2021 at 07:05:26PM +0100, Catalin Marinas wrote:
+> > On Tue, Aug 03, 2021 at 09:42:18AM +0300, Mike Rapoport wrote:
+> > > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > > index 8490ed2917ff..0bffd2d1854f 100644
+> > > --- a/arch/arm64/mm/init.c
+> > > +++ b/arch/arm64/mm/init.c
+> > > @@ -74,6 +74,7 @@ phys_addr_t arm64_dma_phys_limit __ro_after_init;
+> > >  static void __init reserve_crashkernel(void)
+> > >  {
+> > >  	unsigned long long crash_base, crash_size;
+> > > +	unsigned long long crash_max = arm64_dma_phys_limit;
+> > >  	int ret;
+> > >  
+> > >  	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
+> > > @@ -84,33 +85,18 @@ static void __init reserve_crashkernel(void)
+> > >  
+> > >  	crash_size = PAGE_ALIGN(crash_size);
+> > >  
+> > > -	if (crash_base == 0) {
+> > > -		/* Current arm64 boot protocol requires 2MB alignment */
+> > > -		crash_base = memblock_find_in_range(0, arm64_dma_phys_limit,
+> > > -				crash_size, SZ_2M);
+> > > -		if (crash_base == 0) {
+> > > -			pr_warn("cannot allocate crashkernel (size:0x%llx)\n",
+> > > -				crash_size);
+> > > -			return;
+> > > -		}
+> > > -	} else {
+> > > -		/* User specifies base address explicitly. */
+> > > -		if (!memblock_is_region_memory(crash_base, crash_size)) {
+> > > -			pr_warn("cannot reserve crashkernel: region is not memory\n");
+> > > -			return;
+> > > -		}
+> > > +	/* User specifies base address explicitly. */
+> > > +	if (crash_base)
+> > > +		crash_max = crash_base + crash_size;
+> > >  
+> > > -		if (memblock_is_region_reserved(crash_base, crash_size)) {
+> > > -			pr_warn("cannot reserve crashkernel: region overlaps reserved memory\n");
+> > > -			return;
+> > > -		}
+> > > -
+> > > -		if (!IS_ALIGNED(crash_base, SZ_2M)) {
+> > > -			pr_warn("cannot reserve crashkernel: base address is not 2MB aligned\n");
+> > > -			return;
+> > > -		}
+> > > +	/* Current arm64 boot protocol requires 2MB alignment */
+> > > +	crash_base = memblock_phys_alloc_range(crash_size, SZ_2M,
+> > > +					       crash_base, crash_max);
+> > > +	if (!crash_base) {
+> > > +		pr_warn("cannot allocate crashkernel (size:0x%llx)\n",
+> > > +			crash_size);
+> > > +		return;
+> > >  	}
+> > > -	memblock_reserve(crash_base, crash_size);
+> > 
+> > We'll miss a bit on debug information provided to the user in case of a
+> > wrong crash_base/size option on the command line. Not sure we care much,
+> > though the alignment would probably be useful (maybe we document it
+> > somewhere).
 > 
-> > On 12/07/21 18:18, Srikar Dronamraju wrote:
-> > > Hi Valentin,
-> > >
-> > >> On 01/07/21 09:45, Srikar Dronamraju wrote:
-> > >> > @@ -1891,12 +1894,30 @@ void sched_init_numa(void)
-> > >> >  void sched_domains_numa_masks_set(unsigned int cpu)
-> > >> >  {
-> > >
+> It is already documented:
+> 
+> Documentation/admin-guide/kdump/kdump.rst:
+>    On arm64, use "crashkernel=Y[@X]".  Note that the start address of
+>    the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
 
-Hey Valentin / Peter
+Thanks for the pointer.
 
-Did you get a chance to look at this?
+> > What I haven't checked is whether memblock_phys_alloc_range() aims to
+> > get a 2MB aligned end (size) as well. If crash_size is not 2MB aligned,
+> > crash_max wouldn't be either and the above could fail. We only care
+> > about the crash_base to be aligned but the memblock_phys_alloc_range()
+> > doc says that both the start and size would be aligned to this.
+> 
+> The doc lies :)
+> 
+> memblock_phys_alloc_range() boils down to 
+> 
+> 	for_each_free_mem_range_reverse(i, nid, flags, &this_start, &this_end,
+> 					NULL) {
+> 
+> 		/* clamp this_{start,end} to the user defined limits */
+> 
+> 		cand = round_down(this_end - size, align);
+> 		if (cand >= this_start)
+> 			return cand;
+> 	}
 
--- 
-Thanks and Regards
-Srikar Dronamraju
+Alright, it should work then. For arm64:
+
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
