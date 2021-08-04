@@ -2,123 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0586C3E04D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8A13E04E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239325AbhHDPvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:51:46 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:24505 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239214AbhHDPvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:51:45 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628092293; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=rA+vddmtsJ7Rtq3lbQ5qIf/Jl6SUyZWzSinop5veS4Y=; b=QH3qz/dIq4MjQ1h2ml1qK472gXxYilGC9M3aCsAdPzjTFPGGGcyRXj3rGrYgawgjHx8+Ay8b
- 7AkHHAgmIKAf7iiqA3ie1Q1ahCfhhrQjkemZSBi7lqYsHFU9cHtqBV/mATr5tvYRAZA+6xSC
- 82iXZxheGjNBfsJOKugvIrkKdao=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 610ab776bcdc32aad384fcf5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Aug 2021 15:51:18
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 447B6C43460; Wed,  4 Aug 2021 15:51:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C1C61C433F1;
-        Wed,  4 Aug 2021 15:51:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C1C61C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] drm/msm/dp: update is_connected status base on sink count at dp_pm_resume()
-Date:   Wed,  4 Aug 2021 08:51:01 -0700
-Message-Id: <1628092261-32346-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S239552AbhHDPwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233230AbhHDPwW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 11:52:22 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CBDC0613D5;
+        Wed,  4 Aug 2021 08:52:09 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id c24so1966453lfi.11;
+        Wed, 04 Aug 2021 08:52:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LOerQFZ0jK8/gKUx7F6VWzq+EmsyF6Mh3+2EWyBwV7k=;
+        b=WxflTTjBUcRlekTmCCDw38zuvU4FNXPHhQjcZ7jbxeVORh5S85vqOYRllxyWYgS7Zg
+         vxfaf3QBRh7yOO5gxN76nvOiaGtXeh7K2QCJH/C7098CRiVup0TXdyJodFhPctFSclmt
+         2JDdCpe3Kskg1PwPo9Ksiad01ocnHZn96FE+FvEglegL60NCXxi3JR05VOwZvGI7iZ8X
+         VN5VJKQoXegCc28K4oTADbzUUpUtS1Yjfb59hOpZxnn859XaLVQ7wPHjqu4qi19GKQJD
+         an9ocK/KzADhJZdapLbWtE7BbaEfhkU+m0p8QXxmE6d5T5gR3xTHJGS8C+Jl1pNXgCZ2
+         AIjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LOerQFZ0jK8/gKUx7F6VWzq+EmsyF6Mh3+2EWyBwV7k=;
+        b=RdmF9CJcMqLAOMuo2d1eiacyg1qvT3M72rFpiAchQcLj9crAUpX9YOfYrGi7CINHY9
+         jnbpzUqgNR6wMaq+/jURMxiB5nRsSsvyLQJEZNydV6pQFUhU6h3S9VJbnu8SbH0Akak+
+         j0m53eDeg3eDazq/EIgHiKF6EAzk1iGb7FoGm7erEy2oUfHT7OP3n820OOJplCqjNMQ2
+         AQvn7Yl7v8ROGx0PjCBq8bBX0MxkxIrS4bImZkIATYxxbh8fr2iOHGsW0DUBf8KuFbA4
+         8LG7NFfXT6wAOVx8Ox8HDX2wxIpFoOKmPoZr3sveVK3Lx+mYQEHQnxk62i7CtU6QEQ4K
+         1IWA==
+X-Gm-Message-State: AOAM533v7sRQJwwurneXZBpESGk1b9BBJJPQJoG+dKj3J/j7dSexrujx
+        auTXJo5jUsqNWmnReCOZD5k=
+X-Google-Smtp-Source: ABdhPJzsrxxqWvViyKle7Uk8+V1sK5RIVOnDfRgeJB9MD8pBmOEK6S3CmL9y00EWnS5fH33BS3UbeQ==
+X-Received: by 2002:a05:6512:3b89:: with SMTP id g9mr21267607lfv.96.1628092327374;
+        Wed, 04 Aug 2021 08:52:07 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.226.235])
+        by smtp.gmail.com with ESMTPSA id o8sm231658lfu.25.2021.08.04.08.52.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 08:52:06 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, qiangqing.zhang@nxp.com,
+        hslester96@gmail.com, fugang.duan@nxp.com
+Cc:     dan.carpenter@oracle.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH 1/2] net: fec: fix use-after-free in fec_drv_remove
+Date:   Wed,  4 Aug 2021 18:51:51 +0300
+Message-Id: <25ad9ae695546c0ce23edb25cb2a67575cbda26b.1628091954.git.paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <cover.1628091954.git.paskripkin@gmail.com>
+References: <cover.1628091954.git.paskripkin@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently at dp_pm_resume() is_connected state is decided base on hpd connection
-status only. This will put is_connected in wrongly "true" state at the scenario
-that dongle attached to DUT but without hmdi cable connecting to it. Fix this
-problem by adding read sink count from dongle and decided is_connected state base
-on both sink count and hpd connection status.
+Smatch says:
+	drivers/net/ethernet/freescale/fec_main.c:3994 fec_drv_remove() error: Using fep after free_{netdev,candev}(ndev);
+	drivers/net/ethernet/freescale/fec_main.c:3995 fec_drv_remove() error: Using fep after free_{netdev,candev}(ndev);
 
-Changes in v2:
--- remove dp_get_sink_count() cand call drm_dp_read_sink_count()
+Since fep pointer is netdev private data, accessing it after free_netdev()
+call can cause use-after-free bug. Fix it by moving free_netdev() call at
+the end of the function
 
-Changes in v3:
--- delete status local variable from dp_pm_resume()
-
-Changes in v4:
--- delete un necessary comment at dp_pm_resume()
-
-Fixes: d9aa6571b28ba ("drm/msm/dp: check sink_count before update is_connected status")
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: a31eda65ba21 ("net: fec: fix clock count mis-match")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
- drivers/gpu/drm/msm/dp/dp_display.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/freescale/fec_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 78c5301..25fb4f8 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -1313,7 +1313,7 @@ static int dp_pm_resume(struct device *dev)
- 	struct platform_device *pdev = to_platform_device(dev);
- 	struct msm_dp *dp_display = platform_get_drvdata(pdev);
- 	struct dp_display_private *dp;
--	u32 status;
-+	int sink_count = 0;
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index 8aea707a65a7..7e4c4980ced7 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -3843,13 +3843,13 @@ fec_drv_remove(struct platform_device *pdev)
+ 	if (of_phy_is_fixed_link(np))
+ 		of_phy_deregister_fixed_link(np);
+ 	of_node_put(fep->phy_node);
+-	free_netdev(ndev);
  
- 	dp = container_of(dp_display, struct dp_display_private, dp_display);
+ 	clk_disable_unprepare(fep->clk_ahb);
+ 	clk_disable_unprepare(fep->clk_ipg);
+ 	pm_runtime_put_noidle(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
  
-@@ -1327,14 +1327,25 @@ static int dp_pm_resume(struct device *dev)
++	free_netdev(ndev);
+ 	return 0;
+ }
  
- 	dp_catalog_ctrl_hpd_config(dp->catalog);
- 
--	status = dp_catalog_link_is_connected(dp->catalog);
-+	/*
-+	 * set sink to normal operation mode -- D0
-+	 * before dpcd read
-+	 */
-+	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
-+
-+	if (dp_catalog_link_is_connected(dp->catalog)) {
-+		sink_count = drm_dp_read_sink_count(dp->aux);
-+		if (sink_count < 0)
-+			sink_count = 0;
-+	}
- 
-+	dp->link->sink_count = sink_count;
- 	/*
- 	 * can not declared display is connected unless
- 	 * HDMI cable is plugged in and sink_count of
- 	 * dongle become 1
- 	 */
--	if (status && dp->link->sink_count)
-+	if (dp->link->sink_count)
- 		dp->dp_display.is_connected = true;
- 	else
- 		dp->dp_display.is_connected = false;
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.32.0
 
