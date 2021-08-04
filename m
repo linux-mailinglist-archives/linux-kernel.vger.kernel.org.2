@@ -2,87 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9223E0184
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590FB3E018C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237509AbhHDM73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 08:59:29 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:49338
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236777AbhHDM7W (ORCPT
+        id S238278AbhHDNAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:00:02 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:12445 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236532AbhHDNAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 08:59:22 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 99F253F0F9;
-        Wed,  4 Aug 2021 12:59:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628081947;
-        bh=gRYiPHltXl1ab4ROKl548BWP/IqBGUAthHnSDS3smEw=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=rUEGUoWsIo5Q0hwJx0wDVffZe1p7bBrU/MjUaAXMADlSYYHWOF/nC32quaBeWo0ER
-         BZpPdoWtYm8WSZ1EQ0QhUDK2PzgHqICAHAhsTfrIqR/qeUqauea8+K/kUnsJ58uqUS
-         rWCAP/QjzKcHqz5owAcjxsA4IYlstfLOdKOejyH8tlfZOmiZbdOj5HZI4LG6IsP8fX
-         f/YekIg9NaH85GEIyIQLmK9/qUfbGo4RD7Wt0056wH2VCwX8cwDFACITiyIbdPY6ye
-         Dg9YOACgKB+QMCQs6PoIhlEmkirMnkbvaCAjZgmEqinza6mK2Ll8Acs3I6DcTKG8Vz
-         Vjr1rcDi2L07g==
-From:   Colin King <colin.king@canonical.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-        linux-usb@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] usb: gadget: f_uac2: remove redundant assignments to pointer i_feature
-Date:   Wed,  4 Aug 2021 13:59:07 +0100
-Message-Id: <20210804125907.111654-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 4 Aug 2021 09:00:01 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GfsDr2dv3zckpk;
+        Wed,  4 Aug 2021 20:56:12 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 4 Aug 2021 20:59:46 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 4 Aug
+ 2021 20:59:45 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <liangwenpeng@huawei.com>, <liweihang@huawei.com>,
+        <dledford@redhat.com>, <jgg@ziepe.ca>, <chenglang@huawei.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] RDMA/hns: Fix return in hns_roce_rereg_user_mr()
+Date:   Wed, 4 Aug 2021 20:59:39 +0800
+Message-ID: <20210804125939.20516-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+If re-registering an MR in hns_roce_rereg_user_mr(), we should
+return NULL instead of pass 0 to ERR_PTR.
 
-Pointer i_feature is being initialized with a value and then immediately
-re-assigned a new value in the next statement. Fix this by replacing the
-the redundant initialization with the following assigned value.
-
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 4e9fc1dae2a9 ("RDMA/hns: Optimize the MR registration process")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/usb/gadget/function/f_uac2.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_mr.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/function/f_uac2.c b/drivers/usb/gadget/function/f_uac2.c
-index b9edc6787f79..3c34995276e7 100644
---- a/drivers/usb/gadget/function/f_uac2.c
-+++ b/drivers/usb/gadget/function/f_uac2.c
-@@ -970,17 +970,13 @@ afunc_bind(struct usb_configuration *cfg, struct usb_function *fn)
- 	std_as_in_if1_desc.iInterface = us[STR_AS_IN_ALT1].id;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+index 006c84bb3f9f..7089ac780291 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_mr.c
++++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+@@ -352,7 +352,9 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
+ free_cmd_mbox:
+ 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
  
- 	if (FUOUT_EN(uac2_opts)) {
--		u8 *i_feature = (u8 *)out_feature_unit_desc;
--
--		i_feature = (u8 *)out_feature_unit_desc +
--					out_feature_unit_desc->bLength - 1;
-+		u8 *i_feature = (u8 *)out_feature_unit_desc +
-+				out_feature_unit_desc->bLength - 1;
- 		*i_feature = us[STR_FU_OUT].id;
- 	}
- 	if (FUIN_EN(uac2_opts)) {
--		u8 *i_feature = (u8 *)in_feature_unit_desc;
--
--		i_feature = (u8 *)in_feature_unit_desc +
--					in_feature_unit_desc->bLength - 1;
-+		u8 *i_feature = (u8 *)in_feature_unit_desc +
-+				in_feature_unit_desc->bLength - 1;
- 		*i_feature = us[STR_FU_IN].id;
- 	}
+-	return ERR_PTR(ret);
++	if (ret)
++		return ERR_PTR(ret);
++	return NULL;
+ }
  
+ int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
 -- 
-2.31.1
+2.17.1
 
