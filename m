@@ -2,127 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58323DFE1D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABF53DFE1F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237106AbhHDJh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 05:37:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40409 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237092AbhHDJhz (ORCPT
+        id S237109AbhHDJi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 05:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237101AbhHDJiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 05:37:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628069862;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=K7GiN8GAhFqidnlxumxy327KJdvl+R/HW14HWrxH9/E=;
-        b=gM7tIdm3RX6nLUavl1vVqKnfLiUYkggUHKmgKLNrde0HWt8u76IyI8Cd8/dG3ENE31JkKo
-        PFG81blwXW/ft89LmHyyhuTpz6D2orwElQumwa2kXF1gOfOS2+NgcDPl0XPvVCOk94kW9L
-        BZPfbckCTD/5VN9sGBg41HDBXKtmrDc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-1X5qspqTOt-y-88AB8yFaQ-1; Wed, 04 Aug 2021 05:37:41 -0400
-X-MC-Unique: 1X5qspqTOt-y-88AB8yFaQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8146D101AFB5;
-        Wed,  4 Aug 2021 09:37:39 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F57060C9F;
-        Wed,  4 Aug 2021 09:37:38 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] KVM: Do not leak memory for duplicate debugfs directories
-Date:   Wed,  4 Aug 2021 05:37:37 -0400
-Message-Id: <20210804093737.2536206-1-pbonzini@redhat.com>
+        Wed, 4 Aug 2021 05:38:23 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B560C061799;
+        Wed,  4 Aug 2021 02:38:10 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id y1so1666594iod.10;
+        Wed, 04 Aug 2021 02:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IfelQpsCk2dlINF9FFCZTuni2ibPe6+4gIAnhuY21DA=;
+        b=UXTmtNB5ldrjppN/daDbCwyPoNdxb4/Se8Y8s+f5aIGsnRxCW04IBvBCjAz00PWDAP
+         e7nfljw2k7P7USYvwEuh87MwSkoAW4XtUYf6i9fwOo0uWZUSj6o/beveNqX+ILF5AGYQ
+         JZWqeTyMcP86EwqFB5m+GibJvUwhy/GKMyL7mSvaOzgA2OTakU3i90o5tvtVRzTy1wLu
+         UXv20zGzK2cF8TtAD/G40jmdvHVTnhLh3P2y1B8mUK39Rqpe3MCBDJuLBtGkcNfZciL4
+         mUzMZ2h3y0h3/0MagNDBuk+l5bw93PqX9NJRAeJD/D+CKkpu9u/Nq233HAKzLlrKovzE
+         stVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IfelQpsCk2dlINF9FFCZTuni2ibPe6+4gIAnhuY21DA=;
+        b=djdvPTDrWh1ecRN1+H+sDcL9fQPYGxxgvnN5vl7pcAe26YNoGfrgAJjDOwXhsK6aO6
+         /CtAdd9c8L98RHYZ0TRi4PPKwRC4gTk5MAjdaxmh9Hyer0Px5KIifxlsXxXM3mNLlm9h
+         JczFD9QDfY932JMD51E6AaOnuvqBCcdz2QREn10M8NSVDRC74VfktGgwwBRXwcVeYCIP
+         sTuhol2zwgKpDfF2RJohhLBgSHN4Kl2AHuOTguWQrtEmVah1hzWyLOPH9G5Oqr37tCaQ
+         n6jmDezDHYQ37jkhUtdqgBDnr4nhu5MC02dhjle2ZBHl6uo63rYFoX+n/8tnHXpHS5BX
+         7NHg==
+X-Gm-Message-State: AOAM530XshxJoqxJu6Mvopr8TmJvFgZHS15qlNxzllvqZMYr5NHj1nGl
+        lDjVF1/6CA8R7ANAVygwjoZrZI3SW+CdRKc1mn0=
+X-Google-Smtp-Source: ABdhPJy4d09HfTysXpHb3wis6SDAF0TjPV6izp1uKTttA1IPmLWsRseIQeRndBfkN1Ovcz4WC8iZaUke8E5xeQTPgXs=
+X-Received: by 2002:a5d:8e19:: with SMTP id e25mr673746iod.175.1628069889790;
+ Wed, 04 Aug 2021 02:38:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210803084456.198-1-alistair@alistair23.me> <20210803084456.198-2-alistair@alistair23.me>
+ <YQlBtQDrVHqh3N5D@google.com> <CAKmqyKMZWVx3KqeysUjOc29nuxnwJfZ3wjmWjVwk9tpQ4dkh-A@mail.gmail.com>
+ <YQpYjEc9r8QGUhiD@google.com>
+In-Reply-To: <YQpYjEc9r8QGUhiD@google.com>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Wed, 4 Aug 2021 19:37:42 +1000
+Message-ID: <CAKmqyKP79jXdGhMKYzA3ZOkkT6kb2buOSyYuaCS43SK9oe2ACw@mail.gmail.com>
+Subject: Re: [PATCH v8 02/11] mfd: sy7636a: Initial commit
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
+        Mark Brown <broonie@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM creates a debugfs directory for each VM in order to store statistics
-about the virtual machine.  The directory name is built from the process
-pid and a VM fd.  While generally unique, it is possible to keep a
-file descriptor alive in a way that causes duplicate directories, which
-manifests as these messages:
+On Wed, Aug 4, 2021 at 7:06 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Wed, 04 Aug 2021, Alistair Francis wrote:
+>
+> > On Tue, Aug 3, 2021 at 11:16 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > >
+> > > On Tue, 03 Aug 2021, Alistair Francis wrote:
+> > >
+> > > > Initial support for the Silergy SY7636A Power Management chip.
+> > > >
+> > > > Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> > > > ---
+> > > >  drivers/mfd/Kconfig         |  9 +++++
+> > > >  drivers/mfd/Makefile        |  1 +
+> > > >  drivers/mfd/sy7636a.c       | 72 +++++++++++++++++++++++++++++++++=
+++++
+> > > >  include/linux/mfd/sy7636a.h | 45 +++++++++++++++++++++++
+> > > >  4 files changed, 127 insertions(+)
+> > > >  create mode 100644 drivers/mfd/sy7636a.c
+> > > >  create mode 100644 include/linux/mfd/sy7636a.h
+> > > >
+> > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > > > index 6a3fd2d75f96..b82208f0c79c 100644
+> > > > --- a/drivers/mfd/Kconfig
+> > > > +++ b/drivers/mfd/Kconfig
+> > > > @@ -1352,6 +1352,15 @@ config MFD_SYSCON
+> > > >         Select this option to enable accessing system control regis=
+ters
+> > > >         via regmap.
+> > > >
+> > > > +config MFD_SY7636A
+> > > > +     tristate "Silergy SY7636A Power Management IC"
+> > > > +     select MFD_CORE
+> > > > +     select REGMAP_I2C
+> > > > +     depends on I2C
+> > > > +     help
+> > > > +       Select this option to enable support for the Silergy SY7636=
+A
+> > > > +       Power Management IC.
+> > > > +
+> > > >  config MFD_DAVINCI_VOICECODEC
+> > > >       tristate
+> > > >       select MFD_CORE
+> > > > diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> > > > index 8116c19d5fd4..cbe581e87fa9 100644
+> > > > --- a/drivers/mfd/Makefile
+> > > > +++ b/drivers/mfd/Makefile
+> > > > @@ -266,6 +266,7 @@ obj-$(CONFIG_MFD_KHADAS_MCU)      +=3D khadas-m=
+cu.o
+> > > >  obj-$(CONFIG_MFD_ACER_A500_EC)       +=3D acer-ec-a500.o
+> > > >  obj-$(CONFIG_MFD_QCOM_PM8008)        +=3D qcom-pm8008.o
+> > > >
+> > > > +obj-$(CONFIG_MFD_SY7636A)    +=3D sy7636a.o
+> > > >  obj-$(CONFIG_SGI_MFD_IOC3)   +=3D ioc3.o
+> > > >  obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)     +=3D simple-mfd-i2c.o
+> > > >  obj-$(CONFIG_MFD_INTEL_M10_BMC)   +=3D intel-m10-bmc.o
+> > > > diff --git a/drivers/mfd/sy7636a.c b/drivers/mfd/sy7636a.c
+> > > > new file mode 100644
+> > > > index 000000000000..f3ff93c7395d
+> > > > --- /dev/null
+> > > > +++ b/drivers/mfd/sy7636a.c
+> > > > @@ -0,0 +1,72 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0+
+> > > > +/*
+> > > > + * MFD parent driver for SY7636A chip
+> > > > + *
+> > > > + * Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
+> > > > + *
+> > > > + * Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.co=
+m>
+> > > > + *          Alistair Francis <alistair@alistair23.me>
+> > > > + *
+> > > > + * Based on the lp87565 driver by Keerthy <j-keerthy@ti.com>
+> > > > + */
+> > > > +
+> > > > +#include <linux/interrupt.h>
+> > > > +#include <linux/mfd/core.h>
+> > > > +#include <linux/module.h>
+> > > > +#include <linux/of_device.h>
+> > > > +
+> > > > +#include <linux/mfd/sy7636a.h>
+> > > > +
+> > > > +static const struct regmap_config sy7636a_regmap_config =3D {
+> > > > +     .reg_bits =3D 8,
+> > > > +     .val_bits =3D 8,
+> > > > +};
+> > > > +
+> > > > +static const struct mfd_cell sy7636a_cells[] =3D {
+> > > > +     { .name =3D "sy7636a-regulator", },
+> > >
+> > > What kind of regulator is 'vcom'? LDO? DCDC?
+> >
+> > Both I guess:
+> >
+> > "SY7636A is a single-chip power management IC (PMIC) designed for
+> > electronic paper display (EPD) applications. The device supports panel
+> > sizes up to 9.7 inches and larger. The device integrates two
+> > high-efficiency DC-DC boost converters, which are boosted to 25V and
+> > -20V by two charge pumps to provide gate driver power for the panel.
+> > Two tracking LDOs create a =C2=B115V source driver power supply that
+> > supports output currents up to 200mA. SY7636A also provides I2C
+> > interface control for specific panel requirements"
+>
+> Is there a datasheet I could look at?
 
-  [  471.846235] debugfs: Directory '20245-4' with parent 'kvm' already present!
+I have managed to find this:
 
-Even though this should not happen in practice, it is more or less
-expected in the case of KVM for testcases that call KVM_CREATE_VM and
-close the resulting file descriptor repeatedly and in parallel.
+https://www.silergy.com/cn/productsview/SY7636ARMC
 
-When this happens, debugfs_create_dir() returns an error but
-kvm_create_vm_debugfs() goes on to allocate stat data structs which are
-later leaked.  The slow memory leak was spotted by syzkaller, where it
-caused OOM reports.
+which is in Chinese. The datasheet is behind a login page unfortunately.
 
-Since the issue only affects debugfs, do a lookup before calling
-debugfs_create_dir, so that the message is downgraded and rate-limited.
-While at it, ensure kvm->debugfs_dentry is NULL rather than an error
-if it is not created.  This fixes kvm_destroy_vm_debugfs, which was not
-checking IS_ERR_OR_NULL correctly.
+Alistair
 
-Cc: stable@vger.kernel.org
-Fixes: 536a6f88c49d ("KVM: Create debugfs dir and stat files for each VM")
-Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- virt/kvm/kvm_main.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index d20fba0fc290..b50dbe269f4b 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -892,6 +892,8 @@ static void kvm_destroy_vm_debugfs(struct kvm *kvm)
- 
- static int kvm_create_vm_debugfs(struct kvm *kvm, int fd)
- {
-+	static DEFINE_MUTEX(kvm_debugfs_lock);
-+	struct dentry *dent;
- 	char dir_name[ITOA_MAX_LEN * 2];
- 	struct kvm_stat_data *stat_data;
- 	const struct _kvm_stats_desc *pdesc;
-@@ -903,8 +905,20 @@ static int kvm_create_vm_debugfs(struct kvm *kvm, int fd)
- 		return 0;
- 
- 	snprintf(dir_name, sizeof(dir_name), "%d-%d", task_pid_nr(current), fd);
--	kvm->debugfs_dentry = debugfs_create_dir(dir_name, kvm_debugfs_dir);
-+	mutex_lock(&kvm_debugfs_lock);
-+	dent = debugfs_lookup(dir_name, kvm_debugfs_dir);
-+	if (dent) {
-+		pr_warn_ratelimited("KVM: debugfs: duplicate directory %s\n", dir_name);
-+		dput(dent);
-+		mutex_unlock(&kvm_debugfs_lock);
-+		return 0;
-+	}
-+	dent = debugfs_create_dir(dir_name, kvm_debugfs_dir);
-+	mutex_unlock(&kvm_debugfs_lock);
-+	if (IS_ERR(dent))
-+		return 0;
- 
-+	kvm->debugfs_dentry = dent;
- 	kvm->debugfs_stat_data = kcalloc(kvm_debugfs_num_entries,
- 					 sizeof(*kvm->debugfs_stat_data),
- 					 GFP_KERNEL_ACCOUNT);
-@@ -5201,7 +5215,7 @@ static void kvm_uevent_notify_change(unsigned int type, struct kvm *kvm)
- 	}
- 	add_uevent_var(env, "PID=%d", kvm->userspace_pid);
- 
--	if (!IS_ERR_OR_NULL(kvm->debugfs_dentry)) {
-+	if (kvm->debugfs_dentry) {
- 		char *tmp, *p = kmalloc(PATH_MAX, GFP_KERNEL_ACCOUNT);
- 
- 		if (p) {
--- 
-2.27.0
-
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
