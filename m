@@ -2,156 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8353E022E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF7B3E0245
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238499AbhHDNml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:42:41 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45570 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237305AbhHDNmj (ORCPT
+        id S238063AbhHDNrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237330AbhHDNrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:42:39 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 133881FDF0;
-        Wed,  4 Aug 2021 13:42:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628084546; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cd6QFPd1A0Bmx9XXWp5vLXMioX3R+S1I/iAZz0+5Ls4=;
-        b=NdOwFa031p1tD5wGcSqoW6lXbr5pHOZfdIZigz9+bZarnzU/vrf3eEFouH2Ba9OW1HbnOY
-        r8DG1aqp/N3YT+EbvHuQWY2XJSiC1rxW3IXzezRKHXFaq8aviX/KmS1xZG0dVXkCXMFBeZ
-        BI3stuXS2SyOB4gxGKD2DsYAQzpV14o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628084546;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cd6QFPd1A0Bmx9XXWp5vLXMioX3R+S1I/iAZz0+5Ls4=;
-        b=y05y+n1nHBWU82vDBKoaBOVztk7mSZqow5Jwmq0SvZEKxZ1SaGo8UymlvIFU4odwaBcbWW
-        MCL6IfvwIF+BeuDQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id E150313942;
-        Wed,  4 Aug 2021 13:42:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id dALvNUGZCmFgQQAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Wed, 04 Aug 2021 13:42:25 +0000
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Hugh Dickins <hughd@google.com>, Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210723100034.13353-1-mgorman@techsingularity.net>
- <20210723100034.13353-3-mgorman@techsingularity.net> <87czqu2iew.ffs@tglx>
- <20210804095425.GA6464@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH 2/2] mm/vmstat: Protect per cpu variables with preempt
- disable on RT
-Message-ID: <91b2f893-eb6a-d91d-3769-baba8601b0f6@suse.cz>
-Date:   Wed, 4 Aug 2021 15:42:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 4 Aug 2021 09:47:16 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015B7C061798
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 06:47:02 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id x11so3797802ejj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 06:47:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hev-cc.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZdWCbKQ0FeBPqzrHYkEiTGQcOJDgW/YM6BhLZvlGVa0=;
+        b=bd+MQUXjLGYM2BWsZBVdwUXcKoZhBZTarzqqinr42+H8hC5UYktDAos8vj5w/BGSSE
+         qC6SZUHfBD7DT8eRSRCtJ1uPaaFrYM11X912eALlWJk20icqfiKUIXCfm4mMELRTMQn3
+         B28Y/CXzoXfQ96g/11w1Va8Eui3Gf9FjMs5ms9UmXWpZS2ZSDsC4XIRetjyiFEOluc9x
+         esXBVBPh5+pg1c0RYipG0UqUOwPM3d7315zzIzRXZvj1BH+CIq5o2dunC6DTYLXPk3zE
+         MOtYRR8zKiHNCnwuEXZoxUudpHQsdPOCTCO7SBw3Nk6s911eTF2JwPx7UkkcPHSddfUV
+         HKVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZdWCbKQ0FeBPqzrHYkEiTGQcOJDgW/YM6BhLZvlGVa0=;
+        b=pX/vYHFFgTCJMl/qzWnaGiITtJhTaSiTTaZ5p2NZMnTB6fYnep+jawZigFYIIJ7D0c
+         h3KKkZcT8Hu8S7Q9G4zMWdm8In6///lPthIplqxv+5Z99E0Ieyo0K9eWcPmJ6vjy/k+Z
+         4nBWFGSGz+33GJPrZhfWJHhoLAOlQ38kflBpBjaRsv+/joWz9gcWfUUhIalbnQZor2Fn
+         F34VM8KQzwu6mgQs0Hmy7e9C5BOk6aIZIMk3qEPOuIeKxdyNw/B4QstIY41VxwRUqD2u
+         m9fsXg1LRFon2fQU5DO4+1RsjzNOgzcSDgjEaACLA3thpslP6fQ0iQf6vFjFZAVtZFwZ
+         UgeQ==
+X-Gm-Message-State: AOAM530BOK12q7J07NhhkoFHfw7F7EjaRGKrmcLUIiHrdIc49QTTqTqZ
+        ovnCOT60iIZ0wylXwOXay6VCnYk6kEtooQdSbN0qtiOpW0fIaXQW6uwlCw==
+X-Google-Smtp-Source: ABdhPJyhVGHT+EfmUvgX2/jIbnFHTnjhaZPNSXW2mejIDCZ+TVSLsD62L2XpG1vvE6+F4OiCSchYQS0noBgHWewXzus=
+X-Received: by 2002:a17:906:f20a:: with SMTP id gt10mr26145158ejb.267.1628084821505;
+ Wed, 04 Aug 2021 06:47:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210804095425.GA6464@techsingularity.net>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210729082549.144559-1-wangrui@loongson.cn> <20210729095342.GB8286@alpha.franken.de>
+ <CAHirt9hLATcnSw9HXSo-TZ+buNHJXJvFtJEy56_Bi+mOfckNjw@mail.gmail.com> <20210729143307.GA13231@alpha.franken.de>
+In-Reply-To: <20210729143307.GA13231@alpha.franken.de>
+From:   hev <r@hev.cc>
+Date:   Wed, 4 Aug 2021 21:46:50 +0800
+Message-ID: <CAHirt9igj7wzrNKWUaoEnofWEwF1VtjuBpvgRGZpMiGphJmPCQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] locking/atomic: arch/mips: Fix atomic{_64,}_sub_if_positive
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Rui Wang <wangrui@loongson.cn>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mips@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/21 11:54 AM, Mel Gorman wrote:
-> On Wed, Aug 04, 2021 at 01:54:47AM +0200, Thomas Gleixner wrote:
->> 
->>  <tglx> so in vmstat.c there is this magic comment:
->>  <tglx>  * For use when we know that interrupts are disabled
->>  <tglx>  * or when we know that preemption is disabled and that
->>  <tglx>  * particular counter cannot be updated from interrupt context.
->>  <tglx> how can I know which counters need what?
->>  <mm_expert> I don't think there's a list, one would have to check on counter to counter basis :/ 
->>  <tglx> and of course there is nothing which validates that, right?
->>  <mm_expert> exactly
->> 
-> 
-> While I'm not "mm_expert", I agree with his/her statements.
+On Thu, Jul 29, 2021 at 10:33 PM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Thu, Jul 29, 2021 at 08:31:11PM +0800, hev wrote:
+> > Hi, Thomas,
+> >
+> > On Thu, Jul 29, 2021 at 5:53 PM Thomas Bogendoerfer
+> > <tsbogend@alpha.franken.de> wrote:
+> > >
+> > > On Thu, Jul 29, 2021 at 04:25:49PM +0800, Rui Wang wrote:
+> > > > This looks like a typo and that caused atomic64 test failed.
+> > > >
+> > > > Signed-off-by: Rui Wang <wangrui@loongson.cn>
+> > > > Signed-off-by: hev <r@hev.cc>
+> > > > ---
+> > > >  arch/mips/include/asm/atomic.h | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/arch/mips/include/asm/atomic.h b/arch/mips/include/asm/atomic.h
+> > > > index 95e1f7f3597f..a0b9e7c1e4fc 100644
+> > > > --- a/arch/mips/include/asm/atomic.h
+> > > > +++ b/arch/mips/include/asm/atomic.h
+> > > > @@ -206,7 +206,7 @@ ATOMIC_OPS(atomic64, xor, s64, ^=, xor, lld, scd)
+> > > >   * The function returns the old value of @v minus @i.
+> > > >   */
+> > > >  #define ATOMIC_SIP_OP(pfx, type, op, ll, sc)                         \
+> > > > -static __inline__ int arch_##pfx##_sub_if_positive(type i, pfx##_t * v)      \
+> > > > +static __inline__ type arch_##pfx##_sub_if_positive(type i, pfx##_t * v)     \
+> > > >  {                                                                    \
+> > > >       type temp, result;                                              \
+> > > >                                                                       \
+> > >
+> > > sub_if_postive looks unused to me. Could you send a patch removing it
+> > > instead ? riscv also has a sub_if_positive implementation, which looks
+> > > unused.
+> > I found atomic{_64,}_dec_if_postive is based on sub_if_postive, and
+> > used in many places:
+> >
+> > kernel/kmod.c:    if (atomic_dec_if_positive(&kmod_concurrent_max) < 0) {
+> > kernel/kmod.c:
+> > atomic_dec_if_positive(&kmod_concurrent_max) >= 0,
+> > kernel/module.c:        ret = atomic_dec_if_positive(&module->refcnt);
+> > ...
+> > drivers/net/ethernet/mellanox/mlx5/core/eswitch.c:
+> > atomic64_dec_if_positive(&esw->user_count);
+> > drivers/net/netdevsim/fib.c:        atomic64_dec_if_positive(&entry->num);
+> > drivers/net/netdevsim/fib.c:        atomic64_dec_if_positive(&entry->num);
+> >
+> > Are you sure to remove it?
+>
+> in that case, let's keep it. There is a fallback for atomic_dec_if_positive,
+> that's why I didn't notice where it is used.
 
-Phew, since you do, I can now disclose it was me.
+yep, do you think this patch is okay?
 
-> Each counter
-> would need to be audited and two question are asked
-> 
->  o If this counter is inaccurate, does anything break?
->  o If this counter is inaccurate, does it both increment and decrement
->    allowing the possibility it goes negative?
-> 
-> The decision on that is looking at the counter and seeing if any
-> functional decision is made based on its value. So two examples;
-> 
-> 	NR_VMSCAN_IMMEDIATE is a node-based counter that only every
-> 	increments and is reported to userspace. No kernel code makes
-> 	any decision based on its value. Therefore it's likely safe to
-> 	move to numa_stat_item instead.
-> 
-> 	Action: move it
-> 
-> 	WORKINGSET_ACTIVATE_FILE is a node-based counter that is used to
-> 	determine if a mem cgroup is potentially congested by looking at
-> 	the ratio of cgroup to node refault rates as well as deciding if
-> 	LRU file pages should be deactivate.  If that value drifts, the
-> 	ratios are miscalculated and could lead to functional oddities
-> 	and therefore must be accurate.
-> 
-> 	Action: leave it alone
-> 
-> I guess it could be further split into state that must be accurate from
-> IRQ and non-IRQ contexts but that probably would be very fragile and
-> offer limited value.
-> 
->> Brilliant stuff which prevents you to do any validation on this. Over
->> the years there have been several issues where callers had to be fixed
->> by analysing bug reports instead of having a proper instrumentation in
->> that code which would have told the developer that he got it wrong.
->> 
-> 
-> I'm not sure it could be validated at build-time but I'm just back from
-> holiday and may be lacking imagination.
+Regards,
 
-The idea was not build-time, but runtime (hidden behind lockdep, VM_DEBUG or
-whatnot), i.e.:
-
-<sched_expert> what that code needs is switch(item) { case foo1: case foo2:
-lockdep_assert_irqs_disabled(); break; case bar1: case bar2:
-lockdep_assert_preempt_disabled(); lockdep_assert_no_in_irq(); break; } or
-something along those lines
-
->> Of course on RT kernels the preempt_disable_rt() will serialize
->> everything correctly, but as we have learned over the years just
->> slapping _if_rt() or if_not_rt() variants of things around is most of
->> the time papering over the underlying problem of badly defined
->> protection scopes. Let's not proliferate that. As I said in the above
->> IRC conversation:
->> 
->>  <tglx> I fundamentally hate this preempt_disable_rt() muck
->> 
-> 
-> The issue is that even if this was properly audited and the inaccurate
-> and accurate counters were in the proper enums using the correct APIs, it
-> would still be necessary to protect the accurate counters from updates from
-> IRQ context. Hence, as I write this, I don't think preempt_[dis|en]able_rt
-> would go away and that is why I didn't continue with the series to break
-> out "accurate" stats
-> 
-
+Rui
