@@ -2,411 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 479F13DFBE4
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 09:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290893DFBF6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 09:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235652AbhHDHSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 03:18:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55930 "EHLO mail.kernel.org"
+        id S235854AbhHDHTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 03:19:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235545AbhHDHSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 03:18:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9848460F14;
-        Wed,  4 Aug 2021 07:17:52 +0000 (UTC)
+        id S235764AbhHDHTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 03:19:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FE2D60FC3;
+        Wed,  4 Aug 2021 07:19:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628061475;
-        bh=IixKMnv4O7hFfMTSpcTjyF2I3jrmDmNM+Hc0Ua/fAa4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=W0N6Ern1kdEGBDZDXf1v0GLERfwVGk7Qsy5BDmxec6IA4/IbQuXjXVAW6VT/RKCna
-         F60B1XcT1KX+i7uV1f/op4oUq4VUvHKTFLe33uDoZH41nCsct3f3SFnAh/78bel5cw
-         yT9/kWnUA6MG/G8UVsXrGIPwV2AsRBZvP8GoIGopGkOqXyBIS3YC4jLEGewFGHJM0n
-         2tkC1/4GGugGSowGBbqJuJmx2I5AgQGH4oaVXCiQqIcUZfHQE06LN+xCNpHgXDbryi
-         Ih2wD730zQSofvLkQpff2bYa4NSeOAHR/V4TzRgjESjPEo5/zpy1BCaGMLIe85TpWS
-         re0CC8d5+yGLg==
-Subject: Re: [PATCH v2 3/3] erofs: convert all uncompressed cases to iomap
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        linux-erofs@lists.ozlabs.org
-Cc:     linux-fsdevel@vger.kernel.org, nvdimm@lists.linux.dev,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Liu Bo <bo.liu@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>,
-        Huang Jianan <huangjianan@oppo.com>,
-        Tao Ma <boyu.mt@taobao.com>
-References: <20210730194625.93856-1-hsiangkao@linux.alibaba.com>
- <20210730194625.93856-4-hsiangkao@linux.alibaba.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <76f9241e-5e7b-1de4-6cef-c92aa1de7498@kernel.org>
-Date:   Wed, 4 Aug 2021 15:17:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        s=k20201202; t=1628061541;
+        bh=DuCVUYP7oviwKz23wsYZqPNLLQEdkO9PaJNmlDPw5TI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RoQ4/9xs6bAfnpO0Z+2f51GvkoebeQxBXOeUzed8pRtqPojG2u8q+TCL5KAZDDEj/
+         iYFX8OjWeTiagFkdBde4fAnmUIYsiHxQxxq8o9Q6h/rKf61ThUAquxBaPGcXP4Hyy0
+         zwSdiem33aLQsX39k5+fPvdwsdcH9riIn77vUJ+qfcNVBQZ1e28NmIEHRYQCedoilC
+         /YnQJwOK8ZAIHuibax4AQVd6Wx8atr26q3yrD3PLPJ2mSefjzd8MpV7UDs9nVT/XHM
+         HGAqDST8DnQdmrR26Z8cybN6UlLyJaGPBtspS5Q1uUuAiM1lQ8ZbG6zonXVTqduPif
+         Uo4HytOUo0pEg==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mBBB5-000BlA-3j; Wed, 04 Aug 2021 09:18:59 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-phy@lists.infradead.org
+Subject: [PATCH v4 0/4] DT schema changes for HiKey970 PCIe hardware to work
+Date:   Wed,  4 Aug 2021 09:18:53 +0200
+Message-Id: <cover.1628061310.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210730194625.93856-4-hsiangkao@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/31 3:46, Gao Xiang wrote:
-> Since tail-packing inline has been supported by iomap now, let's
-> convert all EROFS uncompressed data I/O to iomap, which is pretty
-> straight-forward.
-> 
-> Cc: linux-fsdevel@vger.kernel.org
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> ---
->   fs/erofs/data.c | 288 ++++++++----------------------------------------
->   1 file changed, 49 insertions(+), 239 deletions(-)
-> 
-> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-> index 911521293b20..6b98156bb5ca 100644
-> --- a/fs/erofs/data.c
-> +++ b/fs/erofs/data.c
-> @@ -9,29 +9,6 @@
->   #include <linux/dax.h>
->   #include <trace/events/erofs.h>
->   
-> -static void erofs_readendio(struct bio *bio)
-> -{
-> -	struct bio_vec *bvec;
-> -	blk_status_t err = bio->bi_status;
-> -	struct bvec_iter_all iter_all;
-> -
-> -	bio_for_each_segment_all(bvec, bio, iter_all) {
-> -		struct page *page = bvec->bv_page;
-> -
-> -		/* page is already locked */
-> -		DBG_BUGON(PageUptodate(page));
-> -
-> -		if (err)
-> -			SetPageError(page);
-> -		else
-> -			SetPageUptodate(page);
-> -
-> -		unlock_page(page);
-> -		/* page could be reclaimed now */
-> -	}
-> -	bio_put(bio);
-> -}
-> -
->   struct page *erofs_get_meta_page(struct super_block *sb, erofs_blk_t blkaddr)
->   {
->   	struct address_space *const mapping = sb->s_bdev->bd_inode->i_mapping;
-> @@ -109,206 +86,6 @@ static int erofs_map_blocks_flatmode(struct inode *inode,
->   	return err;
->   }
->   
-> -static inline struct bio *erofs_read_raw_page(struct bio *bio,
-> -					      struct address_space *mapping,
-> -					      struct page *page,
-> -					      erofs_off_t *last_block,
-> -					      unsigned int nblocks,
-> -					      unsigned int *eblks,
-> -					      bool ra)
-> -{
-> -	struct inode *const inode = mapping->host;
-> -	struct super_block *const sb = inode->i_sb;
-> -	erofs_off_t current_block = (erofs_off_t)page->index;
-> -	int err;
-> -
-> -	DBG_BUGON(!nblocks);
-> -
-> -	if (PageUptodate(page)) {
-> -		err = 0;
-> -		goto has_updated;
-> -	}
-> -
-> -	/* note that for readpage case, bio also equals to NULL */
-> -	if (bio &&
-> -	    (*last_block + 1 != current_block || !*eblks)) {
-> -submit_bio_retry:
-> -		submit_bio(bio);
-> -		bio = NULL;
-> -	}
-> -
-> -	if (!bio) {
-> -		struct erofs_map_blocks map = {
-> -			.m_la = blknr_to_addr(current_block),
-> -		};
-> -		erofs_blk_t blknr;
-> -		unsigned int blkoff;
-> -
-> -		err = erofs_map_blocks_flatmode(inode, &map, EROFS_GET_BLOCKS_RAW);
-> -		if (err)
-> -			goto err_out;
-> -
-> -		/* zero out the holed page */
-> -		if (!(map.m_flags & EROFS_MAP_MAPPED)) {
-> -			zero_user_segment(page, 0, PAGE_SIZE);
-> -			SetPageUptodate(page);
-> -
-> -			/* imply err = 0, see erofs_map_blocks */
-> -			goto has_updated;
-> -		}
-> -
-> -		/* for RAW access mode, m_plen must be equal to m_llen */
-> -		DBG_BUGON(map.m_plen != map.m_llen);
-> -
-> -		blknr = erofs_blknr(map.m_pa);
-> -		blkoff = erofs_blkoff(map.m_pa);
-> -
-> -		/* deal with inline page */
-> -		if (map.m_flags & EROFS_MAP_META) {
-> -			void *vsrc, *vto;
-> -			struct page *ipage;
-> -
-> -			DBG_BUGON(map.m_plen > PAGE_SIZE);
-> -
-> -			ipage = erofs_get_meta_page(inode->i_sb, blknr);
-> -
-> -			if (IS_ERR(ipage)) {
-> -				err = PTR_ERR(ipage);
-> -				goto err_out;
-> -			}
-> -
-> -			vsrc = kmap_atomic(ipage);
-> -			vto = kmap_atomic(page);
-> -			memcpy(vto, vsrc + blkoff, map.m_plen);
-> -			memset(vto + map.m_plen, 0, PAGE_SIZE - map.m_plen);
-> -			kunmap_atomic(vto);
-> -			kunmap_atomic(vsrc);
-> -			flush_dcache_page(page);
-> -
-> -			SetPageUptodate(page);
-> -			/* TODO: could we unlock the page earlier? */
-> -			unlock_page(ipage);
-> -			put_page(ipage);
-> -
-> -			/* imply err = 0, see erofs_map_blocks */
-> -			goto has_updated;
-> -		}
-> -
-> -		/* pa must be block-aligned for raw reading */
-> -		DBG_BUGON(erofs_blkoff(map.m_pa));
-> -
-> -		/* max # of continuous pages */
-> -		if (nblocks > DIV_ROUND_UP(map.m_plen, PAGE_SIZE))
-> -			nblocks = DIV_ROUND_UP(map.m_plen, PAGE_SIZE);
-> -
-> -		*eblks = bio_max_segs(nblocks);
-> -		bio = bio_alloc(GFP_NOIO, *eblks);
-> -
-> -		bio->bi_end_io = erofs_readendio;
-> -		bio_set_dev(bio, sb->s_bdev);
-> -		bio->bi_iter.bi_sector = (sector_t)blknr <<
-> -			LOG_SECTORS_PER_BLOCK;
-> -		bio->bi_opf = REQ_OP_READ | (ra ? REQ_RAHEAD : 0);
-> -	}
-> -
-> -	err = bio_add_page(bio, page, PAGE_SIZE, 0);
-> -	/* out of the extent or bio is full */
-> -	if (err < PAGE_SIZE)
-> -		goto submit_bio_retry;
-> -	--*eblks;
-> -	*last_block = current_block;
-> -	return bio;
-> -
-> -err_out:
-> -	/* for sync reading, set page error immediately */
-> -	if (!ra) {
-> -		SetPageError(page);
-> -		ClearPageUptodate(page);
-> -	}
-> -has_updated:
-> -	unlock_page(page);
-> -
-> -	/* if updated manually, continuous pages has a gap */
-> -	if (bio)
-> -		submit_bio(bio);
-> -	return err ? ERR_PTR(err) : NULL;
-> -}
-> -
-> -/*
-> - * since we dont have write or truncate flows, so no inode
-> - * locking needs to be held at the moment.
-> - */
-> -static int erofs_raw_access_readpage(struct file *file, struct page *page)
-> -{
-> -	erofs_off_t last_block;
-> -	unsigned int eblks;
-> -	struct bio *bio;
-> -
-> -	trace_erofs_readpage(page, true);
-> -
-> -	bio = erofs_read_raw_page(NULL, page->mapping,
-> -				  page, &last_block, 1, &eblks, false);
-> -
-> -	if (IS_ERR(bio))
-> -		return PTR_ERR(bio);
-> -
-> -	if (bio)
-> -		submit_bio(bio);
-> -	return 0;
-> -}
-> -
-> -static void erofs_raw_access_readahead(struct readahead_control *rac)
-> -{
-> -	erofs_off_t last_block;
-> -	unsigned int eblks;
-> -	struct bio *bio = NULL;
-> -	struct page *page;
-> -
-> -	trace_erofs_readpages(rac->mapping->host, readahead_index(rac),
-> -			readahead_count(rac), true);
-> -
-> -	while ((page = readahead_page(rac))) {
-> -		prefetchw(&page->flags);
-> -
-> -		bio = erofs_read_raw_page(bio, rac->mapping, page, &last_block,
-> -				readahead_count(rac), &eblks, true);
-> -
-> -		/* all the page errors are ignored when readahead */
-> -		if (IS_ERR(bio)) {
-> -			pr_err("%s, readahead error at page %lu of nid %llu\n",
-> -			       __func__, page->index,
-> -			       EROFS_I(rac->mapping->host)->nid);
-> -
-> -			bio = NULL;
-> -		}
-> -
-> -		put_page(page);
-> -	}
-> -
-> -	if (bio)
-> -		submit_bio(bio);
-> -}
-> -
-> -static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
-> -{
-> -	struct inode *inode = mapping->host;
-> -	struct erofs_map_blocks map = {
-> -		.m_la = blknr_to_addr(block),
-> -	};
-> -
-> -	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
-> -		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
-> -
-> -		if (block >> LOG_SECTORS_PER_BLOCK >= blks)
-> -			return 0;
-> -	}
-> -
-> -	if (!erofs_map_blocks_flatmode(inode, &map, EROFS_GET_BLOCKS_RAW))
-> -		return erofs_blknr(map.m_pa);
-> -
-> -	return 0;
-> -}
-> -
->   static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->   		unsigned int flags, struct iomap *iomap, struct iomap *srcmap)
->   {
-> @@ -327,6 +104,7 @@ static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->   	iomap->offset = map.m_la;
->   	iomap->length = map.m_llen;
->   	iomap->flags = 0;
-> +	iomap->private = NULL;
->   
->   	if (!(map.m_flags & EROFS_MAP_MAPPED)) {
->   		iomap->type = IOMAP_HOLE;
-> @@ -336,20 +114,61 @@ static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->   		return 0;
->   	}
->   
-> -	/* that shouldn't happen for now */
->   	if (map.m_flags & EROFS_MAP_META) {
-> -		DBG_BUGON(1);
-> -		return -ENOTBLK;
-> +		struct page *ipage;
-> +
-> +		iomap->type = IOMAP_INLINE;
-> +		ipage = erofs_get_meta_page(inode->i_sb,
-> +					    erofs_blknr(map.m_pa));
+Hi Rob,
 
-Error handling for erofs_get_meta_page()?
+It follows the DT bindings for Kirin 970 PCIE and its corresponding PHY,
+rebased on the top of next-20210803.
 
-Thanks
+It should apply cleanly on the top of:
+	https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git/log/?h=dt/next
 
-> +		iomap->inline_data = page_address(ipage) +
-> +					erofs_blkoff(map.m_pa);
-> +		iomap->private = ipage;
-> +	} else {
-> +		iomap->type = IOMAP_MAPPED;
-> +		iomap->addr = map.m_pa;
->   	}
-> -	iomap->type = IOMAP_MAPPED;
-> -	iomap->addr = map.m_pa;
->   	return 0;
->   }
->   
-> +static int erofs_iomap_end(struct inode *inode, loff_t pos, loff_t length,
-> +		ssize_t written, unsigned flags, struct iomap *iomap)
-> +{
-> +	struct page *ipage = iomap->private;
-> +
-> +	if (ipage) {
-> +		DBG_BUGON(iomap->type != IOMAP_INLINE);
-> +		unlock_page(ipage);
-> +		put_page(ipage);
-> +	} else {
-> +		DBG_BUGON(iomap->type == IOMAP_INLINE);
-> +	}
-> +	return written;
-> +}
-> +
->   const struct iomap_ops erofs_iomap_ops = {
->   	.iomap_begin = erofs_iomap_begin,
-> +	.iomap_end = erofs_iomap_end,
->   };
->   
-> +/*
-> + * since we dont have write or truncate flows, so no inode
-> + * locking needs to be held at the moment.
-> + */
-> +static int erofs_readpage(struct file *file, struct page *page)
-> +{
-> +	return iomap_readpage(page, &erofs_iomap_ops);
-> +}
-> +
-> +static void erofs_readahead(struct readahead_control *rac)
-> +{
-> +	return iomap_readahead(rac, &erofs_iomap_ops);
-> +}
-> +
-> +static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
-> +{
-> +	return iomap_bmap(mapping, block, &erofs_iomap_ops);
-> +}
-> +
->   static int erofs_prepare_dio(struct kiocb *iocb, struct iov_iter *to)
->   {
->   	struct inode *inode = file_inode(iocb->ki_filp);
-> @@ -365,15 +184,6 @@ static int erofs_prepare_dio(struct kiocb *iocb, struct iov_iter *to)
->   
->   	if (align & blksize_mask)
->   		return -EINVAL;
-> -
-> -	/*
-> -	 * Temporarily fall back tail-packing inline to buffered I/O instead
-> -	 * since tail-packing inline support relies on an iomap core update.
-> -	 */
-> -	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE &&
-> -	    iocb->ki_pos + iov_iter_count(to) >
-> -			rounddown(inode->i_size, EROFS_BLKSIZ))
-> -		return 1;
->   	return 0;
->   }
->   
-> @@ -409,8 +219,8 @@ static ssize_t erofs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
->   
->   /* for uncompressed (aligned) files and raw access for other files */
->   const struct address_space_operations erofs_raw_access_aops = {
-> -	.readpage = erofs_raw_access_readpage,
-> -	.readahead = erofs_raw_access_readahead,
-> +	.readpage = erofs_readpage,
-> +	.readahead = erofs_readahead,
->   	.bmap = erofs_bmap,
->   	.direct_IO = noop_direct_IO,
->   };
-> 
+Note: you mentioned that patch 1 was already applied, but it is not
+there yet. I opted to keep it at the tree, in case someone wants to
+apply this series on the top of linux-next.
+
+v4:
+  - Rebased and fixed a merge conflict
+
+v3:
+  - Fixed a comment on patch 3: The Ethernet controller is at lane 6.
+
+v2:
+  - removed the DTS file. I'll submit it in separate, once having
+    everything else merged;
+  - it now doesn't produce any warnings with:
+        make DT_SCHEMA_FILES=Documentation/devicetree/bindings/pci/hisilicon,kirin
+-pcie.yaml DT_CHECKER_FLAGS=-m dt_binding_check
+  - added the upstream node;
+  - the clock enable now uses a new property (hisilicon,clken-gpios);
+  - the reg for the PCI devices are now properly filled;
+  - the pcie@x,y nodes now match the port number from table 4-1 from the
+   datasheet.
+
+
+Mauro Carvalho Chehab (4):
+  dt-bindings: PCI: kirin: Fix compatible string
+  dt-bindings: PCI: kirin: Convert kirin-pcie.txt to yaml
+  dt-bindings: PCI: kirin: Add support for Kirin970
+  dt-bindings: phy: Add bindings for HiKey 970 PCIe PHY
+
+ .../bindings/pci/hisilicon,kirin-pcie.yaml    | 160 ++++++++++++++++++
+ .../devicetree/bindings/pci/kirin-pcie.txt    |  50 ------
+ .../devicetree/bindings/pci/snps,dw-pcie.yaml |   2 +-
+ .../phy/hisilicon,phy-hi3670-pcie.yaml        |  82 +++++++++
+ MAINTAINERS                                   |   2 +-
+ 5 files changed, 244 insertions(+), 52 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+ delete mode 100644 Documentation/devicetree/bindings/pci/kirin-pcie.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
+
+-- 
+2.31.1
+
+
