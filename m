@@ -2,99 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FFB3DFB88
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE413DFB8B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235654AbhHDGoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 02:44:01 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:37274 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235070AbhHDGoA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 02:44:00 -0400
-Received: from [192.168.1.87] (unknown [223.178.56.171])
-        by linux.microsoft.com (Postfix) with ESMTPSA id DADCE209DD4A;
-        Tue,  3 Aug 2021 23:43:44 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DADCE209DD4A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1628059428;
-        bh=V/XYsXsYVsA5Pb1ntrRBOWS6XD7DTF+fjpdIcug4aCw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Cj5PvOhjHeKFOHz1X1tSzo8ZfZqL0lX6n3/1G8fOiix2DXh/xdkddfTDhgC8RMhHF
-         TmcseRM1Soe4Rl5V4AwJe3G+VYxGCWd+m1OGKZE0eu9IuOOMnhjHFjyw8iJh8rv0ZE
-         oey+Badv593cyQMjtl0kxCnP/vyJ2Cb6aAGXneHo=
-Subject: Re: [RFC v1 5/8] mshv: add paravirtualized IOMMU support
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        pasha.tatashin@soleen.com, Joerg Roedel <joro@8bytes.org>,
+        id S235667AbhHDGqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 02:46:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:56844 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230070AbhHDGqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 02:46:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6518011FB;
+        Tue,  3 Aug 2021 23:46:38 -0700 (PDT)
+Received: from [10.163.67.195] (unknown [10.163.67.195])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 062493F66F;
+        Tue,  3 Aug 2021 23:46:35 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH] arm64/mm: Fix idmap on [16K|36VA|48PA]
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
         Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
-References: <20210709114339.3467637-1-wei.liu@kernel.org>
- <20210709114339.3467637-6-wei.liu@kernel.org>
- <77670985-2a1b-7bbd-2ede-4b7810c3e220@linux.microsoft.com>
- <20210803214718.hnp3ejs35lh455fw@liuwe-devbox-debian-v2>
-From:   Praveen Kumar <kumarpraveen@linux.microsoft.com>
-Message-ID: <562f4c31-1ea5-ea56-ac0a-6bd80b61c3df@linux.microsoft.com>
-Date:   Wed, 4 Aug 2021 12:13:42 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <1627879359-30303-1-git-send-email-anshuman.khandual@arm.com>
+ <20210803103440.GA5786@arm.com>
+ <7bad50a2-76f1-7946-3a15-35e46fb289c0@arm.com>
+ <20210803131201.GB5786@arm.com>
+ <4d6a4a0c-7f68-991d-5b0e-08c280543fe8@arm.com>
+Message-ID: <cad9294f-8158-6aa4-5740-26f534530740@arm.com>
+Date:   Wed, 4 Aug 2021 12:17:26 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210803214718.hnp3ejs35lh455fw@liuwe-devbox-debian-v2>
+In-Reply-To: <4d6a4a0c-7f68-991d-5b0e-08c280543fe8@arm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-08-2021 03:17, Wei Liu wrote:
->>> +static size_t hv_iommu_unmap(struct iommu_domain *d, unsigned long iova,
->>> +			   size_t size, struct iommu_iotlb_gather *gather)
->>> +{
->>> +	size_t unmapped;
->>> +	struct hv_iommu_domain *domain = to_hv_iommu_domain(d);
->>> +	unsigned long flags, npages;
->>> +	struct hv_input_unmap_device_gpa_pages *input;
->>> +	u64 status;
->>> +
->>> +	unmapped = hv_iommu_del_mappings(domain, iova, size);
->>> +	if (unmapped < size)
->>> +		return 0;
->> Is there a case where unmapped > 0 && unmapped < size ?
->>
-> There could be such a case -- hv_iommu_del_mappings' return value is >= 0.
-> Is there a problem with this predicate?
 
-What I understand, if we are unmapping and return 0, means nothing was unmapped, and will that not cause any corruption or illegal access of unmapped memory later?
-From __iommu_unmap
-...
-    13         while (unmapped < size) {
-    12                 size_t pgsize = iommu_pgsize(domain, iova, size - unmapped);
-    11
-    10                 unmapped_page = ops->unmap(domain, iova, pgsize, iotlb_gather);
-     9                 if (!unmapped_page)
-     8                         break;		<<< we just break here, thinking there is nothing unmapped, but actually hv_iommu_del_mappings has removed some pages.
-     7
-     6                 pr_debug("unmapped: iova 0x%lx size 0x%zx\n",
-     5                         ¦iova, unmapped_page);
-     4
-     3                 iova += unmapped_page;
-     2                 unmapped += unmapped_page;
-     1         }
-...
 
-Am I missing something ?
+On 8/4/21 9:16 AM, Anshuman Khandual wrote:
+> I am working on a solution which re-works idmap extension logic based on the
+> difference between __idmap_text_end and PGDIR_SHIFT coverage, then creating
+> additional page table levels and reducing idmap_t0sz appropriately. All the
+> existing code including this fix here, will be dropped completely. Because
+> it might be difficult to extend this patch to get the entire thing in order,
+> the idea was to just fix [16K|36VA|48PA] which could then be backported and
+> then do the rework in mainline (which need not be backported)
 
-Regards,
+FYI.
 
-~Praveen.
+Here is the rework (draft standard, lightly tested and not documented) which
+I have been working on. It tries to take care of three different situations,
+when __idmap_text_end would not be covered with the existing idmap levels.
+
+1. idmap requires single new level
+2. idmap requires two new levels
+3. idmap does not require more levels but idmap_ptrs_per_pgd needs adjustment
+
+Applies after the fix here.
+
+---
+ arch/arm64/include/asm/assembler.h |  9 ++++++
+ arch/arm64/kernel/head.S           | 62 +++++++++++++++-----------------------
+ 2 files changed, 33 insertions(+), 38 deletions(-)
+
+diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+index 89faca0..d826641 100644
+--- a/arch/arm64/include/asm/assembler.h
++++ b/arch/arm64/include/asm/assembler.h
+@@ -25,6 +25,15 @@
+ #include <asm/ptrace.h>
+ #include <asm/thread_info.h>
+ 
++	.macro shift_to_nr_ptrs, reg1, reg2, reg3, tmp
++	ldr_l   \reg3, idmap_t0sz
++	add     \reg3, \reg3, \tmp
++	mov     \reg2, #64
++	sub     \reg2, \reg2, \reg3
++	mov     \reg1, #1
++	lsr     \reg1, \reg1, \reg2
++	.endm
++
+ 	/*
+ 	 * Provide a wxN alias for each wN register so what we can paste a xN
+ 	 * reference after a 'w' to obtain the 32-bit version.
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index da33bbc..b308787 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -327,54 +327,40 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+ 	dmb	sy
+ 	dc	ivac, x6		// Invalidate potentially stale cache line
+ 
+-#if (VA_BITS < 48)
+ #define EXTRA_SHIFT	(PGDIR_SHIFT + PAGE_SHIFT - 3)
+ #define EXTRA_SHIFT_1	(EXTRA_SHIFT + PAGE_SHIFT - 3)
+-#define EXTRA_PTRS	(1 << (PHYS_MASK_SHIFT - EXTRA_SHIFT))
+-#define EXTRA_PTRS_1	(1 << (PHYS_MASK_SHIFT - EXTRA_SHIFT_1))
+-
+-	/*
+-	 * If VA_BITS < 48, we have to configure an additional table level.
+-	 * First, we have to verify our assumption that the current value of
+-	 * VA_BITS was chosen such that all translation levels are fully
+-	 * utilised, and that lowering T0SZ will always result in an additional
+-	 * translation level to be configured.
+-	 */
+-#if VA_BITS != EXTRA_SHIFT
++#if (VA_BITS > EXTRA_SHIFT)
+ #error "Mismatch between VA_BITS and page size/number of translation levels"
+ #endif
+ 
+-/*
+- * In this particular CONFIG_ARM64_16K_PAGES config, there might be a
+- * scenario where 'idmap_text_end' ends up high enough in the PA range
+- * requiring two additional idmap page table levels. Reduce idmap_t0sz
+- * to cover the entire PA range. This prevents table misconfiguration
+- * when a given idmap_t0sz value just requires single additional level
+- * where as two levels have been built.
+- */
+-#if defined(CONFIG_ARM64_VA_BITS_36) && defined(CONFIG_ARM64_PA_BITS_48)
+-	mov	x4, EXTRA_PTRS_1
+-	create_table_entry x0, x3, EXTRA_SHIFT_1, x4, x5, x6
++#if (VA_BITS == EXTRA_SHIFT)
++	mov	x6, #TCR_T0SZ(VA_BITS_MIN)
++	sub	x6, x6, x5
++	cmp	x6, #(PAGE_SHIFT - 3)
++	b.gt	8f
+ 
+-	mov	x4, PTRS_PER_PTE
++	shift_to_nr_ptrs x4, x5, x6, #EXTRA_SHIFT
+ 	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
++	b	1f
++8:
++	shift_to_nr_ptrs x4, x5, x6, #EXTRA_SHIFT_1
++	create_table_entry x0, x3, EXTRA_SHIFT_1, x4, x5, x6
+ 
+-	mov	x5, #64 - PHYS_MASK_SHIFT
+-	adr_l	x6, idmap_t0sz
+-	str	x5, [x6]
+-	dmb	sy
+-	dc	ivac, x6
+-#else
+-	mov	x4, EXTRA_PTRS
++	mov     x4, PTRS_PER_PTE
+ 	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
+-#endif
+-#else
+-	/*
+-	 * If VA_BITS == 48, we don't have to configure an additional
+-	 * translation level, but the top-level table has more entries.
+-	 */
+-	mov	x4, #1 << (PHYS_MASK_SHIFT - PGDIR_SHIFT)
++#elif (VA_BITS < EXTRA_SHIFT)
++	mov	x6, #64
++	sub	x6, x6, x5
++	cmp	x6, EXTRA_SHIFT
++	b.eq	1f
++	b.gt	8f
++
++	shift_to_nr_ptrs x4, x5, x6, #PGDIR_SHIFT
+ 	str_l	x4, idmap_ptrs_per_pgd, x5
++	b	1f
++8:
++	shift_to_nr_ptrs x4, x5, x6, #EXTRA_SHIFT
++	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
+ #endif
+ 1:
+ 	ldr_l	x4, idmap_ptrs_per_pgd
+-- 
+2.7.4
+
