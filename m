@@ -2,286 +2,508 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696B43DF9A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 04:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2D63DF9A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 04:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234287AbhHDCVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 22:21:09 -0400
-Received: from mail-eopbgr1310119.outbound.protection.outlook.com ([40.107.131.119]:62149
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229678AbhHDCVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 22:21:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RSiuYhGdTs/1WJH3hN+G6EtSwz2eJet6SRmUepntmhBgRaFlhjCCQy8Z92dAL6ihdQE0i+tnyx8ayY7x0bjb9jfH3a5EvKyqeYOh/m0r5FZBm3Q++/+jw4KGjnQ4N+Agz07x2pwDFeM257HCsxppi7xJjYDI/lMQks/5xaklwCmmbDMQSHPB/76uEzCCtmrBZGM1j0CoTkwAP5adS2ivZ3f/QAiqE4jpM+PZBnrR3kysV03nszCziSO05/icujOpJhhrtAY4fJtDlZAS06rpq0e04HppvAg3FKOdSU/F9xWM14RuKnoOs9Hvxl4HuoM6fahoTkQgJOtgNFMtJTze8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k8IpLnTVIn38RJpcRqQh/3CmUeCLOy8BmxwVRpknmJM=;
- b=KOZD9Qsg//o4ad6f0vDUpKaMl5jk2FUb4F6LoWd4lV33xM9OW/tvuZLxNxLgYRjSg13ZvlGnH/TNFbqHude5aPMYWPTkrJwhRAqC9BI108w5AfGnV/778r0YNB9riXJc2QrianCdbLolZaCgB8V+Bo2Ij3Otb6t5tuJza7eZETUBX/3TcNa+/iaCqcyLa/pPBBeWSr8joF59QM3GTSroZ/tkSxEtAPQm33MbQcM38cb2mi677pu8rt1cZrbnY8FqB7BPzj03sgBIu7tIkoQvyxztOMSflQg8kwacYD1lQFTDXte37twcLPdJK8tkVAQ9vl/A6UcOkU2r54rEXzNsmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k8IpLnTVIn38RJpcRqQh/3CmUeCLOy8BmxwVRpknmJM=;
- b=x1c0NAwlNDgzoIIob9o6jYTuuW6SjzbZZvCmG6Aud82IVS1VvDC0app0Bqu+ARsD52AL1ZCLNazdIfOeVyR6cwFkbbzag0zAbk5LMCNQqqDxqjAL9YHqB1oVBx96ZqQmkQ8rnyefHh9j/oR9WRUIcKhnIEwaaDEOeN1KkedPIE3vhH1U8wnmcwRSMaN0sHD4ju9E1fZJoSev2+IO3mSYRyNkAYmuU2wmgxuD4YVJO3NCIN2G5tC+9O3P8IAR1FbCNIV3ayJ126yQM3Nr/VQ6C80mNU9GCVJ9Sh8yaKPgnwubMNrCxd/90PKUpQFtrexTvYwoXu5AjqDI2hePe5qGbg==
-Received: from HK2PR06MB3300.apcprd06.prod.outlook.com (2603:1096:202:34::18)
- by HK2PR06MB3299.apcprd06.prod.outlook.com (2603:1096:202:32::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.20; Wed, 4 Aug
- 2021 02:20:52 +0000
-Received: from HK2PR06MB3300.apcprd06.prod.outlook.com
- ([fe80::d5cc:c577:ddab:f4d9]) by HK2PR06MB3300.apcprd06.prod.outlook.com
- ([fe80::d5cc:c577:ddab:f4d9%7]) with mapi id 15.20.4373.026; Wed, 4 Aug 2021
- 02:20:51 +0000
-From:   Kuo-Hsiang Chou <kuohsiang_chou@aspeedtech.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "airlied@linux.ie" <airlied@linux.ie>,
-        Jenmin Yuan <jenmin_yuan@aspeedtech.com>,
-        Arc Sung <arc_sung@aspeedtech.com>,
-        "airlied@redhat.com" <airlied@redhat.com>
-Subject: RE: [PATCH v5] drm/ast: Fixed CVE for DP501
-Thread-Topic: [PATCH v5] drm/ast: Fixed CVE for DP501
-Thread-Index: AQHXNoyWYwZZ2uXGjUqOZ47iYsMUI6rIPE6AgALc7dCAlwUSgIABHKBA
-Date:   Wed, 4 Aug 2021 02:20:51 +0000
-Message-ID: <HK2PR06MB330037E5EF551AAF0EDA33E28CF19@HK2PR06MB3300.apcprd06.prod.outlook.com>
-References: <214f1451-2406-b298-e233-4939cae9e1f2@suse.de>
- <20210421085859.17761-1-kuohsiang_chou@aspeedtech.com>
- <2662b502-edbe-b79b-b458-dbabafe6ca3c@suse.de>
- <HK2PR06MB3300831DB8F41525C92B28708C5F9@HK2PR06MB3300.apcprd06.prod.outlook.com>
- <a31502d1-b1ea-d74d-a5c7-b4200e52ff4d@suse.de>
-In-Reply-To: <a31502d1-b1ea-d74d-a5c7-b4200e52ff4d@suse.de>
-Accept-Language: en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.de; dkim=none (message not signed)
- header.d=none;suse.de; dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ddb649ab-fd0d-439a-a69b-08d956ee7b40
-x-ms-traffictypediagnostic: HK2PR06MB3299:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK2PR06MB3299BE815B3C01BBBE1D76578CF19@HK2PR06MB3299.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wsJGAIpVp+EHDhT+wPbjlK9s12A2hqtPqybymlcEf21vI70bhH+RcmYvrJeI9mJoTLQhIaDcJryk3aIJ2m+LgYM9aqg8+itHgaNd5xWSGrgEGPkaCM1dtYHKHw5LVomIR/ZJMmTMpU8zwC+0bSbvXR4dkttxFj8wUNUxeL4xi8xtjhKodeYg8VQGxy0oxVh1G/l8O4/xJ/r0aADiDifiY8nadxKQmibLb0RfeQOjn7vuQOAtjL/Dp9phP9PCCfjj2ZqUtbuGEQQlu91r8GOgWtSG4waf2BgPLpWAvS4Gr5FcTcY4ywyiykKf9DPJaH/6u19U5wZjdD2eBNtQR7FQCf50yVM4yjQVvbGRbsgmbI3GOnD1AlVTJqqpbFdy4WyYF8EumbpM0p8ARWGM2DzRRZzczj6/Bu4hki74yDwrHuwq/R9C6hZK0WvAC39blvcm0OiN7k0yWBaIZf7xUSjHoHrP45yA6faiv/GCeMSgykMPeO+xjGyGCHSqHlN9b9UCni6pZULMacwT0llOGaLwJjC73Ye7ZkwDpP4jTcyYqRv8aBxrUiBCxlRE/f4ha9MvpG5LJuNZ9yQAWswuFSUozuCaPyGFfNX9erAxWETewzsca1Evxf4ZHMcHoi68PlD7qVU++uycClOwkWHJSlLFyXEe1S+91lZGOaGe8F6Mg/oi8ah3cUHzx3UZa2ULFTwiPUglpd3uPDDRlVp9v/57sw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR06MB3300.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(136003)(366004)(346002)(396003)(376002)(66556008)(76116006)(122000001)(110136005)(66476007)(64756008)(66446008)(66946007)(6506007)(316002)(55236004)(8936002)(54906003)(26005)(8676002)(186003)(5660300002)(52536014)(71200400001)(30864003)(7696005)(38070700005)(53546011)(38100700002)(478600001)(2906002)(86362001)(83380400001)(66574015)(966005)(33656002)(55016002)(4326008)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 63dtbjeKZ0mZkDw/izMS9ZSgYcUE/Bo2xHIcebJAlhGwgcxKTasMwZrFjzBvsAyR+nqtqT6WIfHWNj/ONysQBjq7wG9dC+vB0gxd6GhbI7P/l7TALv1MjVuV/soUe7YZkyatK2dOW+Y/ZU9YEeWsxR2neJOPUFzaNmes4rST7BLvAQ8AssY3Qca2yOr2WceC6uE71U9Kfby/8Tiz1idVFWgAyjY1wrpa2OpgFiJhW8DSwr68ZIronBJ+WHoHZ4WOly3TfISHf+dPZE3CA3vzyQsYLlWIEqejE/NtVJmWYe6fhFttPKjfCFyxiQ8yb+f1yx8tt2A7PAlSC7PB+QgJUrjnhP28Ctso3U1m/eLdXvYAvnNid3TU3ysnVNVIEmY8qA1SID7N53PcVD0EtBVNZEubC9HxNzhdApac+Jcl95dSvQ+MNg9e0h3eaiV2thNYXqi6fSneYjuDlF7VyrcXej5wo8sxl48+Pn6xL8PFUlJu3B+2Kjgo7pFXFwTHabChFU05CVNtlGi9N+vsZI2j4dQZjG/OjImFpUDCfSXunHxQutuWEbmCJyLJILP4I67ypT6T3pDtThs9ShS3XQk4AoWe3YOkuxsuychw9uYpQLZ34dHnRp15Hz+fhPDx2LV3in50Y07iBy8gbN89TwLGi5MyobYTEG73DpjcqFygkVcEP5GQLo9vaF9T/x3PZ/nkhE5HByIDgpHtEvXsfuLQ5Hj76cJFowFU8m7TBx1KKpk=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S234353AbhHDCYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 22:24:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229678AbhHDCYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 22:24:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CF8160F94;
+        Wed,  4 Aug 2021 02:23:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628043837;
+        bh=1dC/25aFn30nSjLtDbh9bzLecj1wEQsE8h0c97pLXds=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Obl4asHssPsOaIRF9aRc/vlM4S/DJLzUK0wwPXzhEJYr+k22EwRlRwDBJ9JaR/KdH
+         /Oz8aehdxrfks/yDHB9TwRB1gJxPBreKHPU7S86VKS41Qe/YJcqCua9OpexqgcnGsk
+         fZvgUOb8QLkREiFbIJOBblQi7n4iQUAsT4ornlMEquzZopxDkjnPkS0rdzcfgMb/lm
+         5qiJjc8GD/780vTQDIyK1H1fAewpP+t2P4vJ3+1/slP+hK94zwM3mgzGXYXqp7A/nQ
+         vZZModQ42X5W++1kS6PjXgb1UCUXj2jUeZmtS0FQA4oCwqaQaAkUHWBuchVHQLJqoV
+         TbO6ZTfv0Aisw==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
+        Chao Yu <chao@kernel.org>
+Subject: [RFC v3] f2fs: extent cache: support unaligned extent
+Date:   Wed,  4 Aug 2021 10:23:48 +0800
+Message-Id: <20210804022348.1414543-1-chao@kernel.org>
+X-Mailer: git-send-email 2.22.1
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK2PR06MB3300.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ddb649ab-fd0d-439a-a69b-08d956ee7b40
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Aug 2021 02:20:51.7256
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dSDdIH6gFzxTb9jGYJAjpWDJXeuT7TfxCBlUseNioGmfNJAr5G7wQN3gRHGDB6z3B/18Jom0QPQa9y0hnaLaxtFW8qfYQ+th03UaRwtml/k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3299
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBUaG9tYXMgWmltbWVybWFubiBb
-bWFpbHRvOnR6aW1tZXJtYW5uQHN1c2UuZGVdIA0KU2VudDogVHVlc2RheSwgQXVndXN0IDAzLCAy
-MDIxIDQ6NTggUE0NClRvOiBLdW8tSHNpYW5nIENob3UgPGt1b2hzaWFuZ19jaG91QGFzcGVlZHRl
-Y2guY29tPjsgZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgbGludXgta2VybmVsQHZn
-ZXIua2VybmVsLm9yZw0KU3ViamVjdDogUmU6IFtQQVRDSCB2NV0gZHJtL2FzdDogRml4ZWQgQ1ZF
-IGZvciBEUDUwMQ0KDQpIaQ0KDQpBbSAyOS4wNC4yMSB1bSAxMToyMSBzY2hyaWViIEt1by1Ic2lh
-bmcgQ2hvdToNCj4gTW9yZSBnZW5lcmFsbHkgc3BlYWtpbmcsIHRoZSBEUDUwMSBjb2RlIG5lZWRz
-IGEgbWFqb3IgcmVmYWN0b3JpbmcuIEl0J3MgY3VycmVudGx5IGJvbHRlZCBvbnRvIHRoZSByZWd1
-bGFyIFZHQSBjb25uZWN0b3IgY29kZS4gSXQgc2hvdWxkIHJhdGhlciBiZSBhIHNlcGFyYXRlIGNv
-bm5lY3RvciBvciBhIERSTSBicmlkZ2UuIEkgYWx3YXlzIHdhbnRlZCB0byB3b3JrIG9uIHRoaXMs
-IGJ1dCBkb24ndCBoYXZlIGEgZGV2aWNlIGZvciB0ZXN0aW5nLiBJZiBJJ2QgcHJvdmlkZSBwYXRj
-aGVzLCB3b3VsZCB5b3UgYmUgaW4gYSBwb3NpdGlvbiB0byB0ZXN0IHRoZW0/DQo+IA0KPiBOTywg
-SSBjYW4ndC4gVGhlIHBhdGNoIHdhcyB2ZXJpZmllZCBvbiBBU1QyNTAwK0RQNTAxIGJlZm9yZSwg
-c28gdGhlIGNvcnJlY3RuZXNzIG9mIHRoaXMgcGF0Y2ggaXMgcHJvbWlzZWQuIEJ1dCBjdXN0b21l
-ciBhbHdheXMgcmVxdWVzdGVkIHRvIHNlbmQgdGhlIHBsYXRmb3JtIGJhY2sgYWZ0ZXIgYnVnIGZp
-eGVkLiBOb3csIG5vIERQNTAxIHBsYXRmb3JtIG9uIG15IGhhbmQsIGJ1dCBJIHRyeSB0byBjb252
-aW5jZSBjdXN0b20gdG8gZ2V0IHRoZSBzb21lb25lIHBsYXRmb3JtLg0KDQpXaGF0J3MgdGhlIGhh
-cmR3YXJlIHBsYXRmb3JtIHRoYXQgeW91ciBjdXN0b21lciBwcm92aWRlcyB0byB5b3U/IEknZCBs
-aWtlIHRvIGRvIG1vcmUgZGV2ZWxvcG1lbnQgZm9yIHRoZSBEUDUwMSBjb2RlLCBidXQgdGhlIGhh
-cmR3YXJlIGlzIGhhcmQgdG8gZmluZC4NCg0KSGkgVG9tYXMNClRoZSBwbGF0Zm9ybSB3YXMgYSB3
-aG9sZSBzZXJ2ZXIgcGxhdGZvcm0gYm9ycm93ZWQgZnJvbSBMZW5vdm8sIGJ1dCBMZW5vdm8gaGFk
-IGdldCBpdCBiYWNrIGFmdGVyIGlzc3VlIGZpeGVkLg0KVGhlIHJlYXNvbiB0aGF0IERQNTAxIGhh
-cmR3YXJlIGhhcmQgdG8gZmluZCBpcyB0aGUgSUMgdmVuZG9yLCBwYXJhZGUsIGlzbid0IHN1cHBv
-cnQgaXQgYW55bW9yZS4NCkJ1dCBBU1BFRUQgbmVlZHMgdG8gbWFpbnRhaW4gRFA1MDEgZm9yIHNv
-bWUgb2YgY3VzdG9tZXJzIHdobyB1c2UgQVNUMjUwMCBhbmQgRFA1MDEsIHRob3VnaCwgSUMgdmVu
-ZG9yIGRvZXNuJ3Qgc3VwcG9ydCBpdCBhbnltb3JlLg0KDQpQbGVhc2UgdW5kZXJzdGFuZCB0aGUg
-Y29uZGl0aW9uIHRoYXQgSSBjYW4gYmUgdGhlIHBvc2l0aW9uIHRvIHRlc3QgRFA1MDEuIFRoYW5r
-cyB2ZXJ5IG11Y2ghIA0KDQpSZWdhcmRzLA0KCUt1by1Ic2lhbmcgQ2hvdQ0KDQpCZXN0IHJlZ2Fy
-ZHMNClRob21hcw0KDQo+IA0KPiBCZXN0IFJlZ2FyZHMsDQo+IAlLdW8tSHNpYW5nIENob3UNCj4g
-DQo+IEJlc3QgcmVnYXJkcw0KPiBUaG9tYXMNCj4gDQo+IA0KPj4gU2lnbmVkLW9mZi1ieTogS3Vv
-SHNpYW5nIENob3UgPGt1b2hzaWFuZ19jaG91QGFzcGVlZHRlY2guY29tPg0KPj4gUmVwb3J0ZWQt
-Ynk6IGtlcm5lbCB0ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPg0KPj4gLS0tDQo+PiAgICBkcml2
-ZXJzL2dwdS9kcm0vYXN0L2FzdF9kcDUwMS5jIHwgMTM5ICsrKysrKysrKysrKysrKysrKysrKysr
-LS0tLS0tLS0tDQo+PiAgICBkcml2ZXJzL2dwdS9kcm0vYXN0L2FzdF9kcnYuaCAgIHwgIDEyICsr
-Kw0KPj4gICAgZHJpdmVycy9ncHUvZHJtL2FzdC9hc3RfbWFpbi5jICB8ICAxMSArKy0NCj4+ICAg
-IDMgZmlsZXMgY2hhbmdlZCwgMTI1IGluc2VydGlvbnMoKyksIDM3IGRlbGV0aW9ucygtKQ0KPj4N
-Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vYXN0L2FzdF9kcDUwMS5jIA0KPj4gYi9k
-cml2ZXJzL2dwdS9kcm0vYXN0L2FzdF9kcDUwMS5jIGluZGV4IDg4MTIxYzBlMC4uY2Q5M2M0NGYy
-IDEwMDY0NA0KPj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FzdC9hc3RfZHA1MDEuYw0KPj4gKysr
-IGIvZHJpdmVycy9ncHUvZHJtL2FzdC9hc3RfZHA1MDEuYw0KPj4gQEAgLTE4OSw2ICsxODksOSBA
-QCBib29sIGFzdF9iYWNrdXBfZncoc3RydWN0IGRybV9kZXZpY2UgKmRldiwgdTggKmFkZHIsIHUz
-MiBzaXplKQ0KPj4gICAgCXUzMiBpLCBkYXRhOw0KPj4gICAgCXUzMiBib290X2FkZHJlc3M7DQo+
-Pg0KPj4gKwlpZiAoYXN0LT5jb25maWdfbW9kZSAhPSBhc3RfdXNlX3AyYSkNCj4+ICsJCXJldHVy
-biBmYWxzZTsNCj4+ICsNCj4+ICAgIAlkYXRhID0gYXN0X21pbmR3bShhc3QsIDB4MWU2ZTIxMDAp
-ICYgMHgwMTsNCj4+ICAgIAlpZiAoZGF0YSkgew0KPj4gICAgCQlib290X2FkZHJlc3MgPSBnZXRf
-ZndfYmFzZShhc3QpOyBAQCAtMjA3LDYgKzIxMCw5IEBAIHN0YXRpYyBib29sIA0KPj4gYXN0X2xh
-dW5jaF9tNjhrKHN0cnVjdCBkcm1fZGV2aWNlICpkZXYpDQo+PiAgICAJdTggKmZ3X2FkZHIgPSBO
-VUxMOw0KPj4gICAgCXU4IGpyZWc7DQo+Pg0KPj4gKwlpZiAoYXN0LT5jb25maWdfbW9kZSAhPSBh
-c3RfdXNlX3AyYSkNCj4+ICsJCXJldHVybiBmYWxzZTsNCj4+ICsNCj4+ICAgIAlkYXRhID0gYXN0
-X21pbmR3bShhc3QsIDB4MWU2ZTIxMDApICYgMHgwMTsNCj4+ICAgIAlpZiAoIWRhdGEpIHsNCj4+
-DQo+PiBAQCAtMjcxLDI1ICsyNzcsNTUgQEAgdTggYXN0X2dldF9kcDUwMV9tYXhfY2xrKHN0cnVj
-dCBkcm1fZGV2aWNlICpkZXYpDQo+PiAgICAJc3RydWN0IGFzdF9wcml2YXRlICphc3QgPSB0b19h
-c3RfcHJpdmF0ZShkZXYpOw0KPj4gICAgCXUzMiBib290X2FkZHJlc3MsIG9mZnNldCwgZGF0YTsN
-Cj4+ICAgIAl1OCBsaW5rY2FwWzRdLCBsaW5rcmF0ZSwgbGlua2xhbmVzLCBtYXhjbGsgPSAweGZm
-Ow0KPj4gKwl1MzIgKnBsaW5rY2FwOw0KPj4NCj4+IC0JYm9vdF9hZGRyZXNzID0gZ2V0X2Z3X2Jh
-c2UoYXN0KTsNCj4+IC0NCj4+IC0JLyogdmFsaWRhdGUgRlcgdmVyc2lvbiAqLw0KPj4gLQlvZmZz
-ZXQgPSAweGYwMDA7DQo+PiAtCWRhdGEgPSBhc3RfbWluZHdtKGFzdCwgYm9vdF9hZGRyZXNzICsg
-b2Zmc2V0KTsNCj4+IC0JaWYgKChkYXRhICYgMHhmMCkgIT0gMHgxMCkgLyogdmVyc2lvbjogMXgg
-Ki8NCj4+IC0JCXJldHVybiBtYXhjbGs7DQo+PiAtDQo+PiAtCS8qIFJlYWQgTGluayBDYXBhYmls
-aXR5ICovDQo+PiAtCW9mZnNldCAgPSAweGYwMTQ7DQo+PiAtCSoodTMyICopbGlua2NhcCA9IGFz
-dF9taW5kd20oYXN0LCBib290X2FkZHJlc3MgKyBvZmZzZXQpOw0KPj4gLQlpZiAobGlua2NhcFsy
-XSA9PSAwKSB7DQo+PiAtCQlsaW5rcmF0ZSA9IGxpbmtjYXBbMF07DQo+PiAtCQlsaW5rbGFuZXMg
-PSBsaW5rY2FwWzFdOw0KPj4gLQkJZGF0YSA9IChsaW5rcmF0ZSA9PSAweDBhKSA/ICg5MCAqIGxp
-bmtsYW5lcykgOiAoNTQgKiBsaW5rbGFuZXMpOw0KPj4gLQkJaWYgKGRhdGEgPiAweGZmKQ0KPj4g
-LQkJCWRhdGEgPSAweGZmOw0KPj4gLQkJbWF4Y2xrID0gKHU4KWRhdGE7DQo+PiArCWlmIChhc3Qt
-PmNvbmZpZ19tb2RlID09IGFzdF91c2VfcDJhKSB7DQo+PiArCQlib290X2FkZHJlc3MgPSBnZXRf
-ZndfYmFzZShhc3QpOw0KPj4gKw0KPj4gKwkJLyogdmFsaWRhdGUgRlcgdmVyc2lvbiAqLw0KPj4g
-KwkJb2Zmc2V0ID0gQVNUX0RQNTAxX0dCTF9WRVJTSU9OOw0KPj4gKwkJZGF0YSA9IGFzdF9taW5k
-d20oYXN0LCBib290X2FkZHJlc3MgKyBvZmZzZXQpOw0KPj4gKwkJaWYgKChkYXRhICYgQVNUX0RQ
-NTAxX0ZXX1ZFUlNJT05fTUFTSykgIT0gQVNUX0RQNTAxX0ZXX1ZFUlNJT05fMSkgLyogdmVyc2lv
-bjogMXggKi8NCj4+ICsJCQlyZXR1cm4gbWF4Y2xrOw0KPj4gKw0KPj4gKwkJLyogUmVhZCBMaW5r
-IENhcGFiaWxpdHkgKi8NCj4+ICsJCW9mZnNldCAgPSBBU1RfRFA1MDFfTElOS1JBVEU7DQo+PiAr
-CQlwbGlua2NhcCA9ICh1MzIgKilsaW5rY2FwOw0KPj4gKwkJKnBsaW5rY2FwICA9IGFzdF9taW5k
-d20oYXN0LCBib290X2FkZHJlc3MgKyBvZmZzZXQpOw0KPj4gKwkJaWYgKGxpbmtjYXBbMl0gPT0g
-MCkgew0KPj4gKwkJCWxpbmtyYXRlID0gbGlua2NhcFswXTsNCj4+ICsJCQlsaW5rbGFuZXMgPSBs
-aW5rY2FwWzFdOw0KPj4gKwkJCWRhdGEgPSAobGlua3JhdGUgPT0gMHgwYSkgPyAoOTAgKiBsaW5r
-bGFuZXMpIDogKDU0ICogbGlua2xhbmVzKTsNCj4+ICsJCQlpZiAoZGF0YSA+IDB4ZmYpDQo+PiAr
-CQkJCWRhdGEgPSAweGZmOw0KPj4gKwkJCW1heGNsayA9ICh1OClkYXRhOw0KPj4gKwkJfQ0KPj4g
-Kwl9IGVsc2Ugew0KPj4gKwkJaWYgKCFhc3QtPmRwNTAxX2Z3X2J1ZikNCj4+ICsJCQlyZXR1cm4g
-QVNUX0RQNTAxX0RFRkFVTFRfRENMSzsJLyogMTAyNHg3NjggYXMgZGVmYXVsdCAqLw0KPj4gKw0K
-Pj4gKwkJLyogZHVtbXkgcmVhZCAqLw0KPj4gKwkJb2Zmc2V0ID0gMHgwMDAwOw0KPj4gKwkJZGF0
-YSA9IHJlYWRsKGFzdC0+ZHA1MDFfZndfYnVmICsgb2Zmc2V0KTsNCj4+ICsNCj4+ICsJCS8qIHZh
-bGlkYXRlIEZXIHZlcnNpb24gKi8NCj4+ICsJCW9mZnNldCA9IEFTVF9EUDUwMV9HQkxfVkVSU0lP
-TjsNCj4+ICsJCWRhdGEgPSByZWFkbChhc3QtPmRwNTAxX2Z3X2J1ZiArIG9mZnNldCk7DQo+PiAr
-CQlpZiAoKGRhdGEgJiBBU1RfRFA1MDFfRldfVkVSU0lPTl9NQVNLKSAhPSBBU1RfRFA1MDFfRldf
-VkVSU0lPTl8xKSAvKiB2ZXJzaW9uOiAxeCAqLw0KPj4gKwkJCXJldHVybiBtYXhjbGs7DQo+PiAr
-DQo+PiArCQkvKiBSZWFkIExpbmsgQ2FwYWJpbGl0eSAqLw0KPj4gKwkJb2Zmc2V0ID0gQVNUX0RQ
-NTAxX0xJTktSQVRFOw0KPj4gKwkJcGxpbmtjYXAgPSAodTMyICopbGlua2NhcDsNCj4+ICsJCSpw
-bGlua2NhcCA9IHJlYWRsKGFzdC0+ZHA1MDFfZndfYnVmICsgb2Zmc2V0KTsNCj4+ICsJCWlmIChs
-aW5rY2FwWzJdID09IDApIHsNCj4+ICsJCQlsaW5rcmF0ZSA9IGxpbmtjYXBbMF07DQo+PiArCQkJ
-bGlua2xhbmVzID0gbGlua2NhcFsxXTsNCj4+ICsJCQlkYXRhID0gKGxpbmtyYXRlID09IDB4MGEp
-ID8gKDkwICogbGlua2xhbmVzKSA6ICg1NCAqIGxpbmtsYW5lcyk7DQo+PiArCQkJaWYgKGRhdGEg
-PiAweGZmKQ0KPj4gKwkJCQlkYXRhID0gMHhmZjsNCj4+ICsJCQltYXhjbGsgPSAodTgpZGF0YTsN
-Cj4+ICsJCX0NCj4+ICAgIAl9DQo+PiAgICAJcmV0dXJuIG1heGNsazsNCj4+ICAgIH0NCj4+IEBA
-IC0yOTgsMjYgKzMzNCw1NyBAQCBib29sIGFzdF9kcDUwMV9yZWFkX2VkaWQoc3RydWN0IGRybV9k
-ZXZpY2UgKmRldiwgdTggKmVkaWRkYXRhKQ0KPj4gICAgew0KPj4gICAgCXN0cnVjdCBhc3RfcHJp
-dmF0ZSAqYXN0ID0gdG9fYXN0X3ByaXZhdGUoZGV2KTsNCj4+ICAgIAl1MzIgaSwgYm9vdF9hZGRy
-ZXNzLCBvZmZzZXQsIGRhdGE7DQo+PiArCXUzMiAqcEVESURpZHg7DQo+Pg0KPj4gLQlib290X2Fk
-ZHJlc3MgPSBnZXRfZndfYmFzZShhc3QpOw0KPj4gLQ0KPj4gLQkvKiB2YWxpZGF0ZSBGVyB2ZXJz
-aW9uICovDQo+PiAtCW9mZnNldCA9IDB4ZjAwMDsNCj4+IC0JZGF0YSA9IGFzdF9taW5kd20oYXN0
-LCBib290X2FkZHJlc3MgKyBvZmZzZXQpOw0KPj4gLQlpZiAoKGRhdGEgJiAweGYwKSAhPSAweDEw
-KQ0KPj4gLQkJcmV0dXJuIGZhbHNlOw0KPj4gLQ0KPj4gLQkvKiB2YWxpZGF0ZSBQblAgTW9uaXRv
-ciAqLw0KPj4gLQlvZmZzZXQgPSAweGYwMTA7DQo+PiAtCWRhdGEgPSBhc3RfbWluZHdtKGFzdCwg
-Ym9vdF9hZGRyZXNzICsgb2Zmc2V0KTsNCj4+IC0JaWYgKCEoZGF0YSAmIDB4MDEpKQ0KPj4gLQkJ
-cmV0dXJuIGZhbHNlOw0KPj4gKwlpZiAoYXN0LT5jb25maWdfbW9kZSA9PSBhc3RfdXNlX3AyYSkg
-ew0KPj4gKwkJYm9vdF9hZGRyZXNzID0gZ2V0X2Z3X2Jhc2UoYXN0KTsNCj4+DQo+PiAtCS8qIFJl
-YWQgRURJRCAqLw0KPj4gLQlvZmZzZXQgPSAweGYwMjA7DQo+PiAtCWZvciAoaSA9IDA7IGkgPCAx
-Mjg7IGkgKz0gNCkgew0KPj4gLQkJZGF0YSA9IGFzdF9taW5kd20oYXN0LCBib290X2FkZHJlc3Mg
-KyBvZmZzZXQgKyBpKTsNCj4+IC0JCSoodTMyICopKGVkaWRkYXRhICsgaSkgPSBkYXRhOw0KPj4g
-KwkJLyogdmFsaWRhdGUgRlcgdmVyc2lvbiAqLw0KPj4gKwkJb2Zmc2V0ID0gQVNUX0RQNTAxX0dC
-TF9WRVJTSU9OOw0KPj4gKwkJZGF0YSA9IGFzdF9taW5kd20oYXN0LCBib290X2FkZHJlc3MgKyBv
-ZmZzZXQpOw0KPj4gKwkJaWYgKChkYXRhICYgQVNUX0RQNTAxX0ZXX1ZFUlNJT05fTUFTSykgIT0g
-QVNUX0RQNTAxX0ZXX1ZFUlNJT05fMSkNCj4+ICsJCQlyZXR1cm4gZmFsc2U7DQo+PiArDQo+PiAr
-CQkvKiB2YWxpZGF0ZSBQblAgTW9uaXRvciAqLw0KPj4gKwkJb2Zmc2V0ID0gQVNUX0RQNTAxX1BO
-UE1PTklUT1I7DQo+PiArCQlkYXRhID0gYXN0X21pbmR3bShhc3QsIGJvb3RfYWRkcmVzcyArIG9m
-ZnNldCk7DQo+PiArCQlpZiAoIShkYXRhICYgQVNUX0RQNTAxX1BOUF9DT05ORUNURUQpKQ0KPj4g
-KwkJCXJldHVybiBmYWxzZTsNCj4+ICsNCj4+ICsJCS8qIFJlYWQgRURJRCAqLw0KPj4gKwkJb2Zm
-c2V0ID0gQVNUX0RQNTAxX0VESURfREFUQTsNCj4+ICsJCWZvciAoaSA9IDA7IGkgPCAxMjg7IGkg
-Kz0gNCkgew0KPj4gKwkJCWRhdGEgPSBhc3RfbWluZHdtKGFzdCwgYm9vdF9hZGRyZXNzICsgb2Zm
-c2V0ICsgaSk7DQo+PiArCQkJcEVESURpZHggPSAodTMyICopKGVkaWRkYXRhICsgaSk7DQo+PiAr
-CQkJKnBFRElEaWR4ID0gZGF0YTsNCj4+ICsJCX0NCj4+ICsJfSBlbHNlIHsNCj4+ICsJCWlmICgh
-YXN0LT5kcDUwMV9md19idWYpDQo+PiArCQkJcmV0dXJuIGZhbHNlOw0KPj4gKw0KPj4gKwkJLyog
-ZHVtbXkgcmVhZCAqLw0KPj4gKwkJb2Zmc2V0ID0gMHgwMDAwOw0KPj4gKwkJZGF0YSA9IHJlYWRs
-KGFzdC0+ZHA1MDFfZndfYnVmICsgb2Zmc2V0KTsNCj4+ICsNCj4+ICsJCS8qIHZhbGlkYXRlIEZX
-IHZlcnNpb24gKi8NCj4+ICsJCW9mZnNldCA9IEFTVF9EUDUwMV9HQkxfVkVSU0lPTjsNCj4+ICsJ
-CWRhdGEgPSByZWFkbChhc3QtPmRwNTAxX2Z3X2J1ZiArIG9mZnNldCk7DQo+PiArCQlpZiAoKGRh
-dGEgJiBBU1RfRFA1MDFfRldfVkVSU0lPTl9NQVNLKSAhPSBBU1RfRFA1MDFfRldfVkVSU0lPTl8x
-KQ0KPj4gKwkJCXJldHVybiBmYWxzZTsNCj4+ICsNCj4+ICsJCS8qIHZhbGlkYXRlIFBuUCBNb25p
-dG9yICovDQo+PiArCQlvZmZzZXQgPSBBU1RfRFA1MDFfUE5QTU9OSVRPUjsNCj4+ICsJCWRhdGEg
-PSByZWFkbChhc3QtPmRwNTAxX2Z3X2J1ZiArIG9mZnNldCk7DQo+PiArCQlpZiAoIShkYXRhICYg
-QVNUX0RQNTAxX1BOUF9DT05ORUNURUQpKQ0KPj4gKwkJCXJldHVybiBmYWxzZTsNCj4+ICsNCj4+
-ICsJCS8qIFJlYWQgRURJRCAqLw0KPj4gKwkJb2Zmc2V0ID0gQVNUX0RQNTAxX0VESURfREFUQTsN
-Cj4+ICsJCWZvciAoaSA9IDA7IGkgPCAxMjg7IGkgKz0gNCkgew0KPj4gKwkJCWRhdGEgPSByZWFk
-bChhc3QtPmRwNTAxX2Z3X2J1ZiArIG9mZnNldCArIGkpOw0KPj4gKwkJCXBFRElEaWR4ID0gKHUz
-MiAqKShlZGlkZGF0YSArIGkpOw0KPj4gKwkJCSpwRURJRGlkeCA9IGRhdGE7DQo+PiArCQl9DQo+
-PiAgICAJfQ0KPj4NCj4+ICAgIAlyZXR1cm4gdHJ1ZTsNCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJz
-L2dwdS9kcm0vYXN0L2FzdF9kcnYuaCANCj4+IGIvZHJpdmVycy9ncHUvZHJtL2FzdC9hc3RfZHJ2
-LmggaW5kZXggZTgyYWI4NjI4Li45MTFmOWY0MTQgMTAwNjQ0DQo+PiAtLS0gYS9kcml2ZXJzL2dw
-dS9kcm0vYXN0L2FzdF9kcnYuaA0KPj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2FzdC9hc3RfZHJ2
-LmgNCj4+IEBAIC0xNTAsNiArMTUwLDcgQEAgc3RydWN0IGFzdF9wcml2YXRlIHsNCj4+DQo+PiAg
-ICAJdm9pZCBfX2lvbWVtICpyZWdzOw0KPj4gICAgCXZvaWQgX19pb21lbSAqaW9yZWdzOw0KPj4g
-Kwl2b2lkIF9faW9tZW0gKmRwNTAxX2Z3X2J1ZjsNCj4+DQo+PiAgICAJZW51bSBhc3RfY2hpcCBj
-aGlwOw0KPj4gICAgCWJvb2wgdmdhMl9jbG9uZTsNCj4+IEBAIC0zMjUsNiArMzI2LDE3IEBAIGlu
-dCBhc3RfbW9kZV9jb25maWdfaW5pdChzdHJ1Y3QgYXN0X3ByaXZhdGUgKmFzdCk7DQo+PiAgICAj
-ZGVmaW5lIEFTVF9NTV9BTElHTl9TSElGVCA0DQo+PiAgICAjZGVmaW5lIEFTVF9NTV9BTElHTl9N
-QVNLICgoMSA8PCBBU1RfTU1fQUxJR05fU0hJRlQpIC0gMSkNCj4+DQo+PiArI2RlZmluZSBBU1Rf
-RFA1MDFfRldfVkVSU0lPTl9NQVNLCUdFTk1BU0soNywgNCkNCj4+ICsjZGVmaW5lIEFTVF9EUDUw
-MV9GV19WRVJTSU9OXzEJCUJJVCg0KQ0KPj4gKyNkZWZpbmUgQVNUX0RQNTAxX1BOUF9DT05ORUNU
-RUQJCUJJVCgxKQ0KPj4gKw0KPj4gKyNkZWZpbmUgQVNUX0RQNTAxX0RFRkFVTFRfRENMSwk2NQ0K
-Pj4gKw0KPj4gKyNkZWZpbmUgQVNUX0RQNTAxX0dCTF9WRVJTSU9OCTB4ZjAwMA0KPj4gKyNkZWZp
-bmUgQVNUX0RQNTAxX1BOUE1PTklUT1IJMHhmMDEwDQo+PiArI2RlZmluZSBBU1RfRFA1MDFfTElO
-S1JBVEUJMHhmMDE0DQo+PiArI2RlZmluZSBBU1RfRFA1MDFfRURJRF9EQVRBCTB4ZjAyMA0KPj4g
-Kw0KPj4gICAgaW50IGFzdF9tbV9pbml0KHN0cnVjdCBhc3RfcHJpdmF0ZSAqYXN0KTsNCj4+DQo+
-PiAgICAvKiBhc3QgcG9zdCAqLw0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9hc3Qv
-YXN0X21haW4uYyANCj4+IGIvZHJpdmVycy9ncHUvZHJtL2FzdC9hc3RfbWFpbi5jIGluZGV4IDBh
-YzNjMjAzOS4uMzk3NmEyNTg3IDEwMDY0NA0KPj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FzdC9h
-c3RfbWFpbi5jDQo+PiArKysgYi9kcml2ZXJzL2dwdS9kcm0vYXN0L2FzdF9tYWluLmMNCj4+IEBA
-IC05OSw3ICs5OSw3IEBAIHN0YXRpYyB2b2lkIGFzdF9kZXRlY3RfY29uZmlnX21vZGUoc3RydWN0
-IGRybV9kZXZpY2UgKmRldiwgdTMyICpzY3VfcmV2KQ0KPj4gICAgCWlmICghKGpyZWdkMCAmIDB4
-ODApIHx8ICEoanJlZ2QxICYgMHgxMCkpIHsNCj4+ICAgIAkJLyogRG91YmxlIGNoZWNrIGl0J3Mg
-YWN0dWFsbHkgd29ya2luZyAqLw0KPj4gICAgCQlkYXRhID0gYXN0X3JlYWQzMihhc3QsIDB4ZjAw
-NCk7DQo+PiAtCQlpZiAoZGF0YSAhPSAweEZGRkZGRkZGKSB7DQo+PiArCQlpZiAoKGRhdGEgIT0g
-MHhGRkZGRkZGRikgJiYgKGRhdGEgIT0gMHgwMCkpIHsNCj4+ICAgIAkJCS8qIFAyQSB3b3Jrcywg
-Z3JhYiBzaWxpY29uIHJldmlzaW9uICovDQo+PiAgICAJCQlhc3QtPmNvbmZpZ19tb2RlID0gYXN0
-X3VzZV9wMmE7DQo+Pg0KPj4gQEAgLTQxMSw2ICs0MTEsNyBAQCBzdHJ1Y3QgYXN0X3ByaXZhdGUg
-KmFzdF9kZXZpY2VfY3JlYXRlKGNvbnN0IHN0cnVjdCBkcm1fZHJpdmVyICpkcnYsDQo+PiAgICAJ
-CXJldHVybiBhc3Q7DQo+PiAgICAJZGV2ID0gJmFzdC0+YmFzZTsNCj4+DQo+PiArCWRldi0+cGRl
-diA9IHBkZXY7DQo+PiAgICAJcGNpX3NldF9kcnZkYXRhKHBkZXYsIGRldik7DQo+Pg0KPj4gICAg
-CWFzdC0+cmVncyA9IHBjaV9pb21hcChwZGV2LCAxLCAwKTsgQEAgLTQ1MCw2ICs0NTEsMTQgQEAg
-c3RydWN0IA0KPj4gYXN0X3ByaXZhdGUgKmFzdF9kZXZpY2VfY3JlYXRlKGNvbnN0IHN0cnVjdA0K
-PiBkcm1fZHJpdmVyICpkcnYsDQo+PiAgICAJaWYgKHJldCkNCj4+ICAgIAkJcmV0dXJuIEVSUl9Q
-VFIocmV0KTsNCj4+DQo+PiArCS8qIG1hcCByZXNlcnZlZCBidWZmZXIgKi8NCj4+ICsJYXN0LT5k
-cDUwMV9md19idWYgPSBOVUxMOw0KPj4gKwlpZiAoZGV2LT52cmFtX21tLT52cmFtX3NpemUgPCBw
-Y2lfcmVzb3VyY2VfbGVuKGRldi0+cGRldiwgMCkpIHsNCj4+ICsJCWFzdC0+ZHA1MDFfZndfYnVm
-ID0gcGNpX2lvbWFwX3JhbmdlKGRldi0+cGRldiwgMCwgZGV2LT52cmFtX21tLT52cmFtX3NpemUs
-IDApOw0KPj4gKwkJaWYgKCFhc3QtPmRwNTAxX2Z3X2J1ZikNCj4+ICsJCQlkcm1faW5mbyhkZXYs
-ICJmYWlsZWQgdG8gbWFwIHJlc2VydmVkIGJ1ZmZlciFcbiIpOw0KPj4gKwl9DQo+PiArDQo+PiAg
-ICAJcmV0ID0gYXN0X21vZGVfY29uZmlnX2luaXQoYXN0KTsNCj4+ICAgIAlpZiAocmV0KQ0KPj4g
-ICAgCQlyZXR1cm4gRVJSX1BUUihyZXQpOw0KPj4gLS0NCj4+IDIuMTguNA0KPj4NCj4+IF9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+PiBkcmktZGV2ZWwg
-bWFpbGluZyBsaXN0DQo+PiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnDQo+PiBodHRw
-czovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbA0KPj4N
-Cj4gDQo+IC0tDQo+IFRob21hcyBaaW1tZXJtYW5uDQo+IEdyYXBoaWNzIERyaXZlciBEZXZlbG9w
-ZXINCj4gU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQo+IE1heGZlbGRzdHIu
-IDUsIDkwNDA5IE7DvHJuYmVyZywgR2VybWFueSAoSFJCIDM2ODA5LCBBRyBOw7xybmJlcmcpDQo+
-IEdlc2Now6RmdHNmw7xocmVyOiBGZWxpeCBJbWVuZMO2cmZmZXINCj4gDQo+IF9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+IGRyaS1kZXZlbCBtYWlsaW5n
-IGxpc3QNCj4gZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZw0KPiBodHRwczovL2xpc3Rz
-LmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbA0KPiANCg0KLS0NClRo
-b21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJl
-IFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCk1heGZlbGRzdHIuIDUsIDkwNDA5IE7DvHJuYmVyZywg
-R2VybWFueQ0KKEhSQiAzNjgwOSwgQUcgTsO8cm5iZXJnKQ0KR2VzY2jDpGZ0c2bDvGhyZXI6IEZl
-bGl4IEltZW5kw7ZyZmZlcg0KDQo=
+Compressed inode may suffer read performance issue due to it can not
+use extent cache, so I propose to add this unaligned extent support
+to improve it.
+
+Currently, it only works in readonly format f2fs image.
+
+Unaligned extent: in one compressed cluster, physical block number
+will be less than logical block number, so we add an extra physical
+block length in extent info in order to indicate such extent status.
+
+The idea is if one whole cluster blocks are contiguous physically,
+once its mapping info was readed at first time, we will cache an
+unaligned (or aligned) extent info entry in extent cache, it expects
+that the mapping info will be hitted when rereading cluster.
+
+Merge policy:
+- Aligned extents can be merged.
+- Aligned extent and unaligned extent can not be merged.
+
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+v3:
+- avoid CONFIG_F2FS_FS_COMPRESSION as much as possible
+- clean up codes
+ fs/f2fs/compress.c     | 24 ++++++++++++
+ fs/f2fs/data.c         | 28 +++++++++++---
+ fs/f2fs/extent_cache.c | 88 +++++++++++++++++++++++++++++++++++++-----
+ fs/f2fs/f2fs.h         | 42 +++++++++++++++++---
+ fs/f2fs/node.c         | 18 +++++++++
+ 5 files changed, 179 insertions(+), 21 deletions(-)
+
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 4aa166d3d9bf..296ff37d4b08 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1719,6 +1719,30 @@ void f2fs_put_page_dic(struct page *page)
+ 	f2fs_put_dic(dic);
+ }
+ 
++/*
++ * check whether cluster blocks are contiguous, and add extent cache entry
++ * only if cluster blocks are logically and physically contiguous.
++ */
++int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn)
++{
++	bool compressed = f2fs_data_blkaddr(dn) == COMPRESS_ADDR;
++	int i = compressed ? 1 : 0;
++	block_t first_blkaddr = data_blkaddr(dn->inode, dn->node_page,
++						dn->ofs_in_node + i);
++
++	for (i += 1; i < F2FS_I(dn->inode)->i_cluster_size; i++) {
++		block_t blkaddr = data_blkaddr(dn->inode, dn->node_page,
++						dn->ofs_in_node + i);
++
++		if (!__is_valid_data_blkaddr(blkaddr))
++			break;
++		if (first_blkaddr + i - 1 != blkaddr)
++			return 0;
++	}
++
++	return compressed ? i - 1 : i;
++}
++
+ const struct address_space_operations f2fs_compress_aops = {
+ 	.releasepage = f2fs_release_page,
+ 	.invalidatepage = f2fs_invalidate_page,
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index f7b96625e616..8cc964c54d51 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -2186,6 +2186,8 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+ 	sector_t last_block_in_file;
+ 	const unsigned blocksize = blks_to_bytes(inode, 1);
+ 	struct decompress_io_ctx *dic = NULL;
++	struct extent_info_unaligned eiu;
++	bool from_dnode = true;
+ 	int i;
+ 	int ret = 0;
+ 
+@@ -2216,6 +2218,12 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+ 	if (f2fs_cluster_is_empty(cc))
+ 		goto out;
+ 
++	if (f2fs_lookup_extent_cache_unaligned(inode, start_idx, &eiu))
++		from_dnode = false;
++
++	if (from_dnode)
++		goto skip_reading_dnode;
++
+ 	set_new_dnode(&dn, inode, NULL, NULL, 0);
+ 	ret = f2fs_get_dnode_of_data(&dn, start_idx, LOOKUP_NODE);
+ 	if (ret)
+@@ -2223,11 +2231,13 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+ 
+ 	f2fs_bug_on(sbi, dn.data_blkaddr != COMPRESS_ADDR);
+ 
++skip_reading_dnode:
+ 	for (i = 1; i < cc->cluster_size; i++) {
+ 		block_t blkaddr;
+ 
+-		blkaddr = data_blkaddr(dn.inode, dn.node_page,
+-						dn.ofs_in_node + i);
++		blkaddr = from_dnode ? data_blkaddr(dn.inode, dn.node_page,
++					dn.ofs_in_node + i) :
++					eiu.ei.blk + i;
+ 
+ 		if (!__is_valid_data_blkaddr(blkaddr))
+ 			break;
+@@ -2237,6 +2247,9 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+ 			goto out_put_dnode;
+ 		}
+ 		cc->nr_cpages++;
++
++		if (!from_dnode && i >= eiu.plen)
++			break;
+ 	}
+ 
+ 	/* nothing to decompress */
+@@ -2256,8 +2269,9 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+ 		block_t blkaddr;
+ 		struct bio_post_read_ctx *ctx;
+ 
+-		blkaddr = data_blkaddr(dn.inode, dn.node_page,
+-						dn.ofs_in_node + i + 1);
++		blkaddr = from_dnode ? data_blkaddr(dn.inode, dn.node_page,
++					dn.ofs_in_node + i + 1) :
++					eiu.ei.blk + i + 1;
+ 
+ 		f2fs_wait_on_block_writeback(inode, blkaddr);
+ 
+@@ -2302,13 +2316,15 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+ 		*last_block_in_bio = blkaddr;
+ 	}
+ 
+-	f2fs_put_dnode(&dn);
++	if (from_dnode)
++		f2fs_put_dnode(&dn);
+ 
+ 	*bio_ret = bio;
+ 	return 0;
+ 
+ out_put_dnode:
+-	f2fs_put_dnode(&dn);
++	if (from_dnode)
++		f2fs_put_dnode(&dn);
+ out:
+ 	for (i = 0; i < cc->cluster_size; i++) {
+ 		if (cc->rpages[i]) {
+diff --git a/fs/f2fs/extent_cache.c b/fs/f2fs/extent_cache.c
+index 3ebf976a682d..0ea37e64031f 100644
+--- a/fs/f2fs/extent_cache.c
++++ b/fs/f2fs/extent_cache.c
+@@ -235,7 +235,7 @@ static struct kmem_cache *extent_node_slab;
+ static struct extent_node *__attach_extent_node(struct f2fs_sb_info *sbi,
+ 				struct extent_tree *et, struct extent_info *ei,
+ 				struct rb_node *parent, struct rb_node **p,
+-				bool leftmost)
++				bool leftmost, bool unaligned)
+ {
+ 	struct extent_node *en;
+ 
+@@ -247,6 +247,9 @@ static struct extent_node *__attach_extent_node(struct f2fs_sb_info *sbi,
+ 	INIT_LIST_HEAD(&en->list);
+ 	en->et = et;
+ 
++	if (unaligned)
++		en->plen = ((struct extent_info_unaligned *)ei)->plen;
++
+ 	rb_link_node(&en->rb_node, parent, p);
+ 	rb_insert_color_cached(&en->rb_node, &et->root, leftmost);
+ 	atomic_inc(&et->node_cnt);
+@@ -320,7 +323,7 @@ static struct extent_node *__init_extent_tree(struct f2fs_sb_info *sbi,
+ 	struct rb_node **p = &et->root.rb_root.rb_node;
+ 	struct extent_node *en;
+ 
+-	en = __attach_extent_node(sbi, et, ei, NULL, p, true);
++	en = __attach_extent_node(sbi, et, ei, NULL, p, true, false);
+ 	if (!en)
+ 		return NULL;
+ 
+@@ -439,6 +442,17 @@ static bool f2fs_lookup_extent_tree(struct inode *inode, pgoff_t pgofs,
+ 		stat_inc_rbtree_node_hit(sbi);
+ 
+ 	*ei = en->ei;
++
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	if (is_inode_flag_set(inode, FI_COMPRESSED_FILE) &&
++				f2fs_sb_has_readonly(sbi)) {
++		struct extent_info_unaligned *eiu =
++				(struct extent_info_unaligned *)ei;
++
++		eiu->plen = en->plen;
++	}
++#endif
++
+ 	spin_lock(&sbi->extent_lock);
+ 	if (!list_empty(&en->list)) {
+ 		list_move_tail(&en->list, &sbi->extent_list);
+@@ -457,17 +471,18 @@ static bool f2fs_lookup_extent_tree(struct inode *inode, pgoff_t pgofs,
+ static struct extent_node *__try_merge_extent_node(struct f2fs_sb_info *sbi,
+ 				struct extent_tree *et, struct extent_info *ei,
+ 				struct extent_node *prev_ex,
+-				struct extent_node *next_ex)
++				struct extent_node *next_ex,
++				bool unaligned)
+ {
+ 	struct extent_node *en = NULL;
+ 
+-	if (prev_ex && __is_back_mergeable(ei, &prev_ex->ei)) {
++	if (prev_ex && __is_back_mergeable(ei, &prev_ex->ei, unaligned)) {
+ 		prev_ex->ei.len += ei->len;
+ 		ei = &prev_ex->ei;
+ 		en = prev_ex;
+ 	}
+ 
+-	if (next_ex && __is_front_mergeable(ei, &next_ex->ei)) {
++	if (next_ex && __is_front_mergeable(ei, &next_ex->ei, unaligned)) {
+ 		next_ex->ei.fofs = ei->fofs;
+ 		next_ex->ei.blk = ei->blk;
+ 		next_ex->ei.len += ei->len;
+@@ -495,7 +510,7 @@ static struct extent_node *__insert_extent_tree(struct f2fs_sb_info *sbi,
+ 				struct extent_tree *et, struct extent_info *ei,
+ 				struct rb_node **insert_p,
+ 				struct rb_node *insert_parent,
+-				bool leftmost)
++				bool leftmost, bool unaligned)
+ {
+ 	struct rb_node **p;
+ 	struct rb_node *parent = NULL;
+@@ -512,7 +527,7 @@ static struct extent_node *__insert_extent_tree(struct f2fs_sb_info *sbi,
+ 	p = f2fs_lookup_rb_tree_for_insert(sbi, &et->root, &parent,
+ 						ei->fofs, &leftmost);
+ do_insert:
+-	en = __attach_extent_node(sbi, et, ei, parent, p, leftmost);
++	en = __attach_extent_node(sbi, et, ei, parent, p, leftmost, unaligned);
+ 	if (!en)
+ 		return NULL;
+ 
+@@ -594,7 +609,7 @@ static void f2fs_update_extent_tree_range(struct inode *inode,
+ 						end - dei.fofs + dei.blk,
+ 						org_end - end);
+ 				en1 = __insert_extent_tree(sbi, et, &ei,
+-							NULL, NULL, true);
++						NULL, NULL, true, false);
+ 				next_en = en1;
+ 			} else {
+ 				en->ei.fofs = end;
+@@ -633,9 +648,10 @@ static void f2fs_update_extent_tree_range(struct inode *inode,
+ 	if (blkaddr) {
+ 
+ 		set_extent_info(&ei, fofs, blkaddr, len);
+-		if (!__try_merge_extent_node(sbi, et, &ei, prev_en, next_en))
++		if (!__try_merge_extent_node(sbi, et, &ei,
++					prev_en, next_en, false))
+ 			__insert_extent_tree(sbi, et, &ei,
+-					insert_p, insert_parent, leftmost);
++				insert_p, insert_parent, leftmost, false);
+ 
+ 		/* give up extent_cache, if split and small updates happen */
+ 		if (dei.len >= 1 &&
+@@ -661,6 +677,47 @@ static void f2fs_update_extent_tree_range(struct inode *inode,
+ 		f2fs_mark_inode_dirty_sync(inode, true);
+ }
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++void f2fs_update_extent_tree_range_unaligned(struct inode *inode,
++				pgoff_t fofs, block_t blkaddr, unsigned int llen,
++				unsigned int plen)
++{
++	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
++	struct extent_tree *et = F2FS_I(inode)->extent_tree;
++	struct extent_node *en = NULL;
++	struct extent_node *prev_en = NULL, *next_en = NULL;
++	struct extent_info_unaligned eiu;
++	struct rb_node **insert_p = NULL, *insert_parent = NULL;
++	bool leftmost = false;
++
++	trace_f2fs_update_extent_tree_range(inode, fofs, blkaddr, llen);
++
++	/* it is safe here to check FI_NO_EXTENT w/o et->lock in ro image */
++	if (is_inode_flag_set(inode, FI_NO_EXTENT))
++		return;
++
++	write_lock(&et->lock);
++
++	en = (struct extent_node *)f2fs_lookup_rb_tree_ret(&et->root,
++				(struct rb_entry *)et->cached_en, fofs,
++				(struct rb_entry **)&prev_en,
++				(struct rb_entry **)&next_en,
++				&insert_p, &insert_parent, false,
++				&leftmost);
++	f2fs_bug_on(sbi, en);
++
++	set_extent_info(&eiu.ei, fofs, blkaddr, llen);
++	eiu.plen = plen;
++
++	if (!__try_merge_extent_node(sbi, et, (struct extent_info *)&eiu,
++				prev_en, next_en, true))
++		__insert_extent_tree(sbi, et, (struct extent_info *)&eiu,
++				insert_p, insert_parent, leftmost, true);
++
++	write_unlock(&et->lock);
++}
++#endif
++
+ unsigned int f2fs_shrink_extent_tree(struct f2fs_sb_info *sbi, int nr_shrink)
+ {
+ 	struct extent_tree *et, *next;
+@@ -818,6 +875,17 @@ bool f2fs_lookup_extent_cache(struct inode *inode, pgoff_t pgofs,
+ 	return f2fs_lookup_extent_tree(inode, pgofs, ei);
+ }
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++bool f2fs_lookup_extent_cache_unaligned(struct inode *inode, pgoff_t pgofs,
++					struct extent_info_unaligned *eiu)
++{
++	if (!f2fs_may_extent_tree(inode))
++		return false;
++
++	return f2fs_lookup_extent_tree(inode, pgofs, (struct extent_info *)eiu);
++}
++#endif
++
+ void f2fs_update_extent_cache(struct dnode_of_data *dn)
+ {
+ 	pgoff_t fofs;
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 75f97c50302d..618397e6e6c2 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -582,11 +582,21 @@ struct extent_info {
+ 	u32 blk;			/* start block address of the extent */
+ };
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++struct extent_info_unaligned {
++	struct extent_info ei;		/* extent info */
++	unsigned int plen;		/* physical extent length of compressed blocks */
++};
++#endif
++
+ struct extent_node {
+ 	struct rb_node rb_node;		/* rb node located in rb-tree */
+ 	struct extent_info ei;		/* extent info */
+ 	struct list_head list;		/* node in global extent list of sbi */
+ 	struct extent_tree *et;		/* extent tree pointer */
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++	unsigned int plen;		/* physical extent length of compressed blocks */
++#endif
+ };
+ 
+ struct extent_tree {
+@@ -822,22 +832,32 @@ static inline bool __is_discard_front_mergeable(struct discard_info *cur,
+ }
+ 
+ static inline bool __is_extent_mergeable(struct extent_info *back,
+-						struct extent_info *front)
++				struct extent_info *front, bool unaligned)
+ {
++	if (unaligned) {
++		struct extent_info_unaligned *be =
++				(struct extent_info_unaligned *)back;
++		struct extent_info_unaligned *fe =
++				(struct extent_info_unaligned *)front;
++
++		if (be->ei.len != be->plen || fe->ei.len != fe->plen)
++			return false;
++	}
++
+ 	return (back->fofs + back->len == front->fofs &&
+ 			back->blk + back->len == front->blk);
+ }
+ 
+ static inline bool __is_back_mergeable(struct extent_info *cur,
+-						struct extent_info *back)
++				struct extent_info *back, bool unaligned)
+ {
+-	return __is_extent_mergeable(back, cur);
++	return __is_extent_mergeable(back, cur, unaligned);
+ }
+ 
+ static inline bool __is_front_mergeable(struct extent_info *cur,
+-						struct extent_info *front)
++				struct extent_info *front, bool unaligned)
+ {
+-	return __is_extent_mergeable(cur, front);
++	return __is_extent_mergeable(cur, front, unaligned);
+ }
+ 
+ extern void f2fs_mark_inode_dirty_sync(struct inode *inode, bool sync);
+@@ -4001,6 +4021,10 @@ unsigned int f2fs_destroy_extent_node(struct inode *inode);
+ void f2fs_destroy_extent_tree(struct inode *inode);
+ bool f2fs_lookup_extent_cache(struct inode *inode, pgoff_t pgofs,
+ 			struct extent_info *ei);
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++bool f2fs_lookup_extent_cache_unaligned(struct inode *inode, pgoff_t pgofs,
++					struct extent_info_unaligned *eiu);
++#endif
+ void f2fs_update_extent_cache(struct dnode_of_data *dn);
+ void f2fs_update_extent_cache_range(struct dnode_of_data *dn,
+ 			pgoff_t fofs, block_t blkaddr, unsigned int len);
+@@ -4078,6 +4102,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc);
+ void f2fs_decompress_end_io(struct decompress_io_ctx *dic, bool failed);
+ void f2fs_put_page_dic(struct page *page);
++int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn);
+ int f2fs_init_compress_ctx(struct compress_ctx *cc);
+ void f2fs_destroy_compress_ctx(struct compress_ctx *cc, bool reuse);
+ void f2fs_init_compress_info(struct f2fs_sb_info *sbi);
+@@ -4106,6 +4131,9 @@ void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino);
+ 		sbi->compr_written_block += blocks;			\
+ 		sbi->compr_saved_block += diff;				\
+ 	} while (0)
++void f2fs_update_extent_tree_range_unaligned(struct inode *inode,
++				pgoff_t fofs, block_t blkaddr, unsigned int llen,
++				unsigned int plen);
+ #else
+ static inline bool f2fs_is_compressed_page(struct page *page) { return false; }
+ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
+@@ -4132,6 +4160,7 @@ static inline void f2fs_put_page_dic(struct page *page)
+ {
+ 	WARN_ON_ONCE(1);
+ }
++static inline int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn) { return 0; }
+ static inline int f2fs_init_compress_inode(struct f2fs_sb_info *sbi) { return 0; }
+ static inline void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi) { }
+ static inline int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi) { return 0; }
+@@ -4147,6 +4176,9 @@ static inline bool f2fs_load_compressed_page(struct f2fs_sb_info *sbi,
+ static inline void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi,
+ 							nid_t ino) { }
+ #define inc_compr_inode_stat(inode)		do { } while (0)
++static inline void f2fs_update_extent_tree_range_unaligned(struct inode *inode,
++				pgoff_t fofs, block_t blkaddr, unsigned int llen,
++				unsigned int plen) { }
+ #endif
+ 
+ static inline void set_compress_context(struct inode *inode)
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index 5840b82ce311..baf09a2e6e1f 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -841,6 +841,24 @@ int f2fs_get_dnode_of_data(struct dnode_of_data *dn, pgoff_t index, int mode)
+ 	dn->ofs_in_node = offset[level];
+ 	dn->node_page = npage[level];
+ 	dn->data_blkaddr = f2fs_data_blkaddr(dn);
++
++	if (is_inode_flag_set(dn->inode, FI_COMPRESSED_FILE) &&
++					f2fs_sb_has_readonly(sbi)) {
++		int blknum = f2fs_cluster_blocks_are_contiguous(dn);
++
++		if (blknum) {
++			block_t blkaddr = f2fs_data_blkaddr(dn);
++
++			if (blkaddr == COMPRESS_ADDR)
++				blkaddr = data_blkaddr(dn->inode, dn->node_page,
++							dn->ofs_in_node + 1);
++
++			f2fs_update_extent_tree_range_unaligned(dn->inode,
++					index, blkaddr,
++					F2FS_I(dn->inode)->i_cluster_size,
++					blknum);
++		}
++	}
+ 	return 0;
+ 
+ release_pages:
+-- 
+2.22.1
+
