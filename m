@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81163DFF5E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E453DFF63
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237292AbhHDKWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 06:22:52 -0400
-Received: from outbound-smtp61.blacknight.com ([46.22.136.249]:33327 "EHLO
-        outbound-smtp61.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235522AbhHDKWv (ORCPT
+        id S237311AbhHDK0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 06:26:31 -0400
+Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:60327 "EHLO
+        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235383AbhHDK03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 06:22:51 -0400
+        Wed, 4 Aug 2021 06:26:29 -0400
 Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp61.blacknight.com (Postfix) with ESMTPS id 0E485FAA38
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 11:22:38 +0100 (IST)
-Received: (qmail 3488 invoked from network); 4 Aug 2021 10:22:37 -0000
+        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id 0E70ACAD34
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 11:26:16 +0100 (IST)
+Received: (qmail 16267 invoked from network); 4 Aug 2021 10:26:15 -0000
 Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 4 Aug 2021 10:22:37 -0000
-Date:   Wed, 4 Aug 2021 11:22:36 +0100
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 4 Aug 2021 10:26:15 -0000
+Date:   Wed, 4 Aug 2021 11:26:13 +0100
 From:   Mel Gorman <mgorman@techsingularity.net>
 To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -28,58 +28,64 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         Aubrey Li <aubrey.li@linux.intel.com>,
         yangyicong <yangyicong@huawei.com>
-Subject: Re: [PATCH 7/9] sched/fair: Enforce proportional scan limits when
- scanning for an idle core
-Message-ID: <20210804102236.GB6464@techsingularity.net>
+Subject: Re: [PATCH 8/9] sched/fair: select idle cpu from idle cpumask for
+ task wakeup
+Message-ID: <20210804102613.GC6464@techsingularity.net>
 References: <20210726102247.21437-1-mgorman@techsingularity.net>
- <20210726102247.21437-8-mgorman@techsingularity.net>
- <58167022b9074ed9951b09ab6ba1983e@hisilicon.com>
+ <20210726102247.21437-9-mgorman@techsingularity.net>
+ <9dde989df06b483790cc24dc7670a919@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <58167022b9074ed9951b09ab6ba1983e@hisilicon.com>
+In-Reply-To: <9dde989df06b483790cc24dc7670a919@hisilicon.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 10:52:01AM +0000, Song Bao Hua (Barry Song) wrote:
-> > @@ -6265,30 +6265,35 @@ static int select_idle_cpu(struct task_struct *p, struct
-> > sched_domain *sd, bool
-> >  		if (has_idle_core) {
-> >  			i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> >  			if ((unsigned int)i < nr_cpumask_bits)
-> > -				return i;
-> > +				break;
-> > 
-> > +			nr -= sched_smt_weight;
-> >  		} else {
-> > -			if (!--nr)
-> > -				return -1;
-> >  			idle_cpu = __select_idle_cpu(cpu, p);
-> >  			if ((unsigned int)idle_cpu < nr_cpumask_bits)
-> >  				break;
-> > +			nr--;
-> >  		}
-> > +
-> > +		if (nr < 0)
-> > +			break;
-> >  	}
-> > 
-> > -	if (has_idle_core)
-> > -		set_idle_cores(target, false);
-> > +	if ((unsigned int)idle_cpu < nr_cpumask_bits) {
-> > +		if (has_idle_core)
-> > +			set_idle_cores(target, false);
-> > 
-> 
-> For example, if we have 16 cpus(8 SMT2 cores). In case core7 is idle,
-> we only have scanned core0+core1(cpu0-cpu3) and if these two cores
-> are not idle, but here we set has_idle_cores to false while core7 is
-> idle. It seems incorrect.
+On Mon, Aug 02, 2021 at 10:41:13AM +0000, Song Bao Hua (Barry Song) wrote:
+> Hi Mel, Aubrey,
+> A similar thing Yicong and me has discussed is having a mask or a count for
+> idle cores. And then we can only scan idle cores in this mask in
+> select_idle_cpu().
 > 
 
-Yep, that block needs to be revisited.
+Either approach would require a lot of updates.
+
+> A obvious problem is that has_idle_cores is a bool, it can seriously lag
+> from the real status. I mean, after system enters the status without idle
+> cores, has_idle_cores could be still true.
+> 
+
+True.
+
+> Right now, we are setting has_idle_cores to true while cpu enters idle
+> and its smt sibling is also idle. But we are setting has_idle_cores to
+> false only after we scan all cores in a llc.
+> 
+> So we have thought for a while to provide an idle core mask. But never
+> really made a workable patch.
+> 
+> Mel's patch7/9 limits the number of cores which will be scanned in
+> select_idle_cpu(), it might somehow alleviate the problem we redundantly
+> scan all cores while we actually have no idle core even has_idle_cores
+> is true.
+> 
+
+I prototyped a patch that tracked the location of a known idle core and
+use it as a starting hint for a search. It's cleared if the core is
+selected for use. Unfortunately, it was not a universal win so was
+dropped for the moment but either way, improving the accurate of
+has_idle_cores without being too expensive would be niuce.
+
+> However, if we can get idle core mask, it could be also good to
+> select_idle_core()? Maybe after that, we don't have to enforce
+> proportional scan limits while scanning for an idle core?
+> 
+
+To remove the limits entirely, it would have to be very accurate and
+it's hard to see how that can be done without having a heavily updated
+shared cache line.
 
 -- 
 Mel Gorman
