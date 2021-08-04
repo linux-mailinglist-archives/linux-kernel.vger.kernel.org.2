@@ -2,64 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03EF83E00AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 13:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3643E00B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237916AbhHDL7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 07:59:46 -0400
-Received: from outbound-smtp33.blacknight.com ([81.17.249.66]:39662 "EHLO
-        outbound-smtp33.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235848AbhHDL7o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 07:59:44 -0400
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp33.blacknight.com (Postfix) with ESMTPS id 5A86EBAC23
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 12:59:30 +0100 (IST)
-Received: (qmail 30195 invoked from network); 4 Aug 2021 11:59:29 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPA; 4 Aug 2021 11:59:29 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Song Bao Hua <song.bao.hua@hisilicon.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 2/2] sched/fair: Avoid a second scan of target in select_idle_cpu
-Date:   Wed,  4 Aug 2021 12:58:57 +0100
-Message-Id: <20210804115857.6253-3-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210804115857.6253-1-mgorman@techsingularity.net>
-References: <20210804115857.6253-1-mgorman@techsingularity.net>
+        id S237954AbhHDMAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 08:00:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234765AbhHDMAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 08:00:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id F2A2661040;
+        Wed,  4 Aug 2021 12:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628078406;
+        bh=zMbEjsMMn8TNP0mvzqmnpzDUld8VD46UN1l2SI3Xflw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=WpL60fCJW8ilZDgCOtmMLvU6xqAlqhj1lnS6gz3aguUoZa0i7/Xja8M51gOtp6TrR
+         jF3D3lv4RrvB7jFgPNtyj4sWg5irTp2toiuAt7hrfUSWFazrdxUu0r2x7rdccdAqJs
+         uJCpcdRYDcZ4xWO4ImDiRVwTpt5g3w4CYE2KV1ZcGlvnC8vDUnTUcLQSyRyV415Afs
+         7K36Eo7L64lsiUW7nv/1iV56PFz8Iatv6Dz+SN6p7kp4PNnGlosETNDjgr87TxTfGl
+         5w8397x04Cp+MxRXqjCb6oIQ1BVX6mp1Cjg+lSxG4gJjm18g4DQmYoDMVCe4dNy+WS
+         zkzSIacJji2vA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id ED14460A48;
+        Wed,  4 Aug 2021 12:00:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4] pktgen: Remove redundant clone_skb override
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162807840596.323.9958057340127820476.git-patchwork-notify@kernel.org>
+Date:   Wed, 04 Aug 2021 12:00:05 +0000
+References: <20210803162739.2363542-1-richardsonnick@google.com>
+In-Reply-To: <20210803162739.2363542-1-richardsonnick@google.com>
+To:     Nicholas Richardson <richardsonnick@google.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, nrrichar@ncsu.edu,
+        arunkaly@google.com, gustavoars@kernel.org, dev@ooseel.net,
+        yebin10@huawei.com, zhudi21@huawei.com, yejune.deng@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When select_idle_cpu starts scanning for an idle CPU, it starts with
-a target CPU that has already been checked by select_idle_sibling.
-This patch starts with the next CPU instead.
+Hello:
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 8ad7666f387c..f412b4504378 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6249,7 +6249,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
- 		time = cpu_clock(this);
- 	}
- 
--	for_each_cpu_wrap(cpu, cpus, target) {
-+	for_each_cpu_wrap(cpu, cpus, target + 1) {
- 		if (has_idle_core) {
- 			i = select_idle_core(p, cpu, cpus, &idle_cpu);
- 			if ((unsigned int)i < nr_cpumask_bits)
--- 
-2.31.1
+On Tue,  3 Aug 2021 16:27:35 +0000 you wrote:
+> From: Nick Richardson <richardsonnick@google.com>
+> 
+> When the netif_receive xmit_mode is set, a line is supposed to set
+> clone_skb to a default 0 value. This line is made redundant due to a
+> preceding line that checks if clone_skb is more than zero and returns
+> -ENOTSUPP.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v4] pktgen: Remove redundant clone_skb override
+    https://git.kernel.org/netdev/net-next/c/c2eecaa193ff
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
