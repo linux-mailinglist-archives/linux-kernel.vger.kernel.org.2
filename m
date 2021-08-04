@@ -2,98 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF5C3E004B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 13:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AAE3E004D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 13:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237766AbhHDLfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 07:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43190 "EHLO
+        id S237761AbhHDLfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 07:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237719AbhHDLfh (ORCPT
+        with ESMTP id S237726AbhHDLfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 07:35:37 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBCBC06179A
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 04:35:25 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id a1so807603vsd.12
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 04:35:25 -0700 (PDT)
+        Wed, 4 Aug 2021 07:35:44 -0400
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF61C0617A4
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 04:35:30 -0700 (PDT)
+Received: by mail-ua1-x92b.google.com with SMTP id 91so716361uas.10
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 04:35:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=InP9peXlbtO4mCujwrny7kM0O4CUejd3WqIqrBu9ksc=;
-        b=o68yKhc9ieL+VmBlW63oQ8KmiqHu0FYv9FpbS6zYFsgRfcJQHcACeSJUOl4VAq9YOt
-         YlSDDhs1zO5s9IPU1Fu9n5SZyw1yKJxmGljdQJIV+CJNfy6IcWx+azo2mN/rgB/B8CFI
-         TpJufHSABZZjmLkERZAMy9Va8tjyxbbXpbzDibecxNtw8tmj5QCiNADDpGr1pXxJU0P8
-         2jSNLnPqvadEU9Bk1GJjk8sIZbxiozy9Ic9E4O3um6zvJ2d12wod0bj/Pw/8w2k2HcUn
-         TJf1lVXF3s9gFF8CNH/Uc7uPq5FWPto4cKMvAFpL5M1res+bquhtTUp98b/exyb3ctH+
-         6Cog==
+        bh=K+XPIBdEmBiE3IWUYxG9LKoaZ2lDQ33Dr5Yh21o59y8=;
+        b=ji72+81tL3oN9fkldOo7UUKwYqThUIAp8yuurX3vzylYFFpYopB5IZQgF2GArGEpgd
+         fXlPEv9zrH+KvqSWd+zY1vj5CtZ/PtJgl8Gv5AIETYBBs8uT9HroRFWNpHwhv/GvjKF0
+         ii8UxAzbj/4gdOH//ZFPxq5xEY55O+Cvusj1FiACbAlgCMBQJs37R8ZQ7COXgwjtefuf
+         YZMembJuAN4CJxg2eRLLNOuYxZeylTrngIKus7Nnridjxkzd2NP+Beoq3wzgp8POqEw4
+         o3HZN7YiUyfmMejpJJ82nezWm+YCJZpHIDtNXJH4Ke8ilF/+JdVhloXUuNC+pMr5ixg+
+         71Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=InP9peXlbtO4mCujwrny7kM0O4CUejd3WqIqrBu9ksc=;
-        b=UvSujMSMtj4NsOQXnBDc3KKQULW6XeIM7Hyo77RT/cjvmDTTGIFVZ811mmEvmEc2qT
-         GJmiItrkNADER8p6XgwGCocaks/cTEi0LX0ZtKaUbHQNTWvCMpjzk6xM1ITEb2BaD+yW
-         V6iWY24wWtWKF/4O0Fbcqcokv98x/c2ki7uTPvCQ/DGiR9AC0g53Kf3wC9ovn4zo0RRi
-         pTEIzF9wmRt+ZPbc5EAUZ6iVcFTrqws5ByIcCDCHfMp5Nmg5zrehzLg/L+GwEcjq2LmY
-         DJBSDYZ7fLcWiyaVQR0RNr9qgkFhvmmUjm33v91G2FPdQsCwVbd8eOgbIkGMMtnwHwiL
-         NDUg==
-X-Gm-Message-State: AOAM5302W5E2a1x0OQ4f+taR2EywF6Un9CQ47YVofkLP3M/XPJNbId4j
-        IfY28hOmM3eMF/FswEtpOnzVuSw39CGXburcynH6RA==
-X-Google-Smtp-Source: ABdhPJwjxMMu79egWeArYZVYGe8Sfh77udOSKtpAPVikzuZZeFQt/iS4OaDskliFjW1aRgdUNHIkNA27PrDj9G34X/E=
-X-Received: by 2002:a67:7c11:: with SMTP id x17mr5354731vsc.55.1628076924623;
- Wed, 04 Aug 2021 04:35:24 -0700 (PDT)
+        bh=K+XPIBdEmBiE3IWUYxG9LKoaZ2lDQ33Dr5Yh21o59y8=;
+        b=dCAYAYHqdyHanYpBIW5tMaT/Ntewua41vIv+Vh1yivy3dEs/OB0lTRM0t4Tx1xiZLQ
+         w67KD8cqJh6iAKTI09abpYjuKfOlhtT7ojb9gKcj4meKA513l4eCUJResyDS4UEj6/fL
+         AM358JXNQ4qRZDaf4ZFW18xV/Zzr8jyssf9AcRiDFYz6qaWcnTRfjU+5279pujlkXnH1
+         FKFVQQmUOReE6PF7SchlPsqTWQ+S0mHiZw6/yy/sIUB4ThQZonbasNN7/EBPxJ+Dgsd2
+         SpCgG4u8iU4H8Xxi9nV8HC8JxDp2GZHYSZrsG5OKayiCRjbGEEUOUgxB4jxz/ACPZn8U
+         7fAQ==
+X-Gm-Message-State: AOAM531SXCElV63yifCFgMg3u31eRfUm+3FsUAElmvzX8CB93LaMCr40
+        5rdsvKlWuK+wuMXPEU2XThQW0ThxeHQo5iHS02QYtA==
+X-Google-Smtp-Source: ABdhPJwxHFU3OlHmpSdL0NsTNoSoJrlQpBg8cFrTZ79lrYAsD1hih94K7o8DEMExOnWFiAC79uyc3X/AFM4kjRbEYUI=
+X-Received: by 2002:a9f:25a7:: with SMTP id 36mr9392519uaf.129.1628076929325;
+ Wed, 04 Aug 2021 04:35:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210702134229.357717-1-ulf.hansson@linaro.org>
-In-Reply-To: <20210702134229.357717-1-ulf.hansson@linaro.org>
+References: <1626435974-14462-1-git-send-email-sbhanu@codeaurora.org> <d95ea0583c39b8e73f391502adb39b09@codeaurora.org>
+In-Reply-To: <d95ea0583c39b8e73f391502adb39b09@codeaurora.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 4 Aug 2021 13:34:47 +0200
-Message-ID: <CAPDyKFo78aJgcajxL6fcPb7xB16R_S6VyuwEp7tG84+CPSkKTw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] mmc: core: Avoid hogging the CPU while polling for busy
-To:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 4 Aug 2021 13:34:52 +0200
+Message-ID: <CAPDyKFp0O-N79QzHtoaC0+yWvYbTy1mGCjn7wivLvFvJ7_oNiA@mail.gmail.com>
+Subject: Re: [PATCH V4] mmc: sdhci-msm: Update the software timeout value for sdhc
+To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>
 Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Christian Lohle <CLoehle@hyperstone.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Sahitya Tummala <stummala@codeaurora.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Ram Prakash Gupta <rampraka@codeaurora.org>,
+        Sayali Lokhande <sayalil@codeaurora.org>,
+        Sarthak Garg <sartgarg@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>, cang@codeaurora.org,
+        Pradeep P V K <pragalla@codeaurora.org>,
+        nitirawa@codeaurora.org, linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Jul 2021 at 15:42, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> Step by step, code that have been dealing sending CMD13 to poll the card for
-> busy, have been moved to use the common mmc_poll_for_busy() loop. This helps to
-> avoid hogging the CPU, for example, as it inserts a small delay in between each
-> polling attempt. Additionally, it avoids open coding.
->
-> This series takes the next and final step, by moving the mmc block device layer
-> from its own busy polling loop, into using the common code.
->
-> Please test and review!
->
-> Kind regards
-> Uffe
->
-> Ulf Hansson (3):
->   mmc: core: Avoid hogging the CPU while polling for busy in the I/O err
->     path
->   mmc: core: Avoid hogging the CPU while polling for busy for mmc ioctls
->   mmc: core: Avoid hogging the CPU while polling for busy after I/O
->     writes
->
->  drivers/mmc/core/block.c   | 74 +++++++++++++++++---------------------
->  drivers/mmc/core/mmc_ops.c |  5 ++-
->  drivers/mmc/core/mmc_ops.h |  1 +
->  3 files changed, 37 insertions(+), 43 deletions(-)
->
++ Stephen
 
-This series has been applied for next. If you encounter any
-regressions (performance related as well), please report them!
+On Mon, 2 Aug 2021 at 12:41, <sbhanu@codeaurora.org> wrote:
+>
+> Gentle Reminder
+>
+> Thanks,
+> Sajida
+>
+> On 2021-07-16 17:16, Shaik Sajida Bhanu wrote:
+> > Whenever SDHC run at clock rate 50MHZ or below, the hardware data
+> > timeout value will be 21.47secs, which is approx. 22secs and we have
+> > a current software timeout value as 10secs. We have to set software
+> > timeout value more than the hardware data timeout value to avioid
+> > seeing
+> > the below register dumps.
+> >
+> > [  332.953670] mmc2: Timeout waiting for hardware interrupt.
+> > [  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP
+> > ===========
+> > [  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:
+> > 0x00007202
+> > [  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:
+> > 0x00000001
+> > [  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode:
+> > 0x00000027
+> > [  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl:
+> > 0x0000001f
+> > [  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:
+> > 0x00000000
+> > [  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:
+> > 0x00000007
+> > [  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat:
+> > 0x00000000
+> > [  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab:
+> > 0x03ff100b
+> > [  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int:
+> > 0x00000000
+> > [  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:
+> > 0x0000808f
+> > [  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr:
+> > 0x00000000
+> > [  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:
+> > 0x00000000
+> > [  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:
+> > 0x00000000
+> > [  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
+> > [  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
+> > 0x0000000ffffff218
+> > [  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
+> > -----------
+> > [  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
+> > 0x6000642c | DLL cfg2: 0x0020a000
+> > [  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
+> > 0x00000000 | DDR cfg: 0x80040873
+> > [  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
+> > 0xf88218a8 Vndr func3: 0x02626040
+> > [  333.102371] mmc2: sdhci:
+> > ============================================
+> >
+> > So, set software timeout value more than hardware timeout value.
+> >
+> > Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+> > Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
+Applied for fixes and by adding a stable tag, thanks!
 
 Kind regards
 Uffe
+
+
+> > ---
+> >
+> > Changes since V3:
+> >       - Addressed minor comments from Adrain Hunter and retained his
+> >         Acked-by Signed-off.
+> >
+> > Changes since V2:
+> >       - Updated 22 with 22LL to avoid compiler warning as
+> >         suggested by Adrian Hunter.
+> >       - Added a check to update software data timeout value if its value
+> >         is less than the calculated hardware data timeout value as suggested
+> >         by Veerabhadrarao Badiganti.
+> > Changes since V1:
+> >       - Moved software data timeout update part to qcom specific file
+> >         as suggested by Veerabhadrarao Badiganti.
+> > ---
+> >  drivers/mmc/host/sdhci-msm.c | 18 ++++++++++++++++++
+> >  1 file changed, 18 insertions(+)
+> >
+> > diff --git a/drivers/mmc/host/sdhci-msm.c
+> > b/drivers/mmc/host/sdhci-msm.c
+> > index e44b7a6..290a14c 100644
+> > --- a/drivers/mmc/host/sdhci-msm.c
+> > +++ b/drivers/mmc/host/sdhci-msm.c
+> > @@ -2089,6 +2089,23 @@ static void sdhci_msm_cqe_disable(struct
+> > mmc_host *mmc, bool recovery)
+> >       sdhci_cqe_disable(mmc, recovery);
+> >  }
+> >
+> > +static void sdhci_msm_set_timeout(struct sdhci_host *host, struct
+> > mmc_command *cmd)
+> > +{
+> > +     u32 count, start = 15;
+> > +
+> > +     __sdhci_set_timeout(host, cmd);
+> > +     count = sdhci_readb(host, SDHCI_TIMEOUT_CONTROL);
+> > +     /*
+> > +      * Update software timeout value if its value is less than hardware
+> > data
+> > +      * timeout value. Qcom SoC hardware data timeout value was calculated
+> > +      * using 4 * MCLK * 2^(count + 13). where MCLK = 1 / host->clock.
+> > +      */
+> > +     if (cmd && cmd->data && host->clock > 400000 &&
+> > +         host->clock <= 50000000 &&
+> > +         ((1 << (count + start)) > (10 * host->clock)))
+> > +             host->data_timeout = 22LL * NSEC_PER_SEC;
+> > +}
+> > +
+> >  static const struct cqhci_host_ops sdhci_msm_cqhci_ops = {
+> >       .enable         = sdhci_msm_cqe_enable,
+> >       .disable        = sdhci_msm_cqe_disable,
+> > @@ -2438,6 +2455,7 @@ static const struct sdhci_ops sdhci_msm_ops = {
+> >       .irq    = sdhci_msm_cqe_irq,
+> >       .dump_vendor_regs = sdhci_msm_dump_vendor_regs,
+> >       .set_power = sdhci_set_power_noreg,
+> > +     .set_timeout = sdhci_msm_set_timeout,
+> >  };
+> >
+> >  static const struct sdhci_pltfm_data sdhci_msm_pdata = {
