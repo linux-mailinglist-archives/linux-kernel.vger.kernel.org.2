@@ -2,75 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8EF33E0786
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B01D83E0787
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238944AbhHDSY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S240204AbhHDSY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 14:24:29 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:58035 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235223AbhHDSY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Aug 2021 14:24:26 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:33313 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236916AbhHDSY0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 14:24:26 -0400
-Received: by mail-oi1-f174.google.com with SMTP id 26so3960572oiy.0;
-        Wed, 04 Aug 2021 11:24:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EDTQBFnCXodZBPTlZJxMnSffHlZHqHvoychgteMDXpU=;
-        b=RzfKkK4LVQrYwasaZiFBdTi1EUvGppDGaYW71XsD3TxW7OxEXPGRfyohHjgGZpijNI
-         6IrsW2CsSlo9VjtaJptBdGyWeJC6D+GomWb2tdTDrNGdW2u/e+YeUz19/EjfF4o6mIjU
-         5J4msTnj5xKf7VoiAw2V6S1cDLV3lxgQ9hrkPLPyI5Gl8WU2qjqsaOWnC4pXlu9k44cX
-         PBaexWvhdCyDUZIUVGfeea8YQw9bGQ5VRaVAKwqMSCME/Qe8ZBn+OL0NeEtYRiOoFO1O
-         ra+8iJa/JXPHi3qJld5gEh7h2x6s602zISNicrTR2/Taa9mrOUUa4XBZIAOy2foxarWU
-         Ye7Q==
-X-Gm-Message-State: AOAM532aj1GZeRYy8KTEcLNp1uilJwvQgCtkQlXdtwUZVEhPLzg4FKtA
-        Fr6SiP+m7FpvNTTGCj9KJQhPzHnc84/moaDBC0A=
-X-Google-Smtp-Source: ABdhPJw/pYJXlsNu/jSaFTf0PXAfDAnnBK724/IctR7NyKbUxxCPQvnxIswFxGL1KwUTSaDl9qLNiudssg8cBpc4mjI=
-X-Received: by 2002:a05:6808:198c:: with SMTP id bj12mr587895oib.71.1628101452040;
- Wed, 04 Aug 2021 11:24:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210804104407.5600-1-alexandre.belloni@bootlin.com>
-In-Reply-To: <20210804104407.5600-1-alexandre.belloni@bootlin.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 4 Aug 2021 20:24:01 +0200
-Message-ID: <CAJZ5v0gtDP1NXMfpfXzDUWAhV_2GcN3DtRWJvdhv9eZprpnQ2A@mail.gmail.com>
-Subject: Re: [PATCH] PM / sleep: check RTC features instead of ops in suspend_test
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Gg0WH6QzDz9sWW;
+        Wed,  4 Aug 2021 20:24:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 0L_DWaTW1BYS; Wed,  4 Aug 2021 20:24:11 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gg0WH5NCTz9sWL;
+        Wed,  4 Aug 2021 20:24:11 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9108D8B7AE;
+        Wed,  4 Aug 2021 20:24:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id HDyRtP5JMZTt; Wed,  4 Aug 2021 20:24:11 +0200 (CEST)
+Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 52B188B7A1;
+        Wed,  4 Aug 2021 20:24:11 +0200 (CEST)
+Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 0620766190; Wed,  4 Aug 2021 18:24:10 +0000 (UTC)
+Message-Id: <75287841cbb8740edd44880fe60be66d489160d9.1628097995.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/smp: Fix OOPS in topology_init()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed,  4 Aug 2021 18:24:10 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 12:44 PM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
->
-> Test RTC_FEATURE_ALARM instead of relying on ops->set_alarm to know whether
-> alarms are available.
->
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> ---
->  kernel/power/suspend_test.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/power/suspend_test.c b/kernel/power/suspend_test.c
-> index e1ed58adb69e..d20526c5be15 100644
-> --- a/kernel/power/suspend_test.c
-> +++ b/kernel/power/suspend_test.c
-> @@ -129,7 +129,7 @@ static int __init has_wakealarm(struct device *dev, const void *data)
->  {
->         struct rtc_device *candidate = to_rtc_device(dev);
->
-> -       if (!candidate->ops->set_alarm)
-> +       if (!test_bit(RTC_FEATURE_ALARM, candidate->features))
->                 return 0;
->         if (!device_may_wakeup(candidate->dev.parent))
->                 return 0;
-> --
+Running an SMP kernel on an UP platform not prepared for it,
+I encountered the following OOPS:
 
-Applied as 5.15 material, thanks!
+	BUG: Kernel NULL pointer dereference on read at 0x00000034
+	Faulting instruction address: 0xc0a04110
+	Oops: Kernel access of bad area, sig: 11 [#1]
+	BE PAGE_SIZE=4K SMP NR_CPUS=2 CMPCPRO
+	Modules linked in:
+	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-pmac-00001-g230fedfaad21 #5234
+	NIP:  c0a04110 LR: c0a040d8 CTR: c0a04084
+	REGS: e100dda0 TRAP: 0300   Not tainted  (5.13.0-pmac-00001-g230fedfaad21)
+	MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 84000284  XER: 00000000
+	DAR: 00000034 DSISR: 20000000
+	GPR00: c0006bd4 e100de60 c1033320 00000000 00000000 c0942274 00000000 00000000
+	GPR08: 00000000 00000000 00000001 00000063 00000007 00000000 c0006f30 00000000
+	GPR16: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000005
+	GPR24: c0c67d74 c0c67f1c c0c60000 c0c67d70 c0c0c558 1efdf000 c0c00020 00000000
+	NIP [c0a04110] topology_init+0x8c/0x138
+	LR [c0a040d8] topology_init+0x54/0x138
+	Call Trace:
+	[e100de60] [80808080] 0x80808080 (unreliable)
+	[e100de90] [c0006bd4] do_one_initcall+0x48/0x1bc
+	[e100def0] [c0a0150c] kernel_init_freeable+0x1c8/0x278
+	[e100df20] [c0006f44] kernel_init+0x14/0x10c
+	[e100df30] [c00190fc] ret_from_kernel_thread+0x14/0x1c
+	Instruction dump:
+	7c692e70 7d290194 7c035040 7c7f1b78 5529103a 546706fe 5468103a 39400001
+	7c641b78 40800054 80c690b4 7fb9402e <81060034> 7fbeea14 2c080000 7fa3eb78
+	---[ end trace b246ffbc6bbbb6fb ]---
+
+Fix it by checking smp_ops before using it, as already done in
+several other places in the arch/powerpc/kernel/smp.c
+
+Fixes: 39f87561454d ("powerpc/smp: Move ppc_md.cpu_die() to smp_ops.cpu_offline_self()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/kernel/sysfs.c b/arch/powerpc/kernel/sysfs.c
+index 5ff0e55d0db1..defecb3b1b15 100644
+--- a/arch/powerpc/kernel/sysfs.c
++++ b/arch/powerpc/kernel/sysfs.c
+@@ -1167,7 +1167,7 @@ static int __init topology_init(void)
+ 		 * CPU.  For instance, the boot cpu might never be valid
+ 		 * for hotplugging.
+ 		 */
+-		if (smp_ops->cpu_offline_self)
++		if (smp_ops && smp_ops->cpu_offline_self)
+ 			c->hotpluggable = 1;
+ #endif
+ 
+-- 
+2.25.0
+
