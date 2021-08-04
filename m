@@ -2,100 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A74F3E09FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395B93E0A05
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhHDV25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38218 "EHLO
+        id S231716AbhHDVbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhHDV24 (ORCPT
+        with ESMTP id S230418AbhHDVbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:28:56 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A409C061798
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:28:43 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id j3so4523553plx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:28:43 -0700 (PDT)
+        Wed, 4 Aug 2021 17:31:01 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416DDC061799
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:30:48 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id bg4so1840000vsb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:30:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YwkwRJ9mLbXh7zqk7lDDyX/7/SuI/tJpL52Sp9LmiBc=;
-        b=OE/AvtRMkBeyoJUtymm5FvWO/YBLRc0dy9KBzpwRW/ToEUPpaWRmMC/JvfVXySz4+b
-         rywpJFZqj1Um7P1D3RLIp6VBJp6QKPoETT80bBQyKdCGtdWj2HwxF36cxC7GBBPzNvgP
-         ehZHkhCKoiVj9o0YHWD3PK8sMo8Uh7Fqr8kmVz4FKdK3n6/pMk6qmdXWjdKuTb3iD39u
-         RBTAgcWCfQpNPILQjyeMYAiaBZUDO0mnKg4sRctkx5hk68aL2guyJ0GTlMkmKu3yLYGi
-         nvWxG11kdhoIWEwlz664vRRDWHXvX4S/ZJfPdivV589vP3whFMYgwH/JCwHwZ4ufyaPH
-         /yAQ==
+        bh=dxaJFL8Y5c22Jta0cMEZC2iEw41WS8AsvJV/yCHApHU=;
+        b=aFm4foLY/Ah5O7HrLETjBorHA/Cbd4vqMKInq5ZltFuYyRmeKeRRProzZ+QYj1F0ki
+         L2nCrSrSWq1ivhi/Sz+Tvs0z70lHYq8V5kPuzV4lb/KmyuYPEesHqj9zGjfXp81gNjwk
+         Hc8Y8XbiQQygnK8nDxfxY4Ea+ILEnS2D8ZLh6V01K3pd1mGl3frQ7WWWlHFzRfyNTfGU
+         j9IzlCghKlDvyGKZMPPu+sM+kackw0OGiBzo3/kNfT8KUCGiNk/ALNyTSEBJ8sZHhQ6i
+         t2uCyKv4JHyjy++JVm1Phmm+hJCtaJj8F1RV4pEnOFs9kYHFlXCAi4Rzj/26hZfjQ9OI
+         vPxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YwkwRJ9mLbXh7zqk7lDDyX/7/SuI/tJpL52Sp9LmiBc=;
-        b=Gu7BbzjjUta649LONMXJwU6vdQ747fXVNXRz/CyQ9kC798Hazy7Dsb0IBjUdZQ13B3
-         8+Dxs1pET5rqvXo23TfNOmm/YeVZfBQgIHY2JU0g2h3SEwjfyL9eefY/XwQW8BYep/b8
-         LPIDhaiwgIUzBtZki0slvgHFWnEYobGoadgyHA2URhzHYsIM3eqlnwDWDVfGFVQyadfF
-         PDed35kAweQ1zdXyGwBZoY8moP6+ltviQqY+7QUqrePHdcmgCWG7iYGWPyOGSknA3GCv
-         bb29QY5f0wsJzJiE5/ULM1+Mz12wLeuRfeUNjunHYmBBBOoRW3ILuKcuSkr4L57R5aKl
-         UyRw==
-X-Gm-Message-State: AOAM532gaK8iymvpad2XvQrKP+c4E8HCs3hzfPc0cRrwVahE3ygNEwBH
-        kLBNVHZtixCS64DkFC5+CPZg0fpxqaIrje2hvPiDKg==
-X-Google-Smtp-Source: ABdhPJzFVq7U9xJpmnszWMfMg7W/Q7UwjVYxw+m5FvMfbR7Rr8H+p1C6DFfux6NGIeUPdKskM9JDCoFFLzrXds0FDEs=
-X-Received: by 2002:a17:90b:11cd:: with SMTP id gv13mr2974447pjb.149.1628112523029;
- Wed, 04 Aug 2021 14:28:43 -0700 (PDT)
+        bh=dxaJFL8Y5c22Jta0cMEZC2iEw41WS8AsvJV/yCHApHU=;
+        b=FSq6TY98B01H0li0oxir9WIOAhWdDq/XE0Bp44ZP5zqmmaFP1MMFDdepk4vxxNJc9y
+         wvI7hN3w6/ZGjsOYp2kfrewiBLgtVmb0huI5vsRQvulF0NwvBiwathNo1v5rARLG3Z8G
+         iBixQMIJfeqqWKXWJZNbLZeYdva8XKUdzOAa1wSGo4vF4cjFguQmZ/FK5kq8Mg8MhpY4
+         HmNHCkGruU9biZCQfvRUXrq0SsLMg2074/E4700EIobAMWVY3ZinaQvetedQ0eI/6w0N
+         eCMAc4ILXaNqp9F81vu5ABHh6r+XZjvmOm7X+aKiq+AZGhDGc7/ypx7uP51vHImKH1JH
+         r+Cg==
+X-Gm-Message-State: AOAM5304p62PMrNyX3hvscnUejXJYWZLKvFT3KVev2fYUDSo5iYIQDih
+        /POATDFgyzUDQvEHQ4wX2Fga6HjUXD+FPmYefS9U1w==
+X-Google-Smtp-Source: ABdhPJxs3KtlDburhMJ7hb4H+QMZ+qFnQt7AfD5vKDnUEhepBfw+rufW06PMmUaJ+YMjNVp0Vvi4JO3VVZ/yl7ndwcc=
+X-Received: by 2002:a67:de06:: with SMTP id q6mr2048185vsk.57.1628112646443;
+ Wed, 04 Aug 2021 14:30:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQrqhYEL64CSLRTy@kroah.com> <CAPcyv4iEEDCz5719d0vNi=zi=6oN5vctcVfY5P=WQ9j_Zpz6eA@mail.gmail.com>
- <YQsBfAVPomaC97Rm@casper.infradead.org>
-In-Reply-To: <YQsBfAVPomaC97Rm@casper.infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 4 Aug 2021 14:28:32 -0700
-Message-ID: <CAPcyv4gSsL5hk=CSk=9duqCN3VDS_T2LaYRL+_zK9VOkO8NB+A@mail.gmail.com>
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-13-semen.protsenko@linaro.org> <15871f8ced3c757fad1ab3b6e62c4e64@misterjones.org>
+ <CAPLW+4=v4bDcuxGVqs06mobGj34At4cD+vg48b4dPujarS07Tg@mail.gmail.com> <bf21badb-804f-45f0-c02b-80ff57ab9931@canonical.com>
+In-Reply-To: <bf21badb-804f-45f0-c02b-80ff57ab9931@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Thu, 5 Aug 2021 00:30:34 +0300
+Message-ID: <CAPLW+4nY=hozOR+B_0sPZODrk9PXaXg+NB-9pVhDbAjEy7yjhg@mail.gmail.com>
+Subject: Re: [PATCH 12/12] arm64: dts: exynos: Add Exynos850 SoC support
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 2:07 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Wed, 4 Aug 2021 at 21:36, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
 >
-> On Wed, Aug 04, 2021 at 01:11:27PM -0700, Dan Williams wrote:
-> > On Wed, Aug 4, 2021 at 12:29 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > > Why not just make distros that want to support this type of platform,
-> > > also provide these tiny kernel images?  Why are you pushing this work on
-> > > the kernel community instead?
+> On 04/08/2021 16:39, Sam Protsenko wrote:
+> > Hi Marc,
 > >
-> > In fact, these questions are where I started when first encountering
-> > this proposal. Andi has addressed the single kernel image constraint,
-> > but I want to pick up on this "pushing work to the kernel community"
-> > contention. The small list of vetted drivers that a TDX guest needs
-> > will be built-in and maintained in the kernel by the protected guest
-> > developer community, so no "pushing work" there. However, given that
-> > any driver disable mechanism needs to touch the driver core I
-> > advocated to go ahead and make this a general purpose capability to
-> > pick up where this [1] conversation left off. I.e. a general facility
-> > for the corner cases that modprobe and kernel config policy can not
-> > reach. Corner cases like VMM attacking the VM, or broken hardware with
-> > a built-in driver that can't be unbound after the fact.
+> > On Fri, 30 Jul 2021 at 19:50, Marc Zyngier <maz@kernel.org> wrote:
+> >>
+> >> On 2021-07-30 15:49, Sam Protsenko wrote:
+> >>> Samsung Exynos850 is ARMv8-based mobile-oriented SoC.
+> >>>
+> >>> Features:
+> >>>  * CPU: Cortex-A55 Octa (8 cores), up to 2 GHz
+> >>>  * Memory interface: LPDDR4/4x 2 channels (12.8 GB/s)
+> >>>  * SD/MMC: SD 3.0, eMMC5.1 DDR 8-bit
+> >>>  * Modem: 4G LTE, 3G, GSM/GPRS/EDGE
+> >>>  * RF: Quad GNSS, WiFi 5 (802.11ac), Bluetooth 5.0
+> >>>  * GPU: Mali-G52 MP1
+> >>>  * Codec: 1080p 60fps H64, HEVC, JPEG HW Codec
+> >>>  * Display: Full HD+ (2520x1080)@60fps LCD
+> >>>  * Camera: 16+5MP/13+8MP ISP, MIPI CSI 4/4/2, FD, DRC
+> >>>  * Connectivity: USB 2.0 DRD, USI (SPI/UART/I2C), HSI2C, I3C, ADC,
+> >>> Audio
+> >>>
+> >>> This patch adds minimal SoC support. Particular board device tree files
+> >>> can include exynos850.dtsi file to get SoC related nodes, and then
+> >>> reference those nodes further as needed.
+> >>>
+> >>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> >>> ---
+> >>>  .../boot/dts/exynos/exynos850-pinctrl.dtsi    | 782 ++++++++++++++++++
+> >>>  arch/arm64/boot/dts/exynos/exynos850-usi.dtsi |  30 +
+> >>>  arch/arm64/boot/dts/exynos/exynos850.dtsi     | 245 ++++++
+> >>>  3 files changed, 1057 insertions(+)
+> >>>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+> >>>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-usi.dtsi
+> >>>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850.dtsi
+> >>>
+> >>> diff --git a/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+> >>> b/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+> >>> new file mode 100644
+> >>> index 000000000000..4cf0a22cc6db
+> >>
+> >> [...]
+> >>
+> >>> +     gic: interrupt-controller@12a00000 {
+> >>> +             compatible = "arm,cortex-a15-gic", "arm,cortex-a9-gic";
+> >>
+> >> One thing for sure, it cannot be both. And given that it is
+> >> an A55-based SoC, it isn't either. It is more likely a GIC400.
+> >>
+> >
+> > Yes, it's GIC-400, thanks for pointing that out. Will fix that in v2.
+> >
+> >>> +             #interrupt-cells = <3>;
+> >>> +             #address-cells = <0>;
+> >>> +             interrupt-controller;
+> >>> +             reg = <0x0 0x12a01000 0x1000>,
+> >>> +                   <0x0 0x12a02000 0x1000>,
+> >>
+> >> This is wrong. It is architecturally set to 8kB.
+> >>
+> >
+> > Nice catch! Actually there is an error (typo?) in SoC's TRM, saying
+> > that Virtual Interface Control Register starts at 0x3000 offset (from
+> > 0x12a00000), where it obviously should be 0x4000, that's probably
+> > where this dts error originates from. Btw, I'm also seeing the same
+> > error in exynos7.dtsi.
 >
-> I don't understand how this defends against a hypervisor attacking a
-> guest.  If the hardware exists, the hypervisor can access it, regardless
-> of whether the driver is default-disabled by configuration.
+> What's the error exactly? The "Virtual interface control register"
+> offset (3rd region) is set properly to 0x4000 on Exynos7. Also one for
+> the Exynos5433 looks correct.
+>
 
-The "hardware" in this case is virtual devices presented by the VMM to
-the VM. So if a driver misbehaves in a useful way for an attacker to
-exploit, they can stimulate that behavior with a custom crafted
-virtual device, and that driver will autoload unaware of the threat
-without this filter for vetted drivers.
+The issue is that 2nd region's size is 0x1000, but it must be 0x2000.
+It's defined by GIC-400 architecture, as I understand. Please look at
+[1], table 3-1 has very specific offsets and sizes for each functional
+block, and each particular SoC must adhere to that spec. So having
+0x1000 for 2nd region can't be correct. And because exynos7.dtsi has
+GIC-400 as well, and 0x1000 is specified there for 2nd region size
+too, so I presume there is the same mistake there.
+
+Can you please check the TRM for Exynos7 SoC (if you have one in your
+possession), and see if there is a typo there? E.g. in case of
+Exynos850 TRM I can see that in "Register Map Summary" section the
+offset for the first register (GICH_HCR) in "Virtual Interface Control
+Register" region is specified as 0x3000, where it should be 0x4000, so
+it's probably a typo. But the register description is correct, saying
+that: "Address = Base Address + 0x4000".
+
+[1] https://developer.arm.com/documentation/ddi0471/b/programmers-model/gic-400-register-map
+
+> > Though I don't have a TRM for Exynos7 SoCs, so
+> > not sure if I should go ahead and fix that too. Anyway, for Exynos850,
+> > I'll fix that in v2 series.
+>
+>
+> However while we are at addresses - why are you using address-cells 2?
+> It adds everywhere additional 0x0 before actual address.
+>
+
+Right. For "cpus" node I'll change the address-cells to 1 in my v2
+series. I'll keep address-cells=2 for the root node, but I'm going to
+encapsulate some nodes into soc node (as you suggested earlier), where
+I'll make address-cells=1. That's pretty much how it's done in
+exynos7.dtsi and in exynos5433.dtsi, so I guess that's should be fine
+(to get rid of superfluous 0x0 and conform with other Exynos DTs)?
+
+>
+> Best regards,
+> Krzysztof
