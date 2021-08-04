@@ -2,250 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76953DF94D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628C13DF957
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233810AbhHDBhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 21:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233389AbhHDBhg (ORCPT
+        id S233335AbhHDBkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 21:40:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60186 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229833AbhHDBkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 21:37:36 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72CFBC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 18:37:23 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id y7so1684938ybo.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 18:37:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=epKB0hcqm1WCC8vBGK+vx99lC/aJI/2AY4lrD7eYLb8=;
-        b=AEccR6l/OKGESalKQvaRWiGGw/rio+62YWgIEhXsEEYHlVGhFesvWTPKcNov85mSqW
-         YtF7Oc1w6ubuCGDGQUrSgyoudaS5M4ZXoHGjIdVNtxgSpedngvtttz3sd8Y5eFj6/i1T
-         jOg5eEl6bN/kakSNWhFSn0m9dFLHZnLrzDuKVOPNHsCN04O2yncFR9x71/Ysx0xrQr2Q
-         nuLMy/ATtkk++oWh+8mv+I7wovY6dvb7eCwqRNcyztUWs8yPWDB3qNNotz/nnlIuUU/4
-         za2uS0hhTZQKDViBPBNr0EvcDLM68lITnnnATpItJfVis554OreLT3scY1MlHXJ1Yznk
-         0JZg==
+        Tue, 3 Aug 2021 21:40:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628041239;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=prEBRZoKY0mhe0m86DgKhDz/qFG3iaSQj/eiWjJyZK8=;
+        b=AeGb706gsOlnqpA0U6aFrZxBFoVossX+31dgBxHLzYFamSRzwlO+hpZngv5dSN+EbSjzFe
+        Pw0M03Zs+Ihvk34/txxBq4raI0TEIv+tpwPkjcKC9DHnRJ3VC3Zg3M7YUakbHRoQAFU4zU
+        /K85QhFBnFU5HlIws9mwLiGpEc0NlWM=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-518-Sp5vX1L7PPO3LesPARcp3g-1; Tue, 03 Aug 2021 21:40:38 -0400
+X-MC-Unique: Sp5vX1L7PPO3LesPARcp3g-1
+Received: by mail-qt1-f198.google.com with SMTP id y12-20020ac8524c0000b029028acd693c6bso476961qtn.20
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 18:40:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=epKB0hcqm1WCC8vBGK+vx99lC/aJI/2AY4lrD7eYLb8=;
-        b=E7+VVFKwMTV9DJQeZqsC/NeTUSzdjFAiPzcJiGRpf28u2DcCxqwKL3Xr2LLyT3LZZD
-         NfkouXxlae/8LbC/r0z8/qpxTf+wp1H6UtxS4GB8ID9xFXy0vd4LOm2QldjwOg4es98p
-         gwC2uKoQu5M5Awbtf3ZMPSZzfLsX3ufZOs1Hk7+JATIfLcexSk9qZqf0kneqcaGPsoa4
-         BFS/8wcxACVDrPgvdbA8CirbszqKiqRmV/7ekro62bs47eQc/GplcKG2kwctV9UTbNfZ
-         dJf9wmzr7GrtVpjWI2IqRLt1KrqHJ60bwPa1gMXHh+Run6uhj9YYL1ieCzouFF2V/jOF
-         dLdg==
-X-Gm-Message-State: AOAM530a7F+e7Y1szC5o1wn6EGoM0QlqqmAV0DQSdW6BIXNqzQvW1llP
-        TWo794TLzqN5ujDAjdFDqaJ8ioh/jz31aR5uTiwBYQ==
-X-Google-Smtp-Source: ABdhPJxIRCvXjvM5XX/7Lx2VcKSsZlmtIzvOYuSx+K/LRfB6QcCO7PpBPp79Q8riGnMoAJ+NYv75MM16FMCkJ5wzF9c=
-X-Received: by 2002:a25:8b91:: with SMTP id j17mr30103983ybl.228.1628041041716;
- Tue, 03 Aug 2021 18:37:21 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=prEBRZoKY0mhe0m86DgKhDz/qFG3iaSQj/eiWjJyZK8=;
+        b=XB4mYiPCapTr9I3/i0w39MV0+2tA+5zYGoiDIp8I1SExV8YMnj0OmTIWzAPJhO37DN
+         SKyX4mf58btnAipovx3PKHGXkXgqtKya8MFzR2EcJ1XJ5BQuls85DeQPEomN27TjkhhS
+         wy9gNdkaaZH+zhk7MjgZJAQJh2NHJwlxloO245mzfVe3U/uB+lx9V1VGSC05fj5TnCHK
+         0dM8TqNUeOwlchBFa0VqZoHsw67GvGNcijRaeMiAI7LvETZPwGEwm8US5lrJ/daPVUkW
+         KHHIEJiQc7V5drdnaGeaidnc//NgEPxeaMPN1N32x6mtBh1Q8189zFpPxbdP1nZxG3lE
+         BvbQ==
+X-Gm-Message-State: AOAM531Ynd+g6lw3jgXGKM8WFcDx1OENUT5ivllkcmMEaFwinNJ1H3Dd
+        ChByaejpZ1DyWuZrmvIb4ZXRcekpJOKuMmI9l53LuEZxGc3C2WU3d8TWi17qmhDCZ1ZgQhoYbRD
+        tw8IKlyD14DPcGU14UQO9dymI
+X-Received: by 2002:a05:6214:3a4:: with SMTP id m4mr24172392qvy.17.1628041238103;
+        Tue, 03 Aug 2021 18:40:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx8EWOBC1RHCyAbVwynmIEQicD29HOr33gfx2qHwud9l8mmYV9gdbAOwj5Mm31YWDE03ccxrg==
+X-Received: by 2002:a05:6214:3a4:: with SMTP id m4mr24172377qvy.17.1628041237922;
+        Tue, 03 Aug 2021 18:40:37 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id b1sm306006qtq.12.2021.08.03.18.40.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 18:40:37 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] mm/memcg: Disable task obj_stock for PREEMPT_RT
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Luis Goncalves <lgoncalv@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210803175519.22298-1-longman@redhat.com> <87h7g62jxm.ffs@tglx>
+Message-ID: <8953e099-356e-ee09-a701-f4c7f4cda487@redhat.com>
+Date:   Tue, 3 Aug 2021 21:40:35 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20201020072532.949137-1-narmstrong@baylibre.com>
- <20201020072532.949137-2-narmstrong@baylibre.com> <7hsga8kb8z.fsf@baylibre.com>
- <CAF2Aj3g6c8FEZb3e1by6sd8LpKLaeN5hsKrrQkZUvh8hosiW9A@mail.gmail.com>
- <87r1hwwier.wl-maz@kernel.org> <7h7diwgjup.fsf@baylibre.com> <87im0m277h.wl-maz@kernel.org>
-In-Reply-To: <87im0m277h.wl-maz@kernel.org>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 3 Aug 2021 18:36:45 -0700
-Message-ID: <CAGETcx9OukoWM_qprMse9aXdzCE=GFUgFEkfhhNjg44YYsOQLw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build as
- a module
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Kevin Hilman <khilman@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87h7g62jxm.ffs@tglx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 2:44 AM Marc Zyngier <maz@kernel.org> wrote:
+On 8/3/21 7:21 PM, Thomas Gleixner wrote:
+> Waiman,
 >
-> On Mon, 14 Jun 2021 23:30:22 +0100,
-> Kevin Hilman <khilman@baylibre.com> wrote:
-> >
-> > Marc Zyngier <maz@kernel.org> writes:
-> >
-> > > On Fri, 21 May 2021 10:47:48 +0100,
-> > > Lee Jones <lee.jones@linaro.org> wrote:
-> > >>
-> > >> [1  <text/plain; UTF-8 (quoted-printable)>]
-> > >> On Tue, 20 Oct 2020 at 19:23, Kevin Hilman <khilman@baylibre.com> wrote:
-> > >>
-> > >> > Neil Armstrong <narmstrong@baylibre.com> writes:
-> > >> >
-> > >> > > In order to reduce the kernel Image size on multi-platform distributions,
-> > >> > > make it possible to build the Amlogic GPIO IRQ controller as a module
-> > >> > > by switching it to a platform driver.
-> > >> > >
-> > >> > > Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> > >> >
-> > >> > Reviewed-by: Kevin Hilman <khilman@baylibre.com>
-> > >> > Tested-by: Kevin Hilman <khilman@baylibre.com>
-> > >> >
-> > >> > Tested as a module on meson-sm1-khadas-vim3l where the wired networking
-> > >> > uses GPIO IRQs.
-> > >> >
-> > >>
-> > >> Good morning Neil, Kevin,
-> > >>
-> > >> What happened to this set in the end?  I still don't see it in Mainline.
-> > >
-> > > Last time I tried this patch, it broke my test setup in non-obvious
-> > > ways. Has someone checked that the issue I reported back then has been
-> > > resolved now that fw_devlink is more usable?
-> >
-> > OK, after much anticipation (and much delay due to me forgetting about
-> > this), I just gave this series a spin again on top of v5.13-rc6, and it
-> > seems to work fine with `fw_devlink=on`
-> >
-> > I started with your config[1] and accepting all the defaults of any new
-> > configs.  IOW, I ran: yes '' | make oldconfig after copying your config
-> > to .config.
-> >
-> > With that it seems to be working fine for me.
-> >
-> > Right after boot (and before network probes) I see module loaded, but no
-> > users yet in /proc/interrupts:
-> >
-> > / # uname -a
-> > Linux buildroot 5.13.0-rc6-00002-g679c8e852942 #5 SMP PREEMPT Mon Jun 14 15:08:40 PDT 2021 aarch64 GNU/Linux
-> > / # lsmod |grep gpio
-> > irq_meson_gpio         20480  0
-> > leds_gpio              16384  0
-> > / # cat /proc/interrupts
-> >            CPU0       CPU1       CPU2       CPU3
-> >   9:          0          0          0          0     GICv2  25 Level     vgic
-> >  11:          0          0          0          0     GICv2  30 Level     kvm guest ptimer
-> >  12:          0          0          0          0     GICv2  27 Level     kvm guest vtimer
-> >  13:       1416        916        534       1421     GICv2  26 Level     arch_timer
-> >  15:          5          0          0          0     GICv2  89 Edge      dw_hdmi_top_irq, ff600000.hdmi-tx
-> >  22:         38          0          0          0     GICv2 225 Edge      ttyAML0
-> >  23:         20          0          0          0     GICv2 227 Edge      ff805000.i2c
-> >  25:          2          0          0          0     GICv2 232 Edge      ff809000.adc
-> >  28:        322          0          0          0     GICv2  35 Edge      meson
-> >  31:          0          0          0          0     GICv2 222 Edge      ffe05000.sd
-> >  32:        787          0          0          0     GICv2 223 Edge      ffe07000.mmc
-> >  34:          0          0          0          0     GICv2 194 Level     panfrost-job
-> >  35:          0          0          0          0     GICv2 193 Level     panfrost-mmu
-> >  36:          3          0          0          0     GICv2 192 Level     panfrost-gpu
-> >  39:          0          0          0          0     GICv2  63 Level     ff400000.usb, ff400000.usb
-> >  40:         32          0          0          0     GICv2  62 Level     xhci-hcd:usb1
-> > IPI0:       425        544        664        925       Rescheduling interrupts
-> > IPI1:        86        166        269        136       Function call interrupts
-> > IPI2:         0          0          0          0       CPU stop interrupts
-> > IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
-> > IPI4:         0          0          0          0       Timer broadcast interrupts
-> > IPI5:         0          0          0          0       IRQ work interrupts
-> > IPI6:         0          0          0          0       CPU wake-up interrupts
-> > Err:          0
-> >
-> > So then I init the network interface and PHY works, DHCP works etc.
-> >
-> > / # udhcpc
-> > udhcpc: started, v1.31.1
-> > [  102.250449] meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=37)
-> > [  102.256413] meson8b-dwmac ff3f0000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
-> > [  102.269433] meson8b-dwmac ff3f0000.ethernet eth0: No Safety Features support found
-> > [  102.271357] meson8b-dwmac ff3f0000.ethernet eth0: PTP not supported by HW
-> > [  102.278493] meson8b-dwmac ff3f0000.ethernet eth0: configuring for phy/rgmii link mode
-> > udhcpc: sending discover
-> > [  104.743301] meson8b-dwmac ff3f0000.ethernet eth0: Link is Up - 100Mbps/Full - flow control rx/tx
-> > [  104.746470] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
-> > udhcpc: sending discover
-> > udhcpc: sending select for 192.168.0.122
-> > udhcpc: lease of 192.168.0.122 obtained, lease time 600
-> > deleting routers
-> > adding dns 192.168.0.254
-> > adding dns 192.168.0.254
-> > / # cat /proc/interrupts
-> >            CPU0       CPU1       CPU2       CPU3
-> >   9:          0          0          0          0     GICv2  25 Level     vgic
-> >  11:          0          0          0          0     GICv2  30 Level     kvm guest ptimer
-> >  12:          0          0          0          0     GICv2  27 Level     kvm guest vtimer
-> >  13:       1575       1018        604       1588     GICv2  26 Level     arch_timer
-> >  14:          8          0          0          0     GICv2  40 Level     eth0
-> >  15:          5          0          0          0     GICv2  89 Edge      dw_hdmi_top_irq, ff600000.hdmi-tx
-> >  22:        132          0          0          0     GICv2 225 Edge      ttyAML0
-> >  23:         20          0          0          0     GICv2 227 Edge      ff805000.i2c
-> >  25:          2          0          0          0     GICv2 232 Edge      ff809000.adc
-> >  28:        322          0          0          0     GICv2  35 Edge      meson
-> >  31:          0          0          0          0     GICv2 222 Edge      ffe05000.sd
-> >  32:        787          0          0          0     GICv2 223 Edge      ffe07000.mmc
-> >  34:          0          0          0          0     GICv2 194 Level     panfrost-job
-> >  35:          0          0          0          0     GICv2 193 Level     panfrost-mmu
-> >  36:          3          0          0          0     GICv2 192 Level     panfrost-gpu
-> >  37:          2          0          0          0  meson-gpio-irqchip  26 Level     0.0:00
-> >  39:          0          0          0          0     GICv2  63 Level     ff400000.usb, ff400000.usb
-> >  40:         32          0          0          0     GICv2  62 Level     xhci-hcd:usb1
-> > IPI0:       476        567        720        956       Rescheduling interrupts
-> > IPI1:        93        166        270        137       Function call interrupts
-> > IPI2:         0          0          0          0       CPU stop interrupts
-> > IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
-> > IPI4:         0          0          0          0       Timer broadcast interrupts
-> > IPI5:         0          0          0          0       IRQ work interrupts
-> > IPI6:         0          0          0          0       CPU wake-up interrupts
-> > Err:          0
-> > / #
+> On Tue, Aug 03 2021 at 13:55, Waiman Long wrote:
 >
-> This thing keeps failing on my end. It only works if I force the
-> irqchip module to be present before the MDIO module is loaded. Here's
-> an example:
+> please Cc RT people on RT related patches.
 >
-> root@tiger-roach:~# modprobe mdio_mux_meson_g12a
-> [  125.871544] libphy: mdio_mux: probed
-> [  125.882575] g12a-mdio_mux ff64c000.mdio-multiplexer: Error: Failed to register MDIO bus for child /soc/bus@ff600000/mdio-multiplexer@4c000/mdio@0
-> [  125.892630] libphy: mdio_mux: probed
+>> For PREEMPT_RT kernel, preempt_disable() and local_irq_save()
+>> are typically converted to local_lock() and local_lock_irqsave()
+>> respectively.
+> That's just wrong. local_lock has a clear value even on !RT kernels. See
 >
-> Trying to bring up the Ethernet interface will fail. Note that there
-> was no attempt to load the irqchip driver.
+>    https://www.kernel.org/doc/html/latest/locking/locktypes.html#local-lock
 >
-> root@tiger-roach:~# modprobe -r mdio_mux_meson_g12a
-> root@tiger-roach:~# modprobe irq-meson-gpio
-> [  144.983344] meson-gpio-intc ffd0f080.interrupt-controller: 100 to 8 gpio interrupt mux initialized
-> root@tiger-roach:~# modprobe mdio_mux_meson_g12a
-> [  150.376464] libphy: mdio_mux: probed
-> [  150.391039] libphy: mdio_mux: probed
+I understand what local_lock is for. For !RT kernel, local_lock() still 
+requires the use of a pseudo_lock which is not the goal of this patch to 
+put one there.
+>> These two variants of local_lock() are essentially
+>> the same.
+> Only on RT kernels.
+That is right. So this is a change aimed for easier integration with RT 
+kernel.
 >
-> And it now works.
+>> + * For PREEMPT_RT kernel, preempt_disable() and local_irq_save() may have
+>> + * to be changed to variants of local_lock(). This eliminates the
+>> + * performance advantage of using preempt_disable(). Fall back to always
+>> + * use local_irq_save() and use only irq_obj for simplicity.
+> Instead of adding that comment you could have just done the full
+> conversion, but see below.
+Well, I can do that if you want me to.
 >
-> Is it a MDIO issue? a fw_devlink issue? No idea. But I'd really like
-> to see this addressed before taking this patch, as everything works
-> just fine as long as the irqchip is built in (which on its own could
-> well pure luck).
+>>    */
+>> +static inline bool use_task_obj_stock(void)
+>> +{
+>> +	return !IS_ENABLED(CONFIG_PREEMPT_RT) && likely(in_task());
+>> +}
+>> +
+>>   static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
+>>   {
+>>   	struct memcg_stock_pcp *stock;
+>>   
+>> -	if (likely(in_task())) {
+>> +	if (use_task_obj_stock()) {
+>>   		*pflags = 0UL;
+>>   		preempt_disable();
+>>   		stock = this_cpu_ptr(&memcg_stock);
+> This is clearly the kind of conditional locking which is frowned upon
+> rightfully.
 >
-> Saravana, could you please have a look from a fw_devlink perspective?
+> So if we go to reenable memcg for RT we end up with:
+>
+> 	if (use_task_obj_stock()) {
+>             preempt_disable();
+>          } else {
+>             local_lock_irqsave(memcg_stock_lock, flags);
+>          }
+>          
+> and further down we end up with:
+The purpose of this series is to improve kmem_cache allocation and free 
+performance for non-RT kernel. So not disabling/enabling interrupt help 
+a bit in this regard.
+>
+>> @@ -2212,7 +2222,7 @@ static void drain_local_stock(struct work_struct *dummy)
+>>   
+>>   	stock = this_cpu_ptr(&memcg_stock);
+>>   	drain_obj_stock(&stock->irq_obj);
+>> -	if (in_task())
+>> +	if (use_task_obj_stock())
+>>   		drain_obj_stock(&stock->task_obj);
+>>   	drain_stock(stock);
+>>   	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+>> Thanks,
+>>
+>>          tglx
+>>
+>
+> 	/*
+> 	 * The only protection from memory hotplug vs. drain_stock races is
+> 	 * that we always operate on local CPU stock here with IRQ disabled
+> 	 */
+> -	local_irq_save(flags);
+> +	local_lock_irqsave(memcg_stock_lock, flags);
+>          ...
+> 	if (use_task_obj_stock())
+>    		drain_obj_stock(&stock->task_obj);
+>
+> which is incomprehensible garbage.
+>
+> The comment above the existing local_irq_save() is garbage w/o any local
+> lock conversion already today (and even before the commit which
+> introduced stock::task_obj) simply because that comment does not explain
+> the why.
+That comment was added by commit 72f0184c8a00 ("mm, memcg: remove 
+hotplug locking from try_charge"). It was there before my commits.
 
-Sigh... I spent several hours looking at this and wrote up an analysis
-and then realized I might be looking at the wrong DT files.
+>
+> I can just assume that for stock->task_obj the IRQ protection is
+> completely irrelevant. If not and _all_ members of stock have to be
+> protected against memory hotplug by disabling interrupts then any other
+> function which just disables preemption is broken.
+That is correct specifically for task_obj, but not for other data.
+>
+> To complete the analysis of drain_local_stock(). AFAICT that function
+> can only be called from task context. So what is the purpose of this
+> in_task() conditional there?
+>
+> 	if (in_task())
+>    		drain_obj_stock(&stock->task_obj);
+I haven't done a full analysis to see if it can be called from task 
+context only. Maybe in_task() check isn't needed, but having it there 
+provides the safety that it will still work in case it can be called 
+from interrupt context.
+>
+> I assume it's mechanical conversion of:
+>
+> -       drain_obj_stock(stock);
+> +       drain_obj_stock(&stock->irq_obj);
+> +       if (in_task())
+> +               drain_obj_stock(&stock->task_obj);
+>
+> all over the place without actually looking at the surrounding code,
+> comments and call sites.
+>
+> This patch is certainly in line with that approach, but it's just adding
+> more confusion.
 
-Marc, can you point me to the board file in upstream that corresponds
-to the platform in which you see this issue? I'm not asking for [1],
-but the actual final .dts (not .dtsi) file that corresponds to the
-platform/board/system.
+What is your suggestion for improving this patch?
 
-Based on your error messages, it's failing for mdio@0 which
-corresponds to ext_mdio. But none of the board dts files in upstream
-have a compatible property for "ext_mdio". Which means fw_devlink
-_should_ propagate the gpio_intc IRQ dependency all the way up to
-eth_phy.
+Cheers,
+Longman
 
-Also, in the failing case, can you run:
-ls -ld supplier:*
-
-in the /sys/devices/....<something>/ folder that corresponds to the
-"eth_phy: mdio-multiplexer@4c000" DT node and tell me what it shows?
-
-Thanks,
-Saravana
-
-[1] - arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
