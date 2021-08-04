@@ -2,153 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624AF3E01ED
+	by mail.lfdr.de (Postfix) with ESMTP id 163C43E01EC
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238441AbhHDN2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:28:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42430 "EHLO mail.kernel.org"
+        id S238427AbhHDN2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:28:37 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:40297 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238119AbhHDN2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237961AbhHDN2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 4 Aug 2021 09:28:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C91260F6F;
-        Wed,  4 Aug 2021 13:28:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628083703;
-        bh=Wfd7R0ApGgOmwN9wt/25NVYqDvQ1vR7xSRygDH3CUiM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=umiYsv1CPiaiJY5d8zSjVtGl+d0rOPGpcC2Ki7x09LSxg4dp54MzfqO7pj6wkd8Y1
-         +a8eKVnvyKAJCnbLU948OhVMTP7tbDs5VbvW65b17dEcR214GzXDfB1Q0ZlnOeHB0x
-         XPNEIL/1rgUQZstW/oG1i/JHdq3nR2MJyBWfpHur1TV1iOc6W8kX3+O65gzlP2Rxv/
-         KfvR7E5w/RgPDc4oDDqNzrNX35Oxh2xUqVeW6M7dM5+t5HOVDK91vLmzJfBXOe0vVJ
-         zjhTMMJjKmbJ5h4bZWCSAQqT5Q7WUBORUMAhH+RawS2MpfNDj/NmF4J84ILPEvCyu2
-         xHElTJfHl9cWw==
-Received: by mail-ej1-f43.google.com with SMTP id h9so3732555ejs.4;
-        Wed, 04 Aug 2021 06:28:23 -0700 (PDT)
-X-Gm-Message-State: AOAM5336NcVPbVb2sufIfaSfvbVEhdv7P48bplbEYVqI1iEFdlcRaAIq
-        Wf4iDz5vs9Se8v+LbPHVG6OuXwomwOyg4z2dMA==
-X-Google-Smtp-Source: ABdhPJwyzYTN5irKM6Kf8VGRNhMvW6JRknZ7L0BMgKHrrmuupnTr74hdq3bN+HWkO8eDLdIzsTHpyAF6HgWykC1PzaQ=
-X-Received: by 2002:a17:907:766c:: with SMTP id kk12mr25096464ejc.525.1628083701595;
- Wed, 04 Aug 2021 06:28:21 -0700 (PDT)
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Gfsxx5dt9z9sWr;
+        Wed,  4 Aug 2021 15:28:21 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id iNwnHIadWABF; Wed,  4 Aug 2021 15:28:21 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gfsxx4PqTz9sWq;
+        Wed,  4 Aug 2021 15:28:21 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 722F78B7A7;
+        Wed,  4 Aug 2021 15:28:21 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id MTAWowFn5j68; Wed,  4 Aug 2021 15:28:21 +0200 (CEST)
+Received: from [172.25.230.100] (po15451.idsi0.si.c-s.fr [172.25.230.100])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 303FE8B7A1;
+        Wed,  4 Aug 2021 15:28:21 +0200 (CEST)
+Subject: Re: [PATCH] powerpc/32s: Fix napping restore in data storage
+ interrupt (DSI)
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Finn Thain <fthain@linux-m68k.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>, userm57@yahoo.com
+References: <731694e0885271f6ee9ffc179eb4bcee78313682.1628003562.git.christophe.leroy@csgroup.eu>
+ <ce20d16c-b0b2-94c-3e22-794d95c376b@linux-m68k.org>
+ <b04a90a9-9d62-2192-f896-ea99be911604@csgroup.eu>
+ <8fb08f68-ed01-65f9-fb9e-66abf2b18a00@csgroup.eu>
+ <1628068469.gv4bl1fw7w.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <d8e1f924-ca60-4dcc-ac5f-3801ea226edf@csgroup.eu>
+Date:   Wed, 4 Aug 2021 15:28:20 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210727160315.15575-1-eajames@linux.ibm.com> <20210727160315.15575-3-eajames@linux.ibm.com>
- <YQhZimPDbNJk5nbR@robh.at.kernel.org> <29d72be98ebe3e5761f4c3da7b4daf2f05fbbf3b.camel@linux.ibm.com>
- <209d9f68-e6c4-68c9-d495-d7e3f5050440@axentia.se>
-In-Reply-To: <209d9f68-e6c4-68c9-d495-d7e3f5050440@axentia.se>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 4 Aug 2021 07:28:09 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLFC7vjMvZ3o6ey=thf=ZHsqApdT69e6akLvs0ceb8m1w@mail.gmail.com>
-Message-ID: <CAL_JsqLFC7vjMvZ3o6ey=thf=ZHsqApdT69e6akLvs0ceb8m1w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] i2c: mux: pca954x: Support multiple devices on a
- single reset line
-To:     Peter Rosin <peda@axentia.se>
-Cc:     Eddie James <eajames@linux.ibm.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1628068469.gv4bl1fw7w.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 1:50 AM Peter Rosin <peda@axentia.se> wrote:
->
-> On 2021-08-02 23:51, Eddie James wrote:
-> > On Mon, 2021-08-02 at 14:46 -0600, Rob Herring wrote:
-> >> On Tue, Jul 27, 2021 at 11:03:15AM -0500, Eddie James wrote:
-> >>> Some systems connect several PCA954x devices to a single reset
-> >>> GPIO. For
-> >>> these devices to get out of reset and probe successfully, each
-> >>> device must
-> >>> defer the probe until the GPIO has been hogged. Accomplish this by
-> >>> attempting to grab a new "reset-shared-hogged" devicetree property,
-> >>> but
-> >>> expect it to fail with EPROBE_DEFER or EBUSY.
-> >>>
-> >>> Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> >>> ---
-> >>>  drivers/i2c/muxes/i2c-mux-pca954x.c | 46 +++++++++++++++++++++++
-> >>> ------
-> >>>  1 file changed, 37 insertions(+), 9 deletions(-)
-> >>>
-> >>> diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c
-> >>> b/drivers/i2c/muxes/i2c-mux-pca954x.c
-> >>> index 4ad665757dd8..376b54ffb590 100644
-> >>> --- a/drivers/i2c/muxes/i2c-mux-pca954x.c
-> >>> +++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
-> >>> @@ -434,15 +434,43 @@ static int pca954x_probe(struct i2c_client
-> >>> *client,
-> >>>     i2c_set_clientdata(client, muxc);
-> >>>     data->client = client;
-> >>>
-> >>> -   /* Reset the mux if a reset GPIO is specified. */
-> >>> -   gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-> >>> -   if (IS_ERR(gpio))
-> >>> -           return PTR_ERR(gpio);
-> >>> -   if (gpio) {
-> >>> -           udelay(1);
-> >>> -           gpiod_set_value_cansleep(gpio, 0);
-> >>> -           /* Give the chip some time to recover. */
-> >>> -           udelay(1);
-> >>> +   /*
-> >>> +    * Grab the shared, hogged gpio that controls the mux reset. We
-> >>> expect
-> >>> +    * this to fail with either EPROBE_DEFER or EBUSY. The only
-> >>> purpose of
-> >>> +    * trying to get it is to make sure the gpio controller has
-> >>> probed up
-> >>> +    * and hogged the line to take the mux out of reset, meaning
-> >>> that the
-> >>> +    * mux is ready to be probed up. Don't try and set the line any
-> >>> way; in
-> >>> +    * the event we actually successfully get the line (if it
-> >>> wasn't
-> >>> +    * hogged) then we immediately release it, since there is no
-> >>> way to
-> >>> +    * sync up the line between muxes.
-> >>> +    */
-> >>> +   gpio = gpiod_get_optional(dev, "reset-shared-hogged", 0);
-> >>> +   if (IS_ERR(gpio)) {
-> >>> +           ret = PTR_ERR(gpio);
-> >>> +           if (ret != -EBUSY)
-> >>> +                   return ret;
-> >>
-> >> Why can't you just do this with the existing 'reset-gpios' property?
-> >> What's the usecase where you'd want to fail probe because EBUSY
-> >> other
-> >> than an error in your DT.
-> >
-> > Hi, thanks for the reply.
-> >
-> > Are you suggesting I use "reset-gpios" and change the driver to ignore
-> > EBUSY? I don't know any other usecase, I just didn't think it would be
-> > acceptable to ignore EBUSY on that, but perhaps it is a better
-> > solution.
->
-> Hi!
->
-> From a device-tree point of view that might seem simple. But it becomes
-> a mess when several driver instances need to coordinate. If one instance
-> is grabbing the reset line but is then stalled while other instances
-> race ahead, they might be clobbered by a late reset from the stalled
-> first instance.
->
-> And while it might be possible to arrange the code such that those dragons
-> are dodged and that the reset is properly coordinated, what if the gpio is
-> supposed to be shared with some other totally unrelated driver? It might
-> seem to work when everything is normal, but as soon as anything out of the
-> ordinary happens, all bets are off. I expect subtle problems in the
-> furture.
 
-All of this is true, but a different reset GPIO property name does
-nothing to solve it.
 
-> I see no simple solution to this, and I also expect that if gpios need
-> to be shared, there will eventually need to be some kind of layer that
-> helps with coordination such that it becomes explicit rather than
-> implicit and fragile.
+Le 04/08/2021 à 13:36, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of August 4, 2021 4:21 pm:
+>> Hi Nic,
+>>
+>> I think I'll need your help on that one.
+>>
+>> Le 04/08/2021 à 08:07, Christophe Leroy a écrit :
+>>>
+>>>
+>>> Le 04/08/2021 à 06:04, Finn Thain a écrit :
+> 
+> Hi Finn!
+> 
+>>>> On Tue, 3 Aug 2021, Christophe Leroy wrote:
+>>>>
+>> ...
+>>>>
+>>>> ------------[ cut here ]------------
+>>>> kernel BUG at arch/powerpc/kernel/interrupt.c:49!
+>>>> Oops: Exception in kernel mode, sig: 5 [#1]
+>>>> BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+>>>> Modules linked in:
+>>>> CPU: 0 PID: 1859 Comm: xfce4-session Not tainted 5.13.0-pmac-VMAP #10
+>>>> NIP:  c0011474 LR: c0011464 CTR: 00000000
+>>>> REGS: e2f75e40 TRAP: 0700   Not tainted  (5.13.0-pmac-VMAP)
+>>>> MSR:  00021032 <ME,IR,DR,RI>  CR: 2400446c  XER: 20000000
+>>>>
+>>>> GPR00: c001604c e2f75f00 ca284a60 00000000 00000000 a5205eb0 00000008 00000020
+>>>> GPR08: ffffffc0 00000001 501200d9 ce030005 ca285010 00c1f778 00000000 00000000
+>>>> GPR16: 00945b20 009402f8 00000001 a6b87550 a51fd000 afb73220 a6b22c78 a6a6aecc
+>>>> GPR24: 00000000 ffffffc0 00000020 00000008 a5205eb0 00000000 e2f75f40 000000ae
+>>>> NIP [c0011474] system_call_exception+0x60/0x164
+>>>> LR [c0011464] system_call_exception+0x50/0x164
+>>>> Call Trace:
+>>>> [e2f75f00] [00009000] 0x9000 (unreliable)
+>>>> [e2f75f30] [c001604c] ret_from_syscall+0x0/0x28
+>>>> --- interrupt: c00 at 0xa69d6cb0
+>>>> NIP:  a69d6cb0 LR: a69d6c3c CTR: 00000000
+>>>> REGS: e2f75f40 TRAP: 0c00   Not tainted  (5.13.0-pmac-VMAP)
+>>>> MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 2400446c  XER: 20000000
+>>>>
+>>>> GPR00: 000000ae a5205de0 a5687ca0 00000000 00000000 a5205eb0 00000008 00000020
+>>>> GPR08: ffffffc0 401201ea 401200d9 ffffffff c158f230 00c1f778 00000000 00000000
+>>>> GPR16: 00945b20 009402f8 00000001 a6b87550 a51fd000 afb73220 a6b22c78 a6a6aecc
+>>>> GPR24: afb72fc8 00000000 00000001 a5205f30 afb733dc 00000000 a6b85ff4 a5205eb0
+>>>> NIP [a69d6cb0] 0xa69d6cb0
+>>>> LR [a69d6c3c] 0xa69d6c3c
+>>>> --- interrupt: c00
+>>>> Instruction dump:
+>>>> 7cdb3378 93810020 7cbc2b78 93a10024 7c9d2378 93e1002c 7d3f4b78 4800d629
+>>>> 817e0084 931e0088 69690002 5529fffe <0f090000> 69694000 552997fe 0f090000
+>>>> ---[ end trace c66c6c3c44806276 ]---
+>>>>
+>>
+>> Getting a BUG at arch/powerpc/kernel/interrupt.c:49 meaning MSR_RI is not set, but the c00 interrupt
+>> frame shows MSR_RI properly set, so what ?
+> 
+> Could the stack be correct but regs pointer incorrect?
+> 
+> Instruction dump is
+> 
+>     0:   78 33 db 7c     mr      r27,r6
+>     4:   20 00 81 93     stw     r28,32(r1)
+>     8:   78 2b bc 7c     mr      r28,r5
+>     c:   24 00 a1 93     stw     r29,36(r1)
+>    10:   78 23 9d 7c     mr      r29,r4
+>    14:   2c 00 e1 93     stw     r31,44(r1)
+>    18:   78 4b 3f 7d     mr      r31,r9
+>    1c:   29 d6 00 48     bl      0xd644
+>    20:   84 00 7e 81     lwz     r11,132(r30)
+>    24:   88 00 1e 93     stw     r24,136(r30)
+>    28:   02 00 69 69     xori    r9,r11,2
+>    2c:   fe ff 29 55     rlwinm  r9,r9,31,31,31
+>    30:   00 00 09 0f     twnei   r9,0
+>    34:   00 40 69 69     xori    r9,r11,16384
+>    38:   fe 97 29 55     rlwinm  r9,r9,18,31,31
+>    3c:   00 00 09 0f     twnei   r9,0
+> 
+> regs->msr is in r11 == 0xce030005 so some kernel address?
+> 
+> r1  == 0xe2f75f00
+> r30 == 0xe2f75f40
+> 
+> I think that matches if the function allocates 48 bytes of stack.
+> STACK_FRAME_OVERHEAD is 16, so the difference would be 0x40 in that
+> case. Seems okay.
+> 
+> I'm not sure then. Can you get a hash fault interrupt come in here
+> because of the vmap stack access and clobber r11? Hmm...
+> 
+> fast_hash_page_return:
+>          andis.  r10, r9, SRR1_ISI_NOPT@h        /* Set on ISI, cleared on DSI */
+> 
+> Is that really right? DSI can set this bit for NOHPTE as well no?
 
-Yes, like making the reset subsystem handle 'reset-gpios' properties
-as I suggested.
+On DSI, the error bits are in DSISR while they are in SRR1 on ISI.
 
-Rob
+r9 is supposed to contain SRR1 in both cases. Powerpc 32 bits programming manual explicitely says 
+that bits 1-4 and 10-15 of SRR1 are cleared on DSI.
+
+Thanks,
+Christophe
