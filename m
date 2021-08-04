@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07373DFE0D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C333DFE09
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236678AbhHDJdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 05:33:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38182 "EHLO mail.kernel.org"
+        id S236637AbhHDJbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 05:31:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236599AbhHDJc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 05:32:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8047360EB9;
-        Wed,  4 Aug 2021 09:32:47 +0000 (UTC)
+        id S236599AbhHDJbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 05:31:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67DB160EE5;
+        Wed,  4 Aug 2021 09:31:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628069567;
-        bh=lCyffb9PLH1HfSBsp6TDN9RZ6eNQihkh5qfjzkNc6Jo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WQ5cF1jNoOVb2h5Tm/m6MVCYxkBWsu64VNhQA39CL/0vukZFhTJLWNseIiT+azT5j
-         cDFfmwNugKgDLMIPmB/n2GVcI1LI3oiUcfZRW8ePl1ls7T9Q1gBa7wgX8tM28Ko5+A
-         b5f2f6p9z3gkeXk41plHcoHx4Uq88fGN+kAzIv9CAEf36P2xglBR3b08lLMhRQfUfb
-         HKPKUdTyY1is1RlGN6B9tccVizWDwup+dshJCv/vg1+XjwJp3ro3c59jlnV1ZH9V8G
-         6DLNLjHAkgh6Q/mFeDrIqcnime9Zv2XxEg4mCHqu04G+D92tZIPUYqmMVC5KXhfm3n
-         rB7NdLiBjWbnQ==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mBDFt-0006T8-MT; Wed, 04 Aug 2021 11:32:05 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Khoruzhick <anarsoul@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH] USB: serial: pl2303: fix GT type detection
-Date:   Wed,  4 Aug 2021 11:31:00 +0200
-Message-Id: <20210804093100.24811-1-johan@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <YQpeE19WIeQO2b//@hovoldconsulting.com>
-References: <YQpeE19WIeQO2b//@hovoldconsulting.com>
+        s=k20201202; t=1628069493;
+        bh=ImLzJp0qR5RMF7abGLu47/n5IMgym2fH1/INNOJqCi8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T3X/NizRn7ThzigqHIDeWs0mNKHeDqCSxqOG2Jgkr0k0mnip/T8k1oSpX0EWaAZsB
+         K/0lKlpEUtjnJz7JtoluIe66606niUiF1cLjojTkE1VA8R4ak9J6USlIhR2b5PMELV
+         pRpPystji0zsOfFZxZBira/+8JwHm5oFeFCMUzMnY6X+rOFXctnJ0tJjyr3bg+zsAe
+         hSFALn8zCN+eNGH+mARdhJUZL3MEW1UY6UUZg21zfkERnGvL7Jw7/zxbSLX0AIkK/M
+         VxcsFLCB+ZQj1oygMtG6YugCjEXAgx1RhYiWhKPHpHSNSQB3oCez+9n91P56WapS3t
+         PuSH4/+hDZgZQ==
+Date:   Wed, 4 Aug 2021 17:31:26 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Martin Kepplinger <martin.kepplinger@puri.sm>,
+        dafna.hirschfeld@collabora.com, devicetree@vger.kernel.org,
+        festevam@gmail.com, kernel@pengutronix.de, kernel@puri.sm,
+        krzk@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        m.felsch@pengutronix.de, mchehab@kernel.org,
+        phone-devel@vger.kernel.org, robh@kernel.org,
+        slongerbeam@gmail.com, Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v10 0/3] media: imx: add support for imx8mq MIPI RX
+Message-ID: <20210804093125.GE30984@dragon>
+References: <20210728091245.231043-1-martin.kepplinger@puri.sm>
+ <YQFcfbrTmGw4kZvQ@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQFcfbrTmGw4kZvQ@pendragon.ideasonboard.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At least some PL2303GT have a bcdDevice of 0x305 instead of 0x100 as the
-datasheet claims. Add it to the list of known release numbers for the
-HXN (G) type.
+On Wed, Jul 28, 2021 at 04:32:45PM +0300, Laurent Pinchart wrote:
+> Hi Martin,
+> 
+> On Wed, Jul 28, 2021 at 11:12:42AM +0200, Martin Kepplinger wrote:
+> > hi,
+> > 
+> > This patch series adds a driver for the i.MX8MQ CSI MIPI receiver / controller.
+> > 
+> > It includes the driver, the dt-bindings and the DT addition to the SoC dtsi.
+> > I test it using libcamera. Thanks to Laurent who helped a lot. I'm happy for
+> > any feedback,
+> 
+> Thank you for the series. I've submitted a pull request that contains
+> patches 1/3 and 2/3.
+> 
+> Shawn, Sascha, how would you like to handle 3/3 ?
 
-Fixes: 894758d0571d ("USB: serial: pl2303: tighten type HXN (G) detection")
-Reported-by: Vasily Khoruzhick <anarsoul@gmail.com>
-Tested-by: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: stable@vger.kernel.org	# 5.13
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/pl2303.c | 1 +
- 1 file changed, 1 insertion(+)
+I picked up the 3/3 in v9, which I think is identical to this version.
+Otherwise, please let me know.
 
-diff --git a/drivers/usb/serial/pl2303.c b/drivers/usb/serial/pl2303.c
-index 17601e32083e..930b3d50a330 100644
---- a/drivers/usb/serial/pl2303.c
-+++ b/drivers/usb/serial/pl2303.c
-@@ -432,6 +432,7 @@ static int pl2303_detect_type(struct usb_serial *serial)
- 	case 0x200:
- 		switch (bcdDevice) {
- 		case 0x100:
-+		case 0x305:
- 			/*
- 			 * Assume it's an HXN-type if the device doesn't
- 			 * support the old read request value.
--- 
-2.31.1
-
+Shawn
