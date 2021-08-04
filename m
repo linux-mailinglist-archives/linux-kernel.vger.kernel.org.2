@@ -2,307 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F67E3DFF44
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CC03DFF45
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237110AbhHDKRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 06:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235527AbhHDKRe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 06:17:34 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A301C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 03:17:22 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id t68so2205532qkf.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 03:17:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metztli-com.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=BU4gaEXMUC4dk3AbuhMq06nooKvFSA+rLb2MZ4hroZo=;
-        b=JHt41geswPE+Gq38BYwP8Wost4DpJFkPEZ5784KofcHmCIRdsk3kDFoRz8rFVc6Dcd
-         VFxU9HSR6OYN6b0lbqKUasVMy4/Sdw5ij9PlOdATAl5+g3RwkFFo1pVl7/RSRXDUDbAt
-         4Yt50YdQgjqfJe/sa2guBwVDd1vUXzrSq28PiSsqBbiewJWW5OIbMsHzv+ZglMcORSJV
-         AeCoNHkdGBM83262X/Zw08ljsBlO65cqYKhyKaF/f+BppiNf6gPyNqFagHd7hHnYiDk8
-         Mo49qxLRV+GsIUlWU1UxH3IOgOlI28WynlBoSJ2zuvMOMRUGHkYt6bEwsRbwOAXY/QqH
-         jWmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=BU4gaEXMUC4dk3AbuhMq06nooKvFSA+rLb2MZ4hroZo=;
-        b=NN51x0vpFVBMydPjYWkAOktlAqO3RBiXIhG3hLTeUud7AO0Vl/aGOEzWduD77EKAMK
-         QAmspoiK2EmvZrWGdnOcwyJlJfS28ZAuEL6C8E3J0Mv0bW5t23pqo7Z7optzZAz+0ZkR
-         dXFwLQhjHsl9g+pgLSDClIuBFrtgrOhBSZE7JHeP46Miz5CvLx+lJ48snRYQ1NwLPgkF
-         pvBIpX01cDD3dOx715NejLHIGnmjUrOqpi9aXpenK0LxKmuuKjTmM5pZLEk7zmvA0rfH
-         cYRU8SGhf9J+cYqhCZLOFBaOdNOTQLhB2FUCo7pCnD+ODAxnlj1eFtXtnnwxZHVWmu6Y
-         fW4A==
-X-Gm-Message-State: AOAM533lLkZh8NTW4TSIHb1RXWqD9TKFbgxwTg15jQMb6qct9OG4JiY9
-        7nKjEA+DSo8Drl7p/y8dZqhTZA==
-X-Google-Smtp-Source: ABdhPJy6hwyyqIlltJpn+cBQ8x8SrdTlBIQ92vzycg/+F4OGNn35/K7Mmg5iMpf08LQB7MyzboNv/g==
-X-Received: by 2002:a37:2d04:: with SMTP id t4mr25081661qkh.463.1628072241418;
-        Wed, 04 Aug 2021 03:17:21 -0700 (PDT)
-Received: from ?IPv6:2600:1700:6470:27a0:4e80:93ff:fe00:3ff7? ([2600:1700:6470:27a0:4e80:93ff:fe00:3ff7])
-        by smtp.gmail.com with ESMTPSA id w5sm683795qtv.3.2021.08.04.03.17.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 03:17:20 -0700 (PDT)
-Message-ID: <ef36436b5889fd1b7b545a56f196400f16e2e4d3.camel@metztli.com>
-Subject: Re: [reiser4 SFRN 5.1.3] kernel [5.10.x] read not supported for
- file /test-exec \(pid: 10094 comm: debootstrap\)
-From:   Metztli Information Technology <jose.r.r@metztli.com>
-To:     Edward Shishkin <edward.shishkin@gmail.com>
-Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Date:   Wed, 04 Aug 2021 03:17:18 -0700
-In-Reply-To: <e37d5585-318e-3130-82c9-7a740b9af8af@gmail.com>
-References: <20210208125427.CFC7C75EED90@huitzilopochtli.metztli-it.com>
-         <e37d5585-318e-3130-82c9-7a740b9af8af@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S237130AbhHDKR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 06:17:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:58778 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235527AbhHDKRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 06:17:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 820A713A1;
+        Wed,  4 Aug 2021 03:17:42 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 60F853F66F;
+        Wed,  4 Aug 2021 03:17:40 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Scott Wood <swood@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH 1/2] rcutorture: Don't disable softirqs with preemption disabled when PREEMPT_RT
+In-Reply-To: <20210803234352.GX4397@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+References: <20210803225437.3612591-1-valentin.schneider@arm.com> <20210803225437.3612591-2-valentin.schneider@arm.com> <20210803234352.GX4397@paulmck-ThinkPad-P17-Gen-1>
+Date:   Wed, 04 Aug 2021 11:17:33 +0100
+Message-ID: <87v94la4zm.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-08 at 17:03 +0100, Edward Shishkin wrote:
-> On 02/08/2021 01:54 PM, Metztli Information Technology wrote:
-> > On Wed, Dec 23, 2020 at 3:40 PM Edward Shishkin
-> > <edward.shishkin@gmail.com> wrote:
-> > > 
-> > > On 12/23/2020 05:01 PM, Metztli Information Technology wrote:
-> > > > Niltze [Ð—Ð´Ñ€Ð°Ð²Ñ Ñ‚Ð²ÑƒÐ¹Ñ‚Ðµ : Hello], Ed-
-> > > > 
-> > > > I built Linux kernel 5.10.1-1 within the 'Debian way' -- as
-> > > > usual -- to generate a kernel component for my Debian-Installer
-> > > > (d-i).
-> > > > The patch I applied is reiser4-for-5.10-rc3.patch.gz from v5-
-> > > > unstable.
-> > > > 
-> > > > Once I built the proper reiser4progs-2.0.4.tar.gz and generated
-> > > > one set of components for d-i I built the d-i image.
-> > > > 
-> > > > Fact is, the installer throws an error in *both* bare metal and
-> > > > VirtualBox 6.1.16:
-> > > > ...
-> > > > Dec 22 20:19:56 main-menu[330]: INFO: Menu item 'bootstrap-
-> > > > base' selected
-> > > > Dec 22 20:19:56 debootstrap: /usr/sbin/debootstrap --
-> > > > components=main --debian-installer --resolve-deps --
-> > > > keyring=/usr/share/keyrings/archive.gpg buster /target
-> > > > http://deb.debian.org/debian/
-> > > > Dec 22 20:19:56 debootstrap: /usr/sbin/debootstrap: line 1596:
-> > > > /target/test-exec: Invalid argument
-> > > > Dec 22 20:19:56 kernel: [ 1018.632648] kernel read not
-> > > > supported for file /test-exec (pid: 10077 comm: debootstrap)
-> > > > Dec 22 20:19:56 debootstrap: E: NOEXEC
-> > > > Dec 22 20:19:56 debootstrap: EF: Cannot install into target
-> > > > '/target' mounted with noexec or nodev
-> > > > Dec 22 20:20:12 base-installer: error: exiting on error base-
-> > > > installer/debootstrap-failed
-> > > > Dec 22 20:20:14 main-menu[330]: WARNING **: Configuring
-> > > > 'bootstrap-base' failed with error code 1
-> > > > Dec 22 20:20:14 main-menu[330]: WARNING **: Menu item
-> > > > 'bootstrap-base' failed.
-> > > > Dec 22 20:20:15 main-menu[330]: INFO: Falling back to the
-> > > > package description for brltty-udeb
-> > > > 
-> > > 
-> > > [...]
-> > > 
-> > > > 
-> > > > Apparently, d-i [Debian-installer] complains about being unable
-> > > > to set the test file executable and causes the error when 1 is
-> > > > returned.
-> > > > Notwithstanding, I manually verified that I am able to touch a
-> > > > file and set it +x executable.
-> > > > 
-> > > > Furthermore, tricking the function return value to 0 I am able
-> > > > to make d-i continue with the latest SFRN5 installation (see
-> > > > [*trick*] below); yet, subsequently halts again with
-> > > > an apparently related error --can not proceed any further.
-> > > > 
-> > > > Digging deeper with dmesg, we can see that apparently it is the
-> > > > kernel which cannot 'read' properly. Please find a partial
-> > > > dmesg log with relevant output
-> > > > from an attempt on my physical development machine.
-> > > > ...
-> > > > [  508.614488] Loading Reiser4 (Software Framework Release:
-> > > > 5.1.3). See reiser4.wiki.kernel.org for a description of
-> > > > Reiser4.
-> > > > [  508.661951] SGI XFS with ACLs, security attributes,
-> > > > realtime, quota, no debug enabled
-> > > > [  509.326270] device-mapper: uevent: version 1.0.3
-> > > > [  509.326505] device-mapper: ioctl: 4.43.0-ioctl (2020-10-01)
-> > > > initialised: dm-devel@redhat.com
-> > > > [  509.902828]  sda: sda1 sda2 sda3 sda4 sda5 sda6
-> > > > [  509.915300]  sdb: sdb1 sdb2 sdb3
-> > > > [  511.973360]  sdb: sdb1 sdb2 sdb3
-> > > > [  627.525371] Adding 9765884k swap on /dev/sda3.  Priority:-2
-> > > > extents:1 across:9765884k FS
-> > > > [  636.240812] reiser4[mount(9430)]: reiser4_register_subvol
-> > > > (fs/reiser4/init_volume.c:222)[edward-1932]:
-> > > > [  636.240812] NOTICE: brick /dev/sda6 has been registered
-> > > > [  636.243003] reiser4 (sda6): found disk format 5.1.3.
-> > > > [  643.759971] reiser4 (/dev/sda6): using Hybrid Transaction
-> > > > Model.
-> > > > [  643.759980] reiser4: brick /dev/sda6 activated
-> > > > [  643.788537] EXT4-fs (sda1): mounting ext2 file system using
-> > > > the ext4 subsystem
-> > > > [  643.813474] EXT4-fs (sda1): mounted filesystem without
-> > > > journal. Opts: (null)
-> > > > [  643.813488] ext2 filesystem being mounted at /target/boot
-> > > > supports timestamps until 2038 (0x7fffffff)
-> > > > [  648.168730] kernel read not supported for file /test-exec
-> > > > (pid: 9876 comm: debootstrap) [*trick*]
-> > > > [  898.761385] reiser4: brick /dev/sda6 deactivated
-> > > > [  991.001332] reiser4 (sda6): found disk format 5.1.3.
-> > > > [  999.093471] reiser4 (/dev/sda6): using Hybrid Transaction
-> > > > Model.
-> > > > [  999.093480] reiser4: brick /dev/sda6 activated
-> > > > [ 1009.340117] EXT4-fs (sda1): mounting ext2 file system using
-> > > > the ext4 subsystem
-> > > > [ 1009.362722] EXT4-fs (sda1): mounted filesystem without
-> > > > journal. Opts: (null)
-> > > > [ 1009.362737] ext2 filesystem being mounted at /target/boot
-> > > > supports timestamps until 2038 (0x7fffffff)
-> > > > [ 6373.748413] kernel read not supported for file /test-exec
-> > > > (pid: 10094 comm: debootstrap)
-> > > > [ 6413.169920] kernel read not supported for file /usr/bin/true
-> > > > (pid: 15960 comm: chroot)
-> > > 
-> > > 
-> > > Hello.
-> > > 
-> > > This is because of VFS changes in Linux-5.10.X.
-> > > Specifically, because of the following patch:
-> > > https://lkml.org/lkml/2020/8/17/174
-> > > In the upstream git repository it is commit
-> > > 4d03e3cc59828c82ee89ea6e2
-> > > 
-> > > So, Christoph, what to do now for file systems which implement
-> > > ->read() method of file operations?
-> > 
-> > *deafening silence* it appears that -- in the best of cases --
-> > Christoph engaged in an act of _iter masturbation [1];
-> > and in the worst of cases, the gentleman was aiming straight at
-> > reiser4.
-> > 
-> > > ... It seems that chroot doesn't work
-> > > for them. And people are not able to release distros with
-> > > upgraded
-> > > kernels..
-> > 
-> > Not only 'chroot doesn't work' for us, but even after replacing the
-> > kernel in a reiser4 (proper SFRN ;) instance and
-> >   upon an initial Linux 5.10.x kernel boot:
-> > ...
-> > kernel read not supported for file usr/lib/systemd/systemd (pid: 1
-> > comm: run-init)
-> > kernel panic -- not syncing: Attempted to kill init!
-> > exitcod=0x00000100
-> > ...
-> > 
-> > Fact is some of us have commercial interests when deploying
-> > reiser4, both in cloud instances, baremetal, and on-premises.
-> > 
-> > In the future if -- and only if -- our reiser4 efforts come to
-> > successful fruition, quite likely in due time we will be
-> >   able to financially commit to the Penguin's Linux Foundation
-> > temple, just like large corporations do
-> >   in exchange for indulgences[2] which virtue-wash their past
-> > and/or current corp. officers' *substantially darker deeds*;
-> >   heck, 'indulgence trafficking' seems to assuage->numb->arg(STFU)
-> > that 'virtuous' cult of GNU/Linux
-> >   developers/gatekeepers/maintainers' frivolous, *narcissist*,
-> > ethics and/or moralities so often piled up against
-> >   Reiser's work --which, paradoxically(!?), actually was largely
-> > implemented by Russian developers ;)
-> > 
-> > In the meantime, I hacked a reverse patch that undoes some(all) of
-> > the surreptitious lethal attack on reiser4 fs
-> >   -- at least on AMD64 architectures (I did away with other
-> > arch/Kconfigs).
-> > And no, I am not a git pro-, undoing what I could of commit
-> > 4d03e3cc59828c82ee89ea6e27a2f3cdf95aaadf (as your hinted, Ed)
-> >   does not fix the 'kernel read' issue.
-> > 
-> > Notwithstanding, I would appreciate if you can take a look at the
-> > attached patch. Probably it can be streamlined and/or improved
-> >   further to minimize pain on subsequent Linux kernel upgrades.
-> 
-> 
-> That patch is an attempt to swim against the current ;)
-> 
-> I no longer remember, why they want to get rid of set_fs for already
-> 15
-> years, but ->read() and ->write() methods seem to be deprecated, and
-> the
-> correct way would be to implement the new ->read_iter() and
-> write_iter()
-> methods, where reiser4 works with "chunked" streams, represented by
-> iov_iter structure, rather than with "continuous" streams,
-> represented
-> by char __user *buf. The task is not that difficult, but rather time
-> consuming - I don't have a time for this right now..
 
-On Sun, Jun 20, 2021 at 10:45 AM Edward Shishkin
-<edward.shishkin@gmail.com> wrote:
-   So, I have implemented ->read_iter() for all plugins (*). It is
-   included
-   to reiser4-for-5.12 stuff. Not sure if it is enough to make distro with
-   root over reiser4 though: ->write_iter() is not yet implemented (not so
-   trivial because of transactions).
-   
-   (*)
-   https://github.com/edward6/reiser4/commit/ac72aba7e8bb16a28755c1b2b762971927d17c3c
-   
-   https://github.com/edward6/reiser4/commit/4d3200fbcb2003c680cdb822e3f616d3fa83c391
-   
-   Edward.
-   
-You updated reiser4 patch implementation enables the reiser4 Debian
-Installer (d-i) to proceed with the installation into a reiser4 root fs
-disk media, Sir, much appreciated.
++Cc Scott, Sebastian
 
-< https://metztli.it/bullseye/netboot-ng/metztli-reiser4.iso >
-< https://metztli.it/bullseye/netboot-ng/metztli-reiser4.iso.SHA256SUM
+On 03/08/21 16:43, Paul E. McKenney wrote:
+> On Tue, Aug 03, 2021 at 11:54:36PM +0100, Valentin Schneider wrote:
+>> Running RCU torture with CONFIG_PREEMPT_RT under v5.13-rt1 triggers:
+>>
+>> [   10.821700] DEBUG_LOCKS_WARN_ON(this_cpu_read(softirq_ctrl.cnt))
+>> [   10.821716] WARNING: CPU: 5 PID: 137 at kernel/softirq.c:173 __local_bh_disable_ip (kernel/softirq.c:173 (discriminator 31))
+>> [   10.821739] Modules linked in:
+>> [   10.821749] CPU: 5 PID: 137 Comm: rcu_torture_rea Not tainted 5.13.0-rt1-00005-g08bbda29766a #129
+>> [   10.821759] Hardware name: ARM Juno development board (r0) (DT)
+>> [   10.821765] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+>> [   10.821938] Call trace:
+>> [   10.821941] __local_bh_disable_ip (kernel/softirq.c:173 (discriminator 31))
+>> [   10.821950] rcutorture_one_extend (./include/linux/rcupdate.h:274 ./include/linux/rcupdate.h:737 kernel/rcu/rcutorture.c:1443)
+>> [   10.821960] rcu_torture_one_read (kernel/rcu/rcutorture.c:1590 kernel/rcu/rcutorture.c:1638)
+>> [   10.821968] rcu_torture_reader (kernel/rcu/rcutorture.c:1730)
+>> [   10.821976] kthread (kernel/kthread.c:321)
+>> [   10.821986] ret_from_fork (arch/arm64/kernel/entry.S:1005)
+>> [   10.821997] irq event stamp: 478635
+>> [   10.822001] hardirqs last enabled at (478635): _raw_spin_unlock_irq (./arch/arm64/include/asm/irqflags.h:35 ./include/linux/spinlock_api_smp.h:168 kernel/locking/spinlock.c:202)
+>> [   10.822016] hardirqs last disabled at (478634): __schedule (kernel/sched/core.c:5154 (discriminator 1))
+>> [   10.822029] softirqs last enabled at (478626): __local_bh_enable_ip (./arch/arm64/include/asm/irqflags.h:85 kernel/softirq.c:262)
+>> [   10.822040] softirqs last disabled at (478622): rcutorture_one_extend (./include/linux/bottom_half.h:19 kernel/rcu/rcutorture.c:1441)
+>>
+>> Per this warning, softirqs cannot be disabled in a non-preemptible region
+>> under CONFIG_PREEMPT_RT. Adjust RCU torture accordingly.
+>>
+>> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+>> ---
+>>  kernel/rcu/rcutorture.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+>> index 6096a7d14342..680f66b65f14 100644
+>> --- a/kernel/rcu/rcutorture.c
+>> +++ b/kernel/rcu/rcutorture.c
+>> @@ -1537,6 +1537,8 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
+>>       * them on non-RT.
+>>       */
+>>      if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+>
+> This depends on some rcutorture patches in -rt that are not yet in
+> -rcu.  Would -rt be a good place for this one, or are those patches
+> now ready for -rcu?
 >
 
-Took me a while because there is no Debian packaging for the Linux
-kernel 5.12, i.e., the Debian kernel package maintainers/developers'
-last package is for 5.10.46-zt and then they skipped 5.11 and 5.12 to
-begin experimenting with packaging for 5.13.xy-zt. I had to come up
-with a crude hack -- based on inductive reasoning -- to combine patches
-from those two packaging extremes and thus test if your patch actually
-solved the installation issue.
+Right, this goes along with
 
-Apropos, I have been running that reiser4 linux 5.12.19 EOL build
-locally, as well, for a couple of days without apparent issues thus
-far.
-< https://metztli.it/bullseye/tezcatlipoca.jpg >
+  72d6f4f680bf ("rcutorture: Avoid problematic critical section nesting on RT")
 
+(from v5.13-rt1), which seems to apply cleanly on top of the current
+mainline. So if we want this to go straight into -rcu, the above needs to
+go along with it.
 
-Best Professional Regards.
+Thomas et al, any objections?
 
-
--- 
--- 
-Jose R R
-http://metztli.it
------------------------------------------------------------------------
-----------------------
-Download Metztli Reiser4: Debian Buster w/ Linux 5.10.26 AMD64
------------------------------------------------------------------------
-----------------------
-feats ZSTD compression https://sf.net/projects/metztli-reiser4/
------------------------------------------------------------------------
-----------------------
-or SFRN 5.1.3, Metztli Reiser5 https://sf.net/projects/debian-reiser4/
------------------------------------------------------------------------
---------------------
-Official current Reiser4 resources: https://reiser4.wiki.kernel.org/
-
-
+>                                                       Thanx, Paul
+>
+>> +		/* Can't disable bh in atomic context under PREEMPT_RT */
+>> +		mask &= ~(RCUTORTURE_RDR_ATOM_BH | RCUTORTURE_RDR_ATOM_RBH);
+>>              /*
+>>               * Can't release the outermost rcu lock in an irq disabled
+>>               * section without preemption also being disabled, if irqs
+>> --
+>> 2.25.1
+>>
