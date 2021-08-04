@@ -2,144 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE523E0A2D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDFF3E0A2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234875AbhHDV6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44906 "EHLO
+        id S234941AbhHDV7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhHDV6t (ORCPT
+        with ESMTP id S229479AbhHDV7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:58:49 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA8EC0613D5;
-        Wed,  4 Aug 2021 14:58:35 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id hs10so6034309ejc.0;
-        Wed, 04 Aug 2021 14:58:35 -0700 (PDT)
+        Wed, 4 Aug 2021 17:59:18 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB57C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:59:05 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id l19so5098141pjz.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:59:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UDFP+Kh/RXp5326ifRvFQhSNe6psMCNDhU/dD1rM8SA=;
-        b=aJO8jUZNJLtuyY3pbXnWfLurE2o2BUbvMDRodBpaALLIZ2vk5/obf8tI5CyYpMWTl4
-         S5XUXdJF3PHtTAjg1DnFFgd/mL0mQPgOyIfSKCMBkE3duy8WCvdniyRU3ptJt6GCKL4I
-         AmFaCUzJ4/DmqYkLrHG+EIqPrkKkmjWYETYbTwpidM68uG/HOw2hgTJMXL1IsS1iPgXJ
-         gu6v4/zddwPtMK9qctadVp9lM8/aFvqZF/tklCEWR1KjObJTv+twR7GK4pTmy5nR2Uac
-         aoh16hY5LSJeQccnLabchOIf2UooX6zYGnswmEMOHR9ZBaIFCgYCc1l/WXNjd/jPragF
-         3zIg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=O8eJ77gUUAQPCTRG4aKmdZBbj0yzJFVRjQmVIPqu+nY=;
+        b=Sy91xrJtaeMLLuVxL6+f1+uJtkDsKFSh3I/amCRlUJn9ma1utz8JNgRUWQVejG6IQJ
+         2L0VeyIck1MTqpyMt18SY0ed9uvgF3epGv7JmGLq/eXOWyCLOIxJ9roXARNXXpD8ZtU2
+         o0z65MEOkRoY3qVwgw2d5SIZM0iqn8cuYjhiTaWrWywJMVPkiHfhZqd4n18/5oRyP15k
+         ZX9oFBaIq2O81VcqGHt/M43F4K33WrNCyD31cewYnN509EIEDuYEgH4m/ntwcE2PYiQ+
+         EOCLv7XMMgOQU/9sroWhRFwsDjPHg+8NeftPEUbAvIptvNTlUEhZk0fuRSktSvfDJiVI
+         6UdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UDFP+Kh/RXp5326ifRvFQhSNe6psMCNDhU/dD1rM8SA=;
-        b=jkeD0RDNW0nocveiyjbYBBX/POk/LqmbZUaPvA3mqMqjF1+QJQtNm0/oYuhW15U/1b
-         s/xdzouxuwXxxqhIL5XeEq5L8xfICIPbgpK20lu1TStRzhkCi7e8qxqaYUecAgmirOhE
-         v6doySSOJ2EQdrC7WY+OHuxZqpCuGXmpgXOT6K2kal56UfkmUYkpwYhI7tPhAfX/WU7s
-         ZeqRuhYKRtxHFFPL7vlPYobbmhRhsxlZHTM75H2mpzWMhbuxGYSRxKy06TxcqFPpcB/d
-         bLyomuxlCStHmct8Xt/BC3pTxAeLzcQSdezYPvVFEmuf6IJvMvvnpn/x/XZOAN+HniXW
-         UW7g==
-X-Gm-Message-State: AOAM531v62pa0LYU00tkkV2o3f6H7vUWabpgQ8cegtY+UlKLflQqLJnY
-        PEeUes8mXgO6XylwZYcrd3vdeUMT90LW4su+JoM=
-X-Google-Smtp-Source: ABdhPJy+1zg5ha6tdssaaLOTO5ub8yD6ePygjh/AQXLvSk2ersQk/TktWkm2YuWkuPfs+j45CXhQuk4L7keHv/Dy1cE=
-X-Received: by 2002:a17:906:b0c5:: with SMTP id bk5mr1228728ejb.428.1628114314016;
- Wed, 04 Aug 2021 14:58:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=O8eJ77gUUAQPCTRG4aKmdZBbj0yzJFVRjQmVIPqu+nY=;
+        b=ukueP3wx4rsrCS6ofhaobCuYiF/iwyUxrGQaMd8yluddIAT8YnjRpnXBr7r0FRX6Qd
+         /leoiHx22zQVZ3Q6IYSq3ZIjcUzgYE2Kqt+6dphVpq1vfZGrTcs6EEGHy85rzaQLDSJj
+         VegCXSDcph49279uwYwjdSHYVdpEAFtQJlpUXaez9COeCxI2dV4YRmKJQAMoL/4r+fXV
+         ibhBCNfzdqipsaUKORRZB1noSq1222mc2xwSpkRNLuH3+U3HWbehNxyNpwRw9m6X1+Kz
+         de0ZPsqqLnFVbbleH7Dn1UMN9PuFh12EdWnzJ+e+ngole3GbEoL71MnpDEEnqLOAvYsr
+         dEsQ==
+X-Gm-Message-State: AOAM531zoCmoNznq0QJmVYwvfZZeS8OLgTOApPIawcvtalNhQ36GWUGm
+        hgcyccadFKiMIn+z8k0sz28CrQ==
+X-Google-Smtp-Source: ABdhPJw2Ew3hDfI22U6qEBviQI4Q/MIZoAzm+AkbAdKfMwB1ZiPHwWQqmC0Xbjp3aB8fxVi6BYT+Ng==
+X-Received: by 2002:aa7:96cd:0:b029:3b7:53e2:9e6b with SMTP id h13-20020aa796cd0000b02903b753e29e6bmr1670733pfq.19.1628114344599;
+        Wed, 04 Aug 2021 14:59:04 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id q16sm3948189pfk.153.2021.08.04.14.59.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 14:59:04 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 21:59:00 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 04/12] x86/tdx: Add protected guest support for TDX
+ guest
+Message-ID: <YQsNpG55v7dhFqIb@google.com>
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-References: <20210716103651.1455-1-linux.amoon@gmail.com> <20210716103651.1455-2-linux.amoon@gmail.com>
- <CAFBinCDeqauw_V-Vn9cat9HaCXj6HEMz6G+G+VbqCNtGEFGYzg@mail.gmail.com>
- <CANAwSgQ5PDGUWMH-jxnz5wwutUVniTn7RAe=4J=8-jbmqxYRRg@mail.gmail.com>
- <CAFBinCBhg+dije+3DvV_V_kqHv9q+r4EPxXCYFti6KuA4mK7KQ@mail.gmail.com>
- <CANAwSgT9-5zGr67aGzBmW6WDBfeiAvjv_zv2UbRC+YbgAGg==A@mail.gmail.com>
- <CAFBinCCGA0b=LVjbQood+iN+DHLodY0RJ-GrSOcgdzrDFJ25pQ@mail.gmail.com> <CAFBinCAohjxcsY3D1rdAiYVGL+==cnjzZxg1GmYxSNVhxSTDoA@mail.gmail.com>
-In-Reply-To: <CAFBinCAohjxcsY3D1rdAiYVGL+==cnjzZxg1GmYxSNVhxSTDoA@mail.gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Wed, 4 Aug 2021 23:58:23 +0200
-Message-ID: <CAFBinCAP_DDvPLn4h1yQKEdU_x1ovokHUTPeq3vNV_sDF8PcWg@mail.gmail.com>
-Subject: Re: [PATCHv2 1/4] ARM: dts: meson8b: odroidc1: Add usb phy power node
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     linux-phy@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-amlogic@lists.infradead.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Matt Corallo <oc2udbzfd@mattcorallo.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210804181329.2899708-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 9:09 PM Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
->
-> Hi Anand,
->
-> On Sun, Jul 18, 2021 at 4:01 PM Martin Blumenstingl
-> <martin.blumenstingl@googlemail.com> wrote:
-> [...]
-> > > From the schematics [1]
-> > > https://dn.odroid.com/S805/Schematics/odroid-c1+_rev0.4_20160226.pdf
-> > >
-> > > You could find references to PWREN  <--- GPIOAO.BIT5
-> > > The second reference is USB HOST Power Switch
-> > > The third reference is USB HOST POWER.
-> > >
-> > > Hope I am clean in my thought process now.
-> > Can you please point out the page numbers for me?
-> >
-> > What I am seeing on page 1 is:
-> > GPIOAO_5 (called GPIOAO.BIT5) is connected as an INPUT to the USB_OTG
-> > PWREN signal (that's the green box with the label "USB_OTG.SchDoc"
-> > above it).
-> I unfortunately missed your question on IRC on this topic:
-> <armoon> xdarklight: just want to understand the confusion on PWREN,
-> either is INPUT / OTPUT to usb hub am I correct
-> My understanding of the INPUT/OUTPUT direction in the Odroid-C1
-> schematics (which you linked) above is that the arrow direction shows
-> whether it's an input or output.
-> For example (all on page one):
-> - HDMI_HPD is an input to the Meson8b SoC, arrow direction is: HDMI => S805
-> - IR_IN is an input to the Meson8b SoC, arrow direction is: S805 <=
-> GPIOAO.BIT7 IR_IN
-> - PWM is an output, arrow direction is: S805 => PWM.C VCCK_PWM
-> - 3.3V/1.8V switch for the SD card is an output, arrow direction is:
-> S805 => GPIOAO.BIT3 TF_3V3N_1V8_EN
->
-> That tells me: the arrow direction shows which connections are inputs
-> or outputs.
-> Some pins can be input and output at the same time (HDMI_CEC). But
-> let's keep it simple for now any only look at inputs/output.
->
-> Based on this information I am looking at the arrow direction for
-> USB_OTG: GPIOAO.BIT5 PWREN <= S805
-> So this confirms that GPIOAO_5 is an output to the SoC.
-> Please note though that this part is not linked with any USB host
-> connector, it's only linked to the USB OTG path.
->
-> For the next part the S805 SoC is not involved:
-> USB1 USB_HOST_PWR_SW PWREN <= PWREN USB_HUB_GL852G
-> USB2 USB_HOST_PWR_SW PWREN <= PWREN USB_HUB_GL852G
-> This tells me that the PWREN signal for the two USB_HOST_PWR_SW (USB
-> host power switches / current limiters) is driven by the GL852G USB
-> hub.
-Hardkernel team responded on the Odroid forums to the request from Anand:
-"Power-Enable signal to the USB load switch ICs is connected to the
-USB hub controller.
-It is not connected the CPU GPIO."
+On Wed, Aug 04, 2021, Kuppuswamy Sathyanarayanan wrote:
+> TDX architecture provides a way for VM guests to be highly secure and
+> isolated (from untrusted VMM). To achieve this requirement, we can't
+> completely trust any data coming from VMM. TDX guest fixes this issue
+> by hardening the IO drivers against the attack from the VMM. Since we
+> have a requirement to modify the generic drivers, we need to use the
+> generic prot_guest_has() API to add TDX specific code in generic
+> drivers.
+> 
+> So add TDX guest support in prot_guest_has() API.
+> 
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
 
-The regulator from Anand's patch is therefore connected to the micro USB port.
-This means that the patch needs updating in case Anand wants to have
-it included.
+...
 
+> diff --git a/arch/x86/include/asm/protected_guest.h b/arch/x86/include/asm/protected_guest.h
+> index b4a267dddf93..c67bf13c8ad3 100644
+> --- a/arch/x86/include/asm/protected_guest.h
+> +++ b/arch/x86/include/asm/protected_guest.h
+> @@ -12,12 +12,17 @@
+>  
+>  #include <linux/mem_encrypt.h>
+>  
+> +#include <asm/processor.h>
+> +#include <asm/tdx.h>
+> +
+>  #ifndef __ASSEMBLY__
+>  
+>  static inline bool prot_guest_has(unsigned int attr)
+>  {
+>  	if (sme_me_mask)
+>  		return amd_prot_guest_has(attr);
+> +	else if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
 
-Best regards,
-Martin
-
-
-[0] https://forum.odroid.com/viewtopic.php?p=332217#p332217
+Why not "boot_cpu_has(X86_FEATURE_TDX_GUEST)"?
