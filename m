@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9B33E040B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B12B93E040D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238885AbhHDPVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:21:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238324AbhHDPVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:21:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E35A60295;
-        Wed,  4 Aug 2021 15:21:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628090482;
-        bh=ResC44EGJwfafk1EP1TTehAscV+PxNhFSYCS7gE+NbQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=o+YAX3nM7ZsbINM78zsss9kmETucTr8eDJ9XhnmF7IP3KkvYQ3LrpWozYDakmvuqB
-         S3yXsaByYojvDBAEfD7SKPIP+AuODwWjLhiTquQFwiOYruaq+Aj16RfopXAKd/j3yl
-         RXJXhPIV3Is/ghDJpWSSwzmKI+TGdMME/TRcZ0n4xX/H3NHR930cx13Cv6BCSqEYcw
-         +RiNUYvXiT6ChCAgwC2XvaSnGKXemw3kK1vZIaIY4Td6Lwk8kP7TEapAuLnWfphqcC
-         6JxTuPdxgDJFPMbZFGzPWN9rtKMofElwX6pQKmmJR81MfSWbtCsJFt9oVLYPr/Vuc5
-         9251zhWAfSnvA==
-Received: by mail-wm1-f44.google.com with SMTP id a192-20020a1c7fc90000b0290253b32e8796so3895239wmd.0;
-        Wed, 04 Aug 2021 08:21:22 -0700 (PDT)
-X-Gm-Message-State: AOAM531Q3BKJvxRkSlaX9PBzSZFoXB5qBlFQjOyIINDnW2EGIV31x8N9
-        AMVVGA3PFXgjrnQpPj0Sg0NjYPl+S5EAdY4GszI=
-X-Google-Smtp-Source: ABdhPJyhsDZiH6C0oIXqOf2mYVpZRorsqoPP39EpX0oNA364INwgFOyHPCUYK+yr5luDHjm6eIbPPD+iF8pKEjFkMH0=
-X-Received: by 2002:a05:600c:3b08:: with SMTP id m8mr10383643wms.84.1628090481196;
- Wed, 04 Aug 2021 08:21:21 -0700 (PDT)
+        id S238920AbhHDPWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238324AbhHDPWE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 11:22:04 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E34CC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 08:21:51 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id h10so1619481qth.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 08:21:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PVQ1V3ExogsGaCtov6jk1dJHF06/mvxhxmainNfgf8Y=;
+        b=WhDDPEFlFUnZ/n4mkY5wKuDd9D4NlnpC53nPyhaUXTsS9ANdhKzdNVx5fakLYg2ld5
+         53GgyApWfpJWTWn512PJAEbrjzkH1y6DcLkbSv2qLBD9Qp6s79jweDq44mCbnJeSulGL
+         WMiUkGI5b+AsRhjGG1rnpemgEjwWKyOWN33wp7OWMq/D0VuLpRLrLJlXxBVAUrmslAbI
+         JCDt2vljmNoDdhI3HK6gynnaCSn8i1E1Ua/ZiIq4ia1LBLlm1Zz/bQwBCUxfKmy24Dgn
+         qU15RgjA75W5WwHdDOF6zqkIj19IRt3f14tZD1T5Op7jFviKOqpCdNSW7BYRhvpDGETc
+         jA3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PVQ1V3ExogsGaCtov6jk1dJHF06/mvxhxmainNfgf8Y=;
+        b=hGwgyc1DP2GTEZtIjtq/SwFA5PaFMUJWvW0052J8DI6reMzigWwCIZezrHUkwUp6hy
+         fpOEJJZ8dhnlPqsOQIcKBUXRoDlQlYrZ+Tp/OCyMo6BXrQ6MmzlLqL4qM1voDo3PBIoV
+         NXAYghd1P02O5KqcGO1QAo+rVK62zFrev8mEuwNWIxw96yAgJZMfLeYuI7kpqAHZoL2R
+         nm5AnXp94N8ETAAJtIDLMgk7L0rQYgDurHpbbhBf67rw2ldROfQPOq4brxMiphnMchsE
+         5IU3xFb4zFkD3ayMKADJd1Dp6xvU2xVOk+RLvOmt9mpf1jJ3kk2FaSEuFDnHZ/qGXV0Z
+         ZWRw==
+X-Gm-Message-State: AOAM533CG7hnxeolZ8nyo1j3fffWbVYMJfwRRTjSCgkJ4/ye0rcFU9Ms
+        3puuDOhptoerV8jJ+lIMbLI71A==
+X-Google-Smtp-Source: ABdhPJzIvP8prj+GuCuMKLyFZYhXKJCHI+G2lNJeGYxKjjOccHbhkJhB2OzLb/YU60cvxkm3wxDViw==
+X-Received: by 2002:ac8:5b95:: with SMTP id a21mr104029qta.275.1628090510844;
+        Wed, 04 Aug 2021 08:21:50 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id c16sm988323qtv.32.2021.08.04.08.21.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 08:21:50 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mBIiK-00CeGf-Ja; Wed, 04 Aug 2021 12:21:48 -0300
+Date:   Wed, 4 Aug 2021 12:21:48 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jann Horn <jannh@google.com>
+Cc:     Liam Howlett <liam.howlett@oracle.com>,
+        Luigi Rizzo <lrizzo@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH] Add mmap_assert_locked() annotations to find_vma*()
+Message-ID: <20210804152148.GI543798@ziepe.ca>
+References: <20210731175341.3458608-1-lrizzo@google.com>
+ <20210803160803.GG543798@ziepe.ca>
+ <CAMOZA0JKjRFUHbs3zc4kiGcuXxR0arCN=oPZZsLCa4qHvRrH_A@mail.gmail.com>
+ <20210803230725.ao3i2emejyyor36n@revolver>
+ <CAG48ez2TEP0hsRjLACVmRppMEk6Z9aREcGL498EKhdBBXSRsoA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210804121318.337276-1-arnd@kernel.org> <20210804142814.GB1645@hoboy.vegasvil.org>
-In-Reply-To: <20210804142814.GB1645@hoboy.vegasvil.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 4 Aug 2021 17:21:05 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1EBwd+DvqnQSHL03zqaoRz_bhxj6TGw2ivpWLDT7jorw@mail.gmail.com>
-Message-ID: <CAK8P3a1EBwd+DvqnQSHL03zqaoRz_bhxj6TGw2ivpWLDT7jorw@mail.gmail.com>
-Subject: Re: [PATCH net-next v3] ethernet: fix PTP_1588_CLOCK dependencies
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Shannon Nelson <snelson@pensando.io>, drivers@pensando.io,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Simon Horman <simon.horman@netronome.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Intel Wired LAN <intel-wired-lan@lists.osuosl.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez2TEP0hsRjLACVmRppMEk6Z9aREcGL498EKhdBBXSRsoA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 4:28 PM Richard Cochran <richardcochran@gmail.com> wrote:
-> > @@ -87,8 +87,8 @@ config E1000E_HWTS
-> >  config IGB
-> >       tristate "Intel(R) 82575/82576 PCI-Express Gigabit Ethernet support"
-> >       depends on PCI
-> > -     imply PTP_1588_CLOCK
-> > -     select I2C
-> > +     depends on PTP_1588_CLOCK_OPTIONAL
-> > +     depends on I2C
->
-> This little i2c bit sneaks in, but I guess you considered any possible
-> trouble with it?
+On Wed, Aug 04, 2021 at 04:42:23PM +0200, Jann Horn wrote:
+> Since I haven't sent a new version of my old series for almost a year,
+> I think it'd be fine to take Luigi's patch for now, and undo it at a
+> later point when/if we want to actually use proper locking here
+> because we're worried about concurrent access to the MM.
 
-Good catch!
+IIRC one of the major points of that work was not "proper locking" but
+to have enough locking to be complatible with lockdep so we could add
+assertions like in get_user_pages and find_vma.
 
-I did need this with v2, as it was causing a circular dependency against
-(IIRC) CONFIG_MLXSW_I2C, but I'm fairly sure it's not needed any
-more after everything else uses 'depends on' now.
-
-I'm happy to resend a v4 without that change, as it doesn't belong in here,
-or we just leave it because it is correct after all, depending on what the Intel
-ethernet people prefer.
-
-> Acked-by: Richard Cochran <richardcochran@gmail.com>
-
-Thanks,
-
-      Arnd
+Jason
