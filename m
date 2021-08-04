@@ -2,194 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CDE3E0422
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634B63E0420
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239059AbhHDPZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:25:47 -0400
-Received: from mga05.intel.com ([192.55.52.43]:52776 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238994AbhHDPZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:25:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="299531340"
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="299531340"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 08:25:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="585490624"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Aug 2021 08:25:02 -0700
-Received: from alobakin-mobl.ger.corp.intel.com (kswiecic-MOBL.ger.corp.intel.com [10.213.28.10])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 174FOvOo013258;
-        Wed, 4 Aug 2021 16:24:57 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Shay Agroskin <shayagr@amazon.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Lukasz Czapnik <lukasz.czapnik@intel.com>,
-        Marcin Kubiak <marcin.kubiak@intel.com>,
-        "Michal Kubiak" <michal.kubiak@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Netanel Belgazal" <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Andrii Nakryiko" <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        "Ido Schimmel" <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Jian Shen <shenjian15@huawei.com>,
-        "Petr Vorel" <petr.vorel@gmail.com>, Yangbo Lu <yangbo.lu@nxp.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 07/21] ethernet, ena: convert to standard XDP stats
-Date:   Wed,  4 Aug 2021 17:24:55 +0200
-Message-Id: <20210804152455.173-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <pj41zllf5hmkck.fsf@u570694869fb251.ant.amazon.com>
-References: <20210803163641.3743-1-alexandr.lobakin@intel.com> <20210803163641.3743-8-alexandr.lobakin@intel.com> <pj41zllf5hmkck.fsf@u570694869fb251.ant.amazon.com>
+        id S238982AbhHDPZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:25:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42169 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238988AbhHDPZ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 11:25:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628090708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gYL7WTiLrXdvlISyfYPUBkceFpd6GfwZ8nIKez1uy+s=;
+        b=Q8/wvdtCpnqLziKgjJt3fdapDgGkIjtGZdvXyEJmRNXOctN/LOZlzhh/zC+pQoVyZAqhHa
+        IfXqRZc1UsfJO4wZS9augBQZ4w/U2Me0r2Qdd1YTNFg/z8rR72+EhdIdDC/+RLZh3L//IC
+        TpEO/PZUJr2DEq5DjyTwqWs8ABJEMEE=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-383-MCOqVDOpMSSUalwvXCG06Q-1; Wed, 04 Aug 2021 11:25:07 -0400
+X-MC-Unique: MCOqVDOpMSSUalwvXCG06Q-1
+Received: by mail-wm1-f71.google.com with SMTP id w25-20020a1cf6190000b0290252505ddd56so398299wmc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 08:25:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gYL7WTiLrXdvlISyfYPUBkceFpd6GfwZ8nIKez1uy+s=;
+        b=bY7Xe+DEGwsg7dUXLRXhW5jk0fVgAwMS/iubGB8tu4MApGH5GHnH9Lme6TNINnx6k1
+         6h/AH3qbubk+u4+PKAfMkNYhSCw3y3tlB/GbpN65POE+fWbngOpf/oirL+OGzB51QI5r
+         D6EQ35IoX+KuzqsY02rd4aJeq5+2bALX2rbtkkx4ssQJUHuo52ku1+aeP+PcWSy835gn
+         I9Ch9I/uOPKjyicPSVQywn5gpru2IDjZZCQkRyMluHyzZDxMnTDXlrupW9dc+D7JRWJp
+         YfZYKxYXJ/2H+uV8H4CDBZGNNvWsG2/t8e284Kz8EgMZ9Ud1StnUqhqfPRvh3+/CWk6/
+         PiOA==
+X-Gm-Message-State: AOAM532BihEk0BOz94r3A/0dJPEr3/cDev4+DHO1WGd5kqNyy8pBY4Nr
+        +0pHc0VR8OoFhGZEOdGgTEPesjJ7RO+3l+kx93/u0N487ImS40KPFUdqrbd/rJqp5wlVjjtSYWS
+        PFkRoU5El2cvN2HlVcUhESIXGiwapKoKEwxZ71ztk
+X-Received: by 2002:a05:600c:5108:: with SMTP id o8mr146214wms.97.1628090706475;
+        Wed, 04 Aug 2021 08:25:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwGPp6F/pqnoLzgNlPa34lpo9Fxz5ei5sfxO6QxFSlOC9E6qS0pKNJg4a4S7jUPOSWKzwWMmB1rxcCP3pTCg+4=
+X-Received: by 2002:a05:600c:5108:: with SMTP id o8mr146202wms.97.1628090706302;
+ Wed, 04 Aug 2021 08:25:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210803191818.993968-1-agruenba@redhat.com> <20210803191818.993968-6-agruenba@redhat.com>
+In-Reply-To: <20210803191818.993968-6-agruenba@redhat.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Wed, 4 Aug 2021 17:24:55 +0200
+Message-ID: <CAHc6FU7YLUivXXa00dX1=DC1XaYLnh_j3QDvYcRoAji14WAyAQ@mail.gmail.com>
+Subject: Re: [PATCH v5 05/12] iov_iter: Introduce fault_in_iov_iter_writeable
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, ocfs2-devel@oss.oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shay Agroskin <shayagr@amazon.com>
-Date: Wed, 4 Aug 2021 16:04:59 +0300
+On Tue, Aug 3, 2021 at 9:18 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+> Introduce a new fault_in_iov_iter_writeable helper for safely faulting in an
+> iterator for writing.  Uses get_user_pages() to fault in the pages without
+> actually writing to them, which would be destructive.
+>
+> We'll use fault_in_iov_iter_writeable in gfs2 once we've determined that the
+> iterator passed to .read_iter isn't in memory.
+>
+> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> ---
+>  include/linux/pagemap.h |  1 +
+>  include/linux/uio.h     |  1 +
+>  lib/iov_iter.c          | 41 +++++++++++++++++++++++++++
+>  mm/gup.c                | 61 +++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 104 insertions(+)
+>
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index 7c9edc9694d9..a629807edb8c 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -737,6 +737,7 @@ extern void add_page_wait_queue(struct page *page, wait_queue_entry_t *waiter);
+>   * Fault in userspace address range.
+>   */
+>  size_t fault_in_writeable(char __user *uaddr, size_t size);
+> +size_t fault_in_safe_writeable(const char __user *uaddr, size_t size);
+>  size_t fault_in_readable(const char __user *uaddr, size_t size);
+>
+>  int add_to_page_cache_locked(struct page *page, struct address_space *mapping,
+> diff --git a/include/linux/uio.h b/include/linux/uio.h
+> index 12d30246c2e9..ffa431aeb067 100644
+> --- a/include/linux/uio.h
+> +++ b/include/linux/uio.h
+> @@ -120,6 +120,7 @@ size_t copy_page_from_iter_atomic(struct page *page, unsigned offset,
+>  void iov_iter_advance(struct iov_iter *i, size_t bytes);
+>  void iov_iter_revert(struct iov_iter *i, size_t bytes);
+>  size_t fault_in_iov_iter_readable(const struct iov_iter *i, size_t bytes);
+> +size_t fault_in_iov_iter_writeable(const struct iov_iter *i, size_t bytes);
+>  size_t iov_iter_single_seg_count(const struct iov_iter *i);
+>  size_t copy_page_to_iter(struct page *page, size_t offset, size_t bytes,
+>                          struct iov_iter *i);
+> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+> index c0fa1618561c..4ffc76801eaa 100644
+> --- a/lib/iov_iter.c
+> +++ b/lib/iov_iter.c
+> @@ -471,6 +471,47 @@ size_t fault_in_iov_iter_readable(const struct iov_iter *i, size_t size)
+>  }
+>  EXPORT_SYMBOL(fault_in_iov_iter_readable);
+>
+> +/*
+> + * fault_in_iov_iter_writeable - fault in iov iterator for writing
+> + * @i: iterator
+> + * @size: maximum length
+> + *
+> + * Faults in the iterator using get_user_pages(), i.e., without triggering
+> + * hardware page faults.  This is primarily useful when we know that some or
+> + * all of the pages in @i aren't in memory.
+> + *
+> + * Returns the number of bytes faulted in, or 0 if no bytes could be faulted in
+> + * (i.e., because the address is invalid).
+> + *
+> + * Always returns the number of avaliable bytes for non-user space iterators.
+> + */
+> +size_t fault_in_iov_iter_writeable(const struct iov_iter *i, size_t size)
+> +{
+> +       if (size > i->count)
+> +               size = i->count;
+> +
+> +       if (iter_is_iovec(i)) {
+> +               const struct iovec *p;
+> +               size_t bytes = size;
+> +               size_t skip;
+> +
+> +               for (p = i->iov, skip = i->iov_offset; bytes; p++, skip = 0) {
+> +                       size_t len = min(bytes, p->iov_len - skip);
+> +                       size_t ret;
+> +
+> +                       if (unlikely(!len))
+> +                               continue;
+> +                       ret = fault_in_safe_writeable(p->iov_base + skip, len);
+> +                       bytes -= ret;
+> +                       if (ret != len)
+> +                               break;
+> +               }
+> +               return size - bytes;
+> +       }
+> +       return size;
+> +}
+> +EXPORT_SYMBOL(fault_in_iov_iter_writeable);
+> +
+>  void iov_iter_init(struct iov_iter *i, unsigned int direction,
+>                         const struct iovec *iov, unsigned long nr_segs,
+>                         size_t count)
+> diff --git a/mm/gup.c b/mm/gup.c
+> index d04984d5d93c..7218e27c2481 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -1694,6 +1694,67 @@ size_t fault_in_writeable(char __user *uaddr, size_t size)
+>  }
+>  EXPORT_SYMBOL(fault_in_writeable);
+>
+> +/**
+> + * fault_in_safe_writeable - fault in an address range for writing
+> + * @uaddr: start of address range
+> + * @size: length of address range
+> + *
+> + * Faults in an address range using get_user_pages, i.e., without triggering
+> + * hardware page faults.  This is primarily useful when we know that some or
+> + * all of the pages in the address range aren't in memory.
+> + *
+> + * Other than fault_in_writeable(), this function is non-destructive.
+> + *
+> + * Note that we don't pin or otherwise hold the pages referenced that we fault
+> + * in.  There's no guarantee that they'll stay in memory for any duration of
+> + * time.
+> + *
+> + * Returns the number of bytes faulted in from @uaddr.
+> + */
+> +size_t fault_in_safe_writeable(const char __user *uaddr, size_t size)
+> +{
+> +       unsigned long start = (unsigned long)uaddr;
+> +       unsigned long end, nstart, nend;
+> +       struct mm_struct *mm = current->mm;
+> +       struct vm_area_struct *vma = NULL;
+> +       int locked = 0;
+> +
+> +       /* FIXME: Protect against overflow! */
+> +
+> +       end = PAGE_ALIGN(start + size);
+> +       for (nstart = start & PAGE_MASK; nstart < end; nstart = nend) {
+> +               unsigned long nr_pages;
+> +               long ret;
+> +
+> +               if (!locked) {
+> +                       locked = 1;
+> +                       mmap_read_lock(mm);
+> +                       vma = find_vma(mm, nstart);
+> +               } else if (nstart >= vma->vm_end)
+> +                       vma = vma->vm_next;
+> +               if (!vma || vma->vm_start >= end)
+> +                       break;
+> +               nend = min(end, vma->vm_end);
+> +               if (vma->vm_flags & (VM_IO | VM_PFNMAP))
+> +                       continue;
 
-> Alexander Lobakin <alexandr.lobakin@intel.com> writes:
-> 
-> >
-> >
-> >
-> > Its 6 XDP per-channel counters align just fine with the standard
-> > stats.
-> > Drop them from the custom Ethtool statistics and expose to the
-> > standard stats infra instead.
-> >
-> > Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> > ---
-> >  drivers/net/ethernet/amazon/ena/ena_ethtool.c | 46 
-> >  ++++++++++++++++---
-> >  1 file changed, 40 insertions(+), 6 deletions(-)
-> 
-> Hi,
-> thanks for making this patch. I like the idea of splitting stats 
-> into a per-queue basis
-> 
-> >
-> > diff --git a/drivers/net/ethernet/amazon/ena/ena_ethtool.c 
-> > b/drivers/net/ethernet/amazon/ena/ena_ethtool.c
-> > index 851a198cec82..1b6563641575 100644
-> > --- a/drivers/net/ethernet/amazon/ena/ena_ethtool.c
-> > +++ b/drivers/net/ethernet/amazon/ena/ena_ethtool.c
-> > @@ -90,12 +90,6 @@ static const struct ena_stats 
-> > ena_stats_rx_strings[] = {
-> >         ENA_STAT_RX_ENTRY(bad_req_id),
-> >         ENA_STAT_RX_ENTRY(empty_rx_ring),
-> >         ENA_STAT_RX_ENTRY(csum_unchecked),
-> > -       ENA_STAT_RX_ENTRY(xdp_aborted),
-> > -       ENA_STAT_RX_ENTRY(xdp_drop),
-> > -       ENA_STAT_RX_ENTRY(xdp_pass),
-> > -       ENA_STAT_RX_ENTRY(xdp_tx),
-> > -       ENA_STAT_RX_ENTRY(xdp_invalid),
-> > -       ENA_STAT_RX_ENTRY(xdp_redirect),
-> >
-> 
-> The ena_stats_rx_strings array is (indirectly) accessed through 
-> ena_get_stats() function which is used for both fetching ethtool 
-> stats and
-> for sharing the stats with the device in case of an error (through 
-> ena_dump_stats_ex() function).
-> 
-> The latter use is broken by removing the XDP specific stats from 
-> ena_stats_rx_strings array.
-> 
-> I can submit an adaptation for the new system later (similar to 
-> mlx5) if you prefer
+Shouldn't we disallow read()ing into those kinds of vmas? If we skip
+over them here and then the actual write results in -EFAULT, we'll end
+up in a loop.
 
-Feel free to either do that (I'll exclude this patch from that
-series then) or you can give me some little tips or examples or
-anything on how to improve this one, so ena would stay converted.
-Both ways are fine for me.
+> +               if (nstart < vma->vm_start)
+> +                       nstart = vma->vm_start;
 
-> thanks,
-> Shay
+Likewise, shouldn't we fail for memory ranges not covered by a vma?
+
+> +               nr_pages = (nend - nstart) / PAGE_SIZE;
+> +               ret = __get_user_pages_locked(mm, nstart, nr_pages,
+> +                                             NULL, NULL, &locked,
+> +                                             FOLL_TOUCH | FOLL_WRITE);
+> +               if (ret <= 0)
+> +                       break;
+> +               nend = nstart + ret * PAGE_SIZE;
+> +       }
+> +       if (locked)
+> +               mmap_read_unlock(mm);
+> +       if (nstart > start)
+> +               return min(nstart - start, size);
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL(fault_in_safe_writeable);
+> +
+>  size_t fault_in_readable(const char __user *uaddr, size_t size)
+>  {
+>         const char __user *start = uaddr, *end;
+> --
+> 2.26.3
+>
 
 Thanks,
-Al
+Andreas
 
-> >  };
-> >
-> >  static const struct ena_stats ena_stats_ena_com_strings[] = {
-> > @@ -324,6 +318,44 @@ static void ena_get_ethtool_strings(struct 
-> > net_device *netdev,
-> >         }
-> >  }
-> >
-> > +static int ena_get_std_stats_channels(struct net_device 
-> > *netdev, u32 sset)
-> > +{
-> > +       const struct ena_adapter *adapter = netdev_priv(netdev);
-> > +
-> > +       switch (sset) {
-> > +       case ETH_SS_STATS_XDP:
-> > +               return adapter->num_io_queues;
-> > +       default:
-> > +               return -EOPNOTSUPP;
-> > +       }
-> > +}
-> > +
-> > +static void ena_get_xdp_stats(struct net_device *netdev,
-> > +                             struct ethtool_xdp_stats 
-> > *xdp_stats)
-> > +{
-> > +       const struct ena_adapter *adapter = netdev_priv(netdev);
-> > +       const struct u64_stats_sync *syncp;
-> > +       const struct ena_stats_rx *stats;
-> > +       struct ethtool_xdp_stats *iter;
-> > +       u32 i;
-> > +
-> ...
-> >  {
-> > @@ -916,6 +948,8 @@ static const struct ethtool_ops 
-> > ena_ethtool_ops = {
-> >         .get_tunable            = ena_get_tunable,
-> >         .set_tunable            = ena_set_tunable,
-> >         .get_ts_info            = ethtool_op_get_ts_info,
-> > +       .get_std_stats_channels = ena_get_std_stats_channels,
-> > +       .get_xdp_stats          = ena_get_xdp_stats,
-> >  };
-> >
-> >  void ena_set_ethtool_ops(struct net_device *netdev)
-> 
-> 
