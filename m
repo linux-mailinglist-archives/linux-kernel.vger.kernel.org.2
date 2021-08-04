@@ -2,53 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 444963E0270
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0163E0273
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238119AbhHDNxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237156AbhHDNxI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:53:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F9AC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 06:52:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sQHuzcjS6P96HYdRIf7uqQ4lnDNFAoSA8AvFOLfc/M4=; b=tewNok//YUiPhUzswLRFPp3jXc
-        PuQKMVAbnitnz6zWHQzh8f6a/RQc9KVm15hvF7mMIUaPZt/jrMllAsqYk4YTJHKNB1aUYp9c3Hidm
-        Upeu+cPbKwVMygr0h+RzLCHAC+sONRLA/6CkStl0UZTuRxjrHM3HsJItd63qdoupvZCJT6BEgwrAC
-        dd8mLHSVuiShgokS+uG1Fm6GAsRC7MuugPO+3QW53ogsr+OfrXzRIHA6u894yWnTn/2PDQsg1vVR3
-        i+/d/SXddJC4/Nc15pt2Iw3zncwB6dSBWBMks2GIEWXwrzVvQvg7iDB7Ga6EmnB2eEY+VqGTfWH3b
-        0ZN9VGOQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBHJU-005uPG-Qe; Wed, 04 Aug 2021 13:52:13 +0000
-Date:   Wed, 4 Aug 2021 14:52:04 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>
-Subject: Re: [PATCH] f2fs: introduce nosmall_discard mount option
-Message-ID: <YQqbhMtVZvCF30r9@infradead.org>
-References: <20210730100530.4401-1-chao@kernel.org>
+        id S237459AbhHDNxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:53:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237156AbhHDNxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 09:53:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FBFB60EE5;
+        Wed,  4 Aug 2021 13:53:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628085207;
+        bh=9OFLSLaWZEiz0zjbwf/0fkoZwlWio885LGnwee/LxW8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r/CW58RuFXGwzx9U720u7bhqr8lspy7Zqwn2Ag0dvEQLdTlpflBX6F75MT8lXVuqg
+         8AvLMAOKcS9QF3JJiJxsb91vZlxydcURGKFfuDksLB4e8nDWquV5PKvqv0NHnHy8Xq
+         IUD/9zjARklfA+8g+JMLsZctg6VtvoQaIX/KUD1ieYxkvePlFoLvtIeIhy9TeLTgm0
+         ATYHGZEgrpSWSCtpn8sQwZoyPJH0O6OXDEN1dcecY+OWo+JHkbBCwg+cYaiul77tdp
+         zPKqYI4S2VI7XvGDzsXUj+ERfgVEW7rv1zRV/ArU3cH3RSqfKWv5cqcfhphYXZx/bU
+         ycn5PVT0T43wA==
+Date:   Wed, 4 Aug 2021 16:53:21 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     liangwenpeng@huawei.com, liweihang@huawei.com, dledford@redhat.com,
+        jgg@ziepe.ca, chenglang@huawei.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] RDMA/hns: Fix return in hns_roce_rereg_user_mr()
+Message-ID: <YQqb0U43eQUGK641@unreal>
+References: <20210804125939.20516-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210730100530.4401-1-chao@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210804125939.20516-1-yuehaibing@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 06:05:30PM +0800, Chao Yu wrote:
-> This patch introduces a new mountoption "nosmall_discard" to support
-> disabling small discard functionality, note that the mountoption can not
-> be removed by remount() due to related metadata should always be
-> initialized during mount().
+On Wed, Aug 04, 2021 at 08:59:39PM +0800, YueHaibing wrote:
+> If re-registering an MR in hns_roce_rereg_user_mr(), we should
+> return NULL instead of pass 0 to ERR_PTR.
+> 
+> Fixes: 4e9fc1dae2a9 ("RDMA/hns: Optimize the MR registration process")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_mr.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+> index 006c84bb3f9f..7089ac780291 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_mr.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+> @@ -352,7 +352,9 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
+>  free_cmd_mbox:
+>  	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+>  
+> -	return ERR_PTR(ret);
+> +	if (ret)
+> +		return ERR_PTR(ret);
+> +	return NULL;
+>  }
 
-Why does this need an option?  It should be enable IFF and only IFF a
-SMR drive is detected.
+I don't understand this function, it returns or ERR_PTR() or NULL, but
+should return &mr->ibmr in success path. How does it work?
+
+Thanks
+
+>  
+>  int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+> -- 
+> 2.17.1
+> 
