@@ -2,3189 +2,1137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1283DFB97
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2B03DFBA1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235702AbhHDGvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 02:51:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49162 "EHLO mail.kernel.org"
+        id S235707AbhHDG53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 02:57:29 -0400
+Received: from mga04.intel.com ([192.55.52.120]:23323 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235019AbhHDGvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 02:51:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDA8E60EEA;
-        Wed,  4 Aug 2021 06:50:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628059852;
-        bh=SYZCySKy1NlprhbMdxresnPjNiNJqyFVU4Opx/Wtgcw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cShVxJrxr0b9OjJoZjIyDQ08qdO1kQAnZpsVMu8E0cesFXUznKghIqu0JJQFoLlr8
-         FkgSBRaSe9StuwpOoW+k32vrEkYWB4fTKt+dYuQ4XZgd/9451KiDEwoBdmMgLii0SC
-         wrhePN6RfnR46ibHFG9YxD8r5FrPRHnlcqA5hKO++qJ72T0u11UKgNtnCqlzMrSGpD
-         gztDQaCbZfI7eddt49d3WQzpZzXMmV39c/WZlyjnINKocgJq78+MeVUoMkUYM+UyaA
-         2mca5qze9SlWHnBJ43mqc2p07o/6r+RDb0f3tyJpqhoKnlZ0qLsxL8/GV3JOMv9k04
-         leY4jje9OKLgQ==
-Date:   Wed, 4 Aug 2021 08:50:45 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, linux-phy@lists.infradead.org
-Subject: Re: [PATCH v3 0/4] DT schema changes for HiKey970 PCIe hardware to
- work
-Message-ID: <20210804085045.3dddbb9c@coco.lan>
-In-Reply-To: <CAL_JsqLjw=+szXWJjGe86tMc51NA-5j=jVSXUAWuKeZRuJNJUg@mail.gmail.com>
-References: <cover.1627965261.git.mchehab+huawei@kernel.org>
-        <CAL_JsqLjw=+szXWJjGe86tMc51NA-5j=jVSXUAWuKeZRuJNJUg@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S235430AbhHDG51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 02:57:27 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="212000466"
+X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
+   d="gz'50?scan'50,208,50";a="212000466"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 23:57:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
+   d="gz'50?scan'50,208,50";a="502861555"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Aug 2021 23:57:13 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mBAq0-000EfC-N7; Wed, 04 Aug 2021 06:57:12 +0000
+Date:   Wed, 4 Aug 2021 14:56:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     kbuild-all@lists.01.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-kernel@vger.kernel.org
+Subject: [djwong-xfs:other-stuff-for-5.15 21/23]
+ arch/sh/include/asm/pgtable.h:39:25: warning: left shift of negative value
+Message-ID: <202108041404.HKEzdGr2-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="pf9I7BMVVzbSWLtt"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 3 Aug 2021 16:11:42 -0600
-Rob Herring <robh+dt@kernel.org> escreveu:
 
-> On Mon, Aug 2, 2021 at 10:39 PM Mauro Carvalho Chehab
-> <mchehab+huawei@kernel.org> wrote:
-> >
-> > Hi Rob,
-> >
-> > That's the third version of the DT bindings for Kirin 970 PCIE and its
-> > corresponding PHY.
-> >
-> > It is identical to v2, except by:
-> >         -          pcie@7,0 { // Lane 7: Ethernet
-> >         +          pcie@7,0 { // Lane 6: Ethernet =20
->=20
-> Can you check whether you have DT node links in sysfs for the PCI
-> devices? If you don't, then something is wrong still in the topology
-> or the PCI core is failing to set the DT node pointer in struct
-> device. Though you don't rely on that currently, we want the topology
-> to match. It's possible this never worked on arm/arm64 as mainly
-> powerpc relied on this.
->
-> I'd like some way to validate the DT matches the PCI topology. We
-> could have a tool that generates the DT structure based on the PCI
-> topology.
+--pf9I7BMVVzbSWLtt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The of_node node link is on those places:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git other-stuff-for-5.15
+head:   1aa974ba9fad4f0ada9281690c0771dc74d26718
+commit: 2c286bab5e5a4d47e58d84c7e4bb244ae0a1c0a7 [21/23] xfs: automatic resource cleanup of for_each_perag*
+config: sh-allmodconfig (attached as .config)
+compiler: sh4-linux-gcc (GCC) 10.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/commit/?id=2c286bab5e5a4d47e58d84c7e4bb244ae0a1c0a7
+        git remote add djwong-xfs https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git
+        git fetch --no-tags djwong-xfs other-stuff-for-5.15
+        git checkout 2c286bab5e5a4d47e58d84c7e4bb244ae0a1c0a7
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross ARCH=sh 
 
-	$ find /sys/devices/platform/soc/f4000000.pcie/ -name of_node
-	/sys/devices/platform/soc/f4000000.pcie/of_node
-	/sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/of_node
-	/sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/pci_bus/00=
-00:01/of_node
-	/sys/devices/platform/soc/f4000000.pcie/pci0000:00/pci_bus/0000:00/of_node
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-This is the pci stuff under firmware:
+All warnings (new ones prefixed by >>):
 
-	$ tree /sys/firmware/devicetree/base/soc/pcie@f4000000/
-	/sys/firmware/devicetree/base/soc/pcie@f4000000/
-	=E2=94=9C=E2=94=80=E2=94=80 #address-cells
-	=E2=94=9C=E2=94=80=E2=94=80 bus-range
-	=E2=94=9C=E2=94=80=E2=94=80 compatible
-	=E2=94=9C=E2=94=80=E2=94=80 device_type
-	=E2=94=9C=E2=94=80=E2=94=80 hisilicon,clken-gpios
-	=E2=94=9C=E2=94=80=E2=94=80 #interrupt-cells
-	=E2=94=9C=E2=94=80=E2=94=80 interrupt-map
-	=E2=94=9C=E2=94=80=E2=94=80 interrupt-map-mask
-	=E2=94=9C=E2=94=80=E2=94=80 interrupt-names
-	=E2=94=9C=E2=94=80=E2=94=80 interrupts
-	=E2=94=9C=E2=94=80=E2=94=80 msi-parent
-	=E2=94=9C=E2=94=80=E2=94=80 name
-	=E2=94=9C=E2=94=80=E2=94=80 num-lanes
-	=E2=94=9C=E2=94=80=E2=94=80 pcie@0,0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 #address-cells
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 compatible
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 device_type
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 name
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 pcie@1,0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 #a=
-ddress-cells
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 co=
-mpatible
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 de=
-vice_type
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 na=
-me
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ra=
-nges
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reg
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 re=
-set-gpios
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 #s=
-ize-cells
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 pcie@5,0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 #a=
-ddress-cells
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 co=
-mpatible
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 de=
-vice_type
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 na=
-me
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ra=
-nges
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reg
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 re=
-set-gpios
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 #s=
-ize-cells
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 pcie@7,0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 #a=
-ddress-cells
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 co=
-mpatible
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 de=
-vice_type
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 na=
-me
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ra=
-nges
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reg
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 re=
-set-gpios
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 #s=
-ize-cells
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ranges
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reg
-	=E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 #size-cells
-	=E2=94=9C=E2=94=80=E2=94=80 phys
-	=E2=94=9C=E2=94=80=E2=94=80 ranges
-	=E2=94=9C=E2=94=80=E2=94=80 reg
-	=E2=94=9C=E2=94=80=E2=94=80 reg-names
-	=E2=94=9C=E2=94=80=E2=94=80 reset-gpios
-	=E2=94=94=E2=94=80=E2=94=80 #size-cells
+   In file included from include/linux/pgtable.h:6,
+                    from include/linux/mm.h:33,
+                    from fs/xfs/kmem.h:11,
+                    from fs/xfs/xfs_linux.h:24,
+                    from fs/xfs/xfs.h:22,
+                    from fs/xfs/xfs_trace.c:6:
+   arch/sh/include/asm/pgtable.h: In function 'neff_sign_extend':
+>> arch/sh/include/asm/pgtable.h:39:25: warning: left shift of negative value [-Wshift-negative-value]
+      39 | #define NEFF_MASK (-1LL << NEFF)
+         |                         ^~
+   arch/sh/include/asm/pgtable.h:44:46: note: in expansion of macro 'NEFF_MASK'
+      44 |  return (extended & NEFF_SIGN) ? (extended | NEFF_MASK) : extended;
+         |                                              ^~~~~~~~~
 
-And this is what we get from the pcie devnode:
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
+   Depends on SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && HAS_DMA
+   Selected by
+   - SND_ATMEL_SOC_SSC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC
+   - SND_ATMEL_SOC_SSC_PDC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && ATMEL_SSC
 
-	/sys/devices/platform/soc/f4000000.pcie/
-	=E2=94=9C=E2=94=80=E2=94=80 driver -> ../../../../bus/platform/drivers/kir=
-in-pcie
-	=E2=94=9C=E2=94=80=E2=94=80 driver_override
-	=E2=94=9C=E2=94=80=E2=94=80 modalias
-	=E2=94=9C=E2=94=80=E2=94=80 of_node -> ../../../../firmware/devicetree/bas=
-e/soc/pcie@f4000000
-	=E2=94=9C=E2=94=80=E2=94=80 pci0000:00
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:00:00.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 00=
-00:00:00.0:pcie001
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 driver -> ../../../../../../../bus/pci_express/driver=
-s/pcie_pme
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 00=
-00:00:00.0:pcie002
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 driver -> ../../../../../../../bus/pci_express/driver=
-s/aer
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 00=
-00:00:00.0:pcie010
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 00=
-00:01:00.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 0000:01:00.0:pcie102
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../=
-../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 0000:02:01.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:02:01.0:pcie202
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
- -> ../../../../../../../../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:02:01.0:pcie210
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
- -> ../../../../../../../../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:03:00.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_c=
-orrectable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_f=
-atal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_n=
-onfatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ari_enabl=
-ed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 broken_pa=
-rity_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 class
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 config
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 consisten=
-t_dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_l=
-ink_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_l=
-ink_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 d3cold_al=
-lowed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 devspec
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dma_mask_=
-bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver ->=
- ../../../../../../../../../bus/pci/drivers/nvme
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver_ov=
-erride
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 enable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 irq
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 link
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 clkpm
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=
-=80=E2=94=80 l1_aspm
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpu=
-list
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_=
-speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_=
-width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 modalias
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 msi_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 numa_node
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 nvme
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=
-=80=E2=94=80 nvme0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 address
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 cntlid
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 dev
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 device -> ../../../0000:03:00.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 firmware_rev
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 kato
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 model
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 ng0n1
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dev
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 device -> ../../nvme0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspend_=
-delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_acti=
-ve_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_stat=
-us
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 runtime_susp=
-ended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../../=
-../../../../../class/nvme-generic
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 numa_node
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 nvme0n1
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 alignment_offset
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 bdi -> ../../../../../../../../../=
-../../virtual/bdi/259:0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 capability
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dev
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 device -> ../../nvme0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 discard_alignment
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 eui
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 events
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 events_async
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 events_poll_msecs
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ext_range
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 hidden
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 holders
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 inflight
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 integrity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 device_is_in=
-tegrity_capable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 format
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 protection_i=
-nterval_bytes
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 read_verify
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 tag_size
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 write_genera=
-te
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 mq
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpu0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpu1
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpu2
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpu3
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpu4
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpu5
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpu6
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpu7
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpu_list
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 nr_reser=
-ved_tags
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=94=E2=94=80=E2=94=80 nr_tags
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 nsid
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 nvme0n1p1
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 alignment_of=
-fset
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dev
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 discard_alig=
-nment
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 holders
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 inflight
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 partition
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=
-=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=
-=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=
-=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=
-=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=
-=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ro
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 size
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 start
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 stat
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem ->=
- ../../../../../../../../../../../../../class/block
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspend_=
-delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_acti=
-ve_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_stat=
-us
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 runtime_susp=
-ended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 queue
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 add_random
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 chunk_sectors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dax
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 discard_gran=
-ularity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 discard_max_=
-bytes
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 discard_max_=
-hw_bytes
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 discard_zero=
-es_data
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 fua
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 hw_sector_si=
-ze
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 io_poll
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 io_poll_delay
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 iosched
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=
-=E2=94=80 aging_expire
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=
-=E2=94=80 async_depth
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=
-=E2=94=80 fifo_batch
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=
-=E2=94=80 front_merges
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=
-=E2=94=80 read_expire
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=
-=E2=94=80 write_expire
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=
-=E2=94=80 writes_starved
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 iostats
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 io_timeout
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 logical_bloc=
-k_size
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_discard_=
-segments
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_hw_secto=
-rs_kb
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_integrit=
-y_segments
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_sectors_=
-kb
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_segments
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_segment_=
-size
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 minimum_io_s=
-ize
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 nomerges
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 nr_requests
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 nr_zones
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 optimal_io_s=
-ize
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 physical_blo=
-ck_size
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 read_ahead_kb
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rotational
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rq_affinity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 scheduler
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 stable_writes
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 virt_boundar=
-y_mask
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wbt_lat_usec
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 write_cache
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 write_same_m=
-ax_bytes
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 write_zeroes=
-_max_bytes
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 zone_append_=
-max_bytes
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 zoned
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 zone_write_g=
-ranularity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 range
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 removable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ro
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 size
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 slaves
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 stat
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../../=
-../../../../../class/block
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 wwid
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 pm_qos_latency_tolerance_us
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 queue_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 rescan_controller
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 reset_controller
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 serial
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 sqsize
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 state
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 subsysnqn
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 subsystem -> ../../../../../../../../../../../class/nvme
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 transport
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=94=
-=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 pools
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_abort_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_active
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_active_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_expire_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_last_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_max_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=
-=80=E2=94=80 wakeup_total_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power_sta=
-te
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 remove
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reset
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 resource
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 resource0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 revision
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
- -> ../../../../../../../../../bus/pci
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
-_device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
-_vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_correctable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_fatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_nonfatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ari_enabled
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 broken_parity_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 class
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 config
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 consistent_dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 d3cold_allowed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 devspec
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver -> ../../../../../../../=
-../bus/pci/drivers/pcieport
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver_override
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 enable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 irq
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 link
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpulist
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 modalias
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 msi_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 numa_node
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 0000:03
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpuaf=
-finity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpuli=
-staffinity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 devic=
-e -> ../../../0000:02:01.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=94=
-=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 subsy=
-stem -> ../../../../../../../../../../class/pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspe=
-nd_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_a=
-ctive_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_s=
-tatus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_s=
-uspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ab=
-ort_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ac=
-tive
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ac=
-tive_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_co=
-unt
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ex=
-pire_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_la=
-st_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ma=
-x_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 wakeup_to=
-tal_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power_state
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 remove
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reset
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 resource
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 revision
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 secondary_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subordinate_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../=
-../../bus/pci
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem_device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem_vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 0000:02:04.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:02:04.0:pcie202
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
- -> ../../../../../../../../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:02:04.0:pcie210
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
- -> ../../../../../../../../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_correctable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_fatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_nonfatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ari_enabled
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 broken_parity_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 class
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 config
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 consistent_dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 d3cold_allowed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 devspec
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver -> ../../../../../../../=
-../bus/pci/drivers/pcieport
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver_override
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 enable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 irq
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 link
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpulist
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 modalias
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 msi_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 numa_node
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 0000:04
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpuaf=
-finity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpuli=
-staffinity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 devic=
-e -> ../../../0000:02:04.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=94=
-=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 subsy=
-stem -> ../../../../../../../../../../class/pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspe=
-nd_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_a=
-ctive_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_s=
-tatus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_s=
-uspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ab=
-ort_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ac=
-tive
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ac=
-tive_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_co=
-unt
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ex=
-pire_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_la=
-st_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ma=
-x_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 wakeup_to=
-tal_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power_state
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 remove
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 resource
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 revision
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 secondary_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subordinate_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../=
-../../bus/pci
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem_device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem_vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 0000:02:05.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:02:05.0:pcie202
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
- -> ../../../../../../../../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:02:05.0:pcie210
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
- -> ../../../../../../../../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:05:00.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_c=
-orrectable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_f=
-atal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_n=
-onfatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ari_enabl=
-ed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 broken_pa=
-rity_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 class
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 config
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 consisten=
-t_dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_l=
-ink_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_l=
-ink_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 d3cold_al=
-lowed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 devspec
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dma_mask_=
-bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver_ov=
-erride
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 enable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 irq
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 link
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 clkpm
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 l0s_aspm
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=
-=80=E2=94=80 l1_aspm
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpu=
-list
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_=
-speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_=
-width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 modalias
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 msi_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 numa_node
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_abort_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_active
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_active_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_expire_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_last_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_max_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=
-=80=E2=94=80 wakeup_total_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power_sta=
-te
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 remove
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reset
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 resource
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 resource0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 revision
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
- -> ../../../../../../../../../bus/pci
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
-_device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
-_vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_correctable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_fatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_nonfatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ari_enabled
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 broken_parity_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 class
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 config
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 consistent_dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 d3cold_allowed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 devspec
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver -> ../../../../../../../=
-../bus/pci/drivers/pcieport
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver_override
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 enable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 irq
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 link
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpulist
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 modalias
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 msi_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 numa_node
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 0000:05
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpuaf=
-finity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpuli=
-staffinity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 devic=
-e -> ../../../0000:02:05.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=94=
-=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 subsy=
-stem -> ../../../../../../../../../../class/pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspe=
-nd_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_a=
-ctive_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_s=
-tatus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_s=
-uspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ab=
-ort_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ac=
-tive
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ac=
-tive_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_co=
-unt
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ex=
-pire_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_la=
-st_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ma=
-x_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 wakeup_to=
-tal_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power_state
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 remove
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 resource
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 revision
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 secondary_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subordinate_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../=
-../../bus/pci
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem_device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem_vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 0000:02:07.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:02:07.0:pcie202
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
- -> ../../../../../../../../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:02:07.0:pcie210
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
- -> ../../../../../../../../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:06:00.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_c=
-orrectable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_f=
-atal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_n=
-onfatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ari_enabl=
-ed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 broken_pa=
-rity_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 class
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 config
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 consisten=
-t_dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_l=
-ink_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_l=
-ink_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 d3cold_al=
-lowed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 devspec
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dma_mask_=
-bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver ->=
- ../../../../../../../../../bus/pci/drivers/r8169
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver_ov=
-erride
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 enable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 irq
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 link
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 clkpm
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=
-=80=E2=94=80 l1_aspm
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpu=
-list
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_=
-speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_=
-width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 mdio_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=
-=80=E2=94=80 r8169-600
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 device -> ../../../0000:06:00.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 r8169-600:00
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 attached_dev -> ../../../net/enp6s0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver -> ../../../../../../../../=
-../../../../bus/mdio_bus/drivers/RTL8211E Gigabit Ethernet
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 phy_dev_flags
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 phy_has_fixups
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 phy_id
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 phy_interface
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspend_=
-delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_acti=
-ve_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_stat=
-us
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 runtime_susp=
-ended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 statistics
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 writes
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../../=
-../../../../../bus/mdio_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 statistics
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_1
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_10
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_11
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_12
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_13
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_14
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_15
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_16
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_17
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_18
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_19
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_2
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_20
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_21
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_22
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_23
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_24
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_25
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_26
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_27
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_28
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_29
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_3
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_30
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_31
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_4
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_5
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_6
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_7
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_8
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 errors_9
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_1
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_10
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_11
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_12
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_13
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_14
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_15
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_16
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_17
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_18
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_19
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_2
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_20
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_21
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_22
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_23
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_24
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_25
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_26
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_27
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_28
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_29
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_3
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_30
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_31
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_4
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_5
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_6
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_7
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_8
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reads_9
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_1
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_10
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_11
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_12
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_13
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_14
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_15
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_16
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_17
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_18
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_19
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_2
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_20
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_21
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_22
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_23
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_24
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_25
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_26
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_27
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_28
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_29
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_3
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_30
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_31
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_4
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_5
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_6
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_7
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_8
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 transfers_9
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_1
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_10
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_11
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_12
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_13
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_14
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_15
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_16
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_17
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_18
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_19
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_2
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_20
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_21
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_22
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_23
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_24
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_25
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_26
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_27
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_28
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_29
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_3
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_30
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_31
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_4
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_5
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_6
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_7
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 writes_8
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 writes_9
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 subsystem -> ../../../../../../../../../../../class/mdio=
-_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=94=
-=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 modalias
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 msi_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 net
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=
-=80=E2=94=80 enp6s0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 addr_assign_type
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 address
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 addr_len
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 broadcast
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 carrier
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 carrier_changes
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 carrier_down_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 carrier_up_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 device -> ../../../0000:06:00.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 dev_id
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 dev_port
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 dormant
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 duplex
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 flags
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 gro_flush_timeout
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 ifalias
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 ifindex
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 iflink
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 link_mode
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 mtu
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 name_assign_type
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 napi_defer_hard_irqs
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 netdev_group
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 operstate
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 phydev -> ../../mdio_bus/r8169-600/r8169-600:00
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 phys_port_id
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 phys_port_name
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 phys_switch_id
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 proto_down
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 queues
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rx-0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rps_cpus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 rps_flow_cnt
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 tx-0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 byte_queue_limits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 hold_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 inflight
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 limit
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 limit_max
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 limit_min
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 traffic_class
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 tx_maxrate
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 tx_timeout
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 xps_cpus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0     =E2=94=94=E2=94=80=E2=94=80 xps_rxqs
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 statistics
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 collisions
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 multicast
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rx_bytes
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rx_compressed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rx_crc_errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rx_dropped
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rx_errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rx_fifo_errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rx_frame_errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rx_length_errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rx_missed_errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rx_nohandler
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rx_over_errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rx_packets
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 tx_aborted_errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 tx_bytes
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 tx_carrier_errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 tx_compressed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 tx_dropped
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 tx_errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 tx_fifo_errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 tx_heartbeat_errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 tx_packets
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=
-=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 tx_window_errors
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 subsystem -> ../../../../../../../../../../../class/net
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 testing
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 threaded
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 tx_queue_len
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=
-=E2=94=80=E2=94=80 type
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=94=
-=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 numa_node
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_abort_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_active
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_active_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_expire_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_last_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=
-=80=E2=94=80 wakeup_max_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=
-=80=E2=94=80 wakeup_total_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power_sta=
-te
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 remove
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 reset
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 resource
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 resource2
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 resource4
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 resource4=
-_wc
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 revision
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
- -> ../../../../../../../../../bus/pci
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
-_device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
-_vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 vpd
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_correctable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_fatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_nonfatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ari_enabled
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 broken_parity_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 class
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 config
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 consistent_dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 d3cold_allowed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 devspec
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver -> ../../../../../../../=
-../bus/pci/drivers/pcieport
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver_override
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 enable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 irq
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 link
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpulist
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 modalias
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 msi_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 numa_node
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 0000:06
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpuaf=
-finity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpuli=
-staffinity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 devic=
-e -> ../../../0000:02:07.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=94=
-=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 subsy=
-stem -> ../../../../../../../../../../class/pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspe=
-nd_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_a=
-ctive_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_s=
-tatus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_s=
-uspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ab=
-ort_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ac=
-tive
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ac=
-tive_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_co=
-unt
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ex=
-pire_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_la=
-st_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ma=
-x_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 wakeup_to=
-tal_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power_state
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 remove
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 resource
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 revision
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 secondary_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subordinate_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../=
-../../bus/pci
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem_device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem_vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 0000:02:09.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:02:09.0:pcie202
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
- -> ../../../../../../../../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 0000:02:09.0:pcie210
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem=
- -> ../../../../../../../../../bus/pci_express
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_correctable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_fatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 aer_dev_nonfatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ari_enabled
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 broken_parity_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 class
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 config
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 consistent_dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 current_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 d3cold_allowed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 devspec
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver -> ../../../../../../../=
-../bus/pci/drivers/pcieport
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 driver_override
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 enable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 irq
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 link
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpulist
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 local_cpus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 max_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 modalias
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 msi_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 numa_node
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 0000:07
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpuaf=
-finity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpuli=
-staffinity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 devic=
-e -> ../../../0000:02:09.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=
-=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=94=
-=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 subsy=
-stem -> ../../../../../../../../../../class/pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspe=
-nd_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_a=
-ctive_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_s=
-tatus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_s=
-uspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ab=
-ort_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ac=
-tive
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ac=
-tive_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_co=
-unt
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ex=
-pire_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_la=
-st_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_ma=
-x_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 wakeup_to=
-tal_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power_state
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 remove
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 resource
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 revision
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 secondary_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subordinate_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../=
-../../bus/pci
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem_device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 subsystem_vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 aer_dev_correctable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 aer_dev_fatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 aer_dev_nonfatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 ari_enabled
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 broken_parity_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 class
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 config
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 consistent_dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 current_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 current_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 d3cold_allowed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 devspec
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 driver -> ../../../../../../../bus/pci/drivers/pciepo=
-rt
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 driver_override
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 enable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 irq
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 link
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 l0s_aspm
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 l1_aspm
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 local_cpulist
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 local_cpus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 max_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 max_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 modalias
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 msi_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 numa_node
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 0000:02
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpuaffinity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 cpulistaffinity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 device -> ../../../0000:01:=
-00.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autos=
-uspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 contr=
-ol
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runti=
-me_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runti=
-me_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 runti=
-me_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../..=
-/../../../../class/pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0     =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_abort_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_active
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_active_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_expire_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_last_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 wakeup_max_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 wakeup_total_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 power_state
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 remove
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 reset
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 resource
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 resource0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 revision
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 secondary_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 subordinate_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../../bus/pci
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 subsystem_device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 subsystem_vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=94=E2=94=80=E2=94=80 vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ae=
-r_dev_correctable
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ae=
-r_dev_fatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ae=
-r_dev_nonfatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ae=
-r_rootport_total_err_cor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ae=
-r_rootport_total_err_fatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ae=
-r_rootport_total_err_nonfatal
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ar=
-i_enabled
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 br=
-oken_parity_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 cl=
-ass
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 co=
-nfig
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 co=
-nsistent_dma_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 cu=
-rrent_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 cu=
-rrent_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 d3=
-cold_allowed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 de=
-vice
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 de=
-vspec
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dm=
-a_mask_bits
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dr=
-iver -> ../../../../../../bus/pci/drivers/pcieport
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 dr=
-iver_override
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 en=
-able
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 irq
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 li=
-nk
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 lo=
-cal_cpulist
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 lo=
-cal_cpus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ma=
-x_link_speed
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ma=
-x_link_width
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 mo=
-dalias
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ms=
-i_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 nu=
-ma_node
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 of=
-_node -> ../../../../../../firmware/devicetree/base/soc/pcie@f4000000/pcie@=
-0,0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 pc=
-i_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=94=E2=94=80=E2=94=80 0000:01
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=9C=E2=94=80=E2=94=80 cpuaffinity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=9C=E2=94=80=E2=94=80 cpulistaffinity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=9C=E2=94=80=E2=94=80 device -> ../../../0000:00:00.0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=9C=E2=94=80=E2=94=80 of_node -> ../../../../../../../../firmware/device=
-tree/base/soc/pcie@f4000000/pcie@0,0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=9C=E2=94=80=E2=94=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../../../../class/pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=9C=E2=94=80=E2=94=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=
-=94=94=E2=94=80=E2=94=80 waiting_for_supplier
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 po=
-wer
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 wakeup
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 wakeup_abort_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 wakeup_active
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 wakeup_active_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 wakeup_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 wakeup_expire_count
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 wakeup_last_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=9C=E2=94=80=E2=94=80 wakeup_max_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=
-=94=E2=94=80=E2=94=80 wakeup_total_time_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 po=
-wer_state
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 re=
-move
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 re=
-scan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 re=
-set
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 re=
-source
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 re=
-source0
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 re=
-vision
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 se=
-condary_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 su=
-bordinate_bus_number
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 su=
-bsystem -> ../../../../../../bus/pci
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 su=
-bsystem_device
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 su=
-bsystem_vendor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ue=
-vent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 ve=
-ndor
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 00=
-00:00
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=
-=80 cpuaffinity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=
-=80 cpulistaffinity
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=
-=80 device -> ../../../pci0000:00
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=
-=80 of_node -> ../../../../../../../firmware/devicetree/base/soc/pcie@f4000=
-000
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=
-=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=
-=94=9C=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=
-=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=
-=94=9C=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=
-=94=9C=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=82=C2=A0=C2=A0 =E2=
-=94=94=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=
-=80 rescan
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=
-=80 subsystem -> ../../../../../../../class/pci_bus
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=9C=E2=94=80=E2=94=
-=80 uevent
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0     =E2=94=94=E2=94=80=E2=94=
-=80 waiting_for_supplier
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 au=
-tosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 co=
-ntrol
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ru=
-ntime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 ru=
-ntime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 ru=
-ntime_suspended_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 uevent
-	=E2=94=9C=E2=94=80=E2=94=80 power
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 autosuspend_delay_ms
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 control
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_active_time
-	=E2=94=82=C2=A0=C2=A0 =E2=94=9C=E2=94=80=E2=94=80 runtime_status
-	=E2=94=82=C2=A0=C2=A0 =E2=94=94=E2=94=80=E2=94=80 runtime_suspended_time
-	=E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../bus/platform
-	=E2=94=9C=E2=94=80=E2=94=80 supplier:amba:e8a12000.gpio -> ../../../virtua=
-l/devlink/amba:e8a12000.gpio--platform:f4000000.pcie
-	=E2=94=9C=E2=94=80=E2=94=80 supplier:amba:e8a1c000.gpio -> ../../../virtua=
-l/devlink/amba:e8a1c000.gpio--platform:f4000000.pcie
-	=E2=94=9C=E2=94=80=E2=94=80 supplier:amba:e8a1f000.gpio -> ../../../virtua=
-l/devlink/amba:e8a1f000.gpio--platform:f4000000.pcie
-	=E2=94=9C=E2=94=80=E2=94=80 supplier:amba:fff10000.gpio -> ../../../virtua=
-l/devlink/amba:fff10000.gpio--platform:f4000000.pcie
-	=E2=94=9C=E2=94=80=E2=94=80 supplier:phy:phy-fc000000.pcie-phy.1 -> ../../=
-../virtual/devlink/phy:phy-fc000000.pcie-phy.1--platform:f4000000.pcie
-	=E2=94=9C=E2=94=80=E2=94=80 supplier:platform:fc000000.pcie-phy -> ../../.=
-./virtual/devlink/platform:fc000000.pcie-phy--platform:f4000000.pcie
-	=E2=94=94=E2=94=80=E2=94=80 uevent
 
-Thanks,
-Mauro
+vim +39 arch/sh/include/asm/pgtable.h
+
+^1da177e4c3f41 include/asm-sh/pgtable.h Linus Torvalds 2005-04-16  32  
+36bcd39dbca824 include/asm-sh/pgtable.h Paul Mundt     2007-11-10  33  /*
+36bcd39dbca824 include/asm-sh/pgtable.h Paul Mundt     2007-11-10  34   * Effective and physical address definitions, to aid with sign
+36bcd39dbca824 include/asm-sh/pgtable.h Paul Mundt     2007-11-10  35   * extension.
+36bcd39dbca824 include/asm-sh/pgtable.h Paul Mundt     2007-11-10  36   */
+36bcd39dbca824 include/asm-sh/pgtable.h Paul Mundt     2007-11-10  37  #define NEFF		32
+36bcd39dbca824 include/asm-sh/pgtable.h Paul Mundt     2007-11-10  38  #define	NEFF_SIGN	(1LL << (NEFF - 1))
+36bcd39dbca824 include/asm-sh/pgtable.h Paul Mundt     2007-11-10 @39  #define	NEFF_MASK	(-1LL << NEFF)
+36bcd39dbca824 include/asm-sh/pgtable.h Paul Mundt     2007-11-10  40  
+
+:::::: The code at line 39 was first introduced by commit
+:::::: 36bcd39dbca824daffe16d607ae574b6edc7d31a sh: Split out 29-bit and 32-bit physical mode definitions.
+
+:::::: TO: Paul Mundt <lethal@linux-sh.org>
+:::::: CC: Paul Mundt <lethal@linux-sh.org>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--pf9I7BMVVzbSWLtt
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+PuXyq1X9rGO7ETHlqrDc+F/DlVB5bncDAA==
+
+--pf9I7BMVVzbSWLtt--
