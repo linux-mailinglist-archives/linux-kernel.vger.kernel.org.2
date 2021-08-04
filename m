@@ -2,238 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894A03E0150
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BC93E0159
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238174AbhHDMkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 08:40:25 -0400
-Received: from mga02.intel.com ([134.134.136.20]:19343 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236625AbhHDMkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 08:40:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="201078150"
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="201078150"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 05:40:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="480148024"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga008.fm.intel.com with ESMTP; 04 Aug 2021 05:40:05 -0700
-Subject: Re: [PATCH v4 5/5] mmc: sdhci: simplify v2/v3+ clock calculation
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Kevin Liu <kliu5@marvell.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Suneel Garapati <suneel.garapati@xilinx.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Al Cooper <alcooperx@gmail.com>
-References: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
- <a8a677659b27244be865a730f6a7f2b7805a4390.1627204633.git.mirq-linux@rere.qmqm.pl>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <9a6b8e4a-b944-c1d7-f310-fea1e1269e6d@intel.com>
-Date:   Wed, 4 Aug 2021 15:40:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S238204AbhHDMoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 08:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238184AbhHDMoJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 08:44:09 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3683C061798
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 05:43:56 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id k4so1129186wms.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 05:43:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6BWC3c/3rtkcV7WXMXe6RZt5i0F5nTHF+1FQsvoNiWc=;
+        b=DVq+BkOnipOsYifSFqEfB33PAboXxf4yC1DlXMX8OZjgBcWoDb/PvjiTQAM+pldWiF
+         WKx5n4lmIqxmpC/5uEwU0rnS3tgnX3U2RZn8iHSU9dVOfvxkTwajLHtnUDx24qUPwtBr
+         MfxPsHz4MOlIJ/6pPk6hj9vZiGX2SkkELFaMoiUCUrXZJecz7hTXTb8xf0X2C30F/XwL
+         oB0Xm03ETuwWIGXdfyZwXAvwck+hb70VSL6hFlS8a16kqAtvjY4YI3zZz9PPE4FVf22n
+         3+petT6681yrUhP0G0OKMgCS7WCDYPQk/KBJSJu7m0PHAdbTaimG6kublfgWXqIl3LWQ
+         eivQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6BWC3c/3rtkcV7WXMXe6RZt5i0F5nTHF+1FQsvoNiWc=;
+        b=ZK8jGybv7tHKjU4+1tI20SG1ExIfNPJbeX4oskSvkimjxKMEIal+s1K/HB2TAZpZI4
+         royNZ43SgNSbC5LHK5YwUpGyd862z9PouN7GvRpoFZTNIysXIvs1ebvToVECoSIEkeyp
+         gsW7OKsSJYQy7xZ+aVgM9AT/ynVJ/l+jTdCf/rq97QcdqVsMACgHJNix/hFc9VfVm+Ht
+         0fCSgFuiS/i6LDYjpld7y5DrnShajVbNRkwxRN7cnkd6f62KLotHaM2iRB7xnsQhkwMp
+         J3aWDcv8l3O/L6g/0ELiEv+yT6WA957AgsbalBU+dga242cUaGFwUf4aorAUc1JHVm04
+         nlkA==
+X-Gm-Message-State: AOAM533gNpIWfPiuGtP6hl4wTwOW4TJCogspZGb7TRbYMeJ19wOn3BHW
+        BSDznYmwbeo6wt6DoOtJQioi4A==
+X-Google-Smtp-Source: ABdhPJwqlMcWUuT1k4rp9W71z1LZAiPVMqbRmaxo+YUt5J7u0104g6hRhluIpipBDZiacPGaHfD02A==
+X-Received: by 2002:a1c:7f50:: with SMTP id a77mr27174231wmd.163.1628081035533;
+        Wed, 04 Aug 2021 05:43:55 -0700 (PDT)
+Received: from google.com ([109.180.115.228])
+        by smtp.gmail.com with ESMTPSA id r129sm2215438wmr.7.2021.08.04.05.43.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 05:43:54 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 13:43:52 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH v8 09/11] ARM: dts: imx7d: remarkable2: Enable
+ silergy,sy7636a
+Message-ID: <YQqLiAtAtREWTvD7@google.com>
+References: <20210803084456.198-1-alistair@alistair23.me>
+ <20210803084456.198-9-alistair@alistair23.me>
 MIME-Version: 1.0
-In-Reply-To: <a8a677659b27244be865a730f6a7f2b7805a4390.1627204633.git.mirq-linux@rere.qmqm.pl>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210803084456.198-9-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/21 12:20 pm, Michał Mirosław wrote:
-> For base clock setting, SDHCI V2 differs from V3+ only in allowed divisor
-> values.  Remove the duplicate version of code and reduce indentation
-> levels.  We can see now, that 'real_div' can't be zero, so the check is
-> removed.  While at it, replace divisor search loops with divide-and-clamp
-> to make the code even more readable.
+On Tue, 03 Aug 2021, Alistair Francis wrote:
 
-It doesn't seem simpler to me, just different.
-
-Simpler would mean broken into separate logical functions, getting rid of
-the gotos, and above all having the changes broken into separate patches
-for easy review.
-
+> Enable the silergy,sy7636a and silergy,sy7636a-regulator on the
+> reMarkable2.
 > 
-> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
 > ---
-> v4: no changes
-> v3: squashed div-conversion and deduplication patches to avoid code churn
-> v2: no changes
-> ---
->  drivers/mmc/host/sdhci.c | 124 ++++++++++++++++++---------------------
->  drivers/mmc/host/sdhci.h |   4 +-
->  2 files changed, 58 insertions(+), 70 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index cfa314e659bc..90bda4150083 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -1848,88 +1848,76 @@ static u16 sdhci_get_preset_value(struct sdhci_host *host)
->  u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
->  		   unsigned int *actual_clock)
->  {
-> -	int div = 0; /* Initialized for compiler warning */
-> -	int real_div = div, clk_mul = 1;
-> +	unsigned int div, real_div, clk_mul = 1;
->  	u16 clk = 0;
-> -	bool switch_base_clk = false;
->  
-> -	if (host->version >= SDHCI_SPEC_300) {
-> -		if (host->preset_enabled) {
-> -			u16 pre_val;
-> +	if (clock == 0)
-> +		return clk;
-> +
-> +	if (host->preset_enabled) {
-> +		/* Only version 3.00+ can have preset_enabled */
-> +		u16 pre_val;
-> +
-> +		pre_val = sdhci_get_preset_value(host);
-> +		div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
-> +		if (!(pre_val & SDHCI_PRESET_CLKGEN_SEL))
-> +			goto base_div_set;
-> +
-> +		clk = SDHCI_PROG_CLOCK_MODE;
-> +		real_div = div + 1;
-> +		clk_mul = host->clk_mul;
-> +		if (!clk_mul) {
-> +			/* The clock frequency is unknown. Assume undivided base. */
-> +			clk_mul = 1;
-> +		}
-> +
-> +		goto clock_set;
-> +	}
-> +
-> +	/*
-> +	 * Check if the Host Controller supports Programmable Clock
-> +	 * Mode.
-> +	 */
-> +	if (host->version >= SDHCI_SPEC_300 && host->clk_mul) {
-> +		div = DIV_ROUND_UP(host->max_clk * host->clk_mul, clock);
-> +		if (div <= SDHCI_MAX_DIV_SPEC_300 / 2 + 1) {
-> +			/*
-> +			 * Set Programmable Clock Mode in the Clock
-> +			 * Control register.
-> +			 */
-> +			clk = SDHCI_PROG_CLOCK_MODE;
-> +			clk_mul = host->clk_mul;
-> +			real_div = div--;
->  
-> -			pre_val = sdhci_get_preset_value(host);
-> -			div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
-> -			if (pre_val & SDHCI_PRESET_CLKGEN_SEL) {
-> -				clk = SDHCI_PROG_CLOCK_MODE;
-> -				real_div = div + 1;
-> -				clk_mul = host->clk_mul;
-> -				if (!clk_mul) {
-> -					/* The clock frequency is unknown. Assume undivided base. */
-> -					clk_mul = 1;
-> -				}
-> -			} else {
-> -				real_div = max_t(int, 1, div << 1);
-> -			}
->  			goto clock_set;
->  		}
->  
->  		/*
-> -		 * Check if the Host Controller supports Programmable Clock
-> -		 * Mode.
-> +		 * Divisor is too big for requested clock rate.
-> +		 * Fall back to the base clock.
->  		 */
-> -		if (host->clk_mul) {
-> -			for (div = 1; div <= 1024; div++) {
-> -				if ((host->max_clk * host->clk_mul / div)
-> -					<= clock)
-> -					break;
-> -			}
-> -			if ((host->max_clk * host->clk_mul / div) <= clock) {
-> -				/*
-> -				 * Set Programmable Clock Mode in the Clock
-> -				 * Control register.
-> -				 */
-> -				clk = SDHCI_PROG_CLOCK_MODE;
-> -				real_div = div;
-> -				clk_mul = host->clk_mul;
-> -				div--;
-> -			} else {
-> -				/*
-> -				 * Divisor can be too small to reach clock
-> -				 * speed requirement. Then use the base clock.
-> -				 */
-> -				switch_base_clk = true;
-> -			}
-> -		}
-> +	}
->  
-> -		if (!host->clk_mul || switch_base_clk) {
-> -			/* Version 3.00 divisors must be a multiple of 2. */
-> -			if (host->max_clk <= clock) {
-> -				div = 1;
-> -				if (host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
-> -					div = 2;
-> -			} else {
-> -				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
-> -				     div += 2) {
-> -					if ((host->max_clk / div) <= clock)
-> -						break;
-> -				}
-> -			}
-> -			real_div = div;
-> -			div >>= 1;
-> -		}
-> +	div = DIV_ROUND_UP(host->max_clk, clock);
-> +
-> +	if (div == 1 && (host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN))
-> +		div = 2;
-> +
-> +	if (host->version >= SDHCI_SPEC_300) {
-> +		/* Version 3.00 divisors must be a multiple of 2. */
-> +		div = min(div, SDHCI_MAX_DIV_SPEC_300);
-> +		div = DIV_ROUND_UP(div, 2);
->  	} else {
->  		/* Version 2.00 divisors must be a power of 2. */
-> -		for (div = 1; div < SDHCI_MAX_DIV_SPEC_200; div *= 2) {
-> -			if ((host->max_clk / div) <= clock)
-> -				break;
-> -		}
-> -		real_div = div;
-> -		div >>= 1;
-> +		div = min(div, SDHCI_MAX_DIV_SPEC_200);
-> +		div = roundup_pow_of_two(div) / 2;
->  	}
->  
-> +base_div_set:
-> +	real_div = div * 2 + !div;
-> +
->  clock_set:
-> -	if (real_div)
-> -		*actual_clock = (host->max_clk * clk_mul) / real_div;
-> +	*actual_clock = (host->max_clk * clk_mul) / real_div;
->  	clk |= (div & SDHCI_DIV_MASK) << SDHCI_DIVIDER_SHIFT;
->  	clk |= ((div & SDHCI_DIV_HI_MASK) >> SDHCI_DIV_MASK_LEN)
->  		<< SDHCI_DIVIDER_HI_SHIFT;
-> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-> index 074dc182b184..a3fa70d91410 100644
-> --- a/drivers/mmc/host/sdhci.h
-> +++ b/drivers/mmc/host/sdhci.h
-> @@ -284,8 +284,8 @@
->   * End of controller registers.
->   */
->  
-> -#define SDHCI_MAX_DIV_SPEC_200	256
-> -#define SDHCI_MAX_DIV_SPEC_300	2046
-> +#define SDHCI_MAX_DIV_SPEC_200	256u
-> +#define SDHCI_MAX_DIV_SPEC_300	2046u
->  
->  /*
->   * Host SDMA buffer boundary. Valid values from 4K to 512K in powers of 2.
-> 
+>  arch/arm/boot/dts/imx7d-remarkable2.dts | 42 +++++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
 
+I don't see the DT documentation for this device.
+
+Has it been accepted/merged already?
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
