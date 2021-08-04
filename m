@@ -2,437 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6623E06CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD343E06D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237883AbhHDRdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 13:33:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41364 "EHLO
+        id S232464AbhHDRf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 13:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhHDRdx (ORCPT
+        with ESMTP id S229869AbhHDRf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:33:53 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16FCAC0613D5;
-        Wed,  4 Aug 2021 10:33:40 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 21so3707277oin.8;
-        Wed, 04 Aug 2021 10:33:40 -0700 (PDT)
+        Wed, 4 Aug 2021 13:35:56 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C931C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 10:35:43 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id h9so4905243ejs.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 10:35:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=boQtfMOkZY9hdjBQivOx+8/FvLGtf9v8PYVfUON6vUQ=;
-        b=GvZ1SBNr2DcgJSQTR+uzl4H3+WJD0SNH7HsHspqb1BuouaZcwWSbrOHZ+5+HQweU3Q
-         SMGyUIijwEnz1zocHU2f3X51iEnbnHYb6QNZS6+L/bmhDL0udvq2jZEDzJH7QCPZfg6i
-         TSj6sC7jX/J/xEmLLGkIcmArcjjT5iYMeGXdZ/mc0ExqIXdG//pYUjIRR4bvfgwI0qHT
-         T/d6z23Qsjstwvy5CdR74maXQ0BkfvtzjvpFPE2vVilXNhN3ERNBCO9oxlBk/9Cx8lR8
-         ilnua+8hAP85QWI+qlaF3Mk4b7tWWscPH5SgzvMC6B8M/2AuGqyrdFUJrgrxe+Nzu0WV
-         G/vQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YhZiYOgndOKxjc09S0PXNRg2bwREnpEcJqoGdi9R3j4=;
+        b=uPKmDG4mWdPVccRtNrmtq3Z3t9xbtfSjYd05HwrgyEmNtnwM6QI54yUqLRWlTArX3M
+         U4ZPHSF1CietFYSZjIL/ZV/c/mteQE27BzX7RnoBoKyr3LC3ZII7dRpDeKzd31BJz/Px
+         PcnMO14xn+nOzudhRkgFDoHG5lU1zHzPi2QkNbtQ3HpScrnwvKfLs0GzkXXY1wmLQbfC
+         KBD8cLQPkjW6G8Q2Bd19AJW+nkwSbi3rNUf4nXMn0ujd+COkun3zyFzWzJm2Z2ZDkdsH
+         f9wNinvfOwwQHQWP3Yy8eEaeEpK/Wrquxr8wpvXyUo/MO9FoAVEkbnmrDQmWvLP7Jdxx
+         7YQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=boQtfMOkZY9hdjBQivOx+8/FvLGtf9v8PYVfUON6vUQ=;
-        b=uUwhrf86WznfE6V/d0WgXiaZJY89boIkbKjMXgre9Z69gZ/5RtRj4uqiFCtm45XKaz
-         ZO7rRsEDhUWng/QXB9WtRX3glmrTW6F4zVyiC+G2aZTeKXz4+RQVpIq00k8+mg0U75gj
-         EVxhOAIp7oQeRLbNP049MKZ9ytov5wZYMj5GA/Sh9Q4a5pd2lNObTjRolsjb20gWzgY7
-         +6uS7khRxAL/8b5kIMiVy4AnfS08NCo2+75TNT+eu3PPeSCPqD5b1zlKR7ojZYY8om7I
-         ISwcuPtDypMs7d5FDvjgDD1/q5xkIJjq0kuqHdh+sFKJI3DO9KVYSbOfP4id/97AAYGH
-         RaXw==
-X-Gm-Message-State: AOAM533ahJ8AeZRKijwFMUTW7tllvlQzBkgFKkf4i5SSgtwdiRxa/pGi
-        eclW42LgfGhucQR5hl4FIGI=
-X-Google-Smtp-Source: ABdhPJzPmtomHiFQRHu0Frnwj19U5U9ieIGCtt/9GmfJnQQrdsF77jcXTd2yPxviTb/mGRTxwKZmwA==
-X-Received: by 2002:aca:39c6:: with SMTP id g189mr2259435oia.47.1628098419381;
-        Wed, 04 Aug 2021 10:33:39 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c21sm560538oiw.16.2021.08.04.10.33.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 10:33:38 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     "Winiarska, Iwona" <iwona.winiarska@intel.com>
-Cc:     "corbet@lwn.net" <corbet@lwn.net>,
-        "jae.hyun.yoo@linux.intel.com" <jae.hyun.yoo@linux.intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "olof@lixom.net" <olof@lixom.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
-        "zweiss@equinix.com" <zweiss@equinix.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "d.mueller@elsoft.ch" <d.mueller@elsoft.ch>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>
-References: <20210803113134.2262882-1-iwona.winiarska@intel.com>
- <20210803113134.2262882-14-iwona.winiarska@intel.com>
- <20210803153937.GA337938@roeck-us.net>
- <a576f7075625a476c613b5feb2c4c7033d6c0375.camel@intel.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v2 13/15] hwmon: peci: Add dimmtemp driver
-Message-ID: <ff8f8b20-33af-08a0-6036-03429bf69730@roeck-us.net>
-Date:   Wed, 4 Aug 2021 10:33:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YhZiYOgndOKxjc09S0PXNRg2bwREnpEcJqoGdi9R3j4=;
+        b=NG5cAudOQSFd+waPAmClPSj971fqwQig658m2QTc6kb9ItzgVC6GzyIpyfX9blakd6
+         jeoQEmQWSk3X81Hbxkx+WrP7QBPvNe2qP0sfzXcybdK/OztiFWDV0rNNtNRbzbErO5wp
+         nMiPgaSy5BiVNvPQZxYq8qQNSPaGLiFFGn2BXnQxZC2fwY7U7vlUSNAYOhbxwvqewZVp
+         FTPthadJAp+pjWevS8GdefieDhrqx04lVlwVIC0xwDUQZKCvwiaoMrBRq1PMIpgRtX9c
+         R716g7CILDrepOOQJPV7/Q4Z5yVp9dwe/9QaE9sgbG6odIqTz/KdIbWPnoV/mOTlRPrn
+         MFNg==
+X-Gm-Message-State: AOAM533QsvNzAMJn3GeTwZ4mq/6XbEOQ9HFFdi+kgV3PE+RVlYIUPnON
+        VhRpvBTYtlWwami04zFzhpI9selVodR7YKUnUOqDVQ==
+X-Google-Smtp-Source: ABdhPJymCBqSnZgzBKSNmr2MjF0wpRwbeglHEpm4zXemFVzbR6C40A4/FY2kBM4h652XG2mpuMxECGFnFC8tuINkG34=
+X-Received: by 2002:a17:906:53ce:: with SMTP id p14mr299514ejo.477.1628098542007;
+ Wed, 04 Aug 2021 10:35:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a576f7075625a476c613b5feb2c4c7033d6c0375.camel@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210802210016.642262-1-abdulras@google.com> <mhng-fc0ced4d-4e60-422b-8728-7e9bdd0276fb@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-fc0ced4d-4e60-422b-8728-7e9bdd0276fb@palmerdabbelt-glaptop>
+From:   Saleem Abdulrasool <abdulras@google.com>
+Date:   Wed, 4 Aug 2021 10:35:29 -0700
+Message-ID: <CAO8XFHs-s2SHajL8NpWsK_JcG0ZoyDr9qd9jGDxdQ6bU-cKqiw@mail.gmail.com>
+Subject: Re: [PATCH] riscv: explicitly use symbol offsets for VDSO v2
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nathan@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/21 3:46 AM, Winiarska, Iwona wrote:
-> On Tue, 2021-08-03 at 08:39 -0700, Guenter Roeck wrote:
->> On Tue, Aug 03, 2021 at 01:31:32PM +0200, Iwona Winiarska wrote:
->>> Add peci-dimmtemp driver for Temperature Sensor on DIMM readings that
->>> are accessible via the processor PECI interface.
->>>
->>> The main use case for the driver (and PECI interface) is out-of-band
->>> management, where we're able to obtain thermal readings from an external
->>> entity connected with PECI, e.g. BMC on server platforms.
->>>
->>> Co-developed-by: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
->>> Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
->>> Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
->>> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>> ---
->>> Note that the timeout was completely removed - we're going to probe
->>> for detected DIMMs every 5 seconds until we reach "stable" state of
->>> either getting correct DIMM data or getting all -EINVAL (which
->>> suggest that the CPU doesn't have any DIMMs).
->>>
->>>   drivers/hwmon/peci/Kconfig    |  13 +
->>>   drivers/hwmon/peci/Makefile   |   2 +
->>>   drivers/hwmon/peci/dimmtemp.c | 614 ++++++++++++++++++++++++++++++++++
->>>   3 files changed, 629 insertions(+)
->>>   create mode 100644 drivers/hwmon/peci/dimmtemp.c
->>>
->>> diff --git a/drivers/hwmon/peci/Kconfig b/drivers/hwmon/peci/Kconfig
->>> index e10eed68d70a..9d32a57badfe 100644
->>> --- a/drivers/hwmon/peci/Kconfig
->>> +++ b/drivers/hwmon/peci/Kconfig
->>> @@ -14,5 +14,18 @@ config SENSORS_PECI_CPUTEMP
->>>            This driver can also be built as a module. If so, the module
->>>            will be called peci-cputemp.
->>>   
->>> +config SENSORS_PECI_DIMMTEMP
->>> +       tristate "PECI DIMM temperature monitoring client"
->>> +       depends on PECI
->>> +       select SENSORS_PECI
->>> +       select PECI_CPU
->>> +       help
->>> +         If you say yes here you get support for the generic Intel PECI
->>> hwmon
->>> +         driver which provides Temperature Sensor on DIMM readings that are
->>> +         accessible via the processor PECI interface.
->>> +
->>> +         This driver can also be built as a module. If so, the module
->>> +         will be called peci-dimmtemp.
->>> +
->>>   config SENSORS_PECI
->>>          tristate
->>> diff --git a/drivers/hwmon/peci/Makefile b/drivers/hwmon/peci/Makefile
->>> index e8a0ada5ab1f..191cfa0227f3 100644
->>> --- a/drivers/hwmon/peci/Makefile
->>> +++ b/drivers/hwmon/peci/Makefile
->>> @@ -1,5 +1,7 @@
->>>   # SPDX-License-Identifier: GPL-2.0-only
->>>   
->>>   peci-cputemp-y := cputemp.o
->>> +peci-dimmtemp-y := dimmtemp.o
->>>   
->>>   obj-$(CONFIG_SENSORS_PECI_CPUTEMP)     += peci-cputemp.o
->>> +obj-$(CONFIG_SENSORS_PECI_DIMMTEMP)    += peci-dimmtemp.o
->>> diff --git a/drivers/hwmon/peci/dimmtemp.c b/drivers/hwmon/peci/dimmtemp.c
->>> new file mode 100644
->>> index 000000000000..6264c29bb6c0
->>> --- /dev/null
->>> +++ b/drivers/hwmon/peci/dimmtemp.c
->>> @@ -0,0 +1,614 @@
->>> +// SPDX-License-Identifier: GPL-2.0-only
->>> +// Copyright (c) 2018-2021 Intel Corporation
->>> +
->>> +#include <linux/auxiliary_bus.h>
->>> +#include <linux/bitfield.h>
->>> +#include <linux/bitops.h>
->>> +#include <linux/hwmon.h>
->>> +#include <linux/jiffies.h>
->>> +#include <linux/module.h>
->>> +#include <linux/peci.h>
->>> +#include <linux/peci-cpu.h>
->>> +#include <linux/units.h>
->>> +#include <linux/workqueue.h>
->>> +#include <linux/x86/intel-family.h>
->>> +
->>> +#include "common.h"
->>> +
->>> +#define DIMM_MASK_CHECK_DELAY_JIFFIES  msecs_to_jiffies(5000)
->>> +
->>> +/* Max number of channel ranks and DIMM index per channel */
->>> +#define CHAN_RANK_MAX_ON_HSX   8
->>> +#define DIMM_IDX_MAX_ON_HSX    3
->>> +#define CHAN_RANK_MAX_ON_BDX   4
->>> +#define DIMM_IDX_MAX_ON_BDX    3
->>> +#define CHAN_RANK_MAX_ON_BDXD  2
->>> +#define DIMM_IDX_MAX_ON_BDXD   2
->>> +#define CHAN_RANK_MAX_ON_SKX   6
->>> +#define DIMM_IDX_MAX_ON_SKX    2
->>> +#define CHAN_RANK_MAX_ON_ICX   8
->>> +#define DIMM_IDX_MAX_ON_ICX    2
->>> +#define CHAN_RANK_MAX_ON_ICXD  4
->>> +#define DIMM_IDX_MAX_ON_ICXD   2
->>> +
->>> +#define CHAN_RANK_MAX          CHAN_RANK_MAX_ON_HSX
->>> +#define DIMM_IDX_MAX           DIMM_IDX_MAX_ON_HSX
->>> +#define DIMM_NUMS_MAX          (CHAN_RANK_MAX * DIMM_IDX_MAX)
->>> +
->>> +#define CPU_SEG_MASK           GENMASK(23, 16)
->>> +#define GET_CPU_SEG(x)         (((x) & CPU_SEG_MASK) >> 16)
->>> +#define CPU_BUS_MASK           GENMASK(7, 0)
->>> +#define GET_CPU_BUS(x)         ((x) & CPU_BUS_MASK)
->>> +
->>> +#define DIMM_TEMP_MAX          GENMASK(15, 8)
->>> +#define DIMM_TEMP_CRIT         GENMASK(23, 16)
->>> +#define GET_TEMP_MAX(x)                (((x) & DIMM_TEMP_MAX) >> 8)
->>> +#define GET_TEMP_CRIT(x)       (((x) & DIMM_TEMP_CRIT) >> 16)
->>> +
->>> +struct peci_dimmtemp;
->>> +
->>> +struct dimm_info {
->>> +       int chan_rank_max;
->>> +       int dimm_idx_max;
->>> +       u8 min_peci_revision;
->>> +       int (*read_thresholds)(struct peci_dimmtemp *priv, int dimm_order,
->>> +                              int chan_rank, u32 *data);
->>> +};
->>> +
->>> +struct peci_dimm_thresholds {
->>> +       long temp_max;
->>> +       long temp_crit;
->>> +       struct peci_sensor_state state;
->>> +};
->>> +
->>> +enum peci_dimm_threshold_type {
->>> +       temp_max_type,
->>> +       temp_crit_type,
->>> +};
->>> +
->>> +struct peci_dimmtemp {
->>> +       struct peci_device *peci_dev;
->>> +       struct device *dev;
->>> +       const char *name;
->>> +       const struct dimm_info *gen_info;
->>> +       struct delayed_work detect_work;
->>> +       struct {
->>> +               struct peci_sensor_data temp;
->>> +               struct peci_dimm_thresholds thresholds;
->>> +       } dimm[DIMM_NUMS_MAX];
->>> +       char **dimmtemp_label;
->>> +       DECLARE_BITMAP(dimm_mask, DIMM_NUMS_MAX);
->>> +};
->>> +
->>> +static u8 __dimm_temp(u32 reg, int dimm_order)
->>> +{
->>> +       return (reg >> (dimm_order * 8)) & 0xff;
->>> +}
->>> +
->>> +static int get_dimm_temp(struct peci_dimmtemp *priv, int dimm_no, long
->>> *val)
->>> +{
->>> +       int dimm_order = dimm_no % priv->gen_info->dimm_idx_max;
->>> +       int chan_rank = dimm_no / priv->gen_info->dimm_idx_max;
->>> +       u32 data;
->>> +       int ret;
->>
->>          int ret = 0;
->>
->>> +
->>> +       mutex_lock(&priv->dimm[dimm_no].temp.state.lock);
->>> +       if (!peci_sensor_need_update(&priv->dimm[dimm_no].temp.state))
->>> +               goto skip_update;
->>> +
->>> +       ret = peci_pcs_read(priv->peci_dev, PECI_PCS_DDR_DIMM_TEMP,
->>> chan_rank, &data);
->>> +       if (ret) {
->>> +               mutex_unlock(&priv->dimm[dimm_no].temp.state.lock);
->>> +               return ret;
->>> +       }
->>
->>          if (ret)
->>                  goto unlock;
->>
->>> +
->>> +       priv->dimm[dimm_no].temp.value = __dimm_temp(data, dimm_order) *
->>> MILLIDEGREE_PER_DEGREE;
->>> +
->>> +       peci_sensor_mark_updated(&priv->dimm[dimm_no].temp.state);
->>> +
->>> +skip_update:
->>> +       *val = priv->dimm[dimm_no].temp.value;
->>
->> unlock:
->>> +       mutex_unlock(&priv->dimm[dimm_no].temp.state.lock);
->>> +       return 0;
->>
->>          return ret;
-> 
-> Ack.
-> 
->>
->>> +}
->>> +
->>> +static int update_thresholds(struct peci_dimmtemp *priv, int dimm_no)
->>> +{
->>> +       int dimm_order = dimm_no % priv->gen_info->dimm_idx_max;
->>> +       int chan_rank = dimm_no / priv->gen_info->dimm_idx_max;
->>> +       u32 data;
->>> +       int ret;
->>> +
->>> +       if (!peci_sensor_need_update(&priv->dimm[dimm_no].thresholds.state))
->>> +               return 0;
->>> +
->>> +       ret = priv->gen_info->read_thresholds(priv, dimm_order, chan_rank,
->>> &data);
->>> +       if (ret == -ENODATA) /* Use default or previous value */
->>> +               return 0;
->>> +       if (ret)
->>> +               return ret;
->>> +
->>> +       priv->dimm[dimm_no].thresholds.temp_max = GET_TEMP_MAX(data) *
->>> MILLIDEGREE_PER_DEGREE;
->>> +       priv->dimm[dimm_no].thresholds.temp_crit = GET_TEMP_CRIT(data) *
->>> MILLIDEGREE_PER_DEGREE;
->>> +
->>> +       peci_sensor_mark_updated(&priv->dimm[dimm_no].thresholds.state);
->>> +
->>> +       return 0;
->>> +}
->>> +
->>> +static int get_dimm_thresholds(struct peci_dimmtemp *priv, enum
->>> peci_dimm_threshold_type type,
->>> +                              int dimm_no, long *val)
->>> +{
->>> +       int ret;
->>> +
->>> +       mutex_lock(&priv->dimm[dimm_no].thresholds.state.lock);
->>> +       ret = update_thresholds(priv, dimm_no);
->>> +       if (ret)
->>> +               goto unlock;
->>> +
->>> +       switch (type) {
->>> +       case temp_max_type:
->>> +               *val = priv->dimm[dimm_no].thresholds.temp_max;
->>> +               break;
->>> +       case temp_crit_type:
->>> +               *val = priv->dimm[dimm_no].thresholds.temp_crit;
->>> +               break;
->>> +       default:
->>> +               ret = -EOPNOTSUPP;
->>> +               break;
->>> +       }
->>> +unlock:
->>> +       mutex_unlock(&priv->dimm[dimm_no].thresholds.state.lock);
->>> +
->>> +       return ret;
->>> +}
->>> +
->>> +static int dimmtemp_read_string(struct device *dev,
->>> +                               enum hwmon_sensor_types type,
->>> +                               u32 attr, int channel, const char **str)
->>> +{
->>> +       struct peci_dimmtemp *priv = dev_get_drvdata(dev);
->>> +
->>> +       if (attr != hwmon_temp_label)
->>> +               return -EOPNOTSUPP;
->>> +
->>> +       *str = (const char *)priv->dimmtemp_label[channel];
->>> +
->>> +       return 0;
->>> +}
->>> +
->>> +static int dimmtemp_read(struct device *dev, enum hwmon_sensor_types type,
->>> +                        u32 attr, int channel, long *val)
->>> +{
->>> +       struct peci_dimmtemp *priv = dev_get_drvdata(dev);
->>> +
->>> +       switch (attr) {
->>> +       case hwmon_temp_input:
->>> +               return get_dimm_temp(priv, channel, val);
->>> +       case hwmon_temp_max:
->>> +               return get_dimm_thresholds(priv, temp_max_type, channel,
->>> val);
->>> +       case hwmon_temp_crit:
->>> +               return get_dimm_thresholds(priv, temp_crit_type, channel,
->>> val);
->>> +       default:
->>> +               break;
->>> +       }
->>> +
->>> +       return -EOPNOTSUPP;
->>> +}
->>> +
->>> +static umode_t dimmtemp_is_visible(const void *data, enum
->>> hwmon_sensor_types type,
->>> +                                  u32 attr, int channel)
->>> +{
->>> +       const struct peci_dimmtemp *priv = data;
->>> +
->>> +       if (test_bit(channel, priv->dimm_mask))
->>> +               return 0444;
->>> +
->>> +       return 0;
->>> +}
->>> +
->>> +static const struct hwmon_ops peci_dimmtemp_ops = {
->>> +       .is_visible = dimmtemp_is_visible,
->>> +       .read_string = dimmtemp_read_string,
->>> +       .read = dimmtemp_read,
->>> +};
->>> +
->>> +static int check_populated_dimms(struct peci_dimmtemp *priv)
->>> +{
->>> +       int chan_rank_max = priv->gen_info->chan_rank_max;
->>> +       int dimm_idx_max = priv->gen_info->dimm_idx_max;
->>> +       u32 chan_rank_empty = 0;
->>> +       u64 dimm_mask = 0;
->>> +       int chan_rank, dimm_idx, ret;
->>> +       u32 pcs;
->>> +
->>> +       BUILD_BUG_ON(CHAN_RANK_MAX > 32);
->>> +       BUILD_BUG_ON(DIMM_NUMS_MAX > 64);
->>
->> I don't immediately see the value of those build bugs. What happens if
->> CHAN_RANK_MAX > 32 or DIMM_NUMS_MAX > 64 ? Where do those limits come
->> from ?
-> 
-> Supported HW doesn't come near the limit for now - it's just an "artificial"
-> limit imposed by variables we're using (u64 for dimm_mask and u32 for
-> chan_rank_empty).
-> 
+On Tue, Aug 3, 2021 at 8:55 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Mon, 02 Aug 2021 14:00:17 PDT (-0700), abdulras@google.com wrote:
+> > The current implementation of the `__rt_sigaction` reference computed a=
+n
+> > absolute offset relative to the mapped base of the VDSO.  While this ca=
+n
+> > be handled in the medlow model, the medany model cannot handle this as
+> > it is meant to be position independent.  The current implementation
+> > relied on the BFD linker relaxing the PC-relative relocation into an
+> > absolute relocation as it was a near-zero address allowing it to be
+> > referenced relative to `zero`.
+> >
+> > We now extract the offsets and create a generated header allowing the
+> > build with LLVM and lld to succeed as we no longer depend on the linker
+> > rewriting address references near zero.  This change was largely
+> > modelled after the ARM64 target which does something similar.
+> >
+> > Signed-off-by: Saleem Abdulrasool <abdulras@google.com>
+> > ---
+> >  arch/riscv/Makefile                        |  4 ++++
+> >  arch/riscv/include/asm/vdso.h              | 11 ++--------
+> >  arch/riscv/kernel/vdso/Makefile            | 25 ++++++++++------------
+> >  arch/riscv/kernel/vdso/gen_vdso_offsets.sh |  5 +++++
+> >  arch/riscv/kernel/vdso/so2s.sh             |  6 ------
+> >  5 files changed, 22 insertions(+), 29 deletions(-)
+> >  create mode 100755 arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+> >  delete mode 100755 arch/riscv/kernel/vdso/so2s.sh
+> >
+> > diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+> > index bc74afdbf31e..e026b2d0a5a4 100644
+> > --- a/arch/riscv/Makefile
+> > +++ b/arch/riscv/Makefile
+> > @@ -108,6 +108,10 @@ PHONY +=3D vdso_install
+> >  vdso_install:
+> >       $(Q)$(MAKE) $(build)=3Darch/riscv/kernel/vdso $@
+> >
+> > +prepare: vdso_prepare
+> > +vdso_prepare: prepare0
+> > +     $(Q)$(MAKE) $(build)=3Darch/riscv/kernel/vdso include/generated/v=
+dso-offsets.h
+> > +
+> >  ifneq ($(CONFIG_XIP_KERNEL),y)
+> >  ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN),yy)
+> >  KBUILD_IMAGE :=3D $(boot)/loader.bin
+> > diff --git a/arch/riscv/include/asm/vdso.h b/arch/riscv/include/asm/vds=
+o.h
+> > index 1453a2f563bc..098795262b92 100644
+> > --- a/arch/riscv/include/asm/vdso.h
+> > +++ b/arch/riscv/include/asm/vdso.h
+> > @@ -9,24 +9,17 @@
+> >  #define _ASM_RISCV_VDSO_H
+> >
+> >  #include <linux/types.h>
+> > +#include <generated/vdso-offsets.h>
+> >
+> >  #ifndef CONFIG_GENERIC_TIME_VSYSCALL
+> >  struct vdso_data {
+> >  };
+> >  #endif
+> >
+> > -/*
+> > - * The VDSO symbols are mapped into Linux so we can just use regular s=
+ymbol
+> > - * addressing to get their offsets in userspace.  The symbols are mapp=
+ed at an
+> > - * offset of 0, but since the linker must support setting weak undefin=
+ed
+> > - * symbols to the absolute address 0 it also happens to support other =
+low
+> > - * addresses even when the code model suggests those low addresses wou=
+ld not
+> > - * otherwise be availiable.
+> > - */
+> >  #define VDSO_SYMBOL(base, name)                                       =
+               \
+> >  ({                                                                    =
+       \
+> >       extern const char __vdso_##name[];                               =
+       \
+> > -     (void __user *)((unsigned long)(base) + __vdso_##name);          =
+       \
+> > +     (void __user *)((unsigned long)(base) + __vdso_##name##_offset); =
+       \
+> >  })
+> >
+> >  asmlinkage long sys_riscv_flush_icache(uintptr_t, uintptr_t, uintptr_t=
+);
+> > diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/M=
+akefile
+> > index 24d936c147cd..f8cb9144a284 100644
+> > --- a/arch/riscv/kernel/vdso/Makefile
+> > +++ b/arch/riscv/kernel/vdso/Makefile
+> > @@ -23,10 +23,10 @@ ifneq ($(c-gettimeofday-y),)
+> >  endif
+> >
+> >  # Build rules
+> > -targets :=3D $(obj-vdso) vdso.so vdso.so.dbg vdso.lds vdso-syms.S
+> > +targets :=3D $(obj-vdso) vdso.so vdso.so.dbg vdso.lds
+> >  obj-vdso :=3D $(addprefix $(obj)/, $(obj-vdso))
+> >
+> > -obj-y +=3D vdso.o vdso-syms.o
+> > +obj-y +=3D vdso.o
+> >  CPPFLAGS_vdso.lds +=3D -P -C -U$(ARCH)
+> >
+> >  # Disable -pg to prevent insert call site
+> > @@ -43,20 +43,22 @@ $(obj)/vdso.o: $(obj)/vdso.so
+> >  # link rule for the .so file, .lds has to be first
+> >  $(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) FORCE
+> >       $(call if_changed,vdsold)
+> > -LDFLAGS_vdso.so.dbg =3D -shared -s -soname=3Dlinux-vdso.so.1 \
+> > +LDFLAGS_vdso.so.dbg =3D -shared -S -soname=3Dlinux-vdso.so.1 \
+> >       --build-id=3Dsha1 --hash-style=3Dboth --eh-frame-hdr
+> >
+> > -# We also create a special relocatable object that should mirror the s=
+ymbol
+> > -# table and layout of the linked DSO. With ld --just-symbols we can th=
+en
+> > -# refer to these symbols in the kernel code rather than hand-coded add=
+resses.
+> > -$(obj)/vdso-syms.S: $(obj)/vdso.so FORCE
+> > -     $(call if_changed,so2s)
+> > -
+> >  # strip rule for the .so file
+> >  $(obj)/%.so: OBJCOPYFLAGS :=3D -S
+> >  $(obj)/%.so: $(obj)/%.so.dbg FORCE
+> >       $(call if_changed,objcopy)
+> >
+> > +# Generate VDSO offsets using helper script
+> > +gen-vdsosym :=3D $(srctree)/$(src)/gen_vdso_offsets.sh
+> > +quiet_cmd_vdsosym =3D VDSOSYM $@
+> > +     cmd_vdsosym =3D $(NM) $< | $(gen-vdsosym) | LC_ALL=3DC sort > $@
+> > +
+> > +include/generated/vdso-offsets.h: $(obj)/vdso.so.dbg FORCE
+> > +     $(call if_changed,vdsosym)
+> > +
+> >  # actual build commands
+> >  # The DSO images are built using a special linker script
+> >  # Make sure only to export the intended __vdso_xxx symbol offsets.
+> > @@ -65,11 +67,6 @@ quiet_cmd_vdsold =3D VDSOLD  $@
+> >                     $(OBJCOPY) $(patsubst %, -G __vdso_%, $(vdso-syms))=
+ $@.tmp $@ && \
+> >                     rm $@.tmp
+> >
+> > -# Extracts symbol offsets from the VDSO, converting them into an assem=
+bly file
+> > -# that contains the same symbols at the same offsets.
+> > -quiet_cmd_so2s =3D SO2S    $@
+> > -      cmd_so2s =3D $(NM) -D $< | $(srctree)/$(src)/so2s.sh > $@
+> > -
+> >  # install commands for the unstripped file
+> >  quiet_cmd_vdso_install =3D INSTALL $@
+> >        cmd_vdso_install =3D cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
+> > diff --git a/arch/riscv/kernel/vdso/gen_vdso_offsets.sh b/arch/riscv/ke=
+rnel/vdso/gen_vdso_offsets.sh
+> > new file mode 100755
+> > index 000000000000..c2e5613f3495
+> > --- /dev/null
+> > +++ b/arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+> > @@ -0,0 +1,5 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +LC_ALL=3DC
+> > +sed -n -e 's/^[0]\+\(0[0-9a-fA-F]*\) . \(__vdso_[a-zA-Z0-9_]*\)$/\#def=
+ine \2_offset\t0x\1/p'
+> > diff --git a/arch/riscv/kernel/vdso/so2s.sh b/arch/riscv/kernel/vdso/so=
+2s.sh
+> > deleted file mode 100755
+> > index e64cb6d9440e..000000000000
+> > --- a/arch/riscv/kernel/vdso/so2s.sh
+> > +++ /dev/null
+> > @@ -1,6 +0,0 @@
+> > -#!/bin/sh
+> > -# SPDX-License-Identifier: GPL-2.0+
+> > -# Copyright 2020 Palmer Dabbelt <palmerdabbelt@google.com>
+> > -
+> > -sed 's!\([0-9a-f]*\) T \([a-z0-9_]*\)\(@@LINUX_4.15\)*!.global \2\n.se=
+t \2,0x\1!' \
+> > -| grep '^\.'
+>
+> This is giving me some unused variable warnings:
+>
+> In file included from arch/riscv/kernel/signal.c:16:
+> arch/riscv/kernel/signal.c: In function =E2=80=98setup_rt_frame=E2=80=99:
+> ./arch/riscv/include/asm/vdso.h:21:20: warning: unused variable =E2=80=98=
+__vdso_rt_sigreturn=E2=80=99 [-Wunused-variable]
+>    21 |  extern const char __vdso_##name[];     \
+>       |                    ^~~~~~~
+> arch/riscv/kernel/signal.c:197:28: note: in expansion of macro =E2=80=98V=
+DSO_SYMBOL=E2=80=99
+>   197 |  regs->ra =3D (unsigned long)VDSO_SYMBOL(
+>       |                            ^~~~~~~~~~~
 
-Please use a value derived from the size of those variables for the check
-to clarify and explain the constraints.
+Thanks Palmer,
 
-Thanks,
-Guenter
+It seems that there was a difference in diagnostics between gcc and
+clang.  The diagnostic indicated that I didn't scrub hard enough
+during the cleanups.  I've sent out an updated version.  Thank you for
+informing me of this missed cleanup!
