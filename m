@@ -2,116 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D9D3DFB6B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6E03DFB6D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235360AbhHDGYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 02:24:52 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:53278 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234831AbhHDGYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 02:24:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628058276; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=ms4w2nOLpyvnWav4AUaTVOElpOLGquasTh0H33YDf+8=; b=HItqekPhj6O3sqbJTXWiqk9ysTUrF6QUw1PBnfLWifqJIjWwn9k7OP57w2w/mG0yACIFWI5Z
- 5kAPMqO+O2+bekYaS1dOye1Val13w836TmHGOP5JUqln9ZqELFMFvnWP0P/EMKC7vWsw2Ojj
- ZVkYky3D1uUYi4uU67s1IdyZHFM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 610a3294041a739c46fbf70a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Aug 2021 06:24:20
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9B39CC433D3; Wed,  4 Aug 2021 06:24:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S235388AbhHDGZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 02:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233280AbhHDGZv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 02:25:51 -0400
+Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11164C0613D5;
+        Tue,  3 Aug 2021 23:25:39 -0700 (PDT)
+Received: from [10.32.112.20] (55862176.cust.multi.fi [85.134.33.118])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E23C1C433F1;
-        Wed,  4 Aug 2021 06:24:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E23C1C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v2] usb: dwc3: gadget: Avoid runtime resume if disabling pullup
-Date:   Tue,  3 Aug 2021 23:24:05 -0700
-Message-Id: <1628058245-30692-1-git-send-email-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        (Authenticated sender: tmb)
+        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 388791B001E8;
+        Wed,  4 Aug 2021 09:25:35 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
+        t=1628058335;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wxtt8KNuWwpP7gtvj6O94l8wyhQFK14FxF4B830ik+k=;
+        b=d/pxRZXfthkNC6xGq8HNha1T3HjDzc+spHVHA1P4d7vTGTm0R1vDXzRlqB5okijQgNPC6Y
+        ewgZexVVtghUM1uwOBw1heKxF4jugd4FVDjWcsvRRZhBoXmDARhUyXYYWNo9r3aRtIQHdD
+        8lOs2sdMD71tgrsDQh0zsixdBxH8dB1zGjihOV7scFjSwYS/3hdgBV3V+/u002YBkJfGQz
+        mhfCJlrTDqPv7WvRrlnl3tyTR9hVSrN5pM9x/d0MQK6vKPBmhFqjktALTP9OoRLG29aDhX
+        ZqhNbx2/lKrF96C3H4fUgoh5g7kKNYXk/1mvbcSUCNLE3Nr/GI79fHcLEyBDAQ==
+Subject: Re: [PATCH 5.10 00/67] 5.10.56-rc1 review
+To:     Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20210802134339.023067817@linuxfoundation.org>
+ <20210803192607.GA14540@duo.ucw.cz>
+From:   Thomas Backlund <tmb@iki.fi>
+Message-ID: <e591d78c-0196-a218-59dd-91d83aa65f90@iki.fi>
+Date:   Wed, 4 Aug 2021 09:25:34 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210803192607.GA14540@duo.ucw.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: sv
+Content-Transfer-Encoding: 7bit
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=tmb smtp.mailfrom=tmb@iki.fi
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=lahtoruutu; t=1628058335;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wxtt8KNuWwpP7gtvj6O94l8wyhQFK14FxF4B830ik+k=;
+        b=p9XqdDbKzBPrZybQvzAqglHBkNNWRh9BQNVd2/981R+eLCajaOqhnynKLYt7gL41q4DMWo
+        7SpT/wOVjeWG9hTAyPrgY4H+HjgYiKv0va1xAA+jr8P6F1PdlysSuhKhr6gWnnIWojV5DD
+        cgpEktxVGcKMmcHUUsexycZjH+Nz62vtCh56stvNfTnj3CWxEOLNSNdMuDYKjbiM+l2pJZ
+        Hpc3IxDRotpFgJf9LHU1WA8yX8hFDKyGFoEU7K3sFCmikex1uuaP7JOP2MLMmYt/AgPhdX
+        at2/M9mZQueL6ubE2NCVs7A4w8ZUhFPxFGnHDuZIs7M5YgKGQHCUTf8ch2L6LQ==
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1628058335; a=rsa-sha256;
+        cv=none;
+        b=GLrdONjZ15KCe67xuhNxmDuv9dGd8U7vnCEQietyqwk5L/3pQZ6VX8U9TIclG0ucVsh2Wt
+        spXRntV4aZCmNyUqXSEFUSwIXahTGMAeCDswLvLQ9ZyLFQF2qNbPewhJxptDijBLEivDpU
+        3/quacx77s21C/z2Y9FNcO6t+c3z2CbOVIL53zWzSGUP89H+nav+6FXg6DRn0f+yosIRoW
+        JlS83fmQbV+2lrDS67bjKHuEcOVW+O/+Sm6eLkwCYSEc0Q6h2vTmfjNoOKVnJHU1RNR7tm
+        VJb6eL1AdddTk9/DnkStfu/Q4j0XyqJ4bDnOJzwjC5zERDPor6PNPsvtGHXBMQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the device is already in the runtime suspended state, any call to
-the pullup routine will issue a runtime resume on the DWC3 core
-device.  If the USB gadget is disabling the pullup, then avoid having
-to issue a runtime resume, as DWC3 gadget has already been
-halted/stopped.
+Den 03-08-2021 kl. 22:26, skrev Pavel Machek:
+> Hi!
+> 
+>> This is the start of the stable review cycle for the 5.10.56 release.
+>> There are 67 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
+> 
+> Not sure what went wrong, but 50 or so patches disappeared from the queue:
+> 
+> 48156f3dce81b215b9d6dd524ea34f7e5e029e6b (origin/queue/5.10) btrfs: fix lost inode on log replay after mix of fsync, rename and inode eviction
+> 474a423936753742c112e265b5481dddd8c02f33 btrfs: fix race causing unnecessary inode logging during link and rename
+> 2fb9fc485825505e31b634b68d4c05e193a224da Revert "drm/i915: Propagate errors on awaiting already signaled fences"
+> b1c92988bfcb7aa46bdf8198541f305c9ff2df25 drm/i915: Revert "drm/i915/gem: Asynchronous cmdparser"
+> 11fe69a17195cf58eff523f26f90de50660d0100 (tag: v5.10.55) Linux 5.10.55
+> 984e93b8e20731f83e453dd056f8a3931b4a66e5 ipv6: ip6_finish_output2: set
+> sk into newly allocated nskb
+> 
+> Best regards,
 
-This fixes an issue where the following condition occurs:
+Looks like a fallout of switching to use rc-* for current review queues 
+and apparently keep queue-* for upcoming stuff
 
-usb_gadget_remove_driver()
--->usb_gadget_disconnect()
- -->dwc3_gadget_pullup(0)
-  -->pm_runtime_get_sync() -> ret = 0
-  -->pm_runtime_put() [async]
--->usb_gadget_udc_stop()
- -->dwc3_gadget_stop()
-  -->dwc->gadget_driver = NULL
-...
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/tree/ 
 
-dwc3_suspend_common()
--->dwc3_gadget_suspend()
- -->DWC3 halt/stop routine skipped, driver_data == NULL
 
-This leads to a situation where the DWC3 gadget is not properly
-stopped, as the runtime resume would have re-enabled EP0 and event
-interrupts, and since we avoided the DWC3 gadget suspend, these
-resources were never disabled.
 
-Fixes: 77adb8bdf422 ("usb: dwc3: gadget: Allow runtime suspend if UDC unbinded")
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
-Changes in v2:
-- Added fixes tag with the problem commit.
-
- drivers/usb/dwc3/gadget.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index a29a4ca..5d08454 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2435,6 +2435,17 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
- 	}
- 
- 	/*
-+	 * Avoid issuing a runtime resume if the device is already in the
-+	 * suspended state during gadget disconnect.  DWC3 gadget was already
-+	 * halted/stopped during runtime suspend.
-+	 */
-+	if (!is_on) {
-+		pm_runtime_barrier(dwc->dev);
-+		if (pm_runtime_suspended(dwc->dev))
-+			return 0;
-+	}
-+
-+	/*
- 	 * Check the return value for successful resume, or error.  For a
- 	 * successful resume, the DWC3 runtime PM resume routine will handle
- 	 * the run stop sequence, so avoid duplicate operations here.
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+--
+Thomas
