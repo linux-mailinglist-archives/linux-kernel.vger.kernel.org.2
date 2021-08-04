@@ -2,80 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB113E00D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC763E00D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237956AbhHDMFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 08:05:39 -0400
-Received: from outbound-smtp01.blacknight.com ([81.17.249.7]:49513 "EHLO
-        outbound-smtp01.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234765AbhHDMFi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 08:05:38 -0400
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp01.blacknight.com (Postfix) with ESMTPS id BE0F3C4A88
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 13:05:24 +0100 (IST)
-Received: (qmail 17282 invoked from network); 4 Aug 2021 12:05:24 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 4 Aug 2021 12:05:24 -0000
-Date:   Wed, 4 Aug 2021 13:05:22 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH v3 00/35] SLUB: reduce irq disabled scope and make it RT
- compatible
-Message-ID: <20210804120522.GD6464@techsingularity.net>
-References: <20210729132132.19691-1-vbabka@suse.cz>
+        id S237986AbhHDMHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 08:07:11 -0400
+Received: from mga06.intel.com ([134.134.136.31]:49804 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234765AbhHDMHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 08:07:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="274958502"
+X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
+   d="scan'208";a="274958502"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 05:06:56 -0700
+X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
+   d="scan'208";a="511886792"
+Received: from dfuxbrum-mobl.ger.corp.intel.com (HELO [10.251.175.67]) ([10.251.175.67])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 05:06:53 -0700
+Subject: Re: [Intel-wired-lan] [PATCH v2] igc: fix page fault when thunderbolt
+ is unplugged
+To:     Aaron Ma <aaron.ma@canonical.com>, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210702045120.22855-1-aaron.ma@canonical.com>
+ <20210713130036.741188-1-aaron.ma@canonical.com>
+From:   "Fuxbrumer, Dvora" <dvorax.fuxbrumer@linux.intel.com>
+Message-ID: <567b12f8-359a-5268-e020-edcf2dd46937@linux.intel.com>
+Date:   Wed, 4 Aug 2021 15:06:44 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210729132132.19691-1-vbabka@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210713130036.741188-1-aaron.ma@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 03:20:57PM +0200, Vlastimil Babka wrote:
-> Changes since v2 [5]:
-> * Rebase to 5.14-rc3
-> * A number of fixes to the RT parts, big thanks to Mike Galbraith for testing
->   and debugging!
->   * The largest fix is to protect kmem_cache_cpu->partial by local_lock instead
->     of cmpxchg tricks, which are insufficient on RT. To avoid divergence
->     between RT and !RT, just do it everywhere. Affected mainly patch 25 and a
->     new patch 33. This also addresses a theoretical race raised earlier by Jann
->     Horn.
-> * Smaller fixes reported by Sebastian Andrzej Siewior and Cyrill Gorcunov
+On 7/13/2021 16:00, Aaron Ma wrote:
+> After unplug thunerbolt dock with i225, pciehp interrupt is triggered,
+> remove call will read/write mmio address which is already disconnected,
+> then cause page fault and make system hang.
 > 
-> Changes since RFC v1 [1]:
-> * Addressed feedback from Christoph and Mel, added their acks.
-> * Finished RT conversion, adopting 2 patches from the RT tree.
-> * The local_lock conversion has to sacrifice lockless fathpaths on PREEMPT_RT
-> * Added some more cleanup patches to the front.
+> Check PCI state to remove device safely.
 > 
-> This series was initially inspired by Mel's pcplist local_lock rewrite, and
-> also interest to better understand SLUB's locking and the new primitives and RT
-> variants and implications. It should make SLUB more preemption-friendly,
-> especially for RT, hopefully without noticeable regressions, as the fast paths
-> are not affected.
+> Trace:
+> BUG: unable to handle page fault for address: 000000000000b604
+> Oops: 0000 [#1] SMP NOPTI
+> RIP: 0010:igc_rd32+0x1c/0x90 [igc]
+> Call Trace:
+> igc_ptp_suspend+0x6c/0xa0 [igc]
+> igc_ptp_stop+0x12/0x50 [igc]
+> igc_remove+0x7f/0x1c0 [igc]
+> pci_device_remove+0x3e/0xb0
+> __device_release_driver+0x181/0x240
 > 
-> Series is based on 5.14-rc3 and also available as a git branch:
-> https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=slub-local-lock-v3r1
+> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+> ---
+>   drivers/net/ethernet/intel/igc/igc_main.c | 32 ++++++++++++++---------
+>   drivers/net/ethernet/intel/igc/igc_ptp.c  |  3 ++-
+>   2 files changed, 21 insertions(+), 14 deletions(-)
 > 
-
-FWIW, I ran a corrected version of this series through a few tests. Some
-small gains, no major regressions in terms of performance on a !PREEMPT_RT
-configuration across 6 different machines.
-
--- 
-Mel Gorman
-SUSE Labs
+Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
