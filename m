@@ -2,156 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395933E0349
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7253E0352
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239021AbhHDOcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:32:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
+        id S238883AbhHDOdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238822AbhHDOap (ORCPT
+        with ESMTP id S237719AbhHDObJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:30:45 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C2DC0613D5;
-        Wed,  4 Aug 2021 07:30:21 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id u3so4774497lff.9;
-        Wed, 04 Aug 2021 07:30:21 -0700 (PDT)
+        Wed, 4 Aug 2021 10:31:09 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770B7C061799;
+        Wed,  4 Aug 2021 07:30:56 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id qk33so3997995ejc.12;
+        Wed, 04 Aug 2021 07:30:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mKJzb3ll4dn13iZlEAdIWf6tqFSFs0x9Rq1Rej/qSjg=;
-        b=ACv//ihaYWedxDc0yEk4YmwQ6HFrya4rg/t/C/kt9UkDksqBV/+bjUrlcx8dVAzfKm
-         f78ZZu2jXvr2xFw6OglQ3ATEWAry3E2MdRSnKvhcM92+HfY6nfL3PnLVjMDZfBQymOw3
-         JYi32nVMHitxOhbtGEMm/ezrNttJVOcCO5/ZwqBxQAXuy5HswrgEF+mFn9upqjHszBp6
-         xyTkC88Egu+hYxNx9RhT5Ha875IRamZMaQpDsf5lYkTdXxpvwqYyHRMfDJEjz9Xzkrql
-         2Q9OsmBjiQL/SQ8nnYx8eaiRbUsDmnxGhKQN/EQGvV7tMUByO5eqS7MptNm02Zvv6bYC
-         fp9Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jJgUENKtq1Xqry9IKjcIj2rKDWLQw2yb8qZeXDYhYJ8=;
+        b=BxCJNFoC7AHZbsvmMXQ77Va5cgAhXPrXZUq2mUPzzDCMytHKjRwVlsHHQ0aKhqgfXB
+         ik3ENUgR0qekgQ425+ZwpllnLbbRBpcpRIKyU3cah6GNIy3bgGin7F3tMKDgYUj+av8k
+         UsKhUQeaNC4wnfHsIfTadhWp6HNP4sQApoyF4vThm4Lhi3Y3c+7wrx063eoJSvy/kqtq
+         JyyR1Afw97kQp6xoFQlbcPC9tTVVvhfSndZyeYJg1w6J880LAnlyiiNXny4J+54MiFu1
+         5T/lXZzFjEut45x/fb2OfVA11isRllpEHNVdJI3FfW5ZJ1gJTJOVWSSqCX0IDHoxknwo
+         zIJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mKJzb3ll4dn13iZlEAdIWf6tqFSFs0x9Rq1Rej/qSjg=;
-        b=pgCJPCAu2o8TAVlYSHHX78SxGk2pVl9PGSaHYklz4LveLFeCLozTg9ctqDcDxUJnn3
-         jDF9v/pgrIzYK/CU/sjY8AR9tLYttQb4bIUphgUvAlAvnnuNLihcTroEKEBs22ERiJON
-         JbfPGDjty2Bb0YyPcR/1Fz4yD3Fq9Bp+5LnASKh18Q4xQGNEi3Kcb/i+yMtAI6hg5T2o
-         uT2SzBTyiWySzynkQzP/eVGjFW+8Fpo0ScDbKVJ/UUFwKYVAg5i389T6+teU09ZjRKOe
-         K05DopDbySJwSL1/uZ+Ofq0ZBH3GJU0X3Xbyc2RNHt9JqGlsYL+if4q93VOJCXa5e7bx
-         Y4gQ==
-X-Gm-Message-State: AOAM531UiLxQzKBCXXhvUmvinfBBHCnYp4XAV8tDaLZsQahAVll6DwDc
-        e8xpuMwCEpQipu1mfgiJi+4=
-X-Google-Smtp-Source: ABdhPJwkKsHNDLJ6c/JFRTey0AqGNnMx4xhUQKjGEIqRINMcv24UiA8COKYjLDaHf85zU2OcXMYAUA==
-X-Received: by 2002:a05:6512:1281:: with SMTP id u1mr3461472lfs.136.1628087420062;
-        Wed, 04 Aug 2021 07:30:20 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.226.235])
-        by smtp.gmail.com with ESMTPSA id b15sm213794lff.104.2021.08.04.07.30.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 07:30:19 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     petkan@nucleusys.com, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
-Subject: [PATCH net v2] net: pegasus: fix uninit-value in get_interrupt_interval
-Date:   Wed,  4 Aug 2021 17:30:05 +0300
-Message-Id: <20210804143005.439-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210804045839.101fe0f0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210804045839.101fe0f0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jJgUENKtq1Xqry9IKjcIj2rKDWLQw2yb8qZeXDYhYJ8=;
+        b=Yl/lttlJBAwi9qbttdKHMWI+5VhyhRWmZXA+J1VSSaFVBg7lbuhV5q8gEHNCuP+tYg
+         MeMXX5O4u7kqx0DAcXUz/9AOeshfJb67XdnOTZD+jShmDThLcylfKMOPMSGZbROKNPwK
+         rWEtm4ZQqimJwLprum27Pr9f0jx1Ex9chguGXe58mi59FmEVnldZG7592aAFeOGJqx8R
+         /FIE82g1p7D8RfCYNn8hdgtewN/Gb2L3D11cad2PyOYcfZT9Fl5oKv0ua3rTMB4qm87q
+         xG4iVFMVxKUtkX2I7d3YDWm7tGKiEEJjsLD1Yu+KGcN5A2D1UN/Fdv6gejvLn0LXKQ6N
+         +3Bg==
+X-Gm-Message-State: AOAM533syn0gE5FJrlpQahLsZ8hdZH9GAA08wz0CWm5eh9P/DAwvpsXd
+        GMOy3TbmNFqwf9vTtCh139o=
+X-Google-Smtp-Source: ABdhPJzzx6YRfIY5C2gP75MtSmovcieYN4L31YhhhxGDjBoJ+z2nYGnWfs6H0nZp4nj5gvII+MUf2A==
+X-Received: by 2002:a17:907:7251:: with SMTP id ds17mr13062822ejc.43.1628087455004;
+        Wed, 04 Aug 2021 07:30:55 -0700 (PDT)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id d23sm1026971edt.39.2021.08.04.07.30.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 07:30:54 -0700 (PDT)
+Subject: Re: [PATCH v2 7/7] arm64: dts: rockchip: rk3568-evb1-v10: add node
+ for sd card
+To:     Michael Riesch <michael.riesch@wolfvision.net>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Liang Chen <cl@rock-chips.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Simon Xue <xxm@rock-chips.com>,
+        Jianqun Xu <jay.xu@rock-chips.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>
+References: <20210804130625.15449-1-michael.riesch@wolfvision.net>
+ <20210804130625.15449-8-michael.riesch@wolfvision.net>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <aa16ee55-e1de-adc8-51f0-8ceed136b911@gmail.com>
+Date:   Wed, 4 Aug 2021 16:30:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210804130625.15449-8-michael.riesch@wolfvision.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported uninit value pegasus_probe(). The problem was in missing
-error handling.
+Hi Michael,
 
-get_interrupt_interval() internally calls read_eprom_word() which can
-fail in some cases. For example: failed to receive usb control message.
-These cases should be handled to prevent uninit value bug, since
-read_eprom_word() will not initialize passed stack variable in case of
-internal failure.
+Could you add a commit message to all patches in this serie?
 
-Fail log:
+On 8/4/21 3:06 PM, Michael Riesch wrote:
+> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
+> ---
+> v2:
+> - rename alias to match convention
+> 
+>  arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+> index ed96f27c64a3..c4da6436059d 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+> @@ -17,6 +17,7 @@
+>  		ethernet0 = &gmac0;
+>  		ethernet1 = &gmac1;
 
-BUG: KMSAN: uninit-value in get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
-BUG: KMSAN: uninit-value in pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
-CPU: 1 PID: 825 Comm: kworker/1:1 Not tainted 5.12.0-rc6-syzkaller #0
-...
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
- kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
- get_interrupt_interval drivers/net/usb/pegasus.c:746 [inline]
- pegasus_probe+0x10e7/0x4080 drivers/net/usb/pegasus.c:1152
-....
+>  		mmc0 = &sdhci;
+> +		mmc1 = &sdmmc0;
 
-Local variable ----data.i@pegasus_probe created at:
- get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
- pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
- get_interrupt_interval drivers/net/usb/pegasus.c:1151 [inline]
- pegasus_probe+0xe57/0x4080 drivers/net/usb/pegasus.c:1152
+mmc aliases are sort on reg address based on availability without number
+gap.
 
-Reported-and-tested-by: syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
+	sdmmc0: mmc@fe2b0000 {}
+	sdhci: mmc@fe310000 {}
 
-Changes in v2:
-	Rebased on top of -net
+>  	};
+>  
+>  	chosen: chosen {
+> @@ -353,6 +354,20 @@
+>  	status = "okay";
+>  };
+>  
+> +&sdmmc0 {
+> +	bus-width = <4>;
+> +	cap-sd-highspeed;
+> +	cd-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_LOW>;
+> +	disable-wp;
 
----
- drivers/net/usb/pegasus.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&sdmmc0_bus4 &sdmmc0_clk &sdmmc0_cmd &sdmmc0_det>;
 
-diff --git a/drivers/net/usb/pegasus.c b/drivers/net/usb/pegasus.c
-index f18b03be1..652e9fcf0 100644
---- a/drivers/net/usb/pegasus.c
-+++ b/drivers/net/usb/pegasus.c
-@@ -744,12 +744,16 @@ static inline void disable_net_traffic(pegasus_t *pegasus)
- 	set_registers(pegasus, EthCtrl0, sizeof(tmp), &tmp);
- }
- 
--static inline void get_interrupt_interval(pegasus_t *pegasus)
-+static inline int get_interrupt_interval(pegasus_t *pegasus)
- {
- 	u16 data;
- 	u8 interval;
-+	int ret;
-+
-+	ret = read_eprom_word(pegasus, 4, &data);
-+	if (ret < 0)
-+		return ret;
- 
--	read_eprom_word(pegasus, 4, &data);
- 	interval = data >> 8;
- 	if (pegasus->usb->speed != USB_SPEED_HIGH) {
- 		if (interval < 0x80) {
-@@ -764,6 +768,8 @@ static inline void get_interrupt_interval(pegasus_t *pegasus)
- 		}
- 	}
- 	pegasus->intr_interval = interval;
-+
-+	return 0;
- }
- 
- static void set_carrier(struct net_device *net)
-@@ -1165,7 +1171,9 @@ static int pegasus_probe(struct usb_interface *intf,
- 				| NETIF_MSG_PROBE | NETIF_MSG_LINK);
- 
- 	pegasus->features = usb_dev_id[dev_index].private;
--	get_interrupt_interval(pegasus);
-+	res = get_interrupt_interval(pegasus);
-+	if (res)
-+		goto out2;
- 	if (reset_mac(pegasus)) {
- 		dev_err(&intf->dev, "can't reset MAC\n");
- 		res = -EIO;
--- 
-2.32.0
+pinctrl-names below pinctrl-0 like the rest of rk356x.dtsi
 
+> +	sd-uhs-sdr104;
+
+> +	supports-sd;
+
+Check mmc-controller.yaml, rockchip-dw-mshc.yaml and
+synopsys-dw-mshc-common.yaml for properties.
+
+> +	vmmc-supply = <&vcc3v3_sd>;
+> +	vqmmc-supply = <&vccio_sd>;
+> +	status = "okay";
+> +};
+> +
+>  &uart2 {
+>  	status = "okay";
+>  };
+> 
