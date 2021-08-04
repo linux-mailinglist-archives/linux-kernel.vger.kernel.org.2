@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 116413DFCB7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877CB3DFCBE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236377AbhHDIXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:23:33 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:55522 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236355AbhHDIX3 (ORCPT
+        id S236392AbhHDIYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:24:38 -0400
+Received: from mail.nearlyone.de ([46.163.114.145]:39888 "EHLO
+        mail.nearlyone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236261AbhHDIYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:23:29 -0400
-X-UUID: a968b4e8546544039583720400a08df0-20210804
-X-UUID: a968b4e8546544039583720400a08df0-20210804
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <kuan-ying.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1183806492; Wed, 04 Aug 2021 16:23:14 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 4 Aug 2021 16:23:13 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 4 Aug 2021 16:23:12 +0800
-From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-To:     Nicholas Tang <nicholas.tang@mediatek.com>,
-        Andrew Yang <andrew.tang@mediatek.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Subject: [PATCH v2 2/2] kasan, slub: reset tag when printing address
-Date:   Wed, 4 Aug 2021 16:22:30 +0800
-Message-ID: <20210804082230.10837-3-Kuan-Ying.Lee@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210804082230.10837-1-Kuan-Ying.Lee@mediatek.com>
-References: <20210804082230.10837-1-Kuan-Ying.Lee@mediatek.com>
+        Wed, 4 Aug 2021 04:24:37 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7BE1E5E361;
+        Wed,  4 Aug 2021 10:24:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monom.org; s=dkim;
+        t=1628065463; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+         in-reply-to:references; bh=7MXt9jO9nRd+eRgxlVk1Ac75ZwcBXTdIHJ3fndYmS7Y=;
+        b=eRJY23M2J6Zsq7vqY3+fCtIJOGMX1Wwi36q74YJoil8xA94RZGVZKarpjaRg50MF32yVSS
+        4oj4esjWaqrbmbXnOJUf0hcrlh6NVk299HY85EMFvknHY14VDdxSlrfOur6S2loeovmKvB
+        6S1FTpS+I1LDUpzL4mdCu5TNe5rAJ+6NAAX7U4gmTvjhI3aX2k780eGfOiWSbUaW0QcXNA
+        7XVx5J6Xlu6S2djfaN6zl+qRAciHuIPu/eePNcruY0rrSt/E4HrdENknGhbqpCPZS0bQ4h
+        YEccjIOE6z/+1wF9baI4nCGaL4OxntOStmQO4ZisUXPX9Uf5fgOutfFSbAZT0A==
+Date:   Wed, 4 Aug 2021 10:24:18 +0200
+From:   Daniel Wagner <wagi@monom.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.14-rc4-rt4
+Message-ID: <20210804082418.fbibprcwtzyt5qax@beryllium.lan>
+References: <20210802162750.santic4y6lzcet5c@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802162750.santic4y6lzcet5c@linutronix.de>
+X-Last-TLS-Session-Version: TLSv1.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The address still includes the tags when it is printed.
-With hardware tag-based kasan enabled, we will get a
-false positive KASAN issue when we access metadata.
+Hi Sebastian,
 
-Reset the tag before we access the metadata.
+On Mon, Aug 02, 2021 at 06:27:50PM +0200, Sebastian Andrzej Siewior wrote:
+> Dear RT folks!
+> 
+> I'm pleased to announce the v5.14-rc4-rt4 patch set. 
 
-Fixes: aa1ef4d7b3f6 ("kasan, mm: reset tags when accessing metadata")
-Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Suggested-by: Marco Elver <elver@google.com>
----
- mm/slub.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+stress-ng is able to trigger a BUG on my old x86_64 box very
+easy. Unfortunately, there is not much in the logs though.
 
-diff --git a/mm/slub.c b/mm/slub.c
-index b6c5205252eb..f77d8cd79ef7 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -576,8 +576,8 @@ static void print_section(char *level, char *text, u8 *addr,
- 			  unsigned int length)
- {
- 	metadata_access_enable();
--	print_hex_dump(level, kasan_reset_tag(text), DUMP_PREFIX_ADDRESS,
--			16, 1, addr, length, 1);
-+	print_hex_dump(level, text, DUMP_PREFIX_ADDRESS,
-+			16, 1, kasan_reset_tag((void *)addr), length, 1);
- 	metadata_access_disable();
- }
- 
--- 
-2.18.0
++ ./cyclictest.sh -D 15m -p 98 -i 1000 -t 2 -a 0-1 -h 100 -w 'stress-ng --class io --all 1'
+# /dev/cpu_dma_latency set to 0us
+[   21.059000] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
+[   21.059008] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 321, name: iou-wrk-314
+[   21.059010] Preemption disabled at:
+[   21.059011] [<ffffffffa5223ce7>] schedule+0xa7/0xf0
+[   23.076059] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
+[   23.076064] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 324, name: iou-wrk-314
+[   23.076066] Preemption disabled at:
+[   23.076067] [<ffffffffa5223ce7>] schedule+0xa7/0xf0
+[   37.416490] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
+[   37.416495] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 369, name: iou-wrk-314
+[   37.416498] Preemption disabled at:
+[   37.416498] [<ffffffffa5223ce7>] schedule+0xa7/0xf0
+[   38.416858] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
+[   38.416863] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 411, name: iou-wrk-314
+[   38.416864] Preemption disabled at:
+[   38.416865] [<ffffffffa5223ce7>] schedule+0xa7/0xf0
+[   43.486360] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
+[   43.486366] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 414, name: iou-wrk-314
+[   43.486368] Preemption disabled at:
+[   43.486369] [<ffffffffa5223ce7>] schedule+0xa7/0xf0
 
+Thanks,
+Daniel
