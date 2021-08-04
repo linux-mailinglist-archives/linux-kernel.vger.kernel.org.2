@@ -2,183 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0F33E062F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CDBE3E0630
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239679AbhHDQyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:54:39 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:46720 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhHDQyf (ORCPT
+        id S239700AbhHDQym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239638AbhHDQyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:54:35 -0400
-Received: by mail-ot1-f48.google.com with SMTP id v8-20020a0568301bc8b02904d5b4e5ca3aso2194606ota.13;
-        Wed, 04 Aug 2021 09:54:22 -0700 (PDT)
+        Wed, 4 Aug 2021 12:54:38 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E64C061798
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 09:54:25 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id k65so4771243yba.13
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 09:54:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yN6+s2skg1cQMKmJXP1gEppbA6Yu/yhjKK82lWQnCnM=;
+        b=RPnPRoc8iKAsaPqqQNjqaVwHWGrkxjKMuFopfvnxvMqSsAZaeJ1wNkdFdL146W5pZv
+         pfZnOtJt5PjrMUXAl979FTJ0LLGbQ1G5nkKu6g9VKxcAKuSiB/iSGzD5ICo7S7vTFfDr
+         ZuwENH41eo28rKjtoBx2jwfst5bX/JJ0PR7KYfwYlggjNcKvW0azFQZZU+sv554GrDad
+         qpxoDLz36EtxdpjcZGzJoB7btq4LqOUXofKJP831jL+rwRMraX2MfHwWYxNlGYihVSvZ
+         MvSmK9RgZjg4hJkdpMYx08jORZEXMxhH4lwmYWwL46qQqNohfr2ZEKgfqDElhC6XIgsg
+         CNYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5Yw5K+hpf6wK9FS0rCgdvu6Erlnib6FE8Z2BOGIeQgQ=;
-        b=Xo5+Af+PlUl1QuT5pT9aKkGKd0UHLGEjbFXeoii3ZxnTwYOgv4uIjTbUANq1vQbbQS
-         fxrl6NZ85WExuM9futM2iDko7FO0Irj5DAYMlbilmDAH/zjSwtOVOiFJF9qLyrBUVErz
-         MSRJH2yi/h9YvMQdWofDLFiUcXyK5vLDoo7OylaZfcoR5FUiSfb0ZAhUdB1AAHVoBUJ9
-         ULyXbf6SDG0duq+5JLZ1f9IlrF0/g9mTa4w+HL7yGLIboNJBgyiFYg+Y/DbNO3Z7EM4q
-         dSoHu/hb98HWvfDjOd0w6QSxy/VZpHKyfuMFbYLKp70ETn7TAWI9ijnKOYUxLFxceIgZ
-         bAbg==
-X-Gm-Message-State: AOAM530NSXxSb8feYTXOgXKReah9Nv8wYT5MR1R6K7YAgwJRoYjcURgM
-        fkqjZ2sKj+owgakkcS9qOueB+9ruzLc/3BkvcKk=
-X-Google-Smtp-Source: ABdhPJwKFV2Hpu3+uV65WKk4BJ1i8OWuWXVBHEfksjNtUaAlYB3I1wBxjbGxxS8kAaxg2kPaNFYd2SSZSC98DAnEGlU=
-X-Received: by 2002:a05:6830:1f59:: with SMTP id u25mr502119oth.321.1628096061774;
- Wed, 04 Aug 2021 09:54:21 -0700 (PDT)
+        bh=yN6+s2skg1cQMKmJXP1gEppbA6Yu/yhjKK82lWQnCnM=;
+        b=HtMlEJI+J+tKkItjx9+JIw2Uttd/rTXCPU5TAVwtkOnRWCeEOyYhB3AZ/Lt3SGFKl5
+         EnjF82/c5K6K7IblPiVkXqXiH3SRD8RljjiNksSZKafrpQN8Zq/wnOMQIGS5Iu5VlVZu
+         6j1fAnK9qL9+KikbwfZ7AwpHnQ+SH/JhAG2yJkdhpNoykUpmhFS3oYkQArgi5FD6fwcu
+         5p4Ws5uW0IUvl1iip06tCc6RBJOebSUnFncrb4UnTIeJZxFn4Ifxmrj6WLUNpcnbRmLX
+         GSwrG7EyyTyfVWXGWSM7SG6NEf30enbgeE8X+SE8EWb94mOTXFoAA/sSNYebAYwqdHGD
+         urjg==
+X-Gm-Message-State: AOAM530avo3SWW+n3cRFEzPEepc610boqWPRac5k3/mjC20TVO/+a7z3
+        FKEAdIb3EYr7rak9ot6vX2IMKAuwcUnKPebHKb+vvA==
+X-Google-Smtp-Source: ABdhPJxPn/6uYOUWAMU+RHYMsTFL8YmkD7GufT2JGUw3Tr/B220J2elCakmRm5hFcPBgL9rtDUkv+rV72fghjOYpmpM=
+X-Received: by 2002:a25:7ec4:: with SMTP id z187mr369533ybc.136.1628096064532;
+ Wed, 04 Aug 2021 09:54:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210715095337.19453-1-haokexin@gmail.com>
-In-Reply-To: <20210715095337.19453-1-haokexin@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 4 Aug 2021 18:54:10 +0200
-Message-ID: <CAJZ5v0i1Rv3dJk2CJ_Kz+BCg_G0BvzsyJmZXTJHirJrmqxo-9g@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: schedutil: Use kobject release() method to free sugov_tunables
-To:     Kevin Hao <haokexin@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>
+References: <20210802221431.2251210-1-surenb@google.com> <YQkAqwZIF+AnpexA@dhcp22.suse.cz>
+ <CAJuCfpGiYAdvOydimHbK73oKS-ZfMMBtADXxWCYpxkX2qJX08g@mail.gmail.com>
+ <CAJuCfpEjb+o_TuQqxYALcvpr+4kq7tVNjq7A3oahB=1=JPyWtw@mail.gmail.com> <YQox2Ems40WXmJ3z@dhcp22.suse.cz>
+In-Reply-To: <YQox2Ems40WXmJ3z@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 4 Aug 2021 09:54:12 -0700
+Message-ID: <CAJuCfpFX4t_SpWs5de=dSvW8jWvJ6tYJPFeesY2mYuGtxSDOxg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] mm: introduce process_mrelease system call
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 11:56 AM Kevin Hao <haokexin@gmail.com> wrote:
+On Tue, Aug 3, 2021 at 11:21 PM Michal Hocko <mhocko@suse.com> wrote:
 >
-> The struct sugov_tunables is protected by the kobject, so we can't free
-> it directly. Otherwise we would get a call trace like this:
->   ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x30
->   WARNING: CPU: 3 PID: 720 at lib/debugobjects.c:505 debug_print_object+0xb8/0x100
->   Modules linked in:
->   CPU: 3 PID: 720 Comm: a.sh Tainted: G        W         5.14.0-rc1-next-20210715-yocto-standard+ #507
->   Hardware name: Marvell OcteonTX CN96XX board (DT)
->   pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
->   pc : debug_print_object+0xb8/0x100
->   lr : debug_print_object+0xb8/0x100
->   sp : ffff80001ecaf910
->   x29: ffff80001ecaf910 x28: ffff00011b10b8d0 x27: ffff800011043d80
->   x26: ffff00011a8f0000 x25: ffff800013cb3ff0 x24: 0000000000000000
->   x23: ffff80001142aa68 x22: ffff800011043d80 x21: ffff00010de46f20
->   x20: ffff800013c0c520 x19: ffff800011d8f5b0 x18: 0000000000000010
->   x17: 6e6968207473696c x16: 5f72656d6974203a x15: 6570797420746365
->   x14: 6a626f2029302065 x13: 303378302f307830 x12: 2b6e665f72656d69
->   x11: ffff8000124b1560 x10: ffff800012331520 x9 : ffff8000100ca6b0
->   x8 : 000000000017ffe8 x7 : c0000000fffeffff x6 : 0000000000000001
->   x5 : ffff800011d8c000 x4 : ffff800011d8c740 x3 : 0000000000000000
->   x2 : ffff0001108301c0 x1 : ab3c90eedf9c0f00 x0 : 0000000000000000
->   Call trace:
->    debug_print_object+0xb8/0x100
->    __debug_check_no_obj_freed+0x1c0/0x230
->    debug_check_no_obj_freed+0x20/0x88
->    slab_free_freelist_hook+0x154/0x1c8
->    kfree+0x114/0x5d0
->    sugov_exit+0xbc/0xc0
->    cpufreq_exit_governor+0x44/0x90
->    cpufreq_set_policy+0x268/0x4a8
->    store_scaling_governor+0xe0/0x128
->    store+0xc0/0xf0
->    sysfs_kf_write+0x54/0x80
->    kernfs_fop_write_iter+0x128/0x1c0
->    new_sync_write+0xf0/0x190
->    vfs_write+0x2d4/0x478
->    ksys_write+0x74/0x100
->    __arm64_sys_write+0x24/0x30
->    invoke_syscall.constprop.0+0x54/0xe0
->    do_el0_svc+0x64/0x158
->    el0_svc+0x2c/0xb0
->    el0t_64_sync_handler+0xb0/0xb8
->    el0t_64_sync+0x198/0x19c
->   irq event stamp: 5518
->   hardirqs last  enabled at (5517): [<ffff8000100cbd7c>] console_unlock+0x554/0x6c8
->   hardirqs last disabled at (5518): [<ffff800010fc0638>] el1_dbg+0x28/0xa0
->   softirqs last  enabled at (5504): [<ffff8000100106e0>] __do_softirq+0x4d0/0x6c0
->   softirqs last disabled at (5483): [<ffff800010049548>] irq_exit+0x1b0/0x1b8
+> On Tue 03-08-21 15:09:43, Suren Baghdasaryan wrote:
+> > On Tue, Aug 3, 2021 at 10:27 AM Suren Baghdasaryan <surenb@google.com> wrote:
+> [...]
+> > > > > +     if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
+> > > > > +             mm = task->mm;
+> > > > > +             mmget(mm);
+> > > > > +     }
+> > > > > +     task_unlock(task);
+> > > > > +     if (!mm) {
+> > > >
+> > > > Do we want to treat MMF_OOM_SKIP as a failure?
+> > >
+> > > Yeah, I don't think we want to create additional contention if
+> > > oom-killer is already working on this mm. Should we return EBUSY in
+> > > this case? Other possible options is ESRCH, indicating that this
+> > > process is a goner, so don't bother. WDYT?
+> >
+> > After considering this some more I think ESRCH would be more
+> > appropriate. EBUSY might be understood as "I need to retry at a better
+> > time", which is not what we want here.
 >
-> So add a release() method for sugov_tunables_ktype to release the
-> sugov_tunables safely.
->
-> Fixes: 9bdcb44e391d ("cpufreq: schedutil: New governor based on scheduler utilization data")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Kevin Hao <haokexin@gmail.com>
-> ---
->  kernel/sched/cpufreq_schedutil.c | 23 ++++++++++++-----------
->  1 file changed, 12 insertions(+), 11 deletions(-)
->
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index 57124614363d..ac171496da4b 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -537,9 +537,17 @@ static struct attribute *sugov_attrs[] = {
->  };
->  ATTRIBUTE_GROUPS(sugov);
->
-> +static void sugov_tunables_free(struct kobject *kobj)
-> +{
-> +       struct gov_attr_set *attr_set = container_of(kobj, struct gov_attr_set, kobj);
-> +
-> +       kfree(to_sugov_tunables(attr_set));
-> +}
-> +
->  static struct kobj_type sugov_tunables_ktype = {
->         .default_groups = sugov_groups,
->         .sysfs_ops = &governor_sysfs_ops,
-> +       .release = &sugov_tunables_free,
->  };
->
->  /********************** cpufreq governor interface *********************/
-> @@ -639,14 +647,6 @@ static struct sugov_tunables *sugov_tunables_alloc(struct sugov_policy *sg_polic
->         return tunables;
->  }
->
-> -static void sugov_tunables_free(struct sugov_tunables *tunables)
+> Why cannot we simply return 0 in that case. The work has been done
+> already by the kernel so why should we tell the caller that there was
+> something wrong?
 
-Rename this to sugov_clear_global_tunables() and make it take no arguments.
+Ah, you are right. I was under the impression that MMF_OOM_SKIP means
+oom-killer is reaping the mm, but looks like it means that mm was
+already reaped. If that's true then I agree, returning 0 is the right
+move here. Will fix.
 
-> -{
-> -       if (!have_governor_per_policy())
-> -               global_tunables = NULL;
-> -
-> -       kfree(tunables);
-
-Drop just this one line from it.
-
-> -}
-> -
->  static int sugov_init(struct cpufreq_policy *policy)
->  {
->         struct sugov_policy *sg_policy;
-> @@ -707,7 +707,8 @@ static int sugov_init(struct cpufreq_policy *policy)
->  fail:
->         kobject_put(&tunables->attr_set.kobj);
->         policy->governor_data = NULL;
-> -       sugov_tunables_free(tunables);
-
-And call sugov_clear_global_tunables() instead of the above from here
-and analogously below.
-
-> +       if (!have_governor_per_policy())
-> +               global_tunables = NULL;
->
->  stop_kthread:
->         sugov_kthread_stop(sg_policy);
-> @@ -733,8 +734,8 @@ static void sugov_exit(struct cpufreq_policy *policy)
->
->         count = gov_attr_set_put(&tunables->attr_set, &sg_policy->tunables_hook);
->         policy->governor_data = NULL;
-> -       if (!count)
-> -               sugov_tunables_free(tunables);
-> +       if (!count && !have_governor_per_policy())
-> +               global_tunables = NULL;
->
->         mutex_unlock(&global_tunables_lock);
 >
 > --
+> Michal Hocko
+> SUSE Labs
