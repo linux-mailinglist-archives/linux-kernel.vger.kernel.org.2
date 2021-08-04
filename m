@@ -2,107 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0547B3DF95F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D586D3DF96A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233826AbhHDBuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 21:50:08 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:16039 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbhHDBuH (ORCPT
+        id S234038AbhHDBwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 21:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229820AbhHDBwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 21:50:07 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GfZMw2TxXzZxHs;
-        Wed,  4 Aug 2021 09:46:20 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 4 Aug 2021 09:49:53 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 4 Aug 2021 09:49:53 +0800
-Subject: Re: [PATCH] once: Fix panic when module unload
-To:     Hannes Frederic Sowa <hannes@stressinduktion.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Minmin chen <chenmingmin@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210622022138.23048-1-wangkefeng.wang@huawei.com>
- <6b4b7165-5438-df65-3a43-7dcb576dab93@huawei.com>
- <3017d4a6-8f1b-4f8b-9c73-1121f0251fde@www.fastmail.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <09551b30-f73a-f248-5030-5c57c8457547@huawei.com>
-Date:   Wed, 4 Aug 2021 09:49:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Tue, 3 Aug 2021 21:52:41 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1316C06175F;
+        Tue,  3 Aug 2021 18:52:28 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id mt6so810208pjb.1;
+        Tue, 03 Aug 2021 18:52:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fSQgo07VJZLrzxtRhVpF2elOIx5PWfCaTzxcdQTI7sQ=;
+        b=AH1zW7BE9omAKOjq4atorPk+57PqXqxm72okT/sJJeaB/KGSI/yVXGbo+or5iSV8DM
+         Nzn+Op61BdpBBK2z0eQ56R+86cH/pdH1JvRsF2MLdZdLN9QyF40cAis3V+3r+gys6pLF
+         Wt5nbPEidUbNwkSB0bSwwY/NkmoH+2qcmUVnwUGZ/MVha1n4bzf99cl4kCeR9U37tb6u
+         9ETOoeec+DlA30Cp/wA7qihjWYeg+EISnWTAmlGvj/kipYID5haaaGyo4YUdfN4Eghv2
+         1ckHyd5/COwgsJu8mDz2pcuozW/teLegKpb3Vkpb5WSx3f2bDQG3tuazJVz028oiSn8M
+         YmSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fSQgo07VJZLrzxtRhVpF2elOIx5PWfCaTzxcdQTI7sQ=;
+        b=g5W5GV0eghePopbpFN8w8vRVPZ5KlNtJZcISIMwzQZsi0SDr42L9rDEAAU6DCXR6vg
+         5/FzY5lnpWcBGi1ZtK96dY8SDCMpOwZTqMr9zi7Rm26T/p7scyZS2fhgAnMFjUDukiPH
+         chsUQKyenwVqtt0uOJsR5M6X1V/i2Wu/NY/hUAbCK2iT/83lylpC6GQBOj64uvQjcnW6
+         fFDh09Jqn5UWQ9Pxu6SREOwSfnuuVnaVZMxiSX2PH3BiHMY7VOQtr4Vre1CSgoRV1ktl
+         sGaQ7Y3nNrlyQpBoyXXTWeRX8HgCuTrcRnW++DifTTz5LYuLL3w0FEf2oGQ9KeCqSKdG
+         Q8gw==
+X-Gm-Message-State: AOAM530FC6s+U4rYYVg8dbPuwMNZx2uZSzaw5zWLoZq+HFwpEGTTjb6d
+        73BUrmE2kBZPaz8Pg3DUje4=
+X-Google-Smtp-Source: ABdhPJzyXDotjHwSv5EpTfdtG5zDwsdMySRsOZ7X/2I9Tj1ioD9a+FZjytRGdxDjmqtg3iLd1+amag==
+X-Received: by 2002:a17:90a:ea8b:: with SMTP id h11mr18676578pjz.157.1628041948277;
+        Tue, 03 Aug 2021 18:52:28 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.49])
+        by smtp.gmail.com with ESMTPSA id b12sm496069pff.63.2021.08.03.18.52.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Aug 2021 18:52:27 -0700 (PDT)
+From:   Tuo Li <islituo@gmail.com>
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, airlied@redhat.com,
+        Felix.Kuehling@amd.com, Oak.Zeng@amd.com, nirmoy.das@amd.com,
+        tzimmermann@suse.de, Philip.Yang@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, baijiaju1990@gmail.com,
+        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH] drm/amdgpu: drop redundant null-pointer checks in amdgpu_ttm_tt_populate() and amdgpu_ttm_tt_unpopulate()
+Date:   Tue,  3 Aug 2021 18:51:32 -0700
+Message-Id: <20210804015132.29617-1-islituo@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <3017d4a6-8f1b-4f8b-9c73-1121f0251fde@www.fastmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The varialbe gtt in the function amdgpu_ttm_tt_populate() and
+amdgpu_ttm_tt_unpopulate() is guaranteed to be not NULL in the context.
+Thus the null-pointer checks are redundant and can be dropped.
 
-On 2021/8/3 17:59, Hannes Frederic Sowa wrote:
-> Hello,
->
-> On Tue, Aug 3, 2021, at 04:11, Kefeng Wang wrote:
->> Hi ALL, I don't know who maintain the lib/once.c, add Greg and Andrew too,
->>
->> Hi David, I check the history, the lib/once.c is from net/core/utils.c
->> since
->>
->> commit 46234253b9363894a254844a6550b4cc5f3edfe8
->> Author: Hannes Frederic Sowa <hannes@stressinduktion.org>
->> Date:   Thu Oct 8 01:20:35 2015 +0200
->>
->>       net: move net_get_random_once to lib
->>
->> This bug is found in our product test, we want to make sure that whether
->> this solution
->>
->> is correct or not, so could David or any others help to review this patch.
->>
->> Many thinks.
-> Thanks for the patch.
->
-> I see that it got marked as not applicable for the net trees:
-> <https://patchwork.kernel.org/project/netdevbpf/patch/20210622022138.23048-1-wangkefeng.wang@huawei.com/>
->
-> Back then I added this code via the net/ tree thus I think it should get
-> picked up nonetheless hopefully.
->
-> Regarding your patch, I think it mostly looks fine:
->
-> It might be worthwhile to increment the reference counter inside the
-> preempt disabled bracket in find_module_by_key (and thus also rename
-> that function to make this fact more clear).
->
-> The other option would be to use the macro DO_ONCE and always pass in
-> THIS_MODULE from there, increment its ref counter in once_disable_jump.
-> This might be more canonical.
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks for your replay.
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+index 3a55f08e00e1..719539bd6c44 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -1121,7 +1121,7 @@ static int amdgpu_ttm_tt_populate(struct ttm_device *bdev,
+ 	struct amdgpu_ttm_tt *gtt = (void *)ttm;
+ 
+ 	/* user pages are bound by amdgpu_ttm_tt_pin_userptr() */
+-	if (gtt && gtt->userptr) {
++	if (gtt->userptr) {
+ 		ttm->sg = kzalloc(sizeof(struct sg_table), GFP_KERNEL);
+ 		if (!ttm->sg)
+ 			return -ENOMEM;
+@@ -1146,7 +1146,7 @@ static void amdgpu_ttm_tt_unpopulate(struct ttm_device *bdev,
+ 	struct amdgpu_ttm_tt *gtt = (void *)ttm;
+ 	struct amdgpu_device *adev;
+ 
+-	if (gtt && gtt->userptr) {
++	if (gtt->userptr) {
+ 		amdgpu_ttm_tt_set_user_pages(ttm, NULL);
+ 		kfree(ttm->sg);
+ 		ttm->sg = NULL;
+-- 
+2.25.1
 
-Yes, that was my first thought, add THIS_MODULE to __do_once_done(),
-
-I will change to this way to fix the issue.
-
-
->
-> Thanks and sorry for the delay,
-> Hannes
-> .
->
