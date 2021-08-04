@@ -2,248 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC20D3E09E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826A43E09E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbhHDVLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:11:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48995 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229591AbhHDVLd (ORCPT
+        id S229783AbhHDVOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhHDVOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:11:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628111480;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0aCM0sS1/kssfJvUB4gZNdTsc20oPF9++cTUI8zhW60=;
-        b=CA4y1J6ULaHDSiJZppYNtte5dMEyCAWIH/8zvcc1t+BOInlXd5oqvn7wPmMzlNqNZ9p08Y
-        QPe/GkiL4/Mv3cr+U9NQk84um5CaaKRjiO7x5o5LOT2HVwnYiEr6oFgo3enn89oVF+Nn8X
-        JDT2tm1QwsUBNsx+8/WgJOKzY2eVwJU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-491-AA_yMFDwMs2mLG58g3F5tw-1; Wed, 04 Aug 2021 17:11:16 -0400
-X-MC-Unique: AA_yMFDwMs2mLG58g3F5tw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EDC398799FF;
-        Wed,  4 Aug 2021 21:11:13 +0000 (UTC)
-Received: from optiplex-fbsd (unknown [10.3.128.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5279960BF4;
-        Wed,  4 Aug 2021 21:11:09 +0000 (UTC)
-Date:   Wed, 4 Aug 2021 17:11:06 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     Charan Teja Reddy <charante@codeaurora.org>
-Cc:     akpm@linux-foundation.org, mcgrof@kernel.org,
-        keescook@chromium.org, yzaikin@google.com,
-        dave.hansen@linux.intel.com, vbabka@suse.cz,
-        mgorman@techsingularity.net, nigupta@nvidia.com, corbet@lwn.net,
-        rppt@kernel.org, khalid.aziz@oracle.com, rientjes@google.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        vinmenon@codeaurora.org
-Subject: Re: [PATCH V5] mm: compaction: support triggering of proactive
- compaction by user
-Message-ID: <YQsCasRVGoVhIvyR@optiplex-fbsd>
-References: <1627653207-12317-1-git-send-email-charante@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1627653207-12317-1-git-send-email-charante@codeaurora.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Wed, 4 Aug 2021 17:14:01 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA722C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:13:48 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so7519172pji.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:13:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pWeVOPuGe2rwR/ROAXUfTRwXClu2H2NNWD6p4NOstS8=;
+        b=PwQjaVNp8FyJDWyiUT0Z8kpUGe8+CNzROVRPRHgR/dDii1HFfBEbPrU/LViRYGNseN
+         Goj+KxfWobnXG2w+YLWviBprLG/E4CYFs5ur6vBD4C4FjyBuhWYZBwdt9yS3hFRCov+O
+         05y8JHO7qSM6VF8APQ8FAENHjfM94RLB7TQbg2uSgzLFH1T75yxAq5MnrBIBQ/5i4OYl
+         EyjjbTHapBQVbJdkZoqYsUsEvzG2fwFK+Ua9xM1bWcClktpFT34aEgwdnOq3Zj2ivvXm
+         D6PIGidNR5JuWZWtkjLpC/B+UNKt/GVXYwGP4jiAiWFmcJ89K5kB9YCQV3nh5LJ/EoUS
+         +A2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=pWeVOPuGe2rwR/ROAXUfTRwXClu2H2NNWD6p4NOstS8=;
+        b=rEQHEtGDCuD5YH3B0rWVYYHwvTX/CZ6BerAnu7sU6PTMxo7hwgZgzAHGPViVIvEenk
+         Ssrsh1/bzn2H0M/OO2jm4LsPF7w7AzKzjSLLrisMQPyWEfUA+qs4FSpMo24s7WXxN3Fl
+         wTNFvfsrZ+xud6/Q9/SGcD3Z2WFDJabOufXgfDSkWjACDMnjY6bbvdSGqcFZywG/hS7x
+         GHDcOoXIcyJJuqovBJKFag5Wx7ZTseF85Jv2jDvMsJm++tDhSFHgXLLwqdnrw6CF6BU+
+         sZ5sLby5F0g9DGUpAykZGSKA0Eh6//lpbI3VJFXiU4xYszgOLWGiTcYbutvmojSvc/wQ
+         O2XA==
+X-Gm-Message-State: AOAM533vPQt9seVJCh1nksnGpIQTv5C4lqUZkcjZ/JwlqppGQNMaGcl8
+        NpG4kZHelwoJpxdEsTZzpDCCxA==
+X-Google-Smtp-Source: ABdhPJxmNRnC1qh7wzjVxVKaFhVi5Z3hxxqwFofh38QlmmnLtXqmkYyJ4V9kVrsfo+kv7/42Wvm31A==
+X-Received: by 2002:a62:1d06:0:b029:3ab:9703:b6b8 with SMTP id d6-20020a621d060000b02903ab9703b6b8mr1372593pfd.0.1628111628112;
+        Wed, 04 Aug 2021 14:13:48 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id w15sm3279146pjc.45.2021.08.04.14.13.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 14:13:47 -0700 (PDT)
+Date:   Wed, 04 Aug 2021 14:13:47 -0700 (PDT)
+X-Google-Original-Date: Wed, 04 Aug 2021 14:13:46 PDT (-0700)
+Subject:     Re: [PATCH v4] dt-bindings: riscv: add starfive jh7100 bindings
+In-Reply-To: <CAOnJCUL9uU5G1LOgfYPz9Ny77yFYaP5sgtdxG3_w=Zcsi+f96Q@mail.gmail.com>
+CC:     bmeng.cn@gmail.com, robh+dt@kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        michael.zhu@starfivetech.com, tekkamanninja@gmail.com,
+        jack.zhu@starfivetech.com, leyfoon.tan@starfivetech.com,
+        geert@linux-m68k.org, kernel@esmil.dk, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     atishp@atishpatra.org, drew@beagleboard.org
+Message-ID: <mhng-c9300c9e-6877-492f-a290-7c51066d3920@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 07:23:27PM +0530, Charan Teja Reddy wrote:
-> The proactive compaction[1] gets triggered for every 500msec and run
-> compaction on the node for COMPACTION_HPAGE_ORDER (usually order-9)
-> pages based on the value set to sysctl.compaction_proactiveness.
-> Triggering the compaction for every 500msec in search of
-> COMPACTION_HPAGE_ORDER pages is not needed for all applications,
-> especially on the embedded system usecases which may have few MB's of
-> RAM. Enabling the proactive compaction in its state will endup in
-> running almost always on such systems.
-> 
-> Other side, proactive compaction can still be very much useful for
-> getting a set of higher order pages in some controllable
-> manner(controlled by using the sysctl.compaction_proactiveness). So, on
-> systems where enabling the proactive compaction always may proove not
-> required, can trigger the same from user space on write to its sysctl
-> interface. As an example, say app launcher decide to launch the memory
-> heavy application which can be launched fast if it gets more higher
-> order pages thus launcher can prepare the system in advance by
-> triggering the proactive compaction from userspace.
-> 
-> This triggering of proactive compaction is done on a write to
-> sysctl.compaction_proactiveness by user.
-> 
-> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=facdaa917c4d5a376d09d25865f5a863f906234a
-> 
-> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+On Wed, 04 Aug 2021 13:54:16 PDT (-0700), atishp@atishpatra.org wrote:
+> On Wed, Aug 4, 2021 at 1:33 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>>
+>> On Thu, 15 Jul 2021 19:17:23 PDT (-0700), bmeng.cn@gmail.com wrote:
+>> > On Tue, Jul 13, 2021 at 2:34 PM Drew Fustini <drew@beagleboard.org> wrote:
+>> >>
+>> >> Add DT binding documentation for the StarFive JH7100 Soc [1] and the
+>> >> BeagleV Starlight JH7100 board [2].
+>> >>
+>> >> [1] https://github.com/starfive-tech/beaglev_doc
+>> >> [2] https://github.com/beagleboard/beaglev-starlight
+>> >>
+>> >> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+>> >> ---
+>> >> v4 changes:
+>> >> - removed JH7100 SoC revision number after discussion with Geert
+>> >>
+>> >> v3 changes:
+>> >> - added revision number for the board and soc after question from Palmer
+>> >>
+>> >> v2 changes:
+>> >> - removed "items:" entry that only had "const: starfive,jh7100"
+>> >> - correct typo in Description:
+>> >>
+>> >> Results of running checks:
+>> >>   $ make -j8 ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- dt_binding_check \
+>> >>     DT_SCHEMA_FILES=Documentation/devicetree/bindings/riscv/starfive.yaml
+>> >>     CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+>> >>     DTEX    Documentation/devicetree/bindings/riscv/starfive.example.dts
+>> >>     SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+>> >>     DTC     Documentation/devicetree/bindings/riscv/starfive.example.dt.yaml
+>> >>     CHECK   Documentation/devicetree/bindings/riscv/starfive.example.dt.yaml
+>> >>   $ make -j8 ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- dtbs_check \
+>> >>     DT_SCHEMA_FILES=Documentation/devicetree/bindings/riscv/starfive.yaml
+>> >>     SYNC    include/config/auto.conf.cmd
+>> >>     UPD     include/config/kernel.release
+>> >>     SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+>> >>     DTC     arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dtb
+>> >>     DTC     arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dt.yaml
+>> >>     DTC     arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dt.yaml
+>> >>     DTC     arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dt.yaml
+>> >>     CHECK   arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dt.yaml
+>> >>     CHECK   arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dt.yaml
+>> >>     CHECK   arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dt.yaml
+>> >>
+>> >> The dts file is from vendor repo and is being cleaned up right now in
+>> >> preperation for submitting to the mailing list:
+>> >> https://github.com/starfive-tech/linux/tree/beaglev/arch/riscv/boot/dts/starfive
+>> >>
+>> >>  .../devicetree/bindings/riscv/starfive.yaml   | 27 +++++++++++++++++++
+>> >>  1 file changed, 27 insertions(+)
+>> >>  create mode 100644 Documentation/devicetree/bindings/riscv/starfive.yaml
+>> >>
+>> >
+>> > Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
+>>
+>> Thanks.  This is on for-next, as Rob suggested taking it via the RISC-V
+>> tree.
+>>
+> Given that beagleV starlight mass production is cancelled [1], are we
+> still upstreaming the support for this ?
 
-Acked-by: Rafael Aquini <aquini@redhat.com>
+I'm not sure, but I wasn't quite sure where to have that discussion.  I 
+figured that the boards exist so there's no reason to shoot this down, 
+given that it's just the vendor DT list.  At a bare minimum there's out 
+of tree support for this, so having the DT strings defined seems sane as 
+that's a defacto interface with bootloaders.
 
-> ---
->  Changes in V5:
->  	-- Avoid unnecessary wakeup of proactive compaction when it is disabled.
-> 	-- No changes in the logic of triggering the proactive compaction.
-> 
->  Changes in V4:
-> 	-- Changed the code as the 'proactive_defer' counter is removed.
-> 	-- No changes in the logic of triggering the proactive compaction.
-> 	-- https://lore.kernel.org/patchwork/patch/1448777/
-> 
->  Changes in V3:
->         -- Fixed review comments from Valstimil and others.
->         -- https://lore.kernel.org/patchwork/patch/1438211/
-> 
->  Changes in V2:
-> 	-- remove /proc/../proactive_compact_memory interface trigger for proactive compaction
->         -- Intention is same that add a way to trigger proactive compaction by user.
->         -- https://lore.kernel.org/patchwork/patch/1431283/
-> 
->  changes in V1:
-> 	-- Created the new /proc/sys/vm/proactive_compact_memory in
-> 	   interface to trigger proactive compaction from user 
->         -- https://lore.kernel.org/lkml/1619098678-8501-1-git-send-email-charante@codeaurora.org/
-> 
->  Documentation/admin-guide/sysctl/vm.rst |  3 ++-
->  include/linux/compaction.h              |  2 ++
->  include/linux/mmzone.h                  |  1 +
->  kernel/sysctl.c                         |  2 +-
->  mm/compaction.c                         | 38 +++++++++++++++++++++++++++++++--
->  5 files changed, 42 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-> index 003d5cc..b526cf6 100644
-> --- a/Documentation/admin-guide/sysctl/vm.rst
-> +++ b/Documentation/admin-guide/sysctl/vm.rst
-> @@ -118,7 +118,8 @@ compaction_proactiveness
->  
->  This tunable takes a value in the range [0, 100] with a default value of
->  20. This tunable determines how aggressively compaction is done in the
-> -background. Setting it to 0 disables proactive compaction.
-> +background. On write of non zero value to this tunable will immediately
-> +trigger the proactive compaction. Setting it to 0 disables proactive compaction.
->  
->  Note that compaction has a non-trivial system-wide impact as pages
->  belonging to different processes are moved around, which could also lead
-> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-> index c24098c..34bce35 100644
-> --- a/include/linux/compaction.h
-> +++ b/include/linux/compaction.h
-> @@ -84,6 +84,8 @@ static inline unsigned long compact_gap(unsigned int order)
->  extern unsigned int sysctl_compaction_proactiveness;
->  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
->  			void *buffer, size_t *length, loff_t *ppos);
-> +extern int compaction_proactiveness_sysctl_handler(struct ctl_table *table,
-> +		int write, void *buffer, size_t *length, loff_t *ppos);
->  extern int sysctl_extfrag_threshold;
->  extern int sysctl_compact_unevictable_allowed;
->  
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 4610750..6a1d79d 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -853,6 +853,7 @@ typedef struct pglist_data {
->  	enum zone_type kcompactd_highest_zoneidx;
->  	wait_queue_head_t kcompactd_wait;
->  	struct task_struct *kcompactd;
-> +	bool proactive_compact_trigger;
->  #endif
->  	/*
->  	 * This is a per-node reserve of pages that are not available
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 82d6ff6..65bc6f7 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -2871,7 +2871,7 @@ static struct ctl_table vm_table[] = {
->  		.data		= &sysctl_compaction_proactiveness,
->  		.maxlen		= sizeof(sysctl_compaction_proactiveness),
->  		.mode		= 0644,
-> -		.proc_handler	= proc_dointvec_minmax,
-> +		.proc_handler	= compaction_proactiveness_sysctl_handler,
->  		.extra1		= SYSCTL_ZERO,
->  		.extra2		= &one_hundred,
->  	},
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index f984ad0..fbc60f9 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -2700,6 +2700,30 @@ static void compact_nodes(void)
->   */
->  unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
->  
-> +int compaction_proactiveness_sysctl_handler(struct ctl_table *table, int write,
-> +		void *buffer, size_t *length, loff_t *ppos)
-> +{
-> +	int rc, nid;
-> +
-> +	rc = proc_dointvec_minmax(table, write, buffer, length, ppos);
-> +	if (rc)
-> +		return rc;
-> +
-> +	if (write && sysctl_compaction_proactiveness) {
-> +		for_each_online_node(nid) {
-> +			pg_data_t *pgdat = NODE_DATA(nid);
-> +
-> +			if (pgdat->proactive_compact_trigger)
-> +				continue;
-> +
-> +			pgdat->proactive_compact_trigger = true;
-> +			wake_up_interruptible(&pgdat->kcompactd_wait);
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  /*
->   * This is the entry point for compacting all nodes via
->   * /proc/sys/vm/compact_memory
-> @@ -2744,7 +2768,8 @@ void compaction_unregister_node(struct node *node)
->  
->  static inline bool kcompactd_work_requested(pg_data_t *pgdat)
->  {
-> -	return pgdat->kcompactd_max_order > 0 || kthread_should_stop();
-> +	return pgdat->kcompactd_max_order > 0 || kthread_should_stop() ||
-> +		pgdat->proactive_compact_trigger;
->  }
->  
->  static bool kcompactd_node_suitable(pg_data_t *pgdat)
-> @@ -2895,9 +2920,16 @@ static int kcompactd(void *p)
->  	while (!kthread_should_stop()) {
->  		unsigned long pflags;
->  
-> +		/*
-> +		 * Avoid the unnecessary wakeup for proactive compaction
-> +		 * when it is disabled.
-> +		 */
-> +		if (!sysctl_compaction_proactiveness)
-> +			timeout = MAX_SCHEDULE_TIMEOUT;
->  		trace_mm_compaction_kcompactd_sleep(pgdat->node_id);
->  		if (wait_event_freezable_timeout(pgdat->kcompactd_wait,
-> -			kcompactd_work_requested(pgdat), timeout)) {
-> +			kcompactd_work_requested(pgdat), timeout) &&
-> +			!pgdat->proactive_compact_trigger) {
->  
->  			psi_memstall_enter(&pflags);
->  			kcompactd_do_work(pgdat);
-> @@ -2932,6 +2964,8 @@ static int kcompactd(void *p)
->  				timeout =
->  				   default_timeout << COMPACT_MAX_DEFER_SHIFT;
->  		}
-> +		if (unlikely(pgdat->proactive_compact_trigger))
-> +			pgdat->proactive_compact_trigger = false;
->  	}
->  
->  	return 0;
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member of the Code Aurora Forum, hosted by The Linux Foundation
-> 
-> 
+Maybe this is more of a question for Drew: I think we were all OK 
+working through the issues with the first-run chip when there was going 
+to be a lot of them, but with such a small number produced I'm not sure 
+if there's going to be enough interested to take on all that effort.  
 
+I'm not quite sure where we stand on support for this: at some point 
+there were some ideas floating around as to a way to support it without 
+major software changes (allocating into the non-caching regions).  If 
+that pans out then I'm fine handling this, at least from the RISC-V 
+side, but if we're going to have to go through all the ISA/SBI stuff 
+then it's probably not worth it.  Also not sure if there are a bunch of 
+starfive-specific drivers that would be needed to make this boot, in 
+which case it's probably best to wait for whatever comes next.
+
+>
+> [1] https://www.cnx-software.com/2021/07/31/beaglev-starlight-sbc-wont-be-mass-manufactured-redesigned-beaglev-risc-v-sbc-expected-in-q1-2022/
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
