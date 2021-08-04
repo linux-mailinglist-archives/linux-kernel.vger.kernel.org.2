@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642083E043A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F013E043F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239051AbhHDPdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:33:05 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42306 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238879AbhHDPci (ORCPT
+        id S239103AbhHDPdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239058AbhHDPdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:32:38 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B39D821DC1;
-        Wed,  4 Aug 2021 15:32:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628091144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Wed, 4 Aug 2021 11:33:24 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B924C0613D5;
+        Wed,  4 Aug 2021 08:33:12 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 17:33:08 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628091189;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZTQVflxg1xumcXv2psH1AudaLak+V/X7QqKx6v8ICaY=;
-        b=1tuFAG8bkoM5RyFnk2N2HqUcLjlJncPzGLLg0zi2D60zrAn1edKYURkw2aQ46BCs+w7Q+b
-        aYZBMFHb7Q9Ch2ZVOqHlJWGdS9On95zDkARLfnMgwljMNZNPtss2T4UBjEGXRGj2WU9DXF
-        rml1CsuzDYCt2vcs2ke8AbAf1zW/q+E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628091144;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        bh=UITlFQfMn5a0ECmudpd6OTfbQkrY3q2ViFmsUd3y0O4=;
+        b=S2FFqwPNBno1O6pWE5QfyQ3X3ppQfvNrqSCCFH2VX42eeZBvQ/QzRF85D0MDEVtcuf1Nyk
+        yJvCOfQsYsO+2xwCe8WrUsjG2LewHgOKUks4mhzid5kTEUFM56GTZgpWKcEyz5wMtkEFVh
+        7C/326YYoNX65TopjIjQA0ijoqNH8UyCbCYwLoYJps2/0cJQr5PZMlRVjWVNZz2w35b5pc
+        IgssKC74H+0BCfqkalCQuAozbBunA/asUsXdGCOxmMXhHlQsfeKp+6YEfN4lOu1ycR5bMW
+        wYy2a/NvjfOGOGXQrn5KAe1g5SiGODJkKndWhDfSwbZy2sSpywFtsR+0+BZogw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628091189;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZTQVflxg1xumcXv2psH1AudaLak+V/X7QqKx6v8ICaY=;
-        b=LMtZ0EgX+Tu3S2OCFERJ4qeqJZf8eKLm5pdwoZxNv7Q3HJRrLuP6ZAPL0WNWycp9f6m1TV
-        gaGN72Dqtodb4SDw==
-Received: from quack2.suse.cz (jack.udp.ovpn2.nue.suse.de [10.163.43.118])
-        by relay2.suse.de (Postfix) with ESMTP id A2B82A3B95;
-        Wed,  4 Aug 2021 15:32:24 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id F1E6D1F2B83; Wed,  4 Aug 2021 17:32:21 +0200 (CEST)
-Date:   Wed, 4 Aug 2021 17:32:21 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Wang Jianchao <jianchao.wan9@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tytso@mit.edu, adilger.kernel@dilger.ca
-Subject: Re: [PATCH V3 5/5] ext4: make fallocate retry when err is ENOSPC
-Message-ID: <20210804153221.GK4578@quack2.suse.cz>
-References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
- <20210724074124.25731-6-jianchao.wan9@gmail.com>
+        bh=UITlFQfMn5a0ECmudpd6OTfbQkrY3q2ViFmsUd3y0O4=;
+        b=6FNL0w5IQx/o71Yw07KRIwB0qY27ffUQoONfH/lx5Kfl23fqgpa2RpeMx61Bv8zsfjx6AW
+        xR+zMUCSSHKL2/Cg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Daniel Wagner <wagi@monom.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.14-rc4-rt4
+Message-ID: <20210804153308.oasahcxjmcw7vivo@linutronix.de>
+References: <20210802162750.santic4y6lzcet5c@linutronix.de>
+ <20210804082418.fbibprcwtzyt5qax@beryllium.lan>
+ <20210804104340.fhdjwn3hruymu3ml@linutronix.de>
+ <20210804104803.4nwxi74sa2vwiujd@linutronix.de>
+ <20210804110057.chsvt7l5xpw7bo5r@linutronix.de>
+ <20210804131731.GG8057@worktop.programming.kicks-ass.net>
+ <4f549344-1040-c677-6a6a-53e243c5f364@kernel.dk>
+ <feebf183-2e33-36b5-4538-62a40b2a58b6@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210724074124.25731-6-jianchao.wan9@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <feebf183-2e33-36b5-4538-62a40b2a58b6@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 24-07-21 15:41:24, Wang Jianchao wrote:
-> From: Wang Jianchao <wangjianchao@kuaishou.com>
-> 
-> The blocks may be waiting for journal commit to be freed back to
-> mb buddy. Let fallocate wait and retry in that case.
-> 
-> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
+On 2021-08-04 08:23:55 [-0600], Jens Axboe wrote:
+> Totally untested, but I think the principle is sound. I'll run it through
+> some testing.
 
-Did you really observe this? Because the retry is already handled in
-ext4_alloc_file_blocks() that's used by ext4_fallocate(). So no retry
-should be needed there.
+This is needed:
 
-								Honza
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index 1192ee2abd982..77ec6896edaa5 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -428,9 +428,9 @@ static struct io_wq_work *io_get_next_work(struct io_wqe *wqe)
+ 	}
+ 
+ 	if (stall_hash != -1U) {
+-		raw_spin_unlock(&wqe->lock);
++		raw_spin_unlock_irq(&wqe->lock);
+ 		io_wait_on_hash(wqe, stall_hash);
+-		raw_spin_lock(&wqe->lock);
++		raw_spin_lock_irq(&wqe->lock);
+ 	}
+ 
+ 	return NULL;
 
-> ---
->  fs/ext4/extents.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 92ad64b89d9b..ad0b874d3448 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -4635,7 +4635,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->  	struct inode *inode = file_inode(file);
->  	loff_t new_size = 0;
->  	unsigned int max_blocks;
-> -	int ret = 0;
-> +	int ret = 0, retries = 0;
->  	int flags;
->  	ext4_lblk_t lblk;
->  	unsigned int blkbits = inode->i_blkbits;
-> @@ -4656,6 +4656,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->  		     FALLOC_FL_INSERT_RANGE))
->  		return -EOPNOTSUPP;
->  
-> +retry:
->  	ext4_fc_start_update(inode);
->  
->  	if (mode & FALLOC_FL_PUNCH_HOLE) {
-> @@ -4722,6 +4723,9 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->  	trace_ext4_fallocate_exit(inode, offset, max_blocks, ret);
->  exit:
->  	ext4_fc_stop_update(inode);
-> +	if (ret == -ENOSPC && ext4_should_retry_alloc(inode->i_sb, &retries))
-> +		goto retry;
-> +
->  	return ret;
->  }
->  
-> -- 
-> 2.17.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+otherwise the spinlock_t lock in io_wait_on_hash() is acquired with
+disabled interrupts which is a no-no on -RT.
+With that it all looks good as far as I can tell.
+Thank you.
+
+Sebastian
