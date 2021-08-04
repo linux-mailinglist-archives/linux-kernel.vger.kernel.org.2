@@ -2,71 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E667A3E073F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47AC3E0743
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240049AbhHDSKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 14:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240015AbhHDSKG (ORCPT
+        id S240070AbhHDSKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 14:10:40 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:44555 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240054AbhHDSKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 14:10:06 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 216CDC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 11:09:53 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id r1so2472260iln.6
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 11:09:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ral1ZU11g69msFJZlb1AivOjbzPYxaeW+eku+0mRJ1Q=;
-        b=ZdpCifRsCW6GB8eOi9zm4n9aiu7rUAmMgdDIQanh9nsmMQb/RAGRmrE77owCgMJj4m
-         Z0iBbtCVfh4snh6bBno2aqNo0/5+bYsX6Z2kRoVe1YNrqrwpuvTveBmp75auLTyRc+WG
-         L2d6NrzzvBXmZtkY/jZyETVffjtWsz28PsDMdM9wT2aYCcDUe7fJwVW6gbtZtXvSrsmv
-         VEUs8ofuNWsyTHnXw18L6zG5iz45tmP/FjvlNEKTXJmbcaPdZ14hMobjpKgZufdOJz/G
-         YcXoRXon/4tEGt+mUuCgpUKg3gYOhqOkTTvidnlTSQp4vr9pMDprEQ23eLrYm+E3RnP5
-         OofQ==
+        Wed, 4 Aug 2021 14:10:36 -0400
+Received: by mail-oi1-f179.google.com with SMTP id w6so3811147oiv.11;
+        Wed, 04 Aug 2021 11:10:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ral1ZU11g69msFJZlb1AivOjbzPYxaeW+eku+0mRJ1Q=;
-        b=W9xoDTn5cJQiXwQi4jRh2pmNXFauVQtRklp41aknNrZslrQeYccgDamr1U7/B3xXXc
-         GpF+Y8G2gmTvy8JAPNcNCSstV27jfqSIDFxC8o315cC5nMaHxjm9z3B4arZmZw73YeM8
-         iTuQ12LZbiN5FK0f9JlFJDBH1n0nW6Jw0gmNL1VkPJ+nUWcLzpa9O7fXMcGWZzkfOfQY
-         0cHBN3cBtJYHRV2H7wePkqztrw5CT5G5Ci4A0BTBLQvFvmbYs+H/BTcY0jKCVtvD97Kg
-         5xDjZjaccoXFeyzJ+70XlF4kFHIZRHPTvTGK0u6iH3pCG6AOQes0qGoxaCRxYW376eT0
-         nAtA==
-X-Gm-Message-State: AOAM5327r21eqiGdkRG3fQvHQUvLed05BUFyN+EkUIgHQ5VBipNsH6Rz
-        WLytpLrBEwh4c5IOvKzHT3xX77LN+IS4RTgm0d8=
-X-Google-Smtp-Source: ABdhPJwWllpY0T39LJXhCw/0U7yenBQb2W5YEsfggwvJnDY/A2UR5PGwFzPYwZOD5vS+aS78JdsFPrFpdwUufn9pZGY=
-X-Received: by 2002:a92:b74d:: with SMTP id c13mr695593ilm.176.1628100592598;
- Wed, 04 Aug 2021 11:09:52 -0700 (PDT)
+        bh=BHP1RoSVeBBQbedfLc0h0dS6upuWC946jvdxT2uP/us=;
+        b=dXO5AmJDhrdMrc+zECtyi0zh5aV7nNqZZBOxtXsl1dK0G3HfxGP+hECd5v3eYuRnCG
+         icxTHtBs/Z7W5CpB89xoQnoD4DV45RQ6Huh6u6UbIVUrNdodea3Jeb2vO8p2GTtjIFOR
+         fvVjrIwLWYD8DSy7UootRoDMTeCHfU4+0rU5rbuxPwznhGaXtjt4hAp5ciGSTZAtPhw6
+         uvl2RnRheN9EY+fXkYBz/UXXiw4DeiI3xlCOzQasjiVkHg7pOUT7M7ja/9loN+l1Vf+0
+         awUXEcPX5dzMjHX1bnUMrlKi/v8gESjBRd1SmExgMufvQAKZbx8YTOyFWWGZ7wv0DbnB
+         GqJA==
+X-Gm-Message-State: AOAM532sOLTz40cr2QUM0c8OKY4BPd9BeSkZusEbDq8BdYgmjLTbIOTS
+        92HYqzAJfa/X8K9GGVNprrqZVHKfM1EXJv8or9M=
+X-Google-Smtp-Source: ABdhPJxQ4c65snW88xWZ5QHVpT273X+/XzM8e5NOX+d+920CdPyV1upZrtYZLElLkCUcX8kuRnSUwD641SssBH//43w=
+X-Received: by 2002:aca:d7d5:: with SMTP id o204mr531239oig.69.1628100622488;
+ Wed, 04 Aug 2021 11:10:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210720181542.2896262-1-ndesaulniers@google.com> <CAKwvOdkdoAadmOt1w2cE4Q5rOM48qPt3_WgkSkhxGVsyVV6U0w@mail.gmail.com>
-In-Reply-To: <CAKwvOdkdoAadmOt1w2cE4Q5rOM48qPt3_WgkSkhxGVsyVV6U0w@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 4 Aug 2021 20:09:41 +0200
-Message-ID: <CANiq72nxUxYLOu=O785rgpn-1bRw=sBC4hH1Mg9+Ofq1xfiyYg@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: add Nick as Reviewer for compiler_attributes.h
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20210803102744.23654-1-lukasz.luba@arm.com> <4e6b02fb-b421-860b-4a07-ed6cccdc1570@arm.com>
+In-Reply-To: <4e6b02fb-b421-860b-4a07-ed6cccdc1570@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 4 Aug 2021 20:10:11 +0200
+Message-ID: <CAJZ5v0hgpM+ErHMTYLFFasvn=Ptc0MyaaFn=HSxOcGcDcBwMVg@mail.gmail.com>
+Subject: Re: [PATCH v3] PM: EM: Increase energy calculation precision
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Chris Redpath <Chris.Redpath@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        CCj.Yeh@mediatek.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 8:00 PM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
+On Tue, Aug 3, 2021 at 3:31 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
 >
-> Bumping for review EOM
+> Hi Rafael,
+>
+> On 8/3/21 11:27 AM, Lukasz Luba wrote:
+>
+> [snip]
+>
+> >
+> > Fixes: 27871f7a8a341ef ("PM: Introduce an Energy Model management framework")
+> > Reported-by: CCJ Yeh <CCj.Yeh@mediatek.com>
+> > Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> > Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> > ---
+> >
+> > v3 changes:
+> > - adjusted patch description according to Dietmar's comments
+> > - added Dietmar's review tag
+> > - added one empty line in the code to separate them
+> >
+> >   include/linux/energy_model.h | 16 ++++++++++++++++
+> >   kernel/power/energy_model.c  |  4 +++-
+> >   2 files changed, 19 insertions(+), 1 deletion(-)
+> >
+>
+> Could you take this patch via your PM tree, please?
 
-Applied!
-
-Cheers,
-Miguel
+I can do that, but do you want a Cc:stable tag on it?
