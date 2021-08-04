@@ -2,158 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C9D3E041A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BA03E0417
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238978AbhHDPZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:25:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33728 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237429AbhHDPZL (ORCPT
+        id S238968AbhHDPYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:24:33 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:59554
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238324AbhHDPYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:25:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628090698;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FOnK+veu0wWChnkChEJGDHGZFXwH5RbR5XEsiBmdrMU=;
-        b=IT2j9TcMKjdnNhXXsEwFuUuyJsX8TcNkk923TWbuWq5IqlM59RQIOvB7qgdjnWCL9a7+wv
-        MXI00M+zc+QHNlGOFPhY/sn1BA1rNOHnxo7Vk4CH4l4Aea4Ol6idsZ4gBdl51B7dLcw1oL
-        6S8jUYRy7h3QKrg774SonTA6oE6Zaso=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-CYGh4U8qPaWw_bBgQEpX3g-1; Wed, 04 Aug 2021 11:23:53 -0400
-X-MC-Unique: CYGh4U8qPaWw_bBgQEpX3g-1
-Received: by mail-ed1-f70.google.com with SMTP id y39-20020a50bb2a0000b02903bc05daccbaso1635283ede.5
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 08:23:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=FOnK+veu0wWChnkChEJGDHGZFXwH5RbR5XEsiBmdrMU=;
-        b=uZhJuWaggNhSfXIjZ7S/8q5W4rszqQUG3kptZl0nZG2KSwtqAUdcQ1q1wc36oU4MLA
-         pAFrI08s1nlDhOCq7r+LBlJAeQ3ueXfjjYhkydc7i8QWVLxgVuT8WhjBrCnZmIkGo5G0
-         /82AEML6ZIunxvz6QFJJR3/W5r8b6DmYK56B0DUn6is9sA+AN85hcgFJEVWGKVacbC7J
-         UtjVkP2e6cHUFN//jvemt3fnZbrO+M9m+DZF53Ipu+QOz1Q3gbsS3//1B2u/9h6P+ZxM
-         WEfH9GAtFiDHjKFO8F3p51E5HOryoon3gjLNMkzlQZVEfvXt4jQpUqEvBSXMzJmZZ+9T
-         WgKA==
-X-Gm-Message-State: AOAM533VmEXvJpRJX1bC5ff348j+to4k8uxSROQidyUV4+ojSPlVgwiE
-        qXL5X8Mck1iZHaZB6RB3Mxh0Xb42oLkSP6Aa+OWyydRuXB29oTxlJn7p5PK4vZKTuiwJPupSY8G
-        NOWgZ27hHAOCD4CtRVpaRCBEZ
-X-Received: by 2002:a05:6402:184b:: with SMTP id v11mr279747edy.267.1628090631912;
-        Wed, 04 Aug 2021 08:23:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz/39HeEjVjl3cpnIoTdSCpE59bH+X7ttEEVWnEzeo9TkvSQoRZJeV8fS+jTMea1+k26xJCDw==
-X-Received: by 2002:a05:6402:184b:: with SMTP id v11mr279724edy.267.1628090631769;
-        Wed, 04 Aug 2021 08:23:51 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id nd14sm736547ejc.113.2021.08.04.08.23.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 08:23:51 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 17:23:49 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     =?utf-8?B?5YKF5YWz5Lie?= <fuguancheng@bytedance.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>, jasowang@redhat.com,
-        stefanha@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        arseny.krasnov@kaspersky.com, andraprs@amazon.com,
-        Colin King <colin.king@canonical.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [External] Re: [PATCH 0/4] Add multi-cid support for vsock driver
-Message-ID: <20210804152349.o4vh233xjdruh4pv@steredhat>
-References: <20210802120720.547894-1-fuguancheng@bytedance.com>
- <20210802134251.hgg2wnepia4cjwnv@steredhat>
- <CAKv9dH5KbN25m8_Wmej9WXgJWheRV5S-tyPCdjUHHEFoWk-V1w@mail.gmail.com>
+        Wed, 4 Aug 2021 11:24:32 -0400
+Received: from localhost (1.general.khfeng.us.vpn [10.172.68.174])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id F412D3F0FA;
+        Wed,  4 Aug 2021 15:24:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628090659;
+        bh=hDbB0bm93+F0EguMHBiaxBXcE+njk5ShWnWQKqO10PI=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=vH/SIvcVPIFscAqYBu+yXAN1EUgQeBD+dcWc4tbmT3Id60CC3HYE7XacIrpjg8Nxn
+         xtfYqnwq8gG6nBiX+obB9syTzKVVKjvAbRwzv+BHP3EIUGyMu1Ss2rAaK/avMHAuJd
+         YXF7nAaFeMcirAVIhvA8fWaKXvmkXxXBeCPlPJhKbFCN3IdlG/kn6ESWl1Z7hrUtaC
+         v0n8kEkiosrjMAhZSKvQgJYn9dU2rqZDRpdnO4uGRaFLjI9b9Y0PuDKLxpCDoPlRVM
+         Kfrm1r9uE/UZOD7F6V09EJ/zb43y/5wV8PiKYaB7bniXZdEbmqbvCq8CP3jQg/Tsdj
+         +bnS0Gb/itH4A==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, ville.syrjala@linux.intel.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Imre Deak <imre.deak@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/i915/dp: Use max params for older panels
+Date:   Wed,  4 Aug 2021 23:24:02 +0800
+Message-Id: <20210804152408.584823-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKv9dH5KbN25m8_Wmej9WXgJWheRV5S-tyPCdjUHHEFoWk-V1w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 03:09:41PM +0800, 傅关丞 wrote:
->Sorry I cannot figure out a good use case.
->
->It is normal for a host to have multiple ip addresses used for
->communication.
->So I thought it might be nice to have both  host and guest use multiple
->CIDs for communication.
->I know this is not a very strong argument.
+Users reported that after commit 2bbd6dba84d4 ("drm/i915: Try to use
+fast+narrow link on eDP again and fall back to the old max strategy on
+failure"), the screen starts to have wobbly effect.
 
-Maybe there could be a use case for guests (which I don't see now), but 
-for the host it seems pointless. The strength of vsock is that the guest 
-knows that using CID=2 always reaches the host.
+Commit a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for
+everything") doesn't help either, that means the affected panels only
+work with max params.
 
-Moreover we have recently merged VMADDR_FLAG_TO_HOST that when set 
-allows you to forward any packet to the host, regardless of the CID (not 
-yet supported by vhost-vsock).
+The panels are all DP 1.1 ones, so apply max params to them to resolve
+the issue.
 
->
->The vsock driver does not work if one of the two peers doesn't support
->multiple CIDs.
+Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3714
+Fixes: 2bbd6dba84d4 ("drm/i915: Try to use fast+narrow link on eDP again and fall back to the old max strategy on failure")
+Fixes: a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for everything")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/gpu/drm/i915/display/intel_dp.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-This is absolutely to be avoided.
-
-I think the virtio device feature negotiation can help here.
-
->
->I have a possible solution here, but there may be some problems with it
->that I haven't noticed.
->
->Hypervisors will use different ways to send CIDs setup to the kernel based
->on their vsock setup.
->
->------For host-------
->If host vsock driver supports multi-cid, the hypervisor will use the
->modified VHOST_VSOCK_SET_GUEST_CID call to set its CIDs.
->Otherwise, the original call is used.
->
->------For guest-------
->Now the virtio_vsock_config looks like this:
->u64 guest_cid
->u32 num_guest_cid;
->u32 num_host_cid;
->u32 index;
->u64 cid;
->
->If the guest vsock driver supports multi-cid, it will read num_guest_cid
->and num_host_cid from the device config space.
->Then it writes an index register, which is the cid it wants to read.  After
->hypervisors handle this issue, it can read the cid
->from the cid register.
->
->If it does not support multi-cid, it will just read the guest_cid from the
->config space, which should work just fine.
->
-
-Why not add a new device feature to enable or disable multi-cid?
-
-
->
->-------Communication--------
->For communication issues, we might need to use a new feature bit.  Let's
->call it VHOST_VSOCK_SUPPORT_MULTI_CID.
->The basic idea is that this feature bit is set when both host and guest
->support using multiple CIDs.  After negotiation, if the feature bit
->is set, the host can use all the CIDs specified to communicate with the
->guest.  Otherwise, the first cid passed in will
->be used as the guest_cid to communicate with guests.
-
-I think the same feature bit can be used for the virtio_vsock_config, 
-no?
-
->
->Also, if the bit is set for guests, all the CIDs can be used to communicate
->with the host.  Otherwise, the first cid with index 0 will be
->used as the guest_cid while the VMADDR_HOST_CID will be used for host cid.
-
-We already have VMADDR_FLAG_TO_HOST to forward all packets to the host, 
-we only need to support in some way in vhost-vsock.
-
-Thanks,
-Stefano
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index 75d4ebc669411..e64bab4b016e1 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -1330,14 +1330,16 @@ intel_dp_compute_link_config(struct intel_encoder *encoder,
+ 	limits.min_bpp = intel_dp_min_bpp(pipe_config->output_format);
+ 	limits.max_bpp = intel_dp_max_bpp(intel_dp, pipe_config);
+ 
+-	if (intel_dp->use_max_params) {
++	if (intel_dp->use_max_params ||
++	    intel_dp->dpcd[DP_DPCD_REV] <= DP_DPCD_REV_11) {
+ 		/*
+ 		 * Use the maximum clock and number of lanes the eDP panel
+ 		 * advertizes being capable of in case the initial fast
+-		 * optimal params failed us. The panels are generally
+-		 * designed to support only a single clock and lane
+-		 * configuration, and typically on older panels these
+-		 * values correspond to the native resolution of the panel.
++		 * optimal params failed us or the panel is DP 1.1 or earlier.
++		 * The panels are generally designed to support only a single
++		 * clock and lane configuration, and typically on older panels
++		 * these values correspond to the native resolution of the
++		 * panel.
+ 		 */
+ 		limits.min_lane_count = limits.max_lane_count;
+ 		limits.min_clock = limits.max_clock;
+-- 
+2.31.1
 
