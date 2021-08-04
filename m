@@ -2,58 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681C23E05E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7A03E05E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237541AbhHDQ0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:26:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46976 "EHLO mail.kernel.org"
+        id S237456AbhHDQ0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:26:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236825AbhHDQZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:25:55 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A9AB60F41;
-        Wed,  4 Aug 2021 16:25:42 +0000 (UTC)
-Date:   Wed, 4 Aug 2021 12:25:41 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Wagner <wagi@monom.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org
-Subject: Re: [ANNOUNCE] v5.14-rc4-rt4
-Message-ID: <20210804122541.741cf858@oasis.local.home>
-In-Reply-To: <20210804162231.rfj5i736lqc4nsio@linutronix.de>
-References: <20210804104803.4nwxi74sa2vwiujd@linutronix.de>
-        <20210804110057.chsvt7l5xpw7bo5r@linutronix.de>
-        <20210804131731.GG8057@worktop.programming.kicks-ass.net>
-        <4f549344-1040-c677-6a6a-53e243c5f364@kernel.dk>
-        <feebf183-2e33-36b5-4538-62a40b2a58b6@kernel.dk>
-        <20210804153308.oasahcxjmcw7vivo@linutronix.de>
-        <f2d0a028-fe85-28ff-9cea-8ab1d26a15d0@kernel.dk>
-        <20210804154743.niogqvnladdkfgi2@linutronix.de>
-        <7c946918-ae0d-6195-6a78-b019f9bc1fd3@kernel.dk>
-        <20210804121704.1587c41b@oasis.local.home>
-        <20210804162231.rfj5i736lqc4nsio@linutronix.de>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236825AbhHDQ0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 12:26:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF6BC60E78;
+        Wed,  4 Aug 2021 16:25:59 +0000 (UTC)
+Date:   Wed, 4 Aug 2021 17:25:57 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     will@kernel.org, mark.rutland@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
+        wei.liu@kernel.org, kys@microsoft.com, sthemmin@microsoft.com,
+        ardb@kernel.org
+Subject: Re: [PATCH v12 0/5] Enable Linux guests on Hyper-V on ARM64
+Message-ID: <20210804162555.GD4857@arm.com>
+References: <1628092359-61351-1-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1628092359-61351-1-git-send-email-mikelley@microsoft.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Aug 2021 18:22:31 +0200
-Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+On Wed, Aug 04, 2021 at 08:52:34AM -0700, Michael Kelley wrote:
+> This series enables Linux guests running on Hyper-V on ARM64
+> hardware. New ARM64-specific code in arch/arm64/hyperv initializes
+> Hyper-V and its hypercall mechanism.  Existing architecture
+> independent drivers for Hyper-V's VMbus and synthetic devices just
+> work when built for ARM64. Hyper-V code is built and included in
+> the image and modules only if CONFIG_HYPERV is enabled.
+[...]
+> Hyper-V on ARM64 runs with a 4 Kbyte page size, but allows guests
+> with 4K/16K/64K page size. Linux guests with this patch series
+> work with all three supported ARM64 page sizes.
+> 
+> The Hyper-V vPCI driver at drivers/pci/host/pci-hyperv.c has
+> x86/x64-specific code and is not being built for ARM64. Enabling
+> Hyper-V vPCI devices on ARM64 is in progress via a separate set
+> of patches.
+> 
+> This patch set is based on the linux-next20210720 code tree.
 
-> no preemption happens here with NEED_RESCHED set.
+Is it possible to rebase this on top of -rc3? Are there any
+dependencies or do you plan to upstream this via a different tree?
 
-But if interrupts were disabled, how would NEED_RESCHED be set? As soon
-as you enable interrupts, the interrupt that sets NEED_RESCHED would
-trigger the preemption.
+It applies cleanly but it doesn't build for me:
 
--- Steve
+In file included from arch/arm64/include/asm/mshyperv.h:52,
+                 from arch/arm64/hyperv/hv_core.c:19:
+include/asm-generic/mshyperv.h: In function 'hv_do_rep_hypercall':
+include/asm-generic/mshyperv.h:86:3: error: implicit declaration of function 'touch_nmi_watchdog' [-Werror=implicit-function-declaration]
+   86 |   touch_nmi_watchdog();
+      |   ^~~~~~~~~~~~~~~~~~
+
+A quick fix for the above was to include nmi.h in mshyperv.h.
+
+However, the below I can't fix since there's no trace of
+hv_common_init() on top of 5.14-rc3:
+
+arch/arm64/hyperv/mshyperv.c: In function 'hyperv_init':
+arch/arm64/hyperv/mshyperv.c:66:8: error: implicit declaration of function 'hv_common_init' [-Werror=implicit-function-declaration]
+   66 |  ret = hv_common_init();
+      |        ^~~~~~~~~~~~~~
+arch/arm64/hyperv/mshyperv.c:71:5: error: 'hv_common_cpu_init' undeclared (first use in this function)
+   71 |     hv_common_cpu_init, hv_common_cpu_die);
+      |     ^~~~~~~~~~~~~~~~~~
+arch/arm64/hyperv/mshyperv.c:71:5: note: each undeclared identifier is reported only once for each function it appears in
+arch/arm64/hyperv/mshyperv.c:71:25: error: 'hv_common_cpu_die' undeclared (first use in this function)
+   71 |     hv_common_cpu_init, hv_common_cpu_die);
+      |                         ^~~~~~~~~~~~~~~~~
+arch/arm64/hyperv/mshyperv.c:73:3: error: implicit declaration of function 'hv_common_free' [-Werror=implicit-function-declaration]
+   73 |   hv_common_free();
+      |   ^~~~~~~~~~~~~~
+
+-- 
+Catalin
