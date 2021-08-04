@@ -2,121 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360A63E04E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999413E04E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239566AbhHDPwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:52:31 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41558 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239567AbhHDPwa (ORCPT
+        id S239624AbhHDPwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:52:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239602AbhHDPwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:52:30 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id F150C1FDFE;
-        Wed,  4 Aug 2021 15:52:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628092336; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DsQZleP+a92Q9m/XYDgfuGFJXRSyYXNyPiGtDd47CFc=;
-        b=fkuHI02LvqjMYRclhitwjoI9XYIBcDuLNYF1E4FwrbECKJx1Itje5zImfKp6syAWT6zpSg
-        DFFwDZyAbsG7oJEDFXuXDclREyWZrv/W30tOEO1pf4cia53LEhR0yeHSN0Nk72U+v6lW5Z
-        XrutC5cAgY6b/y2yi8slcQFZCoGLKBw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628092336;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DsQZleP+a92Q9m/XYDgfuGFJXRSyYXNyPiGtDd47CFc=;
-        b=JfCoMrYQ5IDLBP8he7K7aoZeAbEIubobla7byGvV3wBqhFBb80/ppRPmdS6HSgYxWbO2FH
-        Uuuapa8oQs2JGRCw==
-Received: from quack2.suse.cz (jack.udp.ovpn2.nue.suse.de [10.163.43.118])
-        by relay2.suse.de (Postfix) with ESMTP id DD87BA3BD6;
-        Wed,  4 Aug 2021 15:52:16 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 3CE871F2B83; Wed,  4 Aug 2021 17:52:14 +0200 (CEST)
-Date:   Wed, 4 Aug 2021 17:52:14 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Wang Jianchao <jianchao.wan9@gmail.com>
-Cc:     Guoqing Jiang <guoqing.jiang@linux.dev>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tytso@mit.edu, adilger.kernel@dilger.ca
-Subject: Re: [PATCH V3 5/5] ext4: make fallocate retry when err is ENOSPC
-Message-ID: <20210804155214.GN4578@quack2.suse.cz>
-References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
- <20210724074124.25731-6-jianchao.wan9@gmail.com>
- <0ac551b1-6295-9117-757d-12bee70de588@linux.dev>
- <2888807f-2822-a73d-4c01-f073f8fffae2@gmail.com>
+        Wed, 4 Aug 2021 11:52:38 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E00C0613D5;
+        Wed,  4 Aug 2021 08:52:24 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id t9so5268886lfc.6;
+        Wed, 04 Aug 2021 08:52:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MBriIZ2G2M2XCFCkysf4584gS82vV2S0w04vsL/TpMs=;
+        b=Y+U0o5F1svs/jTON0xwzaWelTku7kmvUmxAofy1IhwBSR4dN39oirQHZVq3+yvAv5k
+         p9u1r/2yjY/OLkP3dRaDCqcd6udg+WW6lbe31uc1DqqPnPt14dT3Smwqcp45n746S2SJ
+         xHanq1vCz360Bo5WqUKNIWZVFbEpLHQ9DZHvuumR7mY3oezazl75yzcP2vSJqhFKDcAy
+         WGWgjMANS2Bp9rJzjyfsnpUWHbRFufaaL/7gUWBJMgVxes806gB8hpOO6dFXo/s2p4ur
+         m2BK1vC/9+3cWLd1J66LYrnZ3Ps5iTBRngnahhoKBQCR7CmHLP17Q8ZM9XJMsjwdwJ94
+         Q26w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MBriIZ2G2M2XCFCkysf4584gS82vV2S0w04vsL/TpMs=;
+        b=kHuj+/qYRhx2HEET/rMKQnPbdxMZ+e8kP9eA8/j3bfEfiet5nQ9vRfmI9n1ORjmVYS
+         54MWHS+eLTX4m7xkibflGP3JXOWRwm2v9vJVpRs47MzbidFN1TKBLOXoojnSUqvtRgvp
+         M5yJ4Jwghz8JdSl5U5lCn1R6WULmbZVAkMtDuqTfy9nr+8mEQeeeKf8BX4C/Mmyq0rq1
+         5ZrDvwPxV9lba4cZ3xspcbVre0HSsgxdhJwqas59lJo8/7WSidSUmIaeop6u3j0EXl1p
+         lW43+JfJE7350SGSRXc0+ZWTqv+Ub5UU8DmGpz2sYtpAEVfbHmqLsYDKvBvFx2qs6Yr9
+         JtLQ==
+X-Gm-Message-State: AOAM531V/jlHFFsaJx9WWHEnOnNm6KkncMr2DY/LamR0vvXOAmzvLmG5
+        S53LvoxNIxUNIy/IYE+H7U8=
+X-Google-Smtp-Source: ABdhPJz3DE5NVTPwgg425Om0rpKX0sRS9HYPJc2IW5qT9x5uY5l/znGh/nF+XmkrVs1LYNeZTGE8dg==
+X-Received: by 2002:ac2:57c5:: with SMTP id k5mr21398920lfo.72.1628092343168;
+        Wed, 04 Aug 2021 08:52:23 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.226.235])
+        by smtp.gmail.com with ESMTPSA id x16sm230198lfa.244.2021.08.04.08.52.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 08:52:22 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, jdmason@kudzu.us,
+        jesse.brandeburg@intel.com, colin.king@canonical.com
+Cc:     dan.carpenter@oracle.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH 2/2] net: vxge: fix use-after-free in vxge_device_unregister
+Date:   Wed,  4 Aug 2021 18:52:20 +0300
+Message-Id: <cf7e28fc0aaac4263564db2e21f22b07928fec87.1628091954.git.paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <cover.1628091954.git.paskripkin@gmail.com>
+References: <cover.1628091954.git.paskripkin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2888807f-2822-a73d-4c01-f073f8fffae2@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 26-07-21 15:05:41, Wang Jianchao wrote:
-> 
-> 
-> On 2021/7/26 11:40 AM, Guoqing Jiang wrote:
-> > Hi,
-> > 
-> > On 7/24/21 3:41 PM, Wang Jianchao wrote:
-> >> From: Wang Jianchao <wangjianchao@kuaishou.com>
-> >>
-> >> The blocks may be waiting for journal commit to be freed back to
-> >> mb buddy. Let fallocate wait and retry in that case.
-> >>
-> >> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
-> >> ---
-> >>   fs/ext4/extents.c | 6 +++++-
-> >>   1 file changed, 5 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> >> index 92ad64b89d9b..ad0b874d3448 100644
-> >> --- a/fs/ext4/extents.c
-> >> +++ b/fs/ext4/extents.c
-> >> @@ -4635,7 +4635,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
-> >>       struct inode *inode = file_inode(file);
-> >>       loff_t new_size = 0;
-> >>       unsigned int max_blocks;
-> >> -    int ret = 0;
-> >> +    int ret = 0, retries = 0;
-> >>       int flags;
-> >>       ext4_lblk_t lblk;
-> >>       unsigned int blkbits = inode->i_blkbits;
-> >> @@ -4656,6 +4656,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
-> >>                FALLOC_FL_INSERT_RANGE))
-> >>           return -EOPNOTSUPP;
-> >>   +retry:
-> >>       ext4_fc_start_update(inode);
-> >>         if (mode & FALLOC_FL_PUNCH_HOLE) {
-> >> @@ -4722,6 +4723,9 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
-> >>       trace_ext4_fallocate_exit(inode, offset, max_blocks, ret);
-> >>   exit:
-> >>       ext4_fc_stop_update(inode);
-> >> +    if (ret == -ENOSPC && ext4_should_retry_alloc(inode->i_sb, &retries))
-> >> +        goto retry;
-> >> +
-> > 
-> > Not sure if it is necessary since ext4_alloc_file_blocks already retries allocate.
-> 
-> Yes, this patch should be get rid of.  But it is indeed helpful to fix
-> the xfstest generic/371 which does concurrently write/rm and
-> fallocate/rm. I'll figure out some other way to improve that
+Smatch says:
+drivers/net/ethernet/neterion/vxge/vxge-main.c:3518 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
+drivers/net/ethernet/neterion/vxge/vxge-main.c:3518 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
+drivers/net/ethernet/neterion/vxge/vxge-main.c:3520 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
+drivers/net/ethernet/neterion/vxge/vxge-main.c:3520 vxge_device_unregister() error: Using vdev after free_{netdev,candev}(dev);
 
-Note that the retry logic is only a heuristic. It is not guaranteed any
-number of retries is enough, we just do three to not give up too easily...
-Your patch effectively raised number of retries to 9 so that may have
-masked the issue. But I don't think so high number of retries is a sensible
-choice because that way it may take too long to return ENOSPC.
+Since vdev pointer is netdev private data accessing it after free_netdev()
+call can cause use-after-free bug. Fix it by moving free_netdev() call at
+the end of the function
 
-								Honza
+Fixes: 6cca200362b4 ("vxge: cleanup probe error paths")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/net/ethernet/neterion/vxge/vxge-main.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/neterion/vxge/vxge-main.c b/drivers/net/ethernet/neterion/vxge/vxge-main.c
+index 82eef4c72f01..7abd13e69471 100644
+--- a/drivers/net/ethernet/neterion/vxge/vxge-main.c
++++ b/drivers/net/ethernet/neterion/vxge/vxge-main.c
+@@ -3512,13 +3512,13 @@ static void vxge_device_unregister(struct __vxge_hw_device *hldev)
+ 
+ 	kfree(vdev->vpaths);
+ 
+-	/* we are safe to free it now */
+-	free_netdev(dev);
+-
+ 	vxge_debug_init(vdev->level_trace, "%s: ethernet device unregistered",
+ 			buf);
+ 	vxge_debug_entryexit(vdev->level_trace,	"%s: %s:%d  Exiting...", buf,
+ 			     __func__, __LINE__);
++
++	/* we are safe to free it now */
++	free_netdev(dev);
+ }
+ 
+ /*
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.32.0
+
