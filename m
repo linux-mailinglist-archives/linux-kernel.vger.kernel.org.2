@@ -2,183 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A73B3DF94C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76953DF94D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233731AbhHDBgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 21:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49486 "EHLO
+        id S233810AbhHDBhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 21:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233389AbhHDBgq (ORCPT
+        with ESMTP id S233389AbhHDBhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 21:36:46 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAEFFC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 18:36:33 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id y200so668254iof.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 18:36:33 -0700 (PDT)
+        Tue, 3 Aug 2021 21:37:36 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72CFBC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 18:37:23 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id y7so1684938ybo.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 18:37:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bhIVG0r/qPK2TcXgdoBmOu4PcDkyct/LwknBdo9Vm44=;
-        b=etBcJ3hu100rjwpYbtkwmf8cHrGicv0c9BRH5dqeQvhA8zcw3+yGFBvmd2oy+G61Xg
-         FsrZRQSWT9OxH3+a1u6lJZxFDV9XYgG/FvTcnwo8fC56qa/OxJtasWYEcn5uJc/3oShm
-         N64c/k7CWL+iVZm6/xstuh0srxrA5safwTTUq74m3MQrr+DDHmHioUbw7r5FbDqude+X
-         T0KT0TIFtReLsSuwFzynBBT4o8SN9WcNQxCWDCj9kyt+w+K/Dfz9x2RXl/xUbbC2i91h
-         GA5JWnotazSaiGpQAdn3yGcxIpNjeks+ztzGtI5FXnQN6QauvcXWDewu4VrqlSLq5EGu
-         +EGQ==
+        bh=epKB0hcqm1WCC8vBGK+vx99lC/aJI/2AY4lrD7eYLb8=;
+        b=AEccR6l/OKGESalKQvaRWiGGw/rio+62YWgIEhXsEEYHlVGhFesvWTPKcNov85mSqW
+         YtF7Oc1w6ubuCGDGQUrSgyoudaS5M4ZXoHGjIdVNtxgSpedngvtttz3sd8Y5eFj6/i1T
+         jOg5eEl6bN/kakSNWhFSn0m9dFLHZnLrzDuKVOPNHsCN04O2yncFR9x71/Ysx0xrQr2Q
+         nuLMy/ATtkk++oWh+8mv+I7wovY6dvb7eCwqRNcyztUWs8yPWDB3qNNotz/nnlIuUU/4
+         za2uS0hhTZQKDViBPBNr0EvcDLM68lITnnnATpItJfVis554OreLT3scY1MlHXJ1Yznk
+         0JZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bhIVG0r/qPK2TcXgdoBmOu4PcDkyct/LwknBdo9Vm44=;
-        b=L2HHAK+7NYSrxg4ycLgqGcp1NIH7hGYHIc2oxfrCioQwxLnSAZvOuw5QFYb3102wOr
-         eiveRykK2SzVdChdU9EKLhjYpOkDRmNUZ/nKg3iShaHO8H/FELzParRRWsNaEdCBk76Z
-         QVwYP6oGk/wMByh87sLJJB8hFrDKLLELQXzswmDHcf/x/6JTla1ZKP2ri69hIB+ScgZe
-         5fz5Q4rv9V3Raewoa/slgXUMmTwILt/DxFUXO0tS1wzxIfemTfYgHehd438yQD+41Ywi
-         QZZ4ZjVbf8fHHFKpEzGpZenMbekMxySILbN3Gj21SMIXlaQOK2YJG6hpDFWdjfRtTGCW
-         oG2g==
-X-Gm-Message-State: AOAM532iuIgzOUHzlKPa+0K/m3bG15xhm85n4iAWNG8FqaLLKQTUBE4D
-        0Kf//NhZzTUVRMSuPRRw/yi2HaBoMoMZXlQsIWA=
-X-Google-Smtp-Source: ABdhPJycfMu+ic0YNnSUcQN1/5sg6KuvTG4vElZbfMKEXBBPpsDnPy61q94tyZVwsYb/Ok7/beqk5C+zLHKVOSQqG98=
-X-Received: by 2002:a02:2243:: with SMTP id o64mr21894799jao.40.1628040993394;
- Tue, 03 Aug 2021 18:36:33 -0700 (PDT)
+        bh=epKB0hcqm1WCC8vBGK+vx99lC/aJI/2AY4lrD7eYLb8=;
+        b=E7+VVFKwMTV9DJQeZqsC/NeTUSzdjFAiPzcJiGRpf28u2DcCxqwKL3Xr2LLyT3LZZD
+         NfkouXxlae/8LbC/r0z8/qpxTf+wp1H6UtxS4GB8ID9xFXy0vd4LOm2QldjwOg4es98p
+         gwC2uKoQu5M5Awbtf3ZMPSZzfLsX3ufZOs1Hk7+JATIfLcexSk9qZqf0kneqcaGPsoa4
+         BFS/8wcxACVDrPgvdbA8CirbszqKiqRmV/7ekro62bs47eQc/GplcKG2kwctV9UTbNfZ
+         dJf9wmzr7GrtVpjWI2IqRLt1KrqHJ60bwPa1gMXHh+Run6uhj9YYL1ieCzouFF2V/jOF
+         dLdg==
+X-Gm-Message-State: AOAM530a7F+e7Y1szC5o1wn6EGoM0QlqqmAV0DQSdW6BIXNqzQvW1llP
+        TWo794TLzqN5ujDAjdFDqaJ8ioh/jz31aR5uTiwBYQ==
+X-Google-Smtp-Source: ABdhPJxIRCvXjvM5XX/7Lx2VcKSsZlmtIzvOYuSx+K/LRfB6QcCO7PpBPp79Q8riGnMoAJ+NYv75MM16FMCkJ5wzF9c=
+X-Received: by 2002:a25:8b91:: with SMTP id j17mr30103983ybl.228.1628041041716;
+ Tue, 03 Aug 2021 18:37:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210803141621.780504-1-bigeasy@linutronix.de> <20210803141621.780504-38-bigeasy@linutronix.de>
-In-Reply-To: <20210803141621.780504-38-bigeasy@linutronix.de>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Wed, 4 Aug 2021 09:36:21 +0800
-Message-ID: <CAJhGHyAjXDxcktZLCcZiN8cCvMX8LqO5-UyLAwEJoELBoRxhZw@mail.gmail.com>
-Subject: Re: [PATCH 37/38] workqueue: Replace deprecated CPU-hotplug functions.
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>
+References: <20201020072532.949137-1-narmstrong@baylibre.com>
+ <20201020072532.949137-2-narmstrong@baylibre.com> <7hsga8kb8z.fsf@baylibre.com>
+ <CAF2Aj3g6c8FEZb3e1by6sd8LpKLaeN5hsKrrQkZUvh8hosiW9A@mail.gmail.com>
+ <87r1hwwier.wl-maz@kernel.org> <7h7diwgjup.fsf@baylibre.com> <87im0m277h.wl-maz@kernel.org>
+In-Reply-To: <87im0m277h.wl-maz@kernel.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 3 Aug 2021 18:36:45 -0700
+Message-ID: <CAGETcx9OukoWM_qprMse9aXdzCE=GFUgFEkfhhNjg44YYsOQLw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build as
+ a module
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 10:17 PM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
+On Tue, Aug 3, 2021 at 2:44 AM Marc Zyngier <maz@kernel.org> wrote:
 >
-> The functions get_online_cpus() and put_online_cpus() have been
-> deprecated during the CPU hotplug rework. They map directly to
-> cpus_read_lock() and cpus_read_unlock().
+> On Mon, 14 Jun 2021 23:30:22 +0100,
+> Kevin Hilman <khilman@baylibre.com> wrote:
+> >
+> > Marc Zyngier <maz@kernel.org> writes:
+> >
+> > > On Fri, 21 May 2021 10:47:48 +0100,
+> > > Lee Jones <lee.jones@linaro.org> wrote:
+> > >>
+> > >> [1  <text/plain; UTF-8 (quoted-printable)>]
+> > >> On Tue, 20 Oct 2020 at 19:23, Kevin Hilman <khilman@baylibre.com> wrote:
+> > >>
+> > >> > Neil Armstrong <narmstrong@baylibre.com> writes:
+> > >> >
+> > >> > > In order to reduce the kernel Image size on multi-platform distributions,
+> > >> > > make it possible to build the Amlogic GPIO IRQ controller as a module
+> > >> > > by switching it to a platform driver.
+> > >> > >
+> > >> > > Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> > >> >
+> > >> > Reviewed-by: Kevin Hilman <khilman@baylibre.com>
+> > >> > Tested-by: Kevin Hilman <khilman@baylibre.com>
+> > >> >
+> > >> > Tested as a module on meson-sm1-khadas-vim3l where the wired networking
+> > >> > uses GPIO IRQs.
+> > >> >
+> > >>
+> > >> Good morning Neil, Kevin,
+> > >>
+> > >> What happened to this set in the end?  I still don't see it in Mainline.
+> > >
+> > > Last time I tried this patch, it broke my test setup in non-obvious
+> > > ways. Has someone checked that the issue I reported back then has been
+> > > resolved now that fw_devlink is more usable?
+> >
+> > OK, after much anticipation (and much delay due to me forgetting about
+> > this), I just gave this series a spin again on top of v5.13-rc6, and it
+> > seems to work fine with `fw_devlink=on`
+> >
+> > I started with your config[1] and accepting all the defaults of any new
+> > configs.  IOW, I ran: yes '' | make oldconfig after copying your config
+> > to .config.
+> >
+> > With that it seems to be working fine for me.
+> >
+> > Right after boot (and before network probes) I see module loaded, but no
+> > users yet in /proc/interrupts:
+> >
+> > / # uname -a
+> > Linux buildroot 5.13.0-rc6-00002-g679c8e852942 #5 SMP PREEMPT Mon Jun 14 15:08:40 PDT 2021 aarch64 GNU/Linux
+> > / # lsmod |grep gpio
+> > irq_meson_gpio         20480  0
+> > leds_gpio              16384  0
+> > / # cat /proc/interrupts
+> >            CPU0       CPU1       CPU2       CPU3
+> >   9:          0          0          0          0     GICv2  25 Level     vgic
+> >  11:          0          0          0          0     GICv2  30 Level     kvm guest ptimer
+> >  12:          0          0          0          0     GICv2  27 Level     kvm guest vtimer
+> >  13:       1416        916        534       1421     GICv2  26 Level     arch_timer
+> >  15:          5          0          0          0     GICv2  89 Edge      dw_hdmi_top_irq, ff600000.hdmi-tx
+> >  22:         38          0          0          0     GICv2 225 Edge      ttyAML0
+> >  23:         20          0          0          0     GICv2 227 Edge      ff805000.i2c
+> >  25:          2          0          0          0     GICv2 232 Edge      ff809000.adc
+> >  28:        322          0          0          0     GICv2  35 Edge      meson
+> >  31:          0          0          0          0     GICv2 222 Edge      ffe05000.sd
+> >  32:        787          0          0          0     GICv2 223 Edge      ffe07000.mmc
+> >  34:          0          0          0          0     GICv2 194 Level     panfrost-job
+> >  35:          0          0          0          0     GICv2 193 Level     panfrost-mmu
+> >  36:          3          0          0          0     GICv2 192 Level     panfrost-gpu
+> >  39:          0          0          0          0     GICv2  63 Level     ff400000.usb, ff400000.usb
+> >  40:         32          0          0          0     GICv2  62 Level     xhci-hcd:usb1
+> > IPI0:       425        544        664        925       Rescheduling interrupts
+> > IPI1:        86        166        269        136       Function call interrupts
+> > IPI2:         0          0          0          0       CPU stop interrupts
+> > IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
+> > IPI4:         0          0          0          0       Timer broadcast interrupts
+> > IPI5:         0          0          0          0       IRQ work interrupts
+> > IPI6:         0          0          0          0       CPU wake-up interrupts
+> > Err:          0
+> >
+> > So then I init the network interface and PHY works, DHCP works etc.
+> >
+> > / # udhcpc
+> > udhcpc: started, v1.31.1
+> > [  102.250449] meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=37)
+> > [  102.256413] meson8b-dwmac ff3f0000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
+> > [  102.269433] meson8b-dwmac ff3f0000.ethernet eth0: No Safety Features support found
+> > [  102.271357] meson8b-dwmac ff3f0000.ethernet eth0: PTP not supported by HW
+> > [  102.278493] meson8b-dwmac ff3f0000.ethernet eth0: configuring for phy/rgmii link mode
+> > udhcpc: sending discover
+> > [  104.743301] meson8b-dwmac ff3f0000.ethernet eth0: Link is Up - 100Mbps/Full - flow control rx/tx
+> > [  104.746470] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+> > udhcpc: sending discover
+> > udhcpc: sending select for 192.168.0.122
+> > udhcpc: lease of 192.168.0.122 obtained, lease time 600
+> > deleting routers
+> > adding dns 192.168.0.254
+> > adding dns 192.168.0.254
+> > / # cat /proc/interrupts
+> >            CPU0       CPU1       CPU2       CPU3
+> >   9:          0          0          0          0     GICv2  25 Level     vgic
+> >  11:          0          0          0          0     GICv2  30 Level     kvm guest ptimer
+> >  12:          0          0          0          0     GICv2  27 Level     kvm guest vtimer
+> >  13:       1575       1018        604       1588     GICv2  26 Level     arch_timer
+> >  14:          8          0          0          0     GICv2  40 Level     eth0
+> >  15:          5          0          0          0     GICv2  89 Edge      dw_hdmi_top_irq, ff600000.hdmi-tx
+> >  22:        132          0          0          0     GICv2 225 Edge      ttyAML0
+> >  23:         20          0          0          0     GICv2 227 Edge      ff805000.i2c
+> >  25:          2          0          0          0     GICv2 232 Edge      ff809000.adc
+> >  28:        322          0          0          0     GICv2  35 Edge      meson
+> >  31:          0          0          0          0     GICv2 222 Edge      ffe05000.sd
+> >  32:        787          0          0          0     GICv2 223 Edge      ffe07000.mmc
+> >  34:          0          0          0          0     GICv2 194 Level     panfrost-job
+> >  35:          0          0          0          0     GICv2 193 Level     panfrost-mmu
+> >  36:          3          0          0          0     GICv2 192 Level     panfrost-gpu
+> >  37:          2          0          0          0  meson-gpio-irqchip  26 Level     0.0:00
+> >  39:          0          0          0          0     GICv2  63 Level     ff400000.usb, ff400000.usb
+> >  40:         32          0          0          0     GICv2  62 Level     xhci-hcd:usb1
+> > IPI0:       476        567        720        956       Rescheduling interrupts
+> > IPI1:        93        166        270        137       Function call interrupts
+> > IPI2:         0          0          0          0       CPU stop interrupts
+> > IPI3:         0          0          0          0       CPU stop (for crash dump) interrupts
+> > IPI4:         0          0          0          0       Timer broadcast interrupts
+> > IPI5:         0          0          0          0       IRQ work interrupts
+> > IPI6:         0          0          0          0       CPU wake-up interrupts
+> > Err:          0
+> > / #
 >
-> Replace deprecated CPU-hotplug functions with the official version.
-> The behavior remains unchanged.
+> This thing keeps failing on my end. It only works if I force the
+> irqchip module to be present before the MDIO module is loaded. Here's
+> an example:
 >
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
+> root@tiger-roach:~# modprobe mdio_mux_meson_g12a
+> [  125.871544] libphy: mdio_mux: probed
+> [  125.882575] g12a-mdio_mux ff64c000.mdio-multiplexer: Error: Failed to register MDIO bus for child /soc/bus@ff600000/mdio-multiplexer@4c000/mdio@0
+> [  125.892630] libphy: mdio_mux: probed
+>
+> Trying to bring up the Ethernet interface will fail. Note that there
+> was no attempt to load the irqchip driver.
+>
+> root@tiger-roach:~# modprobe -r mdio_mux_meson_g12a
+> root@tiger-roach:~# modprobe irq-meson-gpio
+> [  144.983344] meson-gpio-intc ffd0f080.interrupt-controller: 100 to 8 gpio interrupt mux initialized
+> root@tiger-roach:~# modprobe mdio_mux_meson_g12a
+> [  150.376464] libphy: mdio_mux: probed
+> [  150.391039] libphy: mdio_mux: probed
+>
+> And it now works.
+>
+> Is it a MDIO issue? a fw_devlink issue? No idea. But I'd really like
+> to see this addressed before taking this patch, as everything works
+> just fine as long as the irqchip is built in (which on its own could
+> well pure luck).
+>
+> Saravana, could you please have a look from a fw_devlink perspective?
 
+Sigh... I spent several hours looking at this and wrote up an analysis
+and then realized I might be looking at the wrong DT files.
 
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Marc, can you point me to the board file in upstream that corresponds
+to the platform in which you see this issue? I'm not asking for [1],
+but the actual final .dts (not .dtsi) file that corresponds to the
+platform/board/system.
 
->  kernel/workqueue.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
->
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index f148eacda55a9..f967aa4050d08 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -3293,7 +3293,7 @@ int schedule_on_each_cpu(work_func_t func)
->         if (!works)
->                 return -ENOMEM;
->
-> -       get_online_cpus();
-> +       cpus_read_lock();
->
->         for_each_online_cpu(cpu) {
->                 struct work_struct *work = per_cpu_ptr(works, cpu);
-> @@ -3305,7 +3305,7 @@ int schedule_on_each_cpu(work_func_t func)
->         for_each_online_cpu(cpu)
->                 flush_work(per_cpu_ptr(works, cpu));
->
-> -       put_online_cpus();
-> +       cpus_read_unlock();
->         free_percpu(works);
->         return 0;
->  }
-> @@ -4016,14 +4016,14 @@ static void apply_wqattrs_commit(struct apply_wqattrs_ctx *ctx)
->  static void apply_wqattrs_lock(void)
->  {
->         /* CPUs should stay stable across pwq creations and installations */
-> -       get_online_cpus();
-> +       cpus_read_lock();
->         mutex_lock(&wq_pool_mutex);
->  }
->
->  static void apply_wqattrs_unlock(void)
->  {
->         mutex_unlock(&wq_pool_mutex);
-> -       put_online_cpus();
-> +       cpus_read_unlock();
->  }
->
->  static int apply_workqueue_attrs_locked(struct workqueue_struct *wq,
-> @@ -4068,7 +4068,7 @@ static int apply_workqueue_attrs_locked(struct workqueue_struct *wq,
->   *
->   * Performs GFP_KERNEL allocations.
->   *
-> - * Assumes caller has CPU hotplug read exclusion, i.e. get_online_cpus().
-> + * Assumes caller has CPU hotplug read exclusion, i.e. cpus_read_lock().
->   *
->   * Return: 0 on success and -errno on failure.
->   */
-> @@ -4196,7 +4196,7 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
->                 return 0;
->         }
->
-> -       get_online_cpus();
-> +       cpus_read_lock();
->         if (wq->flags & __WQ_ORDERED) {
->                 ret = apply_workqueue_attrs(wq, ordered_wq_attrs[highpri]);
->                 /* there should only be single pwq for ordering guarantee */
-> @@ -4206,7 +4206,7 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
->         } else {
->                 ret = apply_workqueue_attrs(wq, unbound_std_wq_attrs[highpri]);
->         }
-> -       put_online_cpus();
-> +       cpus_read_unlock();
->
->         return ret;
->  }
-> @@ -5168,10 +5168,10 @@ long work_on_cpu_safe(int cpu, long (*fn)(void *), void *arg)
->  {
->         long ret = -ENODEV;
->
-> -       get_online_cpus();
-> +       cpus_read_lock();
->         if (cpu_online(cpu))
->                 ret = work_on_cpu(cpu, fn, arg);
-> -       put_online_cpus();
-> +       cpus_read_unlock();
->         return ret;
->  }
->  EXPORT_SYMBOL_GPL(work_on_cpu_safe);
-> @@ -5443,7 +5443,7 @@ static ssize_t wq_pool_ids_show(struct device *dev,
->         const char *delim = "";
->         int node, written = 0;
->
-> -       get_online_cpus();
-> +       cpus_read_lock();
->         rcu_read_lock();
->         for_each_node(node) {
->                 written += scnprintf(buf + written, PAGE_SIZE - written,
-> @@ -5453,7 +5453,7 @@ static ssize_t wq_pool_ids_show(struct device *dev,
->         }
->         written += scnprintf(buf + written, PAGE_SIZE - written, "\n");
->         rcu_read_unlock();
-> -       put_online_cpus();
-> +       cpus_read_unlock();
->
->         return written;
->  }
-> --
-> 2.32.0
->
+Based on your error messages, it's failing for mdio@0 which
+corresponds to ext_mdio. But none of the board dts files in upstream
+have a compatible property for "ext_mdio". Which means fw_devlink
+_should_ propagate the gpio_intc IRQ dependency all the way up to
+eth_phy.
+
+Also, in the failing case, can you run:
+ls -ld supplier:*
+
+in the /sys/devices/....<something>/ folder that corresponds to the
+"eth_phy: mdio-multiplexer@4c000" DT node and tell me what it shows?
+
+Thanks,
+Saravana
+
+[1] - arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
