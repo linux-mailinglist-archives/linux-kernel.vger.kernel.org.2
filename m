@@ -2,327 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA78E3E0849
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5B13E084D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhHDSub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 14:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239199AbhHDSuY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 14:50:24 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875D6C06179A
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 11:50:11 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 16-20020a250b100000b029055791ebe1e6so3780058ybl.20
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 11:50:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=QDum0StXSY3lEe5NHVGk92kk81iIMQ9tJ12P9cSRrpQ=;
-        b=MLns7pkegEDgc78ptuPF/SoXZ20Sr/1UFYxzlhpi5TBmaacFal3/iRzQH81sWp5+9r
-         TNJSUIOyaua+Av9gY+oVxab/B2Tzz2mGOJvslGHYH0VENQaDMh33mFkREftmlva9Guug
-         FPs8Id0b6GXujrV7aNt88U0BCaMi4WtvQSjV78JZ04jBsbti/6fv2JvHEzSChHNFkMKt
-         pjpPpdkCkRDrJs6C0ZvChN3VCsZJ4SBBV73O/1mQiF08vmEqokSrHgD+ygt9VwMDSW7F
-         Jg9iziq3cEUBtPYMbJkO/OFs+oXiQtcN2Hi4dQSpFA/XwQbsGNASaRfvkTPMOVsSRw+Z
-         Murw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=QDum0StXSY3lEe5NHVGk92kk81iIMQ9tJ12P9cSRrpQ=;
-        b=PiUxYVrxg1jRZ1kHdQk2cVBPUFlHEbgqlvPSiXr2NrxWN2pSQrLuTwRLQkdgRu4XFD
-         Ltnd0Q7X/KyCHP/jsyvj00diUhYmGuQ5WRKtk3XxzBkuloG0Yllbe5EM4FMQFwyd4K45
-         0I1Tkt5MPI8qo/+OLX6dTp7W4Ef8gIr67XW7Y3CI2+aZgV2bHZZMRR5BaQlbeq+p6s1X
-         O7rs7n6IKizhIITpdFixibrI8oKH70yNSwnPZd4rXSSt8zEJCLv7s6aj3JacjMZGT8dZ
-         vQzXQD4YBPA8/AyGVfP5k6rbuDzvSKApUV+u1QzFk+CAEmBi3ews/p1fQulg+5Yqn1nn
-         2V2g==
-X-Gm-Message-State: AOAM532Hmsmc4juOKzUBR+Ym0H5hSWh/5WQgsds570n3/1ecJa6T1krR
-        wC1/PTT+fbplnS6GcgoebVIpMz0MmcI=
-X-Google-Smtp-Source: ABdhPJzKg+WCHVYgDtkfhglT5u/WFaslwqdMzNNKnKMkbSmhJmgyP6vkCCp6LfOlp2ClShl9TKmKSjw5Tek=
-X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:b576:f4a3:d948:a503])
- (user=surenb job=sendgmr) by 2002:a5b:2:: with SMTP id a2mr1065977ybp.84.1628103010707;
- Wed, 04 Aug 2021 11:50:10 -0700 (PDT)
-Date:   Wed,  4 Aug 2021 11:50:04 -0700
-In-Reply-To: <20210804185004.1304692-1-surenb@google.com>
-Message-Id: <20210804185004.1304692-2-surenb@google.com>
-Mime-Version: 1.0
-References: <20210804185004.1304692-1-surenb@google.com>
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH v6 2/2] mm: wire up syscall process_mrelease
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     akpm@linux-foundation.org
-Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
-        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
-        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
-        hch@infradead.org, oleg@redhat.com, david@redhat.com,
-        jannh@google.com, shakeelb@google.com, luto@kernel.org,
-        christian.brauner@ubuntu.com, fweimer@redhat.com, jengelh@inai.de,
-        timmurray@google.com, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, surenb@google.com
-Content-Type: text/plain; charset="UTF-8"
+        id S239437AbhHDSum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 14:50:42 -0400
+Received: from mail-mw2nam08on2076.outbound.protection.outlook.com ([40.107.101.76]:22784
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239165AbhHDSuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 14:50:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=avzpciybrCfzwGRcizYGqPIVjKnMWCre6YvamNL5hcfWlECgi86mCvzUFqFTUP62BEEDVcXaRyLdnt7EgALO6bYxzMdTfNl9ieDdklYwSsYb50S3v2K4B2C3rXmjfQ32Jx2Qat2/P2RzHvZQiK0KV0xHIM4wOCRZA0/OLI3elflpwttJk0WeT/Mm65X0SNT+BPhBRIDDhyBed+3P4R6IKJv3Q2Nb2mCJyeLC5cbaWFRxOQuDXLcODyaiBFgEt7vz7KTpRu/U+TAiF6++FITU//uu5+1a/52p2R8CpkL0ep4PV+z5hYDrOx/JdIN0Tjj6SNs1RktfYP3RvCCMJ27www==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BgJb8xwsVmLh9slHr8mMyoSdHsYL5zNL/KcNA6nJ++k=;
+ b=Ak9zSk6vgxlumw+HtCSqDlXYOSnXeOyvYXY4h6duEpJ6DRkDX+GJUU0qKCzzgOHVSbBqWHgJP576TPStNBu1bbpNZMEj7AjUBRi4lLyPtgsQQxhBiapExuZ55VK2mm/RIl4PuoBjOkqYTFcWg0rhwwr+Wqr6tvNgaBxD0ZiqNvXsTy1HFxz2yhp2vP1WIx2Yt1jh+Yq25kT/rq0vSbaexJXeEpgFkVoY+kD+RzLl1P8ARSxYSl/uAszz9mQIqC7ZtwO28h2nfarb2cvEyLspr3dHPI1TLcaP5kBEqwwhlROv/PcpBKACPgbdPqL01ti0u2SgvjBMgwyI0L9kD2onQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BgJb8xwsVmLh9slHr8mMyoSdHsYL5zNL/KcNA6nJ++k=;
+ b=KvIwwjl2XWOiDw2lRF5alSwpJ0kWXGQsbkpVM72n3Mbjygh6RkyrEHaCvUcoYCOo+B9JjrlLqLKd2qeOLNbYU+OtiIBfWgCrOvQ5Mq6dHL+jaMMCl6jD4SZSXGZGWUXvP874inIDsHwWcX2Yif39onFBDgEIqozdIsWaYEcbqVggT97798CQ8vM8rqpu6BoGFqamKesjI859eFrMpxaDAMlDYfH7fbaaz67zcI8TSWXaEOOAf5GBA39L5uoqVDFZ810y3DCCBnAb+fQemqzzUlAuhtcnpBCiyS7Zge7WlMTc54PlqH83noX2smYwJfwLPVcuC3vNfO1Hv/ebeWKyjw==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB5520.namprd12.prod.outlook.com (2603:10b6:5:208::9) by
+ DM8PR12MB5431.namprd12.prod.outlook.com (2603:10b6:8:34::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4394.16; Wed, 4 Aug 2021 18:50:26 +0000
+Received: from DM6PR12MB5520.namprd12.prod.outlook.com
+ ([fe80::81bc:3e01:d9e0:6c52]) by DM6PR12MB5520.namprd12.prod.outlook.com
+ ([fe80::81bc:3e01:d9e0:6c52%9]) with mapi id 15.20.4394.016; Wed, 4 Aug 2021
+ 18:50:26 +0000
+Date:   Wed, 4 Aug 2021 15:50:22 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/mlx5: return the EFAULT per ibv_advise_mr(3)
+Message-ID: <20210804185022.GM1721383@nvidia.com>
+References: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
+ <20210803162507.GA2892108@nvidia.com>
+ <YQmDZpbCy3uTS5jv@unreal>
+ <20210803181341.GE1721383@nvidia.com>
+ <YQonIu3VMTlGj0TJ@unreal>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQonIu3VMTlGj0TJ@unreal>
+X-ClientProxiedBy: YQBPR01CA0070.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:2::42) To DM6PR12MB5520.namprd12.prod.outlook.com
+ (2603:10b6:5:208::9)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YQBPR01CA0070.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01:2::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Wed, 4 Aug 2021 18:50:26 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mBLyA-00CiJC-Uu; Wed, 04 Aug 2021 15:50:22 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ce28b6a9-ba84-4936-de35-08d95778b919
+X-MS-TrafficTypeDiagnostic: DM8PR12MB5431:
+X-Microsoft-Antispam-PRVS: <DM8PR12MB5431F8034A31C450B471967AC2F19@DM8PR12MB5431.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:949;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9IkVLB685QKupQNXZ43luvz1bXYk4Z/372lfXkatK0U/VD+mTdglsJ0pvhglaIF3fbR3kF8vnfIaodXFZmnxk+yg6mg6Sjb2rUx+1t6+MqEIh/G3j6hsivyt04b+XsX4hvjltl8+6Xv0DkUvmj7Piu+XzwXvDyNBFaezDLqRfGE3/2dHDYe6b4nT825A8MA9qrkM+r79aUenRMnb7f99kQ8tuayJULTutKP/Jtx3mz1JLjb5pibnl1NmxACBXErgg7yZW28JwiJd3gy4XbpKP3UqLKZLuo0+IZ2I6hGMDFdkAhb6W0djeEOksG9FSn7Rachwfh2p5F98WjxzaN5qUBlWphjjoPdwolr63VO0K6r9NY/RzTlkKfdPJ0bwfy0KNic7nLkQBDIEX87RoZUn7+zq/aruzkB8vtZygLFP1H3B6yIYLutONq/XiVGZ1nqxy3w8xREo9BbtgXuzVodUYxA22J1r3zflBzr3YT/OFlabgv9E3gPXjbsKRL+EGXNkeq1QvYhOhtTpb9KiCd1Fndyy3+sVolb60f2fkb1AcKedvO04BLx67VXsxdt4pnYQSV+PevNSSHA9gsU2TXum5ISlMniyPbQIY/YIoS0vfbornPJBLIxX8TLG6fJKm4TKEjHikxPFGw2hEIa36CU2cA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5520.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(39860400002)(396003)(66556008)(66476007)(1076003)(2616005)(86362001)(83380400001)(66946007)(5660300002)(426003)(6916009)(38100700002)(36756003)(478600001)(4326008)(9746002)(33656002)(8936002)(26005)(8676002)(2906002)(186003)(316002)(9786002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?u6LgbV3PvEyvdrQ7Tk0+aBU7EDXrYlR01/jFLbfId1bUodj2xVMZgkd2pJb5?=
+ =?us-ascii?Q?5rkfZnS56WZCEUDUzD9MKh8nxO8d/9O0mAEeWUZa/9yHQ9TVpejx5axCyrir?=
+ =?us-ascii?Q?5PYcUpQ9GGvJPqkXBXUA+eV/Z/sXOFSG7VtjdUu+fetxGvhDKxAPCYsrZY2S?=
+ =?us-ascii?Q?2OLhmxEGvD4FMt5fYeVqGKTNm3eFEiP+/RE5jC6D1+PZHD1hMPqmafXn1BSV?=
+ =?us-ascii?Q?7eC+68mOD21QCZUlgw8EarG6msU0XmGhEXzvlMvviGih0wjGqKcjCiEW57cD?=
+ =?us-ascii?Q?J+u4lS4IvhT1mxNzASPpU2KsUezJQZwlRCEe1L9NFsuLo8D3JVzch2qkivkv?=
+ =?us-ascii?Q?RRKOI/PREYd28JK3/uXmnWczUYIlr5iWO/a3ozdwewXGSmBsgeuH4KJ/lbuc?=
+ =?us-ascii?Q?MPZ+IVSleJEYr1R20OJR0gZJCfaz+tGjCn3addKRKHla/LZFLcCIzO+JVSLE?=
+ =?us-ascii?Q?9ho6tWEI1XwFnZ3N7hmi4lRjq2XiP0NTjGz+f+zyyPcuaBvGvPu5YAaAHyHd?=
+ =?us-ascii?Q?xNPmdCE8HafXRVh0G+c7npri8iSyEWQsjKKat7Bjg/+tou+TJaxg/wDQ8fWL?=
+ =?us-ascii?Q?M7a7r5CBRMO8o2hdu4S70eqGrxbBfy/uceKIjNDBNlIGyOS3fxE2Puje8VWY?=
+ =?us-ascii?Q?ezSrNZQHN7Pwb7/BqCnqswA+FhNp9h8UnO9vllVWIZpFIxvG1GHW+C5BdALo?=
+ =?us-ascii?Q?NH07NlW//cm2PNurSxh2uc/MMjxI8tid+z4P50CVOkBcUsP7WGalwtYRqAuE?=
+ =?us-ascii?Q?xd4BYLnq2xA07MJ8WkvY22Ztx2P/L+TSa5K9q+YpC9lJ4HgSH8ncFXr3/jl6?=
+ =?us-ascii?Q?ki8qaS8duHeTpu7PClDEPOyTDwNo1ARC0BA1Ze3vu44WVwGHrosp13Dj4O8x?=
+ =?us-ascii?Q?X6f94YVNrBmlzdn1iRLzVyPIZ3wOX1HQP7GEunxMjLZD01O0Yu+pyVAnAWIJ?=
+ =?us-ascii?Q?V8ACfOGZi5a6qP0ERETn6p9lHmLessv6gv8DgE9SbAq5tZuPel8ADSY/8MdX?=
+ =?us-ascii?Q?RjfSSl+5rWpUIoKpz8+lNpfmoISPC77HFVY0dC+A2JmewVFX8rJnVhIBXGHJ?=
+ =?us-ascii?Q?o59hECSu4SgscixOdLtIeqUm40PCKOcTQwHJg1rU0ieEGvu3l9Crf/A7HqYi?=
+ =?us-ascii?Q?72Au85aTj6xsJYNVBOORxrpm3/WFBH9IKOEf9TIiSr9GABd0piiUg7aSnMey?=
+ =?us-ascii?Q?lVrUkYcyxaGzKGrlyM6X4jPup6DEG+jNdxFB8jzzijaSMb/HtZd5sPTYK5MG?=
+ =?us-ascii?Q?ZEI5X3LTsoBSJzNEMEua/ICI+8f4XNMIg3u20S+DrGk3v2wtQFgeNLXFeEVt?=
+ =?us-ascii?Q?g+UEzAUsShtm1Q19z2w/HT54?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce28b6a9-ba84-4936-de35-08d95778b919
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5520.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2021 18:50:26.4251
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L64kIk7zD+rqYQmmss1D4f9kXdE7l2o04pVVPDWJV5tk5+5YXufk35CbC2Vnd/JO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5431
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split off from prev patch in the series that implements the syscall.
+On Wed, Aug 04, 2021 at 08:35:30AM +0300, Leon Romanovsky wrote:
+> On Tue, Aug 03, 2021 at 03:13:41PM -0300, Jason Gunthorpe wrote:
+> > On Tue, Aug 03, 2021 at 08:56:54PM +0300, Leon Romanovsky wrote:
+> > > On Tue, Aug 03, 2021 at 01:25:07PM -0300, Jason Gunthorpe wrote:
+> > > > On Sun, Aug 01, 2021 at 05:20:50PM +0800, Li Zhijian wrote:
+> > > > > ibv_advise_mr(3) says:
+> > > > > EFAULT In one of the following: o When the range requested is out of the  MR  bounds,
+> > > > >        or  when  parts of it are not part of the process address space. o One of the
+> > > > >        lkeys provided in the scatter gather list is invalid or with wrong write access
+> > > > > 
+> > > > > Actually get_prefetchable_mr() will return NULL if it see above conditions
+> > > > 
+> > > > No, get_prefetchable_mr() returns NULL if the mkey is invalid
+> > > 
+> > > And what is this?
+> > >   1701 static struct mlx5_ib_mr *                         
+> > >   1702 get_prefetchable_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
+> > >   1703                     u32 lkey)
+> > > 
+> > > ...
+> > > 
+> > >   1721         /* prefetch with write-access must be supported by the MR */
+> > >   1722         if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
+> > >   1723             !mr->umem->writable) {
+> > >   1724                 mr = NULL;
+> > >   1725                 goto end;
+> > >   1726         }
+> > 
+> > I would say that is an invalid mkey
+> 
+> I see it is as wrong write access.
 
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
----
- arch/alpha/kernel/syscalls/syscall.tbl      | 2 ++
- arch/arm/tools/syscall.tbl                  | 2 ++
- arch/arm64/include/asm/unistd.h             | 2 +-
- arch/arm64/include/asm/unistd32.h           | 2 ++
- arch/ia64/kernel/syscalls/syscall.tbl       | 2 ++
- arch/m68k/kernel/syscalls/syscall.tbl       | 2 ++
- arch/microblaze/kernel/syscalls/syscall.tbl | 2 ++
- arch/mips/kernel/syscalls/syscall_n32.tbl   | 2 ++
- arch/mips/kernel/syscalls/syscall_n64.tbl   | 2 ++
- arch/mips/kernel/syscalls/syscall_o32.tbl   | 2 ++
- arch/parisc/kernel/syscalls/syscall.tbl     | 2 ++
- arch/powerpc/kernel/syscalls/syscall.tbl    | 2 ++
- arch/s390/kernel/syscalls/syscall.tbl       | 2 ++
- arch/sh/kernel/syscalls/syscall.tbl         | 2 ++
- arch/sparc/kernel/syscalls/syscall.tbl      | 2 ++
- arch/x86/entry/syscalls/syscall_32.tbl      | 1 +
- arch/x86/entry/syscalls/syscall_64.tbl      | 1 +
- arch/xtensa/kernel/syscalls/syscall.tbl     | 2 ++
- include/linux/syscalls.h                    | 1 +
- include/uapi/asm-generic/unistd.h           | 4 +++-
- kernel/sys_ni.c                             | 1 +
- 21 files changed, 38 insertions(+), 2 deletions(-)
+It just means the man page is wrong
 
-diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
-index a17687ed4b51..605645eae04c 100644
---- a/arch/alpha/kernel/syscalls/syscall.tbl
-+++ b/arch/alpha/kernel/syscalls/syscall.tbl
-@@ -486,3 +486,5 @@
- 554	common	landlock_create_ruleset		sys_landlock_create_ruleset
- 555	common	landlock_add_rule		sys_landlock_add_rule
- 556	common	landlock_restrict_self		sys_landlock_restrict_self
-+# 557 reserved for memfd_secret
-+558	common	process_mrelease		sys_process_mrelease
-diff --git a/arch/arm/tools/syscall.tbl b/arch/arm/tools/syscall.tbl
-index c5df1179fc5d..2f32eb8beca8 100644
---- a/arch/arm/tools/syscall.tbl
-+++ b/arch/arm/tools/syscall.tbl
-@@ -460,3 +460,5 @@
- 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
- 445	common	landlock_add_rule		sys_landlock_add_rule
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
-+# 447 reserved for memfd_secret
-+448	common	process_mrelease		sys_process_mrelease
-diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
-index 727bfc3be99b..3cb206aea3db 100644
---- a/arch/arm64/include/asm/unistd.h
-+++ b/arch/arm64/include/asm/unistd.h
-@@ -38,7 +38,7 @@
- #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
- #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
- 
--#define __NR_compat_syscalls		447
-+#define __NR_compat_syscalls		449
- #endif
- 
- #define __ARCH_WANT_SYS_CLONE
-diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
-index 99ffcafc736c..0f49cdb180dd 100644
---- a/arch/arm64/include/asm/unistd32.h
-+++ b/arch/arm64/include/asm/unistd32.h
-@@ -901,6 +901,8 @@ __SYSCALL(__NR_landlock_create_ruleset, sys_landlock_create_ruleset)
- __SYSCALL(__NR_landlock_add_rule, sys_landlock_add_rule)
- #define __NR_landlock_restrict_self 446
- __SYSCALL(__NR_landlock_restrict_self, sys_landlock_restrict_self)
-+#define __NR_process_mrelease 448
-+__SYSCALL(__NR_process_mrelease, sys_process_mrelease)
- 
- /*
-  * Please add new compat syscalls above this comment and update
-diff --git a/arch/ia64/kernel/syscalls/syscall.tbl b/arch/ia64/kernel/syscalls/syscall.tbl
-index 6d07742c57b8..9bf45f2be966 100644
---- a/arch/ia64/kernel/syscalls/syscall.tbl
-+++ b/arch/ia64/kernel/syscalls/syscall.tbl
-@@ -367,3 +367,5 @@
- 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
- 445	common	landlock_add_rule		sys_landlock_add_rule
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
-+# 447 reserved for memfd_secret
-+448	common	process_mrelease		sys_process_mrelease
-diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
-index 541bc1b3a8f9..f1f98ee6c82d 100644
---- a/arch/m68k/kernel/syscalls/syscall.tbl
-+++ b/arch/m68k/kernel/syscalls/syscall.tbl
-@@ -446,3 +446,5 @@
- 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
- 445	common	landlock_add_rule		sys_landlock_add_rule
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
-+# 447 reserved for memfd_secret
-+448	common	process_mrelease		sys_process_mrelease
-diff --git a/arch/microblaze/kernel/syscalls/syscall.tbl b/arch/microblaze/kernel/syscalls/syscall.tbl
-index a176faca2927..da49ddd4bb54 100644
---- a/arch/microblaze/kernel/syscalls/syscall.tbl
-+++ b/arch/microblaze/kernel/syscalls/syscall.tbl
-@@ -452,3 +452,5 @@
- 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
- 445	common	landlock_add_rule		sys_landlock_add_rule
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
-+# 447 reserved for memfd_secret
-+448	common	process_mrelease		sys_process_mrelease
-diff --git a/arch/mips/kernel/syscalls/syscall_n32.tbl b/arch/mips/kernel/syscalls/syscall_n32.tbl
-index c2d2e19abea8..56c8d3cf42ed 100644
---- a/arch/mips/kernel/syscalls/syscall_n32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
-@@ -385,3 +385,5 @@
- 444	n32	landlock_create_ruleset		sys_landlock_create_ruleset
- 445	n32	landlock_add_rule		sys_landlock_add_rule
- 446	n32	landlock_restrict_self		sys_landlock_restrict_self
-+# 447 reserved for memfd_secret
-+448	n32	process_mrelease		sys_process_mrelease
-diff --git a/arch/mips/kernel/syscalls/syscall_n64.tbl b/arch/mips/kernel/syscalls/syscall_n64.tbl
-index ac653d08b1ea..1ca7bc337932 100644
---- a/arch/mips/kernel/syscalls/syscall_n64.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
-@@ -361,3 +361,5 @@
- 444	n64	landlock_create_ruleset		sys_landlock_create_ruleset
- 445	n64	landlock_add_rule		sys_landlock_add_rule
- 446	n64	landlock_restrict_self		sys_landlock_restrict_self
-+# 447 reserved for memfd_secret
-+448	n64	process_mrelease		sys_process_mrelease
-diff --git a/arch/mips/kernel/syscalls/syscall_o32.tbl b/arch/mips/kernel/syscalls/syscall_o32.tbl
-index 253f2cd70b6b..fd3a9df60ec2 100644
---- a/arch/mips/kernel/syscalls/syscall_o32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
-@@ -434,3 +434,5 @@
- 444	o32	landlock_create_ruleset		sys_landlock_create_ruleset
- 445	o32	landlock_add_rule		sys_landlock_add_rule
- 446	o32	landlock_restrict_self		sys_landlock_restrict_self
-+# 447 reserved for memfd_secret
-+448	o32	process_mrelease		sys_process_mrelease
-diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
-index e26187b9ab87..040df1b7a589 100644
---- a/arch/parisc/kernel/syscalls/syscall.tbl
-+++ b/arch/parisc/kernel/syscalls/syscall.tbl
-@@ -444,3 +444,5 @@
- 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
- 445	common	landlock_add_rule		sys_landlock_add_rule
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
-+# 447 reserved for memfd_secret
-+448	common	process_mrelease		sys_process_mrelease
-diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
-index aef2a290e71a..d8ebd7d37c0f 100644
---- a/arch/powerpc/kernel/syscalls/syscall.tbl
-+++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-@@ -526,3 +526,5 @@
- 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
- 445	common	landlock_add_rule		sys_landlock_add_rule
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
-+# 447 reserved for memfd_secret
-+448	common	process_mrelease		sys_process_mrelease
-diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
-index 64d51ab5a8b4..57233ace30cb 100644
---- a/arch/s390/kernel/syscalls/syscall.tbl
-+++ b/arch/s390/kernel/syscalls/syscall.tbl
-@@ -449,3 +449,5 @@
- 444  common	landlock_create_ruleset	sys_landlock_create_ruleset	sys_landlock_create_ruleset
- 445  common	landlock_add_rule	sys_landlock_add_rule		sys_landlock_add_rule
- 446  common	landlock_restrict_self	sys_landlock_restrict_self	sys_landlock_restrict_self
-+# 447 reserved for memfd_secret
-+448  common	process_mrelease	sys_process_mrelease		sys_process_mrelease
-diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
-index e0a70be77d84..2f6e95eb4690 100644
---- a/arch/sh/kernel/syscalls/syscall.tbl
-+++ b/arch/sh/kernel/syscalls/syscall.tbl
-@@ -449,3 +449,5 @@
- 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
- 445	common	landlock_add_rule		sys_landlock_add_rule
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
-+# 447 reserved for memfd_secret
-+448	common	process_mrelease		sys_process_mrelease
-diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
-index 603f5a821502..42fc2906215d 100644
---- a/arch/sparc/kernel/syscalls/syscall.tbl
-+++ b/arch/sparc/kernel/syscalls/syscall.tbl
-@@ -492,3 +492,5 @@
- 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
- 445	common	landlock_add_rule		sys_landlock_add_rule
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
-+# 447 reserved for memfd_secret
-+448	common	process_mrelease		sys_process_mrelease
-diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-index ce763a12311c..661a03bcfbd1 100644
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@ -452,3 +452,4 @@
- 445	i386	landlock_add_rule	sys_landlock_add_rule
- 446	i386	landlock_restrict_self	sys_landlock_restrict_self
- 447	i386	memfd_secret		sys_memfd_secret
-+448	i386	process_mrelease	sys_process_mrelease
-diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-index f6b57799c1ea..807b6a1de8e8 100644
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -369,6 +369,7 @@
- 445	common	landlock_add_rule	sys_landlock_add_rule
- 446	common	landlock_restrict_self	sys_landlock_restrict_self
- 447	common	memfd_secret		sys_memfd_secret
-+448	common	process_mrelease	sys_process_mrelease
- 
- #
- # Due to a historical design error, certain syscalls are numbered differently
-diff --git a/arch/xtensa/kernel/syscalls/syscall.tbl b/arch/xtensa/kernel/syscalls/syscall.tbl
-index 235d67d6ceb4..f4384951f393 100644
---- a/arch/xtensa/kernel/syscalls/syscall.tbl
-+++ b/arch/xtensa/kernel/syscalls/syscall.tbl
-@@ -417,3 +417,5 @@
- 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
- 445	common	landlock_add_rule		sys_landlock_add_rule
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
-+# 447 reserved for memfd_secret
-+448	common	process_mrelease		sys_process_mrelease
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index 69c9a7010081..00bc170a50f0 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -915,6 +915,7 @@ asmlinkage long sys_mincore(unsigned long start, size_t len,
- asmlinkage long sys_madvise(unsigned long start, size_t len, int behavior);
- asmlinkage long sys_process_madvise(int pidfd, const struct iovec __user *vec,
- 			size_t vlen, int behavior, unsigned int flags);
-+asmlinkage long sys_process_mrelease(int pidfd, unsigned int flags);
- asmlinkage long sys_remap_file_pages(unsigned long start, unsigned long size,
- 			unsigned long prot, unsigned long pgoff,
- 			unsigned long flags);
-diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-index a9d6fcd95f42..14c8fe863c6d 100644
---- a/include/uapi/asm-generic/unistd.h
-+++ b/include/uapi/asm-generic/unistd.h
-@@ -877,9 +877,11 @@ __SYSCALL(__NR_landlock_restrict_self, sys_landlock_restrict_self)
- #define __NR_memfd_secret 447
- __SYSCALL(__NR_memfd_secret, sys_memfd_secret)
- #endif
-+#define __NR_process_mrelease 448
-+__SYSCALL(__NR_process_mrelease, sys_process_mrelease)
- 
- #undef __NR_syscalls
--#define __NR_syscalls 448
-+#define __NR_syscalls 449
- 
- /*
-  * 32 bit systems traditionally used different
-diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
-index 30971b1dd4a9..18a9c2cde767 100644
---- a/kernel/sys_ni.c
-+++ b/kernel/sys_ni.c
-@@ -289,6 +289,7 @@ COND_SYSCALL(munlockall);
- COND_SYSCALL(mincore);
- COND_SYSCALL(madvise);
- COND_SYSCALL(process_madvise);
-+COND_SYSCALL(process_mrelease);
- COND_SYSCALL(remap_file_pages);
- COND_SYSCALL(mbind);
- COND_SYSCALL_COMPAT(mbind);
--- 
-2.32.0.554.ge1b32706d8-goog
-
+Jason
