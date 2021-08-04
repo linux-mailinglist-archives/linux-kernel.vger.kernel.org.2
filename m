@@ -2,177 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992843E0837
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC953E0838
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238900AbhHDStN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 14:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231349AbhHDStC (ORCPT
+        id S238872AbhHDSte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 14:49:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41324 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231349AbhHDStc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 14:49:02 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F89FC061799;
-        Wed,  4 Aug 2021 11:48:49 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id e5so4016036pld.6;
-        Wed, 04 Aug 2021 11:48:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S4a7Bei7o1KC7VPD+FPgXj8rKANsZk7Dtmy+dqLdqQ0=;
-        b=Na8zJeTGmfyPfIl5yXh/YhNP81bw+jRCfXL/tqIhwoa2Imxmtx7IlQGUl2xONijLvg
-         Qqlq9tZrw+CAYpQLh2nD0cb1vNe4ohM1yF/A15EyyTnm+yywBvmWbyvypxlj3kB8COv+
-         FcZvEl459iDM41LJfG2H5RJ5LuazCDCQpUde6BqVaQuUw6m0Ws0XUjmwtoYdxioTs2MU
-         vzVKia2gyJ8ZbMYCHIWMDQDb6XSgL8ZfT1LX5pZW3ZOQiRUarMynP2YEQ2F24C/9So36
-         XA3jbvIEF4BYgwcqEnCi9RaF0I9CrvFwgFz3tdqh94eJPUSUPEOYpSgV+jNd3k+5XuEq
-         gW/Q==
+        Wed, 4 Aug 2021 14:49:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628102959;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wIS1QzS1z5rPO1vnLNSXVbu6rEfqlxZ6uoU3oa+gFO8=;
+        b=a9CkuzKHf1lhkL8tBKsoBX6dpD+s+CThT0diJh2xltlhes4aSMis2Aqs34YDlgaMDHjpuN
+        BDizTZehluOMXQ7vicojPTm9k8oI6qQM2gMEpL/C0OwHnSD+8OUyKDw8Q/f802Qjs2uZ7+
+        OjhjgcpHZtiL90O6GIfu43NhTdSPF6Y=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-20-1OKIF8bNNHCr3B3Q_ayD4Q-1; Wed, 04 Aug 2021 14:49:18 -0400
+X-MC-Unique: 1OKIF8bNNHCr3B3Q_ayD4Q-1
+Received: by mail-wr1-f69.google.com with SMTP id z10-20020adfdf8a0000b02901536d17cd63so1137831wrl.21
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 11:49:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S4a7Bei7o1KC7VPD+FPgXj8rKANsZk7Dtmy+dqLdqQ0=;
-        b=GSrOr/PDYCRkT84sar8rIVXKB3ex0HevRmKD3iGn7S4ItCNpapTPfx/RMTut9/3QsP
-         6IZ/kp7xlMS9Trtkkomi1e+8pErIeJAgy5TPTFhXb6JfeS/+vlE7TRgXEtSKCCqPMqjN
-         f7zPxUg7bVd8T3btNGJQRxwINHiLCAUTWOR8K/Xmxfqo7PrEVrowa9ZFInm2zmSS+Yck
-         avyg9uzamw9kpl7L5Zw/MtN+RV7A90pDBXYcQJYYMS+iBcqzP5FRNnzL9ZMB/ay2gL0Z
-         4FI8w59fkbOA/QQApMDuLICG+sed52TwhTRK2oMLUx8JECmgSd99C/Qi6xzm+AQ1uG+n
-         ZySg==
-X-Gm-Message-State: AOAM5328FLNM2QHktAQyAly7GzRMs3WaxJAkNX6wyF6t02D3h8TyAuYW
-        bblv+dCNIBejS28KQ7LiQEw=
-X-Google-Smtp-Source: ABdhPJz6VHK4a/cMxFqm9pe6FoV3BLeCK1H/pOxFm7ctorQ8X3eRKxzjPcE3vctLy4+qTFtLj1HovA==
-X-Received: by 2002:a17:90a:e647:: with SMTP id ep7mr11175384pjb.145.1628102928959;
-        Wed, 04 Aug 2021 11:48:48 -0700 (PDT)
-Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:a:194c:6842:b8a8:6f83])
-        by smtp.gmail.com with ESMTPSA id a22sm3739411pfa.137.2021.08.04.11.48.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 11:48:48 -0700 (PDT)
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        michael.h.kelley@microsoft.com
-Cc:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vkuznets@redhat.com
-Subject: [PATCH] x86/Hyper-V: Initialize Hyper-V stimer after enabling lapic
-Date:   Wed,  4 Aug 2021 14:48:43 -0400
-Message-Id: <20210804184843.513524-1-ltykernel@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=wIS1QzS1z5rPO1vnLNSXVbu6rEfqlxZ6uoU3oa+gFO8=;
+        b=Z9zoByPaWok2tUdU7udzbdcU8sI8+ZOhW+6CWdACDnATHhf1vNxGMrkj8ctpeY6Xkz
+         A1jxdL931wR/CQE5rTGC1rtXehdXrPMHUk6L8qibB24vw9wbO6jW4hHQ2XWBGXoYXTaP
+         Cj6wnxY5W+gVl/YcthKDMbsE5Q3oLDzcP5iQMEbM6o0KnrZs96oh7xeO88YdHdmUG/DG
+         oExpPYX+3EQZkLoG1g3q36D2iDSePGt372KK+sEkxe5Cd0+mJFsdQ7vqnoOLdISE8MWX
+         u+4IxsYkGze5rEv8BzkRPtu3T3iNljUAWXmRG2ejhMx3cUk8zOoWGtabh862ruBYwC9d
+         9SSw==
+X-Gm-Message-State: AOAM532dqhmArodFRSZcMFqO9EiNax3pWVW9yyJDWsf2cH2QVZemtyUD
+        RpE/Ds9EpBZFdf8QWqHrU+C86+EqEDYfGlx3UZ2z5+x6Bzrf7jtXvzi9lm28lg8bvGRlISTkyO8
+        kXQ6e5pNDFDOtH+V9m6q+w05I
+X-Received: by 2002:a5d:6107:: with SMTP id v7mr762587wrt.107.1628102956783;
+        Wed, 04 Aug 2021 11:49:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxkGRiEHbgAzLaSSeRuv2og1EjDVGvwXPYpq1DOCWx9uW6w35PXJyhdwq9EteK8Oufq1WGU4Q==
+X-Received: by 2002:a5d:6107:: with SMTP id v7mr762568wrt.107.1628102956551;
+        Wed, 04 Aug 2021 11:49:16 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c65d3.dip0.t-ipconnect.de. [91.12.101.211])
+        by smtp.gmail.com with ESMTPSA id f194sm6849056wmf.23.2021.08.04.11.49.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 11:49:15 -0700 (PDT)
+To:     Peter Xu <peterx@redhat.com>,
+        Tiberiu A Georgescu <tiberiu.georgescu@nutanix.com>
+Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        christian.brauner@ubuntu.com, ebiederm@xmission.com,
+        adobriyan@gmail.com, songmuchun@bytedance.com, axboe@kernel.dk,
+        vincenzo.frascino@arm.com, catalin.marinas@arm.com,
+        peterz@infradead.org, chinwen.chang@mediatek.com,
+        linmiaohe@huawei.com, jannh@google.com, apopple@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, ivan.teterevkov@nutanix.com,
+        florian.schmidt@nutanix.com, carl.waldspurger@nutanix.com,
+        jonathan.davies@nutanix.com
+References: <20210730160826.63785-1-tiberiu.georgescu@nutanix.com>
+ <YQrdY5zQOVgQJ1BI@t490s>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH 0/1] pagemap: swap location for shared pages
+Message-ID: <839e82f7-2c54-d1ef-8371-0a332a4cb447@redhat.com>
+Date:   Wed, 4 Aug 2021 20:49:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <YQrdY5zQOVgQJ1BI@t490s>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+On 04.08.21 20:33, Peter Xu wrote:
+> Hi, Tiberiu,
+> 
+> On Fri, Jul 30, 2021 at 04:08:25PM +0000, Tiberiu A Georgescu wrote:
+>> This patch follows up on a previous RFC:
+>> 20210714152426.216217-1-tiberiu.georgescu@nutanix.com
+>>
+>> When a page allocated using the MAP_SHARED flag is swapped out, its pagemap
+>> entry is cleared. In many cases, there is no difference between swapped-out
+>> shared pages and newly allocated, non-dirty pages in the pagemap interface.
+>>
+>> Example pagemap-test code (Tested on Kernel Version 5.14-rc3):
+>>      #define NPAGES (256)
+>>      /* map 1MiB shared memory */
+>>      size_t pagesize = getpagesize();
+>>      char *p = mmap(NULL, pagesize * NPAGES, PROT_READ | PROT_WRITE,
+>>      		   MAP_ANONYMOUS | MAP_SHARED, -1, 0);
+>>      /* Dirty new pages. */
+>>      for (i = 0; i < PAGES; i++)
+>>      	p[i * pagesize] = i;
+>>
+>> Run the above program in a small cgroup, which causes swapping:
+>>      /* Initialise cgroup & run a program */
+>>      $ echo 512K > foo/memory.limit_in_bytes
+>>      $ echo 60 > foo/memory.swappiness
+>>      $ cgexec -g memory:foo ./pagemap-test
+>>
+>> Check the pagemap report. Example of the current expected output:
+>>      $ dd if=/proc/$PID/pagemap ibs=8 skip=$(($VADDR / $PAGESIZE)) count=$COUNT | hexdump -C
+>>      00000000  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+>>      *
+>>      00000710  e1 6b 06 00 00 00 00 a1  9e eb 06 00 00 00 00 a1  |.k..............|
+>>      00000720  6b ee 06 00 00 00 00 a1  a5 a4 05 00 00 00 00 a1  |k...............|
+>>      00000730  5c bf 06 00 00 00 00 a1  90 b6 06 00 00 00 00 a1  |\...............|
+>>
+>> The first pagemap entries are reported as zeroes, indicating the pages have
+>> never been allocated while they have actually been swapped out.
+>>
+>> This patch addresses the behaviour and modifies pte_to_pagemap_entry() to
+>> make use of the XArray associated with the virtual memory area struct
+>> passed as an argument. The XArray contains the location of virtual pages in
+>> the page cache, swap cache or on disk. If they are in either of the caches,
+>> then the original implementation still works. If not, then the missing
+>> information will be retrieved from the XArray.
+>>
+>> Performance
+>> ============
+>> I measured the performance of the patch on a single socket Xeon E5-2620
+>> machine, with 128GiB of RAM and 128GiB of swap storage. These were the
+>> steps taken:
+>>
+>>    1. Run example pagemap-test code on a cgroup
+>>      a. Set up cgroup with limit_in_bytes=4GiB and swappiness=60;
+>>      b. allocate 16GiB (about 4 million pages);
+>>      c. dirty 0,50 or 100% of pages;
+>>      d. do this for both private and shared memory.
+>>    2. Run `dd if=<PAGEMAP> ibs=8 skip=$(($VADDR / $PAGESIZE)) count=4194304`
+>>       for each possible configuration above
+>>      a.  3 times for warm up;
+>>      b. 10 times to measure performance.
+>>         Use `time` or another performance measuring tool.
+>>
+>> Results (averaged over 10 iterations):
+>>                 +--------+------------+------------+
+>>                 | dirty% |  pre patch | post patch |
+>>                 +--------+------------+------------+
+>>   private|anon  |     0% |      8.15s |      8.40s |
+>>                 |    50% |     11.83s |     12.19s |
+>>                 |   100% |     12.37s |     12.20s |
+>>                 +--------+------------+------------+
+>>    shared|anon  |     0% |      8.17s |      8.18s |
+>>                 |    50% | (*) 10.43s |     37.43s |
+>>                 |   100% | (*) 10.20s |     38.59s |
+>>                 +--------+------------+------------+
+>>
+>> (*): reminder that pre-patch produces incorrect pagemap entries for swapped
+>>       out pages.
+>>
+>>  From run to run the above results are stable (mostly <1% stderr).
+>>
+>> The amount of time it takes for a full read of the pagemap depends on the
+>> granularity used by dd to read the pagemap file. Even though the access is
+>> sequential, the script only reads 8 bytes at a time, running pagemap_read()
+>> COUNT times (one time for each page in a 16GiB area).
+>>
+>> To reduce overhead, we can use batching for large amounts of sequential
+>> access. We can make dd read multiple page entries at a time,
+>> allowing the kernel to make optimisations and yield more throughput.
+>>
+>> Performance in real time (seconds) of
+>> `dd if=<PAGEMAP> ibs=8*$BATCH skip=$(($VADDR / $PAGESIZE / $BATCH))
+>> count=$((4194304 / $BATCH))`:
+>> +---------------------------------+ +---------------------------------+
+>> |     Shared, Anon, 50% dirty     | |     Shared, Anon, 100% dirty    |
+>> +-------+------------+------------+ +-------+------------+------------+
+>> | Batch |  Pre-patch | Post-patch | | Batch |  Pre-patch | Post-patch |
+>> +-------+------------+------------+ +-------+------------+------------+
+>> |     1 | (*) 10.43s |     37.43s | |     1 | (*) 10.20s |     38.59s |
+>> |     2 | (*)  5.25s |     18.77s | |     2 | (*)  5.15s |     19.37s |
+>> |     4 | (*)  2.63s |      9.42s | |     4 | (*)  2.63s |      9.74s |
+>> |     8 | (*)  1.38s |      4.80s | |     8 | (*)  1.35s |      4.94s |
+>> |    16 | (*)  0.73s |      2.46s | |    16 | (*)  0.72s |      2.54s |
+>> |    32 | (*)  0.40s |      1.31s | |    32 | (*)  0.41s |      1.34s |
+>> |    64 | (*)  0.25s |      0.72s | |    64 | (*)  0.24s |      0.74s |
+>> |   128 | (*)  0.16s |      0.43s | |   128 | (*)  0.16s |      0.44s |
+>> |   256 | (*)  0.12s |      0.28s | |   256 | (*)  0.12s |      0.29s |
+>> |   512 | (*)  0.10s |      0.21s | |   512 | (*)  0.10s |      0.22s |
+>> |  1024 | (*)  0.10s |      0.20s | |  1024 | (*)  0.10s |      0.21s |
+>> +-------+------------+------------+ +-------+------------+------------+
+>>
+>> To conclude, in order to make the most of the underlying mechanisms of
+>> pagemap and xarray, one should be using batching to achieve better
+>> performance.
+> 
+> So what I'm still a bit worried is whether it will regress some existing users.
+> Note that existing users can try to read pagemap in their own way; we can't
+> expect all the userspaces to change their behavior due to a kernel change.
 
-Hyper-V Isolation VM doesn't have PIT/HPET legacy timer and only
-provide stimer. Initialize Hyper-v stimer just after enabling
-lapic to avoid kernel stuck during calibrating TSC due to no
-available timer.
+Then let's provide a way to enable the new behavior for a process if we 
+don't find another way to extract that information. I would actually 
+prefer finding a different interface for that, because with such things 
+the "pagemap" no longer expresses which pages are currently mapped. 
+Shared memory is weird.
 
-Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
----
- arch/x86/hyperv/hv_init.c      | 29 -----------------------------
- arch/x86/kernel/cpu/mshyperv.c | 22 ++++++++++++++++++++++
- 2 files changed, 22 insertions(+), 29 deletions(-)
+> 
+> Meanwhile, from the numbers, it seems to show a 4x speed down due to looking up
+> the page cache no matter the size of ibs=.  IOW I don't see a good way to avoid
+> that overhead, so no way to have the userspace run as fast as before.
+> 
+> Also note that it's not only affecting the PM_SWAP users; it potentially
+> affects all the /proc/pagemap users as long as there're file-backed memory on
+> the read region of pagemap, which is very sane to happen.
+> 
+> That's why I think if we want to persist it, we should still consider starting
+> from the pte marker idea.
 
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index 6f247e7e07eb..4a643a85d570 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -271,25 +271,6 @@ static struct syscore_ops hv_syscore_ops = {
- 	.resume		= hv_resume,
- };
- 
--static void (* __initdata old_setup_percpu_clockev)(void);
--
--static void __init hv_stimer_setup_percpu_clockev(void)
--{
--	/*
--	 * Ignore any errors in setting up stimer clockevents
--	 * as we can run with the LAPIC timer as a fallback.
--	 */
--	(void)hv_stimer_alloc(false);
--
--	/*
--	 * Still register the LAPIC timer, because the direct-mode STIMER is
--	 * not supported by old versions of Hyper-V. This also allows users
--	 * to switch to LAPIC timer via /sys, if they want to.
--	 */
--	if (old_setup_percpu_clockev)
--		old_setup_percpu_clockev();
--}
--
- static void __init hv_get_partition_id(void)
- {
- 	struct hv_get_partition_id *output_page;
-@@ -396,16 +377,6 @@ void __init hyperv_init(void)
- 		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
- 	}
- 
--	/*
--	 * hyperv_init() is called before LAPIC is initialized: see
--	 * apic_intr_mode_init() -> x86_platform.apic_post_init() and
--	 * apic_bsp_setup() -> setup_local_APIC(). The direct-mode STIMER
--	 * depends on LAPIC, so hv_stimer_alloc() should be called from
--	 * x86_init.timers.setup_percpu_clockev.
--	 */
--	old_setup_percpu_clockev = x86_init.timers.setup_percpu_clockev;
--	x86_init.timers.setup_percpu_clockev = hv_stimer_setup_percpu_clockev;
--
- 	hv_apic_init();
- 
- 	x86_init.pci.arch_init = hv_pci_init;
-diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-index 6b5835a087a3..dcfbd2770d7f 100644
---- a/arch/x86/kernel/cpu/mshyperv.c
-+++ b/arch/x86/kernel/cpu/mshyperv.c
-@@ -214,6 +214,20 @@ static void __init hv_smp_prepare_boot_cpu(void)
- #endif
- }
- 
-+static void (* __initdata old_setup_initr_mode)(void);
-+
-+static void __init hv_setup_initr_mode(void)
-+{
-+	if (old_setup_initr_mode)
-+		old_setup_initr_mode();
-+
-+	/*
-+	 * The direct-mode STIMER depends on LAPIC and so allocate
-+	 * STIMER after calling initr node callback.
-+	 */
-+	(void)hv_stimer_alloc(false);
-+}
-+
- static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
- {
- #ifdef CONFIG_X86_64
-@@ -424,6 +438,7 @@ static void __init ms_hyperv_init_platform(void)
- 	/* Register Hyper-V specific clocksource */
- 	hv_init_clocksource();
- #endif
-+
- 	/*
- 	 * TSC should be marked as unstable only after Hyper-V
- 	 * clocksource has been initialized. This ensures that the
-@@ -431,6 +446,13 @@ static void __init ms_hyperv_init_platform(void)
- 	 */
- 	if (!(ms_hyperv.features & HV_ACCESS_TSC_INVARIANT))
- 		mark_tsc_unstable("running on Hyper-V");
-+
-+	/*
-+	 * Override initr mode callback in order to allocate STIMER
-+	 * after initalizing LAPIC.
-+	 */
-+	old_setup_initr_mode = x86_init.irqs.intr_mode_init;
-+	x86_init.irqs.intr_mode_init = hv_setup_initr_mode;
- }
- 
- static bool __init ms_hyperv_x2apic_available(void)
+TBH, I tend to really dislike the PTE marker idea. IMHO, we shouldn't 
+store any state information regarding shared memory in per-process page 
+tables: it just doesn't make too much sense.
+
+And this is similar to SOFTDIRTY or UFFD_WP bits: this information 
+actually belongs to the shared file ("did *someone* write to this page", 
+"is *someone* interested into changes to that page", "is there 
+something"). I know, that screams for a completely different design in 
+respect to these features.
+
+I guess we start learning the hard way that shared memory is just 
+different and requires different interfaces than per-process page table 
+interfaces we have (pagemap, userfaultfd).
+
+I didn't have time to explore any alternatives yet, but I wonder if 
+tracking such stuff per an actual fd/memfd and not via process page 
+tables is actually the right and clean approach. There are certainly 
+many issues to solve, but conceptually to me it feels more natural to 
+have these shared memory features not mangled into process page tables.
+
+> 
+> I do plan to move the pte marker idea forward unless that'll be NACKed upstream
+> for some other reason, because that seems to be the only way for uffd-wp to
+> support file based memories; no matter with a new swp type or with special swap
+> pte.  I am even thinking about whether I should propose that with PM_SWAP first
+> because that seems to be a simpler scenario than uffd-wp (which will get the
+> rest uffd-wp patches involved then), then we can have a shared infrastructure.
+> But haven't thought deeper than that.
+> 
+> Thanks,
+> 
+
+
 -- 
-2.25.1
+Thanks,
+
+David / dhildenb
 
