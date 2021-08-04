@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F2F3DFDBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C737D3DFDAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237020AbhHDJKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 05:10:38 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:39872 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236906AbhHDJKg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 05:10:36 -0400
-X-UUID: 70d6da78d4a94c559c99d936885b3c4d-20210804
-X-UUID: 70d6da78d4a94c559c99d936885b3c4d-20210804
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <kuan-ying.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 954435666; Wed, 04 Aug 2021 17:10:19 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 4 Aug 2021 17:10:18 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 4 Aug 2021 17:10:18 +0800
-From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-To:     Nicholas Tang <nicholas.tang@mediatek.com>,
-        Andrew Yang <andrew.yang@mediatek.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Subject: [PATCH v3 2/2] kasan, slub: reset tag when printing address
-Date:   Wed, 4 Aug 2021 17:09:57 +0800
-Message-ID: <20210804090957.12393-3-Kuan-Ying.Lee@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210804090957.12393-1-Kuan-Ying.Lee@mediatek.com>
-References: <20210804090957.12393-1-Kuan-Ying.Lee@mediatek.com>
+        id S237001AbhHDJKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 05:10:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236965AbhHDJKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 05:10:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id BADC261050;
+        Wed,  4 Aug 2021 09:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628068205;
+        bh=MB37BoflNXbs9FH9YcZB2Z2pMR25pzrNeNuYx1/iBBU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=t68VeIp3hOUBKxWiS0NxNof70QR57kqqiqsaaGC/pSULVh7NNiGONmTnWOW+kO+6W
+         u8owK+ofVTJ+lSzRcj56tBUCytWn+E1kNvAdl+iD8fPw8CKttz2fYnkDzzVG0GAYss
+         N62v0D/8BQWYZqr29/jTIautFQj1oJ8EqgtkqCNJnig27wgedGF5cUP42fbrJo/t1E
+         c7xOD2etOkMan4mwAStQjv9W8bSj9vf1lhBsaAmDYm8cxUDCqd0hGzH/BHMhkrp8B3
+         hOqL8cdfGtkXUWh4fB5Uo/bfOjIzCLXUFVocxcLHjIMX+6hBmd6KB/ES1vQEsEhEY9
+         YibzmYJXLOYyA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B59C660A48;
+        Wed,  4 Aug 2021 09:10:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: add extack arg for link ops
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162806820573.32022.14403323895648321150.git-patchwork-notify@kernel.org>
+Date:   Wed, 04 Aug 2021 09:10:05 +0000
+References: <20210803120250.32642-1-rocco.yue@mediatek.com>
+In-Reply-To: <20210803120250.32642-1-rocco.yue@mediatek.com>
+To:     Rocco Yue <rocco.yue@mediatek.com>
+Cc:     dsahern@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        yoshfuji@linux-ipv6.org, matthias.bgg@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, rocco.yue@gmail.com,
+        chao.song@mediatek.com, zhuoliang.zhang@mediatek.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The address still includes the tags when it is printed.
-With hardware tag-based kasan enabled, we will get a
-false positive KASAN issue when we access metadata.
+Hello:
 
-Reset the tag before we access the metadata.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Fixes: aa1ef4d7b3f6 ("kasan, mm: reset tags when accessing metadata")
-Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Reviewed-by: Marco Elver <elver@google.com>
----
- mm/slub.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Tue, 3 Aug 2021 20:02:50 +0800 you wrote:
+> Pass extack arg to validate_linkmsg and validate_link_af callbacks.
+> If a netlink attribute has a reject_message, use the extended ack
+> mechanism to carry the message back to user space.
+> 
+> Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
+> ---
+>  include/net/rtnetlink.h | 3 ++-
+>  net/core/rtnetlink.c    | 9 +++++----
+>  net/ipv4/devinet.c      | 5 +++--
+>  net/ipv6/addrconf.c     | 5 +++--
+>  4 files changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/mm/slub.c b/mm/slub.c
-index b6c5205252eb..f77d8cd79ef7 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -576,8 +576,8 @@ static void print_section(char *level, char *text, u8 *addr,
- 			  unsigned int length)
- {
- 	metadata_access_enable();
--	print_hex_dump(level, kasan_reset_tag(text), DUMP_PREFIX_ADDRESS,
--			16, 1, addr, length, 1);
-+	print_hex_dump(level, text, DUMP_PREFIX_ADDRESS,
-+			16, 1, kasan_reset_tag((void *)addr), length, 1);
- 	metadata_access_disable();
- }
- 
--- 
-2.18.0
+Here is the summary with links:
+  - [net-next] net: add extack arg for link ops
+    https://git.kernel.org/netdev/net-next/c/8679c31e0284
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
