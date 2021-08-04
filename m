@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DA93E0362
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1AE3E035F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238892AbhHDOeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238106AbhHDOd6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S238853AbhHDOd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 4 Aug 2021 10:33:58 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3957C061798;
-        Wed,  4 Aug 2021 07:33:05 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id s48so4242670ybi.7;
-        Wed, 04 Aug 2021 07:33:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=SqFXGAq4e3ua/Ts6/H9tHLCw4CGuQ4DInivgNoJfgjA=;
-        b=ZCvp2wmpsfXcE8l5VO+teKlSfFiqZ5lnsE5oDsq/9W+BtJMZoxAhszV9mYOK7RXq2P
-         yR/nxUAZiKIhFkuxe5KswpcAm+xlHN9gSxDJYaU7XwL37OLi+j4cYcnBwePyEk/TH45H
-         cmLLcQaY1JWK6UspNpOYHLMsvAndroo9VgBXL+NjOdNtR7P3ru5zwl8D1p6gFb0vNd3D
-         iBfVG+QPR3/ZE5LGQAou50tWCQIO/EsglLYK6vwKXIepB2F8KufSK0AtDQ4T0xHHzkJX
-         sKHc3xg/0vJcu16WTbADdN2a8VtiMedeIMiHkuaEQ8US8MRmTw1Us2GlEH8h0cXDC0N7
-         r5AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=SqFXGAq4e3ua/Ts6/H9tHLCw4CGuQ4DInivgNoJfgjA=;
-        b=jREb/kvQR8DRCf+31WfhQuNnY6PiNs8EQU/RXo8u5lFAlSGoEpHkfyydQKatJXa7aV
-         aXmIUpsiWLy/jYbca9sq1brWH/jUYIl+O9vhVjCLzmsY2iL3WQEDiloOUJKUirUvNym2
-         q+uFPl80rIWCdwsXZREydxy6dSSsCIWx2ufed/svYb/dsfS44YsT/HWHYA16oMk9BcnV
-         dD90AF1rIIEtoDjHlvw9RZ8Lnd2mvirSwKvq69CD1sHnsniIRWFQND5v/bWDpuZfSxYg
-         wsYXxTOtuH/rfryT+gHS7vaAQ6pg/BGuaXHAsnOUDFoX3zP2dLf4ANrlC+7jWNR98MxK
-         M3bA==
-X-Gm-Message-State: AOAM530+wPpex9YP1OR+vs9kWwidQPWPGV1m25mn82tS/PNRUvPFcgJn
-        srgzMnQnxP5xTRGVhzDChG280xSbzkOTeMBkn8g=
-X-Google-Smtp-Source: ABdhPJwBPu3e1omSX1k+jFsXU9pGTMPB32qAD4Qpv6GErPVzktqEePPxLBwAWI/tyrxrGp/Ce8WXAvxUqi2bN7jkUGU=
-X-Received: by 2002:a25:2cf:: with SMTP id 198mr36391086ybc.259.1628087584033;
- Wed, 04 Aug 2021 07:33:04 -0700 (PDT)
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:59286
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238936AbhHDOdf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 10:33:35 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 175843F04D;
+        Wed,  4 Aug 2021 14:33:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628087600;
+        bh=kSwB8Osy7KBFjV5y3FKjG+p2/CUjE4tMFarLYN2GUY8=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=E9ktIt4wMm8GHKM1K/bcICRkgZdDqPqbc2MR2sP5dW6X2zBreS0vM7gxxfpdHnrJh
+         tPcZev0EkvOfi7lxQzu7A0nxoKYqsp39chToU7ZcQ9oB4nnEMPHayLQmz5eXz0LKQi
+         koi128nIXlejQPsFPQJz1HJ66EipZFDf4+XEghFysVyjqYbNBqN/ZbeTD4uKMizUEa
+         PKd8PDXwCKqS/IcVNz98rltL7h0O0wm1OrNlQN5Os0C0yeQmCg22zVOGcUpOytkl9t
+         Jju0Mn4RGfO9J+LUxRZQIrnv25mmB5OdhlN9tTiv+1bgm6sBGo4wiX8XdkBR9CNvCP
+         vvB85T9i5IzYA==
+From:   Colin King <colin.king@canonical.com>
+To:     Jack Wang <jinpu.wang@cloud.ionos.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: pm8001: Remove redundant initialization of variable rv
+Date:   Wed,  4 Aug 2021 15:33:19 +0100
+Message-Id: <20210804143319.115340-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Wed, 4 Aug 2021 10:32:52 -0400
-Message-ID: <CAMdYzYrx8pgeyK7u=kcopZ+Wae+fQdr_uM4AuVjqWKfZYikgcA@mail.gmail.com>
-Subject: [BUG] mmc_regulator_set_ocr can't cope with regulator-fixed
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-mmc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Morning,
+From: Colin Ian King <colin.king@canonical.com>
 
-I've encountered a fun issue with the dw-mmc driver while working on
-enabling support for the Quartz-64 Model A.
-The regulator-fixed driver supports enabling via a gpio, but does not
-have the ops to set voltage as it is fixed.
-The dw-mmc calls mmc_regulator_set_ocr for vmmc, which attempts to set
-the voltage first but fails due to the lack of the voltage ops. It
-then bails returning -EINVAL.
-This leads to the following message :
-dwmmc_rockchip fe2b0000.mmc: could not set regulator OCR (-22)
+The variable rv is being initialized with a value that is never
+read, it is being updated later on. The assignment is redundant and
+can be removed.
 
-This can be fixed by switching to regulator-gpio for the vmmc supply
-to the sdmmc controller, however the sdio controller vmmc is provided
-by a fixed regulator that is always on. Obviously the regulator-gpio
-isn't an option, as it has no gpio to enable.
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/scsi/pm8001/pm8001_hwi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Removing the vmmc phandle from the sdio node is an option, but then it
-doesn't fully describe the hardware (it's also a non-standard 4.4v).
-I had considered changing the check in dw-mmc.c [1] to continue in the
-case of -EINVAL, but there are other places in the regulator framework
-that can also return that and it doesn't address the underlying issue.
+diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
+index 17c0f26e683a..63690508313b 100644
+--- a/drivers/scsi/pm8001/pm8001_hwi.c
++++ b/drivers/scsi/pm8001/pm8001_hwi.c
+@@ -1323,7 +1323,7 @@ int pm8001_mpi_build_cmd(struct pm8001_hba_info *pm8001_ha,
+ 	void *pMessage;
+ 	unsigned long flags;
+ 	int q_index = circularQ - pm8001_ha->inbnd_q_tbl;
+-	int rv = -1;
++	int rv;
+ 
+ 	WARN_ON(q_index >= PM8001_MAX_INB_NUM);
+ 	spin_lock_irqsave(&circularQ->iq_lock, flags);
+-- 
+2.31.1
 
-As such I'm reaching out to the experts to see what the best course of
-action is here.
-Please weigh in with what you think.
-
-Very Respectfully,
-Peter Geis
