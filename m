@@ -2,153 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6013E0AAB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AF93E0AAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbhHDXAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 19:00:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhHDXAD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 19:00:03 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55092C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 15:59:49 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id z2so7298771lft.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 15:59:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yKBCddFUD4ZVg3evBH79AytFMC59ICl5HYXSEir7plU=;
-        b=ebulXj+Z6/Ub9Krg3pAiSomWCFfnFE/iXQaNP7ubYVZykn93fMeXr1/xIqFRinj3Ew
-         GHG0ZtsMBZ3vsbi1bV89yG7QxskFZE9zwNBwqkrEAOoJJUVnzDtdJsNT2+45YXIs3Zix
-         1CTFZIkW9Qr7PMfu0rJP0gTAu9mb4U52cMdey1lgVR2VdwunvqUNyP3NVzTRvl/pfFaJ
-         P8J6dtw+mEIbLeQ6+dklxX/a5k1orE/BdNeGeIfsvf/RA7EXcWQgWbvdJWHCRgPnQPYJ
-         8AF8Gtsv0G12SRSlrSWkKWhPVVMYwIUtwxD4yfRVyZgjFmcAU9cXYjfvghjjixLO60CZ
-         Rmsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yKBCddFUD4ZVg3evBH79AytFMC59ICl5HYXSEir7plU=;
-        b=DFTXvV6ec/CG57TNy5bV1O64y7zPE3xBn8WX+IBSbxPzcbeq5NLm50A3eFH8Ilc8PF
-         fJHYbH5Xi/szp+69R5xiHMPyQ4hdgC0fricQmsBS9bp/ifDwNhe+eowIzf8wW8pdIXrR
-         7TrjnM2HBD94M7XB6sUeZMXqTA2WH4KOwDGBvxTD8QFvN9oDua5tNO1/Anvn+b8Vm511
-         YY5WFcuDzog6DOa9TiAT3GPNhT3Ktid2+SlqICdCPnLrQT+pClYhSfqjtAsVKzMuktIo
-         j7+zxleOl6G6v8f0OF1jU/17iResi/EhhqE29uE3lVEF6hZ8ttm2lVoOmX+r9D8wXysd
-         bGGA==
-X-Gm-Message-State: AOAM530wRujm4lwBtlt1/5fwtOMA4qP+l3hgLkDk5msrottJdIgzRGAP
-        4nBOO5nre7cXrVElhQZK4FpJzykHjx9utcdlsznqGQ==
-X-Google-Smtp-Source: ABdhPJxTwTEidem65WeqdTi/dr8QkeyuaN9y+ifYH6uanXfbyxom6MSKvxOnh5EKy7wfDzYDsvtUpyai4/S+yITO06k=
-X-Received: by 2002:a05:6512:c23:: with SMTP id z35mr1101321lfu.299.1628117987480;
- Wed, 04 Aug 2021 15:59:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210804185004.1304692-1-surenb@google.com>
-In-Reply-To: <20210804185004.1304692-1-surenb@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 4 Aug 2021 15:59:36 -0700
-Message-ID: <CALvZod4gnVq+7=+i2=Q0aLN+n=aKEWdM2qyNsCAKLxR=s3uvqw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] mm: introduce process_mrelease system call
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
+        id S234169AbhHDXAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 19:00:36 -0400
+Received: from mga03.intel.com ([134.134.136.65]:17519 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229479AbhHDXAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 19:00:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="214059107"
+X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
+   d="scan'208";a="214059107"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 16:00:21 -0700
+X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
+   d="scan'208";a="512261135"
+Received: from bguvendi-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.99.93])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 16:00:20 -0700
+Subject: Re: [PATCH v5 04/12] x86/tdx: Add protected guest support for TDX
+ guest
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        Peter H Anvin <hpa@zytor.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YQsNpG55v7dhFqIb@google.com>
+ <9c576f24-e6de-f816-623d-408a4a2ae747@intel.com>
+ <4f28fe6e-a8ce-e444-51db-d0eb564eca8f@linux.intel.com>
+ <YQsX54MPVYFuLmFr@google.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <ca4aa25c-7d88-9812-4852-ced3274493a8@linux.intel.com>
+Date:   Wed, 4 Aug 2021 16:00:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YQsX54MPVYFuLmFr@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 11:50 AM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> In modern systems it's not unusual to have a system component monitoring
-> memory conditions of the system and tasked with keeping system memory
-> pressure under control. One way to accomplish that is to kill
-> non-essential processes to free up memory for more important ones.
-> Examples of this are Facebook's OOM killer daemon called oomd and
-> Android's low memory killer daemon called lmkd.
-> For such system component it's important to be able to free memory
-> quickly and efficiently. Unfortunately the time process takes to free
-> up its memory after receiving a SIGKILL might vary based on the state
-> of the process (uninterruptible sleep), size and OPP level of the core
-> the process is running. A mechanism to free resources of the target
-> process in a more predictable way would improve system's ability to
-> control its memory pressure.
-> Introduce process_mrelease system call that releases memory of a dying
-> process from the context of the caller. This way the memory is freed in
-> a more controllable way with CPU affinity and priority of the caller.
-> The workload of freeing the memory will also be charged to the caller.
-> The operation is allowed only on a dying process.
->
-> After previous discussions [1, 2, 3] the decision was made [4] to introduce
-> a dedicated system call to cover this use case.
->
-> The API is as follows,
->
->           int process_mrelease(int pidfd, unsigned int flags);
->
->         DESCRIPTION
->           The process_mrelease() system call is used to free the memory of
->           an exiting process.
->
->           The pidfd selects the process referred to by the PID file
->           descriptor.
->           (See pidofd_open(2) for further information)
->
->           The flags argument is reserved for future use; currently, this
->           argument must be specified as 0.
->
->         RETURN VALUE
->           On success, process_mrelease() returns 0. On error, -1 is
->           returned and errno is set to indicate the error.
->
->         ERRORS
->           EBADF  pidfd is not a valid PID file descriptor.
->
->           EAGAIN Failed to release part of the address space.
->
->           EINTR  The call was interrupted by a signal; see signal(7).
->
->           EINVAL flags is not 0.
->
->           EINVAL The memory of the task cannot be released because the
->                  process is not exiting, the address space is shared
->                  with another live process or there is a core dump in
->                  progress.
->
->           ENOSYS This system call is not supported, for example, without
->                  MMU support built into Linux.
->
->           ESRCH  The target process does not exist (i.e., it has terminated
->                  and been waited on).
->
-> [1] https://lore.kernel.org/lkml/20190411014353.113252-3-surenb@google.com/
-> [2] https://lore.kernel.org/linux-api/20201113173448.1863419-1-surenb@google.com/
-> [3] https://lore.kernel.org/linux-api/20201124053943.1684874-3-surenb@google.com/
-> [4] https://lore.kernel.org/linux-api/20201223075712.GA4719@lst.de/
->
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-Next I wanna see cgroup.procs giving me pidfds.
+On 8/4/21 3:42 PM, Sean Christopherson wrote:
+> What other possible use case is there for invoking tdx_prot_guest_has() beyond
+> running as a TDX guest?  If it were e.g. intel_prot_guest_has() then I would at
+> least understand the code, if not agree with the sub-optimal approach, but as is
+> it makes no sense.
+
+Yes. I think his original intention is to implement intel_prot_guest_has() in
+arch/x86/kernel/cpu/intel.c and then call tdx_prot_guest_has() from it. But since
+we have no other use cases, we have called tdx_prot_*() directly here.
+
+Boris, how do you want to proceed? Do you want me to implement intel_prot_guest_has()
+or change comparison log to TDX specific?
+
+
+> 
+> Given amd_prot_guest_has(), my guess is Boris intended intel_prot_guest_has()...
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
