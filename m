@@ -2,91 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7123E0514
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6E93E05AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239693AbhHDQAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:00:15 -0400
-Received: from mout.gmx.net ([212.227.17.20]:59551 "EHLO mout.gmx.net"
+        id S234599AbhHDQP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:15:57 -0400
+Received: from mga14.intel.com ([192.55.52.115]:39495 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239420AbhHDQAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:00:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628092786;
-        bh=tuR6AkZISPXXqL00+nsRnE8ZS+JUJdPGMUFCl9+7OOE=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=VDkfS4H9+cjqBGWamQJGJ2qDdeGKeFNzwgupNxJI/osZJdrqbwx/OFfPlNk+dGuF3
-         E3++vQkisCH/2anjySNtyFnxC60F/1a8vKJYdLBYhuBW+mx35z4Fp1zPyzgYF+MRJA
-         nWHXlMAdKwEtyK/4pK+tu7S63NBvIwmEywJeRG5g=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [217.61.147.17] ([217.61.147.17]) by web-mail.gmx.net
- (3c-app-gmx-bap67.server.lan [172.19.172.67]) (via HTTP); Wed, 4 Aug 2021
- 17:59:46 +0200
+        id S229648AbhHDQP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 12:15:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="213685391"
+X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
+   d="scan'208";a="213685391"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 09:15:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
+   d="scan'208";a="637037059"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga005.jf.intel.com with ESMTP; 04 Aug 2021 09:15:39 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 25408142; Wed,  4 Aug 2021 19:16:09 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Cc:     Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v2 1/4] gpio: dwapb: Unify ACPI enumeration checks in get_irq() and configure_irqs()
+Date:   Wed,  4 Aug 2021 19:00:16 +0300
+Message-Id: <20210804160019.77105-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Message-ID: <trinity-7bda902b-2c2b-4b74-99fe-9258b7ebedcf-1628092786728@3c-app-gmx-bap67>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Frank Wunderlich <linux@fw-web.de>,
-        linux-mediatek@lists.infradead.org, CK Hu <ck.hu@mediatek.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dafna.hirschfeld@collabora.com,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Subject: Aw: Re: [PATCH v2] soc: mmsys: mediatek: add mask to mmsys routes
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 4 Aug 2021 17:59:46 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <e8c990b6-180d-9702-d8cc-fd1e98dfc744@gmail.com>
-References: <20210729070549.5514-1-linux@fw-web.de>
- <e8c990b6-180d-9702-d8cc-fd1e98dfc744@gmail.com>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:Pl2oZIbBfTHdTqxy1K+GtDsXwd+8D6NgmDBAp/R6ZBuiXJ2kPj6p5pQ2NaW/n6Y6nvchJ
- kNbjXbyWCcZv0vgTgGTcf0x64rMKq7xUJupfCismXTI27PB98kcXP4qSep6ajzN4+YyR0KN0ZZ0w
- 7Fyq7AGtnlN08LwUEUx9XNxYHMAgmqGGfIdlM0iwf5QhHP3yAnFN5K+DPxCTPJpbDWoC6YkyJU9t
- 8G3aPvW5jPUOMrLc+BtqPolWzEgVXdAkxfHoVG6sXdeCHPYTKz5RDiq3rdokBexjrOy6jODOKGSk
- Xs=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OEk3L5WrzAo=:CBZrIqJSgoQJZwtNJLHmxv
- 5jkT6aWTK06g7D2Wr/ab+IqwbfXemJFLCE9GZAVPHR3YWou1FpE3L2ST41vJ6JSEi7+llQ1sA
- 5Dt2XGLTHwqeI2jEMnGlo2QudFRFeeVSVXtz9Ko0R7Sd50x9+ke5+JKUz3Pm1tRvoZoe9kLQ7
- i88SQRn7JXoZAawHcO4ucyU4YKsJUxQNOaErmnNu+cBoje5IWl8Oz6dZqiEn8wVy+301y0mdW
- fNw5Q9DzYB6uo3r6l80w2BTdUSqOmuGEHh3B4pe/vMJAzRtARCNE9fOQ02eYjrfK+7nke9xWF
- rQ7MNJ6to4a4yjylhe+NAVteXAod6fbgCPzVHmmHrY5vEkTj+JXWeF5izx3hkzCNwHANAfwZE
- Se2YdVjM7YUtYHsCnt/nDM0Rr5wvvLk0SoHXKSrI2RJ6N+9r0PUs5bAnqxnFwUPbZDWosaX3t
- oFTjcV1CS49aHoLQyDI6F0WYJS4BQbpcsYkCyGZLf854daUCjoudWzRc7AORIoePqO2C8R0sS
- m2rU7K8h62vTPor14/vPpMXlrIdKp9HO06QAA6U0xoZd04GufR0J1mbY1bjuQQLBQzLlFFEHm
- Wx4WEPppLQgFlx0uWE/esxR4b3x4BWyt1xaux+48V04Dheu95mxnm8LRRSdZqR57X7O9WZ6ug
- 6vsAC+SZgpK84JTHxz3Mj2APgv5DmA7d5dq9ravMf7D39XVEqUfXanWHszdc/UZwpiT3Na94D
- U8Y3BI2oN1KFLV/dF3pMgL6vPJlOkLPwoO3ToSXr5U3BXtIUqHntuwr4l0CzzICo4ZBU7w1G3
- zZ5oLI7hINMY/QpHw1HeCS5A1ZxiNaIc3kbbEvmNeulBRJAzoE=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Shared IRQ is only enabled for ACPI enumeration, there is no need
+to have a special flag for that, since we simple can test if device
+has been enumerated by ACPI. This unifies the checks in dwapb_get_irq()
+and dwapb_configure_irqs().
 
-> Gesendet: Mittwoch, 04. August 2021 um 17:17 Uhr
-> Von: "Matthias Brugger" <matthias.bgg@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Lee Jones <lee.jones@linaro.org>
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
+Tested-by: Serge Semin <fancer.lancer@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: added tags (Lee, Serge), rephrased comments near to for-loop (Serge)
+ drivers/gpio/gpio-dwapb.c                | 24 ++++++++++++------------
+ drivers/mfd/intel_quark_i2c_gpio.c       |  1 -
+ include/linux/platform_data/gpio-dwapb.h |  1 -
+ 3 files changed, 12 insertions(+), 14 deletions(-)
 
-> My understanding is, that this does not break mt8173 and other SoCs that use the
-> default routing table. Correct?
+diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
+index 3eb13d6d31ef..4c7153cb646c 100644
+--- a/drivers/gpio/gpio-dwapb.c
++++ b/drivers/gpio/gpio-dwapb.c
+@@ -436,21 +436,17 @@ static void dwapb_configure_irqs(struct dwapb_gpio *gpio,
+ 	pirq->irqchip.irq_set_wake = dwapb_irq_set_wake;
+ #endif
+ 
+-	if (!pp->irq_shared) {
+-		girq->num_parents = pirq->nr_irqs;
+-		girq->parents = pirq->irq;
+-		girq->parent_handler_data = gpio;
+-		girq->parent_handler = dwapb_irq_handler;
+-	} else {
+-		/* This will let us handle the parent IRQ in the driver */
++	/*
++	 * Intel ACPI-based platforms mostly have the DesignWare APB GPIO
++	 * IRQ lane shared between several devices. In that case the parental
++	 * IRQ has to be handled in the shared way so to be properly delivered
++	 * to all the connected devices.
++	 */
++	if (has_acpi_companion(gpio->dev)) {
+ 		girq->num_parents = 0;
+ 		girq->parents = NULL;
+ 		girq->parent_handler = NULL;
+ 
+-		/*
+-		 * Request a shared IRQ since where MFD would have devices
+-		 * using the same irq pin
+-		 */
+ 		err = devm_request_irq(gpio->dev, pp->irq[0],
+ 				       dwapb_irq_handler_mfd,
+ 				       IRQF_SHARED, DWAPB_DRIVER_NAME, gpio);
+@@ -458,6 +454,11 @@ static void dwapb_configure_irqs(struct dwapb_gpio *gpio,
+ 			dev_err(gpio->dev, "error requesting IRQ\n");
+ 			goto err_kfree_pirq;
+ 		}
++	} else {
++		girq->num_parents = pirq->nr_irqs;
++		girq->parents = pirq->irq;
++		girq->parent_handler_data = gpio;
++		girq->parent_handler = dwapb_irq_handler;
+ 	}
+ 
+ 	girq->chip = &pirq->irqchip;
+@@ -581,7 +582,6 @@ static struct dwapb_platform_data *dwapb_gpio_get_pdata(struct device *dev)
+ 			pp->ngpio = DWAPB_MAX_GPIOS;
+ 		}
+ 
+-		pp->irq_shared	= false;
+ 		pp->gpio_base	= -1;
+ 
+ 		/*
+diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
+index 01935ae4e9e1..a43993e38b6e 100644
+--- a/drivers/mfd/intel_quark_i2c_gpio.c
++++ b/drivers/mfd/intel_quark_i2c_gpio.c
+@@ -227,7 +227,6 @@ static int intel_quark_gpio_setup(struct pci_dev *pdev)
+ 	pdata->properties->ngpio	= INTEL_QUARK_MFD_NGPIO;
+ 	pdata->properties->gpio_base	= INTEL_QUARK_MFD_GPIO_BASE;
+ 	pdata->properties->irq[0]	= pci_irq_vector(pdev, 0);
+-	pdata->properties->irq_shared	= true;
+ 
+ 	cell->platform_data = pdata;
+ 	cell->pdata_size = sizeof(*pdata);
+diff --git a/include/linux/platform_data/gpio-dwapb.h b/include/linux/platform_data/gpio-dwapb.h
+index 0aa5c6720259..535e5ed549d9 100644
+--- a/include/linux/platform_data/gpio-dwapb.h
++++ b/include/linux/platform_data/gpio-dwapb.h
+@@ -14,7 +14,6 @@ struct dwapb_port_property {
+ 	unsigned int	ngpio;
+ 	unsigned int	gpio_base;
+ 	int		irq[DWAPB_MAX_GPIOS];
+-	bool		irq_shared;
+ };
+ 
+ struct dwapb_platform_data {
+-- 
+2.30.2
 
-i took the mask values from CK Hu's Patch, mt7623 uses this table and with it hdmi works again (was broken by the array-commit). I'm not sure on which devices Chun-Kuang has tested it, he only suggests to add the mask again from his commit to fix mt7623.
-
-https://patchwork.kernel.org/project/linux-mediatek/patch/20210710132431.265985-1-linux@fw-web.de/#24335233
-
-I can only test on mt7623/BPI-R2...
-
-there is a new patchset for mt8192 which adds a new routing-table, which needs to be extended with mask values (without it wil not work, but maybe duplicate values may work):
-
-https://patchwork.kernel.org/project/linux-mediatek/patch/1627894773-23872-3-git-send-email-yongqiang.niu@mediatek.com/
-
-regards Frank
-
-> Added now to v5.14-next/soc
-> Thanks.
-
-Thanks too
