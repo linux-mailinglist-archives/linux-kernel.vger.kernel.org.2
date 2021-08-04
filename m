@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D7B3E021B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598E83E021E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238227AbhHDNfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42226 "EHLO
+        id S238280AbhHDNfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231310AbhHDNfG (ORCPT
+        with ESMTP id S238266AbhHDNf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:35:06 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FDDC061799
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 06:34:53 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id 14so2720062qkc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 06:34:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XSfNtUyU9x/YGEG2BT0B9uxjpaTMgrW+GMW+Gx0V97Q=;
-        b=TpJYOKtrBFCaIgXuJrcHTL9EdQQt/csWAYYnG/TNqSXdjlttxf00i3FumuVwQpC/i0
-         pyfQyywmeGDkG/1pH3aozxBecjgdjvF+ryY1UQ2NFBsNKqfCflLMbOzmDqL4qk/UYiJy
-         js9SGtFIVZ+rhbM66/odc+gGx5HYgIko2j2ShmUO5qJgoiQig132zbESQ5bK//hFwj1c
-         oyueGqgnhmdwYSYBk/5UjslheYVPlT9RMCqXz9RHPdBNwNKkkJMZvtt573O0tECXCWV/
-         lkmiok0E7LQpt+rvED+wrD/Ln7HahrGdtgWIyvCItrhGEPAK1RFNudkEuAz3/xqjvXiX
-         Qr8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XSfNtUyU9x/YGEG2BT0B9uxjpaTMgrW+GMW+Gx0V97Q=;
-        b=ltSxOvbH+qfxjGwvV0QuJ8PWB2WjRTwDSXjtafnP/FBh/iHbKeldeI9UkFkcRL4nT9
-         9S5We6Rv37N4vvJtrH97Sq0ndWAWJMyrIWhgYKl8iKWIWZClYlcye4NKnhvyLEv3L5s7
-         w6P0nl5BCFutlw3heaOaCLsSKgjTRyRbtFWVu/ucdPqy/0FucHiWsq2Wu2ysFi7Sq2me
-         kgIig6jvTndMOJr87pbhiYx3pAzVPOalFuaBP3qXtVv3DIEHipCDajCTFNAsNIt6KN8O
-         wgDlsz9pVHLVz3yKsY7ZzkrR4CC3gME8oFf3QCOvjLtb89pKOijmfJtGf++P0BtjN663
-         h/QA==
-X-Gm-Message-State: AOAM530FqTxpY80QFLf/iCU9hUS02DuqCms9IVXcjc809qWcb9wL7niE
-        byrXngrILnW3j5703+rpYhmVQA==
-X-Google-Smtp-Source: ABdhPJyk5Ylha0tBS0IPdf6k19JH5IiOL/TMwax3CAbXwe5mPVxvRQa2P0A+g9mDDJAgyUrioDgaTQ==
-X-Received: by 2002:a05:620a:448c:: with SMTP id x12mr26075570qkp.39.1628084092359;
-        Wed, 04 Aug 2021 06:34:52 -0700 (PDT)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id z23sm847908qts.96.2021.08.04.06.34.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 06:34:51 -0700 (PDT)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH] cpufreq: blacklist Qualcomm sm8150 in cpufreq-dt-platdev
-Date:   Wed,  4 Aug 2021 09:34:51 -0400
-Message-Id: <20210804133451.2503674-1-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 4 Aug 2021 09:35:29 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D44EC0613D5;
+        Wed,  4 Aug 2021 06:35:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=4hk+HApOCK63oaKmJFSctQEwtZoOxqs0pPNX/2Vu9NQ=; b=bR4T43FsUV/4qxec5DQLuuGUU7
+        7YJ275gzeIhu7I+BKww2Q2mu2pwBfz5gxW7FfTKS3ovZQplGWM9hqOOk0zNI5BsVd7LVFZMQUiJR3
+        WyF/MfWQyvYDZlpywa2svU7VUUETwhCi7p9HgeDtqcmUvDwJK9IJ8m96P5MlVieHCqwgEmwW7F+HU
+        JpeSOyvBfzACIBLtMjzngircc64R/5Pqp6JA9TTCh5pQ3afEHZadHe7S8aDq+axGS32A4KdQxdcZO
+        /L55Fk+z8hphHi4luNU439MKXcZd3yY4qzCKdeqNvU3xlugCSKDWPq+3e+EN8G/TADmA2z3hdfSBl
+        K5fBJb6A==;
+Received: from [2601:1c0:6280:3f0:e65e:37ff:febd:ee53]
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mBH3C-005kix-60; Wed, 04 Aug 2021 13:35:14 +0000
+Subject: Re: [PATCH][next] kernel/user.c: Fix spelling mistake "cpunter" ->
+ "counter"
+To:     Colin King <colin.king@canonical.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210804120658.110124-1-colin.king@canonical.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e67d1ff8-f872-c1af-7f1c-03ac9e9d7d2e@infradead.org>
+Date:   Wed, 4 Aug 2021 06:35:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210804120658.110124-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Qualcomm sm8150 platform uses the qcom-cpufreq-hw driver, so
-add it to the cpufreq-dt-platdev driver's blocklist.
+On 8/4/21 5:06 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake in a panic message. Fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   kernel/user.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/user.c b/kernel/user.c
+> index a2673f940506..7fc40af8d8ac 100644
+> --- a/kernel/user.c
+> +++ b/kernel/user.c
+> @@ -223,7 +223,7 @@ static int __init uid_cache_init(void)
+>   		INIT_HLIST_HEAD(uidhash_table + n);
+>   
+>   	if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
+> -		panic("percpu cpunter alloc failed");
+> +		panic("percpu counter alloc failed");
+>   
+>   	/* Insert the root user immediately (init already runs as root) */
+>   	spin_lock_irq(&uidhash_lock);
+> 
 
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
----
- drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
- 1 file changed, 1 insertion(+)
+Nick Piggin has reworded that panic message text in a patch
+yesterday so this patch isn't needed.
 
-diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index 9d5a38a91f10..231e585f6ba2 100644
---- a/drivers/cpufreq/cpufreq-dt-platdev.c
-+++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-@@ -141,6 +141,7 @@ static const struct of_device_id blocklist[] __initconst = {
- 	{ .compatible = "qcom,sc7280", },
- 	{ .compatible = "qcom,sc8180x", },
- 	{ .compatible = "qcom,sdm845", },
-+	{ .compatible = "qcom,sm8150", },
- 
- 	{ .compatible = "st,stih407", },
- 	{ .compatible = "st,stih410", },
+https://lore.kernel.org/lkml/1628051945.fens3r99ox.astroid@bobo.none/
+
+
+thanks.
 -- 
-2.25.1
+~Randy
 
