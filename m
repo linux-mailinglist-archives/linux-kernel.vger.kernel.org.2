@@ -2,154 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181E23E05B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB1F3E0515
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236693AbhHDQRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:17:23 -0400
-Received: from mga18.intel.com ([134.134.136.126]:16160 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229731AbhHDQRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:17:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="201139878"
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="201139878"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 09:15:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="419487558"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 04 Aug 2021 09:15:41 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 8F7921CB; Wed,  4 Aug 2021 19:16:11 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-Cc:     Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 4/4] gpio: dwapb: Get rid of legacy platform data
-Date:   Wed,  4 Aug 2021 19:00:19 +0300
-Message-Id: <20210804160019.77105-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210804160019.77105-1-andriy.shevchenko@linux.intel.com>
-References: <20210804160019.77105-1-andriy.shevchenko@linux.intel.com>
+        id S239306AbhHDQBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:01:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24886 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236453AbhHDQBE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 12:01:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628092851;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kEsjrzEf989GiFesEbeonJ3m9TGKEwxRikvJxw0JX+4=;
+        b=hHBwPjVnW4zFHjE5ud/FcUb8N3ZC0avvfDnrSDcPlwCdEb5WmoRWXighMsvCY/fhK1/Dbg
+        mBhEbeuZ/5Vc4qvvvQhj0T9ZHBU09zauhgcv0UEne9x7dVu7dS97PIj4wWCSniBuD8OKtY
+        AAyiHDvN75aiItuBQ+Uv0Jpl4W/r6Lc=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-170-QUmCwvq1PfKhTCq7SZ1haA-1; Wed, 04 Aug 2021 12:00:50 -0400
+X-MC-Unique: QUmCwvq1PfKhTCq7SZ1haA-1
+Received: by mail-qt1-f198.google.com with SMTP id k18-20020ac847520000b029028bf7425a59so1111039qtp.22
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 09:00:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=kEsjrzEf989GiFesEbeonJ3m9TGKEwxRikvJxw0JX+4=;
+        b=pcFRSeuLk/vQO/PNtKzitlH4kT1malZO9oR0pg4mWeuPybm4rX3ENfF1/HuX5daT8G
+         RQLzuaf9NWQiAF6ZzLMZtQ+6KeHUH5FEH58MU2nIQa8qBhQebFywlrEpjhr7+Eezvw18
+         7WOAqRllnk5us5/OsNzmDhJihQlE1VAJCs948ESYjgytJtIVKFSu0z2Hs6cbQQCEQspK
+         Bp3dL9LSr6uucTbO9aTqTprP0COvkyxIQRr9WNDlyGml1tgslyWZtpfEb+WbtBhex8DG
+         3jZ5xT8reWKcHTXRLkDxsKFt6ru8R6MnHXaXaS2dIMKkLrkYdY6g+L6f249bskfCkJ0q
+         kFIw==
+X-Gm-Message-State: AOAM5331yqFXAsjrE3e6ffDtRtLRTrgrAjlL9ulVghcS8NyP4f5/MO53
+        kpx38JwMJ4WQKDTcR2hOlEY2S/lVmzTK+2GDQyIGKvP+x+ej4SiecxTdkShqOqXybkwFb5F+LuC
+        5T2kz9utOmfW7UZRfr4xGKUTD
+X-Received: by 2002:a05:620a:3c8:: with SMTP id r8mr115982qkm.19.1628092850005;
+        Wed, 04 Aug 2021 09:00:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx1QX2uMiY0+tjFXi1oQjufonahM1RQ6aSelVwGVf8DR+eHT/HQ7Hgz4p3Zz9FvTypcufD6pQ==
+X-Received: by 2002:a05:620a:3c8:: with SMTP id r8mr115953qkm.19.1628092849770;
+        Wed, 04 Aug 2021 09:00:49 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id j4sm1480452qkk.78.2021.08.04.09.00.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 09:00:49 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH] mm/memcg: Disable task obj_stock for PREEMPT_RT
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Luis Goncalves <lgoncalv@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210803175519.22298-1-longman@redhat.com> <87h7g62jxm.ffs@tglx>
+ <8953e099-356e-ee09-a701-f4c7f4cda487@redhat.com>
+Message-ID: <ce048e8b-bd2d-7517-d8e0-f74be98b8dee@redhat.com>
+Date:   Wed, 4 Aug 2021 12:00:47 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <8953e099-356e-ee09-a701-f4c7f4cda487@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Platform data is a legacy interface to supply device properties
-to the driver. In this case we don't have anymore in-kernel users
-for it. Just remove it for good.
+On 8/3/21 9:40 PM, Waiman Long wrote:
+> On 8/3/21 7:21 PM, Thomas Gleixner wrote:
+>> To complete the analysis of drain_local_stock(). AFAICT that function
+>> can only be called from task context. So what is the purpose of this
+>> in_task() conditional there?
+>>
+>>     if (in_task())
+>>            drain_obj_stock(&stock->task_obj);
+> I haven't done a full analysis to see if it can be called from task 
+> context only. Maybe in_task() check isn't needed, but having it there 
+> provides the safety that it will still work in case it can be called 
+> from interrupt context. 
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
-Tested-by: Serge Semin <fancer.lancer@gmail.com>
----
-v2: added tags, put structures after forward declaration (Serge)
- drivers/gpio/gpio-dwapb.c                | 28 +++++++++++++++---------
- include/linux/platform_data/gpio-dwapb.h | 24 --------------------
- 2 files changed, 18 insertions(+), 34 deletions(-)
- delete mode 100644 include/linux/platform_data/gpio-dwapb.h
+After looking at possible call chains that can lead to 
+drain_local_stock(), one call chain comes from the allocation of slab 
+objects which I had previously determined to be callable from interrupt 
+context. So it is prudent to add a in_task() check here.
 
-diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-index 674e91e69cc5..f98fa33e1679 100644
---- a/drivers/gpio/gpio-dwapb.c
-+++ b/drivers/gpio/gpio-dwapb.c
-@@ -16,7 +16,6 @@
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/platform_data/gpio-dwapb.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
- #include <linux/reset.h>
-@@ -48,6 +47,7 @@
- 
- #define DWAPB_DRIVER_NAME	"gpio-dwapb"
- #define DWAPB_MAX_PORTS		4
-+#define DWAPB_MAX_GPIOS		32
- 
- #define GPIO_EXT_PORT_STRIDE	0x04 /* register stride 32 bits */
- #define GPIO_SWPORT_DR_STRIDE	0x0c /* register stride 3*32 bits */
-@@ -65,6 +65,19 @@
- 
- struct dwapb_gpio;
- 
-+struct dwapb_port_property {
-+	struct fwnode_handle *fwnode;
-+	unsigned int idx;
-+	unsigned int ngpio;
-+	unsigned int gpio_base;
-+	int irq[DWAPB_MAX_GPIOS];
-+};
-+
-+struct dwapb_platform_data {
-+	struct dwapb_port_property *properties;
-+	unsigned int nports;
-+};
-+
- #ifdef CONFIG_PM_SLEEP
- /* Store GPIO context across system-wide suspend/resume transitions */
- struct dwapb_context {
-@@ -674,17 +687,12 @@ static int dwapb_gpio_probe(struct platform_device *pdev)
- 	unsigned int i;
- 	struct dwapb_gpio *gpio;
- 	int err;
-+	struct dwapb_platform_data *pdata;
- 	struct device *dev = &pdev->dev;
--	struct dwapb_platform_data *pdata = dev_get_platdata(dev);
--
--	if (!pdata) {
--		pdata = dwapb_gpio_get_pdata(dev);
--		if (IS_ERR(pdata))
--			return PTR_ERR(pdata);
--	}
- 
--	if (!pdata->nports)
--		return -ENODEV;
-+	pdata = dwapb_gpio_get_pdata(dev);
-+	if (IS_ERR(pdata))
-+		return PTR_ERR(pdata);
- 
- 	gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
- 	if (!gpio)
-diff --git a/include/linux/platform_data/gpio-dwapb.h b/include/linux/platform_data/gpio-dwapb.h
-deleted file mode 100644
-index 535e5ed549d9..000000000000
---- a/include/linux/platform_data/gpio-dwapb.h
-+++ /dev/null
-@@ -1,24 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Copyright(c) 2014 Intel Corporation.
-- */
--
--#ifndef GPIO_DW_APB_H
--#define GPIO_DW_APB_H
--
--#define DWAPB_MAX_GPIOS		32
--
--struct dwapb_port_property {
--	struct fwnode_handle *fwnode;
--	unsigned int	idx;
--	unsigned int	ngpio;
--	unsigned int	gpio_base;
--	int		irq[DWAPB_MAX_GPIOS];
--};
--
--struct dwapb_platform_data {
--	struct dwapb_port_property *properties;
--	unsigned int nports;
--};
--
--#endif
--- 
-2.30.2
+Cheers,
+Longman
 
