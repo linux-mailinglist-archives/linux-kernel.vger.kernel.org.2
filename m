@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 731CE3E08A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0273E08A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234316AbhHDTTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 15:19:44 -0400
+        id S235553AbhHDTTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 15:19:46 -0400
 Received: from mga18.intel.com ([134.134.136.126]:32885 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229609AbhHDTTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 15:19:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="201177509"
+        id S234016AbhHDTTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 15:19:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="201177513"
 X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="201177509"
+   d="scan'208";a="201177513"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 12:19:29 -0700
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 12:19:31 -0700
 X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="467228209"
+   d="scan'208";a="467228232"
 Received: from mjkendri-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.17.117])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 12:19:28 -0700
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 12:19:29 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -34,83 +34,74 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 00/10] Add TDX Guest Support (#VE handler support)
-Date:   Wed,  4 Aug 2021 12:18:45 -0700
-Message-Id: <20210804191855.2901927-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v4 01/10] x86/io: Allow to override inX() and outX() implementation
+Date:   Wed,  4 Aug 2021 12:18:46 -0700
+Message-Id: <20210804191855.2901927-2-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210804191855.2901927-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20210804191855.2901927-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
-hosts and some physical attacks. This series adds #VE handler support,
-for port I/O, MMIO and MWAIT/MONITOR features in TDX guest.
+The patch allows to override the implementation of the port IO
+helpers. TDX code will provide an implementation that redirect the
+helpers to paravirt calls.
 
-This series is the continuation of the patch series titled "Add TDX Guest
-Support (Initial support)" which added initial support for TDX guests. You
-can find the patchset in the following link.
-
-[set 1, v5] - https://lore.kernel.org/patchwork/project/lkml/list/?series=510805
-
-Also please note that this series alone is not necessarily fully
-functional.
-
-You can find TDX related documents in the following link.
-
-https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
 
 Changes since v3:
- * Rebased on top of Tom Lendacky protected guest changes.
- * Rest of changelogs are included in patches in-line.
+ * None
 
 Changes since v2:
- * Rebased on top of v5.14-rc1.
- * Rest of changelogs are included in patches in-line.
+ * None
 
-Changes since v1:
- * Rebased on top of TDX guest set 1 patches (which had some core API changes).
- * Moved "x86/tdx: Add early_is_tdx_guest() interface" patch from set 1 patch
-   series to this patchset (since it is only used in early I/O support case).
- * Rest of changelogs are included in patches in-line.
+ arch/x86/include/asm/io.h | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-Andi Kleen (1):
-  x86/tdx: Handle early IO operations
-
-Kirill A. Shutemov (6):
-  x86/io: Allow to override inX() and outX() implementation
-  x86/tdx: Handle port I/O
-  x86/insn-eval: Introduce insn_get_modrm_reg_ptr()
-  x86/insn-eval: Introduce insn_decode_mmio()
-  x86/sev-es: Use insn_decode_mmio() for MMIO implementation
-  x86/tdx: Handle in-kernel MMIO
-
-Kuppuswamy Sathyanarayanan (3):
-  x86/tdx: Add early_is_tdx_guest() interface
-  x86/tdx: Handle port I/O in decompression code
-  x86/tdx: Handle MWAIT and MONITOR
-
- arch/x86/boot/compressed/Makefile |   2 +
- arch/x86/boot/compressed/tdcall.S |   3 +
- arch/x86/boot/compressed/tdx.c    |  31 +++++
- arch/x86/boot/cpuflags.c          |  12 +-
- arch/x86/boot/cpuflags.h          |   2 +
- arch/x86/include/asm/insn-eval.h  |  13 ++
- arch/x86/include/asm/io.h         |  23 +++-
- arch/x86/include/asm/tdx.h        |  66 ++++++++++
- arch/x86/kernel/head64.c          |   3 +
- arch/x86/kernel/sev.c             | 171 ++++++-------------------
- arch/x86/kernel/tdx.c             | 205 ++++++++++++++++++++++++++++++
- arch/x86/lib/insn-eval.c          | 102 +++++++++++++++
- include/linux/protected_guest.h   |   1 +
- 13 files changed, 495 insertions(+), 139 deletions(-)
- create mode 100644 arch/x86/boot/compressed/tdcall.S
- create mode 100644 arch/x86/boot/compressed/tdx.c
-
+diff --git a/arch/x86/include/asm/io.h b/arch/x86/include/asm/io.h
+index 841a5d104afa..be96bf1e667a 100644
+--- a/arch/x86/include/asm/io.h
++++ b/arch/x86/include/asm/io.h
+@@ -271,18 +271,26 @@ static inline bool sev_key_active(void) { return false; }
+ 
+ #endif /* CONFIG_AMD_MEM_ENCRYPT */
+ 
++#ifndef __out
++#define __out(bwl, bw)							\
++	asm volatile("out" #bwl " %" #bw "0, %w1" : : "a"(value), "Nd"(port))
++#endif
++
++#ifndef __in
++#define __in(bwl, bw)							\
++	asm volatile("in" #bwl " %w1, %" #bw "0" : "=a"(value) : "Nd"(port))
++#endif
++
+ #define BUILDIO(bwl, bw, type)						\
+ static inline void out##bwl(unsigned type value, int port)		\
+ {									\
+-	asm volatile("out" #bwl " %" #bw "0, %w1"			\
+-		     : : "a"(value), "Nd"(port));			\
++	__out(bwl, bw);							\
+ }									\
+ 									\
+ static inline unsigned type in##bwl(int port)				\
+ {									\
+ 	unsigned type value;						\
+-	asm volatile("in" #bwl " %w1, %" #bw "0"			\
+-		     : "=a"(value) : "Nd"(port));			\
++	__in(bwl, bw);							\
+ 	return value;							\
+ }									\
+ 									\
 -- 
 2.25.1
 
