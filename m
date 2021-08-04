@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2D23E04DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5383A3E04C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239413AbhHDPv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239214AbhHDPv5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:51:57 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7ACEC0613D5;
-        Wed,  4 Aug 2021 08:51:43 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id m9so3100351ljp.7;
-        Wed, 04 Aug 2021 08:51:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MFb0mtSBNfYCXWuLJ4WFezyMCJ+009tKgdeIKYVHYDk=;
-        b=N5MxHxPzZWY/QQdU+75Q5PW5zVR2TFcqf3SAKpSTQqNyKbFjFMw3TO9XTHcYQsrrGX
-         ejLL8A3e0ezvqhOrMQZcRUZVU8kGswjndweMy1CauCIsMmcKTZRD5haKOG9TU7M+p8Uu
-         iQLoVM3Cd6ehlLMEl/T+CLltHCW9ATMuvwf0jNZHCGBKEJa2vHnpkwetUnYE++QF8sJn
-         j7aLH3rAeN+WuKHqPTrkwyppMGOueXdWy/3KOelMTEpFmeikv7rzJA+ut0DtWwXiNcRz
-         mTuheHVAYpdhfaFd4vtJXqx7ln6GnFFBnSyeT1sq5nzLrgTYxFg8v4u3P1xY/c5qk7xr
-         m3cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MFb0mtSBNfYCXWuLJ4WFezyMCJ+009tKgdeIKYVHYDk=;
-        b=hOYnNRdUAnGOsE3SMyBbyKYF8AUvrWhHFopKmhKBO/PRdHtiLIThxhxTzjcFy+J5Fk
-         zvVOstHmZrK4w2zdI/xfTSG2AZh7vlJCBOSdF9wjEvggoPAppFitJl4TEcsYTTZuZydk
-         ipISpzxut2et8PU/D8QKs6EPi3Yk8MSv5pN84747snUl3vBLaoCAWbqArHc0lSdaxAvk
-         Okb6TQTwE01oMg/vIlNE/ty6cNTOoMKaVvoEj4h3LEYEikmQrLBr8Xz9veTjXjrDeHWK
-         7S5xHfSNltJg3ASoI5dO4Ogxjk6IAf7BYby/XxxE+GcqqrQtRZesTHkylRCqnIrgD4MV
-         okJQ==
-X-Gm-Message-State: AOAM532J/3kKJJqeAiKvW9rK7ed9AWwAeoQL8WgiB9pYA4DkuNDNOLTh
-        7Kpms02ZPz62oQnJ0Xt0p+0=
-X-Google-Smtp-Source: ABdhPJyXyWLi2G16uEgpKXqO84/1hTJ/7A8rsSh+jBN3J+5RPvyZ7EaB8u95yq1b+5VzrcNUmoqr0w==
-X-Received: by 2002:a05:651c:3c1:: with SMTP id f1mr107539ljp.82.1628092302185;
-        Wed, 04 Aug 2021 08:51:42 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.226.235])
-        by smtp.gmail.com with ESMTPSA id i21sm231641lfc.92.2021.08.04.08.51.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 08:51:41 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, qiangqing.zhang@nxp.com,
-        hslester96@gmail.com, fugang.duan@nxp.com, jdmason@kudzu.us,
-        jesse.brandeburg@intel.com, colin.king@canonical.com
-Cc:     dan.carpenter@oracle.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH 0/2] net: fix use-after-free bugs
-Date:   Wed,  4 Aug 2021 18:48:57 +0300
-Message-Id: <cover.1628091954.git.paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S239511AbhHDPtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:49:42 -0400
+Received: from mga11.intel.com ([192.55.52.93]:23458 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239495AbhHDPtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 11:49:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="210834593"
+X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
+   d="scan'208";a="210834593"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 08:49:23 -0700
+X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
+   d="scan'208";a="668130482"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 08:49:20 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mBJ8s-0059pd-8o; Wed, 04 Aug 2021 18:49:14 +0300
+Date:   Wed, 4 Aug 2021 18:49:14 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Riccardo Mori <patacca@autistici.org>,
+        Lovesh <lovesh.bond@gmail.com>
+Subject: Re: [PATCH v1 1/1] pinctrl: tigerlake: Fix GPIO mapping for newer
+ version of software
+Message-ID: <YQq2+ggL+vagZdFr@smile.fi.intel.com>
+References: <20210804140246.64856-1-andriy.shevchenko@linux.intel.com>
+ <YQq1rzsupUSLYsEw@lahna>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQq1rzsupUSLYsEw@lahna>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've added new checker to smatch yesterday. It warns about using
-netdev_priv() pointer after free_{netdev,candev}() call. I hope, it will
-get into next smatch release.
+On Wed, Aug 04, 2021 at 06:43:43PM +0300, Mika Westerberg wrote:
+> On Wed, Aug 04, 2021 at 05:02:46PM +0300, Andy Shevchenko wrote:
+> > The software mapping for GPIO, which initially comes from Microsoft,
+> > is subject to change by respective Windows and firmware developers.
+> > Due to above the driver had been written and published way ahead of
+> > the schedule, and thus the numbering schema used in it is outdated.
+> > 
+> > Fix the numbering schema in accordance with the real products on market.
+> > 
+> > Fixes: 653d96455e1e ("pinctrl: tigerlake: Add support for Tiger Lake-H")
+> > Reported-and-tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > Reported-by: Riccardo Mori <patacca@autistici.org>
+> > Reported-and-tested-by: Lovesh <lovesh.bond@gmail.com>
+> > BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213463
+> > BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213579
+> > BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=213857
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> Thanks Andy for taking care of this!
+> 
+> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-Some of the reported bugs are fixed and upstreamed already, but Dan ran new
-smatch with allmodconfig and found 2 more. Big thanks to Dan for doing it,
-because I totally forgot to do it.
-
-Pavel Skripkin (2):
-  net: fec: fix use-after-free in fec_drv_remove
-  net: vxge: fix use-after-free in vxge_device_unregister
-
- drivers/net/ethernet/freescale/fec_main.c      | 2 +-
- drivers/net/ethernet/neterion/vxge/vxge-main.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Pushed to my review and testing queue, thanks!
 
 -- 
-2.32.0
+With Best Regards,
+Andy Shevchenko
+
 
