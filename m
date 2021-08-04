@@ -2,284 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 836A13DFD00
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715413DFD0D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236601AbhHDIe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236578AbhHDIex (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:34:53 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90658C06179A
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 01:34:40 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id k65so2808522yba.13
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 01:34:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0CTfCNbfY1m9OBrWFZPhcEhGSy7DNXKX4GwNGkq+X1g=;
-        b=QmT3pbXMsz09tghu3H/sl/G9IDaUhFSWKS74ovRCAFzugw78Ehpt8Zv0Bhs3/XC0mJ
-         BgbGt3YjtGmG1cB8/xM8S8gj0VGKgyFq4CwCqPz9QG3hluAASdeghf0dYhTed90ywkp4
-         csPSMNGXzqJqF5gIZmUVrYGjkY4W9eAxqfIYsgmJsbTs6djsUrvNlyc4hEdxc0Ysa3Mj
-         MPb2pKrKk++1vNXbUtPt5yfykaoZiMTvieLMkO3/9no515vi4YIr5/5XvAyWJKgpBt+J
-         tbNdv0midy6C0QrSTrV76g1vQDFuSzcpjxGqbOm6pmH0Rmdi8BSTm4T4Yu0sUfBRsUUN
-         yKIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0CTfCNbfY1m9OBrWFZPhcEhGSy7DNXKX4GwNGkq+X1g=;
-        b=pcA7+mQdaT4SKgzaVPOnhefJPe89k2g+/3AkyZx0B+GQci4TcZzet9MFzuAEoVaPyu
-         gWhzqE5lWt8fwtHjP+wrv5bCt6+DYFsdoUgZbdZed0ciCw0plxQVtOd8rhrOwpLKpfuY
-         bE3WDnPjmNcHruP3cVEG11dUOzJCb0K2aEj0Qu+UB2yCO6GBOfDOenG+Ng8reMaUIVX5
-         MgzsPpmdu8z6hQ/BuOuUdrd0shAXQBEnmorZMTcm8WAyZj8xqnAPyqghXbEprbQioJHj
-         7e8miqtYRz4T4/oWdNGodZVVZ85oaNvlO3iJNoVxrDN+6HDtCzR0wFHmZdnFAEzSZACj
-         O0sA==
-X-Gm-Message-State: AOAM5312hH3VDVrqY/BSv7o6IOy3Uy/7o78hGbxFfUJWgWXRaQMh/Ku/
-        Pb3pEO50ubNws5RXmBRrzo/p8G3m5DngtcsJSykodQ==
-X-Google-Smtp-Source: ABdhPJzBEBMFio/4f/n7MXtT8b+2gqBl/NcHszvil/PLytVOHO6+5FiSb1mclZkBCsyKGgRpmhbupM/gkQFyJ4THnPg=
-X-Received: by 2002:a25:ad57:: with SMTP id l23mr34970381ybe.303.1628066079331;
- Wed, 04 Aug 2021 01:34:39 -0700 (PDT)
+        id S236621AbhHDIh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:37:26 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:58473 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236493AbhHDIhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 04:37:22 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GflTw4r3dz9sVl;
+        Wed,  4 Aug 2021 10:37:08 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 4YTPUHOfzsKL; Wed,  4 Aug 2021 10:37:08 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GflTw3XfSz9sVg;
+        Wed,  4 Aug 2021 10:37:08 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3336A8B7A3;
+        Wed,  4 Aug 2021 10:37:08 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 3ppPbVI8GWdy; Wed,  4 Aug 2021 10:37:08 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A0F328B7A1;
+        Wed,  4 Aug 2021 10:37:07 +0200 (CEST)
+Subject: Re: [PATCH] powerpc: Remove MSR_PR check in
+ interrupt_exit_{user/kernel}_prepare()
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <b36623df00ef3d2296f928487b6e23f93a217afa.1628054802.git.christophe.leroy@csgroup.eu>
+ <1628064412.48kzr1eula.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <cd5f54fd-fbf4-e471-9971-1e8c86755754@csgroup.eu>
+Date:   Wed, 4 Aug 2021 10:37:08 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210804075556.2582-1-ptikhomirov@virtuozzo.com>
-In-Reply-To: <20210804075556.2582-1-ptikhomirov@virtuozzo.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 4 Aug 2021 10:34:28 +0200
-Message-ID: <CANn89i+Sz1xLmo1tFgbx0KH=RJks6Q=zw0O7NM962T-FG063aQ@mail.gmail.com>
-Subject: Re: [PATCH v3] sock: allow reading and changing sk_userlocks with setsockopt
-To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Paolo Abeni <pabeni@redhat.com>,
-        Florian Westphal <fw@strlen.de>,
-        LKML <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrei Vagin <avagin@gmail.com>, kernel@openvz.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1628064412.48kzr1eula.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 9:56 AM Pavel Tikhomirov
-<ptikhomirov@virtuozzo.com> wrote:
->
-> SOCK_SNDBUF_LOCK and SOCK_RCVBUF_LOCK flags disable automatic socket
-> buffers adjustment done by kernel (see tcp_fixup_rcvbuf() and
-> tcp_sndbuf_expand()). If we've just created a new socket this adjustment
-> is enabled on it, but if one changes the socket buffer size by
-> setsockopt(SO_{SND,RCV}BUF*) it becomes disabled.
->
-> CRIU needs to call setsockopt(SO_{SND,RCV}BUF*) on each socket on
-> restore as it first needs to increase buffer sizes for packet queues
-> restore and second it needs to restore back original buffer sizes.
-
-We could argue the bug is in TCP_REPAIR code, not allowing restoring
-queues unless
-those setsockopt() calls have been done.
-
-For instance SO_RCVLOWAT is able to automatically increase sk->sk_rcvbuf
-
-But I think this feature might be useful regardless of TCP_REPAIR needs.
-
-(There is no way to 'undo' a prior SO_RCVBUF or SO_SNDBUF since they are setting
-the SOCK_[SND|RCV]BUF_LOCK bits permanently)
-
-Reviewed-by: Eric Dumazet <edumazet@google.com>
 
 
-> So after CRIU restore all sockets become non-auto-adjustable, which can
-> decrease network performance of restored applications significantly.
->
-> CRIU need to be able to restore sockets with enabled/disabled adjustment
-> to the same state it was before dump, so let's add special setsockopt
-> for it.
->
-> Let's also export SOCK_SNDBUF_LOCK and SOCK_RCVBUF_LOCK flags to uAPI so
-> that using these interface one can reenable automatic socket buffer
-> adjustment on their sockets.
->
-> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-> ---
-> Here is a corresponding CRIU commits using these new feature to fix slow
-> download speed problem after migration:
-> https://github.com/checkpoint-restore/criu/pull/1568
->
-> Origin of the problem:
->
-> We have a customer in Virtuozzo who mentioned that nginx server becomes
-> slower after container migration. Especially it is easy to mention when
-> you wget some big file via localhost from the same container which was
-> just migrated.
->
-> By strace-ing all nginx processes I see that nginx worker process before
-> c/r sends data to local wget with big chunks ~1.5Mb, but after c/r it
-> only succeeds to send by small chunks ~64Kb.
->
-> Before:
-> sendfile(12, 13, [7984974] => [9425600], 11479629) = 1440626 <0.000180>
->
-> After:
-> sendfile(8, 13, [1507275] => [1568768], 17957328) = 61493 <0.000675>
->
-> Smaller buffer can explain the decrease in download speed. So as a POC I
-> just commented out all buffer setting manipulations and that helped.
->
-> Note: I'm not sure about the way I export flags to uAPI, probably there
-> is some other better way without separating BUF and BIND lock flags to
-> different header files.
->
-> v2: define SOCK_BUF_LOCK_MASK mask
-> v3: reject other flags except SOCK_SNDBUF_LOCK and SOCK_RCVBUF_LOCK, use
-> mask in sock_getsockopt, export flags to uapi/linux/socket.h
-> ---
->  arch/alpha/include/uapi/asm/socket.h  |  2 ++
->  arch/mips/include/uapi/asm/socket.h   |  2 ++
->  arch/parisc/include/uapi/asm/socket.h |  2 ++
->  arch/sparc/include/uapi/asm/socket.h  |  2 ++
->  include/net/sock.h                    |  3 +--
->  include/uapi/asm-generic/socket.h     |  2 ++
->  include/uapi/linux/socket.h           |  5 +++++
->  net/core/sock.c                       | 13 +++++++++++++
->  8 files changed, 29 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/alpha/include/uapi/asm/socket.h b/arch/alpha/include/uapi/asm/socket.h
-> index 6b3daba60987..1dd9baf4a6c2 100644
-> --- a/arch/alpha/include/uapi/asm/socket.h
-> +++ b/arch/alpha/include/uapi/asm/socket.h
-> @@ -129,6 +129,8 @@
->
->  #define SO_NETNS_COOKIE                71
->
-> +#define SO_BUF_LOCK            72
-> +
->  #if !defined(__KERNEL__)
->
->  #if __BITS_PER_LONG == 64
-> diff --git a/arch/mips/include/uapi/asm/socket.h b/arch/mips/include/uapi/asm/socket.h
-> index cdf404a831b2..1eaf6a1ca561 100644
-> --- a/arch/mips/include/uapi/asm/socket.h
-> +++ b/arch/mips/include/uapi/asm/socket.h
-> @@ -140,6 +140,8 @@
->
->  #define SO_NETNS_COOKIE                71
->
-> +#define SO_BUF_LOCK            72
-> +
->  #if !defined(__KERNEL__)
->
->  #if __BITS_PER_LONG == 64
-> diff --git a/arch/parisc/include/uapi/asm/socket.h b/arch/parisc/include/uapi/asm/socket.h
-> index 5b5351cdcb33..8baaad52d799 100644
-> --- a/arch/parisc/include/uapi/asm/socket.h
-> +++ b/arch/parisc/include/uapi/asm/socket.h
-> @@ -121,6 +121,8 @@
->
->  #define SO_NETNS_COOKIE                0x4045
->
-> +#define SO_BUF_LOCK            0x4046
-> +
->  #if !defined(__KERNEL__)
->
->  #if __BITS_PER_LONG == 64
-> diff --git a/arch/sparc/include/uapi/asm/socket.h b/arch/sparc/include/uapi/asm/socket.h
-> index 92675dc380fa..e80ee8641ac3 100644
-> --- a/arch/sparc/include/uapi/asm/socket.h
-> +++ b/arch/sparc/include/uapi/asm/socket.h
-> @@ -122,6 +122,8 @@
->
->  #define SO_NETNS_COOKIE          0x0050
->
-> +#define SO_BUF_LOCK              0x0051
-> +
->  #if !defined(__KERNEL__)
->
->
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index ff1be7e7e90b..6e761451c927 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -68,6 +68,7 @@
->  #include <net/tcp_states.h>
->  #include <linux/net_tstamp.h>
->  #include <net/l3mdev.h>
-> +#include <uapi/linux/socket.h>
->
->  /*
->   * This structure really needs to be cleaned up.
-> @@ -1438,8 +1439,6 @@ static inline int __sk_prot_rehash(struct sock *sk)
->  #define RCV_SHUTDOWN   1
->  #define SEND_SHUTDOWN  2
->
-> -#define SOCK_SNDBUF_LOCK       1
-> -#define SOCK_RCVBUF_LOCK       2
->  #define SOCK_BINDADDR_LOCK     4
->  #define SOCK_BINDPORT_LOCK     8
->
-> diff --git a/include/uapi/asm-generic/socket.h b/include/uapi/asm-generic/socket.h
-> index d588c244ec2f..1f0a2b4864e4 100644
-> --- a/include/uapi/asm-generic/socket.h
-> +++ b/include/uapi/asm-generic/socket.h
-> @@ -124,6 +124,8 @@
->
->  #define SO_NETNS_COOKIE                71
->
-> +#define SO_BUF_LOCK            72
-> +
->  #if !defined(__KERNEL__)
->
->  #if __BITS_PER_LONG == 64 || (defined(__x86_64__) && defined(__ILP32__))
-> diff --git a/include/uapi/linux/socket.h b/include/uapi/linux/socket.h
-> index c3409c8ec0dd..eb0a9a5b6e71 100644
-> --- a/include/uapi/linux/socket.h
-> +++ b/include/uapi/linux/socket.h
-> @@ -26,4 +26,9 @@ struct __kernel_sockaddr_storage {
->         };
->  };
->
-> +#define SOCK_SNDBUF_LOCK       1
-> +#define SOCK_RCVBUF_LOCK       2
-> +
-> +#define SOCK_BUF_LOCK_MASK (SOCK_SNDBUF_LOCK | SOCK_RCVBUF_LOCK)
-> +
->  #endif /* _UAPI_LINUX_SOCKET_H */
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 9671c32e6ef5..aada649e07e8 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -1358,6 +1358,15 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
->                 ret = sock_bindtoindex_locked(sk, val);
->                 break;
->
-> +       case SO_BUF_LOCK:
-> +               if (val & ~SOCK_BUF_LOCK_MASK) {
-> +                       ret = -EINVAL;
-> +                       break;
-> +               }
-> +               sk->sk_userlocks = val | (sk->sk_userlocks &
-> +                                         ~SOCK_BUF_LOCK_MASK);
-> +               break;
-> +
->         default:
->                 ret = -ENOPROTOOPT;
->                 break;
-> @@ -1720,6 +1729,10 @@ int sock_getsockopt(struct socket *sock, int level, int optname,
->                 v.val64 = sock_net(sk)->net_cookie;
->                 break;
->
-> +       case SO_BUF_LOCK:
-> +               v.val = sk->sk_userlocks & SOCK_BUF_LOCK_MASK;
-> +               break;
-> +
->         default:
->                 /* We implement the SO_SNDLOWAT etc to not be settable
->                  * (1003.1g 7).
-> --
-> 2.31.1
->
+Le 04/08/2021 à 10:08, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of August 4, 2021 3:27 pm:
+>> In those hot functions that are called at every interrupt, any saved
+>> cycle is worth it.
+>>
+>> interrupt_exit_user_prepare() and interrupt_exit_kernel_prepare() are
+>> called from three places:
+>> - From entry_32.S
+>> - From interrupt_64.S
+>> - From interrupt_exit_user_restart() and interrupt_exit_kernel_restart()
+>>
+>> In entry_32.S, there are inambiguously called based on MSR_PR:
+>>
+>> 	interrupt_return:
+>> 		lwz	r4,_MSR(r1)
+>> 		addi	r3,r1,STACK_FRAME_OVERHEAD
+>> 		andi.	r0,r4,MSR_PR
+>> 		beq	.Lkernel_interrupt_return
+>> 		bl	interrupt_exit_user_prepare
+>> 	...
+>> 	.Lkernel_interrupt_return:
+>> 		bl	interrupt_exit_kernel_prepare
+>>
+>> In interrupt_64.S, that's similar:
+>>
+>> 	interrupt_return_\srr\():
+>> 		ld	r4,_MSR(r1)
+>> 		andi.	r0,r4,MSR_PR
+>> 		beq	interrupt_return_\srr\()_kernel
+>> 	interrupt_return_\srr\()_user: /* make backtraces match the _kernel variant */
+>> 		addi	r3,r1,STACK_FRAME_OVERHEAD
+>> 		bl	interrupt_exit_user_prepare
+>> 	...
+>> 	interrupt_return_\srr\()_kernel:
+>> 		addi	r3,r1,STACK_FRAME_OVERHEAD
+>> 		bl	interrupt_exit_kernel_prepare
+>>
+>> In interrupt_exit_user_restart() and interrupt_exit_kernel_restart(),
+>> MSR_PR is verified respectively by BUG_ON(!user_mode(regs)) and
+>> BUG_ON(user_mode(regs)) prior to calling interrupt_exit_user_prepare()
+>> and interrupt_exit_kernel_prepare().
+>>
+>> The verification in interrupt_exit_user_prepare() and
+>> interrupt_exit_kernel_prepare() are therefore useless and can be removed.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> 
+> Probably okay to do now things are ironing out.
+> 
+> Unless we want to make a new define for interrupt handler debug and put
+> a bunch of these asserts under it. There's quite a lot more here, and
+> in asm/interrupt.h, etc.
+
+But that one is so trivial that I'm not sure there is any point in keeping it even as a kind of 
+additional DEBUG level, unless you want those BUG_ONs because you don't trust the compiler.
+
+Christophe
+
+> 
+> Thanks,
+> Nick
+> 
+>> ---
+>>   arch/powerpc/kernel/interrupt.c | 2 --
+>>   1 file changed, 2 deletions(-)
+>>
+>> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+>> index 21bbd615ca41..f26caf911ab5 100644
+>> --- a/arch/powerpc/kernel/interrupt.c
+>> +++ b/arch/powerpc/kernel/interrupt.c
+>> @@ -465,7 +465,6 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs)
+>>   
+>>   	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x))
+>>   		BUG_ON(!(regs->msr & MSR_RI));
+>> -	BUG_ON(!(regs->msr & MSR_PR));
+>>   	BUG_ON(arch_irq_disabled_regs(regs));
+>>   	CT_WARN_ON(ct_state() == CONTEXT_USER);
+>>   
+>> @@ -499,7 +498,6 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs)
+>>   	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x) &&
+>>   	    unlikely(!(regs->msr & MSR_RI)))
+>>   		unrecoverable_exception(regs);
+>> -	BUG_ON(regs->msr & MSR_PR);
+>>   	/*
+>>   	 * CT_WARN_ON comes here via program_check_exception,
+>>   	 * so avoid recursion.
+>> -- 
+>> 2.25.0
+>>
+>>
