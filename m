@@ -2,87 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4F73E00DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0583E00E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238015AbhHDMHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 08:07:36 -0400
-Received: from mga09.intel.com ([134.134.136.24]:30393 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236857AbhHDMHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 08:07:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="213889133"
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="213889133"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 05:07:22 -0700
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="467087460"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 05:07:19 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mBFg0-0056Cy-3X; Wed, 04 Aug 2021 15:07:12 +0300
-Date:   Wed, 4 Aug 2021 15:07:12 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v1 1/5] serdev: Split and export
- serdev_acpi_get_uart_resource()
-Message-ID: <YQqC8JOfH6BqTpW6@smile.fi.intel.com>
-References: <20210803192905.72246-1-andriy.shevchenko@linux.intel.com>
- <035d2579-f64c-b5c2-45ff-4421ad7db6ca@redhat.com>
+        id S236691AbhHDMMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 08:12:44 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58110 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235697AbhHDMMl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 08:12:41 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 296761FDD5;
+        Wed,  4 Aug 2021 12:12:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1628079148; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bn9YVbCSQKeHHPfP05oD5rwX8ODweOX9w/K+lArk/DE=;
+        b=pJykIc+xN1nPCYR+8lVCwGNHacbjeH4BnxYNPAjN5HwhwpgixEWNbXHGIVGxw0toxjfyE+
+        3Cz/TV2a/vLe+bxLld3Yxu29dFROf4HRFFmsffjqCyRRUT/p7QefScdDc8u+qL9c428dDi
+        8yrfvbcQ6E33HugPCEHnK31du1EvPTE=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 18078A3B84;
+        Wed,  4 Aug 2021 12:12:26 +0000 (UTC)
+Date:   Wed, 4 Aug 2021 14:12:22 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Chengyang Fan <cy.fan@huawei.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org, kgdb-bugreport@lists.sourceforge.net
+Subject: Re: [PATCH printk v1 03/10] kgdb: delay roundup if holding printk
+ cpulock
+Message-ID: <YQqEJtmNFxVxH3U/@alley>
+References: <20210803131301.5588-1-john.ogness@linutronix.de>
+ <20210803131301.5588-4-john.ogness@linutronix.de>
+ <20210803142558.cz7apumpgijs5y4y@maple.lan>
+ <87tuk635rb.fsf@jogness.linutronix.de>
+ <20210804113159.lsnoyylifg6v5i35@maple.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <035d2579-f64c-b5c2-45ff-4421ad7db6ca@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210804113159.lsnoyylifg6v5i35@maple.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 10:08:01AM +0200, Hans de Goede wrote:
-> Hi,
-> 
-> On 8/3/21 9:29 PM, Andy Shevchenko wrote:
-> > The same as for I²C Serial Bus resource split and export
-> > serdev_acpi_get_uart_resource(). We have already 3 users
-> > one of which is converted here.
+On Wed 2021-08-04 12:31:59, Daniel Thompson wrote:
+> On Tue, Aug 03, 2021 at 05:36:32PM +0206, John Ogness wrote:
+> > On 2021-08-03, Daniel Thompson <daniel.thompson@linaro.org> wrote:
+> > > On Tue, Aug 03, 2021 at 03:18:54PM +0206, John Ogness wrote:
+> > >> kgdb makes use of its own cpulock (@dbg_master_lock, @kgdb_active)
+> > >> during cpu roundup. This will conflict with the printk cpulock.
+> > >
+> > > When the full vision is realized what will be the purpose of the printk
+> > > cpulock?
+> > >
+> > > I'm asking largely because it's current role is actively unhelpful
+> > > w.r.t. kdb. It is possible that cautious use of in_dbg_master() might
+> > > be a better (and safer) solution. However it sounds like there is a
+> > > larger role planned for the printk cpulock...
 > > 
-> > Rationale of this is to consolidate parsing UART Serial Bus
-> > resource in one place as it's done, e.g., for I²C Serial Bus.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > The printk cpulock is used as a synchronization mechanism for
+> > implementing atomic consoles, which need to be able to safely interrupt
+> > the console write() activity at any time and immediately continue with
+> > their own printing. The ultimate goal is to move all console printing
+> > into per-console dedicated kthreads, so the primary function of the
+> > printk cpulock is really to immediately _stop_ the CPU/kthread
+> > performing write() in order to allow write_atomic() (from any context on
+> > any CPU) to safely and reliably take over.
 > 
-> Thanks, patch looks good to me:
+> I see.
 > 
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> Is there any mileage in allowing in_dbg_master() to suppress taking
+> the console lock?
 > 
-> *for this patch*
+> There's a couple of reasons to worry about the current approach.
 > 
-> We do need to talk about how to merge this series, I've
-> NACK-ed patches 3/5 and 4/5 (see my reply there) so that
-> leaves just 2/5  as depending on this one. I believe it
-> would be easiest to just merge 1/5 + 2/5 to the tree
-> which caries serdev patches, which I guess is Greg's
-> tty tree ?
+> The first is that we don't want this code to trigger in the case when
+> kgdb is enabled and kdb is not since it is only kdb (a self-hosted
+> debugger) than uses the consoles. This case is relatively trivial to
+> address since we can rename it kdb_roundup_delay() and alter the way it
+> is conditionally compiled.
+> 
+> The second is more of a problem however. kdb will only call into the
+> console code from the debug master. By default this is the CPU that
+> takes the debug trap so initial prints will work fine. However it is
+> possible to switch to a different master (so we can read per-CPU
+> registers and things like that). This will result in one of the CPUs
+> that did the IPI round up calling into console code and this is unsafe
+> in that instance.
+> 
+> There are a couple of tricks we could adopt to work around this but
+> given the slightly odd calling context for kdb (all CPUs quiesced, no
+> log interleaving possible) it sounds like it would remain safe to
+> bypass the lock if in_dbg_master() is true.
+> 
+> Bypassing an inconvenient lock might sound icky but:
+> 
+> 1. If the lock is not owned by any CPU then what kdb will do is safe.
+>
+> 2. If the lock is owned by any CPU then we have quiesced it anyway
+>    and this makes is safe for the owning CPU to share its ownership
+>    (since it isn't much different to recursive acquisition on a single
+>    CPU)
 
-I can resend a v2 with tags and dropped mentioned patches.
-I think it will be easier to everyone to handle.
+I think about the following:
 
--- 
-With Best Regards,
-Andy Shevchenko
+void kgdb_roundup_cpus(void)
+{
+	__printk_cpu_lock();
+	__kgdb_roundup_cpus();
+}
+
+, where __printk_cpu_lock() waits/takes printk_cpu_lock()
+	__kgdb_roundup_cpus() is the original kgdb_roundup_cpus();
 
 
+The idea is that kgdb_roundup_cpus() caller takes the printk_cpu lock.
+The owner will be well defined.
+
+As a result any other CPU will not be able to take the printk_cpu lock
+as long as it is owned by the kgdb lock. But as you say, kgdb will
+make sure that everything is serialized at this stage. So that
+the original raw_printk_cpu_lock_irqsave() might just disable
+IRQs when called under debugger.
+
+Does it make any sense?
+
+I have to say that it is a bit hairy. But it looks slightly better
+than the delayed/repeated IPI proposed by this patch.
+
+Best Regards,
+Petr
