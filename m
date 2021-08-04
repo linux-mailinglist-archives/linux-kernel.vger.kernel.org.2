@@ -2,100 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C98B3DF988
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 04:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAAB33DF986
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 04:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234344AbhHDCD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 22:03:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48406 "EHLO mail.kernel.org"
+        id S234301AbhHDCDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 22:03:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233916AbhHDCDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234024AbhHDCDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Aug 2021 22:03:54 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 504C760F58;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF4C760F70;
         Wed,  4 Aug 2021 02:03:42 +0000 (UTC)
-Date:   Tue, 3 Aug 2021 22:03:40 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Hui Su <suhui@zeku.com>
-Cc:     me@kloenk.de, masahiroy@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scripts/tracing: fix the bug that can't parse
- raw_trace_func
-Message-ID: <20210803220340.27771569@rorschach.local.home>
-In-Reply-To: <20210611022107.608787-1-suhui@zeku.com>
-References: <20210611022107.608787-1-suhui@zeku.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628042622;
+        bh=Q8eZPDaLV1ol8DdRIjz+PapA4l7YPLXHaVAtMQG8fcQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rk7x9d+D1beYS1le8B6CDGiBvszMGbxCKpwaeM6AUECSPSENheXrnO8Z//3j0OpvR
+         8BfqxbkpOld9PP95dIWFqHQsUf2ab3EYBaMRBiph1ccbxUu8ENsKuTFzz6HHxOYQm5
+         5YsFOJ3YO0aXPacziCSbs/OoyiPiw4wVVji6TA2wi7tipWAtZfKYH/1uzG47H0kLMV
+         tIktj9eRcCKJ/6KMOZmk1tnTSfIIBQRvAq2Y7xq/A26krSSfkIj0+kV0n7hw4JHt3U
+         WzquPDhCx3mp0uAMHqXdgMj4jZ/+kWSIgOors+YmdzX8ZxqMHYP7/AF9RXmNypuGcN
+         CVYqGxAp7frmA==
+Date:   Tue, 3 Aug 2021 19:03:41 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>
+Subject: Re: [PATCH] f2fs: compress: do sanity check on cluster
+Message-ID: <YQn1fchZOJlQeiW+@google.com>
+References: <20210803103952.737222-1-chao@kernel.org>
+ <YQmKQVxQwJL2GU09@google.com>
+ <275b4ec7-d7fd-b169-ff43-3ceec37b47b9@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <275b4ec7-d7fd-b169-ff43-3ceec37b47b9@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Jun 2021 10:21:07 +0800
-Hui Su <suhui@zeku.com> wrote:
-
-> Since commit 77271ce4b2c0 ("tracing: Add irq, preempt-count and need resched info
-> to default trace output"), the default trace output format has been changed to:
->           <idle>-0       [009] d.h. 22420.068695: _raw_spin_lock_irqsave <-hrtimer_interrupt
->           <idle>-0       [000] ..s. 22420.068695: _nohz_idle_balance <-run_rebalance_domains
->           <idle>-0       [011] d.h. 22420.068695: account_process_tick <-update_process_times
+On 08/04, Chao Yu wrote:
+> On 2021/8/4 2:26, Jaegeuk Kim wrote:
+> > On 08/03, Chao Yu wrote:
+> > > This patch adds f2fs_sanity_check_cluster() to support doing
+> > > sanity check on cluster of compressed file, it will be triggered
+> > > from below two paths:
+> > > 
+> > > - __f2fs_cluster_blocks()
+> > > - f2fs_map_blocks(F2FS_GET_BLOCK_FIEMAP)
+> > > 
+> > > And it can detect below three kind of cluster insanity status.
+> > > 
+> > > C: COMPRESS_ADDR
+> > > N: NULL_ADDR or NEW_ADDR
+> > > V: valid blkaddr
+> > > *: any value
+> > > 
+> > > 1. [*|C|*|*]
+> > > 2. [C|*|C|*]
+> > > 3. [C|N|N|V]
+> > > 
+> > > Signed-off-by: Chao Yu <chao@kernel.org>
+> > > ---
+> > >   fs/f2fs/compress.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++
+> > >   fs/f2fs/data.c     | 21 ++++++++++++------
+> > >   fs/f2fs/f2fs.h     |  1 +
+> > >   3 files changed, 68 insertions(+), 7 deletions(-)
+> > > 
+> > > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+> > > index 455561826c7d..4aa166d3d9bf 100644
+> > > --- a/fs/f2fs/compress.c
+> > > +++ b/fs/f2fs/compress.c
+> > > @@ -898,6 +898,54 @@ static bool cluster_has_invalid_data(struct compress_ctx *cc)
+> > >   	return false;
+> > >   }
+> > > +bool f2fs_sanity_check_cluster(struct dnode_of_data *dn)
+> > > +{
+> > > +	struct f2fs_sb_info *sbi = F2FS_I_SB(dn->inode);
+> > > +	unsigned int cluster_size = F2FS_I(dn->inode)->i_cluster_size;
+> > > +	bool compressed = dn->data_blkaddr == COMPRESS_ADDR;
+> > > +	int cluster_end = 0;
+> > > +	int i;
+> > > +	char *reason = "";
+> > > +
+> > > +	if (!compressed)
+> > > +		return false;
+> > > +
+> > > +	/* [..., COMPR_ADDR, ...] */
+> > > +	if (dn->ofs_in_node % cluster_size) {
+> > > +		reason = "[*|C|*|*]";
+> > > +		goto out;
+> > > +	}
+> > > +
+> > > +	for (i = 1; i < cluster_size; i++) {
+> > > +		block_t blkaddr = data_blkaddr(dn->inode, dn->node_page,
+> > > +							dn->ofs_in_node + i);
+> > > +
+> > > +		/* [COMPR_ADDR, ..., COMPR_ADDR] */
+> > > +		if (blkaddr == COMPRESS_ADDR) {
+> > > +			reason = "[C|*|C|*]";
+> > > +			goto out;
+> > > +		}
+> > > +		if (compressed) {
+> > > +			if (!__is_valid_data_blkaddr(blkaddr)) {
+> > > +				if (!cluster_end)
+> > > +					cluster_end = i;
+> > > +				continue;
+> > > +			}
+> > > +			/* [COMPR_ADDR, NULL_ADDR or NEW_ADDR, valid_blkaddr] */
+> > > +			if (cluster_end) {
+> > > +				reason = "[C|N|N|V]";
+> > > +				goto out;
+> > > +			}
+> > > +		}
+> > > +	}
+> > > +	return false;
+> > > +out:
+> > > +	f2fs_warn(sbi, "access invalid cluster, ino:%lu, nid:%u, ofs_in_node:%u, reason:%s",
+> > > +			dn->inode->i_ino, dn->nid, dn->ofs_in_node, reason);
+> > > +	set_sbi_flag(sbi, SBI_NEED_FSCK);
+> > > +	return true;
+> > > +}
+> > > +
+> > >   static int __f2fs_cluster_blocks(struct inode *inode,
+> > >   				unsigned int cluster_idx, bool compr)
+> > >   {
+> > > @@ -915,6 +963,11 @@ static int __f2fs_cluster_blocks(struct inode *inode,
+> > >   		goto fail;
+> > >   	}
+> > > +	if (f2fs_sanity_check_cluster(&dn)) {
+> > > +		ret = -EFSCORRUPTED;
+> > > +		goto fail;
+> > > +	}
+> > > +
+> > >   	if (dn.data_blkaddr == COMPRESS_ADDR) {
+> > >   		int i;
+> > > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> > > index 948083c88d17..75dda2035f68 100644
+> > > --- a/fs/f2fs/data.c
+> > > +++ b/fs/f2fs/data.c
+> > > @@ -1558,13 +1558,20 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
+> > >   			}
+> > >   			if (flag == F2FS_GET_BLOCK_PRECACHE)
+> > >   				goto sync_out;
+> > > -			if (flag == F2FS_GET_BLOCK_FIEMAP &&
+> > > -						blkaddr == NULL_ADDR) {
+> > > -				if (map->m_next_pgofs)
+> > > -					*map->m_next_pgofs = pgofs + 1;
+> > > -				goto sync_out;
+> > > -			}
+> > > -			if (flag != F2FS_GET_BLOCK_FIEMAP) {
+> > > +			if (flag == ) {
+> > > +				if (blkaddr == NULL_ADDR) {
+> > > +					if (map->m_next_pgofs)
+> > > +						*map->m_next_pgofs = pgofs + 1;
+> > > +					goto sync_out;
+> > > +				}
+> > > +#ifdef CONFIG_F2FS_FS_COMPRESSION
+> > > +				if (f2fs_compressed_file(inode) &&
+> > > +					f2fs_sanity_check_cluster(&dn)) {
+> > > +					err = -EFSCORRUPTED;
+> > 
+> > I prefer to give the block map as is instead of giving an error, since this\
 > 
-> origin trace output format:(before v3.2.0)
->      # tracer: nop
->      #
->      #           TASK-PID    CPU#    TIMESTAMP  FUNCTION
->      #              | |       |          |         |
->           migration/0-6     [000]    50.025810: rcu_note_context_switch <-__schedule
->           migration/0-6     [000]    50.025812: trace_rcu_utilization <-rcu_note_context_switch
->           migration/0-6     [000]    50.025813: rcu_sched_qs <-rcu_note_context_switch
->           migration/0-6     [000]    50.025815: rcu_preempt_qs <-rcu_note_context_switch
->           migration/0-6     [000]    50.025817: trace_rcu_utilization <-rcu_note_context_switch
->           migration/0-6     [000]    50.025818: debug_lockdep_rcu_enabled <-__schedule
->           migration/0-6     [000]    50.025820: debug_lockdep_rcu_enabled <-__schedule
+> It looks the policy is not consistent with the one we did in
+> f2fs_is_valid_blkaddr().
+
+Why FIEMAP only? Do we need to check in other cases likewise
+f2fs_is_valid_blkaddr()?
+
 > 
-> The draw_functrace.py(introduced in v2.6.28) can't parse the new version format trace_func,
-> So we need modify draw_functrace.py to adapt the new version trace output format.
+> > takes away to debug the problem from user-land.
 > 
-> Signed-off-by: Hui Su <suhui@zeku.com>
+> We can debug through "dump.f2fs -i" command? also once f2fs_sanity_check_cluster()
+> fails, it will print kernel message for further debuging.
 
-Hi Hui.
+My concern here is how to debug and get out of this endless fiemap error before
+recovered.
 
-Sorry, I missed this patch. I'll add it to my queue and mark it for
-stable.
-
--- Steve
-
-
-> ---
->  scripts/tracing/draw_functrace.py | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/scripts/tracing/draw_functrace.py b/scripts/tracing/draw_functrace.py
-> index 74f8aadfd4cb..7011fbe003ff 100755
-> --- a/scripts/tracing/draw_functrace.py
-> +++ b/scripts/tracing/draw_functrace.py
-> @@ -17,7 +17,7 @@ Usage:
->  	$ cat /sys/kernel/debug/tracing/trace_pipe > ~/raw_trace_func
->  	Wait some times but not too much, the script is a bit slow.
->  	Break the pipe (Ctrl + Z)
-> -	$ scripts/draw_functrace.py < raw_trace_func > draw_functrace
-> +	$ scripts/tracing/draw_functrace.py < ~/raw_trace_func > draw_functrace
->  	Then you have your drawn trace in draw_functrace
->  """
->  
-> @@ -103,10 +103,10 @@ def parseLine(line):
->  	line = line.strip()
->  	if line.startswith("#"):
->  		raise CommentLineException
-> -	m = re.match("[^]]+?\\] +([0-9.]+): (\\w+) <-(\\w+)", line)
-> +	m = re.match("[^]]+?\\] +([a-z.]+) +([0-9.]+): (\\w+) <-(\\w+)", line)
->  	if m is None:
->  		raise BrokenLineException
-> -	return (m.group(1), m.group(2), m.group(3))
-> +	return (m.group(2), m.group(3), m.group(4))
->  
->  
->  def main():
-
+> Thanks,
+> 
+> > 
+> > > +					goto sync_out;
+> > > +				}
+> > > +#endif
+> > > +			} else {
+> > >   				/* for defragment case */
+> > >   				if (map->m_next_pgofs)
+> > >   					*map->m_next_pgofs = pgofs + 1;
+> > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > > index 20389b9b3eac..86d416ffad61 100644
+> > > --- a/fs/f2fs/f2fs.h
+> > > +++ b/fs/f2fs/f2fs.h
+> > > @@ -4060,6 +4060,7 @@ void f2fs_end_read_compressed_page(struct page *page, bool failed,
+> > >   							block_t blkaddr);
+> > >   bool f2fs_cluster_is_empty(struct compress_ctx *cc);
+> > >   bool f2fs_cluster_can_merge_page(struct compress_ctx *cc, pgoff_t index);
+> > > +bool f2fs_sanity_check_cluster(struct dnode_of_data *dn);
+> > >   void f2fs_compress_ctx_add_page(struct compress_ctx *cc, struct page *page);
+> > >   int f2fs_write_multi_pages(struct compress_ctx *cc,
+> > >   						int *submitted,
+> > > -- 
+> > > 2.22.1
