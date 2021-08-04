@@ -2,393 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126FF3E06C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0223E06C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237213AbhHDRaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 13:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40530 "EHLO
+        id S237620AbhHDRck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 13:32:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhHDRaM (ORCPT
+        with ESMTP id S229934AbhHDRci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:30:12 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D4CC0613D5;
-        Wed,  4 Aug 2021 10:29:59 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id DBEAB12810F5;
-        Wed,  4 Aug 2021 10:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1628098198;
-        bh=nV7FoaiBu/kfJ9Su7TbaD3GNW5DsSz4XpDp4JfntAFI=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=V/zfj6h48crdI4Pg/qv7mGK9D2+v5oMvZBiEWVT+YJ3q3X3GjCyDBKgAoXz5ItTcR
-         uxoP5r0Ua0PjIzQJjC3I5irrFSHmpV2bFX0yAoN44L+fHK2i8oXoYJnLpndq5PabD5
-         0fcxEes5a7pia4De3EHBAMaoBk4dUepmPAeJ4mAM=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id a1Szdpb_fKiV; Wed,  4 Aug 2021 10:29:58 -0700 (PDT)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 8217812810F4;
-        Wed,  4 Aug 2021 10:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1628098198;
-        bh=nV7FoaiBu/kfJ9Su7TbaD3GNW5DsSz4XpDp4JfntAFI=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=V/zfj6h48crdI4Pg/qv7mGK9D2+v5oMvZBiEWVT+YJ3q3X3GjCyDBKgAoXz5ItTcR
-         uxoP5r0Ua0PjIzQJjC3I5irrFSHmpV2bFX0yAoN44L+fHK2i8oXoYJnLpndq5PabD5
-         0fcxEes5a7pia4De3EHBAMaoBk4dUepmPAeJ4mAM=
-Message-ID: <271d6e9404dd961ec5ca9983b4730f61401bc3be.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 5.14-rc4
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Wed, 04 Aug 2021 10:29:57 -0700
+        Wed, 4 Aug 2021 13:32:38 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2473C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 10:32:25 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id n192-20020a25dac90000b029054c59edf217so3593368ybf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 10:32:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=/j6yv6+Ku7KXNVVOYpvwLhxyPAj/+OpFFq2HsmTelKU=;
+        b=aEvu1PvvMB0wxMb2Y6q3SiE+UMNgDVxc1W6N99HhRM3K95m/7DZunZj/X7+Zr5jO/N
+         T8HmzeMDLZbtx9q/yG403RgKgqX3JdtruL/brloTOQHYijCAEo21KvjI5T1fqfqNM1zv
+         IfPWPE6TdbzO3fiiidOXzDEwGFkOiyxYbnyLV9qXRgPeqhXTal8egtUppE46j3BNlwxg
+         0/K8y3ESUQihagJusSJ2tWJeu7VEkqNnJStFR6zVfGlZw9ttc95lJBK5/K2ueN46Tn6T
+         uX375nj+F0PenkQr9Jyu3LRVAnYtTPtyVjClOHZWmGSVng6CqENui1UwcWd2470dGVt8
+         CQKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=/j6yv6+Ku7KXNVVOYpvwLhxyPAj/+OpFFq2HsmTelKU=;
+        b=s+xL+XefBuKrc5BWRQ+beS65YbF1inZeXuDVQk/EuvcKruqE3rIJq+2wHj3wzlK3Ar
+         mxswekokM6sUe2dco6jwUD0HMCqZ9RJZulHyEM7pcvj1HMn0NLiflQjZr4aYdwMLGMnP
+         gPvUYlXUrRoYLBeErlahEoxiHDXDZdQom31b3fIzy3fN74J9FCC8IWpVHXalHEqCQuZ4
+         rsjJm6Xoz64jbR/2Hy0ooAOxsxHHjwdRrVDoQScb7RLTO69PrPqpr4YEqaYB+/mvjrQC
+         8TSBcGh7mkUwXZ0+76/Drzt5AuqnhmbkOF7GYjTJutzTOC2/o2rH4r0LwwUNM+5qTjzw
+         lQiA==
+X-Gm-Message-State: AOAM531SDo/QOcgpEm8Jf3k5RuGkBExbcb3uzo0Cq9B+vrZynFnlTUMt
+        FmjfwHigT+3VDwEIDG5oIMYylV62n1cRgA==
+X-Google-Smtp-Source: ABdhPJylwM+QqkMC3yBbQTg9bJ7ZkETdzwvGbCdH9xVy46m+hhV1uOAp2KU2ao/EHeoNE7bMbsLdAQWv9NMZug==
+X-Received: from abdulras.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:41e1])
+ (user=abdulras job=sendgmr) by 2002:a25:c589:: with SMTP id
+ v131mr621116ybe.344.1628098345153; Wed, 04 Aug 2021 10:32:25 -0700 (PDT)
+Date:   Wed,  4 Aug 2021 17:32:14 +0000
+Message-Id: <20210804173214.1027994-1-abdulras@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH v3] riscv: explicitly use symbol offsets for VDSO
+From:   Saleem Abdulrasool <abdulras@google.com>
+To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        clang-built-linux@googlegroups.com,
+        Saleem Abdulrasool <abdulras@google.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Seven fixes, five in drivers.  The two core changes are a trivial
-warning removal in scsi_scan.c and a change to rescan for capacity when
-a device makes a user induced (via a write to the state variable)
-offline->running transition to fix issues with device mapper.
+The current implementation of the `__rt_sigaction` reference computed an
+absolute offset relative to the mapped base of the VDSO.  While this can
+be handled in the medlow model, the medany model cannot handle this as
+it is meant to be position independent.  The current implementation
+relied on the BFD linker relaxing the PC-relative relocation into an
+absolute relocation as it was a near-zero address allowing it to be
+referenced relative to `zero`.
 
-The patch is available here:
+We now extract the offsets and create a generated header allowing the
+build with LLVM and lld to succeed as we no longer depend on the linker
+rewriting address references near zero.  This change was largely
+modelled after the ARM64 target which does something similar.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-
-The short changelog is:
-
-Harshvardhan Jha (1):
-      scsi: megaraid_mm: Fix end of loop tests for list_for_each_entry()
-
-Igor Pylypiv (1):
-      scsi: pm80xx: Fix TMF task completion race condition
-
-Li Manyi (1):
-      scsi: sr: Return correct event when media event code is 3
-
-Sreekanth Reddy (1):
-      scsi: core: Avoid printing an error if target_alloc() returns -ENXIO
-
-Tyrel Datwyler (1):
-      scsi: ibmvfc: Fix command state accounting and stale response detection
-
-Ye Bin (1):
-      scsi: scsi_dh_rdac: Avoid crash during rdac_bus_attach()
-
-lijinlin (1):
-      scsi: core: Fix capacity set to zero after offlinining device
-
-And the diffstat:
-
- drivers/scsi/device_handler/scsi_dh_rdac.c |  4 ++--
- drivers/scsi/ibmvscsi/ibmvfc.c             | 19 ++++++++++++++++--
- drivers/scsi/ibmvscsi/ibmvfc.h             |  1 +
- drivers/scsi/megaraid/megaraid_mm.c        | 21 ++++++++++++++------
- drivers/scsi/pm8001/pm8001_sas.c           | 32 ++++++++++++++----------------
- drivers/scsi/scsi_scan.c                   |  3 ++-
- drivers/scsi/scsi_sysfs.c                  |  9 ++++++---
- drivers/scsi/sr.c                          |  2 +-
- 8 files changed, 59 insertions(+), 32 deletions(-)
-
-With full diff below
-
-James
-
+Signed-off-by: Saleem Abdulrasool <abdulras@google.com>
 ---
+ arch/riscv/Makefile                        |  4 ++++
+ arch/riscv/include/asm/vdso.h              | 14 ++----------
+ arch/riscv/kernel/vdso/Makefile            | 25 ++++++++++------------
+ arch/riscv/kernel/vdso/gen_vdso_offsets.sh |  5 +++++
+ arch/riscv/kernel/vdso/so2s.sh             |  6 ------
+ 5 files changed, 22 insertions(+), 32 deletions(-)
+ create mode 100755 arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+ delete mode 100755 arch/riscv/kernel/vdso/so2s.sh
 
-diff --git a/drivers/scsi/device_handler/scsi_dh_rdac.c b/drivers/scsi/device_handler/scsi_dh_rdac.c
-index 25f6e1ac9e7b..66652ab409cc 100644
---- a/drivers/scsi/device_handler/scsi_dh_rdac.c
-+++ b/drivers/scsi/device_handler/scsi_dh_rdac.c
-@@ -453,8 +453,8 @@ static int initialize_controller(struct scsi_device *sdev,
- 		if (!h->ctlr)
- 			err = SCSI_DH_RES_TEMP_UNAVAIL;
- 		else {
--			list_add_rcu(&h->node, &h->ctlr->dh_list);
- 			h->sdev = sdev;
-+			list_add_rcu(&h->node, &h->ctlr->dh_list);
- 		}
- 		spin_unlock(&list_lock);
- 		err = SCSI_DH_OK;
-@@ -778,11 +778,11 @@ static void rdac_bus_detach( struct scsi_device *sdev )
- 	spin_lock(&list_lock);
- 	if (h->ctlr) {
- 		list_del_rcu(&h->node);
--		h->sdev = NULL;
- 		kref_put(&h->ctlr->kref, release_controller);
- 	}
- 	spin_unlock(&list_lock);
- 	sdev->handler_data = NULL;
-+	synchronize_rcu();
- 	kfree(h);
- }
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index bc74afdbf31e..e026b2d0a5a4 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -108,6 +108,10 @@ PHONY += vdso_install
+ vdso_install:
+ 	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso $@
  
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index bee1bec49c09..935b01ee44b7 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -807,6 +807,13 @@ static int ibmvfc_init_event_pool(struct ibmvfc_host *vhost,
- 	for (i = 0; i < size; ++i) {
- 		struct ibmvfc_event *evt = &pool->events[i];
- 
-+		/*
-+		 * evt->active states
-+		 *  1 = in flight
-+		 *  0 = being completed
-+		 * -1 = free/freed
-+		 */
-+		atomic_set(&evt->active, -1);
- 		atomic_set(&evt->free, 1);
- 		evt->crq.valid = 0x80;
- 		evt->crq.ioba = cpu_to_be64(pool->iu_token + (sizeof(*evt->xfer_iu) * i));
-@@ -1017,6 +1024,7 @@ static void ibmvfc_free_event(struct ibmvfc_event *evt)
- 
- 	BUG_ON(!ibmvfc_valid_event(pool, evt));
- 	BUG_ON(atomic_inc_return(&evt->free) != 1);
-+	BUG_ON(atomic_dec_and_test(&evt->active));
- 
- 	spin_lock_irqsave(&evt->queue->l_lock, flags);
- 	list_add_tail(&evt->queue_list, &evt->queue->free);
-@@ -1072,6 +1080,12 @@ static void ibmvfc_complete_purge(struct list_head *purge_list)
-  **/
- static void ibmvfc_fail_request(struct ibmvfc_event *evt, int error_code)
- {
-+	/*
-+	 * Anything we are failing should still be active. Otherwise, it
-+	 * implies we already got a response for the command and are doing
-+	 * something bad like double completing it.
-+	 */
-+	BUG_ON(!atomic_dec_and_test(&evt->active));
- 	if (evt->cmnd) {
- 		evt->cmnd->result = (error_code << 16);
- 		evt->done = ibmvfc_scsi_eh_done;
-@@ -1723,6 +1737,7 @@ static int ibmvfc_send_event(struct ibmvfc_event *evt,
- 
- 		evt->done(evt);
- 	} else {
-+		atomic_set(&evt->active, 1);
- 		spin_unlock_irqrestore(&evt->queue->l_lock, flags);
- 		ibmvfc_trc_start(evt);
- 	}
-@@ -3251,7 +3266,7 @@ static void ibmvfc_handle_crq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost,
- 		return;
- 	}
- 
--	if (unlikely(atomic_read(&evt->free))) {
-+	if (unlikely(atomic_dec_if_positive(&evt->active))) {
- 		dev_err(vhost->dev, "Received duplicate correlation_token 0x%08llx!\n",
- 			crq->ioba);
- 		return;
-@@ -3778,7 +3793,7 @@ static void ibmvfc_handle_scrq(struct ibmvfc_crq *crq, struct ibmvfc_host *vhost
- 		return;
- 	}
- 
--	if (unlikely(atomic_read(&evt->free))) {
-+	if (unlikely(atomic_dec_if_positive(&evt->active))) {
- 		dev_err(vhost->dev, "Received duplicate correlation_token 0x%08llx!\n",
- 			crq->ioba);
- 		return;
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.h b/drivers/scsi/ibmvscsi/ibmvfc.h
-index 4f0f3baefae4..92fb889d7eb0 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.h
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.h
-@@ -745,6 +745,7 @@ struct ibmvfc_event {
- 	struct ibmvfc_target *tgt;
- 	struct scsi_cmnd *cmnd;
- 	atomic_t free;
-+	atomic_t active;
- 	union ibmvfc_iu *xfer_iu;
- 	void (*done)(struct ibmvfc_event *evt);
- 	void (*_done)(struct ibmvfc_event *evt);
-diff --git a/drivers/scsi/megaraid/megaraid_mm.c b/drivers/scsi/megaraid/megaraid_mm.c
-index abf7b401f5b9..c509440bd161 100644
---- a/drivers/scsi/megaraid/megaraid_mm.c
-+++ b/drivers/scsi/megaraid/megaraid_mm.c
-@@ -238,7 +238,7 @@ mraid_mm_get_adapter(mimd_t __user *umimd, int *rval)
- 	mimd_t		mimd;
- 	uint32_t	adapno;
- 	int		iterator;
--
-+	bool		is_found;
- 
- 	if (copy_from_user(&mimd, umimd, sizeof(mimd_t))) {
- 		*rval = -EFAULT;
-@@ -254,12 +254,16 @@ mraid_mm_get_adapter(mimd_t __user *umimd, int *rval)
- 
- 	adapter = NULL;
- 	iterator = 0;
-+	is_found = false;
- 
- 	list_for_each_entry(adapter, &adapters_list_g, list) {
--		if (iterator++ == adapno) break;
-+		if (iterator++ == adapno) {
-+			is_found = true;
-+			break;
-+		}
- 	}
- 
--	if (!adapter) {
-+	if (!is_found) {
- 		*rval = -ENODEV;
- 		return NULL;
- 	}
-@@ -725,6 +729,7 @@ ioctl_done(uioc_t *kioc)
- 	uint32_t	adapno;
- 	int		iterator;
- 	mraid_mmadp_t*	adapter;
-+	bool		is_found;
- 
- 	/*
- 	 * When the kioc returns from driver, make sure it still doesn't
-@@ -747,19 +752,23 @@ ioctl_done(uioc_t *kioc)
- 		iterator	= 0;
- 		adapter		= NULL;
- 		adapno		= kioc->adapno;
-+		is_found	= false;
- 
- 		con_log(CL_ANN, ( KERN_WARNING "megaraid cmm: completed "
- 					"ioctl that was timedout before\n"));
- 
- 		list_for_each_entry(adapter, &adapters_list_g, list) {
--			if (iterator++ == adapno) break;
-+			if (iterator++ == adapno) {
-+				is_found = true;
-+				break;
-+			}
- 		}
- 
- 		kioc->timedout = 0;
- 
--		if (adapter) {
-+		if (is_found)
- 			mraid_mm_dealloc_kioc( adapter, kioc );
--		}
++prepare: vdso_prepare
++vdso_prepare: prepare0
++	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso include/generated/vdso-offsets.h
 +
- 	}
- 	else {
- 		wake_up(&wait_q);
-diff --git a/drivers/scsi/pm8001/pm8001_sas.c b/drivers/scsi/pm8001/pm8001_sas.c
-index 48548a95327b..32e60f0c3b14 100644
---- a/drivers/scsi/pm8001/pm8001_sas.c
-+++ b/drivers/scsi/pm8001/pm8001_sas.c
-@@ -684,8 +684,7 @@ int pm8001_dev_found(struct domain_device *dev)
+ ifneq ($(CONFIG_XIP_KERNEL),y)
+ ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN),yy)
+ KBUILD_IMAGE := $(boot)/loader.bin
+diff --git a/arch/riscv/include/asm/vdso.h b/arch/riscv/include/asm/vdso.h
+index 1453a2f563bc..d8d003c2b5a3 100644
+--- a/arch/riscv/include/asm/vdso.h
++++ b/arch/riscv/include/asm/vdso.h
+@@ -9,25 +9,15 @@
+ #define _ASM_RISCV_VDSO_H
  
- void pm8001_task_done(struct sas_task *task)
- {
--	if (!del_timer(&task->slow_task->timer))
--		return;
-+	del_timer(&task->slow_task->timer);
- 	complete(&task->slow_task->completion);
- }
+ #include <linux/types.h>
++#include <generated/vdso-offsets.h>
  
-@@ -693,9 +692,14 @@ static void pm8001_tmf_timedout(struct timer_list *t)
- {
- 	struct sas_task_slow *slow = from_timer(slow, t, timer);
- 	struct sas_task *task = slow->task;
-+	unsigned long flags;
+ #ifndef CONFIG_GENERIC_TIME_VSYSCALL
+ struct vdso_data {
+ };
+ #endif
  
--	task->task_state_flags |= SAS_TASK_STATE_ABORTED;
--	complete(&task->slow_task->completion);
-+	spin_lock_irqsave(&task->task_state_lock, flags);
-+	if (!(task->task_state_flags & SAS_TASK_STATE_DONE)) {
-+		task->task_state_flags |= SAS_TASK_STATE_ABORTED;
-+		complete(&task->slow_task->completion);
-+	}
-+	spin_unlock_irqrestore(&task->task_state_lock, flags);
- }
+-/*
+- * The VDSO symbols are mapped into Linux so we can just use regular symbol
+- * addressing to get their offsets in userspace.  The symbols are mapped at an
+- * offset of 0, but since the linker must support setting weak undefined
+- * symbols to the absolute address 0 it also happens to support other low
+- * addresses even when the code model suggests those low addresses would not
+- * otherwise be availiable.
+- */
+ #define VDSO_SYMBOL(base, name)							\
+-({										\
+-	extern const char __vdso_##name[];					\
+-	(void __user *)((unsigned long)(base) + __vdso_##name);			\
+-})
++	(void __user *)((unsigned long)(base) + __vdso_##name##_offset)
  
- #define PM8001_TASK_TIMEOUT 20
-@@ -748,13 +752,10 @@ static int pm8001_exec_internal_tmf_task(struct domain_device *dev,
- 		}
- 		res = -TMF_RESP_FUNC_FAILED;
- 		/* Even TMF timed out, return direct. */
--		if ((task->task_state_flags & SAS_TASK_STATE_ABORTED)) {
--			if (!(task->task_state_flags & SAS_TASK_STATE_DONE)) {
--				pm8001_dbg(pm8001_ha, FAIL,
--					   "TMF task[%x]timeout.\n",
--					   tmf->tmf);
--				goto ex_err;
--			}
-+		if (task->task_state_flags & SAS_TASK_STATE_ABORTED) {
-+			pm8001_dbg(pm8001_ha, FAIL, "TMF task[%x]timeout.\n",
-+				   tmf->tmf);
-+			goto ex_err;
- 		}
+ asmlinkage long sys_riscv_flush_icache(uintptr_t, uintptr_t, uintptr_t);
  
- 		if (task->task_status.resp == SAS_TASK_COMPLETE &&
-@@ -834,12 +835,9 @@ pm8001_exec_internal_task_abort(struct pm8001_hba_info *pm8001_ha,
- 		wait_for_completion(&task->slow_task->completion);
- 		res = TMF_RESP_FUNC_FAILED;
- 		/* Even TMF timed out, return direct. */
--		if ((task->task_state_flags & SAS_TASK_STATE_ABORTED)) {
--			if (!(task->task_state_flags & SAS_TASK_STATE_DONE)) {
--				pm8001_dbg(pm8001_ha, FAIL,
--					   "TMF task timeout.\n");
--				goto ex_err;
--			}
-+		if (task->task_state_flags & SAS_TASK_STATE_ABORTED) {
-+			pm8001_dbg(pm8001_ha, FAIL, "TMF task timeout.\n");
-+			goto ex_err;
- 		}
+diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+index 24d936c147cd..f8cb9144a284 100644
+--- a/arch/riscv/kernel/vdso/Makefile
++++ b/arch/riscv/kernel/vdso/Makefile
+@@ -23,10 +23,10 @@ ifneq ($(c-gettimeofday-y),)
+ endif
  
- 		if (task->task_status.resp == SAS_TASK_COMPLETE &&
-diff --git a/drivers/scsi/scsi_scan.c b/drivers/scsi/scsi_scan.c
-index b059bf2b61d4..5b6996a2401b 100644
---- a/drivers/scsi/scsi_scan.c
-+++ b/drivers/scsi/scsi_scan.c
-@@ -475,7 +475,8 @@ static struct scsi_target *scsi_alloc_target(struct device *parent,
- 		error = shost->hostt->target_alloc(starget);
+ # Build rules
+-targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds vdso-syms.S
++targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds
+ obj-vdso := $(addprefix $(obj)/, $(obj-vdso))
  
- 		if(error) {
--			dev_printk(KERN_ERR, dev, "target allocation failed, error %d\n", error);
-+			if (error != -ENXIO)
-+				dev_err(dev, "target allocation failed, error %d\n", error);
- 			/* don't want scsi_target_reap to do the final
- 			 * put because it will be under the host lock */
- 			scsi_target_destroy(starget);
-diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-index 32489d25158f..ae9bfc658203 100644
---- a/drivers/scsi/scsi_sysfs.c
-+++ b/drivers/scsi/scsi_sysfs.c
-@@ -807,11 +807,14 @@ store_state_field(struct device *dev, struct device_attribute *attr,
- 	mutex_lock(&sdev->state_mutex);
- 	ret = scsi_device_set_state(sdev, state);
- 	/*
--	 * If the device state changes to SDEV_RUNNING, we need to run
--	 * the queue to avoid I/O hang.
-+	 * If the device state changes to SDEV_RUNNING, we need to
-+	 * rescan the device to revalidate it, and run the queue to
-+	 * avoid I/O hang.
- 	 */
--	if (ret == 0 && state == SDEV_RUNNING)
-+	if (ret == 0 && state == SDEV_RUNNING) {
-+		scsi_rescan_device(dev);
- 		blk_mq_run_hw_queues(sdev->request_queue, true);
-+	}
- 	mutex_unlock(&sdev->state_mutex);
+-obj-y += vdso.o vdso-syms.o
++obj-y += vdso.o
+ CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
  
- 	return ret == 0 ? count : -EINVAL;
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index 94c254e9012e..a6d3ac0a6cbc 100644
---- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -221,7 +221,7 @@ static unsigned int sr_get_events(struct scsi_device *sdev)
- 	else if (med->media_event_code == 2)
- 		return DISK_EVENT_MEDIA_CHANGE;
- 	else if (med->media_event_code == 3)
--		return DISK_EVENT_EJECT_REQUEST;
-+		return DISK_EVENT_MEDIA_CHANGE;
- 	return 0;
- }
+ # Disable -pg to prevent insert call site
+@@ -43,20 +43,22 @@ $(obj)/vdso.o: $(obj)/vdso.so
+ # link rule for the .so file, .lds has to be first
+ $(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) FORCE
+ 	$(call if_changed,vdsold)
+-LDFLAGS_vdso.so.dbg = -shared -s -soname=linux-vdso.so.1 \
++LDFLAGS_vdso.so.dbg = -shared -S -soname=linux-vdso.so.1 \
+ 	--build-id=sha1 --hash-style=both --eh-frame-hdr
  
+-# We also create a special relocatable object that should mirror the symbol
+-# table and layout of the linked DSO. With ld --just-symbols we can then
+-# refer to these symbols in the kernel code rather than hand-coded addresses.
+-$(obj)/vdso-syms.S: $(obj)/vdso.so FORCE
+-	$(call if_changed,so2s)
+-
+ # strip rule for the .so file
+ $(obj)/%.so: OBJCOPYFLAGS := -S
+ $(obj)/%.so: $(obj)/%.so.dbg FORCE
+ 	$(call if_changed,objcopy)
+ 
++# Generate VDSO offsets using helper script
++gen-vdsosym := $(srctree)/$(src)/gen_vdso_offsets.sh
++quiet_cmd_vdsosym = VDSOSYM $@
++	cmd_vdsosym = $(NM) $< | $(gen-vdsosym) | LC_ALL=C sort > $@
++
++include/generated/vdso-offsets.h: $(obj)/vdso.so.dbg FORCE
++	$(call if_changed,vdsosym)
++
+ # actual build commands
+ # The DSO images are built using a special linker script
+ # Make sure only to export the intended __vdso_xxx symbol offsets.
+@@ -65,11 +67,6 @@ quiet_cmd_vdsold = VDSOLD  $@
+                    $(OBJCOPY) $(patsubst %, -G __vdso_%, $(vdso-syms)) $@.tmp $@ && \
+                    rm $@.tmp
+ 
+-# Extracts symbol offsets from the VDSO, converting them into an assembly file
+-# that contains the same symbols at the same offsets.
+-quiet_cmd_so2s = SO2S    $@
+-      cmd_so2s = $(NM) -D $< | $(srctree)/$(src)/so2s.sh > $@
+-
+ # install commands for the unstripped file
+ quiet_cmd_vdso_install = INSTALL $@
+       cmd_vdso_install = cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
+diff --git a/arch/riscv/kernel/vdso/gen_vdso_offsets.sh b/arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+new file mode 100755
+index 000000000000..c2e5613f3495
+--- /dev/null
++++ b/arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+@@ -0,0 +1,5 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++
++LC_ALL=C
++sed -n -e 's/^[0]\+\(0[0-9a-fA-F]*\) . \(__vdso_[a-zA-Z0-9_]*\)$/\#define \2_offset\t0x\1/p'
+diff --git a/arch/riscv/kernel/vdso/so2s.sh b/arch/riscv/kernel/vdso/so2s.sh
+deleted file mode 100755
+index e64cb6d9440e..000000000000
+--- a/arch/riscv/kernel/vdso/so2s.sh
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0+
+-# Copyright 2020 Palmer Dabbelt <palmerdabbelt@google.com>
+-
+-sed 's!\([0-9a-f]*\) T \([a-z0-9_]*\)\(@@LINUX_4.15\)*!.global \2\n.set \2,0x\1!' \
+-| grep '^\.'
+-- 
+2.32.0.554.ge1b32706d8-goog
 
