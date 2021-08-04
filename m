@@ -2,114 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CB33E0A31
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FB93E0A38
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234972AbhHDWCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 18:02:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52850 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229479AbhHDWCO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 18:02:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628114520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d2KqUld+afo/DqE9+AEtQTsC0qFJZ5g464VDzN5fDCk=;
-        b=DznlWIsIohk04aVdpHuasVaWIpn8mGeEI3/N4ONXjaLG+NfnuxbGlM40phnf0Mko7D3CNP
-        o7ll2jECSR28U4AqOrVcw24K42YjHxR2OoO9C4tVF+O+dcmP/oNt6jULlZaZpZGtDiileM
-        Ea3FcVdOPwapWD7Lw9XhQIUSEFQi3xc=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262-ovtQRFh_MEaJwMBn1iEjNw-1; Wed, 04 Aug 2021 18:01:59 -0400
-X-MC-Unique: ovtQRFh_MEaJwMBn1iEjNw-1
-Received: by mail-wr1-f71.google.com with SMTP id d10-20020a056000114ab02901537f048363so1281199wrx.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 15:01:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d2KqUld+afo/DqE9+AEtQTsC0qFJZ5g464VDzN5fDCk=;
-        b=g5QlfTb67LmxSBkRgeFIfJzCBpBgConhS0EOJZaPEHNO1/wNxwLvpXAN1zeYG06x0t
-         PRaSC4W0hoyw5EGv9mO3ilxCrPYmhsBQyuFOXYqrapFfx8rtbZASm/S5vppild7Qjjwd
-         JMrswhedLVM+5bbgU1m831yVtPjAfr5HTCqQ92FXe3juh5pyrEiHuFr/kqIUREpMxXiy
-         WdLCHlFTg09jE5bU4RkBbc6fC565RH5+NI7jFbxCHQkTSrxE4jqjsypoNCtc4BBSXEnH
-         /5nBVpXvYIlHOS4a1ZXwFnVVs7kaSOTj8dW3gZpepOL2NlG+OY/P/qpT7pF+A2EuEk93
-         fm8A==
-X-Gm-Message-State: AOAM533aIGL670lkn1yVuElb8rxnFzGhvg3iaoyoGnPJ8GvYgBNNzWwK
-        PhphVJRNtt0hha3GT2Ds88/RmbOvZYkYCeStIC2PkIUzzvTrcE57QrK2YR3e3HG65uhzcW5QbhU
-        jO7zIdtP2XsgOOGdTHYpSUodODtBQ90nE69GxlnVY
-X-Received: by 2002:a05:600c:2241:: with SMTP id a1mr11802093wmm.171.1628114518450;
-        Wed, 04 Aug 2021 15:01:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyY5/nXWklNR1mjmCS911U1388HsPu+p770sIXPA+rC70wi12iHVm9penxHkIrsLojhFxJ+H/cT1xS0GAj+5BQ=
-X-Received: by 2002:a05:600c:2241:: with SMTP id a1mr11802083wmm.171.1628114518302;
- Wed, 04 Aug 2021 15:01:58 -0700 (PDT)
+        id S235062AbhHDWDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 18:03:51 -0400
+Received: from mga12.intel.com ([192.55.52.136]:38483 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231500AbhHDWDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 18:03:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="193615393"
+X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
+   d="scan'208";a="193615393"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 15:03:33 -0700
+X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
+   d="scan'208";a="671119206"
+Received: from cmalmber-mobl1.amr.corp.intel.com (HELO [10.212.219.120]) ([10.212.219.120])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 15:03:33 -0700
+Subject: Re: [PATCH v5 04/12] x86/tdx: Add protected guest support for TDX
+ guest
+To:     Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YQsNpG55v7dhFqIb@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <9c576f24-e6de-f816-623d-408a4a2ae747@intel.com>
+Date:   Wed, 4 Aug 2021 15:03:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAK8P3a0i0WP24Z0TScmPqKxmM2ovtKnmm+qZq6+Tc1ju+hma0w@mail.gmail.com>
- <20210804141049.499767-1-kherbst@redhat.com> <CAK8P3a136c_L3yVn-841Sbfib9UMOf1M-pk+2SqWt0wD2zfRKQ@mail.gmail.com>
- <CACO55tsLpURTm=Jf=4gRVtYQbit5h2OBYw_MFb6Vf1PFvTV7dw@mail.gmail.com>
- <CACO55tuy5Am9zbcR490KWYYAg7MguBN5m82vbjzifGN5KpGbxw@mail.gmail.com> <CAK8P3a3hZ7X5+kM5E+_Y+COUp49Kt6iDjiqMFtimiSbPk4byzQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a3hZ7X5+kM5E+_Y+COUp49Kt6iDjiqMFtimiSbPk4byzQ@mail.gmail.com>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Thu, 5 Aug 2021 00:01:47 +0200
-Message-ID: <CACO55tsj_dgo8NENArCQ_=qcuJoMPg9k-gfkWxZ_8FCQUOTY1A@mail.gmail.com>
-Subject: Re: [PATCH] depend on BACKLIGHT_CLASS_DEVICE for more devices
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lyude Paul <lyude@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        ML nouveau <nouveau@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YQsNpG55v7dhFqIb@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 11:10 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Wed, Aug 4, 2021 at 8:59 PM Karol Herbst <kherbst@redhat.com> wrote:
-> > On Wed, Aug 4, 2021 at 4:43 PM Karol Herbst <kherbst@redhat.com> wrote:
-> > > On Wed, Aug 4, 2021 at 4:19 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > > > On Wed, Aug 4, 2021 at 4:10 PM Karol Herbst <kherbst@redhat.com> wrote:
-> > > > >
-> > > > > playing around a little bit with this, I think the original "select
-> > > > > BACKLIGHT_CLASS_DEVICE" is fine. Atm we kind of have this weird mix of
-> > > > > drivers selecting and others depending on it. We could of course convert
-> > > > > everything over to depend, and break those cycling dependency issues with
-> > > > > this.
-> > > > >
-> > > > > Anyway this change on top of my initial patch is enough to make Kconfig
-> > > > > happy and has the advantage of not having to mess with the deps of nouveau
-> > > > > too much.
-> > > >
-> > > > Looks good to me. We'd probably want to make the BACKLIGHT_CLASS_DEVICE
-> > > > option itself 'default FB || DRM' though, to ensure that defconfigs
-> > > > keep working.
-> > > >
-> > >
-> > > okay cool. Will send out a proper updated patch series soonish.
-> > >
-> >
-> > mhh, actually that breaks drivers selecting FB_BACKLIGHT as now
-> > BACKLIGHT_CLASS_DEVICE might be disabled :(
->
-> Are you sure? It should already be the case that any driver that selects
-> FB_BACKLIGHT either 'depends on BACKLIGHT_CLASS_DEVICE'
-> or 'select BACKLIGHT_CLASS_DEVICE'.
->
+On 8/4/21 2:59 PM, Sean Christopherson wrote:
+>> +#include <asm/processor.h>
+>> +#include <asm/tdx.h>
+>> +
+>>  #ifndef __ASSEMBLY__
+>>  
+>>  static inline bool prot_guest_has(unsigned int attr)
+>>  {
+>>  	if (sme_me_mask)
+>>  		return amd_prot_guest_has(attr);
+>> +	else if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
+> Why not "boot_cpu_has(X86_FEATURE_TDX_GUEST)"?
 
-none of the fb drivers seem to do that.
-
-> If you change all the 'select BACKLIGHT_CLASS_DEVICE' to 'depends
-> on', I don't see a problem with doing 'select FB_BACKLIGHT' from
-> those.
->
-> I have applied your patch to my randconfig tree and built a few dozen
-> kernels, don't see any regressions so far, but will let it run over night.
->
->       Arnd
->
-
+Even better: cpu_feature_enabled(X86_FEATURE_TDX_GUEST).  That gets you
+both static patching *and* compile-time optimization if you hook
+X86_FEATURE_TDX_GUEST into disabled-features.h.
