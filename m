@@ -2,76 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6043E026E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 444963E0270
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238012AbhHDNvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:51:17 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:38759 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237798AbhHDNvQ (ORCPT
+        id S238119AbhHDNxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237156AbhHDNxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:51:16 -0400
-Received: from mail-wm1-f51.google.com ([209.85.128.51]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MoOpq-1mvLZO0uSG-00oobu; Wed, 04 Aug 2021 15:51:02 +0200
-Received: by mail-wm1-f51.google.com with SMTP id n12-20020a05600c3b8cb029025a67bbd40aso4020518wms.0;
-        Wed, 04 Aug 2021 06:51:02 -0700 (PDT)
-X-Gm-Message-State: AOAM530PmxCTTuHVC5UOsZvTJr2nLKlZ7fb2w0Bm4285dO1wUGlty/1U
-        Ti5ajmsX8Oydl87DQ4WhML2irZoQf0sI5wc/15g=
-X-Google-Smtp-Source: ABdhPJyNFXrQChPOLZS9aAXYYL1omRQ7dj4KugUgr5B6iGIyUO+NAtViqzCeM3ydmA0f6eM1ScWfqCiaf+g9Xa3Yeew=
-X-Received: by 2002:a05:600c:414b:: with SMTP id h11mr9756314wmm.120.1628085061870;
- Wed, 04 Aug 2021 06:51:01 -0700 (PDT)
+        Wed, 4 Aug 2021 09:53:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F9AC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 06:52:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sQHuzcjS6P96HYdRIf7uqQ4lnDNFAoSA8AvFOLfc/M4=; b=tewNok//YUiPhUzswLRFPp3jXc
+        PuQKMVAbnitnz6zWHQzh8f6a/RQc9KVm15hvF7mMIUaPZt/jrMllAsqYk4YTJHKNB1aUYp9c3Hidm
+        Upeu+cPbKwVMygr0h+RzLCHAC+sONRLA/6CkStl0UZTuRxjrHM3HsJItd63qdoupvZCJT6BEgwrAC
+        dd8mLHSVuiShgokS+uG1Fm6GAsRC7MuugPO+3QW53ogsr+OfrXzRIHA6u894yWnTn/2PDQsg1vVR3
+        i+/d/SXddJC4/Nc15pt2Iw3zncwB6dSBWBMks2GIEWXwrzVvQvg7iDB7Ga6EmnB2eEY+VqGTfWH3b
+        0ZN9VGOQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mBHJU-005uPG-Qe; Wed, 04 Aug 2021 13:52:13 +0000
+Date:   Wed, 4 Aug 2021 14:52:04 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>
+Subject: Re: [PATCH] f2fs: introduce nosmall_discard mount option
+Message-ID: <YQqbhMtVZvCF30r9@infradead.org>
+References: <20210730100530.4401-1-chao@kernel.org>
 MIME-Version: 1.0
-References: <20210803124506.23365-1-patrice.chotard@foss.st.com>
-In-Reply-To: <20210803124506.23365-1-patrice.chotard@foss.st.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 4 Aug 2021 15:50:45 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a06_vUXghtvp4jTMEc4jV7RW8XmbUmgfrsoH_BSZ+awJQ@mail.gmail.com>
-Message-ID: <CAK8P3a06_vUXghtvp4jTMEc4jV7RW8XmbUmgfrsoH_BSZ+awJQ@mail.gmail.com>
-Subject: Re: [PATCH 0/4] ARM: dts: sti: remove clk_ignore_unused from bootargs
-To:     Patrice CHOTARD <patrice.chotard@foss.st.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>, SoC Team <soc@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:frLBf9x2o+kfql5pBavIFUHAETAwWb6nqbcy6V7fNiVPrxPBsg1
- IR4m9kE5pWzO+yewKxCSgIGeOub/b9c0lKhq99/Vw0GjjNkyguvnBEjPmyeZ4OcuCWG8fUF
- qmjfQrSPHuzt96p8746sPy2zSCJTbGhrJ6lzsXWSZgKX4cn0E2Kr5qtzB5YKgXOlTcPZsxJ
- NjPqtZ07Z/tOHXHTNlyOQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JQiVNUwaNE8=:7GSQo8ZXcJEaSmeZx/DDhV
- 5f3ugmUyuQCbo6ByX5st7NSm+TXad/a/x1gtK7mTnV/EgrK5U/O3iyeFnZjXGZA6VfdvTCjeh
- 9YRqLqI1ma/P3OPcvw+JcVrlzJ+nx+Isg0k4YU3WuQViBhUY8c0Y5+t6wtotGAqJ5BwfCpYja
- AszS2/NNM8ZhxV7EvDRL+KK/7RRkuVyWTXTz+0s1uWau4iI4TgC/k2S93kPQs1mpd3Udxc7i5
- vVA7f2wzXs1i9JWYJIclR0+hUtIVBO1LeaV474Q/uIiyMHUzoPHBX/vdCEOJ5tjm9aNyqJ9un
- lciCckAffyh26IBEh7Ofkm6Ew7A7/BqtZDzJLN+4faquMLedLpusen74zYrAJ5TIHJ69c6o9A
- OOIGu5kBugCXzdfVacUMDnMnG2nNCLMQv2Hjsd707z7sSiwLgkG9V9GbxpW8S6ZvqF+/NbzqT
- 7t3oxZzxz4XioPtMmgB2O/QJEG3rrrRO2onnnOB2xtJIpojIB65pCcX/aclBIlVqdwHi1hxX2
- oBzlPEvwOIhNteX7viASDndQ+jlZn3I9iqwmqyo3lTtn1wL7G3c2GaTjnK+7IQpcAJm57BKU7
- UMSUiwys8d3SYnyAiASeabvvrwcf2MkLcgCzaUfv4ZVrvwyDnltes/o35/nO2aqorCwVRL0la
- h+N5532m+j7qhJEgDraWslv4T9riW/PmmgspBqFM080zBkvDfwratHG1x+FxynJlpHJRRWkrw
- sOJCmrm0i775V+QqKuh7Mi+Yo3FKJn0zzUIuPM+A2yKe2NC+V892+MjkeoiT8hHskq5HmQCdS
- 6EAKcCd+snRPOAOeWNZkcMajmt+bP/f1+HXNMc97SdeD6W7zghSikg2Mz/DqT8aRP/APr5J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730100530.4401-1-chao@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 2:45 PM <patrice.chotard@foss.st.com> wrote:
->
-> From: Patrice Chotard <patrice.chotard@foss.st.com>
->
-> Remove clk_ignore_unused from bootargs from STi boards DT.
+On Fri, Jul 30, 2021 at 06:05:30PM +0800, Chao Yu wrote:
+> This patch introduces a new mountoption "nosmall_discard" to support
+> disabling small discard functionality, note that the mountoption can not
+> be removed by remount() due to related metadata should always be
+> initialized during mount().
 
-The patches look good to me, but I'm not sure what you expect me to do
-here, as you have added soc@kernel.org to Cc:, and other addresses to To:
-
-I have dropped them from patchwork for the moment. When you want
-them to be applied to the soc tree, please resend or send a pull request
-to:soc@kernel.org, until then, please leave out that address so it does
-not get into patchwork.
-
-      Arnd
+Why does this need an option?  It should be enable IFF and only IFF a
+SMR drive is detected.
