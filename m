@@ -2,164 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011763E09F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDEC3E09F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhHDVUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:20:30 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:54646 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230014AbhHDVU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:20:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628112016; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=uCGICzJv+N4Cscfb4VHB7mulhy2uYSQDb+HMunR6BxM=; b=XIK5OQYMw71APGXxJOxI66ANO93SDOgAp0P1zh72nBRL0Eo+dq+1imKx9Xlyf6fguYtD/Dlk
- mPjNriCbZjel3DkIRAgX5hToxARy/yF8QreMKFmUppRDkCbjjjfjn2/Sb7uaWKYLdWJgtfTY
- mA/r9ajP6IAAwm5xB4XBjLhrAKA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 610b0487041a739c46c1a6ae (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Aug 2021 21:20:07
- GMT
-Sender: rishabhb=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C823AC4338A; Wed,  4 Aug 2021 21:20:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 78CBDC433D3;
-        Wed,  4 Aug 2021 21:20:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 78CBDC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rishabhb@codeaurora.org
-From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
-To:     sudeep.holla@arm.com, cristian.marussi@arm.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        avajid@codeaurora.org, adharmap@codeaurora.org,
-        Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Subject: [PATCH v3] firmware: arm_scmi: Free mailbox channels if probe fails
-Date:   Wed,  4 Aug 2021 14:19:59 -0700
-Message-Id: <1628111999-21595-1-git-send-email-rishabhb@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S230518AbhHDVWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230344AbhHDVWm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 17:22:42 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D26C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:22:29 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id n17so4139055lft.13
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:22:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UJEIF1MBhfOV8x4z5f0qO8eGLWYyB7UB8BJTiU6/7O8=;
+        b=Q2ftN7/c7umZq4SmFVMuZAx+rzkbimz0K+YLyZ2KSXIJIziAIdaJ1KaBVnmQ8yvqOV
+         5AenidY5GXZnjRTV0HTOrGg2f1kpY0+DQKSxHE/DUDWfWjyN4nQTqvWmBPfjg8JC7sB1
+         vh9PgKg1OAZxkr+gDgTtrHsxZQ8LH4aqtOPlCeSu/WOhOFetxTeqt52R8m7WeiDqM+w2
+         RoSDZZyMgl2KMFT+Sa74k5ou4I8gl4yURTdk7D6kriityAGqpizx6nch2QntcLoA6f7p
+         6d7xGQfm2nj12pxanrd0E59+xaOt6xQpIH7RydBRcAANUsWeaIxHCzXsTkM61EsSY9Bd
+         K7Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UJEIF1MBhfOV8x4z5f0qO8eGLWYyB7UB8BJTiU6/7O8=;
+        b=TpDuvXfbpbNMhHRrvyQBWoFS0tVRWnJ5lIXE6YLuZoKr/p/gSLG0RDOEVpYeSbx5NB
+         b8vKznidv8Nz50CcICkI/lLOFjAXVArJSEvYWSY6HwSHTIoYWoABGt0uX22wDA+/YIum
+         Ab+lgOZ6U7MIcElFFnNFcePPiAOkRtPLWZmvuFEF5EGiSPmehaGG+mjamIG29jvg2GUb
+         ZrVmj6zYiMD5jNsRXnlMQwPreBqg0UgNZx8Rw1KQ5Et15qwoCv5zuJOwtfKGhCegoPAG
+         w46kYhbTtMYwRiPdYB4yFy9kgsizGgHnExIFx1OzGaMia5DrvesZv8kQVihzZh7DnLYI
+         bdlg==
+X-Gm-Message-State: AOAM533ato+K7J9fvAqAQFZMTShnkzfbn98rjip4JtO0H/qMdvjCK5G4
+        0/g249trQWQfaWBi0VjlTiEiegsinp+tdEWSCn34Jg==
+X-Google-Smtp-Source: ABdhPJy/WQsmj7Ah+zKiTmlR/rxywqx0xCrCM7jCG3pMSJQFZyirN6Z3oXQmXjHNFmQzT8kSDupixHzxvVtqXXAP+M8=
+X-Received: by 2002:a05:6512:3f16:: with SMTP id y22mr853067lfa.356.1628112147822;
+ Wed, 04 Aug 2021 14:22:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210731175341.3458608-1-lrizzo@google.com> <20210803160803.GG543798@ziepe.ca>
+ <CAMOZA0JKjRFUHbs3zc4kiGcuXxR0arCN=oPZZsLCa4qHvRrH_A@mail.gmail.com>
+ <20210803230725.ao3i2emejyyor36n@revolver> <CAG48ez2TEP0hsRjLACVmRppMEk6Z9aREcGL498EKhdBBXSRsoA@mail.gmail.com>
+ <20210804152148.GI543798@ziepe.ca>
+In-Reply-To: <20210804152148.GI543798@ziepe.ca>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 4 Aug 2021 23:22:01 +0200
+Message-ID: <CAG48ez1U9OKoc3EUHLOTRvm67Bprrmznr9_49cKPU1FsjcsRKg@mail.gmail.com>
+Subject: Re: [PATCH] Add mmap_assert_locked() annotations to find_vma*()
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Liam Howlett <liam.howlett@oracle.com>,
+        Luigi Rizzo <lrizzo@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mailbox channels for the base protocol are setup during probe.
-There can be a scenario where probe fails to acquire the base
-protocol due to a timeout leading to cleaning up of all device
-managed memory including the scmi_mailbox structure setup during
-mailbox_chan_setup function.
-[   12.735104]arm-scmi soc:qcom,scmi: timed out in resp(caller: version_get+0x84/0x140)
-[   12.735224]arm-scmi soc:qcom,scmi: unable to communicate with SCMI
-[   12.735947]arm-scmi: probe of soc:qcom,scmi failed with error -110
+On Wed, Aug 4, 2021 at 5:21 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> On Wed, Aug 04, 2021 at 04:42:23PM +0200, Jann Horn wrote:
+> > Since I haven't sent a new version of my old series for almost a year,
+> > I think it'd be fine to take Luigi's patch for now, and undo it at a
+> > later point when/if we want to actually use proper locking here
+> > because we're worried about concurrent access to the MM.
+>
+> IIRC one of the major points of that work was not "proper locking" but
+> to have enough locking to be complatible with lockdep so we could add
+> assertions like in get_user_pages and find_vma.
 
-Now when a message arrives at cpu slightly after the timeout, the mailbox
-controller will try to call the rx_callback of the client and might end
-up accessing freed memory.
-[   12.758363][    C0] Call trace:
-[   12.758367][    C0]  rx_callback+0x24/0x160
-[   12.758372][    C0]  mbox_chan_received_data+0x44/0x94
-[   12.758386][    C0]  __handle_irq_event_percpu+0xd4/0x240
-This patch frees the mailbox channels setup during probe and adds some more
-error handling in case the probe fails.
+That's part of it; but it's also for making the code more clearly
+correct and future-proofing it. Looking at it now, I think
+process_madvise() might actually already be able to race with execve()
+to some degree; and if you made a change like this to the current
+kernel:
 
-Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
----
- drivers/firmware/arm_scmi/driver.c | 35 ++++++++++++++++++++++++-----------
- 1 file changed, 24 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 9b2e8d4..ead3bd3 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -1390,6 +1390,21 @@ void scmi_protocol_device_unrequest(const struct scmi_device_id *id_table)
- 	mutex_unlock(&scmi_requested_devices_mtx);
- }
- 
-+static int scmi_cleanup_txrx_channels(struct scmi_info *info)
-+{
-+	int ret;
-+	struct idr *idr = &info->tx_idr;
-+
-+	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
-+	idr_destroy(&info->tx_idr);
-+
-+	idr = &info->rx_idr;
-+	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
-+	idr_destroy(&info->rx_idr);
-+
-+	return ret;
-+}
-+
- static int scmi_probe(struct platform_device *pdev)
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 6d3d348b17f4..3648c198673c 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -1043,12 +1043,14 @@ madvise_behavior_valid(int behavior)
+ static bool
+ process_madvise_behavior_valid(int behavior)
  {
- 	int ret;
-@@ -1430,7 +1445,7 @@ static int scmi_probe(struct platform_device *pdev)
- 
- 	ret = scmi_xfer_info_init(info);
- 	if (ret)
--		return ret;
-+		goto clear_txrx_setup;
- 
- 	if (scmi_notification_init(handle))
- 		dev_err(dev, "SCMI Notifications NOT available.\n");
-@@ -1443,7 +1458,7 @@ static int scmi_probe(struct platform_device *pdev)
- 	ret = scmi_protocol_acquire(handle, SCMI_PROTOCOL_BASE);
- 	if (ret) {
- 		dev_err(dev, "unable to communicate with SCMI\n");
--		return ret;
-+		goto notification_exit;
- 	}
- 
- 	mutex_lock(&scmi_list_mutex);
-@@ -1482,6 +1497,12 @@ static int scmi_probe(struct platform_device *pdev)
- 	}
- 
- 	return 0;
-+
-+notification_exit:
-+	scmi_notification_exit(&info->handle);
-+clear_txrx_setup:
-+	scmi_cleanup_txrx_channels(info);
-+	return ret;
+        switch (behavior) {
+        case MADV_COLD:
+        case MADV_PAGEOUT:
++       case MADV_DOFORK:
++       case MADV_DONTFORK:
+                return true;
+        default:
+                return false;
+        }
  }
- 
- void scmi_free_channel(struct scmi_chan_info *cinfo, struct idr *idr, int id)
-@@ -1493,7 +1514,6 @@ static int scmi_remove(struct platform_device *pdev)
- {
- 	int ret = 0, id;
- 	struct scmi_info *info = platform_get_drvdata(pdev);
--	struct idr *idr = &info->tx_idr;
- 	struct device_node *child;
- 
- 	mutex_lock(&scmi_list_mutex);
-@@ -1517,14 +1537,7 @@ static int scmi_remove(struct platform_device *pdev)
- 	idr_destroy(&info->active_protocols);
- 
- 	/* Safe to free channels since no more users */
--	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
--	idr_destroy(&info->tx_idr);
--
--	idr = &info->rx_idr;
--	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
--	idr_destroy(&info->rx_idr);
--
--	return ret;
-+	return scmi_cleanup_txrx_channels(info);
- }
- 
- static ssize_t protocol_version_show(struct device *dev,
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
 
+it would probably introduce a memory corruption bug, because then
+someone might be able to destroy the stack VMA between
+setup_new_exec() and setup_arg_pages() by using process_madvise() to
+trigger VMA splitting/merging in the right pattern.
