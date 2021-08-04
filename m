@@ -2,206 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E68D3E069B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93FE3E0666
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239819AbhHDRRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 13:17:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:35350 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240032AbhHDRRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:17:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6166D14FF;
-        Wed,  4 Aug 2021 10:17:00 -0700 (PDT)
-Received: from 010265703453.arm.com (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 81E443F66F;
-        Wed,  4 Aug 2021 10:16:58 -0700 (PDT)
-From:   Robin Murphy <robin.murphy@arm.com>
-To:     joro@8bytes.org, will@kernel.org
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
-        john.garry@huawei.com, dianders@chromium.org, rajatja@google.com,
-        chenxiang66@hisilicon.com,
-        Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
-Subject: [PATCH v3 25/25] iommu: Allow enabling non-strict mode dynamically
-Date:   Wed,  4 Aug 2021 18:15:53 +0100
-Message-Id: <22b044263f69e2bfe404c4379a435005ea58b3e2.1628094601.git.robin.murphy@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1628094600.git.robin.murphy@arm.com>
-References: <cover.1628094600.git.robin.murphy@arm.com>
+        id S239808AbhHDRQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 13:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239695AbhHDRQN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 13:16:13 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C6BC0613D5;
+        Wed,  4 Aug 2021 10:15:59 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id h14so3043119wrx.10;
+        Wed, 04 Aug 2021 10:15:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=c4j6T3m1C4pL+lPcW0oUDbkxI8uRYoCs76i1TtiXvnc=;
+        b=sJpff0nnWDGvxC8ZM3ej4RZnYJELHF3NM1ikHDdi1c4Fk36WpZk+hGcOpgXXjwAdSo
+         K1EmXD7mCJNKoYowu6E8yC/z2eHUFN6eFBHYxosBSsaTwprZzwW1be5veR7y+ZUflmoC
+         cbSlcvu97XJRZyblcAy+wnCdMDj7DNnJdic80yzOhb/+E9KrobeBkPOzt26XBhPq3j/Z
+         OcARkok9Z2zQkg/2FoMZZhy1WY4lRcdyaty8Pz/rw4OtZX+9ef2x5B97wVrHRWLwPWip
+         xlWqkrvI/t7b4sO9PCkD5oSLAe61LskvLYpa8HGv91FRwlCaKBfIVYV1Ytm+TwF1IOxj
+         7Wng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c4j6T3m1C4pL+lPcW0oUDbkxI8uRYoCs76i1TtiXvnc=;
+        b=Bu0WyKc0RE3Zhj92N5o7kub+PAZl0CWWcEYlMjc6E5R/rbYnmLr/1IGOHFB2+lUjxp
+         UnWOjeWdi/gAgdo2cMtjJf7/eqV66bPZiIqHa2UkyP8A26wADinHiapqOLi4yHlggx0A
+         Q7PKdvCU8WJL+/Umme/kQSTjDOYb2o5pypn+RaSLn3HlCBP8El+o5kj8XADqkftazbjV
+         vifdwa+D1tYsPCfPS1xHu4N5l1OIEQmqydULUhBPULPwtZIfyBysyfcsrJR8jBpoijfG
+         iadalyjOACTgBklowus777GTZgFPJkmFQiQ60JePHgTQSG2Ui5XnMoaHS7tj8CVmK/4p
+         Vj3A==
+X-Gm-Message-State: AOAM531ZKZqYQucn1uzLGOS5mLT4wUKZ4OwoO4ldN21hiy84qOyTWhWG
+        VKR2HchCW6e83AxB0aw3rARUuCVvqxnjaQ==
+X-Google-Smtp-Source: ABdhPJwUObN0r34XPKPFfFXf0JVqSRsPVdEbkOCBYZN6v7CvkdaIkZBUf9JibNEtGgRtI50h2yRmIw==
+X-Received: by 2002:a5d:55cb:: with SMTP id i11mr446654wrw.158.1628097358323;
+        Wed, 04 Aug 2021 10:15:58 -0700 (PDT)
+Received: from ziggy.stardust (static-55-132-6-89.ipcom.comunitel.net. [89.6.132.55])
+        by smtp.gmail.com with ESMTPSA id z6sm2844141wmp.1.2021.08.04.10.15.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 10:15:57 -0700 (PDT)
+Subject: Re: [PATCH] arm: dts: mt7623: increase passive cooling trip
+To:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210725163451.217610-1-linux@fw-web.de>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <8122ce40-ee45-ff09-cc08-ac4d6ae2bfa5@gmail.com>
+Date:   Wed, 4 Aug 2021 19:15:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210725163451.217610-1-linux@fw-web.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocating and enabling a flush queue is in fact something we can
-reasonably do while a DMA domain is active, without having to rebuild it
-from scratch. Thus we can allow a strict -> non-strict transition from
-sysfs without requiring to unbind the device's driver, which is of
-particular interest to users who want to make selective relaxations to
-critical devices like the one serving their root filesystem.
 
-Disabling and draining a queue also seems technically possible to
-achieve without rebuilding the whole domain, but would certainly be more
-involved. Furthermore there's not such a clear use-case for tightening
-up security *after* the device may already have done whatever it is that
-you don't trust it not to do, so we only consider the relaxation case.
 
-CC: Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+On 25/07/2021 18:34, Frank Wunderlich wrote:
+> From: Frank Wunderlich <frank-w@public-files.de>
+> 
+> MT7623/BPI-R2 has idle temperature after bootup from 48 degrees celsius
+> increase the passive trip temp threshold to not trottle CPU frequency at
+> this temperature
+> 
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 
----
+pushed to v5.14-next/dts32
 
-v3: Actually think about concurrency, rework most of the fq data
-    accesses to be (hopefully) safe and comment it all
----
- drivers/iommu/dma-iommu.c | 25 ++++++++++++++++++-------
- drivers/iommu/iommu.c     | 16 ++++++++++++----
- drivers/iommu/iova.c      |  9 ++++++---
- 3 files changed, 36 insertions(+), 14 deletions(-)
+Thanks!
 
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index f51b8dc99ac6..6b04dc765d91 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -310,6 +310,12 @@ static bool dev_is_untrusted(struct device *dev)
- 	return dev_is_pci(dev) && to_pci_dev(dev)->untrusted;
- }
- 
-+/*
-+ * Protected from concurrent sysfs updates by the mutex of the group who owns
-+ * this domain. At worst it might theoretically be able to allocate two queues
-+ * and leak one if you poke sysfs to race just right with iommu_setup_dma_ops()
-+ * running for the first device in the group. Don't do that.
-+ */
- int iommu_dma_init_fq(struct iommu_domain *domain)
- {
- 	struct iommu_dma_cookie *cookie = domain->iova_cookie;
-@@ -325,7 +331,12 @@ int iommu_dma_init_fq(struct iommu_domain *domain)
- 		domain->type = IOMMU_DOMAIN_DMA;
- 		return -ENODEV;
- 	}
--	cookie->fq_domain = domain;
-+	/*
-+	 * Prevent incomplete iovad->fq being observable. Pairs with path from
-+	 * __iommu_dma_unmap() through iommu_dma_free_iova() to queue_iova()
-+	 */
-+	smp_wmb();
-+	WRITE_ONCE(cookie->fq_domain, domain);
- 	return 0;
- }
- 
-@@ -456,17 +467,17 @@ static dma_addr_t iommu_dma_alloc_iova(struct iommu_domain *domain,
- }
- 
- static void iommu_dma_free_iova(struct iommu_dma_cookie *cookie,
--		dma_addr_t iova, size_t size, struct page *freelist)
-+		dma_addr_t iova, size_t size, struct iommu_iotlb_gather *gather)
- {
- 	struct iova_domain *iovad = &cookie->iovad;
- 
- 	/* The MSI case is only ever cleaning up its most recent allocation */
- 	if (cookie->type == IOMMU_DMA_MSI_COOKIE)
- 		cookie->msi_iova -= size;
--	else if (cookie->fq_domain)	/* non-strict mode */
-+	else if (gather && gather->queued)
- 		queue_iova(iovad, iova_pfn(iovad, iova),
- 				size >> iova_shift(iovad),
--				(unsigned long)freelist);
-+				(unsigned long)gather->freelist);
- 	else
- 		free_iova_fast(iovad, iova_pfn(iovad, iova),
- 				size >> iova_shift(iovad));
-@@ -485,14 +496,14 @@ static void __iommu_dma_unmap(struct device *dev, dma_addr_t dma_addr,
- 	dma_addr -= iova_off;
- 	size = iova_align(iovad, size + iova_off);
- 	iommu_iotlb_gather_init(&iotlb_gather);
--	iotlb_gather.queued = cookie->fq_domain;
-+	iotlb_gather.queued = READ_ONCE(cookie->fq_domain);
- 
- 	unmapped = iommu_unmap_fast(domain, dma_addr, size, &iotlb_gather);
- 	WARN_ON(unmapped != size);
- 
--	if (!cookie->fq_domain)
-+	if (!iotlb_gather.queued)
- 		iommu_iotlb_sync(domain, &iotlb_gather);
--	iommu_dma_free_iova(cookie, dma_addr, size, iotlb_gather.freelist);
-+	iommu_dma_free_iova(cookie, dma_addr, size, &iotlb_gather);
- }
- 
- static void __iommu_dma_unmap_swiotlb(struct device *dev, dma_addr_t dma_addr,
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 480ad6a538a9..593d4555bc57 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -3203,6 +3203,13 @@ static int iommu_change_dev_def_domain(struct iommu_group *group,
- 		goto out;
- 	}
- 
-+	/* We can bring up a flush queue without tearing down the domain */
-+	if (type == IOMMU_DOMAIN_DMA_FQ && prev_dom->type == IOMMU_DOMAIN_DMA) {
-+		prev_dom->type = IOMMU_DOMAIN_DMA_FQ;
-+		ret = iommu_dma_init_fq(prev_dom);
-+		goto out;
-+	}
-+
- 	/* Sets group->default_domain to the newly allocated domain */
- 	ret = iommu_group_alloc_default_domain(dev->bus, group, type);
- 	if (ret)
-@@ -3243,9 +3250,9 @@ static int iommu_change_dev_def_domain(struct iommu_group *group,
- }
- 
- /*
-- * Changing the default domain through sysfs requires the users to ubind the
-- * drivers from the devices in the iommu group. Return failure if this doesn't
-- * meet.
-+ * Changing the default domain through sysfs requires the users to unbind the
-+ * drivers from the devices in the iommu group, except for a DMA -> DMA-FQ
-+ * transition. Return failure if this isn't met.
-  *
-  * We need to consider the race between this and the device release path.
-  * device_lock(dev) is used here to guarantee that the device release path
-@@ -3321,7 +3328,8 @@ static ssize_t iommu_group_store_type(struct iommu_group *group,
- 
- 	/* Check if the device in the group still has a driver bound to it */
- 	device_lock(dev);
--	if (device_is_bound(dev)) {
-+	if (device_is_bound(dev) && !(req_type == IOMMU_DOMAIN_DMA_FQ &&
-+	    group->default_domain->type == IOMMU_DOMAIN_DMA)) {
- 		pr_err_ratelimited("Device is still bound to driver\n");
- 		ret = -EBUSY;
- 		goto out;
-diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-index 2ad73fb2e94e..547b6243de9b 100644
---- a/drivers/iommu/iova.c
-+++ b/drivers/iommu/iova.c
-@@ -633,17 +633,20 @@ void queue_iova(struct iova_domain *iovad,
- 		unsigned long pfn, unsigned long pages,
- 		unsigned long data)
- {
--	struct iova_fq *fq = raw_cpu_ptr(iovad->fq);
-+	struct iova_fq *fq;
- 	unsigned long flags;
- 	unsigned idx;
- 
- 	/*
- 	 * Order against the IOMMU driver's pagetable update from unmapping
- 	 * @pte, to guarantee that iova_domain_flush() observes that if called
--	 * from a different CPU before we release the lock below.
-+	 * from a different CPU before we release the lock below. Full barrier
-+	 * so it also pairs with iommu_dma_init_fq() to avoid seeing partially
-+	 * written fq state here.
- 	 */
--	smp_wmb();
-+	smp_mb();
- 
-+	fq = raw_cpu_ptr(iovad->fq);
- 	spin_lock_irqsave(&fq->lock, flags);
- 
- 	/*
--- 
-2.25.1
-
+> ---
+>  arch/arm/boot/dts/mt7623.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dtsi
+> index b7247ab082aa..11933494e03d 100644
+> --- a/arch/arm/boot/dts/mt7623.dtsi
+> +++ b/arch/arm/boot/dts/mt7623.dtsi
+> @@ -160,7 +160,7 @@ cpu_thermal: cpu-thermal {
+>  
+>  				trips {
+>  					cpu_passive: cpu-passive {
+> -						temperature = <47000>;
+> +						temperature = <57000>;
+>  						hysteresis = <2000>;
+>  						type = "passive";
+>  					};
+> 
