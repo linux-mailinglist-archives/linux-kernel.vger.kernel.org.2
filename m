@@ -2,61 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42383E070C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E63EE3E0710
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239989AbhHDR7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 13:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
+        id S239996AbhHDSA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 14:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237302AbhHDR7N (ORCPT
+        with ESMTP id S238336AbhHDSA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:59:13 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A080C0613D5;
-        Wed,  4 Aug 2021 10:59:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=f05KDrtHywJ7ptgF5rdbcaksmjyPJirEWKVIlatL5dQ=; b=ZyInXTn6AUJn5/Nm0+ZZKIe/dw
-        AIYzDU9oMm85lKCsFXkMZcLEI3tUpqtdDmQEr/f1FLo63q7sSG7yxzHzPHeamw2fd5QEIW+kizVE/
-        fDQroRDkJvmQlIlm10Mc0GOZw/s7LWS4ZxHksbo+s0OelZXS17g/C50ngyawEkK0B32reP/1udCWc
-        vjC/nSD4k/XHMxKDH+TYvkmSc06J3qBTIJYkOnt05eBZag/g4x+hoCcQJznJkvMmO7qxb9WP+ej82
-        1RFeEdQmo8H1frJgEoOI91do5nV5KA2/btmeOW3q7NV3aZ7z3EW2idz/bF5bJUKwE7WWW6KGaxjA2
-        HWFhB1mQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBLAR-00771T-Fk; Wed, 04 Aug 2021 17:58:59 +0000
-Date:   Wed, 4 Aug 2021 10:58:59 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     lucas.demarchi@intel.com, linux-modules@vger.kernel.org
-Cc:     live-patching@vger.kernel.org, fstests@vger.kernel.org,
-        linux-block@vger.kernel.org, hare@suse.de, dgilbert@interlog.com,
-        jeyu@kernel.org, osandov@fb.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] libkmod-module: add support for a patient module removal
- option
-Message-ID: <YQrVY8Wxb026TDWN@bombadil.infradead.org>
-References: <20210803202417.462197-1-mcgrof@kernel.org>
+        Wed, 4 Aug 2021 14:00:57 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1234C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 11:00:44 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id c24so2599946lfi.11
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 11:00:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l+ibMoMQpfUT9bLOurH7tEEZu9XJnKNs+DZk3gP/F/4=;
+        b=WBMCSpfhYPpAbDByxBQBKT7VhO4Dg6FM8SOV2bcvsF/lN+kK2bCyTJUZ6jEovWCoX+
+         K2skLEM5eAzSTmZCQ03uLRTtHA03PfLmNKxYqktvZC02X2Ya1sC8dc+YsOGIYxp4iX9y
+         kJy/1ddRFufWylctzfiGmtZBEhftKzvEdArHZSEvrdjKY4DABPxn0kVc61fhb88Js04X
+         /pDP+9/MnqXPvNASm27oaFS2hhRPQ0T1mGDFKF19R7Cln1nV4yViPMKzRKsQh7wGynB1
+         E5gkOnb3VfJ9puu+JNUqXTrWVes+qqux+njGwM25Nb0nBnIW157Qotdp5lGmunLUjTVX
+         VbHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l+ibMoMQpfUT9bLOurH7tEEZu9XJnKNs+DZk3gP/F/4=;
+        b=RzIVvKk2ojyu7TwLjjpw3HtXL+wgAN1JbLP469Id1rA5IKkyHk4MrJT6RrQL+FIz0k
+         ZJS3Pdri+9rxUPn3sLkEaIm8wT62FRwyl3JqbYkzH+9w17H+n5U5o1IxEE9x0N1OO3mq
+         33zZtztV28eCiXVYU00jxfWpZseUx3WQT5JLm+AsZwAmtDo0jaPD5IxzCg+pLzhHPP0s
+         hLqJke6wOG5nV51/UuIw79A8oKmkxREUIZcS7TupWWId493I0tFS/Djic+Gp35z47Liy
+         MtkGWyk5Rm2uc8XwuLcRXKF9tvWEW77dO91WMBfoaEh5SeXg+JACL1IlWPd6mpJVwWKf
+         4qcg==
+X-Gm-Message-State: AOAM532Yq4qfKKJUZCeOwM2FF5GEOALeueIfYewvL+r5FQcPmSgx2rlC
+        t2wbsoTGt/C8UKfVT4b5ugIkCo99DnI2+bANN43m0A==
+X-Google-Smtp-Source: ABdhPJziGr2xLP3UUOomtvrTuLXQHTU+gO7hPP5YWfJP0XYZc7u7WOJANuDzqv46+qcs7/sjjnSl6W8p07MqaNXijZc=
+X-Received: by 2002:a05:6512:3041:: with SMTP id b1mr346634lfb.122.1628100042816;
+ Wed, 04 Aug 2021 11:00:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803202417.462197-1-mcgrof@kernel.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <20210720181542.2896262-1-ndesaulniers@google.com>
+In-Reply-To: <20210720181542.2896262-1-ndesaulniers@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 4 Aug 2021 11:00:31 -0700
+Message-ID: <CAKwvOdkdoAadmOt1w2cE4Q5rOM48qPt3_WgkSkhxGVsyVV6U0w@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: add Nick as Reviewer for compiler_attributes.h
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 01:24:17PM -0700, Luis Chamberlain wrote:
-> + diff --git a/libkmod/libkmod-module.c b/libkmod/libkmod-module.c
-<-- snip -->
-> +		ERR(mod->ctx, "%s refcnt is %ld waiting for it to become 0\n", mod->name, refcnt);
+Bumping for review EOM
 
-OK after running many tests with this I think we need to just expand
-this so that the error message only applies when -v is passed to
-modprobe, otherwise we get the print message every time, and using
-INFO() doesn't cut it, given the next priority level available to
-the library is LOG_INFO (6) and when modprobe -v is passed we set the
-log level to LOG_NOTICE (5), so we need a new NOTICE(). I'll send a v2
-with that included as a separate patch.
+On Tue, Jul 20, 2021 at 11:15 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> $ ./scripts/get_maintainer.pl --rolestats --git-blame -f \
+>   include/linux/compiler_attributes.h
+> ...
+> Nick Desaulniers <ndesaulniers@google.com> (supporter:CLANG/LLVM BUILD
+> SUPPORT,authored lines:43/331=13%,commits:8/15=53%)
+>
+> It's also important for me to stay up on which compiler attributes clang
+> is missing.
+>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 548783bf6505..fe9b2ab45402 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4658,6 +4658,7 @@ F:        drivers/platform/x86/compal-laptop.c
+>
+>  COMPILER ATTRIBUTES
+>  M:     Miguel Ojeda <ojeda@kernel.org>
+> +R:     Nick Desaulniers <ndesaulniers@google.com>
+>  S:     Maintained
+>  F:     include/linux/compiler_attributes.h
+>
+> --
+> 2.32.0.402.g57bb445576-goog
+>
 
-  Luis
+
+-- 
+Thanks,
+~Nick Desaulniers
