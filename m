@@ -2,109 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948703DFC72
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE683DFC76
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236122AbhHDIHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:07:15 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:50022 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236089AbhHDIHN (ORCPT
+        id S236145AbhHDIIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:08:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20431 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236113AbhHDIIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:07:13 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AvB1CAq5mbF3wPcJIFQPXwPTXdLJyesId70hD?=
- =?us-ascii?q?6qkRc20wTiX8ra2TdZsguyMc9wx6ZJhNo7G90cq7MBbhHPxOkOos1N6ZNWGIhI?=
- =?us-ascii?q?LCFvAB0WKN+V3dMhy73utc+IMlSKJmFeD3ZGIQse/KpCW+DPYsqePqzJyV?=
-X-IronPort-AV: E=Sophos;i="5.84,293,1620662400"; 
-   d="scan'208";a="112378081"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 04 Aug 2021 16:06:59 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id ED6DE4D0D49B;
-        Wed,  4 Aug 2021 16:06:53 +0800 (CST)
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Wed, 4 Aug 2021 16:06:53 +0800
-Received: from [192.168.122.212] (10.167.226.45) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Wed, 4 Aug 2021 16:06:53 +0800
-Subject: Re: RDMA/rpma + fsdax(ext4) was broken since 36f30e486d
-From:   =?UTF-8?B?TGksIFpoaWppYW4v5p2OIOaZuuWdmg==?= 
-        <lizhijian@cn.fujitsu.com>
-To:     Yishai Hadas <yishaih@nvidia.com>, <linux-rdma@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?WWFuZywgWGlhby/mnagg5pmT?= <yangx.jy@fujitsu.com>
-References: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
-Message-ID: <68169bc5-075f-8260-eedc-80fdf4b0accd@cn.fujitsu.com>
-Date:   Wed, 4 Aug 2021 16:06:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 4 Aug 2021 04:08:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628064485;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aZwnnJbZGmY78AaBVHz1xhD58sV1zCT+PSZcOVwS1yk=;
+        b=UPqVnThTeDgunlWyQxPrsZwPLrWaHXLZtFhN3SllXfeHO1CdFxsTN7nEZwOnRqO9jUaz0z
+        yqSPs3nGr4/1gPYlF2/37f9uMmFJzpekrb12dYuk6eYff21rFD8YQoPIuaFdcYml9VrrxH
+        QKYEZveAjgMBUH0TWaiXD5bCGPZQEEg=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-470-EqlO6WxoPISXNMGZFNGSIw-1; Wed, 04 Aug 2021 04:08:04 -0400
+X-MC-Unique: EqlO6WxoPISXNMGZFNGSIw-1
+Received: by mail-ej1-f70.google.com with SMTP id a19-20020a1709063e93b0290551ea218ea2so563523ejj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 01:08:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aZwnnJbZGmY78AaBVHz1xhD58sV1zCT+PSZcOVwS1yk=;
+        b=AySgLoe6Au2ya5X44gwdKay8BO6umiQw76fEBsZ9yKcISCeWdafTlptYimTZ4ksLPl
+         tipW9/TBIR3lDQeeH/o6go5AFvkKXEwNJvIQi2xPywkNPBCLZ2ihcJd2pGR+U7mY3udt
+         Z4NRjoyBuSACb2a5Ov4Z8lRe3aWyHG2IgLSXB5V7W7g0wAzzIucdY44mtotPG/YjWXvh
+         owzpLzqbjYF0UPWSmO8XVZTWTjQzciZWOL964/4AsL+FNZIuJfcevk1FZdIkjReygcBb
+         hIAY3g2gqd+U9PLvndah9vSEnxfdmf0gi7NGxK4qkUFJszZXdHKKAYo1wXUm3eCvutIQ
+         HLoQ==
+X-Gm-Message-State: AOAM530NMoaZFPG1cb0RQptzCJozXwzoGZlLJ7WQ/4qz7LK/EzqPC3Fk
+        aMsLwqpouRB1uUPQ7AkQDjMnjf6A8uDWkZAhek2ueOVhfoK+8fm2JxVb6d6Ad/wlUOZ0GLwPMrC
+        492Yyc94ZpmOOrKNWmo3Dar7l
+X-Received: by 2002:a17:906:2bd3:: with SMTP id n19mr25281537ejg.232.1628064482416;
+        Wed, 04 Aug 2021 01:08:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyJ1+gMYBRSUkrYqo89Yv7xc5DTJIohqhaN0uH5kty9MZlm1Z33Iw3saCry50e7XHi7/2KP0g==
+X-Received: by 2002:a17:906:2bd3:: with SMTP id n19mr25281504ejg.232.1628064482121;
+        Wed, 04 Aug 2021 01:08:02 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id ha26sm425362ejb.87.2021.08.04.01.08.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 01:08:01 -0700 (PDT)
+Subject: Re: [PATCH v1 1/5] serdev: Split and export
+ serdev_acpi_get_uart_resource()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+References: <20210803192905.72246-1-andriy.shevchenko@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <035d2579-f64c-b5c2-45ff-4421ad7db6ca@redhat.com>
+Date:   Wed, 4 Aug 2021 10:08:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-yoursite-MailScanner-ID: ED6DE4D0D49B.A0A37
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@fujitsu.com
-X-Spam-Status: No
+In-Reply-To: <20210803192905.72246-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-convert to text and send again
+Hi,
 
-2021/8/4 15:55, Li, Zhijian wrote:
->
-> Hey all:
->
-> Recently, i reported a issue to rpmahttps://github.com/pmem/rpma/issues/1142
-> where we found that the native rpma + fsdax example failed in recent kernel.
->
-> Below is the bisect log
->
-> [lizhijian@yl linux]$ git bisect log
-> git bisect start
-> # good: [bbf5c979011a099af5dc76498918ed7df445635b] Linux 5.9
-> git bisect good bbf5c979011a099af5dc76498918ed7df445635b
-> # bad: [2c85ebc57b3e1817b6ce1a6b703928e113a90442] Linux 5.10
-> git bisect bad 2c85ebc57b3e1817b6ce1a6b703928e113a90442
-> # good: [4d0e9df5e43dba52d38b251e3b909df8fa1110be] lib, uaccess: add failure injection to usercopy functions
-> git bisect good 4d0e9df5e43dba52d38b251e3b909df8fa1110be
-> # bad: [6694875ef8045cdb1e6712ee9b68fe08763507d8] ext4: indicate that fast_commit is available via /sys/fs/ext4/feature/...
-> git bisect bad 6694875ef8045cdb1e6712ee9b68fe08763507d8
-> # good: [14c914fcb515c424177bb6848cc2858ebfe717a8] Merge tag 'wireless-drivers-next-2020-10-02' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next
-> git bisect good 14c914fcb515c424177bb6848cc2858ebfe717a8
-> # good: [6f78b9acf04fbf9ede7f4265e7282f9fb39d2c8c] Merge tag 'mtd/for-5.10' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux
-> git bisect good 6f78b9acf04fbf9ede7f4265e7282f9fb39d2c8c
-> # bad: [bbe85027ce8019c73ab99ad1c2603e2dcd1afa49] Merge tag 'xfs-5.10-merge-5' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux
-> git bisect bad bbe85027ce8019c73ab99ad1c2603e2dcd1afa49
-> # bad: [9d9af1007bc08971953ae915d88dc9bb21344b53] Merge tag 'perf-tools-for-v5.10-2020-10-15' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux
-> git bisect bad 9d9af1007bc08971953ae915d88dc9bb21344b53
-> # good: [21c2fe94abb2abe894e6aabe6b4e84a255c8d339] RDMA/mthca: Combine special QP struct with mthca QP
-> git bisect good 21c2fe94abb2abe894e6aabe6b4e84a255c8d339
-> # good: [dbaa1b3d9afba3c050d365245a36616ae3f425a7] Merge branch 'perf/urgent' into perf/core
-> git bisect good dbaa1b3d9afba3c050d365245a36616ae3f425a7
-> # bad: [c7a198c700763ac89abbb166378f546aeb9afb33] RDMA/ucma: Fix use after free in destroy id flow
-> git bisect bad c7a198c700763ac89abbb166378f546aeb9afb33
-> # bad: [5ce2dced8e95e76ff7439863a118a053a7fc6f91] RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces
-> git bisect bad 5ce2dced8e95e76ff7439863a118a053a7fc6f91
-> # bad: [a03bfc37d59de316436c46f5691c5a972ed57c82] RDMA/mlx5: Sync device with CPU pages upon ODP MR registration
-> git bisect bad a03bfc37d59de316436c46f5691c5a972ed57c82
-> # good: [a6f0b08dbaf289c3c57284e16ac8043140f2139b] RDMA/core: Remove ucontext->closing
-> git bisect good a6f0b08dbaf289c3c57284e16ac8043140f2139b
-> # bad: [36f30e486dce22345c2dd3a3ba439c12cd67f6ba] IB/core: Improve ODP to use hmm_range_fault()
-> git bisect bad 36f30e486dce22345c2dd3a3ba439c12cd67f6ba
-> # good: [2ee9bf346fbfd1dad0933b9eb3a4c2c0979b633e] RDMA/addr: Fix race with netevent_callback()/rdma_addr_cancel()
-> git bisect good 2ee9bf346fbfd1dad0933b9eb3a4c2c0979b633e
-> # first bad commit: [36f30e486dce22345c2dd3a3ba439c12cd67f6ba] IB/core: Improve ODP to use hmm_range_fault()
->
-> Note: some commit have to apply a extra patch to avoid a kernel panic.
-> > git cherry-pick d4c5da5 # dax: Fix stack overflow when mounting fsdax pmem device
->
->
-> Thanks
-> Li
->
->
+On 8/3/21 9:29 PM, Andy Shevchenko wrote:
+> The same as for I²C Serial Bus resource split and export
+> serdev_acpi_get_uart_resource(). We have already 3 users
+> one of which is converted here.
+> 
+> Rationale of this is to consolidate parsing UART Serial Bus
+> resource in one place as it's done, e.g., for I²C Serial Bus.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
+Thanks, patch looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+*for this patch*
+
+We do need to talk about how to merge this series, I've
+NACK-ed patches 3/5 and 4/5 (see my reply there) so that
+leaves just 2/5  as depending on this one. I believe it
+would be easiest to just merge 1/5 + 2/5 to the tree
+which caries serdev patches, which I guess is Greg's
+tty tree ?
+
+Greg can you pick up 1/5 and 2/5 ?
+
+Regards,
+
+Hans
+
+
+
+> ---
+>  drivers/tty/serdev/core.c | 36 +++++++++++++++++++++++++++++-------
+>  include/linux/serdev.h    | 14 ++++++++++++++
+>  2 files changed, 43 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
+> index 92498961fd92..436e3d1ba92c 100644
+> --- a/drivers/tty/serdev/core.c
+> +++ b/drivers/tty/serdev/core.c
+> @@ -562,23 +562,45 @@ struct acpi_serdev_lookup {
+>  	int index;
+>  };
+>  
+> +/**
+> + * serdev_acpi_get_uart_resource - Gets UARTSerialBus resource if type matches
+> + * @ares:	ACPI resource
+> + * @uart:	Pointer to UARTSerialBus resource will be returned here
+> + *
+> + * Checks if the given ACPI resource is of type UARTSerialBus.
+> + * In this case, returns a pointer to it to the caller.
+> + *
+> + * Returns true if resource type is of UARTSerialBus, otherwise false.
+> + */
+> +bool serdev_acpi_get_uart_resource(struct acpi_resource *ares,
+> +				   struct acpi_resource_uart_serialbus **uart)
+> +{
+> +	struct acpi_resource_uart_serialbus *sb;
+> +
+> +	if (ares->type != ACPI_RESOURCE_TYPE_SERIAL_BUS)
+> +		return false;
+> +
+> +	sb = &ares->data.uart_serial_bus;
+> +	if (sb->type != ACPI_RESOURCE_SERIAL_TYPE_UART)
+> +		return false;
+> +
+> +	*uart = sb;
+> +	return true;
+> +}
+> +EXPORT_SYMBOL_GPL(serdev_acpi_get_uart_resource);
+> +
+>  static int acpi_serdev_parse_resource(struct acpi_resource *ares, void *data)
+>  {
+>  	struct acpi_serdev_lookup *lookup = data;
+>  	struct acpi_resource_uart_serialbus *sb;
+>  	acpi_status status;
+>  
+> -	if (ares->type != ACPI_RESOURCE_TYPE_SERIAL_BUS)
+> -		return 1;
+> -
+> -	if (ares->data.common_serial_bus.type != ACPI_RESOURCE_SERIAL_TYPE_UART)
+> +	if (!serdev_acpi_get_uart_resource(ares, &sb))
+>  		return 1;
+>  
+>  	if (lookup->index != -1 && lookup->n++ != lookup->index)
+>  		return 1;
+>  
+> -	sb = &ares->data.uart_serial_bus;
+> -
+>  	status = acpi_get_handle(lookup->device_handle,
+>  				 sb->resource_source.string_ptr,
+>  				 &lookup->controller_handle);
+> @@ -586,7 +608,7 @@ static int acpi_serdev_parse_resource(struct acpi_resource *ares, void *data)
+>  		return 1;
+>  
+>  	/*
+> -	 * NOTE: Ideally, we would also want to retreive other properties here,
+> +	 * NOTE: Ideally, we would also want to retrieve other properties here,
+>  	 * once setting them before opening the device is supported by serdev.
+>  	 */
+>  
+> diff --git a/include/linux/serdev.h b/include/linux/serdev.h
+> index 9f14f9c12ec4..3368c261ab62 100644
+> --- a/include/linux/serdev.h
+> +++ b/include/linux/serdev.h
+> @@ -327,4 +327,18 @@ static inline int serdev_tty_port_unregister(struct tty_port *port)
+>  }
+>  #endif /* CONFIG_SERIAL_DEV_CTRL_TTYPORT */
+>  
+> +struct acpi_resource;
+> +struct acpi_resource_uart_serialbus;
+> +
+> +#ifdef CONFIG_ACPI
+> +bool serdev_acpi_get_uart_resource(struct acpi_resource *ares,
+> +				   struct acpi_resource_uart_serialbus **uart);
+> +#else
+> +static inline bool serdev_acpi_get_uart_resource(struct acpi_resource *ares,
+> +						 struct acpi_resource_uart_serialbus **uart)
+> +{
+> +	return false;
+> +}
+> +#endif /* CONFIG_ACPI */
+> +
+>  #endif /*_LINUX_SERDEV_H */
+> 
 
