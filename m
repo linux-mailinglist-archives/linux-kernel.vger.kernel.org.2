@@ -2,246 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100E03E039B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6633E039E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238495AbhHDOoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238396AbhHDOoA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:44:00 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05EAC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:43:46 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id e5so3231823pld.6
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=Ssek2gBdwyibbtURI+xATKZuZg52BHGlKje0OtabAs0=;
-        b=h7VKzZe4o/L9PE1NTEeOz+gX+OI8S+0iVj+BIvfuPH96E+Uq9tD4KtuiaP3BxpqVMF
-         h24wZN18njHEA/v2QrhvN4v+TvKzidPUCu70kgXubr0I3ny8IuWoAIdhUbspfg1v0sDH
-         ITMawuKWwYSGbk2Lo0wxpsvPoVT4qZ9OQH9Yo5NxK1JFzSxexLGW+C4kwH7Vs3HPEqws
-         BJbxEeXdNhTxpfL+wHF9iQTiiAIgB8DeVVeE7fu+T0nDmfHvBjiT7Ugob4dyR50pKXaw
-         95z1uNAmqu8+dVgtjBXav1k85dFplY6yKKJNDaz9jkQt/9Vw0p+CuHxqAigOz/aKRULu
-         Rbow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=Ssek2gBdwyibbtURI+xATKZuZg52BHGlKje0OtabAs0=;
-        b=cNWAbZ4fwtX6BYH4u3OIT6U4jWqon10RmV2SQBtZpt1IJGSAOGa/nVli3+MgzvnLKi
-         SA47WRSMnYZ8BLc7m+XXDP/ZVwh2fL7JmhryOiY86Jlh+5k9mFneiZU08SwZu13jzNLj
-         kx+CImXsQ0JIUXiJK8yBuxIq84t7KH0M/BWh+RGBgqhPAQMzJ2x20qwTRCefNv4iI4Pw
-         MkCkDisuaUvI4hIW17L7ylup0X29cUg7Ua8U/Lecu+EF6o70fPYv/bp77oOS4O08J5wR
-         o92Vsrfx5++3nt5GrbyZwtJ8x7mg0QaB149ppd2zpXWYGkyvAQDKishpFxkHcOKaXSA1
-         A+xw==
-X-Gm-Message-State: AOAM533YU9ikmoywMJjJ4mdmlf89BXCW0eWhZBJBGJSfMe5Dg9DXnuPc
-        4TtAHN9O96evrSW7133T7S+e1g==
-X-Google-Smtp-Source: ABdhPJwL5ywRYtwZGNqKKeAQLRuOPUqwsDqScLiVgGvUGmKKEoly68alFaEd9jp/7w2tRDEZawbVTg==
-X-Received: by 2002:a63:5641:: with SMTP id g1mr1098698pgm.33.1628088226021;
-        Wed, 04 Aug 2021 07:43:46 -0700 (PDT)
-Received: from [192.168.1.116] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id x4sm3398147pfb.27.2021.08.04.07.43.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 07:43:45 -0700 (PDT)
-To:     io-uring <io-uring@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Daniel Wagner <dwagner@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] io-wq: remove GFP_ATOMIC allocation off schedule out path
-Message-ID: <a673a130-e0e4-5aa8-4165-f35d1262fc6a@kernel.dk>
-Date:   Wed, 4 Aug 2021 08:43:43 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S238525AbhHDOoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:44:20 -0400
+Received: from mga18.intel.com ([134.134.136.126]:7422 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237793AbhHDOoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 10:44:18 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="201116838"
+X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
+   d="scan'208";a="201116838"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 07:44:05 -0700
+X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
+   d="scan'208";a="437448740"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 07:44:03 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mBI7g-0058gw-Gg; Wed, 04 Aug 2021 17:43:56 +0300
+Date:   Wed, 4 Aug 2021 17:43:56 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Hoan Tran <hoan@os.amperecomputing.com>
+Subject: Re: [PATCH v1 2/4] gpio: dwapb: Read GPIO base from gpio-base
+ property
+Message-ID: <YQqnrHAuSneeEFgO@smile.fi.intel.com>
+References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
+ <20210726125436.58685-2-andriy.shevchenko@linux.intel.com>
+ <20210802135839.4clqd34npppwasyh@mobilestation>
+ <CAHp75Vcz=vkaGObUcOOTZA51pHPoMc50RpPBLg4fgZgHdUStRA@mail.gmail.com>
+ <20210804124433.crh7w6jzfjcswubo@mobilestation>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210804124433.crh7w6jzfjcswubo@mobilestation>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel reports that the v5.14-rc4-rt4 kernel throws a BUG when running
-stress-ng:
+On Wed, Aug 04, 2021 at 03:44:33PM +0300, Serge Semin wrote:
+> On Mon, Aug 02, 2021 at 06:52:28PM +0300, Andy Shevchenko wrote:
+> > On Mon, Aug 2, 2021 at 5:14 PM Serge Semin <fancer.lancer@gmail.com> wrote:
+> > > On Mon, Jul 26, 2021 at 03:54:34PM +0300, Andy Shevchenko wrote:
+> > > > For backward compatibility with some legacy devices introduce
+> > > > a new (*) property gpio-base to read GPIO base. This will allow
+> > > > further cleanup of the driver.
+> > 
+> > Thanks for the review! My answers below.
+> > 
+> > > > *) Note, it's not new for GPIO library since mockup driver is
+> > > >    using it already.
+> > >
+> > > You are right but I don't think it's a good idea to advertise the
+> > > pure Linux-internal property "gpio-base" to any use-case like OF
+> > > and ACPI FW nodes.
+> 
+> > I don't want to advertise them, actually (that's why no bindings are
+> > modified). Perhaps introducing a paragraph in the GPIO documentation
+> > about this (and / or in GPIO generic bindings) that gpio-base property
+> > is solely for internal use and should't be used in actual DTs?
+> 
+> It might have been not that clear but by "advertising" I meant to have
+> the property generically handled in the driver, thus permitting it
+> being specified not only via the SW-nodes but also via the ACPI
+> and OF firmware. (Please see my next comment for more details.)
+> 
+> Regarding adding the gpio-base property documentation. I am pretty
+> sure it shouldn't be mentioned neither in the DW APB GPIO bindings,
+> nor in any other GPIO device DT-bindings because as you are right
+> saying it is the solely Linux kernel-specific parameter and isn't
+> supposed to be part of the device tree specification. On the other
+> hand if it gets to be frequently used then indeed we need to somehow
+> have it described and of course make sure it isn't used
+> inappropriately. Thus a possible option of documenting the property
+> would be just adding a new paragraph/file somewhere in
+> Documentation/driver-api/gpio/ since the property name implies that
+> it's going to be generic and permitted to be specified for all
+> GPIO-chips. Though it's for @Linus and @Bartosz to decide after all.
 
-| [   90.202543] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
-| [   90.202549] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 2047, name: iou-wrk-2041
-| [   90.202555] CPU: 5 PID: 2047 Comm: iou-wrk-2041 Tainted: G        W         5.14.0-rc4-rt4+ #89
-| [   90.202559] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-| [   90.202561] Call Trace:
-| [   90.202577]  dump_stack_lvl+0x34/0x44
-| [   90.202584]  ___might_sleep.cold+0x87/0x94
-| [   90.202588]  rt_spin_lock+0x19/0x70
-| [   90.202593]  ___slab_alloc+0xcb/0x7d0
-| [   90.202598]  ? newidle_balance.constprop.0+0xf5/0x3b0
-| [   90.202603]  ? dequeue_entity+0xc3/0x290
-| [   90.202605]  ? io_wqe_dec_running.isra.0+0x98/0xe0
-| [   90.202610]  ? pick_next_task_fair+0xb9/0x330
-| [   90.202612]  ? __schedule+0x670/0x1410
-| [   90.202615]  ? io_wqe_dec_running.isra.0+0x98/0xe0
-| [   90.202618]  kmem_cache_alloc_trace+0x79/0x1f0
-| [   90.202621]  io_wqe_dec_running.isra.0+0x98/0xe0
-| [   90.202625]  io_wq_worker_sleeping+0x37/0x50
-| [   90.202628]  schedule+0x30/0xd0
-| [   90.202630]  schedule_timeout+0x8f/0x1a0
-| [   90.202634]  ? __bpf_trace_tick_stop+0x10/0x10
-| [   90.202637]  io_wqe_worker+0xfd/0x320
-| [   90.202641]  ? finish_task_switch.isra.0+0xd3/0x290
-| [   90.202644]  ? io_worker_handle_work+0x670/0x670
-| [   90.202646]  ? io_worker_handle_work+0x670/0x670
-| [   90.202649]  ret_from_fork+0x22/0x30
+Thanks for elaborative point.
 
-which is due to the RT kernel not liking a GFP_ATOMIC allocation inside
-a raw spinlock. Besides that not working on RT, doing any kind of
-allocation from inside schedule() is kind of nasty and should be avoided
-if at all possible.
+> > >  Especially seeing we don't have it described in the
+> > > DT-bindings and noting that the mockup driver is dedicated for the
+> > > GPIO tests only. What about restricting the property usage for the
+> > > SW-nodes only by adding an additional check: is_software_node() here?
+> 
+> > I don't think we need this. But if you think it's better this way just
+> > to avoid usage of this property outside of internal properties, I'm
+> > fine to add. Perhaps we may issue a warning and continue? (see also
+> > above)
+> 
+> In my opinion it's very required and here is why. Adding the generic
+> gpio-base property support into the driver basically means saying:
+> "Hey, the driver supports it, so you can add it to your firmware."
+> Even if the property isn't described in the bindings, the platform
+> developers will be able to use it in new DTS-files since it's much
+> easier to add a property into a DT-file and make things working than
+> to convert the drivers/platforms/apps to using the GPIOd API. In case
+> if maintainers aren't that careful at review such dts may get slip
+> into the kernel, which in its turn will de facto make the property
+> being part of the DT specification and will need to be supported. That
+> is we must be very careful in what properties are permitted in the
+> driver. Thus, yes, I think we need to make sure here that the property
+> is only used in framework of the kernel and isn't passed via
+> inappropriate paths like DT/ACPI fw so not to get into the
+> maintainability troubles in future.
 
-This particular path happens when an io-wq worker goes to sleep, and we
-need a new worker to handle pending work. We currently allocate a small
-data item to hold the information we need to create a new worker, but we
-can instead include this data in the io_worker struct itself and just
-protect it with a single bit lock. We only really need one per worker
-anyway, as we will have run pending work between to sleep cycles.
+Got it. I'll add the additional check in next version.
 
-https://lore.kernel.org/lkml/20210804082418.fbibprcwtzyt5qax@beryllium.lan/
-Reported-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-
----
-
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index 50dc93ffc153..d5f56d41d59b 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -51,6 +51,10 @@ struct io_worker {
- 
- 	struct completion ref_done;
- 
-+	unsigned long create_state;
-+	struct callback_head create_work;
-+	int create_index;
-+
- 	struct rcu_head rcu;
- };
- 
-@@ -261,42 +265,46 @@ static void io_wqe_inc_running(struct io_worker *worker)
- 	atomic_inc(&acct->nr_running);
- }
- 
--struct create_worker_data {
--	struct callback_head work;
--	struct io_wqe *wqe;
--	int index;
--};
--
- static void create_worker_cb(struct callback_head *cb)
- {
--	struct create_worker_data *cwd;
-+	struct io_worker *worker;
- 	struct io_wq *wq;
- 
--	cwd = container_of(cb, struct create_worker_data, work);
--	wq = cwd->wqe->wq;
--	create_io_worker(wq, cwd->wqe, cwd->index);
--	kfree(cwd);
-+	worker = container_of(cb, struct io_worker, create_work);
-+	wq = worker->wqe->wq;
-+	create_io_worker(wq, worker->wqe, worker->create_index);
-+	clear_bit_unlock(0, &worker->create_state);
-+	io_worker_release(worker);
- }
- 
--static void io_queue_worker_create(struct io_wqe *wqe, struct io_wqe_acct *acct)
-+static void io_queue_worker_create(struct io_wqe *wqe, struct io_worker *worker,
-+				   struct io_wqe_acct *acct)
- {
--	struct create_worker_data *cwd;
- 	struct io_wq *wq = wqe->wq;
- 
- 	/* raced with exit, just ignore create call */
- 	if (test_bit(IO_WQ_BIT_EXIT, &wq->state))
- 		goto fail;
-+	if (!io_worker_get(worker))
-+		goto fail;
-+	/*
-+	 * create_state manages ownership of create_work/index. We should
-+	 * only need one entry per worker, as the worker going to sleep
-+	 * will trigger the condition, and waking will clear it once it
-+	 * runs the task_work.
-+	 */
-+	if (test_bit(0, &worker->create_state) ||
-+	    test_and_set_bit_lock(0, &worker->create_state))
-+		goto fail_release;
- 
--	cwd = kmalloc(sizeof(*cwd), GFP_ATOMIC);
--	if (cwd) {
--		init_task_work(&cwd->work, create_worker_cb);
--		cwd->wqe = wqe;
--		cwd->index = acct->index;
--		if (!task_work_add(wq->task, &cwd->work, TWA_SIGNAL))
--			return;
-+	init_task_work(&worker->create_work, create_worker_cb);
-+	worker->create_index = acct->index;
-+	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL))
-+		return;
- 
--		kfree(cwd);
--	}
-+	clear_bit_unlock(0, &worker->create_state);
-+fail_release:
-+	io_worker_release(worker);
- fail:
- 	atomic_dec(&acct->nr_running);
- 	io_worker_ref_put(wq);
-@@ -314,7 +322,7 @@ static void io_wqe_dec_running(struct io_worker *worker)
- 	if (atomic_dec_and_test(&acct->nr_running) && io_wqe_run_queue(wqe)) {
- 		atomic_inc(&acct->nr_running);
- 		atomic_inc(&wqe->wq->worker_refs);
--		io_queue_worker_create(wqe, acct);
-+		io_queue_worker_create(wqe, worker, acct);
- 	}
- }
- 
-@@ -973,12 +981,12 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
- 
- static bool io_task_work_match(struct callback_head *cb, void *data)
- {
--	struct create_worker_data *cwd;
-+	struct io_worker *worker;
- 
- 	if (cb->func != create_worker_cb)
- 		return false;
--	cwd = container_of(cb, struct create_worker_data, work);
--	return cwd->wqe->wq == data;
-+	worker = container_of(cb, struct io_worker, create_work);
-+	return worker->wqe->wq == data;
- }
- 
- void io_wq_exit_start(struct io_wq *wq)
-@@ -995,12 +1003,13 @@ static void io_wq_exit_workers(struct io_wq *wq)
- 		return;
- 
- 	while ((cb = task_work_cancel_match(wq->task, io_task_work_match, wq)) != NULL) {
--		struct create_worker_data *cwd;
-+		struct io_worker *worker;
- 
--		cwd = container_of(cb, struct create_worker_data, work);
--		atomic_dec(&cwd->wqe->acct[cwd->index].nr_running);
-+		worker = container_of(cb, struct io_worker, create_work);
-+		atomic_dec(&worker->wqe->acct[worker->create_index].nr_running);
- 		io_worker_ref_put(wq);
--		kfree(cwd);
-+		clear_bit_unlock(0, &worker->create_state);
-+		io_worker_release(worker);
- 	}
- 
- 	rcu_read_lock();
+> Issuing a warning but accepting the property isn't good alternative
+> due to the same reason. Why do we need to add the DT/ACPI property
+> support, which isn't supposed to be used like that instead of just
+> restricting the usecases beforehand? So I vote for parsing the
+> "gpio-base" property only if it's passed as a part of the SW-node.
 
 -- 
-Jens Axboe
+With Best Regards,
+Andy Shevchenko
+
 
