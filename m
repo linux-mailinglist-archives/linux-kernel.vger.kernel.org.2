@@ -2,107 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA333E06A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140403E06A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239833AbhHDRSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 13:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239814AbhHDRSh (ORCPT
+        id S239856AbhHDRTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 13:19:43 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3583 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239832AbhHDRTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:18:37 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CEDC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 10:18:24 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id x8so5727606lfe.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 10:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CEMSlLo/4eh/Hj8rGHRAwqVIGlNxyDjckrl7zG49UZU=;
-        b=s0SYWEmyqzG8E3OqYenfSTqbSEJfVxO5VO1UKgWV5luA7mZLTQnIEWyrDR1G+SKYG4
-         j6mU3ylcl0vCC5v8N7/M98yfYD3A9RLAYu/uM2sX4QLIt66ZAVA+3Ty+6n2P8dxsDZJF
-         Zc1jrBIr7woNQW0eeIZK1o0vz5rMhtjjrN5g6RBB2skpB001IesD7ghcptBsP4YhYMhg
-         ZcbkRURclcm/MaRne783l9Mz5Ck/xJsoo4/50N952Oif/iker6T3LXHWikCzqkKTUdss
-         a3h0azNmOI1Zeapfo6qwfqYEWaV9CrzMlQ2wyNWmBJykDT/WjFgtQkxw0YjJAlm1FoSq
-         wADw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CEMSlLo/4eh/Hj8rGHRAwqVIGlNxyDjckrl7zG49UZU=;
-        b=r1LtrJ/6MWBlKjTgiW9gnHTQYlRXniu3tp9pXjDXb9YHHw5+LgkT8/tIEQ4k0+/+Bf
-         ZIIzQV+elp59Hox5ZwlBRG4FB0OkgPr368o/FsFqCltA35zMabXsEwWRtNb9ewAczFLZ
-         G91qCMT8lCS4b6uG6HO0UCObMMO6h6cj/ep5ic+w3jwXCp2nHfGJKg0cJekl//qIdLr0
-         tOtIcoz7tEaqr40Kch09iIYAMxAlDhW1gsaT7gvEkwjYu6Zc5tep0bei4toYO1f0e6Ku
-         6YJjWDqNheaJqFvJ1XSSUtmkRECHw2DbrRpMtRNWk2wR5L1JkJATCadx0mijoIgXULNX
-         a6Hg==
-X-Gm-Message-State: AOAM530f+bmawjcYaXIO402MLvNOCyK1GuPvA/pNImcRsIjzvRiUIMUU
-        cj02FhK9Ofr3ujwAjCoe9vARm7vfYsm3ew7aJUIvqPupVL7cjw==
-X-Google-Smtp-Source: ABdhPJzFUWbfdSUmjcKOz5zqZmHo9hyzefo+K3cplbHAFwQKp0np9RT0yrCABkpmAjnXdi1oOJ7t22Lg1HgVjR3Fr9g=
-X-Received: by 2002:a05:6512:39ca:: with SMTP id k10mr196778lfu.547.1628097502271;
- Wed, 04 Aug 2021 10:18:22 -0700 (PDT)
+        Wed, 4 Aug 2021 13:19:41 -0400
+Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gfz4K2sQmz6F80M;
+        Thu,  5 Aug 2021 01:19:13 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 4 Aug 2021 19:19:26 +0200
+Received: from [10.47.90.65] (10.47.90.65) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 4 Aug 2021
+ 18:19:25 +0100
+Subject: Re: [PATCH] perf test: Make metric testing more robust.
+To:     Ian Rogers <irogers@google.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+References: <20210804072547.1728924-1-irogers@google.com>
+ <74ddb02a-1cdc-24fc-781e-4c87feb638fa@huawei.com>
+ <CAP-5=fWWvGi8gGfwGORF-4y7V6G_gCxY7=SX2zo_cyxKxTEf+A@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <3e853906-f758-8ad6-2297-27e4f097591a@huawei.com>
+Date:   Wed, 4 Aug 2021 18:18:56 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <202108041936.52T4sUU6-lkp@intel.com>
-In-Reply-To: <202108041936.52T4sUU6-lkp@intel.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 4 Aug 2021 10:18:10 -0700
-Message-ID: <CAKwvOdmOTNTGvGeaRKSp4f6M1PC-HQLjMoaeQU6WM9ygxuU5_w@mail.gmail.com>
-Subject: Re: ERROR: modpost: "__raw_writesl" [drivers/i3c/master/i3c-master-cdns.ko]
- undefined!
-To:     Chen Rong <rong.a.chen@intel.com>, Philip Li <philip.li@intel.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAP-5=fWWvGi8gGfwGORF-4y7V6G_gCxY7=SX2zo_cyxKxTEf+A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.90.65]
+X-ClientProxiedBy: lhreml751-chm.china.huawei.com (10.201.108.201) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 4:39 AM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Nathan,
->
-> First bad commit (maybe != root cause):
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   d5ad8ec3cfb56a017de6a784835666475b4be349
-> commit: 6fef087d0d37ba7dba8f3d75566eb4c256cd6742 hexagon: handle {,SOFT}IRQENTRY_TEXT in linker script
-> date:   4 weeks ago
-> config: hexagon-randconfig-r023-20210804 (attached as .config)
+On 04/08/2021 15:55, Ian Rogers wrote:
+> 
+> 
+> On Wed, Aug 4, 2021, 2:11 AM John Garry <john.garry@huawei.com 
+> <mailto:john.garry@huawei.com>> wrote:
+> 
+>     On 04/08/2021 08:25, Ian Rogers wrote:
+>      > When testing metric expressions we fake counter values from 1 going
+>      > upward. For some metrics this can yield negative values that are
+>     clipped
+>      > to zero, and then cause divide by zero failures. A workaround for
+>     this
+>      > case is to try a second time with counter values going in the
+>     opposite
+>      > direction.
+>      >
+>      > This case was seen in a metric like:
+>      >    event1 / max(event2 - event3, 0)
+> 
+>     is this the standard method to make the metric evaluation fail when
+>     results are not as expected? In this example, event2 should be greater
+>     than event3 always. Dividing by max(x, 0) would seem a bit silly.
+> 
+> 
+> I wouldn't say it was standard but it is in a metric a third party gave 
+> us.
 
-cool, one of the first reports from 0day bot of hexagon :)
+I agree that making it more robust is a good thing. But masking bogus 
+expressions isn't great. After all, we're here to find them :)
 
-> compiler: clang version 12.0.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6fef087d0d37ba7dba8f3d75566eb4c256cd6742
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 6fef087d0d37ba7dba8f3d75566eb4c256cd6742
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>, old ones prefixed by <<):
->
-> >> ERROR: modpost: "__raw_writesl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
-> >> ERROR: modpost: "__raw_readsl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ > It would be possible to get the same test failure on more standard
+ > expressions, so it would be nice if these tests were more robust.
+
+so something like this would fail also:
+event1 / (event2 + event3 - 1 - event4)
+
+assuming we have ascending values from 1 for event1. And this would seem 
+a valid expression.
+
+Anyway, it would be nice if we could reject max(0, x) and any divide by 
+negative numbers, apart from your change.
+
+Cheers,
+john
 
 
+>      >
+>      > Signed-off-by: Ian Rogers <irogers@google.com
+>     <mailto:irogers@google.com>>
+>      > ---
+>      >   tools/perf/tests/pmu-events.c | 32 ++++++++++++++++++++++++++------
+>      >   1 file changed, 26 insertions(+), 6 deletions(-)
+>      >
+>      > diff --git a/tools/perf/tests/pmu-events.c
+>     b/tools/perf/tests/pmu-events.c
+>      > index b8aff8fb50d8..6c1cd58605c1 100644
+>      > --- a/tools/perf/tests/pmu-events.c
+>      > +++ b/tools/perf/tests/pmu-events.c
+>      > @@ -600,8 +600,18 @@ static int test_parsing(void)
+>      >                       }
+>      >
+>      >                       if (expr__parse(&result, &ctx,
+>     pe->metric_expr, 0)) {
+>      > -                             expr_failure("Parse failed", map, pe);
+>      > -                             ret++;
+>      > +                             /*
+>      > +                              * Parsing failed, make numbers go
+>     from large to
+>      > +                              * small which can resolve divide
+>     by zero
+>      > +                              * issues.
+>      > +                              */
+>      > +                             k = 1024;
+>      > +                             hashmap__for_each_entry((&ctx.ids),
+>     cur, bkt)
+>      > +                                     expr__add_id_val(&ctx,
+>     strdup(cur->key), k--);
+>      > +                             if (expr__parse(&result, &ctx,
+>     pe->metric_expr, 0)) {
+>      > +                                     expr_failure("Parse
+>     failed", map, pe);
+>      > +                                     ret++;
+>      > +                             }
+>      >                       }
+>      >                       expr__ctx_clear(&ctx);
+>      >               }
+>      > @@ -656,10 +666,20 @@ static int metric_parse_fake(const char *str)
+>      >               }
+>      >       }
+>      >
+>      > -     if (expr__parse(&result, &ctx, str, 0))
+>      > -             pr_err("expr__parse failed\n");
+>      > -     else
+>      > -             ret = 0;
+>      > +     ret = 0;
+>      > +     if (expr__parse(&result, &ctx, str, 0)) {
+>      > +             /*
+>      > +              * Parsing failed, make numbers go from large to
+>     small which can
+>      > +              * resolve divide by zero issues.
+>      > +              */
+>      > +             i = 1024;
+>      > +             hashmap__for_each_entry((&ctx.ids), cur, bkt)
+>      > +                     expr__add_id_val(&ctx, strdup(cur->key), i--);
+>      > +             if (expr__parse(&result, &ctx, str, 0)) {
+>      > +                     pr_err("expr__parse failed\n");
+>      > +                     ret = -1;
+>      > +             }
+>      > +     }
+>      >
+>      >   out:
+>      >       expr__ctx_clear(&ctx);
+>      >
+> 
 
--- 
-Thanks,
-~Nick Desaulniers
