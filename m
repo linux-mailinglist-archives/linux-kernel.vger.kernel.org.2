@@ -2,333 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7053E0387
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1F53E038C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238106AbhHDOmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237523AbhHDOmC (ORCPT
+        id S238166AbhHDOmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:42:40 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:59888
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237523AbhHDOmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:42:02 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A69EC0613D5;
-        Wed,  4 Aug 2021 07:41:49 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id gs8so4028225ejc.13;
-        Wed, 04 Aug 2021 07:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FsND2VD1tfMjTxIruUVsPqPLwbrqDp/vXALMQ2gLNXw=;
-        b=Qgrh+VwFVjTb7JMPVBtjd/nBXsYzCBzHLSG1oQpLBh8KQxO8+X1rOWXCcn8BY6nxHZ
-         phvZGNlnT656A0kVfKOEpx441670TEVhWZEq4C5LPy66ndIJs9XzMMlsvZdyS8PjxiPS
-         kpIZIqtYj+BpXzMFPZTxJCdEwktWm7zakxi87+Sh3QKlu3gbyew9yxEVR/IjNXZYcJmW
-         hLYIwlTHJLrDtB+3azZLbtvf/19kZvRF7nEtM0cB+4I13VxCKwDs+Psvwgc13rSdtxEu
-         yFFqik/ZELWC9sgMWe6QzcUBbknvaKtnUUgd79mmEmruXnarLtGBg6Tw2lGtR5YSNrrx
-         fQ0Q==
+        Wed, 4 Aug 2021 10:42:39 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id E3CB63F349
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:42:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628088145;
+        bh=3wAPLTNTz+K6PssPvD29DSKcaFgyHs1tGU9uPv0wDys=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=t5nOOzKIA2o6Rgd0nulKNvf3B/Ubf/sIK6NtMKr8ljPhuZqB+t49k/GGjp2b8kHO0
+         ThBFJHcYCxvzft7lTvo07iRC3nGaiBw52igrmR92kp/uvLqyAu+vEhmpADFe9bAPRX
+         GYAROzCmx/Mh+uLG9S619/N62bDDMDHa1SNx6riHwNrqnX4qNS4Y4uj54RkN+xtojT
+         UZFVxVJKrIw7vxzQRgDgtl/Af6G4geRgdjB3jkCw1NanCVrFq5gSSdQ6VerMDFSjfQ
+         GujC9qZa1F/0oOvp3txlMLKN9u0v0mmxokSCpBHRAzlY7kHgrQl6nWPhS1ekWHZ3hN
+         Fop2jdU7Rp/pw==
+Received: by mail-ed1-f69.google.com with SMTP id u4-20020a50eac40000b02903bddc52675eso1404844edp.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:42:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FsND2VD1tfMjTxIruUVsPqPLwbrqDp/vXALMQ2gLNXw=;
-        b=LuCIZK4nSq9YAafCfx2AwTgwUdB4SRo5nTdeHdewp7nLfU8JONCFSZAMN2hBi+ZvSS
-         qe5YOHCPO3erxfgN/9e7tz/SgKzVRA3cKoHzdkGhLdfBxO2pKxfA+rasHsdGzRErtH/L
-         YAuG8wJsH0eqEZeh+EVtc7yj3RvDcxEhtzwQHQxKklzNHFPYECgGovA45IggL4EMa/QJ
-         oLy9ToC9gW8FIvyID1aWDt9bGOR2Um54ZSh3HNN/+rRXj7luKz2l/bwMxQPTPCIxZV7s
-         1DjpcX7aIRGcyQVSLmyNt7/y+OBg1muURGrxdCrg4+r7UhpfRcakTNKW21mkyqctZbky
-         9uVQ==
-X-Gm-Message-State: AOAM5303RMFiycd+nY3u7/Tcmt4ZPLUcTMb4KS8LsgGhvpXWH5jC4C85
-        JBVDoQvgR7wal6WWeDYBHo8=
-X-Google-Smtp-Source: ABdhPJypUH5eDrOfeiJ2VnDjvRhr2Hh4r5maJpCtTbe7KRdg+Zq8A7+1jHkuJtKuivbhMmosDN4/dQ==
-X-Received: by 2002:a17:906:30d0:: with SMTP id b16mr26182913ejb.495.1628088107864;
-        Wed, 04 Aug 2021 07:41:47 -0700 (PDT)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id e27sm737994ejc.41.2021.08.04.07.41.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 07:41:47 -0700 (PDT)
-Subject: Re: [PATCH v2 3/7] arm64: dts: rockchip: rk3568-evb1-v10: add
- regulators of rk809 pmic
-To:     Michael Riesch <michael.riesch@wolfvision.net>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Liang Chen <cl@rock-chips.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Simon Xue <xxm@rock-chips.com>,
-        Jianqun Xu <jay.xu@rock-chips.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>
-References: <20210804130625.15449-1-michael.riesch@wolfvision.net>
- <20210804130625.15449-4-michael.riesch@wolfvision.net>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <cf4bf613-6462-fac9-824d-71375b852adf@gmail.com>
-Date:   Wed, 4 Aug 2021 16:41:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3wAPLTNTz+K6PssPvD29DSKcaFgyHs1tGU9uPv0wDys=;
+        b=p+HR+p+dpLWP9TMCmJcUhn7MCHz5zQCl4DjPzlYCx8chuMaU85y48fbmfhgFGx6Nra
+         cYBc4uk2dINJBi3g3u7ZJSXL5PKmJaR+TlcxhbJL1srYEBLIpHpCO4w7bn5tq5yqEPXB
+         R+GRai+FgOvRlMbpjq2QRHMGEvJErA4EdKg0CpYePCD6QYW+4CGLzeQzsER66aZBKPK7
+         ZQ6WNi451Vpy8C+yDNDEisRr5pwWTsbr03nraqT2w60v+eQvGm0ZlBfilkcbLfUOlT1o
+         1zbQAnre5zCgt+hRAJv4ir6KIOhD6yyKYSijMGDp7nApaH1JMq/MPZXJKrD6wAj4SV6Z
+         nvPQ==
+X-Gm-Message-State: AOAM532U4jbBSl55jPd/sn32/tTSBD6rvFHLEiyQFu70cVoEYl9bjsgF
+        zP+nOW9vq72D0Ndml5XlnsJOjM4tRnoJ21Z8ORwXIoJexC04DujMeYWLghv6xwoxCj6VWjkkSGh
+        BH+35dgG8FCZXKLrjJG4aU6YSnElVjch+P4LwC+OmNpSGoaRkZplWsDVbVg==
+X-Received: by 2002:a17:907:9d2:: with SMTP id bx18mr9112343ejc.117.1628088145477;
+        Wed, 04 Aug 2021 07:42:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyOaQSvCaKPRq4H/5+YCJPxGecpIdfcA+4DRu7m7wAnxxdu88WH23lia/jjgNqV7LJNX9GlmVz4ZA/+PeiS+gI=
+X-Received: by 2002:a17:907:9d2:: with SMTP id bx18mr9112321ejc.117.1628088145254;
+ Wed, 04 Aug 2021 07:42:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210804130625.15449-4-michael.riesch@wolfvision.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210514071452.25220-1-kai.heng.feng@canonical.com>
+ <576B26FD-81F8-4632-82F6-57C4A7C096C4@holtmann.org> <8735ryk0o7.fsf@baylibre.com>
+ <CAAd53p7Zc3Zk21rwj_x1BLgf8tWRxaKBmXARkM6d7Kpkb+fDZA@mail.gmail.com>
+ <87y29o58su.fsf@baylibre.com> <CAAd53p4Ss1Z-7CB4g=_xZYxo1xDz6ih6GHUuMcgncy+yNAfU4w@mail.gmail.com>
+ <87a6lzx7jf.fsf@baylibre.com>
+In-Reply-To: <87a6lzx7jf.fsf@baylibre.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Wed, 4 Aug 2021 22:42:09 +0800
+Message-ID: <CAAd53p6T_K67CPthLPObF=OWWCEChW4pMFMwuq87qWmTmzP2VA@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: Shutdown controller after workqueues are
+ flushed or cancelled
+To:     Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+On Tue, Aug 3, 2021 at 4:21 PM Mattijs Korpershoek
+<mkorpershoek@baylibre.com> wrote:
+>
+> Hi Kai-Heng,
+>
+> Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
+>
+> > Hi Mattijs,
+> >
+> > On Fri, Jul 30, 2021 at 7:40 PM Mattijs Korpershoek
+> > <mkorpershoek@baylibre.com> wrote:
+> >>
+> >> Hi Kai-Heng,
+> >
+> > [snipped]
+> >
+> >> Thank you for your help. Sorry I did not post the logs previously.
+> >>
+> >> dmesg: https://pastebin.com/tpWDNyQr
+> >> ftrace on btmtksdio: https://pastebin.com/jmhvmwUw
+> >
+> > Seems like btmtksdio needs shudown() to be called before flush().
+> > Since the order was there for a very long time, changing the calling
+> > order indeed can break what driver expects.
+> > Can you please test the following patch:
+> > diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> > index 2560ed2f144d..a61e610a400c 100644
+> > --- a/net/bluetooth/hci_core.c
+> > +++ b/net/bluetooth/hci_core.c
+> > @@ -1785,6 +1785,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
+> >         aosp_do_close(hdev);
+> >         msft_do_close(hdev);
+> >
+> > +       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+> > +           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+> > +           test_bit(HCI_UP, &hdev->flags)) {
+> > +               /* Execute vendor specific shutdown routine */
+> > +               if (hdev->shutdown)
+> > +                       hdev->shutdown(hdev);
+> > +       }
+> > +
+> >         if (hdev->flush)
+> >                 hdev->flush(hdev);
+> >
+> > @@ -1798,14 +1806,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
+> >                 clear_bit(HCI_INIT, &hdev->flags);
+> >         }
+> >
+> > -       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+> > -           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+> > -           test_bit(HCI_UP, &hdev->flags)) {
+> > -               /* Execute vendor specific shutdown routine */
+> > -               if (hdev->shutdown)
+> > -                       hdev->shutdown(hdev);
+> > -       }
+> > -
+> >         /* flush cmd  work */
+> >         flush_work(&hdev->cmd_work);
+>
+> Thanks for the patch and your help.
+> I've tried it, but it seems that it does not improve for me.
+> I'm still observing:
+>
+> i500-pumpkin login: root
+> root@i500-pumpkin:~# hciconfig hci0 up
+> Can't init device hci0: Connection timed out (110)
+>
+> Logs for this session:
+> dmesg:   https://pastebin.com/iAFk5Tzi
+> ftrace:  https://pastebin.com/kEMWSYrE
 
-Missing commit message.
+Thanks for the testing!
+What about moving the shutdown() part right after hci_req_sync_lock()
+so tx/rx can still work:
 
-On 8/4/21 3:06 PM, Michael Riesch wrote:
-> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
-> ---
->  .../boot/dts/rockchip/rk3568-evb1-v10.dts     | 206 ++++++++++++++++++
->  1 file changed, 206 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-> index 65e536c78d2e..f682144a1892 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-> @@ -104,6 +104,203 @@
->  	status = "okay";
->  };
->  
-> +&i2c0 {
-> +	status = "okay";
-> +
-> +	rk809: pmic@20 {
-> +		compatible = "rockchip,rk809";
-> +		reg = <0x20>;
-> +		interrupt-parent = <&gpio0>;
-> +		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_LOW>;
-> +		#clock-cells = <1>;
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 2560ed2f144d4..be3113fb7d4b0 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1727,6 +1727,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
+        hci_request_cancel_all(hdev);
+        hci_req_sync_lock(hdev);
 
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pmic_int>;
++       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
++           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
++           test_bit(HCI_UP, &hdev->flags)) {
++               /* Execute vendor specific shutdown routine */
++               if (hdev->shutdown)
++                       hdev->shutdown(hdev);
++       }
++
+        if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
+                cancel_delayed_work_sync(&hdev->cmd_timer);
+                hci_req_sync_unlock(hdev);
+@@ -1798,14 +1806,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
+                clear_bit(HCI_INIT, &hdev->flags);
+        }
 
-pinctrl-names below pinctrl-0 like the rest of rk356x.dtsi
+-       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+-           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+-           test_bit(HCI_UP, &hdev->flags)) {
+-               /* Execute vendor specific shutdown routine */
+-               if (hdev->shutdown)
+-                       hdev->shutdown(hdev);
+-       }
+-
+        /* flush cmd  work */
+        flush_work(&hdev->cmd_work);
 
-> +		rockchip,system-power-controller;
-> +		wakeup-source;
-> +
-> +		vcc1-supply = <&vcc3v3_sys>;
-> +		vcc2-supply = <&vcc3v3_sys>;
-> +		vcc3-supply = <&vcc3v3_sys>;
-> +		vcc4-supply = <&vcc3v3_sys>;
-> +		vcc5-supply = <&vcc3v3_sys>;
-> +		vcc6-supply = <&vcc3v3_sys>;
-> +		vcc7-supply = <&vcc3v3_sys>;
-> +		vcc8-supply = <&vcc3v3_sys>;
-> +		vcc9-supply = <&vcc3v3_sys>;
-> +
-> +		regulators {
-> +			vdd_logic: DCDC_REG1 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <500000>;
-> +				regulator-max-microvolt = <1350000>;
-> +				regulator-init-microvolt = <900000>;
-> +				regulator-ramp-delay = <6001>;
-> +				regulator-initial-mode = <0x2>;
-> +				regulator-name = "vdd_logic";
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vdd_gpu: DCDC_REG2 {
-> +				regulator-min-microvolt = <500000>;
-> +				regulator-max-microvolt = <1350000>;
-> +				regulator-init-microvolt = <900000>;
-> +				regulator-ramp-delay = <6001>;
-> +				regulator-initial-mode = <0x2>;
-> +				regulator-name = "vdd_gpu";
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vcc_ddr: DCDC_REG3 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-initial-mode = <0x2>;
-> +				regulator-name = "vcc_ddr";
-> +				regulator-state-mem {
-> +					regulator-on-in-suspend;
-> +				};
-> +			};
-> +
-> +			vdd_npu: DCDC_REG4 {
 
-> +				regulator-min-microvolt = <500000>;
-> +				regulator-max-microvolt = <1350000>;
 
-Exception to the sort rule:
-1: regulator-min-microvolt above regulator-max-microvolt
 
-2: regulator-name above all other regulator properties.
 
-The rest in alphabetical order.
-Fix them all.
-
-> +				regulator-init-microvolt = <900000>;
-> +				regulator-ramp-delay = <6001>;
-> +				regulator-initial-mode = <0x2>;
-> +				regulator-name = "vdd_npu";
-
-Add empty line between properties and a node.
-
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vcc_1v8: DCDC_REG5 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-name = "vcc_1v8";
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vdda0v9_image: LDO_REG1 {
-> +				regulator-min-microvolt = <900000>;
-> +				regulator-max-microvolt = <900000>;
-> +				regulator-name = "vdda0v9_image";
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vdda_0v9: LDO_REG2 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <900000>;
-> +				regulator-max-microvolt = <900000>;
-> +				regulator-name = "vdda_0v9";
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vdda0v9_pmu: LDO_REG3 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <900000>;
-> +				regulator-max-microvolt = <900000>;
-> +				regulator-name = "vdda0v9_pmu";
-> +				regulator-state-mem {
-> +					regulator-on-in-suspend;
-> +					regulator-suspend-microvolt = <900000>;
-> +				};
-> +			};
-> +
-> +			vccio_acodec: LDO_REG4 {
-> +				regulator-min-microvolt = <3300000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-name = "vccio_acodec";
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vccio_sd: LDO_REG5 {
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-name = "vccio_sd";
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vcc3v3_pmu: LDO_REG6 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <3300000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-name = "vcc3v3_pmu";
-> +				regulator-state-mem {
-> +					regulator-on-in-suspend;
-> +					regulator-suspend-microvolt = <3300000>;
-> +				};
-> +			};
-> +
-> +			vcca_1v8: LDO_REG7 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-name = "vcca_1v8";
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vcca1v8_pmu: LDO_REG8 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-name = "vcca1v8_pmu";
-> +				regulator-state-mem {
-> +					regulator-on-in-suspend;
-> +					regulator-suspend-microvolt = <1800000>;
-> +				};
-> +			};
-> +
-> +			vcca1v8_image: LDO_REG9 {
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-name = "vcca1v8_image";
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vcc_3v3: SWITCH_REG1 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-name = "vcc_3v3";
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vcc3v3_sd: SWITCH_REG2 {
-> +				regulator-name = "vcc3v3_sd";
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
->  &mdio0 {
->  	rgmii_phy0: ethernet-phy@0 {
->  		compatible = "ethernet-phy-ieee802.3-c22";
-> @@ -124,6 +321,15 @@
->  	};
->  };
->  
-> +&pinctrl {
-> +	pmic {
-> +		pmic_int: pmic_int {
-> +			rockchip,pins =
-> +				<0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +	};
-> +};
-> +
->  &sdhci {
->  	bus-width = <8>;
->  	max-frequency = <200000000>;
-> 
+>
+>
+> >
+> > Kai-Heng
+> >
+> >>
+> >> Mattijs
+> >> >
+> >> > Kai-Heng
+> >> >
+> >> >>
+> >> >> Thanks,
+> >> >> Mattijs Korpershoek
+> >> >>
+> >> >>
+> >> >> >
+> >> >> > Regards
+> >> >> >
+> >> >> > Marcel
