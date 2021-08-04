@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF143E0757
+	by mail.lfdr.de (Postfix) with ESMTP id D35733E0758
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240120AbhHDSPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 14:15:03 -0400
+        id S240149AbhHDSPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 14:15:07 -0400
 Received: from mga02.intel.com ([134.134.136.20]:49808 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240091AbhHDSO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 14:14:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="201151088"
+        id S240050AbhHDSPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 14:15:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="201151095"
 X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="201151088"
+   d="scan'208";a="201151095"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 11:14:46 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 11:14:47 -0700
 X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="503075823"
+   d="scan'208";a="503075831"
 Received: from mjkendri-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.17.117])
   by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 11:14:46 -0700
 From:   Kuppuswamy Sathyanarayanan 
@@ -34,9 +34,9 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 03/12] x86/cpufeatures: Add TDX Guest CPU feature
-Date:   Wed,  4 Aug 2021 11:13:20 -0700
-Message-Id: <20210804181329.2899708-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v5 04/12] x86/tdx: Add protected guest support for TDX guest
+Date:   Wed,  4 Aug 2021 11:13:21 -0700
+Message-Id: <20210804181329.2899708-5-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -46,158 +46,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add CPU feature detection for Trusted Domain Extensions support. TDX
-feature adds capabilities to keep guest register state and memory
-isolated from hypervisor.
+TDX architecture provides a way for VM guests to be highly secure and
+isolated (from untrusted VMM). To achieve this requirement, we can't
+completely trust any data coming from VMM. TDX guest fixes this issue
+by hardening the IO drivers against the attack from the VMM. Since we
+have a requirement to modify the generic drivers, we need to use the
+generic prot_guest_has() API to add TDX specific code in generic
+drivers.
 
-For TDX guest platforms, executing CPUID(eax=0x21, ecx=0) will return
-following values in EAX, EBX, ECX and EDX.
-
-EAX:  Maximum sub-leaf number:  0
-EBX/EDX/ECX:  Vendor string:
-
-EBX =  "Inte"
-EDX =  "lTDX"
-ECX =  "    "
-
-So when above condition is true, set X86_FEATURE_TDX_GUEST feature cap
-bit.
+So add TDX guest support in prot_guest_has() API.
 
 Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
 
-Changes since v4:
- * Moved tdx_early_init() below copy_bootdata() because of
-   cmdline and IDT dependencies.
+Change since v4:
+ * Rebased on top of Tom Lendacky's protected guest changes.
+ * Moved memory encryption related protected guest flags in
+   tdx_prot_guest_has() to the patch that actually uses them.
 
-Changes since v3:
- * Fixed order of string cpuid_count() call.
+ arch/x86/Kconfig                       |  1 +
+ arch/x86/include/asm/protected_guest.h |  5 +++++
+ arch/x86/include/asm/tdx.h             |  4 ++++
+ arch/x86/kernel/tdx.c                  | 13 +++++++++++++
+ include/linux/protected_guest.h        |  3 +++
+ 5 files changed, 26 insertions(+)
 
-Changes since v2:
- * Fixed debug prints as per Borislav suggestion.
-
-Changes since v1:
- * Fixed commit log issues reported by Borislav.
- * Moved header file include to the start of tdx.h.
- * Added pr_fmt for TDX.
- * Simplified cpuid_has_tdx_guest() implementation as per
-   Borislav comments.
-
- arch/x86/include/asm/cpufeatures.h |  1 +
- arch/x86/include/asm/tdx.h         | 20 ++++++++++++++++++++
- arch/x86/kernel/Makefile           |  1 +
- arch/x86/kernel/head64.c           |  3 +++
- arch/x86/kernel/tdx.c              | 29 +++++++++++++++++++++++++++++
- 5 files changed, 54 insertions(+)
- create mode 100644 arch/x86/include/asm/tdx.h
- create mode 100644 arch/x86/kernel/tdx.c
-
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index d0ce5cfd3ac1..84997abeb401 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -238,6 +238,7 @@
- #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMMCALL hypercall instruction */
- #define X86_FEATURE_PVUNLOCK		( 8*32+20) /* "" PV unlock function */
- #define X86_FEATURE_VCPUPREEMPT		( 8*32+21) /* "" PV vcpu_is_preempted function */
-+#define X86_FEATURE_TDX_GUEST		( 8*32+22) /* Trusted Domain Extensions Guest */
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index ab0e7c346c44..10f2cb51a39d 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -871,6 +871,7 @@ config INTEL_TDX_GUEST
+ 	depends on SECURITY
+ 	select X86_X2APIC
+ 	select SECURITY_LOCKDOWN_LSM
++	select ARCH_HAS_PROTECTED_GUEST
+ 	help
+ 	  Provide support for running in a trusted domain on Intel processors
+ 	  equipped with Trusted Domain eXtensions. TDX is a new Intel
+diff --git a/arch/x86/include/asm/protected_guest.h b/arch/x86/include/asm/protected_guest.h
+index b4a267dddf93..c67bf13c8ad3 100644
+--- a/arch/x86/include/asm/protected_guest.h
++++ b/arch/x86/include/asm/protected_guest.h
+@@ -12,12 +12,17 @@
  
- /* Intel-defined CPU features, CPUID level 0x00000007:0 (EBX), word 9 */
- #define X86_FEATURE_FSGSBASE		( 9*32+ 0) /* RDFSBASE, WRFSBASE, RDGSBASE, WRGSBASE instructions*/
+ #include <linux/mem_encrypt.h>
+ 
++#include <asm/processor.h>
++#include <asm/tdx.h>
++
+ #ifndef __ASSEMBLY__
+ 
+ static inline bool prot_guest_has(unsigned int attr)
+ {
+ 	if (sme_me_mask)
+ 		return amd_prot_guest_has(attr);
++	else if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
++		return tdx_prot_guest_has(attr);
+ 
+ 	return false;
+ }
 diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-new file mode 100644
-index 000000000000..c738bde944d1
---- /dev/null
+index c738bde944d1..eee226e4b3b4 100644
+--- a/arch/x86/include/asm/tdx.h
 +++ b/arch/x86/include/asm/tdx.h
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (C) 2020 Intel Corporation */
-+#ifndef _ASM_X86_TDX_H
-+#define _ASM_X86_TDX_H
-+
-+#include <linux/cpufeature.h>
-+
-+#define TDX_CPUID_LEAF_ID	0x21
-+
-+#ifdef CONFIG_INTEL_TDX_GUEST
-+
-+void __init tdx_early_init(void);
-+
-+#else
-+
-+static inline void tdx_early_init(void) { };
-+
-+#endif /* CONFIG_INTEL_TDX_GUEST */
-+
-+#endif /* _ASM_X86_TDX_H */
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 3e625c61f008..b49110bd50d9 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -127,6 +127,7 @@ obj-$(CONFIG_PARAVIRT_CLOCK)	+= pvclock.o
- obj-$(CONFIG_X86_PMEM_LEGACY_DEVICE) += pmem.o
+@@ -11,10 +11,14 @@
  
- obj-$(CONFIG_JAILHOUSE_GUEST)	+= jailhouse.o
-+obj-$(CONFIG_INTEL_TDX_GUEST)	+= tdx.o
+ void __init tdx_early_init(void);
  
- obj-$(CONFIG_EISA)		+= eisa.o
- obj-$(CONFIG_PCSPKR_PLATFORM)	+= pcspeaker.o
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index de01903c3735..f41f3dac1318 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -40,6 +40,7 @@
- #include <asm/extable.h>
- #include <asm/trapnr.h>
- #include <asm/sev.h>
-+#include <asm/tdx.h>
- 
- /*
-  * Manage page tables very early on.
-@@ -495,6 +496,8 @@ asmlinkage __visible void __init x86_64_start_kernel(char * real_mode_data)
- 
- 	copy_bootdata(__va(real_mode_data));
- 
-+	tdx_early_init();
++bool tdx_prot_guest_has(unsigned long flag);
 +
- 	/*
- 	 * Load microcode early on BSP.
- 	 */
+ #else
+ 
+ static inline void tdx_early_init(void) { };
+ 
++static inline bool tdx_prot_guest_has(unsigned long flag) { return false; }
++
+ #endif /* CONFIG_INTEL_TDX_GUEST */
+ 
+ #endif /* _ASM_X86_TDX_H */
 diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-new file mode 100644
-index 000000000000..39dd1515b131
---- /dev/null
+index 39dd1515b131..1a032d700f51 100644
+--- a/arch/x86/kernel/tdx.c
 +++ b/arch/x86/kernel/tdx.c
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2020 Intel Corporation */
+@@ -4,6 +4,8 @@
+ #undef pr_fmt
+ #define pr_fmt(fmt)     "x86/tdx: " fmt
+ 
++#include <linux/protected_guest.h>
 +
-+#undef pr_fmt
-+#define pr_fmt(fmt)     "x86/tdx: " fmt
-+
-+#include <asm/tdx.h>
-+
-+static inline bool cpuid_has_tdx_guest(void)
+ #include <asm/tdx.h>
+ 
+ static inline bool cpuid_has_tdx_guest(void)
+@@ -18,6 +20,17 @@ static inline bool cpuid_has_tdx_guest(void)
+ 	return !memcmp("IntelTDX    ", sig, 12);
+ }
+ 
++bool tdx_prot_guest_has(unsigned long flag)
 +{
-+	u32 eax, sig[3];
++	switch (flag) {
++	case PATTR_GUEST_TDX:
++		return cpu_feature_enabled(X86_FEATURE_TDX_GUEST);
++	}
 +
-+	if (cpuid_eax(0) < TDX_CPUID_LEAF_ID)
-+		return false;
-+
-+	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2], &sig[1]);
-+
-+	return !memcmp("IntelTDX    ", sig, 12);
++	return false;
 +}
++EXPORT_SYMBOL_GPL(tdx_prot_guest_has);
 +
-+void __init tdx_early_init(void)
-+{
-+	if (!cpuid_has_tdx_guest())
-+		return;
+ void __init tdx_early_init(void)
+ {
+ 	if (!cpuid_has_tdx_guest())
+diff --git a/include/linux/protected_guest.h b/include/linux/protected_guest.h
+index 7a7120abbb62..9085f5dd834c 100644
+--- a/include/linux/protected_guest.h
++++ b/include/linux/protected_guest.h
+@@ -22,6 +22,9 @@
+ #define PATTR_SEV			0x801
+ #define PATTR_SEV_ES			0x802
+ 
++/* 0x900 - 0x9ff reserved for Intel */
++#define PATTR_GUEST_TDX			0x900
 +
-+	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
-+
-+	pr_info("Guest initialized\n");
-+}
+ #ifdef CONFIG_ARCH_HAS_PROTECTED_GUEST
+ 
+ #include <asm/protected_guest.h>
 -- 
 2.25.1
 
