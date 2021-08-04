@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE92C3DFC19
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 09:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C433DFC1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 09:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235927AbhHDHaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 03:30:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235817AbhHDHap (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 03:30:45 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8611C0613D5;
-        Wed,  4 Aug 2021 00:30:30 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id c16so2056513plh.7;
-        Wed, 04 Aug 2021 00:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gNzKH1dtCwPVST8/mI3ucxuJYuJYd4b8kKwOymbhvvs=;
-        b=RnAUfCnPqUIfoOnDUpLZ8UIfPJYTSa7CSsrXygSXKctW2h8txh3sy/EAKaA9gxu2uR
-         tIhWly248ceYZxw7/mpPdu/rvOkXzA9YCqK4YD71hBZ5rvppWTukJz53U81DGU5MkNo1
-         eY8biEa5PxwhV/0je+ojeUkktVFMYN9cMeFY+Wr4y96q/wiWbQrh+wsmByvDJrP4iFzm
-         de4Z9bpVnAFyWeui2k8rEPw6bHLDjE46/4lB8EtB6X6iBHTymkjUKA/1vPCW2E/3yRwN
-         BoZFL9Vq7rk84xTO4gwFIps9Ip/4KYPJIpu9JqmZQt1M3mA9XjNIMlYe8oT/CHpbLA/6
-         7ZZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gNzKH1dtCwPVST8/mI3ucxuJYuJYd4b8kKwOymbhvvs=;
-        b=cgBZIJ/Mnzltm9PYz76xeVmNFnejHqOyg7I1p57AAwSeLgCNKFid7J3YjtMc7LEJKu
-         henoKAN6v07cSK9Vd0a5c1xKd1YlZ9poKQuDrYB0Tk1rXfLF1H2pkc0nTOfIO9HzxElv
-         9bLY0EnNcpdk1lOkRcOIqvr3FDj27G4qyQhqFgLG0hFoPqo79hUfeHElUggiiQsGQnBZ
-         jwUl9jKrO1kBL23c4sb4+f9HeMREvJrt5x9QRgU2JPqLNhNAuWArBwo0V7djnOxLOhad
-         ffuAUvQqfpZ0GYpxAc/2su4tel+kAywSLFvDgUvYdVYCyyOF4Sb5/cJK7JLOFJbcogWR
-         4+ZA==
-X-Gm-Message-State: AOAM530DZ6JTzYjaFFl0nTBmtTCfed9w9Fj6rhx1h4Whe72VoGOiw1ME
-        uSL4oweWKXAeRGcp//za71f1Jw7fj6tlCa8mzdh/5Xa4nR8=
-X-Google-Smtp-Source: ABdhPJzTrmmCkg6ofrdBZ3GOgJJZOBDld7Hyu7nJ1Fhb1lYqEnm1NT2F4jZcSG/iHem2BDKRejCC7DZrynupwonK5jE=
-X-Received: by 2002:a17:90b:912:: with SMTP id bo18mr26947781pjb.228.1628062230315;
- Wed, 04 Aug 2021 00:30:30 -0700 (PDT)
+        id S235942AbhHDHa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 03:30:59 -0400
+Received: from mout.gmx.net ([212.227.17.21]:49923 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235817AbhHDHa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 03:30:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628062222;
+        bh=P4wBvc85h3fXlWdQcXelaLmQpD4A4GD47g72UVNj57I=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=MY1RIEdV/YTZijOtU6ffuHajpvE/20+zoOy4oMIA9PMA3e8aXwTzaWPC7MBwPQv9v
+         zxZzXV80UaXChtfhqATFIYAKu67BsJ6Bz3v1inyeOEs2eNHmfydh/xW8GT3DvjbbGy
+         U9jSZDDOEcU1R6ZK2AfZFBmrKJZJ899NQx7CctXU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [217.61.147.17] ([217.61.147.17]) by web-mail.gmx.net
+ (3c-app-gmx-bap67.server.lan [172.19.172.67]) (via HTTP); Wed, 4 Aug 2021
+ 09:30:21 +0200
 MIME-Version: 1.0
-References: <CAHp75VeWKgyz32scczN0c+iJwGZXVP42g0NG0oXrdJ34GyHB8w@mail.gmail.com>
- <20210728103551.GA31304@amd> <179c4bce-ce9b-c9a8-4f24-cb4b3397e0f0@redhat.com>
- <20210803215821.GE30387@amd>
-In-Reply-To: <20210803215821.GE30387@amd>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 4 Aug 2021 10:29:54 +0300
-Message-ID: <CAHp75VczUTTN3f=fv5d_kRa+OP=MMhJTSVfSu-t2PURTGkycfw@mail.gmail.com>
-Subject: Re: LED subsystem lagging maintenance
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <trinity-a5eeacb8-1625-4111-b613-19ee1609b902-1628062221917@3c-app-gmx-bap67>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Subject: Aw: [PATCH v8, 2/2] soc: mediatek: mmsys: Add mt8192 mmsys routing
+ table
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 4 Aug 2021 09:30:21 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <1627894773-23872-3-git-send-email-yongqiang.niu@mediatek.com>
+References: <1627894773-23872-1-git-send-email-yongqiang.niu@mediatek.com>
+ <1627894773-23872-3-git-send-email-yongqiang.niu@mediatek.com>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:FTFMR063lUiqNFEXMYKR9Nt6kBJb+tvRQII2gEh1asf4eB17tIoXkk2zLgq9ZD1OfoZwa
+ zwQa5mpCvFQBtgET6CZ/J7NtfPT9Bk8eILs7hs9zUEJ356V/YkowKCFFYgFuC5vh804RgGRtvI7S
+ nN/4NVGY4SKwh3JwOyAbL5N6eyxGAapF+Qt7UbVMzOun+eMRCx/q2qjqlGp3A92+tmr3Oxt4iFpr
+ WxfpR8duyZViNpCMnmrdQSeLBnDM9/A+UnMfbmH4lXNI18H4pcGPM373s5b5GEWpkg89+mJ5Ihsq
+ mQ=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:pe3B7hYMLN8=:xYFKFGHPzPUBrVYDFk7erl
+ jCyPvToDYyqeGdTfuO5erRCplUODZQ2TuJJTXrNllkHHVX+Q/xgVq0GKWHQV3KLGEreWxpo7d
+ XuU/FRHqPq7uKnltpXonljHTWVPtSv+lp2tPV0+wDrTSU5vYIsrnacPtTmNg2KfT2xbuSKBIJ
+ g35lTXsvY70UqFgAtB5vAwdu6cvSdM1vEZFeBpbdJDDdPdVRnh77ajOPurEJTqVU+MO3PlP6e
+ VkRPJx0RikfPKW7fd6qRXqGal/KDecSIIxzjFCltzjLYdiYF+XRYwOzKeSGR95hMMMggCdMz8
+ iYtXCF1kkmI1b/gGBNPqktDysHJYfO6xC1mUr7zdhtpxS70PkdPdSKP/S/Q2PmzlrXpIPaPdv
+ 7F3/a30PnTmhxNZElXqCoFQJbFirK3s7LfuzbysOw5tuaTZpqF122rvWqEY6z/RdKlKIxsYKW
+ wPieYJYeNVnxgFZkdRfMjwEANhdYzIJkXUaiFwOKT4OydA9m1lie++9HLB7/ew7Irdhr/+2rI
+ 7xhz9zJtLT2d4i/64rW2kLhXWhraE7ZVKhbJtN21MRQ2eGC/VjY1ItEqfKl14UyNEL/CA/1ps
+ FlNKtiSJATQq/OkmLx0fiub23Mve1SBSNWj3XfP8ZsLlAIXg86oaBmnaaTyK3av+huAJ2RRtC
+ uZCpWZVNQUG02nrYcaOWBMtHWW3s4s/QfEcDp6rD05SgwQxnB04FXWgv3u8pDFGevUh4Xiu71
+ iiUOreyBgptkJa63QoxIL6RfHndWbwa8g8Cu+gMb6g4gxL2i7vV5zVXWV2oln6MXZt5fAtt5a
+ Dbie10PssSR6fDvZdVRpeDDnnoQ4EbTxssHUiZY1tjOlujPB48=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 12:58 AM Pavel Machek <pavel@ucw.cz> wrote:
-> > >> I have noticed that in the last couple of cycles the LED subsystem is
-> > >> a bit laggish in terms of maintenance (*). I think it's time that
-> > >> someone can help Pavel to sort things out.
-> > >>
-> > >> In any case, I wonder if we have any kind of procedure for what to do
-> > >> in such cases. Do we need to assume that the subsystem is in a
-> > >> (pre-)orphaned state? If so, who is the best to take care of patch
-> > >> flow?
-> > >
-> > > To be honest, patches were not applied because they were not that
-> > > important to begin with, because of lacking explanation, and because
-> > > you pushed a bit too hard.
-> > >
-> > > Yes, I'm quite busy in -rc1 to -rc3 timeframe with stable reviews. No,
-> > > LED subsystem is not orphaned.
-> >
-> > It is good to hear that you are still actively maintaining the LED
-> > subsystem, thank you.
-> >
-> > This thread does remind me that I was planning on re-sending this
-> > LED patch which seems to have fallen through the cracks:
-> >
-> > https://lore.kernel.org/alsa-devel/20210221115208.105203-1-hdegoede@redhat.com/
-> >
-> > Can you pick this one up please? Or shall I resend it?
->
-> Thanks, applied.
+Hi
 
-Thank you, Pavel! Sorry for being a bit pushy.
+can you please test if your device still work after applying this
 
+https://patchwork.kernel.org/project/linux-mediatek/patch/20210729070549.5514-1-linux@fw-web.de/
 
--- 
-With Best Regards,
-Andy Shevchenko
+and
+
+duplicate value constants in your routes?
+
+e.g. changing
+
++		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
++		MT8192_DISP_OVL0_2L_MOUT_EN, MT8192_OVL0_MOUT_EN_DISP_RDMA0,
+
+to
+
++		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
++		MT8192_DISP_OVL0_2L_MOUT_EN, MT8192_OVL0_MOUT_EN_DISP_RDMA0,
++		MT8192_OVL0_MOUT_EN_DISP_RDMA0
+
+regards Frank
