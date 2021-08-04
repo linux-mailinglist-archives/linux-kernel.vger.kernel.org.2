@@ -2,222 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B03D3E03B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCFF3E03BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238777AbhHDOwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234423AbhHDOwE (ORCPT
+        id S238783AbhHDOw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:52:58 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:30038 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234423AbhHDOw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:52:04 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FB5C0613D5;
-        Wed,  4 Aug 2021 07:51:51 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id cf5so3905742edb.2;
-        Wed, 04 Aug 2021 07:51:51 -0700 (PDT)
+        Wed, 4 Aug 2021 10:52:56 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 174Ek3kT025106;
+        Wed, 4 Aug 2021 14:52:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=FbBoMJyUvfQjOK3NCY29cLc6m5Tp8DZjvqUBfdCordo=;
+ b=vgenw2QJOg+M+QEeUNUdOXDR9eop+59Lw60MEv7PjF/7TRDBCJI0Uyfh1dtXl07zRZzH
+ 4xMMH7EKpq+/Fc/8CyeHRfHLDYsjD6cu5yIp9Po1ACypMIxajFW66RtrQZmOaMTRSBvV
+ mzcOCK0jnxTsFAMiqoVq7AzKss5bqh34zkiJTj83923o/7hdP7YHuQihjxQHLPF8NYYG
+ Z7xA6xtyqmr14ZZMZcla59sivkzR9mgE3Tc+XYsWEsdXCi/0qZE3qSUjz5dqraaUg14D
+ 5K17JQ++cVxh/PQBAZ4LQvZ10NzfCG2crvWLmGya8dMiUuPYGCDJ7kHCJ/Hytg+x1JUK 8Q== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=FbBoMJyUvfQjOK3NCY29cLc6m5Tp8DZjvqUBfdCordo=;
+ b=NsLrBgY4lP7KcyBZB4T0hKGwQQ8OhvVj8Lpn6vGqXJmldEWNmEPUR0kiqtxsSQUvIhac
+ 5gpOBCpXtf/g4mKqtUKCXq7dCva4r/aREW3fPY87RxaVf7k4F078AM0yQ1/tkaKAcA0G
+ ps4ZYczcy/BP4YNmv5KYckcTRQUTLgvy5OqrzpWyom2311b+EdtiJWTZQBr/Ft1OTLjt
+ PQYGpfFWYvg6jvim9074JM9aT3/W2sw+sJYbEtIcw0pQwdQqSiW2dKIAb87Viawl5Cvm
+ 7zaLiQo67sfFNkwSxa3Xsnkmmwa4EfLJK3wTjFeyYNpc26DyWAasfyJUWpMKFn9+59qM kw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3a6cntpn2t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 04 Aug 2021 14:52:26 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 174EpP5S183328;
+        Wed, 4 Aug 2021 14:52:25 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2107.outbound.protection.outlook.com [104.47.55.107])
+        by userp3020.oracle.com with ESMTP id 3a5g9xafxp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 04 Aug 2021 14:52:25 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=baGIODcGBKe1lQ//z+xIpuPUFv8AinTHruyR77E0cyHA0cke8Psc5jgd9Xt87mE17cBeruWrPbJj5kLsCZJYg2Tp7YPPcOpcvpShbggKz+xcQDAlUfd4J3fUF45BNOnB0XNAtokS6vTdW986Jv2mU6IbTO8IgdmzTifcnuRvAgxJVFs7cE6x1qhO2F0E4rvD1NHLIkhS4EPdbob9nIyc0HC4vKYIuBwKiassmicviw1L69GvOlxH6pxglavidGRAwKPAVU8KcTD0Y+PKcGsN529/a8zhzS//h/89m5ebZuUioG+yFYrGL93d0KS9sMwe9/SpeHaISa+kT2papgdgHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FbBoMJyUvfQjOK3NCY29cLc6m5Tp8DZjvqUBfdCordo=;
+ b=JBjH2Mnlk51aJpGNtZnWw6JrVzizuCliHXP2dvwvw8Af0eo7cvy1uDY/KCPJk/Arjh4V+MNfPEoT1XUCqiKe7DPdrkAA+iUkYn+B2wYipkmdnTasrEybHLoGSUnKDXMlhqvuzQOW0gtc9Greq+2qBrsN0P4KjqoWdhg5TDmGNCxlrJfKcqYNay+/Wy+M+3gBBU8cbuWT4BMOz+/tjfKWMRexTcHZrQUh7FEBgjtZREypTV0xpdQaQ5LTgI46rR1UsUgh/a9hp/kDt/zT7CMPgV3qLixqbNFe93EzSNvTlpes1TWovQpddBs8lSbRf6khAcfeYqAdIi5bkXDhUBTqdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SECr+Us9Cf/Gvs+9Axv6k/jT6yduvmzCSZPno/cMwXg=;
-        b=U3stkZoVI7t/beAJKpSu3LM6JqYlv8YCenMMQQcY8tf+fvXDa89atBkfPWEEavOhH3
-         MhcVouky8a1GuUi9nK8T/rYY+iJP0T2LuzUQM07LI2baUg1LbUadbBbIwzDl2HF4h78v
-         mdLl8lQXPGRvo/0Tf8phhVw5ZH7CKGcuWDS2cso3VGG5Ke591qxHdVxZy4SXVkwMv5HE
-         Jzc99sefhCEDFpYcl0ghjmJ/0Zq1n9aiIQ63L7NyNka+NOK6AHcECVUJntxxiDyH8Go+
-         Kwwv0mFS3URX1g9BgMmtUk7rlBMq+GqdUbtqxsXTdifSZIVV/oILSjCcAupMzn8JFBRy
-         BIsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SECr+Us9Cf/Gvs+9Axv6k/jT6yduvmzCSZPno/cMwXg=;
-        b=i6ozAlrVsDStKork34uS1DyqyxxtB7N+5+R0vg1nd80Wp8JiBH33uHPNsjDE5YhQdf
-         s924vHmBUUNzIaNIMGXBtVTZ3Db+cA45BHaZPRrjcII6Z+aDiI0/bvHLmW9VkFQxo3ib
-         StdSiwfakYWuEwwq2XNuuGX1/Cup778uhrhiQ/tuNB+89I3mSVSeFqPx0zS+gNWZjwAr
-         ovUm2uKH3dAG6yPZXmwS8lkljVRcEsMDjVQw/i7veijEFBRDzxOQdlq01DJW3ApRM2qO
-         7T9pQ6+MnAp3C6g0KfyXCtHErCeIkjezX26/eZYKvSK3tjTdm5rotP/eg2HUUdDv3YXE
-         TICg==
-X-Gm-Message-State: AOAM533wtoyIF2p6NimQoHO4mwXzTTkg+WBlMoDnRuB1i4YqUmPabOiK
-        cQ5M7bJLACJoIYSLv70s16A=
-X-Google-Smtp-Source: ABdhPJxYL6BxYMsug5DWZ2ymXXVaxisiTIuVkW3kDQum2jb1Tc6R8sNesjrpl102Ixo82n/MTCGnhA==
-X-Received: by 2002:a05:6402:49a:: with SMTP id k26mr74673edv.279.1628088709732;
-        Wed, 04 Aug 2021 07:51:49 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id c6sm1044261ede.48.2021.08.04.07.51.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 07:51:49 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 17:51:47 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        robh+dt@kernel.org, UNGLinuxDriver@microchip.com,
-        Woojung.Huh@microchip.com, hkallweit1@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 net-next 05/10] net: dsa: microchip: add DSA support
- for microchip lan937x
-Message-ID: <20210804145147.4ncxdgrfzlipsjuf@skbuf>
-References: <20210731150416.upe5nwkwvwajhwgg@skbuf>
- <49678cce02ac03edc6bbbd1afb5f67606ac3efc2.camel@microchip.com>
- <20210802121550.gqgbipqdvp5x76ii@skbuf>
- <YQfvXTEbyYFMLH5u@lunn.ch>
- <20210802135911.inpu6khavvwsfjsp@skbuf>
- <50eb24a1e407b651eda7aeeff26d82d3805a6a41.camel@microchip.com>
- <20210803235401.rctfylazg47cjah5@skbuf>
- <20210804095954.GN22278@shell.armlinux.org.uk>
- <20210804104625.d2qw3gr7algzppz5@skbuf>
- <d10aa31f1258aa2975e3837acb09f26265da91eb.camel@microchip.com>
-MIME-Version: 1.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FbBoMJyUvfQjOK3NCY29cLc6m5Tp8DZjvqUBfdCordo=;
+ b=nfBBEMIBnAHhYgn15pcSjUwXsLuivG2cLPiUFLqlNT4MXLXb7lG6QxCQeo+DGWrNC6Z/l+r2n8IYTDZoosGcnj5uCMekd4mUM7UE4Nb+aNdBJkueoCYy+WB+LHBEJDgGNRLdiEuLLu+yPRdhlXKnIDz4giiEl7WXtUZZmu865kg=
+Authentication-Results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2966.namprd10.prod.outlook.com (2603:10b6:a03:8c::27)
+ by BY5PR10MB4321.namprd10.prod.outlook.com (2603:10b6:a03:202::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.19; Wed, 4 Aug
+ 2021 14:52:23 +0000
+Received: from BYAPR10MB2966.namprd10.prod.outlook.com
+ ([fe80::9478:368e:93b4:6b48]) by BYAPR10MB2966.namprd10.prod.outlook.com
+ ([fe80::9478:368e:93b4:6b48%4]) with mapi id 15.20.4373.026; Wed, 4 Aug 2021
+ 14:52:23 +0000
+Date:   Wed, 4 Aug 2021 10:52:19 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 27/38] padata: Replace deprecated CPU-hotplug functions.
+Message-ID: <20210804145219.tun2tid53nnh3i77@oracle.com>
+References: <20210803141621.780504-1-bigeasy@linutronix.de>
+ <20210803141621.780504-28-bigeasy@linutronix.de>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d10aa31f1258aa2975e3837acb09f26265da91eb.camel@microchip.com>
+In-Reply-To: <20210803141621.780504-28-bigeasy@linutronix.de>
+X-ClientProxiedBy: MN2PR19CA0026.namprd19.prod.outlook.com
+ (2603:10b6:208:178::39) To BYAPR10MB2966.namprd10.prod.outlook.com
+ (2603:10b6:a03:8c::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from oracle.com (98.229.125.203) by MN2PR19CA0026.namprd19.prod.outlook.com (2603:10b6:208:178::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17 via Frontend Transport; Wed, 4 Aug 2021 14:52:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f35b2532-ab04-418a-f153-08d9575777a4
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4321:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB43214CB02578B06D5EA1723FD9F19@BY5PR10MB4321.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: r/+BMYwZQSj3iIKk4zHcQvsXkOjHJmWJYbvd0iLpesyZxXEFzdunNmHHUZJ9R1SCf9hm2EzZVuXnsLrr4ryk939Ovq1e/46thPM2Op4e+NXD20429mUm5+CnRdWJGQ8c1QNY3ust6sl61zjDHJhbybZ/VTsONXTcMz5A1gXnHzkOzPW4TdbQZh+Wq75alOtieQHyl4piZlQdJnIhvyhv33y3cUWoGd9J1k3cwBugZP0RkIEsjwXQuH3hG9TTvdRZnBqDiDXAiZj/k3F7sj+GWrny2hGPBBidhHOshgV9uBQ4nyk5du/x+LzqOW9J2afKq845F0ftPVY5vkg4wIu5IMSz9daaKHCv3KsuXAVlYCUwGwshSUtdK3qFMve0D8SS9znBlplCp1Gx3gz4Q0epUS9gjFByy59eqCMXLy3h20fXpmrN5tKVLsXnpc9d2/O6AXqUv6ikInBRXrhyufgOwCdpqjElBd6mJTrJPbi3rE6/8NsqdEwOLfefPt+5oo1KQ5ZAJAI5GjSNk9N9FMAw5QY5trjV0rrhJBGqlocu2HcG9BpQveL+JOH+iUeqr6wzQXYdaWKg9Q3RetK9tS7hCm0nxwokFYQnaGKHsWp8VqU3w3MKlJpgFNW4OfVrpQM0y5qvgW4zSGrpwYQHp5vlQM+a2AdUA1iskf0afC/uyyBCMzZrhmVDZabKzOON1ObgILJYnLSSLCPrvWydyHNNHQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2966.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8886007)(52116002)(7696005)(36756003)(316002)(66476007)(55016002)(1076003)(54906003)(8936002)(66556008)(66946007)(508600001)(38350700002)(38100700002)(8676002)(4326008)(26005)(83380400001)(5660300002)(6916009)(6666004)(4744005)(2906002)(186003)(86362001)(2616005)(956004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?M9W9+8rJOgBlucmVqQ4e5cFwWRx2GB15CLnZhpm/x4HK1A/ckkC9debbU/oi?=
+ =?us-ascii?Q?uOF5RWpBrhdd8tL0/sg+73e2QzNEJkWb1//csY9v015hbeIQvFw8q9K8C5XA?=
+ =?us-ascii?Q?br9vrz176LOrFrIMAD2peRDPJjXr4lTV4Ao/KLZFLCiTFWyDbth8QjfM6G0D?=
+ =?us-ascii?Q?7T2j2CjlHaqJ/IIXtlE00vKXP81u3h73EMA+4yGPx3KigXtrdImxricyY0Oe?=
+ =?us-ascii?Q?rQIgWFIkB1RTMu3hxRSocGPQqw3oaeOLdA+s5SDxewQhUoM4dDQyEZOuw4Xk?=
+ =?us-ascii?Q?isV0ZfcSGLCzAMMtt3YZl9+rqCFdad/6aTPJkZD28ORqNoXyawu2JNmrq7zP?=
+ =?us-ascii?Q?gunxEAz2AfzTkW85pb/v3QEOjMh0BCq8Pl3+6OSefI/GM77PcV93MD2WCuBv?=
+ =?us-ascii?Q?olydNpBhI3sNGdsnQVEzIr7qnn4xEI06EOIMeIt6z4gCOG0KmNwgkzXOyOYe?=
+ =?us-ascii?Q?1xgkBCZIAhvR6Q9BjLKa8D7pCU9AwrYiRGiZcc2ZZeAFJon36pilxLCK2MDj?=
+ =?us-ascii?Q?kW6EzzuHPpVm1Hcvn9kZniv58rFJ9i4Hiehq+rTL4u+P/D1mNUwqsZhsXNNb?=
+ =?us-ascii?Q?KQwFT89gbs7i3yZUKrkASWo2WcsyaCoAWMvOMvluOC3wO8ZnmElIWXVzRa0M?=
+ =?us-ascii?Q?cUViizmrXO+N2H2pnZGoEpC1gdMSCJcZAFetehY3lGh3pHCkzH39r2zW3UBe?=
+ =?us-ascii?Q?BRGX5qntyiQJSKAgHogl3adASAaEJFR7NQECLAbpEBvgqW1qvsJ9SEhsz+yh?=
+ =?us-ascii?Q?n/yKkpvBivegNZybE9/V93Ay9QfsRPLNmDnGBZ6Z0wOyC5sQR4MeYIt8G2US?=
+ =?us-ascii?Q?wXk8dgojWYRLVg2fpAeCD/XIx5TNdw0FAEJpKd3Va4XeJgFdO4UHYcDqnCA8?=
+ =?us-ascii?Q?7w3FKeKbQn0e351IZ2qtzCABexclWui2rnM1+OTrsqeHkyXxf/fw/iX57pPM?=
+ =?us-ascii?Q?gHZrmf6C21RfYC05HNxUYojK9LCx/lUczoXfSPYEmos6aVz5JXbXYBoDRapQ?=
+ =?us-ascii?Q?Y5rdSXxRolgsjdepm3rOQnSb7qVq2mzh2ZeF0P6uUjJpvaJRODCf8nv4AI9K?=
+ =?us-ascii?Q?X4zkJ6KPrZUcrlXkJg3KNofs9nRCkypdOVp6pKZSRUnbDklPfg5ajOxlgtEv?=
+ =?us-ascii?Q?OlrN4wka/VUuQlBLhvcd/fMe9ZzsJRXfXWKuocZDCXJrTfSEmKG20YNfugl4?=
+ =?us-ascii?Q?Znp81Hw/2AheMukrSH+KANub+KxqHBQ+8Wyh09KNQlWw0GFSnZLlG7qZuEeZ?=
+ =?us-ascii?Q?Gy5pifFZMZsrK3Mo7JHxS2z8mfxhpE99nHjzwEmqFyRA7txS7JDItlBoWVV4?=
+ =?us-ascii?Q?YmKUh46IS6wUhSmSIkJyubL9?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f35b2532-ab04-418a-f153-08d9575777a4
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2966.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2021 14:52:23.2674
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QGKyppF08G3dB1lotniRYK6OXWTAEVacY4/Xni/5GteP+rHYY41iwInUnv1xWvTkaPgXpSBEnR5wp9+9rsWpgGHW5VcS8xQRNwplwrjSa/4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4321
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10065 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
+ spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108040083
+X-Proofpoint-ORIG-GUID: wkBSPEo2Ta9zoONq5MpwFKB5ZtLeutzP
+X-Proofpoint-GUID: wkBSPEo2Ta9zoONq5MpwFKB5ZtLeutzP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 07:58:15PM +0530, Prasanna Vengateshan wrote:
-> On Wed, 2021-08-04 at 13:46 +0300, Vladimir Oltean wrote:
-> > The problem is that I have no clear migration path for the drivers I
-> > maintain, like sja1105, and I suspect that others might be in the exact
-> > same situation.
-> > 
-> > Currently, if the sja1105 needs to add internal delays in a MAC-to-MAC
-> > (fixed-link) setup, it does that based on the phy-mode string. So
-> > "rgmii-id" + "fixed-link" means for sja1105 "add RX and TX RGMII
-> > internal delays", even though the documentation now says "the MAC should
-> > not add the RX or TX delays in this case".
-> > 
-> > There are 2 cases to think about, old driver with new DT blob and new
-> > driver with old DT blob. If breakage is involved, I am not actually very
-> > interested in doing the migration, because even though the interpretation
-> > of the phy-mode string is inconsistent between the phy-handle and fixed-link
-> > case (which was deliberate), at least it currently does all that I need it to.
-> > 
-> > I am not even clear what is the expected canonical behavior for a MAC
-> > driver. It parses rx-internal-delay-ps and tx-internal-delay-ps, and
-> > then what? It treats all "rgmii*" phy-mode strings identically? Or is it
-> > an error to have "rgmii-rxid" for phy-mode and non-zero rx-internal-delay-ps?
-> > If it is an error, should all MAC drivers check for it? And if it is an
-> > error, does it not make migration even more difficult (adding an
-> > rx-internal-delay-ps property to a MAC OF node which already uses
-> > "rgmii-id" would be preferable to also having to change the "rgmii-id"
-> > to "rgmii", because an old kernel might also need to work with that DT
-> > blob, and that will ignore the new rx-internal-delay-ps property).
+On Tue, Aug 03, 2021 at 04:16:10PM +0200, Sebastian Andrzej Siewior wrote:
+> The functions get_online_cpus() and put_online_cpus() have been
+> deprecated during the CPU hotplug rework. They map directly to
+> cpus_read_lock() and cpus_read_unlock().
 > 
+> Replace deprecated CPU-hotplug functions with the official version.
+> The behavior remains unchanged.
 > 
-> Considering the PHY is responsible to add internal delays w.r.to phy-mode, "*-
-> tx-internal-delay-ps" approach that i was applying to different connections as
-> shown below by bringing up different examples.
-> 
-> 1) Fixed-link MAC-MAC: 
->        port@4 {
->             .....
->             phy-mode = "rgmii";
->             rx-internal-delay-ps = <xxx>;
->             tx-internal-delay-ps = <xxx>;
->             ethernet = <&ethernet>;
->             fixed-link {
->            	......
->             };
->           };
-> 
-> 2) Fixed-link MAC-Unknown:
->         port@5 {
->             ......
->             phy-mode = "rgmii-id";
->             rx-internal-delay-ps = <xxx>;
->             tx-internal-delay-ps = <xxx>;
->             fixed-link {
->            .	....
->             };
->           };
-> 
-> 3) Fixed-link :
->         port@5 {
->             ......
->             phy-mode = "rgmii-id";
->             fixed-link {
->               .....
->             };
->           };
-> 
-> From above examples,
-> 	a) MAC node is responsible to add RGMII delay by parsing "*-internal-
-> delay-ps" for (1) & (2). Its a known item in this discussion.
-> 	b) Is rgmii-* to be ignored by the MAC in (2) and just apply the delays
-> from MAC side? Because if its forced to have "rgmii", would it become just -
-> >interface=*_MODE_RGMII and affects legacy?
+> Cc: Steffen Klassert <steffen.klassert@secunet.com>
+> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+> Cc: linux-crypto@vger.kernel.org
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Yes, I think the MAC would have to accept any "rgmii*" phy-mode in
-fixed-link. The legacy behavior would be do to whatever it did before,
-and the new behavior would be to NOT apply any MAC-level delays based on
-the phy-mode value, but only based on the {rx,tx}-internal-delay-ps
-properties if these are present, or fall back to the legacy behavior if
-they aren't.
+Satisfying to see the old wrappers finally go away.
 
-This way:
-- New kernel with old DT blob falls back to legacy behavior
-- New kernel with new DT blob finds the explicit {rx,tx}-internal-delay-ps
-  properties and applies MAC-level delays only according to those, while
-  accepting any phy-mode string
-- Old kernel with new DT blob behaves the same as before, because it
-  does not parse {rx,tx}-internal-delay-ps and we will not change its
-  phy-mode.
-
-> 	c) if MAC follows standard delay, then it needs to be validated against
-> "*-internal-delay-ps", may be validating against single value and throw an
-> error. Might be okay.
-
-Drivers with no legacy might throw an error if:
-- phy-mode == "rgmii-id" or "rgmii-rxid" and there is a non-zero rx-internal-delay-ps
-- phy-mode == "rgmii-id" or "rgmii-txid" and there is a non-zero tx-internal-delay-ps
-
-but considering that most drivers already have a legacy to support, I'm
-not sure how useful that error will be.
-
-> 	d) For 3), Neither MAC nor other side will apply delays. Expected.
-
-In the "new" behavior, correct. In "legacy" behavior, they might have to.
-
-> 3) MAC-PHY
-> 
-> 	i) &test3 {
-> 		phy-handle = <&phy0>;
-> 		phy-mode = "rgmii-id";
-> 		phy0: ethernet-phy@xx {
-> 			.....
-> 			rx-internal-delay = <xxx>;
-> 			tx-internal-delay = <xxx>;
-> 		};
-> 	  };
-> 
-> 	ii) &test4 {
-> 		phy-handle = <&phy0>;
-> 		phy-mode = "rgmii";
->         	rx-internal-delay-ps = <xxx>;
->         	tx-internal-delay-ps = <xxx>;
-> 		phy0: ethernet-phy@xx {
-> 			reg = <x>;
-> 	        };
-> 	     };
-> 
-> 
-> For 3(i), I assume phy would apply internal delay values by checking its phydev-
-> >interface.
-
-PHY drivers have a phy_get_internal_delay() helper that takes into
-consideration both the phy-mode value and the {rx,tx}-internal-delay
-properties. In example 3(i), the {rx,tx}-internal-delay properties would
-prevail as long as the PHY driver uses that helper.
-
-> For 3(ii), MAC would apply the delays.
-> 
-> Overall, only (b) need a right decision? or any other items are missed?
-> 
-> 
-> Prasanna V
-> 
+Acked-by: Daniel Jordan <daniel.m.jordan@oracle.com>
