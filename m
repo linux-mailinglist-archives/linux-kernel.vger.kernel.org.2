@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598E83E021E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67A33E0275
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238280AbhHDNfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238266AbhHDNf3 (ORCPT
+        id S238370AbhHDNxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:53:52 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:52064 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236956AbhHDNxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:35:29 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D44EC0613D5;
-        Wed,  4 Aug 2021 06:35:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=4hk+HApOCK63oaKmJFSctQEwtZoOxqs0pPNX/2Vu9NQ=; b=bR4T43FsUV/4qxec5DQLuuGUU7
-        7YJ275gzeIhu7I+BKww2Q2mu2pwBfz5gxW7FfTKS3ovZQplGWM9hqOOk0zNI5BsVd7LVFZMQUiJR3
-        WyF/MfWQyvYDZlpywa2svU7VUUETwhCi7p9HgeDtqcmUvDwJK9IJ8m96P5MlVieHCqwgEmwW7F+HU
-        JpeSOyvBfzACIBLtMjzngircc64R/5Pqp6JA9TTCh5pQ3afEHZadHe7S8aDq+axGS32A4KdQxdcZO
-        /L55Fk+z8hphHi4luNU439MKXcZd3yY4qzCKdeqNvU3xlugCSKDWPq+3e+EN8G/TADmA2z3hdfSBl
-        K5fBJb6A==;
-Received: from [2601:1c0:6280:3f0:e65e:37ff:febd:ee53]
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBH3C-005kix-60; Wed, 04 Aug 2021 13:35:14 +0000
-Subject: Re: [PATCH][next] kernel/user.c: Fix spelling mistake "cpunter" ->
- "counter"
-To:     Colin King <colin.king@canonical.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210804120658.110124-1-colin.king@canonical.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e67d1ff8-f872-c1af-7f1c-03ac9e9d7d2e@infradead.org>
-Date:   Wed, 4 Aug 2021 06:35:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 4 Aug 2021 09:53:52 -0400
+X-UUID: f76cc7f8ef814dfe83c9cbfcd8ffcbbe-20210804
+X-UUID: f76cc7f8ef814dfe83c9cbfcd8ffcbbe-20210804
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 90024289; Wed, 04 Aug 2021 21:53:35 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 4 Aug 2021 21:53:33 +0800
+Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 4 Aug 2021 21:53:27 +0800
+From:   Mason Zhang <Mason.Zhang@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Laxman Dewangan <ldewangan@nvidia.com>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        Mason Zhang <Mason.Zhang@mediatek.com>
+Subject: [PATCH v3 0/2] spi cs_timing restructure
+Date:   Wed, 4 Aug 2021 21:36:31 +0800
+Message-ID: <20210804133630.18519-1-Mason.Zhang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <20210804120658.110124-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/21 5:06 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> There is a spelling mistake in a panic message. Fix it.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->   kernel/user.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/user.c b/kernel/user.c
-> index a2673f940506..7fc40af8d8ac 100644
-> --- a/kernel/user.c
-> +++ b/kernel/user.c
-> @@ -223,7 +223,7 @@ static int __init uid_cache_init(void)
->   		INIT_HLIST_HEAD(uidhash_table + n);
->   
->   	if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
-> -		panic("percpu cpunter alloc failed");
-> +		panic("percpu counter alloc failed");
->   
->   	/* Insert the root user immediately (init already runs as root) */
->   	spin_lock_irq(&uidhash_lock);
-> 
+Hello,
+This patchset has restructure spi cs_timing, as we know spi core has
+removed spi_set_cs_timing() API, it is a correct decision because it
+asked spi devices to call it in one more time.
+so we need find another way to support user set cs_timing. Actually,
+spi_device set spi_delay for cs_timing is enough, and about how to
+set cs_timing, just put it one the master driver.
+We have test this patch in mediatek platform, it can compeletly meets
+our needs.
 
-Nick Piggin has reworded that panic message text in a patch
-yesterday so this patch isn't needed.
+Changed in v2:
+  - fix tegra spi build err
 
-https://lore.kernel.org/lkml/1628051945.fens3r99ox.astroid@bobo.none/
+Changed in v3:
+  - merged patch2/3/4 for build pass
 
+Mason Zhang (2):
+  spi: move cs spi_delay to spi_device
+  spi: modify set_cs_timing parameter
 
-thanks.
+ drivers/spi/spi-mt65xx.c   | 107 +++++++++++++++++++++----------------
+ drivers/spi/spi-tegra114.c |   8 +--
+ drivers/spi/spi.c          |   6 +--
+ include/linux/spi/spi.h    |  23 ++++----
+ 4 files changed, 78 insertions(+), 66 deletions(-)
+
 -- 
-~Randy
+2.18.0
 
