@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A853E0A8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A587E3E0A91
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235309AbhHDWuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 18:50:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229775AbhHDWum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 18:50:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D76F601FE;
-        Wed,  4 Aug 2021 22:50:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1628117428;
-        bh=au1jMsHrlZQGAFtzrot7CCPS+RgEAXFEcGYA0uxvwUA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=O4pj+MUbZwCirnYWew8Dlfb93x0HyiTgZGzxQRxfDe2cCKD9mmUaO/UBk3HS5o85X
-         +iXxVrhGnbwzdi1E8oJHSppWyTUsv/w/Crsj4UEOIdnq3i7j+tsAGvPAtI8QFWeoMG
-         MavZmyqLfP1+ptt0e4qk0PPEXD3nST0irkff/xDA=
-Date:   Wed, 4 Aug 2021 15:50:24 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
-        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
-        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
-        hch@infradead.org, oleg@redhat.com, david@redhat.com,
-        jannh@google.com, shakeelb@google.com, luto@kernel.org,
-        christian.brauner@ubuntu.com, fweimer@redhat.com, jengelh@inai.de,
-        timmurray@google.com, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v6 1/2] mm: introduce process_mrelease system call
-Message-Id: <20210804155024.e4e42e1b7b087937271fa7ce@linux-foundation.org>
-In-Reply-To: <20210804185004.1304692-1-surenb@google.com>
-References: <20210804185004.1304692-1-surenb@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S235439AbhHDWu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 18:50:57 -0400
+Received: from www62.your-server.de ([213.133.104.62]:46792 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235323AbhHDWuy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 18:50:54 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mBPia-000Gcu-Dn; Thu, 05 Aug 2021 00:50:32 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mBPia-0004r6-3I; Thu, 05 Aug 2021 00:50:32 +0200
+Subject: Re: [PATCH bpf-next] samples/bpf: xdp_redirect_cpu: Add mprog-disable
+ to optstring.
+To:     Matt Cover <werekraken@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthew Cover <matthew.cover@stackpath.com>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210731005632.13228-1-matthew.cover@stackpath.com>
+ <20210731152523.22syukzew6c7njjh@apollo.localdomain>
+ <CAGyo_hp2Uunp0_McN3J8MjSeF593thwiODfUaiE-u_NXArEDPg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4922e491-46c2-fa85-e10c-79b0ffe476c7@iogearbox.net>
+Date:   Thu, 5 Aug 2021 00:50:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAGyo_hp2Uunp0_McN3J8MjSeF593thwiODfUaiE-u_NXArEDPg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26253/Wed Aug  4 10:20:49 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  4 Aug 2021 11:50:03 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
+On 8/4/21 7:57 PM, Matt Cover wrote:
+> On Sat, Jul 31, 2021 at 8:25 AM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+>>
+>> On Sat, Jul 31, 2021 at 06:26:32AM IST, Matthew Cover wrote:
+>>> Commit ce4dade7f12a ("samples/bpf: xdp_redirect_cpu: Load a eBPF program
+>>> on cpumap") added the following option, but missed adding it to optstring:
+>>> - mprog-disable: disable loading XDP program on cpumap entries
+>>>
+>>> Add the missing option character.
+>>
+>> I made some changes in this area in [0], since the support was primarily to do
+>> redirection from the cpumap prog, so by default we don't install anything now
+>> and only do so if a redirection interface is specified (and use devmap instead).
+>> So this option won't be used anyway going forward (since we don't install a
+>> dummy XDP_PASS program anymore) if it gets accepted.
+>>
+>> [0]: https://lore.kernel.org/bpf/20210728165552.435050-1-memxor@gmail.com
+>>
+>> PS: I can restore it again if this is something really used beyond redirecting
+>> to another device (i.e. with custom BPF programs). Any feedback would be helpful.
+> 
+> Hey Kartikeya. I happened to be looking through this code to get a
+> feel for using CPUMAP for custom steering (e.g. RSS on encapsulated
+> packets) in XDP and noticed the missing option character. Figured it
+> was worth doing a quick patch and test.
+> 
+> Unfortunately, I'm not able to say much on your changes as I'm still
+> getting familiarized with this code. It looks like your submission is
+> in need of a rebase; v3 has been marked "Changes Requested" in
+> patchwork [0]. As I see things, It'd be good to get this fix in there
+> for now, whether or not the code is removed later.
 
-> In modern systems it's not unusual to have a system component monitoring
-> memory conditions of the system and tasked with keeping system memory
-> pressure under control. One way to accomplish that is to kill
-> non-essential processes to free up memory for more important ones.
-> Examples of this are Facebook's OOM killer daemon called oomd and
-> Android's low memory killer daemon called lmkd.
-> For such system component it's important to be able to free memory
-> quickly and efficiently. Unfortunately the time process takes to free
-> up its memory after receiving a SIGKILL might vary based on the state
-> of the process (uninterruptible sleep), size and OPP level of the core
-> the process is running. A mechanism to free resources of the target
-> process in a more predictable way would improve system's ability to
-> control its memory pressure.
-> Introduce process_mrelease system call that releases memory of a dying
-> process from the context of the caller. This way the memory is freed in
-> a more controllable way with CPU affinity and priority of the caller.
-> The workload of freeing the memory will also be charged to the caller.
-> The operation is allowed only on a dying process.
-> 
-> After previous discussions [1, 2, 3] the decision was made [4] to introduce
-> a dedicated system call to cover this use case.
-> 
-> The API is as follows,
-> 
->           int process_mrelease(int pidfd, unsigned int flags);
-> 
->         DESCRIPTION
->           The process_mrelease() system call is used to free the memory of
->           an exiting process.
-> 
->           The pidfd selects the process referred to by the PID file
->           descriptor.
->           (See pidofd_open(2) for further information)
+Yeap, given this fix in here is tiny & valid either way, I took it in for now, and
+when Kartikeya's rework eventually drops the whole option, so be it. ;)
 
-I did s/pidofd_open/pidfd_open/
-
-> 
->           The flags argument is reserved for future use; currently, this
->           argument must be specified as 0.
-> 
->         RETURN VALUE
->           On success, process_mrelease() returns 0. On error, -1 is
->           returned and errno is set to indicate the error.
-> 
->         ERRORS
->           EBADF  pidfd is not a valid PID file descriptor.
-> 
->           EAGAIN Failed to release part of the address space.
-> 
->           EINTR  The call was interrupted by a signal; see signal(7).
-> 
->           EINVAL flags is not 0.
-> 
->           EINVAL The memory of the task cannot be released because the
->                  process is not exiting, the address space is shared
->                  with another live process or there is a core dump in
->                  progress.
-> 
->           ENOSYS This system call is not supported, for example, without
->                  MMU support built into Linux.
-> 
->           ESRCH  The target process does not exist (i.e., it has terminated
->                  and been waited on).
-> 
-> ...
->
->  mm/oom_kill.c | 65 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 65 insertions(+)
-
-The code is nice and simple.
-
-Can we get a test suite into tools/testing/selftests?
+Applied, thanks!
