@@ -2,131 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EAAD3E036D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BFB13E0370
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237776AbhHDOg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:36:29 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7925 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237361AbhHDOg2 (ORCPT
+        id S237366AbhHDOiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235304AbhHDOiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:36:28 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GfvMn3qJJz83dT;
-        Wed,  4 Aug 2021 22:32:21 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 4 Aug 2021 22:36:12 +0800
-Received: from ubuntu1804.huawei.com (10.67.174.98) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 4 Aug 2021 22:36:12 +0800
-From:   Pu Lehui <pulehui@huawei.com>
-To:     <oleg@redhat.com>, <mpe@ellerman.id.au>,
-        <benh@kernel.crashing.org>, <paulus@samba.org>,
-        <naveen.n.rao@linux.vnet.ibm.com>, <mhiramat@kernel.org>,
-        <christophe.leroy@csgroup.eu>, <peterz@infradead.org>,
-        <npiggin@gmail.com>, <ruscur@russell.cc>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <zhangjinhao2@huawei.com>, <xukuohai@huawei.com>,
-        <pulehui@huawei.com>
-Subject: [PATCH] powerpc/kprobes: Fix kprobe Oops happens in booke
-Date:   Wed, 4 Aug 2021 22:37:35 +0800
-Message-ID: <20210804143735.148547-1-pulehui@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 4 Aug 2021 10:38:04 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1377C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:37:51 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id p5so2531825wro.7
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:37:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5ZWPk7+tHwwQUoVBZmKXeuGPCR5jkfcKlPCiW0KLOiM=;
+        b=Auz3Sqxy9OiRA7eMF6erDlUjpzk6k7FCOJQ/Ia6d8SiDfIvqQqzfqAMefWq+n2IsC4
+         HnXKWTRyZrv5iupQo/zZJmiIYwhxIAzNG9NYCgp0TOb5AzKK6V2Z1MpGtZSj0gzWi2y9
+         2/HfTd+ZM4A23c3lEYcSNqwBox8k8UeZ4LvxoepWjiqXacBOtYHO9F34hiIKoBK2Eztd
+         +el3PvuCH94AZrd27hPdTD6jTTiN6THlezFhLnMA31iU63jQTjIaMUsVkwWiqfYqt1nr
+         NL2v/NrNWDLnIRw300aoU87OdR8z3YLKCfS+uQ6Aw45k5C2aKaHHiXffyrmx50i7IDrV
+         z3qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5ZWPk7+tHwwQUoVBZmKXeuGPCR5jkfcKlPCiW0KLOiM=;
+        b=lXSqdT42CVuJRn1scoPSNhaqS1RjIMYq5Tclknj3b1K+KrktGpPiuFeSS8e/Otustq
+         aHOmtwZ41PTncRV7SHgWyKji2NsAuLXBDC+SVbOhGy6E342e6PTimphOCQXQgSUJhuWM
+         tzwk7ED/C0h/0HmD5g4lpDkw5o1nLJqZC+cuIIpF1w07hmmOvMXXhM/5JLw3ClK/9qUP
+         XvjFdHTPc2AU6Rbl5DkkalGqB5o28ZUqifXsIftb2v4/MpitXWsESRo6aF+gxdX9bnLb
+         2JPpCEwHXp4IF9fSO8zHGnqrgQMJRM3se00AP/VlQsB0RQGP/M8gYLi9Pn/IIxKdfP0u
+         4oqQ==
+X-Gm-Message-State: AOAM530U/96DJuhRbio9c0u/ZYI9bPVD26khSXpuFiJ5bVE/dRBpucJR
+        FYVaVpDe+lyKKUqddB4vTx/CRgxqbEcZJw==
+X-Google-Smtp-Source: ABdhPJznqTDQnE3lHtVT3M5ocBtDeSwhIDmqRg3Cym1DowVfbY6vQ6j1tHU5GNvgaL0yQx507T+y6g==
+X-Received: by 2002:a5d:6184:: with SMTP id j4mr29617399wru.340.1628087870408;
+        Wed, 04 Aug 2021 07:37:50 -0700 (PDT)
+Received: from localhost.localdomain ([109.180.115.228])
+        by smtp.gmail.com with ESMTPSA id f17sm3362958wrt.18.2021.08.04.07.37.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 07:37:49 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Michael Walle <michael@walle.cc>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/1] mfd: simple-mfd-i2c: Add support for registering devices via MFD cells
+Date:   Wed,  4 Aug 2021 15:37:44 +0100
+Message-Id: <20210804143744.689238-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.98]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500019.china.huawei.com (7.185.36.180)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using kprobe on powerpc booke series processor, Oops happens
-as show bellow:
+More devices are cropping up requiring only Regmap initialisation and
+child registration functionality.  We currently only support that if
+all required devices are represented by their own Device Tree nodes
+complete with compatible strings.
 
-[   35.861352] Oops: Exception in kernel mode, sig: 5 [#1]
-[   35.861676] BE PAGE_SIZE=4K SMP NR_CPUS=24 QEMU e500
-[   35.861905] Modules linked in:
-[   35.862144] CPU: 0 PID: 76 Comm: sh Not tainted 5.14.0-rc3-00060-g7e96bf476270 #18
-[   35.862610] NIP:  c0b96470 LR: c00107b4 CTR: c0161c80
-[   35.862805] REGS: c387fe70 TRAP: 0700   Not tainted (5.14.0-rc3-00060-g7e96bf476270)
-[   35.863198] MSR:  00029002 <CE,EE,ME>  CR: 24022824  XER: 20000000
-[   35.863577]
-[   35.863577] GPR00: c0015218 c387ff20 c313e300 c387ff50 00000004 40000002 40000000 0a1a2cce
-[   35.863577] GPR08: 00000000 00000004 00000000 59764000 24022422 102490c2 00000000 00000000
-[   35.863577] GPR16: 00000000 00000000 00000040 10240000 10240000 10240000 10240000 10220000
-[   35.863577] GPR24: ffffffff 10240000 00000000 00000000 bfc655e8 00000800 c387ff50 00000000
-[   35.865367] NIP [c0b96470] schedule+0x0/0x130
-[   35.865606] LR [c00107b4] interrupt_exit_user_prepare_main+0xf4/0x100
-[   35.865974] Call Trace:
-[   35.866142] [c387ff20] [c0053224] irq_exit+0x114/0x120 (unreliable)
-[   35.866472] [c387ff40] [c0015218] interrupt_return+0x14/0x13c
-[   35.866728] --- interrupt: 900 at 0x100af3dc
-[   35.866963] NIP:  100af3dc LR: 100de020 CTR: 00000000
-[   35.867177] REGS: c387ff50 TRAP: 0900   Not tainted (5.14.0-rc3-00060-g7e96bf476270)
-[   35.867488] MSR:  0002f902 <CE,EE,PR,FP,ME>  CR: 20022422  XER: 20000000
-[   35.867808]
-[   35.867808] GPR00: c001509c bfc65570 1024b4d0 00000000 100de020 20022422 bfc655a8 100af3dc
-[   35.867808] GPR08: 0002f902 00000000 00000000 00000000 72656773 102490c2 00000000 00000000
-[   35.867808] GPR16: 00000000 00000000 00000040 10240000 10240000 10240000 10240000 10220000
-[   35.867808] GPR24: ffffffff 10240000 00000000 00000000 bfc655e8 10245910 ffffffff 00000001
-[   35.869406] NIP [100af3dc] 0x100af3dc
-[   35.869578] LR [100de020] 0x100de020
-[   35.869751] --- interrupt: 900
-[   35.870001] Instruction dump:
-[   35.870283] 40c20010 815e0518 714a0100 41e2fd04 39200000 913e00c0 3b1e0450 4bfffd80
-[   35.870666] 0fe00000 92a10024 4bfff1a9 60000000 <7fe00008> 7c0802a6 93e1001c 7c5f1378
-[   35.871339] ---[ end trace 23ff848139efa9b9 ]---
+However, not everyone is happy with adding empty nodes that provide no
+additional device information into the Device Tree.
 
-There is no real mode for booke arch and the MMU translation is
-always on. The corresponding MSR_IS/MSR_DS bit in booke is used
-to switch the address space, but not for real mode judgment.
+Rather than have a plethora of mostly empty, function-less drivers in
+MFD, we'll support those simple cases in here instead via MFD cells.
 
-Fixes: 21f8b2fa3ca5 ("powerpc/kprobes: Ignore traps that happened in real mode")
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
+Cc: Michael Walle <michael@walle.cc>
+Cc: Mark Brown <broonie@kernel.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/powerpc/include/asm/ptrace.h | 6 ++++++
- arch/powerpc/kernel/kprobes.c     | 5 +----
- 2 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
-index 3e5d470a6155..4aec1a97024b 100644
---- a/arch/powerpc/include/asm/ptrace.h
-+++ b/arch/powerpc/include/asm/ptrace.h
-@@ -187,6 +187,12 @@ static inline unsigned long frame_pointer(struct pt_regs *regs)
- #define user_mode(regs) (((regs)->msr & MSR_PR) != 0)
- #endif
+Michael, could you please test this on your platform to ensure I
+         didn't break anything please?
+
+ drivers/mfd/simple-mfd-i2c.c | 39 ++++++++++++++++++++++++++++--------
+ drivers/mfd/simple-mfd-i2c.h | 27 +++++++++++++++++++++++++
+ 2 files changed, 58 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/mfd/simple-mfd-i2c.h
+
+diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.c
+index 87f684cff9a17..fec3f002a9119 100644
+--- a/drivers/mfd/simple-mfd-i2c.c
++++ b/drivers/mfd/simple-mfd-i2c.c
+@@ -2,39 +2,62 @@
+ /*
+  * Simple MFD - I2C
+  *
++ * Author(s):
++ * 	Michael Walle <michael@walle.cc>
++ * 	Lee Jones <lee.jones@linaro.org>
++ *
+  * This driver creates a single register map with the intention for it to be
+  * shared by all sub-devices.  Children can use their parent's device structure
+  * (dev.parent) in order to reference it.
+  *
+  * Once the register map has been successfully initialised, any sub-devices
+- * represented by child nodes in Device Tree will be subsequently registered.
++ * represented by child nodes in Device Tree or via the MFD cells in this file
++ * will be subsequently registered.
+  */
  
-+#ifdef CONFIG_BOOKE
-+#define real_mode(regs)	0
-+#else
-+#define real_mode(regs)	(!((regs)->msr & MSR_IR) || !((regs)->msr & MSR_DR))
-+#endif
+ #include <linux/i2c.h>
+ #include <linux/kernel.h>
++#include <linux/mfd/core.h>
+ #include <linux/module.h>
+ #include <linux/of_platform.h>
+ #include <linux/regmap.h>
+ 
+-static const struct regmap_config simple_regmap_config = {
++#include "simple-mfd-i2c.h"
 +
- #define force_successful_syscall_return()   \
- 	do { \
- 		set_thread_flag(TIF_NOERROR); \
-diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
-index cbc28d1a2e1b..fac9a5974718 100644
---- a/arch/powerpc/kernel/kprobes.c
-+++ b/arch/powerpc/kernel/kprobes.c
-@@ -289,10 +289,7 @@ int kprobe_handler(struct pt_regs *regs)
- 	unsigned int *addr = (unsigned int *)regs->nip;
- 	struct kprobe_ctlblk *kcb;
++static const struct regmap_config regmap_config_8r_8v = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+ };
  
--	if (user_mode(regs))
--		return 0;
--
--	if (!(regs->msr & MSR_IR) || !(regs->msr & MSR_DR))
-+	if (user_mode(regs) || real_mode(regs))
- 		return 0;
+ static int simple_mfd_i2c_probe(struct i2c_client *i2c)
+ {
+-	const struct regmap_config *config;
++	const struct simple_mfd_data *simple_mfd_data;
++	const struct regmap_config *regmap_config;
+ 	struct regmap *regmap;
++	int ret;
++
++	simple_mfd_data = device_get_match_data(&i2c->dev);
  
- 	/*
+-	config = device_get_match_data(&i2c->dev);
+-	if (!config)
+-		config = &simple_regmap_config;
++	if (simple_mfd_data->regmap_config)
++		regmap_config = simple_mfd_data->regmap_config;
++	else
++		regmap_config = &regmap_config_8r_8v;
+ 
+-	regmap = devm_regmap_init_i2c(i2c, config);
++	regmap = devm_regmap_init_i2c(i2c, regmap_config);
+ 	if (IS_ERR(regmap))
+ 		return PTR_ERR(regmap);
+ 
+-	return devm_of_platform_populate(&i2c->dev);
++	if (!simple_mfd_data->mfd_cell)
++		return devm_of_platform_populate(&i2c->dev);
++
++	ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_AUTO,
++				   simple_mfd_data->mfd_cell,
++				   simple_mfd_data->mfd_cell_size,
++				   NULL, 0, NULL);
++	if (!ret)
++		dev_err(&i2c->dev, "Failed to add child devices\n");
++
++	return ret;
+ }
+ 
+ static const struct of_device_id simple_mfd_i2c_of_match[] = {
+diff --git a/drivers/mfd/simple-mfd-i2c.h b/drivers/mfd/simple-mfd-i2c.h
+new file mode 100644
+index 0000000000000..a2a0bc45b4e3b
+--- /dev/null
++++ b/drivers/mfd/simple-mfd-i2c.h
+@@ -0,0 +1,27 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Simple MFD - I2C
++ *
++ * Author: Lee Jones <lee.jones@linaro.org>
++ *
++ * This driver creates a single register map with the intention for it to be
++ * shared by all sub-devices.  Children can use their parent's device structure
++ * (dev.parent) in order to reference it.
++ *
++ * Once the register map has been successfully initialised, any sub-devices
++ * represented by child nodes in Device Tree will be subsequently registered.
++ */
++
++#ifndef __MFD_SIMPLE_MFD_I2C_H
++#define __MFD_SIMPLE_MFD_I2C_H
++
++#include <linux/mfd/core.h>
++#include <linux/regmap.h>
++
++struct simple_mfd_data {
++	const struct regmap_config *regmap_config;
++	const struct mfd_cell *mfd_cell;
++	size_t mfd_cell_size;
++};
++
++#endif /* __MFD_SIMPLE_MFD_I2C_H */
 -- 
-2.17.1
+2.32.0.554.ge1b32706d8-goog
 
