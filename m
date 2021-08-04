@@ -2,119 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021C23DF98B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 04:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE9D3DF992
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 04:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234098AbhHDCEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 22:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
+        id S234085AbhHDCMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 22:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234422AbhHDCEJ (ORCPT
+        with ESMTP id S229892AbhHDCMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 22:04:09 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D601AC0613D5
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 19:03:57 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id i10-20020a05600c354ab029025a0f317abfso2885511wmq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 19:03:57 -0700 (PDT)
+        Tue, 3 Aug 2021 22:12:47 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0047DC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 19:12:35 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id z128so1721133ybc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 19:12:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rtst-co-kr.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zBi/4DyBrAJ54JI+6NAqWr7rfcLuXLpDmtkvpW0MEpg=;
-        b=VxDyckCan+nlsyElYFpgIKhlFvfJGmh1LuwKJz4W6++ZOdvSj9BPr5P3TEqAGJR7WT
-         S8V0yyRtbvkPce1pk2NlJIqFRImxTRTF738Az2uxnigUtcFsVzeb5qyk1L3HMViwo7C2
-         wWKZZMGMDFJ3thdVsMyUykfojFTDnQ78QDGSPjROs4482uO0PTuPqDBye2t9IfRWCJTW
-         n2lqMoMrW6HPPrxgRO3r/RFaQsKxtxeLXxoKTIGjo1T64wiWS+ufwnz3Iq3FOt0mZpq2
-         AJaRlbejOeTlxBVy4Ip4RoRD0SwNXa6CEpuIuOk+77s41jFCazDd/OAH3NKGMwHg3LHa
-         1uRw==
+         :cc;
+        bh=Sm451czZd0rWklvsSmqNKdExE0Oj2B0x8c+hMELIQJ0=;
+        b=LO5hlyuJnToPkkXBhogL5LHyT5V9JfEPAsQnS4Vq36uK6+Kc6QRqhIZIQFQ6kqSfb+
+         704Lh8LXVFCYj8eEYADECGLuYS9F/lBJroIYFqRFj5aRqgYdv3tRzP9LW9BS4yOPS1Q6
+         7G5YhqLaMNCQd9Sv1xBs5lWGFZ+3oIlCxNijBYqQpx647ZfX2rEYR++jyrSOQYkkEFVS
+         bfSt7sP0PMi4ZQK/0YeER2XhOH0yCS8gzTtlQshcm05WqDdzjMCKpVqdjz+RisHq1nlN
+         Jqg7F6HLl0aO5XMQdZKgDsBkf8smwo5E/1rVFYQHFQ2Lu+rfmLfPx6u8AJiNNzzbWY+i
+         /IcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zBi/4DyBrAJ54JI+6NAqWr7rfcLuXLpDmtkvpW0MEpg=;
-        b=gl6IFaIOc2tDJA937tlQDDziAtmSd5/x3RuyVb5byziV4Mr0aqKb0iuUDkO80ROHCp
-         jrpHKq3lVyWtabssZIfIJFCJzG3a5iBkhKIP4pjtiYhwNJep/dja5gUmpfsAYnyM0JuB
-         AxJpUPQ2exmdpjlLPRrzDBR3A39BtJxfTs6lR5gmUVdYUOduHJhWvIwJu/YUGWIcNleC
-         qClEsA/Eh8Gil44+DKhEI7wl9714TqxDWPBM/rJ9kRP4am3bDp/eC5DkgLDOGsooLH68
-         Eb9tSSg/Ewxj6uMDAPawG+F+su3qaXyxn4oDYa6Fp3Mgb3U5GKa6Mpy8ibWni5bl30c6
-         A//A==
-X-Gm-Message-State: AOAM533s8jlY7WQy50OE/RcxQ0bTN/wYRUGryv/R8b//u1GKJuTyCqc7
-        zWhUmBzM+erjZB95X9SD1L04ivLRjxlZ4F3Rsd3Gwg==
-X-Google-Smtp-Source: ABdhPJxY3QjySiiv+DNCAckxM779d1JXngFScYhhyH3gGzgY6c3A8dX9XcgtDZyEc7ALNTMY2deeQ769daP3dbmKuII=
-X-Received: by 2002:a7b:c094:: with SMTP id r20mr24399561wmh.107.1628042636306;
- Tue, 03 Aug 2021 19:03:56 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=Sm451czZd0rWklvsSmqNKdExE0Oj2B0x8c+hMELIQJ0=;
+        b=ov3qKErlcI5/FpnpSUxS3rTrrxBTwhoARjXRomBQXUKPB4atJgIa40Ayp7gBiJv1+R
+         B7XGgQm5N2G5FrUhGI+oVTXX4DloI3rQPiJmKmCGTTVxVhZQ62le8c2GREGC6D+X/5mZ
+         3t3g8Si8J8py0U96YAPJY0xuJQNac432K9Yk8di5nLFWm0GjoOwfbXC20Fd4Ico6Qpa0
+         oh8+DVENXklCXUCtX/9e935rIYn76dqWyDb8R/XnopHn0bTpk+iIl26mgHdcaCwBZGDE
+         SYNdAEDbtu1QRoDM7fpC/Tq2/uGXtfdPZYh8jPNZ5Ih+c16o4KQqFn4NqmRYW+hZb+EY
+         sqdQ==
+X-Gm-Message-State: AOAM532LJ+Ahvw+he3CLb/8k2cLgCL75cDaMC55aAmvmNN9jMPf/CQL0
+        3IVOEKj5ASv35Sp9ANaiplvAD06349a696TSer/EVw==
+X-Google-Smtp-Source: ABdhPJygfpE1YkHtbzYX/2h95P7IvsLukbbMRLifnuJXjoooqapqG3VNL9zYjmvV8A8r8iWaiCz+j2nxYB/UiYwk0pI=
+X-Received: by 2002:a25:8b91:: with SMTP id j17mr30240817ybl.228.1628043154789;
+ Tue, 03 Aug 2021 19:12:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAJk_X9hBB_edByfEvueSyWgKjpYGZbS2rPLPCSpRrPr+icFz_Q@mail.gmail.com>
- <20210804013252.GA16420@nchen>
-In-Reply-To: <20210804013252.GA16420@nchen>
-From:   Jeaho Hwang <jhhwang@rtst.co.kr>
-Date:   Wed, 4 Aug 2021 11:03:44 +0900
-Message-ID: <CAJk_X9gwa+4CZRemKqW7XZzxd438EQHA-Ngp4MdmPVgHM0Q5fg@mail.gmail.com>
-Subject: Re: Chipidea USB device goes infinite loop due to interrupt while hw_ep_prime
-To:     Peter Chen <peter.chen@kernel.org>
-Cc:     linux-usb@vger.kernel.org,
-        =?UTF-8?B?67OA66y06rSRKEJ5ZW9uIE1vbyBLd2FuZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRpb24gUGxhdGZvcm0=?=
-         =?UTF-8?B?7Jew6rWs7YyA?= <mkbyeon@lselectric.co.kr>,
-        Linux team <team-linux@rtst.co.kr>,
-        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201020072532.949137-1-narmstrong@baylibre.com>
+ <20201020072532.949137-2-narmstrong@baylibre.com> <7hsga8kb8z.fsf@baylibre.com>
+ <CAF2Aj3g6c8FEZb3e1by6sd8LpKLaeN5hsKrrQkZUvh8hosiW9A@mail.gmail.com>
+ <87r1hwwier.wl-maz@kernel.org> <7h7diwgjup.fsf@baylibre.com>
+ <87im0m277h.wl-maz@kernel.org> <87h7g626wg.wl-maz@kernel.org>
+In-Reply-To: <87h7g626wg.wl-maz@kernel.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 3 Aug 2021 19:11:58 -0700
+Message-ID: <CAGETcx-XEJ25SvUO92wVyqjna+=CU6UTSQKqDimy008z0afA1g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build as
+ a module
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi. linux-usb and linux-rt experts.
+On Tue, Aug 3, 2021 at 2:51 AM Marc Zyngier <maz@kernel.org> wrote:
 >
-> On 21-08-02 17:35:01, Jeaho Hwang wrote:
-> > Hi.
-> >
-> > We found an infinite loop inside the function hw_ep_set_halt
-> > (drivers/usb/chipidea/udc.c) if a cablle is repeatedly
-> > connnected/disconnected while ping through RNDIS with chipidea USB devi=
-ce.
-> >
-> > Using ftrace tracing, we found that hw_ep_set_halt is called due to err=
-or
-> > return of hw_ep_prime(drivers/usb/chipidea/udc.c:202) which is called f=
-rom
-> > isr_tr_complete_handler -> isr_setup_status_phase -> _ep_queue.
-> >
-> > The comment of function hw_ep_prime says (execute without interruption)=
- but
-> > timer interrupt is occurred while hw_ep_prime is executing. We believe =
-that
-> > the interrupt causes an error return of hw_ep_prime. We tried to protec=
-t
-> > hw_ep_prime from irqs and then no case of the infinite loop is occurred=
-.
-> >
-> > I want ask if it is appropriate way that turning off irq inside (thread=
-ed)
-> > irq handlers. And should we explicitly turn off irqs before calling
-> > hw_ep_prime?
-> >
+> On Tue, 03 Aug 2021 10:44:34 +0100,
+> Marc Zyngier <maz@kernel.org> wrote:
 >
-> Jeaho, do you use RT-Linux or standard Linux? The function hw_ep_prime is
-> only called at udc_irq which is registered as top-half irq handlers.
-> Why the timer interrupt is occurred when hw_ep_prime is executing?
-
-We use preempt_RT so timer interrupt could be occurred. Now I found
-out that forced threaded irq handler disables local irq on standard
-linux so It is a linux-rt issue. Then should I make patch which
-disables local irqs during hw_ep_prime for RT kernel and suggest it to
-linux-rt maintainers?
-
-Thanks for a kind answer Peter.
-
+> [...]
 >
-> --
+> > This thing keeps failing on my end. It only works if I force the
+> > irqchip module to be present before the MDIO module is loaded. Here's
+> > an example:
+> >
+> > root@tiger-roach:~# modprobe mdio_mux_meson_g12a
+> > [  125.871544] libphy: mdio_mux: probed
+> > [  125.882575] g12a-mdio_mux ff64c000.mdio-multiplexer: Error: Failed to register MDIO bus for child /soc/bus@ff600000/mdio-multiplexer@4c000/mdio@0
+> > [  125.892630] libphy: mdio_mux: probed
+> >
+> > Trying to bring up the Ethernet interface will fail. Note that there
+> > was no attempt to load the irqchip driver.
+> >
+> > root@tiger-roach:~# modprobe -r mdio_mux_meson_g12a
+> > root@tiger-roach:~# modprobe irq-meson-gpio
+> > [  144.983344] meson-gpio-intc ffd0f080.interrupt-controller: 100 to 8 gpio interrupt mux initialized
+> > root@tiger-roach:~# modprobe mdio_mux_meson_g12a
+> > [  150.376464] libphy: mdio_mux: probed
+> > [  150.391039] libphy: mdio_mux: probed
+> >
+> > And it now works.
 >
-> Thanks,
-> Peter Chen
->
+> An additional source of amusement is that this patch allows the
+> irqchip to be removed from the kernel. It becomes really fun when you
+> have live interrupts...
 
+Which is why I wrote IRQCHIP_PLATFORM_DRIVER_BEGIN/END macros. Maybe
+those should be used instead?
 
---=20
-=ED=99=A9=EC=9E=AC=ED=98=B8, Jay Hwang, linux team manager of RTst
-010-7242-1593
+-Saravana
+
+[1] - https://lore.kernel.org/lkml/20200718000637.3632841-2-saravanak@google.com/
