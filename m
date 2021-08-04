@@ -2,58 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81363DFDF7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A953DFE00
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236585AbhHDJZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 05:25:12 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:35214 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236201AbhHDJZL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 05:25:11 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 6680120119;
-        Wed,  4 Aug 2021 09:24:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628069098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SQUO7OJgSdGtF9W14xBHcfW8H85zaIryJz9W3e/fxrE=;
-        b=XXXufPpQjb1AxJNOAqz0VISfmRuxtPCS2l14zYG3ckjpWwpoAMDkDrmdt7y0I0/bZ0LuOr
-        ygZG1ETL3TefrMo+w3BbWfUSDBgKaJwy88Xypcg8Q0cwTnnj9+Lij8S9OQnB5Nsne/Gt3C
-        giUOc2C5y2HE5Wz4NKYMeM6rInhH4J0=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 1B691A3B93;
-        Wed,  4 Aug 2021 09:24:58 +0000 (UTC)
-Date:   Wed, 4 Aug 2021 11:24:56 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v1 01/10] printk: relocate printk cpulock functions
-Message-ID: <YQpc6IZqfYbm5M93@alley>
-References: <20210803131301.5588-1-john.ogness@linutronix.de>
- <20210803131301.5588-2-john.ogness@linutronix.de>
+        id S236600AbhHDJ3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 05:29:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235427AbhHDJ3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 05:29:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8479A60EB9;
+        Wed,  4 Aug 2021 09:29:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628069359;
+        bh=F+pN4N1gCpcgAacPjKXnlhSvfsbduWSEH5hSqYGQZho=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OUqwhSgOHz5aASIUVzmFjsN4XW6wWo/6hB1iKEtbR1O83smCX+Jtkv/WclRRQFI/O
+         0WDCWtQBmV8zTOfhyzuPgqcQdvu7SDFE9As4eXWNKu5HaB8nuuoDsJteva510sQIXR
+         RYPw/u1iE225cq1l47QW6rnCrNXarVMbRokKmAJA=
+Date:   Wed, 4 Aug 2021 11:29:16 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Kalyan Thota <kalyan_t@codeaurora.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        dianders@chromium.org, mkrishn@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, rnayak@codeaurora.org,
+        stable@vger.kernel.org
+Subject: Re: [Resend v3] drm/msm/disp/dpu1: add safe lut config in dpu driver
+Message-ID: <YQpd7P7xYaaf45OS@kroah.com>
+References: <1628066313-9717-1-git-send-email-kalyan_t@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210803131301.5588-2-john.ogness@linutronix.de>
+In-Reply-To: <1628066313-9717-1-git-send-email-kalyan_t@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-08-03 15:18:52, John Ogness wrote:
-> Move the printk cpulock functions "as is" further up so that they
-> can be used by other printk.c functions in an upcoming commit.
+On Wed, Aug 04, 2021 at 01:38:33AM -0700, Kalyan Thota wrote:
+> Add safe lut configuration for all the targets in dpu
+> driver as per QOS recommendation.
 > 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> Issue reported on SC7280:
+> 
+> With wait-for-safe feature in smmu enabled, RT client
+> buffer levels are checked to be safe before smmu invalidation.
+> Since display was always set to unsafe it was delaying the
+> invalidaiton process thus impacting the performance on NRT clients
+> such as eMMC and NVMe.
+> 
+> Validated this change on SC7280, With this change eMMC performance
+> has improved significantly.
+> 
+> Changes in v2:
+> - Add fixes tag (Sai)
+> - CC stable kernel (Dimtry)
+> 
+> Changes in v3:
+> - Correct fixes tag with appropriate hash (stephen)
+> - Resend patch adding reviewed by tag
+> 
+> Fixes: 591e34a091d1 ("drm/msm/disp/dpu1: add support for display for SC7280 target")
+> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org> (sc7280, sc7180)
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+<formletter>
 
-Best Regards,
-Petr
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
+
+</formletter>
