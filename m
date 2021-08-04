@@ -2,113 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13EBB3E09D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0903E09D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240045AbhHDVDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60854 "EHLO
+        id S240133AbhHDVEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:04:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240125AbhHDVDn (ORCPT
+        with ESMTP id S240082AbhHDVEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:03:43 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB41C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:03:27 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id z18so5747641ybg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:03:27 -0700 (PDT)
+        Wed, 4 Aug 2021 17:04:23 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203FDC0613D5;
+        Wed,  4 Aug 2021 14:04:10 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id f42so6734003lfv.7;
+        Wed, 04 Aug 2021 14:04:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jlekstrand-net.20150623.gappssmtp.com; s=20150623;
+        d=googlemail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CyeKjKtoo9LoSd8Ka8M+GcyT9q9AB1Q66au6WOGmIu8=;
-        b=QOgxNkaWKKyNO5qwEAGPVjVHQU2HHIWNpHskRmVAAVZacLU8CDl2sHjiVHfkecCDAD
-         EGVwrQgz/ONC8DatBMXsP+ggp6b9tl0qK+IGkqT6V/sgBMB3m+LP0qSIxULbW76/FyRu
-         F7qqZYG/i/8YupmS7IVwYdhlQWjNr1ycL22Wg+xb/Aac25zzPlK+1iH3uPyAih22MUzo
-         zPDGriYbgSihlN7BbyUlvPdwe8kux768j6PeZW9KWBj+y4qysW6Brn2e2J1KG0fWJUc9
-         W5Wc9JdX40S+qrejo2mcvF1FuFrCb1TyAxDEf0yCo0qAPoLz5r8n3nsqG+Vt2FHQKG4U
-         h0RQ==
+        bh=bRgs0NPKh4Mw3gD6S/OL3j4+WTypBMMGrOvKDK40lo0=;
+        b=DbK0lw1BL42tvqX/clZcnrxev3xx9WcpJBvlbzNzaBPpeLoZ/66un1phJ20lQtU7mp
+         3ovVprD8QmuPl5Ah3Z08GKO+RIJoHWc44HDT5iF3n812zdjNKCpywqzK1dYgOkeetMnZ
+         aYlQSuwI2I3MXm8L+NuqZ7fYD8mQXyN83hsk0+4XMNtDPw7JelN0ENd9taOeknSMXtKY
+         TfYQuFxzYrTd4+2qVKRQHmdRGOhCWliGByO9S8IUrk/OaQMnLJtZci9HA8rTyLfHDyPM
+         nU6gl32lzkb5v0PXtk42himNI538Ad4HYhgm7Rw/UNe7a9986mYTW+jAGt52HCdCnTBV
+         qupA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CyeKjKtoo9LoSd8Ka8M+GcyT9q9AB1Q66au6WOGmIu8=;
-        b=qFpqvKYj06AS0v3+Xa5TSm/fqLdtPld5d7MZVVf+c3UaFpOEIhMAWoqSBPWvIWGPuY
-         OwaIGpKII//fV6QNetgOVEW+mmatd6Zc8nHccpn3UltY+Gk9lXYrOLWjh0Nd+I5f71b4
-         3yaJtWLn2XabtpnnxLDXMAFY6bQzimnTAp/nlrOrUHduay5WGn0SdxNm/9QuMePwYv3y
-         tu74JGUALHle0QEk367jUTW2hcTaiuf3IjdDrnL3Ck1t0EHZfuxxXAAG2Qw/iQL/SGtF
-         2qlagp+so1YfTxYe1l2sAmGwW/m4jzgpn00SCbzinYJDOf+7NEFxYNPIeoQQn8arhPrQ
-         v/2A==
-X-Gm-Message-State: AOAM531moJlM9H4xx3hnZ04iVABzvG9oshFVWnuPG5pTjdCeXrivMUrc
-        +z7zAdPmPWs/5CybNJC9tn5MlyA+P4jQKuXxGNqN6g==
-X-Google-Smtp-Source: ABdhPJx4D532aHvf28UN5ogYmIBkrzQd5oszq1iQNc6mbV1wwkUv/3ic7VceumFl/dA5J6RsWAW0VJy0Bj8j8uaKnKg=
-X-Received: by 2002:a25:680b:: with SMTP id d11mr1696970ybc.241.1628111006488;
- Wed, 04 Aug 2021 14:03:26 -0700 (PDT)
+        bh=bRgs0NPKh4Mw3gD6S/OL3j4+WTypBMMGrOvKDK40lo0=;
+        b=LvUuXI5oYrf3jZ4jSRLZ5DMR1QIFfDpv8qVEK4y0gWsUt/37Q0/YLpkLJL8k/UUmfq
+         ZZJL9rYo358gUjYAZkmVPqAMcgB6bAQ0LLEXb2+en9se6eV3IcIwYlAPRVQc8ygykts7
+         1DGOq5aAvrbdX5BIRRDv/WrCnCw9+SV4QN5Z7ziztnsxaYGkOSp4HkgbUvgCGbPYzzGK
+         DEffYe2xOG5KsmwwsvTpWXuxbMCOrbSmxBCckIJKIAZEKffK1s0JsuJHiMb6AMYDbvfX
+         szAqEiMTNIww0txNfd23xl++bqFMTqDPD7Ie73CIvHM6wpaitNjNcotH430qxz+gwvJ6
+         MDwg==
+X-Gm-Message-State: AOAM532proK+WBvru59n32UoLpxnMHs314/PLxvsre6gXgIR1QNHvWXo
+        rrsPV4npR+su8cueaWYTZLvCrxesAOmZinLWw/s=
+X-Google-Smtp-Source: ABdhPJxCGu1zBOUwbc3sME3niD4I85/4MNH4QCPLuk+2DyDyECbtIPi3zXHPCvRxAGKTz1kM4LV2nrn+dLtUad1+fOc=
+X-Received: by 2002:a19:c202:: with SMTP id l2mr812180lfc.276.1628111048404;
+ Wed, 04 Aug 2021 14:04:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210804204147.2070-1-rdunlap@infradead.org>
-In-Reply-To: <20210804204147.2070-1-rdunlap@infradead.org>
-From:   Jason Ekstrand <jason@jlekstrand.net>
-Date:   Wed, 4 Aug 2021 16:03:15 -0500
-Message-ID: <CAOFGe95raX2O3aKBvTPhKy19aOA96yp0=6hp4nsg6T8x9OBj5A@mail.gmail.com>
-Subject: Re: [PATCH -next] drm/i915: fix i915_globals_exit() section mismatch error
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Intel GFX <intel-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>
+References: <20210717234859.351911-1-martin.blumenstingl@googlemail.com>
+ <20210717234859.351911-3-martin.blumenstingl@googlemail.com> <20210728175823.GA2766167@p14s>
+In-Reply-To: <20210728175823.GA2766167@p14s>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Wed, 4 Aug 2021 23:03:57 +0200
+Message-ID: <CAFBinCB0-bAa7Y+YhscczarGrGuio37F8vRyfW6U2DiiDAvr-g@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] remoteproc: meson-mx-ao-arc: Add a driver for the
+ AO ARC remote procesor
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-remoteproc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bjorn.andersson@linaro.org, ohad@wizery.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 3:41 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Fix modpost Section mismatch error in i915_globals_exit().
-> Since both an __init function and an __exit function can call
-> i915_globals_exit(), any function that i915_globals_exit() calls
-> should not be marked as __init or __exit. I.e., it needs to be
-> available for either of them.
->
-> WARNING: modpost: vmlinux.o(.text+0x8b796a): Section mismatch in reference from the function i915_globals_exit() to the function .exit.text:__i915_globals_flush()
-> The function i915_globals_exit() references a function in an exit section.
-> Often the function __i915_globals_flush() has valid usage outside the exit section
-> and the fix is to remove the __exit annotation of __i915_globals_flush.
->
-> ERROR: modpost: Section mismatches detected.
-> Set CONFIG_SECTION_MISMATCH_WARN_ONLY=y to allow them.
+Hi Mathieu,
 
-My gut says we actually want to back-port
-https://lore.kernel.org/dri-devel/YPk3OCMrhg7UlU6T@phenom.ffwll.local/
-instead.  Daniel, thoughts?
+thanks for taking the time to look into this!
 
---Jason
+(I will address any of your comments that I am not mentioning in this
+email anymore. Thanks a lot for the suggestions!)
 
+On Wed, Jul 28, 2021 at 7:58 PM Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
+[...]
+> > +     writel(FIELD_PREP(AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU,
+> > +                            priv->sram_pa >> 14),
+> Indentation problem
+The idea here is to align priv->sram_pa with AO_REMAP_REG0... which
+are both arguments to FIELD_PREP
+Maybe using something like this will make that easier to read:
+    tmp = FIELD_PREP(AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU,
+                                     priv->sram_pa >> 14);
+    writel(tmp, priv->remap_base + AO_REMAP_REG0);
+
+What do you think: leave it as is or use a separate variable?
+
+[...]
+> > +     usleep_range(10, 100);
 >
-> Fixes: 1354d830cb8f ("drm/i915: Call i915_globals_exit() if pci_register_device() fails")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Jason Ekstrand <jason@jlekstrand.net>
-> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> Cc: Jani Nikula <jani.nikula@linux.intel.com>
-> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-> Cc: intel-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> ---
->  drivers/gpu/drm/i915/i915_globals.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I've seen this kind of mysterious timeouts in other patchset based vendor trees.
+> You likely don't know why it is needed so I won't ask.
+unfortunately this is also the case here
+
+[...]
+> > +     priv->arc_reset = devm_reset_control_get_exclusive(dev, NULL);
+> > +     if (IS_ERR(priv->arc_reset)) {
 >
-> --- linext-2021-0804.orig/drivers/gpu/drm/i915/i915_globals.c
-> +++ linext-2021-0804/drivers/gpu/drm/i915/i915_globals.c
-> @@ -138,7 +138,7 @@ void i915_globals_unpark(void)
->         atomic_inc(&active);
->  }
+> Function __reset_control_get() in __devm_reset_control_get() can return NULL so
+> this should be IS_ERR_OR_NULL().
+The logic in there is: return optional ? NULL : ERR_PTR(-...);
+I am requesting a mandatory reset line here, so reset core will never
+return NULL
+See also [0]
+
+For this reason I am not planning to change this
+
+[...]
+> This driver is squeaky clean. With the above:
 >
-> -static void __exit __i915_globals_flush(void)
-> +static void  __i915_globals_flush(void)
->  {
->         atomic_inc(&active); /* skip shrinking */
->
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+awesome, thank you!
+
+
+Best regards,
+Martin
+
+
+[0] https://elixir.bootlin.com/linux/v5.14-rc4/source/include/linux/reset.h#L227
