@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1C63DFCF8
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8023DFCFB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236586AbhHDId4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:33:56 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56044 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236512AbhHDIdz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:33:55 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id C95182010B;
-        Wed,  4 Aug 2021 08:33:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628066021; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8fZuu5IPh8/NDuL9TS9G3aL/MepY8Xyguc7Af8DztIg=;
-        b=ouxwYpdxC1RedfFp8dj0o3PNLQCFDo9OUoIE7ySDg/ScOugzvVH0ZKfgL4NMwE/lCvtVat
-        LPIEqispUA9aIH2ESfpT3QYs1eQEEC/YhjAYan/dVOC9c9eEiPuVyfJNyvaOoSuS81rgzT
-        J5Y4CLyDH2KnTqWZVkfZB0LHCTFyGQM=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 44DFBA3B89;
-        Wed,  4 Aug 2021 08:33:41 +0000 (UTC)
-Date:   Wed, 4 Aug 2021 10:33:39 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Luis Goncalves <lgoncalv@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] mm/memcg: Disable task obj_stock for PREEMPT_RT
-Message-ID: <YQpQ43VrlqsOhXKd@dhcp22.suse.cz>
-References: <20210803175519.22298-1-longman@redhat.com>
- <87h7g62jxm.ffs@tglx>
- <93dfe0d4-c687-93f8-da75-c5d3c9bd0ac7@suse.cz>
+        id S236512AbhHDIeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:34:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:57546 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236354AbhHDIeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 04:34:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDAD831B;
+        Wed,  4 Aug 2021 01:34:02 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B93783F66F;
+        Wed,  4 Aug 2021 01:34:01 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 09:33:58 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Cc:     sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, avajid@codeaurora.org,
+        adharmap@codeaurora.org
+Subject: Re: [PATCH] firmware: arm_scmi: Free mailbox channels if probe fails
+Message-ID: <20210804083358.GR6592@e120937-lin>
+References: <1628029342-3638-1-git-send-email-rishabhb@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <93dfe0d4-c687-93f8-da75-c5d3c9bd0ac7@suse.cz>
+In-Reply-To: <1628029342-3638-1-git-send-email-rishabhb@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 04-08-21 09:39:23, Vlastimil Babka wrote:
-> On 8/4/21 1:21 AM, Thomas Gleixner wrote:
-> > 	/*
-> > 	 * The only protection from memory hotplug vs. drain_stock races is
-> > 	 * that we always operate on local CPU stock here with IRQ disabled
-> > 	 */
-> > -	local_irq_save(flags);
-> > +	local_lock_irqsave(memcg_stock_lock, flags);
-> >         ...
-> > 	if (use_task_obj_stock())
-> >   		drain_obj_stock(&stock->task_obj);
-> > 
-> > which is incomprehensible garbage.
-> > 
-> > The comment above the existing local_irq_save() is garbage w/o any local
-> > lock conversion already today (and even before the commit which
-> > introduced stock::task_obj) simply because that comment does not explain
-> > the why.
+On Tue, Aug 03, 2021 at 03:22:22PM -0700, Rishabh Bhatnagar wrote:
+> Mailbox channels for the base protocol are setup during probe.
+> There can be a scenario where probe fails to acquire the base
+> protocol due to a timeout leading to cleaning up of all device
+> managed memory including the scmi_mailbox structure setup during
+> mailbox_chan_setup function.
+> [   12.735104]arm-scmi soc:qcom,scmi: timed out in resp(caller: version_get+0x84/0x140)
+> [   12.735224]arm-scmi soc:qcom,scmi: unable to communicate with SCMI
+> [   12.735947]arm-scmi: probe of soc:qcom,scmi failed with error -110
 > 
-> Michal, this seems to be your comment from commit 72f0184c8a00 ("mm, memcg:
-> remove hotplug locking from try_charge"). Was "memory hotplug" a mistake,
-> because the rest of the commit is about cpu hotplug, and I don't really see a
-> memory hotplug connection there?
+> Now when a message arrives at cpu slightly after the timeout, the mailbox
+> controller will try to call the rx_callback of the client and might end
+> up accessing freed memory.
+> [   12.758363][    C0] Call trace:
+> [   12.758367][    C0]  rx_callback+0x24/0x160
+> [   12.758372][    C0]  mbox_chan_received_data+0x44/0x94
+> [   12.758386][    C0]  __handle_irq_event_percpu+0xd4/0x240
+> This patch frees the mailbox channels setup during probe and adds some more
+> error handling in case the probe fails.
+> 
+> Change-Id: I1214ec2c4c92c4a3ca5fa73de11e0e403b13b46a
+> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
 
-This part of the changelog tried to explain that part IIRC
-"
-    We can get rid of {get,put}_online_cpus, fortunately.  We do not have to
-    be worried about races with memory hotplug because drain_local_stock,
-    which is called from both the WQ draining and the memory hotplug
-    contexts, is always operating on the local cpu stock with IRQs disabled.
-"
+Hi Rishabh,
 
-Now I have to admit I do not remember all the details and from a quick
-look the memory hotplug doesn't seem to be draining memcg pcp stock.
-Maybe this has been removed since then. The only stock draining outside
-of the memcg code seems to be memcg_hotplug_cpu_dead callback. That
-would indicate that I really meant the cpu hotplug here indeed.
+Good catch, thanks for this.
 
--- 
-Michal Hocko
-SUSE Labs
+> ---
+>  drivers/firmware/arm_scmi/driver.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> index 9b2e8d4..518c7b9 100644
+> --- a/drivers/firmware/arm_scmi/driver.c
+> +++ b/drivers/firmware/arm_scmi/driver.c
+> @@ -1430,7 +1430,7 @@ static int scmi_probe(struct platform_device *pdev)
+>  
+>  	ret = scmi_xfer_info_init(info);
+>  	if (ret)
+> -		return ret;
+> +		goto clear_txrx_setup;
+>  
+>  	if (scmi_notification_init(handle))
+>  		dev_err(dev, "SCMI Notifications NOT available.\n");
+> @@ -1443,7 +1443,7 @@ static int scmi_probe(struct platform_device *pdev)
+>  	ret = scmi_protocol_acquire(handle, SCMI_PROTOCOL_BASE);
+>  	if (ret) {
+>  		dev_err(dev, "unable to communicate with SCMI\n");
+> -		return ret;
+> +		goto notification_exit;
+>  	}
+>  
+>  	mutex_lock(&scmi_list_mutex);
+> @@ -1482,6 +1482,13 @@ static int scmi_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	return 0;
+> +
+> +notification_exit:
+> +	scmi_notification_exit(&info->handle);
+> +clear_txrx_setup:
+> +	idr_for_each(&info->tx_idr, info->desc->ops->chan_free, &info->tx_idr);
+> +	idr_for_each(&info->rx_idr, info->desc->ops->chan_free, &info->rx_idr);
+> +	return ret;
+>  }
+>  
+
+Shouldn't we also clear the internal IDRs memory allocs after these
+idr_for_each() adding a couple of:
+
+	idr_destroy(&info->tx_idr);
+
+	idr_destroy(&info->rx_idr);
+
+like scmi_remove() does ?
+
+Thanks,
+Cristian
