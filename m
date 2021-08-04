@@ -2,274 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B3B3E0292
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0DC03E029A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238458AbhHDOB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237987AbhHDOBx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:01:53 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7146C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:01:39 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id 14so2809259qkc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:01:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=lAcUqfGNK/vKh805DTBR3HzpfTobh2wi2E9gIlvVZ18=;
-        b=PQW94aeF6OBxLbUUYwzl19r0q7xGYyNVs8SbLqe/oTt9VMpwGLy2MOs0O/Y1+uVr9z
-         UqTYotVTFPShEzM8I1S5uLXaJtkfp0/3mqpYI7aNoJP709ihgrcdTDAmBXAkjbEwOY19
-         r8zEMhfO4YLhphtJ+ICVFuLoctauTapc2wlUCdgqaRuBt7NddT3dzpleY7p1v21KeSF1
-         fMVngf1z2hh6c+uQ1aeEBpafcYjnS/3V6n0Yc5Ol0QA0BUoML0wBiTuY0KiLhzx0rrRb
-         DC0MAzvGwIj8LygiVz5IKW4Zi/MmWBXS3H8qRAi2WI/KgF6xxgy6d6NxPcR9MlaQ2NSo
-         Gf+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=lAcUqfGNK/vKh805DTBR3HzpfTobh2wi2E9gIlvVZ18=;
-        b=ReGAHqn3zW65wLB1Chzv8gxkX0lYMmqCId+EgaYBgEONjj8L0H63EOxWyXOa1G0DR+
-         91iw6z9n4aPE7bNkWySTE0+tQTGD6o1tjWTaIDpDi2iK1QmedOquH7NvkwCqKm7YTjCW
-         HI6xbh8dDoz3Dji2paFvXoXBPPxs2P9K/3QKaF79zmaff/j/IgYWgbhe+v4Z9RIr2rJ+
-         BXjpvq7x11liTVWlPfEry2JKl6gtcTniRMmxOHdVdDs4T3nCu4h7ZAJNdoeii162XQIX
-         X1jsAJ3C7or2LzeZO8bqKtrFmo+TJMpq/aVTA60E1VkjGWT6Rt4hkhAZH6jTWdxwYGym
-         LHAg==
-X-Gm-Message-State: AOAM532xsWxBEtEsAyU8vzCjYWB7l9wDBKSQiYSgOx7oy9+BQooJ4kDy
-        XkCoiSfxeiQI7+/TVXF92PA=
-X-Google-Smtp-Source: ABdhPJz/A+s0bModLH3XwnR7BC4vkevcEVENTG3FaZqf7ADtkd+kbfKcTmDSEsh1tPDV6xleTqGdpA==
-X-Received: by 2002:ae9:f70f:: with SMTP id s15mr2127451qkg.437.1628085698949;
-        Wed, 04 Aug 2021 07:01:38 -0700 (PDT)
-Received: from bat.mindbit.ro (cpe00fc8d79db03-cm00fc8d79db00.cpe.net.fido.ca. [72.137.118.157])
-        by smtp.gmail.com with ESMTPSA id j12sm857805qtj.21.2021.08.04.07.01.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 07:01:38 -0700 (PDT)
-Message-ID: <32e1428e6b872fe6694cc1251bf19bc4b6d403a9.camel@gmail.com>
-Subject: Re: [PATCH] powerpc/32: Fix critical and debug interrupts on BOOKE
-From:   Radu Rendec <radu.rendec@gmail.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linux-kernel@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Date:   Wed, 04 Aug 2021 10:01:37 -0400
-In-Reply-To: <c9f3a3e2-e5ed-6074-b700-99911d925012@csgroup.eu>
-References: <028d5483b4851b01ea4334d0751e7f260419092b.1625637264.git.christophe.leroy@csgroup.eu>
-         <c9f3a3e2-e5ed-6074-b700-99911d925012@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S238511AbhHDOCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:02:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238491AbhHDOCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 10:02:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0F2A6109E;
+        Wed,  4 Aug 2021 14:02:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628085752;
+        bh=9UZLV0Kq8F+CSYFloLyn3KWe9256CMwCDienEmR4DTE=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=iJpVJTdc6NnwK2g81brDUD1XvU24HLV3NpvVLk8Fqde3Zr32B3dIwzCGN5efC7S9R
+         W0jO//6n6WL76icpkDwPRcxJ6MzokEHQjFf9h5ogaRCQDLnG5E+egPR3Dv56a/djyg
+         0JQZ2OaVlpfoQ5oj9jwBV5XfEs+jsb0DJaHHzOr4SwdhjDyE2gddtKRGVu6C6CgCXE
+         SO1eNiDx0ObfeWKwHYz9m5sfC7XS6IEL4voe6qRBVxgc6GKHiWA2mIM8PvTo4KAVr0
+         k/3Yyg/jI7XZTdPEWTHOWQfAci16NlVXHOr2M0U2ERZ20sjBay6INCOKW6rJEahWgj
+         tyLP8PiSbwYDA==
+References: <20210804125907.111654-1-colin.king@canonical.com>
+User-agent: mu4e 1.6.1; emacs 27.2
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+        linux-usb@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] usb: gadget: f_uac2: remove redundant assignments
+ to pointer i_feature
+Date:   Wed, 04 Aug 2021 17:02:11 +0300
+In-reply-to: <20210804125907.111654-1-colin.king@canonical.com>
+Message-ID: <87o8ad5mvf.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
 
-On Wed, 2021-08-04 at 07:52 +0200, Christophe Leroy wrote:
-> Le 07/07/2021 à 07:55, Christophe Leroy a écrit :
-> > 32 bits BOOKE have special interrupts for debug and other
-> > critical events.
-> 
-> Were you able to test this patch ?
+Colin King <colin.king@canonical.com> writes:
 
-I tested it three weeks ago and it works like a charm!
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> Pointer i_feature is being initialized with a value and then immediately
+> re-assigned a new value in the next statement. Fix this by replacing the
+> the redundant initialization with the following assigned value.
+>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-I'm so sorry I forgot to let you know. I got distracted testing the
-old ptrace() problem. In fact, I wouldn't have been able to test that
-if your interrupts patch hadn't been working.
+Acked-by: Felipe Balbi <balbi@kernel.org>
 
-Thanks,
-Radu
-
-> > When handling those interrupts, dedicated registers are saved
-> > in the stack frame in addition to the standard registers, leading
-> > to a shift of the pt_regs struct.
-> > 
-> > Since commit db297c3b07af ("powerpc/32: Don't save thread.regs on
-> > interrupt entry"), the pt_regs struct is expected to be at the
-> > same place all the time.
-> > 
-> > Instead of handling a special struct in addition to pt_regs, just
-> > add those special registers to struct pt_regs.
-> > 
-> > Reported-by: Radu Rendec <radu.rendec@gmail.com>
-> > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > Fixes: db297c3b07af ("powerpc/32: Don't save thread.regs on
-> > interrupt entry")
-> > Cc: stable@vger.kernel.org
-> > ---
-> >   arch/powerpc/include/asm/ptrace.h | 16 ++++++++++++++++
-> >   arch/powerpc/kernel/asm-offsets.c | 31
-> > ++++++++++++++-----------------
-> >   arch/powerpc/kernel/head_booke.h  | 27
-> > +++------------------------
-> >   3 files changed, 33 insertions(+), 41 deletions(-)
-> > 
-> > diff --git a/arch/powerpc/include/asm/ptrace.h
-> > b/arch/powerpc/include/asm/ptrace.h
-> > index 3e5d470a6155..14422e851494 100644
-> > --- a/arch/powerpc/include/asm/ptrace.h
-> > +++ b/arch/powerpc/include/asm/ptrace.h
-> > @@ -70,6 +70,22 @@ struct pt_regs
-> >                 unsigned long __pad[4]; /* Maintain 16 byte
-> > interrupt stack alignment */
-> >         };
-> >   #endif
-> > +#if defined(CONFIG_PPC32) && defined(CONFIG_BOOKE)
-> > +       struct { /* Must be a multiple of 16 bytes */
-> > +               unsigned long mas0;
-> > +               unsigned long mas1;
-> > +               unsigned long mas2;
-> > +               unsigned long mas3;
-> > +               unsigned long mas6;
-> > +               unsigned long mas7;
-> > +               unsigned long srr0;
-> > +               unsigned long srr1;
-> > +               unsigned long csrr0;
-> > +               unsigned long csrr1;
-> > +               unsigned long dsrr0;
-> > +               unsigned long dsrr1;
-> > +       };
-> > +#endif
-> >   };
-> >   #endif
-> >   
-> > diff --git a/arch/powerpc/kernel/asm-offsets.c
-> > b/arch/powerpc/kernel/asm-offsets.c
-> > index a47eefa09bcb..5bee245d832b 100644
-> > --- a/arch/powerpc/kernel/asm-offsets.c
-> > +++ b/arch/powerpc/kernel/asm-offsets.c
-> > @@ -309,24 +309,21 @@ int main(void)
-> >         STACK_PT_REGS_OFFSET(STACK_REGS_IAMR, iamr);
-> >   #endif
-> >   
-> > -#if defined(CONFIG_PPC32)
-> > -#if defined(CONFIG_BOOKE) || defined(CONFIG_40x)
-> > -       DEFINE(EXC_LVL_SIZE, STACK_EXC_LVL_FRAME_SIZE);
-> > -       DEFINE(MAS0, STACK_INT_FRAME_SIZE+offsetof(struct
-> > exception_regs, mas0));
-> > +#if defined(CONFIG_PPC32) && defined(CONFIG_BOOKE)
-> > +       STACK_PT_REGS_OFFSET(MAS0, mas0);
-> >         /* we overload MMUCR for 44x on MAS0 since they are
-> > mutually exclusive */
-> > -       DEFINE(MMUCR, STACK_INT_FRAME_SIZE+offsetof(struct
-> > exception_regs, mas0));
-> > -       DEFINE(MAS1, STACK_INT_FRAME_SIZE+offsetof(struct
-> > exception_regs, mas1));
-> > -       DEFINE(MAS2, STACK_INT_FRAME_SIZE+offsetof(struct
-> > exception_regs, mas2));
-> > -       DEFINE(MAS3, STACK_INT_FRAME_SIZE+offsetof(struct
-> > exception_regs, mas3));
-> > -       DEFINE(MAS6, STACK_INT_FRAME_SIZE+offsetof(struct
-> > exception_regs, mas6));
-> > -       DEFINE(MAS7, STACK_INT_FRAME_SIZE+offsetof(struct
-> > exception_regs, mas7));
-> > -       DEFINE(_SRR0, STACK_INT_FRAME_SIZE+offsetof(struct
-> > exception_regs, srr0));
-> > -       DEFINE(_SRR1, STACK_INT_FRAME_SIZE+offsetof(struct
-> > exception_regs, srr1));
-> > -       DEFINE(_CSRR0, STACK_INT_FRAME_SIZE+offsetof(struct
-> > exception_regs, csrr0));
-> > -       DEFINE(_CSRR1, STACK_INT_FRAME_SIZE+offsetof(struct
-> > exception_regs, csrr1));
-> > -       DEFINE(_DSRR0, STACK_INT_FRAME_SIZE+offsetof(struct
-> > exception_regs, dsrr0));
-> > -       DEFINE(_DSRR1, STACK_INT_FRAME_SIZE+offsetof(struct
-> > exception_regs, dsrr1));
-> > -#endif
-> > +       STACK_PT_REGS_OFFSET(MMUCR, mas0);
-> > +       STACK_PT_REGS_OFFSET(MAS1, mas1);
-> > +       STACK_PT_REGS_OFFSET(MAS2, mas2);
-> > +       STACK_PT_REGS_OFFSET(MAS3, mas3);
-> > +       STACK_PT_REGS_OFFSET(MAS6, mas6);
-> > +       STACK_PT_REGS_OFFSET(MAS7, mas7);
-> > +       STACK_PT_REGS_OFFSET(_SRR0, srr0);
-> > +       STACK_PT_REGS_OFFSET(_SRR1, srr1);
-> > +       STACK_PT_REGS_OFFSET(_CSRR0, csrr0);
-> > +       STACK_PT_REGS_OFFSET(_CSRR1, csrr1);
-> > +       STACK_PT_REGS_OFFSET(_DSRR0, dsrr0);
-> > +       STACK_PT_REGS_OFFSET(_DSRR1, dsrr1);
-> >   #endif
-> >   
-> >         /* About the CPU features table */
-> > diff --git a/arch/powerpc/kernel/head_booke.h
-> > b/arch/powerpc/kernel/head_booke.h
-> > index 87b806e8eded..e5503420b6c6 100644
-> > --- a/arch/powerpc/kernel/head_booke.h
-> > +++ b/arch/powerpc/kernel/head_booke.h
-> > @@ -168,20 +168,18 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
-> >   /* only on e500mc */
-> >   #define DBG_STACK_BASE                dbgirq_ctx
-> >   
-> > -#define EXC_LVL_FRAME_OVERHEAD (THREAD_SIZE - INT_FRAME_SIZE -
-> > EXC_LVL_SIZE)
-> > -
-> >   #ifdef CONFIG_SMP
-> >   #define BOOKE_LOAD_EXC_LEVEL_STACK(level)             \
-> >         mfspr   r8,SPRN_PIR;                            \
-> >         slwi    r8,r8,2;                                \
-> >         addis   r8,r8,level##_STACK_BASE@ha;            \
-> >         lwz     r8,level##_STACK_BASE@l(r8);            \
-> > -       addi    r8,r8,EXC_LVL_FRAME_OVERHEAD;
-> > +       addi    r8,r8,THREAD_SIZE - INT_FRAME_SIZE;
-> >   #else
-> >   #define BOOKE_LOAD_EXC_LEVEL_STACK(level)             \
-> >         lis     r8,level##_STACK_BASE@ha;               \
-> >         lwz     r8,level##_STACK_BASE@l(r8);            \
-> > -       addi    r8,r8,EXC_LVL_FRAME_OVERHEAD;
-> > +       addi    r8,r8,THREAD_SIZE - INT_FRAME_SIZE;
-> >   #endif
-> >   
-> >   /*
-> > @@ -208,7 +206,7 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
-> >         mtmsr   r11;                                                    \
-> >         mfspr   r11,SPRN_SPRG_THREAD;   /* if from user, start at
-> > top of   */\
-> >         lwz     r11, TASK_STACK - THREAD(r11); /* this thread's
-> > kernel stack */\
-> > -       addi    r11,r11,EXC_LVL_FRAME_OVERHEAD; /* allocate stack
-> > frame    */\
-> > +       addi    r11,r11,THREAD_SIZE - INT_FRAME_SIZE;   /* allocate
-> > stack frame    */\
-> >         beq     1f;                                                         
-> > \
-> >         /* COMING FROM USER MODE
-> > */                                          \
-> >         stw     r9,_CCR(r11);           /* save
-> > CR                         */\
-> > @@ -516,24 +514,5 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
-> >         bl      kernel_fp_unavailable_exception;                             
-> > \
-> >         b       interrupt_return
-> >   
-> > -#else /* __ASSEMBLY__ */
-> > -struct exception_regs {
-> > -       unsigned long mas0;
-> > -       unsigned long mas1;
-> > -       unsigned long mas2;
-> > -       unsigned long mas3;
-> > -       unsigned long mas6;
-> > -       unsigned long mas7;
-> > -       unsigned long srr0;
-> > -       unsigned long srr1;
-> > -       unsigned long csrr0;
-> > -       unsigned long csrr1;
-> > -       unsigned long dsrr0;
-> > -       unsigned long dsrr1;
-> > -};
-> > -
-> > -/* ensure this structure is always sized to a multiple of the
-> > stack alignment */
-> > -#define STACK_EXC_LVL_FRAME_SIZE       ALIGN(sizeof (struct
-> > exception_regs), 16)
-> > -
-> >   #endif /* __ASSEMBLY__ */
-> >   #endif /* __HEAD_BOOKE_H__ */
-> > 
-
-
+-- 
+balbi
