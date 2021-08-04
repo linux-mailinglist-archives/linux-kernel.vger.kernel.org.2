@@ -2,220 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0826B3DFA0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB143DFA11
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234913AbhHDDmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 23:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234462AbhHDDl5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 23:41:57 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBF5C061764
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 20:41:44 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id cf5so1759529edb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 20:41:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jqn3cUSXhL86/aR8CXIntvMigSyWyrxcTEh0ioBgKjc=;
-        b=Mfkfku6RzIh9PU9VB5qCOgW8WPVleuDk9MDb+AtkTfLnzUJypUSiqNvVbRdiH9x9qL
-         MZP9SjW8oyhlmRzbHUP/2gJ+6kXh3+rI/VAaLH20TTvlTX1UTzihrxkV81EzOX2YZVV3
-         SHByZMnPSJzR26K8RUWZO6dQcs1gcGr3sQEv/OSVDYrGzE2E5Dbm2DdrKrxIMnQcaaGo
-         9hxzJZ8wRDhSwzboDQLOaCO75FvoxSAOZGfhIYUtTjYa0YFV/XJnbB8ghi0RUfgtyNsM
-         Nbd/YJcdPOKwsyhsHy7vzZrskbK4f/21IDo4QFCBMdqKUVY2C8bfdZgpOvTTrt7VmUGc
-         H3xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jqn3cUSXhL86/aR8CXIntvMigSyWyrxcTEh0ioBgKjc=;
-        b=exaeNvOCKSVs654EXBfkacbhs8gGQkyC1uBBac3OAdR9X7nIVI5AIPUpljjMSXsHdJ
-         7WOT/KM2ERoj13UDaf9UCMX+UOgomFaQNM1k6ZhUmNeijwWvDtDyovLM3BCqj+6Ae68r
-         Neogv6JJXJQF1+5ZQWp8MJy1L7aaDpZ7L/GqGdRZdMOIOVwGaSkAJP/HLPxeTsHske9q
-         q+ekU5wUEdyLQIt0Tlvw0xO9FNuSoFTCRGH81z+3Zhk141XoYtk/JFKl78ru6BBLra5b
-         l906jVu/J2az6/Na2DFf5J01SXiXz2vCRhdktrgZ6rU4lFiK3G19OcMt5FLH7xtgKpw+
-         dDpg==
-X-Gm-Message-State: AOAM533/ETnVPGMxaHCH+3Qm893YY1yqfC7uQaM+Riqa/PcC0AIfcqlA
-        RCRfT61khbGkzE7G4bucsS/8HOBK02FXsuqpRItjXA==
-X-Google-Smtp-Source: ABdhPJyJKo0Trisq81aGbNLYiUV00k9Ixck93Dwg1xDSDp9cPcYPvKUVlMntKjkWjIBFpnJkSaGPG6+/MfNYMUkJsEI=
-X-Received: by 2002:a05:6402:2043:: with SMTP id bc3mr29579404edb.62.1628048502976;
- Tue, 03 Aug 2021 20:41:42 -0700 (PDT)
+        id S234916AbhHDDp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 23:45:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:56058 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230060AbhHDDp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 23:45:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8083213A1;
+        Tue,  3 Aug 2021 20:45:44 -0700 (PDT)
+Received: from [10.163.67.195] (unknown [10.163.67.195])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 747FC3F719;
+        Tue,  3 Aug 2021 20:45:42 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH] arm64/mm: Fix idmap on [16K|36VA|48PA]
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <1627879359-30303-1-git-send-email-anshuman.khandual@arm.com>
+ <20210803103440.GA5786@arm.com>
+ <7bad50a2-76f1-7946-3a15-35e46fb289c0@arm.com>
+ <20210803131201.GB5786@arm.com>
+Message-ID: <4d6a4a0c-7f68-991d-5b0e-08c280543fe8@arm.com>
+Date:   Wed, 4 Aug 2021 09:16:33 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <cover.1627828548.git.zhansayabagdaulet@gmail.com> <26a3cc3d02dc4fa65cc9b135be76e7d795c44877.1627828548.git.zhansayabagdaulet@gmail.com>
-In-Reply-To: <26a3cc3d02dc4fa65cc9b135be76e7d795c44877.1627828548.git.zhansayabagdaulet@gmail.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Tue, 3 Aug 2021 23:41:07 -0400
-Message-ID: <CA+CK2bDYZBBaU3pC369o01tCgydaJ6y91GZ0_MWONMMCajZOUw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] selftests: vm: add COW time test for KSM pages
-To:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, shuah@kernel.org,
-        linux-mm <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210803131201.GB5786@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 1, 2021 at 11:43 AM Zhansaya Bagdauletkyzy
-<zhansayabagdaulet@gmail.com> wrote:
->
-> Since merged pages are copied every time they need to be modified,
-> the write access time is different between shared and non-shared pages.
-> Add ksm_cow_time() function which evaluates latency of these COW
-> breaks. First, duplicated pages are merged and then the time required
-> to write to each of the pages is detected.
 
-Hi Zhansaya,
 
-This test would make more sense if we also had a baseline on how long
-it takes to modify unmerged pages. This way it would show the true
-cost of having a write on a previously merged page vs. if it was never
-merged.
+On 8/3/21 6:42 PM, Catalin Marinas wrote:
+> On Tue, Aug 03, 2021 at 04:57:04PM +0530, Anshuman Khandual wrote:
+>> On 8/3/21 4:04 PM, Catalin Marinas wrote:
+>>> On Mon, Aug 02, 2021 at 10:12:39AM +0530, Anshuman Khandual wrote:
+>>>> +/*
+>>>> + * In this particular CONFIG_ARM64_16K_PAGES config, there might be a
+>>>> + * scenario where 'idmap_text_end' ends up high enough in the PA range
+>>>> + * requiring two additional idmap page table levels. Reduce idmap_t0sz
+>>>> + * to cover the entire PA range. This prevents table misconfiguration
+>>>> + * when a given idmap_t0sz value just requires single additional level
+>>>> + * where as two levels have been built.
+>>>> + */
+>>>> +#if defined(CONFIG_ARM64_VA_BITS_36) && defined(CONFIG_ARM64_PA_BITS_48)
+> 
+> I don't think you need the PA_BITS_48 check in here. It's either this
+> one or PA_BITS_52 in the future. Anyway, I think so far our assumption
 
-Also, instead of having all pages merged together, I'd rather see a
-collection of merged pairs of pages, which are decoupled as one of the
-pages gets modified: i.e.
-Page1 - Page2: merged
-Page3 - Page4: merged
-...
+Even PA_BITS_52 range will be well within the two extra idmap page table
+levels limit, so it should be covered with this proposed code.
 
-then, go through pages: Page2, Page4, ... and modify the first byte in
-each of them and measure the time it takes. Do the same when these
-pages are not merged, and print both numbers so the cost of KSM and
-COW can be calculated.
+> is that the kernel will always be placed in the first 48-bit, so we
+> don't need extra check.
 
-Thanks,
-Pasha
+The check on ARM64_PA_BITS_48 here is a code hardening construct. Because
+(PAGE_SHIFT - 3) is an important factor which ends up pushing the idmap to
+have two extra levels. Could we just assert ARM64_16K_PAGES instead, along
+with ARM64_VA_BITS_36 ? I am concerned because in future other page size
+configs might have ARM64_VA_BITS_36 as well.
 
->
-> The test is run as follows: ./ksm_tests -C -p 5000
-> The output:
->         Total COW time:      0.012612 s
->         The number of pages: 5000
->         Average speed:       1623 MB/s
->
-> Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-> ---
->  tools/testing/selftests/vm/ksm_tests.c | 66 ++++++++++++++++++++++++--
->  1 file changed, 63 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/vm/ksm_tests.c b/tools/testing/selftests/vm/ksm_tests.c
-> index 91c6ff496655..3ffd899b2bd9 100644
-> --- a/tools/testing/selftests/vm/ksm_tests.c
-> +++ b/tools/testing/selftests/vm/ksm_tests.c
-> @@ -33,7 +33,8 @@ enum ksm_test_name {
->         CHECK_KSM_UNMERGE,
->         CHECK_KSM_ZERO_PAGE_MERGE,
->         CHECK_KSM_NUMA_MERGE,
-> -       KSM_MERGE_TIME
-> +       KSM_MERGE_TIME,
-> +       KSM_COW_TIME
->  };
->
->  static int ksm_write_sysfs(const char *file_path, unsigned long val)
-> @@ -98,7 +99,9 @@ static void print_help(void)
->                " -U (page unmerging)\n"
->                " -P evaluate merging time and speed.\n"
->                "    For this test, the size of duplicated memory area (in MB)\n"
-> -              "    must be provided using -s option\n\n");
-> +              "    must be provided using -s option\n"
-> +              " -C evaluate the time required to break COW of merged pages.\n"
-> +              "    The number of pages can be defined using -p option.\n\n");
->
->         printf(" -a: specify the access protections of pages.\n"
->                "     <prot> must be of the form [rwx].\n"
-> @@ -457,6 +460,56 @@ static int ksm_merge_time(int mapping, int prot, int timeout, size_t map_size)
->         return KSFT_FAIL;
->  }
->
-> +static int ksm_cow_time(int mapping, int prot, int timeout, size_t page_size, long page_count)
-> +{
-> +       void *map_ptr;
-> +       struct timespec start_time, end_time;
-> +       long cow_time_s, cow_time_ns;
-> +       int avg_speed;
-> +
-> +       if (clock_gettime(CLOCK_MONOTONIC_RAW, &start_time)) {
-> +               perror("clock_gettime");
-> +               return KSFT_FAIL;
-> +       }
-> +
-> +       map_ptr = allocate_memory(NULL, prot, mapping, '*', page_size * page_count);
-> +       if (!map_ptr)
-> +               return KSFT_FAIL;
-> +
-> +       if (ksm_merge_pages(map_ptr, page_size * page_count, start_time, timeout))
-> +               goto err_out;
-> +
-> +       if (clock_gettime(CLOCK_MONOTONIC_RAW, &start_time)) {
-> +               perror("clock_gettime");
-> +               goto err_out;
-> +       }
-> +       for (size_t i = 0; i < page_count; i++)
-> +               memset(map_ptr + page_size * i, '-', 1);
-> +       if (clock_gettime(CLOCK_MONOTONIC_RAW, &end_time)) {
-> +               perror("clock_gettime");
-> +               goto err_out;
-> +       }
-> +
-> +       cow_time_ns = (end_time.tv_sec - start_time.tv_sec) * NSEC_PER_SEC +
-> +                      (end_time.tv_nsec - start_time.tv_nsec);
-> +       cow_time_s = cow_time_ns / NSEC_PER_SEC;
-> +       cow_time_ns %= NSEC_PER_SEC;
-> +       avg_speed = (page_size * page_count) / (cow_time_s * USEC_PER_SEC +
-> +                                               cow_time_ns / NSEC_PER_USEC);
-> +
-> +       printf("Total COW time:      %ld.%06ld s\n", cow_time_s, cow_time_ns / NSEC_PER_USEC);
-> +       printf("The number of pages: %ld\n", page_count);
-> +       printf("Average speed:       %d MB/s\n", avg_speed);
-> +
-> +       munmap(map_ptr, page_size * page_count);
-> +       return KSFT_PASS;
-> +
-> +err_out:
-> +       printf("Not OK\n");
-> +       munmap(map_ptr, page_size * page_count);
-> +       return KSFT_FAIL;
-> +}
-> +
->  int main(int argc, char *argv[])
->  {
->         int ret, opt;
-> @@ -470,7 +523,7 @@ int main(int argc, char *argv[])
->         bool merge_across_nodes = KSM_MERGE_ACROSS_NODES_DEFAULT;
->         long size_MB = 0;
->
-> -       while ((opt = getopt(argc, argv, "ha:p:l:z:m:s:MUZNP")) != -1) {
-> +       while ((opt = getopt(argc, argv, "ha:p:l:z:m:s:MUZNPC")) != -1) {
->                 switch (opt) {
->                 case 'a':
->                         prot = str_to_prot(optarg);
-> @@ -524,6 +577,9 @@ int main(int argc, char *argv[])
->                 case 'P':
->                         test_name = KSM_MERGE_TIME;
->                         break;
-> +               case 'C':
-> +                       test_name = KSM_COW_TIME;
-> +                       break;
->                 default:
->                         return KSFT_FAIL;
->                 }
-> @@ -573,6 +629,10 @@ int main(int argc, char *argv[])
->                 ret = ksm_merge_time(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
->                                      size_MB);
->                 break;
-> +       case KSM_COW_TIME:
-> +               ret = ksm_cow_time(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
-> +                                  page_size, page_count);
-> +               break;
->         }
->
->         if (ksm_restore(&ksm_sysfs_old)) {
-> --
-> 2.25.1
->
+Something like ...
+
+#if defined(CONFIG_ARM64_VA_BITS_36) && defined(CONFIG_ARM64_16K_PAGES)
+
+> 
+>>>> +	mov	x4, EXTRA_PTRS_1
+>>>> +	create_table_entry x0, x3, EXTRA_SHIFT_1, x4, x5, x6
+>>>> +
+>>>> +	mov	x4, PTRS_PER_PTE
+>>>> +	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
+>>>> +
+>>>> +	mov	x5, #64 - PHYS_MASK_SHIFT
+>>>> +	adr_l	x6, idmap_t0sz
+>>>> +	str	x5, [x6]
+>>>> +	dmb	sy
+>>>> +	dc	ivac, x6
+>>>> +#else
+>>>>  	mov	x4, EXTRA_PTRS
+>>>>  	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
+>>>> +#endif
+>>>>  #else
+>>>>  	/*
+>>>>  	 * If VA_BITS == 48, we don't have to configure an additional
+>>>
+>>> There's a prior idmap_t0sz setting based on __idmap_text_end. Isn't that
+>>> sufficient? We don't care about covering the whole PA space, just the
+>>> __idmap_text_end.
+>>
+>> Right but its bit tricky here.
+>>
+>> __idmap_text_end could be any where between VA_BITS (36) and PA_BITS (48)
+>> which would require (one or two) additional page table levels. But in this
+>> solution it creates two additional page table levels for idmap which would
+>> completely map upto PA_BITS, regardless of __idmap_text_end's position. So
+>> in case __idmap_text_end is between VA_BITS (36) and VA_BITS(47), a single
+>> additional page table level is required where as we have created two ! So
+>> to avoid such a situation, adjust idmap_t0sz accordingly. Otherwise there
+>> will be a MMU mis-configuration.
+> 
+> I get it now. You need 4 levels with 16K pages for idmap as 3 levels
+> (one extra in head.S) are not sufficient. The normal page table uses 2
+> levels with 36-bit VA. Here you chose to go with 4 levels always as the
+> simplest option.
+> 
+> Do we need to adjust idmap_ptrs_per_pgd? I think even without your
+
+IIUC idmap_ptrs_per_pgd tracks the number of entries at the highest level
+i.e PGD but *as per* the VA_BITS config. IIUC it is used by map_memory()
+which creates the mapping for the standard VA_BITS based idmap without the
+extra levels, which get their entries populated with create_table_entry().
+Hence idmap_ptrs_per_pgd need not be updated when new levels are added. It
+should be left unchanged as PTRS_PER_PGD.
+
+> patch, its value is wrong as it doesn't seem to be adjusted for the
+
+The only time the entries get adjusted is when existing number of levels
+dont change but all entries at PGD i.e PTRS_PER_PGD are not required. But
+seems like it is not done correctly either.
+
+Current idmap_t0sz is decided on what is required for __idmap_text_end
+coverage but not PHYS_MASK_SHIFT. So the number of entries at PGD level
+should be computed as follows.
+
+idmap_ptrs_per_pgd = 1 << ((64 - idmap_t0sz) - PGDIR_SHIFT)
+
+but instead here is what we have.
+
+        /*
+         * If VA_BITS == 48, we don't have to configure an additional
+         * translation level, but the top-level table has more entries.
+         */
+        mov     x4, #1 << (PHYS_MASK_SHIFT - PGDIR_SHIFT)
+        str_l   x4, idmap_ptrs_per_pgd, x5
+
+A reduced idmap_t0sz here covers __idmap_text_end not PHYS_MASK_SHIFT.
+I guess this just works because idmap page table levels required for the
+reduced idmap_t0sz and PHYS_MASK_SHIFT remains the same in all possible
+cases for now. The only deviation would have been [16K|36VA|48PA] which
+must have faced this issue but then it was blocked by another problem
+altogether (being solved here).
+
+> extra level. I can't figure out whether it matter but I think we should
+> remove this variable altogether and just set the x4 register to what we
+> need in head.S
+
+Right, idmap_ptrs_per_pgd is not required for anything else other than
+map_memory() which take it at x4. Could be dropped without any problem.
+
+> 
+>> This patch is indented for stable back port and hence tries to be as simple
+>> and minimal as possible. So it creates two additional page table levels
+>> mapping upto PA_BITS without just considering __idmap_text_end's position.
+>> Reducing __idmap_t0sz upto PA_BITS should not be a problem irrespective of
+>> ID_AA64MMFR0_EL1.PARANGE value. As __idmap_text_end would never be on a PA
+>> which is not supported. Hence out of range PA would never be on the bus for
+>> translation.
+> 
+> I'd rather have a clean solution (might as well be this one) than
+> worrying about a stable back-port. It's highly unlikely that we'll trip
+> over this problem in practice: first you'd need RAM above 47-bit and
+> second you'd have to enable EXPERT and 36-bit VA.
+
+I am working on a solution which re-works idmap extension logic based on the
+difference between __idmap_text_end and PGDIR_SHIFT coverage, then creating
+additional page table levels and reducing idmap_t0sz appropriately. All the
+existing code including this fix here, will be dropped completely. Because
+it might be difficult to extend this patch to get the entire thing in order,
+the idea was to just fix [16K|36VA|48PA] which could then be backported and
+then do the rework in mainline (which need not be backported).
+
+To summarize here, you would prefer to skip the above transition and instead
+directly move to the rework which may not be backported ? Please do suggest.
+
+> 
+> It looks like idmap_t0sz is used by the kvm_mmu_init() code to calculate
+> hyp_va_bits. Does it mean that idmap_t0sz should always match PA_SIZE?
+
+Default value for idmap_t0sz is TCR_T0SZ(VA_BITS_MIN) unless it gets reduced
+further to map __idmap_text_end after extending the idmap levels. So it does
+not always match PA_SIZE.
+
+> Or maybe we should just decouple the two.
+
+I dont have adequate understanding on this area. It seems like the hyp borrows
+the already discovered __idmap_text_end placement via idmap_t0sz to figure out
+whether it also needs to have an extended ID map (at EL2). Decoupling it might
+suggest KVM should rediscover __idmap_text_end's placement ?
