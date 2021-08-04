@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA223E0129
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F353E0131
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237533AbhHDM2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 08:28:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55126 "EHLO
+        id S238085AbhHDMan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 08:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236758AbhHDM2G (ORCPT
+        with ESMTP id S237429AbhHDMal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 08:28:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDDCC0613D5;
-        Wed,  4 Aug 2021 05:27:53 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 14:27:49 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628080071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wge5H3ohVu9KXZ7XjLIwa/xxD3n3Ba0yHl81R3u0frA=;
-        b=MOh7k18uhCf+MgMnNnUIHRYL5O8XUW5VqzJ8lNWxFnJN11YbJBaMGSiiJwiCA7o2e30sLR
-        tMR69cRX1CZL312mDITZuGx/j8EoB14c8PMB1CO23kblozN06AcR0ZcrX070tuTy5ud9Yf
-        mBpAhZBtCLZPK/PVHMNm+gmaevz9hSkwZJzDZATZBx0mv03/6Xr9RkKxgFG7fjXY+c6Pf0
-        HdY0YO2EXNi7hsUUCgGDtCgp+vLzWJBjNub6RZMcL2oWDYfBJsWLlhBoNGGywF2apsxaA1
-        RU3kqSRbChkznr23W6u8imITLNQRX8DLD7oNo4lamfiwfZPz9IgfywWMW+Dr2w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628080071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wge5H3ohVu9KXZ7XjLIwa/xxD3n3Ba0yHl81R3u0frA=;
-        b=HLf7HfrLeP6rzmVeqro9DbhiKXsH2RvNuNcn93Kb8lcfxBtaEasCaOEARSTvn1rz4bR8UB
-        EI1HBnpOqGOg7oDQ==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Zanussi <zanussi@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Clark Williams <williams@redhat.com>
-Subject: Re: [PATCH 17/17] libtracefs: Add man page for tracefs_sql()
-Message-ID: <YQqHxQ5XH/ZN5yUq@lx-t490>
-References: <20210730221824.595597-1-rostedt@goodmis.org>
- <20210730221824.595597-18-rostedt@goodmis.org>
- <YQakDYRnId+bK+ue@lx-t490>
- <20210801182916.689a84a8@rorschach.local.home>
+        Wed, 4 Aug 2021 08:30:41 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB4E1C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 05:30:28 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id ec13so3331707edb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 05:30:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Gcr8BhuUlRn9dO5oYZlFn/1npo+Wb2aMp3w+r/9MRMk=;
+        b=WHKHoCpXVz/+eBeqLg7X8OOd0zw5SbQ8V8eTxq9QbYyNdg/1UfJBh6/CJxfwEyZ672
+         UQ72/RmfGI6i5A2WGOuU23KrfpW2v4J82hxlSZ0STUvMPUMQIuvn7M6aI4VbaBFf8qVV
+         LgifWWKRKWB3+iTsuVwNAxZaUY81YATnGteYy/X/9MkyTt0F3yRVSdxeS/4NlTBQcUfv
+         RJB+V8LIg7OFihL6w8uUTAMNsLHVv40sj8Hr8RFNqEANKycf6HvGNsOX7NLqKHNpPRQT
+         IbgucPZG243C2IEqwZEBCh5kwONLZqMWbNtFHAjeZL6hy8kBIobOAcN7VLMSPzn+7OE3
+         qICA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Gcr8BhuUlRn9dO5oYZlFn/1npo+Wb2aMp3w+r/9MRMk=;
+        b=balpJ56Uoxf1lzkbeUC09NbYHiWJi+OKKCePk8QwGB9+zXRLAp+A1bPMn9Qtk9LCiG
+         ZSXmh5Lha5PQ0VAzu8JgQS5/MAPKz76lYuxaOgR2e7qjsZs3YMKqmrIrOMW84iy7yN1q
+         Qpqfdf0YqZkzESV6457r7sgu6xHSRfuTfEPDrfvk+WemSnhNA48Z+FD0qzXUehh29xD8
+         aW550357pRaYLcX+nNekbCKr1uuyr3DaLOgxWpIoZXIx6heQ6BBd+LrK3zhIWUxNq4ce
+         18Ow9JMi8dsn1nsVLUx5o/r6jDrxE3zHSG0NhNNF677c+oKI3HonPrKsRJrwHMu0eYW6
+         zxlg==
+X-Gm-Message-State: AOAM533ibKeSyW9nIotCF8H8y1vBB2ittSN6kHdmcFNlk6n4P307ACCQ
+        qdwOrrTA85msbTJ+4michOY=
+X-Google-Smtp-Source: ABdhPJwWCUzOdpguggzhTnudkKa+0jV8mVhsPd0pRn7Jd/RgWXtGu4TEEiyhKU8ZPYkIP/U38Qolog==
+X-Received: by 2002:a50:9503:: with SMTP id u3mr31376325eda.135.1628080227448;
+        Wed, 04 Aug 2021 05:30:27 -0700 (PDT)
+Received: from pek-vx-bsp2.wrs.com (ec2-44-242-66-180.us-west-2.compute.amazonaws.com. [44.242.66.180])
+        by smtp.gmail.com with ESMTPSA id f5sm627590ejj.45.2021.08.04.05.30.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 05:30:27 -0700 (PDT)
+From:   Bin Meng <bmeng.cn@gmail.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <Conor.Dooley@microchip.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Bin Meng <bin.meng@windriver.com>,
+        conor dooley <conor.dooley@microchip.com>
+Subject: [PATCH v2 1/2] riscv: dts: microchip: Use 'local-mac-address' for emac1
+Date:   Wed,  4 Aug 2021 20:30:14 +0800
+Message-Id: <20210804123015.807929-1-bmeng.cn@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210801182916.689a84a8@rorschach.local.home>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 01, 2021, Steven Rostedt wrote:
-> On Sun, 1 Aug 2021 15:39:25 +0200
-> "Ahmed S. Darwish" <a.darwish@linutronix.de> wrote:
->
-> > On Fri, Jul 30, 2021, Steven Rostedt wrote:
-> > > +
-> > > +The SQL format is as follows:
-> > > +
-> > > +*SELECT* <fields> FROM <start-event> JOIN <end-event> ON <matching-fields> WHERE <filter>
-> > > +
-> > > +Note, although the examples show the SQL commands in uppercase, they are not required to
-> > > +be so. That is, you can use "SELECT" or "select" or "sElEct".
-> > > +
-> >
-> > Maybe it would be helpful to mention that, unlike normal SELECT queries,
-> > the JOIN and ON parts above are _not_ optional?
-> >
-> > That is, generic "one event source" queries:
-> >
-> >   SELECT common_pid,msr,val FROM write_msr WHERE msr=72
-> >
-> > are not supported. (I wish they were though ;-))
->
-> Actually, the sql parser should support it, but it will fail on the
-> creation of events. That's because I started trying to make this create
-> normal histograms. The problem is, that it can't really do a 1 to 1 on
-> histograms and selects, so I gave up. But perhaps for the subset it can
-> create, maybe I can still have it do so. That may require changing the
-> API slightly.
->
-> I'm not a big SQL person, so I don't know all the magic and I have no
-> idea how to add the "values" part of the hist trigger.
->
+From: Bin Meng <bin.meng@windriver.com>
 
-Thanks! I've replied at the v2 thread.
+Per the DT spec, 'local-mac-address' is used to specify MAC address
+that was assigned to the network device, while 'mac-address' is used
+to specify the MAC address that was last used by the boot program,
+and shall be used only if the value differs from 'local-mac-address'
+property value.
 
-(Discovered after-the-fact that a v3 was already sent, sorry..)
+Signed-off-by: Bin Meng <bin.meng@windriver.com>
+Reviewed-by: conor dooley <conor.dooley@microchip.com>
+---
 
---
-Ahmed S. Darwish
-Linutronix GmbH
+(no changes since v1)
+
+ arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+index 0659068b62f7..a9c558366d61 100644
+--- a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
++++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+@@ -317,7 +317,7 @@ emac1: ethernet@20112000 {
+ 			reg = <0x0 0x20112000 0x0 0x2000>;
+ 			interrupt-parent = <&plic>;
+ 			interrupts = <70 71 72 73>;
+-			mac-address = [00 00 00 00 00 00];
++			local-mac-address = [00 00 00 00 00 00];
+ 			clocks = <&clkcfg 5>, <&clkcfg 2>;
+ 			status = "disabled";
+ 			clock-names = "pclk", "hclk";
+-- 
+2.25.1
+
