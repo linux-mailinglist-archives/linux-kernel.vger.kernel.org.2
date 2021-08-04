@@ -2,103 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FEF3E02F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4061F3E02FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238686AbhHDOW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53136 "EHLO
+        id S238693AbhHDOXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237114AbhHDOWV (ORCPT
+        with ESMTP id S237709AbhHDOXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:22:21 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B60C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:22:08 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so5743997pji.5
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:22:08 -0700 (PDT)
+        Wed, 4 Aug 2021 10:23:08 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8BCC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:22:55 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id g30so498651lfv.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:22:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=n0WYjDn/Hk7WnWbcRBK4RMrec6sKgFH/C1TYM3Ko0Rs=;
-        b=lpD5Ve14VY80a7nbPg5IGwwxlbAy9J5Cul+mWTcEk04uYNulKBFe6uXYlfKeDwKDIt
-         4kYfy8npJ+Z0S0mB1eXfMaT78akBvzdqthRPkia0TK7G8Mp2vcgLxO1sAtd9f4EdUXV+
-         8hEfyvJ2WIroBa78qYBgX3ZuZSJbQ+9bmJWTRB1JS+BQgLQ30HR2hwK/HksKSZ35BmGJ
-         RZ5MPfuCh8I9N/V/YgzjZTD7DbYImQo+WdDMWjE3JJIkwUJA9f+feSEvX7HRS7n2KWTn
-         QFxP+5LfCc1xla7bFrHspG8kKZGl1X8RNh/PxAnVLcIMldHDGGeUzHT9Lb8sJ3QfBpwo
-         yppA==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RWlPdL6DwUB6mJRKo0+xi01KggPqUO2/jhQbASI+2FE=;
+        b=QE89PTFODc67XC5H0kcbNIHy9cHlhvZkaAEzK2h6T5fIoEU3d/4E71kndL/f8s0tX+
+         JJ2IIyqzYAV0j2e/4ewwAvS4XIxTlCfeK/XRJ/YxRCkeu+mNPzOr1xke1fPqRbdyAR4B
+         HpxGTKCP36gIfxXsUcVm/lgcHiih0hCBskkrIwgV3F6DfSmJA40eJiRToQYPcUYR0eyT
+         RCbPpYju7Y4YRRRqtxU07ogL97sP0o4V1NsUx2pYjrfcgP0VetrNVpj/ytQszajPV9MH
+         6wty0FiHYQ32pTJpHGrmLfDORsARUr2M1ZV8qaW76tJn4/ZHo3J7Cc8u8NvjL/6y+gTn
+         ZYpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=n0WYjDn/Hk7WnWbcRBK4RMrec6sKgFH/C1TYM3Ko0Rs=;
-        b=sfJr36ie9QAWPGyEy/uQ+TlAyvLMQSLMa/VBvdCiurqoODr2cqTy1H+5uFxJit4tE7
-         xUhAletBAkOQK4u5tnvMMTbqqofw8OVJxcgcBfj/I2BKW7un7HIHwA6lYvfJi2DFpR7l
-         LAnaKJv9JIN07cbWMRofYFbz8tHOb9EfECtUzHyNuUVYMgV2RVJRzgbGxVHo5QDZnT8z
-         Jza6mbiwOKNCclEkq7nt40RtALKVlehZ910iDBosojiKfUd5faYcsEsDXnF7XUFr35IQ
-         INwaxeihSONddmFXMAMUQt9lE6K2hZrmGvNOxSkiEkwRjRH2GBvTSTyP3bm1ZMy+etXY
-         1r0g==
-X-Gm-Message-State: AOAM533TeKBsL44Dq6AZw1sB3dl9o59XlX/l+XOHzpDwBPueOnYvbEBO
-        oH17Rt0M8jTD4hqoKUE90TA=
-X-Google-Smtp-Source: ABdhPJz4tO69xbVlNbbINXuBQR5/4rmJSU/BIK7B2v2hJbwTfK8QH08fVrsbi8Lj9c/Z7uvp4d30Qw==
-X-Received: by 2002:a17:90a:d596:: with SMTP id v22mr10256557pju.51.1628086928254;
-        Wed, 04 Aug 2021 07:22:08 -0700 (PDT)
-Received: from user ([106.212.234.168])
-        by smtp.gmail.com with ESMTPSA id j3sm3309399pfe.98.2021.08.04.07.22.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RWlPdL6DwUB6mJRKo0+xi01KggPqUO2/jhQbASI+2FE=;
+        b=apuW8jf2Y39Xu9SxfOP5ldDxus8iHj0GiQL2lEXkWN7doaz4zYowkIHRqkdXHvomef
+         IBlEJiFvtEe6+1r5VRkBG0vPqqtfD8ubB5f6LsGEdDUV3383Vw72OZt9+7ZIjpY5bCzO
+         hdtLxdBpnlOdD24MtGpv3B7aa/pOb0oZaliZCjiRO29mQGOarl1m65kyilotLWy1ffcy
+         ZO728y6WNlaT2TE3n+uiCYWNfbYFYBg0rEIidZiHf+/+7gKiK3Y6HS28nrLBd8wxcDyk
+         SLdQ9PE6UomXQd+Q9BR19ueX0xSA+sjMXR3b7qvIGIoqwrORqhkC7Z2ZOYXBSHmOifoz
+         Wxeg==
+X-Gm-Message-State: AOAM532HB0DKvt3Ris+nmqfR2Uv/CZkZJFEnp3JRJMg1FuZX40JWa79m
+        aFpqj8RcTG7BFGeEWR1jMO3BLQ==
+X-Google-Smtp-Source: ABdhPJwmL8YC08a1GHI5b6vVSDE4TmS9HGaEeEH0JAy+4KfiRyfMQ4fATRlflfmdnGgIK/c1Hjc6kw==
+X-Received: by 2002:a05:6512:3481:: with SMTP id v1mr3277279lfr.325.1628086973453;
+        Wed, 04 Aug 2021 07:22:53 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id o10sm211359lfl.129.2021.08.04.07.22.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 07:22:07 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 19:52:02 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        saurav.girepunje@gmail.com, marcocesati@gmail.com,
-        ross.schm.dev@gmail.com, insafonov@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@gmail.com, monu.girepunje@gmail.com
-Subject: [PATCH] staging: rtl8723bs: os_dep: remove unused variable
-Message-ID: <YQqiig3oIWZ2oz+G@user>
+        Wed, 04 Aug 2021 07:22:52 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 00CD6102BC1; Wed,  4 Aug 2021 17:22:57 +0300 (+03)
+Date:   Wed, 4 Aug 2021 17:22:57 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel@vger.kernel.org, Shuang Zhai <zhais@google.com>
+Subject: Re: [PATCH 2/3] mm: free zapped tail pages when splitting isolated
+ thp
+Message-ID: <20210804142257.tsgzpfc3zq7um7iu@box.shutemov.name>
+References: <20210731063938.1391602-1-yuzhao@google.com>
+ <20210731063938.1391602-3-yuzhao@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210731063938.1391602-3-yuzhao@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove below unused static variable from os_intfs.c
-rtw_enusbss
-rtw_hwpdn_mode
-rtw_hwpwrp_detect
+On Sat, Jul 31, 2021 at 12:39:37AM -0600, Yu Zhao wrote:
+> @@ -2506,6 +2508,25 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>  			continue;
+>  		unlock_page(subpage);
+>  
+> +		/*
+> +		 * If a tail page has only two references left, one inherited
+> +		 * from the isolation of its head and the other from
+> +		 * lru_add_page_tail() which we are about to drop, it means this
+> +		 * tail page was concurrently zapped. Then we can safely free it
+> +		 * and save page reclaim or migration the trouble of trying it.
+> +		 */
+> +		if (list && page_ref_freeze(subpage, 2)) {
+> +			VM_BUG_ON_PAGE(PageLRU(subpage), subpage);
+> +			VM_BUG_ON_PAGE(PageCompound(subpage), subpage);
+> +			VM_BUG_ON_PAGE(page_mapped(subpage), subpage);
+> +
+> +			ClearPageActive(subpage);
+> +			ClearPageUnevictable(subpage);
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/rtl8723bs/os_dep/os_intfs.c | 8 --------
- 1 file changed, 8 deletions(-)
+Why touch PG_Active/PG_Unevictable?
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/os_intfs.c b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-index 724909078d80..71c9e7eec206 100644
---- a/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-+++ b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-@@ -109,11 +109,6 @@ static int rtw_antdiv_cfg = 1; /*  0:OFF , 1:ON, 2:decide by Efuse config */
- static int rtw_antdiv_type; /* 0:decide by efuse  1: for 88EE, 1Tx and 1RxCG are diversity.(2 Ant with SPDT), 2:  for 88EE, 1Tx and 2Rx are diversity.(2 Ant, Tx and RxCG are both on aux port, RxCS is on main port), 3: for 88EE, 1Tx and 1RxCG are fixed.(1Ant, Tx and RxCG are both on aux port) */
+> +			list_move(&subpage->lru, &pages_to_free);
+> +			nr_pages_to_free++;
+> +			continue;
+> +		}
+> +
 
-
--static int rtw_enusbss;/* 0:disable, 1:enable */
--
--static int rtw_hwpdn_mode = 2;/* 0:disable, 1:enable, 2: by EFUSE config */
--
--static int rtw_hwpwrp_detect; /* HW power  ping detect 0:disable , 1:enable */
-
- static int rtw_hw_wps_pbc;
-
-@@ -159,9 +154,6 @@ module_param(rtw_wifi_spec, int, 0644);
- module_param(rtw_antdiv_cfg, int, 0644);
- module_param(rtw_antdiv_type, int, 0644);
-
--module_param(rtw_enusbss, int, 0644);
--module_param(rtw_hwpdn_mode, int, 0644);
--module_param(rtw_hwpwrp_detect, int, 0644);
-
- module_param(rtw_hw_wps_pbc, int, 0644);
-
---
-2.30.2
-
+-- 
+ Kirill A. Shutemov
