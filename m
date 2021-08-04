@@ -2,104 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C63B63E0606
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539203E05FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239255AbhHDQhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
+        id S237966AbhHDQbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhHDQhS (ORCPT
+        with ESMTP id S237794AbhHDQbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:37:18 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1FE64C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 09:37:04 -0700 (PDT)
+        Wed, 4 Aug 2021 12:31:44 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051ABC061799
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 09:31:28 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id u3so5438656lff.9
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 09:31:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=Juw2cquMzDaAGLJ5HN2u+Sjovrp9iaYMrFDeyu1bTo4=; b=qayyDRT0YgUuF
-        AKTemStdlBo34Sr+cDLQ6lsgAwYlmxmprLArXWyQM9HGAi97H1b2EySRIXvHd/ym
-        edg4oWGgbEUdC6SqaI0bY5NkwZ1Dat4wvsqhe7uByKoOQRSjMJimxMuUdsGSqyQg
-        63a4zhKyzs5nevr0mmxiH512D0QmoI=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnbPwtwgphJO2UAA--.18797S2;
-        Thu, 05 Aug 2021 00:37:01 +0800 (CST)
-Date:   Thu, 5 Aug 2021 00:30:59 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: Enable Undefined Behavior Sanitizer UBSAN
-Message-ID: <20210805003059.26b03ec0@xhacker>
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mbke9nvjw7+ZeekiQRXLpz0LVFhUcu96Nb3OTfXE7BU=;
+        b=PZ1SUNe5srVpzwzOaifNxeDnFelZQ09VVBF0S+czoEleI8H7NaXtf6BgmLYsKuLNiC
+         LTcU8OYPWLuF/4NphS6i+l1ci/XnoMb+i+upOTt69bQAT3JgDhcod/J5a5/zqAWUQ5CE
+         n8TsxAIOFru99StbsoS1slJejG91rgTWWoOlM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mbke9nvjw7+ZeekiQRXLpz0LVFhUcu96Nb3OTfXE7BU=;
+        b=KFmZ0f9IC5MSvp+Bp+bI3ZqlJV555ACRZ108a48SLYl7vVY46jW7sZhkC510drSdIZ
+         mZ5ENvqxJkv2r1v2MYvzCXUCuzvoH6Xq6J25NA+D/7xM1U2jgCXifPI7crADFdIT7FPE
+         DOHnM7XA5PegVQDP0o53ODA5Eme3voMlPoelCEvG9yCWF3obd3fzu6czeOimDTHxkL3n
+         3yeiC5A4FCabmppvgRzW4FQV34I6iTrWc3bFkBmrTMAMB08BVY/uefvxGnr8q3CLEjGV
+         +8QF7aYkShAn38CUoNfWLfLLiZw1YEiJaWH8rxpSS1ur1BtMAKcxANz3jL0jRXwrhfTJ
+         T13g==
+X-Gm-Message-State: AOAM531HmuI/eVhx8/GZs0XezhLCWoBZbBIhfSG0h9Qvv+cP2TbjCIaB
+        sfrUPxZatDEdr8mGQEdv/icF4YOWQCH+VVkm
+X-Google-Smtp-Source: ABdhPJwR9Usl02UBaLmPrJLJrxQ3+nWeaD+xwnvdxUx4gb33tspNy8Mo37dhirg504g/0Az8GXtILg==
+X-Received: by 2002:ac2:4569:: with SMTP id k9mr101799lfm.178.1628094686232;
+        Wed, 04 Aug 2021 09:31:26 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id n17sm239399lfu.201.2021.08.04.09.31.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 09:31:18 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id g30so1202975lfv.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 09:31:18 -0700 (PDT)
+X-Received: by 2002:a19:fc06:: with SMTP id a6mr62531lfi.377.1628094677755;
+ Wed, 04 Aug 2021 09:31:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygBnbPwtwgphJO2UAA--.18797S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFy3GrWrWw1UAr48XF4ruFg_yoW8Wry3pw
-        sYkrn3CrWUGrs5WF4Iy3y8uFyUtan3Xw4agF4qyay5JrWfCr90yw4qvwsIqr1UXFWDArWS
-        kF98u347tr17J37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUySb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr
-        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC2
-        0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
-        0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
-        14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20x
-        vaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j5BMNUUUUU=
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+References: <1628086770.5rn8p04n6j.none.ref@localhost> <1628086770.5rn8p04n6j.none@localhost>
+In-Reply-To: <1628086770.5rn8p04n6j.none@localhost>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 4 Aug 2021 09:31:01 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiLr55zHUWNzmp3DeoO0DUaYp7vAzQB5KUCni5FpwC7Uw@mail.gmail.com>
+Message-ID: <CAHk-=wiLr55zHUWNzmp3DeoO0DUaYp7vAzQB5KUCni5FpwC7Uw@mail.gmail.com>
+Subject: Re: [REGRESSION?] Simultaneous writes to a reader-less, non-full pipe
+ can hang
+To:     "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>, acrichton@mozilla.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Ian Kent <raven@themaw.net>,
+        Christian Brauner <christian@brauner.io>,
+        keyrings@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+Your program is buggy.
 
-Select ARCH_HAS_UBSAN_SANITIZE_ALL in order to allow the user to
-enable CONFIG_UBSAN_SANITIZE_ALL and instrument the entire kernel for
-ubsan checks.
+On Wed, Aug 4, 2021 at 8:37 AM Alex Xu (Hello71) <alex_y_xu@yahoo.ca> wrote:
+>
+>     pipe(pipefd);
+>     printf("init buffer: %d\n", fcntl(pipefd[1], F_GETPIPE_SZ));
+>     printf("new buffer:  %d\n", fcntl(pipefd[1], F_SETPIPE_SZ, 0));
 
-VDSO is excluded because its build doesn't include the
-__ubsan_handle_*() functions from lib/ubsan.c, and the VDSO has no
-sane way to report errors even if it has definitions of these functions.
+Yeah, what did you expect this to do? You said you want a minimal
+buffer, you get a really small buffer.
 
-Passed lib/test_ubsan.c test.
+Then you try to write multiple messages to the pipe that you just said
+should have a minimum size.
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/Kconfig              | 1 +
- arch/riscv/kernel/vdso/Makefile | 1 +
- 2 files changed, 2 insertions(+)
+Don't do that then.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index f133ac72572f..cccb95bf8331 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -28,6 +28,7 @@ config RISCV
- 	select ARCH_HAS_STRICT_KERNEL_RWX if MMU && !XIP_KERNEL
- 	select ARCH_HAS_STRICT_MODULE_RWX if MMU && !XIP_KERNEL
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
-+	select ARCH_HAS_UBSAN_SANITIZE_ALL
- 	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
- 	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
- 	select ARCH_STACKWALK
-diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-index 24d936c147cd..30a5335bd317 100644
---- a/arch/riscv/kernel/vdso/Makefile
-+++ b/arch/riscv/kernel/vdso/Makefile
-@@ -36,6 +36,7 @@ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
- GCOV_PROFILE := n
- KCOV_INSTRUMENT := n
- KASAN_SANITIZE := n
-+UBSAN_SANITIZE := n
- 
- # Force dependency
- $(obj)/vdso.o: $(obj)/vdso.so
--- 
-2.32.0
+> /proc/x/stack shows that the remaining thread is hanging at pipe.c:560.
+> It looks like not only there needs to be space in the pipe, but also
+> slots.
 
+Correct. The fullness of a pipe is not about whether it has the
+possibility of merging more bytes into an existing not-full slot, but
+about whether it has empty slots left.
 
+Part of that is simply the POSIX pipe guarantees - a write of size
+PIPE_BUF or less is guaranteed to be atomic, so it mustn't be split
+among buffers.
+
+So a pipe must not be "writable" unless it has space for at least that
+much (think select/poll, which don't know the size of the write).
+
+The fact that we might be able to reuse a partially filled buffer for
+smaller writes is simply not relevant to that issue.
+
+And yes, we could have different measures of "could write" for
+different writes, but we just don't have or want that complexity.
+
+Please don't mess with F_SETPIPE_SZ unless you have a really good
+reason to do so, and actually understand what you are doing.
+
+Doing a F_SETPIPE_SZ, 0 basically means "I want the mimimum pipe size
+possible". And that one accepts exactly one write at a time.
+
+Of course, the exact semantics are much more complicated than that
+"exactly one write". The pipe write code will optimistically merge
+writes into a previous buffer, which means that depending on the
+pattern of your writes, the exact number of bytes you can write will
+be very different.
+
+But that "merge writes into a previous buffer" only appends to the
+buffer - not _reuse_ it - so when each buffer is one page in size,
+what happens is that you can merge up to 4096 bytes worth of writes,
+but then after that the pipe write will want a new buffer - even if
+the old buffer is now empty because of old reads.
+
+That's why your test program won't block immediately: both writers
+will actually start out happily doing writes into that one buffer that
+is allocated, but at some point that buffer ends, and it wants to
+allocate a new buffer.
+
+But you told it not to allocate more buffers, and the old buffer is
+never completely empty because your readers never read _everythign_,
+so it will hang, waiting for you to empty the one minimal buffer it
+allocated. And that will never happen.
+
+There's a very real reason why we do *not* by default say "pipes can
+only ever use only one buffer".
+
+I don't think this is a regression, but if you have an actual
+application - not a test program - that does crazy things like this
+and used to work (I'm not sure it has ever worked, though), we can
+look into making it work again.
+
+That said, I suspect the way to make it work is to just say "the
+minimum pipe size is two slots" rather than change the "we want at
+least one empty slot". Exactly because of that whole "look, we must
+not consider a pipe that doesn't have a slot writable".
+
+Because clearly people don't understand how subtle F_SETPIPE_SZ is.
+It's not really a "byte count", even though that is how it's
+expressed.
+
+                   Linus
