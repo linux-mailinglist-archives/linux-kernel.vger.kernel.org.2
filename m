@@ -2,178 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C193DFE6E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9C33DFE79
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237223AbhHDJyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 05:54:46 -0400
-Received: from outbound-smtp16.blacknight.com ([46.22.139.233]:38237 "EHLO
-        outbound-smtp16.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236366AbhHDJyo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 05:54:44 -0400
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp16.blacknight.com (Postfix) with ESMTPS id 378B41C3B75
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 10:54:31 +0100 (IST)
-Received: (qmail 32135 invoked from network); 4 Aug 2021 09:54:30 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 4 Aug 2021 09:54:30 -0000
-Date:   Wed, 4 Aug 2021 10:54:25 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>, Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 2/2] mm/vmstat: Protect per cpu variables with preempt
- disable on RT
-Message-ID: <20210804095425.GA6464@techsingularity.net>
-References: <20210723100034.13353-1-mgorman@techsingularity.net>
- <20210723100034.13353-3-mgorman@techsingularity.net>
- <87czqu2iew.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <87czqu2iew.ffs@tglx>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S237253AbhHDJ5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 05:57:07 -0400
+Received: from comms.puri.sm ([159.203.221.185]:41608 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236659AbhHDJ5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 05:57:06 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 0E811DFD3B;
+        Wed,  4 Aug 2021 02:56:24 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id DQm56S8O-S3x; Wed,  4 Aug 2021 02:56:19 -0700 (PDT)
+Message-ID: <bf02db8325bb799a861ff7a924ab4d7d5b1df0cc.camel@puri.sm>
+Subject: Re: [PATCH v10 0/3] media: imx: add support for imx8mq MIPI RX
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     dafna.hirschfeld@collabora.com, devicetree@vger.kernel.org,
+        festevam@gmail.com, kernel@pengutronix.de, kernel@puri.sm,
+        krzk@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        m.felsch@pengutronix.de, mchehab@kernel.org,
+        phone-devel@vger.kernel.org, robh@kernel.org,
+        slongerbeam@gmail.com, Sascha Hauer <s.hauer@pengutronix.de>
+Date:   Wed, 04 Aug 2021 11:56:14 +0200
+In-Reply-To: <20210804093125.GE30984@dragon>
+References: <20210728091245.231043-1-martin.kepplinger@puri.sm>
+         <YQFcfbrTmGw4kZvQ@pendragon.ideasonboard.com>
+         <20210804093125.GE30984@dragon>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 01:54:47AM +0200, Thomas Gleixner wrote:
-> Mel!
+Am Mittwoch, dem 04.08.2021 um 17:31 +0800 schrieb Shawn Guo:
+> On Wed, Jul 28, 2021 at 04:32:45PM +0300, Laurent Pinchart wrote:
+> > Hi Martin,
+> > 
+> > On Wed, Jul 28, 2021 at 11:12:42AM +0200, Martin Kepplinger wrote:
+> > > hi,
+> > > 
+> > > This patch series adds a driver for the i.MX8MQ CSI MIPI receiver
+> > > / controller.
+> > > 
+> > > It includes the driver, the dt-bindings and the DT addition to
+> > > the SoC dtsi.
+> > > I test it using libcamera. Thanks to Laurent who helped a lot.
+> > > I'm happy for
+> > > any feedback,
+> > 
+> > Thank you for the series. I've submitted a pull request that
+> > contains
+> > patches 1/3 and 2/3.
+> > 
+> > Shawn, Sascha, how would you like to handle 3/3 ?
 > 
-
-I hope the ! is not a sign that the patch is a wtf :)
-
-> On Fri, Jul 23 2021 at 11:00, Mel Gorman wrote:
-> > From: Ingo Molnar <mingo@elte.hu>
-> >
-> > Disable preemption on -RT for the vmstat code. On vanila the code runs
-> > in IRQ-off regions while on -RT it may not when stats are updated under
-> > a local_lock. "preempt_disable" ensures that the same resources is not
-> > updated in parallel due to preemption.
-> >
-> > This patch differs from the preempt-rt version where __count_vm_event and
-> > __count_vm_events are also protected. The counters are explicitly "allowed
-> > to be to be racy" so there is no need to protect them from preemption. Only
-> > the accurate page stats that are updated by a read-modify-write need
-> > protection.
-> >
-> > Signed-off-by: Ingo Molnar <mingo@elte.hu>
-> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> > ---
-> >  mm/vmstat.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> >
-> > diff --git a/mm/vmstat.c b/mm/vmstat.c
-> > index b0534e068166..d06332c221b1 100644
-> > --- a/mm/vmstat.c
-> > +++ b/mm/vmstat.c
-> > @@ -319,6 +319,7 @@ void __mod_zone_page_state(struct zone *zone, enum zone_stat_item item,
-> >  	long x;
-> >  	long t;
-> >  
-> > +	preempt_disable_rt();
+> I picked up the 3/3 in v9, which I think is identical to this
+> version.
+> Otherwise, please let me know.
 > 
-> Yes, this is smart to some extent. But in reality it's a bandaid simply
-> because nobody can tell which item of vmstat requires which protection.
-> 
+> Shawn
 
-They were not split correctly when first introduced unfortunately. I don't
-recall why but it's very likely that it simply was not thought about very
-heavily. The naming doesn't help because there is no clue to the names if
-accuracy is needed for functional correctness. I only put heavy thought
-into it when I was dealing with excessive overhead from accurate counters.
+it's identical, yes. thank you very much,
 
-Most of zone_stat_item and node_stat_item *must* be accurate for
-correctness (e.g. NR_FREE_PAGES drifting would be very bad) but not all.
-NR_VMSCAN_IMMEDIATE does not need special protection for example, same
-for NR_WRITTEN and NR_DIRTIED. Some of the WORKINGSET ones may not need
-protection either but I didn't audit every single one. Either way, some
-of the events could be moved out.
+                       martin
 
-Commit f19298b9516c ("mm/vmstat: convert NUMA statistics to basic NUMA
-counters") is an example where some counters were moved because they did
-not require accuracy and were updated from fast paths. The existance of
-the path allows some other counters to move relatively easily.
-
-> If you go back in RT history then you will figure out that we were able
-> to eliminate _all_ occurences of preempt_disable_rt() except for this
-> one.
-> 
-> Even mm developers are wary about this:
-> 
->  <tglx> so in vmstat.c there is this magic comment:
->  <tglx>  * For use when we know that interrupts are disabled
->  <tglx>  * or when we know that preemption is disabled and that
->  <tglx>  * particular counter cannot be updated from interrupt context.
->  <tglx> how can I know which counters need what?
->  <mm_expert> I don't think there's a list, one would have to check on counter to counter basis :/ 
->  <tglx> and of course there is nothing which validates that, right?
->  <mm_expert> exactly
-> 
-
-While I'm not "mm_expert", I agree with his/her statements. Each counter
-would need to be audited and two question are asked
-
- o If this counter is inaccurate, does anything break?
- o If this counter is inaccurate, does it both increment and decrement
-   allowing the possibility it goes negative?
-
-The decision on that is looking at the counter and seeing if any
-functional decision is made based on its value. So two examples;
-
-	NR_VMSCAN_IMMEDIATE is a node-based counter that only every
-	increments and is reported to userspace. No kernel code makes
-	any decision based on its value. Therefore it's likely safe to
-	move to numa_stat_item instead.
-
-	Action: move it
-
-	WORKINGSET_ACTIVATE_FILE is a node-based counter that is used to
-	determine if a mem cgroup is potentially congested by looking at
-	the ratio of cgroup to node refault rates as well as deciding if
-	LRU file pages should be deactivate.  If that value drifts, the
-	ratios are miscalculated and could lead to functional oddities
-	and therefore must be accurate.
-
-	Action: leave it alone
-
-I guess it could be further split into state that must be accurate from
-IRQ and non-IRQ contexts but that probably would be very fragile and
-offer limited value.
-
-> Brilliant stuff which prevents you to do any validation on this. Over
-> the years there have been several issues where callers had to be fixed
-> by analysing bug reports instead of having a proper instrumentation in
-> that code which would have told the developer that he got it wrong.
-> 
-
-I'm not sure it could be validated at build-time but I'm just back from
-holiday and may be lacking imagination.
-
-> Of course on RT kernels the preempt_disable_rt() will serialize
-> everything correctly, but as we have learned over the years just
-> slapping _if_rt() or if_not_rt() variants of things around is most of
-> the time papering over the underlying problem of badly defined
-> protection scopes. Let's not proliferate that. As I said in the above
-> IRC conversation:
-> 
->  <tglx> I fundamentally hate this preempt_disable_rt() muck
-> 
-
-The issue is that even if this was properly audited and the inaccurate
-and accurate counters were in the proper enums using the correct APIs, it
-would still be necessary to protect the accurate counters from updates from
-IRQ context. Hence, as I write this, I don't think preempt_[dis|en]able_rt
-would go away and that is why I didn't continue with the series to break
-out "accurate" stats
-
--- 
-Mel Gorman
-SUSE Labs
