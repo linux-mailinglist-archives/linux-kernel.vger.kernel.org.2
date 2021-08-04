@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6504A3DF9B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 04:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E71C3DF9B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 04:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234501AbhHDChO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 22:37:14 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:56580 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231950AbhHDChN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 22:37:13 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UhvWjaO_1628044619;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UhvWjaO_1628044619)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 04 Aug 2021 10:37:00 +0800
-Subject: Re: [PATCH v2] ocfs2: quota_local: fix possible
- uninitialized-variable access in ocfs2_local_read_info()
-To:     Tuo Li <islituo@gmail.com>, mark@fasheh.com, jlbec@evilplan.org
-Cc:     ocfs2-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        baijiaju1990@gmail.com, TOTE Robot <oslab@tsinghua.edu.cn>
-References: <20210804014510.29430-1-islituo@gmail.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <9b977911-1d62-ea72-0efa-185fe5937355@linux.alibaba.com>
-Date:   Wed, 4 Aug 2021 10:36:59 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S234601AbhHDCh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 22:37:56 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:18939 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234506AbhHDChy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 22:37:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628044663; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=AdSZAOo3QXrorQizvhdg24/idcUVBek6kZg6Gp4D9Vc=; b=d4zu13j3wj5Krrky0THi9x+FClZstFcLNgtQ0HaOgtNOab6XHVyUEmMiLxETDwCxzVAPzZn3
+ hGkVyItND8cMTQ3f73zMXmBn0q+Wh/OQGMpwEUGRQbWyQDNtcqV7hikuwYmsXF9knbZnPS0M
+ 29alZIsiS0IN1Ql1+pW7oKFPjjM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6109fd64ebcbc9cec91f3965 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Aug 2021 02:37:24
+ GMT
+Sender: luoj=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4CAB6C43144; Wed,  4 Aug 2021 02:37:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.253.66.187] (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: luoj)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8E5D9C433F1;
+        Wed,  4 Aug 2021 02:37:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8E5D9C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=luoj@codeaurora.org
+Subject: Re: [PATCH 3/3] dt-bindings: net: rename Qualcomm IPQ MDIO bindings
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Gross, Andy" <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Robert Marko <robert.marko@sartura.hr>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        devicetree@vger.kernel.org, Sricharan <sricharan@codeaurora.org>
+References: <20210729125358.5227-1-luoj@codeaurora.org>
+ <20210729125358.5227-3-luoj@codeaurora.org>
+ <CAL_Jsq+=Vyy7_EQ_A7JW4ZfqpPU=6eCyUYMnPORChGvefw-yTA@mail.gmail.com>
+ <7873e70dcf4fe749521bd9c985571742@codeaurora.org> <YQf1jdsUc8S7tTBy@lunn.ch>
+From:   Jie Luo <luoj@codeaurora.org>
+Message-ID: <0eb8f82a-c03c-8ec5-7ac4-7835dd935c73@codeaurora.org>
+Date:   Wed, 4 Aug 2021 10:37:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210804014510.29430-1-islituo@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <YQf1jdsUc8S7tTBy@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 8/2/2021 9:39 PM, Andrew Lunn wrote:
+>>> since the phylib code can't satisfy resetting PHY in IPQ chipset, phylib
+>>> resets phy by
+>>> configuring GPIO output value to 1, then to 0. however the PHY reset in
+>>> IPQ chipset need
+>>> to configuring GPIO output value to 0, then to 1 for the PHY reset, so i
+>>> put the phy-reset-gpios here.
+> Look at the active low DT property of a GPIO.
+>
+>       Andrew
 
-On 8/4/21 9:45 AM, Tuo Li wrote:
-> A memory block is allocated through kmalloc(), and its return value is
-> assigned to the pointer oinfo. If the return value of
-> ocfs2_global_read_info() at line 709 is less than zero,
-> oinfo->dqi_gqinode may be not initialized. However, it is accessed at
-> line 775:
->   iput(oinfo->dqi_gqinode);
-> 
-> To fix this possible uninitialized-variable access, replace kmalloc()
-> with kzalloc() when allocating memory for oinfo.
-> 
-
-Update description as well.
-
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Tuo Li <islituo@gmail.com>
-> ---
-> v2:
-> * Replace kzalloc() with NULL assignment to oinfo->dqi_gqinode.
->   Thank Joseph Qi for helpful advice.
-> ---
->  fs/ocfs2/quota_local.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/ocfs2/quota_local.c b/fs/ocfs2/quota_local.c
-> index b1a8b046f4c2..de5aae584d5d 100644
-> --- a/fs/ocfs2/quota_local.c
-> +++ b/fs/ocfs2/quota_local.c
-> @@ -703,6 +703,7 @@ static int ocfs2_local_read_info(struct super_block *sb, int type)
->  	oinfo->dqi_type = type;
->  	INIT_LIST_HEAD(&oinfo->dqi_chunk);
->  	oinfo->dqi_rec = NULL;
-> +	oinfo->dqi_gqinode = NULL;
->  	oinfo->dqi_lqi_bh = NULL;
->  	oinfo->dqi_libh = NULL;
->  
-
-We need take care oinfo->dqi_gqlock as well. How about the following way?
-
-diff --git a/fs/ocfs2/quota_global.c b/fs/ocfs2/quota_global.c
-index eda8348..f033de7 100644
---- a/fs/ocfs2/quota_global.c
-+++ b/fs/ocfs2/quota_global.c
-@@ -357,7 +357,6 @@ int ocfs2_global_read_info(struct super_block *sb, int type)
- 	}
- 	oinfo->dqi_gi.dqi_sb = sb;
- 	oinfo->dqi_gi.dqi_type = type;
--	ocfs2_qinfo_lock_res_init(&oinfo->dqi_gqlock, oinfo);
- 	oinfo->dqi_gi.dqi_entry_size = sizeof(struct ocfs2_global_disk_dqblk);
- 	oinfo->dqi_gi.dqi_ops = &ocfs2_global_ops;
- 	oinfo->dqi_gqi_bh = NULL;
-diff --git a/fs/ocfs2/quota_local.c b/fs/ocfs2/quota_local.c
-index b1a8b04..0e4b16d 100644
---- a/fs/ocfs2/quota_local.c
-+++ b/fs/ocfs2/quota_local.c
-@@ -702,6 +702,8 @@ static int ocfs2_local_read_info(struct super_block *sb, int type)
- 	info->dqi_priv = oinfo;
- 	oinfo->dqi_type = type;
- 	INIT_LIST_HEAD(&oinfo->dqi_chunk);
-+	oinfo->dqi_gqinode = NULL;
-+	ocfs2_qinfo_lock_res_init(&oinfo->dqi_gqlock, oinfo);
- 	oinfo->dqi_rec = NULL;
- 	oinfo->dqi_lqi_bh = NULL;
- 	oinfo->dqi_libh = NULL;
+> thanks Andrew, will update it in the next patch set.
