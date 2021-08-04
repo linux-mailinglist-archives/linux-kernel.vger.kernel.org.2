@@ -2,128 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2E53E0AE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FCDF3E0AEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235719AbhHDXfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 19:35:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47399 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235323AbhHDXfB (ORCPT
+        id S235746AbhHDXli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 19:41:38 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:35523 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235582AbhHDXlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 19:35:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628120087;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VQv4qZvsh4gqGG12A1+aEgDS91kf49v/O6T32Q2bwtM=;
-        b=bk5oV7Cn1UcN41YmUVaOWLYLnlTUR0jAp6soqdjhY7GTyhBxIK0XIYJzSYia4WSXP+g/gs
-        yJshKlS6HzL0qIYYjHnWrGbBtmMCEnqCxCtDWF8OLDqg1Opyj1WNN6QYFf+zTlktevMtoZ
-        yGnVvoXWSTkvjah6UMemPBvvuxHT+Y8=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-203-nYKAoBVKObOHMUAcS7qKnA-1; Wed, 04 Aug 2021 19:34:44 -0400
-X-MC-Unique: nYKAoBVKObOHMUAcS7qKnA-1
-Received: by mail-qk1-f198.google.com with SMTP id b190-20020a3767c70000b02903ca0967b842so1481697qkc.9
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 16:34:44 -0700 (PDT)
+        Wed, 4 Aug 2021 19:41:35 -0400
+Received: by mail-il1-f200.google.com with SMTP id v18-20020a056e020f92b02901ff388acf98so1761793ilo.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 16:41:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=VQv4qZvsh4gqGG12A1+aEgDS91kf49v/O6T32Q2bwtM=;
-        b=rnxYX1rHC0pvnulN0puLcOAZ1QoCzDFtNMOTZf1FKtQlQSXLFW9VjpyRxk3G8oOFcL
-         cMuiMfz8YX0dF3QKYZrK0eFrpELSDmOB8VNsGwiSPBd0fZzgwBKQy436d+dxm7KyWMXO
-         KxD5xCOFADq0uVVfjCv6+CfP1onJkyGa8igy7EkAjH90DZebbewzwD9xbK48pc66ezSK
-         GhgXXrisFcK1nCY/LrHn+B8LXodTTzM/iQFZWLX+d+5bN2Fk1kiZ36o7otp7aYjUIO25
-         GsKpmOIiJb4nJjriR4cFv3hr4iXW9lNwMQ+ToUGWNhJdnSl+fsQRDTgTtm7pdz3OKRBI
-         7OPg==
-X-Gm-Message-State: AOAM531xXr1VvExsGBARN4t+JjlGXs3cU0Zw+4+J3+jgqlH2pBWxlrWE
-        bg0kCFP3iKUYHrLUnZq0PaL2l9JfiSEmHfHByb0rG0bnkzJrJc6enMPUMd1s/Var/MzCZuEg2i2
-        1sFltidFBoDHB6CruN+AUqb2F
-X-Received: by 2002:a05:622a:104a:: with SMTP id f10mr1945495qte.340.1628120084415;
-        Wed, 04 Aug 2021 16:34:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwl9rRdjxepiOiyYQS7TcrkbqZpMoDI0ChGVDRK0W7wLv1R/j1RPQNuuHd8hbeeRX1LcABeDg==
-X-Received: by 2002:a05:622a:104a:: with SMTP id f10mr1945482qte.340.1628120084211;
-        Wed, 04 Aug 2021 16:34:44 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id q194sm2224297qke.83.2021.08.04.16.34.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 16:34:43 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [patch 30/63] locking/spinlock: Provide RT variant
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>
-References: <20210730135007.155909613@linutronix.de>
- <20210730135206.865728220@linutronix.de>
-Message-ID: <4fa5ec01-ff09-16f3-e1d6-42431036f554@redhat.com>
-Date:   Wed, 4 Aug 2021 19:34:42 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=aEfuAixG+gq35I7KjD5wnNAArKWS8WpJhEmIQRVu3Pw=;
+        b=dFkAFygGCC35FCpi8avTaEzBeh0ViToxOmOzVJm7l4tlIfs/0BRTCqse8D6B651u5+
+         J4o63JrlBFCHE4KQ8arA6w4rRw8Xm60WEHfc4+3IsomdMyWlpBjef9EVIEW2KUn7/os4
+         cieo9PDap0Kw5srZ/432SQCZAYcvM6YM23aiCGPG/7NqPxNNI1D8YYefujzJXTHhBLaR
+         zeUhLhz8alNSMyyCYxUfLb/X2Ab5XPN0uEorvYPy5HJ5fh2D+v4ukYDLlVI0RtjteaZb
+         gDa7A5Io+dvr2fiM7gXT8CYHbYHdS0ikwPLZKDFT4wd4v6IUjge/ad3w78Il7VYsYRYY
+         MtCw==
+X-Gm-Message-State: AOAM533OWCbqz0dm3tzmtmbyUzlBaEnVkAVXgoxmydQDbIgzadDAB1Jc
+        OsnBzwyjE8OJYaj4d4+Cm38E0Hjz7Xtj3yWZgyMh3Ky+eMa2
+X-Google-Smtp-Source: ABdhPJxBPUnp6THFfHqBnALZZ0/hwHQ0xXpWHvxK4hS1LIa3+8vWhbeoZyoHVWQiKxId2UoLtnStAydbRAgvGm9xzrkUG0t4SQj5
 MIME-Version: 1.0
-In-Reply-To: <20210730135206.865728220@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Received: by 2002:a02:2243:: with SMTP id o64mr1834294jao.40.1628120481519;
+ Wed, 04 Aug 2021 16:41:21 -0700 (PDT)
+Date:   Wed, 04 Aug 2021 16:41:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f3ee6005c8c45628@google.com>
+Subject: [syzbot] WARNING in iov_iter_pipe (2)
+From:   syzbot <syzbot+7e3ea7eaebc6168ab4d5@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/21 9:50 AM, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
->
-> Provide the actual locking functions which make use of the general and
-> spinlock specific rtmutex code.
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->   kernel/locking/Makefile      |    1
->   kernel/locking/spinlock_rt.c |  128 +++++++++++++++++++++++++++++++++++++++++++
->   2 files changed, 129 insertions(+)
->   create mode 100644 kernel/locking/spinlock_rt.c
-> ---
-> --- a/kernel/locking/Makefile
-> +++ b/kernel/locking/Makefile
-> @@ -25,6 +25,7 @@ obj-$(CONFIG_LOCK_SPIN_ON_OWNER) += osq_
->   obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
->   obj-$(CONFIG_QUEUED_SPINLOCKS) += qspinlock.o
->   obj-$(CONFIG_RT_MUTEXES) += rtmutex_api.o
-> +obj-$(CONFIG_PREEMPT_RT) += spinlock_rt.o
->   obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
->   obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock_debug.o
->   obj-$(CONFIG_QUEUED_RWLOCKS) += qrwlock.o
-> --- /dev/null
-> +++ b/kernel/locking/spinlock_rt.c
-> @@ -0,0 +1,128 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * PREEMPT_RT substitution for spin/rw_locks
-> + *
-> + * spin_lock and rw_lock on RT are based on rtmutex with a few twists to
-> + * resemble the non RT semantics
-> + *
-> + * - Contrary to a plain rtmutex, spin_lock and rw_lock are state
-> + *   preserving. The task state is saved before blocking on the underlying
-> + *   rtmutex and restored when the lock has been acquired. Regular wakeups
-> + *   during that time are redirected to the saved state so no wake up is
-> + *   missed.
-> + *
-> + * - Non RT spin/rw_locks disable preemption and evtl. interrupts.
+Hello,
 
-"evtl."?
+syzbot found the following issue on:
 
-Cheers,
-Longman
+HEAD commit:    d5ad8ec3cfb5 Merge tag 'media/v5.14-2' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=156d81ae300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=343fd21f6f4da2d6
+dashboard link: https://syzkaller.appspot.com/bug?extid=7e3ea7eaebc6168ab4d5
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7e3ea7eaebc6168ab4d5@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 31934 at lib/iov_iter.c:1158 iov_iter_pipe+0x228/0x2d0 lib/iov_iter.c:1158
+Modules linked in:
+CPU: 0 PID: 31934 Comm: syz-executor.2 Not tainted 5.14.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:iov_iter_pipe+0x228/0x2d0 lib/iov_iter.c:1158
+Code: 83 c0 03 38 d0 7c 04 84 d2 75 54 44 89 63 24 48 83 c4 10 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 5f 6f a1 fd 0f 0b e8 58 6f a1 fd <0f> 0b 48 b8 00 00 00 00 00 fc ff df 48 8b 14 24 48 c1 ea 03 0f b6
+RSP: 0018:ffffc90001c9f9e0 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: ffffc90001c9fa60 RCX: ffffc90003359000
+RDX: 0000000000040000 RSI: ffffffff83d42c08 RDI: 0000000000000003
+RBP: ffff88807eb65400 R08: 0000000000000010 R09: 0000000000008000
+R10: ffffffff83d42aca R11: 0000000000004000 R12: 0000000000000050
+R13: 0000000000000000 R14: 0000000000000010 R15: 0000000000000010
+FS:  00007f0929a3d700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2f548000 CR3: 000000007e97f000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ generic_file_splice_read+0x9c/0x6c0 fs/splice.c:307
+ do_splice_to+0x1bf/0x250 fs/splice.c:796
+ splice_direct_to_actor+0x2c2/0x8c0 fs/splice.c:870
+ do_splice_direct+0x1b3/0x280 fs/splice.c:979
+ do_sendfile+0x9f0/0x1120 fs/read_write.c:1260
+ __do_sys_sendfile64 fs/read_write.c:1325 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1311 [inline]
+ __x64_sys_sendfile64+0x1cc/0x210 fs/read_write.c:1311
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665e9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0929a3d188 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 000000000056c038 RCX: 00000000004665e9
+RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000008
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000800100020001 R11: 0000000000000246 R12: 000000000056c038
+R13: 00007ffc9a3f6d4f R14: 00007f0929a3d300 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
