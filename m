@@ -2,160 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA18D3DFFAD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C2D3DFFB5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237659AbhHDKxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 06:53:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:59188 "EHLO foss.arm.com"
+        id S237653AbhHDK6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 06:58:47 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:36401 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237653AbhHDKxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 06:53:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BF2013A1;
-        Wed,  4 Aug 2021 03:53:26 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF84F3F719;
-        Wed,  4 Aug 2021 03:53:23 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 11:53:18 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: Re: [PATCH v7 5/7] PCI: cadence: Add support to configure virtual
- functions
-Message-ID: <20210804105318.GA31443@lpieralisi>
-References: <20210803050310.27122-1-kishon@ti.com>
- <20210803050310.27122-6-kishon@ti.com>
- <20210803114530.GE11252@lpieralisi>
- <be907fe7-4095-e28b-5575-76629edc30f0@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <be907fe7-4095-e28b-5575-76629edc30f0@ti.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S237318AbhHDK6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 06:58:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628074713; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=1yEyx4zDCThfGh0MKzJPsMlxXnL6JvXOTClEMfzJDsY=; b=GVIVGZW07VHZwA3pBaShArJSnvmxcS7MEeHn4rnyX+rM2ADYriph2O1xZh8fmPZ3L7MFu5Km
+ RVbW4HLP8O+gXdNMaZkAiH3q77MTwamz9S/4fxFkmcLHYgRzs6JGbrkMOVgZsZY7OljjPf7O
+ ZFk9QxE39KZPW4QkCcrl71UGkpw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 610a72d9ad1af63949071d15 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 04 Aug 2021 10:58:33
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5B0C9C43217; Wed,  4 Aug 2021 10:58:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 81D32C433F1;
+        Wed,  4 Aug 2021 10:58:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 81D32C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     ulf.hansson@linaro.org, bjorn.andersson@linaro.org,
+        viresh.kumar@linaro.org
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        swboyd@chromium.org, rojay@codeaurora.org, stephan@gerhold.net,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH v6 0/2] PM / Domains: Add support for 'required-opps' to set default perf state
+Date:   Wed,  4 Aug 2021 16:28:14 +0530
+Message-Id: <1628074696-7979-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 08:26:42PM +0530, Kishon Vijay Abraham I wrote:
-> Hi Lorenzo,
-> 
-> On 03/08/21 5:15 pm, Lorenzo Pieralisi wrote:
-> > On Tue, Aug 03, 2021 at 10:33:08AM +0530, Kishon Vijay Abraham I wrote:
-> >> Now that support for SR-IOV is added in PCIe endpoint core, add support
-> >> to configure virtual functions in the Cadence PCIe EP driver.
-> >>
-> >> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> >> Acked-by: Tom Joseph <tjoseph@cadence.com>
-> >> ---
-> >>  .../pci/controller/cadence/pcie-cadence-ep.c  | 241 +++++++++++++++---
-> >>  drivers/pci/controller/cadence/pcie-cadence.h |   7 +
-> >>  2 files changed, 217 insertions(+), 31 deletions(-)
-> >>
-> >> diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> >> index 912a15be8bfd..791915054ff4 100644
-> >> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> >> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> >> @@ -20,7 +20,18 @@ static int cdns_pcie_ep_write_header(struct pci_epc *epc, u8 fn, u8 vfn,
-> >>  				     struct pci_epf_header *hdr)
-> >>  {
-> >>  	struct cdns_pcie_ep *ep = epc_get_drvdata(epc);
-> >> +	u32 cap = CDNS_PCIE_EP_FUNC_SRIOV_CAP_OFFSET;
-> >>  	struct cdns_pcie *pcie = &ep->pcie;
-> >> +	u32 reg;
-> >> +
-> >> +	if (vfn > 1) {
-> >> +		dev_dbg(&epc->dev, "Only Virtual Function #1 has deviceID\n");
-> >> +		return 0;
-> > 
-> > Shouldn't this return an error ?
-> 
-> Since the same function driver could be used for physical function and
-> virtual function, I tried to avoid adding any additional case specific
-> for virtual function in the function driver.
-> 
-> If we want to return an error here, then the function driver should be
-> modified to not invoke writeheader for vfn > 1.
+v6: Fixed up some more error handling in __genpd_dev_pm_attach()
 
-Well, I see it the other way around. If writing the header for vfn > 1
-is an error it must be reported as such and handled accordingly.
+v5: Dropped all default_pstate handling in runtime suspend/resume
 
-As it stands - it looks like we do nothing and everything is just
-fine, which is weird.
+v4: Fixed error handling in __genpd_dev_pm_attach()
 
-Thanks,
-Lorenzo
+This is a re-spin of the series [1] which was adding support for a new
+DT binding (assigned-performance-state) and based on the discussions on
+that thread [2] it was concluded that we could achieve the same with the
+existing 'required-opps' binding instead.
 
-> >> +	} else if (vfn == 1) {
-> >> +		reg = cap + PCI_SRIOV_VF_DID;
-> >> +		cdns_pcie_ep_fn_writew(pcie, fn, reg, hdr->deviceid);
-> >> +		return 0;
-> >> +	}
-> >>  
-> >>  	cdns_pcie_ep_fn_writew(pcie, fn, PCI_DEVICE_ID, hdr->deviceid);
-> >>  	cdns_pcie_ep_fn_writeb(pcie, fn, PCI_REVISION_ID, hdr->revid);
-> >> @@ -51,12 +62,14 @@ static int cdns_pcie_ep_set_bar(struct pci_epc *epc, u8 fn, u8 vfn,
-> >>  				struct pci_epf_bar *epf_bar)
-> >>  {
-> >>  	struct cdns_pcie_ep *ep = epc_get_drvdata(epc);
-> >> +	u32 cap = CDNS_PCIE_EP_FUNC_SRIOV_CAP_OFFSET;
-> >>  	struct cdns_pcie_epf *epf = &ep->epf[fn];
-> >>  	struct cdns_pcie *pcie = &ep->pcie;
-> >>  	dma_addr_t bar_phys = epf_bar->phys_addr;
-> >>  	enum pci_barno bar = epf_bar->barno;
-> >>  	int flags = epf_bar->flags;
-> >>  	u32 addr0, addr1, reg, cfg, b, aperture, ctrl;
-> >> +	u32 first_vf_offset, stride;
-> >>  	u64 sz;
-> >>  
-> >>  	/* BAR size is 2^(aperture + 7) */
-> >> @@ -92,26 +105,50 @@ static int cdns_pcie_ep_set_bar(struct pci_epc *epc, u8 fn, u8 vfn,
-> >>  
-> >>  	addr0 = lower_32_bits(bar_phys);
-> >>  	addr1 = upper_32_bits(bar_phys);
-> >> +
-> >> +	if (vfn == 1) {
-> >> +		/* All virtual functions use the same BAR config */
-> >> +		if (bar < BAR_4) {
-> >> +			reg = CDNS_PCIE_LM_EP_VFUNC_BAR_CFG0(fn);
-> >> +			b = bar;
-> >> +		} else {
-> >> +			reg = CDNS_PCIE_LM_EP_VFUNC_BAR_CFG1(fn);
-> >> +			b = bar - BAR_4;
-> >> +		}
-> >> +	} else if (vfn == 0) {
-> >> +		/* BAR configuration for physical function */
-> >> +		if (bar < BAR_4) {
-> >> +			reg = CDNS_PCIE_LM_EP_FUNC_BAR_CFG0(fn);
-> >> +			b = bar;
-> >> +		} else {
-> >> +			reg = CDNS_PCIE_LM_EP_FUNC_BAR_CFG1(fn);
-> >> +			b = bar - BAR_4;
-> >> +		}
-> >> +	}
-> > 
-> > Code in both branches is almost identical except for what is
-> > assigned to reg, it is not fundamental but maybe it can be rewritten
-> > more concisely.
-> 
-> okay.. let me think.
-> 
-> Thanks
-> Kishon
+So this series, just drops the new binding and uses required-opps to achieve
+the default perf state setting thats needed by some devices.
+
+---
+Some devics within power-domains with performance states do not
+support DVFS, but still need to vote on a default/static state
+while they are active. Add support for this using the 'required-opps'
+property in device tree.
+
+[1] https://lore.kernel.org/patchwork/project/lkml/list/?series=501336&state=%2A&archive=both
+[2] https://lore.kernel.org/patchwork/patch/1436886/
+
+Rajendra Nayak (2):
+  PM / Domains: Add support for 'required-opps' to set default perf
+    state
+  arm64: dts: sc7180: Add required-opps for i2c
+
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 24 ++++++++++++++++++++++++
+ drivers/base/power/domain.c          | 28 ++++++++++++++++++++++++++--
+ include/linux/pm_domain.h            |  1 +
+ 3 files changed, 51 insertions(+), 2 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
