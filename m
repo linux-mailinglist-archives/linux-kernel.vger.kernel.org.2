@@ -2,166 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885E63E036B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EAAD3E036D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237342AbhHDOgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:36:14 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:59518
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236599AbhHDOgM (ORCPT
+        id S237776AbhHDOg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:36:29 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7925 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237361AbhHDOg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:36:12 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 09A4D3F34D
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:35:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628087759;
-        bh=K5TNPGczlna7cZJ2HSa6Pq+LnWnwehyD5R/FozLlvyo=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=ErV4xZBZbJxdI53OmG7qkNNMcuZhqU52HtLBaRXRHTsyLFy1nKpzV3CAWRmHJLpqq
-         BRSjo3ef35HkjJgkHk5LatrWzvCHu1TksXrTDNhGLVJCevzq4n74MklcNDhWMvpxQO
-         N4gb3UyODMvRhB4t/YcEt906FJBbVoinZtqfTt2avGoruiIHqibou04iZDqSyrtM0S
-         60AH5xvlPS2LZ8PTxp92cq0PIXK/oRp/DgNoK8lRZZaNEiYCuYcqcmfdr844tb/EuY
-         9C3jo7/TuXz8s9SXJbs1xxv5aqrzY6FuH2bGmqPxNWKfLxh47q15V+UjPsCiHMdAeI
-         5XOD3BmDBsnOg==
-Received: by mail-ed1-f71.google.com with SMTP id a23-20020a50ff170000b02903b85a16b672so1577834edu.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:35:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K5TNPGczlna7cZJ2HSa6Pq+LnWnwehyD5R/FozLlvyo=;
-        b=Ths88aFakVgy2T/FG29zB8oQvXjEEDO7pXn7nXhmhlIv/PEXvykIYUsfQJQmADGouz
-         jxI028zSTTClPWDK9dYSmE9LBF9bnJB3e9N7VmQCA48nSMyhlafgi4P38XAvhrYwHD7a
-         NJodonkfo3eISaHHa5G6dbUE6XkRe/MneAG+FkZyIkVLG6Lkjh47B5eJVMwUIxxjk+0G
-         MPS7sT8vLRIZzgFO852ASSF8ADm9cotLmUEa1+Y4gi5izczPl7L+2/kZhgVJuF7/pe6R
-         A06mNUGyMWPx59vvrxTR+mQluROpx30WwDtaihT7P3jGvenGyURQKE5rlcFSLZakAj5H
-         +swA==
-X-Gm-Message-State: AOAM531iUEu5LgVBBFGR9qWsGat3HsVhtsXKH8wV5Z+0zKMNABHS65M/
-        ZgTuCQeKFDplKsFQesqJNHlJ8/L/kiewHgzBcsM0NDJx2CrJqQp2q2NeDS2N4fBzwwkaBCXynxq
-        DvBXMm+uPxPJDKcItaTkzKpoCMReAmN09ZF1028sYjobYWAt2GVkyxQTtjA==
-X-Received: by 2002:aa7:c9d8:: with SMTP id i24mr18349edt.79.1628087758605;
-        Wed, 04 Aug 2021 07:35:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJySrlECEieDBDFouY+AXeH4RwTrpMkTpPgxc2XCW4494s2y9dDuty2whvMSHK4uGzw1yfptzkYC9y2OHbIM6iM=
-X-Received: by 2002:aa7:c9d8:: with SMTP id i24mr18321edt.79.1628087758363;
- Wed, 04 Aug 2021 07:35:58 -0700 (PDT)
+        Wed, 4 Aug 2021 10:36:28 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GfvMn3qJJz83dT;
+        Wed,  4 Aug 2021 22:32:21 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 4 Aug 2021 22:36:12 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.98) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 4 Aug 2021 22:36:12 +0800
+From:   Pu Lehui <pulehui@huawei.com>
+To:     <oleg@redhat.com>, <mpe@ellerman.id.au>,
+        <benh@kernel.crashing.org>, <paulus@samba.org>,
+        <naveen.n.rao@linux.vnet.ibm.com>, <mhiramat@kernel.org>,
+        <christophe.leroy@csgroup.eu>, <peterz@infradead.org>,
+        <npiggin@gmail.com>, <ruscur@russell.cc>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <zhangjinhao2@huawei.com>, <xukuohai@huawei.com>,
+        <pulehui@huawei.com>
+Subject: [PATCH] powerpc/kprobes: Fix kprobe Oops happens in booke
+Date:   Wed, 4 Aug 2021 22:37:35 +0800
+Message-ID: <20210804143735.148547-1-pulehui@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210514071452.25220-1-kai.heng.feng@canonical.com>
- <20210802030538.2023-1-hdanton@sina.com> <CAAd53p4NO3KJkn2Zp=hxQOtR8vynkJpcPmNtwv2R6z=zei056Q@mail.gmail.com>
- <20210803074722.2383-1-hdanton@sina.com>
-In-Reply-To: <20210803074722.2383-1-hdanton@sina.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Wed, 4 Aug 2021 22:35:43 +0800
-Message-ID: <CAAd53p6wi7pk6yFgTnG-JDd9e4zCn3F40bioYyGbAqYg5kMHZQ@mail.gmail.com>
-Subject: Re: [PATCH v2] Bluetooth: Shutdown controller after workqueues are
- flushed or cancelled
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "bluez mailin list (linux-bluetooth@vger.kernel.org)" 
-        <linux-bluetooth@vger.kernel.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.98]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 3:47 PM Hillf Danton <hdanton@sina.com> wrote:
->
-> On Tue, 3 Aug 2021 14:45:07 +0800 Kai-Heng Feng wrote:
-> >On Mon, Aug 2, 2021 at 11:05 AM Hillf Danton <hdanton@sina.com> wrote:
-> >>
-> >> Given the skb_get in hci_req_sync_complete makes it safe to free skb on
-> >> driver side, I doubt this patch is the correct fix as it is.
-> >
-> >Some workqueues are still active.
-> >The shutdown() should be called at least after hci_request_cancel_all().
->
-> What is muddy then is how active workqueues prevent skb_get from protecting
-> kfree_skb. Can you spot what workqueue it is?
+When using kprobe on powerpc booke series processor, Oops happens
+as show bellow:
 
-I managed to reproduce the issue with another kernel splat:
-------------[ cut here ]------------
-kernel BUG at mm/slub.c:321!
-invalid opcode: 0000 [#1] SMP NOPTI
-CPU: 2 PID: 2208 Comm: kworker/u9:3 Not tainted 5.14.0-rc4+ #16
-Hardware name: HP HP ProBook 650 G8 Notebook PC/87ED, BIOS T74 Ver.
-01.03.04 01/07/2021
-Workqueue: hci0 discov_update [bluetooth]
-RIP: 0010:__slab_free+0x20c/0x3a0
-Code: 00 44 0f b6 54 24 1a 8b 74 24 14 44 0f b6 4c 24 1b 44 8b 44 24
-1c 48 89 44 24 08 48 8b 54 24 20 48 8b 7c 24 28 e9 ad fe ff ff <0f> 0b
-49 3b 54 24 28 0f 85 6b ff ff ff 49 89 5c 24 20 49 89 4c 24
-RSP: 0018:ffffaa0e4164fc50 EFLAGS: 00010246
-RAX: ffff9cc9a217e668 RBX: ffff9cc9a217e600 RCX: ffff9cc9a217e600
-RDX: 000000008010000e RSI: ffffd09044885f80 RDI: ffff9cc980e96500
-RBP: ffffaa0e4164fd00 R08: 0000000000000001 R09: ffffffff885b3a4e
-R10: ffff9cc999aab800 R11: ffff9cc9a217e600 R12: ffffd09044885f80
-R13: ffff9cc9a217e600 R14: ffff9cc980e96500 R15: ffff9cc9a217e600
-FS:  0000000000000000(0000) GS:ffff9cca2b900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffe164d5b98 CR3: 000000013f410002 CR4: 0000000000770ee0
-PKRU: 55555554
-Call Trace:
- ? psi_task_switch+0xc3/0x1e0
- ? __switch_to_asm+0x36/0x70
- ? skb_free_head+0x67/0x80
- kmem_cache_free+0x370/0x3d0
- ? kfree_skbmem+0x4e/0x90
- kfree_skbmem+0x4e/0x90
- kfree_skb+0x47/0xb0
- __hci_req_sync+0x134/0x2a0 [bluetooth]
- ? wait_woken+0x70/0x70
- discov_update+0x2ae/0x310 [bluetooth]
- process_one_work+0x21d/0x3c0
- worker_thread+0x53/0x420
- ? process_one_work+0x3c0/0x3c0
- kthread+0x127/0x150
- ? set_kthread_struct+0x50/0x50
- ret_from_fork+0x1f/0x30
-Modules linked in: rfcomm cmac algif_hash algif_skcipher af_alg bnep
-nls_iso8859_1 snd_soc_skl_hda_dsp snd_soc_intel_hda_dsp_common
-snd_soc_hdac_hdmi snd_hda_codec_hdmi snd_hda_codec_realtek
-snd_hda_codec_generic snd_soc_dmic snd_sof_pci_intel_tgl
-snd_sof_intel_hda_common snd_soc_hdac_hda snd_sof_pci snd_sof
-snd_sof_xtensa_dsp snd_sof_intel_hda snd_hda_ext_core
-snd_soc_acpi_intel_match snd_soc_acpi ledtrig_audio snd_soc_core
-snd_hda_intel snd_intel_dspcfg snd_hda_codec snd_hwdep snd_hda_core
-snd_pcm snd_seq i915 snd_seq_device snd_timer hp_wmi intel_tcc_cooling
-x86_pkg_temp_thermal intel_powerclamp i2c_algo_bit coretemp joydev
-kvm_intel ttm mei_hdcp intel_rapl_msr platform_profile wmi_bmof kvm
-uvcvideo crct10dif_pclmul btusb videobuf2_vmalloc videobuf2_memops
-drm_kms_helper btrtl videobuf2_v4l2 crc32_pclmul btbcm
-ghash_clmulni_intel input_leds videobuf2_common btintel snd videodev
-syscopyarea sysfillrect sysimgblt aesni_intel mc serio_raw fb_sys_fops
-bluetooth crypto_simd
- cec cryptd intel_cstate ecdh_generic efi_pstore ecc rc_core
-hid_multitouch processor_thermal_device_pci_legacy mei_me
-intel_soc_dts_iosf processor_thermal_device mei soundcore
-processor_thermal_rfim ee1004 processor_thermal_mbox
-processor_thermal_rapl intel_pmt_telemetry intel_rapl_common
-intel_pmt_class ucsi_acpi typec_ucsi typec wmi soc_button_array
-int3403_thermal int340x_thermal_zone video int3400_thermal
-acpi_thermal_rel acpi_pad mac_hid intel_hid sparse_keymap sch_fq_codel
-msr parport_pc ppdev lp drm parport ip_tables x_tables autofs4
-hid_generic nvme nvme_core intel_lpss_pci e1000e intel_lpss i2c_i801
-idma64 i2c_smbus xhci_pci xhci_pci_renesas vmd intel_pmt i2c_hid_acpi
-i2c_hid hid pinctrl_tigerlake
----[ end trace c09445d4697039ed ]---
+[   35.861352] Oops: Exception in kernel mode, sig: 5 [#1]
+[   35.861676] BE PAGE_SIZE=4K SMP NR_CPUS=24 QEMU e500
+[   35.861905] Modules linked in:
+[   35.862144] CPU: 0 PID: 76 Comm: sh Not tainted 5.14.0-rc3-00060-g7e96bf476270 #18
+[   35.862610] NIP:  c0b96470 LR: c00107b4 CTR: c0161c80
+[   35.862805] REGS: c387fe70 TRAP: 0700   Not tainted (5.14.0-rc3-00060-g7e96bf476270)
+[   35.863198] MSR:  00029002 <CE,EE,ME>  CR: 24022824  XER: 20000000
+[   35.863577]
+[   35.863577] GPR00: c0015218 c387ff20 c313e300 c387ff50 00000004 40000002 40000000 0a1a2cce
+[   35.863577] GPR08: 00000000 00000004 00000000 59764000 24022422 102490c2 00000000 00000000
+[   35.863577] GPR16: 00000000 00000000 00000040 10240000 10240000 10240000 10240000 10220000
+[   35.863577] GPR24: ffffffff 10240000 00000000 00000000 bfc655e8 00000800 c387ff50 00000000
+[   35.865367] NIP [c0b96470] schedule+0x0/0x130
+[   35.865606] LR [c00107b4] interrupt_exit_user_prepare_main+0xf4/0x100
+[   35.865974] Call Trace:
+[   35.866142] [c387ff20] [c0053224] irq_exit+0x114/0x120 (unreliable)
+[   35.866472] [c387ff40] [c0015218] interrupt_return+0x14/0x13c
+[   35.866728] --- interrupt: 900 at 0x100af3dc
+[   35.866963] NIP:  100af3dc LR: 100de020 CTR: 00000000
+[   35.867177] REGS: c387ff50 TRAP: 0900   Not tainted (5.14.0-rc3-00060-g7e96bf476270)
+[   35.867488] MSR:  0002f902 <CE,EE,PR,FP,ME>  CR: 20022422  XER: 20000000
+[   35.867808]
+[   35.867808] GPR00: c001509c bfc65570 1024b4d0 00000000 100de020 20022422 bfc655a8 100af3dc
+[   35.867808] GPR08: 0002f902 00000000 00000000 00000000 72656773 102490c2 00000000 00000000
+[   35.867808] GPR16: 00000000 00000000 00000040 10240000 10240000 10240000 10240000 10220000
+[   35.867808] GPR24: ffffffff 10240000 00000000 00000000 bfc655e8 10245910 ffffffff 00000001
+[   35.869406] NIP [100af3dc] 0x100af3dc
+[   35.869578] LR [100de020] 0x100de020
+[   35.869751] --- interrupt: 900
+[   35.870001] Instruction dump:
+[   35.870283] 40c20010 815e0518 714a0100 41e2fd04 39200000 913e00c0 3b1e0450 4bfffd80
+[   35.870666] 0fe00000 92a10024 4bfff1a9 60000000 <7fe00008> 7c0802a6 93e1001c 7c5f1378
+[   35.871339] ---[ end trace 23ff848139efa9b9 ]---
 
-So hci_request_cancel_all() -> cancel_work_sync(&hdev->discov_update)
-and can prevent the race from happening.
+There is no real mode for booke arch and the MMU translation is
+always on. The corresponding MSR_IS/MSR_DS bit in booke is used
+to switch the address space, but not for real mode judgment.
 
-And the kernel splat is just one symptom of the issue, most of the
-time it's just "Bluetooth: hci0: HCI reset during shutdown failed" in
-dmesg.
+Fixes: 21f8b2fa3ca5 ("powerpc/kprobes: Ignore traps that happened in real mode")
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
+---
+ arch/powerpc/include/asm/ptrace.h | 6 ++++++
+ arch/powerpc/kernel/kprobes.c     | 5 +----
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-Kai-Heng
+diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
+index 3e5d470a6155..4aec1a97024b 100644
+--- a/arch/powerpc/include/asm/ptrace.h
++++ b/arch/powerpc/include/asm/ptrace.h
+@@ -187,6 +187,12 @@ static inline unsigned long frame_pointer(struct pt_regs *regs)
+ #define user_mode(regs) (((regs)->msr & MSR_PR) != 0)
+ #endif
+ 
++#ifdef CONFIG_BOOKE
++#define real_mode(regs)	0
++#else
++#define real_mode(regs)	(!((regs)->msr & MSR_IR) || !((regs)->msr & MSR_DR))
++#endif
++
+ #define force_successful_syscall_return()   \
+ 	do { \
+ 		set_thread_flag(TIF_NOERROR); \
+diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
+index cbc28d1a2e1b..fac9a5974718 100644
+--- a/arch/powerpc/kernel/kprobes.c
++++ b/arch/powerpc/kernel/kprobes.c
+@@ -289,10 +289,7 @@ int kprobe_handler(struct pt_regs *regs)
+ 	unsigned int *addr = (unsigned int *)regs->nip;
+ 	struct kprobe_ctlblk *kcb;
+ 
+-	if (user_mode(regs))
+-		return 0;
+-
+-	if (!(regs->msr & MSR_IR) || !(regs->msr & MSR_DR))
++	if (user_mode(regs) || real_mode(regs))
+ 		return 0;
+ 
+ 	/*
+-- 
+2.17.1
+
