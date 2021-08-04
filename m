@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540823DFE4F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7453F3DFE6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237192AbhHDJq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 05:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237177AbhHDJqZ (ORCPT
+        id S237218AbhHDJxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 05:53:04 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42680 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235522AbhHDJxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 05:46:25 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8877DC0613D5;
-        Wed,  4 Aug 2021 02:46:11 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id l4so1880926ljq.4;
-        Wed, 04 Aug 2021 02:46:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mVnJInZpn4OUvjoNvU3SZlWdiP6K+04meJVPvdzldwQ=;
-        b=sF+sWnJ3H92GflZLESsLN2ti3iapm4lJ1FIgWB2/dJLKhlQa6Ex4IPy2oNPMm7URKn
-         B9tNyri9vLOhG0zfn0QiSz3iLkyP8new6WIj96etpjSEIdoBfPseaqMFZLIdv85lXk+k
-         LjMqfHRUsP5vXUFNe2zlc5xEPGtoRy5alvp7rWBl/mOCPTrHhayhAZpWLrSfHLN4eFO3
-         aHihfQsKNCW/LnPLT1GHbvL8KVXLEEm3yftCgHuhZ2zxVQ3TantqCbzD9FnaCPF9Gtnk
-         LT7gBAsYk7p5WcNZsgyIE+vvld8vIATwK+qtjacNjXEPuqstadxGHUgwyo91en98rDgK
-         ujzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mVnJInZpn4OUvjoNvU3SZlWdiP6K+04meJVPvdzldwQ=;
-        b=H+BZdWPt9wkUoMVdQLolCs1gZYIAKxIj0ksUD+G0BK0xrxc0HJjHY2oNhp9lUtXsYU
-         eB/7RDSkWW0DbJsvLOsxq/KkzdbmvtbdmJQbm3a5sFgOyTz7nVNIyQmL6eGczkSR/SQE
-         VLF9elYHOPzWHhLsfSOUBdT7ovQJsfiQXvWfocuuvmmf+K/H0F2FlipepaDrkqUfFFD+
-         64Ykv0PjGczjCvqjlVMB6cB9CdfS6A0SeMMIE7K8PI6MgE6GmdXB1xMfOLY23OokcHh6
-         AqpnxlGZW/0/Eyynmfk+oxc/HzW3HkcWrURwFHAbhCiNHkdAAUz7486XT0gj9P1sEGum
-         JZhA==
-X-Gm-Message-State: AOAM530+id3Z0IL5gWUqaj5mqfy/rWohdrUSaY8BswN9Q6noZOLb43xF
-        qKN2D1RQ1PFpzm2wZI9LCrU=
-X-Google-Smtp-Source: ABdhPJz36QMz/TPvyrUYFGdy+PGKoAmoP8tL+HREdgsQva7salGCDqTWz+aBJcdqfOTwsEOPEeCGbg==
-X-Received: by 2002:a2e:bc1a:: with SMTP id b26mr17670696ljf.132.1628070369833;
-        Wed, 04 Aug 2021 02:46:09 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id v78sm102254lfa.141.2021.08.04.02.46.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 02:46:09 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 12:46:07 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Viresh Kumar <vireshk@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v1 1/3] dmaengine: dw: Remove error message from DT
- parsing code
-Message-ID: <20210804094607.ac3zxomlmu3ifpqr@mobilestation>
-References: <20210802184355.49879-1-andriy.shevchenko@linux.intel.com>
+        Wed, 4 Aug 2021 05:53:03 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id CC19E22149;
+        Wed,  4 Aug 2021 09:52:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1628070769; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tYcOI0WrEElgIslH4aKnjBiPq+5+gfy+9XKG/Vylt7g=;
+        b=IUPYNUJuywUFufeSCWhDIbwMGXNB0beJHTNh0lHK8EmBRus/obSNGdqmT7mzT1acP+rNpi
+        EZdoiha4bm1PJ0qGuf53C2g8s5+/80egTaUL7kpn9+2yaH5nVtFkXIuLePbJzg6s67pJEZ
+        tvQBu5BG+yiWHnl7Uow1GR8ZotX3zqA=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 85E5AA3B89;
+        Wed,  4 Aug 2021 09:52:49 +0000 (UTC)
+Date:   Wed, 4 Aug 2021 11:52:49 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v1 02/10] printk: rename printk cpulock API and
+ always disable interrupts
+Message-ID: <YQpjcYSxUU0pjZhU@alley>
+References: <20210803131301.5588-1-john.ogness@linutronix.de>
+ <20210803131301.5588-3-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210802184355.49879-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210803131301.5588-3-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andy
-
-On Mon, Aug 02, 2021 at 09:43:53PM +0300, Andy Shevchenko wrote:
-> Users are a bit frightened of the harmless message that tells that
-> DT is missed on ACPI-based platforms. Remove it for good, it will
-> simplify the future conversion to fwnode and device property APIs.
-
-Thanks for the cleanup patchset. No comments from me, just the tags
-for the whole series:
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-Tested-by: Serge Semin <fancer.lancer@gmail.com>
-[Tested on Baikal-T1 DW DMAC with 8 channels, 12 requests, 2 masters,
-no multi-block support and uneven max burst length setup]
-
--Sergey
-
+On Tue 2021-08-03 15:18:53, John Ogness wrote:
+> The printk cpulock functions use local_irq_disable(). This means that
+> hardware interrupts are also disabled on PREEMPT_RT. To make this
+> clear, rename the functions to use the raw_ prefix:
 > 
-> Fixes: a9ddb575d6d6 ("dmaengine: dw_dmac: Enhance device tree support")
-> Depends-on: f5e84eae7956 ("dmaengine: dw: platform: Split OF helpers to separate module")
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=199379
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>     raw_printk_cpu_lock_irqsave(flags);
+>     raw_printk_cpu_unlock_irqrestore(flags);
+> 
+> Also, these functions were a NOP for !CONFIG_SMP. But for !CONFIG_SMP
+> they still need to disable hardware interrupts. So modify them
+> appropriately for this.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 > ---
->  drivers/dma/dw/of.c | 5 -----
->  1 file changed, 5 deletions(-)
+>  include/linux/printk.h | 30 ++++++++++++++----------------
+>  lib/dump_stack.c       |  4 ++--
+>  lib/nmi_backtrace.c    |  4 ++--
+>  3 files changed, 18 insertions(+), 20 deletions(-)
 > 
-> diff --git a/drivers/dma/dw/of.c b/drivers/dma/dw/of.c
-> index c1cf7675b9d1..4d2b89142721 100644
-> --- a/drivers/dma/dw/of.c
-> +++ b/drivers/dma/dw/of.c
-> @@ -54,11 +54,6 @@ struct dw_dma_platform_data *dw_dma_parse_dt(struct platform_device *pdev)
->  	u32 nr_masters;
->  	u32 nr_channels;
->  
-> -	if (!np) {
-> -		dev_err(&pdev->dev, "Missing DT data\n");
-> -		return NULL;
-> -	}
-> -
->  	if (of_property_read_u32(np, "dma-masters", &nr_masters))
->  		return NULL;
->  	if (nr_masters < 1 || nr_masters > DW_DMA_MAX_NR_MASTERS)
-> -- 
-> 2.30.2
-> 
+> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> index 259af4f97f50..ac738d1d9934 100644
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -280,17 +280,22 @@ static inline void dump_stack(void)
+>  extern int __printk_cpu_trylock(void);
+>  extern void __printk_wait_on_cpu_lock(void);
+>  extern void __printk_cpu_unlock(void);
+> +#else
+> +#define __printk_cpu_trylock()		1
+> +#define __printk_wait_on_cpu_lock()
+> +#define __printk_cpu_unlock()
+> +#endif /* CONFIG_SMP */
+
+IMHO, it is not obvious that
+
+		while (!__printk_cpu_trylock())		\
+			__printk_wait_on_cpu_lock();	\
+
+does nothing in the !CONFIG_SMP case. Please, make it more obvious.
+I suggest to define:
+
+#ifdef CONFIG_SMP
+
+#define __printk_cpu_lock()				\
+	do {						\
+		while (!__printk_cpu_trylock())		\
+			__printk_wait_on_cpu_lock();	\
+	} while (0)
+
+#else
+
+#define __printk_cpu_lock()
+
+#endif
+
+/**
+ * raw_printk_cpu_lock_irqsave() - Disable interrupts and acquire the printk
+ *                                 cpu-reentrant spinning lock.
+ * @flags: Stack-allocated storage for saving local interrupt state,
+ *         to be passed to raw_printk_cpu_unlock_irqrestore().
+ *
+ * If the lock is owned by another CPU, spin until it becomes available.
+ */
+#define raw_printk_cpu_lock_irqsave(flags)	\
+	do {					\
+		local_irq_save(flags);		\
+		__printk_cpu_lock();		\
+	} while (0)
+
+
+Best Regards,
+Petr
