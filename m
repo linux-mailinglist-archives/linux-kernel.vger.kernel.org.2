@@ -2,222 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63993E037C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7053E0387
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238030AbhHDOkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
+        id S238106AbhHDOmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237523AbhHDOkE (ORCPT
+        with ESMTP id S237523AbhHDOmC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:40:04 -0400
-Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88889C06179A
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:39:51 -0700 (PDT)
-Received: by mail-vk1-xa32.google.com with SMTP id d15so483720vka.13
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:39:51 -0700 (PDT)
+        Wed, 4 Aug 2021 10:42:02 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A69EC0613D5;
+        Wed,  4 Aug 2021 07:41:49 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id gs8so4028225ejc.13;
+        Wed, 04 Aug 2021 07:41:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rDKZtg82NP3ddCZ+CbKtTQlVqMfRo/3JfYFc/Sav3bE=;
-        b=Rb4w2JW9NDUtFI5B1DdY4p2VknlohGp3Ak2rkEyHilaSfQWGfO0PvM1LI8VTGSK58E
-         E5E1B7V9pL3lsFa9AlJN5av9Qj+fCiZP+6tceSKxdI88Ba47f90C3X8Z4yv2iUc+dHm0
-         I4ldJ6XAhqprsW6XOH5F45fxk02OUBmUTwEKyL9gV6aedQ/k3CI1uHi8cB5PtGBQKZG6
-         Odz6nToeGDrD5vdlizhxdCzailrpXe2J3KfMjoivaI8rPBD1almFcOU+6j2dUPFr0uer
-         zfNkuOoXistHWz3jiy1hDLDplsrrln/1yOHA4dOaP9Z9uNs+SeRuriIj+AuA6y67mGyN
-         xNTQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FsND2VD1tfMjTxIruUVsPqPLwbrqDp/vXALMQ2gLNXw=;
+        b=Qgrh+VwFVjTb7JMPVBtjd/nBXsYzCBzHLSG1oQpLBh8KQxO8+X1rOWXCcn8BY6nxHZ
+         phvZGNlnT656A0kVfKOEpx441670TEVhWZEq4C5LPy66ndIJs9XzMMlsvZdyS8PjxiPS
+         kpIZIqtYj+BpXzMFPZTxJCdEwktWm7zakxi87+Sh3QKlu3gbyew9yxEVR/IjNXZYcJmW
+         hLYIwlTHJLrDtB+3azZLbtvf/19kZvRF7nEtM0cB+4I13VxCKwDs+Psvwgc13rSdtxEu
+         yFFqik/ZELWC9sgMWe6QzcUBbknvaKtnUUgd79mmEmruXnarLtGBg6Tw2lGtR5YSNrrx
+         fQ0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rDKZtg82NP3ddCZ+CbKtTQlVqMfRo/3JfYFc/Sav3bE=;
-        b=uKm0eG8Zs7nrQ91Q2z36zh1Ldk4QoUGYpYhbzPYD91LeZp+y1hhI+lJ16NxIrD002W
-         zr1Y1uEYmJH8U3UA+Yb1Kwl+avAfJWAebMpNtoLle3nJesL/ioxYlh29eQL0cuF6lAV4
-         kGsVCsRyhlxuWtggMwh+QFaMSiXeXbskbPOgznplliy2ouhHt4u4O5fY8HsOKcemYggb
-         2c53FpnkxzjoMML7wBfD3ydBXczk2Go4gpE5d54dFRlR2Bl4XKQG4+4n76xNkddwsY2s
-         qXIkajcSuPXSg3Re7oeCHk12QbZGLOkf8at5F5jOvcfZUTbpi8HumRlrAG7yDrLEumSE
-         nFsA==
-X-Gm-Message-State: AOAM5330bVDxAomPAje4sOTZ5SL1JAo25D6vA3lVrplQ48bDntPR9qZ6
-        xPAWgd+M+Nu/r89Fr425SkcfgpW0oelTxhZehLfdLg==
-X-Google-Smtp-Source: ABdhPJxlsfrubol74U2vzDZDlR75ZOAD7I215GfcgIYKIkBbyLzJAazUw8L/PPcVieLCSBWNf4qgTYF7TKl9M+mp1Eo=
-X-Received: by 2002:a05:6122:549:: with SMTP id y9mr5395608vko.7.1628087990034;
- Wed, 04 Aug 2021 07:39:50 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FsND2VD1tfMjTxIruUVsPqPLwbrqDp/vXALMQ2gLNXw=;
+        b=LuCIZK4nSq9YAafCfx2AwTgwUdB4SRo5nTdeHdewp7nLfU8JONCFSZAMN2hBi+ZvSS
+         qe5YOHCPO3erxfgN/9e7tz/SgKzVRA3cKoHzdkGhLdfBxO2pKxfA+rasHsdGzRErtH/L
+         YAuG8wJsH0eqEZeh+EVtc7yj3RvDcxEhtzwQHQxKklzNHFPYECgGovA45IggL4EMa/QJ
+         oLy9ToC9gW8FIvyID1aWDt9bGOR2Um54ZSh3HNN/+rRXj7luKz2l/bwMxQPTPCIxZV7s
+         1DjpcX7aIRGcyQVSLmyNt7/y+OBg1muURGrxdCrg4+r7UhpfRcakTNKW21mkyqctZbky
+         9uVQ==
+X-Gm-Message-State: AOAM5303RMFiycd+nY3u7/Tcmt4ZPLUcTMb4KS8LsgGhvpXWH5jC4C85
+        JBVDoQvgR7wal6WWeDYBHo8=
+X-Google-Smtp-Source: ABdhPJypUH5eDrOfeiJ2VnDjvRhr2Hh4r5maJpCtTbe7KRdg+Zq8A7+1jHkuJtKuivbhMmosDN4/dQ==
+X-Received: by 2002:a17:906:30d0:: with SMTP id b16mr26182913ejb.495.1628088107864;
+        Wed, 04 Aug 2021 07:41:47 -0700 (PDT)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id e27sm737994ejc.41.2021.08.04.07.41.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 07:41:47 -0700 (PDT)
+Subject: Re: [PATCH v2 3/7] arm64: dts: rockchip: rk3568-evb1-v10: add
+ regulators of rk809 pmic
+To:     Michael Riesch <michael.riesch@wolfvision.net>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Liang Chen <cl@rock-chips.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Simon Xue <xxm@rock-chips.com>,
+        Jianqun Xu <jay.xu@rock-chips.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>
+References: <20210804130625.15449-1-michael.riesch@wolfvision.net>
+ <20210804130625.15449-4-michael.riesch@wolfvision.net>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <cf4bf613-6462-fac9-824d-71375b852adf@gmail.com>
+Date:   Wed, 4 Aug 2021 16:41:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
- <20210730144922.29111-13-semen.protsenko@linaro.org> <15871f8ced3c757fad1ab3b6e62c4e64@misterjones.org>
-In-Reply-To: <15871f8ced3c757fad1ab3b6e62c4e64@misterjones.org>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Wed, 4 Aug 2021 17:39:38 +0300
-Message-ID: <CAPLW+4=v4bDcuxGVqs06mobGj34At4cD+vg48b4dPujarS07Tg@mail.gmail.com>
-Subject: Re: [PATCH 12/12] arm64: dts: exynos: Add Exynos850 SoC support
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210804130625.15449-4-michael.riesch@wolfvision.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+Hi Michael,
 
-On Fri, 30 Jul 2021 at 19:50, Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2021-07-30 15:49, Sam Protsenko wrote:
-> > Samsung Exynos850 is ARMv8-based mobile-oriented SoC.
-> >
-> > Features:
-> >  * CPU: Cortex-A55 Octa (8 cores), up to 2 GHz
-> >  * Memory interface: LPDDR4/4x 2 channels (12.8 GB/s)
-> >  * SD/MMC: SD 3.0, eMMC5.1 DDR 8-bit
-> >  * Modem: 4G LTE, 3G, GSM/GPRS/EDGE
-> >  * RF: Quad GNSS, WiFi 5 (802.11ac), Bluetooth 5.0
-> >  * GPU: Mali-G52 MP1
-> >  * Codec: 1080p 60fps H64, HEVC, JPEG HW Codec
-> >  * Display: Full HD+ (2520x1080)@60fps LCD
-> >  * Camera: 16+5MP/13+8MP ISP, MIPI CSI 4/4/2, FD, DRC
-> >  * Connectivity: USB 2.0 DRD, USI (SPI/UART/I2C), HSI2C, I3C, ADC,
-> > Audio
-> >
-> > This patch adds minimal SoC support. Particular board device tree files
-> > can include exynos850.dtsi file to get SoC related nodes, and then
-> > reference those nodes further as needed.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >  .../boot/dts/exynos/exynos850-pinctrl.dtsi    | 782 ++++++++++++++++++
-> >  arch/arm64/boot/dts/exynos/exynos850-usi.dtsi |  30 +
-> >  arch/arm64/boot/dts/exynos/exynos850.dtsi     | 245 ++++++
-> >  3 files changed, 1057 insertions(+)
-> >  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
-> >  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-usi.dtsi
-> >  create mode 100644 arch/arm64/boot/dts/exynos/exynos850.dtsi
-> >
-> > diff --git a/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
-> > b/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
-> > new file mode 100644
-> > index 000000000000..4cf0a22cc6db
->
-> [...]
->
-> > +     gic: interrupt-controller@12a00000 {
-> > +             compatible = "arm,cortex-a15-gic", "arm,cortex-a9-gic";
->
-> One thing for sure, it cannot be both. And given that it is
-> an A55-based SoC, it isn't either. It is more likely a GIC400.
->
+Missing commit message.
 
-Yes, it's GIC-400, thanks for pointing that out. Will fix that in v2.
+On 8/4/21 3:06 PM, Michael Riesch wrote:
+> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
+> ---
+>  .../boot/dts/rockchip/rk3568-evb1-v10.dts     | 206 ++++++++++++++++++
+>  1 file changed, 206 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+> index 65e536c78d2e..f682144a1892 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+> @@ -104,6 +104,203 @@
+>  	status = "okay";
+>  };
+>  
+> +&i2c0 {
+> +	status = "okay";
+> +
+> +	rk809: pmic@20 {
+> +		compatible = "rockchip,rk809";
+> +		reg = <0x20>;
+> +		interrupt-parent = <&gpio0>;
+> +		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_LOW>;
+> +		#clock-cells = <1>;
 
-> > +             #interrupt-cells = <3>;
-> > +             #address-cells = <0>;
-> > +             interrupt-controller;
-> > +             reg = <0x0 0x12a01000 0x1000>,
-> > +                   <0x0 0x12a02000 0x1000>,
->
-> This is wrong. It is architecturally set to 8kB.
->
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pmic_int>;
 
-Nice catch! Actually there is an error (typo?) in SoC's TRM, saying
-that Virtual Interface Control Register starts at 0x3000 offset (from
-0x12a00000), where it obviously should be 0x4000, that's probably
-where this dts error originates from. Btw, I'm also seeing the same
-error in exynos7.dtsi. Though I don't have a TRM for Exynos7 SoCs, so
-not sure if I should go ahead and fix that too. Anyway, for Exynos850,
-I'll fix that in v2 series.
+pinctrl-names below pinctrl-0 like the rest of rk356x.dtsi
 
-> > +                   <0x0 0x12a04000 0x2000>,
-> > +                   <0x0 0x12a06000 0x2000>;
-> > +             interrupts = <GIC_PPI 9
-> > +                             (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
->
-> 4? With 8 CPUs?
->
+> +		rockchip,system-power-controller;
+> +		wakeup-source;
+> +
+> +		vcc1-supply = <&vcc3v3_sys>;
+> +		vcc2-supply = <&vcc3v3_sys>;
+> +		vcc3-supply = <&vcc3v3_sys>;
+> +		vcc4-supply = <&vcc3v3_sys>;
+> +		vcc5-supply = <&vcc3v3_sys>;
+> +		vcc6-supply = <&vcc3v3_sys>;
+> +		vcc7-supply = <&vcc3v3_sys>;
+> +		vcc8-supply = <&vcc3v3_sys>;
+> +		vcc9-supply = <&vcc3v3_sys>;
+> +
+> +		regulators {
+> +			vdd_logic: DCDC_REG1 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-min-microvolt = <500000>;
+> +				regulator-max-microvolt = <1350000>;
+> +				regulator-init-microvolt = <900000>;
+> +				regulator-ramp-delay = <6001>;
+> +				regulator-initial-mode = <0x2>;
+> +				regulator-name = "vdd_logic";
+> +				regulator-state-mem {
+> +					regulator-off-in-suspend;
+> +				};
+> +			};
+> +
+> +			vdd_gpu: DCDC_REG2 {
+> +				regulator-min-microvolt = <500000>;
+> +				regulator-max-microvolt = <1350000>;
+> +				regulator-init-microvolt = <900000>;
+> +				regulator-ramp-delay = <6001>;
+> +				regulator-initial-mode = <0x2>;
+> +				regulator-name = "vdd_gpu";
+> +				regulator-state-mem {
+> +					regulator-off-in-suspend;
+> +				};
+> +			};
+> +
+> +			vcc_ddr: DCDC_REG3 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-initial-mode = <0x2>;
+> +				regulator-name = "vcc_ddr";
+> +				regulator-state-mem {
+> +					regulator-on-in-suspend;
+> +				};
+> +			};
+> +
+> +			vdd_npu: DCDC_REG4 {
 
-Will be fixed in v2, thanks.
+> +				regulator-min-microvolt = <500000>;
+> +				regulator-max-microvolt = <1350000>;
 
-> I also find it curious that you went through the unusual
-> (and IMO confusing) effort to allocate a name to each and
-> every SPI in the system, but didn't do it for any on the PPIs...
->
+Exception to the sort rule:
+1: regulator-min-microvolt above regulator-max-microvolt
 
-Yeah, after some consideration I removed the whole interrupts header
-and used hard-coded values instead. I probably felt it would be right
-thing to have, just because there is no public TRM for Exynos850, thus
-documenting interrupts somewhere would be nice. But that reasoning is
-wrong, as trying to mix that kind of documentation with code just
-clutters it. The right thing to do is probably just provide a public
-TRM, but that's not for me to decide, alas :) Anyway, will be fixed in
-v2.
+2: regulator-name above all other regulator properties.
 
->
-> > +     };
-> > +
-> > +     timer {
-> > +             compatible = "arm,armv8-timer";
-> > +             interrupts = <GIC_PPI 13
-> > +                             (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
-> > +                          <GIC_PPI 14
-> > +                             (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
-> > +                          <GIC_PPI 11
-> > +                             (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
-> > +                          <GIC_PPI 10
-> > +                             (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>;
-> > +             clock-frequency = <26000000>;
->
-> No, please. Fix the firmware to program CNTFRQ_EL0 on each
-> and every CPU. This isn't 2012 anymore.
->
+The rest in alphabetical order.
+Fix them all.
 
-Ok, will remove that property in v2. Though it looks like CNTFRQ_EL0
-register can be only changed in EL3 execution level, so I'll have to
-ask the vendor to fix their BL31 or whatever. But that might take some
-time, so I'll have to keep "clock-frequency" workaround in my local
-tree for now, to make scheduler work.
+> +				regulator-init-microvolt = <900000>;
+> +				regulator-ramp-delay = <6001>;
+> +				regulator-initial-mode = <0x2>;
+> +				regulator-name = "vdd_npu";
 
-> You are also missing the hypervisor virtual timer interrupt.
->
+Add empty line between properties and a node.
 
-Checked SoC TRM, there is no PPI for hypervisor virtual timer
-interrupt, and no mentioning of it at all. Likewise, I checked ARMv8
-ARM and TRM, almost no description of it. Also, I checked other
-platforms, and seems like everyone does the same (having only 4
-interrupts). And I wasn't able to find any documentation on that, so I
-guess I'll leave it as is, if you don't mind.
-
-> > +             use-clocksource-only;
-> > +             use-physical-timer;
->
-> Thankfully, these two properties do not exist.
->
-
-Yeah, that's just some leftover from vendor's kernel, overlook by
-me... Will remove in v2, thanks.
-
-> Thanks,
->
->          M.
-> --
-> Jazz is not dead. It just smells funny...
+> +				regulator-state-mem {
+> +					regulator-off-in-suspend;
+> +				};
+> +			};
+> +
+> +			vcc_1v8: DCDC_REG5 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-name = "vcc_1v8";
+> +				regulator-state-mem {
+> +					regulator-off-in-suspend;
+> +				};
+> +			};
+> +
+> +			vdda0v9_image: LDO_REG1 {
+> +				regulator-min-microvolt = <900000>;
+> +				regulator-max-microvolt = <900000>;
+> +				regulator-name = "vdda0v9_image";
+> +				regulator-state-mem {
+> +					regulator-off-in-suspend;
+> +				};
+> +			};
+> +
+> +			vdda_0v9: LDO_REG2 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-min-microvolt = <900000>;
+> +				regulator-max-microvolt = <900000>;
+> +				regulator-name = "vdda_0v9";
+> +				regulator-state-mem {
+> +					regulator-off-in-suspend;
+> +				};
+> +			};
+> +
+> +			vdda0v9_pmu: LDO_REG3 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-min-microvolt = <900000>;
+> +				regulator-max-microvolt = <900000>;
+> +				regulator-name = "vdda0v9_pmu";
+> +				regulator-state-mem {
+> +					regulator-on-in-suspend;
+> +					regulator-suspend-microvolt = <900000>;
+> +				};
+> +			};
+> +
+> +			vccio_acodec: LDO_REG4 {
+> +				regulator-min-microvolt = <3300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-name = "vccio_acodec";
+> +				regulator-state-mem {
+> +					regulator-off-in-suspend;
+> +				};
+> +			};
+> +
+> +			vccio_sd: LDO_REG5 {
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-name = "vccio_sd";
+> +				regulator-state-mem {
+> +					regulator-off-in-suspend;
+> +				};
+> +			};
+> +
+> +			vcc3v3_pmu: LDO_REG6 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-min-microvolt = <3300000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-name = "vcc3v3_pmu";
+> +				regulator-state-mem {
+> +					regulator-on-in-suspend;
+> +					regulator-suspend-microvolt = <3300000>;
+> +				};
+> +			};
+> +
+> +			vcca_1v8: LDO_REG7 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-name = "vcca_1v8";
+> +				regulator-state-mem {
+> +					regulator-off-in-suspend;
+> +				};
+> +			};
+> +
+> +			vcca1v8_pmu: LDO_REG8 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-name = "vcca1v8_pmu";
+> +				regulator-state-mem {
+> +					regulator-on-in-suspend;
+> +					regulator-suspend-microvolt = <1800000>;
+> +				};
+> +			};
+> +
+> +			vcca1v8_image: LDO_REG9 {
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-name = "vcca1v8_image";
+> +				regulator-state-mem {
+> +					regulator-off-in-suspend;
+> +				};
+> +			};
+> +
+> +			vcc_3v3: SWITCH_REG1 {
+> +				regulator-always-on;
+> +				regulator-boot-on;
+> +				regulator-name = "vcc_3v3";
+> +				regulator-state-mem {
+> +					regulator-off-in-suspend;
+> +				};
+> +			};
+> +
+> +			vcc3v3_sd: SWITCH_REG2 {
+> +				regulator-name = "vcc3v3_sd";
+> +				regulator-state-mem {
+> +					regulator-off-in-suspend;
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+>  &mdio0 {
+>  	rgmii_phy0: ethernet-phy@0 {
+>  		compatible = "ethernet-phy-ieee802.3-c22";
+> @@ -124,6 +321,15 @@
+>  	};
+>  };
+>  
+> +&pinctrl {
+> +	pmic {
+> +		pmic_int: pmic_int {
+> +			rockchip,pins =
+> +				<0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
+> +		};
+> +	};
+> +};
+> +
+>  &sdhci {
+>  	bus-width = <8>;
+>  	max-frequency = <200000000>;
+> 
