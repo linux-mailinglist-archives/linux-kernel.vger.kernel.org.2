@@ -2,69 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C933F3E08CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178683E08D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240756AbhHDT2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 15:28:07 -0400
-Received: from mga12.intel.com ([192.55.52.136]:25752 "EHLO mga12.intel.com"
+        id S239589AbhHDT33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 15:29:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240720AbhHDT2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 15:28:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="193587881"
-X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="193587881"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 12:27:47 -0700
-X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="522091507"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.32.138]) ([10.209.32.138])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 12:27:45 -0700
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
+        id S234676AbhHDT30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 15:29:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A75960BD3;
+        Wed,  4 Aug 2021 19:29:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628105352;
+        bh=r3ZDW4vFNK88sVmyyRefvriLQS5e7IyWkdL6AfYxEIw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=z21sMJTd5YlE9ofg6H+0H8NRadBa5YBgBe6b8AscrZWvf9GCGC3DdMWTItYmEyyx+
+         Y9LNkAfMOFGuYar6K05r26QEB5vb5rAUDYQd7wjU7Cva5r63T5LE3Kf2BI4Rlz5wMV
+         8GgFgTSDLJWeeRRjamT4bIXUi3j1gYKXQAdKrC9E=
+Date:   Wed, 4 Aug 2021 21:29:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v1] driver: base: Add driver filter support
+Message-ID: <YQrqhYEL64CSLRTy@kroah.com>
 References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQrXhnHJCsTxiRcP@casper.infradead.org>
- <0e20cad3-8ba4-71bc-5bfd-3246ef991c6d@linux.intel.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <515ff3e6-d7aa-4d40-1cf7-7113721d68b9@linux.intel.com>
-Date:   Wed, 4 Aug 2021 12:27:44 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <0e20cad3-8ba4-71bc-5bfd-3246ef991c6d@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 04, 2021 at 10:43:22AM -0700, Kuppuswamy Sathyanarayanan wrote:
+> Intel's Trust Domain Extensions (TDX) is a new Intel technology that
+> adds support for VMs to maintain confidentiality and integrity in the
+> presence of an untrusted VMM.
+> 
+> Given the VMM is an untrusted entity and the VMM presents emulated
+> hardware to the guest, a threat vector similar to Thunderclap [1] is
+> present. Also, for ease of deployment, it is useful to be able to use
+> the same kernel binary on host and guest, but that presents a wide
+> attack surface given the range of hardware supported in typical
+> builds. However, TDX guests only require a small number of drivers, a
+> number small enough to audit for Thunderclap style attacks, and the
+> rest can be disabled via policy. Add a mechanism to filter drivers
+> based on a "protected-guest trusted" indication.
 
-On 8/4/2021 11:29 AM, Kuppuswamy, Sathyanarayanan wrote:
->
->
-> On 8/4/21 11:08 AM, Matthew Wilcox wrote:
->> Why use a doubly-linked-list here?  An allocating xarray should perform
->> much better and use less memory.
->
-> We don't expect the list to be too long. So we may not gain any 
-> significant
-> advantage in terms of performance or memory when using alternate 
-> lists. Since
-> linked list easier to use, we chose it.
->
-Also even if it was long it wouldn't matter because this isn't a fast 
-path at all.
+So you are trying to work around the "problem" that distro kernels
+provides drivers for everything by adding additional kernel complexity?
 
-All that matters it to write the code as clearly as possible.
+What prevents you from using a sane, stripped down, kernel image for
+these vms which would keep things sane and simpler and easier to audit
+and most importantly, prove, that the image is not doing something you
+don't expect it to do?
 
--Andi
+Why not just make distros that want to support this type of platform,
+also provide these tiny kernel images?  Why are you pushing this work on
+the kernel community instead?
 
+> An alternative solution is to disable untrusted drivers using a custom
+> kernel config for TDX, but such solution will break our goal of using
+> same kernel binary in guest/host or in standard OS distributions. So
+> it is not considered.
+
+Why is that a goal that you _have_ to have?  Who is making that
+requirement?
+
+> Driver filter framework adds support to filter drivers at boot
+> time by using platform specific allow list. This is a generic
+> solution that can be reused by TDX. Driver filter framework adds a
+> new hook (driver_allowed()) in driver_register() interface which
+> will update the "allowed" status of the driver based on platform
+> specific driver allow list or deny list. During driver bind process,
+> trusted status is used to determine whether to continue or deny the
+> bind process. If platform does not register any allow or deny list,
+> all devices will be allowed. Platforms can use wildcard like "ALL:ALL"
+> in bus_name and driver_name of filter node to allow or deny all
+> bus and drivers.
+> 
+> Per driver opt-in model is also considered as an alternative design
+> choice, but central allow or deny list is chosen because it is
+> easier to maintain and audit. Also, "driver self serve" might be
+> abused by mistake by driver authors cutting and pasting the code.
+> 
+> Also add an option in kernel command line and sysfs to update the
+> allowed or denied drivers list. Driver filter allowed status
+> can be read using following command.
+> 
+> cat /sys/bus/$bus/drivers/$driver/allowed
+
+You added a sysfs file without Documentation/ABI/ update as well?
+
+{sigh}
+
+And what's wrong with the current method of removing drivers from
+devices that you do not want them to be bound to?  We offer that support
+for all busses now that want to do it, what driver types are you needing
+to "control" here that does not take advantage of the existing
+infrastructure that we currently have for this type of thing?
+
+thanks,
+
+greg k-h
