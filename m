@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801263E08CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368AF3E08D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240743AbhHDT2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 15:28:05 -0400
+        id S240783AbhHDT2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 15:28:13 -0400
 Received: from mga01.intel.com ([192.55.52.88]:42526 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240707AbhHDT2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 15:28:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="235953233"
+        id S231281AbhHDT2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 15:28:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="235953239"
 X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="235953233"
+   d="scan'208";a="235953239"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 12:27:48 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 12:27:49 -0700
 X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="585563751"
+   d="scan'208";a="585563757"
 Received: from mjkendri-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.17.117])
   by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 12:27:48 -0700
 From:   Kuppuswamy Sathyanarayanan 
@@ -34,198 +34,101 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/5] x86/boot: Avoid #VE during boot for TDX platforms
-Date:   Wed,  4 Aug 2021 12:27:25 -0700
-Message-Id: <20210804192729.2902472-3-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v4 3/5] x86/topology: Disable CPU online/offline control for TDX guest
+Date:   Wed,  4 Aug 2021 12:27:26 -0700
+Message-Id: <20210804192729.2902472-4-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210804192729.2902472-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20210804192729.2902472-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+As per Intel TDX Virtual Firmware Design Guide, sec 4.3.5 and
+sec 9.4, all unused CPUs are put in spinning state by
+TDVF until OS requests for CPU bring-up via mailbox address passed
+by ACPI MADT table. Since by default all unused CPUs are always in
+spinning state, there is no point in supporting dynamic CPU
+online/offline feature. So current generation of TDVF does not
+support CPU hotplug feature. It may be supported in next generation.
 
-There are a few MSRs and control register bits which the kernel
-normally needs to modify during boot. But, TDX disallows
-modification of these registers to help provide consistent
-security guarantees. Fortunately, TDX ensures that these are all
-in the correct state before the kernel loads, which means the
-kernel has no need to modify them.
-
-The conditions to avoid are:
-
-  * Any writes to the EFER MSR
-  * Clearing CR0.NE
-  * Clearing CR3.MCE
-
-This theoretically makes guest boot more fragile. If, for
-instance, EFER was set up incorrectly and a WRMSR was performed,
-it will trigger early exception panic or a triple fault, if it's
-before early exceptions are set up. However, this is likely to
-trip up the guest BIOS long before control reaches the kernel. In
-any case, these kinds of problems are unlikely to occur in
-production environments, and developers have good debug
-tools to fix them quickly. 
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
 ---
 
 Changes since v3:
- * None
+ * Rebased on top of Tom Lendacky's protected guest change.
 
- arch/x86/boot/compressed/head_64.S   | 16 ++++++++++++----
- arch/x86/boot/compressed/pgtable.h   |  2 +-
- arch/x86/kernel/head_64.S            | 20 ++++++++++++++++++--
- arch/x86/realmode/rm/trampoline_64.S | 23 +++++++++++++++++++----
- 4 files changed, 50 insertions(+), 11 deletions(-)
+Changes since v1:
+ * Replaced is_tdx_guest() check with prot_guest_has(PR_GUEST_TDX).
 
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index a2347ded77ea..0c68e3adc940 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -640,12 +640,20 @@ SYM_CODE_START(trampoline_32bit_src)
- 	movl	$MSR_EFER, %ecx
- 	rdmsr
- 	btsl	$_EFER_LME, %eax
-+	/* Avoid writing EFER if no change was made (for TDX guest) */
-+	jc	1f
- 	wrmsr
--	popl	%edx
-+1:	popl	%edx
- 	popl	%ecx
+ arch/x86/kernel/tdx.c      | 15 +++++++++++++++
+ arch/x86/kernel/topology.c |  3 ++-
+ 2 files changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index 4080f7546e62..1b6ed482c6b6 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -5,6 +5,7 @@
+ #define pr_fmt(fmt)     "x86/tdx: " fmt
  
- 	/* Enable PAE and LA57 (if required) paging modes */
--	movl	$X86_CR4_PAE, %eax
-+	movl	%cr4, %eax
+ #include <linux/protected_guest.h>
++#include <linux/cpuhotplug.h>
+ 
+ #include <asm/tdx.h>
+ #include <asm/vmx.h>
+@@ -303,6 +304,17 @@ static int tdg_handle_mmio(struct pt_regs *regs, struct ve_info *ve)
+ 	return insn.length;
+ }
+ 
++static int tdg_cpu_offline_prepare(unsigned int cpu)
++{
 +	/*
-+	 * Clear all bits except CR4.MCE, which is preserved.
-+	 * Clearing CR4.MCE will #VE in TDX guests.
++	 * Per Intel TDX Virtual Firmware Design Guide,
++	 * sec 4.3.5 and sec 9.4, Hotplug is not supported
++	 * in TDX platforms. So don't support CPU
++	 * offline feature once it is turned on.
 +	 */
-+	andl	$X86_CR4_MCE, %eax
-+	orl	$X86_CR4_PAE, %eax
- 	testl	%edx, %edx
- 	jz	1f
- 	orl	$X86_CR4_LA57, %eax
-@@ -659,8 +667,8 @@ SYM_CODE_START(trampoline_32bit_src)
- 	pushl	$__KERNEL_CS
- 	pushl	%eax
++	return -EOPNOTSUPP;
++}
++
+ unsigned long tdg_get_ve_info(struct ve_info *ve)
+ {
+ 	u64 ret;
+@@ -443,5 +455,8 @@ void __init tdx_early_init(void)
+ 	pv_ops.irq.safe_halt = tdg_safe_halt;
+ 	pv_ops.irq.halt = tdg_halt;
  
--	/* Enable paging again */
--	movl	$(X86_CR0_PG | X86_CR0_PE), %eax
-+	/* Enable paging again. Avoid clearing X86_CR0_NE for TDX */
-+	movl	$(X86_CR0_PG | X86_CR0_NE | X86_CR0_PE), %eax
- 	movl	%eax, %cr0
++	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "tdg:cpu_hotplug",
++			  NULL, tdg_cpu_offline_prepare);
++
+ 	pr_info("Guest initialized\n");
+ }
+diff --git a/arch/x86/kernel/topology.c b/arch/x86/kernel/topology.c
+index bd83748e2bde..c637f49d029a 100644
+--- a/arch/x86/kernel/topology.c
++++ b/arch/x86/kernel/topology.c
+@@ -32,6 +32,7 @@
+ #include <linux/init.h>
+ #include <linux/smp.h>
+ #include <linux/irq.h>
++#include <linux/protected_guest.h>
+ #include <asm/io_apic.h>
+ #include <asm/cpu.h>
  
- 	lret
-diff --git a/arch/x86/boot/compressed/pgtable.h b/arch/x86/boot/compressed/pgtable.h
-index 6ff7e81b5628..cc9b2529a086 100644
---- a/arch/x86/boot/compressed/pgtable.h
-+++ b/arch/x86/boot/compressed/pgtable.h
-@@ -6,7 +6,7 @@
- #define TRAMPOLINE_32BIT_PGTABLE_OFFSET	0
+@@ -130,7 +131,7 @@ int arch_register_cpu(int num)
+ 			}
+ 		}
+ 	}
+-	if (num || cpu0_hotpluggable)
++	if ((num || cpu0_hotpluggable) && !prot_guest_has(PATTR_GUEST_TDX))
+ 		per_cpu(cpu_devices, num).cpu.hotpluggable = 1;
  
- #define TRAMPOLINE_32BIT_CODE_OFFSET	PAGE_SIZE
--#define TRAMPOLINE_32BIT_CODE_SIZE	0x70
-+#define TRAMPOLINE_32BIT_CODE_SIZE	0x80
- 
- #define TRAMPOLINE_32BIT_STACK_END	TRAMPOLINE_32BIT_SIZE
- 
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index d8b3ebd2bb85..96beac9eff42 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -141,7 +141,13 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 1:
- 
- 	/* Enable PAE mode, PGE and LA57 */
--	movl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
-+	movq	%cr4, %rcx
-+	/*
-+	 * Clear all bits except CR4.MCE, which is preserved.
-+	 * Clearing CR4.MCE will #VE in TDX guests.
-+	 */
-+	andl	$X86_CR4_MCE, %ecx
-+	orl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
- #ifdef CONFIG_X86_5LEVEL
- 	testl	$1, __pgtable_l5_enabled(%rip)
- 	jz	1f
-@@ -229,13 +235,23 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	/* Setup EFER (Extended Feature Enable Register) */
- 	movl	$MSR_EFER, %ecx
- 	rdmsr
-+	/*
-+	 * Preserve current value of EFER for comparison and to skip
-+	 * EFER writes if no change was made (for TDX guest)
-+	 */
-+	movl    %eax, %edx
- 	btsl	$_EFER_SCE, %eax	/* Enable System Call */
- 	btl	$20,%edi		/* No Execute supported? */
- 	jnc     1f
- 	btsl	$_EFER_NX, %eax
- 	btsq	$_PAGE_BIT_NX,early_pmd_flags(%rip)
--1:	wrmsr				/* Make changes effective */
- 
-+	/* Avoid writing EFER if no change was made (for TDX guest) */
-+1:	cmpl	%edx, %eax
-+	je	1f
-+	xor	%edx, %edx
-+	wrmsr				/* Make changes effective */
-+1:
- 	/* Setup cr0 */
- 	movl	$CR0_STATE, %eax
- 	/* Make changes effective */
-diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
-index ae112a91592f..0fdd74054044 100644
---- a/arch/x86/realmode/rm/trampoline_64.S
-+++ b/arch/x86/realmode/rm/trampoline_64.S
-@@ -143,13 +143,27 @@ SYM_CODE_START(startup_32)
- 	movl	%eax, %cr3
- 
- 	# Set up EFER
-+	movl	$MSR_EFER, %ecx
-+	rdmsr
-+	/*
-+	 * Skip writing to EFER if the register already has desired
-+	 * value (to avoid #VE for the TDX guest).
-+	 */
-+	cmp	pa_tr_efer, %eax
-+	jne	.Lwrite_efer
-+	cmp	pa_tr_efer + 4, %edx
-+	je	.Ldone_efer
-+.Lwrite_efer:
- 	movl	pa_tr_efer, %eax
- 	movl	pa_tr_efer + 4, %edx
--	movl	$MSR_EFER, %ecx
- 	wrmsr
- 
--	# Enable paging and in turn activate Long Mode
--	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_PE), %eax
-+.Ldone_efer:
-+	/*
-+	 * Enable paging and in turn activate Long Mode. Avoid clearing
-+	 * X86_CR0_NE for TDX.
-+	 */
-+	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_NE | X86_CR0_PE), %eax
- 	movl	%eax, %cr0
- 
- 	/*
-@@ -169,7 +183,8 @@ SYM_CODE_START(pa_trampoline_compat)
- 	movl	$rm_stack_end, %esp
- 	movw	$__KERNEL_DS, %dx
- 
--	movl	$X86_CR0_PE, %eax
-+	/* Avoid clearing X86_CR0_NE for TDX */
-+	movl	$(X86_CR0_NE | X86_CR0_PE), %eax
- 	movl	%eax, %cr0
- 	ljmpl   $__KERNEL32_CS, $pa_startup_32
- SYM_CODE_END(pa_trampoline_compat)
+ 	return register_cpu(&per_cpu(cpu_devices, num).cpu, num);
 -- 
 2.25.1
 
