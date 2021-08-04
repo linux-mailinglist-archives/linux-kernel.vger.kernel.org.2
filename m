@@ -2,133 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6633E039E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFD53E03A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238525AbhHDOoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:44:20 -0400
-Received: from mga18.intel.com ([134.134.136.126]:7422 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237793AbhHDOoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:44:18 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="201116838"
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="201116838"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 07:44:05 -0700
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="437448740"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 07:44:03 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mBI7g-0058gw-Gg; Wed, 04 Aug 2021 17:43:56 +0300
-Date:   Wed, 4 Aug 2021 17:43:56 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Hoan Tran <hoan@os.amperecomputing.com>
-Subject: Re: [PATCH v1 2/4] gpio: dwapb: Read GPIO base from gpio-base
- property
-Message-ID: <YQqnrHAuSneeEFgO@smile.fi.intel.com>
-References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
- <20210726125436.58685-2-andriy.shevchenko@linux.intel.com>
- <20210802135839.4clqd34npppwasyh@mobilestation>
- <CAHp75Vcz=vkaGObUcOOTZA51pHPoMc50RpPBLg4fgZgHdUStRA@mail.gmail.com>
- <20210804124433.crh7w6jzfjcswubo@mobilestation>
+        id S238739AbhHDOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:46:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33639 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238703AbhHDOqM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 10:46:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628088360;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AtaANfQj7G/12fLVNP8ZEKFYhS90aaah+dzycPwvl7A=;
+        b=Usu6I00m+mSEcxWiwh3g4zK7cRSdWg8hljF/vK2YHxHSKrJyyvf4VL4FIUNdj7z4H/2HUu
+        K//1pNnNpJfj7SuGRSuHVl3i08+7Eu0fKmIQzZyOw37kEwEc5VsMwknI9axeIzQtWJJw2w
+        bkS/junpB8xjJQ68JHAZmg67MCpROV8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-358-RluIBlZvO3Ovj2uUiEH8Iw-1; Wed, 04 Aug 2021 10:45:58 -0400
+X-MC-Unique: RluIBlZvO3Ovj2uUiEH8Iw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A30AC7400;
+        Wed,  4 Aug 2021 14:45:56 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8255410016F2;
+        Wed,  4 Aug 2021 14:45:44 +0000 (UTC)
+Message-ID: <c82a3abe00d387985ac806c8ff062cc29e192bbd.camel@redhat.com>
+Subject: Re: [RFC PATCH 1/4] KVM: selftests: Add support for creating
+ non-default type VMs
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        linux-kselftest@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
+        David Matlack <dmatlack@google.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Zhenzhong Duan <zhenzhong.duan@intel.com>,
+        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
+        Like Xu <like.xu@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>
+Date:   Wed, 04 Aug 2021 17:45:43 +0300
+In-Reply-To: <42a812a9-7f17-2a26-d289-1f921408a469@intel.com>
+References: <20210726183816.1343022-1-erdemaktas@google.com>
+         <20210726183816.1343022-2-erdemaktas@google.com>
+         <e1651746-aa46-31e7-e1c0-99f3faaf1586@intel.com>
+         <ede70f11e713ee0140c0e684c3d46b3aa1176e5e.camel@redhat.com>
+         <42a812a9-7f17-2a26-d289-1f921408a469@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804124433.crh7w6jzfjcswubo@mobilestation>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 03:44:33PM +0300, Serge Semin wrote:
-> On Mon, Aug 02, 2021 at 06:52:28PM +0300, Andy Shevchenko wrote:
-> > On Mon, Aug 2, 2021 at 5:14 PM Serge Semin <fancer.lancer@gmail.com> wrote:
-> > > On Mon, Jul 26, 2021 at 03:54:34PM +0300, Andy Shevchenko wrote:
-> > > > For backward compatibility with some legacy devices introduce
-> > > > a new (*) property gpio-base to read GPIO base. This will allow
-> > > > further cleanup of the driver.
+On Wed, 2021-08-04 at 22:42 +0800, Xiaoyao Li wrote:
+> On 8/4/2021 10:24 PM, Maxim Levitsky wrote:
+> > On Wed, 2021-08-04 at 14:09 +0800, Xiaoyao Li wrote:
+> > > On 7/27/2021 2:37 AM, Erdem Aktas wrote:
+> > > > Currently vm_create function only creates KVM_X86_LEGACY_VM type VMs.
+> > > > Changing the vm_create function to accept type parameter to create
+> > > > new VM types.
+> > > > 
+> > > > Signed-off-by: Erdem Aktas <erdemaktas@google.com>
+> > > > Reviewed-by: Sean Christopherson <seanjc@google.com>
+> > > > Reviewed-by: Peter Gonda <pgonda@google.com>
+> > > > Reviewed-by: Marc Orr <marcorr@google.com>
+> > > > Reviewed-by: Sagi Shahar <sagis@google.com>
+> > > > ---
+> > > >    .../testing/selftests/kvm/include/kvm_util.h  |  1 +
+> > > >    tools/testing/selftests/kvm/lib/kvm_util.c    | 29 +++++++++++++++++--
+> > > >    2 files changed, 27 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+> > > > index d53bfadd2..c63df42d6 100644
+> > > > --- a/tools/testing/selftests/kvm/include/kvm_util.h
+> > > > +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+> > > > @@ -88,6 +88,7 @@ int vcpu_enable_cap(struct kvm_vm *vm, uint32_t vcpu_id,
+> > > >    void vm_enable_dirty_ring(struct kvm_vm *vm, uint32_t ring_size);
+> > > >    
+> > > >    struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm);
+> > > > +struct kvm_vm *__vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm, int type);
+> > > >    void kvm_vm_free(struct kvm_vm *vmp);
+> > > >    void kvm_vm_restart(struct kvm_vm *vmp, int perm);
+> > > >    void kvm_vm_release(struct kvm_vm *vmp);
+> > > > diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> > > > index e5fbf16f7..70caa3882 100644
+> > > > --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> > > > +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> > > > @@ -180,13 +180,36 @@ _Static_assert(sizeof(vm_guest_mode_params)/sizeof(struct vm_guest_mode_params)
+> > > >     * Return:
+> > > >     *   Pointer to opaque structure that describes the created VM.
+> > > >     *
+> > > > - * Creates a VM with the mode specified by mode (e.g. VM_MODE_P52V48_4K).
+> > > > + * Wrapper VM Create function to create a VM with default type (0).
+> > > 
+> > > Can we pass KVM_X86_LEGACY_VM (whatever name when it's upstreamed)
+> > > instead of 0?
 > > 
-> > Thanks for the review! My answers below.
+> > To be honest I would prefer this to be called something like KVM_X86_STANDARD_VM,
+> > or something.
 > > 
-> > > > *) Note, it's not new for GPIO library since mockup driver is
-> > > >    using it already.
-> > >
-> > > You are right but I don't think it's a good idea to advertise the
-> > > pure Linux-internal property "gpio-base" to any use-case like OF
-> > > and ACPI FW nodes.
+> > I don't think that normal unencrypted virtualization is already legacy, even if TDX
+> > docs claim that.
 > 
-> > I don't want to advertise them, actually (that's why no bindings are
-> > modified). Perhaps introducing a paragraph in the GPIO documentation
-> > about this (and / or in GPIO generic bindings) that gpio-base property
-> > is solely for internal use and should't be used in actual DTs?
+> I'm not proposing to use this specific name introduced in TDX RFC 
+> series, but proposing to use the name defined in KVM in the future 
+> instead of hard-coded 0.
 > 
-> It might have been not that clear but by "advertising" I meant to have
-> the property generically handled in the driver, thus permitting it
-> being specified not only via the SW-nodes but also via the ACPI
-> and OF firmware. (Please see my next comment for more details.)
+> Yes, KVM_X86_STANDARD_VM or KVM_X86_NORMAL_VM (proposed by Paolo) is 
+> better than KVM_X86_LEGACY_VM.
+
+KVM_X86_NORMAL_VM is a very good name IMHO as well.
+Thanks!
+
+Best regards,
+	Maxim Levitsky
+
 > 
-> Regarding adding the gpio-base property documentation. I am pretty
-> sure it shouldn't be mentioned neither in the DW APB GPIO bindings,
-> nor in any other GPIO device DT-bindings because as you are right
-> saying it is the solely Linux kernel-specific parameter and isn't
-> supposed to be part of the device tree specification. On the other
-> hand if it gets to be frequently used then indeed we need to somehow
-> have it described and of course make sure it isn't used
-> inappropriately. Thus a possible option of documenting the property
-> would be just adding a new paragraph/file somewhere in
-> Documentation/driver-api/gpio/ since the property name implies that
-> it's going to be generic and permitted to be specified for all
-> GPIO-chips. Though it's for @Linus and @Bartosz to decide after all.
-
-Thanks for elaborative point.
-
-> > >  Especially seeing we don't have it described in the
-> > > DT-bindings and noting that the mockup driver is dedicated for the
-> > > GPIO tests only. What about restricting the property usage for the
-> > > SW-nodes only by adding an additional check: is_software_node() here?
-> 
-> > I don't think we need this. But if you think it's better this way just
-> > to avoid usage of this property outside of internal properties, I'm
-> > fine to add. Perhaps we may issue a warning and continue? (see also
-> > above)
-> 
-> In my opinion it's very required and here is why. Adding the generic
-> gpio-base property support into the driver basically means saying:
-> "Hey, the driver supports it, so you can add it to your firmware."
-> Even if the property isn't described in the bindings, the platform
-> developers will be able to use it in new DTS-files since it's much
-> easier to add a property into a DT-file and make things working than
-> to convert the drivers/platforms/apps to using the GPIOd API. In case
-> if maintainers aren't that careful at review such dts may get slip
-> into the kernel, which in its turn will de facto make the property
-> being part of the DT specification and will need to be supported. That
-> is we must be very careful in what properties are permitted in the
-> driver. Thus, yes, I think we need to make sure here that the property
-> is only used in framework of the kernel and isn't passed via
-> inappropriate paths like DT/ACPI fw so not to get into the
-> maintainability troubles in future.
-
-Got it. I'll add the additional check in next version.
-
-> Issuing a warning but accepting the property isn't good alternative
-> due to the same reason. Why do we need to add the DT/ACPI property
-> support, which isn't supposed to be used like that instead of just
-> restricting the usecases beforehand? So I vote for parsing the
-> "gpio-base" property only if it's passed as a part of the SW-node.
-
--- 
-With Best Regards,
-Andy Shevchenko
+> > Just my personal opinion.
+> > 
+> > Best regards,
+> > 	Maxim Levitsky
+> > 
+> > > > + */
+> > > > +struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
+> > > > +{
+> > > > +	return __vm_create(mode, phy_pages, perm, 0);
+> > > > +}
+> > > > +
 
 
