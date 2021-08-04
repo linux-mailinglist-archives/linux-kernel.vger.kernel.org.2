@@ -2,266 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8C53E089E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200933E08A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239206AbhHDTRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 15:17:53 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:34120 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhHDTRw (ORCPT
+        id S239398AbhHDTSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 15:18:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23168 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232580AbhHDTSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 15:17:52 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 174JHNWO091027;
-        Wed, 4 Aug 2021 14:17:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1628104643;
-        bh=m6/gguX0IHWu5i3dJz3iVS/sPPRAt8og7b1NR/AzLls=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=wcXopyuHtQ3ysQPSCcvgDSAIDpdhLcjQGiRKNwEs7xS1J9gYLSlmzbTBBglZxg+9Z
-         Y0+cWDoXoV7kZLWqMDeiH8/mZwdvezqyjegRzvCe1RAQReL04nlmfhYFggJD3xW6v1
-         T22JaZ9aZErdtwziG/SLo/oEa5qxcYjQlI9mZ1KA=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 174JHNto009553
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 4 Aug 2021 14:17:23 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 4 Aug
- 2021 14:17:23 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 4 Aug 2021 14:17:23 -0500
-Received: from [10.250.68.246] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 174JHN8x053149;
-        Wed, 4 Aug 2021 14:17:23 -0500
-Subject: Re: [PATCH v2 1/5] remoteproc: Add support for detach-only during
- shutdown
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Loic Pallardy <loic.pallardy@st.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Praneeth Bajjuri <praneeth@ti.com>,
-        Hari Nagalla <hnagalla@ti.com>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210723220248.6554-1-s-anna@ti.com>
- <20210723220248.6554-2-s-anna@ti.com> <20210802184431.GC3051951@p14s>
- <cd399fef-6db7-72eb-933f-7454a043ed14@ti.com> <20210803162311.GB3091608@p14s>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <7e264184-60ea-a035-7bd3-1fc2c76a160d@ti.com>
-Date:   Wed, 4 Aug 2021 14:17:22 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 4 Aug 2021 15:18:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628104675;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AOuTInqWHm5JsxiufxPxrl3RhFGmVgLzFC5P9l0+9vM=;
+        b=VQt6kyZ1m4R5mWY+xRmd2I21P2Xh9VrJnqna1eD8uoEDikfIMgWNXuDgYSi9hKCHEkKm1t
+        FFivLnoerufYjhLnk5fA4aR3dr5x54vWGlDzgO+bbR59RQ4QZifj4LHIemfWyKBfZgmEcP
+        KgeTS/OLLKdBUZnbjGDwDKfyBmeH5pQ=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-260-hQ0_Pe_pNtyqPGUdSWN-Gg-1; Wed, 04 Aug 2021 15:17:54 -0400
+X-MC-Unique: hQ0_Pe_pNtyqPGUdSWN-Gg-1
+Received: by mail-qk1-f199.google.com with SMTP id q9-20020a05620a0c89b02903ba3e0f08d7so2665331qki.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 12:17:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AOuTInqWHm5JsxiufxPxrl3RhFGmVgLzFC5P9l0+9vM=;
+        b=PPWhTWuKU+dymWMNITPZ4zbhQUSOBKazSwHDjYoSc+YdxqlAnuc8C5opGtIMGrNqlh
+         PMoDSZzqCdr1btUfEmf5BrkhLtexte10q1NxMC6Q4l7RMdSiHa22nBvc8VcbkhFZYlAB
+         RtdHq/ZmfIPtRRBaIj/0DqwOs22IKCCmLggRWB0lQN3tVUDmZlsT2fc9vJr1GBx2vOWm
+         wygbEpOL0+wsictgNKzi5X0+HNBbJxrOep3uBibFNydRQi564EoRx44G1/Q7tE8Oo+8N
+         RWyaBMdaA4CzaXNYFFhfX31BaNxgIqHUJm7SHc06j9mHKz1VOB7PI0h2t8lOksjk1b0J
+         1unA==
+X-Gm-Message-State: AOAM532F2PEwUj9neYo3eyTrSo+mTmMds3xe6xuscBZCeZvMKqYlZbP8
+        Y/tEV/JSrjon+DGjvl8hFuzfe5QpWfaOyvnuY2u1+0JExJseRip3De29CgoxcFfqgU/dFB9Ls6Q
+        6I9tdE2Oh0eLvlGVdzzXuYhJL
+X-Received: by 2002:ac8:1106:: with SMTP id c6mr1064929qtj.20.1628104673685;
+        Wed, 04 Aug 2021 12:17:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy/VPzU3MTG44ao6DOYRTTSzyp04c8qcvUclHsx6dvYvekjwEGCNaOIR/cWW1gAe6hROeaXLw==
+X-Received: by 2002:ac8:1106:: with SMTP id c6mr1064902qtj.20.1628104673462;
+        Wed, 04 Aug 2021 12:17:53 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
+        by smtp.gmail.com with ESMTPSA id w14sm1821905qkm.81.2021.08.04.12.17.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 12:17:52 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 15:17:51 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Tiberiu A Georgescu <tiberiu.georgescu@nutanix.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        christian.brauner@ubuntu.com, ebiederm@xmission.com,
+        adobriyan@gmail.com, songmuchun@bytedance.com, axboe@kernel.dk,
+        vincenzo.frascino@arm.com, catalin.marinas@arm.com,
+        peterz@infradead.org, chinwen.chang@mediatek.com,
+        linmiaohe@huawei.com, jannh@google.com, apopple@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, ivan.teterevkov@nutanix.com,
+        florian.schmidt@nutanix.com, carl.waldspurger@nutanix.com,
+        jonathan.davies@nutanix.com
+Subject: Re: [PATCH 0/1] pagemap: swap location for shared pages
+Message-ID: <YQrn33pOlpdl662i@t490s>
+References: <20210730160826.63785-1-tiberiu.georgescu@nutanix.com>
+ <YQrdY5zQOVgQJ1BI@t490s>
+ <839e82f7-2c54-d1ef-8371-0a332a4cb447@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210803162311.GB3091608@p14s>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <839e82f7-2c54-d1ef-8371-0a332a4cb447@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
-
-On 8/3/21 11:23 AM, Mathieu Poirier wrote:
-> Good morning,
+On Wed, Aug 04, 2021 at 08:49:14PM +0200, David Hildenbrand wrote:
+> TBH, I tend to really dislike the PTE marker idea. IMHO, we shouldn't store
+> any state information regarding shared memory in per-process page tables: it
+> just doesn't make too much sense.
 > 
-> On Mon, Aug 02, 2021 at 06:21:38PM -0500, Suman Anna wrote:
->> Hi Mathieu,
->>
->> On 8/2/21 1:44 PM, Mathieu Poirier wrote:
->>> On Fri, Jul 23, 2021 at 05:02:44PM -0500, Suman Anna wrote:
->>>> The remoteproc core has support for both stopping and detaching a
->>>> remote processor that was attached to previously, through both the
->>>> remoteproc sysfs and cdev interfaces. The rproc_shutdown() though
->>>> unconditionally only uses the stop functionality at present. This
->>>> may not be the default desired functionality for all the remoteproc
->>>> platform drivers.
->>>>
->>>> Enhance the remoteproc core logic to key off the presence of the
->>>> .stop() ops and allow the individual remoteproc drivers to continue
->>>> to use the standard rproc_add() and rproc_del() API. This allows
->>>> the remoteproc drivers to only do detach if supported when the driver
->>>> is uninstalled, and the remote processor continues to run undisturbed
->>>> even after the driver removal.
->>>>
->>>> Signed-off-by: Suman Anna <s-anna@ti.com>
->>>> ---
->>>> v2: Addressed various review comments from v1
->>>>  - Reworked the logic to not use remoteproc detach_on_shutdown and
->>>>    rely only on rproc callback ops
->>>>  - Updated the last para of the patch description
->>>> v1: https://patchwork.kernel.org/project/linux-remoteproc/patch/20210522000309.26134-3-s-anna@ti.com/
->>>>
->>>>  drivers/remoteproc/remoteproc_cdev.c  | 7 +++++++
->>>>  drivers/remoteproc/remoteproc_core.c  | 5 ++++-
->>>>  drivers/remoteproc/remoteproc_sysfs.c | 6 ++++++
->>>>  3 files changed, 17 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
->>>> index 4ad98b0b8caa..16c932beed88 100644
->>>> --- a/drivers/remoteproc/remoteproc_cdev.c
->>>> +++ b/drivers/remoteproc/remoteproc_cdev.c
->>>> @@ -42,6 +42,13 @@ static ssize_t rproc_cdev_write(struct file *filp, const char __user *buf, size_
->>>>  		    rproc->state != RPROC_ATTACHED)
->>>>  			return -EINVAL;
->>>>  
->>>> +		if (rproc->state == RPROC_ATTACHED &&
->>>
->>> This is already checked just above.
->>>
->>>> +		    !rproc->ops->stop) {
->>
->> Well, this is checking for both conditions, and not just the stop ops
->> independently. We expect to have .stop() defined normally for both regular
->> remoteproc mode and attached mode where you want to stop (and not detach), but
->> as you can see, I am supporting only detach and so will not have .stop() defined
->>  with RPROC_ATTACHED.
->>
->>>
->>> This is checked in rproc_stop() where -EINVAL is returned if ops::stop has not
->>> been provided.
->>
->> rproc_shutdown() actually doesn't return any status, so all its internal
->> checking gets ignored and a success is returned today.
->>
+> And this is similar to SOFTDIRTY or UFFD_WP bits: this information actually
+> belongs to the shared file ("did *someone* write to this page", "is
+> *someone* interested into changes to that page", "is there something"). I
+> know, that screams for a completely different design in respect to these
+> features.
 > 
-> That is correct, and I have suggested to add a return value in my previous
-> review.
-
-Yeah ok. I can add a separate patch fixing that, and couple of these checks then
-become redundant.
-
+> I guess we start learning the hard way that shared memory is just different
+> and requires different interfaces than per-process page table interfaces we
+> have (pagemap, userfaultfd).
 > 
->>>
->>>> +			dev_err(&rproc->dev,
->>>> +				"stop not supported for this rproc, use detach\n");
->>>
->>> The standard error message from the shell should be enough here, the same way it
->>> is enough when the "start" and "stop" scenarios fail.
->>
->> Thought this was a bit more informative, but sure this trace can be dropped.
->>
->>>
->>>> +			return -EINVAL;
->>>> +		}
->>>> +
->>>>  		rproc_shutdown(rproc);
->>>>  	} else if (!strncmp(cmd, "detach", len)) {
->>>>  		if (rproc->state != RPROC_ATTACHED)
->>>> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
->>>> index 7de5905d276a..ab9e52180b04 100644
->>>> --- a/drivers/remoteproc/remoteproc_core.c
->>>> +++ b/drivers/remoteproc/remoteproc_core.c
->>>> @@ -2075,7 +2075,10 @@ void rproc_shutdown(struct rproc *rproc)
->>>>  	if (!atomic_dec_and_test(&rproc->power))
->>>>  		goto out;
->>>>  
->>>> -	ret = rproc_stop(rproc, false);
->>>> +	if (rproc->state == RPROC_ATTACHED && !rproc->ops->stop)
->>>> +		ret = __rproc_detach(rproc);
->>>> +	else
->>>> +		ret = rproc_stop(rproc, false);
->>>
->>> As I indicated in my last review I think rproc_shutdown() and rproc_del() should
->>> be decoupled and the right call made in the platform drivers based on the state
->>> of the remote processor.  
->>
->> We have various remoteproc API provided in pairs - rproc_alloc()/rproc_free(),
->> rproc_add()/rproc_del(), rproc_boot()/rproc_shutdown() and
->> rproc_attach()/rproc_detach(). The drivers are configuring conditions for
->> auto-boot and RPROC_DETACHED. The reason they are coupled is primarily because
->> of the auto-boot done during rproc_add(). And we handle the RPROC_DETACHED case
->> just as well in rproc_boot().
->>
-> 
-> The difference with rproc_boot() is that we are checking only the state of the
-> remoteproc, everything else related to the remote processor operations is
-> seamlessly handles by the state machine.  It is also tied to the
-> rproc_trigger_auto_boot() mechanic - decoupling that would be messy without
-> bringing any advantages other than keeping with a semantic symmetry.
+> I didn't have time to explore any alternatives yet, but I wonder if tracking
+> such stuff per an actual fd/memfd and not via process page tables is
+> actually the right and clean approach. There are certainly many issues to
+> solve, but conceptually to me it feels more natural to have these shared
+> memory features not mangled into process page tables.
 
-Most of this is actually tied to auto_boot if you think about it, not just the
-rproc state. If we have auto_boot set to false, then rproc_add() would not do
-anything, and the decision to start or attach can either be done through the
-sysfs/cdev or a kernel remoteproc or some consumer driver. And the state machine
-is getting influenced by this flag. auto-boot is a very useful feature.
+Yes, we can explore all the possibilities, I'm totally fine with it.
 
-You are asking is to do things differently between the regular start/stop case
-and attach/detach case ignoring the auto-boot. The semantic symmetry actually
-makes it easier to follow the state machine given that there are some internal
-reference counts as well.
+I just want to say I still don't think when there's page cache then we must put
+all the page-relevant things into the page cache.
 
-Note that we also have the devres API, and rproc_alloc()/rproc_free() and
-rproc_add()/rproc_del() form the main remoteproc subsystem API. The drivers
-would end up using matching calls if we don't have auto_boot.
+They're shared by processes, but process can still have its own way to describe
+the relationship to that page in the cache, to me it's as simple as "we allow
+process A to write to page cache P", while "we don't allow process B to write
+to the same page" like the write bit.
 
-> 
->> While what you have suggested works, but I am not quite convinced on this
->> asymmetric usage, and why this state-machine logic should be split between the
->> core and remoteproc drivers differently between attach and detach. To me,
->> calling rproc_detach() in remoteproc drivers would have made sense only if they
->> are also calling rproc_attach().
-> 
-> As pointed out above I see rproc_boot() as a special case but if that really
-> concerns you I'm open to consider patches that will take rproc_attach() out of
-> rproc_boot(). 
-> 
+Swap information is indeed tricky because it's shared by all the processes, but
+so far I still see it as a doable approach as long as it can solve the problem.
 
-We are talking about a bigger behavioral change to remoteproc core here. So I
-would definitely want to hear from others as well on this before we spend any
-time reworking code.
+I am not against the approach mentioned in this patch either - but I still
+share my concerns, as that's not normally what we do with existing interfaces.
 
-Meanwhile, how do I take this series forward? One option I can probably do is
-turn off auto-boot for early-boot case in my drivers and do the matching
-attach/detach.
+Thanks,
 
-regards
-Suman
-
->>
->>
->> Conditions such as the above make the core code
->>> brittle, difficult to understand and tedious to maintain.
->>
->> The logic I have added actually makes rproc_shutdown behavior to be on par with
->> the rproc_boot().
->>
->> regards
->> Suman
->>
->>>
->>> Thanks,
->>> Mathieu
->>>
->>>>  	if (ret) {
->>>>  		atomic_inc(&rproc->power);
->>>>  		goto out;
->>>> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
->>>> index ea8b89f97d7b..133e766f38d4 100644
->>>> --- a/drivers/remoteproc/remoteproc_sysfs.c
->>>> +++ b/drivers/remoteproc/remoteproc_sysfs.c
->>>> @@ -206,6 +206,12 @@ static ssize_t state_store(struct device *dev,
->>>>  		    rproc->state != RPROC_ATTACHED)
->>>>  			return -EINVAL;
->>>>  
->>>> +		if (rproc->state == RPROC_ATTACHED &&
->>>> +		    !rproc->ops->stop) {
->>>> +			dev_err(&rproc->dev, "stop not supported for this rproc, use detach\n");
->>>> +			return -EINVAL;
->>>> +		}
->>>> +
->>>>  		rproc_shutdown(rproc);
->>>>  	} else if (sysfs_streq(buf, "detach")) {
->>>>  		if (rproc->state != RPROC_ATTACHED)
->>>> -- 
->>>> 2.32.0
->>>>
->>
+-- 
+Peter Xu
 
