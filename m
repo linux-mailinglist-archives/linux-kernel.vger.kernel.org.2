@@ -2,72 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142B03DFB38
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B8E3DFB42
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235424AbhHDFrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 01:47:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235012AbhHDFrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 01:47:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DBC260F35;
-        Wed,  4 Aug 2021 05:47:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628056060;
-        bh=1gdAXIFEnMmmgxkAapvaJqxB+Vq0F+z7XRSiH/DqABE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tz7FyKHQV1AMtEtC+epww0ohe2WtFEph3g6Spy1b5mz6khm47prW89VVSyRhfzjLx
-         zLL8g7wB+u3lOBUwnFnlTvcwO5Rce31LNm7Y2FCf9m2ayBQ3OimThsKKAYjcd1UfGg
-         ZbBF3shZ4a9z9/PD9t9KWy4ZX9tKc4Jh6lOawyhIY632toTDhbXharRkPINL7yN5K2
-         W1Q1/fhbHhhWSUStVToCEn0GdJkSINuFzgKPs7aw/UxAYXYHbw3VHmM4HYTZ+YeW8f
-         PQH8iwS1TCEc0ecbqa44NCMYCnN716BvnwG/qLR1ZvbSMx/sziwECBwy3c/6EACTb+
-         fBmSksFmmzZ4Q==
-Date:   Wed, 4 Aug 2021 08:47:36 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
-        cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, mptcp@lists.linux.dev,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
-        linux-s390@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH net-next v2] net: Modify sock_set_keepalive() for more
- scenarios
-Message-ID: <YQop+GhJcKICdwZ0@unreal>
-References: <20210804032856.4005-1-yajun.deng@linux.dev>
+        id S235458AbhHDFtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 01:49:52 -0400
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:53130 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231138AbhHDFtv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 01:49:51 -0400
+Received: by mail-wm1-f54.google.com with SMTP id n11so476594wmd.2;
+        Tue, 03 Aug 2021 22:49:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GgdNz1NgdkEFekSLCkbFNoAD3gpMYm5SQwudLZkpI3s=;
+        b=jKO2Kke4trqSkgaxC7tOVaA20x2UKiU5MC/uyspehE2OlCBg4Stit3nbx9hdd11r23
+         X0FLZh6HCLt9Yoob3yjk/OnveChPP459yIbaobMMNk80tOE4o1S7z/GWtKA/aiLB7zMV
+         gvUwQCuFl+mAx4yk7wzcZkjxgJUYIZjFzw+R8lytQUGsG4wQLozwfNfGffcdTbAgn6yr
+         hbxrJlgyLrWeDSUO5anXPsyhfZKliIMUT80wJ+FwkHh3fg5nT5aHjxz4BjbVrmbHB5sh
+         0YJjg+h6zOgg48UaoMszd2CZIyGyKAuK11S/AIRUS+JKJ3J/Rklni5PEF6QCCzL0G2WL
+         Q8Lw==
+X-Gm-Message-State: AOAM533k9uIJm/pFEIv0Kj6lpVq0Bl1I7k/ElGlygf/AS6+JHBmRL/t/
+        d1tC1h4MvkVJOv0/2xf6dfo=
+X-Google-Smtp-Source: ABdhPJxofAvpnCFZX4nJ0UPWt2mV75icXOQNyrc4tU5T+2WesSFrsXlPCkkbDyw6LlSm0GWW7alUyA==
+X-Received: by 2002:a1c:1b17:: with SMTP id b23mr7735903wmb.178.1628056178447;
+        Tue, 03 Aug 2021 22:49:38 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id c10sm1051400wmb.40.2021.08.03.22.49.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 22:49:37 -0700 (PDT)
+Subject: Re: [PATCH 2/2] perf: remove shebang from
+ scripts/{perl,python}/*.{pl,py}
+To:     Adrian Hunter <adrian.hunter@intel.com>, acme@redhat.com
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20210726091434.5000-1-jslaby@suse.cz>
+ <20210726091434.5000-2-jslaby@suse.cz>
+ <d916a46f-91fb-4e11-b72e-b96a73971117@intel.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <8c62e5f1-be91-0104-898b-250d9f533f8f@kernel.org>
+Date:   Wed, 4 Aug 2021 07:49:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804032856.4005-1-yajun.deng@linux.dev>
+In-Reply-To: <d916a46f-91fb-4e11-b72e-b96a73971117@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 11:28:56AM +0800, Yajun Deng wrote:
-> Add 2nd parameter in sock_set_keepalive(), let the caller decide
-> whether to set. This can be applied to more scenarios.
+On 03. 08. 21, 13:44, Adrian Hunter wrote:
+> On 26/07/21 12:14 pm, Jiri Slaby wrote:
+>> The scripts cannot be executed on their own. The python ones were always
+>> installed without x permissions, the perl ones fail anyway:
+>>    BEGIN failed--compilation aborted at /usr/lib/perf-core/scripts/perl/rw-by-pid.pl line 18.
+>> so there is no point to have a shebang in them. This causes rpmlint to
+>> complain too:
+>>    W: non-executable-script /usr/lib/perf-core/scripts/perl/rw-by-file.pl 644 /usr/bin/perl -w
+>>
+>> Hence drop shebangs in them all and remove x permissions in the
+>> repository. If anyone wants some of them executable, they need to fix
+>> the install scripts first.
+>>
+>> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+>> Cc: Adrian Hunter <adrian.hunter@intel.com>
+>> Cc: Andi Kleen <ak@linux.intel.com>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Jiri Olsa <jolsa@redhat.com>
+>> Cc: Kan Liang <kan.liang@linux.intel.com>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Namhyung Kim <namhyung@kernel.org>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+>> ---
+>>   tools/perf/scripts/perl/rw-by-file.pl            | 1 -
+>>   tools/perf/scripts/perl/rw-by-pid.pl             | 1 -
+>>   tools/perf/scripts/perl/rwtop.pl                 | 1 -
+>>   tools/perf/scripts/perl/wakeup-latency.pl        | 1 -
+>>   tools/perf/scripts/python/exported-sql-viewer.py | 1 -
 > 
-> v2:
->  - add the change in fs/dlm.
-> 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  fs/dlm/lowcomms.c     |  2 +-
->  include/net/sock.h    |  2 +-
->  net/core/filter.c     |  4 +---
->  net/core/sock.c       | 10 ++++------
->  net/mptcp/sockopt.c   |  4 +---
->  net/rds/tcp_listen.c  |  2 +-
->  net/smc/af_smc.c      |  2 +-
->  net/sunrpc/xprtsock.c |  2 +-
->  8 files changed, 11 insertions(+), 17 deletions(-)
+> exported-sql-viewer.py is a standalone executable
 
-1. Don't add changelogs in the commit messages and put them under --- marker.
-2. Add an explanation to the commit message WHY this change is necessary
-and HOW will it be used.
-3. Drop all your double NOT in front of values (!!val) and rely on C
-that casts int to bool naturally.
+That's great, but in fact noone can run it when make-installed as I 
+stated above:
 
-Thanks
+ >> If anyone wants some of them executable, they need to fix
+ >> the install scripts first.
+
+See:
+$(INSTALL) scripts/python/*.py -m 644 -t 
+'$(DESTDIR_SQ)$(perfexec_instdir_SQ)/scripts/python';
+
+thanks,
+-- 
+js
+suse labs
