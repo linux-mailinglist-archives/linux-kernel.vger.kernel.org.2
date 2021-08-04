@@ -2,123 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5BD3E0775
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8EF33E0786
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238983AbhHDSVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 14:21:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238755AbhHDSU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 14:20:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30A3A60F94;
-        Wed,  4 Aug 2021 18:20:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628101245;
-        bh=7e9VthFDgj2TLGdYUTdWlqA7YJoPwfJ6cIu1tk2mhkU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UG6KL8imFGrl/yQtt+/Yb9Bk+RGlr1K9H/xsQgVXUaLdjo4Jxlj8RAzAuBJ6bRFLO
-         eleu/UP7iywxcQ8yAtPNFfUy1UYiXDzd8Wm9szr8FlxJ6MKqc2JhVw+H3ioKa002IP
-         GTqFwwuZHIlFPho5VV/QllPon+vh8zHkF0Uk4M/2yfslaKVEZ2TRYVQQRJu8f1QeZC
-         FYrEwQWxBFluiGEZKURPeKylVDncpmJBXiw3HxAHJWoZOK5UYmMakwed4bU8eYaGwY
-         9TIihRFPa2aNIakr8+5n1qpN+kCKvSkeT3OmEUFesO94u9Sp2iAH67hgkbNSQUXEW+
-         oPTPBDEiZesWw==
-Date:   Wed, 4 Aug 2021 13:23:25 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] net/ipv4: Revert use of struct_size() helper
-Message-ID: <20210804182325.GA11752@embeddedor>
+        id S238944AbhHDSY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 14:24:26 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:33313 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236916AbhHDSY0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 14:24:26 -0400
+Received: by mail-oi1-f174.google.com with SMTP id 26so3960572oiy.0;
+        Wed, 04 Aug 2021 11:24:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EDTQBFnCXodZBPTlZJxMnSffHlZHqHvoychgteMDXpU=;
+        b=RzfKkK4LVQrYwasaZiFBdTi1EUvGppDGaYW71XsD3TxW7OxEXPGRfyohHjgGZpijNI
+         6IrsW2CsSlo9VjtaJptBdGyWeJC6D+GomWb2tdTDrNGdW2u/e+YeUz19/EjfF4o6mIjU
+         5J4msTnj5xKf7VoiAw2V6S1cDLV3lxgQ9hrkPLPyI5Gl8WU2qjqsaOWnC4pXlu9k44cX
+         PBaexWvhdCyDUZIUVGfeea8YQw9bGQ5VRaVAKwqMSCME/Qe8ZBn+OL0NeEtYRiOoFO1O
+         ra+8iJa/JXPHi3qJld5gEh7h2x6s602zISNicrTR2/Taa9mrOUUa4XBZIAOy2foxarWU
+         Ye7Q==
+X-Gm-Message-State: AOAM532aj1GZeRYy8KTEcLNp1uilJwvQgCtkQlXdtwUZVEhPLzg4FKtA
+        Fr6SiP+m7FpvNTTGCj9KJQhPzHnc84/moaDBC0A=
+X-Google-Smtp-Source: ABdhPJw/pYJXlsNu/jSaFTf0PXAfDAnnBK724/IctR7NyKbUxxCPQvnxIswFxGL1KwUTSaDl9qLNiudssg8cBpc4mjI=
+X-Received: by 2002:a05:6808:198c:: with SMTP id bj12mr587895oib.71.1628101452040;
+ Wed, 04 Aug 2021 11:24:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210804104407.5600-1-alexandre.belloni@bootlin.com>
+In-Reply-To: <20210804104407.5600-1-alexandre.belloni@bootlin.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 4 Aug 2021 20:24:01 +0200
+Message-ID: <CAJZ5v0gtDP1NXMfpfXzDUWAhV_2GcN3DtRWJvdhv9eZprpnQ2A@mail.gmail.com>
+Subject: Re: [PATCH] PM / sleep: check RTC features instead of ops in suspend_test
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Revert the use of structr_size() and stay with IP_MSFILTER_SIZE() for
-now, as in this case, the size of struct ip_msfilter didn't change with
-the addition of the flexible array imsf_slist_flex[]. So, if we use
-struct_size() we will be allocating and calculating the size of
-struct ip_msfilter with one too many items for imsf_slist_flex[].
+On Wed, Aug 4, 2021 at 12:44 PM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
+>
+> Test RTC_FEATURE_ALARM instead of relying on ops->set_alarm to know whether
+> alarms are available.
+>
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> ---
+>  kernel/power/suspend_test.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/power/suspend_test.c b/kernel/power/suspend_test.c
+> index e1ed58adb69e..d20526c5be15 100644
+> --- a/kernel/power/suspend_test.c
+> +++ b/kernel/power/suspend_test.c
+> @@ -129,7 +129,7 @@ static int __init has_wakealarm(struct device *dev, const void *data)
+>  {
+>         struct rtc_device *candidate = to_rtc_device(dev);
+>
+> -       if (!candidate->ops->set_alarm)
+> +       if (!test_bit(RTC_FEATURE_ALARM, candidate->features))
+>                 return 0;
+>         if (!device_may_wakeup(candidate->dev.parent))
+>                 return 0;
+> --
 
-We might use struct_size() in the future, but for now let's stay
-with IP_MSFILTER_SIZE().
-
-Fixes: 	2d3e5caf96b9 ("net/ipv4: Replace one-element array with flexible-array member")
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- net/ipv4/igmp.c        |  4 ++--
- net/ipv4/ip_sockglue.c | 12 +++++-------
- 2 files changed, 7 insertions(+), 9 deletions(-)
-
-diff --git a/net/ipv4/igmp.c b/net/ipv4/igmp.c
-index a5f4ecb02e97..c2d477eb6825 100644
---- a/net/ipv4/igmp.c
-+++ b/net/ipv4/igmp.c
-@@ -2553,8 +2553,8 @@ int ip_mc_msfget(struct sock *sk, struct ip_msfilter *msf,
- 	copycount = count < msf->imsf_numsrc ? count : msf->imsf_numsrc;
- 	len = flex_array_size(psl, sl_addr, copycount);
- 	msf->imsf_numsrc = count;
--	if (put_user(struct_size(optval, imsf_slist_flex, copycount), optlen) ||
--	    copy_to_user(optval, msf, struct_size(optval, imsf_slist_flex, 0))) {
-+	if (put_user(IP_MSFILTER_SIZE(copycount), optlen) ||
-+	    copy_to_user(optval, msf, IP_MSFILTER_SIZE(0))) {
- 		return -EFAULT;
- 	}
- 	if (len &&
-diff --git a/net/ipv4/ip_sockglue.c b/net/ipv4/ip_sockglue.c
-index bbe660b84a91..468969c75708 100644
---- a/net/ipv4/ip_sockglue.c
-+++ b/net/ipv4/ip_sockglue.c
-@@ -667,7 +667,7 @@ static int set_mcast_msfilter(struct sock *sk, int ifindex,
- 	struct sockaddr_in *psin;
- 	int err, i;
- 
--	msf = kmalloc(struct_size(msf, imsf_slist_flex, numsrc), GFP_KERNEL);
-+	msf = kmalloc(IP_MSFILTER_SIZE(numsrc), GFP_KERNEL);
- 	if (!msf)
- 		return -ENOBUFS;
- 
-@@ -1228,7 +1228,7 @@ static int do_ip_setsockopt(struct sock *sk, int level, int optname,
- 	{
- 		struct ip_msfilter *msf;
- 
--		if (optlen < struct_size(msf, imsf_slist_flex, 0))
-+		if (optlen < IP_MSFILTER_SIZE(0))
- 			goto e_inval;
- 		if (optlen > sysctl_optmem_max) {
- 			err = -ENOBUFS;
-@@ -1246,8 +1246,7 @@ static int do_ip_setsockopt(struct sock *sk, int level, int optname,
- 			err = -ENOBUFS;
- 			break;
- 		}
--		if (struct_size(msf, imsf_slist_flex, msf->imsf_numsrc) >
--		    optlen) {
-+		if (IP_MSFILTER_SIZE(msf->imsf_numsrc) > optlen) {
- 			kfree(msf);
- 			err = -EINVAL;
- 			break;
-@@ -1660,12 +1659,11 @@ static int do_ip_getsockopt(struct sock *sk, int level, int optname,
- 	{
- 		struct ip_msfilter msf;
- 
--		if (len < struct_size(&msf, imsf_slist_flex, 0)) {
-+		if (len < IP_MSFILTER_SIZE(0)) {
- 			err = -EINVAL;
- 			goto out;
- 		}
--		if (copy_from_user(&msf, optval,
--				   struct_size(&msf, imsf_slist_flex, 0))) {
-+		if (copy_from_user(&msf, optval, IP_MSFILTER_SIZE(0))) {
- 			err = -EFAULT;
- 			goto out;
- 		}
--- 
-2.27.0
-
+Applied as 5.15 material, thanks!
