@@ -2,214 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628C13DF957
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B80FD3DF962
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233335AbhHDBkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 21:40:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60186 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229833AbhHDBkw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 21:40:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628041239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=prEBRZoKY0mhe0m86DgKhDz/qFG3iaSQj/eiWjJyZK8=;
-        b=AeGb706gsOlnqpA0U6aFrZxBFoVossX+31dgBxHLzYFamSRzwlO+hpZngv5dSN+EbSjzFe
-        Pw0M03Zs+Ihvk34/txxBq4raI0TEIv+tpwPkjcKC9DHnRJ3VC3Zg3M7YUakbHRoQAFU4zU
-        /K85QhFBnFU5HlIws9mwLiGpEc0NlWM=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-Sp5vX1L7PPO3LesPARcp3g-1; Tue, 03 Aug 2021 21:40:38 -0400
-X-MC-Unique: Sp5vX1L7PPO3LesPARcp3g-1
-Received: by mail-qt1-f198.google.com with SMTP id y12-20020ac8524c0000b029028acd693c6bso476961qtn.20
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 18:40:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=prEBRZoKY0mhe0m86DgKhDz/qFG3iaSQj/eiWjJyZK8=;
-        b=XB4mYiPCapTr9I3/i0w39MV0+2tA+5zYGoiDIp8I1SExV8YMnj0OmTIWzAPJhO37DN
-         SKyX4mf58btnAipovx3PKHGXkXgqtKya8MFzR2EcJ1XJ5BQuls85DeQPEomN27TjkhhS
-         wy9gNdkaaZH+zhk7MjgZJAQJh2NHJwlxloO245mzfVe3U/uB+lx9V1VGSC05fj5TnCHK
-         0dM8TqNUeOwlchBFa0VqZoHsw67GvGNcijRaeMiAI7LvETZPwGEwm8US5lrJ/daPVUkW
-         KHHIEJiQc7V5drdnaGeaidnc//NgEPxeaMPN1N32x6mtBh1Q8189zFpPxbdP1nZxG3lE
-         BvbQ==
-X-Gm-Message-State: AOAM531Ynd+g6lw3jgXGKM8WFcDx1OENUT5ivllkcmMEaFwinNJ1H3Dd
-        ChByaejpZ1DyWuZrmvIb4ZXRcekpJOKuMmI9l53LuEZxGc3C2WU3d8TWi17qmhDCZ1ZgQhoYbRD
-        tw8IKlyD14DPcGU14UQO9dymI
-X-Received: by 2002:a05:6214:3a4:: with SMTP id m4mr24172392qvy.17.1628041238103;
-        Tue, 03 Aug 2021 18:40:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx8EWOBC1RHCyAbVwynmIEQicD29HOr33gfx2qHwud9l8mmYV9gdbAOwj5Mm31YWDE03ccxrg==
-X-Received: by 2002:a05:6214:3a4:: with SMTP id m4mr24172377qvy.17.1628041237922;
-        Tue, 03 Aug 2021 18:40:37 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id b1sm306006qtq.12.2021.08.03.18.40.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Aug 2021 18:40:37 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH] mm/memcg: Disable task obj_stock for PREEMPT_RT
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Luis Goncalves <lgoncalv@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20210803175519.22298-1-longman@redhat.com> <87h7g62jxm.ffs@tglx>
-Message-ID: <8953e099-356e-ee09-a701-f4c7f4cda487@redhat.com>
-Date:   Tue, 3 Aug 2021 21:40:35 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233929AbhHDBvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 21:51:02 -0400
+Received: from mga17.intel.com ([192.55.52.151]:49171 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229820AbhHDBvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 21:51:01 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="194107912"
+X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
+   d="scan'208";a="194107912"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2021 18:50:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
+   d="scan'208";a="441460492"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
+  by fmsmga007.fm.intel.com with ESMTP; 03 Aug 2021 18:50:47 -0700
+Date:   Wed, 4 Aug 2021 09:44:55 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, "Wu, Hao" <hao.wu@intel.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>
+Subject: Re: [PATCH] fpga: region: handle compat_id as an uuid
+Message-ID: <20210804014455.GB461389@yilunxu-OptiPlex-7050>
+References: <20210726202650.4074614-1-trix@redhat.com>
+ <6f30a4c6-61a0-bb57-9f13-bcad3f3589b8@intel.com>
+ <ba28bac6-9c6d-de73-523f-b8ba4bef84de@redhat.com>
+ <DM6PR11MB38199F872DC94971D9C8A53885EA9@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <YQL4qyAmqj322HTz@epycbox.lan>
+ <a5b4b303-7d9b-27d7-4c1e-cd29fea8cdb9@redhat.com>
+ <20210730014859.GA436611@yilunxu-OptiPlex-7050>
+ <dd2bc08b-3610-b14f-59fc-ab444845d0f7@redhat.com>
+ <20210803033224.GA461389@yilunxu-OptiPlex-7050>
+ <fa35d07e-f455-a9c9-1d01-b115d114de9b@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <87h7g62jxm.ffs@tglx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa35d07e-f455-a9c9-1d01-b115d114de9b@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/3/21 7:21 PM, Thomas Gleixner wrote:
-> Waiman,
->
-> On Tue, Aug 03 2021 at 13:55, Waiman Long wrote:
->
-> please Cc RT people on RT related patches.
->
->> For PREEMPT_RT kernel, preempt_disable() and local_irq_save()
->> are typically converted to local_lock() and local_lock_irqsave()
->> respectively.
-> That's just wrong. local_lock has a clear value even on !RT kernels. See
->
->    https://www.kernel.org/doc/html/latest/locking/locktypes.html#local-lock
->
-I understand what local_lock is for. For !RT kernel, local_lock() still 
-requires the use of a pseudo_lock which is not the goal of this patch to 
-put one there.
->> These two variants of local_lock() are essentially
->> the same.
-> Only on RT kernels.
-That is right. So this is a change aimed for easier integration with RT 
-kernel.
->
->> + * For PREEMPT_RT kernel, preempt_disable() and local_irq_save() may have
->> + * to be changed to variants of local_lock(). This eliminates the
->> + * performance advantage of using preempt_disable(). Fall back to always
->> + * use local_irq_save() and use only irq_obj for simplicity.
-> Instead of adding that comment you could have just done the full
-> conversion, but see below.
-Well, I can do that if you want me to.
->
->>    */
->> +static inline bool use_task_obj_stock(void)
->> +{
->> +	return !IS_ENABLED(CONFIG_PREEMPT_RT) && likely(in_task());
->> +}
->> +
->>   static inline struct obj_stock *get_obj_stock(unsigned long *pflags)
->>   {
->>   	struct memcg_stock_pcp *stock;
->>   
->> -	if (likely(in_task())) {
->> +	if (use_task_obj_stock()) {
->>   		*pflags = 0UL;
->>   		preempt_disable();
->>   		stock = this_cpu_ptr(&memcg_stock);
-> This is clearly the kind of conditional locking which is frowned upon
-> rightfully.
->
-> So if we go to reenable memcg for RT we end up with:
->
-> 	if (use_task_obj_stock()) {
->             preempt_disable();
->          } else {
->             local_lock_irqsave(memcg_stock_lock, flags);
->          }
->          
-> and further down we end up with:
-The purpose of this series is to improve kmem_cache allocation and free 
-performance for non-RT kernel. So not disabling/enabling interrupt help 
-a bit in this regard.
->
->> @@ -2212,7 +2222,7 @@ static void drain_local_stock(struct work_struct *dummy)
->>   
->>   	stock = this_cpu_ptr(&memcg_stock);
->>   	drain_obj_stock(&stock->irq_obj);
->> -	if (in_task())
->> +	if (use_task_obj_stock())
->>   		drain_obj_stock(&stock->task_obj);
->>   	drain_stock(stock);
->>   	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
->> Thanks,
->>
->>          tglx
->>
->
-> 	/*
-> 	 * The only protection from memory hotplug vs. drain_stock races is
-> 	 * that we always operate on local CPU stock here with IRQ disabled
-> 	 */
-> -	local_irq_save(flags);
-> +	local_lock_irqsave(memcg_stock_lock, flags);
->          ...
-> 	if (use_task_obj_stock())
->    		drain_obj_stock(&stock->task_obj);
->
-> which is incomprehensible garbage.
->
-> The comment above the existing local_irq_save() is garbage w/o any local
-> lock conversion already today (and even before the commit which
-> introduced stock::task_obj) simply because that comment does not explain
-> the why.
-That comment was added by commit 72f0184c8a00 ("mm, memcg: remove 
-hotplug locking from try_charge"). It was there before my commits.
+On Tue, Aug 03, 2021 at 05:21:54AM -0700, Tom Rix wrote:
+> 
+> On 8/2/21 8:32 PM, Xu Yilun wrote:
+> > On Fri, Jul 30, 2021 at 05:07:00AM -0700, Tom Rix wrote:
+> > > On 7/29/21 6:48 PM, Xu Yilun wrote:
+> > > > On Thu, Jul 29, 2021 at 12:16:47PM -0700, Tom Rix wrote:
+> > > > > On 7/29/21 11:51 AM, Moritz Fischer wrote:
+> > > > > > On Wed, Jul 28, 2021 at 01:36:56AM +0000, Wu, Hao wrote:
+> > > > > > > > On 7/26/21 3:12 PM, Russ Weight wrote:
+> > > > > > > > > On 7/26/21 1:26 PM, trix@redhat.com wrote:
+> > > > > > > > > > From: Tom Rix <trix@redhat.com>
+> > > > > > > > > > 
+> > > > > > > > > > An fpga region's compat_id is exported by the sysfs
+> > > > > > > > > > as a 128 bit hex string formed by concatenating two
+> > > > > > > > > > 64 bit values together.
+> > > > > > > > > > 
+> > > > > > > > > > The only user of compat_id is dfl.  Its user library
+> > > > > > > > > > opae converts this value into a uuid.
+> > > > > > > > > > 
+> > > > > > > > > > ex/
+> > > > > > > > > > $ cat /sys/class/fpga_region/region1/compat_id
+> > > > > > > > > > f3c9941350814aadbced07eb84a6d0bb
+> > > > > > > > > > 
+> > > > > > > > > > Is reported as
+> > > > > > > > > > $ fpgainfo bmc
+> > > > > > > > > > ...
+> > > > > > > > > > Pr Interface Id                  : f3c99413-5081-4aad-bced-07eb84a6d0bb
+> > > > > > > > > > 
+> > > > > > > > > > Storing a uuid as 2 64 bit values is vendor specific.
+> > > > > > > > > > And concatenating them together is vendor specific.
+> > > > > > > > > > 
+> > > > > > > > > > It is better to store and print out as a vendor neutral uuid.
+> > > > > > > > > > 
+> > > > > > > > > > Change fpga_compat_id from a struct to a union.
+> > > > > > > > > > Keep the old 64 bit values for dfl.
+> > > > > > > > > > Sysfs output is now
+> > > > > > > > > > f3c99413-5081-4aad-bced-07eb84a6d0bb
+> > > > > > > > > I'm fowarding feedback from Tim Whisonant, one of the OPAE userspace
+> > > > > > > > > developers:
+> > > > > > > > > 
+> > > > > > > > > I think that this change to the sysfs for the compat_id node will
+> > > > > > > > > end up breaking the SDK, which does not expect the '-' characters to
+> > > > > > > > > be included when parsing the sysfs value. Currently, it is parsed as
+> > > > > > > > > a raw hex string without regard to any '-' characters. This goes for
+> > > > > > > > > any "guid" currently exported by sysfs and for what we read in the
+> > > > > > > > > device MMIO space.
+> > > > > > > > Yes, it will.
+> > > > > > > > 
+> > > > > > > > And there are other places, like dfl-afu-main.c:afu_id_show()
+> > > > > > > > 
+> > > > > > > > outputs raw hex that sdk turns into a uuid.
+> > > > > > > > 
+> > > > > > > > 
+> > > > > > > > Some options.
+> > > > > > > > 
+> > > > > > > > If no one but dfl will ever use it, then v1 of patchset.
+> > > > > > > > 
+> > > > > > > > If others can use it but don't want to change dfl, then v2 of patchset,
+> > > > > > > > my favorite.
+> > > > > > > > 
+> > > > > > > > Or this one for uuid for everyone, what have been v3 but changed too much.
+> > > > > > > > 
+> > > > > > > > 
+> > > > > > > > could dfl change generally to output uuid's to the sysfs ?
+> > > > > > > > 
+> > > > > > > > this would be generally helpful and a one time disruption to the sdk.
+> > > > > > > This change limited the output format to uuid_t, but if any hardware doesn't
+> > > > > > > use uuid_t on hardware may have to convert it back from the sysfs output in
+> > > > > > > userspace. Leave it to print hardware values (e.g. from register), and convert
+> > > > > > > it in userspace should be fine too I think.
+> > > > > > I'm not entirely sure. I seem to recall there being examples of sysfs
+> > > > > > files returning different things for different drivers.
+> > > > > > 
+> > > > > > That being said it seems largely cosmetic to add the '-' in between.
+> > > > > > 
+> > > > > > If it breaks userspace, I'm against it. If you *need* it make a
+> > > > > > compat_uuid entry or something in that case?
+> > > > > My gripe is
+> > > > > 
+> > > > > For a nominally common interface, compat_id has a vendor specific output.
+> > > > > 
+> > > > > If for example another vendor wanted to use this field but their natural
+> > > > > format was an OF string.
+> > > > > 
+> > > > > 16 bytes of raw hex would not work for them, so they would roll their own.
+> > > > > 
+> > > > > which defeats the purpose of a common interface.
+> > > > > 
+> > > > > 
+> > > > > The language in the docs as-is is vague on the output format.
+> > > > > 
+> > > > > DFL is the only user of the interface.
+> > > > > 
+> > > > > So ver 2
+> > > > > 
+> > > > > https://lore.kernel.org/linux-fpga/4ab7dd2d-c215-6333-6860-6f7d0ac64c3d@redhat.com/
+> > > > > 
+> > > > > Keeps the output as-is for dfl, so nothing breaks in userspace
+> > > > > 
+> > > > > And adds flexibility for vendors to output their appropriate natural form.
+> > > > > 
+> > > > > So compat_id becomes generally useful.
+> > > > Mixing types seems be strongly against in Documentation/filesystems/sysfs.rst.
+> > > > So in my opinion there should be a determined format for the output. The
+> > > > concern for this patch is which one is a better format, uuid style or
+> > > > 128 bit raw hex?
+> > > > 
+> > > > And I vote for 128 bit raw hex, as other vendors may not use uuid_t as
+> > > > the identifier, may be an OF string. So we don't have to force them
+> > > > decorate it as the uuid style.
+> > > So you would be ok with v2 of this patchset ?
+> > No. I prefer we keep the current implementation. I mean 128 bit raw hex
+> > could be a more compatible output format for all vendors, uuid style,
+> > string style or others.
+> 
+> How would 128 bit raw hex be compatible if a vendor's natural format was an
+> OF string ?
+> 
+> Why would they even use compat_id ?
 
->
-> I can just assume that for stock->task_obj the IRQ protection is
-> completely irrelevant. If not and _all_ members of stock have to be
-> protected against memory hotplug by disabling interrupts then any other
-> function which just disables preemption is broken.
-That is correct specifically for task_obj, but not for other data.
->
-> To complete the analysis of drain_local_stock(). AFAICT that function
-> can only be called from task context. So what is the purpose of this
-> in_task() conditional there?
->
-> 	if (in_task())
->    		drain_obj_stock(&stock->task_obj);
-I haven't done a full analysis to see if it can be called from task 
-context only. Maybe in_task() check isn't needed, but having it there 
-provides the safety that it will still work in case it can be called 
-from interrupt context.
->
-> I assume it's mechanical conversion of:
->
-> -       drain_obj_stock(stock);
-> +       drain_obj_stock(&stock->irq_obj);
-> +       if (in_task())
-> +               drain_obj_stock(&stock->task_obj);
->
-> all over the place without actually looking at the surrounding code,
-> comments and call sites.
->
-> This patch is certainly in line with that approach, but it's just adding
-> more confusion.
+As I mentioned before, I assume there should be a unified output format
+for all vendors. So we need to choose one from raw hex, uuid_t, string
+and all other formats. Raw hex is the fundamental format, which could be
+further interpreted by user as a uuid_t, a string or other objects.
 
-What is your suggestion for improving this patch?
+Thanks,
+Yilun
 
-Cheers,
-Longman
-
+> 
+> Tom
+> 
+> > 
+> > Thanks,
+> > Yilun
+> > 
+> > > Tom
+> > > 
+> > > > Thanks
+> > > > Yilun
+> > > > 
+> > > > > Tom
+> > > > > 
+> > > > > 
+> > > > > > - Moritz
+> > > > > > 
