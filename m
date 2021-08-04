@@ -2,107 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D86F53DFCDE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB583DFCE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236421AbhHDIaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236188AbhHDIaE (ORCPT
+        id S236517AbhHDIbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:31:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28031 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236436AbhHDIbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:30:04 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9BBC061798
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 01:29:51 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id c16so1244976wrp.13
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 01:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IUj4Ab0V4S7X9wJwpM5ZlBQ/cYJnKu4wbVBWey5twJE=;
-        b=vbLsGC7MyMAJ3KtJUo4y2UOex0xxfCB4BT/L9+iu9p1sYdQ5VV51W/s/bonpOvvmja
-         NSqlZa7DeXzbI59jABuRayDxsnQVD7CozC9YSjUl1p+ALb+Ny5csYgghewv+qqYQ/xD1
-         XiJuSikQaXTy6kRAMcu/9GB4SDA+plht25QILTsg56P6vXpF9NibC9EQ7G4vaCWI6SrT
-         Ved3Q6NaNFSoMKR1rsm6HkQrTZQE+bT7s5b+zgaPTFxYqY6gSehfcAbL5reACRtKJuH1
-         HeWP9apLa4SfreGhSVihk2z2o0rdsc9ucVoyHA7rNyehm7bLJhpk5krA5gzfRYtFWuKb
-         0hDg==
+        Wed, 4 Aug 2021 04:31:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628065860;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R+iBXiMp+0i0kwjToWGA8/FOLua2xKY/IasSPwlB2ug=;
+        b=SIOcMys6eqGi4oT1OUGcy7Rk7zFUzXliGyJqrEntREDryOfgYnJqb39Hx9IE3drzoGhEGR
+        hWstrU5OB1MvSvn8P3P7w+kz90G90LOTFjvOjo4zUIrffHN0up8qznCh2nPbKuvXQf5O5y
+        o+o1WzYgo/fiq52H2NCR04A3hKjgZwc=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-325-unj0MZQcONOk-a0nB_l2Tg-1; Wed, 04 Aug 2021 04:30:59 -0400
+X-MC-Unique: unj0MZQcONOk-a0nB_l2Tg-1
+Received: by mail-pj1-f71.google.com with SMTP id g12-20020a17090ace8cb029017797b2c0f8so125015pju.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 01:30:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IUj4Ab0V4S7X9wJwpM5ZlBQ/cYJnKu4wbVBWey5twJE=;
-        b=nhycGibpynEJbeGwnTlz0N1UaM6RRjnMabfYzrUUmepaQ+BZqlHWXqf72EsLZkUaVl
-         sI/A7uB6xRI6KUT+LGfkXtDM1hbZflea062Jj5tYdyRsE8z8bGROgF3h+FjJ9XTLJ3dA
-         8q9pYYaAi701zA6HVoGDXOzKaQ8htO4zWCdrzDur2XqlpsylQ8BrplVgnVElpvDypSyj
-         hf+4a1E4V2tRCMBk5cJUl7k83k0EaoTKWg8YRdnQUnn6hWBlYgRBt5wwR1Qk1KV13qDC
-         JMMAfeQWlhp2KabgJitCBYIgXFoQ1q3cAZRVjTbpjgcYChZ+aqR/LtC3bMxxXmzTAFG8
-         wHTg==
-X-Gm-Message-State: AOAM532WTcslvoaHxcaj9m5unCM9ReRCex4Yla9020xU9SF0k42GGW/I
-        pPT0BdLT6OYNJ4dP81MiIxAcLA==
-X-Google-Smtp-Source: ABdhPJyXOVu3cqtGjpfwSvmIS1pkUox/I92zrcpzPn/HG9YS5/ZIz/Iu4mNzGQv5HfHbVjb6NE5X2w==
-X-Received: by 2002:adf:82e6:: with SMTP id 93mr27090513wrc.47.1628065790489;
-        Wed, 04 Aug 2021 01:29:50 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id t23sm5273852wmi.32.2021.08.04.01.29.49
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=R+iBXiMp+0i0kwjToWGA8/FOLua2xKY/IasSPwlB2ug=;
+        b=FV6b1R67CMfKHy3K2fP/yNaTZW9PP9Lw67tpGfOUIjjflUa+Nws88JJXnlrQwK0Xc0
+         Y4JJBGhgCrmmKTNDeZ9cnnRIgbx/1MXs4TtPNurMEdcdfBaVAJ2sZBLWNTyFns8r1XNR
+         lDiMRxWMjwuKUJUSfSUXIkgIRe0ceAUt56e6EQuyKOgFZC7DJwa3JiqPih33T8aES19x
+         /Wqyv9dfdkCZU2GK4T3tWWOlNB7Ir2LmnuXvTlwAzjY3CGBO6x1qI1nXAtb0tntO44x5
+         +5jp+R8fqJqyEl5bbvCFbI2AQlWANnk++AtVRosNM5Z/34i//eYUHmRthzeaC0OLgtsJ
+         GPRQ==
+X-Gm-Message-State: AOAM530N8kLWEgSaZgj4KLGYJGqVv7bhA/DE4Ckv3eCMysFHb4w8XQXS
+        hEtcQGfhhzqz65IPOvNvdzH4sPffGfkwtKMQ2LQ9zjatSOFKE3s3CrHxOywtrE7aRRn4LHR/qDQ
+        i2pV8Ay7VdSR5yT9ICCHplX5GDFWTq2MjYZbWNWg5BJpN2yWDURGUXDXtQ54F7U5koxVdjEkbFE
+        up
+X-Received: by 2002:a17:90a:5886:: with SMTP id j6mr27687780pji.34.1628065857955;
+        Wed, 04 Aug 2021 01:30:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxnH9lVsulyqPnREH97Ou07tfmz86+gb2/y1eNG5JuTtEooMRamySZ0IC743fc1pY8YcAbbnQ==
+X-Received: by 2002:a17:90a:5886:: with SMTP id j6mr27687725pji.34.1628065857537;
+        Wed, 04 Aug 2021 01:30:57 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id i14sm2040290pgh.79.2021.08.04.01.30.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 01:29:49 -0700 (PDT)
-Subject: Re: [PATCH v3 0/4] nvmem: qfprom: Add binding updates and
- power-domain handling
-To:     Rajendra Nayak <rnayak@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rbokka@codeaurora.org,
-        dianders@chromium.org
-References: <1627627573-32454-1-git-send-email-rnayak@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <476c79ce-2065-602d-8c34-4234fcc53f6d@linaro.org>
-Date:   Wed, 4 Aug 2021 09:29:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 04 Aug 2021 01:30:57 -0700 (PDT)
+Subject: Re: [PATCH v10 04/17] vdpa: Fail the vdpa_reset() if fail to set
+ device status to zero
+To:     Yongji Xie <xieyongji@bytedance.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        He Zhe <zhe.he@windriver.com>,
+        Liu Xiaodong <xiaodong.liu@intel.com>,
+        Joe Perches <joe@perches.com>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210729073503.187-1-xieyongji@bytedance.com>
+ <20210729073503.187-5-xieyongji@bytedance.com>
+ <39a191f6-555b-d2e6-e712-735b540526d0@redhat.com>
+ <CACycT3sdH3zVzznsaMb0+3mzrLF7FjmB89U11fZv_23Y4_WbEw@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <31d11097-dab8-578b-402e-a0e55949ce66@redhat.com>
+Date:   Wed, 4 Aug 2021 16:30:47 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <1627627573-32454-1-git-send-email-rnayak@codeaurora.org>
+In-Reply-To: <CACycT3sdH3zVzznsaMb0+3mzrLF7FjmB89U11fZv_23Y4_WbEw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+在 2021/8/3 下午5:31, Yongji Xie 写道:
+> On Tue, Aug 3, 2021 at 3:58 PM Jason Wang <jasowang@redhat.com> wrote:
+>>
+>> 在 2021/7/29 下午3:34, Xie Yongji 写道:
+>>> Re-read the device status to ensure it's set to zero during
+>>> resetting. Otherwise, fail the vdpa_reset() after timeout.
+>>>
+>>> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+>>> ---
+>>>    include/linux/vdpa.h | 15 ++++++++++++++-
+>>>    1 file changed, 14 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+>>> index 406d53a606ac..d1a80ef05089 100644
+>>> --- a/include/linux/vdpa.h
+>>> +++ b/include/linux/vdpa.h
+>>> @@ -6,6 +6,7 @@
+>>>    #include <linux/device.h>
+>>>    #include <linux/interrupt.h>
+>>>    #include <linux/vhost_iotlb.h>
+>>> +#include <linux/delay.h>
+>>>
+>>>    /**
+>>>     * struct vdpa_calllback - vDPA callback definition.
+>>> @@ -340,12 +341,24 @@ static inline struct device *vdpa_get_dma_dev(struct vdpa_device *vdev)
+>>>        return vdev->dma_dev;
+>>>    }
+>>>
+>>> -static inline void vdpa_reset(struct vdpa_device *vdev)
+>>> +#define VDPA_RESET_TIMEOUT_MS 1000
+>>> +
+>>> +static inline int vdpa_reset(struct vdpa_device *vdev)
+>>>    {
+>>>        const struct vdpa_config_ops *ops = vdev->config;
+>>> +     int timeout = 0;
+>>>
+>>>        vdev->features_valid = false;
+>>>        ops->set_status(vdev, 0);
+>>> +     while (ops->get_status(vdev)) {
+>>> +             timeout += 20;
+>>> +             if (timeout > VDPA_RESET_TIMEOUT_MS)
+>>> +                     return -EIO;
+>>> +
+>>> +             msleep(20);
+>>> +     }
+>>
+>> I wonder if it's better to do this in the vDPA parent?
+>>
+>> Thanks
+>>
+> Sorry, I didn't get you here. Do you mean vDPA parent driver (e.g.
+> VDUSE)?
 
-On 30/07/2021 07:46, Rajendra Nayak wrote:
-> v3:
-> * Dropped the description in bindings patch
-> * Added a patch to fix ordering in qfprom_disable_fuse_blowing()
-> * Fixed devm_add_action_or_reset() order
-> 
-> v2:
-> * pm_runtime calls made unconditionally, should work even without the power-domains property in DT
-> * Added the missing pm_runtime_disable() handling
-> * DT patch rebased on msm/for-next
-> 
-> --
-> qfprom devices on sc7280 have an additional requirement to vote on a power-domain
-> performance state to reliably blow fuses. Add the binding updates and handle this in
-> the driver, also add the DT node for sc7280 platform.
-> 
-> Rajendra Nayak (4):
->    dt-bindings: nvmem: qfprom: Add optional power-domains property
->    nvmem: qfprom: Fix up qfprom_disable_fuse_blowing() ordering
->    nvmem: qfprom: sc7280: Handle the additional power-domains vote
 
-Applied 1-3 patches.
+Yes, since the how it's expected to behave depends on the specific hardware.
 
-dts patch can go via Bjorn's tree.
+Even for the spec, the behavior is transport specific:
 
---srini
->    arm64: dts: qcom: sc7280: Add qfprom node
-> 
->   .../devicetree/bindings/nvmem/qcom,qfprom.yaml     |  3 +++
->   arch/arm64/boot/dts/qcom/sc7280.dtsi               | 13 +++++++++
->   drivers/nvmem/qfprom.c                             | 31 +++++++++++++++++++---
->   3 files changed, 44 insertions(+), 3 deletions(-)
-> 
+PCI: requires reread until 0
+MMIO: doesn't require but it might not work for the hardware so we 
+decide to change
+CCW: the succeed of the ccw command means the success of the reset
+
+Thanks
+
+
+> Actually I didn't find any other place where I can do
+> set_status() and get_status().
+>
+> Thanks,
+> Yongji
+>
+
