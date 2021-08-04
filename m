@@ -2,67 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC403E0650
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227993E0662
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239782AbhHDRJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 13:09:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
+        id S239792AbhHDRNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 13:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbhHDRJE (ORCPT
+        with ESMTP id S230161AbhHDRM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:09:04 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96ABC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 10:08:50 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id n11so1622385wmd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 10:08:50 -0700 (PDT)
+        Wed, 4 Aug 2021 13:12:59 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0423C0613D5;
+        Wed,  4 Aug 2021 10:12:45 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id n12so3066345wrr.2;
+        Wed, 04 Aug 2021 10:12:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/eXGTMv90CrY+h6kFPapkl2kvVM9xop2+wNswN+X3CQ=;
-        b=dnQFEvCjJrFdVRUPB6Pm3vM1P5voe5NcznpNN9giJk0vDGKbK76jzHfsKvJMTm4xVE
-         tb1DsJjJCx+FFtOQBtCIiIETpvXsiAq2vIFKLpuH7e7VOXi2lHXQ1kWeweXCSU5J4kye
-         XW5BZW+bMGJ/KDhNKXe7VbuW6DkXmLSpvjHwS1QqeAXCI65uGNSvqNOdbI0TuX2r+0py
-         0kNi6lj4td4yhFetYHfRA4F/EE1FKLszsClRkWcsYtxGa86xuIYXLNVMax0KmpAMeQH9
-         WhSNul7Uy1xHq846nmY07e8u9PbfaookHRyl2wPHBh4+5ldvPYOFH/CSOiwFKGfIu001
-         o3cg==
+        bh=wqLm8EfM5SnlCMGedDjfLb4X4DuYoCJtVPMlQgV2X1o=;
+        b=sCWLSZhPyyln0hjThAJeHOhOHy8a6RC00Bq/oMZe5m93kzlDcsrqg/G4H92gS3D97B
+         T/PsmF5I3atptlop4Wm26nhRqEAywJlyjKVN+TMzzq6v7eMn6LfrcUwQ+T9VoJBc4eWE
+         q/+Xgig6ssBx/KqllcgCCOEjkvAgda6IzYengQqxNedQi5BikeA+h0prXQJDXaAEp9ZU
+         J9NPe7/yMBNQodFfyy1+ZwDwy/WmZ+j4Tw23Y2JAWOeX/SVdNU/kjX7SFv69cDuSE+20
+         8cWld46NjsQvAB2OSJ4F4VLzId9NdDVBXGvnXcNxKbQ7LaiJqzqdapt1lkCxaQOQ36+w
+         fMTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=/eXGTMv90CrY+h6kFPapkl2kvVM9xop2+wNswN+X3CQ=;
-        b=X7EzJ8zUbCNQcUOXG7WxCRdzyMTHHviFi0pfafPnkVGMJ06gC37WM/bTYHSw0Ww9N+
-         UaunNw1zWfs+XXKiNi3MVQYq0lkRYi8dEZJMbsyki+f/JodrkWrpr6G/nKa1be/vAgjL
-         7uUDHt9He3ho/Fq7+buA5yAS1p66xMmbmp03G3AC4dfO3mguR85XRAY+syoFABxHm4L0
-         MVXSLPkyK1mM5A+ZAf4eqvdg6yz3mpvKTftqDiYuq6Nj0DDCIC2FAY33r2H0WRXKgxaF
-         4fhV5YKgCQQ7F/TLUSldVkU6CDlzIDylyMFj0bl9t+UULFXXTyzujyG5ngXvg2WF+lZP
-         3B1g==
-X-Gm-Message-State: AOAM532WSDRWc6jWTPzXgA3CgHc/oHr+PKEcEShLFkLD7+ZBrowiDrLk
-        I8LdPv+FAtvrdfDkDAh4I7o=
-X-Google-Smtp-Source: ABdhPJyxEuNfD/DLY+3wo/r8+jwHbpOXBbsmEXEG3V6EbhJx0t1Gb9nR3pOGg1+CC2pMWCHojxlmkA==
-X-Received: by 2002:a1c:f405:: with SMTP id z5mr10748720wma.33.1628096929356;
-        Wed, 04 Aug 2021 10:08:49 -0700 (PDT)
+        bh=wqLm8EfM5SnlCMGedDjfLb4X4DuYoCJtVPMlQgV2X1o=;
+        b=DQEJmiVPNezEUzpU0yNMrF4j+HBexa0rq0qYyc/T3UWb/0zSrCB/ifls6S9hkBL6z3
+         SQgpxiqDfku4xEEd1iPRwxUa5Dnzz0z+Ahh3sT1nuk2/ow1h7H/WXOiL98ZgzvtzxWj7
+         1WXpeiGklmP6vxIxujWyNMhzWqHOrT2392KXlA3BPag+QEZjYbCK495fhlpMmNObUpB2
+         AbiBKKgeP4p+zFbfBhgHNmwEWKLwoy9l6zz58pAduTM9rSig6QbF9CrONf1iQ1iIZqXG
+         NcGSguncc7rTSq7bV2Xzkxw5j+oJy9Ti8g1rq+LVRVWF1ZkEm847pTnZGja0CLrot4zG
+         MgHA==
+X-Gm-Message-State: AOAM532ZLV+SYYAPqcDOFbKaLHzKRJsTCeduAgfy5UFX8DdDcDL6OtRG
+        3DwvelcUqapdTlB+Yd+xM8w=
+X-Google-Smtp-Source: ABdhPJxxDI3VKUUUZ99T3bf6+3VsvDiJd6y55gmL4NRjzXdT/gModQr8wE9WiovQVUjYZngMsrXvCA==
+X-Received: by 2002:adf:f302:: with SMTP id i2mr424571wro.186.1628097164373;
+        Wed, 04 Aug 2021 10:12:44 -0700 (PDT)
 Received: from ziggy.stardust (static-55-132-6-89.ipcom.comunitel.net. [89.6.132.55])
-        by smtp.gmail.com with ESMTPSA id f194sm6631026wmf.23.2021.08.04.10.08.48
+        by smtp.gmail.com with ESMTPSA id j140sm2962191wmj.37.2021.08.04.10.12.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 10:08:48 -0700 (PDT)
-Subject: Re: [PATCH 3/3] soc: mediatek: mmsys: add MT8365 support
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     mkorpershoek@baylibre.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20210519161847.3747352-1-fparent@baylibre.com>
- <20210519161847.3747352-3-fparent@baylibre.com>
+        Wed, 04 Aug 2021 10:12:44 -0700 (PDT)
+Subject: Re: [PATCH v6 2/5] pwm: mtk_disp: fix force reg to working reg.
+To:     Jitao Shi <jitao.shi@mediatek.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     linux-pwm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        srv_heupstream@mediatek.com, yingjoe.chen@mediatek.com,
+        eddie.huang@mediatek.com, ck.hu@mediatek.com, stonea168@163.com,
+        huijuan.xie@mediatek.com, shuijing.li@mediatek.com
+References: <20210724081849.182108-1-jitao.shi@mediatek.com>
+ <20210724081849.182108-3-jitao.shi@mediatek.com>
 From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <d8c0e3c6-c7bf-251a-cdb9-7ca35d1dae13@gmail.com>
-Date:   Wed, 4 Aug 2021 19:08:47 +0200
+Message-ID: <925e1dcb-1f6b-1762-8342-b102d5e928e8@gmail.com>
+Date:   Wed, 4 Aug 2021 19:12:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210519161847.3747352-3-fparent@baylibre.com>
+In-Reply-To: <20210724081849.182108-3-jitao.shi@mediatek.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,126 +75,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabien,
 
-On 19/05/2021 18:18, Fabien Parent wrote:
-> Add DSI mmsys connections for the MT8365 SoC.
-> 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
->  drivers/soc/mediatek/mt8365-mmsys.h | 60 +++++++++++++++++++++++++++++
->  drivers/soc/mediatek/mtk-mmsys.c    | 11 ++++++
->  2 files changed, 71 insertions(+)
->  create mode 100644 drivers/soc/mediatek/mt8365-mmsys.h
-> 
-> diff --git a/drivers/soc/mediatek/mt8365-mmsys.h b/drivers/soc/mediatek/mt8365-mmsys.h
-> new file mode 100644
-> index 000000000000..2475aeb79791
-> --- /dev/null
-> +++ b/drivers/soc/mediatek/mt8365-mmsys.h
-> @@ -0,0 +1,60 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +
-> +#ifndef __SOC_MEDIATEK_MT8365_MMSYS_H
-> +#define __SOC_MEDIATEK_MT8365_MMSYS_H
-> +
-> +#define MT8365_DISP_REG_CONFIG_DISP_OVL0_MOUT_EN	0xf3c
-> +#define MT8365_DISP_REG_CONFIG_DISP_RDMA0_SOUT_SEL	0xf4c
-> +#define MT8365_DISP_REG_CONFIG_DISP_DITHER0_MOUT_EN	0xf50
-> +#define MT8365_DISP_REG_CONFIG_DISP_RDMA0_SEL_IN	0xf54
-> +#define MT8365_DISP_REG_CONFIG_DISP_RDMA0_RSZ0_SEL_IN	0xf60
-> +#define MT8365_DISP_REG_CONFIG_DISP_COLOR0_SEL_IN	0xf64
-> +#define MT8365_DISP_REG_CONFIG_DISP_DSI0_SEL_IN		0xf68
-> +
-> +#define MT8365_RDMA0_SOUT_COLOR0			0x1
-> +#define MT8365_DITHER_MOUT_EN_DSI0			0x1
-> +#define MT8365_DSI0_SEL_IN_DITHER			0x1
-> +#define MT8365_RDMA0_SEL_IN_OVL0			0x0
-> +#define MT8365_RDMA0_RSZ0_SEL_IN_RDMA0			0x0
-> +#define MT8365_DISP_COLOR_SEL_IN_COLOR0			0x0
-> +#define MT8365_OVL0_MOUT_PATH0_SEL			BIT(0)
-> +
-> +static const struct mtk_mmsys_routes mt8365_mmsys_routing_table[] = {
-> +	{
-> +		DDP_COMPONENT_OVL0, DDP_COMPONENT_RDMA0,
-> +		MT8365_DISP_REG_CONFIG_DISP_OVL0_MOUT_EN,
-> +		MT8365_OVL0_MOUT_PATH0_SEL
 
-I pushed this patch to v4.15-next/soc
-As we now include the mask field in mtk_mmsys_routes I updated that in the patch.
-Please let me know if I screwed something up.
+On 24/07/2021 10:18, Jitao Shi wrote:
+> Disable reg double buffer before writing register.
+
+The commit message does not explain why you move this from probe to pwm_config.
+Can you please explain exactly why you need to do that.
 
 Regards,
 Matthias
 
-> +	},
-> +	{
-> +		DDP_COMPONENT_OVL0, DDP_COMPONENT_RDMA0,
-> +		MT8365_DISP_REG_CONFIG_DISP_RDMA0_SEL_IN,
-> +		MT8365_RDMA0_SEL_IN_OVL0
-> +	},
-> +	{
-> +		DDP_COMPONENT_RDMA0, DDP_COMPONENT_COLOR0,
-> +		MT8365_DISP_REG_CONFIG_DISP_RDMA0_SOUT_SEL,
-> +		MT8365_RDMA0_SOUT_COLOR0
-> +	},
-> +	{
-> +		DDP_COMPONENT_COLOR0, DDP_COMPONENT_CCORR,
-> +		MT8365_DISP_REG_CONFIG_DISP_COLOR0_SEL_IN,
-> +		MT8365_DISP_COLOR_SEL_IN_COLOR0
-> +	},
-> +	{
-> +		DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
-> +		MT8365_DISP_REG_CONFIG_DISP_DITHER0_MOUT_EN,
-> +		MT8365_DITHER_MOUT_EN_DSI0
-> +	},
-> +	{
-> +		DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
-> +		MT8365_DISP_REG_CONFIG_DISP_DSI0_SEL_IN,
-> +		MT8365_DSI0_SEL_IN_DITHER
-> +	},
-> +	{
-> +		DDP_COMPONENT_RDMA0, DDP_COMPONENT_COLOR0,
-> +		MT8365_DISP_REG_CONFIG_DISP_RDMA0_RSZ0_SEL_IN,
-> +		MT8365_RDMA0_RSZ0_SEL_IN_RDMA0
-> +	},
-> +};
-> +
-> +#endif /* __SOC_MEDIATEK_MT8365_MMSYS_H */
-> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-> index 080660ef11bf..44aff822d035 100644
-> --- a/drivers/soc/mediatek/mtk-mmsys.c
-> +++ b/drivers/soc/mediatek/mtk-mmsys.c
-> @@ -13,6 +13,7 @@
->  #include "mtk-mmsys.h"
->  #include "mt8167-mmsys.h"
->  #include "mt8183-mmsys.h"
-> +#include "mt8365-mmsys.h"
+> 
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> ---
+>  drivers/pwm/pwm-mtk-disp.c | 24 +++++++++++-------------
+>  1 file changed, 11 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/pwm/pwm-mtk-disp.c b/drivers/pwm/pwm-mtk-disp.c
+> index 3ade525adcc3..1070d78d4940 100644
+> --- a/drivers/pwm/pwm-mtk-disp.c
+> +++ b/drivers/pwm/pwm-mtk-disp.c
+> @@ -128,6 +128,17 @@ static int mtk_disp_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+>  		mtk_disp_pwm_update_bits(mdp, mdp->data->commit,
+>  					 mdp->data->commit_mask,
+>  					 0x0);
+> +	} else {
+> +	/*
+> +	 * For MT2701, disable double buffer before writing register
+> +	 * and select manual mode and use PWM_PERIOD/PWM_HIGH_WIDTH.
+> +	 */
+> +		mtk_disp_pwm_update_bits(mdp, mdp->data->bls_debug,
+> +					 mdp->data->bls_debug_mask,
+> +					 mdp->data->bls_debug_mask);
+> +		mtk_disp_pwm_update_bits(mdp, mdp->data->con0,
+> +					 mdp->data->con0_sel,
+> +					 mdp->data->con0_sel);
+>  	}
 >  
->  static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
->  	.clk_driver = "clk-mt2701-mm",
-> @@ -52,6 +53,12 @@ static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
->  	.num_routes = ARRAY_SIZE(mmsys_mt8183_routing_table),
->  };
+>  	clk_disable_unprepare(mdp->clk_mm);
+> @@ -213,19 +224,6 @@ static int mtk_disp_pwm_probe(struct platform_device *pdev)
 >  
-> +static const struct mtk_mmsys_driver_data mt8365_mmsys_driver_data = {
-> +	.clk_driver = "clk-mt8365-mm",
-> +	.routes = mt8365_mmsys_routing_table,
-> +	.num_routes = ARRAY_SIZE(mt8365_mmsys_routing_table),
-> +};
-> +
->  struct mtk_mmsys {
->  	void __iomem *regs;
->  	const struct mtk_mmsys_driver_data *data;
-> @@ -157,6 +164,10 @@ static const struct of_device_id of_match_mtk_mmsys[] = {
->  		.compatible = "mediatek,mt8183-mmsys",
->  		.data = &mt8183_mmsys_driver_data,
->  	},
-> +	{
-> +		.compatible = "mediatek,mt8365-mmsys",
-> +		.data = &mt8365_mmsys_driver_data,
-> +	},
->  	{ }
->  };
+>  	platform_set_drvdata(pdev, mdp);
+>  
+> -	/*
+> -	 * For MT2701, disable double buffer before writing register
+> -	 * and select manual mode and use PWM_PERIOD/PWM_HIGH_WIDTH.
+> -	 */
+> -	if (!mdp->data->has_commit) {
+> -		mtk_disp_pwm_update_bits(mdp, mdp->data->bls_debug,
+> -					 mdp->data->bls_debug_mask,
+> -					 mdp->data->bls_debug_mask);
+> -		mtk_disp_pwm_update_bits(mdp, mdp->data->con0,
+> -					 mdp->data->con0_sel,
+> -					 mdp->data->con0_sel);
+> -	}
+> -
+>  	return 0;
+>  }
 >  
 > 
