@@ -2,92 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E8A3DF9EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639453DF9EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234744AbhHDDLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 23:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
+        id S234859AbhHDDMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 23:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234044AbhHDDL3 (ORCPT
+        with ESMTP id S234832AbhHDDMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 23:11:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA3AC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 20:11:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:Subject:From:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=b7ea5nZ+ckbjTfjPzMM7oA1gBGqNWHn29Te70wk2vTk=; b=CIpWxlF2JRoECOxo8dm2l2bNxJ
-        PN5XKNWTxw29IfkeRxl4tV8tbzI8SGoF7vr0JqPeEyXtw1z8zDeiybZb/wbwcIOsr+gfpKD4DcyTs
-        WysDWtE6Ay/gaKRBYnfXTktSVft8GGPgDAyRzUegpSVDdTvzDtoA7t+/9vigLAFk6p4E5BpUI60dL
-        f5sPF2o+Rl8/3h9KsmkVAsPcRwrw4L7NPFn1Zmdi6jj+COQb+c0YxxMz5fN/NkNSyDFhirKST2kGO
-        x0E5j8B7DXKjSa/ggSMBkFLqQI8hwYvgNaaP4xJbotk5+vjDE5W7CdZ6pszzU98jBN294Q8aIrnvZ
-        X7Fg8DbQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mB7ID-005LsP-15; Wed, 04 Aug 2021 03:10:14 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: make[2]: *** [arch/powerpc/Makefile.postlink:31: vmlinux] Error 1
-To:     kernel test robot <lkp@intel.com>, Feng Tang <feng.tang@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <202107301612.rQ29n76B-lkp@intel.com>
-Message-ID: <c3e9247d-95cd-718c-d8a5-f0cd5e5a3598@infradead.org>
-Date:   Tue, 3 Aug 2021 20:10:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 3 Aug 2021 23:12:38 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C55C061798;
+        Tue,  3 Aug 2021 20:12:04 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id f8so515647ilr.4;
+        Tue, 03 Aug 2021 20:12:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VgjNmTtUCekqMJuPhdkOwY12hWYBqmEMHhuoCL31ByI=;
+        b=Qh1t8Q1W0M0NYHbZCM8FYnt1o7Y1swpfS+HFC+xGi5tg1ljs5fPfZqzL3FQtwmS3V0
+         9FfKHWI+Bi+SSHR0phWapRc/BLyuU35jX3snHlYBqvHFShsXF22A69yOixLvncKs0ZGW
+         JE1WFo13S2Th0dem/yf1nEprLwv+P9/jnvYrBIx1YyUW1t7PmiOi0rzmYm9HEL6/fLr3
+         4wUbeTaWEeTMjSzcrozmhfgvjgXA7naqdLNgvkvsI8Z9iblO0yFQoHegXpfuwspfHlB6
+         gYuHS/+vwoh/CIk8OFhpU4x2cCkdmxGzBc8qCC4NuXr1MIF5RLogPr2PePccqsm/kIyr
+         ydEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VgjNmTtUCekqMJuPhdkOwY12hWYBqmEMHhuoCL31ByI=;
+        b=aJQi+Df6zNqBR7DVsuy2rsoCuOpOwpKZs8t2r2ZY3smSqUHW9pa3W6sM3QbFNOqzZn
+         ksO6WyzmCqH7/2OvKfEEfbip818rTpSQP2nkZxs2s6x2xO0bfiZORihdaQf3m8uh0+JW
+         UzEbT5CP0XMCR0FZzOAviNzps798TTkBZ4GEFRh+BwasRKSX5zqZRH7ywNfV2PEKB/rO
+         RHOBX5jl2j73QjmYR3t9otGLqEBE7+Dxez1tFFQDDbntOb8JBxrM+779lQ7WCBDORisM
+         KidC6pI/rSVdGgvPUlTMLNpTRMAOceD4UIp16ucm8dxKUBcZ8c/hPViy5C22hTZUelra
+         /HIw==
+X-Gm-Message-State: AOAM5324Fr5ZfC7i9KU+7gn2nf/nTXAXqlWMnIZ9w2Q2ir/CvVuTm/41
+        5Djd20+9uE/iFpoOXFvmFH9RyaYtI2b5s1GRkgM=
+X-Google-Smtp-Source: ABdhPJwKxDgXCokuxlcg93EAaGtZ655oYlj6+j9UfPEMcGJrEXqf9j5cNroVlNKgXBC0RaeX2KF22HGG2DMiz6j7VtI=
+X-Received: by 2002:a05:6e02:10a:: with SMTP id t10mr289427ilm.52.1628046724057;
+ Tue, 03 Aug 2021 20:12:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <202107301612.rQ29n76B-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200320212833.3507-1-sean.j.christopherson@intel.com>
+ <20200320212833.3507-2-sean.j.christopherson@intel.com> <CAJhGHyCPyu6BVZwqvySeT2LSr81Xospdv2O=ssvTQv0Rvky0UA@mail.gmail.com>
+ <YQljNBBp/EousNBk@google.com>
+In-Reply-To: <YQljNBBp/EousNBk@google.com>
+From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Date:   Wed, 4 Aug 2021 11:11:52 +0800
+Message-ID: <CAJhGHyDbCbP3+oN-EpX_KLYKpzDhotpwASAxMSRScGjtdRNOtA@mail.gmail.com>
+Subject: Re: [PATCH v3 01/37] KVM: VMX: Flush all EPTP/VPID contexts on remote
+ TLB flush
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/21 1:29 AM, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   764a5bc89b12b82c18ce7ca5d7c1b10dd748a440
-> commit: cf536e185869d4815d506e777bcca6edd9966a6e Makefile: extend 32B aligned debug option to 64B aligned
-> date:   10 weeks ago
-> config: powerpc64-randconfig-c023-20210730 (attached as .config)
-> compiler: powerpc-linux-gcc (GCC) 10.3.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cf536e185869d4815d506e777bcca6edd9966a6e
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout cf536e185869d4815d506e777bcca6edd9966a6e
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross ARCH=powerpc64
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->>> make[2]: *** [arch/powerpc/Makefile.postlink:31: vmlinux] Error 1
-> 
-> ---
+On Tue, Aug 3, 2021 at 11:39 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, Aug 03, 2021, Lai Jiangshan wrote:
+> > (I'm replying to a very old email, so many CCs are dropped.)
+> >
+> > On Sat, Mar 21, 2020 at 5:33 AM Sean Christopherson
+> > <sean.j.christopherson@intel.com> wrote:
+> > >
+> > > Flush all EPTP/VPID contexts if a TLB flush _may_ have been triggered by
+> > > a remote or deferred TLB flush, i.e. by KVM_REQ_TLB_FLUSH.  Remote TLB
+> > > flushes require all contexts to be invalidated, not just the active
+> > > contexts, e.g. all mappings in all contexts for a given HVA need to be
+> > > invalidated on a mmu_notifier invalidation.  Similarly, the instigator
+> > > of the deferred TLB flush may be expecting all contexts to be flushed,
+> > > e.g. vmx_vcpu_load_vmcs().
+> > >
+> > > Without nested VMX, flushing only the current EPTP/VPID context isn't
+> > > problematic because KVM uses a constant VPID for each vCPU, and
+> >
+> > Hello, Sean
+> >
+> > Is the patch optimized for cases where nested VMX is active?
+>
+> Well, this patch isn't, but KVM has since been optimized to do full EPT/VPID
+> flushes only when "necessary".  Necessary in quotes because the two uses can
+> technically be further optimized, but doing so would incur significant complexity.
 
-Hi ktr/lkp,
+Hello, thanks for your reply.
 
-This is not "All errors". I suggest that you improve your output by
-(also) grepping for "ERROR:", so that the following lines would be
-included here:
+I know there might be a lot of possible optimizations to be considered, many of
+which are too complicated to be implemented.
 
-ERROR: start_text address is c000000000000200, should be c000000000000100
-ERROR: try to enable LD_HEAD_STUB_CATCH config option
-ERROR: see comments in arch/powerpc/tools/head_check.sh
+The optimization I considered yesterday is "ept_sync_global() V.S.
+ept_sync_context(this_vcpu's)" in the case: when the VM is using EPT and
+doesn't allow nested VMs.  (And I failed to express it yesterday)
 
+In this case, the vCPU uses only one single root_hpa, and I think ept sync
+for single context is enough for both cases you listed below.
 
-and yes, enabling LD_HEAD_STUB_CATCH does fix this build error.
+When the context is flushed, the TLB for the vCPU is clean to run.
 
-thanks.
--- 
-~Randy
+If kvm changes the mmu->root_hpa, it is kvm's responsibility to request
+another flush which is implemented.
 
+In other words, KVM_REQ_TLB_FLUSH == KVM_REQ_TLB_FLUSH_CURRENT in this case.
+And before this patch, kvm flush only the single context rather than global.
+
+>
+> Use #1 is remote flushes from the MMU, which don't strictly require a global flush,
+> but KVM would need to propagate more information (mmu_role?) in order for responding
+> vCPUs to determine what contexts needs to be flushed.  And practically speaking,
+> for MMU flushes there's no meaningful difference when using TDP without nested
+> guests as the common case will be that each vCPU has a single active EPTP and
+> that EPTP will be affected by the MMU changes, i.e. needs to be flushed.
+
+I don't see when we need "to determine what contexts" since the vcpu is
+using only one context in this case which is the assumption in my mind,
+could you please correct me if I'm wrong.
+
+Thanks,
+Lai.
+
+>
+> Use #2 is in VMX's pCPU migration path.  Again, not strictly necessary as KVM could
+> theoretically track which pCPUs have run a particular vCPU and when that pCPU last
+> flushed EPT contexts, but fully solving the problem would be quite complex.  Since
+> pCPU migration is always going to be a slow path, the extra complexity would be
+> very difficult to justify.
+>
+> > I think the non-nested cases are normal cases.
+> >
+> > Although the related code has been changed, the logic of the patch
+> > is still working now, would it be better if we restore the optimization
+> > for the normal cases (non-nested)?
+>
+> As above, vmx_flush_tlb_all() hasn't changed, but the callers have.
