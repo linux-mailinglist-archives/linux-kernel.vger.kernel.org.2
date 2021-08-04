@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B60E3E03EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CB93E03EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236354AbhHDPKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:10:07 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:34162
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237114AbhHDPKF (ORCPT
+        id S238255AbhHDPM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237114AbhHDPM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:10:05 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 57B383F04E;
-        Wed,  4 Aug 2021 15:09:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628089791;
-        bh=jOI1MaghgNGcJtSRSTB8GoNttvxl2jIpyug9Cz3oOHk=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=OW2kjVqQSto9Eac4j2zLDVIwwEpXPBKYDJSMWMQnZsOuUGaBNVLmswCLD+TtIBPRv
-         Blq5wbKCOfQxL3C/hNcXCRs/6Xc41PCoihgbypXZorXxpoNrxzXxi48LEGcAfa6V5w
-         Qs7+jFds+9sp3HTrJODcrYqvcjo56xAd1e+AJzmRWpajhi7O0A+FWRVDZ0QSlcnNcD
-         EOPQbbvUXMSo0zNCOQNT6p03383iNgkfl+yohdzEgP4kX7dSyhtNOrBlHh7pcahCbP
-         sMPhNzKrkjpHjCnEGvw8GWjWBTZtoGlz2pkSKxB78QTkTMZh2bI3NqpwfZGT79U0MM
-         NH0v38Ywy3DFQ==
-From:   Colin King <colin.king@canonical.com>
-To:     Karsten Keil <isdn@linux-pingi.de>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andrei Emeltchenko <andrei.emeltchenko@intel.com>,
-        Gustavo Padovan <gustavo.padovan@collabora.co.uk>,
-        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Bluetooth: increase BTNAMSIZ to 21 chars to fix potential buffer overflow
-Date:   Wed,  4 Aug 2021 16:09:51 +0100
-Message-Id: <20210804150951.116814-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 4 Aug 2021 11:12:27 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CD1C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 08:12:14 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id qk33so4205060ejc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 08:12:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5Vo9KH/MhVz7kXBD6l2im9RgAeC2wAwSck49Hn8SWjc=;
+        b=PaVIRT7vozP4R+oBv6QR8L8XGHClC2ZebRx/A1tLBc8n5ru4ZdjlSxGDK2J3+cTFcY
+         bxZ8OaNKlomp7AU/hnwR3Ee7RkZ3MAoW++Q/HvyDMTArIeZaVz1Ou6zDlLfu1RzQGA+1
+         KQuCygKrdaCRdZrlo1l6XBAsclWm3mWdxrZ9scXcYvK6ixhhSsnmQZ51iEOqj3kRwg36
+         FWFONcAT2PJWaCnv/KjSgQWImdNksnwPMDcTLy4Ie3aBxN6ZRS2SEVooaIyIvfQs5t1c
+         karWD8Xz/sSllhTNua8aU8b2e0VrW6ggfpdcPMNcUvAfZSsAx5GQf2H3fk3T8V4nBcKL
+         UNzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5Vo9KH/MhVz7kXBD6l2im9RgAeC2wAwSck49Hn8SWjc=;
+        b=H9XoIU7A/RX23RznYkkT6oyQA6oDr8/dpPCaBkJ5jyxXFHEKS8LXDkU7BYmO/ULShU
+         1IXg414OhY4QJo+XdxedkbsFckDAUxH0NWbmJ+kYH06GyWXkTD6HZBbYvTaQZj5f/hZ8
+         I38k05fiOfIqIPYuWVt1MVzNubwkRhGB67fTZjSXGafIvXJEDppgK54UoJYBHSG4sf2S
+         BqXh+2CiexS281mp0ictn3KZ6O1nA8EKi4YlKmnkmahUCRDxLv/H6gVEoCh6vmjEwKr0
+         v8cE4W8EDKLvERalQX+uURlo6x777Zjb7ueO0Illt3rc5N4ktUPQf23LcHDqLepD68F+
+         T5Sw==
+X-Gm-Message-State: AOAM533EfPV7kVC5yiLrmTnwoiL+hcHK7GjIaS/cCHI9nd6YbPq07Xx6
+        Y62ilV9DhdDnVmhlae3Bmms=
+X-Google-Smtp-Source: ABdhPJyjy5+mIOt6o4mj0inLDL55SGhwPIqkE0njS3o7l1bM/Kc/Zsgvt1x8uJFT9jmMszzaDj/8DQ==
+X-Received: by 2002:a17:906:9450:: with SMTP id z16mr26100237ejx.52.1628089932827;
+        Wed, 04 Aug 2021 08:12:12 -0700 (PDT)
+Received: from localhost.localdomain (host-82-51-42-96.retail.telecomitalia.it. [82.51.42.96])
+        by smtp.gmail.com with ESMTPSA id r27sm1064548edb.66.2021.08.04.08.12.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 08:12:12 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: core: Remove rtw_mfree_all_stainfo()
+Date:   Wed, 04 Aug 2021 17:12:11 +0200
+Message-ID: <5755579.ylQvOfxgKt@localhost.localdomain>
+In-Reply-To: <20210804130136.GJ1931@kadam>
+References: <20210802005517.12815-1-fmdefrancesco@gmail.com> <20210804130136.GJ1931@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wednesday, August 4, 2021 3:01:36 PM CEST Dan Carpenter wrote:
+> On Mon, Aug 02, 2021 at 02:55:17AM +0200, Fabio M. De Francesco wrote:
+> > Remove rtw_mfree_all_stainfo() and the only line of code that calls
+> > it. This function simply takes a spinlock and iterates over a list
+> > with no purpose. That iteration has no side effects.
+> 
+> I mean, it's pretty clearly supposed to free all the items on the list.
+> 
+Sorry, I'm not sure to understand what you required:
+since rtw_mfree_all_stainfo() is supposed to free all the nodes on the list, 
+should a better patch *really* delete those items (instead than simply get rid 
+of the function itself)? 
 
-An earlier commit replaced using batostr to using %pMR sprintf for the
-construction of session->name. Static analysis detected that this new
-method can use a total of 21 characters (including the trailing '\0')
-so we need to increase the BTNAMSIZ from 18 to 21 to fix potential
-buffer overflows.
+Thanks,
 
-Addresses-Coverity: ("Out-of-bounds write")
-Fixes: fcb73338ed53 ("Bluetooth: Use %pMR in sprintf/seq_printf instead of batostr")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- net/bluetooth/cmtp/cmtp.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Fabio
+> 
+> regards,
+> dan carpenter
 
-diff --git a/net/bluetooth/cmtp/cmtp.h b/net/bluetooth/cmtp/cmtp.h
-index c32638dddbf9..f6b9dc4e408f 100644
---- a/net/bluetooth/cmtp/cmtp.h
-+++ b/net/bluetooth/cmtp/cmtp.h
-@@ -26,7 +26,7 @@
- #include <linux/types.h>
- #include <net/bluetooth/bluetooth.h>
- 
--#define BTNAMSIZ 18
-+#define BTNAMSIZ 21
- 
- /* CMTP ioctl defines */
- #define CMTPCONNADD	_IOW('C', 200, int)
--- 
-2.31.1
+
+
 
