@@ -2,276 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621AC3DFCAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2EFD3DFCAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236327AbhHDITs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236288AbhHDITo (ORCPT
+        id S236266AbhHDIUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:20:21 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55254 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236179AbhHDIUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:19:44 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EB7C061799
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 01:19:31 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id j13-20020a0cf30d0000b029032dd803a7edso1273402qvl.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 01:19:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=Qdv1zhxh0PY/Xiuvh0QkKRmzFpu7CaVMvwBJEs74Yps=;
-        b=dxy3lZf5YUVgr4P1g5uOvCprfZ0RyOBv/QBETQ4uFBberuSq/IGm/GQOnNJp+ZGS7E
-         0eZeQypsH0P7e0MDBIvRAdVX/IVK4b+E7O+9fAKCtX1qkXXrfmv1piCw0oVypchs2vFC
-         PrYy2Y/bZbHjodKUdUe7WQroZxUzecJXpI9GfyqfwfwaUM10TOlIezXC6VgFmgxeuEwN
-         odbwnfpwJXLiZUSah2Bp1K+r++CtwirKd1V0hkLzBYTd2YfkHwPt5/qgQsLNZpH0FUm5
-         NDgXk7S0isC+Lq9dqohLMI9xGet3i3RW2099GWzvsmAtcM2DOupsk9FRULDL5F6lb5O8
-         mDYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Qdv1zhxh0PY/Xiuvh0QkKRmzFpu7CaVMvwBJEs74Yps=;
-        b=bt75fQb9B6nKECwAH0tkwmxZyn66zPz4U88ET8XEI6f2c92Tuxuf709A3QTAJK/luq
-         CDXrzr6j7E6AzSRe82R01ErBCu6gJAJ1Iwbya2z6zqQXtdTpCuf1IYXqCvjIlaRByiuz
-         nhk7DTrhJiqU/aMEvQm6GiX+8cHAtkMr/RVOIVnQIDCZzn3TnyzWZjaKyDiDCkWVJct5
-         uue7CmSRmPreYDxVuv8yvbJLWrJvZf1Zc2ANoZmZz7q3gTZ5GVhzGRALhtV9kjXdxkS1
-         GYS+91YVB50iLsT3WStLRG5AosYCmTwEBFe89XkEuuRofZ96qkJgwJSYaWynKT4xKFil
-         2Wlw==
-X-Gm-Message-State: AOAM532RTYFBRC/jYjaf2QfTGZk+XAvtbBTGdCg2f74IENnnVO5B2ejp
-        T0LLsIvPQZVfyx3Q3E/YmnXey7RgpGU9
-X-Google-Smtp-Source: ABdhPJzuhKfJwvBzNgm/9/+FgHSe+RWiRCTdznI3q0TQJ5VkutynLvZzW8175Dcx9gS3PBdTEZLxJ6gnk3WZ
-X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:7eb8:c2f5:2e08:d4bc])
- (user=kyletso job=sendgmr) by 2002:a0c:9c4a:: with SMTP id
- w10mr25877813qve.14.1628065170297; Wed, 04 Aug 2021 01:19:30 -0700 (PDT)
-Date:   Wed,  4 Aug 2021 16:19:17 +0800
-In-Reply-To: <20210804081917.3390341-1-kyletso@google.com>
-Message-Id: <20210804081917.3390341-3-kyletso@google.com>
-Mime-Version: 1.0
-References: <20210804081917.3390341-1-kyletso@google.com>
-X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
-Subject: [PATCH v6 2/2] usb: typec: tcpm: Support non-PD mode
-From:   Kyle Tso <kyletso@google.com>
-To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, robh+dt@kernel.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 4 Aug 2021 04:20:20 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 23284221B6;
+        Wed,  4 Aug 2021 08:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1628065207; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lcx+B/N18widrHuZLHZiL32C9ltYEwiglNQ7MtBx6bI=;
+        b=Jz6JUhuuz7lMa83tROXofHjvK6VlFINTkD2AvYV+6HVr2SktLKcDdH9zAp57oWhD4+RA2r
+        qR60UBMt4MzPJR003RRtd0H8VxT2G6GjZ9BqRYKtBsMnBXtKwQJ3NehFCWNcdZdfm7mA5b
+        1ttlxk0tghKuGH5ti/JmAyyHrRHfx/k=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 30FC6A3B95;
+        Wed,  4 Aug 2021 08:20:06 +0000 (UTC)
+Date:   Wed, 4 Aug 2021 10:20:05 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Miaohe Lin <linmiaohe@huawei.com>,
+        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
+        shakeelb@google.com, willy@infradead.org, alexs@kernel.org,
+        richard.weiyang@gmail.com, songmuchun@bytedance.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 2/5] mm, memcg: narrow the scope of percpu_charge_mutex
+Message-ID: <YQpNtfjl0rHH8Mgf@dhcp22.suse.cz>
+References: <20210729125755.16871-1-linmiaohe@huawei.com>
+ <20210729125755.16871-3-linmiaohe@huawei.com>
+ <YQNsxVPsRSBZcfGG@carbon.lan>
+ <YQOhGs3k9rHx3mmT@dhcp22.suse.cz>
+ <YQlPiLY0ieRb704V@cmpxchg.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQlPiLY0ieRb704V@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even if the Type-C controller supports PD, it is doable to disable PD
-capabilities with the current state machine in TCPM. Without enabling RX
-in low-level drivers and with skipping the power negotiation, the port
-is eligible to be a non-PD Type-C port. Use new flags whose values are
-populated from the device tree to decide the port PD capability. Adding
-"pd-disable" property in device tree indicates that the port does not
-support PD. If PD is not supported, the device tree property
-"typec-power-opmode" shall be added to specify the advertised Rp value
-if the port supports SRC role.
+On Tue 03-08-21 10:15:36, Johannes Weiner wrote:
+[...]
+> git history shows we tried to remove it once:
+> 
+> commit 8521fc50d433507a7cdc96bec280f9e5888a54cc
+> Author: Michal Hocko <mhocko@suse.cz>
+> Date:   Tue Jul 26 16:08:29 2011 -0700
+> 
+>     memcg: get rid of percpu_charge_mutex lock
+> 
+> but it turned out that the lock did in fact protect a data structure:
+> the stock itself. Specifically stock->cached:
+> 
+> commit 9f50fad65b87a8776ae989ca059ad6c17925dfc3
+> Author: Michal Hocko <mhocko@suse.cz>
+> Date:   Tue Aug 9 11:56:26 2011 +0200
+> 
+>     Revert "memcg: get rid of percpu_charge_mutex lock"
+> 
+>     This reverts commit 8521fc50d433507a7cdc96bec280f9e5888a54cc.
+> 
+>     The patch incorrectly assumes that using atomic FLUSHING_CACHED_CHARGE
+>     bit operations is sufficient but that is not true.  Johannes Weiner has
+>     reported a crash during parallel memory cgroup removal:
+> 
+>       BUG: unable to handle kernel NULL pointer dereference at 0000000000000018
+>       IP: [<ffffffff81083b70>] css_is_ancestor+0x20/0x70
+>       Oops: 0000 [#1] PREEMPT SMP
+>       Pid: 19677, comm: rmdir Tainted: G        W   3.0.0-mm1-00188-gf38d32b #35 ECS MCP61M-M3/MCP61M-M3
+>       RIP: 0010:[<ffffffff81083b70>]  css_is_ancestor+0x20/0x70
+>       RSP: 0018:ffff880077b09c88  EFLAGS: 00010202
+>       Process rmdir (pid: 19677, threadinfo ffff880077b08000, task ffff8800781bb310)
+>       Call Trace:
+>        [<ffffffff810feba3>] mem_cgroup_same_or_subtree+0x33/0x40
+>        [<ffffffff810feccf>] drain_all_stock+0x11f/0x170
+>        [<ffffffff81103211>] mem_cgroup_force_empty+0x231/0x6d0
+>        [<ffffffff811036c4>] mem_cgroup_pre_destroy+0x14/0x20
+>        [<ffffffff81080559>] cgroup_rmdir+0xb9/0x500
+>        [<ffffffff81114d26>] vfs_rmdir+0x86/0xe0
+>        [<ffffffff81114e7b>] do_rmdir+0xfb/0x110
+>        [<ffffffff81114ea6>] sys_rmdir+0x16/0x20
+>        [<ffffffff8154d76b>] system_call_fastpath+0x16/0x1b
+> 
+>     We are crashing because we try to dereference cached memcg when we are
+>     checking whether we should wait for draining on the cache.  The cache is
+>     already cleaned up, though.
+> 
+>     There is also a theoretical chance that the cached memcg gets freed
+>     between we test for the FLUSHING_CACHED_CHARGE and dereference it in
+>     mem_cgroup_same_or_subtree:
+> 
+>             CPU0                    CPU1                         CPU2
+>       mem=stock->cached
+>       stock->cached=NULL
+>                                   clear_bit
+>                                                             test_and_set_bit
+>       test_bit()                    ...
+>       <preempted>             mem_cgroup_destroy
+>       use after free
+> 
+>     The percpu_charge_mutex protected from this race because sync draining
+>     is exclusive.
+> 
+>     It is safer to revert now and come up with a more parallel
+>     implementation later.
+> 
+> I didn't remember this one at all!
 
-Signed-off-by: Kyle Tso <kyletso@google.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
-Changes since v5:
-- Changed the property name
-- Added Acked-by tag
+Me neither. Thanks for looking that up!
 
- drivers/usb/typec/tcpm/tcpm.c | 87 +++++++++++++++++++++++++++--------
- 1 file changed, 68 insertions(+), 19 deletions(-)
+> However, when you look at the codebase from back then, there was no
+> rcu-protection for memcg lifetime, and drain_stock() didn't double
+> check stock->cached inside the work. Hence the crash during a race.
+> 
+> The drain code is different now: drain_local_stock() disables IRQs
+> which holds up rcu, and then calls drain_stock() and drain_obj_stock()
+> which both check stock->cached one more time before the deref.
+> 
+> With workqueue managing concurrency, and rcu ensuring memcg lifetime
+> during the drain, this lock indeed seems unnecessary now.
+> 
+> Unless I'm missing something, it should just be removed instead.
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 5b22a1c931a9..12a022bb82cd 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -316,6 +316,7 @@ struct tcpm_port {
- 	struct typec_partner *partner;
- 
- 	enum typec_cc_status cc_req;
-+	enum typec_cc_status src_rp;	/* work only if pd_supported == false */
- 
- 	enum typec_cc_status cc1;
- 	enum typec_cc_status cc2;
-@@ -323,6 +324,7 @@ struct tcpm_port {
- 
- 	bool attached;
- 	bool connected;
-+	bool pd_supported;
- 	enum typec_port_type port_type;
- 
- 	/*
-@@ -815,6 +817,9 @@ static enum typec_cc_status tcpm_rp_cc(struct tcpm_port *port)
- 	int nr_pdo = port->nr_src_pdo;
- 	int i;
- 
-+	if (!port->pd_supported)
-+		return port->src_rp;
-+
- 	/*
- 	 * Search for first entry with matching voltage.
- 	 * It should report the maximum supported current.
-@@ -3568,9 +3573,11 @@ static int tcpm_src_attach(struct tcpm_port *port)
- 	if (ret < 0)
- 		return ret;
- 
--	ret = port->tcpc->set_pd_rx(port->tcpc, true);
--	if (ret < 0)
--		goto out_disable_mux;
-+	if (port->pd_supported) {
-+		ret = port->tcpc->set_pd_rx(port->tcpc, true);
-+		if (ret < 0)
-+			goto out_disable_mux;
-+	}
- 
- 	/*
- 	 * USB Type-C specification, version 1.2,
-@@ -3600,7 +3607,8 @@ static int tcpm_src_attach(struct tcpm_port *port)
- out_disable_vconn:
- 	tcpm_set_vconn(port, false);
- out_disable_pd:
--	port->tcpc->set_pd_rx(port->tcpc, false);
-+	if (port->pd_supported)
-+		port->tcpc->set_pd_rx(port->tcpc, false);
- out_disable_mux:
- 	tcpm_mux_set(port, TYPEC_STATE_SAFE, USB_ROLE_NONE,
- 		     TYPEC_ORIENTATION_NONE);
-@@ -3804,6 +3812,20 @@ static enum typec_pwr_opmode tcpm_get_pwr_opmode(enum typec_cc_status cc)
- 	}
- }
- 
-+static enum typec_cc_status tcpm_pwr_opmode_to_rp(enum typec_pwr_opmode opmode)
-+{
-+	switch (opmode) {
-+	case TYPEC_PWR_MODE_USB:
-+		return TYPEC_CC_RP_DEF;
-+	case TYPEC_PWR_MODE_1_5A:
-+		return TYPEC_CC_RP_1_5;
-+	case TYPEC_PWR_MODE_3_0A:
-+	case TYPEC_PWR_MODE_PD:
-+	default:
-+		return TYPEC_CC_RP_3_0;
-+	}
-+}
-+
- static void run_state_machine(struct tcpm_port *port)
- {
- 	int ret;
-@@ -3914,6 +3936,10 @@ static void run_state_machine(struct tcpm_port *port)
- 		if (port->ams == POWER_ROLE_SWAP ||
- 		    port->ams == FAST_ROLE_SWAP)
- 			tcpm_ams_finish(port);
-+		if (!port->pd_supported) {
-+			tcpm_set_state(port, SRC_READY, 0);
-+			break;
-+		}
- 		port->upcoming_state = SRC_SEND_CAPABILITIES;
- 		tcpm_ams_start(port, POWER_NEGOTIATION);
- 		break;
-@@ -4161,7 +4187,10 @@ static void run_state_machine(struct tcpm_port *port)
- 				current_lim = PD_P_SNK_STDBY_MW / 5;
- 			tcpm_set_current_limit(port, current_lim, 5000);
- 			tcpm_set_charge(port, true);
--			tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
-+			if (!port->pd_supported)
-+				tcpm_set_state(port, SNK_READY, 0);
-+			else
-+				tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
- 			break;
- 		}
- 		/*
-@@ -4389,7 +4418,8 @@ static void run_state_machine(struct tcpm_port *port)
- 		tcpm_set_vbus(port, true);
- 		if (port->ams == HARD_RESET)
- 			tcpm_ams_finish(port);
--		port->tcpc->set_pd_rx(port->tcpc, true);
-+		if (port->pd_supported)
-+			port->tcpc->set_pd_rx(port->tcpc, true);
- 		tcpm_set_attached_state(port, true);
- 		tcpm_set_state(port, SRC_UNATTACHED, PD_T_PS_SOURCE_ON);
- 		break;
-@@ -5898,6 +5928,7 @@ EXPORT_SYMBOL_GPL(tcpm_tcpc_reset);
- static int tcpm_fw_get_caps(struct tcpm_port *port,
- 			    struct fwnode_handle *fwnode)
- {
-+	const char *opmode_str;
- 	const char *cap_str;
- 	int ret;
- 	u32 mw, frs_current;
-@@ -5932,22 +5963,37 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
- 		return ret;
- 	port->typec_caps.type = ret;
- 	port->port_type = port->typec_caps.type;
-+	port->pd_supported = !fwnode_property_read_bool(fwnode, "pd-disable");
- 
- 	port->slow_charger_loop = fwnode_property_read_bool(fwnode, "slow-charger-loop");
- 	if (port->port_type == TYPEC_PORT_SNK)
- 		goto sink;
- 
--	/* Get source pdos */
--	ret = fwnode_property_count_u32(fwnode, "source-pdos");
--	if (ret <= 0)
--		return -EINVAL;
-+	/* Get Source PDOs for the PD port or Source Rp value for the non-PD port */
-+	if (port->pd_supported) {
-+		ret = fwnode_property_count_u32(fwnode, "source-pdos");
-+		if (ret == 0)
-+			return -EINVAL;
-+		else if (ret < 0)
-+			return ret;
- 
--	port->nr_src_pdo = min(ret, PDO_MAX_OBJECTS);
--	ret = fwnode_property_read_u32_array(fwnode, "source-pdos",
--					     port->src_pdo, port->nr_src_pdo);
--	if ((ret < 0) || tcpm_validate_caps(port, port->src_pdo,
--					    port->nr_src_pdo))
--		return -EINVAL;
-+		port->nr_src_pdo = min(ret, PDO_MAX_OBJECTS);
-+		ret = fwnode_property_read_u32_array(fwnode, "source-pdos",
-+						     port->src_pdo, port->nr_src_pdo);
-+		if (ret)
-+			return ret;
-+		ret = tcpm_validate_caps(port, port->src_pdo, port->nr_src_pdo);
-+		if (ret)
-+			return ret;
-+	} else {
-+		ret = fwnode_property_read_string(fwnode, "typec-power-opmode", &opmode_str);
-+		if (ret)
-+			return ret;
-+		ret = typec_find_pwr_opmode(opmode_str);
-+		if (ret < 0)
-+			return ret;
-+		port->src_rp = tcpm_pwr_opmode_to_rp(ret);
-+	}
- 
- 	if (port->port_type == TYPEC_PORT_SRC)
- 		return 0;
-@@ -5961,6 +6007,11 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
- 	if (port->typec_caps.prefer_role < 0)
- 		return -EINVAL;
- sink:
-+	port->self_powered = fwnode_property_read_bool(fwnode, "self-powered");
-+
-+	if (!port->pd_supported)
-+		return 0;
-+
- 	/* Get sink pdos */
- 	ret = fwnode_property_count_u32(fwnode, "sink-pdos");
- 	if (ret <= 0)
-@@ -5977,9 +6028,7 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
- 		return -EINVAL;
- 	port->operating_snk_mw = mw / 1000;
- 
--	port->self_powered = fwnode_property_read_bool(fwnode, "self-powered");
--
--	/* FRS can only be supported byb DRP ports */
-+	/* FRS can only be supported by DRP ports */
- 	if (port->port_type == TYPEC_PORT_DRP) {
- 		ret = fwnode_property_read_u32(fwnode, "new-source-frs-typec-current",
- 					       &frs_current);
+I do not think you are missing anything. We can drop the lock and
+simplify the code. The above information would be great to have in the
+changelog.
+
+Thanks!
 -- 
-2.32.0.554.ge1b32706d8-goog
-
+Michal Hocko
+SUSE Labs
