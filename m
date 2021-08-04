@@ -2,96 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AAE3E0601
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43EFB3E05F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238234AbhHDQf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbhHDQf2 (ORCPT
+        id S237713AbhHDQbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:31:15 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46132 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237566AbhHDQbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:35:28 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 26AA7C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 09:35:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=xh604dbpsnnyAOf8SN+G2bUQr6IW6+e6nF19LETYIVw=; b=UE2pDEgw/gfbh
-        fU+0NbSEIaCrT5hqYME/yyrSBnfX9BMkfHZoAvNfcNpb4GtatGjPbBYj36jFz8TE
-        Am2Iy1HgYGMaDN+dDl0A0j2ON42A8q2UWkjP0FJkFUdq9lwWBoTfD42yTTrS1tFv
-        3KzoC3gXt6SMJsquLEapn9ncmmRiGQ=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDHzna+wQphv+mUAA--.32067S2;
-        Thu, 05 Aug 2021 00:35:10 +0800 (CST)
-Date:   Thu, 5 Aug 2021 00:29:08 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: Keep the riscv Kconfig selects sorted
-Message-ID: <20210805002908.2597836f@xhacker>
+        Wed, 4 Aug 2021 12:31:14 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 174GUefr026063
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 4 Aug 2021 12:30:41 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 8AB6815C37C1; Wed,  4 Aug 2021 12:30:40 -0400 (EDT)
+Date:   Wed, 4 Aug 2021 12:30:40 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Leonidas P. Papadakos" <papadakospan@gmail.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        zajec5@gmail.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
+Message-ID: <YQrAsGBmVeKQp+Z9@mit.edu>
+References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
+ <20210716114635.14797-1-papadakospan@gmail.com>
+ <CAHk-=whfeq9gyPWK3yao6cCj7LKeU3vQEDGJ3rKDdcaPNVMQzQ@mail.gmail.com>
+ <YQnHxIU+EAAxIjZA@mit.edu>
+ <YQnU5m/ur+0D5MfJ@casper.infradead.org>
+ <YQnZgq3gMKGI1Nig@mit.edu>
+ <CAHk-=wiSwzrWOSN5UCrej3YcLRPmW5tViGSA5p2m-hiyKnQiMg@mail.gmail.com>
+ <YQnkGMxZCgCWXQPf@mit.edu>
+ <20210804010351.GM3601466@magnolia>
+ <20210804063810.dvnqgxnaoajy3ehe@kari-VirtualBox>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygDHzna+wQphv+mUAA--.32067S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7GFyfCF13AFWfXF4UJFWDurg_yoW8JrWfpr
-        nYkwnrJFWjkrs5GF4Fk3y8uF1UJFn5GrW3GrW3Gay5AF93CrZrZryqqFnFqryUXaykJrn3
-        CF9Y93WUtFs8ZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUySb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr
-        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC2
-        0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
-        0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
-        14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20x
-        vaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jnNVgUUUUU=
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210804063810.dvnqgxnaoajy3ehe@kari-VirtualBox>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+On Wed, Aug 04, 2021 at 09:38:10AM +0300, Kari Argillander wrote:
+> Konstantin has wrote about these thing see below.
+> 
+> Source:
+> https://lore.kernel.org/linux-fsdevel/7538540ab82e4b398a0203564a1f1b23@paragon-software.com/
 
-Move three Kconfig selects: ARCH_STACKWALK, ARCH_SUPPORTS_ATOMIC_RMW
-and ARCH_SUPPORTS_DEBUG_PAGEALLOC to the right place.
+Thanks for the link; that's really helpful.
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/Kconfig | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> I'm just bringing this thing up because so many has asked and Konstantin
+> has not responded recently. Hopefully he will soon. Of course is it
+> little bit worrying that example generic/013 still fails after almoust
+> year has passed and Konstantin said he is working on it. And it seems that
+> more tests fails than beginning of review process.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 8fcceb8eda07..f133ac72572f 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -13,9 +13,6 @@ config 32BIT
- config RISCV
- 	def_bool y
- 	select ARCH_CLOCKSOURCE_INIT
--	select ARCH_SUPPORTS_ATOMIC_RMW
--	select ARCH_SUPPORTS_DEBUG_PAGEALLOC if MMU
--	select ARCH_STACKWALK
- 	select ARCH_HAS_BINFMT_FLAT
- 	select ARCH_HAS_DEBUG_VM_PGTABLE
- 	select ARCH_HAS_DEBUG_VIRTUAL if MMU
-@@ -33,6 +30,9 @@ config RISCV
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
- 	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
-+	select ARCH_STACKWALK
-+	select ARCH_SUPPORTS_ATOMIC_RMW
-+	select ARCH_SUPPORTS_DEBUG_PAGEALLOC if MMU
- 	select ARCH_SUPPORTS_HUGETLBFS if MMU
- 	select ARCH_USE_MEMTEST
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
--- 
-2.32.0
+Also interesting is that back in August 2020 Konstantin had promised
+that they would be publishing their own fsck and mkfs tools.
+Personally, I consider having a strong set of file system utilities to
+be as important, if not more important, than the kernel code.  Perhaps
+there are licensing issues which is why he hasn't been able to make
+his code available?
 
+One thing which I wonder about is whether there is anyone other than
+Konstantin which is working on ntfs3?  I'm less concerned about
+specific problems about the *code* --- I'll let folks like Christoph,
+Dave, and Al weigh in on that front.
 
+I'm more concerned about the long term sustainability and
+maintainibility of the effort.  Programming is a team sport, and this
+is especially true in the file system.  If you look at the successful
+file systems, there are multiple developers involved, and ideally,
+those developers work for a variety of different companies.  This way,
+if a particular file system developer gets hit by a bus, laid low with
+COVD-19, or gets laid off by their company due to changing business
+strategies, or just decides to accept a higher paying job elsewhere,
+the file system can continue to be adequately supported upstream.
+
+If Konstantin really is the only developer working on ntfs3, that may
+very well explain why generic/013 failures have been unaddressed in
+over a year.  Which is why I tend to be much more concerned about
+development community and development processes than just the quality
+and maturity of the code.  If you have a good community and
+development processes, the code qualtiy will follow.  If you don't,
+that tends to be a recipe for eventual failure.
+
+There are a large number of people on the cc line, include from folks
+like Red Hat, SuSE, etc.  It would be *great* to hear that they are
+also working on ntfs3, and it's not just a one engineer show.  (Also,
+given the deadlock problems, lack of container compatibility, etc.,
+are the Linux distros actually planning on shipping ntfs3 to their
+customers?  Are they going to help make ntfs3 suitable for customers
+with access to their help desks?)
+
+> > > I can even give them patches and configs to make it trivially easy for
+> > > them to run fstests using KVM or GCE....
+
+I've since posted RFC patches to the fstests list to allow other
+people to run xfstests on ntfs3.  I don't know why Konstantin hadn't
+published his patches to fstests a year ago --- perhaps because of
+licensing concerns with the mkfs and fsck userspace programs which
+Paragon Software is using?
+
+My fstests patches use the mkfs.ntfs and ntfsfix which ships with the
+ntfs-3g package.  They are not ideal; for example ntfsfix will not
+detect or fix all problems, and it is documented that for some issues,
+you have to boot into Windows and run CHKDSK.  But it is the only
+thing that is going to be available for any **users** of ntfs3 outside
+of Paragon Software.
+
+Some kind of update from Paragon Software about when their versions of
+{mkfs,fsck}.ntfs might be made available for Linux distributions to
+use would certainly be enlightening.
+
+					- Ted
