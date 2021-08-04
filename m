@@ -2,236 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3605D3E03F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25DD3E03F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238828AbhHDPMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:12:37 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22686 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237114AbhHDPMf (ORCPT
+        id S238847AbhHDPNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:13:53 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:58698
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237114AbhHDPNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:12:35 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 174F5Quj023733;
-        Wed, 4 Aug 2021 11:12:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=SbLA99YBkCDTvYoRyCg6c+QYBqoK+BM9HakRz7VEmRw=;
- b=Ye7xtzYcYzf//cmJqEejPyfe3duVuY25ZhaHKVxmEc5FJZYI0TY1fFSbdFfDQh1PxpZo
- 92a9422Wb9TUO/URuR8jK/fTwbmha5/6I9fPw6RpCroneTIK59uWFtMDws0BQvl2X51b
- P+7HIs7aGl/V7tbGO8Pba6EFuw6iwdPRH2OneaCyg/bna8tL6BJQWgw6buMAizt1KAMo
- iZlkC76g/Lgl24HIMujllrmfprJaIB5P09FgtrO0tRvrkLllBpDtTGG0ewAfnpvy0qi/
- LljBUKuF2OqLZReRt/L+wb8TQ2Agdw56oXhtrTwLxLxZW3wMcJYIF8j60Rg6aGTsuzRg Sg== 
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a76r6bscc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Aug 2021 11:12:19 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 174F2ZMk027928;
-        Wed, 4 Aug 2021 15:12:18 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma02wdc.us.ibm.com with ESMTP id 3a6nhw7xg5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 04 Aug 2021 15:12:18 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 174FCHsl47251822
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 4 Aug 2021 15:12:17 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7716C6A061;
-        Wed,  4 Aug 2021 15:12:17 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B54B6A057;
-        Wed,  4 Aug 2021 15:12:17 +0000 (GMT)
-Received: from v0005c16 (unknown [9.211.39.200])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  4 Aug 2021 15:12:16 +0000 (GMT)
-Message-ID: <8b4fc37178449e99c2f7a9d23429b7fb4bc13de4.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 2/2] i2c: mux: pca954x: Support multiple devices on a
- single reset line
-From:   Eddie James <eajames@linux.ibm.com>
-To:     Rob Herring <robh@kernel.org>, Peter Rosin <peda@axentia.se>
-Cc:     Linux I2C <linux-i2c@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Wed, 04 Aug 2021 10:12:16 -0500
-In-Reply-To: <CAL_JsqLFC7vjMvZ3o6ey=thf=ZHsqApdT69e6akLvs0ceb8m1w@mail.gmail.com>
-References: <20210727160315.15575-1-eajames@linux.ibm.com>
-         <20210727160315.15575-3-eajames@linux.ibm.com>
-         <YQhZimPDbNJk5nbR@robh.at.kernel.org>
-         <29d72be98ebe3e5761f4c3da7b4daf2f05fbbf3b.camel@linux.ibm.com>
-         <209d9f68-e6c4-68c9-d495-d7e3f5050440@axentia.se>
-         <CAL_JsqLFC7vjMvZ3o6ey=thf=ZHsqApdT69e6akLvs0ceb8m1w@mail.gmail.com>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: DrjR7rERvU23V8m3m24PuiNQmExExjoy
-X-Proofpoint-ORIG-GUID: DrjR7rERvU23V8m3m24PuiNQmExExjoy
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-04_03:2021-08-04,2021-08-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
- clxscore=1015 priorityscore=1501 adultscore=0 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108040085
+        Wed, 4 Aug 2021 11:13:51 -0400
+Received: from localhost.localdomain (111-240-142-2.dynamic-ip.hinet.net [111.240.142.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id C3D1E3F0FC;
+        Wed,  4 Aug 2021 15:13:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628090018;
+        bh=2gLssv6zfXEbS3M1XEEg2CclWAXeqhmsLnOeaUBQ4dw=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=Rq9p9eYkWFrpXHPeddwWgMU2pwPLCvrvEWC3LAER+1QJbA6Q1cT2MkiHfS8s8sd83
+         pnStAIY3TQgINh0IS8bJy5PSAK6n5NZ7jF8N9YZ8eWc0EhTPgw2biULxU7gQGds63A
+         0EUXqZ6DgWw4ky+2Sc6k18PkrwgFWgI/P+S1J+Ww2WOOx6yUurOri5UViC+6MMn3vy
+         6+wcyRhcCSJgPFe8jzqwXKQTR4m5esXT8qfIoKOZ/QOHdsNyq7j22aVX5bLumQ0Fal
+         VfWXz7ADN81Pz9eXmBOcv/V/qzqhSkwcw4OLevZuwpi6ydSjITFeZ4bcGhuJVQMtso
+         DEv07sn4I7jAA==
+From:   chris.chiu@canonical.com
+To:     jes.sorensen@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     code@reto-schneider.ch, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Chiu <chris.chiu@canonical.com>
+Subject: [PATCH v2] rtl8xxxu: Fix the handling of TX A-MPDU aggregation
+Date:   Wed,  4 Aug 2021 23:13:25 +0800
+Message-Id: <20210804151325.86600-1-chris.chiu@canonical.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-08-04 at 07:28 -0600, Rob Herring wrote:
-> On Wed, Aug 4, 2021 at 1:50 AM Peter Rosin <peda@axentia.se> wrote:
-> > On 2021-08-02 23:51, Eddie James wrote:
-> > > On Mon, 2021-08-02 at 14:46 -0600, Rob Herring wrote:
-> > > > On Tue, Jul 27, 2021 at 11:03:15AM -0500, Eddie James wrote:
-> > > > > Some systems connect several PCA954x devices to a single
-> > > > > reset
-> > > > > GPIO. For
-> > > > > these devices to get out of reset and probe successfully,
-> > > > > each
-> > > > > device must
-> > > > > defer the probe until the GPIO has been hogged. Accomplish
-> > > > > this by
-> > > > > attempting to grab a new "reset-shared-hogged" devicetree
-> > > > > property,
-> > > > > but
-> > > > > expect it to fail with EPROBE_DEFER or EBUSY.
-> > > > > 
-> > > > > Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> > > > > ---
-> > > > >  drivers/i2c/muxes/i2c-mux-pca954x.c | 46
-> > > > > +++++++++++++++++++++++
-> > > > > ------
-> > > > >  1 file changed, 37 insertions(+), 9 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c
-> > > > > b/drivers/i2c/muxes/i2c-mux-pca954x.c
-> > > > > index 4ad665757dd8..376b54ffb590 100644
-> > > > > --- a/drivers/i2c/muxes/i2c-mux-pca954x.c
-> > > > > +++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
-> > > > > @@ -434,15 +434,43 @@ static int pca954x_probe(struct
-> > > > > i2c_client
-> > > > > *client,
-> > > > >     i2c_set_clientdata(client, muxc);
-> > > > >     data->client = client;
-> > > > > 
-> > > > > -   /* Reset the mux if a reset GPIO is specified. */
-> > > > > -   gpio = devm_gpiod_get_optional(dev, "reset",
-> > > > > GPIOD_OUT_HIGH);
-> > > > > -   if (IS_ERR(gpio))
-> > > > > -           return PTR_ERR(gpio);
-> > > > > -   if (gpio) {
-> > > > > -           udelay(1);
-> > > > > -           gpiod_set_value_cansleep(gpio, 0);
-> > > > > -           /* Give the chip some time to recover. */
-> > > > > -           udelay(1);
-> > > > > +   /*
-> > > > > +    * Grab the shared, hogged gpio that controls the mux
-> > > > > reset. We
-> > > > > expect
-> > > > > +    * this to fail with either EPROBE_DEFER or EBUSY. The
-> > > > > only
-> > > > > purpose of
-> > > > > +    * trying to get it is to make sure the gpio controller
-> > > > > has
-> > > > > probed up
-> > > > > +    * and hogged the line to take the mux out of reset,
-> > > > > meaning
-> > > > > that the
-> > > > > +    * mux is ready to be probed up. Don't try and set the
-> > > > > line any
-> > > > > way; in
-> > > > > +    * the event we actually successfully get the line (if it
-> > > > > wasn't
-> > > > > +    * hogged) then we immediately release it, since there is
-> > > > > no
-> > > > > way to
-> > > > > +    * sync up the line between muxes.
-> > > > > +    */
-> > > > > +   gpio = gpiod_get_optional(dev, "reset-shared-hogged", 0);
-> > > > > +   if (IS_ERR(gpio)) {
-> > > > > +           ret = PTR_ERR(gpio);
-> > > > > +           if (ret != -EBUSY)
-> > > > > +                   return ret;
-> > > > 
-> > > > Why can't you just do this with the existing 'reset-gpios'
-> > > > property?
-> > > > What's the usecase where you'd want to fail probe because EBUSY
-> > > > other
-> > > > than an error in your DT.
-> > > 
-> > > Hi, thanks for the reply.
-> > > 
-> > > Are you suggesting I use "reset-gpios" and change the driver to
-> > > ignore
-> > > EBUSY? I don't know any other usecase, I just didn't think it
-> > > would be
-> > > acceptable to ignore EBUSY on that, but perhaps it is a better
-> > > solution.
-> > 
-> > Hi!
-> > 
-> > From a device-tree point of view that might seem simple. But it
-> > becomes
-> > a mess when several driver instances need to coordinate. If one
-> > instance
-> > is grabbing the reset line but is then stalled while other
-> > instances
-> > race ahead, they might be clobbered by a late reset from the
-> > stalled
-> > first instance.
+From: Chris Chiu <chris.chiu@canonical.com>
 
-Hi,
+The TX A-MPDU aggregation is not handled in the driver since the
+ieee80211_start_tx_ba_session has never been started properly.
+Start and stop the TX BA session by tracking the TX aggregation
+status of each TID. Fix the ampdu_action and the tx descriptor
+accordingly with the given TID.
 
-Well this isn't a concern if the line is hogged - once it's hogged it
-shouldn't change, and all driver instances should get the same thing -
-EBUSY. Before it's hogged all driver instances should get EPROBE_DEFER.
+Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+---
 
-> > 
-> > And while it might be possible to arrange the code such that those
-> > dragons
-> > are dodged and that the reset is properly coordinated, what if the
-> > gpio is
-> > supposed to be shared with some other totally unrelated driver? It
-> > might
-> > seem to work when everything is normal, but as soon as anything out
-> > of the
-> > ordinary happens, all bets are off. I expect subtle problems in the
-> > furture.
+Changelog:
+  v2:
+   - use data type BITMAP for tx_aggr_started instead of bool array
 
-Unless another driver uses the non-exclusive flag (which can cause many
-subtle problems in all sorts of areas anyway), the GPIO shouldn't
-change. Now, the driver that does the GPIO hogging might go away, which
-definitely would be a problem. I suppose I feel it's an error path
-anyway, so all bets are off for dependent devices.
+ .../net/wireless/realtek/rtl8xxxu/rtl8xxxu.h  |  2 ++
+ .../wireless/realtek/rtl8xxxu/rtl8xxxu_core.c | 33 ++++++++++++++-----
+ 2 files changed, 26 insertions(+), 9 deletions(-)
 
-> 
-> All of this is true, but a different reset GPIO property name does
-> nothing to solve it.
-
-This is part of why I chose a new property that specifically indicates
-that it's hogged.
-
-> 
-> > I see no simple solution to this, and I also expect that if gpios
-> > need
-> > to be shared, there will eventually need to be some kind of layer
-> > that
-> > helps with coordination such that it becomes explicit rather than
-> > implicit and fragile.
-> 
-> Yes, like making the reset subsystem handle 'reset-gpios' properties
-> as I suggested.
-
-That would be nice... if anyone has the time for such an extensive
-addition :(
-
-Thanks,
-Eddie
-
-> 
-> Rob
+diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
+index 01735776345a..7ddce3c3f0c4 100644
+--- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
++++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
+@@ -1378,6 +1378,8 @@ struct rtl8xxxu_priv {
+ 	u8 no_pape:1;
+ 	u8 int_buf[USB_INTR_CONTENT_LENGTH];
+ 	u8 rssi_level;
++	DECLARE_BITMAP(tx_aggr_started, IEEE80211_NUM_TIDS);
++	DECLARE_BITMAP(tid_tx_operational, IEEE80211_NUM_TIDS);
+ 	/*
+ 	 * Only one virtual interface permitted because only STA mode
+ 	 * is supported and no iface_combinations are provided.
+diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+index ac1061caacd6..3285a91efb91 100644
+--- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
++++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+@@ -4805,6 +4805,8 @@ rtl8xxxu_fill_txdesc_v1(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
+ 	struct ieee80211_rate *tx_rate = ieee80211_get_tx_rate(hw, tx_info);
+ 	struct rtl8xxxu_priv *priv = hw->priv;
+ 	struct device *dev = &priv->udev->dev;
++	u8 *qc = ieee80211_get_qos_ctl(hdr);
++	u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
+ 	u32 rate;
+ 	u16 rate_flags = tx_info->control.rates[0].flags;
+ 	u16 seq_number;
+@@ -4828,7 +4830,7 @@ rtl8xxxu_fill_txdesc_v1(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
+ 
+ 	tx_desc->txdw3 = cpu_to_le32((u32)seq_number << TXDESC32_SEQ_SHIFT);
+ 
+-	if (ampdu_enable)
++	if (ampdu_enable && test_bit(tid, priv->tid_tx_operational))
+ 		tx_desc->txdw1 |= cpu_to_le32(TXDESC32_AGG_ENABLE);
+ 	else
+ 		tx_desc->txdw1 |= cpu_to_le32(TXDESC32_AGG_BREAK);
+@@ -4876,6 +4878,8 @@ rtl8xxxu_fill_txdesc_v2(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
+ 	struct rtl8xxxu_priv *priv = hw->priv;
+ 	struct device *dev = &priv->udev->dev;
+ 	struct rtl8xxxu_txdesc40 *tx_desc40;
++	u8 *qc = ieee80211_get_qos_ctl(hdr);
++	u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
+ 	u32 rate;
+ 	u16 rate_flags = tx_info->control.rates[0].flags;
+ 	u16 seq_number;
+@@ -4902,7 +4906,7 @@ rtl8xxxu_fill_txdesc_v2(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
+ 
+ 	tx_desc40->txdw9 = cpu_to_le32((u32)seq_number << TXDESC40_SEQ_SHIFT);
+ 
+-	if (ampdu_enable)
++	if (ampdu_enable && test_bit(tid, priv->tid_tx_operational))
+ 		tx_desc40->txdw2 |= cpu_to_le32(TXDESC40_AGG_ENABLE);
+ 	else
+ 		tx_desc40->txdw2 |= cpu_to_le32(TXDESC40_AGG_BREAK);
+@@ -5015,12 +5019,19 @@ static void rtl8xxxu_tx(struct ieee80211_hw *hw,
+ 	if (ieee80211_is_data_qos(hdr->frame_control) && sta) {
+ 		if (sta->ht_cap.ht_supported) {
+ 			u32 ampdu, val32;
++			u8 *qc = ieee80211_get_qos_ctl(hdr);
++			u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
+ 
+ 			ampdu = (u32)sta->ht_cap.ampdu_density;
+ 			val32 = ampdu << TXDESC_AMPDU_DENSITY_SHIFT;
+ 			tx_desc->txdw2 |= cpu_to_le32(val32);
+ 
+ 			ampdu_enable = true;
++
++			if (!test_bit(tid, priv->tx_aggr_started) &&
++			    !(skb->protocol == cpu_to_be16(ETH_P_PAE)))
++				if (!ieee80211_start_tx_ba_session(sta, tid, 0))
++					set_bit(tid, priv->tx_aggr_started);
+ 		}
+ 	}
+ 
+@@ -6096,6 +6107,7 @@ rtl8xxxu_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 	struct device *dev = &priv->udev->dev;
+ 	u8 ampdu_factor, ampdu_density;
+ 	struct ieee80211_sta *sta = params->sta;
++	u16 tid = params->tid;
+ 	enum ieee80211_ampdu_mlme_action action = params->action;
+ 
+ 	switch (action) {
+@@ -6108,17 +6120,20 @@ rtl8xxxu_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 		dev_dbg(dev,
+ 			"Changed HT: ampdu_factor %02x, ampdu_density %02x\n",
+ 			ampdu_factor, ampdu_density);
+-		break;
++		return IEEE80211_AMPDU_TX_START_IMMEDIATE;
++	case IEEE80211_AMPDU_TX_STOP_CONT:
+ 	case IEEE80211_AMPDU_TX_STOP_FLUSH:
+-		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP_FLUSH\n", __func__);
+-		rtl8xxxu_set_ampdu_factor(priv, 0);
+-		rtl8xxxu_set_ampdu_min_space(priv, 0);
+-		break;
+ 	case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
+-		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP_FLUSH_CONT\n",
+-			 __func__);
++		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP\n", __func__);
+ 		rtl8xxxu_set_ampdu_factor(priv, 0);
+ 		rtl8xxxu_set_ampdu_min_space(priv, 0);
++		clear_bit(tid, priv->tx_aggr_started);
++		clear_bit(tid, priv->tid_tx_operational);
++		ieee80211_stop_tx_ba_cb_irqsafe(vif, sta->addr, tid);
++		break;
++	case IEEE80211_AMPDU_TX_OPERATIONAL:
++		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_OPERATIONAL\n", __func__);
++		set_bit(tid, priv->tid_tx_operational);
+ 		break;
+ 	case IEEE80211_AMPDU_RX_START:
+ 		dev_dbg(dev, "%s: IEEE80211_AMPDU_RX_START\n", __func__);
+-- 
+2.20.1
 
