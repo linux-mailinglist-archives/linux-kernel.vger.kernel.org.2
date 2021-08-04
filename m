@@ -2,198 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7B33E01A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248B03E01A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238322AbhHDNFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:05:53 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:53286 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237577AbhHDNFv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:05:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1628082340; x=1659618340;
-  h=references:from:to:cc:in-reply-to:date:message-id:
-   mime-version:subject;
-  bh=6DQs4BJxZy5tiv1i8yLWpSEtKNltR4iXCeNhNIa5+Sg=;
-  b=PKOfmbq0NUc2Ow3w4cMLlBqRjUCkVlPuPaYbjxINUybqSwRAibfU04Rp
-   uyIkNlpiOxvBRQFzZzuyemTFVQDBWylZX459KTRqOSHU2/nPxpqD0rH5w
-   STMEeeuzOiFsgIYcuXUEpLA1kNNuujODLA8pN0t0yJplZAK4zclxOY3/p
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.84,294,1620691200"; 
-   d="scan'208";a="127110400"
-Subject: Re: [PATCH net-next 07/21] ethernet, ena: convert to standard XDP stats
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-397e131e.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 04 Aug 2021 13:05:28 +0000
-Received: from EX13D28EUC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2c-397e131e.us-west-2.amazon.com (Postfix) with ESMTPS id 0804AA0472;
-        Wed,  4 Aug 2021 13:05:24 +0000 (UTC)
-Received: from u570694869fb251.ant.amazon.com.amazon.com (10.43.161.229) by
- EX13D28EUC001.ant.amazon.com (10.43.164.4) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Wed, 4 Aug 2021 13:05:04 +0000
-References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
- <20210803163641.3743-8-alexandr.lobakin@intel.com>
-User-agent: mu4e 1.4.15; emacs 27.1
-From:   Shay Agroskin <shayagr@amazon.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Lukasz Czapnik <lukasz.czapnik@intel.com>,
-        Marcin Kubiak <marcin.kubiak@intel.com>,
-        "Michal Kubiak" <michal.kubiak@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Netanel Belgazal" <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        "Guy Tzalik" <gtzalik@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Andrii Nakryiko" <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Sameeh Jubran <sameehj@amazon.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        "Ido Schimmel" <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
-        "Vladyslav Tarasiuk" <vladyslavt@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Jian Shen <shenjian15@huawei.com>,
-        "Petr Vorel" <petr.vorel@gmail.com>, Dan Murphy <dmurphy@ti.com>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        <netdev@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>, <bpf@vger.kernel.org>
-In-Reply-To: <20210803163641.3743-8-alexandr.lobakin@intel.com>
-Date:   Wed, 4 Aug 2021 16:04:59 +0300
-Message-ID: <pj41zllf5hmkck.fsf@u570694869fb251.ant.amazon.com>
+        id S238321AbhHDNGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:06:53 -0400
+Received: from mail-am6eur05on2054.outbound.protection.outlook.com ([40.107.22.54]:30017
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231310AbhHDNGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 09:06:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EmSu5G2kVFj3pINIO34KrLZLGBvzc6rGw+DDIK8VNE4W5wROqPJrDYCB9MOKHsk9QNQhmKq8BjQOybyowD5smokQfAnqawdHTAYjVfCWbJsfcpwUfTfo5FTLtxp4QLcrZm6WxMdwPvQB0I1D+efPbruKvnLxbMF2MMlOgzglj8u7Mzel4PJbo4N3Fdcx0DvM0m5al8gIPjRi8jDWSmLPnPRwBmDQk6yoUXuuwmaGQiV2wAQwMFaLh2HB5+rmRH23uCMIkCdcXVYJtQrGVvzh0o08v33uIa0bHDaU8R/6i0V1PpSlgt1M+mNaI+2xj2jbINJaSZC6rV1cWzW025L9vQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=61g4JixVwa/rU0H3/EKE5WgzMEHvqNtrxhKmRbDxbss=;
+ b=QBYHe3bVOU17h9vYSRTDwBusPTmsz5INY8HvufJG8WDd3/M5PL+LWazyrSTLD4HB3JWb4duexGnBmTzodGZDOIq2Kh54HFbHtyOZWK4Hthxgbh5CeFGqLcvaF1M5tIkgvPJk3QSkGC8YrGt26yMmYqZ7UQfcll0ZDHWQeMpOOuSpj+Uhmm8Vqm4giZPRB2H6xF8OnUlS1SUiCHIH26ZDiaWeYvmMZYf0/7cj3HKKzAdt/pAigmfO5+Px4EBNUbyITscUy/nDpijfzNwl74tS8L/JbvaGjPD/IQjB/QQtWIJ+EFrLjTKoI59RBIuz4V4qNF9FhwP84c7QlrdgHoq8Bg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=61g4JixVwa/rU0H3/EKE5WgzMEHvqNtrxhKmRbDxbss=;
+ b=T7sqSX/VI8I3IX44br9Fdg6BiQ3KbowPmQh6anmEK6ChQGcvV0JQYi3vOJYyOdEDYKfo8hD1qZCGvHVQz2lsBIfiHKVXOe4AwMZVtmE1bLV7F1cY7isw7RjJwqLU8TH2gfsyhzV6rWg6gcFFmYKnv4TOBlEEdJNxdiY1WHtq1UY=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=wolfvision.net;
+Received: from DBBPR08MB4523.eurprd08.prod.outlook.com (2603:10a6:10:c8::19)
+ by DB8PR08MB5401.eurprd08.prod.outlook.com (2603:10a6:10:f9::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Wed, 4 Aug
+ 2021 13:06:37 +0000
+Received: from DBBPR08MB4523.eurprd08.prod.outlook.com
+ ([fe80::ade3:93e2:735c:c10b]) by DBBPR08MB4523.eurprd08.prod.outlook.com
+ ([fe80::ade3:93e2:735c:c10b%7]) with mapi id 15.20.4394.016; Wed, 4 Aug 2021
+ 13:06:36 +0000
+From:   Michael Riesch <michael.riesch@wolfvision.net>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Liang Chen <cl@rock-chips.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Simon Xue <xxm@rock-chips.com>,
+        Jianqun Xu <jay.xu@rock-chips.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Johan Jonker <jbx6244@gmail.com>
+Subject: [PATCH v2 0/7] arm64: dts: rockchip: rk3568-evb1-v10: add sd card support
+Date:   Wed,  4 Aug 2021 15:06:18 +0200
+Message-Id: <20210804130625.15449-1-michael.riesch@wolfvision.net>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM4PR0202CA0012.eurprd02.prod.outlook.com
+ (2603:10a6:200:89::22) To DBBPR08MB4523.eurprd08.prod.outlook.com
+ (2603:10a6:10:c8::19)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Originating-IP: [10.43.161.229]
-X-ClientProxiedBy: EX13D22UWB004.ant.amazon.com (10.43.161.165) To
- EX13D28EUC001.ant.amazon.com (10.43.164.4)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carlos.wolfvision-at.intra (91.118.163.37) by AM4PR0202CA0012.eurprd02.prod.outlook.com (2603:10a6:200:89::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Wed, 4 Aug 2021 13:06:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 45c8f033-29ad-4375-d11e-08d95748b0d6
+X-MS-TrafficTypeDiagnostic: DB8PR08MB5401:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR08MB5401DB8B81EB64209401025BF2F19@DB8PR08MB5401.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: K0wkj7iLOu43tEPuO0m2YvFOCYXRm+vF+1cps5DY4Ql88M9Wur7B0H3SpMslN+E5aiqXWS9rxwGI5aaPt0ZjORKriiZ3vDhKTrMExrolBdzIW86+n/577hbDrNRQxcnvBta1j218G+ntbs0DLXiBRcoxr7T27C4NFVij7JZCbgjNIElrN1msSJ1k/WO6n9bFxVq3QTiI2/iinzeiKNhUP/Zd9U2R9NPB5YCxg6qdjzFtv95KUfKL0qmA6tc5UCfHr0l34F4YkQPDUBFLIwafu8m9MKAeSTg8EpdLf3PCfdFQl0lZwM3yclup5lV6CnDyrsUUnkK+Ro10AB2iBK90GtfKWCvdVlNFT87RAj/uK2cHxSXBnC5TNvWGacRAk0qmRrpAIlrB+3yfc6qd4PW86KPHp3J3eCTnD60XmEbF2uJLxqeucHpS7/xcYibTP+iEWL752L7sJTudcoJRzgOBEO/D8NcHegXuxD8VWdI/nN0WIi5umOiRQ3+hIUBZ8J8alxX4PCAG3IErBqjh9ADdAmU89bErOPEERVvOEV6ZVempp6wTFQwBxLbCtXhJSZF5tvtlaiYRHRvYaSTuhSzyPypDkRkA+1LR6RQ0itIW5jYl2WqkXte9FxxPHnyVQ54636hk5zLjSDPPfBNip9vvovMU+aYiGVEF7tK/pNJqbzrM3lJcBNqt+OgLN1Da1g/HdKFh2FBtvIZUPSlFO/YpJn/BgTXepIe13EPfFJBj9GV2W9EDSc4M+u44M3zg+IoUqFN8e/9frFIk0VCUvkv+pg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR08MB4523.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39840400004)(396003)(366004)(346002)(136003)(8676002)(186003)(956004)(1076003)(7416002)(478600001)(2616005)(2906002)(66556008)(8936002)(966005)(66476007)(66946007)(52116002)(6666004)(83380400001)(54906003)(36756003)(38350700002)(5660300002)(44832011)(316002)(6512007)(38100700002)(26005)(86362001)(6486002)(4326008)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qtM2VHz88XU6PsuNcduuGi/hRB6b4du1mCZ77ocKuci/4RTJuipzP/OVMEhB?=
+ =?us-ascii?Q?pPHmPEUck8tGSDiKAxMSEt2hS6EGOJLFSgiUvV8qguQUVn9bp79ULG2jdoFz?=
+ =?us-ascii?Q?1vxHq3weglEUGKKdmNT+myWRSGWQH3A3chbe8Mw2+OScIcp2r94KVe0fHo5k?=
+ =?us-ascii?Q?HpkmVtYtA1cBt1aJlKCT4Mmo4CtjJc0NADaBaNoSwjNRQ3rbwfcXAPjgbxe6?=
+ =?us-ascii?Q?YTfPwbuLuTCe7aVXw1M4HDr3McxbYX+R6R1/bx/9Y42kytDBUBI5KQ1+lAv3?=
+ =?us-ascii?Q?y4ppc7LpBh+f8sJhwyTBMyXc7R/pKGVvnQL8SvB5AfVdfpi+wPTVJsqqmZBj?=
+ =?us-ascii?Q?7UlTcaiYyFwn6s9cm/8agyBYoQcyTTSvqrFauz6tJYCUYYRJyl8NbGsLpqnd?=
+ =?us-ascii?Q?k1AdKWHZ/t9BpD9q4lsfk9yfuw+fA/5fchXEo+tMCcGkhkSuSpOqpFVHENjX?=
+ =?us-ascii?Q?+m5AcXRydfpgf746Tv9LOVn4/PQShPU2Htn/z869T3eo2SGw0md6I8/BW8t7?=
+ =?us-ascii?Q?PaYXxllDoBTPmK9tJYaIhXhSFFqve8h7z1DRnaZZ5iRkcSwWAmsOpBcjsXfJ?=
+ =?us-ascii?Q?xiblymz30hWSX0WGTp9TJsplCr5FVGn8my7eamBHMuCpDSNPjPTr5o+V5SVg?=
+ =?us-ascii?Q?QGXZgIF8fMAoB7JeigfKbtUk8Twoiy3cjz1o6qtPyU6TxQzwE47k9FpVDFaG?=
+ =?us-ascii?Q?fWqcELseoNtCczEIC9gTKy4rmG8P2IvnBEz0eZ/0fE+PHDpY8d0gt2iuQjtO?=
+ =?us-ascii?Q?ebq064qUGL8/RGzDZESG6M3Rlc3bPSdz/BkIH5W2d0sghFJLmiochAItLo8y?=
+ =?us-ascii?Q?KRUvemuPIrnrWrjhLm76bwN2itUvjH2V3mM3Eu53KCapiz8pth/DBy0/MmEz?=
+ =?us-ascii?Q?MFqJnQhAHv8C90qBYxiOFegNuorsbhaaWkUPknvwoiv6zhbeShF3CF681FDT?=
+ =?us-ascii?Q?IkasqrFj9CBJt4kG4IHyPOgnCtyEruVgncyXpLyw0gG8jZ0fP8ezc2Wnup4z?=
+ =?us-ascii?Q?qm1z4bK9ZoO+4mIirAntPj9PSTvDmHLuktTihOMkc7utdUv3Ywc7NN2DhPpR?=
+ =?us-ascii?Q?S7aqdWeP0V87PT29/fs7P8IEI/J0ml5lS9Lq60/oEQYgLEg76LXwWnXCkI7Y?=
+ =?us-ascii?Q?sI88VPVECEVf8oMjxyL/COpBOlIar2675p3IbpcObliGWpI/O7A6C1G46tzI?=
+ =?us-ascii?Q?byQQD4Mib7OYEjIp97vNzFdRjr+BTfSgyWoRXezXOJB/FH9ieIfvg+FLO7BL?=
+ =?us-ascii?Q?7Uh8Ot5x/Ld2Pd9rKYpA/Rh7kcupalmwns/ByrEem44ZQzi/rG/BBMwPUpDD?=
+ =?us-ascii?Q?7v0pJD8OTNbMMhWBFsCKK7v7?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45c8f033-29ad-4375-d11e-08d95748b0d6
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR08MB4523.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2021 13:06:36.7714
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QcdOoks3TiaWyYz3Bazf7mpt4NLHwco+KY2VG+kivoNR9m/SXnqYRHHRitCfJxL7v6r1jLUHYL8lZVhK8YIPeXQlXR+WhnU+gGtgzoFhcLk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR08MB5401
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all,
 
-Alexander Lobakin <alexandr.lobakin@intel.com> writes:
+This series enables the SD card reader on the RK3568 EVB1
+and completes the support for the on-board eMMC.
 
->
->
->
-> Its 6 XDP per-channel counters align just fine with the standard
-> stats.
-> Drop them from the custom Ethtool statistics and expose to the
-> standard stats infra instead.
->
-> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> ---
->  drivers/net/ethernet/amazon/ena/ena_ethtool.c | 46 
->  ++++++++++++++++---
->  1 file changed, 40 insertions(+), 6 deletions(-)
+As the PMU IO domains are required, the patch series that
+introduces support for the RK3568 [1] has been integrated
+in this series to bring this mainline.
 
-Hi,
-thanks for making this patch. I like the idea of splitting stats 
-into a per-queue basis
+Best regards,
+Michael
 
->
-> diff --git a/drivers/net/ethernet/amazon/ena/ena_ethtool.c 
-> b/drivers/net/ethernet/amazon/ena/ena_ethtool.c
-> index 851a198cec82..1b6563641575 100644
-> --- a/drivers/net/ethernet/amazon/ena/ena_ethtool.c
-> +++ b/drivers/net/ethernet/amazon/ena/ena_ethtool.c
-> @@ -90,12 +90,6 @@ static const struct ena_stats 
-> ena_stats_rx_strings[] = {
->         ENA_STAT_RX_ENTRY(bad_req_id),
->         ENA_STAT_RX_ENTRY(empty_rx_ring),
->         ENA_STAT_RX_ENTRY(csum_unchecked),
-> -       ENA_STAT_RX_ENTRY(xdp_aborted),
-> -       ENA_STAT_RX_ENTRY(xdp_drop),
-> -       ENA_STAT_RX_ENTRY(xdp_pass),
-> -       ENA_STAT_RX_ENTRY(xdp_tx),
-> -       ENA_STAT_RX_ENTRY(xdp_invalid),
-> -       ENA_STAT_RX_ENTRY(xdp_redirect),
->
+[1] https://patchwork.kernel.org/project/linux-rockchip/list/?series=489383
 
-The ena_stats_rx_strings array is (indirectly) accessed through 
-ena_get_stats() function which is used for both fetching ethtool 
-stats and
-for sharing the stats with the device in case of an error (through 
-ena_dump_stats_ex() function).
+v2:
+- rename alias to match convention
+- add support for rk3568 io domains
 
-The latter use is broken by removing the XDP specific stats from 
-ena_stats_rx_strings array.
+Jianqun Xu (1):
+  soc: rockchip: io-domain: add rk3568 support
 
-I can submit an adaptation for the new system later (similar to 
-mlx5) if you prefer
+Michael Riesch (6):
+  dt-bindings: power: add rk3568-pmu-io-domain support
+  arm64: dts: rockchip: rk3568-evb1-v10: add regulators of rk809 pmic
+  arm64: dts: rockchip: enable io domains for rk356x
+  arm64: dts: rockchip: rk3568-evb1-v10: enable io domains
+  arm64: dts: rockchip: rk3568-evb1-v10: add pinctrl and alias to emmc
+    node
+  arm64: dts: rockchip: rk3568-evb1-v10: add node for sd card
 
-thanks,
-Shay
+ .../bindings/power/rockchip-io-domain.yaml    |  30 +++
+ .../boot/dts/rockchip/rk3568-evb1-v10.dts     | 237 ++++++++++++++++++
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi      |   5 +
+ drivers/soc/rockchip/io-domain.c              |  88 ++++++-
+ 4 files changed, 352 insertions(+), 8 deletions(-)
 
->  };
->
->  static const struct ena_stats ena_stats_ena_com_strings[] = {
-> @@ -324,6 +318,44 @@ static void ena_get_ethtool_strings(struct 
-> net_device *netdev,
->         }
->  }
->
-> +static int ena_get_std_stats_channels(struct net_device 
-> *netdev, u32 sset)
-> +{
-> +       const struct ena_adapter *adapter = netdev_priv(netdev);
-> +
-> +       switch (sset) {
-> +       case ETH_SS_STATS_XDP:
-> +               return adapter->num_io_queues;
-> +       default:
-> +               return -EOPNOTSUPP;
-> +       }
-> +}
-> +
-> +static void ena_get_xdp_stats(struct net_device *netdev,
-> +                             struct ethtool_xdp_stats 
-> *xdp_stats)
-> +{
-> +       const struct ena_adapter *adapter = netdev_priv(netdev);
-> +       const struct u64_stats_sync *syncp;
-> +       const struct ena_stats_rx *stats;
-> +       struct ethtool_xdp_stats *iter;
-> +       u32 i;
-> +
-...
->  {
-> @@ -916,6 +948,8 @@ static const struct ethtool_ops 
-> ena_ethtool_ops = {
->         .get_tunable            = ena_get_tunable,
->         .set_tunable            = ena_set_tunable,
->         .get_ts_info            = ethtool_op_get_ts_info,
-> +       .get_std_stats_channels = ena_get_std_stats_channels,
-> +       .get_xdp_stats          = ena_get_xdp_stats,
->  };
->
->  void ena_set_ethtool_ops(struct net_device *netdev)
+-- 
+2.20.1
 
