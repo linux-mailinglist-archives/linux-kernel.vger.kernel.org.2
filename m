@@ -2,102 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B2D3E0105
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8920C3E010A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237235AbhHDMVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 08:21:11 -0400
-Received: from mail-wm1-f51.google.com ([209.85.128.51]:45634 "EHLO
-        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236370AbhHDMVK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 08:21:10 -0400
-Received: by mail-wm1-f51.google.com with SMTP id l11-20020a7bcf0b0000b0290253545c2997so1330702wmg.4;
-        Wed, 04 Aug 2021 05:20:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A3YHHdNQhQUPqpOyWucLW8OhP5ZvpbmVO6o/+w7Bn+c=;
-        b=Rc+bYEA5OGyBlpKPYJaLaXQqxcwcgjBdpImuyuJtmzILo3wWb4sDDOB18JR3sLaZ9C
-         R6780TiqBjVWXJVmm4ecOXgY7AKkyM54X3cb2CgeuSqF6ekc0R47XYcLS7HvM3wI3XRf
-         +0TiJFls4UPGPgsN3uo+JW6ZfZJxpinb9ApDyEt+XVpvgkaLx1mUgLhslSfMfQEIWJQ9
-         vVD5371078JWqiUKdkcWH1IwM1AdjqA1/jpkrvNMpGsMtWr2AChLy1S/mgMQWfB2FBCo
-         1W5RfjEnK9dgj7Ed+An08NPh+6SroFPH4KxQTxYYBd+c0NlFLTL5nNDac2r+42yoMT7Z
-         D4kQ==
-X-Gm-Message-State: AOAM530l27GogIOsvtTiIeMmoRskjbkxhRZbG/aJcmMPEIJyQ/K+2uCn
-        IQD0wEzKEUB831IrKtwM/g8=
-X-Google-Smtp-Source: ABdhPJwh3Tcjxxk0Mbg8rzgTpAGMkjevBEK6fsJzBKd6twg603sG5kquxgYAABLzo2dw3hzs+xEZ9A==
-X-Received: by 2002:a1c:c91a:: with SMTP id f26mr27416713wmb.162.1628079656210;
-        Wed, 04 Aug 2021 05:20:56 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id j36sm5385370wms.16.2021.08.04.05.20.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 05:20:55 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 12:20:54 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        nunodasneves@linux.microsoft.com
-Subject: Re: [PATCH v5] hyperv: root partition faults writing to VP ASSIST
- MSR PAGE
-Message-ID: <20210804122054.2iqcdukdx6a3x54t@liuwe-devbox-debian-v2>
-References: <20210731120519.17154-1-kumarpraveen@linux.microsoft.com>
- <20210802125133.ci2jlg32mdfd5xds@liuwe-devbox-debian-v2>
+        id S237306AbhHDMYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 08:24:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232269AbhHDMYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 08:24:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2747460F22;
+        Wed,  4 Aug 2021 12:23:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628079832;
+        bh=4ylRegfHRw69soIf1hEiZSOw0NhH/r/QM37Gu6tZzvk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=020tCh9PnFhp6IKwLjw0ahVmzwP9lxHbmyQ8SSBBzJfqJQLWavjGyvBbvXdbUvHHQ
+         Zeq0RxhugHF/0RQnBiaF5UcenwFk7mQUy+/r8asHUb1S49Ht3fSYOxXBYPPtyOdlkU
+         2sQ4M2eKnapNDjDXd9RNHSc6rnAlbT2pL9wiwtAk=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.14.242
+Date:   Wed,  4 Aug 2021 14:23:45 +0200
+Message-Id: <162807982692255@kroah.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210802125133.ci2jlg32mdfd5xds@liuwe-devbox-debian-v2>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 12:51:33PM +0000, Wei Liu wrote:
-> On Sat, Jul 31, 2021 at 05:35:19PM +0530, Praveen Kumar wrote:
-> > For Root partition the VP assist pages are pre-determined by the
-> > hypervisor. The Root kernel is not allowed to change them to
-> > different locations. And thus, we are getting below stack as in
-> > current implementation Root is trying to perform write to specific
-> > MSR.
-> > 
-> > [ 2.778197] unchecked MSR access error: WRMSR to 0x40000073 (tried to
-> > write 0x0000000145ac5001) at rIP: 0xffffffff810c1084
-> > (native_write_msr+0x4/0x30)
-> > [ 2.784867] Call Trace:
-> > [ 2.791507] hv_cpu_init+0xf1/0x1c0
-> > [ 2.798144] ? hyperv_report_panic+0xd0/0xd0
-> > [ 2.804806] cpuhp_invoke_callback+0x11a/0x440
-> > [ 2.811465] ? hv_resume+0x90/0x90
-> > [ 2.818137] cpuhp_issue_call+0x126/0x130
-> > [ 2.824782] __cpuhp_setup_state_cpuslocked+0x102/0x2b0
-> > [ 2.831427] ? hyperv_report_panic+0xd0/0xd0
-> > [ 2.838075] ? hyperv_report_panic+0xd0/0xd0
-> > [ 2.844723] ? hv_resume+0x90/0x90
-> > [ 2.851375] __cpuhp_setup_state+0x3d/0x90
-> > [ 2.858030] hyperv_init+0x14e/0x410
-> > [ 2.864689] ? enable_IR_x2apic+0x190/0x1a0
-> > [ 2.871349] apic_intr_mode_init+0x8b/0x100
-> > [ 2.878017] x86_late_time_init+0x20/0x30
-> > [ 2.884675] start_kernel+0x459/0x4fb
-> > [ 2.891329] secondary_startup_64_no_verify+0xb0/0xbb
-> > 
-> > Since, the hypervisor already provides the VP assist page for root
-> > partition, we need to memremap the memory from hypervisor for root
-> > kernel to use. The mapping is done in hv_cpu_init during bringup and
-> > is unmaped in hv_cpu_die during teardown.
-> > 
-> > Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
-> 
-> Looks good. I can fix a few styling issues in code and comments when I
-> commit this patch.
+I'm announcing the release of the 4.14.242 kernel.
 
-Applied to hyperv-next. Thanks.
+All users of the 4.14 kernel series must upgrade.
 
-Wei.
+The updated 4.14.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.14.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-> 
-> Wei.
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                                          |    2 
+ arch/arm/boot/dts/versatile-ab.dts                |    5 
+ arch/arm/boot/dts/versatile-pb.dts                |    2 
+ arch/x86/include/asm/proto.h                      |    2 
+ arch/x86/kvm/ioapic.c                             |    2 
+ arch/x86/kvm/ioapic.h                             |    4 
+ arch/x86/kvm/x86.c                                |   13 +
+ drivers/net/can/spi/hi311x.c                      |    2 
+ drivers/net/can/usb/ems_usb.c                     |   14 +-
+ drivers/net/can/usb/esd_usb2.c                    |   16 ++
+ drivers/net/can/usb/mcba_usb.c                    |    2 
+ drivers/net/can/usb/usb_8dev.c                    |   15 +-
+ drivers/net/ethernet/dec/tulip/winbond-840.c      |    7 -
+ drivers/net/ethernet/mellanox/mlx4/main.c         |    1 
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.c |   10 -
+ drivers/net/ethernet/sis/sis900.c                 |    7 -
+ drivers/net/ethernet/sun/niu.c                    |    3 
+ drivers/net/virtio_net.c                          |   10 +
+ drivers/nfc/nfcsim.c                              |    3 
+ fs/hfs/bfind.c                                    |   14 +-
+ fs/hfs/bnode.c                                    |   25 ++-
+ fs/hfs/btree.h                                    |    7 +
+ fs/hfs/super.c                                    |   10 -
+ fs/ocfs2/file.c                                   |  103 +++++++++------
+ include/linux/skbuff.h                            |    9 +
+ include/linux/virtio_net.h                        |   14 +-
+ include/net/af_unix.h                             |    1 
+ include/net/busy_poll.h                           |    2 
+ include/net/llc_pdu.h                             |   31 +++-
+ include/net/sctp/constants.h                      |    4 
+ kernel/workqueue.c                                |   20 +-
+ net/802/garp.c                                    |   14 ++
+ net/802/mrp.c                                     |   14 ++
+ net/Makefile                                      |    2 
+ net/can/raw.c                                     |   20 ++
+ net/core/dev.c                                    |    3 
+ net/core/sock.c                                   |    2 
+ net/llc/af_llc.c                                  |   10 +
+ net/llc/llc_s_ac.c                                |    2 
+ net/netfilter/nf_conntrack_core.c                 |    7 -
+ net/netfilter/nft_nat.c                           |    4 
+ net/sctp/input.c                                  |    2 
+ net/sctp/protocol.c                               |    3 
+ net/tipc/socket.c                                 |    9 -
+ net/unix/Kconfig                                  |    5 
+ net/unix/Makefile                                 |    2 
+ net/unix/af_unix.c                                |  102 ++++++---------
+ net/unix/garbage.c                                |   68 ----------
+ net/unix/scm.c                                    |  149 ++++++++++++++++++++++
+ net/unix/scm.h                                    |   10 +
+ net/wireless/scan.c                               |    6 
+ tools/perf/util/map.c                             |    2 
+ tools/testing/selftests/vm/userfaultfd.c          |    2 
+ 53 files changed, 539 insertions(+), 259 deletions(-)
+
+Arnaldo Carvalho de Melo (1):
+      Revert "perf map: Fix dso->nsinfo refcounting"
+
+Dan Carpenter (1):
+      can: hi311x: fix a signedness bug in hi3110_cmd()
+
+Desmond Cheong Zhi Xi (3):
+      hfs: add missing clean-up in hfs_fill_super
+      hfs: fix high memory mapping in hfs_bnode_read
+      hfs: add lock nesting notation to hfs_find_init
+
+Eric Dumazet (3):
+      net: annotate data race around sk_ll_usec
+      virtio_net: Do not pull payload in skb->head
+      gro: ensure frag0 meets IP header alignment
+
+Florian Westphal (1):
+      netfilter: conntrack: adjust stop timestamp to real expiry value
+
+Greg Kroah-Hartman (2):
+      selftest: fix build error in tools/testing/selftests/vm/userfaultfd.c
+      Linux 4.14.242
+
+Hoang Le (1):
+      tipc: fix sleeping in tipc accept routine
+
+Jan Kiszka (1):
+      x86/asm: Ensure asm/proto.h can be included stand-alone
+
+Jens Axboe (1):
+      net: split out functions related to registering inflight socket files
+
+Jiapeng Chong (1):
+      mlx4: Fix missing error code in mlx4_load_one()
+
+Juergen Gross (1):
+      x86/kvm: fix vcpu-id indexed array sizes
+
+Junxiao Bi (2):
+      ocfs2: fix zero out valid data
+      ocfs2: issue zeroout to EOF blocks
+
+Krzysztof Kozlowski (1):
+      nfc: nfcsim: fix use after free during module unload
+
+Maor Gottlieb (1):
+      net/mlx5: Fix flow table chaining
+
+Marcelo Ricardo Leitner (1):
+      sctp: fix return value check in __sctp_rcv_asconf_lookup
+
+Maxim Levitsky (1):
+      KVM: x86: determine if an exception has an error code only when injecting it.
+
+Miklos Szeredi (1):
+      af_unix: fix garbage collect vs MSG_PEEK
+
+Nguyen Dinh Phi (1):
+      cfg80211: Fix possible memory leak in function cfg80211_bss_update
+
+Pablo Neira Ayuso (1):
+      netfilter: nft_nat: allow to specify layer 4 protocol NAT only
+
+Paul Jakma (1):
+      NIU: fix incorrect error return, missed in previous revert
+
+Pavel Skripkin (5):
+      can: mcba_usb_start(): add missing urb->transfer_dma initialization
+      can: usb_8dev: fix memory leak
+      can: ems_usb: fix memory leak
+      can: esd_usb2: fix memory leak
+      net: llc: fix skb_over_panic
+
+Sudeep Holla (1):
+      ARM: dts: versatile: Fix up interrupt controller node names
+
+Wang Hai (2):
+      tulip: windbond-840: Fix missing pci_disable_device() in probe and remove
+      sis900: Fix missing pci_disable_device() in probe and remove
+
+Xin Long (1):
+      sctp: move 198 addresses from unusable to private scope
+
+Yang Yingliang (3):
+      workqueue: fix UAF in pwq_unbound_release_workfn()
+      net/802/mrp: fix memleak in mrp_request_join()
+      net/802/garp: fix memleak in garp_request_join()
+
+Ziyang Xuan (1):
+      can: raw: raw_setsockopt(): fix raw_rcv panic for sock UAF
+
