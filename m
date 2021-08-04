@@ -2,172 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF653E09F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9713E09EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbhHDVRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:17:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43016 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230063AbhHDVRx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:17:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628111859;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v0xCOqT4DwRRgK+FhR6M4QKvtKCg8O1LkYdACEO8VNE=;
-        b=U+xU5qSQvjtvxga05PQnG7eOhU+L7EW1pN1gUSMPThJjszOtATRgQHYyTuFbYKUmxVlcW4
-        GJb+sWxLttohwHSJO5HUkbU6064crAjmukRiQJzrHKPJGvJ7B/RtD+SP0gyI6e09d/hNkq
-        ClJhw7TwTABaulX6GjU+uxryPsSjpuI=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-125-TU1AacxuMo6qgIM332nkgg-1; Wed, 04 Aug 2021 17:17:38 -0400
-X-MC-Unique: TU1AacxuMo6qgIM332nkgg-1
-Received: by mail-qk1-f200.google.com with SMTP id h186-20020a37b7c30000b02903b914d9e335so2791974qkf.17
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:17:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=v0xCOqT4DwRRgK+FhR6M4QKvtKCg8O1LkYdACEO8VNE=;
-        b=ChfeGM6/lkDRtpjyqfoNOzF6NZsouxE3jmiHGdfx26QFS0WgYPMntjUqHQPEEbdsjq
-         C2aJysisFAJ98lFgyhUrs5EeAnfb9mI3kN9cFQM/7onzX281wOFnPIx0UBO81gxP/3aS
-         t2dd1z77XXnlOLd3u4gaCp4NLbxXX24vJMIbtHpE0aKglsIpZ2iuEf14eb3OU2ypG0UG
-         p4SZ/Yp+RJeNsziBRXj46Pf+/W2p3RdJQuvg//bE2z+m45FIMCrjWARsLjhGvkX3UiC8
-         +bC38X5Sy9E082D3k5YvJ1lRMk62FN9vcMARtiyP/DD1VNPfGK0N+/t7qDdKWtBIH2tw
-         GXrQ==
-X-Gm-Message-State: AOAM5321CNSY7IewlyTH0WagqQc1yv5onpir45M1JQbvXk1JYJmnMYMx
-        b+sUEsySwLY+pwAHQEGctz7j9BtZZqHcMrZqitio/Z8i2lo1w8ko1ol+6zeTyxg+fYkkq0luR8P
-        Mjq3UVGgaDsmDSQxkQvJwHlOS
-X-Received: by 2002:a05:6214:e67:: with SMTP id jz7mr1635484qvb.0.1628111858266;
-        Wed, 04 Aug 2021 14:17:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy2e0s41ebl8AJKs7FLLqqmyKr34IbfdQMCKuUHiE8IpjkZf/s2CF8BgoKY4kS0tgO1AUCaVw==
-X-Received: by 2002:a05:6214:e67:: with SMTP id jz7mr1635475qvb.0.1628111858089;
-        Wed, 04 Aug 2021 14:17:38 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id w26sm1932346qki.6.2021.08.04.14.17.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 14:17:37 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [patch 22/63] locking/spinlock: Split the lock types header
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>
-References: <20210730135007.155909613@linutronix.de>
- <20210730135206.416779376@linutronix.de>
-Message-ID: <977ef5db-17b4-646d-cbb8-b0ca301b55ea@redhat.com>
-Date:   Wed, 4 Aug 2021 17:17:36 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230006AbhHDVQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:16:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229910AbhHDVQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 17:16:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 511C160EE8;
+        Wed,  4 Aug 2021 21:16:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628111770;
+        bh=VXiqPxF0kjv6nWSjkMwVKlsBbYuZtRFsnuWf5zouccE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=hF5WVeKONzt1hdOekY4f2881K2Sh+Ch7vjgKV6wOGs8H/ZI02DdgNePxokRg6nZ2g
+         YtdajtoC+X18GwemzS9BkcDiDCnLPUeaFpRlYCz3DDSl1/a4g8MJ9bN17wdBdwLwCC
+         MLLkT03bB+gYpEji0BT8GHoaOw+dBtJ6oXfRGuxoBGWusX/QfowVexx3mXLa8ZwM5g
+         rysUJxqP6p1h5H2y3viHY5yQtFQPGQ1MZbUVUHSr1+MKltHPns5/vGC1s29gbu6/PJ
+         0ODp45SjlCA63Xds+2sne77khLEs7CtXlD61Ahe0GVAcjaywqq+bgahYDb6eIeZIsp
+         QlxQB8elpYh9w==
+Date:   Wed, 4 Aug 2021 16:18:50 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] net/ipv4/igmp: Use struct_size() helper
+Message-ID: <20210804211850.GA42046@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20210730135206.416779376@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/21 9:50 AM, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
->
-> Move raw_spinlock into its own file. Prepare for RT 'sleeping spinlocks' to
-> avoid header recursion as RT locks require rtmutex.h which in turn requires
-> the raw spinlock types.
->
-> No functional change.
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->   include/linux/rwlock_types.h       |    4 ++
->   include/linux/spinlock.h           |    4 ++
->   include/linux/spinlock_types.h     |   19 ----------
->   include/linux/spinlock_types_raw.h |   65 +++++++++++++++++++++++++++++++++++++
->   4 files changed, 74 insertions(+), 18 deletions(-)
->   create mode 100644 include/linux/spinlock_types_raw.h
-> ---
-> --- a/include/linux/rwlock_types.h
-> +++ b/include/linux/rwlock_types.h
-> @@ -1,6 +1,10 @@
->   #ifndef __LINUX_RWLOCK_TYPES_H
->   #define __LINUX_RWLOCK_TYPES_H
->   
-> +#if !defined(__LINUX_SPINLOCK_TYPES_H)
-> +# error "Do not include directly, include spinlock_types.h"
-> +#endif
-> +
->   /*
->    * include/linux/rwlock_types.h - generic rwlock type definitions
->    *				  and initializers
-> --- a/include/linux/spinlock.h
-> +++ b/include/linux/spinlock.h
-> @@ -12,6 +12,8 @@
->    *  asm/spinlock_types.h: contains the arch_spinlock_t/arch_rwlock_t and the
->    *                        initializers
->    *
-> + *  linux/spinlock_types_raw:
-> + *			  The raw types and initializers
->    *  linux/spinlock_types.h:
->    *                        defines the generic type and initializers
->    *
-> @@ -31,6 +33,8 @@
->    *                        contains the generic, simplified UP spinlock type.
->    *                        (which is an empty structure on non-debug builds)
->    *
-> + *  linux/spinlock_types_raw:
-> + *			  The raw RT types and initializers
->    *  linux/spinlock_types.h:
->    *                        defines the generic type and initializers
->    *
-> --- a/include/linux/spinlock_types.h
-> +++ b/include/linux/spinlock_types.h
-> @@ -9,24 +9,7 @@
->    * Released under the General Public License (GPL).
->    */
->   
-> -#if defined(CONFIG_SMP)
-> -# include <asm/spinlock_types.h>
-> -#else
-> -# include <linux/spinlock_types_up.h>
-> -#endif
-> -
-> -#include <linux/lockdep_types.h>
-> -
-> -typedef struct raw_spinlock {
-> -	arch_spinlock_t raw_lock;
-> -#ifdef CONFIG_DEBUG_SPINLOCK
-> -	unsigned int magic, owner_cpu;
-> -	void *owner;
-> -#endif
-> -#ifdef CONFIG_DEBUG_LOCK_ALLOC
-> -	struct lockdep_map dep_map;
-> -#endif
-> -} raw_spinlock_t;
-> +#include <linux/spinlock_types_raw.h>
->   
->   #define SPINLOCK_MAGIC		0xdead4ead
->   
+Replace IP_SFLSIZE() with struct_size() helper in order to avoid any
+potential type mistakes or integer overflows that, in the worst
+scenario, could lead to heap overflows.
 
-Most of the code in spinlock_types.h are moved into 
-spinlock_types_raw.h. However, macros like SPINLOCK_MAGIC and those that 
-followed are not removed from spinlock_types.h in this patch leading to 
-the same set of macro definitions in two different files. Should we 
-eliminate the duplicate macro definitions either from spinlock_types.h 
-or from spinlock_types_raw.h?
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ include/linux/igmp.h |  3 ---
+ net/ipv4/igmp.c      | 20 +++++++++++++-------
+ 2 files changed, 13 insertions(+), 10 deletions(-)
 
-Cheers,
-Longman
+diff --git a/include/linux/igmp.h b/include/linux/igmp.h
+index 64ce8cd1cfaf..93c262ecbdc9 100644
+--- a/include/linux/igmp.h
++++ b/include/linux/igmp.h
+@@ -41,9 +41,6 @@ struct ip_sf_socklist {
+ 	__be32			sl_addr[];
+ };
+ 
+-#define IP_SFLSIZE(count)	(sizeof(struct ip_sf_socklist) + \
+-	(count) * sizeof(__be32))
+-
+ #define IP_SFBLOCK	10	/* allocate this many at once */
+ 
+ /* ip_mc_socklist is real list now. Speed is not argument;
+diff --git a/net/ipv4/igmp.c b/net/ipv4/igmp.c
+index a5f4ecb02e97..cca84d2b13d6 100644
+--- a/net/ipv4/igmp.c
++++ b/net/ipv4/igmp.c
+@@ -2233,7 +2233,7 @@ static int ip_mc_leave_src(struct sock *sk, struct ip_mc_socklist *iml,
+ 			iml->sfmode, psf->sl_count, psf->sl_addr, 0);
+ 	RCU_INIT_POINTER(iml->sflist, NULL);
+ 	/* decrease mem now to avoid the memleak warning */
+-	atomic_sub(IP_SFLSIZE(psf->sl_max), &sk->sk_omem_alloc);
++	atomic_sub(struct_size(psf, sl_addr, psf->sl_max), &sk->sk_omem_alloc);
+ 	kfree_rcu(psf, rcu);
+ 	return err;
+ }
+@@ -2382,7 +2382,8 @@ int ip_mc_source(int add, int omode, struct sock *sk, struct
+ 
+ 		if (psl)
+ 			count += psl->sl_max;
+-		newpsl = sock_kmalloc(sk, IP_SFLSIZE(count), GFP_KERNEL);
++		newpsl = sock_kmalloc(sk, struct_size(newpsl, sl_addr, count),
++				      GFP_KERNEL);
+ 		if (!newpsl) {
+ 			err = -ENOBUFS;
+ 			goto done;
+@@ -2393,7 +2394,8 @@ int ip_mc_source(int add, int omode, struct sock *sk, struct
+ 			for (i = 0; i < psl->sl_count; i++)
+ 				newpsl->sl_addr[i] = psl->sl_addr[i];
+ 			/* decrease mem now to avoid the memleak warning */
+-			atomic_sub(IP_SFLSIZE(psl->sl_max), &sk->sk_omem_alloc);
++			atomic_sub(struct_size(psl, sl_addr, psl->sl_max),
++				   &sk->sk_omem_alloc);
+ 			kfree_rcu(psl, rcu);
+ 		}
+ 		rcu_assign_pointer(pmc->sflist, newpsl);
+@@ -2468,8 +2470,9 @@ int ip_mc_msfilter(struct sock *sk, struct ip_msfilter *msf, int ifindex)
+ 		goto done;
+ 	}
+ 	if (msf->imsf_numsrc) {
+-		newpsl = sock_kmalloc(sk, IP_SFLSIZE(msf->imsf_numsrc),
+-							   GFP_KERNEL);
++		newpsl = sock_kmalloc(sk, struct_size(newpsl, sl_addr,
++						      msf->imsf_numsrc),
++				      GFP_KERNEL);
+ 		if (!newpsl) {
+ 			err = -ENOBUFS;
+ 			goto done;
+@@ -2480,7 +2483,9 @@ int ip_mc_msfilter(struct sock *sk, struct ip_msfilter *msf, int ifindex)
+ 		err = ip_mc_add_src(in_dev, &msf->imsf_multiaddr,
+ 			msf->imsf_fmode, newpsl->sl_count, newpsl->sl_addr, 0);
+ 		if (err) {
+-			sock_kfree_s(sk, newpsl, IP_SFLSIZE(newpsl->sl_max));
++			sock_kfree_s(sk, newpsl,
++				     struct_size(newpsl, sl_addr,
++						 newpsl->sl_max));
+ 			goto done;
+ 		}
+ 	} else {
+@@ -2493,7 +2498,8 @@ int ip_mc_msfilter(struct sock *sk, struct ip_msfilter *msf, int ifindex)
+ 		(void) ip_mc_del_src(in_dev, &msf->imsf_multiaddr, pmc->sfmode,
+ 			psl->sl_count, psl->sl_addr, 0);
+ 		/* decrease mem now to avoid the memleak warning */
+-		atomic_sub(IP_SFLSIZE(psl->sl_max), &sk->sk_omem_alloc);
++		atomic_sub(struct_size(psl, sl_addr, psl->sl_max),
++			   &sk->sk_omem_alloc);
+ 		kfree_rcu(psl, rcu);
+ 	} else
+ 		(void) ip_mc_del_src(in_dev, &msf->imsf_multiaddr, pmc->sfmode,
+-- 
+2.27.0
 
