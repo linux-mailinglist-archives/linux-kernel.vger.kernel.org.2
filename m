@@ -2,71 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C133E059A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201D53E05AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233675AbhHDQNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:13:37 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:40240 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234305AbhHDQNZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:13:25 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 5416C1C0B7A; Wed,  4 Aug 2021 18:13:10 +0200 (CEST)
-Date:   Wed, 4 Aug 2021 18:13:09 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     lqhua06@163.com
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "quanah.li_cp" <liqinghua@yulong.com>
-Subject: Re: [PATCH] leds: led-core: The value of delay_on and delay_off
- remains when led off
-Message-ID: <20210804161309.GF25072@amd>
-References: <20210429125908.8308-1-lqhua06@163.com>
+        id S231129AbhHDQPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:15:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229648AbhHDQP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 12:15:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AC5F60F35;
+        Wed,  4 Aug 2021 16:15:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628093717;
+        bh=SU7iytpCAGzQPHujZgCX1j7w+mEyOgO8m5L4Sfkfong=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c0iuJnE+Iq2qLARWx2kO/wSRb9gScSFH2nSxE+ddHBNkgc+DefJHN4DSiqejGP2/E
+         4gHjzSW2bJZufF+GODGh0BLiCo8vrStx6Wr2Ikc+kDy/gPKWdX69wjdvTURirYRdQP
+         yCY2AuyK9zN73Zw4glL3i/xCcNy0f80gjzop3EzmqAthLGu/Cz+tnGKkt1eiTrwyRG
+         K8cXR8i87ZRn3/oJtNKkCmeR3IRw5GAE/eGTXrj7z9AZrnuwaaX4hoKsEaLHL6tXQu
+         L67m89axZ3atNglt5rGg0LeIeJMJ97jK3SOy+DmbDdY5sV/RTCrdK40YD4t5iZoxqN
+         wlemh04Wm9Y8g==
+Date:   Wed, 4 Aug 2021 17:15:01 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-mmc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [BUG] mmc_regulator_set_ocr can't cope with regulator-fixed
+Message-ID: <20210804161501.GB26252@sirena.org.uk>
+References: <CAMdYzYrx8pgeyK7u=kcopZ+Wae+fQdr_uM4AuVjqWKfZYikgcA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="pyE8wggRBhVBcj8z"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="i0/AhcQY5QxfSsSZ"
 Content-Disposition: inline
-In-Reply-To: <20210429125908.8308-1-lqhua06@163.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <CAMdYzYrx8pgeyK7u=kcopZ+Wae+fQdr_uM4AuVjqWKfZYikgcA@mail.gmail.com>
+X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---pyE8wggRBhVBcj8z
+--i0/AhcQY5QxfSsSZ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu 2021-04-29 20:59:08, lqhua06@163.com wrote:
-> From: "quanah.li_cp" <liqinghua@yulong.com>
->=20
-> The LED connect to pmic gpio, and the LED can blinking during
-> AP goto sleep.
->=20
-> When the LED is turned off and the hardware blinking will be disabled,
-> but the value of delay_on and delay_off still remains.
+On Wed, Aug 04, 2021 at 10:32:52AM -0400, Peter Geis wrote:
 
-Is that a problem?
+> Removing the vmmc phandle from the sdio node is an option, but then it
+> doesn't fully describe the hardware (it's also a non-standard 4.4v).
+> I had considered changing the check in dw-mmc.c [1] to continue in the
+> case of -EINVAL, but there are other places in the regulator framework
+> that can also return that and it doesn't address the underlying issue.
 
-It seems this is a feature, not a bug.
+What is the underlying issue that you don't see as being fixed if the
+MMC code is able to cope with not being able to read the voltage?  If we
+don't know what voltage the regulator has then no amount of wishful
+thinking is going to give us that knowledge, if we want to proceed with
+controlling the device then the MMC code is going to need to make some
+decisions about what it's safe to do given the limited information it
+has available to it.  Otherwise there's no option other than providing
+the information about the voltage.
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---pyE8wggRBhVBcj8z
+--i0/AhcQY5QxfSsSZ
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
 
-iEYEARECAAYFAmEKvJUACgkQMOfwapXb+vJ+nACfYBzw2nHQO6fhVJKdiVW0E6Ca
-gVwAn1vOfXku+O4+u7Q9LPO2EBFzvzs3
-=GSLC
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEKvQQACgkQJNaLcl1U
+h9C12Af8DblVDI9WXSmbrPRXViKHLSNZFzqp2ZuGthopEX5957SrGd87e5iV+I/g
+gre6Jo3qS3dGIailxhWX4Tcyd/OztkwsS4V9ep1FBb3Iqo6qBbByMHwD/w2wF7sw
+zYDzwdN0yUltexPHqnPjxatTxrTL09SM8NnIl0018t1hl5UKtM/KU8YN6nFJEPLH
+4Q2ooIe2pPSz7gsg4fW1xsmxJXCqUulFtoyK59mwoHrvfdrLWWIXvvCh87c7LCxk
+kwhYlg3SbIcZlZvLL1lVcMbPnZj6F3lClwHbzhy8jAP/LXF0rtFjbvDjZJZUImq/
+3BOF/lOC6PcaomF/mguPVTzZj2XXoQ==
+=L2o3
 -----END PGP SIGNATURE-----
 
---pyE8wggRBhVBcj8z--
+--i0/AhcQY5QxfSsSZ--
