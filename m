@@ -2,139 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06633E0AC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA2E3E0ACD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235565AbhHDXPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 19:15:17 -0400
-Received: from mga14.intel.com ([192.55.52.115]:10020 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230514AbhHDXPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 19:15:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="213760940"
-X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="213760940"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 16:14:59 -0700
-X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="668379256"
-Received: from ltd-ie-desk03.amr.corp.intel.com ([10.212.230.170])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 16:14:58 -0700
-Message-ID: <4e9d536cb6a7cffb829f105183f2bb5bceb4122c.camel@linux.intel.com>
-Subject: Re: [PATCH v5 1/2] Bluetooth: btusb: Record debug log for Mediatek
- Chip.
-From:   Tedd Ho-Jeong An <tedd.an@linux.intel.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        "\"Mark-YW Chen" =?UTF-8?Q?=28=E9=99=B3=E6=8F=9A=E6=96=87=29=22?= 
-        <Mark-YW.Chen@mediatek.com>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>, chris.lu@mediatek.com,
-        will-cy.lee@mediatek.com, Sean Wang <sean.wang@mediatek.com>,
-        BlueZ <linux-bluetooth@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Michael Sun <michaelfsun@google.com>, shawnku@google.com,
-        jemele@google.com, apusaka@google.com, mcchou@chromium.org
-Date:   Wed, 04 Aug 2021 16:14:57 -0700
-In-Reply-To: <8988B918-95FD-42DE-95FA-3BAC4A144165@holtmann.org>
-References: <20210804090316.12080-1-mark-yw.chen@mediatek.com>
-         <8988B918-95FD-42DE-95FA-3BAC4A144165@holtmann.org>
-Organization: Intel Corporation
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S235627AbhHDXUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 19:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233780AbhHDXUl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 19:20:41 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81AECC061798
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 16:20:27 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id x15so4863687oic.9
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 16:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+WrY9sY3xmkOkflQ06GlfCPlNC4kNQFurKfUW6O4aNQ=;
+        b=QXU5ykemFZbefDYdowS/GS93b0Hqj4WM6eDDz52B9LUhe4lZRb51Cdy4Gy4fN1Fugg
+         AlTq/UlQ1D3oCeErjCVqHk9/jVem3nYORoAV5H1lVURS/TP9CVOH8kRaRhmdGwU1JrWH
+         K45UQzWrEh9Xqnci0wTALvizIk1v2g8tXJl8UrCNNtwz73M3TThZ+5MaMoIeXCuMVu8A
+         rVahASNRQozxcNzTvTPp5DnIt4Q7n1IpBpZSJBOIoBxGqNDTaAdBIBVxTe+63zEzMOCb
+         gIvp4pkfvhdWaot0BtJ/BjDcYuPxF2v0WlICplsykEoAF4Qq3SH8v2fy1kxx7D2XwCbl
+         RsUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+WrY9sY3xmkOkflQ06GlfCPlNC4kNQFurKfUW6O4aNQ=;
+        b=B3n4W1SMi8A9wckzAPMNxoM/uX5qQUjZUbIvhXVz2qXoQ/iSUVMPp5fOBYMTAdBJ8B
+         A/EyNJDEf1t4Veu9SkKUZtdbo9whcOhOv1bXusLft1AFSPv/+u+NAHW7OkFVkCe8125E
+         n9evk8yDOUN5jFSd3zx6Y7No2oRB5H3SkbAsaI0gfDtbPpD2d8kobpCLzh6XfrmHwF8C
+         in+pYYCe706f2m/k2bhUNk+AP8BGe/0sUFi84fqVj+/acrw4BsxnZZWXjpbVYEh0MqCZ
+         gRGD5+0ReOn3idbl2KfEmqKXvJFvmAcSTDQ8JbpcMRZ0HxsjkGruzolTfbDrLts5w+OP
+         QNvw==
+X-Gm-Message-State: AOAM531Rm3fjSsCJQ3RyMmgiNev/4oNMA/KffvBZouQtzgdiN3yjt/1B
+        bpAuQjMR/WqkrOuCXXDLhZJvHA==
+X-Google-Smtp-Source: ABdhPJzuWE8wYJfSvfdZ1zfsR4m2m7P3NIyjB125PXi8DLMi21I+eMfEW3aGFPmpg16L3nnHDlPi6w==
+X-Received: by 2002:aca:180c:: with SMTP id h12mr1319358oih.60.1628119226910;
+        Wed, 04 Aug 2021 16:20:26 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id f3sm691099otc.49.2021.08.04.16.20.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 16:20:26 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 18:20:24 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     sboyd@kernel.org, robh+dt@kernel.org, mka@chromium.org,
+        viresh.kumar@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dianders@chromium.org, tdas@codeaurora.org
+Subject: Re: [PATCH 2/4] cpufreq: qcom: Re-arrange register offsets to
+ support per core L3 DCVS
+Message-ID: <YQsguOCjIFZaJSzd@builder.lan>
+References: <1627581885-32165-1-git-send-email-sibis@codeaurora.org>
+ <1627581885-32165-3-git-send-email-sibis@codeaurora.org>
+ <YQsetKGjlmQRxytX@builder.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQsetKGjlmQRxytX@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On Wed 04 Aug 18:11 CDT 2021, Bjorn Andersson wrote:
 
-I cannot find the original patch email and CI report, however this patch throws this warning.
+> On Thu 29 Jul 13:04 CDT 2021, Sibi Sankar wrote:
+> 
+> > Qualcomm SoCs (starting with SM8350) support per core voting for L3 cache
+> > frequency. So, re-arrange the cpufreq register offsets to allow access for
+> > the L3 interconnect to implement per core control. Also prevent binding
+> > breakage caused by register offset shuffling by using the SM8250/SM8350
+> > EPSS compatible.
+> > 
+> > Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
+> > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> > ---
+> >  drivers/cpufreq/qcom-cpufreq-hw.c | 23 +++++++++++++++++++----
+> >  1 file changed, 19 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+> > index f86859bf76f1..74ef3b38343b 100644
+> > --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+> > +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+> > @@ -28,6 +28,7 @@ struct qcom_cpufreq_soc_data {
+> >  	u32 reg_volt_lut;
+> >  	u32 reg_perf_state;
+> >  	u8 lut_row_size;
+> > +	bool skip_enable;
+> 
+> This should probably be called "skip_enable_check".
+> 
+> >  };
+> >  
+> >  struct qcom_cpufreq_data {
+> > @@ -257,19 +258,31 @@ static const struct qcom_cpufreq_soc_data qcom_soc_data = {
+> >  	.reg_volt_lut = 0x114,
+> >  	.reg_perf_state = 0x920,
+> >  	.lut_row_size = 32,
+> > +	.skip_enable = false,
+> >  };
+> >  
+> >  static const struct qcom_cpufreq_soc_data epss_soc_data = {
+> > +	.reg_freq_lut = 0x0,
+> > +	.reg_volt_lut = 0x100,
+> > +	.reg_perf_state = 0x220,
+> > +	.lut_row_size = 4,
+> > +	.skip_enable = true,
+> 
+> This change is not compatible with existing DTBs.
+> 
 
-drivers/bluetooth/btusb.c: In function ‘btusb_recv_acl_mtk’:
-drivers/bluetooth/btusb.c:4033:3: warning: this statement may fall through [-Wimplicit-fallthrough=]
- 4033 |   usb_disable_autosuspend(data->udev);
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/bluetooth/btusb.c:4034:2: note: here
- 4034 |  case 0x05ff:  /* Firmware debug logging 1 */
-      |  ^~~~
+Continued staring at this after I sent my response, and I'm confused.
 
+You're say in the commit message that SM8350 and beyond needs access to
+some registers in the first 0x100 bytes of the register space. So
+therefor you're changing the fallback, which is only used for sc7280...
+
+In other words, you break the compatibility with the existing sc7280
+dtb and leave sm8350 unchanged - after saying that this change is for
+the sake of sm8350.
+
+
+Lastly, why is "the L3 frequency" an interconnect and not a clock? (And
+why don't we make the cpufreq driver a clock-controller for the
+platforms that has this?)
 
 Regards,
-Tedd
+Bjorn
 
-
-On Wed, 2021-08-04 at 16:48 +0200, Marcel Holtmann wrote:
-> Hi Mark,
+> Regards,
+> Bjorn
 > 
-> > Mediatek Bluetooth controller sends the FW log and FW dump via EP2.
-> > This patch creates an MTK specified callback(btusb_recv_acl_mtk) to
-> > replace the original one (hci_recv_frame) when an MTK controller is
-> > detected. The new callback will separate the firmware dump traffics
-> > from the ACL data to have them process separately.
+> > +};
+> > +
+> > +static const struct qcom_cpufreq_soc_data epss_sm8250_soc_data = {
+> >  	.reg_enable = 0x0,
+> >  	.reg_freq_lut = 0x100,
+> >  	.reg_volt_lut = 0x200,
+> >  	.reg_perf_state = 0x320,
+> >  	.lut_row_size = 4,
+> > +	.skip_enable = false,
+> >  };
+> >  
+> >  static const struct of_device_id qcom_cpufreq_hw_match[] = {
+> >  	{ .compatible = "qcom,cpufreq-hw", .data = &qcom_soc_data },
+> >  	{ .compatible = "qcom,cpufreq-epss", .data = &epss_soc_data },
+> > +	{ .compatible = "qcom,sm8250-cpufreq-epss", .data = &epss_sm8250_soc_data },
+> > +	{ .compatible = "qcom,sm8350-cpufreq-epss", .data = &epss_sm8250_soc_data },
+> >  	{}
+> >  };
+> >  MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
+> > @@ -334,10 +347,12 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+> >  	data->res = res;
+> >  
+> >  	/* HW should be in enabled state to proceed */
+> > -	if (!(readl_relaxed(base + data->soc_data->reg_enable) & 0x1)) {
+> > -		dev_err(dev, "Domain-%d cpufreq hardware not enabled\n", index);
+> > -		ret = -ENODEV;
+> > -		goto error;
+> > +	if (!data->soc_data->skip_enable) {
+> > +		if (!(readl_relaxed(base + data->soc_data->reg_enable) & 0x1)) {
+> > +			dev_err(dev, "Domain-%d cpufreq hardware not enabled\n", index);
+> > +			ret = -ENODEV;
+> > +			goto error;
+> > +		}
+> >  	}
+> >  
+> >  	qcom_get_related_cpus(index, policy->cpus);
+> > -- 
+> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> > a Linux Foundation Collaborative Project
 > > 
-> > 1. Add a new field (recv_acl) to the btusb_data struct to store
-> > vendor-specific ACL callback handler.
-> > 2. Add the MTK-specific ACL callback handler (btusb_recv_acl_mtk) to
-> > process ACL data, debug log, and firmware dump.
-> > 3. The debug log traces LMP/LL events and connection quality reports.
-> > 4. The upper layer can use hci_channel_monitor to receive these
-> > packets.
-> > 
-> > Example btmon: firmware debug log.
-> > 1. Enable firmware debug log.
-> > < HCI Command: Vendor (0x3f|0x005d) plen 4
-> >        00 00 02 02                                      ....
-> > > HCI Event: Command Complete (0x0e) plen 8
-> >      Vendor (0x3f|0x005d) ncmd 1
-> >        Status: Success (0x00)
-> >        00 00 02 02                                      ....
-> > 2. Diagnostic packet from controller
-> > = Vendor Diagnostic (len 500)
-> >          ff 05 f0 01 fd ff 02 0e 08 01 5d fc 00 00 00 02
-> >          02 aa aa aa cb e3 f0 15 b0 0c 5f 01 00 d1 0f 33
-> >          01 7f 00 08 57 61 0c 00 00 00 00 00 23 37 17 00
-> >          fd ff 00 00 29 60 ff ff b1 56 e8 00 57 40 0a 40
-> >          39 95 f2 00 47 40 43 00 fc f0 16 00 57 61 0c 00
-> >          00 00 00 00 23 37 17 00 fd ff 00 00 29 60 ff ff
-> >          65 95 f2 00 57 40 0a 40 ec d3 fc 00 47 40 3b 00
-> >          2c f1 17 00 57 61 0c 00 00 00 00 00 23 37 17 00
-> >          fd ff 00 00 29 60 ff ff 19 d4 fc 00 57 40 76 1c
-> >          b2 61 01 01 47 40 b3 04 0b 63 18 00 fe ff 02 01
-> >          04 05 33 8b 9e 08 00 aa aa aa aa aa 27 38 01 02
-> >          01 00 00 00 02 e0 10 00 20 00 20 00 2a 08 40 00
-> >          20 00 20 08 2a 08 02 00 40 00 00 01 2e 08 40 00
-> >          01 67 b0 c2 2e 08 3e 07 ff ff ff ff 40 08 01 00
-> >          02 00 00 00 34 08 a3 00 00 00 00 00 34 08 a3 00
-> >          00 00 00 00 35 08 45 01 00 00 00 00 2e 08 40 00
-> >          01 67 b0 c2 30 35 01 02 00 00 00 00 2c 31 01 00
-> >          02 00 00 40 2d 19 03 00 00 40 00 00 fd ff 02 0f
-> >          04 00 01 01 04 aa aa aa aa aa aa aa 57 61 0c 00
-> >          00 00 00 00 23 46 32 00 01 00 00 00 2f 35 00 02
-> >          00 00 00 00 29 35 ff 02 00 22 00 00 2d 31 a6 02
-> >          02 00 00 00 31 6c 40 00 14 63 18 1b 31 6c 40 00
-> >          14 63 18 23 51 08 53 00 12 63 18 00 2c 35 12 01
-> >          fe 00 00 00 2b 35 fe 02 02 00 00 00 2f 31 21 00
-> >          00 00 02 00 75 61 01 00 4c 1b 93 00 79 61 01 00
-> >          00 00 00 00 12 e3 63 18 20 31 86 01 74 61 68 03
-> >          00 00 04 00 a1 73 ff 00 b9 01 00 00 a1 73 04 00
-> >          00 00 00 00 a1 73 00 00 00 00 00 00 a1 73 00 00
-> >          02 00 00 00 31 6c 40 00 16 63 18 0c 31 6c 40 00
-> >          16 63 18 1c 77 61 40 00 48 33 40 00 14 e3 63 18
-> >          40 31 86 01 00 d1 02 c5 07 23 a1 34 73 61 37 02
-> >          02 00 00 a1
-> > 
-> > Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
-> > Reviewed-by: Michael Sun <michaelfsun@google.com>
-> > Reviewed-by: Archie Pusaka <apusaka@chromium.org>
-> > ---
-> > drivers/bluetooth/btusb.c | 25 ++++++++++++++++++++++++-
-> > 1 file changed, 24 insertions(+), 1 deletion(-)
-> 
-> patch has been applied to bluetooth-next tree.
-> 
-> Regards
-> 
-> Marcel
-> 
-
