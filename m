@@ -2,228 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A633DFCDA
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86F53DFCDE
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236480AbhHDI2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56420 "EHLO
+        id S236421AbhHDIaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236483AbhHDI2t (ORCPT
+        with ESMTP id S236188AbhHDIaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:28:49 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61A5C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 01:28:35 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id js7so755341qvb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 01:28:35 -0700 (PDT)
+        Wed, 4 Aug 2021 04:30:04 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9BBC061798
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 01:29:51 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id c16so1244976wrp.13
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 01:29:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=SJ2ofhqIP5yg8wFYW3H98xh0sTyZWIb8UKLy27YOElY=;
-        b=k+oQ7MbnPh7jBpOUC7EsDMpV38QX19cwe4C85+B9qILlXkZSNS8hvtB6gAB1LYREcm
-         ljERWYRIRU+17oh455TM2moKmldVBJv03EppubSuEZoHT4E2udS8orFinBWu/A3OtF7k
-         XOU0rpj52v9BNHs6pDY7pWRAhZqYP2yj+50HYiply6v1plJQlwJ2rddrX4D/UYJUeH7U
-         IJOAT7YNmRdFW7W0ThZ0NojZR686n6KuhcYONzyVJhUj7tmCaGDUvcHrJ0zLRZeMOo1t
-         sJ3mTYkOkgawGxTVRMNRA4ftT3zDMMOIB8EDtV+pJQB/86/GRgVj0GbqczagNaArMBIu
-         rm1A==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IUj4Ab0V4S7X9wJwpM5ZlBQ/cYJnKu4wbVBWey5twJE=;
+        b=vbLsGC7MyMAJ3KtJUo4y2UOex0xxfCB4BT/L9+iu9p1sYdQ5VV51W/s/bonpOvvmja
+         NSqlZa7DeXzbI59jABuRayDxsnQVD7CozC9YSjUl1p+ALb+Ny5csYgghewv+qqYQ/xD1
+         XiJuSikQaXTy6kRAMcu/9GB4SDA+plht25QILTsg56P6vXpF9NibC9EQ7G4vaCWI6SrT
+         Ved3Q6NaNFSoMKR1rsm6HkQrTZQE+bT7s5b+zgaPTFxYqY6gSehfcAbL5reACRtKJuH1
+         HeWP9apLa4SfreGhSVihk2z2o0rdsc9ucVoyHA7rNyehm7bLJhpk5krA5gzfRYtFWuKb
+         0hDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=SJ2ofhqIP5yg8wFYW3H98xh0sTyZWIb8UKLy27YOElY=;
-        b=kieMVcDblIzLHug1DU6F0s+kDDtvnK2xORa3QHMe8cC5E2A6nRgmpaVw8X6Oj1PpXY
-         L7IDo+sSB/HrEjryaJKIOtHw5KEAT9RQJTZgfSdyHywyK0U3KgLIzzFWf+1Us6WU7drL
-         K5s46enHW0NFrb9WmOr+2/OVIf7UduwwRyNyjffonv1ibEqns36PDlrmwsQDhnmGnToS
-         FYAd8nm2MTU7G/YPBPBEjDni6M47OEunFdVHRaujtSFtDMvhUklN0Me5JDevE6XMt5fE
-         NvbAKpQYnvlMg62BLFJSEKofj9uakpHVd1jZK5ZXO5S8FfamF9k80IEGV7MRZ1NNCWg/
-         VKhw==
-X-Gm-Message-State: AOAM530vhAUlcKmlibErdv5E3C/dBXd3XPZZ5Lf+9QKYACrvyJW+MHgf
-        iik4CpAyX2M8y+uxQNYoYbiUTw==
-X-Google-Smtp-Source: ABdhPJz/cw1r8E/5Ib+MNljWXsCPw1e6Y5EJGl4Bqx0w0vCtfXsHxUNEK7swwPIkMnc2KrISA5dqXg==
-X-Received: by 2002:a0c:ed25:: with SMTP id u5mr24628515qvq.56.1628065714889;
-        Wed, 04 Aug 2021 01:28:34 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id c18sm569797qtb.61.2021.08.04.01.28.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 01:28:34 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 01:28:19 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Yang Shi <shy828301@gmail.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org, Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH 06/16] huge tmpfs: shmem_is_huge(vma, inode, index)
-In-Reply-To: <CAHbLzko_wg4mx-LTbJ6JcJo-6VzMh5BAcuMV8PXKPsFXOBVASw@mail.gmail.com>
-Message-ID: <8baad8b2-8f7a-2589-ce21-4135a59c5dc6@google.com>
-References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com> <dae523ab-c75b-f532-af9d-8b6a1d4e29b@google.com> <CAHbLzkoKZ9OdUfP5DX81CKOJWrRZ0GANrmenNeKWNmSOgUh0bQ@mail.gmail.com> <e7374d7e-4773-aba1-763-8fa2c953f917@google.com>
- <CAHbLzko_wg4mx-LTbJ6JcJo-6VzMh5BAcuMV8PXKPsFXOBVASw@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IUj4Ab0V4S7X9wJwpM5ZlBQ/cYJnKu4wbVBWey5twJE=;
+        b=nhycGibpynEJbeGwnTlz0N1UaM6RRjnMabfYzrUUmepaQ+BZqlHWXqf72EsLZkUaVl
+         sI/A7uB6xRI6KUT+LGfkXtDM1hbZflea062Jj5tYdyRsE8z8bGROgF3h+FjJ9XTLJ3dA
+         8q9pYYaAi701zA6HVoGDXOzKaQ8htO4zWCdrzDur2XqlpsylQ8BrplVgnVElpvDypSyj
+         hf+4a1E4V2tRCMBk5cJUl7k83k0EaoTKWg8YRdnQUnn6hWBlYgRBt5wwR1Qk1KV13qDC
+         JMMAfeQWlhp2KabgJitCBYIgXFoQ1q3cAZRVjTbpjgcYChZ+aqR/LtC3bMxxXmzTAFG8
+         wHTg==
+X-Gm-Message-State: AOAM532WTcslvoaHxcaj9m5unCM9ReRCex4Yla9020xU9SF0k42GGW/I
+        pPT0BdLT6OYNJ4dP81MiIxAcLA==
+X-Google-Smtp-Source: ABdhPJyXOVu3cqtGjpfwSvmIS1pkUox/I92zrcpzPn/HG9YS5/ZIz/Iu4mNzGQv5HfHbVjb6NE5X2w==
+X-Received: by 2002:adf:82e6:: with SMTP id 93mr27090513wrc.47.1628065790489;
+        Wed, 04 Aug 2021 01:29:50 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id t23sm5273852wmi.32.2021.08.04.01.29.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 01:29:49 -0700 (PDT)
+Subject: Re: [PATCH v3 0/4] nvmem: qfprom: Add binding updates and
+ power-domain handling
+To:     Rajendra Nayak <rnayak@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rbokka@codeaurora.org,
+        dianders@chromium.org
+References: <1627627573-32454-1-git-send-email-rnayak@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <476c79ce-2065-602d-8c34-4234fcc53f6d@linaro.org>
+Date:   Wed, 4 Aug 2021 09:29:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1627627573-32454-1-git-send-email-rnayak@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Aug 2021, Yang Shi wrote:
-> On Sat, Jul 31, 2021 at 10:22 PM Hugh Dickins <hughd@google.com> wrote:
-> > On Fri, 30 Jul 2021, Yang Shi wrote:
-> > > On Fri, Jul 30, 2021 at 12:42 AM Hugh Dickins <hughd@google.com> wrote:
-> > > >
-> > > > Extend shmem_huge_enabled(vma) to shmem_is_huge(vma, inode, index), so
-> > > > that a consistent set of checks can be applied, even when the inode is
-> > > > accessed through read/write syscalls (with NULL vma) instead of mmaps
-> > > > (the index argument is seldom of interest, but required by mount option
-> > > > "huge=within_size").  Clean up and rearrange the checks a little.
-> > > >
-> > > > This then replaces the checks which shmem_fault() and shmem_getpage_gfp()
-> > > > were making, and eliminates the SGP_HUGE and SGP_NOHUGE modes: while it's
-> > > > still true that khugepaged's collapse_file() at that point wants a small
-> > > > page, the race that might allocate it a huge page is too unlikely to be
-> > > > worth optimizing against (we are there *because* there was at least one
-> > > > small page in the way), and handled by a later PageTransCompound check.
-> > >
-> > > Yes, it seems too unlikely. But if it happens the PageTransCompound
-> > > check may be not good enough since the page allocated by
-> > > shmem_getpage() may be charged to wrong memcg (root memcg). And it
-> > > won't be replaced by a newly allocated huge page so the wrong charge
-> > > can't be undone.
-> >
-> > Good point on the memcg charge: I hadn't thought of that.  Of course
-> > it's not specific to SGP_CACHE versus SGP_NOHUGE (this patch), but I
-> > admit that a huge mischarge is hugely worse than a small mischarge.
+
+
+On 30/07/2021 07:46, Rajendra Nayak wrote:
+> v3:
+> * Dropped the description in bindings patch
+> * Added a patch to fix ordering in qfprom_disable_fuse_blowing()
+> * Fixed devm_add_action_or_reset() order
 > 
-> The small page could be collapsed to a huge page sooner or later, so
-> the mischarge may be transient. But huge page can't be replaced.
-
-You're right, if all goes well, the mischarged small page could be
-collapsed to a correctly charged huge page sooner or later (but all
-may not go well), whereas the mischarged huge page is stuck there.
-
+> v2:
+> * pm_runtime calls made unconditionally, should work even without the power-domains property in DT
+> * Added the missing pm_runtime_disable() handling
+> * DT patch rebased on msm/for-next
 > 
-> >
-> > We could fix it by making shmem_getpage_gfp() non-static, and pointing
-> > to the vma (hence its mm, hence its memcg) here, couldn't we?  Easily
-> > done, but I don't really want to make shmem_getpage_gfp() public just
-> > for this, for two reasons.
-> >
-> > One is that the huge race it just so unlikely; and a mischarge to root
-> > is not the end of the world, so long as it's not reproducible.  It can
-> > only happen on the very first page of the huge extent, and the prior
+> --
+> qfprom devices on sc7280 have an additional requirement to vote on a power-domain
+> performance state to reliably blow fuses. Add the binding updates and handle this in
+> the driver, also add the DT node for sc7280 platform.
 > 
-> OK, if so the mischarge is not as bad as what I thought in the first place.
+> Rajendra Nayak (4):
+>    dt-bindings: nvmem: qfprom: Add optional power-domains property
+>    nvmem: qfprom: Fix up qfprom_disable_fuse_blowing() ordering
+>    nvmem: qfprom: sc7280: Handle the additional power-domains vote
+
+Applied 1-3 patches.
+
+dts patch can go via Bjorn's tree.
+
+--srini
+>    arm64: dts: qcom: sc7280: Add qfprom node
 > 
-> > "Stop if extent has been truncated" check makes sure there was one
-> > entry in the extent at that point: so the race with hole-punch can only
-> > occur after we xas_unlock_irq(&xas) immediately before shmem_getpage()
-> > looks up the page in the tree (and I say hole-punch not truncate,
-> > because shmem_getpage()'s i_size check will reject when truncated).
-> > I don't doubt that it could happen, but stand by not optimizing against.
+>   .../devicetree/bindings/nvmem/qcom,qfprom.yaml     |  3 +++
+>   arch/arm64/boot/dts/qcom/sc7280.dtsi               | 13 +++++++++
+>   drivers/nvmem/qfprom.c                             | 31 +++++++++++++++++++---
+>   3 files changed, 44 insertions(+), 3 deletions(-)
 > 
-> I agree the race is so unlikely and it may be not worth optimizing
-> against it right now, but a note or a comment may be worth.
-
-Thanks, but despite us agreeing that the race is too unlikely to be worth
-optimizing against, it does still nag at me ever since you questioned it:
-silly, but I can't quite be convinced by my own dismissals.
-
-I do still want to get rid of SGP_HUGE and SGP_NOHUGE, clearing up those
-huge allocation decisions remains the intention; but now think to add
-SGP_NOALLOC for collapse_file() in place of SGP_NOHUGE or SGP_CACHE -
-to rule out that possibility of mischarge after racing hole-punch,
-no matter whether it's huge or small.  If any such race occurs,
-collapse_file() should just give up.
-
-This being the "Stupid me" SGP_READ idea, except that of course would
-not work: because half the point of that block in collapse_file() is
-to initialize the !Uptodate pages, whereas SGP_READ avoids doing so.
-
-There is, of course, the danger that in fixing this unlikely mischarge,
-I've got the code wrong and am introducing a bug: here's what a 17/16
-would look like, though it will be better inserted early.  I got sick
-of all the "if (page "s, and was glad of the opportunity to fix that
-outdated "bring it back from swap" comment - swap got done above.
-
-What do you think? Should I add this in or leave it out?
-
-Thanks,
-Hugh
-
---- a/include/linux/shmem_fs.h
-+++ b/include/linux/shmem_fs.h
-@@ -108,6 +108,7 @@ extern unsigned long shmem_partial_swap_usage(struct address_space *mapping,
- /* Flag allocation requirements to shmem_getpage */
- enum sgp_type {
- 	SGP_READ,	/* don't exceed i_size, don't allocate page */
-+	SGP_NOALLOC,	/* like SGP_READ, but do use fallocated page */
- 	SGP_CACHE,	/* don't exceed i_size, may allocate page */
- 	SGP_WRITE,	/* may exceed i_size, may allocate !Uptodate page */
- 	SGP_FALLOC,	/* like SGP_WRITE, but make existing page Uptodate */
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1721,7 +1721,7 @@ static void collapse_file(struct mm_struct *mm,
- 				xas_unlock_irq(&xas);
- 				/* swap in or instantiate fallocated page */
- 				if (shmem_getpage(mapping->host, index, &page,
--						  SGP_CACHE)) {
-+						  SGP_NOALLOC)) {
- 					result = SCAN_FAIL;
- 					goto xa_unlocked;
- 				}
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1903,26 +1903,27 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- 		return error;
- 	}
- 
--	if (page)
-+	if (page) {
- 		hindex = page->index;
--	if (page && sgp == SGP_WRITE)
--		mark_page_accessed(page);
--
--	/* fallocated page? */
--	if (page && !PageUptodate(page)) {
-+		if (sgp == SGP_WRITE)
-+			mark_page_accessed(page);
-+		if (PageUptodate(page))
-+			goto out;
-+		/* fallocated page */
- 		if (sgp != SGP_READ)
- 			goto clear;
- 		unlock_page(page);
- 		put_page(page);
--		page = NULL;
--		hindex = index;
- 	}
--	if (page || sgp == SGP_READ)
--		goto out;
-+
-+	*pagep = NULL;
-+	if (sgp == SGP_READ)
-+		return 0;
-+	if (sgp == SGP_NOALLOC)
-+		return -ENOENT;
- 
- 	/*
--	 * Fast cache lookup did not find it:
--	 * bring it back from swap or allocate.
-+	 * Fast cache lookup and swap lookup did not find it: allocate.
- 	 */
- 
- 	if (vma && userfaultfd_missing(vma)) {
