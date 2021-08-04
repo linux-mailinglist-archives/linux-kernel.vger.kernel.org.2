@@ -2,80 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BC33E0819
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01853E0830
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 20:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240518AbhHDSqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 14:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240404AbhHDSpv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 14:45:51 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F13C06179E
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 11:45:32 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id j1so4336165pjv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 11:45:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/EQmTGydF1pIXOESNrwErzBdNg9CrOE9Mxb8eJMGl6U=;
-        b=lYgtUH8iYVPqtvlrViEDj4VisTlI5BAnqJr+1CvEvld5nN6Rr/R75P9DnspBYe8FOA
-         GvhNwqEoUnzWPmWB8A28qBG6O+IKvGIoCEYJ6HWqGjl3m6xhmUIME+FBpli2J/sYtzb1
-         0ZM6tR/MN7vxyJQIPM8zHlHp4FJpGRdzghkChnowHjsbAY5DD7MPKN9e8dHGqkCH26t5
-         WoEAW9u+JDUK+G5crAlmyWI+HlNoFIGDM03OwBFC3JWb/rfC5H7glsPCimWq1uuR/C9O
-         85bW3wAHCCflHFpo+vNcqoFkuW/Vp97Wprb+sMzRVocNrGf+R482OPaB/PGxZE/4Zaoa
-         GVoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/EQmTGydF1pIXOESNrwErzBdNg9CrOE9Mxb8eJMGl6U=;
-        b=Sxi3QrnpI+99gZUVed2y+choWgxeoIS5WTNb4JaqujGn7cJwGCY7QrPHULVD6tzkJ2
-         YMs2rY0ItQ6f7W53n6FjHtNRmCmQIxWitYHgnlVmLrWO5uoX7HxfcJlj7Ib58XEgcYN1
-         JVO4Xvs2Li3SfdxgFArSckUUhbUbLQk569Yn++fUoXFJ3lnUBWtjjEs5nreX0kPjEdf/
-         33EZbwcWruYUI1PdqE2vZzJIZ1yptqnGoITdLjHe01YmG0WvzBIDM311EG8Q0M//mdbM
-         kbzH49WYYkOG5K2uLf1qhqqVg2g7v9kbaND8zbCA+pSIy8SclF7/qZYKmKCmNCQ/to26
-         aBUg==
-X-Gm-Message-State: AOAM532AdBg8EbZHRQYAbpKYvTfN7t5d4D/TvZQOzoUxBWUhIFHFe8Cn
-        nLZPYn7fJC6lBj4aHBu2rfJ+FKY2lXpaAvO3sRXmnA==
-X-Google-Smtp-Source: ABdhPJwRABacfDbCANpEBh/SV7ISPXsw4UJ7/x0n6pmLObYtDw0FF3GTHMwnbKk4Jkn/qvdLfv0uzAtpGu6zUY49kjA=
-X-Received: by 2002:a63:3c7:: with SMTP id 190mr530402pgd.240.1628102731653;
- Wed, 04 Aug 2021 11:45:31 -0700 (PDT)
+        id S237576AbhHDSr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 14:47:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240562AbhHDSrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 14:47:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D20060EE9;
+        Wed,  4 Aug 2021 18:46:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628102808;
+        bh=Z0AMCBYZWMFG/732Trem2uyECkXKzKW3+VAiIP0p6V4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=JnIFhgNFwMr7gr0m8gY3k+f8l4ogJqin83HhIfbOpCaCD0HKbDfUAUEk3ykm8wb1e
+         fPh6TkD+aFTT1bpQeRSIEuJ3dCohwrezrn74tcXNLFk6jKkKNeiJbV2OHRQ3zxaFFO
+         DPliLj+9gXuKIFFtPMPByfeQbZlKSEHvuflVqbtf7Y7eLiA1TQa5kHxyiuhJsJph3F
+         WSBuFX1CQI7yWgYMZJLVFLDz5Fs+2azU+4gugqZIe8dxTouwc/zeMDSkNfJ4v9HzVr
+         VA56vm/nQ9wCv7k0HMfkDr6RjGu1qJCfPEeXWtPAGumXy+rMGJXeYozW2QscRorlSB
+         tv/z8oPraDMrQ==
+Subject: Re: [PATCH 2/4] staging: r8188eu: Remove unnecessary parentheses
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20210803223609.1627280-1-nathan@kernel.org>
+ <20210803223609.1627280-3-nathan@kernel.org>
+ <CAKwvOdmMH6V1yK42Y9xBQX2+2UoCF38q5g=6NXVtk3EWNGz2oQ@mail.gmail.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <a0453425-4907-a43e-dde7-112de434a2ec@kernel.org>
+Date:   Wed, 4 Aug 2021 11:46:46 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQrXhnHJCsTxiRcP@casper.infradead.org>
-In-Reply-To: <YQrXhnHJCsTxiRcP@casper.infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 4 Aug 2021 11:45:20 -0700
-Message-ID: <CAPcyv4hW7nxffn0s8OKOh=GfK3AO_CvgRvuYs8vOQ8B4PCW24A@mail.gmail.com>
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAKwvOdmMH6V1yK42Y9xBQX2+2UoCF38q5g=6NXVtk3EWNGz2oQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 11:09 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Aug 04, 2021 at 10:43:22AM -0700, Kuppuswamy Sathyanarayanan wrote:
-> > +/* Driver allow list */
-> > +static LIST_HEAD(driver_allow_list);
-> > +/* Driver deny list */
-> > +static LIST_HEAD(driver_deny_list);
->
-> Why use a doubly-linked-list here?  An allocating xarray should perform
-> much better and use less memory.
+On 8/4/2021 10:46 AM, Nick Desaulniers wrote:
+> On Tue, Aug 3, 2021 at 3:36 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>>
+>> Clang warns several times across the driver along the lines of:
+>>
+>> drivers/staging/r8188eu/core/rtw_pwrctrl.c:222:21: warning: equality
+>> comparison with extraneous parentheses [-Wparentheses-equality]
+>>          if ((pwrpriv->rpwm == pslv)) {
+>>               ~~~~~~~~~~~~~~^~~~~~~
+>> drivers/staging/r8188eu/core/rtw_pwrctrl.c:222:21: note: remove
+>> extraneous parentheses around the comparison to silence this warning
+>>          if ((pwrpriv->rpwm == pslv)) {
+>>              ~              ^      ~
+>> drivers/staging/r8188eu/core/rtw_pwrctrl.c:222:21: note: use '=' to turn
+>> this equality comparison into an assignment
+>>          if ((pwrpriv->rpwm == pslv)) {
+>>                             ^~
+>>                             =
+>> 1 warning generated.
+>>
+>> The compilers have agreed that single parentheses are used for equality
+>> and double parentheses are used for assignment within control flow
+>> statements such as if and while so remove them in these places to fix
+>> the warning.
+>>
+>> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>> ---
+>>   drivers/staging/r8188eu/core/rtw_pwrctrl.c   | 2 +-
+>>   drivers/staging/r8188eu/core/rtw_security.c  | 4 ++--
+>>   drivers/staging/r8188eu/core/rtw_wlan_util.c | 2 +-
+>>   drivers/staging/r8188eu/hal/odm.c            | 2 +-
+>>   drivers/staging/r8188eu/hal/usb_halinit.c    | 2 +-
+>>   5 files changed, 6 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/staging/r8188eu/core/rtw_pwrctrl.c b/drivers/staging/r8188eu/core/rtw_pwrctrl.c
+>> index d67eeb045002..598c32d7eaa5 100644
+>> --- a/drivers/staging/r8188eu/core/rtw_pwrctrl.c
+>> +++ b/drivers/staging/r8188eu/core/rtw_pwrctrl.c
+>> @@ -219,7 +219,7 @@ void rtw_set_rpwm(struct adapter *padapter, u8 pslv)
+>>                          pslv = PS_STATE_S3;
+>>          }
+>>
+>> -       if ((pwrpriv->rpwm == pslv)) {
+>> +       if (pwrpriv->rpwm == pslv) {
+>>                  RT_TRACE(_module_rtl871x_pwrctrl_c_, _drv_err_,
+>>                           ("%s: Already set rpwm[0x%02X], new=0x%02X!\n", __func__, pwrpriv->rpwm, pslv));
+>>                  return;
+>> diff --git a/drivers/staging/r8188eu/core/rtw_security.c b/drivers/staging/r8188eu/core/rtw_security.c
+>> index 2c1b9a6dcdf2..45fd8b1aeb59 100644
+>> --- a/drivers/staging/r8188eu/core/rtw_security.c
+>> +++ b/drivers/staging/r8188eu/core/rtw_security.c
+>> @@ -1211,7 +1211,7 @@ u32       rtw_aes_encrypt(struct adapter *padapter, u8 *pxmitframe)
+>>          pframe = ((struct xmit_frame *)pxmitframe)->buf_addr + hw_hdr_offset;
+>>
+>>          /* 4 start to encrypt each fragment */
+>> -       if ((pattrib->encrypt == _AES_)) {
+>> +       if (pattrib->encrypt == _AES_) {
+>>                  if (pattrib->psta)
+>>                          stainfo = pattrib->psta;
+>>                  else
+>> @@ -1454,7 +1454,7 @@ u32       rtw_aes_decrypt(struct adapter *padapter, u8 *precvframe)
+>>
+>>          pframe = (unsigned char *)((struct recv_frame *)precvframe)->rx_data;
+>>          /* 4 start to encrypt each fragment */
+>> -       if ((prxattrib->encrypt == _AES_)) {
+>> +       if (prxattrib->encrypt == _AES_) {
+>>                  stainfo = rtw_get_stainfo(&padapter->stapriv, &prxattrib->ta[0]);
+>>                  if (stainfo != NULL) {
+>>                          RT_TRACE(_module_rtl871x_security_c_, _drv_err_, ("rtw_aes_decrypt: stainfo!= NULL!!!\n"));
+>> diff --git a/drivers/staging/r8188eu/core/rtw_wlan_util.c b/drivers/staging/r8188eu/core/rtw_wlan_util.c
+>> index 15edccef9f1d..4a8e52484cfd 100644
+>> --- a/drivers/staging/r8188eu/core/rtw_wlan_util.c
+>> +++ b/drivers/staging/r8188eu/core/rtw_wlan_util.c
+>> @@ -1306,7 +1306,7 @@ int support_short_GI(struct adapter *padapter, struct HT_caps_element *pHT_caps)
+>>          if (!(pmlmeinfo->HT_enable))
+>>                  return _FAIL;
+>>
+>> -       if ((pmlmeinfo->assoc_AP_vendor == HT_IOT_PEER_RALINK))
+>> +       if (pmlmeinfo->assoc_AP_vendor == HT_IOT_PEER_RALINK)
+>>                  return _FAIL;
+>>
+>>          bit_offset = (pmlmeext->cur_bwmode & HT_CHANNEL_WIDTH_40) ? 6 : 5;
+>> diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
+>> index 0bc836311036..65a117408d50 100644
+>> --- a/drivers/staging/r8188eu/hal/odm.c
+>> +++ b/drivers/staging/r8188eu/hal/odm.c
+>> @@ -1631,7 +1631,7 @@ void odm_EdcaTurboCheckCE(struct odm_dm_struct *pDM_Odm)
+>>          struct mlme_ext_priv    *pmlmeext = &(Adapter->mlmeextpriv);
+>>          struct mlme_ext_info    *pmlmeinfo = &(pmlmeext->mlmext_info);
+>>
+>> -       if ((pregpriv->wifi_spec == 1))/*  (pmlmeinfo->HT_enable == 0)) */
+>> +       if (pregpriv->wifi_spec == 1)
+> 
+> ^ was the comment you removed important?
 
-Sounds reasonable to me.
+I doubt it, it looks like commented out code, which presumably means it 
+did not work. I have cleaned up dead comments like this at the same time 
+as cleaning up warnings in the past without any issues.
+
+> If not:
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Thanks for the review!
+
+Cheers,
+Nathan
+
+>>                  goto dm_CheckEdcaTurbo_EXIT;
+>>
+>>          if (pmlmeinfo->assoc_AP_vendor >=  HT_IOT_PEER_MAX)
+>> diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
+>> index d985894c0f30..ec7badfd72aa 100644
+>> --- a/drivers/staging/r8188eu/hal/usb_halinit.c
+>> +++ b/drivers/staging/r8188eu/hal/usb_halinit.c
+>> @@ -1300,7 +1300,7 @@ static void hw_var_set_opmode(struct adapter *Adapter, u8 variable, u8 *val)
+>>                  StopTxBeacon(Adapter);
+>>
+>>                  rtw_write8(Adapter, REG_BCN_CTRL, 0x19);/* disable atim wnd */
+>> -       } else if ((mode == _HW_STATE_ADHOC_)) {
+>> +       } else if (mode == _HW_STATE_ADHOC_) {
+>>                  ResumeTxBeacon(Adapter);
+>>                  rtw_write8(Adapter, REG_BCN_CTRL, 0x1a);
+>>          } else if (mode == _HW_STATE_AP_) {
+>> --
+>> 2.33.0.rc0
+>>
