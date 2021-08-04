@@ -2,161 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301EB3DFCAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 744FE3DFCBB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236316AbhHDIUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:20:43 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:21391 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236291AbhHDIUm (ORCPT
+        id S236300AbhHDIYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236279AbhHDIYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:20:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1628065230; x=1659601230;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=Z6uCYiJDMPmIaY0H5P/HrvjIUzv/p6tap6NAIzcPXoQ=;
-  b=S1+nH66y7iHcDgP1o4NhiS1KwhY6rVU/FxIVEZef8qwUEecux0xhM8kg
-   DVM7g0otrmJWmu5XOnsiElRbpuDsHDuP0iJwEu4nOp9CZKyUyudi+BiqR
-   Vmk+Pa39KcNDMCAqxizxWwhFij3b3lsU5Ntlu5kSPF2WGknpAgSwhYSV8
-   6PxEh0MEHUoITfZpujdcOO2SYd/ACx2A8a8FOWiJVrAJZkP6+Ii2J43kV
-   p7ttIbkgjBFFBNGRz4t2efPayKSZxkqqg1BwbqETqLP3PAfgYVaSMsAQs
-   Gl3gyV0QUIrIMqapd4RbBlqiHRTX3hdpFjLbIWYOAtv9vptsFKvOaDjc3
-   w==;
-IronPort-SDR: ajr5qO8VLkx6Ag0+Bqu3hVg8ZYWrygk+vCKrE0QqemMJvKQHsR2g39dkchOvfom7zZ18zCP3Dv
- 5rFsX6Hwj0s0tQWQgn0+nxWlUZT3eCjbB1+Q1j9JPDf4hbA2/5TO5uoBIIuYb40+xy+xxH5PAm
- pcOj6QiiQuxX99YiJFncLBW7mf9yy7m82THBQLLw415y5tj+pBWe1tCpf2uipXKF/plW6pNgwQ
- CKWPfNMYFxiblWMlBC2EnzQaVq80d07WzEtnbARJqq1mlUBJSNO5sUV3DliPuM8ec7YrKGiq+J
- 7IBumt5mZXlQy9msKCw4+Bo6
-X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
-   d="scan'208";a="138752739"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Aug 2021 01:20:30 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 4 Aug 2021 01:20:29 -0700
-Received: from [10.12.73.135] (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Wed, 4 Aug 2021 01:20:27 -0700
-Subject: Re: [GIT PULL] ARM: at91: soc for 5.15
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        <arm@kernel.org>, <soc@kernel.org>
-CC:     Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Stephen Boyd <sboyd@kernel.org>
-References: <20210804081721.11093-1-nicolas.ferre@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <25bf6f36-e6b5-e7ed-840d-3ff635c15d58@microchip.com>
-Date:   Wed, 4 Aug 2021 10:20:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 4 Aug 2021 04:24:14 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E68FC0613D5;
+        Wed,  4 Aug 2021 01:24:01 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id z7so1474503iog.13;
+        Wed, 04 Aug 2021 01:24:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eb+TKlXCM46Z6tbqcEsEswjl6rovh8B22X0RVpQXd7U=;
+        b=vCQAEFqQVzQV/2uc0cXBp8db0kmXGlPSb6MxGgezbVtonLlWfocTd7QymizEDqge54
+         dPUJRiPY1DpA5xune/betgMlO2377fzNlTa4ohK3zwFz+SN1z496brHSQjd98K78V7XV
+         6BXH5Uec/01ekh0nsqTIWjtYdLI0DrKvvrf441ZXpjTP1MyLItEO7bZ6A24hgy1WbMir
+         Ry7xDLdNw0356U8awJICY4GGjrkkw9jQXnnpYxxnMUXFOJkfSaa8PnW6j61Ok0IhIEeC
+         XfbIvyV9mkTfSvfjFiWDqv/Cg6xC+t5mdEf+NtCKmbLoB2NiAso896O9FBI9sYCgkReU
+         mV+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eb+TKlXCM46Z6tbqcEsEswjl6rovh8B22X0RVpQXd7U=;
+        b=Ko3H3kPSWC/JwJGkv1y57xA0viM2v0DfvKApY9KKFTB6iPGNE+XfhrGcAmNhi9EJzX
+         CZQHEdghtiylHXnzAgoLBAcn7tOWxwpYfm5ZvYFy87Ny9nPgi7KN9SxnmHfvQ+4mMB1i
+         MLlBDEgV83QRHbzKTtnzsRCrU5Ds1F3PGjBlNO4dc2S9ogRPJWKyta0Dab99xpleTchu
+         kgHC1CTNuyll1y0yD38QJe4+Fa6+VHRIghvm3Y6rCak+EBCcZd8fXmRUbhYKi6+NpdxW
+         qICcK5xSbG4Icm/lEfC4y9JPKqBBpZFoVI3kKbcGZ2SSYgFttbdTMOS9Y13RvPEl1Oxf
+         OWmA==
+X-Gm-Message-State: AOAM530l6E/JhmTG2rANifKW0/zkUjj90IufbPsO47lCyRdqU5g3USBf
+        VQAxBTqxlCWZi01Q7VK9J/Rk8zFNn2cYrYkXbPo=
+X-Google-Smtp-Source: ABdhPJyggLddJMxmH+EazD/b2CkCx2eAQUCXI3ipFEEkkszNqgKKJ057F38PpHH5uOWQQ58JJdUTU8a4DS0QQLx2X90=
+X-Received: by 2002:a6b:490d:: with SMTP id u13mr86293iob.176.1628065440657;
+ Wed, 04 Aug 2021 01:24:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210804081721.11093-1-nicolas.ferre@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210803084456.198-1-alistair@alistair23.me> <20210803084456.198-2-alistair@alistair23.me>
+ <YQlBtQDrVHqh3N5D@google.com>
+In-Reply-To: <YQlBtQDrVHqh3N5D@google.com>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Wed, 4 Aug 2021 18:22:00 +1000
+Message-ID: <CAKmqyKMZWVx3KqeysUjOc29nuxnwJfZ3wjmWjVwk9tpQ4dkh-A@mail.gmail.com>
+Subject: Re: [PATCH v8 02/11] mfd: sy7636a: Initial commit
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
+        Mark Brown <broonie@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2021 at 10:17, nicolas.ferre@microchip.com wrote:
-> From: Nicolas Ferre <nicolas.ferre@microchip.com>
-> 
-> Arnd, Olof,
-> 
-> Here are the soc changes for 5.15 which contains the introduction of our new
-> SoC family: the SAMA7G5.
-> Note that one header file is shared with the clock sub-system. We synchronized
-> with Stephen to make it appear in this Pull-Request.
-> 
-> Thanks, best regards,
->    Nicolas
-> 
-> The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
-> 
->    Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-> 
-> are available in the Git repository at:
-> 
->    git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git at91-soc-5.15
-> 
-> for you to fetch changes up to ad9bc2e35cf575644064284943aefdde426644cc:
-> 
->    ARM: at91: pm: add sama7g5 shdwc (2021-07-19 14:32:13 +0200)
-> 
-> ----------------------------------------------------------------
-> AT91 soc for 5.13:
-Error with tag, please disregard this message. Sorry for the noise!
+On Tue, Aug 3, 2021 at 11:16 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Tue, 03 Aug 2021, Alistair Francis wrote:
+>
+> > Initial support for the Silergy SY7636A Power Management chip.
+> >
+> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> > ---
+> >  drivers/mfd/Kconfig         |  9 +++++
+> >  drivers/mfd/Makefile        |  1 +
+> >  drivers/mfd/sy7636a.c       | 72 +++++++++++++++++++++++++++++++++++++
+> >  include/linux/mfd/sy7636a.h | 45 +++++++++++++++++++++++
+> >  4 files changed, 127 insertions(+)
+> >  create mode 100644 drivers/mfd/sy7636a.c
+> >  create mode 100644 include/linux/mfd/sy7636a.h
+> >
+> > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > index 6a3fd2d75f96..b82208f0c79c 100644
+> > --- a/drivers/mfd/Kconfig
+> > +++ b/drivers/mfd/Kconfig
+> > @@ -1352,6 +1352,15 @@ config MFD_SYSCON
+> >         Select this option to enable accessing system control registers
+> >         via regmap.
+> >
+> > +config MFD_SY7636A
+> > +     tristate "Silergy SY7636A Power Management IC"
+> > +     select MFD_CORE
+> > +     select REGMAP_I2C
+> > +     depends on I2C
+> > +     help
+> > +       Select this option to enable support for the Silergy SY7636A
+> > +       Power Management IC.
+> > +
+> >  config MFD_DAVINCI_VOICECODEC
+> >       tristate
+> >       select MFD_CORE
+> > diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> > index 8116c19d5fd4..cbe581e87fa9 100644
+> > --- a/drivers/mfd/Makefile
+> > +++ b/drivers/mfd/Makefile
+> > @@ -266,6 +266,7 @@ obj-$(CONFIG_MFD_KHADAS_MCU)      +=3D khadas-mcu.o
+> >  obj-$(CONFIG_MFD_ACER_A500_EC)       +=3D acer-ec-a500.o
+> >  obj-$(CONFIG_MFD_QCOM_PM8008)        +=3D qcom-pm8008.o
+> >
+> > +obj-$(CONFIG_MFD_SY7636A)    +=3D sy7636a.o
+> >  obj-$(CONFIG_SGI_MFD_IOC3)   +=3D ioc3.o
+> >  obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)     +=3D simple-mfd-i2c.o
+> >  obj-$(CONFIG_MFD_INTEL_M10_BMC)   +=3D intel-m10-bmc.o
+> > diff --git a/drivers/mfd/sy7636a.c b/drivers/mfd/sy7636a.c
+> > new file mode 100644
+> > index 000000000000..f3ff93c7395d
+> > --- /dev/null
+> > +++ b/drivers/mfd/sy7636a.c
+> > @@ -0,0 +1,72 @@
+> > +// SPDX-License-Identifier: GPL-2.0+
+> > +/*
+> > + * MFD parent driver for SY7636A chip
+> > + *
+> > + * Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
+> > + *
+> > + * Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
+> > + *          Alistair Francis <alistair@alistair23.me>
+> > + *
+> > + * Based on the lp87565 driver by Keerthy <j-keerthy@ti.com>
+> > + */
+> > +
+> > +#include <linux/interrupt.h>
+> > +#include <linux/mfd/core.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of_device.h>
+> > +
+> > +#include <linux/mfd/sy7636a.h>
+> > +
+> > +static const struct regmap_config sy7636a_regmap_config =3D {
+> > +     .reg_bits =3D 8,
+> > +     .val_bits =3D 8,
+> > +};
+> > +
+> > +static const struct mfd_cell sy7636a_cells[] =3D {
+> > +     { .name =3D "sy7636a-regulator", },
+>
+> What kind of regulator is 'vcom'? LDO? DCDC?
 
-Regards,
-   Nicolas
+Both I guess:
 
-> 
-> - Add new SoC based on a Cortex-A7 core: the SAMA7G5 family
->    - mach-at91 entry, Kconfig and header files
->    - Power Management Controller (PMC) code and associated power
->      management changes. Support for suspend/resume, Ultra Low Power modes
->      and Backup with Memory in Self-Refresh mode.
->    - Power management association with DDR controller and shutdown
->      controller for addressing this variety of modes.
-> 
-> ----------------------------------------------------------------
-> Claudiu Beznea (23):
->        clk: at91: add register definition for sama7g5's master clock
->        ARM: at91: pm: move pm_bu to soc_pm data structure
->        ARM: at91: pm: move the setup of soc_pm.bu->suspended
->        ARM: at91: pm: document at91_soc_pm structure
->        ARM: at91: pm: check for different controllers in at91_pm_modes_init()
->        ARM: at91: pm: do not initialize pdev
->        ARM: at91: pm: use r7 instead of tmp1
->        ARM: at91: pm: avoid push and pop on stack while memory is in self-refersh
->        ARM: at91: pm: s/CONFIG_SOC_SAM9X60/CONFIG_HAVE_AT91_SAM9X60_PLL/g
->        ARM: at91: pm: add support for waiting MCK1..4
->        ARM: at91: sfrbu: add sfrbu registers definitions for sama7g5
->        ARM: at91: ddr: add registers definitions for sama7g5's ddr
->        ARM: at91: pm: add self-refresh support for sama7g5
->        ARM: at91: pm: add support for MCK1..4 save/restore for ulp modes
->        ARM: at91: pm: add support for 2.5V LDO regulator control
->        ARM: at91: pm: wait for ddr power mode off
->        ARM: at91: pm: add sama7g5 ddr controller
->        ARM: at91: pm: add sama7g5 ddr phy controller
->        ARM: at91: pm: save ddr phy calibration data to securam
->        ARM: at91: pm: add backup mode support for SAMA7G5
->        ARM: at91: pm: add sama7g5's pmc
->        ARM: at91: pm: add pm support for SAMA7G5
->        ARM: at91: pm: add sama7g5 shdwc
-> 
-> Eugen Hristev (3):
->        ARM: at91: add new SoC sama7g5
->        ARM: at91: debug: add sama7g5 low level debug uart
->        ARM: at91: sama7: introduce sama7 SoC family
-> 
->   arch/arm/Kconfig.debug               |  10 +
->   arch/arm/mach-at91/Kconfig           |  18 +
->   arch/arm/mach-at91/Makefile          |   1 +
->   arch/arm/mach-at91/generic.h         |   2 +
->   arch/arm/mach-at91/pm.c              | 343 +++++++++++----
->   arch/arm/mach-at91/pm.h              |   3 +
->   arch/arm/mach-at91/pm_data-offsets.c |   2 +
->   arch/arm/mach-at91/pm_suspend.S      | 827 ++++++++++++++++++++++++++---------
->   arch/arm/mach-at91/sama7.c           |  33 ++
->   include/linux/clk/at91_pmc.h         |  26 ++
->   include/soc/at91/sama7-ddr.h         |  80 ++++
->   include/soc/at91/sama7-sfrbu.h       |  34 ++
->   12 files changed, 1090 insertions(+), 289 deletions(-)
->   create mode 100644 arch/arm/mach-at91/sama7.c
->   create mode 100644 include/soc/at91/sama7-ddr.h
->   create mode 100644 include/soc/at91/sama7-sfrbu.h
-> 
+"SY7636A is a single-chip power management IC (PMIC) designed for
+electronic paper display (EPD) applications. The device supports panel
+sizes up to 9.7 inches and larger. The device integrates two
+high-efficiency DC-DC boost converters, which are boosted to 25V and
+-20V by two charge pumps to provide gate driver power for the panel.
+Two tracking LDOs create a =C2=B115V source driver power supply that
+supports output currents up to 200mA. SY7636A also provides I2C
+interface control for specific panel requirements"
 
+Alistair
 
--- 
-Nicolas Ferre
+>
+> > +     { .name =3D "sy7636a-temperature", },
+> > +     { .name =3D "sy7636a-thermal", },
+> > +};
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
