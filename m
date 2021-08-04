@@ -2,116 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45DD03E0441
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D3D3E043E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239109AbhHDPdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:33:39 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38570 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239104AbhHDPdh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:33:37 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CA23E2017C;
-        Wed,  4 Aug 2021 15:33:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628091203; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=t1tJavoxRL8YKK5Go9RcDtEqTyvx22b83zd2R6Gnu8U=;
-        b=RmB8ayOZl1h/pidOXlM38S5lgpD8pX2M2IFmCTahhR9dOvPqLhm9MIYV08kJvZwqNvcBhw
-        KvIKB5tndoiZrAtMLMDHNjrJ9ndpnYjkt8pyrdyf/3/Zl3sjDIBdXXEff+ttgGHBRbJO52
-        cuJP9CNnJ51PtobHdx26soQToLgr/Dw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628091203;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=t1tJavoxRL8YKK5Go9RcDtEqTyvx22b83zd2R6Gnu8U=;
-        b=4SEKEmtyQMijIYzn4DTfJFEh+sIfCgkx/aGXqyKx/gaZtuN4Izbw/6cOzfjqES2eDpe771
-        yxM1YD9gbC6TILBQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id BC18113BD7;
-        Wed,  4 Aug 2021 15:33:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id bBiLLUOzCmH8YgAAGKfGzw
-        (envelope-from <dwagner@suse.de>); Wed, 04 Aug 2021 15:33:23 +0000
-Date:   Wed, 4 Aug 2021 17:33:23 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-rt-users@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH] io-wq: remove GFP_ATOMIC allocation off schedule out path
-Message-ID: <20210804153323.anggq6oto6x7g2rs@beryllium.lan>
-References: <a673a130-e0e4-5aa8-4165-f35d1262fc6a@kernel.dk>
+        id S239094AbhHDPdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:33:18 -0400
+Received: from mga03.intel.com ([134.134.136.65]:43712 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239087AbhHDPdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 11:33:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="213973803"
+X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
+   d="scan'208";a="213973803"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 08:32:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
+   d="scan'208";a="480219774"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga008.fm.intel.com with ESMTP; 04 Aug 2021 08:32:54 -0700
+Subject: Re: [PATCH V4 2/2] scsi: ufshcd: Fix device links when BOOT WLUN
+ fails to probe
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+References: <20210716114408.17320-1-adrian.hunter@intel.com>
+ <20210716114408.17320-3-adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <c78aac34-5c55-f6b6-3450-d5c3f09781fa@intel.com>
+Date:   Wed, 4 Aug 2021 18:33:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a673a130-e0e4-5aa8-4165-f35d1262fc6a@kernel.dk>
+In-Reply-To: <20210716114408.17320-3-adrian.hunter@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 08:43:43AM -0600, Jens Axboe wrote:
-> Daniel reports that the v5.14-rc4-rt4 kernel throws a BUG when running
-> stress-ng:
-> 
-> | [   90.202543] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
-> | [   90.202549] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 2047, name: iou-wrk-2041
-> | [   90.202555] CPU: 5 PID: 2047 Comm: iou-wrk-2041 Tainted: G        W         5.14.0-rc4-rt4+ #89
-> | [   90.202559] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-> | [   90.202561] Call Trace:
-> | [   90.202577]  dump_stack_lvl+0x34/0x44
-> | [   90.202584]  ___might_sleep.cold+0x87/0x94
-> | [   90.202588]  rt_spin_lock+0x19/0x70
-> | [   90.202593]  ___slab_alloc+0xcb/0x7d0
-> | [   90.202598]  ? newidle_balance.constprop.0+0xf5/0x3b0
-> | [   90.202603]  ? dequeue_entity+0xc3/0x290
-> | [   90.202605]  ? io_wqe_dec_running.isra.0+0x98/0xe0
-> | [   90.202610]  ? pick_next_task_fair+0xb9/0x330
-> | [   90.202612]  ? __schedule+0x670/0x1410
-> | [   90.202615]  ? io_wqe_dec_running.isra.0+0x98/0xe0
-> | [   90.202618]  kmem_cache_alloc_trace+0x79/0x1f0
-> | [   90.202621]  io_wqe_dec_running.isra.0+0x98/0xe0
-> | [   90.202625]  io_wq_worker_sleeping+0x37/0x50
-> | [   90.202628]  schedule+0x30/0xd0
-> | [   90.202630]  schedule_timeout+0x8f/0x1a0
-> | [   90.202634]  ? __bpf_trace_tick_stop+0x10/0x10
-> | [   90.202637]  io_wqe_worker+0xfd/0x320
-> | [   90.202641]  ? finish_task_switch.isra.0+0xd3/0x290
-> | [   90.202644]  ? io_worker_handle_work+0x670/0x670
-> | [   90.202646]  ? io_worker_handle_work+0x670/0x670
-> | [   90.202649]  ret_from_fork+0x22/0x30
-> 
-> which is due to the RT kernel not liking a GFP_ATOMIC allocation inside
-> a raw spinlock. Besides that not working on RT, doing any kind of
-> allocation from inside schedule() is kind of nasty and should be avoided
-> if at all possible.
-> 
-> This particular path happens when an io-wq worker goes to sleep, and we
-> need a new worker to handle pending work. We currently allocate a small
-> data item to hold the information we need to create a new worker, but we
-> can instead include this data in the io_worker struct itself and just
-> protect it with a single bit lock. We only really need one per worker
-> anyway, as we will have run pending work between to sleep cycles.
-> 
-> https://lore.kernel.org/lkml/20210804082418.fbibprcwtzyt5qax@beryllium.lan/
-> Reported-by: Daniel Wagner <dwagner@suse.de>
-> Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-I applied this patch on top of v5.14-rc4-rt4 and with it all looks
-good.
+Martin, perhaps you could consider picking up this patch if no one objects?
 
-Tested-by: Daniel Wagner <dwagner@suse.de>
+
+On 16/07/21 2:44 pm, Adrian Hunter wrote:
+> Managed device links are deleted by device_del(). However it is possible to
+> add a device link to a consumer before device_add(), and then discovering
+> an error prevents the device from being used. In that case normally
+> references to the device would be dropped and the device would be deleted.
+> However the device link holds a reference to the device, so the device link
+> and device remain indefinitely (unless the supplier is deleted).
+> 
+> For UFSHCD, if a LUN fails to probe (e.g. absent BOOT WLUN), the device
+> will not have been registered but can still have a device link holding a
+> reference to the device. The unwanted device link will prevent runtime
+> suspend indefinitely.
+> 
+> Amend device link removal to accept removal of a link with an unregistered
+> consumer device (suggested by Rafael), and fix UFSHCD by explicitly
+> deleting the device link when SCSI destroys the SCSI device.
+> 
+> Fixes: b294ff3e34490 ("scsi: ufs: core: Enable power management for wlun")
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
+> ---
+>  drivers/base/core.c       |  2 ++
+>  drivers/scsi/ufs/ufshcd.c | 23 +++++++++++++++++++++--
+>  2 files changed, 23 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 2de8f7d8cf54..983e895d4ced 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -887,6 +887,8 @@ static void device_link_put_kref(struct device_link *link)
+>  {
+>  	if (link->flags & DL_FLAG_STATELESS)
+>  		kref_put(&link->kref, __device_link_del);
+> +	else if (!device_is_registered(link->consumer))
+> +		__device_link_del(&link->kref);
+>  	else
+>  		WARN(1, "Unable to drop a managed device link reference\n");
+>  }
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 708b3b62fc4d..9864a8ee0263 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -5020,15 +5020,34 @@ static int ufshcd_slave_configure(struct scsi_device *sdev)
+>  static void ufshcd_slave_destroy(struct scsi_device *sdev)
+>  {
+>  	struct ufs_hba *hba;
+> +	unsigned long flags;
+>  
+>  	hba = shost_priv(sdev->host);
+>  	/* Drop the reference as it won't be needed anymore */
+>  	if (ufshcd_scsi_to_upiu_lun(sdev->lun) == UFS_UPIU_UFS_DEVICE_WLUN) {
+> -		unsigned long flags;
+> -
+>  		spin_lock_irqsave(hba->host->host_lock, flags);
+>  		hba->sdev_ufs_device = NULL;
+>  		spin_unlock_irqrestore(hba->host->host_lock, flags);
+> +	} else if (hba->sdev_ufs_device) {
+> +		struct device *supplier = NULL;
+> +
+> +		/* Ensure UFS Device WLUN exists and does not disappear */
+> +		spin_lock_irqsave(hba->host->host_lock, flags);
+> +		if (hba->sdev_ufs_device) {
+> +			supplier = &hba->sdev_ufs_device->sdev_gendev;
+> +			get_device(supplier);
+> +		}
+> +		spin_unlock_irqrestore(hba->host->host_lock, flags);
+> +
+> +		if (supplier) {
+> +			/*
+> +			 * If a LUN fails to probe (e.g. absent BOOT WLUN), the
+> +			 * device will not have been registered but can still
+> +			 * have a device link holding a reference to the device.
+> +			 */
+> +			device_link_remove(&sdev->sdev_gendev, supplier);
+> +			put_device(supplier);
+> +		}
+>  	}
+>  }
+>  
+> 
 
