@@ -2,178 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 322CC3DFD9A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB99A3DFD9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236904AbhHDJGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 05:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37064 "EHLO
+        id S236931AbhHDJIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 05:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235528AbhHDJGh (ORCPT
+        with ESMTP id S234880AbhHDJIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 05:06:37 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE67C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 02:06:24 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id b128so753165wmb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 02:06:24 -0700 (PDT)
+        Wed, 4 Aug 2021 05:08:14 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068EAC061799
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 02:08:02 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id hs10so2780587ejc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 02:08:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=fek9tYBlhdhrU7dCmsbkvE0PWz8UZbll5VrIM672nLw=;
-        b=qCxNXYwBUKEgmfv41Ksy/hwAem0tvjMgzmuQAwi3cD1IVi0UFPTbjxha/HquFzLUNN
-         CmNwRv0nMnX4Fddu97WKuM/Wug3vmSK9HP0ahFala585VZhcL/Tp3Gye6yM3i1og8gF8
-         H57JriY1pHxhpkIbroqpbjcrkxPNueURI7osd20cpkGDJk+pqIGI04IyU+HIj+22XuQC
-         Pcr6pCK/KewwUYV48gXUWpAQDQSZLQB+vp6IgrNNfaVhrYCk7FM7Vj6rgzTeF+ToAJz9
-         fKMvcvkxHqzbvCtFv/J6daI/kFXvWxj9bupukm4/cdmXMi5W2Y7/Jqk5c7NAZ2HVN6fG
-         Nwdw==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vHxgnDbRze3cfbummo1oFdspd0VXUkioTGyKAxbmjBY=;
+        b=rrLb5avlbWWVVZAoiqSf4GuH1Tep3672/ZPFrJ1q2sFsUjVxFnNVB7tKQ6xXG4rhnv
+         1PpAczmI/qacC7vsiZ2BEcntWSoQhW130Qwg+GEKxWvTPhhjdU0zMqHukOrvN7jIhUoV
+         Nsn2eb0p8F8I1ZJcwL62tBSr6vb1HYCK7y/HkosE9AxRt7VX5in8838+OKYoj/JdigCO
+         22pQ6zrUz1MLqHboxSN2WElTA63GZmG1OcBMMKNc/LoDbjlq6Lf4z01rVYSWbqkkn5bl
+         mqGmd/oNyGjYpPMnG5vHW8RpUjXvzzZbHlRoL8cVzBdZSTws01CqFaXWZkQX3ftOVtMV
+         f9GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=fek9tYBlhdhrU7dCmsbkvE0PWz8UZbll5VrIM672nLw=;
-        b=nqnTFjuBwP8q9HthgsmuIKfVBpronQ2Av9hSeByWgpb8cWzow5Wa5OTIt+RsH7Fyhm
-         enqTkKGenDl+HBFmC0d9aRplsfBhwDNwkT4nRROYbsWGxQCx3dwxTqpxxOQpGIxufZrL
-         9TKmGJuQBBvgEohBv8mU3WI+wP4mUaHy51lTZIg8Rr0V3MXcoyPZdTDxD4MwbfelymaT
-         44dH2fYswAulrHUb2OFTQsaM0WGVUCoVwh7XwsEzWJb9tEXSMMcAVmEr5bIqRwGtRs2f
-         vr9hflXbT28nNdDhrcx4xK64ziEA+wFUPx1xEPagjUj0KkZVde2yzpSgIWOxCY9UtNui
-         f11g==
-X-Gm-Message-State: AOAM5309ZSc16WqPFdxj4P+2IMQtLJFRwEppTEUEdw53XFxnZOY0Tryp
-        cmrmEf6gCqXs9l2Cl+e8JZ5FiA==
-X-Google-Smtp-Source: ABdhPJzpqeyUylpo53QNk/g+chsU22g7uFH0HcgoAZxydKAbFerMz9+IvN0IlEDazdbo+iAIZssnmw==
-X-Received: by 2002:a05:600c:4eca:: with SMTP id g10mr14925508wmq.16.1628067983266;
-        Wed, 04 Aug 2021 02:06:23 -0700 (PDT)
-Received: from google.com ([109.180.115.228])
-        by smtp.gmail.com with ESMTPSA id m14sm1697269wrs.56.2021.08.04.02.06.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 02:06:22 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 10:06:20 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Alistair Francis <alistair23@gmail.com>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
-        Mark Brown <broonie@kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 02/11] mfd: sy7636a: Initial commit
-Message-ID: <YQpYjEc9r8QGUhiD@google.com>
-References: <20210803084456.198-1-alistair@alistair23.me>
- <20210803084456.198-2-alistair@alistair23.me>
- <YQlBtQDrVHqh3N5D@google.com>
- <CAKmqyKMZWVx3KqeysUjOc29nuxnwJfZ3wjmWjVwk9tpQ4dkh-A@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vHxgnDbRze3cfbummo1oFdspd0VXUkioTGyKAxbmjBY=;
+        b=sd3c8r0XZqL1umXJN3cr6jeU/GUi5T6tJ/pynSRO/3Hn+DClqENyejqnToAFHQyqvB
+         5JzaZs/uBixmMWVVUjTulrOOmGpBmKsXmmlrLXqJilwsW8AsDM+tgKiPDZF/Jcej2D+h
+         OkLGuog1oNYMXY1uhvW5PndhbbXN06SWKfL5bxCmchs4a1oaCRjxOoESRhsHOU+nJ9zB
+         7b8YR0tq+XygupyffV/PjZIGCC4VZROPYCspKOZxwU3irW4P5c2Ry2U/th/0RVxoadJ7
+         3XyhS6zWOXhmIUkcax2EEB6mBG6Wkaogk3L063ZG6i/jbxGBMQLibrQgjrArpme32yH+
+         3SUQ==
+X-Gm-Message-State: AOAM5313WPlVAzrrdBZ4MIOiArCJALIOnw3qQk2rsqQnrYSWRHu8HVNU
+        k/zZtedjFSJxduMnjaTnAiNR4Yi0sWdZLRbG7kW5
+X-Google-Smtp-Source: ABdhPJz7ndtSUpcqEgNkoVHcDwP0fq03BR0Lre7qDAvevyBxeyuNZM0taxEDcIn1Kzh847IXKZfSmIisXg0eBWVCt2c=
+X-Received: by 2002:a17:906:58c7:: with SMTP id e7mr24219405ejs.197.1628068080494;
+ Wed, 04 Aug 2021 02:08:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKmqyKMZWVx3KqeysUjOc29nuxnwJfZ3wjmWjVwk9tpQ4dkh-A@mail.gmail.com>
+References: <20210729073503.187-1-xieyongji@bytedance.com> <20210729073503.187-11-xieyongji@bytedance.com>
+ <6bb6c689-e6dd-cfa2-094b-a0ca4258aded@redhat.com> <CACycT3v7BHxYY0OFYJRFU41Bz1=_v8iMRwzYKgX6cJM-SiNH+A@mail.gmail.com>
+ <fdcb0224-11f9-caf2-a44e-e6406087fd50@redhat.com> <CACycT3v0EQVrv_A1K1bKmiYu0q5aFE=t+0yRaWKC7T3_H3oB-Q@mail.gmail.com>
+ <bd48ec76-0d5c-2efb-8406-894286b28f6b@redhat.com>
+In-Reply-To: <bd48ec76-0d5c-2efb-8406-894286b28f6b@redhat.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Wed, 4 Aug 2021 17:07:49 +0800
+Message-ID: <CACycT3tUwJXUV24PK7OvzPrHYYeQ5Q3qUW_vbuFMjwig0dBw2g@mail.gmail.com>
+Subject: Re: [PATCH v10 10/17] virtio: Handle device reset failure in register_virtio_device()
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        He Zhe <zhe.he@windriver.com>,
+        Liu Xiaodong <xiaodong.liu@intel.com>,
+        Joe Perches <joe@perches.com>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Aug 2021, Alistair Francis wrote:
+On Wed, Aug 4, 2021 at 4:54 PM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> =E5=9C=A8 2021/8/4 =E4=B8=8B=E5=8D=884:50, Yongji Xie =E5=86=99=E9=81=93:
+> > On Wed, Aug 4, 2021 at 4:32 PM Jason Wang <jasowang@redhat.com> wrote:
+> >>
+> >> =E5=9C=A8 2021/8/3 =E4=B8=8B=E5=8D=885:38, Yongji Xie =E5=86=99=E9=81=
+=93:
+> >>> On Tue, Aug 3, 2021 at 4:09 PM Jason Wang <jasowang@redhat.com> wrote=
+:
+> >>>> =E5=9C=A8 2021/7/29 =E4=B8=8B=E5=8D=883:34, Xie Yongji =E5=86=99=E9=
+=81=93:
+> >>>>> The device reset may fail in virtio-vdpa case now, so add checks to
+> >>>>> its return value and fail the register_virtio_device().
+> >>>> So the reset() would be called by the driver during remove as well, =
+or
+> >>>> is it sufficient to deal only with the reset during probe?
+> >>>>
+> >>> Actually there is no way to handle failure during removal. And it
+> >>> should be safe with the protection of software IOTLB even if the
+> >>> reset() fails.
+> >>>
+> >>> Thanks,
+> >>> Yongji
+> >>
+> >> If this is true, does it mean we don't even need to care about reset
+> >> failure?
+> >>
+> > But we need to handle the failure in the vhost-vdpa case, isn't it?
+>
+>
+> Yes, but:
+>
+> - This patch is for virtio not for vhost, if we don't care virtio, we
+> can avoid the changes
+> - For vhost, there could be two ways probably:
+>
+> 1) let the set_status to report error
+> 2) require userspace to re-read for status
+>
+> It looks to me you want to go with 1) and I'm not sure whether or not
+> it's too late to go with 2).
+>
 
-> On Tue, Aug 3, 2021 at 11:16 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Tue, 03 Aug 2021, Alistair Francis wrote:
-> >
-> > > Initial support for the Silergy SY7636A Power Management chip.
-> > >
-> > > Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> > > ---
-> > >  drivers/mfd/Kconfig         |  9 +++++
-> > >  drivers/mfd/Makefile        |  1 +
-> > >  drivers/mfd/sy7636a.c       | 72 +++++++++++++++++++++++++++++++++++++
-> > >  include/linux/mfd/sy7636a.h | 45 +++++++++++++++++++++++
-> > >  4 files changed, 127 insertions(+)
-> > >  create mode 100644 drivers/mfd/sy7636a.c
-> > >  create mode 100644 include/linux/mfd/sy7636a.h
-> > >
-> > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > > index 6a3fd2d75f96..b82208f0c79c 100644
-> > > --- a/drivers/mfd/Kconfig
-> > > +++ b/drivers/mfd/Kconfig
-> > > @@ -1352,6 +1352,15 @@ config MFD_SYSCON
-> > >         Select this option to enable accessing system control registers
-> > >         via regmap.
-> > >
-> > > +config MFD_SY7636A
-> > > +     tristate "Silergy SY7636A Power Management IC"
-> > > +     select MFD_CORE
-> > > +     select REGMAP_I2C
-> > > +     depends on I2C
-> > > +     help
-> > > +       Select this option to enable support for the Silergy SY7636A
-> > > +       Power Management IC.
-> > > +
-> > >  config MFD_DAVINCI_VOICECODEC
-> > >       tristate
-> > >       select MFD_CORE
-> > > diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> > > index 8116c19d5fd4..cbe581e87fa9 100644
-> > > --- a/drivers/mfd/Makefile
-> > > +++ b/drivers/mfd/Makefile
-> > > @@ -266,6 +266,7 @@ obj-$(CONFIG_MFD_KHADAS_MCU)      += khadas-mcu.o
-> > >  obj-$(CONFIG_MFD_ACER_A500_EC)       += acer-ec-a500.o
-> > >  obj-$(CONFIG_MFD_QCOM_PM8008)        += qcom-pm8008.o
-> > >
-> > > +obj-$(CONFIG_MFD_SY7636A)    += sy7636a.o
-> > >  obj-$(CONFIG_SGI_MFD_IOC3)   += ioc3.o
-> > >  obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)     += simple-mfd-i2c.o
-> > >  obj-$(CONFIG_MFD_INTEL_M10_BMC)   += intel-m10-bmc.o
-> > > diff --git a/drivers/mfd/sy7636a.c b/drivers/mfd/sy7636a.c
-> > > new file mode 100644
-> > > index 000000000000..f3ff93c7395d
-> > > --- /dev/null
-> > > +++ b/drivers/mfd/sy7636a.c
-> > > @@ -0,0 +1,72 @@
-> > > +// SPDX-License-Identifier: GPL-2.0+
-> > > +/*
-> > > + * MFD parent driver for SY7636A chip
-> > > + *
-> > > + * Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
-> > > + *
-> > > + * Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
-> > > + *          Alistair Francis <alistair@alistair23.me>
-> > > + *
-> > > + * Based on the lp87565 driver by Keerthy <j-keerthy@ti.com>
-> > > + */
-> > > +
-> > > +#include <linux/interrupt.h>
-> > > +#include <linux/mfd/core.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/of_device.h>
-> > > +
-> > > +#include <linux/mfd/sy7636a.h>
-> > > +
-> > > +static const struct regmap_config sy7636a_regmap_config = {
-> > > +     .reg_bits = 8,
-> > > +     .val_bits = 8,
-> > > +};
-> > > +
-> > > +static const struct mfd_cell sy7636a_cells[] = {
-> > > +     { .name = "sy7636a-regulator", },
-> >
-> > What kind of regulator is 'vcom'? LDO? DCDC?
-> 
-> Both I guess:
-> 
-> "SY7636A is a single-chip power management IC (PMIC) designed for
-> electronic paper display (EPD) applications. The device supports panel
-> sizes up to 9.7 inches and larger. The device integrates two
-> high-efficiency DC-DC boost converters, which are boosted to 25V and
-> -20V by two charge pumps to provide gate driver power for the panel.
-> Two tracking LDOs create a ±15V source driver power supply that
-> supports output currents up to 200mA. SY7636A also provides I2C
-> interface control for specific panel requirements"
+Looks like 2) can't work if reset failure happens in
+vhost_vdpa_release() and vhost_vdpa_open().
 
-Is there a datasheet I could look at?
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+Yongji
