@@ -2,180 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA2E3E0ACD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E593E0AD5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235627AbhHDXUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 19:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35050 "EHLO
+        id S235532AbhHDXad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 19:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233780AbhHDXUl (ORCPT
+        with ESMTP id S229464AbhHDXac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 19:20:41 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81AECC061798
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 16:20:27 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id x15so4863687oic.9
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 16:20:27 -0700 (PDT)
+        Wed, 4 Aug 2021 19:30:32 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43FAC061798
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 16:30:18 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id z2so7416343lft.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 16:30:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+WrY9sY3xmkOkflQ06GlfCPlNC4kNQFurKfUW6O4aNQ=;
-        b=QXU5ykemFZbefDYdowS/GS93b0Hqj4WM6eDDz52B9LUhe4lZRb51Cdy4Gy4fN1Fugg
-         AlTq/UlQ1D3oCeErjCVqHk9/jVem3nYORoAV5H1lVURS/TP9CVOH8kRaRhmdGwU1JrWH
-         K45UQzWrEh9Xqnci0wTALvizIk1v2g8tXJl8UrCNNtwz73M3TThZ+5MaMoIeXCuMVu8A
-         rVahASNRQozxcNzTvTPp5DnIt4Q7n1IpBpZSJBOIoBxGqNDTaAdBIBVxTe+63zEzMOCb
-         gIvp4pkfvhdWaot0BtJ/BjDcYuPxF2v0WlICplsykEoAF4Qq3SH8v2fy1kxx7D2XwCbl
-         RsUA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cHtPEclDrK7WzfT08VRfok96f4EFF4H9682lU5YgG5s=;
+        b=Ik7HwoYbaw0A0wuENWLbxNnHG1SR/P6ZYN5/96bCC0AEigb7RjDkwFJea9oEQFOSCP
+         da/jc6fHhKRaGXbonvww5Pq9rpDujnwTvjyHT72mUyZqDjDPGyRMG2pBeS4iFOtI2H0s
+         bnjVsLdLv6kcgDh4nRfGbrx9h3scUuIPKzVSprkoEaa8jabEvBpqvgNAIRvc6zCec9x/
+         7RO0opQy8FAS1C5Vt3geV4/94z0pmaL9zV4iB4Nwrqwr5rKycSxEvQ1h5XOfieqFrU5Z
+         e7QF5znPP2VNxhJxCEqyzIfFNWheN5Zta2XYOHX1FAv0STI0YKcrftmSCWiHBoXc2Vk3
+         i8QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+WrY9sY3xmkOkflQ06GlfCPlNC4kNQFurKfUW6O4aNQ=;
-        b=B3n4W1SMi8A9wckzAPMNxoM/uX5qQUjZUbIvhXVz2qXoQ/iSUVMPp5fOBYMTAdBJ8B
-         A/EyNJDEf1t4Veu9SkKUZtdbo9whcOhOv1bXusLft1AFSPv/+u+NAHW7OkFVkCe8125E
-         n9evk8yDOUN5jFSd3zx6Y7No2oRB5H3SkbAsaI0gfDtbPpD2d8kobpCLzh6XfrmHwF8C
-         in+pYYCe706f2m/k2bhUNk+AP8BGe/0sUFi84fqVj+/acrw4BsxnZZWXjpbVYEh0MqCZ
-         gRGD5+0ReOn3idbl2KfEmqKXvJFvmAcSTDQ8JbpcMRZ0HxsjkGruzolTfbDrLts5w+OP
-         QNvw==
-X-Gm-Message-State: AOAM531Rm3fjSsCJQ3RyMmgiNev/4oNMA/KffvBZouQtzgdiN3yjt/1B
-        bpAuQjMR/WqkrOuCXXDLhZJvHA==
-X-Google-Smtp-Source: ABdhPJzuWE8wYJfSvfdZ1zfsR4m2m7P3NIyjB125PXi8DLMi21I+eMfEW3aGFPmpg16L3nnHDlPi6w==
-X-Received: by 2002:aca:180c:: with SMTP id h12mr1319358oih.60.1628119226910;
-        Wed, 04 Aug 2021 16:20:26 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id f3sm691099otc.49.2021.08.04.16.20.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 16:20:26 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 18:20:24 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     sboyd@kernel.org, robh+dt@kernel.org, mka@chromium.org,
-        viresh.kumar@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dianders@chromium.org, tdas@codeaurora.org
-Subject: Re: [PATCH 2/4] cpufreq: qcom: Re-arrange register offsets to
- support per core L3 DCVS
-Message-ID: <YQsguOCjIFZaJSzd@builder.lan>
-References: <1627581885-32165-1-git-send-email-sibis@codeaurora.org>
- <1627581885-32165-3-git-send-email-sibis@codeaurora.org>
- <YQsetKGjlmQRxytX@builder.lan>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cHtPEclDrK7WzfT08VRfok96f4EFF4H9682lU5YgG5s=;
+        b=kZ1spemwuscISJBqXNucMG8khgQRy9uVpOlUqyCkSud7GhkrZpXj9Gs3EkMh6j4r90
+         EWgdWS1tPUY8dumvtkdUdG27zMO1c/WnNOZ8M/1j+SBjUJyJoEMtDfTQ1yQ0hVq49GVa
+         E6FqItmivDzUo/Y1fUIhbdhJ3FPW51/4TSm7g5oG9atI+45VCLSyktfYsjCzNXHXd/S8
+         oNN75RRffp99CpGvcBIkI+4tycbOZnRc9kQS6kBOkQnms6gphoGFV968yI0iqZsqrKmX
+         kbB+H8NM2x7MflT6y1G4lvcMi6HiqY6OdtlQsaF0Sg2f5cVTZg7GZbvsAGjcjMEf5cd3
+         f1Iw==
+X-Gm-Message-State: AOAM533X4zvwVSjNvf5XraUy2AELpW/C3mjTSAYIku1RnN9p+B27zzjD
+        KVIRlUHgOVxbCIqkAdkjvTdA0kiI3uTBnkuXH8hz3w==
+X-Google-Smtp-Source: ABdhPJw/BC7SYt/yq3Hmv3SjF2oaeXhckHMpYk5Am5Udn+/mSARm9PiS3mnOBesbqnRdtiFlPoMC8EgmB5GhXfscY+g=
+X-Received: by 2002:a05:6512:2618:: with SMTP id bt24mr1242912lfb.180.1628119816966;
+ Wed, 04 Aug 2021 16:30:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQsetKGjlmQRxytX@builder.lan>
+References: <20210801200617.623745-5-posk@google.com> <3530714d-125b-e0f5-45b2-72695e2fc4ee@uwaterloo.ca>
+In-Reply-To: <3530714d-125b-e0f5-45b2-72695e2fc4ee@uwaterloo.ca>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Wed, 4 Aug 2021 16:30:05 -0700
+Message-ID: <CAPNVh5cokv9un3TAxFfYEkRkA_EM68_2YSCaY_-z+wKzHWY+kw@mail.gmail.com>
+Subject: Re: [PATCH 4/4 v0.4] sched/umcg: RFC: implement UMCG syscalls
+To:     Thierry Delisle <tdelisle@uwaterloo.ca>
+Cc:     posk@posk.io, avagin@google.com, bsegall@google.com,
+        jannh@google.com, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        peterz@infradead.org, pjt@google.com, tglx@linutronix.de,
+        Peter Buhr <pabuhr@uwaterloo.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 04 Aug 18:11 CDT 2021, Bjorn Andersson wrote:
+On Wed, Aug 4, 2021 at 3:05 PM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
+>
+> I have attached an atomic stack implementation I wrote. I believe it would
+> be applicable here. It is very similar except the kernel side no longer
+> needs a retry loop, the looping is moved to the user-space after the pop.
+> Using it instead of the code you have in enqueue_idle_worker means the
+> timeout is no longer needed.
 
-> On Thu 29 Jul 13:04 CDT 2021, Sibi Sankar wrote:
-> 
-> > Qualcomm SoCs (starting with SM8350) support per core voting for L3 cache
-> > frequency. So, re-arrange the cpufreq register offsets to allow access for
-> > the L3 interconnect to implement per core control. Also prevent binding
-> > breakage caused by register offset shuffling by using the SM8250/SM8350
-> > EPSS compatible.
-> > 
-> > Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
-> > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> > ---
-> >  drivers/cpufreq/qcom-cpufreq-hw.c | 23 +++++++++++++++++++----
-> >  1 file changed, 19 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-> > index f86859bf76f1..74ef3b38343b 100644
-> > --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> > +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> > @@ -28,6 +28,7 @@ struct qcom_cpufreq_soc_data {
-> >  	u32 reg_volt_lut;
-> >  	u32 reg_perf_state;
-> >  	u8 lut_row_size;
-> > +	bool skip_enable;
-> 
-> This should probably be called "skip_enable_check".
-> 
-> >  };
-> >  
-> >  struct qcom_cpufreq_data {
-> > @@ -257,19 +258,31 @@ static const struct qcom_cpufreq_soc_data qcom_soc_data = {
-> >  	.reg_volt_lut = 0x114,
-> >  	.reg_perf_state = 0x920,
-> >  	.lut_row_size = 32,
-> > +	.skip_enable = false,
-> >  };
-> >  
-> >  static const struct qcom_cpufreq_soc_data epss_soc_data = {
-> > +	.reg_freq_lut = 0x0,
-> > +	.reg_volt_lut = 0x100,
-> > +	.reg_perf_state = 0x220,
-> > +	.lut_row_size = 4,
-> > +	.skip_enable = true,
-> 
-> This change is not compatible with existing DTBs.
-> 
+Thanks, Thierry! Your implementation seems reasonable - I'll test it
+and will use it in the future versions of the patchset if everything
+is OK.
 
-Continued staring at this after I sent my response, and I'm confused.
+>
+>  > - ``uint64_t idle_server_tid_ptr``: points to a pointer variable in the
+>  >   userspace that points to an idle server, i.e. a server in IDLE
+> state waiting
+>  >   in sys_umcg_wait(); read-only; workers must have this field set;
+> not used
+>  >   in servers.
+>  >
+>  >   When a worker's blocking operation in the kernel completes, the kernel
+>  >   changes the worker's state from ``BLOCKED`` to ``IDLE``, adds the
+> worker
+>  >   to the list of idle workers, and checks whether
+>  >   ``*idle_server_tid_ptr`` is not zero. If not, the kernel tries to
+> cmpxchg()
+>  >   it with zero; if cmpxchg() succeeds, the kernel will then wake the
+> server.
+>  >   See `State transitions`_ below for more details.
+>
+> In this case, I believe cmpxchg is not necessary and xchg suffices.
 
-You're say in the commit message that SM8350 and beyond needs access to
-some registers in the first 0x100 bytes of the register space. So
-therefor you're changing the fallback, which is only used for sc7280...
-
-In other words, you break the compatibility with the existing sc7280
-dtb and leave sm8350 unchanged - after saying that this change is for
-the sake of sm8350.
-
-
-Lastly, why is "the L3 frequency" an interconnect and not a clock? (And
-why don't we make the cpufreq driver a clock-controller for the
-platforms that has this?)
-
-Regards,
-Bjorn
-
-> Regards,
-> Bjorn
-> 
-> > +};
-> > +
-> > +static const struct qcom_cpufreq_soc_data epss_sm8250_soc_data = {
-> >  	.reg_enable = 0x0,
-> >  	.reg_freq_lut = 0x100,
-> >  	.reg_volt_lut = 0x200,
-> >  	.reg_perf_state = 0x320,
-> >  	.lut_row_size = 4,
-> > +	.skip_enable = false,
-> >  };
-> >  
-> >  static const struct of_device_id qcom_cpufreq_hw_match[] = {
-> >  	{ .compatible = "qcom,cpufreq-hw", .data = &qcom_soc_data },
-> >  	{ .compatible = "qcom,cpufreq-epss", .data = &epss_soc_data },
-> > +	{ .compatible = "qcom,sm8250-cpufreq-epss", .data = &epss_sm8250_soc_data },
-> > +	{ .compatible = "qcom,sm8350-cpufreq-epss", .data = &epss_sm8250_soc_data },
-> >  	{}
-> >  };
-> >  MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
-> > @@ -334,10 +347,12 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
-> >  	data->res = res;
-> >  
-> >  	/* HW should be in enabled state to proceed */
-> > -	if (!(readl_relaxed(base + data->soc_data->reg_enable) & 0x1)) {
-> > -		dev_err(dev, "Domain-%d cpufreq hardware not enabled\n", index);
-> > -		ret = -ENODEV;
-> > -		goto error;
-> > +	if (!data->soc_data->skip_enable) {
-> > +		if (!(readl_relaxed(base + data->soc_data->reg_enable) & 0x1)) {
-> > +			dev_err(dev, "Domain-%d cpufreq hardware not enabled\n", index);
-> > +			ret = -ENODEV;
-> > +			goto error;
-> > +		}
-> >  	}
-> >  
-> >  	qcom_get_related_cpus(index, policy->cpus);
-> > -- 
-> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > a Linux Foundation Collaborative Project
-> > 
+Right! I'll need to roll another atomic_xchg helper for this and the
+atomic stack above...
