@@ -2,138 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BED03DFCD1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 434DF3DFCD6
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236434AbhHDI2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:28:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56397 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236401AbhHDI2K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:28:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628065677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VzZ2fz11QFkhGxgNVXLaPyQv4vbgyLKy/JcMqXEwSCE=;
-        b=G6m8oA3op9pu+76PZVZ8PHY/jWhpglbO+cAwI3S0z/PqxPFwTv9Yh8r2LfVlqWOgDH06C9
-        lNbB9mQpPk0xLukYBxK6dOhlmCf/o+NX4XoHUl/j5GuS5ot+RyDfjnu6KNO3NzUz1XsQ1k
-        KzJZDVxJTgj6V6k2lDzDLfMVBWj6Lj8=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-601-Rwuq0cj2P8-j5Te2UXN8vA-1; Wed, 04 Aug 2021 04:27:56 -0400
-X-MC-Unique: Rwuq0cj2P8-j5Te2UXN8vA-1
-Received: by mail-pj1-f72.google.com with SMTP id s20-20020a17090a5d14b0290177ee10728cso1814398pji.9
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 01:27:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=VzZ2fz11QFkhGxgNVXLaPyQv4vbgyLKy/JcMqXEwSCE=;
-        b=EY9R4U/9uwIeOt4KUUB0xelOLvr2UktjhGWHh4QKVQJD3cgeWDu7aJGh5+agshimhS
-         5G77VrbT/oqn1YyaNajFCfu/C7oy6p5wFE5zOia/y2tNtlktN5uQMR0GHkM35VlISDJD
-         zUkFdAwB6+9Vr7mxy1H/2nUu0BAgYZ1yBDdh7yF4+jfkMlalM2YKsDxWH4bqDFNvLVBK
-         XIOeSWX+RjM6YWiJr6Tf91umX73jepeMrgnNuljbuiiRWFS10TxHfQcttSoIy6ptGZq0
-         ONSQAS750KF5n1aJmN3LnCZQQQM0Cn+DHXCGfWNKhAeND1Q5EIfP3RpQqCB5pkJkvWra
-         zH9A==
-X-Gm-Message-State: AOAM530JtSAh7vaB2IzpbWICG3nf8zk/imuCOjwJ/oMWMXLBW6YRO+Ww
-        pHBn8z1KMTac7gcYDv7AsC5P0Rg9IAeMIE8NV0CvHK+Bm9+SFphuod4VNbQXkoFEAF57fdawfRm
-        pWo5ITbJlMXSCaBgpouH2HIY4Q2BtHKLXlDhQli3m3nYk1mdi2T8WQNnAFkGfqZ2v7Oogi9w/AW
-        fz
-X-Received: by 2002:a65:620a:: with SMTP id d10mr1146374pgv.120.1628065675502;
-        Wed, 04 Aug 2021 01:27:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyXILAtwY28td6fRSflYoyigX2PjP4ZVbOPHaGCmnbiB1lEKAblvPX4KIAKHqSTrKqVGtkG2Q==
-X-Received: by 2002:a65:620a:: with SMTP id d10mr1146334pgv.120.1628065675198;
-        Wed, 04 Aug 2021 01:27:55 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id l2sm1714190pfc.157.2021.08.04.01.27.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 01:27:54 -0700 (PDT)
-Subject: Re: [PATCH v10 02/17] file: Export receive_fd() to modules
-To:     Yongji Xie <xieyongji@bytedance.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        He Zhe <zhe.he@windriver.com>,
-        Liu Xiaodong <xiaodong.liu@intel.com>,
-        Joe Perches <joe@perches.com>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210729073503.187-1-xieyongji@bytedance.com>
- <20210729073503.187-3-xieyongji@bytedance.com>
- <a0ab081a-db06-6b7a-b22e-4ace96a5c7db@redhat.com>
- <CACycT3sdx8nA8fh3pjO_=pbiM+Bs5y+h4fuGkFQEsRSaBnph7Q@mail.gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <0a37dce4-0012-c2d1-bb06-5e9409815b93@redhat.com>
-Date:   Wed, 4 Aug 2021 16:27:42 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        id S236463AbhHDI2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:28:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236383AbhHDI2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 04:28:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62F6C61037;
+        Wed,  4 Aug 2021 08:28:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628065690;
+        bh=bsnK861s4w9Krqm9zlALXbihT+W3WdDTP8TGkcy3fCE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nqH/2gX/y9YB3XT3R96l3KJ2CC3SEiYPil76yc8zGlzox0iC6Vz/skYhA5Nax+O4a
+         WQoVHHQR4Uo2sG60FxrfjU71kWOMU+fim4k0PFANOLlN1mhx81DuDRcLChIWD69NzZ
+         nV6Qs541Ts69mRt/SXP78K5JeihRuu6NW1EeZXODtzHcNJQSGucKGz98DuQoM9JMNO
+         a1gElqACd+AoXsC+AFfXUcCckBVBRV20nlscfgLumGi+rkAXmig0Vw+ztL5iuC1fnY
+         4FEl3O04nKDgI7eedPfG4OTSwt4yZSuWyAb6KKudAGVB/GfDDCRtGbOj/gLShGue3L
+         CUfwQj7aIaOhA==
+Received: by mail-wm1-f46.google.com with SMTP id n11so696614wmd.2;
+        Wed, 04 Aug 2021 01:28:10 -0700 (PDT)
+X-Gm-Message-State: AOAM533c+PPVkCZukw8mLLMIILL4+j0YUf1hzTJCmh3AG2437yEhsmJe
+        YUOpJI3jHhMLwoquorvkW6eGPxiiKFotJ3Qu0D0=
+X-Google-Smtp-Source: ABdhPJz+vnTHHtv/Zv0RaiH+Ss/P3uLHNmCrGCxnB5bx1MtDYAJBdsG1nalFwPiBwSCiXt1+soPXLnilgkosyjM74Zg=
+X-Received: by 2002:a7b:ce10:: with SMTP id m16mr8172551wmc.75.1628065688828;
+ Wed, 04 Aug 2021 01:28:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACycT3sdx8nA8fh3pjO_=pbiM+Bs5y+h4fuGkFQEsRSaBnph7Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <cover.1627989586.git.viresh.kumar@linaro.org> <75c8e6e5e8dfa1889938f3a6b2d991763c7a3717.1627989586.git.viresh.kumar@linaro.org>
+ <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com> <20210804070531.w3h3jm6rou2hpgqj@vireshk-i7>
+In-Reply-To: <20210804070531.w3h3jm6rou2hpgqj@vireshk-i7>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 4 Aug 2021 10:27:52 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0vBhP6ZJuqCxAUVZG_eAPu1Lk_Nw8FEarnHb286pPPyQ@mail.gmail.com>
+Message-ID: <CAK8P3a0vBhP6ZJuqCxAUVZG_eAPu1Lk_Nw8FEarnHb286pPPyQ@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] gpio: virtio: Add IRQ support
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/8/3 下午5:01, Yongji Xie 写道:
-> On Tue, Aug 3, 2021 at 3:46 PM Jason Wang <jasowang@redhat.com> wrote:
->>
->> 在 2021/7/29 下午3:34, Xie Yongji 写道:
->>> Export receive_fd() so that some modules can use
->>> it to pass file descriptor between processes without
->>> missing any security stuffs.
->>>
->>> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
->>> ---
->>>    fs/file.c            | 6 ++++++
->>>    include/linux/file.h | 7 +++----
->>>    2 files changed, 9 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/fs/file.c b/fs/file.c
->>> index 86dc9956af32..210e540672aa 100644
->>> --- a/fs/file.c
->>> +++ b/fs/file.c
->>> @@ -1134,6 +1134,12 @@ int receive_fd_replace(int new_fd, struct file *file, unsigned int o_flags)
->>>        return new_fd;
->>>    }
->>>
->>> +int receive_fd(struct file *file, unsigned int o_flags)
->>> +{
->>> +     return __receive_fd(file, NULL, o_flags);
->>
->> Any reason that receive_fd_user() can live in the file.h?
->>
-> Since no modules use it.
+On Wed, Aug 4, 2021 at 9:05 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> On 03-08-21, 17:01, Arnd Bergmann wrote:
+> > >
+> > > +static void virtio_gpio_irq_unmask(struct irq_data *d)
+> > > +{
+> > > +       struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+> > > +       struct virtio_gpio *vgpio = gpiochip_get_data(gc);
+> > > +       struct vgpio_irq_line *irq_line = &vgpio->irq_lines[d->hwirq];
+> > > +
+> > > +       irq_line->masked = false;
+> > > +       irq_line->update_pending = true;
+> > > +}
+> >
+> > Same here. unmask is probably less important, but it's the
+> > same operation: if you want interrupts to become active
+> > again when they are not, just queue the request
 >
-> Thanks,
-> Yongji
+> We can't because its a slow bus ? And unmask can be called from
+> irq-context. That's exactly why we had the irq_bus_lock/unlock
+> discussion earlier.
 
+I thought only 'mask' is slow, since that has to wait for the completion,
+but 'unmask' just involves sending the eventq request without having
+to wait for it.
 
-Ok.
-
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
+> > > +static void vgpio_work_handler(struct work_struct *work)
+> > > +{
+> > > +       struct virtio_gpio *vgpio = container_of(work, struct virtio_gpio,
+> > > +                                                work);
+> > > +       struct device *dev = &vgpio->vdev->dev;
+> > > +       struct vgpio_irq_line *irq_line;
+> > > +       int irq, gpio, ret;
+> > > +       unsigned int len;
+> > > +
+> > > +       mutex_lock(&vgpio->irq_lock);
+> > > +
+> > > +       while (true) {
+> > > +               irq_line = virtqueue_get_buf(vgpio->event_vq, &len);
+> > > +               if (!irq_line)
+> > > +                       break;
+> >
+> > Related to above, I think all the eventq handling should be moved into the
+> > virtio_gpio_event_vq() function directly.
 >
+> You mean without scheduling a work ?
 
+Yes.
+
+> > > +               /* The interrupt may have been disabled by now */
+> > > +               if (irq_line->update_pending && irq_line->masked)
+> > > +                       update_irq_type(vgpio, gpio, VIRTIO_GPIO_IRQ_TYPE_NONE);
+> >
+> > This is a part I'm not sure about, and I suppose it's the same part that
+> > Marc was also confused by.
+> >
+> > As far as I can tell, the update_irq_type() message would lead to the
+> > interrupt getting delivered when it was armed and is now getting disabled,
+> > but I don't see why we would call update_irq_type() as a result of the
+> > eventq notification.
+>
+> Lemme try to explain answer to all other question together here.
+>
+> The irq related functions get called in two scenarios:
+>
+> - request_irq() or irq_set_irq_type(), enable/disable_irq(), etc:
+>
+>   The call sequence here is like this:
+>
+>   ->irq_bus_lock()
+>
+>   ->spin-lock-irqsave
+>   ->irq_mask()/irq_unmask()/irq_set_type()..
+>   ->spin-unlock-irqsave
+>
+>   ->irq_bus_unlock()
+>
+>
+>   So the mask/unmask/set-type routines can't issue virtio requests and
+>   we need to do that from irq_bus_unlock(). This shall answer your
+>   question about mask/unmask, right ? Or maybe I misunderstood them
+>   then ?
+
+I don't think it is correct that you cannot issue virtio requests from
+atomic context, only that you cannot wait for the reply.
+
+For 'unmask', there is no waiting, since the reply is the actual IRQ
+event. For the others, the sequence makes sense.
+
+> - Interrupt: i.e. buffer sent back by the host over virtio.
+>
+>   virtio_gpio_event_vq() schedules a work item, which processes the
+>   items from the eventq virtqueue and eventually calls
+>   generic_handle_irq(). The irq-core can issue calls to
+>   ->irq_mask/unmask() here without a prior call to
+>   irq_bus_lock/unlock(), normally they will balance out by the end,
+>   but I am not sure if it is guaranteed. Moreover, interrupt should be
+>   re-enabled only after unmask() is called (for ONESHOT) and not at
+>   EOI, right ?
+>
+>   I chose not to queue the buffers back from eoi() as it is possible
+>   that we won't want to queue them at all, as the interrupt needs to
+>   be disabled by the time generic_handle_irq() returns. And so I did
+>   everything from the end of vgpio_work_handler()'s loop, i.e. either
+>   disable the interrupts with VIRTIO_GPIO_IRQ_TYPE_NONE or enable the
+>   interrupt again by re-queuing the buffer.
+>
+> Regarding irq handling using work-item, I had to move to that to take
+> care of locking for re-queuing the buffers for a GPIO line from
+> irq-handler and bus-unlock. Nothing else seemed to work, though I am
+> continuing to look into that to see if there is an alternative here.
+
+I don't think it makes sense to optimize for the rare case that the
+irq handler disables the irq, when that makes the common case
+(irq remains unmasked and enabled) much slower.
+
+       Arnd
