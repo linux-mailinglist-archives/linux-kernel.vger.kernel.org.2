@@ -2,100 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FABB3E0A1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A16113E0A1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232045AbhHDVpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41888 "EHLO
+        id S233796AbhHDVq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:46:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbhHDVpR (ORCPT
+        with ESMTP id S231345AbhHDVq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:45:17 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8920AC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:45:03 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id a8so4978916pjk.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:45:03 -0700 (PDT)
+        Wed, 4 Aug 2021 17:46:26 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C9FC061798
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:46:13 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id o32-20020a0c85a30000b0290328f91ede2bso2483985qva.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hfp2nbAaBDmaHCKbc8jdtjyOnO2Mi9ptYsZd0hKtwR4=;
-        b=Tvd62UHnA853y4QUoh0E1xlqa/eX01VTvu4Lzbwfj+5WqzN6YtivEoiTt4hcorifYl
-         d8MQIi+nCfoH0671wWkOl7X+Llk3ot6Gras7mW8WeWLCzjIWuo1BYzatqwaBicVnYPB3
-         AubCV1g6ExfSgTZm5dB+3BXu0Ikq3RIevhV4gPacVAOOioDQFfBx6agBACDo1fBDq24J
-         RS2v/l9OD0hOlfimAGaFJqDC1d9gc3AQkZK1EZ/gPn6S10X1gt0jfm3w4fA0mLiLODhL
-         sXhQGkRwPZrNuOkq2ydXUK0EdEaW+JrexEGpX0tqorwaDDaccPcFVb+U9dBODFWMesIY
-         nzGw==
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=C4TQOA8B8J/q4Zfe5kHKEB3lmPCutdPC4QZ7gqnArH8=;
+        b=YNPOfuewQrcWJCQ/5Iz1uNhVfCb1JkA4TKkX/0eh8jFXMExJPlyT8oXMGZuw00qiCd
+         C1/GMBA6RZBqyhevuhfebMNc+N2QsjkyLxFe07Cc+rN13zJCqwy7DrMvbPFF7OQaZO5K
+         bhXLFz6y7Of7H+rEatnX55xtleoN0xU/Aud13OEC0HEB35o5FXSwWY+qLM6V8dOi80aB
+         yLbZWKMiIA2jqt8de0baS96IM6KRrc0+2tfoXthF8vlgqfgtK5Hnfm5/a54wXuChfA35
+         sTHKSjHy5zp4Sr8X9yl8pPez1sljtm+vUKXWatUrSr4GvZk7U/8pozMdAIwomPipG4CQ
+         OnqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hfp2nbAaBDmaHCKbc8jdtjyOnO2Mi9ptYsZd0hKtwR4=;
-        b=oenqa/Jqbsd9qEWi2eD+oxgqkv8eMoC9o83iHBqyD+p1RBy7c74rtUsUHlCTba1CIb
-         9u/bH/EbvHgkwTRVA4RKQFi4y2Wlz9LK+vz4O4DRE1Z8fiKZijwVtjOn1UuSKdChoBK5
-         LPhOgyy2uQRMH23fUOFtJp+OuY/SXqrJqhXyd9QQytqDnWYHX2CWsV15g0qrUjiIKjc3
-         vWnHfObMSw1oS8rHzumcwtyHEGFCxAmQMXzZFDkF2kK/jZwCw68gmrhJUaH/TtSnRwG+
-         hCdjVsuAddkPta7b1G3KNPfmFHThPDniucJ8/HooIa+ZoIXzWkOo1HYX5m1fIs7y2GW/
-         sCWA==
-X-Gm-Message-State: AOAM532rKeCXwEN1Q7F4MFVjFnes8qYm743LK3xEXsyQKaI/F4LBMdZj
-        KZ+9gOr/1iEioi+WVoa74GgrNA==
-X-Google-Smtp-Source: ABdhPJwBMKYYqyJIg2SCdgsHABnqwhRvRaS0BnO8JD3yPfiFoqd+w2gJBR9n05GRPFTHEFKjMlFvRw==
-X-Received: by 2002:a63:5505:: with SMTP id j5mr400634pgb.250.1628113502837;
-        Wed, 04 Aug 2021 14:45:02 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b18sm3873743pfi.199.2021.08.04.14.45.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 14:45:02 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 21:44:58 +0000
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=C4TQOA8B8J/q4Zfe5kHKEB3lmPCutdPC4QZ7gqnArH8=;
+        b=RPMatwVbtfXt1OozOLuVCIZdxllWaLuv4c+BWH1rHUWz1TXW6D//gGwDl7Ck8Uuood
+         UpTtNrg4xnfDL+F6w5n/Ovp0LIRYr9ltCYEsHubtnfTLX5iTVPv2KUAGx/3kQ25ItEsj
+         etcrPqZXBBMjeCrm00nLHNSThffbKE0YbfPF8fSKbVn82E45BJ2IE3k9ht1ImzLXb97x
+         2v/IcoLVNaqZ1tnrSLlJAxhZETMEiU2D5FSf3170rGGxHnsIT6Ht8yGeISS463hh+8t5
+         eWd3xFm92/MeJMoU44e+SB9EEMsORDHjn1aqLxTA7692l0rujWYtw38fTpmKHILtor5g
+         SxxA==
+X-Gm-Message-State: AOAM5316un5+qIVaO+zcNamlEfJPMJ5iRVYT/00LtdHqbEC5U7ZWAphI
+        g3xwQkwyYeCuJvYyGMRz5Q7FxqBXhao=
+X-Google-Smtp-Source: ABdhPJzre0zuQgcoCCv3rfHIjO6dR7eyTRXfK2AxxKiu1wox9S+sbtAdIzb3L38QimrvyQF7xC/AQRzu05o=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e041:28e5:75db:9055])
+ (user=seanjc job=sendgmr) by 2002:a0c:a321:: with SMTP id u30mr1545572qvu.57.1628113573026;
+ Wed, 04 Aug 2021 14:46:13 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed,  4 Aug 2021 14:46:09 -0700
+Message-Id: <20210804214609.1096003-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH] KVM: x86/mmu: Fix per-cpu counter corruption on 32-bit builds
 From:   Sean Christopherson <seanjc@google.com>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 11/12] x86/tdx: Don't write CSTAR MSR on Intel
-Message-ID: <YQsKWuiUyUWoA5kb@google.com>
-References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-12-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQrdFLPaUnC8Q5bn@google.com>
- <4c1ee7b9-9941-fdc4-73f5-3d2ef0530556@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c1ee7b9-9941-fdc4-73f5-3d2ef0530556@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021, Kuppuswamy, Sathyanarayanan wrote:
-> 
-> On 8/4/21 11:31 AM, Sean Christopherson wrote:
-> > > On Intel CPUs writing the CSTAR MSR is not really needed. Syscalls
-> > > from 32bit work using SYSENTER and 32bit SYSCALL is an illegal opcode.
-> > > But the kernel did write it anyways even though it was ignored by
-> > > the CPU. Inside a TDX guest this actually leads to a #GP. While the #GP
-> > > is caught and recovered from, it prints an ugly message at boot.
-> > > Do not write the CSTAR MSR on Intel CPUs.
-> > Not that it really matters, but...
-> > 
-> > Is #GP the actual TDX-Module behavior?  If so, isn't that a contradiction with
-> 
-> No, #GP is triggered by guest.
+Take a signed 'long' instead of an 'unsigned long' for the number of
+pages to add/subtract to the total number of pages used by the MMU.  This
+fixes a zero-extension bug on 32-bit kernels that effectively corrupts
+the per-cpu counter used by the shrinker.
 
-#GP is not triggered by the guest, it's not even reported by the guest.  From
-patch 7, the #VE handler escalates unhandled #VEs "similar to #GP handler", but
-it still reports #VE as the actual vector.
+Per-cpu counters take a signed 64-bit value on both 32-bit and 64-bit
+kernels, whereas kvm_mod_used_mmu_pages() takes an unsigned long and thus
+an unsigned 32-bit value on 32-bit kernels.  As a result, the value used
+to adjust the per-cpu counter is zero-extended (unsigned -> signed), not
+sign-extended (signed -> signed), and so KVM's intended -1 gets morphed to
+4294967295 and effectively corrupts the counter.
 
-Now, that particular behavior could change, e.g. setting tsk->thread.trap_nr to
-#VE might confuse userspace, but at no point does this "trigger" a #GP.
+This was found by a staggering amount of sheer dumb luck when running
+kvm-unit-tests on a 32-bit KVM build.  The shrinker just happened to kick
+in while running tests and do_shrink_slab() logged an error about trying
+to free a negative number of objects.  The truly lucky part is that the
+kernel just happened to be a slightly stale build, as the shrinker no
+longer yells about negative objects as of commit 18bb473e5031 ("mm:
+vmscan: shrink deferred objects proportional to priority").
+
+ vmscan: shrink_slab: mmu_shrink_scan+0x0/0x210 [kvm] negative objects to delete nr=-858993460
+
+Fixes: bc8a3d8925a8 ("kvm: mmu: Fix overflow on kvm mmu page limit calculation")
+Cc: stable@vger.kernel.org
+Cc: Ben Gardon <bgardon@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index b4b65c21b2ca..082a0ba79edd 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -1700,7 +1700,7 @@ static int is_empty_shadow_page(u64 *spt)
+  * aggregate version in order to make the slab shrinker
+  * faster
+  */
+-static inline void kvm_mod_used_mmu_pages(struct kvm *kvm, unsigned long nr)
++static inline void kvm_mod_used_mmu_pages(struct kvm *kvm, long nr)
+ {
+ 	kvm->arch.n_used_mmu_pages += nr;
+ 	percpu_counter_add(&kvm_total_used_mmu_pages, nr);
+-- 
+2.32.0.554.ge1b32706d8-goog
+
