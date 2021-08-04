@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBA93E03E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B60E3E03EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 17:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238608AbhHDPJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 11:09:16 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:58360
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236354AbhHDPJP (ORCPT
+        id S236354AbhHDPKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 11:10:07 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:34162
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237114AbhHDPKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 11:09:15 -0400
-Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        Wed, 4 Aug 2021 11:10:05 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 328733F0FC;
-        Wed,  4 Aug 2021 15:09:01 +0000 (UTC)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 57B383F04E;
+        Wed,  4 Aug 2021 15:09:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628089741;
-        bh=w8XV7w2n45SjiUVSnEHbqA1jcvtFXp2hov1ShVkQg8k=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=mEpAuy/XwuGuC/10SZHxdMskcUYTphpV64DVRbuPq9jaJxYtLMDKASnjL5ZZBdCqj
-         JaRhDqdHHEpqNrpROK/mHJfPzKFqrvOxzflTAFkLSCkkEV1v4UEu8gjXAY7p8xORwN
-         EyEIMT+n9nlKJIEjCNyd2YdomxXlcg8TRo41vCGex0HtJsUYOHpBhAaRd4mOFPZGgQ
-         SDZIAyu3gD+kRAFfxc0gOt8QDtzuY8vH+HzbfSXQaULg9ArCnXVKoerQbkNrtWLgTg
-         x4IhH0B6sMO7vimpxOkMu2hyPQoHBj2Fl/nCVk9iV43FSshKw8IROAM3wWiJ2M4VRK
-         MUhxYutDRsq8A==
-Subject: Re: [PATCH][next[next]] scsi: qla2xxx: Remove redundant
- initialization of variable num_cnt
-To:     Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
+        s=20210705; t=1628089791;
+        bh=jOI1MaghgNGcJtSRSTB8GoNttvxl2jIpyug9Cz3oOHk=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=OW2kjVqQSto9Eac4j2zLDVIwwEpXPBKYDJSMWMQnZsOuUGaBNVLmswCLD+TtIBPRv
+         Blq5wbKCOfQxL3C/hNcXCRs/6Xc41PCoihgbypXZorXxpoNrxzXxi48LEGcAfa6V5w
+         Qs7+jFds+9sp3HTrJODcrYqvcjo56xAd1e+AJzmRWpajhi7O0A+FWRVDZ0QSlcnNcD
+         EOPQbbvUXMSo0zNCOQNT6p03383iNgkfl+yohdzEgP4kX7dSyhtNOrBlHh7pcahCbP
+         sMPhNzKrkjpHjCnEGvw8GWjWBTZtoGlz2pkSKxB78QTkTMZh2bI3NqpwfZGT79U0MM
+         NH0v38Ywy3DFQ==
+From:   Colin King <colin.king@canonical.com>
+To:     Karsten Keil <isdn@linux-pingi.de>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrei Emeltchenko <andrei.emeltchenko@intel.com>,
+        Gustavo Padovan <gustavo.padovan@collabora.co.uk>,
+        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210804131344.112635-1-colin.king@canonical.com>
- <7ac5f319-fd4c-f2e0-e318-71a4d7661693@oracle.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <80e9bea5-2e4e-0d8a-5123-0ed7f72916be@canonical.com>
-Date:   Wed, 4 Aug 2021 16:09:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Subject: [PATCH] Bluetooth: increase BTNAMSIZ to 21 chars to fix potential buffer overflow
+Date:   Wed,  4 Aug 2021 16:09:51 +0100
+Message-Id: <20210804150951.116814-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <7ac5f319-fd4c-f2e0-e318-71a4d7661693@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2021 16:08, Himanshu Madhani wrote:
-> 
-> 
-> On 8/4/21 8:13 AM, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> The variable num_cnt is being initialized with a value that is never
->> read, it is being updated later on. The assignment is redundant and
->> can be removed.
->>
->> Addresses-Coverity: ("Unused value")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>   drivers/scsi/qla2xxx/qla_edif.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/scsi/qla2xxx/qla_edif.c
->> b/drivers/scsi/qla2xxx/qla_edif.c
->> index fde410989c03..2db954a7aaf1 100644
->> --- a/drivers/scsi/qla2xxx/qla_edif.c
->> +++ b/drivers/scsi/qla2xxx/qla_edif.c
->> @@ -875,7 +875,7 @@ static int
->>   qla_edif_app_getfcinfo(scsi_qla_host_t *vha, struct bsg_job *bsg_job)
->>   {
->>       int32_t            rval = 0;
->> -    int32_t            num_cnt = 1;
->> +    int32_t            num_cnt;
->>       struct fc_bsg_reply    *bsg_reply = bsg_job->reply;
->>       struct app_pinfo_req    app_req;
->>       struct app_pinfo_reply    *app_reply;
->>
-> 
-> Looks Good.
-> 
-> (I am curious if that extra "next" in patch subject was a typo or some
-> workflow added that)
+From: Colin Ian King <colin.king@canonical.com>
 
-It was an accidental double paste. My bad.
+An earlier commit replaced using batostr to using %pMR sprintf for the
+construction of session->name. Static analysis detected that this new
+method can use a total of 21 characters (including the trailing '\0')
+so we need to increase the BTNAMSIZ from 18 to 21 to fix potential
+buffer overflows.
 
-> 
-> Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-> 
+Addresses-Coverity: ("Out-of-bounds write")
+Fixes: fcb73338ed53 ("Bluetooth: Use %pMR in sprintf/seq_printf instead of batostr")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ net/bluetooth/cmtp/cmtp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/bluetooth/cmtp/cmtp.h b/net/bluetooth/cmtp/cmtp.h
+index c32638dddbf9..f6b9dc4e408f 100644
+--- a/net/bluetooth/cmtp/cmtp.h
++++ b/net/bluetooth/cmtp/cmtp.h
+@@ -26,7 +26,7 @@
+ #include <linux/types.h>
+ #include <net/bluetooth/bluetooth.h>
+ 
+-#define BTNAMSIZ 18
++#define BTNAMSIZ 21
+ 
+ /* CMTP ioctl defines */
+ #define CMTPCONNADD	_IOW('C', 200, int)
+-- 
+2.31.1
 
