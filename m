@@ -2,193 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7403DF9FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1802B3DFA03
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234886AbhHDD3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 23:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234207AbhHDD3a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 23:29:30 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0047AC061764;
-        Tue,  3 Aug 2021 20:29:17 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1628047754;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zvfYYuqF2FHspYtQC1WvXSu+rBBu+KjB/5LBDoNtRT4=;
-        b=FzQTSyOQ2rGO9qwy0o7IpAgbTz+5sSPMs3uY0QXt4erSXgQRqyoNWlVuyN4C/rXYVw9tVg
-        0NE/iaz4WcOIznqjpX8v083yMFlbwDD88OWzGNBvs6FNIlazK3Vu7yA3oCN0Y4eJ6Hiih0
-        fjABO4ni6e7dK5W1t8uuLLDApcsdv4M=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     davem@davemloft.net, kuba@kernel.org,
-        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com
-Cc:     cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, mptcp@lists.linux.dev,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
-        linux-s390@vger.kernel.org, linux-nfs@vger.kernel.org,
-        Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH net-next v2] net: Modify sock_set_keepalive() for more scenarios
-Date:   Wed,  4 Aug 2021 11:28:56 +0800
-Message-Id: <20210804032856.4005-1-yajun.deng@linux.dev>
+        id S234902AbhHDDaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 23:30:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229571AbhHDDaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 23:30:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01ACA61037;
+        Wed,  4 Aug 2021 03:29:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628047791;
+        bh=1iL1o2YZoGnWri3qeq+tQMAVLFgEuBeM6zTEgcD8x/0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BD4cCTnKHQ733Bo8SGheKl2MDcYfKXSpnoyI0seWn8Alagwcn3g+96Iz2Y28enleF
+         NLlbvBJuabETpj8/cc2wf0aCJsYpE9g9UcUQX1ZrGcnSZXoLsRp31qcG7AaAQeNks+
+         p1s4Gr4xqJnXWVb83WiAh4TDmGPjG+zkNL1JsNRXl1wQ402czpwtQKo/cjb2egTikC
+         7hZsylN0GyKHbhLMeA67WL/GoO53ZUdpIK9nIcXx1UfbAsCPJUzXvNBdG/hgvsRZOp
+         5AUAq0VjIzypOyD5oR0Zrl7yQMGXHB2ceZ94TH+FVRNw64pPM3w79PAfJInFf7p313
+         Lkobbreq8o45g==
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
+        Yangtao Li <frank.li@vivo.com>, Chao Yu <chao@kernel.org>
+Subject: [PATCH v4] f2fs: reduce the scope of setting fsck tag when de->name_len is zero
+Date:   Wed,  4 Aug 2021 11:29:46 +0800
+Message-Id: <20210804032946.1416807-1-chao@kernel.org>
+X-Mailer: git-send-email 2.22.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 2nd parameter in sock_set_keepalive(), let the caller decide
-whether to set. This can be applied to more scenarios.
+From: Yangtao Li <frank.li@vivo.com>
 
-v2:
- - add the change in fs/dlm.
+I recently found a case where de->name_len is 0 in f2fs_fill_dentries()
+easily reproduced, and finally set the fsck flag.
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Thread A			Thread B
+- f2fs_readdir
+ - f2fs_read_inline_dir
+  - ctx->pos = d.max
+				- f2fs_add_dentry
+				 - f2fs_add_inline_entry
+				  - do_convert_inline_dir
+				 - f2fs_add_regular_entry
+- f2fs_readdir
+ - f2fs_fill_dentries
+  - set_sbi_flag(sbi, SBI_NEED_FSCK)
+
+Process A opens the folder, and has been reading without closing it.
+During this period, Process B created a file under the folder (occupying
+multiple f2fs_dir_entry, exceeding the d.max of the inline dir). After
+creation, process A uses the d.max of inline dir to read it again, and
+it will read that de->name_len is 0.
+
+And Chao pointed out that w/o inline conversion, the race condition still
+can happen as below:
+
+dir_entry1: A
+dir_entry2: B
+dir_entry3: C
+free slot: _
+ctx->pos: ^
+
+Thread A is traversing directory,
+ctx-pos moves to below position after readdir() by thread A:
+AAAABBBB___
+        ^
+
+Then thread B delete dir_entry2, and create dir_entry3.
+
+Thread A calls readdir() to lookup dirents starting from middle
+of new dirent slots as below:
+AAAACCCCCC_
+        ^
+In these scenarios, the file system is not damaged, and it's hard to
+avoid it. But we can bypass tagging FSCK flag if:
+a) bit_pos (:= ctx->pos % d->max) is non-zero and
+b) before bit_pos moves to first valid dir_entry.
+
+Fixes: ddf06b753a85 ("f2fs: fix to trigger fsck if dirent.name_len is zero")
+Signed-off-by: Yangtao Li <frank.li@vivo.com>
+[Chao: clean up description]
+Reviewed-by: Chao Yu <chao@kernel.org>
 ---
- fs/dlm/lowcomms.c     |  2 +-
- include/net/sock.h    |  2 +-
- net/core/filter.c     |  4 +---
- net/core/sock.c       | 10 ++++------
- net/mptcp/sockopt.c   |  4 +---
- net/rds/tcp_listen.c  |  2 +-
- net/smc/af_smc.c      |  2 +-
- net/sunrpc/xprtsock.c |  2 +-
- 8 files changed, 11 insertions(+), 17 deletions(-)
-
-diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
-index 0ea9ae35da0b..5d748ce4d876 100644
---- a/fs/dlm/lowcomms.c
-+++ b/fs/dlm/lowcomms.c
-@@ -1356,7 +1356,7 @@ static int tcp_create_listen_sock(struct listen_connection *con,
- 		log_print("Can't bind to port %d", dlm_config.ci_tcp_port);
- 		goto create_out;
+v4:
+- clean up description a bit
+- fix code style issue
+ fs/f2fs/dir.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-) 
+diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+index 456651682daf..c250bf46ef5e 100644
+--- a/fs/f2fs/dir.c
++++ b/fs/f2fs/dir.c
+@@ -1000,6 +1000,7 @@ int f2fs_fill_dentries(struct dir_context *ctx, struct f2fs_dentry_ptr *d,
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(d->inode);
+ 	struct blk_plug plug;
+ 	bool readdir_ra = sbi->readdir_ra == 1;
++	bool found_valid_dirent = false;
+ 	int err = 0;
+ 
+ 	bit_pos = ((unsigned long)ctx->pos % d->max);
+@@ -1014,13 +1015,15 @@ int f2fs_fill_dentries(struct dir_context *ctx, struct f2fs_dentry_ptr *d,
+ 
+ 		de = &d->dentry[bit_pos];
+ 		if (de->name_len == 0) {
++			if (found_valid_dirent || !bit_pos) {
++				printk_ratelimited(
++					"%sF2FS-fs (%s): invalid namelen(0), ino:%u, run fsck to fix.",
++					KERN_WARNING, sbi->sb->s_id,
++					le32_to_cpu(de->ino));
++				set_sbi_flag(sbi, SBI_NEED_FSCK);
++			}
+ 			bit_pos++;
+ 			ctx->pos = start_pos + bit_pos;
+-			printk_ratelimited(
+-				"%sF2FS-fs (%s): invalid namelen(0), ino:%u, run fsck to fix.",
+-				KERN_WARNING, sbi->sb->s_id,
+-				le32_to_cpu(de->ino));
+-			set_sbi_flag(sbi, SBI_NEED_FSCK);
+ 			continue;
+ 		}
+ 
+@@ -1063,6 +1066,7 @@ int f2fs_fill_dentries(struct dir_context *ctx, struct f2fs_dentry_ptr *d,
+ 			f2fs_ra_node_page(sbi, le32_to_cpu(de->ino));
+ 
+ 		ctx->pos = start_pos + bit_pos;
++		found_valid_dirent = true;
  	}
--	sock_set_keepalive(sock->sk);
-+	sock_set_keepalive(sock->sk, true);
- 
- 	result = sock->ops->listen(sock, 5);
- 	if (result < 0) {
-diff --git a/include/net/sock.h b/include/net/sock.h
-index ff1be7e7e90b..0aae26159549 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -2772,7 +2772,7 @@ int sock_set_timestamping(struct sock *sk, int optname,
- 
- void sock_enable_timestamps(struct sock *sk);
- void sock_no_linger(struct sock *sk);
--void sock_set_keepalive(struct sock *sk);
-+void sock_set_keepalive(struct sock *sk, bool valbool);
- void sock_set_priority(struct sock *sk, u32 priority);
- void sock_set_rcvbuf(struct sock *sk, int val);
- void sock_set_mark(struct sock *sk, u32 val);
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 6f493ef5bb14..c73caa53992e 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4752,9 +4752,7 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
- 			ret = sock_bindtoindex(sk, ifindex, false);
- 			break;
- 		case SO_KEEPALIVE:
--			if (sk->sk_prot->keepalive)
--				sk->sk_prot->keepalive(sk, valbool);
--			sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
-+			sock_set_keepalive(sk, !!valbool);
- 			break;
- 		case SO_REUSEPORT:
- 			sk->sk_reuseport = valbool;
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 9671c32e6ef5..7041e6355ae1 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -892,12 +892,12 @@ int sock_set_timestamping(struct sock *sk, int optname,
- 	return 0;
- }
- 
--void sock_set_keepalive(struct sock *sk)
-+void sock_set_keepalive(struct sock *sk, bool valbool)
- {
- 	lock_sock(sk);
- 	if (sk->sk_prot->keepalive)
--		sk->sk_prot->keepalive(sk, true);
--	sock_valbool_flag(sk, SOCK_KEEPOPEN, true);
-+		sk->sk_prot->keepalive(sk, valbool);
-+	sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
- 	release_sock(sk);
- }
- EXPORT_SYMBOL(sock_set_keepalive);
-@@ -1060,9 +1060,7 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
- 		break;
- 
- 	case SO_KEEPALIVE:
--		if (sk->sk_prot->keepalive)
--			sk->sk_prot->keepalive(sk, valbool);
--		sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
-+		sock_set_keepalive(sk, !!valbool);
- 		break;
- 
- 	case SO_OOBINLINE:
-diff --git a/net/mptcp/sockopt.c b/net/mptcp/sockopt.c
-index 8c03afac5ca0..879b8381055c 100644
---- a/net/mptcp/sockopt.c
-+++ b/net/mptcp/sockopt.c
-@@ -81,9 +81,7 @@ static void mptcp_sol_socket_sync_intval(struct mptcp_sock *msk, int optname, in
- 			sock_valbool_flag(ssk, SOCK_DBG, !!val);
- 			break;
- 		case SO_KEEPALIVE:
--			if (ssk->sk_prot->keepalive)
--				ssk->sk_prot->keepalive(ssk, !!val);
--			sock_valbool_flag(ssk, SOCK_KEEPOPEN, !!val);
-+			sock_set_keepalive(ssk, !!val);
- 			break;
- 		case SO_PRIORITY:
- 			ssk->sk_priority = val;
-diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
-index 09cadd556d1e..b69ebb3f424a 100644
---- a/net/rds/tcp_listen.c
-+++ b/net/rds/tcp_listen.c
-@@ -44,7 +44,7 @@ void rds_tcp_keepalive(struct socket *sock)
- 	int keepidle = 5; /* send a probe 'keepidle' secs after last data */
- 	int keepcnt = 5; /* number of unack'ed probes before declaring dead */
- 
--	sock_set_keepalive(sock->sk);
-+	sock_set_keepalive(sock->sk, true);
- 	tcp_sock_set_keepcnt(sock->sk, keepcnt);
- 	tcp_sock_set_keepidle(sock->sk, keepidle);
- 	/* KEEPINTVL is the interval between successive probes. We follow
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 898389611ae8..ad8f4302037f 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -68,7 +68,7 @@ static void smc_set_keepalive(struct sock *sk, int val)
- {
- 	struct smc_sock *smc = smc_sk(sk);
- 
--	smc->clcsock->sk->sk_prot->keepalive(smc->clcsock->sk, val);
-+	sock_set_keepalive(smc->clcsock->sk, !!val);
- }
- 
- static struct smc_hashinfo smc_v4_hashinfo = {
-diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-index e573dcecdd66..306a332f8d28 100644
---- a/net/sunrpc/xprtsock.c
-+++ b/net/sunrpc/xprtsock.c
-@@ -2127,7 +2127,7 @@ static void xs_tcp_set_socket_timeouts(struct rpc_xprt *xprt,
- 	spin_unlock(&xprt->transport_lock);
- 
- 	/* TCP Keepalive options */
--	sock_set_keepalive(sock->sk);
-+	sock_set_keepalive(sock->sk, true);
- 	tcp_sock_set_keepidle(sock->sk, keepidle);
- 	tcp_sock_set_keepintvl(sock->sk, keepidle);
- 	tcp_sock_set_keepcnt(sock->sk, keepcnt);
+ out:
+ 	if (readdir_ra)
 -- 
-2.32.0
+2.22.1
 
