@@ -2,265 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95883E030A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4CF73E030C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238764AbhHDOYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238768AbhHDOY3 (ORCPT
+        id S238766AbhHDOYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:24:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55425 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238733AbhHDOYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:24:29 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB96C0617A0
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:23:58 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id j3so3171398plx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=n9Sjp3wNbFl86/XHeOuraYarVkTi/7NfVhRkUt1wBME=;
-        b=fSg2IayWjI1QRrJGyWeIVQvi9pK7Tw+DW6gjYLYIh6rEBaDWsCvU00wBku/+w7f/Ma
-         0qR6ayZg10WgK7FjgeXKSipfyMTLM2UDbx6A+HyOwIwDtj/+hdW+kzNTLqqj5w2jU3gt
-         CcBQv/61DSjjO/RMsHCmbHpalxlXEE56yWjTllXUYpjedBlw580tgDgEMl1d47x6gZ9e
-         Mm2mDHJfZ8yvYUmqsEEMeGR/McRAH0fdSzCU3++fZ6Ho6bW1nLVdCiw60g9OIoskrUDE
-         ITyNR++EzlzkMDKhOpc3f1v5yeADIgOokrz4gjeNs7ClNOPWx3vITkAqn7esyDbX2r1c
-         TOog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n9Sjp3wNbFl86/XHeOuraYarVkTi/7NfVhRkUt1wBME=;
-        b=c2gpcUFedK0W4pJh1mA5/qko74X8+ZXleimBPeiH/76UQXnybdQzXcPpMWtN6Fssy/
-         YvKhhhJpJQ9atNmpewTUzQd+rDMzyQ8sFqGicYZZvL7kqnRhTVIMFrGSAHdznYZUA9rk
-         x3Lf1xRgbdCIPBLJ3qmilaZ/JY8qzFRBBDJQ6hy4UE/1TDsOjGl/19OaNfroXe4l65kb
-         Sow3GGitGE7d+AJDxpySZpz8aNUChymwbxvJtMSwfinV7qYdylxQI+AIkgNugPJ2uhds
-         C4dTpjZY6OWQtojB2k8novhv1FX67focov36dbY35moTCF6i7tUOBme6qgCSNjjmUoTa
-         XJYA==
-X-Gm-Message-State: AOAM532QTUtYSqJQDan1ektx2LGVJjQHO5cUFdyBJ/1fH8b8tR52CUN0
-        oFFIZ34bvzg7d4ZiZGvHjPaMiw==
-X-Google-Smtp-Source: ABdhPJwn01+nAxEB5rtni8GWzTwRlTULTpk8L17F2g8qv/r78pqSWXZGJxKOAGe91KFfATjHEP32CQ==
-X-Received: by 2002:a17:90a:bc89:: with SMTP id x9mr10409045pjr.52.1628087038257;
-        Wed, 04 Aug 2021 07:23:58 -0700 (PDT)
-Received: from [192.168.1.116] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id mr18sm2766391pjb.39.2021.08.04.07.23.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 07:23:57 -0700 (PDT)
-Subject: Re: [ANNOUNCE] v5.14-rc4-rt4
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Daniel Wagner <wagi@monom.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <20210802162750.santic4y6lzcet5c@linutronix.de>
- <20210804082418.fbibprcwtzyt5qax@beryllium.lan>
- <20210804104340.fhdjwn3hruymu3ml@linutronix.de>
- <20210804104803.4nwxi74sa2vwiujd@linutronix.de>
- <20210804110057.chsvt7l5xpw7bo5r@linutronix.de>
- <20210804131731.GG8057@worktop.programming.kicks-ass.net>
- <4f549344-1040-c677-6a6a-53e243c5f364@kernel.dk>
-Message-ID: <feebf183-2e33-36b5-4538-62a40b2a58b6@kernel.dk>
-Date:   Wed, 4 Aug 2021 08:23:55 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 4 Aug 2021 10:24:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628087067;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZAtcHDW/mFf86xkrq3751FwHHXupiXoVHWdcBKFMaoQ=;
+        b=cyK0qlR5l1smunPMqGfEVkmTL16TCPMRLV6taQsNRgcO/P1PV4oOrHNaXJELNotuBp8TFk
+        AteEoUQNTuXuU/Kr7E45Hbl+G6uu7oe34tZ2qg4K2m8DZ2Y21e21W9cbsJJjjNy2uCyNx3
+        Xkutfk9Lc4XFdMHDYBq3ilCrrWACq9s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-439-JR4VXxsROT-XT_dNg1l5Gw-1; Wed, 04 Aug 2021 10:24:26 -0400
+X-MC-Unique: JR4VXxsROT-XT_dNg1l5Gw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0EBAD1932482;
+        Wed,  4 Aug 2021 14:24:23 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DF0B860CA0;
+        Wed,  4 Aug 2021 14:24:08 +0000 (UTC)
+Message-ID: <ede70f11e713ee0140c0e684c3d46b3aa1176e5e.camel@redhat.com>
+Subject: Re: [RFC PATCH 1/4] KVM: selftests: Add support for creating
+ non-default type VMs
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        linux-kselftest@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
+        David Matlack <dmatlack@google.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Zhenzhong Duan <zhenzhong.duan@intel.com>,
+        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
+        Like Xu <like.xu@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>
+Date:   Wed, 04 Aug 2021 17:24:07 +0300
+In-Reply-To: <e1651746-aa46-31e7-e1c0-99f3faaf1586@intel.com>
+References: <20210726183816.1343022-1-erdemaktas@google.com>
+         <20210726183816.1343022-2-erdemaktas@google.com>
+         <e1651746-aa46-31e7-e1c0-99f3faaf1586@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <4f549344-1040-c677-6a6a-53e243c5f364@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/21 7:32 AM, Jens Axboe wrote:
-> On 8/4/21 7:17 AM, Peter Zijlstra wrote:
->> On Wed, Aug 04, 2021 at 01:00:57PM +0200, Sebastian Andrzej Siewior wrote:
->>> On 2021-08-04 12:48:05 [+0200], To Daniel Wagner wrote:
->>>> On 2021-08-04 12:43:42 [+0200], To Daniel Wagner wrote:
->>>>> Odd. Do you have a config for that, please?
->>>>
->>>> No need.
->>>> | [   90.202543] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
->>>> | [   90.202549] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 2047, name: iou-wrk-2041
->>>> | [   90.202555] CPU: 5 PID: 2047 Comm: iou-wrk-2041 Tainted: G        W         5.14.0-rc4-rt4+ #89
->>>> | [   90.202561] Call Trace:
->>> …
->>>> | [   90.202588]  rt_spin_lock+0x19/0x70
->>>> | [   90.202593]  ___slab_alloc+0xcb/0x7d0
->>> …
->>>> | [   90.202618]  kmem_cache_alloc_trace+0x79/0x1f0
->>>> | [   90.202621]  io_wqe_dec_running.isra.0+0x98/0xe0
->>>> | [   90.202625]  io_wq_worker_sleeping+0x37/0x50
->>>> | [   90.202628]  schedule+0x30/0xd0
->>>>
->>>> le look.
->>>
->>> So this is due to commit
->>>   685fe7feedb96 ("io-wq: eliminate the need for a manager thread")
->>>
->>> introduced in the v5.13-rc1 merge window. The call chain is
->>>   schedule()
->>>    sched_submit_work()
->>>     preempt_disable();
->>>     io_wq_worker_sleeping()
->>>       raw_spin_lock_irq(&worker->wqe->lock);
->>>       io_wqe_dec_running(worker);
->>>        io_queue_worker_create()
->>>         kmalloc(sizeof(*cwd), GFP_ATOMIC);
->>>
->>> The lock wqe::lock has been turned into a raw_spinlock_t in commit
->>>    95da84659226d ("io_wq: Make io_wqe::lock a raw_spinlock_t")
->>>
->>> after a careful analysis of the code at that time. This commit breaks
->>> things. Is this really needed?
->>
->> Urgh, doing allocs from schedule seems really yuck. Can we please not do
->> this?
+On Wed, 2021-08-04 at 14:09 +0800, Xiaoyao Li wrote:
+> On 7/27/2021 2:37 AM, Erdem Aktas wrote:
+> > Currently vm_create function only creates KVM_X86_LEGACY_VM type VMs.
+> > Changing the vm_create function to accept type parameter to create
+> > new VM types.
+> > 
+> > Signed-off-by: Erdem Aktas <erdemaktas@google.com>
+> > Reviewed-by: Sean Christopherson <seanjc@google.com>
+> > Reviewed-by: Peter Gonda <pgonda@google.com>
+> > Reviewed-by: Marc Orr <marcorr@google.com>
+> > Reviewed-by: Sagi Shahar <sagis@google.com>
+> > ---
+> >   .../testing/selftests/kvm/include/kvm_util.h  |  1 +
+> >   tools/testing/selftests/kvm/lib/kvm_util.c    | 29 +++++++++++++++++--
+> >   2 files changed, 27 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+> > index d53bfadd2..c63df42d6 100644
+> > --- a/tools/testing/selftests/kvm/include/kvm_util.h
+> > +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+> > @@ -88,6 +88,7 @@ int vcpu_enable_cap(struct kvm_vm *vm, uint32_t vcpu_id,
+> >   void vm_enable_dirty_ring(struct kvm_vm *vm, uint32_t ring_size);
+> >   
+> >   struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm);
+> > +struct kvm_vm *__vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm, int type);
+> >   void kvm_vm_free(struct kvm_vm *vmp);
+> >   void kvm_vm_restart(struct kvm_vm *vmp, int perm);
+> >   void kvm_vm_release(struct kvm_vm *vmp);
+> > diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> > index e5fbf16f7..70caa3882 100644
+> > --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> > +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> > @@ -180,13 +180,36 @@ _Static_assert(sizeof(vm_guest_mode_params)/sizeof(struct vm_guest_mode_params)
+> >    * Return:
+> >    *   Pointer to opaque structure that describes the created VM.
+> >    *
+> > - * Creates a VM with the mode specified by mode (e.g. VM_MODE_P52V48_4K).
+> > + * Wrapper VM Create function to create a VM with default type (0).
 > 
-> Agree, I have an idea of how to get rid of it. Let me experiment a bit...
+> Can we pass KVM_X86_LEGACY_VM (whatever name when it's upstreamed) 
+> instead of 0?
 
-Something like this should do it - the only thing we need the allocation for
-is short lived, queueing a task_work item to create a new worker. We can
-manage this on a per-existing worker basis, and just have the tw/index
-stored in the worker itself. That avoids an allocation off schedule ->
-going to sleep.
+To be honest I would prefer this to be called something like KVM_X86_STANDARD_VM,
+or something.
 
-Totally untested, but I think the principle is sound. I'll run it through
-some testing.
+I don't think that normal unencrypted virtualization is already legacy, even if TDX
+docs claim that.
 
+Just my personal opinion.
 
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index 50dc93ffc153..97eaaf25a429 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -51,6 +51,10 @@ struct io_worker {
- 
- 	struct completion ref_done;
- 
-+	unsigned long create_state;
-+	struct callback_head create_work;
-+	int create_index;
-+
- 	struct rcu_head rcu;
- };
- 
-@@ -261,42 +265,44 @@ static void io_wqe_inc_running(struct io_worker *worker)
- 	atomic_inc(&acct->nr_running);
- }
- 
--struct create_worker_data {
--	struct callback_head work;
--	struct io_wqe *wqe;
--	int index;
--};
--
- static void create_worker_cb(struct callback_head *cb)
- {
--	struct create_worker_data *cwd;
-+	struct io_worker *worker;
- 	struct io_wq *wq;
- 
--	cwd = container_of(cb, struct create_worker_data, work);
--	wq = cwd->wqe->wq;
--	create_io_worker(wq, cwd->wqe, cwd->index);
--	kfree(cwd);
-+	worker = container_of(cb, struct io_worker, create_work);
-+	wq = worker->wqe->wq;
-+	create_io_worker(wq, worker->wqe, worker->create_index);
-+	clear_bit_unlock(0, &worker->create_state);
-+	io_worker_release(worker);
- }
- 
--static void io_queue_worker_create(struct io_wqe *wqe, struct io_wqe_acct *acct)
-+static void io_queue_worker_create(struct io_wqe *wqe, struct io_worker *worker,
-+				   struct io_wqe_acct *acct)
- {
--	struct create_worker_data *cwd;
- 	struct io_wq *wq = wqe->wq;
- 
- 	/* raced with exit, just ignore create call */
- 	if (test_bit(IO_WQ_BIT_EXIT, &wq->state))
- 		goto fail;
-+	/*
-+	 * create_state manages ownership of create_work/index. We should
-+	 * only need one entry per worker, as the worker going to sleep
-+	 * will trigger the condition, and waking will clear it once it
-+	 * runs the task_work.
-+	 */
-+	if (test_bit(0, &worker->create_state) ||
-+	    test_and_set_bit_lock(0, &worker->create_state))
-+		goto fail;
- 
--	cwd = kmalloc(sizeof(*cwd), GFP_ATOMIC);
--	if (cwd) {
--		init_task_work(&cwd->work, create_worker_cb);
--		cwd->wqe = wqe;
--		cwd->index = acct->index;
--		if (!task_work_add(wq->task, &cwd->work, TWA_SIGNAL))
--			return;
-+	io_worker_get(worker);
-+	init_task_work(&worker->create_work, create_worker_cb);
-+	worker->create_index = acct->index;
-+	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL))
-+		return;
- 
--		kfree(cwd);
--	}
-+	clear_bit_unlock(0, &worker->create_state);
-+	io_worker_release(worker);
- fail:
- 	atomic_dec(&acct->nr_running);
- 	io_worker_ref_put(wq);
-@@ -314,7 +320,7 @@ static void io_wqe_dec_running(struct io_worker *worker)
- 	if (atomic_dec_and_test(&acct->nr_running) && io_wqe_run_queue(wqe)) {
- 		atomic_inc(&acct->nr_running);
- 		atomic_inc(&wqe->wq->worker_refs);
--		io_queue_worker_create(wqe, acct);
-+		io_queue_worker_create(wqe, worker, acct);
- 	}
- }
- 
-@@ -973,12 +979,12 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
- 
- static bool io_task_work_match(struct callback_head *cb, void *data)
- {
--	struct create_worker_data *cwd;
-+	struct io_worker *worker;
- 
- 	if (cb->func != create_worker_cb)
- 		return false;
--	cwd = container_of(cb, struct create_worker_data, work);
--	return cwd->wqe->wq == data;
-+	worker = container_of(cb, struct io_worker, create_work);
-+	return worker->wqe->wq == data;
- }
- 
- void io_wq_exit_start(struct io_wq *wq)
-@@ -995,12 +1001,13 @@ static void io_wq_exit_workers(struct io_wq *wq)
- 		return;
- 
- 	while ((cb = task_work_cancel_match(wq->task, io_task_work_match, wq)) != NULL) {
--		struct create_worker_data *cwd;
-+		struct io_worker *worker;
- 
--		cwd = container_of(cb, struct create_worker_data, work);
--		atomic_dec(&cwd->wqe->acct[cwd->index].nr_running);
-+		worker = container_of(cb, struct io_worker, create_work);
-+		atomic_dec(&worker->wqe->acct[worker->create_index].nr_running);
- 		io_worker_ref_put(wq);
--		kfree(cwd);
-+		clear_bit_unlock(0, &worker->create_state);
-+		io_worker_release(worker);
- 	}
- 
- 	rcu_read_lock();
+Best regards,
+	Maxim Levitsky
 
--- 
-Jens Axboe
+> 
+> > + */
+> > +struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
+> > +{
+> > +	return __vm_create(mode, phy_pages, perm, 0);
+> > +}
+> > +
+> 
+> 
+
 
