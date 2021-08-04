@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77FF3DFA18
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F7A3DFA1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 05:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234682AbhHDDtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 23:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhHDDtm (ORCPT
+        id S234931AbhHDDva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 23:51:30 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:13228 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231815AbhHDDv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 23:49:42 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C682EC061798
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 20:49:29 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id ca5so1092682pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 20:49:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hy1NnP0wO2zT/VrMPRCtNkUc0gMbU7esFhgTPbbumaI=;
-        b=pV3LQkTEVPVFO26bH4qKathJhoDVM53Wle33GPuHirv2DuW2qDklwIScy2sYGP/qdo
-         G4Fmk/hM5GcDgdrbTSDp9aukIqKPSx6ouUAghX8NOe+h5E2A7j9bPvjpV/XTqKVKj9uo
-         F2fF/0YVnI2g2AAxnKAFhoz1HwI540CBzUl8YtRiX1g9l40QcPUnmzgIy+61h0NHsif7
-         phCMi0sqqj3sWKI9HBhiXrkLZXiHvVq5Zp/pu4c583bc9oFKSxPmWJ3qmkxAdQ0K2Pre
-         vagCPQZjsoHJUYzHOnegWEXQxrCooPRXeM0B8S1DSWq+ldZqIL/hwUbfTZBeTOeSuCZi
-         MPRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hy1NnP0wO2zT/VrMPRCtNkUc0gMbU7esFhgTPbbumaI=;
-        b=EYtvYTfe20ZjceBFxYRjuN9a5n59xlLJr3ZDOlDklDnklMAJj6zzhu8G4wIFhyqRB/
-         dpnQsa9eJUQTf7O7YiLAYMwBUd7gGiNZrJuQJL4v5sy4A9n0VUA6tbcCwW90vD0zTT1G
-         Z3cWO7LuAmVyCwh6dNBJdLgrRlGfzBWF66fy5KI8mP4q5mpDsv2GRVxuQzKzcA6gsT4E
-         nJzvlUGYOod0sNWZZE1Z1oKJU5JBPbEObwZ/bArYqEmQp32IzUoQoL1Dmt/5a3mEwExN
-         VpMBUs909N6nK87AfmrIaqALE2C+Kp0uY5S8QjqGfUo1DNZWQbdejXwxLIqUNPnannin
-         BxCA==
-X-Gm-Message-State: AOAM531b3ZBz/ka73+hcCZnA7eo5R8AqHy9TTivzFUtgbiKRFXLxnN9o
-        lcTuzDIbrSrGD8Qgdu+nzvmfUA==
-X-Google-Smtp-Source: ABdhPJzu/UIWjSp9w8Y+KDSNX/I9Gp6Tb85pVQV1NeAG9BQWHvOy0AKG892wKsDIlxZIxK3pOYSmvQ==
-X-Received: by 2002:a17:902:8ec7:b029:12c:6a1a:3e8d with SMTP id x7-20020a1709028ec7b029012c6a1a3e8dmr20768190plo.83.1628048969221;
-        Tue, 03 Aug 2021 20:49:29 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id b17sm739174pgl.61.2021.08.03.20.49.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 20:49:28 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 09:19:26 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH V4 3/5] dt-bindings: gpio: Add bindings for gpio-virtio
-Message-ID: <20210804034926.qtagdoopeaeaskaw@vireshk-i7>
-References: <cover.1627362340.git.viresh.kumar@linaro.org>
- <acf7402ef4aabc0ad6295c32846f2bef1cd9b56a.1627362340.git.viresh.kumar@linaro.org>
- <YQhKKyPmOUE8z+US@robh.at.kernel.org>
- <20210803043014.paskwghdio6azplp@vireshk-i7>
- <CAL_JsqJ6_ktTQKiy_xx9DhjQ3=imfvSZpBem5fXwVY7O49EgCw@mail.gmail.com>
+        Tue, 3 Aug 2021 23:51:29 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gfd7w1Zp7z1CNwj;
+        Wed,  4 Aug 2021 11:51:08 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 4 Aug 2021 11:51:13 +0800
+Received: from thunder-town.china.huawei.com (10.174.179.0) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 4 Aug 2021 11:51:13 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH] workqueue: Replace deprecated ida_simple_*() with ida_alloc()/ida_free()
+Date:   Wed, 4 Aug 2021 11:50:36 +0800
+Message-ID: <20210804035036.2211-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqJ6_ktTQKiy_xx9DhjQ3=imfvSZpBem5fXwVY7O49EgCw@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-08-21, 09:47, Rob Herring wrote:
-> n Mon, Aug 2, 2021 at 10:30 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > On 02-08-21, 13:40, Rob Herring wrote:
-> > > Humm, how does one implement interrupts without a parent interrupt? It
-> > > uses the parent virtio,mmio interrupt?
-> >
-> > Kind of, yeah, but not necessarily.
-> >
-> > The interrupt information is passed over buffers shared between host and guest.
-> > Now the guest may process the buffers when it receives a notification from the
-> > host, that will be at downpath of an interrupt for virtio,mmio. Or the guest may
-> > poll on the virtqueue and process any buffers as soon as they are made
-> > available, no interrupts then.
-> 
-> Okay, thanks for the explanation.
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
+Replace ida_simple_get() with ida_alloc() and ida_simple_remove() with
+ida_free(), the latter is more concise and intuitive.
 
-Thanks for reviewing this Rob.
+In addition, if ida_alloc() fails, NULL is returned directly. This
+eliminates unnecessary initialization of two local variables and an 'if'
+judgment.
 
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ kernel/workqueue.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 542c2d03dab6..80595556e525 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1912,14 +1912,14 @@ static void worker_detach_from_pool(struct worker *worker)
+  */
+ static struct worker *create_worker(struct worker_pool *pool)
+ {
+-	struct worker *worker = NULL;
+-	int id = -1;
++	struct worker *worker;
++	int id;
+ 	char id_buf[16];
+ 
+ 	/* ID is needed to determine kthread name */
+-	id = ida_simple_get(&pool->worker_ida, 0, 0, GFP_KERNEL);
++	id = ida_alloc(&pool->worker_ida, GFP_KERNEL);
+ 	if (id < 0)
+-		goto fail;
++		return NULL;
+ 
+ 	worker = alloc_worker(pool->node);
+ 	if (!worker)
+@@ -1954,8 +1954,7 @@ static struct worker *create_worker(struct worker_pool *pool)
+ 	return worker;
+ 
+ fail:
+-	if (id >= 0)
+-		ida_simple_remove(&pool->worker_ida, id);
++	ida_free(&pool->worker_ida, id);
+ 	kfree(worker);
+ 	return NULL;
+ }
+@@ -2378,7 +2377,7 @@ static int worker_thread(void *__worker)
+ 		set_pf_worker(false);
+ 
+ 		set_task_comm(worker->task, "kworker/dying");
+-		ida_simple_remove(&pool->worker_ida, worker->id);
++		ida_free(&pool->worker_ida, worker->id);
+ 		worker_detach_from_pool(worker);
+ 		kfree(worker);
+ 		return 0;
 -- 
-viresh
+2.25.1
+
