@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5DC3DFFA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7960D3DFFA1
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 12:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237632AbhHDKwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 06:52:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:59158 "EHLO foss.arm.com"
+        id S237617AbhHDKwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 06:52:04 -0400
+Received: from mga17.intel.com ([192.55.52.151]:29882 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237593AbhHDKwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 06:52:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 648A513A1;
-        Wed,  4 Aug 2021 03:52:00 -0700 (PDT)
-Received: from [10.57.10.145] (unknown [10.57.10.145])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 843893F719;
-        Wed,  4 Aug 2021 03:51:58 -0700 (PDT)
-Subject: Re: [PATCH v2] cpufreq: arm_scmi: Fix error path when allocation
- failed
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, sudeep.holla@arm.com,
-        cristian.marussi@arm.com, rjw@rjwysocki.net,
-        nicola.mazzucato@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org
-References: <20210803090744.12143-1-lukasz.luba@arm.com>
- <20210804040237.ssrba26jpe572mjf@vireshk-i7>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <c0679032-6405-1eab-9e2c-ae58faa88e6b@arm.com>
-Date:   Wed, 4 Aug 2021 11:51:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S237593AbhHDKwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 06:52:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="194176956"
+X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
+   d="scan'208";a="194176956"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 03:51:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,293,1620716400"; 
+   d="scan'208";a="419390433"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by orsmga006.jf.intel.com with ESMTP; 04 Aug 2021 03:51:47 -0700
+Subject: Re: [PATCH v4 2/5] mmc: sdhci: always obey programmable clock config
+ in preset value
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Kevin Liu <kliu5@marvell.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Suneel Garapati <suneel.garapati@xilinx.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Cooper <alcooperx@gmail.com>
+References: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
+ <e65dc96eb24caf8baa5431a51fe694b969e2d51f.1627204633.git.mirq-linux@rere.qmqm.pl>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <fe01b20d-779b-1e2c-7702-5a4702900d84@intel.com>
+Date:   Wed, 4 Aug 2021 13:52:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210804040237.ssrba26jpe572mjf@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <e65dc96eb24caf8baa5431a51fe694b969e2d51f.1627204633.git.mirq-linux@rere.qmqm.pl>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25/07/21 12:20 pm, Michał Mirosław wrote:
+> When host controller uses programmable clock presets but doesn't
+> advertise programmable clock support, we can only guess what frequency
+> it generates. Let's at least return correct SDHCI_PROG_CLOCK_MODE bit
+> value in this case.
 
+If the preset value doesn't make sense, why use it at all?
 
-On 8/4/21 5:02 AM, Viresh Kumar wrote:
-> On 03-08-21, 10:07, Lukasz Luba wrote:
->> Stop the initialization when cpumask allocation failed and return an
->> error.
->>
->> Fixes: 80a064dbd556 ("scmi-cpufreq: Get opp_shared_cpus from opp-v2 for EM")
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->> changes:
->> v2:
->> - removed dev_warn() since it's not needed in this case
->> - adjusted the patch description
->>
->>   drivers/cpufreq/scmi-cpufreq.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
->> index ec9a87ca2dbb..75f818d04b48 100644
->> --- a/drivers/cpufreq/scmi-cpufreq.c
->> +++ b/drivers/cpufreq/scmi-cpufreq.c
->> @@ -134,7 +134,7 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
->>   	}
->>   
->>   	if (!zalloc_cpumask_var(&opp_shared_cpus, GFP_KERNEL))
->> -		ret = -ENOMEM;
->> +		return -ENOMEM;
->>   
->>   	/* Obtain CPUs that share SCMI performance controls */
->>   	ret = scmi_get_sharing_cpus(cpu_dev, policy->cpus);
 > 
-> Applied. Thanks.
+> Fixes: 52983382c74f ("mmc: sdhci: enhance preset value function")
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> ---
+> v4: no changes
+> v3: added a comment for this case
+> v2: no changes
+> ---
+>  drivers/mmc/host/sdhci.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index c7438dd13e3e..3ab60e7f936b 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -1859,11 +1859,14 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+>  
+>  			pre_val = sdhci_get_preset_value(host);
+>  			div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
+> -			if (host->clk_mul &&
+> -				(pre_val & SDHCI_PRESET_CLKGEN_SEL)) {
+> +			if (pre_val & SDHCI_PRESET_CLKGEN_SEL) {
+>  				clk = SDHCI_PROG_CLOCK_MODE;
+>  				real_div = div + 1;
+>  				clk_mul = host->clk_mul;
+> +				if (!clk_mul) {
+> +					/* The clock frequency is unknown. Assume undivided base. */
+> +					clk_mul = 1;
+> +				}
+>  			} else {
+>  				real_div = max_t(int, 1, div << 1);
+>  			}
 > 
 
-Thank you for taking it.
