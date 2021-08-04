@@ -2,75 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 290EA3DF9CF
+	by mail.lfdr.de (Postfix) with ESMTP id DDE0B3DF9D1
 	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 04:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234665AbhHDCz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 22:55:26 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:44681 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231396AbhHDCz0 (ORCPT
+        id S234691AbhHDC4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 22:56:41 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16040 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231396AbhHDC4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 22:55:26 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UhvWmO7_1628045712;
-Received: from localhost(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UhvWmO7_1628045712)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 04 Aug 2021 10:55:12 +0800
-From:   Xianting Tian <xianting.tian@linux.alibaba.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org, amit@kernel.org,
-        arnd@arndb.de, osandov@fb.com
-Cc:     linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Xianting Tian <xianting.tian@linux.alibaba.com>
-Subject: [PATCH v3 2/2] virtio-console: remove unnecessary kmemdup()
-Date:   Wed,  4 Aug 2021 10:55:10 +0800
-Message-Id: <20210804025510.93595-1-xianting.tian@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 3 Aug 2021 22:56:40 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gfbrj1fgSzZxJk;
+        Wed,  4 Aug 2021 10:52:53 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 4 Aug 2021 10:56:26 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 4 Aug 2021 10:56:25 +0800
+Subject: Re: [PATCH 4.14 00/38] 4.14.242-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210802134334.835358048@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <dd7fcb28-586d-c43a-814c-631951508e7c@huawei.com>
+Date:   Wed, 4 Aug 2021 10:56:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210802134334.835358048@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hvc framework will never pass stack memory to the put_chars() function,
-So the calling of kmemdup() is unnecessary, remove it.
 
-This revert commit c4baad5029 ("virtio-console: avoid DMA from stack")
 
-Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
----
- drivers/char/virtio_console.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+On 2021/8/2 21:44, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.242 release.
+> There are 38 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.242-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-index 7eaf303a7..4ed3ffb1d 100644
---- a/drivers/char/virtio_console.c
-+++ b/drivers/char/virtio_console.c
-@@ -1117,8 +1117,6 @@ static int put_chars(u32 vtermno, const char *buf, int count)
- {
- 	struct port *port;
- 	struct scatterlist sg[1];
--	void *data;
--	int ret;
- 
- 	if (unlikely(early_put_chars))
- 		return early_put_chars(vtermno, buf, count);
-@@ -1127,14 +1125,8 @@ static int put_chars(u32 vtermno, const char *buf, int count)
- 	if (!port)
- 		return -EPIPE;
- 
--	data = kmemdup(buf, count, GFP_ATOMIC);
--	if (!data)
--		return -ENOMEM;
--
--	sg_init_one(sg, data, count);
--	ret = __send_to_port(port, sg, 1, count, data, false);
--	kfree(data);
--	return ret;
-+	sg_init_one(sg, buf, count);
-+	return __send_to_port(port, sg, 1, count, (void *)buf, false);
- }
- 
- /*
--- 
-2.17.1
+Tested on x86 for 4.14.242-rc1,
 
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.14.y
+Version: 4.14.242-rc1
+Commit: ec038bb8339f8cbc9d78324a4e62c5cb3992e69f
+Compiler: gcc version 7.3.0 (GCC)
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8836
+passed: 8836
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
