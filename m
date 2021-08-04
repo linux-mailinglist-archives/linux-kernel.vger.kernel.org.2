@@ -2,70 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C333DFE09
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBF03DFE10
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236637AbhHDJbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 05:31:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236599AbhHDJbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 05:31:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67DB160EE5;
-        Wed,  4 Aug 2021 09:31:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628069493;
-        bh=ImLzJp0qR5RMF7abGLu47/n5IMgym2fH1/INNOJqCi8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T3X/NizRn7ThzigqHIDeWs0mNKHeDqCSxqOG2Jgkr0k0mnip/T8k1oSpX0EWaAZsB
-         K/0lKlpEUtjnJz7JtoluIe66606niUiF1cLjojTkE1VA8R4ak9J6USlIhR2b5PMELV
-         pRpPystji0zsOfFZxZBira/+8JwHm5oFeFCMUzMnY6X+rOFXctnJ0tJjyr3bg+zsAe
-         hSFALn8zCN+eNGH+mARdhJUZL3MEW1UY6UUZg21zfkERnGvL7Jw7/zxbSLX0AIkK/M
-         VxcsFLCB+ZQj1oygMtG6YugCjEXAgx1RhYiWhKPHpHSNSQB3oCez+9n91P56WapS3t
-         PuSH4/+hDZgZQ==
-Date:   Wed, 4 Aug 2021 17:31:26 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Martin Kepplinger <martin.kepplinger@puri.sm>,
-        dafna.hirschfeld@collabora.com, devicetree@vger.kernel.org,
-        festevam@gmail.com, kernel@pengutronix.de, kernel@puri.sm,
-        krzk@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        m.felsch@pengutronix.de, mchehab@kernel.org,
-        phone-devel@vger.kernel.org, robh@kernel.org,
-        slongerbeam@gmail.com, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v10 0/3] media: imx: add support for imx8mq MIPI RX
-Message-ID: <20210804093125.GE30984@dragon>
-References: <20210728091245.231043-1-martin.kepplinger@puri.sm>
- <YQFcfbrTmGw4kZvQ@pendragon.ideasonboard.com>
+        id S236709AbhHDJeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 05:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236599AbhHDJes (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 05:34:48 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACAFC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 02:34:36 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mBDID-0006j4-5Z; Wed, 04 Aug 2021 11:34:29 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:e44:2d7c:bf4a:7b36])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 283A6660717;
+        Wed,  4 Aug 2021 09:34:25 +0000 (UTC)
+Date:   Wed, 4 Aug 2021 11:34:23 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Gianluca Falavigna <gianluca.falavigna@inwind.it>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [RESEND PATCH 4/4] can: c_can: cache frames to operate as a true
+ FIFO
+Message-ID: <20210804093423.ms2p245f5oiw4xn4@pengutronix.de>
+References: <20210725161150.11801-1-dariobin@libero.it>
+ <20210725161150.11801-5-dariobin@libero.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pxwz6jh2a7zdpnhc"
 Content-Disposition: inline
-In-Reply-To: <YQFcfbrTmGw4kZvQ@pendragon.ideasonboard.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210725161150.11801-5-dariobin@libero.it>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 04:32:45PM +0300, Laurent Pinchart wrote:
-> Hi Martin,
-> 
-> On Wed, Jul 28, 2021 at 11:12:42AM +0200, Martin Kepplinger wrote:
-> > hi,
-> > 
-> > This patch series adds a driver for the i.MX8MQ CSI MIPI receiver / controller.
-> > 
-> > It includes the driver, the dt-bindings and the DT addition to the SoC dtsi.
-> > I test it using libcamera. Thanks to Laurent who helped a lot. I'm happy for
-> > any feedback,
-> 
-> Thank you for the series. I've submitted a pull request that contains
-> patches 1/3 and 2/3.
-> 
-> Shawn, Sascha, how would you like to handle 3/3 ?
 
-I picked up the 3/3 in v9, which I think is identical to this version.
-Otherwise, please let me know.
+--pxwz6jh2a7zdpnhc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Shawn
+On 25.07.2021 18:11:50, Dario Binacchi wrote:
+> As reported by a comment in the c_can_start_xmit() this was not a FIFO.
+> C/D_CAN controller sends out the buffers prioritized so that the lowest
+> buffer number wins.
+>=20
+> What did c_can_start_xmit() do if head was less tail in the tx ring ? It
+> waited until all the frames queued in the FIFO was actually transmitted
+> by the controller before accepting a new CAN frame to transmit, even if
+> the FIFO was not full, to ensure that the messages were transmitted in
+> the order in which they were loaded.
+>=20
+> By storing the frames in the FIFO without requiring its transmission, we
+> will be able to use the full size of the FIFO even in cases such as the
+> one described above. The transmission interrupt will trigger their
+> transmission only when all the messages previously loaded but stored in
+> less priority positions of the buffers have been transmitted.
+>=20
+> Suggested-by: Gianluca Falavigna <gianluca.falavigna@inwind.it>
+> Signed-off-by: Dario Binacchi <dariobin@libero.it>
+>=20
+> ---
+>=20
+>  drivers/net/can/c_can/c_can.h      |  6 +++++
+>  drivers/net/can/c_can/c_can_main.c | 42 +++++++++++++++++-------------
+>  2 files changed, 30 insertions(+), 18 deletions(-)
+>=20
+> diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+> index 8fe7e2138620..fc499a70b797 100644
+> --- a/drivers/net/can/c_can/c_can.h
+> +++ b/drivers/net/can/c_can/c_can.h
+> +static inline u8 c_can_get_tx_free(const struct c_can_tx_ring *ring)
+> +{
+> +	return ring->obj_num - (ring->head - ring->tail);
+> +}
+> +
+>  #endif /* C_CAN_H */
+> diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c=
+_can_main.c
+> index 451ac9a9586a..4c061fef002c 100644
+> --- a/drivers/net/can/c_can/c_can_main.c
+> +++ b/drivers/net/can/c_can/c_can_main.c
+> @@ -427,20 +427,6 @@ static void c_can_setup_receive_object(struct net_de=
+vice *dev, int iface,
+>  	c_can_object_put(dev, iface, obj, IF_COMM_RCV_SETUP);
+>  }
+> =20
+> -static u8 c_can_get_tx_free(const struct c_can_tx_ring *ring)
+> -{
+> -	u8 head =3D c_can_get_tx_head(ring);
+> -	u8 tail =3D c_can_get_tx_tail(ring);
+> -
+> -	/* This is not a FIFO. C/D_CAN sends out the buffers
+> -	 * prioritized. The lowest buffer number wins.
+> -	 */
+> -	if (head < tail)
+> -		return 0;
+> -
+> -	return ring->obj_num - head;
+> -}
+> -
+
+Can you move that change into patch 3?
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--pxwz6jh2a7zdpnhc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEKXx0ACgkQqclaivrt
+76k37QgAr+vV8YOvoijVLiT5qq1Pt64OZi1pA16Mi3jynCoJsZJGuxab020/NlzE
+ZgPSdb7HHaffJP3Hmk8EEH0+fPWjKsTQe7oG+yQEMhMlbyH/54MWNILWvYDbUb1Y
+j4ckQpTooAgVImOns7Z3URO07NNg0RVxVGkLHossONe/CmGKC8aFlnOE11HLRs8O
+CwRsjyGjjgfixvFgN8AAEfaaMsy751whPjHEIDQuifIcEj1O5mJ/cnyj4l2YCPFe
+mYnIzazmih43RdgMbabEbRLnGmb/xldL/IyPqQPe1f/Opw3k1F1zNqPggqK8Vyd7
+GMDOLz9mqBIlPQZlqM5LQFY+DdpZWw==
+=H0i1
+-----END PGP SIGNATURE-----
+
+--pxwz6jh2a7zdpnhc--
