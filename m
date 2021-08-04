@@ -2,319 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0643DFC40
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 09:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDABA3DFC42
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 09:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235965AbhHDHno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 03:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235807AbhHDHnm (ORCPT
+        id S235987AbhHDHoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 03:44:02 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:37293 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235807AbhHDHoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 03:43:42 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EB5C0613D5;
-        Wed,  4 Aug 2021 00:43:29 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso2405136pjo.1;
-        Wed, 04 Aug 2021 00:43:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1fOMj2y0rLoQwuJe+Zd0XQ3vetH0lhSEGRdRxLTN6n4=;
-        b=aDdVS32fQutSKA7d394oca5HUswP524QdPoW6/jxsBni1TptLWotV6/S0WmhaXe6oc
-         yyojOezJKnhOTbZA6VBcrES13AfKVM989HbJaea1AP8sMk9jBRnCZH9pMzHx3AgGYt7D
-         R+OyBI0+iUPqUISoAe+vBDvliTz62QjkXaEbIY9iJKLEF+0tw1Hqk3gbv4p37LnVmfzE
-         Q9tws5+THETgb+/u45TFbKFT/ka6R0DRwpAE1ZpAVmUkXGQOSuq5uBrAU/+Hn7QqdWgx
-         BZKfE/iN2p3iLp8Wn1lV7/uWrhr6V+3U0EAxqpJAbdjOGmxiJDG2iWVj8VifW/wYGrqL
-         usQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1fOMj2y0rLoQwuJe+Zd0XQ3vetH0lhSEGRdRxLTN6n4=;
-        b=jpO7xBp3ERQIbbiLUh0oMnCnWZjNKQMFbfYUYD152bc7H6N+pmA1PIK+DRnl1FmvwA
-         wOF2YUl9rHITzvnC8zldRL3cYwW5w7rXOMTfb+1mg6wRJFKHsyfPdKYSu/t1tI4oxqYl
-         vW20+wC2MIOwoy/YA9hQk5QjxTyEyviPtEwgbe79zaRbbt4Fzqh6gb1oBnS2akuCN/d1
-         CJNzWT2oWgllHhVH96rlBDXZBqGXSnmqyZy1TDTGgCY/RqP51mnly/acczOa93bEB7Ub
-         2oqVQpsupYRF2Y/XUqPvvT1Yy1+hmV/CvV0rlQjVPWEA5mok0sCePT6wrDZPuHs+1mRH
-         UmfQ==
-X-Gm-Message-State: AOAM530WR8hucOt8WQCieDUbuSWtYmlSumwXEVHTpUEeB42MjE/dSk/M
-        2XSHebkR3AZK9+oXz1vPNfHlniGdFIva14pTYXs=
-X-Google-Smtp-Source: ABdhPJxGLlpYN7lmL4AYupBhIsnuG37eJL6mkrjNXg93UHtkx8PfeaO29Or8n6pjApc5bR5hhAK5a5fqg9gnIqxpl2k=
-X-Received: by 2002:a17:902:ac90:b029:12c:e7a:c183 with SMTP id
- h16-20020a170902ac90b029012c0e7ac183mr50851plr.21.1628063008750; Wed, 04 Aug
- 2021 00:43:28 -0700 (PDT)
+        Wed, 4 Aug 2021 03:44:00 -0400
+Received: from mail-wr1-f54.google.com ([209.85.221.54]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MfZ9C-1mmkN10BpI-00g3KV; Wed, 04 Aug 2021 09:43:47 +0200
+Received: by mail-wr1-f54.google.com with SMTP id c9so1120354wri.8;
+        Wed, 04 Aug 2021 00:43:46 -0700 (PDT)
+X-Gm-Message-State: AOAM532RJZ/Iz//sqZxUJ/XIaRDbw0HPuR8UnFrT2eqq3041TfJuGHK5
+        2c42i/WRD82wx0bW1SL9onFpUCpUAir4Ys4i7oo=
+X-Google-Smtp-Source: ABdhPJyunqosCIflc5vvvynoT6hdGMCnplHeTZXsuPA8UnSjopVy4WA6W8LG+8a5SLNVnF2AQBvVhxHXr2nSTm0xejk=
+X-Received: by 2002:adf:fd90:: with SMTP id d16mr28680284wrr.105.1628063026717;
+ Wed, 04 Aug 2021 00:43:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210804050809.628266-1-davidgow@google.com>
-In-Reply-To: <20210804050809.628266-1-davidgow@google.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 4 Aug 2021 10:42:52 +0300
-Message-ID: <CAHp75VeibpVCcQD6VcACM9=AaaG3KWExJ5cS4orXLkFBu4PtXQ@mail.gmail.com>
-Subject: Re: [PATCH v2] kunit: Print test statistics on failure
-To:     David Gow <davidgow@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Daniel Latypov <dlatypov@google.com>,
-        Rae Moar <rmoar@google.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
+References: <20210802145321.1153989-1-arnd@kernel.org>
+In-Reply-To: <20210802145321.1153989-1-arnd@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 4 Aug 2021 09:43:30 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2R4EVY9=K3UB2+z7mssNCrSf3BrGW95BwR+qw1SLOm-w@mail.gmail.com>
+Message-ID: <CAK8P3a2R4EVY9=K3UB2+z7mssNCrSf3BrGW95BwR+qw1SLOm-w@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/gpu: fix link failure with QCOM_SCM=m
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Kees Cook <keescook@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:vXMHY/nrtN/3gOBb2V7u+wSazxaz2q42Xdu8YzxXshlrtEcew1s
+ 8IHrMXLR0g1giWnqd8SffsCxIwsLE1eeh6/D0TphmpmlVVO0EQMuiqAD1+H+G/szlbtdoqA
+ m1+DUFRcw352/6cX+27iZhhyTWx+OZvq7MaKeC6dbskHpiXY7r6OWnLcCPt0QxVKaQy4Q2g
+ dZfHGVEqPtS85e5h9EWZw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mcRO33EVP6A=:7IJ1iRsUiciNf4re1XCpTD
+ e/aauj6zlQ+DLiSSzwMh2eyuE3xh+oFP0iYm/IboXRQX48flawU7e4dmI9eF57E7m38nYLeX/
+ 1uwWh6Yg6YVW+5ZBFmt+U5yeQCYS1B46rrCL3H2fzzCLGj1Kf9ZEVIbRNLuj8YnYJIFh6kL42
+ weuzGjHDqJcRoarV+0IPYD37Ui2/F4MKH6+IV0EW9tjMs8o+iARANAr1oADU/UfVDmRjNl20q
+ 5zTM8KJNe2huMM5dQ8wq8woUybQ4uCjZQjVF0JePG9a5p0WDG7ZwcFEJND7TGXOmq0zg4y2BN
+ N4rSlEKtwqGgsPGiTKcvitI188Hs++QFg/aHiT2AJirHPRuCeisCj/cdkKihJBHE3vbyYdGSi
+ 4A3Ag+/SKwnm+8NhoYMiM6+6Zt8RHJ8wxHoRW0z4ZBb58D/rPvAgvrYufo6sO2DW/F9QduRMx
+ G+T/UauTaT69i8SGDimAcggxPVzHeIf131pzNqOTOxyZuh5XwEBHqRaso+dlMG5Cr2YBMTbc5
+ gYEvun5ynpV2IAQg/1XFaB1VsrOzYi5pxnqXGAGDMk25hcxw6h6a7L4Aufnt005Ml9rX/pRm8
+ pyMFkq9vs46a5vjebV/VOUCIo64V1DCpb/kOkbQ+VimXlUip1fgiX37QESCNPLS989qleCVbp
+ dJ4WkvUzIKAAMfeZBIphwQWfxvo+ZeXRFh6UqoIfuZeXkf+27f8ivumtu+uMC+RKWlcE0+kBH
+ OvQgaajLuItWXMEmC+tk8Z1qlg37AG6UAGoCcMysmir871sRFVAr1PVLCENnZdXjIjsrnHXbd
+ Bm9clJUjOVoheBvHGwV66Y3RhdCZUYh25bQcJNEFAkR40ht/nC+00mAAHZ4grA/amWNY5/ulG
+ 37VgtORsSxQBGnzI++b29ZQOr3Mao/KQbNnZO8u0rf0w5RTuLUYPZ/IaYldJtxnEpe8iVR8hu
+ mzsc4w1Y4S3Ku/g2mGNetMgCfczcs7XMkvgbRISqktuv1b+qzq0o3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Rasmus
+On Mon, Aug 2, 2021 at 4:53 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Another missed dependency when SCM is a loadable module
+> and adreno is built-in:
+>
+> drivers/gpu/drm/msm/adreno/adreno_gpu.o: In function `adreno_zap_shader_load':
+> adreno_gpu.c:(.text+0x1e8): undefined reference to `qcom_scm_is_available'
+> drivers/gpu/drm/msm/adreno/a5xx_gpu.o: In function `a5xx_hw_init':
+> a5xx_gpu.c:(.text+0x28a6): undefined reference to `qcom_scm_set_remote_state'
+>
+> Change it so the dependency on QCOM_SCM and QCOM_MDT_LOADER can be
+> ignored if we are not building for ARCH_QCOM, but prevent the
+> link error during compile testing when SCM is a loadable module
+> and ARCH_QCOM is disabled.
+>
+> Fixes: a9e2559c931d ("drm/msm/gpu: Move zap shader loading to adreno")
+> Fixes: 5ea4dba68305 ("drm/msm/a6xx: add CONFIG_QCOM_LLCC dependency")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-On Wed, Aug 4, 2021 at 8:08 AM David Gow <davidgow@google.com> wrote:
->
-> When a number of tests fail, it can be useful to get higher-level
-> statistics of how many tests are failing (or how many parameters are
-> failing in parameterised tests), and in what cases or suites. This is
-> already done by some non-KUnit tests, so add support for automatically
-> generating these for KUnit tests.
->
-> This change adds a 'kunit.stats_enabled' switch which has three values:
-> - 0: No stats are printed (current behaviour)
-> - 1: Stats are printed only for tests/suites with more than one
->      subtest (new default)
-> - 2: Always print test statistics
->
-> For parameterised tests, the summary line looks as follows:
-> "    # inode_test_xtimestamp_decoding: pass:16 fail:0 skip:0 total:16"
-> For test suites, there are two lines looking like this:
-> "# ext4_inode_test: pass:1 fail:0 skip:0 total:1"
-> "# Totals: pass:16 fail:0 skip:0 total:16"
->
-> The first line gives the number of direct subtests, the second "Totals"
-> line is the accumulated sum of all tests and test parameters.
->
-> This format is based on the one used by kselftest[1].
->
-> [1]: https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/kselftest.h#L109
->
-> Signed-off-by: David Gow <davidgow@google.com>
+Oh, this is still wrong, for two reasons:
+
 > ---
+>  drivers/gpu/drm/msm/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> This is the long-awaited v2 of the test statistics patch:
-> https://lore.kernel.org/linux-kselftest/20201211072319.533803-1-davidgow@google.com/
->
-> It updates the patch to apply on current mainline kernels, takes skipped
-> tests into account, changes the output format to better match what
-> kselftest uses, and addresses some of the comments from v1.
->
-> Please let me know what you think, in particular:
-> - Is this sufficient to assuage any worries about porting tests to
->   KUnit?
-> - Are we printing too many stats by default: for a lot of existing tests
->   many of them are useless. I'm particuarly curious about the separate
->   "Totals" line, versus the per-suite line -- is that useful? Should it
->   only be printed when the totals differ?
-> - Is the output format sufficiently legible for people and/or tools
->   which may want to parse it?
->
-> Cheers,
-> -- David
->
-> Changelog:
->
-> Changes since v1:
-> https://lore.kernel.org/linux-kselftest/20201211072319.533803-1-davidgow@google.com/
-> - Rework to use a new struct kunit_result_stats, with helper functions
->   for adding results, accumulating them over nested structures, etc.
-> - Support skipped tests, report them separately from failures and
->   passes.
-> - New output format to better match kselftest:
->   - "pass:n fail:n skip:n total:n"
-> - Changes to stats_enabled parameter:
->   - Now a module parameter, with description
->   - Default "1" option now prints even when no tests fail.
-> - Improved parser fix which doesn't break crashed test detection.
->
-> ---
->  lib/kunit/test.c                    | 109 ++++++++++++++++++++++++++++
->  tools/testing/kunit/kunit_parser.py |   2 +-
->  2 files changed, 110 insertions(+), 1 deletion(-)
->
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index d79ecb86ea57..f246b847024e 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-> @@ -10,6 +10,7 @@
->  #include <kunit/test-bug.h>
->  #include <linux/kernel.h>
->  #include <linux/kref.h>
-> +#include <linux/moduleparam.h>
->  #include <linux/sched/debug.h>
->  #include <linux/sched.h>
->
-> @@ -51,6 +52,51 @@ void __kunit_fail_current_test(const char *file, int line, const char *fmt, ...)
->  EXPORT_SYMBOL_GPL(__kunit_fail_current_test);
->  #endif
->
-> +/*
-> + * KUnit statistic mode:
-> + * 0 - disabled
-> + * 1 - only when there is more than one subtest
-> + * 2 - enabled
-> + */
-> +static int kunit_stats_enabled = 1;
-> +module_param_named(stats_enabled, kunit_stats_enabled, int, 0644);
-> +MODULE_PARM_DESC(stats_enabled,
-> +                 "Print test stats: never (0), only for multiple subtests (1), or always (2)");
-> +
-> +struct kunit_result_stats {
-> +       unsigned long passed;
-> +       unsigned long skipped;
-> +       unsigned long failed;
-> +       unsigned long total;
-> +};
-> +
-> +static bool kunit_should_print_stats(struct kunit_result_stats stats)
-> +{
-> +       if (kunit_stats_enabled == 0)
-> +               return false;
-> +
-> +       if (kunit_stats_enabled == 2)
-> +               return true;
-> +
-> +       return (stats.total > 1);
-> +}
-> +
-> +static void kunit_print_test_stats(struct kunit *test,
-> +                                  struct kunit_result_stats stats)
-> +{
-> +       if (!kunit_should_print_stats(stats))
-> +               return;
-> +
-> +       kunit_log(KERN_INFO, test,
-> +                 KUNIT_SUBTEST_INDENT
-> +                 "# %s: pass:%lu fail:%lu skip:%lu total:%lu",
-> +                 test->name,
-> +                 stats.passed,
-> +                 stats.failed,
-> +                 stats.skipped,
-> +                 stats.total);
-> +}
-> +
->  /*
->   * Append formatted message to log, size of which is limited to
->   * KUNIT_LOG_SIZE bytes (including null terminating byte).
-> @@ -393,15 +439,69 @@ static void kunit_run_case_catch_errors(struct kunit_suite *suite,
->                 test_case->status = KUNIT_SUCCESS;
->  }
->
-> +static void kunit_print_suite_stats(struct kunit_suite *suite,
-> +                                   struct kunit_result_stats suite_stats,
-> +                                   struct kunit_result_stats param_stats)
-> +{
-> +       if (kunit_should_print_stats(suite_stats)) {
-> +               kunit_log(KERN_INFO, suite,
-> +                         "# %s: pass:%lu fail:%lu skip:%lu total:%lu",
-> +                         suite->name,
-> +                         suite_stats.passed,
-> +                         suite_stats.failed,
-> +                         suite_stats.skipped,
-> +                         suite_stats.total);
-> +       }
-> +
-> +       if (kunit_should_print_stats(param_stats)) {
-> +               kunit_log(KERN_INFO, suite,
-> +                         "# Totals: pass:%lu fail:%lu skip:%lu total:%lu",
-> +                         param_stats.passed,
-> +                         param_stats.failed,
-> +                         param_stats.skipped,
-> +                         param_stats.total);
-> +       }
-> +}
-> +
-> +static void kunit_update_stats(struct kunit_result_stats *stats,
-> +                              enum kunit_status status)
-> +{
-> +       switch (status) {
-> +       case KUNIT_SUCCESS:
-> +               stats->passed++;
-> +               break;
-> +       case KUNIT_SKIPPED:
-> +               stats->skipped++;
-> +               break;
-> +       case KUNIT_FAILURE:
-> +               stats->failed++;
-> +               break;
-> +       }
-> +
-> +       stats->total++;
-> +}
-> +
-> +static void kunit_accumulate_stats(struct kunit_result_stats *total,
-> +                                  struct kunit_result_stats add)
-> +{
-> +       total->passed += add.passed;
-> +       total->skipped += add.skipped;
-> +       total->failed += add.failed;
-> +       total->total += add.total;
-> +}
-> +
->  int kunit_run_tests(struct kunit_suite *suite)
->  {
->         char param_desc[KUNIT_PARAM_DESC_SIZE];
->         struct kunit_case *test_case;
-> +       struct kunit_result_stats suite_stats = { 0 };
-> +       struct kunit_result_stats total_stats = { 0 };
->
->         kunit_print_subtest_start(suite);
->
->         kunit_suite_for_each_test_case(suite, test_case) {
->                 struct kunit test = { .param_value = NULL, .param_index = 0 };
-> +               struct kunit_result_stats param_stats = { 0 };
->                 test_case->status = KUNIT_SKIPPED;
->
->                 if (test_case->generate_params) {
-> @@ -431,14 +531,23 @@ int kunit_run_tests(struct kunit_suite *suite)
->                                 test.param_value = test_case->generate_params(test.param_value, param_desc);
->                                 test.param_index++;
->                         }
-> +
-> +                       kunit_update_stats(&param_stats, test.status);
-> +
->                 } while (test.param_value);
->
-> +               kunit_print_test_stats(&test, param_stats);
-> +
->                 kunit_print_ok_not_ok(&test, true, test_case->status,
->                                       kunit_test_case_num(suite, test_case),
->                                       test_case->name,
->                                       test.status_comment);
-> +
-> +               kunit_update_stats(&suite_stats, test_case->status);
-> +               kunit_accumulate_stats(&total_stats, param_stats);
->         }
->
-> +       kunit_print_suite_stats(suite, suite_stats, total_stats);
->         kunit_print_subtest_end(suite);
->
->         return 0;
-> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-> index b88db3f51dc5..c699f778da06 100644
-> --- a/tools/testing/kunit/kunit_parser.py
-> +++ b/tools/testing/kunit/kunit_parser.py
-> @@ -137,7 +137,7 @@ def print_log(log) -> None:
->         for m in log:
->                 print_with_timestamp(m)
->
-> -TAP_ENTRIES = re.compile(r'^(TAP|[\s]*ok|[\s]*not ok|[\s]*[0-9]+\.\.[0-9]+|[\s]*#).*$')
-> +TAP_ENTRIES = re.compile(r'^(TAP|[\s]*ok|[\s]*not ok|[\s]*[0-9]+\.\.[0-9]+|[\s]*# (Subtest:|.*: kunit test case crashed!)).*$')
->
->  def consume_non_diagnostic(lines: LineStream) -> None:
->         while lines and not TAP_ENTRIES.match(lines.peek()):
-> --
-> 2.32.0.554.ge1b32706d8-goog
->
+> diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+> index 52536e7adb95..69fbfe4568b2 100644
+> --- a/drivers/gpu/drm/msm/Kconfig
+> +++ b/drivers/gpu/drm/msm/Kconfig
+> @@ -9,14 +9,14 @@ config DRM_MSM
+>         depends on QCOM_OCMEM || QCOM_OCMEM=n
+>         depends on QCOM_LLCC || QCOM_LLCC=n
+>         depends on QCOM_COMMAND_DB || QCOM_COMMAND_DB=n
+> +       depends on QCOM_SCM || (QCOM_SCM=n && ARCH_QCOM=n)
+> +       depends on QCOM_MDT_LOADER || ARCH_QCOM=n
 
+* Only QCOM_SCM has become user-selectable, but QCOM_MDT_LOADER
+   is still meant to only be selected by its users, so we cannot depend on it
+   here
 
--- 
-With Best Regards,
-Andy Shevchenko
+* There are two other drivers that have the broken 'select QCOM_SCM if
+   ARCH_QCOM', we have to fix them all at once.
+
+         Arnd
