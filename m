@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604383E028C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B55E3E028E
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238094AbhHDN7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbhHDN7i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:59:38 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74DBC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 06:59:25 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id k4so2416367wrc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 06:59:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C8AVWyR2/nU5NIf312f2J5aD2AcP4YWEdaMMUYDNvZQ=;
-        b=0DzaXrDnbqZ/EIwUGa4zxn1I2cVvf1w4L1g2rlLfhCHtVWcASETR7t4UQiJyhQh0Op
-         WT18dAxniDN002X7En7j36OymTUdH51EVypI9Hz4R/g9LXiMA3XdqeXH4M78qOsNvaRU
-         3l3xGfuCIoYbdVclBsxsBB7/D5iE/X9HtYSScjTbqGzGr1PCsh8SwFXIplu1NQ6nEtAK
-         nEZkgmxIeUOEcLlcbcbqjuLKdUwcxtl2BEOab1Du4NneowbFUG4hp3BNqwtnNH1+HLpH
-         rt+gZbbRYRF1eh95SQN11MfZ/3lah3jAUIvdsEgsAUN2yrTHk0laNlihVS2pRxVfg/eq
-         wgSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C8AVWyR2/nU5NIf312f2J5aD2AcP4YWEdaMMUYDNvZQ=;
-        b=AsXkinnr3wD+wmmJSrj8fakqyVMB5USVgy3yazao1XfY690PjfkPd5qAd/d9Wr3sBZ
-         gkdu0YvKPK4bh+MJz4oN5YLu703/atEYNx0vMwFttalhxWXS2XI9OiN4NLpxZBdPpCPj
-         +AIz1k6raS7YoHlhBh1u5UD4m4NG3v5MyPWqFa+U5TUeUVO7uzIWHa593t4eBVbTUdHS
-         TEp+RrKOoAAlSqXBXipzVMvBZDdDAczHL48NH4QqDHHWUHSfCYvThgMA4QdwvqSYTIHL
-         luGYuXWu1hPGwdTGsf9jTunjsiXWtzCWKZl0pnhao6ZUPmoatHHAnfss5RPH0DpQbMjo
-         4IYQ==
-X-Gm-Message-State: AOAM533FcZ5z7HYNZ648lsa8RycwCiku5P9KHFiF7wfbY7+ss8kgadQW
-        iVRZQA31tdyTf234WrWhB5acGg==
-X-Google-Smtp-Source: ABdhPJwhH+IrL5qDPqg0/PiBZf7SiY9LChCd5dJcrcOKywNuI+ir6xENLzMaG2fRYlW5Ab67k9FwWw==
-X-Received: by 2002:a5d:63cf:: with SMTP id c15mr28949764wrw.230.1628085564164;
-        Wed, 04 Aug 2021 06:59:24 -0700 (PDT)
-Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
-        by smtp.gmail.com with ESMTPSA id g16sm3071637wro.63.2021.08.04.06.59.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 06:59:23 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [GIT PULL] gpio: fixes for v5.14-rc5
-Date:   Wed,  4 Aug 2021 15:59:22 +0200
-Message-Id: <20210804135922.13050-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
+        id S238366AbhHDN76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:59:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:60960 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238053AbhHDN7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 09:59:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C062E11FB;
+        Wed,  4 Aug 2021 06:59:41 -0700 (PDT)
+Received: from e125579.eggemann (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 294033F719;
+        Wed,  4 Aug 2021 06:59:40 -0700 (PDT)
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Bruno Goncalves <bgoncalv@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] sched/deadline: Fix missing clock update in migrate_task_rq_dl()
+Date:   Wed,  4 Aug 2021 15:59:25 +0200
+Message-Id: <20210804135925.3734605-1-dietmar.eggemann@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+A missing clock update is causing the following warning:
 
-Please pull the following GPIO fixes for the next rc.
+rq->clock_update_flags < RQCF_ACT_SKIP
+WARNING: CPU: 112 PID: 2041 at kernel/sched/sched.h:1453
+sub_running_bw.isra.0+0x190/0x1a0
+...
+CPU: 112 PID: 2041 Comm: sugov:112 Tainted: G W 5.14.0-rc1 #1
+Hardware name: WIWYNN Mt.Jade Server System
+B81.030Z1.0007/Mt.Jade Motherboard, BIOS 1.6.20210526 (SCP:
+1.06.20210526) 2021/05/26
+...
+Call trace:
+  sub_running_bw.isra.0+0x190/0x1a0
+  migrate_task_rq_dl+0xf8/0x1e0
+  set_task_cpu+0xa8/0x1f0
+  try_to_wake_up+0x150/0x3d4
+  wake_up_q+0x64/0xc0
+  __up_write+0xd0/0x1c0
+  up_write+0x4c/0x2b0
+  cppc_set_perf+0x120/0x2d0
+  cppc_cpufreq_set_target+0xe0/0x1a4 [cppc_cpufreq]
+  __cpufreq_driver_target+0x74/0x140
+  sugov_work+0x64/0x80
+  kthread_worker_fn+0xe0/0x230
+  kthread+0x138/0x140
+  ret_from_fork+0x10/0x18
 
-Thanks!
-Bartosz
+The task causing this is the `cppc_fie` DL task introduced by
+commit 1eb5dde674f5 ("cpufreq: CPPC: Add support for frequency
+invariance").
 
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+With CONFIG_ACPI_CPPC_CPUFREQ_FIE=y and schedutil cpufreq governor on
+slow-switching system (like on this Ampere Altra WIWYNN Mt. Jade Arm
+Server):
 
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+DL task `curr=sugov:112` lets `p=cppc_fie` migrate and since the latter
+is in `non_contending` state, migrate_task_rq_dl() calls
 
-are available in the Git repository at:
+  sub_running_bw()->__sub_running_bw()->cpufreq_update_util()->
+  rq_clock()->assert_clock_updated()
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.14-rc5
+on p.
 
-for you to fetch changes up to 9b87f43537acfa24b95c236beba0f45901356eb2:
+Fix this by updating the clock for a non_contending task in
+migrate_task_rq_dl() before calling sub_running_bw().
 
-  gpio: tqmx86: really make IRQ optional (2021-08-02 17:17:27 +0200)
+Reported-by: Bruno Goncalves <bgoncalv@redhat.com>
+Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+---
+ kernel/sched/deadline.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-----------------------------------------------------------------
-gpio fixes for v5.14-rc5
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index aaacd6cfd42f..4920f498492f 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -1733,6 +1733,7 @@ static void migrate_task_rq_dl(struct task_struct *p, int new_cpu __maybe_unused
+ 	 */
+ 	raw_spin_rq_lock(rq);
+ 	if (p->dl.dl_non_contending) {
++		update_rq_clock(rq);
+ 		sub_running_bw(&p->dl, &rq->dl);
+ 		p->dl.dl_non_contending = 0;
+ 		/*
+-- 
+2.25.1
 
-- revert a patch intruducing breakage in interrupt handling in gpio-mpc8xxx
-- correctly handle missing IRQs in gpio-tqmx86 by really making them optional
-
-----------------------------------------------------------------
-Matthias Schiffer (1):
-      gpio: tqmx86: really make IRQ optional
-
-Rasmus Villemoes (1):
-      Revert "gpio: mpc8xxx: change the gpio interrupt flags."
-
- drivers/gpio/gpio-mpc8xxx.c | 2 +-
- drivers/gpio/gpio-tqmx86.c  | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
