@@ -2,73 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1873DFE51
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540823DFE4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237199AbhHDJqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 05:46:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237177AbhHDJqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 05:46:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D0F060F43;
-        Wed,  4 Aug 2021 09:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628070378;
-        bh=nt0RjSYMCjZ+aptscxs5+o+ti2RHm78rEXtWUlpI+iQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EK0cf9uy1ZVm3nPQNyD1Gb3mct7D6fJwv0rz9ej7uTVuQN8DblPmgfmarHSPKStLX
-         e2CqUR+AsVFh/4/lel3GeXOpenokesve6/IeaWI8ox636wFduNeTQJgIMtx0wTwVnZ
-         nrnv3kHTWyLsM4aymDPwxpw5h9RWDMpH6vnIdIKa5VCam3jQmNjixUP1htZ3wfJTvT
-         OFoi0ro6dOKr41ScGwrXhU10MadOlaSda8xJVEjN2vhT1mhGQKUpLUPCNlyBlgvoQf
-         jEDlB/NeaFQBiHMHZYUcNAZ2lUDxLblo5xs9DP5FZhlkv5TUh/2pJxdkgQHLyP134N
-         7MX5sMnjyDpwQ==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mBDSx-0007Zu-O3; Wed, 04 Aug 2021 11:45:36 +0200
-Date:   Wed, 4 Aug 2021 11:45:35 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Salah Triki <salah.triki@gmail.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, gregkh@linuxfoundation.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] input: touchscreen: replace conditional statement with
- max()
-Message-ID: <YQphv1ikiyT/q1zy@hovoldconsulting.com>
-References: <20210803003857.GA1560352@pc>
+        id S237192AbhHDJq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 05:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237177AbhHDJqZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 05:46:25 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8877DC0613D5;
+        Wed,  4 Aug 2021 02:46:11 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id l4so1880926ljq.4;
+        Wed, 04 Aug 2021 02:46:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mVnJInZpn4OUvjoNvU3SZlWdiP6K+04meJVPvdzldwQ=;
+        b=sF+sWnJ3H92GflZLESsLN2ti3iapm4lJ1FIgWB2/dJLKhlQa6Ex4IPy2oNPMm7URKn
+         B9tNyri9vLOhG0zfn0QiSz3iLkyP8new6WIj96etpjSEIdoBfPseaqMFZLIdv85lXk+k
+         LjMqfHRUsP5vXUFNe2zlc5xEPGtoRy5alvp7rWBl/mOCPTrHhayhAZpWLrSfHLN4eFO3
+         aHihfQsKNCW/LnPLT1GHbvL8KVXLEEm3yftCgHuhZ2zxVQ3TantqCbzD9FnaCPF9Gtnk
+         LT7gBAsYk7p5WcNZsgyIE+vvld8vIATwK+qtjacNjXEPuqstadxGHUgwyo91en98rDgK
+         ujzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mVnJInZpn4OUvjoNvU3SZlWdiP6K+04meJVPvdzldwQ=;
+        b=H+BZdWPt9wkUoMVdQLolCs1gZYIAKxIj0ksUD+G0BK0xrxc0HJjHY2oNhp9lUtXsYU
+         eB/7RDSkWW0DbJsvLOsxq/KkzdbmvtbdmJQbm3a5sFgOyTz7nVNIyQmL6eGczkSR/SQE
+         VLF9elYHOPzWHhLsfSOUBdT7ovQJsfiQXvWfocuuvmmf+K/H0F2FlipepaDrkqUfFFD+
+         64Ykv0PjGczjCvqjlVMB6cB9CdfS6A0SeMMIE7K8PI6MgE6GmdXB1xMfOLY23OokcHh6
+         AqpnxlGZW/0/Eyynmfk+oxc/HzW3HkcWrURwFHAbhCiNHkdAAUz7486XT0gj9P1sEGum
+         JZhA==
+X-Gm-Message-State: AOAM530+id3Z0IL5gWUqaj5mqfy/rWohdrUSaY8BswN9Q6noZOLb43xF
+        qKN2D1RQ1PFpzm2wZI9LCrU=
+X-Google-Smtp-Source: ABdhPJz36QMz/TPvyrUYFGdy+PGKoAmoP8tL+HREdgsQva7salGCDqTWz+aBJcdqfOTwsEOPEeCGbg==
+X-Received: by 2002:a2e:bc1a:: with SMTP id b26mr17670696ljf.132.1628070369833;
+        Wed, 04 Aug 2021 02:46:09 -0700 (PDT)
+Received: from mobilestation ([95.79.127.110])
+        by smtp.gmail.com with ESMTPSA id v78sm102254lfa.141.2021.08.04.02.46.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 02:46:09 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 12:46:07 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Viresh Kumar <vireshk@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v1 1/3] dmaengine: dw: Remove error message from DT
+ parsing code
+Message-ID: <20210804094607.ac3zxomlmu3ifpqr@mobilestation>
+References: <20210802184355.49879-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210803003857.GA1560352@pc>
+In-Reply-To: <20210802184355.49879-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 01:38:57AM +0100, Salah Triki wrote:
-> Replace conditional statement with max() in order to make code cleaner.
-> Issue found by coccinelle.
+Hello Andy
+
+On Mon, Aug 02, 2021 at 09:43:53PM +0300, Andy Shevchenko wrote:
+> Users are a bit frightened of the harmless message that tells that
+> DT is missed on ACPI-based platforms. Remove it for good, it will
+> simplify the future conversion to fwnode and device property APIs.
+
+Thanks for the cleanup patchset. No comments from me, just the tags
+for the whole series:
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Tested-by: Serge Semin <fancer.lancer@gmail.com>
+[Tested on Baikal-T1 DW DMAC with 8 channels, 12 requests, 2 masters,
+no multi-block support and uneven max burst length setup]
+
+-Sergey
+
 > 
-> Signed-off-by: Salah Triki <salah.triki@gmail.com>
+> Fixes: a9ddb575d6d6 ("dmaengine: dw_dmac: Enhance device tree support")
+> Depends-on: f5e84eae7956 ("dmaengine: dw: platform: Split OF helpers to separate module")
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=199379
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  drivers/input/touchscreen/usbtouchscreen.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/dma/dw/of.c | 5 -----
+>  1 file changed, 5 deletions(-)
 > 
-> diff --git a/drivers/input/touchscreen/usbtouchscreen.c b/drivers/input/touchscreen/usbtouchscreen.c
-> index 43c521f50c85..69f36d4f6cea 100644
-> --- a/drivers/input/touchscreen/usbtouchscreen.c
-> +++ b/drivers/input/touchscreen/usbtouchscreen.c
-> @@ -269,7 +269,7 @@ static int e2i_read_data(struct usbtouch_usb *dev, unsigned char *pkt)
+> diff --git a/drivers/dma/dw/of.c b/drivers/dma/dw/of.c
+> index c1cf7675b9d1..4d2b89142721 100644
+> --- a/drivers/dma/dw/of.c
+> +++ b/drivers/dma/dw/of.c
+> @@ -54,11 +54,6 @@ struct dw_dma_platform_data *dw_dma_parse_dt(struct platform_device *pdev)
+>  	u32 nr_masters;
+>  	u32 nr_channels;
 >  
->  	tmp = tmp - 0xA000;
->  	dev->touch = (tmp > 0);
-> -	dev->press = (tmp > 0 ? tmp : 0);
-> +	dev->press = max(tmp, 0);
-
-I'm afraid that like the related patch you've posted elsewhere, this not
-an improvement either.
-
->  
->  	return 1;
->  }
-
-Johan
+> -	if (!np) {
+> -		dev_err(&pdev->dev, "Missing DT data\n");
+> -		return NULL;
+> -	}
+> -
+>  	if (of_property_read_u32(np, "dma-masters", &nr_masters))
+>  		return NULL;
+>  	if (nr_masters < 1 || nr_masters > DW_DMA_MAX_NR_MASTERS)
+> -- 
+> 2.30.2
+> 
