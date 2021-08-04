@@ -2,102 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6323E06A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA063E06AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239857AbhHDRT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 13:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
+        id S239791AbhHDRU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 13:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbhHDRTz (ORCPT
+        with ESMTP id S229993AbhHDRUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:19:55 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889EAC0613D5;
-        Wed,  4 Aug 2021 10:19:41 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id d8so3079833wrm.4;
-        Wed, 04 Aug 2021 10:19:41 -0700 (PDT)
+        Wed, 4 Aug 2021 13:20:54 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10743C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 10:20:42 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id u10so3688576oiw.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 10:20:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=O9SItd3XY405dHzvkc9GDc7qBcgktuPcRH3jW9NDsus=;
-        b=a7X1e0HiSjvwjVXzD8OJgN8F0pq+uSvbd+ug23nvL7Qfj0KIXJ/DxQL515BzoQxjtM
-         KGmGjJSfj6+nMw32lREnSJK8vXnQ9A91vVIBFmYSYmV0Za2GThvhHLls+jxcF2d5JS9a
-         D71ajMPeqbB1ahf6ZufXJaCChi4HEmCI6l88zujyjQLiLUvhXDzWEA20E+16DTiZTqW7
-         aNW8MvxX0FjUdEx3ZM4SnM361m6RD9Ymnq+nEzsucSJ79IUQKeh/Pjkqutm7pBV+YqGC
-         n0E3S2kjkjR4d+DMrfaaTjPcFTHDm2cE0vTQft6TsfSY7lsWHFkJMnZ48JwLI1Pd7Jit
-         +blw==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SsLjeKiLuliSZOE+wUaPOjaCl3gVgPx+PNBKHSFfAc0=;
+        b=hVC8CZtsjkFOsvIinLJF30LOuTeXy5igNSPk7hFv9p92XBKklcEs4hRIgS5etqqoyk
+         Ex95PKSsiEj/BIIpSYMCXBpJJqiH/5bSpUtu467tZBV8HYK5j+gEiLPcsWBFOX+A76Bz
+         JQ70k6t5f/6C/3n/OaC5HAKi3bKsajwSq0Tl1GgURhePM/VohVmGQ8oqkiXqAisNMjXn
+         eeHuS+zUQmQd6Fd1jtrlFXGp45uGhY89q+X9Iye1mtthZzGL2CodxGIT+vCYy9ESHOca
+         nzkl3F/QNRx10oWyG57E0AG0qj+C3s6cveoKrfI/8lgHfHl936IVjVr+tKTpkIlR6IYn
+         KIrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O9SItd3XY405dHzvkc9GDc7qBcgktuPcRH3jW9NDsus=;
-        b=D5+Wuw9PJd9j7NG/r305uQbp2UfwLlze+wkqFJbaitLE6+oaLwt1C4CNDcFM2OkOM+
-         qPckQf/yEJgNGgHW5mZwyYjDObAhqnRCjYa0fTPRoaSucuxqf8WeCdqNfpNUEOk6xuFY
-         q7GexoiJXe91Rufb5pJYU1OuBJdKphmA/+0SJXqQBdt3acUm/OmJrAcWqaxn0lyaGf1E
-         nbf+GuCaUPm/ApEjeYqtFLZh4kk2GW2t7p5SzJWFkPpS1oQxEnSK0ghksYe3g615Eb0F
-         DY7IdKpROah+Y895+Fab7iNjyoPvf2OvyltyMfxWaJPAEBWjKB1iodTQFRiKOLRrg9cA
-         2FUw==
-X-Gm-Message-State: AOAM5301kBb4up10KbkZyxLDgd+/BhfWgCTXEuG7t8niOFvUXYc/o3uo
-        x6pGAPaB17Ho9uggp3HVYVNbwXbTl/guBQ==
-X-Google-Smtp-Source: ABdhPJy1Ufwahx5HIvCTUwg/AGqU6WYCwDXtjONKbsOazi/UN4zk+Nv/cBLQovbRWSrw19JuGoZPAQ==
-X-Received: by 2002:adf:f710:: with SMTP id r16mr470460wrp.124.1628097580131;
-        Wed, 04 Aug 2021 10:19:40 -0700 (PDT)
-Received: from ziggy.stardust (static-55-132-6-89.ipcom.comunitel.net. [89.6.132.55])
-        by smtp.gmail.com with ESMTPSA id w18sm3537191wrg.68.2021.08.04.10.19.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 10:19:39 -0700 (PDT)
-Subject: Re: [PATCH v4 1/2] arm64: dts: mt8183: kukui: Use aliases to mmc
- nodes
-To:     Chen-Yu Tsai <wenst@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Eizan Miyamoto <eizan@chromium.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210728040710.2891955-1-hsinyi@chromium.org>
- <CAGXv+5EVcSyfG1Fk6PZOnWUZo85brf_cneW7iob4Z5gnjFca7Q@mail.gmail.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <fb0d8da4-6d0f-b10b-a207-af234d47b171@gmail.com>
-Date:   Wed, 4 Aug 2021 19:19:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SsLjeKiLuliSZOE+wUaPOjaCl3gVgPx+PNBKHSFfAc0=;
+        b=eNwTDLFkOZTPIBoNwVTt6/4IFTHtaronNfRhqJXEDfTDGl8J7+0FU+W+bpWe5SnPrE
+         JeNuI/xnjhkue/CiWWwkwg33rUSZkvhZphKbSKj+yX1D2QylcgDrMI9K/mBeKYvfuun5
+         JwOnK1kn7EzrXB2YSoQiNXoblgxvqGvOfTMx/vgeOJsQNYEtFOn43oaLe1UU7ANnkszs
+         kR4d8S2yUzph2H+ncnpnsffV44eCBIgO0qJJ+DQXCQ/LGDeiKvhw3ET/aHXJSQC7cO9w
+         qMlYYZ+cYUZCfw3UNoXSo/o23PphmalU2zvEFz/kCeeCPEUP4Z1reo0eX5Bl4yoN3Iig
+         JN4g==
+X-Gm-Message-State: AOAM530QB9cwhczYVH0UuRBEjQmcKUoR12ClkVPoQTZN1k1KrBy3tk+N
+        xZjj+BMb9UqBBRH9Gg5PX1RB7naIKRNT5l+WM7C+1Q==
+X-Google-Smtp-Source: ABdhPJydHT8T09LV2c5tCC/zHhUe+u5O3+JdHKYpJP9RhhU+4ivVPQngJmG/KHsv0HSdDX7wN70cCyRdKW8apbASMIk=
+X-Received: by 2002:a05:6808:d53:: with SMTP id w19mr447537oik.48.1628097641355;
+ Wed, 04 Aug 2021 10:20:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAGXv+5EVcSyfG1Fk6PZOnWUZo85brf_cneW7iob4Z5gnjFca7Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210802211912.116329-1-jiang.wang@bytedance.com>
+ <20210802211912.116329-3-jiang.wang@bytedance.com> <87zgtxcfig.fsf@cloudflare.com>
+In-Reply-To: <87zgtxcfig.fsf@cloudflare.com>
+From:   "Jiang Wang ." <jiang.wang@bytedance.com>
+Date:   Wed, 4 Aug 2021 10:20:30 -0700
+Message-ID: <CAP_N_Z_c5CidNPdnaf=M=Vpm9-rJvODi+-5rZ0DNO+mwOpKJpw@mail.gmail.com>
+Subject: Re: Re: [PATCH bpf-next v3 2/5] af_unix: add unix_stream_proto for sockmap
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Yongji Xie <xieyongji@bytedance.com>,
+        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 4, 2021 at 9:59 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>
+> On Mon, Aug 02, 2021 at 11:19 PM CEST, Jiang Wang wrote:
+>
+> [...]
+>
+> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> > index ae5fa4338..42f50ea7a 100644
+> > --- a/net/core/sock_map.c
+> > +++ b/net/core/sock_map.c
+> > @@ -517,9 +517,15 @@ static bool sk_is_tcp(const struct sock *sk)
+> >              sk->sk_protocol == IPPROTO_TCP;
+> >  }
+> >
+> > +static bool sk_is_unix_stream(const struct sock *sk)
+> > +{
+> > +     return sk->sk_type == SOCK_STREAM &&
+> > +            sk->sk_protocol == PF_UNIX;
+> > +}
+> > +
+> >  static bool sock_map_redirect_allowed(const struct sock *sk)
+> >  {
+> > -     if (sk_is_tcp(sk))
+> > +     if (sk_is_tcp(sk) || sk_is_unix_stream(sk))
+> >               return sk->sk_state != TCP_LISTEN;
+> >       else
+> >               return sk->sk_state == TCP_ESTABLISHED;
+>
+> Let me provide some context.
+>
+> The reason why we check != TCP_LISTEN for TCP sockets is that we want to
+> allow redirect redirect to sockets that are about to transition from
+> TCP_SYN_RECV to TCP_ESTABLISHED, in addition to sockets already in
+> TCP_ESTABLISHED state.
+>
+> That's because BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB callback happens when
+> socket is still in TCP_SYN_RECV state. With BPF sockops program, we can
+> insert such socket into a sockmap. Hence, there is a short window of
+> opportunity when we could redirect to a socket in TCP_SYN_RECV.
+>
+> UNIX sockets can be only in TCP_{CLOSE,LISTEN,ESTABLISHED} state,
+> AFAIK. So it is sufficient to rely on the default == TCP_ESTABLISHED
+> check.
+>
+Got it. Thanks for the explanation. I will change unix sockets to only
+check == TCP_ESTABLISHED condition.
 
+> > diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+> > index 0ae3fc4c8..9c1711c67 100644
+> > --- a/net/unix/af_unix.c
+> > +++ b/net/unix/af_unix.c
+> > @@ -791,17 +791,35 @@ static void unix_close(struct sock *sk, long timeout)
+> >        */
+> >  }
+> >
+> > -struct proto unix_proto = {
+> > -     .name                   = "UNIX",
+> > +static void unix_unhash(struct sock *sk)
+> > +{
+> > +     /* Nothing to do here, unix socket does not need a ->unhash().
+> > +      * This is merely for sockmap.
+> > +      */
+> > +}
+> > +
+> > +struct proto unix_dgram_proto = {
+> > +     .name                   = "UNIX-DGRAM",
+> > +     .owner                  = THIS_MODULE,
+> > +     .obj_size               = sizeof(struct unix_sock),
+> > +     .close                  = unix_close,
+> > +#ifdef CONFIG_BPF_SYSCALL
+> > +     .psock_update_sk_prot   = unix_dgram_bpf_update_proto,
+> > +#endif
+> > +};
+> > +
+> > +struct proto unix_stream_proto = {
+> > +     .name                   = "UNIX-STREAM",
+> >       .owner                  = THIS_MODULE,
+> >       .obj_size               = sizeof(struct unix_sock),
+> >       .close                  = unix_close,
+> > +     .unhash                 = unix_unhash,
+> >  #ifdef CONFIG_BPF_SYSCALL
+> > -     .psock_update_sk_prot   = unix_bpf_update_proto,
+> > +     .psock_update_sk_prot   = unix_stream_bpf_update_proto,
+> >  #endif
+> >  };
+> >
+> > -static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
+> > +static struct sock *unix_create1(struct net *net, struct socket *sock, int kern, int type)
+> >  {
+> >       struct sock *sk = NULL;
+> >       struct unix_sock *u;
+> > @@ -810,7 +828,11 @@ static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
+> >       if (atomic_long_read(&unix_nr_socks) > 2 * get_max_files())
+> >               goto out;
+> >
+> > -     sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_proto, kern);
+> > +     if (type == SOCK_STREAM)
+> > +             sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_stream_proto, kern);
+> > +     else /*dgram and  seqpacket */
+> > +             sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_dgram_proto, kern);
+> > +
+> >       if (!sk)
+> >               goto out;
+> >
+> > @@ -872,7 +894,7 @@ static int unix_create(struct net *net, struct socket *sock, int protocol,
+> >               return -ESOCKTNOSUPPORT;
+> >       }
+> >
+> > -     return unix_create1(net, sock, kern) ? 0 : -ENOMEM;
+> > +     return unix_create1(net, sock, kern, sock->type) ? 0 : -ENOMEM;
+> >  }
+> >
+> >  static int unix_release(struct socket *sock)
+> > @@ -1286,7 +1308,7 @@ static int unix_stream_connect(struct socket *sock, struct sockaddr *uaddr,
+> >       err = -ENOMEM;
+> >
+> >       /* create new sock for complete connection */
+> > -     newsk = unix_create1(sock_net(sk), NULL, 0);
+> > +     newsk = unix_create1(sock_net(sk), NULL, 0, sock->type);
+> >       if (newsk == NULL)
+> >               goto out;
+> >
+> > @@ -2214,7 +2236,7 @@ static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg, size_t si
+> >       struct sock *sk = sock->sk;
+> >
+> >  #ifdef CONFIG_BPF_SYSCALL
+> > -     if (sk->sk_prot != &unix_proto)
+> > +     if (sk->sk_prot != &unix_dgram_proto)
+> >               return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
+> >                                           flags & ~MSG_DONTWAIT, NULL);
+> >  #endif
+>
+>
+> KASAN might be unhappy about access to sk->sk_prot not annotated with
+> READ_ONCE. In unix_bpf we have WRITE_ONCE(sk->sk_prot, ...) [1]
+>
+Got it.  Will check and add READ_ONCE if necessary.
 
-On 29/07/2021 11:58, Chen-Yu Tsai wrote:
-> On Wed, Jul 28, 2021 at 12:07 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
->>
->> With commit 1796164fac7e ("dt-bindings: mmc: document alias support"),
->> a way to specify fixed index numbers was provided. This patch use aliases
->> to mmc nodes so the partition name for eMMC and SD card will be consistent
->> across boots.
->>
->> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
->> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
->> Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->> ---
->> v3->v4: change commit message based on review in v3.
-> 
-> Thanks for following up. My reviewed-by is still valid for both patches.
-> 
-
-Sorry for the confusion on this series. I now took this version into
-v5.14-next/dts64
-
-Thanks
+> [...]
+>
+> [1] https://github.com/google/ktsan/wiki/READ_ONCE-and-WRITE_ONCE#why-kernel-code-should-use-read_once-and-write_once-for-shared-memory-accesses
