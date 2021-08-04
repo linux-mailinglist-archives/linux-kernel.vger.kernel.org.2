@@ -2,91 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C50A3E09DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC20D3E09E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbhHDVKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:10:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhHDVKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:10:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17ACA60F43
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 21:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628111409;
-        bh=AR7/8fSFLxcOU7ReweR1RJMUzQ2C6A8WBiBQgmubyxA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bstBTAnhv749RIOm/8A++1zEJoVPLjeLJya1QeLgs+5os8XLqTX8NVxd11Jh5ne0X
-         25RPg0sHRCshpt2JG73ht7Xyx5dhtErx1V8I9gCVolzqz237y6uQ98P1D4u3g0FnEH
-         SnynInM+s3bEItadObYqiqLFG2NHBPRBkZeJYWhW+F5BV7++MeLDhNP+rF+X86XxpF
-         aTbuCPg58JahZq3d68NRMmRAd9W2YnbjIVMfIoU5tbkiNR5tQSdrSe1ht84Lr9Z5cl
-         3geDZMkh8EWExQ4h3Kl04ZTQUyVWVA3XrMvZJNdyBdMaZiSkIusjDlYx8q+EiUfTyf
-         7lV0W67V/+P6g==
-Received: by mail-wm1-f45.google.com with SMTP id n11so1969504wmd.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:10:09 -0700 (PDT)
-X-Gm-Message-State: AOAM532/wYGvR5hZ+vQXaI4SEVTXsFWt9rlKkM1tHc+rQT9NGglH+eCS
-        ZjyynDceM8jCiDJUv3Rd5lgquF6FvL9GU9rYCvA=
-X-Google-Smtp-Source: ABdhPJxawV1DUFGq0xf4c1YWGB9f0ICNgrFaDVK4nvjPq8GUrxtQnE1yV12ZR4xxG8yzQp9mNDGQvEuc2xvVrRg4gF8=
-X-Received: by 2002:a7b:ce10:: with SMTP id m16mr11140796wmc.75.1628111407639;
- Wed, 04 Aug 2021 14:10:07 -0700 (PDT)
+        id S229739AbhHDVLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:11:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48995 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229591AbhHDVLd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 17:11:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628111480;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0aCM0sS1/kssfJvUB4gZNdTsc20oPF9++cTUI8zhW60=;
+        b=CA4y1J6ULaHDSiJZppYNtte5dMEyCAWIH/8zvcc1t+BOInlXd5oqvn7wPmMzlNqNZ9p08Y
+        QPe/GkiL4/Mv3cr+U9NQk84um5CaaKRjiO7x5o5LOT2HVwnYiEr6oFgo3enn89oVF+Nn8X
+        JDT2tm1QwsUBNsx+8/WgJOKzY2eVwJU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-491-AA_yMFDwMs2mLG58g3F5tw-1; Wed, 04 Aug 2021 17:11:16 -0400
+X-MC-Unique: AA_yMFDwMs2mLG58g3F5tw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EDC398799FF;
+        Wed,  4 Aug 2021 21:11:13 +0000 (UTC)
+Received: from optiplex-fbsd (unknown [10.3.128.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5279960BF4;
+        Wed,  4 Aug 2021 21:11:09 +0000 (UTC)
+Date:   Wed, 4 Aug 2021 17:11:06 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     Charan Teja Reddy <charante@codeaurora.org>
+Cc:     akpm@linux-foundation.org, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com,
+        dave.hansen@linux.intel.com, vbabka@suse.cz,
+        mgorman@techsingularity.net, nigupta@nvidia.com, corbet@lwn.net,
+        rppt@kernel.org, khalid.aziz@oracle.com, rientjes@google.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        vinmenon@codeaurora.org
+Subject: Re: [PATCH V5] mm: compaction: support triggering of proactive
+ compaction by user
+Message-ID: <YQsCasRVGoVhIvyR@optiplex-fbsd>
+References: <1627653207-12317-1-git-send-email-charante@codeaurora.org>
 MIME-Version: 1.0
-References: <CAK8P3a0i0WP24Z0TScmPqKxmM2ovtKnmm+qZq6+Tc1ju+hma0w@mail.gmail.com>
- <20210804141049.499767-1-kherbst@redhat.com> <CAK8P3a136c_L3yVn-841Sbfib9UMOf1M-pk+2SqWt0wD2zfRKQ@mail.gmail.com>
- <CACO55tsLpURTm=Jf=4gRVtYQbit5h2OBYw_MFb6Vf1PFvTV7dw@mail.gmail.com> <CACO55tuy5Am9zbcR490KWYYAg7MguBN5m82vbjzifGN5KpGbxw@mail.gmail.com>
-In-Reply-To: <CACO55tuy5Am9zbcR490KWYYAg7MguBN5m82vbjzifGN5KpGbxw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 4 Aug 2021 23:09:51 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3hZ7X5+kM5E+_Y+COUp49Kt6iDjiqMFtimiSbPk4byzQ@mail.gmail.com>
-Message-ID: <CAK8P3a3hZ7X5+kM5E+_Y+COUp49Kt6iDjiqMFtimiSbPk4byzQ@mail.gmail.com>
-Subject: Re: [PATCH] depend on BACKLIGHT_CLASS_DEVICE for more devices
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lyude Paul <lyude@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        ML nouveau <nouveau@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1627653207-12317-1-git-send-email-charante@codeaurora.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 8:59 PM Karol Herbst <kherbst@redhat.com> wrote:
-> On Wed, Aug 4, 2021 at 4:43 PM Karol Herbst <kherbst@redhat.com> wrote:
-> > On Wed, Aug 4, 2021 at 4:19 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > > On Wed, Aug 4, 2021 at 4:10 PM Karol Herbst <kherbst@redhat.com> wrote:
-> > > >
-> > > > playing around a little bit with this, I think the original "select
-> > > > BACKLIGHT_CLASS_DEVICE" is fine. Atm we kind of have this weird mix of
-> > > > drivers selecting and others depending on it. We could of course convert
-> > > > everything over to depend, and break those cycling dependency issues with
-> > > > this.
-> > > >
-> > > > Anyway this change on top of my initial patch is enough to make Kconfig
-> > > > happy and has the advantage of not having to mess with the deps of nouveau
-> > > > too much.
-> > >
-> > > Looks good to me. We'd probably want to make the BACKLIGHT_CLASS_DEVICE
-> > > option itself 'default FB || DRM' though, to ensure that defconfigs
-> > > keep working.
-> > >
-> >
-> > okay cool. Will send out a proper updated patch series soonish.
-> >
->
-> mhh, actually that breaks drivers selecting FB_BACKLIGHT as now
-> BACKLIGHT_CLASS_DEVICE might be disabled :(
+On Fri, Jul 30, 2021 at 07:23:27PM +0530, Charan Teja Reddy wrote:
+> The proactive compaction[1] gets triggered for every 500msec and run
+> compaction on the node for COMPACTION_HPAGE_ORDER (usually order-9)
+> pages based on the value set to sysctl.compaction_proactiveness.
+> Triggering the compaction for every 500msec in search of
+> COMPACTION_HPAGE_ORDER pages is not needed for all applications,
+> especially on the embedded system usecases which may have few MB's of
+> RAM. Enabling the proactive compaction in its state will endup in
+> running almost always on such systems.
+> 
+> Other side, proactive compaction can still be very much useful for
+> getting a set of higher order pages in some controllable
+> manner(controlled by using the sysctl.compaction_proactiveness). So, on
+> systems where enabling the proactive compaction always may proove not
+> required, can trigger the same from user space on write to its sysctl
+> interface. As an example, say app launcher decide to launch the memory
+> heavy application which can be launched fast if it gets more higher
+> order pages thus launcher can prepare the system in advance by
+> triggering the proactive compaction from userspace.
+> 
+> This triggering of proactive compaction is done on a write to
+> sysctl.compaction_proactiveness by user.
+> 
+> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=facdaa917c4d5a376d09d25865f5a863f906234a
+> 
+> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
 
-Are you sure? It should already be the case that any driver that selects
-FB_BACKLIGHT either 'depends on BACKLIGHT_CLASS_DEVICE'
-or 'select BACKLIGHT_CLASS_DEVICE'.
+Acked-by: Rafael Aquini <aquini@redhat.com>
 
-If you change all the 'select BACKLIGHT_CLASS_DEVICE' to 'depends
-on', I don't see a problem with doing 'select FB_BACKLIGHT' from
-those.
+> ---
+>  Changes in V5:
+>  	-- Avoid unnecessary wakeup of proactive compaction when it is disabled.
+> 	-- No changes in the logic of triggering the proactive compaction.
+> 
+>  Changes in V4:
+> 	-- Changed the code as the 'proactive_defer' counter is removed.
+> 	-- No changes in the logic of triggering the proactive compaction.
+> 	-- https://lore.kernel.org/patchwork/patch/1448777/
+> 
+>  Changes in V3:
+>         -- Fixed review comments from Valstimil and others.
+>         -- https://lore.kernel.org/patchwork/patch/1438211/
+> 
+>  Changes in V2:
+> 	-- remove /proc/../proactive_compact_memory interface trigger for proactive compaction
+>         -- Intention is same that add a way to trigger proactive compaction by user.
+>         -- https://lore.kernel.org/patchwork/patch/1431283/
+> 
+>  changes in V1:
+> 	-- Created the new /proc/sys/vm/proactive_compact_memory in
+> 	   interface to trigger proactive compaction from user 
+>         -- https://lore.kernel.org/lkml/1619098678-8501-1-git-send-email-charante@codeaurora.org/
+> 
+>  Documentation/admin-guide/sysctl/vm.rst |  3 ++-
+>  include/linux/compaction.h              |  2 ++
+>  include/linux/mmzone.h                  |  1 +
+>  kernel/sysctl.c                         |  2 +-
+>  mm/compaction.c                         | 38 +++++++++++++++++++++++++++++++--
+>  5 files changed, 42 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
+> index 003d5cc..b526cf6 100644
+> --- a/Documentation/admin-guide/sysctl/vm.rst
+> +++ b/Documentation/admin-guide/sysctl/vm.rst
+> @@ -118,7 +118,8 @@ compaction_proactiveness
+>  
+>  This tunable takes a value in the range [0, 100] with a default value of
+>  20. This tunable determines how aggressively compaction is done in the
+> -background. Setting it to 0 disables proactive compaction.
+> +background. On write of non zero value to this tunable will immediately
+> +trigger the proactive compaction. Setting it to 0 disables proactive compaction.
+>  
+>  Note that compaction has a non-trivial system-wide impact as pages
+>  belonging to different processes are moved around, which could also lead
+> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+> index c24098c..34bce35 100644
+> --- a/include/linux/compaction.h
+> +++ b/include/linux/compaction.h
+> @@ -84,6 +84,8 @@ static inline unsigned long compact_gap(unsigned int order)
+>  extern unsigned int sysctl_compaction_proactiveness;
+>  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
+>  			void *buffer, size_t *length, loff_t *ppos);
+> +extern int compaction_proactiveness_sysctl_handler(struct ctl_table *table,
+> +		int write, void *buffer, size_t *length, loff_t *ppos);
+>  extern int sysctl_extfrag_threshold;
+>  extern int sysctl_compact_unevictable_allowed;
+>  
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 4610750..6a1d79d 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -853,6 +853,7 @@ typedef struct pglist_data {
+>  	enum zone_type kcompactd_highest_zoneidx;
+>  	wait_queue_head_t kcompactd_wait;
+>  	struct task_struct *kcompactd;
+> +	bool proactive_compact_trigger;
+>  #endif
+>  	/*
+>  	 * This is a per-node reserve of pages that are not available
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 82d6ff6..65bc6f7 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -2871,7 +2871,7 @@ static struct ctl_table vm_table[] = {
+>  		.data		= &sysctl_compaction_proactiveness,
+>  		.maxlen		= sizeof(sysctl_compaction_proactiveness),
+>  		.mode		= 0644,
+> -		.proc_handler	= proc_dointvec_minmax,
+> +		.proc_handler	= compaction_proactiveness_sysctl_handler,
+>  		.extra1		= SYSCTL_ZERO,
+>  		.extra2		= &one_hundred,
+>  	},
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index f984ad0..fbc60f9 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -2700,6 +2700,30 @@ static void compact_nodes(void)
+>   */
+>  unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
+>  
+> +int compaction_proactiveness_sysctl_handler(struct ctl_table *table, int write,
+> +		void *buffer, size_t *length, loff_t *ppos)
+> +{
+> +	int rc, nid;
+> +
+> +	rc = proc_dointvec_minmax(table, write, buffer, length, ppos);
+> +	if (rc)
+> +		return rc;
+> +
+> +	if (write && sysctl_compaction_proactiveness) {
+> +		for_each_online_node(nid) {
+> +			pg_data_t *pgdat = NODE_DATA(nid);
+> +
+> +			if (pgdat->proactive_compact_trigger)
+> +				continue;
+> +
+> +			pgdat->proactive_compact_trigger = true;
+> +			wake_up_interruptible(&pgdat->kcompactd_wait);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * This is the entry point for compacting all nodes via
+>   * /proc/sys/vm/compact_memory
+> @@ -2744,7 +2768,8 @@ void compaction_unregister_node(struct node *node)
+>  
+>  static inline bool kcompactd_work_requested(pg_data_t *pgdat)
+>  {
+> -	return pgdat->kcompactd_max_order > 0 || kthread_should_stop();
+> +	return pgdat->kcompactd_max_order > 0 || kthread_should_stop() ||
+> +		pgdat->proactive_compact_trigger;
+>  }
+>  
+>  static bool kcompactd_node_suitable(pg_data_t *pgdat)
+> @@ -2895,9 +2920,16 @@ static int kcompactd(void *p)
+>  	while (!kthread_should_stop()) {
+>  		unsigned long pflags;
+>  
+> +		/*
+> +		 * Avoid the unnecessary wakeup for proactive compaction
+> +		 * when it is disabled.
+> +		 */
+> +		if (!sysctl_compaction_proactiveness)
+> +			timeout = MAX_SCHEDULE_TIMEOUT;
+>  		trace_mm_compaction_kcompactd_sleep(pgdat->node_id);
+>  		if (wait_event_freezable_timeout(pgdat->kcompactd_wait,
+> -			kcompactd_work_requested(pgdat), timeout)) {
+> +			kcompactd_work_requested(pgdat), timeout) &&
+> +			!pgdat->proactive_compact_trigger) {
+>  
+>  			psi_memstall_enter(&pflags);
+>  			kcompactd_do_work(pgdat);
+> @@ -2932,6 +2964,8 @@ static int kcompactd(void *p)
+>  				timeout =
+>  				   default_timeout << COMPACT_MAX_DEFER_SHIFT;
+>  		}
+> +		if (unlikely(pgdat->proactive_compact_trigger))
+> +			pgdat->proactive_compact_trigger = false;
+>  	}
+>  
+>  	return 0;
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+> member of the Code Aurora Forum, hosted by The Linux Foundation
+> 
+> 
 
-I have applied your patch to my randconfig tree and built a few dozen
-kernels, don't see any regressions so far, but will let it run over night.
-
-      Arnd
