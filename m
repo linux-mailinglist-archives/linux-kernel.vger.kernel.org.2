@@ -2,136 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6616C3E0A25
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF683E0A2A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234765AbhHDVsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:48:55 -0400
-Received: from mga18.intel.com ([134.134.136.126]:45893 "EHLO mga18.intel.com"
+        id S234820AbhHDVvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:51:46 -0400
+Received: from mga09.intel.com ([134.134.136.24]:49152 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234653AbhHDVsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:48:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="201204390"
+        id S231342AbhHDVvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 17:51:45 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="214005994"
 X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="201204390"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 14:48:40 -0700
+   d="scan'208";a="214005994"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 14:51:30 -0700
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="671115571"
-Received: from cmalmber-mobl1.amr.corp.intel.com (HELO [10.212.219.120]) ([10.212.219.120])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 14:48:39 -0700
-Subject: Re: [PATCH v5 11/12] x86/tdx: Don't write CSTAR MSR on Intel
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-12-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQrdFLPaUnC8Q5bn@google.com>
- <4c1ee7b9-9941-fdc4-73f5-3d2ef0530556@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <2f2f0bfa-4881-81dc-65a3-1e5c7cbf85c0@intel.com>
-Date:   Wed, 4 Aug 2021 14:48:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="512245283"
+Received: from linux.intel.com ([10.54.29.200])
+  by FMSMGA003.fm.intel.com with ESMTP; 04 Aug 2021 14:51:29 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.53])
+        by linux.intel.com (Postfix) with ESMTP id E6CD458090B;
+        Wed,  4 Aug 2021 14:51:28 -0700 (PDT)
+Message-ID: <7308291f26a3f225fca069461d9ac26170f0ba66.camel@linux.intel.com>
+Subject: Re: [PATCH] platform/x86: intel_pmc_core: Prevent possibile overflow
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Evgeny Novikov <novikov@ispras.ru>, irenic.rajneesh@gmail.com,
+        gayatri.kammela@intel.com, hdegoede@redhat.com,
+        mgross@linux.intel.com, andy.shevchenko@gmail.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 04 Aug 2021 14:51:28 -0700
+In-Reply-To: <159dec07-9f05-3a92-8b7d-3d2f27448f70@ispras.ru>
+References: <facd47b64a5efa4e0e70cd29586173e44a8929c2.camel@linux.intel.com>
+         <20210804003039.359138-1-david.e.box@linux.intel.com>
+         <159dec07-9f05-3a92-8b7d-3d2f27448f70@ispras.ru>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <4c1ee7b9-9941-fdc4-73f5-3d2ef0530556@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/21 2:03 PM, Kuppuswamy, Sathyanarayanan wrote:
->> Is #GP the actual TDX-Module behavior?  If so, isn't that a
->> contradiction with
+Hi Evgeny,
+
+On Wed, 2021-08-04 at 13:48 +0300, Evgeny Novikov wrote:
+> Hi David,
 > 
-> No, #GP is triggered by guest.
-...
->> Regardless of #GP versus #VE, "Table 16.2 MSR Virtualization" needs
->> to state the actual behavior.
+> Your patch fixes the out of bound issue, but I have another concern 
+> regarding possible incomplete initialization of first 8 elements of
+> the 
+> lpm_priority array that is declared on the stack and is not
+> initialized, 
+> say, with zeroes. Yet again due to some invalid values coming from
+> the 
+> register, it is not guaranteed that something meaningful will be 
+> assigned for all first 8 elements of lpm_priority in the first cycle
+> in 
+> pmc_core_get_low_power_modes(). In the second cycle this function 
+> accesses all these elements from lpm_priority. Though there is test 
+> "!(BIT(mode) & lpm_en)", it can pass accidentally, thus some
+> unexpected 
+> values can be stored to "pmcdev->lpm_en_modes[i++]" and exposed
+> later.
+
+I sent out a v2 that validates the priority levels are within bounds
+and meaningful before reordering them to set the lpm_en_modes. Thanks.
+
+David
+
 > 
-> Even in this case, it will trigger #VE. But since CSTAR MSR is not 
-> supported, write to it will fail and leads to #VE fault.
+> 
+> Best regards,
+> Evgeny Novikov
+> 
+> 
+> On 04.08.2021 03:30, David E. Box wrote:
+> > Low Power Mode (LPM) priority is encoded in 4 bits. Yet, this value
+> > is used
+> > as an index to an array whose element size was less than 16,
+> > leading to the
+> > possibility of overflow should we read a larger than expected
+> > priority. Set
+> > the array size to 16 to prevent this.
+> > 
+> > Reported-by: Evgeny Novikov <novikov@ispras.ru>
+> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > ---
+> >   drivers/platform/x86/intel_pmc_core.c | 2 +-
+> >   drivers/platform/x86/intel_pmc_core.h | 1 +
+> >   2 files changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/platform/x86/intel_pmc_core.c
+> > b/drivers/platform/x86/intel_pmc_core.c
+> > index b0e486a6bdfb..2a761fe98277 100644
+> > --- a/drivers/platform/x86/intel_pmc_core.c
+> > +++ b/drivers/platform/x86/intel_pmc_core.c
+> > @@ -1451,7 +1451,7 @@ DEFINE_SHOW_ATTRIBUTE(pmc_core_pkgc);
+> >   
+> >   static void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev)
+> >   {
+> > -       u8 lpm_priority[LPM_MAX_NUM_MODES];
+> > +       u8 lpm_priority[LPM_MAX_PRI];
+> >         u32 lpm_en;
+> >         int mode, i, p;
+> >   
+> > diff --git a/drivers/platform/x86/intel_pmc_core.h
+> > b/drivers/platform/x86/intel_pmc_core.h
+> > index e8dae9c6c45f..b98c2b44c938 100644
+> > --- a/drivers/platform/x86/intel_pmc_core.h
+> > +++ b/drivers/platform/x86/intel_pmc_core.h
+> > @@ -190,6 +190,7 @@ enum ppfear_regs {
+> >   #define LPM_MAX_NUM_MODES                     8
+> >   #define GET_X2_COUNTER(v)                     ((v) >> 1)
+> >   #define LPM_STS_LATCH_MODE                    BIT(31)
+> > +#define LPM_MAX_PRI                            16      /* size of
+> > 4 bits */
+> >   
+> >   #define TGL_PMC_SLP_S0_RES_COUNTER_STEP               0x7A
+> >   #define TGL_PMC_LTR_THC0                      0x1C04
 
-Sathya, I think there might be a mixup of terminology here that's
-confusing.  I'm confused by this exchange.
 
-In general, we refer to hardware exceptions by their architecture names:
-#GP for general protection fault, #PF for page fault, #VE for
-Virtualization Exception.
-
-Those hardware exceptions are wired up to software handlers:
-#GP lands in asm_exc_general_protection
-#PF ends up in exc_page_fault
-#VE ends up in exc_virtualization_exception
-... and more of course
-
-But, to add to the confusion, the #VE handler
-(exc_virtualization_exception()) itself calls (or did once upon a time
-call) do_general_protection() when it can't handle something.
-do_general_protection() is (was?) *ALSO* called by the #GP handler.
-
-So, is that what you meant?  By "#GP is triggered by guest", you mean
-that a write to the CSTAR MSR and the resulting #VE will end up being
-handled in a way that is similar to how a #GP hardware exception would
-have been handled?
-
-If that's what you meant, I'm not _sure_ that's totally accurate.  Could
-you elaborate on this a bit?  It also would be really handy if you were
-able to adopt the terminology I talked about above.  It will really make
-things less confusing.
