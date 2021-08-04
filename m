@@ -2,87 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C8E3E06EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419893E06F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 19:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbhHDRtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 13:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235750AbhHDRtP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 13:49:15 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F1CC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 10:49:01 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id f11so3370126ioj.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 10:49:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V1tRU+J2S/v/0zLqyOv0CCFlndM1M4TGM5gcBC/vm+0=;
-        b=GlX1ALSN4f0vfkJKqRqMbUQdHO26ZIndx1otBchxqB0ghfcbd/ry7GBXKjawh6LIWZ
-         Y0LKv9YvdxMIgm1GutrA9vPOZa5j/4p8NgRRIbIJN6msB9MAuL/wQe5+Zw8C6+z9ORfY
-         ty1MSG2iCzaqyjZGoBNO1NYtP7B8+EHT1kwAUHg8xoEHFud5ADLTiLHbQwkfkX5v6jZs
-         lUIEK7fGCNTvXmfHyxkgdQyGiJAZZJb5xwel+GZdPmdx/Ztv4vPhsdD3IKLw6nziYcbD
-         ZWSLgbvd1TPx6+4jpiYu7kBGAX+VE3BKRpNqhExlThdUF63MjNN0VHzKzHvG9PceVPoY
-         cUug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V1tRU+J2S/v/0zLqyOv0CCFlndM1M4TGM5gcBC/vm+0=;
-        b=bkQ3Aff0/yvL3oSNyI4sZOZhr+ul0Bil/gHi/8HWiG8pNEDiQ8vg4k329wBm7qsmmz
-         0OcE3jyeGRaAWf7OOMzGF9mnOD9c0EX3Yc8i6qvdMPoVmWuyGc1Fyspv2H42jQbtS48R
-         JsC4GPqhsZ9tmeNV6tLyAt06OeqOU3fBLknVdHsWY0XqxTf/R/zIWl/NcV6JkQnxp0SS
-         ziKy9onRY6h5cKbrK4aaTg0nGnF+h5G25XOBI5L13eutAAapZExCuKo9fHJMIstLylr6
-         FzKBAcLhO5vMivePf5RHX9VLOjpAub8z3Y2J1jvVcDYjn8HjiHfTtKRdxJ4AWd5cUN43
-         vQtA==
-X-Gm-Message-State: AOAM533hgzgOIIu+4I7znc/ObfIk/jqpKW1QojzqPMaLhSlx5/eGl/kP
-        PNuNfx9+hpagEb+Mup9laNczagXcxw0nKTFEjN2UO2hl
-X-Google-Smtp-Source: ABdhPJxf/QWvlhpFK2bjBaeO5A6mZubKIwn02+vAWFzWu5gkqKjxoSMx71k0MjxdNXr+proX/TRhnN+3Q1HHYIBEWmc=
-X-Received: by 2002:a05:6602:2bc9:: with SMTP id s9mr445272iov.64.1628099340837;
- Wed, 04 Aug 2021 10:49:00 -0700 (PDT)
+        id S239902AbhHDRu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 13:50:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47162 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239814AbhHDRuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 13:50:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92AFC60E78;
+        Wed,  4 Aug 2021 17:50:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628099409;
+        bh=rdy4S4sZbf0DPHSO2IvenRzSVBGX7wTwS/OKrB9xBUA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WE7Hv3KlEeQhOHAUwL3Qci6y1hyarwe3I1B8vZR4KCzUt7sq1K1DbpnGTQrAch12h
+         aZ++PGv0vrhTdA74Uuou/Bd1rIGAfaBAZW73ptuYqNW1jGrm2mxTXlqw7vaISvjti7
+         8Ei4cHVjE67xKVFLOZhsHeu5j0BIQ+UV4OQdfTaoaldk6IxPhgfCQvP+dJ94qTjepP
+         0roN6zYEjcOLMYo2hlOwKsHLMj7Ur4tVcjrKKUWQiRk+27D2MNVIf2bOmYIzLzWGC2
+         1kR8USxRj8A+J4hY8cRxLwgMv/enSPiuc4qDFYNcfA/SXzSwrOWB0cupo11zGU97MR
+         7Nn4ikOm8gwMg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Tree for Aug 4
+Date:   Wed,  4 Aug 2021 18:49:53 +0100
+Message-Id: <20210804174953.16143-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210802202326.1817503-1-ndesaulniers@google.com>
- <1847b77a-093a-ce59-5c3b-1a21d3bb66c7@kernel.org> <CAKwvOd=F_OexmHctcW6x7d6up8+zOb5-iLWU9-Ji1dv9-S3F+A@mail.gmail.com>
-In-Reply-To: <CAKwvOd=F_OexmHctcW6x7d6up8+zOb5-iLWU9-Ji1dv9-S3F+A@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 4 Aug 2021 19:48:49 +0200
-Message-ID: <CANiq72mGnjy50kd4gMrOsWwmnM3YFp01qO5JzSyZyPGwCL0CwA@mail.gmail.com>
-Subject: Re: [PATCH v2] compiler_attributes.h: move __compiletime_{error|warning}
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Will Deacon <will@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Tom Stellard <tstellar@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 7:44 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> Ah, I forgot the release/13.x branch was cut before I sent this.  I'd
-> rather this feature "ride the trains" so that it gets more soak time.
->
-> Miguel, would you like a v3 updating the comment above (and the
-> comment below) to s/13.0/14.0/g, or can you simply fold that change
-> into this one when applying it?
+Hi all,
 
-I can do the replacements on my side, no worries!
+Changes since 20210803:
 
-Cheers,
-Miguel
+The mhi tree gained two conflicts with the net tree.
+
+Non-merge commits (relative to Linus' tree): 4709
+ 5212 files changed, 333430 insertions(+), 133424 deletions(-)
+
+----------------------------------------------------------------------------
+
+I have created today's linux-next tree at
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+are tracking the linux-next tree using git, you should not use "git pull"
+to do so as that will try to merge the new linux-next release with the
+old one.  You should use "git fetch" and checkout or reset to the new
+master.
+
+You can see which trees have been included by looking in the Next/Trees
+file in the source.  There are also quilt-import.log and merge.log
+files in the Next directory.  Between each merge, the tree was built
+with an arm64 defconfig, an allmodconfig for x86_64, a
+multi_v7_defconfig for arm and a native build of tools/perf. After
+the final fixups (if any), I do an x86_64 modules_install followed by
+builds for x86_64 allnoconfig, arm64 allnoconfig and i386, and htmldocs.
+
+Below is a summary of the state of the merge.
+
+I am currently merging 333 trees (counting Linus' and 90 trees of bug
+fix patches pending for the current merge release).
+
+Stats about the size of the tree over time can be seen at
+http://neuling.org/linux-next-size.html .
+
+Status of my local build tests will be at
+http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+advice about cross compilers/configs that work, we are always open to add
+more builds.
+
+Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+Gortmaker for triage and bug fixes.
