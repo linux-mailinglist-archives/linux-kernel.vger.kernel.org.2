@@ -2,195 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588AD3E060D
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3A23E060F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 18:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239533AbhHDQjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 12:39:45 -0400
-Received: from mail-bn7nam10on2108.outbound.protection.outlook.com ([40.107.92.108]:20193
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239264AbhHDQjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 12:39:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gjQ8C8Ge2tcZcqtjZMhFiQCHh4l0yihLcdO+k06sG3VealJsG6OZ2x7cdx0KoW2TvOlJPHWEupwDyxStu/htynsY3S9zuOSwdQGiY2knxrP8QZKs6qoDzUuMbABBli6ox2fqdEXzObev1a1UYJ/MEopQd5Mm7gBJdVQi3gd0IGo9d8b5T6snUEHvwwfDaZZzhEc9Myuv75gGtmnkRP66pRXc+Ag5efRks/XaQgkeOe5DQaI77t4ZNd8ihbBdC1SG+mZpPl3pro3k4wqT+gMJNF0+VvGE0kJsOComgJo016okHkbUp6uDnxHmG7Q1Z2FNVYLqkvUX+5OCRfV6+hixXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PuYat74pjYc+38w/rrUCed12bQeT2QfB4OmsbdBRfbY=;
- b=GDSgPOYNnuwtCvVdRRjXy7D93QsnhA0BB0xAdKXy9TBNM+YpNFUzlX6g1+FDpfj1U/WChPLwg1idcQ1LFDYihxdvwfeiA6dQtffKcFnZrFuqvNZXHaMcnBGfX51STBwSP2nxjm3gH7+oFzn4CYr8rFSz6L6O5Tsi7gOF5QJY2fzUB66Yp013lOBRaXQ4CHGTE4Ox2//MdPJK5CCjboN2cQuvKUEDusFJ5ERZp9m0r71/jKM/GAJJpV2iCrQvbNUYHnKgIDaBt4oZsRZ850UkhlSGRbakJHYccM+cJKl1DQwTg0KQ4X/Q1WqLj6XLi3Uk2up3NS4Vh0sPRWMABM7Bcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PuYat74pjYc+38w/rrUCed12bQeT2QfB4OmsbdBRfbY=;
- b=hJ4eq4hI1zEG7rf6/Vj9Y/mp57/l3+eiW1ET5krjl9q5REwX9cx7PBtY4JZyXaqdZwBEnsidyiaA7LiJOtAX6lt922YBhD/6phF1JOidmgIyLset3TUYarZZ999rQUGfHJiM5FpAFXl2rCBsEmHjYacSK98vXLs0e3ALSAn4+dU=
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
- by CO1PR21MB1316.namprd21.prod.outlook.com (2603:10b6:303:153::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.1; Wed, 4 Aug
- 2021 16:39:03 +0000
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::e8f7:b582:9e2d:ba55]) by MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::e8f7:b582:9e2d:ba55%2]) with mapi id 15.20.4415.005; Wed, 4 Aug 2021
- 16:39:03 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     "will@kernel.org" <will@kernel.org>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "ardb@kernel.org" <ardb@kernel.org>
-Subject: RE: [PATCH v12 0/5] Enable Linux guests on Hyper-V on ARM64
-Thread-Topic: [PATCH v12 0/5] Enable Linux guests on Hyper-V on ARM64
-Thread-Index: AQHXiUjTly44W5NXSUiYnV60OWzMuKtjiD2AgAAB+tA=
-Date:   Wed, 4 Aug 2021 16:39:02 +0000
-Message-ID: <MWHPR21MB159317B1D47ED60C73B47021D7F19@MWHPR21MB1593.namprd21.prod.outlook.com>
-References: <1628092359-61351-1-git-send-email-mikelley@microsoft.com>
- <20210804162555.GD4857@arm.com>
-In-Reply-To: <20210804162555.GD4857@arm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=e9af289a-30bc-4dcc-831e-c7dfb5d976de;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-08-04T16:33:01Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 51c30b73-777c-4d1b-0ac7-08d957665e50
-x-ms-traffictypediagnostic: CO1PR21MB1316:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <CO1PR21MB131600D52546D2C4E53A18C8D7F19@CO1PR21MB1316.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: EaiYvDOeBfYT/ChrjyztSlkw4xlRg3heQhY7AhqR5fIpdZUV3vs9w8WbTAZShN1odF/p0y/OtRTotJ9Rg/BeDC5XnB23/MMwhKbw7f0GBhqJ4l7wXFkfreuppgUbRo3WR64FeVTot6mDt4pqHcGbFs2SzHLHtBzVuC7a4x+MGynAiLIEzGNb8xTg9ju660glSqIqMs8Tnmt7wlfdeq5cr2N4tOTnhQozBv52Gh45Ohl6GjUY92rR7ZEhUpZs2HSW2wsgsd9zl5BuYRfAYkRUo5PNVc9zMX8vkzcIEZoO0lanvyikEt08a6fUT5jNNB+Mu+fWJrxKrYNiMTLxyrEo0eheeIz5d3rBhoy/jvRhxHqgB790x6TrH+jk5nxlwy4OCyws032qypBy4RBY5fnARXJBps1orHc0nKNSNrv4m5Hao6g0PMG5ds4ViAgEg0AqEB1hdp0d2uGaPNw9YKUX25TRy4z3sBuENZphdwE4+1DAIt5nl7Vet1igkbAA95GpDkM2AJKyoY/Bvl2XBxkgelfuI8uagocFQQkdMMfq8uwwrMizTzeDD9+sxo6B/r2nbJvDTjRmqJP2ukcHls04xzK6jYbArPdABQXkCLjNIYeGwaJiNUeB12Gxc7b8nNsG/BoPkUJrFzJWT0pPTbEMGGpq4pczW8MHrek0tBbQo/nnhYGh6L1X8A94HYGjpIR/8h45E82u37DMTxkNXGsX2Lakd4aQbWOhufLgoE48KLsckHVdSsF+h9NP+3fOgFkcXcFkb6s2GjYhG/zr3RpI+2/RwV8YiEX2tyHU4Z+1Ub0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(71200400001)(10290500003)(64756008)(26005)(76116006)(66446008)(66946007)(508600001)(66476007)(7696005)(33656002)(4326008)(82960400001)(186003)(9686003)(66556008)(55016002)(5660300002)(6506007)(52536014)(8936002)(8676002)(8990500004)(86362001)(122000001)(38070700005)(6916009)(316002)(2906002)(82950400001)(38100700002)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?oebF4uRyInU4wPs2BjKJk9lN3nqXKM7Xd9V8G8Qk0ZebO7fpPLqOsVjbl7tD?=
- =?us-ascii?Q?XWrpoGPdt6fjej28F59MaVTV7Pmvfqc58li6SIt02fw9yzoV8FO202O1hwTr?=
- =?us-ascii?Q?yUu6IESd+/QRWdYrnkd6P3UURumxaCDQs+fiiMNp0LznC+GxmGa1uX0l054d?=
- =?us-ascii?Q?OxINs3PP/nyYCWJtzipb6TvF3TLjDB0yJKyG4col4EIT8PG5jfA2YFUfp3dR?=
- =?us-ascii?Q?kJ8umuLVrDLk8WIRA8fNmSkcuW7U48hoVBumzkQdBURAGq3Ct18iciv8LR4Z?=
- =?us-ascii?Q?u3P2HD+EBtHjXNjishcIjk7iP2M4DLYGj4tUf9XXeosWcHavISDejI5sZ0qe?=
- =?us-ascii?Q?d9Zu4r0Dc+mY0qo0eXr/74ZtjhDEvjiQusFvFndKXw0klTlIPsIXj5yx4ufJ?=
- =?us-ascii?Q?hbJrDe7otQP9n735SN+EzqY+z0ycCS8L3oHI4Lf9BnPn40CE0B90DDTtfjvw?=
- =?us-ascii?Q?M/+pcK8Ny5vJGhBpb0/mRKE8PifnP58nvBTWpQYddEJSi0lLp+La1Jyk9Z6f?=
- =?us-ascii?Q?utk0ZGSJ0xQ9DOxkkVtxNKakZPlfG8mk1xFAG4NuGgcJxAYr8N55LuXUDK8J?=
- =?us-ascii?Q?wMa1lkiBw++3Go7WzG+8Xque+h7ZIHNQs5pyVbQSQieN25Yfr2s21IcJpu8p?=
- =?us-ascii?Q?vpTrCL1+lE0YU4uekVoxCimitAlPqhCUn7kcs69pYS38xrOB3J/J7UhEBm+Q?=
- =?us-ascii?Q?B+ZJG/gdxci0qMzSklqreNFEfNth0D7vuyKJGxGKILuKOiv/eaRgG+uu27iF?=
- =?us-ascii?Q?0v+5EWsamxI3m499n81/W2L7WhPJUHi7c93YDZzX3YFxxUpUUNuw6B9XV6bT?=
- =?us-ascii?Q?APjLWR8z+7XLZTJgH3Ktx0O+Voq1xHlY+hdXh6tTXlnf5jAV9IJa9i5Ewx7R?=
- =?us-ascii?Q?T9EY6weXuEzBaNMKeLCOltifqeCe0dNh6uTbLxwdhsozEyeI7uvx1c6ky2p0?=
- =?us-ascii?Q?2jD4x0nvNFr+FeAYW2qOvrTD29t9bI4+iaVJrgmx4qfhHSwr5dS0mjVBhDLS?=
- =?us-ascii?Q?8NtZelTmEWWP7fojtpUGirnlOF4QLxHWiS3DPwblAcgAXTm62ZVD9dvPEnf1?=
- =?us-ascii?Q?uG9S8Qr8u2iaO9ccklgJ1YfnXjrY62hG0CSteeqZoBFD8CwzJ7Yv+4jg5edj?=
- =?us-ascii?Q?xyai1ymnxQq2aKbcmWnrWmfhP6jNjeXOX4dR4qOyjjYDQ4mT6qjmYYKvTeio?=
- =?us-ascii?Q?hICcqm3SMuByu9ZTmsYrVRmc9tOmXTl479J02O98GOZ1wMdg7w2v5bw6z6c0?=
- =?us-ascii?Q?Td4NCsdIMEq4xSuoOZa9dh+7JFO4brfE+F4J72MYEXYls6/Fx2WQAk8WUvYm?=
- =?us-ascii?Q?fTJfCZ5+DCI9kyiofMERT4Ut?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S239299AbhHDQkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 12:40:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57834 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229913AbhHDQkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 12:40:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3234C60243;
+        Wed,  4 Aug 2021 16:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628095209;
+        bh=3Kyek9w1qA9n8pYemGgc9Ahby2q7ijSKgZlPqfiGF/U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=hn3gmPbb0FkIk+XwMti9fqPhS8tVZL2kytiRkMRFDeMsDfj12vchnRhYyq2wedQ7m
+         o506pThpHjErU1LUzA/TEa/0Wyc6KEVALg9o14eLHygbsZQpvMKLasbQUqzdBOAfxj
+         6uYAM7ixsDy6aCwz+NnScBCJ0JzT+jPdWmavuFrud8K3T4AQjgijaawx3y2bNjsIaq
+         hG/EQMPVJuLtoMGDopuv1RwG7DuABn6T4Yu8FR5u1f3JTgPoiCn/9/z+3mdm9jDD13
+         axQe//zrviVZCFUeq07aaEmmqy3QH9lX/+Woz8qJcYvRW1reCg3R1FIz3kHxZN01qQ
+         dPYSgLxMzdMQw==
+Date:   Wed, 4 Aug 2021 11:40:07 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sergio =?iso-8859-1?Q?Migu=E9ns?= Iglesias <lonyelon@gmail.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergio =?iso-8859-1?Q?Migu=E9ns?= Iglesias <sergio@lony.xyz>
+Subject: Re: [PATCH] pci: probe: Fixed code style
+Message-ID: <20210804164007.GA1648919@bjorn-Precision-5520>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 51c30b73-777c-4d1b-0ac7-08d957665e50
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Aug 2021 16:39:02.7012
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: N2O32SS9yf+grSzT2NbUxNI7YLpoVGWtWZxc9yudRDugtaS1L8aRu456Dr7fzrtPjj6BCLGcdNHDKLKP5gMFLzY5r3cgaiweabHvEuU8haU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR21MB1316
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210804144219.791004-1-sergio@lony.xyz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Catalin Marinas <catalin.marinas@arm.com> Sent: Wednesday, August 4, =
-2021 9:26 AM
->=20
-> On Wed, Aug 04, 2021 at 08:52:34AM -0700, Michael Kelley wrote:
-> > This series enables Linux guests running on Hyper-V on ARM64
-> > hardware. New ARM64-specific code in arch/arm64/hyperv initializes
-> > Hyper-V and its hypercall mechanism.  Existing architecture
-> > independent drivers for Hyper-V's VMbus and synthetic devices just
-> > work when built for ARM64. Hyper-V code is built and included in
-> > the image and modules only if CONFIG_HYPERV is enabled.
-> [...]
-> > Hyper-V on ARM64 runs with a 4 Kbyte page size, but allows guests
-> > with 4K/16K/64K page size. Linux guests with this patch series
-> > work with all three supported ARM64 page sizes.
-> >
-> > The Hyper-V vPCI driver at drivers/pci/host/pci-hyperv.c has
-> > x86/x64-specific code and is not being built for ARM64. Enabling
-> > Hyper-V vPCI devices on ARM64 is in progress via a separate set
-> > of patches.
-> >
-> > This patch set is based on the linux-next20210720 code tree.
->=20
-> Is it possible to rebase this on top of -rc3? Are there any
-> dependencies or do you plan to upstream this via a different tree?
->=20
+On Wed, Aug 04, 2021 at 04:42:19PM +0200, Sergio Miguéns Iglesias wrote:
+> Fixed the code style for "drivers/pci/probe.c".
 
-There are dependencies on changes in the hyperv-next tree
-(https://git.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git/)
-which is why you are getting the build errors.  The changes
-common-ized some code between the x86 side and previous
-versions of this patch set (and fixed the #include nmi.h problem).=20
-So the code would most naturally go upstream through that tree.
+Thanks for looking at this.
 
-Michael
+Read https://chris.beams.io/posts/git-commit/ and
+https://lore.kernel.org/r/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
 
-
-> It applies cleanly but it doesn't build for me:
->=20
-> In file included from arch/arm64/include/asm/mshyperv.h:52,
->                  from arch/arm64/hyperv/hv_core.c:19:
-> include/asm-generic/mshyperv.h: In function 'hv_do_rep_hypercall':
-> include/asm-generic/mshyperv.h:86:3: error: implicit declaration of funct=
-ion 'touch_nmi_watchdog' [-Werror=3Dimplicit-
-> function-declaration]
->    86 |   touch_nmi_watchdog();
->       |   ^~~~~~~~~~~~~~~~~~
->=20
-> A quick fix for the above was to include nmi.h in mshyperv.h.
->=20
-> However, the below I can't fix since there's no trace of
-> hv_common_init() on top of 5.14-rc3:
->=20
-> arch/arm64/hyperv/mshyperv.c: In function 'hyperv_init':
-> arch/arm64/hyperv/mshyperv.c:66:8: error: implicit declaration of functio=
-n 'hv_common_init' [-Werror=3Dimplicit-function-
-> declaration]
->    66 |  ret =3D hv_common_init();
->       |        ^~~~~~~~~~~~~~
-> arch/arm64/hyperv/mshyperv.c:71:5: error: 'hv_common_cpu_init' undeclared=
- (first use in this function)
->    71 |     hv_common_cpu_init, hv_common_cpu_die);
->       |     ^~~~~~~~~~~~~~~~~~
-> arch/arm64/hyperv/mshyperv.c:71:5: note: each undeclared identifier is re=
-ported only once for each function it appears in
-> arch/arm64/hyperv/mshyperv.c:71:25: error: 'hv_common_cpu_die' undeclared=
- (first use in this function)
->    71 |     hv_common_cpu_init, hv_common_cpu_die);
->       |                         ^~~~~~~~~~~~~~~~~
-> arch/arm64/hyperv/mshyperv.c:73:3: error: implicit declaration of functio=
-n 'hv_common_free' [-Werror=3Dimplicit-function-
-> declaration]
->    73 |   hv_common_free();
->       |   ^~~~~~~~~~~~~~
->=20
-> --
-> Catalin
+> Signed-off-by: Sergio Miguéns Iglesias <sergio@lony.xyz>
+> ---
+>  drivers/pci/probe.c | 43 +++++++++++++++++++++++++++----------------
+>  1 file changed, 27 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 79177ac37880..b584822868d1 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -110,6 +110,7 @@ postcore_initcall(pcibus_class_init);
+>  static u64 pci_size(u64 base, u64 maxbase, u64 mask)
+>  {
+>  	u64 size = mask & maxbase;	/* Find the significant bits */
+> +
+>  	if (!size)
+>  		return 0;
+>  
+> @@ -331,12 +332,14 @@ static void pci_read_bases(struct pci_dev *dev, unsigned int howmany, int rom)
+>  
+>  	for (pos = 0; pos < howmany; pos++) {
+>  		struct resource *res = &dev->resource[pos];
+> +
+>  		reg = PCI_BASE_ADDRESS_0 + (pos << 2);
+>  		pos += __pci_read_base(dev, pci_bar_unknown, res, reg);
+>  	}
+>  
+>  	if (rom) {
+>  		struct resource *res = &dev->resource[PCI_ROM_RESOURCE];
+> +
+>  		dev->rom_base_reg = rom;
+>  		res->flags = IORESOURCE_MEM | IORESOURCE_PREFETCH |
+>  				IORESOURCE_READONLY | IORESOURCE_SIZEALIGN;
+> @@ -1376,6 +1379,7 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
+>  			 */
+>  			for (i = 0; i < CARDBUS_RESERVE_BUSNR; i++) {
+>  				struct pci_bus *parent = bus;
+> +
+>  				if (pci_find_bus(pci_domain_nr(bus),
+>  							max+i+1))
+>  					break;
+> @@ -1880,6 +1884,7 @@ int pci_setup_device(struct pci_dev *dev)
+>  		 */
+>  		if (class == PCI_CLASS_STORAGE_IDE) {
+>  			u8 progif;
+> +
+>  			pci_read_config_byte(dev, PCI_CLASS_PROG, &progif);
+>  			if ((progif & 1) == 0) {
+>  				region.start = 0x1F0;
+> @@ -1948,7 +1953,7 @@ int pci_setup_device(struct pci_dev *dev)
+>  			dev->hdr_type);
+>  		return -EIO;
+>  
+> -	bad:
+> +bad:
+>  		pci_err(dev, "ignoring class %#08x (doesn't match header type %02x)\n",
+>  			dev->class, dev->hdr_type);
+>  		dev->class = PCI_CLASS_NOT_DEFINED << 8;
+> @@ -2155,9 +2160,9 @@ static void pci_configure_ltr(struct pci_dev *dev)
+>  	 * Complex and all intermediate Switches indicate support for LTR.
+>  	 * PCIe r4.0, sec 6.18.
+>  	 */
+> -	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+> -	    ((bridge = pci_upstream_bridge(dev)) &&
+> -	      bridge->ltr_path)) {
+> +	bridge = pci_upstream_bridge(dev);
+> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT || (bridge &&
+> +		bridge->ltr_path)) {
+>  		pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
+>  					 PCI_EXP_DEVCTL2_LTR_EN);
+>  		dev->ltr_path = 1;
+> @@ -2543,11 +2548,11 @@ struct pci_dev *pci_scan_single_device(struct pci_bus *bus, int devfn)
+>  }
+>  EXPORT_SYMBOL(pci_scan_single_device);
+>  
+> -static unsigned next_fn(struct pci_bus *bus, struct pci_dev *dev, unsigned fn)
+> +static unsigned int next_fn(struct pci_bus *bus, struct pci_dev *dev, unsigned int fn)
+>  {
+>  	int pos;
+>  	u16 cap = 0;
+> -	unsigned next_fn;
+> +	unsigned int next_fn;
+>  
+>  	if (pci_ari_enabled(bus)) {
+>  		if (!dev)
+> @@ -2606,7 +2611,7 @@ static int only_one_child(struct pci_bus *bus)
+>   */
+>  int pci_scan_slot(struct pci_bus *bus, int devfn)
+>  {
+> -	unsigned fn, nr = 0;
+> +	unsigned int fn, nr = 0;
+>  	struct pci_dev *dev;
+>  
+>  	if (only_one_child(bus) && (devfn > 0))
+> @@ -3190,11 +3195,11 @@ struct pci_bus *pci_scan_bus(int bus, struct pci_ops *ops,
+>  	pci_add_resource(&resources, &iomem_resource);
+>  	pci_add_resource(&resources, &busn_resource);
+>  	b = pci_create_root_bus(NULL, bus, ops, sysdata, &resources);
+> -	if (b) {
+> +	if (b)
+>  		pci_scan_child_bus(b);
+> -	} else {
+> +	else
+>  		pci_free_resource_list(&resources);
+> -	}
+> +
+>  	return b;
+>  }
+>  EXPORT_SYMBOL(pci_scan_bus);
+> @@ -3269,14 +3274,20 @@ static int __init pci_sort_bf_cmp(const struct device *d_a,
+>  	const struct pci_dev *a = to_pci_dev(d_a);
+>  	const struct pci_dev *b = to_pci_dev(d_b);
+>  
+> -	if      (pci_domain_nr(a->bus) < pci_domain_nr(b->bus)) return -1;
+> -	else if (pci_domain_nr(a->bus) > pci_domain_nr(b->bus)) return  1;
+> +	if (pci_domain_nr(a->bus) < pci_domain_nr(b->bus))
+> +		return -1;
+> +	else if (pci_domain_nr(a->bus) > pci_domain_nr(b->bus))
+> +		return  1;
+>  
+> -	if      (a->bus->number < b->bus->number) return -1;
+> -	else if (a->bus->number > b->bus->number) return  1;
+> +	if (a->bus->number < b->bus->number)
+> +		return -1;
+> +	else if (a->bus->number > b->bus->number)
+> +		return  1;
+>  
+> -	if      (a->devfn < b->devfn) return -1;
+> -	else if (a->devfn > b->devfn) return  1;
+> +	if (a->devfn < b->devfn)
+> +		return -1;
+> +	else if (a->devfn > b->devfn)
+> +		return  1;
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.32.0
+> 
