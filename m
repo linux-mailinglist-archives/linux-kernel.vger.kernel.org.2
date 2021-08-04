@@ -2,196 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EE83DFC81
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3043DFC86
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236180AbhHDILj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:11:39 -0400
-Received: from mout.gmx.net ([212.227.17.20]:55529 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236102AbhHDILi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:11:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628064669;
-        bh=YvEcXrHPBfYzp2tdYOHNvNnbANlyDTHvf2AxPW3et7M=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Fy/Egp/3GARYqkIFltMKbJNDvxrQxAdZPd/FG+EPOeOPvcj5lDTc+2cyPjQ+rPcAh
-         F+DRAdGc3p50UCEcZ84vi68k7TA2saYSj0wA0jf/pWtxOHfcLED1ILm3LKUvFlHQe+
-         sJoNVLOemd4yH7Qax7tBT/ryvWmflmFxrIgLH+8s=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [217.61.147.17] ([217.61.147.17]) by web-mail.gmx.net
- (3c-app-gmx-bap67.server.lan [172.19.172.67]) (via HTTP); Wed, 4 Aug 2021
- 10:11:08 +0200
+        id S236206AbhHDIMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:12:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236142AbhHDIMA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 04:12:00 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AFCC0613D5;
+        Wed,  4 Aug 2021 01:11:47 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id z18so2777662ybg.8;
+        Wed, 04 Aug 2021 01:11:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jPCIyaMUeP4YlX+eHOCe2Hk3dvS6J1yRREr3ZpK8PqE=;
+        b=mBZXRCJ9MZQM0MB8te1m5lfQcuzIgUJPb7Xs16M5wRmELRwp69N0rffDJeMYpwoJSx
+         VBM2jPH21DzzbruKOFYOTj4bKoPSSf8vJM0U4XZXPhpBThjCPGkzkiwUy1Q8QJBBVpC0
+         zPTZx8HLYHgQPvyFr8UIXLql7GnJMC9WuMtoHRkE/QT6lC1h0Lhwrz77ncevHQ8BlZ63
+         PvpTOtoG5SPZnOqNsRZkq+nwd5ohsAVeFnQQsPFOwJ+HwB28SaS+gYx8FHLy6TEGt4Jo
+         AvSqmPOr7CKNEy0JjDP+eBvGiAmKGyngDilCjhDGX6JJPoYj4Zge1ChrJmnf3kvGi/lr
+         nagA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jPCIyaMUeP4YlX+eHOCe2Hk3dvS6J1yRREr3ZpK8PqE=;
+        b=ORfUHKGfyEc9EVIdbEaqg0Y6ZlxHuwy8cdg6Klf3Z2zZkOGQbJjm2b5trw45/TGB6V
+         3F4PhFo1tqOfhdNXbV8B7rquytD3K/NdGRNY93qcQj5aK7qYY/WJqqdCfQOj/wM1Bsqv
+         qyGWOHQnkMhTLxSmNapS7vdVsQy3sge8v9QcHNbmGW+0xy3MYX+EEsTk8N9hDhmM9Jto
+         K40HINA9brFh1QE+r59k9mD+GviWpuNIFqhMTQ+UYk9B0RUfsd1w1CaqWi1UKlRHOa/B
+         Mib3W39KQzwpITBw8J0ko1fUFxO9ylpl10FNjFJiKX4BZyCxPOxALYH21QyXfg9IaDvj
+         05aQ==
+X-Gm-Message-State: AOAM5336cXm0gwlIPxoVFN6t0/P7KLkOioy1/WoS2ZEwIuD7pjEZg3Fu
+        gr6pCkymK2XuhfHMr0ZXc0IajqozokJRwW5VEVI=
+X-Google-Smtp-Source: ABdhPJw64BR7H6H44pztlxskpaS2F1m6uWL8/z1U+9L2hJwCQ7r3CCvgZV8iT0vTOh9BsbeOkyUYAKMiJMIJWlqew6Q=
+X-Received: by 2002:a25:e404:: with SMTP id b4mr34296150ybh.426.1628064706525;
+ Wed, 04 Aug 2021 01:11:46 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <trinity-8910c659-6e4e-4979-a6d0-eaf5b8bee213-1628064668849@3c-app-gmx-bap67>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Sungbo Eo <mans0n@gorani.run>
-Cc:     linux-mediatek@lists.infradead.org,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+References: <20210727133022.634-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210727133022.634-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210804075855.2vjvfb67kufiibqx@pengutronix.de>
+In-Reply-To: <20210804075855.2vjvfb67kufiibqx@pengutronix.de>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Wed, 4 Aug 2021 09:11:20 +0100
+Message-ID: <CA+V-a8tWMVfnS3PWeOSqtDddO-M6zDS+WFpUSjv=2MgUV56Qvg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] arm64: dts: renesas: r9a07g044: Add CANFD node
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Min Guo <min.guo@mediatek.com>, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Aw: Re:  [PATCH 0/2] Add MUSB for MT7623
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 4 Aug 2021 10:11:08 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <f3607979-ea50-fc1c-0afe-a55881aa24f0@gorani.run>
-References: <20210803151320.71531-1-mans0n@gorani.run>
- <trinity-0f9449b8-5114-46e5-9a4f-00b62155a938-1628010948338@3c-app-gmx-bs54>
- <f3607979-ea50-fc1c-0afe-a55881aa24f0@gorani.run>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:KDWodkr75906Bt6g62XmHQa9PoCrBrWNqNZQVvojYAf8r83q+NlJOQdWStEWgAwcp5Xsk
- UBrdYAoLIWiKBUNCkshM22OkDenDDKkXTdCGpNPHsRpT4Wx7NpCSfylBw3DGvsJI4iQBxUx3rFzg
- r5tr9NAliXV9Oz3JwDUN075FmTSILzA/ad/BSHs/OMYst7FzkqUB276NgPqNvZN4UtUbsXp71uhR
- cUGSp3BaI8LIYuB9lmspvlNrBFy6dCjcxg7VSUEUz63oilokVa9noH32eIIZ0jjs7CTnsx8PUGhj
- hY=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2BPuurnNY30=:oEguZKWjzcVKUemXYbFOBL
- qPt7dgNXyh4CiAnPe58jGKgbqpjJHmKk28h6ywQZiTkGw/2ijp0pXmY3Pd9BWnsNcODMOGcmW
- 0+rkY3QRC7its2+Zh50j7bTrpvK5vu+mbqy334oM/S1rx9s/SMqRqkTFs16GwwSyAcaz17Ev1
- 6K8Jkcy69W4GP/r7n9QtSinrHqqIY40ybdeVRYQVAa7w0qh+H7wwx9FEtd6X7+yUcGC6TryrX
- 3qYLxMwyEz2svfG73RII2ks1B+7du3W8H+/66i50EBWSq3PJRaWoxSrh3Kqphpeduby2MfWqt
- 7DiEDvbOKEQTzkqVLchJ3Aywuh1PPhLjTEMwAeTdsK4tjAM3NQqakUYWYITPpLTE2jfh5rR8e
- ovZmTOANBXXjFgFrJdLJznQvEaQ9rf4SmDel2dqrz57ODup77jFvX+F0BrxuU0wqANp2MYv5y
- ZtyzuyYRcGBkMCA0CfNSJ2xxDQRGEJ3chwGKAkNLVcs+HnfldVerRPecgj+RWQRptCoSsIWGD
- d5s2llHpqJrhGqrQM/Aq5jSihhW/6iARd/AwdW3tanMQQ6xksGpZIBqU8Aem/0B/dNOg5JuAF
- Nk64jvRBiF0/njrbEZsohO5rqb7nxWqX7bTV3+WMmfv7cxTElsURxCnLhpQ+tigo47vvKEbkW
- ATKEkpKzvu2k9ldzczf36Myc97SZVe07nMa6FoCnUSG4V/BQVfIQvTFSsAewqF7e2qWTQl3EX
- cROVamWwDr/Gt7pSJf7OdssHxUhfahXxi8Fy04IkvtkOvY5Rz8MAhRz/TnBhmZjLlvSo5zyVe
- o9TO4Xg4FX/pEc/f4+YrT/mtN36ZvBZFv3SqVaLjQrRUNjmp8k=
-Content-Transfer-Encoding: quoted-printable
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Gesendet: Mittwoch, 04. August 2021 um 02:14 Uhr
-> Von: "Sungbo Eo" <mans0n@gorani.run>
+Hi Marc,
 
-> > thanks for working on it. do both otg-roles (host/client) work on your=
- device?
+On Wed, Aug 4, 2021 at 8:59 AM Marc Kleine-Budde <mkl@pengutronix.de> wrote:
 >
-> Yes, I tested it with host mode and device mode.
-> I also tried manual role-switch via sysfs and it worked with some prior =
-setup.
-> Note that my device has a USB Type-A connector and not micro B, so I can=
-'t help with id pin stuff...
-
-> > but usb-stick is not powered (led of the stick is off) and of course i=
- see no mass-storage device.
->
-> I observed the same symptom (but different error log).
->
-> [    2.722253] musb-hdrc musb-hdrc.1.auto: VBUS_ERROR in a_idle (80, <Se=
-ssEnd), retry #0, port1 00000104
->
-> In my case adding `regulator-always-on;` in the regulator node solved th=
-e problem temporarily.
-> But after that I switched to relying on pinctrl.
-
-i've found out that usb-stick is powered if i first connect otg-cable and =
-then the stick to the cable...regulator always on does not change anything=
- for me (only supporess "disabling vusb" message on boot). traceback on po=
-weroff is still there.
-
-role switch happen on inserting stick into cable, not before (insert cable=
- into r2) as i expected.
-
-need to figure out which CONFIG options i need to get USB-Stick as mass st=
-orage working.
-
-i wonder why it works on your board without the vusb/connector subnodes
-
-> +&pio {
-> +       musb_pins: musb {
-> +               pins-musb {
-> +                       pinmux =3D <MT7623_PIN_237_EXT_SDIO2_FUNC_DRV_VB=
-US>;
-> +               };
-> +       };
-> +};
-
-imho it's the same gpio used for regulator, right? whats the difference?
-i tried this instead of the regulator-node =3D> not powered (cable first, =
-then stick).
-
-> +&usb3 {
-> +       pinctrl-names =3D "default";
-> +       pinctrl-0 =3D <&musb_pins>;
-> +       status =3D "okay";
-> +
-> +       dr_mode =3D "host";
-> +
-> +       connector {
-> +               compatible =3D "usb-a-connector";
-> +       };
-> +};
->
-> root@OpenWrt:~# lsusb -t
-> /:  Bus 03.Port 1: Dev 1, Class=3Droot_hub, Driver=3Dmusb-hdrc/1p, 480M
->     |__ Port 1: Dev 2, If 0, Class=3D, Driver=3Dusb-storage, 480M
-> /:  Bus 02.Port 1: Dev 1, Class=3Droot_hub, Driver=3Dxhci-mtk/1p, 5000M
-> /:  Bus 01.Port 1: Dev 1, Class=3Droot_hub, Driver=3Dxhci-mtk/1p, 480M
->
-> I tested device mode with legacy CDC composite device module.
-> You can also take more complicated configfs approach, though.
-> https://elinux.org/images/e/ef/USB_Gadget_Configfs_API_0.pdf
->
-> +       dr_mode =3D "host";
-> -       dr_mode =3D "peripheral";
->
-> root@OpenWrt:/# insmod g_cdc
-> [   64.565254] using random self ethernet address
-> [   64.569711] using random host ethernet address
-> [   64.575966] usb0: HOST MAC 26:36:2d:e5:8f:6f
-> [   64.580501] usb0: MAC 92:d7:f9:c7:88:01
-> [   64.584409] g_cdc gadget: CDC Composite Gadget, version: King Kameham=
-eha Day 2008
-> [   64.592454] g_cdc gadget: g_cdc ready
->
-> I also tried usb-role-switch,
->
-> -       dr_mode =3D "host";
-> +       usb-role-switch;
->
-> After boot the initial mode of musb is "none", and it did not turn vbus =
-on even if I set it to host mode.
-> Later I found out that I need to load any gadget driver before setting i=
-t to host mode.
->
-> # echo peripheral > /sys/devices/platform/11200000.usb/musb-hdrc.1.auto/=
-mode
-> # insmod g_cdc
-> # echo host > /sys/devices/platform/11200000.usb/musb-hdrc.1.auto/mode
->
-> That's all I know. Please let me know if I skipped some details.
-> Thanks.
->
+> On 27.07.2021 14:30:22, Lad Prabhakar wrote:
+> > Add CANFD node to R9A07G044 (RZ/G2L) SoC DTSI.
 > >
-> > and now i'm back on the traceback on power down i've reported Author o=
-f musb driver some time ago
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > ---
+> >  arch/arm64/boot/dts/renesas/r9a07g044.dtsi | 41 ++++++++++++++++++++++
+> >  1 file changed, 41 insertions(+)
 > >
-> > [  156.785185] WARNING: CPU: 0 PID: 1 at drivers/power/reset/mt6323-po=
-weroff.c:4
-> > [  156.795156] Unable to power off system
+> > diff --git a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
+> > index 9a7489dc70d1..51655c09f1f8 100644
+> > --- a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
+> > +++ b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
+> > @@ -13,6 +13,13 @@
+> >       #address-cells = <2>;
+> >       #size-cells = <2>;
 > >
-> > [  156.884496] [<c0cca1ec>] (warn_slowpath_fmt) from [<c090562c>] (mt6=
-323_do_pw)
-> > [  156.893203]  r8:c3296d40 r7:00000024 r6:0ccccb60 r5:c10fe3d8 r4:000=
-00000
-> > [  156.900030] [<c09054b0>] (mt6323_do_pwroff) from [<c010ba68>] (mach=
-ine_power)
-> > [  156.908558]  r8:fee1dead r7:c1312590 r6:92f61d00 r5:00000000 r4:432=
-1fedc
-> > [  156.915385] [<c010ba34>] (machine_power_off) from [<c01524bc>] (ker=
-nel_power)
+> > +     /* External CAN clock - to be overridden by boards that provide it */
+> > +     can_clk: can {
+> > +             compatible = "fixed-clock";
+> > +             #clock-cells = <0>;
+> > +             clock-frequency = <0>;
+> > +     };
+> > +
+> >       /* clock can be either from exclk or crystal oscillator (XIN/XOUT) */
+> >       extal_clk: extal {
+> >               compatible = "fixed-clock";
+> > @@ -89,6 +96,40 @@
+> >                       status = "disabled";
+> >               };
 > >
-> > i guess it's related to the usb_vbus.
-> >
-> > regards Frank
-> >
+> > +             canfd: can@10050000 {
+> > +                     compatible = "renesas,r9a07g044-canfd", "renesas,rzg2l-canfd";
+> > +                     reg = <0 0x10050000 0 0x8000>;
+> > +                     interrupts = <GIC_SPI 426 IRQ_TYPE_LEVEL_HIGH>,
+> > +                                  <GIC_SPI 427 IRQ_TYPE_LEVEL_HIGH>,
+> > +                                  <GIC_SPI 422 IRQ_TYPE_LEVEL_HIGH>,
+> > +                                  <GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH>,
+> > +                                  <GIC_SPI 428 IRQ_TYPE_LEVEL_HIGH>,
+> > +                                  <GIC_SPI 423 IRQ_TYPE_LEVEL_HIGH>,
+> > +                                  <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH>,
+> > +                                  <GIC_SPI 429 IRQ_TYPE_LEVEL_HIGH>;
+> > +                     interrupt-names = "g_err", "g_recc",
+> > +                                       "ch0_err", "ch0_rec", "ch0_trx",
+> > +                                       "ch1_err", "ch1_rec", "ch1_trx";
+> > +                     clocks = <&cpg CPG_MOD R9A07G044_CANFD_PCLK>,
+> > +                              <&cpg CPG_CORE R9A07G044_CLK_P0_DIV2>,
+> > +                              <&can_clk>;
+> > +                     clock-names = "fck", "canfd", "can_clk";
+> > +                     assigned-clocks = <&cpg CPG_CORE R9A07G044_CLK_P0_DIV2>;
+> > +                     assigned-clock-rates = <50000000>;
+> > +                     resets = <&cpg R9A07G044_CANFD_RSTP_N>,
+> > +                              <&cpg R9A07G044_CANFD_RSTC_N>;
+> > +                     reset-names = "rstp_n", "rstc_n";
+> > +                     power-domains = <&cpg>;
+> > +                     status = "disabled";
+> > +
+> > +                     channel0 {
+> > +                             status = "disabled";
+> > +                     };
+> > +                     channel1 {
+> > +                             status = "disabled";
+> > +                     };
+> > +             };
+> > +
+> >               i2c0: i2c@10058000 {
+> >                       #address-cells = <1>;
+> >                       #size-cells = <0>;
 >
+> This doesn't apply to net-next/master, the r9a07g044.dtsi doesn't have a
+> i2c0 node at all. There isn't a i2c0 node in Linus' master branch, yet.
+>
+I had based the patch on top [1] (sorry I should have mentioned the
+dependency), usually Geert picks up the DTS/I patches and queues it
+via ARM tree. Shall I rebase it on net-next and re-send ?
+
+@Geert Uytterhoeven Is that OK ?
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-devel.git/log/?h=renesas-arm-dt-for-v5.15
+
+Cheers,
+Prabhakar
+
+> Marc
+>
+> --
+> Pengutronix e.K.                 | Marc Kleine-Budde           |
+> Embedded Linux                   | https://www.pengutronix.de  |
+> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
