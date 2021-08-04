@@ -2,159 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EFD53E03A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F963E03A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238739AbhHDOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:46:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33639 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238703AbhHDOqM (ORCPT
+        id S238675AbhHDOqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229749AbhHDOqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:46:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628088360;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AtaANfQj7G/12fLVNP8ZEKFYhS90aaah+dzycPwvl7A=;
-        b=Usu6I00m+mSEcxWiwh3g4zK7cRSdWg8hljF/vK2YHxHSKrJyyvf4VL4FIUNdj7z4H/2HUu
-        K//1pNnNpJfj7SuGRSuHVl3i08+7Eu0fKmIQzZyOw37kEwEc5VsMwknI9axeIzQtWJJw2w
-        bkS/junpB8xjJQ68JHAZmg67MCpROV8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-358-RluIBlZvO3Ovj2uUiEH8Iw-1; Wed, 04 Aug 2021 10:45:58 -0400
-X-MC-Unique: RluIBlZvO3Ovj2uUiEH8Iw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A30AC7400;
-        Wed,  4 Aug 2021 14:45:56 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8255410016F2;
-        Wed,  4 Aug 2021 14:45:44 +0000 (UTC)
-Message-ID: <c82a3abe00d387985ac806c8ff062cc29e192bbd.camel@redhat.com>
-Subject: Re: [RFC PATCH 1/4] KVM: selftests: Add support for creating
- non-default type VMs
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        linux-kselftest@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
-        David Matlack <dmatlack@google.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Yanan Wang <wangyanan55@huawei.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Zhenzhong Duan <zhenzhong.duan@intel.com>,
-        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>
-Date:   Wed, 04 Aug 2021 17:45:43 +0300
-In-Reply-To: <42a812a9-7f17-2a26-d289-1f921408a469@intel.com>
-References: <20210726183816.1343022-1-erdemaktas@google.com>
-         <20210726183816.1343022-2-erdemaktas@google.com>
-         <e1651746-aa46-31e7-e1c0-99f3faaf1586@intel.com>
-         <ede70f11e713ee0140c0e684c3d46b3aa1176e5e.camel@redhat.com>
-         <42a812a9-7f17-2a26-d289-1f921408a469@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 4 Aug 2021 10:46:09 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89135C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:45:56 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id u16so3265616ple.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:45:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=P8L654BT1qD/OuJQ67qVjzfF7qTMazs5HMM0i+7RRcU=;
+        b=fwuZTS2ikg4ACOiCjTD3LaULWWQfkT6c5+djcaSAxEdN887vXddrjiEPZJTGjhao4W
+         4XXCqUZFuOW7vRaVDQuYzrx2RxgSJ6XDKIKdfOrUdf8mXVJMuMAaEvJ2VOiDMtSQWsI8
+         uvF+0bAm30zV+6/a9+/RJsvA0trmPceQgiFakE8lJj+vNxQxeTfCE6DJI7j4MOcdVwZ9
+         ArgXHlyYuAYaT/KJwoMVDARa+rLS5gwK1EQ2eC/3QZK3yJ3TLtg6gAskMF8mE5lQ05M5
+         UOlmoo6diMCotD5tufmYGe57o96OtQ9HH+C9IUO33C+OdhA3EoK1KK3jI4paAXw5hB73
+         h4mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=P8L654BT1qD/OuJQ67qVjzfF7qTMazs5HMM0i+7RRcU=;
+        b=hA7uf6myTdevbmKLfwu5dnqn6u+Omy9r/mv/IO9vh/HUbDtu2DOqNuJ0EvWolHSEsS
+         5l9JI9k1MOPpcjH4mlO4WkfvtLnanqlXADOaq91os5MNGV7Md1hkuIEJPKNSusX2VpZw
+         qheJJfuHvf6r61zjnUMvU1mOSJ5n3wO9bLcJ5ulfEeHDLYOJNZpNpt5K86RkG3Ah4f5Y
+         qEjE2rLM6TMq7NnHyrB2y2QGKeIi2dhT0do4tzLYV8xPJl8NnTPmSTtA9zFeRlchHpva
+         x4AbO/+wCcfk92RcL6dXSD8F3cmQCJ/Lrb0+dsEZJh8lX+eaZZiONlbI2SLbTzUy7G4Z
+         zvng==
+X-Gm-Message-State: AOAM533XUv6EpyKuieENL1ZBzOvU388BF1i6b3o8p/baYupVUZrg5pey
+        4H3nxJs0fRZiqzWD9UHbko94Zbs9H2w=
+X-Google-Smtp-Source: ABdhPJxLmkmmgouPLnRDtGmrVMfLMsXI77C3t2tw1c5wn0y6G7joHKaNpwWijYksY1TkSpEX0KgijA==
+X-Received: by 2002:a05:6a00:b83:b029:352:9507:f3b9 with SMTP id g3-20020a056a000b83b02903529507f3b9mr27559882pfj.13.1628088356088;
+        Wed, 04 Aug 2021 07:45:56 -0700 (PDT)
+Received: from localhost (60-242-181-102.static.tpgi.com.au. [60.242.181.102])
+        by smtp.gmail.com with ESMTPSA id g1sm3246958pfo.0.2021.08.04.07.45.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 07:45:55 -0700 (PDT)
+Date:   Thu, 05 Aug 2021 00:45:50 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH] powerpc/32s: Fix napping restore in data storage
+ interrupt (DSI)
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Finn Thain <fthain@linux-m68k.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>, userm57@yahoo.com
+References: <731694e0885271f6ee9ffc179eb4bcee78313682.1628003562.git.christophe.leroy@csgroup.eu>
+        <ce20d16c-b0b2-94c-3e22-794d95c376b@linux-m68k.org>
+        <b04a90a9-9d62-2192-f896-ea99be911604@csgroup.eu>
+        <8fb08f68-ed01-65f9-fb9e-66abf2b18a00@csgroup.eu>
+        <1628068469.gv4bl1fw7w.astroid@bobo.none>
+        <d8e1f924-ca60-4dcc-ac5f-3801ea226edf@csgroup.eu>
+In-Reply-To: <d8e1f924-ca60-4dcc-ac5f-3801ea226edf@csgroup.eu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Message-Id: <1628085762.7z2g9ulayj.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-08-04 at 22:42 +0800, Xiaoyao Li wrote:
-> On 8/4/2021 10:24 PM, Maxim Levitsky wrote:
-> > On Wed, 2021-08-04 at 14:09 +0800, Xiaoyao Li wrote:
-> > > On 7/27/2021 2:37 AM, Erdem Aktas wrote:
-> > > > Currently vm_create function only creates KVM_X86_LEGACY_VM type VMs.
-> > > > Changing the vm_create function to accept type parameter to create
-> > > > new VM types.
-> > > > 
-> > > > Signed-off-by: Erdem Aktas <erdemaktas@google.com>
-> > > > Reviewed-by: Sean Christopherson <seanjc@google.com>
-> > > > Reviewed-by: Peter Gonda <pgonda@google.com>
-> > > > Reviewed-by: Marc Orr <marcorr@google.com>
-> > > > Reviewed-by: Sagi Shahar <sagis@google.com>
-> > > > ---
-> > > >    .../testing/selftests/kvm/include/kvm_util.h  |  1 +
-> > > >    tools/testing/selftests/kvm/lib/kvm_util.c    | 29 +++++++++++++++++--
-> > > >    2 files changed, 27 insertions(+), 3 deletions(-)
-> > > > 
-> > > > diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-> > > > index d53bfadd2..c63df42d6 100644
-> > > > --- a/tools/testing/selftests/kvm/include/kvm_util.h
-> > > > +++ b/tools/testing/selftests/kvm/include/kvm_util.h
-> > > > @@ -88,6 +88,7 @@ int vcpu_enable_cap(struct kvm_vm *vm, uint32_t vcpu_id,
-> > > >    void vm_enable_dirty_ring(struct kvm_vm *vm, uint32_t ring_size);
-> > > >    
-> > > >    struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm);
-> > > > +struct kvm_vm *__vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm, int type);
-> > > >    void kvm_vm_free(struct kvm_vm *vmp);
-> > > >    void kvm_vm_restart(struct kvm_vm *vmp, int perm);
-> > > >    void kvm_vm_release(struct kvm_vm *vmp);
-> > > > diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> > > > index e5fbf16f7..70caa3882 100644
-> > > > --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> > > > +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> > > > @@ -180,13 +180,36 @@ _Static_assert(sizeof(vm_guest_mode_params)/sizeof(struct vm_guest_mode_params)
-> > > >     * Return:
-> > > >     *   Pointer to opaque structure that describes the created VM.
-> > > >     *
-> > > > - * Creates a VM with the mode specified by mode (e.g. VM_MODE_P52V48_4K).
-> > > > + * Wrapper VM Create function to create a VM with default type (0).
-> > > 
-> > > Can we pass KVM_X86_LEGACY_VM (whatever name when it's upstreamed)
-> > > instead of 0?
-> > 
-> > To be honest I would prefer this to be called something like KVM_X86_STANDARD_VM,
-> > or something.
-> > 
-> > I don't think that normal unencrypted virtualization is already legacy, even if TDX
-> > docs claim that.
-> 
-> I'm not proposing to use this specific name introduced in TDX RFC 
-> series, but proposing to use the name defined in KVM in the future 
-> instead of hard-coded 0.
-> 
-> Yes, KVM_X86_STANDARD_VM or KVM_X86_NORMAL_VM (proposed by Paolo) is 
-> better than KVM_X86_LEGACY_VM.
+Excerpts from Christophe Leroy's message of August 4, 2021 11:28 pm:
+>=20
+>=20
+> Le 04/08/2021 =C3=A0 13:36, Nicholas Piggin a =C3=A9crit=C2=A0:
+>> Excerpts from Christophe Leroy's message of August 4, 2021 4:21 pm:
+>>> Hi Nic,
+>>>
+>>> I think I'll need your help on that one.
+>>>
+>>> Le 04/08/2021 =C3=A0 08:07, Christophe Leroy a =C3=A9crit=C2=A0:
+>>>>
+>>>>
+>>>> Le 04/08/2021 =C3=A0 06:04, Finn Thain a =C3=A9crit=C2=A0:
+>>=20
+>> Hi Finn!
+>>=20
+>>>>> On Tue, 3 Aug 2021, Christophe Leroy wrote:
+>>>>>
+>>> ...
+>>>>>
+>>>>> ------------[ cut here ]------------
+>>>>> kernel BUG at arch/powerpc/kernel/interrupt.c:49!
+>>>>> Oops: Exception in kernel mode, sig: 5 [#1]
+>>>>> BE PAGE_SIZE=3D4K MMU=3DHash SMP NR_CPUS=3D2 PowerMac
+>>>>> Modules linked in:
+>>>>> CPU: 0 PID: 1859 Comm: xfce4-session Not tainted 5.13.0-pmac-VMAP #10
+>>>>> NIP:=C2=A0 c0011474 LR: c0011464 CTR: 00000000
+>>>>> REGS: e2f75e40 TRAP: 0700=C2=A0=C2=A0 Not tainted=C2=A0 (5.13.0-pmac-=
+VMAP)
+>>>>> MSR:=C2=A0 00021032 <ME,IR,DR,RI>=C2=A0 CR: 2400446c=C2=A0 XER: 20000=
+000
+>>>>>
+>>>>> GPR00: c001604c e2f75f00 ca284a60 00000000 00000000 a5205eb0 00000008=
+ 00000020
+>>>>> GPR08: ffffffc0 00000001 501200d9 ce030005 ca285010 00c1f778 00000000=
+ 00000000
+>>>>> GPR16: 00945b20 009402f8 00000001 a6b87550 a51fd000 afb73220 a6b22c78=
+ a6a6aecc
+>>>>> GPR24: 00000000 ffffffc0 00000020 00000008 a5205eb0 00000000 e2f75f40=
+ 000000ae
+>>>>> NIP [c0011474] system_call_exception+0x60/0x164
+>>>>> LR [c0011464] system_call_exception+0x50/0x164
+>>>>> Call Trace:
+>>>>> [e2f75f00] [00009000] 0x9000 (unreliable)
+>>>>> [e2f75f30] [c001604c] ret_from_syscall+0x0/0x28
+>>>>> --- interrupt: c00 at 0xa69d6cb0
+>>>>> NIP:=C2=A0 a69d6cb0 LR: a69d6c3c CTR: 00000000
+>>>>> REGS: e2f75f40 TRAP: 0c00=C2=A0=C2=A0 Not tainted=C2=A0 (5.13.0-pmac-=
+VMAP)
+>>>>> MSR:=C2=A0 0000d032 <EE,PR,ME,IR,DR,RI>=C2=A0 CR: 2400446c=C2=A0 XER:=
+ 20000000
+>>>>>
+>>>>> GPR00: 000000ae a5205de0 a5687ca0 00000000 00000000 a5205eb0 00000008=
+ 00000020
+>>>>> GPR08: ffffffc0 401201ea 401200d9 ffffffff c158f230 00c1f778 00000000=
+ 00000000
+>>>>> GPR16: 00945b20 009402f8 00000001 a6b87550 a51fd000 afb73220 a6b22c78=
+ a6a6aecc
+>>>>> GPR24: afb72fc8 00000000 00000001 a5205f30 afb733dc 00000000 a6b85ff4=
+ a5205eb0
+>>>>> NIP [a69d6cb0] 0xa69d6cb0
+>>>>> LR [a69d6c3c] 0xa69d6c3c
+>>>>> --- interrupt: c00
+>>>>> Instruction dump:
+>>>>> 7cdb3378 93810020 7cbc2b78 93a10024 7c9d2378 93e1002c 7d3f4b78 4800d6=
+29
+>>>>> 817e0084 931e0088 69690002 5529fffe <0f090000> 69694000 552997fe 0f09=
+0000
+>>>>> ---[ end trace c66c6c3c44806276 ]---
+>>>>>
+>>>
+>>> Getting a BUG at arch/powerpc/kernel/interrupt.c:49 meaning MSR_RI is n=
+ot set, but the c00 interrupt
+>>> frame shows MSR_RI properly set, so what ?
+>>=20
+>> Could the stack be correct but regs pointer incorrect?
+>>=20
+>> Instruction dump is
+>>=20
+>>     0:   78 33 db 7c     mr      r27,r6
+>>     4:   20 00 81 93     stw     r28,32(r1)
+>>     8:   78 2b bc 7c     mr      r28,r5
+>>     c:   24 00 a1 93     stw     r29,36(r1)
+>>    10:   78 23 9d 7c     mr      r29,r4
+>>    14:   2c 00 e1 93     stw     r31,44(r1)
+>>    18:   78 4b 3f 7d     mr      r31,r9
+>>    1c:   29 d6 00 48     bl      0xd644
+>>    20:   84 00 7e 81     lwz     r11,132(r30)
+>>    24:   88 00 1e 93     stw     r24,136(r30)
+>>    28:   02 00 69 69     xori    r9,r11,2
+>>    2c:   fe ff 29 55     rlwinm  r9,r9,31,31,31
+>>    30:   00 00 09 0f     twnei   r9,0
+>>    34:   00 40 69 69     xori    r9,r11,16384
+>>    38:   fe 97 29 55     rlwinm  r9,r9,18,31,31
+>>    3c:   00 00 09 0f     twnei   r9,0
+>>=20
+>> regs->msr is in r11 =3D=3D 0xce030005 so some kernel address?
+>>=20
+>> r1  =3D=3D 0xe2f75f00
+>> r30 =3D=3D 0xe2f75f40
+>>=20
+>> I think that matches if the function allocates 48 bytes of stack.
+>> STACK_FRAME_OVERHEAD is 16, so the difference would be 0x40 in that
+>> case. Seems okay.
+>>=20
+>> I'm not sure then. Can you get a hash fault interrupt come in here
+>> because of the vmap stack access and clobber r11? Hmm...
+>>=20
+>> fast_hash_page_return:
+>>          andis.  r10, r9, SRR1_ISI_NOPT@h        /* Set on ISI, cleared =
+on DSI */
+>>=20
+>> Is that really right? DSI can set this bit for NOHPTE as well no?
+>=20
+> On DSI, the error bits are in DSISR while they are in SRR1 on ISI.
+>=20
+> r9 is supposed to contain SRR1 in both cases. Powerpc 32 bits programming=
+ manual explicitely says=20
+> that bits 1-4 and 10-15 of SRR1 are cleared on DSI.
 
-KVM_X86_NORMAL_VM is a very good name IMHO as well.
-Thanks!
+Ah right, I had in mind it was DSISR on DSI and SRR1 on ISI because
+we put them together early on 64s. Can't think of anything else at the=20
+moment.
 
-Best regards,
-	Maxim Levitsky
-
-> 
-> > Just my personal opinion.
-> > 
-> > Best regards,
-> > 	Maxim Levitsky
-> > 
-> > > > + */
-> > > > +struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
-> > > > +{
-> > > > +	return __vm_create(mode, phy_pages, perm, 0);
-> > > > +}
-> > > > +
-
+Thanks,
+Nick
 
