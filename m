@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A893DFB1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F6A3DFB1F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 07:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235162AbhHDFfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 01:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhHDFfJ (ORCPT
+        id S235321AbhHDFfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 01:35:33 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:50050 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235056AbhHDFfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 01:35:09 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69CAC0613D5
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Aug 2021 22:34:56 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id d3so615189qvq.6
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 22:34:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=AzPTuvmtk/GmKeGcg4Ye3QqV4cGp0sQpwmlvW0kRJJk=;
-        b=RCPwO6hRr+av+1TT+ydq43h1ySz0YZWTtmBZqcDXziElHt/whPrqj9xq7JESmEcZQX
-         3X+L9iF/HtcZZ7Oj4QZElfgxLS31qX3z68KdmJYzgYnx638HwSUeRCQGU0v8AWv0l+2H
-         FM8eKXRz6GRRvWAA8VQjDh3/wMCJu31TO6D3dCrsJIyAsqqc7HwHqtAJ1rqmgZXee1sP
-         SgNE9i7TDGNCSh7cWUpyIyozYQRrFg0k+6pbfxDZHbCvp1tL0TS5tdN7mRoXqMGKCu4b
-         gVtRREJNTm7Sn2YF7cTmcJnkcnLp0p1scSTZ2xXY8j063ifmkQEcYZr0OxXsiYo5Kkd4
-         cGZw==
+        Wed, 4 Aug 2021 01:35:32 -0400
+Received: by mail-il1-f197.google.com with SMTP id o11-20020a92d38b0000b0290222c57c8ca8so402001ilo.16
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 22:35:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=AzPTuvmtk/GmKeGcg4Ye3QqV4cGp0sQpwmlvW0kRJJk=;
-        b=NzO/8DcGGj5AWOuE8GP+/F6ZrOYge/C4i1OT8K+XxUH29oAmFa7nwxs06+WIOv30q9
-         eVUXYcplzwjrVtwFIOyplbXgniDsYh+XtrFDHUlqslnKwSrE1ndI1pDZ23Xmm4NPN3PC
-         8z/1k/UA72S5v+MBwXnol8X3Nu2fo05qebNGkME6ZaC0YZrPSGPNIjO1qq4ejn3Bjv9i
-         BW0ZhYshAxaPNJKKtRQazCUEd8/nG/PbnXZRyHouv5UQVDSGPExAYIhLhZ0iS20J9lrC
-         ehBMqHMnre2qHlo4Hnax4xmc2CMfZrRvKSqZsJW41M1fxhfq5Kzh3pWO6xcO8Dj+wEz9
-         iBaQ==
-X-Gm-Message-State: AOAM533CeqDQsJdIzNcsu7lQXyTqOvcvC+DGPidWx0yb3DBdbs6S/8cp
-        olFLZCmJNy6+CizB1UrWyaIm1Q==
-X-Google-Smtp-Source: ABdhPJytPEx6Dv0bP6IEhekqVhpVIcpWjN5uD5TH0ScarA7l0AYpaYrDfMGvvj9ftMliIKmrv9b02w==
-X-Received: by 2002:a05:6214:f0c:: with SMTP id gw12mr25258192qvb.33.1628055295705;
-        Tue, 03 Aug 2021 22:34:55 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id h68sm742610qkf.126.2021.08.03.22.34.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Aug 2021 22:34:54 -0700 (PDT)
-Date:   Tue, 3 Aug 2021 22:34:52 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     "Huang, Ying" <ying.huang@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH] mm,shmem: Fix a typo in shmem_swapin_page()
-In-Reply-To: <YQkwBdpWTPjv4xIx@casper.infradead.org>
-Message-ID: <704d597-443b-32f-84eb-524a58dd8ef@google.com>
-References: <20210723080000.93953-1-ying.huang@intel.com> <24187e5e-069-9f3f-cefe-39ac70783753@google.com> <YPs6cQo7iG1JcOn8@casper.infradead.org> <8735rr54i9.fsf@yhuang6-desk2.ccr.corp.intel.com> <YQkwBdpWTPjv4xIx@casper.infradead.org>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=dWP63N1iAJI/pUug+0yne7Sw6kGWIyZgoJ55JqnTIsg=;
+        b=EJKU7SJ7bQchagevgR4gt2YF1NMk7aPQHJIr9+fr7RdBHpSrO676auDrIvH1niCPaP
+         eCwQQ9Sx20l0xbM2tGr9CyvkuK3RGu+DA/5G97SWhEGXoJgj+UuQab5eMnHz+SgYtOp5
+         iVUpDETzrBAjUK1ftPhU30Pmwwkn5LgH1GDGHUoAfEy/0TLqpG21UU1Huc4evQ5bgBsO
+         0hV/SfOk9yMfnhsy+hs4MyymjCvMrUF0+ahBmUd9giU2rGI/Qpv2QcC1KiPlmvMEaDCN
+         P+60bsOQd0FP/d5GhRWidiVyYKTmo3MnJThbRqaUM4fMdRdEH7TSk5Ax1TtLu5gOsx6w
+         ykug==
+X-Gm-Message-State: AOAM5327dzTMHHmDrlmm8Z9BQajC8mosmGC1CpC/Uv0eJ0OG2daeNqh4
+        gXIOjWID9xxpJHcuiLlBLzjCNjMpFpckrrhr9w0NyGfma9UD
+X-Google-Smtp-Source: ABdhPJy6+HITYvauDQkhzO7rfPSNDE5/FgtZblRf/Dh6oNReT4TaDg+YIy1CzVohEK0Gy4kHHwVcfa4QbeTUiRJ7T8pE2Xp9qGVz
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-Received: by 2002:a5d:9eda:: with SMTP id a26mr821004ioe.166.1628055320265;
+ Tue, 03 Aug 2021 22:35:20 -0700 (PDT)
+Date:   Tue, 03 Aug 2021 22:35:20 -0700
+In-Reply-To: <00000000000092839d0581fd74ad@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000a0c4005c8b52bf3@google.com>
+Subject: Re: [syzbot] WARNING in __vunmap
+From:   syzbot <syzbot+5ec9bb042ddfe9644773@syzkaller.appspotmail.com>
+To:     ali.hamid@alimam.biz, davem@davemloft.net, hdanton@sina.com,
+        herbert@gondor.apana.org.au, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Aug 2021, Matthew Wilcox wrote:
-> On Tue, Aug 03, 2021 at 04:14:38PM +0800, Huang, Ying wrote:
-> > Matthew Wilcox <willy@infradead.org> writes:
-> > > But I REALLY REALLY REALLY want a reproducer.  Right now, I have a hard
-> > > time believing this, or any of the other races can really happen.
-> > 
-> > I think the race is only theoretical too.  Firstly, swapoff is a rare
-> > operations in practice; secondly, the race window is really small.
-> 
-> So do something to provoke it.  Widen the window.  Put an msleep(1000)
-> between *pagep = NULL and the call to get_swap_device().  That's assuming
-> that the swapon/swapoff loop that I proposed doesn't work.  Did you
-> try it?
+syzbot has found a reproducer for the following issue on:
 
-I've been doing that swapon/swapoff loop for years, while running kernel
-builds on tmpfs going out to swap; for better or worse on baremetal not VM.
+HEAD commit:    d5ad8ec3cfb5 Merge tag 'media/v5.14-2' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1669619a300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=343fd21f6f4da2d6
+dashboard link: https://syzkaller.appspot.com/bug?extid=5ec9bb042ddfe9644773
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11c3f142300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154e2121300000
 
-You're right that few will ever need that level of reliability; but it
-has caught problems from time to time, and I do insist on fixing them.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5ec9bb042ddfe9644773@syzkaller.appspotmail.com
 
-I'm not as insistent as you on wanting a reproducer; and we all take pride
-sometimes in fixing ever more inconceivable bugs.  I'm not against that,
-but it's easy to end up with a fix more dangerous than what it claims to
-fix, rather like with random newbie cleanups.
+------------[ cut here ]------------
+Trying to vfree() nonexistent vm area (ffffc90002bc9000)
+WARNING: CPU: 0 PID: 8497 at mm/vmalloc.c:2567 __vunmap+0x150/0xb70 mm/vmalloc.c:2567
+Modules linked in:
+CPU: 1 PID: 8497 Comm: syz-executor174 Not tainted 5.14.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__vunmap+0x150/0xb70 mm/vmalloc.c:2567
+Code: 85 78 ff ff ff e8 20 b0 c4 ff 48 c7 c7 c0 7c a9 8b e8 44 ed 7b 07 e8 0f b0 c4 ff 4c 89 e6 48 c7 c7 e0 bb 96 89 e8 c1 05 37 07 <0f> 0b 48 83 c4 38 5b 5d 41 5c 41 5d 41 5e 41 5f e9 eb af c4 ff e8
+RSP: 0018:ffffc900023b72d8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff888028c00000 RSI: ffffffff815d7935 RDI: fffff52000476e4d
+RBP: dffffc0000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815d176e R11: 0000000000000000 R12: ffffc90002bc9000
+R13: ffff8880253d20c0 R14: ffffc90002bc9000 R15: ffffe8ffffc338a8
+FS:  00007fcdcc063700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fcdcc084718 CR3: 00000000159f1000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __vfree+0x3c/0xd0 mm/vmalloc.c:2635
+ vfree+0x5a/0x90 mm/vmalloc.c:2666
+ ipcomp_free_scratches+0xc4/0x160 net/xfrm/xfrm_ipcomp.c:203
+ ipcomp_free_data net/xfrm/xfrm_ipcomp.c:312 [inline]
+ ipcomp_init_state+0x77c/0xa40 net/xfrm/xfrm_ipcomp.c:364
+ ipcomp6_init_state+0xc2/0x700 net/ipv6/ipcomp6.c:154
+ __xfrm_init_state+0x995/0x15c0 net/xfrm/xfrm_state.c:2648
+ xfrm_state_construct net/xfrm/xfrm_user.c:627 [inline]
+ xfrm_add_sa+0x1ef1/0x35f0 net/xfrm/xfrm_user.c:684
+ xfrm_user_rcv_msg+0x42c/0x8b0 net/xfrm/xfrm_user.c:2812
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ xfrm_netlink_rcv+0x6b/0x90 net/xfrm/xfrm_user.c:2824
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:703 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:723
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2392
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2446
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2475
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x445b99
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fcdcc063318 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004ca428 RCX: 0000000000445b99
+RDX: 0000000000000000 RSI: 0000000020000800 RDI: 0000000000000004
+RBP: 00000000004ca420 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ca42c
+R13: 00007ffec83642cf R14: 00007fcdcc063400 R15: 0000000000022000
 
-I've never seen the swapoff race claimed by Miaohe, and don't expect to;
-but he's probably right, given the current code.  I just dislike adding
-unnecessary complexity, and siting it in the wrong place (mm/shmem.c).
-
-Yang, is it possible that 5.1 commit 8fd2e0b505d1 ("mm: swap: check if
-swap backing device is congested or not") was actually developed and
-measured on 4.1 or earlier, which still had blk_set_queue_congested()?
-
-I cannot explain its usefulness nowadays, on congested HDD anyway:
-Matthew is right that NFS and a few others may still be setting
-congested flags, but they're not what that commit was proposed for.
-
-If it is still useful, then I contend (but Huang Ying will disagree)
-that the get_swap_device() and put_swap_device() should be around
-8fd2e0b505d1's inode_read_congested() block in swap_cluster_readahead(),
-not encroaching into mm/shmem.c.
-
-But if that block is not useful, then it should simply be removed (later).
-
-Hugh
