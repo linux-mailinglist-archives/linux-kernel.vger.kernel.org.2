@@ -2,76 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27EF53DFE3F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431C53DFE48
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 11:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237123AbhHDJoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 05:44:01 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:47584 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236511AbhHDJoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 05:44:01 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPSA id 2141940D403D;
-        Wed,  4 Aug 2021 09:43:43 +0000 (UTC)
-Subject: Re: [PATCH] platform/x86: intel_pmc_core: Fix potential buffer
- overflows
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        "David E. Box" <david.e.box@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ldv-project@linuxtesting.org
-References: <20210803181135.22298-1-novikov@ispras.ru>
- <CAHp75Vde1RAKTCTzmt0eHjNGrKUyi7r1rtNo934WW6wqi9T=ng@mail.gmail.com>
- <CAHp75VfVCk1ueQZiGnJqwhD=j+zpVZ3Q-GmLMKX9AfP_BFMPNA@mail.gmail.com>
-From:   Evgeny Novikov <novikov@ispras.ru>
-Message-ID: <394f3b53-7896-c602-a6d2-e0e17d1e647e@ispras.ru>
-Date:   Wed, 4 Aug 2021 12:43:43 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237161AbhHDJpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 05:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237146AbhHDJpg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 05:45:36 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64C0C06179A
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 02:45:23 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mBDSg-000866-Ng; Wed, 04 Aug 2021 11:45:18 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:e44:2d7c:bf4a:7b36])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id A5FE5660744;
+        Wed,  4 Aug 2021 09:45:16 +0000 (UTC)
+Date:   Wed, 4 Aug 2021 11:45:15 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Gianluca Falavigna <gianluca.falavigna@inwind.it>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [RESEND PATCH 4/4] can: c_can: cache frames to operate as a true
+ FIFO
+Message-ID: <20210804094515.ariv7d24t2i4hic5@pengutronix.de>
+References: <20210725161150.11801-1-dariobin@libero.it>
+ <20210725161150.11801-5-dariobin@libero.it>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfVCk1ueQZiGnJqwhD=j+zpVZ3Q-GmLMKX9AfP_BFMPNA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vdeu2tms3hj5egqq"
+Content-Disposition: inline
+In-Reply-To: <20210725161150.11801-5-dariobin@libero.it>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.08.2021 21:30, Andy Shevchenko wrote:
-> On Tue, Aug 3, 2021 at 9:26 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
->> On Tue, Aug 3, 2021 at 9:21 PM Evgeny Novikov <novikov@ispras.ru> wrote:
->>> It looks like pmc_core_get_low_power_modes() mixes up modes and
->>> priorities. In addition to invalid behavior, potentially this can
->>> cause buffer overflows since the driver reads priorities from the
->>> register and then it uses them as indexes for array lpm_priority
->>> that can contain 8 elements at most. The patch swaps modes and
->>> priorities.
->>>
->>> Found by Linux Driver Verification project (linuxtesting.org).
->> Seems legit.
-> Hold on, but then it follows with another loop where actually it reads
-> modes by priority index. Can you elaborate what exactly is the problem
-> you think?
->
-I agree with you and David that my fix was not valid from the functional
 
-point of view. Indeed, some issues can happen if something unexpected
+--vdeu2tms3hj5egqq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-will be read from the register. For instance, for priority equals to 255 you
+On 25.07.2021 18:11:50, Dario Binacchi wrote:
+> diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+> index 8fe7e2138620..fc499a70b797 100644
+> --- a/drivers/net/can/c_can/c_can.h
+> +++ b/drivers/net/can/c_can/c_can.h
+> @@ -200,6 +200,7 @@ struct c_can_priv {
+>  	atomic_t sie_pending;
+>  	unsigned long tx_dir;
+>  	int last_status;
+> +	spinlock_t tx_lock;
 
-will have pri0 = 15 and prio1 = 15. Obviously, you can not access the
+What does the spin lock protect?
 
-lpm_priority array consisting of just 8 elements by these indexes.
+>  	struct c_can_tx_ring tx;
+>  	u16 (*read_reg)(const struct c_can_priv *priv, enum reg index);
+>  	void (*write_reg)(const struct c_can_priv *priv, enum reg index, u16 va=
+l);
+> @@ -236,4 +237,9 @@ static inline u8 c_can_get_tx_tail(const struct c_can=
+_tx_ring *ring)
+>  	return ring->tail & (ring->obj_num - 1);
+>  }
+> =20
+> +static inline u8 c_can_get_tx_free(const struct c_can_tx_ring *ring)
+> +{
+> +	return ring->obj_num - (ring->head - ring->tail);
+> +}
+> +
+>  #endif /* C_CAN_H */
+> diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c=
+_can_main.c
+> index 451ac9a9586a..4c061fef002c 100644
+> --- a/drivers/net/can/c_can/c_can_main.c
+> +++ b/drivers/net/can/c_can/c_can_main.c
+> @@ -427,20 +427,6 @@ static void c_can_setup_receive_object(struct net_de=
+vice *dev, int iface,
+>  	c_can_object_put(dev, iface, obj, IF_COMM_RCV_SETUP);
+>  }
+> =20
+> -static u8 c_can_get_tx_free(const struct c_can_tx_ring *ring)
+> -{
+> -	u8 head =3D c_can_get_tx_head(ring);
+> -	u8 tail =3D c_can_get_tx_tail(ring);
+> -
+> -	/* This is not a FIFO. C/D_CAN sends out the buffers
+> -	 * prioritized. The lowest buffer number wins.
+> -	 */
+> -	if (head < tail)
+> -		return 0;
+> -
+> -	return ring->obj_num - head;
+> -}
+> -
+>  static bool c_can_tx_busy(const struct c_can_priv *priv,
+>  			  const struct c_can_tx_ring *tx_ring)
+>  {
+> @@ -470,7 +456,7 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff *s=
+kb,
+>  	struct can_frame *frame =3D (struct can_frame *)skb->data;
+>  	struct c_can_priv *priv =3D netdev_priv(dev);
+>  	struct c_can_tx_ring *tx_ring =3D &priv->tx;
+> -	u32 idx, obj;
+> +	u32 idx, obj, cmd =3D IF_COMM_TX;
+> =20
+>  	if (can_dropped_invalid_skb(dev, skb))
+>  		return NETDEV_TX_OK;
+> @@ -483,7 +469,11 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff *=
+skb,
+>  	if (c_can_get_tx_free(tx_ring) =3D=3D 0)
+>  		netif_stop_queue(dev);
+> =20
+> -	obj =3D idx + priv->msg_obj_tx_first;
+> +	spin_lock_bh(&priv->tx_lock);
 
+What does the spin_lock protect? The ndo_start_xmit function is properly
+serialized by the networking core.
 
-Best regards,
+Otherwise the patch looks good!
 
-Evgeny Novikov
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--vdeu2tms3hj5egqq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEKYagACgkQqclaivrt
+76koYwf/VB746DM0v/+iyR3r8TdJsKJEJp5x3d/t6SQf6kHjdOnXF/v3espWwPKF
+44FFrD/LkOx51pxxCV753LtpgGn34eQPcVCLSm8QItkFyB1Am5/wZ9E1hIkQ4cnw
+hREw9ClpB5bDlKIHYfAo6qTFCqokuZFz+1gSdmRA6oPTQBAeVWCU7OzmJjMFeVau
+mKAp5GcNz5YO3x/QEOEfqCemWFT9WYDzxaS7c3w2Mzu9yesGfzJRSjRQ6gGcP5hE
+3TVcQdyegZEKWhHrehL7YxtHF8Y6HYxvZypTDt78gvQx2eFQiME3bHIIM2s5wdFP
+wGBfVGU/Uipg753+1k/9SgEUj9/ZUQ==
+=N0WF
+-----END PGP SIGNATURE-----
+
+--vdeu2tms3hj5egqq--
