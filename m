@@ -2,179 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE413DFB8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA003DFB92
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 08:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235667AbhHDGqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 02:46:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:56844 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230070AbhHDGqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 02:46:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6518011FB;
-        Tue,  3 Aug 2021 23:46:38 -0700 (PDT)
-Received: from [10.163.67.195] (unknown [10.163.67.195])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 062493F66F;
-        Tue,  3 Aug 2021 23:46:35 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH] arm64/mm: Fix idmap on [16K|36VA|48PA]
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <1627879359-30303-1-git-send-email-anshuman.khandual@arm.com>
- <20210803103440.GA5786@arm.com>
- <7bad50a2-76f1-7946-3a15-35e46fb289c0@arm.com>
- <20210803131201.GB5786@arm.com>
- <4d6a4a0c-7f68-991d-5b0e-08c280543fe8@arm.com>
-Message-ID: <cad9294f-8158-6aa4-5740-26f534530740@arm.com>
-Date:   Wed, 4 Aug 2021 12:17:26 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <4d6a4a0c-7f68-991d-5b0e-08c280543fe8@arm.com>
-Content-Type: text/plain; charset=utf-8
+        id S235692AbhHDGtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 02:49:42 -0400
+Received: from mail-dm6nam11on2056.outbound.protection.outlook.com ([40.107.223.56]:28128
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235019AbhHDGtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 02:49:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MEYarYTigaYaLi8xSNpD2BBwiwGiOgsXf14IGQJL9O3CvdAozpPyOSCVjgnsouZM96ONove42l6KNpH8VxrkFOqwqX7aolLrrT/cfdxq9SJWjJhBV8kYwwY1GuuWiF19Ey/DRhXnO7Nn2X4rb+x5QRYFwFD8XyVpLm1Tdt/Pm19CuYRfNmH/7WpL9oqiMKiQxEYZGJExzrFxR00E/YXGLyg8OHWhFZU/7QZnpOXUAkXJ2oxDTvIJNfjGaTejF+bm/VvAs7f81bEzKS5ecKxMzNEh5JVkHr24xzQxqYxWLN7Hl2EUEchsVhizRAfra/P0rrHnSGM4LZhArsRM0YfoJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R21oSnGALzqbjJeYzxNUJDx/qMtkpewI2Ldb9Zf3myo=;
+ b=G9hZoVoe9eHiPSU2jGCxSFohCpz8P5t45UhxgOTKkTTKxM1+ICzZ3y6IUfzh7nZUDgU0m4S1blYUqdwZFLzbMXkm+66CwBKP9Do0/MQ84DiDZX+Hjmiuu3thUA5LODQ21Nr2xaNispwuu9N3YkKtcqGqolRZA4vqWnFdrAA6UIWOOiLenUbuFTpy61Vi3HIamW8IdYnBdDB93m+06GEBeFjkl30pHZDETWcJSI1K9GfRh5pnoASwPxk7DscIYPpv7RgbQeTm14XXu7KLBEI89vwcrANxNt02IMhg0LTMxNf0n2ddXvvWzcBZn53bTpIrrL7EF5oVaBKJt7t3AJxG4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R21oSnGALzqbjJeYzxNUJDx/qMtkpewI2Ldb9Zf3myo=;
+ b=C/ZT5enuuFdyLQunCZ88Lny5mR48e2ZmFLtlPmBjwQn6N5sASl5Jk2xjJSIB6yRjzl3BQ363TXuZPUvBe4zySnilG6im5ZBbDdVTE2dtofvM07+f0YrQ+srEDYg82yZNFa2gurzNHudUxb86qPRiR8NbgRSnB37xGIDuixMcQJI=
+Authentication-Results: tsinghua.edu.cn; dkim=none (message not signed)
+ header.d=none;tsinghua.edu.cn; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by BL0PR12MB2514.namprd12.prod.outlook.com (2603:10b6:207:43::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15; Wed, 4 Aug
+ 2021 06:49:18 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6c9e:1e08:7617:f756]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6c9e:1e08:7617:f756%5]) with mapi id 15.20.4373.026; Wed, 4 Aug 2021
+ 06:49:18 +0000
+Subject: Re: [PATCH] drm/amdgpu: drop redundant null-pointer checks in
+ amdgpu_ttm_tt_populate() and amdgpu_ttm_tt_unpopulate()
+To:     Tuo Li <islituo@gmail.com>, alexander.deucher@amd.com,
+        Xinhui.Pan@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, airlied@redhat.com,
+        Felix.Kuehling@amd.com, Oak.Zeng@amd.com, nirmoy.das@amd.com,
+        tzimmermann@suse.de, Philip.Yang@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, baijiaju1990@gmail.com,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+References: <20210804015132.29617-1-islituo@gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <f515880f-17f8-66b3-20d9-c1a46a252463@amd.com>
+Date:   Wed, 4 Aug 2021 08:49:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210804015132.29617-1-islituo@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR07CA0024.eurprd07.prod.outlook.com
+ (2603:10a6:208:ac::37) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:fc63:9f41:3d77:1613] (2a02:908:1252:fb60:fc63:9f41:3d77:1613) by AM0PR07CA0024.eurprd07.prod.outlook.com (2603:10a6:208:ac::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.4 via Frontend Transport; Wed, 4 Aug 2021 06:49:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e2f79aee-7de1-4374-1ef2-08d95713fa73
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2514:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB251449AEEF598E86CFF8F3F683F19@BL0PR12MB2514.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Z6PzogWllAT/MkfYMMYVScVnhKZm0JTIEJi9QVKTWur/CPm4k0ACEtA2fjBxfw9UTnpwz89L8FC+4VamU8UrFq4RJDbLxK0Ykz8ruZFcA+7eBO68YfMRRj24uk6Z7fFJnWawirX7V5u6GlX08iSxSwnRshlgoiDguxj4RNyCZuprbGsdj/Id65/oxVAIos5ns30QDlsQ89MdNNivNZONMJGLunuFtUt/7xT2SankKKUsS1KLkeO2lyi/cMvMKZuFDrRylZWRexEagyPHKGNhtctYjq4zKBcxKFZ3N8avPzD2wKQydgEOiPWQMJZsDzoLhmlk3PNHb52TBGPMYaUmAM5uX0om212z1u8N5w6mAhm+wlWNCgAih8J0bq0L0mdRNagK1xUOzLRyQazEq5km2u41U90IW6myz4Aw0SZiwJTMV2pRf9V9GBgEMeS6GBJDWLswMwXoKOjNQIKmvwmtKMg5gMK1acv+y4XIqUrUMR1watKURA2NCe+Pu4Yhd/HQqEsE79xOuqQ8PgWN1NR9GQNkVlMRA136hr+cL7pNp9GFmj0LyUvLTR1/7hTC1peLenm3bOlaNBUnRxR7wCBQkNxmWqXgawtnSSt9Czuw2LAwHvJ4Vpt9skRWwGN2L9y4uWmG27UOH1jantkN/LHUnn1+KS5U/9Nd4BxfEdxItWMPuzWoemhv7xCKioMgpsq10FpoQl4IrpHbxMRlibSKzZhT36zBJZ1FSxmKRsGoYP0JL2v9z2DZ/Kch4ExZLb+M
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(376002)(136003)(366004)(31696002)(86362001)(83380400001)(4326008)(8676002)(478600001)(38100700002)(8936002)(6636002)(5660300002)(6486002)(36756003)(921005)(7416002)(31686004)(66556008)(2906002)(66476007)(186003)(316002)(2616005)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ejRXaHRwb3BoUUV4UjJsdUJGenBPYUNEY0hGem5iaXVYMUVEZThtdGhUU05L?=
+ =?utf-8?B?TWlyQVE5U1BZcjMxYThEd0Y1ZWFxSmFWbFVKdkliTVZzK2o0eXNlc3dOWlpB?=
+ =?utf-8?B?YUhZZFNEdU1xSnFRMzQzc2tva3JnYmlyd0EyWWoveWkyUFRLc2dwSXNGUEZr?=
+ =?utf-8?B?RUVzR2NOTFZ2V1ZpbzFrOVc0cE9KWnBnNEhMd1Q0WVdkdld2UTVZcHpSV0h1?=
+ =?utf-8?B?VXhpMDBOQnZZczZiTmhEWDFROTVNTnd4OUtzZm5WZGoyS3Z4bzk1R0ppR2Y1?=
+ =?utf-8?B?Qlg2MmF4emxuRldQeHJlTXBralFxeEt2RFJvcnJvT3ZBY1IzMUFQMDNHSHNV?=
+ =?utf-8?B?QW1sZDhuSkx2VCs4Q2RvKzFZZ1NzdDZPMWhPOGJUa3lPdXdNN3NoY2tkeFNP?=
+ =?utf-8?B?VFgzS1QwZTkzaGtuajd5VnlId0dhN0dDanFLYnlvRk9rOURPeHI1a05UTWE5?=
+ =?utf-8?B?ZzlJSzVzUzBZWW5PT1B1U05UVldVSHpRVjZoNWtxM0ljdEtFVDBnRVFWT1Bu?=
+ =?utf-8?B?eUg0cEdVcjhvaW42T0dFYnZGUktXdHo5aG13Q2s3azc2U29KSHlpQzZhZ3RK?=
+ =?utf-8?B?WitFS210dVhRUTFHNTlTSGNxUmFYdW4rWVlkbXdGT2pwTEg5OG1CRUdydERh?=
+ =?utf-8?B?bGNjd1dmN2U4MitJR2NnT3RwTStKTUkwTWlzUlR6RVJKNk44eEhRL0Z4VjZX?=
+ =?utf-8?B?WUxNd25jZWZiNkI3dkVKNUZrQ25SS2hXS0VjcmZUTGJYWXU3TmxvaWxkMGxm?=
+ =?utf-8?B?dGtxcVBiWlIva2Y5Y0diRGZXQXQ4M25DaGVOandkaWdFTisycTNDSUtMSEZs?=
+ =?utf-8?B?NXAzM0FjZFdkSmc3d2FteXd0a2o5SnBBTXhMeVRwTDdMK2NEbHRidVlPQ0xF?=
+ =?utf-8?B?WDIzRm9ob1ZYZnBDbURla3JqSlc0bWhLZ1lLNzIvdHNCdUM0UkZkR29sK0F6?=
+ =?utf-8?B?ZTJ3eUFlOTV1blNoYkpCek5FYzczcFE2UW5MdXo1d2g4UkVZQUdqem1ORFM5?=
+ =?utf-8?B?Z0JPNUNHdHJ5dmNvckZLWFN5dUt0L1FTS281Ky9LWHdkQW14Q1MxQzExblk5?=
+ =?utf-8?B?UjVIdEFkYTY2a2pzNnJkVllSVHBXd3ExeTF5WDZFWHE1Y2w2a1JNNTNOelkx?=
+ =?utf-8?B?UVRCeWdjbi9nU2dJTzBtbmcxVk8rc1g3MXY3bDlPdmpScVR3Vm5CZFFmL0dL?=
+ =?utf-8?B?aVRtZ2NuTTkzOS9BbEEyQlo5OXl3MDArdVJpc2UwcS9HL3dJcEFoWU5WL2M5?=
+ =?utf-8?B?dGZHYi9BY1JNbkcva09vN1ZGZTVYakJEYi8rbUVIZjhSVFRNQXA3clUwQ3hm?=
+ =?utf-8?B?dUM3RVdzYnFwbkdrRjk4WFg3dlNtLy9PTVVkc2RuSm5vY3lMVHdFc2s0UW0r?=
+ =?utf-8?B?RGFNWlhUSFJ2WXNDS0liZnhrMXpnUVB4NVNRR1l5Q1lrOWJJQWtWd1BVZ3k3?=
+ =?utf-8?B?YkZRbWFkRmZWVnovSDczK2FML2NzUFdMTzlQb2pKa3o5Ymk0elh1RVdpYlA3?=
+ =?utf-8?B?TTJHZVQ1a0QvTEkrcVBpckpIbEZqVGVNaTJpbzRtL2Z5Wmtkay9QeFNEOUdX?=
+ =?utf-8?B?RnhJcmo2ejQ0OHFnZlBzUDFqSnhQTnJiQ0FzdVBkdUR2UTRzRnF0SDVPejhF?=
+ =?utf-8?B?ZFFIWmVOdGNRa01xWnpHVTIya0lMMG84NnVReGNZbWh2OGNiV1dYZGxOVjdn?=
+ =?utf-8?B?dURIOWdIaXcvZG1oSkZRWVc5ZVVISU9aNDk0Z3RvRG16UEJ3WmpFdG9SaEo2?=
+ =?utf-8?B?TU9mMTNMdFgwQS8yS1diYTlPLzI0MklHR2JWOU9DYjZyM1EzZE4zNU1YSmtW?=
+ =?utf-8?B?YjRWMEMvVFVNYXJzcE0vMGlTZWpYUFpqMjJFZEZUTmNXSnZLbEVzeTRUN044?=
+ =?utf-8?Q?od+dMww5VN9vC?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2f79aee-7de1-4374-1ef2-08d95713fa73
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2021 06:49:17.7693
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +On/45LMIKsd7zxRBKEq8IoKbUkzHvteg3bW4SKXFnk5fTwe2KfdgKYqfOENFbfL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2514
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 04.08.21 um 03:51 schrieb Tuo Li:
+> The varialbe gtt in the function amdgpu_ttm_tt_populate() and
+> amdgpu_ttm_tt_unpopulate() is guaranteed to be not NULL in the context.
+> Thus the null-pointer checks are redundant and can be dropped.
+>
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Tuo Li <islituo@gmail.com>
 
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-On 8/4/21 9:16 AM, Anshuman Khandual wrote:
-> I am working on a solution which re-works idmap extension logic based on the
-> difference between __idmap_text_end and PGDIR_SHIFT coverage, then creating
-> additional page table levels and reducing idmap_t0sz appropriately. All the
-> existing code including this fix here, will be dropped completely. Because
-> it might be difficult to extend this patch to get the entire thing in order,
-> the idea was to just fix [16K|36VA|48PA] which could then be backported and
-> then do the rework in mainline (which need not be backported)
-
-FYI.
-
-Here is the rework (draft standard, lightly tested and not documented) which
-I have been working on. It tries to take care of three different situations,
-when __idmap_text_end would not be covered with the existing idmap levels.
-
-1. idmap requires single new level
-2. idmap requires two new levels
-3. idmap does not require more levels but idmap_ptrs_per_pgd needs adjustment
-
-Applies after the fix here.
-
----
- arch/arm64/include/asm/assembler.h |  9 ++++++
- arch/arm64/kernel/head.S           | 62 +++++++++++++++-----------------------
- 2 files changed, 33 insertions(+), 38 deletions(-)
-
-diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-index 89faca0..d826641 100644
---- a/arch/arm64/include/asm/assembler.h
-+++ b/arch/arm64/include/asm/assembler.h
-@@ -25,6 +25,15 @@
- #include <asm/ptrace.h>
- #include <asm/thread_info.h>
- 
-+	.macro shift_to_nr_ptrs, reg1, reg2, reg3, tmp
-+	ldr_l   \reg3, idmap_t0sz
-+	add     \reg3, \reg3, \tmp
-+	mov     \reg2, #64
-+	sub     \reg2, \reg2, \reg3
-+	mov     \reg1, #1
-+	lsr     \reg1, \reg1, \reg2
-+	.endm
-+
- 	/*
- 	 * Provide a wxN alias for each wN register so what we can paste a xN
- 	 * reference after a 'w' to obtain the 32-bit version.
-diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index da33bbc..b308787 100644
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -327,54 +327,40 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
- 	dmb	sy
- 	dc	ivac, x6		// Invalidate potentially stale cache line
- 
--#if (VA_BITS < 48)
- #define EXTRA_SHIFT	(PGDIR_SHIFT + PAGE_SHIFT - 3)
- #define EXTRA_SHIFT_1	(EXTRA_SHIFT + PAGE_SHIFT - 3)
--#define EXTRA_PTRS	(1 << (PHYS_MASK_SHIFT - EXTRA_SHIFT))
--#define EXTRA_PTRS_1	(1 << (PHYS_MASK_SHIFT - EXTRA_SHIFT_1))
--
--	/*
--	 * If VA_BITS < 48, we have to configure an additional table level.
--	 * First, we have to verify our assumption that the current value of
--	 * VA_BITS was chosen such that all translation levels are fully
--	 * utilised, and that lowering T0SZ will always result in an additional
--	 * translation level to be configured.
--	 */
--#if VA_BITS != EXTRA_SHIFT
-+#if (VA_BITS > EXTRA_SHIFT)
- #error "Mismatch between VA_BITS and page size/number of translation levels"
- #endif
- 
--/*
-- * In this particular CONFIG_ARM64_16K_PAGES config, there might be a
-- * scenario where 'idmap_text_end' ends up high enough in the PA range
-- * requiring two additional idmap page table levels. Reduce idmap_t0sz
-- * to cover the entire PA range. This prevents table misconfiguration
-- * when a given idmap_t0sz value just requires single additional level
-- * where as two levels have been built.
-- */
--#if defined(CONFIG_ARM64_VA_BITS_36) && defined(CONFIG_ARM64_PA_BITS_48)
--	mov	x4, EXTRA_PTRS_1
--	create_table_entry x0, x3, EXTRA_SHIFT_1, x4, x5, x6
-+#if (VA_BITS == EXTRA_SHIFT)
-+	mov	x6, #TCR_T0SZ(VA_BITS_MIN)
-+	sub	x6, x6, x5
-+	cmp	x6, #(PAGE_SHIFT - 3)
-+	b.gt	8f
- 
--	mov	x4, PTRS_PER_PTE
-+	shift_to_nr_ptrs x4, x5, x6, #EXTRA_SHIFT
- 	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
-+	b	1f
-+8:
-+	shift_to_nr_ptrs x4, x5, x6, #EXTRA_SHIFT_1
-+	create_table_entry x0, x3, EXTRA_SHIFT_1, x4, x5, x6
- 
--	mov	x5, #64 - PHYS_MASK_SHIFT
--	adr_l	x6, idmap_t0sz
--	str	x5, [x6]
--	dmb	sy
--	dc	ivac, x6
--#else
--	mov	x4, EXTRA_PTRS
-+	mov     x4, PTRS_PER_PTE
- 	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
--#endif
--#else
--	/*
--	 * If VA_BITS == 48, we don't have to configure an additional
--	 * translation level, but the top-level table has more entries.
--	 */
--	mov	x4, #1 << (PHYS_MASK_SHIFT - PGDIR_SHIFT)
-+#elif (VA_BITS < EXTRA_SHIFT)
-+	mov	x6, #64
-+	sub	x6, x6, x5
-+	cmp	x6, EXTRA_SHIFT
-+	b.eq	1f
-+	b.gt	8f
-+
-+	shift_to_nr_ptrs x4, x5, x6, #PGDIR_SHIFT
- 	str_l	x4, idmap_ptrs_per_pgd, x5
-+	b	1f
-+8:
-+	shift_to_nr_ptrs x4, x5, x6, #EXTRA_SHIFT
-+	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
- #endif
- 1:
- 	ldr_l	x4, idmap_ptrs_per_pgd
--- 
-2.7.4
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> index 3a55f08e00e1..719539bd6c44 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> @@ -1121,7 +1121,7 @@ static int amdgpu_ttm_tt_populate(struct ttm_device *bdev,
+>   	struct amdgpu_ttm_tt *gtt = (void *)ttm;
+>   
+>   	/* user pages are bound by amdgpu_ttm_tt_pin_userptr() */
+> -	if (gtt && gtt->userptr) {
+> +	if (gtt->userptr) {
+>   		ttm->sg = kzalloc(sizeof(struct sg_table), GFP_KERNEL);
+>   		if (!ttm->sg)
+>   			return -ENOMEM;
+> @@ -1146,7 +1146,7 @@ static void amdgpu_ttm_tt_unpopulate(struct ttm_device *bdev,
+>   	struct amdgpu_ttm_tt *gtt = (void *)ttm;
+>   	struct amdgpu_device *adev;
+>   
+> -	if (gtt && gtt->userptr) {
+> +	if (gtt->userptr) {
+>   		amdgpu_ttm_tt_set_user_pages(ttm, NULL);
+>   		kfree(ttm->sg);
+>   		ttm->sg = NULL;
 
