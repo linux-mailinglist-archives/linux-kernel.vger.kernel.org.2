@@ -2,160 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747813E09CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A98F3E09CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240129AbhHDVDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240082AbhHDVDY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:03:24 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDCEBC061798
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:03:07 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id kl2so1791825qvb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:03:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zdp6WltwdPJTiYOXAA38Zmu1ytNFtDVTLeWSJfJQUTA=;
-        b=pYDFpii+lgAAPWns/N8L4Cmo0xyRztJF7JYeWgj8oHRZZO0s6PKpyDemjtdowSWg/S
-         t/RRf2/vebxyVqxstAUzy1XQVdpo8U8CcM+yCecg6xK1+EBidwwDlR2nd79tC2teo5oe
-         ZCU+GD5GpyO+cpGLLnCG9QZHL7wgVOIa2+Z78QvHvuPFzFbA5+hmYx8TocrlDUcXnwKN
-         s7P1cVm4hI9QbQd5xaUp9Tsl9IAFgJAZBcz6tbSZ2qOmwBCbqsRGxKd7EdvtOugP08lB
-         9F/qPbRjJ9qKRp4eN5wwt4phJ1ZXLovPrW7FFMti7r/jNmc5C6U/6nY50hYv5ByHBdo+
-         rNXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zdp6WltwdPJTiYOXAA38Zmu1ytNFtDVTLeWSJfJQUTA=;
-        b=cMTLPbDgbdmLOmWTID2UH1HjhICAkprOzEdI6mqJxqlGwxfUs0ibHcUtuqKRrTu+72
-         znxBr+hGkKxYH16ShcTXYvm6ajJ5jU/CJmmIZ+BwKXYsQilaOn5K1UVsSonCdqpa+N7a
-         xMUN2yCqfXmHssU9iC0ybJ3KiB/qFEuTR7Dvbtw4wGnuSvoZjihtm3tPrHrW5NIETLbn
-         gFNGpcTCIoKozXLFtg+34BJWdE57vl9fbgpClL9xyLRiel2h6U0ZdbO83y6H2N4bQJJp
-         oOZPGMZcYG7WvkIPscsMSk+DJxdrtEsxvM1s85fQFHYPmUADCH/+qHpdz99V8h/Sz6Fz
-         EwhQ==
-X-Gm-Message-State: AOAM532pAXPeegB42cc2uYkeJNS7TAg9wWcBg4npDJwqXzKpH4tvQK8P
-        e93TUgGJwwXxP0fEqblGbDFWVNqJCRYXiDkv0JjZTw==
-X-Google-Smtp-Source: ABdhPJwzRxAtYtsckH8eXVYGse7q8J4o42yWbF/cUsPjzKXnvsENpPibR4PjjuetgtQCFE0DxrNZ7FJB/59wegVXnLA=
-X-Received: by 2002:a0c:aa42:: with SMTP id e2mr1547891qvb.23.1628110987030;
- Wed, 04 Aug 2021 14:03:07 -0700 (PDT)
+        id S239981AbhHDVDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:03:33 -0400
+Received: from mga01.intel.com ([192.55.52.88]:50993 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231771AbhHDVDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 17:03:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="235972196"
+X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
+   d="scan'208";a="235972196"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 14:03:05 -0700
+X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
+   d="scan'208";a="512230737"
+Received: from bguvendi-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.99.93])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 14:03:05 -0700
+Subject: Re: [PATCH v5 11/12] x86/tdx: Don't write CSTAR MSR on Intel
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YQrdFLPaUnC8Q5bn@google.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <4c1ee7b9-9941-fdc4-73f5-3d2ef0530556@linux.intel.com>
+Date:   Wed, 4 Aug 2021 14:03:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210731195034.979084-1-dmitry.baryshkov@linaro.org>
- <20210731195034.979084-2-dmitry.baryshkov@linaro.org> <CAJZ5v0gWD8WSQU4oPMSdZFM9VpNpc4TAFJ=_wQLB60XFxw-Ciw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0gWD8WSQU4oPMSdZFM9VpNpc4TAFJ=_wQLB60XFxw-Ciw@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 5 Aug 2021 00:02:54 +0300
-Message-ID: <CAA8EJpq5DB2a=C+eo_S7QgVMzpm=mvUcC4DkWwGoKQ1g8trmgA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] PM: runtime: add devm_pm_runtime_enable helper
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YQrdFLPaUnC8Q5bn@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Aug 2021 at 21:07, Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Sat, Jul 31, 2021 at 9:50 PM Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
-> >
-> > A typical code pattern for pm_runtime_enable() call is to call it in the
-> > _probe function and to call pm_runtime_disable() both from _probe error
-> > path and from _remove function. For some drivers the whole remove
-> > function would consist of the call to pm_remove_disable().
-> >
-> > Add helper function to replace this bolierplate piece of code. Calling
-> > devm_pm_runtime_enable() removes the need for calling
-> > pm_runtime_disable() both in the probe()'s error path and in the
-> > remove() function.
-> >
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > ---
-> >  drivers/base/power/runtime.c | 17 +++++++++++++++++
-> >  include/linux/pm_runtime.h   |  4 ++++
-> >  2 files changed, 21 insertions(+)
-> >
-> > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> > index 8a66eaf731e4..ec94049442b9 100644
-> > --- a/drivers/base/power/runtime.c
-> > +++ b/drivers/base/power/runtime.c
-> > @@ -1447,6 +1447,23 @@ void pm_runtime_enable(struct device *dev)
-> >  }
-> >  EXPORT_SYMBOL_GPL(pm_runtime_enable);
-> >
-> > +static void pm_runtime_disable_action(void *data)
-> > +{
-> > +       pm_runtime_disable(data);
-> > +}
-> > +
-> > +/**
-> > + * devm_pm_runtime_enable - devres-enabled version of pm_runtime_enable.
-> > + * @dev: Device to handle.
-> > + */
-> > +int devm_pm_runtime_enable(struct device *dev)
-> > +{
-> > +       pm_runtime_enable(dev);
-> > +
-> > +       return devm_add_action_or_reset(dev, pm_runtime_disable_action, dev);
->
-> When exactly is pm_runtime_disable_action() going to run by this rule?
->  When the device goes away or when the driver is unbound from it?
-
-When the driver is unbound (either because probe() returns an error or
-because __device_release_driver() is being called).
-This corresponds to a typical call to pm_runtime_disable() from the
-probe()'s error path or in the remove() callback.
-
-> > +}
-> > +EXPORT_SYMBOL_GPL(devm_pm_runtime_enable);
-> > +
-> >  /**
-> >   * pm_runtime_forbid - Block runtime PM of a device.
-> >   * @dev: Device to handle.
-> > diff --git a/include/linux/pm_runtime.h b/include/linux/pm_runtime.h
-> > index aab8b35e9f8a..222da43b7096 100644
-> > --- a/include/linux/pm_runtime.h
-> > +++ b/include/linux/pm_runtime.h
-> > @@ -59,6 +59,8 @@ extern void pm_runtime_put_suppliers(struct device *dev);
-> >  extern void pm_runtime_new_link(struct device *dev);
-> >  extern void pm_runtime_drop_link(struct device_link *link);
-> >
-> > +extern int devm_pm_runtime_enable(struct device *dev);
-> > +
-> >  /**
-> >   * pm_runtime_get_if_in_use - Conditionally bump up runtime PM usage counter.
-> >   * @dev: Target device.
-> > @@ -253,6 +255,8 @@ static inline void __pm_runtime_disable(struct device *dev, bool c) {}
-> >  static inline void pm_runtime_allow(struct device *dev) {}
-> >  static inline void pm_runtime_forbid(struct device *dev) {}
-> >
-> > +static inline int devm_pm_runtime_enable(struct device *dev) { return 0; }
-> > +
-> >  static inline void pm_suspend_ignore_children(struct device *dev, bool enable) {}
-> >  static inline void pm_runtime_get_noresume(struct device *dev) {}
-> >  static inline void pm_runtime_put_noidle(struct device *dev) {}
-> > --
-> > 2.30.2
-> >
 
 
+On 8/4/21 11:31 AM, Sean Christopherson wrote:
+>> On Intel CPUs writing the CSTAR MSR is not really needed. Syscalls
+>> from 32bit work using SYSENTER and 32bit SYSCALL is an illegal opcode.
+>> But the kernel did write it anyways even though it was ignored by
+>> the CPU. Inside a TDX guest this actually leads to a #GP. While the #GP
+>> is caught and recovered from, it prints an ugly message at boot.
+>> Do not write the CSTAR MSR on Intel CPUs.
+> Not that it really matters, but...
+> 
+> Is #GP the actual TDX-Module behavior?  If so, isn't that a contradiction with
+
+No, #GP is triggered by guest.
+
+> respect to the TDX-Module architecture?  It says:
+> 
+>    guest TD access violations to MSRs can cause a #GP(0) in most cases where the
+>    MSR is enumerated as inaccessible by the Intel TDX module via CPUID
+>    virtualization.  In other cases, guest TD access violations to MSRs can cause
+>    a #VE.
+> 
+> Given that there is no dedicated CPUID flag for CSTAR and CSTAR obviously exists
+> on Intel CPUs, I don't see how the TDX-Module can possible enumerate CSTAR as
+> being inaccessible.
+> 
+> Regardless of #GP versus #VE, "Table 16.2 MSR Virtualization" needs to state the
+> actual behavior.
+
+Even in this case, it will trigger #VE. But since CSTAR MSR is not supported, write
+to it will fail and leads to #VE fault.
+
+File: arch/x86/kernel/traps.c
+
+1183 DEFINE_IDTENTRY(exc_virtualization_exception)
+1201         if (!ret)
+1202                 ret = tdg_handle_virtualization_exception(regs, &ve);
+1203         /*
+1204          * If tdg_handle_virtualization_exception() could not process
+1205          * it successfully, treat it as #GP(0) and handle it.
+1206          */
+1207         if (ret)
+1208                 ve_raise_fault(regs, 0);
 
 -- 
-With best wishes
-Dmitry
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
