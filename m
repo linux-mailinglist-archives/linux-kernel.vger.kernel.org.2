@@ -2,126 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46B13DFD18
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2933DFD1A
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236650AbhHDIkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:40:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:57608 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236477AbhHDIks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:40:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C39831B;
-        Wed,  4 Aug 2021 01:40:36 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 025663F66F;
-        Wed,  4 Aug 2021 01:40:34 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 09:40:32 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Cc:     sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, avajid@codeaurora.org,
-        adharmap@codeaurora.org
-Subject: Re: [PATCH] firmware: arm_scmi: Free mailbox channels if probe fails
-Message-ID: <20210804084032.GS6592@e120937-lin>
-References: <1628029342-3638-1-git-send-email-rishabhb@codeaurora.org>
- <20210804083358.GR6592@e120937-lin>
+        id S236654AbhHDIlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235307AbhHDIlu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 04:41:50 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E75C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 01:41:37 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so1043356oti.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 01:41:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ry/C788Ax+QRjoem679Qz9xjcGp3R8vxYXF3Ug8T/cU=;
+        b=CdeSijkPZlqUImGIAEzCPBTp6l7WQasuELwBXyk/ZoG5VDeh1gjR+9z3QgEETkKMXx
+         ESlpE0ZjQ6Hm4EczMgQduF7lq//myVLatAB4ctFpbLT5+96N383jrCYI+6OROefnr406
+         vQk/G+owiXqx6JVCRyqvTddr/+DGhRXI+vd61ALTEzm5pGxtmfJp9fAHE+I7gsVluHKn
+         HzgA76R4usQfRo5H8GM4t39wQzbxhwP7HYrKHuoMo1v4E8IHXBPydAKh5qHaWXy8oW+Y
+         J+Qikv9yXbG5K5ClLtSz4jV/dOrpGWZf0sJpFAB0kWfvC8KHFw9VjvZb5H7RQw8e0C6m
+         s+2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ry/C788Ax+QRjoem679Qz9xjcGp3R8vxYXF3Ug8T/cU=;
+        b=jYb7ghB0yR2qdjGm9dJ4LswTw6gvlWFSQ1fIvsVxtHMMa9ntf199xJYZwd68EFj6ni
+         upVwoxqgXRyY56Gh6yCg0sKb+CyAYiXGS6gi0N6urkMTg9feV9WvfTOhnTvOP9xwHjsD
+         FMCJM5zR/neehnTyQxQ1Pm/gtl8F8Fi/pQz0ohy560OkmaqBGUlc/9XVoyA3+e5Kn9yb
+         8Und0LV/u4VTOU+OzOXhspMmLDG/xoHdIM39SG3CwYi+LM3RqTYdnHvPJ0htxryOJ0HS
+         IMI25msVYbMeg/al3M8o51FIn2MaZ01VFn+jNUsX0Eu7nK93J18LLjsb+tNW/roX2Ngm
+         SS7w==
+X-Gm-Message-State: AOAM531Oq3UwDIvAGrwmKRoh6Us2/YTrdCHldpe/6/lNiUCRAgMdwdA+
+        JfoEYo84hBp8tKdbiX3yoJV6f4gD/RnwOLmBuIi73A==
+X-Google-Smtp-Source: ABdhPJwULOwQJrId2LR6uf4OqnUiOnC6+yQnX9X5/0EP+lRGGxsuaAeYFWMZ2K7UDJwoWl0nMWJTt4uXnmlICOmyUos=
+X-Received: by 2002:a05:6830:1490:: with SMTP id s16mr2295783otq.233.1628066496794;
+ Wed, 04 Aug 2021 01:41:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804083358.GR6592@e120937-lin>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210804082230.10837-1-Kuan-Ying.Lee@mediatek.com> <20210804082230.10837-3-Kuan-Ying.Lee@mediatek.com>
+In-Reply-To: <20210804082230.10837-3-Kuan-Ying.Lee@mediatek.com>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 4 Aug 2021 10:41:25 +0200
+Message-ID: <CANpmjNMAw=rcp_V+G_vjRjArj+09AkOxtC+wUNs-e1RRvfQm6w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] kasan, slub: reset tag when printing address
+To:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+Cc:     Nicholas Tang <nicholas.tang@mediatek.com>,
+        Andrew Yang <andrew.tang@mediatek.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 09:33:58AM +0100, Cristian Marussi wrote:
-> On Tue, Aug 03, 2021 at 03:22:22PM -0700, Rishabh Bhatnagar wrote:
-> > Mailbox channels for the base protocol are setup during probe.
-> > There can be a scenario where probe fails to acquire the base
-> > protocol due to a timeout leading to cleaning up of all device
-> > managed memory including the scmi_mailbox structure setup during
-> > mailbox_chan_setup function.
-> > [   12.735104]arm-scmi soc:qcom,scmi: timed out in resp(caller: version_get+0x84/0x140)
-> > [   12.735224]arm-scmi soc:qcom,scmi: unable to communicate with SCMI
-> > [   12.735947]arm-scmi: probe of soc:qcom,scmi failed with error -110
-> > 
-> > Now when a message arrives at cpu slightly after the timeout, the mailbox
-> > controller will try to call the rx_callback of the client and might end
-> > up accessing freed memory.
-> > [   12.758363][    C0] Call trace:
-> > [   12.758367][    C0]  rx_callback+0x24/0x160
-> > [   12.758372][    C0]  mbox_chan_received_data+0x44/0x94
-> > [   12.758386][    C0]  __handle_irq_event_percpu+0xd4/0x240
-> > This patch frees the mailbox channels setup during probe and adds some more
-> > error handling in case the probe fails.
-> > 
-> > Change-Id: I1214ec2c4c92c4a3ca5fa73de11e0e403b13b46a
-> > Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> 
-> Hi Rishabh,
-> 
-> Good catch, thanks for this.
-> 
+On Wed, 4 Aug 2021 at 10:23, Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com> wrote:
+>
+> The address still includes the tags when it is printed.
+> With hardware tag-based kasan enabled, we will get a
+> false positive KASAN issue when we access metadata.
+>
+> Reset the tag before we access the metadata.
+>
+> Fixes: aa1ef4d7b3f6 ("kasan, mm: reset tags when accessing metadata")
+> Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+> Suggested-by: Marco Elver <elver@google.com>
 
-Hi again,
+Note, in this case Suggested-by is inappropriate, because I did not
+suggest the change in any way (you already had it in v1). I just
+commented on the fact that it's missing a Fixes so stable can pick it
+up and some clarification.
 
-sorry forgot one thing.
+Reviewed-by: Marco Elver <elver@google.com>
 
-> > ---
-> >  drivers/firmware/arm_scmi/driver.c | 11 +++++++++--
-> >  1 file changed, 9 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> > index 9b2e8d4..518c7b9 100644
-> > --- a/drivers/firmware/arm_scmi/driver.c
-> > +++ b/drivers/firmware/arm_scmi/driver.c
-> > @@ -1430,7 +1430,7 @@ static int scmi_probe(struct platform_device *pdev)
-> >  
-> >  	ret = scmi_xfer_info_init(info);
-> >  	if (ret)
-> > -		return ret;
-> > +		goto clear_txrx_setup;
-> >  
-> >  	if (scmi_notification_init(handle))
-> >  		dev_err(dev, "SCMI Notifications NOT available.\n");
-> > @@ -1443,7 +1443,7 @@ static int scmi_probe(struct platform_device *pdev)
-> >  	ret = scmi_protocol_acquire(handle, SCMI_PROTOCOL_BASE);
-> >  	if (ret) {
-> >  		dev_err(dev, "unable to communicate with SCMI\n");
-> > -		return ret;
-> > +		goto notification_exit;
-> >  	}
-> >  
-> >  	mutex_lock(&scmi_list_mutex);
-> > @@ -1482,6 +1482,13 @@ static int scmi_probe(struct platform_device *pdev)
-> >  	}
-> >  
-> >  	return 0;
-> > +
-> > +notification_exit:
-> > +	scmi_notification_exit(&info->handle);
-> > +clear_txrx_setup:
-> > +	idr_for_each(&info->tx_idr, info->desc->ops->chan_free, &info->tx_idr);
-> > +	idr_for_each(&info->rx_idr, info->desc->ops->chan_free, &info->rx_idr);
-> > +	return ret;
-> >  }
-> >  
-> 
-> Shouldn't we also clear the internal IDRs memory allocs after these
-> idr_for_each() adding a couple of:
-> 
-> 	idr_destroy(&info->tx_idr);
-> 
-> 	idr_destroy(&info->rx_idr);
-> 
-> like scmi_remove() does ?
-> 
-
-Maybe it could be worth at this point unifying this common "cleanup-all-channels"
-logic shared between scmi_probe()-error-path and scmi_remove() into its own
-helper function to call from both sites.
-
-Thanks,
-Cristian
+> ---
+>  mm/slub.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/slub.c b/mm/slub.c
+> index b6c5205252eb..f77d8cd79ef7 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -576,8 +576,8 @@ static void print_section(char *level, char *text, u8 *addr,
+>                           unsigned int length)
+>  {
+>         metadata_access_enable();
+> -       print_hex_dump(level, kasan_reset_tag(text), DUMP_PREFIX_ADDRESS,
+> -                       16, 1, addr, length, 1);
+> +       print_hex_dump(level, text, DUMP_PREFIX_ADDRESS,
+> +                       16, 1, kasan_reset_tag((void *)addr), length, 1);
+>         metadata_access_disable();
+>  }
+>
+> --
+> 2.18.0
