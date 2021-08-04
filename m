@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E953E0194
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5EF3E0193
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238224AbhHDNEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237040AbhHDND7 (ORCPT
+        id S237586AbhHDND0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:03:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32575 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237364AbhHDNDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:03:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA04C0613D5;
-        Wed,  4 Aug 2021 06:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Nkb/72Yala+eTU54cegs5bW6fYqKpGJitAnXLiCjS1E=; b=C1/IsNAKPp/DB65EqmxyI4aBBT
-        M7p7NiRZnGd9uXsgKe1CSlz08nIJeVgsxB0+cJc08sSjlHfApTWm/LSKPLup0K9oxIoOcYyao7GbB
-        85w1Db3cM+aTydWkrVQcJoTdN+Zh/4aZf6UEddcs/tMZFCfC4FfC5JcaOuh03Y5Huah7CJQQNRw4L
-        MffjRLZj5cginhSHRkJSBPl8KDVOQ5xDf4LGe7BH7M6lUtWc+aMT+dxPgrlnYGEeJkSo63MLT1k+C
-        UXEsTPep0KFCXWV4alpJFh3wHpGgmcliFTsk5CnSKlmIm4J7QmWiwzMMA331mEfHx9sAzwgZX9k9V
-        a0bH7gfw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBGXc-005rRv-Pe; Wed, 04 Aug 2021 13:02:40 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DF6F89862B0; Wed,  4 Aug 2021 15:02:34 +0200 (CEST)
-Date:   Wed, 4 Aug 2021 15:02:34 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Liam Merwick <Liam.Merwick@oracle.com>
-Cc:     Like Xu <like.xu.linux@gmail.com>,
-        Joerg Roedel <joerg.roedel@amd.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] perf/x86/amd: Don't touch the AMD64_EVENTSEL_HOSTONLY
- bit inside the guest
-Message-ID: <20210804130234.GE8057@worktop.programming.kicks-ass.net>
-References: <20210802070850.35295-1-likexu@tencent.com>
- <20210804112854.lmizhfddz3qgli7t@oracle.com>
+        Wed, 4 Aug 2021 09:03:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628082183;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=59zmCpCBlITuttXNI4RN6CTgSr+o23QtyJ1nteFPfIs=;
+        b=f/GeneiXluWI2hRA714hCrn35EnVtmP3Hj8hi2dSXanBGQ6jJYgHRulSgc+xkzEbDCBh28
+        f+PfEDbyg8NjmnwMGe0wL3MRh/EOwN+OMcc+bKZoxaMQrktmpu5q5LPJPd4didSbmEHl0F
+        mYXKOQxDYuv7WyuevHUoK/9IHGbdKMg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-296-66hV4PoLOOizQQL6lquQDg-1; Wed, 04 Aug 2021 09:03:02 -0400
+X-MC-Unique: 66hV4PoLOOizQQL6lquQDg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 33CF31853040;
+        Wed,  4 Aug 2021 13:03:01 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4518A5DD68;
+        Wed,  4 Aug 2021 13:02:59 +0000 (UTC)
+Message-ID: <dcb6aad4e544bed88dd05d3d3c64ac4b9b9f5a25.camel@redhat.com>
+Subject: Re: [PATCH] KVM: selftests: fix hyperv_clock test
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Date:   Wed, 04 Aug 2021 16:02:58 +0300
+In-Reply-To: <74cec7b5-ae92-2f34-9aa5-30306509f933@redhat.com>
+References: <20210804112057.409498-1-mlevitsk@redhat.com>
+         <74cec7b5-ae92-2f34-9aa5-30306509f933@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804112854.lmizhfddz3qgli7t@oracle.com>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 12:28:54PM +0100, Liam Merwick wrote:
-> On (08/02/21 15:08), Like Xu wrote:
+On Wed, 2021-08-04 at 14:24 +0200, Paolo Bonzini wrote:
+> On 04/08/21 13:20, Maxim Levitsky wrote:
+> > The test was mistakenly using addr_gpa2hva on a gva
+> > and that happened to work accidentally.
+> > 
+> > commit 106a2e766eae ("KVM: selftests:
+> > Lower the min virtual address for misc page allocations")
+> > revealed this bug.
+> > 
+> > Fixes: 106a2e766eae ("KVM: selftests: Lower the min virtual address for misc page allocations")
+> 
+> The right "Fixes" is 2c7f76b4c42b ("selftests: kvm: Add basic Hyper-V 
+> clocksources tests", 2021-03-18).
 
-> > From: Like Xu <likexu@tencent.com>
-> > 
-> > If we use "perf record" in an AMD Milan guest, dmesg reports a #GP
-> > warning from an unchecked MSR access error on MSR_F15H_PERF_CTLx:
-> > 
-> > [] unchecked MSR access error: WRMSR to 0xc0010200 (tried to write
-> > 0x0000020000110076) at rIP: 0xffffffff8106ddb4 (native_write_msr+0x4/0x20)
-> > [] Call Trace:
-> > []  amd_pmu_disable_event+0x22/0x90
-> > []  x86_pmu_stop+0x4c/0xa0
-> > []  x86_pmu_del+0x3a/0x140
-> > 
-> > The AMD64_EVENTSEL_HOSTONLY bit is defined and used on the host,
-> > while the guest perf driver should avoid such use.
-> > 
-> > Fixes: 1018faa6cf23 ("perf/x86/kvm: Fix Host-Only/Guest-Only counting with SVM disabled")
-> > Signed-off-by: Like Xu <likexu@tencent.com>
-> > Tested-by: Kim Phillips <kim.phillips@amd.com>
-> 
-> Reviewed-by: Liam Merwick <liam.merwick@oracle.com>
-> Tested-by: Liam Merwick <liam.merwick@oracle.com>
-> [ Patch applied to a 5.4 branch ]
-> 
-> Should it also include
-> 
-> Cc: stable@vger.kernel.org
+Makes sense. I wasn't sure about which commit to blame here.
+I'll resend the patch.
 
-An accurate Fixes tag is usually sufficient to trigger the stable
-robots. Anyway, thanks!
+Best regards,
+	Maxim Levitsky
+> 
+> Paolo
+> 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >   tools/testing/selftests/kvm/x86_64/hyperv_clock.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_clock.c b/tools/testing/selftests/kvm/x86_64/hyperv_clock.c
+> > index bab10ae787b6..e0b2bb1339b1 100644
+> > --- a/tools/testing/selftests/kvm/x86_64/hyperv_clock.c
+> > +++ b/tools/testing/selftests/kvm/x86_64/hyperv_clock.c
+> > @@ -215,7 +215,7 @@ int main(void)
+> >   	vcpu_set_hv_cpuid(vm, VCPU_ID);
+> >   
+> >   	tsc_page_gva = vm_vaddr_alloc_page(vm);
+> > -	memset(addr_gpa2hva(vm, tsc_page_gva), 0x0, getpagesize());
+> > +	memset(addr_gva2hva(vm, tsc_page_gva), 0x0, getpagesize());
+> >   	TEST_ASSERT((addr_gva2gpa(vm, tsc_page_gva) & (getpagesize() - 1)) == 0,
+> >   		"TSC page has to be page aligned\n");
+> >   	vcpu_args_set(vm, VCPU_ID, 2, tsc_page_gva, addr_gva2gpa(vm, tsc_page_gva));
+> > 
+
+
