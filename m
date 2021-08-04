@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219653DF91F
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE993DF927
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 03:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbhHDBEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Aug 2021 21:04:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58426 "EHLO mail.kernel.org"
+        id S232333AbhHDBHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Aug 2021 21:07:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232116AbhHDBEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Aug 2021 21:04:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49EB660EE9;
-        Wed,  4 Aug 2021 01:03:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628039032;
-        bh=3zpTVINyDQY06hDwhYcrGO5+Ep7Qt5Tfwx09qPKhUSk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YKP6ry3t6DYW1/STHLt13HzOzHU51+xx8mVeLUKW6eVa16+T07HRrn4jB2qwvsiTJ
-         lroMLc0yp7Mk0nu+cTODcTJaizbnClbLg7iAD5/TZ0edGk32QjxPoqvIyH4S+5zW8O
-         +tXj9Y3R8owoZDv39tLITGVLB3Uvd5bomqd+KacsGUc6qu7am0XGodkGZlcawTGJzV
-         2kDTnkkGMEmn1AEjuwDG4v+Y1Tcp4NIa7BIfTBU6ltNiirdAjnyj1rTotkNoJh7+kL
-         kYqPdGxEQbL40TrbUMS4Rtqzg/rk+XnIC9ZjPqvUrXqhE0fyHoz95Od7oZGjQnjxuE
-         NWvMCDgHBGHVA==
-Date:   Tue, 3 Aug 2021 18:03:51 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Leonidas P. Papadakos" <papadakospan@gmail.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        zajec5@gmail.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
-Message-ID: <20210804010351.GM3601466@magnolia>
-References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
- <20210716114635.14797-1-papadakospan@gmail.com>
- <CAHk-=whfeq9gyPWK3yao6cCj7LKeU3vQEDGJ3rKDdcaPNVMQzQ@mail.gmail.com>
- <YQnHxIU+EAAxIjZA@mit.edu>
- <YQnU5m/ur+0D5MfJ@casper.infradead.org>
- <YQnZgq3gMKGI1Nig@mit.edu>
- <CAHk-=wiSwzrWOSN5UCrej3YcLRPmW5tViGSA5p2m-hiyKnQiMg@mail.gmail.com>
- <YQnkGMxZCgCWXQPf@mit.edu>
+        id S230083AbhHDBHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 3 Aug 2021 21:07:20 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7254E60EE9;
+        Wed,  4 Aug 2021 01:07:07 +0000 (UTC)
+Date:   Tue, 3 Aug 2021 21:07:05 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Karol Herbst <karolherbst@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, nouveau@lists.freedesktop.org
+Subject: Re: [PATCH 06/38] x86/mmiotrace: Replace deprecated CPU-hotplug
+ functions.
+Message-ID: <20210803210705.2fdc9d1a@rorschach.local.home>
+In-Reply-To: <20210803141621.780504-7-bigeasy@linutronix.de>
+References: <20210803141621.780504-1-bigeasy@linutronix.de>
+        <20210803141621.780504-7-bigeasy@linutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQnkGMxZCgCWXQPf@mit.edu>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 08:49:28PM -0400, Theodore Ts'o wrote:
-> On Tue, Aug 03, 2021 at 05:10:22PM -0700, Linus Torvalds wrote:
-> > The user-space FUSE thing does indeed work reasonably well.
-> > 
-> > It performs horribly badly if you care about things like that, though.
-> > 
-> > In fact, your own numbers kind of show that:
-> > 
-> >   ntfs/default: 670 tests, 55 failures, 211 skipped, 34783 seconds
-> >   ntfs3/default: 664 tests, 67 failures, 206 skipped, 8106 seconds
-> > 
-> > and that's kind of the point of ntfs3.
+On Tue,  3 Aug 2021 16:15:49 +0200
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+
+> The functions get_online_cpus() and put_online_cpus() have been
+> deprecated during the CPU hotplug rework. They map directly to
+> cpus_read_lock() and cpus_read_unlock().
 > 
-> Sure, although if you run fstress in parallel ntfs3 will lock up, the
-> system hard, and it has at least one lockdep deadlock complaints.
-> It's not up to me, but personally, I'd feel better if *someone* at
-> Paragon Software responded to Darrrick and my queries about their
-> quality assurance, and/or made commitments that they would at least
-> *try* to fix the problems that about 5 minutes of testing using
-> fstests turned up trivially.
-
-<cough> Yes, my aim was to gauge their interest in actively QAing the
-driver's current problems so that it doesn't become one of the shabby
-Linux filesystem drivers, like <cough>ntfs.
-
-Note I didn't even ask for a particular percentage of passing tests,
-because I already know that non-Unix filesystems fail the tests that
-look for the more Unix-specific behaviors.
-
-I really only wanted them to tell /us/ what the baseline is.  IMHO the
-silence from them is a lot more telling.  Both generic/013 and
-generic/475 are basic "try to create files and read and write data to
-them" exercisers; failing those is a red flag.
-
---D
-
-> I can even give them patches and configsto make it trivially easy for
-> them to run fstests using KVM or GCE....
+> Replace deprecated CPU-hotplug functions with the official version.
+> The behavior remains unchanged.
 > 
-> 				- Ted
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+-- Steve
+
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Karol Herbst <karolherbst@gmail.com>
+> Cc: Pekka Paalanen <ppaalanen@gmail.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: x86@kernel.org
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: nouveau@lists.freedesktop.org
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+>  arch/x86/mm/mmio-mod.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/mm/mmio-mod.c b/arch/x86/mm/mmio-mod.c
+> index cd768dafca9e9..933a2ebad471b 100644
+> --- a/arch/x86/mm/mmio-mod.c
+> +++ b/arch/x86/mm/mmio-mod.c
+> @@ -376,12 +376,12 @@ static void enter_uniprocessor(void)
+>  		goto out;
+>  	}
+>  
+> -	get_online_cpus();
+> +	cpus_read_lock();
+>  	cpumask_copy(downed_cpus, cpu_online_mask);
+>  	cpumask_clear_cpu(cpumask_first(cpu_online_mask), downed_cpus);
+>  	if (num_online_cpus() > 1)
+>  		pr_notice("Disabling non-boot CPUs...\n");
+> -	put_online_cpus();
+> +	cpus_read_unlock();
+>  
+>  	for_each_cpu(cpu, downed_cpus) {
+>  		err = remove_cpu(cpu);
+
