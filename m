@@ -2,178 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244CC3E0139
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AB33E013B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238129AbhHDMdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 08:33:40 -0400
-Received: from mga17.intel.com ([192.55.52.151]:59932 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237177AbhHDMdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 08:33:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="194190292"
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="194190292"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 05:33:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
-   d="scan'208";a="480146226"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga008.fm.intel.com with ESMTP; 04 Aug 2021 05:33:23 -0700
-Subject: Re: [PATCH v4 4/5] mmc: sdhci: move
- SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN frequency limit
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Kevin Liu <kliu5@marvell.com>,
-        Suneel Garapati <suneel.garapati@xilinx.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Al Cooper <alcooperx@gmail.com>
-References: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
- <ff3907df3aa91f83a4a0a22b63d51bfe491ed039.1627204633.git.mirq-linux@rere.qmqm.pl>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <2cdb95f3-8943-715a-d3d7-804953e49786@intel.com>
-Date:   Wed, 4 Aug 2021 15:33:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <ff3907df3aa91f83a4a0a22b63d51bfe491ed039.1627204633.git.mirq-linux@rere.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S238042AbhHDMev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 08:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235639AbhHDMes (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 08:34:48 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02769C0613D5;
+        Wed,  4 Aug 2021 05:34:35 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so1356388wmb.5;
+        Wed, 04 Aug 2021 05:34:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=T7y3XoKx560IIuodiyJF+1EGhUXPpmwekuXB+OdFOz4=;
+        b=n9pC7MBO5MmUgT0EmL1pM3aubyN710oo5qB+xQyN4X08wASge/2ZfbZxlzjE44VIGo
+         T67r9ZIvHM/DUgjzYRS7FrTsh/SckcDlVpBERW1U1c6Vm2Z1EitptWOettxtzrHA2PCK
+         Oo/EZUN9+1hpVsezW80/mGWzlhD+26IqCvDDute+uNiW9l75iO2gPdB4uQWUArAIT7Ht
+         /Afs+yrXrAG4Uvg1O5QNNKIs/855OJynS3H3M9luymfLoR9h96ep/n47F+bjyxYmj5m7
+         a+RsMM+h3kEeEmq+aUomXofG3ZBsZWmHctO2CZV8BmC//Bhi/1EFoaY9V97eXiorZz7S
+         yXsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=T7y3XoKx560IIuodiyJF+1EGhUXPpmwekuXB+OdFOz4=;
+        b=GuOy/OX1PiTcgQ7R1hMb38/SoS35YPKrOJMxO3+MkDxTEG5mdOCoxDUxSfnksOCFY8
+         rLMlRG9KSn8Yum/XT1bb7U70NuTJfbwqKVsWgaDiNiI/cSVHITsnpw9hkETx8YuAwLQg
+         NF0M5T5xvOgTa98kzhWoi0hnmfVjVdJ9Lk4nla1aZhHQnWgULgxwwmo+c782JlckqAg2
+         X7BOoIV10U3B7GD5+AoRTZoJqtZaOKsHi3cer+C0NaNr8GwdFau48xyqBeQBp5V/l2b7
+         PICdNRFlzzVO+HxUf/ucVklYXiTsyr+hTVYC3cOQ2N5b18NAm8of6leSzjciIsu01OJw
+         aHrg==
+X-Gm-Message-State: AOAM532UfpjE//h71SMJhKmsUEwEj49wRmXn8q0IeaYvRYjISwxi7Nic
+        V8Wzgxd6IB8GdWHRzxX5xpaLEKeKkSk=
+X-Google-Smtp-Source: ABdhPJzgnQ6FVcLyLBH3abz/FShyYq886TUhMfAGMuepHLepG5xOg2dUzT24+pNWvIbWkUyMRkbFTQ==
+X-Received: by 2002:a05:600c:259:: with SMTP id 25mr23867004wmj.57.1628080473469;
+        Wed, 04 Aug 2021 05:34:33 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d4a:5b00:f5aa:e9bf:ac96:6276])
+        by smtp.gmail.com with ESMTPSA id g138sm2620158wmg.32.2021.08.04.05.34.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 05:34:33 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, Pavel Machek <pavel@ucw.cz>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH 0/2] More (hopefully final) Kconfig clean-up after IDE removal 
+Date:   Wed,  4 Aug 2021 14:34:24 +0200
+Message-Id: <20210804123426.16947-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/21 12:20 pm, Michał Mirosław wrote:
-> Push handling of clock frequency dependence for
-> SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN quirk to the drivers that use it.
+Dear Christoph, dear Jens,
 
-What is the max_clk dependency for, and why push it down?
+here is a follow-up to the issue of Kconfig references to obsolete IDE configs,
+which I first identified and addressed in commit 094121ef815f ("arch: Kconfig:
+clean up obsolete use of HAVE_IDE").
 
-> 
-> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-> ---
-> v4: fix build issue reported by kernel test robot
-> v3: rebased on v5.14-rc2 and reworded commitmsg
-> v2: reworded commitmsg
-> ---
->  drivers/mmc/host/sdhci-of-arasan.c  | 11 ++++-------
->  drivers/mmc/host/sdhci-of-dwcmshc.c |  8 +++++---
->  drivers/mmc/host/sdhci.c            |  3 +--
->  3 files changed, 10 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-> index 737e2bfdedc2..f2a6441ab540 100644
-> --- a/drivers/mmc/host/sdhci-of-arasan.c
-> +++ b/drivers/mmc/host/sdhci-of-arasan.c
-> @@ -452,8 +452,7 @@ static const struct sdhci_ops sdhci_arasan_cqe_ops = {
->  static const struct sdhci_pltfm_data sdhci_arasan_cqe_pdata = {
->  	.ops = &sdhci_arasan_cqe_ops,
->  	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
-> -	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
-> -			SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN,
-> +	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
->  };
->  
->  #ifdef CONFIG_PM_SLEEP
-> @@ -1118,7 +1117,6 @@ static const struct sdhci_pltfm_data sdhci_arasan_pdata = {
->  	.ops = &sdhci_arasan_ops,
->  	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
->  	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
-> -			SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN |
->  			SDHCI_QUIRK2_STOP_WITH_TC,
->  };
->  
-> @@ -1141,7 +1139,6 @@ static const struct sdhci_pltfm_data sdhci_keembay_emmc_pdata = {
->  		SDHCI_QUIRK_32BIT_DMA_SIZE |
->  		SDHCI_QUIRK_32BIT_ADMA_SIZE,
->  	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
-> -		SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN |
->  		SDHCI_QUIRK2_CAPS_BIT63_FOR_HS400 |
->  		SDHCI_QUIRK2_STOP_WITH_TC |
->  		SDHCI_QUIRK2_BROKEN_64_BIT_DMA,
-> @@ -1156,7 +1153,6 @@ static const struct sdhci_pltfm_data sdhci_keembay_sd_pdata = {
->  		SDHCI_QUIRK_32BIT_DMA_SIZE |
->  		SDHCI_QUIRK_32BIT_ADMA_SIZE,
->  	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
-> -		SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN |
->  		SDHCI_QUIRK2_CARD_ON_NEEDS_BUS_ON |
->  		SDHCI_QUIRK2_STOP_WITH_TC |
->  		SDHCI_QUIRK2_BROKEN_64_BIT_DMA,
-> @@ -1171,7 +1167,6 @@ static const struct sdhci_pltfm_data sdhci_keembay_sdio_pdata = {
->  		SDHCI_QUIRK_32BIT_DMA_SIZE |
->  		SDHCI_QUIRK_32BIT_ADMA_SIZE,
->  	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
-> -		SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN |
->  		SDHCI_QUIRK2_HOST_OFF_CARD_ON |
->  		SDHCI_QUIRK2_BROKEN_64_BIT_DMA,
->  };
-> @@ -1197,7 +1192,6 @@ static struct sdhci_arasan_of_data intel_lgm_sdxc_data = {
->  static const struct sdhci_pltfm_data sdhci_arasan_zynqmp_pdata = {
->  	.ops = &sdhci_arasan_ops,
->  	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
-> -			SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN |
->  			SDHCI_QUIRK2_STOP_WITH_TC,
->  };
->  
-> @@ -1502,6 +1496,9 @@ static int sdhci_arasan_add_host(struct sdhci_arasan_data *sdhci_arasan)
->  	bool dma64;
->  	int ret;
->  
-> +	if (sdhci_pltfm_clk_get_max_clock(host) <= 25000000)
-> +		host->quirks2 |= SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN;
-> +
->  	if (!sdhci_arasan->has_cqe)
->  		return sdhci_add_host(host);
->  
-> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> index bac874ab0b33..b6b7c4068e90 100644
-> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> @@ -283,14 +283,13 @@ static const struct sdhci_pltfm_data sdhci_dwcmshc_rk3568_pdata = {
->  	.ops = &sdhci_dwcmshc_rk3568_ops,
->  	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN |
->  		  SDHCI_QUIRK_BROKEN_TIMEOUT_VAL,
-> -	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
-> -		   SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN,
-> +	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
->  };
->  
->  static int dwcmshc_rk3568_init(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
->  {
-> -	int err;
->  	struct rk3568_priv *priv = dwc_priv->priv;
-> +	int err;
->  
->  	priv->rockchip_clks[0].id = "axi";
->  	priv->rockchip_clks[1].id = "block";
-> @@ -318,6 +317,9 @@ static int dwcmshc_rk3568_init(struct sdhci_host *host, struct dwcmshc_priv *dwc
->  	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_TXCLK);
->  	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_STRBIN);
->  
-> +	if (sdhci_pltfm_clk_get_max_clock(host) <= 25000000)
-> +		host->quirks2 |= SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN;
-> +
->  	return 0;
->  }
->  
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index 0993f7d0ce8e..cfa314e659bc 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -1905,8 +1905,7 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
->  			/* Version 3.00 divisors must be a multiple of 2. */
->  			if (host->max_clk <= clock) {
->  				div = 1;
-> -				if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
-> -					&& host->max_clk <= 25000000)
-> +				if (host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
->  					div = 2;
->  			} else {
->  				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
-> 
+Following checkkconfigsymbols.py indications, this patch series cleans up all
+references to removed IDE Kconfig symbol throughout the current kernel tree.
+
+Pavel, Sekhar, Bartosz, you are CCed, just to let know about minor follow-up
+cleanup in your files.
+
+Christoph, please review and ack.
+
+Jens, please pick these two further clean-up patches.
+
+
+Best regards,
+
+Lukas
+
+Lukas Bulwahn (2):
+  leds: trigger: remove reference to obsolete CONFIG_IDE_GD_ATA
+  arm: davinci: remove reference to obsolete BLK_DEV_PALMCHIP_BK3710
+
+ arch/arm/mach-davinci/board-dm644x-evm.c  | 3 +--
+ arch/arm/mach-davinci/board-dm646x-evm.c  | 3 +--
+ arch/arm/mach-davinci/board-neuros-osd2.c | 3 +--
+ drivers/leds/trigger/Kconfig              | 2 +-
+ 4 files changed, 4 insertions(+), 7 deletions(-)
+
+-- 
+2.17.1
 
