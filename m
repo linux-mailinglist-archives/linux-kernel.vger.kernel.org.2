@@ -2,137 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FA23DFD53
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C183DFD55
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 10:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236731AbhHDIyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 04:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235421AbhHDIyG (ORCPT
+        id S236806AbhHDIy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 04:54:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36766 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236771AbhHDIy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 04:54:06 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490D7C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 01:53:53 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id e21so2288329pla.5
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 01:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=jAaZlMkl00zT0OtQniQ7FZrvBURnMn0WpyG8CxlOJn4=;
-        b=fk37KOcrmxMPrw7cXIiBvrn80IgC1iRB7IkdNmQkax/PkAu2NsEsTirizGutmU0QG3
-         VOTUOnlbIbIdLU0C4uyIcoRR6n4b/fVNrmKQNEezNIobfi1RL5uwvOj39pFxVgRTEy7H
-         AvGcHpBt8z3iaVpcL+yI3PzBkSXCtI3XLjQQkvm8URA0+/IcP1KxVDb7Xyk2csBABKZ+
-         OTv00GJ1mmF+6sI5vx+ExobgY5rfNtwZNlDkIr38Dd5SRIl39N6BIHjCT7AfiPFL/gqH
-         Y5n/jMA4zpg1cXov+VHFc1ZKEG6zqaiOIa2bttWvHaATHK+M8V1EEGMEaPbbEaP1hTA0
-         oNdw==
+        Wed, 4 Aug 2021 04:54:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628067254;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JEJS6wNFWZnl108KgJLIgK1xlv8/2mIWHkixRJuOciE=;
+        b=WDsLGIXcQBI4Ril5/9VQX1fkPJ/grCepT7vlIrTdAtQ4UOEBu7b11hn2L6Brgxjp06R5YM
+        NH3mWRnF7KhWaX7EJFxj0aardBJ2gCIl/2quHVxREqQghsfd+uNtMO+YrJBk9Dn+k+U8Ch
+        o2LLrPScCMILps+Y3Dyl5BMovQI6ifU=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-354-qWzRc0gcMhegEmMLvXDwmw-1; Wed, 04 Aug 2021 04:54:13 -0400
+X-MC-Unique: qWzRc0gcMhegEmMLvXDwmw-1
+Received: by mail-pl1-f199.google.com with SMTP id u2-20020a170902e5c2b029012cb0f6543aso1655375plf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 01:54:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=jAaZlMkl00zT0OtQniQ7FZrvBURnMn0WpyG8CxlOJn4=;
-        b=jLd0HKm2kTFr3954UMmi5128b+NHo28VHN3oJ66bFl03i0V6ZkZIDF+ul869y/Mfwx
-         zHJH6S+kMlo55nl4OxDkDp8nJZxxXzP/j3VXoqQ6gKCg+AdTw2Wa+6b3N+AXIrljHhM/
-         hAnB52p5wi1jr4T5ptApoCg/97kr5r0tv14u/EiyTdQr2yJ6P0zftbNZFEYw94O6BWbm
-         B9LCIryjO6SdFZmz0M9nciaSIeiGpPv9nodL3iQc8EDNLFYYUzzweKgbUFcDLv/7T+64
-         mNcbdHcvF1ScIEoMX4ZfpQ27KR7Tbw3o4QVVrQuno0PLGGHCdJ4Ef92AF1okMa24tMXj
-         G4yw==
-X-Gm-Message-State: AOAM532xjBo7X9DhYcMrDRXMfeonjThMTZswUXAStQfaepErofGcS9za
-        nsT3HEvWVjLkvLAjntwiGOs=
-X-Google-Smtp-Source: ABdhPJwcXvw0oSoxqi2MuD7Y5yzBqeL8SRppbr8D0zPLRVYAgmrTaQA5Pd9K8CuLIjyynNaYi0XY+Q==
-X-Received: by 2002:a17:902:b78b:b029:12c:6f89:51aa with SMTP id e11-20020a170902b78bb029012c6f8951aamr21910891pls.3.1628067232884;
-        Wed, 04 Aug 2021 01:53:52 -0700 (PDT)
-Received: from localhost (60-242-181-102.static.tpgi.com.au. [60.242.181.102])
-        by smtp.gmail.com with ESMTPSA id u13sm1893006pfh.123.2021.08.04.01.53.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 01:53:52 -0700 (PDT)
-Date:   Wed, 04 Aug 2021 18:53:47 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH] powerpc: Remove MSR_PR check in
- interrupt_exit_{user/kernel}_prepare()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <b36623df00ef3d2296f928487b6e23f93a217afa.1628054802.git.christophe.leroy@csgroup.eu>
-        <1628064412.48kzr1eula.astroid@bobo.none>
-        <cd5f54fd-fbf4-e471-9971-1e8c86755754@csgroup.eu>
-In-Reply-To: <cd5f54fd-fbf4-e471-9971-1e8c86755754@csgroup.eu>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=JEJS6wNFWZnl108KgJLIgK1xlv8/2mIWHkixRJuOciE=;
+        b=RWitcWMiNOl3uOZ6gEyPq/Qn4ROyjGTS3xNvchBolbqE9r/KwnH/eERjgyqNOvewdv
+         lYVXoIiS2kNGteTyd56Wu2KhPsw0/YXFnUtRBmjguk5HnGTGM26ygib1oc+j+XGMu0er
+         NODYJweL5rEVJjmkbrrRwCcnPASfftRJW9Mt/DZT8tzgH1zLiWrgo+xHdTkp1Vr1bY92
+         mydsLFPkUL/CHNXxE1cqCqbw+lWwHpkVxADoZ2njOYsvGT0Ay61y58CdUJdgZt614SoP
+         h7KrtIBbqFinuDcEkhUscbWDkE3abWvoL1MAuH5zaB/1zCPAo6rF2sSUHV92JmyVVmZD
+         +HBg==
+X-Gm-Message-State: AOAM530U7OkUo3bKLt+Ia8gbHQPyC8JDpW4hdeIfugsf54CWQkZXAQkv
+        Lyh1Lw264CWl6YqrcraODwliacSNElxx5GwxuxR5zC0tmSKCOoZW8qCAkWg6WcMrlIPBpt2OSK3
+        EUzRp7cIGPLFQvNQloYF1rAFVgoXUcYaVBQdqDpKN2B3vbGZZVaICivCfjFdAPmztNTTv/6BkLe
+        ec
+X-Received: by 2002:a17:90a:f486:: with SMTP id bx6mr26967703pjb.26.1628067251961;
+        Wed, 04 Aug 2021 01:54:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxdg7DPc1fVvfeRYsMAj9zuHXHxH4WMFyt0BnuNiFR52VmL83Bg8evPgUiXWSZNAPGcbnx9HQ==
+X-Received: by 2002:a17:90a:f486:: with SMTP id bx6mr26967649pjb.26.1628067251626;
+        Wed, 04 Aug 2021 01:54:11 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 6sm1963202pfg.108.2021.08.04.01.54.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 01:54:11 -0700 (PDT)
+Subject: Re: [PATCH v10 10/17] virtio: Handle device reset failure in
+ register_virtio_device()
+To:     Yongji Xie <xieyongji@bytedance.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        He Zhe <zhe.he@windriver.com>,
+        Liu Xiaodong <xiaodong.liu@intel.com>,
+        Joe Perches <joe@perches.com>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210729073503.187-1-xieyongji@bytedance.com>
+ <20210729073503.187-11-xieyongji@bytedance.com>
+ <6bb6c689-e6dd-cfa2-094b-a0ca4258aded@redhat.com>
+ <CACycT3v7BHxYY0OFYJRFU41Bz1=_v8iMRwzYKgX6cJM-SiNH+A@mail.gmail.com>
+ <fdcb0224-11f9-caf2-a44e-e6406087fd50@redhat.com>
+ <CACycT3v0EQVrv_A1K1bKmiYu0q5aFE=t+0yRaWKC7T3_H3oB-Q@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <bd48ec76-0d5c-2efb-8406-894286b28f6b@redhat.com>
+Date:   Wed, 4 Aug 2021 16:54:02 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Message-Id: <1628067212.yli25q0lwj.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CACycT3v0EQVrv_A1K1bKmiYu0q5aFE=t+0yRaWKC7T3_H3oB-Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of August 4, 2021 6:37 pm:
->=20
->=20
-> Le 04/08/2021 =C3=A0 10:08, Nicholas Piggin a =C3=A9crit=C2=A0:
->> Excerpts from Christophe Leroy's message of August 4, 2021 3:27 pm:
->>> In those hot functions that are called at every interrupt, any saved
->>> cycle is worth it.
->>>
->>> interrupt_exit_user_prepare() and interrupt_exit_kernel_prepare() are
->>> called from three places:
->>> - From entry_32.S
->>> - From interrupt_64.S
->>> - From interrupt_exit_user_restart() and interrupt_exit_kernel_restart(=
-)
->>>
->>> In entry_32.S, there are inambiguously called based on MSR_PR:
->>>
->>> 	interrupt_return:
->>> 		lwz	r4,_MSR(r1)
->>> 		addi	r3,r1,STACK_FRAME_OVERHEAD
->>> 		andi.	r0,r4,MSR_PR
->>> 		beq	.Lkernel_interrupt_return
->>> 		bl	interrupt_exit_user_prepare
->>> 	...
->>> 	.Lkernel_interrupt_return:
->>> 		bl	interrupt_exit_kernel_prepare
->>>
->>> In interrupt_64.S, that's similar:
->>>
->>> 	interrupt_return_\srr\():
->>> 		ld	r4,_MSR(r1)
->>> 		andi.	r0,r4,MSR_PR
->>> 		beq	interrupt_return_\srr\()_kernel
->>> 	interrupt_return_\srr\()_user: /* make backtraces match the _kernel va=
-riant */
->>> 		addi	r3,r1,STACK_FRAME_OVERHEAD
->>> 		bl	interrupt_exit_user_prepare
->>> 	...
->>> 	interrupt_return_\srr\()_kernel:
->>> 		addi	r3,r1,STACK_FRAME_OVERHEAD
->>> 		bl	interrupt_exit_kernel_prepare
->>>
->>> In interrupt_exit_user_restart() and interrupt_exit_kernel_restart(),
->>> MSR_PR is verified respectively by BUG_ON(!user_mode(regs)) and
->>> BUG_ON(user_mode(regs)) prior to calling interrupt_exit_user_prepare()
->>> and interrupt_exit_kernel_prepare().
->>>
->>> The verification in interrupt_exit_user_prepare() and
->>> interrupt_exit_kernel_prepare() are therefore useless and can be remove=
-d.
->>>
->>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>=20
->> Probably okay to do now things are ironing out.
->>=20
->> Unless we want to make a new define for interrupt handler debug and put
->> a bunch of these asserts under it. There's quite a lot more here, and
->> in asm/interrupt.h, etc.
->=20
-> But that one is so trivial that I'm not sure there is any point in keepin=
-g it even as a kind of=20
-> additional DEBUG level, unless you want those BUG_ONs because you don't t=
-rust the compiler.
 
-Fair point.
+在 2021/8/4 下午4:50, Yongji Xie 写道:
+> On Wed, Aug 4, 2021 at 4:32 PM Jason Wang <jasowang@redhat.com> wrote:
+>>
+>> 在 2021/8/3 下午5:38, Yongji Xie 写道:
+>>> On Tue, Aug 3, 2021 at 4:09 PM Jason Wang <jasowang@redhat.com> wrote:
+>>>> 在 2021/7/29 下午3:34, Xie Yongji 写道:
+>>>>> The device reset may fail in virtio-vdpa case now, so add checks to
+>>>>> its return value and fail the register_virtio_device().
+>>>> So the reset() would be called by the driver during remove as well, or
+>>>> is it sufficient to deal only with the reset during probe?
+>>>>
+>>> Actually there is no way to handle failure during removal. And it
+>>> should be safe with the protection of software IOTLB even if the
+>>> reset() fails.
+>>>
+>>> Thanks,
+>>> Yongji
+>>
+>> If this is true, does it mean we don't even need to care about reset
+>> failure?
+>>
+> But we need to handle the failure in the vhost-vdpa case, isn't it?
 
-Acked-by: Nicholas Piggin <npiggin@gmail.com>
+
+Yes, but:
+
+- This patch is for virtio not for vhost, if we don't care virtio, we 
+can avoid the changes
+- For vhost, there could be two ways probably:
+
+1) let the set_status to report error
+2) require userspace to re-read for status
+
+It looks to me you want to go with 1) and I'm not sure whether or not 
+it's too late to go with 2).
+
+Thanks
+
+
+>
+> Thanks,
+> Yongji
+>
+
