@@ -2,125 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2D93E0AD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477593E0ADD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235658AbhHDXbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 19:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
+        id S235543AbhHDXcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 19:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235571AbhHDXbe (ORCPT
+        with ESMTP id S230514AbhHDXcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 19:31:34 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC5FC0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 16:31:20 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso5915466pjo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 16:31:20 -0700 (PDT)
+        Wed, 4 Aug 2021 19:32:53 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35D5C061799
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 16:32:39 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso5920300pjo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 16:32:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Zd+uox/EZ4rv4qm3Tkl9ksk48grG3CU/Mqm/t6eMNV4=;
-        b=iA1EQu0Ghv3f7PId5bp+Rvi6PVKtnJbWbyEiz8T7P3j0Xpt4ahJBNYbtSzVpyVDTxG
-         +SI8zAXY1HZR/by1oqDjUyb/mfdt7P7+tdn04mUml7O4deCPB0ea3j9B/EmMoBRCLKtt
-         NB+LdF73NIjLPhRQiqlOE6GpJXLBUX7FCG5afve3IS4xuWlHb3fJAEfaNTYoDGMr7dO1
-         vZ2voSgbpHU7gh8vWqjmyc3YJ235f3o611ku6DoVeVTRZzC16jLUjlXIHkUBPGG58c1e
-         4F8zpYzudPOX3k9vdHzBwz23fKCXCrdBvd7OoaUStQeZ0Z+Lo169jF9bXKi8nUIv94Yo
-         xEDA==
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=GEY4fD5yTtVusES2V+7/qwef8O+lrHGgZiJ82DRI4is=;
+        b=pENPHCeWlybJ/Gyfy/Z7Xbe3eT93GtA9t2uWVRxUNQxn4KGEzyD9YcUuCzJfPS0jrA
+         mio41gsj9MCTJyqcXM9t/n8Qvg069nCIgSpdwikHsXK1AcWu7Eh6HHRtoOkdhnn28tQd
+         mixHw9vUuoAkxuJ7W7WBt1/liaSBrn5c4t/V0HBTKQ3LMkelmNo/OzU704pxAgSvW8pd
+         RvJLTxeS75u+bfoIhE3hTAySJ2QAQVfH0eACY3CG5MHW8hvJWEl1zZ56BTjU5SjLSCrm
+         aOWIgorySwKKk2lKMTC98BolnOuy8pIvQy9f5xgWtOgndrmIC4UUfLBhx0dHRq0JYIJ4
+         OcWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Zd+uox/EZ4rv4qm3Tkl9ksk48grG3CU/Mqm/t6eMNV4=;
-        b=U2EsJPWguYRB/KE0A2gp5wndqkPoCLIV8foC2NHkoHuo/U/uB1A1+2O0PXu8zsRS4E
-         Vx1oGZANRkafM/MioMhP6mcI2Fd7oSYNCdT0+vqIjcEps4m8QIH7w1NaTUy5AurSh1IJ
-         3+IEFgRxFrka/eGmaW8wem35bWMGt4otXZHiJKjKXWgPF/ZK1z2esXbA5KYdCXTcMrP3
-         IVqz8Jdi33Yv/ffJTatM21JDwXb7oW4ExzQUXhQmacMuSXMkXoRY6tb5vjNpYQ9e6CP9
-         /EUNrlXZ1LQzWdcrzzrVZGkogWuGG+HgXi70W6n95c/lyG/vUz83YvPASE2r74+31AFJ
-         aYyA==
-X-Gm-Message-State: AOAM532hcydO01STl2tScUaxemMsFk0+eCgRWx2UK4Qsn5rO2OoUBoai
-        fSyolEABJjwlPTRCCMEkyCeySg==
-X-Google-Smtp-Source: ABdhPJxssIOCNPZAbfOxrf/IMA12h60LqOvcCTi+PK0UppFpa1s1eenr1lxdNpE5vVyd5Co6NOsJsA==
-X-Received: by 2002:a17:902:b407:b029:12c:aadd:90d7 with SMTP id x7-20020a170902b407b029012caadd90d7mr1349877plr.79.1628119879991;
-        Wed, 04 Aug 2021 16:31:19 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f15sm3585612pjt.3.2021.08.04.16.31.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 16:31:19 -0700 (PDT)
-Date:   Wed, 4 Aug 2021 23:31:15 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Erdem Aktas <erdemaktas@google.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        linux-kselftest@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Marc Orr <marcorr@google.com>, Sagi Shahar <sagis@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
-        David Matlack <dmatlack@google.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Yanan Wang <wangyanan55@huawei.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Zhenzhong Duan <zhenzhong.duan@intel.com>,
-        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
-        Like Xu <like.xu@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>
-Subject: Re: [RFC PATCH 1/4] KVM: selftests: Add support for creating
- non-default type VMs
-Message-ID: <YQsjQ5aJokV1HZ8N@google.com>
-References: <20210726183816.1343022-1-erdemaktas@google.com>
- <20210726183816.1343022-2-erdemaktas@google.com>
- <e1651746-aa46-31e7-e1c0-99f3faaf1586@intel.com>
- <ede70f11e713ee0140c0e684c3d46b3aa1176e5e.camel@redhat.com>
- <42a812a9-7f17-2a26-d289-1f921408a469@intel.com>
- <c82a3abe00d387985ac806c8ff062cc29e192bbd.camel@redhat.com>
- <CAAYXXYx_CFKBhFjqfz_wyh6bPPbWpTPCDfGmmLGqiugvfqA3Dg@mail.gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=GEY4fD5yTtVusES2V+7/qwef8O+lrHGgZiJ82DRI4is=;
+        b=DIx8rvtNwHf1ucCOLmQjGrqN/rJloSJoI1uv/4IfL+I24lS8GwlacB4A3Uc6pvP0Z6
+         01RdmLYfHpMSMOrmqp5dR49tUQK9VdN2mmgwOczgXoVUr4P/c2ij9cu1ITJQHnRT9K6Z
+         +hIlA9x7L4mSqLNAUQdQZDDvYho+48ZSDr9mfd5EoC8lTBT4AqTPaLDyGxwu+w9/YKrn
+         FsFdvfLmZfL+yWADZD92tdgH2qtPAja1YGFz2VruimFDpaSF6x64ehP38fK/RyDJbU76
+         o/+9hnD8nJlCCo8d24REq1a+Z/pj6IhquLW+FHg8N2Yd7AFuW4wQMkUpeiEBb1jvRld7
+         +XxA==
+X-Gm-Message-State: AOAM530Z5BHv+xhks8lSm7vdwSTVdB6W/Htp0azmUD7Q+GQb+z7KlLPV
+        edz39+rgLXz+54oOSjHMlSqM2g==
+X-Google-Smtp-Source: ABdhPJwnbTS+0bG3I6EnW4W3vEGyG2Q4iA2qU4Eg1E7Yz9wu7YS2PtXANua1GayLt/mJbDKRrO3poQ==
+X-Received: by 2002:a17:902:f704:b029:11a:cdee:490 with SMTP id h4-20020a170902f704b029011acdee0490mr1360703plo.37.1628119959237;
+        Wed, 04 Aug 2021 16:32:39 -0700 (PDT)
+Received: from [192.168.10.153] (219-90-184-65.ip.adam.com.au. [219.90.184.65])
+        by smtp.gmail.com with UTF8SMTPSA id m16sm7400791pjz.30.2021.08.04.16.32.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 16:32:38 -0700 (PDT)
+Message-ID: <05ade6a2-2eb4-89c2-7c6e-651c8c53c6f6@ozlabs.ru>
+Date:   Thu, 5 Aug 2021 09:32:33 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAYXXYx_CFKBhFjqfz_wyh6bPPbWpTPCDfGmmLGqiugvfqA3Dg@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:90.0) Gecko/20100101
+ Thunderbird/90.0
+Subject: Re: [PATCH] KVM: Do not leak memory for duplicate debugfs directories
+Content-Language: en-US
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210804093737.2536206-1-pbonzini@redhat.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <20210804093737.2536206-1-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021, Erdem Aktas wrote:
-> Thank you all for all that great feedback! I will include them in my v2.
+
+
+On 04/08/2021 19:37, Paolo Bonzini wrote:
+> KVM creates a debugfs directory for each VM in order to store statistics
+> about the virtual machine.  The directory name is built from the process
+> pid and a VM fd.  While generally unique, it is possible to keep a
+> file descriptor alive in a way that causes duplicate directories, which
+> manifests as these messages:
 > 
-> On Wed, Aug 4, 2021 at 7:46 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
-> >
-> > > > > Can we pass KVM_X86_LEGACY_VM (whatever name when it's upstreamed)
-> > > > > instead of 0?
-> > > >
-> I was originally thinking of doing this but Sean has suggested that we
-> should use 0 to make it  arch-agnostic for creating default VMs.
-> +Sean Christopherson : What do you think?
+>    [  471.846235] debugfs: Directory '20245-4' with parent 'kvm' already present!
+> 
+> Even though this should not happen in practice, it is more or less
+> expected in the case of KVM for testcases that call KVM_CREATE_VM and
+> close the resulting file descriptor repeatedly and in parallel.
+> 
+> When this happens, debugfs_create_dir() returns an error but
+> kvm_create_vm_debugfs() goes on to allocate stat data structs which are
+> later leaked. 
 
-I hate passing '0', but KVM_X86_LEGACY_VM is worse because it's nonsensical for
-other architectures.
- 
-> >
-> > KVM_X86_NORMAL_VM is a very good name IMHO as well.
+Rather the already allocated srructs leak, no?
 
-But that implies protected guests are abnormal!  And KVM_X86_STANDARD_VM would
-imply protected guests are sub-standard!  I'm only half-joking, e.g. if we get
-to the point where the majority of guests being run are protected guests, then
-!protected guests are no longer the "standard".
+> The slow memory leak was spotted by syzkaller, where it
+> caused OOM reports.
 
-Looking at other architectures, I think the least awful option is a generic
-KVM_VM_TYPE_AUTO, or maybe KVM_VM_TYPE_DEFAULT.  That aligns with how '0' is used
-by PPC, MIPS, and arm64[*], and would work for x86 as well without implying what's
-normal/standard.
+I gave it a try and almost replied with "tested-by" but after running it 
+over night I got 1 of these with followed OOM:
 
-[*] arm64 uses the type to specify the IPA width (I'm not even sure what that is),
-    but thankfully interprets '0' as a default.
+[ 1104.951394][  T544] debugfs: Directory '544-4' with parent 'kvm' 
+already present!
+[ 1104.951600][  T544] Failed to create 544-4
+
+This is definitely an improvement as this used to happen a few times 
+every hour but still puzzling :-/
+
+> 
+> Since the issue only affects debugfs, do a lookup before calling
+> debugfs_create_dir, so that the message is downgraded and rate-limited.
+> While at it, ensure kvm->debugfs_dentry is NULL rather than an error
+> if it is not created.  This fixes kvm_destroy_vm_debugfs, which was not
+> checking IS_ERR_OR_NULL correctly.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 536a6f88c49d ("KVM: Create debugfs dir and stat files for each VM")
+> Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>   virt/kvm/kvm_main.c | 18 ++++++++++++++++--
+>   1 file changed, 16 insertions(+), 2 deletions(-)
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index d20fba0fc290..b50dbe269f4b 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -892,6 +892,8 @@ static void kvm_destroy_vm_debugfs(struct kvm *kvm)
+>   
+>   static int kvm_create_vm_debugfs(struct kvm *kvm, int fd)
+>   {
+> +	static DEFINE_MUTEX(kvm_debugfs_lock);
+> +	struct dentry *dent;
+>   	char dir_name[ITOA_MAX_LEN * 2];
+>   	struct kvm_stat_data *stat_data;
+>   	const struct _kvm_stats_desc *pdesc;
+> @@ -903,8 +905,20 @@ static int kvm_create_vm_debugfs(struct kvm *kvm, int fd)
+>   		return 0;
+>   
+>   	snprintf(dir_name, sizeof(dir_name), "%d-%d", task_pid_nr(current), fd);
+> -	kvm->debugfs_dentry = debugfs_create_dir(dir_name, kvm_debugfs_dir);
+> +	mutex_lock(&kvm_debugfs_lock);
+> +	dent = debugfs_lookup(dir_name, kvm_debugfs_dir);
+> +	if (dent) {
+> +		pr_warn_ratelimited("KVM: debugfs: duplicate directory %s\n", dir_name);
+> +		dput(dent);
+> +		mutex_unlock(&kvm_debugfs_lock);
+> +		return 0;
+> +	}
+> +	dent = debugfs_create_dir(dir_name, kvm_debugfs_dir);
+> +	mutex_unlock(&kvm_debugfs_lock);
+> +	if (IS_ERR(dent))
+> +		return 0;
+>   
+> +	kvm->debugfs_dentry = dent;
+>   	kvm->debugfs_stat_data = kcalloc(kvm_debugfs_num_entries,
+>   					 sizeof(*kvm->debugfs_stat_data),
+>   					 GFP_KERNEL_ACCOUNT);
+> @@ -5201,7 +5215,7 @@ static void kvm_uevent_notify_change(unsigned int type, struct kvm *kvm)
+>   	}
+>   	add_uevent_var(env, "PID=%d", kvm->userspace_pid);
+>   
+> -	if (!IS_ERR_OR_NULL(kvm->debugfs_dentry)) {
+> +	if (kvm->debugfs_dentry) {
+>   		char *tmp, *p = kmalloc(PATH_MAX, GFP_KERNEL_ACCOUNT);
+>   
+>   		if (p) {
+> 
+
+-- 
+Alexey
