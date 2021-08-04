@@ -2,69 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD813E00D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4F73E00DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238007AbhHDMHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 08:07:14 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:49500
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237987AbhHDMHL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 08:07:11 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 83E143F22C;
-        Wed,  4 Aug 2021 12:06:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628078818;
-        bh=I5iMEiYeK7cuE7cXx3He18rSygUas33plv7CQH+qomo=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=oKgu7LLaNOTt74RaPSZyRHkmp5yWtEGV147IXE6ePMGAtzEwc0Q3bi7MTOcmT1zqP
-         zdl5NTXsCx0JnZ+RrgfaS6r1pKra/92ZJNnZWQvnKXDM3Zk+pwmLJV4h+tOS3mEETb
-         Pe6Jlmu3qrq3qWjcBLYim9LMX5qln+CNNWofZH2ieZPKA028GXTKaqaYtPfLbA8jXq
-         UZOORXeRoiIy+BKStZp5cILJ/iFT9yk7qsPqufOmIYbUPhx+TDhT4EYaRScEW4MJOj
-         4a8JHR7c4nYX+zDZGcKtBtgF3Tc9btIjbja0mcBvaooRkmYMazEHPXG9anUjIm16mJ
-         B0Az3PkkL0amw==
-From:   Colin King <colin.king@canonical.com>
-To:     "Eric W . Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] kernel/user.c: Fix spelling mistake "cpunter" -> "counter"
-Date:   Wed,  4 Aug 2021 13:06:58 +0100
-Message-Id: <20210804120658.110124-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S238015AbhHDMHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 08:07:36 -0400
+Received: from mga09.intel.com ([134.134.136.24]:30393 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236857AbhHDMHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 08:07:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10065"; a="213889133"
+X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
+   d="scan'208";a="213889133"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 05:07:22 -0700
+X-IronPort-AV: E=Sophos;i="5.84,294,1620716400"; 
+   d="scan'208";a="467087460"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 05:07:19 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mBFg0-0056Cy-3X; Wed, 04 Aug 2021 15:07:12 +0300
+Date:   Wed, 4 Aug 2021 15:07:12 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v1 1/5] serdev: Split and export
+ serdev_acpi_get_uart_resource()
+Message-ID: <YQqC8JOfH6BqTpW6@smile.fi.intel.com>
+References: <20210803192905.72246-1-andriy.shevchenko@linux.intel.com>
+ <035d2579-f64c-b5c2-45ff-4421ad7db6ca@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <035d2579-f64c-b5c2-45ff-4421ad7db6ca@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Aug 04, 2021 at 10:08:01AM +0200, Hans de Goede wrote:
+> Hi,
+> 
+> On 8/3/21 9:29 PM, Andy Shevchenko wrote:
+> > The same as for I²C Serial Bus resource split and export
+> > serdev_acpi_get_uart_resource(). We have already 3 users
+> > one of which is converted here.
+> > 
+> > Rationale of this is to consolidate parsing UART Serial Bus
+> > resource in one place as it's done, e.g., for I²C Serial Bus.
+> > 
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> Thanks, patch looks good to me:
+> 
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> *for this patch*
+> 
+> We do need to talk about how to merge this series, I've
+> NACK-ed patches 3/5 and 4/5 (see my reply there) so that
+> leaves just 2/5  as depending on this one. I believe it
+> would be easiest to just merge 1/5 + 2/5 to the tree
+> which caries serdev patches, which I guess is Greg's
+> tty tree ?
 
-There is a spelling mistake in a panic message. Fix it.
+I can resend a v2 with tags and dropped mentioned patches.
+I think it will be easier to everyone to handle.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- kernel/user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/user.c b/kernel/user.c
-index a2673f940506..7fc40af8d8ac 100644
---- a/kernel/user.c
-+++ b/kernel/user.c
-@@ -223,7 +223,7 @@ static int __init uid_cache_init(void)
- 		INIT_HLIST_HEAD(uidhash_table + n);
- 
- 	if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
--		panic("percpu cpunter alloc failed");
-+		panic("percpu counter alloc failed");
- 
- 	/* Insert the root user immediately (init already runs as root) */
- 	spin_lock_irq(&uidhash_lock);
 -- 
-2.31.1
+With Best Regards,
+Andy Shevchenko
+
 
