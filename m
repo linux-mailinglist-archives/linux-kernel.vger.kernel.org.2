@@ -2,113 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FB93E0A38
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976523E0A3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 00:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235062AbhHDWDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 18:03:51 -0400
-Received: from mga12.intel.com ([192.55.52.136]:38483 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231500AbhHDWDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 18:03:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="193615393"
-X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="193615393"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 15:03:33 -0700
-X-IronPort-AV: E=Sophos;i="5.84,295,1620716400"; 
-   d="scan'208";a="671119206"
-Received: from cmalmber-mobl1.amr.corp.intel.com (HELO [10.212.219.120]) ([10.212.219.120])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 15:03:33 -0700
-Subject: Re: [PATCH v5 04/12] x86/tdx: Add protected guest support for TDX
- guest
-To:     Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQsNpG55v7dhFqIb@google.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
- 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
- K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
- VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
- e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
- ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
- kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
- rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
- f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
- mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
- UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
- sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
- 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
- cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
- UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
- db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
- lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
- kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
- gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
- AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
- XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
- e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
- pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
- YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
- lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
- M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
- 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
- 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
- OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
- ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
- z5cecg==
-Message-ID: <9c576f24-e6de-f816-623d-408a4a2ae747@intel.com>
-Date:   Wed, 4 Aug 2021 15:03:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235105AbhHDWFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 18:05:16 -0400
+Received: from esa.hc503-62.ca.iphmx.com ([216.71.135.51]:8674 "EHLO
+        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231249AbhHDWFM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 18:05:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
+  t=1628114699; x=1659650699;
+  h=to:cc:references:subject:in-reply-to:from:message-id:
+   date:mime-version;
+  bh=L9nJV2YSSJWQgya0qOZuNRNyTlFsERQnSEL4wHqvqwI=;
+  b=DtRX71VVpT2PqDuVh4qrFL4Ch2rGWx/gVv99H+6yVDl53YjYXYQzh69e
+   2YTHFRgPAEf3One9DKxrOu1sQAMaBcjVkx1KenOdAmBvsk0aXaJhmtkmR
+   sLDPUikcuITz2O+zlJRUXfl24LLDreeU3tpwOT3jxrLAcur0BlW8NFOAz
+   Q=;
+Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
+  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Aug 2021 18:04:57 -0400
+Received: from [10.42.0.123] (10.32.139.159) by connhm04.connect.uwaterloo.ca
+ (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 4 Aug
+ 2021 18:04:57 -0400
+To:     <posk@posk.io>
+CC:     <avagin@google.com>, <bsegall@google.com>, <jannh@google.com>,
+        <linux-api@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <mingo@redhat.com>, <peterz@infradead.org>, <pjt@google.com>,
+        <posk@google.com>, <tdelisle@uwaterloo.ca>, <tglx@linutronix.de>,
+        Peter Buhr <pabuhr@uwaterloo.ca>
+References: <20210801200617.623745-5-posk@google.com>
+Subject: Re: [PATCH 4/4 v0.4] sched/umcg: RFC: implement UMCG syscalls
+In-Reply-To: <20210801200617.623745-5-posk@google.com>
+From:   Thierry Delisle <tdelisle@uwaterloo.ca>
+Message-ID: <3530714d-125b-e0f5-45b2-72695e2fc4ee@uwaterloo.ca>
+Date:   Wed, 4 Aug 2021 18:04:57 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YQsNpG55v7dhFqIb@google.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/mixed;
+        boundary="------------80684090183B5F7F3FBA5261"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.32.139.159]
+X-ClientProxiedBy: connhm03.connect.uwaterloo.ca (172.16.137.67) To
+ connhm04.connect.uwaterloo.ca (172.16.137.68)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/21 2:59 PM, Sean Christopherson wrote:
->> +#include <asm/processor.h>
->> +#include <asm/tdx.h>
->> +
->>  #ifndef __ASSEMBLY__
->>  
->>  static inline bool prot_guest_has(unsigned int attr)
->>  {
->>  	if (sme_me_mask)
->>  		return amd_prot_guest_has(attr);
->> +	else if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
-> Why not "boot_cpu_has(X86_FEATURE_TDX_GUEST)"?
+--------------80684090183B5F7F3FBA5261
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Even better: cpu_feature_enabled(X86_FEATURE_TDX_GUEST).  That gets you
-both static patching *and* compile-time optimization if you hook
-X86_FEATURE_TDX_GUEST into disabled-features.h.
+I have attached an atomic stack implementation I wrote. I believe it would
+be applicable here. It is very similar except the kernel side no longer
+needs a retry loop, the looping is moved to the user-space after the pop.
+Using it instead of the code you have in enqueue_idle_worker means the
+timeout is no longer needed.
+
+ > - ``uint64_t idle_server_tid_ptr``: points to a pointer variable in the
+ >   userspace that points to an idle server, i.e. a server in IDLE 
+state waiting
+ >   in sys_umcg_wait(); read-only; workers must have this field set; 
+not used
+ >   in servers.
+ >
+ >   When a worker's blocking operation in the kernel completes, the kernel
+ >   changes the worker's state from ``BLOCKED`` to ``IDLE``, adds the 
+worker
+ >   to the list of idle workers, and checks whether
+ >   ``*idle_server_tid_ptr`` is not zero. If not, the kernel tries to 
+cmpxchg()
+ >   it with zero; if cmpxchg() succeeds, the kernel will then wake the 
+server.
+ >   See `State transitions`_ below for more details.
+
+In this case, I believe cmpxchg is not necessary and xchg suffices.
+
+
+--------------80684090183B5F7F3FBA5261
+Content-Type: text/x-csrc; charset="UTF-8"; name="atomic_stack.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="atomic_stack.c"
+
+// This is free and unencumbered software released into the public domain.
+//
+// Anyone is free to copy, modify, publish, use, compile, sell, or
+// distribute this software, either in source code form or as a compiled
+// binary, for any purpose, commercial or non-commercial, and by any
+// means.
+//
+// In jurisdictions that recognize copyright laws, the author or authors
+// of this software dedicate any and all copyright interest in the
+// software to the public domain. We make this dedication for the benefit
+// of the public at large and to the detriment of our heirs and
+// successors. We intend this dedication to be an overt act of
+// relinquishment in perpetuity of all present and future rights to this
+// software under copyright law.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+// OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+//
+// For more information, please refer to <https://unlicense.org>
+
+#include <assert.h>
+#include <stdbool.h>
+
+struct node {
+	struct node * volatile next;
+};
+
+// Two sentinels, the values do not matter but must be different
+// and unused by real addresses.
+static struct node * const STACK_NO_VAL  = 0;
+static struct node * const STACK_PENDING = 1;
+
+// push a node to the stack
+static inline void atomic_stack_push(struct node * volatile * head, struct node * n) {
+	/* paranoid */ assert( n->next == STACK_NO_VAL );
+	// Mark as pending so if it gets poped before the assignment to next
+	// the reader knows this isn't necessarily the end of the list
+	n->next = STACK_PENDING;
+
+	// actually add the node to the list
+	struct node * e = __atomic_exchange_n(head, n, __ATOMIC_SEQ_CST);
+
+	// update the next field
+	__atomic_store_n(&n->next, e, __ATOMIC_RELAXED);
+}
+
+// Pop all nodes from the stack
+// Once popped, nodes should be iterate on using atomic_stack_next
+static inline struct node * atomic_stack_pop_all(struct node * volatile * head) {
+	// Steal the entire list for ourselves atomically
+	// Nodes can still have pending next fields but everyone should agree
+	// the nodes are ours.
+	return __atomic_exchange_n(head, STACK_NO_VAL, __ATOMIC_SEQ_CST);
+}
+
+// from a given node, advance to the next node, waiting for pending nodes
+// to be resolved
+// if clear is set, the nodes that are advanced from are unlinked before the
+// previous node is returned
+static inline struct node * atomic_stack_next(struct node * n, bool clear) {
+	// Wait until the next field is pending
+	while(STACK_PENDING == __atomic_load_n(&n->next, __ATOMIC_RELAXED)) asm volatile("pause" : : :);
+
+	// The field is no longer pending, any subsequent concurrent write to that field
+	// should now be dependent on the next read.
+	struct node * r = n->next;
+
+	// For convenience, unlink the node if desired and return.
+	if(clear) n->next = STACK_NO_VAL;
+	return r;
+}
+
+--------------80684090183B5F7F3FBA5261--
