@@ -2,96 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7E13E08B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F863E08B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237734AbhHDTWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 15:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37906 "EHLO
+        id S237825AbhHDTZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 15:25:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234768AbhHDTV5 (ORCPT
+        with ESMTP id S234768AbhHDTZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 15:21:57 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3046C061799
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 12:21:43 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id m18so3828399ljo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 12:21:43 -0700 (PDT)
+        Wed, 4 Aug 2021 15:25:24 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94A1C0613D5;
+        Wed,  4 Aug 2021 12:25:10 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso5040114pjo.1;
+        Wed, 04 Aug 2021 12:25:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ylI9MXOs0Ir8PA1SSc4CWBUvb8oJBzOcDwis/U9YFVQ=;
-        b=X4MpP5DhkCDW/CMWbe1IZxRUGYUWQeM73N+vdca9xUIdVP0Y5juQKu4iNsxYX7MmYc
-         JP/2XHO+BXYeXnmy4snp3Sgoybts38cc2zI1AZdTx4O+7fyJ+i10Wtk2tIdasaLHK5SN
-         3sXBSXl91LZBjaq6Qv94le6sGurixI8Q1rHrorSjBI9bpPKk8hi4VVzHodPGrwexNnR3
-         Z9r4ihvDqWCMN/5NVPwiO0sB0VMZr6TlFT28No4CBfFnIo+WigR5oqKhPriocCvF0vM9
-         VvCamXc5yyY0MHzbn4YWbAVobGBuLT+VGZ9nCm3c3tTN9+hIy/xpH5aw4lLAIkQODV2W
-         rXrA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=mmVK1hU7ZU/h7aq3Lyk6d21CcR1cot/6rqNgdGojQEo=;
+        b=eMgoj0phLST6KaNi7uHV4hXhFPw9AJSo0znp96nYIoqEPUye2l6VVCh44AL42ePOf+
+         BKLToqmPy6Ri7rjoiHXi5ZNSpUp2ccXdgBZKB8q+IPczD/2OTMPtLYSA8AYwtaUtTH3l
+         FE+FHTT4qG503EPMrgl1zxlV0hxWaLtx8+nOlEKBRJBx7qdRqGU5YwnhtUS4wEC+SiFB
+         8UveYif6zn9SaawppS6j69omFRbSQVxgh7sM2igFoCSyP3c1QzQn34LZ2vmqe8LWOgaI
+         QfWHLssfA4nyefsyGlTRgsEKu5VjIzPMRmYJW4Ek3cUdtKslooGRRFoVZZsFcihuLfJC
+         FE5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ylI9MXOs0Ir8PA1SSc4CWBUvb8oJBzOcDwis/U9YFVQ=;
-        b=ZQHbVaafqUuqL18wAotVOy0mgqo0Iyh5pwShHWo4PnOeAtPPAS6Py8sKH45nwh6uQ1
-         Pxu1ChN/G1kk0Liin8Ji6alsnqtnKmNmxshGL7AtM7ggdyOyLDGJ59c4me5u6wOPHENT
-         E5GdyFm18pfreBc0QllqHrGuoHhf4fd6vb0owvs/7wWykAjZUH6ZNq0HKONbAvGtaA3Z
-         Xk1cW7OC1fE296gl7yVh+MpO18XCFmxUoPJQDUxzHevHLlHPLAl4rU5IjcegOn1EVurx
-         WTFX/7iBUSgOAbQiq1N4kO04TQ8aTXBRbjhCLJjwE93Ucb4wn4zwmTJxpr7+5XPG9hbA
-         gaaw==
-X-Gm-Message-State: AOAM531JkSCITTy+2Q1EO6Hn+SSnBf2Vny9260USctZedvCmt26KFXuk
-        aVy7mWZWNBh2hkXKuNSVjC9xLPk6+M3cU3gj5LHBPA==
-X-Google-Smtp-Source: ABdhPJxSA1V/rjr6BECMCBkSMvqgdG8Yhf5F4dByLuR2eLus55oS/5YtDzd9iMRxhd9NtXjxhgFa/N8SglbWP5DUc2A=
-X-Received: by 2002:a2e:888f:: with SMTP id k15mr609374lji.326.1628104901981;
- Wed, 04 Aug 2021 12:21:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210726142943.27008-1-lukas.bulwahn@gmail.com> <20210726142943.27008-5-lukas.bulwahn@gmail.com>
-In-Reply-To: <20210726142943.27008-5-lukas.bulwahn@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 4 Aug 2021 21:21:30 +0200
-Message-ID: <CACRpkdYH=rQEK0sRU8DueUbvffe8DhKdH_nu7u4Pnk3MaBNmig@mail.gmail.com>
-Subject: Re: [PATCH v3 4/8] MAINTAINERS: rectify entries with
- documentation-file-ref check
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Yu Chen <chenyu56@huawei.com>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Naga Sureshkumar Relli <nagasure@xilinx.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Deepak Saxena <dsaxena@plexity.net>,
-        Mirela Rabulea <mirela.rabulea@nxp.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Wilken Gottwalt <wilken.gottwalt@posteo.net>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mmVK1hU7ZU/h7aq3Lyk6d21CcR1cot/6rqNgdGojQEo=;
+        b=KRdBOlSNE5Od/GZYRGUNnvNldg9x4YUCx8wLr7Lbe0XKPdqtMKCXmoRj8O9iv7EZnE
+         GToimTbBY9WfA30MD/iy3xRidZUjjS+tdr0N+XszwDKRv3ZHpXZZF++wjqSp5Umi+BuP
+         iV4JI+pLUl7Wq7iXSuWgu54XC9aFVIr1AXNSqv33ienMuC8HAOGILOwdtdU2rN9JHmxg
+         6NsjRmPWLat0vI/UJB9cIHqPFaAWHikvZCu1h42HBa7BTm08+IqyNjV/AhDnFQzExqGR
+         iETprkKHfh9/mRZWDc122xWvzr6j2FWZeBqKhXMIxGolk/ufGkx13TJv+ngbUvQ4drd6
+         8D6Q==
+X-Gm-Message-State: AOAM532RFIux/BSRX7mLJ0F4VMeh3RTm5h0q6KXEsGmzwp50ZgQOhJfe
+        jvtfTzgSPcgRjlU2qFviXq0=
+X-Google-Smtp-Source: ABdhPJxZMYsswEp1xvIL2WUoc69Rn6pdqH894miPQ4DxWkM4nibuMvzAq8T/h0fnLsn3mY58CBbfxQ==
+X-Received: by 2002:a63:494:: with SMTP id 142mr127287pge.242.1628105110352;
+        Wed, 04 Aug 2021 12:25:10 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:2003:b021:6001:8ce1:3e29:705e])
+        by smtp.gmail.com with ESMTPSA id e4sm1071027pgt.22.2021.08.04.12.25.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 04 Aug 2021 12:25:10 -0700 (PDT)
+From:   Raag Jadav <raagjadav@gmail.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Raag Jadav <raagjadav@gmail.com>
+Subject: [PATCH v2 0/2] fix eeprom entries for ls1046afrwy and ls1046ardb
+Date:   Thu,  5 Aug 2021 00:54:44 +0530
+Message-Id: <1628105086-8172-1-git-send-email-raagjadav@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 4:30 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+This series fixes eeprom entries for ls1046afrwy and ls1046ardb boards.
 
-> A number of file entries can be automatically repaired with
-> ./scripts/documentation-file-ref-check --fix.
->
-> The changes from this script were manually cross-checked for sanity.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Changes since v1:
+- Update patch description.
+- Add bindings for ON Semi CAT24C04 and CAT24C05 eeproms.
 
-Thanks for fixing!
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Raag Jadav (2):
+  arm64: dts: ls1046a: fix eeprom entries
+  dt-bindings: at24: add ON Semi CAT24C04 and CAT24C05
 
-Yours,
-Linus Walleij
+ Documentation/devicetree/bindings/eeprom/at24.yaml | 6 ++++++
+ arch/arm64/boot/dts/freescale/fsl-ls1046a-frwy.dts | 8 +-------
+ arch/arm64/boot/dts/freescale/fsl-ls1046a-rdb.dts  | 7 +------
+ 3 files changed, 8 insertions(+), 13 deletions(-)
+
+-- 
+2.7.4
+
