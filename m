@@ -2,116 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FF73DFA2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 06:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5243DFA2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 06:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbhHDEEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 00:04:51 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:33541 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229562AbhHDEEu (ORCPT
+        id S232924AbhHDEFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 00:05:48 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:48474
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229464AbhHDEFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 00:04:50 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id A363F5C0129;
-        Wed,  4 Aug 2021 00:04:37 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 04 Aug 2021 00:04:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=zhqS3u
-        ONZN5n4HL/DQug9GqUIhjPXsIGOz3wxqAvewU=; b=fUJzBzWRskYL9S60bfH0nN
-        lHlT1WH1s47IjAf9RZHIzCY1EXzstC7mBp7xEdg2hXQTZLGw90c1MlHxo72NXrrJ
-        831Oxc7/1uSrsT/MEL8UqNhsAf/G3sW5UgSm3kgZbr7fY9dEzql41hsA8RDJ9E06
-        O4q+ccY+bXnKIuajuDKmuZMX2yrAoyJmL9pZIl0PI4UPOAsvcx4liFZhsh5Y/57Z
-        tzNFdELHDY6ZU/2PxEoLem8Hdq+1P4Wk+sxzyjhh/hiNS5Dr94iYLvoqXnln4kE5
-        7jGtLCfMqqo0xO2rBpwn0iHyAMmy7dzET/dd8UuIWZN6nJFIPzxnAawfhxyPHU1w
-        ==
-X-ME-Sender: <xms:0xEKYdGaUUY3wmx4-3xxaJ0R3S-UL8PZDQCX6B_xXK8fXz2JyL0cmg>
-    <xme:0xEKYSXNeIBeFsjiV7SBwnzQxRl2UStknKL8IJbdDU7LPEX90mBvWx-5vke6zBzAY
-    R8yTViIK65K9H_Emes>
-X-ME-Received: <xmr:0xEKYfLuOmePxxdVpdnefipLiSAgLSbB9Cdn9ujzXIV89RcHAUXBV6aNdz5STdoqsik360bs-XgDC7cqJ2A_Iz480ymIBX5sxJc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieehgdejhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeffudfhgeefvdeitedugfelueegheekkeefveffhfeiveetledvhfdtveffteeu
-    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
-    hhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:0xEKYTGVwE5Vu1vy9aljXPRzMS_sUucpuwEEoa9MfqoK6K6BISC8Hg>
-    <xmx:0xEKYTVQedE_425BM7uY-axX9pj6cSp8x9lI14zcb3BMElFnkg9i_g>
-    <xmx:0xEKYeNgeZZX-hudjSiytjpeYXWJrhQrt4lcgxJ5p9Xgvh_NIHCa0Q>
-    <xmx:1REKYZzLXrEEpa7giA_S1LmbKqUktRaSTdJZmcI6w_0ouJdJI-UeNQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 4 Aug 2021 00:04:33 -0400 (EDT)
-Date:   Wed, 4 Aug 2021 14:04:28 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, userm57@yahoo.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc/32s: Fix napping restore in data storage interrupt
- (DSI)
-In-Reply-To: <731694e0885271f6ee9ffc179eb4bcee78313682.1628003562.git.christophe.leroy@csgroup.eu>
-Message-ID: <ce20d16c-b0b2-94c-3e22-794d95c376b@linux-m68k.org>
-References: <731694e0885271f6ee9ffc179eb4bcee78313682.1628003562.git.christophe.leroy@csgroup.eu>
+        Wed, 4 Aug 2021 00:05:45 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id C72D73F34D
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 04:05:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628049925;
+        bh=K8QqgejufW6QBHrbYxY5VgQSp4ONTbxOf5CTX7mBoLY=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=q+hcqWJLEUQAY/kg+kfyyUD2amNalVJ26hp0lX60i7LXeUxNHOwjDkWeeOUz21nfm
+         MLcGQSiRtmSbEnzcrSBwVCUeVVT6G9dW96va4t/MeJKtH9XhCGj6jpSEjL7gMZUohj
+         WXTUSSpdCiN04v7CsL3dM8SsLKnpyoyx89HcYr7sqQn+K8B5MhLKrdfooykHY2QtY3
+         9WGXdb2f8rrksUis2snyuWjcOYHRuFn0Tk6U73kpO7tF0UiWQPSxggc1ccoDRgy7zx
+         koSMeZZVI/FUXYrzs9efeQFdBuzWUJNd/hWqVPFiIQ4Bjut+hZ6ODRsx+oJmXU3ZTk
+         wGJpq3IIBzfGg==
+Received: by mail-ed1-f72.google.com with SMTP id d12-20020a50fe8c0000b02903a4b519b413so785946edt.9
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Aug 2021 21:05:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K8QqgejufW6QBHrbYxY5VgQSp4ONTbxOf5CTX7mBoLY=;
+        b=KRMCDoandanG0BDKAgOHD72eyHcNIpKQkkarzj7BuBYWFIpRY0g7lCMF6W86h65rCB
+         utvY8E42G4SMbjctSVaTt30qR3o34scPBe5qTvw/H787B8dmhlpWDh+kCwa685eMUXS/
+         FV9Apj5eHlQZQNU4shBz+xurNbShgilfl9o9294qL8I9pQu9hmmTPqmwt9FJ2j0NZPvv
+         0PDy2y/CBSDMK/dxlBzkqgLdn6Tb4JLde7V/JaK01rUUjjGNjYQG/KDyWmRKcSxDSvfi
+         PTLyijC7RYcMrX2DfGXfUuJYL9sqTda5GH8QkVgt+GnwTgQsI6GhWG/nMb7CmuCLKhSH
+         3Nkg==
+X-Gm-Message-State: AOAM532RPceaS9TK8JQ7AQPHb0N6v//OtYPxOCTGO5grJyfjFGqE79CI
+        ObPj339SRmGvadwgh4i8416v9Uw24xXywsm5Ui+R46XESDUoUZxav6SwKSpdzk5Nvrd2xMjiPTw
+        1ZgzRm/65K9RcvqlSjSLO+lp+n3WSlbqmnl9A5e0LNQNgkW2cTDl1Ts+x6Q==
+X-Received: by 2002:aa7:c50d:: with SMTP id o13mr29221420edq.153.1628049925366;
+        Tue, 03 Aug 2021 21:05:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzPpYJiPgLknSuDZM0Ba9u14AjqWyOXZKkeW43iLJtYDXVL8CggnubSMbP5TmbTHk9vFfIu5YymNDqZ51mvHrE=
+X-Received: by 2002:aa7:c50d:: with SMTP id o13mr29221409edq.153.1628049925125;
+ Tue, 03 Aug 2021 21:05:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210803152823.515849-1-kai.heng.feng@canonical.com> <f5f553ad-904d-dac5-dac5-3d7e266ab2fb@gmail.com>
+In-Reply-To: <f5f553ad-904d-dac5-dac5-3d7e266ab2fb@gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Wed, 4 Aug 2021 12:05:10 +0800
+Message-ID: <CAAd53p52G6R-ydsy72faAZ5yphb8-vSeYcvz1kog46eGFh+hLQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] r8169: Implement dynamic ASPM mechanism
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     nic_swsd <nic_swsd@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:8169 10/100/1000 GIGABIT ETHERNET DRIVER" 
+        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Aug 2021, Christophe Leroy wrote:
+On Wed, Aug 4, 2021 at 3:57 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>
+> On 03.08.2021 17:28, Kai-Heng Feng wrote:
+> > r8169 NICs on some platforms have abysmal speed when ASPM is enabled.
+> > Same issue can be observed with older vendor drivers.
+> >
+> > The issue is however solved by the latest vendor driver. There's a new
+>
+> Is there any errata document from Realtek recommending this workaround?
+> Any prove that it solves the issues in all cases of ASPM issues we've
+> seen so far?
 
-> When a DSI (Data Storage Interrupt) is taken while in NAP mode, r11 
-> doesn't survive the call to power_save_ppc32_restore().
-> 
-> So use r1 instead of r11 as they both contain the virtual stack pointer 
-> at that point.
-> 
-> Reported-by: Finn Thain <fthain@linux-m68k.org>
-> Fixes: 4c0104a83fc3 ("powerpc/32: Dismantle EXC_XFER_STD/LITE/TEMPLATE")
+Actually I don't know. Let me ask Realtek.
 
-Regarding that 'Fixes' tag, this patch has not fixed the failure below, 
-unfortunately. But there appears to be several bugs in play here. Can you 
-tell us which failure mode is associated with the bug addressed by this 
-patch?
+> Also your heuristics logic seems to be different from the one in r8168.
+> The vendor driver considers also rx packets.
 
-------------[ cut here ]------------
-kernel BUG at arch/powerpc/kernel/interrupt.c:49!
-Oops: Exception in kernel mode, sig: 5 [#1]
-BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
-Modules linked in:
-CPU: 0 PID: 1859 Comm: xfce4-session Not tainted 5.13.0-pmac-VMAP #10
-NIP:  c0011474 LR: c0011464 CTR: 00000000
-REGS: e2f75e40 TRAP: 0700   Not tainted  (5.13.0-pmac-VMAP)
-MSR:  00021032 <ME,IR,DR,RI>  CR: 2400446c  XER: 20000000
+rx packets are accumulated in rtl_rx().
 
-GPR00: c001604c e2f75f00 ca284a60 00000000 00000000 a5205eb0 00000008 00000020
-GPR08: ffffffc0 00000001 501200d9 ce030005 ca285010 00c1f778 00000000 00000000
-GPR16: 00945b20 009402f8 00000001 a6b87550 a51fd000 afb73220 a6b22c78 a6a6aecc
-GPR24: 00000000 ffffffc0 00000020 00000008 a5205eb0 00000000 e2f75f40 000000ae
-NIP [c0011474] system_call_exception+0x60/0x164
-LR [c0011464] system_call_exception+0x50/0x164
-Call Trace:
-[e2f75f00] [00009000] 0x9000 (unreliable)
-[e2f75f30] [c001604c] ret_from_syscall+0x0/0x28
---- interrupt: c00 at 0xa69d6cb0
-NIP:  a69d6cb0 LR: a69d6c3c CTR: 00000000
-REGS: e2f75f40 TRAP: 0c00   Not tainted  (5.13.0-pmac-VMAP)
-MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 2400446c  XER: 20000000
+>
+> In addition you use this logic also for chip versions not covered by
+> r8168, like RTL8125. Any info from Realtek regarding these chip versions?
 
-GPR00: 000000ae a5205de0 a5687ca0 00000000 00000000 a5205eb0 00000008 00000020
-GPR08: ffffffc0 401201ea 401200d9 ffffffff c158f230 00c1f778 00000000 00000000
-GPR16: 00945b20 009402f8 00000001 a6b87550 a51fd000 afb73220 a6b22c78 a6a6aecc
-GPR24: afb72fc8 00000000 00000001 a5205f30 afb733dc 00000000 a6b85ff4 a5205eb0
-NIP [a69d6cb0] 0xa69d6cb0
-LR [a69d6c3c] 0xa69d6c3c
---- interrupt: c00
-Instruction dump:
-7cdb3378 93810020 7cbc2b78 93a10024 7c9d2378 93e1002c 7d3f4b78 4800d629
-817e0084 931e0088 69690002 5529fffe <0f090000> 69694000 552997fe 0f090000
----[ end trace c66c6c3c44806276 ]---
+Right, maybe 8125 doesn't need dynamic ASPM. Let me ask them...
+
+>
+> > mechanism, which disables r8169's internal ASPM when the NIC has
+> > substantial network traffic, and vice versa.
+> >
+> 10 packets per second I wouldn't call substantial traffic.
+
+I'll change the wording in v2.
+
+> I'm afraid we may open a can of worms and may be bothered
+> with bug reports and complaints again.
+
+Let's hope this time it works.
+
+>
+> > So implement the same mechanism here to resolve the issue.
+> >
+> For me this risk is too high to re-enable ASPM for a lot of chip
+> versions w/o any official errata and workaround information.
+> I propose you make this change downstream, and if there are no
+> user complaints after some months I may consider to have something
+> like that in the mainline driver.
+
+Sure, let's see how it works in downstream kernel first.
+
+>
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> >  drivers/net/ethernet/realtek/r8169_main.c | 36 +++++++++++++++++++++++
+> >  1 file changed, 36 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> > index c7af5bc3b8af..e257d3cd885e 100644
+> > --- a/drivers/net/ethernet/realtek/r8169_main.c
+> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> > @@ -624,6 +624,10 @@ struct rtl8169_private {
+> >
+> >       unsigned supports_gmii:1;
+> >       unsigned aspm_manageable:1;
+> > +     unsigned aspm_enabled:1;
+> > +     struct timer_list aspm_timer;
+> > +     u32 aspm_packet_count;
+> > +
+> >       dma_addr_t counters_phys_addr;
+> >       struct rtl8169_counters *counters;
+> >       struct rtl8169_tc_offsets tc_offset;
+> > @@ -2671,6 +2675,8 @@ static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
+> >               RTL_W8(tp, Config5, RTL_R8(tp, Config5) & ~ASPM_en);
+> >       }
+> >
+> > +     tp->aspm_enabled = enable;
+> > +
+> >       udelay(10);
+> >  }
+> >
+> > @@ -4408,6 +4414,7 @@ static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
+> >
+> >       dirty_tx = tp->dirty_tx;
+> >
+> > +     tp->aspm_packet_count += tp->cur_tx - dirty_tx;
+> >       while (READ_ONCE(tp->cur_tx) != dirty_tx) {
+> >               unsigned int entry = dirty_tx % NUM_TX_DESC;
+> >               u32 status;
+> > @@ -4552,6 +4559,8 @@ static int rtl_rx(struct net_device *dev, struct rtl8169_private *tp, int budget
+> >               rtl8169_mark_to_asic(desc);
+> >       }
+> >
+> > +     tp->aspm_packet_count += count;
+> > +
+> >       return count;
+> >  }
+> >
+> > @@ -4659,8 +4668,31 @@ static int r8169_phy_connect(struct rtl8169_private *tp)
+> >       return 0;
+> >  }
+> >
+> > +#define ASPM_PACKET_THRESHOLD 10
+> > +#define ASPM_TIMER_INTERVAL 1000
+> > +
+> > +static void rtl8169_aspm_timer(struct timer_list *timer)
+> > +{
+> > +     struct rtl8169_private *tp = from_timer(tp, timer, aspm_timer);
+> > +     bool enable;
+> > +
+> > +     enable = tp->aspm_packet_count <= ASPM_PACKET_THRESHOLD;
+> > +
+> > +     if (tp->aspm_enabled != enable) {
+> > +             rtl_unlock_config_regs(tp);
+> > +             rtl_hw_aspm_clkreq_enable(tp, enable);
+> > +             rtl_lock_config_regs(tp);
+>
+> All this in interrupt context w/o locking?
+
+Sorry, I forgot the timer is in interrupt context.
+Or is it safe to use workqueue for rtl_{,un}lock_config_regs() and
+rtl_hw_aspm_clkreq_enable()?
+
+Kai-Heng
+
+>
+> > +     }
+> > +
+> > +     tp->aspm_packet_count = 0;
+> > +
+> > +     mod_timer(timer, jiffies + msecs_to_jiffies(ASPM_TIMER_INTERVAL));
+> > +}
+> > +
+> >  static void rtl8169_down(struct rtl8169_private *tp)
+> >  {
+> > +     del_timer_sync(&tp->aspm_timer);
+> > +
+> >       /* Clear all task flags */
+> >       bitmap_zero(tp->wk.flags, RTL_FLAG_MAX);
+> >
+> > @@ -4687,6 +4719,10 @@ static void rtl8169_up(struct rtl8169_private *tp)
+> >       rtl_reset_work(tp);
+> >
+> >       phy_start(tp->phydev);
+> > +
+> > +     timer_setup(&tp->aspm_timer, rtl8169_aspm_timer, 0);
+> > +     mod_timer(&tp->aspm_timer,
+> > +               jiffies + msecs_to_jiffies(ASPM_TIMER_INTERVAL));
+> >  }
+> >
+> >  static int rtl8169_close(struct net_device *dev)
+> >
+>
