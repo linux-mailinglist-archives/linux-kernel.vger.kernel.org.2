@@ -2,91 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521173E0396
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100E03E039B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238386AbhHDOnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 10:43:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26630 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238314AbhHDOnq (ORCPT
+        id S238495AbhHDOoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238396AbhHDOoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 10:43:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628088213;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kFYUSa3dRghMYe581f3uqD6OPPYe5RTO9O4Oxh6XB5I=;
-        b=SdL1aHBKgTm6gcbnxkeRkIOKlJmEetcQudRSgQrLcXM4j2155L0/lL/giPTBmJanc65B2w
-        1ctFBRCWehsOXTapBIPCxqrDa73ZD8w2IG7IIlfECAGC3zkLs1fTU1Tgw9/74/T9hPe4Ut
-        DpvoHqEzcTbuy8tp0GhnWjIkn6s+Yuo=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-218-gwb65xhTOgipaQVyzJdJkw-1; Wed, 04 Aug 2021 10:43:31 -0400
-X-MC-Unique: gwb65xhTOgipaQVyzJdJkw-1
-Received: by mail-wm1-f70.google.com with SMTP id a197-20020a1c98ce0000b029025831695a2eso362891wme.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:43:31 -0700 (PDT)
+        Wed, 4 Aug 2021 10:44:00 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05EAC0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 07:43:46 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id e5so3231823pld.6
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 07:43:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=Ssek2gBdwyibbtURI+xATKZuZg52BHGlKje0OtabAs0=;
+        b=h7VKzZe4o/L9PE1NTEeOz+gX+OI8S+0iVj+BIvfuPH96E+Uq9tD4KtuiaP3BxpqVMF
+         h24wZN18njHEA/v2QrhvN4v+TvKzidPUCu70kgXubr0I3ny8IuWoAIdhUbspfg1v0sDH
+         ITMawuKWwYSGbk2Lo0wxpsvPoVT4qZ9OQH9Yo5NxK1JFzSxexLGW+C4kwH7Vs3HPEqws
+         BJbxEeXdNhTxpfL+wHF9iQTiiAIgB8DeVVeE7fu+T0nDmfHvBjiT7Ugob4dyR50pKXaw
+         95z1uNAmqu8+dVgtjBXav1k85dFplY6yKKJNDaz9jkQt/9Vw0p+CuHxqAigOz/aKRULu
+         Rbow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kFYUSa3dRghMYe581f3uqD6OPPYe5RTO9O4Oxh6XB5I=;
-        b=ICRqKPbyC5y9Xz7qPMZ82QAGj9QRxMPQ/wWKUD0MTYbqKqMou+j5Pe+PNX7K4/WrTo
-         qmfxvJzso2L99syKGc6XD+EjQkHQhhUSLAb690eTOVcGlqYSpWpe+XbsFvN/5nkxqAlg
-         +d5g8mp0Re217KAZGKDLFxGJZBR0cARkMAaS9Q39p2oMJIt9pKk/9wtFj+mYVWTEHg6w
-         wcHmCy4WQPJMGEWNQPzHepEdcCnPMfKMuT6i7qPb4CBWydVulPEVOl6D2P0lYerRsQri
-         l/dxOJFe43OUdPWnkbY7WPY601xawedprPIdJ+bgl0xLyK9crg15dp7OuYa0nU5c/HzP
-         PWyA==
-X-Gm-Message-State: AOAM530oRaU/nUSzhW8EVUin6TgVytCIzhf3zgQ+UsShRkdVc21xXGxN
-        /h5eOL7sewc9G+nsT6vUV2k4CNL1U9sK9km+lsQXO4t79Uiw3bhSVuBYYBzFMXEnJOF8vgbhMwa
-        5aRG86dVi/k5aRzwaBoo24S80Kx83jD1LRYjB1qhq
-X-Received: by 2002:a05:600c:2241:: with SMTP id a1mr10229059wmm.171.1628088210717;
-        Wed, 04 Aug 2021 07:43:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwwKeR2z5x/HL0NvZb68pP377KTS2HGMKbAH8tOqgYY8tWUV+n8t4legpd8joDAklG+ZHncu46UdSv0kNWBp5Q=
-X-Received: by 2002:a05:600c:2241:: with SMTP id a1mr10229050wmm.171.1628088210589;
- Wed, 04 Aug 2021 07:43:30 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=Ssek2gBdwyibbtURI+xATKZuZg52BHGlKje0OtabAs0=;
+        b=cNWAbZ4fwtX6BYH4u3OIT6U4jWqon10RmV2SQBtZpt1IJGSAOGa/nVli3+MgzvnLKi
+         SA47WRSMnYZ8BLc7m+XXDP/ZVwh2fL7JmhryOiY86Jlh+5k9mFneiZU08SwZu13jzNLj
+         kx+CImXsQ0JIUXiJK8yBuxIq84t7KH0M/BWh+RGBgqhPAQMzJ2x20qwTRCefNv4iI4Pw
+         MkCkDisuaUvI4hIW17L7ylup0X29cUg7Ua8U/Lecu+EF6o70fPYv/bp77oOS4O08J5wR
+         o92Vsrfx5++3nt5GrbyZwtJ8x7mg0QaB149ppd2zpXWYGkyvAQDKishpFxkHcOKaXSA1
+         A+xw==
+X-Gm-Message-State: AOAM533YU9ikmoywMJjJ4mdmlf89BXCW0eWhZBJBGJSfMe5Dg9DXnuPc
+        4TtAHN9O96evrSW7133T7S+e1g==
+X-Google-Smtp-Source: ABdhPJwL5ywRYtwZGNqKKeAQLRuOPUqwsDqScLiVgGvUGmKKEoly68alFaEd9jp/7w2tRDEZawbVTg==
+X-Received: by 2002:a63:5641:: with SMTP id g1mr1098698pgm.33.1628088226021;
+        Wed, 04 Aug 2021 07:43:46 -0700 (PDT)
+Received: from [192.168.1.116] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id x4sm3398147pfb.27.2021.08.04.07.43.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 07:43:45 -0700 (PDT)
+To:     io-uring <io-uring@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Daniel Wagner <dwagner@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH] io-wq: remove GFP_ATOMIC allocation off schedule out path
+Message-ID: <a673a130-e0e4-5aa8-4165-f35d1262fc6a@kernel.dk>
+Date:   Wed, 4 Aug 2021 08:43:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAK8P3a0i0WP24Z0TScmPqKxmM2ovtKnmm+qZq6+Tc1ju+hma0w@mail.gmail.com>
- <20210804141049.499767-1-kherbst@redhat.com> <CAK8P3a136c_L3yVn-841Sbfib9UMOf1M-pk+2SqWt0wD2zfRKQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a136c_L3yVn-841Sbfib9UMOf1M-pk+2SqWt0wD2zfRKQ@mail.gmail.com>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Wed, 4 Aug 2021 16:43:19 +0200
-Message-ID: <CACO55tsLpURTm=Jf=4gRVtYQbit5h2OBYw_MFb6Vf1PFvTV7dw@mail.gmail.com>
-Subject: Re: [PATCH] depend on BACKLIGHT_CLASS_DEVICE for more devices
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lyude Paul <lyude@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        ML nouveau <nouveau@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 4:19 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Wed, Aug 4, 2021 at 4:10 PM Karol Herbst <kherbst@redhat.com> wrote:
-> >
-> > playing around a little bit with this, I think the original "select
-> > BACKLIGHT_CLASS_DEVICE" is fine. Atm we kind of have this weird mix of
-> > drivers selecting and others depending on it. We could of course convert
-> > everything over to depend, and break those cycling dependency issues with
-> > this.
-> >
-> > Anyway this change on top of my initial patch is enough to make Kconfig
-> > happy and has the advantage of not having to mess with the deps of nouveau
-> > too much.
->
-> Looks good to me. We'd probably want to make the BACKLIGHT_CLASS_DEVICE
-> option itself 'default FB || DRM' though, to ensure that defconfigs
-> keep working.
->
+Daniel reports that the v5.14-rc4-rt4 kernel throws a BUG when running
+stress-ng:
 
-okay cool. Will send out a proper updated patch series soonish.
+| [   90.202543] BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:35
+| [   90.202549] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 2047, name: iou-wrk-2041
+| [   90.202555] CPU: 5 PID: 2047 Comm: iou-wrk-2041 Tainted: G        W         5.14.0-rc4-rt4+ #89
+| [   90.202559] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+| [   90.202561] Call Trace:
+| [   90.202577]  dump_stack_lvl+0x34/0x44
+| [   90.202584]  ___might_sleep.cold+0x87/0x94
+| [   90.202588]  rt_spin_lock+0x19/0x70
+| [   90.202593]  ___slab_alloc+0xcb/0x7d0
+| [   90.202598]  ? newidle_balance.constprop.0+0xf5/0x3b0
+| [   90.202603]  ? dequeue_entity+0xc3/0x290
+| [   90.202605]  ? io_wqe_dec_running.isra.0+0x98/0xe0
+| [   90.202610]  ? pick_next_task_fair+0xb9/0x330
+| [   90.202612]  ? __schedule+0x670/0x1410
+| [   90.202615]  ? io_wqe_dec_running.isra.0+0x98/0xe0
+| [   90.202618]  kmem_cache_alloc_trace+0x79/0x1f0
+| [   90.202621]  io_wqe_dec_running.isra.0+0x98/0xe0
+| [   90.202625]  io_wq_worker_sleeping+0x37/0x50
+| [   90.202628]  schedule+0x30/0xd0
+| [   90.202630]  schedule_timeout+0x8f/0x1a0
+| [   90.202634]  ? __bpf_trace_tick_stop+0x10/0x10
+| [   90.202637]  io_wqe_worker+0xfd/0x320
+| [   90.202641]  ? finish_task_switch.isra.0+0xd3/0x290
+| [   90.202644]  ? io_worker_handle_work+0x670/0x670
+| [   90.202646]  ? io_worker_handle_work+0x670/0x670
+| [   90.202649]  ret_from_fork+0x22/0x30
 
->       Arnd
->
+which is due to the RT kernel not liking a GFP_ATOMIC allocation inside
+a raw spinlock. Besides that not working on RT, doing any kind of
+allocation from inside schedule() is kind of nasty and should be avoided
+if at all possible.
+
+This particular path happens when an io-wq worker goes to sleep, and we
+need a new worker to handle pending work. We currently allocate a small
+data item to hold the information we need to create a new worker, but we
+can instead include this data in the io_worker struct itself and just
+protect it with a single bit lock. We only really need one per worker
+anyway, as we will have run pending work between to sleep cycles.
+
+https://lore.kernel.org/lkml/20210804082418.fbibprcwtzyt5qax@beryllium.lan/
+Reported-by: Daniel Wagner <dwagner@suse.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+
+---
+
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index 50dc93ffc153..d5f56d41d59b 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -51,6 +51,10 @@ struct io_worker {
+ 
+ 	struct completion ref_done;
+ 
++	unsigned long create_state;
++	struct callback_head create_work;
++	int create_index;
++
+ 	struct rcu_head rcu;
+ };
+ 
+@@ -261,42 +265,46 @@ static void io_wqe_inc_running(struct io_worker *worker)
+ 	atomic_inc(&acct->nr_running);
+ }
+ 
+-struct create_worker_data {
+-	struct callback_head work;
+-	struct io_wqe *wqe;
+-	int index;
+-};
+-
+ static void create_worker_cb(struct callback_head *cb)
+ {
+-	struct create_worker_data *cwd;
++	struct io_worker *worker;
+ 	struct io_wq *wq;
+ 
+-	cwd = container_of(cb, struct create_worker_data, work);
+-	wq = cwd->wqe->wq;
+-	create_io_worker(wq, cwd->wqe, cwd->index);
+-	kfree(cwd);
++	worker = container_of(cb, struct io_worker, create_work);
++	wq = worker->wqe->wq;
++	create_io_worker(wq, worker->wqe, worker->create_index);
++	clear_bit_unlock(0, &worker->create_state);
++	io_worker_release(worker);
+ }
+ 
+-static void io_queue_worker_create(struct io_wqe *wqe, struct io_wqe_acct *acct)
++static void io_queue_worker_create(struct io_wqe *wqe, struct io_worker *worker,
++				   struct io_wqe_acct *acct)
+ {
+-	struct create_worker_data *cwd;
+ 	struct io_wq *wq = wqe->wq;
+ 
+ 	/* raced with exit, just ignore create call */
+ 	if (test_bit(IO_WQ_BIT_EXIT, &wq->state))
+ 		goto fail;
++	if (!io_worker_get(worker))
++		goto fail;
++	/*
++	 * create_state manages ownership of create_work/index. We should
++	 * only need one entry per worker, as the worker going to sleep
++	 * will trigger the condition, and waking will clear it once it
++	 * runs the task_work.
++	 */
++	if (test_bit(0, &worker->create_state) ||
++	    test_and_set_bit_lock(0, &worker->create_state))
++		goto fail_release;
+ 
+-	cwd = kmalloc(sizeof(*cwd), GFP_ATOMIC);
+-	if (cwd) {
+-		init_task_work(&cwd->work, create_worker_cb);
+-		cwd->wqe = wqe;
+-		cwd->index = acct->index;
+-		if (!task_work_add(wq->task, &cwd->work, TWA_SIGNAL))
+-			return;
++	init_task_work(&worker->create_work, create_worker_cb);
++	worker->create_index = acct->index;
++	if (!task_work_add(wq->task, &worker->create_work, TWA_SIGNAL))
++		return;
+ 
+-		kfree(cwd);
+-	}
++	clear_bit_unlock(0, &worker->create_state);
++fail_release:
++	io_worker_release(worker);
+ fail:
+ 	atomic_dec(&acct->nr_running);
+ 	io_worker_ref_put(wq);
+@@ -314,7 +322,7 @@ static void io_wqe_dec_running(struct io_worker *worker)
+ 	if (atomic_dec_and_test(&acct->nr_running) && io_wqe_run_queue(wqe)) {
+ 		atomic_inc(&acct->nr_running);
+ 		atomic_inc(&wqe->wq->worker_refs);
+-		io_queue_worker_create(wqe, acct);
++		io_queue_worker_create(wqe, worker, acct);
+ 	}
+ }
+ 
+@@ -973,12 +981,12 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
+ 
+ static bool io_task_work_match(struct callback_head *cb, void *data)
+ {
+-	struct create_worker_data *cwd;
++	struct io_worker *worker;
+ 
+ 	if (cb->func != create_worker_cb)
+ 		return false;
+-	cwd = container_of(cb, struct create_worker_data, work);
+-	return cwd->wqe->wq == data;
++	worker = container_of(cb, struct io_worker, create_work);
++	return worker->wqe->wq == data;
+ }
+ 
+ void io_wq_exit_start(struct io_wq *wq)
+@@ -995,12 +1003,13 @@ static void io_wq_exit_workers(struct io_wq *wq)
+ 		return;
+ 
+ 	while ((cb = task_work_cancel_match(wq->task, io_task_work_match, wq)) != NULL) {
+-		struct create_worker_data *cwd;
++		struct io_worker *worker;
+ 
+-		cwd = container_of(cb, struct create_worker_data, work);
+-		atomic_dec(&cwd->wqe->acct[cwd->index].nr_running);
++		worker = container_of(cb, struct io_worker, create_work);
++		atomic_dec(&worker->wqe->acct[worker->create_index].nr_running);
+ 		io_worker_ref_put(wq);
+-		kfree(cwd);
++		clear_bit_unlock(0, &worker->create_state);
++		io_worker_release(worker);
+ 	}
+ 
+ 	rcu_read_lock();
+
+-- 
+Jens Axboe
 
