@@ -2,266 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751193E0AB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6683B3E0ABD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 01:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234265AbhHDXJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 19:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60754 "EHLO
+        id S235314AbhHDXMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 19:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhHDXJT (ORCPT
+        with ESMTP id S230022AbhHDXME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 19:09:19 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC586C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 16:09:04 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id f8so3227667ilr.4
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 16:09:04 -0700 (PDT)
+        Wed, 4 Aug 2021 19:12:04 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4FDC06179A
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 16:11:51 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id u10so4883348oiw.4
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 16:11:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VmKoqPxtmz3LinXCEf4UyRiZ48LWiSjHFNY3pqfMWb8=;
-        b=AMp1bXGXLQZPM2wpWLEIIsn32AZ8GvhBJ3McXvBCGs05CIh4f03DF4NZs4aCjauqBC
-         N7LealoMadHUJNmfFW0YGrPYpyUSbSzl65iTLEzRB3FYtrtV+uXUJzIbCBygcoyxGX1D
-         MPnUVrL5GlVrYCmi+HvkcFBUc1c3PHZUtQU7Cv6ie/ilJA5fl2fFPuqkXzrPEEsYKaID
-         otSXSd33Bz98a4YN4b6Ol3p7VdvNRhoqwe7amc1TP6MMI0KlZGf6mZwLMJXDq//IGTBA
-         te+RQzT2/mY1gIiyqB5KqP4qGmP8JFB+DOeTnKbcv4/GmyrWAQDCyxDiEqoXc+HAZqIn
-         wEwQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TaWq51EqywyuKb/DYdfCbIFAEoPpPDGd0uhGmHXUj0A=;
+        b=QQOAum8eTzRYtMGTKCUzlhfYrrHG+LFJpDkyNcTh2ZGR2PvgVcwX0msgO9Z+kFAaax
+         jrjisKpNSlCdwHTDeH84VeaDyJ0Ar546tPGnwVYGsvnB86KDIH6ofSR/ZNAR89jBM3qs
+         KbgRASuSGueGYICoRHoJHg7U/qKKccA2opcHuSfCob6xvsi/72/HeN+ll2gXRzXriMth
+         LG/GdxjYrqQGMbD/0Gk83BfuuH0BbWRLbyPPyBpEdu/2I2zlZ4so6aNV9Mvk5TUKEX+k
+         4pHiKCRt7fr3/kjFEjbxCyauhU7+0TPZG1bYxK9FozGe/DKk9A9vlQqKpthhd+x67xEW
+         Ysbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VmKoqPxtmz3LinXCEf4UyRiZ48LWiSjHFNY3pqfMWb8=;
-        b=Pz2NTNnW+GuZsg9pdAJk5jBAHiKYK912b8rqTugpvcT7ZQFcF6lGhoCQOcgWleSkgG
-         j7he9US/QqOB5wm1TpvDIBJbQeAqRwmp+wZ6kME8DlTZomT6FVikRgZGMuhXPPcW1CSE
-         bYS1mUfx0G1Ysk/rlohdyjbfETjr5Y6m8T+P3fZuW3g0FaqjJtU0povuxVGMZBdrDIJa
-         zjNMQgm1J3D3oSNrpj8Hg8FBLn7fiLSqhF2nMJ0snCa+qieOJLah7+NpUxRzr/8lUpZx
-         g9/bqx6AABodXdD9zoHJYDTt3Z69YtVoF7eGeinzPsk3t42v56LT5OqIowqDJcwth1vE
-         tgBw==
-X-Gm-Message-State: AOAM532Xzz9rWLsaRCcJA9+DYVSeQ8LOzlqQzPWEBZnuk7fMdqwBDG4g
-        hn+Od0BE9csgDTL2iCYlIwx6Hez/4TJbs86N/tr8zA==
-X-Google-Smtp-Source: ABdhPJy5zY+8RsXLshA/zYIc0jaUMMx7hb2RAA2BxZDcBbhbnTlovLYnYbExpkI4IRPvNGO+GHk9E+FXK/rcQ5m0xjE=
-X-Received: by 2002:a05:6e02:1073:: with SMTP id q19mr712026ilj.110.1628118544096;
- Wed, 04 Aug 2021 16:09:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TaWq51EqywyuKb/DYdfCbIFAEoPpPDGd0uhGmHXUj0A=;
+        b=UmleeabHLok7Vd2Rm7FixwPCaNVtEvWyCvME1zqiea6fZEvKOi8t0jRXLSLiY8pYkp
+         1OgHz3mW8Gfkax8wMa4lR/f090FKTvnpIzAwhOvGCmYPQMC6kx74LUSLw7JZcn+UeOb1
+         AfwdjjWsoyp0vqE5/VfiBYTok903T89Se6Il6fzhbwOrt0we/61OjFLi6wJNeRuIESFM
+         VkkUX6mnCnTOCkGp6u9BJhu3bOLAEE3Jc2kvEUiPYGlQwcRG2HeqkWzr4D8pGlkLkYrS
+         p0DHth1Ckz8LzgR9I2/CL3Dw9GtLfDpyqidJCwINf72nyYQuAW88fuKVxee+Tk8dl1Ae
+         rv4A==
+X-Gm-Message-State: AOAM532sCed9zFD/+sOwrI2HSmAcpBYmpZ0R0Okkfk2exOqM6oo9DEjS
+        gXOZb/kFNe/47gVCac5a79uZ0w==
+X-Google-Smtp-Source: ABdhPJwUZLe2IQMgeO//fmZvAc15YbwcKsnB78yHqFio6xKY3oH/0UdbPuQfHF9jaAiV2v6HEloYoA==
+X-Received: by 2002:a05:6808:4d0:: with SMTP id a16mr1240203oie.166.1628118710409;
+        Wed, 04 Aug 2021 16:11:50 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u18sm748726oif.9.2021.08.04.16.11.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 16:11:49 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 18:11:48 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     sboyd@kernel.org, robh+dt@kernel.org, mka@chromium.org,
+        viresh.kumar@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dianders@chromium.org, tdas@codeaurora.org
+Subject: Re: [PATCH 2/4] cpufreq: qcom: Re-arrange register offsets to
+ support per core L3 DCVS
+Message-ID: <YQsetKGjlmQRxytX@builder.lan>
+References: <1627581885-32165-1-git-send-email-sibis@codeaurora.org>
+ <1627581885-32165-3-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-References: <cover.1624978790.git.ashish.kalra@amd.com> <f987ecfce59e90f1b207a84715544799392bdd85.1624978790.git.ashish.kalra@amd.com>
-In-Reply-To: <f987ecfce59e90f1b207a84715544799392bdd85.1624978790.git.ashish.kalra@amd.com>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Wed, 4 Aug 2021 16:08:27 -0700
-Message-ID: <CABayD+d2U4GX_azcQiWe5bHw+N4pPXcTnNH5-wop+5czO_engw@mail.gmail.com>
-Subject: Re: [PATCH v5 5/6] x86/kvm: Add guest support for detecting and
- enabling SEV Live Migration feature.
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, joro@8bytes.org, bp@alien8.de,
-        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, brijesh.singh@amd.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1627581885-32165-3-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 8:12 AM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
->
-> From: Ashish Kalra <ashish.kalra@amd.com>
->
-> The guest support for detecting and enabling SEV Live migration
-> feature uses the following logic :
->
->  - kvm_init_plaform() checks if its booted under the EFI
->
->    - If not EFI,
->
->      i) if kvm_para_has_feature(KVM_FEATURE_MIGRATION_CONTROL), issue a wrmsrl()
->          to enable the SEV live migration support
->
->    - If EFI,
->
->      i) If kvm_para_has_feature(KVM_FEATURE_MIGRATION_CONTROL), read
->         the UEFI variable which indicates OVMF support for live migration
->
->      ii) the variable indicates live migration is supported, issue a wrmsrl() to
->           enable the SEV live migration support
->
-> The EFI live migration check is done using a late_initcall() callback.
->
-> Also, ensure that _bss_decrypted section is marked as decrypted in the
-> shared pages list.
->
-> v5 of this patch splits the guest kernel support for SEV live migration
-> and kexec support for live migration into separate patches.
->
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->  arch/x86/include/asm/mem_encrypt.h |  4 ++
->  arch/x86/kernel/kvm.c              | 82 ++++++++++++++++++++++++++++++
->  arch/x86/mm/mem_encrypt.c          |  5 ++
->  3 files changed, 91 insertions(+)
->
-> diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
-> index 9c80c68d75b5..8dd373cc8b66 100644
-> --- a/arch/x86/include/asm/mem_encrypt.h
-> +++ b/arch/x86/include/asm/mem_encrypt.h
-> @@ -43,6 +43,8 @@ void __init sme_enable(struct boot_params *bp);
->
->  int __init early_set_memory_decrypted(unsigned long vaddr, unsigned long size);
->  int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size);
-> +void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages,
-> +                                           bool enc);
->
->  void __init mem_encrypt_free_decrypted_mem(void);
->
-> @@ -83,6 +85,8 @@ static inline int __init
->  early_set_memory_decrypted(unsigned long vaddr, unsigned long size) { return 0; }
->  static inline int __init
->  early_set_memory_encrypted(unsigned long vaddr, unsigned long size) { return 0; }
-> +static inline void __init
-> +early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages, bool enc) {}
->
->  static inline void mem_encrypt_free_decrypted_mem(void) { }
->
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index a26643dc6bd6..a014c9bb5066 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -27,6 +27,7 @@
->  #include <linux/nmi.h>
->  #include <linux/swait.h>
->  #include <linux/syscore_ops.h>
-> +#include <linux/efi.h>
->  #include <asm/timer.h>
->  #include <asm/cpu.h>
->  #include <asm/traps.h>
-> @@ -40,6 +41,7 @@
->  #include <asm/ptrace.h>
->  #include <asm/reboot.h>
->  #include <asm/svm.h>
-> +#include <asm/e820/api.h>
->
->  DEFINE_STATIC_KEY_FALSE(kvm_async_pf_enabled);
->
-> @@ -433,6 +435,8 @@ static void kvm_guest_cpu_offline(bool shutdown)
->         kvm_disable_steal_time();
->         if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
->                 wrmsrl(MSR_KVM_PV_EOI_EN, 0);
-> +       if (kvm_para_has_feature(KVM_FEATURE_MIGRATION_CONTROL))
-> +               wrmsrl(MSR_KVM_MIGRATION_CONTROL, 0);
->         kvm_pv_disable_apf();
->         if (!shutdown)
->                 apf_task_wake_all();
-> @@ -547,6 +551,55 @@ static void kvm_send_ipi_mask_allbutself(const struct cpumask *mask, int vector)
->         __send_ipi_mask(local_mask, vector);
->  }
->
-> +static int __init setup_efi_kvm_sev_migration(void)
-> +{
-> +       efi_char16_t efi_sev_live_migration_enabled[] = L"SevLiveMigrationEnabled";
-> +       efi_guid_t efi_variable_guid = AMD_SEV_MEM_ENCRYPT_GUID;
-> +       efi_status_t status;
-> +       unsigned long size;
-> +       bool enabled;
-> +
-> +       if (!sev_active() ||
-> +           !kvm_para_has_feature(KVM_FEATURE_MIGRATION_CONTROL))
-> +               return 0;
-> +
-> +       if (!efi_enabled(EFI_BOOT))
-> +               return 0;
-> +
-> +       if (!efi_enabled(EFI_RUNTIME_SERVICES)) {
-> +               pr_info("%s : EFI runtime services are not enabled\n", __func__);
-> +               return 0;
-> +       }
-> +
-> +       size = sizeof(enabled);
-> +
-> +       /* Get variable contents into buffer */
-> +       status = efi.get_variable(efi_sev_live_migration_enabled,
-> +                                 &efi_variable_guid, NULL, &size, &enabled);
-> +
-> +       if (status == EFI_NOT_FOUND) {
-> +               pr_info("%s : EFI live migration variable not found\n", __func__);
-> +               return 0;
-> +       }
-> +
-> +       if (status != EFI_SUCCESS) {
-> +               pr_info("%s : EFI variable retrieval failed\n", __func__);
-> +               return 0;
-> +       }
-> +
-> +       if (enabled == 0) {
-> +               pr_info("%s: live migration disabled in EFI\n", __func__);
-> +               return 0;
-> +       }
-> +
-> +       pr_info("%s : live migration enabled in EFI\n", __func__);
-> +       wrmsrl(MSR_KVM_MIGRATION_CONTROL, KVM_MIGRATION_READY);
-> +
-> +       return 1;
-> +}
-> +
-> +late_initcall(setup_efi_kvm_sev_migration);
-> +
->  /*
->   * Set the IPI entry points
->   */
-> @@ -805,8 +858,37 @@ static bool __init kvm_msi_ext_dest_id(void)
->         return kvm_para_has_feature(KVM_FEATURE_MSI_EXT_DEST_ID);
->  }
->
-> +static void kvm_sev_hc_page_enc_status(unsigned long pfn, int npages, bool enc)
-> +{
-> +       kvm_hypercall3(KVM_HC_MAP_GPA_RANGE, pfn << PAGE_SHIFT, npages,
-> +                      KVM_MAP_GPA_RANGE_ENC_STAT(enc) | KVM_MAP_GPA_RANGE_PAGE_SZ_4K);
-> +}
-> +
->  static void __init kvm_init_platform(void)
->  {
-> +       if (sev_active() &&
-> +           kvm_para_has_feature(KVM_FEATURE_MIGRATION_CONTROL)) {
-> +               unsigned long nr_pages;
-> +
-> +               pv_ops.mmu.notify_page_enc_status_changed =
-> +                       kvm_sev_hc_page_enc_status;
-> +
-> +               /*
-> +                * Ensure that _bss_decrypted section is marked as decrypted in the
-> +                * shared pages list.
-> +                */
-> +               nr_pages = DIV_ROUND_UP(__end_bss_decrypted - __start_bss_decrypted,
-> +                                       PAGE_SIZE);
-> +               early_set_mem_enc_dec_hypercall((unsigned long)__start_bss_decrypted,
-> +                                               nr_pages, 0);
-> +
-> +               /*
-> +                * If not booted using EFI, enable Live migration support.
-> +                */
-> +               if (!efi_enabled(EFI_BOOT))
-> +                       wrmsrl(MSR_KVM_MIGRATION_CONTROL,
-> +                              KVM_MIGRATION_READY);
-> +       }
->         kvmclock_init();
->         x86_platform.apic_post_init = kvm_apic_init;
->  }
-> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-> index 455ac487cb9d..2673a89d17d9 100644
-> --- a/arch/x86/mm/mem_encrypt.c
-> +++ b/arch/x86/mm/mem_encrypt.c
-> @@ -409,6 +409,11 @@ int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size)
->         return early_set_memory_enc_dec(vaddr, size, true);
->  }
->
-> +void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages, bool enc)
-> +{
-> +       notify_range_enc_status_changed(vaddr, npages, enc);
-> +}
-> +
->  /*
->   * SME and SEV are very similar but they are not the same, so there are
->   * times that the kernel will need to distinguish between SME and SEV. The
-> --
-> 2.17.1
->
+On Thu 29 Jul 13:04 CDT 2021, Sibi Sankar wrote:
 
-Reviewed-by: Steve Rutherford <srutherford@google.com>
+> Qualcomm SoCs (starting with SM8350) support per core voting for L3 cache
+> frequency. So, re-arrange the cpufreq register offsets to allow access for
+> the L3 interconnect to implement per core control. Also prevent binding
+> breakage caused by register offset shuffling by using the SM8250/SM8350
+> EPSS compatible.
+> 
+> Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+>  drivers/cpufreq/qcom-cpufreq-hw.c | 23 +++++++++++++++++++----
+>  1 file changed, 19 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+> index f86859bf76f1..74ef3b38343b 100644
+> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+> @@ -28,6 +28,7 @@ struct qcom_cpufreq_soc_data {
+>  	u32 reg_volt_lut;
+>  	u32 reg_perf_state;
+>  	u8 lut_row_size;
+> +	bool skip_enable;
+
+This should probably be called "skip_enable_check".
+
+>  };
+>  
+>  struct qcom_cpufreq_data {
+> @@ -257,19 +258,31 @@ static const struct qcom_cpufreq_soc_data qcom_soc_data = {
+>  	.reg_volt_lut = 0x114,
+>  	.reg_perf_state = 0x920,
+>  	.lut_row_size = 32,
+> +	.skip_enable = false,
+>  };
+>  
+>  static const struct qcom_cpufreq_soc_data epss_soc_data = {
+> +	.reg_freq_lut = 0x0,
+> +	.reg_volt_lut = 0x100,
+> +	.reg_perf_state = 0x220,
+> +	.lut_row_size = 4,
+> +	.skip_enable = true,
+
+This change is not compatible with existing DTBs.
+
+Regards,
+Bjorn
+
+> +};
+> +
+> +static const struct qcom_cpufreq_soc_data epss_sm8250_soc_data = {
+>  	.reg_enable = 0x0,
+>  	.reg_freq_lut = 0x100,
+>  	.reg_volt_lut = 0x200,
+>  	.reg_perf_state = 0x320,
+>  	.lut_row_size = 4,
+> +	.skip_enable = false,
+>  };
+>  
+>  static const struct of_device_id qcom_cpufreq_hw_match[] = {
+>  	{ .compatible = "qcom,cpufreq-hw", .data = &qcom_soc_data },
+>  	{ .compatible = "qcom,cpufreq-epss", .data = &epss_soc_data },
+> +	{ .compatible = "qcom,sm8250-cpufreq-epss", .data = &epss_sm8250_soc_data },
+> +	{ .compatible = "qcom,sm8350-cpufreq-epss", .data = &epss_sm8250_soc_data },
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
+> @@ -334,10 +347,12 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+>  	data->res = res;
+>  
+>  	/* HW should be in enabled state to proceed */
+> -	if (!(readl_relaxed(base + data->soc_data->reg_enable) & 0x1)) {
+> -		dev_err(dev, "Domain-%d cpufreq hardware not enabled\n", index);
+> -		ret = -ENODEV;
+> -		goto error;
+> +	if (!data->soc_data->skip_enable) {
+> +		if (!(readl_relaxed(base + data->soc_data->reg_enable) & 0x1)) {
+> +			dev_err(dev, "Domain-%d cpufreq hardware not enabled\n", index);
+> +			ret = -ENODEV;
+> +			goto error;
+> +		}
+>  	}
+>  
+>  	qcom_get_related_cpus(index, policy->cpus);
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
