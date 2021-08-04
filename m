@@ -2,194 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395B93E0A05
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315513E0A06
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 23:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231716AbhHDVbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 17:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38682 "EHLO
+        id S231767AbhHDVcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 17:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230418AbhHDVbB (ORCPT
+        with ESMTP id S230418AbhHDVb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 17:31:01 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416DDC061799
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:30:48 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id bg4so1840000vsb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:30:48 -0700 (PDT)
+        Wed, 4 Aug 2021 17:31:58 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61507C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 14:31:45 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id u16so4553583ple.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 14:31:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dxaJFL8Y5c22Jta0cMEZC2iEw41WS8AsvJV/yCHApHU=;
-        b=aFm4foLY/Ah5O7HrLETjBorHA/Cbd4vqMKInq5ZltFuYyRmeKeRRProzZ+QYj1F0ki
-         L2nCrSrSWq1ivhi/Sz+Tvs0z70lHYq8V5kPuzV4lb/KmyuYPEesHqj9zGjfXp81gNjwk
-         Hc8Y8XbiQQygnK8nDxfxY4Ea+ILEnS2D8ZLh6V01K3pd1mGl3frQ7WWWlHFzRfyNTfGU
-         j9IzlCghKlDvyGKZMPPu+sM+kackw0OGiBzo3/kNfT8KUCGiNk/ALNyTSEBJ8sZHhQ6i
-         t2uCyKv4JHyjy++JVm1Phmm+hJCtaJj8F1RV4pEnOFs9kYHFlXCAi4Rzj/26hZfjQ9OI
-         vPxA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pvwg0n6zrVFRteh7pLiTbDONpJZxU30uK8EC69rMJMQ=;
+        b=nN3nDX6hkgfV+TIHqhzqghwJxobDCOTpZ2e9aPjEtRv4ULsnC6kv9n0RGHeNf193+9
+         uVv4aVac5BedXbdiheAFOXuDt9bza2t/K5GJIy1+aCUGLVknwADV+vsZaPpRRAjm8URK
+         e0rPE+NeSKNzuktQlTJ+kRehxtGTnDMx4uhTs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dxaJFL8Y5c22Jta0cMEZC2iEw41WS8AsvJV/yCHApHU=;
-        b=FSq6TY98B01H0li0oxir9WIOAhWdDq/XE0Bp44ZP5zqmmaFP1MMFDdepk4vxxNJc9y
-         wvI7hN3w6/ZGjsOYp2kfrewiBLgtVmb0huI5vsRQvulF0NwvBiwathNo1v5rARLG3Z8G
-         iBixQMIJfeqqWKXWJZNbLZeYdva8XKUdzOAa1wSGo4vF4cjFguQmZ/FK5kq8Mg8MhpY4
-         HmNHCkGruU9biZCQfvRUXrq0SsLMg2074/E4700EIobAMWVY3ZinaQvetedQ0eI/6w0N
-         eCMAc4ILXaNqp9F81vu5ABHh6r+XZjvmOm7X+aKiq+AZGhDGc7/ypx7uP51vHImKH1JH
-         r+Cg==
-X-Gm-Message-State: AOAM5304p62PMrNyX3hvscnUejXJYWZLKvFT3KVev2fYUDSo5iYIQDih
-        /POATDFgyzUDQvEHQ4wX2Fga6HjUXD+FPmYefS9U1w==
-X-Google-Smtp-Source: ABdhPJxs3KtlDburhMJ7hb4H+QMZ+qFnQt7AfD5vKDnUEhepBfw+rufW06PMmUaJ+YMjNVp0Vvi4JO3VVZ/yl7ndwcc=
-X-Received: by 2002:a67:de06:: with SMTP id q6mr2048185vsk.57.1628112646443;
- Wed, 04 Aug 2021 14:30:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pvwg0n6zrVFRteh7pLiTbDONpJZxU30uK8EC69rMJMQ=;
+        b=bMTd07aMUtywF/zo4Po6Q1eDPaJaklPdCynf61+axkaPl/P7HwwcicPadzInNzjkD2
+         iPX6mZoazEB5bHfXWitl7p2kiuak+MG5Wx1wzEZCVh7+LMqOOlbeyjp3wEIH/ey4tGLG
+         HMVVmQ+5fdto88MYfEs8IJvwbVYspdetw4XWWdDkQlkpUDEsY58dqdqcT9vks+2pcRRy
+         JPxJI9EDrQdkK7TiEGt+awIqUL7Y/aLV/M/37UE6xeKe1JZ0X/toTyvGviMgeBohgpFL
+         PpG+TZzBgh2uJ06RxsygNE/DdwOJb/qycF5ov96eIyTGw+OzDq4dICwqk2KydkCi9BPz
+         /BDA==
+X-Gm-Message-State: AOAM532ywPZ5oJ4FFd2DuoTACIxkFbmIzgIiEUzTFxPZrWOk7S1DBSx8
+        IGfcIDXGheeUFXtBZbIBD+43hw==
+X-Google-Smtp-Source: ABdhPJwfVXRUcgEfmAqIVz84pHgULxreY3OLXA3rNsM1VAhDdJZpVLwT//2JO/J2YVkx8vSNoolM7g==
+X-Received: by 2002:a17:902:dac1:b029:12c:61a8:1f4a with SMTP id q1-20020a170902dac1b029012c61a81f4amr1297118plx.37.1628112704856;
+        Wed, 04 Aug 2021 14:31:44 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:1bbb:ae51:b1f4:49bc])
+        by smtp.gmail.com with UTF8SMTPSA id a11sm4804548pgj.75.2021.08.04.14.31.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 14:31:44 -0700 (PDT)
+From:   Gwendal Grignou <gwendal@chromium.org>
+To:     dtor@chromium.org, jwerner@chromium.org, bleung@chromium.org,
+        enric.balletbo@collabora.com, groeck@chromium.org
+Cc:     linux-kernel@vger.kernel.org,
+        Gwendal Grignou <gwendal@chromium.org>
+Subject: [PATCH v3 0/1] platform/chrome: Update cros_ec sysfs attribute after sensors are found
+Date:   Wed,  4 Aug 2021 14:31:38 -0700
+Message-Id: <20210804213139.4139492-1-gwendal@chromium.org>
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
 MIME-Version: 1.0
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
- <20210730144922.29111-13-semen.protsenko@linaro.org> <15871f8ced3c757fad1ab3b6e62c4e64@misterjones.org>
- <CAPLW+4=v4bDcuxGVqs06mobGj34At4cD+vg48b4dPujarS07Tg@mail.gmail.com> <bf21badb-804f-45f0-c02b-80ff57ab9931@canonical.com>
-In-Reply-To: <bf21badb-804f-45f0-c02b-80ff57ab9931@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Thu, 5 Aug 2021 00:30:34 +0300
-Message-ID: <CAPLW+4nY=hozOR+B_0sPZODrk9PXaXg+NB-9pVhDbAjEy7yjhg@mail.gmail.com>
-Subject: Re: [PATCH 12/12] arm64: dts: exynos: Add Exynos850 SoC support
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Aug 2021 at 21:36, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 04/08/2021 16:39, Sam Protsenko wrote:
-> > Hi Marc,
-> >
-> > On Fri, 30 Jul 2021 at 19:50, Marc Zyngier <maz@kernel.org> wrote:
-> >>
-> >> On 2021-07-30 15:49, Sam Protsenko wrote:
-> >>> Samsung Exynos850 is ARMv8-based mobile-oriented SoC.
-> >>>
-> >>> Features:
-> >>>  * CPU: Cortex-A55 Octa (8 cores), up to 2 GHz
-> >>>  * Memory interface: LPDDR4/4x 2 channels (12.8 GB/s)
-> >>>  * SD/MMC: SD 3.0, eMMC5.1 DDR 8-bit
-> >>>  * Modem: 4G LTE, 3G, GSM/GPRS/EDGE
-> >>>  * RF: Quad GNSS, WiFi 5 (802.11ac), Bluetooth 5.0
-> >>>  * GPU: Mali-G52 MP1
-> >>>  * Codec: 1080p 60fps H64, HEVC, JPEG HW Codec
-> >>>  * Display: Full HD+ (2520x1080)@60fps LCD
-> >>>  * Camera: 16+5MP/13+8MP ISP, MIPI CSI 4/4/2, FD, DRC
-> >>>  * Connectivity: USB 2.0 DRD, USI (SPI/UART/I2C), HSI2C, I3C, ADC,
-> >>> Audio
-> >>>
-> >>> This patch adds minimal SoC support. Particular board device tree files
-> >>> can include exynos850.dtsi file to get SoC related nodes, and then
-> >>> reference those nodes further as needed.
-> >>>
-> >>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> >>> ---
-> >>>  .../boot/dts/exynos/exynos850-pinctrl.dtsi    | 782 ++++++++++++++++++
-> >>>  arch/arm64/boot/dts/exynos/exynos850-usi.dtsi |  30 +
-> >>>  arch/arm64/boot/dts/exynos/exynos850.dtsi     | 245 ++++++
-> >>>  3 files changed, 1057 insertions(+)
-> >>>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
-> >>>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-usi.dtsi
-> >>>  create mode 100644 arch/arm64/boot/dts/exynos/exynos850.dtsi
-> >>>
-> >>> diff --git a/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
-> >>> b/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
-> >>> new file mode 100644
-> >>> index 000000000000..4cf0a22cc6db
-> >>
-> >> [...]
-> >>
-> >>> +     gic: interrupt-controller@12a00000 {
-> >>> +             compatible = "arm,cortex-a15-gic", "arm,cortex-a9-gic";
-> >>
-> >> One thing for sure, it cannot be both. And given that it is
-> >> an A55-based SoC, it isn't either. It is more likely a GIC400.
-> >>
-> >
-> > Yes, it's GIC-400, thanks for pointing that out. Will fix that in v2.
-> >
-> >>> +             #interrupt-cells = <3>;
-> >>> +             #address-cells = <0>;
-> >>> +             interrupt-controller;
-> >>> +             reg = <0x0 0x12a01000 0x1000>,
-> >>> +                   <0x0 0x12a02000 0x1000>,
-> >>
-> >> This is wrong. It is architecturally set to 8kB.
-> >>
-> >
-> > Nice catch! Actually there is an error (typo?) in SoC's TRM, saying
-> > that Virtual Interface Control Register starts at 0x3000 offset (from
-> > 0x12a00000), where it obviously should be 0x4000, that's probably
-> > where this dts error originates from. Btw, I'm also seeing the same
-> > error in exynos7.dtsi.
->
-> What's the error exactly? The "Virtual interface control register"
-> offset (3rd region) is set properly to 0x4000 on Exynos7. Also one for
-> the Exynos5433 looks correct.
->
+Attribute "kb_wake_angle" in /sys/<cros_ec hw path>/chromeos/cros_ec,
+used to set at which angle the embedded controller must wake up the
+host, is only set when there is at least 2 accelerometers in the
+chromebook.
 
-The issue is that 2nd region's size is 0x1000, but it must be 0x2000.
-It's defined by GIC-400 architecture, as I understand. Please look at
-[1], table 3-1 has very specific offsets and sizes for each functional
-block, and each particular SoC must adhere to that spec. So having
-0x1000 for 2nd region can't be correct. And because exynos7.dtsi has
-GIC-400 as well, and 0x1000 is specified there for 2nd region size
-too, so I presume there is the same mistake there.
+The detection of these sensors is done in cros_ec_sensorhub, driver that
+can be probed after the cros_ec_sysfs driver that sets the attribute on
+behalf of the chromeos EC class driver.
+Therefore, we need to upgrade the sysfs group in the sensorhub probe
+routine.
 
-Can you please check the TRM for Exynos7 SoC (if you have one in your
-possession), and see if there is a typo there? E.g. in case of
-Exynos850 TRM I can see that in "Register Map Summary" section the
-offset for the first register (GICH_HCR) in "Virtual Interface Control
-Register" region is specified as 0x3000, where it should be 0x4000, so
-it's probably a typo. But the register description is correct, saying
-that: "Address = Base Address + 0x4000".
+Gwendal Grignou (1):
+  platform/chrome: Poke kb_wake_angle attribute visibility when needed
 
-[1] https://developer.arm.com/documentation/ddi0471/b/programmers-model/gic-400-register-map
+ drivers/platform/chrome/cros_ec_sensorhub.c | 6 +++++-
+ drivers/platform/chrome/cros_ec_sysfs.c     | 5 +++--
+ include/linux/platform_data/cros_ec_proto.h | 2 ++
+ 3 files changed, 10 insertions(+), 3 deletions(-)
 
-> > Though I don't have a TRM for Exynos7 SoCs, so
-> > not sure if I should go ahead and fix that too. Anyway, for Exynos850,
-> > I'll fix that in v2 series.
->
->
-> However while we are at addresses - why are you using address-cells 2?
-> It adds everywhere additional 0x0 before actual address.
->
+-- 
+2.32.0.554.ge1b32706d8-goog
 
-Right. For "cpus" node I'll change the address-cells to 1 in my v2
-series. I'll keep address-cells=2 for the root node, but I'm going to
-encapsulate some nodes into soc node (as you suggested earlier), where
-I'll make address-cells=1. That's pretty much how it's done in
-exynos7.dtsi and in exynos5433.dtsi, so I guess that's should be fine
-(to get rid of superfluous 0x0 and conform with other Exynos DTs)?
-
->
-> Best regards,
-> Krzysztof
