@@ -2,227 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E343E027C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8433E0226
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238455AbhHDNzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:55:08 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:53394 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236956AbhHDNzH (ORCPT
+        id S238333AbhHDNlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 09:41:21 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:51944
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235532AbhHDNlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:55:07 -0400
-X-UUID: d761232d0c944a638338dc7dbf3b303a-20210804
-X-UUID: d761232d0c944a638338dc7dbf3b303a-20210804
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 335190459; Wed, 04 Aug 2021 21:54:51 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 4 Aug 2021 21:54:50 +0800
-Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 4 Aug 2021 21:54:49 +0800
-From:   Mason Zhang <Mason.Zhang@mediatek.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Laxman Dewangan <ldewangan@nvidia.com>,
-        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        Mason Zhang <Mason.Zhang@mediatek.com>
-Subject: [PATCH v3 2/2] spi: modify set_cs_timing parameter
-Date:   Wed, 4 Aug 2021 21:37:47 +0800
-Message-ID: <20210804133746.6742-1-Mason.Zhang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Wed, 4 Aug 2021 09:41:19 -0400
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 580D13F228;
+        Wed,  4 Aug 2021 13:41:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628084466;
+        bh=lFojyGKTjPs1WHFbR8j0rBafp8XajAZ525KT5rkGLos=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=Fh3OVbLKgCd1iCimdmU0jvESTC/CRuoOASP4WTiASaP96L0w04pjmDpIG/DLpbDSC
+         KKJ3MUFZ0Unl3v63zdmXJE0830RpM8FjDWdwkxWX5YAXFmBd5V252bUHjvGBbZ6Aqc
+         +hO6kE0yhROukCLwyDNCtFvQTM+kVb9id1u5QxF9LrHBWm/hi0b4RTkhTn+jPYp9LR
+         Ag594oTp4NAGvjtV3PFOc2nFUkU3N2/6r9eIoRYBzrib003S/YfkHZOQCOPA/kCmhi
+         cIYId1iWcp92j5aYmLvz2VTMpQW1S2sAbzfYjnXeLF7fp21ZhBl6uq5YtzDlU8tz5I
+         Z69XppiFTl6lA==
+Subject: Re: [PATCH][next] kernel/user.c: Fix spelling mistake "cpunter" ->
+ "counter"
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210804120658.110124-1-colin.king@canonical.com>
+ <e67d1ff8-f872-c1af-7f1c-03ac9e9d7d2e@infradead.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <481ca355-6359-b8b4-423e-54b0c6000b00@canonical.com>
+Date:   Wed, 4 Aug 2021 14:41:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <e67d1ff8-f872-c1af-7f1c-03ac9e9d7d2e@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch modified set_cs_timing parameter, no need pass in spi_delay
-to set_cs_timing callback.
-By the way, we modified the mediatek and tegra114 spi driver to fix build err.
-In mediatek spi driver, We have support set absolute time not clk_count,
-and call this function in prepare_message not user's API.
+On 04/08/2021 14:35, Randy Dunlap wrote:
+> On 8/4/21 5:06 AM, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> There is a spelling mistake in a panic message. Fix it.
+>>
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>   kernel/user.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/user.c b/kernel/user.c
+>> index a2673f940506..7fc40af8d8ac 100644
+>> --- a/kernel/user.c
+>> +++ b/kernel/user.c
+>> @@ -223,7 +223,7 @@ static int __init uid_cache_init(void)
+>>           INIT_HLIST_HEAD(uidhash_table + n);
+>>         if (percpu_counter_init(&root_user.epoll_watches, 0, GFP_KERNEL))
+>> -        panic("percpu cpunter alloc failed");
+>> +        panic("percpu counter alloc failed");
+>>         /* Insert the root user immediately (init already runs as
+>> root) */
+>>       spin_lock_irq(&uidhash_lock);
+>>
+> 
+> Nick Piggin has reworded that panic message text in a patch
+> yesterday so this patch isn't needed.
 
-Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
----
- drivers/spi/spi-mt65xx.c   | 107 +++++++++++++++++++++----------------
- drivers/spi/spi-tegra114.c |   8 +--
- include/linux/spi/spi.h    |   3 +-
- 3 files changed, 66 insertions(+), 52 deletions(-)
+Fair enough. Thanks for the info.
 
-diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
-index 6f2925118b98..bb09592bc009 100644
---- a/drivers/spi/spi-mt65xx.c
-+++ b/drivers/spi/spi-mt65xx.c
-@@ -208,6 +208,65 @@ static void mtk_spi_reset(struct mtk_spi *mdata)
- 	writel(reg_val, mdata->base + SPI_CMD_REG);
- }
- 
-+static int mtk_spi_set_hw_cs_timing(struct spi_device *spi)
-+{
-+	struct mtk_spi *mdata = spi_master_get_devdata(spi->master);
-+	struct spi_delay *cs_setup = &spi->cs_setup;
-+	struct spi_delay *cs_hold = &spi->cs_hold;
-+	struct spi_delay *cs_inactive = &spi->cs_inactive;
-+	u16 setup, hold, inactive;
-+	u32 reg_val;
-+	int delay;
-+
-+	delay = spi_delay_to_ns(cs_setup, NULL);
-+	if (delay < 0)
-+		return delay;
-+	setup = (delay * DIV_ROUND_UP(mdata->spi_clk_hz, 1000000)) / 1000;
-+
-+	delay = spi_delay_to_ns(cs_hold, NULL);
-+	if (delay < 0)
-+		return delay;
-+	hold = (delay * DIV_ROUND_UP(mdata->spi_clk_hz, 1000000)) / 1000;
-+
-+	delay = spi_delay_to_ns(cs_inactive, NULL);
-+	if (delay < 0)
-+		return delay;
-+	inactive = (delay * DIV_ROUND_UP(mdata->spi_clk_hz, 1000000)) / 1000;
-+
-+	setup    = setup ? setup : 1;
-+	hold     = hold ? hold : 1;
-+	inactive = inactive ? inactive : 1;
-+
-+	reg_val = readl(mdata->base + SPI_CFG0_REG);
-+	if (mdata->dev_comp->enhance_timing) {
-+		hold = min(hold, 0xffff);
-+		setup = min(setup, 0xffff);
-+		reg_val &= ~(0xffff << SPI_ADJUST_CFG0_CS_HOLD_OFFSET);
-+		reg_val |= (((hold - 1) & 0xffff)
-+			   << SPI_ADJUST_CFG0_CS_HOLD_OFFSET);
-+		reg_val &= ~(0xffff << SPI_ADJUST_CFG0_CS_SETUP_OFFSET);
-+		reg_val |= (((setup - 1) & 0xffff)
-+			   << SPI_ADJUST_CFG0_CS_SETUP_OFFSET);
-+	} else {
-+		hold = min(hold, 0xff);
-+		setup = min(setup, 0xff);
-+		reg_val &= ~(0xff << SPI_CFG0_CS_HOLD_OFFSET);
-+		reg_val |= (((hold - 1) & 0xff) << SPI_CFG0_CS_HOLD_OFFSET);
-+		reg_val &= ~(0xff << SPI_CFG0_CS_SETUP_OFFSET);
-+		reg_val |= (((setup - 1) & 0xff)
-+			    << SPI_CFG0_CS_SETUP_OFFSET);
-+	}
-+	writel(reg_val, mdata->base + SPI_CFG0_REG);
-+
-+	inactive = min(inactive, 0xff);
-+	reg_val = readl(mdata->base + SPI_CFG1_REG);
-+	reg_val &= ~SPI_CFG1_CS_IDLE_MASK;
-+	reg_val |= (((inactive - 1) & 0xff) << SPI_CFG1_CS_IDLE_OFFSET);
-+	writel(reg_val, mdata->base + SPI_CFG1_REG);
-+
-+	return 0;
-+}
-+
- static int mtk_spi_prepare_message(struct spi_master *master,
- 				   struct spi_message *msg)
- {
-@@ -284,6 +343,8 @@ static int mtk_spi_prepare_message(struct spi_master *master,
- 		<< SPI_CFG1_GET_TICK_DLY_OFFSET);
- 	writel(reg_val, mdata->base + SPI_CFG1_REG);
- 
-+	/* set hw cs timing */
-+	mtk_spi_set_hw_cs_timing(spi);
- 	return 0;
- }
- 
-@@ -528,52 +589,6 @@ static bool mtk_spi_can_dma(struct spi_master *master,
- 		(unsigned long)xfer->rx_buf % 4 == 0);
- }
- 
--static int mtk_spi_set_hw_cs_timing(struct spi_device *spi,
--				    struct spi_delay *setup,
--				    struct spi_delay *hold,
--				    struct spi_delay *inactive)
--{
--	struct mtk_spi *mdata = spi_master_get_devdata(spi->master);
--	u16 setup_dly, hold_dly, inactive_dly;
--	u32 reg_val;
--
--	if ((setup && setup->unit != SPI_DELAY_UNIT_SCK) ||
--	    (hold && hold->unit != SPI_DELAY_UNIT_SCK) ||
--	    (inactive && inactive->unit != SPI_DELAY_UNIT_SCK)) {
--		dev_err(&spi->dev,
--			"Invalid delay unit, should be SPI_DELAY_UNIT_SCK\n");
--		return -EINVAL;
--	}
--
--	setup_dly = setup ? setup->value : 1;
--	hold_dly = hold ? hold->value : 1;
--	inactive_dly = inactive ? inactive->value : 1;
--
--	reg_val = readl(mdata->base + SPI_CFG0_REG);
--	if (mdata->dev_comp->enhance_timing) {
--		reg_val &= ~(0xffff << SPI_ADJUST_CFG0_CS_HOLD_OFFSET);
--		reg_val |= (((hold_dly - 1) & 0xffff)
--			   << SPI_ADJUST_CFG0_CS_HOLD_OFFSET);
--		reg_val &= ~(0xffff << SPI_ADJUST_CFG0_CS_SETUP_OFFSET);
--		reg_val |= (((setup_dly - 1) & 0xffff)
--			   << SPI_ADJUST_CFG0_CS_SETUP_OFFSET);
--	} else {
--		reg_val &= ~(0xff << SPI_CFG0_CS_HOLD_OFFSET);
--		reg_val |= (((hold_dly - 1) & 0xff) << SPI_CFG0_CS_HOLD_OFFSET);
--		reg_val &= ~(0xff << SPI_CFG0_CS_SETUP_OFFSET);
--		reg_val |= (((setup_dly - 1) & 0xff)
--			    << SPI_CFG0_CS_SETUP_OFFSET);
--	}
--	writel(reg_val, mdata->base + SPI_CFG0_REG);
--
--	reg_val = readl(mdata->base + SPI_CFG1_REG);
--	reg_val &= ~SPI_CFG1_CS_IDLE_MASK;
--	reg_val |= (((inactive_dly - 1) & 0xff) << SPI_CFG1_CS_IDLE_OFFSET);
--	writel(reg_val, mdata->base + SPI_CFG1_REG);
--
--	return 0;
--}
--
- static int mtk_spi_setup(struct spi_device *spi)
- {
- 	struct mtk_spi *mdata = spi_master_get_devdata(spi->master);
-diff --git a/drivers/spi/spi-tegra114.c b/drivers/spi/spi-tegra114.c
-index 5131141bbf0d..e9de1d958bbd 100644
---- a/drivers/spi/spi-tegra114.c
-+++ b/drivers/spi/spi-tegra114.c
-@@ -717,12 +717,12 @@ static void tegra_spi_deinit_dma_param(struct tegra_spi_data *tspi,
- 	dma_release_channel(dma_chan);
- }
- 
--static int tegra_spi_set_hw_cs_timing(struct spi_device *spi,
--				      struct spi_delay *setup,
--				      struct spi_delay *hold,
--				      struct spi_delay *inactive)
-+static int tegra_spi_set_hw_cs_timing(struct spi_device *spi)
- {
- 	struct tegra_spi_data *tspi = spi_master_get_devdata(spi->master);
-+	struct spi_delay *setup = &spi->cs_setup;
-+	struct spi_delay *hold = &spi->cs_hold;
-+	struct spi_delay *inactive = &spi->cs_inactive;
- 	u8 setup_dly, hold_dly, inactive_dly;
- 	u32 setup_hold;
- 	u32 spi_cs_timing;
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 651e19ba3415..fe027efb85c2 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -553,8 +553,7 @@ struct spi_controller {
- 	 * to configure specific CS timing through spi_set_cs_timing() after
- 	 * spi_setup().
- 	 */
--	int (*set_cs_timing)(struct spi_device *spi, struct spi_delay *setup,
--			     struct spi_delay *hold, struct spi_delay *inactive);
-+	int (*set_cs_timing)(struct spi_device *spi);
- 
- 	/* bidirectional bulk transfers
- 	 *
--- 
-2.18.0
+> 
+> https://lore.kernel.org/lkml/1628051945.fens3r99ox.astroid@bobo.none/
+> 
+> 
+> thanks.
 
