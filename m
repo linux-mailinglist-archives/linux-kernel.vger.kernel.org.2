@@ -2,68 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B99D3E00C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926B03E00CA
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 14:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237937AbhHDMDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 08:03:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54942 "EHLO mail.kernel.org"
+        id S238000AbhHDMEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 08:04:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237148AbhHDMDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 08:03:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5852A60F22;
-        Wed,  4 Aug 2021 12:03:02 +0000 (UTC)
+        id S237991AbhHDMET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 08:04:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F25CC60F22;
+        Wed,  4 Aug 2021 12:04:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628078582;
-        bh=tgNOdqKx8V6QH+68UnW8H7w3PF0OXwRdh17tL2J0lI4=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=jJ8mkuR3a/L15l+BrLwwYhROuzmLkYaIb59uUY8GuW70X5+5qaTy+HNWxZWlWsiaV
-         RL3C/ExqI64NQLUzoEap/qfohCT7jEOQbifJc+/zuk1xwNJ8rnyDqrrC7B/Ib789vu
-         9sm6Oue0MbCdVTpPgdg1tNPu4+zUI2DMshPp6T78=
-Date:   Wed, 4 Aug 2021 14:03:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Salah Triki <salah.triki@gmail.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Ross Schmidt <ross.schm.dev@gmail.com>,
-        Marco Cesati <marcocesati@gmail.com>,
-        Brother Matthew De Angelis <matthew.v.deangelis@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ivan Safonov <insafonov@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] tablet: acecad: update the reference count of the usb
- interface structure
-Message-ID: <YQqB9Pl1tvloKHWZ@kroah.com>
-References: <20210731160938.GA909566@pc>
- <20210804105838.GE1931@kadam>
+        s=korg; t=1628078646;
+        bh=SA09EAAKTkUs1OqwmkOmft4MkR4GN2nXfPFNIrNpdXs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GPe4efqDC7Xbj/2Eg3fPcTh+8aRcYpWQ+9NYlQAZmiUgyRRgyYed31yEGisg8pr6r
+         bpDY40rNZm86eTB5xHmh/cU9nM/YOoA/3NCKuBxuxpULdng0v7eNUlqCrQcunftKll
+         XyAB91uOqhu4CIsEKbfJjGTq1nsOZDqSNTNdgpJ4=
+Date:   Wed, 4 Aug 2021 14:04:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ting Wang <zxc52fgh@gmail.com>
+Cc:     sre@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wangting11 <wangting11@xiaomi.com>
+Subject: Re: [PATCH v11 0/4] add some power supply properties about
+ wireless/wired charging
+Message-ID: <YQqCNKoLdwaCjmIl@kroah.com>
+References: <cover.1627992564.git.wangting11@xiaomi.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210804105838.GE1931@kadam>
+In-Reply-To: <cover.1627992564.git.wangting11@xiaomi.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 01:58:38PM +0300, Dan Carpenter wrote:
-> On Sat, Jul 31, 2021 at 05:09:38PM +0100, Salah Triki wrote:
-> >  drivers/input/tablet/acecad.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/input/tablet/acecad.c b/drivers/input/tablet/acecad.c
-> > index a38d1fe97334..85fe134a30ee 100644
-> > --- a/drivers/input/tablet/acecad.c
-> > +++ b/drivers/input/tablet/acecad.c
-> > @@ -151,7 +151,7 @@ static int usb_acecad_probe(struct usb_interface *intf, const struct usb_device_
-> >  		goto fail2;
-> >  	}
-> >  
-> > -	acecad->intf = intf;
-> > +	acecad->intf = usb_get_intf(intf);
-> >  	acecad->input = input_dev;
-> >  
-> >  	if (dev->manufacturer)
+On Wed, Aug 04, 2021 at 07:01:57PM +0800, Ting Wang wrote:
+> From: wangting11 <wangting11@xiaomi.com>
 > 
-> As I mentioned earlier, you need to drop the reference if
-> input_register_device() fails.
+> This patchset aims to provide power supply properties about wireless/wired charging.
+> "quick_charge_type" reports different types of quick charge based on the charging power;
+> "tx_adapter" shows" the type of wireless charging adapter;
+> "signal_strength" shows the coupling level between TX and RX;
+> "reverse_chg_mode" provides the interface of enabling/disabling wireless reverse charging.
+> 
+> Changes in V11
+>  - Fix build error on linus/master 
+>  - Fix build error on power-supply/for-next
+>  - Fix conflict
 
-Also as mentioned in other threads, this is not needed at all.
+Where are the users of these new properties?  Shouldn't drivers be
+submitted with them as well, otherwise why would these be added?
+
+thanks,
+
+greg k-h
