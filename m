@@ -2,104 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B55E3E028E
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 15:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF9A3E0291
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 16:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238366AbhHDN76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 09:59:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:60960 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238053AbhHDN7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 09:59:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C062E11FB;
-        Wed,  4 Aug 2021 06:59:41 -0700 (PDT)
-Received: from e125579.eggemann (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 294033F719;
-        Wed,  4 Aug 2021 06:59:40 -0700 (PDT)
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Bruno Goncalves <bgoncalv@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] sched/deadline: Fix missing clock update in migrate_task_rq_dl()
-Date:   Wed,  4 Aug 2021 15:59:25 +0200
-Message-Id: <20210804135925.3734605-1-dietmar.eggemann@arm.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S238430AbhHDOAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 10:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238005AbhHDOAs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 10:00:48 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D76C0613D5;
+        Wed,  4 Aug 2021 07:00:35 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id m12so2348951wru.12;
+        Wed, 04 Aug 2021 07:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=UQh0XuwEqlgV75Ps3B/F3ylifl0qiT4/8PBf3CQWjYw=;
+        b=eOyvHSKNYGyaO+vNyt8TYAy1znDJI8bWYgVrTFZz5Bh49tY0KEY5Vic1ZUjMTCQ6Yl
+         UI31ZFXG4+EiUC3ZBUz8GiMzvh8S1gGc+zUG/ytz21FqPFlmcYtaLyyxR/M0KN/pmzzo
+         rM5gOufWNkQvVvbbpKWbLqJygPdhOE9jxfriqlmd0j2OzS2+TmgAM9eYLVZz04EnCiku
+         OpqN3IitHJxMHd3XBRR6n9h2M0vrDdfe8YhC7GyyDQkVC+/U7JlkXVzfkurVPwfPHnoV
+         sAEvF+dCFHI/LLkvDOr0dejQSrPCGh9uEy10GzfLbWywyPBRPsVReY5ogQoIaBehq0iC
+         8UjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=UQh0XuwEqlgV75Ps3B/F3ylifl0qiT4/8PBf3CQWjYw=;
+        b=EbQTiklrTyGtRQKlX9lGu+hysj6BKVrkMI7wTUk7XZfRVrYXtWe9E1adkakMCcrYFQ
+         rGrh2sdSGOSU66CYbN31zRA5uQfo3HYVNUVV23UoGrjirC4MIw2D+xj9JBWm8RH2F2km
+         ooNqPGGiXyGolrhbviqnSKkyCLnE7g6R8zHfXXgntJPzgNplzwS64MuCapkruAiHPPs6
+         y2Jb+kfg3fRSWcrtOdlYLz8lrbi+nbNWs69vukpeJxtW+Zt5Nr3RWEUQPnNKeqamCyq+
+         4NrlU6ImjCnbRpzuVpHIyI/nTbnsgzGGd/JIrlPEPuMCHiVISJxXbtR3wEXgvp3V0iO9
+         oE7w==
+X-Gm-Message-State: AOAM532Wou+l+2/x8R6HTTTv/bRZWSNgvxz9alGqEHXESiswaqFQn2R1
+        BtoTTaQzP513L6krS5pvyDY=
+X-Google-Smtp-Source: ABdhPJzllF+zFHrspGUKzLn3qA7J6fHTwUA8j7nohSTy8ysuKuNFdqGA5vH04F7Jcz/A/DMK8TJUFA==
+X-Received: by 2002:a5d:6904:: with SMTP id t4mr28597192wru.187.1628085633684;
+        Wed, 04 Aug 2021 07:00:33 -0700 (PDT)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id k1sm2812902wrz.61.2021.08.04.07.00.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 07:00:33 -0700 (PDT)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH] arm64: dts: meson: add audio playback to nexbox-a1
+Date:   Wed,  4 Aug 2021 14:00:29 +0000
+Message-Id: <20210804140029.4445-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A missing clock update is causing the following warning:
+Add initial support limited to HDMI i2s and SPDIF (LPCM).
 
-rq->clock_update_flags < RQCF_ACT_SKIP
-WARNING: CPU: 112 PID: 2041 at kernel/sched/sched.h:1453
-sub_running_bw.isra.0+0x190/0x1a0
-...
-CPU: 112 PID: 2041 Comm: sugov:112 Tainted: G W 5.14.0-rc1 #1
-Hardware name: WIWYNN Mt.Jade Server System
-B81.030Z1.0007/Mt.Jade Motherboard, BIOS 1.6.20210526 (SCP:
-1.06.20210526) 2021/05/26
-...
-Call trace:
-  sub_running_bw.isra.0+0x190/0x1a0
-  migrate_task_rq_dl+0xf8/0x1e0
-  set_task_cpu+0xa8/0x1f0
-  try_to_wake_up+0x150/0x3d4
-  wake_up_q+0x64/0xc0
-  __up_write+0xd0/0x1c0
-  up_write+0x4c/0x2b0
-  cppc_set_perf+0x120/0x2d0
-  cppc_cpufreq_set_target+0xe0/0x1a4 [cppc_cpufreq]
-  __cpufreq_driver_target+0x74/0x140
-  sugov_work+0x64/0x80
-  kthread_worker_fn+0xe0/0x230
-  kthread+0x138/0x140
-  ret_from_fork+0x10/0x18
-
-The task causing this is the `cppc_fie` DL task introduced by
-commit 1eb5dde674f5 ("cpufreq: CPPC: Add support for frequency
-invariance").
-
-With CONFIG_ACPI_CPPC_CPUFREQ_FIE=y and schedutil cpufreq governor on
-slow-switching system (like on this Ampere Altra WIWYNN Mt. Jade Arm
-Server):
-
-DL task `curr=sugov:112` lets `p=cppc_fie` migrate and since the latter
-is in `non_contending` state, migrate_task_rq_dl() calls
-
-  sub_running_bw()->__sub_running_bw()->cpufreq_update_util()->
-  rq_clock()->assert_clock_updated()
-
-on p.
-
-Fix this by updating the clock for a non_contending task in
-migrate_task_rq_dl() before calling sub_running_bw().
-
-Reported-by: Bruno Goncalves <bgoncalv@redhat.com>
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
 ---
- kernel/sched/deadline.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../boot/dts/amlogic/meson-gxm-nexbox-a1.dts  | 61 +++++++++++++++++++
+ 1 file changed, 61 insertions(+)
 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index aaacd6cfd42f..4920f498492f 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1733,6 +1733,7 @@ static void migrate_task_rq_dl(struct task_struct *p, int new_cpu __maybe_unused
- 	 */
- 	raw_spin_rq_lock(rq);
- 	if (p->dl.dl_non_contending) {
-+		update_rq_clock(rq);
- 		sub_running_bw(&p->dl, &rq->dl);
- 		p->dl.dl_non_contending = 0;
- 		/*
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
+index dfa7a37a1281..236c0a144142 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
+@@ -10,6 +10,7 @@
+ /dts-v1/;
+ 
+ #include "meson-gxm.dtsi"
++#include <dt-bindings/sound/meson-aiu.h>
+ 
+ / {
+ 	compatible = "nexbox,a1", "amlogic,s912", "amlogic,meson-gxm";
+@@ -24,6 +25,13 @@
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
++	spdif_dit: audio-codec-0 {
++		#sound-dai-cells = <0>;
++		compatible = "linux,spdif-dit";
++		status = "okay";
++		sound-name-prefix = "DIT";
++	};
++
+ 	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x0 0x0 0x80000000>;
+@@ -75,6 +83,59 @@
+ 			};
+ 		};
+ 	};
++
++	sound {
++		compatible = "amlogic,gx-sound-card";
++		model = "NEXBOX-A1";
++		assigned-clocks = <&clkc CLKID_MPLL0>,
++				  <&clkc CLKID_MPLL1>,
++				  <&clkc CLKID_MPLL2>;
++		assigned-clock-parents = <0>, <0>, <0>;
++		assigned-clock-rates = <294912000>,
++				       <270950400>,
++				       <393216000>;
++		status = "okay";
++
++		dai-link-0 {
++			sound-dai = <&aiu AIU_CPU CPU_I2S_FIFO>;
++		};
++
++		dai-link-1 {
++			sound-dai = <&aiu AIU_CPU CPU_SPDIF_FIFO>;
++		};
++
++		dai-link-2 {
++			sound-dai = <&aiu AIU_CPU CPU_I2S_ENCODER>;
++			dai-format = "i2s";
++			mclk-fs = <256>;
++
++			codec-0 {
++				sound-dai = <&aiu AIU_HDMI CTRL_I2S>;
++			};
++		};
++
++		dai-link-3 {
++			sound-dai = <&aiu AIU_CPU CPU_SPDIF_ENCODER>;
++
++			codec-0 {
++				sound-dai = <&spdif_dit>;
++			};
++		};
++
++		dai-link-4 {
++			sound-dai = <&aiu AIU_HDMI CTRL_OUT>;
++
++			codec-0 {
++				sound-dai = <&hdmi_tx>;
++			};
++		};
++	};
++};
++
++&aiu {
++	status = "okay";
++	pinctrl-0 = <&spdif_out_h_pins>;
++	pinctrl-names = "default";
+ };
+ 
+ &cec_AO {
 -- 
-2.25.1
+2.17.1
 
