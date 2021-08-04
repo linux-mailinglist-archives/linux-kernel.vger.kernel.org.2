@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 178683E08D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629913E08D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 21:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239589AbhHDT33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 15:29:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234676AbhHDT30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 15:29:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A75960BD3;
-        Wed,  4 Aug 2021 19:29:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628105352;
-        bh=r3ZDW4vFNK88sVmyyRefvriLQS5e7IyWkdL6AfYxEIw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z21sMJTd5YlE9ofg6H+0H8NRadBa5YBgBe6b8AscrZWvf9GCGC3DdMWTItYmEyyx+
-         Y9LNkAfMOFGuYar6K05r26QEB5vb5rAUDYQd7wjU7Cva5r63T5LE3Kf2BI4Rlz5wMV
-         8GgFgTSDLJWeeRRjamT4bIXUi3j1gYKXQAdKrC9E=
-Date:   Wed, 4 Aug 2021 21:29:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-Message-ID: <YQrqhYEL64CSLRTy@kroah.com>
-References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S239286AbhHDT3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 15:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231224AbhHDT3Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 15:29:16 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5DBC061799
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 12:29:02 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id g5-20020a9d6b050000b02904f21e977c3eso2673296otp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 12:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=auFQAqlgCrKWrcj2wTgyCwrQ8LuB5Vgp2FCt8uNfzBY=;
+        b=Rcy2g/ksuJPuFWN319M4hTbby/3rxVhxL1dfpT2Pr0Qxmcn5yV0FX/bqKuEAhOz28O
+         SkzEmjRMJnQFG9JjqqYbQsbkUaZEyOoYd3qQ3GbLsC3ZQrjS9fOwb9WIlsva2A98PgvO
+         t12A8iFaXMuBJ65Lo585POu2DbcmD06dXv5ACLKrNLmdSn12mx/wY7pQgGFABqwTbVsX
+         Yb5zSuCQM7W7X/2vNVM3R9evc/F2y1Niq2u6oecm0IfFYDcP94zK5izamKau/MXMZ+fR
+         XbQflCG3HZVutMjpPtTv9r5y7xsdbuKlirka9xaJAoAMC7QLt30COi5XIuOYntJQ6ekR
+         RVKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=auFQAqlgCrKWrcj2wTgyCwrQ8LuB5Vgp2FCt8uNfzBY=;
+        b=FUzNPxhXZOglZ3hJL6AsEgFK8ENiko4+pu5lW8LqlOBMhkOmRZCkfEMhUrCKXEqH1C
+         t0rxPZZf2nxfZFIdz4OtqvKxgjrMAqhBA97hXsbAVIJtw9PDA+2C/8xJNbizG0KwRD5T
+         sePj0AhcRm4DVZXoA7SkLD6ZSdGo+BguOHqWiS4s9WhtivzKKJ6IkdKwoCg3KLepdpYN
+         9QP+Mz1DbK7rHDIULnGy8/89sUCri33rkCmctOj8SH0gddyKQy5aK4EwxHoBXspzk96Q
+         C9O0+dNQNDu7RTlV7KeYmv49Bvd3sdfSJB+e7WzQ7YiXHMs9Gbu+4aqBAGLbEAYp8Iy/
+         G3LQ==
+X-Gm-Message-State: AOAM530NsVgsYDMXQQX2SwfqyfizxScVro/g0A7jNXvQTRTH8F3Nny5N
+        zlDeJJo79AizOfnRY6j/gxXlJw==
+X-Google-Smtp-Source: ABdhPJztWHJvrr5MpjusvGtLLS0KDH1rGm6g2Dc2IdWXeFlCnEYhTsi/QSA21kCKx5j06NDLCjZuuA==
+X-Received: by 2002:a9d:62d4:: with SMTP id z20mr918565otk.305.1628105342003;
+        Wed, 04 Aug 2021 12:29:02 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t24sm544509otq.66.2021.08.04.12.29.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 12:29:01 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, konrad.dybcio@somainline.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH] arm64: defconfig: Enable Qualcomm MSM8996 CPU clock driver
+Date:   Wed,  4 Aug 2021 12:30:42 -0700
+Message-Id: <20210804193042.1155398-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 10:43:22AM -0700, Kuppuswamy Sathyanarayanan wrote:
-> Intel's Trust Domain Extensions (TDX) is a new Intel technology that
-> adds support for VMs to maintain confidentiality and integrity in the
-> presence of an untrusted VMM.
-> 
-> Given the VMM is an untrusted entity and the VMM presents emulated
-> hardware to the guest, a threat vector similar to Thunderclap [1] is
-> present. Also, for ease of deployment, it is useful to be able to use
-> the same kernel binary on host and guest, but that presents a wide
-> attack surface given the range of hardware supported in typical
-> builds. However, TDX guests only require a small number of drivers, a
-> number small enough to audit for Thunderclap style attacks, and the
-> rest can be disabled via policy. Add a mechanism to filter drivers
-> based on a "protected-guest trusted" indication.
+The MSM8996 supports CPU frequency scaling, so enable the clock driver
+for this.
 
-So you are trying to work around the "problem" that distro kernels
-provides drivers for everything by adding additional kernel complexity?
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-What prevents you from using a sane, stripped down, kernel image for
-these vms which would keep things sane and simpler and easier to audit
-and most importantly, prove, that the image is not doing something you
-don't expect it to do?
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index c7cf0d1ad34e..3bf6f8a86aae 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -974,6 +974,7 @@ CONFIG_TI_SCI_CLK=y
+ CONFIG_COMMON_CLK_QCOM=y
+ CONFIG_QCOM_A53PLL=y
+ CONFIG_QCOM_CLK_APCS_MSM8916=y
++CONFIG_QCOM_CLK_APCC_MSM8996=y
+ CONFIG_QCOM_CLK_SMD_RPM=y
+ CONFIG_QCOM_CLK_RPMH=y
+ CONFIG_IPQ_GCC_8074=y
+-- 
+2.29.2
 
-Why not just make distros that want to support this type of platform,
-also provide these tiny kernel images?  Why are you pushing this work on
-the kernel community instead?
-
-> An alternative solution is to disable untrusted drivers using a custom
-> kernel config for TDX, but such solution will break our goal of using
-> same kernel binary in guest/host or in standard OS distributions. So
-> it is not considered.
-
-Why is that a goal that you _have_ to have?  Who is making that
-requirement?
-
-> Driver filter framework adds support to filter drivers at boot
-> time by using platform specific allow list. This is a generic
-> solution that can be reused by TDX. Driver filter framework adds a
-> new hook (driver_allowed()) in driver_register() interface which
-> will update the "allowed" status of the driver based on platform
-> specific driver allow list or deny list. During driver bind process,
-> trusted status is used to determine whether to continue or deny the
-> bind process. If platform does not register any allow or deny list,
-> all devices will be allowed. Platforms can use wildcard like "ALL:ALL"
-> in bus_name and driver_name of filter node to allow or deny all
-> bus and drivers.
-> 
-> Per driver opt-in model is also considered as an alternative design
-> choice, but central allow or deny list is chosen because it is
-> easier to maintain and audit. Also, "driver self serve" might be
-> abused by mistake by driver authors cutting and pasting the code.
-> 
-> Also add an option in kernel command line and sysfs to update the
-> allowed or denied drivers list. Driver filter allowed status
-> can be read using following command.
-> 
-> cat /sys/bus/$bus/drivers/$driver/allowed
-
-You added a sysfs file without Documentation/ABI/ update as well?
-
-{sigh}
-
-And what's wrong with the current method of removing drivers from
-devices that you do not want them to be bound to?  We offer that support
-for all busses now that want to do it, what driver types are you needing
-to "control" here that does not take advantage of the existing
-infrastructure that we currently have for this type of thing?
-
-thanks,
-
-greg k-h
