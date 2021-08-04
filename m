@@ -2,133 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CA13E0921
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 22:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 611003E0924
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Aug 2021 22:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240795AbhHDUFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 16:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47530 "EHLO
+        id S240807AbhHDUFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 16:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbhHDUE6 (ORCPT
+        with ESMTP id S239458AbhHDUFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 16:04:58 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197D5C06179C
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 13:04:45 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id a7so3900797ljq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 13:04:45 -0700 (PDT)
+        Wed, 4 Aug 2021 16:05:12 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D920C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 13:04:59 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id h18so2780641ilc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 13:04:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sahklOmuEWNKGHdHX0TfbNlW0MEZnmzRkOffEEIf8Zg=;
-        b=RBNOcGPiP0Tn2LCxIxQy3MCJV4xnMx2Bve+Q5ATjwz8evRElxC7yfTfdMiL2NXb2Iv
-         Ffx4IWqpeE13/vv/zz8Vlc0A1isK2sj4QhG0E+5tSga50RWMCXvu5U5ABqhbaIQyTtuB
-         RFVNLsQvbKmyRfVvkpKzIEGVm48rk5eJ5LI2s=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WpJTczWcMa/wlQB3c8ZVvUWtfwUJzoex9JrRy9qZMaU=;
+        b=V2EDbbaFFgv/yFfhmUf9155JJ/wIPornZXPN5AzHMdPUVi9oaTtJHHA3yLPuRQMgqy
+         zbJtaSsDaAy7JzbAIYII7nU0nm0OBeVxtXYt1k1K9NX0kzAQy8s15auhXOTIIAMAgmdB
+         asCu7p8zDWaWpxHnXDklH9PVT0bW6J2749f7WmmtsT5m+zt9IZ0cy7QwSbCNxVa4FzMp
+         EkftrmLD1ielcb7qYdXN2h202l07Z/vYeS1zutrclwZrikfMvFpQgy4DI2stqWPPh98m
+         Yk0xOk9+3dXTvCmwZ+HiDYSAViWN2YO/VPV7HPyZP5gecmsaIgoXo1qz5s9kD1kPjHHP
+         lu5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sahklOmuEWNKGHdHX0TfbNlW0MEZnmzRkOffEEIf8Zg=;
-        b=kmmDdqt+ymFn5huZ0d72DNT4xg6dfNk+WCJwaY2h1+lrQjnMuNQSMR8ftUr4rbiNLj
-         bJ8R0LWgon2jzGacb7FbvcuxvgvR+VL2Mnxfxfo1cuiqnDNOJEaLQRQuyKhfe9KKBT9T
-         yAAmc7KqXXwjwu0JWAxskxIVWBfoSrcNdIQB16M937hGPcqhqXh1ACRxHjnpm7l192a5
-         J7WKqHCBgWueDLkVbFD2KTSt165PUppI2ZDSBZoOsaIphRpfiwJPQ8gtcfmmAv2cjBdQ
-         NxRSM1GvthIVk7aEGkFl2+8zNGDKlQXFOgFg1FqZsbrXm2uzmP8qT5LDmH2ygJzz0qSU
-         lZeg==
-X-Gm-Message-State: AOAM531jJSOA8oHhmd6Ie4lLAOtPTWmaFjgUueJDPlwgUI0evOn8lYqW
-        4mcqfVkr37b12ys9x97ipiH16W5flQuhEoCW
-X-Google-Smtp-Source: ABdhPJzVjNw+ybc0KF2rgCoMvaduf9EVid0fdYG/0wv7aOS6bAMiOV35evbZQTNtGQk2XEwgSjy1uw==
-X-Received: by 2002:a2e:9843:: with SMTP id e3mr647767ljj.498.1628107483328;
-        Wed, 04 Aug 2021 13:04:43 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id q17sm287335lfn.214.2021.08.04.13.04.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Aug 2021 13:04:41 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id a7so3900638ljq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 13:04:40 -0700 (PDT)
-X-Received: by 2002:a2e:84c7:: with SMTP id q7mr670782ljh.61.1628107480111;
- Wed, 04 Aug 2021 13:04:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WpJTczWcMa/wlQB3c8ZVvUWtfwUJzoex9JrRy9qZMaU=;
+        b=cxEXfYLEgkDtQUoN2I6BIIz5XKBt8M/ZNj7K6iRxM/Bucnjz3nukjVrIMNyhDN8AuW
+         mEHUluc+aOfxOX4DoQHujxbvR8CUDqALHB2mm4WbDZ8gkdi8l3XFluWVdIKu9vN1zCmt
+         EDvPrCADXoASU5kVZOwy9NMb+Y6px3Q/ry5o9YvLQvfvMNXh8YgKz1JenTmJqWjOfEoy
+         afBOrw33wCYqHD40nWE19TjbdFnwfthqjfF9iWIunp3Ga0gkJVTIIvyBePdmJJwQV/lY
+         StyhuRe4QkQ1dQdmxHCyNtffb/VR5imYoKEXy34ROr0e26ZR+6WvEh6qlp/F/swfxslp
+         vNYQ==
+X-Gm-Message-State: AOAM531sky4bO3DP7/Lc8HJH0Fk7PwOrIQ+AjHawk+zKgMxKO8+BkUaR
+        ULZTiidjsJWQcyT0+fyYQE85Xw==
+X-Google-Smtp-Source: ABdhPJzJIABp7xpm/81s+uXVZS7zz3xFasgjCDYFrHACNOujmuT8N5qBYNf/d3dOd4DZdir1dr7VqA==
+X-Received: by 2002:a92:c8c1:: with SMTP id c1mr999791ilq.106.1628107498554;
+        Wed, 04 Aug 2021 13:04:58 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id f7sm1681097ils.42.2021.08.04.13.04.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 13:04:58 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     robh+dt@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org
+Cc:     elder@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: net: qcom,ipa: make imem interconnect optional
+Date:   Wed,  4 Aug 2021 15:04:55 -0500
+Message-Id: <20210804200455.1878582-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <1628086770.5rn8p04n6j.none.ref@localhost> <1628086770.5rn8p04n6j.none@localhost>
- <CAHk-=wiLr55zHUWNzmp3DeoO0DUaYp7vAzQB5KUCni5FpwC7Uw@mail.gmail.com> <1628105897.vb3ko0vb06.none@localhost>
-In-Reply-To: <1628105897.vb3ko0vb06.none@localhost>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 4 Aug 2021 13:04:24 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wioi2+dfni1Sx2_Js_WmcgHKtzPUSDkhZ4uo0P6Qe0z+A@mail.gmail.com>
-Message-ID: <CAHk-=wioi2+dfni1Sx2_Js_WmcgHKtzPUSDkhZ4uo0P6Qe0z+A@mail.gmail.com>
-Subject: Re: [REGRESSION?] Simultaneous writes to a reader-less, non-full pipe
- can hang
-To:     "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-Cc:     acrichton@mozilla.com, Christian Brauner <christian@brauner.io>,
-        David Howells <dhowells@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        keyrings@vger.kernel.org, Linux API <linux-api@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-usb@vger.kernel.org,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ian Kent <raven@themaw.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 12:48 PM Alex Xu (Hello71) <alex_y_xu@yahoo.ca> wrote:
->
-> I agree that if this only affects programs which intentionally adjust
-> the pipe buffer size, then it is not a huge issue. The problem,
-> admittedly buried very close to the bottom of my email, is that the
-> kernel will silently provide one-page pipe buffers if the user has
-> exceeded 16384 (by default) pipe buffer pages allocated.
+On some newer SoCs, the interconnect between IPA and SoC internal
+memory (imem) is not used.  Update the binding to indicate that
+having just the memory and config interconnects is another allowed
+configuration.
 
-That's a good point.
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+v2:  Now based on linux-next/master (not net-next/master)
 
-That "fall back to a single buffer" case is meant to make things
-hobble along if the user has exhausted the pipe buffers, but you're
-right that we might want to make that minimum be two buffers.
+Rob, Bjorn, Andy:
 
-I didn't test this, but the obvious fix seems to be just increasing
-the '1' to '2'.
+This was posted as part of a small series once before, and accepted
+into the net-next/master branch by David Miller:
+  https://lore.kernel.org/netdev/20210719212456.3176086-1-elder@linaro.org/
 
-  @@ -781,8 +784,8 @@ struct pipe_inode_info *alloc_pipe_info(void)
-          user_bufs = account_pipe_buffers(user, 0, pipe_bufs);
+That series got reverted yesterday:
+  https://lore.kernel.org/netdev/20210802233019.800250-1-elder@linaro.org/
 
-          if (too_many_pipe_buffers_soft(user_bufs) &&
-pipe_is_unprivileged_user()) {
-  -               user_bufs = account_pipe_buffers(user, pipe_bufs, 1);
-  -               pipe_bufs = 1;
-  +               user_bufs = account_pipe_buffers(user, pipe_bufs, 2);
-  +               pipe_bufs = 2;
-          }
+Now I'm posting this patch again (by itself, and a little different
+this time based on input from Rob) so that this patch can be taken
+through the Qualcomm repository.  I will be posting other updates to
+DTS files in a separate series shortly.
 
-          if (too_many_pipe_buffers_hard(user_bufs) &&
-pipe_is_unprivileged_user())
+I didn't copy networking addressees this time...
 
-although a real patch would need a comment about how a single buffer
-is problematic, and probably make the '2' be a #define to not just
-repeat the same magic constant silently.
+					-Alex
 
-IOW, something like
+ .../devicetree/bindings/net/qcom,ipa.yaml     | 24 ++++++++++++-------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-  /*
-   * The general pipe use case needs at least two buffers: one
-   * for data yet to be read, and one for new data
-   */
-  #define DEF_MIN_PIPE_BUFFERS 2
+diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+index ed88ba4b94df5..b8a0b392b24ea 100644
+--- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
++++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+@@ -87,16 +87,24 @@ properties:
+       - const: ipa-setup-ready
+ 
+   interconnects:
+-    items:
+-      - description: Interconnect path between IPA and main memory
+-      - description: Interconnect path between IPA and internal memory
+-      - description: Interconnect path between IPA and the AP subsystem
++    oneOf:
++      - items:
++          - description: Path leading to system memory
++          - description: Path between the AP and IPA config space
++      - items:
++          - description: Path leading to system memory
++          - description: Path leading to internal memory
++          - description: Path between the AP and IPA config space
+ 
+   interconnect-names:
+-    items:
+-      - const: memory
+-      - const: imem
+-      - const: config
++    oneOf:
++      - items:
++          - const: memory
++          - const: config
++      - items:
++          - const: memory
++          - const: imem
++          - const: config
+ 
+   qcom,smem-states:
+     $ref: /schemas/types.yaml#/definitions/phandle-array
+-- 
+2.27.0
 
-to go with the existing PIPE_DEF_BUFFERS (although the
-DEF_MIN_PIPE_BUFFERS use would only be in fs/pipe.c, so I guess it
-doesn't actually need to be exposed to anybody else in the pipe.h
-header file).
-
-I'd take that patch with some proper testing and a commit message.
-
-Hint hint ;)
-
-                Linus
