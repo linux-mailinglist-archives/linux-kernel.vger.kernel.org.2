@@ -2,187 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A783E1895
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8693E17B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242810AbhHEPqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:46:37 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44554 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242478AbhHEPm7 (ORCPT
+        id S241685AbhHEPOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233201AbhHEPOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:42:59 -0400
-Message-ID: <20210805153956.507589092@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628178164;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=sZ+ArfnpGIkqlgpVaQdtCxQn6qTi++uYQ5vC8P1LMNY=;
-        b=qyo7oFkhGf10jQKCdW214exzWBTfr9gF5IVWmMf37jJ5Lmv02PZxwsmUfaffTO1mcV4D/z
-        jkUSoql0gtnqJo836833mDfH/eCR+HMktftHao3nWCY9fq8B543fSNnSLiixlIjuMK+eKe
-        3/4AEwCOKkpve/5gG788PDcjsvGTP3pr64QYfkV8oW66QpAb3f4poDVoDaEtsp4nx/OzB+
-        95CDQqBdlol6igvxBf/PNc0NxDNJMWJn8kZDrCCYQtsBl5WNbmWmma4ckYhuZ5dAVjNnBC
-        Ug+nmjRcdvg6FrSOljPJxXCiGRJ08kRMSj1etrzMxs8sLVSxiy+7PQeQ4bEodg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628178164;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=sZ+ArfnpGIkqlgpVaQdtCxQn6qTi++uYQ5vC8P1LMNY=;
-        b=Bp9otr7/k1+E1O+XIZmu+pXJBwo4Bnp17H7btedDMDs59TzdCUFnV+v3ZBXE7ypj6gkLmM
-        oRh5IYgqFHrJKjDg==
-Date:   Thu, 05 Aug 2021 17:14:04 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Mike Galbraith <efault@gmx.de>
-Subject: [patch V3 64/64] locking/rtmutex: Add adaptive spinwait mechanism
-References: <20210805151300.330412127@linutronix.de>
+        Thu, 5 Aug 2021 11:14:53 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A82C061765;
+        Thu,  5 Aug 2021 08:14:37 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id g13so11764443lfj.12;
+        Thu, 05 Aug 2021 08:14:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IcxM4SQZ1Owp4dygHmrLmNFPgwp1t/zdZnY5NIzOZu0=;
+        b=F/f7mAWu68gjHXLeJysy7N3Wx6VCcxwKiBK0KP0WJJtrNT9A067qrqdCCidLM0zG2M
+         ruhMXbpNj5ZGC8wD/o6gYlpA2vTfYtdVzubcJk3uY1ICqTh+tJmAYlTtZZ4FwSKVmbCi
+         6miM2IjtWUiP37u+9fEwsvk2CkMU/ShdQQLBMkCDw28jlQg7oOm3RQkzVLAVQnHVEl2e
+         KQFdwvvmZipEc/aWkwGlzTCJXs1+4Asn3+EH1RT0sGtMDVi8+aOTk+uPnBvGgkJvClKC
+         +DRqpPG2vPcjeDU5r8VM6OsIYm47IIZ7y73xqWdci7a+B3FyJ8Qtju9srIrrd8SwVJe8
+         xwQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IcxM4SQZ1Owp4dygHmrLmNFPgwp1t/zdZnY5NIzOZu0=;
+        b=WGm4f4+IN1r+kHbgTSD/p203uqgJeBUBVXxV9L1E/6WhYHk13cZM4u/la6Bvnaqc5A
+         lHYKgdFKyKdG8zRDRHFgx8oMO0eSyDw65yeO8I35ruOrq3A9tCXgMgdY5aHLXoolAQQT
+         XmVKgNgPCt3zXBOtDEas4+Yv7SlJR8iZqzxFJduI6rnbPF9SvezQNlDQ3tE26A1veDlo
+         3m6Y8AGHOkZmMVphx988iu4vvpsiHNX1HwdwZDQdKd8cl+rB176CzTKj/Dt0Ebn5J4vi
+         /LHPNmjyqF91o2L4+pcKQrFzXxncGogkO2peQTNtf7uKb7uul47zHbqEVt+FPAUQPeo3
+         6qnw==
+X-Gm-Message-State: AOAM531pVaQIWdaIRG5x2JNOi+cLG3RaL8kG3csAqpN29kLTmFJODi+Y
+        RPc83uQvQ7t7CcqonlwYp/w=
+X-Google-Smtp-Source: ABdhPJzQpgpdw8+dPgM2yFriEmZyNjF5sCxv74DBD7aDbc1EdfcyLviP1dqLuHxqJAD6JFeJ6RGOZg==
+X-Received: by 2002:a05:6512:3c96:: with SMTP id h22mr385622lfv.517.1628176475747;
+        Thu, 05 Aug 2021 08:14:35 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.226.235])
+        by smtp.gmail.com with ESMTPSA id t142sm540204lff.269.2021.08.05.08.14.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 08:14:35 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, johann@whamcloud.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
+Subject: [PATCH] ext4: avoid huge mmp update interval value
+Date:   Thu,  5 Aug 2021 18:14:18 +0300
+Message-Id: <20210805151418.30659-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt <rostedt@goodmis.org>
+Syzbot reported task hung bug in ext4_fill_super(). The problem was in
+too huge mmp update interval.
 
-Going to sleep when locks are contended can be quite inefficient when the
-contention time is short and the lock owner is running on a different CPU.
+Syzkaller reproducer setted s_mmp_update_interval to 39785 seconds. This
+update interaval is unreasonable huge and it can cause tasks to hung on
+kthread_stop() call, since it will wait until timeout timer expires.
 
-The MCS mechanism cannot be used because MCS is strictly FIFO ordered while
-for rtmutex based locks the waiter ordering is priority based.
+To avoid this sutiation, I've added MIN and MAX constants for kmmp
+interval and clamped s_mmp_update_interval within the boundaries
 
-Provide a simple adaptive spinwait mechanism which currently restricts the
-spinning to the top priority waiter.
-
-[ tglx: Provide a contemporary changelog ]
-
-Originally-by: Gregory Haskins <ghaskins@novell.com>
-Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reported-and-tested-by: syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
+Fixes: c5e06d101aaf ("ext4: add support for multiple mount protection")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
-V3: Fold the extension for regular sleeping locks and add the missing spin
-    wait checks (PeterZ)
+
+Hi, Ted and ext4 maintainers!
+
+I am not sure about min/max values for interval, so I look forward to
+receiving your views on these values and patch in general!
+
+
+
+With regards,
+Pavel Skripkin
+
 ---
- kernel/locking/rtmutex.c |   59 +++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 57 insertions(+), 2 deletions(-)
----
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -8,6 +8,11 @@
-  *  Copyright (C) 2005-2006 Timesys Corp., Thomas Gleixner <tglx@timesys.com>
-  *  Copyright (C) 2005 Kihon Technologies Inc., Steven Rostedt
-  *  Copyright (C) 2006 Esben Nielsen
-+ * Adaptive Spinlocks:
-+ *  Copyright (C) 2008 Novell, Inc., Gregory Haskins, Sven Dietrich,
-+ *				     and Peter Morreale,
-+ * Adaptive Spinlocks simplification:
-+ *  Copyright (C) 2008 Red Hat, Inc., Steven Rostedt <srostedt@redhat.com>
-  *
-  *  See Documentation/locking/rt-mutex-design.rst for details.
-  */
-@@ -1278,6 +1283,44 @@ static __always_inline void __rt_mutex_u
- 	rt_mutex_slowunlock(lock);
- }
+ fs/ext4/mmp.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+index bc364c119af6..160abee66dce 100644
+--- a/fs/ext4/mmp.c
++++ b/fs/ext4/mmp.c
+@@ -7,6 +7,9 @@
  
-+#ifdef CONFIG_SMP
-+/*
-+ * Note that owner is a speculative pointer and dereferencing relies
-+ * on rcu_read_lock() and the check against the lock owner.
-+ */
-+static bool rtmutex_adaptive_spinwait(struct rt_mutex_base *lock,
-+				     struct task_struct *owner)
-+{
-+	bool res = true;
+ #include "ext4.h"
+ 
++#define EXT4_KMMP_MAX_INTERVAL		100
++#define EXT4_KMMP_MIN_INTERVAL		5
 +
-+	rcu_read_lock();
-+	for (;;) {
-+		/* Owner changed. Trylock again */
-+		if (owner != rt_mutex_owner(lock))
-+			break;
-+		/*
-+		 * Ensure that owner->on_cpu is dereferenced _after_
-+		 * checking the above to be valid.
-+		 */
-+		barrier();
-+		if (!owner->on_cpu || need_resched() ||
-+		    vcpu_is_preempted(task_cpu(owner))) {
-+			res = false;
-+			break;
-+		}
-+		cpu_relax();
-+	}
-+	rcu_read_unlock();
-+	return res;
-+}
-+#else
-+static bool rtmutex_adaptive_spinwait(struct rt_mutex_base *lock,
-+				     struct task_struct *owner)
-+{
-+	return false;
-+}
-+#endif
+ /* Checksumming functions */
+ static __le32 ext4_mmp_csum(struct super_block *sb, struct mmp_struct *mmp)
+ {
+@@ -140,6 +143,12 @@ static int kmmpd(void *data)
+ 	unsigned long diff;
+ 	int retval;
+ 
++	/* We should avoid unreasonable huge update interval, since it can cause
++	 * task hung bug on umount or on error handling path in ext4_fill_super()
++	 */
++	mmp_update_interval = clamp(mmp_update_interval, EXT4_KMMP_MIN_INTERVAL,
++							 EXT4_KMMP_MAX_INTERVAL);
 +
- #ifdef RT_MUTEX_BUILD_MUTEX
- /*
-  * Functions required for:
-@@ -1362,6 +1405,7 @@ static int __sched rt_mutex_slowlock_blo
- 					   struct rt_mutex_waiter *waiter)
- {
- 	struct rt_mutex *rtm = container_of(lock, struct rt_mutex, rtmutex);
-+	struct task_struct *owner;
- 	int ret = 0;
+ 	mmp_block = le64_to_cpu(es->s_mmp_block);
+ 	mmp = (struct mmp_struct *)(bh->b_data);
+ 	mmp->mmp_time = cpu_to_le64(ktime_get_real_seconds());
+@@ -156,6 +165,9 @@ static int kmmpd(void *data)
+ 	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
+ 	       sizeof(mmp->mmp_nodename));
  
- 	for (;;) {
-@@ -1384,9 +1428,14 @@ static int __sched rt_mutex_slowlock_blo
- 				break;
- 		}
- 
-+		if (waiter == rt_mutex_top_waiter(lock))
-+			owner = rt_mutex_owner(lock);
-+		else
-+			owner = NULL;
- 		raw_spin_unlock_irq(&lock->wait_lock);
- 
--		schedule();
-+		if (!owner || !rtmutex_adaptive_spinwait(lock, owner))
-+			schedule();
- 
- 		raw_spin_lock_irq(&lock->wait_lock);
- 		set_current_state(state);
-@@ -1542,6 +1591,7 @@ static __always_inline int __rt_mutex_lo
- static void __sched rtlock_slowlock_locked(struct rt_mutex_base *lock)
- {
- 	struct rt_mutex_waiter waiter;
-+	struct task_struct *owner;
- 
- 	lockdep_assert_held(&lock->wait_lock);
- 
-@@ -1560,9 +1610,14 @@ static void __sched rtlock_slowlock_lock
- 		if (try_to_take_rt_mutex(lock, current, &waiter))
- 			break;
- 
-+		if (&waiter == rt_mutex_top_waiter(lock))
-+			owner = rt_mutex_owner(lock);
-+		else
-+			owner = NULL;
- 		raw_spin_unlock_irq(&lock->wait_lock);
- 
--		schedule_rtlock();
-+		if (!owner || !rtmutex_adaptive_spinwait(lock, owner))
-+			schedule_rtlock();
- 
- 		raw_spin_lock_irq(&lock->wait_lock);
- 		set_current_state(TASK_RTLOCK_WAIT);
++	ext4_msg(sb, KERN_INFO, "Started kmmp thread with update interval = %u\n",
++		 mmp_update_interval);
++
+ 	while (!kthread_should_stop() && !sb_rdonly(sb)) {
+ 		if (!ext4_has_feature_mmp(sb)) {
+ 			ext4_warning(sb, "kmmpd being stopped since MMP feature"
+-- 
+2.32.0
 
