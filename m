@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED21F3E14BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0CB3E14B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241388AbhHEMaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:30:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42950 "EHLO mail.kernel.org"
+        id S241371AbhHEMaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:30:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240887AbhHEMaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240009AbhHEMaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Aug 2021 08:30:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E1CAF61154;
+Received: by mail.kernel.org (Postfix) with ESMTPS id D783B6113C;
         Thu,  5 Aug 2021 12:30:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1628166606;
-        bh=J4VgCz/RFtte9IHmBasq7s6Uw3UIpVc82NtiLAdi4/Y=;
+        bh=GZ2Jy/6iEb4dlJpi73YaSiwro78S2UBi5mHHzVSZfIM=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kivyHesbA97cMkokUqhxUHmArz6LwT2JYcxovPzK+FxD2uM7J60fORkrIPiOVmi7/
-         e0UGCX9eEfqbLTrva250iLXHvMkyjlJrsVhKPObN0+3DE4zDi+tuBiOKmk4n74CM5I
-         hK1lhGYehN7cmxOO/HTUQHsjkELA6rXnoOvKycGRarmlAPFBBT3BvpQG44g0NjOmlp
-         BiSBiyV6EZ8koNyowh4n0HJ5S0kU4R8Xn/3WOmxTJHSAbyvebxWkzyVoY3VpIm5tlj
-         R9tzIzTAshpObYH88DR/VPjpOG4ZW0OxTZVztWlwx40JSc0lrXq6smdXz8Cr43Rft3
-         S+rk33owBQM5g==
+        b=lK08tk7MATn2Ix1D3ZkfV+sMFvGtfevERIrYCQXKPcU+SABNjze9gCIgrZaflGH/v
+         ThDgsKnb8A1OOAhqPorC24+fXwkLn6T5/CUk9MxQw09Pm9mdWpJa+HGN7PWqkBD5He
+         uhj21FwsRmc8XY+fihxkzfcHiS7qhjFiMYwYJshI7oPCkI484FkQS62KgUXeflQXWU
+         ea+WeuERTEmqwwLQAReNYqDP+uufHWhNRU+dXSbGjPZL/v/XKoDI4WMqbBylgOe+oG
+         gB6ncCSnTHxmqOgo4LVf7RAgff5WuTOYL/c0pHN/X49hXGYMUgimXNfN3FibHHWfM1
+         3tHlPK919RHEQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D7E7A60A7C;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CD40460A88;
         Thu,  5 Aug 2021 12:30:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] netdevice: add the case if dev is NULL
+Subject: Re: [PATCH net-next] net: Remove redundant if statements
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162816660687.5517.14280451425614767063.git-patchwork-notify@kernel.org>
+Message-Id: <162816660683.5517.6056843504159587831.git-patchwork-notify@kernel.org>
 Date:   Thu, 05 Aug 2021 12:30:06 +0000
-References: <20210805115434.19248-1-yajun.deng@linux.dev>
-In-Reply-To: <20210805115434.19248-1-yajun.deng@linux.dev>
+References: <20210805115527.19435-1-yajun.deng@linux.dev>
+In-Reply-To: <20210805115527.19435-1-yajun.deng@linux.dev>
 To:     Yajun Deng <yajun.deng@linux.dev>
 Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -46,18 +46,56 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Thu,  5 Aug 2021 19:54:34 +0800 you wrote:
-> Add the case if dev is NULL in dev_{put, hold}, so the caller doesn't
-> need to care whether dev is NULL or not.
+On Thu,  5 Aug 2021 19:55:27 +0800 you wrote:
+> The 'if (dev)' statement already move into dev_{put , hold}, so remove
+> redundant if statements.
 > 
 > Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 > ---
->  include/linux/netdevice.h | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
+>  net/batman-adv/bridge_loop_avoidance.c |  6 ++----
+>  net/batman-adv/distributed-arp-table.c |  3 +--
+>  net/batman-adv/gateway_client.c        |  3 +--
+>  net/batman-adv/multicast.c             |  9 +++------
+>  net/batman-adv/originator.c            | 12 ++++--------
+>  net/batman-adv/translation-table.c     |  9 +++------
+>  net/can/raw.c                          |  8 ++------
+>  net/core/dev.c                         |  6 ++----
+>  net/core/drop_monitor.c                |  6 ++----
+>  net/core/dst.c                         |  6 ++----
+>  net/core/neighbour.c                   | 15 +++++----------
+>  net/decnet/dn_dev.c                    |  6 ++----
+>  net/decnet/dn_fib.c                    |  3 +--
+>  net/decnet/dn_route.c                  | 18 ++++++------------
+>  net/ethtool/netlink.c                  |  6 ++----
+>  net/ieee802154/nl-phy.c                |  3 +--
+>  net/ieee802154/nl802154.c              |  3 +--
+>  net/ieee802154/socket.c                |  3 +--
+>  net/ipv4/fib_semantics.c               |  4 +---
+>  net/ipv4/icmp.c                        |  3 +--
+>  net/ipv4/route.c                       |  3 +--
+>  net/ipv6/addrconf.c                    |  6 ++----
+>  net/ipv6/ip6mr.c                       |  3 +--
+>  net/ipv6/route.c                       |  3 +--
+>  net/llc/af_llc.c                       |  6 ++----
+>  net/netfilter/nf_flow_table_offload.c  |  3 +--
+>  net/netfilter/nf_queue.c               | 24 ++++++++----------------
+>  net/netlabel/netlabel_unlabeled.c      |  6 ++----
+>  net/netrom/nr_loopback.c               |  3 +--
+>  net/netrom/nr_route.c                  |  3 +--
+>  net/packet/af_packet.c                 | 15 +++++----------
+>  net/phonet/af_phonet.c                 |  3 +--
+>  net/phonet/pn_dev.c                    |  6 ++----
+>  net/phonet/socket.c                    |  3 +--
+>  net/sched/act_mirred.c                 |  6 ++----
+>  net/smc/smc_ib.c                       |  3 +--
+>  net/smc/smc_pnet.c                     |  3 +--
+>  net/wireless/nl80211.c                 | 16 +++++-----------
+>  net/wireless/scan.c                    |  3 +--
+>  39 files changed, 82 insertions(+), 168 deletions(-)
 
 Here is the summary with links:
-  - [net-next] netdevice: add the case if dev is NULL
-    https://git.kernel.org/netdev/net-next/c/b37a46683739
+  - [net-next] net: Remove redundant if statements
+    https://git.kernel.org/netdev/net-next/c/1160dfa178eb
 
 You are awesome, thank you!
 --
