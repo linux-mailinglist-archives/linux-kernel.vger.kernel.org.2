@@ -2,240 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526F63E1C38
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAB03E1C3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242360AbhHETMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:12:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52272 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242471AbhHETMd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:12:33 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5402F61108;
-        Thu,  5 Aug 2021 19:12:18 +0000 (UTC)
-Date:   Thu, 5 Aug 2021 15:12:11 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Stefan Metzmacher <metze@samba.org>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] Fix: tracepoint: rcu get state and cond sync for
- static call updates (v2)
-Message-ID: <20210805151211.7b8458ae@oasis.local.home>
-In-Reply-To: <20210805132717.23813-4-mathieu.desnoyers@efficios.com>
-References: <20210805132717.23813-1-mathieu.desnoyers@efficios.com>
-        <20210805132717.23813-4-mathieu.desnoyers@efficios.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S242493AbhHETOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:14:33 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:53912 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242383AbhHETOc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 15:14:32 -0400
+Received: from mailhost.synopsys.com (sv1-mailhost1.synopsys.com [10.205.2.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id D1DB6463B9;
+        Thu,  5 Aug 2021 19:14:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1628190857; bh=FIJHlm9Oeck01oRbTOwcXlwmWsrlbmTLxX4fL7vtOCw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=a1Yf2opcY13IMkJZskMdfodkmnSDmgbc5mnOxZlET7IJwgbCplACG8NEsL5+CXrZz
+         cMzw/zLsItWOWiC7RKePUWusvGfLyCHL0HSSMElPc/EOw9jMJbq2ZFPhDLUxNF8OuY
+         ASEiiJEhBvLed01eZR9RCsI0BuhPOGbFGlSJVUgBFzfpiiBVCV95qAgOKx8vcT8YYs
+         j0tfPjBF3ofSw3RQbLKP6iIzQ/UY+8ISLkqk51qS2PNy0vuCg2GY4d9CNybhTOs83e
+         NS8FHTudKYKB15in7atPzURYab5zhVUK7AfJ4cFDHBD9r0VG1QVxgfRdw2K+3+GYiH
+         rgvvX4wHIe+XQ==
+Received: from vineetg-Latitude-7400.internal.synopsys.com (snps-fugpbdpduq.internal.synopsys.com [10.202.17.37])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by mailhost.synopsys.com (Postfix) with ESMTPSA id 9A53DA029E;
+        Thu,  5 Aug 2021 19:14:14 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: [RFC] bitops/non-atomic: make @nr unsigned to avoid any DIV
+Date:   Thu,  5 Aug 2021 12:14:08 -0700
+Message-Id: <20210805191408.2003237-1-vgupta@synopsys.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <YQwaIIFvzdNcWnww@hirez.programming.kicks-ass.net>
+References: <YQwaIIFvzdNcWnww@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  5 Aug 2021 09:27:17 -0400
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+signed math causes generation of costlier instructions such as DIV when
+they could be done by barrerl shifter.
 
-> State transitions from 1->0->1 and N->2->1 callbacks require RCU
-> synchronization. Rather than performing the RCU synchronization every
-> time the state change occurs, which is quite slow when many tracepoints
-> are registered in batch, instead keep a snapshot of the RCU state on the
-> most recent transitions which belong to a chain, and conditionally wait
-> for a grace period on the last transition of the chain if one g.p. has
-> not elapsed since the last snapshot.
-> 
-> This applies to both RCU and SRCU.
-> 
-> Link: https://lore.kernel.org/io-uring/4ebea8f0-58c9-e571-fd30-0ce4f6f09c70@samba.org/
-> Fixes: d25e37d89dd2 ("tracepoint: Optimize using static_call()")
-> Fixes: 547305a64632 ("tracepoint: Fix out of sync data passing by static caller")
-> Fixes: 352384d5c84e ("tracepoints: Update static_call before tp_funcs when adding a tracepoint")
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Stefan Metzmacher <metze@samba.org>
-> Cc: <stable@vger.kernel.org> # 5.10+
-> ---
-> Changes since v1:
-> - Use tp_rcu_get_state/tp_rcu_cond_sync on 2->1 transition when
->   tp_funcs[0].data != old[0].data rather than
->   tracepoint_synchronize_unregister.
-> ---
->  kernel/tracepoint.c | 81 ++++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 69 insertions(+), 12 deletions(-)
-> 
-> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-> index 8d772bd6894d..d8f69580001c 100644
-> --- a/kernel/tracepoint.c
-> +++ b/kernel/tracepoint.c
-> @@ -28,6 +28,44 @@ extern tracepoint_ptr_t __stop___tracepoints_ptrs[];
->  DEFINE_SRCU(tracepoint_srcu);
->  EXPORT_SYMBOL_GPL(tracepoint_srcu);
->  
-> +enum tp_transition_sync {
-> +	TP_TRANSITION_SYNC_1_0_1,
-> +	TP_TRANSITION_SYNC_N_2_1,
-> +
-> +	_NR_TP_TRANSITION_SYNC,
-> +};
-> +
-> +struct tp_transition_snapshot {
-> +	unsigned long rcu;
-> +	unsigned long srcu;
-> +	bool ongoing;
-> +};
-> +
-> +/* Protected by tracepoints_mutex */
-> +static struct tp_transition_snapshot tp_transition_snapshot[_NR_TP_TRANSITION_SYNC];
-> +
-> +static void tp_rcu_get_state(enum tp_transition_sync sync)
-> +{
-> +	struct tp_transition_snapshot *snapshot = &tp_transition_snapshot[sync];
-> +
-> +	/* Keep the latest get_state snapshot. */
-> +	snapshot->rcu = get_state_synchronize_rcu();
-> +	snapshot->srcu = start_poll_synchronize_srcu(&tracepoint_srcu);
-> +	snapshot->ongoing = true;
-> +}
-> +
-> +static void tp_rcu_cond_sync(enum tp_transition_sync sync)
-> +{
-> +	struct tp_transition_snapshot *snapshot = &tp_transition_snapshot[sync];
-> +
-> +	if (!snapshot->ongoing)
-> +		return;
-> +	cond_synchronize_rcu(snapshot->rcu);
-> +	if (!poll_state_synchronize_srcu(&tracepoint_srcu, snapshot->srcu))
-> +		synchronize_srcu(&tracepoint_srcu);
-> +	snapshot->ongoing = false;
-> +}
-> +
->  /* Set to 1 to enable tracepoint debug output */
->  static const int tracepoint_debug;
->  
-> @@ -311,6 +349,11 @@ static int tracepoint_add_func(struct tracepoint *tp,
->  	 */
->  	switch (nr_func_state(tp_funcs)) {
->  	case TP_FUNC_1:		/* 0->1 */
-> +		/*
-> +		 * Make sure new static func never uses old data after a
-> +		 * 1->0->1 transition sequence.
-> +		 */
-> +		tp_rcu_cond_sync(TP_TRANSITION_SYNC_1_0_1);
->  		/* Set static call to first function */
->  		tracepoint_update_call(tp, tp_funcs);
->  		/* Both iterator and static call handle NULL tp->funcs */
-> @@ -326,9 +369,21 @@ static int tracepoint_add_func(struct tracepoint *tp,
->  		 * static call update/call.
->  		 */
->  		rcu_assign_pointer(tp->funcs, tp_funcs);
-> +		/*
-> +		 * Make sure static func never uses incorrect data after a
-> +		 * 1->...->2->1 transition sequence.
-> +		 */
-> +		if (tp_funcs[0].data != old[0].data)
-> +			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
->  		break;
->  	case TP_FUNC_N:		/* N->N+1 (N>1) */
->  		rcu_assign_pointer(tp->funcs, tp_funcs);
-> +		/*
-> +		 * Make sure static func never uses incorrect data after a
-> +		 * N->...->2->1 (N>1) transition sequence.
-> +		 */
-> +		if (tp_funcs[0].data != old[0].data)
-> +			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
->  		break;
+Worse part is this is not caught by things like bloat-o-meter since
+instruction length / symbols are typically same size.
 
-Looks to me that the above can be replaced with:
+e.g.
 
-	case TP_FUNC_2:		/* 1->2 */
-		/* Set iterator static call */
-		tracepoint_update_call(tp, tp_funcs);
-		/*
-		 * Iterator callback installed before updating tp->funcs.
-		 * Requires ordering between RCU assign/dereference and
-		 * static call update/call.
-		 */
-		fallthrough;
-	case TP_FUNC_N:		/* N->N+1 (N>1) */
-		rcu_assign_pointer(tp->funcs, tp_funcs);
-		/*
-		 * Make sure static func never uses incorrect data after a
-		 * N->...->2->1 (N>1) transition sequence.
-		 */
-		if (tp_funcs[0].data != old[0].data)
-			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
-		break;
+stock (signed math)
+__________________
 
->  	default:
->  		WARN_ON_ONCE(1);
-> @@ -372,24 +427,20 @@ static int tracepoint_remove_func(struct tracepoint *tp,
->  		/* Both iterator and static call handle NULL tp->funcs */
->  		rcu_assign_pointer(tp->funcs, NULL);
->  		/*
-> -		 * Make sure new func never uses old data after a 1->0->1
-> -		 * transition sequence.
-> -		 * Considering that transition 0->1 is the common case
-> -		 * and don't have rcu-sync, issue rcu-sync after
-> -		 * transition 1->0 to break that sequence by waiting for
-> -		 * readers to be quiescent.
-> +		 * Make sure new static func never uses old data after a
-> +		 * 1->0->1 transition sequence.
->  		 */
-> -		tracepoint_synchronize_unregister();
-> +		tp_rcu_get_state(TP_TRANSITION_SYNC_1_0_1);
->  		break;
->  	case TP_FUNC_1:		/* 2->1 */
->  		rcu_assign_pointer(tp->funcs, tp_funcs);
->  		/*
-> -		 * On 2->1 transition, RCU sync is needed before setting
-> -		 * static call to first callback, because the observer
-> -		 * may have loaded any prior tp->funcs after the last one
-> -		 * associated with an rcu-sync.
-> +		 * Make sure static func never uses incorrect data after a
-> +		 * N->...->2->1 (N>2) transition sequence.
->  		 */
-> -		tracepoint_synchronize_unregister();
+919b4614 <test_taint>:
+919b4614:	div	r2,r0,0x20
+                ^^^
+919b4618:	add2	r2,0x920f6050,r2
+919b4620:	ld_s	r2,[r2,0]
+919b4622:	lsr	r0,r2,r0
+919b4626:	j_s.d	[blink]
+919b4628:	bmsk_s	r0,r0,0
+919b462a:	nop_s
 
-We should add a comment here with:
+(patched) unsigned math
+__________________
 
-		/*
-		 * If the first element's data has changed, then force the
-		 * synchronization, to prevent current readers that have loaded
-		 * the old data from calling the new function.
-		 */
+919b4614 <test_taint>:
+919b4614:	lsr	r2,r0,0x5  @nr/32
+                ^^^
+919b4618:	add2	r2,0x920f6050,r2
+919b4620:	ld_s	r2,[r2,0]
+919b4622:	lsr	r0,r2,r0     #test_bit()
+919b4626:	j_s.d	[blink]
+919b4628:	bmsk_s	r0,r0,0
+919b462a:	nop_s
 
-Can you send a v3 of just this patch? I'll pull in the other patches.
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+---
+This is an RFC for feeback, I understand this impacts every arch,
+but as of now it is only buld/run tested on ARC.
+---
+---
+ include/asm-generic/bitops/non-atomic.h | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
--- Steve
-
-> +		if (tp_funcs[0].data != old[0].data)
-> +			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
-> +		tp_rcu_cond_sync(TP_TRANSITION_SYNC_N_2_1);
->  		/* Set static call to first function */
->  		tracepoint_update_call(tp, tp_funcs);
->  		break;
-> @@ -397,6 +448,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
->  		fallthrough;
->  	case TP_FUNC_N:
->  		rcu_assign_pointer(tp->funcs, tp_funcs);
-> +		/*
-> +		 * Make sure static func never uses incorrect data after a
-> +		 * N->...->2->1 (N>2) transition sequence.
-> +		 */
-> +		if (tp_funcs[0].data != old[0].data)
-> +			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
->  		break;
->  	default:
->  		WARN_ON_ONCE(1);
+diff --git a/include/asm-generic/bitops/non-atomic.h b/include/asm-generic/bitops/non-atomic.h
+index 7e10c4b50c5d..c5a7d8eb9c2b 100644
+--- a/include/asm-generic/bitops/non-atomic.h
++++ b/include/asm-generic/bitops/non-atomic.h
+@@ -13,7 +13,7 @@
+  * If it's called on the same region of memory simultaneously, the effect
+  * may be that only one operation succeeds.
+  */
+-static inline void __set_bit(int nr, volatile unsigned long *addr)
++static inline void __set_bit(unsigned int nr, volatile unsigned long *addr)
+ {
+ 	unsigned long mask = BIT_MASK(nr);
+ 	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
+@@ -21,7 +21,7 @@ static inline void __set_bit(int nr, volatile unsigned long *addr)
+ 	*p  |= mask;
+ }
+ 
+-static inline void __clear_bit(int nr, volatile unsigned long *addr)
++static inline void __clear_bit(unsigned int nr, volatile unsigned long *addr)
+ {
+ 	unsigned long mask = BIT_MASK(nr);
+ 	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
+@@ -38,7 +38,7 @@ static inline void __clear_bit(int nr, volatile unsigned long *addr)
+  * If it's called on the same region of memory simultaneously, the effect
+  * may be that only one operation succeeds.
+  */
+-static inline void __change_bit(int nr, volatile unsigned long *addr)
++static inline void __change_bit(unsigned int nr, volatile unsigned long *addr)
+ {
+ 	unsigned long mask = BIT_MASK(nr);
+ 	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
+@@ -55,7 +55,7 @@ static inline void __change_bit(int nr, volatile unsigned long *addr)
+  * If two examples of this operation race, one can appear to succeed
+  * but actually fail.  You must protect multiple accesses with a lock.
+  */
+-static inline int __test_and_set_bit(int nr, volatile unsigned long *addr)
++static inline int __test_and_set_bit(unsigned int nr, volatile unsigned long *addr)
+ {
+ 	unsigned long mask = BIT_MASK(nr);
+ 	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
+@@ -74,7 +74,7 @@ static inline int __test_and_set_bit(int nr, volatile unsigned long *addr)
+  * If two examples of this operation race, one can appear to succeed
+  * but actually fail.  You must protect multiple accesses with a lock.
+  */
+-static inline int __test_and_clear_bit(int nr, volatile unsigned long *addr)
++static inline int __test_and_clear_bit(unsigned int nr, volatile unsigned long *addr)
+ {
+ 	unsigned long mask = BIT_MASK(nr);
+ 	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
+@@ -85,7 +85,7 @@ static inline int __test_and_clear_bit(int nr, volatile unsigned long *addr)
+ }
+ 
+ /* WARNING: non atomic and it can be reordered! */
+-static inline int __test_and_change_bit(int nr,
++static inline int __test_and_change_bit(unsigned int nr,
+ 					    volatile unsigned long *addr)
+ {
+ 	unsigned long mask = BIT_MASK(nr);
+@@ -101,7 +101,7 @@ static inline int __test_and_change_bit(int nr,
+  * @nr: bit number to test
+  * @addr: Address to start counting from
+  */
+-static inline int test_bit(int nr, const volatile unsigned long *addr)
++static inline int test_bit(unsigned int nr, const volatile unsigned long *addr)
+ {
+ 	return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+ }
+-- 
+2.25.1
 
