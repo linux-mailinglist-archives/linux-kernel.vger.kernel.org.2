@@ -2,133 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8693E17B0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D9B3E17B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241685AbhHEPOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52640 "EHLO
+        id S241851AbhHEPQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233201AbhHEPOx (ORCPT
+        with ESMTP id S233196AbhHEPP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:14:53 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A82C061765;
-        Thu,  5 Aug 2021 08:14:37 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id g13so11764443lfj.12;
-        Thu, 05 Aug 2021 08:14:37 -0700 (PDT)
+        Thu, 5 Aug 2021 11:15:58 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54190C061765;
+        Thu,  5 Aug 2021 08:15:42 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id dw2-20020a17090b0942b0290177cb475142so15585804pjb.2;
+        Thu, 05 Aug 2021 08:15:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=IcxM4SQZ1Owp4dygHmrLmNFPgwp1t/zdZnY5NIzOZu0=;
-        b=F/f7mAWu68gjHXLeJysy7N3Wx6VCcxwKiBK0KP0WJJtrNT9A067qrqdCCidLM0zG2M
-         ruhMXbpNj5ZGC8wD/o6gYlpA2vTfYtdVzubcJk3uY1ICqTh+tJmAYlTtZZ4FwSKVmbCi
-         6miM2IjtWUiP37u+9fEwsvk2CkMU/ShdQQLBMkCDw28jlQg7oOm3RQkzVLAVQnHVEl2e
-         KQFdwvvmZipEc/aWkwGlzTCJXs1+4Asn3+EH1RT0sGtMDVi8+aOTk+uPnBvGgkJvClKC
-         +DRqpPG2vPcjeDU5r8VM6OsIYm47IIZ7y73xqWdci7a+B3FyJ8Qtju9srIrrd8SwVJe8
-         xwQg==
+        bh=m1E0Vz2zYUe2a6xBjsmkpxdjVocPM+t+MvTQpXM4T2Q=;
+        b=CDZnwnqv/iklGJI//xgOAGalDkpOK/1OZ/Y5yBaKyBTuDTg+T/VGL+OW0vXKSec+If
+         ZZlZFEU2e5K9eTIObjdOe+2N68+iFCqQUiBwiKdp2iyIEE9sjQDobIxHmB4YkTycI0tM
+         XXtJrD+7XdI78OyAYbWDa3dOU+aHWGq0lZzKtEoSh0FVsFYJnWWXymgDvwgOGWTZt7D/
+         G1KYm7LJ5nwRJpW2ILxUoAU6bPiQg0scDbLZTC+MJe8mZuIqH7U8c4Dkbs8odLp8TOb9
+         1G/PF6RP4kVXbLftKxLXRaNdzics/pxl0w3svq4wbJx/sKb5hEMo7MIuhZEZDDQsYyHz
+         8uCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=IcxM4SQZ1Owp4dygHmrLmNFPgwp1t/zdZnY5NIzOZu0=;
-        b=WGm4f4+IN1r+kHbgTSD/p203uqgJeBUBVXxV9L1E/6WhYHk13cZM4u/la6Bvnaqc5A
-         lHYKgdFKyKdG8zRDRHFgx8oMO0eSyDw65yeO8I35ruOrq3A9tCXgMgdY5aHLXoolAQQT
-         XmVKgNgPCt3zXBOtDEas4+Yv7SlJR8iZqzxFJduI6rnbPF9SvezQNlDQ3tE26A1veDlo
-         3m6Y8AGHOkZmMVphx988iu4vvpsiHNX1HwdwZDQdKd8cl+rB176CzTKj/Dt0Ebn5J4vi
-         /LHPNmjyqF91o2L4+pcKQrFzXxncGogkO2peQTNtf7uKb7uul47zHbqEVt+FPAUQPeo3
-         6qnw==
-X-Gm-Message-State: AOAM531pVaQIWdaIRG5x2JNOi+cLG3RaL8kG3csAqpN29kLTmFJODi+Y
-        RPc83uQvQ7t7CcqonlwYp/w=
-X-Google-Smtp-Source: ABdhPJzQpgpdw8+dPgM2yFriEmZyNjF5sCxv74DBD7aDbc1EdfcyLviP1dqLuHxqJAD6JFeJ6RGOZg==
-X-Received: by 2002:a05:6512:3c96:: with SMTP id h22mr385622lfv.517.1628176475747;
-        Thu, 05 Aug 2021 08:14:35 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.226.235])
-        by smtp.gmail.com with ESMTPSA id t142sm540204lff.269.2021.08.05.08.14.34
+        bh=m1E0Vz2zYUe2a6xBjsmkpxdjVocPM+t+MvTQpXM4T2Q=;
+        b=F4VtdMjdk26PCfkvjKvENhY55epUd+WGRq5OXPcXyb5F0/ArRlRdziHVNf4KaRHMnt
+         DQENVv/PBRGLbtDNLEyc/hzNESegOGa4+K8ZUgemjPRD7DlZT+8oLVaxRhKB0qg/m3RH
+         SHLtZpFw+PJ8ZP8QXTOBPAKtLnDRQlfVY/8VAk1Aj8Yt2ijlJcJb5CNM8v0DDIY7KFHA
+         +urj5wswIcI4Qqn3Ou4qBrulQLrYVgjcciykFpJCWWpI9WiioatYCAaiMlSFWRgCl2fn
+         XknOpyNJPO5YnBuTH5JRe3c5R4TXytvrYmKwYLDFwh0b9Jj+4Gg9OzYot77Lk0UfRs91
+         W1ew==
+X-Gm-Message-State: AOAM533I6rUcYkYBBopm1YpHXyC3KRfDkgezT1LVglx9QtNSmexe5tyd
+        ZQw9BuvqB7V9YL6LqGyiNlc=
+X-Google-Smtp-Source: ABdhPJzgEng28x3Rp+fU+Mr/Qm+y+cJxzZMjBx4q+nTTy4Wiecivn5MHgqDhEgSsbFqh1bk1b/e0Mg==
+X-Received: by 2002:a63:5606:: with SMTP id k6mr934510pgb.21.1628176541912;
+        Thu, 05 Aug 2021 08:15:41 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.81])
+        by smtp.gmail.com with ESMTPSA id h5sm7074138pfv.145.2021.08.05.08.15.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 08:14:35 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, johann@whamcloud.com
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
-Subject: [PATCH] ext4: avoid huge mmp update interval value
-Date:   Thu,  5 Aug 2021 18:14:18 +0300
-Message-Id: <20210805151418.30659-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 05 Aug 2021 08:15:41 -0700 (PDT)
+From:   Tuo Li <islituo@gmail.com>
+To:     jlayton@kernel.org, idryomov@gmail.com
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        baijiaju1990@gmail.com, Tuo Li <islituo@gmail.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH v2] ceph: fix possible null-pointer dereference in ceph_mdsmap_decode()
+Date:   Thu,  5 Aug 2021 08:14:34 -0700
+Message-Id: <20210805151434.142619-1-islituo@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported task hung bug in ext4_fill_super(). The problem was in
-too huge mmp update interval.
+kcalloc() is called to allocate memory for m->m_info, and if it fails,
+ceph_mdsmap_destroy() behind the label out_err will be called:
+  ceph_mdsmap_destroy(m);
 
-Syzkaller reproducer setted s_mmp_update_interval to 39785 seconds. This
-update interaval is unreasonable huge and it can cause tasks to hung on
-kthread_stop() call, since it will wait until timeout timer expires.
+In ceph_mdsmap_destroy(), m->m_info is dereferenced through:
+  kfree(m->m_info[i].export_targets);
 
-To avoid this sutiation, I've added MIN and MAX constants for kmmp
-interval and clamped s_mmp_update_interval within the boundaries
+To fix this possible null-pointer dereference, check m->m_info before the 
+for loop to free m->m_info[i].export_targets.
 
-Reported-and-tested-by: syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
-Fixes: c5e06d101aaf ("ext4: add support for multiple mount protection")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
 ---
-
-Hi, Ted and ext4 maintainers!
-
-I am not sure about min/max values for interval, so I look forward to
-receiving your views on these values and patch in general!
-
-
-
-With regards,
-Pavel Skripkin
-
+v2:
+* Put an "if (m->m_info)" around the for loop in ceph_mdsmap_destroy()
+instead of freeing m and returning -ENOMEM in ceph_mdsmap_decode().
+  Thank Jeff Layton for helpful advice.
 ---
- fs/ext4/mmp.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ fs/ceph/mdsmap.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-index bc364c119af6..160abee66dce 100644
---- a/fs/ext4/mmp.c
-+++ b/fs/ext4/mmp.c
-@@ -7,6 +7,9 @@
- 
- #include "ext4.h"
- 
-+#define EXT4_KMMP_MAX_INTERVAL		100
-+#define EXT4_KMMP_MIN_INTERVAL		5
-+
- /* Checksumming functions */
- static __le32 ext4_mmp_csum(struct super_block *sb, struct mmp_struct *mmp)
+diff --git a/fs/ceph/mdsmap.c b/fs/ceph/mdsmap.c
+index abd9af7727ad..26d6fa049b44 100644
+--- a/fs/ceph/mdsmap.c
++++ b/fs/ceph/mdsmap.c
+@@ -393,9 +393,11 @@ struct ceph_mdsmap *ceph_mdsmap_decode(void **p, void *end, bool msgr2)
+ void ceph_mdsmap_destroy(struct ceph_mdsmap *m)
  {
-@@ -140,6 +143,12 @@ static int kmmpd(void *data)
- 	unsigned long diff;
- 	int retval;
- 
-+	/* We should avoid unreasonable huge update interval, since it can cause
-+	 * task hung bug on umount or on error handling path in ext4_fill_super()
-+	 */
-+	mmp_update_interval = clamp(mmp_update_interval, EXT4_KMMP_MIN_INTERVAL,
-+							 EXT4_KMMP_MAX_INTERVAL);
-+
- 	mmp_block = le64_to_cpu(es->s_mmp_block);
- 	mmp = (struct mmp_struct *)(bh->b_data);
- 	mmp->mmp_time = cpu_to_le64(ktime_get_real_seconds());
-@@ -156,6 +165,9 @@ static int kmmpd(void *data)
- 	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
- 	       sizeof(mmp->mmp_nodename));
- 
-+	ext4_msg(sb, KERN_INFO, "Started kmmp thread with update interval = %u\n",
-+		 mmp_update_interval);
-+
- 	while (!kthread_should_stop() && !sb_rdonly(sb)) {
- 		if (!ext4_has_feature_mmp(sb)) {
- 			ext4_warning(sb, "kmmpd being stopped since MMP feature"
+ 	int i;
+-
+-	for (i = 0; i < m->possible_max_rank; i++)
+-		kfree(m->m_info[i].export_targets);
++	
++	if (m->m_info) {
++		for (i = 0; i < m->possible_max_rank; i++)
++			kfree(m->m_info[i].export_targets);
++	}
+ 	kfree(m->m_info);
+ 	kfree(m->m_data_pg_pools);
+ 	kfree(m);
 -- 
-2.32.0
+2.25.1
 
