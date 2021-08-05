@@ -2,166 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F9F3E0CFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 06:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481023E0CF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 05:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhHEECH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 00:02:07 -0400
-Received: from [43.250.32.171] ([43.250.32.171]:48196 "EHLO email.cn"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229446AbhHEECE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 00:02:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=From:To:Date; bh=eBCcozSu9hNSLlbWZn+AY6boa0Vbxrja8LsS0
-        JUUaRI=; b=S+RmDZcogFKBExHqZCkR/3tJuGpUe3s5e8AAFcCdLJdj4zRy4YuH/
-        HKKPnVw9m8ONlvbWNLDCfZc9v2HJU4pdPDHtjGDKFzCxK7kWg61sJDB4LnQJp+R7
-        1TBPKJpHan9XwF+6Z0oSV9Z97WKP1LaGdepEp84lE+Uz4RhdBizaOI=
-Received: from localhost.localdomain (unknown [113.251.8.125])
-        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgA3RQSqYgthnhQZAA--.28023S2;
-        Thu, 05 Aug 2021 12:01:47 +0800 (CST)
-From:   Hu Haowen <src.res@email.cn>
-To:     gregkh@linuxfoundation.org, corbet@lwn.net
-Cc:     linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: usb: fix malformed table
-Date:   Thu,  5 Aug 2021 12:01:46 +0800
-Message-Id: <20210805040146.121526-1-src.res@email.cn>
-X-Mailer: git-send-email 2.25.1
+        id S238630AbhHED7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 23:59:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52984 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229674AbhHED73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 23:59:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C72F260F0F;
+        Thu,  5 Aug 2021 03:59:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628135955;
+        bh=+CmUqoyIYshFvS7sAel7Bg5ZiyKxXU1G+HgxdE/n+T8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lg9VMFGOMrTBu1g1ssM1/0ANqCDT5VlgZWo42yBfJywDSbhN1waW+Z9N9dknh113g
+         9Tjrverb5CJmFdtz300hnXxR+TrpXMvjL76JqX51q+XFdGo/w8bInYc4+f+TvN7Y7c
+         7dck0+jOSy3v0KcZCZozHKzSdZBod6HVoe3r0q5In1q6EbSTRuyW9W8VtFV47OBLoK
+         /hWVhrbcBS/XZCZcvRgvu4sTkZhfRohK3S68Qwo6q8KQ5WgsTSTuqX8NlQJS6oVA0v
+         RhJt6CK4AVdTn6XjElK6XxifDkv3vPCm1CEFvhi7wAHB7lnsLT3BcQHyQuhzVW/Sn4
+         NC9rXRoRrdsSg==
+Date:   Wed, 4 Aug 2021 23:01:56 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH 4/4][next] scsi: megaraid_sas: Replace one-element array with
+ flexible-array member in MR_PD_CFG_SEQ_NUM_SYNC
+Message-ID: <97d9c7fd288a11a919a0b8e6cbd7f0378d51c117.1628135423.git.gustavoars@kernel.org>
+References: <cover.1628135423.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LCKnCgA3RQSqYgthnhQZAA--.28023S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxtF1UXF45Xry8Gw4DCr45ZFb_yoW7CrWrpa
-        1DJrySvF15ZrWfJw45Jw47Wr1fXrWUGF4DJrn5tr1jgryfJ34UJ34av3WYyFyUCr1DAwnF
-        y3Wqqr18ZrWjvrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgvb7Iv0xC_KF4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
-        v20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2
-        z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0x
-        vYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_
-        Cr1UJr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8Xw
-        CF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26F4UJr1UMxC20s026xCaFVCjc4AY
-        6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
-        0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
-        AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIev
-        Ja73UjIFyTuYvjxU8pnQUUUUU
-X-Originating-IP: [113.251.8.125]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1628135423.git.gustavoars@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tables are separated with tabs and spaces mixed together, leading
-to malformation. Changed the characters all into spaces to solve this
-issue.
+Replace one-element array with a flexible-array member in struct
+MR_PD_CFG_SEQ_NUM_SYNC and use the struct_size() helper.
 
-Signed-off-by: Hu Haowen <src.res@email.cn>
+This helps with the ongoing efforts to globally enable -Warray-bounds
+and get us closer to being able to tighten the FORTIFY_SOURCE routines
+on memcpy().
+
+Link: https://en.wikipedia.org/wiki/Flexible_array_member
+Link: https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
+Link: https://github.com/KSPP/linux/issues/79
+Link: https://github.com/KSPP/linux/issues/109
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- Documentation/usb/gadget-testing.rst | 84 ++++++++++++++--------------
- 1 file changed, 42 insertions(+), 42 deletions(-)
+ drivers/scsi/megaraid/megaraid_sas_base.c   | 14 +++++++-------
+ drivers/scsi/megaraid/megaraid_sas_fusion.c |  2 +-
+ drivers/scsi/megaraid/megaraid_sas_fusion.h |  2 +-
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/usb/gadget-testing.rst b/Documentation/usb/gadget-testing.rst
-index d6253f1a32a1..c18113077889 100644
---- a/Documentation/usb/gadget-testing.rst
-+++ b/Documentation/usb/gadget-testing.rst
-@@ -724,28 +724,28 @@ Function-specific configfs interface
- The function name to use when creating the function directory is "uac2".
- The uac2 function provides these attributes in its function directory:
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index d072f9caeb4a..a4131dd510e3 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -5782,10 +5782,10 @@ megasas_setup_jbod_map(struct megasas_instance *instance)
+ {
+ 	int i;
+ 	struct fusion_context *fusion = instance->ctrl_context;
+-	u32 pd_seq_map_sz;
++	size_t pd_seq_map_sz;
  
--	=============== ====================================================
--	c_chmask	capture channel mask
--	c_srate		capture sampling rate
--	c_ssize		capture sample size (bytes)
--	c_sync		capture synchronization type (async/adaptive)
--	c_mute_present	capture mute control enable
--	c_volume_present	capture volume control enable
--	c_volume_min	capture volume control min value (in 1/256 dB)
--	c_volume_max	capture volume control max value (in 1/256 dB)
--	c_volume_res	capture volume control resolution (in 1/256 dB)
--	fb_max    maximum extra bandwidth in async mode
--	p_chmask	playback channel mask
--	p_srate		playback sampling rate
--	p_ssize		playback sample size (bytes)
--	p_mute_present	playback mute control enable
--	p_volume_present	playback volume control enable
--	p_volume_min	playback volume control min value (in 1/256 dB)
--	p_volume_max	playback volume control max value (in 1/256 dB)
--	p_volume_res	playback volume control resolution (in 1/256 dB)
--	req_number	the number of pre-allocated request for both capture
--			and playback
--	=============== ====================================================
-+	================ ====================================================
-+	c_chmask         capture channel mask
-+	c_srate          capture sampling rate
-+	c_ssize          capture sample size (bytes)
-+	c_sync           capture synchronization type (async/adaptive)
-+	c_mute_present   capture mute control enable
-+	c_volume_present capture volume control enable
-+	c_volume_min     capture volume control min value (in 1/256 dB)
-+	c_volume_max     capture volume control max value (in 1/256 dB)
-+	c_volume_res     capture volume control resolution (in 1/256 dB)
-+	fb_max           maximum extra bandwidth in async mode
-+	p_chmask         playback channel mask
-+	p_srate          playback sampling rate
-+	p_ssize          playback sample size (bytes)
-+	p_mute_present   playback mute control enable
-+	p_volume_present playback volume control enable
-+	p_volume_min     playback volume control min value (in 1/256 dB)
-+	p_volume_max     playback volume control max value (in 1/256 dB)
-+	p_volume_res     playback volume control resolution (in 1/256 dB)
-+	req_number       the number of pre-allocated request for both capture
-+	                 and playback
-+	================ ====================================================
+-	pd_seq_map_sz = sizeof(struct MR_PD_CFG_SEQ_NUM_SYNC) +
+-		(sizeof(struct MR_PD_CFG_SEQ) * (MAX_PHYSICAL_DEVICES - 1));
++	pd_seq_map_sz = struct_size((struct MR_PD_CFG_SEQ_NUM_SYNC *)0, seq,
++				    MAX_PHYSICAL_DEVICES);
  
- The attributes have sane default values.
+ 	instance->use_seqnum_jbod_fp =
+ 		instance->support_seqnum_jbod_fp;
+@@ -7961,7 +7961,7 @@ static void megasas_detach_one(struct pci_dev *pdev)
+ 	struct Scsi_Host *host;
+ 	struct megasas_instance *instance;
+ 	struct fusion_context *fusion;
+-	u32 pd_seq_map_sz;
++	size_t pd_seq_map_sz;
  
-@@ -914,26 +914,26 @@ Function-specific configfs interface
- The function name to use when creating the function directory is "uac1".
- The uac1 function provides these attributes in its function directory:
+ 	instance = pci_get_drvdata(pdev);
  
--	========== ====================================================
--	c_chmask   	capture channel mask
--	c_srate    	capture sampling rate
--	c_ssize    	capture sample size (bytes)
--	c_mute_present	capture mute control enable
--	c_volume_present	capture volume control enable
--	c_volume_min	capture volume control min value (in 1/256 dB)
--	c_volume_max	capture volume control max value (in 1/256 dB)
--	c_volume_res	capture volume control resolution (in 1/256 dB)
--	p_chmask   	playback channel mask
--	p_srate    	playback sampling rate
--	p_ssize    	playback sample size (bytes)
--	p_mute_present	playback mute control enable
--	p_volume_present	playback volume control enable
--	p_volume_min	playback volume control min value (in 1/256 dB)
--	p_volume_max	playback volume control max value (in 1/256 dB)
--	p_volume_res	playback volume control resolution (in 1/256 dB)
--	req_number 	the number of pre-allocated request for both capture
--			and playback
--	========== ====================================================
-+	================ ====================================================
-+	c_chmask         capture channel mask
-+	c_srate          capture sampling rate
-+	c_ssize          capture sample size (bytes)
-+	c_mute_present   capture mute control enable
-+	c_volume_present capture volume control enable
-+	c_volume_min     capture volume control min value (in 1/256 dB)
-+	c_volume_max     capture volume control max value (in 1/256 dB)
-+	c_volume_res     capture volume control resolution (in 1/256 dB)
-+	p_chmask         playback channel mask
-+	p_srate          playback sampling rate
-+	p_ssize          playback sample size (bytes)
-+	p_mute_present   playback mute control enable
-+	p_volume_present playback volume control enable
-+	p_volume_min     playback volume control min value (in 1/256 dB)
-+	p_volume_max     playback volume control max value (in 1/256 dB)
-+	p_volume_res     playback volume control resolution (in 1/256 dB)
-+	req_number       the number of pre-allocated request for both capture
-+	                 and playback
-+	================ ====================================================
+@@ -8033,9 +8033,9 @@ static void megasas_detach_one(struct pci_dev *pdev)
  
- The attributes have sane default values.
+ 	if (instance->adapter_type != MFI_SERIES) {
+ 		megasas_release_fusion(instance);
+-			pd_seq_map_sz = sizeof(struct MR_PD_CFG_SEQ_NUM_SYNC) +
+-				(sizeof(struct MR_PD_CFG_SEQ) *
+-					(MAX_PHYSICAL_DEVICES - 1));
++			pd_seq_map_sz =
++				struct_size((struct MR_PD_CFG_SEQ_NUM_SYNC *)0,
++					    seq, MAX_PHYSICAL_DEVICES);
+ 		for (i = 0; i < 2 ; i++) {
+ 			if (fusion->ld_map[i])
+ 				dma_free_coherent(&instance->pdev->dev,
+diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+index 06399c026a8d..a824fb641fda 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
++++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+@@ -1310,7 +1310,7 @@ megasas_sync_pd_seq_num(struct megasas_instance *instance, bool pend) {
  
+ 	pd_sync = (void *)fusion->pd_seq_sync[(instance->pd_seq_map_id & 1)];
+ 	pd_seq_h = fusion->pd_seq_phys[(instance->pd_seq_map_id & 1)];
+-	pd_seq_map_sz = struct_size(pd_sync, seq, MAX_PHYSICAL_DEVICES - 1);
++	pd_seq_map_sz = struct_size(pd_sync, seq, MAX_PHYSICAL_DEVICES);
+ 
+ 	cmd = megasas_get_cmd(instance);
+ 	if (!cmd) {
+diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.h b/drivers/scsi/megaraid/megaraid_sas_fusion.h
+index d60137eb519c..b4084c6f5c0c 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_fusion.h
++++ b/drivers/scsi/megaraid/megaraid_sas_fusion.h
+@@ -1249,7 +1249,7 @@ struct MR_PD_CFG_SEQ {
+ struct MR_PD_CFG_SEQ_NUM_SYNC {
+ 	__le32 size;
+ 	__le32 count;
+-	struct MR_PD_CFG_SEQ seq[1];
++	struct MR_PD_CFG_SEQ seq[];
+ } __packed;
+ 
+ /* stream detection */
 -- 
-2.25.1
+2.27.0
 
