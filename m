@@ -2,117 +2,702 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B60843E182D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9EA3E1856
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242198AbhHEPij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:38:39 -0400
-Received: from mga11.intel.com ([192.55.52.93]:36579 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233549AbhHEPid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:38:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="211079038"
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="211079038"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 08:38:19 -0700
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="512734144"
-Received: from arthur-vostro-3668.sh.intel.com ([10.239.13.1])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 08:38:14 -0700
-From:   Zeng Guang <guang.zeng@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kai Huang <kai.huang@intel.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Robert Hu <robert.hu@intel.com>, Gao Chao <chao.gao@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        Robert Hoo <robert.hu@linux.intel.com>
-Subject: [PATCH v3 2/6] KVM: VMX: Extend BUILD_CONTROLS_SHADOW macro to support 64-bit variation
-Date:   Thu,  5 Aug 2021 23:13:13 +0800
-Message-Id: <20210805151317.19054-3-guang.zeng@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210805151317.19054-1-guang.zeng@intel.com>
-References: <20210805151317.19054-1-guang.zeng@intel.com>
+        id S242215AbhHEPmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:42:23 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43596 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242305AbhHEPli (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 11:41:38 -0400
+Message-ID: <20210805153953.567933991@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628178083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=0esEV67/I15daTgD5DAJylMQvurGsL5UuBCjku9P6CU=;
+        b=fUacZtq4N2be3/uJqgLZOpxODes2e0lYd2K5R6BeBSW+7rNZ+cgrkUpqF1PU2o0UQASNxS
+        Jk5kC5HCgKHOa1aQy3jkHBVhQm3dBRuv/kg2GStNXUJ81vLa8KFFmTdM0Z85Kb0JDyZztj
+        uBXoW14XwxcVkp/PSP7xgRgkcLTdjLJJ6vkKBtFtuFHNbOcjKIOz9lIsQjTjVFvLEDJuw/
+        nCYFAVp9ypZsgi7cdUsYD3o3Y+bFhZbINInOPZLkitTWAAgm8zvz+Dr3r2VbbExMUllTry
+        M0Yvg4bis8B1RCPPEuBjwLp+4JMEGtsrDarXA8h59c7/k/55mbdZXyEbIRSOGw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628178083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=0esEV67/I15daTgD5DAJylMQvurGsL5UuBCjku9P6CU=;
+        b=E6Ai1/7EKdXUPf48Eiq370AU2KisAI5qgHYQdznLSa2edJkOjvU4jdLIP3WL75uFGUr/K3
+        PRGM/l8zApFcetCQ==
+Date:   Thu, 05 Aug 2021 17:13:13 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mike Galbraith <efault@gmx.de>
+Subject: [patch V3 13/64] rtmutex: Split out the inner parts of struct rtmutex
+References: <20210805151300.330412127@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Hoo <robert.hu@linux.intel.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-The Tertiary VM-Exec Control, different from previous control fields, is 64
-bit. So extend BUILD_CONTROLS_SHADOW() by adding a 'bit' parameter, to
-support both 32 bit and 64 bit fields' auxiliary functions building.
-Also, define the auxiliary functions for Tertiary control field here, using
-the new BUILD_CONTROLS_SHADOW().
+RT builds substitutions for rwsem, mutex, spinlock and rwlock around
+rtmutexes. Split the inner working out so each lock substitution can use
+them with the appropriate lockdep annotations. This avoid having an extra
+unused lockdep map in the wrapped rtmutex.
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Robert Hoo <robert.hu@linux.intel.com>
+No functional change.
+
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kvm/vmx/vmx.h | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+V2: New patch
+---
+ include/linux/rtmutex.h         |   29 +++++++++++++-----
+ kernel/futex.c                  |    4 +-
+ kernel/locking/rtmutex.c        |   64 ++++++++++++++++++++--------------------
+ kernel/locking/rtmutex_api.c    |   39 +++++++++++++-----------
+ kernel/locking/rtmutex_common.h |   38 +++++++++++------------
+ kernel/rcu/tree_plugin.h        |    6 +--
+ 6 files changed, 100 insertions(+), 80 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index 3979a947933a..945c6639ce24 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -413,31 +413,32 @@ static inline u8 vmx_get_rvi(void)
- 	return vmcs_read16(GUEST_INTR_STATUS) & 0xff;
- }
+--- a/include/linux/rtmutex.h
++++ b/include/linux/rtmutex.h
+@@ -19,6 +19,21 @@
  
--#define BUILD_CONTROLS_SHADOW(lname, uname)				    \
--static inline void lname##_controls_set(struct vcpu_vmx *vmx, u32 val)	    \
-+#define BUILD_CONTROLS_SHADOW(lname, uname, bits)			    \
-+static inline void lname##_controls_set(struct vcpu_vmx *vmx, u##bits val) \
- {									    \
- 	if (vmx->loaded_vmcs->controls_shadow.lname != val) {		    \
--		vmcs_write32(uname, val);				    \
-+		vmcs_write##bits(uname, val);				    \
- 		vmx->loaded_vmcs->controls_shadow.lname = val;		    \
- 	}								    \
- }									    \
--static inline u32 lname##_controls_get(struct vcpu_vmx *vmx)		    \
-+static inline u##bits lname##_controls_get(struct vcpu_vmx *vmx)	    \
- {									    \
- 	return vmx->loaded_vmcs->controls_shadow.lname;			    \
- }									    \
--static inline void lname##_controls_setbit(struct vcpu_vmx *vmx, u32 val)   \
-+static inline void lname##_controls_setbit(struct vcpu_vmx *vmx, u##bits val)   \
- {									    \
- 	lname##_controls_set(vmx, lname##_controls_get(vmx) | val);	    \
- }									    \
--static inline void lname##_controls_clearbit(struct vcpu_vmx *vmx, u32 val) \
-+static inline void lname##_controls_clearbit(struct vcpu_vmx *vmx, u##bits val) \
- {									    \
- 	lname##_controls_set(vmx, lname##_controls_get(vmx) & ~val);	    \
- }
--BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS)
--BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS)
--BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL)
--BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL)
--BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL)
-+BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS, 32)
-+BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS, 32)
-+BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL, 32)
-+BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL, 32)
-+BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL, 32)
-+BUILD_CONTROLS_SHADOW(tertiary_exec, TERTIARY_VM_EXEC_CONTROL, 64)
+ extern int max_lock_depth; /* for sysctl */
  
- static inline void vmx_register_cache_reset(struct kvm_vcpu *vcpu)
++struct rt_mutex_base {
++	raw_spinlock_t		wait_lock;
++	struct rb_root_cached   waiters;
++	struct task_struct	*owner;
++};
++
++#define __RT_MUTEX_BASE_INITIALIZER(rtbasename)				\
++{									\
++	.wait_lock = __RAW_SPIN_LOCK_UNLOCKED(rtbasename.wait_lock),	\
++	.waiters = RB_ROOT_CACHED,					\
++	.owner = NULL							\
++}
++
++extern void rt_mutex_base_init(struct rt_mutex_base *rtb);
++
+ /**
+  * The rt_mutex structure
+  *
+@@ -28,9 +43,7 @@ extern int max_lock_depth; /* for sysctl
+  * @owner:	the mutex owner
+  */
+ struct rt_mutex {
+-	raw_spinlock_t		wait_lock;
+-	struct rb_root_cached   waiters;
+-	struct task_struct	*owner;
++	struct rt_mutex_base	rtmutex;
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 	struct lockdep_map	dep_map;
+ #endif
+@@ -58,11 +71,11 @@ do { \
+ #define __DEP_MAP_RT_MUTEX_INITIALIZER(mutexname)
+ #endif
+ 
+-#define __RT_MUTEX_INITIALIZER(mutexname) \
+-	{ .wait_lock = __RAW_SPIN_LOCK_UNLOCKED(mutexname.wait_lock) \
+-	, .waiters = RB_ROOT_CACHED \
+-	, .owner = NULL \
+-	__DEP_MAP_RT_MUTEX_INITIALIZER(mutexname)}
++#define __RT_MUTEX_INITIALIZER(mutexname)				\
++{									\
++	.rtmutex = __RT_MUTEX_BASE_INITIALIZER(mutexname.rtmutex)	\
++	__DEP_MAP_RT_MUTEX_INITIALIZER(mutexname)			\
++}
+ 
+ #define DEFINE_RT_MUTEX(mutexname) \
+ 	struct rt_mutex mutexname = __RT_MUTEX_INITIALIZER(mutexname)
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -179,7 +179,7 @@ struct futex_pi_state {
+ 	/*
+ 	 * The PI object:
+ 	 */
+-	struct rt_mutex pi_mutex;
++	struct rt_mutex_base pi_mutex;
+ 
+ 	struct task_struct *owner;
+ 	refcount_t refcount;
+@@ -3254,7 +3254,7 @@ static int futex_wait_requeue_pi(u32 __u
+ 			ret = ret < 0 ? ret : 0;
+ 		}
+ 	} else {
+-		struct rt_mutex *pi_mutex;
++		struct rt_mutex_base *pi_mutex;
+ 
+ 		/*
+ 		 * We have been woken up by futex_unlock_pi(), a timeout, or a
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -48,7 +48,7 @@
+  */
+ 
+ static __always_inline void
+-rt_mutex_set_owner(struct rt_mutex *lock, struct task_struct *owner)
++rt_mutex_set_owner(struct rt_mutex_base *lock, struct task_struct *owner)
  {
--- 
-2.25.1
+ 	unsigned long val = (unsigned long)owner;
+ 
+@@ -58,13 +58,13 @@ rt_mutex_set_owner(struct rt_mutex *lock
+ 	WRITE_ONCE(lock->owner, (struct task_struct *)val);
+ }
+ 
+-static __always_inline void clear_rt_mutex_waiters(struct rt_mutex *lock)
++static __always_inline void clear_rt_mutex_waiters(struct rt_mutex_base *lock)
+ {
+ 	lock->owner = (struct task_struct *)
+ 			((unsigned long)lock->owner & ~RT_MUTEX_HAS_WAITERS);
+ }
+ 
+-static __always_inline void fixup_rt_mutex_waiters(struct rt_mutex *lock)
++static __always_inline void fixup_rt_mutex_waiters(struct rt_mutex_base *lock)
+ {
+ 	unsigned long owner, *p = (unsigned long *) &lock->owner;
+ 
+@@ -139,14 +139,14 @@ static __always_inline void fixup_rt_mut
+  * set up.
+  */
+ #ifndef CONFIG_DEBUG_RT_MUTEXES
+-static __always_inline bool rt_mutex_cmpxchg_acquire(struct rt_mutex *lock,
++static __always_inline bool rt_mutex_cmpxchg_acquire(struct rt_mutex_base *lock,
+ 						     struct task_struct *old,
+ 						     struct task_struct *new)
+ {
+ 	return try_cmpxchg_acquire(&lock->owner, &old, new);
+ }
+ 
+-static __always_inline bool rt_mutex_cmpxchg_release(struct rt_mutex *lock,
++static __always_inline bool rt_mutex_cmpxchg_release(struct rt_mutex_base *lock,
+ 						     struct task_struct *old,
+ 						     struct task_struct *new)
+ {
+@@ -158,7 +158,7 @@ static __always_inline bool rt_mutex_cmp
+  * all future threads that attempt to [Rmw] the lock to the slowpath. As such
+  * relaxed semantics suffice.
+  */
+-static __always_inline void mark_rt_mutex_waiters(struct rt_mutex *lock)
++static __always_inline void mark_rt_mutex_waiters(struct rt_mutex_base *lock)
+ {
+ 	unsigned long owner, *p = (unsigned long *) &lock->owner;
+ 
+@@ -174,7 +174,7 @@ static __always_inline void mark_rt_mute
+  * 2) Drop lock->wait_lock
+  * 3) Try to unlock the lock with cmpxchg
+  */
+-static __always_inline bool unlock_rt_mutex_safe(struct rt_mutex *lock,
++static __always_inline bool unlock_rt_mutex_safe(struct rt_mutex_base *lock,
+ 						 unsigned long flags)
+ 	__releases(lock->wait_lock)
+ {
+@@ -210,7 +210,7 @@ static __always_inline bool unlock_rt_mu
+ }
+ 
+ #else
+-static __always_inline bool rt_mutex_cmpxchg_acquire(struct rt_mutex *lock,
++static __always_inline bool rt_mutex_cmpxchg_acquire(struct rt_mutex_base *lock,
+ 						     struct task_struct *old,
+ 						     struct task_struct *new)
+ {
+@@ -218,14 +218,14 @@ static __always_inline bool rt_mutex_cmp
+ 
+ }
+ 
+-static __always_inline bool rt_mutex_cmpxchg_release(struct rt_mutex *lock,
++static __always_inline bool rt_mutex_cmpxchg_release(struct rt_mutex_base *lock,
+ 						     struct task_struct *old,
+ 						     struct task_struct *new)
+ {
+ 	return false;
+ }
+ 
+-static __always_inline void mark_rt_mutex_waiters(struct rt_mutex *lock)
++static __always_inline void mark_rt_mutex_waiters(struct rt_mutex_base *lock)
+ {
+ 	lock->owner = (struct task_struct *)
+ 			((unsigned long)lock->owner | RT_MUTEX_HAS_WAITERS);
+@@ -234,7 +234,7 @@ static __always_inline void mark_rt_mute
+ /*
+  * Simple slow path only version: lock->owner is protected by lock->wait_lock.
+  */
+-static __always_inline bool unlock_rt_mutex_safe(struct rt_mutex *lock,
++static __always_inline bool unlock_rt_mutex_safe(struct rt_mutex_base *lock,
+ 						 unsigned long flags)
+ 	__releases(lock->wait_lock)
+ {
+@@ -295,13 +295,13 @@ static __always_inline bool __waiter_les
+ }
+ 
+ static __always_inline void
+-rt_mutex_enqueue(struct rt_mutex *lock, struct rt_mutex_waiter *waiter)
++rt_mutex_enqueue(struct rt_mutex_base *lock, struct rt_mutex_waiter *waiter)
+ {
+ 	rb_add_cached(&waiter->tree_entry, &lock->waiters, __waiter_less);
+ }
+ 
+ static __always_inline void
+-rt_mutex_dequeue(struct rt_mutex *lock, struct rt_mutex_waiter *waiter)
++rt_mutex_dequeue(struct rt_mutex_base *lock, struct rt_mutex_waiter *waiter)
+ {
+ 	if (RB_EMPTY_NODE(&waiter->tree_entry))
+ 		return;
+@@ -369,7 +369,7 @@ rt_mutex_cond_detect_deadlock(struct rt_
+ 	return chwalk == RT_MUTEX_FULL_CHAINWALK;
+ }
+ 
+-static __always_inline struct rt_mutex *task_blocked_on_lock(struct task_struct *p)
++static __always_inline struct rt_mutex_base *task_blocked_on_lock(struct task_struct *p)
+ {
+ 	return p->pi_blocked_on ? p->pi_blocked_on->lock : NULL;
+ }
+@@ -439,15 +439,15 @@ static __always_inline struct rt_mutex *
+  */
+ static int __sched rt_mutex_adjust_prio_chain(struct task_struct *task,
+ 					      enum rtmutex_chainwalk chwalk,
+-					      struct rt_mutex *orig_lock,
+-					      struct rt_mutex *next_lock,
++					      struct rt_mutex_base *orig_lock,
++					      struct rt_mutex_base *next_lock,
+ 					      struct rt_mutex_waiter *orig_waiter,
+ 					      struct task_struct *top_task)
+ {
+ 	struct rt_mutex_waiter *waiter, *top_waiter = orig_waiter;
+ 	struct rt_mutex_waiter *prerequeue_top_waiter;
+ 	int ret = 0, depth = 0;
+-	struct rt_mutex *lock;
++	struct rt_mutex_base *lock;
+ 	bool detect_deadlock;
+ 	bool requeue = true;
+ 
+@@ -795,7 +795,7 @@ static int __sched rt_mutex_adjust_prio_
+  *	    callsite called task_blocked_on_lock(), otherwise NULL
+  */
+ static int __sched
+-try_to_take_rt_mutex(struct rt_mutex *lock, struct task_struct *task,
++try_to_take_rt_mutex(struct rt_mutex_base *lock, struct task_struct *task,
+ 		     struct rt_mutex_waiter *waiter)
+ {
+ 	lockdep_assert_held(&lock->wait_lock);
+@@ -913,14 +913,14 @@ try_to_take_rt_mutex(struct rt_mutex *lo
+  *
+  * This must be called with lock->wait_lock held and interrupts disabled
+  */
+-static int __sched task_blocks_on_rt_mutex(struct rt_mutex *lock,
++static int __sched task_blocks_on_rt_mutex(struct rt_mutex_base *lock,
+ 					   struct rt_mutex_waiter *waiter,
+ 					   struct task_struct *task,
+ 					   enum rtmutex_chainwalk chwalk)
+ {
+ 	struct task_struct *owner = rt_mutex_owner(lock);
+ 	struct rt_mutex_waiter *top_waiter = waiter;
+-	struct rt_mutex *next_lock;
++	struct rt_mutex_base *next_lock;
+ 	int chain_walk = 0, res;
+ 
+ 	lockdep_assert_held(&lock->wait_lock);
+@@ -1003,7 +1003,7 @@ static int __sched task_blocks_on_rt_mut
+  * Called with lock->wait_lock held and interrupts disabled.
+  */
+ static void __sched mark_wakeup_next_waiter(struct wake_q_head *wake_q,
+-					    struct rt_mutex *lock)
++					    struct rt_mutex_base *lock)
+ {
+ 	struct rt_mutex_waiter *waiter;
+ 
+@@ -1052,12 +1052,12 @@ static void __sched mark_wakeup_next_wai
+  * Must be called with lock->wait_lock held and interrupts disabled. I must
+  * have just failed to try_to_take_rt_mutex().
+  */
+-static void __sched remove_waiter(struct rt_mutex *lock,
++static void __sched remove_waiter(struct rt_mutex_base *lock,
+ 				  struct rt_mutex_waiter *waiter)
+ {
+ 	bool is_top_waiter = (waiter == rt_mutex_top_waiter(lock));
+ 	struct task_struct *owner = rt_mutex_owner(lock);
+-	struct rt_mutex *next_lock;
++	struct rt_mutex_base *next_lock;
+ 
+ 	lockdep_assert_held(&lock->wait_lock);
+ 
+@@ -1115,7 +1115,8 @@ static void __sched remove_waiter(struct
+  *
+  * Must be called with lock->wait_lock held and interrupts disabled
+  */
+-static int __sched __rt_mutex_slowlock(struct rt_mutex *lock, unsigned int state,
++static int __sched __rt_mutex_slowlock(struct rt_mutex_base *lock,
++				       unsigned int state,
+ 				       struct hrtimer_sleeper *timeout,
+ 				       struct rt_mutex_waiter *waiter)
+ {
+@@ -1170,7 +1171,8 @@ static void __sched rt_mutex_handle_dead
+ /*
+  * Slow path lock function:
+  */
+-static int __sched rt_mutex_slowlock(struct rt_mutex *lock, unsigned int state,
++static int __sched rt_mutex_slowlock(struct rt_mutex_base *lock,
++				     unsigned int state,
+ 				     struct hrtimer_sleeper *timeout,
+ 				     enum rtmutex_chainwalk chwalk)
+ {
+@@ -1231,7 +1233,7 @@ static int __sched rt_mutex_slowlock(str
+ 	return ret;
+ }
+ 
+-static __always_inline int __rt_mutex_lock(struct rt_mutex *lock,
++static __always_inline int __rt_mutex_lock(struct rt_mutex_base *lock,
+ 					   unsigned int state)
+ {
+ 	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
+@@ -1240,7 +1242,7 @@ static __always_inline int __rt_mutex_lo
+ 	return rt_mutex_slowlock(lock, state, NULL, RT_MUTEX_MIN_CHAINWALK);
+ }
+ 
+-static int __sched __rt_mutex_slowtrylock(struct rt_mutex *lock)
++static int __sched __rt_mutex_slowtrylock(struct rt_mutex_base *lock)
+ {
+ 	int ret = try_to_take_rt_mutex(lock, current, NULL);
+ 
+@@ -1256,7 +1258,7 @@ static int __sched __rt_mutex_slowtryloc
+ /*
+  * Slow path try-lock function:
+  */
+-static int __sched rt_mutex_slowtrylock(struct rt_mutex *lock)
++static int __sched rt_mutex_slowtrylock(struct rt_mutex_base *lock)
+ {
+ 	unsigned long flags;
+ 	int ret;
+@@ -1282,7 +1284,7 @@ static int __sched rt_mutex_slowtrylock(
+ 	return ret;
+ }
+ 
+-static __always_inline int __rt_mutex_trylock(struct rt_mutex *lock)
++static __always_inline int __rt_mutex_trylock(struct rt_mutex_base *lock)
+ {
+ 	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
+ 		return 1;
+@@ -1293,7 +1295,7 @@ static __always_inline int __rt_mutex_tr
+ /*
+  * Slow path to release a rt-mutex.
+  */
+-static void __sched rt_mutex_slowunlock(struct rt_mutex *lock)
++static void __sched rt_mutex_slowunlock(struct rt_mutex_base *lock)
+ {
+ 	DEFINE_WAKE_Q(wake_q);
+ 	unsigned long flags;
+@@ -1354,7 +1356,7 @@ static void __sched rt_mutex_slowunlock(
+ 	rt_mutex_postunlock(&wake_q);
+ }
+ 
+-static __always_inline void __rt_mutex_unlock(struct rt_mutex *lock)
++static __always_inline void __rt_mutex_unlock(struct rt_mutex_base *lock)
+ {
+ 	if (likely(rt_mutex_cmpxchg_release(lock, current, NULL)))
+ 		return;
+--- a/kernel/locking/rtmutex_api.c
++++ b/kernel/locking/rtmutex_api.c
+@@ -26,12 +26,18 @@ static __always_inline int __rt_mutex_lo
+ 
+ 	might_sleep();
+ 	mutex_acquire(&lock->dep_map, subclass, 0, _RET_IP_);
+-	ret = __rt_mutex_lock(lock, state);
++	ret = __rt_mutex_lock(&lock->rtmutex, state);
+ 	if (ret)
+ 		mutex_release(&lock->dep_map, _RET_IP_);
+ 	return ret;
+ }
+ 
++void rt_mutex_base_init(struct rt_mutex_base *rtb)
++{
++	__rt_mutex_base_init(rtb);
++}
++EXPORT_SYMBOL(rt_mutex_base_init);
++
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ /**
+  * rt_mutex_lock_nested - lock a rt_mutex
+@@ -93,7 +99,7 @@ int __sched rt_mutex_trylock(struct rt_m
+ 	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEXES) && WARN_ON_ONCE(!in_task()))
+ 		return 0;
+ 
+-	ret = __rt_mutex_trylock(lock);
++	ret = __rt_mutex_trylock(&lock->rtmutex);
+ 	if (ret)
+ 		mutex_acquire(&lock->dep_map, 0, 1, _RET_IP_);
+ 
+@@ -109,19 +115,19 @@ EXPORT_SYMBOL_GPL(rt_mutex_trylock);
+ void __sched rt_mutex_unlock(struct rt_mutex *lock)
+ {
+ 	mutex_release(&lock->dep_map, _RET_IP_);
+-	__rt_mutex_unlock(lock);
++	__rt_mutex_unlock(&lock->rtmutex);
+ }
+ EXPORT_SYMBOL_GPL(rt_mutex_unlock);
+ 
+ /*
+  * Futex variants, must not use fastpath.
+  */
+-int __sched rt_mutex_futex_trylock(struct rt_mutex *lock)
++int __sched rt_mutex_futex_trylock(struct rt_mutex_base *lock)
+ {
+ 	return rt_mutex_slowtrylock(lock);
+ }
+ 
+-int __sched __rt_mutex_futex_trylock(struct rt_mutex *lock)
++int __sched __rt_mutex_futex_trylock(struct rt_mutex_base *lock)
+ {
+ 	return __rt_mutex_slowtrylock(lock);
+ }
+@@ -133,7 +139,7 @@ int __sched __rt_mutex_futex_trylock(str
+  * @lock:	The rt_mutex to be unlocked
+  * @wake_q:	The wake queue head from which to get the next lock waiter
+  */
+-bool __sched __rt_mutex_futex_unlock(struct rt_mutex *lock,
++bool __sched __rt_mutex_futex_unlock(struct rt_mutex_base *lock,
+ 				     struct wake_q_head *wake_q)
+ {
+ 	lockdep_assert_held(&lock->wait_lock);
+@@ -156,7 +162,7 @@ bool __sched __rt_mutex_futex_unlock(str
+ 	return true; /* call postunlock() */
+ }
+ 
+-void __sched rt_mutex_futex_unlock(struct rt_mutex *lock)
++void __sched rt_mutex_futex_unlock(struct rt_mutex_base *lock)
+ {
+ 	DEFINE_WAKE_Q(wake_q);
+ 	unsigned long flags;
+@@ -185,9 +191,8 @@ void __sched __rt_mutex_init(struct rt_m
+ 		     struct lock_class_key *key)
+ {
+ 	debug_check_no_locks_freed((void *)lock, sizeof(*lock));
++	__rt_mutex_base_init(&lock->rtmutex);
+ 	lockdep_init_map(&lock->dep_map, name, key, 0);
+-
+-	__rt_mutex_basic_init(lock);
+ }
+ EXPORT_SYMBOL_GPL(__rt_mutex_init);
+ 
+@@ -205,10 +210,10 @@ EXPORT_SYMBOL_GPL(__rt_mutex_init);
+  * possible at this point because the pi_state which contains the rtmutex
+  * is not yet visible to other tasks.
+  */
+-void __sched rt_mutex_init_proxy_locked(struct rt_mutex *lock,
++void __sched rt_mutex_init_proxy_locked(struct rt_mutex_base *lock,
+ 					struct task_struct *proxy_owner)
+ {
+-	__rt_mutex_basic_init(lock);
++	__rt_mutex_base_init(lock);
+ 	rt_mutex_set_owner(lock, proxy_owner);
+ }
+ 
+@@ -224,7 +229,7 @@ void __sched rt_mutex_init_proxy_locked(
+  * possible because it belongs to the pi_state which is about to be freed
+  * and it is not longer visible to other tasks.
+  */
+-void __sched rt_mutex_proxy_unlock(struct rt_mutex *lock)
++void __sched rt_mutex_proxy_unlock(struct rt_mutex_base *lock)
+ {
+ 	debug_rt_mutex_proxy_unlock(lock);
+ 	rt_mutex_set_owner(lock, NULL);
+@@ -249,7 +254,7 @@ void __sched rt_mutex_proxy_unlock(struc
+  *
+  * Special API call for PI-futex support.
+  */
+-int __sched __rt_mutex_start_proxy_lock(struct rt_mutex *lock,
++int __sched __rt_mutex_start_proxy_lock(struct rt_mutex_base *lock,
+ 					struct rt_mutex_waiter *waiter,
+ 					struct task_struct *task)
+ {
+@@ -296,7 +301,7 @@ int __sched __rt_mutex_start_proxy_lock(
+  *
+  * Special API call for PI-futex support.
+  */
+-int __sched rt_mutex_start_proxy_lock(struct rt_mutex *lock,
++int __sched rt_mutex_start_proxy_lock(struct rt_mutex_base *lock,
+ 				      struct rt_mutex_waiter *waiter,
+ 				      struct task_struct *task)
+ {
+@@ -328,7 +333,7 @@ int __sched rt_mutex_start_proxy_lock(st
+  *
+  * Special API call for PI-futex support
+  */
+-int __sched rt_mutex_wait_proxy_lock(struct rt_mutex *lock,
++int __sched rt_mutex_wait_proxy_lock(struct rt_mutex_base *lock,
+ 				     struct hrtimer_sleeper *to,
+ 				     struct rt_mutex_waiter *waiter)
+ {
+@@ -368,7 +373,7 @@ int __sched rt_mutex_wait_proxy_lock(str
+  *
+  * Special API call for PI-futex support
+  */
+-bool __sched rt_mutex_cleanup_proxy_lock(struct rt_mutex *lock,
++bool __sched rt_mutex_cleanup_proxy_lock(struct rt_mutex_base *lock,
+ 					 struct rt_mutex_waiter *waiter)
+ {
+ 	bool cleanup = false;
+@@ -413,7 +418,7 @@ bool __sched rt_mutex_cleanup_proxy_lock
+ void __sched rt_mutex_adjust_pi(struct task_struct *task)
+ {
+ 	struct rt_mutex_waiter *waiter;
+-	struct rt_mutex *next_lock;
++	struct rt_mutex_base *next_lock;
+ 	unsigned long flags;
+ 
+ 	raw_spin_lock_irqsave(&task->pi_lock, flags);
+--- a/kernel/locking/rtmutex_common.h
++++ b/kernel/locking/rtmutex_common.h
+@@ -32,7 +32,7 @@ struct rt_mutex_waiter {
+ 	struct rb_node		tree_entry;
+ 	struct rb_node		pi_tree_entry;
+ 	struct task_struct	*task;
+-	struct rt_mutex		*lock;
++	struct rt_mutex_base	*lock;
+ 	int			prio;
+ 	u64			deadline;
+ };
+@@ -40,26 +40,26 @@ struct rt_mutex_waiter {
+ /*
+  * PI-futex support (proxy locking functions, etc.):
+  */
+-extern void rt_mutex_init_proxy_locked(struct rt_mutex *lock,
++extern void rt_mutex_init_proxy_locked(struct rt_mutex_base *lock,
+ 				       struct task_struct *proxy_owner);
+-extern void rt_mutex_proxy_unlock(struct rt_mutex *lock);
+-extern int __rt_mutex_start_proxy_lock(struct rt_mutex *lock,
++extern void rt_mutex_proxy_unlock(struct rt_mutex_base *lock);
++extern int __rt_mutex_start_proxy_lock(struct rt_mutex_base *lock,
+ 				     struct rt_mutex_waiter *waiter,
+ 				     struct task_struct *task);
+-extern int rt_mutex_start_proxy_lock(struct rt_mutex *lock,
++extern int rt_mutex_start_proxy_lock(struct rt_mutex_base *lock,
+ 				     struct rt_mutex_waiter *waiter,
+ 				     struct task_struct *task);
+-extern int rt_mutex_wait_proxy_lock(struct rt_mutex *lock,
++extern int rt_mutex_wait_proxy_lock(struct rt_mutex_base *lock,
+ 			       struct hrtimer_sleeper *to,
+ 			       struct rt_mutex_waiter *waiter);
+-extern bool rt_mutex_cleanup_proxy_lock(struct rt_mutex *lock,
++extern bool rt_mutex_cleanup_proxy_lock(struct rt_mutex_base *lock,
+ 				 struct rt_mutex_waiter *waiter);
+ 
+-extern int rt_mutex_futex_trylock(struct rt_mutex *l);
+-extern int __rt_mutex_futex_trylock(struct rt_mutex *l);
++extern int rt_mutex_futex_trylock(struct rt_mutex_base *l);
++extern int __rt_mutex_futex_trylock(struct rt_mutex_base *l);
+ 
+-extern void rt_mutex_futex_unlock(struct rt_mutex *lock);
+-extern bool __rt_mutex_futex_unlock(struct rt_mutex *lock,
++extern void rt_mutex_futex_unlock(struct rt_mutex_base *lock);
++extern bool __rt_mutex_futex_unlock(struct rt_mutex_base *lock,
+ 				struct wake_q_head *wake_q);
+ 
+ extern void rt_mutex_postunlock(struct wake_q_head *wake_q);
+@@ -69,12 +69,12 @@ extern void rt_mutex_postunlock(struct w
+  * unconditionally.
+  */
+ #ifdef CONFIG_RT_MUTEXES
+-static inline int rt_mutex_has_waiters(struct rt_mutex *lock)
++static inline int rt_mutex_has_waiters(struct rt_mutex_base *lock)
+ {
+ 	return !RB_EMPTY_ROOT(&lock->waiters.rb_root);
+ }
+ 
+-static inline struct rt_mutex_waiter *rt_mutex_top_waiter(struct rt_mutex *lock)
++static inline struct rt_mutex_waiter *rt_mutex_top_waiter(struct rt_mutex_base *lock)
+ {
+ 	struct rb_node *leftmost = rb_first_cached(&lock->waiters);
+ 	struct rt_mutex_waiter *w = NULL;
+@@ -99,7 +99,7 @@ static inline struct rt_mutex_waiter *ta
+ 
+ #define RT_MUTEX_HAS_WAITERS	1UL
+ 
+-static inline struct task_struct *rt_mutex_owner(struct rt_mutex *lock)
++static inline struct task_struct *rt_mutex_owner(struct rt_mutex_base *lock)
+ {
+ 	unsigned long owner = (unsigned long) READ_ONCE(lock->owner);
+ 
+@@ -121,21 +121,21 @@ enum rtmutex_chainwalk {
+ 	RT_MUTEX_FULL_CHAINWALK,
+ };
+ 
+-static inline void __rt_mutex_basic_init(struct rt_mutex *lock)
++static inline void __rt_mutex_base_init(struct rt_mutex_base *lock)
+ {
+-	lock->owner = NULL;
+ 	raw_spin_lock_init(&lock->wait_lock);
+ 	lock->waiters = RB_ROOT_CACHED;
++	lock->owner = NULL;
+ }
+ 
+ /* Debug functions */
+-static inline void debug_rt_mutex_unlock(struct rt_mutex *lock)
++static inline void debug_rt_mutex_unlock(struct rt_mutex_base *lock)
+ {
+ 	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEXES))
+ 		DEBUG_LOCKS_WARN_ON(rt_mutex_owner(lock) != current);
+ }
+ 
+-static inline void debug_rt_mutex_proxy_unlock(struct rt_mutex *lock)
++static inline void debug_rt_mutex_proxy_unlock(struct rt_mutex_base *lock)
+ {
+ 	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEXES))
+ 		DEBUG_LOCKS_WARN_ON(!rt_mutex_owner(lock));
+@@ -163,7 +163,7 @@ static inline void rt_mutex_init_waiter(
+ 
+ #else /* CONFIG_RT_MUTEXES */
+ /* Used in rcu/tree_plugin.h */
+-static inline struct task_struct *rt_mutex_owner(struct rt_mutex *lock)
++static inline struct task_struct *rt_mutex_owner(struct rt_mutex_base *lock)
+ {
+ 	return NULL;
+ }
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -559,7 +559,7 @@ rcu_preempt_deferred_qs_irqrestore(struc
+ 			WRITE_ONCE(rnp->exp_tasks, np);
+ 		if (IS_ENABLED(CONFIG_RCU_BOOST)) {
+ 			/* Snapshot ->boost_mtx ownership w/rnp->lock held. */
+-			drop_boost_mutex = rt_mutex_owner(&rnp->boost_mtx) == t;
++			drop_boost_mutex = rt_mutex_owner(&rnp->boost_mtx.rtmutex) == t;
+ 			if (&t->rcu_node_entry == rnp->boost_tasks)
+ 				WRITE_ONCE(rnp->boost_tasks, np);
+ 		}
+@@ -586,7 +586,7 @@ rcu_preempt_deferred_qs_irqrestore(struc
+ 
+ 		/* Unboost if we were boosted. */
+ 		if (IS_ENABLED(CONFIG_RCU_BOOST) && drop_boost_mutex)
+-			rt_mutex_futex_unlock(&rnp->boost_mtx);
++			rt_mutex_futex_unlock(&rnp->boost_mtx.rtmutex);
+ 
+ 		/*
+ 		 * If this was the last task on the expedited lists,
+@@ -1083,7 +1083,7 @@ static int rcu_boost(struct rcu_node *rn
+ 	 * section.
+ 	 */
+ 	t = container_of(tb, struct task_struct, rcu_node_entry);
+-	rt_mutex_init_proxy_locked(&rnp->boost_mtx, t);
++	rt_mutex_init_proxy_locked(&rnp->boost_mtx.rtmutex, t);
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	/* Lock only for side effect: boosts task t's priority. */
+ 	rt_mutex_lock(&rnp->boost_mtx);
 
