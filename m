@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADC03E1A79
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7A63E1A7E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240076AbhHERfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:35:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57276 "EHLO mail.kernel.org"
+        id S240229AbhHERgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:36:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240060AbhHERfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:35:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9784861104;
-        Thu,  5 Aug 2021 17:35:15 +0000 (UTC)
+        id S240060AbhHERgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 13:36:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D565060F42;
+        Thu,  5 Aug 2021 17:36:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628184915;
-        bh=36BRsfhi9BO0Kd9mw3h2GUzrkAMFIJGSmPhKF+cVypU=;
+        s=k20201202; t=1628184964;
+        bh=AnGQRaP8nkqNwiFWtMqvZz6Ciyna+r9FB3Un0pnNMWY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SfMNDFo0wrVWg8Vav2jfmYPttGnjY8qHRcUr+YCdMgx6DRvuC+iKSabSk82GGrs9S
-         oSPdjZl0Qiu/weIEd2EhFGPmoAaqIF0u+7FIAQVO1zhN9qnARFn+QY5+XI4+SHuLQb
-         V+QMD7bfs0AyGqajUM8lctGQRPlKnkhHl4T4Y5xxhH6gMgntcBBlAADj0VBALHzSA+
-         gq0U3RCuFQxwsyGRjRHdD9UL/GZODSqvw+TsExz2nrgs8+qQtKDLj4JwVdnQvX2FUt
-         RhLLRjw7Q2RzO9KtxiTvF33Kh5/d2ElgvpyR/Kc5ojc67hiH+c5pZY2ms8u7GB3l43
-         DWEnsoRGh8g8w==
-Received: by pali.im (Postfix)
-        id 34637817; Thu,  5 Aug 2021 19:35:13 +0200 (CEST)
-Date:   Thu, 5 Aug 2021 19:35:13 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/7] PCI: aardvark: Interrupt fixes
-Message-ID: <20210805173513.at5rhmemfk67crzf@pali>
-References: <20210625090319.10220-1-pali@kernel.org>
+        b=BnUO66Jl6tej8HglOHBrL2fhDWV24R4mTC8gWe0UlnUc7LLdvTR8fQlp4XlIcLFqh
+         dkRqmMQPxo1O/SdyP7NVOjH/70QlTGLjg+r2n7Jl3IykNyuXG4aW6d4rzQIvuw8dOR
+         Uh2pt2p0WIoyOQ1hjWrTYIccFxJFu3ovlKexZ1nmQUyhGhxmKzAHmoX28y247psB79
+         lY3BxE2QbHHih6awfQ4fYjKYGU17TgNFVvIWDV8qmpUUMsVGvqs1SEO9E1gs+F171j
+         sEWkLIW6PkWZTXC+B/4XARcT6IzBxPaGzuBvRON5N8zM88KmFs4gsVnGUuN23s66BU
+         Ms89efTXKbh7w==
+Date:   Thu, 5 Aug 2021 20:35:59 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v1] netdevsim: Forbid devlink reload when adding
+ or deleting ports
+Message-ID: <YQwhf+3oeqOv/OMU@unreal>
+References: <53cd1a28dd34ced9fb4c39885c6e13523e97d62c.1628161323.git.leonro@nvidia.com>
+ <20210805061547.3e0869ad@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YQvs4wRIIEDG6Dcu@unreal>
+ <20210805072342.17faf851@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YQv2v5cTqLvoPc4n@unreal>
+ <20210805082756.0b4e61d7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210625090319.10220-1-pali@kernel.org>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210805082756.0b4e61d7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 25 June 2021 11:03:12 Pali Rohár wrote:
-> Per Lorenzo's request [1] I'm resending [2] some other aardvark patches
-> which fixes just interrupts.
+On Thu, Aug 05, 2021 at 08:27:56AM -0700, Jakub Kicinski wrote:
+> On Thu, 5 Aug 2021 17:33:35 +0300 Leon Romanovsky wrote:
+> > On Thu, Aug 05, 2021 at 07:23:42AM -0700, Jakub Kicinski wrote:
+> > > > This is what devlink_reload_disable() returns, so I kept same error.
+> > > > It is not important at all.
+> > > > 
+> > > > What about the following change on top of this patch?  
+> > > 
+> > > LGTM, the only question is whether we should leave in_reload true 
+> > > if nsim_dev->fail_reload is set.  
+> > 
+> > I don't think so, it will block add/delete ports.
 > 
-> I addressed review comments from [2], updated patches and added Acked-by
-> tags.
+> As it should, given add/delete ports takes the port_list_lock which is
+> destroyed by down but not (due to the forced failure) re-initialized by
+> up.
 > 
-> [1] - https://lore.kernel.org/linux-pci/20210603151605.GA18917@lpieralisi/
-> [2] - https://lore.kernel.org/linux-pci/20210506153153.30454-1-pali@kernel.org/
+> If we want to handle adding ports while down we can just bump port
+> count and return, although I don't think there's a practical need
+> to support that.
 
-Could you review these patches?
+Sorry, but for me netdevsim looks like complete dumpster. It was
+intended for fast prototyping, but ended to be huge pile of debugfs
+entries and selftest to execute random flows.
 
-> Pali Rohár (7):
->   PCI: aardvark: Do not touch status bits of masked interrupts in
->     interrupt handler
->   PCI: aardvark: Check for virq mapping when processing INTx IRQ
->   PCI: aardvark: Remove irq_mask_ack callback for INTx interrupts
->   PCI: aardvark: Don't mask irq when mapping
->   PCI: aardvark: Fix support for MSI interrupts
->   PCI: aardvark: Correctly clear and unmask all MSI interrupts
->   PCI: aardvark: Fix setting MSI address
-> 
->  drivers/pci/controller/pci-aardvark.c | 82 ++++++++++++++-------------
->  1 file changed, 44 insertions(+), 38 deletions(-)
-> 
-> -- 
-> 2.20.1
-> 
+Do you want me to move in_reload = false line to be after if (nsim_dev->fail_reload)
+check?
+
+Thanks
