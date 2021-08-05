@@ -2,127 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486C83E0D53
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 06:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0609F3E0D54
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 06:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236278AbhHEEdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 00:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231373AbhHEEdO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 00:33:14 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6ACC061765;
-        Wed,  4 Aug 2021 21:32:59 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id g5-20020a9d6b050000b02904f21e977c3eso3919208otp.5;
-        Wed, 04 Aug 2021 21:32:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WPmSYKxM3hDxf4j2HGMY4KEBqM5rWpME+JCZGt0gVjw=;
-        b=d6lgTlgZ4XtRuTrGFwjnfu6FMANDeGYNkF3HVRgAEz3zNJWeXPay2/77o5xUFwchyy
-         fZ+RxFE6PKyFPBCA/PrBqv7fb7Ru/8F66ANYljfjpCZek/EgK9BnwwHV0KtaiOXGOBHC
-         awwvqO+5eU4YhGFJjXO4OaZpU6kBceP9x20lc/jksWMCQHnZ8orlDNKyp4wj86imwnCD
-         6YKPbF79Crl7D4d2jD8s0rV9wTcK0I3OjHVcLIxaFULDXF9ynJoOKulQ9ZfLCD/pGLv1
-         zFEDI6x2G+joB+ZOQckwYoiMZ1LQcX9rian6mNKcuPDevnN7/eoOCrSnqHj1w21TH/v7
-         BVog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WPmSYKxM3hDxf4j2HGMY4KEBqM5rWpME+JCZGt0gVjw=;
-        b=OwLFiVGMaYs2wDyCqgFTesxXRTkK0RCB+Nax1y40ep8X1Fg880NTtYddXvGDPbozet
-         iUIifVJRDjG3WwF1pFn426gFY27IK2m2wYYojXuumNpa8/7YcYVZpob4/8tFLPA4D/Ks
-         dr7F0lP+Xi+/77TxrvYSyY8vE+r/0NGHyVe+PR30ikvPBtHcYIhT1AlHSp1ecoQss8AH
-         LAtk869RYvpanRiYpLOyGQhbQVSz5zJykVbf2s9A/C52vGvQGZvwLUrPOIpjIq0L72UN
-         166rzXaaUl06WsMgLbyqba+gFbtXX1GPQGePJJ4NCkL9qHptOPt55y/ruvwRpWp7Z5/a
-         SY0Q==
-X-Gm-Message-State: AOAM5309XmTxbcm8DhxlzklWmMnfVp3IJ7gSh9JqbpAo4F9055//+dF+
-        Uxbgx7j+xgdUVNz17VMbML1lMD+0ct0+e5Zid5k=
-X-Google-Smtp-Source: ABdhPJxVoTU6a30brhTf1IeElqkRglO5k+x+tHkN0DLsz3Nd4Duri9Cmng8GzMH9mtkqISPNR9a5gCNiMTCPSizufzw=
-X-Received: by 2002:a9d:70c3:: with SMTP id w3mr2216613otj.311.1628137979011;
- Wed, 04 Aug 2021 21:32:59 -0700 (PDT)
+        id S234957AbhHEEeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 00:34:31 -0400
+Received: from mga12.intel.com ([192.55.52.136]:1627 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229470AbhHEEea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 00:34:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="193661041"
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="193661041"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 21:34:16 -0700
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="522296741"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.32.138]) ([10.209.32.138])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 21:34:15 -0700
+Subject: Re: [clocksource] 8901ecc231: stress-ng.lockbus.ops_per_sec -9.5%
+ regression
+To:     paulmck@kernel.org, Chao Gao <chao.gao@intel.com>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        zhengjun.xing@intel.com
+References: <20210521135617.GT4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210522160827.GA2625834@paulmck-ThinkPad-P17-Gen-1>
+ <20210526064922.GD5262@shbuild999.sh.intel.com>
+ <20210526134911.GB4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
+ <20210802062008.GA24720@gao-cwp>
+ <20210802170257.GL4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210803085759.GA31621@gao-cwp>
+ <20210803134816.GO4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210805021646.GA11629@gao-cwp>
+ <20210805040349.GD4397@paulmck-ThinkPad-P17-Gen-1>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <a8d99be8-da3f-6c8e-cdbb-efd239ff3f14@linux.intel.com>
+Date:   Wed, 4 Aug 2021 21:34:13 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210804015132.29617-1-islituo@gmail.com> <f515880f-17f8-66b3-20d9-c1a46a252463@amd.com>
-In-Reply-To: <f515880f-17f8-66b3-20d9-c1a46a252463@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 5 Aug 2021 00:32:47 -0400
-Message-ID: <CADnq5_MSp=PAqbaTrS771ssKJzVpT2LyDTjZCSx2hh-DFo3MXg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: drop redundant null-pointer checks in
- amdgpu_ttm_tt_populate() and amdgpu_ttm_tt_unpopulate()
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Tuo Li <islituo@gmail.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        xinhui pan <Xinhui.Pan@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Airlie <airlied@redhat.com>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        Oak Zeng <Oak.Zeng@amd.com>, Nirmoy Das <nirmoy.das@amd.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "Yang, Philip" <Philip.Yang@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        TOTE Robot <oslab@tsinghua.edu.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210805040349.GD4397@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
 
-Alex
+> My current thought is that if more than (say) 100 consecutive attempts
+> to read the clocksource get hit with excessive delays, it is time to at
+> least do a WARN_ON(), and maybe also time to disable the clocksource
+> due to skew.  The reason is that if reading the clocksource -always-
+> sees excessive delays, perhaps the clock driver or hardware is to blame.
+>
+> Thoughts?
 
-On Wed, Aug 4, 2021 at 2:49 AM Christian K=C3=B6nig <christian.koenig@amd.c=
-om> wrote:
+On TDX this would be fatal because we don't have a usable fallback source
+
+(just jiffies). Better try as hard as possible.
+
+
+-Andi
+
 >
-> Am 04.08.21 um 03:51 schrieb Tuo Li:
-> > The varialbe gtt in the function amdgpu_ttm_tt_populate() and
-> > amdgpu_ttm_tt_unpopulate() is guaranteed to be not NULL in the context.
-> > Thus the null-pointer checks are redundant and can be dropped.
-> >
-> > Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> > Signed-off-by: Tuo Li <islituo@gmail.com>
->
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
-> > ---
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/=
-amd/amdgpu/amdgpu_ttm.c
-> > index 3a55f08e00e1..719539bd6c44 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> > @@ -1121,7 +1121,7 @@ static int amdgpu_ttm_tt_populate(struct ttm_devi=
-ce *bdev,
-> >       struct amdgpu_ttm_tt *gtt =3D (void *)ttm;
-> >
-> >       /* user pages are bound by amdgpu_ttm_tt_pin_userptr() */
-> > -     if (gtt && gtt->userptr) {
-> > +     if (gtt->userptr) {
-> >               ttm->sg =3D kzalloc(sizeof(struct sg_table), GFP_KERNEL);
-> >               if (!ttm->sg)
-> >                       return -ENOMEM;
-> > @@ -1146,7 +1146,7 @@ static void amdgpu_ttm_tt_unpopulate(struct ttm_d=
-evice *bdev,
-> >       struct amdgpu_ttm_tt *gtt =3D (void *)ttm;
-> >       struct amdgpu_device *adev;
-> >
-> > -     if (gtt && gtt->userptr) {
-> > +     if (gtt->userptr) {
-> >               amdgpu_ttm_tt_set_user_pages(ttm, NULL);
-> >               kfree(ttm->sg);
-> >               ttm->sg =3D NULL;
->
+> 			
