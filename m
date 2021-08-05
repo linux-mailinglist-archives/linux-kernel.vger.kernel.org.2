@@ -2,184 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466473E1821
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349023E1826
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242001AbhHEPgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:36:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232057AbhHEPgx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:36:53 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93804C061765;
-        Thu,  5 Aug 2021 08:36:39 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 93F451F40AC3
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: [PATCH v2] media: vivid: drop CONFIG_FB dependency
-Date:   Thu,  5 Aug 2021 16:36:31 +0100
-Message-Id: <8615e9e583173652894889afd492022683389621.1628177586.git.guillaume.tucker@collabora.com>
-X-Mailer: git-send-email 2.20.1
+        id S242109AbhHEPho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:37:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242000AbhHEPhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 11:37:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D6A160E78;
+        Thu,  5 Aug 2021 15:37:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628177847;
+        bh=KJFGnAesTb/YE5RvbTnTHSc1LxNKuUkzXiyHn6mZRFA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=gsNqgUPG9mDnGruEjlLobzw0dmjBqaDui9bCFV1mRJ2JldTKHUIMRUgOBKjZVU77m
+         F+PrkYW0EPUa0OYfnskR/SobY3vnm1x2L6QNuS9RoC4Kydg6kZUlDxia6f20YjO8Ri
+         YG1IFmzJJSX0HxSrFri+rk9DxJwSjMzAiI9kY0Kwd4kcxzYJ3Nmh1wHu+qvzgadO3w
+         RVRhrKs/3TdC3dLe2j8sfM50nZATU3Z4aoZcdqd/YYz3OijkbBcv+mKOR9xsHcMev7
+         Qt4e0ZjrkMn3lerUTKaRhfWgHQMgF84ovnymlzRH9QZOp8+LS2rsPznx00StJv2i7Y
+         lHjozz1FU7GzQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 679E35C098A; Thu,  5 Aug 2021 08:37:27 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 08:37:27 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Chao Gao <chao.gao@intel.com>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [clocksource]  8901ecc231:  stress-ng.lockbus.ops_per_sec -9.5%
+ regression
+Message-ID: <20210805153727.GG4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210526064922.GD5262@shbuild999.sh.intel.com>
+ <20210526134911.GB4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
+ <20210802062008.GA24720@gao-cwp>
+ <20210802170257.GL4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210803085759.GA31621@gao-cwp>
+ <20210803134816.GO4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210805021646.GA11629@gao-cwp>
+ <20210805040349.GD4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210805053938.GA12593@gao-cwp>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210805053938.GA12593@gao-cwp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the vivid dependency on CONFIG_FB by compiling out parts of the
-code that make use of the framebuffer API when not enabled.  This is
-particularly useful as CONFIG_FB is not selected any more by
-DRM_FBDEV_EMULATION.
+On Thu, Aug 05, 2021 at 01:39:40PM +0800, Chao Gao wrote:
+> [snip]
+> >> This patch works well; no false-positive (marking TSC unstable) in a
+> >> 10hr stress test.
+> >
+> >Very good, thank you!  May I add your Tested-by?
+> 
+> sure.
+> Tested-by: Chao Gao <chao.gao@intel.com>
 
-Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
----
+Very good, thank you!  I will apply this on the next rebase.
 
-Notes:
-    Changes in v2:
-    * fix Makefile conditional for when CONFIG_FB=m
-    * compile-out bit 16 (framebuffer) when no CONFIG_FB
+> >I expect that I will need to modify the patch a bit more to check for
+> >a system where it is -never- able to get a good fine-grained read from
+> >the clock.
+> 
+> Agreed.
+> 
+> >And it might be that your test run ended up in that state.
+> 
+> Not that case judging from kernel logs. Coarse-grained check happened 6475
+> times in 43k seconds (by grep "coarse-grained skew check" in kernel logs).
+> So, still many checks were fine-grained.
 
- drivers/media/test-drivers/vivid/Kconfig       | 5 +----
- drivers/media/test-drivers/vivid/Makefile      | 5 ++++-
- drivers/media/test-drivers/vivid/vivid-core.c  | 9 +++++++++
- drivers/media/test-drivers/vivid/vivid-ctrls.c | 4 ++++
- 4 files changed, 18 insertions(+), 5 deletions(-)
+Whew!  ;-)
 
-diff --git a/drivers/media/test-drivers/vivid/Kconfig b/drivers/media/test-drivers/vivid/Kconfig
-index c3abde2986b2..06ad350f1903 100644
---- a/drivers/media/test-drivers/vivid/Kconfig
-+++ b/drivers/media/test-drivers/vivid/Kconfig
-@@ -1,13 +1,10 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config VIDEO_VIVID
- 	tristate "Virtual Video Test Driver"
--	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64 && FB
-+	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64
- 	depends on HAS_DMA
- 	select FONT_SUPPORT
- 	select FONT_8x16
--	select FB_CFB_FILLRECT
--	select FB_CFB_COPYAREA
--	select FB_CFB_IMAGEBLIT
- 	select VIDEOBUF2_VMALLOC
- 	select VIDEOBUF2_DMA_CONTIG
- 	select VIDEO_V4L2_TPG
-diff --git a/drivers/media/test-drivers/vivid/Makefile b/drivers/media/test-drivers/vivid/Makefile
-index b12ad0152a3e..2ad634da7f88 100644
---- a/drivers/media/test-drivers/vivid/Makefile
-+++ b/drivers/media/test-drivers/vivid/Makefile
-@@ -3,10 +3,13 @@ vivid-objs := vivid-core.o vivid-ctrls.o vivid-vid-common.o vivid-vbi-gen.o \
- 		vivid-vid-cap.o vivid-vid-out.o vivid-kthread-cap.o vivid-kthread-out.o \
- 		vivid-radio-rx.o vivid-radio-tx.o vivid-radio-common.o \
- 		vivid-rds-gen.o vivid-sdr-cap.o vivid-vbi-cap.o vivid-vbi-out.o \
--		vivid-osd.o vivid-meta-cap.o vivid-meta-out.o \
-+		vivid-meta-cap.o vivid-meta-out.o \
- 		vivid-kthread-touch.o vivid-touch-cap.o
- ifeq ($(CONFIG_VIDEO_VIVID_CEC),y)
-   vivid-objs += vivid-cec.o
- endif
-+ifneq ($(CONFIG_FB),)
-+  vivid-objs += vivid-osd.o
-+endif
- 
- obj-$(CONFIG_VIDEO_VIVID) += vivid.o
-diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
-index d2bd2653cf54..7675962b9e93 100644
---- a/drivers/media/test-drivers/vivid/vivid-core.c
-+++ b/drivers/media/test-drivers/vivid/vivid-core.c
-@@ -126,7 +126,9 @@ MODULE_PARM_DESC(node_types, " node types, default is 0xe1d3d. Bitmask with the
- 			     "\t\t    bit 8: Video Output node\n"
- 			     "\t\t    bit 10-11: VBI Output node: 0 = none, 1 = raw vbi, 2 = sliced vbi, 3 = both\n"
- 			     "\t\t    bit 12: Radio Transmitter node\n"
-+#if IS_ENABLED(CONFIG_FB)
- 			     "\t\t    bit 16: Framebuffer for testing overlays\n"
-+#endif
- 			     "\t\t    bit 17: Metadata Capture node\n"
- 			     "\t\t    bit 18: Metadata Output node\n"
- 			     "\t\t    bit 19: Touch Capture node\n");
-@@ -1021,9 +1023,11 @@ static int vivid_detect_feature_set(struct vivid_dev *dev, int inst,
- 	/* do we have a modulator? */
- 	*has_modulator = dev->has_radio_tx;
- 
-+#if IS_ENABLED(CONFIG_FB)
- 	if (dev->has_vid_cap)
- 		/* do we have a framebuffer for overlay testing? */
- 		dev->has_fb = node_type & 0x10000;
-+#endif
- 
- 	/* can we do crop/compose/scaling while capturing? */
- 	if (no_error_inj && *ccs_cap == -1)
-@@ -1355,6 +1359,7 @@ static int vivid_create_queues(struct vivid_dev *dev)
- 			return ret;
- 	}
- 
-+#if IS_ENABLED(CONFIG_FB)
- 	if (dev->has_fb) {
- 		/* Create framebuffer for testing capture/output overlay */
- 		ret = vivid_fb_init(dev);
-@@ -1363,6 +1368,8 @@ static int vivid_create_queues(struct vivid_dev *dev)
- 		v4l2_info(&dev->v4l2_dev, "Framebuffer device registered as fb%d\n",
- 			  dev->fb_info.node);
- 	}
-+#endif
-+
- 	return 0;
- }
- 
-@@ -2069,12 +2076,14 @@ static int vivid_remove(struct platform_device *pdev)
- 				video_device_node_name(&dev->radio_tx_dev));
- 			video_unregister_device(&dev->radio_tx_dev);
- 		}
-+#if IS_ENABLED(CONFIG_FB)
- 		if (dev->has_fb) {
- 			v4l2_info(&dev->v4l2_dev, "unregistering fb%d\n",
- 				dev->fb_info.node);
- 			unregister_framebuffer(&dev->fb_info);
- 			vivid_fb_release_buffers(dev);
- 		}
-+#endif
- 		if (dev->has_meta_cap) {
- 			v4l2_info(&dev->v4l2_dev, "unregistering %s\n",
- 				  video_device_node_name(&dev->meta_cap_dev));
-diff --git a/drivers/media/test-drivers/vivid/vivid-ctrls.c b/drivers/media/test-drivers/vivid/vivid-ctrls.c
-index 8dc50fe22972..081470a1d88a 100644
---- a/drivers/media/test-drivers/vivid/vivid-ctrls.c
-+++ b/drivers/media/test-drivers/vivid/vivid-ctrls.c
-@@ -305,6 +305,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_ro_int32 = {
- 
- /* Framebuffer Controls */
- 
-+#if IS_ENABLED(CONFIG_FB)
- static int vivid_fb_s_ctrl(struct v4l2_ctrl *ctrl)
- {
- 	struct vivid_dev *dev = container_of(ctrl->handler,
-@@ -328,6 +329,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_clear_fb = {
- 	.name = "Clear Framebuffer",
- 	.type = V4L2_CTRL_TYPE_BUTTON,
- };
-+#endif /* IS_ENABLED(CONFIG_FB) */
- 
- 
- /* Video User Controls */
-@@ -1761,8 +1763,10 @@ int vivid_create_controls(struct vivid_dev *dev, bool show_ccs_cap,
- 	    (dev->has_vbi_cap && dev->has_vbi_out))
- 		v4l2_ctrl_new_custom(hdl_loop_cap, &vivid_ctrl_loop_video, NULL);
- 
-+#if IS_ENABLED(CONFIG_FB)
- 	if (dev->has_fb)
- 		v4l2_ctrl_new_custom(hdl_fb, &vivid_ctrl_clear_fb, NULL);
-+#endif
- 
- 	if (dev->has_radio_rx) {
- 		v4l2_ctrl_new_custom(hdl_radio_rx, &vivid_ctrl_radio_hw_seek_mode, NULL);
--- 
-2.20.1
+So about once per 13 clocksource watchdog checks.
 
+To Andi's point, do you have enough information in your console log to
+work out the longest run of course-grained clocksource checks?
+
+> >My current thought is that if more than (say) 100 consecutive attempts
+> >to read the clocksource get hit with excessive delays, it is time to at
+> >least do a WARN_ON(), and maybe also time to disable the clocksource
+> >due to skew.  The reason is that if reading the clocksource -always-
+> >sees excessive delays, perhaps the clock driver or hardware is to blame.
+> >
+> >Thoughts?
+> 
+> It makes sense to me.
+
+Sounds good!
+
+							Thanx, Paul
