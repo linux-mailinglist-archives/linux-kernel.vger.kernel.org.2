@@ -2,95 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A833E15B5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE9A3E15B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241654AbhHENbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 09:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbhHENbd (ORCPT
+        id S241698AbhHENcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 09:32:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28668 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238437AbhHENcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 09:31:33 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E165DC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 06:31:18 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id k38-20020a05600c1ca6b029025af5e0f38bso6324062wms.5
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 06:31:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zs+Z1KlvhHEW9OY5xJG2JR+/SH7cHwYmUg91uA47VDU=;
-        b=Kl5dsNC2zDDGoySUkNYlbcc93SIM93mVI+ajJXWI2zMKUj/2ZYQhwx3nfvX6Kwvtm1
-         qufZuTDcLFUI7vM0MuuwSeiSJcwtmmhMwyfKLSl/9wull3p7Fmc1SSYR5DYnA80lmdmU
-         UPHtF1VW8pBRjLswW51iq+lVOFvyTluXAO5+kVms/dQ9bVImq0RBra/jCyqiartXxf7J
-         YCuFIA2UiGGiOkhvCmOc8MAW9eLHnuNM6a4QZqYXPXwCX/bJIdKcH+IoTAzpeOqVSIAh
-         4Gzq1SIOd9tjf4WHJ0vU3pzpQEocsISGfcIH9G4GzjQRsW2M3jMkviYgqvlXsrbTAPxp
-         EgNw==
+        Thu, 5 Aug 2021 09:32:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628170315;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KFeFt1ww8WzoDvTA8B4ID/THa1sBrEwi6JiSRoox5oM=;
+        b=UYNe/jicwMop7jWFr8j3AEnGB1jlLJmLNLel8lHczjZGBudnlDBRcMMaLJ5BdrSYphVBad
+        coEPIY1VjClyve620cm55Ufb5xdLNlqrK3uimJA1tPcXt9DoXYFPuvbWJXNB5SRnvj6W0H
+        AWFnokaf0gfNVaPDr8W0y3cNWuIuvvA=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-486-LwTtJm-PPpy7WCrRLDIQ1w-1; Thu, 05 Aug 2021 09:31:54 -0400
+X-MC-Unique: LwTtJm-PPpy7WCrRLDIQ1w-1
+Received: by mail-pj1-f69.google.com with SMTP id o13-20020a17090a9f8db0290177972c9adeso5692730pjp.5
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 06:31:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zs+Z1KlvhHEW9OY5xJG2JR+/SH7cHwYmUg91uA47VDU=;
-        b=DqtZrDQPbHuyTL4+dpHeYDkrJwzlXHt8PtwD8m01ADdFOGVNFVhZTxnazOmob8I+j2
-         NnLacGdjN9yJ2lGjbqGtoxtuQ9nt3bF/w3+j/tNCGNKGstjJ01zAzK495jVUgRzq11RW
-         TeF7puFLfyL15tlOfOji2fBoANSjs40DaCxPK5ZEYvHmBMufmTclrewvVflQFrX2Wrzh
-         jAUydMh303Cw/NworeyZ8pV8L+KhrnLFrtzvtAmsg4YsTWqmfsHQZXpGtWMpyz7OtmRQ
-         7Q0NUs4vtHnfs7SJLmIh8Teu61S0Kr0i4+WRKtSEnJ703bmylEcg9/kKmsbpBf+NIg8+
-         0yZg==
-X-Gm-Message-State: AOAM530UnhQEX9hOQZwoTo/A+4pREYUXz+sG0U5ty4BJ/oO2sGXJDG9j
-        HTZeNGlbmAInCHpAJqNEdmXBfQ==
-X-Google-Smtp-Source: ABdhPJxHMBhwxopjuu/lU4IUKdR1Y2ZaCLba2PO1PDGFOr6TIPBGJXbymC1x8UIlVO6dIoZJUAK2EA==
-X-Received: by 2002:a7b:c441:: with SMTP id l1mr5126255wmi.69.1628170277551;
-        Thu, 05 Aug 2021 06:31:17 -0700 (PDT)
-Received: from google.com ([109.180.115.228])
-        by smtp.gmail.com with ESMTPSA id u23sm8921636wmc.24.2021.08.05.06.31.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 06:31:16 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 14:31:15 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/7] mfd: tqmx86: remove incorrect TQMx90UC board ID
-Message-ID: <YQvoI74FeFiAHsae@google.com>
-References: <cover.1626429286.git.matthias.schiffer@ew.tq-group.com>
- <5bb8c96ee6a755f18d82375927515ad504869b9e.1626429286.git.matthias.schiffer@ew.tq-group.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=KFeFt1ww8WzoDvTA8B4ID/THa1sBrEwi6JiSRoox5oM=;
+        b=gvYKsZi0G1X6dlTkoPRX2ngagQLsCc2kAqtJMiMYeMQE8pwz35ajM5rdEgZE6ptMuG
+         FqykWKKjbfO51C1XHIGRS7KCH1kCRr5dSgtFVH9Qxb6vzc+M9fJTtSl5p8dkkxphawZ9
+         Fxvy0sSTXwQPasEUMpTZ/aXxD8cARiRSL7WEJaoMYnpkLFAHnHGtKMr3mViTQg0TkndR
+         cqTt12jU+n70lm0nBDozv/cbFsm3NMhHlk4umDSd5x+L+ic1pkXPMOv2+O1fsZhZsop0
+         tU4fVZoCYP+bzO1gAZGmHUTq2e9mHF7Tj0KMLL8PLcStziPUFolm+Lf6JyTdjsveb7mj
+         7YqQ==
+X-Gm-Message-State: AOAM533qlJ3DHp0ucDorBsVL9VjLGVwTdr5QNZDyZ7cNiZfSr/lNqrxx
+        j2N+dbov01o57kgdLkSsTRDwwxe2UeJMebQLCezgjKrR8FzC/odS+LF1CrPYiTt/aNxOMUQJthH
+        lUR6cNyYTf2zBMdmYT5vnMeCK
+X-Received: by 2002:a65:610c:: with SMTP id z12mr612917pgu.453.1628170312974;
+        Thu, 05 Aug 2021 06:31:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJweBq6SSyDD2nP+XrrpaLsd2Knf9rcBqrsnAXcXPB8geZ/AllW4llVpLKWNfVfqwtMjCV4ZTA==
+X-Received: by 2002:a65:610c:: with SMTP id z12mr612875pgu.453.1628170312586;
+        Thu, 05 Aug 2021 06:31:52 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id y67sm6867035pfg.218.2021.08.05.06.31.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Aug 2021 06:31:52 -0700 (PDT)
+Subject: Re: [PATCH v10 01/17] iova: Export alloc_iova_fast() and
+ free_iova_fast()
+To:     Yongji Xie <xieyongji@bytedance.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     kvm <kvm@vger.kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Liu Xiaodong <xiaodong.liu@intel.com>,
+        Joe Perches <joe@perches.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        songmuchun@bytedance.com, Jens Axboe <axboe@kernel.dk>,
+        He Zhe <zhe.he@windriver.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, bcrl@kvack.org,
+        netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>
+References: <20210729073503.187-1-xieyongji@bytedance.com>
+ <20210729073503.187-2-xieyongji@bytedance.com>
+ <43d88942-1cd3-c840-6fec-4155fd544d80@redhat.com>
+ <CACycT3vcpwyA3xjD29f1hGnYALyAd=-XcWp8+wJiwSqpqUu00w@mail.gmail.com>
+ <6e05e25e-e569-402e-d81b-8ac2cff1c0e8@arm.com>
+ <CACycT3sm2r8NMMUPy1k1PuSZZ3nM9aic-O4AhdmRRCwgmwGj4Q@mail.gmail.com>
+ <417ce5af-4deb-5319-78ce-b74fb4dd0582@arm.com>
+ <CACycT3vARzvd4-dkZhDHqUkeYoSxTa2ty0z0ivE1znGti+n1-g@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <8c381d3d-9bbd-73d6-9733-0f0b15c40820@redhat.com>
+Date:   Thu, 5 Aug 2021 21:31:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <CACycT3vARzvd4-dkZhDHqUkeYoSxTa2ty0z0ivE1znGti+n1-g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5bb8c96ee6a755f18d82375927515ad504869b9e.1626429286.git.matthias.schiffer@ew.tq-group.com>
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Jul 2021, Matthias Schiffer wrote:
 
-> No TQMx90UC exists at the moment, and it is undecided whether ID 10 will
-> be used eventually (and if it is, how that SoM will be named).
-> 
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> ---
-> 
-> v2: new patch
-> v3: remove Fixes line
-> 
->  drivers/mfd/tqmx86.c | 4 ----
->  1 file changed, 4 deletions(-)
+在 2021/8/5 下午8:34, Yongji Xie 写道:
+>> My main point, though, is that if you've already got something else
+>> keeping track of the actual addresses, then the way you're using an
+>> iova_domain appears to be something you could do with a trivial bitmap
+>> allocator. That's why I don't buy the efficiency argument. The main
+>> design points of the IOVA allocator are to manage large address spaces
+>> while trying to maximise spatial locality to minimise the underlying
+>> pagetable usage, and allocating with a flexible limit to support
+>> multiple devices with different addressing capabilities in the same
+>> address space. If none of those aspects are relevant to the use-case -
+>> which AFAICS appears to be true here - then as a general-purpose
+>> resource allocator it's rubbish and has an unreasonably massive memory
+>> overhead and there are many, many better choices.
+>>
+> OK, I get your point. Actually we used the genpool allocator in the
+> early version. Maybe we can fall back to using it.
 
-For my own reference (apply this as-is to your sign-off block):
 
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+I think maybe you can share some perf numbers to see how much 
+alloc_iova_fast() can help.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks
+
+
+>
+
