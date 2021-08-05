@@ -2,204 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F35DD3E1B98
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CAA13E1B9D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241617AbhHESow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:44:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241568AbhHESot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:44:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5783560F01;
-        Thu,  5 Aug 2021 18:44:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628189074;
-        bh=V+yClbERtd7wR+Quq7Ck+f5fI7p0BVNHghH2h61vC5w=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=i/JOA3obDm/t8FHfX/Xt8EPazAVkBXdScd7XlsrQJXPAsuHuwxxn7bjGTC/FzMVyJ
-         Xad6/KroTVtmH5Ez43wC1ZvZ+Ts2Wp0JmvtxG0k9TZhcLbiDs2xdfOcr6T+vhgEDm3
-         wZTwIs8ioQHnXD6ZdN91prn+iAe6ry84ScHuAUnWWYjrZasYw0JfvsSCTJR+YzPBhA
-         2lEuQraoTbbvIDEi6eVFW4LH2elbgbrCj2ovCAfaYrpk16Jhy5JzZFL4NWalMY/Dxj
-         aBEGH4Xytj/mr3WQToz9H13g4o5QCa12knMUYL7tzhyFP0febL8s86NicQGaPMiu0b
-         9/X28esndF70g==
-Subject: Re: [PATCH v3] riscv: explicitly use symbol offsets for VDSO
-To:     Saleem Abdulrasool <abdulras@google.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        clang-built-linux@googlegroups.com
-References: <20210804173214.1027994-1-abdulras@google.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <615fafba-bdcc-7f13-483d-6f3ef405924c@kernel.org>
-Date:   Thu, 5 Aug 2021 11:44:34 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S241635AbhHESo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241642AbhHESoz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:44:55 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D75C061798
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:44:40 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id p38so13098466lfa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=INk3XSw8EkiiqWSqdb59L6OOJd8smcU62HiHOCZ/eNY=;
+        b=qMLBzO6WhhUWnOWwFvXaPVjifn5YOEjQwvC516itc7t6Mwr4H8VCjaT3jBqjzLeGhY
+         3CUPlSirGnmvkmFCbqVwxqZR+2pGt3y58ZpMSA1gvcFuDPQt/XlYrqC+fJEhGHuOvlbh
+         cn8SqEgzJN8b4Q31k84p4Znd3NPG42xgCQ2Jc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=INk3XSw8EkiiqWSqdb59L6OOJd8smcU62HiHOCZ/eNY=;
+        b=VjBcgsj8shM0HPQzqCDD/fXQ0+KPTDQX7AM1Y148/wr+oFdICvqxT1LXLocd6ErjSk
+         sevqvaaH9oYYKHigO3IPYpt1W/NxtqkT1pS2gxG/s2RNY0erMvGL9yK0rT+SZCKYY2+R
+         /EWPZGOnjrmQjuQ5rXcfG2FJtpJNm7RyrfdRZrNrnZBv9j5lzFYnTtJyfk6psFwQeZTD
+         i8ZJm401fsiU5/unjYeZlM8f+qQyxaGEwtTkPinJ36Lm9cGmPwjBjpNAalnP73d4DZvi
+         Nws931pAUUaGk5qKKO7W6F2vOYQaEok00p5lORGncEWURxyejQ/cc5KEdISqSAU2H8hb
+         jETA==
+X-Gm-Message-State: AOAM531snDA2ffQSwzyyQL6eWEeIfnGdFdUeDw+G9w8xX705hfGGsxfy
+        t5sH0phgWx00gAA9gMSRCGe8eQ==
+X-Google-Smtp-Source: ABdhPJzyPq0ysU2CTi312TtSkUo2U7Utcg5KrzfhL0ZenWSLzwonHZ35S8TOFPmBzOicf3YiKwRHlg==
+X-Received: by 2002:a05:6512:260e:: with SMTP id bt14mr4621782lfb.491.1628189079192;
+        Thu, 05 Aug 2021 11:44:39 -0700 (PDT)
+Received: from cloudflare.com (79.191.182.217.ipv4.supernova.orange.pl. [79.191.182.217])
+        by smtp.gmail.com with ESMTPSA id v16sm469447ljn.93.2021.08.05.11.44.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 11:44:38 -0700 (PDT)
+References: <20210805051340.3798543-1-jiang.wang@bytedance.com>
+ <20210805051340.3798543-3-jiang.wang@bytedance.com>
+User-agent: mu4e 1.1.0; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Jiang Wang <jiang.wang@bytedance.com>
+Cc:     netdev@vger.kernel.org, cong.wang@bytedance.com,
+        duanxiongchun@bytedance.com, xieyongji@bytedance.com,
+        chaiwen.cc@bytedance.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 2/5] af_unix: add unix_stream_proto for sockmap
+In-reply-to: <20210805051340.3798543-3-jiang.wang@bytedance.com>
+Date:   Thu, 05 Aug 2021 20:44:37 +0200
+Message-ID: <87y29fd94a.fsf@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <20210804173214.1027994-1-abdulras@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/2021 10:32 AM, 'Saleem Abdulrasool' via Clang Built Linux wrote:
-> The current implementation of the `__rt_sigaction` reference computed an
-> absolute offset relative to the mapped base of the VDSO.  While this can
-> be handled in the medlow model, the medany model cannot handle this as
-> it is meant to be position independent.  The current implementation
-> relied on the BFD linker relaxing the PC-relative relocation into an
-> absolute relocation as it was a near-zero address allowing it to be
-> referenced relative to `zero`.
-> 
-> We now extract the offsets and create a generated header allowing the
-> build with LLVM and lld to succeed as we no longer depend on the linker
-> rewriting address references near zero.  This change was largely
-> modelled after the ARM64 target which does something similar.
-> 
-> Signed-off-by: Saleem Abdulrasool <abdulras@google.com>
+On Thu, Aug 05, 2021 at 07:13 AM CEST, Jiang Wang wrote:
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+[...]
 
-> ---
->   arch/riscv/Makefile                        |  4 ++++
->   arch/riscv/include/asm/vdso.h              | 14 ++----------
->   arch/riscv/kernel/vdso/Makefile            | 25 ++++++++++------------
->   arch/riscv/kernel/vdso/gen_vdso_offsets.sh |  5 +++++
->   arch/riscv/kernel/vdso/so2s.sh             |  6 ------
->   5 files changed, 22 insertions(+), 32 deletions(-)
->   create mode 100755 arch/riscv/kernel/vdso/gen_vdso_offsets.sh
->   delete mode 100755 arch/riscv/kernel/vdso/so2s.sh
-> 
-> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-> index bc74afdbf31e..e026b2d0a5a4 100644
-> --- a/arch/riscv/Makefile
-> +++ b/arch/riscv/Makefile
-> @@ -108,6 +108,10 @@ PHONY += vdso_install
->   vdso_install:
->   	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso $@
->   
-> +prepare: vdso_prepare
-> +vdso_prepare: prepare0
-> +	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso include/generated/vdso-offsets.h
+> --- a/net/unix/af_unix.c
+> +++ b/net/unix/af_unix.c
+> @@ -791,17 +791,35 @@ static void unix_close(struct sock *sk, long timeout)
+>  	 */
+>  }
+>
+> -struct proto unix_proto = {
+> -	.name			= "UNIX",
+> +static void unix_unhash(struct sock *sk)
+> +{
+> +	/* Nothing to do here, unix socket does not need a ->unhash().
+> +	 * This is merely for sockmap.
+> +	 */
+> +}
 > +
->   ifneq ($(CONFIG_XIP_KERNEL),y)
->   ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN),yy)
->   KBUILD_IMAGE := $(boot)/loader.bin
-> diff --git a/arch/riscv/include/asm/vdso.h b/arch/riscv/include/asm/vdso.h
-> index 1453a2f563bc..d8d003c2b5a3 100644
-> --- a/arch/riscv/include/asm/vdso.h
-> +++ b/arch/riscv/include/asm/vdso.h
-> @@ -9,25 +9,15 @@
->   #define _ASM_RISCV_VDSO_H
->   
->   #include <linux/types.h>
-> +#include <generated/vdso-offsets.h>
->   
->   #ifndef CONFIG_GENERIC_TIME_VSYSCALL
->   struct vdso_data {
->   };
->   #endif
->   
-> -/*
-> - * The VDSO symbols are mapped into Linux so we can just use regular symbol
-> - * addressing to get their offsets in userspace.  The symbols are mapped at an
-> - * offset of 0, but since the linker must support setting weak undefined
-> - * symbols to the absolute address 0 it also happens to support other low
-> - * addresses even when the code model suggests those low addresses would not
-> - * otherwise be availiable.
-> - */
->   #define VDSO_SYMBOL(base, name)							\
-> -({										\
-> -	extern const char __vdso_##name[];					\
-> -	(void __user *)((unsigned long)(base) + __vdso_##name);			\
-> -})
-> +	(void __user *)((unsigned long)(base) + __vdso_##name##_offset)
->   
->   asmlinkage long sys_riscv_flush_icache(uintptr_t, uintptr_t, uintptr_t);
->   
-> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-> index 24d936c147cd..f8cb9144a284 100644
-> --- a/arch/riscv/kernel/vdso/Makefile
-> +++ b/arch/riscv/kernel/vdso/Makefile
-> @@ -23,10 +23,10 @@ ifneq ($(c-gettimeofday-y),)
->   endif
->   
->   # Build rules
-> -targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds vdso-syms.S
-> +targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds
->   obj-vdso := $(addprefix $(obj)/, $(obj-vdso))
->   
-> -obj-y += vdso.o vdso-syms.o
-> +obj-y += vdso.o
->   CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
->   
->   # Disable -pg to prevent insert call site
-> @@ -43,20 +43,22 @@ $(obj)/vdso.o: $(obj)/vdso.so
->   # link rule for the .so file, .lds has to be first
->   $(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) FORCE
->   	$(call if_changed,vdsold)
-> -LDFLAGS_vdso.so.dbg = -shared -s -soname=linux-vdso.so.1 \
-> +LDFLAGS_vdso.so.dbg = -shared -S -soname=linux-vdso.so.1 \
->   	--build-id=sha1 --hash-style=both --eh-frame-hdr
->   
-> -# We also create a special relocatable object that should mirror the symbol
-> -# table and layout of the linked DSO. With ld --just-symbols we can then
-> -# refer to these symbols in the kernel code rather than hand-coded addresses.
-> -$(obj)/vdso-syms.S: $(obj)/vdso.so FORCE
-> -	$(call if_changed,so2s)
-> -
->   # strip rule for the .so file
->   $(obj)/%.so: OBJCOPYFLAGS := -S
->   $(obj)/%.so: $(obj)/%.so.dbg FORCE
->   	$(call if_changed,objcopy)
->   
-> +# Generate VDSO offsets using helper script
-> +gen-vdsosym := $(srctree)/$(src)/gen_vdso_offsets.sh
-> +quiet_cmd_vdsosym = VDSOSYM $@
-> +	cmd_vdsosym = $(NM) $< | $(gen-vdsosym) | LC_ALL=C sort > $@
+> +struct proto unix_dgram_proto = {
+> +	.name			= "UNIX-DGRAM",
+> +	.owner			= THIS_MODULE,
+> +	.obj_size		= sizeof(struct unix_sock),
+> +	.close			= unix_close,
+> +#ifdef CONFIG_BPF_SYSCALL
+> +	.psock_update_sk_prot	= unix_dgram_bpf_update_proto,
+> +#endif
+> +};
 > +
-> +include/generated/vdso-offsets.h: $(obj)/vdso.so.dbg FORCE
-> +	$(call if_changed,vdsosym)
+> +struct proto unix_stream_proto = {
+> +	.name			= "UNIX-STREAM",
+>  	.owner			= THIS_MODULE,
+>  	.obj_size		= sizeof(struct unix_sock),
+>  	.close			= unix_close,
+> +	.unhash			= unix_unhash,
+>  #ifdef CONFIG_BPF_SYSCALL
+> -	.psock_update_sk_prot	= unix_bpf_update_proto,
+> +	.psock_update_sk_prot	= unix_stream_bpf_update_proto,
+>  #endif
+>  };
+>
+> -static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
+> +static struct sock *unix_create1(struct net *net, struct socket *sock, int kern, int type)
+>  {
+>  	struct sock *sk = NULL;
+>  	struct unix_sock *u;
+> @@ -810,7 +828,11 @@ static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
+>  	if (atomic_long_read(&unix_nr_socks) > 2 * get_max_files())
+>  		goto out;
+>
+> -	sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_proto, kern);
+> +	if (type == SOCK_STREAM)
+> +		sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_stream_proto, kern);
+> +	else /*dgram and  seqpacket */
+> +		sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_dgram_proto, kern);
 > +
->   # actual build commands
->   # The DSO images are built using a special linker script
->   # Make sure only to export the intended __vdso_xxx symbol offsets.
-> @@ -65,11 +67,6 @@ quiet_cmd_vdsold = VDSOLD  $@
->                      $(OBJCOPY) $(patsubst %, -G __vdso_%, $(vdso-syms)) $@.tmp $@ && \
->                      rm $@.tmp
->   
-> -# Extracts symbol offsets from the VDSO, converting them into an assembly file
-> -# that contains the same symbols at the same offsets.
-> -quiet_cmd_so2s = SO2S    $@
-> -      cmd_so2s = $(NM) -D $< | $(srctree)/$(src)/so2s.sh > $@
-> -
->   # install commands for the unstripped file
->   quiet_cmd_vdso_install = INSTALL $@
->         cmd_vdso_install = cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
-> diff --git a/arch/riscv/kernel/vdso/gen_vdso_offsets.sh b/arch/riscv/kernel/vdso/gen_vdso_offsets.sh
-> new file mode 100755
-> index 000000000000..c2e5613f3495
-> --- /dev/null
-> +++ b/arch/riscv/kernel/vdso/gen_vdso_offsets.sh
-> @@ -0,0 +1,5 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
+>  	if (!sk)
+>  		goto out;
+>
+> @@ -872,7 +894,7 @@ static int unix_create(struct net *net, struct socket *sock, int protocol,
+>  		return -ESOCKTNOSUPPORT;
+>  	}
+>
+> -	return unix_create1(net, sock, kern) ? 0 : -ENOMEM;
+> +	return unix_create1(net, sock, kern, sock->type) ? 0 : -ENOMEM;
+>  }
+>
+>  static int unix_release(struct socket *sock)
+> @@ -1286,7 +1308,7 @@ static int unix_stream_connect(struct socket *sock, struct sockaddr *uaddr,
+>  	err = -ENOMEM;
+>
+>  	/* create new sock for complete connection */
+> -	newsk = unix_create1(sock_net(sk), NULL, 0);
+> +	newsk = unix_create1(sock_net(sk), NULL, 0, sock->type);
+>  	if (newsk == NULL)
+>  		goto out;
+>
+> @@ -2261,7 +2283,7 @@ static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg, size_t si
+>  	struct sock *sk = sock->sk;
+>
+>  #ifdef CONFIG_BPF_SYSCALL
+> -	if (sk->sk_prot != &unix_proto)
+> +	if (READ_ONCE(sk->sk_prot) != &unix_dgram_proto)
+>  		return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
+>  					    flags & ~MSG_DONTWAIT, NULL);
+
+Notice we have two reads from sk->sk_prot here.  And the value
+sk->sk_prot holds might change between reads (that is when we remove the
+socket from sockmap). So we want to load it just once.
+
+Otherwise, it seems possible that sk->sk_prot->recvmsg will be called,
+when sk->sk_prot == unix_proto. Which means sk->sk_prot->recvmsg is NULL.
+
+>  #endif
+> @@ -2580,6 +2602,20 @@ static int unix_stream_read_actor(struct sk_buff *skb,
+>  	return ret ?: chunk;
+>  }
+>
+> +int __unix_stream_recvmsg(struct sock *sk, struct msghdr *msg,
+> +			  size_t size, int flags)
+> +{
+> +	struct unix_stream_read_state state = {
+> +		.recv_actor = unix_stream_read_actor,
+> +		.socket = sk->sk_socket,
+> +		.msg = msg,
+> +		.size = size,
+> +		.flags = flags
+> +	};
 > +
-> +LC_ALL=C
-> +sed -n -e 's/^[0]\+\(0[0-9a-fA-F]*\) . \(__vdso_[a-zA-Z0-9_]*\)$/\#define \2_offset\t0x\1/p'
-> diff --git a/arch/riscv/kernel/vdso/so2s.sh b/arch/riscv/kernel/vdso/so2s.sh
-> deleted file mode 100755
-> index e64cb6d9440e..000000000000
-> --- a/arch/riscv/kernel/vdso/so2s.sh
-> +++ /dev/null
-> @@ -1,6 +0,0 @@
-> -#!/bin/sh
-> -# SPDX-License-Identifier: GPL-2.0+
-> -# Copyright 2020 Palmer Dabbelt <palmerdabbelt@google.com>
-> -
-> -sed 's!\([0-9a-f]*\) T \([a-z0-9_]*\)\(@@LINUX_4.15\)*!.global \2\n.set \2,0x\1!' \
-> -| grep '^\.'
-> 
+> +	return unix_stream_read_generic(&state, true);
+> +}
+> +
+>  static int unix_stream_recvmsg(struct socket *sock, struct msghdr *msg,
+>  			       size_t size, int flags)
+>  {
+> @@ -2591,6 +2627,12 @@ static int unix_stream_recvmsg(struct socket *sock, struct msghdr *msg,
+>  		.flags = flags
+>  	};
+>
+> +#ifdef CONFIG_BPF_SYSCALL
+> +	struct sock *sk = sock->sk;
+> +	if (sk->sk_prot != &unix_stream_proto)
+> +		return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
+> +					    flags & ~MSG_DONTWAIT, NULL);
+
+Also needs READ_ONCE annotations.
+
+> +#endif
+>  	return unix_stream_read_generic(&state, true);
+>  }
+>
+> @@ -2652,6 +2694,7 @@ static int unix_shutdown(struct socket *sock, int mode)
+>
+>  		int peer_mode = 0;
+>
+> +		other->sk_prot->unhash(other);
+
+Here as well.
+
+>  		if (mode&RCV_SHUTDOWN)
+>  			peer_mode |= SEND_SHUTDOWN;
+>  		if (mode&SEND_SHUTDOWN)
+
+[...]
