@@ -2,150 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB4B3E0D98
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 07:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E773E0D9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 07:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237021AbhHEFNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 01:13:06 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:56649 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236989AbhHEFNC (ORCPT
+        id S237049AbhHEFOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 01:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236991AbhHEFOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 01:13:02 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 62E3E2B00475;
-        Thu,  5 Aug 2021 01:12:48 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 05 Aug 2021 01:12:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=twhTTkXFTaNa0
-        JKFc4hyiam+oxDA9ilOzTNkxYn0QVU=; b=PkXgn16HgvSTUUdp6giJJ9zviZhK5
-        YoexSA5yHmTUNPltoiP5mAxmqsWqgUCAFZE9ck3QdGZTqRC/vtAM8R4VJIWB+dan
-        BHlYAj/FRZH5J8p4tWMd8xf+V9LK1jsbDbPdsjIhzKBq50zp6VSCjae3oIvSkoRN
-        XmhXcUJwn0R8z0jfTweb1SaTF44lplH/G5fkKyRMUgFZVLwjNT2rXS+OnnYABXlF
-        fYMwwB6BIa6FOgPfBsyyU55jW7OzY2EA5QQuJxZDR0eXIpgx4Snrwck0FrzURLwY
-        jpg3stCs9G9kKmtSwgcoTK9E5uyEvx6cYdTxoiD3sA+CNrP0PDMguZYBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=twhTTkXFTaNa0JKFc4hyiam+oxDA9ilOzTNkxYn0QVU=; b=N91rrRY5
-        cU4Qo/kWYt562kutCyBFODu28K8np5yaqzV2WJD+iZCVFY7nam/DScOE3Qrm2P0g
-        nlbkOojuvniVOAkcDpY7ZnZnb46NzVtLFPFO6MLzISFjK1Nw8L2nLOhTZYIXY94z
-        zThs9JdJw8qOMfg8ipCzSPc0+oUd7yY3hj65llYkElpMYzOHSj41vFzFYnwbmhKY
-        JB1K+64R6y78VQZimEM8oJYlEgP69h9mqe4syOb9Gv45LP00CXaARLYkRqJDZBB4
-        4w0iIgAPEkbap92NYBvUswR3qMmcpSmuEbWBtna9699VNyQ1elDnj16X5xX3iU0W
-        5/0kpuf+3K/PDA==
-X-ME-Sender: <xms:T3MLYWK6nCm4i-mYnGmkteOFDD1aCVb_G5BdRaH-tjiCPYFOvr_BOA>
-    <xme:T3MLYeKDfZ1nJfGM4oS8kiKpdj1U37rR81uGRturVC7SIKi6ovQQZGy2JmJ0kh6yB
-    CY16AGukMX3xIU8bw>
-X-ME-Received: <xmr:T3MLYWuLplqQJKYJ-ZHws7fvEMBEwB9e7gH0doed8V2P98UJLWrlBkjNjWyaBXiVyiM3XOPE2xEEaZoSu6qg0FGri3Tr7pySAfzAEMWpBYgfcJSC8laqn5ucPPUHsnvdzjyROw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieekgdekkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
-    ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
-    grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
-    jeehueeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:T3MLYbbqss8FZWj0XX95tEdKX2-GRp5eNXjiiz9qFXZOR-th-7iacw>
-    <xmx:T3MLYdY3GZ4Z9redfNmlvcCCsBjFUbqHWv5RscupUckzgU39W7_kbA>
-    <xmx:T3MLYXCmFYed_WBYgpPCRlzJA0OuSlEHpvAcNpFA5A8KnmPT9qrGrQ>
-    <xmx:UHMLYaRrNXS7u6bEAL8qs-tiRjPOZZ-gMY0gh8VKeU-M1SMVxyOBQCcBg4M>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 5 Aug 2021 01:12:47 -0400 (EDT)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        Samuel Holland <samuel@sholland.org>,
-        Ondrej Jirman <megous@megous.com>
-Subject: [PATCH resend v3 2/2] input: sun4i-lradc-keys - Add wakup support
-Date:   Thu,  5 Aug 2021 00:12:41 -0500
-Message-Id: <20210805051241.47168-3-samuel@sholland.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210805051241.47168-1-samuel@sholland.org>
-References: <20210805051241.47168-1-samuel@sholland.org>
+        Thu, 5 Aug 2021 01:14:08 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E092C061765
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 22:13:55 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso6935708pjo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 22:13:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zqSJLdzYBiQGMhcj1u7bHoXE7egAMmO44r4bYkCkGKo=;
+        b=b+n1TkeAtCj+qnYZpSEJIylDr0/oSP6BMf41PPHp4DKcfq5gAveZNLRXKLvVQjxl0H
+         fak7EC+x1IRv258amj8GvVwUebQE7Dy07PiG3TJCtt13Y8QJOctpOv8btT8xnftXZrNY
+         6jzdzNxPD97BdT2Vk+3KwjrdYqkdPKSpt9nexc+c9viuk4T5rrduSQPN4PLse77zdoMb
+         CHxh85YIQg2lbU9AobV+1T0OyvlgCOTuqUd7Abse5gY0FfxNrtZ2fzkSZtRjZ5FyXn0p
+         0oBQPy18eCCsTgcMB/TPuG+0HPDgtD7Y0IXa/m+ncy1BAlX3oEE4K1RYzLdplmJpQ3ln
+         mKMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zqSJLdzYBiQGMhcj1u7bHoXE7egAMmO44r4bYkCkGKo=;
+        b=ZzdWk1zxEsWq3CtgxgcdomZcaUCR5N+Qh2UbuFL1V1d0MY6/mKid6sxOalQnHhcHcP
+         031sAupeZ5ncud21xeCCPKuK0O8QER8VtExFh9FqoaawEBOFvk0RbK1MhaV8f5ajdeX9
+         +Oz3J/so0Sy8LnvGnVi0oyV0kBzs/If8hnyXzbWVWH5UpZvcRynak+pZjW2pzab0j0I1
+         hFXGbfXRQySsG/Ku11aGqUOEgqPg1DXzD79y2zPM5r7C7fmTAgk3R1PZzLyWVd4owsCK
+         sXUhxd4UjDH6O8EO5HTzDbKBJA5PrTml3BPX/IzOxZQDP/7nnSbTyoDZDM/IBaLQMOJ+
+         qO6A==
+X-Gm-Message-State: AOAM532bdQpAVELGYq+kYDTnP+z+hG6T8p/ULeQ9Sj8IDRq7DyOdPFX4
+        RQSuGpyFeINg7X18yGpF2JXkrw==
+X-Google-Smtp-Source: ABdhPJye6rJtRdEjpdsoDQRsQw0YueRo2rs1+kvIURi/KQkXOQWLZqz8KE3ILOQ4CwNjyYAY46/CoA==
+X-Received: by 2002:a63:a1c:: with SMTP id 28mr1258262pgk.445.1628140434918;
+        Wed, 04 Aug 2021 22:13:54 -0700 (PDT)
+Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
+        by smtp.gmail.com with ESMTPSA id k4sm4201098pjs.55.2021.08.04.22.13.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 22:13:54 -0700 (PDT)
+From:   Jiang Wang <jiang.wang@bytedance.com>
+To:     netdev@vger.kernel.org
+Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
+        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v4 0/5] sockmap: add sockmap support for unix stream socket
+Date:   Thu,  5 Aug 2021 05:13:32 +0000
+Message-Id: <20210805051340.3798543-1-jiang.wang@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Jirman <megous@megous.com>
+This patch series add support for unix stream type
+for sockmap. Sockmap already supports TCP, UDP,
+unix dgram types. The unix stream support is similar
+to unix dgram.
 
-Allow the driver to wake the system on key press if the "wakeup-source"
-property is provided in the device tree. Using the LRADC as a wakeup
-source requires keeping the AVCC domain active during sleep. Since this
-has a nontrivial impact on power consumption (sometimes doubling it),
-disable the LRADC wakeup source by default.
+Also add selftests for unix stream type in sockmap tests.
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Ondrej Jirman <megous@megous.com>
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- drivers/input/keyboard/sun4i-lradc-keys.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/input/keyboard/sun4i-lradc-keys.c b/drivers/input/keyboard/sun4i-lradc-keys.c
-index 4a796bed48ac..af1683d68c8c 100644
---- a/drivers/input/keyboard/sun4i-lradc-keys.c
-+++ b/drivers/input/keyboard/sun4i-lradc-keys.c
-@@ -22,6 +22,8 @@
- #include <linux/module.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_wakeirq.h>
-+#include <linux/pm_wakeup.h>
- #include <linux/regulator/consumer.h>
- #include <linux/slab.h>
- 
-@@ -226,8 +228,7 @@ static int sun4i_lradc_probe(struct platform_device *pdev)
- {
- 	struct sun4i_lradc_data *lradc;
- 	struct device *dev = &pdev->dev;
--	int i;
--	int error;
-+	int error, i, irq;
- 
- 	lradc = devm_kzalloc(dev, sizeof(struct sun4i_lradc_data), GFP_KERNEL);
- 	if (!lradc)
-@@ -272,8 +273,11 @@ static int sun4i_lradc_probe(struct platform_device *pdev)
- 	if (IS_ERR(lradc->base))
- 		return PTR_ERR(lradc->base);
- 
--	error = devm_request_irq(dev, platform_get_irq(pdev, 0),
--				 sun4i_lradc_irq, 0,
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0)
-+		return irq;
-+
-+	error = devm_request_irq(dev, irq, sun4i_lradc_irq, 0,
- 				 "sun4i-a10-lradc-keys", lradc);
- 	if (error)
- 		return error;
-@@ -282,6 +286,14 @@ static int sun4i_lradc_probe(struct platform_device *pdev)
- 	if (error)
- 		return error;
- 
-+	if (device_property_read_bool(dev, "wakeup-source")) {
-+		device_set_wakeup_capable(dev, true);
-+
-+		error = dev_pm_set_wake_irq(dev, irq);
-+		if (error)
-+			dev_warn(dev, "Failed to set wake IRQ\n");
-+	}
-+
- 	return 0;
- }
- 
+Jiang Wang (5):
+  af_unix: add read_sock for stream socket types
+  af_unix: add unix_stream_proto for sockmap
+  selftest/bpf: add tests for sockmap with unix stream type.
+  selftest/bpf: change udp to inet in some function names
+  selftest/bpf: add new tests in sockmap for unix stream to tcp.
+
+ include/net/af_unix.h                         |  8 +-
+ net/unix/af_unix.c                            | 86 ++++++++++++++---
+ net/unix/unix_bpf.c                           | 93 ++++++++++++++-----
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 48 ++++++----
+ 4 files changed, 183 insertions(+), 52 deletions(-)
+
+v1 -> v2 :
+ - Call unhash in shutdown.
+ - Clean up unix_create1 a bit.
+ - Return -ENOTCONN if socket is not connected.
+
+v2 -> v3 :
+ - check for stream type in update_proto
+ - remove intermediate variable in __unix_stream_recvmsg
+ - fix compile warning in unix_stream_recvmsg
+
+v3 -> v4 :
+ - remove sk_is_unix_stream, just check TCP_ESTABLISHED for UNIX sockets.
+ - add READ_ONCE in unix_dgram_recvmsg
+ - remove type check in unix_stream_bpf_update_proto
+
 -- 
-2.26.3
+2.20.1
 
