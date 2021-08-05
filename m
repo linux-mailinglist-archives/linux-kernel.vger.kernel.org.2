@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C7C3E1B1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35043E1B20
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241131AbhHESUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39288 "EHLO
+        id S241144AbhHESWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhHESUA (ORCPT
+        with ESMTP id S238992AbhHESV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:20:00 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7555C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:19:45 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so11570498pjh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:19:45 -0700 (PDT)
+        Thu, 5 Aug 2021 14:21:59 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CABCC061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:21:44 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id e13-20020a056830200db02904f06fa2790cso6095008otp.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:21:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=InNueHw56vHBV+1tT6xD7MnAUIreY9NYLVLxpAGdi8E=;
-        b=CuuxnsN0QgIUDgNI0+zzS+ltEtAuQsligmM89FxcRGwaSyAFpJWi1g1UU6g8+QVwjJ
-         7TheF0ELN5GPWRXdSWQWVDyRIVyh3AYbhQbqK2+ja4LzBUsSA2dLfrOeWMMytxW2w7/N
-         +1D5KcQyCXFdRm/8IT96c44RWWQr5BRFk9JxbNRArHHkCZ5AK9u1FVrHE8WGCihgTyZQ
-         CfmU1Y4VYsUMIoMJrhcvIjayL6yqACQhIcoYjli0ULYRjH7NTLlvj6dOGwZsNtAEQYrd
-         rEc26P3Mrpv0sUL6P9aJ4A9UF45Hh7z9EtmjRVxyaWGXtb7vjnwkqmRxXiGoIypZNRVL
-         +bvg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=27qj2SWHf1ITmiEsMbQM8FzGSFNAOy3v+jLUQb3Ja84=;
+        b=KfJY1YUJIGR7TvsAVd7lBr89GqNQUjB9YAaf/2DLFZBymgDfomTuzE8vyS0sdSIe2J
+         nr/Ctl8RHwIxj3Eul7qbc6jdtiiwEhWoRsLLLigKmKTHYt2o+/J3OcNXjsGVQAIZsoHn
+         cpDHhiaY1EBOn8zhBBn/luIB0cbu2eX/LrfddnrjCod/mEUpopCyLhiVtXvj+lRub2Ri
+         BfTgteRJAYiYYz26hVBGG0EcE2Z+ddzzXliwuqOJ1TntGB6FcCIK0thOEp1uxj7IAvDc
+         j4S9xOpsG+wMpLZUWbUBWi1T6URWvGYcwNSygVQB4XVI1k6ovB6VA9vtlC2GxD2tKZo9
+         FZgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=InNueHw56vHBV+1tT6xD7MnAUIreY9NYLVLxpAGdi8E=;
-        b=F2JbHl9hj1s7rKS/YH8ksyxgl/B4fntvxwCsXfBOMW7GtabYqTSWHjWYnyl4xVsTZF
-         CDy+V6G9nKFwxlbvtXJAY4YlPww2U3BBMNGsX8N/g0y4j2zJlMwuO8q8L10itDPPAwVm
-         0sfrUzZNcqX+1JmcTgE5T3SdGhtJyRxf1pCp/TLjFSVWib3vadC/OibS1nq0JGW36h28
-         2loJk/lSwOcamyAZR493Ug5Htva4XuSuJQ6KlGN91wi/W+qg07vnbiDtPGpuBsqMZYyv
-         bIX+LnwTGl5GGNIcslu9V9ZReF6Gr7Gk5fxvpqYIju6DCc0glepCmTBlHAeWhKnX+BWE
-         P1GQ==
-X-Gm-Message-State: AOAM530xp39L0XX6JiraVOCuFkXqqD9bz4LDBrE12pY4EHmKOlKGLWL5
-        s9jpjH/ltYw2bzw71nkeeSXFKg==
-X-Google-Smtp-Source: ABdhPJyD44lfRbmtbRyYlKYo78opElfarkxLTHe3/Hy0Me7lLaLMaId5sNULWNI48OEexuH9ivy+0Q==
-X-Received: by 2002:a17:90a:3801:: with SMTP id w1mr16476553pjb.57.1628187584967;
-        Thu, 05 Aug 2021 11:19:44 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 16sm7571735pfu.109.2021.08.05.11.19.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 11:19:44 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 18:19:41 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Peter Xu <peterx@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH v3 4/7] KVM: X86: Introduce mmu_rmaps_stat per-vm debugfs
- file
-Message-ID: <YQwrvX2MHplDlxrx@google.com>
-References: <20210730220455.26054-1-peterx@redhat.com>
- <20210730220455.26054-5-peterx@redhat.com>
- <8964c91d-761f-8fd4-e8c6-f85d6e318a45@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=27qj2SWHf1ITmiEsMbQM8FzGSFNAOy3v+jLUQb3Ja84=;
+        b=J5qesfzNGaPD3J0olf+pEKokewKGOdTf0aq59f+0H0wguSO+qlVfV28wEw+J7W4xpc
+         C9kVYjmXtzHSOLvH+K9A0uRav+G4zdE41pTPDGa3IzT3IC+qanUqHqx5Z+RgDZNwKlqk
+         eIwqPo1xN5iRTNyXfdWP0SAS74klC1bKEOOBm8iKXXDab6fBX0DLiCP+LqKSqIqgeDur
+         qPLGOBFcqs0JLWV2gm5IbyJa7NSU1hWDZk/OvXiiv9Q5wFsDF5bBmxvJhXq2KqEP6Y1x
+         WAeR9sjswmla0jZ2kMtxZkpfwIE744VTRF6UCxTK/C98cNTEOVIWnlnOnOUbPl5E+uwq
+         4AGQ==
+X-Gm-Message-State: AOAM531xElyL6nU8qr+yqAf8sWoPFBO8HqCJO8PWr7S/GVYfks8LQk/+
+        K5lb/mI07dSpQnf9B926G36Z1Lb78XReStfwf+E=
+X-Google-Smtp-Source: ABdhPJxEFl9g2uIR7AX/5xRKU2EoUakZ8tDgBO6V/DlWWQ9gFUU2CtMZ7xgrDvbpoNlW+6PhoRR5f5SqhnQmG5wrXhk=
+X-Received: by 2002:a05:6830:1c2f:: with SMTP id f15mr4696064ote.23.1628187703609;
+ Thu, 05 Aug 2021 11:21:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8964c91d-761f-8fd4-e8c6-f85d6e318a45@redhat.com>
+References: <CAPM=9twko1gCNTB3CPf7CAQqWFayMj=1fa3ZoEwwviDFhF48kQ@mail.gmail.com>
+ <CAHk-=wgYq=EpNmDPNVxnBX+HpjNcQg50DSjuxZuK0UbZjh-pnQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wgYq=EpNmDPNVxnBX+HpjNcQg50DSjuxZuK0UbZjh-pnQ@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 5 Aug 2021 14:21:31 -0400
+Message-ID: <CADnq5_M7gbOn34_57ipGjfpo7FvB3sFQnSOtkPUvstshX4V-zQ@mail.gmail.com>
+Subject: Re: [git pull] drm fixes for 5.14-rc4
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>,
+        Harry Wentland <hwentlan@amd.com>,
+        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>
+Cc:     Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021, Paolo Bonzini wrote:
-> On 31/07/21 00:04, Peter Xu wrote:
-> > Use this file to dump rmap statistic information.  The statistic is done by
-> > calculating the rmap count and the result is log-2-based.
-> > 
-> > An example output of this looks like (idle 6GB guest, right after boot linux):
-> > 
-> > Rmap_Count:     0       1       2-3     4-7     8-15    16-31   32-63   64-127  128-255 256-511 512-1023
-> > Level=4K:       3086676 53045   12330   1272    502     121     76      2       0       0       0
-> > Level=2M:       5947    231     0       0       0       0       0       0       0       0       0
-> > Level=1G:       32      0       0       0       0       0       0       0       0       0       0
-> > 
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > ---
-> >   arch/x86/kvm/x86.c | 113 +++++++++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 113 insertions(+)
-> 
-> This should be in debugfs.c, meaning that the kvm_mmu_slot_lpages() must be
-> in a header.  I think mmu.h should do, let me take a look and I can post
-> myself a v4 of these debugfs parts.
+On Thu, Aug 5, 2021 at 2:14 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> This might possibly have been fixed already by the previous drm pull,
+> but I wanted to report it anyway, just in case.
+>
+> It happened after an uptime of over a week, so it might not be trivial
+> to reproduce.
+>
+> It's a NULL pointer dereference in dc_stream_retain() with the code being
+>
+>         lock xadd %eax,0x390(%rdi) <-- trapping instruction
+>
+> and that's just the
+>
+>         kref_get(&stream->refcount);
+>
+> with a NULL 'stream' argument.
+>
+>   Call Trace:
+>    dc_resource_state_copy_construct+0x13f/0x190 [amdgpu]
+>    amdgpu_dm_atomic_commit_tail+0xd5/0x1540 [amdgpu]
+>    commit_tail+0x97/0x180 [drm_kms_helper]
+>    process_one_work+0x1df/0x3a0
+>
+> the oops is followed by a stream of
+>
+>   [drm:amdgpu_dm_atomic_check [amdgpu]] *ERROR* [CRTC:55:crtc-1]
+> hw_done or flip_done timed out
+>
+> and the machine was not usable afterwards.
+>
+> lspci says this is a
+>
+>  49:00.0 VGA compatible controller [0300]:
+>    Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
+>    [Radeon RX 470/480/570/570X/580/580X/590]
+>    [1002:67df] (rev e7) (prog-if 00 [VGA controller])
+>
+> Full oops in the attachment, but I think the above is all the really
+> salient details.
 
-When you do post v4, don't forget to include both mmu.h and mmu/mmu_internal.h. :-)
-kvm/queue is still broken...
+Thanks for the report.  Adding some display folks to take a look.
 
-arch/x86/kvm/debugfs.c: In function ‘kvm_mmu_rmaps_stat_show’:
-arch/x86/kvm/debugfs.c:115:18: error: implicit declaration of function ‘kvm_mmu_slot_lpages’;
-  115 |     lpage_size = kvm_mmu_slot_lpages(slot, k + 1);
-      |                  ^~~~~~~~~~~~~~~~~~~
-      |                  kvm_mmu_gfn_allow_lpage
+Alex
