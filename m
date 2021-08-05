@@ -2,163 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0973E0EB4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC1B3E0EA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238717AbhHEG4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 02:56:31 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:52344 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238529AbhHEGzr (ORCPT
+        id S238331AbhHEGzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 02:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238064AbhHEGzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 02:55:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1628146532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aWZQwouCRguyRVYUrbJB0b52caFxPb8vLemC9Kxx0AM=;
-        b=U2LMr7NFNp0Xi6VvJbmh6kmoA83k9PfiMui3QDK6Q8dkdFc+q1shrB30EmSre7QQBZIQ3Q
-        2morhTubgCywfJvjPO4M5DGJxLNrHTNfm8frZ2bVjG/7d6565hIHijaq5xQLwg7yGMn58y
-        zuwkZzYfVWC9gayDAA/uqdwRYimQhDQ=
-Received: from EUR03-AM5-obe.outbound.protection.outlook.com
- (mail-am5eur03lp2052.outbound.protection.outlook.com [104.47.8.52]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-26-NXpk25gSNxOjCPCS7cMEkw-1; Thu, 05 Aug 2021 08:55:30 +0200
-X-MC-Unique: NXpk25gSNxOjCPCS7cMEkw-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nr0n+Y6CR/7Xm67ohuAtqYxz3qj+KsTMJxMtzaVIxLBbP45jcLHYwYiJcWTEYDVzYuC9LF23ne/C2ZFldhAnGMcfGoMcKuqUXeA+mg2N8aUsnQXXLGIvj049ufM0tw/NWPe2r9VI7e2nBBHv2HLw91ky5P4+vRFQX1nTRhEcDFwtcVNItzezykTJCDOEHk5FpkjUuwNmMGGEB03AjS+VS3DVEzOJqEM52pFVH8RZYY7/7F5OgGjowg7urPZ9nKopqjc624Ur54YSY83AV6ogbfmJj2b1SXZYaWUe8EBaOJ2nAGjHH7SrjvoEWOTP/zkXDDAM9bd/Ei7O7mDImNa3LQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=osw/i73KgwmK6xFxOMQmECeYBvjJJnhr3Z0jaUZynVs=;
- b=BJVA7nCBpuZgm4VFH4mmwLeD9ly7Wax0j2PM4B1+uZ0XzmvNa6loDNZWUl19HyYiP0CNJJ3Ac/7d1k37eQMO3q+LQMwZE3uF2W574Hld9gIUFZ26eBLu3wBOp3QTZicR5fXuN6joUbnj4LxpHiaSvKgoAUPNbpI9tRdfI2L4k5sZsJnamx+CfLe/fS19hFDdqN19xMsppxJzvKVdxdTuaI42S+fF/JMfv8mntuIWm4PofpSg9yhwSZAUhm87O9XZ+MVkpTJ8PiXuXyvN6JTSD4L/P+rHYC7awaCdWWmtGprUZE2TEKcSMUGd91/7ON8oz1DqufAMv5V0WcrI9MrsLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR0402MB3439.eurprd04.prod.outlook.com (2603:10a6:803:4::13)
- by VI1PR0402MB2735.eurprd04.prod.outlook.com (2603:10a6:800:b5::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16; Thu, 5 Aug
- 2021 06:55:28 +0000
-Received: from VI1PR0402MB3439.eurprd04.prod.outlook.com
- ([fe80::f1df:db6f:4ff8:a667]) by VI1PR0402MB3439.eurprd04.prod.outlook.com
- ([fe80::f1df:db6f:4ff8:a667%5]) with mapi id 15.20.4373.026; Thu, 5 Aug 2021
- 06:55:28 +0000
-From:   Chester Lin <clin@suse.com>
-To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-CC:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
-        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
-        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
-        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        "Ivan T . Ivanov" <iivanov@suse.de>,
-        "Lee, Chun-Yi" <jlee@suse.com>, Chester Lin <clin@suse.com>
-Subject: [PATCH 8/8] MAINTAINERS: Add an entry for NXP S32G2 boards
-Date:   Thu,  5 Aug 2021 14:54:29 +0800
-Message-ID: <20210805065429.27485-9-clin@suse.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210805065429.27485-1-clin@suse.com>
-References: <20210805065429.27485-1-clin@suse.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-ClientProxiedBy: AM4PR0202CA0019.eurprd02.prod.outlook.com
- (2603:10a6:200:89::29) To VI1PR0402MB3439.eurprd04.prod.outlook.com
- (2603:10a6:803:4::13)
+        Thu, 5 Aug 2021 02:55:19 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9315EC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 23:55:05 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id m12so5043712wru.12
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 23:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=UQut8Ke/ADO3sWjb/iXhRcq7XHUhpPbiGz4qSbh/qc4=;
+        b=FXTKey/8zkE8p8iLf73PYkEKQ21oEqVIt8Z16g4+3UGc5EuWvitls4vPwXZQKArgkW
+         h9ci+D5xEjD+dj/KYYm3rcjQfrn6Ab2346oo0ufsJi7GOIg1ddw+5S4aqD5kuELnVU+l
+         8GwADQLaia/BlIJTXhqFS+elM6iuandX3GyudV4Q52vhtoY9jS9BfgCRWEs9FrM6lsi4
+         vXX6dC43uvIWe908VL714AWh5VoII9QGRBb8V8t5+Wxg17XQNe5XLinx2MRmEQ21j+HQ
+         nvm/ECDZCLqU7aU4SmZYWCj14HnsFzKDvhaRRayQMWjM2B6tFVbWEJGzFc96aoc24WQb
+         x5RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=UQut8Ke/ADO3sWjb/iXhRcq7XHUhpPbiGz4qSbh/qc4=;
+        b=BAJ8d8aUdHfmLVFblpk3sVfsuofR8sbfPYthyvVBLAE7mJCXdcaDluLC5L31Cd6H3U
+         hvchNJUlwqfQ60nyqGqTSNn7mFxIr4Y7V4MFHLttpALHnFhkEK4YVUCPllsZb1jazrzb
+         6CzStUAviDPj8KvC0a26URRdCQjeMISv4E0kl5GeyKc/cKHI46jvXQRQ+FZ2OTOuDMtu
+         AkagJS88Qn1VM0CAI4qxkRJoT/xtchTU4I24m2LZ3TUTw9dPMzR8vEWVHtU8MVUSFe8L
+         jX2AipDMtjwt+t0bSRQGV0uJYrUjcsPA8yqyU3wrdw6thX8fNxIv5ucETwuJBfnjSJJC
+         FhZw==
+X-Gm-Message-State: AOAM53366x3klgp5MPEY0xAf3a/WZscY0BiLdfd/ipsuwog/hlZwrRPu
+        19nn0dKhnaPrF0ZCHht0c6HaEA==
+X-Google-Smtp-Source: ABdhPJz3XnFL0DGFUnzaBTdRDRxgZADi+TIE5d/2ijw/qeG1RZ6wlm+jdbwTraoGpvnWzXv3vBQ7fA==
+X-Received: by 2002:a05:6000:124b:: with SMTP id j11mr3351631wrx.348.1628146504096;
+        Wed, 04 Aug 2021 23:55:04 -0700 (PDT)
+Received: from localhost ([2a01:cb19:826e:8e00:21a2:cbbe:58a1:6e75])
+        by smtp.gmail.com with ESMTPSA id j5sm4874231wrs.22.2021.08.04.23.55.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 23:55:03 -0700 (PDT)
+From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] Bluetooth: Shutdown controller after workqueues are
+ flushed or cancelled
+In-Reply-To: <CAAd53p6T_K67CPthLPObF=OWWCEChW4pMFMwuq87qWmTmzP2VA@mail.gmail.com>
+References: <20210514071452.25220-1-kai.heng.feng@canonical.com>
+ <576B26FD-81F8-4632-82F6-57C4A7C096C4@holtmann.org>
+ <8735ryk0o7.fsf@baylibre.com>
+ <CAAd53p7Zc3Zk21rwj_x1BLgf8tWRxaKBmXARkM6d7Kpkb+fDZA@mail.gmail.com>
+ <87y29o58su.fsf@baylibre.com>
+ <CAAd53p4Ss1Z-7CB4g=_xZYxo1xDz6ih6GHUuMcgncy+yNAfU4w@mail.gmail.com>
+ <87a6lzx7jf.fsf@baylibre.com>
+ <CAAd53p6T_K67CPthLPObF=OWWCEChW4pMFMwuq87qWmTmzP2VA@mail.gmail.com>
+Date:   Thu, 05 Aug 2021 08:55:01 +0200
+Message-ID: <87bl6cnzy2.fsf@baylibre.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (118.166.54.149) by AM4PR0202CA0019.eurprd02.prod.outlook.com (2603:10a6:200:89::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16 via Frontend Transport; Thu, 5 Aug 2021 06:55:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6f83ce73-99f5-4650-688f-08d957de027f
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB2735:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB2735E6B0E0A1B5D82458F02DADF29@VI1PR0402MB2735.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KR5ECY8LNiXGK2ypmeYUsjE03XoU/4Q/a77YqEiYH+r7ebIz2Cg/vgBTwbv+fyx3Sgp2m5FCocf63u0cuHo3QqVy62cF8p989YKptgcq9txUV7xVjNXT59s7KyY7MqUZlrMqvOjSYwRqfKqoYJULUO813agSW2+3/LVfYJS4plNGYhH7/8GuoKm35XcaxSTTCrXLqpLVtIr43xXO0cDhGsSzfglDx5UTmhsEbW8SRUp9JkITZtCA9f0Ysio3IvSh7vf6d2+cGnbM/7UhLdy44BrCcMUwUonqQTAtd0sFZUX5T7qsB3s5Cdr4kgBwypdTjrHAwx65xOqfBRxMwstz4+I4Qr3OhHBAWVVkg+zVkXszaUYy8mpVaUqOgToLIvAusl4PoxWuM0J5BgCa+GbMMxtZLNdxGR99QDgCviDvo8VdrvgttZsrbHwu81AmbUZXSHXwdZ9I/bnlXMKoQUSlmIwWqXZ1uk7yek1rmmShTLSDLReaa+u5LqsXrNWN2apoRYoHXhUAfMAGyXrTd1DuYCZ69GbOnvlzAM3HcPdHOTicrYFfq4m+pb3MSkaqSGzrW1RTBDxLNhuEcj8U/yod++UTVDANL9se/tHoSQ0gLY/05kUJeDRxwU7+1Nfc+vYq0tZ3Gnr8j7x8gWOrpIlwjg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3439.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(39850400004)(346002)(376002)(366004)(36756003)(38100700002)(66946007)(2616005)(66556008)(66476007)(5660300002)(956004)(8676002)(86362001)(1076003)(4744005)(6486002)(7416002)(107886003)(186003)(54906003)(2906002)(8936002)(6496006)(4326008)(55236004)(478600001)(316002)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+Sl5Lo0eoTkHL9FNYNehbfHq0jRc2t5zxDNiJh1UBttZjrcAbi068Hbo3cDr?=
- =?us-ascii?Q?QsoALRztwJqcIuH3iTXBn8CFZQKkruJW4/7Wkh6AY7w/6n3ecLyuDhrjGCSB?=
- =?us-ascii?Q?qdMlcW7s8BFslk08SnGwIE1ONi7f0bfNZr62ZUZdHFYtKgkxCCNwlFMJmtZy?=
- =?us-ascii?Q?U1hnMdLN8AVbHLumU+6YBJE/jI+WYhv8lEjhDk1+vzyCJ6rKst5LBCZBnqR1?=
- =?us-ascii?Q?oRIG0CSG7wUvJqqi+Kv2+X9XTlMGgkZFmh4c5wDwyVjheSqzOuh0UHkHgLXx?=
- =?us-ascii?Q?tjE/RecEp8ZIVDlNLWWSWfMXUzwZvHHmskerP1t4ErllB87pbZwW1bJlhQnc?=
- =?us-ascii?Q?rqOxKOUO4iuxdXguuMAGISLkpflVUFEVTvVnslPRJrhMipHkRAIeaq084gUB?=
- =?us-ascii?Q?uhOmZ5X2K70r70JKrfDYX9x57oSqb/29POFFcHCUIK8HvRRoQXIo4zpHslYJ?=
- =?us-ascii?Q?9RN87W5/m0HbIhknNJEpqj1yHtuVODnf93kZTbqJwCnynlwIw/hxd8pEbKca?=
- =?us-ascii?Q?uRoptJeMmrewRdVvp79QfcdN5QD+VFjMVRaX8JXapNIGvTAbe/q44aEvn9Xa?=
- =?us-ascii?Q?VhXeU4x6KFoSi9CTxfUvqTLviS4SuPgVnI/6mAB4U/cH2J5m/kmE2nPes+2G?=
- =?us-ascii?Q?74Ek1Phx/E12uBmRlPPtWa3MdciC5Ab0GdYWOrM05cf3SZYXT2iXim/gw87H?=
- =?us-ascii?Q?LNrxbrF9Ui1e03mAtTu7MVThh6hJqUcd8VhKsR43LMJtEbzKbOtynMVwBqFS?=
- =?us-ascii?Q?gNxeP9dV4TcMYlsaM+6rzB+6lXwaJKYCwmKFEBBaUZPTXxByjtXg/Lv7lZI/?=
- =?us-ascii?Q?ZMyP93RWnQE0/QotOIcZyjWv9+bDkBa9Rnbl9zptWiXYpR7Wi/T/YGa6cW+u?=
- =?us-ascii?Q?yTuLhu8amV01BTeB8x8Iw/FCg2LSY7y9Q6msmunpEK/Sl6+HM90z18EAMZk5?=
- =?us-ascii?Q?A7EWKD3IhVMOXRGd7DzvmN+fxNkj7U/k6+9xSIEbDYc+2BjVfz2ZkhamGWd7?=
- =?us-ascii?Q?6KNlRKL8rJQ0V7QQrPQIOu9uBDuvpZ1zVD6aKtt0Lvfnbu6tOc2XnA4fME27?=
- =?us-ascii?Q?B6mXRLaBbF9mr/03PCUFsnX2CMyjUMlpYIKFoEeVpHA0VdMPf7ScoloAA2qd?=
- =?us-ascii?Q?VPoLk3VgIJ1oy2JBDaIWbHKvQtCIkgGBqSlIaxBwZcuCczfWcmbrjtV2+t4D?=
- =?us-ascii?Q?OWbmCAJ9WtN9KSfljy9dEXzhGPinq2KUzT6CIi94NpOnSeX15GJT5x2bB7U5?=
- =?us-ascii?Q?sBXfX0PsO1YfRc6tSrbFKYFkrMCcBDQ96aHTh0TNQRKwdwtxdpiZ0RotjpiF?=
- =?us-ascii?Q?89+9w6Umd/DXcH2mXUqTwKCi?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f83ce73-99f5-4650-688f-08d957de027f
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3439.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2021 06:55:28.6685
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rAO2e5JKAYLfSM5bn+m5LgqO5YpsRI5HWx4gcnp3cLKEjU6YBq9C1BP9XqMD+BwQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2735
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new entry for the maintenance of NXP S32G2 DT files.
+Hi Kai-Heng,
 
-Signed-off-by: Chester Lin <clin@suse.com>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+Thanks for your patch,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 36aee8517ab0..3c6ba6cefd8f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2281,6 +2281,12 @@ F:	arch/arm/boot/dts/nuvoton-wpcm450*
- F:	arch/arm/mach-npcm/wpcm450.c
- F:	drivers/*/*wpcm*
-=20
-+ARM/NXP S32G2 ARCHITECTURE
-+M:	Chester Lin <clin@suse.com>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	arch/arm64/boot/dts/freescale/s32g2*
-+
- ARM/OPENMOKO NEO FREERUNNER (GTA02) MACHINE SUPPORT
- L:	openmoko-kernel@lists.openmoko.org (subscribers-only)
- S:	Orphan
---=20
-2.30.0
+Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
 
+> On Tue, Aug 3, 2021 at 4:21 PM Mattijs Korpershoek
+> <mkorpershoek@baylibre.com> wrote:
+>>
+>> Hi Kai-Heng,
+>>
+>> Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
+>>
+>> > Hi Mattijs,
+>> >
+>> > On Fri, Jul 30, 2021 at 7:40 PM Mattijs Korpershoek
+>> > <mkorpershoek@baylibre.com> wrote:
+>> >>
+>> >> Hi Kai-Heng,
+>> >
+>> > [snipped]
+>> >
+>> >> Thank you for your help. Sorry I did not post the logs previously.
+>> >>
+>> >> dmesg: https://pastebin.com/tpWDNyQr
+>> >> ftrace on btmtksdio: https://pastebin.com/jmhvmwUw
+>> >
+>> > Seems like btmtksdio needs shudown() to be called before flush().
+>> > Since the order was there for a very long time, changing the calling
+>> > order indeed can break what driver expects.
+>> > Can you please test the following patch:
+>> > diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+>> > index 2560ed2f144d..a61e610a400c 100644
+>> > --- a/net/bluetooth/hci_core.c
+>> > +++ b/net/bluetooth/hci_core.c
+>> > @@ -1785,6 +1785,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
+>> >         aosp_do_close(hdev);
+>> >         msft_do_close(hdev);
+>> >
+>> > +       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+>> > +           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+>> > +           test_bit(HCI_UP, &hdev->flags)) {
+>> > +               /* Execute vendor specific shutdown routine */
+>> > +               if (hdev->shutdown)
+>> > +                       hdev->shutdown(hdev);
+>> > +       }
+>> > +
+>> >         if (hdev->flush)
+>> >                 hdev->flush(hdev);
+>> >
+>> > @@ -1798,14 +1806,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
+>> >                 clear_bit(HCI_INIT, &hdev->flags);
+>> >         }
+>> >
+>> > -       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+>> > -           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+>> > -           test_bit(HCI_UP, &hdev->flags)) {
+>> > -               /* Execute vendor specific shutdown routine */
+>> > -               if (hdev->shutdown)
+>> > -                       hdev->shutdown(hdev);
+>> > -       }
+>> > -
+>> >         /* flush cmd  work */
+>> >         flush_work(&hdev->cmd_work);
+>>
+>> Thanks for the patch and your help.
+>> I've tried it, but it seems that it does not improve for me.
+>> I'm still observing:
+>>
+>> i500-pumpkin login: root
+>> root@i500-pumpkin:~# hciconfig hci0 up
+>> Can't init device hci0: Connection timed out (110)
+>>
+>> Logs for this session:
+>> dmesg:   https://pastebin.com/iAFk5Tzi
+>> ftrace:  https://pastebin.com/kEMWSYrE
+>
+> Thanks for the testing!
+> What about moving the shutdown() part right after hci_req_sync_lock()
+> so tx/rx can still work:
+>
+> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> index 2560ed2f144d4..be3113fb7d4b0 100644
+> --- a/net/bluetooth/hci_core.c
+> +++ b/net/bluetooth/hci_core.c
+> @@ -1727,6 +1727,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
+>         hci_request_cancel_all(hdev);
+>         hci_req_sync_lock(hdev);
+>
+> +       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+> +           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+> +           test_bit(HCI_UP, &hdev->flags)) {
+> +               /* Execute vendor specific shutdown routine */
+> +               if (hdev->shutdown)
+> +                       hdev->shutdown(hdev);
+> +       }
+> +
+>         if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
+>                 cancel_delayed_work_sync(&hdev->cmd_timer);
+>                 hci_req_sync_unlock(hdev);
+> @@ -1798,14 +1806,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
+>                 clear_bit(HCI_INIT, &hdev->flags);
+>         }
+>
+> -       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+> -           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+> -           test_bit(HCI_UP, &hdev->flags)) {
+> -               /* Execute vendor specific shutdown routine */
+> -               if (hdev->shutdown)
+> -                       hdev->shutdown(hdev);
+> -       }
+> -
+>         /* flush cmd  work */
+>         flush_work(&hdev->cmd_work);
+I confirm this diff works for me:
+
+root@i500-pumpkin:~# hciconfig hci0 up
+root@i500-pumpkin:~# hciconfig hci0 down
+root@i500-pumpkin:~# hciconfig hci0 up
+root@i500-pumpkin:~# hciconfig hci0
+hci0:   Type: Primary  Bus: SDIO
+        BD Address: 00:0C:E7:55:FF:12  ACL MTU: 1021:8  SCO MTU: 244:4
+        UP RUNNING 
+        RX bytes:11268 acl:0 sco:0 events:829 errors:0
+        TX bytes:182569 acl:0 sco:0 commands:829 errors:0
+
+root@i500-pumpkin:~# hcitool scan 
+Scanning ...
+        <redacted>       Pixel 3 XL
+
+Tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+>
+>
+>
+>
+>
+>>
+>>
+>> >
+>> > Kai-Heng
+>> >
+>> >>
+>> >> Mattijs
+>> >> >
+>> >> > Kai-Heng
+>> >> >
+>> >> >>
+>> >> >> Thanks,
+>> >> >> Mattijs Korpershoek
+>> >> >>
+>> >> >>
+>> >> >> >
+>> >> >> > Regards
+>> >> >> >
+>> >> >> > Marcel
