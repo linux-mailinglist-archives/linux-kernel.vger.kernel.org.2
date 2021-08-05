@@ -2,159 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB8E3E1C17
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77CE43E1C21
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241469AbhHETF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
+        id S242237AbhHETHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232116AbhHETFz (ORCPT
+        with ESMTP id S241406AbhHETHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:05:55 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD09C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 12:05:40 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so11880128pjh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 12:05:40 -0700 (PDT)
+        Thu, 5 Aug 2021 15:07:13 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83553C061765;
+        Thu,  5 Aug 2021 12:06:59 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id c137so10403270ybf.5;
+        Thu, 05 Aug 2021 12:06:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2ZFFq7OM5nVkToszzdtX9QSlNl/eY89U4a4AO5gbJ0c=;
-        b=dgxIBWU0u0EHXfPQrJsNfrQ8leeNYIxMblGPZfdM3Ua7Qj+jQjx5zoz/UaSUmzqj6q
-         tIX67J0aXI+Av+ptQljjWXFQeGYLxwdbj2qhFwEWL90k+N25uxQ1rDEDrKiPb4wqRVe3
-         rT23r+cBkDJ9g8JijWw84nFgPxCSpV4PQn+iMphpfz4y04ObSCyLuI60Z07KnNlfZ+oj
-         NY/2x7Jo2MqimtJzymKazggA5aIuIkvFjUWcsmy7w2hBG3tGQFpqsSt6Hkknt5XLIM/T
-         +rW8B1o1WfkgB4tUvMQfipkFb2KUbdd/DxggqQFa/z8Ii/CpEAG2KWbvZi0Sw8VZXi/R
-         Bq0A==
+        bh=LuHXKdr41otBPVM2gg/1dOJSL5potWIuI6htGDgGDKQ=;
+        b=ICf0PMtbjQGAdbzhpc75k0eb0oyEiwVD6U21ACued/xRcWDf9KOBPSlM/lGLa3aorH
+         118AVyXqraqmCITuwKqwgLoaovjbQGOgDi4bYOX/3CiQBAdZ3CR94usv9jlj/E3I+xoJ
+         xuODAv9OmhDIu+ZZVN2RbzA/BVgfabK82oAzMqpa6e0yN7LumLW5ex+IdK7YMRsrXv1H
+         jdS3HbEahE2lkb4V/AHm4cJ6HMw/1BKKAm3ayg+DLT30SHKRsg0+A/QlVMfssuxdOWcz
+         5PfN7dNM5K3lk1TzLvLZ3ErWF9GAuWxg59nrY0R92J5IkIx+d5M7mBjwzdGIWgM7EUQx
+         Qifg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2ZFFq7OM5nVkToszzdtX9QSlNl/eY89U4a4AO5gbJ0c=;
-        b=V4a+KaePAc0jtahUtNHF0Iur+4b1xebk3Xd8eU+kV+WrTcyGtlMQZndD7OpVMUqkxf
-         ujCcgBKV07KoEY+o5/mhRjd73KQ9dWEP+hmcQKfXkHhFAZ1XNN0fGyoZnxHkbsu88+sn
-         8lvQm8htMqVBM0hG7aWzCt033g/y/7vr1Czmhv/KZdJ/bK4XwBdgY+WsQfyhqaUxxjyY
-         dRKw/JeQYZQbVll4ErYUno2Ehsq+rsYtZVpf3wFgpjaG9klHpTfc9KR6SCyflWlpIlk2
-         B5vQoF4UbrZ5PCH2uVZAbJOq/IF750iBYkCIeSUOWVnEMaA6C/Rt/PEpG8GNMQXdX0JH
-         6pGw==
-X-Gm-Message-State: AOAM532AX5lBIoKg1mzanmxS8QjetBMpg4CevzIhYS0AdDyslJhMF1hz
-        dA7V6WVuZmnxa7sxwt4MJjsJWZyYrrCrxJ3d9VHm8g==
-X-Google-Smtp-Source: ABdhPJxKXPQWKZYVNFugMmvukgwEvPM1+RUaAfvu87Y0aIiNAm/MX3SlelYUjvZdxUxr63cktsycKHW5sNSqYYm9sU0=
-X-Received: by 2002:aa7:90c8:0:b029:32c:935f:de5f with SMTP id
- k8-20020aa790c80000b029032c935fde5fmr6578542pfk.79.1628190340250; Thu, 05 Aug
- 2021 12:05:40 -0700 (PDT)
+        bh=LuHXKdr41otBPVM2gg/1dOJSL5potWIuI6htGDgGDKQ=;
+        b=hjlSe86Fco7OuOf1tDompG4KBRCQNAyhe0yfilHcXaY652Eqt1rCuI2zb907LRhCk6
+         u9FAaixR/rJf9EVeUkncsJJ0ZQ8dWEiv4mwSrf7oOS2yeCpZpiDJTTP5chNI3FemmB22
+         wjLTcJBNTbb2Osn7Zp1CEJmfQVIp4S5guB9YhmOQ0E9ecCgfSvDP9K7j0M85dsYUPLLG
+         K85qFvFMdqYwc8oXkE0oLIg+/aP8wpA2eqxfPxiZUmMeT9/h1ncQlEL/RDmDCP+Wmm8M
+         /IZRVvTcHKmF5RwQnMc8Y9pa72+Avn6jM7O78OashF6/cmhU5NSQ2fNcIbn7Jf6JZsva
+         Kxmw==
+X-Gm-Message-State: AOAM531clCc4AzUDm9NdesHPExLudajcGpqntCj4SCWMnq9pf4jO7527
+        GA/NW1LZCtzUJZBCSScwqczF4Sc3L0JL+hqEUZY=
+X-Google-Smtp-Source: ABdhPJz0gfmBCUEliNsEVULa3oJqIIZ2cbDdYe0uE92esELwKo8D0MOprxvCnPsAOwdEx/cR1xU+qAaWz00wrj6n9/Y=
+X-Received: by 2002:a25:9b03:: with SMTP id y3mr7123064ybn.264.1628190418769;
+ Thu, 05 Aug 2021 12:06:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <a565cb1662d2f8300905a369c575e19176fd8e4c.1628148418.git.xji@analogixsemi.com>
-In-Reply-To: <a565cb1662d2f8300905a369c575e19176fd8e4c.1628148418.git.xji@analogixsemi.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Thu, 5 Aug 2021 21:05:29 +0200
-Message-ID: <CAG3jFyuGJZ4ig6nFxXJJ0d-7ob2+=po2cxSuN29wedV5xVE+gA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] drm/bridge: anx7625: Tune K value for IVO panel
-To:     Xin Ji <xji@analogixsemi.com>
-Cc:     Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bernie Liang <bliang@analogixsemi.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devel@driverdev.osuosl.org, Qilin Wen <qwen@analogixsemi.com>
+References: <20210804154712.929986-1-desmondcheongzx@gmail.com> <20210804154712.929986-2-desmondcheongzx@gmail.com>
+In-Reply-To: <20210804154712.929986-2-desmondcheongzx@gmail.com>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Thu, 5 Aug 2021 12:06:47 -0700
+Message-ID: <CABBYNZ+5-wEyLJDUU0fC3fogAkJiXD+8np_8c_M0yfYZVUYbww@mail.gmail.com>
+Subject: Re: [RESEND PATCH v5 1/6] Bluetooth: schedule SCO timeouts with delayed_work
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, sudipm.mukherjee@gmail.com,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        skhan@linuxfoundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Xin,
+Hi Desmond,
 
-Thanks for submitting this.
-
-On Thu, 5 Aug 2021 at 09:31, Xin Ji <xji@analogixsemi.com> wrote:
+On Wed, Aug 4, 2021 at 8:48 AM Desmond Cheong Zhi Xi
+<desmondcheongzx@gmail.com> wrote:
 >
-> IVO panel require less input video clock variation than video clock
-> variation in DP CTS spec.
+> struct sock.sk_timer should be used as a sock cleanup timer. However,
+> SCO uses it to implement sock timeouts.
 >
-> This patch decreases the K value of ANX7625 which will shrink eDP Tx
-> video clock variation to meet IVO panel's requirement.
+> This causes issues because struct sock.sk_timer's callback is run in
+> an IRQ context, and the timer callback function sco_sock_timeout takes
+> a spin lock on the socket. However, other functions such as
+> sco_conn_del and sco_conn_ready take the spin lock with interrupts
+> enabled.
 >
-> Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> This inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} lock usage could
+> lead to deadlocks as reported by Syzbot [1]:
+>        CPU0
+>        ----
+>   lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+>   <Interrupt>
+>     lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+>
+> To fix this, we use delayed work to implement SCO sock timouts
+> instead. This allows us to avoid taking the spin lock on the socket in
+> an IRQ context, and corrects the misuse of struct sock.sk_timer.
+>
+> As a note, cancel_delayed_work is used instead of
+> cancel_delayed_work_sync in sco_sock_set_timer and
+> sco_sock_clear_timer to avoid a deadlock. In the future, the call to
+> bh_lock_sock inside sco_sock_timeout should be changed to lock_sock to
+> synchronize with other functions using lock_sock. However, since
+> sco_sock_set_timer and sco_sock_clear_timer are sometimes called under
+> the locked socket (in sco_connect and __sco_sock_close),
+> cancel_delayed_work_sync might cause them to sleep until an
+> sco_sock_timeout that has started finishes running. But
+> sco_sock_timeout would also sleep until it can grab the lock_sock.
+>
+> Using cancel_delayed_work is fine because sco_sock_timeout does not
+> change from run to run, hence there is no functional difference
+> between:
+> 1. waiting for a timeout to finish running before scheduling another
+> timeout
+> 2. scheduling another timeout while a timeout is running.
+>
+> Link: https://syzkaller.appspot.com/bug?id=9089d89de0502e120f234ca0fc8a703f7368b31e [1]
+> Reported-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+> Tested-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 > ---
->  drivers/gpu/drm/bridge/analogix/anx7625.c | 17 ++++++++++++++---
->  drivers/gpu/drm/bridge/analogix/anx7625.h |  4 +++-
->  2 files changed, 17 insertions(+), 4 deletions(-)
+>  net/bluetooth/sco.c | 41 +++++++++++++++++++++++++++++++++++------
+>  1 file changed, 35 insertions(+), 6 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> index a3d82377066b..ceed1c7f3f28 100644
-> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> @@ -384,6 +384,18 @@ static int anx7625_odfc_config(struct anx7625_data *ctx,
->         return ret;
+> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+> index ffa2a77a3e4c..89cb987ca9eb 100644
+> --- a/net/bluetooth/sco.c
+> +++ b/net/bluetooth/sco.c
+> @@ -48,6 +48,8 @@ struct sco_conn {
+>         spinlock_t      lock;
+>         struct sock     *sk;
+>
+> +       struct delayed_work     timeout_work;
+> +
+>         unsigned int    mtu;
+>  };
+>
+> @@ -74,9 +76,20 @@ struct sco_pinfo {
+>  #define SCO_CONN_TIMEOUT       (HZ * 40)
+>  #define SCO_DISCONN_TIMEOUT    (HZ * 2)
+>
+> -static void sco_sock_timeout(struct timer_list *t)
+> +static void sco_sock_timeout(struct work_struct *work)
+>  {
+> -       struct sock *sk = from_timer(sk, t, sk_timer);
+> +       struct sco_conn *conn = container_of(work, struct sco_conn,
+> +                                            timeout_work.work);
+> +       struct sock *sk;
+> +
+> +       sco_conn_lock(conn);
+> +       sk = conn->sk;
+> +       if (sk)
+> +               sock_hold(sk);
+> +       sco_conn_unlock(conn);
+> +
+> +       if (!sk)
+> +               return;
+>
+>         BT_DBG("sock %p state %d", sk, sk->sk_state);
+>
+> @@ -91,14 +104,27 @@ static void sco_sock_timeout(struct timer_list *t)
+>
+>  static void sco_sock_set_timer(struct sock *sk, long timeout)
+>  {
+> +       struct delayed_work *work;
+
+Minor nitpick but I don't think using a dedicated variable here makes
+much sense.
+
+> +       if (!sco_pi(sk)->conn)
+> +               return;
+> +       work = &sco_pi(sk)->conn->timeout_work;
+> +
+>         BT_DBG("sock %p state %d timeout %ld", sk, sk->sk_state, timeout);
+> -       sk_reset_timer(sk, &sk->sk_timer, jiffies + timeout);
+> +       cancel_delayed_work(work);
+> +       schedule_delayed_work(work, timeout);
 >  }
 >
-> +static int anx7625_set_k_value(struct anx7625_data *ctx)
-
-Pardon my ignorance, but I don't know what a K-value is. Could you add
-a comment detailing
-what the K-value does?
-
-> +{
-> +       struct edid *edid = (struct edid *)ctx->slimport_edid_p.edid_raw_data;
-> +
-> +       if (edid->mfg_id[0] == IVO_MID0 && edid->mfg_id[1] == IVO_MID1)
-> +               return anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
-> +                                        MIPI_DIGITAL_ADJ_1, 0x3B);
-> +
-> +       return anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
-> +                                MIPI_DIGITAL_ADJ_1, 0x3D);
-> +}
-> +
->  static int anx7625_dsi_video_timing_config(struct anx7625_data *ctx)
+>  static void sco_sock_clear_timer(struct sock *sk)
 >  {
->         struct device *dev = &ctx->client->dev;
-> @@ -470,9 +482,8 @@ static int anx7625_dsi_video_timing_config(struct anx7625_data *ctx)
->                         MIPI_PLL_N_NUM_15_8, (n >> 8) & 0xff);
->         ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client, MIPI_PLL_N_NUM_7_0,
->                         (n & 0xff));
-> -       /* Diff */
-> -       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
-> -                       MIPI_DIGITAL_ADJ_1, 0x3D);
-> +       /* Diff and K value */
+> +       struct delayed_work *work;
 
-With a proper comment above, this comment is no longer needed.
+Ditto.
 
-> +       anx7625_set_k_value(ctx);
+> +       if (!sco_pi(sk)->conn)
+> +               return;
+> +       work = &sco_pi(sk)->conn->timeout_work;
+> +
+>         BT_DBG("sock %p state %d", sk, sk->sk_state);
+> -       sk_stop_timer(sk, &sk->sk_timer);
+> +       cancel_delayed_work(work);
+>  }
 >
->         ret |= anx7625_odfc_config(ctx, post_divider - 1);
+>  /* ---- SCO connections ---- */
+> @@ -179,6 +205,9 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
+>                 bh_unlock_sock(sk);
+>                 sco_sock_kill(sk);
+>                 sock_put(sk);
+> +
+> +               /* Ensure no more work items will run before freeing conn. */
+> +               cancel_delayed_work_sync(&conn->timeout_work);
+>         }
 >
-> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
-> index 034c3840028f..6dcf64c703f9 100644
-> --- a/drivers/gpu/drm/bridge/analogix/anx7625.h
-> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
-> @@ -210,7 +210,9 @@
->  #define  MIPI_VIDEO_STABLE_CNT           0x0A
+>         hcon->sco_data = NULL;
+> @@ -193,6 +222,8 @@ static void __sco_chan_add(struct sco_conn *conn, struct sock *sk,
+>         sco_pi(sk)->conn = conn;
+>         conn->sk = sk;
 >
->  #define  MIPI_LANE_CTRL_10               0x0F
-> -#define  MIPI_DIGITAL_ADJ_1   0x1B
-> +#define  MIPI_DIGITAL_ADJ_1     0x1B
-> +#define  IVO_MID0               0x26
-> +#define  IVO_MID1               0xCF
+> +       INIT_DELAYED_WORK(&conn->timeout_work, sco_sock_timeout);
+> +
+>         if (parent)
+>                 bt_accept_enqueue(parent, sk, true);
+>  }
+> @@ -500,8 +531,6 @@ static struct sock *sco_sock_alloc(struct net *net, struct socket *sock,
 >
->  #define  MIPI_PLL_M_NUM_23_16   0x1E
->  #define  MIPI_PLL_M_NUM_15_8    0x1F
+>         sco_pi(sk)->setting = BT_VOICE_CVSD_16BIT;
+>
+> -       timer_setup(&sk->sk_timer, sco_sock_timeout, 0);
+> -
+>         bt_sock_link(&sco_sk_list, sk);
+>         return sk;
+>  }
 > --
 > 2.25.1
 >
 
-LGTM with the above fix.
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+-- 
+Luiz Augusto von Dentz
