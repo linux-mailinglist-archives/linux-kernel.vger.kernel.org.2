@@ -2,105 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840543E0FF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9630D3E0FF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239212AbhHEIMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 04:12:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38566 "EHLO mail.kernel.org"
+        id S239224AbhHEIML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 04:12:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235877AbhHEIME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 04:12:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B333B61078;
-        Thu,  5 Aug 2021 08:11:50 +0000 (UTC)
+        id S239215AbhHEIMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 04:12:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27DD660F43;
+        Thu,  5 Aug 2021 08:11:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628151110;
-        bh=UDVn/n+b4ifejuAldecYtpvLiHWebHyZJ2ot8Xm7zJM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=b0bBXsXf0pUJWq2yllF1qZMuHrpPG6LxjhBUeAXyLYJku3Z6bBbvtPXEfZzdzAY/1
-         /3YLTx8JEPhzLoUwkA7bWclJaxsmLuIymRpiuTqfpoXMvKPl3biKRKD2lWLFd6WeDf
-         k5W2c6SUTDZB8SBm2mO+YoeD7VaRpvGBFsCKhbhADb/EkGnNC1eIb5vdTOmJpYPDI6
-         HUT7D1p3WilK3XMdUX0GTesFeeU96OW+WuEUGz5YQC099XO3dRC1PNVGeqM8K/ardt
-         5+2K6ni6aRV6MPBEZ3bfov5VvVNfNqndnt41eLT7yX/bE96MvHJBivgiTiIPHs26x1
-         lNqBUVsEAr/pg==
-Received: by mail-wr1-f45.google.com with SMTP id l18so5343241wrv.5;
-        Thu, 05 Aug 2021 01:11:50 -0700 (PDT)
-X-Gm-Message-State: AOAM5316JnSntH5P0ByQmEcYMyIDAnXUzmfZ981Wmg7T0U38VTC6Ip0I
-        4v6HsPfX7yLZ6PtoWimy2kiQCeSv1i0EawFlk2M=
-X-Google-Smtp-Source: ABdhPJygsRjjgl2ODlzfwGyOxtVwMsKnmyPUzAx8U1eXjyLXcuOHPt8tpnA6IimrkOf9W8kenBTfPfIKmG6jzhpGARQ=
-X-Received: by 2002:adf:e107:: with SMTP id t7mr3674023wrz.165.1628151109296;
- Thu, 05 Aug 2021 01:11:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210804121318.337276-1-arnd@kernel.org> <CO1PR11MB5089A77D5388203C4AA2F9E4D6F19@CO1PR11MB5089.namprd11.prod.outlook.com>
-In-Reply-To: <CO1PR11MB5089A77D5388203C4AA2F9E4D6F19@CO1PR11MB5089.namprd11.prod.outlook.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 5 Aug 2021 10:11:33 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2ZTmtkU9StyWMG=TwODxqAVEN_AFyGdyerr9C5vUMaVA@mail.gmail.com>
-Message-ID: <CAK8P3a2ZTmtkU9StyWMG=TwODxqAVEN_AFyGdyerr9C5vUMaVA@mail.gmail.com>
-Subject: Re: [PATCH net-next v3] ethernet: fix PTP_1588_CLOCK dependencies
-To:     "Keller, Jacob E" <jacob.e.keller@intel.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        "drivers@pensando.io" <drivers@pensando.io>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Simon Horman <simon.horman@netronome.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        s=k20201202; t=1628151116;
+        bh=uIB0BoCskDsD79gCcHLXIEBoVLc8Ir8gHuaC7+0TPCg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d6FpcrEvaNhM8kh1TLFRKFD1w1wOfxi5tpxHRPJqPupdxXp3r2Y7E5u1IowJKB88s
+         Dz3MNQtN1dYUJMibBpBnbBxN9if4vXEaaI5i6LreNgizNaO1imwnxxA89nmQ1SKX26
+         S4EFVKmLe6bIGD7yvqiB0VU1qJgHrmTnHsJbgiVijr2HCYGRshSGIGSgtQFHWYFl8j
+         wQXzQCFmTb0N3b2yMHNUkgYIZN6oVbAPOy9alTPKRnopdjw01IQEbFjsdI6ZMnKBnj
+         oHnfmbxwsjv7XvnTx8yHrz2/11hGkXlDiZyYR3BEEyPuys4yE37W+EZmQLRF0/GdtR
+         V5G38PMEIJ8Zg==
+Received: by pali.im (Postfix)
+        id A2C80817; Thu,  5 Aug 2021 10:11:53 +0200 (CEST)
+Date:   Thu, 5 Aug 2021 10:11:53 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mark Gross <mgross@linux.intel.com>
+Subject: Re: [RFT, PATCH v1 1/1] platform/x86: dell-smo8800: Convert to be a
+ platform driver
+Message-ID: <20210805081153.5exc6iih2yu5a3ph@pali>
+References: <20210803194039.35083-1-andriy.shevchenko@linux.intel.com>
+ <20210804200025.iqsvknddoxix7yw7@pali>
+ <CAHp75Vc1r+9N6_BiJzO3JYppgaokKiQwk4sLrp72kPEDgYEweg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75Vc1r+9N6_BiJzO3JYppgaokKiQwk4sLrp72kPEDgYEweg@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 10:52 PM Keller, Jacob E
-<jacob.e.keller@intel.com> wrote:
+On Thursday 05 August 2021 10:20:40 Andy Shevchenko wrote:
+> On Wednesday, August 4, 2021, Pali Rohár <pali@kernel.org> wrote:
+> 
+> > On Tuesday 03 August 2021 22:40:39 Andy Shevchenko wrote:
+> > > ACPI core in conjunction with platform driver core provides
+> > > an infrastructure to enumerate ACPI devices. Use it in order
+> > > to remove a lot of boilerplate code.
+> >
+> > Are there any other dependences for this patch?
+> 
+> 
+> >
+> Assuming that you are asking because something is not working, what are the
+> symptoms?
+> 
 
-> > diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/Kconfig
-> > b/drivers/net/ethernet/oki-semi/pch_gbe/Kconfig
-> > index af84f72bf08e..4e18b64dceb9 100644
-> > --- a/drivers/net/ethernet/oki-semi/pch_gbe/Kconfig
-> > +++ b/drivers/net/ethernet/oki-semi/pch_gbe/Kconfig
-> > @@ -6,6 +6,7 @@
-> >  config PCH_GBE
-> >       tristate "OKI SEMICONDUCTOR IOH(ML7223/ML7831) GbE"
-> >       depends on PCI && (X86_32 || COMPILE_TEST)
-> > +     depends on PTP_1588_CLOCK
-> >       select MII
-> >       select PTP_1588_CLOCK_PCH
-> >       select NET_PTP_CLASSIFY
->
-> I did notice this one driver which now directly depends on PTP_1558_CLOCK, but I
-> suspect that's because it actually doesn't work if you disable PTP?
+Because I thought that it is something new, but I have not found
+anything special about it in last kernel versions...
 
-Yes, it's the 'select PTP_1588_CLOCK_PCH' and 'select NET_PTP_CLASSIFY'
-that actually need it.
+> > And in which kernel
+> > version is (or will be) introduced this ACPI infrastructure?
+> 
+> 
+> I don’t remember, I think it is in v3 era or even v2.6.x.
 
-      Arnd
+... and this answers why.
+
+I will try to find some time to test this change on a real hw.
+
+> 
+> 
+> >
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > ---
+> > >  drivers/platform/x86/dell/Kconfig        |  2 +-
+> > >  drivers/platform/x86/dell/dell-smo8800.c | 74 ++++++------------------
+> > >  2 files changed, 20 insertions(+), 56 deletions(-)
+> > >
+> > > diff --git a/drivers/platform/x86/dell/Kconfig
+> > b/drivers/platform/x86/dell/Kconfig
+> > > index 9e7314d90bea..821aba31821c 100644
+> > > --- a/drivers/platform/x86/dell/Kconfig
+> > > +++ b/drivers/platform/x86/dell/Kconfig
+> > > @@ -140,7 +140,7 @@ config DELL_SMBIOS_SMM
+> > >  config DELL_SMO8800
+> > >       tristate "Dell Latitude freefall driver (ACPI SMO88XX)"
+> > >       default m
+> > > -     depends on ACPI
+> > > +     depends on ACPI || COMPILE_TEST
+> > >       help
+> > >         Say Y here if you want to support SMO88XX freefall devices
+> > >         on Dell Latitude laptops.
+> > > diff --git a/drivers/platform/x86/dell/dell-smo8800.c
+> > b/drivers/platform/x86/dell/dell-smo8800.c
+> > > index 5d9304a7de1b..3385e852104c 100644
+> > > --- a/drivers/platform/x86/dell/dell-smo8800.c
+> > > +++ b/drivers/platform/x86/dell/dell-smo8800.c
+> > > @@ -10,13 +10,14 @@
+> > >
+> > >  #define DRIVER_NAME "smo8800"
+> > >
+> > > -#include <linux/kernel.h>
+> > > -#include <linux/module.h>
+> > > -#include <linux/acpi.h>
+> > > +#include <linux/fs.h>
+> > >  #include <linux/interrupt.h>
+> > > +#include <linux/kernel.h>
+> > >  #include <linux/miscdevice.h>
+> > > +#include <linux/mod_devicetable.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/platform_device.h>
+> > >  #include <linux/uaccess.h>
+> > > -#include <linux/fs.h>
+> > >
+> > >  struct smo8800_device {
+> > >       u32 irq;                     /* acpi device irq */
+> > > @@ -44,37 +45,6 @@ static irqreturn_t smo8800_interrupt_thread(int irq,
+> > void *data)
+> > >       return IRQ_HANDLED;
+> > >  }
+> > >
+> > > -static acpi_status smo8800_get_resource(struct acpi_resource *resource,
+> > > -                                     void *context)
+> > > -{
+> > > -     struct acpi_resource_extended_irq *irq;
+> > > -
+> > > -     if (resource->type != ACPI_RESOURCE_TYPE_EXTENDED_IRQ)
+> > > -             return AE_OK;
+> > > -
+> > > -     irq = &resource->data.extended_irq;
+> > > -     if (!irq || !irq->interrupt_count)
+> > > -             return AE_OK;
+> > > -
+> > > -     *((u32 *)context) = irq->interrupts[0];
+> > > -     return AE_CTRL_TERMINATE;
+> > > -}
+> > > -
+> > > -static u32 smo8800_get_irq(struct acpi_device *device)
+> > > -{
+> > > -     u32 irq = 0;
+> > > -     acpi_status status;
+> > > -
+> > > -     status = acpi_walk_resources(device->handle, METHOD_NAME__CRS,
+> > > -                                  smo8800_get_resource, &irq);
+> > > -     if (ACPI_FAILURE(status)) {
+> > > -             dev_err(&device->dev, "acpi_walk_resources failed\n");
+> > > -             return 0;
+> > > -     }
+> > > -
+> > > -     return irq;
+> > > -}
+> > > -
+> > >  static ssize_t smo8800_misc_read(struct file *file, char __user *buf,
+> > >                                size_t count, loff_t *pos)
+> > >  {
+> > > @@ -136,7 +106,7 @@ static const struct file_operations
+> > smo8800_misc_fops = {
+> > >       .release = smo8800_misc_release,
+> > >  };
+> > >
+> > > -static int smo8800_add(struct acpi_device *device)
+> > > +static int smo8800_probe(struct platform_device *device)
+> > >  {
+> > >       int err;
+> > >       struct smo8800_device *smo8800;
+> > > @@ -160,14 +130,12 @@ static int smo8800_add(struct acpi_device *device)
+> > >               return err;
+> > >       }
+> > >
+> > > -     device->driver_data = smo8800;
+> > > +     platform_set_drvdata(device, smo8800);
+> > >
+> > > -     smo8800->irq = smo8800_get_irq(device);
+> > > -     if (!smo8800->irq) {
+> > > -             dev_err(&device->dev, "failed to obtain IRQ\n");
+> > > -             err = -EINVAL;
+> > > +     err = platform_get_irq(device, 0);
+> > > +     if (err < 0)
+> > >               goto error;
+> > > -     }
+> > > +     smo8800->irq = err;
+> > >
+> > >       err = request_threaded_irq(smo8800->irq, smo8800_interrupt_quick,
+> > >                                  smo8800_interrupt_thread,
+> > > @@ -189,9 +157,9 @@ static int smo8800_add(struct acpi_device *device)
+> > >       return err;
+> > >  }
+> > >
+> > > -static int smo8800_remove(struct acpi_device *device)
+> > > +static int smo8800_remove(struct platform_device *device)
+> > >  {
+> > > -     struct smo8800_device *smo8800 = device->driver_data;
+> > > +     struct smo8800_device *smo8800 = platform_get_drvdata(device);
+> > >
+> > >       free_irq(smo8800->irq, smo8800);
+> > >       misc_deregister(&smo8800->miscdev);
+> > > @@ -211,21 +179,17 @@ static const struct acpi_device_id smo8800_ids[] =
+> > {
+> > >       { "SMO8831", 0 },
+> > >       { "", 0 },
+> > >  };
+> > > -
+> > >  MODULE_DEVICE_TABLE(acpi, smo8800_ids);
+> > >
+> > > -static struct acpi_driver smo8800_driver = {
+> > > -     .name = DRIVER_NAME,
+> > > -     .class = "Latitude",
+> > > -     .ids = smo8800_ids,
+> > > -     .ops = {
+> > > -             .add = smo8800_add,
+> > > -             .remove = smo8800_remove,
+> > > +static struct platform_driver smo8800_driver = {
+> > > +     .probe = smo8800_probe,
+> > > +     .remove = smo8800_remove,
+> > > +     .driver = {
+> > > +             .name = DRIVER_NAME,
+> > > +             .acpi_match_table = smo8800_ids,
+> > >       },
+> > > -     .owner = THIS_MODULE,
+> > >  };
+> > > -
+> > > -module_acpi_driver(smo8800_driver);
+> > > +module_platform_driver(smo8800_driver);
+> > >
+> > >  MODULE_DESCRIPTION("Dell Latitude freefall driver (ACPI SMO88XX)");
+> > >  MODULE_LICENSE("GPL");
+> > > --
+> > > 2.30.2
+> > >
+> >
+> 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
