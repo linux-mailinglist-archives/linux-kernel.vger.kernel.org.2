@@ -2,155 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519833E0DAE
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 07:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824F03E0DB1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 07:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237610AbhHEFOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 01:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237469AbhHEFOf (ORCPT
+        id S237337AbhHEFPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 01:15:11 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:29103 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231922AbhHEFPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 01:14:35 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84514C061798
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 22:14:21 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id b1-20020a17090a8001b029017700de3903so7682225pjn.1
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 22:14:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9iqwgQUcM7kXjxKmNPoKYxMsXr+XLcOB8+pWCUZkNe8=;
-        b=RbpJzx+BoK8RbyOspFM+n29W5JH0aaCLGjko+2aoqRhjPFUM4R6/71EkAOhUPIp54h
-         6/KUb2shwI6HSqMwRcFwsJOezU9+mA05bVf//hYKutCXxfA5Y1zXGcF/ZSoYJAvFzX7B
-         tpCCbQC8YNWQamkT69AYaJ7+rX2cu626mDpfumFsOjquW7ytN4o5zo6SDPiVHneAphmz
-         7sr2Rijb7Vuk2pkmMoj4ojrFlnN+LBUi8EafRwqdB9wrq3ci/9F0L4rhpYQkHHqt8j+N
-         vv6ouIdmsMv5OGbjpAZkuUoVwdzVVJ4XN72JbUi9FwRZ3KpNGhHkmEOTksXjQ/riRbnh
-         mQ7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9iqwgQUcM7kXjxKmNPoKYxMsXr+XLcOB8+pWCUZkNe8=;
-        b=HsZTjYkv7SZ38Mij/86W/iCHGYXUOiTQPRf8T/jiuHSnLZYuXwHd9+rWkXyKMQrwBU
-         J+QO3r+/55CNLfxFNOSHf8CPaXzse9AmOxgsUxeQtrr+E0ks/6IXyaDzsVJBFXE10sqU
-         fJSblPo9DISRDn/Ygr3kOoK1jqOqGeoGHoEGC4d0aM3DPKJTwJMBDmPu8r/iJGEEfuIb
-         UL4Um34fbgEKPbTjQqbfrjyGAcrtxwMmSDdhYGCcU5oytf3SVgvhQ2e3n59C0tfu8u4D
-         YQ9+nihNCGBD5+SYjtR8fu5R2MDUSgYAfb2zVvaBYQGx2syTRdB8VNeVN7vo0qKQT1dv
-         ULFw==
-X-Gm-Message-State: AOAM533mH7Akii0yl1yrhu8Ye9JfpJqAMh+J5qq648kyEoJVgqUWtkre
-        SRIMx3M8uNZZY/8xsYwz3a/omg==
-X-Google-Smtp-Source: ABdhPJwxpstYm1Z68yFetFV4U3XzSVLVc5w6RZx9tXnuPslfOOTSiZZl0VLhXwmobFYSed0IpSgNpw==
-X-Received: by 2002:a05:6a00:180e:b029:39e:4765:20c4 with SMTP id y14-20020a056a00180eb029039e476520c4mr3119587pfa.30.1628140461072;
-        Wed, 04 Aug 2021 22:14:21 -0700 (PDT)
-Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
-        by smtp.gmail.com with ESMTPSA id k4sm4201098pjs.55.2021.08.04.22.14.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 22:14:20 -0700 (PDT)
-From:   Jiang Wang <jiang.wang@bytedance.com>
-To:     netdev@vger.kernel.org
-Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
-        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v4 5/5] selftest/bpf: add new tests in sockmap for unix stream to tcp.
-Date:   Thu,  5 Aug 2021 05:13:37 +0000
-Message-Id: <20210805051340.3798543-6-jiang.wang@bytedance.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210805051340.3798543-1-jiang.wang@bytedance.com>
-References: <20210805051340.3798543-1-jiang.wang@bytedance.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 5 Aug 2021 01:15:09 -0400
+Date:   05 Aug 2021 14:14:53 +0900
+X-IronPort-AV: E=Sophos;i="5.84,296,1620658800"; 
+   d="scan'208";a="89874908"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie6.idc.renesas.com with ESMTP; 05 Aug 2021 14:14:53 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id D0DAD4195F4D;
+        Thu,  5 Aug 2021 14:14:53 +0900 (JST)
+Message-ID: <87eeb8tquq.wl-kuninori.morimoto.gx@renesas.com>
+From:   Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: simple-card-utils: Avoid over-allocating DLCs
+In-Reply-To: <20210805050706.46833-1-samuel@sholland.org>
+References: <20210805050706.46833-1-samuel@sholland.org>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add two new test cases in sockmap tests, where unix stream is
-redirected to tcp and vice versa.
 
-Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
----
- .../selftests/bpf/prog_tests/sockmap_listen.c    | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+Hi Samuel
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 07ed8081f9ae..afa14fb66f08 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -1884,7 +1884,7 @@ static void inet_unix_redir_to_connected(int family, int type, int sock_mapfd,
- 	xclose(p0);
- }
- 
--static void udp_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
-+static void inet_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 					    struct bpf_map *inner_map, int family)
- {
- 	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-@@ -1899,9 +1899,13 @@ static void udp_unix_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 	skel->bss->test_ingress = false;
- 	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				    REDIR_EGRESS);
-+	inet_unix_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				    REDIR_EGRESS);
- 	skel->bss->test_ingress = true;
- 	inet_unix_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				    REDIR_INGRESS);
-+	inet_unix_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				    REDIR_INGRESS);
- 
- 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
- }
-@@ -1961,7 +1965,7 @@ static void unix_inet_redir_to_connected(int family, int type, int sock_mapfd,
- 
- }
- 
--static void unix_udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
-+static void unix_inet_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 					    struct bpf_map *inner_map, int family)
- {
- 	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-@@ -1976,9 +1980,13 @@ static void unix_udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
- 	skel->bss->test_ingress = false;
- 	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				     REDIR_EGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				     REDIR_EGRESS);
- 	skel->bss->test_ingress = true;
- 	unix_inet_redir_to_connected(family, SOCK_DGRAM, sock_map, verdict_map,
- 				     REDIR_INGRESS);
-+	unix_inet_redir_to_connected(family, SOCK_STREAM, sock_map, verdict_map,
-+				     REDIR_INGRESS);
- 
- 	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
- }
-@@ -1994,8 +2002,8 @@ static void test_udp_unix_redir(struct test_sockmap_listen *skel, struct bpf_map
- 	snprintf(s, sizeof(s), "%s %s %s", map_name, family_name, __func__);
- 	if (!test__start_subtest(s))
- 		return;
--	udp_unix_skb_redir_to_connected(skel, map, family);
--	unix_udp_skb_redir_to_connected(skel, map, family);
-+	inet_unix_skb_redir_to_connected(skel, map, family);
-+	unix_inet_skb_redir_to_connected(skel, map, family);
- }
- 
- static void run_tests(struct test_sockmap_listen *skel, struct bpf_map *map,
--- 
-2.20.1
+Thank you for your patch
 
+> The allocation of the DAI link components (DLCs) passed the wrong
+> pointer to sizeof. Since simple_dai_props is much larger than
+> snd_soc_dai_link_component, there was no out of bounds access, only
+> wasted memory.
+> 
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+
+Wow indeed !
+Thank you for your fixup
+
+	Fixes: f2138aed231c8 ("ASoC: simple-card-utils: enable flexible CPU/Codec/Platform")
+	Fixes: 050c7950fd706 ("ASoC: simple-card-utils: alloc dai_link information for CPU/Codec/Platform")
+	Reviewed-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+>  sound/soc/generic/simple-card-utils.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+> index 677f7da93b4b..10c63b73900c 100644
+> --- a/sound/soc/generic/simple-card-utils.c
+> +++ b/sound/soc/generic/simple-card-utils.c
+> @@ -640,8 +640,8 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+>  			cnf_num += li->num[i].codecs;
+>  	}
+>  
+> -	dais = devm_kcalloc(dev, dai_num, sizeof(*dais),      GFP_KERNEL);
+> -	dlcs = devm_kcalloc(dev, dlc_num, sizeof(*dai_props), GFP_KERNEL);
+> +	dais = devm_kcalloc(dev, dai_num, sizeof(*dais), GFP_KERNEL);
+> +	dlcs = devm_kcalloc(dev, dlc_num, sizeof(*dlcs), GFP_KERNEL);
+>  	if (!dais || !dlcs)
+>  		return -ENOMEM;
+>  
+> -- 
+> 2.31.1
+> 
