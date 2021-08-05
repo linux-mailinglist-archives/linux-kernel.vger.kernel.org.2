@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5F13E0D57
+	by mail.lfdr.de (Postfix) with ESMTP id E5A4C3E0D58
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 06:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236424AbhHEEfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 00:35:30 -0400
-Received: from mail-pl1-f181.google.com ([209.85.214.181]:44768 "EHLO
-        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236329AbhHEEf0 (ORCPT
+        id S236616AbhHEEfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 00:35:33 -0400
+Received: from mail-pj1-f44.google.com ([209.85.216.44]:38588 "EHLO
+        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236336AbhHEEf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 00:35:26 -0400
-Received: by mail-pl1-f181.google.com with SMTP id q2so5569144plr.11
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 21:35:12 -0700 (PDT)
+        Thu, 5 Aug 2021 00:35:27 -0400
+Received: by mail-pj1-f44.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so12202738pjb.3;
+        Wed, 04 Aug 2021 21:35:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zqkxRlYr87kbKQ9r71+y8bsBamGsVypc9m9RJrJLvrI=;
-        b=im4Rp2hMfq7ouMFunxqxqlgPQ6rHKP3JgSMvMmmfoOI8/7T3BPQFeYUB6+CwjlG+Dv
-         9XStpl+DNruQz54RY6eOiF1EqW+f492hwTBbbxdPT84elarT47Bcax0mWBurSb9/aAhh
-         Hk+1wX2Cf9pA96ZqJCjey3uM41qr92nZIK7LZm7po4wHUgngca5XzfZCmz0iB0EYsPbD
-         lpnQvz4jR4xCTaiCSoqy9dr2XlQmosSgMDwMxLGvmD3JEeqS7KF+ki9/4yO5qgoxMOBC
-         sGVDWhMbpfKGl4sGfZzdt+fW65gUOUCSdj4mVXrWok9fcnkpTrJHHLN8ogaqZcDK4wyG
-         jZUQ==
-X-Gm-Message-State: AOAM530pbRBqHedj8Fl4fmOLmhX/FXGUishLcajdqa+4MnRXwT8V/tLo
-        +f0g5Hu3i3O0ACdVtjzsCN0=
-X-Google-Smtp-Source: ABdhPJxO9FxtHheSPC4QGlfyRxUjwuXmOlUY3XMIwkCOcoDEkyD76HpRSLGCN0Tq44QDOVjOiJoy1g==
-X-Received: by 2002:aa7:96aa:0:b029:3c3:9e84:45a3 with SMTP id g10-20020aa796aa0000b02903c39e8445a3mr3066167pfk.23.1628138112195;
-        Wed, 04 Aug 2021 21:35:12 -0700 (PDT)
+        bh=Y9+eNr/zSZMLipWn6KjcMbbv/1vfoat0Zw1Y0cwm9Co=;
+        b=Q/uPN8BFa+dWIBIpL83t/f9nl7vPjWLZhB8u2//yNuOor01YRT0WGcN6hkFGhVJkz7
+         l00xNtQt4wDZgFdLm6wxkKVgWDY34SubMzQ8ySV6q6yCgFCCKD6tyjcbRrBV4Imf4AxZ
+         4HDYpXEvDwtm3Y49Gb3c8ySXev5L8vL5xuzcasqB3/OtWwVze/wPeTuI4jIzM6QkpCsw
+         PjASApEZdsjrflSCNn3Us/JI0QKEwoFFu8q0YauA0spkqWwJYiPs195SmU44FGHaR7d3
+         8uQguIqdg0SxkuMmi8SuaRsQn5tiXhWYDzlliHjP1IwxnlFGSvMBfHz3uPGXi1R8QU3k
+         kE/A==
+X-Gm-Message-State: AOAM533a9XOlc26B0KiSZWgW3+Pfu1x5vCb/UJnEPS2FYDKeTn5BpDrM
+        fa/tX52U6POWFaqtt5rc/Is=
+X-Google-Smtp-Source: ABdhPJxXrrRwISSdmGVPPWhvP6KkSxfVzU1xjUzKtiLueGpyv+aXPSpKrhH2WqmmMUjtgfGPV0hPQA==
+X-Received: by 2002:a17:90a:29a4:: with SMTP id h33mr2617676pjd.98.1628138114036;
+        Wed, 04 Aug 2021 21:35:14 -0700 (PDT)
 Received: from asus.hsd1.ca.comcast.net ([2601:647:4000:d7:e365:91b7:6284:3848])
-        by smtp.gmail.com with ESMTPSA id b15sm5642153pgj.60.2021.08.04.21.35.10
+        by smtp.gmail.com with ESMTPSA id b15sm5642153pgj.60.2021.08.04.21.35.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 21:35:11 -0700 (PDT)
+        Wed, 04 Aug 2021 21:35:13 -0700 (PDT)
 From:   Bart Van Assche <bvanassche@acm.org>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
@@ -41,10 +41,13 @@ Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
         "Martin K . Petersen" <martin.petersen@oracle.com>,
         Brendan Higgins <brendanhiggins@google.com>,
         Bart Van Assche <bvanassche@acm.org>,
+        David Gow <davidgow@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
         Yanko Kaneti <yaneti@declera.com>
-Subject: [PATCH v4 1/3] configfs: Restore the kernel v5.13 text attribute write behavior
-Date:   Wed,  4 Aug 2021 21:35:01 -0700
-Message-Id: <20210805043503.20252-2-bvanassche@acm.org>
+Subject: [PATCH v4 2/3] kunit: Add support for suite initialization and cleanup
+Date:   Wed,  4 Aug 2021 21:35:02 -0700
+Message-Id: <20210805043503.20252-3-bvanassche@acm.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210805043503.20252-1-bvanassche@acm.org>
 References: <20210805043503.20252-1-bvanassche@acm.org>
@@ -54,68 +57,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of appending new text attribute data at the offset specified by the
-write() system call, only pass the newly written data to the .store()
-callback.
+A common feature of unit testing frameworks is support for sharing a test
+configuration across multiple unit tests. Add this functionality to the
+KUnit framework. This functionality will be used in the next patch in this
+series.
 
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Cc: David Gow <davidgow@google.com>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: kunit-dev@googlegroups.com
+Cc: linux-kselftest@vger.kernel.org
 Cc: Bodo Stroesser <bostroesser@gmail.com>
 Cc: Martin K. Petersen <martin.petersen@oracle.com>
 Cc: Yanko Kaneti <yaneti@declera.com>
-Cc: Brendan Higgins <brendanhiggins@google.com>
-Reported-by: Bodo Stroesser <bostroesser@gmail.com>
-Tested-by: Bodo Stroesser <bostroesser@gmail.com>
 Signed-off-by: Bart Van Assche <bvanassche@acm.org>
 ---
- fs/configfs/file.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ include/kunit/test.h |  4 ++++
+ lib/kunit/test.c     | 14 ++++++++++++++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/fs/configfs/file.c b/fs/configfs/file.c
-index 5a0be9985bae..0ad32150611e 100644
---- a/fs/configfs/file.c
-+++ b/fs/configfs/file.c
-@@ -177,28 +177,22 @@ static ssize_t configfs_bin_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 	return retval;
- }
- 
--/* Fill [buffer, buffer + pos) with data coming from @from. */
--static int fill_write_buffer(struct configfs_buffer *buffer, loff_t pos,
-+/* Fill @buffer with data coming from @from. */
-+static int fill_write_buffer(struct configfs_buffer *buffer,
- 			     struct iov_iter *from)
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 24b40e5c160b..a6eef96a409c 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -215,6 +215,8 @@ static inline char *kunit_status_to_ok_not_ok(enum kunit_status status)
+  * struct kunit_suite - describes a related collection of &struct kunit_case
+  *
+  * @name:	the name of the test. Purely informational.
++ * @init_suite:	called once per test suite before the test cases.
++ * @exit_suite:	called once per test suite after all test cases.
+  * @init:	called before every test case.
+  * @exit:	called after every test case.
+  * @test_cases:	a null terminated array of test cases.
+@@ -229,6 +231,8 @@ static inline char *kunit_status_to_ok_not_ok(enum kunit_status status)
+  */
+ struct kunit_suite {
+ 	const char name[256];
++	int (*init_suite)(void);
++	void (*exit_suite)(void);
+ 	int (*init)(struct kunit *test);
+ 	void (*exit)(struct kunit *test);
+ 	struct kunit_case *test_cases;
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index d79ecb86ea57..c271692ced93 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -397,9 +397,19 @@ int kunit_run_tests(struct kunit_suite *suite)
  {
--	loff_t to_copy;
- 	int copied;
--	u8 *to;
+ 	char param_desc[KUNIT_PARAM_DESC_SIZE];
+ 	struct kunit_case *test_case;
++	int res = 0;
  
- 	if (!buffer->page)
- 		buffer->page = (char *)__get_free_pages(GFP_KERNEL, 0);
- 	if (!buffer->page)
- 		return -ENOMEM;
+ 	kunit_print_subtest_start(suite);
  
--	to_copy = SIMPLE_ATTR_SIZE - 1 - pos;
--	if (to_copy <= 0)
--		return 0;
--	to = buffer->page + pos;
--	copied = copy_from_iter(to, to_copy, from);
-+	copied = copy_from_iter(buffer->page, SIMPLE_ATTR_SIZE - 1, from);
- 	buffer->needs_read_fill = 1;
- 	/* if buf is assumed to contain a string, terminate it by \0,
- 	 * so e.g. sscanf() can scan the string easily */
--	to[copied] = 0;
-+	buffer->page[copied] = 0;
- 	return copied ? : -EFAULT;
- }
++	if (suite->init_suite)
++		res = suite->init_suite();
++
++	if (res < 0) {
++		kunit_log(KERN_INFO, suite, KUNIT_SUBTEST_INDENT
++			  "# Suite initialization failed (%d)\n", res);
++		goto end;
++	}
++
+ 	kunit_suite_for_each_test_case(suite, test_case) {
+ 		struct kunit test = { .param_value = NULL, .param_index = 0 };
+ 		test_case->status = KUNIT_SKIPPED;
+@@ -439,6 +449,10 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 				      test.status_comment);
+ 	}
  
-@@ -227,10 +221,10 @@ static ssize_t configfs_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
- 	struct file *file = iocb->ki_filp;
- 	struct configfs_buffer *buffer = file->private_data;
--	ssize_t len;
-+	int len;
++	if (suite->exit_suite)
++		suite->exit_suite();
++
++end:
+ 	kunit_print_subtest_end(suite);
  
- 	mutex_lock(&buffer->mutex);
--	len = fill_write_buffer(buffer, iocb->ki_pos, from);
-+	len = fill_write_buffer(buffer, from);
- 	if (len > 0)
- 		len = flush_write_buffer(file, buffer, len);
- 	if (len > 0)
+ 	return 0;
