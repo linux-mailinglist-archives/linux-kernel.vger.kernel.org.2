@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7C83E13CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056673E13CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240791AbhHELXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:23:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30240 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240731AbhHELXu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:23:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628162615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5Fd84Q4wmp1HHp9/8faQUi9ZHuuSm34D/5/TWDWrlNs=;
-        b=F6y71Mx4YfDQZSDQj0ui1O4xqnOiIlc9VwJ0vvdxs3OTqP2U9gEL/Iu/PlztIRRk7ZlOO3
-        tDuyoiOsLqdAoYfMgp2jc+VbgqSb+VRCi8dCP9taw9hknZ79s0FKPbUYvziayzy2/3jgIv
-        Wz6gtmdyEzt2VCNm0nWpvHbZKO2TcTg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-wixwhbkRN3qmj4jFdc4rcQ-1; Thu, 05 Aug 2021 07:23:32 -0400
-X-MC-Unique: wixwhbkRN3qmj4jFdc4rcQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC9E291199;
-        Thu,  5 Aug 2021 11:23:28 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F120D60E1C;
-        Thu,  5 Aug 2021 11:23:20 +0000 (UTC)
-Message-ID: <c7d6cd80f767791b67505bce005c7e73d94edda0.camel@redhat.com>
-Subject: Re: [PATCH] selftests: KVM: avoid failures due to reserved
- HyperTransport region
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     stable@vger.kernel.org, David Matlack <dmatlack@google.com>
-Date:   Thu, 05 Aug 2021 14:23:19 +0300
-In-Reply-To: <20210805105423.412878-1-pbonzini@redhat.com>
-References: <20210805105423.412878-1-pbonzini@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S240947AbhHELYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:24:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:43080 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240623AbhHELYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 07:24:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C67151FB;
+        Thu,  5 Aug 2021 04:24:39 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A99A63F719;
+        Thu,  5 Aug 2021 04:24:38 -0700 (PDT)
+Subject: Re: [PATCH] iommu/arm-smmu-v3: Remove some unneeded init in
+ arm_smmu_cmdq_issue_cmdlist()
+To:     John Garry <john.garry@huawei.com>, will@kernel.org
+Cc:     joro@8bytes.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com
+References: <1624293394-202509-1-git-send-email-john.garry@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <ee1f3ab5-3acc-f442-f2d2-898cf88bc447@arm.com>
+Date:   Thu, 5 Aug 2021 12:24:33 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <1624293394-202509-1-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-05 at 06:54 -0400, Paolo Bonzini wrote:
-> Accessing guest physical addresses at 0xFFFD_0000_0000 and above causes
-> a failure on AMD processors because those addresses are reserved by
-> HyperTransport (this is not documented).  Avoid selftests failures
-> by reserving those guest physical addresses.
+On 2021-06-21 17:36, John Garry wrote:
+> Members of struct "llq" will be zero-inited, apart from member max_n_shift.
+> But we write llq.val straight after the init, so it was pointless to zero
+> init those other members. As such, separately init member max_n_shift
+> only.
 > 
-> Fixes: ef4c9f4f6546 ("KVM: selftests: Fix 32-bit truncation of vm_get_max_gfn()")
-> Cc: stable@vger.kernel.org
-> Cc: David Matlack <dmatlack@google.com>
-> Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  tools/testing/selftests/kvm/lib/kvm_util.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> In addition, struct "head" is initialised to "llq" only so that member
+> max_n_shift is set. But that member is never referenced for "head", so
+> remove any init there.
 > 
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index 10a8ed691c66..d995cc9836ee 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -309,6 +309,12 @@ struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
->  	/* Limit physical addresses to PA-bits. */
->  	vm->max_gfn = ((1ULL << vm->pa_bits) >> vm->page_shift) - 1;
->  
-> +#ifdef __x86_64__
-> +	/* Avoid reserved HyperTransport region on AMD processors.  */
-> +	if (vm->pa_bits == 48)
-> +		vm->max_gfn = 0xfffcfffff;
-> +#endif
+> Removing these initializations is seen as a small performance optimisation,
+> as this code is (very) hot path.
+
+I looked at this and immediately thought "surely the compiler can see 
+that all the prod/cons/val fields are written anyway and elide the 
+initialisation?", so I dumped the before and after disassembly, and... oh.
+
+You should probably clarify that it's zero-initialising all the 
+cacheline padding which is both pointless and painful. With that,
+
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+
+However, having looked this closely I'm now tangentially wondering why 
+max_n_shift isn't inside the padded union? It's read at the same time as 
+both prod and cons by queue_has_space(), and never updated, so there 
+doesn't appear to be any benefit to it being in a separate cacheline all 
+by itself, and llq is already twice as big as it needs to be. Sorting 
+that would also be a good opportunity to store the value of interest in 
+its appropriate form so we're not needlessly recalculating 1 << shift 
+every flippin' time...
+
+Robin.
+
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index 54b2f27b81d4..8a8ad49bb7fd 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -727,11 +727,11 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
+>   	unsigned long flags;
+>   	bool owner;
+>   	struct arm_smmu_cmdq *cmdq = &smmu->cmdq;
+> -	struct arm_smmu_ll_queue llq = {
+> -		.max_n_shift = cmdq->q.llq.max_n_shift,
+> -	}, head = llq;
+> +	struct arm_smmu_ll_queue llq, head;
+>   	int ret = 0;
+>   
+> +	llq.max_n_shift = cmdq->q.llq.max_n_shift;
 > +
->  	/* Allocate and setup memory for guest. */
->  	vm->vpages_mapped = sparsebit_alloc();
->  	if (phy_pages != 0)
-
-I probably would have restricted this workaround to AMD vendor string,
-but I don't mind this to be like that as well at least for now.
-
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-
-Best regards,
-	Maxim Levitsky
-
+>   	/* 1. Allocate some space in the queue */
+>   	local_irq_save(flags);
+>   	llq.val = READ_ONCE(cmdq->q.llq.val);
+> 
