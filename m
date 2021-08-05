@@ -2,86 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232813E1466
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC733E1469
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239470AbhHEMFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:05:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49566 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232222AbhHEMFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:05:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04CD661155;
-        Thu,  5 Aug 2021 12:05:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628165129;
-        bh=Ck+H5fHI4Uj5s8lLUfFUqZDAYUKh5122ORxvtmz/diU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ojAQ0/Bvj/hG6iywm8KiqE05dPpMEvxcfSxBvuCla2Apr2GSomNOZy/me748qcNBf
-         /pneQ0yIZmcxZxE5+WZIWlbXLnbrLL1MOjrsJY0G18YtgmGBDoPSnmqCqw3tBAs2ZW
-         6+K8oa2lPLSb3Oo9wo3Xh+Fp3gq6uFlW2HpG055EsA0+tNscKhvrCSOjDLfz0nO9Gs
-         JHgxoO2kry+/ilfrvdo+LVBAB13g1pHJ8wr9Xx0++gS/RFAkaX9eUKavPFgryNymxi
-         986wF2pUQzg1oBPgm0RxnRKeA7MFXGZ5lwo2JQ1QQpagI+zGQNNTtJNFLNjjZsYGEn
-         9n34ZvNmViWsQ==
-Received: by mail-wm1-f46.google.com with SMTP id n11so3191260wmd.2;
-        Thu, 05 Aug 2021 05:05:28 -0700 (PDT)
-X-Gm-Message-State: AOAM5333ooI6l7/YwMxByICGoL67Pnt4CNi2p80OsyBlcnPs185VBSsM
-        5fWjW08i0Zcj+bstOKsdQunF6kc1Y5g4rPuI8s4=
-X-Google-Smtp-Source: ABdhPJzAfd9uLhTu78AQivM2yBgntkHqfEKvNqhhAmF5n8E+GHRMhqoKm0bwhIJJSnrxZVM9ikU7c363gPqVeaTy6cc=
-X-Received: by 2002:a05:600c:3641:: with SMTP id y1mr4545036wmq.43.1628165127559;
- Thu, 05 Aug 2021 05:05:27 -0700 (PDT)
+        id S239474AbhHEMG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232222AbhHEMG2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 08:06:28 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A09EC061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 05:06:13 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id cf5so8039643edb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 05:06:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ertoc34XQ2YSK37Kysk0lOwTGhFvoRTCVq5kxbjqo+U=;
+        b=CBxWj1sSeE3vi+yhdMWpQOTw8qlPx07H7aWU82ZZquLz8RVcAWTAj+jFayZbVo/Wk8
+         jBhAV8A4IIZIa6x1sr/vT85pT0plwJCgnmBQ9TrHnb66D/dGxuPebqs1JAh/8JorQi1w
+         KhFut1dy8BPqhMqMeACjbnASxGg6CrOYJxRDMnUF2X+IWw/+WwXhrMR0cWYM3Mvi74u0
+         yQMnSc7lytZy70YY0zXPf9VjS6MmrfpnlVnbmjy9EDIgwjoCHo7rmS06zXHTglc5/GVM
+         ljwJUo33GriHSpEbeXujiRCORyhl7pjJGT73s62vgMDMPjGVDvbOKJrRW57hwzn+XmaP
+         CgrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ertoc34XQ2YSK37Kysk0lOwTGhFvoRTCVq5kxbjqo+U=;
+        b=XClJT7whE55FdCix2dlloFWdWMPaZ6OQ7nHTqdtOibelgsIgnvY0+wOOF+2vOYH7r8
+         i8zgJnN+RymcnsPTPvvuDTFuiIxeDwytYdggOyKgCU/rubYhehacsrZCqfwVCkxVRXPM
+         C7qJiDSrdCs6gf+iMVDnTgwMjAmrq29Pxq/GgxOcN7rg8/x0iEOT4K2lEXwaNEJeAyMl
+         BstDPGOL/2VLmkYW1gkn1O4PWKkfR8aIw758NgfBEfK0QJLh8LIYNcdCL25uwMY1/dEp
+         WJ0pdRWl9lmaG92d1R65uFmPwVpDl+VZu1eO/+rJ2Qqe0OW+fxpfHQUHdvAyRoKp5nbr
+         1pXQ==
+X-Gm-Message-State: AOAM530g5x3oB4fFYqv1rkYEC4vzqKlV8u4LTo5++sR3RKDuOzajoj7f
+        oFHbcvhibhfdyNe+sROJAxA=
+X-Google-Smtp-Source: ABdhPJw8PM+trx4KYu7wd3tmbcRq1jQ1J2yfZxOZ69fA3kgSsqHHa4YQcb9VfcIxLrRJqEpXwdot4A==
+X-Received: by 2002:a05:6402:d4e:: with SMTP id ec14mr5891853edb.277.1628165172143;
+        Thu, 05 Aug 2021 05:06:12 -0700 (PDT)
+Received: from localhost.localdomain (host-82-51-42-96.retail.telecomitalia.it. [82.51.42.96])
+        by smtp.gmail.com with ESMTPSA id c6sm2191565ede.48.2021.08.05.05.06.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 05:06:11 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] staging: r8188eu: Remove unneeded comments in rtw_mp_ioctl.h
+Date:   Thu,  5 Aug 2021 14:06:09 +0200
+Message-Id: <20210805120609.28588-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210805110048.1696362-1-arnd@kernel.org> <20210805112546.gitosuu7bzogbzyf@skbuf>
- <CAK8P3a0w95+3dBo5OLeCsEi8gjmFqabnSeqeNPQq49=rPeRm=A@mail.gmail.com> <20210805114946.n46mumz2re7fxdto@skbuf>
-In-Reply-To: <20210805114946.n46mumz2re7fxdto@skbuf>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 5 Aug 2021 14:05:11 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3csnad2Ote5JeRAdTwToZNa-2+DGwUs62sobU-ESWmbQ@mail.gmail.com>
-Message-ID: <CAK8P3a3csnad2Ote5JeRAdTwToZNa-2+DGwUs62sobU-ESWmbQ@mail.gmail.com>
-Subject: Re: [PATCH net-next] dsa: sja1105: fix reverse dependency
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 1:49 PM Vladimir Oltean <olteanv@gmail.com> wrote:
->
-> On Thu, Aug 05, 2021 at 01:39:34PM +0200, Arnd Bergmann wrote:
-> > Do you have any opinion on whether that 'select' going the other way is still
-> > relevant?
->
-> Yes, of course it is. It also has nothing to do with build dependencies.
-> With the original DSA design from 2008, an Ethernet switch has separate
-> drivers for
-> (a) accessing its registers
-> (b) manipulating the packets that the switch sends towards a host
->     Ethernet controller ("DSA master")
->
-> The register access drivers are in drivers/net/dsa/*, the packet
-> manipulation ("tagging protocol") drivers are in net/dsa/tag_*.c.
->
-> [ This is because it was originally thought that a "tagging protocol" is
->   completely stateless and you should never need to access a hardware
->   register when manipulating a packet. ]
->
-> When you enable a driver for a switch, you absolutely want to ping
-> through it too, so all register access drivers enable the tagging
-> protocol driver specific to their hardware as well, using 'select'.
-> This works just fine because tagging protocol drivers generally have no
-> dependencies, or if they do, the register access driver inherits them too.
-> So a user does not need to manually enable the tagging protocol driver.
+After commit 85143bdc731b ("staging: r8188eu: include: Remove unused
+const definitions"), some comments are not anymore needed. Remove them
+too. In the while, remove also a line with a void comment.
 
-Got it, thanks for the explanation.
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ drivers/staging/r8188eu/include/rtw_mp_ioctl.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-      Arnd
+diff --git a/drivers/staging/r8188eu/include/rtw_mp_ioctl.h b/drivers/staging/r8188eu/include/rtw_mp_ioctl.h
+index 0376ddbf6011..cf99f39a582e 100644
+--- a/drivers/staging/r8188eu/include/rtw_mp_ioctl.h
++++ b/drivers/staging/r8188eu/include/rtw_mp_ioctl.h
+@@ -11,7 +11,6 @@
+ #include "rtw_efuse.h"
+ #include "rtw_mp.h"
+ 
+-/*  */
+ struct cfg_dbg_msg_struct {
+ 	u32 DebugLevel;
+ 	u32 DebugComponent_H32;
+@@ -52,7 +51,6 @@ struct dr_variable_struct {
+ 
+ #define _irqlevel_changed_(a, b)
+ 
+-/* rtl8188eu_oid_rtl_seg_81_80_00 */
+ int rtl8188eu_oid_rt_pro_set_data_rate_hdl(struct oid_par_priv *poid_par_priv);
+ int rtl8188eu_oid_rt_pro_start_test_hdl(struct oid_par_priv *poid_par_priv);
+ int rtl8188eu_oid_rt_pro_stop_test_hdl(struct oid_par_priv *poid_par_priv);
+@@ -60,7 +58,6 @@ int rtl8188eu_oid_rt_pro_set_channel_direct_call_hdl(struct oid_par_priv *poid_p
+ int rtl8188eu_oid_rt_pro_set_antenna_bb_hdl(struct oid_par_priv *poid_par_priv);
+ int rtl8188eu_oid_rt_pro_set_tx_power_control_hdl(struct oid_par_priv *poid_par_priv);
+ 
+-/* rtl8188eu_oid_rtl_seg_81_80_20 */
+ int rtl8188eu_oid_rt_pro_query_tx_packet_sent_hdl(struct oid_par_priv *poid_par_priv);
+ int rtl8188eu_oid_rt_pro_query_rx_packet_received_hdl(struct oid_par_priv *poid_par_priv);
+ int rtl8188eu_oid_rt_pro_query_rx_packet_crc32_error_hdl(struct oid_par_priv *par_priv);
+@@ -78,7 +75,6 @@ int rtl8188eu_oid_rt_pro_read_bb_reg_hdl(struct oid_par_priv *poid_par_priv);
+ int rtl8188eu_oid_rt_pro_write_rf_reg_hdl(struct oid_par_priv *poid_par_priv);
+ int rtl8188eu_oid_rt_pro_read_rf_reg_hdl(struct oid_par_priv *poid_par_priv);
+ 
+-/* rtl8188eu_oid_rtl_seg_81_85 */
+ int rtl8188eu_oid_rt_wireless_mode_hdl(struct oid_par_priv *poid_par_priv);
+ 
+ /*  rtl8188eu_oid_rtl_seg_87_11_00 */
+-- 
+2.32.0
+
