@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8059B3E11BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316D03E11C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239991AbhHEJ6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 05:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232852AbhHEJ6u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:58:50 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AF2C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 02:58:35 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id l19so7493999pjz.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 02:58:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O0IcL/D/ZU1hAOTd1XphGXL3D3G0tDnrkBfwu1W2heo=;
-        b=Ulos4PtARRFLFCHQeZLRCmj3p88UF2vyD+RUuSiePKTG0K2VBkoVxO8skpEinQTM3q
-         WaBxipBJSFjg/Z9n033egXetgR0VizykxMYKAHGt4ENOuvLdmLxpDQUpti23P8P0hvK1
-         HrcpZbROr+Dm6SbJopW6hYKAJHTxRlb6MIF9FBgNQ7DH7e5YF/ZZQ598KAN3jAWmKPmc
-         V71hXen00lc1z7//wL0nvKL+0+KLKYHi1Jwex4r82JJkg87T39o2ITMZq5z5RbIp3m15
-         GbCkXQ/7YQ202V7v7ehea0hQOOU5zBOumt2z7F/Bm4xaG9IhenfOiJimSqKJODY9c9iV
-         wO4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O0IcL/D/ZU1hAOTd1XphGXL3D3G0tDnrkBfwu1W2heo=;
-        b=c8OLl0Rw5bDgmUvRyVjAhxGmSvBjrMCjWKe6zVAW2A8psE7Kc+KK4adLHnTVfZMY7G
-         SoixB5dnaz6dBthnlqdUu1LXkC6CK0WvsQzuAjG3Rqv2osR1wwZdmO2l6iEblxRyN7Mx
-         kH6UFSRTq+0V/oFMs7P5KLe3yDE8ZLJfZm6yzctWCzCgU9Radb3TdaJDiNZ8CUJX8ayd
-         5RmFu6okHoei2Er0ZHsbl16Yp9JPgUCEvI6BuMIlxzrRNB1UIDAdKi60tMQeYZG+phhH
-         rfCUA65RnYIDBYRf2K/cmT+FLufTO6yF7Ob0o94BFY9XSirRqui/93FggPrxr45PoDK3
-         PK+A==
-X-Gm-Message-State: AOAM532ZZD9cvpMMTg6Bu+ycBaEAGshj/8gPk6a+VPbYCkx29cF6qePG
-        n2i4afcJQrhj+iXCF6Zzu+E=
-X-Google-Smtp-Source: ABdhPJze8sjte1j57KB4oGCX6wwiziscvbsIR/9o/sSCBJze52HYZxBazUyzLi2/KxbgP6IS5ZQzdg==
-X-Received: by 2002:aa7:838a:0:b029:3b7:31a5:649c with SMTP id u10-20020aa7838a0000b02903b731a5649cmr4160794pfm.44.1628157515514;
-        Thu, 05 Aug 2021 02:58:35 -0700 (PDT)
-Received: from ownia.. ([173.248.225.217])
-        by smtp.gmail.com with ESMTPSA id n22sm5974444pff.57.2021.08.05.02.58.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 02:58:35 -0700 (PDT)
-From:   Weizhao Ouyang <o451686892@gmail.com>
-To:     Julia.Lawall@inria.fr, Gilles.Muller@inria.fr,
-        nicolas.palix@imag.fr, michal.lkml@markovi.net,
-        o451686892@gmail.com, efremov@linux.com
-Cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
-Subject: [RESEND] coccinelle: api: rename kzfree to kfree_sensitive
-Date:   Thu,  5 Aug 2021 17:58:23 +0800
-Message-Id: <20210805095822.1732125-1-o451686892@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S240065AbhHEKAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 06:00:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:42106 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239980AbhHEKAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 06:00:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 373706D;
+        Thu,  5 Aug 2021 03:00:03 -0700 (PDT)
+Received: from [10.57.6.87] (unknown [10.57.6.87])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4BE503F719;
+        Thu,  5 Aug 2021 02:59:59 -0700 (PDT)
+Subject: Re: [PATCH v3] PM: EM: Increase energy calculation precision
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Chris Redpath <Chris.Redpath@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        CCj.Yeh@mediatek.com
+References: <20210803102744.23654-1-lukasz.luba@arm.com>
+ <4e6b02fb-b421-860b-4a07-ed6cccdc1570@arm.com>
+ <CAJZ5v0hgpM+ErHMTYLFFasvn=Ptc0MyaaFn=HSxOcGcDcBwMVg@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <c23f8fac-4515-5891-0778-18e65eeb7087@arm.com>
+Date:   Thu, 5 Aug 2021 10:59:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0hgpM+ErHMTYLFFasvn=Ptc0MyaaFn=HSxOcGcDcBwMVg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 453431a54934 ("mm, treewide: rename kzfree() to
-kfree_sensitive()") renamed kzfree() to kfree_sensitive(),
-it should be applied to coccinelle.
 
-Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
----
- scripts/coccinelle/api/kvmalloc.cocci | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/coccinelle/api/kvmalloc.cocci b/scripts/coccinelle/api/kvmalloc.cocci
-index c30dab718a49..5ddcb76b76b0 100644
---- a/scripts/coccinelle/api/kvmalloc.cocci
-+++ b/scripts/coccinelle/api/kvmalloc.cocci
-@@ -79,7 +79,7 @@ position p : script:python() { relevant(p) };
-   } else {
-     ... when != krealloc(E, ...)
-         when any
--*   \(kfree\|kzfree\)(E)
-+*   \(kfree\|kfree_sensitive\)(E)
-     ...
-   }
- 
--- 
-2.30.2
+On 8/4/21 7:10 PM, Rafael J. Wysocki wrote:
+> On Tue, Aug 3, 2021 at 3:31 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> Hi Rafael,
+>>
+>> On 8/3/21 11:27 AM, Lukasz Luba wrote:
+>>
+>> [snip]
+>>
+>>>
+>>> Fixes: 27871f7a8a341ef ("PM: Introduce an Energy Model management framework")
+>>> Reported-by: CCJ Yeh <CCj.Yeh@mediatek.com>
+>>> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>>> ---
+>>>
+>>> v3 changes:
+>>> - adjusted patch description according to Dietmar's comments
+>>> - added Dietmar's review tag
+>>> - added one empty line in the code to separate them
+>>>
+>>>    include/linux/energy_model.h | 16 ++++++++++++++++
+>>>    kernel/power/energy_model.c  |  4 +++-
+>>>    2 files changed, 19 insertions(+), 1 deletion(-)
+>>>
+>>
+>> Could you take this patch via your PM tree, please?
+> 
+> I can do that, but do you want a Cc:stable tag on it?
+> 
 
+No, thank you. I'll prepare a dedicated patches and send them after this
+patch gets a proper commit ID. I've done similar things recently with
+some thermal stuff and different stable versions [1].
+
+Please take this patch. I will handle the stable testing, preparation
+separately.
+
+Regards,
+Lukasz
+
+[1] https://lore.kernel.org/lkml/20210514104916.19975-1-lukasz.luba@arm.com/
