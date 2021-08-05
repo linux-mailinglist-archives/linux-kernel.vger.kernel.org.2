@@ -2,240 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6850A3E1858
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CED83E1834
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239999AbhHEPmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242303AbhHEPll (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:41:41 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8296AC061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 08:41:26 -0700 (PDT)
-Message-ID: <20210805153953.626686331@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628178085;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=7Gt7wkKDeTyrAIfWaoS+eX8qMORYsBHar2hZJqWkADQ=;
-        b=Omp2btIaX9tPrrOqvTE8pfu1GYnqwHyF7bgUlqkmSXOQmKGFKL1sB/w/C+GOSgsqN7IhNG
-        6eriFjzhn1CZ2Bw1i/gXN/YsQBjRkk98o1PPqC3/xaU+5+oUxtI1VcIDSugXylnSbPG4Sn
-        QO6UnqepN0oaBDwj6h5/IsSmhbLy7BqKD6Yac3/Xc42vdb0ln9V/N5/CAbjAtbSS1jrOev
-        rQeA6++S4tsbtZEuMa/wNVrZhektU4HYiF9A///6e/fsPNpz2o/5yzifUzEeGVquYVM8GX
-        WPc9VYM8ovsWdvbZ5Nhh1yTMbYtlmG9kUyKi9XjLScbxmv8uTXmfP+TfTCz1vg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628178085;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=7Gt7wkKDeTyrAIfWaoS+eX8qMORYsBHar2hZJqWkADQ=;
-        b=E6WOLR/tByA8gl/dK9j4L5Q6NIlgZapdgdkpSIpMw7oTr5Pi8cSFzLG0/vVWw4jn4jFUum
-        XBZCZy++vQXyK0Dw==
-Date:   Thu, 05 Aug 2021 17:13:14 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Mike Galbraith <efault@gmx.de>
-Subject: [patch V3 14/64] locking/rtmutex: Provide rt_mutex_slowlock_locked()
-References: <20210805151300.330412127@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+        id S233549AbhHEPiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:38:50 -0400
+Received: from mga11.intel.com ([192.55.52.93]:36579 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242170AbhHEPii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 11:38:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="211079053"
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="211079053"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 08:38:23 -0700
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="512734235"
+Received: from arthur-vostro-3668.sh.intel.com ([10.239.13.1])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 08:38:19 -0700
+From:   Zeng Guang <guang.zeng@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Kai Huang <kai.huang@intel.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Robert Hu <robert.hu@intel.com>, Gao Chao <chao.gao@intel.com>,
+        Zeng Guang <guang.zeng@intel.com>,
+        Robert Hoo <robert.hu@linux.intel.com>
+Subject: [PATCH v3 3/6] KVM: VMX: Detect Tertiary VM-Execution control when setup VMCS config
+Date:   Thu,  5 Aug 2021 23:13:14 +0800
+Message-Id: <20210805151317.19054-4-guang.zeng@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210805151317.19054-1-guang.zeng@intel.com>
+References: <20210805151317.19054-1-guang.zeng@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Robert Hoo <robert.hu@linux.intel.com>
 
-Split the inner workings of rt_mutex_slowlock() out into a separate
-function which can be reused by the upcoming RT lock substitutions,
-e.g. for rw_semaphores.
+Check VMX feature on tertiary execution control in VMCS config setup.
+Currently it's not supported for hyper-v and disabled for now.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Robert Hoo <robert.hu@linux.intel.com>
+Signed-off-by: Zeng Guang <guang.zeng@intel.com>
 ---
-V2: Add the dropped debug_rt_mutex_free_waiter() - Valentin
----
- kernel/locking/rtmutex.c     |  100 ++++++++++++++++++++++++-------------------
- kernel/locking/rtmutex_api.c |    2 
- 2 files changed, 59 insertions(+), 43 deletions(-)
----
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -1106,7 +1106,7 @@ static void __sched remove_waiter(struct
+ arch/x86/include/asm/vmx.h      |  3 +++
+ arch/x86/kvm/vmx/capabilities.h |  7 ++++++
+ arch/x86/kvm/vmx/evmcs.c        |  2 ++
+ arch/x86/kvm/vmx/evmcs.h        |  1 +
+ arch/x86/kvm/vmx/vmcs.h         |  1 +
+ arch/x86/kvm/vmx/vmx.c          | 40 ++++++++++++++++++++++++++++++++-
+ arch/x86/kvm/vmx/vmx.h          |  1 +
+ 7 files changed, 54 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
+index 0ffaa3156a4e..8c929596a299 100644
+--- a/arch/x86/include/asm/vmx.h
++++ b/arch/x86/include/asm/vmx.h
+@@ -31,6 +31,7 @@
+ #define CPU_BASED_RDTSC_EXITING                 VMCS_CONTROL_BIT(RDTSC_EXITING)
+ #define CPU_BASED_CR3_LOAD_EXITING		VMCS_CONTROL_BIT(CR3_LOAD_EXITING)
+ #define CPU_BASED_CR3_STORE_EXITING		VMCS_CONTROL_BIT(CR3_STORE_EXITING)
++#define CPU_BASED_ACTIVATE_TERTIARY_CONTROLS	VMCS_CONTROL_BIT(TERTIARY_CONTROLS)
+ #define CPU_BASED_CR8_LOAD_EXITING              VMCS_CONTROL_BIT(CR8_LOAD_EXITING)
+ #define CPU_BASED_CR8_STORE_EXITING             VMCS_CONTROL_BIT(CR8_STORE_EXITING)
+ #define CPU_BASED_TPR_SHADOW                    VMCS_CONTROL_BIT(VIRTUAL_TPR)
+@@ -221,6 +222,8 @@ enum vmcs_field {
+ 	ENCLS_EXITING_BITMAP_HIGH	= 0x0000202F,
+ 	TSC_MULTIPLIER                  = 0x00002032,
+ 	TSC_MULTIPLIER_HIGH             = 0x00002033,
++	TERTIARY_VM_EXEC_CONTROL	= 0x00002034,
++	TERTIARY_VM_EXEC_CONTROL_HIGH	= 0x00002035,
+ 	GUEST_PHYSICAL_ADDRESS          = 0x00002400,
+ 	GUEST_PHYSICAL_ADDRESS_HIGH     = 0x00002401,
+ 	VMCS_LINK_POINTER               = 0x00002800,
+diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
+index 4705ad55abb5..38d414f64e61 100644
+--- a/arch/x86/kvm/vmx/capabilities.h
++++ b/arch/x86/kvm/vmx/capabilities.h
+@@ -59,6 +59,7 @@ struct vmcs_config {
+ 	u32 pin_based_exec_ctrl;
+ 	u32 cpu_based_exec_ctrl;
+ 	u32 cpu_based_2nd_exec_ctrl;
++	u64 cpu_based_3rd_exec_ctrl;
+ 	u32 vmexit_ctrl;
+ 	u32 vmentry_ctrl;
+ 	struct nested_vmx_msrs nested;
+@@ -131,6 +132,12 @@ static inline bool cpu_has_secondary_exec_ctrls(void)
+ 		CPU_BASED_ACTIVATE_SECONDARY_CONTROLS;
  }
  
- /**
-- * __rt_mutex_slowlock() - Perform the wait-wake-try-to-take loop
-+ * rt_mutex_slowlock_block() - Perform the wait-wake-try-to-take loop
-  * @lock:		 the rt_mutex to take
-  * @state:		 the state the task should block in (TASK_INTERRUPTIBLE
-  *			 or TASK_UNINTERRUPTIBLE)
-@@ -1115,10 +1115,10 @@ static void __sched remove_waiter(struct
-  *
-  * Must be called with lock->wait_lock held and interrupts disabled
-  */
--static int __sched __rt_mutex_slowlock(struct rt_mutex_base *lock,
--				       unsigned int state,
--				       struct hrtimer_sleeper *timeout,
--				       struct rt_mutex_waiter *waiter)
-+static int __sched rt_mutex_slowlock_block(struct rt_mutex_base *lock,
-+					   unsigned int state,
-+					   struct hrtimer_sleeper *timeout,
-+					   struct rt_mutex_waiter *waiter)
- {
- 	int ret = 0;
- 
-@@ -1168,52 +1168,37 @@ static void __sched rt_mutex_handle_dead
- 	}
- }
- 
--/*
-- * Slow path lock function:
-+/**
-+ * __rt_mutex_slowlock - Locking slowpath invoked with lock::wait_lock held
-+ * @lock:	The rtmutex to block lock
-+ * @state:	The task state for sleeping
-+ * @chwalk:	Indicator whether full or partial chainwalk is requested
-+ * @waiter:	Initializer waiter for blocking
-  */
--static int __sched rt_mutex_slowlock(struct rt_mutex_base *lock,
--				     unsigned int state,
--				     struct hrtimer_sleeper *timeout,
--				     enum rtmutex_chainwalk chwalk)
-+static int __sched __rt_mutex_slowlock(struct rt_mutex_base *lock,
-+				       unsigned int state,
-+				       enum rtmutex_chainwalk chwalk,
-+				       struct rt_mutex_waiter *waiter)
- {
--	struct rt_mutex_waiter waiter;
--	unsigned long flags;
--	int ret = 0;
--
--	rt_mutex_init_waiter(&waiter);
-+	int ret;
- 
--	/*
--	 * Technically we could use raw_spin_[un]lock_irq() here, but this can
--	 * be called in early boot if the cmpxchg() fast path is disabled
--	 * (debug, no architecture support). In this case we will acquire the
--	 * rtmutex with lock->wait_lock held. But we cannot unconditionally
--	 * enable interrupts in that early boot case. So we need to use the
--	 * irqsave/restore variants.
--	 */
--	raw_spin_lock_irqsave(&lock->wait_lock, flags);
-+	lockdep_assert_held(&lock->wait_lock);
- 
- 	/* Try to acquire the lock again: */
--	if (try_to_take_rt_mutex(lock, current, NULL)) {
--		raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
-+	if (try_to_take_rt_mutex(lock, current, NULL))
- 		return 0;
--	}
- 
- 	set_current_state(state);
- 
--	/* Setup the timer, when timeout != NULL */
--	if (unlikely(timeout))
--		hrtimer_start_expires(&timeout->timer, HRTIMER_MODE_ABS);
--
--	ret = task_blocks_on_rt_mutex(lock, &waiter, current, chwalk);
-+	ret = task_blocks_on_rt_mutex(lock, waiter, current, chwalk);
- 
- 	if (likely(!ret))
--		/* sleep on the mutex */
--		ret = __rt_mutex_slowlock(lock, state, timeout, &waiter);
-+		ret = rt_mutex_slowlock_block(lock, state, NULL, waiter);
- 
- 	if (unlikely(ret)) {
- 		__set_current_state(TASK_RUNNING);
--		remove_waiter(lock, &waiter);
--		rt_mutex_handle_deadlock(ret, chwalk, &waiter);
-+		remove_waiter(lock, waiter);
-+		rt_mutex_handle_deadlock(ret, chwalk, waiter);
- 	}
- 
- 	/*
-@@ -1221,14 +1206,45 @@ static int __sched rt_mutex_slowlock(str
- 	 * unconditionally. We might have to fix that up.
- 	 */
- 	fixup_rt_mutex_waiters(lock);
-+	return ret;
-+}
- 
--	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
-+static inline int __rt_mutex_slowlock_locked(struct rt_mutex_base *lock,
-+					     unsigned int state)
++static inline bool cpu_has_tertiary_exec_ctrls(void)
 +{
-+	struct rt_mutex_waiter waiter;
-+	int ret;
- 
--	/* Remove pending timer: */
--	if (unlikely(timeout))
--		hrtimer_cancel(&timeout->timer);
-+	rt_mutex_init_waiter(&waiter);
-+
-+	ret = __rt_mutex_slowlock(lock, state, RT_MUTEX_MIN_CHAINWALK, &waiter);
- 
- 	debug_rt_mutex_free_waiter(&waiter);
-+	return ret;
++	return vmcs_config.cpu_based_exec_ctrl &
++		CPU_BASED_ACTIVATE_TERTIARY_CONTROLS;
 +}
 +
-+/*
-+ * rt_mutex_slowlock - Locking slowpath invoked when fast path fails
-+ * @lock:	The rtmutex to block lock
-+ * @state:	The task state for sleeping
-+ */
-+static int __sched rt_mutex_slowlock(struct rt_mutex_base *lock,
-+				     unsigned int state)
+ static inline bool cpu_has_vmx_virtualize_apic_accesses(void)
+ {
+ 	return vmcs_config.cpu_based_2nd_exec_ctrl &
+diff --git a/arch/x86/kvm/vmx/evmcs.c b/arch/x86/kvm/vmx/evmcs.c
+index 896b2a50b4aa..03c15e1e5807 100644
+--- a/arch/x86/kvm/vmx/evmcs.c
++++ b/arch/x86/kvm/vmx/evmcs.c
+@@ -299,8 +299,10 @@ const unsigned int nr_evmcs_1_fields = ARRAY_SIZE(vmcs_field_to_evmcs_1);
+ 
+ __init void evmcs_sanitize_exec_ctrls(struct vmcs_config *vmcs_conf)
+ {
++	vmcs_conf->cpu_based_exec_ctrl &= ~EVMCS1_UNSUPPORTED_EXEC_CTRL;
+ 	vmcs_conf->pin_based_exec_ctrl &= ~EVMCS1_UNSUPPORTED_PINCTRL;
+ 	vmcs_conf->cpu_based_2nd_exec_ctrl &= ~EVMCS1_UNSUPPORTED_2NDEXEC;
++	vmcs_conf->cpu_based_3rd_exec_ctrl = 0;
+ 
+ 	vmcs_conf->vmexit_ctrl &= ~EVMCS1_UNSUPPORTED_VMEXIT_CTRL;
+ 	vmcs_conf->vmentry_ctrl &= ~EVMCS1_UNSUPPORTED_VMENTRY_CTRL;
+diff --git a/arch/x86/kvm/vmx/evmcs.h b/arch/x86/kvm/vmx/evmcs.h
+index 2ec9b46f0d0c..8a20295f4f0f 100644
+--- a/arch/x86/kvm/vmx/evmcs.h
++++ b/arch/x86/kvm/vmx/evmcs.h
+@@ -50,6 +50,7 @@ DECLARE_STATIC_KEY_FALSE(enable_evmcs);
+  */
+ #define EVMCS1_UNSUPPORTED_PINCTRL (PIN_BASED_POSTED_INTR | \
+ 				    PIN_BASED_VMX_PREEMPTION_TIMER)
++#define EVMCS1_UNSUPPORTED_EXEC_CTRL (CPU_BASED_ACTIVATE_TERTIARY_CONTROLS)
+ #define EVMCS1_UNSUPPORTED_2NDEXEC					\
+ 	(SECONDARY_EXEC_VIRTUAL_INTR_DELIVERY |				\
+ 	 SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES |			\
+diff --git a/arch/x86/kvm/vmx/vmcs.h b/arch/x86/kvm/vmx/vmcs.h
+index 4b9957e2bf5b..83e2065a955d 100644
+--- a/arch/x86/kvm/vmx/vmcs.h
++++ b/arch/x86/kvm/vmx/vmcs.h
+@@ -48,6 +48,7 @@ struct vmcs_controls_shadow {
+ 	u32 pin;
+ 	u32 exec;
+ 	u32 secondary_exec;
++	u64 tertiary_exec;
+ };
+ 
+ /*
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 927a552393b9..53de999054d1 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -2391,6 +2391,23 @@ static __init int adjust_vmx_controls(u32 ctl_min, u32 ctl_opt,
+ 	return 0;
+ }
+ 
++static __init int adjust_vmx_controls_64(u64 ctl_min, u64 ctl_opt,
++					 u32 msr, u64 *result)
 +{
-+	unsigned long flags;
-+	int ret;
++	u64 vmx_msr;
++	u64 ctl = ctl_min | ctl_opt;
 +
-+	/*
-+	 * Technically we could use raw_spin_[un]lock_irq() here, but this can
-+	 * be called in early boot if the cmpxchg() fast path is disabled
-+	 * (debug, no architecture support). In this case we will acquire the
-+	 * rtmutex with lock->wait_lock held. But we cannot unconditionally
-+	 * enable interrupts in that early boot case. So we need to use the
-+	 * irqsave/restore variants.
-+	 */
-+	raw_spin_lock_irqsave(&lock->wait_lock, flags);
-+	ret = __rt_mutex_slowlock_locked(lock, state);
-+	raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
++	rdmsrl(msr, vmx_msr);
++	ctl &= vmx_msr; /* bit == 1 means it can be set */
++
++	/* Ensure minimum (required) set of control bits are supported. */
++	if (ctl_min & ~ctl)
++		return -EIO;
++
++	*result = ctl;
++	return 0;
++}
++
+ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+ 				    struct vmx_capability *vmx_cap)
+ {
+@@ -2399,6 +2416,7 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+ 	u32 _pin_based_exec_control = 0;
+ 	u32 _cpu_based_exec_control = 0;
+ 	u32 _cpu_based_2nd_exec_control = 0;
++	u64 _cpu_based_3rd_exec_control = 0;
+ 	u32 _vmexit_control = 0;
+ 	u32 _vmentry_control = 0;
  
- 	return ret;
+@@ -2420,7 +2438,8 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+ 
+ 	opt = CPU_BASED_TPR_SHADOW |
+ 	      CPU_BASED_USE_MSR_BITMAPS |
+-	      CPU_BASED_ACTIVATE_SECONDARY_CONTROLS;
++	      CPU_BASED_ACTIVATE_SECONDARY_CONTROLS |
++	      CPU_BASED_ACTIVATE_TERTIARY_CONTROLS;
+ 	if (adjust_vmx_controls(min, opt, MSR_IA32_VMX_PROCBASED_CTLS,
+ 				&_cpu_based_exec_control) < 0)
+ 		return -EIO;
+@@ -2494,6 +2513,16 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+ 				"1-setting enable VPID VM-execution control\n");
+ 	}
+ 
++	if (_cpu_based_exec_control & CPU_BASED_ACTIVATE_TERTIARY_CONTROLS) {
++		u64 opt3 = 0;
++		u64 min3 = 0;
++
++		if (adjust_vmx_controls_64(min3, opt3,
++					   MSR_IA32_VMX_PROCBASED_CTLS3,
++					   &_cpu_based_3rd_exec_control))
++			return -EIO;
++	}
++
+ 	min = VM_EXIT_SAVE_DEBUG_CONTROLS | VM_EXIT_ACK_INTR_ON_EXIT;
+ #ifdef CONFIG_X86_64
+ 	min |= VM_EXIT_HOST_ADDR_SPACE_SIZE;
+@@ -2581,6 +2610,7 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+ 	vmcs_conf->pin_based_exec_ctrl = _pin_based_exec_control;
+ 	vmcs_conf->cpu_based_exec_ctrl = _cpu_based_exec_control;
+ 	vmcs_conf->cpu_based_2nd_exec_ctrl = _cpu_based_2nd_exec_control;
++	vmcs_conf->cpu_based_3rd_exec_ctrl = _cpu_based_3rd_exec_control;
+ 	vmcs_conf->vmexit_ctrl         = _vmexit_control;
+ 	vmcs_conf->vmentry_ctrl        = _vmentry_control;
+ 
+@@ -4148,6 +4178,11 @@ u32 vmx_exec_control(struct vcpu_vmx *vmx)
+ 	return exec_control;
  }
-@@ -1239,7 +1255,7 @@ static __always_inline int __rt_mutex_lo
- 	if (likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
- 		return 0;
  
--	return rt_mutex_slowlock(lock, state, NULL, RT_MUTEX_MIN_CHAINWALK);
-+	return rt_mutex_slowlock(lock, state);
- }
++u64 vmx_tertiary_exec_control(struct vcpu_vmx *vmx)
++{
++	return vmcs_config.cpu_based_3rd_exec_ctrl;
++}
++
+ /*
+  * Adjust a single secondary execution control bit to intercept/allow an
+  * instruction in the guest.  This is usually done based on whether or not a
+@@ -4319,6 +4354,9 @@ static void init_vmcs(struct vcpu_vmx *vmx)
+ 		secondary_exec_controls_set(vmx, vmx->secondary_exec_control);
+ 	}
  
- static int __sched __rt_mutex_slowtrylock(struct rt_mutex_base *lock)
---- a/kernel/locking/rtmutex_api.c
-+++ b/kernel/locking/rtmutex_api.c
-@@ -342,7 +342,7 @@ int __sched rt_mutex_wait_proxy_lock(str
- 	raw_spin_lock_irq(&lock->wait_lock);
- 	/* sleep on the mutex */
- 	set_current_state(TASK_INTERRUPTIBLE);
--	ret = __rt_mutex_slowlock(lock, TASK_INTERRUPTIBLE, to, waiter);
-+	ret = rt_mutex_slowlock_block(lock, TASK_INTERRUPTIBLE, to, waiter);
- 	/*
- 	 * try_to_take_rt_mutex() sets the waiter bit unconditionally. We might
- 	 * have to fix that up.
++	if (cpu_has_tertiary_exec_ctrls())
++		tertiary_exec_controls_set(vmx, vmx_tertiary_exec_control(vmx));
++
+ 	if (kvm_vcpu_apicv_active(&vmx->vcpu)) {
+ 		vmcs_write64(EOI_EXIT_BITMAP0, 0);
+ 		vmcs_write64(EOI_EXIT_BITMAP1, 0);
+diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+index 945c6639ce24..448006bd8fa7 100644
+--- a/arch/x86/kvm/vmx/vmx.h
++++ b/arch/x86/kvm/vmx/vmx.h
+@@ -478,6 +478,7 @@ static inline u32 vmx_vmexit_ctrl(void)
+ 
+ u32 vmx_exec_control(struct vcpu_vmx *vmx);
+ u32 vmx_pin_based_exec_ctrl(struct vcpu_vmx *vmx);
++u64 vmx_tertiary_exec_control(struct vcpu_vmx *vmx);
+ 
+ static inline struct kvm_vmx *to_kvm_vmx(struct kvm *kvm)
+ {
+-- 
+2.25.1
 
