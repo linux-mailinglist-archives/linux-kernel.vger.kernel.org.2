@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D5D3E1128
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258A53E1132
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239678AbhHEJSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 05:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
+        id S233072AbhHEJUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 05:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232046AbhHEJSj (ORCPT
+        with ESMTP id S232258AbhHEJUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:18:39 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB3CC061765;
-        Thu,  5 Aug 2021 02:18:25 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id mt6so7225525pjb.1;
-        Thu, 05 Aug 2021 02:18:25 -0700 (PDT)
+        Thu, 5 Aug 2021 05:20:32 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E39DC061765;
+        Thu,  5 Aug 2021 02:20:17 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id y200so5869340iof.1;
+        Thu, 05 Aug 2021 02:20:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZwVoN/DI9XW1PFvWC8iFcWp68xBNJWcGRgCDQYYughw=;
-        b=FR5RGyfUSND4F+gmoV9oK380dxTM7+ziCHumx4TBxTt6bi1b6SMISZ+Tgw5TKasDR0
-         bVjwAf9p6D1bugYEFB7+c1F17/uLJ25a1RTM9tUDO1JKDhadgjAP0sIiw5w31ADzrwFX
-         ycqgZrXjPEJk4i1rqXDYq+1ZVheRFJ+c4PDGmiDmV5+AVUf4hO2ArjtScS/DCYovjUoH
-         BZx/M5IPR1b2YvQoA+rRUJuMMzSresa7T8zDtc256V0ZjMJnJEaIhXoay7VDU8Hgjd5U
-         CZJ2Z2aO/MOqErvpGLZKqJbaJj7ggskmjKe1QOOF631KNQsvpCrPbongWu0LYSKIRyor
-         Y+Dg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gmxmbal5kN8ALwaA2TjN7nOaacEIqVHPBww5o4ZLZEc=;
+        b=OTPZ/ue8FcpPntTRetaZvV8hc8RlWy4XkuE+tMA6Qhva/AlRgX3auNlI7HPA6+z1o3
+         RQdc8lK1I0XdtJI+wvPo5hcETJGwZY7n8z+rIKfMMvwyUuP7J+/Zyg7x4ldMpuR+qC+D
+         X0V7XPd7lHhuJMx+yufSuxAxE8aloRNUKA6oOJ9Y+GpQN3rZ0TBLxhGMkbfXaY+gMMMk
+         5Hab3YAiMmwkbdY/qIvj5rRVxj08OiMDIl/xKygyhWEek6Cl0gyVorEotDqenuPEei5h
+         PFeiWo277J9nvXLcWtdbffBURbQzRqze1M9GrvmBL+FI7tvWiV2vM7PJvdbowaGyxUAU
+         BZVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZwVoN/DI9XW1PFvWC8iFcWp68xBNJWcGRgCDQYYughw=;
-        b=BiYpfoFKM+W+lX3L37U3ctL7mrgs5JoYpov+edmUOlX9Ya5oq11oaBKyFhCwk4Ckk1
-         prdYgMmoMjUpmXTkJGglFufBqwPPSrky+ZSWQeDWe3UVUOGjDd/rlrWZk/HGhXonwlGa
-         MkMz0MahQfITT68o2ravJc3kSbHIXmeV1q5516oiyPLw8fsPVPQymn3cwidzLpDIx7Uq
-         9rcr3qscOTcKbrlbYp/MQkD74CdRrDOXKqStc5em2TBW3s4c3i+DYWqwlz29quS1p4F+
-         /V3OJSOqNGkcdt8hUiVsvy8z8t55SYwEQqdWvQSnATSQ1VDaW7h8/H58lOBnymMS4J0y
-         c8yQ==
-X-Gm-Message-State: AOAM531GlJSn7yEADNhO2W9a7u5VKrfGWE7b3ZXKoD5QATTcR5v8HOff
-        hWLvNIGwiMMunXRY/116/7o=
-X-Google-Smtp-Source: ABdhPJw8fzKyJU1taP3hkSUjNczdllqZhha3EOq7EN43CuiVgY/sEQz0EF8oBb8Tq+7Uk3Cbu7LIHg==
-X-Received: by 2002:a63:a902:: with SMTP id u2mr754513pge.123.1628155104681;
-        Thu, 05 Aug 2021 02:18:24 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id b8sm5220826pjo.51.2021.08.05.02.18.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Aug 2021 02:18:24 -0700 (PDT)
-Subject: Re: [PATCH net-next 1/3] dt-bindings: net: fsl, fec: add "fsl,
- wakeup-irq" property
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>, davem@davemloft.net,
-        kuba@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com, andrew@lunn.ch
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210805074615.29096-1-qiangqing.zhang@nxp.com>
- <20210805074615.29096-2-qiangqing.zhang@nxp.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <2e1a14bf-2fa8-ed39-d133-807c4e14859c@gmail.com>
-Date:   Thu, 5 Aug 2021 02:18:11 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gmxmbal5kN8ALwaA2TjN7nOaacEIqVHPBww5o4ZLZEc=;
+        b=IzDzFJYPqHZR9lxkIZAzOMCl2K0yNqaampU4bShc8a9eoloXjqeOv11pCn3ZkpJeHv
+         t0KPojfzUXTKsU3RZ5IP7AmMTvJX5lhRhKASG7nbM/iNPv5MNgQY3/Yi4+Dxm6uuxkeq
+         pE7xea65HsiA4kDi9v8HgRjyZe5YFYZXRR23PTgjXeoubDaOgv66I0oSbQ1up5uBOi7O
+         QKwVHkBqoGl0j3SY21iEALAxVJko8XCjErfJGxbe0kdfNdcR4izxv15sdt1uTw1+gXrF
+         QeIkhWy2UDJVh/PN6Vt2g19bgnTeIY7NP87etl4nEQVo+FRLLLou6+58lxY5GR5REeTB
+         Xoww==
+X-Gm-Message-State: AOAM533x+EKr9ulVfXYRJWglKUbC1gVIOHEB/inaYlVBzpH1ZbuyJift
+        BFkpJB/Ab+QKXaqmXunrWvYoDd/p3ftCOyCfryM=
+X-Google-Smtp-Source: ABdhPJzj90GzKVMvuigvCbMYK6QaClIQIGsSj4o9T55BNJMS+gKSjLMfX+sql1HcMcsIKDElrvqSZjS0mJLvMJ7GhxQ=
+X-Received: by 2002:a02:b047:: with SMTP id q7mr3722748jah.130.1628155217097;
+ Thu, 05 Aug 2021 02:20:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210805074615.29096-2-qiangqing.zhang@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1627098243-2742-1-git-send-email-dillon.minfei@gmail.com>
+ <1627098243-2742-3-git-send-email-dillon.minfei@gmail.com> <CACRpkdYReUdg_7oSTqcsA_+9tS9w6MH90=KV1rGyr4YWT=NW-w@mail.gmail.com>
+In-Reply-To: <CACRpkdYReUdg_7oSTqcsA_+9tS9w6MH90=KV1rGyr4YWT=NW-w@mail.gmail.com>
+From:   Dillon Min <dillon.minfei@gmail.com>
+Date:   Thu, 5 Aug 2021 17:19:41 +0800
+Message-ID: <CAL9mu0LfcLS1iNQnamxA_oTrxu8eEBpUm+u92V2d9-8qz6hvow@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] ARM: dts: stm32: fix dtbs_check warning on ili9341
+ dts binding
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Alexandre TORGUE <Alexandre.torgue@foss.st.com>,
+        Peter Robinson <pbrobinson@gmail.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        =?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        kbuild-all@lists.01.org, linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus
 
+Thanks.
 
-On 8/5/2021 12:46 AM, Joakim Zhang wrote:
-> Add "fsl,wakeup-irq" property for FEC controller to select wakeup irq
-> source.
-> 
-> Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+On Thu, 5 Aug 2021 at 17:11, Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Sat, Jul 24, 2021 at 5:44 AM <dillon.minfei@gmail.com> wrote:
+>
+> > From: Dillon Min <dillon.minfei@gmail.com>
+> >
+> > Since the compatible string defined from ilitek,ili9341.yaml is
+> > "st,sf-tc240t-9370-t", "ilitek,ili9341"
+> >
+> > so, append "ilitek,ili9341" to avoid the below dtbs_check warning.
+> >
+> > arch/arm/boot/dts/stm32f429-disco.dt.yaml: display@1: compatible:
+> > ['st,sf-tc240t-9370-t'] is too short
+> >
+> > Fixes: a726e2f000ec ("ARM: dts: stm32: enable ltdc binding with ili9341, gyro l3gd20 on stm32429-disco board")
+> > Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > ---
+> > v4: no change.
+>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Please funnel this patch through the STM and ARM SoC tree.
 
-Why are not you making use of the standard interrupts-extended property 
-which allows different interrupt lines to be originating from different 
-interrupt controllers, e.g.:
+Sure, I will let Alex know. Thanks for your help on this driver.
 
-interrupts-extended = <&gic GIC_SPI 112 4>, <&wakeup_intc 0>;
--- 
-Florian
+Hi Alex,
+Should I send v5 with Linus's Reviewed-by tag on this patch? thanks.
+
+Best Regards
+Dillon
+
+>
+> Yours,
+> Linus Walleij
