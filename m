@@ -2,235 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3960B3E1976
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931073E197A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbhHEQ2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 12:28:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:50158 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229762AbhHEQ2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 12:28:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0BAFC31B;
-        Thu,  5 Aug 2021 09:27:46 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC38C3F66F;
-        Thu,  5 Aug 2021 09:27:42 -0700 (PDT)
-Subject: Re: [PATCH v3 2/7] soc: rockchip: io-domain: add rk3568 support
-To:     Michael Riesch <michael.riesch@wolfvision.net>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Liang Chen <cl@rock-chips.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Simon Xue <xxm@rock-chips.com>,
-        Jianqun Xu <jay.xu@rock-chips.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Tobias Schramm <t.schramm@manjaro.org>,
-        Johan Jonker <jbx6244@gmail.com>
-References: <20210805120107.27007-1-michael.riesch@wolfvision.net>
- <20210805120107.27007-3-michael.riesch@wolfvision.net>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <8008800c-c518-30d4-edcf-57566e7a1251@arm.com>
-Date:   Thu, 5 Aug 2021 17:27:36 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232148AbhHEQaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 12:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231865AbhHEQ3x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 12:29:53 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D6DC061765;
+        Thu,  5 Aug 2021 09:29:38 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id cl16-20020a17090af690b02901782c35c4ccso7057748pjb.5;
+        Thu, 05 Aug 2021 09:29:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rsYpGvyHZuOAJzeF+YGA1lgrH6KHim3VPc69mv3Sy6k=;
+        b=Ae8AHqFNWti/dfbrUwRJX9O6HjkRwWemoXe3vsBKlen8ZuErEf9Z1oaXxuKWfo9MOO
+         biQ/CRLxFUD1BUyEfN8giwA4Twx28L8761JMm9ba8LlCmUD0S7TtJPQbBDIzcMJ0C7/s
+         GpRCsm2nWFIH8NevRBHk3qlVVSmV3I35dFJnH2uPlf6iT3Y66NCiSZ9TAey4tdobPlXd
+         mukkCiq2KP67QbkICDeDA0Sj7ScxygIuQPWrco+N/cKona56tTnPAWu/OUAH8foRRmsk
+         zfx1RLSyICufrMh7DBMFpfkb3SDcscVZAZxvJ3ZwC4GqhAifoUlHm1JvxFhG0GsltsH5
+         aKxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rsYpGvyHZuOAJzeF+YGA1lgrH6KHim3VPc69mv3Sy6k=;
+        b=OGvrPAkAVCKn+FpgYE84m5M/aZn812uMz/lLAxpKPaezz9zmVQbvkB3Z5RvkwlH+h1
+         W/NH5Jj0yebn6d/BRnyc5zLsdYWn12QXcIXP1daS3Xvw8YI3BPH8s47j7HDCML+pJdUP
+         y50al2lCAi/rHddwLUJ8TsUx+4DeqbWNVmI5L1jjP1r4TvBvO8Kmp1DfnhRYNmExgSW2
+         ibbJOURU3tg1TrbsATb5nmXj1b704VEcpq9sqDP2OgTRH9x9cJymMS9AgGKn2NayqqyJ
+         C9PTiLUc4ceuZaxkb7xNXdLmv5ED1ejFMoo7C4pmPTHM1uU6KsptkSnhRLEgYUlK+yDE
+         jrWA==
+X-Gm-Message-State: AOAM5324bU00kKO55TUzTMeIb9sOvMotqqpPW1eBZnozui/f4aBcUeUQ
+        HEAgVpb2dF5WvhfsAD853VI=
+X-Google-Smtp-Source: ABdhPJyciQ6R/i/idfHq+fumh1UWhMRqYa1whmv0xe9IGfxUKlMLqISnuFXRCbaCr7KfYGe+CB1kBg==
+X-Received: by 2002:a17:90b:38c3:: with SMTP id nn3mr5687810pjb.193.1628180978077;
+        Thu, 05 Aug 2021 09:29:38 -0700 (PDT)
+Received: from localhost.localdomain ([139.5.31.161])
+        by smtp.googlemail.com with ESMTPSA id nr6sm62551pjb.39.2021.08.05.09.29.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 09:29:37 -0700 (PDT)
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: [PATCH v15 0/9] PCI: Expose and manage PCI device reset
+Date:   Thu,  5 Aug 2021 21:59:08 +0530
+Message-Id: <20210805162917.3989-1-ameynarkhede03@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210805120107.27007-3-michael.riesch@wolfvision.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-05 13:01, Michael Riesch wrote:
-> From: Jianqun Xu <jay.xu@rock-chips.com>
-> 
-> The io-domain registers on RK3568 SoCs have three separated bits to
-> enable/disable the 1.8v/2.5v/3.3v power.
-> 
-> This patch make the write to be a operation, allow rk3568 uses a private
-> register set function.
-> 
-> Since the 2.5v is not used on RK3568, so the driver only set
+PCI and PCIe devices may support a number of possible reset mechanisms
+for example Function Level Reset (FLR) provided via Advanced Feature or
+PCIe capabilities, Power Management reset, bus reset, or device specific reset.
+Currently the PCI subsystem creates a policy prioritizing these reset methods
+which provides neither visibility nor control to userspace.
 
-FWIW, this seems at odds with what the first paragraph says - can anyone 
-clarify what exactly "not used" means here? Is it that the I/O domain 
-controller has been redesigned to support more than two logic levels on 
-the new generation of SoCs, but RK3568's I/O pads still only physically 
-support 1.8v and 3.3v; or is it that it *can* support 2.5v as well but 
-no currently-known RK3568-based designs use that?
+Expose the reset methods available per device to userspace, via sysfs
+and allow an administrative user or device owner to have ability to
+manage per device reset method priorities or exclusions.
+This feature aims to allow greater control of a device for use cases
+as device assignment, where specific device or platform issues may
+interact poorly with a given reset method, and for which device specific
+quirks have not been developed.
 
-In the former case it's just a wording issue in the commit message, but 
-in the latter it's arguably worth implementing support now for the sake 
-of future compatibility.
+Changes in v15:
+	- Fix use of uninitialized variable in patch 3/9
 
-Robin.
+Changes in v14:
+	- Remove duplicate entries from pdev->reset_methods as per
+	  Shanker's suggestion
 
-> 1.8v [enable] + 3.3v [disable] for 1.8v mode
-> 1.8v [disable] + 3.3v [enable] for 3.3v mode
-> 
-> There is not register order requirement which has been cleared by our IC
-> team.
-> 
-> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
-> ---
->   drivers/soc/rockchip/io-domain.c | 88 +++++++++++++++++++++++++++++---
->   1 file changed, 80 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
-> index cf8182fc3642..13c446fd33a9 100644
-> --- a/drivers/soc/rockchip/io-domain.c
-> +++ b/drivers/soc/rockchip/io-domain.c
-> @@ -51,13 +51,11 @@
->   #define RK3399_PMUGRF_CON0_VSEL		BIT(8)
->   #define RK3399_PMUGRF_VSEL_SUPPLY_NUM	9
->   
-> -struct rockchip_iodomain;
-> +#define RK3568_PMU_GRF_IO_VSEL0		(0x0140)
-> +#define RK3568_PMU_GRF_IO_VSEL1		(0x0144)
-> +#define RK3568_PMU_GRF_IO_VSEL2		(0x0148)
->   
-> -struct rockchip_iodomain_soc_data {
-> -	int grf_offset;
-> -	const char *supply_names[MAX_SUPPLIES];
-> -	void (*init)(struct rockchip_iodomain *iod);
-> -};
-> +struct rockchip_iodomain;
->   
->   struct rockchip_iodomain_supply {
->   	struct rockchip_iodomain *iod;
-> @@ -66,13 +64,62 @@ struct rockchip_iodomain_supply {
->   	int idx;
->   };
->   
-> +struct rockchip_iodomain_soc_data {
-> +	int grf_offset;
-> +	const char *supply_names[MAX_SUPPLIES];
-> +	void (*init)(struct rockchip_iodomain *iod);
-> +	int (*write)(struct rockchip_iodomain_supply *supply, int uV);
-> +};
-> +
->   struct rockchip_iodomain {
->   	struct device *dev;
->   	struct regmap *grf;
->   	const struct rockchip_iodomain_soc_data *soc_data;
->   	struct rockchip_iodomain_supply supplies[MAX_SUPPLIES];
-> +	int (*write)(struct rockchip_iodomain_supply *supply, int uV);
->   };
->   
-> +static int rk3568_iodomain_write(struct rockchip_iodomain_supply *supply, int uV)
-> +{
-> +	struct rockchip_iodomain *iod = supply->iod;
-> +	u32 is_3v3 = uV > MAX_VOLTAGE_1_8;
-> +	u32 val0, val1;
-> +	int b;
-> +
-> +	switch (supply->idx) {
-> +	case 0: /* pmuio1 */
-> +		break;
-> +	case 1: /* pmuio2 */
-> +		b = supply->idx;
-> +		val0 = BIT(16 + b) | (is_3v3 ? 0 : BIT(b));
-> +		b = supply->idx + 4;
-> +		val1 = BIT(16 + b) | (is_3v3 ? BIT(b) : 0);
-> +
-> +		regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL2, val0);
-> +		regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL2, val1);
-> +		break;
-> +	case 3: /* vccio2 */
-> +		break;
-> +	case 2: /* vccio1 */
-> +	case 4: /* vccio3 */
-> +	case 5: /* vccio4 */
-> +	case 6: /* vccio5 */
-> +	case 7: /* vccio6 */
-> +	case 8: /* vccio7 */
-> +		b = supply->idx - 1;
-> +		val0 = BIT(16 + b) | (is_3v3 ? 0 : BIT(b));
-> +		val1 = BIT(16 + b) | (is_3v3 ? BIT(b) : 0);
-> +
-> +		regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL0, val0);
-> +		regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL1, val1);
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	};
-> +
-> +	return 0;
-> +}
-> +
->   static int rockchip_iodomain_write(struct rockchip_iodomain_supply *supply,
->   				   int uV)
->   {
-> @@ -136,7 +183,7 @@ static int rockchip_iodomain_notify(struct notifier_block *nb,
->   			return NOTIFY_BAD;
->   	}
->   
-> -	ret = rockchip_iodomain_write(supply, uV);
-> +	ret = supply->iod->write(supply, uV);
->   	if (ret && event == REGULATOR_EVENT_PRE_VOLTAGE_CHANGE)
->   		return NOTIFY_BAD;
->   
-> @@ -398,6 +445,22 @@ static const struct rockchip_iodomain_soc_data soc_data_rk3399_pmu = {
->   	.init = rk3399_pmu_iodomain_init,
->   };
->   
-> +static const struct rockchip_iodomain_soc_data soc_data_rk3568_pmu = {
-> +	.grf_offset = 0x140,
-> +	.supply_names = {
-> +		"pmuio1",
-> +		"pmuio2",
-> +		"vccio1",
-> +		"vccio2",
-> +		"vccio3",
-> +		"vccio4",
-> +		"vccio5",
-> +		"vccio6",
-> +		"vccio7",
-> +	},
-> +	.write = rk3568_iodomain_write,
-> +};
-> +
->   static const struct rockchip_iodomain_soc_data soc_data_rv1108 = {
->   	.grf_offset = 0x404,
->   	.supply_names = {
-> @@ -469,6 +532,10 @@ static const struct of_device_id rockchip_iodomain_match[] = {
->   		.compatible = "rockchip,rk3399-pmu-io-voltage-domain",
->   		.data = &soc_data_rk3399_pmu
->   	},
-> +	{
-> +		.compatible = "rockchip,rk3568-pmu-io-voltage-domain",
-> +		.data = &soc_data_rk3568_pmu
-> +	},
->   	{
->   		.compatible = "rockchip,rv1108-io-voltage-domain",
->   		.data = &soc_data_rv1108
-> @@ -502,6 +569,11 @@ static int rockchip_iodomain_probe(struct platform_device *pdev)
->   	match = of_match_node(rockchip_iodomain_match, np);
->   	iod->soc_data = match->data;
->   
-> +	if (iod->soc_data->write)
-> +		iod->write = iod->soc_data->write;
-> +	else
-> +		iod->write = rockchip_iodomain_write;
-> +
->   	parent = pdev->dev.parent;
->   	if (parent && parent->of_node) {
->   		iod->grf = syscon_node_to_regmap(parent->of_node);
-> @@ -562,7 +634,7 @@ static int rockchip_iodomain_probe(struct platform_device *pdev)
->   		supply->reg = reg;
->   		supply->nb.notifier_call = rockchip_iodomain_notify;
->   
-> -		ret = rockchip_iodomain_write(supply, uV);
-> +		ret = iod->write(supply, uV);
->   		if (ret) {
->   			supply->reg = NULL;
->   			goto unreg_notify;
-> 
+Changes in v13:
+	- Added "PCI: Cache PCIe FLR capability"
+	- Removed memcpy in pci_init_reset_methods() and reset_method_show
+	- Moved reset_method sysfs attribute code from pci-sysfs.c to
+	  pci.c
+
+Changes in v12:
+        - Corrected subject in 0/8 (cover letter).
+
+Changes in v11:
+        - Alex's suggestion fallback back to other resets if the ACPI RST
+          fails. Fix "s/-EINVAL/-ENOTTY/" in 7/8 patch.
+
+Changes in v10:
+        - Fix build error on ppc as reported by build bot
+
+Changes in v9:
+        - Renamed has_flr bitfield to has_pcie_flr and restored
+          use of PCI_DEV_FLAGS_NO_FLR_RESET in quirk_no_flr()
+        - Cleaned up sysfs code
+
+Changes in v8:
+        - Added has_flr bitfield to struct pci_dev to cache flr
+          capability
+        - Updated encoding scheme used in reset_methods array as per
+          Bjorn's suggestion
+        - Updated Shanker's ACPI patches
+
+Changes in v7:
+        - Fix the pci_dev_acpi_reset() prototype mismatch
+          in case of CONFIG_ACPI=n
+
+Changes in v6:
+        - Address Bjorn's and Krzysztof's review comments
+        - Add Shanker's updated patches along with new
+          "PCI: Setup ACPI_COMPANION early" patch
+
+Changes in v5:
+        - Rebase the series over pci/reset branch of
+          Bjorn's pci tree to avoid merge conflicts
+          caused by recent changes in existing reset
+          sysfs attribute
+
+Changes in v4:
+        - Change the order or strlen and strim in reset_method_store
+          function to avoid extra strlen call.
+        - Use consistent terminology in new
+          pci_reset_mode enum and rename the probe argument
+          of reset functions.
+
+Changes in v3:
+        - Dropped "PCI: merge slot and bus reset implementations" which was
+          already accepted separately
+        - Grammar fixes
+        - Added Shanker's patches which were rebased on v2 of this series
+        - Added "PCI: Change the type of probe argument in reset functions"
+          and additional user input sanitization code in reset_method_store
+          function per review feedback from Krzysztof
+
+Changes in v2:
+        - Use byte array instead of bitmap to keep track of
+          ordering of reset methods
+        - Fix incorrect use of reset_fn field in octeon driver
+        - Allow writing comma separated list of names of supported reset
+          methods to reset_method sysfs attribute
+        - Writing empty string instead of "none" to reset_method attribute
+          disables ability of reset the device
+
+Amey Narkhede (6):
+  PCI: Cache PCIe FLR capability
+  PCI: Add pcie_reset_flr to follow calling convention of other reset
+    methods
+  PCI: Add new array for keeping track of ordering of reset methods
+  PCI: Remove reset_fn field from pci_dev
+  PCI: Allow userspace to query and set device reset mechanism
+  PCI: Change the type of probe argument in reset functions
+
+Shanker Donthineni (3):
+  PCI: Define a function to set ACPI_COMPANION in pci_dev
+  PCI: Setup ACPI fwnode early and at the same time with OF
+  PCI: Add support for ACPI _RST reset method
+
+ Documentation/ABI/testing/sysfs-bus-pci       |  19 ++
+ drivers/crypto/cavium/nitrox/nitrox_main.c    |   4 +-
+ .../ethernet/cavium/liquidio/lio_vf_main.c    |   2 +-
+ drivers/pci/hotplug/pciehp.h                  |   2 +-
+ drivers/pci/hotplug/pciehp_hpc.c              |   2 +-
+ drivers/pci/hotplug/pnv_php.c                 |   4 +-
+ drivers/pci/pci-acpi.c                        |  35 ++-
+ drivers/pci/pci-sysfs.c                       |   3 +-
+ drivers/pci/pci.c                             | 287 +++++++++++++-----
+ drivers/pci/pci.h                             |  24 +-
+ drivers/pci/pcie/aer.c                        |  12 +-
+ drivers/pci/probe.c                           |  16 +-
+ drivers/pci/quirks.c                          |  25 +-
+ drivers/pci/remove.c                          |   1 -
+ include/linux/pci.h                           |  14 +-
+ include/linux/pci_hotplug.h                   |   2 +-
+ 16 files changed, 332 insertions(+), 120 deletions(-)
+
+--
+2.32.0
