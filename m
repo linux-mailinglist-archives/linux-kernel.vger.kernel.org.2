@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D213E0BF4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 03:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492583E0C01
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 03:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236914AbhHEBJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 21:09:03 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7926 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhHEBJB (ORCPT
+        id S237039AbhHEBQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 21:16:00 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:13231 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhHEBP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 21:09:01 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gg9Pf24ktz845H;
-        Thu,  5 Aug 2021 09:04:54 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+        Wed, 4 Aug 2021 21:15:59 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gg9f12qBxz1CSWN;
+        Thu,  5 Aug 2021 09:15:37 +0800 (CST)
+Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 09:15:44 +0800
+Received: from [10.174.187.161] (10.174.187.161) by
+ dggpeml500013.china.huawei.com (7.185.36.41) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 09:08:45 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 5 Aug 2021 09:08:44 +0800
-Subject: Re: [PATCH 4.19 00/30] 4.19.201-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210802134334.081433902@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <7f52bac1-6e58-e764-2a8a-a381d278c6ac@huawei.com>
-Date:   Thu, 5 Aug 2021 09:08:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ 15.1.2176.2; Thu, 5 Aug 2021 09:15:43 +0800
+Subject: Re: [PATCH V9 03/18] perf/x86/intel: Handle guest PEBS overflow PMI
+ for KVM guest
+To:     Zhu Lingshan <lingshan.zhu@intel.com>, <peterz@infradead.org>,
+        <pbonzini@redhat.com>
+References: <20210722054159.4459-1-lingshan.zhu@intel.com>
+ <20210722054159.4459-4-lingshan.zhu@intel.com>
+CC:     <bp@alien8.de>, <seanjc@google.com>, <vkuznets@redhat.com>,
+        <wanpengli@tencent.com>, <jmattson@google.com>, <joro@8bytes.org>,
+        <kan.liang@linux.intel.com>, <ak@linux.intel.com>,
+        <wei.w.wang@intel.com>, <eranian@google.com>,
+        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        <kvm@vger.kernel.org>, <like.xu.linux@gmail.com>,
+        <boris.ostrvsky@oracle.com>, Like Xu <like.xu@linux.intel.com>
+From:   Liuxiangdong <liuxiangdong5@huawei.com>
+Message-ID: <610B3BBE.8080204@huawei.com>
+Date:   Thu, 5 Aug 2021 09:15:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-In-Reply-To: <20210802134334.081433902@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+In-Reply-To: <20210722054159.4459-4-lingshan.zhu@intel.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
+X-Originating-IP: [10.174.187.161]
+X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
+ dggpeml500013.china.huawei.com (7.185.36.41)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -52,51 +55,101 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2021/8/2 21:44, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.201 release.
-> There are 30 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.201-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On 2021/7/22 13:41, Zhu Lingshan wrote:
+> From: Like Xu <like.xu@linux.intel.com>
+>
+> With PEBS virtualization, the guest PEBS records get delivered to the
+> guest DS, and the host pmi handler uses perf_guest_cbs->is_in_guest()
+> to distinguish whether the PMI comes from the guest code like Intel PT.
+>
+> No matter how many guest PEBS counters are overflowed, only triggering
+> one fake event is enough. The fake event causes the KVM PMI callback to
+> be called, thereby injecting the PEBS overflow PMI into the guest.
+>
+> KVM may inject the PMI with BUFFER_OVF set, even if the guest DS is
+> empty. That should really be harmless. Thus guest PEBS handler would
+> retrieve the correct information from its own PEBS records buffer.
+>
+> Originally-by: Andi Kleen <ak@linux.intel.com>
+> Co-developed-by: Kan Liang <kan.liang@linux.intel.com>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+> ---
+>   arch/x86/events/intel/core.c | 45 ++++++++++++++++++++++++++++++++++++
+>   1 file changed, 45 insertions(+)
+>
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index da835f5a37e2..2eceb73cd303 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -2783,6 +2783,50 @@ static void intel_pmu_reset(void)
+>   }
+>   
+>   DECLARE_STATIC_CALL(x86_guest_handle_intel_pt_intr, *(perf_guest_cbs->handle_intel_pt_intr));
+> +DECLARE_STATIC_CALL(x86_guest_state, *(perf_guest_cbs->state));
+> +
+> +/*
+> + * We may be running with guest PEBS events created by KVM, and the
+> + * PEBS records are logged into the guest's DS and invisible to host.
+> + *
+> + * In the case of guest PEBS overflow, we only trigger a fake event
+> + * to emulate the PEBS overflow PMI for guest PBES counters in KVM.
+> + * The guest will then vm-entry and check the guest DS area to read
+> + * the guest PEBS records.
+> + *
+> + * The contents and other behavior of the guest event do not matter.
+> + */
+> +static void x86_pmu_handle_guest_pebs(struct pt_regs *regs,
+> +				      struct perf_sample_data *data)
+> +{
+> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> +	u64 guest_pebs_idxs = cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask;
 
-Tested on arm64 and x86 for 4.19.201-rc1,
+guest_pebs_idxs has been defined here.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.19.y
-Version: 4.19.201-rc1
-Commit: 7d0b2cf6631fd9776096a6a1bc52a89946f15d4c
-Compiler: gcc version 7.3.0 (GCC)
+> +	struct perf_event *event = NULL;
+> +	unsigned int guest = 0;
+> +	int bit;
+> +
+> +	guest = static_call(x86_guest_state)();
+> +	if (!(guest & PERF_GUEST_ACTIVE))
+> +		return;
+> +
+> +	if (!x86_pmu.pebs_vmx || !x86_pmu.pebs_active ||
+> +	    !(cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask))
+> +		return;
+> +
+Why not use guest_pebs_idxs?
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8858
-passed: 8858
-failed: 0
-timeout: 0
---------------------------------------------------------------------
++	if (!x86_pmu.pebs_vmx || !x86_pmu.pebs_active ||
++	    !guest_pebs_idxs)
++		return;
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8858
-passed: 8858
-failed: 0
-timeout: 0
---------------------------------------------------------------------
 
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+> +	for_each_set_bit(bit, (unsigned long *)&guest_pebs_idxs,
+> +			 INTEL_PMC_IDX_FIXED + x86_pmu.num_counters_fixed) {
+> +		event = cpuc->events[bit];
+> +		if (!event->attr.precise_ip)
+> +			continue;
+> +
+> +		perf_sample_data_init(data, 0, event->hw.last_period);
+> +		if (perf_event_overflow(event, data, regs))
+> +			x86_pmu_stop(event, 0);
+> +
+> +		/* Inject one fake event is enough. */
+> +		break;
+> +	}
+> +}
+>   
+>   static int handle_pmi_common(struct pt_regs *regs, u64 status)
+>   {
+> @@ -2835,6 +2879,7 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
+>   		u64 pebs_enabled = cpuc->pebs_enabled;
+>   
+>   		handled++;
+> +		x86_pmu_handle_guest_pebs(regs, &data);
+>   		x86_pmu.drain_pebs(regs, &data);
+>   		status &= intel_ctrl | GLOBAL_STATUS_TRACE_TOPAPMI;
+>   
+
