@@ -2,64 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8513E195D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68483E1961
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbhHEQUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 12:20:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40280 "EHLO mail.kernel.org"
+        id S229778AbhHEQWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 12:22:17 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:45126 "EHLO mail.ispras.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhHEQUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 12:20:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B531660243;
-        Thu,  5 Aug 2021 16:20:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628180415;
-        bh=VFxYgzBBWT1LiYLjgJFwyOgZryBAs4ErOSaZpv3EZ7M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TCJc3ksuFNWoSTvLjRCDBHd5BDMK6NTG3GFhDoT9OSgH9OPEUiyq6gI3vOgEWTvrt
-         OQUN0buKgp7b5PLt/TVVZQGHH5HiHVtzD1d0FEG6R6ED32ym9zxAgFqhGa5XABbwCk
-         6Tv+Nn7R1v46rgD+BhMFhiM04rzlnHj0jEtXHDR5EGDn/OrmeHReR+5/vnmihbYIiQ
-         jHbTvMrvYlcZOpCERH/IpiS0y2x3GySP7otxw6qeb/Y8qr8WgyK1Q9C509IuJWzSBr
-         DQi5ClJCfbU8BHO7Uk1WPWELQajChMr0W92VWftXG636KvF0u5ouyW5HLXOpROHuoa
-         B57M8f7W3mtSA==
-Received: by mail-lj1-f170.google.com with SMTP id n6so7830727ljp.9;
-        Thu, 05 Aug 2021 09:20:15 -0700 (PDT)
-X-Gm-Message-State: AOAM530P5nVzalIENM2zYHK3necltEuXDL2lud16j1/3c3MdG63yZaJG
-        C4A5St9ifz42aikWfsqA//LvLIuJBmut7tUjsto=
-X-Google-Smtp-Source: ABdhPJy2wEmnaOIK672fR2BPxWH4X/15JVu3FoK8wrn3vcX7eu33ioL4/XFmbV45r2tcQphqqesEVyOTg2twgm1HUUQ=
-X-Received: by 2002:a2e:505b:: with SMTP id v27mr3531375ljd.177.1628180414057;
- Thu, 05 Aug 2021 09:20:14 -0700 (PDT)
+        id S229437AbhHEQWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 12:22:16 -0400
+Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
+        by mail.ispras.ru (Postfix) with ESMTPSA id 6B6B040D4004;
+        Thu,  5 Aug 2021 16:21:57 +0000 (UTC)
+Subject: Re: [PATCH] platform/x86: intel_pmc_core: Prevent possibile overflow
+To:     david.e.box@linux.intel.com, irenic.rajneesh@gmail.com,
+        gayatri.kammela@intel.com, hdegoede@redhat.com,
+        mgross@linux.intel.com, andy.shevchenko@gmail.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <facd47b64a5efa4e0e70cd29586173e44a8929c2.camel@linux.intel.com>
+ <20210804003039.359138-1-david.e.box@linux.intel.com>
+ <159dec07-9f05-3a92-8b7d-3d2f27448f70@ispras.ru>
+ <7308291f26a3f225fca069461d9ac26170f0ba66.camel@linux.intel.com>
+From:   Evgeny Novikov <novikov@ispras.ru>
+Message-ID: <457033ea-93ce-709d-39e7-8664b3731e71@ispras.ru>
+Date:   Thu, 5 Aug 2021 19:21:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210803141621.780504-1-bigeasy@linutronix.de> <20210803141621.780504-16-bigeasy@linutronix.de>
-In-Reply-To: <20210803141621.780504-16-bigeasy@linutronix.de>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 5 Aug 2021 09:20:02 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4xCAAhvZPoaW8tq9uXrif45ubRLR4c=i7KJQsSzeO6EA@mail.gmail.com>
-Message-ID: <CAPhsuW4xCAAhvZPoaW8tq9uXrif45ubRLR4c=i7KJQsSzeO6EA@mail.gmail.com>
-Subject: Re: [PATCH 15/38] md/raid5: Replace deprecated CPU-hotplug functions.
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-raid <linux-raid@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <7308291f26a3f225fca069461d9ac26170f0ba66.camel@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 7:17 AM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> The functions get_online_cpus() and put_online_cpus() have been
-> deprecated during the CPU hotplug rework. They map directly to
-> cpus_read_lock() and cpus_read_unlock().
->
-> Replace deprecated CPU-hotplug functions with the official version.
-> The behavior remains unchanged.
->
-> Cc: Song Liu <song@kernel.org>
-> Cc: linux-raid@vger.kernel.org
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Hi David,
 
-Acked-by: Song Liu <song@kernel.org>
+On 05.08.2021 00:51, David E. Box wrote:
+> Hi Evgeny,
+>
+> On Wed, 2021-08-04 at 13:48 +0300, Evgeny Novikov wrote:
+>> Hi David,
+>>
+>> Your patch fixes the out of bound issue, but I have another concern
+>> regarding possible incomplete initialization of first 8 elements of
+>> the
+>> lpm_priority array that is declared on the stack and is not
+>> initialized,
+>> say, with zeroes. Yet again due to some invalid values coming from
+>> the
+>> register, it is not guaranteed that something meaningful will be
+>> assigned for all first 8 elements of lpm_priority in the first cycle
+>> in
+>> pmc_core_get_low_power_modes(). In the second cycle this function
+>> accesses all these elements from lpm_priority. Though there is test
+>> "!(BIT(mode) & lpm_en)", it can pass accidentally, thus some
+>> unexpected
+>> values can be stored to "pmcdev->lpm_en_modes[i++]" and exposed
+>> later.
+> I sent out a v2 that validates the priority levels are within bounds
+> and meaningful before reordering them to set the lpm_en_modes. Thanks.
+
+Now it looks that you fixed both issues. Our verification framework does 
+not report warnings after application of the patch. I can not reason 
+about functional correctness of this code since I am not familiar with 
+the corresponding documentation and, thus, expected behavior.
+
+Likely there is a small misprint in the comment "contains gives".
+
+Best regards,
+Evgeny Novikov
+
+> David
+>
+>>
+>> Best regards,
+>> Evgeny Novikov
+>>
+>>
+>> On 04.08.2021 03:30, David E. Box wrote:
+>>> Low Power Mode (LPM) priority is encoded in 4 bits. Yet, this value
+>>> is used
+>>> as an index to an array whose element size was less than 16,
+>>> leading to the
+>>> possibility of overflow should we read a larger than expected
+>>> priority. Set
+>>> the array size to 16 to prevent this.
+>>>
+>>> Reported-by: Evgeny Novikov <novikov@ispras.ru>
+>>> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+>>> ---
+>>>    drivers/platform/x86/intel_pmc_core.c | 2 +-
+>>>    drivers/platform/x86/intel_pmc_core.h | 1 +
+>>>    2 files changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/platform/x86/intel_pmc_core.c
+>>> b/drivers/platform/x86/intel_pmc_core.c
+>>> index b0e486a6bdfb..2a761fe98277 100644
+>>> --- a/drivers/platform/x86/intel_pmc_core.c
+>>> +++ b/drivers/platform/x86/intel_pmc_core.c
+>>> @@ -1451,7 +1451,7 @@ DEFINE_SHOW_ATTRIBUTE(pmc_core_pkgc);
+>>>    
+>>>    static void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev)
+>>>    {
+>>> -       u8 lpm_priority[LPM_MAX_NUM_MODES];
+>>> +       u8 lpm_priority[LPM_MAX_PRI];
+>>>          u32 lpm_en;
+>>>          int mode, i, p;
+>>>    
+>>> diff --git a/drivers/platform/x86/intel_pmc_core.h
+>>> b/drivers/platform/x86/intel_pmc_core.h
+>>> index e8dae9c6c45f..b98c2b44c938 100644
+>>> --- a/drivers/platform/x86/intel_pmc_core.h
+>>> +++ b/drivers/platform/x86/intel_pmc_core.h
+>>> @@ -190,6 +190,7 @@ enum ppfear_regs {
+>>>    #define LPM_MAX_NUM_MODES                     8
+>>>    #define GET_X2_COUNTER(v)                     ((v) >> 1)
+>>>    #define LPM_STS_LATCH_MODE                    BIT(31)
+>>> +#define LPM_MAX_PRI                            16      /* size of
+>>> 4 bits */
+>>>    
+>>>    #define TGL_PMC_SLP_S0_RES_COUNTER_STEP               0x7A
+>>>    #define TGL_PMC_LTR_THC0                      0x1C04
+>
