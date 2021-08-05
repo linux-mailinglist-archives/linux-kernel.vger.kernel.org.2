@@ -2,190 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCD33E0F9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AAD3E0F99
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238949AbhHEHuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 03:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238836AbhHEHuv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 03:50:51 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766D8C061799
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 00:50:37 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id p5so5274100wro.7
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 00:50:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1Os9VBo5ol0/OE/zsUlv+66XdPO6lV3sKgplzYRLLhU=;
-        b=dthuYtFBHhD3kr3ForYIFvZSUVRL+g4AvqqJ5MqApy7GwqLEWJD3FrctTfuA/tYCpx
-         sNlgxyx8sXHQzq89b9u747HAwdEzj71m31DAEjlOG4IqiLXyya660ZghaSD7+gnKMnU7
-         CHSvH2cOEP9AnKaBxJCKZ0NlqS7ZaSFDoptZ9EgPjxRwVWbSl/2PJ56sjS6SUkW+X0O6
-         Ev2dNvflaVoteEN2KzSSdFNpcJpkxuD3jT9ftBEozrIwoGOSjpGgiyC7agZv6GyQQhpF
-         DLkjSoc0Xat8zqIdRl9NoSFJ5NLqQoX9ttPJ8DWoB97sP3VtcZzD/pkBZHXH7KMl1fKB
-         GcCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1Os9VBo5ol0/OE/zsUlv+66XdPO6lV3sKgplzYRLLhU=;
-        b=q2PAplTSqGjcSSJtP8QK+z+/iJyEqwNF6584r0XPBOJ8t2bz9lj6N4u2y11L4I9efG
-         uyXa+8wVBBnWEF/LNpo2c92Tafvl1lKGgT4LqzV9SCE2j4uUcYnuXZ1DxCehpce3aZ+/
-         W4c5UuaKnW1TQJWjss10CMFCGdBgvdN7xtbn75ee2FSm+LaT6VbrayTR/05scc0UnZOe
-         st406rJd7RoQX2hzB0jlkMRYe0w8avnioNgn3EEuSF4uuVupim9IpjDCsWuvXUsGwnJE
-         4yETf6/gHAJj7kL4YhEfeNU8LETFBp5TYGxDB6bjkd2wJncG0TXNFx6M/O+gHMske1he
-         jBgA==
-X-Gm-Message-State: AOAM531cCWzRqRrGQdwwEdOerRF9/PWixXISeUUL6C9ZIFwYVYk/NTu0
-        CkQrvWVPPxTZjJrNJH3035QOKw==
-X-Google-Smtp-Source: ABdhPJw8HrMNDFxDvHEKsrTuUr73DV6B7ZEHdGYK/OgbJyv26WO2sghDmY9iYMdlRWWqluqCuDH5CA==
-X-Received: by 2002:adf:ed4f:: with SMTP id u15mr3439300wro.423.1628149836117;
-        Thu, 05 Aug 2021 00:50:36 -0700 (PDT)
-Received: from localhost.localdomain ([109.180.115.228])
-        by smtp.gmail.com with ESMTPSA id h16sm5154491wre.52.2021.08.05.00.50.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 00:50:35 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Brian Cain <bcain@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Chris Zankel <chris@zankel.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Guo Ren <guoren@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Jeff Dike <jdike@addtoit.com>, John Crispin <john@phrozen.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Simek <monstr@monstr.eu>, openrisc@lists.librecores.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Richard Weinberger <richard@nod.at>,
-        Rich Felker <dalias@libc.org>, sparclinux@vger.kernel.org,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [PATCH 0/3] power: reset: Convert Power-Off driver to tristate
-Date:   Thu,  5 Aug 2021 08:50:29 +0100
-Message-Id: <20210805075032.723037-1-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+        id S238763AbhHEHur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 03:50:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229674AbhHEHup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 03:50:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AA0B60E52;
+        Thu,  5 Aug 2021 07:50:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628149832;
+        bh=IfDGT3CJpSAkyCOes60sLQqs86j1EQBH2nZKN5/U2cQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QV49Q7qgT4me+2nhzciEzpt4zkloppO+EN9Nw/872uE9xdiUf39JQ+hGHb2w2iEzN
+         9JGGvj60ozU19m9dPoO37zgfwa/RoPdKS2x7MaWBqbFIMxwNqgpvRzOUFUjWGx4QXM
+         laUxoMNPMrabPiIFfyNsjpJSmp5wG36S21AabyTM=
+Date:   Thu, 5 Aug 2021 09:50:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v1] driver: base: Add driver filter support
+Message-ID: <YQuYRZ9+lfwprA14@kroah.com>
+References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YQrqhYEL64CSLRTy@kroah.com>
+ <f2b1d564-8174-f8e9-9fee-12e938c6d846@linux.intel.com>
+ <56f15095-f1aa-88bc-9335-e0147bdcc573@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <56f15095-f1aa-88bc-9335-e0147bdcc573@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide support to compile the Power-Off driver as a module.
+On Wed, Aug 04, 2021 at 01:09:07PM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> 
+> 
+> On 8/4/21 12:50 PM, Andi Kleen wrote:
+> > 
+> > > And what's wrong with the current method of removing drivers from
+> > > devices that you do not want them to be bound to?  We offer that support
+> > > for all busses now that want to do it, what driver types are you needing
+> > > to "control" here that does not take advantage of the existing
+> > > infrastructure that we currently have for this type of thing?
+> > 
+> > I'm not sure what mechanism you're referring to here, but in general
+> > don't want the drivers to initialize at all because they might get
+> > exploited in any code that they execute.The intention is to disable all
+> > drivers except for a small allow list, because it's not practical to
+> > harden all 25M lines of Linux code.
+> 
+> Yes, we are not trying to remove the drivers via sysfs. If driver
+> filter is enabled, "allowed" sysfs file is used to view the driver
+> filter status (allowed/denied). And a write to that file changes
+> the allowed/denied status of the driver. It has nothing to do
+> with bind/unbind operations.
 
-Elliot Berman (2):
-  reboot: Export reboot_mode
-  power: reset: Enable tristate on restart power-off driver
+Again, we have this already today, with full sysfs control in userspace.
+Why add yet-another-way to do this?  What is lacking in the existing
+functionality that needs to be expanded on?
 
-Lee Jones (1):
-  arch: Export machine_restart() instances so they can be called from
-    modules
-
- arch/arc/kernel/reset.c            | 1 +
- arch/arm/kernel/reboot.c           | 1 +
- arch/arm64/kernel/process.c        | 1 +
- arch/csky/kernel/power.c           | 1 +
- arch/h8300/kernel/process.c        | 1 +
- arch/hexagon/kernel/reset.c        | 1 +
- arch/m68k/kernel/process.c         | 1 +
- arch/microblaze/kernel/reset.c     | 1 +
- arch/mips/kernel/reset.c           | 1 +
- arch/mips/lantiq/falcon/reset.c    | 1 +
- arch/mips/sgi-ip27/ip27-reset.c    | 1 +
- arch/nios2/kernel/process.c        | 1 +
- arch/openrisc/kernel/process.c     | 1 +
- arch/parisc/kernel/process.c       | 1 +
- arch/powerpc/kernel/setup-common.c | 1 +
- arch/riscv/kernel/reset.c          | 1 +
- arch/s390/kernel/setup.c           | 1 +
- arch/sh/kernel/reboot.c            | 1 +
- arch/sparc/kernel/process_32.c     | 1 +
- arch/sparc/kernel/reboot.c         | 1 +
- arch/um/kernel/reboot.c            | 1 +
- arch/x86/kernel/reboot.c           | 1 +
- arch/xtensa/kernel/setup.c         | 1 +
- drivers/power/reset/Kconfig        | 2 +-
- kernel/reboot.c                    | 2 ++
- 25 files changed, 26 insertions(+), 1 deletion(-)
-
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Brian Cain <bcain@codeaurora.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Guo Ren <guoren@kernel.org>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: John Crispin <john@phrozen.org>
-Cc: Jonas Bonn <jonas@southpole.se>
-Cc: Ley Foon Tan <ley.foon.tan@intel.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-csky@vger.kernel.org
-Cc: linux-hexagon@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-riscv@lists.infradead.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
-Cc: linux-snps-arc@lists.infradead.org
-Cc: linux-um@lists.infradead.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Michal Simek <monstr@monstr.eu>
-Cc: openrisc@lists.librecores.org
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Rich Felker <dalias@libc.org>
-Cc: sparclinux@vger.kernel.org
-Cc: Stafford Horne <shorne@gmail.com>
-Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: uclinux-h8-devel@lists.sourceforge.jp
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
--- 
-2.32.0.605.g8dce9f2422-goog
-
+greg k-h
