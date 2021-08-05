@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490433E1E72
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BC23E1E74
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhHEWKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 18:10:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
+        id S237051AbhHEWK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 18:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbhHEWKW (ORCPT
+        with ESMTP id S231903AbhHEWKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 18:10:22 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A048C0613D5
+        Thu, 5 Aug 2021 18:10:23 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB3AC0613D5
         for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 15:10:07 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id z4so8445214wrv.11
+Received: by mail-wr1-x434.google.com with SMTP id b13so8476692wrs.3
         for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 15:10:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fiLt4knuszJi0AGnyks6GFha2NM/LBLCGr2yZG7PLZc=;
-        b=QopFxdYMwrIphWHRC2OxXF2hOHHEDleVcGIdW/oP47nz5YXCRRSrLNU+ErhToe2eYB
-         QvKysinjKPztu/B8j1str6fTDnp0pDrcRgBj6nMVGchLde0X76CdsxCcaeW0TnRfVawX
-         mtZ9F8M7FRtCP391J6BBk3EeSPUvOfoKNjApJQZ/ybgkNT/IfSBJ0j8jUNB225KzL2t8
-         hHLEn6u6v0nC7RGYKuHqXfxpjx6tETmAU+Deu4R4S2ppHI3/jYJAk4uNgZtf4lFmMeBm
-         Cl9w25mbG7T0xCfi73SyyUjWhKytqe9WMkm3454rtng/F2Ggqhw0K/3N5KjoutDgE9vp
-         7QKw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=U+w3lXB2hzuJmWQKE0Bh8lOKq0x+eCrRICMF6HvQuy4=;
+        b=SiW9CKIWquDJQs9u4/LmMQI6k+SbXyVvc+e8miwc6fN9aJZGc+d3t+Ix+d6ugsfRky
+         YNpKM9nXuga7fb0Aw9lHEGI5gykXJ00kiok0/riPBL68R9UKNh40IHhLmZLWR4UmVA4p
+         QrsChppWDQ2Uep0RedLe9zjr8uahYd9ijwuxDSFvHCgnrpqmnaSMdDfzTHkbOzU+W/T6
+         MLr82fnS/+iPvnXo+pfAxZhIR/YbH9GU8etyH8mOFKPbM/1ByQeBGygNxcoUzPyDIdQ2
+         qnJFB61jYeX1Mscx4YoJzm7zXElj4CxOKxEUP+X7KJr5Sv48e15SYGEUkziKfSxa7/OU
+         NJrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fiLt4knuszJi0AGnyks6GFha2NM/LBLCGr2yZG7PLZc=;
-        b=Z8qhZvJYQLCIoaNrZpJ7o3u0sEUHt+u5DLRGabs0XiF19R3c/oYVlRAoE7vAu+39jR
-         r9ZXdG3stDgO8Tdc9/CpLpkhM0NPVWtptptPSw2/rdswf1pj4m4GDywVXKANAUd1wA1G
-         ySVVcI3TsPKupQulyUdMOEMHwr7tH6uhMDG6DubgIKTA41uRWjNjvaro7TPnFV0eux4H
-         G/R9H7Pcmq/Of3914ngXMlTa8pWnD7o3n6/5I9jBwkaixOan92aruz9zxS40GROb0D50
-         CQyOeEL3upETyR9aj8rFr7LbYATa3LWZQfLbJnP2/tfXF4/AMxwLD/9GwFMrIl81x5O6
-         SFQA==
-X-Gm-Message-State: AOAM533bwxw9g9rwmfcqFUEWOshvhJj9+ZDuZFEW+2I1pmc25A/C/FE2
-        RoXwR60igjId5h5hOWL6oP176bUKxSc=
-X-Google-Smtp-Source: ABdhPJyQGXQ7jpiazanEdeYHoN0HVNRFH76WQGbUbblTBIgPHcGSOMTzwY3ONp06PyYVvqTSfERGOQ==
-X-Received: by 2002:a5d:6447:: with SMTP id d7mr7662959wrw.72.1628201405640;
-        Thu, 05 Aug 2021 15:10:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=U+w3lXB2hzuJmWQKE0Bh8lOKq0x+eCrRICMF6HvQuy4=;
+        b=Efd4fIkw2U8gx3canlQ3AZ3EK0P5WzxtC5m4PccjHOLoJDZKdPQ33u/2pFD0ziWgSY
+         PKCheTxznUc0z3nLAp7fWe+BBFPtLJlg4LoiHNYpoqWpIG7AdkViLiMITAnAwzESyMki
+         9h5fZsIRhIooP1i9XhE+VvjFO6JCh1ftqpoV31HtG52tXpJPfyxM4IDrAg1NRTTgqlfA
+         JnjhXGsglScX0C7QRWBHwhpJr0L9Zi7ziBSK9L9ZRMj/1tVgBFPrzoWoqWZPJIF/j0Bw
+         9xIvfceasrkSppET8JZO/CEtjvqZU+wOhgWxZ8o5GqcxP0C7rT2wcY4paRhgcx31BJs3
+         6Ysw==
+X-Gm-Message-State: AOAM532YTBX2S1BxP+OjRCe+aqcaScPGhZhyhk5jSgURt7IeBw5ysk5I
+        zuLqlYcbuduu10eAKHtFdg50kLTBsts=
+X-Google-Smtp-Source: ABdhPJyDzNRq9Zu0ZfkQBBAr8LnefgKCOCV4NqwEOCodD9H4WLsTQZq/nKclNOUbjzURamuqCr9WZQ==
+X-Received: by 2002:a5d:530e:: with SMTP id e14mr7491241wrv.392.1628201406471;
+        Thu, 05 Aug 2021 15:10:06 -0700 (PDT)
 Received: from localhost.localdomain (cpc141996-chfd3-2-0-cust928.12-3.cable.virginm.net. [86.13.91.161])
-        by smtp.gmail.com with ESMTPSA id q64sm6573055wma.8.2021.08.05.15.10.04
+        by smtp.gmail.com with ESMTPSA id q64sm6573055wma.8.2021.08.05.15.10.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 15:10:05 -0700 (PDT)
+        Thu, 05 Aug 2021 15:10:06 -0700 (PDT)
 From:   Daniel Scally <djrscally@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
         andriy.shevchenko@linux.intel.com,
         laurent.pinchart@ideasonboard.com
-Subject: [PATCH v3 0/2] Check for endpoints in fwnode->secondary more sensibly
-Date:   Thu,  5 Aug 2021 23:08:48 +0100
-Message-Id: <20210805220850.131545-1-djrscally@gmail.com>
+Subject: [PATCH v3 1/2] device property: Check fwnode->secondary in fwnode_graph_get_next_endpoint()
+Date:   Thu,  5 Aug 2021 23:08:49 +0100
+Message-Id: <20210805220850.131545-2-djrscally@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210805220850.131545-1-djrscally@gmail.com>
+References: <20210805220850.131545-1-djrscally@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all
+Sensor drivers often check for an endpoint to make sure that they're
+connected to a consuming device like a CIO2 during .probe(). Some of
+those endpoints might be in the form of software_nodes assigned as
+a secondary to the device's fwnode_handle. Account for this possibility
+in fwnode_graph_get_next_endpoint() to avoid having to do it in the
+sensor drivers themselves.
 
-A while ago I patched fwnode_graph_get_endpoint_by_id() to check for endpoints
-against fwnode->secondary if none was found against the primary. It's actually
-better to do this in fwnode_graph_get_next_endpoint() instead, since that
-function is called by fwnode_graph_get_endpoint_by_id() and also directly called
-in a bunch of other places (primarily sensor drivers checking that they have
-endpoints connected during probe). This small series just adds the equivalent
-functionality to fwnode_graph_get_next_endpoint() and reverts the earlier
-commit.
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Daniel Scally <djrscally@gmail.com>
+---
+ drivers/base/property.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-Thanks
-Dan
-
-
-Daniel Scally (2):
-  device property: Check fwnode->secondary in
-    fwnode_graph_get_next_endpoint()
-  Revert "media: device property: Call fwnode_graph_get_endpoint_by_id()
-    for fwnode->secondary"
-
- drivers/base/property.c | 30 +++++++++++++++++++++---------
- 1 file changed, 21 insertions(+), 9 deletions(-)
-
+diff --git a/drivers/base/property.c b/drivers/base/property.c
+index 1421e9548857..fb0e852dad5f 100644
+--- a/drivers/base/property.c
++++ b/drivers/base/property.c
+@@ -1036,7 +1036,26 @@ struct fwnode_handle *
+ fwnode_graph_get_next_endpoint(const struct fwnode_handle *fwnode,
+ 			       struct fwnode_handle *prev)
+ {
+-	return fwnode_call_ptr_op(fwnode, graph_get_next_endpoint, prev);
++	const struct fwnode_handle *parent;
++	struct fwnode_handle *ep;
++
++	/*
++	 * If this function is in a loop and the previous iteration returned
++	 * an endpoint from fwnode->secondary, then we need to use the secondary
++	 * as parent rather than @fwnode.
++	 */
++	if (prev)
++		parent = fwnode_graph_get_port_parent(prev);
++	else
++		parent = fwnode;
++
++	ep = fwnode_call_ptr_op(parent, graph_get_next_endpoint, prev);
++
++	if (IS_ERR_OR_NULL(ep) &&
++	    !IS_ERR_OR_NULL(parent) && !IS_ERR_OR_NULL(parent->secondary))
++		ep = fwnode_graph_get_next_endpoint(parent->secondary, NULL);
++
++	return ep;
+ }
+ EXPORT_SYMBOL_GPL(fwnode_graph_get_next_endpoint);
+ 
 -- 
 2.25.1
 
