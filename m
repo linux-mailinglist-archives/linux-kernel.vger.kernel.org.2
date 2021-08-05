@@ -2,135 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC623E176B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4D03E1770
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241781AbhHEO4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:56:49 -0400
-Received: from mga17.intel.com ([192.55.52.151]:30728 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233269AbhHEO4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:56:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="194444390"
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="194444390"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 07:56:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="467537626"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by orsmga008.jf.intel.com with ESMTP; 05 Aug 2021 07:56:32 -0700
-Subject: Re: USB xhci crash under load on 5.14-rc3
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <YQpJLk42b+0g7WFB@kroah.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
- 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 fiD/
-Message-ID: <9bb1d58b-5c68-86b7-13df-2faa749880c5@linux.intel.com>
-Date:   Thu, 5 Aug 2021 17:59:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S240712AbhHEO7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 10:59:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32499 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235307AbhHEO7U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 10:59:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628175546;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OKfktGoBccm3g2YvE4pKqdpXN4O5Me1QiwLaOMs8jPc=;
+        b=gRB+CZMv4I2A+FjqLZJ9HQnfE5JsIxNkF43tt9wJI5du0k/olJH4YWKmomJ2O9eXO3roGC
+        FVGd555P7zS0socs6uMbjiM6t3Uj9IS8PpCGOb9LotG4vUsYgk7bX4Q1Lf2o3KbkLxq8gu
+        s7rjLHiMG0Y6BqoWJp2HV5d1gzwgPJY=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-319-jFyhDjR1NZWndyvmkVQhbA-1; Thu, 05 Aug 2021 10:59:05 -0400
+X-MC-Unique: jFyhDjR1NZWndyvmkVQhbA-1
+Received: by mail-qv1-f69.google.com with SMTP id v18-20020a0cdd920000b0290344e08aac15so4011916qvk.17
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 07:59:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=OKfktGoBccm3g2YvE4pKqdpXN4O5Me1QiwLaOMs8jPc=;
+        b=a/7ENJ4XGO0X9DsK/OgYr7Fp4nxPJvTW/ZwqhWpmvdInouG3+8FpLCFusYJ7oy60KC
+         3LlPRVFIoqtu8r50bSBxmfZQvGrqf5xVScHn8fQiH9zS8gC7xrLe+blcEsbV/I3rjF0U
+         sqaLIWIO7Ma3y5ZWqOcNyMZbmkQVTbCy9UBrPcNz5GrZuRYT1EL8g1b7EHGYMbzBJyJO
+         HclNcMXDra352DWBd0O6qhbqeTU6VY7l3FhaxXFwBtA8orbvtpcyPLsQ5eNeLcMi1qC/
+         ohd2UVIkFt33KcZMjtYmj05jMW0jGAdstXCy/AmZbG5jCZ9HfL18DuUa+YfIRzK09ViS
+         4gZA==
+X-Gm-Message-State: AOAM530pxRyJe9G3wp857z6Q8GoSOiivODFvE7irD4e8WyPqma3zVizw
+        7KgN0aZoRuBJ5LnKIDR5dTNlofQEQCUN9EHMCyxAdYIS1q4dHSxLGQnndL81MKFEMOc7kMYvj84
+        b4biPCvBKPCPROMD91UEbvSa2
+X-Received: by 2002:a05:620a:12c8:: with SMTP id e8mr5535554qkl.142.1628175544616;
+        Thu, 05 Aug 2021 07:59:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxg6rRdW39I9pEP8NMxxWQhjY1kC3FKoIKRIqXEPgbK8rILgKGjjCZ9Fe6rdzfPLJw0i0pMew==
+X-Received: by 2002:a05:620a:12c8:: with SMTP id e8mr5535537qkl.142.1628175544427;
+        Thu, 05 Aug 2021 07:59:04 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id i123sm3309601qkf.60.2021.08.05.07.59.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Aug 2021 07:59:03 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [patch 15/63] locking: Add base code for RT rw_semaphore and
+ rwlock
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <llong@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+References: <20210730135007.155909613@linutronix.de>
+ <20210730135206.018846923@linutronix.de>
+ <710fff58-1db3-d0c2-21db-b1837d37bfee@redhat.com> <87o8ac1cv8.ffs@tglx>
+Message-ID: <4040ac0a-970b-bd47-1ffb-14eee56c672a@redhat.com>
+Date:   Thu, 5 Aug 2021 10:59:02 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YQpJLk42b+0g7WFB@kroah.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <87o8ac1cv8.ffs@tglx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4.8.2021 11.00, Greg KH wrote:
-> Hi,
-> 
-> I was doing some filesystem backups from one USB device to another one
-> this weekend and kept running into the problem of the xhci controller
-> shutting down after an hour or so of high volume traffic.
-> 
-> I finally captured the problem in the kernel log as this would also take
-> out my keyboard, making it hard to recover from :)
-> 
-> The log is below for when the problem happens, and then the devices are
-> disconnected from the bus (ignore the filesystem errors, those are
-> expected when i/o is in flight and we disconnect a device.
-> 
-> Any hint as to what the IO_PAGE_FAULT error messages are?
-> 
+On 8/5/21 5:04 AM, Thomas Gleixner wrote:
+> On Wed, Aug 04 2021 at 15:37, Waiman Long wrote:
+>> On 7/30/21 9:50 AM, Thomas Gleixner wrote:
+>>> +static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+>>> +				     unsigned int state)
+>>> +{
+>>> +	struct rt_mutex_base *rtm = &rwb->rtmutex;
+>>> +	unsigned long flags;
+>>> +
+>>> +	/* Take the rtmutex as a first step */
+>>> +	if (rwbase_rtmutex_lock_state(rtm, state))
+>> This function is used here before it was defined in next patch (patch 16).
+> Correct and there are more I think. But that's a hen and egg
+> problem:
+>
+> The base code cannot be compiled without the actual implementation for
+> either rw_semaphore or rw_lock substitutions. The implementations cannot
+> be compiled without the base code.
+>
+> So I chose to split it up so the base logic is separate.
+>
+> Thanks,
+>
+I realize that after the fact that the code introduced by this patch 
+won't be compiled until the later patch is merged. So it is all OK.
 
-No idea, unfortunately.
+Thanks,
+Longman
 
-> I'll go back to 5.13.y now and see if I can reproduce it there or not,
-> as my backups are not yet done...
-> 
-> thanks,
-> 
-> greg k-h
-> 
-> 
-> [Aug 4 09:48] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff00000 flags=0x0000]
-> [  +0.000012] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff00f80 flags=0x0000]
-> [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff01000 flags=0x0000]
-> [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff01f80 flags=0x0000]
-> [  +0.000005] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff02000 flags=0x0000]
-> [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff02f80 flags=0x0000]
-> [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff03000 flags=0x0000]
-> [  +0.000005] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff03f80 flags=0x0000]
-> [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff04000 flags=0x0000]
-> [Aug 4 09:49] sd 3:0:0:0: [sdc] tag#21 uas_eh_abort_handler 0 uas-tag 1 inflight: CMD IN 
-> [  +0.000011] sd 3:0:0:0: [sdc] tag#21 CDB: Read(16) 88 00 00 00 00 01 8a 44 08 b0 00 00 00 08 00 00
-> [  +5.106493] xhci_hcd 0000:47:00.1: xHCI host not responding to stop endpoint command.
-> [  +0.000010] xhci_hcd 0000:47:00.1: USBSTS: HCHalted HSE
-
-
-HSE "Host System Error" bit is set, meaning xHC hardware detected a serious error and stopped the host.
-HSE was probably set 5-10 seconds earlier, but only discovered here.
-
-Specs state:
-
-xHC sets this bit to ‘1’ when a serious error
-is detected, either internal to the xHC or during a host system access involving the xHC module.
-(In a PCI system, conditions that set this bit to ‘1’ include PCI Parity error, PCI Master Abort, and
-PCI Target Abort.)
-
--Mathias
