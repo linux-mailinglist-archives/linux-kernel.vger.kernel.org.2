@@ -2,77 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588123E1B5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BF23E1B66
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241286AbhHESda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:33:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241267AbhHESd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:33:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB26C6024A;
-        Thu,  5 Aug 2021 18:33:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628188394;
-        bh=Vnb2zcxGZEUexMV2u0dJ0rRLWcI7bnDKV6XRlcLWR9E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z9W8hNUJp8lnnAeyXwWTxCG0RWta6sug3LqEdz4dRsTtNv0EeSU1/6+VnMPPeXL2y
-         S2GQ2LUVFzDK7K438MVEn29b3QIv1ifxoyj/ElMfsJQtRUn1Eyx5WDS16zbNFCcWgB
-         cjHOTTbrpjFv5tfPA2gPMmfZFXucQ0GHgF6fTxjk=
-Date:   Thu, 5 Aug 2021 20:33:11 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Long Li <longli@microsoft.com>
-Cc:     "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [Patch v5 0/3] Introduce a driver to support host accelerated
- access to Microsoft Azure Blob for Azure VM
-Message-ID: <YQwu5z3fx0xhqz3W@kroah.com>
-References: <1628146812-29798-1-git-send-email-longli@linuxonhyperv.com>
- <YQuOca6cmsY/CIiW@kroah.com>
- <BY5PR21MB1506213A9BBC8285C01D1EB3CEF29@BY5PR21MB1506.namprd21.prod.outlook.com>
+        id S229788AbhHESep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:34:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241267AbhHESek (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:34:40 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66BA3C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:34:24 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id a19so8608000oiw.6
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:34:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=TZQqBrv6qFFrmIcwMHn6Tt1aOzqmQe5CcX5H31Yc2D8=;
+        b=jM+qFVtxfPIwShdjDlkwiDnBtOTl3GBLcUMQkzrNJs5RMZD08KMiUYSXA6DwKlngcV
+         FJdoM4rjwEct36UODwq4Z0sqEBOhjWI4w5GZWCqCzdl//cLAReV5sS8sKwe18gDlt37P
+         exqVNaZ3KID+niE8g3gCNu20AhSeKoh22h7Nw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=TZQqBrv6qFFrmIcwMHn6Tt1aOzqmQe5CcX5H31Yc2D8=;
+        b=uVUaaMCpIPXU2A5zw2WiKwIMvULWkV863mVidnrOeLshBbWazK91P8ysc5iAAow7zX
+         yPjwFjPITAKaHfZaRnzPy7jsGfn03zPcAYNmfSfubhaMio6r4K541S3zgrKE38fUaMj1
+         onyycQ/4JAtC8rDhCdDyDzbc+bhCo74g6CCyBvwj8e//q6sg3so2p2Ir9ZH6kMiV+XyN
+         Qp7oWYzr5YOFOaBQMArREx1NUGnqwDSeH5sS/o9l2ih3z3tRIA5+q+m/8sQVmdc7zZ3g
+         O0Lg+lAj+jzWvqWg7BjCWosuY/U9h5Hjahcmbt8u2AofmaP4pk0IAqlmxR2gRq4THJ1f
+         zD3w==
+X-Gm-Message-State: AOAM533hMx7VrAr/2+Em4lgFB5A+Vhnt9cSRwRltTEz5xJZR/+mAcJFI
+        2WgoAP6HBj6Y5zIyphWCNCVTBdV226vGPlanOjhE6w==
+X-Google-Smtp-Source: ABdhPJwJ+Ulv2NUu9Hno8DPMoDQScz1PjXLsrEKbBtSi8KYZ7i0sxRfVg4lVYFImIcK8gjsNOxr3Pa8zmqL7w9Eizls=
+X-Received: by 2002:a05:6808:619:: with SMTP id y25mr8128779oih.166.1628188464390;
+ Thu, 05 Aug 2021 11:34:24 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 5 Aug 2021 11:34:23 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BY5PR21MB1506213A9BBC8285C01D1EB3CEF29@BY5PR21MB1506.namprd21.prod.outlook.com>
+In-Reply-To: <1628161974-7182-2-git-send-email-deesin@codeaurora.org>
+References: <1628161974-7182-1-git-send-email-deesin@codeaurora.org> <1628161974-7182-2-git-send-email-deesin@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 5 Aug 2021 11:34:23 -0700
+Message-ID: <CAE-0n50fN42fhAcoCJBz-PEW5sEdqSKT5YuaxWE_29J=P1=vQw@mail.gmail.com>
+Subject: Re: [PATCH V5 1/2] soc: qcom: aoss: Expose send for generic usecase
+To:     Deepak Kumar Singh <deesin@codeaurora.org>,
+        bjorn.andersson@linaro.org, clew@codeaurora.org,
+        sibis@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 06:27:59PM +0000, Long Li wrote:
-> > Subject: Re: [Patch v5 0/3] Introduce a driver to support host accelerated
-> > access to Microsoft Azure Blob for Azure VM
-> > 
-> > On Thu, Aug 05, 2021 at 12:00:09AM -0700, longli@linuxonhyperv.com wrote:
-> > > v5:
-> > > Added problem statement and test numbers to patch 0
-> > 
-> > patch 0 does not show up in the changelog, please put that in the patch that
-> > adds the driver, otherwise we will never see that information in the future.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> I will fix this.  Do you want me to send the v6, or re-spin v5?
+Quoting Deepak Kumar Singh (2021-08-05 04:12:53)
+> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+> index 934fcc4..b84cb31 100644
+> --- a/drivers/soc/qcom/qcom_aoss.c
+> +++ b/drivers/soc/qcom/qcom_aoss.c
+> @@ -515,6 +521,43 @@ static void qmp_cooling_devices_remove(struct qmp *qmp)
+>                 thermal_cooling_device_unregister(qmp->cooling_devs[i].cdev);
+>  }
+>
+> +/**
+> + * qmp_get() - get a qmp handle from a device
+> + * @dev: client device pointer
+> + *
+> + * Return: handle to qmp device on success, ERR_PTR() on failure
+> + */
+> +struct qmp *qmp_get(struct device *dev)
+> +{
+> +       struct platform_device *pdev;
+> +       struct device_node *np;
+> +       struct qmp *qmp;
+> +
+> +       if (!dev || !dev->of_node)
+> +               return ERR_PTR(-EINVAL);
+> +
+> +       np = of_parse_phandle(dev->of_node, "qcom,qmp", 0);
+> +       if (!np)
+> +               return ERR_PTR(-ENODEV);
+> +
+> +       pdev = of_find_device_by_node(np);
+> +       of_node_put(np);
+> +       if (!pdev)
+> +               return ERR_PTR(-EINVAL);
+> +
+> +       qmp = platform_get_drvdata(pdev);
+> +
+> +       return qmp ? qmp : ERR_PTR(-EPROBE_DEFER);
+> +}
+> +EXPORT_SYMBOL(qmp_get);
+> +
+> +void qmp_put(struct qmp *qmp)
+> +{
+> +       if (!IS_ERR_OR_NULL(qmp))
+> +               put_device(qmp->dev);
 
-If you fix a v5, that turns into v6, right?
+Where is the corresponding get_device() call?
 
-
+> +}
+> +EXPORT_SYMBOL(qmp_put);
+> +
+>  static int qmp_probe(struct platform_device *pdev)
+>  {
+>         struct resource *res;
