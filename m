@@ -2,296 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6470D3E1A77
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DE63E1A7C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240039AbhHERfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231278AbhHERfY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:35:24 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7A4C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 10:35:10 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id l19so10686917pjz.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 10:35:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/HZSC2SlqOyJDihv4vxsKTzy6sQrfkkuEXcLdxiVhMQ=;
-        b=eI/71tFYEjcYB6/CO++j6gZTapqaO5ryNkQYEPpdsAz/frOsNTry4LfYQ0QzSXNtf+
-         DS925dPE/n3Wfx3TuHZy9Afp415VU7zyXjHB6h8jTN1IyYY0hbx+S2/wESu1f4Na6ACz
-         axYOOVvu4Et/BuRR4Ko9e5gh48j018rf3TD3DG0ZKwyiJBT4g9IaPBOS3QP61QmWbbNG
-         qjxoHLpbM7FlbDASfdYfoi0H/BEbnZDuC3XXuDz/wXJXGg1TLv8OTmc4mHNY2TwYsz8T
-         FxFbxNmQcqSH964h+4ptERH4+aj18nbWgPoM82MXfchXG+4Xjuc5Yj+2D2BnKvg4Zjtc
-         7NnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/HZSC2SlqOyJDihv4vxsKTzy6sQrfkkuEXcLdxiVhMQ=;
-        b=sB/TSap7GOmXIxNJmwcfufuWZRb0SAY4t6ROhgaKr7Kb6q/C3Mr6zMwEg1Q9vx7Wwt
-         OYyK5vaP85fMUbRrm3ZXthEUTpF7WezCDgA/wdR2HwxZXwkuoxJcKQ6FGE04U6neTZUU
-         BKwAdXbeDcifLrNKJHUGefW6dB4Mt1nR0IK7skiJalDcJ+Ny05x//byoA1u2kpCUN0jp
-         IdMnNsJ46p5ZmiKB+pcsn0Q1xsIAWIJRf5mjsz0arSrFxkq8pzeZGpc4lDxSsFtCJiTG
-         siAcGlAQYB4W45aocb4fxW4KWZefRFjgClfmryNuOWcC1zrH1/X9dkzge4glQ5nFOl7P
-         chZQ==
-X-Gm-Message-State: AOAM531p9W99JaED0/M9xdwr6P+sbyQRl9LtKfnU2GH24fhT4b3U8zne
-        qoAsdTemDRdS2VIvN2HAkmTjEg==
-X-Google-Smtp-Source: ABdhPJxpXaJdQSrRMiJ4hudt/iT48xnGSS0U6y0VQSY3zd4zKUt1rVZ6sRajITbj1Qjs1j5C0gfnDQ==
-X-Received: by 2002:a17:902:ab88:b029:12b:d2ee:c26f with SMTP id f8-20020a170902ab88b029012bd2eec26fmr5268043plr.38.1628184909604;
-        Thu, 05 Aug 2021 10:35:09 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id t30sm8977670pgl.47.2021.08.05.10.35.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 10:35:08 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 11:35:06 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Loic Pallardy <loic.pallardy@st.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Praneeth Bajjuri <praneeth@ti.com>,
-        Hari Nagalla <hnagalla@ti.com>,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] remoteproc: Add support for detach-only during
- shutdown
-Message-ID: <20210805173506.GF3205691@p14s>
-References: <20210723220248.6554-1-s-anna@ti.com>
- <20210723220248.6554-2-s-anna@ti.com>
- <20210802184431.GC3051951@p14s>
- <cd399fef-6db7-72eb-933f-7454a043ed14@ti.com>
- <20210803162311.GB3091608@p14s>
- <7e264184-60ea-a035-7bd3-1fc2c76a160d@ti.com>
+        id S240157AbhHERfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:35:46 -0400
+Received: from mail-bn1nam07on2137.outbound.protection.outlook.com ([40.107.212.137]:46727
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240060AbhHERfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 13:35:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b/cYYRKEDtrVnFUhox28xRHCkFW0dR7Mp7vZQ42GyNJUrqtEHecervOllk7VslGWzBQrXN7j42klxEQbZYPJnaVSSfBwPjggUvmQ1jzruzTkhwnb0hRTGKsQZyHBhoz9Ggu79PoBErFEcJ1REf+6hOPu+qS4WJJtW271jkIxnocW9yeGpizHb5gyHTSCu0+ahnEfjF8CoIqb6t6pKV2itbU5ap3DCCNdiQdKE1zIKzi1pP5VW1UtLLDIqm5lMoS1pFIeTQYiuXsq2IIzsceJfCga8q8DWIm6vsqURrnwSJtS/sIXpWIuFiqZx0r41lSjXzBi1J3yPxmPmwMGr7G8hA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u75OJOZg5ReGZd6Gnb6HY4dXWRqZfAPkg3afwc71Qeo=;
+ b=HSM+CN3fB/ivqW0O4R9Ap6NNZJ5EzcDEKrQW82++pytUMT4KeZ5ggtVx4b/XyhsuK/3yX8mOitro8ErPMGtlW2QOzUt7qiCdwHUN/4xs9yPKqnMzqGdRvvuE+I/orXubFNBS9WRSZ7mf2n0Cym5UHWd6+QXzDkw6O7AOVA0lsH6KyLrGhMBcZU2svjH2+Zg1ekFNBTo3yL4p18Ytda5VPZ8nhMCt77iu4TmduTvKm65NQmXFhn6IOo8hN4Mx4mc71xyHKJUEz40iS+0YgozklO+xbrSHz/FlBvD/7HSzVuWwYMx2LRiWSsp7MFHGY6+oy9uX5R0Uc9pB4wIxuytJdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u75OJOZg5ReGZd6Gnb6HY4dXWRqZfAPkg3afwc71Qeo=;
+ b=VgjRkYG2PNi6UFczY+AUh/nAyW+DPj97AFqRSr0iFop9bt3qmz14ANOzW/7u/eP+4Z5Zfu6U/M/iw9EGKaKqE4NGSnPuDdDi3wFUv9LPH8umrJstvDlCHrmPv5n8lIqFmRGPHDUuyH7hXq2vaM09DKdmOWHPH6r6kRrRAaExrg8=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MW4PR21MB2058.namprd21.prod.outlook.com (2603:10b6:303:11d::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.7; Thu, 5 Aug
+ 2021 17:35:08 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::e8f7:b582:9e2d:ba55]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::e8f7:b582:9e2d:ba55%2]) with mapi id 15.20.4415.005; Thu, 5 Aug 2021
+ 17:35:08 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Tianyu Lan <ltykernel@gmail.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>
+CC:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>
+Subject: RE: [PATCH] x86/Hyper-V: Initialize Hyper-V stimer after enabling
+ lapic
+Thread-Topic: [PATCH] x86/Hyper-V: Initialize Hyper-V stimer after enabling
+ lapic
+Thread-Index: AQHXiWFeirpd23mz0UeWjQo7kIdmNKtlKU+w
+Date:   Thu, 5 Aug 2021 17:35:07 +0000
+Message-ID: <MWHPR21MB1593E508E6B6DF82DF45A431D7F29@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210804184843.513524-1-ltykernel@gmail.com>
+In-Reply-To: <20210804184843.513524-1-ltykernel@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=4d80a51a-ebb3-46bf-9721-dbd3b1be1a8f;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-08-05T17:19:23Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3214e251-5e1d-4a77-3196-08d958375e94
+x-ms-traffictypediagnostic: MW4PR21MB2058:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MW4PR21MB205873E3DFFB931FE81C33C9D7F29@MW4PR21MB2058.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3276;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Bx8KV96KH/lsnWvo7xun+fMAsoIZsLfhkq/6klp+dVMaxwBHyR62UOWxASyfA24uSkc45B5FC3u4G2myeNUdYRgmqQCNnxWEuCrQAavVfyGqJZWk8n5A3Rsix0pM22SWwPxjso4kWOAqhQw+8FiJyM+RcZCHdHauzN9mSQnDhjdOlno8qFXR7z352nk7Vzz1D/y8gmMcVfiI49XI7O1ECOrIjz0/UymaqoW6CjfZjrQz6nQ/KYi9HH2LTf90IHnOcHyUo1yXWHVPvmDDjKxDcEiyOk/JJbVqmZh64ZV8bDIPHmOyVEQNQS0FMgTSc8Ib+nO4JFM8NHvzYE5s2OC15jA+KMp0ptFjbpmz2AjYUrELnIgxQmrLjNmR7ca+gg1/g+XpWz3jK2/d0oDmoEdtmWHcuSHTo6HWAYi/B9PyXbPs3GojjzxhLUG8nzExa630GDfC3d0tcr7riEnsCqu5Oz5zC1vUtWDt8p3ODL8VRyStmx+IEE9MWs5WglDKdLdACaUvXh2nZYdMWkZTFzdl2pEJvzbNI2m3OKGYt4unB0c8KaK0qBvPv5WgULaYeN43vwwXxobKxNAe+EiJzcom7HspQHHcWTXwJ6zq6xYCj+UPgumiC5kGXnH90zr/Tj4P426OBJPvoe98Z7khDnXwfH7763zjnneppGX4nu4yuh1u4ZAfl22V+h1NvcdBbNITcgYagn8cKDknPqSZNK1mJVUP39V4SfiMcgC6I4/voo8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(8990500004)(7416002)(38100700002)(508600001)(122000001)(54906003)(66946007)(110136005)(66476007)(76116006)(66446008)(9686003)(66556008)(316002)(55016002)(64756008)(7696005)(38070700005)(52536014)(71200400001)(86362001)(2906002)(8676002)(5660300002)(26005)(8936002)(82950400001)(83380400001)(186003)(33656002)(82960400001)(6506007)(921005)(10290500003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?9ss+hgrXFfQVw6QDQb2CMv01ZN7vonL52P2Cr7QzrheX8ITCBzsXxc9j1DFL?=
+ =?us-ascii?Q?3EAtPYehCXgwcIZyfWUH6NuhUnV5yFmOse3qfAaYWuVlJNgEz9466lltIReb?=
+ =?us-ascii?Q?5/izvkE27km84Q2GOpN/1M7Cr2lZRrqE9x2SJqgrynps3F5yRhEXamvklBUB?=
+ =?us-ascii?Q?XR7r/vdurNiZgx4kUhZf6iVVCpAQ6/Re3sxtM+EeUrVjW39nsfsH+OnoNyVU?=
+ =?us-ascii?Q?A6CZgBsPaleCXaGCxsPwoecif59SYfXTU1lOuP4xjqgek5OPd6ZRJ6B+opOH?=
+ =?us-ascii?Q?52GbL773C+hA2PvvaFdK40PXALgJphHlYIk2fsnhkDTUFDm2+zTUJSmJogkS?=
+ =?us-ascii?Q?spDi9gp4tKv1lo8sr/JdJ8/I/FO170Iw3Ilxg7y2A5stXG1uz8gNE0CxcmEX?=
+ =?us-ascii?Q?rbcHG/sU9sIsUUiuRqidFADEjKjf8ZzEpxRBWiSa5jnk77PwoUXAvOcZGxhs?=
+ =?us-ascii?Q?O9LdHIl5WTX9O1I0gXhkdZXFdncIzBSa0IM4GwV6fYnRadfLIti2Xz3Nh3O+?=
+ =?us-ascii?Q?nMOjKkjxV2wcL6+xmtkYu0ct2EX98X7rvVtemPTp9YwQcoL4FrRCcf4mKFTm?=
+ =?us-ascii?Q?YkLAjKt8dVbWAo0V+9+8B97dcxp6Jxkf9CJ/DyQWtgBqV1br4i6nRsRwbktc?=
+ =?us-ascii?Q?pZqpvG44mVCVNPkJweVcZ1SOrUAPreLumrXfrd3YAO4QkyTUOdXMBOKD/odp?=
+ =?us-ascii?Q?yQTWehi9wsa274vSyJuG9o1Cg1Id+owhCIwQKwi/8esmxSF01+SXi9q9w2Vo?=
+ =?us-ascii?Q?cEBtZR3e5asSuno1uc77at8Ipz5vFraX1Gs9l3KMvs/MR3W8/kAnm5n721Ky?=
+ =?us-ascii?Q?Q/GMrCCNQRvNuhS6CxKzEGjCFt92y5Ftw6+ncWHQBH6x71NRGXRwirM+sn1C?=
+ =?us-ascii?Q?k64JC6/xRHTFVUJN5c+KAGJMB3NkttMQPvLh30bh4BstLdasgVFzjdOzriuo?=
+ =?us-ascii?Q?OE03oBZDgHuDhRU1hD4iMv4icBpRgEjltCvWDl9NSEishE4V6m10lIRd8HWb?=
+ =?us-ascii?Q?dutqywLMeDjxtNzgOijT/gyaYg2byB9LS/YRouyhLs5Codw6UNT0wIFrOt1r?=
+ =?us-ascii?Q?OFDG/uPjamYoNkoT34ome+M8UXZsyI9/u8iMXB9abOUg2n09vP7WQ9F6kKwI?=
+ =?us-ascii?Q?URbsLOAG3REeDLUVjW9qi/RFlR+8bZmzeom3wf1RWAFA3e/IpWL3N89pDDi6?=
+ =?us-ascii?Q?oWSw+DuUeU+4OHDgob9703KgGqQbFB2nCig/exL1YaGMWtPDph3uAmJlkfd1?=
+ =?us-ascii?Q?eF6WBMwIPdUyQ0tz6tl0hVIjc5przviRhskaqIw+1OJ7W8DTv5CX9dXIhCPV?=
+ =?us-ascii?Q?ptZduhknZj/8ayeYz2IhrviV?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7e264184-60ea-a035-7bd3-1fc2c76a160d@ti.com>
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3214e251-5e1d-4a77-3196-08d958375e94
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2021 17:35:08.0353
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KOIZz4SeSnsSYrXfxJXI1fRZVyH5R07xM8yH3AWlAcJiCyKoDbA3no2Vz46jB2y6yq5BfZzUx/7l5k6oYPmUFaagauCiZ54aloh6CTC7YwQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB2058
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 02:17:22PM -0500, Suman Anna wrote:
-> Hi Mathieu,
-> 
-> On 8/3/21 11:23 AM, Mathieu Poirier wrote:
-> > Good morning,
-> > 
-> > On Mon, Aug 02, 2021 at 06:21:38PM -0500, Suman Anna wrote:
-> >> Hi Mathieu,
-> >>
-> >> On 8/2/21 1:44 PM, Mathieu Poirier wrote:
-> >>> On Fri, Jul 23, 2021 at 05:02:44PM -0500, Suman Anna wrote:
-> >>>> The remoteproc core has support for both stopping and detaching a
-> >>>> remote processor that was attached to previously, through both the
-> >>>> remoteproc sysfs and cdev interfaces. The rproc_shutdown() though
-> >>>> unconditionally only uses the stop functionality at present. This
-> >>>> may not be the default desired functionality for all the remoteproc
-> >>>> platform drivers.
-> >>>>
-> >>>> Enhance the remoteproc core logic to key off the presence of the
-> >>>> .stop() ops and allow the individual remoteproc drivers to continue
-> >>>> to use the standard rproc_add() and rproc_del() API. This allows
-> >>>> the remoteproc drivers to only do detach if supported when the driver
-> >>>> is uninstalled, and the remote processor continues to run undisturbed
-> >>>> even after the driver removal.
-> >>>>
-> >>>> Signed-off-by: Suman Anna <s-anna@ti.com>
-> >>>> ---
-> >>>> v2: Addressed various review comments from v1
-> >>>>  - Reworked the logic to not use remoteproc detach_on_shutdown and
-> >>>>    rely only on rproc callback ops
-> >>>>  - Updated the last para of the patch description
-> >>>> v1: https://patchwork.kernel.org/project/linux-remoteproc/patch/20210522000309.26134-3-s-anna@ti.com/
-> >>>>
-> >>>>  drivers/remoteproc/remoteproc_cdev.c  | 7 +++++++
-> >>>>  drivers/remoteproc/remoteproc_core.c  | 5 ++++-
-> >>>>  drivers/remoteproc/remoteproc_sysfs.c | 6 ++++++
-> >>>>  3 files changed, 17 insertions(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
-> >>>> index 4ad98b0b8caa..16c932beed88 100644
-> >>>> --- a/drivers/remoteproc/remoteproc_cdev.c
-> >>>> +++ b/drivers/remoteproc/remoteproc_cdev.c
-> >>>> @@ -42,6 +42,13 @@ static ssize_t rproc_cdev_write(struct file *filp, const char __user *buf, size_
-> >>>>  		    rproc->state != RPROC_ATTACHED)
-> >>>>  			return -EINVAL;
-> >>>>  
-> >>>> +		if (rproc->state == RPROC_ATTACHED &&
-> >>>
-> >>> This is already checked just above.
-> >>>
-> >>>> +		    !rproc->ops->stop) {
-> >>
-> >> Well, this is checking for both conditions, and not just the stop ops
-> >> independently. We expect to have .stop() defined normally for both regular
-> >> remoteproc mode and attached mode where you want to stop (and not detach), but
-> >> as you can see, I am supporting only detach and so will not have .stop() defined
-> >>  with RPROC_ATTACHED.
-> >>
-> >>>
-> >>> This is checked in rproc_stop() where -EINVAL is returned if ops::stop has not
-> >>> been provided.
-> >>
-> >> rproc_shutdown() actually doesn't return any status, so all its internal
-> >> checking gets ignored and a success is returned today.
-> >>
-> > 
-> > That is correct, and I have suggested to add a return value in my previous
-> > review.
-> 
-> Yeah ok. I can add a separate patch fixing that, and couple of these checks then
-> become redundant.
-> 
-> > 
-> >>>
-> >>>> +			dev_err(&rproc->dev,
-> >>>> +				"stop not supported for this rproc, use detach\n");
-> >>>
-> >>> The standard error message from the shell should be enough here, the same way it
-> >>> is enough when the "start" and "stop" scenarios fail.
-> >>
-> >> Thought this was a bit more informative, but sure this trace can be dropped.
-> >>
-> >>>
-> >>>> +			return -EINVAL;
-> >>>> +		}
-> >>>> +
-> >>>>  		rproc_shutdown(rproc);
-> >>>>  	} else if (!strncmp(cmd, "detach", len)) {
-> >>>>  		if (rproc->state != RPROC_ATTACHED)
-> >>>> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> >>>> index 7de5905d276a..ab9e52180b04 100644
-> >>>> --- a/drivers/remoteproc/remoteproc_core.c
-> >>>> +++ b/drivers/remoteproc/remoteproc_core.c
-> >>>> @@ -2075,7 +2075,10 @@ void rproc_shutdown(struct rproc *rproc)
-> >>>>  	if (!atomic_dec_and_test(&rproc->power))
-> >>>>  		goto out;
-> >>>>  
-> >>>> -	ret = rproc_stop(rproc, false);
-> >>>> +	if (rproc->state == RPROC_ATTACHED && !rproc->ops->stop)
-> >>>> +		ret = __rproc_detach(rproc);
-> >>>> +	else
-> >>>> +		ret = rproc_stop(rproc, false);
-> >>>
-> >>> As I indicated in my last review I think rproc_shutdown() and rproc_del() should
-> >>> be decoupled and the right call made in the platform drivers based on the state
-> >>> of the remote processor.  
-> >>
-> >> We have various remoteproc API provided in pairs - rproc_alloc()/rproc_free(),
-> >> rproc_add()/rproc_del(), rproc_boot()/rproc_shutdown() and
-> >> rproc_attach()/rproc_detach(). The drivers are configuring conditions for
-> >> auto-boot and RPROC_DETACHED. The reason they are coupled is primarily because
-> >> of the auto-boot done during rproc_add(). And we handle the RPROC_DETACHED case
-> >> just as well in rproc_boot().
-> >>
-> > 
-> > The difference with rproc_boot() is that we are checking only the state of the
-> > remoteproc, everything else related to the remote processor operations is
-> > seamlessly handles by the state machine.  It is also tied to the
-> > rproc_trigger_auto_boot() mechanic - decoupling that would be messy without
-> > bringing any advantages other than keeping with a semantic symmetry.
-> 
-> Most of this is actually tied to auto_boot if you think about it, not just the
-> rproc state. If we have auto_boot set to false, then rproc_add() would not do
-> anything, and the decision to start or attach can either be done through the
-> sysfs/cdev or a kernel remoteproc or some consumer driver. And the state machine
-> is getting influenced by this flag. auto-boot is a very useful feature.
-> 
-> You are asking is to do things differently between the regular start/stop case
-> and attach/detach case ignoring the auto-boot. The semantic symmetry actually
-> makes it easier to follow the state machine given that there are some internal
-> reference counts as well.
+From: Tianyu Lan <ltykernel@gmail.com> Sent: Wednesday, August 4, 2021 11:4=
+9 AM
+>=20
+> Hyper-V Isolation VM doesn't have PIT/HPET legacy timer and only
+> provide stimer. Initialize Hyper-v stimer just after enabling
+> lapic to avoid kernel stuck during calibrating TSC due to no
+> available timer.
 
-I am definitely not asking to ignore the auto-boot flag.  All I said is that I
-did not split the semantic in rproc_boot() because of the auto-boot flag and the
-mechanic to handle it.
+I'm unclear on the core reason this patch is needed. Hyper-V
+Generation 2 VMs don't have PIT or HPET either, and they don't get
+stuck in TSC calibration.  Instead of calibration, Hyper-V provides
+guests with a synthetic MSR to directly read the TSC frequency.
+Code in ms_hyperv_init_platform() sets x86_platform.calibrate_tsc
+to hv_get_tsc_khz(), which reads the synthetic MSR.  Is some
+part of this mechanism not available in a Hyper-V Isolated VM?
 
-> 
-> Note that we also have the devres API, and rproc_alloc()/rproc_free() and
-> rproc_add()/rproc_del() form the main remoteproc subsystem API. The drivers
-> would end up using matching calls if we don't have auto_boot.
-> 
-> > 
-> >> While what you have suggested works, but I am not quite convinced on this
-> >> asymmetric usage, and why this state-machine logic should be split between the
-> >> core and remoteproc drivers differently between attach and detach. To me,
-> >> calling rproc_detach() in remoteproc drivers would have made sense only if they
-> >> are also calling rproc_attach().
-> > 
-> > As pointed out above I see rproc_boot() as a special case but if that really
-> > concerns you I'm open to consider patches that will take rproc_attach() out of
-> > rproc_boot(). 
-> > 
-> 
-> We are talking about a bigger behavioral change to remoteproc core here. So I
-> would definitely want to hear from others as well on this before we spend any
-> time reworking code.
-> 
-> Meanwhile, how do I take this series forward? One option I can probably do is
-> turn off auto-boot for early-boot case in my drivers and do the matching
-> attach/detach.
->
+>=20
+> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+> ---
+>  arch/x86/hyperv/hv_init.c      | 29 -----------------------------
+>  arch/x86/kernel/cpu/mshyperv.c | 22 ++++++++++++++++++++++
+>  2 files changed, 22 insertions(+), 29 deletions(-)
+>=20
+> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> index 6f247e7e07eb..4a643a85d570 100644
+> --- a/arch/x86/hyperv/hv_init.c
+> +++ b/arch/x86/hyperv/hv_init.c
+> @@ -271,25 +271,6 @@ static struct syscore_ops hv_syscore_ops =3D {
+>  	.resume		=3D hv_resume,
+>  };
+>=20
+> -static void (* __initdata old_setup_percpu_clockev)(void);
+> -
+> -static void __init hv_stimer_setup_percpu_clockev(void)
+> -{
+> -	/*
+> -	 * Ignore any errors in setting up stimer clockevents
+> -	 * as we can run with the LAPIC timer as a fallback.
+> -	 */
+> -	(void)hv_stimer_alloc(false);
+> -
+> -	/*
+> -	 * Still register the LAPIC timer, because the direct-mode STIMER is
+> -	 * not supported by old versions of Hyper-V. This also allows users
+> -	 * to switch to LAPIC timer via /sys, if they want to.
+> -	 */
+> -	if (old_setup_percpu_clockev)
+> -		old_setup_percpu_clockev();
+> -}
+> -
+>  static void __init hv_get_partition_id(void)
+>  {
+>  	struct hv_get_partition_id *output_page;
+> @@ -396,16 +377,6 @@ void __init hyperv_init(void)
+>  		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
+>  	}
+>=20
+> -	/*
+> -	 * hyperv_init() is called before LAPIC is initialized: see
+> -	 * apic_intr_mode_init() -> x86_platform.apic_post_init() and
+> -	 * apic_bsp_setup() -> setup_local_APIC(). The direct-mode STIMER
+> -	 * depends on LAPIC, so hv_stimer_alloc() should be called from
+> -	 * x86_init.timers.setup_percpu_clockev.
+> -	 */
+> -	old_setup_percpu_clockev =3D x86_init.timers.setup_percpu_clockev;
+> -	x86_init.timers.setup_percpu_clockev =3D hv_stimer_setup_percpu_clockev=
+;
+> -
+>  	hv_apic_init();
+>=20
+>  	x86_init.pci.arch_init =3D hv_pci_init;
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyper=
+v.c
+> index 6b5835a087a3..dcfbd2770d7f 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -214,6 +214,20 @@ static void __init hv_smp_prepare_boot_cpu(void)
+>  #endif
+>  }
+>=20
+> +static void (* __initdata old_setup_initr_mode)(void);
+> +
+> +static void __init hv_setup_initr_mode(void)
+> +{
+> +	if (old_setup_initr_mode)
+> +		old_setup_initr_mode();
+> +
+> +	/*
+> +	 * The direct-mode STIMER depends on LAPIC and so allocate
+> +	 * STIMER after calling initr node callback.
 
-I don't think there is a need to turn off auto-boot for early boot, rproc_boot()
-will to the right thing.
+I'd love to see this comment have a bit more detail.  I think the
+point is this:  "The direct-mode STIMER interrupt delivery depends
+on the LAPIC being enabled".  The timer mechanism itself does not
+depend on the LAPIC timer.  You just copied this comment from the
+previous place, so making it better isn't strictly within the scope of
+this patch, but if you are going to move it, let's make it a little more
+precise.
 
-As for the way forward, the easiest way I see is to call either rproc_shutdown()
-or rproc_detach() based on rproc->state in rproc_del().  That will work with
-devm_rproc_remove() and it is still possible for platorm drivers to explicitly
-call rproc_shutdown() before rproc_del() to force a remote processor that was
-attached to be switched off when the driver is removed.
+> +	 */
+> +	(void)hv_stimer_alloc(false);
 
-That is all the time I had for remoteproc - I am officially away for the next two weeks.  
+I understood the point that Praveen Kumar was making to be that
+we should not just ignore the return value from hv_stimer_alloc()
+in the case of an Isolated VM.  A failure of hv_stimer_alloc() in
+an Isolated VM is fatal because there is no LAPIC timer to fall
+back on.  In that case, really all that can be done is BUG_ON().
 
-Thanks,
-Mathieu
+> +}
+> +
+>  static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
+>  {
+>  #ifdef CONFIG_X86_64
+> @@ -424,6 +438,7 @@ static void __init ms_hyperv_init_platform(void)
+>  	/* Register Hyper-V specific clocksource */
+>  	hv_init_clocksource();
+>  #endif
+> +
+>  	/*
+>  	 * TSC should be marked as unstable only after Hyper-V
+>  	 * clocksource has been initialized. This ensures that the
+> @@ -431,6 +446,13 @@ static void __init ms_hyperv_init_platform(void)
+>  	 */
+>  	if (!(ms_hyperv.features & HV_ACCESS_TSC_INVARIANT))
+>  		mark_tsc_unstable("running on Hyper-V");
+> +
+> +	/*
+> +	 * Override initr mode callback in order to allocate STIMER
+> +	 * after initalizing LAPIC.
+> +	 */
+> +	old_setup_initr_mode =3D x86_init.irqs.intr_mode_init;
+> +	x86_init.irqs.intr_mode_init =3D hv_setup_initr_mode;
 
-> regards
-> Suman
-> 
-> >>
-> >>
-> >> Conditions such as the above make the core code
-> >>> brittle, difficult to understand and tedious to maintain.
-> >>
-> >> The logic I have added actually makes rproc_shutdown behavior to be on par with
-> >> the rproc_boot().
-> >>
-> >> regards
-> >> Suman
-> >>
-> >>>
-> >>> Thanks,
-> >>> Mathieu
-> >>>
-> >>>>  	if (ret) {
-> >>>>  		atomic_inc(&rproc->power);
-> >>>>  		goto out;
-> >>>> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
-> >>>> index ea8b89f97d7b..133e766f38d4 100644
-> >>>> --- a/drivers/remoteproc/remoteproc_sysfs.c
-> >>>> +++ b/drivers/remoteproc/remoteproc_sysfs.c
-> >>>> @@ -206,6 +206,12 @@ static ssize_t state_store(struct device *dev,
-> >>>>  		    rproc->state != RPROC_ATTACHED)
-> >>>>  			return -EINVAL;
-> >>>>  
-> >>>> +		if (rproc->state == RPROC_ATTACHED &&
-> >>>> +		    !rproc->ops->stop) {
-> >>>> +			dev_err(&rproc->dev, "stop not supported for this rproc, use detach\n");
-> >>>> +			return -EINVAL;
-> >>>> +		}
-> >>>> +
-> >>>>  		rproc_shutdown(rproc);
-> >>>>  	} else if (sysfs_streq(buf, "detach")) {
-> >>>>  		if (rproc->state != RPROC_ATTACHED)
-> >>>> -- 
-> >>>> 2.32.0
-> >>>>
-> >>
-> 
+Hanging the stimer initialization on the intr_mode_init() function
+is an ugly hack.  Is your goal to do the stimer initialization
+after the interrupt mode has been setup, but before tsc_init() is
+called in x86_late_time_init()?  Back to my initial comments,
+I'm curious as to why the existing mechanism doesn't work.
+
+Michael
+
+>  }
+>=20
+>  static bool __init ms_hyperv_x2apic_available(void)
+> --
+> 2.25.1
+
