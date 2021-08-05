@@ -2,177 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247483E0F6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0F73E0F6C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234448AbhHEHji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 03:39:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58024 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230471AbhHEHjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 03:39:36 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S237410AbhHEHkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 03:40:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28380 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230381AbhHEHkP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 03:40:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628149201;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=LKJJsIRb7WeylWDesNbJ0ZJZIxGY5exTeGT1+Dg+bq0=;
+        b=Hi0HpIOy9PgcH33oRDaD5TW62E+INkEATnAL1CuhpgmaXmfuTEyWWpAipoJKvV+66ivHMn
+        vaU9GeOAGQbEDM7zPgGbTvIYhrej1JKa6aOcvw6ew+k1gwy9UpkZS+oLqROcqWd2632R3f
+        dxQ+KsIEG3xwNxBe6qsQArdU6lAtlU0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-338-oNTNMF-JOhOX13cmMIyyCQ-1; Thu, 05 Aug 2021 03:40:00 -0400
+X-MC-Unique: oNTNMF-JOhOX13cmMIyyCQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9467860F10;
-        Thu,  5 Aug 2021 07:39:22 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mBXyK-0034vy-Iv; Thu, 05 Aug 2021 08:39:20 +0100
-Date:   Thu, 05 Aug 2021 08:39:20 +0100
-Message-ID: <87y29gbas7.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Subject: Re: [PATCH 12/12] arm64: dts: exynos: Add Exynos850 SoC support
-In-Reply-To: <CAPLW+4mMF9B2BiY2hTgHz5=DNbDJZ7TDzt=Xefb5tDKwQhpEew@mail.gmail.com>
-References: <20210730144922.29111-1-semen.protsenko@linaro.org>
-        <20210730144922.29111-13-semen.protsenko@linaro.org>
-        <15871f8ced3c757fad1ab3b6e62c4e64@misterjones.org>
-        <CAPLW+4=v4bDcuxGVqs06mobGj34At4cD+vg48b4dPujarS07Tg@mail.gmail.com>
-        <87k0l1w8y5.wl-maz@kernel.org>
-        <CAPLW+4mMF9B2BiY2hTgHz5=DNbDJZ7TDzt=Xefb5tDKwQhpEew@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: semen.protsenko@linaro.org, s.nawrocki@samsung.com, cw00.choi@samsung.com, krzysztof.kozlowski@canonical.com, linus.walleij@linaro.org, tomasz.figa@gmail.com, robh+dt@kernel.org, sboyd@kernel.org, mturquette@baylibre.com, jirislaby@kernel.org, gregkh@linuxfoundation.org, ckeepax@opensource.wolfsonmicro.com, ryu.real@samsung.com, tom.gall@linaro.org, sumit.semwal@linaro.org, john.stultz@linaro.org, amit.pundir@linaro.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26B58192FDAD;
+        Thu,  5 Aug 2021 07:39:59 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CC4C569FAE;
+        Thu,  5 Aug 2021 07:39:58 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM fixes for Linux 5.14-rc5
+Date:   Thu,  5 Aug 2021 03:39:58 -0400
+Message-Id: <20210805073958.2684067-1-pbonzini@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Aug 2021 19:37:24 +0100,
-Sam Protsenko <semen.protsenko@linaro.org> wrote:
-> 
-> On Wed, 4 Aug 2021 at 18:01, Marc Zyngier <maz@kernel.org> wrote:
-> >
-> > On Wed, 04 Aug 2021 15:39:38 +0100,
-> > Sam Protsenko <semen.protsenko@linaro.org> wrote:
-> >
-> > > > You are also missing the hypervisor virtual timer interrupt.
-> > > >
-> > >
-> > > Checked SoC TRM, there is no PPI for hypervisor virtual timer
-> > > interrupt, and no mentioning of it at all. Likewise, I checked ARMv8
-> > > ARM and TRM, almost no description of it. Also, I checked other
-> > > platforms, and seems like everyone does the same (having only 4
-> > > interrupts). And I wasn't able to find any documentation on that, so I
-> > > guess I'll leave it as is, if you don't mind.
-> >
-> > I *do* mind, and other DTs being wrong isn't a good enough excuse! ;-)
-> >
-> > From the ARMv8 ARM (ARM DDI 0487G.b)
-> > <quote>
-> > D11.2.4 Timers
-> >
-> > In an implementation of the Generic Timer that includes EL3, if EL3
-> > can use AArch64, the following timers are implemented:
-> >
-> > * An EL1 physical timer, that:
-> >   - In Secure state, can be accessed from EL1.
-> >   - In Non-secure state, can be accessed from EL1 unless those
-> >     accesses are trapped to EL2.
-> >     When this timer can be accessed from EL1, an EL1 control
-> >     determines whether it can be accessed from EL0.
-> > * A Non-secure EL2 physical timer.
-> > * A Secure EL3 physical timer. An EL3 control determines whether this
-> >   register is accessible from Secure EL1.
-> > * An EL1 virtual timer.
-> > * When FEAT_VHE is implemented, a Non-secure EL2 virtual timer.
-> > * When FEAT_SEL2 is implemented, a Secure EL2 physical timer.
-> > * When FEAT_SEL2 is implemented, a Secure EL2 virtual timer.
-> > </quote>
-> >
-> > Cortex-A55 being an ARMv8.2 implementation, it has FEAT_VHE, and thus
-> > it does have a NS-EL2 virtual timer. This is further confirmed by the
-> > TRM which documents CNTHV*_EL2 as valid system registers[1].
-> >
-> > So the timer exists, the signal is routed out of the core, and it
-> > is likely that it is connected to the GIC.
-> >
-> > If the designers have omitted it, then it needs to be documented as
-> > such.
-> >
-> 
-> Ok, I've checked thoroughly all docs again, and it seems like there is
-> no dedicated PPI number for this "EL2 Hypervisor Virtual Timer" in
-> Exynos850 SoC. The timer instance itself might exist of course, but
-> interrupt line is probably wasn't connected to GIC by SoC designers,
-> at least it's not documented.
+Linus,
 
-Can you try and check this? You can directly program the virtual timer
-so that it has a pending interrupt, and then check the pending
-register on the same CPU to see if there is anything appearing there.
+The following changes since commit 8750f9bbda115f3f79bfe43be85551ee5e12b6ff:
 
-> Moreover, from [1,2] it looks like if it were existing it would have
-> been PPI=12 (INTID=28). But in GIC-400 TRM this PPI is assigned to
-> "Legacy FIQ signal",
+  KVM: add missing compat KVM_CLEAR_DIRTY_LOG (2021-07-27 16:59:01 -0400)
 
-No. That's only if you set the bypass bits in GICD_CTLR, which nobody
-with half a brain would consider doing.
+are available in the Git repository at:
 
-> and all there is no PPI for Hypervisor Virtual
-> Timer documented there as well. In Exynos850 TRM the source for this
-> PPI's interrupt source is marked as "-", which means it's not used.
->
-> So if you know something that I don't know -- please point me out the
-> doc where this PPI line is documented. Otherwise I can add the comment
-> to device tree, stating that this interrupt line is not present in
-> SoC's GIC, i.e. something like this:
-> 
-> 8<------------------------------------------------------------------------------->8
->     timer {
->         compatible = "arm,armv8-timer";
->         interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(8) |
->                       IRQ_TYPE_LEVEL_LOW)>,
->                  <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(8) |
->                       IRQ_TYPE_LEVEL_LOW)>,
->                  <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(8) |
->                       IRQ_TYPE_LEVEL_LOW)>,
->                  <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(8) |
->                       IRQ_TYPE_LEVEL_LOW)>;
->         /* Hypervisor Virtual Timer PPI is not present in this SoC GIC */
->     };
-> 8<------------------------------------------------------------------------------->8
-> 
-> Is that ok with you?
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-I'd rather you verify the above first. And if you can't, I'd like a
-comment that is a bit more explicit:
+for you to fetch changes up to d5aaad6f83420efb8357ac8e11c868708b22d0a9:
 
-/* The vendor couldn't be bothered to wire the EL2 Virtual Timers */
+  KVM: x86/mmu: Fix per-cpu counter corruption on 32-bit builds (2021-08-05 03:33:56 -0400)
 
-Thanks,
+----------------------------------------------------------------
+Mostly bugfixes; plus, support for XMM arguments to Hyper-V hypercalls
+now obeys KVM_CAP_HYPERV_ENFORCE_CPUID.  Both the XMM arguments feature
+and KVM_CAP_HYPERV_ENFORCE_CPUID are new in 5.14, and each did not know
+of the other.
 
-	M.
+----------------------------------------------------------------
+Maxim Levitsky (1):
+      KVM: selftests: fix hyperv_clock test
 
--- 
-Without deviation from the norm, progress is not possible.
+Mingwei Zhang (1):
+      KVM: SVM: improve the code readability for ASID management
+
+Paolo Bonzini (2):
+      KVM: x86: accept userspace interrupt only if no event is injected
+      KVM: Do not leak memory for duplicate debugfs directories
+
+Sean Christopherson (2):
+      KVM: SVM: Fix off-by-one indexing when nullifying last used SEV VMCB
+      KVM: x86/mmu: Fix per-cpu counter corruption on 32-bit builds
+
+Vitaly Kuznetsov (4):
+      KVM: x86: hyper-v: Check access to hypercall before reading XMM registers
+      KVM: x86: Introduce trace_kvm_hv_hypercall_done()
+      KVM: x86: hyper-v: Check if guest is allowed to use XMM registers for hypercall input
+      KVM: selftests: Test access to XMM fast hypercalls
+
+ arch/x86/kvm/hyperv.c                              | 18 +++++++--
+ arch/x86/kvm/mmu/mmu.c                             |  2 +-
+ arch/x86/kvm/svm/sev.c                             | 45 ++++++++++++----------
+ arch/x86/kvm/trace.h                               | 15 ++++++++
+ arch/x86/kvm/x86.c                                 | 13 ++++++-
+ .../testing/selftests/kvm/include/x86_64/hyperv.h  |  5 ++-
+ tools/testing/selftests/kvm/x86_64/hyperv_clock.c  |  2 +-
+ .../testing/selftests/kvm/x86_64/hyperv_features.c | 41 ++++++++++++++++++--
+ virt/kvm/kvm_main.c                                | 18 ++++++++-
+ 9 files changed, 125 insertions(+), 34 deletions(-)
+
