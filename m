@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD0E3E15E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE3A3E15F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241281AbhHENni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 09:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239750AbhHENnh (ORCPT
+        id S241741AbhHENo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 09:44:59 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:15335 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241703AbhHENo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 09:43:37 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34734C061765;
-        Thu,  5 Aug 2021 06:43:22 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so11665849pji.5;
-        Thu, 05 Aug 2021 06:43:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=58Ffi1Arbxce6aerw4WIspWj9tMJZpszbjIyc6AUL44=;
-        b=GH/dqod3qaeVISZlEavJ1B1Q2ckMHBpygJRbUAG5V15AKHnuh55c1+0DnCQfcNbAyw
-         32WP6Gwu7hlLL4eVrUid6reGBAB99eRuwoKBdSpon4fBYCmtWJuvMBjD04HNTYP15yKp
-         O5gijcBXRvf9QfPDgdkclQ/bCXKms1Bm2yv4WHa/9PJAL01s2fY3YROgs6i4PTjP1ZZG
-         i7/LeLwWzEnaq1r3AaGAV+ajMePlfLjvM6jeZof49A+vH6REdJtSeYvr7UmIhZ87KrqH
-         N+v97k784K8vvMdS8WdoGR2cXG1CJ0KURs/MDyq432JX3l1TbkVaNFUxI2ThcLZfZVG5
-         z+YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=58Ffi1Arbxce6aerw4WIspWj9tMJZpszbjIyc6AUL44=;
-        b=k2n9X6l0PSqsM8KtnilmXZfOFsEAUetnYxfnblZHWbj45rdnLl2n5RornYAd7jvdfm
-         kZWmNg5+nrMu61s5dxHLW1GR7TH7A1b1G9BOV/Uw9QpUSMTs157uRzd9vArjbbei1OJc
-         ZWyxxk3HRPK7UiUhVCL3CK7chO6TqnI47a/YgDd5H76t4eHsJcDE5qtIyniynGPNI/bC
-         jWoMIdf5Hw0GLmccoyUsryBatUlnYqBuPKf8XfpfsUviwmKYHXz4fVkOw4a8gW+KQnse
-         tyvrILRnO2NjkMle17hoTtjyzlTAXy4l69Ii9+iloudJVHspJcq02FS6f0royz63CBIA
-         vuJw==
-X-Gm-Message-State: AOAM531bXP3r+RBZnvBcTu3n6LuvhWvAXKbCr1eg/So2fOCfUGkWMV7i
-        YI8Q4Bcr+B6d/U8g3eb3+6sDiQZUDGKbJsi62Q0=
-X-Google-Smtp-Source: ABdhPJxQ7j9Z8TwVs6BQjf+UxIRFeNyr6I+JFKe1EKX8uckU3zdLzwQe9cpuMb/d5VHLmMrqWrtO9A2gpZpoukuqZYQ=
-X-Received: by 2002:a65:5ccd:: with SMTP id b13mr232696pgt.203.1628171001734;
- Thu, 05 Aug 2021 06:43:21 -0700 (PDT)
+        Thu, 5 Aug 2021 09:44:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628171084; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=UDqqULtEilcoytZXS/txGxlVIVFuUcqpiXHWmqfAO/E=; b=EDY1l4Z3etFlczA7s0phW1UD058RthbTsc9nOJ/qGwGKgrKgHgjpulGz7A6AYSY4pcVJx7e9
+ 7w3Y4BKRAUbjHrDDPLadUmmpDxtsumdW+1YzL/OmbngZXGq11GGk9e3fvGaLFs2kjddK5TzT
+ U/0Jba0Nm1dKm6yh1ZV4chkjfnc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 610beb3ab4dfc4b0ef2dfff1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 05 Aug 2021 13:44:26
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 64548C43144; Thu,  5 Aug 2021 13:44:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9B60DC4338A;
+        Thu,  5 Aug 2021 13:44:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9B60DC4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Liwei Song <liwei.song@windriver.com>
+Cc:     Luca Coelho <luciano.coelho@intel.com>,
+        David <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iwlwifi: select MAC80211_LEDS conditionally
+References: <20210624100823.854-1-liwei.song@windriver.com>
+        <87sg17ilz2.fsf@codeaurora.org>
+        <92d293b4-0ef1-6239-4b91-4af420786980@windriver.com>
+Date:   Thu, 05 Aug 2021 16:44:17 +0300
+In-Reply-To: <92d293b4-0ef1-6239-4b91-4af420786980@windriver.com> (Liwei
+        Song's message of "Thu, 24 Jun 2021 19:06:39 +0800")
+Message-ID: <87fsvoc8ge.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <cover.1626429286.git.matthias.schiffer@ew.tq-group.com>
- <65f9787ebd6725e90fad9ea7f936ee0d5712da94.1626429286.git.matthias.schiffer@ew.tq-group.com>
- <YQvn9dkFluRYj80r@google.com> <9dc9fb4b37f7afa661bf1bb9148e5109b3f4329c.camel@ew.tq-group.com>
-In-Reply-To: <9dc9fb4b37f7afa661bf1bb9148e5109b3f4329c.camel@ew.tq-group.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 5 Aug 2021 16:42:42 +0300
-Message-ID: <CAHp75VeQxr3pkX9j10wUi3NjZY-Nkn=waPsMDxG=pDprY3Wsyg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/7] mfd: tqmx86: clear GPIO IRQ resource when no IRQ
- is set
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 4:40 PM Matthias Schiffer
-<matthias.schiffer@ew.tq-group.com> wrote:
-> On Thu, 2021-08-05 at 14:30 +0100, Lee Jones wrote:
-> > On Fri, 16 Jul 2021, Matthias Schiffer wrote:
+Liwei Song <liwei.song@windriver.com> writes:
 
-...
-
-> > Strange - why is this !0 in the first place?
+> On 6/24/21 18:41, Kalle Valo wrote:
+>> Liwei Song <liwei.song@windriver.com> writes:
+>> 
+>>> MAC80211_LEDS depends on LEDS_CLASS=y or LEDS_CLASS=MAC80211,
+>>> add condition to enable it in iwlwifi/Kconfig to avoid below
+>>> compile warning when LEDS_CLASS was set to m:
+>>>
+>>> WARNING: unmet direct dependencies detected for MAC80211_LEDS
+>>>   Depends on [n]: NET [=y] && WIRELESS [=y] && MAC80211 [=y] &&
+>>> (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=MAC80211 [=y])
+>>>   Selected by [m]:
+>>>   - IWLWIFI_LEDS [=y] && NETDEVICES [=y] && WLAN [=y] &&
+>>> WLAN_VENDOR_INTEL [=y] && IWLWIFI [=m] && (LEDS_CLASS [=m]=y ||
+>>> LEDS_CLASS [=m]=IWLWIFI [=m]) && (IWLMVM [=m] || IWLDVM [=m])
+>>>
+>>> Signed-off-by: Liwei Song <liwei.song@windriver.com>
+>> 
+>> Is this is a new regression or an old bug? What commit caused this?
 >
-> I don't see anything strange here. DEFINE_RES_IRQ() sets flags to
-> IORESOURCE_IRQ. We reset it to 0 when there is no IRQ to clear that
-> resource entry.
+> It should be exist when the below commit change the dependency of MAC80211_LEDS
+> to fix some build error:
 >
-> An alternative would be to start with an empty entry and only fill in
-> the fields when an IRQ is used, but that seems more cumbersome than the
-> current code to me.
+> commit b64acb28da8394485f0762e657470c9fc33aca4d
+> Author: Arnd Bergmann <arnd@arndb.de>
+> Date:   Mon Jan 25 12:36:42 2021 +0100
+>
+>     ath9k: fix build error with LEDS_CLASS=m
 
-Another alternative is to start using the IRQ DISABLED resource flag,
-but I'm afraid that OF code is not ready for that.
-https://elixir.bootlin.com/linux/latest/source/include/linux/ioport.h#L331
+Thanks, it seems LEDS_CLASS is a constant source of problems for
+wireless drivers :/
+
+Luca, what should we do? We cannot have compile errors in the tree.
+
+I assigned this patch to me on patchwork.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
