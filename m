@@ -2,128 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA633E1A6B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7709D3E1A62
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239956AbhHERdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbhHERdJ (ORCPT
+        id S238858AbhHER3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:29:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20621 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238365AbhHER3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:33:09 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C2EC061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 10:32:54 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id ec13so9562559edb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 10:32:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kSMSzayyNT2YehjLQ2Cwc0r8HqyEvjniy8Pw7lCSffg=;
-        b=CjeV+4n++fBbfbgUnSajYHMZzSgIGQ/AzXROF+Y4CaB/aORGEHsRe4pUpEJVdYpwfB
-         NmAZXoNyQn6JPxdWXpyZnM00VCUOuYnkUNerNg1Ng90I+xulwoWK81gZiomswCGM8sp6
-         nIAp7+gezxOviLaRF+m3bsJwsaKOi0OIDRvRA=
+        Thu, 5 Aug 2021 13:29:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628184566;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vx6Eap2OuxsPf1499Uax7Ttsx2qtwc6VR8SU5LEnWZg=;
+        b=BG5AIWKWsTc2kutuwkIbxzdEQfTUkw9oaZINs4bY1UGv8n6yf+NrAbhZ0GU25VQ34TuTcS
+        XeSmDztrnStKloxHzSJK76n2UfKDA1xi2Zs9DPTC8T4fN33MC7RXKz/n6S9tGL8RCImYLq
+        tC7j2bratgws+n0sAzHC7BOmV8Vg8n0=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-31-KO043fjVOjmIHXwNO563oQ-1; Thu, 05 Aug 2021 13:29:25 -0400
+X-MC-Unique: KO043fjVOjmIHXwNO563oQ-1
+Received: by mail-wr1-f72.google.com with SMTP id v18-20020adfe2920000b029013bbfb19640so2174179wri.17
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 10:29:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kSMSzayyNT2YehjLQ2Cwc0r8HqyEvjniy8Pw7lCSffg=;
-        b=EObhrN8/fLpzboFYXuxOva8cvzWWglX6j7iGRbRUbSU6ZFzGy6jKaq9WAUjeAJPkqo
-         UI846Cl0tY0pQdPq/il+5TjLXM8cHxquwUPXLxEHfCDBibhtk8XYUvsXd0iB8/WyPGEK
-         +zbjgD+gunaOooxzEYszCzPWCHVTTUcWci4Iph1fIYVvLXy0LyNreCKUSr+yvk0sd4ur
-         O/7sHA+k4MtuLw1cZX6t13IfEE/DHetKz/bjWSYWCYvVnjap/sQUhmWXnaZ5ZAdv3aXW
-         twCniOtuJnpsXKFm1nffxsRtx3tWsa/PogRLKCk1oov310roLFiJswmoDm+rjFQfHY9l
-         cIbA==
-X-Gm-Message-State: AOAM532l870ER4jI6uMz13tqYaPUCvdhYmNK7dCd7wbRn42fJ/OjLbQq
-        XxQHjjUHNStDjXDqp/bIi3kmXhFyiYdMwI5eaPk=
-X-Google-Smtp-Source: ABdhPJzBOL893fCSmOHXBSwkyL7eLGE7O3KgDZRNDeoJbAOPoTEaLIk9sRmFGuW0QqlMa1hSLv97rg==
-X-Received: by 2002:aa7:cd03:: with SMTP id b3mr8088629edw.304.1628184773092;
-        Thu, 05 Aug 2021 10:32:53 -0700 (PDT)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
-        by smtp.gmail.com with ESMTPSA id j23sm2598395eds.21.2021.08.05.10.32.52
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=vx6Eap2OuxsPf1499Uax7Ttsx2qtwc6VR8SU5LEnWZg=;
+        b=VIrMitGtMT3+uwIQZfPZor+/z9AY+L4DGyHIQ1Tv0xUB+jesj90EiUHP9ATGRwZYGE
+         LQObVfjStUGin0TqkfAO95mZqghkPWiEiV14aQSUGEDjmg4seqFoPw2GxX85tsdUa87k
+         6eiolITS71DNFiNnyos7h8G+C+LfvrDT/nwEdLEU/wyyMPJY9+JiNjg42Pr/iUpUO7F8
+         vvHaBCFixo1nM0RbE+hWCZ8pKWsOUod/xHRvxTe15HTp6mc0nsqf3krBJpBD8rh09LYL
+         O9T8JSpJ+6nBpULrz6ZMr/Sfu3hf+SUCfyeu6JUmKOx12xDEeuZikx9PBoMVGcHpbvXO
+         4JgA==
+X-Gm-Message-State: AOAM5323N0BkTcHuqLlxIzG4Le20wQbaPdri+TjrbE8saJJPrQyLUPG4
+        gWzl0qCrq89YPYI3LdPjV18NJJOV2/sVkPZRahoix1ZxG0Jy2zGj800hrykphCtOvPgcVJjIHdp
+        FZX2Aly5dGAVSdh0B39ka9ul3
+X-Received: by 2002:a7b:cd0b:: with SMTP id f11mr6199289wmj.172.1628184563794;
+        Thu, 05 Aug 2021 10:29:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzwmHpBEyQ42ianqozMIlYiVXLJH+NUXQprFquOC/W1fvzc6KeDbvs+MGzr+TSSp1k/vWSx7Q==
+X-Received: by 2002:a7b:cd0b:: with SMTP id f11mr6199251wmj.172.1628184563522;
+        Thu, 05 Aug 2021 10:29:23 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c630b.dip0.t-ipconnect.de. [91.12.99.11])
+        by smtp.gmail.com with ESMTPSA id h25sm9508172wmp.33.2021.08.05.10.29.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Aug 2021 10:32:52 -0700 (PDT)
-Received: by mail-ej1-f42.google.com with SMTP id oz16so10845657ejc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 10:32:52 -0700 (PDT)
-X-Received: by 2002:a05:6512:2388:: with SMTP id c8mr4369071lfv.201.1628184441363;
- Thu, 05 Aug 2021 10:27:21 -0700 (PDT)
+        Thu, 05 Aug 2021 10:29:23 -0700 (PDT)
+Subject: Re: [PATCH v7 1/2] mm: introduce process_mrelease system call
+To:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
+        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
+        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
+        hch@infradead.org, oleg@redhat.com, jannh@google.com,
+        shakeelb@google.com, luto@kernel.org, christian.brauner@ubuntu.com,
+        fweimer@redhat.com, jengelh@inai.de, timmurray@google.com,
+        linux-api@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+References: <20210805170859.2389276-1-surenb@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <46998d10-d0ca-aeeb-8dcd-41b8130fb756@redhat.com>
+Date:   Thu, 5 Aug 2021 19:29:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <YQv+iwmhhZJ+/ndc@casper.infradead.org> <YQvpDP/tdkG4MMGs@casper.infradead.org>
- <YQvbiCubotHz6cN7@casper.infradead.org> <1017390.1628158757@warthog.procyon.org.uk>
- <1170464.1628168823@warthog.procyon.org.uk> <1186271.1628174281@warthog.procyon.org.uk>
- <1219713.1628181333@warthog.procyon.org.uk>
-In-Reply-To: <1219713.1628181333@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 5 Aug 2021 10:27:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjyEk9EuYgE3nBnRCRd_AmRYVOGACEjt0X33QnORd5-ig@mail.gmail.com>
-Message-ID: <CAHk-=wjyEk9EuYgE3nBnRCRd_AmRYVOGACEjt0X33QnORd5-ig@mail.gmail.com>
-Subject: Re: Canvassing for network filesystem write size vs page size
-To:     David Howells <dhowells@redhat.com>
-Cc:     Anna Schumaker <anna.schumaker@netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, devel@lists.orangefs.org,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210805170859.2389276-1-surenb@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 9:36 AM David Howells <dhowells@redhat.com> wrote:
->
-> Some network filesystems, however, currently keep track of which byte ranges
-> are modified within a dirty page (AFS does; NFS seems to also) and only write
-> out the modified data.
+On 05.08.21 19:08, Suren Baghdasaryan wrote:
+> In modern systems it's not unusual to have a system component monitoring
+> memory conditions of the system and tasked with keeping system memory
+> pressure under control. One way to accomplish that is to kill
+> non-essential processes to free up memory for more important ones.
+> Examples of this are Facebook's OOM killer daemon called oomd and
+> Android's low memory killer daemon called lmkd.
+> For such system component it's important to be able to free memory
+> quickly and efficiently. Unfortunately the time process takes to free
+> up its memory after receiving a SIGKILL might vary based on the state
+> of the process (uninterruptible sleep), size and OPP level of the core
+> the process is running. A mechanism to free resources of the target
+> process in a more predictable way would improve system's ability to
+> control its memory pressure.
+> Introduce process_mrelease system call that releases memory of a dying
+> process from the context of the caller. This way the memory is freed in
+> a more controllable way with CPU affinity and priority of the caller.
+> The workload of freeing the memory will also be charged to the caller.
+> The operation is allowed only on a dying process.
+> 
+> After previous discussions [1, 2, 3] the decision was made [4] to introduce
+> a dedicated system call to cover this use case.
+> 
+> The API is as follows,
+> 
+>            int process_mrelease(int pidfd, unsigned int flags);
+> 
+>          DESCRIPTION
+>            The process_mrelease() system call is used to free the memory of
+>            an exiting process.
+> 
+>            The pidfd selects the process referred to by the PID file
+>            descriptor.
+>            (See pidfd_open(2) for further information)
+> 
+>            The flags argument is reserved for future use; currently, this
+>            argument must be specified as 0.
+> 
+>          RETURN VALUE
+>            On success, process_mrelease() returns 0. On error, -1 is
+>            returned and errno is set to indicate the error.
+> 
+>          ERRORS
+>            EBADF  pidfd is not a valid PID file descriptor.
+> 
+>            EAGAIN Failed to release part of the address space.
+> 
+>            EINTR  The call was interrupted by a signal; see signal(7).
+> 
+>            EINVAL flags is not 0.
+> 
+>            EINVAL The memory of the task cannot be released because the
+>                   process is not exiting, the address space is shared
+>                   with another live process or there is a core dump in
+>                   progress.
+> 
+>            ENOSYS This system call is not supported, for example, without
+>                   MMU support built into Linux.
+> 
+>            ESRCH  The target process does not exist (i.e., it has terminated
+>                   and been waited on).
+> 
+> [1] https://lore.kernel.org/lkml/20190411014353.113252-3-surenb@google.com/
+> [2] https://lore.kernel.org/linux-api/20201113173448.1863419-1-surenb@google.com/
+> [3] https://lore.kernel.org/linux-api/20201124053943.1684874-3-surenb@google.com/
+> [4] https://lore.kernel.org/linux-api/20201223075712.GA4719@lst.de/
+> 
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> ---
+> changes in v7:
+> - Fixed pidfd_open misspelling, per Andrew Morton
+> - Fixed wrong task pinning after find_lock_task_mm() issue, per Michal Hocko
+> - Moved MMF_OOM_SKIP check before task_will_free_mem(), per Michal Hocko
+> 
+>   mm/oom_kill.c | 73 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 73 insertions(+)
+> 
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index c729a4c4a1ac..a4d917b43c73 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -28,6 +28,7 @@
+>   #include <linux/sched/task.h>
+>   #include <linux/sched/debug.h>
+>   #include <linux/swap.h>
+> +#include <linux/syscalls.h>
+>   #include <linux/timex.h>
+>   #include <linux/jiffies.h>
+>   #include <linux/cpuset.h>
+> @@ -1141,3 +1142,75 @@ void pagefault_out_of_memory(void)
+>   	out_of_memory(&oc);
+>   	mutex_unlock(&oom_lock);
+>   }
+> +
+> +SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+> +{
+> +#ifdef CONFIG_MMU
+> +	struct mm_struct *mm = NULL;
+> +	struct task_struct *task;
+> +	struct task_struct *p;
+> +	unsigned int f_flags;
+> +	struct pid *pid;
+> +	long ret = 0;
+> +
+> +	if (flags)
+> +		return -EINVAL;
+> +
+> +	pid = pidfd_get_pid(pidfd, &f_flags);
+> +	if (IS_ERR(pid))
+> +		return PTR_ERR(pid);
+> +
+> +	task = get_pid_task(pid, PIDTYPE_PID);
+> +	if (!task) {
+> +		ret = -ESRCH;
+> +		goto put_pid;
+> +	}
+> +
+> +	/*
+> +	 * If the task is dying and in the process of releasing its memory
+> +	 * then get its mm.
+> +	 */
+> +	p = find_lock_task_mm(task);
+> +	if (!p) {
+> +		ret = -ESRCH;
+> +		goto put_pid;
+> +	}
+> +	if (task != p) {
+> +		get_task_struct(p);
 
-NFS definitely does. I haven't used NFS in two decades, but I worked
-on some of the code (read: I made nfs use the page cache both for
-reading and writing) back in my Transmeta days, because NFSv2 was the
-default filesystem setup back then.
 
-See fs/nfs/write.c, although I have to admit that I don't recognize
-that code any more.
+Wouldn't we want to obtain the mm from p ? I thought that was the whole 
+exercise of going via find_lock_task_mm().
 
-It's fairly important to be able to do streaming writes without having
-to read the old contents for some loads. And read-modify-write cycles
-are death for performance, so you really want to coalesce writes until
-you have the whole page.
+-- 
+Thanks,
 
-That said, I suspect it's also *very* filesystem-specific, to the
-point where it might not be worth trying to do in some generic manner.
+David / dhildenb
 
-In particular, NFS had things like interesting credential issues, so
-if you have multiple concurrent writers that used different 'struct
-file *' to write to the file, you can't just mix the writes. You have
-to sync the writes from one writer before you start the writes for the
-next one, because one might succeed and the other not.
-
-So you can't just treat it as some random "page cache with dirty byte
-extents". You really have to be careful about credentials, timeouts,
-etc, and the pending writes have to keep a fair amount of state
-around.
-
-At least that was the case two decades ago.
-
-[ goes off and looks. See "nfs_write_begin()" and friends in
-fs/nfs/file.c for some of the examples of these things, althjough it
-looks like the code is less aggressive about avoding the
-read-modify-write case than I thought I remembered, and only does it
-for write-only opens ]
-
-               Linus
-
-            Linus
