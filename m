@@ -2,90 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 387563E1A88
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED643E1A8E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240335AbhHERg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:36:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239498AbhHERgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:36:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0683E610A2;
-        Thu,  5 Aug 2021 17:36:32 +0000 (UTC)
-Date:   Thu, 5 Aug 2021 18:36:25 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        John Crispin <john@phrozen.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH 1/3] arch: Export machine_restart() instances so they can
- be called from modules
-Message-ID: <20210805173625.GH6719@arm.com>
-References: <20210805075032.723037-1-lee.jones@linaro.org>
- <20210805075032.723037-2-lee.jones@linaro.org>
+        id S240333AbhHERja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239557AbhHERj2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 13:39:28 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D468C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 10:39:14 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so16625967pjr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 10:39:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=25dI2qwAi7TSMZKSjGmJYglQgYbrwOJcxN6GHCDQJtY=;
+        b=uFTSZPbFCNjb65mQPn0Er3edoI5Tmo52V5M7wb5ifPkYDUeTgC/9MnNHvvfC5T4c6D
+         fg9Hf9rnez9xcFsdyFWGWwMsaYVxXUtpI3M0YlwSoG00LC07NRKudSF7L7svQjkGaWlm
+         SnDiKDpT/ncc0KXEeCLwfBU4UOqtHjsqxieGTHZe1/TRJQvEF3XilbYTdFQ6iTWGwGVO
+         bf63iXpy7D3DFsaAmEVEOEROXRQ+dA8w5RfaWGPayfYPszXElngWAshhZgXFVYSGvIYI
+         vAewl8g3XCgeJLYC7KC756Imz2qE8gu7BOzxLBF0o4EioAMBrMAR7grb9J+qR6SyWhXS
+         ReZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=25dI2qwAi7TSMZKSjGmJYglQgYbrwOJcxN6GHCDQJtY=;
+        b=PzB5FRWtZnKX5wZ1lMbsHet9ZFJ3e9ghvzNIhXd+t56dl97MaWCcH3VTYllLFrJum0
+         1YQl0UQAVxkqPzANqSKF4xqzSeSPq/TvUrRfxKfRlaweI6CfywA765E5bkJ1QGun40UR
+         hILmp1Aa3/GDhJElP4GVy2/zcI+5K30Qzd00reryP3WC4k7D1k3flGvewdK59PolcWNt
+         xdtLlQakXj/0iTcjzjEK5rdmIvFQCtt1ZVKdjkJhvc4eyTwNdPVtkbfMGatzN0qDz4bF
+         Z/Wk/cWfyrkT8f9UMAhtMFfs3d3WeoGALq90NRcQr8n9RCp17DV23zk+3tIpYFet0j4l
+         la5Q==
+X-Gm-Message-State: AOAM5328kL2XpMDubWcHgGiF+7QI32LZZNN3hi08piXuQ2PM5HdCzLzU
+        lF9Zuo6X8Hd8WyhzQ21TVker0w==
+X-Google-Smtp-Source: ABdhPJwQ/vFVl7z3DmEv/wlvSs11OrMFHcZMvxz1lW0lUCxyJlJX0BFvN1tmkExqXFlN2th6Y5N+dA==
+X-Received: by 2002:a17:90a:8049:: with SMTP id e9mr16826271pjw.160.1628185153210;
+        Thu, 05 Aug 2021 10:39:13 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id j3sm7677397pfe.98.2021.08.05.10.39.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 10:39:12 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 17:39:08 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "Huang, Kai" <kai.huang@intel.com>,
+        "erdemaktas@google.com" <erdemaktas@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "ckuehl@redhat.com" <ckuehl@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>
+Subject: Re: [RFC PATCH v2 41/69] KVM: x86: Add infrastructure for stolen GPA
+ bits
+Message-ID: <YQwiPNRYHtnMA5AL@google.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <c958a131ded780808a687b0f25c02127ca14418a.1625186503.git.isaku.yamahata@intel.com>
+ <20210805234424.d14386b79413845b990a18ac@intel.com>
+ <YQwMkbBFUuNGnGFw@google.com>
+ <78b802bbcf72a087bcf118340eae89f97024d09c.camel@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210805075032.723037-2-lee.jones@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <78b802bbcf72a087bcf118340eae89f97024d09c.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 08:50:30AM +0100, Lee Jones wrote:
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index b4bb67f17a2ca..cf89ce91d7145 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -212,6 +212,7 @@ void machine_restart(char *cmd)
->  	printk("Reboot failed -- System halted\n");
->  	while (1);
->  }
-> +EXPORT_SYMBOL(machine_restart);
+On Thu, Aug 05, 2021, Edgecombe, Rick P wrote:
+> On Thu, 2021-08-05 at 16:06 +0000, Sean Christopherson wrote:
+> > On Thu, Aug 05, 2021, Kai Huang wrote:
+> > > And removing 'gfn_stolen_bits' in 'struct kvm_mmu_page' could also save
+> > > some memory.
+> > 
+> > But I do like saving memory...  One potentially bad idea would be to
+> > unionize gfn and stolen bits by shifting the stolen bits after they're
+> > extracted from the gpa, e.g.
+> > 
+> > 	union {
+> > 		gfn_t gfn_and_stolen;
+> > 		struct {
+> > 			gfn_t gfn:52;
+> > 			gfn_t stolen:12;
+> > 		}
+> > 	};
+> > 
+> > the downsides being that accessing just the gfn would require an additional
+> > masking operation, and the stolen bits wouldn't align with reality.
+> 
+> It definitely seems like the sp could be packed more efficiently.
 
-Should we make this EXPORT_SYMBOL_GPL? I suppose it's not for general
-use by out of tree drivers and it matches the other pm_power_off symbol
-we export in this file.
+Yeah, in general it could be optimized.  But for TDP/direct MMUs, we don't care
+thaaat much because there are relatively few shadow pages, versus indirect MMUs
+with thousands or tens of thousands of shadow pages.  Of course, indirect MMUs
+are also the most gluttonous due to the unsync_child_bitmap, gfns, write flooding
+count, etc...
 
-Either way:
+If we really want to reduce the memory footprint for the common case (TDP MMU),
+the crud that's used only by indirect shadow pages could be shoved into a
+different struct by abusing the struct layout and and wrapping accesses to the
+indirect-only fields with casts/container_of and helpers, e.g.
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+struct kvm_mmu_indirect_page {
+	struct kvm_mmu_page this;
+
+	gfn_t *gfns;
+	unsigned int unsync_children;
+	DECLARE_BITMAP(unsync_child_bitmap, 512);
+
+#ifdef CONFIG_X86_32
+	/*
+	 * Used out of the mmu-lock to avoid reading spte values while an
+	 * update is in progress; see the comments in __get_spte_lockless().
+	 */
+	int clear_spte_count;
+#endif
+
+	/* Number of writes since the last time traversal visited this page.  */
+	atomic_t write_flooding_count;
+}
+
+
+> One other idea is the stolen bits could just be recovered from the role
+> bits with a helper, like how the page fault error code stolen bits
+> encoding version of this works.
+
+As in, a generic "stolen_gfn_bits" in the role instead of a per-feature role bit?
+That would avoid the problem of per-feature role bits leading to a pile of
+marshalling code, and wouldn't suffer the masking cost when accessing ->gfn,
+though I'm not sure that matters much.
+
+> If the stolen bits are not fed into the hash calculation though it
+> would change the behavior a bit. Not sure if for better or worse. Also
+> the calculation of hash collisions would need to be aware.
+
+The role is already factored into the collision logic.
+
+> FWIW, I kind of like something like Sean's proposal. It's a bit
+> convoluted, but there are more unused bits in the gfn than the role.
+
+And tightly bound, i.e. there can't be more than gfn_t gfn+gfn_stolen bits.
+
+> Also they are a little more related.
+
+
