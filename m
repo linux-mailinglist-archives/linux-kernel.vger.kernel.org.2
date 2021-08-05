@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C363E1A49
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6283E1A4B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239595AbhHERUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:20:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239562AbhHERUo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:20:44 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DDEC061765;
-        Thu,  5 Aug 2021 10:20:30 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id c9so7513053wri.8;
-        Thu, 05 Aug 2021 10:20:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Yewv8eLDuGQeemlSPQSqp+7rB89rcOX4qDuzzTlqfT8=;
-        b=EsowHEOyEYYrO9vnkTAEE8IY9xW1VG4R14262m++D4LfZdV/Aj7s3UlE2WKcuz2mFz
-         MzW/pNBbbBDnPK2q3yGTwqs4TBr04kU1+bnOFW4xPtcV2PcASq5Mig+iXVaBIusf2bs2
-         jpv85JF/RDxHA6QL81xnes3joy4MYEUeQJFdwrujN3ThNPQSSx1w8ZPjRChaE6wpvF4c
-         ixAYbvjs7qWGmWc0JMfhE13FaHlHBlCnawj0w1c0jTzfAXV8J7HFUyxzJx9SBYhYBXiD
-         fQueO7HqbgcldgMjOuvg7871gDH/TixuNQcwiicG3A4dNA0eJGIR0EKnMq79DDq/Om5g
-         2n3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Yewv8eLDuGQeemlSPQSqp+7rB89rcOX4qDuzzTlqfT8=;
-        b=kW5FtSvPfomQWNNWTtlmBmcEHYfNcYOFTE+zGckzHrSELvI9f7Czgh7E9b9GmwceE8
-         /rzLKwjo+1F5WNsPoXBOu9ewFEOruxQyXjAxDRMfzosK2cavufNIP5tM/kpCuxmLlPLG
-         x+zjqwrEzFu7vVeaqzwsbydAKgukz6efMPO+z0Q9+6k9tVB28SOSLeKcPJFY7jK18295
-         YaqMfQ29YNGqXXCCwc5G9OM54cvCgIhgyMiLOj81fPmXlN3U7mUozedWyWY9+IdXMGJP
-         zoz3OM0a0O+IY71RZpGdSCcGXSuoyhOrJd+Jy6oKhM23juBrbD6/vln/TSI8JUuDd0eu
-         B2zg==
-X-Gm-Message-State: AOAM533qVSQ2FFdKZJXEs/jpoKy9dqmJiXVSYMUqHnH4k7NBacM5k+vD
-        aFsRVA/1QYNvTfLFTH+l30I=
-X-Google-Smtp-Source: ABdhPJxCiTfqldjm4hmLDiEc6fvPdlmv3Z2zkV8UiudjVMrbhWeJgGjYXREJlzrxpvyDVmrlFQL0Fg==
-X-Received: by 2002:adf:f74f:: with SMTP id z15mr6555518wrp.54.1628184028927;
-        Thu, 05 Aug 2021 10:20:28 -0700 (PDT)
-Received: from precision (aftr-62-216-202-140.dynamic.mnet-online.de. [62.216.202.140])
-        by smtp.gmail.com with ESMTPSA id d7sm6872606wrs.39.2021.08.05.10.20.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 10:20:28 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 19:20:26 +0200
-From:   Mete Polat <metepolat2000@gmail.com>
-To:     Davidlohr Bueso <dbueso@suse.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mete Polat <metepolat2000@gmail.com>,
-        Jesper Nilsson <jesper@jni.nu>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] rbtree: remove unneeded explicit alignment in struct
- rb_node
-Message-ID: <YQwd2puXiSiUWEE1@precision>
-References: <20210805133213.700-1-lukas.bulwahn@gmail.com>
- <CAK8P3a3aNuxaEtAiewd+Wjc8hKtca0NrcV2kykkNC-qKT_HhzQ@mail.gmail.com>
- <50ad4c8b848bd371b4b42959167ef03d@suse.de>
+        id S239562AbhHERXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:23:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230172AbhHERXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 13:23:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E498461040;
+        Thu,  5 Aug 2021 17:23:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628184196;
+        bh=449gq+Na7KsB0w5p/YYNbxeSQ7SEH1snnxDkgA337kM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WG0EHHaJgCTZY/XJnC5ybhEMOPyoljGy/kU1kKCb07WQTvZ/+BtK2G4mNhlM9iah/
+         vfOUjGT7wYOYLLC4K/vX5bA+2IaYI4PrrjCrT/sHnxwGPtVUapdcKAlxaT3nTXv9TW
+         Cjo4pbl/XDfq8xoIqKs1XXL8X/8uqlrr5hrEGAfjkGJZ93bXLxV/Js5Ndn8qKwYNm/
+         YXVa5eKaBJwCdyQraOUGaksp4NnG7jpYHylraPtVJ/VEYOvoF8YPDQ+W4KugxZLg5t
+         PgPhjqmKVWmn0WGJswu7eJC1P7dRFk3zOmrgePIc0tdzWY8jNSGtgzfq3mMhh+X+Oc
+         Qwb7apa9/KqfQ==
+Date:   Thu, 5 Aug 2021 18:23:00 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: RFC power domain vs generic supply regulator
+Message-ID: <20210805172300.GR26252@sirena.org.uk>
+References: <CAOf5uwnZvJWhwf=h8nx=MmZz4BOyaq_BTr8vyDcGHqnBO7jK1Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2qwbT0JTInWqknst"
 Content-Disposition: inline
-In-Reply-To: <50ad4c8b848bd371b4b42959167ef03d@suse.de>
+In-Reply-To: <CAOf5uwnZvJWhwf=h8nx=MmZz4BOyaq_BTr8vyDcGHqnBO7jK1Q@mail.gmail.com>
+X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 08:02:28AM -0700, Davidlohr Bueso wrote:
-> On 2021-08-05 07:02, Arnd Bergmann wrote:
-> > The revert would appear to change the alignment to 16 bits instead
-> > of 32 bits on m68k as well (not 8 bits as on cris), but I don't know if
-> > that
-> > can cause problems there.
-> 
-> Yeah I tried this a while back and it broke m68k, so it was a no go:
-> 
-> https://lore.kernel.org/lkml/CAMuHMdXeZvJ0X6Ah2CpLRoQJm+YhxAWBt-rUpxoyfOLTcHp+0g@mail.gmail.com/
 
-The problem is that the field '__rb_parent_color' in struct rb_node is
-storing the color AND the pointer to the parent node at the same time.
-The color is stored in the least significant bit which is fine when
-rb_node is at least 16-bit aligned. I guess, it does not work on m68k
-because the makro
+--2qwbT0JTInWqknst
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-#define __rb_parent(pc)    ((struct rb_node *)(pc & ~3))
+On Tue, Jun 08, 2021 at 08:01:20AM +0200, Michael Nazzareno Trimarchi wrote:
 
-used to retrieve the parent pointer zeros the first two bits, not only
-the first one.
+> I'm trying to understand how to deal with devices that do not provide
+> a supply handle connection using the device tree, or if there is a
+> generic way
+> to connect to a regulator. The pinctrl has a generic binding inside
+> dd.c that allow to mux pinout during probing or it allows to define a
+> power domain,
+> According to the code I read the power domain can be only connected to
+> the SoC power domain but in general a generic power domain can be
+> connected
+> to any source aka a regulator. For example and spi-nor can be powered
+> but a gpio regulator or any kind of supply connection and bunch of
+> devices
+> can just need a supply if they are probed or binded runtime. Can
+> someone give me feedback on this topic?
 
-Maybe the effiency to store this one color bit in another field was
-required in the early days but I think moving the color to a seperate
-field is really the better way to go. It also makes reasoning about the
-algorithm easier.
+I'm having a really hard time parsing the issue you're trying to solve
+here.  Power domains and regulators are different things, power domains
+represent blocks with a SoC which have some kind of power control which
+may involve a combination of things, the drivers for the devices within
+those domains generally just do runtime PM and then let the driver core
+figure out what's going on with them.  Regulators are for things with
+physical supplies that can be seen in the schematic for the board, in
+general anything that uses a regulator should explicitly say so in its
+binding - supporting some sort of generic mapping isn't great since it
+means that we don't have any control over which regulator is which and
+that makes it hard to add control of the regulators later.  Power
+domanis may possibly have regulators among the resources they use but
+that would just be a normal device binding for the power domain.  All of
+this is orthogonal to when drivers for devices get loaded, that can
+happen at any point while the system is running and doesn't really
+affect how the relationships are described.
 
-I will create a patch.
+--2qwbT0JTInWqknst
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Mete
-> 
-> Thanks, Davidlohr
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEMHnMACgkQJNaLcl1U
+h9DD1gf+PHowNvrKDS3RQBg1lraOVRV4tu1K7RxIn8jTcrVhwuFUqzg2wdZVdmaq
+dyCaNB6Fcj0zOFIqqXahLfjLy1c0NEC3qqInbsm6lPbWWVG4whhoE9gnuzl1lRNF
+8wwU5phofNxICoqJzWny79za5gNgSGwLSy82HJ79Yc9k4zjcgx0rZGToTF1fE6xF
+bGb47tH9u8SQryDy0yaIP0AeUf4UOZSJBBXHK66TrTDxUCzSLJL+ybG/n+Sk5jx9
+u6aGzMr/+peG7folgu+A7eeOEAEJda+sv+9rTIeAGreclRpM7fyWTNDsWWSP8dYT
+wVS2LWTlGxyWZBcJbZj2GH4iqkAmmg==
+=ZZ0x
+-----END PGP SIGNATURE-----
+
+--2qwbT0JTInWqknst--
