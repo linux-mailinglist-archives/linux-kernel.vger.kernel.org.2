@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2F43E15CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036173E15D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238480AbhHENgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 09:36:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232900AbhHENgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 09:36:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24A5F61004;
-        Thu,  5 Aug 2021 13:35:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628170556;
-        bh=CpATmNokx74QwJ4qfUqqYxtBNb1Sl8uIz0anyAYPWmM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=iB4gZBTic5a1gzXrmJgYu21Kb5v4jv7mMq9LlpK1yO0Ac/LwQl19c055lAVIEm7Vg
-         zKcbynoJX7FBoYGk+EGSVYo8Z1nbfH1wW2/AgLktPT7WgUrHRAB4TrG/2U8Z3hKPg7
-         YlPIG5S25At90kZsaN/wUGor/11oNHH/j+XpjXtE5crEOFUgnxSHDpVsICJQymlcov
-         aq8/AkxfzzOvTK/S09E27IgB4V3nFYroAW2lRJkpGw5+SMdJn3lI5JAdg7l1hN6j1Q
-         mxyNfjQwGB3nVwajqMojBU8k5D8BZRfPlL4glxyo7F2y7lZqaNwwEu4ZBRL4lqNnrs
-         GGxu62KP2MRsQ==
-Subject: Re: [f2fs-dev] [RFC v3] f2fs: extent cache: support unaligned extent
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Chao Yu <chao.yu@linux.dev>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210804022348.1414543-1-chao@kernel.org>
- <YQsIj0wKk6YbN/FJ@google.com> <YQsmfm3ibU6bhvZr@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <bb635f86-b29b-384b-cfe0-c8b78e3c9ec5@kernel.org>
-Date:   Thu, 5 Aug 2021 21:35:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S241161AbhHENix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 09:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhHENiw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 09:38:52 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EC4C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 06:38:37 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id j2so6577195wrx.9
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 06:38:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=28Fc+tiebK20f07l73mzXr4mJV/RBZE3cuZaLE2iCIo=;
+        b=O60QdmWm8KUkD88SfntVrPL0nOjsjUSDj4WJSCkRZeTXIy2TLHgqgv0INdsINDePiV
+         3Q63aGB3gMnneA3wfOZ61JLUGs38vFuFBa11RPKCNmwbbUCXQRH1b64Ac49bgrkHtpcF
+         oJbmH2r5JhwrrwHp3+arTwPeORXdpQnPIwfw6fYNyBAQx4hC6RDMcvwY3dZHDEQqnZ75
+         tnIWoImn7XxQsJfUukJ8+ntZq6gt1cvzCBXWJxRQYt5t2YWmd8NSOvPRzTYFIx5TdwyL
+         r/I0Qx/8ak81ONEyom1ZYCgFznhodCs8h8pD40aMlPmmuLHPc2LHGy676bE8IY2sqDmn
+         WRvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=28Fc+tiebK20f07l73mzXr4mJV/RBZE3cuZaLE2iCIo=;
+        b=m9HIgvcqW4JwYgJetmXdSEtc28q1HnyoAaExNgmngwqY999LPTnODOzJ7fG6Okp9im
+         18TGTK7vWCJ8mkTtfbI49gkhrAmR4rqXf/xStLU9Zp7dKRMGArJ4yQzPnyhnv4TWzqDc
+         BhxJLmHblG1lDkCBNRVylUx6+c6Wt7iMiJXZfmc5dolgeei9G8188Mkcz0+r0CWRb7mb
+         /JVALtU4fcEoSaNuwFo8q3AOhGbFdJGzLatAmTiFbfLNBC4cJ24K3gFKCeHRS1troF81
+         5LN6PYYl8tMrvlYkpfFm1wTrcwjDV+FyuDEy5u1M6OHi+hyiV1XtjwakmaiznbckXGsZ
+         KTsQ==
+X-Gm-Message-State: AOAM533+VNq9X3u6Gl0LfDrkI7aP265PhH5OQOxdgSseLSmGXwPryJmb
+        JhWrxVn38VSnY9gg7FhQF4Ysrw==
+X-Google-Smtp-Source: ABdhPJxSzYYYNinzFDsb/3zZQ9t8NxDNBeUR3nJ4nXaUjskEtPLU40LDzwsB8cTjj+o+R63FU61AGg==
+X-Received: by 2002:adf:f8c8:: with SMTP id f8mr5479766wrq.204.1628170716515;
+        Thu, 05 Aug 2021 06:38:36 -0700 (PDT)
+Received: from google.com ([109.180.115.228])
+        by smtp.gmail.com with ESMTPSA id x18sm5550356wmc.17.2021.08.05.06.38.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 06:38:36 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 14:38:34 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/7] mfd: tqmx86: fix typo in "platform"
+Message-ID: <YQvp2rmUlLpAdv9a@google.com>
+References: <cover.1626429286.git.matthias.schiffer@ew.tq-group.com>
+ <9f816abe843b0ccac1cef2be7e78359a22b22073.1626429286.git.matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
-In-Reply-To: <YQsmfm3ibU6bhvZr@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9f816abe843b0ccac1cef2be7e78359a22b22073.1626429286.git.matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/5 7:45, Jaegeuk Kim wrote:
-> Chao,
-> 
-> How about this?
-> https://github.com/jaegeuk/f2fs/commit/d6bbe121bc24dfabfedc07ba7cb6e921fb70ece0
-> 
-> I'm digging one bug in __insert_extent_tree w/ the patch tho.
-> 
-> On 08/04, Jaegeuk Kim wrote:
->> On 08/04, Chao Yu wrote:
->>> Compressed inode may suffer read performance issue due to it can not
->>> use extent cache, so I propose to add this unaligned extent support
->>> to improve it.
->>>
->>> Currently, it only works in readonly format f2fs image.
->>>
->>> Unaligned extent: in one compressed cluster, physical block number
->>> will be less than logical block number, so we add an extra physical
->>> block length in extent info in order to indicate such extent status.
->>>
->>> The idea is if one whole cluster blocks are contiguous physically,
->>> once its mapping info was readed at first time, we will cache an
->>> unaligned (or aligned) extent info entry in extent cache, it expects
->>> that the mapping info will be hitted when rereading cluster.
->>>
->>> Merge policy:
->>> - Aligned extents can be merged.
->>> - Aligned extent and unaligned extent can not be merged.
->>>
->>> Signed-off-by: Chao Yu <chao@kernel.org>
->>> ---
->>> v3:
->>> - avoid CONFIG_F2FS_FS_COMPRESSION as much as possible
->>> - clean up codes
->>>   fs/f2fs/compress.c     | 24 ++++++++++++
->>>   fs/f2fs/data.c         | 28 +++++++++++---
->>>   fs/f2fs/extent_cache.c | 88 +++++++++++++++++++++++++++++++++++++-----
->>>   fs/f2fs/f2fs.h         | 42 +++++++++++++++++---
->>>   fs/f2fs/node.c         | 18 +++++++++
->>>   5 files changed, 179 insertions(+), 21 deletions(-)
->>>
->>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->>> index 4aa166d3d9bf..296ff37d4b08 100644
->>> --- a/fs/f2fs/compress.c
->>> +++ b/fs/f2fs/compress.c
->>> @@ -1719,6 +1719,30 @@ void f2fs_put_page_dic(struct page *page)
->>>   	f2fs_put_dic(dic);
->>>   }
->>>   
->>> +/*
->>> + * check whether cluster blocks are contiguous, and add extent cache entry
->>> + * only if cluster blocks are logically and physically contiguous.
->>> + */
->>> +int f2fs_cluster_blocks_are_contiguous(struct dnode_of_data *dn)
->>> +{
->>> +	bool compressed = f2fs_data_blkaddr(dn) == COMPRESS_ADDR;
->>> +	int i = compressed ? 1 : 0;
->>> +	block_t first_blkaddr = data_blkaddr(dn->inode, dn->node_page,
->>> +						dn->ofs_in_node + i);
->>> +
->>> +	for (i += 1; i < F2FS_I(dn->inode)->i_cluster_size; i++) {
->>> +		block_t blkaddr = data_blkaddr(dn->inode, dn->node_page,
->>> +						dn->ofs_in_node + i);
->>> +
->>> +		if (!__is_valid_data_blkaddr(blkaddr))
->>> +			break;
->>> +		if (first_blkaddr + i - 1 != blkaddr)
->>> +			return 0;
+On Fri, 16 Jul 2021, Matthias Schiffer wrote:
 
-The merge condition looks wrong, shouldn't be:
+> Rename variable from "ocores_platfom_data" to "ocores_platform_data".
+> 
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> ---
+> 
+> v2: new patch
+> v3: new patch
 
-if (first_blkaddr + i - compressed ? 1 : 0 != blkaddr)
-	return 0;
+Heh?
 
-Thanks,
+>  drivers/mfd/tqmx86.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+
+For my own reference (apply this as-is to your sign-off block):
+
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
