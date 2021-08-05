@@ -2,116 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0214E3E1F0C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE493E1F16
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242052AbhHEW4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 18:56:08 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:43432 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242015AbhHEW4C (ORCPT
+        id S241899AbhHEW7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 18:59:51 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:39251 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229482AbhHEW7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 18:56:02 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 175Mthr0088767;
-        Thu, 5 Aug 2021 17:55:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1628204143;
-        bh=oU9KWyxlGeDI6RvDLAF+0omt78i3oBLg/hmxQwSgpKs=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=zLoZXuH0WpRkiQK7nTCldg9PANUoKLu2S/jLXeamp5RNlsQs81zC7zbvpT9iaB6z4
-         3bBdsKhd5Ld6rmhYj9Vd5o+VILaSCR0Q89x4W3zny7XQRTzRFcyNS6GWUE9ytGbLCm
-         Kd3PRSndm4JdZ/LH0DRv/aIl1ebszAMtXf3cRic0=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 175Mthq0118444
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 5 Aug 2021 17:55:43 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 5 Aug
- 2021 17:55:43 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 5 Aug 2021 17:55:43 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 175MtgXY058877;
-        Thu, 5 Aug 2021 17:55:42 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH net-next 2/2] net: ethernet: ti: am65-cpsw: use napi_complete_done() in TX completion
-Date:   Fri, 6 Aug 2021 01:55:32 +0300
-Message-ID: <20210805225532.2667-3-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210805225532.2667-1-grygorii.strashko@ti.com>
-References: <20210805225532.2667-1-grygorii.strashko@ti.com>
+        Thu, 5 Aug 2021 18:59:50 -0400
+Received: from dread.disaster.area (pa49-195-182-146.pa.nsw.optusnet.com.au [49.195.182.146])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 9372580BA06;
+        Fri,  6 Aug 2021 08:59:27 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mBmKk-00Exmn-ED; Fri, 06 Aug 2021 08:59:26 +1000
+Date:   Fri, 6 Aug 2021 08:59:26 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        johann@whamcloud.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: avoid huge mmp update interval value
+Message-ID: <20210805225926.GB2566745@dread.disaster.area>
+References: <20210805151418.30659-1-paskripkin@gmail.com>
+ <YQw/2PuZ8z22Qice@mit.edu>
+ <2e940500-6d77-2871-407b-201ca29f24fc@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e940500-6d77-2871-407b-201ca29f24fc@gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
+        a=QpfB3wCSrn/dqEBSktpwZQ==:117 a=QpfB3wCSrn/dqEBSktpwZQ==:17
+        a=kj9zAlcOel0A:10 a=MhDmnRu9jo8A:10 a=7-415B0cAAAA:8
+        a=znp41cB1dSf8sDBhxX4A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables support for hard irqs deferral feature from Eric Dumazet
-[1] for TI K3 CPSW driver by using napi_complete_done() in TX completion
-path.
+On Thu, Aug 05, 2021 at 11:12:42PM +0300, Pavel Skripkin wrote:
+> On 8/5/21 10:45 PM, Theodore Ts'o wrote:
+> > On Thu, Aug 05, 2021 at 06:14:18PM +0300, Pavel Skripkin wrote:
+> > > Syzbot reported task hung bug in ext4_fill_super(). The problem was in
+> > > too huge mmp update interval.
+> > > 
+> > > Syzkaller reproducer setted s_mmp_update_interval to 39785 seconds. This
+> > > update interaval is unreasonable huge and it can cause tasks to hung on
+> > > kthread_stop() call, since it will wait until timeout timer expires.
+> > 
+> > I must be missing something.  kthread_stop() should wake up the
+> > kmmpd() thread, which should see kthread_should_stop(), and then it
+> > should exit.  What is causing it to wait until the timeout timer
+> > expires?
+> > 
+> > 					- Ted
+> > 
+> 
+> 
+> Hi, Ted!
+> 
+> I guess, I've explained my idea badly, sorry :)
+> 
+> I mean, that there is a chance to hit this situation:
+> 
+> CPU0				CPU1
+> 				kthread_should_stop()  <-- false
+> kthread_stop()
+> set_bit(KTHREAD_SHOULD_STOP)				
+> wake_up_process()
+> wait_for_completion()
+> 				schedule_timeout_interruptible()
+> 
+> *waits until timer expires*
 
-Depending on gro_flush_timeout and napi_defer_hard_irqs at gives up to 30%
-CPU utilization reduction:
+Yeah, so the bug here is checking kthread_should_stop() while
+the task state is TASK_RUNNING.
 
-gro_flush_timeout=50000
-napi_defer_hard_irqs=2
+What you need to do here is:
 
-netperf -l 10 -H 192.168.1.1  -t UDP_STREAM -c -C -- -m 1470
-MIGRATED UDP STREAM TEST from 0.0.0.0 (0.0.0.0) port 0 AF_INET to 192.168.1.1 () port 0 AF_INET
-Socket  Message  Elapsed      Messages                   CPU      Service
-Size    Size     Time         Okay Errors   Throughput   Util     Demand
-bytes   bytes    secs            #      #   10^6bits/sec % SS     us/KB
+while (run) {
 
-before:
-212992    1470   10.00      809632      0      952.0     42.98    14.792
-212992           10.00      809630             952.0     50.66    8.719
+	....
+	set_current_state(TASK_INTERRUPTIBLE);
+	if (kthread_should_stop()) {
+		__set_current_state(TASK_RUNNING);
+		break;
+	}
+	schedule_timeout(tout);
 
-after:
-212992    1470   10.00      813686      0      956.8     32.14    11.009
-212992           10.00      813686             956.8     50.05    8.570
+	.....
+}
 
-[1] https://lore.kernel.org/netdev/20200422161329.56026-1-edumazet@google.com/
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+That means in the case above where schedule() occurs after the
+kthread_should_stop() check has raced with kthread_stop(), then
+wake_up_process() will handle any races with schedule() correctly.
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 08399f572091..b18343f9791d 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -1086,13 +1086,13 @@ static int am65_cpsw_nuss_tx_poll(struct napi_struct *napi_tx, int budget)
- 	else
- 		num_tx = am65_cpsw_nuss_tx_compl_packets(tx_chn->common, tx_chn->id, budget);
- 
--	num_tx = min(num_tx, budget);
--	if (num_tx < budget) {
--		napi_complete(napi_tx);
-+	if (num_tx >= budget)
-+		return budget;
-+
-+	if (napi_complete_done(napi_tx, num_tx))
- 		enable_irq(tx_chn->irq);
--	}
- 
--	return num_tx;
-+	return 0;
- }
- 
- static irqreturn_t am65_cpsw_nuss_rx_irq(int irq, void *dev_id)
+i.e.  wake_up_process() will set the task state to TASK_RUNNING and
+schedule() will not sleep if it is called after wake_up_process().
+Or if schedule() runs first then wake_up_process() will wake it
+correctly after setting the state to TASK_RUNNING.
+
+Either way, the loop then runs around again straight away to the next
+kthread_should_stop() call, at which point it breaks out.
+
+I note that the "wait_to_exit:" code in the same function does this
+properly....
+
+Cheers,
+
+Dave.
 -- 
-2.17.1
-
+Dave Chinner
+david@fromorbit.com
