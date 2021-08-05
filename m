@@ -2,156 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5351E3E1B77
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 279E53E1B78
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241459AbhHESh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43408 "EHLO
+        id S241476AbhHESi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:38:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241428AbhHEShr (ORCPT
+        with ESMTP id S237913AbhHESi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:37:47 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31870C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:37:33 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id z6-20020a0568302906b02904f268d34f86so5810223otu.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:37:33 -0700 (PDT)
+        Thu, 5 Aug 2021 14:38:26 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51D4C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:38:11 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id k13so4574542qth.10
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:38:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lFSSR+B2VNCO9CHsb870x2POa5wOsOAfxAuwjoPuEis=;
-        b=K4BRMbfUK6XZeLpv4Kb1TgO7NqJGJrrA8ef+LHvB6W1vcOYc/3IQ26WyGe2kyheXZ1
-         5JkybDvhXeuimuFGXtVp4MsX7LPOXbtV1cqdlPZaV4R136f35PeHzkNuUKtFhqq9onor
-         QA3AdT2hgNNo448KBRyYKVYZCky85bCwhtxx9iWfNrvcxF6lZwVsj/mqFzBcJ3e2C+49
-         7ZyjrMSKSOK73M5KuJq/fH9FTCcEkE4RpTC2x0fcYScHdkpb/n2Y0DHyB64TwYSZ2bLY
-         gUlITBpMNYopjktkFoaUUze9m8OIJizAb3Y4SQ3wwtyDX1KTaU20o6yyV77SOlt9Az2S
-         7fJg==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ck5dWuwFo/uEgQ0O9vb5RC+dFl2DTseh0e2RyNx8YIs=;
+        b=MZN5AJFgKfTro7Lh5+pBih2rFARR3iXo6Q0qkE/7SnqHk2WdAHSeYBmqu1DRPZcsJn
+         A86r8/mVA+NH/1wZQxhhctUvMWHA5t2/xL/iHE43/E8NdSxtHJf3I7oVOoQ8T7xxGJTY
+         63PJ2etGJJCkbrK/fPWgU5ixJHWtFN5RjAErrrRFgjC1FF+Ept0JGecAf1cPOBildU97
+         GxkpbDc1pshUEZlMQ2oGhr+qERCFZ+EFk+6WbIDbyJ+QXmG4zRV8RfdmYJ6Y16hmOoTC
+         wvkkhIACQjtp7FbQjmmCkmS5x/HoBEeSAZLWoIvmy9Bmyk2Dl1OivEjPMSW6W/WUbqdF
+         tfTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=lFSSR+B2VNCO9CHsb870x2POa5wOsOAfxAuwjoPuEis=;
-        b=sl9PCCLcizxvsQiS8+3hw393GzlgqM4eLx7unZS1MQ9qAwv58h1AgxtXUJR3sgbrGH
-         2FMdRrlnByzfGBMpx1eRIpJcIzWURPV1vjQ1ImB4TS+M91ixWW2NItZE/pNGIyqxMNCA
-         BYg83gWbe+4+3PDVot8x6KX/4fbcxD1lr0QBvB+68nHCpX7W0JSTe9GicQ3Q2bUI0Jy1
-         zoPrHQ2IiA12XnoD4aqjyrkO4jzsPbfqwyskcFehoIZrd4O7hMlA0WA6GNCjZkPFGQ9p
-         dNBI++8xO95AGCL+wP6jOQ10GCRZept3+nvviNqvZ6/eDXb65Smz7aM3Fz/8NS35Y3E0
-         HVZQ==
-X-Gm-Message-State: AOAM53119mMQ0t/Jse5Vc3zhSTpGQy5/Rd0gQv2IqNv7HtiKhXGZIbp6
-        pewymjXAunr8DDhqX7g8L/c=
-X-Google-Smtp-Source: ABdhPJxX2pVqOzXaAaY1MUFcMFy9KZFbXojNb5gWWQMobWy8MqnqcG+yHSS4CzkVvesw/OcvGOj66w==
-X-Received: by 2002:a9d:75da:: with SMTP id c26mr4696519otl.289.1628188652637;
-        Thu, 05 Aug 2021 11:37:32 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-1016.res6.spectrum.com.com (2603-8090-2005-39b3-0000-0000-0000-1016.res6.spectrum.com. [2603:8090:2005:39b3::1016])
-        by smtp.gmail.com with ESMTPSA id q32sm1156726oiw.37.2021.08.05.11.37.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 11:37:32 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-To:     gregkh@linuxfoundation.org
-Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Subject: [PATCH 5/5] staging: r8188eu: Remove rtw_buf_free()
-Date:   Thu,  5 Aug 2021 13:37:17 -0500
-Message-Id: <20210805183717.23007-6-Larry.Finger@lwfinger.net>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210805183717.23007-1-Larry.Finger@lwfinger.net>
-References: <20210805183717.23007-1-Larry.Finger@lwfinger.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ck5dWuwFo/uEgQ0O9vb5RC+dFl2DTseh0e2RyNx8YIs=;
+        b=T3+vqs2vZM7BuIxDt9sUBamgYwzl1GX44iXVYq++QNwtCoMYcOhKGdbwRTtSAagFWX
+         lqj8lIX8IgTC2wI1Rk+wtelrt9Y4ah9C3cGuzDVnvnb2HKVx76frEhepxnifCgtRvKZG
+         RjrkaEkd9gbHV0J+kquOMBgjOdmW2N/E8V6adkb+l8c+0D6J08ca0bKIV9LM9o+kLdqw
+         gKltyjA8dUSKcHR3jQG+YkO5bb85T3aEYnOeVPmQIWvbksXhDpEThs/iVV8OOiqKc5A8
+         inETU/X0xaJc0G8YJzVbtCxlDLrj96BEY47kuDdwxZ31X6k/IJ4pNBXz7AOAyeKHFr3t
+         BfKg==
+X-Gm-Message-State: AOAM530L84dpf23HHtOXyTDbB/6ySC47poI16gesgsAobqorsEerpt0O
+        dzZzP5cUgHVSG0NeuDJeM6ah7tyr6UnGkhHYro5zlA==
+X-Google-Smtp-Source: ABdhPJzuNqz9YMRe0mQsPKaIqNr0YnYNS1zH2Nf3XmowGNcNu7cslok7UZNmWsFS0mcyu9Cvhw0F+fGM3KsDlDau/N4=
+X-Received: by 2002:aed:20c4:: with SMTP id 62mr5705291qtb.139.1628188690844;
+ Thu, 05 Aug 2021 11:38:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210804214333.927985-1-saravanak@google.com> <87v94kb6xa.wl-maz@kernel.org>
+ <7hfsvng2mj.fsf@baylibre.com>
+In-Reply-To: <7hfsvng2mj.fsf@baylibre.com>
+From:   Kevin Hilman <khilman@baylibre.com>
+Date:   Thu, 5 Aug 2021 11:37:59 -0700
+Message-ID: <CAOi56cW5=Yy_vtPM+i1M7YxQuKw75Zx2xgcgEsyfdm2E-qobmQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] Clean up and fix error handling in mdio_mux_init()
+To:     Marc Zyngier <maz@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        kernel-team@android.com, netdev@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This routine is just a wrapper around kfree(). The wrapper also sets
-buffer length to 0, and the pointer to NULL. The length variable is in
-the struct to be freed, thus setting it to zero is meaningless. Setting
-the pointer to NULL is also not needed.
+On Thu, Aug 5, 2021 at 11:36 AM Kevin Hilman <khilman@baylibre.com> wrote:
+>
+> Marc Zyngier <maz@kernel.org> writes:
+>
+> > Hi Saravana,
+> >
+> > On Wed, 04 Aug 2021 22:43:29 +0100,
+> > Saravana Kannan <saravanak@google.com> wrote:
+> >>
+> >> This patch series was started due to -EPROBE_DEFER not being handled
+> >> correctly in mdio_mux_init() and causing issues [1]. While at it, I also
+> >> did some more error handling fixes and clean ups. The -EPROBE_DEFER fix is
+> >> the last patch.
+> >>
+> >> Ideally, in the last patch we'd treat any error similar to -EPROBE_DEFER
+> >> but I'm not sure if it'll break any board/platforms where some child
+> >> mdiobus never successfully registers. If we treated all errors similar to
+> >> -EPROBE_DEFER, then none of the child mdiobus will work and that might be a
+> >> regression. If people are sure this is not a real case, then I can fix up
+> >> the last patch to always fail the entire mdio-mux init if any of the child
+> >> mdiobus registration fails.
+> >>
+> >> Cc: Marc Zyngier <maz@kernel.org>
+> >> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> >> Cc: Kevin Hilman <khilman@baylibre.com>
+> >> [1] - https://lore.kernel.org/lkml/CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com/#t
+> >>
+> >> Saravana Kannan (3):
+> >>   net: mdio-mux: Delete unnecessary devm_kfree
+> >>   net: mdio-mux: Don't ignore memory allocation errors
+> >>   net: mdio-mux: Handle -EPROBE_DEFER correctly
+> >>
+> >>  drivers/net/mdio/mdio-mux.c | 37 ++++++++++++++++++++++++-------------
+> >>  1 file changed, 24 insertions(+), 13 deletions(-)
+> >
+> > Thanks for this. I've just gave it a go on my test platform, and this
+> > indeed addresses the issues I was seeing [1].
+> >
+> > Acked-by: Marc Zyngier <maz@kernel.org>
+> > Tested-by: Marc Zyngier <maz@kernel.org>
+>
+> I wasn't seeing the same issues as Marc, but am heavily using everything
+> as modules on a few platforms using this code, and I'm not seeing any
+> regressions.
+>
+> Thanks Saravana for finding the root cause here.
+>
+> Acked-by: Kevin Hilman <khilman@baylibre.com>
+> Signed-off-by: Kevin Hilman <khilman@baylibre.com>
 
-Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
----
- drivers/staging/r8188eu/core/rtw_mlme.c         | 4 ++--
- drivers/staging/r8188eu/core/rtw_mlme_ext.c     | 9 ++++-----
- drivers/staging/r8188eu/include/osdep_service.h | 1 -
- drivers/staging/r8188eu/os_dep/osdep_service.c  | 7 -------
- 4 files changed, 6 insertions(+), 15 deletions(-)
+Oops, that should not be a SoB, but rather:
 
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
-index 4ffed8a35054..e3d5a721d25c 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme.c
-@@ -99,8 +99,8 @@ static void rtw_free_mlme_ie_data(u8 **ppie, u32 *plen)
- 
- void rtw_free_mlme_priv_ie_data(struct mlme_priv *pmlmepriv)
- {
--	rtw_buf_free(&pmlmepriv->assoc_req, &pmlmepriv->assoc_req_len);
--	rtw_buf_free(&pmlmepriv->assoc_rsp, &pmlmepriv->assoc_rsp_len);
-+	kfree(pmlmepriv->assoc_req);
-+	kfree(pmlmepriv->assoc_rsp);
- 	rtw_free_mlme_ie_data(&pmlmepriv->wps_beacon_ie, &pmlmepriv->wps_beacon_ie_len);
- 	rtw_free_mlme_ie_data(&pmlmepriv->wps_probe_req_ie, &pmlmepriv->wps_probe_req_ie_len);
- 	rtw_free_mlme_ie_data(&pmlmepriv->wps_probe_resp_ie, &pmlmepriv->wps_probe_resp_ie_len);
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-index a8ed4e1a0278..470c338b44e1 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-@@ -1519,11 +1519,10 @@ unsigned int OnAssocRsp(struct adapter *padapter, struct recv_frame *precv_frame
- 	UpdateBrateTbl(padapter, pmlmeinfo->network.SupportedRates);
- 
- report_assoc_result:
--	if (res > 0) {
-+	if (res > 0)
- 		rtw_buf_update(&pmlmepriv->assoc_rsp, &pmlmepriv->assoc_rsp_len, pframe, pkt_len);
--	} else {
--		rtw_buf_free(&pmlmepriv->assoc_rsp, &pmlmepriv->assoc_rsp_len);
--	}
-+	else
-+		kfree(pmlmepriv->assoc_rsp);
- 
- 	report_join_res(padapter, res);
- 
-@@ -5534,7 +5533,7 @@ void issue_assocreq(struct adapter *padapter)
- 	if (ret == _SUCCESS)
- 		rtw_buf_update(&pmlmepriv->assoc_req, &pmlmepriv->assoc_req_len, (u8 *)pwlanhdr, pattrib->pktlen);
- 	else
--		rtw_buf_free(&pmlmepriv->assoc_req, &pmlmepriv->assoc_req_len);
-+		kfree(pmlmepriv->assoc_req);
- }
- 
- /* when wait_ack is ture, this function shoule be called at process context */
-diff --git a/drivers/staging/r8188eu/include/osdep_service.h b/drivers/staging/r8188eu/include/osdep_service.h
-index cb876b50d68c..10f0203fd905 100644
---- a/drivers/staging/r8188eu/include/osdep_service.h
-+++ b/drivers/staging/r8188eu/include/osdep_service.h
-@@ -370,7 +370,6 @@ void rtw_free_netdev(struct net_device *netdev);
- 		(a)[3] = (u8) (((u32) (val)) & 0xff);		\
- 	} while (0)
- 
--void rtw_buf_free(u8 **buf, u32 *buf_len);
- void rtw_buf_update(u8 **buf, u32 *buf_len, u8 *src, u32 src_len);
- 
- struct rtw_cbuf {
-diff --git a/drivers/staging/r8188eu/os_dep/osdep_service.c b/drivers/staging/r8188eu/os_dep/osdep_service.c
-index db6ee1dca48e..232d3a337be4 100644
---- a/drivers/staging/r8188eu/os_dep/osdep_service.c
-+++ b/drivers/staging/r8188eu/os_dep/osdep_service.c
-@@ -283,13 +283,6 @@ int rtw_change_ifname(struct adapter *padapter, const char *ifname)
- 	return -1;
- }
- 
--void rtw_buf_free(u8 **buf, u32 *buf_len)
--{
--	*buf_len = 0;
--	kfree(*buf);
--	*buf = NULL;
--}
--
- void rtw_buf_update(u8 **buf, u32 *buf_len, u8 *src, u32 src_len)
- {
- 	u32 dup_len = 0;
--- 
-2.32.0
-
+Tested-by: Kevin Hilman <khilman@baylibre.com>
