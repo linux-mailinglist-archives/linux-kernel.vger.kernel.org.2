@@ -2,212 +2,366 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269143E1F1D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E153E1F24
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242216AbhHEXF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 19:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242095AbhHEXF0 (ORCPT
+        id S241620AbhHEXGV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Aug 2021 19:06:21 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7935 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230012AbhHEXGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 19:05:26 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C33C0613D5;
-        Thu,  5 Aug 2021 16:05:10 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id x14so10588975edr.12;
-        Thu, 05 Aug 2021 16:05:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I/25GrrZpejuaIsrg2FKQps7AX77zIWY/zjbr34VeZ0=;
-        b=OYlhiCc5na6+TZoaOjwRrRFLhTpcLTJeyNGhK8pOEL4zEyuSTH4YgDaIsdrmx+DQb9
-         qlfFuCKqCN2JzvA9hn8rKEQ5Srl9DCzFZ67n9xuWESh114yqEShY8jDcQSeo+0TG/w/+
-         YD8NHEY45e47v6jtKg8hw10hXocR5Ff0J0Hq1IvxTzylYqWMp9QScv71jPdrj+oI8iSj
-         9KXZ/EUFM01cKGDaCI2UDgfHaq5I/yapnAjelRcnUJBF6xUsHpwfAqY818gyKedVVX+j
-         bKhvldNEpCi321bWaopX3v6uOnXcgMNkVDy+TGPTR/cYb6aMjXX1fptZysEq3lYsIkuA
-         mymg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I/25GrrZpejuaIsrg2FKQps7AX77zIWY/zjbr34VeZ0=;
-        b=bgH9gW0EX2OVv2l8vCGhacOs6S0v6+9MPQAn+XNFYHI6nIivR6RUr5lBcWRzWmeQwp
-         Cbqpfh8Tc/L34O5GEz5Mwe9AO4Ttd4BlRBe+aixdcW8nZc1MDdMYVh6KnasQhJqBkRt0
-         /2Vb1P32FnSoJqTJrpELp/kOhR/C1is9PSZFp18VykEYhALlrXrm3I7wz2D09bpJUgGT
-         I+9QZluCfpcZ9VTWI3wYFyomkTukzOJjVNZY6OVedh7ziWkK1j8oBcu40FhkBHRawqxy
-         baWE3j1EzdvW29yZypc/FkVN94LSl+0CZOFCd06EVD5fa2jcEv3nfJ6HMULtJtszTLvM
-         xOcw==
-X-Gm-Message-State: AOAM531W58+hFgfISyu3dnZWpnbH4F2eOpD2MJdFUMTdEVyBpkrrcEGf
-        PgVhyBO65DA2RPHG5PLYujtYKqQU7uVZcFOZM+0=
-X-Google-Smtp-Source: ABdhPJzeMfslc8W1NBjLr/ckLSALCSK6iusfJgrcH7RgMYHltEpUwoCpdTUtfeDJeKNnj7EiOyZQXgZXq4yscNH+p6g=
-X-Received: by 2002:a50:ce45:: with SMTP id k5mr9452189edj.168.1628204708811;
- Thu, 05 Aug 2021 16:05:08 -0700 (PDT)
+        Thu, 5 Aug 2021 19:06:20 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GgkdX0tXnz84LD;
+        Fri,  6 Aug 2021 07:02:08 +0800 (CST)
+Received: from dggpemm000004.china.huawei.com (7.185.36.154) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 6 Aug 2021 07:06:00 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggpemm000004.china.huawei.com (7.185.36.154) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 6 Aug 2021 07:06:00 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Fri, 6 Aug 2021 07:05:59 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "yury.norov@gmail.com" <yury.norov@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>,
+        "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
+        "sbrivio@redhat.com" <sbrivio@redhat.com>,
+        "jianpeng.ma@intel.com" <jianpeng.ma@intel.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        tangchengchang <tangchengchang@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        yangyicong <yangyicong@huawei.com>,
+        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>,
+        "Jonathan Cameron" <jonathan.cameron@huawei.com>
+Subject: RE: [PATCH v8 1/5] cpumask: introduce cpumap_print_to_buf to support
+ large bitmask and list
+Thread-Topic: [PATCH v8 1/5] cpumask: introduce cpumap_print_to_buf to support
+ large bitmask and list
+Thread-Index: AQHXhDyXSaAny2b84UqcVQEdPxb4q6tkYuyAgAEwn8A=
+Date:   Thu, 5 Aug 2021 23:05:59 +0000
+Message-ID: <53c5fec4223f4c398b81362acf7441b5@hisilicon.com>
+References: <20210729054208.1800-1-song.bao.hua@hisilicon.com>
+ <20210729054208.1800-2-song.bao.hua@hisilicon.com>
+ <YQvfD701nvqbClLd@kroah.com>
+In-Reply-To: <YQvfD701nvqbClLd@kroah.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.201.246]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com>
- <dae523ab-c75b-f532-af9d-8b6a1d4e29b@google.com> <CAHbLzkoKZ9OdUfP5DX81CKOJWrRZ0GANrmenNeKWNmSOgUh0bQ@mail.gmail.com>
- <e7374d7e-4773-aba1-763-8fa2c953f917@google.com> <CAHbLzko_wg4mx-LTbJ6JcJo-6VzMh5BAcuMV8PXKPsFXOBVASw@mail.gmail.com>
-In-Reply-To: <CAHbLzko_wg4mx-LTbJ6JcJo-6VzMh5BAcuMV8PXKPsFXOBVASw@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 5 Aug 2021 16:04:56 -0700
-Message-ID: <CAHbLzkqKQ_k_aipojZd=UiHyivaweCpCFJJn7WCWVcxhTijqAQ@mail.gmail.com>
-Subject: Re: [PATCH 06/16] huge tmpfs: shmem_is_huge(vma, inode, index)
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 2:14 PM Yang Shi <shy828301@gmail.com> wrote:
->
-> On Sat, Jul 31, 2021 at 10:22 PM Hugh Dickins <hughd@google.com> wrote:
-> >
-> > On Fri, 30 Jul 2021, Yang Shi wrote:
-> > > On Fri, Jul 30, 2021 at 12:42 AM Hugh Dickins <hughd@google.com> wrote:
-> > > >
-> > > > Extend shmem_huge_enabled(vma) to shmem_is_huge(vma, inode, index), so
-> > > > that a consistent set of checks can be applied, even when the inode is
-> > > > accessed through read/write syscalls (with NULL vma) instead of mmaps
-> > > > (the index argument is seldom of interest, but required by mount option
-> > > > "huge=within_size").  Clean up and rearrange the checks a little.
-> > > >
-> > > > This then replaces the checks which shmem_fault() and shmem_getpage_gfp()
-> > > > were making, and eliminates the SGP_HUGE and SGP_NOHUGE modes: while it's
-> > > > still true that khugepaged's collapse_file() at that point wants a small
-> > > > page, the race that might allocate it a huge page is too unlikely to be
-> > > > worth optimizing against (we are there *because* there was at least one
-> > > > small page in the way), and handled by a later PageTransCompound check.
-> > >
-> > > Yes, it seems too unlikely. But if it happens the PageTransCompound
-> > > check may be not good enough since the page allocated by
-> > > shmem_getpage() may be charged to wrong memcg (root memcg). And it
-> > > won't be replaced by a newly allocated huge page so the wrong charge
-> > > can't be undone.
-> >
-> > Good point on the memcg charge: I hadn't thought of that.  Of course
-> > it's not specific to SGP_CACHE versus SGP_NOHUGE (this patch), but I
-> > admit that a huge mischarge is hugely worse than a small mischarge.
->
-> The small page could be collapsed to a huge page sooner or later, so
-> the mischarge may be transient. But huge page can't be replaced.
->
-> >
-> > We could fix it by making shmem_getpage_gfp() non-static, and pointing
-> > to the vma (hence its mm, hence its memcg) here, couldn't we?  Easily
-> > done, but I don't really want to make shmem_getpage_gfp() public just
-> > for this, for two reasons.
-> >
-> > One is that the huge race it just so unlikely; and a mischarge to root
-> > is not the end of the world, so long as it's not reproducible.  It can
-> > only happen on the very first page of the huge extent, and the prior
->
-> OK, if so the mischarge is not as bad as what I thought in the first place.
->
-> > "Stop if extent has been truncated" check makes sure there was one
-> > entry in the extent at that point: so the race with hole-punch can only
-> > occur after we xas_unlock_irq(&xas) immediately before shmem_getpage()
-> > looks up the page in the tree (and I say hole-punch not truncate,
-> > because shmem_getpage()'s i_size check will reject when truncated).
-> > I don't doubt that it could happen, but stand by not optimizing against.
->
-> I agree the race is so unlikely and it may be not worth optimizing
-> against it right now, but a note or a comment may be worth.
->
-> >
-> > Other reason is that doing shmem_getpage() (or shmem_getpage_gfp())
-> > there is unhealthy for unrelated reasons, that I cannot afford to get
-> > into sending patches for at this time: but some of our users found the
-> > worst-case latencies in collapse_file() intolerable - shmem_getpage()
-> > may be reading in from swap, while the locked head of the huge page
-> > being built is in the page cache keeping other users waiting.  So,
-> > I'd say there's something worse than memcg in that shmem_getpage(),
-> > but fixing that cannot be a part of this series.
->
-> Yeah, that is a different problem.
->
-> >
-> > >
-> > > And, another question is it seems the newly allocated huge page will
-> > > just be uncharged instead of being freed until
-> > > "khugepaged_pages_to_scan" pages are scanned. The
-> > > khugepaged_prealloc_page() is called to free the allocated huge page
-> > > before each call to khugepaged_scan_mm_slot(). But
-> > > khugepaged_scan_file() -> collapse_fille() -> khugepaged_alloc_page()
-> > > may be called multiple times in the loop in khugepaged_scan_mm_slot(),
-> > > so khugepaged_alloc_page() may see that page to trigger VM_BUG IIUC.
-> > >
-> > > The code is quite convoluted, I'm not sure whether I miss something or
-> > > not. And this problem seems very hard to trigger in real life
-> > > workload.
-> >
-> > Just to clarify, those two paragraphs are not about this patch, but about
-> > what happens to mm/khugepaged.c's newly allocated huge page, when collapse
-> > fails for any reason.
-> >
-> > Yes, the code is convoluted: that's because it takes very different paths
-> > when CONFIG_NUMA=y (when it cannot predict which node to allocate from)
-> > and when not NUMA (when it can allocate the huge page at a good unlocked
-> > moment, and carry it forward from one attempt to the next).
-> >
-> > I don't like it at all, the two paths are confusing: sometimes I wonder
-> > whether we should just remove the !CONFIG_NUMA path entirely; and other
-> > times I wonder in the other direction, whether the CONFIG_NUMA=y path
-> > ought to go the other way when it finds nr_node_ids is 1.  Undecided.
->
-> I'm supposed it is just performance consideration to keep the
-> allocated huge page, but I'm not sure how much the difference would be
-> if we remove it (remove the !CONFIG_NUMA path) because the pcp could
-> cache THP now since Mel's patch 44042b449872 ("mm/page_alloc: allow
-> high-order pages to be stored on the per-cpu lists").
->
-> It seems to provide the similar optimization but in the buddy
-> allocator layer so that khugepaged doesn't have to maintain its own
-> implementation.
->
-> >
-> > I'm confident that if you work through the two cases (thinking about
-> > only one of them at once!), you'll find that the failure paths (not
-> > to mention the successful paths) do actually work correctly without
-> > leaking (well, maybe the !NUMA path can hold on to one huge page
-> > indefinitely, I forget, but I wouldn't count that as leaking).
->
-> IIUC the NUMA page could hold on to one huge page indefinitely. But
-> I've never seen the BUG personally, so maybe you are right.
 
-By rereading the code, I think you are correct. Both cases do work
-correctly without leaking. And the !CONFIG_NUMA case may carry the
-huge page indefinitely.
 
-I think it is because khugepaged may collapse memory for another NUMA
-node in the next loop, so it doesn't make too much sense to carry the
-huge page, but it may be an optimization for !CONFIG_NUMA case.
-
-However, as I mentioned in earlier email the new pcp implementation
-could cache THP now, so we might not need keep this convoluted logic
-anymore. Just free the page if collapse is failed then re-allocate
-THP. The carried THP might improve the success rate a little bit but I
-doubt how noticeable it would be, may be not worth for the extra
-complexity at all.
-
->
+> -----Original Message-----
+> From: Greg KH [mailto:gregkh@linuxfoundation.org]
+> Sent: Friday, August 6, 2021 12:53 AM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: andriy.shevchenko@linux.intel.com; yury.norov@gmail.com;
+> linux-kernel@vger.kernel.org; akpm@linux-foundation.org;
+> dave.hansen@intel.com; linux@rasmusvillemoes.dk; rafael@kernel.org;
+> rdunlap@infradead.org; agordeev@linux.ibm.com; sbrivio@redhat.com;
+> jianpeng.ma@intel.com; valentin.schneider@arm.com; peterz@infradead.org;
+> bristot@redhat.com; guodong.xu@linaro.org; tangchengchang
+> <tangchengchang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
+> yangyicong <yangyicong@huawei.com>; tim.c.chen@linux.intel.com; Linuxarm
+> <linuxarm@huawei.com>; tiantao (H) <tiantao6@hisilicon.com>; Jonathan Cameron
+> <jonathan.cameron@huawei.com>
+> Subject: Re: [PATCH v8 1/5] cpumask: introduce cpumap_print_to_buf to support
+> large bitmask and list
+> 
+> On Thu, Jul 29, 2021 at 05:42:04PM +1200, Barry Song wrote:
+> > From: Tian Tao <tiantao6@hisilicon.com>
 > >
-> > Collapse failure is not uncommon and leaking huge pages gets noticed.
+> > The existing cpumap_print_to_pagebuf() is used by cpu topology and other
+> > drivers to export hexadecimal bitmask and decimal list to userspace by
+> > sysfs ABI.
 > >
-> > Hugh
+> > Right now, those drivers are using a normal attribute for this kind of
+> > ABIs. A normal attribute typically has show entry as below:
+> >
+> > static ssize_t example_dev_show(struct device *dev,
+> >                 struct device_attribute *attr, char *buf)
+> > {
+> > 	...
+> > 	return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
+> > }
+> > show entry of attribute has no offset and count parameters and this
+> > means the file is limited to one page only.
+> >
+> > cpumap_print_to_pagebuf() API works terribly well for this kind of
+> > normal attribute with buf parameter and without offset, count:
+> >
+> > static inline ssize_t
+> > cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
+> > {
+> > 	return bitmap_print_to_pagebuf(list, buf, cpumask_bits(mask),
+> > 				       nr_cpu_ids);
+> > }
+> >
+> > The problem is once we have many cpus, we have a chance to make bitmask
+> > or list more than one page. Especially for list, it could be as complex
+> > as 0,3,5,7,9,...... We have no simple way to know it exact size.
+> >
+> > It turns out bin_attribute is a way to break this limit. bin_attribute
+> > has show entry as below:
+> > static ssize_t
+> > example_bin_attribute_show(struct file *filp, struct kobject *kobj,
+> >              struct bin_attribute *attr, char *buf,
+> >              loff_t offset, size_t count)
+> > {
+> > 	...
+> > }
+> >
+> > With the new offset and count parameters, this makes sysfs ABI be able
+> > to support file size more than one page. For example, offset could be
+> > >= 4096.
+> >
+> > This patch introduces cpumap_print_to_buf() and its bitmap infrastructure
+> > bitmap_print_to_buf() so that those drivers can move to bin_attribute to
+> > support large bitmask and list. At the same time, we have to pass those
+> > corresponding parameters such as offset, count from bin_attribute to this
+> > new API.
+> >
+> > Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Cc: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: Stefano Brivio <sbrivio@redhat.com>
+> > Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+> > Cc: "Ma, Jianpeng" <jianpeng.ma@intel.com>
+> > Cc: Yury Norov <yury.norov@gmail.com>
+> > Cc: Valentin Schneider <valentin.schneider@arm.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> > ---
+> >  include/linux/bitmap.h  |  2 ++
+> >  include/linux/cpumask.h | 63 +++++++++++++++++++++++++++++++++
+> >  lib/bitmap.c            | 78 +++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 143 insertions(+)
+> >
+> > diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> > index a36cfcec4e77..0de6effa2797 100644
+> > --- a/include/linux/bitmap.h
+> > +++ b/include/linux/bitmap.h
+> > @@ -226,6 +226,8 @@ void bitmap_copy_le(unsigned long *dst, const unsigned
+> long *src, unsigned int n
+> >  unsigned int bitmap_ord_to_pos(const unsigned long *bitmap, unsigned int ord,
+> unsigned int nbits);
+> >  int bitmap_print_to_pagebuf(bool list, char *buf,
+> >  				   const unsigned long *maskp, int nmaskbits);
+> > +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
+> > +			int nmaskbits, loff_t off, size_t count);
+> >
+> >  #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG -
+> 1)))
+> >  #define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG -
+> 1)))
+> > diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> > index f3689a52bfd0..4b838eb6294c 100644
+> > --- a/include/linux/cpumask.h
+> > +++ b/include/linux/cpumask.h
+> > @@ -983,6 +983,69 @@ cpumap_print_to_pagebuf(bool list, char *buf, const
+> struct cpumask *mask)
+> >  				      nr_cpu_ids);
+> >  }
+> >
+> > +/**
+> > + * cpumap_print_to_buf  - copies the cpumask into the buffer
+> > + * @list: indicates whether the cpumap must be list
+> > + *      true:  print in decimal list format
+> > + *      false: print in hexadecimal bitmask format
+> > + *
+> > + * The existing cpumap_print_to_pagebuf() is used by cpu topology and other
+> > + * drivers to export hexadecimal bitmask and decimal list to userspace by
+> > + * sysfs ABI.
+> > + * Drivers might be using a normal attribute for this kind of ABIs. A
+> > + * normal attribute typically has show entry as below:
+> > + * static ssize_t example_attribute_show(struct device *dev,
+> > + * 		struct device_attribute *attr, char *buf)
+> > + * {
+> > + * 	...
+> > + * 	return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
+> > + * }
+> > + * show entry of attribute has no offset and count parameters. this means
+> > + * the file is limited to one page only.
+> > + * cpumap_print_to_pagebuf() API works terribly well for this kind of
+> > + * normal attribute with buf parameter and without offset, count:
+> > + * cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
+> > + * {
+> > + * }
+> > + * The problem is once we have many cpus, we have a chance to make bitmask
+> > + * or list more than one page. Especially for list, it could be as complex
+> > + * as 0,3,5,7,9,... We have no simple way to know it exact size.
+> > + * It turns out bin_attribute is a way to break this limit. bin_attribute
+> > + * has show entry as below:
+> > + * static ssize_t
+> > + * example_bin_attribute_show(struct file *filp, struct kobject *kobj,
+> > + * 		struct bin_attribute *attr, char *buf,
+> > + * 		loff_t offset, size_t count)
+> > + * {
+> > + * 	...
+> > + * }
+> > + * With the new offset and count parameters, this makes sysfs ABI be able
+> > + * to support file size more than one page. For example, offset could be
+> > + * >= 4096.
+> > + * cpumap_print_to_buf() makes those drivers be able to support large
+> > + * bitmask and list after they move to use bin_attribute. In result, we
+> > + * have to pass the corresponding parameters such as off, count from
+> > + * bin_attribute show entry to this API.
+> > + *
+> > + * @mask: the cpumask to copy
+> > + * @buf: the buffer to copy into
+> > + * @off: in the string from which we are copying, We copy to @buf
+> > + * @count: the maximum number of bytes to print
+> > + *
+> > + * The function copies the cpumask into the buffer either as comma-separated
+> > + * list of cpus or hex values of cpumask; Typically used by bin_attribute
+> to
+> > + * export cpumask bitmask and list ABI.
+> > + *
+> > + * Returns the length of how many bytes have been copied.
+> > + */
+> > +static inline ssize_t
+> > +cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
+> > +		loff_t off, size_t count)
+> > +{
+> > +	return bitmap_print_to_buf(list, buf, cpumask_bits(mask),
+> > +				   nr_cpu_ids, off, count);
+> > +}
+> > +
+> >  #if NR_CPUS <= BITS_PER_LONG
+> >  #define CPU_MASK_ALL							\
+> >  (cpumask_t) { {								\
+> > diff --git a/lib/bitmap.c b/lib/bitmap.c
+> > index 9401d39e4722..56bcffe2fa8c 100644
+> > --- a/lib/bitmap.c
+> > +++ b/lib/bitmap.c
+> > @@ -487,6 +487,84 @@ int bitmap_print_to_pagebuf(bool list, char *buf, const
+> unsigned long *maskp,
+> >  }
+> >  EXPORT_SYMBOL(bitmap_print_to_pagebuf);
+> >
+> > +/**
+> > + * bitmap_print_to_buf  - convert bitmap to list or hex format ASCII string
+> > + * @list: indicates whether the bitmap must be list
+> > + *      true:  print in decimal list format
+> > + *      false: print in hexadecimal bitmask format
+> 
+> I do not understand "list" or not here.  Having binary values in a
+> function makes it almost impossible to read when they are being called
+> without having to go dig up the real user.
+> 
+> Are you using this in both ways?  If so, make this the common, static
+> function and have:
+> 	bitmap_print_list_to_buf()
+> 	bitmap_print_bitmask_to_buf()
+> 
+> so that the caller knows exactly what is happening here.
+
+Sounds reasonable to remove bool parameter.
+
+> 
+> 
+> 
+> > + *
+> > + * The bitmap_print_to_pagebuf() is used indirectly via its cpumap wrapper
+> > + * cpumap_print_to_pagebuf() or directly by drivers to export hexadecimal
+> > + * bitmask and decimal list to userspace by sysfs ABI.
+> > + * Drivers might be using a normal attribute for this kind of ABIs. A
+> > + * normal attribute typically has show entry as below:
+> > + * static ssize_t example_attribute_show(struct device *dev,
+> > + * 		struct device_attribute *attr, char *buf)
+> > + * {
+> > + * 	...
+> > + * 	return bitmap_print_to_pagebuf(true, buf, &mask, nr_trig_max);
+> > + * }
+> > + * show entry of attribute has no offset and count parameters and this
+> > + * means the file is limited to one page only.
+> > + * bitmap_print_to_pagebuf() API works terribly well for this kind of
+> > + * normal attribute with buf parameter and without offset, count:
+> > + * bitmap_print_to_pagebuf(bool list, char *buf, const unsigned long *maskp,
+> > + * 			   int nmaskbits)
+> > + * {
+> > + * }
+> > + * The problem is once we have a large bitmap, we have a chance to get a
+> > + * bitmask or list more than one page. Especially for list, it could be
+> > + * as complex as 0,3,5,7,9,... We have no simple way to know it exact size.
+> > + * It turns out bin_attribute is a way to break this limit. bin_attribute
+> > + * has show entry as below:
+> > + * static ssize_t
+> > + * example_bin_attribute_show(struct file *filp, struct kobject *kobj,
+> > + * 		struct bin_attribute *attr, char *buf,
+> > + * 		loff_t offset, size_t count)
+> > + * {
+> > + * 	...
+> > + * }
+> > + * With the new offset and count parameters, this makes sysfs ABI be able
+> > + * to support file size more than one page. For example, offset could be
+> > + * >= 4096.
+> > + * bitmap_print_to_buf() and its cpumap wrapper cpumap_print_to_buf() makes
+> > + * those drivers be able to support large bitmask and list after they move
+> > + * to use bin_attribute. In result, we have to pass the corresponding
+> > + * parameters such as off, count from bin_attribute show entry to this API.
+> > + *
+> > + * @buf: buffer into which string is placed
+> > + * @maskp: pointer to bitmap to convert
+> > + * @nmaskbits: size of bitmap, in bits
+> > + * @off: in the string from which we are copying, We copy to @buf
+> > + * @count: the maximum number of bytes to print
+> > + *
+> > + * The role of cpumap_print_to_buf() and cpumap_print_to_pagebuf() is
+> similar,
+> > + * the difference is that bitmap_print_to_pagebuf() mainly serves sysfs
+> > + * attribute with the assumption the destination buffer is exactly one page
+> > + * and won't be more than one page. cpumap_print_to_buf(), on the other hand,
+> > + * mainly serves bin_attribute which doesn't work with exact one page, and
+> it
+> > + * can break the size limit of converted decimal list and hexadecimal bitmask.
+> > + *
+> > + * Returns the number of characters actually printed to @buf
+> > + */
+> > +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
+> > +		int nmaskbits, loff_t off, size_t count)
+> 
+> No need to put the kernel doc for both the .h and .c file, only put it
+> in one place please (where ever it ties into the kernel documentation)
+> 
+
+Actually they are two different modules. One is cpumap, the other one is
+bitmap. But they do have some duplicated content.
+I'd prefer to remove the duplicated part from cpumap.
+
+> thanks,
+> 
+> greg k-h
+
+Thanks
+Barry
+
