@@ -2,115 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35043E1B20
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE8F3E1B25
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241144AbhHESWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39728 "EHLO
+        id S241153AbhHESWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:22:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238992AbhHESV7 (ORCPT
+        with ESMTP id S237370AbhHESWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:21:59 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CABCC061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:21:44 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id e13-20020a056830200db02904f06fa2790cso6095008otp.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:21:44 -0700 (PDT)
+        Thu, 5 Aug 2021 14:22:38 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78378C061798
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:22:23 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id e5so8311661ljp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:22:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=27qj2SWHf1ITmiEsMbQM8FzGSFNAOy3v+jLUQb3Ja84=;
-        b=KfJY1YUJIGR7TvsAVd7lBr89GqNQUjB9YAaf/2DLFZBymgDfomTuzE8vyS0sdSIe2J
-         nr/Ctl8RHwIxj3Eul7qbc6jdtiiwEhWoRsLLLigKmKTHYt2o+/J3OcNXjsGVQAIZsoHn
-         cpDHhiaY1EBOn8zhBBn/luIB0cbu2eX/LrfddnrjCod/mEUpopCyLhiVtXvj+lRub2Ri
-         BfTgteRJAYiYYz26hVBGG0EcE2Z+ddzzXliwuqOJ1TntGB6FcCIK0thOEp1uxj7IAvDc
-         j4S9xOpsG+wMpLZUWbUBWi1T6URWvGYcwNSygVQB4XVI1k6ovB6VA9vtlC2GxD2tKZo9
-         FZgw==
+        bh=LNpT8+EvILfJwMhJDbf0NVaUrZW6zw0xKERByrH5p/E=;
+        b=Y2oK9TpDhBO7ojoFD7/ZGm1Vo4Q4+SveD8msknb3vaTKUGGyIi7lO02RrvoHgt+oFU
+         eLoj0GPIulWoDqtcS/1D6J/RO07/jT5HY76dgvqoYHM7yxInkwOqPjJl/c+Evze2+mgN
+         Yg/mZLJ9Tj1NX1d4prbdV1Yyb2fC0mJ4qyn6BsHr2GPVNJLmRIaH0ufv2gF/s21HQfF0
+         x8DNVd0msrA6o/siIIKWBuWCUvrk8G32z6H6laIAVGXZLbI60vhZlhaVzK3C1Fuy4haa
+         Vy0D0PaQ5ZcXJrhKOmbCJMW6vCV5E8I3Pog57qHQwxW8sQGHtqlbQiqVHwuRpOA3O5WN
+         3lWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=27qj2SWHf1ITmiEsMbQM8FzGSFNAOy3v+jLUQb3Ja84=;
-        b=J5qesfzNGaPD3J0olf+pEKokewKGOdTf0aq59f+0H0wguSO+qlVfV28wEw+J7W4xpc
-         C9kVYjmXtzHSOLvH+K9A0uRav+G4zdE41pTPDGa3IzT3IC+qanUqHqx5Z+RgDZNwKlqk
-         eIwqPo1xN5iRTNyXfdWP0SAS74klC1bKEOOBm8iKXXDab6fBX0DLiCP+LqKSqIqgeDur
-         qPLGOBFcqs0JLWV2gm5IbyJa7NSU1hWDZk/OvXiiv9Q5wFsDF5bBmxvJhXq2KqEP6Y1x
-         WAeR9sjswmla0jZ2kMtxZkpfwIE744VTRF6UCxTK/C98cNTEOVIWnlnOnOUbPl5E+uwq
-         4AGQ==
-X-Gm-Message-State: AOAM531xElyL6nU8qr+yqAf8sWoPFBO8HqCJO8PWr7S/GVYfks8LQk/+
-        K5lb/mI07dSpQnf9B926G36Z1Lb78XReStfwf+E=
-X-Google-Smtp-Source: ABdhPJxEFl9g2uIR7AX/5xRKU2EoUakZ8tDgBO6V/DlWWQ9gFUU2CtMZ7xgrDvbpoNlW+6PhoRR5f5SqhnQmG5wrXhk=
-X-Received: by 2002:a05:6830:1c2f:: with SMTP id f15mr4696064ote.23.1628187703609;
- Thu, 05 Aug 2021 11:21:43 -0700 (PDT)
+        bh=LNpT8+EvILfJwMhJDbf0NVaUrZW6zw0xKERByrH5p/E=;
+        b=E6QOlCvhHUEIoE5d/sFwW8xJ5oR9szyOCbMyAjKixuCD/u30+N3kxYlENIFAoj4Q/y
+         0d56mEolqtf4/cpkZTNpS4qJAQBuMB84+qkj13dEICO5VJsekMTl/69L66LuQcuVCTtO
+         KQ5o5ylLNlWp/gEwiylZzrZeNwGArpvtIIYcfQe/Q3TuHTSxxI8UP4HDEvUDPZzPkxRH
+         pLgK4stUyssL9Cocm1O7g4YjuZAN1zUVW0HX8xmlePI0+K6pP+lc2atfA/7zUg5XbwNS
+         vgXl9y73aEvfeTemWCuLcCaY0YVfm8yiE+1O/yAxOkiOkLvw/C4VG75L/Lehr6xYND4o
+         8GOQ==
+X-Gm-Message-State: AOAM533G1lAAeux/ZDOYCYOy++GdMXvJcWs7ijM7JEZGl51rtJ7J20+K
+        VBwcEL3ukyg+GUQwgbxi1yzqITg0gbeCdzE1QdkAJg==
+X-Google-Smtp-Source: ABdhPJzG4CnCEu4/HQYiDExo1dwwbMB/7DskuDEQchiSBg4779eMZg08PYrCHI1U+FwCgq4FcQXBPxK8q6kT+eH7xOo=
+X-Received: by 2002:a2e:a911:: with SMTP id j17mr3939091ljq.341.1628187741325;
+ Thu, 05 Aug 2021 11:22:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAPM=9twko1gCNTB3CPf7CAQqWFayMj=1fa3ZoEwwviDFhF48kQ@mail.gmail.com>
- <CAHk-=wgYq=EpNmDPNVxnBX+HpjNcQg50DSjuxZuK0UbZjh-pnQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wgYq=EpNmDPNVxnBX+HpjNcQg50DSjuxZuK0UbZjh-pnQ@mail.gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 5 Aug 2021 14:21:31 -0400
-Message-ID: <CADnq5_M7gbOn34_57ipGjfpo7FvB3sFQnSOtkPUvstshX4V-zQ@mail.gmail.com>
-Subject: Re: [git pull] drm fixes for 5.14-rc4
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>,
-        Harry Wentland <hwentlan@amd.com>,
-        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
+References: <20210805150102.131008-1-masahiroy@kernel.org>
+In-Reply-To: <20210805150102.131008-1-masahiroy@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 5 Aug 2021 11:22:10 -0700
+Message-ID: <CAKwvOdkoMnqoz_if9_W9x-WEq3Eu85t6P8sDSUXThypMeT6wiQ@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: check CONFIG_AS_IS_LLVM instead of LLVM_IAS
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 2:14 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Thu, Aug 5, 2021 at 8:01 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> This might possibly have been fixed already by the previous drm pull,
-> but I wanted to report it anyway, just in case.
+> LLVM_IAS is the user interface to set the -(no-)integrated-as flag,
+> and it should be used only for that purpose.
 >
-> It happened after an uptime of over a week, so it might not be trivial
-> to reproduce.
+> LLVM_IAS is checked in some places to determine the assembler type,
+> but it is not precise.
 >
-> It's a NULL pointer dereference in dc_stream_retain() with the code being
+>  $ make CC=gcc LLVM_IAS=1
 >
->         lock xadd %eax,0x390(%rdi) <-- trapping instruction
+> ... will use the GNU assembler since LLVM_IAS=1 is effective only when
+> $(CC) is clang.
 >
-> and that's just the
+> Of course, the combination of CC=gcc and LLVM_IAS=1 does not make
+> sense, but the build system can be more robust against such insane
+> input.
 >
->         kref_get(&stream->refcount);
+> Commit ba64beb17493a ("kbuild: check the minimum assembler version in
+> Kconfig") introduced CONFIG_AS_IS_GNU/LLVM, which is more precise
+> because Kconfig checks the version string from the assembler in use.
 >
-> with a NULL 'stream' argument.
->
->   Call Trace:
->    dc_resource_state_copy_construct+0x13f/0x190 [amdgpu]
->    amdgpu_dm_atomic_commit_tail+0xd5/0x1540 [amdgpu]
->    commit_tail+0x97/0x180 [drm_kms_helper]
->    process_one_work+0x1df/0x3a0
->
-> the oops is followed by a stream of
->
->   [drm:amdgpu_dm_atomic_check [amdgpu]] *ERROR* [CRTC:55:crtc-1]
-> hw_done or flip_done timed out
->
-> and the machine was not usable afterwards.
->
-> lspci says this is a
->
->  49:00.0 VGA compatible controller [0300]:
->    Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere
->    [Radeon RX 470/480/570/570X/580/580X/590]
->    [1002:67df] (rev e7) (prog-if 00 [VGA controller])
->
-> Full oops in the attachment, but I think the above is all the really
-> salient details.
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Thanks for the report.  Adding some display folks to take a look.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Alex
+> ---
+>
+>  Makefile            | 2 +-
+>  arch/riscv/Makefile | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index 4ab151060931..8b56c9692c3c 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -844,7 +844,7 @@ else
+>  DEBUG_CFLAGS   += -g
+>  endif
+>
+> -ifneq ($(LLVM_IAS),1)
+> +ifndef CONFIG_AS_IS_LLVM
+>  KBUILD_AFLAGS  += -Wa,-gdwarf-2
+>  endif
+>
+> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+> index bc74afdbf31e..dcfbd2a87d41 100644
+> --- a/arch/riscv/Makefile
+> +++ b/arch/riscv/Makefile
+> @@ -41,7 +41,7 @@ endif
+>  ifeq ($(CONFIG_LD_IS_LLD),y)
+>         KBUILD_CFLAGS += -mno-relax
+>         KBUILD_AFLAGS += -mno-relax
+> -ifneq ($(LLVM_IAS),1)
+> +ifndef CONFIG_AS_IS_LLVM
+>         KBUILD_CFLAGS += -Wa,-mno-relax
+>         KBUILD_AFLAGS += -Wa,-mno-relax
+>  endif
+> --
+> 2.30.2
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
