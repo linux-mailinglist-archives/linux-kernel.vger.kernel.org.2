@@ -2,90 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FBC3E0C71
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 04:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6FA3E0C7D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 04:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238343AbhHECaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 22:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbhHECaI (ORCPT
+        id S234582AbhHECgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 22:36:22 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7785 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229807AbhHECgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 22:30:08 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F26EC061765
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 19:29:55 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id j1so5859412pjv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 19:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2gTOag6iNgEboHEjQCKxxPjC49dhZbZiovCGHlps5Jc=;
-        b=LBtsYvq4Z5uHgYzZ9yA8bl7KfsA+E5GO/w+rRQ5uMqFk8bMZm8ARdzvt7ErC25E4Wr
-         tiYNzHEfwdIWJhySGDCxLBmhCu0G5q1fcgyDQsZbjyyN6+q5guSvoAzKrIrfFFpmBT7P
-         UTYs3iP0g9S/Twwb3emUwHXg3kcskDvaENB9Yk4mzaz3Kbma8axUfjpMP8MNpEdtpKpC
-         0upB1wyzC7H4/+ZPLN7yZ1wTaRX4MrFViSgeTSmOLNe6zKRv1guD8IWBUgc1dlT9YElH
-         REf5eKCQPwGj+OSHDuxfjxLb3xsQdJTiDmP3uj3UCdCU8kaY3MuQL3jzScKRfukJqK2S
-         uSaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2gTOag6iNgEboHEjQCKxxPjC49dhZbZiovCGHlps5Jc=;
-        b=m06lRRB0Cdm/ygJBmolquujp6rP9xg/ELesWkFF73OFHOynWiYUmMZ0DXMSfjsKMTB
-         OjC/0kOHzc3FKlpO2gnRjVopirEy52p7nWIy5T8PY0yJiMIlkLd6gMTLpZxD/tC2FPE+
-         TnFibVhCDZG7pagtgw4oKVsbShneCOGbUH/dE3xmScjkRKrg8NZnN4wraoajV9eDeF3x
-         tvlqbW3vzgebfMpHe6DeQgDS1bpw4zoX/FzffJ2WI62eI6Ou4uAiGpp+lRoQMD9iuj7G
-         lZW8Xodjsp7I144n/illoQDtxaNaRx22kpQYEmE0hJ8LchrMgHMXiXDEZtrj1xl4oYP9
-         IA+Q==
-X-Gm-Message-State: AOAM531AmNz/KnL8rgcqtVn6z1nG9bShKDjhRC6AF+zdPK1vu6C3N8A8
-        NIJgtAgCimj4No/oo47NfkOA0rjyOxU=
-X-Google-Smtp-Source: ABdhPJy63G+9/MlgSHa+cL4GWuSr84aC8RxAjYTnhod8cy3bWb/N4QEXWDhWs2/hFEshiht6W36ttQ==
-X-Received: by 2002:a17:902:8348:b029:12b:b2a0:941b with SMTP id z8-20020a1709028348b029012bb2a0941bmr2276489pln.62.1628130594547;
-        Wed, 04 Aug 2021 19:29:54 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id 5sm4508434pfp.154.2021.08.04.19.29.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 19:29:54 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: yong.yiran@zte.com.cn
-To:     linux@armlinux.org.uk, yong.yiran@zte.com.cn
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] ARM:sa1100/hackkit:Remove duplicated 'linux/tty.h' include in 'hackkit.c'
-Date:   Wed,  4 Aug 2021 19:30:39 -0700
-Message-Id: <20210805023039.625968-1-yong.yiran@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Wed, 4 Aug 2021 22:36:21 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GgCQl1QDgzYlGn;
+        Thu,  5 Aug 2021 10:35:59 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 10:36:06 +0800
+Received: from [10.174.179.215] (10.174.179.215) by
+ dggema769-chm.china.huawei.com (10.1.198.211) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 10:36:04 +0800
+Subject: Re: [PATCH -next] RDMA/hns: Fix return in hns_roce_rereg_user_mr()
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <liangwenpeng@huawei.com>, <liweihang@huawei.com>,
+        <dledford@redhat.com>, <jgg@ziepe.ca>, <chenglang@huawei.com>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210804125939.20516-1-yuehaibing@huawei.com>
+ <YQqb0U43eQUGK641@unreal>
+From:   YueHaibing <yuehaibing@huawei.com>
+Message-ID: <f0921aa3-a95d-f7e4-a13b-db15d4a5f259@huawei.com>
+Date:   Thu, 5 Aug 2021 10:36:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YQqb0U43eQUGK641@unreal>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: yong yiran <yong.yiran@zte.com.cn>
+On 2021/8/4 21:53, Leon Romanovsky wrote:
+> On Wed, Aug 04, 2021 at 08:59:39PM +0800, YueHaibing wrote:
+>> If re-registering an MR in hns_roce_rereg_user_mr(), we should
+>> return NULL instead of pass 0 to ERR_PTR.
+>>
+>> Fixes: 4e9fc1dae2a9 ("RDMA/hns: Optimize the MR registration process")
+>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_mr.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+>> index 006c84bb3f9f..7089ac780291 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_mr.c
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+>> @@ -352,7 +352,9 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
+>>  free_cmd_mbox:
+>>  	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+>>  
+>> -	return ERR_PTR(ret);
+>> +	if (ret)
+>> +		return ERR_PTR(ret);
+>> +	return NULL;
+>>  }
+> 
+> I don't understand this function, it returns or ERR_PTR() or NULL, but
+> should return &mr->ibmr in success path. How does it work?
 
-'linux/tty.h' included in 'hackkit.c' is duplicated.
-Remove all but the first include of linux/tty.h from hackkit.c.
+Did you means hns_roce_reg_user_mr()?
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: yong yiran <yong.yiran@zte.com.cn>
----
- arch/arm/mach-sa1100/hackkit.c | 1 -
- 1 file changed, 1 deletion(-)
+hns_roce_rereg_user_mr() returns ERR_PTR() on failure, and return NULL on success,
 
-diff --git a/arch/arm/mach-sa1100/hackkit.c b/arch/arm/mach-sa1100/hackkit.c
-index 3085f1c2e586..3fe34ee7c0ab 100644
---- a/arch/arm/mach-sa1100/hackkit.c
-+++ b/arch/arm/mach-sa1100/hackkit.c
-@@ -18,7 +18,6 @@
- #include <linux/serial_core.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
--#include <linux/tty.h>
- #include <linux/gpio.h>
- #include <linux/leds.h>
- #include <linux/platform_device.h>
--- 
-2.25.1
+In ib_uverbs_rereg_mr(), old mr will be used if rereg_user_mr() return NULL, see:
 
+ 829         new_mr = ib_dev->ops.rereg_user_mr(mr, cmd.flags, cmd.start, cmd.length,
+ 830                                            cmd.hca_va, cmd.access_flags, new_pd,
+ 831                                            &attrs->driver_udata);
+ 832         if (IS_ERR(new_mr)) {
+ 833                 ret = PTR_ERR(new_mr);
+ 834                 goto put_new_uobj;
+ 835         }
+ 836         if (new_mr) {
+.....
+ 860                 mr = new_mr;
+ 861         } else {
+ 862                 if (cmd.flags & IB_MR_REREG_PD) {
+ 863                         atomic_dec(&orig_pd->usecnt);
+ 864                         mr->pd = new_pd;
+ 865                         atomic_inc(&new_pd->usecnt);
+ 866                 }
+ 867                 if (cmd.flags & IB_MR_REREG_TRANS)
+ 868                         mr->iova = cmd.hca_va;
+ 869         }
+
+
+> 
+> Thanks
+> 
+>>  
+>>  int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+>> -- 
+>> 2.17.1
+>>
+> .
+> 
