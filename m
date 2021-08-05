@@ -2,152 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A143E12A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5F93E12A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240354AbhHEK0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 06:26:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:42446 "EHLO foss.arm.com"
+        id S240241AbhHEK2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 06:28:50 -0400
+Received: from mga04.intel.com ([192.55.52.120]:40531 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239963AbhHEK0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 06:26:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BEB591FB;
-        Thu,  5 Aug 2021 03:26:21 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9178A3F719;
-        Thu,  5 Aug 2021 03:26:20 -0700 (PDT)
-Subject: Re: [PATCH] of: restricted dma: Don't fail device probe on rmem init
- failure
-To:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     iommu@lists.linux-foundation.org,
-        Claire Chang <tientzu@chromium.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210805094736.902-1-will@kernel.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <af998e69-671c-6d13-bd9b-da71b389575c@arm.com>
-Date:   Thu, 5 Aug 2021 11:26:15 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234785AbhHEK2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 06:28:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="212263377"
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="212263377"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 03:28:30 -0700
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="512635500"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.31.111]) ([10.255.31.111])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 03:28:28 -0700
+Subject: Re: [kbuild-all] Re: make[2]: *** [arch/powerpc/Makefile.postlink:31:
+ vmlinux] Error 1
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Feng Tang <feng.tang@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <202107301612.rQ29n76B-lkp@intel.com>
+ <c3e9247d-95cd-718c-d8a5-f0cd5e5a3598@infradead.org>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <176ab0a5-72dd-dc24-be64-6919cffba9ed@intel.com>
+Date:   Thu, 5 Aug 2021 18:28:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210805094736.902-1-will@kernel.org>
+In-Reply-To: <c3e9247d-95cd-718c-d8a5-f0cd5e5a3598@infradead.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-05 10:47, Will Deacon wrote:
-> If CONFIG_DMA_RESTRICTED_POOL=n then probing a device with a reference
-> to a "restricted-dma-pool" will fail with a reasonably cryptic error:
+
+
+On 8/4/2021 11:10 AM, Randy Dunlap wrote:
+> On 7/30/21 1:29 AM, kernel test robot wrote:
+>> tree:   
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   764a5bc89b12b82c18ce7ca5d7c1b10dd748a440
+>> commit: cf536e185869d4815d506e777bcca6edd9966a6e Makefile: extend 32B 
+>> aligned debug option to 64B aligned
+>> date:   10 weeks ago
+>> config: powerpc64-randconfig-c023-20210730 (attached as .config)
+>> compiler: powerpc-linux-gcc (GCC) 10.3.0
+>> reproduce (this is a W=1 build):
+>>          wget 
+>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
+>> -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cf536e185869d4815d506e777bcca6edd9966a6e 
+>>
+>>          git remote add linus 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>          git fetch --no-tags linus master
+>>          git checkout cf536e185869d4815d506e777bcca6edd9966a6e
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 
+>> make.cross ARCH=powerpc64
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>>> make[2]: *** [arch/powerpc/Makefile.postlink:31: vmlinux] Error 1
+>>
+>> ---
 > 
->    | pci-host-generic: probe of 10000.pci failed with error -22
+> Hi ktr/lkp,
 > 
-> Print a more helpful message in this case and try to continue probing
-> the device as we do if the kernel doesn't have the restricted DMA patches
-> applied or either CONFIG_OF_ADDRESS or CONFIG_HAS_DMA =n.
-
-Makes sense to me;
-
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-
-Although if we allow probe to succeed when a pool really was there for a 
-reason, it may end up being much more fatal if the driver then tries to 
-do a DMA transfer to any old memory and the device access causes an 
-SError, or the VM to be killed, or whatever. That's not quite the same 
-as the stubbed cases where the respective platforms couldn't have a 
-genuine pool to parse either way, but as you say it is what could happen 
-already if the user tried to use an older kernel, and I think the chance 
-of of_reserved_mem_device_init_by_idx() failing without something being 
-terminally wrong anyway - invalid DT, not enough RAM, etc. - is low 
-enough that it's probably not a major concern. Plus I'd hope that the 
-memory protection schemes people do actually implement don't take such 
-such a zero-tolerance approach anyway - allowing a malicious or 
-malfunctioning device to take down the system because it tried to make a 
-rogue access which *was* already contained seems a bit silly.
-
-Robin.
-
-> Cc: Claire Chang <tientzu@chromium.org>
-> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->   drivers/of/address.c    | 8 ++++----
->   drivers/of/device.c     | 2 +-
->   drivers/of/of_private.h | 8 +++-----
->   3 files changed, 8 insertions(+), 10 deletions(-)
+> This is not "All errors". I suggest that you improve your output by
+> (also) grepping for "ERROR:", so that the following lines would be
+> included here:
 > 
-> diff --git a/drivers/of/address.c b/drivers/of/address.c
-> index 973257434398..f6bf4b423c2a 100644
-> --- a/drivers/of/address.c
-> +++ b/drivers/of/address.c
-> @@ -997,7 +997,7 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
->   	return ret;
->   }
->   
-> -int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np)
-> +void of_dma_set_restricted_buffer(struct device *dev, struct device_node *np)
->   {
->   	struct device_node *node, *of_node = dev->of_node;
->   	int count, i;
-> @@ -1022,11 +1022,11 @@ int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np)
->   		 */
->   		if (of_device_is_compatible(node, "restricted-dma-pool") &&
->   		    of_device_is_available(node))
-> -			return of_reserved_mem_device_init_by_idx(dev, of_node,
-> -								  i);
-> +			break;
->   	}
->   
-> -	return 0;
-> +	if (i != count && of_reserved_mem_device_init_by_idx(dev, of_node, i))
-> +		dev_warn(dev, "failed to initialise \"restricted-dma-pool\" memory node\n");
->   }
->   #endif /* CONFIG_HAS_DMA */
->   
-> diff --git a/drivers/of/device.c b/drivers/of/device.c
-> index 2defdca418ec..258a2b099410 100644
-> --- a/drivers/of/device.c
-> +++ b/drivers/of/device.c
-> @@ -166,7 +166,7 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
->   	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
->   
->   	if (!iommu)
-> -		return of_dma_set_restricted_buffer(dev, np);
-> +		of_dma_set_restricted_buffer(dev, np);
->   
->   	return 0;
->   }
-> diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-> index f557bd22b0cf..bc883f69496b 100644
-> --- a/drivers/of/of_private.h
-> +++ b/drivers/of/of_private.h
-> @@ -163,18 +163,16 @@ struct bus_dma_region;
->   #if defined(CONFIG_OF_ADDRESS) && defined(CONFIG_HAS_DMA)
->   int of_dma_get_range(struct device_node *np,
->   		const struct bus_dma_region **map);
-> -int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np);
-> +void of_dma_set_restricted_buffer(struct device *dev, struct device_node *np);
->   #else
->   static inline int of_dma_get_range(struct device_node *np,
->   		const struct bus_dma_region **map)
->   {
->   	return -ENODEV;
->   }
-> -static inline int of_dma_set_restricted_buffer(struct device *dev,
-> -					       struct device_node *np)
-> +static inline void of_dma_set_restricted_buffer(struct device *dev,
-> +						struct device_node *np)
->   {
-> -	/* Do nothing, successfully. */
-> -	return 0;
->   }
->   #endif
->   
+> ERROR: start_text address is c000000000000200, should be c000000000000100
+> ERROR: try to enable LD_HEAD_STUB_CATCH config option
+> ERROR: see comments in arch/powerpc/tools/head_check.sh
+
+Hi Randy,
+
+Thanks for the advice, the "ERROR:" lines weren't redirected to stderr, 
+so the bot didn't notice them, it looks difficult to change the output.
+
+Best Regards,
+Rong Chen
+
 > 
+> 
+> and yes, enabling LD_HEAD_STUB_CATCH does fix this build error.
+> 
+> thanks.
