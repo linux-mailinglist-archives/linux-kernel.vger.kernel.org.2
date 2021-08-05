@@ -2,153 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D68A3E1F68
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422663E1F69
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242458AbhHEXbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 19:31:38 -0400
-Received: from mga02.intel.com ([134.134.136.20]:6546 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242395AbhHEXbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 19:31:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="201448378"
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="201448378"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 16:31:10 -0700
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="481043918"
-Received: from rmgular-mobl2.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.138.25])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 16:31:09 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     "H . Peter Anvin" <hpa@zytor.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>
-Subject: [PATCH v3 5/5] x86/tdx: Add option to override prot values
-Date:   Thu,  5 Aug 2021 16:30:36 -0700
-Message-Id: <20210805233036.2949674-6-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210805233036.2949674-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210805233036.2949674-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-MIME-Version: 1.0
+        id S238250AbhHEXfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 19:35:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236981AbhHEXf2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 19:35:28 -0400
+Received: from mail-oi1-x264.google.com (mail-oi1-x264.google.com [IPv6:2607:f8b0:4864:20::264])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A57C061798
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 16:35:14 -0700 (PDT)
+Received: by mail-oi1-x264.google.com with SMTP id o20so9596074oiw.12
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 16:35:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:dkim-signature:from:to:cc:subject:date
+         :message-id:content-transfer-encoding;
+        bh=0BiRSnRyB4JhIBd4KrAemXgLG/qgwW1qU26DhEQiEMc=;
+        b=eGpdvl5SCRCd08zQJqzbgj5u8Ga6AMz5Fh3ouRm0eiT0uyUiMNtyTlsghnprTiahCu
+         ffdxFcQbVlkDA4YUUyXXct8U2UMPLxsSKUECMHWLjM84JDqn4jiVzQfW+qpJOP4qIBsL
+         fqYlWCFnDSeT8CuDo7yUnI40qt322o9y1Dvefi9nNTuMXNrDLo8AbCb6IehG37aFrLhs
+         RKhieYmLx7aS+mMhPhVvo0oty4v3exrhPtF0RmsnL+yIjazpu+6RCcb3gTEyOkYvI01o
+         0vsJA5nxd/GJFm8DJ+uYaJZaNjRNU5Tf1/pQ6qyHdaLkMtnn6juNkF/ku5XBwGrwZWeZ
+         9xGQ==
+X-Gm-Message-State: AOAM5331aNUdT2N3l8+Huyk+Gr4pqgS2g124gWz+HxE0dr4OQae5wS6X
+        yJZuO/3WWAMOPj0XX/0jtpiAuw5jX4xSq3eqz+Pcy+Gi/Cb4
+X-Google-Smtp-Source: ABdhPJwyX//2MoDU9UeEOedJObiuXZ+uyDBoVwDH580ISGdrBtm5hqypScQZZg77dz84IPBCplei90FbaYng
+X-Received: by 2002:a05:6808:288:: with SMTP id z8mr4097191oic.148.1628206501832;
+        Thu, 05 Aug 2021 16:35:01 -0700 (PDT)
+Received: from smtp.aristanetworks.com (smtp.aristanetworks.com. [52.0.43.43])
+        by smtp-relay.gmail.com with ESMTPS id x41sm12822otr.12.2021.08.05.16.35.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Aug 2021 16:35:01 -0700 (PDT)
+X-Relaying-Domain: arista.com
+Received: from chmeee (unknown [10.95.66.211])
+        by smtp.aristanetworks.com (Postfix) with ESMTPS id 7BCC63000243;
+        Thu,  5 Aug 2021 16:35:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
+        s=Arista-A; t=1628206500;
+        bh=0BiRSnRyB4JhIBd4KrAemXgLG/qgwW1qU26DhEQiEMc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FZMcN1zB8kMKZGhMEzAzxSrNkL6qquhHgE3+e5Mxey66TnEUDM/lt3rq4bUoFFZi+
+         a/2c+E0uVLtecI5N/wSGhBUaTn+hcrbF00Q8jM+Av5jg84SF/1y4DftsN44MSpE837
+         gdY0prUrb0d/L46Lx3cOuLBX7fB91LMehcQDUkHfcB2CT4/BVa6aTp7F+o+C9Kiqz8
+         /aoKN5+jpyIdZLS8yrcyNNRdb3KmSqWudLmeHYv9cuev4+0W5lV4yNjNzH8UoCIydR
+         SAdl9cT6NCUMsh362ozABQVuHvqxTBaB32eiIIWpYmfoG9q85Oa2I5AN9cR3Hhe+2d
+         gno82L67w+TBw==
+Received: from kevmitch by chmeee with local (Exim 4.94.2)
+        (envelope-from <kevmitch@chmeee>)
+        id 1mBmt8-001gxM-81; Thu, 05 Aug 2021 16:34:58 -0700
+From:   Kevin Mitchell <kevmitch@arista.com>
+Cc:     Kevin Mitchell <kevmitch@arista.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: mark scsi_dispatch_cmd as noinline
+Date:   Thu,  5 Aug 2021 16:33:15 -0700
+Message-Id: <20210805233315.403313-1-kevmitch@arista.com>
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andi Kleen <ak@linux.intel.com>
+When scsi_dispatch_cmd was moved to scsi_lib.c and made static, some
+compilers (i.e., at least gcc 8.4.0) decided to compile this
+inline. This is a problem for the lkdtm.ko, which needs to insert a
+kprobe on this function for the SCSI_DISPATCH_CMD crashpoint.
 
-The kernel internally uses prot_guest_has to configure various behavior
-specific to confidential guests. Allow to clear a single value. This is
-mainly useful for debugging and not very user friendly because the hex
-values from the include file have to be used. But for debugging it's
-good enough and it matches the existing clear_cpuid option.
+Mark the function as noinline so as to guarantee the symbol can be found
+by register_kprobe.
 
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Fixes: 82042a2cdb55 ("scsi: move scsi_dispatch_cmd to scsi_lib.c")
+Signed-off-by: Kevin Mitchell <kevmitch@arista.com>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  8 ++++++++
- arch/x86/include/asm/tdx.h                      |  2 ++
- arch/x86/kernel/tdx.c                           | 15 +++++++++++++++
- 3 files changed, 25 insertions(+)
+ drivers/scsi/scsi_lib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index ba390be62f89..10776a743e74 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5573,6 +5573,14 @@
- 
- 	tdfx=		[HW,DRM]
- 
-+	tdx_prot_clear=val
-+			Clear a prot setting for TDX. See
-+			include/linux/protected_guest.h for the allowed
-+			values. Only a single value can be overridden.
-+			Note that invalid values here may break the TDX kernel,
-+			this is mainly for debugging. Clearing protections
-+			may cause security holes.
-+
- 	test_suspend=	[SUSPEND][,N]
- 			Specify "mem" (for Suspend-to-RAM) or "standby" (for
- 			standby suspend) or "freeze" (for suspend type freeze)
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index 665c8cf57d5b..dd5459ece9aa 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
-@@ -67,6 +67,8 @@ enum tdx_map_type {
- 
- #ifdef CONFIG_INTEL_TDX_GUEST
- 
-+extern unsigned int tdg_disable_prot;
-+
- void __init tdx_early_init(void);
- 
- bool tdx_prot_guest_has(unsigned long flag);
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index 644e90dfa587..bfa168f3f09c 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -12,6 +12,7 @@
- #include <asm/vmx.h>
- #include <asm/insn.h>
- #include <asm/insn-eval.h>
-+#include <asm/cmdline.h>
- #include <linux/sched/signal.h> /* force_sig_fault() */
- #include <linux/swiotlb.h>
- 
-@@ -41,6 +42,8 @@ static struct {
- 	unsigned long attributes;
- } td_info __ro_after_init;
- 
-+unsigned int tdg_disable_prot = -1;
-+
- /*
-  * Wrapper for standard use of __tdx_hypercall with BUG_ON() check
-  * for TDCALL error.
-@@ -111,6 +114,9 @@ static inline bool cpuid_has_tdx_guest(void)
- 
- bool tdx_prot_guest_has(unsigned long flag)
+diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+index 7456a26aef51..dbe2d5053d6c 100644
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -1443,7 +1443,7 @@ static void scsi_complete(struct request *rq)
+  * Return: nonzero return request was rejected and device's queue needs to be
+  * plugged.
+  */
+-static int scsi_dispatch_cmd(struct scsi_cmnd *cmd)
++static noinline int scsi_dispatch_cmd(struct scsi_cmnd *cmd)
  {
-+	if (flag == tdg_disable_prot)
-+		return false;
-+
- 	switch (flag) {
- 	case PATTR_GUEST_TDX:
- 	case PATTR_GUEST_UNROLL_STRING_IO:
-@@ -555,6 +561,8 @@ __init bool tdg_early_handle_ve(struct pt_regs *regs)
- 
- void __init tdx_early_init(void)
- {
-+	char prot_clear[30];
-+
- 	if (!cpuid_has_tdx_guest())
- 		return;
- 
-@@ -572,5 +580,12 @@ void __init tdx_early_init(void)
- 	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "tdg:cpu_hotplug",
- 			  NULL, tdg_cpu_offline_prepare);
- 
-+	if (cmdline_find_option(boot_command_line, "tdx_prot_clear",
-+				prot_clear, sizeof(prot_clear))) {
-+		if (kstrtouint(prot_clear, 0, &tdg_disable_prot))
-+			pr_err("Unparsable tdx_prot_clear= option\n");
-+		add_taint(TAINT_CONF_NO_LOCKDOWN, LOCKDEP_STILL_OK);
-+	}
-+
- 	pr_info("Guest initialized\n");
- }
+ 	struct Scsi_Host *host = cmd->device->host;
+ 	int rtn = 0;
 -- 
-2.25.1
+2.32.0
 
