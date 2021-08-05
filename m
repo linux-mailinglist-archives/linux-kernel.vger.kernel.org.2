@@ -2,149 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AA23E0E8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2B93E0E8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237979AbhHEGpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 02:45:15 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:37194
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237906AbhHEGpM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 02:45:12 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 50B6640642
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 06:44:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628145898;
-        bh=lf78NJpzyTn5+xfO0MJuGl1hxrAd7DxHOuUABJBSCnA=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=WreLCdu+LvqkamrV/3Mn7SC2V/2AwDT27sB+ljNBhs/yw7XeJscQKp8wCkS3sil/Q
-         s2HZHuGQ7UQi1nqr+TqR0HQI8Brh34FuDml+7Tf3wh3xkOLOq0NFsGdQ4U33QuXreF
-         /F2J0pYrc4J/dhz5RzIQwwXJZBZpB8KoeTJcRQI6+gTTbc0cFVYk2yAZAiyrJeIal/
-         VwNUEELZDMuJp+5ZQ8G2Y2NjmuWyEFeElZQk1rblsz7u1kSptDxyIG2hbbIvY8e7Dt
-         /+FHWVxmEkVy0AQsSmR6m52V5pzW/nZsROZ4a0XxwjPwrYYHXUWRWSCTDcfiHMYt03
-         t3sJurfxEtFTA==
-Received: by mail-ed1-f71.google.com with SMTP id l3-20020aa7c3030000b02903bccf1897f9so2639911edq.19
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 23:44:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lf78NJpzyTn5+xfO0MJuGl1hxrAd7DxHOuUABJBSCnA=;
-        b=moM1dkLVoRHaN3eQRdh/W51fMuP0HPGPKFjnQxNHikZVIgiDEOkchg3/By2BAlOGAn
-         vJSFzBxQBTg4t/4CgqmcbeJc2HjjtGFOZypI6V0H3+QII71Ygo4URQW8YTEJQ7qwHDMk
-         oC/zWpTZcUw4pYdWW5NpF5+DmSzmKG9hcqpelM8ZzK+rOh9sz3Al0w5NPQCQkwLAWnaD
-         +hnCQB7+ct55oOS+m0FF0lHIsHIXM+v0GDMipK07qexjTh6xg4azcrMoVkCBCWKafNP/
-         yFFe12wJi8A6bQYPswmn0wIzX+hMu3MDimV1DIg/srjse7Z1ysy+5aUsDUeMokw3i5Te
-         vPDA==
-X-Gm-Message-State: AOAM530dcEqLUfYq3cGBwrDHDHASC0nn+ge6FuAVUcVKRv5WMOUJfl1a
-        2aVg9j5zMc81pkPcV9A9dXB6+VpojKdEu//Mggl/yHZG0odJOPBusOXccQ45cpGDhc74zpXPFs+
-        mkEhL02l01bPGwPktSa/noueBDqzmlKUK47PbILHO/XsPypgm6PQFIT0olg==
-X-Received: by 2002:a17:906:9246:: with SMTP id c6mr3195940ejx.78.1628145897956;
-        Wed, 04 Aug 2021 23:44:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyqjsI6JemIIuY794RpMMfiDJoj9bUt1D9azDWR4CXWzEdLSaGiRX8BgZFXs515GJhDFnrG0bSM1vUpujGkS9Y=
-X-Received: by 2002:a17:906:9246:: with SMTP id c6mr3195929ejx.78.1628145897706;
- Wed, 04 Aug 2021 23:44:57 -0700 (PDT)
+        id S235727AbhHEGvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 02:51:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231418AbhHEGvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 02:51:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6B6960F41
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 06:50:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628146258;
+        bh=qMsPpqQgFUPSSPnZfZavNoLnNsZYb+hVgAtPZNQBy5w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ObhBf+NN4GqwQxNx/Lx+8AMAwuGlEvoXaj2dr50XEIYqzYy/HZE2xI7CL2r/XBdRm
+         h7Jl0yGq7YppbC5Qi+io0LfpKg8+sqkjPa7VgkgDzQj7MZ8Za/g84FRPLsS/geIrib
+         XeHHxL9J9xr5FwusDdEI8d630JA5vK4xwDEB/ag73EcJ8nyoA5iocv71E6axsMyg03
+         MQJsYEqpOGmzbPpV4barhyJ1DNTVMGbVfR76rJJ/glh7MLH4aQwApNRc3MqRkjAboQ
+         UO7cggith/pKaisdmkMHzNieFdV7GQLpIG3V5j64ROArAcaNQjL0LWYWAPOA436KVE
+         lr78sf0ffppPw==
+Received: by mail-wr1-f44.google.com with SMTP id p5so5076257wro.7
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 23:50:58 -0700 (PDT)
+X-Gm-Message-State: AOAM533mvrVpQ8XuUCJ4BJBd/Iw/y7IjxVfgXHIWvO5iYprt+/3ORBEY
+        /ZIuHUaHwTopmioowzJd4noLCE0apWHS7jqUGwA=
+X-Google-Smtp-Source: ABdhPJznMWhOISmuIYDXrWpGkt4y1m+fqzTgxmRqDkmkTEHJHsPKR7IHYLL2Gk1DFScHpZ5gzgXyDTyRE3rrOBfVhqs=
+X-Received: by 2002:adf:f7c5:: with SMTP id a5mr3290312wrq.99.1628146257464;
+ Wed, 04 Aug 2021 23:50:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210804160949.592227-1-kai.heng.feng@canonical.com>
- <2d594d0b06401887debd5ec462edcffdc813318a.camel@perches.com>
- <CAAd53p4dXVkuBXShCesEQkPi52CuaVm3tRBnD4S13saLdEGsRQ@mail.gmail.com> <3e8d8a3bcde7b0a2f4f1587c6febf88b7261db05.camel@perches.com>
-In-Reply-To: <3e8d8a3bcde7b0a2f4f1587c6febf88b7261db05.camel@perches.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 5 Aug 2021 14:44:42 +0800
-Message-ID: <CAAd53p6iVPyy+PO4HmmY_mbLYCQ=3G4oCW7PMHB+X5hbH+hHoQ@mail.gmail.com>
-Subject: Re: [PATCH] get_maintainer: Append parenthesis back to trimmed
- subsystem name
-To:     Joe Perches <joe@perches.com>
-Cc:     open list <linux-kernel@vger.kernel.org>
+References: <CAK8P3a0i0WP24Z0TScmPqKxmM2ovtKnmm+qZq6+Tc1ju+hma0w@mail.gmail.com>
+ <20210804141049.499767-1-kherbst@redhat.com> <CAK8P3a136c_L3yVn-841Sbfib9UMOf1M-pk+2SqWt0wD2zfRKQ@mail.gmail.com>
+ <CACO55tsLpURTm=Jf=4gRVtYQbit5h2OBYw_MFb6Vf1PFvTV7dw@mail.gmail.com>
+ <CACO55tuy5Am9zbcR490KWYYAg7MguBN5m82vbjzifGN5KpGbxw@mail.gmail.com>
+ <CAK8P3a3hZ7X5+kM5E+_Y+COUp49Kt6iDjiqMFtimiSbPk4byzQ@mail.gmail.com> <CACO55tsj_dgo8NENArCQ_=qcuJoMPg9k-gfkWxZ_8FCQUOTY1A@mail.gmail.com>
+In-Reply-To: <CACO55tsj_dgo8NENArCQ_=qcuJoMPg9k-gfkWxZ_8FCQUOTY1A@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 5 Aug 2021 08:50:41 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1rAr0BH6cNLkhES+81x2hWW31RTLZkHLDJYK-r8+x6Gg@mail.gmail.com>
+Message-ID: <CAK8P3a1rAr0BH6cNLkhES+81x2hWW31RTLZkHLDJYK-r8+x6Gg@mail.gmail.com>
+Subject: Re: [PATCH] depend on BACKLIGHT_CLASS_DEVICE for more devices
+To:     Karol Herbst <kherbst@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lyude Paul <lyude@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        ML nouveau <nouveau@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 2:33 PM Joe Perches <joe@perches.com> wrote:
+On Thu, Aug 5, 2021 at 12:01 AM Karol Herbst <kherbst@redhat.com> wrote:
 >
-> On Thu, 2021-08-05 at 14:17 +0800, Kai-Heng Feng wrote:
-> > On Thu, Aug 5, 2021 at 12:22 AM Joe Perches <joe@perches.com> wrote:
-> > >
-> > > On Thu, 2021-08-05 at 00:09 +0800, Kai-Heng Feng wrote:
-> > > > When a closing parenthesis gets trimmed, there can be unmatched
-> > > > parenthesis in the subsystem name. This doesn't play well with
-> > > > git-send-email:
-> > > > (cc-cmd) Adding cc: intel-gfx@lists.freedesktop.org (open list:INTEL DRM DRIVERS (excluding Poulsbo, Moorestow...) from: 'scripts/get_maintainer.pl'
-> > > > Unmatched () '(open list:INTEL DRM DRIVERS (excluding Poulsbo, Moorestow...)' '' at /usr/lib/git-core/git-send-email line 554.
-> > > > error: unable to extract a valid address from: intel-gfx@lists.freedesktop.org (open list:INTEL DRM DRIVERS (excluding Poulsbo, Moorestow...)
+> On Wed, Aug 4, 2021 at 11:10 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > On Wed, Aug 4, 2021 at 8:59 PM Karol Herbst <kherbst@redhat.com> wrote:
+> > > On Wed, Aug 4, 2021 at 4:43 PM Karol Herbst <kherbst@redhat.com> wrote:
+> > > > On Wed, Aug 4, 2021 at 4:19 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > > > > On Wed, Aug 4, 2021 at 4:10 PM Karol Herbst <kherbst@redhat.com> wrote:
+> > > > > >
+> > > > > > playing around a little bit with this, I think the original "select
+> > > > > > BACKLIGHT_CLASS_DEVICE" is fine. Atm we kind of have this weird mix of
+> > > > > > drivers selecting and others depending on it. We could of course convert
+> > > > > > everything over to depend, and break those cycling dependency issues with
+> > > > > > this.
+> > > > > >
+> > > > > > Anyway this change on top of my initial patch is enough to make Kconfig
+> > > > > > happy and has the advantage of not having to mess with the deps of nouveau
+> > > > > > too much.
+> > > > >
+> > > > > Looks good to me. We'd probably want to make the BACKLIGHT_CLASS_DEVICE
+> > > > > option itself 'default FB || DRM' though, to ensure that defconfigs
+> > > > > keep working.
+> > > > >
 > > > >
-> > > > So append parenthesis back if it was trimmed to make git-send-email
-> > > > work again:
-> > > > (cc-cmd) Adding cc: intel-gfx@lists.freedesktop.org (open list:INTEL DRM DRIVERS (excluding Poulsbo, Mooresto...)) from: 'scripts/get_maintainer.pl'
-> > >
-> > > Probably better just to add --norolestats to the invoking command-line.
-> >
-> > This can solve the issue beautifully, thanks!
-> >
-> > >
-> > > > diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-> > > []
-> > > > @@ -1252,9 +1252,10 @@ sub get_subsystem_name {
+> > > > okay cool. Will send out a proper updated patch series soonish.
 > > > >
-> > > >
-> > > >      my $subsystem = $typevalue[$start];
-> > > >      if ($output_section_maxlen && length($subsystem) > $output_section_maxlen) {
-> > > > -     $subsystem = substr($subsystem, 0, $output_section_maxlen - 3);
-> > > > +     my $parenthesis = substr($subsystem, -1) eq ")";
-> > > > +     $subsystem = substr($subsystem, 0, $output_section_maxlen - ($parenthesis ? 4 : 3));
-> > > >       $subsystem =~ s/\s*$//;
-> > > > -     $subsystem = $subsystem . "...";
-> > > > +     $subsystem = $subsystem . "..." . ($parenthesis ? ")" : "");
 > > >
-> > > Given an $output_section_maxlen number of possible parentheses, this should
-> > > probably use a while...
+> > > mhh, actually that breaks drivers selecting FB_BACKLIGHT as now
+> > > BACKLIGHT_CLASS_DEVICE might be disabled :(
 > >
-> > Or maybe count the parentheses in two runs?
+> > Are you sure? It should already be the case that any driver that selects
+> > FB_BACKLIGHT either 'depends on BACKLIGHT_CLASS_DEVICE'
+> > or 'select BACKLIGHT_CLASS_DEVICE'.
 > >
-> > diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-> > index 2075db0c08b8e..08315074acffa 100755
-> > --- a/scripts/get_maintainer.pl
-> > +++ b/scripts/get_maintainer.pl
-> > @@ -1252,9 +1252,21 @@ sub get_subsystem_name {
-> >
-> >      my $subsystem = $typevalue[$start];
-> >      if ($output_section_maxlen && length($subsystem) >
-> > $output_section_maxlen) {
-> > +       my $need_closing = 0;
-> >         $subsystem = substr($subsystem, 0, $output_section_maxlen - 3);
-> >         $subsystem =~ s/\s*$//;
-> > -       $subsystem = $subsystem . "...";
-> > +
-> > +       if (substr($subsystem, -1) eq "(") {
-> > +           $subsystem = substr($subsystem, 0, -2);
-> > +       } else {
-> > +           my $opening = () = $subsystem =~ /\(/g;
-> > +           my $closing = () = $subsystem =~ /\)/g;
-> > +           if ($opening != $closing) {
-> > +               $need_closing = 1;
-> > +           }
-> > +       }
-> > +
-> > +       $subsystem = $subsystem . "..." . ($need_closing ? ")" : "");
->
-> This wouldn't necessarily work as you need to have balanced parentheses...
->
-> It could be something like:
->
->         my $open_parens = () = $subsystem =~ /\(/g;
->         my $close_parens = () = $subsystem =~ /\)/g;
->         $subsystem .= ')' x ($open_parens - $close_parens);
+> none of the fb drivers seem to do that.
 
-OK, let me think how do it without exceeding $output_section_maxlen.
+Ah, right, I see now that my randconfig series has a couple of patches
+applied that deal with other random failures, including this one:
 
-Kai-Heng
+https://patchwork.kernel.org/project/linux-fbdev/patch/20200417155553.675905-8-arnd@arndb.de/
 
->
->
+Part of the series went in (through different ways) now, but this one
+never did.
+
+      Arnd
