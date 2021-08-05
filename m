@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4023E13D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D3E3E13DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241048AbhHEL0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:26:19 -0400
-Received: from mga03.intel.com ([134.134.136.65]:43033 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241017AbhHEL0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:26:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="214158748"
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="214158748"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 04:26:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="458987333"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 05 Aug 2021 04:25:58 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id A0164142; Thu,  5 Aug 2021 14:26:28 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Pavel Machek <pavel@ucw.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Amireddy Mallikarjuna reddy 
-        <mallikarjunax.reddy@linux.intel.com>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>
-Subject: [PATCH v1 1/1] leds: lgm-sso: Propagate error codes from callee to caller
-Date:   Thu,  5 Aug 2021 14:26:19 +0300
-Message-Id: <20210805112619.65116-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S241086AbhHEL1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241069AbhHEL1E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 07:27:04 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF09C061799
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 04:26:49 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id n15so2032549uaj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 04:26:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KgulD8RlFMO6ksRjFn6mENC7l0vyk3dqEFKNlHRwNko=;
+        b=W4NSgE82y1CgVXwx+cI24R0OqyAdhuk27TSSLol3k1Z7ZAaWJMhzUPQ8+rmOW0UNpH
+         WcuUNVRF16LbHiUi6Zsc1ZTCPbdZhODpro3ajOCwh0oEO/gfZG6f2VcOzh0NgoqHZWoG
+         dgO8zdDysmW4E8AvKADvYbKJYzdQf3Dpo5ljFG5L3n35h+H3uIIFgh7bnyfOTB6LQcnA
+         awnQEG/bHlSuBzsbNfIG3896He63/hYwAxoFQD6PJWga3wxmPs0E6srfh3yfOxcGU85T
+         TQ2//nZdI/Rhpt56Q02wuGitGblFwOfdamJnwZt8P2UCS4LVOs9E5iV5rAtFvUM0N7Zj
+         RnZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KgulD8RlFMO6ksRjFn6mENC7l0vyk3dqEFKNlHRwNko=;
+        b=TxA6CJeCnsh9SvXMwGcM1CjmwZWp0QtMO3PwMDK3ghsluCZfZEK+kgiuYwZsw3lTEw
+         38Gx/ZJQt2cEQUTiZdche4t0Rg9I0ZY5aLZfFIGUWB+fR6+7mhH/kR4KKXQktKtUKfEX
+         RQ1ksurOvadyXxYfEbCPFyHbjOLEVKVuqRbM2eUMtQjMeXfIzrDcogw7NjK1aZbyx4Xv
+         TA5iXJxvtuC421pH1ydQ3c2+tpCr+dFPWhjMvgMd7pKin9UBjvIW9JWDZCKgkZXKqhH9
+         XYIYzbKAFi34onkqE/aBGnHKAOGGmjombKmr5MTL/xqxVrKC1YtFvKK1q4twGNk4lGDd
+         1B1g==
+X-Gm-Message-State: AOAM532GDhD5odYP3c7tu9OW/w6+z7VFgpu3MWwXJTfHV/3eNxIAVyJh
+        eGcj3UKewpyfkyMuPNxkZh0nyzGE08eulQZonRZbbg==
+X-Google-Smtp-Source: ABdhPJxcSUYstHz1NVIsdC3VoXvNA4U/u9Q9IMVYFBKekSvsqGiA6Slfaz4YKnkdSKruXU39vxVhkR8gB/LHI8HbXPM=
+X-Received: by 2002:ab0:6f4b:: with SMTP id r11mr3131110uat.104.1628162808528;
+ Thu, 05 Aug 2021 04:26:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210805072110.4730-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210805072110.4730-1-krzysztof.kozlowski@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Thu, 5 Aug 2021 14:26:36 +0300
+Message-ID: <CAPLW+4m5LWr5hQi9P8ywZbhNyj8Fwdkk4B_O_YgM_DthWSG9BA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: exynos: correct GIC CPU interfaces address
+ range on Exynos7
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Pankaj Dubey <pankaj.dubey@samsung.com>,
+        Marc Zyngier <maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The one of the latest change to the driver reveals the problem that
-the error codes from callee aren't propagated to the caller of
-__sso_led_dt_parse(). Fix this accordingly.
+Hi Krzysztof,
 
-Fixes: 9999908ca1ab ("leds: lgm-sso: Put fwnode in any case during ->probe()")
-Fixes: c3987cd2bca3 ("leds: lgm: Add LED controller driver for LGM SoC")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/leds/blink/leds-lgm-sso.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+On Thu, 5 Aug 2021 at 10:22, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> The GIC-400 CPU interfaces address range is defined as 0x2000-0x3FFF (by
+> ARM).
+>
+> Reported-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Reported-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
 
-diff --git a/drivers/leds/blink/leds-lgm-sso.c b/drivers/leds/blink/leds-lgm-sso.c
-index e47c47e421d6..fd8b7573285a 100644
---- a/drivers/leds/blink/leds-lgm-sso.c
-+++ b/drivers/leds/blink/leds-lgm-sso.c
-@@ -640,7 +640,7 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
- 							      fwnode_child,
- 							      GPIOD_ASIS, NULL);
- 		if (IS_ERR(led->gpiod)) {
--			dev_err_probe(dev, PTR_ERR(led->gpiod), "led: get gpio fail!\n");
-+			ret = dev_err_probe(dev, PTR_ERR(led->gpiod), "led: get gpio fail!\n");
- 			goto __dt_err;
- 		}
- 
-@@ -660,8 +660,11 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
- 			desc->panic_indicator = 1;
- 
- 		ret = fwnode_property_read_u32(fwnode_child, "reg", &prop);
--		if (ret != 0 || prop >= SSO_LED_MAX_NUM) {
-+		if (ret)
-+			goto __dt_err;
-+		if (prop >= SSO_LED_MAX_NUM) {
- 			dev_err(dev, "invalid LED pin:%u\n", prop);
-+			ret = -EINVAL;
- 			goto __dt_err;
- 		}
- 		desc->pin = prop;
-@@ -697,7 +700,8 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
- 				desc->brightness = LED_FULL;
- 		}
- 
--		if (sso_create_led(priv, led, fwnode_child))
-+		ret = sso_create_led(priv, led, fwnode_child);
-+		if (ret)
- 			goto __dt_err;
- 	}
- 
-@@ -709,7 +713,7 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
- 	list_for_each_entry(led, &priv->led_list, list)
- 		sso_led_shutdown(led);
- 
--	return -EINVAL;
-+	return ret;
- }
- 
- static int sso_led_dt_parse(struct sso_led_priv *priv)
--- 
-2.30.2
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
+>  arch/arm64/boot/dts/exynos/exynos7.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+> index 8b06397ba6e7..c73a597ca66e 100644
+> --- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+> @@ -137,7 +137,7 @@ gic: interrupt-controller@11001000 {
+>                         #address-cells = <0>;
+>                         interrupt-controller;
+>                         reg =   <0x11001000 0x1000>,
+> -                               <0x11002000 0x1000>,
+> +                               <0x11002000 0x2000>,
+>                                 <0x11004000 0x2000>,
+>                                 <0x11006000 0x2000>;
+>                 };
+> --
+> 2.30.2
+>
