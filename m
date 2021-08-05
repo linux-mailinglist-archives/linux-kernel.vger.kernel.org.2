@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4EA3E1559
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3803E155D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240672AbhHENIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 09:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232453AbhHENIe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 09:08:34 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2647CC061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 06:08:20 -0700 (PDT)
-Received: from dslb-188-096-137-143.188.096.pools.vodafone-ip.de ([188.96.137.143] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1mBd6Z-0002sC-2A; Thu, 05 Aug 2021 15:08:11 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH] staging: r8188eu: remove label at the end of a function
-Date:   Thu,  5 Aug 2021 15:07:50 +0200
-Message-Id: <20210805130750.7974-1-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
+        id S241544AbhHENJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 09:09:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240653AbhHENJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 09:09:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 912C360F10;
+        Thu,  5 Aug 2021 13:08:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628168938;
+        bh=P4Z/HQKg5fpKU66bAy6OrZrqvVhFeTR4pYC3Wd1O1NU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W8DEzkZNl+Zrsm/7vGFU+rKFhA9TTCLvPi9qjuhMtSDbHelPRNZr8OZ3NUb1OKKiI
+         uV22gyaX7Th7JuBuOpzLAovjA44f0Yq7oR02ZNf7DM1LcyTuYONVouYnTiV9UPVAbD
+         COdEtFLfwLx81tfbTGC3zV3ZxMDD+zEhuuYPZoNo/b8OdG+uPPK6C5SM7XZanMbpNt
+         Ast2P9eo9LmgpBMP6CdxC9HmAG4QLnlfAdDlILZqTcyputfnN2SHh50sO3uGWetm3n
+         hDKZbJZmVbL3eqNIAlsIobfAaiAveA9wU+UYxpECpMtAcYLkQWOIdgkSIS2/f8cKgy
+         RRptQnZpHqnqQ==
+Date:   Thu, 5 Aug 2021 14:08:42 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-mmc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [BUG] mmc_regulator_set_ocr can't cope with regulator-fixed
+Message-ID: <20210805130842.GO26252@sirena.org.uk>
+References: <CGME20210804143357epcas1p1c67eca591d8bb557c11b8175baaa8550@epcas1p1.samsung.com>
+ <CAMdYzYrx8pgeyK7u=kcopZ+Wae+fQdr_uM4AuVjqWKfZYikgcA@mail.gmail.com>
+ <a9aa636e-326f-a848-dd69-41df87c013af@samsung.com>
+ <CAMdYzYr9PX-9=kkCAfGe8Q0-D+gRo_qCwse8SiGVsmod7fffiA@mail.gmail.com>
+ <20210805124650.GM26252@sirena.org.uk>
+ <CAMdYzYpR6br7s1RD2ze92WzJjtEDZwy9qS6YhghgXy7F91keFg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eHmdSDY+kY2au76U"
+Content-Disposition: inline
+In-Reply-To: <CAMdYzYpR6br7s1RD2ze92WzJjtEDZwy9qS6YhghgXy7F91keFg@mail.gmail.com>
+X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compilation fails for me
 
-drivers/staging/r8188eu/hal/rtl8188e_dm.c: In function ‘rtl8188e_HalDmWatchDog’:
-drivers/staging/r8188eu/hal/rtl8188e_dm.c:182:1: error: label at end of compound statement
-  182 | skip_dm:
-      | ^~~~~~~
+--eHmdSDY+kY2au76U
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Remove the label at the end of the function. Replace the jump to this label
-with a return statement.
+On Thu, Aug 05, 2021 at 08:58:58AM -0400, Peter Geis wrote:
+> On Thu, Aug 5, 2021 at 8:47 AM Mark Brown <broonie@kernel.org> wrote:
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
- drivers/staging/r8188eu/hal/rtl8188e_dm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> > One thing to watch out for with this approach is if there's things that
+> > really need a specific voltage to be set then you'll have to stop those
+> > things happening if you've got a voltage regulator that can't deliver a
+> > voltage in the required range.  I don't know if this affects MMC or not,
+> > if it's just a case of being less efficient it's not such an issue.
 
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_dm.c b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-index b5f42127a751..72b3130eddd2 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-@@ -145,7 +145,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
- 	hw_init_completed = Adapter->hw_init_completed;
- 
- 	if (!hw_init_completed)
--		goto skip_dm;
-+		return;
- 
- 	fw_cur_in_ps = Adapter->pwrctrlpriv.bFwCurrentInPSMode;
- 	rtw_hal_get_hwreg(Adapter, HW_VAR_FWLPS_RF_ON, (u8 *)(&fw_ps_awake));
-@@ -179,7 +179,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
- 		ODM_CmnInfoUpdate(&hal_data->odmpriv, ODM_CMNINFO_LINK, bLinked);
- 		ODM_DMWatchdog(&hal_data->odmpriv);
- 	}
--skip_dm:
-+
- 	/*  Check GPIO to determine current RF on/off and Pbc status. */
- 	/*  Check Hardware Radio ON/OFF or not */
- }
--- 
-2.20.1
+> Yeah, but if this is a fixed regulator and it's a problem, then the
+> hardware is screwed anyways.
 
+Well, the fact that the voltage is being changed at runtime indicates
+that we're changing something from whatever was in the fixed setup - it
+can sometimes be that we don't have access to some higher performance or
+lower power features for example.  That's not ideal but works perfectly
+safely.
+
+--eHmdSDY+kY2au76U
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEL4tkACgkQJNaLcl1U
+h9Dbbgf/YunQb1UPyQ5czRyhW+fldplspxf07rcnSp/hwj2hV4FLvf9wzXk5thAp
+vDMEhO16kYSmm7sgZgnwXrk6BdBcyznZReLOKvKRi4tL+ce9niWYlTaucGhJDdN+
+tEFhB2q2wQx69UpWm0HzCkT2aZG1bi40plL7Y51UQGw5VmsbhigEwiLLQFBHsL6m
+yn5/AksIgxD2zxHPx0N2CW/7CxzlLixhJYxNoZoCuWYR1YptFlOzqlL8NyftQ/kH
+bi27Ep0qc3quoiIULpybE66b/0r6xFvNqWQ393La436az1KM5p10R5bNkT44bOWw
+scag4eXxevkgaU0RgEUI0hQHq5zuHw==
+=+zJO
+-----END PGP SIGNATURE-----
+
+--eHmdSDY+kY2au76U--
