@@ -2,181 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D3F3E0D71
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 06:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499B03E0D81
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 07:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236849AbhHEE5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 00:57:39 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:43563 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236808AbhHEE5h (ORCPT
+        id S232230AbhHEFHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 01:07:24 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:49415 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231326AbhHEFHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 00:57:37 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id E14702B005AE;
-        Thu,  5 Aug 2021 00:57:22 -0400 (EDT)
+        Thu, 5 Aug 2021 01:07:22 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id D76245C00DD;
+        Thu,  5 Aug 2021 01:07:08 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 05 Aug 2021 00:57:23 -0400
+  by compute6.internal (MEProxy); Thu, 05 Aug 2021 01:07:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=ihmVq/5E6B8RM
-        yKVyGoR6c5bmUO1IuRGAjBHKTOJfhw=; b=U2NV4aUQG9wR4z0XiwQi3HdYxn/+m
-        05cgs80oX14V4BQ8UKQowZAA3BNqBfB5272W03NeFYnmyWe+4+B8WRdY1oDetfAd
-        sSyC8Sdescx1nANWS9pcPKJjovX8fYsR06J1YYgQ0FMvaeS0uOHfxpC2N2e3xHP4
-        jGmx2WWvHAfiQ/V0I8GhGbXF+L5UGWjdPhDnAVRC3fszaVKlnoSTqq+8LO0ythP1
-        RP6qWbFwL6boOpYpMyZRhJLXy9OLKTDgBGUJxb0edqvpK0PJQCfW36ZdQCYBiogV
-        rGt26zAC062KXuVXzd/njzVmNNG/fn/JbKb6A02QnRuvJ6I/tTA796dDQ==
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=JbkV0OkjI25/Uw7VNuOjM6Wr15
+        +eFNku94LfNLShlFI=; b=tRyYKGWjjfutwG0EWgeN9kznaKc/6mYGNboUYPqziK
+        UO7lWCa3CsbslnM4UB6NJ/AqZNPZ7y3YCqQ7N+Oy6smguX7db6W8/HlLz4eyDcEi
+        gQeQ3nqpr40SqM7MQVxGDwo0gqZKCNK7X9MaDBtY7VkuLT5EIHIziSwT7LDZ1gu5
+        jnd7SBULdo08PYvyzNgAN1St39B88z8HDJ8E1qCc7S86kW9rHCU+adg3tvI29Jm3
+        ePnBWdNXpxHCnHEJG5EWt+rUY5GHtfK5WoWDdtxmPodNuLD62ZCW4f1tgD86CA8o
+        FsJh5hytQoMNlY7mlNBi05EbrgzUY/HBhOStjM/hoFLg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=ihmVq/5E6B8RMyKVyGoR6c5bmUO1IuRGAjBHKTOJfhw=; b=NwiumweV
-        sRelxj4vHvK3lYRvYcco9o5tF+vjGQHeBR1Fl23rP9obSJinM8lZjiQ9Ogwn1Stt
-        AhbwIbjoO+cn43eIL/aR8UmFyEKVt4Fc+B4MD74rQqOA+8J+TKGi9s57IyKbLdQT
-        P+W6BbAg32GiVglqyfG6sQ/R8jHztYj9p/0In2P2L8gv8AcPkvWITBO5swCPtRnd
-        1pSz/6A3p/xRAFc3Er52bgnUxZsJ8MifP/hb6dsXGDCgzdzSn8qFixCWLN1wSox0
-        Hi5sd9VOaXs3EJ3ObxVhFuFI+fXlccCbdhI8Xl9YCd8P1zbF/ZQ+ULXmbHJemsUU
-        JrUAVo1etj6Fcg==
-X-ME-Sender: <xms:sm8LYfmol11OBXOWalNw1CcNDQwa9JOVl2uUEHPqGtgfccV366UXbA>
-    <xme:sm8LYS3E5BaJMlgkrvWDI1zWD_-XTIbjKPMlzeb9SAjcFjSCNUVSa8zJ9wLEq3RDF
-    pdf4JJFFWu6-7kOEA>
-X-ME-Received: <xmr:sm8LYVpNhB5z7K3PEmmcyrsjIj0q_Vxya3az7YwSI83qD1aJRD69oWJFkq2l0lZkJlUM8Bym6BeQ6xOi1s3osDr6x0n306ldYux5ICEWo7mNwjSJ2OReWxCuZXAd1X7GJCyesA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieekgdekiecutefuodetggdotefrodftvf
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=JbkV0OkjI25/Uw7VN
+        uOjM6Wr15+eFNku94LfNLShlFI=; b=DCGC7K42wKULXMYV4j86FCHB1c78C01Bz
+        bpJs+d2LUJCsIpQUF9b3VY21nucK3y508zsm+KRbvOALj81M0H2bAV6J/m6sMazG
+        cOXfaDkn5DeFykCogGPFfi7SEH9zYCM6pO/o4gft2WUEltKQ3NC+TwOVdP76DOqO
+        uYD571PhvIJYglB7n5sG2bt64J6q//y3JUiWZtJcNXQ0hEIQGkbUZ+/clYBjTUn8
+        mj57G9rZToTSkwD50mEJrhz8dPVSnQr1W4e6PEp5ZeBDbkjmyIJt91D7Ny6dTUtm
+        oblfeFf9SmPSONa0TWqkcnNRcYqNJ+rYtcA8hU4VnVVfU/3/QQWyw==
+X-ME-Sender: <xms:_HELYUFhRSWvx6IAmVkL9fiUFg2uc9fBYwDdQpfMLFDVQDB3SOf9Ew>
+    <xme:_HELYdXqzIGi1uXDyArmf2plstX7BJFR_2Ktr2yTpMX81KwYqrdgVmEHA6JlQ5OMm
+    GUP0yF2l2wHcHSVLQ>
+X-ME-Received: <xmr:_HELYeKy94g6FSF_GVM7C5RoXE3OfcNO62o-Frbx8hG-NokL6yD3ilb-FPQCKHuQ65kGsiftKPo2QQcvy9Je-cVE8UD79EzVkVS-u_FUVPWdanBtOX-wcISIYGyoJJ4J9ukm_A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieekgdekjecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
-    ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
-    grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
-    jeehueeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:sm8LYXk3r3sx7OXNj8i8uTZOzFnnqAoBnW4_GpzsnWIEm_0jZCRbiA>
-    <xmx:sm8LYd0YQWOiUVxfliI8jxlYjtdzxmLpje4KOmgQZgc1F2_tCiuMFw>
-    <xmx:sm8LYWvAsNFl7Cn9FNGrDca5drT4sxA3BQwgxBXBZYlE4cHRxcKmWQ>
-    <xmx:sm8LYWucQ2r_683M7atFVlYPervBE4l3zsJY6MtxYQtSCEXRM5wNhfdWGFI>
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
+    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
+    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
+    tdevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsh
+    grmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:_HELYWGiaQV3Jj5EVUX1jYA7GPWajDC7mIWHadq5U2DToOBBzat8oQ>
+    <xmx:_HELYaUNjUGiBESU-pE_JFUGuEk-GZgc89tWa-y9_Q_G3SgK09GRmQ>
+    <xmx:_HELYZOpU87xZdlBZ_a6wysxLbAIISxFmlf-wWLH4P3rXRDUVysMDw>
+    <xmx:_HELYYxMM-Jg-E3V-iyz33KiWwLbSwE1KERMsggKqEpJ7tvEdF5Zwg>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 5 Aug 2021 00:57:21 -0400 (EDT)
+ 5 Aug 2021 01:07:07 -0400 (EDT)
 From:   Samuel Holland <samuel@sholland.org>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v2 3/3] watchdog: sunxi_wdt: Add support for D1
-Date:   Wed,  4 Aug 2021 23:57:16 -0500
-Message-Id: <20210805045716.46141-3-samuel@sholland.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH] ASoC: simple-card-utils: Avoid over-allocating DLCs
+Date:   Thu,  5 Aug 2021 00:07:06 -0500
+Message-Id: <20210805050706.46833-1-samuel@sholland.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210805045716.46141-1-samuel@sholland.org>
-References: <20210805045716.46141-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-D1 adds a key field to the "CFG" and "MODE" registers, that must be set
-to change the other bits. Add logic to set the key when updating those
-registers.
+The allocation of the DAI link components (DLCs) passed the wrong
+pointer to sizeof. Since simple_dai_props is much larger than
+snd_soc_dai_link_component, there was no out of bounds access, only
+wasted memory.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
-Changes v1 to v2:
- - None.
+ sound/soc/generic/simple-card-utils.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/watchdog/sunxi_wdt.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/watchdog/sunxi_wdt.c b/drivers/watchdog/sunxi_wdt.c
-index b50757882a98..6cf82922d3fb 100644
---- a/drivers/watchdog/sunxi_wdt.c
-+++ b/drivers/watchdog/sunxi_wdt.c
-@@ -48,6 +48,7 @@ struct sunxi_wdt_reg {
- 	u8 wdt_timeout_shift;
- 	u8 wdt_reset_mask;
- 	u8 wdt_reset_val;
-+	u32 wdt_key_val;
- };
- 
- struct sunxi_wdt_dev {
-@@ -91,12 +92,14 @@ static int sunxi_wdt_restart(struct watchdog_device *wdt_dev,
- 	val = readl(wdt_base + regs->wdt_cfg);
- 	val &= ~(regs->wdt_reset_mask);
- 	val |= regs->wdt_reset_val;
-+	val |= regs->wdt_key_val;
- 	writel(val, wdt_base + regs->wdt_cfg);
- 
- 	/* Set lowest timeout and enable watchdog */
- 	val = readl(wdt_base + regs->wdt_mode);
- 	val &= ~(WDT_TIMEOUT_MASK << regs->wdt_timeout_shift);
- 	val |= WDT_MODE_EN;
-+	val |= regs->wdt_key_val;
- 	writel(val, wdt_base + regs->wdt_mode);
- 
- 	/*
-@@ -109,6 +112,7 @@ static int sunxi_wdt_restart(struct watchdog_device *wdt_dev,
- 		mdelay(5);
- 		val = readl(wdt_base + regs->wdt_mode);
- 		val |= WDT_MODE_EN;
-+		val |= regs->wdt_key_val;
- 		writel(val, wdt_base + regs->wdt_mode);
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 677f7da93b4b..10c63b73900c 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -640,8 +640,8 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+ 			cnf_num += li->num[i].codecs;
  	}
- 	return 0;
-@@ -141,6 +145,7 @@ static int sunxi_wdt_set_timeout(struct watchdog_device *wdt_dev,
- 	reg = readl(wdt_base + regs->wdt_mode);
- 	reg &= ~(WDT_TIMEOUT_MASK << regs->wdt_timeout_shift);
- 	reg |= wdt_timeout_map[timeout] << regs->wdt_timeout_shift;
-+	reg |= regs->wdt_key_val;
- 	writel(reg, wdt_base + regs->wdt_mode);
  
- 	sunxi_wdt_ping(wdt_dev);
-@@ -154,7 +159,7 @@ static int sunxi_wdt_stop(struct watchdog_device *wdt_dev)
- 	void __iomem *wdt_base = sunxi_wdt->wdt_base;
- 	const struct sunxi_wdt_reg *regs = sunxi_wdt->wdt_regs;
+-	dais = devm_kcalloc(dev, dai_num, sizeof(*dais),      GFP_KERNEL);
+-	dlcs = devm_kcalloc(dev, dlc_num, sizeof(*dai_props), GFP_KERNEL);
++	dais = devm_kcalloc(dev, dai_num, sizeof(*dais), GFP_KERNEL);
++	dlcs = devm_kcalloc(dev, dlc_num, sizeof(*dlcs), GFP_KERNEL);
+ 	if (!dais || !dlcs)
+ 		return -ENOMEM;
  
--	writel(0, wdt_base + regs->wdt_mode);
-+	writel(regs->wdt_key_val, wdt_base + regs->wdt_mode);
- 
- 	return 0;
- }
-@@ -176,11 +181,13 @@ static int sunxi_wdt_start(struct watchdog_device *wdt_dev)
- 	reg = readl(wdt_base + regs->wdt_cfg);
- 	reg &= ~(regs->wdt_reset_mask);
- 	reg |= regs->wdt_reset_val;
-+	reg |= regs->wdt_key_val;
- 	writel(reg, wdt_base + regs->wdt_cfg);
- 
- 	/* Enable watchdog */
- 	reg = readl(wdt_base + regs->wdt_mode);
- 	reg |= WDT_MODE_EN;
-+	reg |= regs->wdt_key_val;
- 	writel(reg, wdt_base + regs->wdt_mode);
- 
- 	return 0;
-@@ -220,9 +227,20 @@ static const struct sunxi_wdt_reg sun6i_wdt_reg = {
- 	.wdt_reset_val = 0x01,
- };
- 
-+static const struct sunxi_wdt_reg sun20i_wdt_reg = {
-+	.wdt_ctrl = 0x10,
-+	.wdt_cfg = 0x14,
-+	.wdt_mode = 0x18,
-+	.wdt_timeout_shift = 4,
-+	.wdt_reset_mask = 0x03,
-+	.wdt_reset_val = 0x01,
-+	.wdt_key_val = 0x16aa0000,
-+};
-+
- static const struct of_device_id sunxi_wdt_dt_ids[] = {
- 	{ .compatible = "allwinner,sun4i-a10-wdt", .data = &sun4i_wdt_reg },
- 	{ .compatible = "allwinner,sun6i-a31-wdt", .data = &sun6i_wdt_reg },
-+	{ .compatible = "allwinner,sun20i-d1-wdt", .data = &sun20i_wdt_reg },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, sunxi_wdt_dt_ids);
 -- 
 2.31.1
 
