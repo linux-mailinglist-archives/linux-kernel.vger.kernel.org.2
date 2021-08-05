@@ -2,122 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6464B3E1E7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248013E1E81
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237333AbhHEWMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 18:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbhHEWMH (ORCPT
+        id S237556AbhHEWPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 18:15:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57417 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229729AbhHEWPg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 18:12:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D02C0613D5;
-        Thu,  5 Aug 2021 15:11:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RvO+6JeVpLxlPcNmPsjLLYdjB15f9d7yagNnMlUscyM=; b=JmZQe8YwHGdxpbt0TwH//rA7bp
-        HfAA5mzWQ300vIpQYo2arTXyklr5l76dKVELRLgAZnUKxXoRc+QEJSbaJuD0GoNpSfCd/Tm0UBMuE
-        8SlOk735EbFz/87qkcy75AdIYWBzf/6Pu9MY7CX3ueVVY4JMora1+0oRcuu8osroUGfT0mXjfvMK6
-        YRKger+O0AuVg9xmmLmzYUXKEtKW1DDQMgyAYZHjWr1kcBaMhMeG32BSAx4/3o6o/iRQtgZutc3wC
-        Ppbf+HBE58BXsebQaFSh/F53V7A49MoL26n7Xo3oyaKsNZoU5Zwaw2sdDXexB/tn2REY4APSX99IZ
-        UDs7r7iQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBla0-007ZDJ-Ph; Thu, 05 Aug 2021 22:11:12 +0000
-Date:   Thu, 5 Aug 2021 23:11:08 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, devel@lists.orangefs.org,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Canvassing for network filesystem write size vs page size
-Message-ID: <YQxh/G0xGl3GtC8y@casper.infradead.org>
-References: <YQv+iwmhhZJ+/ndc@casper.infradead.org>
- <YQvpDP/tdkG4MMGs@casper.infradead.org>
- <YQvbiCubotHz6cN7@casper.infradead.org>
- <1017390.1628158757@warthog.procyon.org.uk>
- <1170464.1628168823@warthog.procyon.org.uk>
- <1186271.1628174281@warthog.procyon.org.uk>
- <1219713.1628181333@warthog.procyon.org.uk>
- <CAHk-=wjyEk9EuYgE3nBnRCRd_AmRYVOGACEjt0X33QnORd5-ig@mail.gmail.com>
+        Thu, 5 Aug 2021 18:15:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628201720;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MCW6M0K+DPxrj754zH128zD3EsmKOhs+543ICnuoMcc=;
+        b=TBibYXZraFrLl/DCmk0188gibAw+AebBKSU0ENkgmOU33gdxqbKmRjr8ZIzTDbGtcmLQk6
+        cpDxpHdtlmmazl5wgvgse73nf458Xm0dM8iEwkvrt+EkoOqZWXlYDDYbdfl/9qfX3v8CvZ
+        U2q1TMtSv6oC+4RZhM9+Cg6nSwHQ+bI=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-365-6bchScy4PI6RPhYx8prZJw-1; Thu, 05 Aug 2021 18:15:19 -0400
+X-MC-Unique: 6bchScy4PI6RPhYx8prZJw-1
+Received: by mail-ed1-f71.google.com with SMTP id ee50-20020a0564022932b02903be1503f932so475714edb.15
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 15:15:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MCW6M0K+DPxrj754zH128zD3EsmKOhs+543ICnuoMcc=;
+        b=qc9eW9t2seLdqWG/Ei2YstkmE7NIUf0EErVKAP6UXQvCln4cmldLw8D2G9dwYVP5LM
+         s83ybq5s+B+5GdJy/6fFRDQM/QPciKNmDA5AuG5Bqp2DaAKqH43kVD/hk8uIoM2/S6qo
+         mYyIdi2Z+EfFnDFH5CnFNI8E48sTt7ZDkTBl7DuNV0RVMR0/QAAzLZe4BvoxRbBlDJB7
+         N4gJWvqY6SgDCPBF3AmIu0sbJLlxRlhNujmJhDnzr3nJc+elQEPtm55te68T2Krn0wuZ
+         hxmbed6+CBLS1hRrEV3xiiBj8uMtb+KsGddYAPS9WHLmjX4RVCJdvRgx8J+Mb8HOXwn1
+         NmRg==
+X-Gm-Message-State: AOAM532LbLw1kyRYQ3Dce7PRpBLhK0Evz1I7KU4V2iQ8P1lfA254ei6b
+        eFb5/xc0+oztfMqLfkVuYJy6A9kVgorlwwQ/e1bibWZnp1qtvxDwDk2mzW63IXVtLjwvNQjHOUZ
+        pUR6yte84i1PP+onvO8sgCwhi
+X-Received: by 2002:a17:906:2990:: with SMTP id x16mr6795227eje.554.1628201718279;
+        Thu, 05 Aug 2021 15:15:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwIbQyYnx447QQy9o6qJM2wlkRIYr/HT4vvEFz63y63gHdgtaTBNV04YkPjLGwS1izVND2L5Q==
+X-Received: by 2002:a17:906:2990:: with SMTP id x16mr6795220eje.554.1628201718163;
+        Thu, 05 Aug 2021 15:15:18 -0700 (PDT)
+Received: from redhat.com ([2.55.141.248])
+        by smtp.gmail.com with ESMTPSA id bm1sm2152353ejb.38.2021.08.05.15.15.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 15:15:16 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 18:15:13 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tools/virtio: use 'unsigned int' instead of bare
+ 'unsigned'
+Message-ID: <20210805181436-mutt-send-email-mst@kernel.org>
+References: <20210729000402.45690-1-wangborong@cdjrlc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjyEk9EuYgE3nBnRCRd_AmRYVOGACEjt0X33QnORd5-ig@mail.gmail.com>
+In-Reply-To: <20210729000402.45690-1-wangborong@cdjrlc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 10:27:05AM -0700, Linus Torvalds wrote:
-> On Thu, Aug 5, 2021 at 9:36 AM David Howells <dhowells@redhat.com> wrote:
-> > Some network filesystems, however, currently keep track of which byte ranges
-> > are modified within a dirty page (AFS does; NFS seems to also) and only write
-> > out the modified data.
+On Thu, Jul 29, 2021 at 08:04:02AM +0800, Jason Wang wrote:
+> Replace the lazy way 'unsigned' with 'unsigned int' which is more
+> accurate.
 > 
-> NFS definitely does. I haven't used NFS in two decades, but I worked
-> on some of the code (read: I made nfs use the page cache both for
-> reading and writing) back in my Transmeta days, because NFSv2 was the
-> default filesystem setup back then.
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+
+I don't see why this is more accurate. AFAIK it's exactly the same.
+
+> ---
+>  tools/virtio/vringh_test.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> See fs/nfs/write.c, although I have to admit that I don't recognize
-> that code any more.
-> 
-> It's fairly important to be able to do streaming writes without having
-> to read the old contents for some loads. And read-modify-write cycles
-> are death for performance, so you really want to coalesce writes until
-> you have the whole page.
+> diff --git a/tools/virtio/vringh_test.c b/tools/virtio/vringh_test.c
+> index fa87b58bd5fa..3e85f4ec210d 100644
+> --- a/tools/virtio/vringh_test.c
+> +++ b/tools/virtio/vringh_test.c
+> @@ -447,7 +447,7 @@ int main(int argc, char *argv[])
+>  	char buf[28];
+>  	u16 head;
+>  	int err;
+> -	unsigned i;
+> +	unsigned int i;
+>  	void *ret;
+>  	bool (*getrange)(struct vringh *vrh, u64 addr, struct vringh_range *r);
+>  	bool fast_vringh = false, parallel = false;
+> @@ -654,7 +654,7 @@ int main(int argc, char *argv[])
+>  
+>  	/* Free those buffers. */
+>  	for (i = 0; i < RINGSIZE; i++) {
+> -		unsigned len;
+> +		unsigned int len;
+>  		assert(virtqueue_get_buf(vq, &len) != NULL);
+>  	}
+>  
+> -- 
+> 2.32.0
 
-I completely agree with you.  The context you're missing is that Dave
-wants to do RMW twice.  He doesn't do the delaying SetPageUptodate dance.
-If the write is less than the whole page, AFS, Ceph and anybody else
-using netfs_write_begin() will first read the entire page in and mark
-it Uptodate.
-
-Then he wants to track which parts of the page are dirty (at byte
-granularity) and send only those bytes to the server in a write request.
-So it's worst of both worlds; first the client does an RMW, then the
-server does an RMW (assuming the client's data is no longer in the
-server's cache.
-
-The NFS code moves the RMW from the client to the server, and that makes
-a load of sense.
-
-> That said, I suspect it's also *very* filesystem-specific, to the
-> point where it might not be worth trying to do in some generic manner.
-
-It certainly doesn't make sense for block filesystems.  Since they
-can only do I/O on block boundaries, a sub-block write has to read in
-the surrounding block, and once you're doing that, you might as well
-read in the whole page.
-
-Tracking sub-page dirty bits still makes sense.  It's on my to-do
-list for iomap.
-
-> [ goes off and looks. See "nfs_write_begin()" and friends in
-> fs/nfs/file.c for some of the examples of these things, althjough it
-> looks like the code is less aggressive about avoding the
-> read-modify-write case than I thought I remembered, and only does it
-> for write-only opens ]
-
-NFS is missing one trick; it could implement aops->is_partially_uptodate
-and then it would be able to read back bytes that have already been
-written by this client without writing back the dirty ranges and fetching
-the page from the server.
-
-Maybe this isn't an important optimisation.
