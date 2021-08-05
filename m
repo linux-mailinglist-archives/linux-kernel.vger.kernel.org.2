@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038043E0FCF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3453A3E0FCE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239207AbhHEICA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 04:02:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38109 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239180AbhHEIB6 (ORCPT
+        id S239178AbhHEIBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 04:01:42 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:12453 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231377AbhHEIBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 04:01:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628150504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=K2ghss8N4x5+qkA+P5j44zXDC0+0LL6Ii3eIbL81nCo=;
-        b=RhYuf7WGRwH2LeAcDTkSwR6MRMb3FeFRGs5M7lD/VqWFjl987/i9qkfwuMOlYrkuq/TDNg
-        ezG+t9sdXAlpcQBPir6nSCU9lhUeFpHs27TX3kSQ4jzwPy4+enKqGrQpUqcsP/ICXmMu9+
-        ZRT7dC6oz2JOX0rVUmqQPbJlnGD12/Q=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-447-0cJ2gaTLOzm0ibyUsH7_4w-1; Thu, 05 Aug 2021 04:01:43 -0400
-X-MC-Unique: 0cJ2gaTLOzm0ibyUsH7_4w-1
-Received: by mail-ed1-f72.google.com with SMTP id de5-20020a0564023085b02903bb92fd182eso2772237edb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 01:01:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K2ghss8N4x5+qkA+P5j44zXDC0+0LL6Ii3eIbL81nCo=;
-        b=HX9kHGjKID1IOgTm6C32oEv0Ap2pha8noLhwEPhQtHFyezFlUmsWLw4s3+PZfa7Fhf
-         1f/fn5T479NMe/QodfE62aVcfcRm7YrYVp1YTWJmL/mCqQQRRPGCU9ViRuuU6E9tOcp0
-         9928nYE0Pj5Q5YFg9BB6/Jqro7cnFcZ0hrgGKWfTqW53NHpC0WhQkJE+VHNsHHTW+poR
-         jvtJQjEyiUffyy+utdNOO+o6xglvyBq83RHzAKSDA7TIyHyweLG9jNqZUq1kKg4+woQk
-         VmvN/ToH0FDmteZLufkZ7Vpwv7BFGsrER/I1Ro6pNmCk5/TCb+Kf0rZiAk6/d+pBN7wH
-         cbgw==
-X-Gm-Message-State: AOAM530w46pT8RDEh/OJPWtqQeYuNWCDTJ9Of7fYuaQiIjvTHbr2dqr0
-        fSpoNcpsIR/ox9A4VV/uHgbsQoeNgLF8/RJct+A+YQL0VqM52CJRxQ2Xy7NTJfcGBK9n63h0XAp
-        bTgFfj/nSJrXTS9u0iTew99DY
-X-Received: by 2002:a17:906:8443:: with SMTP id e3mr3653494ejy.46.1628150502341;
-        Thu, 05 Aug 2021 01:01:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxRZM+Kqhl+Aet0UV2RVMRB/Uaogk6zdAX2mcOhTRyejWYvAHB4AjPVaC92ipDE99MWEylOig==
-X-Received: by 2002:a17:906:8443:: with SMTP id e3mr3653470ejy.46.1628150502187;
-        Thu, 05 Aug 2021 01:01:42 -0700 (PDT)
-Received: from localhost.localdomain.com ([151.29.52.108])
-        by smtp.gmail.com with ESMTPSA id n15sm1925851edw.70.2021.08.05.01.01.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 01:01:41 -0700 (PDT)
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     paulmck@kernel.org, josh@joshtriplett.org
-Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        peterz@infradead.org, bigeasy@linutronix.de, tglx@linutronix.de,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        rcu@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH] rcu: Make rcu_normal_after_boot writable on RT
-Date:   Thu,  5 Aug 2021 10:01:23 +0200
-Message-Id: <20210805080123.16320-1-juri.lelli@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 5 Aug 2021 04:01:40 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GgLZ60XsJzcl9Q;
+        Thu,  5 Aug 2021 15:57:50 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 16:01:24 +0800
+Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
+ (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 5 Aug
+ 2021 16:01:23 +0800
+Subject: Re: [PATCH 0/2] coresight: ultrasoc: Add support for System Memory
+ Buffer device
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Linuxarm <linuxarm@huawei.com>
+CC:     "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20210719111737.47891-1-liuqi115@huawei.com>
+ <41661d60-d8ef-9d50-57eb-8964c6f6eef8@huawei.com>
+ <CANLsYky2+D8cwquyX3iXgJtu6vND0gZZBtCL_vBobJ8pBwwvfA@mail.gmail.com>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <78495198-9b9d-20ce-030b-6243426c8a47@huawei.com>
+Date:   Thu, 5 Aug 2021 16:01:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANLsYky2+D8cwquyX3iXgJtu6vND0gZZBtCL_vBobJ8pBwwvfA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.203]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Certain configurations (e.g., systems that make heavy use of netns)
-need to use synchronize_rcu_expedited() to service RCU grace periods
-even after boot.
 
-Even though synchronize_rcu_expedited() has been traditionally
-considered harmful for RT for the heavy use of IPIs, it is perfectly
-usable under certain conditions (e.g. nohz_full).
 
-Make rcupdate.rcu_normal_after_boot= again writeable on RT, but keep
-its default value to 1 (enabled) to avoid regressions. Users who need
-synchronize_rcu_expedited() will boot with rcupdate.rcu_normal_after_
-boot=0 in the kernel cmdline.
+On 2021/8/4 22:31, Mathieu Poirier wrote:
+> On Wed, 4 Aug 2021 at 02:05, liuqi (BA) <liuqi115@huawei.com> wrote:
+>>
+>> Gentle ping...
+>> Hi Mathieu and Suzuki, can you have a look at this patchset? thanks.
+>>
+> 
+> On August 2nd I got back to you privately saying I won't be able to
+> review this patchset before the last week of August or the first week
+> of September.  Pinging me again on it won't change that reality.
+> 
+Hi Mathieu,
 
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
----
- kernel/rcu/update.c | 2 --
- 1 file changed, 2 deletions(-)
+Sorry for pinging again as I didn't see that email, perhaps because it 
+is not captured to my coresight subfolder by my mailbox filtering rule 
+:(. I'll wait patiently for your reply.
 
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index c21b38cc25e9..0fdbf937edac 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -57,9 +57,7 @@
- module_param(rcu_expedited, int, 0);
- module_param(rcu_normal, int, 0);
- static int rcu_normal_after_boot = IS_ENABLED(CONFIG_PREEMPT_RT);
--#ifndef CONFIG_PREEMPT_RT
- module_param(rcu_normal_after_boot, int, 0);
--#endif
- #endif /* #ifndef CONFIG_TINY_RCU */
- 
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
--- 
-2.31.1
+Thanks,
+Qi
+
+>> On 2021/7/19 19:17, Qi Liu wrote:
+>>> This patchset add support for SMB(System Memory Buffer) device, SMB
+>>> obtains CPU instructions from Coresight ETM device and stores these
+>>> messages in system memory.
+>>> SMB is developed by Ultrasoc technology, which is acquired by Siemens,
+>>> and we still use "Ultrasoc" to name document and driver.
+>>>
+>>> Change since RFC:
+>>> - Move ultrasoc driver to drivers/hwtracing/coresight.
+>>> - Remove ultrasoc-axi-com.c, as AXI-COM doesn't need to be configured in
+>>>     basic tracing function.
+>>> - Remove ultrasoc.c as SMB does not need to register with the ultrasoc core.
+>>> - Address the comments from Mathieu and Suzuki.
+>>> - Link: https://lists.linaro.org/pipermail/coresight/2021-June/006535.html
+>>>
+>>> Qi Liu (2):
+>>>     Documentation: tracing: Documentation for ultrasoc SMB drivers
+>>>     coresight: ultrasoc: Add System Memory Buffer driver
+>>>
+>>>    .../trace/coresight/ultrasoc-trace.rst        | 193 +++++
+>>>    MAINTAINERS                                   |   7 +
+>>>    drivers/hwtracing/coresight/Kconfig           |   3 +
+>>>    drivers/hwtracing/coresight/Makefile          |   2 +
+>>>    drivers/hwtracing/coresight/ultrasoc/Kconfig  |  12 +
+>>>    drivers/hwtracing/coresight/ultrasoc/Makefile |   6 +
+>>>    .../coresight/ultrasoc/ultrasoc-smb.c         | 722 ++++++++++++++++++
+>>>    .../coresight/ultrasoc/ultrasoc-smb.h         | 142 ++++
+>>>    8 files changed, 1087 insertions(+)
+>>>    create mode 100644 Documentation/trace/coresight/ultrasoc-trace.rst
+>>>    create mode 100644 drivers/hwtracing/coresight/ultrasoc/Kconfig
+>>>    create mode 100644 drivers/hwtracing/coresight/ultrasoc/Makefile
+>>>    create mode 100644 drivers/hwtracing/coresight/ultrasoc/ultrasoc-smb.c
+>>>    create mode 100644 drivers/hwtracing/coresight/ultrasoc/ultrasoc-smb.h
+>>>
+>>
+> .
+> 
 
