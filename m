@@ -2,125 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FA83E1508
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBA63E150B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241482AbhHEMsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:48:51 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:46940 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235161AbhHEMsu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:48:50 -0400
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 175CluwM015994;
-        Thu, 5 Aug 2021 21:47:56 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 175CluwM015994
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1628167677;
-        bh=jIPR2O/wSgPGHR9pIJA/jvrw2g80N0njD4lCEnw8R2E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vAHbWmJf/drD4VdbSH8UNVTBSWDesTC4Vfa4iXiKesZU99+owk4ZbBnqsSo/JGhax
-         LI2Uvhk7+InFsFDomcQvyeyYxw4odT32IRWSrV9ljI+kX8Y38qRGa98JK44r8BNEh9
-         13l4B8tT1+LYVmiQ0dJwPI9zrmWQFpFgVd/q+7fdAT9OmzvW8Ruw70RGgKyTgyEi5s
-         B/6qLXwmJkJB5Ke40cyLeg3VHlOv4HO+BT7th3YKkI9fbbZ9LLh6ZYvLIMStSY8qtr
-         1mlkSs+ZRmonZhQmbcnpDxJElTVVaHtPmZ0LUwzUYBShsE9t/WLCaH43UGSabr9L6V
-         0gjU9CV9rVxaQ==
-X-Nifty-SrcIP: [209.85.216.50]
-Received: by mail-pj1-f50.google.com with SMTP id mt6so8460365pjb.1;
-        Thu, 05 Aug 2021 05:47:56 -0700 (PDT)
-X-Gm-Message-State: AOAM530XrIBp1jw3vKCLQQQId42S3TJJuA6/tKryX3cV0s+Hp9KeVs4S
-        MqmS23WMYh0ID5HJ4Tk8QZdbneXgB9JTsWT/Svc=
-X-Google-Smtp-Source: ABdhPJwp6bNv9d3tv3e5hkUubgRBjvL3IlkFENLKM/+JtIM3RYNTLbDsjOp7knUKh3aKQqNCg7Ek4rmAPs2z0cUwoLo=
-X-Received: by 2002:a63:1b5c:: with SMTP id b28mr630529pgm.175.1628167675871;
- Thu, 05 Aug 2021 05:47:55 -0700 (PDT)
+        id S241489AbhHEMtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:49:39 -0400
+Received: from thoth.sbs.de ([192.35.17.2]:47409 "EHLO thoth.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235161AbhHEMtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 08:49:39 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 175CnB0j001791
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 5 Aug 2021 14:49:11 +0200
+Received: from [167.87.0.185] ([167.87.0.185])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 175CnAiP027338;
+        Thu, 5 Aug 2021 14:49:10 +0200
+Subject: Re: [PATCH v2 0/6] CAN: Add support for CAN in AM65,J721e and AM64
+To:     Aswath Govindraju <a-govindraju@ti.com>, Nishanth Menon <nm@ti.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>
+References: <20210726101012.26983-1-a-govindraju@ti.com>
+ <20210802124509.z23lfg7xxkqaakbo@truce>
+ <36011cee-f617-02ed-7446-c297ba65e6bf@ti.com>
+ <35b0e2dc-0591-0a2f-8e3d-4177792a13fa@siemens.com>
+ <cfd7df02-37ed-6286-0232-2e92bf1f67b4@ti.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <caa97a4e-5e84-2aa6-3a4c-3bbe29fb7a58@siemens.com>
+Date:   Thu, 5 Aug 2021 14:49:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <YPXeqUV+22sxXS9y@rric.localdomain> <20210719202844.18281-1-rrichter@amd.com>
-In-Reply-To: <20210719202844.18281-1-rrichter@amd.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 5 Aug 2021 21:47:18 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARtAv7Vybjk61_MffQhQj2HSZzAGtdCxr83ODPtk+1OaQ@mail.gmail.com>
-Message-ID: <CAK7LNARtAv7Vybjk61_MffQhQj2HSZzAGtdCxr83ODPtk+1OaQ@mail.gmail.com>
-Subject: Re: [PATCH v3] Documentation/kbuild: Document the kconfig choice
- default value
-To:     Robert Richter <rrichter@amd.com>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cfd7df02-37ed-6286-0232-2e92bf1f67b4@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 5:29 AM Robert Richter <rrichter@amd.com> wrote:
->
-> Document how choice defaults are determined:
->
-> Default of a choice is its first visible choice element unless it is
-> explicitly set by the 'default' property [1]. Choice elements do not
-> support default attributes. [2]
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/kconfig/symbol.c?h=v5.14-rc1#n245
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/kconfig/menu.c?h=v5.14-rc1#n494
->
-> Signed-off-by: Robert Richter <rrichter@amd.com>
-> ---
-> v3: Fix base of v2 (rebased onto v5.14-rc2)
-> v2: clarification on 'default' attribute of a choice
->     added example
-> ---
->  Documentation/kbuild/kconfig-language.rst | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
->
-> diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentation/kbuild/kconfig-language.rst
-> index 98c24183d8c3..d919dde0bcbf 100644
-> --- a/Documentation/kbuild/kconfig-language.rst
-> +++ b/Documentation/kbuild/kconfig-language.rst
-> @@ -417,6 +417,21 @@ definitions of that choice. If a [symbol] is associated to the choice,
->  then you may define the same choice (i.e. with the same entries) in another
->  place.
->
-> +The default value of a choice is set to the first visible choice
-> +element unless it is explicitly set by the 'default' property.
-> +
-> +Note:
-> +       Choice options do not support the 'default' attribute.
-> +
-> +E.g.::
-> +
-> +  choice
-> +       default C1
-> +  config C0
-> +  config C1
-> +       # no default attribute here
-> +  endchoice
-> +
->  comment::
->
->         "comment" <prompt>
-> --
-> 2.29.2
->
+On 05.08.21 14:44, Aswath Govindraju wrote:
+> Hi Jan,
+> 
+> On 05/08/21 6:10 pm, Jan Kiszka wrote:
+>> On 05.08.21 14:32, Aswath Govindraju wrote:
+>>> Hi,
+>>>
+>>> On 02/08/21 6:15 pm, Nishanth Menon wrote:
+>>>> On 15:40-20210726, Aswath Govindraju wrote:
+>>>>> The following series of patches add support for CAN in SoC's AM65, J721e
+>>>>> and AM64.
+>>>>>
+>>>>> This patch series is dependent on [1] and [2] and I have requested for an
+>>>>> immutable tag from the Marc Kleine-Budde(maintainer of net tree).
+>>>>>
+>>>>> [1] - https://lore.kernel.org/patchwork/patch/1423048/
+>>>>> [2] - https://www.spinics.net/lists/linux-can/msg08108.html
+>>>>>
+>>>>> changes since v1 -
+>>>>> - changed the message ram configuration to use the maximum value
+>>>>>   in each field, for better performance.
+>>>>>
+>>>>> Aswath Govindraju (3):
+>>>>>   arm64: dts: ti: am654-base-board: Disable mcan nodes
+>>>>>   arm64: dts: ti: k3-am64-main: Add support for MCAN
+>>>>>   arm64: dts: ti: k3-am642-evm/sk: Add support for main domain mcan
+>>>>>     nodes in EVM and disable them on SK
+>>>>>
+>>>>> Faiz Abbas (3):
+>>>>>   arm64: dts: ti: k3-am65-mcu: Add Support for MCAN
+>>>>>   arm64: dts: ti: k3-j721e: Add support for MCAN nodes
+>>>>>   arm64: dts: ti: k3-j721e-common-proc-board: Add support for mcu_mcan
+>>>>>     nodes
+>>>>
+>>>> I noticed in my checkup: https://pastebin.ubuntu.com/p/zSk39M943N/
+>>>> warnings with dtbs_check, I think the bindings need a little more help
+>>>> here (please also notice the iot platform warnings getting introduced).
+>>>>
+>>>
+>>> Jan,
+>>>
+>>> Can you please point me to the schematics for iot platform? Also, is CAN
+>>> subsystem brought out on the iot platform boards?
+>>
+>> Schematics aren't publicly available. If you have specific questions, I
+>> may help, though.
+>>
+>> CAN is not in use yet (not connected AFAIK).
+>>
+> 
+> Thank you for clarifying this. I will disable the CAN DT nodes in
+> k3-am65-iot2050-common.dtsi in my respin.
+> 
 
+That is not a problem for the current design, so you can go ahead with it.
 
-I am not sure whether this note is needed or not,
-anyway the code example is wrong.
+Current defconfig - though not yet upstream based - can be found at [1].
+The CAN subsystem is enabled, but not the AM65x CAN driver.
 
-Kconfig:3:warning: config symbol defined without type
-Kconfig:4:warning: config symbol defined without type
-Kconfig:3:warning: choice value must have a prompt
-Kconfig:4:warning: choice value must have a prompt
-Kconfig:1:warning: config symbol defined without type
-Kconfig:1:warning: choice must have a prompt
+Jan
 
-
-
-
-
-
+[1]
+https://github.com/siemens/meta-iot2050/tree/master/recipes-kernel/linux/files
 
 -- 
-Best Regards
-Masahiro Yamada
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
