@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F703E1501
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83223E14D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241466AbhHEMqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:46:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241470AbhHEMqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:46:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D76F5601FC;
-        Thu,  5 Aug 2021 12:46:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628167591;
-        bh=Mn/G0KCkUMAJFwHK0RFSgD6IFurZnc/p5na5NyaXLjw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ulhTEQGa9uWD4LYg1sl9gveYCt+jx8wegvx7A0EOUFxsNBEpBvN9XDOiJBJxUPk42
-         OAThkChfsiwV5Pg7XdQuVeHXwgkUTeKhlIknzl3iN6CKR7WS74VLx4x1Z7TDtn0fTS
-         vwSZQvMcePdZMmdUOGRukAy8tA7bv8AswLhTaOxo=
-Date:   Thu, 5 Aug 2021 14:46:29 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: Re: [PATCH 00/15] staging: r8188eu: remove core dir RT_TRACE calls
-Message-ID: <YQvdpUzKztxFNlvb@kroah.com>
-References: <20210801190437.82017-1-phil@philpotter.co.uk>
- <YQvAyd2meIE8btpR@kroah.com>
- <CAA=Fs0mViTb_vys9t1DKhFW-1fXxhLRuJM8o=BWqT6MrY9BXsQ@mail.gmail.com>
+        id S241373AbhHEMg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:36:58 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16051 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240188AbhHEMg5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 08:36:57 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GgSgl1dh3zZxt4;
+        Thu,  5 Aug 2021 20:33:07 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 20:36:41 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 5 Aug
+ 2021 20:36:41 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <tj@kernel.org>, <axboe@kernel.dk>, <bo.liu@linux.alibaba.com>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH] blk-iolatency: error out if blk_get_queue() failed in iolatency_set_limit()
+Date:   Thu, 5 Aug 2021 20:46:45 +0800
+Message-ID: <20210805124645.543797-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA=Fs0mViTb_vys9t1DKhFW-1fXxhLRuJM8o=BWqT6MrY9BXsQ@mail.gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 01:37:06PM +0100, Phillip Potter wrote:
-> On Thu, 5 Aug 2021 at 11:43, Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Sun, Aug 01, 2021 at 08:04:22PM +0100, Phillip Potter wrote:
-> > > This series removes all RT_TRACE calls from code within the core directory.
-> > >
-> > > Phillip Potter (15):
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_cmd.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_pwrctrl.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_wlan_util.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_ieee80211.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_io.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_ioctl_set.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_mlme.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_mlme_ext.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_mp.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_security.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_sta_mgt.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_xmit.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_led.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_mp_ioctl.c
-> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_recv.c
-> >
-> > I applied the patches here that I could, others conflicted with other
-> > changes I have taken recently.  Can you rebase and resend the remaining
-> > ones now?
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> Dear Greg,
-> 
-> Many thanks, and of course - will be this evening though after work
-> though (BST). Hope that's ok.
+If queue is dying while iolatency_set_limit() is in progress,
+blk_get_queue() won't increment the refcount of the queue. However,
+blk_put_queue() will still decrement the refcount later, which will
+cause the refcout to be unbalanced.
 
-Sure, no rush, we have no deadlines here :)
+Thus error out in such case to fix the problem.
 
-thanks,
+Fixes: 8c772a9bfc7c ("blk-iolatency: fix IO hang due to negative inflight counter")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ block/blk-iolatency.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-greg k-h
+diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
+index 81be0096411d..d8b0d8bd132b 100644
+--- a/block/blk-iolatency.c
++++ b/block/blk-iolatency.c
+@@ -833,7 +833,11 @@ static ssize_t iolatency_set_limit(struct kernfs_open_file *of, char *buf,
+ 
+ 	enable = iolatency_set_min_lat_nsec(blkg, lat_val);
+ 	if (enable) {
+-		WARN_ON_ONCE(!blk_get_queue(blkg->q));
++		if (!blk_get_queue(blkg->q)) {
++			ret = -ENODEV;
++			goto out;
++		}
++
+ 		blkg_get(blkg);
+ 	}
+ 
+-- 
+2.31.1
+
