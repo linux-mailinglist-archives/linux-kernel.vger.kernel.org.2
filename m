@@ -2,124 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78173E19F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2843E19FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236624AbhHERGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:06:23 -0400
-Received: from mail-pj1-f49.google.com ([209.85.216.49]:50938 "EHLO
-        mail-pj1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236191AbhHERGW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:06:22 -0400
-Received: by mail-pj1-f49.google.com with SMTP id l19so10478472pjz.0;
-        Thu, 05 Aug 2021 10:06:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vR7UP1Yc/IFDSxfAzsx4Zk+6U+CY6rmoy5VDoc5dXUI=;
-        b=EeTZV/AJXbhv5bTuBUc7AREMT8lnpeHHYLBOlJ0n0lvsuyrgy6hRzGPg1DFL9O/g1d
-         uVuKQleJEGGT5nSBc0CMLSITBL/BA/39+0Bhkalfsf2cjJuRNHcmId3FmKO0ve2v45+U
-         2YS1YqecKo1yn6KFvjuCiyjRdb4FLjhsU5NwRUlxIVa3E8nPDS9a2Z8FMNPAwI+Dg6Ep
-         t/GUwYctSwhrwM0BpOE+SRpg6bYRVeF+sr0QZWSf+/YqGmhGxE+kP/PE6DcxqWkV5RVJ
-         Zglthq77p8og+c8GZlU5LLJn3p/O/FeepJyMdhMpyug8We0zWqEGtwT1FMSktV9bizHY
-         d4LA==
-X-Gm-Message-State: AOAM5304W73m5TmqRBrkAQ+YEb63hxW+Nw7CR95/8wNUyZ3hdHKts5z1
-        181O3tTc7rpfonHfr0ZlRWyZsIQ9Xxt5YM2K
-X-Google-Smtp-Source: ABdhPJym7UTEsOoyahFuIvhnLSuQUQJ0vzzMIuCrvUcLZnEY24LVBLesRBXSynOcj3l47W9aJXJVyw==
-X-Received: by 2002:a05:6a00:10cb:b029:3c6:8cc9:5098 with SMTP id d11-20020a056a0010cbb02903c68cc95098mr6013208pfu.41.1628183165889;
-        Thu, 05 Aug 2021 10:06:05 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:93c2:eaf5:530d:627d])
-        by smtp.gmail.com with ESMTPSA id c9sm3292599pgq.58.2021.08.05.10.06.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Aug 2021 10:06:05 -0700 (PDT)
-Subject: Re: [Patch v5 2/3] Drivers: hv: add Azure Blob driver
-To:     longli@linuxonhyperv.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
-Cc:     Long Li <longli@microsoft.com>, Jonathan Corbet <corbet@lwn.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>, linux-doc@vger.kernel.org
-References: <1628146812-29798-1-git-send-email-longli@linuxonhyperv.com>
- <1628146812-29798-3-git-send-email-longli@linuxonhyperv.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <b6404b38-9ea2-b438-dc1b-1196f8e4a158@acm.org>
-Date:   Thu, 5 Aug 2021 10:06:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S236782AbhHERHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:07:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235799AbhHERHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 13:07:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6F9960F02;
+        Thu,  5 Aug 2021 17:06:43 +0000 (UTC)
+Date:   Thu, 5 Aug 2021 18:06:36 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        suzuki.poulose@arm.com, mark.rutland@arm.com, will@kernel.org,
+        maz@kernel.org, james.morse@arm.com, steven.price@arm.com
+Subject: Re: [RFC V2 04/10] arm64/mm: Add FEAT_LPA2 specific
+ ID_AA64MMFR0.TGRAN[2]
+Message-ID: <20210805170636.GE6719@arm.com>
+References: <1627281445-12445-1-git-send-email-anshuman.khandual@arm.com>
+ <1627281445-12445-5-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <1628146812-29798-3-git-send-email-longli@linuxonhyperv.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1627281445-12445-5-git-send-email-anshuman.khandual@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/21 12:00 AM, longli@linuxonhyperv.com wrote:
-> diff --git a/include/uapi/misc/hv_azure_blob.h b/include/uapi/misc/hv_azure_blob.h
-> new file mode 100644
-> index 0000000..87a3f77
-> --- /dev/null
-> +++ b/include/uapi/misc/hv_azure_blob.h
-> @@ -0,0 +1,35 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
-> +/* Copyright (c) 2021 Microsoft Corporation. */
-> +
-> +#ifndef _AZ_BLOB_H
-> +#define _AZ_BLOB_H
-> +
-> +#include <linux/ioctl.h>
-> +#include <linux/uuid.h>
-> +#include <linux/types.h>
-> +
-> +/* user-mode sync request sent through ioctl */
-> +struct az_blob_request_sync_response {
-> +	__u32 status;
-> +	__u32 response_len;
-> +};
-> +
-> +struct az_blob_request_sync {
-> +	guid_t guid;
-> +	__u32 timeout;
-> +	__u32 request_len;
-> +	__u32 response_len;
-> +	__u32 data_len;
-> +	__u32 data_valid;
-> +	__aligned_u64 request_buffer;
-> +	__aligned_u64 response_buffer;
-> +	__aligned_u64 data_buffer;
-> +	struct az_blob_request_sync_response response;
-> +};
-> +
-> +#define AZ_BLOB_MAGIC_NUMBER	'R'
-> +#define IOCTL_AZ_BLOB_DRIVER_USER_REQUEST \
-> +		_IOWR(AZ_BLOB_MAGIC_NUMBER, 0xf0, \
-> +			struct az_blob_request_sync)
-> +
-> +#endif /* define _AZ_BLOB_H */
+On Mon, Jul 26, 2021 at 12:07:19PM +0530, Anshuman Khandual wrote:
+> PAGE_SIZE support is tested against possible minimum and maximum values for
+> its respective ID_AA64MMFR0.TGRAN field, depending on whether it is signed
+> or unsigned. But then FEAT_LPA2 implementation needs to be validated for 4K
+> and 16K page sizes via feature specific ID_AA64MMFR0.TGRAN values. Hence it
+> adds FEAT_LPA2 specific ID_AA64MMFR0.TGRAN[2] values per ARM ARM (0487G.A).
+> 
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-So this driver only supports synchronous requests? Is it likely that 
-users will ask for support of an API that supports having multiple 
-requests outstanding at the same time without having to create multiple 
-user space threads?
-
-Thanks,
-
-Bart.
-
-
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
