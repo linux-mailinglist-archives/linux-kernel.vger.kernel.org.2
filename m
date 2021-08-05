@@ -2,62 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62B13E125A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C273E11F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240420AbhHEKKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 06:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240455AbhHEKKn (ORCPT
+        id S240163AbhHEKGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 06:06:08 -0400
+Received: from esa11.hc1455-7.c3s2.iphmx.com ([207.54.90.137]:47900 "EHLO
+        esa11.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234156AbhHEKGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 06:10:43 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B604AC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 03:10:28 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id u3so8676158ejz.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 03:10:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=J67+rxbQxfS8kPDQ/50P30WNOuT2eFzd+bURjICaS/k=;
-        b=PYzpMluEGjYNNlCbhJwkorhdtRjjkJLwDO/VX0L+fGYpJ3sovu7Vd8I8Kak/m6BqKR
-         XdHvsEi/OV2uDhf6dSwBFyswIWPTv2sMyTeUfTn5CUmk9aDF4E3H+GDvgQ3JXUVXTJ4F
-         3aWeXEbBFnMhiwwvwZoxXLN9MWZT479SysBjeNlRd9AnumCW1V/B5KG+3Z8MoPBNmul+
-         GQxUwTRNBB7E12uYdGPTnlC2eCjBahuTpUFNz8e744Cy2yfKGVysuNbV+n8FQyGNLZlq
-         wnlwXJKCKiCkjcuEaStMZnscH3+htsKB8iB9YV1z3etOcFHrQweyKLQiw80a7w9OZGI+
-         NZzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=J67+rxbQxfS8kPDQ/50P30WNOuT2eFzd+bURjICaS/k=;
-        b=SvTR3Xq/c55Nl0WkPSZJfKDbscU6922Y7O/8++0BV6bSPYd4vd7zLdo06pNaltVYkT
-         YM4tta4LUky9oOxKpTMsK3oXWY3nEqRYgIT7gIJ7eU/SJwXhBycAlsGPOITG8am3gPMJ
-         rqokoEv4t3r/rSVntsaMRaAyPGmu5CgwKCRRPoIefg8ydH7N4y34k/6imhdm4+U9AaBr
-         Eq5J3+8sZO83oSpkSA0PnRzVNBe/82bJRopRHw8Z4FP66eTEUXAqt3VkZH8RNpq10bwR
-         83qSEfV3/pdZeKFtDSodxbLW72KMjKnL32lbhKNdiYEHtD8Jcj2G7Etx8dLv/S6ZFPy8
-         1DGw==
-X-Gm-Message-State: AOAM53047TN3L1RCvm4fomnu0W6ipHl0PPbe13zlR/qJplrdnPuRXkZa
-        5g2mxdXtUjyeaaThZJuQHIoKXut8JyJCrCbcjJ0=
-X-Google-Smtp-Source: ABdhPJzzvaD91A84DhSz5sp4mZk1XLR/jYxyCXK68186JTDqZGKUSSTmstJ6CA+ivnsyKalCo5qfZQng4VO3SzoA6t8=
-X-Received: by 2002:a17:906:1f82:: with SMTP id t2mr3922105ejr.499.1628158227371;
- Thu, 05 Aug 2021 03:10:27 -0700 (PDT)
+        Thu, 5 Aug 2021 06:06:00 -0400
+X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Aug 2021 06:06:00 EDT
+IronPort-SDR: vaamKXEsIZb88hJ8qX91HpxT9PZILJS5Hc+vlrHxW/ZZNwyhH7VBYLYs3Z4bpG3yrGhepiOEcw
+ hYu4RVjcsbjqlVR7OtJnb6Hfi/QN5xW69OdlGJI/UJS2cYX67VOYMLLIOoEpKkAqSrtDfqnem5
+ TrdtBq2ZdxAf3lr4+o7d+2uazDOaOy8UtfkFCG6L9kxORjTdraWUajNszH9bYSk9mTfY0O2g5K
+ 4aQM60EGbnFqt0IEBU4KxrRHQaam+3055klT7tGW0CsSCJ49ficgSvVtKXLSDIOHHFHD+IPjIj
+ pgstRPoZBizyX47Ldhoy1arh
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="18797132"
+X-IronPort-AV: E=Sophos;i="5.84,296,1620658800"; 
+   d="scan'208";a="18797132"
+Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
+  by esa11.hc1455-7.c3s2.iphmx.com with ESMTP; 05 Aug 2021 18:58:35 +0900
+Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com [192.168.83.66])
+        by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 66430EB380;
+        Thu,  5 Aug 2021 18:58:34 +0900 (JST)
+Received: from yto-om2.fujitsu.com (yto-om2.o.css.fujitsu.com [10.128.89.163])
+        by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id B9B1EE37C2;
+        Thu,  5 Aug 2021 18:58:33 +0900 (JST)
+Received: from localhost.localdomain (luna3.soft.fujitsu.com [10.124.196.199])
+        by yto-om2.fujitsu.com (Postfix) with ESMTP id 96071400C23C5;
+        Thu,  5 Aug 2021 18:58:33 +0900 (JST)
+From:   Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
+To:     keescook@chromium.org, linux-kselftest@vger.kernel.org
+Cc:     skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        misono.tomohiro@jp.fujitsu.com
+Subject: [PATCH] selftest/lkdtm: Skip stack-entropy test if lkdtm is not available
+Date:   Thu,  5 Aug 2021 19:12:36 +0900
+Message-Id: <20210805101236.1140381-1-misono.tomohiro@jp.fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Received: by 2002:a05:6408:258c:b029:e3:fe5c:5c2d with HTTP; Thu, 5 Aug 2021
- 03:10:26 -0700 (PDT)
-Reply-To: theresabangurah3333@yahoo.com
-From:   Theresa Bangurah <mariamabah77879@gmail.com>
-Date:   Thu, 5 Aug 2021 11:10:26 +0100
-Message-ID: <CAAi==jrJVgT4vMp=AZxV96hRKK34rZNADQD=uNLr85APP0c44Q@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Exit with return code 4 if lkdtm is not available like other tests
+in order to properly skip the test.
+
+Signed-off-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
+---
+I saw the same problem reported here (on 5.14-rc4):
+https://lore.kernel.org/lkml/2836f48a-d4e2-7f00-f06c-9f556fbd6332@linuxfoundation.org/
+
+ tools/testing/selftests/lkdtm/stack-entropy.sh | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/lkdtm/stack-entropy.sh b/tools/testing/selftests/lkdtm/stack-entropy.sh
+index 1b4d95d575f8..14fedeef762e 100755
+--- a/tools/testing/selftests/lkdtm/stack-entropy.sh
++++ b/tools/testing/selftests/lkdtm/stack-entropy.sh
+@@ -4,13 +4,27 @@
+ # Measure kernel stack entropy by sampling via LKDTM's REPORT_STACK test.
+ set -e
+ samples="${1:-1000}"
++TRIGGER=/sys/kernel/debug/provoke-crash/DIRECT
++KSELFTEST_SKIP_TEST=4
++
++# Verify we have LKDTM available in the kernel.
++if [ ! -r $TRIGGER ] ; then
++	/sbin/modprobe -q lkdtm || true
++	if [ ! -r $TRIGGER ] ; then
++		echo "Cannot find $TRIGGER (missing CONFIG_LKDTM?)"
++	else
++		echo "Cannot write $TRIGGER (need to run as root?)"
++	fi
++	# Skip this test
++	exit $KSELFTEST_SKIP_TEST
++fi
+ 
+ # Capture dmesg continuously since it may fill up depending on sample size.
+ log=$(mktemp -t stack-entropy-XXXXXX)
+ dmesg --follow >"$log" & pid=$!
+ report=-1
+ for i in $(seq 1 $samples); do
+-        echo "REPORT_STACK" >/sys/kernel/debug/provoke-crash/DIRECT
++        echo "REPORT_STACK" > $TRIGGER
+ 	if [ -t 1 ]; then
+ 		percent=$(( 100 * $i / $samples ))
+ 		if [ "$percent" -ne "$report" ]; then
 -- 
-My name is Mrs.Theresa Bangurah,i am American citizen i have something
-important to tell you.Reply me immediately you get this message.God
-bless you.
+2.31.1
+
