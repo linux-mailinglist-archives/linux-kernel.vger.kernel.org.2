@@ -2,112 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD913E1AC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305743E1AC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240484AbhHERt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:49:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36746 "EHLO mail.kernel.org"
+        id S240724AbhHERtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:49:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236276AbhHERtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:49:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9177960EEA;
-        Thu,  5 Aug 2021 17:49:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628185750;
-        bh=hgh8n/mlJ2BWgXVr9IEapn30lUSRxQYBbXEgYVfExsI=;
+        id S236276AbhHERtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 13:49:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B17B4610A2;
+        Thu,  5 Aug 2021 17:49:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628185772;
+        bh=B6IL9Cpv/JUtI1XkONksmlrwilPPgHrXazVlYgLgEhY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S4dR9GzVij9XR2qNakG0ENKTKKely4MQG5DFuH95wJ67k62Pdes6YwV4oUx5fKqX4
-         bW/mIC7UmNY/rq2bHtfrYvyHBjt/4BG9oq25K/MtRfRoIbipwY9HAQyqX+YrY+RqCw
-         N3U3LxnIda1nantkXBMivAMJSqJHT8I5Ri2dqKSHmKhjE4C4dUAN2vkIC2liQ7p246
-         4uDUbLZ70gbtQy85TBWjM/7h9IO3etzRFXzEMiYw+3t1wscYta3MGLElWFx++gYBpG
-         2YxfotWf/tbPB6f6jCRkoQ67eB4WmwSti3EU5Nt89Ort8YOclXwUNsgbm+7awJwNfl
-         AFq2gLeht/mwA==
-Received: by earth.universe (Postfix, from userid 1000)
-        id 959BF3C0C9B; Thu,  5 Aug 2021 19:49:08 +0200 (CEST)
-Date:   Thu, 5 Aug 2021 19:49:08 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Li Tuo <islituo@gmail.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        baijiaju1990@gmail.com, "Jett.Zhou" <jtzhou@marvell.com>
-Subject: Re: [BUG] power: supply: 88pm860x_battery: possible
- uninitialized-variable access in measure_vbatt()
-Message-ID: <20210805174908.ctg6n5iwmg5izap3@earth.universe>
-References: <e2080eb9-bbe2-5077-761d-b5594edb6006@gmail.com>
+        b=LSfSwq7M7P7fkLYbRF2/4z3uyTAgo6LxrlojcSuwN1yV3P1ib9D/HWt97m7r+tSn0
+         p9WuCndm9MKuMXgtUzaJc25kiWO/b52uRNOa8QQaAvXWW9oGXDKCUoitxNhPQeJLZv
+         +wIVf+DpV8FqZHLbMSf48iRGi7/DqYHa858ybh1Q=
+Date:   Thu, 5 Aug 2021 19:49:30 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v1] driver: base: Add driver filter support
+Message-ID: <YQwkqg2/7888ic+O@kroah.com>
+References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YQrqhYEL64CSLRTy@kroah.com>
+ <f2b1d564-8174-f8e9-9fee-12e938c6d846@linux.intel.com>
+ <YQuYCePPZEmVbkfc@kroah.com>
+ <YQuZdVuaGG/Cr62y@kroah.com>
+ <YQuaJ78y8j1UmBoz@kroah.com>
+ <CAPcyv4iCBknhGyw-YjO7_Tua9Vkw_UCSHVj3prL3mVfz4nj-_g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zwujtqsremn5py5a"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e2080eb9-bbe2-5077-761d-b5594edb6006@gmail.com>
+In-Reply-To: <CAPcyv4iCBknhGyw-YjO7_Tua9Vkw_UCSHVj3prL3mVfz4nj-_g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 05, 2021 at 09:37:28AM -0700, Dan Williams wrote:
+> On Thu, Aug 5, 2021 at 12:58 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Aug 05, 2021 at 09:55:33AM +0200, Greg Kroah-Hartman wrote:
+> > > On Thu, Aug 05, 2021 at 09:49:29AM +0200, Greg Kroah-Hartman wrote:
+> > > > On Wed, Aug 04, 2021 at 12:50:24PM -0700, Andi Kleen wrote:
+> > > > > > And what's wrong with the current method of removing drivers from
+> > > > > > devices that you do not want them to be bound to?  We offer that support
+> > > > > > for all busses now that want to do it, what driver types are you needing
+> > > > > > to "control" here that does not take advantage of the existing
+> > > > > > infrastructure that we currently have for this type of thing?
+> > > > >
+> > > > > I'm not sure what mechanism you're referring to here, but in general don't
+> > > > > want the drivers to initialize at all because they might get exploited in
+> > > > > any code that they execute.
+> > > >
+> > > > That is exactly the mechanism we have today in the kernel for all busses
+> > > > if they wish to take advantage of it.  We have had this for all USB
+> > > > drivers for well over a decade now, this is not a new feature.  Please
+> > > > use that instead.
+> > >
+> > > Hm, wait, maybe that didn't get merged yet, let me dig...
+> > >
+> >
+> > Ok, my fault, I was thinking of the generic "removable" support that
+> > recently got added.
+> >
+> > Both thunderbolt and USB have the idea of "authorized" devices, that is
+> > the logic that should be made generic and available for all busses to
+> > use, by moving it to the driver core, just like the "removable" logic
+> > got moved to the driver core recently (see 70f400d4d957 ("driver core:
+> > Move the "removable" attribute from USB to core")
+> >
+> > Please use that type of interface, as we already have userspace tools
+> > using it, and expand it for all busses in the system to use if they
+> > want.  Otherwise with this proposal you will end up with multiple ways
+> > to control the same bus type with different types of "filtering",
+> > ensuring a mess.
+> 
+> I overlooked the "authorized" attribute in usb and thunderbolt. The
+> collision problem makes sense. Are you open to a core "authorized"
+> attribute that buses like usb and thunderbolt would override in favor
+> of their local implementation? I.e. similar to suppress_bind_attrs:
 
---zwujtqsremn5py5a
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What about doing it the other way around and making it generic like was
+done for the "removable" attribute?  That way the logic from both
+thunderbolt and USB moves into the driver core as they really should be
+shared.
 
-[adding Jett Zhou to Cc who introduced the driver]
+See the above git commit as an example of what I mean.
 
-Hi,
+thanks,
 
-On Wed, Jul 28, 2021 at 06:24:12PM +0800, Li Tuo wrote:
-> Our static analysis tool finds a possible uninitialized-variable access in
-> the 88pm860x_battery driver in Linux 5.14.0-rc3:
->=20
-> In calc_soc():
-> 369:=A0=A0=A0 int ocv;
-> 376:=A0=A0=A0 switch (state) {
-> 380:=A0=A0=A0 case OCV_MODE_SLEEP:
-> 381:=A0=A0=A0=A0=A0=A0=A0 ret =3D measure_vbatt(info, OCV_MODE_SLEEP, &oc=
-v);
->=20
-> In measure_vbatt(struct pm860x_battery_info *info, int state, int *data)
-> 176:=A0=A0=A0 switch (state) {
-> 184:=A0=A0=A0 case OCV_MODE_SLEEP:
-> 201:=A0=A0=A0=A0=A0=A0=A0 *data =3D ((*data & 0xff) * 27 * 25) >> 9;
->=20
-> If the variable state is OCV_MODE_SLEEP, the function measure_vbatt() is
-> called with the argument &ocv, and the corresponding parameter is data.
-> Thus *data is uninitialized but it is used at line 201.
->=20
-> I am not quite sure whether this possible uninitialized-variable access is
-> real and how to fix it if it is real.
-> Any feedback would be appreciated, thanks!
->=20
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-
-I suppose the code is suppose to look like this:
-
-201:=A0=A0=A0=A0=A0=A0=A0 *data =3D ((ret & 0xff) * 27 * 25) >> 9;
-
-Considering quite some code is spent before to setup ret, which is
-never used. I don't have the device (nor datasheets) though. Considering
-the driver has only seen trivial cleanups over the last 9 years, maybe
-it can just be removed?
-
--- Sebastian
-
---zwujtqsremn5py5a
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEMJI4ACgkQ2O7X88g7
-+poT7g//cufoD1ZEZiJECh7O3127FFRZoHWb8mwwyL0inJP58K532Nb0i6r3bq2u
-muv8YJmrgTynrMdvWx1tlZwoD6GaYmCUE9c0h4v9j9m782XGJIH0KLx8RrlkxXii
-b461y9Bj1SHE6jwxy4p7BML3ensp/zGJb7GS2RZnhpZqwVURYctl8zasAnyTff8N
-i00EH4G8ehrl2fcT5V1WzK0AxB3DVX205DPGqNLLijHBRcS8P/wxNQZP5S79C5fO
-DUikpsVmg4DGR5btCQo2Oh7axWAPpKfgUGOlDQUT1vYJzxciOCWinv/4GMRT31uC
-JiMjeeiaGXaLXSGTA1lZe25U0XLt1RSieGhns+jgrLke2x9B3NSklJBo087cZyJ8
-e3XavBvLPXg2Ttz2pgRmq3UdmzkYTBpLVEBb4p9WIb9w95LNI8fSqZJVu+YszCN/
-KKkUWxRzK6469nYdsp0Wq+y9eUU35lesn7EKIes6OGGclapAEy013ndyUW01mKm5
-nq1dK8GWarCIOpVBT09EvhZp6tbFHVL19om+TGJ8POFnKUigI/mLA6O4mJLltiqd
-7TMgY4VF3FOWzAhimxakMvy3Innst/gy7D4+JiJttbtDG92M9yoW1MN4O1GX+H+c
-ffWJjRlxzajLhDEwAJeG/J4uhGosT1TjuF7HnCoysB9/gUIUfBQ=
-=TU6k
------END PGP SIGNATURE-----
-
---zwujtqsremn5py5a--
+greg k-h
