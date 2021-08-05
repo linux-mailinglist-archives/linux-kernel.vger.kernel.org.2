@@ -2,130 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC483E16F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3933E1705
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241936AbhHEO3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:29:49 -0400
-Received: from mga14.intel.com ([192.55.52.115]:28696 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233183AbhHEO3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:29:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="213893038"
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="213893038"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 07:29:32 -0700
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="442448718"
-Received: from apeddoll-mobl1.amr.corp.intel.com (HELO [10.209.20.48]) ([10.209.20.48])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 07:29:30 -0700
-Subject: Re: [PATCH V2 03/14] x86/set_memory: Add x86_set_memory_enc static
- call support
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Tianyu Lan <ltykernel@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        Tianyu.Lan@microsoft.com, rppt@kernel.org,
-        kirill.shutemov@linux.intel.com, akpm@linux-foundation.org,
-        brijesh.singh@amd.com, thomas.lendacky@amd.com, pgonda@google.com,
-        david@redhat.com, krish.sadhukhan@oracle.com, saravanand@fb.com,
-        aneesh.kumar@linux.ibm.com, xen-devel@lists.xenproject.org,
-        martin.b.radev@gmail.com, ardb@kernel.org, rientjes@google.com,
-        tj@kernel.org, keescook@chromium.org,
-        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
-        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com, parri.andrea@gmail.com
-References: <20210804184513.512888-1-ltykernel@gmail.com>
- <20210804184513.512888-4-ltykernel@gmail.com>
- <5823af8a-7dbb-dbb0-5ea2-d9846aa2a36a@intel.com>
- <942e6fcb-3bdf-9294-d3db-ca311db440d3@gmail.com>
- <YQv0bRBUq1N5+jgG@hirez.programming.kicks-ass.net>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <fa63e6ad-9536-d5e9-d754-fa04fad69252@intel.com>
-Date:   Thu, 5 Aug 2021 07:29:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S241719AbhHEOcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 10:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233183AbhHEOco (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 10:32:44 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71D7C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 07:32:29 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id j18-20020a17090aeb12b029017737e6c349so9111340pjz.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 07:32:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Hxir+KJT92ne4sjUq07glKFb4339EmPmh/a5GVlr1ko=;
+        b=k3719/z8eUSedQ6lU1Ji4Phj9b5Y8l0i6R93Er8eQtkwn8oV31S9CxSR/eMF8GtlH1
+         xjWqTZwBxPmQfL0Fm2rHuHHJMLShvWbTxr8VBc2YiKbAHxEuCChtZvgmN3DTD0imxKK1
+         oS6rtUVkpsmk2kEb9R0U4Csl2IWbJRtZsVqSOL202172DyPqWAoK0xb58hAC+b2bk0e9
+         JPaySdp1odFbAvM3gJRsak/89lSYGKrBbDzA9kH+zTUYhV0ir3IlKnGeeARonQYLnqUJ
+         mRH09CtOCUWg6lmFaIZdQKUR7lM5V4gSzK5N96JNSgwEQ48WmP5e+YtBxE/j4IRuEFNi
+         xYxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hxir+KJT92ne4sjUq07glKFb4339EmPmh/a5GVlr1ko=;
+        b=FmNO9t7vwh7SBStNrljSdwZmR+w1BRVmXGgiIID+GRZW5oAZyzFI8RxmRPZQJvc9KZ
+         x4phPNDOFapUgQvc2iEPgxvTuC01Di5t0SkevsVtEYxHDMBqyw/zlUOGUcPAZhyMUfqz
+         QVBbGg4WQOSe72t8cMlzcuvHzpJMQZTuJL3Ey32sCVajBqgKa/4Htzo5tC6h+zUHfKaE
+         sKzLR1gARXNmfgEAXLFRC+N6O/1aB9zA6Yr8x9e5yB6Mwzh8817bsMvv8otOPYrJEePB
+         2dSXhL7YUSbKKjFC4MIp8ZsF8k5QFypHeW3YqLo4uhFt3GQ9DkEzAq1KPHHQQQU2Wtwe
+         ZAGA==
+X-Gm-Message-State: AOAM533WKk5bwSmTZe3CQb4Rf4dOwt/I0NB3V3Pws4yXOdEWy6M2qNdO
+        0nV7CnVLw6IjFcYJE2UTlvgytPxNEQbqGeFItvzW7w==
+X-Google-Smtp-Source: ABdhPJzmKvsuXnbAiJTCr2Ie3c70evLDQtBHyeupRXjhU286jch5hsPG3GMDBTl8uNZmPk7w39U7rdBJi7Zo+CSGIZw=
+X-Received: by 2002:a17:90a:604b:: with SMTP id h11mr4973185pjm.220.1628173948924;
+ Thu, 05 Aug 2021 07:32:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YQv0bRBUq1N5+jgG@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1628172477.git.hns@goldelico.com> <15187eccabf39561de226acd8be40b93503cac49.1628172477.git.hns@goldelico.com>
+In-Reply-To: <15187eccabf39561de226acd8be40b93503cac49.1628172477.git.hns@goldelico.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Thu, 5 Aug 2021 16:32:17 +0200
+Message-ID: <CAG3jFyu50h2oLW0U6hJSpxiKp3Hb5Ow8Ujvg2qdKRuy+uhaahw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/8] drm/bridge: synopsis: Add mode_fixup and bridge
+ timings support
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        letux-kernel@openphoenux.org, Paul Boddie <paul@boddie.org.uk>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/21 7:23 AM, Peter Zijlstra wrote:
-> This is assuming any of this is actually performance critical, based off
-> of this using static_call() to begin with.
+Hey Nikolaus,
 
-This code is not performance critical.
+Thanks for submitting this series.
 
-I think I sent folks off on a wild goose chase when I asked that we make
-an effort to optimize code that does:
+On Thu, 5 Aug 2021 at 16:08, H. Nikolaus Schaller <hns@goldelico.com> wrote:
+>
+> From: Paul Boddie <paul@boddie.org.uk>
+>
+> The platform-specific configuration structure is augmented with
+> mode_fixup and timings members so that specialisations of the
+> Synopsys driver can introduce mode flags and bus flags.
+>
+> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> ---
+>  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 16 ++++++++++++++++
+>  include/drm/bridge/dw_hdmi.h              |  5 +++++
+>  2 files changed, 21 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> index e7c7c9b9c646f..e8499eb11328c 100644
+> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> @@ -2810,6 +2810,19 @@ dw_hdmi_bridge_mode_valid(struct drm_bridge *bridge,
+>         return mode_status;
+>  }
+>
+> +static bool
+> +dw_hdmi_bridge_mode_fixup(struct drm_bridge *bridge,
+> +                         const struct drm_display_mode *mode,
+> +                         struct drm_display_mode *adjusted_mode)
+> +{
+> +       struct dw_hdmi *hdmi = bridge->driver_private;
+> +
+> +       if (hdmi->plat_data->mode_fixup)
+> +               return hdmi->plat_data->mode_fixup(bridge, mode, adjusted_mode);
+> +
+> +       return true;
+> +}
+> +
+>  static void dw_hdmi_bridge_mode_set(struct drm_bridge *bridge,
+>                                     const struct drm_display_mode *orig_mode,
+>                                     const struct drm_display_mode *mode)
+> @@ -2883,6 +2896,7 @@ static const struct drm_bridge_funcs dw_hdmi_bridge_funcs = {
+>         .atomic_disable = dw_hdmi_bridge_atomic_disable,
+>         .mode_set = dw_hdmi_bridge_mode_set,
+>         .mode_valid = dw_hdmi_bridge_mode_valid,
+> +       .mode_fixup = dw_hdmi_bridge_mode_fixup,
 
-	if (some_hyperv_check())
-		foo();
+mode_fixup() has been deprecated[1] in favor of atomic_check(), care
+has to be taken when switching to atomic_check() as it has access to
+the full atomic commit.
 
-	if (some_amd_feature_check())
-		bar();
+Looking at this driver, it's using mode_set as well, which should be fixed.
 
-with checks that will actually compile away when Hyper-V or
-some_amd_feature() is disabled.  That's less about performance and just
-about good hygiene.  I *wanted* to see
-cpu_feature_enabled(X86_FEATURE...) checks.
+[1] https://lore.kernel.org/dri-devel/20210722062246.2512666-8-sam@ravnborg.org/
 
-Someone suggested using static calls, and off we went...
-
-Could we please just use cpu_feature_enabled()?
+>         .detect = dw_hdmi_bridge_detect,
+>         .get_edid = dw_hdmi_bridge_get_edid,
+>  };
+> @@ -3364,6 +3378,8 @@ struct dw_hdmi *dw_hdmi_probe(struct platform_device *pdev,
+>  #ifdef CONFIG_OF
+>         hdmi->bridge.of_node = pdev->dev.of_node;
+>  #endif
+> +       if (plat_data->timings)
+> +               hdmi->bridge.timings = plat_data->timings;
+>
+>         memset(&pdevinfo, 0, sizeof(pdevinfo));
+>         pdevinfo.parent = dev;
+> diff --git a/include/drm/bridge/dw_hdmi.h b/include/drm/bridge/dw_hdmi.h
+> index 6a5716655619b..677137445d534 100644
+> --- a/include/drm/bridge/dw_hdmi.h
+> +++ b/include/drm/bridge/dw_hdmi.h
+> @@ -8,6 +8,7 @@
+>
+>  #include <sound/hdmi-codec.h>
+>
+> +struct drm_bridge;
+>  struct drm_display_info;
+>  struct drm_display_mode;
+>  struct drm_encoder;
+> @@ -140,6 +141,10 @@ struct dw_hdmi_plat_data {
+>         enum drm_mode_status (*mode_valid)(struct dw_hdmi *hdmi, void *data,
+>                                            const struct drm_display_info *info,
+>                                            const struct drm_display_mode *mode);
+> +       bool (*mode_fixup)(struct drm_bridge *bridge,
+> +                          const struct drm_display_mode *mode,
+> +                          struct drm_display_mode *adjusted_mode);
+> +       const struct drm_bridge_timings *timings;
+>
+>         /* Vendor PHY support */
+>         const struct dw_hdmi_phy_ops *phy_ops;
+> --
+> 2.31.1
+>
