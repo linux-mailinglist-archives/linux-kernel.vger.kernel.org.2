@@ -2,104 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305743E1AC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80DD3E1AC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240724AbhHERtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:49:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236276AbhHERtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:49:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B17B4610A2;
-        Thu,  5 Aug 2021 17:49:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628185772;
-        bh=B6IL9Cpv/JUtI1XkONksmlrwilPPgHrXazVlYgLgEhY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LSfSwq7M7P7fkLYbRF2/4z3uyTAgo6LxrlojcSuwN1yV3P1ib9D/HWt97m7r+tSn0
-         p9WuCndm9MKuMXgtUzaJc25kiWO/b52uRNOa8QQaAvXWW9oGXDKCUoitxNhPQeJLZv
-         +wIVf+DpV8FqZHLbMSf48iRGi7/DqYHa858ybh1Q=
-Date:   Thu, 5 Aug 2021 19:49:30 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-Message-ID: <YQwkqg2/7888ic+O@kroah.com>
-References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQrqhYEL64CSLRTy@kroah.com>
- <f2b1d564-8174-f8e9-9fee-12e938c6d846@linux.intel.com>
- <YQuYCePPZEmVbkfc@kroah.com>
- <YQuZdVuaGG/Cr62y@kroah.com>
- <YQuaJ78y8j1UmBoz@kroah.com>
- <CAPcyv4iCBknhGyw-YjO7_Tua9Vkw_UCSHVj3prL3mVfz4nj-_g@mail.gmail.com>
+        id S240751AbhHERuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236276AbhHERuY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 13:50:24 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CD7C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 10:50:09 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id s48so10351722ybi.7
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 10:50:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OilqniE9QhryAT0UzDpbjFyxSifZumOZUcb5Cq0u2G8=;
+        b=gobMAMjIypPRzSXl2mNS2SnC+L/eCPB7+GSHnttUNpP2y3UPv+5YhT9g37gLboJwnE
+         vzq8Yick0PJAI2qvonrxAm21aY5D4Yu1817KQjsSpHKQsqYMR0mxVezvcMKxdo6OrtM7
+         7xLqzjmlhPNnPpdT8bubj3OY3OCqyhT/JkbyUZGcW6c43sPSEMlbXs0QqVnhGQUg5ACe
+         pAnvXf4tLW3dV8EUgXcJ6Q6+/cHpzVwWz88dD6M5r4Au+tLEKCr+0hbttL2z95SDEtuB
+         5vTaUESFrcAyZrINFJmcQgrJKuApXu9shg18zf8lyv4jgbOJEGmyCvrG1dlgSmHGBkNh
+         TdHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OilqniE9QhryAT0UzDpbjFyxSifZumOZUcb5Cq0u2G8=;
+        b=Z8QJua+YxDX1N0mwRjjZ9x41p2smLoDaUK/GGQPB/uM0IQcuqPDdmxBj4qW01ae1i6
+         eKU0WBPCS0iCuhmM5Omv6EowITBNIU/EE9w+QPZoOmiONuCiwELEtuC+MmQFD0c3jNew
+         Z8AOzy/H6rtwFtCrlhmkKd9NcgaD/UHW3oC9jrt5ZoZfxnIJtKEo4uvjHBlUUpVTdXAb
+         wBQZObeI6oEHEgO+vOFnPgO4xyJW8+7lsMfenwgSOh/gBDkz3tCTtHtVlrIK7oOZYHUg
+         3szZDeLeNFoaQYxY38tf0DvnuAZqGM1d8+XWHtR73ok9G9TfAiN2Q+NdnKrnvq8HMNci
+         VySA==
+X-Gm-Message-State: AOAM5302s14xuCfGsKCBqTlOnltwHdKzx+1YRsoBcFGb7irVOcd1vVYU
+        LjvpnHprCAtk7WPkyQVxzxHyqRVZkDxPhTXCnuPOLw==
+X-Google-Smtp-Source: ABdhPJyHVtXCrYLheSJJiPeVdXBtqFTGStGuHg6+CYC25g0Tit+W+jWq2MyibVHEwv8OKrKWka1R3jIqliirGSGUrZQ=
+X-Received: by 2002:a25:7ec4:: with SMTP id z187mr7692085ybc.136.1628185808188;
+ Thu, 05 Aug 2021 10:50:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4iCBknhGyw-YjO7_Tua9Vkw_UCSHVj3prL3mVfz4nj-_g@mail.gmail.com>
+References: <20210805170859.2389276-1-surenb@google.com> <46998d10-d0ca-aeeb-8dcd-41b8130fb756@redhat.com>
+In-Reply-To: <46998d10-d0ca-aeeb-8dcd-41b8130fb756@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 5 Aug 2021 10:49:57 -0700
+Message-ID: <CAJuCfpGvqgUWpdL_KNE1tnqH2OjqX64QjBYttoPRtGgXWfONRQ@mail.gmail.com>
+Subject: Re: [PATCH v7 1/2] mm: introduce process_mrelease system call
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 09:37:28AM -0700, Dan Williams wrote:
-> On Thu, Aug 5, 2021 at 12:58 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
+On Thu, Aug 5, 2021 at 10:29 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 05.08.21 19:08, Suren Baghdasaryan wrote:
+> > In modern systems it's not unusual to have a system component monitoring
+> > memory conditions of the system and tasked with keeping system memory
+> > pressure under control. One way to accomplish that is to kill
+> > non-essential processes to free up memory for more important ones.
+> > Examples of this are Facebook's OOM killer daemon called oomd and
+> > Android's low memory killer daemon called lmkd.
+> > For such system component it's important to be able to free memory
+> > quickly and efficiently. Unfortunately the time process takes to free
+> > up its memory after receiving a SIGKILL might vary based on the state
+> > of the process (uninterruptible sleep), size and OPP level of the core
+> > the process is running. A mechanism to free resources of the target
+> > process in a more predictable way would improve system's ability to
+> > control its memory pressure.
+> > Introduce process_mrelease system call that releases memory of a dying
+> > process from the context of the caller. This way the memory is freed in
+> > a more controllable way with CPU affinity and priority of the caller.
+> > The workload of freeing the memory will also be charged to the caller.
+> > The operation is allowed only on a dying process.
 > >
-> > On Thu, Aug 05, 2021 at 09:55:33AM +0200, Greg Kroah-Hartman wrote:
-> > > On Thu, Aug 05, 2021 at 09:49:29AM +0200, Greg Kroah-Hartman wrote:
-> > > > On Wed, Aug 04, 2021 at 12:50:24PM -0700, Andi Kleen wrote:
-> > > > > > And what's wrong with the current method of removing drivers from
-> > > > > > devices that you do not want them to be bound to?  We offer that support
-> > > > > > for all busses now that want to do it, what driver types are you needing
-> > > > > > to "control" here that does not take advantage of the existing
-> > > > > > infrastructure that we currently have for this type of thing?
-> > > > >
-> > > > > I'm not sure what mechanism you're referring to here, but in general don't
-> > > > > want the drivers to initialize at all because they might get exploited in
-> > > > > any code that they execute.
-> > > >
-> > > > That is exactly the mechanism we have today in the kernel for all busses
-> > > > if they wish to take advantage of it.  We have had this for all USB
-> > > > drivers for well over a decade now, this is not a new feature.  Please
-> > > > use that instead.
-> > >
-> > > Hm, wait, maybe that didn't get merged yet, let me dig...
-> > >
+> > After previous discussions [1, 2, 3] the decision was made [4] to introduce
+> > a dedicated system call to cover this use case.
 > >
-> > Ok, my fault, I was thinking of the generic "removable" support that
-> > recently got added.
+> > The API is as follows,
 > >
-> > Both thunderbolt and USB have the idea of "authorized" devices, that is
-> > the logic that should be made generic and available for all busses to
-> > use, by moving it to the driver core, just like the "removable" logic
-> > got moved to the driver core recently (see 70f400d4d957 ("driver core:
-> > Move the "removable" attribute from USB to core")
+> >            int process_mrelease(int pidfd, unsigned int flags);
 > >
-> > Please use that type of interface, as we already have userspace tools
-> > using it, and expand it for all busses in the system to use if they
-> > want.  Otherwise with this proposal you will end up with multiple ways
-> > to control the same bus type with different types of "filtering",
-> > ensuring a mess.
-> 
-> I overlooked the "authorized" attribute in usb and thunderbolt. The
-> collision problem makes sense. Are you open to a core "authorized"
-> attribute that buses like usb and thunderbolt would override in favor
-> of their local implementation? I.e. similar to suppress_bind_attrs:
+> >          DESCRIPTION
+> >            The process_mrelease() system call is used to free the memory of
+> >            an exiting process.
+> >
+> >            The pidfd selects the process referred to by the PID file
+> >            descriptor.
+> >            (See pidfd_open(2) for further information)
+> >
+> >            The flags argument is reserved for future use; currently, this
+> >            argument must be specified as 0.
+> >
+> >          RETURN VALUE
+> >            On success, process_mrelease() returns 0. On error, -1 is
+> >            returned and errno is set to indicate the error.
+> >
+> >          ERRORS
+> >            EBADF  pidfd is not a valid PID file descriptor.
+> >
+> >            EAGAIN Failed to release part of the address space.
+> >
+> >            EINTR  The call was interrupted by a signal; see signal(7).
+> >
+> >            EINVAL flags is not 0.
+> >
+> >            EINVAL The memory of the task cannot be released because the
+> >                   process is not exiting, the address space is shared
+> >                   with another live process or there is a core dump in
+> >                   progress.
+> >
+> >            ENOSYS This system call is not supported, for example, without
+> >                   MMU support built into Linux.
+> >
+> >            ESRCH  The target process does not exist (i.e., it has terminated
+> >                   and been waited on).
+> >
+> > [1] https://lore.kernel.org/lkml/20190411014353.113252-3-surenb@google.com/
+> > [2] https://lore.kernel.org/linux-api/20201113173448.1863419-1-surenb@google.com/
+> > [3] https://lore.kernel.org/linux-api/20201124053943.1684874-3-surenb@google.com/
+> > [4] https://lore.kernel.org/linux-api/20201223075712.GA4719@lst.de/
+> >
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > ---
+> > changes in v7:
+> > - Fixed pidfd_open misspelling, per Andrew Morton
+> > - Fixed wrong task pinning after find_lock_task_mm() issue, per Michal Hocko
+> > - Moved MMF_OOM_SKIP check before task_will_free_mem(), per Michal Hocko
+> >
+> >   mm/oom_kill.c | 73 +++++++++++++++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 73 insertions(+)
+> >
+> > diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> > index c729a4c4a1ac..a4d917b43c73 100644
+> > --- a/mm/oom_kill.c
+> > +++ b/mm/oom_kill.c
+> > @@ -28,6 +28,7 @@
+> >   #include <linux/sched/task.h>
+> >   #include <linux/sched/debug.h>
+> >   #include <linux/swap.h>
+> > +#include <linux/syscalls.h>
+> >   #include <linux/timex.h>
+> >   #include <linux/jiffies.h>
+> >   #include <linux/cpuset.h>
+> > @@ -1141,3 +1142,75 @@ void pagefault_out_of_memory(void)
+> >       out_of_memory(&oc);
+> >       mutex_unlock(&oom_lock);
+> >   }
+> > +
+> > +SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+> > +{
+> > +#ifdef CONFIG_MMU
+> > +     struct mm_struct *mm = NULL;
+> > +     struct task_struct *task;
+> > +     struct task_struct *p;
+> > +     unsigned int f_flags;
+> > +     struct pid *pid;
+> > +     long ret = 0;
+> > +
+> > +     if (flags)
+> > +             return -EINVAL;
+> > +
+> > +     pid = pidfd_get_pid(pidfd, &f_flags);
+> > +     if (IS_ERR(pid))
+> > +             return PTR_ERR(pid);
+> > +
+> > +     task = get_pid_task(pid, PIDTYPE_PID);
+> > +     if (!task) {
+> > +             ret = -ESRCH;
+> > +             goto put_pid;
+> > +     }
+> > +
+> > +     /*
+> > +      * If the task is dying and in the process of releasing its memory
+> > +      * then get its mm.
+> > +      */
+> > +     p = find_lock_task_mm(task);
+> > +     if (!p) {
+> > +             ret = -ESRCH;
+> > +             goto put_pid;
+> > +     }
+> > +     if (task != p) {
+> > +             get_task_struct(p);
+>
+>
+> Wouldn't we want to obtain the mm from p ? I thought that was the whole
+> exercise of going via find_lock_task_mm().
 
-What about doing it the other way around and making it generic like was
-done for the "removable" attribute?  That way the logic from both
-thunderbolt and USB moves into the driver core as they really should be
-shared.
+Yes, that's what we do after checking task_will_free_mem().
+task_will_free_mem() requires us to hold task_lock and
+find_lock_task_mm() achieves that ensuring that mm is still valid, but
+it might return a task other than the original one. That's why we do
+this dance with pinning the new task and unpinning the original one.
+The same dance is performed in __oom_kill_process(). I was
+contemplating adding a parameter to find_lock_task_mm() to request
+this unpin/pin be done within that function but then decided to keep
+it simple for now.
+Did I address your question or did I misunderstand it?
 
-See the above git commit as an example of what I mean.
-
-thanks,
-
-greg k-h
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
