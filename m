@@ -2,83 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36E03E1CCF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D4C3E1CD5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242253AbhHETfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:35:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56662 "EHLO mail.kernel.org"
+        id S243006AbhHEThQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:37:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230471AbhHETfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:35:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EEF061004;
-        Thu,  5 Aug 2021 19:35:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628192136;
-        bh=fZaYRnFhRWpXfUOCk6WjCAYwWtpuoJlgYzfD8ZrCnjQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mIKE4ygEKSSiNr0AbWk07YOCkEiqzHO1N1Rz+Sy4eZG1xbkLxRp43n9HOYpft1pBj
-         rl0lz6rtlQ9JDtI/4BAK1+Oub2YZt7UYNCnUL4o/e7gJzZklBmrxZiGWtFRF4VTClU
-         VjoCZRHWRdeNA2rcV9cK96d6iERe5q8iAMrTVwps=
-Date:   Thu, 5 Aug 2021 21:35:34 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Rob Herring <robh@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>, list@opendingux.net,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 2/2] gpu/drm: ingenic: Add workaround for disabled drivers
-Message-ID: <YQw9hjZll4QmYVLX@kroah.com>
-References: <20210805192110.90302-1-paul@crapouillou.net>
- <20210805192110.90302-3-paul@crapouillou.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805192110.90302-3-paul@crapouillou.net>
+        id S237310AbhHEThP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 15:37:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B72B3610FB;
+        Thu,  5 Aug 2021 19:37:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628192220;
+        bh=9OTiKLZBzM4V3aTDBqubFToc2HxCgDB1+5CBNLusQ6U=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=IJl//HyK+bysZ6bKqZ2xZ0V8WMihOb2tjpd8YNwFNyy93xdMFpeQyT5BwVQNcLG+D
+         GAdTwDGrKWjTU7Q3aAREKvk/Bz4dwFX95NCMVNnYie8CYozKt6clNPEY0D1by1lT/7
+         co9Ekfz4K7ekOMqma5lZlTaSFxmVmE1W2j+9wOvlydT+aCPImBFPa0N53qjMfGqKmx
+         usegYdRkTlAHQVTilZDnCCfTIb06qeJl5mn9Yp/DWQrKGtKxTflp4LungUVy3alr+M
+         OJ+oytg3oxdxV36j2bJhRBN1BscsbSVHxqquUUtcmX3ZAHdjayF/0cz+j/96bkemEH
+         phXhkZUUPV/RQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A833B609D7;
+        Thu,  5 Aug 2021 19:37:00 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for 5.14-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210805154335.1070064-1-kuba@kernel.org>
+References: <20210805154335.1070064-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <netdev.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210805154335.1070064-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.14-rc5
+X-PR-Tracked-Commit-Id: 6bb5318ce501cb744e58105ba56cd5308e75004d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 902e7f373fff2476b53824264c12e4e76c7ec02a
+Message-Id: <162819222062.18936.3286459954059288658.pr-tracker-bot@kernel.org>
+Date:   Thu, 05 Aug 2021 19:37:00 +0000
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 09:21:09PM +0200, Paul Cercueil wrote:
-> When the drivers of remote devices (e.g. HDMI chip) are disabled in the
-> config, we want the ingenic-drm driver to be able to probe nonetheless
-> with the other devices (e.g. internal LCD panel) that are enabled.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index d261f7a03b18..5e1fdbb0ba6b 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -1058,6 +1058,18 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
->  	for (i = 0; ; i++) {
->  		ret = drm_of_find_panel_or_bridge(dev->of_node, 0, i, &panel, &bridge);
->  		if (ret) {
-> +			/*
-> +			 * Workaround for the case where the drivers for the
-> +			 * remote devices are not enabled. When that happens,
-> +			 * drm_of_find_panel_or_bridge() returns -EPROBE_DEFER
-> +			 * endlessly, which prevents the ingenic-drm driver from
-> +			 * working at all.
-> +			 */
-> +			if (ret == -EPROBE_DEFER) {
-> +				ret = driver_deferred_probe_check_state(dev);
-> +				if (ret == -ENODEV || ret == -ETIMEDOUT)
-> +					continue;
-> +			}
+The pull request you sent on Thu,  5 Aug 2021 08:43:35 -0700:
 
-So you are mucking around with devices on other busses within this
-driver?  What could go wrong?  :(
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.14-rc5
 
-Please use the existing driver core functionality for this type of
-thing, it is not unique, no need for this function to be called.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/902e7f373fff2476b53824264c12e4e76c7ec02a
 
-thanks,
+Thank you!
 
-greg k-h
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
