@@ -2,121 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279E53E1B78
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F71E3E1B7D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241476AbhHESi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43606 "EHLO
+        id S241525AbhHESjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237913AbhHESi0 (ORCPT
+        with ESMTP id S236929AbhHESjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:38:26 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51D4C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:38:11 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id k13so4574542qth.10
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:38:11 -0700 (PDT)
+        Thu, 5 Aug 2021 14:39:32 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13061C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:39:18 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id k2-20020ac847820000b029024ea3acef5bso3140985qtq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:39:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ck5dWuwFo/uEgQ0O9vb5RC+dFl2DTseh0e2RyNx8YIs=;
-        b=MZN5AJFgKfTro7Lh5+pBih2rFARR3iXo6Q0qkE/7SnqHk2WdAHSeYBmqu1DRPZcsJn
-         A86r8/mVA+NH/1wZQxhhctUvMWHA5t2/xL/iHE43/E8NdSxtHJf3I7oVOoQ8T7xxGJTY
-         63PJ2etGJJCkbrK/fPWgU5ixJHWtFN5RjAErrrRFgjC1FF+Ept0JGecAf1cPOBildU97
-         GxkpbDc1pshUEZlMQ2oGhr+qERCFZ+EFk+6WbIDbyJ+QXmG4zRV8RfdmYJ6Y16hmOoTC
-         wvkkhIACQjtp7FbQjmmCkmS5x/HoBEeSAZLWoIvmy9Bmyk2Dl1OivEjPMSW6W/WUbqdF
-         tfTA==
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=gut7KGVOXGVwjDuVjJlBum3fd0OxKnF/3/p9WcIAzgA=;
+        b=OYB1dard195uli2R1UDCQfCJd8J/f2bMU8DFe6YCCvQzjUDDmQod0q/0Ke5zwKOs7Z
+         Jo2QNXcnUqfu7c0jqYrkMTgHZDQGuv5ijMnsRm4bnn184xNJGxuu8UwFwjgVqvXF/m36
+         DpsozUaZ1e80Q5epqlc9dGZu6GeLkaUBaZq82JIOeTXtLGHJhezKlON+MBztI0n2e3zw
+         jFMOqlCfsvqqHVEmu2HCwZkNDfGZMZscK1pVOKUaUNdEcydraRmuzRr5+l8TJ3tfqozw
+         iDoTOUWykAsKpkhk4MXqO3idulyXljEmo6/BnY8A6JYXHqJfd1xDMx2/tMOwL1q96d8C
+         hq/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ck5dWuwFo/uEgQ0O9vb5RC+dFl2DTseh0e2RyNx8YIs=;
-        b=T3+vqs2vZM7BuIxDt9sUBamgYwzl1GX44iXVYq++QNwtCoMYcOhKGdbwRTtSAagFWX
-         lqj8lIX8IgTC2wI1Rk+wtelrt9Y4ah9C3cGuzDVnvnb2HKVx76frEhepxnifCgtRvKZG
-         RjrkaEkd9gbHV0J+kquOMBgjOdmW2N/E8V6adkb+l8c+0D6J08ca0bKIV9LM9o+kLdqw
-         gKltyjA8dUSKcHR3jQG+YkO5bb85T3aEYnOeVPmQIWvbksXhDpEThs/iVV8OOiqKc5A8
-         inETU/X0xaJc0G8YJzVbtCxlDLrj96BEY47kuDdwxZ31X6k/IJ4pNBXz7AOAyeKHFr3t
-         BfKg==
-X-Gm-Message-State: AOAM530L84dpf23HHtOXyTDbB/6ySC47poI16gesgsAobqorsEerpt0O
-        dzZzP5cUgHVSG0NeuDJeM6ah7tyr6UnGkhHYro5zlA==
-X-Google-Smtp-Source: ABdhPJzuNqz9YMRe0mQsPKaIqNr0YnYNS1zH2Nf3XmowGNcNu7cslok7UZNmWsFS0mcyu9Cvhw0F+fGM3KsDlDau/N4=
-X-Received: by 2002:aed:20c4:: with SMTP id 62mr5705291qtb.139.1628188690844;
- Thu, 05 Aug 2021 11:38:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210804214333.927985-1-saravanak@google.com> <87v94kb6xa.wl-maz@kernel.org>
- <7hfsvng2mj.fsf@baylibre.com>
-In-Reply-To: <7hfsvng2mj.fsf@baylibre.com>
-From:   Kevin Hilman <khilman@baylibre.com>
-Date:   Thu, 5 Aug 2021 11:37:59 -0700
-Message-ID: <CAOi56cW5=Yy_vtPM+i1M7YxQuKw75Zx2xgcgEsyfdm2E-qobmQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] Clean up and fix error handling in mdio_mux_init()
-To:     Marc Zyngier <maz@kernel.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        kernel-team@android.com, netdev@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=gut7KGVOXGVwjDuVjJlBum3fd0OxKnF/3/p9WcIAzgA=;
+        b=CKLU2AYTV1eE1EPjEPX18UTW+/lALsSqooUGlu3lTLYX9QZ/StrpAhXdivx2AstvoX
+         54PK0KEhYyeRb6i/hwxnAEDHtSutFuJkzjNroIkgnG32Og/kQJPR9NV8Kl2HW07RsymU
+         MJ6HgizX9jGlLUj9LGXtOHOXBg70fQxKF2VGow7uSdYyljIUvLbStinvDaOWyqGk3297
+         afBxy9OVUfCF68ZVivs0Iplty3b4G8lRt9d6IinPerUYSrVtZCtGFB2mvTsz8Y30oyTV
+         0bGx/t3w+F58ZVikz/7BXh6KYDKb4tpORtslYBfxD03IZBg9u9TeRCDHUE8pYiBq/JQn
+         wIDw==
+X-Gm-Message-State: AOAM532gnDF+Qzm77I1K6RhdzyL4EfqVNbDv67CfuzJqtxnl7TrDWpZ1
+        rpxaOXsYd8I6Hih//wHmgkiUoUyVnvU=
+X-Google-Smtp-Source: ABdhPJxiby64Xc2Lz8eTQrM/JBed8r5wAEVYcaSgk1A/lfJLpvCVkeJeWWeUl/JbBAPJNukHU9o0ztEuuZY=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e041:28e5:75db:9055])
+ (user=seanjc job=sendgmr) by 2002:a05:6214:2ce:: with SMTP id
+ g14mr6665890qvu.46.1628188757204; Thu, 05 Aug 2021 11:39:17 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu,  5 Aug 2021 11:38:04 -0700
+Message-Id: <20210805183804.1221554-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+Subject: [PATCH] KVM: x86: Allow guest to set EFER.NX=1 on non-PAE 32-bit kernels
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 11:36 AM Kevin Hilman <khilman@baylibre.com> wrote:
->
-> Marc Zyngier <maz@kernel.org> writes:
->
-> > Hi Saravana,
-> >
-> > On Wed, 04 Aug 2021 22:43:29 +0100,
-> > Saravana Kannan <saravanak@google.com> wrote:
-> >>
-> >> This patch series was started due to -EPROBE_DEFER not being handled
-> >> correctly in mdio_mux_init() and causing issues [1]. While at it, I also
-> >> did some more error handling fixes and clean ups. The -EPROBE_DEFER fix is
-> >> the last patch.
-> >>
-> >> Ideally, in the last patch we'd treat any error similar to -EPROBE_DEFER
-> >> but I'm not sure if it'll break any board/platforms where some child
-> >> mdiobus never successfully registers. If we treated all errors similar to
-> >> -EPROBE_DEFER, then none of the child mdiobus will work and that might be a
-> >> regression. If people are sure this is not a real case, then I can fix up
-> >> the last patch to always fail the entire mdio-mux init if any of the child
-> >> mdiobus registration fails.
-> >>
-> >> Cc: Marc Zyngier <maz@kernel.org>
-> >> Cc: Neil Armstrong <narmstrong@baylibre.com>
-> >> Cc: Kevin Hilman <khilman@baylibre.com>
-> >> [1] - https://lore.kernel.org/lkml/CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com/#t
-> >>
-> >> Saravana Kannan (3):
-> >>   net: mdio-mux: Delete unnecessary devm_kfree
-> >>   net: mdio-mux: Don't ignore memory allocation errors
-> >>   net: mdio-mux: Handle -EPROBE_DEFER correctly
-> >>
-> >>  drivers/net/mdio/mdio-mux.c | 37 ++++++++++++++++++++++++-------------
-> >>  1 file changed, 24 insertions(+), 13 deletions(-)
-> >
-> > Thanks for this. I've just gave it a go on my test platform, and this
-> > indeed addresses the issues I was seeing [1].
-> >
-> > Acked-by: Marc Zyngier <maz@kernel.org>
-> > Tested-by: Marc Zyngier <maz@kernel.org>
->
-> I wasn't seeing the same issues as Marc, but am heavily using everything
-> as modules on a few platforms using this code, and I'm not seeing any
-> regressions.
->
-> Thanks Saravana for finding the root cause here.
->
-> Acked-by: Kevin Hilman <khilman@baylibre.com>
-> Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Remove an ancient restriction that disallowed exposing EFER.NX to the
+guest if EFER.NX=0 on the host, even if NX is fully supported by the CPU.
+The motivation of the check, added by commit 2cc51560aed0 ("KVM: VMX:
+Avoid saving and restoring msr_efer on lightweight vmexit"), was to rule
+out the case of host.EFER.NX=0 and guest.EFER.NX=1 so that KVM could run
+the guest with the host's EFER.NX and thus avoid context switching EFER
+if the only divergence was the NX bit.
 
-Oops, that should not be a SoB, but rather:
+Fast forward to today, and KVM has long since stopped running the guest
+with the host's EFER.NX.  Not only does KVM context switch EFER if
+host.EFER.NX=1 && guest.EFER.NX=0, KVM also forces host.EFER.NX=0 &&
+guest.EFER.NX=1 when using shadow paging (to emulate SMEP).  Furthermore,
+the entire motivation for the restriction was made obsolete over a decade
+ago when Intel added dedicated host and guest EFER fields in the VMCS
+(Nehalem timeframe), which reduced the overhead of context switching EFER
+from 400+ cycles (2 * WRMSR + 1 * RDMSR) to a mere ~2 cycles.
 
-Tested-by: Kevin Hilman <khilman@baylibre.com>
+In practice, the removed restriction only affects non-PAE 32-bit kernels,
+as EFER.NX is set during boot if NX is supported and the kernel will use
+PAE paging (32-bit or 64-bit), regardless of whether or not the kernel
+will actually use NX itself (mark PTEs non-executable).
+
+Alternatively and/or complementarily, startup_32_smp() in head_32.S could
+be modified to set EFER.NX=1 regardless of paging mode, thus eliminating
+the scenario where NX is supported but not enabled.  However, that runs
+the risk of breaking non-KVM non-PAE kernels (though the risk is very,
+very low as there are no known EFER.NX errata), and also eliminates an
+easy-to-use mechanism for stressing KVM's handling of guest vs. host EFER
+across nested virtualization transitions.
+
+Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+
+As alluded to in the changelog, I abandoned the idea of forcing EFER.NX for
+PSE paging.  With this obsolete optimization remove, forcing EFER.NX in the
+host doesn't buy us anything.  Shadow paging doesn't consume host EFER, nor
+does EPT, and NPT is already incompatible with !PAE in the host.
+
+ arch/x86/kvm/cpuid.c | 28 +---------------------------
+ 1 file changed, 1 insertion(+), 27 deletions(-)
+
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 739be5da3bca..fe03bd978761 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -208,30 +208,6 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ 	kvm_mmu_after_set_cpuid(vcpu);
+ }
+ 
+-static int is_efer_nx(void)
+-{
+-	return host_efer & EFER_NX;
+-}
+-
+-static void cpuid_fix_nx_cap(struct kvm_vcpu *vcpu)
+-{
+-	int i;
+-	struct kvm_cpuid_entry2 *e, *entry;
+-
+-	entry = NULL;
+-	for (i = 0; i < vcpu->arch.cpuid_nent; ++i) {
+-		e = &vcpu->arch.cpuid_entries[i];
+-		if (e->function == 0x80000001) {
+-			entry = e;
+-			break;
+-		}
+-	}
+-	if (entry && cpuid_entry_has(entry, X86_FEATURE_NX) && !is_efer_nx()) {
+-		cpuid_entry_clear(entry, X86_FEATURE_NX);
+-		printk(KERN_INFO "kvm: guest NX capability removed\n");
+-	}
+-}
+-
+ int cpuid_query_maxphyaddr(struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_cpuid_entry2 *best;
+@@ -302,7 +278,6 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
+ 	vcpu->arch.cpuid_entries = e2;
+ 	vcpu->arch.cpuid_nent = cpuid->nent;
+ 
+-	cpuid_fix_nx_cap(vcpu);
+ 	kvm_update_cpuid_runtime(vcpu);
+ 	kvm_vcpu_after_set_cpuid(vcpu);
+ 
+@@ -401,7 +376,6 @@ static __always_inline void kvm_cpu_cap_mask(enum cpuid_leafs leaf, u32 mask)
+ 
+ void kvm_set_cpu_caps(void)
+ {
+-	unsigned int f_nx = is_efer_nx() ? F(NX) : 0;
+ #ifdef CONFIG_X86_64
+ 	unsigned int f_gbpages = F(GBPAGES);
+ 	unsigned int f_lm = F(LM);
+@@ -515,7 +489,7 @@ void kvm_set_cpu_caps(void)
+ 		F(CX8) | F(APIC) | 0 /* Reserved */ | F(SYSCALL) |
+ 		F(MTRR) | F(PGE) | F(MCA) | F(CMOV) |
+ 		F(PAT) | F(PSE36) | 0 /* Reserved */ |
+-		f_nx | 0 /* Reserved */ | F(MMXEXT) | F(MMX) |
++		F(NX) | 0 /* Reserved */ | F(MMXEXT) | F(MMX) |
+ 		F(FXSR) | F(FXSR_OPT) | f_gbpages | F(RDTSCP) |
+ 		0 /* Reserved */ | f_lm | F(3DNOWEXT) | F(3DNOW)
+ 	);
+-- 
+2.32.0.605.g8dce9f2422-goog
+
