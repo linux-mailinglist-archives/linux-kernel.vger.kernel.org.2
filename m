@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA993E1885
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134FE3E1886
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242499AbhHEPps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:45:48 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44362 "EHLO
+        id S242463AbhHEPpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:45:51 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44372 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242490AbhHEPmk (ORCPT
+        with ESMTP id S242496AbhHEPml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:42:40 -0400
-Message-ID: <20210805153955.826492729@linutronix.de>
+        Thu, 5 Aug 2021 11:42:41 -0400
+Message-ID: <20210805153955.884220745@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628178145;
+        s=2020; t=1628178146;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=dkx+40ybxvCYh8q1hGT+KN9hnpF6WEFXVhZaV2LnVZM=;
-        b=z0GjQSQJr9btY55mmAcD24s/WpzGswuJbi2fhQhV0gGbSZdJqb404zXbhtdKB4azC+5aQ8
-        DVe5Stk1Kpi+3SsP7TEKlNf1jsRGUGg+V5fr3GbMqfdTap5N78+doDSgeBurN+520Gybea
-        NXgfF8zyxDGBSx3FyWImtGT2miLptYA0yv2p4C/hE/7vXkMHRkcysB/8GWTiRnGhEChJCo
-        FGikP2YlZtjlHcZNHGqjYHcgN6xYAkcfvmNTnkigHPrbGgE9/PtKgpPjJgmc0cSZGUTG7r
-        UpwAxNpKFXIuaL/oQObaWlcPI74hoSRLGS7qwNl1sKBER9mFHKSX0tR2MoB/7w==
+        bh=050tNCinaLUdQNXcoguk6eMn+NPBp94IeU5KyABcng4=;
+        b=O4VHyvlU7qxcVx2LoSxDN9xWRoZX80Js3QlFBV/n5erpm1LbqzNXx9nFodLwOtYTnya+N3
+        FH7+IU+CuIVP+zI6Znd2mhrwEdyE4LemqjbFHOy/5Rk19GdfsVIQg4oqj9GcWcCNZ/XJFV
+        zrFcrVImjKHASi4yV7qQEHopxj+HQYrJC4nzusMWd3AWjH04TsTpjGTqXTNJgluiLqhKAO
+        QFhGKyrDFDG+onOoqxZXzyhn9+CljzccdWXn6ngjAhAWwixfF4ObXTMhVudnHE5qiWU8Du
+        8PNZm2mLdi/ElEKEw4GUUlVgpke0/kPFj9gCeS8LODUE12RZXDD/EQFfjeupzw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628178145;
+        s=2020e; t=1628178146;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=dkx+40ybxvCYh8q1hGT+KN9hnpF6WEFXVhZaV2LnVZM=;
-        b=dxcFfJrSfnyDAC+UafgCoDFbNXWjLT05rjYwd9tIkpVo+Qp5yr+t72JAsXr8QfNCun0/v+
-        340/9cR9QYndhgCw==
-Date:   Thu, 05 Aug 2021 17:13:52 +0200
+        bh=050tNCinaLUdQNXcoguk6eMn+NPBp94IeU5KyABcng4=;
+        b=zvkHf2/62Byjn5CtkeNDaPIHN13oAqauFgIO/xiCGMw/PIUeQFXwRNc0bSc5qbx/FLWyb/
+        7w7GkxQXCDqn5qBA==
+Date:   Thu, 05 Aug 2021 17:13:53 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -46,7 +46,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V3 52/64] locking/rtmutex: Add mutex variant for RT
+Subject: [patch V3 53/64] lib/test_lockup: Adapt to changed variables.
 References: <20210805151300.330412127@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,305 +55,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Add the necessary defines, helpers and API functions for replacing mutex on
-a PREEMPT_RT enabled kernel with a rtmutex based variant.
+The inner parts of certain locks (mutex, rwlocks) changed due to a rework for
+RT and non RT code. Most users remain unaffected, but those who fiddle around
+in the inner parts need to be updated.
 
-No functional change when CONFIG_PREEMPT_RT=n
+Match the struct names to the new layout.
 
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/mutex.h        |   67 ++++++++++++++++++++---
- kernel/locking/mutex.c       |    4 +
- kernel/locking/rtmutex_api.c |  122 +++++++++++++++++++++++++++++++++++++++++++
- lib/Kconfig.debug            |   11 ++-
- 4 files changed, 188 insertions(+), 16 deletions(-)
+ lib/test_lockup.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 ---
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -20,6 +20,18 @@
- #include <linux/osq_lock.h>
- #include <linux/debug_locks.h>
- 
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+# define __DEP_MAP_MUTEX_INITIALIZER(lockname)			\
-+		, .dep_map = {					\
-+			.name = #lockname,			\
-+			.wait_type_inner = LD_WAIT_SLEEP,	\
-+		}
-+#else
-+# define __DEP_MAP_MUTEX_INITIALIZER(lockname)
-+#endif
-+
-+#ifndef CONFIG_PREEMPT_RT
-+
- /*
-  * Simple, straightforward mutexes with strict semantics:
-  *
-@@ -93,16 +105,6 @@ do {									\
- 	__mutex_init((mutex), #mutex, &__key);				\
- } while (0)
- 
--#ifdef CONFIG_DEBUG_LOCK_ALLOC
--# define __DEP_MAP_MUTEX_INITIALIZER(lockname)			\
--		, .dep_map = {					\
--			.name = #lockname,			\
--			.wait_type_inner = LD_WAIT_SLEEP,	\
--		}
--#else
--# define __DEP_MAP_MUTEX_INITIALIZER(lockname)
--#endif
--
- #define __MUTEX_INITIALIZER(lockname) \
- 		{ .owner = ATOMIC_LONG_INIT(0) \
- 		, .wait_lock = __RAW_SPIN_LOCK_UNLOCKED(lockname.wait_lock) \
-@@ -124,6 +126,51 @@ extern void __mutex_init(struct mutex *l
-  */
- extern bool mutex_is_locked(struct mutex *lock);
- 
-+#else /* !CONFIG_PREEMPT_RT */
-+/*
-+ * Preempt-RT variant based on rtmutexes.
-+ */
-+#include <linux/rtmutex.h>
-+
-+struct mutex {
-+	struct rt_mutex_base	rtmutex;
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+	struct lockdep_map	dep_map;
-+#endif
-+};
-+
-+#define __MUTEX_INITIALIZER(mutexname)					\
-+{									\
-+	.rtmutex = __RT_MUTEX_BASE_INITIALIZER(mutexname.rtmutex)	\
-+	__DEP_MAP_MUTEX_INITIALIZER(mutexname)				\
-+}
-+
-+#define DEFINE_MUTEX(mutexname)						\
-+	struct mutex mutexname = __MUTEX_INITIALIZER(mutexname)
-+
-+extern void __mutex_rt_init(struct mutex *lock, const char *name,
-+			    struct lock_class_key *key);
-+extern int mutex_trylock(struct mutex *lock);
-+
-+static inline void mutex_destroy(struct mutex *lock) { }
-+
-+#define mutex_is_locked(l)	rt_mutex_base_is_locked(&(l)->rtmutex)
-+
-+#define mutex_init(mutex)				\
-+do {							\
-+	static struct lock_class_key __key;		\
-+							\
-+	rt_mutex_base_init(&(mutex)->rtmutex);		\
-+	__mutex_rt_init((mutex), #mutex, &__key);	\
-+} while (0)
-+
-+#define __mutex_init(mutex, name, key)			\
-+do {							\
-+	rt_mutex_base_init(&(mutex)->rtmutex);		\
-+	__mutex_rt_init((mutex), name, key);		\
-+} while (0)
-+#endif /* CONFIG_PREEMPT_RT */
-+
- /*
-  * See kernel/locking/mutex.c for detailed documentation of these APIs.
-  * Also see Documentation/locking/mutex-design.rst.
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -30,6 +30,7 @@
- #include <linux/debug_locks.h>
- #include <linux/osq_lock.h>
- 
-+#ifndef CONFIG_PREEMPT_RT
- #include "mutex.h"
- 
- void
-@@ -1078,7 +1079,8 @@ ww_mutex_lock_interruptible(struct ww_mu
- }
- EXPORT_SYMBOL(ww_mutex_lock_interruptible);
- 
--#endif
-+#endif /* !CONFIG_DEBUG_LOCK_ALLOC */
-+#endif /* !CONFIG_PREEMPT_RT */
- 
- /**
-  * atomic_dec_and_mutex_lock - return holding mutex if we dec to 0
---- a/kernel/locking/rtmutex_api.c
-+++ b/kernel/locking/rtmutex_api.c
-@@ -454,3 +454,125 @@ void rt_mutex_debug_task_free(struct tas
- 	DEBUG_LOCKS_WARN_ON(task->pi_blocked_on);
- }
- #endif
-+
-+#ifdef CONFIG_PREEMPT_RT
-+/* Mutexes */
-+void __mutex_rt_init(struct mutex *mutex, const char *name,
-+		     struct lock_class_key *key)
-+{
-+	debug_check_no_locks_freed((void *)mutex, sizeof(*mutex));
-+	lockdep_init_map(&mutex->dep_map, name, key, 0);
-+}
-+EXPORT_SYMBOL(__mutex_rt_init);
-+
-+static __always_inline int __mutex_lock_common(struct mutex *lock,
-+					       unsigned int state,
-+					       unsigned int subclass,
-+					       struct lockdep_map *nest_lock,
-+					       unsigned long ip)
-+{
-+	int ret;
-+
-+	might_sleep();
-+	mutex_acquire_nest(&lock->dep_map, subclass, 0, nest_lock, ip);
-+	ret = __rt_mutex_lock(&lock->rtmutex, state);
-+	if (ret)
-+		mutex_release(&lock->dep_map, ip);
-+	else
-+		lock_acquired(&lock->dep_map, ip);
-+	return ret;
-+}
-+
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+void __sched mutex_lock_nested(struct mutex *lock, unsigned int subclass)
-+{
-+	__mutex_lock_common(lock, TASK_UNINTERRUPTIBLE, subclass, NULL, _RET_IP_);
-+}
-+EXPORT_SYMBOL_GPL(mutex_lock_nested);
-+
-+void __sched _mutex_lock_nest_lock(struct mutex *lock,
-+				   struct lockdep_map *nest_lock)
-+{
-+	__mutex_lock_common(lock, TASK_UNINTERRUPTIBLE, 0, nest_lock, _RET_IP_);
-+}
-+EXPORT_SYMBOL_GPL(_mutex_lock_nest_lock);
-+
-+int __sched mutex_lock_interruptible_nested(struct mutex *lock,
-+					    unsigned int subclass)
-+{
-+	return __mutex_lock_common(lock, TASK_INTERRUPTIBLE, subclass, NULL, _RET_IP_);
-+}
-+EXPORT_SYMBOL_GPL(mutex_lock_interruptible_nested);
-+
-+int __sched mutex_lock_killable_nested(struct mutex *lock,
-+					    unsigned int subclass)
-+{
-+	return __mutex_lock_common(lock, TASK_KILLABLE, subclass, NULL, _RET_IP_);
-+}
-+EXPORT_SYMBOL_GPL(mutex_lock_killable_nested);
-+
-+void __sched mutex_lock_io_nested(struct mutex *lock, unsigned int subclass)
-+{
-+	int token;
-+
-+	might_sleep();
-+
-+	token = io_schedule_prepare();
-+	__mutex_lock_common(lock, TASK_UNINTERRUPTIBLE, subclass, NULL, _RET_IP_);
-+	io_schedule_finish(token);
-+}
-+EXPORT_SYMBOL_GPL(mutex_lock_io_nested);
-+
-+#else /* CONFIG_DEBUG_LOCK_ALLOC */
-+
-+void __sched mutex_lock(struct mutex *lock)
-+{
-+	__mutex_lock_common(lock, TASK_UNINTERRUPTIBLE, 0, NULL, _RET_IP_);
-+}
-+EXPORT_SYMBOL(mutex_lock);
-+
-+int __sched mutex_lock_interruptible(struct mutex *lock)
-+{
-+	return __mutex_lock_common(lock, TASK_INTERRUPTIBLE, 0, NULL, _RET_IP_);
-+}
-+EXPORT_SYMBOL(mutex_lock_interruptible);
-+
-+int __sched mutex_lock_killable(struct mutex *lock)
-+{
-+	return __mutex_lock_common(lock, TASK_KILLABLE, 0, NULL, _RET_IP_);
-+}
-+EXPORT_SYMBOL(mutex_lock_killable);
-+
-+void __sched mutex_lock_io(struct mutex *lock)
-+{
-+	int token = io_schedule_prepare();
-+
-+	__mutex_lock_common(lock, TASK_UNINTERRUPTIBLE, 0, NULL, _RET_IP_);
-+	io_schedule_finish(token);
-+}
-+EXPORT_SYMBOL(mutex_lock_io);
-+#endif /* !CONFIG_DEBUG_LOCK_ALLOC */
-+
-+int __sched mutex_trylock(struct mutex *lock)
-+{
-+	int ret;
-+
-+	if (IS_ENABLED(CONFIG_DEBUG_RT_MUTEXES) && WARN_ON_ONCE(!in_task()))
-+		return 0;
-+
-+	ret = __rt_mutex_trylock(&lock->rtmutex);
-+	if (ret)
-+		mutex_acquire(&lock->dep_map, 0, 1, _RET_IP_);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(mutex_trylock);
-+
-+void __sched mutex_unlock(struct mutex *lock)
-+{
-+	mutex_release(&lock->dep_map, _RET_IP_);
-+	__rt_mutex_unlock(&lock->rtmutex);
-+}
-+EXPORT_SYMBOL(mutex_unlock);
-+
-+#endif /* CONFIG_PREEMPT_RT */
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1235,7 +1235,7 @@ config PROVE_LOCKING
- 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
- 	select LOCKDEP
- 	select DEBUG_SPINLOCK
--	select DEBUG_MUTEXES
-+	select DEBUG_MUTEXES if !PREEMPT_RT
- 	select DEBUG_RT_MUTEXES if RT_MUTEXES
- 	select DEBUG_RWSEMS
- 	select DEBUG_WW_MUTEX_SLOWPATH
-@@ -1299,7 +1299,7 @@ config LOCK_STAT
- 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
- 	select LOCKDEP
- 	select DEBUG_SPINLOCK
--	select DEBUG_MUTEXES
-+	select DEBUG_MUTEXES if !PREEMPT_RT
- 	select DEBUG_RT_MUTEXES if RT_MUTEXES
- 	select DEBUG_LOCK_ALLOC
- 	default n
-@@ -1335,7 +1335,7 @@ config DEBUG_SPINLOCK
- 
- config DEBUG_MUTEXES
- 	bool "Mutex debugging: basic checks"
--	depends on DEBUG_KERNEL
-+	depends on DEBUG_KERNEL && !PREEMPT_RT
- 	help
- 	 This feature allows mutex semantics violations to be detected and
- 	 reported.
-@@ -1345,7 +1345,8 @@ config DEBUG_WW_MUTEX_SLOWPATH
- 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
- 	select DEBUG_LOCK_ALLOC
- 	select DEBUG_SPINLOCK
--	select DEBUG_MUTEXES
-+	select DEBUG_MUTEXES if !PREEMPT_RT
-+	select DEBUG_RT_MUTEXES if PREEMPT_RT
- 	help
- 	 This feature enables slowpath testing for w/w mutex users by
- 	 injecting additional -EDEADLK wound/backoff cases. Together with
-@@ -1368,7 +1369,7 @@ config DEBUG_LOCK_ALLOC
- 	bool "Lock debugging: detect incorrect freeing of live locks"
- 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
- 	select DEBUG_SPINLOCK
--	select DEBUG_MUTEXES
-+	select DEBUG_MUTEXES if !PREEMPT_RT
- 	select DEBUG_RT_MUTEXES if RT_MUTEXES
- 	select LOCKDEP
- 	help
+--- a/lib/test_lockup.c
++++ b/lib/test_lockup.c
+@@ -485,13 +485,13 @@ static int __init test_lockup_init(void)
+ 		       offsetof(spinlock_t, lock.wait_lock.magic),
+ 		       SPINLOCK_MAGIC) ||
+ 	    test_magic(lock_rwlock_ptr,
+-		       offsetof(rwlock_t, rtmutex.wait_lock.magic),
++		       offsetof(rwlock_t, rwbase.rtmutex.wait_lock.magic),
+ 		       SPINLOCK_MAGIC) ||
+ 	    test_magic(lock_mutex_ptr,
+-		       offsetof(struct mutex, lock.wait_lock.magic),
++		       offsetof(struct mutex, rtmutex.wait_lock.magic),
+ 		       SPINLOCK_MAGIC) ||
+ 	    test_magic(lock_rwsem_ptr,
+-		       offsetof(struct rw_semaphore, rtmutex.wait_lock.magic),
++		       offsetof(struct rw_semaphore, rwbase.rtmutex.wait_lock.magic),
+ 		       SPINLOCK_MAGIC))
+ 		return -EINVAL;
+ #else
+@@ -502,7 +502,7 @@ static int __init test_lockup_init(void)
+ 		       offsetof(rwlock_t, magic),
+ 		       RWLOCK_MAGIC) ||
+ 	    test_magic(lock_mutex_ptr,
+-		       offsetof(struct mutex, wait_lock.rlock.magic),
++		       offsetof(struct mutex, wait_lock.magic),
+ 		       SPINLOCK_MAGIC) ||
+ 	    test_magic(lock_rwsem_ptr,
+ 		       offsetof(struct rw_semaphore, wait_lock.magic),
 
