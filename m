@@ -2,121 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B9C3E151A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9D43E151D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237858AbhHEMxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48246 "EHLO
+        id S239354AbhHEMyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241535AbhHEMxQ (ORCPT
+        with ESMTP id S236276AbhHEMyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:53:16 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89531C06179B;
-        Thu,  5 Aug 2021 05:53:01 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so9153081pjb.2;
-        Thu, 05 Aug 2021 05:53:01 -0700 (PDT)
+        Thu, 5 Aug 2021 08:54:16 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A39C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 05:54:02 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id d22so6533148ioy.11
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 05:54:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=BU77sf7xzIvRwh5goFFmMNFMuNqmBOnkMiEiz3vg3H8=;
-        b=lPu8QbrCC0GfZOFqovmt2ITkMV4/39Mn3HuQdnvfqMJ0/7ePozTMm45XiQU8R7bZYg
-         wUgt9DgxjVuwrMXwvgtoL6eR8UFX3B4a5rONheat0OJnfUedXZKQ/kQesp7UYYbMNde5
-         +hD9Nx/U6mVO4uG00X0xNLzwmSDuoEaQWVupk/XqESszul8IpNMIy5h7IKQmlk9Dpvnv
-         yxMVlk/x4JTVM6Zr/gmIq9LJ3l2wnQChJ/STI64CL2IA5LYzi8pwgtRJQH9f0OXv6D3I
-         fiyQWEAEqM4Ugw3kLe6j2ojLNItBuUU3p1E1NUicBh7s4ZPL3pTkwcTBYqhEgQ8gcwAt
-         Qy4w==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=CUJAPxl/NPUJn40+0/B+dDcum5FvMyz50MbPQFWF6HU=;
+        b=P3CtrQKB6e5gkGuj5Fi21FBR9U3D2XrKByP3cIWqaXcKbkdRxoFzpv7owhOcyKRkc1
+         Y10XhT8lHfAe6ZexJVXvxAwHnfINwDrzWqYVUx398ndjXtJJJH6cAEs9h+TGZ96d1RkY
+         qxGgVE+E2du+4kWFYvfaq5KORF3OVj1eTx0b+VJLyvE5ItF1pEMqdPJ6IVuz6YI5MTHH
+         3Dwdb8tjlVuAyg8XhKTkSQn0oWV2Wk8qDF2861eWnCbaL87+fKA16D7uy5QM24SfG50E
+         0FSZcxKClrXHz/unxXB6hKxaGkkGkZw8a2XNn1t7iZFxQhmk5kYElmRpaqZrlhxnl3Y6
+         Dj7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=BU77sf7xzIvRwh5goFFmMNFMuNqmBOnkMiEiz3vg3H8=;
-        b=LXSl9IGc2BwaE25O5mYABbvxgsNtfjLINmp5aMfd7ksoKVTfF766UPiBVvt36ma8DY
-         Vu9slHwceliXcaqBiFUq4DbciUn7+ggbdf7CMXF35IN+1bYwdkKlXjPYzVPFAG4tdAC3
-         Hd0wPF5nd0vHjHbe8qaf5K3Kd9MvjcOMeTrK94j6A+rXd+yiksNib9g77wN9vvYd0B3k
-         1c4+MblFLswNbNs2s8Jips59tjDAAR2E4cSS3JCXya19lc6YoFGfReWsZzJWllQvdZrN
-         g4gHeNEbh3BtQ64sdF8Yfya7wwpL1oUaz0CtogMXjFOPL0aSRRwekQYXt1JkLeYG4dHm
-         EkXQ==
-X-Gm-Message-State: AOAM533iRDIgUVpJ0vIStGF8hn37Y1qGag7wVUcUQE0RJJ5f+9WaZkvc
-        ytPMlsRCgwIo7E/59D7vldI=
-X-Google-Smtp-Source: ABdhPJx7XRXisDhFAh4H/NwSHWH3YPmbdTyG/ODnMuWBcjqqHE1b+fjmlVXUmh7eLSqw67+7C1v/ug==
-X-Received: by 2002:a17:90a:f002:: with SMTP id bt2mr4795630pjb.142.1628167981168;
-        Thu, 05 Aug 2021 05:53:01 -0700 (PDT)
-Received: from [10.114.0.66] ([45.135.186.81])
-        by smtp.gmail.com with ESMTPSA id g6sm6789881pfh.111.2021.08.05.05.52.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Aug 2021 05:53:00 -0700 (PDT)
-Subject: Re: [PATCH] ceph: fix possible null-pointer dereference in
- ceph_mdsmap_decode()
-To:     Jeff Layton <jlayton@kernel.org>, idryomov@gmail.com
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        baijiaju1990@gmail.com, TOTE Robot <oslab@tsinghua.edu.cn>
-References: <20210805122015.129824-1-islituo@gmail.com>
- <ea6c827bcef4a0e424641f5eae2e17b2d0d8ebbe.camel@kernel.org>
-From:   Tuo Li <islituo@gmail.com>
-Message-ID: <2f3266d3-cf95-ca8c-2b61-8a906e21bc38@gmail.com>
-Date:   Thu, 5 Aug 2021 20:52:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=CUJAPxl/NPUJn40+0/B+dDcum5FvMyz50MbPQFWF6HU=;
+        b=mXURI/WAhHgNFJBCiJ6uvrH2daWAomcPqowuie/zo94Ko7BQCiB143LHsxrt+waUcI
+         RZPDub0J0dbvPyXMZ0yf47VMUd4LPMMET7RBjaHISzI27si/ZeBIkYchV9KYl11vc2O8
+         5zzxIdboRqgQy3n0sUKvf/H9HEhuNER0Nvgw6PItXT/cl8cbuou8oxJllSd2CaRVl4Kd
+         D6BOCQmrjw3clSqpeHwejznF5Zt2+zKl3eErSTdUMgbtLANTGP70vYs2scm+fd1xVDik
+         niymsdRL/CTEwtO/R0OfSMIWGiMvuVzUIoLczbfZPotocZIOIfg2Rj79sLBUZG4EZe0D
+         qKeg==
+X-Gm-Message-State: AOAM531sbrvU9tn0GSkdcbydHqE5MkBMy3kNi+hLqBb4fLACjbH3Pspn
+        NcUWgq+gI1tFR8pA+fSC+PLGaXHPzx9VFkzA6EE=
+X-Google-Smtp-Source: ABdhPJwb2xjM6y0tH3mOD4y+0laeBhq2YhKd+WURIHoYWk2Km3b8BSIjcEgNMxxtw2fe8MP5lQXy8ygtY2r93rsbGAg=
+X-Received: by 2002:a6b:28a:: with SMTP id 132mr1085669ioc.157.1628168041470;
+ Thu, 05 Aug 2021 05:54:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ea6c827bcef4a0e424641f5eae2e17b2d0d8ebbe.camel@kernel.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Received: by 2002:a4f:d234:0:0:0:0:0 with HTTP; Thu, 5 Aug 2021 05:54:01 -0700 (PDT)
+Reply-To: shawnhayden424@gmail.com
+From:   Shawn Hayden <sophiebrandon679@gmail.com>
+Date:   Thu, 5 Aug 2021 13:54:01 +0100
+Message-ID: <CAFXeZCSapq3DY2aP2ODS8PmVgMyuVdQ0KMxm-rWNBCCokxMbUQ@mail.gmail.com>
+Subject: =?UTF-8?B?Q8Otc2jDoG4gasSrZ8OydSDmhYjlloTmqZ/mp4s=?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your feedback. It sounds good to put an "if (m->m_info)" around
-the for loop to fix this bug, as well as avoid other potential bugs 
-caused by calling
-ceph_mdsmap_destroy(). I think we can prepare a V2 patch according to 
-your advice.
-
-
-On 2021/8/5 20:29, Jeff Layton wrote:
-> On Thu, 2021-08-05 at 05:20 -0700, Tuo Li wrote:
->> kcalloc() is called to allocate memory for m->m_info, and if it fails,
->> ceph_mdsmap_destroy() behind the label out_err will be called:
->>    ceph_mdsmap_destroy(m);
->>
->> In ceph_mdsmap_destroy(), m->m_info is dereferenced through:
->>    kfree(m->m_info[i].export_targets);
->>
->> To fix this possible null-pointer dereference, if memory allocation
->> for m->m_info fails, free m and return -ENOMEM.
->>
->> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
->> Signed-off-by: Tuo Li <islituo@gmail.com>
->> ---
->>   fs/ceph/mdsmap.c | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/ceph/mdsmap.c b/fs/ceph/mdsmap.c
->> index abd9af7727ad..7d73e4b64b12 100644
->> --- a/fs/ceph/mdsmap.c
->> +++ b/fs/ceph/mdsmap.c
->> @@ -166,8 +166,10 @@ struct ceph_mdsmap *ceph_mdsmap_decode(void **p, void *end, bool msgr2)
->>   	m->possible_max_rank = max(m->m_num_active_mds, m->m_max_mds);
->>   
->>   	m->m_info = kcalloc(m->possible_max_rank, sizeof(*m->m_info), GFP_NOFS);
->> -	if (!m->m_info)
->> -		goto nomem;
->> +	if (!m->m_info) {
->> +		kfree(m);
->> +		return ERR_PTR(-ENOMEM);
->> +	}
->>   
->>   	/* pick out active nodes from mds_info (state > 0) */
->>   	for (i = 0; i < n; i++) {
-> Good catch. This function is already pretty complex. How about we
-> instead fix this in ceph_mdsmap_destroy and make it safe to call that
-> with the mdsmap in this state?
->
-> Basically, just put an "if (m->m_info)" around the for loop in that
-> function. Sound ok?
->
-
+6Kaq5oSb55qE5pyL5Y+L77yMDQoNCuaIkeaYr+WxheS9j+WcqOe+juWci+eahOa+s+Wkp+WIqeS6
+nuWFrOawke+8jOS5n+aYr+S4gOWQjeaTgeaciSAzNSDlubTlt6XkvZzntpPpqZfnmoTmiL/lnLDn
+lKLntpPntIDkuroNCue2k+mpl+OAguaIkeacgOi/keaEn+afk+S6hiBDb3ZpZC0xOSDnl4Xmr5Lv
+vIzkuKbkuJTnlLHmlrwNCuaIkemAmeWAi+W5tOe0gO+8jOaIkeimuuW+l+aIkeaSkOS4jeS4i+WO
+u+S6huOAguaIkeS4gOebtOWcqOawp+awo+S4iw0K5bm+5aSp77yM5oiR5LiN6IO955So6Yyi6LK3
+5oiR55qE55Sf5rS744CC5oiR5Y+v5Lul5ZCR5oWI5ZaE5qmf5qeL5o2Q6LSIIDU1MDAg6JCs576O
+5YWD77yMDQrnibnliKXmmK/luavliqnnqq7kurrjgILljrvlubTmiJHnmoTlprvlrZDmrbvmlrzn
+mYznl4fvvIzmiJHllK/kuIDnmoTlhZLlrZDmmK/mhaLmgKfnl4UNCuizreW+kuaPrumcjeS6huaI
+kee1puS7lueahOaJgOacieizh+mHkeOAgg0K6Lq65Zyo55eF5bqK5LiK77yM5rKS5pyJ55Sf5a2Y
+55qE5biM5pyb77yM5oiR5biM5pybDQrkvaDluavmiJHlrozmiJDkuobmiJHmnIDlvoznmoTpoZjm
+nJvjgILpgJnmmK/kuIDlgIvngrrmiJHmnI3li5nnmoTpoZjmnJsNCueCuuaIkeeahOmdiOmtguWS
+jOe9queahOi1puWFjeWQkeS4iuW4neaHh+axguOAguWmguaenOS9oOmhmOaEjw0K5Lim5rqW5YKZ
+5o+Q5L6b5bmr5Yqp77yM6KuL5Zue562U5oiR77yM5oiR5pyD54K65oKo5o+Q5L6b6Kmz57Sw5L+h
+5oGv44CC5oiR55+l6YGT5oiRDQrlj6/ku6Xkv6Hku7vkvaDjgILoq4vluavluavmiJHjgIINCg0K
+6Kaq5YiH55qE5ZWP5YCZ44CCDQoNCuiCluaBqcK35rW355m744CCDQoNClHEq24nw6BpIGRlIHDD
+qW5neceSdSwNCg0Kd8eSIHNow6wgasWremjDuSB6w6BpIG3Em2lndcOzIGRlIMOgb2TDoGzDrHnH
+jiBnxY1uZ23DrW4sIHnEm3Now6wgecSrIG3DrW5nIHnHkm5neceSdSAzNQ0KbmnDoW4gZ8WNbmd6
+dcOyIGrEq25necOgbiBkZSBmw6FuZ2TDrGNox45uIGrEq25nasOsIHLDqW4NCmrEq25necOgbi4g
+V8eSIHp1w6xqw6xuIGfHjm5yx45ubGUgQ292aWQtMTkgYsOsbmdkw7osIGLDrG5ncWnEmyB5w7N1
+ecO6DQp3x5IgemjDqGdlIG5pw6FuasOsLCB3x5IganXDqWTDqSB3x5IgY2jEk25nIGLDuSB4acOg
+ccO5bGUuIFfHkiB5xKt6aMOtIHrDoGkgeceObmdxw6wgeGnDoA0KaseQIHRpxIFuLCB3x5IgYsO5
+bsOpbmcgecOybmcgcWnDoW4gbceOaSB3x5IgZGUgc2jEk25naHXDsy4gV8eSIGvEm3nHkCB4acOg
+bmcgY8Otc2jDoG4NCmrEq2fDsnUganXEgW56w6huZyA1NTAwIHfDoG4gbcSbaXl1w6FuLA0KdMOo
+YmnDqSBzaMOsIGLEgW5nemjDuSBxacOzbmcgcsOpbi4gUcO5bmnDoW4gd8eSIGRlIHHEq3ppIHPH
+kCB5w7ogw6FpemjDqG5nLCB3x5Igd8OpaXnEqw0KZGUgw6lyemkgc2jDrCBtw6BueMOsbmdiw6xu
+Zw0KZMeUIHTDuiBodcSraHXDsmxlIHfHkiBnxJtpIHTEgSBkZSBzdceSeceSdSB6xKtqxKtuLg0K
+VMeObmcgesOgaSBiw6xuZ2NodcOhbmcgc2jDoG5nLCBtw6lpeceSdSBzaMSTbmdjw7puIGRlIHjE
+q3fDoG5nLCB3x5IgeMSrd8OgbmcNCm7HkCBixIFuZyB3x5Igd8OhbmNow6luZ2xlIHfHkiB6dcOs
+aMOydSBkZSB5dcOgbnfDoG5nLiBaaMOoIHNow6wgecSrZ8OoIHfDqGkgd8eSIGbDunfDuQ0KZGUg
+eXXDoG53w6BuZw0Kd8OoaSB3x5IgZGUgbMOtbmdow7puIGjDqSB6dcOsIGRlIHNow6htaceObiB4
+acOgbmcgc2jDoG5nZMOsIGvEm25xacO6LiBSw7pndceSIG7HkCB5dcOgbnnDrA0KYsOsbmcgemjH
+lG5iw6hpIHTDrWfFjW5nIGLEgW5nemjDuSwgcceQbmcgaHXDrWTDoSB3x5IsIHfHkiBodcOsIHfD
+qGkgbsOtbiB0w61nxY1uZw0KeGnDoW5neMOsIHjDrG54xKsuIFfHkiB6aMSrZMOgbyB3x5INCmvE
+m3nHkCB4w6xucsOobiBux5AuIFHHkG5nIGLEgW5nIGLEgW5nIHfHki4NCg0KUcSrbnFpw6ggZGUg
+d8OobmjDsnUuDQoNClhpw6BvIMSTbsK3aMeOaSBkxJNuZy4NCg==
