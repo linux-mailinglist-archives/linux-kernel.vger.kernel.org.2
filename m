@@ -2,213 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51DCD3E1141
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35953E1152
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236711AbhHEJZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 05:25:36 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:16049 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhHEJZf (ORCPT
+        id S238577AbhHEJcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 05:32:51 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:43014 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238146AbhHEJcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:25:35 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GgNQx2lxTzZxK2;
-        Thu,  5 Aug 2021 17:21:45 +0800 (CST)
-Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 17:25:19 +0800
-Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
- (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 5 Aug
- 2021 17:25:19 +0800
-Subject: Re: [PATCH v2] arm64: kprobe: Enable OPTPROBE for arm64
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-CC:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
-        <davem@davemloft.net>, <linux-arm-kernel@lists.infradead.org>,
-        <song.bao.hua@hisilicon.com>, <prime.zeng@hisilicon.com>,
-        <robin.murphy@arm.com>, <f.fangjian@huawei.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20210804060209.95817-1-liuqi115@huawei.com>
- <20210805105401.4acd3217c566b4e3933f355c@kernel.org>
-From:   "liuqi (BA)" <liuqi115@huawei.com>
-Message-ID: <d3e0c9ee-19b5-8042-d251-05348e8ac49e@huawei.com>
-Date:   Thu, 5 Aug 2021 17:25:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 5 Aug 2021 05:32:47 -0400
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210805093231epoutp02f41829c31fb74b9e2cf236c48aa039a9~YXzYNlDT91069610696epoutp02Y
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 09:32:31 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210805093231epoutp02f41829c31fb74b9e2cf236c48aa039a9~YXzYNlDT91069610696epoutp02Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1628155951;
+        bh=4Sj9w1KreodUtPW30Wow7JUe/4/3NIZ0abD2ZJDPwPo=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=tDIw7ASSO6dWyWyVah9MZxvyk1Kv0ub4bU+rLifcyHExg2gn5PRz8b2KdpbfzzqK/
+         1WE5KF5LpKCrD/tVpEDkupgTy/DqfdrE4+xP/atABv8/2Xkdko82pc5vEk9LT38q01
+         dA1OQSYdQwYsAcFDf/u9puoZmj7f63McWyJnc3Gs=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20210805093226epcas5p306cecb152db385353bbbe48bca790502~YXzT5i7Jp0150801508epcas5p3K;
+        Thu,  5 Aug 2021 09:32:26 +0000 (GMT)
+Received: from epsmges5p3new.samsung.com (unknown [182.195.38.181]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4GgNg73zHNz4x9Pt; Thu,  5 Aug
+        2021 09:32:19 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3D.D6.41701.D10BB016; Thu,  5 Aug 2021 18:32:13 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210805092619epcas5p165c3a064056e0979cb8178e92fa7d206~YXt92jbe-0733707337epcas5p15;
+        Thu,  5 Aug 2021 09:26:19 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210805092619epsmtrp255a4faeb5a8ecf0536c8dc21e9ad673e~YXt91tgJ90817208172epsmtrp24;
+        Thu,  5 Aug 2021 09:26:19 +0000 (GMT)
+X-AuditID: b6c32a4b-0abff7000001a2e5-08-610bb01da1f7
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        8B.E7.08394.ABEAB016; Thu,  5 Aug 2021 18:26:19 +0900 (KST)
+Received: from alimakhtar02 (unknown [107.122.12.5]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210805092617epsmtip19e4d2b50513b28b095bafeee586bc2d9~YXt8Wtl-10330303303epsmtip1F;
+        Thu,  5 Aug 2021 09:26:17 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@canonical.com>,
+        "'Rob Herring'" <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Cc:     "'Chanwoo Choi'" <cw00.choi@samsung.com>,
+        "'Pankaj Dubey'" <pankaj.dubey@samsung.com>,
+        "'Sam Protsenko'" <semen.protsenko@linaro.org>,
+        "'Marc Zyngier'" <maz@kernel.org>
+In-Reply-To: <b0d6ff2a-24af-96c1-62a1-8b920c63e05a@canonical.com>
+Subject: RE: [PATCH] arm64: dts: exynos: correct GIC CPU interfaces address
+ range on Exynos7
+Date:   Thu, 5 Aug 2021 14:56:14 +0530
+Message-ID: <03d701d789db$f275d290$d76177b0$@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20210805105401.4acd3217c566b4e3933f355c@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.203]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema757-chm.china.huawei.com (10.1.198.199)
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQGqCsm6I7l6cIRsiJEa3ZtJxO0jtAJYiPTmAtVSVZirljKmUA==
+Content-Language: en-in
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAJsWRmVeSWpSXmKPExsWy7bCmhq7sBu5Eg4udmhbXvzxntZh/5Byr
+        xca3P5gsNj2+xmpxedccNosZ5/cxWeycc5LVYtHWL+wWrXuPsFs879vH5MDlMauhl81j06pO
+        No871/aweWxeUu/Rt2UVo8fnTXIBbFHZNhmpiSmpRQqpecn5KZl56bZK3sHxzvGmZgaGuoaW
+        FuZKCnmJuam2Si4+AbpumTlAlykplCXmlAKFAhKLi5X07WyK8ktLUhUy8otLbJVSC1JyCkwK
+        9IoTc4tL89L18lJLrAwNDIxMgQoTsjOOHW1mKVgjWHHx4g/mBsY1fF2MnBwSAiYSx/vnMHcx
+        cnEICexmlJh0ZB8jhPOJUaLpxH1WCOcbo8TGlkZGmJbWqdfZIBJ7GSVmde+Acl4yStya/gqs
+        ik1AV2LH4jawhAhI+/LPK8AGMwtsYJTYt/ITWBWngKPEig8T2UBsYYE4iTl/ZjOB2CwCKhJn
+        XmwAs3kFLCVuf//GDGELSpyc+YQFxGYW0JZYtvA1M8RNChI/ny5jBbFFBJwkLj25xgRRIy5x
+        9GcP2HsSAls4JDZ9+8MG0eAi8eDxe6iHhCVeHd/CDmFLSXx+txeohgPIzpbo2WUMEa6RWDrv
+        GAuEbS9x4MocFpASZgFNifW79CHCshJTT62DWssn0fv7CRNEnFdixzwYW1Wi+d1VqDHSEhO7
+        u1knMCrNQvLZLCSfzULywSyEbQsYWVYxSqYWFOempxabFhjnpZbDozw5P3cTIzjpannvYHz0
+        4IPeIUYmDsZDjBIczEoivMmLuRKFeFMSK6tSi/Lji0pzUosPMZoCg3sis5Rocj4w7eeVxBua
+        WBqYmJmZmVgamxkqifOyx39NEBJITyxJzU5NLUgtgulj4uCUamB68aFq7+FPXglzAuvfr++1
+        O59waPXMoi4Tf+n5lb8y87KSJh239RcovPX4SOXX5Vb1ov6bN+qGfVjYk/L2XIK7aulTL4nb
+        f1h2lXH+ap1ru/ry8fUdq/59T/yQOa1W8jaD8YVVbkYnDTtUGPawFHWZG6729T1h5fzrqRoH
+        +9w9fpyrz6y9ZRVqPat+r+nFz/0ZAfndOfI3zwkuWhv17G+Q0J9NPO3XzBtqP5ww4Mp+eOwk
+        f0PTetENn4ImTD5ro83oIf5EZduGRKeA6wpb83mnrF00Od/6x6FW12t11iIvr74o41n6ySFn
+        59H+xavfpDdGLvj+YKHV+QCJV/Nf/gyaM+HXPCM3owjXmAXaV8UPKLEUZyQaajEXFScCAB5W
+        P/hDBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBIsWRmVeSWpSXmKPExsWy7bCSnO7uddyJBp8fM1pc//Kc1WL+kXOs
+        Fhvf/mCy2PT4GqvF5V1z2CxmnN/HZLFzzklWi0Vbv7BbtO49wm7xvG8fkwOXx6yGXjaPTas6
+        2TzuXNvD5rF5Sb1H35ZVjB6fN8kFsEVx2aSk5mSWpRbp2yVwZVzbeoa94LtAxfPWl+wNjF95
+        uxg5OSQETCRap15nA7GFBHYzSmz8WAIRl5a4vnECO4QtLLHy33Mgmwuo5jmjxLQHD8Ea2AR0
+        JXYsbmMDSYgI/GKUmHPuHzOIwyywiVHi1+OtrBAtZxglvvafYAVp4RRwlFjxYSJYu7BAjETr
+        0llMIDaLgIrEmRcbwGxeAUuJ29+/MUPYghInZz5hAbGZBbQleh+2MsLYyxa+Zoa4T0Hi59Nl
+        YPNFBJwkLj25xgRRIy5x9GcP8wRG4VlIRs1CMmoWklGzkLQsYGRZxSiZWlCcm55bbFhgmJda
+        rlecmFtcmpeul5yfu4kRHHlamjsYt6/6oHeIkYmD8RCjBAezkghv8mKuRCHelMTKqtSi/Pii
+        0pzU4kOM0hwsSuK8F7pOxgsJpCeWpGanphakFsFkmTg4pRqYLkhzci0LXCX/wUOFw6/9xNxI
+        86Obj16s2OculiO0QnvTy7O+mT8/zlpcZBfAWiIt2/Xcq/f+VsnzVfcW17Pu/9F2tqJpi2rz
+        ueypwUJKCpMObmH3f30gJO5cVRGPx7m/sq5RT6I/cGz0C+Ppa9zzUOq79t8TbDfXcQW+/qpq
+        Nqn3TbX50ZmXNzaLsuWrGonx2Wzd6zd90Y1X6SJSdgLnjwgwOV9csmr2hElriw1cud95aPPu
+        uFGRqKAx7a6aR7m01TW7u9rmK47cObRL4Q1PWeCEDQVlsz49eW+z3Db9n3BM7onK057TmF5l
+        tdhFHXi/4XQBf36/9u7K7Sf5Dd9sZtj34f/l0iMr3d1UHe95KbEUZyQaajEXFScCAEu+D2cr
+        AwAA
+X-CMS-MailID: 20210805092619epcas5p165c3a064056e0979cb8178e92fa7d206
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
 X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210805073653epcas5p21b4c2358b7de2b3c21dbc357af957137
+References: <20210805072110.4730-1-krzysztof.kozlowski@canonical.com>
+        <CGME20210805073653epcas5p21b4c2358b7de2b3c21dbc357af957137@epcas5p2.samsung.com>
+        <b0d6ff2a-24af-96c1-62a1-8b920c63e05a@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Krzysztof,
 
-Hi Masami,
+> -----Original Message-----
+> From: Krzysztof Kozlowski <krzysztof.kozlowski=40canonical.com>
+> Sent: 05 August 2021 13:07
+> To: Rob Herring <robh+dt=40kernel.org>; devicetree=40vger.kernel.org; lin=
+ux-
+> arm-kernel=40lists.infradead.org; linux-samsung-soc=40vger.kernel.org; li=
+nux-
+> kernel=40vger.kernel.org
+> Cc: Alim Akhtar <alim.akhtar=40samsung.com>; Chanwoo Choi
+> <cw00.choi=40samsung.com>; Pankaj Dubey <pankaj.dubey=40samsung.com>;
+> Sam Protsenko <semen.protsenko=40linaro.org>; Marc Zyngier
+> <maz=40kernel.org>
+> Subject: Re: =5BPATCH=5D arm64: dts: exynos: correct GIC CPU interfaces a=
+ddress
+> range on Exynos7
+>=20
+> On 05/08/2021 09:21, Krzysztof Kozlowski wrote:
+> > The GIC-400 CPU interfaces address range is defined as 0x2000-0x3FFF
+> > (by ARM).
+> >
+>=20
+Looking at DDI0471B_gic400_r0p1_trm.pdf, CPU interface range is 0x0000 =7E =
+0x10000
 
-On 2021/8/5 9:54, Masami Hiramatsu wrote:
-> On Wed, 4 Aug 2021 14:02:09 +0800
-> Qi Liu <liuqi115@huawei.com> wrote:
-> 
->> This patch introduce optprobe for ARM64. In optprobe, probed
->> instruction is replaced by a branch instruction to detour
->> buffer. Detour buffer contains trampoline code and a call to
->> optimized_callback(). optimized_callback() calls opt_pre_handler()
->> to execute kprobe handler.
->>
->> Limitations:
->> - We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
->> guarantee the offset between probe point and kprobe pre_handler
->> is not larger than 128MiB.
->>
->> Performance of optprobe on Hip08 platform is test using kprobe
->> example module[1] to analyze the latency of a kernel function,
->> and here is the result:
->>
->> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/samples/kprobes/kretprobe_example.c
->>
->> kprobe before optimized:
->> [280709.846380] do_empty returned 0 and took 1530 ns to execute
->> [280709.852057] do_empty returned 0 and took 550 ns to execute
->> [280709.857631] do_empty returned 0 and took 440 ns to execute
->> [280709.863215] do_empty returned 0 and took 380 ns to execute
->> [280709.868787] do_empty returned 0 and took 360 ns to execute
->> [280709.874362] do_empty returned 0 and took 340 ns to execute
->> [280709.879936] do_empty returned 0 and took 320 ns to execute
->> [280709.885505] do_empty returned 0 and took 300 ns to execute
->> [280709.891075] do_empty returned 0 and took 280 ns to execute
->> [280709.896646] do_empty returned 0 and took 290 ns to execute
->> [280709.902220] do_empty returned 0 and took 290 ns to execute
->> [280709.907807] do_empty returned 0 and took 290 ns to execute
->>
->> optprobe:
->> [ 2965.964572] do_empty returned 0 and took 90 ns to execute
->> [ 2965.969952] do_empty returned 0 and took 80 ns to execute
->> [ 2965.975332] do_empty returned 0 and took 70 ns to execute
->> [ 2965.980714] do_empty returned 0 and took 60 ns to execute
->> [ 2965.986128] do_empty returned 0 and took 80 ns to execute
->> [ 2965.991507] do_empty returned 0 and took 70 ns to execute
->> [ 2965.996884] do_empty returned 0 and took 70 ns to execute
->> [ 2966.002262] do_empty returned 0 and took 80 ns to execute
->> [ 2966.007642] do_empty returned 0 and took 70 ns to execute
->> [ 2966.013020] do_empty returned 0 and took 70 ns to execute
->> [ 2966.018400] do_empty returned 0 and took 70 ns to execute
->> [ 2966.023779] do_empty returned 0 and took 70 ns to execute
->> [ 2966.029158] do_empty returned 0 and took 70 ns to execute
->>
->> Signed-off-by: Qi Liu <liuqi115@huawei.com>
->>
->> ---
->>
->> Changes since V1:
->> - Address the comments from Masami, checks for all branch instructions, and
->> use aarch64_insn_patch_text_nosync() instead of aarch64_insn_patch_text()
->> in each probe.
-> 
-> Is it safe for the multicore system? If it is safe because it modifies
-> just one instruction (modifying 32bit in atomic), I understand it.
+> I underestimated the issue - this is actually bug as there is a GICC_DIR
+> register at offset 0x1000. Therefore:
+>=20
+Looking at the exynos7 and exynos5433 UMs looks like GICC_DIR is at offset =
+0x2100 (from 0x1100_0000 GIC base)
+It is possible for you to cross check once?
 
-Seems raw_spin_lock_irqsave is used in aarch64_insn_patch_text_nosync() 
-and spinlock could support a protection in multicore system.
-> BTW, anyway, you should use _nosync() variant in arch_prepare_optimized_kprobe()
-> too, beacause the optprobe insn buffer is not touched until the probed instruction
-> is optimized by br.
-> 
-Yes, sounds resonable.
-> [...]
->> +int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *orig)
->> +{
->> +	kprobe_opcode_t *code;
->> +	u32 insn;
->> +	int ret, i;
->> +	void *addrs[TMPL_END_IDX];
->> +	void *addr;
->> +
->> +	code = get_optinsn_slot();
->> +	if (!code)
->> +		return -ENOMEM;
->> +
->> +	if (!is_offset_in_range((unsigned long)code,
->> +				(unsigned long)orig->addr + 8))
->> +		goto error;
->> +
->> +	if (!is_offset_in_range((unsigned long)code + TMPL_CALL_BACK,
->> +				(unsigned long)optimized_callback))
->> +		goto error;
->> +
->> +	if (!is_offset_in_range((unsigned long)&code[TMPL_RESTORE_END],
->> +				(unsigned long)op->kp.addr + 4))
->> +		goto error;
->> +
->> +	/* Setup template */
->> +	for (i = 0; i < TMPL_END_IDX; i++)
->> +		addrs[i] = code + i;
->> +
->> +	ret = aarch64_insn_patch_text(addrs, optprobe_template_entry,
->> +				      TMPL_END_IDX);
-> 
-> You should use aarch64_insn_patch_text_nosync() here (and all the
-> aarch64_insn_patch_text() in this function too), because the insn
-> buffer must not executed until the probe point is optimized.
-> 
-aarch64_insn_patch_text() could patch multi instructions to code[] each 
-time and aarch64_insn_patch_text_nosync() could only patch one 
-instruction each time, so maybe aarch64_insn_patch_text() is better here.
-
-I'll replace other aarch64_insn_patch_text() in this function.
-
-Thanks,
-Qi
-
->> +	if (ret < 0)
->> +		goto error;
->> +
->> +	/* Set probe information */
->> +	addr = code + TMPL_VAL_IDX;
->> +	insn =  (unsigned long long)op & 0xffffffff;
->> +	aarch64_insn_patch_text(&addr, &insn, 1);
->> +
->> +	addr = addr + 4;
->> +	insn = ((unsigned long long)op & GENMASK_ULL(63, 32)) >> 32;
->> +	aarch64_insn_patch_text(&addr, &insn, 1);
->> +
->> +	addr = code + TMPL_CALL_BACK;
->> +	insn =  aarch64_insn_gen_branch_imm((unsigned long)addr,
->> +				(unsigned long)optimized_callback,
->> +				AARCH64_INSN_BRANCH_LINK);
->> +	aarch64_insn_patch_text(&addr, &insn, 1);
->> +
->> +	/* The original probed instruction */
->> +	addr = code + TMPL_RESTORE_ORIGN_INSN;
->> +	insn =  orig->opcode;
->> +	aarch64_insn_patch_text(&addr, &insn, 1);
->> +
->> +	/* Jump back to next instruction */
->> +	addr = code + TMPL_RESTORE_END;
->> +	insn = aarch64_insn_gen_branch_imm(
->> +				(unsigned long)(&code[TMPL_RESTORE_END]),
->> +				(unsigned long)(op->kp.addr) + 4,
->> +				AARCH64_INSN_BRANCH_NOLINK);
->> +	aarch64_insn_patch_text(&addr, &insn, 1);
->> +
->> +	flush_icache_range((unsigned long)code,
->> +			   (unsigned long)(&code[TMPL_END_IDX]));
->> +	/* Set op->optinsn.insn means prepared. */
->> +	op->optinsn.insn = code;
->> +
->> +	return 0;
-> 
-> Thank you,
-> 
-> 
-> 
+> Fixes: b9024cbc937d (=22arm64: dts: Add initial device tree support for
+> exynos7=22)
+>=20
+> > Reported-by: Sam Protsenko <semen.protsenko=40linaro.org>
+> > Reported-by: Marc Zyngier <maz=40kernel.org>
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski=40canonical.com=
+>
+> > ---
+> >  arch/arm64/boot/dts/exynos/exynos7.dtsi =7C 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi
+> > b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+> > index 8b06397ba6e7..c73a597ca66e 100644
+> > --- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
+> > +++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+> > =40=40 -137,7 +137,7 =40=40 gic: interrupt-controller=4011001000 =7B
+> >  			=23address-cells =3D <0>;
+> >  			interrupt-controller;
+> >  			reg =3D	<0x11001000 0x1000>,
+> > -				<0x11002000 0x1000>,
+> > +				<0x11002000 0x2000>,
+> >  				<0x11004000 0x2000>,
+> >  				<0x11006000 0x2000>;
+> >  		=7D;
+> >
+>=20
+>=20
+> Best regards,
+> Krzysztof
 
