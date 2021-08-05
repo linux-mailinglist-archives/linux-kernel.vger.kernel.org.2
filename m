@@ -2,115 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE6E3E18B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBD23E18B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242639AbhHEPvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhHEPvR (ORCPT
+        id S242644AbhHEPuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:50:50 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:48976
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242637AbhHEPus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:51:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B130BC061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 08:51:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=GA9Wl8XAnaVZWe79XE56zBQj2c2DUmDhEABlAFwx8aw=; b=FqwAqcH/fUfn+5Xm46zKZW5e/T
-        HorbSikRPxEUVUVXhuhNYRDydbAxAFJfF4s9cP4+d6rncokBwrhn6owajcd7dObkwmsIaHVEEwHBq
-        D60Rly3y5Kk+xBqnmLMAC3XH+pc78jn1WxwSdJd65HoyV7Va2gPCR31Qp5x1hUTtTuNklrsL9pJXV
-        iEnwru9MtMVW4L2p8BpcG0/ao0V190/dieLm20vMg9JyiCIinZJ7E0/qkw+7t8KQ+vJxKfBu0E09F
-        SyGBFvtmmDkhLj3b/OUdXQ8WjIuPl64M7ifj68egZE0iMfYsiyrc/LieJ1yjJ0C9ju16CN80bigTt
-        GIFdjBCw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBfd5-007FNA-6C; Thu, 05 Aug 2021 15:50:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Thu, 5 Aug 2021 11:50:48 -0400
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 72698300084;
-        Thu,  5 Aug 2021 17:49:54 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2F4F52040A33A; Thu,  5 Aug 2021 17:49:54 +0200 (CEST)
-Date:   Thu, 5 Aug 2021 17:49:54 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     jpoimboe@redhat.com, jbaron@akamai.com, rostedt@goodmis.org,
-        ardb@kernel.org
-Cc:     linux-kernel@vger.kernel.org, ltykernel@gmail.com
-Subject: [PATCH] static_call: Update comment
-Message-ID: <YQwIorQBHEq+s73b@hirez.programming.kicks-ass.net>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 3E92340672
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 15:50:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628178626;
+        bh=D1l7i5Vb28UXsgNtCBHcCcosslzh2sOmteJR8SBleRE=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=g2AAadfmeyKla1dH/Y+Xk1fHUWovHttV+mLNaoWNrMugWEcRlIF2iLfSy+B+yuVb+
+         VU0X09spn5cxjmwDlhVkSJpd7LIK0URshF5JWtde5lW6o92OvqlOnBetFF31parjIk
+         DMNaeNryvmULBtBoQAIXvojjkVChBI8ep9bo7Jk+efKC3xX6QxcXwrjI52j6vmmlWZ
+         A0CDEW0hZpW0jg8pKILrTxTPcXbSijIBCzipwRnC9MxX4ifb0W2BMfa5DgWm3rFAb2
+         YWcvKSva2VJHHgrDLq5ThgNgRR4vMdPTgW7O1o6/bc8dMyNB6rlYURBKivRzO47MbD
+         71U7sDa9yC81Q==
+Received: by mail-ej1-f71.google.com with SMTP id q19-20020a170906b293b029058a1e75c819so2178226ejz.16
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 08:50:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D1l7i5Vb28UXsgNtCBHcCcosslzh2sOmteJR8SBleRE=;
+        b=t/3iAjuC6d72lL1iNIfM3L/yl21JEC91QMY8iLNYqHW+AeX/KdKo054FFe0sXa4vDJ
+         14vh29sFoKtkVCqqyAGF047UWD5cSIvGy0tXu9n0ORkaop1M5hT5SS0sOUD7kR03t4yq
+         jpUzqsuyTnz8+RbMkoVerCJyMj/zGPUbXpQCMtMVjoXbIdDhYLLM6525QfTT2n0JM6Cm
+         ru/z3BGGHwv8rjV3dfn5kpAdAxN6z3wL+1k1lV7phd3YrdYQyWpPxNj3imLpDZXzW/r1
+         +aXAn89QK+JCWwPkAx52IspyUKrAYZleP2RkEPtJ6H7E5rtz3QHr7H5iyTElDy9TgpZD
+         yYEg==
+X-Gm-Message-State: AOAM532Zsab0L4S+Xnu7xP97QiWAVlMhNNCbgVz2QvgsVqP/sItWz+ad
+        KPGyMb0Nqo6+Sy0rmN9DVM61s+hJ2kXgG9Nm0wYMhMewzrIBSQMUo80n3aV65GN2eMARchcIXK/
+        T3e7kkOWmb+NLb+yDl1Sk43hPDhMz6lQOX0tYdAmzQDJkjuIUirLyIy1YHw==
+X-Received: by 2002:a17:907:9d2:: with SMTP id bx18mr5515900ejc.117.1628178625867;
+        Thu, 05 Aug 2021 08:50:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzv/WSADBZGHTodg1DBbwRBVFcjOn0YB5R69RD6u/wvTjmlwPTmtgTeS5cInQdde63/dbkb+r7CykRPnppdfSg=
+X-Received: by 2002:a17:907:9d2:: with SMTP id bx18mr5515871ejc.117.1628178625561;
+ Thu, 05 Aug 2021 08:50:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210514071452.25220-1-kai.heng.feng@canonical.com>
+ <576B26FD-81F8-4632-82F6-57C4A7C096C4@holtmann.org> <8735ryk0o7.fsf@baylibre.com>
+ <CAAd53p7Zc3Zk21rwj_x1BLgf8tWRxaKBmXARkM6d7Kpkb+fDZA@mail.gmail.com>
+ <87y29o58su.fsf@baylibre.com> <CAAd53p4Ss1Z-7CB4g=_xZYxo1xDz6ih6GHUuMcgncy+yNAfU4w@mail.gmail.com>
+ <87a6lzx7jf.fsf@baylibre.com> <CAAd53p6T_K67CPthLPObF=OWWCEChW4pMFMwuq87qWmTmzP2VA@mail.gmail.com>
+ <87bl6cnzy2.fsf@baylibre.com>
+In-Reply-To: <87bl6cnzy2.fsf@baylibre.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 5 Aug 2021 23:50:09 +0800
+Message-ID: <CAAd53p5TVJk3G4cArS_UO7cgUpJLONNGVHnpezXy0XTYoXd_uw@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: Shutdown controller after workqueues are
+ flushed or cancelled
+To:     Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mattijs,
 
-Update the comment with the new features.
+On Thu, Aug 5, 2021 at 2:55 PM Mattijs Korpershoek
+<mkorpershoek@baylibre.com> wrote:
+>
+> Hi Kai-Heng,
+>
+> Thanks for your patch,
+>
+> Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
+>
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- include/linux/static_call.h | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+[snipped]
 
-diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index fc94faa53b5b..35d28261b12b 100644
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -17,11 +17,17 @@
-  *   DECLARE_STATIC_CALL(name, func);
-  *   DEFINE_STATIC_CALL(name, func);
-  *   DEFINE_STATIC_CALL_NULL(name, typename);
-+ *   DEFINE_STATIC_CALL_RET0(name, typename);
-+ *
-+ *   __static_call_return0;
-+ *
-  *   static_call(name)(args...);
-  *   static_call_cond(name)(args...);
-  *   static_call_update(name, func);
-  *   static_call_query(name);
-  *
-+ *   EXPORT_STATIC_CALL{,_TRAMP}{,_GPL}()
-+ *
-  * Usage example:
-  *
-  *   # Start with the following functions (with identical prototypes):
-@@ -96,6 +102,33 @@
-  *   To query which function is currently set to be called, use:
-  *
-  *   func = static_call_query(name);
-+ *
-+ *
-+ * DEFINE_STATIC_CALL_RET0 / __static_call_return0:
-+ *
-+ *   Just like how DEFINE_STATIC_CALL_NULL() / static_call_cond() optimize the
-+ *   conditional void function call, DEFINE_STAT_CALL_RET0 /
-+ *   __static_call_return0 optimize the do nothing return 0 function.
-+ *
-+ *   This feature is strictly UB per the C standard (since it casts a function
-+ *   pointer to a different signature) and relies on the architecture ABI to
-+ *   make things work. In particular it relies on Caller Stack cleanup and the
-+ *   whole return register being clobbered for short return values. All normal
-+ *   CDECL style ABIs conform.
-+ *
-+ *   In particular the x86_64 implementation replaces the 5 byte CALL
-+ *   instruction at the callsite with a 5 byte clear of the RAX register,
-+ *   completely eliding any function call overhead.
-+ *
-+ *   Notably argument setup is unconditional.
-+ *
-+ *
-+ * EXPORT_STATIC_CALL() vs EXPORT_STATIC_CALL_TRAMP():
-+ *
-+ *   The difference is that the _TRAMP variant tries to only export the
-+ *   trampoline with the result that a module can use static_call{,_cond}() but
-+ *   not static_call_update().
-+ *
-  */
- 
- #include <linux/types.h>
+> I confirm this diff works for me:
+>
+> root@i500-pumpkin:~# hciconfig hci0 up
+> root@i500-pumpkin:~# hciconfig hci0 down
+> root@i500-pumpkin:~# hciconfig hci0 up
+> root@i500-pumpkin:~# hciconfig hci0
+> hci0:   Type: Primary  Bus: SDIO
+>         BD Address: 00:0C:E7:55:FF:12  ACL MTU: 1021:8  SCO MTU: 244:4
+>         UP RUNNING
+>         RX bytes:11268 acl:0 sco:0 events:829 errors:0
+>         TX bytes:182569 acl:0 sco:0 commands:829 errors:0
+>
+> root@i500-pumpkin:~# hcitool scan
+> Scanning ...
+>         <redacted>       Pixel 3 XL
+>
+> Tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+
+I found that btmtksdio_flush() only cancels the work instead of doing
+flush_work(). That probably explains why putting ->shutdown right
+before ->flush doesn't work.
+So can you please test the following again:
+diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
+index 9872ef18f9fea..b33c05ad2150b 100644
+--- a/drivers/bluetooth/btmtksdio.c
++++ b/drivers/bluetooth/btmtksdio.c
+@@ -649,9 +649,9 @@ static int btmtksdio_flush(struct hci_dev *hdev)
+ {
+        struct btmtksdio_dev *bdev = hci_get_drvdata(hdev);
+
+-       skb_queue_purge(&bdev->txq);
++       flush_work(&bdev->tx_work);
+
+-       cancel_work_sync(&bdev->tx_work);
++       skb_queue_purge(&bdev->txq);
+
+        return 0;
+ }
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 2560ed2f144d4..a61e610a400cb 100644
+
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1785,6 +1785,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
+        aosp_do_close(hdev);
+        msft_do_close(hdev);
+
++       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
++           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
++           test_bit(HCI_UP, &hdev->flags)) {
++               /* Execute vendor specific shutdown routine */
++               if (hdev->shutdown)
++                       hdev->shutdown(hdev);
++       }
++
+        if (hdev->flush)
+                hdev->flush(hdev);
+
+@@ -1798,14 +1806,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
+                clear_bit(HCI_INIT, &hdev->flags);
+        }
+
+-       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+-           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+-           test_bit(HCI_UP, &hdev->flags)) {
+-               /* Execute vendor specific shutdown routine */
+-               if (hdev->shutdown)
+-                       hdev->shutdown(hdev);
+-       }
+-
+        /* flush cmd  work */
+        flush_work(&hdev->cmd_work);
+
+Kai-Heng
