@@ -2,180 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8685F3E1386
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED453E1404
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240821AbhHELIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:08:46 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:13237 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240746AbhHELIo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:08:44 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GgQnx5cF7z1CSh5;
-        Thu,  5 Aug 2021 19:08:21 +0800 (CST)
-Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 19:08:28 +0800
-Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 5 Aug 2021
- 19:08:28 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] riscv: Enable HAVE_ARCH_HUGE_VMAP for 64BIT
-Date:   Thu, 5 Aug 2021 19:38:37 +0800
-Message-ID: <20210805113837.805805-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
+        id S238062AbhHELkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:40:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231162AbhHELkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 07:40:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B43261151;
+        Thu,  5 Aug 2021 11:39:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628163592;
+        bh=8mU0A5orRr3K27+zyQdI9wprEVKYjZQphj65N7Meb+s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sW+AX4B2inRuoHz0NXi4GyPdRZ3BPqYLHHXDiKjWUHq8lKwKhv+yOpSLnP71dorGv
+         Ndecir0Ev8wu2wKv+6TwlBLwJHUD2LoB7jfecMOmer0RpUvkuYQwCpw4KLIB30+7IX
+         fki4SJG+czHxjO/pmkME/iB6Vl2FGJz7yNjFKQEvAdraP9p8aUj8oLVF45cjZrL1PL
+         lG8YqetoPk7m6QF1JiQhChcDeBTjIk55LcwoJwbtyBq49liE5VB5m8UWWeZkAhSlka
+         U2fqUp+AL+/J8YFxpx+K3t+5S3wK1CzbAWs+75/I0F9Ku7f//zyuMG6R0Tuyx/cYN1
+         ahDkZJX4y3j/A==
+Received: by mail-wr1-f41.google.com with SMTP id z4so6105194wrv.11;
+        Thu, 05 Aug 2021 04:39:52 -0700 (PDT)
+X-Gm-Message-State: AOAM530na3r6jOSGvzIhUnUfQA8oLgKgmvnEHrTWobfExpv/ODIdWlv8
+        eeQlYgHPav0QFTRmMrjpYocMq8iHViQ4RiN6aJY=
+X-Google-Smtp-Source: ABdhPJzgbV+9A3p0Oavt2jWm5P+Q15oIZKr3J79k/r3svVZpDvhlSqs1Iyh4llZ4yrpFmBOyZuKo+Hb83iWfrscQg2c=
+X-Received: by 2002:adf:fd90:: with SMTP id d16mr4962346wrr.105.1628163590597;
+ Thu, 05 Aug 2021 04:39:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
+References: <20210805110048.1696362-1-arnd@kernel.org> <20210805112546.gitosuu7bzogbzyf@skbuf>
+In-Reply-To: <20210805112546.gitosuu7bzogbzyf@skbuf>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 5 Aug 2021 13:39:34 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0w95+3dBo5OLeCsEi8gjmFqabnSeqeNPQq49=rPeRm=A@mail.gmail.com>
+Message-ID: <CAK8P3a0w95+3dBo5OLeCsEi8gjmFqabnSeqeNPQq49=rPeRm=A@mail.gmail.com>
+Subject: Re: [PATCH net-next] dsa: sja1105: fix reverse dependency
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This sets the HAVE_ARCH_HUGE_VMAP option. Enable pmd vmap support and
-define the required page table functions(Currently, riscv has only
-three-level page tables support for 64BIT).
+On Thu, Aug 5, 2021 at 1:25 PM Vladimir Oltean <olteanv@gmail.com> wrote:
+> On Thu, Aug 05, 2021 at 01:00:28PM +0200, Arnd Bergmann wrote:
+> >
+> > Fixes: 566b18c8b752 ("net: dsa: sja1105: implement TX timestamping for SJA1110")
+> > Fixes: 227d07a07ef1 ("net: dsa: sja1105: Add support for traffic through standalone ports")
+>
+> The second Fixes: tag makes no sense.
 
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
- .../features/vm/huge-vmap/arch-support.txt    |  2 +-
- arch/riscv/Kconfig                            |  1 +
- arch/riscv/include/asm/vmalloc.h              | 12 +++++
- arch/riscv/mm/Makefile                        |  1 +
- arch/riscv/mm/pgtable.c                       | 53 +++++++++++++++++++
- 5 files changed, 68 insertions(+), 1 deletion(-)
- create mode 100644 arch/riscv/mm/pgtable.c
+Fair enough. I added this because that was when the original 'select' got added,
+but of course it was not wrong at the time.
 
-diff --git a/Documentation/features/vm/huge-vmap/arch-support.txt b/Documentation/features/vm/huge-vmap/arch-support.txt
-index 439fd9069b8b..0ff394acc9cf 100644
---- a/Documentation/features/vm/huge-vmap/arch-support.txt
-+++ b/Documentation/features/vm/huge-vmap/arch-support.txt
-@@ -22,7 +22,7 @@
-     |    openrisc: | TODO |
-     |      parisc: | TODO |
-     |     powerpc: |  ok  |
--    |       riscv: | TODO |
-+    |       riscv: |  ok  |
-     |        s390: | TODO |
-     |          sh: | TODO |
-     |       sparc: | TODO |
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 8fcceb8eda07..94cc2a254773 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -61,6 +61,7 @@ config RISCV
- 	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
- 	select HANDLE_DOMAIN_IRQ
- 	select HAVE_ARCH_AUDITSYSCALL
-+	select HAVE_ARCH_HUGE_VMAP if MMU && 64BIT
- 	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
- 	select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
- 	select HAVE_ARCH_KASAN if MMU && 64BIT
-diff --git a/arch/riscv/include/asm/vmalloc.h b/arch/riscv/include/asm/vmalloc.h
-index ff9abc00d139..8f17f421f80c 100644
---- a/arch/riscv/include/asm/vmalloc.h
-+++ b/arch/riscv/include/asm/vmalloc.h
-@@ -1,4 +1,16 @@
- #ifndef _ASM_RISCV_VMALLOC_H
- #define _ASM_RISCV_VMALLOC_H
- 
-+#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-+
-+#define IOREMAP_MAX_ORDER (PMD_SHIFT)
-+
-+#define arch_vmap_pmd_supported	arch_vmap_pmd_supported
-+static inline bool __init arch_vmap_pmd_supported(pgprot_t prot)
-+{
-+	return true;
-+}
-+
-+#endif
-+
- #endif /* _ASM_RISCV_VMALLOC_H */
-diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
-index 7ebaef10ea1b..f932b4d69946 100644
---- a/arch/riscv/mm/Makefile
-+++ b/arch/riscv/mm/Makefile
-@@ -13,6 +13,7 @@ obj-y += extable.o
- obj-$(CONFIG_MMU) += fault.o pageattr.o
- obj-y += cacheflush.o
- obj-y += context.o
-+obj-y += pgtable.o
- 
- ifeq ($(CONFIG_MMU),y)
- obj-$(CONFIG_SMP) += tlbflush.o
-diff --git a/arch/riscv/mm/pgtable.c b/arch/riscv/mm/pgtable.c
-new file mode 100644
-index 000000000000..f68dd2b71dce
---- /dev/null
-+++ b/arch/riscv/mm/pgtable.c
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <asm/pgalloc.h>
-+#include <linux/gfp.h>
-+#include <linux/kernel.h>
-+#include <linux/pgtable.h>
-+
-+#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-+
-+int pud_set_huge(pud_t *pud, phys_addr_t phys, pgprot_t prot)
-+{
-+	return 0;
-+}
-+
-+int pud_clear_huge(pud_t *pud)
-+{
-+	return 0;
-+}
-+
-+int pud_free_pmd_page(pud_t *pud, unsigned long addr)
-+{
-+	return 0;
-+}
-+
-+int pmd_set_huge(pmd_t *pmd, phys_addr_t phys, pgprot_t prot)
-+{
-+	pmd_t new_pmd = pfn_pmd(__phys_to_pfn(phys), prot);
-+
-+	set_pmd(pmd, new_pmd);
-+	return 1;
-+}
-+
-+int pmd_clear_huge(pmd_t *pmd)
-+{
-+	if (!pmd_leaf(READ_ONCE(*pmd)))
-+		return 0;
-+	pmd_clear(pmd);
-+	return 1;
-+}
-+
-+int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
-+{
-+	pte_t *pte;
-+
-+	pte = (pte_t *)pmd_page_vaddr(*pmd);
-+	pmd_clear(pmd);
-+
-+	flush_tlb_kernel_range(addr, addr + PMD_SIZE);
-+	pte_free_kernel(NULL, pte);
-+	return 1;
-+}
-+
-+#endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
--- 
-2.18.0.huawei.25
+> > diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
+> > index bca1b5d66df2..548285539752 100644
+> > --- a/net/dsa/Kconfig
+> > +++ b/net/dsa/Kconfig
+> > @@ -138,6 +138,7 @@ config NET_DSA_TAG_LAN9303
+> >
+> >  config NET_DSA_TAG_SJA1105
+> >       tristate "Tag driver for NXP SJA1105 switches"
+> > +     depends on NET_DSA_SJA1105 || !NET_DSA_SJA1105
+>
+> I think I would prefer an optional "build as module if NET_DSA_SJA1105 is a module"
+> dependency only if NET_DSA_SJA1105_PTP is enabled. I think this is how that is
+> expressed:
+>
+>         depends on (NET_DSA_SJA1105 && NET_DSA_SJA1105_PTP) || !NET_DSA_SJA1105 || !NET_DSA_SJA1105_PTP
 
+Ah, I had not realized this dependency is only there when NET_DSA_SJA1105_PTP
+is also enabled. I will give this a little more testing and resend
+later with that change.
+
+Do you have any opinion on whether that 'select' going the other way is still
+relevant?
+
+      Arnd
