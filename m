@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245D23E13EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02A43E13FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241049AbhHELbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240826AbhHELb3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:31:29 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80868C061765;
-        Thu,  5 Aug 2021 04:31:15 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id j1so7950489pjv.3;
-        Thu, 05 Aug 2021 04:31:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1EBdlg+wpGirHMmu5NpOXKP/wpVDNvTG7/9oMG8+2TA=;
-        b=T79QxJMtJoS/ivMj3isDIYFd3/N4RCbbexFX0t1h5SX7XCPJG6tVru285TppZwWOPr
-         eLuiWgak/SzvfxCMeG4cPfdLrPhJqkei5DRf6ZfGgL9tMjJQUU38jij0zr3xLU9j28GH
-         wxfrOOBirApBfwqn3CSRucedRnCy4DrbFvNCcuCVWrZTZGGI0aVTm2TaHqUgjtJ+3/B2
-         o31M0RBmSU/3x1RSNNGpOTtPvljeBXNQA+T3C1RHfEAJiEwBKlcRs9swRZXo1g/mYEAb
-         0E8+4cxeJ9g6UfZ3uLjnb3l6p4N2oyMhLblsE4yoUBW/dejL05N4IYqb4X0fwpxGMZhh
-         CqwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1EBdlg+wpGirHMmu5NpOXKP/wpVDNvTG7/9oMG8+2TA=;
-        b=mImLOp5Zj3P7s55RbsUqBY0TvGLmGVHVMb8vfT8ELjNODOopzpS3MRV2TiDj72KV2q
-         S0xb+mqtlvEwXauT/dskjScEFuWeYEMReW2Y7uq85glJ417W81IPpLi6o64HgVshwXqD
-         RNq6ZkqCxAtw+4SFLLM9uOYXOpELXdoLEhqMimLysTn1WUCz6rtL4BhrWkvkFUje0X/J
-         AmKu6bQffBP28HCJmKgmdUJAGyraMMWnzF23ssBPqaUOIDFdGUs7BXcOmlQ/Bj3WO+Yy
-         RPQx7UEI7tMexOa1skbOHWaJu6BVg4ixOKDlcHgTWzi+YLJ72xI4vaqBMlDNmVT4neK9
-         RrMg==
-X-Gm-Message-State: AOAM533bxdQX8oaY2dDTV1BBelFTKyjvB6DijFk73XHJkfLR1v1pSXvB
-        My+i9ItM3u9kgjK7pBGrOP0RzzorJbwN+oWrqdg=
-X-Google-Smtp-Source: ABdhPJycCBqrY8XWLy+kVBb39vmiLH0ofV3jMCfOLQaWBv1ztWFo31bVO/8lk7CARMZbV+WTkAuumbYsSupxETjz690=
-X-Received: by 2002:a17:90a:b10b:: with SMTP id z11mr14989609pjq.181.1628163074988;
- Thu, 05 Aug 2021 04:31:14 -0700 (PDT)
+        id S241030AbhHELhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:37:16 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:53891 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240857AbhHELhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 07:37:14 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GgRQx6y6Wz9sRR;
+        Thu,  5 Aug 2021 21:36:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1628163418;
+        bh=LUuDWZ6QjdYX5SUcL0rg4SU99LJt8O7kFIHfniH4Wkg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=SF7x/1BvF/du6tR1e3AqhoEFXeAMJ23q3ppFOuDYEK6+ht3SZq2BGm0VpBTQhnKiX
+         c69CtfwbXEyopOpWkMlhoaZaNy7MBcjvFgi441GQPs8JoNSbaypcrSiMU40xfYUL8t
+         f9mZrC/0/S9Sd0Sks9Q6ztffcNH3z15sejK3Mrq6GIC9o5cgKjNUdNCU7s+JyZXP+k
+         m7V2vyizjbFsWr3PDpb/VJj0/lHDkB5dWIo6L1vPnRk6HtSQ+cZceBM9r0fWUQuSIl
+         t/rcwuCY/XD4brZ4tPPAIPKwBGgNhCg1BsOkubGmrACsiPv8a+bTpGKspwCElp7iAD
+         /yfmCkkp5M+aw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 58/64] powerpc: Split memset() to avoid multi-field
+ overflow
+In-Reply-To: <20210727205855.411487-59-keescook@chromium.org>
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-59-keescook@chromium.org>
+Date:   Thu, 05 Aug 2021 21:36:54 +1000
+Message-ID: <87czqsnmw9.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-References: <20210801085155.3170-1-len.baker@gmx.com> <CAHp75VcD_Kqedpkw-Pj+uQbWqdu_9FhXqJS5TuGUPoVv2x45-Q@mail.gmail.com>
- <YQvJB5s1zY2yO87D@kroah.com>
-In-Reply-To: <YQvJB5s1zY2yO87D@kroah.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 5 Aug 2021 14:30:35 +0300
-Message-ID: <CAHp75VeUH3+dZ6scREA-sZz8-7AF_MLobde+2-eZJz=MsxaW0Q@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] Remove all strcpy() uses
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Phil Reid <preid@electromag.com.au>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 2:18 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Sun, Aug 01, 2021 at 02:40:40PM +0300, Andy Shevchenko wrote:
-> > On Sun, Aug 1, 2021 at 11:53 AM Len Baker <len.baker@gmx.com> wrote:
-> > >
-> > > strcpy() performs no bounds checking on the destination buffer. This
-> > > could result in linear overflows beyond the end of the buffer, leading
-> > > to all kinds of misbehaviors. So, this serie removes all strcpy uses
-> > > from the "staging/fbtft" subsystem.
-> > >
-> > > Also, refactor the code a bit to follow the kernel coding-style and
-> > > avoid unnecessary variable initialization.
-> >
-> > I don't see patch 3 (even on lore.kernel.org).
-> >
-> > Greg, Geert, does it make sense to move this driver outside of staging?
+Kees Cook <keescook@chromium.org> writes:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memset(), avoid intentionally writing across
+> neighboring fields.
 >
-> If you clean up everything that needs to be done, yes, please do.
+> Instead of writing across a field boundary with memset(), move the call
+> to just the array, and an explicit zeroing of the prior field.
+>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/macintosh/smu.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/macintosh/smu.c b/drivers/macintosh/smu.c
+> index 94fb63a7b357..59ce431da7ef 100644
+> --- a/drivers/macintosh/smu.c
+> +++ b/drivers/macintosh/smu.c
+> @@ -848,7 +848,8 @@ int smu_queue_i2c(struct smu_i2c_cmd *cmd)
+>  	cmd->read = cmd->info.devaddr & 0x01;
+>  	switch(cmd->info.type) {
+>  	case SMU_I2C_TRANSFER_SIMPLE:
+> -		memset(&cmd->info.sublen, 0, 4);
+> +		cmd->info.sublen = 0;
+> +		memset(&cmd->info.subaddr, 0, 3);
+>  		break;
+>  	case SMU_I2C_TRANSFER_COMBINED:
+>  		cmd->info.devaddr &= 0xfe;
+> -- 
+> 2.30.2
 
-Do we have a clear TODO for that?
+Reviewed-by: Michael Ellerman <mpe@ellerman.id.au>
 
-The current one has the item which is not feasible to achieve in
-reasonable time. Some of those drivers won't be converted to tiny DRM.
-So the idea is to keep this out of staging in the maintenance phase
-(as it currently states, i.e. no new drivers accepted).  For the rest
-I'm not sure what else can be done (checkpatch? coccinelle?).
-Actually the first sentence in this paragraph is a motivation for
-moving out of staging.
-
--- 
-With Best Regards,
-Andy Shevchenko
+cheers
