@@ -2,167 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4233E0E82
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A2B3E0E86
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237657AbhHEGlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 02:41:40 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:46114 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232009AbhHEGlj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 02:41:39 -0400
-Received: from [192.168.1.87] (unknown [223.178.56.171])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C7362209DDB5;
-        Wed,  4 Aug 2021 23:41:21 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C7362209DDB5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1628145685;
-        bh=bxasqC6P0Nvva5TxrwG2pE0QRcDHzuqT0kjeJsO27pQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=QwuKrkAVcWbIjWtac1uUOg/R8BefILIXAelMWOhnnv4BzMJuJhQVDwwOn4HEmcRYZ
-         EUmEH/94W6TRrHPaHlPacVbZFznSRF2ZaafIhlD9xVNuAsTdHozQurVBeAhrbwoV2U
-         VTg0HRqFV9jhf6deaslvhYRh1xNj01Q418Y0Ecb4=
-Subject: Re: [PATCH] x86/Hyper-V: Initialize Hyper-V stimer after enabling
- lapic
-To:     Tianyu Lan <ltykernel@gmail.com>, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        michael.h.kelley@microsoft.com
-Cc:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vkuznets@redhat.com
-References: <20210804184843.513524-1-ltykernel@gmail.com>
-From:   Praveen Kumar <kumarpraveen@linux.microsoft.com>
-Message-ID: <db8d38c9-e11d-1abe-8617-d8a231cc22e2@linux.microsoft.com>
-Date:   Thu, 5 Aug 2021 12:11:18 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237804AbhHEGnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 02:43:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231418AbhHEGnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 02:43:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62BF460462;
+        Thu,  5 Aug 2021 06:43:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628145817;
+        bh=VJd3dRzsYJ2FfUYxQrivjngv0CEl6bodWlWAEugcJRo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j7neluQDnMex0X+f/p2QgZB9pQ2LdnmtHPm+ah+7iwczNeN6J6CHL5OnKc1ACL6Vc
+         VePonkSTqVdV9E43syKf7CnntbdUKWj55yYWhbBpDG46T+aW83j/uA64vYeIcS9UaU
+         1YgaU83ji2vNK/je2adaGu3py7flEw8sDIyyOWP/ISIVz0jE+WgYS1GxGojsyRqWNS
+         43A/QGJug0Pf82JAON30YLwFqBMbfqPNlGUsxbeEM8U4ksTseyZwV2xqBbpz5aguW1
+         fvJWRxEQ1XHxtmNSkqZYggxojUffq2VHGBPbWnh350o9A9+MfH2KrOFTqdLG6My3Qb
+         NQE5trcKuB7Cw==
+Date:   Thu, 5 Aug 2021 09:43:33 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/mlx5: return the EFAULT per ibv_advise_mr(3)
+Message-ID: <YQuIlUT9jZLeFPNH@unreal>
+References: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
+ <20210803162507.GA2892108@nvidia.com>
+ <YQmDZpbCy3uTS5jv@unreal>
+ <20210803181341.GE1721383@nvidia.com>
+ <YQonIu3VMTlGj0TJ@unreal>
+ <20210804185022.GM1721383@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20210804184843.513524-1-ltykernel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210804185022.GM1721383@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-08-2021 00:18, Tianyu Lan wrote:
-> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+On Wed, Aug 04, 2021 at 03:50:22PM -0300, Jason Gunthorpe wrote:
+> On Wed, Aug 04, 2021 at 08:35:30AM +0300, Leon Romanovsky wrote:
+> > On Tue, Aug 03, 2021 at 03:13:41PM -0300, Jason Gunthorpe wrote:
+> > > On Tue, Aug 03, 2021 at 08:56:54PM +0300, Leon Romanovsky wrote:
+> > > > On Tue, Aug 03, 2021 at 01:25:07PM -0300, Jason Gunthorpe wrote:
+> > > > > On Sun, Aug 01, 2021 at 05:20:50PM +0800, Li Zhijian wrote:
+> > > > > > ibv_advise_mr(3) says:
+> > > > > > EFAULT In one of the following: o When the range requested is out of the  MR  bounds,
+> > > > > >        or  when  parts of it are not part of the process address space. o One of the
+> > > > > >        lkeys provided in the scatter gather list is invalid or with wrong write access
+> > > > > > 
+> > > > > > Actually get_prefetchable_mr() will return NULL if it see above conditions
+> > > > > 
+> > > > > No, get_prefetchable_mr() returns NULL if the mkey is invalid
+> > > > 
+> > > > And what is this?
+> > > >   1701 static struct mlx5_ib_mr *                         
+> > > >   1702 get_prefetchable_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
+> > > >   1703                     u32 lkey)
+> > > > 
+> > > > ...
+> > > > 
+> > > >   1721         /* prefetch with write-access must be supported by the MR */
+> > > >   1722         if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
+> > > >   1723             !mr->umem->writable) {
+> > > >   1724                 mr = NULL;
+> > > >   1725                 goto end;
+> > > >   1726         }
+> > > 
+> > > I would say that is an invalid mkey
+> > 
+> > I see it is as wrong write access.
 > 
-> Hyper-V Isolation VM doesn't have PIT/HPET legacy timer and only
-> provide stimer. Initialize Hyper-v stimer just after enabling
-> lapic to avoid kernel stuck during calibrating TSC due to no
-> available timer.
+> It just means the man page is wrong
+
+ok, it can be a solution too.
+
+Thanks
+
 > 
-> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
-> ---
->  arch/x86/hyperv/hv_init.c      | 29 -----------------------------
->  arch/x86/kernel/cpu/mshyperv.c | 22 ++++++++++++++++++++++
->  2 files changed, 22 insertions(+), 29 deletions(-)
-> 
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index 6f247e7e07eb..4a643a85d570 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -271,25 +271,6 @@ static struct syscore_ops hv_syscore_ops = {
->  	.resume		= hv_resume,
->  };
->  
-> -static void (* __initdata old_setup_percpu_clockev)(void);
-> -
-> -static void __init hv_stimer_setup_percpu_clockev(void)
-> -{
-> -	/*
-> -	 * Ignore any errors in setting up stimer clockevents
-> -	 * as we can run with the LAPIC timer as a fallback.
-> -	 */
-> -	(void)hv_stimer_alloc(false);
-> -
-> -	/*
-> -	 * Still register the LAPIC timer, because the direct-mode STIMER is
-> -	 * not supported by old versions of Hyper-V. This also allows users
-> -	 * to switch to LAPIC timer via /sys, if they want to.
-> -	 */
-> -	if (old_setup_percpu_clockev)
-> -		old_setup_percpu_clockev();
-> -}
-> -
->  static void __init hv_get_partition_id(void)
->  {
->  	struct hv_get_partition_id *output_page;
-> @@ -396,16 +377,6 @@ void __init hyperv_init(void)
->  		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
->  	}
->  
-> -	/*
-> -	 * hyperv_init() is called before LAPIC is initialized: see
-> -	 * apic_intr_mode_init() -> x86_platform.apic_post_init() and
-> -	 * apic_bsp_setup() -> setup_local_APIC(). The direct-mode STIMER
-> -	 * depends on LAPIC, so hv_stimer_alloc() should be called from
-> -	 * x86_init.timers.setup_percpu_clockev.
-> -	 */
-> -	old_setup_percpu_clockev = x86_init.timers.setup_percpu_clockev;
-> -	x86_init.timers.setup_percpu_clockev = hv_stimer_setup_percpu_clockev;
-> -
->  	hv_apic_init();
->  
->  	x86_init.pci.arch_init = hv_pci_init;
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> index 6b5835a087a3..dcfbd2770d7f 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -214,6 +214,20 @@ static void __init hv_smp_prepare_boot_cpu(void)
->  #endif
->  }
->  
-> +static void (* __initdata old_setup_initr_mode)(void);
-> +
-> +static void __init hv_setup_initr_mode(void)
-> +{
-> +	if (old_setup_initr_mode)
-> +		old_setup_initr_mode();
-> +
-> +	/*
-> +	 * The direct-mode STIMER depends on LAPIC and so allocate
-> +	 * STIMER after calling initr node callback.
-> +	 */
-> +	(void)hv_stimer_alloc(false);
-
-In my understanding, in previous implementation we were ignoring the return error as there was a fallback handling for LAPIC.
-However, I'm not seeing the same here, or am I missing something ?
-
-> +}
-> +
->  static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
->  {
->  #ifdef CONFIG_X86_64
-> @@ -424,6 +438,7 @@ static void __init ms_hyperv_init_platform(void)
->  	/* Register Hyper-V specific clocksource */
->  	hv_init_clocksource();
->  #endif
-> +
->  	/*
->  	 * TSC should be marked as unstable only after Hyper-V
->  	 * clocksource has been initialized. This ensures that the
-> @@ -431,6 +446,13 @@ static void __init ms_hyperv_init_platform(void)
->  	 */
->  	if (!(ms_hyperv.features & HV_ACCESS_TSC_INVARIANT))
->  		mark_tsc_unstable("running on Hyper-V");
-> +
-> +	/*
-> +	 * Override initr mode callback in order to allocate STIMER
-> +	 * after initalizing LAPIC.
-> +	 */
-> +	old_setup_initr_mode = x86_init.irqs.intr_mode_init;
-> +	x86_init.irqs.intr_mode_init = hv_setup_initr_mode;
->  }
->  
->  static bool __init ms_hyperv_x2apic_available(void)
-> 
-
-
-Regards,
-
-~Praveen.
+> Jason
