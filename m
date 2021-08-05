@@ -2,158 +2,694 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F120F3E0E79
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FAE3E0E80
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235929AbhHEGim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 02:38:42 -0400
-Received: from mail-mw2nam10on2071.outbound.protection.outlook.com ([40.107.94.71]:21216
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230183AbhHEGik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 02:38:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IzSSCqlGodjBy1+Tv7D/MB6NV/KNRA6BrkC7xFtv1ILlr9dBsiUIc8HnInF9C7MMHGFkN6KHjcqPzDY8NHt8+1d6p8HBsJL/ORYxUfggyyH+oXlkxLQyJifd3G0PbKb0ndEif5JA0+yyMKwiwqEp9DB0Tq0HNBR/eaSgr34wIMdoJsEPqKkPPd817I7ONPZCch4Z2oBwETazJksf3EWvnMC5/LQT4QMzffTnTg9W60v5TrY0oC3TgLQj5Lp+nbXYI7BWQxAJ14PRypCUXijqnuhA7NBT1Bm4fvZgKdFQa7Rrho+20kf4Q15Q7KNFTghoRiW0mkeDXgELpoz3/pmBgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tZiFAwnD24B77wWcsip11Fo7nhOLlqgKp+t9wjgf/EQ=;
- b=kSDO2+nlODtGeeH+l3P1kSVDussvaMNf6kEQkWFz6GaTEotTt6vIpNc6ab24mxU6mEysConZoTRrz3scl2Xj0bURuSJaMu3QCR79O7S6Xuc8dwVN2LKfTRQLxSnKmXZfJ1QYLbD8RoPDDK+pSl/MNG0Xo+Nx7htywKsT/Qdd4J01UPsb/rotbKIRM7I+Uz46Hi7mkN30ZFjSLfrBTLYbP3FXLHC0Vef1d70HaRf425AW2dr5GD8VfjL+VlX4bfifeOpYxuh5pAZ2NLjZBruwCb0oSwR8Nd6nXrA81FCkV8FI8QM9H/G0yBxpFCENl6db2fSW+dQr0rHPb/b1BuEnGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tZiFAwnD24B77wWcsip11Fo7nhOLlqgKp+t9wjgf/EQ=;
- b=jh5SFTBWAk79XMp64iVe3UVwBkqvUUctaCNSlgsLUGsfRMPIuEww3FiQIioDvj8vmUk5+yJsxaWoxGOcxliCPOap/Atu0k1DpcH09do4HdYiCDm6SZI/bKXFfBAAMxbMU6XW9Yz4uMq3noZUrxqVK3FWg2+YSBHGQHTO53X4P9c=
-Received: from BN6PR1701CA0015.namprd17.prod.outlook.com
- (2603:10b6:405:15::25) by DM6PR12MB3995.namprd12.prod.outlook.com
- (2603:10b6:5:1c6::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.22; Thu, 5 Aug
- 2021 06:38:25 +0000
-Received: from BN8NAM11FT039.eop-nam11.prod.protection.outlook.com
- (2603:10b6:405:15:cafe::4d) by BN6PR1701CA0015.outlook.office365.com
- (2603:10b6:405:15::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend
- Transport; Thu, 5 Aug 2021 06:38:25 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT039.mail.protection.outlook.com (10.13.177.169) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4394.16 via Frontend Transport; Thu, 5 Aug 2021 06:38:25 +0000
-Received: from hr-amd (10.180.168.240) by SATLEXMB04.amd.com (10.181.40.145)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 5 Aug
- 2021 01:38:23 -0500
-Date:   Thu, 5 Aug 2021 14:39:52 +0800
-From:   Huang Rui <ray.huang@amd.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cpufreq: enhance the sequency of governor change
-Message-ID: <20210805063952.GA2999065@hr-amd>
-References: <20210721101658.9235-1-ray.huang@amd.com>
- <20210803001339.GG2563957@hr-amd>
- <CAJZ5v0gMqFBDubQyG3YSnt1RcGzfjnxvLtTNpCdqZDjdAMJh=w@mail.gmail.com>
+        id S237702AbhHEGlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 02:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237101AbhHEGlK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 02:41:10 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D73C0613C1;
+        Wed,  4 Aug 2021 23:40:56 -0700 (PDT)
+Received: from [IPv6:2a02:810a:880:f54:e5eb:348e:79df:e71f] (unknown [IPv6:2a02:810a:880:f54:e5eb:348e:79df:e71f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id CD57D1F42408;
+        Thu,  5 Aug 2021 07:40:53 +0100 (BST)
+Subject: Re: [PATCH v6 2/9] mtk-mdp: add driver to probe mdp components
+To:     Eizan Miyamoto <eizan@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     wenst@chromium.org, houlong.wei@mediatek.com, yong.wu@mediatek.com,
+        enric.balletbo@collabora.com, devicetree@vger.kernel.org,
+        chunkuang.hu@kernel.org,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+References: <20210802121215.703023-1-eizan@chromium.org>
+ <20210802220943.v6.2.Ie6d1e6e39cf9b5d6b2108ae1096af34c3d55880b@changeid>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <0aff1abb-734f-c714-6ecc-c906862255c3@collabora.com>
+Date:   Thu, 5 Aug 2021 08:40:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gMqFBDubQyG3YSnt1RcGzfjnxvLtTNpCdqZDjdAMJh=w@mail.gmail.com>
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3ff8dba5-4b3f-4ae6-b060-08d957dba0a9
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3995:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB399504C5D4EF15B00D21B723ECF29@DM6PR12MB3995.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:612;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hzORWzjy1ZGBKgZj+S03mWTbqbBqqmYrUjz7q50SDHsCEnYpvIE9GHTsyQmP5ehqiF3xiawCtx/O8RsrHH5wVyRzOSYHqQbmipJzbcIQC1e/JCIC+SsGdc6Hww7fdRBit78bVjR32DgHzvjJBAcNJVMV0zGG35uTw979e4NxKhFkIhLIeH45o72KmvS634Y9cKl3WFf41M/clbYWpsuqbmAfQZrwg6SomoBu55mm3qWy912JyYxsk/m2pb2DzTLePg6fJ6f2I1UrIXT2KdZa5U3/FWlc4XSQc4dr3EUwNejZw0JAVLaamvue79Vq3Sp9MtSVPJyl6ryhipWMr/Nubwocv2/TNBQIq+PshG4MS5GiM+oGcdfx+GmcNvsmTtIq/F+CLt4QERMRimmqnJjcqiIpb+h3kc2UASaQtwm8vV4obUSStwp8HRY66dXaxQoTPDJJLwt2zfcb8mnHaMqxjJnNO+txAsbEq3bMzEZZsRHlNvbQQUImqARoKJnhvr/39IG5de0pqqLRmbM5bQm0u+EH1tY0nwdXiZlTVqX714CR0T4x5k6YUv9oP2MfsJlL/wzqTrGKc77sq5iK4ZEGgu8anURR0U6monFBJpwMPZ0QahaVgxmJRCBKPahmPPhA3zg0FPALayxXqn2HPo7nyE9JILxjj34bDcVi4Zl2JcQNr2M5OSkv5qwtu5Ilhc9/9czA9FuU5PUcHovwkhqqPK14LKR1wx5m3lZ6GQWeAUE=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(136003)(396003)(36840700001)(46966006)(336012)(6916009)(316002)(83380400001)(5660300002)(54906003)(36860700001)(186003)(8936002)(9686003)(16526019)(82310400003)(47076005)(478600001)(8676002)(1076003)(6666004)(356005)(53546011)(26005)(33656002)(81166007)(4326008)(2906002)(70206006)(82740400003)(33716001)(86362001)(55016002)(70586007)(426003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2021 06:38:25.4135
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ff8dba5-4b3f-4ae6-b060-08d957dba0a9
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT039.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3995
+In-Reply-To: <20210802220943.v6.2.Ie6d1e6e39cf9b5d6b2108ae1096af34c3d55880b@changeid>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 01:00:23AM +0800, Rafael J. Wysocki wrote:
-> On Tue, Aug 3, 2021 at 2:13 AM Huang Rui <ray.huang@amd.com> wrote:
-> >
-> > Ping~
+
+
+On 02.08.21 14:12, Eizan Miyamoto wrote:
+> Broadly, this patch (1) adds a driver for various MTK MDP components to
+> go alongside the main MTK MDP driver, and (2) hooks them all together
+> using the component framework.
 > 
-> I prefer the existing code, sorry.
-
-It's ok, thanks anyway for the reply.
-
-Thanks,
-Ray
-
+> (1) Up until now, the MTK MDP driver controls 8 devices in the device
+> tree on its own. When running tests for the hardware video decoder, we
+> found that the iommus and LARBs were not being properly configured. To
+> configure them, a driver for each be added to mtk_mdp_comp so that
+> mtk_iommu_add_device() can (eventually) be called from dma_configure()
+> inside really_probe().
 > 
-> > On Wed, Jul 21, 2021 at 06:16:58PM +0800, Huang, Ray wrote:
-> > > Keep the "success" case of governor change in the mainline of the
-> > > function not in "if" case. And using restart_old_gov flag to indicate
-> > > the fallback case to old governor. This is more readable and no function
-> > > change.
-> > >
-> > > Signed-off-by: Huang Rui <ray.huang@amd.com>
-> > > ---
-> > >  drivers/cpufreq/cpufreq.c | 23 +++++++++++++++--------
-> > >  1 file changed, 15 insertions(+), 8 deletions(-)
-> > >
-> > > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> > > index 802abc925b2a..4f7005ddb70c 100644
-> > > --- a/drivers/cpufreq/cpufreq.c
-> > > +++ b/drivers/cpufreq/cpufreq.c
-> > > @@ -2545,18 +2545,25 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
-> > >       /* start new governor */
-> > >       policy->governor = new_gov;
-> > >       ret = cpufreq_init_governor(policy);
-> > > -     if (!ret) {
-> > > -             ret = cpufreq_start_governor(policy);
-> > > -             if (!ret) {
-> > > -                     pr_debug("governor change\n");
-> > > -                     sched_cpufreq_governor_change(policy, old_gov);
-> > > -                     return 0;
-> > > -             }
-> > > +     if (ret)
-> > > +             goto restart_old_gov;
-> > > +
-> > > +     ret = cpufreq_start_governor(policy);
-> > > +     if (ret) {
-> > >               cpufreq_exit_governor(policy);
-> > > +             goto restart_old_gov;
-> > >       }
-> > >
-> > > +     pr_debug("governor change\n");
-> > > +
-> > > +     sched_cpufreq_governor_change(policy, old_gov);
-> > > +
-> > > +     return 0;
-> > > +
-> > > +restart_old_gov:
-> > >       /* new governor failed, so re-start old one */
-> > > -     pr_debug("starting governor %s failed\n", policy->governor->name);
-> > > +     pr_debug("starting governor %s failed\n",
-> > > +              policy->governor->name);
-> > >       if (old_gov) {
-> > >               policy->governor = old_gov;
-> > >               if (cpufreq_init_governor(policy))
-> > > --
+> (2) The integration into the component framework allows us to defer the
+> registration with the v4l2 subsystem until all the MDP-related devices
+> have been probed, so that the relevant device node does not become
+> available until initialization of all the components is complete.
+> 
+> Some notes about how the component framework has been integrated:
+> 
+> - The driver for the rdma0 component serves double duty as the "master"
+>    (aggregate) driver as well as a component driver. This is a non-ideal
+>    compromise until a better solution is developed. This device is
+>    differentiated from the rest by checking for a "mediatek,vpu" property
+>    in the device node.
+> 
+> - The list of mdp components remains hard-coded as mtk_mdp_comp_dt_ids[]
+>    in mtk_mdp_core.c, and as mtk_mdp_comp_driver_dt_match[] in
+>    mtk_mdp_comp.c. This unfortunate duplication of information is
+>    addressed in a following patch in this series.
+> 
+> - The component driver calls component_add() for each device that is
+>    probed.
+> 
+> - In mtk_mdp_probe (the "master" device), we scan the device tree for
+>    any matching nodes against mtk_mdp_comp_dt_ids, and add component
+>    matches for them. The match criteria is a matching device node
+>    pointer.
+> 
+> - When the set of components devices that have been probed corresponds
+>    with the list that is generated by the "master", the callback to
+>    mtk_mdp_master_bind() is made, which then calls the component bind
+>    functions.
+> 
+> - Inside mtk_mdp_master_bind(), once all the component bind functions
+>    have been called, we can then register our device to the v4l2
+>    subsystem.
+> 
+> - The call to pm_runtime_enable() in the master device is called after
+>    all the components have been registered by their bind() functions
+>    called by mtk_mtp_master_bind(). As a result, the list of components
+>    will not change while power management callbacks mtk_mdp_suspend()/
+>    resume() are accessing the list of components.
+> 
+> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
+> ---
+> 
+> (no changes since v1)
+> 
+>   drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 143 ++++++++++++--
+>   drivers/media/platform/mtk-mdp/mtk_mdp_comp.h |  25 +--
+>   drivers/media/platform/mtk-mdp/mtk_mdp_core.c | 174 +++++++++++++-----
+>   drivers/media/platform/mtk-mdp/mtk_mdp_core.h |   1 +
+>   4 files changed, 252 insertions(+), 91 deletions(-)
+> 
+> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
+> index 76e295c8d9bc..7a0e3acffab9 100644
+> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
+> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
+> @@ -5,13 +5,50 @@
+>    */
+>   
+>   #include <linux/clk.h>
+> +#include <linux/component.h>
+>   #include <linux/device.h>
+>   #include <linux/of.h>
+> +#include <linux/module.h>
+>   #include <linux/of_address.h>
+>   #include <linux/of_platform.h>
+>   #include <soc/mediatek/smi.h>
+>   
+>   #include "mtk_mdp_comp.h"
+> +#include "mtk_mdp_core.h"
+> +
+> +/**
+> + * enum mtk_mdp_comp_type - the MDP component
+> + * @MTK_MDP_RDMA:		Read DMA
+> + * @MTK_MDP_RSZ:		Reszer
+> + * @MTK_MDP_WDMA:		Write DMA
+> + * @MTK_MDP_WROT:		Write DMA with rotation
+> + * @MTK_MDP_COMP_TYPE_MAX:	Placeholder for num elems in this enum
+> + */
+> +enum mtk_mdp_comp_type {
+> +	MTK_MDP_RDMA,
+> +	MTK_MDP_RSZ,
+> +	MTK_MDP_WDMA,
+> +	MTK_MDP_WROT,
+> +	MTK_MDP_COMP_TYPE_MAX,
+> +};
+> +
+> +static const struct of_device_id mtk_mdp_comp_driver_dt_match[] = {
+> +	{
+> +		.compatible = "mediatek,mt8173-mdp-rdma",
+> +		.data = (void *)MTK_MDP_RDMA
+> +	}, {
+> +		.compatible = "mediatek,mt8173-mdp-rsz",
+> +		.data = (void *)MTK_MDP_RSZ
+> +	}, {
+> +		.compatible = "mediatek,mt8173-mdp-wdma",
+> +		.data = (void *)MTK_MDP_WDMA
+> +	}, {
+> +		.compatible = "mediatek,mt8173-mdp-wrot",
+> +		.data = (void *)MTK_MDP_WROT
+> +	},
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, mtk_mdp_comp_driver_dt_match);
+>   
+>   int mtk_mdp_comp_clock_on(struct device *dev, struct mtk_mdp_comp *comp)
+>   {
+> @@ -20,9 +57,7 @@ int mtk_mdp_comp_clock_on(struct device *dev, struct mtk_mdp_comp *comp)
+>   	if (comp->larb_dev) {
+>   		err = mtk_smi_larb_get(comp->larb_dev);
+>   		if (err)
+> -			dev_err(dev,
+> -				"failed to get larb, err %d. type:%d\n",
+> -				err, comp->type);
+> +			dev_err(dev, "failed to get larb, err %d.\n", err);
+>   	}
+>   
+>   	for (i = 0; i < ARRAY_SIZE(comp->clk); i++) {
+> @@ -62,17 +97,41 @@ void mtk_mdp_comp_clock_off(struct device *dev, struct mtk_mdp_comp *comp)
+>   		mtk_smi_larb_put(comp->larb_dev);
+>   }
+>   
+> -int mtk_mdp_comp_init(struct device *dev, struct device_node *node,
+> -		      struct mtk_mdp_comp *comp,
+> -		      enum mtk_mdp_comp_type comp_type)
+> +static int mtk_mdp_comp_bind(struct device *dev, struct device *master, void *data)
+> +{
+> +	struct mtk_mdp_comp *comp = dev_get_drvdata(dev);
+> +	struct mtk_mdp_dev *mdp = data;
+> +
+> +	mtk_mdp_register_component(mdp, comp);
+> +
+> +	return 0;
+> +}
+> +
+> +static void mtk_mdp_comp_unbind(struct device *dev, struct device *master,
+> +			   void *data)
+> +{
+> +	struct mtk_mdp_comp *comp = dev_get_drvdata(dev);
+> +	struct mtk_mdp_dev *mdp = data;
+> +
+> +	mtk_mdp_unregister_component(mdp, comp);
+> +}
+> +
+> +static const struct component_ops mtk_mdp_component_ops = {
+> +	.bind   = mtk_mdp_comp_bind,
+> +	.unbind = mtk_mdp_comp_unbind,
+> +};
+> +
+> +int mtk_mdp_comp_init(struct mtk_mdp_comp *comp, struct device *dev)
+
+This function can be static
+
+>   {
+>   	struct device_node *larb_node;
+>   	struct platform_device *larb_pdev;
+>   	int ret;
+>   	int i;
+> +	struct device_node *node = dev->of_node;
+> +	enum mtk_mdp_comp_type comp_type =
+> +		 (enum mtk_mdp_comp_type)of_device_get_match_data(dev);
+>   
+> -	comp->dev_node = of_node_get(node);
+> -	comp->type = comp_type;
+> +	INIT_LIST_HEAD(&comp->node);
+>   
+>   	for (i = 0; i < ARRAY_SIZE(comp->clk); i++) {
+>   		comp->clk[i] = of_clk_get(node, i);
+
+that iteration can be replaced with clk_bulk_get
+
+> @@ -80,19 +139,17 @@ int mtk_mdp_comp_init(struct device *dev, struct device_node *node,
+>   			if (PTR_ERR(comp->clk[i]) != -EPROBE_DEFER)
+>   				dev_err(dev, "Failed to get clock\n");
+>   			ret = PTR_ERR(comp->clk[i]);
+> -			goto put_dev;
+> +			goto err;
+>   		}
+>   
+>   		/* Only RDMA needs two clocks */
+> -		if (comp->type != MTK_MDP_RDMA)
+> +		if (comp_type != MTK_MDP_RDMA)
+>   			break;
+>   	}
+>   
+>   	/* Only DMA capable components need the LARB property */
+>   	comp->larb_dev = NULL;
+> -	if (comp->type != MTK_MDP_RDMA &&
+> -	    comp->type != MTK_MDP_WDMA &&
+> -	    comp->type != MTK_MDP_WROT)
+> +	if (comp_type != MTK_MDP_RDMA && comp_type != MTK_MDP_WDMA && comp_type != MTK_MDP_WROT)
+>   		return 0;
+>   
+>   	larb_node = of_parse_phandle(node, "mediatek,larb", 0);
+> @@ -100,7 +157,7 @@ int mtk_mdp_comp_init(struct device *dev, struct device_node *node,
+>   		dev_err(dev,
+>   			"Missing mediadek,larb phandle in %pOF node\n", node);
+>   		ret = -EINVAL;
+> -		goto put_dev;
+> +		goto err;
+>   	}
+>   
+>   	larb_pdev = of_find_device_by_node(larb_node);
+> @@ -108,7 +165,7 @@ int mtk_mdp_comp_init(struct device *dev, struct device_node *node,
+>   		dev_warn(dev, "Waiting for larb device %pOF\n", larb_node);
+>   		of_node_put(larb_node);
+>   		ret = -EPROBE_DEFER;
+> -		goto put_dev;
+> +		goto err;
+>   	}
+>   	of_node_put(larb_node);
+>   
+> @@ -116,13 +173,59 @@ int mtk_mdp_comp_init(struct device *dev, struct device_node *node,
+>   
+>   	return 0;
+>   
+> -put_dev:
+> -	of_node_put(comp->dev_node);
+> -
+> +err:
+>   	return ret;
+>   }
+>   
+> -void mtk_mdp_comp_deinit(struct device *dev, struct mtk_mdp_comp *comp)
+> +static int mtk_mdp_comp_probe(struct platform_device *pdev)
+>   {
+> -	of_node_put(comp->dev_node);
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *vpu_node;
+> +	int status;
+> +	struct mtk_mdp_comp *comp;
+> +
+> +	vpu_node = of_parse_phandle(dev->of_node, "mediatek,vpu", 0);
+> +	if (vpu_node) {
+> +		of_node_put(vpu_node);
+> +		/*
+> +		 * The device tree node with a mediatek,vpu property is deemed
+> +		 * the MDP "master" device, we don't want to add a component
+> +		 * for it in this function because the initialization for the
+> +		 * master is done elsewhere.
+> +		 */
+> +		dev_info(dev, "vpu node found, not probing\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	comp = devm_kzalloc(dev, sizeof(*comp), GFP_KERNEL);
+> +	if (!comp)
+> +		return -ENOMEM;
+> +
+> +	status = mtk_mdp_comp_init(comp, dev);
+> +	if (status) {
+> +		dev_err(dev, "Failed to initialize component: %d\n", status);
+> +		return status;
+> +	}
+> +
+> +	dev_set_drvdata(dev, comp);
+> +
+> +	return component_add(dev, &mtk_mdp_component_ops);
+>   }
+> +
+> +static int mtk_mdp_comp_remove(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +
+> +	component_del(dev, &mtk_mdp_component_ops);
+> +	return 0;
+> +}
+> +
+> +struct platform_driver mtk_mdp_component_driver = {
+> +	.probe          = mtk_mdp_comp_probe,
+> +	.remove         = mtk_mdp_comp_remove,
+> +	.driver         = {
+> +		.name   = "mediatek-mdp-comp",
+> +		.owner  = THIS_MODULE,
+> +		.of_match_table = mtk_mdp_comp_driver_dt_match,
+> +	},
+> +};
+> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
+> index 92ab5249bcad..df5fc4c94f90 100644
+> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
+> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
+> @@ -7,42 +7,23 @@
+>   #ifndef __MTK_MDP_COMP_H__
+>   #define __MTK_MDP_COMP_H__
+>   
+> -/**
+> - * enum mtk_mdp_comp_type - the MDP component
+> - * @MTK_MDP_RDMA:	Read DMA
+> - * @MTK_MDP_RSZ:	Riszer
+> - * @MTK_MDP_WDMA:	Write DMA
+> - * @MTK_MDP_WROT:	Write DMA with rotation
+> - */
+> -enum mtk_mdp_comp_type {
+> -	MTK_MDP_RDMA,
+> -	MTK_MDP_RSZ,
+> -	MTK_MDP_WDMA,
+> -	MTK_MDP_WROT,
+> -};
+> -
+>   /**
+>    * struct mtk_mdp_comp - the MDP's function component data
+>    * @node:	list node to track sibing MDP components
+> - * @dev_node:	component device node
+>    * @clk:	clocks required for component
+>    * @larb_dev:	SMI device required for component
+> - * @type:	component type
+>    */
+>   struct mtk_mdp_comp {
+>   	struct list_head	node;
+> -	struct device_node	*dev_node;
+>   	struct clk		*clk[2];
+>   	struct device		*larb_dev;
+> -	enum mtk_mdp_comp_type	type;
+>   };
+>   
+> -int mtk_mdp_comp_init(struct device *dev, struct device_node *node,
+> -		      struct mtk_mdp_comp *comp,
+> -		      enum mtk_mdp_comp_type comp_type);
+> -void mtk_mdp_comp_deinit(struct device *dev, struct mtk_mdp_comp *comp);
+> +int mtk_mdp_comp_init(struct mtk_mdp_comp *comp, struct device *dev);
+> +
+>   int mtk_mdp_comp_clock_on(struct device *dev, struct mtk_mdp_comp *comp);
+>   void mtk_mdp_comp_clock_off(struct device *dev, struct mtk_mdp_comp *comp);
+>   
+> +extern struct platform_driver mtk_mdp_component_driver;
+>   
+>   #endif /* __MTK_MDP_COMP_H__ */
+> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
+> index 412bbec0f735..b813a822439a 100644
+> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
+> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
+> @@ -6,6 +6,7 @@
+>    */
+>   
+>   #include <linux/clk.h>
+> +#include <linux/component.h>
+>   #include <linux/device.h>
+>   #include <linux/errno.h>
+>   #include <linux/interrupt.h>
+> @@ -19,6 +20,7 @@
+>   #include <linux/workqueue.h>
+>   #include <soc/mediatek/smi.h>
+>   
+> +#include "mtk_mdp_comp.h"
+>   #include "mtk_mdp_core.h"
+>   #include "mtk_mdp_m2m.h"
+>   #include "mtk_vpu.h"
+> @@ -32,16 +34,12 @@ module_param(mtk_mdp_dbg_level, int, 0644);
+>   static const struct of_device_id mtk_mdp_comp_dt_ids[] = {
+>   	{
+>   		.compatible = "mediatek,mt8173-mdp-rdma",
+> -		.data = (void *)MTK_MDP_RDMA
+>   	}, {
+>   		.compatible = "mediatek,mt8173-mdp-rsz",
+> -		.data = (void *)MTK_MDP_RSZ
+>   	}, {
+>   		.compatible = "mediatek,mt8173-mdp-wdma",
+> -		.data = (void *)MTK_MDP_WDMA
+>   	}, {
+>   		.compatible = "mediatek,mt8173-mdp-wrot",
+> -		.data = (void *)MTK_MDP_WROT
+>   	},
+>   	{ },
+>   };
+> @@ -106,6 +104,63 @@ static void mtk_mdp_reset_handler(void *priv)
+>   	queue_work(mdp->wdt_wq, &mdp->wdt_work);
+>   }
+>   
+> +static int compare_of(struct device *dev, void *data)
+> +{
+> +	return dev->of_node == data;
+> +}
+> +
+> +static void release_of(struct device *dev, void *data)
+> +{
+> +	of_node_put(data);
+> +}
+> +
+> +static int mtk_mdp_master_bind(struct device *dev)
+> +{
+> +	int status;
+> +	struct mtk_mdp_dev *mdp = dev_get_drvdata(dev);
+> +
+> +	mtk_mdp_register_component(mdp, &mdp->comp_self);
+> +
+> +	status = component_bind_all(dev, mdp);
+> +	if (status) {
+> +		dev_err(dev, "Failed to bind all components: %d\n", status);
+> +		goto err_component_bind_all;
+> +	}
+> +
+> +	status = mtk_mdp_register_m2m_device(mdp);
+> +	if (status) {
+> +		dev_err(dev, "Failed to register m2m device: %d\n", status);
+> +		goto err_mtk_mdp_register_m2m_device;
+> +	}
+> +
+> +	pm_runtime_enable(dev);
+> +
+> +	return 0;
+> +
+> +err_mtk_mdp_register_m2m_device:
+> +	component_unbind_all(dev, mdp);
+> +
+> +err_component_bind_all:
+> +	mtk_mdp_unregister_component(mdp, &mdp->comp_self);
+> +
+> +	return status;
+> +}
+> +
+> +static void mtk_mdp_master_unbind(struct device *dev)
+> +{
+> +	struct mtk_mdp_dev *mdp = dev_get_drvdata(dev);
+> +
+> +	pm_runtime_disable(dev);
+> +	mtk_mdp_unregister_m2m_device(mdp);
+> +	component_unbind_all(dev, mdp);
+> +	mtk_mdp_unregister_component(mdp, &mdp->comp_self);
+> +}
+> +
+> +static const struct component_master_ops mtk_mdp_com_ops = {
+> +	.bind		= mtk_mdp_master_bind,
+> +	.unbind		= mtk_mdp_master_unbind,
+> +};
+> +
+>   void mtk_mdp_register_component(struct mtk_mdp_dev *mdp,
+>   				struct mtk_mdp_comp *comp)
+>   {
+> @@ -123,8 +178,8 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+>   	struct mtk_mdp_dev *mdp;
+>   	struct device *dev = &pdev->dev;
+>   	struct device_node *node, *parent;
+> -	struct mtk_mdp_comp *comp, *comp_temp;
+> -	int ret = 0;
+> +	int i, ret = 0;
+> +	struct component_match *match = NULL;
+>   
+>   	mdp = devm_kzalloc(dev, sizeof(*mdp), GFP_KERNEL);
+>   	if (!mdp)
+> @@ -149,36 +204,43 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+>   	}
+>   
+>   	/* Iterate over sibling MDP function blocks */
+> +	i = 0;
+>   	for_each_child_of_node(parent, node) {
+> -		const struct of_device_id *of_id;
+> -		enum mtk_mdp_comp_type comp_type;
+> +		struct platform_device *pdev;
+>   
+> -		of_id = of_match_node(mtk_mdp_comp_dt_ids, node);
+> -		if (!of_id)
+> +		if (!of_match_node(mtk_mdp_comp_dt_ids, node))
+>   			continue;
+>   
+> -		if (!of_device_is_available(node)) {
+> -			dev_err(dev, "Skipping disabled component %pOF\n",
+> -				node);
+> +		if (!of_device_is_available(node))
+>   			continue;
+> -		}
+> -
+> -		comp_type = (enum mtk_mdp_comp_type)of_id->data;
+>   
+> -		comp = devm_kzalloc(dev, sizeof(*comp), GFP_KERNEL);
+> -		if (!comp) {
+> -			ret = -ENOMEM;
+> -			of_node_put(node);
+> -			goto err_comp;
+> +		pdev = of_find_device_by_node(node);
+> +		if (!pdev) {
+> +			dev_warn(dev, "Unable to find comp device %s\n",
+> +				 node->full_name);
+> +			continue;
+>   		}
+>   
+> -		ret = mtk_mdp_comp_init(dev, node, comp, comp_type);
+> -		if (ret) {
+> -			of_node_put(node);
+> -			goto err_comp;
+> +		/*
+> +		 * Do not add a match for my own (rdma0) device node.
+> +		 * I will be managing it directly instead using comp_self.
+> +		 */
+> +		if (&pdev->dev != dev) {
+> +			dev_dbg(dev, "adding match %d for: %pOF\n", i++, node);
+> +			component_match_add_release(dev, &match, release_of,
+> +						    compare_of,
+> +						    of_node_get(node));
+>   		}
+> +	}
+>   
+> -		mtk_mdp_register_component(mdp, comp);
+> +	/*
+> +	 * Create a component for myself so that clocks can be toggled in
+> +	 * clock_on().
+> +	 */
+> +	ret = mtk_mdp_comp_init(&mdp->comp_self, dev);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to initialize component\n");
+> +		goto err_comp;
+>   	}
+>   
+>   	mdp->job_wq = create_singlethread_workqueue(MTK_MDP_MODULE_NAME);
+> @@ -203,18 +265,12 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+>   		goto err_dev_register;
+>   	}
+>   
+> -	ret = mtk_mdp_register_m2m_device(mdp);
+> -	if (ret) {
+> -		v4l2_err(&mdp->v4l2_dev, "Failed to init mem2mem device\n");
+> -		goto err_m2m_register;
+> -	}
+> -
+>   	mdp->vpu_dev = vpu_get_plat_device(pdev);
+>   	ret = vpu_wdt_reg_handler(mdp->vpu_dev, mtk_mdp_reset_handler, mdp,
+>   				  VPU_RST_MDP);
+>   	if (ret) {
+>   		dev_err(&pdev->dev, "Failed to register reset handler\n");
+> -		goto err_m2m_register;
+> +		goto err_wdt_reg;
+>   	}
+>   
+>   	platform_set_drvdata(pdev, mdp);
+> @@ -222,15 +278,25 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+>   	ret = vb2_dma_contig_set_max_seg_size(&pdev->dev, DMA_BIT_MASK(32));
+>   	if (ret) {
+>   		dev_err(&pdev->dev, "Failed to set vb2 dma mag seg size\n");
+> -		goto err_m2m_register;
+> +		goto err_set_max_seg_size;
+> +	}
+> +
+> +	ret = component_master_add_with_match(dev, &mtk_mdp_com_ops, match);
+> +	if (ret) {
+> +		dev_err(dev, "Component master add failed\n");
+> +		goto err_component_master_add;
+>   	}
+>   
+> -	pm_runtime_enable(dev);
+>   	dev_dbg(dev, "mdp-%d registered successfully\n", mdp->id);
+>   
+>   	return 0;
+>   
+> -err_m2m_register:
+> +err_component_master_add:
+> +	vb2_dma_contig_clear_max_seg_size(&pdev->dev);
+> +
+> +err_set_max_seg_size:
+> +
+> +err_wdt_reg:
+>   	v4l2_device_unregister(&mdp->v4l2_dev);
+>   
+>   err_dev_register:
+> @@ -242,11 +308,6 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+>   err_alloc_job_wq:
+>   
+>   err_comp:
+> -	list_for_each_entry_safe(comp, comp_temp, &mdp->comp_list, node) {
+> -		mtk_mdp_unregister_component(mdp, comp);
+> -		mtk_mdp_comp_deinit(dev, comp);
+> -	}
+> -
+>   	dev_dbg(dev, "err %d\n", ret);
+>   	return ret;
+>   }
+> @@ -254,11 +315,10 @@ static int mtk_mdp_probe(struct platform_device *pdev)
+>   static int mtk_mdp_remove(struct platform_device *pdev)
+>   {
+>   	struct mtk_mdp_dev *mdp = platform_get_drvdata(pdev);
+> -	struct mtk_mdp_comp *comp, *comp_temp;
+>   
+> -	pm_runtime_disable(&pdev->dev);
+> +	component_master_del(&pdev->dev, &mtk_mdp_com_ops);
+> +
+>   	vb2_dma_contig_clear_max_seg_size(&pdev->dev);
+> -	mtk_mdp_unregister_m2m_device(mdp);
+>   	v4l2_device_unregister(&mdp->v4l2_dev);
+>   
+>   	flush_workqueue(mdp->wdt_wq);
+> @@ -267,10 +327,8 @@ static int mtk_mdp_remove(struct platform_device *pdev)
+>   	flush_workqueue(mdp->job_wq);
+>   	destroy_workqueue(mdp->job_wq);
+>   
+> -	list_for_each_entry_safe(comp, comp_temp, &mdp->comp_list, node) {
+> -		mtk_mdp_unregister_component(mdp, comp);
+> -		mtk_mdp_comp_deinit(&pdev->dev, comp);
+> -	}
+> +	if (!list_empty(&mdp->comp_list))
+> +		dev_warn(&pdev->dev, "not all components removed\n");
+>   
+>   	dev_dbg(&pdev->dev, "%s driver unloaded\n", pdev->name);
+>   	return 0;
+> @@ -323,7 +381,25 @@ static struct platform_driver mtk_mdp_driver = {
+>   	}
+>   };
+>   
+> -module_platform_driver(mtk_mdp_driver);
+> +static struct platform_driver * const mtk_mdp_drivers[] = {
+> +	&mtk_mdp_driver,
+> +	&mtk_mdp_component_driver,
+> +};
+> +
+> +static int __init mtk_mdp_init(void)
+> +{
+> +	return platform_register_drivers(mtk_mdp_drivers,
+> +					 ARRAY_SIZE(mtk_mdp_drivers));
+> +}
+> +
+> +static void __exit mtk_mdp_exit(void)
+> +{
+> +	platform_unregister_drivers(mtk_mdp_drivers,
+> +				    ARRAY_SIZE(mtk_mdp_drivers));
+> +}
+> +
+> +module_init(mtk_mdp_init);
+> +module_exit(mtk_mdp_exit);
+>   
+>   MODULE_AUTHOR("Houlong Wei <houlong.wei@mediatek.com>");
+>   MODULE_DESCRIPTION("Mediatek image processor driver");
+> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.h b/drivers/media/platform/mtk-mdp/mtk_mdp_core.h
+> index a6e6dc36307b..8a52539b15d4 100644
+> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.h
+> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.h
+> @@ -155,6 +155,7 @@ struct mtk_mdp_dev {
+>   	struct mtk_mdp_variant		*variant;
+>   	u16				id;
+>   	struct list_head		comp_list;
+> +	struct mtk_mdp_comp		comp_self;
+>   	struct v4l2_m2m_dev		*m2m_dev;
+>   	struct list_head		ctx_list;
+>   	struct video_device		*vdev;
+> 
