@@ -2,211 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE343E189D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DB73E18A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242721AbhHEPrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:47:46 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:35250 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242471AbhHEPri (ORCPT
+        id S242324AbhHEPsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:48:54 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:51810 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242016AbhHEPsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:47:38 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 05DC41FE69;
-        Thu,  5 Aug 2021 15:47:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628178443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xjyShzouPrJcHBbruWtTQutmAQhza4mB7qEDF4um5Mg=;
-        b=HFFKv1lODf3gm58MqBGWAh8qSB3SjD0CWH1FfzIS9Ttb2ITfRIGZdfCH1BtAnoyP4ESIec
-        etQbWzYl+6ASAoafzEiq37hiOIvpPGQL0Maxr2rIGqwGWJypE77o36bBPH1bIEeFynFgxE
-        JPgwV+WeWHfe1PUy2fE9+HyrOT/gvco=
-Received: from suse.cz (pmladek.udp.ovpn1.prg.suse.de [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 9259EA3EC0;
-        Thu,  5 Aug 2021 15:47:22 +0000 (UTC)
-Date:   Thu, 5 Aug 2021 17:47:22 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Chengyang Fan <cy.fan@huawei.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kgdb-bugreport@lists.sourceforge.net,
+        Thu, 5 Aug 2021 11:48:53 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 2319A1F9B;
+        Thu,  5 Aug 2021 18:48:37 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1628178517;
+        bh=epeSWkZAOGd13DhgazWf/4E+OlVgHpyPhbZ/y2BOlIc=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=oh4+CHHD7M9Kv2JH1m8vFxb2a5v2eqTt2tj35coiaU73j84PhMnW3Ds6RC9Ardoj4
+         9WljMm/mt2rwNU/pcZdmFQroCR1Hr/lYhW1PnvPIMZcgyehpTTDkAs2T/2P52s/t9L
+         fLoo1oYJsLYOXwy8Djgs5ybZ+eeExu0HFC3qBwe0=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 18:48:36 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.2176.009; Thu, 5 Aug 2021 18:48:36 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Leonidas P. Papadakos" <papadakospan@gmail.com>,
+        "zajec5@gmail.com" <zajec5@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Changbin Du <changbin.du@intel.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Cengiz Can <cengiz@kernel.wtf>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
-        Wang Qing <wangqing@vivo.com>, Andrij Abyzov <aabyzov@slb.com>,
-        Johan Hovold <johan@kernel.org>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Claire Chang <tientzu@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Al Cooper <alcooperx@gmail.com>, linux-serial@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH printk v1 00/10] printk: introduce atomic consoles and
- sync mode
-Message-ID: <YQwHwT2wYM1dJfVk@alley>
-References: <20210803131301.5588-1-john.ogness@linutronix.de>
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: RE: [GIT PULL] vboxsf fixes for 5.14-1
+Thread-Topic: [GIT PULL] vboxsf fixes for 5.14-1
+Thread-Index: AQHXd9Q0d6WirG0Ih0y0eIuA7j/DOatBFNyAgAAQcQCAAPTFAIAAQ2AAgAATA4CAAAGlAIAAA7AAgALYuICAAGpsgIAcmIIAgAAPpwCAAAV/AIAAAbIAgAAK7QCAAAQEgIACXTsA
+Date:   Thu, 5 Aug 2021 15:48:36 +0000
+Message-ID: <0e175373cef24e2abe76e203bb36d260@paragon-software.com>
+References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com>
+ <20210716114635.14797-1-papadakospan@gmail.com>
+ <CAHk-=whfeq9gyPWK3yao6cCj7LKeU3vQEDGJ3rKDdcaPNVMQzQ@mail.gmail.com>
+ <YQnHxIU+EAAxIjZA@mit.edu> <YQnU5m/ur+0D5MfJ@casper.infradead.org>
+ <YQnZgq3gMKGI1Nig@mit.edu>
+ <CAHk-=wiSwzrWOSN5UCrej3YcLRPmW5tViGSA5p2m-hiyKnQiMg@mail.gmail.com>
+ <YQnkGMxZCgCWXQPf@mit.edu> <20210804010351.GM3601466@magnolia>
+In-Reply-To: <20210804010351.GM3601466@magnolia>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.0.26]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803131301.5588-1-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-08-03 15:18:51, John Ogness wrote:
-> Hi,
-> 
-> This is the next part of our printk-rework effort (points 3 and
-> 4 of the LPC 2019 summary [0]).
-> 
-> Here the concept of "atomic consoles" is introduced through  a
-> new (optional) write_atomic() callback for console drivers. This
-> callback must be implemented as an NMI-safe variant of the
-> write() callback, meaning that it can function from any context
-> without relying on questionable tactics such as ignoring locking
-> and also without relying on the synchronization of console
-> semaphore.
-> 
-> As an example of how such an atomic console can look like, this
-> series implements write_atomic() for the 8250 UART driver.
-> 
-> This series also introduces a new console printing mode called
-> "sync mode" that is only activated when the kernel is about to
-> end (such as panic, oops, shutdown, reboot). Sync mode can only
-> be activated if atomic consoles are available. A system without
-> registered atomic consoles will be unaffected by this series.
->
-> When in sync mode, the console printing behavior becomes:
-> 
-> - only consoles implementing write_atomic() will be called
-> 
-> - printing occurs within vprintk_store() instead of
->   console_unlock(), since the console semaphore is irrelevant
->   for atomic consoles
+> From: Darrick J. Wong <djwong@kernel.org>
+> Sent: Wednesday, August 4, 2021 4:04 AM
+> To: Theodore Ts'o <tytso@mit.edu>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>; Matthew Wilcox <willy=
+@infradead.org>; Leonidas P. Papadakos
+> <papadakospan@gmail.com>; Konstantin Komarov <almaz.alexandrovich@paragon=
+-software.com>; zajec5@gmail.com; Greg Kroah-
+> Hartman <gregkh@linuxfoundation.org>; Hans de Goede <hdegoede@redhat.com>=
+; linux-fsdevel <linux-fsdevel@vger.kernel.org>;
+> Linux Kernel Mailing List <linux-kernel@vger.kernel.org>; Al Viro <viro@z=
+eniv.linux.org.uk>
+> Subject: Re: [GIT PULL] vboxsf fixes for 5.14-1
+>=20
+> On Tue, Aug 03, 2021 at 08:49:28PM -0400, Theodore Ts'o wrote:
+> > On Tue, Aug 03, 2021 at 05:10:22PM -0700, Linus Torvalds wrote:
+> > > The user-space FUSE thing does indeed work reasonably well.
+> > >
+> > > It performs horribly badly if you care about things like that, though=
+.
+> > >
+> > > In fact, your own numbers kind of show that:
+> > >
+> > >   ntfs/default: 670 tests, 55 failures, 211 skipped, 34783 seconds
+> > >   ntfs3/default: 664 tests, 67 failures, 206 skipped, 8106 seconds
+> > >
+> > > and that's kind of the point of ntfs3.
+> >
+> > Sure, although if you run fstress in parallel ntfs3 will lock up, the
+> > system hard, and it has at least one lockdep deadlock complaints.
+> > It's not up to me, but personally, I'd feel better if *someone* at
+> > Paragon Software responded to Darrrick and my queries about their
+> > quality assurance, and/or made commitments that they would at least
+> > *try* to fix the problems that about 5 minutes of testing using
+> > fstests turned up trivially.
+>=20
+> <cough> Yes, my aim was to gauge their interest in actively QAing the
+> driver's current problems so that it doesn't become one of the shabby
+> Linux filesystem drivers, like <cough>ntfs.
+>=20
+> Note I didn't even ask for a particular percentage of passing tests,
+> because I already know that non-Unix filesystems fail the tests that
+> look for the more Unix-specific behaviors.
+>=20
+> I really only wanted them to tell /us/ what the baseline is.  IMHO the
+> silence from them is a lot more telling.  Both generic/013 and
+> generic/475 are basic "try to create files and read and write data to
+> them" exercisers; failing those is a red flag.
+>=20
 
-I am fine with the new behavior at this stage. It is a quite clear
-win when (only) the atomic console is used. And it does not make any
-difference when atomic consoles are disabled.
+Hi Darrick and Theodore! First of all, apologies for the silence on your qu=
+estions.
+Let me please clarify and summarize the QA topic for you.
 
-But I am not sure about the proposed terms and implementation.
-I want to be sure that we are on the right way for introducing
-console kthreads.
+The main thing to outline is that: we have the number of autotests executed
+for ntfs3 code. More specifically, we are using TeamCity as our CI tool, wh=
+ich
+is handling autotests. Those are being executed against each commit to the
+ntfs3 codebase.
 
-Let me try to compare the behavior:
+Autotests are divided into the "promotion" levels, which are quite standard=
+:
+L0, L1, L2. Those levels have the division from the shortest "smoke" (L0)
+to the longest set (L2). This we need to cover the ntfs3 functionality with
+tests under given amount of time (feedback loop for L0 is minutes, while fo=
+r
+L2 is up to 24hrs).
 
-1. before this patchset():
+As for suites we are using - it is the mix of open/well known suites:
+- xfstests, ltp, pjd suite, fsx, dirstress, fstorture - those are of known =
+utilites/suites
+And number of internal autotests which were developed for covering various =
+parts of
+fs specs, regression autotests which are introduced to the infrastructure a=
+fter bugfixes
+and autotests written to test the driver operation on various data sets.
 
-	/* printk: store immediately; try all consoles immediately */
-	int printk(...)
-	{
-		vprintk_store();
-		if (console_try_lock()) {
-			/* flush pending messages to the consoles */
-			console_unlock();
-		}
-	}
+This approach is settled in Paragon for years, and ntfs3, from the first li=
+ne of code written,
+is being developed this way. You may refer the artifacts linked below, wher=
+e the progress/coverage
+during the last year is spoken by autotest results:
 
-	/* panic: try hard to flush messages to the consoles and avoid deadlock */
-	void panic()
-	{
-		/* Ignore locks in console drivers */
-		bust_spinlocks(1);
+the 27th patch-series code (July'2021):=20
+https://dl.paragon-software.com/ntfs3/p27_tests.tar
+25th (March'2021):
+https://dl.paragon-software.com/ntfs3/p25_tests.tar
+2nd (August, 2020):
+https://dl.paragon-software.com/ntfs3/p2_tests.tar
 
-		printk("Kernel panic ...);
-		dump_stack();
+Those are results on ntfs3 ran within the 'linux-next' (the most recent one=
+ given the tests start date)
+As may be observed, we never skipped the "tests day" :)
 
-		smp_send_stop();
-		/* ignore console lock */
-		console_flush_on_panic();
-	}
+There is a note should be provided on xfstests specifically. We have been u=
+sing this suite
+as a part of our autotests for several years already. However the suite ori=
+ginate for Linux
+native file systems and a lot of cases are not applicable to the NTFS. This=
+ is one of the reasons
+why some of "red-flag" failures are there (e.g. generic/475) - they were ex=
+cluded at some point of time
+and we've missed to enable it back when it was the time :)
 
+Thank you all for this effort to run and look closer on our code, on the ne=
+xt patchset, the
+91, 317 and 475 should be resolved. And now we are looking up to other excl=
+uded tests to find out more of such.
 
-2. after this patchset():
+Hope this will resolve some of your concerns.
 
-   + same as before in normal mode or when there is no atomic console
-
-   + in panic with atomic console; it modifies the behavior:
-
-	/*
-	 * printk: store immediately; immediately flush atomic consoles;
-	 *         unsafe consoles are not used anymore;
-	 */
-	int printk(...)
-	{
-		vprintk_store();
-		flush_atomic_consoles();
-	}
-
-	/* panic: no hacks; only atomic consoles are used */
-	void panic()
-	{
-		printk("Kernel panic ...);
-		dump_stack();
-	}
-
-
-3. After introducing console kthread(s):
-
-	int printk(...)
-	{
-		vprintk_store();
-		wake_consoles_via_irqwork();
-	}
-
-	+ in panic:
-
-	    + with atomic console like after this patchset?
-	    + without atomic consoles?
-
-	+ during early boot?
-
-
-I guess that we will need another sync mode for the early boot,
-panic, suspend, kexec, etc.. It must be posible to debug these states
-even wihtout atomic console and working kthreads.
-
-Best Regards,
-Petr
+> --D
+>=20
+> > I can even give them patches and configsto make it trivially easy for
+> > them to run fstests using KVM or GCE....
+> >
+> > 				- Ted
