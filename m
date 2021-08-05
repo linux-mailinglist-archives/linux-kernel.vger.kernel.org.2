@@ -2,99 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0F73E0F6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B893E0F6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237410AbhHEHkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 03:40:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28380 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230381AbhHEHkP (ORCPT
+        id S237870AbhHEHkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 03:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230381AbhHEHkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 03:40:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628149201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=LKJJsIRb7WeylWDesNbJ0ZJZIxGY5exTeGT1+Dg+bq0=;
-        b=Hi0HpIOy9PgcH33oRDaD5TW62E+INkEATnAL1CuhpgmaXmfuTEyWWpAipoJKvV+66ivHMn
-        vaU9GeOAGQbEDM7zPgGbTvIYhrej1JKa6aOcvw6ew+k1gwy9UpkZS+oLqROcqWd2632R3f
-        dxQ+KsIEG3xwNxBe6qsQArdU6lAtlU0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-338-oNTNMF-JOhOX13cmMIyyCQ-1; Thu, 05 Aug 2021 03:40:00 -0400
-X-MC-Unique: oNTNMF-JOhOX13cmMIyyCQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26B58192FDAD;
-        Thu,  5 Aug 2021 07:39:59 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CC4C569FAE;
-        Thu,  5 Aug 2021 07:39:58 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] KVM fixes for Linux 5.14-rc5
-Date:   Thu,  5 Aug 2021 03:39:58 -0400
-Message-Id: <20210805073958.2684067-1-pbonzini@redhat.com>
+        Thu, 5 Aug 2021 03:40:23 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D7FC061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 00:40:08 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id a192-20020a1c7fc90000b0290253b32e8796so5024406wmd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 00:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=uXMFE+x+HBk40J/+blV0JV/UHz61yssYSvQ4knaVK2g=;
+        b=PFfP7KuH7Ir7atvYwV57prUlPGPij4lo7aJaDURFOi5zzVKFgi+ZobyR1mQYQgRwqk
+         5D4M2MjghImr2du1bwnrpt9zr/FwYJB7JzNJlvMmEn0rEMziNvN8UZmyn18PILufPAvj
+         W+vNOiKFgNmZ9pgUFT0IjZguKYTS8j9uc5wrlI6DB7OwZMVt5NdgjvlGTsyY0cf2gifk
+         g1Xc89uTN604lbbwREKwCATP2JPRCeSk0wd4ziotsy5L3fe2wdQO5GnqXjKbopAWaWF3
+         AKfARyTuzG4XtbFI+9u8cySxbbZSiVg5g+iSgxond4Z63IqwcO62p+rp0Lzw/1T+jcPW
+         zW1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=uXMFE+x+HBk40J/+blV0JV/UHz61yssYSvQ4knaVK2g=;
+        b=VI33vEl2j3OTvwFTeLUs1Zpgp/9cBKUaGQdMw/F4Ngn4gFDp6Il9TOJ4rS/x8pSg+3
+         oDCbSPp3CvcFmNtbW/YvROunR+gL7Y7Gf8oMhAHF+d+YnDGyRsXWrSrdIpHcZNwNKFs6
+         9aHqXirh6KjyCp4vzgjlbiC9+MrL7e8MvBPtYAlBApH4garNpTu+cH2iH6e9um/rFOmP
+         xcNQBYZJKcb1H2A390SEZ0rvpMPNaMxsj2x+719M8REQk/KRcSvwqm/ST0ABQahW502N
+         b+NuNx0ssJMmvYNb8dltm5T84V0j/yhjLBTEQO/5WDnTcMnpQcx/uuBU46Zpmo9f3F5C
+         fRLg==
+X-Gm-Message-State: AOAM532zM8SDai0CKaN49+PC/AUAfTWRYPWa8w7p8a7um13oGrf6cp0G
+        a+mMcQeKAOVQ/6pN6egvxCPY8w==
+X-Google-Smtp-Source: ABdhPJx9QpR1i7rTCVl9lmFeZhDDcReBbxopKH+ZiiA5j//M0m/b8UaOuMkaymP8xdsIHTczgyYCBw==
+X-Received: by 2002:a1c:452:: with SMTP id 79mr13476817wme.125.1628149207386;
+        Thu, 05 Aug 2021 00:40:07 -0700 (PDT)
+Received: from google.com ([109.180.115.228])
+        by smtp.gmail.com with ESMTPSA id c204sm8122404wme.15.2021.08.05.00.40.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 00:40:06 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 08:40:05 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/1] mfd: simple-mfd-i2c: Add support for registering
+ devices via MFD cells
+Message-ID: <YQuV1bhnv5QHGqNR@google.com>
+References: <20210804143744.689238-1-lee.jones@linaro.org>
+ <328e69d4d6d57b101af1ab1346b0809f@walle.cc>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <328e69d4d6d57b101af1ab1346b0809f@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Thu, 05 Aug 2021, Michael Walle wrote:
 
-The following changes since commit 8750f9bbda115f3f79bfe43be85551ee5e12b6ff:
+> Hi Lee,
+> 
+> Am 2021-08-04 16:37, schrieb Lee Jones:
+> > More devices are cropping up requiring only Regmap initialisation and
+> > child registration functionality.  We currently only support that if
+> > all required devices are represented by their own Device Tree nodes
+> > complete with compatible strings.
+> > 
+> > However, not everyone is happy with adding empty nodes that provide no
+> > additional device information into the Device Tree.
+> > 
+> > Rather than have a plethora of mostly empty, function-less drivers in
+> > MFD, we'll support those simple cases in here instead via MFD cells.
+> > 
+> > Cc: Michael Walle <michael@walle.cc>
+> > Cc: Mark Brown <broonie@kernel.org>
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> > 
+> > Michael, could you please test this on your platform to ensure I
+> >          didn't break anything please?
+> > 
+> 
+> I'm getting a null pointer dereference.
 
-  KVM: add missing compat KVM_CLEAR_DIRTY_LOG (2021-07-27 16:59:01 -0400)
+Perfect.  Will fix.
 
-are available in the Git repository at:
+Thanks for testing.
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-
-for you to fetch changes up to d5aaad6f83420efb8357ac8e11c868708b22d0a9:
-
-  KVM: x86/mmu: Fix per-cpu counter corruption on 32-bit builds (2021-08-05 03:33:56 -0400)
-
-----------------------------------------------------------------
-Mostly bugfixes; plus, support for XMM arguments to Hyper-V hypercalls
-now obeys KVM_CAP_HYPERV_ENFORCE_CPUID.  Both the XMM arguments feature
-and KVM_CAP_HYPERV_ENFORCE_CPUID are new in 5.14, and each did not know
-of the other.
-
-----------------------------------------------------------------
-Maxim Levitsky (1):
-      KVM: selftests: fix hyperv_clock test
-
-Mingwei Zhang (1):
-      KVM: SVM: improve the code readability for ASID management
-
-Paolo Bonzini (2):
-      KVM: x86: accept userspace interrupt only if no event is injected
-      KVM: Do not leak memory for duplicate debugfs directories
-
-Sean Christopherson (2):
-      KVM: SVM: Fix off-by-one indexing when nullifying last used SEV VMCB
-      KVM: x86/mmu: Fix per-cpu counter corruption on 32-bit builds
-
-Vitaly Kuznetsov (4):
-      KVM: x86: hyper-v: Check access to hypercall before reading XMM registers
-      KVM: x86: Introduce trace_kvm_hv_hypercall_done()
-      KVM: x86: hyper-v: Check if guest is allowed to use XMM registers for hypercall input
-      KVM: selftests: Test access to XMM fast hypercalls
-
- arch/x86/kvm/hyperv.c                              | 18 +++++++--
- arch/x86/kvm/mmu/mmu.c                             |  2 +-
- arch/x86/kvm/svm/sev.c                             | 45 ++++++++++++----------
- arch/x86/kvm/trace.h                               | 15 ++++++++
- arch/x86/kvm/x86.c                                 | 13 ++++++-
- .../testing/selftests/kvm/include/x86_64/hyperv.h  |  5 ++-
- tools/testing/selftests/kvm/x86_64/hyperv_clock.c  |  2 +-
- .../testing/selftests/kvm/x86_64/hyperv_features.c | 41 ++++++++++++++++++--
- virt/kvm/kvm_main.c                                | 18 ++++++++-
- 9 files changed, 125 insertions(+), 34 deletions(-)
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
