@@ -2,164 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B477A3E1610
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCC63E1613
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241780AbhHENvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 09:51:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40612 "EHLO mail.kernel.org"
+        id S241785AbhHENwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 09:52:42 -0400
+Received: from mga03.intel.com ([134.134.136.65]:53451 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233033AbhHENvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 09:51:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60D4661156;
-        Thu,  5 Aug 2021 13:51:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628171497;
-        bh=eIjO8q3dhBFOBiTJiXZLDxR693f1XsUtcz1lB0NBadg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=euCaLvEL1JhYPrWQAXHI9RKCbFe+XEs+yvYcp3K31Dk/QfcDZ6QjmwzKpOdxTLXjj
-         lgPrLBw80OY6Mky90gvJ9RFKWy7MPcUUCofCSva/sqZnwY3f8RBm7seSw4OCjWXTQA
-         0jyolV+GGmbWzh1SFvuiIo6FgnPQdTHOc9QcWQ7mo4JjoXm5C8kMer5aZdCiy3yAUB
-         K3U+Fe346FWSBn5TwvZpwiMkTpb76W6+Vml3Dv0ZpGG5d3aqRo0wJOn5gXaDH94EgE
-         a4alq8+UH2rq4LH7g6H1w+DlplsQKun0r0XpB3VIbKVKDOce3OZ1lDY1Zk/oC4Wkga
-         2FTnSYL4Dc9YQ==
-Date:   Thu, 5 Aug 2021 16:51:31 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v1] netdevsim: Forbid devlink reload when adding
- or deleting ports
-Message-ID: <YQvs4wRIIEDG6Dcu@unreal>
-References: <53cd1a28dd34ced9fb4c39885c6e13523e97d62c.1628161323.git.leonro@nvidia.com>
- <20210805061547.3e0869ad@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S233033AbhHENwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 09:52:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="214183645"
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="214183645"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 06:52:26 -0700
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="437798795"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.183.241]) ([10.212.183.241])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 06:52:25 -0700
+Subject: Re: [PATCH v1] driver: base: Add driver filter support
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YQrqhYEL64CSLRTy@kroah.com>
+ <f2b1d564-8174-f8e9-9fee-12e938c6d846@linux.intel.com>
+ <YQuYCePPZEmVbkfc@kroah.com> <YQuZdVuaGG/Cr62y@kroah.com>
+ <YQuaJ78y8j1UmBoz@kroah.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <fdf8b6b6-58c3-8392-2fc6-1908a314e991@linux.intel.com>
+Date:   Thu, 5 Aug 2021 06:52:25 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805061547.3e0869ad@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YQuaJ78y8j1UmBoz@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 06:15:47AM -0700, Jakub Kicinski wrote:
-> On Thu,  5 Aug 2021 14:05:41 +0300 Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > In order to remove complexity in devlink core related to
-> > devlink_reload_enable/disable, let's rewrite new_port/del_port
-> > logic to rely on internal to netdevsim lock.
-> > 
-> > We should protect only reload_down flow because it destroys nsim_dev,
-> > which is needed for nsim_dev_port_add/nsim_dev_port_del to hold
-> > port_list_lock.
-> 
-> I don't understand why we only have to protect reload_down.
 
-I assumed that if we succeeded to pass reload_down and we are in
-reload_up stage, everything was already bailed out.
+> Both thunderbolt and USB have the idea of "authorized" devices, that is
+> the logic that should be made generic and available for all busses to
+> use, by moving it to the driver core, just like the "removable" logic
+> got moved to the driver core recently (see 70f400d4d957 ("driver core:
+> Move the "removable" attribute from USB to core")
 
-> 
-> What protects us from adding a port right after down? That'd hit a
-> destroyed mutex, up wipes the port list etc...
+This looks like it's controlled by udev?  Have a default per bus, and 
+let user space override it before setting up the device.
 
-You will have very similar crash to already existing one:
-* parallel call to del_device and add_port will hit same issue.
+This doesn't help us handle builtin drivers that initialize before user 
+space is up.
 
-The idea is not make netdevsim universally correct, but to ensure that
-it doesn't crash immediately.
+We need something that works for all drivers. Also cannot just use a 
+default at bootup because some drivers (like virtio or rtc) need to be 
+initialized in early boot to make the system functional at all. So you 
+need a way to distinguish these two cases in the pre user space boot.
 
-> 
-> > +	nsim_bus_dev = nsim_dev->nsim_bus_dev;
-> > +	if (!mutex_trylock(&nsim_bus_dev->nsim_bus_reload_lock))
-> > +		return -EOPNOTSUPP;
-> 
-> Why not -EBUSY?
+That's basically what this patch implements the infrastructure for.
 
-This is what devlink_reload_disable() returns, so I kept same error.
-It is not important at all.
+>
+> Please use that type of interface, as we already have userspace tools
+> using it, and expand it for all busses in the system to use if they
+> want.  Otherwise with this proposal you will end up with multiple ways
+> to control the same bus type with different types of "filtering",
+> ensuring a mess.
 
-What about the following change on top of this patch?
+How would such a proposal work for a platform driver that doesn't have a 
+bus?
 
-diff --git a/drivers/net/netdevsim/bus.c b/drivers/net/netdevsim/bus.c
-index a29ec264119d..62d033a1a557 100644
---- a/drivers/net/netdevsim/bus.c
-+++ b/drivers/net/netdevsim/bus.c
-@@ -196,6 +196,11 @@ new_port_store(struct device *dev, struct device_attribute *attr,
- 	if (!mutex_trylock(&nsim_bus_dev->nsim_bus_reload_lock))
- 		return -EBUSY;
- 
-+	if (nsim_bus_dev->in_reload) {
-+		mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
-+		return -EBUSY;
-+	}
-+
- 	ret = nsim_dev_port_add(nsim_bus_dev, NSIM_DEV_PORT_TYPE_PF, port_index);
- 	mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
- 	return ret ? ret : count;
-@@ -221,6 +226,11 @@ del_port_store(struct device *dev, struct device_attribute *attr,
- 	if (!mutex_trylock(&nsim_bus_dev->nsim_bus_reload_lock))
- 		return -EBUSY;
- 
-+	if (nsim_bus_dev->in_reload) {
-+		mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
-+		return -EBUSY;
-+	}
-+
- 	ret = nsim_dev_port_del(nsim_bus_dev, NSIM_DEV_PORT_TYPE_PF, port_index);
- 	mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
- 	return ret ? ret : count;
-diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
-index ff5714209b86..53068e184c90 100644
---- a/drivers/net/netdevsim/dev.c
-+++ b/drivers/net/netdevsim/dev.c
-@@ -878,6 +878,7 @@ static int nsim_dev_reload_down(struct devlink *devlink, bool netns_change,
- 		mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
- 		return -EOPNOTSUPP;
- 	}
-+	nsim_bus_dev->in_reload = true;
- 
- 	nsim_dev_reload_destroy(nsim_dev);
- 	mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
-@@ -889,17 +890,26 @@ static int nsim_dev_reload_up(struct devlink *devlink, enum devlink_reload_actio
- 			      struct netlink_ext_ack *extack)
- {
- 	struct nsim_dev *nsim_dev = devlink_priv(devlink);
-+	struct nsim_bus_dev *nsim_bus_dev;
-+	int ret;
-+
-+	nsim_bus_dev = nsim_dev->nsim_bus_dev;
-+	mutex_lock(&nsim_bus_dev->nsim_bus_reload_lock);
-+	nsim_bus_dev->in_reload = false;
- 
- 	if (nsim_dev->fail_reload) {
- 		/* For testing purposes, user set debugfs fail_reload
- 		 * value to true. Fail right away.
- 		 */
- 		NL_SET_ERR_MSG_MOD(extack, "User setup the reload to fail for testing purposes");
-+		mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
- 		return -EINVAL;
- 	}
- 
- 	*actions_performed = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT);
--	return nsim_dev_reload_create(nsim_dev, extack);
-+	ret = nsim_dev_reload_create(nsim_dev, extack);
-+	mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
-+	return ret;
- }
- 
- static int nsim_dev_info_get(struct devlink *devlink,
-diff --git a/drivers/net/netdevsim/netdevsim.h b/drivers/net/netdevsim/netdevsim.h
-index 1c20bcbd9d91..793c86dc5a9c 100644
---- a/drivers/net/netdevsim/netdevsim.h
-+++ b/drivers/net/netdevsim/netdevsim.h
-@@ -362,6 +362,7 @@ struct nsim_bus_dev {
- 	struct nsim_vf_config *vfconfigs;
- 	/* Lock for devlink->reload_enabled in netdevsim module */
- 	struct mutex nsim_bus_reload_lock;
-+	bool in_reload;
- 	bool init;
- };
- 
+-Andi
 
-
-Thanks
