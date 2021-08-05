@@ -2,71 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5106F3E0DD3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 07:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030533E0DBE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 07:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234555AbhHEFkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 01:40:12 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:35018 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230405AbhHEFkL (ORCPT
+        id S231617AbhHEF0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 01:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhHEF0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 01:40:11 -0400
-X-UUID: ae6d84afd5b1433a97fad107c3f1d3ee-20210805
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=iysGRkBA3I1DDFi54oZ4OInQV+8ljw933mvUY9ZHSjA=;
-        b=rEuPM1rXzgqeYNRkc9KC5gHv+tEjH1uLvB5IUVR4YUxNvSJFzCWuTsxe/2sU/FqsNv9pyjBgWtBvkmXAQKKNdwo95pp/uDn4JRKNok0eTjKz/oq71JRoEUeBcgYONvUluX89C6zJLbx6Cfms6nXBgO5LipUG4pF/9GPKv3zK2eE=;
-X-UUID: ae6d84afd5b1433a97fad107c3f1d3ee-20210805
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 823788249; Thu, 05 Aug 2021 13:39:53 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 5 Aug 2021 13:39:52 +0800
-Received: from [10.15.20.246] (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 5 Aug 2021 13:39:51 +0800
-Message-ID: <1628140993.20108.4.camel@mbjsdccf07>
-Subject: Re: [PATCH v2 4/4] spi: tegra114: Fix set_cs_timing param
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        <mason.zhang@mediatek.com>
-Date:   Thu, 5 Aug 2021 13:23:13 +0800
-In-Reply-To: <20210803141045.GN4668@sirena.org.uk>
-References: <20210803102517.20944-1-Mason.Zhang@mediatek.com>
-         <20210803141045.GN4668@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 5 Aug 2021 01:26:37 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED82C061765
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 22:26:22 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id g6so2361581qvj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 22:26:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SAWYlvs5XtqLwUaEqS2qwqUPDupygtRRMcwg/DOIhsg=;
+        b=nPobvWYZhXvZVrEvTwMU2dN2uActZpK/cmTowjhr6t4tZ/uQJTV2sYljb33SV3+52s
+         RaEEuEtlXJg0GNli7EjvCKg1OdX457q6ggegb6fm0jHB0hquE0l21h7u4prEoW3YJUIZ
+         +vSH8yX8Y0CNRYy1NI4biFTXdCLBLa5M10cBw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SAWYlvs5XtqLwUaEqS2qwqUPDupygtRRMcwg/DOIhsg=;
+        b=F6/ozJ+/qMu39WJfYBbmQaaEXRgwCODMGw/VzrwSk2dDrCy8DAx/vwnJ/WI+mCKdT6
+         9lGF5Z0vryqRLQUhhyj3MoPSvsKOO3v0nE3GL6IXAXzCoyci886WyrGnHScsKK11ggpH
+         WbADyDWcTobSSR6dKJjHqGLUtnDP9fDIYeZ2ne7PQM1eJ2qL9F8OFqPoaFgfspbTdAHi
+         0ikS1L6pESf1t0jSsyf3zxO5CcbjlAxUJ+GGzUPGBY/x2KPpnAdDKk0Un3XBPsDUcAqi
+         K2jcV0Tl+e2BnMWHzrr0v2CdRSlefp2yoW4H6lPmR4s0CKU9tTRD1dlqHyxpm3akcQAA
+         J8aQ==
+X-Gm-Message-State: AOAM530OvCH2laa+T5cRWhhpE3xlP3TXu4HLSLjUqmcl793to7ntjlNy
+        S7BzzYI4oDEzvtkiowogJ+ExL9Tcpx32V1rGrP4rIw==
+X-Google-Smtp-Source: ABdhPJwliKWoxLiTKjhaiCktAIkaJ/XWbOQ6RdbyHxj8/NjoJYsYviXy+qLt7OPWwt6dfpKxWyMiB9EhxZZyd+mymtc=
+X-Received: by 2002:a05:6214:e4e:: with SMTP id o14mr3391377qvc.55.1628141181770;
+ Wed, 04 Aug 2021 22:26:21 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210709033502.3545820-1-stevensd@google.com> <20210709033502.3545820-4-stevensd@google.com>
+ <20210802135446.GE28547@willie-the-truck>
+In-Reply-To: <20210802135446.GE28547@willie-the-truck>
+From:   David Stevens <stevensd@chromium.org>
+Date:   Thu, 5 Aug 2021 14:26:10 +0900
+Message-ID: <CAD=HUj4+62dYZTWfbPjh8eLRY6FQak8nBS8OD85t0xk_+JvDpA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] dma-iommu: pass SKIP_CPU_SYNC to swiotlb unmap
+To:     Will Deacon <will@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA4LTAzIGF0IDE1OjEwICswMTAwLCBNYXJrIEJyb3duIHdyb3RlOg0KPiBP
-biBUdWUsIEF1ZyAwMywgMjAyMSBhdCAwNjoyNToxOFBNICswODAwLCBNYXNvbiBaaGFuZyB3cm90
-ZToNCj4gPiBUaGlzIHBhdGNoIGZpeGVkIHNldF9jc190aW1pbmcgcGFyYW0sIGJlY2F1c2UgY3Mg
-dGltaW5nIGRlbGF5IGhhcw0KPiA+IGJlZW4gbW92ZWQgdG8gc3BpX2RldmljZS4NCj4gPiANCj4g
-PiBTaWduZWQtb2ZmLWJ5OiBNYXNvbiBaaGFuZyA8TWFzb24uWmhhbmdAbWVkaWF0ZWsuY29tPg0K
-PiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3NwaS9zcGktdGVncmExMTQuYyB8IDggKysrKy0tLS0NCj4g
-PiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkNCj4gDQo+
-IEVhY2ggaW5kaXZpZHVhbCBwYXRjaCBpbiB0aGUgc2VyaWVzIG5lZWRzIHRvIGJlIGJ1aWxkYWJs
-ZSBieSBpdHNlbGYsIGlmDQo+IGFuIGVhcmxpZXIgY29tbWl0IGluIHRoZSBzZXJpZXMgY2F1c2Vz
-IHRoaW5ncyB0byBmYWlsIHRvIGJ1aWxkIHRoZW4gdGhhdA0KPiBjb21taXQgbmVlZHMgdG8gYmUg
-aW1wcm92ZWQgc28gdGhhdCB0aGlzIGRvZXNuJ3QgaGFwcGVuLiAgVGhpcyBzdXBwb3J0cw0KPiB0
-aGluZ3MgbGlrZSBiaXNlY3Rpb24uDQo+IA0KPiBQbGVhc2UgYWxzbyBsb29rIGludG8gaG93IHlv
-dSdyZSBzZW5kaW5nIHNlcmllc2VzLCB0aGVzZSBwYXRjaGVzIGFyZW4ndA0KPiB0aHJlYWRlZCB0
-b2dldGhlciBhcyBub3JtYWwgYW5kIHRoZXJlJ3MgYSB3ZWlyZCAiKioqIiBpbiB0aGUgc3ViamVj
-dCBvZg0KPiB0aGUgZmlyc3QgcGF0Y2guDQoNCg0KRGVhciBNYXJrOg0KDQoJVGhhbmtzIGZvciB5
-b3VyIHN1Z2dlc3Rpb25zLCBJIGhhdmUgbWVyZ2VkIHBhdGNoIDIvMy80IGluIG9uZSBwYXRjaCB0
-bw0KZW5zdXJlIGl0IGNhbiBiZSBidWlsdCBieSBpdHNlbGYuDQoJQW5kIEkgaGF2ZSB1cGRhdGVk
-IHRoZSBwYXRjaCB2MywgYW5kIHJlbW92ZWQgdGhlICoqKiBpbnQgdGhlIGZpcnN0DQpwYXRjaC4N
-Cg0KDQpUaGFua3MNCk1hc29uDQo=
+On Mon, Aug 2, 2021 at 10:54 PM Will Deacon <will@kernel.org> wrote:
+>
+> On Fri, Jul 09, 2021 at 12:35:01PM +0900, David Stevens wrote:
+> > From: David Stevens <stevensd@chromium.org>
+> >
+> > If SKIP_CPU_SYNC isn't already set, then iommu_dma_unmap_(page|sg) has
+> > already called iommu_dma_sync_(single|sg)_for_cpu, so there is no need
+> > to copy from the bounce buffer again.
+> >
+> > Signed-off-by: David Stevens <stevensd@chromium.org>
+> > ---
+> >  drivers/iommu/dma-iommu.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> > index e79e274d2dc5..0a9a9a343e64 100644
+> > --- a/drivers/iommu/dma-iommu.c
+> > +++ b/drivers/iommu/dma-iommu.c
+> > @@ -505,7 +505,8 @@ static void __iommu_dma_unmap_swiotlb(struct device *dev, dma_addr_t dma_addr,
+> >       __iommu_dma_unmap(dev, dma_addr, size);
+> >
+> >       if (unlikely(is_swiotlb_buffer(phys)))
+> > -             swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
+> > +             swiotlb_tbl_unmap_single(dev, phys, size, dir,
+> > +                                      attrs | DMA_ATTR_SKIP_CPU_SYNC);
+> >  }
+>
+> I think it would be cleaner to drop DMA_ATTR_SKIP_CPU_SYNC in the callers
+> once they've called iommu_dma_sync_*_for_cpu().
 
+Dropping that flag in iommu_dma_unmap_* would result in always copying
+from the swiotlb here, which is the opposite direction of what this
+patch is trying to do.
+
+This change is aiming to address the case where DMA_ATTR_SKIP_CPU_SYNC
+isn't passed to dma_unmap_*. In that case, there are calls to
+swiotlb_sync_single_for_cpu from iommu_dma_sync_*_for_cpu, and calls
+to swiotlb_tlb_unmap_single here. That means we copy from the swiotlb
+twice. Adding the DMA_ATTR_SKIP_CPU_SYNC flag here skips the second
+copy.
+
+-David
+
+> Will
