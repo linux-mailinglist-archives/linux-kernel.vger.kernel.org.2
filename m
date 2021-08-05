@@ -2,104 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0CB3E14B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2712E3E14BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241371AbhHEMaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:30:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42928 "EHLO mail.kernel.org"
+        id S241402AbhHEMae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:30:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240009AbhHEMaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:30:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D783B6113C;
-        Thu,  5 Aug 2021 12:30:06 +0000 (UTC)
+        id S241386AbhHEMad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 08:30:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC46961050;
+        Thu,  5 Aug 2021 12:30:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628166606;
-        bh=GZ2Jy/6iEb4dlJpi73YaSiwro78S2UBi5mHHzVSZfIM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lK08tk7MATn2Ix1D3ZkfV+sMFvGtfevERIrYCQXKPcU+SABNjze9gCIgrZaflGH/v
-         ThDgsKnb8A1OOAhqPorC24+fXwkLn6T5/CUk9MxQw09Pm9mdWpJa+HGN7PWqkBD5He
-         uhj21FwsRmc8XY+fihxkzfcHiS7qhjFiMYwYJshI7oPCkI484FkQS62KgUXeflQXWU
-         ea+WeuERTEmqwwLQAReNYqDP+uufHWhNRU+dXSbGjPZL/v/XKoDI4WMqbBylgOe+oG
-         gB6ncCSnTHxmqOgo4LVf7RAgff5WuTOYL/c0pHN/X49hXGYMUgimXNfN3FibHHWfM1
-         3tHlPK919RHEQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CD40460A88;
-        Thu,  5 Aug 2021 12:30:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1628166619;
+        bh=oHpRbH759WgNKrrgklJx6/f8NSNkMtCqiEdRLlBlBxM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=umGMcWlwMH2Ah/swXE9UPY5eK/oTl3ZpCnmugc8YqSQ2gG06lCHwB2Lg5GHlgW/gF
+         lyzzLZWd4bKH10xLE3Brnykrle2hlZcbfrg+pRfBiCJqIsnd+Q0NooNcCXXgx/aX2l
+         DpBjOw/zzsinmFb+OcleIjSY0FlbMIdlb++J5oJ0DPaQQHkDrG10z/ML/fyFgyFJJJ
+         KAhsa/l3a/QPF888jT3jzvl1a5CyjjKG9QzQF9kbT/EdrJpEEbumAUOWsWef3+Dh8m
+         tFKDsrfF+8mRf8h2g5ujQSjjPfTVw0AE4b2nHP3JdyG4S71MbznTzI/56YvBIiMguE
+         m6OZZGo0huDIw==
+Date:   Thu, 5 Aug 2021 15:30:15 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     YueHaibing <yuehaibing@huawei.com>, liangwenpeng@huawei.com,
+        liweihang@huawei.com, dledford@redhat.com, chenglang@huawei.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] RDMA/hns: Fix return in hns_roce_rereg_user_mr()
+Message-ID: <YQvZ14oSAYEuSTA3@unreal>
+References: <20210804125939.20516-1-yuehaibing@huawei.com>
+ <YQqb0U43eQUGK641@unreal>
+ <f0921aa3-a95d-f7e4-a13b-db15d4a5f259@huawei.com>
+ <YQtdswHgMXhC7Mf5@unreal>
+ <974d3309-3617-6413-5a8d-c92b1b2f8dfe@huawei.com>
+ <YQvEbUp9cE5G535E@unreal>
+ <20210805122311.GJ543798@ziepe.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: Remove redundant if statements
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162816660683.5517.6056843504159587831.git-patchwork-notify@kernel.org>
-Date:   Thu, 05 Aug 2021 12:30:06 +0000
-References: <20210805115527.19435-1-yajun.deng@linux.dev>
-In-Reply-To: <20210805115527.19435-1-yajun.deng@linux.dev>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210805122311.GJ543798@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Thu,  5 Aug 2021 19:55:27 +0800 you wrote:
-> The 'if (dev)' statement already move into dev_{put , hold}, so remove
-> redundant if statements.
+On Thu, Aug 05, 2021 at 09:23:11AM -0300, Jason Gunthorpe wrote:
+> On Thu, Aug 05, 2021 at 01:58:53PM +0300, Leon Romanovsky wrote:
 > 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  net/batman-adv/bridge_loop_avoidance.c |  6 ++----
->  net/batman-adv/distributed-arp-table.c |  3 +--
->  net/batman-adv/gateway_client.c        |  3 +--
->  net/batman-adv/multicast.c             |  9 +++------
->  net/batman-adv/originator.c            | 12 ++++--------
->  net/batman-adv/translation-table.c     |  9 +++------
->  net/can/raw.c                          |  8 ++------
->  net/core/dev.c                         |  6 ++----
->  net/core/drop_monitor.c                |  6 ++----
->  net/core/dst.c                         |  6 ++----
->  net/core/neighbour.c                   | 15 +++++----------
->  net/decnet/dn_dev.c                    |  6 ++----
->  net/decnet/dn_fib.c                    |  3 +--
->  net/decnet/dn_route.c                  | 18 ++++++------------
->  net/ethtool/netlink.c                  |  6 ++----
->  net/ieee802154/nl-phy.c                |  3 +--
->  net/ieee802154/nl802154.c              |  3 +--
->  net/ieee802154/socket.c                |  3 +--
->  net/ipv4/fib_semantics.c               |  4 +---
->  net/ipv4/icmp.c                        |  3 +--
->  net/ipv4/route.c                       |  3 +--
->  net/ipv6/addrconf.c                    |  6 ++----
->  net/ipv6/ip6mr.c                       |  3 +--
->  net/ipv6/route.c                       |  3 +--
->  net/llc/af_llc.c                       |  6 ++----
->  net/netfilter/nf_flow_table_offload.c  |  3 +--
->  net/netfilter/nf_queue.c               | 24 ++++++++----------------
->  net/netlabel/netlabel_unlabeled.c      |  6 ++----
->  net/netrom/nr_loopback.c               |  3 +--
->  net/netrom/nr_route.c                  |  3 +--
->  net/packet/af_packet.c                 | 15 +++++----------
->  net/phonet/af_phonet.c                 |  3 +--
->  net/phonet/pn_dev.c                    |  6 ++----
->  net/phonet/socket.c                    |  3 +--
->  net/sched/act_mirred.c                 |  6 ++----
->  net/smc/smc_ib.c                       |  3 +--
->  net/smc/smc_pnet.c                     |  3 +--
->  net/wireless/nl80211.c                 | 16 +++++-----------
->  net/wireless/scan.c                    |  3 +--
->  39 files changed, 82 insertions(+), 168 deletions(-)
+> > > IMO, if ibv_rereg_mr failed, the mr is in undefined state, user
+> > > needs to call ibv_dereg_mr in order to release it, so there no
+> > > need to recover the original state.
+> > 
+> > The thing is that it undefined state in the kernel.  What will be if
+> > user will change access_flags and try to use that "broken" MR
+> > anyway? Will you catch it?
+> 
+> rereg is not atomic, if the rereg fails in the middle the mr should be
+> left in some safe state.
 
-Here is the summary with links:
-  - [net-next] net: Remove redundant if statements
-    https://git.kernel.org/netdev/net-next/c/1160dfa178eb
+It is not the case in the hns flow, they leave such MR in limbo state.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> 
+> Jason
