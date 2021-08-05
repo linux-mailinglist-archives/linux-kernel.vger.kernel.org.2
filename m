@@ -2,489 +2,609 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2306C3E0E43
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DED3E0E47
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbhHEGWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 02:22:52 -0400
-Received: from mga03.intel.com ([134.134.136.65]:20643 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhHEGWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 02:22:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="214110569"
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="gz'50?scan'50,208,50";a="214110569"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 23:22:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="gz'50?scan'50,208,50";a="442238906"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 04 Aug 2021 23:22:26 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mBWlt-000Fbu-Ml; Thu, 05 Aug 2021 06:22:25 +0000
-Date:   Thu, 5 Aug 2021 14:21:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:for-next/clang-fallthrough 1/1] warning:
- fallthrough annotation in unreachable code
-Message-ID: <202108051403.tBfqfI49-lkp@intel.com>
+        id S236077AbhHEGZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 02:25:13 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:46063 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235351AbhHEGYw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 02:24:52 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210805062306epoutp01caab7c028e1128164fcbf6b643473f2f~YVOAWkotH2134021340epoutp01U
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 06:23:06 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210805062306epoutp01caab7c028e1128164fcbf6b643473f2f~YVOAWkotH2134021340epoutp01U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1628144586;
+        bh=tCCo1bb4dp52MSrTFSVeVSeIjVWUJdatIsFzerA+Nbs=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=IeB16irshp41SsaOVkV9vvxz/DP3M17ZLDtreh72xTAFH6POkp8Rp4DvBzYs9x8Qa
+         Q/6pe4FRzaXIjD+d3ccqDsD5D9x6jm0lxEAYq5fPocj4bf4Q2UZrARi6Z/+fHp7TPk
+         6XfUpMWnzGAreqkuRSs4xrfn0WRikVplkn0u+ljg=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210805062306epcas1p3db1017f13b702c61ac636ca3a6a455a2~YVN-0DDdt2326823268epcas1p3U;
+        Thu,  5 Aug 2021 06:23:06 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4GgJSm6zRQz4x9QW; Thu,  5 Aug
+        2021 06:23:04 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        69.FF.09551.8C38B016; Thu,  5 Aug 2021 15:23:04 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210805062304epcas1p221fe6fd232d8bc92ee38a91f8c613621~YVN9-LXCy2534025340epcas1p2D;
+        Thu,  5 Aug 2021 06:23:04 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210805062304epsmtrp123fcce593f3e73df406d21177a9dcb78~YVN9_OCC01906619066epsmtrp1h;
+        Thu,  5 Aug 2021 06:23:04 +0000 (GMT)
+X-AuditID: b6c32a36-2b3ff7000000254f-80-610b83c80025
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        2F.BB.08289.7C38B016; Thu,  5 Aug 2021 15:23:03 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.89.31.77]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210805062303epsmtip13a2994396a3fe758b1b79c7daa4a5964~YVN9rG7mi0169001690epsmtip1s;
+        Thu,  5 Aug 2021 06:23:03 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-cifs@vger.kernel.org>
+Cc:     <linux-cifsd-devel@lists.sourceforge.net>,
+        <aurelien.aptel@gmail.com>, <sandeen@sandeen.net>,
+        <willy@infradead.org>, <hch@infradead.org>,
+        <senozhatsky@chromium.org>, <christian@brauner.io>,
+        <viro@zeniv.linux.org.uk>, <ronniesahlberg@gmail.com>,
+        <hch@lst.de>, <dan.carpenter@oracle.com>, <metze@samba.org>,
+        <smfrench@gmail.com>, <hyc.lee@gmail.com>
+In-Reply-To: <20210805060546.3268-1-namjae.jeon@samsung.com>
+Subject: RE: [PATCH v7 00/13] ksmbd: introduce new SMB3 kernel server
+Date:   Thu, 5 Aug 2021 15:23:03 +0900
+Message-ID: <006f01d789c2$58ee1e20$0aca5a60$@samsung.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="ibTvN161/egqYuK8"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKIccDmQ4BUhxx+Zr+7uyL+JpQP4AJo0AsFqe9ZvxA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTZxjG851z2tNi6g4F5wcLrh7mDEwupRQPBDYDaM5GzZo5s2zZgidw
+        BEZv6Sm6GbN1UXFWhApzainMAeMiMgGBlTK8lHBzGsNFhm5scYpyERQZbsgqo5wu47/f+37P
+        8715vosIlT4QBoqydCbWqGM0pNAHa+kICQ/rObCKiayaU1Ddk26c+mI6mJp8fhKjfrKWIVRN
+        bSdCDf3+CKfGFp0oNb/4F6B+bO/FqAGnXUj1Vc5j1LH8JwLq0GAo1dZQJqQejnUIqRvubgG1
+        8LdduMWXdpfMoHSxuQ+jW20jOH2hOpRuOzOL0G23zEJ6ZvQ2Rpc48wHdVH4HoWcb19GN96YQ
+        9aoPNPGZLJPOGmWsLk2fnqXLSCBTdqQmpSpjIuVh8lhqMynTMVo2gUxWqcO2ZWmWMpGyPYwm
+        Z6mlZjiOjHg93qjPMbGyTD1nSiBZQ7rGII80hHOMlsvRZYSn6bVx8sjIKOWScpcm827lJGKo
+        HQCf3LxUg5tBpR1YgFgEiWjYc+qEwAJ8RFLCAeD3BU3e4gmAf7YeBnwxC2CzqwG3ANGypbP3
+        Bb7vBNA1ftzrGANweOQs4tlXSITB5/9cEnrYn0iDpfV1mEeEEuMIvFlxDvcsiIl4OFF7QeBh
+        P2IrrLnxzbIZI16BLfb7qIclRCy8PXNdwLMv7D19D/MwSrwMf5iyo3wIGZwfrRTww+JgxcDP
+        OK/xh8VHclHPYEgUiKG1dNCbOhlO/TbkNfvBie4mnOdAOF6Q6+W9sKf3GcLzflhfetEbXwHz
+        xkweRIkQeN4ZwSvWw9aFEsCPXQ2n5/IEvFoCv8yV8pINML+/w7vhS9By+DFuBaRtRTDbimC2
+        FQFs/w87A7Cz4EXWwGkzWE5uiFp53Y1g+cWHxjhA4dTjcBdARMAFoAgl/SVp5T6MVJLOfLqP
+        NepTjTkalnMB5dJRH0cD16Tpl76MzpQqV0YpFAoqOmZzjFJBrpU8/Whul5TIYExsNssaWON/
+        PkQkDjQjiT1xVerK3J4FP9U7QRP5hs5Tts87sh+27DQczD5tfUNmCes99/bGutr6X4pU0+Sb
+        qupHmnJb187tUYuWTdNd7uiyb+83i0/utmuK1f2WX4uTg/LmEnzM29+v2pcYMfPgakC0+eN+
+        lgnfK1b9Mb1h1vGZb+2VHTb/W7qArhTDtasjW2KVSRuf7rmrBfMOrTuktb/m3Qo/RyPe/lrz
+        7tWD9MGjCX3PitYVTak0rqayQ8fiHLnt8iuvbpOMZl8+EArbxh+tta7Jh043fTmIOqJ2DhGJ
+        dW+lHD1/DQ2IrU60uvYvVDe4Cwu/27QwfB3/Ovgr7j3/mqTFO3kRF6XrwdDwiQ+DSYzLZOSh
+        qJFj/gUUFdczegQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRmVeSWpSXmKPExsWy7bCSnO6JZu5EgxsqFsdf/2W3aHynbPH6
+        33QWi9MTFjFZrFx9lMni2v337BYv/u9itvj5/zujxZ69J1ksLu+aw2ZxcdlPFovevk+sFq1X
+        tCx2b1zEZvHmxWE2i/N/j7Na/P4xh81B0OPv3I/MHrMbLrJ47Jx1l91j8wotj90LPjN57L7Z
+        wObx8ektFo+5u/oYPbYsfsjk8XmTnMemJ2+ZArijuGxSUnMyy1KL9O0SuDIeL3vNVLD6MmPF
+        1f0r2RsYl81h7GLk4JAQMJE4epK/i5GLQ0hgB6PEq74DQHFOoLi0xLETZ5ghaoQlDh8uhqh5
+        xihxcu8+FpAaNgFdiX9/9rOB2CICqRJLm7YwgxQxC/xkklg5tZcZJCEk0Mso8faSKojNKWAj
+        8Wr1ZlYQW1jAVWLl+flMIDaLgIrEtjnPwOp5BSwlbn08ywphC0qcnPkEbBmzgLZE78NWRghb
+        XmL72znMEIcqSPx8uowV4ggriSWXr7ND1IhIzO5sY57AKDwLyahZSEbNQjJqFpKWBYwsqxgl
+        UwuKc9Nziw0LjPJSy/WKE3OLS/PS9ZLzczcxgiNdS2sH455VH/QOMTJxMB5ilOBgVhLhTV7M
+        lSjEm5JYWZValB9fVJqTWnyIUZqDRUmc90LXyXghgfTEktTs1NSC1CKYLBMHp1QDE9MpWcuI
+        oA2Nbw6cPbfuopLe0u9LwgRTemvMGO8VHUtNC5puLfvCc7Z0ybmmRr67szyzzjms5lbj+rO5
+        17bldYhbqtiudO9JUxPdOYXtzZeeVtuy3O5c7MbL/y87yxRUSeoe0riaV5eeOuvZ3Kwzd/x2
+        +U24aPTJLKfoVMXE5bIHdIq3LokoD9dgXeQ/6bWbm+ZLQ5n5158v3aEo//Ztmscf883v6/JL
+        n2arbz3ju2nvjU0S5hqx76omPsltW5piYaiyzXXt76N7T26Tj6zbtthxptYmr1dTUux5DWSV
+        5L5M/bx/cVF75NLMgwcnxXv8+jZRRcV+OrcXm2X+hR/bsq+Uvubav1Wc6aym85UHD5RYijMS
+        DbWYi4oTAXiy+PVjAwAA
+X-CMS-MailID: 20210805062304epcas1p221fe6fd232d8bc92ee38a91f8c613621
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210805061552epcas1p36b9ebf1ea832ba81c5e50daf32268f2d
+References: <CGME20210805061552epcas1p36b9ebf1ea832ba81c5e50daf32268f2d@epcas1p3.samsung.com>
+        <20210805060546.3268-1-namjae.jeon@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> This is the patch series for ksmbd kernel server.
+> 
+> What is ksmbd ?
+> ===============
+> 
+> The SMB family of protocols is the most widely deployed network filesystem protocol, the default on
+> Windows and Macs (and even on many phones and tablets), with clients and servers on all major
+> operating systems, but lacked a kernel server for Linux. For many cases the current userspace server
+> choices were suboptimal either due to memory footprint, performance or difficulty integrating well
+> with advanced Linux features.
+> 
+> ksmbd is a new kernel module which implements the server-side of the SMB3 protocol.
+> The target is to provide optimized performance, GPLv2 SMB server, better lease handling (distributed
+> caching). The bigger goal is to add new features more rapidly (e.g. RDMA aka "smbdirect", and recent
+> encryption and signing improvements to the protocol) which are easier to develop on a smaller, more
+> tightly optimized kernel server than for example in Samba.  The Samba project is much broader in scope
+> (tools, security services, LDAP, Active Directory Domain Controller, and a cross platform file server
+> for a wider variety of purposes) but the user space file server portion of Samba has proved hard to
+> optimize for some Linux workloads, including for smaller devices. This is not meant to replace Samba,
+> but rather be an extension to allow better optimizing for Linux, and will continue to integrate well
+> with Samba user space tools and libraries where appropriate.
+> Working with the Samba team we have already made sure that the configuration files and xattrs are in a
+> compatible format between the kernel and user space server.
+> 
+> 
+> Architecture
+> ============
+> 
+>                |--- ...
+>        --------|--- ksmbd/3 - Client 3
+>        |-------|--- ksmbd/2 - Client 2
+>        |       |         ____________________________________________________
+>        |       |        |- Client 1                                          |
+> <--- Socket ---|--- ksmbd/1   <<= Authentication : NTLM/NTLM2, Kerberos      |
+>        |       |      | |     <<= SMB engine : SMB2, SMB2.1, SMB3, SMB3.0.2, |
+>        |       |      | |                SMB3.1.1                            |
+>        |       |      | |____________________________________________________|
+>        |       |      |
+>        |       |      |--- VFS --- Local Filesystem
+>        |       |
+> KERNEL |--- ksmbd/0(forker kthread)
+> ---------------||-------------------------------------------------------
+> ---------------||--------
+> USER           ||
+>                || communication using NETLINK
+>                ||  ______________________________________________
+>                || |                                              |
+>         ksmbd.mountd <<= DCE/RPC(srvsvc, wkssvc, samr, lsarpc)   |
+>                ^  |  <<= configure shares setting, user accounts |
+>                |  |______________________________________________|
+>                |
+>                |------ smb.conf(config file)
+>                |
+>                |------ ksmbdpwd.db(user account/password file)
+>                             ^
+>   ksmbd.adduser ------------|
+> 
+> The subset of performance related operations(open/read/write/close etc.) belong in kernelspace(ksmbd)
+> and the other subset which belong to operations(DCE/RPC, user account/share database) which are not
+> really related with performance are handled in userspace(ksmbd.mountd).
+> 
+> When the ksmbd.mountd is started, It starts up a forker thread at initialization time and opens a
+> dedicated port 445 for listening to SMB requests. Whenever new clients make request, Forker thread
+> will accept the client connection and fork a new thread for dedicated communication channel between
+> the client and the server.
+> 
+> 
+> ksmbd feature status
+> ====================
+> 
+> ============================== =================================================
+> Feature name                   Status
+> ============================== =================================================
+> Dialects                       Supported. SMB2.1 SMB3.0, SMB3.1.1 dialects
+>                                (intentionally excludes security vulnerable SMB1 dialect).
+> Auto Negotiation               Supported.
+> Compound Request               Supported.
+> Oplock Cache Mechanism         Supported.
+> SMB2 leases(v1 lease)          Supported.
+> Directory leases(v2 lease)     Planned for future.
+> Multi-credits                  Supported.
+> NTLM/NTLMv2                    Supported.
+> HMAC-SHA256 Signing            Supported.
+> Secure negotiate               Supported.
+> Signing Update                 Supported.
+> Pre-authentication integrity   Supported.
+> SMB3 encryption(CCM, GCM)      Supported. (CCM and GCM128 supported, GCM256 in progress)
+> SMB direct(RDMA)               Partially Supported. SMB3 Multi-channel is required
+>                                to connect to Windows client.
+> SMB3 Multi-channel             Partially Supported.
+> SMB3.1.1 POSIX extension       Supported.
+> ACLs                           Partially Supported. only DACLs available, SACLs
+>                                (auditing) is planned for the future. For
+>                                ownership (SIDs) ksmbd generates random subauth
+>                                values(then store it to disk) and use uid/gid
+>                                get from inode as RID for local domain SID.
+>                                The current acl implementation is limited to
+>                                standalone server, not a domain member.
+>                                Integration with Samba tools is being worked on to
+>                                allow future support for running as a domain member.
+> Kerberos                       Supported.
+> Durable handle v1,v2           Planned for future.
+> Persistent handle              Planned for future.
+> SMB2 notify                    Planned for future.
+> Sparse file support            Supported.
+> DCE/RPC support                Partially Supported. a few calls(NetShareEnumAll,
+>                                NetServerGetInfo, SAMR, LSARPC) that are needed
+>                                for file server handled via netlink interface from
+>                                ksmbd.mountd. Additional integration with Samba
+>                                tools and libraries via upcall is being investigated
+>                                to allow support for additional DCE/RPC management
+>                                calls (and future support for Witness protocol e.g.)
+> ksmbd/nfsd interoperability    Planned for future. The features that ksmbd
+>                                support are Leases, Notify, ACLs and Share modes.
+> ============================== =================================================
+> 
+> All features required as file server are currently implemented in ksmbd.
+> In particular, the implementation of SMB Direct(RDMA) is only currently possible with ksmbd (among
+> Linux servers)
+> 
+> 
+> Stability
+> =========
+> 
+> It has been proved to be stable. A significant amount of xfstests pass and are run regularly from
+> Linux to Linux:
+> 
+>   http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/8/builds/53
 
---ibTvN161/egqYuK8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I missed updating test result in cover letter.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/clang-fallthrough
-head:   58d0d2d2e7dc1b1a4997bb9c47d6cf428f2d3a00
-commit: 58d0d2d2e7dc1b1a4997bb9c47d6cf428f2d3a00 [1/1] Revert "Revert "Makefile: Enable -Wimplicit-fallthrough for Clang""
-config: hexagon-randconfig-r023-20210804 (attached as .config)
-compiler: clang version 12.0.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?id=58d0d2d2e7dc1b1a4997bb9c47d6cf428f2d3a00
-        git remote add gustavoars-linux https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git
-        git fetch --no-tags gustavoars-linux for-next/clang-fallthrough
-        git checkout 58d0d2d2e7dc1b1a4997bb9c47d6cf428f2d3a00
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon 
+    http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/8/builds/54
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+> 
+> In addition regression tests using the broadest SMB3 functional test suite (Samba's "smbtorture") are
+> run on every checkin.
+> It has already been used by many other open source toolkits and commercial companies that need NAS
+> functionality. Their issues have been fixed and contributions are applied into ksmbd. Ksmbd has been
+> well tested and verified in the field and market.
+> 
+> 
+> Mailing list and repositories
+> =============================
+>  - linux-cifs@vger.kernel.org
+>  - linux-cifsd-devel@lists.sourceforge.net(old and deprecated)
+>  - https://git.samba.org/?p=ksmbd.git;a=shortlog;h=refs/heads/cifsd-for-next
+>  - https://github.com/smfrench/smb3-kernel/tree/cifsd-for-next
+>  - https://github.com/namjaejeon/smb3-kernel/tree/ksmbd-v7-series
+>  - https://github.com/cifsd-team/ksmbd (out-of-tree)
+>  - https://github.com/cifsd-team/ksmbd-tools
+> 
+> 
+> How to run ksmbd
+> ================
+> 
+>    a. Download ksmbd-tools and compile them.
+> 	- https://github.com/cifsd-team/ksmbd-tools
+> 
+>    b. Create user/password for SMB share.
+> 
+> 	# mkdir /etc/ksmbd/
+> 	# ksmbd.adduser -a <Enter USERNAME for SMB share access>
+> 
+>    c. Create /etc/ksmbd/smb.conf file, add SMB share in smb.conf file
+> 	- Refer smb.conf.example and Documentation/configuration.txt
+> 	  in ksmbd-tools
+> 
+>    d. Insert ksmbd.ko module
+> 
+> 	# insmod ksmbd.ko
+> 
+>    e. Start ksmbd user space daemon
+> 	# ksmbd.mountd
+> 
+>    f. Access share from Windows or Linux using SMB
+>        e.g. "mount -t cifs //server/share /mnt ..."
+> 
+> 
+> v7:
+>  - fix wrong compression context size.
+>  - fix wrong error status return on session setup.
+>  - set STATUS_INVALID_PARAMETER error status if credit charge is
+>    invalid.
+>  - move credit charge verification over smb2 request size verification.
+>  - fix typo of MS-SMBD.
+>  - add negotiate context verification.
+>  - add support for negotiating signing algorithm.
+>  - Fix potential memory leak in tcp_destroy_socket(). (Marios Makassikis)
+>  - fix -Wstringop-truncation warnings.
+>  - Return STATUS_OBJECT_PATH_NOT_FOUND if smb2_creat() returns ENOENT. (Marios Makassikis)
+>  - don't set RSS capable in FSCTL_QUERY_NETWORK_INTERFACE_INFO.
+>  - use channel signingkey for binding SMB2 session setup.
+>  - fix missing error code in smb2_lock.
+>  - add ipv6_addr_v4mapped check to know if connection from client is ipv4.
+>  - fix an oops in error handling in smb2_open(). (Dan Carpenter)
+> 
+> v6:
+>  - Fix read on the uninitialized pointer sess. (Colin Ian King)
+>  - call mnt_user_ns once in a function.
+>  - remove unneeded NULL check in for_each_netdev. (Coverity Scan)
+>  - fix read on the uninitialized send_ctx. (Coverity Scan)
+>  - fix memory leak smb2_populate_readdir_entry(). (Coverity Scan)
+>  - fix memory leak in smb_inherit_dacl(). (Coverity Scan)
+>  - change data type of volatile/persistent id to u64. (Dan Carpenter)
+>  - delete some stray tabs. (Dan Carpenter)
+>  - use kasprintf() in ksmbd_vfs_xattr_stream_name(). (Dan Carpenter)
+>  - fix the running request count decrement.
+>  - free ksmbd_lock when file is closed.
+>  - make smb2_find_context_vals return NULL if not found. (Dan Carpenter)
+>  - handle error cases first in smb2_create_sd_buffers (Dan Carpenter)
+>  - remove unneeded check_context_err. (Coverity Scan)
+>  - fix memory leak in ksmbd_vfs_get_sd_xattr(). (Coverity Scan)
+>  - fix unused err value in smb2_lock. (Coverity Scan)
+>  - set RDMA capability for FSCTL_QUERY_NETWORK_INTERFACE_INFO.
+>  - fix an error message in ksmbd_conn_trasnport_init.
+>  - fix typo in comment.
+> 
+> v5:
+>  - fix list_add double add BUG_ON trap in setup_async_work().
+>  - set epoch in smb2_lease_break response.
+>  - fix possible compile error for asn1.c.
+>  - remove duplicated argument. (Wan Jiabing)
+>  - append ksmbd prefix into names for asn1 decoder.
+>  - fix kfree of uninitialized pointer oid. (Colin Ian King)
+>  - add support for SMB3 multichannel.
+>  - remove cache read/trans buffer support. (Christoph Hellwig)
+>  - initialize variables on the declaration. (Christoph Hellwig)
+>  - remove ksmbd_vfs_copy_file_range. (Christoph Hellwig)
+>  - use list_for_each_entry instead of list_for_each. (Christoph Hellwig)
+>  - use goto instead of duplicating the resoure cleanup in ksmbd_open_fd. (Christoph Hellwig)
+>  - fix overly long line. (Christoph Hellwig)
+>  - remove unneeded FIXME comment. (Christoph Hellwig)
+>  - remove ____ksmbd_align in ksmbd_server.h. (Christoph Hellwig)
+>  - replace KSMBD_SHARE_CONFIG_PATH with inline function. (Christoph Hellwig)
+>  - remove ksmbd_err/info. (Christoph Hellwig)
+>  - opencode to avoid trivial wrappers. (Christoph Hellwig)
+>  - factor out a ksmbd_validate_entry_in_use helper from __ksmbd_vfs_rename. (Christoph Hellwig)
+>  - opencode posix acl functions instead of wrappers. (Christoph Hellwig)
+>  - change stream type macro to enumeration. (Christoph Hellwig)
+>  - use f_bsize instead of q->limits.logical_block_size. (Christoph Hellwig)
+>  - remove unneeded NULL check in the list iterator. (Dan Carpenter)
+>  - use f_bsize in FS_SECTOR_SIZE_INFORMATION. (Christoph Hellwig)
+>  - move fs/cifsd to fs/ksmbd. (Christoph Hellwig)
+>  - factor out a ksmbd_vfs_lock_parent helper. (Christoph Hellwig)
+>  - set MAY_* flags together with open flags. (Christoph Hellwig)
+>  - reorder and document on-disk strctures and netlink structure in headers. (Christoph Hellwig)
+>  - remove macros in transport_ipc.c.
+>  - replace BUFFER_NR_PAGES with inline function.
+>  - replace KSMBD_ALIGN with kernel ALIGN macro.
+>  - replace PAYLOAD_HEAD with inline function.
+>  - remove getting worker state macros.
+>  - remove and replace macros with inline functions in smb_common.h. (Christoph Hellwig)
+>  - replace SMB_DIRECT_TRANS macro with inline function. (Christoph Hellwig)
+>  - replace request and respone buffer macro with inline functions. (Christoph Hellwig)
+>  - allow PROTECTED_DACL_SECINFO and UNPROTECTED_DACL_SECINFO addition information.
+>  - replace fp macros with inline functions.
+>  - relax credit_charge check in smb2_validate_credit_charge(). (Marios Makassikis).
+>  - add user namespace support. (Christoph Hellwig)
+> 
+> v4:
+>  - add goto fail in asn1_oid_decode() (Dan Carpenter)
+>  - use memcmp instead of for loop check in oid_eq(). (Dan Carpenter)
+>  - add goto fail in neg_token_init_mech_type(). (Dan Carpenter)
+>  - move fips_enabled check before the str_to_key(). (Dan Carpenter)
+>  - just return smbhash() instead of using rc return value. (Dan Carpenter)
+>  - move ret check before the out label. (Dan Carpenter)
+>  - simplify error handling in ksmbd_auth_ntlm(). (Dan Carpenter)
+>  - remove unneeded type casting. (Dan Carpenter)
+>  - set error return value for memcmp() difference. (Dan Carpenter)
+>  - return zero in always success case. (Dan Carpenter)
+>  - never return 1 on failure. (Dan Carpenter)
+>  - add the check if nvec is zero. (Dan Carpenter)
+>  - len can never be negative in ksmbd_init_sg(). (Dan Carpenter)
+>  - remove unneeded initialization of rc variable in ksmbd_crypt_message(). (Dan Carpenter)
+>  - fix wrong return value in ksmbd_crypt_message(). (Dan Carpenter)
+>  - change success handling to failure handling. (Dan Carpenter)
+>  - add default case in switch statment in alloc_shash_desc().(Dan Carpenter)
+>  - call kzalloc() directly instead of wrapper. (Dan Carpenter)
+>  - simplify error handling in ksmbd_gen_preauth_integrity_hash(). (Dan Carpenter)
+>  - return -ENOMEM about error from ksmbd_crypto_ctx_find_xxx calls. (Dan Carpenter)
+>  - alignment match open parenthesis. (Dan Carpenter)
+>  - add the check to prevent potential overflow with smb_strtoUTF16() and
+>    UNICODE_LEN(). (Dan Carpenter)
+>  - braces {} should be used on all arms of this statement.
+>  - spaces preferred around that '/'.
+>  - don't use multiple blank lines.
+>  - No space is necessary after a cast.
+>  - Blank lines aren't necessary after an open brace '{'.
+>  - remove unnecessary parentheses around.
+>  - Prefer kernel type 'u16' over 'uint16_t'.
+>  - lookup a file with LOOKUP_FOLLOW only if 'follow symlinks = yes'.
+>  - fix Control flow issues in ksmbd_build_ntlmssp_challenge_blob().
+>  - fix memleak in ksmbd_vfs_stream_write(). (Yang Yingliang)
+>  - fix memleak in ksmbd_vfs_stream_read(). (Yang Yingliang)
+>  - check return value of ksmbd_vfs_getcasexattr() correctly.
+>  - fix potential read overflow in ksmbd_vfs_stream_read().
+> 
+> v3:
+>  - fix boolreturn.cocci warnings. (kernel test robot)
+>  - fix xfstests generic/504 test failure.
+>  - do not use 0 or 0xFFFFFFFF for TreeID. (Marios Makassikis)
+>  - add support for FSCTL_DUPLICATE_EXTENTS_TO_FILE.
+>  - fix build error without CONFIG_OID_REGISTRY. (Wei Yongjun)
+>  - fix invalid memory access in smb2_write(). (Coverity Scan)
+>  - add support for AES256 encryption.
+>  - fix potential null-ptr-deref in destroy_previous_session(). (Marios Makassikis).
+>  - update out_buf_len in smb2_populate_readdir_entry(). (Marios Makassikis)
+>  - handle ksmbd_session_rpc_open() failure in create_smb2_pipe(). (Marios Makassikis)
+>  - call smb2_set_err_rsp() in smb2_read/smb2_write error path. (Marios Makassikis)
+>  - add ksmbd/nfsd interoperability to feature table. (Amir Goldstein)
+>  - fix regression in smb2_get_info. (Sebastian Gottschall)
+>  - remove is_attributes_write_allowed() wrapper. (Marios Makassikis)
+>  - update access check in set_file_allocation_info/set_end_of_file_info. (Marios Makassikis)
+> 
+> v2:
+>  - fix an error code in smb2_read(). (Dan Carpenter)
+>  - fix error handling in ksmbd_server_init() (Dan Carpenter)
+>  - remove redundant assignment to variable err. (Colin Ian King)
+>  - remove unneeded macros.
+>  - fix wrong use of rw semaphore in __session_create().
+>  - use kmalloc() for small allocations.
+>  - add the check to work file lock and rename behaviors like Windows
+>    unless POSIX extensions are negotiated.
+>  - clean-up codes using chechpatch.pl --strict.
+>  - merge time_wrappers.h into smb_common.h.
+>  - fix wrong prototype in comment (kernel test robot).
+>  - fix implicit declaration of function 'groups_alloc' (kernel test robot).
+>  - fix implicit declaration of function 'locks_alloc_lock' (kernel test robot).
+>  - remove smack inherit leftovers.
+>  - remove calling d_path in error paths.
+>  - handle unhashed dentry in ksmbd_vfs_mkdir.
+>  - use file_inode() instead of d_inode().
+>  - remove useless error handling in ksmbd_vfs_read.
+>  - use xarray instead of linked list for tree connect list.
+>  - remove stale prototype and variables.
+>  - fix memory leak when loop ends (coverity-bot, Muhammad Usama Anjum).
+>  - use kfree to free memory allocated by kmalloc or kzalloc (Muhammad Usama Anjum).
+>  - fix memdup.cocci warnings (kernel test robot)
+>  - remove wrappers of kvmalloc/kvfree.
+>  - change the reference to configuration.txt (Mauro Carvalho Chehab).
+>  - prevent a integer overflow in wm_alloc().
+>  - select SG_POOL for SMB_SERVER_SMBDIRECT. (Zhang Xiaoxu).
+>  - remove unused including <linux/version.h> (Tian Tao).
+>  - declare ida statically.
+>  - add the check if parent is stable by unexpected rename.
+>  - get parent dentry from child in ksmbd_vfs_remove_file().
+>  - re-implement ksmbd_vfs_kern_path.
+>  - fix reference count decrement of unclaimed file in __ksmbd_lookup_fd.
+>  - remove smb2_put_name(). (Marios Makassikis).
+>  - remove unused smberr.h, nterr.c and netmisc.c.
+>  - fix potential null-ptr-deref in smb2_open() (Marios Makassikis).
+>  - use d_inode().
+>  - remove the dead code of unimplemented durable handle.
+>  - use the generic one in lib/asn1_decoder.c
+> 
+> v1:
+>  - fix a handful of spelling mistakes (Colin Ian King)
+>  - fix a precedence bug in parse_dacl() (Dan Carpenter)
+>  - fix a IS_ERR() vs NULL bug (Dan Carpenter)
+>  - fix a use after free on error path  (Dan Carpenter)
+>  - update cifsd.rst Documentation
+>  - remove unneeded FIXME comments
+>  - fix static checker warnings (Dan Carpenter)
+>  - fix WARNING: unmet direct dependencies detected for CRYPTO_ARC4 (Randy Dunlap)
+>  - uniquify extract_sharename() (Stephen Rothwell)
+>  - fix WARNING: document isn't included in any toctree (Stephen Rothwell)
+>  - fix WARNING: Title overline too short (Stephen Rothwell)
+>  - fix warning: variable 'total_ace_size' and 'posix_ccontext'set but not used (kernel test rotbot)
+>  - fix incorrect function comments (kernel test robot)
+> 
+> Namjae Jeon (13):
+>   ksmbd: add document
+>   ksmbd: add server handler
+>   ksmbd: add tcp transport layer
+>   ksmbd: add ipc transport layer
+>   ksmbd: add rdma transport layer
+>   ksmbd: add a utility code that tracks (and caches) sessions data
+>   ksmbd: add authentication
+>   ksmbd: add smb3 engine part 1
+>   ksmbd: add smb3 engine part 2
+>   ksmbd: add oplock/lease cache mechanism
+>   ksmbd: add file operations
+>   ksmbd: add Kconfig and Makefile
+>   MAINTAINERS: add ksmbd kernel server
+> 
+>  Documentation/filesystems/cifs/index.rst |   10 +
+>  Documentation/filesystems/cifs/ksmbd.rst |  164 +
+>  Documentation/filesystems/index.rst      |    2 +-
+>  MAINTAINERS                              |    9 +
+>  fs/Kconfig                               |    1 +
+>  fs/Makefile                              |    1 +
+>  fs/ksmbd/Kconfig                         |   69 +
+>  fs/ksmbd/Makefile                        |   20 +
+>  fs/ksmbd/asn1.c                          |  343 +
+>  fs/ksmbd/asn1.h                          |   21 +
+>  fs/ksmbd/auth.c                          | 1364 ++++
+>  fs/ksmbd/auth.h                          |   67 +
+>  fs/ksmbd/connection.c                    |  413 ++
+>  fs/ksmbd/connection.h                    |  213 +
+>  fs/ksmbd/crypto_ctx.c                    |  282 +
+>  fs/ksmbd/crypto_ctx.h                    |   74 +
+>  fs/ksmbd/glob.h                          |   49 +
+>  fs/ksmbd/ksmbd_netlink.h                 |  395 +
+>  fs/ksmbd/ksmbd_spnego_negtokeninit.asn1  |   31 +
+>  fs/ksmbd/ksmbd_spnego_negtokentarg.asn1  |   19 +
+>  fs/ksmbd/ksmbd_work.c                    |   80 +
+>  fs/ksmbd/ksmbd_work.h                    |  117 +
+>  fs/ksmbd/mgmt/ksmbd_ida.c                |   46 +
+>  fs/ksmbd/mgmt/ksmbd_ida.h                |   34 +
+>  fs/ksmbd/mgmt/share_config.c             |  238 +
+>  fs/ksmbd/mgmt/share_config.h             |   81 +
+>  fs/ksmbd/mgmt/tree_connect.c             |  121 +
+>  fs/ksmbd/mgmt/tree_connect.h             |   56 +
+>  fs/ksmbd/mgmt/user_config.c              |   69 +
+>  fs/ksmbd/mgmt/user_config.h              |   66 +
+>  fs/ksmbd/mgmt/user_session.c             |  369 +
+>  fs/ksmbd/mgmt/user_session.h             |  106 +
+>  fs/ksmbd/misc.c                          |  338 +
+>  fs/ksmbd/misc.h                          |   35 +
+>  fs/ksmbd/ndr.c                           |  340 +
+>  fs/ksmbd/ndr.h                           |   22 +
+>  fs/ksmbd/nterr.h                         |  543 ++
+>  fs/ksmbd/ntlmssp.h                       |  169 +
+>  fs/ksmbd/oplock.c                        | 1709 +++++
+>  fs/ksmbd/oplock.h                        |  131 +
+>  fs/ksmbd/server.c                        |  633 ++
+>  fs/ksmbd/server.h                        |   70 +
+>  fs/ksmbd/smb2misc.c                      |  438 ++
+>  fs/ksmbd/smb2ops.c                       |  312 +
+>  fs/ksmbd/smb2pdu.c                       | 8364 ++++++++++++++++++++++
+>  fs/ksmbd/smb2pdu.h                       | 1698 +++++
+>  fs/ksmbd/smb_common.c                    |  655 ++
+>  fs/ksmbd/smb_common.h                    |  543 ++
+>  fs/ksmbd/smbacl.c                        | 1344 ++++
+>  fs/ksmbd/smbacl.h                        |  212 +
+>  fs/ksmbd/smbfsctl.h                      |   91 +
+>  fs/ksmbd/smbstatus.h                     | 1822 +++++
+>  fs/ksmbd/transport_ipc.c                 |  874 +++
+>  fs/ksmbd/transport_ipc.h                 |   47 +
+>  fs/ksmbd/transport_rdma.c                | 2057 ++++++
+>  fs/ksmbd/transport_rdma.h                |   63 +
+>  fs/ksmbd/transport_tcp.c                 |  618 ++
+>  fs/ksmbd/transport_tcp.h                 |   13 +
+>  fs/ksmbd/unicode.c                       |  384 +
+>  fs/ksmbd/unicode.h                       |  357 +
+>  fs/ksmbd/uniupr.h                        |  268 +
+>  fs/ksmbd/vfs.c                           | 1886 +++++
+>  fs/ksmbd/vfs.h                           |  197 +
+>  fs/ksmbd/vfs_cache.c                     |  725 ++
+>  fs/ksmbd/vfs_cache.h                     |  178 +
+>  fs/ksmbd/xattr.h                         |  122 +
+>  66 files changed, 32187 insertions(+), 1 deletion(-)  create mode 100644
+> Documentation/filesystems/cifs/index.rst
+>  create mode 100644 Documentation/filesystems/cifs/ksmbd.rst
+>  create mode 100644 fs/ksmbd/Kconfig
+>  create mode 100644 fs/ksmbd/Makefile
+>  create mode 100644 fs/ksmbd/asn1.c
+>  create mode 100644 fs/ksmbd/asn1.h
+>  create mode 100644 fs/ksmbd/auth.c
+>  create mode 100644 fs/ksmbd/auth.h
+>  create mode 100644 fs/ksmbd/connection.c  create mode 100644 fs/ksmbd/connection.h  create mode 100644
+> fs/ksmbd/crypto_ctx.c  create mode 100644 fs/ksmbd/crypto_ctx.h  create mode 100644 fs/ksmbd/glob.h
+> create mode 100644 fs/ksmbd/ksmbd_netlink.h  create mode 100644
+> fs/ksmbd/ksmbd_spnego_negtokeninit.asn1
+>  create mode 100644 fs/ksmbd/ksmbd_spnego_negtokentarg.asn1
+>  create mode 100644 fs/ksmbd/ksmbd_work.c  create mode 100644 fs/ksmbd/ksmbd_work.h  create mode 100644
+> fs/ksmbd/mgmt/ksmbd_ida.c  create mode 100644 fs/ksmbd/mgmt/ksmbd_ida.h  create mode 100644
+> fs/ksmbd/mgmt/share_config.c  create mode 100644 fs/ksmbd/mgmt/share_config.h  create mode 100644
+> fs/ksmbd/mgmt/tree_connect.c  create mode 100644 fs/ksmbd/mgmt/tree_connect.h  create mode 100644
+> fs/ksmbd/mgmt/user_config.c  create mode 100644 fs/ksmbd/mgmt/user_config.h  create mode 100644
+> fs/ksmbd/mgmt/user_session.c  create mode 100644 fs/ksmbd/mgmt/user_session.h  create mode 100644
+> fs/ksmbd/misc.c  create mode 100644 fs/ksmbd/misc.h  create mode 100644 fs/ksmbd/ndr.c  create mode
+> 100644 fs/ksmbd/ndr.h  create mode 100644 fs/ksmbd/nterr.h  create mode 100644 fs/ksmbd/ntlmssp.h
+> create mode 100644 fs/ksmbd/oplock.c  create mode 100644 fs/ksmbd/oplock.h  create mode 100644
+> fs/ksmbd/server.c  create mode 100644 fs/ksmbd/server.h  create mode 100644 fs/ksmbd/smb2misc.c  create
+> mode 100644 fs/ksmbd/smb2ops.c  create mode 100644 fs/ksmbd/smb2pdu.c  create mode 100644
+> fs/ksmbd/smb2pdu.h  create mode 100644 fs/ksmbd/smb_common.c  create mode 100644 fs/ksmbd/smb_common.h
+> create mode 100644 fs/ksmbd/smbacl.c  create mode 100644 fs/ksmbd/smbacl.h  create mode 100644
+> fs/ksmbd/smbfsctl.h  create mode 100644 fs/ksmbd/smbstatus.h  create mode 100644
+> fs/ksmbd/transport_ipc.c  create mode 100644 fs/ksmbd/transport_ipc.h  create mode 100644
+> fs/ksmbd/transport_rdma.c  create mode 100644 fs/ksmbd/transport_rdma.h  create mode 100644
+> fs/ksmbd/transport_tcp.c  create mode 100644 fs/ksmbd/transport_tcp.h  create mode 100644
+> fs/ksmbd/unicode.c  create mode 100644 fs/ksmbd/unicode.h  create mode 100644 fs/ksmbd/uniupr.h  create
+> mode 100644 fs/ksmbd/vfs.c  create mode 100644 fs/ksmbd/vfs.h  create mode 100644 fs/ksmbd/vfs_cache.c
+> create mode 100644 fs/ksmbd/vfs_cache.h  create mode 100644 fs/ksmbd/xattr.h
+> 
+> --
+> 2.17.1
 
-All warnings (new ones prefixed by >>):
 
->> warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
->> warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
-   2 warnings generated.
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
---ibTvN161/egqYuK8
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-
---ibTvN161/egqYuK8--
