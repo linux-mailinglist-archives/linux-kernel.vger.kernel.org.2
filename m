@@ -2,67 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B743E1CCA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E6E3E1CCC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237428AbhHETel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhHETej (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:34:39 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE14AC061798;
-        Thu,  5 Aug 2021 12:34:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=g/u/JfxOfcGYNBwCoVS+XZvseyWFfZAjPvhv0usF60I=; b=YzhYBzY1obA6+pIEB9HcP7LxEm
-        iAzbtd4L2gTIgS3Fq1c1cMqb9lQHUjgfCeGGrPfL6cScOef5/SODJVXxcTQCqGjyl0BWzWHZl+ZdZ
-        T1FsCLz7Lok1it879ZD6TKHb1UkHpG82RryZRsFcMrDXD+JkuiPJ6j90K93z1w/5GQlwO1G+PJK/F
-        rFqWfvgYxGoTvxaiKCgYMcWpBn3m8ZJ6uzYH9wDMSpPG94rjQtQ4b1sHbY71YR743eFHWrEHG5oYb
-        l/m8TNGyvhiJ0RAJGoGjS08HfJ9DFLk8yb3afGqSQ2WhV1twAdCqjI9UPjJSCXAoWy+8yuErOyxrC
-        7KYWTpRQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBj8H-0069jd-1t; Thu, 05 Aug 2021 19:34:21 +0000
-Subject: Re: [GIT PULL] Networking for 5.14-rc5
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210805154335.1070064-1-kuba@kernel.org>
- <CAHk-=wi8ufjAUS=+gPxpDPx_tupvfPppLX03RxjWeJ1JtuDZYg@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <afa0b41f-bcb9-455e-4ea8-476ed880fbd2@infradead.org>
-Date:   Thu, 5 Aug 2021 12:34:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S241912AbhHETer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:34:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242253AbhHETen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 15:34:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 003CD6044F;
+        Thu,  5 Aug 2021 19:34:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628192068;
+        bh=fwKKY6bFMJDEL2FPKkqHpTNMBchlx7gUmuOL3vFnpa0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KopAm7IudIT4aRfoUq561wLhRN2vUeBsXMGygdGnhFy1c1HTMsOuYfS6HaX8o+l0E
+         aHCqfATzorWjqjHq3JwQf8JNapgt7V7nWfpppLaJ3V8RKg9/gsH93m3vM1dit0myg+
+         5cTiwH08XuCqdH6JxUDx7cV5mB84BUOxBb4HIOL8=
+Date:   Thu, 5 Aug 2021 21:34:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Rob Herring <robh@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>, list@opendingux.net,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 1/2] drivers core: Export
+ driver_deferred_probe_check_state()
+Message-ID: <YQw9QVwL6we3dsrS@kroah.com>
+References: <20210805192110.90302-1-paul@crapouillou.net>
+ <20210805192110.90302-2-paul@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wi8ufjAUS=+gPxpDPx_tupvfPppLX03RxjWeJ1JtuDZYg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210805192110.90302-2-paul@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/21 12:30 PM, Linus Torvalds wrote:
-> On Thu, Aug 5, 2021 at 8:43 AM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> Small PR this week, maybe it's cucumber time, maybe just bad
->> timing vs subtree PRs, maybe both.
+On Thu, Aug 05, 2021 at 09:21:08PM +0200, Paul Cercueil wrote:
+> Export this function as a GPL symbol, so that it can be used from
+> modules.
 > 
-> "Cucumber time"?
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/base/dd.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Google informs me about this concept, but I'd never heard that term before.
+> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+> index daeb9b5763ae..658f1527a58b 100644
+> --- a/drivers/base/dd.c
+> +++ b/drivers/base/dd.c
+> @@ -296,6 +296,7 @@ int driver_deferred_probe_check_state(struct device *dev)
+>  
+>  	return -EPROBE_DEFER;
+>  }
+> +EXPORT_SYMBOL_GPL(driver_deferred_probe_check_state);
 
-wow, nor had I.
-Thanks for the info. :)
+Drivers should never need to mess with this, it is for only a small set
+of busses to use only.
 
--- 
-~Randy
+Why do you think this is needed by a driver?
 
+thanks,
+
+greg k-h
