@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42643E144D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E663E144F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241210AbhHEMBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:01:40 -0400
-Received: from mail-db8eur05on2079.outbound.protection.outlook.com ([40.107.20.79]:56513
+        id S241218AbhHEMBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:01:41 -0400
+Received: from mail-db8eur05on2074.outbound.protection.outlook.com ([40.107.20.74]:53409
         "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241200AbhHEMBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:01:38 -0400
+        id S241204AbhHEMBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 08:01:39 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ix8h682hkkGkgyck08tqDBXCsOMf+8tdNFT7fvFf5S2wWjHa8nryNlxW1cxgsWDFr4HsYgrmkd0iADxBK7uF54aWLwR4wcQJLoARSyx3xsze9PGFDOVSXwoi/jB8Amuz55651HEDVF1/4QKHNmKSySadfllwXGl3+H8uDrhSERG4TnNzc+HgqBCs1Nn8+F0pAhVbGnNqz266lUBmb5MrOUgmuKapojCpATYBh9tA/heIXQ/mN4yOvFtk5PnLUsQKPYHFqFcK5JzVJdnv7VeAd/+XmP8UY2oKF+Yfp/2BY9KH9uH5w2nOIrdCF2w/2QJ2BcnUswG+9uBM0cB7NR5NrA==
+ b=fWTeH/9hLFzd/Dx7z+xFkrK3s+seIB1z/RCfy3rmUJducCwuwnbu6PuCuvbm8GfKpHYBIZOa2CFLau02Uu/O3q4UtkWaAkwfIzRA7Sj5/MuPgF6MJ7kAE75QEBqYW436le8r/xLBnmF/j/7EHKpVyUJKioNKWejp9uQGjWc+zNWX90rPCdyFiTPM1a3Zzv1PlJWkHFLeUk6qRGqDXaJleFivvbYoVqLsrG9IwKfu/K8KNDC5S5Dn6lp67v1l8taPni+CouBlakYdRiCmPEsVlq6qZ3UxB57RlUzYVL/t0uu7Peb8/eJDCi2Q/qrNPJ81CdjaKx9r3cl3NCRS6J/1vA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NbNmv1dKQqenT4/z6Pyz+XBdCfte2laK0vwKb1RibiU=;
- b=NkOMx8YGoNTze5/VA4W9CDe7ZCiCm/18CiDSLD4e+UYA6k3ugd10u/z32btsF5e3hvF0eLHJcoD42OENJUd96MLbq9JG8tApPkSBPGEa1NiKdXq+w1u9mXOTYrOhLj7DecLGA1rUtD955THOSjTba6ipA0aM8I/UkowqB1Oedztof+0qVmXi3lz+V4fppfPo76pLNuYsYris7va2Ca4oSZkhSF8pBG3eLYdQ9RmqVtvbf08ia8CuXyRSC3crdQgiig2uX/XRA7RQvP5N60dM5fKMX4mkpUcSCslQk0IiLzY0s9wCCn+l00kLv0/rR/9458aQHMMgJd0RvR5wORpjmQ==
+ bh=xgPrtAKvIr0Sj36Daks0th7gyBNOeuaqo1nv9a8DuJY=;
+ b=lgxQ6bC2TnxGN0mRUoJXw8QHROawVUzOso1cTmRxODqWReQCw9uu/zYkr/2mf5i/xwPUGwrE9jYuolekwrXQjP2T0V8Dsa35zDkRF5O6RQxZFRtk6BXFuEeDzyb23CrKggIWX9lyhawFnWq7ZdK0x5ZIdi9RrbsY1PHNM0pES05wH55MARrkaLCbe522FB2RdYcDuuyAWOgexPrK05lTuNUnBn2KgwWrBkAWwlVnkxQ5TwenhK+UemQ2/fy1ubGEQ7T9QUi/jkzl6uY8jX0gI1B9XYVqDe+C/7wR+2Ofw4El6iMK2Q0mLQ8ReOUBZpF+FIBxrY/V+oG8F6Dm3HrhKA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wolfvision.net; dmarc=pass action=none
  header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NbNmv1dKQqenT4/z6Pyz+XBdCfte2laK0vwKb1RibiU=;
- b=hAroyF9GEe6ARPTrMxGKTJCUwIs4lDsJULRBp6Vjd70g8XQUdWwz7MUblUT25UA3xAT2x8B1L5QAIO+KfWWHhEiUyHSi/jRHOXe7wU1PEmKerdsp22DRZ4v9vVatlhOWpfoLKIAKaq8Q8Bk6Ia2EptxP16oaJ/XOP0YiF0iA9gQ=
+ bh=xgPrtAKvIr0Sj36Daks0th7gyBNOeuaqo1nv9a8DuJY=;
+ b=zZBPDSpkbwbgtV7Da7ikWC6wXduUl6AQlbiap2y19pnmugj/SP3uG3uFSUFLutgQARMo6Q09bSvW8mhTAMCLJa1kmMvxjmO9TEt4n27At4PKq1xy2LTWnx2jH7RmK6/JKj3rDK0/Jxmq/y1Pd7+viB5xcDaQtXhO2rkooFtGRaI=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none
  header.from=wolfvision.net;
@@ -34,11 +34,11 @@ Received: from DBBPR08MB4523.eurprd08.prod.outlook.com (2603:10a6:10:c8::19)
  by DB8PR08MB5419.eurprd08.prod.outlook.com (2603:10a6:10:118::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15; Thu, 5 Aug
- 2021 12:01:21 +0000
+ 2021 12:01:24 +0000
 Received: from DBBPR08MB4523.eurprd08.prod.outlook.com
  ([fe80::ade3:93e2:735c:c10b]) by DBBPR08MB4523.eurprd08.prod.outlook.com
  ([fe80::ade3:93e2:735c:c10b%7]) with mapi id 15.20.4394.016; Thu, 5 Aug 2021
- 12:01:21 +0000
+ 12:01:24 +0000
 From:   Michael Riesch <michael.riesch@wolfvision.net>
 To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -55,10 +55,12 @@ Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
         Zhang Changzhong <zhangchangzhong@huawei.com>,
         Tobias Schramm <t.schramm@manjaro.org>,
         Johan Jonker <jbx6244@gmail.com>
-Subject: [PATCH v3 0/7] arm64: dts: rockchip: rk3568-evb1-v10: add sd card support
-Date:   Thu,  5 Aug 2021 14:01:00 +0200
-Message-Id: <20210805120107.27007-1-michael.riesch@wolfvision.net>
+Subject: [PATCH v3 1/7] dt-bindings: power: add rk3568-pmu-io-domain support
+Date:   Thu,  5 Aug 2021 14:01:01 +0200
+Message-Id: <20210805120107.27007-2-michael.riesch@wolfvision.net>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210805120107.27007-1-michael.riesch@wolfvision.net>
+References: <20210805120107.27007-1-michael.riesch@wolfvision.net>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: VI1PR04CA0099.eurprd04.prod.outlook.com
@@ -66,99 +68,138 @@ X-ClientProxiedBy: VI1PR04CA0099.eurprd04.prod.outlook.com
  (2603:10a6:10:c8::19)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carlos.wolfvision-at.intra (91.118.163.37) by VI1PR04CA0099.eurprd04.prod.outlook.com (2603:10a6:803:64::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17 via Frontend Transport; Thu, 5 Aug 2021 12:01:20 +0000
+Received: from carlos.wolfvision-at.intra (91.118.163.37) by VI1PR04CA0099.eurprd04.prod.outlook.com (2603:10a6:803:64::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17 via Frontend Transport; Thu, 5 Aug 2021 12:01:23 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e943e8a2-f453-4f46-8e38-08d95808bd90
+X-MS-Office365-Filtering-Correlation-Id: d10bf73f-9ce0-452a-fb45-08d95808bf3f
 X-MS-TrafficTypeDiagnostic: DB8PR08MB5419:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR08MB5419DA066FD52A26C48F750FF2F29@DB8PR08MB5419.eurprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Microsoft-Antispam-PRVS: <DB8PR08MB5419943DB24EEADBF3C659D9F2F29@DB8PR08MB5419.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m4MagEKqcTraJ4p1q6NauMlPLiOVOPKDiZLS0UH1pbVIMeJPelINdTsToBygxSsueehgYpaG/OxTzbC3W9gmyRH4Xs5V2O4+rA4dIJNxYwK0IUKsUOCrgxXTTdnWEqQFhpbqnERZII/brO5TUvZ5WSD53wBQ+ei92EeEdlVFTYYGVLKOqwFrQZW/ZAzoQgd99IIr0D5wBgteyKPbCmF/Hn7FCA2wXwjY/l0M8cUIPYCpOKcLfr44UJYTiP0homyFpcsyA7XwUX3e0IgM1gi9DJ0rYenzvs7ATWDfdaNKXnDlHf0lv5twb5eCYpjeAVrFS9LbzGXgA3rIpWhKgY1h7uCU0BHqX5m6OzJ0W8b10MSc+q6+rbBJ/OGB5b6soS25lLRFV0U1qiXInWcy+ZOa6nM2NPktEs9VPE0MX5G6yvR0LuT8nWxQcDG4ri8GqmHh1i8W2bg8JjZC0S5sXshjDnsCtzjjdPeDuA9ZR5rfet6Redk+il/Lms3Je+61ZurUGPIdxrM3mygc3nfVX9f6MkRbnWEcUNLqy0Ze9ZBVSI9ZP6JaUvM4Q9YMVe4gGn1jk88D4wnC/JkmWZT8q04kHkGk5jKeyUVDb9YeE7G+6gsa04LzjEKJOoBNMVbkFKzVHXAbfBJE97uOBtbc45jaaJCxspVzgm6IczH0iftNlzpOTH9XWEwfCilQ544OmLKOgYXOgq4Xh5B2RjLhdjE+9alLb//NVJ2SCXYAVikk81J+RKD7XaH6BP/T6WDBwcQCG2VeSbd/eXAgaMzpwdc+Kw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR08MB4523.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39840400004)(396003)(376002)(346002)(6512007)(8936002)(66946007)(38100700002)(7416002)(66476007)(6486002)(66556008)(52116002)(1076003)(2906002)(8676002)(4326008)(54906003)(478600001)(44832011)(316002)(36756003)(38350700002)(83380400001)(2616005)(6666004)(186003)(966005)(6506007)(956004)(86362001)(26005)(5660300002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: pDzhTEl6+dHKrSsoZlqHrBuD1Ut1/TTQjQ+VwWQ0d3HdDZElqCpuPcmoN98dqIzOBs/8V7apYsGf2/5Bi/XefhKFqeDKCIfAnGZ7YvcnDuqqnf6cyF1QJvXBjLe9vLeLBRdxuEX6UvsP7ZoFEEbSGahUU+FEv8tkMcdEYkFmQfnPJrI7aWxlznjQ/2ixvEzrDaHPpiHoTLUOPqxRuOd4jHetBWjDAs1zjM5IHzKkxC9aAPeBhpL7N3s4x0azSRW4Ymi5jYrbfhpWwDFkALvxiTf/FRlAMZ1qBik5KNJIDJ7yhQNLZoSuL8ZGT3modtuZTX6kbg+kvr+wTrrk//85C87U/5ZNUMPrMCF3xDouis0dDNMrUQ2+t18PCXypX+lcSy2jnENIaT7eBS70RiHtecqRoSuyenFq+eW70JNizky0Z6CAC8WqYCUH2HgByJkWBJ5lkpxE1xwY6+bPuq7FytZsz41ivwgasrEtqXyAEYVGDCcKyPNXOf+Ml+CxXMRtQY/I91dQTYMU88N2BoQKiodF7rHW3exlxqsEg2ahPA9SuxX4cyHQcvVa1wUEfdmS7vyjCuMcx8zV3fzSw1lvQAqvWZ5wtyTRUGuvxDUeJbz4xHO6ajZxk3OhohajtAyR3XCaulWp9N0DP7hekzOKnC/MqftfRHw3CSRF5y/Y8S4w9axGq8rkWEdTpG1nsiJBUrieGuaurdlsEE4Z8RLLQg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR08MB4523.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39840400004)(396003)(376002)(346002)(6512007)(8936002)(66946007)(38100700002)(7416002)(66476007)(6486002)(66556008)(52116002)(1076003)(2906002)(8676002)(4326008)(54906003)(478600001)(44832011)(316002)(36756003)(38350700002)(2616005)(6666004)(186003)(6506007)(956004)(86362001)(26005)(5660300002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UXfNlArduJNYkdSl3XHGPPkwJ1HJYDBPueyRrP44sycgVxrtbPm4nUw7jnFt?=
- =?us-ascii?Q?zehLy77IimKeznxreKctI8h2UzTpUiqdwTE/SAp2K6AYh+AGvy2pgjJdTnjn?=
- =?us-ascii?Q?yblicJAwVNmp065O1YQqriu7xq7XsmumaIvnUzNNFnVLnD0umrQNZFY0N+Y8?=
- =?us-ascii?Q?b9grvzLZ0DP5pFOtOMCGmUfagd1WnUO/qw3ykjgygrlix8/ZEgnAue5QSymS?=
- =?us-ascii?Q?pbv7DDfQsFayX+PJ8dtpg7WAsHEq5VS/EV9AFUl6AyJMui8AKLpUm/FBc5hM?=
- =?us-ascii?Q?HwA/sSc8tH8Kt9SgyhnkORAnoJiMGKJvSJLeagBC48+Mcb1ST+DzVBHIxw6e?=
- =?us-ascii?Q?pzMzOc7zvDEV1cjCU4DGZrPaEx3Oiy9c1nJVBhSjUPDmcSA6ijnCc1DFeHz5?=
- =?us-ascii?Q?Pv6qyjQLAC01DZ6cPTK6Bkw/M8G/kag+FW78lhmJIFALPYQ8G2d9FaZ+9mIa?=
- =?us-ascii?Q?Yo2G+fvFOOtKD9snw35JJCkcdfql+eiDGRnufet916Wp3j0puvxnU80b9aJj?=
- =?us-ascii?Q?aaS6Bf4y4KKJsA9gkvCer1Av3SHdCs/kZGEKPP58612RgQj+cUa+JK3wvGqy?=
- =?us-ascii?Q?w6mTH7+Pkw/0ANwjIPN9jAJIo0y5ywUZehz9NvpS9AaP/7V/SWgpIVNcKgBv?=
- =?us-ascii?Q?3w+WCqabdUQK1HroidXROq/HILGdTnZr3dBo8sOwraqtyI0e/H74CxovO9EU?=
- =?us-ascii?Q?RlM8ja0G7v2frUVJJL7G+gXz/8qj+7Aj1vRJOKViUGMxkdb5k6PNxbxKBDUv?=
- =?us-ascii?Q?jiW68TYyVcGcLcqWvJEtGiNoOnbgyfBvqZOP2eTSDp8daUx2bE0U6AxfJa/5?=
- =?us-ascii?Q?fA1C3A5TS046dnWBhuW0B3n//t3HoAonzZQTEnYaxWdLT0bafh5bsMPR5AT6?=
- =?us-ascii?Q?K/hjeFinKwdl593fwHY0m/V8hZMc0mrvl/WdUL7I6vw4dGcBo5OKse9Afb82?=
- =?us-ascii?Q?Z1LS0QTERGj7eQAL0txKin7b3cM+c8baziVJJuqPJNy2YtwdaAs+vHpgeeZq?=
- =?us-ascii?Q?N8s2SgXouyvslFkd3ItZfUPzfuH2arCWzzm3qXQ+cDtJ8eslk3pw5Uty8Ab5?=
- =?us-ascii?Q?Zi46MN7Wo8TQ1ntC24dZMdLR6ZETWRdpZPfY1HSKjWFKwIArMIXKeeZDJ7Zs?=
- =?us-ascii?Q?rYSY7+wAelz9YYBH6TVVJPoFGxgm14JxIecPo7BSArELH8YaP109Xsf7xBHQ?=
- =?us-ascii?Q?DjYLuOds69Rf9CrNqyb+wdMYf97Zi6vqmTuv71Zko6See8HlUaUuRuhiiejT?=
- =?us-ascii?Q?WY9uyl6HdJBrRW5nro93iMxq+VMEt+qEvNXsddbJXHh2ikC/E3ohpzznYmVR?=
- =?us-ascii?Q?2T0K3v9EN+pzMhkfmumFhA01?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Y18M0bLRdu/JynVHn+8gtGpGndONQ4sxbBSvyZMHbKTomxMmEBWYhCVsuj1i?=
+ =?us-ascii?Q?w8iFOnt8s0DC/YcsTVloSWSd38Fwef9iHWLODSW7QfapjFqCkiwiVMeycvfg?=
+ =?us-ascii?Q?PNfbndwuaHb7SuEvhNLCY9rK+xPvLGy4YlVC7vvO5Ceb3e/pXzn5BdDwyozM?=
+ =?us-ascii?Q?s3jb167ZRN0+2mVz9raQRXuosqGtcM9Otjk68F3THZPYcPALOze+nUQO8kGW?=
+ =?us-ascii?Q?1qnn+UWx2MUtX80/HFrxinxfqJONvgUm0YKAI5Ye4AROk9kITwKQnhVv96Tp?=
+ =?us-ascii?Q?fy8jW9lkZb21YH1XS/U7RD6iZsswJXMGinlFUmCCWwAH8IGquQFgh48vmjwk?=
+ =?us-ascii?Q?q0v51d02QbpLRj5CkY3IREgJZq2wsmNDo7yHZccNLcyWaJNpyV/+3K1wcW3q?=
+ =?us-ascii?Q?mh40o+S0WPmq124GUlJKCLtYRdhG+EK6qbWpRNJYnJqkVlMFaf7FZdOfxIkQ?=
+ =?us-ascii?Q?tRWo1mRyfH13L8W483CWl0MyNWm79DHwc9JFtJBwUChjblYpBoRsFdCp9Y6q?=
+ =?us-ascii?Q?idpiFFYPNZFNdCFloQjiVM7yj2HzcS3qoBaX4+WOjGubxWd/iKqUqKmblY/y?=
+ =?us-ascii?Q?rJ9DRakVjtP2b/eO5kfLe37IPKDvgOEnxe2cPo9qupuXIVy8zAv6RN1UIN2C?=
+ =?us-ascii?Q?Z99IvV35RgPOAd4RWmKe0+fArvPjewfAuJqFBd03uAoW2nB0CyzklKfHDZTD?=
+ =?us-ascii?Q?uVzdkr+kBr7QKCXlfJZEtd5bsHnTLJ7CgGeQ2wRtCvNtqQ+rnF09rkP5LNBW?=
+ =?us-ascii?Q?Ch/iJZq7Sd0GwXJ1HyoG/2VP/5wA1yIZI6D/Fsl+gWa7oqKD5Ad8PkIY6qMl?=
+ =?us-ascii?Q?/y8Sguc3elLhJgZ+X+L0XWGjoJGmDwVlQl+rEWqEnaxthxZO/ZczAWKdJf3u?=
+ =?us-ascii?Q?19tG75VNkimg5Hyh3fsfvBwH3xQ8jkNT7nOxg+vNa4T7SVQR8LCl0lydWqfX?=
+ =?us-ascii?Q?h5AedQCIV72Prar4vC8YBXBqjB3ndFgPkceMLMugQ7jIYGnjruV/ToQt1TWN?=
+ =?us-ascii?Q?VNjAa1MHcoA/5YYAyqhSxMKJFtOiC2MRJ8M3Pg1Mf0lOXNKnNM2Z7IVOE3Aq?=
+ =?us-ascii?Q?E2ow4QQmwP0vJ9QSG0VZGTPR+mGDBoOOWy6zhajAtokz4eTQis6SRR3614pq?=
+ =?us-ascii?Q?RnQVfncsUSJAzBi25CckXUNLI6kmXYGkMZwp1zW5bexRd1JgNVqLhyYkiP0k?=
+ =?us-ascii?Q?jyKt6RWy/J4fae28TEIxVwiVNapU/9MCHj3VA597JqMexWQheX8pYjR29EsD?=
+ =?us-ascii?Q?Y9mpjrrbLPssswytV6Q9bGzG3/g4EK4PNWOxQ7Il02GLwjp2MvJNebtNplwj?=
+ =?us-ascii?Q?cQmluCW3F9ibp5HRRtEmHjIh?=
 X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: e943e8a2-f453-4f46-8e38-08d95808bd90
+X-MS-Exchange-CrossTenant-Network-Message-Id: d10bf73f-9ce0-452a-fb45-08d95808bf3f
 X-MS-Exchange-CrossTenant-AuthSource: DBBPR08MB4523.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2021 12:01:21.4305
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2021 12:01:24.2619
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uMKVDyed+xLUaClfCiU+kQSUTpqw/uyhfo3EQHv442AZyZhJCc2gCekbneP6r3icGvyIz4NWINUU5Tfn8EnSQISnZbUVt9TkuGjHdCjGRi0=
+X-MS-Exchange-CrossTenant-UserPrincipalName: nqsuTMkvJktS852smNCtXkpbhXtUatLrIj4LpbTJ+5fYYtSbM6yNqObm+RAgvwOQ0+1tPEA0HRTEAMQRWJv7V7vxlqhthBlYWMcXEEZcirk=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR08MB5419
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Add binding for the RK3568 along a SoC-specific description of
+voltage supplies.
 
-This series enables the SD card reader on the RK3568 EVB1
-and completes the support for the on-board eMMC.
-
-As the PMU IO domains are required, the patch series that
-introduces support for the RK3568 PMU IO domains [1] has been
-revised and integrated in this series.
-Additionally, the required voltage regulators of the RK809
-PMIC are enabled.
-
-Best regards,
-Michael
-
-[1] https://patchwork.kernel.org/project/linux-rockchip/list/?series=489383
-
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+[add soc-specific section]
+Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
+---
 v3:
-- clean up device tree properties and sort alphabetically
+- add missing compatible for the rk3568 to grf.yaml
 
-v2:
-- rename alias to match convention
-- add support for rk3568 io domains
+ .../bindings/power/rockchip-io-domain.yaml    | 30 +++++++++++++++++++
+ .../devicetree/bindings/soc/rockchip/grf.yaml |  1 +
+ 2 files changed, 31 insertions(+)
 
-Jianqun Xu (1):
-  soc: rockchip: io-domain: add rk3568 support
-
-Michael Riesch (6):
-  dt-bindings: power: add rk3568-pmu-io-domain support
-  arm64: dts: rockchip: enable io domains for rk356x
-  arm64: dts: rockchip: rk3568-evb1-v10: enable io domains
-  arm64: dts: rockchip: rk3568-evb1-v10: add regulators of rk809 pmic
-  arm64: dts: rockchip: rk3568-evb1-v10: add node for sd card
-  arm64: dts: rockchip: rk3568-evb1-v10: add pinctrl and alias to emmc
-    node
-
- .../bindings/power/rockchip-io-domain.yaml    |  30 +++
- .../devicetree/bindings/soc/rockchip/grf.yaml |   1 +
- .../boot/dts/rockchip/rk3568-evb1-v10.dts     | 251 ++++++++++++++++++
- arch/arm64/boot/dts/rockchip/rk356x.dtsi      |   5 +
- drivers/soc/rockchip/io-domain.c              |  88 +++++-
- 5 files changed, 367 insertions(+), 8 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/power/rockchip-io-domain.yaml b/Documentation/devicetree/bindings/power/rockchip-io-domain.yaml
+index 121bec56b2b0..1727bf108979 100644
+--- a/Documentation/devicetree/bindings/power/rockchip-io-domain.yaml
++++ b/Documentation/devicetree/bindings/power/rockchip-io-domain.yaml
+@@ -55,6 +55,7 @@ properties:
+       - rockchip,rk3368-pmu-io-voltage-domain
+       - rockchip,rk3399-io-voltage-domain
+       - rockchip,rk3399-pmu-io-voltage-domain
++      - rockchip,rk3568-pmu-io-voltage-domain
+       - rockchip,rv1108-io-voltage-domain
+       - rockchip,rv1108-pmu-io-voltage-domain
+ 
+@@ -74,6 +75,7 @@ allOf:
+   - $ref: "#/$defs/rk3368-pmu"
+   - $ref: "#/$defs/rk3399"
+   - $ref: "#/$defs/rk3399-pmu"
++  - $ref: "#/$defs/rk3568-pmu"
+   - $ref: "#/$defs/rv1108"
+   - $ref: "#/$defs/rv1108-pmu"
+ 
+@@ -282,6 +284,34 @@ $defs:
+         pmu1830-supply:
+           description: The supply connected to PMUIO2_VDD.
+ 
++  rk3568-pmu:
++    if:
++      properties:
++        compatible:
++          contains:
++            const: rockchip,rk3568-pmu-io-voltage-domain
++
++    then:
++      properties:
++        pmuio1-supply:
++          description: The supply connected to PMUIO1.
++        pmuio2-supply:
++          description: The supply connected to PMUIO2.
++        vccio1-supply:
++          description: The supply connected to VCCIO1.
++        vccio2-supply:
++          description: The supply connected to VCCIO2.
++        vccio3-supply:
++          description: The supply connected to VCCIO3.
++        vccio4-supply:
++          description: The supply connected to VCCIO4.
++        vccio5-supply:
++          description: The supply connected to VCCIO5.
++        vccio6-supply:
++          description: The supply connected to VCCIO6.
++        vccio7-supply:
++          description: The supply connected to VCCIO7.
++
+   rv1108:
+     if:
+       properties:
+diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+index fa010df51a5c..dfebf425ca49 100644
+--- a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
++++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+@@ -208,6 +208,7 @@ allOf:
+               - rockchip,rk3368-pmugrf
+               - rockchip,rk3399-grf
+               - rockchip,rk3399-pmugrf
++              - rockchip,rk3568-pmugrf
+               - rockchip,rv1108-grf
+               - rockchip,rv1108-pmugrf
+ 
 -- 
 2.17.1
 
