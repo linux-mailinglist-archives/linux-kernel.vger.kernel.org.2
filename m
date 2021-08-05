@@ -2,118 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327D93E1907
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036183E190A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240451AbhHEQDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 12:03:15 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.82]:8248 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242882AbhHEQC7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 12:02:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628179296;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=kz7en5zl8fiteD+7Oum9C7YsAgoEzeXk8l+oEFfizAo=;
-    b=sZu6BlP6OpE75L0Oqdx3CmyEW36PC4r0dt8PPRWad0sdlneMMt5MUP+cvZ+Ua/RBCo
-    uORUfbbbf5w294rJ66uvHvvCRp2oy7wk1DtMqKhX0eV5pCTD2N78eLD9vZl0hmo3QZKB
-    uLmUSfp4poDsYCRIgvtBLu4iYG7KbNFdfoGt1/wEaNAZofwFoZTfCV1U7/qj0a69nV+l
-    hLG1LqSsVLC9I+tELJ6I5xsIboL2oC7RWv8ipZt2BtsfSwv0usc/48U1l9LUjnst2K8e
-    7kSCGNG3qtcyT/W4UvOcdcGmBY78g7e53FCkYlIIHQ0DNxhlpvAvfHqo6CPS7+nEFe5b
-    R1qQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw4rovw=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.31.0 DYNA|AUTH)
-    with ESMTPSA id Q02727x75G1W7WQ
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Thu, 5 Aug 2021 18:01:32 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH v2 3/8] drm/ingenic: Add support for JZ4780 and HDMI
- output
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <CDHDXQ.QTKW3N6WINVB2@crapouillou.net>
-Date:   Thu, 5 Aug 2021 18:01:31 +0200
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        Paul Boddie <paul@boddie.org.uk>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <0F96C1D5-D98B-4461-B691-20A0C3C38C18@goldelico.com>
-References: <cover.1628172477.git.hns@goldelico.com>
- <263a207d2aeb8bc95aa8464212dcc9b225548f4f.1628172477.git.hns@goldelico.com>
- <CDHDXQ.QTKW3N6WINVB2@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3445.104.21)
+        id S242923AbhHEQEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 12:04:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242898AbhHEQDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 12:03:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74E2F61158;
+        Thu,  5 Aug 2021 16:03:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628179417;
+        bh=z3+3rHbh3BGe8m3lIRaEQE45M23IAVa/0uDCSTyuS9Q=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=qxffhPfPWkkKtO9v3hwPjRjOBZ6aQMH/o/pQlAAfBIK527+gjaA2hzYs9VjJnp/M7
+         hv9dqoO8r9UDmnJGCZtpOU7MCzG5w5nK+Ol4Mvi5mzTr+4LrPIPStww10op79i+c04
+         3O63FVWMvQ4OV3cjU6AmJhmTPXw3KgRU/NdBYp5JMW+SDpFsu06o8Nu7+hIvxUz9/Q
+         JDqAGvBZmOa0nr7uOc7l/PgzRpltMij91d8XDrjkMFKv7jrLvAZ3f/llzwQl51JfUK
+         7uYHrNgJVa7l1IQLV9DdHxRwGR+pg1UOr0PqhDI2+C5HAUVj7lPHqOsLSUvohxty4J
+         6yto/LUXf20fQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 375555C098A; Thu,  5 Aug 2021 09:03:37 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 09:03:37 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     josh@joshtriplett.org, linux-kernel@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, peterz@infradead.org,
+        bigeasy@linutronix.de, tglx@linutronix.de, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu: Make rcu_normal_after_boot writable on RT
+Message-ID: <20210805160337.GI4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210805080123.16320-1-juri.lelli@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210805080123.16320-1-juri.lelli@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Thu, Aug 05, 2021 at 10:01:23AM +0200, Juri Lelli wrote:
+> Certain configurations (e.g., systems that make heavy use of netns)
+> need to use synchronize_rcu_expedited() to service RCU grace periods
+> even after boot.
+> 
+> Even though synchronize_rcu_expedited() has been traditionally
+> considered harmful for RT for the heavy use of IPIs, it is perfectly
+> usable under certain conditions (e.g. nohz_full).
+> 
+> Make rcupdate.rcu_normal_after_boot= again writeable on RT, but keep
+> its default value to 1 (enabled) to avoid regressions. Users who need
+> synchronize_rcu_expedited() will boot with rcupdate.rcu_normal_after_
+> boot=0 in the kernel cmdline.
+> 
+> Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
 
-> Am 05.08.2021 um 17:22 schrieb Paul Cercueil <paul@crapouillou.net>:
->=20
-> Hi Nikolaus & Paul,
->=20
-> Le jeu., ao=C3=BBt 5 2021 at 16:07:52 +0200, H. Nikolaus Schaller =
-<hns@goldelico.com> a =C3=A9crit :
->> From: Paul Boddie <paul@boddie.org.uk>
->> Add support for the LCD controller present on JZ4780 SoCs.
->> This SoC uses 8-byte descriptors which extend the current
->> 4-byte descriptors used for other Ingenic SoCs.
->> Also, add special handling for HDMI-A connectors.
->> For some reason, only the primary planes are working
->> properly. As soon as the overlay plane is enabled
->> things go south :P
->> Tested on MIPS Creator CI20 board.
->> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
->> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
->> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
->> ---
->> drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 163 =
-++++++++++++++++++++--
+Makes sense to me!
 
-... snip ...
+But would another of the -rt people be willing to give an Acked-by?
+For example, maybe they would prefer this kernel boot parameter to be
+exposed only if (!PREEMPT_RT || NO_HZ_FULL).  Or are there !NO_HZ_FULL
+situations where rcu_normal_after_boot makes sense?
 
->=20
-> We already have these in ingenic-drm.h...
->=20
-> Please only add the macros that you need and are missing.
->=20
-> Cheers,
-> -Paul
+							Thanx, Paul
 
-
-all are valid comments. We'll add them for v3 or find answers
-if some code fragments are needed (even if we don't know why)
-or not.
-
-BR and thanks,
-Nikolaus
+> ---
+>  kernel/rcu/update.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> index c21b38cc25e9..0fdbf937edac 100644
+> --- a/kernel/rcu/update.c
+> +++ b/kernel/rcu/update.c
+> @@ -57,9 +57,7 @@
+>  module_param(rcu_expedited, int, 0);
+>  module_param(rcu_normal, int, 0);
+>  static int rcu_normal_after_boot = IS_ENABLED(CONFIG_PREEMPT_RT);
+> -#ifndef CONFIG_PREEMPT_RT
+>  module_param(rcu_normal_after_boot, int, 0);
+> -#endif
+>  #endif /* #ifndef CONFIG_TINY_RCU */
+>  
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+> -- 
+> 2.31.1
+> 
