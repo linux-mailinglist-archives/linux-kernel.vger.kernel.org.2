@@ -2,48 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5992C3E1098
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6153E1099
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239695AbhHEIyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 04:54:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232591AbhHEIyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 04:54:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 946756105A;
-        Thu,  5 Aug 2021 08:54:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628153646;
-        bh=e4/+u67PQLWbwRW/+Zo90jHnaAIdfNh2nVTTaCbQ3qE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xkXbelI7vGun57y5T2hN2gh55i0InDf6HEC85ue0T7rmTck/pmBIxplf6QHNVOW18
-         0r/TvwuEkMCNVrK4HI3ADtkCtNJPXPK/l+MD40mHf2KkkfXVc3bT+F6+u8p/pFk2f8
-         AcCyz+tM3YL7TEZfSpscqnKq+tEnDKyx94IIxyp8=
-Date:   Thu, 5 Aug 2021 10:54:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] USB-serial fixes for 5.14-rc5
-Message-ID: <YQunK2AvKEz/ysOz@kroah.com>
-References: <YQuj0Nqq3YRXVLKh@hovoldconsulting.com>
+        id S239720AbhHEIy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 04:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232651AbhHEIy1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 04:54:27 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49982C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 01:54:13 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628153650;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=B3TzT5Xwpxi37WowC0BuHdZzU0mUOig+vMjN/xwaVU0=;
+        b=ebmhGlMzaB2mPzw/QImcGBOvLwi635wvVaHBq80/ALry07PbjYIOJDQb4xZe8K8DzXQmTq
+        IVZMAwllA3JbgwC/LR3I1Y54nCcqzMmk2maVBkgtGbGUp/cCG8psuWj0eHisMoAKOfz7lV
+        aFWRE0iXtOsFlcrqs2TiMHfFGVdeBnZjEVCDnXxgIBVXT8qxvX6GMfth9CQgw3KPnTxgud
+        mjzuwdf3R0Y5FsSlctK+zRTKx8o0AYXOJKNxRqd8HRON4X7uaJSlF/AU9GQDx6iIFFSmuu
+        MP1K3fW/QsGy5gi1ZEm4e7kf0m1S5vG/gnVdyB9woNanzGwwB16T2akM/BIV9w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628153650;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=B3TzT5Xwpxi37WowC0BuHdZzU0mUOig+vMjN/xwaVU0=;
+        b=4D8pXTVuZ4HEkQY31RMyDxdGxCJ+6iMUln82cb2U20t8MBofeoapboyfaPaT9eZchJcRM6
+        3mY5dlMxM/ydexCA==
+To:     Waiman Long <llong@redhat.com>, LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: Re: [patch 30/63] locking/spinlock: Provide RT variant
+In-Reply-To: <4fa5ec01-ff09-16f3-e1d6-42431036f554@redhat.com>
+References: <20210730135007.155909613@linutronix.de>
+ <20210730135206.865728220@linutronix.de>
+ <4fa5ec01-ff09-16f3-e1d6-42431036f554@redhat.com>
+Date:   Thu, 05 Aug 2021 10:54:10 +0200
+Message-ID: <87v94k1dcd.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQuj0Nqq3YRXVLKh@hovoldconsulting.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 10:39:44AM +0200, Johan Hovold wrote:
-> The following changes since commit ff1176468d368232b684f75e82563369208bc371:
-> 
->   Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git tags/usb-serial-5.14-rc5
+On Wed, Aug 04 2021 at 19:34, Waiman Long wrote:
+> On 7/30/21 9:50 AM, Thomas Gleixner wrote:
+>> From: Thomas Gleixner <tglx@linutronix.de>
+>> + *   missed.
+>> + *
+>> + * - Non RT spin/rw_locks disable preemption and evtl. interrupts.
+>
+> "evtl."?
 
-Pulled and pushed out, thanks.
+German abbreviation for eventually. Let me make that understandable for
+non .de folks.
 
-greg k-h
+Thanks,
+
+        tglx
