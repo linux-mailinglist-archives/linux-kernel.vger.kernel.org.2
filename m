@@ -2,85 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57803E1752
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 661B23E175A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240556AbhHEOv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233040AbhHEOv0 (ORCPT
+        id S240486AbhHEOzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 10:55:38 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:32904 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234937AbhHEOzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:51:26 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9588C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 07:51:11 -0700 (PDT)
-Received: from dslb-188-096-137-143.188.096.pools.vodafone-ip.de ([188.96.137.143] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1mBei8-0003eR-4B; Thu, 05 Aug 2021 16:51:04 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v2] staging: r8188eu: remove label at the end of a function
-Date:   Thu,  5 Aug 2021 16:50:26 +0200
-Message-Id: <20210805145026.14572-1-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210805130750.7974-1-martin@kaiser.cx>
-References: <20210805130750.7974-1-martin@kaiser.cx>
+        Thu, 5 Aug 2021 10:55:35 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 175EtFrl056240;
+        Thu, 5 Aug 2021 09:55:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1628175315;
+        bh=2LdFqgWlvM+4vTpd2kfGWADiBHDbiAlaALFeWQxuafU=;
+        h=From:To:CC:Subject:Date;
+        b=MCxqj3vCvtfUFeAWrQTuZUTJ8Ja+gqGeMCpeVbFh3mkirdgXZG8hTwWKgCvr1P+uC
+         nSykrM2Vd4My2hzdvkiVcwK9IP9C1/zcRpmiB0HUPnyp2/08tZqpW5ddPaLzUO6IYA
+         Wv4VvPwPJO137Q2j1u30AlIiDayXZFuDMUz9b6DM=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 175EtFJw104616
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 5 Aug 2021 09:55:15 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 5 Aug
+ 2021 09:55:14 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 5 Aug 2021 09:55:14 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 175EtDfA116829;
+        Thu, 5 Aug 2021 09:55:14 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ben Hutchings <ben.hutchings@essensium.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-omap@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH net v2] net: ethernet: ti: cpsw: fix min eth packet size for non-switch use-cases
+Date:   Thu, 5 Aug 2021 17:55:11 +0300
+Message-ID: <20210805145511.12016-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compilation fails for me
+The CPSW switchdev driver inherited fix from commit 9421c9015047 ("net:
+ethernet: ti: cpsw: fix min eth packet size") which changes min TX packet
+size to 64bytes (VLAN_ETH_ZLEN, excluding ETH_FCS). It was done to fix HW
+packed drop issue when packets are sent from Host to the port with PVID and
+un-tagging enabled. Unfortunately this breaks some other non-switch
+specific use-cases, like:
+- [1] CPSW port as DSA CPU port with DSA-tag applied at the end of the
+packet
+- [2] Some industrial protocols, which expects min TX packet size 60Bytes
+(excluding FCS).
 
-drivers/staging/r8188eu/hal/rtl8188e_dm.c: In function ‘rtl8188e_HalDmWatchDog’:
-drivers/staging/r8188eu/hal/rtl8188e_dm.c:182:1: error: label at end of compound statement
-  182 | skip_dm:
-      | ^~~~~~~
+Fix it by configuring min TX packet size depending on driver mode
+ - 60Bytes (ETH_ZLEN) for multi mac (dual-mac) mode
+ - 64Bytes (VLAN_ETH_ZLEN) for switch mode
+and update it during driver mode change and annotate with
+READ_ONCE()/WRITE_ONCE() as it can be read by napi while writing.
 
-Remove the label at the end of the function. Replace the jump to this label
-with a return statement.
+[1] https://lore.kernel.org/netdev/20210531124051.GA15218@cephalopod/
+[2] https://e2e.ti.com/support/arm/sitara_arm/f/791/t/701669
 
-Fixes: b398ff88aa36 ("staging: r8188eu: remove return from void functions")
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+
+Cc: stable@vger.kernel.org
+Fixes: ed3525eda4c4 ("net: ethernet: ti: introduce cpsw switchdev based driver part 1 - dual-emac")
+Reported-by: Ben Hutchings <ben.hutchings@essensium.com>
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 ---
-v2:
- - add Fixes tag
 
- drivers/staging/r8188eu/hal/rtl8188e_dm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes in v2:
+- use skb_put_padto
+- update description
+- annotate tx_packet_min with READ_ONCE()/WRITE_ONCE()
 
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_dm.c b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-index b5f42127a751..72b3130eddd2 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-@@ -145,7 +145,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
- 	hw_init_completed = Adapter->hw_init_completed;
+I'm not going to add additional changes in cpdma configuration interface and, 
+instead, will send patches to convert all cpdma users to use skb_put_padto() and
+drop frames padding from cpdma.
+
+v1: https://patchwork.kernel.org/project/netdevbpf/patch/20210611132732.10690-1-grygorii.strashko@ti.com/
+
+ drivers/net/ethernet/ti/cpsw_new.c  | 7 +++++--
+ drivers/net/ethernet/ti/cpsw_priv.h | 4 +++-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
+index ae167223e87f..d904f4ca4b37 100644
+--- a/drivers/net/ethernet/ti/cpsw_new.c
++++ b/drivers/net/ethernet/ti/cpsw_new.c
+@@ -921,7 +921,7 @@ static netdev_tx_t cpsw_ndo_start_xmit(struct sk_buff *skb,
+ 	struct cpdma_chan *txch;
+ 	int ret, q_idx;
  
- 	if (!hw_init_completed)
--		goto skip_dm;
-+		return;
+-	if (skb_padto(skb, CPSW_MIN_PACKET_SIZE)) {
++	if (skb_put_padto(skb, READ_ONCE(priv->tx_packet_min))) {
+ 		cpsw_err(priv, tx_err, "packet pad failed\n");
+ 		ndev->stats.tx_dropped++;
+ 		return NET_XMIT_DROP;
+@@ -1101,7 +1101,7 @@ static int cpsw_ndo_xdp_xmit(struct net_device *ndev, int n,
  
- 	fw_cur_in_ps = Adapter->pwrctrlpriv.bFwCurrentInPSMode;
- 	rtw_hal_get_hwreg(Adapter, HW_VAR_FWLPS_RF_ON, (u8 *)(&fw_ps_awake));
-@@ -179,7 +179,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
- 		ODM_CmnInfoUpdate(&hal_data->odmpriv, ODM_CMNINFO_LINK, bLinked);
- 		ODM_DMWatchdog(&hal_data->odmpriv);
- 	}
--skip_dm:
-+
- 	/*  Check GPIO to determine current RF on/off and Pbc status. */
- 	/*  Check Hardware Radio ON/OFF or not */
- }
+ 	for (i = 0; i < n; i++) {
+ 		xdpf = frames[i];
+-		if (xdpf->len < CPSW_MIN_PACKET_SIZE)
++		if (xdpf->len < READ_ONCE(priv->tx_packet_min))
+ 			break;
+ 
+ 		if (cpsw_xdp_tx_frame(priv, xdpf, NULL, priv->emac_port))
+@@ -1390,6 +1390,7 @@ static int cpsw_create_ports(struct cpsw_common *cpsw)
+ 		priv->dev  = dev;
+ 		priv->msg_enable = netif_msg_init(debug_level, CPSW_DEBUG);
+ 		priv->emac_port = i + 1;
++		priv->tx_packet_min = CPSW_MIN_PACKET_SIZE;
+ 
+ 		if (is_valid_ether_addr(slave_data->mac_addr)) {
+ 			ether_addr_copy(priv->mac_addr, slave_data->mac_addr);
+@@ -1698,6 +1699,7 @@ static int cpsw_dl_switch_mode_set(struct devlink *dl, u32 id,
+ 
+ 			priv = netdev_priv(sl_ndev);
+ 			slave->port_vlan = vlan;
++			WRITE_ONCE(priv->tx_packet_min, CPSW_MIN_PACKET_SIZE_VLAN);
+ 			if (netif_running(sl_ndev))
+ 				cpsw_port_add_switch_def_ale_entries(priv,
+ 								     slave);
+@@ -1726,6 +1728,7 @@ static int cpsw_dl_switch_mode_set(struct devlink *dl, u32 id,
+ 
+ 			priv = netdev_priv(slave->ndev);
+ 			slave->port_vlan = slave->data->dual_emac_res_vlan;
++			WRITE_ONCE(priv->tx_packet_min, CPSW_MIN_PACKET_SIZE);
+ 			cpsw_port_add_dual_emac_def_ale_entries(priv, slave);
+ 		}
+ 
+diff --git a/drivers/net/ethernet/ti/cpsw_priv.h b/drivers/net/ethernet/ti/cpsw_priv.h
+index a323bea54faa..2951fb7b9dae 100644
+--- a/drivers/net/ethernet/ti/cpsw_priv.h
++++ b/drivers/net/ethernet/ti/cpsw_priv.h
+@@ -89,7 +89,8 @@ do {								\
+ 
+ #define CPSW_POLL_WEIGHT	64
+ #define CPSW_RX_VLAN_ENCAP_HDR_SIZE		4
+-#define CPSW_MIN_PACKET_SIZE	(VLAN_ETH_ZLEN)
++#define CPSW_MIN_PACKET_SIZE_VLAN	(VLAN_ETH_ZLEN)
++#define CPSW_MIN_PACKET_SIZE	(ETH_ZLEN)
+ #define CPSW_MAX_PACKET_SIZE	(VLAN_ETH_FRAME_LEN +\
+ 				 ETH_FCS_LEN +\
+ 				 CPSW_RX_VLAN_ENCAP_HDR_SIZE)
+@@ -380,6 +381,7 @@ struct cpsw_priv {
+ 	u32 emac_port;
+ 	struct cpsw_common *cpsw;
+ 	int offload_fwd_mark;
++	u32 tx_packet_min;
+ };
+ 
+ #define ndev_to_cpsw(ndev) (((struct cpsw_priv *)netdev_priv(ndev))->cpsw)
 -- 
-2.20.1
+2.17.1
 
