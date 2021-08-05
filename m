@@ -2,133 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13803E1CA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E743E1CA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242931AbhHET1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhHET1K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:27:10 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF73C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 12:26:56 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id bh26so7248598oib.10
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 12:26:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C0WNWiD9++15y+4clt6BIA4hNTGWYbtTdYbFfD4ej2k=;
-        b=L9YAQmtfbn+K+kdeGGuCbI5iJdpOEwlJeJZOrsxk96GUsUVfvJ2JQ2GQg9+eTZ0wjq
-         4ra84ysGqKuSufRNtKsaOpYSb0kWpguoqgMJIrPKm82neKceuWcJkHj6bexRzO0WE2SN
-         gmHfqU2z0sm/qyi0FJi98eHikp60XbMQzduVZ5Ip9eBSewnvwLqpCDvgl/Qer+IUfCWN
-         isaR7eE3MmzSNipdzfj5RMEeqbQ7Zq/LKZD767aQ3jUms0oVydXoP/I1WjDiV64OpuEx
-         RRMC3TDxR4KP+pQwISWyojlKTy6VI0O8Q47hZ7R3Zxyuf/3VwWKobO/i+bUxZLudKh0A
-         22eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=C0WNWiD9++15y+4clt6BIA4hNTGWYbtTdYbFfD4ej2k=;
-        b=JwXjTOk1Y0ymZ4cMp6WHUuszmMvtFStXKHIYMQGOFqx+DPzFWoCP59ERcVTWoeJFo0
-         pEupL82zjteERMYs+DW2OxvkEsFklDYASql+kOwcy+lLR1vo4/ZUUGN66tRAjx9tOq0I
-         144GE+G//BsV1vmt76t6ESjpTnZNI1mCcFbi0GMyR4Q92PQbtXY3Vppl4yTZ2KKKV87b
-         F0QvwMVyedPP63jADR6B6nq5dYO8fUh8izdPFJV8y9Gz2Tet1IUQrQ5L4QZ3iDccdcZW
-         xSn3HEfCGxJUhhZlYBE8NQEiapzuZZ4DL7vs0wjwDTbbuhQZEzB1ie7fXqzNC+LWmx6R
-         34eQ==
-X-Gm-Message-State: AOAM532/RqH5aLx4B0s7TtEG8q1uinkdqhfFHMTnslfhzRXsQyO8nwKq
-        iV1c7hIiIqheozawijlUMuE=
-X-Google-Smtp-Source: ABdhPJxxi/7ln5/mMEA//jJPm1UmYAh69a2ksDHD59B6xLaLin7e+7KXwP1HQzHzF2H5xxk1UbqkzQ==
-X-Received: by 2002:aca:bc43:: with SMTP id m64mr12550939oif.174.1628191615785;
-        Thu, 05 Aug 2021 12:26:55 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-1016.res6.spectrum.com.com (2603-8090-2005-39b3-0000-0000-0000-1016.res6.spectrum.com. [2603:8090:2005:39b3::1016])
-        by smtp.gmail.com with ESMTPSA id n7sm1143479otf.45.2021.08.05.12.26.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 12:26:55 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-To:     gregkh@linuxfoundation.org
-Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Subject: [PATCH 1/6] staging: r8188eu: Remove rtw_yield_os()
-Date:   Thu,  5 Aug 2021 14:26:39 -0500
-Message-Id: <20210805192644.15978-1-Larry.Finger@lwfinger.net>
-X-Mailer: git-send-email 2.32.0
+        id S242879AbhHET0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:26:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45522 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231154AbhHET0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 15:26:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61D7060E8D;
+        Thu,  5 Aug 2021 19:26:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628191599;
+        bh=/SIk1Ct6Y5mcuV42VIGuw7hDXxZz8BmlXHlb3k2//zU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=TCIM/Fx/5X4uoIgBylthoxp417pA0rWdMteKRtWmeh700Me4N/0GnDBYMIgB00Xv2
+         JCdRoSpfNGxYXsQENrQq240uX41QsT0lo48zIUzyZ7kVsAKl8TR/397+qt7534g9j3
+         WNI2r4NQkzZPDD9TLxsbSpbY0OpKB8QMMWUGGS2fjCpTMab0wl3RuEWU5pr9VNDfpq
+         cfXZzPzWn7YCAjlFFZKYTMM2E0mLV2LYtNkZhgG4wRmeyu92+PpApSbWRX9BcuL4+K
+         WUaoa3LFSuoc/RPD+tU1o2Sn926fEF4GnkrYTaOJArnjL9o3F8AnwEbn8Eznqkdv2M
+         fydkVg589xleQ==
+Subject: Re: [PATCH v3] ucounts: add missing data type changes
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Sven Schnelle <svens@linux.ibm.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20210730062854.3601635-1-svens@linux.ibm.com>
+ <YQn+GomdRCoYc/E8@Ryzen-9-3900X.localdomain> <875ywlat5e.fsf@disp2133>
+ <94478003-8259-4b57-6d93-5a07e0750946@kernel.org> <87v94jalck.fsf@disp2133>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <56b7c0fe-f2e1-7c4f-eb1b-1d9793dea5a8@kernel.org>
+Date:   Thu, 5 Aug 2021 12:26:39 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87v94jalck.fsf@disp2133>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This wrapper is just a call to yield().
+On 8/5/2021 9:48 AM, Eric W. Biederman wrote:
+> Nathan Chancellor <nathan@kernel.org> writes:
+> 
+>> Hi Eric,
+>>
+>> On 8/4/2021 12:47 PM, Eric W. Biederman wrote:
+>>> Nathan Chancellor <nathan@kernel.org> writes:
+>>>
+>>>> On Fri, Jul 30, 2021 at 08:28:54AM +0200, Sven Schnelle wrote:
+>>>>> commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
+>>>>> changed the data type of ucounts/ucounts_max to long, but missed to
+>>>>> adjust a few other places. This is noticeable on big endian platforms
+>>>>> from user space because the /proc/sys/user/max_*_names files all
+>>>>> contain 0.
+>>>>>
+>>>>> Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
+>>>>> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+>>>>
+>>>> This patch in -next as commit e43fc41d1f7f ("ucounts: add missing data type
+>>>> changes") causes Windows Subsystem for Linux to fail to start:
+>>>>
+>>>> [error 0x8007010b when launching `wsl.exe -d Arch'] Could not access starting
+>>>> directory "\\wsl$\Arch\home\nathan"
+>>>>
+>>>> Specifically, it is the change to max_user_watches in
+>>>> fs/notify/inotify/inotify_user.c, as the below diff gets me back to working.
+>>>> Unfortunately, I have no additional information to offer beyond that as WSL's
+>>>> init is custom and closed source (as far as I am aware) and there are no real
+>>>> debugging utilities.
+>>>
+>>> Could you try this patch and tell us what value is being set?
+>>>
+>>> The only think I can imagine is that someone wants unlimited watches and
+>>> sets the value to a ridiculously large value and the interpretation of
+>>> that value winds up being different between int and long.
+>>>
+>>> This should allow you to read either dmesg or the kernel's log as it
+>>> boots up and see what value is being written.  From there it should
+>>> be relatively straight forward to figure out what is going on.
+>>
+>> I applied this diff on top of mine and running 'dmesg |& grep intvec' shows:
+>>
+>> [    0.282500] intvec: dmesg_restrict <- 0
+>> [    0.282510] intvec: max_user_watches <- 524288
+>>
+>> This seems much smaller than INT_MAX so I am not sure how the value could be
+>> different between int and long but I am not at all familiar with the sysctl
+>> code.
+>>
+>> More than happy to continue to test debug patches or provide any additional
+>> information as I can.
+> 
+> Yes.  Very strange.
+> 
+> Could you perhaps try the instrumenting proc_doulongvec_minmax the same
+> way and see what is written in the failing case?
+> 
+> While looking at the code I did see one other serious bug.  The min and
+> max values are int constants intstead of long constants.
+> 
+> Could you test the change below and see if it makes a difference?
 
-Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
----
- drivers/staging/r8188eu/core/rtw_mlme_ext.c     | 2 +-
- drivers/staging/r8188eu/hal/rtl8188e_cmd.c      | 2 +-
- drivers/staging/r8188eu/include/osdep_service.h | 2 --
- drivers/staging/r8188eu/os_dep/osdep_service.c  | 5 -----
- 4 files changed, 2 insertions(+), 9 deletions(-)
+That indeed fixes the issue! I assume you will squash it into the 
+original commit but if not, feel free to add:
 
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-index 470c338b44e1..fe24f72a3cf1 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-@@ -6260,7 +6260,7 @@ unsigned int send_beacon(struct adapter *padapter)
- 		issue_beacon(padapter, 100);
- 		issue++;
- 		do {
--			rtw_yield_os();
-+			yield();
- 			rtw_hal_get_hwreg(padapter, HW_VAR_BCN_VALID, (u8 *)(&bxmitok));
- 			poll++;
- 		} while ((poll%10) != 0 && !bxmitok && !padapter->bSurpriseRemoved && !padapter->bDriverStopped);
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-index f33bf732eeaf..be41e3700969 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-@@ -625,7 +625,7 @@ void rtl8188e_set_FwJoinBssReport_cmd(struct adapter *adapt, u8 mstatus)
- 			SetFwRsvdPagePkt(adapt, false);
- 			DLBcnCount++;
- 			do {
--				rtw_yield_os();
-+				yield();
- 				/* rtw_mdelay_os(10); */
- 				/*  check rsvd page download OK. */
- 				rtw_hal_get_hwreg(adapt, HW_VAR_BCN_VALID, (u8 *)(&bcn_valid));
-diff --git a/drivers/staging/r8188eu/include/osdep_service.h b/drivers/staging/r8188eu/include/osdep_service.h
-index 10f0203fd905..87315d1a5c72 100644
---- a/drivers/staging/r8188eu/include/osdep_service.h
-+++ b/drivers/staging/r8188eu/include/osdep_service.h
-@@ -240,8 +240,6 @@ u32  rtw_atoi(u8 *s);
- void rtw_mdelay_os(int ms);
- void rtw_udelay_os(int us);
- 
--void rtw_yield_os(void);
--
- static inline unsigned char _cancel_timer_ex(struct timer_list *ptimer)
- {
- 	return del_timer_sync(ptimer);
-diff --git a/drivers/staging/r8188eu/os_dep/osdep_service.c b/drivers/staging/r8188eu/os_dep/osdep_service.c
-index 232d3a337be4..e0eddf44b5c7 100644
---- a/drivers/staging/r8188eu/os_dep/osdep_service.c
-+++ b/drivers/staging/r8188eu/os_dep/osdep_service.c
-@@ -156,11 +156,6 @@ void rtw_udelay_os(int us)
- 	udelay((unsigned long)us);
- }
- 
--void rtw_yield_os(void)
--{
--	yield();
--}
--
- #define RTW_SUSPEND_LOCK_NAME "rtw_wifi"
- 
- static const struct device_type wlan_type = {
--- 
-2.32.0
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
+> Eric
+> 
+> 
+> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+> index 6576657a1a25..28b67cb9458d 100644
+> --- a/fs/notify/fanotify/fanotify_user.c
+> +++ b/fs/notify/fanotify/fanotify_user.c
+> @@ -54,6 +54,9 @@ static int fanotify_max_queued_events __read_mostly;
+>   
+>   #include <linux/sysctl.h>
+>   
+> +static long ft_zero = 0;
+> +static long ft_int_max = INT_MAX;
+> +
+>   struct ctl_table fanotify_table[] = {
+>   	{
+>   		.procname	= "max_user_groups",
+> @@ -61,8 +64,8 @@ struct ctl_table fanotify_table[] = {
+>   		.maxlen		= sizeof(long),
+>   		.mode		= 0644,
+>   		.proc_handler	= proc_doulongvec_minmax,
+> -		.extra1		= SYSCTL_ZERO,
+> -		.extra2		= SYSCTL_INT_MAX,
+> +		.extra1		= &ft_zero,
+> +		.extra2		= &ft_int_max,
+>   	},
+>   	{
+>   		.procname	= "max_user_marks",
+> @@ -70,8 +73,8 @@ struct ctl_table fanotify_table[] = {
+>   		.maxlen		= sizeof(long),
+>   		.mode		= 0644,
+>   		.proc_handler	= proc_doulongvec_minmax,
+> -		.extra1		= SYSCTL_ZERO,
+> -		.extra2		= SYSCTL_INT_MAX,
+> +		.extra1		= &ft_zero,
+> +		.extra2		= &ft_int_max,
+>   	},
+>   	{
+>   		.procname	= "max_queued_events",
+> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+> index 55fe7cdea2fb..62051247f6d2 100644
+> --- a/fs/notify/inotify/inotify_user.c
+> +++ b/fs/notify/inotify/inotify_user.c
+> @@ -55,6 +55,9 @@ struct kmem_cache *inotify_inode_mark_cachep __read_mostly;
+>   
+>   #include <linux/sysctl.h>
+>   
+> +static long it_zero = 0;
+> +static long it_int_max = INT_MAX;
+> +
+>   struct ctl_table inotify_table[] = {
+>   	{
+>   		.procname	= "max_user_instances",
+> @@ -62,8 +65,8 @@ struct ctl_table inotify_table[] = {
+>   		.maxlen		= sizeof(long),
+>   		.mode		= 0644,
+>   		.proc_handler	= proc_doulongvec_minmax,
+> -		.extra1		= SYSCTL_ZERO,
+> -		.extra2		= SYSCTL_INT_MAX,
+> +		.extra1		= &it_zero,
+> +		.extra2		= &it_int_max,
+>   	},
+>   	{
+>   		.procname	= "max_user_watches",
+> @@ -71,8 +74,8 @@ struct ctl_table inotify_table[] = {
+>   		.maxlen		= sizeof(long),
+>   		.mode		= 0644,
+>   		.proc_handler	= proc_doulongvec_minmax,
+> -		.extra1		= SYSCTL_ZERO,
+> -		.extra2		= SYSCTL_INT_MAX,
+> +		.extra1		= &it_zero,
+> +		.extra2		= &it_int_max,
+>   	},
+>   	{
+>   		.procname	= "max_queued_events",
+> diff --git a/kernel/ucount.c b/kernel/ucount.c
+> index 260ae7da815f..bb51849e6375 100644
+> --- a/kernel/ucount.c
+> +++ b/kernel/ucount.c
+> @@ -58,14 +58,17 @@ static struct ctl_table_root set_root = {
+>   	.permissions = set_permissions,
+>   };
+>   
+> +static long ue_zero = 0;
+> +static long ue_int_max = INT_MAX;
+> +
+>   #define UCOUNT_ENTRY(name)					\
+>   	{							\
+>   		.procname	= name,				\
+>   		.maxlen		= sizeof(long),			\
+>   		.mode		= 0644,				\
+>   		.proc_handler	= proc_doulongvec_minmax,	\
+> -		.extra1		= SYSCTL_ZERO,			\
+> -		.extra2		= SYSCTL_INT_MAX,		\
+> +		.extra1		= &ue_zero,			\
+> +		.extra2		= &ue_int_max,			\
+>   	}
+>   static struct ctl_table user_table[] = {
+>   	UCOUNT_ENTRY("max_user_namespaces"),
+> 
+> 
+> 
