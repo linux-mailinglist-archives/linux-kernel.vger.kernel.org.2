@@ -2,118 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6CE3E1BBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BF03E1BC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241282AbhHESyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:54:10 -0400
-Received: from mga11.intel.com ([192.55.52.93]:54973 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238848AbhHESyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:54:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="211125886"
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="211125886"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 11:53:55 -0700
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="512862108"
-Received: from dkdean-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.157.53])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 11:53:54 -0700
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andi Kleen <ak@linux.intel.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQrqhYEL64CSLRTy@kroah.com>
- <f2b1d564-8174-f8e9-9fee-12e938c6d846@linux.intel.com>
- <YQuYCePPZEmVbkfc@kroah.com> <YQuZdVuaGG/Cr62y@kroah.com>
- <YQuaJ78y8j1UmBoz@kroah.com>
- <fdf8b6b6-58c3-8392-2fc6-1908a314e991@linux.intel.com>
- <YQwlHrJBw79xhTSI@kroah.com>
- <21db8884-5aa1-3971-79ef-f173a0a95bef@linux.intel.com>
- <YQwpa+LAYt7YZ5dh@kroah.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <7d6751b1-c476-51d3-25c6-b65c0e93d23b@linux.intel.com>
-Date:   Thu, 5 Aug 2021 11:53:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S241533AbhHESyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241446AbhHESyr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:54:47 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AB5C06179B
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:54:32 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id h14so7830899wrx.10
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=mCmxN128wN048rQ3mL+tGyaLgz6ahBPx10bueA4yYQQ=;
+        b=GOrV3VP+r8pYdlSiWQTpaesHdYyjntzU0PvvHrN5y3GEyAm/V0Gk6/Q2DVPAjUOuHG
+         cg9PKnXKTT6euec26ur9UeGp7ZJ1lMFf0XKNZ8JHvT1V9wtuX3S5sCHtymzoXEU9qj2q
+         qvrLHR5Nn9+CzXn368JWDViQsPx0sYdfYo81GedinLwzH0j/KWAgMJ76cgcFRANa52Ap
+         k/HeuXbl/H4MM5n9iS0qwck3lV1RsVGsi6ht6u6CHCiFHc0J5dQij11Gxp4rS/NpUOOz
+         xuYYqbl/V2ElVpVt72G3YEr+BRDilwSbeYw+9JCFvZusmxJWVls+zLhfdxvvorH6XeKQ
+         WnMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mCmxN128wN048rQ3mL+tGyaLgz6ahBPx10bueA4yYQQ=;
+        b=GQy8rfV/8eo8gYL3IC2iRSNVPSuoQMlSLh/W56Jawh/Y6WIHYPmKt6Q0dxjf4TOmeQ
+         3lohvThs4+IMMR9ZDMY0u4YxiViLaCVPWTEeqrph5WWx4ZUhWwF31Lep+huKfGx3RSv5
+         90QgaDsLCj+0f9e/+iIM8ps0WdoX8BUkfPqOxjycWb/JlzID3d5IdCmSdpsy0biaA7AH
+         rQE9G4IG8sZnTTpCRu9mdxBN6i2kvuXAg0kKfl4ahPPQvsC5/Adi3s55l3whQuomw8YP
+         c716yiaVaYgnCX9DRQSI50geol6FzX14t0JYwOTcRVIiUguxiuh9eueZhf4Ms9AnoV0i
+         c8rA==
+X-Gm-Message-State: AOAM530TILnTMp8HVyMgYv47IL03QhzyxPzbd1xjdUJX6dUHT3oAleMU
+        easnjOmaUzKc9kWPZBWLWuCoBA==
+X-Google-Smtp-Source: ABdhPJwssE+mX4OXOdITg+L7JFPUjj2TqXmuwypTLByy6roZIhynzabMmSfypihLZgWIBDpfU85saA==
+X-Received: by 2002:a5d:5906:: with SMTP id v6mr6899987wrd.194.1628189670642;
+        Thu, 05 Aug 2021 11:54:30 -0700 (PDT)
+Received: from google.com ([109.180.115.228])
+        by smtp.gmail.com with ESMTPSA id p5sm7799843wrd.25.2021.08.05.11.54.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 11:54:30 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 19:54:27 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        John Crispin <john@phrozen.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+Subject: Re: [PATCH 1/3] arch: Export machine_restart() instances so they can
+ be called from modules
+Message-ID: <YQwz4xkuxvfrCnag@google.com>
+References: <20210805075032.723037-1-lee.jones@linaro.org>
+ <20210805075032.723037-2-lee.jones@linaro.org>
+ <20210805173625.GH6719@arm.com>
+ <YQww08x2whx/LIIT@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <YQwpa+LAYt7YZ5dh@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YQww08x2whx/LIIT@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 05 Aug 2021, Greg Kroah-Hartman wrote:
 
-
-On 8/5/21 11:09 AM, Greg Kroah-Hartman wrote:
-> On Thu, Aug 05, 2021 at 10:58:46AM -0700, Andi Kleen wrote:
->>
->> On 8/5/2021 10:51 AM, Greg Kroah-Hartman wrote:
->>>
->>> It's controlled by whatever you want to use in userspace.  usbguard has
->>> been handling this logic in userspace for over a decade now just fine.
->>
->>
->> So how does that work with builtin USB drivers? Do you delay the USB binding
->> until usbguard starts up?
+> On Thu, Aug 05, 2021 at 06:36:25PM +0100, Catalin Marinas wrote:
+> > On Thu, Aug 05, 2021 at 08:50:30AM +0100, Lee Jones wrote:
+> > > diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> > > index b4bb67f17a2ca..cf89ce91d7145 100644
+> > > --- a/arch/arm64/kernel/process.c
+> > > +++ b/arch/arm64/kernel/process.c
+> > > @@ -212,6 +212,7 @@ void machine_restart(char *cmd)
+> > >  	printk("Reboot failed -- System halted\n");
+> > >  	while (1);
+> > >  }
+> > > +EXPORT_SYMBOL(machine_restart);
+> > 
+> > Should we make this EXPORT_SYMBOL_GPL? I suppose it's not for general
+> > use by out of tree drivers and it matches the other pm_power_off symbol
+> > we export in this file.
 > 
-> Yes.
-> 
->>>> This doesn't help us handle builtin drivers that initialize before user
->>>> space is up.
->>> Then have the default setting for your bus be "unauthorized" like we
->>> allow for some busses today.
->>
->> We need some early boot drivers, just not all of them. For example in your
->> scheme we would need to reject all early platform drivers, which would break
->> booting. Or allow all early platform drivers, but then we exactly get into
->> the problem that there are far too many of them to properly harden.
-> 
-> Define "harden" please.  Why not just allow all platform drivers, they
-> should all be trusted.  If not, well, you have bigger problems...
+> Yes please.
 
-This driver filter framework will be mainly (at-least for now) used by
-protected guest. "Protected guest" is the term we use define a VM
-guest which ensures memory and data isolation when working with
-untrusted VMM. You can find some basic introduction to it in following
-links.
+Sure.
 
-https://lwn.net/Articles/860352/
-https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
-
-In protected guest, since VMM is untrusted, device drivers that deals
-with IO-memory and data had to audited and hardened against attack from
-malicious VMM.
-
-With this driver filter support, we can ensure only hardened drivers
-are allowed to bind with device. This is applicable to built-in and
-loadable kernel drivers.
-
-I don't think there is a existing framework which does this right?
-
-I am not sure how USB and Thunderbolt "authorzied" model works. But I
-don't think it prevents built-in driver probes during kernel boot right?
-I will also check this framework and get back to you.
-
-> 
-> Anyway, feel free to build on top of the existing scheme please, but do
-> not ignore it and try to create yet-another-way-to-do-this that I have
-> to maintain for the next 20+ years.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Thanks for the feedback.
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
