@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3DD3E1163
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC53D3E1168
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238960AbhHEJe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 05:34:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41660 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237464AbhHEJeu (ORCPT
+        id S232568AbhHEJfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 05:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239354AbhHEJew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:34:50 -0400
-Date:   Thu, 05 Aug 2021 09:34:35 -0000
+        Thu, 5 Aug 2021 05:34:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E63B0C061798;
+        Thu,  5 Aug 2021 02:34:38 -0700 (PDT)
+Date:   Thu, 05 Aug 2021 09:34:36 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628156076;
+        s=2020; t=1628156077;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MCPHILnnBf7at1s3n4owaliRhZjOxHKLxJXSuJMZkYc=;
-        b=FFH/hH5ktzS7ZmHtsOsWwUUxqH0xtlk4YicL7hFRYLhbV5klChAXlirXAdGLJc1aJ3HiMF
-        TNIpUPVxOaawBdpreHBtuU/SqrkdBTwn8mYKuV7ATx3ENLyDERjAV5WVS2+T1B28/LhNj1
-        JihxhPSYYR6oNMSBtHIWwyYZGijmXIg0p0B/bAIxiWuyjOvvTqRWLzuYuIYR+WauOm5nJO
-        DDVMDDguGTwg4QFmEDcpMKq6l4W+e7x0xDtku28lCEmwiOAniOMNeh3Dx8947jLd1FfFbe
-        7Zqhn8fO6/u5Y4UTEm3XrEvXejcc2IH+d6hko/xjIFmy54H57IXIcULO6NYwww==
+        bh=m1q+dEXnSlNfc2kxWteFAidNauBz+KoBleorbpxKXOw=;
+        b=O2sQZeEN4MZfLJFx+dPbNdX6hh8CbPJvMyxClNMwQstzqTGvjljwIh6lECZGuWddh7+Fwr
+        ur+6imKCKw3+y8fkhTKEpYmT9u3cTH2exlBgsJ5vi6TOx0egsyxOBCgG0BlJ0teE1TJm+C
+        zAV1UMvLnDQgpwhjW/lT+V28Z4MFzgtPvOfhxFkxwofS6LBHN3Ex8B5zY3xFrz2gljrO9l
+        8hmMHILdcolRMZ1htGtPDPb5QKsO1EBtx0u3a22zAtGuaMirhn3dG+L4lGD16fHe/hHf5l
+        ZyYhyZdYdu9ExyrRFq9+P5qB29uKtnnG8ona6CfC/nlxRAJEi5v2oYBA8g9jTA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628156076;
+        s=2020e; t=1628156077;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MCPHILnnBf7at1s3n4owaliRhZjOxHKLxJXSuJMZkYc=;
-        b=2fLPs4T71abZxahuy5HR/oVAayztbGiGqBVsdqMEcT1sV6i1TY7g1CcSgDpZQNmqMa2xRA
-        aUZmhPUIabNLDXBQ==
-From:   "tip-bot2 for Quentin Perret" <tip-bot2@linutronix.de>
+        bh=m1q+dEXnSlNfc2kxWteFAidNauBz+KoBleorbpxKXOw=;
+        b=RKCGGAlOFV6cxm+JEtNn6r1sTVGhlCgzARdBq6uNGAtuQ/CMWd3sPBw0taXVz56n9/Zr4m
+        2QAOr9FSMtQ+95BQ==
+From:   tip-bot2 for Mika =?utf-8?q?Penttil=C3=A4?= 
+        <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Don't report SCHED_FLAG_SUGOV in sched_getattr()
-Cc:     Quentin Perret <qperret@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: sched/core] sched/numa: Fix is_core_idle()
+Cc:     mika.penttila@gmail.com,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pankaj Gupta <pankaj.gupta@ionos.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210727101103.2729607-3-qperret@google.com>
-References: <20210727101103.2729607-3-qperret@google.com>
+In-Reply-To: <20210722063946.28951-1-mika.penttila@gmail.com>
+References: <20210722063946.28951-1-mika.penttila@gmail.com>
 MIME-Version: 1.0
-Message-ID: <162815607530.395.9529872932900083627.tip-bot2@tip-bot2>
+Message-ID: <162815607690.395.492375170738086086.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     7ad721bf10718a4e480a27ded8bb16b8f6feb2d1
-Gitweb:        https://git.kernel.org/tip/7ad721bf10718a4e480a27ded8bb16b8f6feb2d1
-Author:        Quentin Perret <qperret@google.com>
-AuthorDate:    Tue, 27 Jul 2021 11:11:02 +01:00
+Commit-ID:     1c6829cfd3d5124b125e6df41158665aea413b35
+Gitweb:        https://git.kernel.org/tip/1c6829cfd3d5124b125e6df41158665aea4=
+13b35
+Author:        Mika Penttil=C3=A4 <mika.penttila@gmail.com>
+AuthorDate:    Thu, 22 Jul 2021 09:39:46 +03:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 04 Aug 2021 15:16:44 +02:00
+CommitterDate: Wed, 04 Aug 2021 15:16:43 +02:00
 
-sched: Don't report SCHED_FLAG_SUGOV in sched_getattr()
+sched/numa: Fix is_core_idle()
 
-SCHED_FLAG_SUGOV is supposed to be a kernel-only flag that userspace
-cannot interact with. However, sched_getattr() currently reports it
-in sched_flags if called on a sugov worker even though it is not
-actually defined in a UAPI header. To avoid this, make sure to
-clean-up the sched_flags field in sched_getattr() before returning to
-userspace.
+Use the loop variable instead of the function argument to test the
+other SMT siblings for idle.
 
-Signed-off-by: Quentin Perret <qperret@google.com>
+Fixes: ff7db0bf24db ("sched/numa: Prefer using an idle CPU as a migration tar=
+get instead of comparing tasks")
+Signed-off-by: Mika Penttil=C3=A4 <mika.penttila@gmail.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210727101103.2729607-3-qperret@google.com
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Acked-by: Pankaj Gupta <pankaj.gupta@ionos.com>
+Link: https://lkml.kernel.org/r/20210722063946.28951-1-mika.penttila@gmail.com
 ---
- kernel/sched/core.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 6c562ad..314f70d 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7530,6 +7530,7 @@ SYSCALL_DEFINE4(sched_getattr, pid_t, pid, struct sched_attr __user *, uattr,
- 		kattr.sched_priority = p->rt_priority;
- 	else
- 		kattr.sched_nice = task_nice(p);
-+	kattr.sched_flags &= SCHED_FLAG_ALL;
- 
- #ifdef CONFIG_UCLAMP_TASK
- 	/*
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 11d2294..13c3fd4 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1486,7 +1486,7 @@ static inline bool is_core_idle(int cpu)
+ 		if (cpu =3D=3D sibling)
+ 			continue;
+=20
+-		if (!idle_cpu(cpu))
++		if (!idle_cpu(sibling))
+ 			return false;
+ 	}
+ #endif
