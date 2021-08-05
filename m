@@ -2,158 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A943E1F79
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3E53E1F7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242467AbhHEXru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 19:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56844 "EHLO
+        id S242495AbhHEXsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 19:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232947AbhHEXrp (ORCPT
+        with ESMTP id S232947AbhHEXsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 19:47:45 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE5FC0613D5
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 16:47:29 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id w6so9639201oiv.11
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 16:47:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OQWDDlOSX9gtP+071Su50rAXqbgHCyyr9WMmSuYegz0=;
-        b=mELehyYOMFONKRgWnZjlahZBcRMHzxQoGbavM8+p29NSvz/+ZJzKkGWJIvCvYs2SXC
-         R1Ak+74R5ZRMLd0S2bX08Dm2XJYNiEN3lUcyy/DDRacZuQtdLF+3knnl6H6fT3Tgk7sP
-         +Eqeqb461S0MC8jxC702FJyyhgcHichDuwInm2xAKVHNad3iom31+B8eRIl+SPZTQZn+
-         Erz3nIRvyywpFIEWDn2CPoFRHjkW1AJagjdS3qqohr0knKV/1GxVSvV+/wozgpelfpDV
-         k/p0KYFijxMiyxbb5dzVLpLQEsNwundvZaLXIfjTq5N9TaxZZIhaDYD8R5KzVARhDs8J
-         /ZmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OQWDDlOSX9gtP+071Su50rAXqbgHCyyr9WMmSuYegz0=;
-        b=aYN1c6GyukffKMIkKVi0XhboprncojkFMcBS70ymnAmOpzEOJHQLw8JFiv7zdESbmY
-         7Q8n7QTT2CMEwaidfn+7aVzdKnVSYnpmF43uKL8YKPPkGfeHtOWweEUFt6Pa7APByZlg
-         XmB2x4OGrDqFYSGG5VfrC5i+qrfdk9XhKRmfyc6uPlvmd82E88wjxxJYpHrUSqcYZK5B
-         kWaO5VoPTL/d6xKQX3wgW7xyhYdc9WVWU34qacyWFQNI07b8D67+D/D716tHbksQw/YQ
-         20oRlETMC0jWhhlnar496HNM22/3EUi+urNKpDZ6i2Z2VWza4LUwKROdqHkzlhqdIp/+
-         zfGw==
-X-Gm-Message-State: AOAM531Tfh9I0vxMjJfCmNgChsX2txkL90PTNDOChLZI1mlqNaXLNLyR
-        xam4BsfA0matnPbdvIzj+KKoNqHRQXU=
-X-Google-Smtp-Source: ABdhPJw8+nnZbm3ybJZQNL/TB0QpC7SB2iW6QwY4lPZFHx7hFBIAzbe07xsiqjR5rCn9fj9gYLqAKQ==
-X-Received: by 2002:a05:6808:1388:: with SMTP id c8mr7323392oiw.172.1628207248842;
-        Thu, 05 Aug 2021 16:47:28 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
-        by smtp.gmail.com with ESMTPSA id bc42sm1030098oob.39.2021.08.05.16.47.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Aug 2021 16:47:28 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: [PATCH] staging: r8188eu: replace custom macros with
- is_broadcast_ether_addr
-To:     Michael Straube <straube.linux@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20210805205010.31192-1-straube.linux@gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <32466d30-6259-4752-281b-875158ad307a@lwfinger.net>
-Date:   Thu, 5 Aug 2021 18:47:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 5 Aug 2021 19:48:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8081C0613D5;
+        Thu,  5 Aug 2021 16:48:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=H3DXaH0DYq/AU+2Gphrkn9Lwf3WnAckLZe9TrSof2hk=; b=abtQMLOoZXkVPjuUhEHDqRyq8B
+        KaXEaoLL1BbXX3emsso4LunhdcKMhxkxFYrvD42OWevUVXBkxay+rvTGncsdtcRnfeBGk8FEEJ82g
+        7/1GwpkJ5N+N8oeYGnLfSHWILFgbWRZWolqBrSWognGRqvZRQXjAioMsIt7VqwR/5y0set0rb2Sl8
+        h9eiGCC6w7qRlR//cfZPoHad3zUxLgvZHKF63EjM+zKlK/T0Bdbw8efLJ0qrWM7BwE0fJDaDjccp8
+        JIHfTwF5MfItHb3bT+6SzPp1jD/VaVUH71EQLFXh7i5EzMqMKWZH/pY+tCRYFBtVdRh4Xsh6Krd+Y
+        hXAscibg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mBn5L-007d2p-Uz; Thu, 05 Aug 2021 23:47:39 +0000
+Date:   Fri, 6 Aug 2021 00:47:35 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Anna Schumaker <anna.schumaker@netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        devel@lists.orangefs.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Canvassing for network filesystem write size vs page size
+Message-ID: <YQx4lx7vEbvmfBnE@casper.infradead.org>
+References: <YQv+iwmhhZJ+/ndc@casper.infradead.org>
+ <YQvpDP/tdkG4MMGs@casper.infradead.org>
+ <YQvbiCubotHz6cN7@casper.infradead.org>
+ <1017390.1628158757@warthog.procyon.org.uk>
+ <1170464.1628168823@warthog.procyon.org.uk>
+ <1186271.1628174281@warthog.procyon.org.uk>
+ <1219713.1628181333@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210805205010.31192-1-straube.linux@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1219713.1628181333@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/21 3:50 PM, Michael Straube wrote:
-> Replace usage of custom macros with is_broadcast_ether_addr. All buffers
-> are properly aligned. Remove the now unsued macros MacAddr_isBcst and
-> IS_MAC_ADDRESS_BROADCAST.
+On Thu, Aug 05, 2021 at 05:35:33PM +0100, David Howells wrote:
+> With Willy's upcoming folio changes, from a filesystem point of view, we're
+> going to be looking at folios instead of pages, where:
 > 
-> Signed-off-by: Michael Straube <straube.linux@gmail.com>
-> ---
->   drivers/staging/r8188eu/core/rtw_ioctl_set.c | 13 +++----------
->   drivers/staging/r8188eu/core/rtw_recv.c      |  2 +-
->   drivers/staging/r8188eu/include/wifi.h       |  7 -------
->   3 files changed, 4 insertions(+), 18 deletions(-)
+>  - a folio is a contiguous collection of pages;
 > 
-> diff --git a/drivers/staging/r8188eu/core/rtw_ioctl_set.c b/drivers/staging/r8188eu/core/rtw_ioctl_set.c
-> index 3e2add5409cc..c354f720310c 100644
-> --- a/drivers/staging/r8188eu/core/rtw_ioctl_set.c
-> +++ b/drivers/staging/r8188eu/core/rtw_ioctl_set.c
-> @@ -13,13 +13,6 @@
->   
->   extern void indicate_wx_scan_complete_event(struct adapter *padapter);
->   
-> -#define IS_MAC_ADDRESS_BROADCAST(addr) \
-> -(\
-> -	((addr[0] == 0xff) && (addr[1] == 0xff) && \
-> -		(addr[2] == 0xff) && (addr[3] == 0xff) && \
-> -		(addr[4] == 0xff) && (addr[5] == 0xff))  ? true : false \
-> -)
-> -
->   u8 rtw_validate_ssid(struct ndis_802_11_ssid *ssid)
->   {
->   	u8	 i;
-> @@ -656,8 +649,8 @@ u8 rtw_set_802_11_add_key(struct adapter *padapter, struct ndis_802_11_key *key)
->   		}
->   
->   		/*  check BSSID */
-> -		if (IS_MAC_ADDRESS_BROADCAST(key->BSSID) == true) {
-> -			RT_TRACE(_module_rtl871x_ioctl_set_c_, _drv_err_, ("MacAddr_isBcst(key->BSSID)\n"));
-> +		if (is_broadcast_ether_addr(key->BSSID)) {
-> +			RT_TRACE(_module_rtl871x_ioctl_set_c_, _drv_err_, ("is_broadcast_ether_addr(key->BSSID)\n"));
->   			ret = false;
->   			goto exit;
->   		}
-> @@ -744,7 +737,7 @@ u8 rtw_set_802_11_add_key(struct adapter *padapter, struct ndis_802_11_key *key)
->   				 padapter->securitypriv.dot118021XGrpPrivacy, key->KeyLength));
->   		}
->   
-> -		if ((check_fwstate(&padapter->mlmepriv, WIFI_ADHOC_STATE) == true) && (IS_MAC_ADDRESS_BROADCAST(key->BSSID) == false)) {
-> +		if (check_fwstate(&padapter->mlmepriv, WIFI_ADHOC_STATE) && !is_broadcast_ether_addr(key->BSSID)) {
->   			RT_TRACE(_module_rtl871x_ioctl_set_c_, _drv_err_,
->   				 (" IBSS but BSSID is not Broadcast Address.\n"));
->   			ret = _FAIL;
-> diff --git a/drivers/staging/r8188eu/core/rtw_recv.c b/drivers/staging/r8188eu/core/rtw_recv.c
-> index aef32f029537..afab951d87fd 100644
-> --- a/drivers/staging/r8188eu/core/rtw_recv.c
-> +++ b/drivers/staging/r8188eu/core/rtw_recv.c
-> @@ -694,7 +694,7 @@ static void count_rx_stats(struct adapter *padapter, struct recv_frame *prframe,
->   
->   	padapter->mlmepriv.LinkDetectInfo.NumRxOkInPeriod++;
->   
-> -	if ((!MacAddr_isBcst(pattrib->dst)) && (!IS_MCAST(pattrib->dst)))
-> +	if (!is_broadcast_ether_addr(pattrib->dst) && !IS_MCAST(pattrib->dst))
->   		padapter->mlmepriv.LinkDetectInfo.NumRxUnicastOkInPeriod++;
->   
->   	if (sta)
-> diff --git a/drivers/staging/r8188eu/include/wifi.h b/drivers/staging/r8188eu/include/wifi.h
-> index 2c56d1d70d03..65fc677bf4eb 100644
-> --- a/drivers/staging/r8188eu/include/wifi.h
-> +++ b/drivers/staging/r8188eu/include/wifi.h
-> @@ -368,13 +368,6 @@ enum WIFI_REG_DOMAIN {
->   
->   #define GetAddr4Ptr(pbuf)	((unsigned char *)((size_t)(pbuf) + 24))
->   
-> -#define MacAddr_isBcst(addr) \
-> -	( \
-> -	((addr[0] == 0xff) && (addr[1] == 0xff) && \
-> -	(addr[2] == 0xff) && (addr[3] == 0xff) && \
-> -	(addr[4] == 0xff) && (addr[5] == 0xff))  ? true : false \
-> -)
-> -
->   static inline int IS_MCAST(unsigned char *da)
->   {
->   	if ((*da) & 0x01)
+>  - each page in the folio might be standard PAGE_SIZE page (4K or 64K, say) or
+>    a huge pages (say 2M each);
 
-Acked-by: Larry Finger <Larry.Finger@lwfinger,net>
+This is not a great way to explain folios.
 
+If you're familiar with compound pages, a folio is a new type for
+either a base page or the head page of a compound page; nothing more
+and nothing less.
 
+If you're not familiar with compound pages, a folio contains 2^n
+contiguous pages.  They are treated as a single unit.
+
+>  - a folio has one dirty flag and one writeback flag that applies to all
+>    constituent pages;
+> 
+>  - a complete folio currently is limited to PMD_SIZE or order 8, but could
+>    theoretically go up to about 2GiB before various integer fields have to be
+>    modified (not to mention the memory allocator).
+
+Filesystems should not make an assumption about this ... I suspect
+the optimum page size scales with I/O bandwidth; taking PCI bandwidth
+as a reasonable proxy, it's doubled five times in twenty years.
+
+> Willy is arguing that network filesystems should, except in certain very
+> special situations (eg. O_SYNC), only write whole folios (limited to EOF).
+
+I did also say that the write could be limited by, eg, a byte-range
+lease on the file.  If the client doesn't have permission to write
+a byte range, then it doesn't need to write it back.
 
