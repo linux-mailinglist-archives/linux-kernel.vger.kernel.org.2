@@ -2,164 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2083E1835
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086703E183C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242245AbhHEPiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:38:52 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3572 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242193AbhHEPij (ORCPT
+        id S242218AbhHEPjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:39:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23855 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242316AbhHEPjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:38:39 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 175FYZX8157844;
-        Thu, 5 Aug 2021 11:38:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=gbPRBdQ5D/dvU7ZGp0Sjf2GZZjty5tvCwrApzPJwGgU=;
- b=r9RYjSvOQ1O/zFmGNzcEqdL1G9KSO/UcvTg43leoThVevYwohtcc8A5RgR65cqFNJqjE
- Ol/UuGMQsnngf96EMQSSkPbqYrne8kXrc7DfEUVJr23/xGNlTnca3aCZkTf1uFch7qJ/
- OyiO00ql6h34p0sUxyLftMCGgVYFsoQsK6Aa6PPgjt3dUF/C2MBlCV7APzxBd+QgR6R5
- GEMs8kxR0Nmg5oH/CV0FoKNrw3gbl7QsQck+CcE+CC70Bhu50JpiMbwDdWxR4txW2TVl
- CPm7PoRjXlV+5UJzkYrMbNC5taSa4BmtslXNMTc8KbdE+tjr6Ibewnqm2Q5yUA46sTnZ 6A== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a89fmrpmv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Aug 2021 11:38:16 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 175FVgHi005638;
-        Thu, 5 Aug 2021 15:38:14 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma05fra.de.ibm.com with ESMTP id 3a4x58j994-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Aug 2021 15:38:13 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 175FcBQV56951276
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 5 Aug 2021 15:38:11 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3B003AE04D;
-        Thu,  5 Aug 2021 15:38:11 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6CE86AE056;
-        Thu,  5 Aug 2021 15:38:09 +0000 (GMT)
-Received: from sig-9-65-205-127.ibm.com (unknown [9.65.205.127])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  5 Aug 2021 15:38:09 +0000 (GMT)
-Message-ID: <e886224b50195a2c1324c91b39514395e9780b06.camel@linux.ibm.com>
-Subject: Re: [RFC][PATCH v2 06/12] diglim: Interfaces - digest_list_add,
- digest_list_del
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>
-Date:   Thu, 05 Aug 2021 11:38:08 -0400
-In-Reply-To: <f7adeb81bab24b689c3e1aa61d83c6f5@huawei.com>
-References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
-         <20210726163700.2092768-7-roberto.sassu@huawei.com>
-         <c9dffd9d29df095660beaa631ff252c4b33629a0.camel@linux.ibm.com>
-         <ef7c85dcb096479e95c8c60ccda4d700@huawei.com>
-         <1ef95096bee13578b3f906dd9f708c6af9d6ff18.camel@linux.ibm.com>
-         <555bf01bee4b4ea7a9bee658366d535a@huawei.com>
-         <3e6a54d4be87a3eafc45c85d013250d17aa0835e.camel@linux.ibm.com>
-          <f7adeb81bab24b689c3e1aa61d83c6f5@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: V-f5mjXJ8d7cNiHxSBkH_kofO_HzxkAX
-X-Proofpoint-GUID: V-f5mjXJ8d7cNiHxSBkH_kofO_HzxkAX
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-05_05:2021-08-05,2021-08-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- priorityscore=1501 bulkscore=0 phishscore=0 adultscore=0 malwarescore=0
- impostorscore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108050094
+        Thu, 5 Aug 2021 11:39:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628177937;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k3S29HjL3Vb9q9YH8bmWKld33b/KN/RqQKdhy40cdvM=;
+        b=AlcyC1+zNr3FjMU74IPVPVDeSGiTQijnPJ6x4SwwXF4XjD6p7d9rM5S3LMdKivC3G5/48z
+        6bfh+41Apnx4Z4JvNEs4yhH/D/QjIARvOuOTPaCO9nxUgt7KpbDPLGCRurSacQP0/heyTL
+        wf3lfHwnkfEBolGK8OshRl1rEbfSfOY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-145-NJ6bkOBkNAebOHEifdG9_A-1; Thu, 05 Aug 2021 11:38:56 -0400
+X-MC-Unique: NJ6bkOBkNAebOHEifdG9_A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7ED0100CA8C;
+        Thu,  5 Aug 2021 15:38:54 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 32A0460CA1;
+        Thu,  5 Aug 2021 15:38:53 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YQv+iwmhhZJ+/ndc@casper.infradead.org>
+References: <YQv+iwmhhZJ+/ndc@casper.infradead.org> <YQvpDP/tdkG4MMGs@casper.infradead.org> <YQvbiCubotHz6cN7@casper.infradead.org> <1017390.1628158757@warthog.procyon.org.uk> <1170464.1628168823@warthog.procyon.org.uk> <1186271.1628174281@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        jlayton@kernel.org, Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        dchinner@redhat.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Could it be made possible to offer "supplementary" data to a DIO write ?
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1216853.1628177932.1@warthog.procyon.org.uk>
+Date:   Thu, 05 Aug 2021 16:38:52 +0100
+Message-ID: <1216854.1628177932@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc'ing Eric Snowberg]
+Matthew Wilcox <willy@infradead.org> wrote:
 
-Hi Roberto,
-
-On Mon, 2021-08-02 at 16:54 +0000, Roberto Sassu wrote:
-
-> > > Properly identifying (all) user space parser(s) would be critical.  It
-> > > would be simpler and  safer to require the converted data be signed.
+> > Note that PAGE_SIZE varies across arches and folios are going to
+> > exacerbate this.  What I don't want to happen is that you read from a
+> > file, it creates, say, a 4M (or larger) folio; you change three bytes and
+> > then you're forced to write back the entire 4M folio.
 > 
-> When a process directly uploads a buffer to the kernel, the actions are
-> added to a digest list depending on the result of ima_measure_critical_data()
-> and from the actions attached to the process credentials and set by the
-> new LSM.
+> Actually, you do.  Two situations:
 > 
-> If a process fails the identification, the actions in the process credentials
-> remain zero and the digest lists the process uploads will be ignored by IMA.
-> 
-> The actions in the process credentials are set with the actions performed
-> on the executable by IMA, only if the digest of the executable is found in
-> a digest list and the digest list type is COMPACT_PARSER. The parser is
-> statically linked.
-> 
-> The digest list for the parser can be generated at the end of the
-> building process and signed similarly to kernel modules (for SUSE,
-> with pesign-obs-integration). This is the only exception to handle,
-> other packages are not affected.
+> 1. Application uses MADVISE_HUGEPAGE.  In response, we create a 2MB
+> page and mmap it aligned.  We use a PMD sized TLB entry and then the
+> CPU dirties a few bytes with a store.  There's no sub-TLB-entry tracking
+> of dirtiness.  It's just the whole 2MB.
 
-Ok, so to boot strap the set of permitted digest list parsers, the
-digest list signature is an appended signature, generated by the build
-process.  The key needed for verifying the signature would already be
-loaded on the builtin keyring.
+That's a special case.  The app specifically asked for it.  I'll grant with
+mmap you have to mark a whole page as being dirty - but if you mmapped it, you
+need to understand that's what will happen.
 
-> 
-> After the parser has been identified, each file operation is monitored.
+> 2. The bigger the folio, the more writes it will absorb before being
+> written back.  So when you're writing back that 4MB folio, you're not
+> just servicing this 3 byte write, you're servicing every other write
+> which hit this 4MB chunk of the file.
 
-Does the new LSM need to monitor all file opens?
+You can argue it that way - but we already do it bytewise in some filesystems,
+so what you want would necessitate a change of behaviour.
 
-> The LSM has to explicitly perform a second open to ensure that
-> the file is measured/appraised before the integrity_iint_cache structure
-> is retrieved (because IMA is called after all LSMs).
-> 
-> If an action is missing from the integrity_iint_cache structure, it
-> will be cleared by the LSM in the actions attached to the process
-> credentials, and will not be added to the digest list being uploaded.
-> 
-> > I agree, it would be much easier. However, it would require changes
-> > to the building infrastructure of Linux distribution vendors, which
-> > might limit the applicability of DIGLIM.
-> > 
+Note also that if the page size > max RPC payload size (1MB in NFS, I think),
+you have to make multiple write operations to fulfil that writeback; further,
+if you have an object-based system you might be making writes to multiple
+servers, some of which will not actually make a change, to make that
+writeback.
 
-I understand, but instead of the distros signing the compact digest
-lists, with Eric's  "Enroll kernel keys thru MOK" patch set, the
-customer/end user could have more control over which file digests are
-permitted on a per system basis.
+I wonder if this needs pushing onto the various network filesystem mailing
+lists to find out what they want and why.
 
-> > With the user space parser taking care of the conversion, distributions
-> > can do appraisal of executables and shared libraries with an update of:
-> > - the kernel: to add DIGLIM
-> > - dracut: to add required digest lists in the initial ram disk
-> > - rpm (plugin): to extract the RPM header and its signature and write
-> >   them to a file that is uploaded to the kernel by the user space parser
-> > 
-> > I'm planning to append the signature at the end of the RPM header
-> > (and use appraise_type=modsig) to avoid the dependency on the
-> > 'initramfs: add support for xattrs in the initial ram disk' patch set
-> > (which I might try to resume in the future).
-
-Based on your explanation above, I surmised as much.
-
-thanks,
-
-Mimi
+David
 
