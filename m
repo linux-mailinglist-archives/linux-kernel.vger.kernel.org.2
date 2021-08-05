@@ -2,147 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C1F3E1627
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305AE3E1631
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241386AbhHEN6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 09:58:55 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:57078 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239757AbhHEN6y (ORCPT
+        id S241784AbhHEN7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 09:59:24 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:24588 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241742AbhHEN7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 09:58:54 -0400
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 175DwLoB003434;
-        Thu, 5 Aug 2021 22:58:22 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 175DwLoB003434
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1628171902;
-        bh=IkfSllG+SbN/b97YNpBIEYdvlpJTUqg6G4RBryizSqQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ua05HcSeJ4GvTVEoegvZ/4UovWLE4o04xLtcLEgmKUiat7MByY6JV9RYXC/BKRqZq
-         bJ4GEPmNqOAS2we1MhN7g2DxlhTz/V4qJD2aRoup0IgEmSO0tEY7gz1pBFum+zt+fp
-         BOr/AGtvqAMKEfR26wckN+FCI1/Po8YmaWbo5d0BoDhxEOQQMNcXfrKHpmzGShwmsw
-         UajyYRmcA9TkCLDMwRip4TPZBuIr9STIhvQQHCSpw7ZHQN9LVNcFreo9oITw7vblks
-         WupTlOpeIMuKYqZJIXAS9raVZft2wpAWW8iCRkt4Fb6XXw5ss8b4iDTGtm+oXNk+fC
-         AkMsXX4WMYfRQ==
-X-Nifty-SrcIP: [209.85.216.47]
-Received: by mail-pj1-f47.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso9609585pjf.4;
-        Thu, 05 Aug 2021 06:58:22 -0700 (PDT)
-X-Gm-Message-State: AOAM530KqEPsaudEQ14PYggWt4dztn33bJnmHVy1Z4mrraPBsuBXX01/
-        mJcaHXAaYvBiCDJbyOGMjYpl1oYfNrW+XBcheY0=
-X-Google-Smtp-Source: ABdhPJw6/Efi1cfCY9CvameEnPfnwBuMScrNWAcgvk9GREiR8ZuGP8HHSkCOuhcsjtwB3fnqTQ6M0WbScGU9mQfZ4Q8=
-X-Received: by 2002:a17:90a:c506:: with SMTP id k6mr15434358pjt.198.1628171901401;
- Thu, 05 Aug 2021 06:58:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210802183910.1802120-1-ndesaulniers@google.com> <20210802183910.1802120-4-ndesaulniers@google.com>
-In-Reply-To: <20210802183910.1802120-4-ndesaulniers@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 5 Aug 2021 22:57:44 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASkBNDzXWxweotPZGJH-z3J59rPQwGDV32rfH9hH+sVHQ@mail.gmail.com>
-Message-ID: <CAK7LNASkBNDzXWxweotPZGJH-z3J59rPQwGDV32rfH9hH+sVHQ@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] Documentation/llvm: update CROSS_COMPILE inferencing
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
+        Thu, 5 Aug 2021 09:59:19 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 175DXIjH130747;
+        Thu, 5 Aug 2021 09:58:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=1rXeo9LZ8sdgK8+jRm8mIWKvquz5FEKRdek01spIM8E=;
+ b=B0OoL5oYUsPJpYeA6PqJXliiBRQAHefNVtcUiP5tpe9sCWs0KCftnLM5DE2VXaMtJM9J
+ VXV0uqEvKw3zNIP8qXwxl43ZKe0gb25TNPBB2gaRSJMKeAJdpkhe3RU8n/TIaf2YXL7g
+ j6SdWZBKJ6/h68srAz9BlDcAe8P8dqyhAMOoPphiqEgjkDjSPLKHzMxfqDDiC12lfiRa
+ dNg46SWLivT1ejINKzj3X27j+VwXgaT6CEBQxroIiza4DD5BQaBlVIOZiEPaf65Rmy5a
+ 47K3dPUYhL18WLPNUc7piQZImw46uXFV11HcVob6y8zMl8Z7PMqjYjjcsSBpUt4EAlb3 dg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a87f6fqcy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Aug 2021 09:58:22 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 175DXVIX131536;
+        Thu, 5 Aug 2021 09:58:21 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a87f6fqc4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Aug 2021 09:58:21 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 175DwAwq032297;
+        Thu, 5 Aug 2021 13:58:18 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3a4wshub58-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Aug 2021 13:58:18 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 175DwGBp55378366
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 5 Aug 2021 13:58:16 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C31744C06D;
+        Thu,  5 Aug 2021 13:58:14 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 14F914C046;
+        Thu,  5 Aug 2021 13:58:10 +0000 (GMT)
+Received: from sig-9-65-205-127.ibm.com (unknown [9.65.205.127])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  5 Aug 2021 13:58:09 +0000 (GMT)
+Message-ID: <de325c9efacda817c42ee83244baa0de4b246aa8.camel@linux.ibm.com>
+Subject: Re: [PATCH RFC v2 00/12] Enroll kernel keys thru MOK
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "scott.branden@broadcom.com" <scott.branden@broadcom.com>,
+        "weiyongjun1@huawei.com" <weiyongjun1@huawei.com>,
+        "nayna@linux.ibm.com" <nayna@linux.ibm.com>,
+        "ebiggers@google.com" <ebiggers@google.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        "lszubowi@redhat.com" <lszubowi@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "James.Bottomley@hansenpartnership.com" 
+        <James.Bottomley@HansenPartnership.com>,
+        "pjones@redhat.com" <pjones@redhat.com>,
+        "glin@suse.com" <glin@suse.com>,
+        Konrad Wilk <konrad.wilk@oracle.com>
+Date:   Thu, 05 Aug 2021 09:58:09 -0400
+In-Reply-To: <3D8EF15C-E3D6-4C9A-9BA2-9F4201AC3ED3@oracle.com>
+References: <20210726171319.3133879-1-eric.snowberg@oracle.com>
+         <820cd72cd77c4716bff2bf344c64d7bcb59fc4d3.camel@linux.ibm.com>
+         <2BBC3A71-6E0D-47A2-842A-11C279A5DC56@oracle.com>
+         <5ac7f5fc866dd271ecfc9be17fef7fa47babbc6e.camel@linux.ibm.com>
+         <3D8EF15C-E3D6-4C9A-9BA2-9F4201AC3ED3@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: qlBak8HRa1stUzgHPBPY4JRURS4dDkrj
+X-Proofpoint-GUID: UZYE_32BMS_GhwZ0JBjQt8a9HtnpvsW8
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-05_04:2021-08-05,2021-08-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 priorityscore=1501 bulkscore=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 impostorscore=0 clxscore=1015 mlxscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108050082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 3:39 AM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> As noted by Masahiro, document how we can generally infer CROSS_COMPILE
-> (and the more specific details about --target and --prefix) based on
-> ARCH.
->
-> Change use of env vars to command line parameters.
->
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Reviewed-by: Fangrui Song <maskray@google.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> Changes v5 -> v6:
-> * Pick up Fangrui's RB tag.
-> * Change use of env vars to command line parameters for consistency.
->
->  Documentation/kbuild/llvm.rst | 19 ++++++++++++++++++-
->  1 file changed, 18 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-> index b18401d2ba82..f8a360958f4c 100644
-> --- a/Documentation/kbuild/llvm.rst
-> +++ b/Documentation/kbuild/llvm.rst
-> @@ -38,7 +38,7 @@ Cross Compiling
->  A single Clang compiler binary will typically contain all supported backends,
->  which can help simplify cross compiling. ::
->
-> -       ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CC=clang
-> +       make ARCH=arm64 CC=clang CROSS_COMPILE=aarch64-linux-gnu-
->
->  ``CROSS_COMPILE`` is not used to prefix the Clang compiler binary, instead
->  ``CROSS_COMPILE`` is used to set a command line flag: ``--target=<triple>``. For
-> @@ -63,6 +63,23 @@ They can be enabled individually. The full list of the parameters: ::
->  Currently, the integrated assembler is disabled by default. You can pass
->  ``LLVM_IAS=1`` to enable it.
->
-> +Omitting CROSS_COMPILE
-> +----------------------
-> +
-> +As explained above, ``CROSS_COMPILE`` is used to set ``--target=<triple>``.
-> +
-> +Unless ``LLVM_IAS=1`` is specified, ``CROSS_COMPILE`` is also used to derive
-> +``--prefix=<path>`` to search for the GNU assembler and linker.
+On Wed, 2021-08-04 at 02:56 +0000, Eric Snowberg wrote:
+
+> Ok, I’ll update the current code to just load CA keys into the mok in v3.  This would
+> simplify the new restrict_link_by_ca function. 
+
+Thank you!
+> 
+> With that change, do you see any issues with how I’m doing the linking?  With the 
+> mok keyring linked to the secondary keyring, the platform keyring may only contain 
+> a subset of the keys it originally contained.  But, as I described above, I don’t believe
+> it will lead to a regression since all keys get referenced. Thanks.
+
+I think there is a problem.  Only the builtin keys should ever be on
+the builtin keyring.  The builtin keyring would need to be linked to
+the mok keyring.  But in the secondary keyring case, the linking
+should be the reverse, where the mok keyring would be linked to the
+secondary keyring, similar to how the builtin keyring is linked to the
+secondary keyring.
+
+        if (key_link(secondary_trusted_keys, builtin_trusted_keys) < 0)
+                panic("Can't link trusted keyrings\n");
 
 
-Is there any place where we rely on --prefix
-to search for the linker?
+thanks,
 
-In general, the compiler stops after generating an object
-since it is passed with the -c option.
-The linking stage is separated.
+Mimi
 
-In the old days, VDSO was an exceptional case
-where $(CC) was used as the linker driver, but
-commit fe00e50b2db8c60e4ec90befad1f5bab8ca2c800 fixed it.
-
-
-
-
-
-
-
-> +
-> +If ``CROSS_COMPILE`` is not specified, the ``--target=<triple>`` is inferred
-> +from ``ARCH``.
-> +
-> +That means if you use only LLVM tools, ``CROSS_COMPILE`` becomes unnecessary.
-> +
-> +For example, to cross-compile the arm64 kernel::
-> +
-> +       make ARCH=arm64 LLVM=1 LLVM_IAS=1
-> +
->  Supported Architectures
->  -----------------------
->
-> --
-> 2.32.0.554.ge1b32706d8-goog
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210802183910.1802120-4-ndesaulniers%40google.com.
-
-
-
--- 
-Best Regards
-Masahiro Yamada
