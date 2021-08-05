@@ -2,68 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4283E1C35
+	by mail.lfdr.de (Postfix) with ESMTP id 5732F3E1C36
 	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242442AbhHETMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:12:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51490 "EHLO mail.kernel.org"
+        id S242546AbhHETMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:12:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242328AbhHETMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:12:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE46561078;
-        Thu,  5 Aug 2021 19:12:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628190723;
-        bh=3/P9jMgnr17dFIwUnHvNdPBy4enCxguNdG2aEY+cqFU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y86CkqGBkt6pIWqke11q2NocT2RAXbi0S/FRYLXu4lwcXPzXr3nyX2LxIjY8lO6I7
-         K/M0BEEtZiwhLJYHExq23brlNtjBwPQsDxRcP8YN5vWnF3pi2pExkMeXJDaEvdZKGM
-         CQMaoQFLwuLb+0rZrZIcntSPI/USQT1OmIuLtlvc=
-Date:   Thu, 5 Aug 2021 21:12:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-Message-ID: <YQw4AEwIUGe3RpCx@kroah.com>
-References: <YQrqhYEL64CSLRTy@kroah.com>
- <f2b1d564-8174-f8e9-9fee-12e938c6d846@linux.intel.com>
- <YQuYCePPZEmVbkfc@kroah.com>
- <YQuZdVuaGG/Cr62y@kroah.com>
- <YQuaJ78y8j1UmBoz@kroah.com>
- <fdf8b6b6-58c3-8392-2fc6-1908a314e991@linux.intel.com>
- <YQwlHrJBw79xhTSI@kroah.com>
- <21db8884-5aa1-3971-79ef-f173a0a95bef@linux.intel.com>
- <YQwpa+LAYt7YZ5dh@kroah.com>
- <7d6751b1-c476-51d3-25c6-b65c0e93d23b@linux.intel.com>
+        id S242387AbhHETMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 15:12:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A91A461078;
+        Thu,  5 Aug 2021 19:12:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628190724;
+        bh=o0VwOFsvUwEaZiHlwNBNlDuhwACz69ebYo9Gt89iPwU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fuAsSYJ2Gfs7DmYaxoD1v92H7+JSU+RjKbI869FOuAaDZr+gxAmUHYHqtdi/eMKPj
+         q+kRSUPMvk6/HDofECo2ofQVIlRhzvCwR7utH3QfOaU5ROL6nF0mcnRRY8HK5BEeRK
+         C98fayl5Klev9lhy/9DIYrAD2mOdBYVuFwNGnmOvfTVzk8LrQkMCK0bS81euClv7A1
+         9GQSGyWuHuXw5o3cKbW9FvxoGrHo+hMhO1rbcXMwTL17HaaagXI921Nb4nQUjczZjJ
+         vKKrCs3NfAVbXFkY1zwhRhVo+7TE0N3u22IQXuHsk8tCBLb5QRsr3IMCds7bbF4vpF
+         zc/NWNxM3KR+w==
+Date:   Thu, 5 Aug 2021 12:12:03 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v1] netdevsim: Forbid devlink reload when
+ adding or deleting ports
+Message-ID: <20210805121203.1ac615d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YQwnr/qel0oktItP@unreal>
+References: <53cd1a28dd34ced9fb4c39885c6e13523e97d62c.1628161323.git.leonro@nvidia.com>
+        <20210805061547.3e0869ad@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YQvs4wRIIEDG6Dcu@unreal>
+        <20210805072342.17faf851@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YQv2v5cTqLvoPc4n@unreal>
+        <20210805082756.0b4e61d7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YQwhf+3oeqOv/OMU@unreal>
+        <YQwnr/qel0oktItP@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7d6751b1-c476-51d3-25c6-b65c0e93d23b@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 11:53:52AM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> I am not sure how USB and Thunderbolt "authorzied" model works. But I
-> don't think it prevents built-in driver probes during kernel boot right?
+On Thu, 5 Aug 2021 21:02:23 +0300 Leon Romanovsky wrote:
+> > > As it should, given add/delete ports takes the port_list_lock which is
+> > > destroyed by down but not (due to the forced failure) re-initialized by
+> > > up.
+> > > 
+> > > If we want to handle adding ports while down we can just bump port
+> > > count and return, although I don't think there's a practical need
+> > > to support that.  
+> > 
+> > Sorry, but for me netdevsim looks like complete dumpster. 
 
-Yes it does.
+I worry that netdevsim's gone unwieldy as a reflection of the quality of
+the devlink APIs that got added, not by itself :/
 
-Again Intel created this framework well over a decade ago for busses
-that it deemed that it did not want to "trust" to instantly probe
-drivers for and made it part of the Wireless USB specification.
+> > It was intended for fast prototyping, but ended to be huge pile of
+> > debugfs entries and selftest to execute random flows.
 
-Then Intel went and added the same framework to Thunderbolt for the same
-reason.
+It's for selftests, IDK what fast prototyping is in terms of driver
+APIs. Fast prototyping makes me think of the "it works" attitude which
+is not sufficiently high bar for core APIs IMO, I'm sure you'll agree.
 
-To ignore this work is quite odd, you might want to talk to your
-coworkers...
+netdevsim was written specifically to be able to exercise HW APIs which
+are implemented by small fraction of drivers. Especially offload APIs
+as those can easily be broken by people changing the SW implementation
+without capable HW at hand.
 
-greg k-h
+BTW I wonder if there is a term in human science of situation like when
+a recent contributor tells the guy who wrote the code what the code was
+intended for :)
+
+> > Do you want me to move in_reload = false line to be after if (nsim_dev->fail_reload)
+> > check?  
+> 
+> BTW, the current implementation where in_reload before if, actually
+> preserves same behaviour as was with devlink_reload_enable() implementation.
+
+Right, but I think as you rightly pointed out the current protection
+of reload is broken. I'm not saying you must make it perfect or else..
+just pointing out a gap you could address if you so choose.
