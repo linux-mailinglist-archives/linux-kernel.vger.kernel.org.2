@@ -2,74 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3612B3E0EBF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160FA3E0EC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234881AbhHEHA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 03:00:27 -0400
-Received: from mail.nearlyone.de ([46.163.114.145]:49298 "EHLO
-        mail.nearlyone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbhHEHAZ (ORCPT
+        id S236246AbhHEHAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 03:00:37 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:48562 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229869AbhHEHAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 03:00:25 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7936A5E3F6;
-        Thu,  5 Aug 2021 09:00:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monom.org; s=dkim;
-        t=1628146810; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-         in-reply-to:references; bh=sBnw6VrFx5VEjNLQ2c5cKD6rn/cZTE5HdUq027f8t8Y=;
-        b=CjegqgPEaX1E9LbSnKxH7OtqHMB2su3yHi6rLENcAdqO2uuKAEQvNJNZxjFy5tWTxJx5R8
-        Vq5CciyB2MsxDEWa2doYFTBpb4atJm5NU3shU9CVqZy4PNKLcV/nj+iyKzKITkFljpmg/g
-        90NVUoJUy+ETslRAoW5g2+bNJrmQL4A3GdYvgtDwoua41hb89wcy0BUQZ4kQzY/+Qs/c7k
-        BYxHo/P/k9lvidk+SYXcshQCdtOHLAJyPrCk3oaIXT7izPf0Ops5xku2SvhY229/OqwVSW
-        YGsLmYqrST2woHGqh38zulmCPnI2eO/kmWXNirYbjHyhNQ8go/0iqa2AJ4CVfA==
-Date:   Thu, 5 Aug 2021 09:00:08 +0200
-From:   Daniel Wagner <wagi@monom.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.14-rc4-rt5
-Message-ID: <20210805070008.nvhzjp56lbx5uwk2@beryllium.lan>
-References: <20210804165017.nizmbj3m7hkqzqop@linutronix.de>
- <20210805063123.mj4rggncauziryv4@beryllium.lan>
- <20210805065351.c7eieltqihduwisr@beryllium.lan>
+        Thu, 5 Aug 2021 03:00:36 -0400
+Received: by linux.microsoft.com (Postfix, from userid 1004)
+        id 4BF88209E044; Thu,  5 Aug 2021 00:00:22 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4BF88209E044
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1628146822;
+        bh=DkvT+P/azRRMQG1BsDMNIW1kNHl9G9/qgI0tmgKhpLI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ahPBJA3IIY+Xyh+kRZ1FZhUSaRJKuP2VFCTlaeN1Y9qsCU+INlSsIM9Lq5oMzvuhC
+         TGTmk+uaJ7nd3eh5DP6vVt+eR2AAClww25DMdflZFVwbAn9NWcoaoY9hlOBRm8F2lf
+         kYyC+3JGbiGwMRsIl/8VsExQhVXq4DS4uU3RCf5A=
+From:   longli@linuxonhyperv.com
+To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Cc:     Long Li <longli@microsoft.com>, Jonathan Corbet <corbet@lwn.net>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Hannes Reinecke <hare@suse.de>
+Subject: [Patch v5 0/3] Introduce a driver to support host accelerated access to Microsoft Azure Blob for Azure VM
+Date:   Thu,  5 Aug 2021 00:00:09 -0700
+Message-Id: <1628146812-29798-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805065351.c7eieltqihduwisr@beryllium.lan>
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 08:53:53AM +0200, Daniel Wagner wrote:
-> On Thu, Aug 05, 2021 at 08:31:23AM +0200, Daniel Wagner wrote:
-> > Just a heads up. I get these build errors:
-> 
-> I suppose this should be:
+From: Long Li <longli@microsoft.com>
 
-and while at it, there are two more compile errors. The first one is
-obvious, the second one is just guessing.
+Azure Blob storage [1] is Microsoft's object storage solution for the
+cloud. Users or client applications can access objects in Blob storage via
+HTTP, from anywhere in the world. Objects in Blob storage are accessible
+via the Azure Storage REST API, Azure PowerShell, Azure CLI, or an Azure
+Storage client library. The Blob storage interface is not designed to be a
+POSIX compliant interface.
 
-diff --git a/kernel/futex.c b/kernel/futex.c
-index c05a33a2f865..41e3d63160a7 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1896,14 +1896,14 @@ static inline void futex_requeue_pi_complete(struct futex_q *q, int locked)
-                if (locked >= 0) {
-                        /* Requeue succeeded. Set DONE or LOCKED */
-                        WARN_ON_ONCE(old != Q_REQUEUE_PI_IN_PROGRESS &&
--                                    old != Q_REQUEUE_PI_WAIT)
-+                                    old != Q_REQUEUE_PI_WAIT);
-                        new = Q_REQUEUE_PI_DONE + locked;
-                } else if (old == Q_REQUEUE_PI_IN_PROGRESS) {
-                        /* Deadlock, no early wakeup interleave */
-                        new = Q_REQUEUE_PI_NONE;
-                } else {
-                        /* Deadlock, early wakeup interleave. */
--                       WARN_ON_ONCE(old != Q_REQUEUE_PI_IN_WAIT);
-+                       WARN_ON_ONCE(old != Q_REQUEUE_PI_WAIT);
-                        new = Q_REQUEUE_PI_IGNORE;
-                }
-        } while (!atomic_try_cmpxchg(&q->requeue_state, &old, new));
+Problem: When a client accesses Blob storage via HTTP, it must go through
+the Blob storage boundary of Azure and get to the storage server through
+multiple servers. This is also true for an Azure VM.
+
+Solution: For an Azure VM, the Blob storage access can be accelerated by
+having Azure host execute the Blob storage requests to the backend storage
+server directly.
+
+This driver implements a VSC (Virtual Service Client) for accelerating Blob
+storage access for an Azure VM by communicating with a VSP (Virtual Service
+Provider) on the Azure host. Instead of using HTTP to access the Blob
+storage, an Azure VM passes the Blob storage request to the VSP on the
+Azure host. The Azure host uses its native network to perform Blob storage
+requests to the backend server directly.
+
+This driver doesn’t implement Blob storage APIs. It acts as a fast channel
+to pass user-mode Blob storage requests to the Azure host. The user-mode
+program using this driver implements Blob storage APIs and packages the
+Blob storage request as structured data to VSC. The request data is modeled
+as three user provided buffers (request, response and data buffers), that
+are patterned on the HTTP model used by existing Azure Blob clients. The
+VSC passes those buffers to VSP for Blob storage requests.
+
+The driver optimizes Blob storage access for an Azure VM in two ways:
+
+1. The Blob storage requests are performed by the Azure host to the Azure
+Blob backend storage server directly.
+
+2. It allows the Azure host to use transport technologies (e.g. RDMA)
+available to the Azure host but not available to the VM, to reach to Azure
+Blob backend servers.
+ 
+Test results using this driver for an Azure VM:
+100 Blob clients running on an Azure VM, each reading 100GB Block Blobs.
+(10 TB total read data)
+With REST API over HTTP: 94.4 mins
+Using this driver: 72.5 mins
+Performance (measured in throughput) gain: 30%.
+ 
+[1] https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction
+
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+Cc: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: Stephen Hemminger <sthemmin@microsoft.com>
+Cc: Wei Liu <wei.liu@kernel.org>
+Cc: Dexuan Cui <decui@microsoft.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Maximilian Luz <luzmaximilian@gmail.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Ben Widawsky <ben.widawsky@intel.com>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Cc: Andra Paraschiv <andraprs@amazon.com>
+Cc: Siddharth Gupta <sidgup@codeaurora.org>
+Cc: Hannes Reinecke <hare@suse.de>
+
+Changes:
+
+v2:
+Refactored the code in vmbus to scan devices
+Reworked Azure Blob driver and moved user-mode interfaces to uapi
+
+v3:
+Changed licensing language
+Patch format passed "checkpatch --strict"
+debugfs and logging, module parameter cleanup
+General code clean up
+Fix device removal race conditions
+
+v4:
+Addressed licencing issues
+Changed to dynamic device model
+
+v5:
+Added problem statement and test numbers to patch 0
+Changed uapi header file to explicitly include all header files needed for user-mode
+Make the driver handle vmbus rescind without waiting on user-mode for device removal
+
+Long Li (3):
+  Drivers: hv: vmbus: add support to ignore certain PCIE devices
+  Drivers: hv: add Azure Blob driver
+  Drivers: hv: Add to maintainer for Hyper-V/Azure drivers
+
+ Documentation/userspace-api/ioctl/ioctl-number.rst |   2 +
+ MAINTAINERS                                        |   2 +
+ drivers/hv/Kconfig                                 |  11 +
+ drivers/hv/Makefile                                |   1 +
+ drivers/hv/channel_mgmt.c                          |  55 +-
+ drivers/hv/hv_azure_blob.c                         | 574 +++++++++++++++++++++
+ include/linux/hyperv.h                             |   9 +
+ include/uapi/misc/hv_azure_blob.h                  |  35 ++
+ 8 files changed, 683 insertions(+), 6 deletions(-)
+ create mode 100644 drivers/hv/hv_azure_blob.c
+ create mode 100644 include/uapi/misc/hv_azure_blob.h
+
+-- 
+1.8.3.1
+
