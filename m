@@ -2,126 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBBB3E1F54
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A05883E1F59
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236801AbhHEX1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 19:27:33 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:18402 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhHEX1b (ORCPT
+        id S242347AbhHEX3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 19:29:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236895AbhHEX3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 19:27:31 -0400
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 175NR10N023519;
-        Fri, 6 Aug 2021 08:27:02 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 175NR10N023519
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1628206022;
-        bh=MTJTYLNOKEORvL0xiX49grwqhg7y9DI4scWvkscW0DY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=yY1mkoKd9GM1Hcw46jv4US3Z5jB6L1DvWGb41H7ZuNVftA2kzachmOFEqR1WZXdj0
-         j15IAQyNN2KijpzLnhbPXeKRb1n4bpqzD0P/TlJlcXYpUGKatHHvxPQzI83bl199Ki
-         uddT+7tBjRGMFobWImndzFat61hbc7KdRXq6oVmezpkA6fKAF8hd6luAqp3VW0Z1R9
-         N0zqEM1FoibZg3bXT+wHq4dOepmfutTuIrGdw8+dd2rkQ1YsrTjwyL+3A6cYdVJqeF
-         2XsLY4tRW9qIoin+7ZeUBPyZAjl15GbaJkRJbmDUWl0OY6aynbubyEQ6GcXNd0vx5r
-         WuEO27wK47EWQ==
-X-Nifty-SrcIP: [209.85.216.54]
-Received: by mail-pj1-f54.google.com with SMTP id b1-20020a17090a8001b029017700de3903so10482600pjn.1;
-        Thu, 05 Aug 2021 16:27:02 -0700 (PDT)
-X-Gm-Message-State: AOAM530K6aL/zbHNxiPpGLP2+mQl6ahHjGSrbAhJk8i2jMu5bhxN/gcX
-        WS3DbkxXU8br2f81ctAPZJCrmKD4m8lvx5xRTbY=
-X-Google-Smtp-Source: ABdhPJwJdFT3wqYK/QhGQg/N0NvJveDlBV8VJ3nhbQmRVGvWvOn3KnUtRrs4+E7kdZTHsFnelIIUmoRAFU3S2F2JuCI=
-X-Received: by 2002:a63:dd51:: with SMTP id g17mr1684pgj.47.1628206021266;
- Thu, 05 Aug 2021 16:27:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210802183910.1802120-1-ndesaulniers@google.com>
- <20210802183910.1802120-4-ndesaulniers@google.com> <CAK7LNASkBNDzXWxweotPZGJH-z3J59rPQwGDV32rfH9hH+sVHQ@mail.gmail.com>
- <CAKwvOd=iyhky9jhw+UpYM7W5-7tqo02sxpZUASEk6XciS0wSwg@mail.gmail.com> <CAKwvOd=5drNCoU-PLFb-kJTzk1tXOvwCK89hAMPXrBZv+Ey=Bw@mail.gmail.com>
-In-Reply-To: <CAKwvOd=5drNCoU-PLFb-kJTzk1tXOvwCK89hAMPXrBZv+Ey=Bw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 6 Aug 2021 08:26:24 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASLPqEYbsEEJZ0S1UvR2v89HgmgcEtutNmW6oCm5TGB9A@mail.gmail.com>
-Message-ID: <CAK7LNASLPqEYbsEEJZ0S1UvR2v89HgmgcEtutNmW6oCm5TGB9A@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] Documentation/llvm: update CROSS_COMPILE inferencing
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 5 Aug 2021 19:29:07 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30161C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 16:28:52 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id o7-20020a05600c5107b0290257f956e02dso7536102wms.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 16:28:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=es0c3UxZ2e0+HJ2C3RZ1dKundYuljCUkYocdB08kQuo=;
+        b=X851qTKkbNn0uyUqdHEwWSWMD0UlYkODROOF3fPzBJ0PjY2idf9i8rHXRd9PPNcLmo
+         H8ptG7hza5Rnw2Dzofc5nNyeGaTjL3ErNphunDCrd0qy2J31+P17wToqIxAb9xmGHAJI
+         M49dcMzETFDQ9Cv8vvPgUMo18QKeRtwhRPEmnZ1+xqjuAak+AbdYyB4i+/kj7f4YFlLz
+         +WhH8HcvjrFjHQjQerhgnnZM2qhnJ2KdjsN8WZcPqQ/m1qQKkvy9gd8Kull8FHKKwt4S
+         afeske3DOgRAx9/LjiXHPEwbFIolEhzQfakhtdFRGn6NlqVwYt3o2vNYxyC+ttWD4Pcf
+         UmEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=es0c3UxZ2e0+HJ2C3RZ1dKundYuljCUkYocdB08kQuo=;
+        b=HXLw5jkHsHYBVGHVPR597fCXgcSrgfUn3jDGhyefaNywcup8XOcs4IeHyeouDD6KEB
+         Dz9UZNJZOXw/KlZsbfgsZjGLObzPMOiKwfegA0LERT/HFg2+bSU+x6IxQS7ZUV4v4O+Z
+         sQ6m69s8eWetJ6HE8dTyCFnY4bHYv4D/fd2htGoqoBlPNbQo4s4c5Nci5pyaJMgfsmCn
+         APxbh6zLI0hK+AMvgDbEyJgAaslcxgfZed1Y35TaXHS5lzF1SVjfFVBpqldNL94Z6+Wn
+         htfJiV1P+TCHI15RgnNT0fCfJAMq2JvkylaLD6n/vu6wJjjnK+kXYzspyMI56tnh/DHZ
+         Hwfg==
+X-Gm-Message-State: AOAM531ZNfNlFLJm5L3csT6IMCXD+E3eO/mn07FkBb8mcxhkYAyPKHcV
+        f4CV7LONfHBU30H7UQTpo58=
+X-Google-Smtp-Source: ABdhPJw0jEDrxkw3B2nUsA5wTXAt7+cIgJRZGtrtv+zWFAuSUaEwUkV7HPPMZdyKNbfw9FH67i9lEw==
+X-Received: by 2002:a1c:5449:: with SMTP id p9mr17467719wmi.101.1628206130686;
+        Thu, 05 Aug 2021 16:28:50 -0700 (PDT)
+Received: from localhost.localdomain (i59F7252E.versanet.de. [89.247.37.46])
+        by smtp.gmail.com with ESMTPSA id l4sm7516042wrw.32.2021.08.05.16.28.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 16:28:49 -0700 (PDT)
+From:   Padmanabha Srinivasaiah <treasure4paddy@gmail.com>
+To:     Jessica Yu <jeyu@kernel.org>, Kees Cook <keescook@chromium.org>,
+        nathan@kernel.org, ndesaulniers@google.com, samitolvanen@google.com
+Cc:     treasure4paddy@gmail.com, Miroslav Benes <mbenes@suse.cz>,
+        Stephen Boyd <swboyd@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH v4] kallsyms: strip CLANG CFI postfix ".cfi_jt"
+Date:   Fri,  6 Aug 2021 01:27:38 +0200
+Message-Id: <20210805232741.9501-1-treasure4paddy@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CABCJKuei==gaaKw0qH1WkshcRyUbqdS_WGRWr6anYAew1HHT2w@mail.gmail.com>
+References: <CABCJKuei==gaaKw0qH1WkshcRyUbqdS_WGRWr6anYAew1HHT2w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 6, 2021 at 3:29 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> On Thu, Aug 5, 2021 at 11:27 AM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > On Thu, Aug 5, 2021 at 6:58 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > >
-> > > On Tue, Aug 3, 2021 at 3:39 AM 'Nick Desaulniers' via Clang Built
-> > > Linux <clang-built-linux@googlegroups.com> wrote:
-> > > > diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-> > > > index b18401d2ba82..f8a360958f4c 100644
-> > > > --- a/Documentation/kbuild/llvm.rst
-> > > > +++ b/Documentation/kbuild/llvm.rst
-> > > > @@ -63,6 +63,23 @@ They can be enabled individually. The full list of the parameters: ::
-> > > >  Currently, the integrated assembler is disabled by default. You can pass
-> > > >  ``LLVM_IAS=1`` to enable it.
-> > > >
-> > > > +Omitting CROSS_COMPILE
-> > > > +----------------------
-> > > > +
-> > > > +As explained above, ``CROSS_COMPILE`` is used to set ``--target=<triple>``.
-> > > > +
-> > > > +Unless ``LLVM_IAS=1`` is specified, ``CROSS_COMPILE`` is also used to derive
-> > > > +``--prefix=<path>`` to search for the GNU assembler and linker.
-> > >
-> > >
-> > > Is there any place where we rely on --prefix
-> > > to search for the linker?
-> > >
-> > > In general, the compiler stops after generating an object
-> > > since it is passed with the -c option.
-> > > The linking stage is separated.
-> > >
-> > > In the old days, VDSO was an exceptional case
-> > > where $(CC) was used as the linker driver, but
-> > > commit fe00e50b2db8c60e4ec90befad1f5bab8ca2c800 fixed it.
-> >
-> > See my previous reply to Fangrui.
-> > https://lore.kernel.org/lkml/CAKwvOdnK=SUm1_--tcLRO3LVeXd_2Srfv2tsZCUW0uXXa1W_pg@mail.gmail.com/
-> >
-> > To be more specific, I believe this is still a problem for ppc vdso.
-> > https://github.com/ClangBuiltLinux/linux/issues/774
-> >
-> > I had sent patches for that, but binutils 2.26 would crash (IIUC,
-> > newer GNU binutils are ok).  See this thread:
-> > https://lore.kernel.org/lkml/b2066ccd-2b81-6032-08e3-41105b400f75@csgroup.eu/
-> >
-> > So "we'd prefer the linker was used as the driver, but there's at
-> > least one place I know of in the tree where that's not currently the
-> > case."
->
-> Also, I think the CC_CAN_LINK functionality also fits the bill.
-> https://github.com/ClangBuiltLinux/linux/issues/1290
-> --
-> Thanks,
-> ~Nick Desaulniers
+Clang CFI adds a postfix ".cfi_jt" to a symbols of extern functions.
+For e.g. this breaks syscall tracer that doesn't expect such postfix,
+so strip out the postfix from the expanded symbol.
 
+Signed-off-by: Padmanabha Srinivasaiah <treasure4paddy@gmail.com>
+---
+Change in v4:
+  - Remove redundant check; irrespective of LTO type (THIN/FULL),
+    LTO_CLANG will be always enabled. Hence will be used as entry flag
+    to check various postfix patterns.
+  - And prior to stripping postfix ".cfi_jt", added a comment to
+    justify why we are doing so.
+ 
+Change in v3:
+  - Modified commit message to indicate fix is for Clang CFI postfix
+  - Rebased on recent patch from ndesaulniers@google.com.
+    https://lore.kernel.org/lkml/
+	20210707181814.365496-1-ndesaulniers@google.com/#t
+  - Fix is enabled even for CONFIG_LTO_CLANG
 
-Ah, this is it.
+Change in v2:
+  - Use existing routine in kallsyms to strip postfix ".cfi_jt" from
+    extern function name.
+  - Modified the commit message accordingly
 
-Thanks.
+ kernel/kallsyms.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-
+diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+index 5cabe4dd3ff4..1b40bcf20fe6 100644
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -174,13 +174,15 @@ static bool cleanup_symbol_name(char *s)
+ 	 * foo.llvm.974640843467629774. This can break hooking of static
+ 	 * functions with kprobes.
+ 	 */
+-	if (!IS_ENABLED(CONFIG_LTO_CLANG_THIN))
++	if (!IS_ENABLED(CONFIG_LTO_CLANG))
+ 		return false;
+ 
+-	res = strstr(s, ".llvm.");
+-	if (res) {
+-		*res = '\0';
+-		return true;
++	if (IS_ENABLED(CONFIG_LTO_CLANG_THIN)) {
++		res = strstr(s, ".llvm.");
++		if (res) {
++			*res = '\0';
++			return true;
++		}
+ 	}
+ 
+ 	/*
+@@ -194,6 +196,17 @@ static bool cleanup_symbol_name(char *s)
+ 		return false;
+ 
+ 	res = strrchr(s, '$');
++	if (!res) {
++		/*
++		 * In case of non static function symbol <funcsym>,
++		 * the local jump table will have entry as <funcsym>.cfi_jt.
++		 *
++		 * Such expansion breaks some built-in components,
++		 * e.g. syscall tracer. Hence remove postfix ".cfi_jt".
++		 */
++		res = strstr(s, ".cfi_jt");
++	}
++
+ 	if (res) {
+ 		*res = '\0';
+ 		return true;
 -- 
-Best Regards
-Masahiro Yamada
+2.17.1
+
