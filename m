@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363683E1751
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2B53E174E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241506AbhHEOuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:50:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38716 "EHLO mail.kernel.org"
+        id S240992AbhHEOuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 10:50:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233269AbhHEOuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233088AbhHEOuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Aug 2021 10:50:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 55F8C61159;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 42EF161158;
         Thu,  5 Aug 2021 14:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1628175006;
-        bh=nNx864jOpGsY8Fllnm7k8ZuF5fR9ejytnm2A9LuOrlo=;
+        bh=erYl14tDj3mv4/TVWmONkGfxb0ywMwdNkd8GpI9HiPs=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=n03cAyjcWAyGcHbVX+/FDh109nspNKfGUtWxzrlGuLe1H0rTkjtXLrV+Br8qDCjhy
-         aNBE3QaIfIFTpCR5KgwigfAaH2EZGvjede5Ewwe8oZeu65+U4pb6Cj/J7Nb3kihY+0
-         x1BQKgcOvj4C5YRM2BvrU8wRs/3LmoXq9/VIQxkq59J0xg5Op9XeV0vV3NXHmoiHgq
-         BSScA7nw3dHDYJh8M6k+ahFKSCTfV042t8XJtZ0x1O95HW6iYan53zuJRzds7WtLH5
-         hTUVCvyRtRnD2u+2sYxujN66VNvcxX1Mc59FWnLFr5a1uZmGF97hkiK84LcdjreQaw
-         1o/WjlUJZTYeQ==
+        b=N4FLdObSBqfvg+aP34s2ncD4nGGK5ZMAD0M0EuzH/l2M8GcOk464XPEqVqKJmPW8A
+         wJx+KpzzyBXZXwgOqMNdFalJnvxZG588wwMsnCd7IwCFxGTFznblsTaa0tmZJUJ8fO
+         QxM36YawCdS0MmyKf6F1metsF6bwGiBDVwJ858P3CbVb3+19ZSXG2v7B0yOandYgN7
+         cCDloU99R+EWjSPjBkhhimQBvWLM85jz90yaD9xFA8yDJ6z7ENie/zw9CnkRtJREtm
+         4UAhgzG09iCfwwfDpLvG+YR9coNyR07savpfs4yN8PInhfPhgS+HTVubw9RDJbHOKt
+         3ZVUeL/mNnNow==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4389E60A88;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 35880609D7;
         Thu,  5 Aug 2021 14:50:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] net: pegasus: fix uninit-value in
- get_interrupt_interval
+Subject: Re: [PATCH 0/2] net: fix use-after-free bugs
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162817500627.11382.2475044595872235331.git-patchwork-notify@kernel.org>
+Message-Id: <162817500621.11382.5799205341486244507.git-patchwork-notify@kernel.org>
 Date:   Thu, 05 Aug 2021 14:50:06 +0000
-References: <20210804143005.439-1-paskripkin@gmail.com>
-In-Reply-To: <20210804143005.439-1-paskripkin@gmail.com>
+References: <cover.1628091954.git.paskripkin@gmail.com>
+In-Reply-To: <cover.1628091954.git.paskripkin@gmail.com>
 To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     petkan@nucleusys.com, davem@davemloft.net, kuba@kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+02c9f70f3afae308464a@syzkaller.appspotmail.com
+Cc:     davem@davemloft.net, kuba@kernel.org, qiangqing.zhang@nxp.com,
+        hslester96@gmail.com, fugang.duan@nxp.com, jdmason@kudzu.us,
+        jesse.brandeburg@intel.com, colin.king@canonical.com,
+        dan.carpenter@oracle.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This series was applied to netdev/net.git (refs/heads/master):
 
-On Wed,  4 Aug 2021 17:30:05 +0300 you wrote:
-> Syzbot reported uninit value pegasus_probe(). The problem was in missing
-> error handling.
+On Wed,  4 Aug 2021 18:48:57 +0300 you wrote:
+> I've added new checker to smatch yesterday. It warns about using
+> netdev_priv() pointer after free_{netdev,candev}() call. I hope, it will
+> get into next smatch release.
 > 
-> get_interrupt_interval() internally calls read_eprom_word() which can
-> fail in some cases. For example: failed to receive usb control message.
-> These cases should be handled to prevent uninit value bug, since
-> read_eprom_word() will not initialize passed stack variable in case of
-> internal failure.
+> Some of the reported bugs are fixed and upstreamed already, but Dan ran new
+> smatch with allmodconfig and found 2 more. Big thanks to Dan for doing it,
+> because I totally forgot to do it.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v2] net: pegasus: fix uninit-value in get_interrupt_interval
-    https://git.kernel.org/netdev/net/c/af35fc37354c
+  - [1/2] net: fec: fix use-after-free in fec_drv_remove
+    https://git.kernel.org/netdev/net/c/44712965bf12
+  - [2/2] net: vxge: fix use-after-free in vxge_device_unregister
+    https://git.kernel.org/netdev/net/c/942e560a3d38
 
 You are awesome, thank you!
 --
