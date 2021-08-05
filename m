@@ -2,109 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D849F3E1E73
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6464B3E1E7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235472AbhHEWKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 18:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
+        id S237333AbhHEWMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 18:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbhHEWKX (ORCPT
+        with ESMTP id S231337AbhHEWMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 18:10:23 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9553DC061798
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 15:10:08 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id k4so8505211wrc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 15:10:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HbdHuUgm9R0O8iD622sN5nUz4CxbxanIEic5v8NNLJE=;
-        b=fkaig+y6pnDujfjZBctq8a/YWJ+US4Le5WXsozsWfiWPeqQdNpXKWcrprTLCnxZVmH
-         +Y+ApVcqp3O6R6/aziK2F/366tTB9W4PtFlIQAX6aGD/eUvlWJjfyqQlz1s6nfvGM0Yb
-         DJcFizw9mNjrxTdE59VUWe0EEipU7xREnGTZwesvzrUcTO8mRvJV10b1DmpP9YBO7xok
-         QV/jtu34akZtN70AnZaDN79/FJDnzhz+7fXxEaEJ78syUkiXGPlj0HffIUKffLb1/GWc
-         8QQZYG+iPkaO92S/ZkYom4ma41+H5FyF9dTNByml2F73yYC5v3NK6mqEWbgIggw54Qic
-         2hUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HbdHuUgm9R0O8iD622sN5nUz4CxbxanIEic5v8NNLJE=;
-        b=uoL+Or9Zzwpxlm2CtXABlwUIswe7xvQhZFXTHrTenRRHlZxZ9FZ1kGdhnO+zUFhWkc
-         gUB9S7XC/JnpmbBUpBQ7RFP2hk5BlP7l9dvfJb8QU858qygq3ZgGmtZMRd+7fjqdjPPj
-         7YplId8cxVWcpDaKaU0/rfTNhkdLgmiopNj3kLCLB97NeUHWlM5vwE6DKMW8KW21T1Tp
-         sjwxMZvnwb+sDpKtpp7ymg4WCUrr2bJa8pZIGwTcOmDg1Lx0+50nUaWfN6uuzcRnnYo1
-         HbnY+XLNpFuBDDY1lHBp+5vUQ41QW1TSGMW/2pv9I0cmVVaZvS+HCF93EQjlK2s0wAsx
-         XlSg==
-X-Gm-Message-State: AOAM533tHwU7zCK23w6wPcG2W0rw7nuUOC0DhOa7jWHeMnIg5+1gPxQl
-        IvQcYXZfpqXV5viSct47yd5M+ZP9ZMc=
-X-Google-Smtp-Source: ABdhPJxEv9mOE053XOkUsFaoh7MYwYsHl8ZwXV238bmG12AY0UVLh710pI3Jw4qbve2RGqjTIEZ2/w==
-X-Received: by 2002:a5d:6908:: with SMTP id t8mr7552881wru.421.1628201407221;
-        Thu, 05 Aug 2021 15:10:07 -0700 (PDT)
-Received: from localhost.localdomain (cpc141996-chfd3-2-0-cust928.12-3.cable.virginm.net. [86.13.91.161])
-        by smtp.gmail.com with ESMTPSA id q64sm6573055wma.8.2021.08.05.15.10.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 15:10:06 -0700 (PDT)
-From:   Daniel Scally <djrscally@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        andriy.shevchenko@linux.intel.com,
-        laurent.pinchart@ideasonboard.com
-Subject: [PATCH v3 2/2] Revert "media: device property: Call fwnode_graph_get_endpoint_by_id() for fwnode->secondary"
-Date:   Thu,  5 Aug 2021 23:08:50 +0100
-Message-Id: <20210805220850.131545-3-djrscally@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210805220850.131545-1-djrscally@gmail.com>
-References: <20210805220850.131545-1-djrscally@gmail.com>
+        Thu, 5 Aug 2021 18:12:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D02C0613D5;
+        Thu,  5 Aug 2021 15:11:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RvO+6JeVpLxlPcNmPsjLLYdjB15f9d7yagNnMlUscyM=; b=JmZQe8YwHGdxpbt0TwH//rA7bp
+        HfAA5mzWQ300vIpQYo2arTXyklr5l76dKVELRLgAZnUKxXoRc+QEJSbaJuD0GoNpSfCd/Tm0UBMuE
+        8SlOk735EbFz/87qkcy75AdIYWBzf/6Pu9MY7CX3ueVVY4JMora1+0oRcuu8osroUGfT0mXjfvMK6
+        YRKger+O0AuVg9xmmLmzYUXKEtKW1DDQMgyAYZHjWr1kcBaMhMeG32BSAx4/3o6o/iRQtgZutc3wC
+        Ppbf+HBE58BXsebQaFSh/F53V7A49MoL26n7Xo3oyaKsNZoU5Zwaw2sdDXexB/tn2REY4APSX99IZ
+        UDs7r7iQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mBla0-007ZDJ-Ph; Thu, 05 Aug 2021 22:11:12 +0000
+Date:   Thu, 5 Aug 2021 23:11:08 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net, devel@lists.orangefs.org,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Canvassing for network filesystem write size vs page size
+Message-ID: <YQxh/G0xGl3GtC8y@casper.infradead.org>
+References: <YQv+iwmhhZJ+/ndc@casper.infradead.org>
+ <YQvpDP/tdkG4MMGs@casper.infradead.org>
+ <YQvbiCubotHz6cN7@casper.infradead.org>
+ <1017390.1628158757@warthog.procyon.org.uk>
+ <1170464.1628168823@warthog.procyon.org.uk>
+ <1186271.1628174281@warthog.procyon.org.uk>
+ <1219713.1628181333@warthog.procyon.org.uk>
+ <CAHk-=wjyEk9EuYgE3nBnRCRd_AmRYVOGACEjt0X33QnORd5-ig@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjyEk9EuYgE3nBnRCRd_AmRYVOGACEjt0X33QnORd5-ig@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit acd418bfcfc415cf5e6414b6d1c6acfec850f290. Checking for
-endpoints against fwnode->secondary in fwnode_graph_get_next_endpoint() is
-a better way to do this since that function is also used in a bunch of
-other places, for instance sensor drivers checking that they do have an
-endpoint connected during probe.
+On Thu, Aug 05, 2021 at 10:27:05AM -0700, Linus Torvalds wrote:
+> On Thu, Aug 5, 2021 at 9:36 AM David Howells <dhowells@redhat.com> wrote:
+> > Some network filesystems, however, currently keep track of which byte ranges
+> > are modified within a dirty page (AFS does; NFS seems to also) and only write
+> > out the modified data.
+> 
+> NFS definitely does. I haven't used NFS in two decades, but I worked
+> on some of the code (read: I made nfs use the page cache both for
+> reading and writing) back in my Transmeta days, because NFSv2 was the
+> default filesystem setup back then.
+> 
+> See fs/nfs/write.c, although I have to admit that I don't recognize
+> that code any more.
+> 
+> It's fairly important to be able to do streaming writes without having
+> to read the old contents for some loads. And read-modify-write cycles
+> are death for performance, so you really want to coalesce writes until
+> you have the whole page.
 
-This reversion depends on the previous patch in this series, "device property:
-Check fwnode->secondary in fwnode_graph_get_next_endpoint()".
+I completely agree with you.  The context you're missing is that Dave
+wants to do RMW twice.  He doesn't do the delaying SetPageUptodate dance.
+If the write is less than the whole page, AFS, Ceph and anybody else
+using netfs_write_begin() will first read the entire page in and mark
+it Uptodate.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Daniel Scally <djrscally@gmail.com>
----
+Then he wants to track which parts of the page are dirty (at byte
+granularity) and send only those bytes to the server in a write request.
+So it's worst of both worlds; first the client does an RMW, then the
+server does an RMW (assuming the client's data is no longer in the
+server's cache.
 
-Changes in v3:
+The NFS code moves the RMW from the client to the server, and that makes
+a load of sense.
 
-	- specified that this patch depends on 1/2 (Greg)
+> That said, I suspect it's also *very* filesystem-specific, to the
+> point where it might not be worth trying to do in some generic manner.
 
- drivers/base/property.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+It certainly doesn't make sense for block filesystems.  Since they
+can only do I/O on block boundaries, a sub-block write has to read in
+the surrounding block, and once you're doing that, you might as well
+read in the whole page.
 
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index fb0e852dad5f..c6bb3d453c57 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -1234,14 +1234,7 @@ fwnode_graph_get_endpoint_by_id(const struct fwnode_handle *fwnode,
- 		best_ep_id = fwnode_ep.id;
- 	}
- 
--	if (best_ep)
--		return best_ep;
--
--	if (fwnode && !IS_ERR_OR_NULL(fwnode->secondary))
--		return fwnode_graph_get_endpoint_by_id(fwnode->secondary, port,
--						       endpoint, flags);
--
--	return NULL;
-+	return best_ep;
- }
- EXPORT_SYMBOL_GPL(fwnode_graph_get_endpoint_by_id);
- 
--- 
-2.25.1
+Tracking sub-page dirty bits still makes sense.  It's on my to-do
+list for iomap.
 
+> [ goes off and looks. See "nfs_write_begin()" and friends in
+> fs/nfs/file.c for some of the examples of these things, althjough it
+> looks like the code is less aggressive about avoding the
+> read-modify-write case than I thought I remembered, and only does it
+> for write-only opens ]
+
+NFS is missing one trick; it could implement aops->is_partially_uptodate
+and then it would be able to read back bytes that have already been
+written by this client without writing back the dirty ranges and fetching
+the page from the server.
+
+Maybe this isn't an important optimisation.
