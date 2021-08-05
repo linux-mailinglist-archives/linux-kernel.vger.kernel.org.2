@@ -2,288 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D4B3E1CB1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B243E1CB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhHET2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:28:25 -0400
-Received: from smtp-32.italiaonline.it ([213.209.10.32]:48658 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230513AbhHET2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:28:23 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([82.60.87.158])
-        by smtp-32.iol.local with ESMTPA
-        id Bj29mFVCOPvRTBj2DmCFmv; Thu, 05 Aug 2021 21:28:06 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1628191686; bh=ovU+K9dCeH924H7d43lXZI742Ly2v3I9DHb1WZh8TOc=;
-        h=From;
-        b=LPS8IsRgxYc0qFeub/igX7l9u+HcwMfTxUsncvrl1gMxAZzLU+STcKMNVqKa0KO6y
-         vrKg6aZg69qtpll+Sj1tPsVFKT88J9jeO83fD4cVwIlL/VKtfAuB6juehqsrXRcE92
-         hvk2WjA6D5JyIgDHcRCjDJSSkXg0g/pxWGgzZrSMX/DfaTaWiDcweqo2yz4cnkeK6x
-         YbGy0o+FKo0twzaJiTLcmc/FMT2QDf51Sfpjm0crIIheTPZta9eGTG0RsArCRaA56d
-         z1eBQKl8MQnKtgkQWJBNM4+Nfxq0RVIvHCievynX9CchSvOVfhkGjEQG9J4/BHdRGM
-         O7D1aEVmn5h0Q==
-X-CNFS-Analysis: v=2.4 cv=NqgUz+RJ c=1 sm=1 tr=0 ts=610c3bc6 cx=a_exe
- a=Hc/BMeSBGyun2kpB8NmEvQ==:117 a=Hc/BMeSBGyun2kpB8NmEvQ==:17 a=gEfo2CItAAAA:8
- a=p_hF36_8n4bHhE57Z5sA:9 a=4Mw1SIdcLJOoZDVX:21 a=uq95oRJrG9BvWHuX:21
- a=sptkURWiP4Gy88Gu7hUp:22
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        devicetree@vger.kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v5] dt-bindings: net: can: c_can: convert to json-schema
-Date:   Thu,  5 Aug 2021 21:27:50 +0200
-Message-Id: <20210805192750.9051-1-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-X-CMAE-Envelope: MS4xfMJZUreXtdoXwnW6voTjepbJyx7hsY02Q2/poIPhNXunXtjH4cv2vvQcJPankzge42XRVAXFWGsptOhVzlOtwhp65QQWUzy03WAM4SmIQ4NSjpG794bx
- 068eaY6/CyKqdtY536dlwnSWz030tGjopKRKK6kW9popmrfvVD8hXJdxh8PaDabrDR7ydrsU4VDRi6kXyO53L2xYfVOSjMxfbxGA1BlWsFSfVmT49cbcgKAW
- zgbvGNcISZGyWRp0oqMCKWYBgpPgJFM9gRzVsi9YEMVXZXylLHrq9UMxTeR84TXRJoyUce7+SOzj71xZPvivPO/rm3wyBRRN3+3GTLNueikfjzzaGXtF0qd6
- fRX0YxFK/S6DH1pXvQni77P6mo/QArmLkntoL6JtxF1YF3GD8bvBPQCR+MVaqsJXXJxqKaHrDk83wVmMvrnTWkOTf3ZbhrhHDgCCbRt4d0UkCjcKWdaSa/Wx
- W/nzxEFArW8ZS+faLqrBow+KDjpIEqRVN0v5YKspOeNln24iPWWJpsl7rN4=
+        id S235149AbhHET2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:28:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230342AbhHET2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 15:28:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 258BD60ED6;
+        Thu,  5 Aug 2021 19:28:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628191705;
+        bh=JhNL8KuD2szPC+zCm2RHptrrY9pP+yh9GzSS1BHqGXk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YDtmgTRhgVn//s60xzR/jK13i0jZlQMkn6EfeUv57be7mrn/qB6We+tYh+Z0TTmLW
+         TFT1vqL9k3QogzFpRrORefk5HXpd4UNEeMCxQHfUoVaQVIMTMUUDeFdrzQIq2Lbw41
+         6NS9gbs1SKAHhO083Cdsd/+Y8DmIW5ag7m+UhMXg=
+Date:   Thu, 5 Aug 2021 21:28:22 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v1] driver: base: Add driver filter support
+Message-ID: <YQw71hBx4/w14Fir@kroah.com>
+References: <YQuYCePPZEmVbkfc@kroah.com>
+ <YQuZdVuaGG/Cr62y@kroah.com>
+ <YQuaJ78y8j1UmBoz@kroah.com>
+ <fdf8b6b6-58c3-8392-2fc6-1908a314e991@linux.intel.com>
+ <YQwlHrJBw79xhTSI@kroah.com>
+ <21db8884-5aa1-3971-79ef-f173a0a95bef@linux.intel.com>
+ <YQwpa+LAYt7YZ5dh@kroah.com>
+ <7d6751b1-c476-51d3-25c6-b65c0e93d23b@linux.intel.com>
+ <YQw4AEwIUGe3RpCx@kroah.com>
+ <CAPcyv4gV9GK93rgtoHxhshzDGk0ueJn0d9LXYitJ8=wJWzmWHg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4gV9GK93rgtoHxhshzDGk0ueJn0d9LXYitJ8=wJWzmWHg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Bosch C_CAN/D_CAN controller device tree binding
-documentation to json-schema.
+On Thu, Aug 05, 2021 at 12:18:12PM -0700, Dan Williams wrote:
+> On Thu, Aug 5, 2021 at 12:12 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Aug 05, 2021 at 11:53:52AM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> > > I am not sure how USB and Thunderbolt "authorzied" model works. But I
+> > > don't think it prevents built-in driver probes during kernel boot right?
+> >
+> > Yes it does.
+> >
+> > Again Intel created this framework well over a decade ago for busses
+> > that it deemed that it did not want to "trust" to instantly probe
+> > drivers for and made it part of the Wireless USB specification.
+> >
+> > Then Intel went and added the same framework to Thunderbolt for the same
+> > reason.
+> >
+> > To ignore this work is quite odd, you might want to talk to your
+> > coworkers...
+> 
+> Sometimes we need upstream to connect us wayward drones back into the
+> hive mind. Forgive me for not immediately recognizing that the
+> existing 'authorized' mechanisms might be repurposed for this use
+> case.
 
-Document missing properties.
-Remove "ti,hwmods" as it is no longer used in TI dts.
-Make "clocks" required as it is used in all dts.
-Update the examples.
+Not your fault, I'm more amazed that Andi doesn't remember this, he's
+been around longer :)
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
+But the first instinct should not be "let's go add a new feature", but
+rather, "how has this problem been solved by others first" because,
+really, this is not a new issue at all.  You should not rely on just me
+to point out existing kernel features, we do have documentation you
+know...
 
----
+thanks,
 
-Changes in v5:
- - Complete 'interrupts' property description
-
-Changes in v4:
- - Fix 'syscon-raminit' property to pass checks.
- - Drop 'status' property from CAN node of examples.
- - Replace CAN node of examples (compatible = "bosch,d_can")  with a
-   recent version taken from socfpga.dtsi dts.
- - Update the 'interrupts' property due to the examples updating.
- - Add 'resets' property due to the examples updating.
-
-Changes in v3:
- - Add type (phandle-array) and size (maxItems: 2) to syscon-raminit
-   property.
-
-Changes in v2:
- - Drop Documentation references.
-
- .../bindings/net/can/bosch,c_can.yaml         | 119 ++++++++++++++++++
- .../devicetree/bindings/net/can/c_can.txt     |  65 ----------
- 2 files changed, 119 insertions(+), 65 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
-
-diff --git a/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
-new file mode 100644
-index 000000000000..2cd145a642f1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
-@@ -0,0 +1,119 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/bosch,c_can.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Bosch C_CAN/D_CAN controller Device Tree Bindings
-+
-+description: Bosch C_CAN/D_CAN controller for CAN bus
-+
-+maintainers:
-+  - Dario Binacchi <dariobin@libero.it>
-+
-+allOf:
-+  - $ref: can-controller.yaml#
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - enum:
-+          - bosch,c_can
-+          - bosch,d_can
-+          - ti,dra7-d_can
-+          - ti,am3352-d_can
-+      - items:
-+          - enum:
-+              - ti,am4372-d_can
-+          - const: ti,am3352-d_can
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    minItems: 1
-+    maxItems: 4
-+
-+  power-domains:
-+    description: |
-+      Should contain a phandle to a PM domain provider node and an args
-+      specifier containing the DCAN device id value. It's mandatory for
-+      Keystone 2 66AK2G SoCs only.
-+    maxItems: 1
-+
-+  clocks:
-+    description: |
-+      CAN functional clock phandle.
-+    maxItems: 1
-+
-+  clock-names:
-+    maxItems: 1
-+
-+  syscon-raminit:
-+    description: |
-+      Handle to system control region that contains the RAMINIT register,
-+      register offset to the RAMINIT register and the CAN instance number (0
-+      offset).
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    items:
-+      items:
-+        - description: The phandle to the system control region.
-+        - description: The register offset.
-+        - description: The CAN instance number.
-+
-+  resets:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+
-+if:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - bosch,d_can
-+
-+then:
-+  properties:
-+    interrupts:
-+      minItems: 4
-+      maxItems: 4
-+      items:
-+        - description: Error and status IRQ
-+        - description: Message object IRQ
-+        - description: RAM ECC correctable error IRQ
-+        - description: RAM ECC non-correctable error IRQ
-+
-+else:
-+  properties:
-+    interrupts:
-+      maxItems: 1
-+      items:
-+        - description: Error and status IRQ
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/reset/altr,rst-mgr.h>
-+
-+    can@ffc00000 {
-+       compatible = "bosch,d_can";
-+       reg = <0xffc00000 0x1000>;
-+       interrupts = <0 131 4>, <0 132 4>, <0 133 4>, <0 134 4>;
-+       clocks = <&can0_clk>;
-+       resets = <&rst CAN0_RESET>;
-+    };
-+  - |
-+    can@0 {
-+        compatible = "ti,am3352-d_can";
-+        reg = <0x0 0x2000>;
-+        clocks = <&dcan1_fck>;
-+        clock-names = "fck";
-+        syscon-raminit = <&scm_conf 0x644 1>;
-+        interrupts = <55>;
-+    };
-diff --git a/Documentation/devicetree/bindings/net/can/c_can.txt b/Documentation/devicetree/bindings/net/can/c_can.txt
-deleted file mode 100644
-index 366479806acb..000000000000
---- a/Documentation/devicetree/bindings/net/can/c_can.txt
-+++ /dev/null
-@@ -1,65 +0,0 @@
--Bosch C_CAN/D_CAN controller Device Tree Bindings
---------------------------------------------------
--
--Required properties:
--- compatible		: Should be "bosch,c_can" for C_CAN controllers and
--			  "bosch,d_can" for D_CAN controllers.
--			  Can be "ti,dra7-d_can", "ti,am3352-d_can" or
--			  "ti,am4372-d_can".
--- reg			: physical base address and size of the C_CAN/D_CAN
--			  registers map
--- interrupts		: property with a value describing the interrupt
--			  number
--
--The following are mandatory properties for DRA7x, AM33xx and AM43xx SoCs only:
--- ti,hwmods		: Must be "d_can<n>" or "c_can<n>", n being the
--			  instance number
--
--The following are mandatory properties for Keystone 2 66AK2G SoCs only:
--- power-domains		: Should contain a phandle to a PM domain provider node
--			  and an args specifier containing the DCAN device id
--			  value. This property is as per the binding,
--			  Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
--- clocks		: CAN functional clock phandle. This property is as per the
--			  binding,
--			  Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
--
--Optional properties:
--- syscon-raminit	: Handle to system control region that contains the
--			  RAMINIT register, register offset to the RAMINIT
--			  register and the CAN instance number (0 offset).
--
--Note: "ti,hwmods" field is used to fetch the base address and irq
--resources from TI, omap hwmod data base during device registration.
--Future plan is to migrate hwmod data base contents into device tree
--blob so that, all the required data will be used from device tree dts
--file.
--
--Example:
--
--Step1: SoC common .dtsi file
--
--	dcan1: d_can@481d0000 {
--		compatible = "bosch,d_can";
--		reg = <0x481d0000 0x2000>;
--		interrupts = <55>;
--		interrupt-parent = <&intc>;
--		status = "disabled";
--	};
--
--(or)
--
--	dcan1: d_can@481d0000 {
--		compatible = "bosch,d_can";
--		ti,hwmods = "d_can1";
--		reg = <0x481d0000 0x2000>;
--		interrupts = <55>;
--		interrupt-parent = <&intc>;
--		status = "disabled";
--	};
--
--Step 2: board specific .dts file
--
--	&dcan1 {
--		status = "okay";
--	};
--- 
-2.17.1
-
+greg k-h
