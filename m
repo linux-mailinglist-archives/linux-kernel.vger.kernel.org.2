@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D003E1EA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA743E1EAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240158AbhHEW2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 18:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39166 "EHLO
+        id S240525AbhHEW24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 18:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240144AbhHEW2q (ORCPT
+        with ESMTP id S240236AbhHEW2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 18:28:46 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCABC0613D5;
-        Thu,  5 Aug 2021 15:28:31 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id mt6so12487905pjb.1;
-        Thu, 05 Aug 2021 15:28:31 -0700 (PDT)
+        Thu, 5 Aug 2021 18:28:49 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE67C0617A0;
+        Thu,  5 Aug 2021 15:28:33 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id mt6so12488029pjb.1;
+        Thu, 05 Aug 2021 15:28:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=l9GKlJXENJ+NEavpSz/rpIPnYrBdVQY2pEFyg+IrfTI=;
-        b=YqmtBVNokX+oXdyXQ2LyXpjGfk56n7Wniukfoi6MKU30C4kiXU6GDU7M1SDPfL3HBq
-         MI8OBrFBCwiWUkH/IE4r0WpcfklvaPeniYVkSFqshowg2ngwRmbh/bIi5iDfAE8CNK61
-         2Xm6RNqcH9efaFf7L7RIBGluXE/IgXpgUzXjP6WJA4OtJ14+PwwRsKzXkr6TGc0Ej433
-         Hnh84NEB8gewUXSN/+Ifai2pjp+uJ+8adeqlUGjlTFMkvgs251gkLfTTy2JB9uZBa1QD
-         TAt+F2e943VmMcmVBIpCEHF9fhE1GnfyvcdmfE+FsNsv1bHOdA7kAUn6iJEc3eBO93JU
-         VdXA==
+        bh=lw6gEfo2Nw0mBe3S5xni2/OM/VRr81Ls+EqynsWDkMc=;
+        b=aOcpCuuQ0oZecIVFgmbyx/nUvanBWvhzq2rfR/nVSM0vyTA3cNp7Z8RlCAWGJ7c9zg
+         xuZ371oGoGa3EfR8yul5t/RSNzV9G11LIBo4G7oR892flIJExRxaU4rJRbrcFXgDMmdm
+         KmgJv2gfQ+P8AURFIwp+ZphhLAwFhf/HbISR2u8yUAkNkHnDxQLqO5wgkCNOyQFe8do5
+         5aUfD1+gaCN7gveWCB16RT+f/Oiu+xknX5OlyIX7vcgE5O9Gknr6gMih+FHiVOfNQ931
+         dSsAmE8PHrWH6TXla+tkxw7+OSyZ6noX3ogHoBRG33VJIfi2jkQwpgZgXg35N8bhBIsO
+         7Igw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=l9GKlJXENJ+NEavpSz/rpIPnYrBdVQY2pEFyg+IrfTI=;
-        b=JhcSZgsF1K/cZwOaqYoeQk2W5RBZAyqZW53bIAV3R24Kin6hZmOMIEfheyyI5JeI7U
-         UuA2NMdYXu+G3ZoHuS+Yn/48ehzQTWozqNq3+wofqHWiRqBtIrZwU8UH28YhAafEQPaE
-         dlq87mTWwjRAdyeCVrlJqnL1z6ioK0URy937aLMAlEsUpGgrHlPcGZOzyi6m9aTs/7Xj
-         62ANKUwkWDx0hG524sohd8665EzHIoD/vfNzLS3fHjs/RtFi2DkRivvf+4aDbhdonbpP
-         1e8k2huKZq/+qteAhDFV9CGeSRqg2Kz91TohRiIHt63mO394jbqKXXeky46/9x/G9CQ0
-         JQ8A==
-X-Gm-Message-State: AOAM5332XUgMSfJhjIWfLKRrJ7vbeCxPTRG8xbaLe38MD32wEgiXLXi6
-        54lUaC2aO475txZXDCGQ5R0=
-X-Google-Smtp-Source: ABdhPJzQJp51jXanZDAwkUbCB9TjOsTXFSFj+xqsyn+Y10RvKJSFBk9BehdJOkgqmaLp/2H3ZcufnQ==
-X-Received: by 2002:aa7:9f06:0:b029:3c6:c469:9135 with SMTP id g6-20020aa79f060000b02903c6c4699135mr6137357pfr.27.1628202511172;
-        Thu, 05 Aug 2021 15:28:31 -0700 (PDT)
+        bh=lw6gEfo2Nw0mBe3S5xni2/OM/VRr81Ls+EqynsWDkMc=;
+        b=ONroWSAsBJR2GdB6q6Fyn9e8sYQHH+PsVzO3lkxHVuvW3UsQxpozBBUVSGEC5v8798
+         HbtBLenkX2Pkt3Csq8d21mCRr54dPdEXRzAaSOo2Y+O6D6hvhRaobFlDumpf4+frClAk
+         RbV721NdvP+vU9YxLGIQI6ygZ3SQmb7bNK3f6NBHIpjEhypfhbwasu/uu5rKCunnlhEt
+         E1scyQLUwVIuJXi4SXsZLNOjuF8V/jtGAkdA8sfU6HKlmP6n5A++PDcH49UDj5TfSR1x
+         rgXXlTJ57x+D8KFPr2WvgpMD7cFHsB0hSbIxSBnZQFxnRbCMy9ntFRiFtHmKfF8wFpq7
+         qBAQ==
+X-Gm-Message-State: AOAM533SwkhAHJRxpBCT/C+Vs73vKQCDv0hd92tBqHvjvJV1AxDquHFb
+        VAMnCGxOMNwUbRbL2Bdrw08=
+X-Google-Smtp-Source: ABdhPJzOXA2xJb3hzf499cQvBTj3sFISjd2xApvkTjWJm88fkqrqkVChquuhHW4AnYTQa+r8MGVViA==
+X-Received: by 2002:a62:36c5:0:b029:32b:83fa:3a3e with SMTP id d188-20020a6236c50000b029032b83fa3a3emr1603833pfa.52.1628202512620;
+        Thu, 05 Aug 2021 15:28:32 -0700 (PDT)
 Received: from taoren-ubuntu-R90MNF91.thefacebook.com (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id b26sm8082292pfo.47.2021.08.05.15.28.30
+        by smtp.gmail.com with ESMTPSA id b26sm8082292pfo.47.2021.08.05.15.28.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 15:28:30 -0700 (PDT)
+        Thu, 05 Aug 2021 15:28:32 -0700 (PDT)
 From:   rentao.bupt@gmail.com
 To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
         Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
@@ -54,9 +54,9 @@ To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
         linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
         openbmc@lists.ozlabs.org, taoren@fb.com
 Cc:     Tao Ren <rentao.bupt@gmail.com>
-Subject: [PATCH v2 2/6] ARM: dts: aspeed: wedge400: Use common flash layout
-Date:   Thu,  5 Aug 2021 15:28:14 -0700
-Message-Id: <20210805222818.8391-3-rentao.bupt@gmail.com>
+Subject: [PATCH v2 3/6] ARM: dts: aspeed: Common dtsi for Facebook AST2600 Network BMCs
+Date:   Thu,  5 Aug 2021 15:28:15 -0700
+Message-Id: <20210805222818.8391-4-rentao.bupt@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210805222818.8391-1-rentao.bupt@gmail.com>
 References: <20210805222818.8391-1-rentao.bupt@gmail.com>
@@ -66,76 +66,194 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tao Ren <rentao.bupt@gmail.com>
 
-Simplify wedge400 flash layout by using the common layout defined in
-"facebook-bmc-flash-layout-128.dtsi".
+This common descirption is included by all Facebook AST2600 Network BMC
+platforms to minimize duplicated device entries across Facebook Network
+BMC device trees.
 
 Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
 ---
  Changes in v2:
-  - None.
+  - "mac3" is removed from the dtsi (moved to platform dts files).
 
- .../boot/dts/aspeed-bmc-facebook-wedge400.dts | 48 +------------------
- 1 file changed, 1 insertion(+), 47 deletions(-)
+ .../dts/ast2600-facebook-netbmc-common.dtsi   | 169 ++++++++++++++++++
+ 1 file changed, 169 insertions(+)
+ create mode 100644 arch/arm/boot/dts/ast2600-facebook-netbmc-common.dtsi
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-wedge400.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-wedge400.dts
-index 63a3dd548f30..a901c8be49b9 100644
---- a/arch/arm/boot/dts/aspeed-bmc-facebook-wedge400.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-facebook-wedge400.dts
-@@ -91,53 +91,7 @@
-  * Both firmware flashes are 128MB on Wedge400 BMC.
-  */
- &fmc_flash0 {
--	partitions {
--		compatible = "fixed-partitions";
--		#address-cells = <1>;
--		#size-cells = <1>;
--
--		/*
--		 * u-boot partition: 384KB.
--		 */
--		u-boot@0 {
--			reg = <0x0 0x60000>;
--			label = "u-boot";
--		};
--
--		/*
--		 * u-boot environment variables: 128KB.
--		 */
--		u-boot-env@60000 {
--			reg = <0x60000 0x20000>;
--			label = "env";
--		};
--
--		/*
--		 * FIT image: 123.5 MB.
--		 */
--		fit@80000 {
--			reg = <0x80000 0x7b80000>;
--			label = "fit";
--		};
--
--		/*
--		 * "data0" partition (4MB) is reserved for persistent
--		 * data store.
--		 */
--		data0@7c00000 {
--			reg = <0x7c00000 0x400000>;
--			label = "data0";
--		};
--
--		/*
--		 * "flash0" partition (covering the entire flash) is
--		 * explicitly created to avoid breaking legacy applications.
--		 */
--		flash0@0 {
--			reg = <0x0 0x8000000>;
--			label = "flash0";
--		};
--	};
+diff --git a/arch/arm/boot/dts/ast2600-facebook-netbmc-common.dtsi b/arch/arm/boot/dts/ast2600-facebook-netbmc-common.dtsi
+new file mode 100644
+index 000000000000..051de5bec345
+--- /dev/null
++++ b/arch/arm/boot/dts/ast2600-facebook-netbmc-common.dtsi
+@@ -0,0 +1,169 @@
++// SPDX-License-Identifier: GPL-2.0+
++// Copyright (c) 2020 Facebook Inc.
++
++#include "aspeed-g6.dtsi"
++#include <dt-bindings/gpio/aspeed-gpio.h>
++
++/ {
++	aliases {
++		mmc0 = &emmc;
++		spi1 = &spi1;
++		spi2 = &spi_gpio;
++	};
++
++	chosen {
++		bootargs = "console=ttyS0,9600n8 root=/dev/ram rw vmalloc=640M";
++	};
++
++	memory@80000000 {
++		device_type = "memory";
++		reg = <0x80000000 0x80000000>;
++	};
++
++	/*
++	 * GPIO-based SPI Master is required to access SPI TPM, because
++	 * full-duplex SPI transactions are not supported by ASPEED SPI
++	 * Controllers.
++	 */
++	spi_gpio: spi-gpio {
++		status = "okay";
++		compatible = "spi-gpio";
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		gpio-sck = <&gpio0 ASPEED_GPIO(X, 3) GPIO_ACTIVE_HIGH>;
++		gpio-mosi = <&gpio0 ASPEED_GPIO(X, 4) GPIO_ACTIVE_HIGH>;
++		gpio-miso = <&gpio0 ASPEED_GPIO(X, 5) GPIO_ACTIVE_HIGH>;
++
++		tpmdev@0 {
++			compatible = "tcg,tpm_tis-spi";
++			spi-max-frequency = <33000000>;
++			reg = <0>;
++		};
++	};
++};
++
++&fmc {
++	status = "okay";
++
++	flash@0 {
++		status = "okay";
++		m25p,fast-read;
++		label = "spi0.0";
++
 +#include "facebook-bmc-flash-layout-128.dtsi"
- };
- 
- &fmc_flash1 {
++	};
++
++	flash@1 {
++		status = "okay";
++		m25p,fast-read;
++		label = "spi0.1";
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			flash1@0 {
++				reg = <0x0 0x8000000>;
++				label = "flash1";
++			};
++		};
++	};
++};
++
++&spi1 {
++	status = "okay";
++};
++
++&uart1 {
++	status = "okay";
++};
++
++&uart2 {
++	status = "okay";
++};
++
++&uart5 {
++	status = "okay";
++};
++
++&wdt1 {
++	status = "okay";
++};
++
++&i2c0 {
++	status = "okay";
++};
++
++&i2c1 {
++	status = "okay";
++};
++
++&i2c2 {
++	status = "okay";
++};
++
++&i2c3 {
++	status = "okay";
++};
++
++&i2c4 {
++	status = "okay";
++};
++
++&i2c5 {
++	status = "okay";
++};
++
++&i2c6 {
++	status = "okay";
++};
++
++&i2c7 {
++	status = "okay";
++};
++
++&i2c8 {
++	status = "okay";
++};
++
++&i2c9 {
++	status = "okay";
++};
++
++&i2c10 {
++	status = "okay";
++};
++
++&i2c12 {
++	status = "okay";
++};
++
++&i2c13 {
++	status = "okay";
++};
++
++&i2c15 {
++	status = "okay";
++};
++
++&vhub {
++	status = "okay";
++};
++
++&emmc_controller {
++	status = "okay";
++};
++
++&emmc {
++	status = "okay";
++
++	non-removable;
++	max-frequency = <25000000>;
++	bus-width = <4>;
++};
++
++&rtc {
++	status = "okay";
++};
 -- 
 2.17.1
 
