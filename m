@@ -2,100 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8183E178E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07813E17A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241772AbhHEPHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231450AbhHEPHs (ORCPT
+        id S241850AbhHEPKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:10:08 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61096 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233201AbhHEPKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:07:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F2EC061765;
-        Thu,  5 Aug 2021 08:07:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ov7WOh57Y5oPUPuBr7cE+QNFoqdlp3ySaVDNxgkioqg=; b=Xm2BnDpdo9UG/w+0PPAQUBZ7vj
-        Sfygt8Y3WJxFKdijCILqnLEG1XDTw7GxROJ0iP0UYtizqIjnvA24bTveGjb05f0SQ+Z4lVQ9ktfkS
-        R1h4vSaq1jFeXxuFsuaFZNgTZIDC/sxWz1xeizpdKuKHqgWH6FfM0644Tzoo/i2v0SabSZx88cKX9
-        5TWOGgiMpBId3vk5v+eVOOj+6MeP40dIf2a/2UqOdkGhGn807qIO7PMoUP85xP5XoQtd++KIhgjUg
-        FXkDicV0o/VTRXH7xfuJKLbF+mmanY8o3rbNJ82p5zGPDTkGhrGVuALInH6yY4/13oZqxHDsEbUw9
-        qY8hkOQg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBexP-007CFt-HG; Thu, 05 Aug 2021 15:06:55 +0000
-Date:   Thu, 5 Aug 2021 16:06:51 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, jlayton@kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        dchinner@redhat.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Could it be made possible to offer "supplementary" data to a DIO
- write ?
-Message-ID: <YQv+iwmhhZJ+/ndc@casper.infradead.org>
-References: <YQvpDP/tdkG4MMGs@casper.infradead.org>
- <YQvbiCubotHz6cN7@casper.infradead.org>
- <1017390.1628158757@warthog.procyon.org.uk>
- <1170464.1628168823@warthog.procyon.org.uk>
- <1186271.1628174281@warthog.procyon.org.uk>
+        Thu, 5 Aug 2021 11:10:07 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 175F4E62005940;
+        Thu, 5 Aug 2021 11:09:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=PYHeUHL0ZH8GoGa/stFMWsqDkOKMwYpeVYQU+PRHDys=;
+ b=kWCQrWA8FO5KjMsKJYhTjzMslbexR3lrUnigXsdYDtzPndt3N6OUvoEdkVx9002xs7lj
+ 0Agjq9pZ+7AHBWChrwjltOA5lzXp4B5IF3Ghn4zNbly1JArc+EARvIUVX8FL+8qEMZJ7
+ A8Db7/fGPv9ocXDf3uZwSmBFRyPaCA1UYaWMB5VML1ZmzhbOU9ZkeGYNFxm7hwmmrQdO
+ OjeQWLkTR1qVQzb3vbrghmADqt0LrDt+b3ardW94BLZUQODxLYQvY1hqylCDIzHc6qoD
+ UXsjpxAIhvrAtuRnuQwMMzpTl5+36Prhqr6y6VaWwVWHT3/2j4xQ1zzlsCjkbkNQpJdx 1w== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a88599e7f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Aug 2021 11:09:50 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 175F7awO005818;
+        Thu, 5 Aug 2021 15:09:47 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 3a4x58t824-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Aug 2021 15:09:47 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 175F9i5Q52494834
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 5 Aug 2021 15:09:44 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B5FF9AE086;
+        Thu,  5 Aug 2021 15:09:44 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6AFFCAE085;
+        Thu,  5 Aug 2021 15:09:44 +0000 (GMT)
+Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  5 Aug 2021 15:09:44 +0000 (GMT)
+Received: from [9.206.171.115] (unknown [9.206.171.115])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id D69DE600B2;
+        Fri,  6 Aug 2021 01:09:19 +1000 (AEST)
+Subject: Re: [PATCH v2 5/6] PCI: Adapt all code locations to not use struct
+ pci_dev::driver directly
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     kernel@pengutronix.de,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pci@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Russell Currey <ruscur@russell.cc>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Michael Buesch <m@bues.ch>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-crypto@vger.kernel.org, qat-linux@intel.com,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org
+References: <20210803100150.1543597-1-u.kleine-koenig@pengutronix.de>
+ <20210803100150.1543597-6-u.kleine-koenig@pengutronix.de>
+From:   Andrew Donnellan <ajd@linux.ibm.com>
+Message-ID: <4b8d26d5-443c-600f-78a9-de5214c80452@linux.ibm.com>
+Date:   Fri, 6 Aug 2021 01:09:08 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1186271.1628174281@warthog.procyon.org.uk>
+In-Reply-To: <20210803100150.1543597-6-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 0KMfkEwjd362vKzVXydvfKA8x7XTgBGG
+X-Proofpoint-ORIG-GUID: 0KMfkEwjd362vKzVXydvfKA8x7XTgBGG
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-05_05:2021-08-05,2021-08-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 malwarescore=0 mlxlogscore=615 mlxscore=0 bulkscore=0
+ adultscore=0 impostorscore=0 clxscore=1011 suspectscore=0
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2107140000 definitions=main-2108050092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 03:38:01PM +0100, David Howells wrote:
-> > If you want to take leases at byte granularity, and then not writeback
-> > parts of a page that are outside that lease, feel free.  It shouldn't
-> > affect how you track dirtiness or how you writethrough the page cache
-> > to the disk cache.
+On 3/8/21 8:01 pm, Uwe Kleine-König wrote:
+> This prepares removing the driver member of struct pci_dev which holds the
+> same information than struct pci_dev::dev->driver.
 > 
-> Indeed.  Handling writes to the local disk cache is different from handling
-> writes to the server(s).  The cache has a larger block size but I don't have
-> to worry about third-party conflicts on it, whereas the server can be taken as
-> having no minimum block size, but my write can clash with someone else's.
-> 
-> Generally, I prefer to write back the minimum I can get away with (as does the
-> Linux NFS client AFAICT).
-> 
-> However, if everyone agrees that we should only ever write back a multiple of
-> a certain block size, even to network filesystems, what block size should that
-> be?
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-If your network protocol doesn't give you a way to ask the server what
-size it is, assume 512 bytes and allow it to be overridden by a mount
-option.
+cxl hunks look alright.
 
-> Note that PAGE_SIZE varies across arches and folios are going to
-> exacerbate this.  What I don't want to happen is that you read from a file, it
-> creates, say, a 4M (or larger) folio; you change three bytes and then you're
-> forced to write back the entire 4M folio.
+Acked-by: Andrew Donnellan <ajd@linux.ibm.com> # cxl
 
-Actually, you do.  Two situations:
-
-1. Application uses MADVISE_HUGEPAGE.  In response, we create a 2MB
-page and mmap it aligned.  We use a PMD sized TLB entry and then the
-CPU dirties a few bytes with a store.  There's no sub-TLB-entry tracking
-of dirtiness.  It's just the whole 2MB.
-
-2. The bigger the folio, the more writes it will absorb before being
-written back.  So when you're writing back that 4MB folio, you're not
-just servicing this 3 byte write, you're servicing every other write
-which hit this 4MB chunk of the file.
-
-There is one exception I've found, and that's O_SYNC writes.  These are
-pretty rare, and I think I have a solution to it which essentially treats
-the page cache as writethrough (for sync writes).  We skip marking
-the page (folio) as dirty and go straight to marking it as writeback.
-We have all the information we need about which bytes to write and we're
-actually using the existing page cache infrastructure to do it.
-
-I'm working on implementing that in iomap; there's some SMOP type
-problems to solve, but it looks doable.
+-- 
+Andrew Donnellan              OzLabs, ADL Canberra
+ajd@linux.ibm.com             IBM Australia Limited
