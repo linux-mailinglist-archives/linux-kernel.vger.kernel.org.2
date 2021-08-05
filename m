@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1053E0FD3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34DD3E0FD8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239351AbhHEIEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 04:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
+        id S239211AbhHEIFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 04:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236777AbhHEIDK (ORCPT
+        with ESMTP id S232559AbhHEIFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 04:03:10 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A271C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 01:02:51 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id d8so5307288wrm.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 01:02:51 -0700 (PDT)
+        Thu, 5 Aug 2021 04:05:52 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E78C061765;
+        Thu,  5 Aug 2021 01:05:38 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id y1so5613035iod.10;
+        Thu, 05 Aug 2021 01:05:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zEZrBAG3edsTrFza0Z8asjlbiX/HavgDkBINPKbvcAM=;
-        b=sf80PQyh0g4hqBFV2TeLsR48iW9FzUNYMQtGJnB2UKqddxMbNPT+BPJZz5FuAQw8xG
-         xhYqpXvfw3s1mega4WRUoJhw5f//zQM2c01D7UG9TNYCxsAJvnZUI3C25hxl621Oarxy
-         17pq6gAsMk/wJZd4OG+5RoYP2JjAQNmZ3aF8RK/eWh8tKsYdIHnezfsmR/qkT1b02/A/
-         zJY0cNNo4gjgIaEro6Gmgcx1tFFkR+nuei3ZCtOvLh+F51Yb307nZ5MEM3e2f/JoQs3p
-         Y2woAOqBBOCe4kuXh3ruFoSxyu0ScZviLpypM7a4yx/8vepxSRWEyPecBoDdwfxU25Nd
-         kowQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CigNGT2AbpQ4wSDNvI4oyMY6a17yp6Be3VnQFnnxIus=;
+        b=JX7XqMPvKDwANHLr7Enzl+BbR0IM9eNOOR3t0GtMmz6BzEx/pFH+05ZcDMFFVitd9c
+         IC/2Aya2UKd+/QuB8Za9waPJHAiCfWB3oJhH1xWkE0HedjNlZoc4EdgozMsrexA2Jace
+         MIrUgzpSjoTv5j7X04YGWDHCvowVMbt8sc5zxzX0dxByq9d8ILrcDmyxNf+Sdgu3EctO
+         lp5T4eWZ2pZbrB9CeGiYts9fyyzpqFZLi36YatacdiicQX/EcJ0JDSNF77av6m9OM2Q4
+         c1/o2Z7wzCcwRVODHMh+rMlaMVUKM3ptLXDPbXB2XlkG4q8tBcVCQAtrQOZXCbSNm4Mj
+         zQJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zEZrBAG3edsTrFza0Z8asjlbiX/HavgDkBINPKbvcAM=;
-        b=GAEIgvo0GxH58y1rJ+8cvQ9IXgo+0RVx5bbwMbiXpjSVNvrS+oh1CNrb+AEq/FE7q9
-         XgKlzR3L6DcTAQXrXLlOBBiK8fIE6jK9ugcNhFz92de8Aj5qwD1N9uQrHUObrt8rvNXk
-         gDogE52KP9fHQv3plHWQRevOvzSTh1miBVKqafbol3FXDEiYVIU3uZPK7X39l+HL/gY3
-         HwkjGg2/Yvni5uYVqOwDQVWycggJY1kqc5zBjByNcJ4lhs5d18uIr5lDr0c3sYbMY787
-         YWMLRpxDP+Q7HPUPHhRJJaJQFCw08vRgiFl6n54POqgd5GH3y2OO3vELnR5DJwdTo0bg
-         R6+Q==
-X-Gm-Message-State: AOAM531EKWMXngO94H2MXJ/M/8+/TImIahDdukmhFU+4Oi9JHCvxMmWJ
-        MWt/BG3ySw+kLr1b7r1IGgsUbQ==
-X-Google-Smtp-Source: ABdhPJwUHpbXsr54oVwa43NvkS8OBXErBcSn8URfjx8+/Xk332hqlN0C6QceSdH6I98R6nixioU/wQ==
-X-Received: by 2002:a5d:6912:: with SMTP id t18mr3674677wru.234.1628150569746;
-        Thu, 05 Aug 2021 01:02:49 -0700 (PDT)
-Received: from google.com ([109.180.115.228])
-        by smtp.gmail.com with ESMTPSA id j1sm8032594wmo.4.2021.08.05.01.02.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 01:02:49 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 09:02:47 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 3/4] mfd: intel_quark_i2c_gpio: Convert GPIO to use
- software nodes
-Message-ID: <YQubJ1s2YuEZk4lm@google.com>
-References: <20210804160019.77105-1-andriy.shevchenko@linux.intel.com>
- <20210804160019.77105-3-andriy.shevchenko@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CigNGT2AbpQ4wSDNvI4oyMY6a17yp6Be3VnQFnnxIus=;
+        b=K7viJCEHTmHJeUUCt3ErdDUGIJoLOYY+DJBxZ3lUu10NtM4rG4hku23+WMuNdXdGop
+         dWn1o8PMPnYPaXjfybpclfRPS6lT2rXpo4LxQ84IZMEgqfivO/iROFY6nfdzerUlPBgx
+         Hw6mgZknTiRjylDfsDccr6jaTaFIFcNWarutUxZJs1a8t4owe0J+eJFRgwASW8T7QHyW
+         tFNpch/3CmHbBVkAHFp/CcnvV+Io4yuWP9aqbheaU17d0xE/NvKpQ75pQR3ITKuasWAI
+         hfD8afxuBzgAZ485awEjO3V5FWv2nr3ruZNwDQq1xKbq08RfQ/zJIUppDRWSRIrMMuqu
+         wHqg==
+X-Gm-Message-State: AOAM532nSHRRCMl5i8s+3KHSuSB31jDG7EryHdT+N9w6POUup0MGuw1K
+        fdqa+9J5WCADA7ntfMSfKEpiGcMJqp1fcu6s4RQ=
+X-Google-Smtp-Source: ABdhPJzNZBZGzsK7tlcjpKcsAXlaEqOYn7z2XrzBU57p8Gp2GSqg5xZGhQOyWMvdk4HUSzuxcdaWGxn7STU14selZn4=
+X-Received: by 2002:a5d:8541:: with SMTP id b1mr4078ios.105.1628150737727;
+ Thu, 05 Aug 2021 01:05:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210804160019.77105-3-andriy.shevchenko@linux.intel.com>
+References: <20210803084456.198-1-alistair@alistair23.me> <20210803084456.198-9-alistair@alistair23.me>
+ <YQqLiAtAtREWTvD7@google.com>
+In-Reply-To: <YQqLiAtAtREWTvD7@google.com>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Thu, 5 Aug 2021 18:05:00 +1000
+Message-ID: <CAKmqyKO_QeNTRZx9P9vhX7DQoBfE6igOtJroTEer-OKoVO-RGQ@mail.gmail.com>
+Subject: Re: [PATCH v8 09/11] ARM: dts: imx7d: remarkable2: Enable silergy,sy7636a
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
+        Mark Brown <broonie@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 04 Aug 2021, Andy Shevchenko wrote:
+On Wed, Aug 4, 2021 at 10:43 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Tue, 03 Aug 2021, Alistair Francis wrote:
+>
+> > Enable the silergy,sy7636a and silergy,sy7636a-regulator on the
+> > reMarkable2.
+> >
+> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> > ---
+> >  arch/arm/boot/dts/imx7d-remarkable2.dts | 42 +++++++++++++++++++++++++
+> >  1 file changed, 42 insertions(+)
+>
+> I don't see the DT documentation for this device.
 
-> The driver can provide a software node group instead of
-> passing legacy platform data. This will allow to drop
-> the legacy platform data structures along with unifying
-> a child device driver to use same interface for all
-> property providers, i.e. Device Tree, ACPI, and board files.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Tested-by: Serge Semin <fancer.lancer@gmail.com>
-> ---
-> v2: added tag (Serge)
->  drivers/mfd/intel_quark_i2c_gpio.c | 70 ++++++++++++++++--------------
->  1 file changed, 37 insertions(+), 33 deletions(-)
+Which device?
 
-For my own reference (apply this as-is to your sign-off block):
+The imx7d-remarkable2 is in current master and there is a single line
+at `Documentation/devicetree/bindings/arm/fsl.yaml`
 
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+The silergy,sy7636a-regulator is also already in master, but it isn't
+exposed to device tree and the compatible string shouldn't be included
+in this patch. I'll fix that.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Alistair
+
+>
+> Has it been accepted/merged already?
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
