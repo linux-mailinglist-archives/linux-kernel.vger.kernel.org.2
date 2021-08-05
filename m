@@ -2,194 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7045D3E1E31
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 23:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2173E1E38
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 23:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237055AbhHEVxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 17:53:37 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59332 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235464AbhHEVx1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 17:53:27 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 175LoV3O017595;
-        Thu, 5 Aug 2021 17:53:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-transfer-encoding
- : mime-version; s=pp1; bh=ZyoICrnkxQkw2owjShcf8xvHkTAw42OBHObumETu2Tc=;
- b=aliap+xQH8al1J9xsxvQ2MuwfnKSH+RKs7f2AyVqyOCdKn37cqBQL1tpRif8yxu1CUsr
- jgZN7JK6uE2lQbULNTCLd3YFmOzwFFioQmbyM2nBRarjmYmYu0Ev8pDXRFQF/t4qR7OX
- uNrFG4GoV/8SyMTD1YlICWVgPvYsi5ZF407GoGP4dFBJc4xRFpXc5ysh07rYqoCqB28j
- VZ7kRJtXnJbu3WP9fGD/0p7gJ2G2xqyJFXL3+U9oUK7pzfUkY/1gGfvIX9el+IhIke4L
- bIQ7dSqHzEo4KO1iUyl7/FAB1OUcF1gxinicwRa047qW6QtFOj/dfoizmqFibwm2izWn 6w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a8j8hap61-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Aug 2021 17:53:10 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 175LpDZO019169;
-        Thu, 5 Aug 2021 17:53:10 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a8j8hap5t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Aug 2021 17:53:10 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 175LhHgd025561;
-        Thu, 5 Aug 2021 21:53:09 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma04dal.us.ibm.com with ESMTP id 3a7vvaudxf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Aug 2021 21:53:09 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 175Lr7AM16515350
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 5 Aug 2021 21:53:07 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 661876E05B;
-        Thu,  5 Aug 2021 21:53:07 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D5FC16E064;
-        Thu,  5 Aug 2021 21:53:06 +0000 (GMT)
-Received: from sbct-2.. (unknown [9.47.158.152])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  5 Aug 2021 21:53:06 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
-To:     jarkko@kernel.org
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        George Wilson <gcwilson@linux.ibm.com>,
-        Nageswara R Sastry <rnsastry@linux.ibm.com>
-Subject: [PATCH v3 2/2] tpm: ibmvtpm: Avoid error message when process gets signal while waiting
-Date:   Thu,  5 Aug 2021 17:52:56 -0400
-Message-Id: <20210805215256.1293987-3-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210805215256.1293987-1-stefanb@linux.vnet.ibm.com>
-References: <20210805215256.1293987-1-stefanb@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: L_3I9e3EApCbyRoF5w5fsVvYCJvSdieZ
-X-Proofpoint-ORIG-GUID: eg3CDP9k6qipOGKBu0Zk6aHI46HcFLJq
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-05_11:2021-08-05,2021-08-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
- priorityscore=1501 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
- adultscore=0 spamscore=0 impostorscore=0 bulkscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108050127
+        id S231387AbhHEV7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 17:59:45 -0400
+Received: from mga12.intel.com ([192.55.52.136]:65246 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229437AbhHEV7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 17:59:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="193854179"
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="193854179"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 14:59:28 -0700
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="586393590"
+Received: from dawntan-mobl1.gar.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.254.52.64])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 14:59:24 -0700
+Date:   Fri, 6 Aug 2021 09:59:22 +1200
+From:   Kai Huang <kai.huang@intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@gmail.com,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>
+Subject: Re: [RFC PATCH v2 41/69] KVM: x86: Add infrastructure for stolen
+ GPA bits
+Message-Id: <20210806095922.6e2ca6587dc6f5b4fe8d52e7@intel.com>
+In-Reply-To: <YQwMkbBFUuNGnGFw@google.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+        <c958a131ded780808a687b0f25c02127ca14418a.1625186503.git.isaku.yamahata@intel.com>
+        <20210805234424.d14386b79413845b990a18ac@intel.com>
+        <YQwMkbBFUuNGnGFw@google.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+On Thu, 5 Aug 2021 16:06:41 +0000 Sean Christopherson wrote:
+> On Thu, Aug 05, 2021, Kai Huang wrote:
+> > On Fri, 2 Jul 2021 15:04:47 -0700 isaku.yamahata@intel.com wrote:
+> > > From: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> > > @@ -2020,6 +2032,7 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+> > >  	sp = kvm_mmu_alloc_page(vcpu, direct);
+> > >  
+> > >  	sp->gfn = gfn;
+> > > +	sp->gfn_stolen_bits = gfn_stolen_bits;
+> > >  	sp->role = role;
+> > >  	hlist_add_head(&sp->hash_link, sp_list);
+> > >  	if (!direct) {
+> > > @@ -2044,6 +2057,13 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+> > >  	return sp;
+> > >  }
+> > 
+> > 
+> > Sorry for replying old thread,
+> 
+> Ha, one month isn't old, it's barely even mature.
+> 
+> > but to me it looks weird to have gfn_stolen_bits
+> > in 'struct kvm_mmu_page'.  If I understand correctly, above code basically
+> > means that GFN with different stolen bit will have different 'struct
+> > kvm_mmu_page', but in the context of this patch, mappings with different
+> > stolen bits still use the same root,
+> 
+> You're conflating "mapping" with "PTE".  The GFN is a per-PTE value.  Yes, there
+> is a final GFN that is representative of the mapping, but more directly the final
+> GFN is associated with the leaf PTE.
+> 
+> TDX effectively adds the restriction that all PTEs used for a mapping must have
+> the same shared/private status, so mapping and PTE are somewhat interchangeable
+> when talking about stolen bits (the shared bit), but in the context of this patch,
+> the stolen bits are a property of the PTE.
 
-When rngd is run as root then lots of these types of message will appear
-in the kernel log if the TPM has been configured to provide random bytes:
+Yes it is a property of PTE, this is the reason that I think it's weird to have
+stolen bits in 'struct kvm_mmu_page'. Shouldn't stolen bits in 'struct
+kvm_mmu_page' imply that all PTEs (whether leaf or not) share the same
+stolen bit?
 
-[ 7406.275163] tpm tpm0: tpm_transmit: tpm_recv: error -4
+> 
+> Back to your statement, it's incorrect.  PTEs (effectively mappings in TDX) with
+> different stolen bits will _not_ use the same root.  kvm_mmu_get_page() includes
+> the stolen bits in both the hash lookup and in the comparison, i.e. restores the
+> stolen bits when looking for an existing shadow page at the target GFN.
+> 
+> @@ -1978,9 +1990,9 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+>                 role.quadrant = quadrant;
+>         }
+> 
+> -       sp_list = &vcpu->kvm->arch.mmu_page_hash[kvm_page_table_hashfn(gfn)];
+> +       sp_list = &vcpu->kvm->arch.mmu_page_hash[kvm_page_table_hashfn(gfn_and_stolen)];
+>         for_each_valid_sp(vcpu->kvm, sp, sp_list) {
+> -               if (sp->gfn != gfn) {
+> +               if ((sp->gfn | sp->gfn_stolen_bits) != gfn_and_stolen) {
+>                         collisions++;
+>                         continue;
+>                 }
+> 
 
-The issue is caused by the following call that is interrupted while
-waiting for the TPM's response.
+This only works for non-root table, but there's only one single
+vcpu->arch.mmu->root_hpa, we don't have an array to have one root for each
+stolen bit, i.e. do a loop in mmu_alloc_direct_roots(), so effectively all
+stolen bits share one single root.
 
-sig = wait_event_interruptible(ibmvtpm->wq,
-                        (ibmvtpm->tpm_status & TPM_STATUS_BUSY) == 0);
+> > which means gfn_stolen_bits doesn't make a lot of sense at least for root
+> > page table. 
+> 
+> It does make sense, even without a follow-up patch.  In Rick's original series,
+> stealing a bit for execute-only guest memory, there was only a single root.  And
+> except for TDX, there can only ever be a single root because the shared EPTP isn't
+> usable, i.e. there's only the regular/private EPTP.
+> 
+> > Instead, having gfn_stolen_bits in 'struct kvm_mmu_page' only makes sense in
+> > the context of TDX, since TDX requires two separate roots for private and
+> > shared mappings.
+> 
+> > So given we cannot tell whether the same root, or different roots should be
+> > used for different stolen bits, I think we should not add 'gfn_stolen_bits' to
+> > 'struct kvm_mmu_page' and use it to determine whether to allocate a new table
+> > for the same GFN, but should use a new role (i.e role.private) to determine.
+> 
+> A new role would work, too, but it has the disadvantage of not automagically
+> working for all uses of stolen bits, e.g. XO support would have to add another
+> role bit.
 
-Rather than waiting for the response in the low level driver, have it use
-the polling loop in tpm_try_transmit() that uses a command's duration to
-poll until a result has been returned by the TPM, thus ending when the
-timeout has occurred but not responding to signals and ctrl-c anymore. To
-stay in this polling loop extend tpm_ibmvtpm_status() to return
-TPM_STATUS_BUSY for as long as the vTPM is busy. Since the loop requires
-the TPM's timeouts, get them now using tpm_get_timeouts() after setting
-the TPM2 version flag on the chip.
+For each purpose of particular stolen bit, a new role can be defined.  For
+instance, in __direct_map(), if you see stolen bit is TDX shared bit, you don't
+set role.private (otherwise set role.private).  For XO, if you see the stolen
+bit is XO, you set role.xo.
 
-To recreat the resolved issue start rngd like this:
+We already have info of 'gfn_stolen_mask' in vcpu, so we just need to make sure
+all code paths can find the actual stolen bit based on sp->role and vcpu (I
+haven't gone through all though, assuming the annoying part is rmap).
 
-sudo rngd -r /dev/hwrng -t
-sudo rngd -r /dev/tpm0 -t
-
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=1981473
-Fixes: 6674ff145eef ("tpm_ibmvtpm: properly handle interrupted packet receptions")
-Cc: Nayna Jain <nayna@linux.ibm.com>
-Cc: George Wilson <gcwilson@linux.ibm.com>
-Reported-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-
----
-v3L
- - split for renaming of tpm_processing_cmd
-
-v2:
- - reworded commit text
----
- drivers/char/tpm/tpm_ibmvtpm.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
-index cd6457061a2e..5d795866b483 100644
---- a/drivers/char/tpm/tpm_ibmvtpm.c
-+++ b/drivers/char/tpm/tpm_ibmvtpm.c
-@@ -106,18 +106,12 @@ static int tpm_ibmvtpm_recv(struct tpm_chip *chip, u8 *buf, size_t count)
- {
- 	struct ibmvtpm_dev *ibmvtpm = dev_get_drvdata(&chip->dev);
- 	u16 len;
--	int sig;
- 
- 	if (!ibmvtpm->rtce_buf) {
- 		dev_err(ibmvtpm->dev, "ibmvtpm device is not ready\n");
- 		return 0;
- 	}
- 
--	sig = wait_event_interruptible(ibmvtpm->wq,
--				(ibmvtpm->tpm_status & TPM_STATUS_BUSY) == 0);
--	if (sig)
--		return -EINTR;
--
- 	len = ibmvtpm->res_len;
- 
- 	if (count < len) {
-@@ -271,7 +265,9 @@ static void tpm_ibmvtpm_cancel(struct tpm_chip *chip)
- 
- static u8 tpm_ibmvtpm_status(struct tpm_chip *chip)
- {
--	return 0;
-+	struct ibmvtpm_dev *ibmvtpm = dev_get_drvdata(&chip->dev);
-+
-+	return ibmvtpm->tpm_status;
- }
- 
- /**
-@@ -459,7 +455,7 @@ static const struct tpm_class_ops tpm_ibmvtpm = {
- 	.send = tpm_ibmvtpm_send,
- 	.cancel = tpm_ibmvtpm_cancel,
- 	.status = tpm_ibmvtpm_status,
--	.req_complete_mask = 0,
-+	.req_complete_mask = TPM_STATUS_BUSY,
- 	.req_complete_val = 0,
- 	.req_canceled = tpm_ibmvtpm_req_canceled,
- };
-@@ -690,8 +686,15 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
- 		goto init_irq_cleanup;
- 	}
- 
--	if (!strcmp(id->compat, "IBM,vtpm20")) {
-+
-+	if (!strcmp(id->compat, "IBM,vtpm20"))
- 		chip->flags |= TPM_CHIP_FLAG_TPM2;
-+
-+	rc = tpm_get_timeouts(chip);
-+	if (rc)
-+		goto init_irq_cleanup;
-+
-+	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
- 		rc = tpm2_get_cc_attrs_tbl(chip);
- 		if (rc)
- 			goto init_irq_cleanup;
--- 
-2.31.1
-
+> 
+> > And removing 'gfn_stolen_bits' in 'struct kvm_mmu_page' could also save some
+> > memory.
+> 
+> But I do like saving memory...  One potentially bad idea would be to unionize
+> gfn and stolen bits by shifting the stolen bits after they're extracted from the
+> gpa, e.g.
+> 
+> 	union {
+> 		gfn_t gfn_and_stolen;
+> 		struct {
+> 			gfn_t gfn:52;
+> 			gfn_t stolen:12;
+> 		}
+> 	};
+> 
+> the downsides being that accessing just the gfn would require an additional masking
+> operation, and the stolen bits wouldn't align with reality.
