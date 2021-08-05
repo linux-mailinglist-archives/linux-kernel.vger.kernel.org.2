@@ -2,149 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816213E0C1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 03:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F183E0C1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 03:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237625AbhHEBdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 21:33:44 -0400
-Received: from sonic304-25.consmr.mail.gq1.yahoo.com ([98.137.68.206]:43231
-        "EHLO sonic304-25.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231964AbhHEBdl (ORCPT
+        id S237660AbhHEBfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 21:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234640AbhHEBfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 21:33:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1628127208; bh=1xrWKh5TgmovRoSe4Y8HZf+3WeuagNCGYghLM3FUw6c=; h=Date:From:Subject:To:References:In-Reply-To:From:Subject:Reply-To; b=OA9XeJt53xahUIh0EznnTR/n8hqoa+pyWqkIV1JrPl1A+YK1TxAUYRhDDizhaNXYiIJh/cncHfmrpToDB1QtujCNH1MBVMwYCBZCuVrZbsW5jiakO3evAyN71FfeLyNqY866/iNh+z+Zk+o7a0zj0/HZBVubSMr3YuKfRKgqUBjbu0rYXy1q8uMs55Tp5hpOIAof1nhmpJcarXoSocfhMJvnAHzH4jVsVnb8ndvaj7Z0XwSHWW5nlSkNWdBHABo1y6hQ2jfji98xiibvIfprcAbYZ8Roj2h4VTXxJa9SqcaAV+MZMsE7dUSeZ8P0AoxuGHrPL8J+tfj6AHielBCdRg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1628127208; bh=wd1QN/TGi76xQdk45sgC+Q+pTZzEb1W4wR9XOLWKz1j=; h=X-Sonic-MF:Date:From:Subject:To:From:Subject; b=AYEp/q4x89Xw18Xna1fnchejDhTL/fm2BvL5ZMfRaArFq1onzTfZpzMxYdP2zzSQYszIqq+VBPMjO0yXmSllxvQ0Gbuc2aDFrP4X4z3N47uog7e/M5GH7XBIr+YF/XQIU4OR2x9itv6/goaqINKXd39XsfAyDdvaQY0hFrDM2x4/czavclW2HJUzsYBSYu87KYlv+WfyCT/cYAKw9LSZT4KXrKJLALgkjtVLVP8hrPXJkItRCvAk8NI26f6KPAB3GFbD65QNjCTr/Ci3hAMhaDh522DNWKMLZmGtYg1aNkS4VN+5E5HVUzC7C9u6nSt67qHWflQ9AWR/qP4nzx4qHw==
-X-YMail-OSG: qUImXvEVM1kqSEmfoulbZ1xMKa0j3vtXseDtasmARnLDHbxnyN9iMgZ4ETlwsao
- 2N3GCh1ugpaxhEQyQ4PVv0n4DVIxYbBvNyka_J52AT2YvvllVhjoUa0OeeZcLXAxqgV8UYEVTrY6
- 3zR8ng_9QbwZ.s9yRF0JlBGefbRHNjtLsIxMiEFKvdc7EzKx3QdBVLMBDzuDr5fLuMRIK3Y51iyx
- C4yrqlkr81c_6DN7rFNpwJp.wZziuoDNf2cWLwBEkd5VSUwjuIFZ8sYpmZvM0sdi0kmvnZC2pxTq
- 8TIytaRIgdnPL8h5xhJ_Ws4X_aSwYOxKEunbsfTjdUH_0IdL.86a.EldplPNXYWkmov70iDDPZJ3
- E6OQo0tuFPBsdexQRTqfIfzPjjMHRROGrZQlm_ZCAuHQKY0W39q6LoeNnwzN5KzGZE3v815livbH
- RP7zZXdWgF3iCO7r2AXgO1Ssi4aQPkTcLWHVAtOgGHG408ClPFVW3jGr2XZ6dZE4NSOsV6mZn25i
- M4CAmD_GNP2ZB8zBKBXOsfD1Km0NcophQ1ofHsnNrl95O9vui8bRkBeZiQUTYsUy9uvuqAH09bcf
- sqZs8ZNv0.u8pgWKz98mtSGFr4TDGh9vVUAcHW1ahiJGXcycduIxllKRZNl.0PgaSHft8FEGZYTi
- t4tMReq8B_yDmJ0lFy1ZB6M_uKQS.YFeDNRCd3i.lErBjmbYJXO5ze4hPLmyPXnmtIM1wFE55_M1
- 1FJUSkPX5Hwv977NLllzuDpEIF.JyaWlazVhHFVQYTZHQRDoP0jJ2j1dsmlSFXHBTLY4Z4pbtrb3
- 9oFiNfC0R9rejhwltC2Oi5M9LffoZcBi0DHEu84Z8HbQptdIcxOPp6Koh9vSnScwb..JlPKz.9xa
- hR0OfzZnpQMIcM7dypWDEFMWenTLHXmGy4eMRjyDymKp7z6QdlNm8NdrKxCG21EbLujzTA0QE.D7
- JllwEmGHwDFW9ULOcwWzBFB6EC8XcxX_Wu6fm0o02AbNGh3e8sPKmIbCzedh9jiCI8mdho4oOzLK
- 49bIKD4gughjqELsyht0UCCev0OUBoP1N.ouxZjto7KblDrW3NFEdMozIb3lXEp5G9dY4N4A0yxG
- Qw4okydW.e95rJBEUiGjfXVtd1kFWGCkofczVwEdenoHcj51GZe9_omo5jz7ougZHB2iY.WY7um1
- qL6Bb0gOvdmxYt8KSZeT0z4Sz_M5F6G4G9vh_PLwC0ku2LpsTEavbFppAzYj412iQdriZFmkjdCp
- K30DsAGnPTquBdqaSIVVaaLqP0HeaK7VivrgIKF59jJbGJ8WSmYuJKI0SAJgdFYRFRHs2es6q2MS
- yHawMbMsx5GYq4bULC1jL1inigYkr8kjSsYT8YPh.C9zy1VulkRJW4FXrKcFkRVJzJcIiiYO6uP6
- e7ffY6Vyv3zMhLgnO3bygY1t_y1Uxdch5GScVBNz0W4YNSLRfZu5WVTUXala_oQIDMILNFjZgtHQ
- lLAm4snPjhdnZZYL9DYvIwxt44SLquK6GecKYREA.e5EFKCmA5lyxNsMELBib5TlGwzDLbB0RMx.
- a7DSBwsDHkJ7oCx8G_v8owLwoOfxiZbWVxygp0DdIMa5fNUsI3fEXOXexb1gCN65pWnTq3sR76rn
- Tsb1LPKS7cJ_2wNP3SyzmQO40ZBCLMJwiWJOJk7R2xzxRGyd3Hz4v0RpnwefylUIxC.QzqZnIfz9
- SVm66LLzrOGuVKvlSLbKRPpvpdFO7s1rO5Fd59r0ooC5kLMCcmFWC72aONw7NfYvCYSDF0OoIx7U
- kHWcSL8v9zSSFzUfBr9oqGtm1MByP9nYxEX3GkDo66Id6ipUCvi2.lZJiv0R0ickdSNNrfjijonp
- zzIA0ZcrkNTgNVJtPqvIf5QIAFOoSQyT4LW2btDkyVSxs_3W7_cMniB_DMfosmPsuzJDkEH9Sccl
- luBskc1nlKwmd6OLFGJspCNxwGmc2AkFuhkhG4tlLi7ArUq3QATEfodKUayIFlulr6d1E1F8ayyP
- kbmiD0yDbESs6D.bgkA6OAq6ib5GAwpfjOQyJWf5N2OOBqqkpqJrw.zIWtjXF.2t35KzBR_Lsicu
- 3BX7QoZT01kGsiXU79RZI69rLz5A_yBi1Fjuhi7olDQueS0JRR_2_oFCIz_JDiS644iNt2G6KnzY
- h7mL0gM3T6CMNTrBSf6Smrkhz2NSYty..AExH66jYd7y_LlNffbnpXZVjh7KU7GdQKRvXkpH6WMZ
- 5mRMH1G9uQzREUisdmTNkPvuNOX.ulLlE1ouPqJpHHPRgsnAwnjnsl2PF53An8VIWEVd6ExwLgfA
- KVg9DhHCqrLhav2ySQT2DjbFP.KRnvIGFWdsKmj9ce9FX7ZOg04VIbWJxl4ZABHedV58913Bfjg1
- upSqAdxxpx84g.qEuTMrz7OuNA43cUgwTnt.MxFmqvd.RnbxUfbWL0KDS_B6p.sKqNBDLGc3w1i5
- iVAmANcVinFoUwR_tKwDHoQoJDYIHRjnh0nU-
-X-Sonic-MF: <alex_y_xu@yahoo.ca>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.gq1.yahoo.com with HTTP; Thu, 5 Aug 2021 01:33:28 +0000
-Received: by kubenode544.mail-prod1.omega.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 0fb3b7ac0e701e905232dbd565dfae20;
-          Thu, 05 Aug 2021 01:33:26 +0000 (UTC)
-Date:   Wed, 04 Aug 2021 21:33:22 -0400
-From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-Subject: [PATCH] pipe: increase minimum default pipe size to 2 pages
-To:     linux-kernel@vger.kernel.org
-References: <20210805000435.10833-1-alex_y_xu.ref@yahoo.ca>
-        <20210805000435.10833-1-alex_y_xu@yahoo.ca>
-In-Reply-To: <20210805000435.10833-1-alex_y_xu@yahoo.ca>
+        Wed, 4 Aug 2021 21:35:08 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F75C061765;
+        Wed,  4 Aug 2021 18:34:55 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4GgB4B36xPzQk2m;
+        Thu,  5 Aug 2021 03:34:50 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gorani.run; s=MBO0001;
+        t=1628127286;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZE+O5cegW+iGebRWUhEH5E4wIAzdvgqgde4doV7RxnQ=;
+        b=vTi3Q3bMHhE54KV89e8W4EIYg7qQRDhTc58ZeJ0z1tt+6aDO+XQ6B/FMOvSOpgdS1NrvLi
+        UlXbHDDn6yTwNJ8Kxp0Rq4ikcIl35uwBFRBVQuJOEwH3wn9U4VXJO6/nQXhRKGdDkbLgvi
+        pDmT0bvrKUWzAkOcyMHdGnc8Y5bypaKdDX9CKkDc5JWyLMAlZemAQuYIj6osPdbQcBe1xD
+        sqjNvXTmGAgRrBnP2DxemGDX4mgM+UYNjSP2w6EhUKw+Xb6nNGyonL9R52NdSfnTuItalD
+        sKUBkehXbmmMqvcHzmoeEASFCXoced4ojdrp+zMzUn6mxptWLhRnBI6XrCUNWA==
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by spamfilter03.heinlein-hosting.de (spamfilter03.heinlein-hosting.de [80.241.56.117]) (amavisd-new, port 10030)
+        with ESMTP id gunOhzsQxFz4; Thu,  5 Aug 2021 03:34:45 +0200 (CEST)
+Subject: Re: Aw: Re: [PATCH 0/2] Add MUSB for MT7623
+To:     Frank Wunderlich <frank-w@public-files.de>
+Cc:     linux-mediatek@lists.infradead.org,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Min Guo <min.guo@mediatek.com>, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210803151320.71531-1-mans0n@gorani.run>
+ <trinity-0f9449b8-5114-46e5-9a4f-00b62155a938-1628010948338@3c-app-gmx-bs54>
+ <f3607979-ea50-fc1c-0afe-a55881aa24f0@gorani.run>
+ <trinity-8910c659-6e4e-4979-a6d0-eaf5b8bee213-1628064668849@3c-app-gmx-bap67>
+From:   Sungbo Eo <mans0n@gorani.run>
+Message-ID: <a6f4d24f-c79b-35e4-43fb-90eb75623dc2@gorani.run>
+Date:   Thu, 5 Aug 2021 10:34:35 +0900
 MIME-Version: 1.0
-Message-Id: <1628127094.lxxn016tj7.none@localhost>
+In-Reply-To: <trinity-8910c659-6e4e-4979-a6d0-eaf5b8bee213-1628064668849@3c-app-gmx-bap67>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: WebService/1.1.18749 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 6EE5B1887
+X-Rspamd-UID: ce070d
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before this patch, the following program prints 4096 and hangs.
-Afterwards, it prints 8192 and exits successfully. Note that you may
-need to increase your RLIMIT_NOFILE before running the program.
+On 2021-08-04 17:11, Frank Wunderlich wrote:
+>> Gesendet: Mittwoch, 04. August 2021 um 02:14 Uhr
+>> Von: "Sungbo Eo" <mans0n@gorani.run>
+> 
+>>> thanks for working on it. do both otg-roles (host/client) work on your device?
+>>
+>> Yes, I tested it with host mode and device mode.
+>> I also tried manual role-switch via sysfs and it worked with some prior setup.
+>> Note that my device has a USB Type-A connector and not micro B, so I can't help with id pin stuff...
+> 
+>>> but usb-stick is not powered (led of the stick is off) and of course i see no mass-storage device.
+>>
+>> I observed the same symptom (but different error log).
+>>
+>> [    2.722253] musb-hdrc musb-hdrc.1.auto: VBUS_ERROR in a_idle (80, <SessEnd), retry #0, port1 00000104
+>>
+>> In my case adding `regulator-always-on;` in the regulator node solved the problem temporarily.
+>> But after that I switched to relying on pinctrl.
+> 
+> i've found out that usb-stick is powered if i first connect otg-cable and then the stick to the cable...regulator always on does not change anything for me (only supporess "disabling vusb" message on boot). traceback on poweroff is still there.
 
-int main() {
-    int pipefd[2];
-    for (int i =3D 0; i < 1025; i++)
-        if (pipe(pipefd) =3D=3D -1)
-            return 1;
-    size_t bufsz =3D fcntl(pipefd[1], F_GETPIPE_SZ);
-    printf("%zd\n", bufsz);
-    char *buf =3D calloc(bufsz, 1);
-    write(pipefd[1], buf, bufsz);
-    read(pipefd[0], buf, bufsz-1);
-    write(pipefd[1], buf, 1);
-}
+I tried to reproduce your usb-conn-gpio message on my machine but I failed.
+Probably because my USB port does not have ID pin...
 
-Signed-off-by: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
----
+Currently OpenWrt does not enable CONFIG_POWER_RESET_MT6323 so I was not aware of the poweroff error.
+After I enabled it I got the same error and I could not resolve it... I'd better disable it for now.
 
-See discussion at https://lore.kernel.org/lkml/1628086770.5rn8p04n6j.none@l=
-ocalhost/.
+> 
+> role switch happen on inserting stick into cable, not before (insert cable into r2) as i expected.
+> 
+> need to figure out which CONFIG options i need to get USB-Stick as mass storage working.
 
-Patch resend to linux-kernel@vger.kernel.org (typoed email last time).=20
-Sorry if this messes up your mail clients.
+Do you mean that vbus turns on but your usb stick is not detected?
+Does that change if you use `dr_mode = "host"`?
 
- fs/pipe.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> i wonder why it works on your board without the vusb/connector subnodes
 
-diff --git a/fs/pipe.c b/fs/pipe.c
-index 9ef4231cce61..8e6ef62aeb1c 100644
---- a/fs/pipe.c
-+++ b/fs/pipe.c
-@@ -31,6 +31,21 @@
-=20
- #include "internal.h"
-=20
-+/*
-+ * New pipe buffers will be restricted to this size while the user is exce=
-eding
-+ * their pipe buffer quota. The general pipe use case needs at least two
-+ * buffers: one for data yet to be read, and one for new data. If this is =
-less
-+ * than two, then a write to a non-empty pipe may block even if the pipe i=
-s not
-+ * full. This can occur with GNU make jobserver or similar uses of pipes a=
-s
-+ * semaphores: multiple processes may be waiting to write tokens back to t=
-he
-+ * pipe before reading tokens: https://lore.kernel.org/lkml/1628086770.5rn=
-8p04n6j.none@localhost/.
-+ *
-+ * Users can reduce their pipe buffers with F_SETPIPE_SZ below this at the=
-ir
-+ * own risk, namely: pipe writes to non-full pipes may block until the pip=
-e is
-+ * emptied.
-+ */
-+#define PIPE_MIN_DEF_BUFFERS 2
-+
- /*
-  * The max size that a non-root user is allowed to grow the pipe. Can
-  * be set by root in /proc/sys/fs/pipe-max-size
-@@ -781,8 +796,8 @@ struct pipe_inode_info *alloc_pipe_info(void)
- 	user_bufs =3D account_pipe_buffers(user, 0, pipe_bufs);
-=20
- 	if (too_many_pipe_buffers_soft(user_bufs) && pipe_is_unprivileged_user())=
- {
--		user_bufs =3D account_pipe_buffers(user, pipe_bufs, 1);
--		pipe_bufs =3D 1;
-+		user_bufs =3D account_pipe_buffers(user, pipe_bufs, PIPE_MIN_DEF_BUFFERS=
-);
-+		pipe_bufs =3D PIPE_MIN_DEF_BUFFERS;
- 	}
-=20
- 	if (too_many_pipe_buffers_hard(user_bufs) && pipe_is_unprivileged_user())
---=20
-2.32.0
+Do you mean vbus subnode in musb or vusb subnode in pmic?
+I've never used vusb node, it did not affect me in any way.
+When I used usb_vbus regulator node to enable vbus line, it did not turn on the line unless I added `regulator-always-on`...
+It seems the connector node is not really required for me.
 
+> 
+>> +&pio {
+>> +       musb_pins: musb {
+>> +               pins-musb {
+>> +                       pinmux = <MT7623_PIN_237_EXT_SDIO2_FUNC_DRV_VBUS>;
+>> +               };
+>> +       };
+>> +};
+> 
+> imho it's the same gpio used for regulator, right? whats the difference?
+> i tried this instead of the regulator-node => not powered (cable first, then stick).
 
+I don't really know how it does work, but for me it does turn on vbus in host mode and turn it off in device mode.
+I imagined DRV_VBUS setup will make the musb controller itself (and not kernel) control the line as needed, but it's just my guess.
+
+> 
+>> +&usb3 {
+>> +       pinctrl-names = "default";
+>> +       pinctrl-0 = <&musb_pins>;
+>> +       status = "okay";
+>> +
+>> +       dr_mode = "host";
+>> +
+>> +       connector {
+>> +               compatible = "usb-a-connector";
+>> +       };
+>> +};
+>>
+>> root@OpenWrt:~# lsusb -t
+>> /:  Bus 03.Port 1: Dev 1, Class=root_hub, Driver=musb-hdrc/1p, 480M
+>>     |__ Port 1: Dev 2, If 0, Class=, Driver=usb-storage, 480M
+>> /:  Bus 02.Port 1: Dev 1, Class=root_hub, Driver=xhci-mtk/1p, 5000M
+>> /:  Bus 01.Port 1: Dev 1, Class=root_hub, Driver=xhci-mtk/1p, 480M
+>>
