@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0BB3E1846
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E460C3E1849
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242158AbhHEPl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:41:27 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43486 "EHLO
+        id S242150AbhHEPlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:41:32 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43516 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241840AbhHEPlS (ORCPT
+        with ESMTP id S242050AbhHEPlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:41:18 -0400
-Message-ID: <20210805151300.330412127@linutronix.de>
+        Thu, 5 Aug 2021 11:41:19 -0400
+Message-ID: <20210805153952.857071447@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628178063;
+        s=2020; t=1628178064;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=h/t12juxjB2pL7dFaOFInuwa77BRRKTHnrE9eT8dlaM=;
-        b=B5hm9qjojVaaDoArYLZvoEinSBo32qyrUAbwGhEdreBpRAbgCOQxZOPJM1e/t5iLwEM9WL
-        Fdoa7k0zF2afIELwFPdeowpyeGjwkUvPa0K0wvExBtyr5OS6JR0skDJDpJxVu8f4g1LhLK
-        Sh50Me9H/sAkAhnYZhR/B/+LH8nOFsOf7tZYvgZlmnmSBvWuXBemIG8U2/zKMhkjYFEESd
-        CJ8itwxqX33uFEtNfUSEGei9oR+Lm13UFWEMigRUU9n7hT1viEWPKSk5fwee4lo4rr4ysP
-        SaS6c3RfHY9zGRIJRHVVe7og0Rk5ekMUKCjoTvXKRgj/aU1H+mb9Ts5byZPFqg==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=PpGuo07G9t6v+7usOIACbdlfiq93zM9BMMU3eJZRQkc=;
+        b=CU9j4CTwunF6bzRZ96LzuGA5YHIs+gl+5cccQlzz/UZz8TGXty1953gF/etQ0qOAookDbF
+        zjWwf7ADbCTxM1Vq3igf0Y1AlweIMr/fBL5lK2lDZdZLryiZvqf64QPDoOe5Dfg9drHCRW
+        xGgAVWTbE6IpPCvbA011lBsJeJr0dcbVQo/51hiJo/Er5Jn0iHvKduUkxzSbTdwL3LpRbc
+        S8yhRDIVBHZWNwCMWAu3WKzHl/+uFg59cD2FpVI359pPRhV2ckYXCK6pEQyM+u8V6nRw4L
+        hBHWQyZcaBSw8vbrvJ4PpuWjbgF0heh7Fmro7YRnbDlLziZMcvfMUL/KqV/CPQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628178063;
+        s=2020e; t=1628178064;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=h/t12juxjB2pL7dFaOFInuwa77BRRKTHnrE9eT8dlaM=;
-        b=ThDkQBBw0rrblw0N+iEw8iFtmB7ebSdFE6nvK+PrNS119MQJsm9ctejGVTKhZFofTECz56
-        IpcCns9PPd0nblBA==
-Date:   Thu, 05 Aug 2021 17:13:00 +0200
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=PpGuo07G9t6v+7usOIACbdlfiq93zM9BMMU3eJZRQkc=;
+        b=hoCU1boixuQXstoyd/mktg6vgrkDthGQkqIKcTWuJ6DFXaxTFLYHqhVqc1jgqvGSqlnyqF
+        TrSRv/xZ1ewC6lCg==
+Date:   Thu, 05 Aug 2021 17:13:01 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -46,99 +46,86 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V3 00/64] locking, sched: The PREEMPT-RT locking infrastructure
+Subject: [patch V3 01/64] sched: Split out the wakeup state check
+References: <20210805151300.330412127@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rm9sa3MsCgp0aGUgZm9sbG93aW5nIHNlcmllcyBpcyBhbiB1cGRhdGUgdG8gVjIgd2hpY2ggY2Fu
-IGJlIGZvdW5kIGhlcmU6CgogIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyMTA3MTMxNTEw
-NTQuNzAwNzE5OTQ5QGxpbnV0cm9uaXguZGUKCkl0IGNvbnRhaW5zIHRoZSBidWxrIG9mIHRoZSBQ
-UkVFTVBULVJUIGxvY2tpbmcgaW5mcmFzdHJ1Y3R1cmUuIEluClBSRUVNUFQtUlQgZW5hYmxlZCBr
-ZXJuZWxzIHRoZSBmb2xsb3dpbmcgbG9ja2luZyBwcmltaXRpdmVzIGFyZSBzdWJzdGl0dXRlZApi
-eSBSVC1NdXRleCBiYXNlZCB2YXJpYW50czoKCiAgbXV0ZXgsIHd3X211dGV4LCByd19zZW1hcGhv
-cmUsIHNwaW5sb2NrLCByd2xvY2sKCnNlbWFwaG9yZXMgYXJlIG5vdCBzdWJzdGl0dXRlZCBiZWNh
-dXNlIHRoZXkgZG8gbm90IHByb3ZpZGUgc3RyaWN0IG93bmVyCnNlbWFudGljcy4KCk9mIGNvdXJz
-ZSByYXdfc3BpbmxvY2tzIGFyZSBub3QgdG91Y2hlZCBlaXRoZXIgYXMgdGhleSBwcm90ZWN0IGxv
-dyBsZXZlbApvcGVyYXRpb25zIGluIHRoZSBzY2hlZHVsZXIsIHRpbWVycyBhbmQgaGFyZHdhcmUg
-YWNjZXNzLgoKVGhlIG1vc3QgaW50ZXJlc3RpbmcgcGFydHMgb2YgdGhlIHNlcmllcyB3aGljaCBu
-ZWVkIGEgbG90IG9mIGV5ZWJhbGxzCmFyZToKCiAgLSB0aGUgc2NoZWR1bGVyIGJpdHMgd2hpY2gg
-cHJvdmlkZSB0aGUgaW5mcmFzdHJ1Y3R1cmUgZm9yIHNwaW5sb2NrIGFuZAogICAgcndsb2NrIHN1
-YnN0aXR1dGlvbiB0byBlbnN1cmUgdGhhdCB0aGUgdGFzayBzdGF0ZSBpcyBwcmVzZXJ2ZWQgd2hl
-bgogICAgYmxvY2tpbmcgb24gc3VjaCBhIGxvY2sgYW5kIGEgcmVndWxhciB3YWtldXAgaXMgaGFu
-ZGxlZCBjb3JyZWN0bHkgYW5kCiAgICBub3QgbG9zdAoKICAtIHRoZSBydG11dGV4IGNvcmUgaW1w
-bGVtZW50YXRpb24gdG8gaGFuZGxlIGxvY2sgY29udGVudGlvbiBvbiBzcGlubG9ja3MKICAgIGFu
-ZCByd2xvY2tzIGNvcnJlY3RseSB2cy4gdGhlIHRhc2sgc3RhdGUKCiAgLSB0aGUgcndfc2VtYXBo
-b3JlL3J3bG9jayBzdWJzdGl0dXRpb25zIHdoaWNoIHV0aWxpemUgdGhlIHNhbWUKICAgIGltcGxl
-bWVudGF0aW9uIHZzLiB0aGUgcmVhZGVyL3dyaXRlciBoYW5kbGluZwoKICAtIFRoZSBuZXcgcnRt
-dXRleCBiYXNlZCB3d19tdXRleCBpbXBsZW1lbnRhdGlvbi4KCiAgLSB0aGUgUEkgZnV0ZXggcmVs
-YXRlZCBiaXRzIHRvIGhhbmRsZSB0aGUgaW50ZXJhY3Rpb24gYmV0d2VlbiBibG9ja2luZwogICAg
-b24gdGhlIHVuZGVybHlpbmcgcnRtdXRleCBhbmQgY29udGVudGlvbiBvbiB0aGUgaGFzaCBidWNr
-ZXQgbG9jayB3aGljaAogICAgaXMgY29udmVydGVkIHRvIGEgJ3NsZWVwaW5nIHNwaW5sb2NrJy4K
-ClRoZSByZXN0IHN1cmVseSBuZWVkcyBhIHRob3JvdWdoIHJldmlldyBhcyB3ZWxsLCBidXQgdGhv
-c2UgcGFydHMgYXJlIHByZXR0eQpzdHJhaWdodCBmb3J3YXJkOiBxdWl0ZSBzb21lIGNvZGUgcmVz
-dHJ1Y3R1cmluZyBhbmQgdGhlIGFjdHVhbCB3cmFwcGVyCmZ1bmN0aW9ucyB0byByZXBsYWNlIHRo
-ZSBleGlzdGluZyAhUlQgaW1wbGVtZW50YXRpb25zLgoKVGhlIHNlcmllcyBzdXJ2aXZlZCBpbnRl
-cm5hbCB0ZXN0aW5nIGluIFJUIGtlcm5lbHMgYW5kIGlzIHBhcnQgb2YgdGhlCnVwY29taW5nIHY1
-LjE0LXJjNC1ydDUgcmVsZWFzZS4KCkZvciAhUlQga2VybmVscyB0aGVyZSBpcyBubyBmdW5jdGlv
-bmFsIGNoYW5nZS4KClRoZSBzZXJpZXMgaXMgYWxzbyBhdmFpbGFibGUgZnJvbSBnaXQ6CgogIGdp
-dDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90Z2x4L2RldmVsLmdp
-dCBydG11dGV4CgphbmQgZnVsbHkgaW50ZWdyYXRlZCBpbnRvIHRoZSB1cGNvbWluZyB2NS4xNC1y
-YzQtcnQ1IHJlbGVhc2UuCgpDaGFuZ2VzIHZzLiBWMjoKCiAgLSBSZXdvcmsgdGhlIHRhc2sgc3Rh
-dGUgY2hhbmdlIGhlbHBlcnMgKFdhaW1hbikKCiAgLSBBZGQgbG9ja2RlcCBhc3NlcnRzIGZvciBw
-YXJhbm9pYSBzYWtlIChQZXRlcikKCiAgLSBSZXZlcnQgdGhlIGRvdWJsZSB3YWtlX3EgaW1wbGVt
-ZW50YXRpb24gYXMgaXQgaXMgYnJva2VuCiAgICBhbmQgZ28gYmFjayB0byB0aGUgVjEgaW1wbGVt
-ZW50YXRpb24gb2YgcnRfd2FrZV9xX2hlYWQgKE1pa2UpCgogIC0gRml4IHRoZSBVTmludGVycnVw
-dGlibGUgY29weSAmIHBhc3RhIGZhaWwgaW4gd3dfbXV0ZXggKE1pa2UpCgogIC0gUGljayB1cCB0
-aGUgZnV0ZXggY2hhbmdlcyBmcm9tIFBldGVyCgogIC0gUmVtb3ZlIGR1cGxpY2F0ZSBkZWZpbmVz
-IChXYWltYW4pCgogIC0gRm9sZCB0aGUgc3BpbiB3YWl0IGNoYW5nZXMgaW50byBvbmUgcGF0Y2gg
-YW5kIHJld3JpdGUgY2hhbmdlbG9nIChQZXRlcikKCiAgLSBGaXggdHlwb3MgYWxsIG92ZXIgdGhl
-IHBsYWNlIChEYW5pZWwpCgpUaGFua3MsCgoJdGdseAotLS0KIGIvZHJpdmVycy9zdGFnaW5nL21l
-ZGlhL2F0b21pc3AvcGNpL2F0b21pc3BfaW9jdGwuYyB8ICAgIDQgCiBiL2luY2x1ZGUvbGludXgv
-ZGVidWdfbG9ja3MuaCAgICAgICAgICAgICAgICAgICAgICAgfCAgICAzIAogYi9pbmNsdWRlL2xp
-bnV4L211dGV4LmggICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA5MyArCiBiL2luY2x1
-ZGUvbGludXgvcHJlZW1wdC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICA0IAogYi9p
-bmNsdWRlL2xpbnV4L3JidHJlZS5oICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAzMCAK
-IGIvaW5jbHVkZS9saW51eC9yYnRyZWVfdHlwZXMuaCAgICAgICAgICAgICAgICAgICAgICB8ICAg
-MzQgCiBiL2luY2x1ZGUvbGludXgvcnRtdXRleC5oICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgIDU1IC0KIGIvaW5jbHVkZS9saW51eC9yd2Jhc2VfcnQuaCAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAgMzggCiBiL2luY2x1ZGUvbGludXgvcndsb2NrX3J0LmggICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgMTQwICsrCiBiL2luY2x1ZGUvbGludXgvcndsb2NrX3R5cGVzLmggICAgICAg
-ICAgICAgICAgICAgICAgfCAgIDM5IAogYi9pbmNsdWRlL2xpbnV4L3J3c2VtLmggICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHwgICA1OCArCiBiL2luY2x1ZGUvbGludXgvc2NoZWQuaCAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTE5ICstCiBiL2luY2x1ZGUvbGludXgvc2NoZWQv
-d2FrZV9xLmggICAgICAgICAgICAgICAgICAgICAgfCAgICA4IAogYi9pbmNsdWRlL2xpbnV4L3Nw
-aW5sb2NrLmggICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxNSAKIGIvaW5jbHVkZS9saW51
-eC9zcGlubG9ja19hcGlfc21wLmggICAgICAgICAgICAgICAgICB8ICAgIDMgCiBiL2luY2x1ZGUv
-bGludXgvc3BpbmxvY2tfcnQuaCAgICAgICAgICAgICAgICAgICAgICAgfCAgMTUxICsrCiBiL2lu
-Y2x1ZGUvbGludXgvc3BpbmxvY2tfdHlwZXMuaCAgICAgICAgICAgICAgICAgICAgfCAgIDgzIC0K
-IGIvaW5jbHVkZS9saW51eC9zcGlubG9ja190eXBlc19yYXcuaCAgICAgICAgICAgICAgICB8ICAg
-NjUgKwogYi9pbmNsdWRlL2xpbnV4L3d3X211dGV4LmggICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgICA1MCAKIGIva2VybmVsL0tjb25maWcubG9ja3MgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAgIDIgCiBiL2tlcm5lbC9mdXRleC5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgNDg4ICsrKysrKy0tCiBiL2tlcm5lbC9sb2NraW5nL01ha2VmaWxlICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgfCAgICAzIAogYi9rZXJuZWwvbG9ja2luZy9tdXRleC1kZWJ1
-Zy5jICAgICAgICAgICAgICAgICAgICAgIHwgICAgNSAKIGIva2VybmVsL2xvY2tpbmcvbXV0ZXgu
-YyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA0MzEgLS0tLS0tLQogYi9rZXJuZWwvbG9j
-a2luZy9tdXRleC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAzMyAKIGIva2VybmVs
-L2xvY2tpbmcvcnRtdXRleC5jICAgICAgICAgICAgICAgICAgICAgICAgICB8IDEwOTUgKysrKysr
-KystLS0tLS0tLS0tLS0KIGIva2VybmVsL2xvY2tpbmcvcnRtdXRleF9hcGkuYyAgICAgICAgICAg
-ICAgICAgICAgICB8ICA1OTAgKysrKysrKysrKwogYi9rZXJuZWwvbG9ja2luZy9ydG11dGV4X2Nv
-bW1vbi5oICAgICAgICAgICAgICAgICAgIHwgIDEyMiArLQogYi9rZXJuZWwvbG9ja2luZy9yd2Jh
-c2VfcnQuYyAgICAgICAgICAgICAgICAgICAgICAgIHwgIDI2MyArKysrCiBiL2tlcm5lbC9sb2Nr
-aW5nL3J3c2VtLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTA5ICsKIGIva2VybmVs
-L2xvY2tpbmcvc3BpbmxvY2suYyAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDcgCiBiL2tl
-cm5lbC9sb2NraW5nL3NwaW5sb2NrX2RlYnVnLmMgICAgICAgICAgICAgICAgICAgfCAgICA1IAog
-Yi9rZXJuZWwvbG9ja2luZy9zcGlubG9ja19ydC5jICAgICAgICAgICAgICAgICAgICAgIHwgIDI1
-NyArKysrCiBiL2tlcm5lbC9sb2NraW5nL3d3X211dGV4LmggICAgICAgICAgICAgICAgICAgICAg
-ICAgfCAgNTY5ICsrKysrKysrKysKIGIva2VybmVsL2xvY2tpbmcvd3dfcnRfbXV0ZXguYyAgICAg
-ICAgICAgICAgICAgICAgICB8ICAgNzYgKwogYi9rZXJuZWwvcmN1L3RyZWVfcGx1Z2luLmggICAg
-ICAgICAgICAgICAgICAgICAgICAgIHwgICAgNiAKIGIva2VybmVsL3NjaGVkL2NvcmUuYyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxMDkgKwogYi9saWIvS2NvbmZpZy5kZWJ1ZyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxMSAKIGIvbGliL3Rlc3RfbG9ja3Vw
-LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDggCiBrZXJuZWwvbG9ja2lu
-Zy9tdXRleC1kZWJ1Zy5oICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDI5IAogNDAgZmlsZXMg
-Y2hhbmdlZCwgMzc1OSBpbnNlcnRpb25zKCspLCAxNDUxIGRlbGV0aW9ucygtKQoK
+From: Thomas Gleixner <tglx@linutronix.de>
+
+RT kernels have a slightly more complicated handling of wakeups due to
+'sleeping' spin/rwlocks. If a task is blocked on such a lock then the
+original state of the task is preserved over the blocking and any regular
+(non lock related) wakeup has to be targeted at the saved state to ensure
+that these wakeups are not lost. Once the task acquired the lock it
+restores the task state from the saved state.
+
+To avoid cluttering try_to_wake_up() with that logic, split the wake up
+state check out into an inline helper and use it at both places where
+task::state is checked against the state argument of try_to_wake_up().
+
+No functional change.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ kernel/sched/core.c |   24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
+---
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3564,6 +3564,22 @@ static void ttwu_queue(struct task_struc
+ }
+ 
+ /*
++ * Invoked from try_to_wake_up() to check whether the task can be woken up.
++ *
++ * The caller holds p::pi_lock if p != current or has preemption
++ * disabled when p == current.
++ */
++static __always_inline
++bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
++{
++	if (READ_ONCE(p->__state) & state) {
++		*success = 1;
++		return true;
++	}
++	return false;
++}
++
++/*
+  * Notes on Program-Order guarantees on SMP systems.
+  *
+  *  MIGRATION
+@@ -3702,10 +3718,9 @@ try_to_wake_up(struct task_struct *p, un
+ 		 *  - we're serialized against set_special_state() by virtue of
+ 		 *    it disabling IRQs (this allows not taking ->pi_lock).
+ 		 */
+-		if (!(READ_ONCE(p->__state) & state))
++		if (!ttwu_state_match(p, state, &success))
+ 			goto out;
+ 
+-		success = 1;
+ 		trace_sched_waking(p);
+ 		WRITE_ONCE(p->__state, TASK_RUNNING);
+ 		trace_sched_wakeup(p);
+@@ -3720,14 +3735,11 @@ try_to_wake_up(struct task_struct *p, un
+ 	 */
+ 	raw_spin_lock_irqsave(&p->pi_lock, flags);
+ 	smp_mb__after_spinlock();
+-	if (!(READ_ONCE(p->__state) & state))
++	if (!ttwu_state_match(p, state, &success))
+ 		goto unlock;
+ 
+ 	trace_sched_waking(p);
+ 
+-	/* We're going to change ->state: */
+-	success = 1;
+-
+ 	/*
+ 	 * Ensure we load p->on_rq _after_ p->state, otherwise it would
+ 	 * be possible to, falsely, observe p->on_rq == 0 and get stuck
+
