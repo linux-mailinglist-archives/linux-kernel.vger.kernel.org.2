@@ -2,123 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CE33E1B50
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63213E1B53
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239245AbhHES3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41496 "EHLO
+        id S241106AbhHES3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236102AbhHES3a (ORCPT
+        with ESMTP id S237842AbhHES3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:29:30 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54A7C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:29:15 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id b21so8311043ljo.13
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:29:15 -0700 (PDT)
+        Thu, 5 Aug 2021 14:29:54 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C9E8C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:29:39 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id g21so9729205edb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:29:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B2x6auZy1yOpqK/qUxjj6oGl/GoNZ7BrX2iVqBBt8Ww=;
-        b=s3FKo7e0gW48IvH0lOX4Kcel4L00ZcKu2nFI66uWvjtQ8/rVQhYZPEbf79d0F8Uouv
-         uk0W/wKOVOAsC0A1EJXlP0p0jCihTaty+C79VIp+YN5MwaOTs/9xzexUBEOh590f+HIF
-         iwFt3MK6wBZjYWk+VbbwKxjhOEYpiNNYXy4u+PXsbJiOBuVInPk2hy49igFYzkF8WVFa
-         Gm9EdHXBflVgYvKhPAgq5ajsf6CE/zuiuxLLOFt+OPa1fpWMD/S29zBNMp3UK/0bFT42
-         GEMXOFiBckGd6B64Zpg0ot0G6WU+72hyx3WSKw3YcoZJWqQiaSCIG8Bg9rQbBBNidWKp
-         e1LQ==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=1c3VrQ3FItr1tlZhwJQtIGHjV4vRn9xHIa6kZJ9nIxc=;
+        b=ENJ2jsN+dNUIpx8dGcAJJc8GzMluVKbrtwQDHErnQEU/A81cSqgkoF7qq0hI7vjVBC
+         6SAeq763ZYep6+7i423qXiE3kOy6oCxfX7Y2JfLsPG1JLfWvy5mJ7LfxrZeBqyMCw4YA
+         oEMOdMhyxUTJvSeiTF2Fg4TObSBepBxN/52U/KCJyHXGzFUXGscu8+7rP/mzed1T9JU8
+         Zrf+y/MbvTrSGMA6Mlh/NoQTO+pIt3N1ECtqu9hZj5Mzh3p5OejjLV65uESnUJQiEP1v
+         hUp8MlMC4lWTtoNH1DbTRLzTji+LBgC6kVMhfyCf37jljEY9wcDDBsVAC9WM3psi7tg7
+         v6wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B2x6auZy1yOpqK/qUxjj6oGl/GoNZ7BrX2iVqBBt8Ww=;
-        b=tPhBJ6P0Qzf92vJG2eqUo1tHS+a++tvunueI/Z+otO5ki+vMqGO9zf4tpyLnAuWXxN
-         00Q7PVqxZG+li6C5Hnkw07UfQDBmEvFr3BDza35WEyzSvWPKdjUdPJczn3LSmzDhs6ML
-         7nmmxkZykJcVJf8Gdg+DOSfXW7NxCUttNqMY+3KNkdX8vFlqzqAtnHog8DK8cMBCSSBv
-         jMPhEdFMtAY65u9RA8LRVtzeeiJajS7FY2OJLz1U74b0orvcwI8T8uh5mR9MRv5b68BN
-         DDEGdAw2VG4bCF18TpxPefUIx7srQk+w6et9LNN1MS0ytdBmJi7ArEdzWc9CdYrDiEev
-         eg2g==
-X-Gm-Message-State: AOAM533TyBuWaVlNsvVlSQhUn36mjKmRX1CoSFB0z3Cu+zNHkVAsv0gU
-        v8TxR+G1B3FqHrw/8eVuR0N5i3dH28YyW9VBy31IZw==
-X-Google-Smtp-Source: ABdhPJyAXLRiePOk8RmfIiiw1Li4GncljE5ldEIU/fCDMdz+GCo7ZOdHwkVrVBCBCpZSQezVnv9hbeU9goJsJiriwWs=
-X-Received: by 2002:a2e:9ec1:: with SMTP id h1mr4044167ljk.0.1628188154005;
- Thu, 05 Aug 2021 11:29:14 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=1c3VrQ3FItr1tlZhwJQtIGHjV4vRn9xHIa6kZJ9nIxc=;
+        b=iHjgBSiZQ1x7a9/MZJUSjNbA9pYws1ZjQjyTelLm/pchAvXTjjr0XawlAUBTrP5Bax
+         m9NuhmSz/yWadTBXMwVlfbn9eJVmxNJWuH/4iipYH1hqbs2kKXm47zK+kzCEkF+5s1mR
+         b7ydQtlKpmm6CUlJBEpqGp7gJPUO0laivCWU+wa+nAAvtzZ6r+NSryqVSi5/jV/eCDTV
+         Webem6GeSlCAfREq0Uro4sV97mA5sBa32GqdnCYoGdqYWWmTgKyRyRYJh7vzIuztew9r
+         Wu+unKMVq6Ha9D5PLS4iGP5Wg5k1DLTBUbLOwq9QPIuSoQuzNs4FeKiFlAscDiYbZ3Zt
+         uSAg==
+X-Gm-Message-State: AOAM533aXCvSU92t1n6JS5Im5pmD0Lu/X3MYT/48P6KHXJYtOAHEhOwX
+        uM9gUbkAfFt51SeeLDo4fHmGSGrmZcTjG4R2RXxfJisB3DY7sYI=
+X-Google-Smtp-Source: ABdhPJxmgP4jWmPz3uLlSNLgR3I1TzKQRWyBUxibakNf4A77O6mTWX6u7RjsU7kbIgC5PZEppaJdr85FcRRrMvhw6P8=
+X-Received: by 2002:a05:6402:b83:: with SMTP id cf3mr8328900edb.12.1628188177841;
+ Thu, 05 Aug 2021 11:29:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210802183910.1802120-1-ndesaulniers@google.com>
- <20210802183910.1802120-4-ndesaulniers@google.com> <CAK7LNASkBNDzXWxweotPZGJH-z3J59rPQwGDV32rfH9hH+sVHQ@mail.gmail.com>
- <CAKwvOd=iyhky9jhw+UpYM7W5-7tqo02sxpZUASEk6XciS0wSwg@mail.gmail.com>
-In-Reply-To: <CAKwvOd=iyhky9jhw+UpYM7W5-7tqo02sxpZUASEk6XciS0wSwg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 5 Aug 2021 11:29:03 -0700
-Message-ID: <CAKwvOd=5drNCoU-PLFb-kJTzk1tXOvwCK89hAMPXrBZv+Ey=Bw@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] Documentation/llvm: update CROSS_COMPILE inferencing
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 5 Aug 2021 14:29:27 -0400
+Message-ID: <CAHC9VhSW0zVR7wB9dxR-AkQAMK_H_fKQ75tTbMLomkBQzfzciw@mail.gmail.com>
+Subject: [GIT PULL] SELinux fixes for v5.14 (#1)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 11:27 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Thu, Aug 5, 2021 at 6:58 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > On Tue, Aug 3, 2021 at 3:39 AM 'Nick Desaulniers' via Clang Built
-> > Linux <clang-built-linux@googlegroups.com> wrote:
-> > > diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-> > > index b18401d2ba82..f8a360958f4c 100644
-> > > --- a/Documentation/kbuild/llvm.rst
-> > > +++ b/Documentation/kbuild/llvm.rst
-> > > @@ -63,6 +63,23 @@ They can be enabled individually. The full list of the parameters: ::
-> > >  Currently, the integrated assembler is disabled by default. You can pass
-> > >  ``LLVM_IAS=1`` to enable it.
-> > >
-> > > +Omitting CROSS_COMPILE
-> > > +----------------------
-> > > +
-> > > +As explained above, ``CROSS_COMPILE`` is used to set ``--target=<triple>``.
-> > > +
-> > > +Unless ``LLVM_IAS=1`` is specified, ``CROSS_COMPILE`` is also used to derive
-> > > +``--prefix=<path>`` to search for the GNU assembler and linker.
-> >
-> >
-> > Is there any place where we rely on --prefix
-> > to search for the linker?
-> >
-> > In general, the compiler stops after generating an object
-> > since it is passed with the -c option.
-> > The linking stage is separated.
-> >
-> > In the old days, VDSO was an exceptional case
-> > where $(CC) was used as the linker driver, but
-> > commit fe00e50b2db8c60e4ec90befad1f5bab8ca2c800 fixed it.
->
-> See my previous reply to Fangrui.
-> https://lore.kernel.org/lkml/CAKwvOdnK=SUm1_--tcLRO3LVeXd_2Srfv2tsZCUW0uXXa1W_pg@mail.gmail.com/
->
-> To be more specific, I believe this is still a problem for ppc vdso.
-> https://github.com/ClangBuiltLinux/linux/issues/774
->
-> I had sent patches for that, but binutils 2.26 would crash (IIUC,
-> newer GNU binutils are ok).  See this thread:
-> https://lore.kernel.org/lkml/b2066ccd-2b81-6032-08e3-41105b400f75@csgroup.eu/
->
-> So "we'd prefer the linker was used as the driver, but there's at
-> least one place I know of in the tree where that's not currently the
-> case."
+Hi Linus,
 
-Also, I think the CC_CAN_LINK functionality also fits the bill.
-https://github.com/ClangBuiltLinux/linux/issues/1290
--- 
+One small SELinux fix for v5.14-rcX to fix a problem where an error
+code was not being propagated back up to userspace when a bogus
+SELinux policy is loaded into the kernel.  The patch passes the
+selinux-testsuite and merges cleanly with your tree as of a few
+minutes ago; please merge this for the next release.
+
 Thanks,
-~Nick Desaulniers
+-Paul
+
+--
+The following changes since commit d99cf13f14200cdb5cbb704345774c9c0698612d:
+
+ selinux: kill 'flags' argument in avc_has_perm_flags() and avc_audit() (2021-0
+6-11 13:11:45 -0400)
+
+are available in the Git repository at:
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux
+-pr-20210805
+
+for you to fetch changes up to 4c156084daa8ee70978e4b150b5eb5fc7b1f15be:
+
+ selinux: correct the return value when loads initial sids (2021-08-02 09:59:50
+-0400)
+
+----------------------------------------------------------------
+selinux/stable-5.14 PR 20210805
+
+----------------------------------------------------------------
+Xiu Jianfeng (1):
+     selinux: correct the return value when loads initial sids
+
+security/selinux/ss/policydb.c | 10 ++++------
+1 file changed, 4 insertions(+), 6 deletions(-)
+
+-- 
+paul moore
+www.paul-moore.com
