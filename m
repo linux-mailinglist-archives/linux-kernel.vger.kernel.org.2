@@ -2,76 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 469803E0CD6
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 05:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161F23E0CD8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 05:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238527AbhHEDkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 23:40:19 -0400
-Received: from m32-153.88.com ([43.250.32.153]:48512 "EHLO email.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231286AbhHEDkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 23:40:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=From:To:Date; bh=5wdJNGYtufzjIgVuAGpajGtzpDQxsxxZzF255
-        aDEswY=; b=LNn3MEQYbu9aF2fNKwxE/Yap1ijll0CTJUWYB/rwqHB82o4cVu/oO
-        tWlthf0affmKRx8AB3UAbRhwC64ZtbTa+J1m0rzlq5QJezFoUuCbseGKC8FFoZPT
-        TrLK8+nEIdgYL/IH5krclgbhyonWb+WP7wO5aGIdf3cTrRzcJKsnGA=
-Received: from localhost.localdomain (unknown [113.251.8.125])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgD3dqeOXQtheOMcAA--.40156S2;
-        Thu, 05 Aug 2021 11:40:00 +0800 (CST)
-From:   Hu Haowen <src.res@email.cn>
-To:     pbonzini@redhat.com, corbet@lwn.net
-Cc:     kvm@vger.kernel.org, linux-doc@vger.kernel.org,
+        id S238538AbhHEDky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 23:40:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231286AbhHEDkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 23:40:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08779601FE;
+        Thu,  5 Aug 2021 03:40:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628134839;
+        bh=PK6dnDBY1zuPRNjL8RTX2Tvc6wQe7Reoet39PTJ0OvQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f4VtB3inVBuZ48BKIde5Ozmc1B+6R0ID13sLavH3Awom27D6BmCGSsNWyaG4NI0wV
+         XokCKghOii90o4qA1if/XlZK9fYDiXNsTQvbaHQTZgbTTixwTC7K9Y7KFCfA5idgKF
+         IV5+EKabAYgS7Qe5Wq/YHP0piYf1UGK49qznC2vOsUDH5DVGPwz0qA8ZX4KhGy0/VO
+         rTc5HJla6i7Uoc33kN3kuELXnOjjikZS9rEoVtEYBwmvxzfVD5Aj6Ayq3pYzKzWeha
+         yv7lBSyqFfQIHLCXEzfJmwNYo+FCjSxel/OAO7lWdf7h1/mvQz7547vat0ybdfXNwm
+         4OPyDF+ZfPXNA==
+Date:   Thu, 5 Aug 2021 06:40:35 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     liangwenpeng@huawei.com, liweihang@huawei.com, dledford@redhat.com,
+        jgg@ziepe.ca, chenglang@huawei.com, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: virt: kvm: api.rst: lengthen title line
-Date:   Thu,  5 Aug 2021 11:39:58 +0800
-Message-Id: <20210805033958.120924-1-src.res@email.cn>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH -next] RDMA/hns: Fix return in hns_roce_rereg_user_mr()
+Message-ID: <YQtdswHgMXhC7Mf5@unreal>
+References: <20210804125939.20516-1-yuehaibing@huawei.com>
+ <YQqb0U43eQUGK641@unreal>
+ <f0921aa3-a95d-f7e4-a13b-db15d4a5f259@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GiKnCgD3dqeOXQtheOMcAA--.40156S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFWxAr43Zry5Cw1UWr4rZrb_yoW3WFbE9F
-        WDtF4Utw18J3yjvr4UGayrXF17Xa1UCF1kCr15GF4UAwnxArsxGF9rJ39Y9FWUWwsrury5
-        Xrs8Xr4rJrnrXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbOxYjsxI4VWDJwAYFVCjjxCrM7CY07I20VC2zVCF04k26cxKx2IY
-        s7xG6rWj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI
-        8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E
-        87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcx
-        kEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWx
-        Jr1UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r48Mx
-        AIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC6x0Yz7v_
-        Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
-        AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
-        cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
-        IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVj
-        vjDU0xZFpf9x07U46wZUUUUU=
-X-Originating-IP: [113.251.8.125]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f0921aa3-a95d-f7e4-a13b-db15d4a5f259@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lengthen the underline of title "8.28 KVM_CAP_ENFORCE_PV_FEATURE_CPUID"
-in order to fix build warnings.
+On Thu, Aug 05, 2021 at 10:36:03AM +0800, YueHaibing wrote:
+> On 2021/8/4 21:53, Leon Romanovsky wrote:
+> > On Wed, Aug 04, 2021 at 08:59:39PM +0800, YueHaibing wrote:
+> >> If re-registering an MR in hns_roce_rereg_user_mr(), we should
+> >> return NULL instead of pass 0 to ERR_PTR.
+> >>
+> >> Fixes: 4e9fc1dae2a9 ("RDMA/hns: Optimize the MR registration process")
+> >> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> >> ---
+> >>  drivers/infiniband/hw/hns/hns_roce_mr.c | 4 +++-
+> >>  1 file changed, 3 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+> >> index 006c84bb3f9f..7089ac780291 100644
+> >> --- a/drivers/infiniband/hw/hns/hns_roce_mr.c
+> >> +++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+> >> @@ -352,7 +352,9 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
+> >>  free_cmd_mbox:
+> >>  	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+> >>  
+> >> -	return ERR_PTR(ret);
+> >> +	if (ret)
+> >> +		return ERR_PTR(ret);
+> >> +	return NULL;
+> >>  }
+> > 
+> > I don't understand this function, it returns or ERR_PTR() or NULL, but
+> > should return &mr->ibmr in success path. How does it work?
+> 
+> Did you means hns_roce_reg_user_mr()?
+> 
+> hns_roce_rereg_user_mr() returns ERR_PTR() on failure, and return NULL on success,
+> 
+> In ib_uverbs_rereg_mr(), old mr will be used if rereg_user_mr() return NULL, see:
+> 
+>  829         new_mr = ib_dev->ops.rereg_user_mr(mr, cmd.flags, cmd.start, cmd.length,
+>  830                                            cmd.hca_va, cmd.access_flags, new_pd,
+>  831                                            &attrs->driver_udata);
+>  832         if (IS_ERR(new_mr)) {
+>  833                 ret = PTR_ERR(new_mr);
+>  834                 goto put_new_uobj;
+>  835         }
+>  836         if (new_mr) {
+> .....
+>  860                 mr = new_mr;
+>  861         } else {
+>  862                 if (cmd.flags & IB_MR_REREG_PD) {
+>  863                         atomic_dec(&orig_pd->usecnt);
+>  864                         mr->pd = new_pd;
+>  865                         atomic_inc(&new_pd->usecnt);
+>  866                 }
+>  867                 if (cmd.flags & IB_MR_REREG_TRANS)
+>  868                         mr->iova = cmd.hca_va;
+>  869         }
 
-Signed-off-by: Hu Haowen <src.res@email.cn>
----
- Documentation/virt/kvm/api.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You overwrite various fields in old_mr when executing hns_roce_rereg_user_mr().
+For example mr->access flags, which is not returned to the original
+state after all failures.
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index c6212c2d5fe3..2c15844c0d72 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -7054,7 +7054,7 @@ trap and emulate MSRs that are outside of the scope of KVM as well as
- limit the attack surface on KVM's MSR emulation code.
- 
- 8.28 KVM_CAP_ENFORCE_PV_FEATURE_CPUID
-------------------------------
-+-------------------------------------
- 
- Architectures: x86
- 
--- 
-2.25.1
+Also I'm not so sure about if it is valid to return NULL in all flows.
 
+Thanks
+
+> 
+> 
+> > 
+> > Thanks
+> > 
+> >>  
+> >>  int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+> >> -- 
+> >> 2.17.1
+> >>
+> > .
+> > 
