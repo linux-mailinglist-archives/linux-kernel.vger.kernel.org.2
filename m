@@ -2,63 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13DF3E10FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4C93E111D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239367AbhHEJQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 05:16:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36242 "EHLO mail.kernel.org"
+        id S239863AbhHEJSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 05:18:00 -0400
+Received: from elvis.franken.de ([193.175.24.41]:46948 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237827AbhHEJQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:16:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D9CE61029;
-        Thu,  5 Aug 2021 09:15:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628154945;
-        bh=jiWBfGfrHPmdXnTZb/UnDx9zSYN4p1QfYI/iS7p0/JQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VpiHG/o7FT+/0Ng7c8yckStLvPH/WlTr+d7n7pl+2yUtyDS7JC5AplUVDm8snftvO
-         WIuIyYf9TIJZU6nyo6Dg8x/5falE78pzxvk+yIhjbMsw/EC2Qq/EB83DHPG2DA9Ohy
-         H8q2czVBP2Yqyq/roLaKPkg4VWrQTUQgIB2zMc3I=
-Date:   Thu, 5 Aug 2021 11:15:42 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-usb@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Minas Harutyunyan <hminas@synopsys.com>,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 1/2] usb: dwc2: rename DWC2_POWER_DOWN_PARAM_NONE state
-Message-ID: <YQusPurbybrNly+b@kroah.com>
-References: <CGME20210804114433eucas1p134417b605abeb57728d358fc2f42162b@eucas1p1.samsung.com>
- <20210804114421.10282-1-m.szyprowski@samsung.com>
+        id S238328AbhHEJRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 05:17:54 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1mBZV8-0005ti-04; Thu, 05 Aug 2021 11:17:18 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 92188C052F; Thu,  5 Aug 2021 11:16:03 +0200 (CEST)
+Date:   Thu, 5 Aug 2021 11:16:03 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        John Crispin <john@phrozen.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+Subject: Re: [PATCH 1/3] arch: Export machine_restart() instances so they can
+ be called from modules
+Message-ID: <20210805091603.GE5979@alpha.franken.de>
+References: <20210805075032.723037-1-lee.jones@linaro.org>
+ <20210805075032.723037-2-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210804114421.10282-1-m.szyprowski@samsung.com>
+In-Reply-To: <20210805075032.723037-2-lee.jones@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 01:44:20PM +0200, Marek Szyprowski wrote:
-> DWC2_POWER_DOWN_PARAM_NONE really means that the driver still uses clock
-> gating to save power when hardware is not used. Rename the state name to
-> DWC2_POWER_DOWN_PARAM_CLOCK_GATING to match the driver behavior.
+On Thu, Aug 05, 2021 at 08:50:30AM +0100, Lee Jones wrote:
+> A recent attempt to convert the Power Reset Restart driver to tristate
+> failed because of the following compile error (reported once merged by
+> Stephen Rothwell via Linux Next):
 > 
-> Suggested-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>   ERROR: "machine_restart" [drivers/power/reset/restart-poweroff.ko] undefined!
+> 
+> This error occurs since some of the machine_restart() instances are
+> not currently exported for use in modules.  This patch aims to rectify
+> that.
+> 
+> Cc: Vineet Gupta <vgupta@synopsys.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Guo Ren <guoren@kernel.org>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Brian Cain <bcain@codeaurora.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Michal Simek <monstr@monstr.eu>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: John Crispin <john@phrozen.org>
+> Cc: Ley Foon Tan <ley.foon.tan@intel.com>
+> Cc: Jonas Bonn <jonas@southpole.se>
+> Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+> Cc: Stafford Horne <shorne@gmail.com>
+> Cc: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Max Filippov <jcmvbkbc@gmail.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Cc: linux-snps-arc@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-csky@vger.kernel.org
+> Cc: uclinux-h8-devel@lists.sourceforge.jp
+> Cc: linux-hexagon@vger.kernel.org
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: linux-mips@vger.kernel.org
+> Cc: openrisc@lists.librecores.org
+> Cc: linux-parisc@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-riscv@lists.infradead.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: sparclinux@vger.kernel.org
+> Cc: linux-um@lists.infradead.org
+> Cc: linux-xtensa@linux-xtensa.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
-> This is a follow-up of this discussion:
-> https://lore.kernel.org/linux-usb/26099de1-826f-42bf-0de7-759a47faf4a0@samsung.com/
 > 
-> This should be applied on top of v5.14-rc3.
+> The 2 patches this change supports have the required Acks already.
+> 
+> NB: If it's safe to omit some of these, let me know and I'll revise the patch.
+> 
+>  [...]
+>  arch/mips/kernel/reset.c           | 1 +
+>  arch/mips/lantiq/falcon/reset.c    | 1 +
+>  arch/mips/sgi-ip27/ip27-reset.c    | 1 +
 
-What else would I apply it on top of, we can't go back in time :)
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-Where is this needed for 5.14-final, or for 5.15-rc1?
-
-thanks,
-
-greg k-h
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
