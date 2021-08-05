@@ -2,132 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54EB3E1649
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE3F3E1708
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241434AbhHEOCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:02:30 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:13238 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233088AbhHEOC3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:02:29 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GgVfM2l6cz1CRvV;
-        Thu,  5 Aug 2021 22:02:03 +0800 (CST)
-Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 22:02:10 +0800
-Received: from localhost.huawei.com (10.175.124.27) by
- dggema773-chm.china.huawei.com (10.1.198.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 5 Aug 2021 22:02:09 +0800
-From:   <lijinlin3@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <john.garry@huawei.com>, <bvanassche@acm.org>,
-        <qiulaibin@huawei.com>, <linfeilong@huawei.com>,
-        <wubo40@huawei.com>, <lijinlin3@huawei.com>
-Subject: [PATCH] scsi: core: Run queue first after running device.
-Date:   Thu, 5 Aug 2021 22:32:31 +0800
-Message-ID: <20210805143231.1713299-1-lijinlin3@huawei.com>
-X-Mailer: git-send-email 2.27.0
+        id S241987AbhHEOd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 10:33:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241678AbhHEOdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 10:33:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4F6260F70;
+        Thu,  5 Aug 2021 14:33:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628174020;
+        bh=uS5k7NT/OtSSpIhp7kkMdv3wNhYKJVGqUHgVMB90X+k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pQsSYEtjIUMsWaCO9Q0Gj0qiHIPDbbs4GmN4Dq0d3dh7CgX8aof2xXi/vu4KHgkdm
+         ro1miJjlCGWMTgEnpnjIdd+c39+/8kVesjyMjf4uV36w6PMjyEh5i2S/4a1ccgbrv3
+         yO1HRKw54EdqJqCuxVSFt3QK+AUJULqhnw5JnLB6Oq29VmMEqNqIi31L4p5CfqO7ka
+         Yh4L9pLxPWWrfPeueVtWyZH3Wv0HtTjJTHSED1B64vcPH0ffmdXWMD6Nv/re6bon8i
+         Rv2vJ3Nj20PmNF9ZGUUufxws20DYpGH6dUFu11O/LmNGImt9diCVfcZEverM3SHbeH
+         ZFY1yZ+ovBA3w==
+Date:   Thu, 5 Aug 2021 17:33:35 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v1] netdevsim: Forbid devlink reload when adding
+ or deleting ports
+Message-ID: <YQv2v5cTqLvoPc4n@unreal>
+References: <53cd1a28dd34ced9fb4c39885c6e13523e97d62c.1628161323.git.leonro@nvidia.com>
+ <20210805061547.3e0869ad@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YQvs4wRIIEDG6Dcu@unreal>
+ <20210805072342.17faf851@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema773-chm.china.huawei.com (10.1.198.217)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210805072342.17faf851@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Jinlin <lijinlin3@huawei.com>
+On Thu, Aug 05, 2021 at 07:23:42AM -0700, Jakub Kicinski wrote:
+> On Thu, 5 Aug 2021 16:51:31 +0300 Leon Romanovsky wrote:
+> > > > +	nsim_bus_dev = nsim_dev->nsim_bus_dev;
+> > > > +	if (!mutex_trylock(&nsim_bus_dev->nsim_bus_reload_lock))
+> > > > +		return -EOPNOTSUPP;  
+> > > 
+> > > Why not -EBUSY?  
+> > 
+> > This is what devlink_reload_disable() returns, so I kept same error.
+> > It is not important at all.
+> > 
+> > What about the following change on top of this patch?
+> 
+> LGTM, the only question is whether we should leave in_reload true 
+> if nsim_dev->fail_reload is set.
 
-We found a hang issue, the test steps are as follows:
-  1. echo "blocked" >/sys/block/sda/device/state
-  2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
-  3. echo none > /sys/block/sda/queue/scheduler
-  4. echo "running" >/sys/block/sda/device/state
+I don't think so, it will block add/delete ports.
 
-Step3 and Step4 should finish this work after Step4, but them hangs.
-
-  CPU#0               CPU#1                CPU#2
-  ---------------     ----------------     ----------------
-                                           Step1: blocking device
-
-                                           Step2: dd xxxx
-                                                  ^^^^^^ get request
-                                                         q_usage_counter++
-
-                      Step3: switching scheculer
-                      elv_iosched_store
-                        elevator_switch
-                          blk_mq_freeze_queue
-                            blk_freeze_queue
-                              > blk_freeze_queue_start
-                                ^^^^^^ mq_freeze_depth++
-
-                              > blk_mq_run_hw_queues
-                                ^^^^^^ can't run queue when dev blocked
-
-                              > blk_mq_freeze_queue_wait
-                                ^^^^^^ Hang here!!! 
-                                       wait q_usage_counter==0
-
-  Step4: running device
-  store_state_field
-    scsi_rescan_device
-      scsi_attach_vpd
-        scsi_vpd_inquiry
-          __scsi_execute
-            blk_get_request
-              blk_mq_alloc_request
-                blk_queue_enter
-                ^^^^^^ Hang here!!!
-                       wait mq_freeze_depth==0 
-
-    blk_mq_run_hw_queues                                           
-    ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
-
-                            blk_mq_unfreeze_queue
-                            ^^^^^ mq_freeze_depth--
-
-Step3 and Step4 wait for each other, caused hangs.
-
-This requires run queue frist to fix this issue when the device state
-changes to SDEV_RUNNING.
-
-Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
-Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
-Signed-off-by: Qiu Laibin <qiulaibin@huawei.com>
-Signed-off-by: Wu Bo <wubo40@huawei.com>
----
- drivers/scsi/scsi_sysfs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-index c3a710bceba0..aa701582c950 100644
---- a/drivers/scsi/scsi_sysfs.c
-+++ b/drivers/scsi/scsi_sysfs.c
-@@ -809,12 +809,12 @@ store_state_field(struct device *dev, struct device_attribute *attr,
- 	ret = scsi_device_set_state(sdev, state);
- 	/*
- 	 * If the device state changes to SDEV_RUNNING, we need to
--	 * rescan the device to revalidate it, and run the queue to
--	 * avoid I/O hang.
-+	 * run the queue to avoid I/O hang, and rescan the device
-+	 * to revalidate it.
- 	 */
- 	if (ret == 0 && state == SDEV_RUNNING) {
--		scsi_rescan_device(dev);
- 		blk_mq_run_hw_queues(sdev->request_queue, true);
-+		scsi_rescan_device(dev);
- 	}
- 	mutex_unlock(&sdev->state_mutex);
- 
--- 
-2.27.0
-
+> 
+> > @@ -889,17 +890,26 @@ static int nsim_dev_reload_up(struct devlink *devlink, enum devlink_reload_actio
+> >  			      struct netlink_ext_ack *extack)
+> >  {
+> >  	struct nsim_dev *nsim_dev = devlink_priv(devlink);
+> > +	struct nsim_bus_dev *nsim_bus_dev;
+> > +	int ret;
+> > +
+> > +	nsim_bus_dev = nsim_dev->nsim_bus_dev;
+> > +	mutex_lock(&nsim_bus_dev->nsim_bus_reload_lock);
+> > +	nsim_bus_dev->in_reload = false;
+> >  
+> >  	if (nsim_dev->fail_reload) {
+> >  		/* For testing purposes, user set debugfs fail_reload
+> >  		 * value to true. Fail right away.
+> >  		 */
+> >  		NL_SET_ERR_MSG_MOD(extack, "User setup the reload to fail for testing purposes");
+> > +		mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
+> >  		return -EINVAL;
+> >  	}
+> >  
+> >  	*actions_performed = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT);
+> > -	return nsim_dev_reload_create(nsim_dev, extack);
+> > +	ret = nsim_dev_reload_create(nsim_dev, extack);
+> > +	mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
+> > +	return ret;
+> >  }
+> 
+> 
