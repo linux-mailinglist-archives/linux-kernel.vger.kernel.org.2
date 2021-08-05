@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83223E14D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD493E1504
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241373AbhHEMg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:36:58 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:16051 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240188AbhHEMg5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:36:57 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GgSgl1dh3zZxt4;
-        Thu,  5 Aug 2021 20:33:07 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 20:36:41 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 5 Aug
- 2021 20:36:41 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>, <bo.liu@linux.alibaba.com>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH] blk-iolatency: error out if blk_get_queue() failed in iolatency_set_limit()
-Date:   Thu, 5 Aug 2021 20:46:45 +0800
-Message-ID: <20210805124645.543797-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S241477AbhHEMrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:47:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241459AbhHEMrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 08:47:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A719C60E97;
+        Thu,  5 Aug 2021 12:47:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628167626;
+        bh=kMQY6aXotHYC4p1x2ZCwkER9VrbqS7BOEPHl0qOdbl0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fm3BZjczDQ2+LdzJrxVmZJRipDr45xGLn57fBW2eTDIubwQeumuffrzsf7geb1j4R
+         XXkaLI7Nm5IrK4oVJNRHaE7F5JS3s6UjGdj3Tc4Z7G6Xp7hSrkdaEXZfTC2ivzwoov
+         zpuxPEyjM5UjKKW9YYL6VsbKFrYteyQk0Vv5+bGq4/twGtG9Jgt7PnMAfqqG/AsAOi
+         w4j5Vhq/kAYiKMEOsV6p7Z9Wi29twv2wMRKhtkt8vRnJvMT4Wjk9Ur0uWuCMQsefoJ
+         JlQ1S2w3KUKxgxy9hdc+BanlCLF0m0k/bE22iZhGENI/ofXE395k35APuOGCZktaWd
+         +YeFftygtS5QQ==
+Date:   Thu, 5 Aug 2021 13:46:50 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-mmc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [BUG] mmc_regulator_set_ocr can't cope with regulator-fixed
+Message-ID: <20210805124650.GM26252@sirena.org.uk>
+References: <CGME20210804143357epcas1p1c67eca591d8bb557c11b8175baaa8550@epcas1p1.samsung.com>
+ <CAMdYzYrx8pgeyK7u=kcopZ+Wae+fQdr_uM4AuVjqWKfZYikgcA@mail.gmail.com>
+ <a9aa636e-326f-a848-dd69-41df87c013af@samsung.com>
+ <CAMdYzYr9PX-9=kkCAfGe8Q0-D+gRo_qCwse8SiGVsmod7fffiA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+2GlJm56SCtLHYlr"
+Content-Disposition: inline
+In-Reply-To: <CAMdYzYr9PX-9=kkCAfGe8Q0-D+gRo_qCwse8SiGVsmod7fffiA@mail.gmail.com>
+X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If queue is dying while iolatency_set_limit() is in progress,
-blk_get_queue() won't increment the refcount of the queue. However,
-blk_put_queue() will still decrement the refcount later, which will
-cause the refcout to be unbalanced.
 
-Thus error out in such case to fix the problem.
+--+2GlJm56SCtLHYlr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: 8c772a9bfc7c ("blk-iolatency: fix IO hang due to negative inflight counter")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-iolatency.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On Thu, Aug 05, 2021 at 07:38:06AM -0400, Peter Geis wrote:
 
-diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
-index 81be0096411d..d8b0d8bd132b 100644
---- a/block/blk-iolatency.c
-+++ b/block/blk-iolatency.c
-@@ -833,7 +833,11 @@ static ssize_t iolatency_set_limit(struct kernfs_open_file *of, char *buf,
- 
- 	enable = iolatency_set_min_lat_nsec(blkg, lat_val);
- 	if (enable) {
--		WARN_ON_ONCE(!blk_get_queue(blkg->q));
-+		if (!blk_get_queue(blkg->q)) {
-+			ret = -ENODEV;
-+			goto out;
-+		}
-+
- 		blkg_get(blkg);
- 	}
- 
--- 
-2.31.1
+> Also, I've got a possible fix to the dw-mmc issue, the following patch
+> changes the behavior to only enable a fixed regulator, not try to set
+> the voltage. It's a split between the behavior when vmmc isn't defined
+> at all and when its a variable regulator:
 
+One thing to watch out for with this approach is if there's things that
+really need a specific voltage to be set then you'll have to stop those
+things happening if you've got a voltage regulator that can't deliver a
+voltage in the required range.  I don't know if this affects MMC or not,
+if it's just a case of being less efficient it's not such an issue.
+
+> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+> index d333130d1531..b30102980261 100644
+> --- a/drivers/mmc/host/dw_mmc.c
+> +++ b/drivers/mmc/host/dw_mmc.c
+> @@ -1446,11 +1446,13 @@ static void dw_mci_set_ios(struct mmc_host
+> *mmc, struct mmc_ios *ios)
+>   switch (ios->power_mode) {
+>   case MMC_POWER_UP:
+>   if (!IS_ERR(mmc->supply.vmmc)) {
+> - ret = mmc_regulator_set_ocr(mmc, mmc->supply.vmmc,
+
+This patch is very whitespace damaged FWIW.
+
+--+2GlJm56SCtLHYlr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEL3bkACgkQJNaLcl1U
+h9AITwf+MrB+PWNVhpqW56tmJ9SGz8jrEIwUWscQhB2kdQKUFfRkN5wgnUliCrN6
+z1aJqb2h4eiZWj5sVGXyQqMuFHRVh7+AIpXhkxPdBf7bn/CTJCgG13eOOP7FELnh
+A3Ax+i9Y2Hhz8GxVFlokMxrCZo20pS+Z4qCTrENO0rzSppWlogkS2CBFNDUGndNs
+lj8K9wLpqFSJFRPUqRdyohpR44cPpsB7hOfeJOh9Le+BdGfqMb2Zkhvwu++oP0is
+NTe/bxNPjb0ta+njFHhF8UOyaBuTa7DeH/9snbYazu70pOZa2bZKiIcMr18qZ0O9
+Edd5L///Ydo5pXWt+3UokRFB2cwkbw==
+=02YF
+-----END PGP SIGNATURE-----
+
+--+2GlJm56SCtLHYlr--
