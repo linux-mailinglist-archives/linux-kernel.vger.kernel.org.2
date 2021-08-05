@@ -2,157 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05963E1939
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906A83E1930
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232666AbhHEQLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 12:11:49 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:61044 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231699AbhHEQLg (ORCPT
+        id S231511AbhHEQLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 12:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhHEQLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 12:11:36 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 175EPV3V027692;
-        Thu, 5 Aug 2021 11:11:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=vCMiMKEoQoT9e4PyNQhrHRqJbFjPpEaQ/Av0RBhrd/M=;
- b=SMW8D6Dk6Un0zKpq2JDhFlpeKax36StYwgHMZYY2PaVWgJgWUtjNap2uN6xRJQX8Vz0b
- 8slMh/hZuAWUbmTjOgr93YL6lyEHp0ECLwx1e7l3acvgsEy6Gd7DNJnf95YPIV4WRu+M
- lAZm8RmqKRsE3fj/1Ie61KImb3BJvA6MSPVulvgI9jajbUtTDZ617nhprQh4PfqU1AUQ
- hE1/uk/dZPieU8k93R39hVHLq01jl7MFCZz0fk1fT1tropGr5ROTmbZlz7gkt/9MW6Q2
- 0eRGaike+HAtFEROWwGEN/zrdGJhlbt1Z0aMSpoTviu3iRHt8KYhrlKyflkMrrlWf0Up tg== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 3a8c61rku5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 05 Aug 2021 11:11:15 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 5 Aug
- 2021 17:11:14 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Thu, 5 Aug 2021 17:11:13 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.37])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 399002BA;
-        Thu,  5 Aug 2021 16:11:13 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 1/8] ASoC: cs42l42: PLL must be running when changing MCLK_SRC_SEL
-Date:   Thu, 5 Aug 2021 17:11:04 +0100
-Message-ID: <20210805161111.10410-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 5 Aug 2021 12:11:31 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98AB0C0613D5;
+        Thu,  5 Aug 2021 09:11:14 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id e25-20020a05600c4b99b0290253418ba0fbso4104535wmp.1;
+        Thu, 05 Aug 2021 09:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3yVfr8nI8PLISyELvilTpZf23yuPK/Chs+AbBCYqhwI=;
+        b=o29RqF6g5OddzmP0Hm1cVDwOAgHgLA2Pe5tDHHWRxN1H7t5+3uec63+nx3i21s1fTs
+         s9Mf2mVR5b+qdPXUmgtW0BCdVV9FoJALKIp4MdFTLJ/HXFn0rdtxCMuCee0EEYHirJOD
+         ybBAvprn8fE/eRVEogGnL1caa1E5rZY0x0JF95gHFrceG/P4AhjmSERcndZTJzYH0fuO
+         aQEID/xeCw/Gm2o43uvniw8U3sna3ht13iwPsWtL9ugZwpuZmg4VXT5V6wOXokoHAtaz
+         yD6PLm/XcFEGyK8PYjvDBzOX9vceocPkkoWxxn62QwGn2vaO74tknn8/NrLGxyovmcuo
+         Zlpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3yVfr8nI8PLISyELvilTpZf23yuPK/Chs+AbBCYqhwI=;
+        b=nA9652cvLMA4d96xomHacssBiM/4jIhbIc7UyH6Udj1n9zjGB548agnbvnWMf4AycC
+         USBzVZyKoz8JYE9TfOIpWii8lwzzXevmZ7bjI461QGWYtDsuNqk1a3gBKyXzIfnrcf/h
+         WMW6WUgjx2cDcSUgeNTBEiA7z7fD4fIRyCE+NUV0Jz2FztTCIidoZIZ2HdEq8QClADf3
+         toiio59f/VFMJEkvpu3+k5GMQwOV3qPP8Q394y1qJkQWgsxsiwC7AasPdWpAHhJMfpHv
+         2vEuwOg1YG+XPJ2BNbSDEUhvz7P5Fe62k/Aaq742NRBPpuyKIymfoRxsk5tP6DAcAe/o
+         DC9g==
+X-Gm-Message-State: AOAM530C/KZyso1dVoFKesLRVS2cxpBB7GfloJTZlv4FL13rCduoY+Z8
+        yxfwp9fa9CGmyiC33wGuSYA=
+X-Google-Smtp-Source: ABdhPJzdBtA8C3ab4YGROs84S7Mh1Ga3np+vhm9BC6CQEldH4BttWOMOJH29A4kw8snvz14TXwKUNw==
+X-Received: by 2002:a05:600c:1ca7:: with SMTP id k39mr16580779wms.115.1628179873285;
+        Thu, 05 Aug 2021 09:11:13 -0700 (PDT)
+Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
+        by smtp.gmail.com with ESMTPSA id w10sm6336007wrr.23.2021.08.05.09.11.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Aug 2021 09:11:12 -0700 (PDT)
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Iskren Chernev <iskren.chernev@gmail.com>
+Subject: [PATCH v4 0/2] Add GCC for SM4250/6115
+Date:   Thu,  5 Aug 2021 19:11:05 +0300
+Message-Id: <20210805161107.1194521-1-iskren.chernev@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: q7Oxb2S5r5Ot3KbUw0pfdmIACOq2Yfx8
-X-Proofpoint-ORIG-GUID: q7Oxb2S5r5Ot3KbUw0pfdmIACOq2Yfx8
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0 spamscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 suspectscore=0
- mlxlogscore=999 adultscore=0 malwarescore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108050099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both SCLK and PLL clocks must be running to drive the glitch-free mux
-behind MCLK_SRC_SEL and complete the switchover.
+This patch adds support for the Global Clock Controller on QCom SM4250 and
+SM6115, codename bengal. The code is taken from OnePlus repo [1]. The two
+platforms are identical so there is only one compat string.
 
-This patch moves the writing of MCLK_SRC_SEL to when the PLL is started
-and stopped, so that it only transitions while the PLL is running.
-The unconditional write MCLK_SRC_SEL=0 in cs42l42_mute_stream() is safe
-because if the PLL is not running MCLK_SRC_SEL is already 0.
+[1]: https://github.com/OnePlusOSS/android_kernel_oneplus_sm4250
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 43fc357199f9 ("ASoC: cs42l42: Set clock source for both ways of stream")
----
- sound/soc/codecs/cs42l42.c | 25 ++++++++++++++++++-------
- sound/soc/codecs/cs42l42.h |  1 +
- 2 files changed, 19 insertions(+), 7 deletions(-)
+v1: https://lkml.org/lkml/2021/6/22/1131
+v2: https://lkml.org/lkml/2021/6/27/157
+v3: https://lkml.org/lkml/2021/8/1/68
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index a00dc3c65549..c96549fe6ab2 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -619,6 +619,8 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
- 
- 	for (i = 0; i < ARRAY_SIZE(pll_ratio_table); i++) {
- 		if (pll_ratio_table[i].sclk == clk) {
-+			cs42l42->pll_config = i;
-+
- 			/* Configure the internal sample rate */
- 			snd_soc_component_update_bits(component, CS42L42_MCLK_CTL,
- 					CS42L42_INTERNAL_FS_MASK,
-@@ -627,14 +629,9 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
- 					(pll_ratio_table[i].mclk_int !=
- 					24000000)) <<
- 					CS42L42_INTERNAL_FS_SHIFT);
--			/* Set the MCLK src (PLL or SCLK) and the divide
--			 * ratio
--			 */
-+
- 			snd_soc_component_update_bits(component, CS42L42_MCLK_SRC_SEL,
--					CS42L42_MCLK_SRC_SEL_MASK |
- 					CS42L42_MCLKDIV_MASK,
--					(pll_ratio_table[i].mclk_src_sel
--					<< CS42L42_MCLK_SRC_SEL_SHIFT) |
- 					(pll_ratio_table[i].mclk_div <<
- 					CS42L42_MCLKDIV_SHIFT));
- 			/* Set up the LRCLK */
-@@ -892,13 +889,21 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 			 */
- 			regmap_multi_reg_write(cs42l42->regmap, cs42l42_to_osc_seq,
- 					       ARRAY_SIZE(cs42l42_to_osc_seq));
-+
-+			/* Must disconnect PLL before stopping it */
-+			snd_soc_component_update_bits(component,
-+						      CS42L42_MCLK_SRC_SEL,
-+						      CS42L42_MCLK_SRC_SEL_MASK,
-+						      0);
-+			usleep_range(100, 200);
-+
- 			snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
- 						      CS42L42_PLL_START_MASK, 0);
- 		}
- 	} else {
- 		if (!cs42l42->stream_use) {
- 			/* SCLK must be running before codec unmute */
--			if ((cs42l42->bclk < 11289600) && (cs42l42->sclk < 11289600)) {
-+			if (pll_ratio_table[cs42l42->pll_config].mclk_src_sel) {
- 				snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
- 							      CS42L42_PLL_START_MASK, 1);
- 
-@@ -919,6 +924,12 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 							       CS42L42_PLL_LOCK_TIMEOUT_US);
- 				if (ret < 0)
- 					dev_warn(component->dev, "PLL failed to lock: %d\n", ret);
-+
-+				/* PLL must be running to drive glitchless switch logic */
-+				snd_soc_component_update_bits(component,
-+							      CS42L42_MCLK_SRC_SEL,
-+							      CS42L42_MCLK_SRC_SEL_MASK,
-+							      CS42L42_MCLK_SRC_SEL_MASK);
- 			}
- 
- 			/* Mark SCLK as present, turn off internal oscillator */
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 206b3c81d3e0..b92c17be7f58 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -775,6 +775,7 @@ struct  cs42l42_private {
- 	struct gpio_desc *reset_gpio;
- 	struct completion pdn_done;
- 	struct snd_soc_jack *jack;
-+	int pll_config;
- 	int bclk;
- 	u32 sclk;
- 	u32 srate;
+Changes from v3:
+- removed test clock from driver/binding
+- fix GCC_SDCC2_BCR value as spotted by Konrad
+- simplified probe function
+
+Changes from v2:
+- Suggested by Stephen Boyd
+  - switch to parent_data in place of parent_names
+- other
+  - drop parent refs to invalid clocks
+  - use pll-alpha regs when possible
+  - drop unused parent defs
+  - add pll test clock to bindings
+
+Changes from v1:
+- remove sm4250 compat, there will be a single sm6115.dtsi for both platforms
+
+Iskren Chernev (2):
+  dt-bindings: clk: qcom: gcc-sm6115: Document SM6115 GCC
+  clk: qcom: Add Global Clock controller (GCC) driver for SM6115
+
+ .../bindings/clock/qcom,gcc-sm6115.yaml       |   72 +
+ drivers/clk/qcom/Kconfig                      |    7 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/gcc-sm6115.c                 | 3544 +++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-sm6115.h   |  201 +
+ 5 files changed, 3825 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm6115.yaml
+ create mode 100644 drivers/clk/qcom/gcc-sm6115.c
+ create mode 100644 include/dt-bindings/clock/qcom,gcc-sm6115.h
+
+
+base-commit: 8d4b477da1a807199ca60e0829357ce7aa6758d5
 -- 
-2.11.0
+2.32.0
 
