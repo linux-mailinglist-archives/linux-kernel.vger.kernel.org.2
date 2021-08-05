@@ -2,105 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886B13E0CF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 05:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F9F3E0CFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 06:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238592AbhHED6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 23:58:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229674AbhHED6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 23:58:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FEE260F0F;
-        Thu,  5 Aug 2021 03:58:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628135887;
-        bh=pFF1tr2fsOoIgGDhIxp/x83PpmpH6r4UQOV68JSoU08=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DWfmGK9FEZ/Rz7HqtZGV0Ww1v81sS1pMywHpBKErM7bZOxpUO+VM8rhPLsi/eOOmX
-         tdlypgIrEBZvGAPQwDc9UkGN6MlsKcGAgDEmrMCfjfsjPU8RoIWDeX4HXJQOvITfEZ
-         5RFxb35/pFAdLLHVg7fK9GKpsUTvu0g8Ug8Vjd5w13NwhJ2DYak+gueAZLDyhrrEj4
-         ZW07k8IyYusuTUlA/8p7RlDaNZgW0y8mMkC7UWuFYG/z/OZuTkwYz7bcTbddOOFAo9
-         SmcdsMS4tDgwoTwl4Iuh1VWw+7CmTZjuLKMcgWtVfQ6WCX5BzZkqYld1S7HtSXmRyu
-         XlwAJIgPp5EMQ==
-Date:   Wed, 4 Aug 2021 23:00:47 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 3/4][next] scsi: megaraid_sas: Replace one-element array with
- flexible-array member in MR_DRV_RAID_MAP
-Message-ID: <e1ac01250cd344e8f1627357bb445f1d0dedd6ed.1628135423.git.gustavoars@kernel.org>
-References: <cover.1628135423.git.gustavoars@kernel.org>
+        id S229723AbhHEECH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 00:02:07 -0400
+Received: from [43.250.32.171] ([43.250.32.171]:48196 "EHLO email.cn"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229446AbhHEECE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 00:02:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=From:To:Date; bh=eBCcozSu9hNSLlbWZn+AY6boa0Vbxrja8LsS0
+        JUUaRI=; b=S+RmDZcogFKBExHqZCkR/3tJuGpUe3s5e8AAFcCdLJdj4zRy4YuH/
+        HKKPnVw9m8ONlvbWNLDCfZc9v2HJU4pdPDHtjGDKFzCxK7kWg61sJDB4LnQJp+R7
+        1TBPKJpHan9XwF+6Z0oSV9Z97WKP1LaGdepEp84lE+Uz4RhdBizaOI=
+Received: from localhost.localdomain (unknown [113.251.8.125])
+        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgA3RQSqYgthnhQZAA--.28023S2;
+        Thu, 05 Aug 2021 12:01:47 +0800 (CST)
+From:   Hu Haowen <src.res@email.cn>
+To:     gregkh@linuxfoundation.org, corbet@lwn.net
+Cc:     linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] docs: usb: fix malformed table
+Date:   Thu,  5 Aug 2021 12:01:46 +0800
+Message-Id: <20210805040146.121526-1-src.res@email.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1628135423.git.gustavoars@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LCKnCgA3RQSqYgthnhQZAA--.28023S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtF1UXF45Xry8Gw4DCr45ZFb_yoW7CrWrpa
+        1DJrySvF15ZrWfJw45Jw47Wr1fXrWUGF4DJrn5tr1jgryfJ34UJ34av3WYyFyUCr1DAwnF
+        y3Wqqr18ZrWjvrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUgvb7Iv0xC_KF4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+        v20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2
+        z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0x
+        vYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_
+        Cr1UJr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8Xw
+        CF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26F4UJr1UMxC20s026xCaFVCjc4AY
+        6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
+        0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
+        AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIev
+        Ja73UjIFyTuYvjxU8pnQUUUUU
+X-Originating-IP: [113.251.8.125]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace one-element array with a flexible-array member in struct
-MR_DRV_RAID_MAP and use the flex_array_size() helper.
+The tables are separated with tabs and spaces mixed together, leading
+to malformation. Changed the characters all into spaces to solve this
+issue.
 
-This helps with the ongoing efforts to globally enable -Warray-bounds
-and get us closer to being able to tighten the FORTIFY_SOURCE routines
-on memcpy().
-
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
-
-Link: https://github.com/KSPP/linux/issues/79
-Link: https://github.com/KSPP/linux/issues/109
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Hu Haowen <src.res@email.cn>
 ---
- drivers/scsi/megaraid/megaraid_sas_fp.c     | 6 +++---
- drivers/scsi/megaraid/megaraid_sas_fusion.h | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ Documentation/usb/gadget-testing.rst | 84 ++++++++++++++--------------
+ 1 file changed, 42 insertions(+), 42 deletions(-)
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas_fp.c b/drivers/scsi/megaraid/megaraid_sas_fp.c
-index da1cad1ee123..9cb36ef96c2c 100644
---- a/drivers/scsi/megaraid/megaraid_sas_fp.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_fp.c
-@@ -229,8 +229,8 @@ static int MR_PopulateDrvRaidMap(struct megasas_instance *instance, u64 map_id)
- 					le32_to_cpu(desc_table->raid_map_desc_offset));
- 				memcpy(pDrvRaidMap->ldSpanMap,
- 				       fw_map_dyn->ld_span_map,
--				       sizeof(struct MR_LD_SPAN_MAP) *
--				       le32_to_cpu(desc_table->raid_map_desc_elements));
-+				       flex_array_size(pDrvRaidMap, ldSpanMap,
-+				       le32_to_cpu(desc_table->raid_map_desc_elements)));
- 			break;
- 			default:
- 				dev_dbg(&instance->pdev->dev, "wrong number of desctableElements %d\n",
-@@ -254,7 +254,7 @@ static int MR_PopulateDrvRaidMap(struct megasas_instance *instance, u64 map_id)
- 			pDrvRaidMap->ldTgtIdToLd[i] =
- 				(u16)fw_map_ext->ldTgtIdToLd[i];
- 		memcpy(pDrvRaidMap->ldSpanMap, fw_map_ext->ldSpanMap,
--		       sizeof(struct MR_LD_SPAN_MAP) * ld_count);
-+		       flex_array_size(pDrvRaidMap, ldSpanMap, ld_count));
- 		memcpy(pDrvRaidMap->arMapInfo, fw_map_ext->arMapInfo,
- 		       sizeof(struct MR_ARRAY_INFO) * MAX_API_ARRAYS_EXT);
- 		memcpy(pDrvRaidMap->devHndlInfo, fw_map_ext->devHndlInfo,
-diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.h b/drivers/scsi/megaraid/megaraid_sas_fusion.h
-index 8b08445f575e..d60137eb519c 100644
---- a/drivers/scsi/megaraid/megaraid_sas_fusion.h
-+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.h
-@@ -1182,7 +1182,7 @@ struct MR_DRV_RAID_MAP {
- 		devHndlInfo[MAX_RAIDMAP_PHYSICAL_DEVICES_DYN];
- 	u16 ldTgtIdToLd[MAX_LOGICAL_DRIVES_DYN];
- 	struct MR_ARRAY_INFO arMapInfo[MAX_API_ARRAYS_DYN];
--	struct MR_LD_SPAN_MAP      ldSpanMap[1];
-+	struct MR_LD_SPAN_MAP      ldSpanMap[];
+diff --git a/Documentation/usb/gadget-testing.rst b/Documentation/usb/gadget-testing.rst
+index d6253f1a32a1..c18113077889 100644
+--- a/Documentation/usb/gadget-testing.rst
++++ b/Documentation/usb/gadget-testing.rst
+@@ -724,28 +724,28 @@ Function-specific configfs interface
+ The function name to use when creating the function directory is "uac2".
+ The uac2 function provides these attributes in its function directory:
  
- };
+-	=============== ====================================================
+-	c_chmask	capture channel mask
+-	c_srate		capture sampling rate
+-	c_ssize		capture sample size (bytes)
+-	c_sync		capture synchronization type (async/adaptive)
+-	c_mute_present	capture mute control enable
+-	c_volume_present	capture volume control enable
+-	c_volume_min	capture volume control min value (in 1/256 dB)
+-	c_volume_max	capture volume control max value (in 1/256 dB)
+-	c_volume_res	capture volume control resolution (in 1/256 dB)
+-	fb_max    maximum extra bandwidth in async mode
+-	p_chmask	playback channel mask
+-	p_srate		playback sampling rate
+-	p_ssize		playback sample size (bytes)
+-	p_mute_present	playback mute control enable
+-	p_volume_present	playback volume control enable
+-	p_volume_min	playback volume control min value (in 1/256 dB)
+-	p_volume_max	playback volume control max value (in 1/256 dB)
+-	p_volume_res	playback volume control resolution (in 1/256 dB)
+-	req_number	the number of pre-allocated request for both capture
+-			and playback
+-	=============== ====================================================
++	================ ====================================================
++	c_chmask         capture channel mask
++	c_srate          capture sampling rate
++	c_ssize          capture sample size (bytes)
++	c_sync           capture synchronization type (async/adaptive)
++	c_mute_present   capture mute control enable
++	c_volume_present capture volume control enable
++	c_volume_min     capture volume control min value (in 1/256 dB)
++	c_volume_max     capture volume control max value (in 1/256 dB)
++	c_volume_res     capture volume control resolution (in 1/256 dB)
++	fb_max           maximum extra bandwidth in async mode
++	p_chmask         playback channel mask
++	p_srate          playback sampling rate
++	p_ssize          playback sample size (bytes)
++	p_mute_present   playback mute control enable
++	p_volume_present playback volume control enable
++	p_volume_min     playback volume control min value (in 1/256 dB)
++	p_volume_max     playback volume control max value (in 1/256 dB)
++	p_volume_res     playback volume control resolution (in 1/256 dB)
++	req_number       the number of pre-allocated request for both capture
++	                 and playback
++	================ ====================================================
+ 
+ The attributes have sane default values.
+ 
+@@ -914,26 +914,26 @@ Function-specific configfs interface
+ The function name to use when creating the function directory is "uac1".
+ The uac1 function provides these attributes in its function directory:
+ 
+-	========== ====================================================
+-	c_chmask   	capture channel mask
+-	c_srate    	capture sampling rate
+-	c_ssize    	capture sample size (bytes)
+-	c_mute_present	capture mute control enable
+-	c_volume_present	capture volume control enable
+-	c_volume_min	capture volume control min value (in 1/256 dB)
+-	c_volume_max	capture volume control max value (in 1/256 dB)
+-	c_volume_res	capture volume control resolution (in 1/256 dB)
+-	p_chmask   	playback channel mask
+-	p_srate    	playback sampling rate
+-	p_ssize    	playback sample size (bytes)
+-	p_mute_present	playback mute control enable
+-	p_volume_present	playback volume control enable
+-	p_volume_min	playback volume control min value (in 1/256 dB)
+-	p_volume_max	playback volume control max value (in 1/256 dB)
+-	p_volume_res	playback volume control resolution (in 1/256 dB)
+-	req_number 	the number of pre-allocated request for both capture
+-			and playback
+-	========== ====================================================
++	================ ====================================================
++	c_chmask         capture channel mask
++	c_srate          capture sampling rate
++	c_ssize          capture sample size (bytes)
++	c_mute_present   capture mute control enable
++	c_volume_present capture volume control enable
++	c_volume_min     capture volume control min value (in 1/256 dB)
++	c_volume_max     capture volume control max value (in 1/256 dB)
++	c_volume_res     capture volume control resolution (in 1/256 dB)
++	p_chmask         playback channel mask
++	p_srate          playback sampling rate
++	p_ssize          playback sample size (bytes)
++	p_mute_present   playback mute control enable
++	p_volume_present playback volume control enable
++	p_volume_min     playback volume control min value (in 1/256 dB)
++	p_volume_max     playback volume control max value (in 1/256 dB)
++	p_volume_res     playback volume control resolution (in 1/256 dB)
++	req_number       the number of pre-allocated request for both capture
++	                 and playback
++	================ ====================================================
+ 
+ The attributes have sane default values.
  
 -- 
-2.27.0
+2.25.1
 
