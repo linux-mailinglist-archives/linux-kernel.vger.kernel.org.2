@@ -2,138 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4389C3E1BCD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9573E1BE3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241753AbhHES4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:56:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44074 "EHLO mail.kernel.org"
+        id S241948AbhHES6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:58:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241061AbhHES4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:56:53 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9AB9460EE9;
-        Thu,  5 Aug 2021 18:56:38 +0000 (UTC)
-Date:   Thu, 5 Aug 2021 14:56:31 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Stefan Metzmacher <metze@samba.org>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] Fix: tracepoint: static call function vs data state
- mismatch (v2)
-Message-ID: <20210805145631.609e0a80@oasis.local.home>
-In-Reply-To: <20210805132717.23813-3-mathieu.desnoyers@efficios.com>
-References: <20210805132717.23813-1-mathieu.desnoyers@efficios.com>
-        <20210805132717.23813-3-mathieu.desnoyers@efficios.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S241540AbhHES6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:58:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF15B60F01;
+        Thu,  5 Aug 2021 18:58:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628189916;
+        bh=3ObuCvajMVwFZHaW6VfTf+mUS6N2qt4nTWItZGJEjxw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IFeKCcM9a5RqaPPvJh+1aszzPBb59pCIupK8wH6+bTr9OkibsMFSy//6oJU1awXjp
+         Jf/udtqP5uE1n3w+Yw30gbnnhDtG8WahxONLKVDWrXYg7TFv/EjwcrOlz0rv19KVMu
+         zo0idywt4nTrwyrx7gdMlYfh/yh3un6JXAmitgVIgho7IZ8G20gipGbuIJY3r1NfrT
+         KIr3FQQiC/i03dkbZvVURX6pvRbga2zoZWhJH+WKWWZkeZTWvHuWElOON+PDw2Zcar
+         O8DBZkdwyflA+FgU1Wh2s07VgjbuSlYqQhexT908LcrXvqzuvx7VSrKTYUvDkZckXt
+         tBF7aTYf+Zgwg==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH v2 0/3] staging: r8188eu: Fix clang warnings
+Date:   Thu,  5 Aug 2021 11:58:04 -0700
+Message-Id: <20210805185807.3296077-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.0.rc0
+In-Reply-To: <20210803223609.1627280-1-nathan@kernel.org>
+References: <20210803223609.1627280-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series cleans up all of the clang warnings that I noticed with
+x86_64 allmodconfig on the current staging-testing. This has been build
+tested with both clang and gcc with x86_64 allmodconfig.
 
-Note, there shouldn't be a "(v2)" outside the "[PATCH ]" part.
-Otherwise it gets added into the git commit during "git am".
+v1 -> v2:
 
-On Thu,  5 Aug 2021 09:27:16 -0400
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+* Rebase on staging-testing and fix conflict in patch 2.
 
-> On a 1->0->1 callbacks transition, there is an issue with the new
-> callback using the old callback's data.
-> 
-> Considering __DO_TRACE_CALL:
-> 
->         do {                                                            \
->                 struct tracepoint_func *it_func_ptr;                    \
->                 void *__data;                                           \
->                 it_func_ptr =                                           \
->                         rcu_dereference_raw((&__tracepoint_##name)->funcs); \
->                 if (it_func_ptr) {                                      \
->                         __data = (it_func_ptr)->data;                   \
-> 
-> ----> [ delayed here on one CPU (e.g. vcpu preempted by the host) ]  
-> 
->                         static_call(tp_func_##name)(__data, args);      \
->                 }                                                       \
->         } while (0)
-> 
-> It has loaded the tp->funcs of the old callback, so it will try to use the old
-> data. This can be fixed by adding a RCU sync anywhere in the 1->0->1
-> transition chain.
-> 
-> On a N->2->1 transition, we need an rcu-sync because you may have a
-> sequence of 3->2->1 (or 1->2->1) where the element 0 data is unchanged
-> between 2->1, but was changed from 3->2 (or from 1->2), which may be
-> observed by the static call. This can be fixed by adding an
-> unconditional RCU sync in transition 2->1.
-> 
-> A follow up fix will introduce a more lightweight scheme based on RCU
-> get_state and cond_sync.
+* Drop patch 1 as it has already been fixed with commit 1c10f2b95cc1
+  ("staging: r8188eu: Remove all calls to _rtw_spinlock_free()") and
+  follow-ups.
 
-I'll add here that this patch will cause a huge performance regression
-on disabling the trace events, but the follow up patch will fix that.
+* Pick up Nick's reviewed-by tag for patches 1 and 2.
 
-Before this patch:
+Nathan Chancellor (3):
+  staging: r8188eu: Remove unnecessary parentheses
+  staging: r8188eu: Remove self assignment in get_rx_power_val_by_reg()
+  staging: r8188eu: Remove pointless NULL check in
+    rtw_check_join_candidate()
 
-  # trace-cmd start -e all
-  # time trace-cmd start -p nop
-
-  real	0m0.778s
-  user	0m0.000s
-  sys	0m0.061s
-
-After this patch:
-
-  # trace-cmd start -e all
-  # time trace-cmd start -p nop
-
-  real	0m10.593s
-  user	0m0.017s
-  sys	0m0.259s
+ drivers/staging/r8188eu/core/rtw_mlme.c       | 2 +-
+ drivers/staging/r8188eu/core/rtw_pwrctrl.c    | 2 +-
+ drivers/staging/r8188eu/core/rtw_security.c   | 4 ++--
+ drivers/staging/r8188eu/core/rtw_wlan_util.c  | 2 +-
+ drivers/staging/r8188eu/hal/odm.c             | 2 +-
+ drivers/staging/r8188eu/hal/rtl8188e_rf6052.c | 2 --
+ drivers/staging/r8188eu/hal/usb_halinit.c     | 2 +-
+ 7 files changed, 7 insertions(+), 9 deletions(-)
 
 
-That's more than 10x slow down. Just under a second to disable all
-events now goes to over 10 seconds!
+base-commit: d48401b8609ff19db0f461759ac6b5210cd81288
+-- 
+2.33.0.rc0
 
-But after the next patch:
-
-  # trace-cmd start -e all
-  # time trace-cmd start -p nop
-
-  real	0m0.878s
-  user	0m0.000s
-  sys	0m0.103s
-
-Which is in the noise from before this patch.
-
-This is a big enough regression, I'll even add a Fixes tag to the next
-patch on the final sha1 of this patch! Such that this patch won't be
-backported without the next patch.
-
-> 
-> Link: https://lore.kernel.org/io-uring/4ebea8f0-58c9-e571-fd30-0ce4f6f09c70@samba.org/
-> Fixes: d25e37d89dd2 ("tracepoint: Optimize using static_call()")
-
-For this patch, I would say the above is what this fixes.
-
--- Steve
-
-> Fixes: 547305a64632 ("tracepoint: Fix out of sync data passing by static caller")
-> Fixes: 352384d5c84e ("tracepoints: Update static_call before tp_funcs when adding a tracepoint")
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Stefan Metzmacher <metze@samba.org>
-> Cc: <stable@vger.kernel.org> # 5.10+
-> ---
