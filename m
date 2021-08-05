@@ -2,366 +2,1375 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E153E1F24
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1CE3E1F2A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241620AbhHEXGV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Aug 2021 19:06:21 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7935 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbhHEXGU (ORCPT
+        id S233143AbhHEXHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 19:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232896AbhHEXHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 19:06:20 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GgkdX0tXnz84LD;
-        Fri,  6 Aug 2021 07:02:08 +0800 (CST)
-Received: from dggpemm000004.china.huawei.com (7.185.36.154) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 6 Aug 2021 07:06:00 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggpemm000004.china.huawei.com (7.185.36.154) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 6 Aug 2021 07:06:00 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
- Fri, 6 Aug 2021 07:05:59 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "yury.norov@gmail.com" <yury.norov@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>,
-        "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
-        "sbrivio@redhat.com" <sbrivio@redhat.com>,
-        "jianpeng.ma@intel.com" <jianpeng.ma@intel.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        tangchengchang <tangchengchang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        yangyicong <yangyicong@huawei.com>,
-        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>,
-        "Jonathan Cameron" <jonathan.cameron@huawei.com>
-Subject: RE: [PATCH v8 1/5] cpumask: introduce cpumap_print_to_buf to support
- large bitmask and list
-Thread-Topic: [PATCH v8 1/5] cpumask: introduce cpumap_print_to_buf to support
- large bitmask and list
-Thread-Index: AQHXhDyXSaAny2b84UqcVQEdPxb4q6tkYuyAgAEwn8A=
-Date:   Thu, 5 Aug 2021 23:05:59 +0000
-Message-ID: <53c5fec4223f4c398b81362acf7441b5@hisilicon.com>
-References: <20210729054208.1800-1-song.bao.hua@hisilicon.com>
- <20210729054208.1800-2-song.bao.hua@hisilicon.com>
- <YQvfD701nvqbClLd@kroah.com>
-In-Reply-To: <YQvfD701nvqbClLd@kroah.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.201.246]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Thu, 5 Aug 2021 19:07:09 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1312EC061799
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 16:06:55 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id bg4so4073798vsb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 16:06:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HdIGE3QIRULiPffn5SgnIgm+JNgi5Ws24qtq2HtssbQ=;
+        b=qElGBMfQCrr+xF7MmUV3WglpKWUD4QRyxyJCeoZlNvMAPR3dCc9q5DUlC4maL256dc
+         dI79lpYphul8twyFJyAu5/mZKAFJ/uh/wXoTWqr8HVG+tV2fL0VKw5Xsmg/O//+Wgtuw
+         LFVey+uOPYx5tX6y/NL5JhGmcJAAHSaGo0uf9F7HDS+cCKi0wCTQUu2+8vKCxuHJOGtv
+         KEIIdhdooZ/g3RliRNkYYGeiKiXzpaUr0AaI7lQfF3VfRcw8jJ6J/FxxM9nQY16DOHgt
+         ruAeQRzSI7Xvo3fXV9dz3MXjg2346R5cghvD9VcTrq2DgjqfeFcrx1xuhyAb5PFRNEiD
+         hiRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HdIGE3QIRULiPffn5SgnIgm+JNgi5Ws24qtq2HtssbQ=;
+        b=od2d2DGoYWuwvmC/O9E5lTuykrbjIoTbGMfEVYOx+qN25VDstWuqHFwCSNYkU80p9T
+         S0q+qPYepVtzTXY6sg4nWYJ2eAFWXtmoDzrR1Ix8aVJrC76wMBA8bVo6MEq4QGU2AhcU
+         8gzoHrn/l1GGjtDLiUlBe/8DzAPLnnKDS4Uo/4zZUumGifSeShtYZqP5UKIVD7ohy0bL
+         bdKnL97sdYdhXI1DfdKZtpal3M6u+BUgsXJ+WGocrqdHfJ5fcxewVtQS56mWFWqwxeG2
+         9MjaBSHnLfbG/bHsNudwnDXXlKUzDxo/DbaRSyZoli9mJhpaTpfqUQO2C/pd2wwQyNc/
+         wLjw==
+X-Gm-Message-State: AOAM53017xA61yYra+EEKpOEeOuBgWp+VgbQNtnyHtzSPqgsiGSi+pe2
+        ppYH4sRsK9uYTPk6TgYnG9+c4PlXl95fHDatzN0VAw==
+X-Google-Smtp-Source: ABdhPJxlY4hK5ku01Mnt8C4cKzB1eJ8LzQkP71Xr2loDTDbrYGugp5xv8bgo1O0wPzVCkCi8qLQBRRWdddenJPml3MM=
+X-Received: by 2002:a67:de06:: with SMTP id q6mr7187500vsk.57.1628204813936;
+ Thu, 05 Aug 2021 16:06:53 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-13-semen.protsenko@linaro.org> <455cfb5e-dff7-a5c0-3875-49abe3e900f3@canonical.com>
+In-Reply-To: <455cfb5e-dff7-a5c0-3875-49abe3e900f3@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Fri, 6 Aug 2021 02:06:41 +0300
+Message-ID: <CAPLW+4nDS0atrbUFagDA0W_Ky5MvOiY+N+NQoQ+me4pndp_iWg@mail.gmail.com>
+Subject: Re: [PATCH 12/12] arm64: dts: exynos: Add Exynos850 SoC support
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 31 Jul 2021 at 12:03, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 30/07/2021 16:49, Sam Protsenko wrote:
+> > Samsung Exynos850 is ARMv8-based mobile-oriented SoC.
+> >
+> > Features:
+> >  * CPU: Cortex-A55 Octa (8 cores), up to 2 GHz
+> >  * Memory interface: LPDDR4/4x 2 channels (12.8 GB/s)
+> >  * SD/MMC: SD 3.0, eMMC5.1 DDR 8-bit
+> >  * Modem: 4G LTE, 3G, GSM/GPRS/EDGE
+> >  * RF: Quad GNSS, WiFi 5 (802.11ac), Bluetooth 5.0
+> >  * GPU: Mali-G52 MP1
+> >  * Codec: 1080p 60fps H64, HEVC, JPEG HW Codec
+> >  * Display: Full HD+ (2520x1080)@60fps LCD
+> >  * Camera: 16+5MP/13+8MP ISP, MIPI CSI 4/4/2, FD, DRC
+> >  * Connectivity: USB 2.0 DRD, USI (SPI/UART/I2C), HSI2C, I3C, ADC, Audio
+>
+> Please document first the features you add (and are working) and
+> afterwards mention all others capabilities.
+>
 
+I'll remove SoC features, as it's easy to find and it's not needed in
+commit message anyway. Instead I'll describe which features (nodes)
+are added in DT by this commit.
 
-> -----Original Message-----
-> From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> Sent: Friday, August 6, 2021 12:53 AM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: andriy.shevchenko@linux.intel.com; yury.norov@gmail.com;
-> linux-kernel@vger.kernel.org; akpm@linux-foundation.org;
-> dave.hansen@intel.com; linux@rasmusvillemoes.dk; rafael@kernel.org;
-> rdunlap@infradead.org; agordeev@linux.ibm.com; sbrivio@redhat.com;
-> jianpeng.ma@intel.com; valentin.schneider@arm.com; peterz@infradead.org;
-> bristot@redhat.com; guodong.xu@linaro.org; tangchengchang
-> <tangchengchang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
-> yangyicong <yangyicong@huawei.com>; tim.c.chen@linux.intel.com; Linuxarm
-> <linuxarm@huawei.com>; tiantao (H) <tiantao6@hisilicon.com>; Jonathan Cameron
-> <jonathan.cameron@huawei.com>
-> Subject: Re: [PATCH v8 1/5] cpumask: introduce cpumap_print_to_buf to support
-> large bitmask and list
-> 
-> On Thu, Jul 29, 2021 at 05:42:04PM +1200, Barry Song wrote:
-> > From: Tian Tao <tiantao6@hisilicon.com>
 > >
-> > The existing cpumap_print_to_pagebuf() is used by cpu topology and other
-> > drivers to export hexadecimal bitmask and decimal list to userspace by
-> > sysfs ABI.
+> > This patch adds minimal SoC support. Particular board device tree files
+> > can include exynos850.dtsi file to get SoC related nodes, and then
+> > reference those nodes further as needed.
 > >
-> > Right now, those drivers are using a normal attribute for this kind of
-> > ABIs. A normal attribute typically has show entry as below:
-> >
-> > static ssize_t example_dev_show(struct device *dev,
-> >                 struct device_attribute *attr, char *buf)
-> > {
-> > 	...
-> > 	return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
-> > }
-> > show entry of attribute has no offset and count parameters and this
-> > means the file is limited to one page only.
-> >
-> > cpumap_print_to_pagebuf() API works terribly well for this kind of
-> > normal attribute with buf parameter and without offset, count:
-> >
-> > static inline ssize_t
-> > cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
-> > {
-> > 	return bitmap_print_to_pagebuf(list, buf, cpumask_bits(mask),
-> > 				       nr_cpu_ids);
-> > }
-> >
-> > The problem is once we have many cpus, we have a chance to make bitmask
-> > or list more than one page. Especially for list, it could be as complex
-> > as 0,3,5,7,9,...... We have no simple way to know it exact size.
-> >
-> > It turns out bin_attribute is a way to break this limit. bin_attribute
-> > has show entry as below:
-> > static ssize_t
-> > example_bin_attribute_show(struct file *filp, struct kobject *kobj,
-> >              struct bin_attribute *attr, char *buf,
-> >              loff_t offset, size_t count)
-> > {
-> > 	...
-> > }
-> >
-> > With the new offset and count parameters, this makes sysfs ABI be able
-> > to support file size more than one page. For example, offset could be
-> > >= 4096.
-> >
-> > This patch introduces cpumap_print_to_buf() and its bitmap infrastructure
-> > bitmap_print_to_buf() so that those drivers can move to bin_attribute to
-> > support large bitmask and list. At the same time, we have to pass those
-> > corresponding parameters such as offset, count from bin_attribute to this
-> > new API.
-> >
-> > Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Cc: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Stefano Brivio <sbrivio@redhat.com>
-> > Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-> > Cc: "Ma, Jianpeng" <jianpeng.ma@intel.com>
-> > Cc: Yury Norov <yury.norov@gmail.com>
-> > Cc: Valentin Schneider <valentin.schneider@arm.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
 > > ---
-> >  include/linux/bitmap.h  |  2 ++
-> >  include/linux/cpumask.h | 63 +++++++++++++++++++++++++++++++++
-> >  lib/bitmap.c            | 78 +++++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 143 insertions(+)
+> >  .../boot/dts/exynos/exynos850-pinctrl.dtsi    | 782 ++++++++++++++++++
+> >  arch/arm64/boot/dts/exynos/exynos850-usi.dtsi |  30 +
+> >  arch/arm64/boot/dts/exynos/exynos850.dtsi     | 245 ++++++
+>
+> Not buildable. Missing Makefile, missing DTS. Please submit with initial
+> DTS, otherwise no one is able to verify it even compiles.
+>
+
+This device is not available for purchase yet. I'll send the patch for
+board dts once it's announced. I can do all the testing for now, if
+you have any specific requests. Would it be possible for us to review
+and apply only SoC support for now? Will send v2 soon...
+
+> >  3 files changed, 1057 insertions(+)
+> >  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+> >  create mode 100644 arch/arm64/boot/dts/exynos/exynos850-usi.dtsi
+> >  create mode 100644 arch/arm64/boot/dts/exynos/exynos850.dtsi
 > >
-> > diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> > index a36cfcec4e77..0de6effa2797 100644
-> > --- a/include/linux/bitmap.h
-> > +++ b/include/linux/bitmap.h
-> > @@ -226,6 +226,8 @@ void bitmap_copy_le(unsigned long *dst, const unsigned
-> long *src, unsigned int n
-> >  unsigned int bitmap_ord_to_pos(const unsigned long *bitmap, unsigned int ord,
-> unsigned int nbits);
-> >  int bitmap_print_to_pagebuf(bool list, char *buf,
-> >  				   const unsigned long *maskp, int nmaskbits);
-> > +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
-> > +			int nmaskbits, loff_t off, size_t count);
-> >
-> >  #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG -
-> 1)))
-> >  #define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG -
-> 1)))
-> > diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> > index f3689a52bfd0..4b838eb6294c 100644
-> > --- a/include/linux/cpumask.h
-> > +++ b/include/linux/cpumask.h
-> > @@ -983,6 +983,69 @@ cpumap_print_to_pagebuf(bool list, char *buf, const
-> struct cpumask *mask)
-> >  				      nr_cpu_ids);
-> >  }
-> >
-> > +/**
-> > + * cpumap_print_to_buf  - copies the cpumask into the buffer
-> > + * @list: indicates whether the cpumap must be list
-> > + *      true:  print in decimal list format
-> > + *      false: print in hexadecimal bitmask format
+> > diff --git a/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi b/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+> > new file mode 100644
+> > index 000000000000..4cf0a22cc6db
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/exynos/exynos850-pinctrl.dtsi
+> > @@ -0,0 +1,782 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Samsung's Exynos850 SoC pin-mux and pin-config device tree source
 > > + *
-> > + * The existing cpumap_print_to_pagebuf() is used by cpu topology and other
-> > + * drivers to export hexadecimal bitmask and decimal list to userspace by
-> > + * sysfs ABI.
-> > + * Drivers might be using a normal attribute for this kind of ABIs. A
-> > + * normal attribute typically has show entry as below:
-> > + * static ssize_t example_attribute_show(struct device *dev,
-> > + * 		struct device_attribute *attr, char *buf)
-> > + * {
-> > + * 	...
-> > + * 	return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
-> > + * }
-> > + * show entry of attribute has no offset and count parameters. this means
-> > + * the file is limited to one page only.
-> > + * cpumap_print_to_pagebuf() API works terribly well for this kind of
-> > + * normal attribute with buf parameter and without offset, count:
-> > + * cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
-> > + * {
-> > + * }
-> > + * The problem is once we have many cpus, we have a chance to make bitmask
-> > + * or list more than one page. Especially for list, it could be as complex
-> > + * as 0,3,5,7,9,... We have no simple way to know it exact size.
-> > + * It turns out bin_attribute is a way to break this limit. bin_attribute
-> > + * has show entry as below:
-> > + * static ssize_t
-> > + * example_bin_attribute_show(struct file *filp, struct kobject *kobj,
-> > + * 		struct bin_attribute *attr, char *buf,
-> > + * 		loff_t offset, size_t count)
-> > + * {
-> > + * 	...
-> > + * }
-> > + * With the new offset and count parameters, this makes sysfs ABI be able
-> > + * to support file size more than one page. For example, offset could be
-> > + * >= 4096.
-> > + * cpumap_print_to_buf() makes those drivers be able to support large
-> > + * bitmask and list after they move to use bin_attribute. In result, we
-> > + * have to pass the corresponding parameters such as off, count from
-> > + * bin_attribute show entry to this API.
+> > + * Copyright (C) 2017 Samsung Electronics Co., Ltd.
+> > + * Copyright (C) 2021 Linaro Ltd.
 > > + *
-> > + * @mask: the cpumask to copy
-> > + * @buf: the buffer to copy into
-> > + * @off: in the string from which we are copying, We copy to @buf
-> > + * @count: the maximum number of bytes to print
-> > + *
-> > + * The function copies the cpumask into the buffer either as comma-separated
-> > + * list of cpus or hex values of cpumask; Typically used by bin_attribute
-> to
-> > + * export cpumask bitmask and list ABI.
-> > + *
-> > + * Returns the length of how many bytes have been copied.
+> > + * Samsung's Exynos850 SoC pin-mux and pin-config options are listed as device
+> > + * tree nodes in this file.
 > > + */
-> > +static inline ssize_t
-> > +cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
-> > +		loff_t off, size_t count)
-> > +{
-> > +	return bitmap_print_to_buf(list, buf, cpumask_bits(mask),
-> > +				   nr_cpu_ids, off, count);
-> > +}
 > > +
-> >  #if NR_CPUS <= BITS_PER_LONG
-> >  #define CPU_MASK_ALL							\
-> >  (cpumask_t) { {								\
-> > diff --git a/lib/bitmap.c b/lib/bitmap.c
-> > index 9401d39e4722..56bcffe2fa8c 100644
-> > --- a/lib/bitmap.c
-> > +++ b/lib/bitmap.c
-> > @@ -487,6 +487,84 @@ int bitmap_print_to_pagebuf(bool list, char *buf, const
-> unsigned long *maskp,
-> >  }
-> >  EXPORT_SYMBOL(bitmap_print_to_pagebuf);
-> >
-> > +/**
-> > + * bitmap_print_to_buf  - convert bitmap to list or hex format ASCII string
-> > + * @list: indicates whether the bitmap must be list
-> > + *      true:  print in decimal list format
-> > + *      false: print in hexadecimal bitmask format
-> 
-> I do not understand "list" or not here.  Having binary values in a
-> function makes it almost impossible to read when they are being called
-> without having to go dig up the real user.
-> 
-> Are you using this in both ways?  If so, make this the common, static
-> function and have:
-> 	bitmap_print_list_to_buf()
-> 	bitmap_print_bitmask_to_buf()
-> 
-> so that the caller knows exactly what is happening here.
+> > +#include <dt-bindings/interrupt-controller/exynos850.h>
+> > +
+> > +/ {
+> > +     /* ALIVE */
+> > +     pinctrl@11850000 {
+> > +             gpa0: gpa0 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <3>;
+>
+> That's odd a little, why three cells? How this would be used/referenced?
+>
 
-Sounds reasonable to remove bool parameter.
+Fixed. You are right, irq_domain_xlate_twocell() is used in
+pinctrl-exynos.c. Btw, that fixed the use-case when gpX is specified
+as interrupt-parrent for other nodes.
 
-> 
-> 
-> 
+> > +                     interrupt-parent = <&gic>;
+> > +                     interrupts =
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT0 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT1 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT2 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT3 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT4 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT5 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT6 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT7 IRQ_TYPE_LEVEL_HIGH>;
+> > +             };
+> > +
+> > +             gpa1: gpa1 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <3>;
+> > +                     interrupt-parent = <&gic>;
+> > +                     interrupts =
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT8 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT9 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT10 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT11 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT12 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT13 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT14 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT15 IRQ_TYPE_LEVEL_HIGH>;
+> > +             };
+> > +
+> > +             gpa2: gpa2 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <3>;
+> > +                     interrupt-parent = <&gic>;
+> > +                     interrupts =
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT16 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT17 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT18 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT19 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT20 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT21 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT22 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT23 IRQ_TYPE_LEVEL_HIGH>;
+> > +             };
+> > +
+> > +             gpa3: gpa3 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <3>;
+> > +                     interrupt-parent = <&gic>;
+> > +                     interrupts =
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT24 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT25 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT26 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT27 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT28 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT29 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT30 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT31 IRQ_TYPE_LEVEL_HIGH>;
+> > +             };
+> > +
+> > +             gpa4: gpa4 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <3>;
+> > +                     interrupt-parent = <&gic>;
+> > +                     interrupts =
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT32 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT33 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT34 IRQ_TYPE_LEVEL_HIGH>,
+> > +                         <GIC_SPI INTREQ__ALIVE_EINT35 IRQ_TYPE_LEVEL_HIGH>;
+> > +             };
+> > +
+> > +             gpq0: gpq0 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             /* USI_PERI_UART_DBG */
+> > +             uart0_bus: uart0-bus {
+> > +                     samsung,pins = "gpq0-0", "gpq0-1";
+> > +                     samsung,pin-function = <2>;
+>
+> EXYNOS_PIN_FUNC_2
+>
+
+Done, thanks.
+
+> > +                     samsung,pin-pud = <0>;
+>
+> EXYNOS_PIN_PULL_xx?
+>
+
+Yes, replaced pin-pud values with these constants, thanks. Won't touch
+pin-drv properties, though, as different domains have different
+meanings for the same values, so don't want to introduce the whole
+bunch of consts.
+
+> > +             };
+> > +
+> > +             decon_f_te_on: decon_f_te_on {
+>
+> 1. Where is it used?
+> 2. Use hyphens in node names.
+> Please build it with W=1 and fix the warnings.
+>
+
+decon* nodes seem like leftover from vendor kernel. Those are not
+connected anywhere on my board, so I removed those nodes.
+
+Also fixed node names as you suggested, and fixed all stuff found with
+W=1 build, thanks for reminding me that.
+
+> > +                     samsung,pins = "gpa4-1";
+>
+> Order the nodes based on first pin name, so:
+> i2c5_bus
+> i2c6_bus
+> decon_f_te_on
+> uart0_bus
+>
+
+Done. Also rearranged the nodes in that way for other pinctrl domains.
+
+> > +                     samsung,pin-function = <0xf>;
+> > +             };
+> > +
+> > +             decon_f_te_off: decon_f_te_off {
+>
+> Where is it used?
+>
+
+Removed, as explained above.
+
+> > +                     samsung,pins = "gpa4-1";
+> > +                     samsung,pin-function = <0x0>;
+> > +             };
+> > +
+> > +             /* I2C_5 | CAM_PMIC_I2C */
+>
+> This comment is confusing. I2C-5 is obvious from node name and label.
+> CAM_PMIC_I2C does not look like property of SoC but board.
+>
+
+Yeah, unfortunately this confusing I2C naming (CAM_PMIC_I2C and
+MOTOR_I2C) actually comes from TRM and SoC schematic symbol. So in
+Device Tree it's called just i2c5 and i2c6 (because it's a regular I2C
+really), but in TRM it's a mix of both names. I guess it's just a poor
+pin function naming, done by SoC designers.
+
+That said, I suggest changing these comments to something like this:
+
+    /* I2C5 (also called CAM_PMIC_I2C in TRM) */
+    /* I2C6 (also called MOTOR_I2C in TRM) */
+
+> > +             i2c5_bus: i2c5-bus {
+> > +                     samsung,pins = "gpa3-5", "gpa3-6";
+> > +                     samsung,pin-function = <3>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             /* I2C_6 | MOTOR_I2C */
+> > +             i2c6_bus: i2c6-bus {
+> > +                     samsung,pins = "gpa3-7", "gpa4-0";
+> > +                     samsung,pin-function = <3>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +     };
+> > +
+> > +     /* CMGP */
+> > +     pinctrl@11c30000 {
+> > +             gpm0: gpm0 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <3>;
+> > +                     interrupt-parent = <&gic>;
+> > +                     interrupts =
+> > +                       <GIC_SPI INTREQ__CMGP_EXT_INTM00 IRQ_TYPE_LEVEL_HIGH>;
+> > +             };
+> > +
+> > +             gpm1: gpm1 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <3>;
+> > +                     interrupt-parent = <&gic>;
+> > +                     interrupts =
+> > +                       <GIC_SPI INTREQ__CMGP_EXT_INTM01 IRQ_TYPE_LEVEL_HIGH>;
+> > +             };
+> > +
+> > +             gpm2: gpm2 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <3>;
+> > +                     interrupt-parent = <&gic>;
+> > +                     interrupts =
+> > +                       <GIC_SPI INTREQ__CMGP_EXT_INTM02 IRQ_TYPE_LEVEL_HIGH>;
+> > +             };
+> > +
+> > +             gpm3: gpm3 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <3>;
+> > +                     interrupt-parent = <&gic>;
+> > +                     interrupts =
+> > +                       <GIC_SPI INTREQ__CMGP_EXT_INTM03 IRQ_TYPE_LEVEL_HIGH>;
+> > +             };
+> > +
+> > +             gpm4: gpm4 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <3>;
+> > +                     interrupt-parent = <&gic>;
+> > +                     interrupts =
+> > +                       <GIC_SPI INTREQ__CMGP_EXT_INTM04 IRQ_TYPE_LEVEL_HIGH>;
+> > +             };
+> > +
+> > +             gpm5: gpm5 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <3>;
+> > +                     interrupt-parent = <&gic>;
+> > +                     interrupts =
+> > +                       <GIC_SPI INTREQ__CMGP_EXT_INTM05 IRQ_TYPE_LEVEL_HIGH>;
+> > +             };
+> > +
+> > +             /* usi_cmgp00 */
+> > +             hsi2c3_bus: hsi2c3-bus {
+> > +                     samsung,pins = "gpm0-0", "gpm1-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             /* usi_cmgp01 */
+> > +             hsi2c4_bus: hsi2c4-bus {
+> > +                     samsung,pins = "gpm4-0", "gpm5-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             /* spi usi_cmgp00 */
+> > +             spi1_bus: spi1-bus {
+> > +                     samsung,pins = "gpm0-0", "gpm1-0", "gpm2-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             spi1_cs: spi1-cs {
+> > +                     samsung,pins = "gpm3-0";
+> > +                     samsung,pin-function = <1>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             spi1_cs_func: spi1-cs-func {
+> > +                     samsung,pins = "gpm3-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             /* spi usi_cmgp01 */
+> > +             spi2_bus: spi2-bus {
+> > +                     samsung,pins = "gpm4-0", "gpm5-0", "gpm6-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             spi2_cs: spi2-cs {
+> > +                     samsung,pins = "gpm7-0";
+> > +                     samsung,pin-function = <1>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             spi2_cs_func: spi2-cs-func {
+> > +                     samsung,pins = "gpm7-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             /* usi_cmgp00_uart */
+> > +             uart1_bus_single: uart1-bus {
+> > +                     samsung,pins = "gpm0-0", "gpm1-0", "gpm2-0", "gpm3-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +             };
+> > +
+> > +             uart1_bus_dual: uart1-bus-dual {
+> > +                     samsung,pins = "gpm0-0", "gpm1-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +             };
+> > +
+> > +             /* usi_cmgp01_uart */
+> > +             uart2_bus_single: uart2-bus {
+> > +                     samsung,pins = "gpm4-0", "gpm5-0", "gpm6-0", "gpm7-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +             };
+> > +
+> > +             uart2_bus_dual: uart2-bus-dual {
+> > +                     samsung,pins = "gpm4-0", "gpm5-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +             };
+> > +     };
+> > +
+> > +     /* AUD */
+> > +     pinctrl@14a60000 {
+> > +             gpb0: gpb0 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             gpb1: gpb1 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             aud_codec_mclk: aud-codec-mclk {
+> > +                     samsung,pins = "gpb0-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <1>;
+> > +             };
+> > +
+> > +             aud_codec_mclk_idle: aud-codec-mclk-idle {
+> > +                     samsung,pins = "gpb0-0";
+> > +                     samsung,pin-function = <0>;
+> > +                     samsung,pin-pud = <1>;
+> > +             };
+> > +
+> > +             aud_i2s0_bus: aud-i2s0-bus {
+> > +                     samsung,pins = "gpb0-1", "gpb0-2", "gpb0-3", "gpb0-4";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <1>;
+> > +             };
+> > +
+> > +             aud_i2s0_idle: aud-i2s0-idle {
+> > +                     samsung,pins = "gpb0-1", "gpb0-2", "gpb0-3", "gpb0-4";
+> > +                     samsung,pin-function = <0>;
+> > +                     samsung,pin-pud = <1>;
+> > +             };
+> > +
+> > +             aud_i2s1_bus: aud-i2s1-bus {
+> > +                     samsung,pins = "gpb1-0", "gpb1-1", "gpb1-2", "gpb1-3";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <1>;
+> > +             };
+> > +
+> > +             aud_i2s1_idle: aud-i2s1-idle {
+> > +                     samsung,pins = "gpb1-0", "gpb1-1", "gpb1-2", "gpb1-3";
+> > +                     samsung,pin-function = <0>;
+> > +                     samsung,pin-pud = <1>;
+> > +             };
+> > +
+> > +             aud_fm_bus: aud-fm-bus {
+> > +                     samsung,pins = "gpb1-4";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <1>;
+> > +             };
+> > +
+> > +             aud_fm_idle: aud-fm-idle {
+> > +                     samsung,pins = "gpb1-4";
+> > +                     samsung,pin-function = <0>;
+> > +                     samsung,pin-pud = <1>;
+> > +             };
+> > +     };
+> > +
+> > +     /* HSI */
+> > +     pinctrl@13430000 {
+> > +             gpf2: gpf2 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             sd2_clk: sd2-clk {
+> > +                     samsung,pins = "gpf2-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sd2_cmd: sd2-cmd {
+> > +                     samsung,pins = "gpf2-1";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <2>;
+> > +              };
+> > +
+> > +             sd2_bus1: sd2-bus-width1 {
+> > +                     samsung,pins = "gpf2-2";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sd2_bus4: sd2-bus-width4 {
+> > +                     samsung,pins = "gpf2-3", "gpf2-4", "gpf2-5";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sd2_clk_fast_slew_rate_1x: sd2-clk_fast_slew_rate_1x {
+> > +                     samsung,pins = "gpf2-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             sd2_clk_fast_slew_rate_1_5x: sd2-clk_fast_slew_rate_1_5x {
+> > +                     samsung,pins = "gpf2-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <1>;
+> > +             };
+> > +
+> > +             sd2_clk_fast_slew_rate_2x: sd2-clk_fast_slew_rate_2x {
+> > +                     samsung,pins = "gpf2-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sd2_clk_fast_slew_rate_2_5x: sd2-clk_fast_slew_rate_2_5x {
+> > +                     samsung,pins = "gpf2-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <3>;
+> > +             };
+> > +
+> > +             sd2_clk_fast_slew_rate_3x: sd2-clk_fast_slew_rate_3x {
+> > +                     samsung,pins = "gpf2-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <4>;
+> > +             };
+> > +
+> > +             sd2_clk_fast_slew_rate_4x: sd2-clk_fast_slew_rate_4x {
+> > +                     samsung,pins = "gpf2-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <5>;
+> > +             };
+> > +
+> > +             sd2_pins_as_pdn: sd2-pins-as-pdn {
+> > +                     samsung,pins = "gpf2-0", "gpf2-1", "gpf2-2", "gpf2-3",
+> > +                                    "gpf2-4", "gpf2-5";
+> > +                     samsung,pin-function = <0>;
+> > +                     samsung,pin-pud = <2>;
+> > +             };
+> > +
+>
+> No need for blank line.
+>
+
+Fixed.
+
+> > +     };
+> > +
+> > +     /* CORE */
+> > +     pinctrl@12070000 {
+> > +             gpf0: gpf0 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             sd0_clk: sd0-clk {
+> > +                     samsung,pins = "gpf0-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <3>;
+> > +             };
+> > +
+> > +             sd0_cmd: sd0-cmd {
+> > +                     samsung,pins = "gpf0-1";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <3>;
+> > +             };
+> > +
+> > +             sd0_rdqs: sd0-rdqs {
+> > +                     samsung,pins = "gpf0-2";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <1>;
+> > +                     samsung,pin-drv = <3>;
+> > +             };
+> > +
+> > +             sd0_nreset: sd0-nreset {
+> > +                     samsung,pins = "gpf0-3";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <3>;
+> > +             };
+> > +
+> > +             sd0_clk_fast_slew_rate_1x: sd0-clk_fast_slew_rate_1x {
+> > +                     samsung,pins = "gpf0-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <1>;
+> > +             };
+> > +
+> > +             sd0_clk_fast_slew_rate_2x: sd0-clk_fast_slew_rate_2x {
+> > +                     samsung,pins = "gpf0-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sd0_clk_fast_slew_rate_3x: sd0-clk_fast_slew_rate_3x {
+> > +                     samsung,pins = "gpf0-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sd0_clk_fast_slew_rate_4x: sd0-clk_fast_slew_rate_4x {
+> > +                     samsung,pins = "gpf0-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <3>;
+> > +             };
+> > +
+> > +             gpf1: gpf1 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             sd0_bus1: sd0-bus-width1 {
+> > +                     samsung,pins = "gpf1-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <3>;
+> > +             };
+> > +
+> > +             sd0_bus4: sd0-bus-width4 {
+> > +                     samsung,pins = "gpf1-1", "gpf1-2", "gpf1-3";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <3>;
+> > +             };
+> > +
+> > +             sd0_bus8: sd0-bus-width8 {
+> > +                     samsung,pins = "gpf1-4", "gpf1-5", "gpf1-6", "gpf1-7";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <3>;
+> > +             };
+> > +     };
+> > +
+> > +     /* PERI */
+> > +     pinctrl@139b0000 {
+> > +             gpg0: gpg0 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             gpp0: gpp0 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +             gpp1: gpp1 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             gpp2: gpp2 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             gpg1: gpg1 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             gpg2: gpg2 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             gpg3: gpg3 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             gpc0: gpc0 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             gpc1: gpc1 {
+> > +                     gpio-controller;
+> > +                     #gpio-cells = <2>;
+> > +
+> > +                     interrupt-controller;
+> > +                     #interrupt-cells = <2>;
+> > +             };
+> > +
+> > +             xclkout: xclkout {
+> > +                     samsung,pins = "gpq0-2";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +             };
+> > +
+> > +             /* usi_hsi2c_0 */
+>
+> Comment seems to duplicate node name/label.
+>
+
+I think the comment is useful, maybe just designed poorly. It's
+pointing out that this HS-I2C block is based on USI IP-core. Basically
+we have 7 USI blocks in this SoC:
+  - 5 USIs that pre-defined: HSI2C0, HSI2C1, HSI2C2, UART0 and SPI0;
+although AFAIU they can be changed via System Register as well, but
+seems like nobody does that
+  - 2 USIs from CMGP blocks (CMGP0 and CMGP1), which are actually configurable
+
+I will revise all such comments like this, just to show those blocks
+are based on USI design:
+
+    /* USI: HSI2C0 */
+
+At least when I was bringing up this board, I was really confused for
+long time about this USI business. So I'm sure some kind of comments
+might be actually helpful. And that's one reason to keep
+exynos850-usi.dtsi file: although I removed it for now, squashing it
+into exynos850.dtsi, I think it might be a good idea to bring that
+back once all USI nodes are described. Just thinking aloud :)
+
+> > +             hsi2c0_bus: hsi2c0-bus {
+> > +                     samsung,pins = "gpc1-0", "gpc1-1";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             /* usi_hsi2c_1 */
+> > +             hsi2c1_bus: hsi2c1-bus {
+> > +                     samsung,pins = "gpc1-2", "gpc1-3";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             /* usi_hsi2c_2 */
+> > +             hsi2c2_bus: hsi2c2-bus {
+> > +                     samsung,pins = "gpc1-4", "gpc1-5";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             /* usi_spi_0 */
+> > +             spi0_bus: spi0-bus {
+> > +                     samsung,pins = "gpp2-0", "gpp2-2", "gpp2-3";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             spi0_cs: spi0-cs {
+> > +                     samsung,pins = "gpp2-1";
+> > +                     samsung,pin-function = <1>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             spi0_cs_func: spi0-cs-func {
+> > +                     samsung,pins = "gpp2-1";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             i2c0_bus: i2c0-bus {
+> > +                     samsung,pins = "gpp0-0", "gpp0-1";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             i2c1_bus: i2c1-bus {
+> > +                     samsung,pins = "gpp0-2", "gpp0-3";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             i2c2_bus: i2c2-bus {
+> > +                     samsung,pins = "gpp0-4", "gpp0-5";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             i2c3_bus: i2c3-bus {
+> > +                     samsung,pins = "gpp1-0", "gpp1-1";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             i2c4_bus: i2c4-bus {
+> > +                     samsung,pins = "gpp1-2", "gpp1-3";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <3>;
+> > +                     samsung,pin-drv = <0>;
+> > +             };
+> > +
+> > +             fm_lna_en: fm-lna-en {
+> > +                     samsung,pins = "gpg2-3";
+> > +                     samsung,pin-function = <1>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-val = <0>;
+> > +             };
+> > +
+> > +             sensor_mclk0_in: sensor-mclk0-in {
+> > +                     samsung,pins = "gpc0-0";
+> > +                     samsung,pin-function = <0>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sensor_mclk0_out: sensor-mclk0-out {
+> > +                     samsung,pins = "gpc0-0";
+> > +                     samsung,pin-function = <1>;
+> > +                     samsung,pin-pud = <1>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sensor_mclk0_fn: sensor-mclk0-fn {
+>
+> No, seriously. What sensor is it? In SoC?
+>
+
+In this context, "sensor" stands for "camera". Of course, it resides
+(or rather *may* reside) outside of the SoC. This is just useful pin
+configuration for camera master clock lines (3 of them). On schematic
+those 3 lines are grouped into "MCLK" block, and those pins main
+function is CAM_MCLK. I guess it makes sense to keep those
+definitions, as I doubt somebody would actually consider using those
+lines for somthing else. Or I can remove all those sensor*
+definitions, if you'd like, then those can be added later, when camera
+support cames in.
+
+> > +                     samsung,pins = "gpc0-0";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sensor_mclk1_in: sensor-mclk1-in {
+> > +                     samsung,pins = "gpc0-1";
+> > +                     samsung,pin-function = <0>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sensor_mclk1_out: sensor-mclk1-out {
+> > +                     samsung,pins = "gpc0-1";
+> > +                     samsung,pin-function = <1>;
+> > +                     samsung,pin-pud = <1>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sensor_mclk1_fn: sensor-mclk1-fn {
+> > +                     samsung,pins = "gpc0-1";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sensor_mclk2_in: sensor-mclk2-in {
+> > +                     samsung,pins = "gpc0-2";
+> > +                     samsung,pin-function = <0>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sensor_mclk2_out: sensor-mclk2-out {
+> > +                     samsung,pins = "gpc0-2";
+> > +                     samsung,pin-function = <1>;
+> > +                     samsung,pin-pud = <1>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +
+> > +             sensor_mclk2_fn: sensor-mclk2-fn {
+> > +                     samsung,pins = "gpc0-2";
+> > +                     samsung,pin-function = <2>;
+> > +                     samsung,pin-pud = <0>;
+> > +                     samsung,pin-drv = <2>;
+> > +             };
+> > +     };
+> > +};
+> > diff --git a/arch/arm64/boot/dts/exynos/exynos850-usi.dtsi b/arch/arm64/boot/dts/exynos/exynos850-usi.dtsi
+> > new file mode 100644
+> > index 000000000000..fb243e0a6260
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/exynos/exynos850-usi.dtsi
+> > @@ -0,0 +1,30 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Samsung's Exynos850 SoC USI device tree source
 > > + *
-> > + * The bitmap_print_to_pagebuf() is used indirectly via its cpumap wrapper
-> > + * cpumap_print_to_pagebuf() or directly by drivers to export hexadecimal
-> > + * bitmask and decimal list to userspace by sysfs ABI.
-> > + * Drivers might be using a normal attribute for this kind of ABIs. A
-> > + * normal attribute typically has show entry as below:
-> > + * static ssize_t example_attribute_show(struct device *dev,
-> > + * 		struct device_attribute *attr, char *buf)
-> > + * {
-> > + * 	...
-> > + * 	return bitmap_print_to_pagebuf(true, buf, &mask, nr_trig_max);
-> > + * }
-> > + * show entry of attribute has no offset and count parameters and this
-> > + * means the file is limited to one page only.
-> > + * bitmap_print_to_pagebuf() API works terribly well for this kind of
-> > + * normal attribute with buf parameter and without offset, count:
-> > + * bitmap_print_to_pagebuf(bool list, char *buf, const unsigned long *maskp,
-> > + * 			   int nmaskbits)
-> > + * {
-> > + * }
-> > + * The problem is once we have a large bitmap, we have a chance to get a
-> > + * bitmask or list more than one page. Especially for list, it could be
-> > + * as complex as 0,3,5,7,9,... We have no simple way to know it exact size.
-> > + * It turns out bin_attribute is a way to break this limit. bin_attribute
-> > + * has show entry as below:
-> > + * static ssize_t
-> > + * example_bin_attribute_show(struct file *filp, struct kobject *kobj,
-> > + * 		struct bin_attribute *attr, char *buf,
-> > + * 		loff_t offset, size_t count)
-> > + * {
-> > + * 	...
-> > + * }
-> > + * With the new offset and count parameters, this makes sysfs ABI be able
-> > + * to support file size more than one page. For example, offset could be
-> > + * >= 4096.
-> > + * bitmap_print_to_buf() and its cpumap wrapper cpumap_print_to_buf() makes
-> > + * those drivers be able to support large bitmask and list after they move
-> > + * to use bin_attribute. In result, we have to pass the corresponding
-> > + * parameters such as off, count from bin_attribute show entry to this API.
+> > + * Copyright (C) 2019 Samsung Electronics Co., Ltd.
+> > + * Copyright (C) 2021 Linaro Ltd.
 > > + *
-> > + * @buf: buffer into which string is placed
-> > + * @maskp: pointer to bitmap to convert
-> > + * @nmaskbits: size of bitmap, in bits
-> > + * @off: in the string from which we are copying, We copy to @buf
-> > + * @count: the maximum number of bytes to print
-> > + *
-> > + * The role of cpumap_print_to_buf() and cpumap_print_to_pagebuf() is
-> similar,
-> > + * the difference is that bitmap_print_to_pagebuf() mainly serves sysfs
-> > + * attribute with the assumption the destination buffer is exactly one page
-> > + * and won't be more than one page. cpumap_print_to_buf(), on the other hand,
-> > + * mainly serves bin_attribute which doesn't work with exact one page, and
-> it
-> > + * can break the size limit of converted decimal list and hexadecimal bitmask.
-> > + *
-> > + * Returns the number of characters actually printed to @buf
+> > + * Samsung's Exynos850 SoC USI channels are listed in this file as device tree
+> > + * nodes.
+>
+> Why here not in exynos850.dtsi?
+>
+
+Yeah, you're right. As it's only serial_0 for now, I've moved that
+into exynos850.dtsi and removed exynos850-usi.dtsi.
+
 > > + */
-> > +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
-> > +		int nmaskbits, loff_t off, size_t count)
-> 
-> No need to put the kernel doc for both the .h and .c file, only put it
-> in one place please (where ever it ties into the kernel documentation)
-> 
+> > +
+> > +#include <dt-bindings/clock/exynos850.h>
+> > +
+> > +/ {
+> > +     aliases {
+> > +             uart0 = &serial_0;
+> > +     };
+> > +
+> > +     /* USI_UART */
+> > +     serial_0: uart@13820000 {
+>
+> This should ne in soc node.
+>
 
-Actually they are two different modules. One is cpumap, the other one is
-bitmap. But they do have some duplicated content.
-I'd prefer to remove the duplicated part from cpumap.
+Done.
 
-> thanks,
-> 
-> greg k-h
+> > +             compatible = "samsung,exynos850-uart";
+> > +             reg = <0x0 0x13820000 0x100>;
+> > +             interrupts = <GIC_SPI INTREQ__UART IRQ_TYPE_LEVEL_HIGH>;
+> > +             pinctrl-names = "default";
+> > +             pinctrl-0 = <&uart0_bus>;
+> > +             clocks = <&clock GATE_UART_QCH>, <&clock DOUT_UART>;
+> > +             clock-names = "gate_uart_clk0", "uart";
+> > +             status = "disabled";
+> > +     };
+> > +};
+> > diff --git a/arch/arm64/boot/dts/exynos/exynos850.dtsi b/arch/arm64/boot/dts/exynos/exynos850.dtsi
+> > new file mode 100644
+> > index 000000000000..ed2d1c8ae0c3
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/exynos/exynos850.dtsi
+> > @@ -0,0 +1,245 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Samsung Exynos850 SoC device tree source
+> > + *
+> > + * Copyright (C) 2018 Samsung Electronics Co., Ltd.
+> > + * Copyright (C) 2021 Linaro Ltd.
+> > + *
+> > + * Samsung Exynos850 SoC device nodes are listed in this file.
+> > + * Exynos based board files can include this file and provide
+> > + * values for board specific bindings.
+> > + */
+> > +
+> > +#include <dt-bindings/interrupt-controller/exynos850.h>
+> > +#include <dt-bindings/clock/exynos850.h>
+> > +#include "exynos850-pinctrl.dtsi"
+> > +#include "exynos850-usi.dtsi"
+> > +
+> > +/ {
+>
+> Add a comment like:
+> /* Also known under engineering name exynos3830 */
+>
 
-Thanks
-Barry
+Sure.
 
+> > +     compatible = "samsung,exynos850";
+>
+> Undocumented compatible. Checkpatch should complain.
+>
+
+It actually doesn't, though it does complain about other undocumented
+compatibles. I understand that it should be documented in
+samsung-boards.yaml, but is it ok with you if I do that later, when
+adding some actual board's dts? Just don't want to have two patches
+for that.
+
+> > +     interrupt-parent = <&gic>;
+> > +     #address-cells = <2>;
+> > +     #size-cells = <1>;
+> > +
+> > +     aliases {
+> > +             pinctrl0 = &pinctrl_0;
+> > +             pinctrl1 = &pinctrl_1;
+> > +             pinctrl2 = &pinctrl_2;
+> > +             pinctrl3 = &pinctrl_3;
+> > +             pinctrl4 = &pinctrl_4;
+> > +             pinctrl5 = &pinctrl_5;
+> > +     };
+> > +
+> > +     cpus {
+> > +             #address-cells = <2>;
+> > +             #size-cells = <0>;
+> > +
+> > +             cpu-map {
+> > +                     cluster0 {
+> > +                             core0 {
+> > +                                     cpu = <&cpu0>;
+> > +                             };
+> > +                             core1 {
+> > +                                     cpu = <&cpu1>;
+> > +                             };
+> > +                             core2 {
+> > +                                     cpu = <&cpu2>;
+> > +                             };
+> > +                             core3 {
+> > +                                     cpu = <&cpu3>;
+> > +                             };
+> > +                     };
+> > +
+> > +                     cluster1 {
+> > +                             core0 {
+> > +                                     cpu = <&cpu4>;
+> > +                             };
+> > +                             core1 {
+> > +                                     cpu = <&cpu5>;
+> > +                             };
+> > +                             core2 {
+> > +                                     cpu = <&cpu6>;
+> > +                             };
+> > +                             core3 {
+> > +                                     cpu = <&cpu7>;
+> > +                             };
+> > +                     };
+> > +             };
+> > +
+> > +             cpu0: cpu@0000 {
+> > +                     device_type = "cpu";
+> > +                     compatible = "arm,cortex-a55", "arm,armv8";
+> > +                     reg = <0x0 0x0000>;
+>
+> reg = <0x0 0x0>;
+> (in following places similarly)
+>
+
+Done, and also fixed @0000 stuff, while at it.
+
+> > +                     enable-method = "psci";
+> > +             };
+> > +             cpu1: cpu@0001 {
+> > +                     device_type = "cpu";
+> > +                     compatible = "arm,cortex-a55", "arm,armv8";
+> > +                     reg = <0x0 0x0001>;
+> > +                     enable-method = "psci";
+> > +             };
+> > +             cpu2: cpu@0002 {
+> > +                     device_type = "cpu";
+> > +                     compatible = "arm,cortex-a55", "arm,armv8";
+> > +                     reg = <0x0 0x0002>;
+> > +                     enable-method = "psci";
+> > +             };
+> > +             cpu3: cpu@0003 {
+> > +                     device_type = "cpu";
+> > +                     compatible = "arm,cortex-a55", "arm,armv8";
+> > +                     reg = <0x0 0x0003>;
+> > +                     enable-method = "psci";
+> > +             };
+> > +             cpu4: cpu@0004 {
+> > +                     device_type = "cpu";
+> > +                     compatible = "arm,cortex-a55", "arm,armv8";
+> > +                     reg = <0x0 0x0100>;
+> > +                     enable-method = "psci";
+> > +             };
+> > +             cpu5: cpu@0005 {
+> > +                     device_type = "cpu";
+> > +                     compatible = "arm,cortex-a55", "arm,armv8";
+> > +                     reg = <0x0 0x0101>;
+> > +                     enable-method = "psci";
+> > +             };
+> > +             cpu6: cpu@0006 {
+> > +                     device_type = "cpu";
+> > +                     compatible = "arm,cortex-a55", "arm,armv8";
+> > +                     reg = <0x0 0x0102>;
+> > +                     enable-method = "psci";
+> > +             };
+> > +             cpu7: cpu@0007 {
+> > +                     device_type = "cpu";
+> > +                     compatible = "arm,cortex-a55", "arm,armv8";
+> > +                     reg = <0x0 0x0103>;
+> > +                     enable-method = "psci";
+> > +             };
+> > +     };
+> > +
+> > +     psci {
+> > +             compatible = "arm,psci-1.0";
+> > +             method = "smc";
+> > +     };
+> > +
+> > +     gic: interrupt-controller@12a00000 {
+> > +             compatible = "arm,cortex-a15-gic", "arm,cortex-a9-gic";
+> > +             #interrupt-cells = <3>;
+> > +             #address-cells = <0>;
+> > +             interrupt-controller;
+> > +             reg = <0x0 0x12a01000 0x1000>,
+> > +                   <0x0 0x12a02000 0x1000>,
+> > +                   <0x0 0x12a04000 0x2000>,
+> > +                   <0x0 0x12a06000 0x2000>;
+> > +             interrupts = <GIC_PPI 9
+> > +                             (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+> > +     };
+> > +
+> > +     timer {
+> > +             compatible = "arm,armv8-timer";
+> > +             interrupts = <GIC_PPI 13
+> > +                             (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+> > +                          <GIC_PPI 14
+> > +                             (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+> > +                          <GIC_PPI 11
+> > +                             (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+> > +                          <GIC_PPI 10
+> > +                             (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>;
+> > +             clock-frequency = <26000000>;
+> > +             use-clocksource-only;
+> > +             use-physical-timer;
+> > +     };
+> > +
+>
+> All below should be under soc node.
+>
+
+Done.
+
+> Please don't write new DTS/DTSI from scratch but use exynos5433.dtsi as
+> template/example.
+>
+
+Well, I didn't implement that from scratch :) As you probably figured,
+I reworked the vendor's dts (heavily, that is). But yeah, I definitely
+re-checked with existing DTs this time (exynos5433 and exynos7
+mostly), and tried to follow best practices.
+
+> > +     clock: clock-controller@0x120e0000 {
+> > +             compatible = "samsung,exynos850-clock";
+> > +             reg = <0x0 0x120e0000 0x8000>;
+> > +             #clock-cells = <1>;
+> > +     };
+> > +
+> > +     /* ALIVE */
+> > +     pinctrl_0: pinctrl@11850000 {
+> > +             compatible = "samsung,exynos850-pinctrl";
+> > +             reg = <0x0 0x11850000 0x1000>;
+> > +             interrupts = <GIC_SPI INTREQ__ALIVE_EINT0 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT1 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT2 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT3 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT4 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT5 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT6 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT7 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT8 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT9 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT10 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT11 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT12 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT13 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT14 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT15 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT16 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT17 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT18 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT19 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT20 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT21 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT22 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT23 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT24 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT25 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT26 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT27 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT28 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT29 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT30 IRQ_TYPE_LEVEL_HIGH>,
+> > +                          <GIC_SPI INTREQ__ALIVE_EINT31 IRQ_TYPE_LEVEL_HIGH>;
+> > +
+> > +             wakeup-interrupt-controller {
+> > +                     compatible = "samsung,exynos7-wakeup-eint";
+> > +             };
+> > +     };
+> > +
+> > +     /* CMGP */
+> > +     pinctrl_1: pinctrl@11c30000 {
+> > +             compatible = "samsung,exynos850-pinctrl";
+> > +             reg = <0x0 0x11c30000 0x1000>;
+> > +             interrupts =
+> > +                     <GIC_SPI INTREQ__CMGP_EXT_INTM00 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <GIC_SPI INTREQ__CMGP_EXT_INTM01 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <GIC_SPI INTREQ__CMGP_EXT_INTM02 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <GIC_SPI INTREQ__CMGP_EXT_INTM03 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <GIC_SPI INTREQ__CMGP_EXT_INTM04 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <GIC_SPI INTREQ__CMGP_EXT_INTM05 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <GIC_SPI INTREQ__CMGP_EXT_INTM06 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <GIC_SPI INTREQ__CMGP_EXT_INTM07 IRQ_TYPE_LEVEL_HIGH>;
+> > +
+> > +             wakeup-interrupt-controller {
+> > +                     compatible = "samsung,exynos7-wakeup-eint";
+> > +             };
+> > +     };
+> > +
+> > +     /* AUD */
+> > +     pinctrl_2: pinctrl@14a60000 {
+> > +             compatible = "samsung,exynos850-pinctrl";
+> > +             reg = <0x0 0x14a60000 0x1000>;
+> > +     };
+> > +
+> > +     /* HSI */
+> > +     pinctrl_3: pinctrl@13430000 {
+> > +             compatible = "samsung,exynos850-pinctrl";
+> > +             reg = <0x0 0x13430000 0x1000>;
+> > +             interrupts = <GIC_SPI INTREQ__GPIO_HSI IRQ_TYPE_LEVEL_HIGH>;
+> > +     };
+> > +
+> > +     /* CORE */
+> > +     pinctrl_4: pinctrl@12070000 {
+> > +             compatible = "samsung,exynos850-pinctrl";
+> > +             reg = <0x0 0x12070000 0x1000>;
+> > +             interrupts = <GIC_SPI INTREQ__GPIO_CORE IRQ_TYPE_LEVEL_HIGH>;
+> > +     };
+> > +
+> > +     /* PERI */
+> > +     pinctrl_5: pinctrl@139b0000 {
+> > +             compatible = "samsung,exynos850-pinctrl";
+> > +             reg = <0x0 0x139b0000 0x1000>;
+> > +             interrupts = <GIC_SPI INTREQ__GPIO_PERI IRQ_TYPE_LEVEL_HIGH>;
+> > +     };
+> > +};
+> >
+>
+>
+> Best regards,
+> Krzysztof
