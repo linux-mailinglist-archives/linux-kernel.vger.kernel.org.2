@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875DE3E1C1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC283E1C1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242067AbhHETGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:06:15 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:37875 "EHLO
+        id S242156AbhHETGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:06:19 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:40991 "EHLO
         new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242003AbhHETEL (ORCPT
+        by vger.kernel.org with ESMTP id S242142AbhHETEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:04:11 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5C6245810BE;
-        Thu,  5 Aug 2021 15:03:56 -0400 (EDT)
+        Thu, 5 Aug 2021 15:04:12 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 39C435810C0;
+        Thu,  5 Aug 2021 15:03:57 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 05 Aug 2021 15:03:56 -0400
+  by compute4.internal (MEProxy); Thu, 05 Aug 2021 15:03:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
         :to:cc:subject:date:message-id:in-reply-to:references:reply-to
-        :mime-version:content-transfer-encoding; s=fm1; bh=qqGgbHXRUcfRW
-        toLBCPkMjVwN6eMCgkKPzC+WcvJLH8=; b=kPK/AchY6vVGSniKXux/L1ociY3SK
-        3VayNDyUcM+qyWTmi1Sg14Kfs1DKeOVq/1mcLL7BONOp08v5uN4q3BHu6xllRR7Y
-        eD7W37sOp9jNxVyqg+ljDyp69PUSHDgjW5NCjL2YDhUmK5LAEnY37ewZA534KusC
-        tY1zFGE9dy0I0WNzaXOeqxwkDPyOnRMSyw+hDjsA88QtGleZVGzQSDnOFmovSuwt
-        BwgM+Y9VfdlEUdzF3B9qyhUN1he9INkxT+ji6ULbYKxHLtKNRcFxZIY11i9QmjHX
-        tUD0LGJJnNx8RcnEIlmccmxKdzlnlVxvaSVhqNFM0IMIeKZQLJtrzA4BQ==
+        :mime-version:content-transfer-encoding; s=fm1; bh=Wc0GbL6NTbU4P
+        ARfHU3RQzdhaDIhKKBfKRDAFccFqtg=; b=Ryn5X3bXridco5AVtFQnjx1sBJgN+
+        i0WN0ZlrHQY24/6dWbGmZlBP5f+R1hCAooamyTV2td/YJdtB0D48TdX+CrCcrv5J
+        fBqNkSldXCisN2TyzlAn/jd3xfwgS3DvtcCcwTzPdQiK6Pnu5zGPNoll5+WfY1sX
+        cizJiEKtN5BskiTXIINYptCOBvh/B4WhrebIB0wDIBDjdXXWZyaiuyc5DX6GCOq1
+        tFE4Eio+7r5rPV3O8xb6W5xGhw6qNzF1AFQ4a7qwUg9M5QSRitrJN1Bl1mhrdwHx
+        rUvgf8VJr6qAq5YKfY8A0eE8IWmECcqT84UOalmBbrO4OK6/N/hRe0IiA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:reply-to:subject
         :to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=qqGgbHXRUcfRWtoLBCPkMjVwN6eMCgkKPzC+WcvJLH8=; b=e1E8k7gD
-        BBRbHXhlSwCKwUdYdF4wpV0rsNYSdkfjYnzK3V2FngJkorubBvbj3tEMHnwDjeDB
-        xakzpLZDkQ9kuIgH3kfUPUKs6EUhNkHRDedkmIWJOj5GMrXysyOwTE0QZisKTujY
-        Y4M0fTMIQZdpRFvLxbuRFgOVgjawHiKFWynTKGbhfv1hk55+VQilvIR1KqaSLpWK
-        IdJ1BvbmfayKCug7Octg7s05cOLS40jwH8VzyhgAAwZ4irBQqDkw3ju+Pkb6DNKn
-        IHxkZBdKkaufB9zV3vWbMhp1j67NsWuDZfJq4vwtULMa1JXBK8Ry4Fs8UP4M+ri0
-        67EYzF+MI1/syQ==
-X-ME-Sender: <xms:GzYMYaq-rH8mZYHZyHQYgXnQRaf-WN5Fts-K1HUUMPVncTT7Z1fAhA>
-    <xme:GzYMYYoGiAhWlWF93BnEiF5ZinDibU0Fb2ZVNploC8EEaspSJ3rlWCX2Zc0ke-g5k
-    ixc9nRAcgljCIuO2A>
-X-ME-Received: <xmr:GzYMYfMcY4I98TRN9xL5J0AWkINq2kj-bPTz-Ed0xgZMSvo1N3svcAbT3TjrjtGalmvSGuMD>
+        fm3; bh=Wc0GbL6NTbU4PARfHU3RQzdhaDIhKKBfKRDAFccFqtg=; b=HjLaHum4
+        z+hmthhaW4rvC0GeGl9U5UYBcmA90+RQv9sCg6rMXHd1ZlYPVuSxt71+e7RNUKD0
+        qIeGa+HDZkRYHcB/Fhxjh7knYdxN0hJCHRT91drZUP6AAxQscn17ZiVm5Xn/K6E9
+        aJpA4zMfDIBgormznM23Try4ZqJ5YOTHNR8HHnVlE3pg2Pf2KSY/S2aLjG+xykHb
+        Kou1tXaeQ2ZzrvuQIROGJesn60DmnuEScMZFaQFgP/ySyCowFAexIsgIjT9l+GSg
+        2URe3BzG1ig9qat9r7NF7QrS3MeLNKUrt4p7bmwtC93DTTlVahtGcN+yKL32RHrD
+        24g7hHJ33EIP4A==
+X-ME-Sender: <xms:HDYMYVk7LPcI9jl5CSuHBLV_gBkuKinGd2y-ATOLeokS4JlyPjHZuA>
+    <xme:HDYMYQ1XKSdIE757rufolagX1UHrSbZeomZx1kO6DMpR75B4KAF-iTPSwHcSWqDN6
+    pA8iovIcC8f4N9ePg>
+X-ME-Received: <xmr:HDYMYboWLE72og3iEJEY5MrrykVUyOlqG1gVLcZiu8G5WD0Yc8jCl11kuyVYnRloKSEb_Rp2>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieelgdduvdelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvufffkffojghfrhgggfestdhqredtredttdenucfhrhhomhepkghiucgj
     rghnuceoiihirdihrghnsehsvghnthdrtghomheqnecuggftrfgrthhtvghrnhepieejue
     dvueduuefhgefhheeiuedvtedvuefgieegveetueeiueehtdegudehfeelnecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepiihirdihrghnsehsvg
+    thgvrhfuihiivgepvdenucfrrghrrghmpehmrghilhhfrhhomhepiihirdihrghnsehsvg
     hnthdrtghomh
-X-ME-Proxy: <xmx:GzYMYZ4RHT-n_mhPV2fEBwy5axgW4ol8VkRh6wE0LFsGOQ459dD8sg>
-    <xmx:GzYMYZ44IHu2EqvSzUSWaCcwsSWMjeONEzBzDnddUnIY5vR5DWBjCQ>
-    <xmx:GzYMYZirJBZAHOSwdYVLmpt40FYXDC8kL0hATDNbvO54Dizk-HbzMg>
-    <xmx:HDYMYQq20cePBs0bfOgeyKf7aRyKFtV3zVMZ3GuVqpJ3PAk-ETIzFA>
+X-ME-Proxy: <xmx:HDYMYVk1jGmEg7t41xCh6ieigHGvK3kQW8TizR5nSCgfcPshShYb9Q>
+    <xmx:HDYMYT1x8IAndSEEpLdXnQdVKCIWPGyIrdEIPo0tlEKaftKBNdALqQ>
+    <xmx:HDYMYUuhP7ehHGfhxvKWfVRafch4zLWW4_PDtuJClufpvzScAGmI7A>
+    <xmx:HTYMYdORrFrikq5fpA6Xqfue4h7xa9J6zCejuO9gQURSa8jY8_D0MA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 5 Aug 2021 15:03:55 -0400 (EDT)
+ 5 Aug 2021 15:03:56 -0400 (EDT)
 From:   Zi Yan <zi.yan@sent.com>
 To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org
 Cc:     Matthew Wilcox <willy@infradead.org>,
@@ -64,14 +64,14 @@ Cc:     Matthew Wilcox <willy@infradead.org>,
         Michal Hocko <mhocko@kernel.org>,
         John Hubbard <jhubbard@nvidia.com>,
         linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
-        Dave Young <dyoung@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Christian Koenig <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>, kexec@lists.infradead.org,
-        linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [RFC PATCH 13/15] mm: convert MAX_ORDER sized static arrays to dynamic ones.
-Date:   Thu,  5 Aug 2021 15:02:51 -0400
-Message-Id: <20210805190253.2795604-14-zi.yan@sent.com>
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Quentin Perret <qperret@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu
+Subject: [RFC PATCH 14/15] mm: introduce MIN_MAX_ORDER to replace MAX_ORDER as compile time constant.
+Date:   Thu,  5 Aug 2021 15:02:52 -0400
+Message-Id: <20210805190253.2795604-15-zi.yan@sent.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210805190253.2795604-1-zi.yan@sent.com>
 References: <20210805190253.2795604-1-zi.yan@sent.com>
@@ -84,346 +84,161 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zi Yan <ziy@nvidia.com>
 
-This prepares for the upcoming changes to make MAX_ORDER a boot time
-parameter instead of compilation time constant. All static arrays with
-MAX_ORDER size are converted to pointers and their memory is allocated
-at runtime.
+For other MAX_ORDER uses (described below), there is no need or too much
+hassle to convert certain static array to dynamic ones. Add
+MIN_MAX_ORDER to serve as compile time constant in place of MAX_ORDER.
 
-free_area array in struct zone is allocated using memblock_alloc_node()
-at boot time and using kzalloc() when memory is hot-added.
+ARM64 hypervisor maintains its own free page list and does not import
+any core kernel symbols, so soon-to-be runtime variable MAX_ORDER is not
+accessible in ARM64 hypervisor code. Also there is no need to allocating
+very large pages.
 
-MAX_ORDER in arm64 nVHE code is independent of kernel buddy allocator,
-so use CONFIG_FORCE_MAX_ZONEORDER instead.
+In SLAB/SLOB/SLUB, 2-D array kmalloc_caches uses MAX_ORDER in its second
+dimension. It is too much hassle to allocate memory for kmalloc_caches
+before any proper memory allocator is set up.
 
 Signed-off-by: Zi Yan <ziy@nvidia.com>
-Cc: Dave Young <dyoung@redhat.com>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Christian Koenig <christian.koenig@amd.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: kexec@lists.infradead.org
-Cc: linux-doc@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Quentin Perret <qperret@google.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: kvmarm@lists.cs.columbia.edu
 Cc: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org
 ---
- .../admin-guide/kdump/vmcoreinfo.rst          |  2 +-
- drivers/gpu/drm/ttm/ttm_device.c              |  7 ++-
- drivers/gpu/drm/ttm/ttm_pool.c                | 58 +++++++++++++++++--
- include/drm/ttm/ttm_pool.h                    |  4 +-
- include/linux/memory_hotplug.h                |  1 +
- include/linux/mmzone.h                        |  2 +-
- mm/memory_hotplug.c                           |  1 +
- mm/page_alloc.c                               | 48 ++++++++++++---
- 8 files changed, 104 insertions(+), 19 deletions(-)
+ arch/arm64/kvm/hyp/include/nvhe/gfp.h | 2 +-
+ arch/arm64/kvm/hyp/nvhe/page_alloc.c  | 3 ++-
+ include/linux/mmzone.h                | 3 +++
+ include/linux/slab.h                  | 8 ++++----
+ mm/slab.c                             | 2 +-
+ mm/slub.c                             | 7 ++++---
+ 6 files changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/admin-guide/kdump/vmcoreinfo.rst b/Documentation=
-/admin-guide/kdump/vmcoreinfo.rst
-index 3861a25faae1..1c9449b9458f 100644
---- a/Documentation/admin-guide/kdump/vmcoreinfo.rst
-+++ b/Documentation/admin-guide/kdump/vmcoreinfo.rst
-@@ -172,7 +172,7 @@ variables.
- Offset of the free_list's member. This value is used to compute the number
- of free pages.
+diff --git a/arch/arm64/kvm/hyp/include/nvhe/gfp.h b/arch/arm64/kvm/hyp/inc=
+lude/nvhe/gfp.h
+index fb0f523d1492..c774b4a98336 100644
+--- a/arch/arm64/kvm/hyp/include/nvhe/gfp.h
++++ b/arch/arm64/kvm/hyp/include/nvhe/gfp.h
+@@ -16,7 +16,7 @@ struct hyp_pool {
+ 	 * API at EL2.
+ 	 */
+ 	hyp_spinlock_t lock;
+-	struct list_head free_area[MAX_ORDER];
++	struct list_head free_area[MIN_MAX_ORDER];
+ 	phys_addr_t range_start;
+ 	phys_addr_t range_end;
+ 	unsigned short max_order;
+diff --git a/arch/arm64/kvm/hyp/nvhe/page_alloc.c b/arch/arm64/kvm/hyp/nvhe=
+/page_alloc.c
+index 41fc25bdfb34..a1cc1b648de0 100644
+--- a/arch/arm64/kvm/hyp/nvhe/page_alloc.c
++++ b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
+@@ -226,7 +226,8 @@ int hyp_pool_init(struct hyp_pool *pool, u64 pfn, unsig=
+ned int nr_pages,
+ 	int i;
 =20
--Each zone has a free_area structure array called free_area[MAX_ORDER].
-+Each zone has a free_area structure array called free_area with length of =
-MAX_ORDER.
- The free_list represents a linked list of free page blocks.
-=20
- (list_head, next|prev)
-diff --git a/drivers/gpu/drm/ttm/ttm_device.c b/drivers/gpu/drm/ttm/ttm_dev=
-ice.c
-index 74e3b460132b..7d994c03fbd0 100644
---- a/drivers/gpu/drm/ttm/ttm_device.c
-+++ b/drivers/gpu/drm/ttm/ttm_device.c
-@@ -94,7 +94,9 @@ static int ttm_global_init(void)
- 		>> PAGE_SHIFT;
- 	num_dma32 =3D min(num_dma32, 2UL << (30 - PAGE_SHIFT));
-=20
--	ttm_pool_mgr_init(num_pages);
-+	ret =3D ttm_pool_mgr_init(num_pages);
-+	if (ret)
-+		goto out;
- 	ttm_tt_mgr_init(num_pages, num_dma32);
-=20
- 	glob->dummy_read_page =3D alloc_page(__GFP_ZERO | GFP_DMA32);
-@@ -216,7 +218,8 @@ int ttm_device_init(struct ttm_device *bdev, struct ttm=
-_device_funcs *funcs,
- 	bdev->funcs =3D funcs;
-=20
- 	ttm_sys_man_init(bdev);
--	ttm_pool_init(&bdev->pool, dev, use_dma_alloc, use_dma32);
-+	if (ttm_pool_init(&bdev->pool, dev, use_dma_alloc, use_dma32))
-+		return -ENOMEM;
-=20
- 	bdev->vma_manager =3D vma_manager;
- 	INIT_DELAYED_WORK(&bdev->wq, ttm_device_delayed_workqueue);
-diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
-index cb38b1a17b09..ae20c80f14a4 100644
---- a/drivers/gpu/drm/ttm/ttm_pool.c
-+++ b/drivers/gpu/drm/ttm/ttm_pool.c
-@@ -64,11 +64,11 @@ module_param(page_pool_size, ulong, 0644);
-=20
- static atomic_long_t allocated_pages;
-=20
--static struct ttm_pool_type global_write_combined[MAX_ORDER];
--static struct ttm_pool_type global_uncached[MAX_ORDER];
-+static struct ttm_pool_type *global_write_combined;
-+static struct ttm_pool_type *global_uncached;
-=20
--static struct ttm_pool_type global_dma32_write_combined[MAX_ORDER];
--static struct ttm_pool_type global_dma32_uncached[MAX_ORDER];
-+static struct ttm_pool_type *global_dma32_write_combined;
-+static struct ttm_pool_type *global_dma32_uncached;
-=20
- static struct mutex shrinker_lock;
- static struct list_head shrinker_list;
-@@ -493,8 +493,10 @@ EXPORT_SYMBOL(ttm_pool_free);
-  * @use_dma32: true if GFP_DMA32 should be used
-  *
-  * Initialize the pool and its pool types.
-+ *
-+ * Returns: 0 on successe, negative error code otherwise
-  */
--void ttm_pool_init(struct ttm_pool *pool, struct device *dev,
-+int ttm_pool_init(struct ttm_pool *pool, struct device *dev,
- 		   bool use_dma_alloc, bool use_dma32)
- {
- 	unsigned int i, j;
-@@ -506,11 +508,30 @@ void ttm_pool_init(struct ttm_pool *pool, struct devi=
-ce *dev,
- 	pool->use_dma32 =3D use_dma32;
-=20
- 	if (use_dma_alloc) {
--		for (i =3D 0; i < TTM_NUM_CACHING_TYPES; ++i)
-+		for (i =3D 0; i < TTM_NUM_CACHING_TYPES; ++i) {
-+			pool->caching[i].orders =3D
-+				kzalloc(sizeof(struct ttm_pool_type) * MAX_ORDER,
-+					GFP_KERNEL);
-+			if (!pool->caching[i].orders) {
-+				i--;
-+				goto failed;
-+			}
- 			for (j =3D 0; j < MAX_ORDER; ++j)
- 				ttm_pool_type_init(&pool->caching[i].orders[j],
- 						   pool, i, j);
+ 	hyp_spin_lock_init(&pool->lock);
+-	pool->max_order =3D min(MAX_ORDER, get_order(nr_pages << PAGE_SHIFT));
 +
-+		}
-+		return 0;
-+
-+failed:
-+		for (; i >=3D 0; i--) {
-+			for (j =3D 0; j < MAX_ORDER; ++j)
-+				ttm_pool_type_fini(&pool->caching[i].orders[j]);
-+			kfree(pool->caching[i].orders);
-+		}
-+		return -ENOMEM;
- 	}
-+	return 0;
- }
-=20
- /**
-@@ -696,6 +717,31 @@ int ttm_pool_mgr_init(unsigned long num_pages)
- 	mutex_init(&shrinker_lock);
- 	INIT_LIST_HEAD(&shrinker_list);
-=20
-+	if (!global_write_combined) {
-+		global_write_combined =3D kzalloc(sizeof(struct ttm_pool_type) * MAX_ORD=
-ER,
-+						GFP_KERNEL);
-+		if (!global_write_combined)
-+			return -ENOMEM;
-+	}
-+	if (!global_uncached) {
-+		global_uncached =3D kzalloc(sizeof(struct ttm_pool_type) * MAX_ORDER,
-+					  GFP_KERNEL);
-+		if (!global_uncached)
-+			return -ENOMEM;
-+	}
-+	if (!global_dma32_write_combined) {
-+		global_dma32_write_combined =3D kzalloc(sizeof(struct ttm_pool_type) * M=
-AX_ORDER,
-+						      GFP_KERNEL);
-+		if (!global_dma32_write_combined)
-+			return -ENOMEM;
-+	}
-+	if (!global_dma32_uncached) {
-+		global_dma32_uncached =3D kzalloc(sizeof(struct ttm_pool_type) * MAX_ORD=
-ER,
-+						GFP_KERNEL);
-+		if (!global_dma32_uncached)
-+			return -ENOMEM;
-+	}
-+
- 	for (i =3D 0; i < MAX_ORDER; ++i) {
- 		ttm_pool_type_init(&global_write_combined[i], NULL,
- 				   ttm_write_combined, i);
-diff --git a/include/drm/ttm/ttm_pool.h b/include/drm/ttm/ttm_pool.h
-index 4321728bdd11..5c09e3cf63ce 100644
---- a/include/drm/ttm/ttm_pool.h
-+++ b/include/drm/ttm/ttm_pool.h
-@@ -71,7 +71,7 @@ struct ttm_pool {
- 	bool use_dma32;
-=20
- 	struct {
--		struct ttm_pool_type orders[MAX_ORDER];
-+		struct ttm_pool_type *orders;
- 	} caching[TTM_NUM_CACHING_TYPES];
- };
-=20
-@@ -79,7 +79,7 @@ int ttm_pool_alloc(struct ttm_pool *pool, struct ttm_tt *=
-tt,
- 		   struct ttm_operation_ctx *ctx);
- void ttm_pool_free(struct ttm_pool *pool, struct ttm_tt *tt);
-=20
--void ttm_pool_init(struct ttm_pool *pool, struct device *dev,
-+int ttm_pool_init(struct ttm_pool *pool, struct device *dev,
- 		   bool use_dma_alloc, bool use_dma32);
- void ttm_pool_fini(struct ttm_pool *pool);
-=20
-diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-index 97f874a60607..c16aa66db61e 100644
---- a/include/linux/memory_hotplug.h
-+++ b/include/linux/memory_hotplug.h
-@@ -326,6 +326,7 @@ extern void clear_zone_contiguous(struct zone *zone);
-=20
- #ifdef CONFIG_MEMORY_HOTPLUG
- extern void __ref free_area_init_core_hotplug(int nid);
-+extern void __ref free_area_deinit_core_hotplug(int nid);
- extern int __add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags);
- extern int add_memory(int nid, u64 start, u64 size, mhp_t mhp_flags);
- extern int add_memory_resource(int nid, struct resource *resource,
++	pool->max_order =3D min(MIN_MAX_ORDER, get_order(nr_pages << PAGE_SHIFT));
+ 	for (i =3D 0; i < pool->max_order; i++)
+ 		INIT_LIST_HEAD(&pool->free_area[i]);
+ 	pool->range_start =3D phys;
 diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 322b995942e5..09aafc05aef4 100644
+index 09aafc05aef4..379dada82d4b 100644
 --- a/include/linux/mmzone.h
 +++ b/include/linux/mmzone.h
-@@ -609,7 +609,7 @@ struct zone {
- 	ZONE_PADDING(_pad1_)
+@@ -27,11 +27,14 @@
+ #ifndef CONFIG_ARCH_FORCE_MAX_ORDER
+ #ifdef CONFIG_SET_MAX_ORDER
+ #define MAX_ORDER CONFIG_SET_MAX_ORDER
++#define MIN_MAX_ORDER CONFIG_SET_MAX_ORDER
+ #else
+ #define MAX_ORDER 11
++#define MIN_MAX_ORDER MAX_ORDER
+ #endif /* CONFIG_SET_MAX_ORDER */
+ #else
+ #define MAX_ORDER CONFIG_ARCH_FORCE_MAX_ORDER
++#define MIN_MAX_ORDER CONFIG_ARCH_FORCE_MAX_ORDER
+ #endif /* CONFIG_ARCH_FORCE_MAX_ORDER */
+ #define MAX_ORDER_NR_PAGES (1 << (MAX_ORDER - 1))
 =20
- 	/* free areas of different sizes */
--	struct free_area	free_area[MAX_ORDER];
-+	struct free_area	*free_area;
-=20
- 	/* zone flags, see below */
- 	unsigned long		flags;
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 91ca751ac20c..4ce20b6482aa 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1239,6 +1239,7 @@ static void rollback_node_hotadd(int nid)
-=20
- 	arch_refresh_nodedata(nid, NULL);
- 	free_percpu(pgdat->per_cpu_nodestats);
-+	free_area_deinit_core_hotplug(nid);
- 	arch_free_nodedata(pgdat);
- }
-=20
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index e4657009fd4f..bfa6962f7615 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6053,11 +6053,21 @@ void show_free_areas(unsigned int filter, nodemask_=
-t *nodemask)
-=20
- 	for_each_populated_zone(zone) {
- 		unsigned int order;
--		unsigned long nr[MAX_ORDER], flags, total =3D 0;
--		unsigned char types[MAX_ORDER];
-+		unsigned long *nr, flags, total =3D 0;
-+		unsigned char *types;
-=20
- 		if (show_mem_node_skip(filter, zone_to_nid(zone), nodemask))
- 			continue;
-+
-+		nr =3D kmalloc(sizeof(unsigned long) * MAX_ORDER, GFP_KERNEL);
-+		if (!nr)
-+			goto skip_zone;
-+		types =3D kmalloc(sizeof(unsigned char) * MAX_ORDER, GFP_KERNEL);
-+		if (!types) {
-+			kfree(nr);
-+			goto skip_zone;
-+		}
-+
- 		show_node(zone);
- 		printk(KERN_CONT "%s: ", zone->name);
-=20
-@@ -6083,8 +6093,11 @@ void show_free_areas(unsigned int filter, nodemask_t=
- *nodemask)
- 				show_migration_types(types[order]);
- 		}
- 		printk(KERN_CONT "=3D %lukB\n", K(total));
--	}
-=20
-+		kfree(nr);
-+		kfree(types);
-+	}
-+skip_zone:
- 	hugetlb_show_meminfo();
-=20
- 	printk("%ld total pagecache pages\n", global_node_page_state(NR_FILE_PAGE=
-S));
-@@ -7429,8 +7442,8 @@ static void __meminit pgdat_init_internals(struct pgl=
-ist_data *pgdat)
- 	lruvec_init(&pgdat->__lruvec);
- }
-=20
--static void __meminit zone_init_internals(struct zone *zone, enum zone_typ=
-e idx, int nid,
--							unsigned long remaining_pages)
-+static void __init zone_init_internals(struct zone *zone, enum zone_type i=
-dx, int nid,
-+							unsigned long remaining_pages, bool hotplug)
- {
- 	atomic_long_set(&zone->managed_pages, remaining_pages);
- 	zone_set_nid(zone, nid);
-@@ -7439,6 +7452,16 @@ static void __meminit zone_init_internals(struct zon=
-e *zone, enum zone_type idx,
- 	spin_lock_init(&zone->lock);
- 	zone_seqlock_init(zone);
- 	zone_pcp_init(zone);
-+	if (hotplug)
-+		zone->free_area =3D
-+			kzalloc_node(sizeof(struct free_area) * MAX_ORDER,
-+				     GFP_KERNEL, nid);
-+	else
-+		zone->free_area =3D
-+			memblock_alloc_node(sizeof(struct free_area) * MAX_ORDER,
-+					    sizeof(struct free_area), nid);
-+	BUG_ON(!zone->free_area);
-+
- }
-=20
- /*
-@@ -7456,7 +7479,18 @@ void __ref free_area_init_core_hotplug(int nid)
-=20
- 	pgdat_init_internals(pgdat);
- 	for (z =3D 0; z < MAX_NR_ZONES; z++)
--		zone_init_internals(&pgdat->node_zones[z], z, nid, 0);
-+		zone_init_internals(&pgdat->node_zones[z], z, nid, 0, true);
-+}
-+
-+void __ref free_area_deinit_core_hotplug(int nid)
-+{
-+	enum zone_type z;
-+	pg_data_t *pgdat =3D NODE_DATA(nid);
-+
-+	for (z =3D 0; z < MAX_NR_ZONES; z++) {
-+		kfree(pgdat->node_zones[z].free_area);
-+		pgdat->node_zones[z].free_area =3D NULL;
-+	}
- }
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index 2c0d80cca6b8..d8747c158db6 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -244,8 +244,8 @@ static inline void __check_heap_object(const void *ptr,=
+ unsigned long n,
+  * to do various tricks to work around compiler limitations in order to
+  * ensure proper constant folding.
+  */
+-#define KMALLOC_SHIFT_HIGH	((MAX_ORDER + PAGE_SHIFT - 1) <=3D 25 ? \
+-				(MAX_ORDER + PAGE_SHIFT - 1) : 25)
++#define KMALLOC_SHIFT_HIGH	((MIN_MAX_ORDER + PAGE_SHIFT - 1) <=3D 25 ? \
++				(MIN_MAX_ORDER + PAGE_SHIFT - 1) : 25)
+ #define KMALLOC_SHIFT_MAX	KMALLOC_SHIFT_HIGH
+ #ifndef KMALLOC_SHIFT_LOW
+ #define KMALLOC_SHIFT_LOW	5
+@@ -258,7 +258,7 @@ static inline void __check_heap_object(const void *ptr,=
+ unsigned long n,
+  * (PAGE_SIZE*2).  Larger requests are passed to the page allocator.
+  */
+ #define KMALLOC_SHIFT_HIGH	(PAGE_SHIFT + 1)
+-#define KMALLOC_SHIFT_MAX	(MAX_ORDER + PAGE_SHIFT - 1)
++#define KMALLOC_SHIFT_MAX	(MIN_MAX_ORDER + PAGE_SHIFT - 1)
+ #ifndef KMALLOC_SHIFT_LOW
+ #define KMALLOC_SHIFT_LOW	3
  #endif
+@@ -271,7 +271,7 @@ static inline void __check_heap_object(const void *ptr,=
+ unsigned long n,
+  * be allocated from the same page.
+  */
+ #define KMALLOC_SHIFT_HIGH	PAGE_SHIFT
+-#define KMALLOC_SHIFT_MAX	(MAX_ORDER + PAGE_SHIFT - 1)
++#define KMALLOC_SHIFT_MAX	(MIN_MAX_ORDER + PAGE_SHIFT - 1)
+ #ifndef KMALLOC_SHIFT_LOW
+ #define KMALLOC_SHIFT_LOW	3
+ #endif
+diff --git a/mm/slab.c b/mm/slab.c
+index d0f725637663..0041de8ec0e9 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -466,7 +466,7 @@ static int __init slab_max_order_setup(char *str)
+ {
+ 	get_option(&str, &slab_max_order);
+ 	slab_max_order =3D slab_max_order < 0 ? 0 :
+-				min(slab_max_order, MAX_ORDER - 1);
++				min(slab_max_order, MIN_MAX_ORDER - 1);
+ 	slab_max_order_set =3D true;
 =20
-@@ -7519,7 +7553,7 @@ static void __init free_area_init_core(struct pglist_=
-data *pgdat)
- 		 * when the bootmem allocator frees pages into the buddy system.
- 		 * And all highmem pages will be managed by the buddy system.
- 		 */
--		zone_init_internals(zone, j, nid, freesize);
-+		zone_init_internals(zone, j, nid, freesize, false);
+ 	return 1;
+diff --git a/mm/slub.c b/mm/slub.c
+index b6c5205252eb..228e4a77c678 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -3564,8 +3564,9 @@ static inline int calculate_order(unsigned int size)
+ 	/*
+ 	 * Doh this slab cannot be placed using slub_max_order.
+ 	 */
+-	order =3D slab_order(size, 1, MAX_ORDER, 1);
+-	if (order < MAX_ORDER)
++
++	order =3D slab_order(size, 1, MIN_MAX_ORDER, 1);
++	if (order < MIN_MAX_ORDER)
+ 		return order;
+ 	return -ENOSYS;
+ }
+@@ -4079,7 +4080,7 @@ __setup("slub_min_order=3D", setup_slub_min_order);
+ static int __init setup_slub_max_order(char *str)
+ {
+ 	get_option(&str, (int *)&slub_max_order);
+-	slub_max_order =3D min(slub_max_order, (unsigned int)MAX_ORDER - 1);
++	slub_max_order =3D min(slub_max_order, (unsigned int)MIN_MAX_ORDER - 1);
 =20
- 		if (!size)
- 			continue;
+ 	return 1;
+ }
 --=20
 2.30.2
 
