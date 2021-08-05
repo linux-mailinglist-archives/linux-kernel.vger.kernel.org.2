@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4C63E116D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30FA3E1175
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbhHEJg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 05:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232605AbhHEJg5 (ORCPT
+        id S239135AbhHEJiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 05:38:24 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:53986 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238744AbhHEJiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:36:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B784DC061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 02:36:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3XEEDb3hLIq11X5odcZdLZhPWWsD1ywJ/nuhepSVgpA=; b=c2MXMV0ZnZtSE3YjcEih1vErmz
-        hOReUlzYqCAy4aIDtYSuj/kCu5FZQ+o+1RH6phwCrG4Y8MtPU2c2ns9D/q2rH2RMC8cTT+innKZZO
-        M9ZDzH7f5rUsZ8/JRF6WRDdVe4bVdfo1t5tXPQFymJLB2cD/mPR+E1HHDzRVNvkRX7IkHvTtCcxaw
-        Oz6A8AYK0e9ecaNPGxvg61RTGQPvKQBVAPyhIAvggCLzEEYMhBfrSxYtJmijYZL67SnVdsmnfGDum
-        L2IYfw48do8+TPSemf+4Ufdcwdn2MQ6VWOzLbWTfEdz8m8sefK4+nL0DSjXoQgdPscX8oz+AFTKWD
-        gUMd0ZiQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBZmz-006oIj-2a; Thu, 05 Aug 2021 09:35:55 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5486B9862B0; Thu,  5 Aug 2021 11:35:44 +0200 (CEST)
-Date:   Thu, 5 Aug 2021 11:35:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bruno Goncalves <bgoncalv@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/deadline: Fix missing clock update in
- migrate_task_rq_dl()
-Message-ID: <20210805093544.GC22037@worktop.programming.kicks-ass.net>
-References: <20210804135925.3734605-1-dietmar.eggemann@arm.com>
- <57f2dfe5-c1f5-4efb-e565-2e174228ee9a@redhat.com>
+        Thu, 5 Aug 2021 05:38:22 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1759Xnvp021646;
+        Thu, 5 Aug 2021 11:37:35 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=/lg8ln5qr6r8cxbsCBbPBe1Cx7VPnaMBPEeubKnLIRo=;
+ b=TLSpPOjvLLeQEHxlNixNz7uG3OhF5Z1ff8BzJ11oGK21VGlL5S/idaK/R14zIPFJbghr
+ glCMHtfiJXM3/JYPFR1Yv0PupQidR7IEUL+vkTNdfRn8Ng+hSbiJBWMHY5sfxz32ec2D
+ MNCT7IHdvxkcvZIlHKcndmkEUlaYY/Q5EUuNtGf7gbusKOlUjAUkLAH8ejRXN/dVmr/l
+ HK1C3fNyH1LTWElur1fqfbrcs9vIQL7hh+smB6mXnEWgFyO6KxlW27fHwOZ85l82STLK
+ G3NlyzMBMaSwM/J0giioS86ZIVg6DVO9qc7FcFWImS7OXh5yTVRHfaU9mdY4ARXqd2Tr ug== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3a8bpvrnp1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Aug 2021 11:37:35 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 86185100034;
+        Thu,  5 Aug 2021 11:37:32 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5C7E22138F9;
+        Thu,  5 Aug 2021 11:37:32 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 5 Aug
+ 2021 11:37:30 +0200
+Subject: Re: [PATCH v4 2/3] ARM: dts: stm32: fix dtbs_check warning on ili9341
+ dts binding
+To:     Dillon Min <dillon.minfei@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Peter Robinson <pbrobinson@gmail.com>
+CC:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        =?UTF-8?Q?Noralf_Tr=c3=b8nnes?= <noralf@tronnes.org>,
+        <kbuild-all@lists.01.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1627098243-2742-1-git-send-email-dillon.minfei@gmail.com>
+ <1627098243-2742-3-git-send-email-dillon.minfei@gmail.com>
+ <CACRpkdYReUdg_7oSTqcsA_+9tS9w6MH90=KV1rGyr4YWT=NW-w@mail.gmail.com>
+ <CAL9mu0LfcLS1iNQnamxA_oTrxu8eEBpUm+u92V2d9-8qz6hvow@mail.gmail.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <ecffd445-7f18-518f-2093-19e393588c1e@foss.st.com>
+Date:   Thu, 5 Aug 2021 11:37:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57f2dfe5-c1f5-4efb-e565-2e174228ee9a@redhat.com>
+In-Reply-To: <CAL9mu0LfcLS1iNQnamxA_oTrxu8eEBpUm+u92V2d9-8qz6hvow@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-05_03:2021-08-05,2021-08-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 10:16:26AM +0200, Daniel Bristot de Oliveira wrote:
-> On 8/4/21 3:59 PM, Dietmar Eggemann wrote:
-> > A missing clock update is causing the following warning:
-> > 
-> > rq->clock_update_flags < RQCF_ACT_SKIP
-> > WARNING: CPU: 112 PID: 2041 at kernel/sched/sched.h:1453
-> > sub_running_bw.isra.0+0x190/0x1a0
-> > ...
-> > CPU: 112 PID: 2041 Comm: sugov:112 Tainted: G W 5.14.0-rc1 #1
-> > Hardware name: WIWYNN Mt.Jade Server System
-> > B81.030Z1.0007/Mt.Jade Motherboard, BIOS 1.6.20210526 (SCP:
-> > 1.06.20210526) 2021/05/26
-> > ...
-> > Call trace:
-> >   sub_running_bw.isra.0+0x190/0x1a0
-> >   migrate_task_rq_dl+0xf8/0x1e0
-> >   set_task_cpu+0xa8/0x1f0
-> >   try_to_wake_up+0x150/0x3d4
-> >   wake_up_q+0x64/0xc0
-> >   __up_write+0xd0/0x1c0
-> >   up_write+0x4c/0x2b0
-> >   cppc_set_perf+0x120/0x2d0
-> >   cppc_cpufreq_set_target+0xe0/0x1a4 [cppc_cpufreq]
-> >   __cpufreq_driver_target+0x74/0x140
-> >   sugov_work+0x64/0x80
-> >   kthread_worker_fn+0xe0/0x230
-> >   kthread+0x138/0x140
-> >   ret_from_fork+0x10/0x18
-> > 
-> > The task causing this is the `cppc_fie` DL task introduced by
-> > commit 1eb5dde674f5 ("cpufreq: CPPC: Add support for frequency
-> > invariance").
-> > 
-> > With CONFIG_ACPI_CPPC_CPUFREQ_FIE=y and schedutil cpufreq governor on
-> > slow-switching system (like on this Ampere Altra WIWYNN Mt. Jade Arm
-> > Server):
-> > 
-> > DL task `curr=sugov:112` lets `p=cppc_fie` migrate and since the latter
-> > is in `non_contending` state, migrate_task_rq_dl() calls
-> > 
-> >   sub_running_bw()->__sub_running_bw()->cpufreq_update_util()->
-> >   rq_clock()->assert_clock_updated()
-> > 
-> > on p.
-> > 
-> > Fix this by updating the clock for a non_contending task in
-> > migrate_task_rq_dl() before calling sub_running_bw().
-> > 
-> > Reported-by: Bruno Goncalves <bgoncalv@redhat.com>
-> > Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> 
-> Reviewed-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Hi Dillon
 
-Thanks!
+On 8/5/21 11:19 AM, Dillon Min wrote:
+> Hi Linus
+> 
+> Thanks.
+> 
+> On Thu, 5 Aug 2021 at 17:11, Linus Walleij <linus.walleij@linaro.org> wrote:
+>>
+>> On Sat, Jul 24, 2021 at 5:44 AM <dillon.minfei@gmail.com> wrote:
+>>
+>>> From: Dillon Min <dillon.minfei@gmail.com>
+>>>
+>>> Since the compatible string defined from ilitek,ili9341.yaml is
+>>> "st,sf-tc240t-9370-t", "ilitek,ili9341"
+>>>
+>>> so, append "ilitek,ili9341" to avoid the below dtbs_check warning.
+>>>
+>>> arch/arm/boot/dts/stm32f429-disco.dt.yaml: display@1: compatible:
+>>> ['st,sf-tc240t-9370-t'] is too short
+>>>
+>>> Fixes: a726e2f000ec ("ARM: dts: stm32: enable ltdc binding with ili9341, gyro l3gd20 on stm32429-disco board")
+>>> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> ---
+>>> v4: no change.
+>>
+>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>>
+>> Please funnel this patch through the STM and ARM SoC tree.
+> 
+> Sure, I will let Alex know. Thanks for your help on this driver.
+> 
+> Hi Alex,
+> Should I send v5 with Linus's Reviewed-by tag on this patch? thanks.
+
+No, I'll do it.
+
+cheers
+alex
+
+> 
+> Best Regards
+> Dillon
+> 
+>>
+>> Yours,
+>> Linus Walleij
+
