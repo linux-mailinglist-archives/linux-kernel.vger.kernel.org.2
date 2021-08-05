@@ -2,118 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806873E15AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBEC3E15AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238796AbhHENaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 09:30:46 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:45928 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232442AbhHENao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 09:30:44 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxL0Dw5wthzHIrAA--.32320S2;
-        Thu, 05 Aug 2021 21:30:25 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] f2fs: Kconfig: clean up config options about compression
-Date:   Thu,  5 Aug 2021 21:30:24 +0800
-Message-Id: <1628170224-13239-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxL0Dw5wthzHIrAA--.32320S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uryrAFW5XF4UKFyxJr1fWFg_yoW8ZFyrpw
-        sYgry8GrZ3WF15KanYgrn8Kr47JryFga1UJr43Jw1UArWrGrn7WF95tFs5ZayUZFZxXFZ8
-        uws0grW5Wr4avFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6ry8MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUsUUUUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S241072AbhHENau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 09:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240827AbhHENas (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 09:30:48 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1916C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 06:30:33 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id z4so6552688wrv.11
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 06:30:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=o6l+0HCVwdFKPSNGNpE45TSpWyYqq7pqwi1msZsfIig=;
+        b=M9QIG2V7JgG78B/X57JWy1N8s0g/1+U6ccvpCIp/upwAWwlUGgmnijeHzpYk16lEfw
+         Sf4A19gK+4bXBUs7sGL/q6l+0Vhsf18ZVamPFW51XFa3hSMDGRb2+kezWbnolUhEfCVw
+         PTwK5MWaG/zeFry/2ZKdhESqHGiFUJOGHIDYHik2guD3iqdRRWDKV6PsZqTRbTftxyw9
+         m1yFhOkrfj8xIY4v95aoc0RAkUkY8Y0mc3hh8csCJZ20FY8Dt3U8Y3nFsyTc4Y/yem9K
+         chAW0/SpSurhniDIoDasXRs9RP26YCbpMG6o6qSqH44XqqMi9EpYj2y48jOuiygytyVY
+         nmeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=o6l+0HCVwdFKPSNGNpE45TSpWyYqq7pqwi1msZsfIig=;
+        b=YBu4npN6GbSzii/tjaIa/SezVRA2H5LnRqSa3gLgIPhfYqjU4QE0SrxNfTWLISWWuW
+         EsQMi1rRz0a64zoRhXyMrO0ODMhcFVzQZ0MmG3g/N5y0Pgtf7RXBYrVOxSugCpMMo8B8
+         n1A7zutPzhU9I8nAXWapIuA/N/bSeS9In1Q6lSlcDp9K3uYEMtNht9udmSqqSDCPw5af
+         Vji+czqCQB44k5SUJwVpkIyRM0kChhzmlR7L1ybtsOkBQztStkR0jxhekMtDINVv2COl
+         2V6aNMCWl1AH2kRZl/0vBklZZ9IfN8a5SaAJ+K0kVtH8D37283fv9goOOQKiXFKncAfk
+         bNYA==
+X-Gm-Message-State: AOAM533aShEcVKyJEVJ2UJI+QvyP0EMrkH4JFIyhgWtxeGWD7L30aZNi
+        Qo19GFwDSVwxq+1lzN6IBM5XtA==
+X-Google-Smtp-Source: ABdhPJzYlh4/9sfnKY5UbgWzbhLA45kdhKY857jCGGTCK+evpxcyd9EYCUKCbixblA6+Va4eYWemIA==
+X-Received: by 2002:a5d:6ac4:: with SMTP id u4mr5361971wrw.166.1628170232208;
+        Thu, 05 Aug 2021 06:30:32 -0700 (PDT)
+Received: from google.com ([109.180.115.228])
+        by smtp.gmail.com with ESMTPSA id x16sm6353936wru.40.2021.08.05.06.30.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 06:30:31 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 14:30:29 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/7] mfd: tqmx86: clear GPIO IRQ resource when no IRQ
+ is set
+Message-ID: <YQvn9dkFluRYj80r@google.com>
+References: <cover.1626429286.git.matthias.schiffer@ew.tq-group.com>
+ <65f9787ebd6725e90fad9ea7f936ee0d5712da94.1626429286.git.matthias.schiffer@ew.tq-group.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <65f9787ebd6725e90fad9ea7f936ee0d5712da94.1626429286.git.matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In fs/f2fs/Kconfig, F2FS_FS_LZ4HC depends on F2FS_FS_LZ4 and F2FS_FS_LZ4
-depends on F2FS_FS_COMPRESSION, so no need to make F2FS_FS_LZ4HC depends
-on F2FS_FS_COMPRESSION explicitly, remove the redudant "depends on", do
-the similar thing for F2FS_FS_LZORLE.
+On Fri, 16 Jul 2021, Matthias Schiffer wrote:
 
-At the same time, it is better to move F2FS_FS_LZORLE next to F2FS_FS_LZO,
-it looks like a little more clear when make menuconfig, the location of
-"LZO-RLE compression support" is under "LZO compression support" instead
-of "F2FS compression feature".
+> The driver was registering IRQ 0 when no IRQ was set. This leads to
+> warnings with newer kernels.
+> 
+> Clear the resource flags, so no resource is registered at all in this
+> case.
+> 
+> Fixes: 2f17dd34ffed ("mfd: tqmx86: IO controller with I2C, Wachdog and GPIO")
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> ---
+> 
+> v2: add Fixes line
+> v3: no changes
+> 
+>  drivers/mfd/tqmx86.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mfd/tqmx86.c b/drivers/mfd/tqmx86.c
+> index ddddf08b6a4c..732013f40e4e 100644
+> --- a/drivers/mfd/tqmx86.c
+> +++ b/drivers/mfd/tqmx86.c
+> @@ -209,6 +209,8 @@ static int tqmx86_probe(struct platform_device *pdev)
+>  
+>  		/* Assumes the IRQ resource is first. */
+>  		tqmx_gpio_resources[0].start = gpio_irq;
+> +	} else {
+> +		tqmx_gpio_resources[0].flags = 0;
 
-Without this patch:
+Strange - why is this !0 in the first place?
 
-F2FS compression feature
-  LZO compression support
-  LZ4 compression support
-    LZ4HC compression support
-  ZSTD compression support
-  LZO-RLE compression support
+>  	}
+>  
+>  	ocores_platfom_data.clock_khz = tqmx86_board_id_to_clk_rate(board_id);
 
-With this patch:
-
-F2FS compression feature
-  LZO compression support
-    LZO-RLE compression support
-  LZ4 compression support
-    LZ4HC compression support
-  ZSTD compression support
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- fs/f2fs/Kconfig | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
-
-diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
-index 7669de7..2ac026f 100644
---- a/fs/f2fs/Kconfig
-+++ b/fs/f2fs/Kconfig
-@@ -105,6 +105,13 @@ config F2FS_FS_LZO
- 	help
- 	  Support LZO compress algorithm, if unsure, say Y.
- 
-+config F2FS_FS_LZORLE
-+	bool "LZO-RLE compression support"
-+	depends on F2FS_FS_LZO
-+	default y
-+	help
-+	  Support LZO-RLE compress algorithm, if unsure, say Y.
-+
- config F2FS_FS_LZ4
- 	bool "LZ4 compression support"
- 	depends on F2FS_FS_COMPRESSION
-@@ -114,7 +121,6 @@ config F2FS_FS_LZ4
- 
- config F2FS_FS_LZ4HC
- 	bool "LZ4HC compression support"
--	depends on F2FS_FS_COMPRESSION
- 	depends on F2FS_FS_LZ4
- 	default y
- 	help
-@@ -127,11 +133,3 @@ config F2FS_FS_ZSTD
- 	default y
- 	help
- 	  Support ZSTD compress algorithm, if unsure, say Y.
--
--config F2FS_FS_LZORLE
--	bool "LZO-RLE compression support"
--	depends on F2FS_FS_COMPRESSION
--	depends on F2FS_FS_LZO
--	default y
--	help
--	  Support LZO-RLE compress algorithm, if unsure, say Y.
 -- 
-2.1.0
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
