@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB033E1871
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AE83E188B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242623AbhHEPoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:44:10 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43940 "EHLO
+        id S242689AbhHEPoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:44:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44092 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242435AbhHEPmL (ORCPT
+        with ESMTP id S242441AbhHEPmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:42:11 -0400
-Message-ID: <20210805153954.793531767@linutronix.de>
+        Thu, 5 Aug 2021 11:42:13 -0400
+Message-ID: <20210805153954.849972718@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628178116;
+        s=2020; t=1628178118;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=aycLtfy8gfdPLlQgpHv6K2/4Mae2a+Ak76YMWhVZx6M=;
-        b=LBqrAeOBpEE0cKnGTfrPNE9weYVEgkgoFl4Ojak29dQeaRVslZ329JNsQYi1ar7HLnXplF
-        4OuqWM3XKqdoVH4ZX8TWwBHXp2dl+5+FkwemB088m/p5DN5rqF1IUXwsdu75Rlz7GO9Ehp
-        YpzFRbU4MwngXwgp23c51v18j6hwoqW0SSHhsnrpuO+mCmHDUMkrcFc/rq7iHNsgEHud/s
-        m0AXrA9Tolx5mXURwjk4+JZVnw1ndpgXeGzav9aFK+HadRc7GxvTqKwqcj5QIiBAru4bMG
-        /WTZtMeLWcPUsME379BIKHkqv3PFR2cwf2L0zKVnVSB86XLsCf7W8eJQFRwqYA==
+        bh=wqEUqv+RphsTuvMw8kU+H6ptt5k3u1F1Mg8Q6pYcvDU=;
+        b=0/0oE99s6RNNtrIp7YZnTdY6d4/1mbU6Voj02aOXvCEwxNGUqWPwbyLCt8otz32rlsT/hE
+        bYop47w8L05Ug7872uWERlahjRYMjEn6+Pzkxheqlt8j64Df6UlXonvlXAiTy967t/W52P
+        mWB/XgoTIqTXjWSqeAZnZ/C17SMGD96Bvnnh1OsZL5mHe+Aj5Mu64r+nnClpbW5R+Coj7v
+        Kmnsud0MitkXwmKyrBHhQSBbfz5lwLbb4DeJHVxSWJphMejzLqycNgJxNmu3jTZldjZ56f
+        WSMJIA6kE6yC7Kqgei0IucntqLRfIOILXfQvy2Vv4M4kIrCrGirtcbs0GT2ieg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628178116;
+        s=2020e; t=1628178118;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=aycLtfy8gfdPLlQgpHv6K2/4Mae2a+Ak76YMWhVZx6M=;
-        b=r4nUmhZ8ql8NSbApii7rzia1jZ+WaB4/OqW/lNgchd1kyjL/SoiGpLYmgyiD4qDDjVaTo+
-        HdqYUD9y+LWbdQAg==
-Date:   Thu, 05 Aug 2021 17:13:34 +0200
+        bh=wqEUqv+RphsTuvMw8kU+H6ptt5k3u1F1Mg8Q6pYcvDU=;
+        b=iCeo76QB4J7t7TAXYmvis04d+ngmefLeJ0c5vZw5sTC068knDkmRC/kSga//KV4XqHkg/a
+        4H3jXymmrOl2ExBg==
+Date:   Thu, 05 Aug 2021 17:13:35 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -46,7 +46,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V3 34/64] locking/mutex: Move waiter to core header
+Subject: [patch V3 35/64] locking/ww_mutex: Move ww_mutex declarations into ww_mutex.h
 References: <20210805151300.330412127@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,57 +57,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Move the mutex waiter declaration from the global to the core local
-header. There is no reason to expose it outside of the core code.
+Move the ww_mutex declarations into the ww_mutex specific header where they
+belong.
+
+Preparatory change to allow compiling ww_mutex standalone.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/mutex.h  |   13 -------------
- kernel/locking/mutex.h |   13 +++++++++++++
- 2 files changed, 13 insertions(+), 13 deletions(-)
+ include/linux/mutex.h    |   11 -----------
+ include/linux/ww_mutex.h |    8 ++++++++
+ 2 files changed, 8 insertions(+), 11 deletions(-)
 ---
 --- a/include/linux/mutex.h
 +++ b/include/linux/mutex.h
-@@ -74,19 +74,6 @@ struct ww_mutex {
+@@ -20,9 +20,6 @@
+ #include <linux/osq_lock.h>
+ #include <linux/debug_locks.h>
+ 
+-struct ww_class;
+-struct ww_acquire_ctx;
+-
+ /*
+  * Simple, straightforward mutexes with strict semantics:
+  *
+@@ -66,14 +63,6 @@ struct mutex {
  #endif
  };
  
--/*
-- * This is the control structure for tasks blocked on mutex,
-- * which resides on the blocked task's kernel stack:
-- */
--struct mutex_waiter {
--	struct list_head	list;
--	struct task_struct	*task;
--	struct ww_acquire_ctx	*ww_ctx;
+-struct ww_mutex {
+-	struct mutex base;
+-	struct ww_acquire_ctx *ctx;
 -#ifdef CONFIG_DEBUG_MUTEXES
--	void			*magic;
+-	struct ww_class *ww_class;
 -#endif
 -};
 -
  #ifdef CONFIG_DEBUG_MUTEXES
  
  #define __DEBUG_MUTEX_INITIALIZER(lockname)				\
---- a/kernel/locking/mutex.h
-+++ b/kernel/locking/mutex.h
-@@ -7,6 +7,19 @@
-  *  Copyright (C) 2004, 2005, 2006 Red Hat, Inc., Ingo Molnar <mingo@redhat.com>
-  */
+--- a/include/linux/ww_mutex.h
++++ b/include/linux/ww_mutex.h
+@@ -28,6 +28,14 @@ struct ww_class {
+ 	unsigned int is_wait_die;
+ };
  
-+/*
-+ * This is the control structure for tasks blocked on mutex, which resides
-+ * on the blocked task's kernel stack:
-+ */
-+struct mutex_waiter {
-+	struct list_head	list;
-+	struct task_struct	*task;
-+	struct ww_acquire_ctx	*ww_ctx;
++struct ww_mutex {
++	struct mutex base;
++	struct ww_acquire_ctx *ctx;
 +#ifdef CONFIG_DEBUG_MUTEXES
-+	void			*magic;
++	struct ww_class *ww_class;
 +#endif
 +};
 +
- #ifdef CONFIG_DEBUG_MUTEXES
- extern void debug_mutex_lock_common(struct mutex *lock,
- 				    struct mutex_waiter *waiter);
+ struct ww_acquire_ctx {
+ 	struct task_struct *task;
+ 	unsigned long stamp;
 
