@@ -2,134 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2323A3E1149
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9033E3E114E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237906AbhHEJ3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 05:29:44 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:12454 "EHLO
+        id S237958AbhHEJcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 05:32:08 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7933 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhHEJ3n (ORCPT
+        with ESMTP id S229913AbhHEJcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:29:43 -0400
+        Thu, 5 Aug 2021 05:32:06 -0400
 Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GgNWh5By0zcl7t;
-        Thu,  5 Aug 2021 17:25:52 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GgNZ56lcJz84FQ;
+        Thu,  5 Aug 2021 17:27:57 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
  dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 17:29:27 +0800
-Received: from [10.174.179.215] (10.174.179.215) by
- dggema769-chm.china.huawei.com (10.1.198.211) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 5 Aug 2021 17:29:26 +0800
-Subject: Re: [PATCH -next] RDMA/hns: Fix return in hns_roce_rereg_user_mr()
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <liangwenpeng@huawei.com>, <liweihang@huawei.com>,
-        <dledford@redhat.com>, <jgg@ziepe.ca>, <chenglang@huawei.com>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210804125939.20516-1-yuehaibing@huawei.com>
- <YQqb0U43eQUGK641@unreal> <f0921aa3-a95d-f7e4-a13b-db15d4a5f259@huawei.com>
- <YQtdswHgMXhC7Mf5@unreal>
-From:   YueHaibing <yuehaibing@huawei.com>
-Message-ID: <974d3309-3617-6413-5a8d-c92b1b2f8dfe@huawei.com>
-Date:   Thu, 5 Aug 2021 17:29:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 17:31:49 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 5 Aug 2021
+ 17:31:49 +0800
+Subject: Re: [PATCH net] page_pool: mask the page->signature before the
+ checking
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC:     Matthew Wilcox <willy@infradead.org>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <hawk@kernel.org>, <mcroce@microsoft.com>,
+        <alexander.duyck@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <chenhao288@hisilicon.com>
+References: <1628125617-49538-1-git-send-email-linyunsheng@huawei.com>
+ <YQtDynWsDxZ/T41e@casper.infradead.org>
+ <19955a79-3a6a-9534-7665-7f868eb7db1f@huawei.com>
+ <YQunSivvZZFRETYn@enceladus>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <bfdfd736-68b2-635b-0c59-017574620f8c@huawei.com>
+Date:   Thu, 5 Aug 2021 17:31:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-In-Reply-To: <YQtdswHgMXhC7Mf5@unreal>
+In-Reply-To: <YQunSivvZZFRETYn@enceladus>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema769-chm.china.huawei.com (10.1.198.211)
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/5 11:40, Leon Romanovsky wrote:
-> On Thu, Aug 05, 2021 at 10:36:03AM +0800, YueHaibing wrote:
->> On 2021/8/4 21:53, Leon Romanovsky wrote:
->>> On Wed, Aug 04, 2021 at 08:59:39PM +0800, YueHaibing wrote:
->>>> If re-registering an MR in hns_roce_rereg_user_mr(), we should
->>>> return NULL instead of pass 0 to ERR_PTR.
+On 2021/8/5 16:54, Ilias Apalodimas wrote:
+> On Thu, Aug 05, 2021 at 10:14:39AM +0800, Yunsheng Lin wrote:
+>> On 2021/8/5 9:50, Matthew Wilcox wrote:
+>>> On Thu, Aug 05, 2021 at 09:06:57AM +0800, Yunsheng Lin wrote:
+>>>> As mentioned in commit c07aea3ef4d4 ("mm: add a signature
+>>>> in struct page"):
+>>>> "The page->signature field is aliased to page->lru.next and
+>>>> page->compound_head."
 >>>>
->>>> Fixes: 4e9fc1dae2a9 ("RDMA/hns: Optimize the MR registration process")
->>>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->>>> ---
->>>>  drivers/infiniband/hw/hns/hns_roce_mr.c | 4 +++-
->>>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>>> And as the comment in page_is_pfmemalloc():
+>>>> "lru.next has bit 1 set if the page is allocated from the
+>>>> pfmemalloc reserves. Callers may simply overwrite it if they
+>>>> do not need to preserve that information."
 >>>>
->>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
->>>> index 006c84bb3f9f..7089ac780291 100644
->>>> --- a/drivers/infiniband/hw/hns/hns_roce_mr.c
->>>> +++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
->>>> @@ -352,7 +352,9 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
->>>>  free_cmd_mbox:
->>>>  	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
->>>>  
->>>> -	return ERR_PTR(ret);
->>>> +	if (ret)
->>>> +		return ERR_PTR(ret);
->>>> +	return NULL;
->>>>  }
->>>
->>> I don't understand this function, it returns or ERR_PTR() or NULL, but
->>> should return &mr->ibmr in success path. How does it work?
->>
->> Did you means hns_roce_reg_user_mr()?
->>
->> hns_roce_rereg_user_mr() returns ERR_PTR() on failure, and return NULL on success,
->>
->> In ib_uverbs_rereg_mr(), old mr will be used if rereg_user_mr() return NULL, see:
->>
->>  829         new_mr = ib_dev->ops.rereg_user_mr(mr, cmd.flags, cmd.start, cmd.length,
->>  830                                            cmd.hca_va, cmd.access_flags, new_pd,
->>  831                                            &attrs->driver_udata);
->>  832         if (IS_ERR(new_mr)) {
->>  833                 ret = PTR_ERR(new_mr);
->>  834                 goto put_new_uobj;
->>  835         }
->>  836         if (new_mr) {
->> .....
->>  860                 mr = new_mr;
->>  861         } else {
->>  862                 if (cmd.flags & IB_MR_REREG_PD) {
->>  863                         atomic_dec(&orig_pd->usecnt);
->>  864                         mr->pd = new_pd;
->>  865                         atomic_inc(&new_pd->usecnt);
->>  866                 }
->>  867                 if (cmd.flags & IB_MR_REREG_TRANS)
->>  868                         mr->iova = cmd.hca_va;
->>  869         }
-> 
-> You overwrite various fields in old_mr when executing hns_roce_rereg_user_mr().
-> For example mr->access flags, which is not returned to the original
-> state after all failures.
-
-IMO, if ibv_rereg_mr failed, the mr is in undefined state, user needs to call
-ibv_dereg_mr in order to release it, so there no need to recover the original state.
-
-Also， mlx4_ib_rereg_user_mr seems to do the same thing.
-
-> 
-> Also I'm not so sure about if it is valid to return NULL in all flows.
-> 
-> Thanks
-> 
->>
->>
->>>
->>> Thanks
->>>
->>>>  
->>>>  int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
->>>> -- 
->>>> 2.17.1
+>>>> The page->signature is or???ed with PP_SIGNATURE when a page is
+>>>> allocated in page pool, see __page_pool_alloc_pages_slow(),
+>>>> and page->signature is checked directly with PP_SIGNATURE in
+>>>> page_pool_return_skb_page(), which might cause resoure leaking
+>>>> problem for a page from page pool if bit 1 of lru.next is set for
+>>>> a pfmemalloc page.
 >>>>
+>>>> As bit 0 is page->compound_head, So mask both bit 0 and 1 before
+>>>> the checking in page_pool_return_skb_page().
+>>>
+>>> No, you don't understand.  We *want* the check to fail if we were low
+>>> on memory so we return the emergency allocation.
+>>
+>> If the check failed, but the page pool assume the page is not from page
+>> pool and will not do the resource cleaning(like dma unmapping), as the
+>> page pool still use the page with pfmemalloc set and dma map the page
+>> if pp_flags & PP_FLAG_DMA_MAP is true in __page_pool_alloc_pages_slow().
+>>
+>> The returning the emergency allocation you mentioned seems to be handled
+>> in __page_pool_put_page(), see:
+>>
+>> https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L411
+>>
+>> We just use the page with pfmemalloc one time and do the resource cleaning
+>> before returning the page back to page allocator. Or did I miss something
+>> here?
+>>
 >>> .
 >>>
+> 
+> I think you are right here.  What happens is that the original
+> pp->signature is OR'ed after the allocation in order to preserve any
+> existing bits.  When those are present though the if which will trigger the
+> recycling will fail and those DMA mapping will be left stale.
+> 
+> If we mask the bits during the check (as your patch does), we'll end up not
+> recycling the page anyway since it has the pfmemalloc bit set. The page
+> pool recycle function will end up releasing the page and the DMA mappings right?
+
+Yes.
+The problem might be magnified when frag page in page pool is added, because
+page pool only hold one ref of the page, and page_pool_return_skb_page() might
+dec the page ref twice if the frag page has two users, supposing the above
+checking fail with the pfmemalloc page, leaving to the below log:
+
+[   49.584990] BUG: Bad page state in process iperf  pfn:20af242
+[   49.584992] page:(____ptrval____) refcount:-1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x20af242
+
+> 
+> Regards
+> /Ilias
 > .
 > 
