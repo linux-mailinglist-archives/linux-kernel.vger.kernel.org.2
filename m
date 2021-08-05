@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65983E188D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6F03E1875
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242759AbhHEPoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:44:23 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43820 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242398AbhHEPmQ (ORCPT
+        id S242506AbhHEPoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242452AbhHEPmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:42:16 -0400
-Message-ID: <20210805153954.965010964@linutronix.de>
+        Thu, 5 Aug 2021 11:42:22 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB00BC061384
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 08:42:04 -0700 (PDT)
+Message-ID: <20210805153955.023328409@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628178121;
+        s=2020; t=1628178123;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=kP+wkGEMMhh4ymI0Nk33oRqOuFFrSS5KxvL/8gBf+/Q=;
-        b=PXOP/h3CRHGVidNL5akalBjTEz8Y7TzysDqnHQ2L6vipSkGUCPKceZeNlUQmeGhukg+4BM
-        3RH/e4vKR7ib0nMCyDmBa1p9WMoK07/gASxd3TcPn8p6YcyExUDQAIFxWb3E5mmXzlEmed
-        Dg1O1wiM7OH2bVQBwRaoUfLgYk3rDUSlSMSn9ezADn2biEUHFNzVvIPdL/9rNZr4+FCmc/
-        IYEdHAqGDg7SEhGXaCwbJtlSn1Ikb2Ph8L78qA5vSnEnMKUNim+9J18klBHIkVNHO1yVMF
-        wCHHtqJdEYKN5NaVcPfxD4lHIbCvNgonrr5m6+3MpgAfkjCPbWIBWjarNIbHWA==
+        bh=NJxRI30XqhVh8/VqD5+ZkYUWJvNUwWO5e2tTeZWJUgs=;
+        b=JXtSRO6Byd9N3CwXT5lHfuEyPKWmHHLtXDbK9iN0ta2PGY+6XSX8+ooPJLhmiblGCZjtAK
+        DdNH7nCpXhGkYuTUNZMIyx/GJMynng+tqoht9DaTHrILqiX5l1VFW5BhGXwdn9kam+2/+g
+        QNlY4DlNBghEqZ+0AxmAgfLXr1qivPjhMQ46vOi3EpCE3zW7ii9Yj0LUYo21CvkFTJ+fh4
+        lglZqcpKDo5zIUXx3Ah9cjSNGoENITUq+9wb91hDdbm4nPRNasLvYs0UuIhieuBZe7e0nL
+        p9bIskbmWDH+mvEdwiZApXT+oVCwfzmrfqmEnOpLZX5Aq8jSJPcL77hOTcDVeg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628178121;
+        s=2020e; t=1628178123;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=kP+wkGEMMhh4ymI0Nk33oRqOuFFrSS5KxvL/8gBf+/Q=;
-        b=MMf/s4NWgc5tzlsJmJ5FNnc3GoHy8DJenU/K9MdRf7/CGEZ/9hUxC3V86Acgq2f9srEpEk
-        2st2ZB84Ju/IopCA==
-Date:   Thu, 05 Aug 2021 17:13:37 +0200
+        bh=NJxRI30XqhVh8/VqD5+ZkYUWJvNUwWO5e2tTeZWJUgs=;
+        b=BbBej3fnQCQeGT6yc96lFOOTFemy2YUXJ/H8J+G5plx7/dUy1zn8lhW5Winb5kB9+YmFXM
+        kDyPy/4TdAjUnSDQ==
+Date:   Thu, 05 Aug 2021 17:13:38 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -46,7 +49,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V3 37/64] locking/ww_mutex: Simplify lockdep annotation
+Subject: [patch V3 38/64] locking/ww_mutex: Gather mutex_waiter initialization
 References: <20210805151300.330412127@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,77 +60,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-No functional change.
-
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 ---
- kernel/locking/mutex.c |   19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ kernel/locking/mutex-debug.c |    1 +
+ kernel/locking/mutex.c       |   12 +++---------
+ 2 files changed, 4 insertions(+), 9 deletions(-)
 ---
+--- a/kernel/locking/mutex-debug.c
++++ b/kernel/locking/mutex-debug.c
+@@ -30,6 +30,7 @@ void debug_mutex_lock_common(struct mute
+ 	memset(waiter, MUTEX_DEBUG_INIT, sizeof(*waiter));
+ 	waiter->magic = waiter;
+ 	INIT_LIST_HEAD(&waiter->list);
++	waiter->ww_ctx = MUTEX_POISON_WW_CTX;
+ }
+ 
+ void debug_mutex_wake_waiter(struct mutex *lock, struct mutex_waiter *waiter)
 --- a/kernel/locking/mutex.c
 +++ b/kernel/locking/mutex.c
-@@ -949,6 +949,10 @@ static __always_inline int __sched
- 		 */
- 		if (ww_ctx->acquired == 0)
- 			ww_ctx->wounded = 0;
-+
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+		nest_lock = &ww_ctx->dep_map;
-+#endif
+@@ -980,17 +980,15 @@ static __always_inline int __sched
  	}
  
- 	preempt_disable();
-@@ -1102,10 +1106,9 @@ static int __sched
+ 	debug_mutex_lock_common(lock, &waiter);
++	waiter.task = current;
++	if (ww_ctx)
++		waiter.ww_ctx = ww_ctx;
  
- static int __sched
- __ww_mutex_lock(struct mutex *lock, unsigned int state, unsigned int subclass,
--		struct lockdep_map *nest_lock, unsigned long ip,
--		struct ww_acquire_ctx *ww_ctx)
-+		unsigned long ip, struct ww_acquire_ctx *ww_ctx)
- {
--	return __mutex_lock_common(lock, state, subclass, nest_lock, ip, ww_ctx, true);
-+	return __mutex_lock_common(lock, state, subclass, NULL, ip, ww_ctx, true);
- }
+ 	lock_contended(&lock->dep_map, ip);
  
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
-@@ -1185,8 +1188,7 @@ ww_mutex_lock(struct ww_mutex *lock, str
+ 	if (!use_ww_ctx) {
+ 		/* add waiting tasks to the end of the waitqueue (FIFO): */
+ 		__mutex_add_waiter(lock, &waiter, &lock->wait_list);
+-
+-
+-#ifdef CONFIG_DEBUG_MUTEXES
+-		waiter.ww_ctx = MUTEX_POISON_WW_CTX;
+-#endif
+ 	} else {
+ 		/*
+ 		 * Add in stamp order, waking up waiters that must kill
+@@ -999,12 +997,8 @@ static __always_inline int __sched
+ 		ret = __ww_mutex_add_waiter(&waiter, lock, ww_ctx);
+ 		if (ret)
+ 			goto err_early_kill;
+-
+-		waiter.ww_ctx = ww_ctx;
+ 	}
  
- 	might_sleep();
- 	ret =  __ww_mutex_lock(&lock->base, TASK_UNINTERRUPTIBLE,
--			       0, ctx ? &ctx->dep_map : NULL, _RET_IP_,
--			       ctx);
-+			       0, _RET_IP_, ctx);
- 	if (!ret && ctx && ctx->acquired > 1)
- 		return ww_mutex_deadlock_injection(lock, ctx);
- 
-@@ -1201,8 +1203,7 @@ ww_mutex_lock_interruptible(struct ww_mu
- 
- 	might_sleep();
- 	ret = __ww_mutex_lock(&lock->base, TASK_INTERRUPTIBLE,
--			      0, ctx ? &ctx->dep_map : NULL, _RET_IP_,
--			      ctx);
-+			      0, _RET_IP_, ctx);
- 
- 	if (!ret && ctx && ctx->acquired > 1)
- 		return ww_mutex_deadlock_injection(lock, ctx);
-@@ -1376,7 +1377,7 @@ static noinline int __sched
- static noinline int __sched
- __ww_mutex_lock_slowpath(struct ww_mutex *lock, struct ww_acquire_ctx *ctx)
- {
--	return __ww_mutex_lock(&lock->base, TASK_UNINTERRUPTIBLE, 0, NULL,
-+	return __ww_mutex_lock(&lock->base, TASK_UNINTERRUPTIBLE, 0,
- 			       _RET_IP_, ctx);
- }
- 
-@@ -1384,7 +1385,7 @@ static noinline int __sched
- __ww_mutex_lock_interruptible_slowpath(struct ww_mutex *lock,
- 					    struct ww_acquire_ctx *ctx)
- {
--	return __ww_mutex_lock(&lock->base, TASK_INTERRUPTIBLE, 0, NULL,
-+	return __ww_mutex_lock(&lock->base, TASK_INTERRUPTIBLE, 0,
- 			       _RET_IP_, ctx);
- }
- 
+-	waiter.task = current;
+-
+ 	set_current_state(state);
+ 	for (;;) {
+ 		/*
 
