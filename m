@@ -2,95 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5930A3E0CC4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 05:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 469803E0CD6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 05:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238494AbhHED1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 23:27:41 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:54669 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238476AbhHED1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 23:27:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628134046; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=83ejBFxG6PpaqEIAxOQakS7CpkA8CGMBWmlvjt7MCsA=; b=dfQCdwfCH7R9COxYwJ+Lj1oOxwFBbB6B0zudcs1COFvGvDwuja3DTqq8yatBuxa276hFUwKI
- wGSkCvkY1rlp+6JPew2NJmNbnX/6BUgBoDwj1HM+5pNXpKReMUzUHq+8+zXXvqPxjEs8MmsC
- iWkzmw9dVCW7+ZeOyvK6SDLHf4M=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 610b5a9e041a739c46268661 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 05 Aug 2021 03:27:26
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5129CC4360C; Thu,  5 Aug 2021 03:27:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.102] (unknown [49.207.220.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 62504C433F1;
-        Thu,  5 Aug 2021 03:27:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 62504C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: sc7280-idp: Add device tree
- files for IDP2
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, skakit@codeaurora.org,
-        swboyd@chromium.org, dianders@chromium.org, mka@chromium.org
-References: <1628082199-17002-1-git-send-email-rnayak@codeaurora.org>
- <1628082199-17002-3-git-send-email-rnayak@codeaurora.org>
- <0cb8bf79-697c-ff16-e37e-d1c783f8a207@somainline.org>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <8aaef1a2-269d-1077-7996-793045a04f7c@codeaurora.org>
-Date:   Thu, 5 Aug 2021 08:57:18 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S238527AbhHEDkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 23:40:19 -0400
+Received: from m32-153.88.com ([43.250.32.153]:48512 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231286AbhHEDkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 23:40:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=From:To:Date; bh=5wdJNGYtufzjIgVuAGpajGtzpDQxsxxZzF255
+        aDEswY=; b=LNn3MEQYbu9aF2fNKwxE/Yap1ijll0CTJUWYB/rwqHB82o4cVu/oO
+        tWlthf0affmKRx8AB3UAbRhwC64ZtbTa+J1m0rzlq5QJezFoUuCbseGKC8FFoZPT
+        TrLK8+nEIdgYL/IH5krclgbhyonWb+WP7wO5aGIdf3cTrRzcJKsnGA=
+Received: from localhost.localdomain (unknown [113.251.8.125])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgD3dqeOXQtheOMcAA--.40156S2;
+        Thu, 05 Aug 2021 11:40:00 +0800 (CST)
+From:   Hu Haowen <src.res@email.cn>
+To:     pbonzini@redhat.com, corbet@lwn.net
+Cc:     kvm@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] docs: virt: kvm: api.rst: lengthen title line
+Date:   Thu,  5 Aug 2021 11:39:58 +0800
+Message-Id: <20210805033958.120924-1-src.res@email.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <0cb8bf79-697c-ff16-e37e-d1c783f8a207@somainline.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GiKnCgD3dqeOXQtheOMcAA--.40156S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XFWxAr43Zry5Cw1UWr4rZrb_yoW3WFbE9F
+        WDtF4Utw18J3yjvr4UGayrXF17Xa1UCF1kCr15GF4UAwnxArsxGF9rJ39Y9FWUWwsrury5
+        Xrs8Xr4rJrnrXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbOxYjsxI4VWDJwAYFVCjjxCrM7CY07I20VC2zVCF04k26cxKx2IY
+        s7xG6rWj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI
+        8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E
+        87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcx
+        kEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWx
+        Jr1UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r48Mx
+        AIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC6x0Yz7v_
+        Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
+        AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
+        cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
+        IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVj
+        vjDU0xZFpf9x07U46wZUUUUU=
+X-Originating-IP: [113.251.8.125]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Lengthen the underline of title "8.28 KVM_CAP_ENFORCE_PV_FEATURE_CPUID"
+in order to fix build warnings.
 
-On 8/5/2021 1:17 AM, Konrad Dybcio wrote:
-> 
-> On 04.08.2021 15:03, Rajendra Nayak wrote:
->> Move all the common device tree bits for both sc7280 IDPs into a
->> sc7280-idp.dtsi and create 2 different dts files (sc7280-idp.dts
->> and sc7280-idp2.dts) in order to manage differences across the
->> IDP SKU1 and SKU2 Boards.
->> PMR735A is present on IDP board only and is not present on IDP2.
->>
->> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->> ---
->>   arch/arm64/boot/dts/qcom/Makefile                  |   1 +
->>   arch/arm64/boot/dts/qcom/sc7280-idp.dts            | 328 +--------------------
-> 
-> I'm still for calling this sc7280-idp-sku1/2.dts, but other than that it looks good.
+Signed-off-by: Hu Haowen <src.res@email.cn>
+---
+ Documentation/virt/kvm/api.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-sure, I'll just wait for others to chime in, and if that's the consensus I would be
-happy to re-spin.
-  
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-
-Thanks.
-
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index c6212c2d5fe3..2c15844c0d72 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -7054,7 +7054,7 @@ trap and emulate MSRs that are outside of the scope of KVM as well as
+ limit the attack surface on KVM's MSR emulation code.
+ 
+ 8.28 KVM_CAP_ENFORCE_PV_FEATURE_CPUID
+------------------------------
++-------------------------------------
+ 
+ Architectures: x86
+ 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.25.1
+
