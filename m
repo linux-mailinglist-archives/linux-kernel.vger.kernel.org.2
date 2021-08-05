@@ -2,454 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17883E0C06
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 03:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4073E0C08
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 03:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237063AbhHEBSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 21:18:48 -0400
-Received: from mga04.intel.com ([192.55.52.120]:51848 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231143AbhHEBSr (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 21:18:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="212187777"
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="212187777"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 18:18:33 -0700
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="512299187"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 18:18:31 -0700
-Subject: Re: [PATCH v3] perf vendor events: Add metrics for Icelake Server
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-References: <20210721070702.2075-1-yao.jin@linux.intel.com>
- <2811bea3-4589-2f76-83b4-83b91f4db1c6@linux.intel.com>
-Message-ID: <85e07b9a-c826-b4cc-188a-4e735d7342bc@linux.intel.com>
-Date:   Thu, 5 Aug 2021 09:18:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237115AbhHEBUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 21:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhHEBUM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 21:20:12 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367FEC061765;
+        Wed,  4 Aug 2021 18:19:58 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so11612863pjr.1;
+        Wed, 04 Aug 2021 18:19:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=e3XwsW9dcpK2inuw4CP3wWTFfrJpkqjKUp1ALe4OcSw=;
+        b=czFhfxgAUEDaFdM3Hcun5CUGzve9qBhEHhdgHBmOX7olliuFKN8DXgEe+rmKmWat+L
+         9mJyEreTCcY9wJOpkumioORcnXgQzD2mgUmfb8cHczaZku6gWfEFHyDULFrbZ1Qkc2Fb
+         w63Puypnh8M8XBOv2KOl5W9ml8QulLssN8QoK10Wjo+2Y386UtpiMhlLjuhbVj4TdOuB
+         pvqKjUhBeZHINJCJM53M/eymo4U+UKhmtE5VcRQ+hQFyt9j6QvVl0xQWmwI7zrDcM1sm
+         tFrqNxnw9BmxW3fhzyQMf8dW7uptS6+uWujOdhQ9442difFXq0vS6iTGzqqcdk7ixPDW
+         IKmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=e3XwsW9dcpK2inuw4CP3wWTFfrJpkqjKUp1ALe4OcSw=;
+        b=uB/nbMJb/9dFMl2poOLPL9PWZOv/gHibgXOV4n3MA9FOn5DZ8T4Kjk4NoJ4xYJTTq4
+         pCwAAelo8e6a6RSSEgif3y2JGoVdZGY0FhJ39bVq95stMe3ReorA+uAlVKfZmOTOmWCP
+         5p0IMGNXCS8zUllcSQll1iA3V/9ZVZOzlSdOhRdO9lf+w2kjqLOYGndpD/y6j3E0tQIb
+         Gy19wSjrmmU0IWsI4+MSn+HjtmQKN3n/d3Hv6v9LAyX31k1J7/EagQSsBjowVZyhfFDk
+         /n2ID7xKHwzoNp144gBQkJKH+o08U0Hja50DbLjgYWcdCPpP2nDNesLiXMVUoMNIpyLs
+         8zgg==
+X-Gm-Message-State: AOAM533Rs7h60ybIjkmIOvCoojhjc9JNJ5fRXO1wlBEQf7iytBweiY3h
+        0cKLWzpFeOWR1bjXsFGtwjc=
+X-Google-Smtp-Source: ABdhPJwslt4nxz+RxhRYj1bs+nrlsiTP9TyPu0faSLQ6tV7d4GwOgf/ab8jE0Nsc/c/E4gjD42jt7w==
+X-Received: by 2002:a65:6088:: with SMTP id t8mr1796538pgu.371.1628126397724;
+        Wed, 04 Aug 2021 18:19:57 -0700 (PDT)
+Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id g11sm3775073pju.13.2021.08.04.18.19.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 04 Aug 2021 18:19:57 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 18:19:51 -0700
+From:   Tao Ren <rentao.bupt@gmail.com>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tao Ren <taoren@fb.com>
+Subject: Re: [PATCH 6/6] ARM: dts: aspeed: Add Facebook Fuji (AST2600) BMC
+Message-ID: <20210805011951.GA28444@taoren-ubuntu-R90MNF91>
+References: <20210728233755.17963-1-rentao.bupt@gmail.com>
+ <20210728233755.17963-7-rentao.bupt@gmail.com>
+ <CACPK8XemZkV7nK_b4883DN+dJKhL=tXfqK6=DpHQe=fZRu_ETQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <2811bea3-4589-2f76-83b4-83b91f4db1c6@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACPK8XemZkV7nK_b4883DN+dJKhL=tXfqK6=DpHQe=fZRu_ETQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andi,
-
-I guess Arnaldo needs your ACK before consider picking up this patch.
-
-Can you give an ACK for this patch?
-
-Thanks
-Jin Yao
-
-On 7/29/2021 3:11 PM, Jin, Yao wrote:
-> Hi Arnaldo,
+On Thu, Aug 05, 2021 at 12:28:02AM +0000, Joel Stanley wrote:
+> On Wed, 28 Jul 2021 at 23:38, <rentao.bupt@gmail.com> wrote:
+> >
+> > From: Tao Ren <rentao.bupt@gmail.com>
+> >
+> > Add initial version of device tree for Facebook Fuji (AST2600) BMC.
 > 
-> Can you kindly pick up this patch?
+> I like to read what kind of platform the BMC is going into if you can
+> add that detail, but it's not essential.
+
+Sure. I will add more details in v2.
+ 
+> > +&spi1 {
+> > +       status = "okay";
+> > +
+> > +       /*
+> > +        * Customize spi1 flash memory size to 32MB (maximum flash size on
+> > +        * the bus) to save vmalloc space.
+> > +        */
+> > +       reg = < 0x1e630000 0xc4
+> > +               0x30000000 0x2000000 >;
 > 
-> Thanks
-> Jin Yao
+> Which driver supports this?
 > 
-> On 7/21/2021 3:07 PM, Jin Yao wrote:
->> Add JSON metrics for Icelake Server to perf.
->>
->> Based on TMA metrics 4.21 at 01.org.
->> https://download.01.org/perfmon/
->>
->> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->> ---
->> v3:
->>   - PMU cstate_core and cstate_pkg are supported for ICX since 5.14-rc1,
->>     add cstate metrics for Core C1/C6 and Package C2/C6.
->>
->> v2:
->>   - Fix perf test 10 error.
->>
->>     # ./perf test 10
->>     10: PMU events                                                      :
->>     10.1: PMU event table sanity                                        : Ok
->>     10.2: PMU event map aliases                                         : Ok
->>     10.3: Parsing of PMU event table metrics                            : Ok
->>     10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
->>
->>   - Remove cstate metrics because the kernel has not supported
->>     cstate_core and cstate_core for Icelake server.
->>
->>   - Remove the topdown L1/L2 metrics.
->>
->>   .../arch/x86/icelakex/icx-metrics.json        | 315 ++++++++++++++++++
->>   1 file changed, 315 insertions(+)
->>   create mode 100644 tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
->>
->> diff --git a/tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json 
->> b/tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
->> new file mode 100644
->> index 000000000000..0731459cdded
->> --- /dev/null
->> +++ b/tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
->> @@ -0,0 +1,315 @@
->> +[
->> +    {
->> +        "BriefDescription": "Instructions Per Cycle (per Logical Processor)",
->> +        "MetricExpr": "INST_RETIRED.ANY / CPU_CLK_UNHALTED.THREAD",
->> +        "MetricGroup": "Summary",
->> +        "MetricName": "IPC"
->> +    },
->> +    {
->> +        "BriefDescription": "Uops Per Instruction",
->> +        "MetricExpr": "UOPS_RETIRED.SLOTS / INST_RETIRED.ANY",
->> +        "MetricGroup": "Pipeline;Retire",
->> +        "MetricName": "UPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Instruction per taken branch",
->> +        "MetricExpr": "INST_RETIRED.ANY / BR_INST_RETIRED.NEAR_TAKEN",
->> +        "MetricGroup": "Branches;FetchBW;PGO",
->> +        "MetricName": "IpTB"
->> +    },
->> +    {
->> +        "BriefDescription": "Cycles Per Instruction (per Logical Processor)",
->> +        "MetricExpr": "1 / (INST_RETIRED.ANY / CPU_CLK_UNHALTED.THREAD)",
->> +        "MetricGroup": "Pipeline",
->> +        "MetricName": "CPI"
->> +    },
->> +    {
->> +        "BriefDescription": "Per-Logical Processor actual clocks when the Logical Processor is 
->> active.",
->> +        "MetricExpr": "CPU_CLK_UNHALTED.THREAD",
->> +        "MetricGroup": "Pipeline",
->> +        "MetricName": "CLKS"
->> +    },
->> +    {
->> +        "BriefDescription": "Instructions Per Cycle (per physical core)",
->> +        "MetricExpr": "INST_RETIRED.ANY / CPU_CLK_UNHALTED.DISTRIBUTED",
->> +        "MetricGroup": "SMT;TmaL1",
->> +        "MetricName": "CoreIPC"
->> +    },
->> +    {
->> +        "BriefDescription": "Floating Point Operations Per Cycle",
->> +        "MetricExpr": "( 1 * ( FP_ARITH_INST_RETIRED.SCALAR_SINGLE + 
->> FP_ARITH_INST_RETIRED.SCALAR_DOUBLE ) + 2 * FP_ARITH_INST_RETIRED.128B_PACKED_DOUBLE + 4 * ( 
->> FP_ARITH_INST_RETIRED.128B_PACKED_SINGLE + FP_ARITH_INST_RETIRED.256B_PACKED_DOUBLE ) + 8 * ( 
->> FP_ARITH_INST_RETIRED.256B_PACKED_SINGLE + FP_ARITH_INST_RETIRED.512B_PACKED_DOUBLE ) + 16 * 
->> FP_ARITH_INST_RETIRED.512B_PACKED_SINGLE ) / CPU_CLK_UNHALTED.DISTRIBUTED",
->> +        "MetricGroup": "Flops",
->> +        "MetricName": "FLOPc"
->> +    },
->> +    {
->> +        "BriefDescription": "Instruction-Level-Parallelism (average number of uops executed when 
->> there is at least 1 uop executed)",
->> +        "MetricExpr": "UOPS_EXECUTED.THREAD / ( UOPS_EXECUTED.CORE_CYCLES_GE_1 / 2 )",
->> +        "MetricGroup": "Pipeline;PortsUtil",
->> +        "MetricName": "ILP"
->> +    },
->> +    {
->> +        "BriefDescription": "Number of Instructions per non-speculative Branch Misprediction 
->> (JEClear)",
->> +        "MetricExpr": "INST_RETIRED.ANY / BR_MISP_RETIRED.ALL_BRANCHES",
->> +        "MetricGroup": "BrMispredicts",
->> +        "MetricName": "IpMispredict"
->> +    },
->> +    {
->> +        "BriefDescription": "Core actual clocks when any Logical Processor is active on the 
->> Physical Core",
->> +        "MetricExpr": "CPU_CLK_UNHALTED.DISTRIBUTED",
->> +        "MetricGroup": "SMT",
->> +        "MetricName": "CORE_CLKS"
->> +    },
->> +    {
->> +        "BriefDescription": "Instructions per Load (lower number means higher occurrence rate)",
->> +        "MetricExpr": "INST_RETIRED.ANY / MEM_INST_RETIRED.ALL_LOADS",
->> +        "MetricGroup": "InsType",
->> +        "MetricName": "IpLoad"
->> +    },
->> +    {
->> +        "BriefDescription": "Instructions per Store (lower number means higher occurrence rate)",
->> +        "MetricExpr": "INST_RETIRED.ANY / MEM_INST_RETIRED.ALL_STORES",
->> +        "MetricGroup": "InsType",
->> +        "MetricName": "IpStore"
->> +    },
->> +    {
->> +        "BriefDescription": "Instructions per Branch (lower number means higher occurrence rate)",
->> +        "MetricExpr": "INST_RETIRED.ANY / BR_INST_RETIRED.ALL_BRANCHES",
->> +        "MetricGroup": "Branches;InsType",
->> +        "MetricName": "IpBranch"
->> +    },
->> +    {
->> +        "BriefDescription": "Instructions per (near) call (lower number means higher occurrence 
->> rate)",
->> +        "MetricExpr": "INST_RETIRED.ANY / BR_INST_RETIRED.NEAR_CALL",
->> +        "MetricGroup": "Branches",
->> +        "MetricName": "IpCall"
->> +    },
->> +    {
->> +        "BriefDescription": "Branch instructions per taken branch. ",
->> +        "MetricExpr": "BR_INST_RETIRED.ALL_BRANCHES / BR_INST_RETIRED.NEAR_TAKEN",
->> +        "MetricGroup": "Branches;PGO",
->> +        "MetricName": "BpTkBranch"
->> +    },
->> +    {
->> +        "BriefDescription": "Instructions per Floating Point (FP) Operation (lower number means 
->> higher occurrence rate)",
->> +        "MetricExpr": "INST_RETIRED.ANY / ( 1 * ( FP_ARITH_INST_RETIRED.SCALAR_SINGLE + 
->> FP_ARITH_INST_RETIRED.SCALAR_DOUBLE ) + 2 * FP_ARITH_INST_RETIRED.128B_PACKED_DOUBLE + 4 * ( 
->> FP_ARITH_INST_RETIRED.128B_PACKED_SINGLE + FP_ARITH_INST_RETIRED.256B_PACKED_DOUBLE ) + 8 * ( 
->> FP_ARITH_INST_RETIRED.256B_PACKED_SINGLE + FP_ARITH_INST_RETIRED.512B_PACKED_DOUBLE ) + 16 * 
->> FP_ARITH_INST_RETIRED.512B_PACKED_SINGLE )",
->> +        "MetricGroup": "Flops;FpArith;InsType",
->> +        "MetricName": "IpFLOP"
->> +    },
->> +    {
->> +        "BriefDescription": "Total number of retired Instructions, Sample with: 
->> INST_RETIRED.PREC_DIST",
->> +        "MetricExpr": "INST_RETIRED.ANY",
->> +        "MetricGroup": "Summary;TmaL1",
->> +        "MetricName": "Instructions"
->> +    },
->> +    {
->> +        "BriefDescription": "Fraction of Uops delivered by the LSD (Loop Stream Detector; aka 
->> Loop Cache)",
->> +        "MetricExpr": "LSD.UOPS / (IDQ.DSB_UOPS + LSD.UOPS + IDQ.MITE_UOPS + IDQ.MS_UOPS)",
->> +        "MetricGroup": "LSD",
->> +        "MetricName": "LSD_Coverage"
->> +    },
->> +    {
->> +        "BriefDescription": "Fraction of Uops delivered by the DSB (aka Decoded ICache; or Uop 
->> Cache)",
->> +        "MetricExpr": "IDQ.DSB_UOPS / (IDQ.DSB_UOPS + LSD.UOPS + IDQ.MITE_UOPS + IDQ.MS_UOPS)",
->> +        "MetricGroup": "DSB;FetchBW",
->> +        "MetricName": "DSB_Coverage"
->> +    },
->> +    {
->> +        "BriefDescription": "Actual Average Latency for L1 data-cache miss demand loads (in core 
->> cycles)",
->> +        "MetricExpr": "L1D_PEND_MISS.PENDING / ( MEM_LOAD_RETIRED.L1_MISS + 
->> MEM_LOAD_RETIRED.FB_HIT )",
->> +        "MetricGroup": "MemoryBound;MemoryLat",
->> +        "MetricName": "Load_Miss_Real_Latency"
->> +    },
->> +    {
->> +        "BriefDescription": "Memory-Level-Parallelism (average number of L1 miss demand load when 
->> there is at least one such miss. Per-Logical Processor)",
->> +        "MetricExpr": "L1D_PEND_MISS.PENDING / L1D_PEND_MISS.PENDING_CYCLES",
->> +        "MetricGroup": "MemoryBound;MemoryBW",
->> +        "MetricName": "MLP"
->> +    },
->> +    {
->> +        "BriefDescription": "Utilization of the core's Page Walker(s) serving STLB misses 
->> triggered by instruction/Load/Store accesses",
->> +        "MetricConstraint": "NO_NMI_WATCHDOG",
->> +        "MetricExpr": "( ITLB_MISSES.WALK_PENDING + DTLB_LOAD_MISSES.WALK_PENDING + 
->> DTLB_STORE_MISSES.WALK_PENDING ) / ( 2 * CPU_CLK_UNHALTED.DISTRIBUTED )",
->> +        "MetricGroup": "MemoryTLB",
->> +        "MetricName": "Page_Walks_Utilization"
->> +    },
->> +    {
->> +        "BriefDescription": "Average data fill bandwidth to the L1 data cache [GB / sec]",
->> +        "MetricExpr": "64 * L1D.REPLACEMENT / 1000000000 / duration_time",
->> +        "MetricGroup": "MemoryBW",
->> +        "MetricName": "L1D_Cache_Fill_BW"
->> +    },
->> +    {
->> +        "BriefDescription": "Average data fill bandwidth to the L2 cache [GB / sec]",
->> +        "MetricExpr": "64 * L2_LINES_IN.ALL / 1000000000 / duration_time",
->> +        "MetricGroup": "MemoryBW",
->> +        "MetricName": "L2_Cache_Fill_BW"
->> +    },
->> +    {
->> +        "BriefDescription": "Average per-core data fill bandwidth to the L3 cache [GB / sec]",
->> +        "MetricExpr": "64 * LONGEST_LAT_CACHE.MISS / 1000000000 / duration_time",
->> +        "MetricGroup": "MemoryBW",
->> +        "MetricName": "L3_Cache_Fill_BW"
->> +    },
->> +    {
->> +        "BriefDescription": "Average per-core data access bandwidth to the L3 cache [GB / sec]",
->> +        "MetricExpr": "64 * OFFCORE_REQUESTS.ALL_REQUESTS / 1000000000 / duration_time",
->> +        "MetricGroup": "MemoryBW;Offcore",
->> +        "MetricName": "L3_Cache_Access_BW"
->> +    },
->> +    {
->> +        "BriefDescription": "L1 cache true misses per kilo instruction for retired demand loads",
->> +        "MetricExpr": "1000 * MEM_LOAD_RETIRED.L1_MISS / INST_RETIRED.ANY",
->> +        "MetricGroup": "CacheMisses",
->> +        "MetricName": "L1MPKI"
->> +    },
->> +    {
->> +        "BriefDescription": "L2 cache true misses per kilo instruction for retired demand loads",
->> +        "MetricExpr": "1000 * MEM_LOAD_RETIRED.L2_MISS / INST_RETIRED.ANY",
->> +        "MetricGroup": "CacheMisses",
->> +        "MetricName": "L2MPKI"
->> +    },
->> +    {
->> +        "BriefDescription": "L2 cache misses per kilo instruction for all request types 
->> (including speculative)",
->> +        "MetricExpr": "1000 * ( ( OFFCORE_REQUESTS.ALL_DATA_RD - OFFCORE_REQUESTS.DEMAND_DATA_RD 
->> ) + L2_RQSTS.ALL_DEMAND_MISS + L2_RQSTS.SWPF_MISS ) / INST_RETIRED.ANY",
->> +        "MetricGroup": "CacheMisses;Offcore",
->> +        "MetricName": "L2MPKI_All"
->> +    },
->> +    {
->> +        "BriefDescription": "L3 cache true misses per kilo instruction for retired demand loads",
->> +        "MetricExpr": "1000 * MEM_LOAD_RETIRED.L3_MISS / INST_RETIRED.ANY",
->> +        "MetricGroup": "CacheMisses",
->> +        "MetricName": "L3MPKI"
->> +    },
->> +    {
->> +        "BriefDescription": "Rate of silent evictions from the L2 cache per Kilo instruction 
->> where the evicted lines are dropped (no writeback to L3 or memory)",
->> +        "MetricExpr": "1000 * L2_LINES_OUT.SILENT / INST_RETIRED.ANY",
->> +        "MetricGroup": "L2Evicts;Server",
->> +        "MetricName": "L2_Evictions_Silent_PKI"
->> +    },
->> +    {
->> +        "BriefDescription": "Rate of non silent evictions from the L2 cache per Kilo instruction",
->> +        "MetricExpr": "1000 * L2_LINES_OUT.NON_SILENT / INST_RETIRED.ANY",
->> +        "MetricGroup": "L2Evicts;Server",
->> +        "MetricName": "L2_Evictions_NonSilent_PKI"
->> +    },
->> +    {
->> +        "BriefDescription": "Average CPU Utilization",
->> +        "MetricExpr": "CPU_CLK_UNHALTED.REF_TSC / msr@tsc@",
->> +        "MetricGroup": "HPC;Summary",
->> +        "MetricName": "CPU_Utilization"
->> +    },
->> +    {
->> +        "BriefDescription": "Measured Average Frequency for unhalted processors [GHz]",
->> +        "MetricExpr": "(CPU_CLK_UNHALTED.THREAD / CPU_CLK_UNHALTED.REF_TSC) * msr@tsc@ / 
->> 1000000000 / duration_time",
->> +        "MetricGroup": "Summary;Power",
->> +        "MetricName": "Average_Frequency"
->> +    },
->> +    {
->> +        "BriefDescription": "Giga Floating Point Operations Per Second",
->> +        "MetricExpr": "( ( 1 * ( FP_ARITH_INST_RETIRED.SCALAR_SINGLE + 
->> FP_ARITH_INST_RETIRED.SCALAR_DOUBLE ) + 2 * FP_ARITH_INST_RETIRED.128B_PACKED_DOUBLE + 4 * ( 
->> FP_ARITH_INST_RETIRED.128B_PACKED_SINGLE + FP_ARITH_INST_RETIRED.256B_PACKED_DOUBLE ) + 8 * ( 
->> FP_ARITH_INST_RETIRED.256B_PACKED_SINGLE + FP_ARITH_INST_RETIRED.512B_PACKED_DOUBLE ) + 16 * 
->> FP_ARITH_INST_RETIRED.512B_PACKED_SINGLE ) / 1000000000 ) / duration_time",
->> +        "MetricGroup": "Flops;HPC",
->> +        "MetricName": "GFLOPs"
->> +    },
->> +    {
->> +        "BriefDescription": "Average Frequency Utilization relative nominal frequency",
->> +        "MetricExpr": "CPU_CLK_UNHALTED.THREAD / CPU_CLK_UNHALTED.REF_TSC",
->> +        "MetricGroup": "Power",
->> +        "MetricName": "Turbo_Utilization"
->> +    },
->> +    {
->> +        "BriefDescription": "Fraction of cycles where both hardware Logical Processors were active",
->> +        "MetricExpr": "1 - CPU_CLK_UNHALTED.ONE_THREAD_ACTIVE / CPU_CLK_UNHALTED.REF_DISTRIBUTED",
->> +        "MetricGroup": "SMT",
->> +        "MetricName": "SMT_2T_Utilization"
->> +    },
->> +    {
->> +        "BriefDescription": "Fraction of cycles spent in the Operating System (OS) Kernel mode",
->> +        "MetricExpr": "CPU_CLK_UNHALTED.THREAD_P:k / CPU_CLK_UNHALTED.THREAD",
->> +        "MetricGroup": "OS",
->> +        "MetricName": "Kernel_Utilization"
->> +    },
->> +    {
->> +        "BriefDescription": "Average external Memory Bandwidth Use for reads and writes [GB / sec]",
->> +        "MetricExpr": "( 64 * ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) / 
->> 1000000000 ) / duration_time",
->> +        "MetricGroup": "HPC;MemoryBW;SoC",
->> +        "MetricName": "DRAM_BW_Use"
->> +    },
->> +    {
->> +        "BriefDescription": "Average latency of data read request to external memory (in 
->> nanoseconds). Accounts for demand loads and L1/L2 prefetches",
->> +        "MetricExpr": "1000000000 * ( UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD / 
->> UNC_CHA_TOR_INSERTS.IA_MISS_DRD ) / ( cha_0@event\\=0x0@ / duration_time )",
->> +        "MetricGroup": "MemoryLat;SoC",
->> +        "MetricName": "MEM_Read_Latency"
->> +    },
->> +    {
->> +        "BriefDescription": "Average number of parallel data read requests to external memory. 
->> Accounts for demand loads and L1/L2 prefetches",
->> +        "MetricExpr": "UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD / 
->> cha@event\\=0x36\\,umask\\=0xC817FE01\\,thresh\\=1@",
->> +        "MetricGroup": "MemoryBW;SoC",
->> +        "MetricName": "MEM_Parallel_Reads"
->> +    },
->> +    {
->> +        "BriefDescription": "Average latency of data read request to external 3D X-Point memory 
->> [in nanoseconds]. Accounts for demand loads and L1/L2 data-read prefetches",
->> +        "MetricExpr": "( 1000000000 * ( UNC_CHA_TOR_OCCUPANCY.IA_MISS_DRD_PMM / 
->> UNC_CHA_TOR_INSERTS.IA_MISS_DRD_PMM ) / cha_0@event\\=0x0@ )",
->> +        "MetricGroup": "MemoryLat;SoC;Server",
->> +        "MetricName": "MEM_PMM_Read_Latency"
->> +    },
->> +    {
->> +        "BriefDescription": "Average 3DXP Memory Bandwidth Use for reads [GB / sec]",
->> +        "MetricExpr": "( ( 64 * imc@event\\=0xe3@ / 1000000000 ) / duration_time )",
->> +        "MetricGroup": "MemoryBW;SoC;Server",
->> +        "MetricName": "PMM_Read_BW"
->> +    },
->> +    {
->> +        "BriefDescription": "Average 3DXP Memory Bandwidth Use for Writes [GB / sec]",
->> +        "MetricExpr": "( ( 64 * imc@event\\=0xe7@ / 1000000000 ) / duration_time )",
->> +        "MetricGroup": "MemoryBW;SoC;Server",
->> +        "MetricName": "PMM_Write_BW"
->> +    },
->> +    {
->> +        "BriefDescription": "Average IO (network or disk) Bandwidth Use for Writes [GB / sec]",
->> +        "MetricExpr": "UNC_CHA_TOR_INSERTS.IO_PCIRDCUR * 64 / 1000000000 / duration_time",
->> +        "MetricGroup": "IoBW;SoC;Server",
->> +        "MetricName": "IO_Write_BW"
->> +    },
->> +    {
->> +        "BriefDescription": "Average IO (network or disk) Bandwidth Use for Reads [GB / sec]",
->> +        "MetricExpr": "( UNC_CHA_TOR_INSERTS.IO_HIT_ITOM + UNC_CHA_TOR_INSERTS.IO_MISS_ITOM + 
->> UNC_CHA_TOR_INSERTS.IO_HIT_ITOMCACHENEAR + UNC_CHA_TOR_INSERTS.IO_MISS_ITOMCACHENEAR ) * 64 / 
->> 1000000000 / duration_time",
->> +        "MetricGroup": "IoBW;SoC;Server",
->> +        "MetricName": "IO_Read_BW"
->> +    },
->> +    {
->> +        "BriefDescription": "Socket actual clocks when any core is active on that socket",
->> +        "MetricExpr": "cha_0@event\\=0x0@",
->> +        "MetricGroup": "SoC",
->> +        "MetricName": "Socket_CLKS"
->> +    },
->> +    {
->> +        "BriefDescription": "Instructions per Far Branch ( Far Branches apply upon transition 
->> from application to operating system, handling interrupts, exceptions) [lower number means higher 
->> occurrence rate]",
->> +        "MetricExpr": "INST_RETIRED.ANY / BR_INST_RETIRED.FAR_BRANCH:u",
->> +        "MetricGroup": "Branches;OS",
->> +        "MetricName": "IpFarBranch"
->> +    },
->> +    {
->> +        "BriefDescription": "C1 residency percent per core",
->> +        "MetricExpr": "(cstate_core@c1\\-residency@ / msr@tsc@) * 100",
->> +        "MetricGroup": "Power",
->> +        "MetricName": "C1_Core_Residency"
->> +    },
->> +    {
->> +        "BriefDescription": "C6 residency percent per core",
->> +        "MetricExpr": "(cstate_core@c6\\-residency@ / msr@tsc@) * 100",
->> +        "MetricGroup": "Power",
->> +        "MetricName": "C6_Core_Residency"
->> +    },
->> +    {
->> +        "BriefDescription": "C2 residency percent per package",
->> +        "MetricExpr": "(cstate_pkg@c2\\-residency@ / msr@tsc@) * 100",
->> +        "MetricGroup": "Power",
->> +        "MetricName": "C2_Pkg_Residency"
->> +    },
->> +    {
->> +        "BriefDescription": "C6 residency percent per package",
->> +        "MetricExpr": "(cstate_pkg@c6\\-residency@ / msr@tsc@) * 100",
->> +        "MetricGroup": "Power",
->> +        "MetricName": "C6_Pkg_Residency"
->> +    },
->> +]
->>
+> It would be great to see Facebook work to get the SPI NOR driver for
+> the ast2600 merged to mainline.
+> 
+> I doubt the IBM team will get to this, as we are using eMMC instead.
+
+Ah, I just checked aspeed-g6.dtsi (ast2600-spi) in mainline and I thought
+the driver patches were also upstreamed. Let me remove the entry for now,
+and will add it back when the driver is ready.
+
+> 
+> > +
+> > +       flash@0 {
+> > +               status = "okay";
+> > +               m25p,fast-read;
+> > +               label = "spi1.0";
+> > +               spi-max-frequency = <5000000>;
+> > +
+> > +               partitions {
+> > +                       compatible = "fixed-partitions";
+> > +                       #address-cells = <1>;
+> > +                       #size-cells = <1>;
+> > +
+> > +                       flash1@0 {
+> > +                               reg = <0x0 0x2000000>;
+> > +                               label = "system-flash";
+> > +                       };
+> > +               };
+> > +       };
+> > +};
+> 
+> > +&ehci1 {
+> > +       status = "okay";
+> > +};
+> 
+> Have you verified that USB works with mainline? I've had reports of it
+> working on 5.8 but it seems to have regressed as of v5.10.
+
+It stopped working on ASPEED since commit 280a9045bb18 ("ehci: fix EHCI
+host controller initialization sequence"): ehci_handshake() returns
+error because HCHalted bit EHCI24[12] stays at 1.
+
+I have a dirty hack in my tree (ignoring the halt bit) and it "works" on
+AST2500 and AST2600. Let me send an email to openbmc and aspeed email
+groups to see if anyone has more context.
+
+Meanwhile, should I delete the entry until the fix is ready in driver?
+ 
+> > +&mdio1 {
+> > +       status = "okay";
+> > +
+> > +       ethphy3: ethernet-phy@13 {
+> > +               compatible = "ethernet-phy-ieee802.3-c22";
+> > +               reg = <0x0d>;
+> > +       };
+> > +};
+> > +
+> > +&mac3 {
+> > +       phy-handle = <&ethphy3>;
+> 
+> status = okay?
+> 
+> You should specify the pinmux too I think, even if the default happens
+> to work, so that other devices cannot claim the pins.
+
+status is set in ast2600 common dtsi, but let me set it here to avoid
+confusion. Will update pinmux in v2. Thanks.
+
+> 
+> Cheers,
+> 
+> Joel
+
+Cheers,
+
+Tao
