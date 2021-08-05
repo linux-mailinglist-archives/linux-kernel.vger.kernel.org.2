@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385B03E1F03
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF893E1F09
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241454AbhHEWpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 18:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241416AbhHEWpS (ORCPT
+        id S242016AbhHEW4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 18:56:01 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:44808 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230437AbhHEWz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 18:45:18 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8C4C061798
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 15:45:03 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id dw2-20020a17090b0942b0290177cb475142so18540748pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 15:45:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4BfhlnmFVBH/5WZ+qdtlmbrJsorAcYIvFXwLK0XohYE=;
-        b=dv98SU3dX8RvvgAVciCvnnGdC9GdQBT286CvsF4rU/Akmb+g2mgUeL6+xZTH19oea+
-         PnZBh41abYDMAqjnI9FTwv3orGtpr5ZlF6Oz4r/RkL+jkAalhQf8XE20g/a3UJUf4gLY
-         hfyzyBdWheKYTHb9xX/jYAyv8xfKYxfl9z7yQuPHFBtm5In6vHlXrcgEGy/lFJxQq9VB
-         oDspbK92DQPxh4tua6tBF6eu5oPbIZep2J9Nr2QYPTmTXwQ6vUFd+VzQb2c71QQYU3PU
-         A30umMTNbWF3Fbp/2BRmhGpW/vzx9JMFjtQGysO9xL0mM6utCdWnsnhuiEOw1OjNOYjw
-         HbIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4BfhlnmFVBH/5WZ+qdtlmbrJsorAcYIvFXwLK0XohYE=;
-        b=YGPu2Cn666+PA4ifWjjtCQvjnHv3HZwYgDFYgTx0FLGJiT9k0oGWDC5M1woxUtvhq3
-         cLB2Cm9Q51CJUscAFYONzDK5JSmPGAkP0Smp09pd9zpkEhVXWFSeEjRUK2baUvDjbPF1
-         IKFPiTbQHA4UYrJzeuSYXZUTsHPwYH1gmTs11rG1ZBSlqFdB9zux6jpVAmk62KRBNy+0
-         z9JWgyKmMEavF2c7gHUAXBr7ATUuqbcjnZJQKYsCUdGIs1wK4dqKyv3ii5VaOIEqBDEw
-         X0+ZzU/W2o42Yz+WRR7AdGik2GljrLWGouP99X2C/F+xmeDAUCIK0MeaQrzb54zhTR06
-         Gqzg==
-X-Gm-Message-State: AOAM5317qJHQK+MlBv1cyPlDnDWHzyFv08CiKsFQcNHW8kzWiaqM5wfi
-        hp4dhIh+PgqJd2mVpjioOWWjWLzKuqQMVA==
-X-Google-Smtp-Source: ABdhPJw4q5DAgxtnqJyDPEsfxXtC/QMaCaEKKBZ1CNwiagIlAz0LXZl+nmurr1SxbQ1y+AedALE82Q==
-X-Received: by 2002:a17:902:bf01:b029:12c:d762:96c with SMTP id bi1-20020a170902bf01b029012cd762096cmr5872304plb.15.1628203503162;
-        Thu, 05 Aug 2021 15:45:03 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id d2sm9146309pgv.87.2021.08.05.15.45.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 15:45:02 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 22:44:58 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com
-Subject: Re: [PATCH v1 1/3] KVM: x86: Convert TDP level calculation to
- vendor's specific code
-Message-ID: <YQxp6gg4W/pZsGuW@google.com>
-References: <20210805205504.2647362-1-wei.huang2@amd.com>
- <20210805205504.2647362-2-wei.huang2@amd.com>
- <CALMp9eQ_SHmFn0ahTyOnyk+JDs_D0qxN9Hc9VFMGDDixc13jUA@mail.gmail.com>
+        Thu, 5 Aug 2021 18:55:59 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 175MtdWk121510;
+        Thu, 5 Aug 2021 17:55:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1628204139;
+        bh=zw7SYCOSmmLpwKH4Ks2vmlsA6rUtnEAfmXrrSsmXdos=;
+        h=From:To:CC:Subject:Date;
+        b=Vohx3b1VmqFx0O0N7DkJ5OwhAg09yFyt5ubE+QvwUe/E3uSI1KTcZ77HvafNt8KdB
+         1M1Eaj/WCZXo9a/F9wC4pop4B/4BPJzBjMxItKnIC5Do+nJY2bD9KJ2/zBakXSuzLc
+         RpcRJNZXp3hO2PXsvfy/7pvAjPt4A12zzXX+yHXA=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 175MtdaZ087192
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 5 Aug 2021 17:55:39 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 5 Aug
+ 2021 17:55:39 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 5 Aug 2021 17:55:39 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 175MtcXE007154;
+        Thu, 5 Aug 2021 17:55:39 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH net-next 0/2] net: ethernet: ti: am65-cpsw: use napi_complete_done() in TX completion
+Date:   Fri, 6 Aug 2021 01:55:30 +0300
+Message-ID: <20210805225532.2667-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALMp9eQ_SHmFn0ahTyOnyk+JDs_D0qxN9Hc9VFMGDDixc13jUA@mail.gmail.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021, Jim Mattson wrote:
-> On Thu, Aug 5, 2021 at 1:55 PM Wei Huang <wei.huang2@amd.com> wrote:
-> >
-> > This design assumes that all x86 CPUs have the flexibility of changing the
-> > nested page table level different from host CPU.
-> 
-> I can't even parse this sentence. What are you trying to say here?
+hi
 
-NPT inherits the host's CR4, and thus CR4.LA57.  So KVM NPT is stuck using whatever
-N-level paging the host kernel is using.
+The intention of this series is to fully enable hard irqs deferral feature
+(hrtimers based HW IRQ coalescing) from Eric Dumazet [1] for TI K3 CPSW driver
+by using napi_complete_done() in TX completion path, so the combination of
+parameters (/sys/class/net/ethX/):
+ napi_defer_hard_irqs 
+ gro_flush_timeout
+can be used for hard irqs deferral.
+
+The Patch 1 is required before enabling hard irqs deferral feature to avoid
+"Unbalanced enable" issue if gro_flush_timeout is configured while
+(napi_defer_hard_irqs == 0).
+
+It's a bit sad that it can not be configured per RX/TX separately.
+
+[1] https://lore.kernel.org/netdev/20200422161329.56026-1-edumazet@google.com/
+Grygorii Strashko (1):
+  net: ethernet: ti: am65-cpsw: use napi_complete_done() in TX
+    completion
+
+Vignesh Raghavendra (1):
+  net: ti: am65-cpsw-nuss: fix RX IRQ state after .ndo_stop()
+
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c | 23 ++++++++++++++++-------
+ drivers/net/ethernet/ti/am65-cpsw-nuss.h |  2 ++
+ 2 files changed, 18 insertions(+), 7 deletions(-)
+
+-- 
+2.17.1
+
