@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F663E1967
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A833E1969
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhHEQZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 12:25:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41690 "EHLO mail.kernel.org"
+        id S230352AbhHEQZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 12:25:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229437AbhHEQZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 12:25:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4430610CD;
-        Thu,  5 Aug 2021 16:25:22 +0000 (UTC)
+        id S230212AbhHEQZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 12:25:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80A9461159;
+        Thu,  5 Aug 2021 16:25:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628180723;
-        bh=kjoyo7By9aAPYD8HyCQ+op278XxMffbnQN6NtG8ZAV8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PtK7178Mh3RqgA45Zyrn0HupM+lxeFd/6UsePHkGJAftEyXJEfh8NV+JmSM0joWi0
-         RHqkdrL07naSJWrSVhkFEac0hh4AdS/eaM+lAh+oTiHYb6XLFroCM2vjr96JwbuNIo
-         o6eV/ndHwoONA03OxyhNA9eiKajUFWwOoP/8vWoFxqqVRQGzrj276FheGdR+pGLm8j
-         Mf2+H7OTG1zA4D3Jl3H97NPfQvbQNL7Xdm/QlHWr+F0fc1ydfyHFaNXSbjG0wWa6ki
-         gTqKFqYHq+zksJXEg0RfiVW4fBOY4dTAbU4dz2JTIx7AV82EhRbMLs5OMUF2kev9Uz
-         ixvmveIDWpCSA==
+        s=k20201202; t=1628180731;
+        bh=tTvJ0pex6wsXnWa4BHpZMxYpfD7K4z2QKxBU5X57Lck=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hcQg+mwtP6h4dMd/6uFxZRzQ9iF3IxQ045l6oD95kgHu6kg6hu+hTSlal/GrmhSzC
+         7FMwCE1mRAo+dYqKXw+7gN5T7Nz3COlG3qO02+K5dTc8mpmHxxxzLXWbepLHo9WBGH
+         uV0zWCSAJe6Jrl5y7MNhxqsJyWmAh3qmteedOnKlQbYsGgpqHUdNEin+dkfYpsQccV
+         ISEgV5AjS/BllyCDpZM9A1G9nsHu6lwzwXi02AYpxoegPzKvs0LvJNzwWNBUazGa3A
+         /Ftxv/LrPxIqR9YUrztmCnKy7LX+tVOU8V9+f/sSCpO5yPpwqPMlznUfNrkz5jLo2i
+         WuD3bjDTujctA==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH v2 0/9] tracing/boot: Add histogram syntax support in boot-time tracing
-Date:   Fri,  6 Aug 2021 01:25:21 +0900
-Message-Id: <162818072104.226227.18088999222035270055.stgit@devnote2>
+Subject: [PATCH v2 1/9] tracing/boot: Fix a hist trigger dependency for boot time tracing
+Date:   Fri,  6 Aug 2021 01:25:29 +0900
+Message-Id: <162818072887.226227.1489690774195740861.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <162818072104.226227.18088999222035270055.stgit@devnote2>
+References: <162818072104.226227.18088999222035270055.stgit@devnote2>
 User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -39,102 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Fixes a build error when CONFIG_HIST_TRIGGERS=n with boot-time
+tracing. Since the trigger_process_regex() is defined only
+when CONFIG_HIST_TRIGGERS=y, if it is disabled, the 'actions'
+event option also must be disabled.
 
-Here is the 2nd version of boot-time tracing to add histogram
-syntax extension with a bugfix related hist-trigger.
-
-In this version, I added multi-histograms and multi-hist-actions
-support, and update bconf2ftrace.sh to support it. But the
-ftrace2bconf.sh is still uses per-event "actions" option because
-this "hist" syntax is for programming histogram on the bootconfig
-from scratch.
-This series also includes per-group/all event enable option
-support in bconf2ftrace.sh and ftrce2bconf.sh.
-
-Other changes in v2:
-[2/9]: 
-       - Cleanup code to add ':' as a prefix for each element
-         instead of fixup the last ':'.
-       - Fix syntax typo for handler actions.
-       - Make pause|continue|clear mutual exclusive.
-       - Add __printf() attribute to the append_printf().
-
-'Histogram' options
--------------------
-Currently, the boot-time tracing only supports per-event actions
-for setting trigger actions. This is enough for short actions
-like 'traceon', 'traceoff', 'snapshot' etc. However, it is not good
-for the 'hist' trigger action because it is usually too long to write
-it in a single string especially if it has an 'onmatch' action.
-
-Here is the new syntax.
-
-    ftrace[.instance.INSTANCE].event.GROUP.EVENT.hist[.N] {
-         keys = <KEY>[,...]
-         values = <VAL>[,...]
-         sort = <SORT-KEY>[,...]
-         size = <ENTRIES>
-         name = <HISTNAME>
-         var { <VAR> = <EXPR> ... }
-         pause|continue|clear
-         onmax|onchange[.M] { var = <VAR>, <ACTION> [= <PARAM>] }
-         onmatch[.M] { event = <EVENT>, <ACTION> [= <PARAM>] }
-         filter = <FILTER>
-    }
-    
-Where <ACTION> is one of below;
-    
-    trace = <EVENT>, <ARG1>[, ...]
-    save = <ARG1>[, ...]
-    snapshot
-
-And "N" and "M" are digit started strings for multiple histograms
-and actions.
-
-For example,
-
-initcall.initcall_finish.actions =
-"hist:keys=func:lat=common_timestamp.usecs-$ts0:onmatch(initcall.initcall_start).trace(initcall_latency,func,$lat)"
-
-This can be written as below;
-
-initcall.initcall_finish.hist {
-    keys = func
-    var.lat = common_timestamp.usecs-$ts0
-    onmatch {
-        event = initcall.initcall_start
-        trace = initcall_latency, func, $lat
-    }
-}
-
-Also, you can add comments for each options.
-
-
-TODO
-====
-- Need to expand ktest testcase for checking this syntax.
-
-Thank you,
-
+Fixes: 81a59555ff15 ("tracing/boot: Add per-event settings")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
+ 0 files changed
 
-Masami Hiramatsu (9):
-      tracing/boot: Fix a hist trigger dependency for boot time tracing
-      tracing/boot: Add per-event histogram action options
-      tracing/boot: Support multiple handlers for per-event histogram
-      tracing/boot: Support multiple histograms for each event
-      tracing/boot: Show correct histogram error command
-      Documentation: tracing: Add histogram syntax to boot-time tracing
-      tools/bootconfig: Support per-group/all event enabling option
-      tools/bootconfig: Add histogram syntax support to bconf2ftrace.sh
-      tools/bootconfig: Use per-group/all enable option in ftrace2bconf script
+diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+index 94ef2d099e32..e6dc9269ad75 100644
+--- a/kernel/trace/trace_boot.c
++++ b/kernel/trace/trace_boot.c
+@@ -204,13 +204,14 @@ trace_boot_init_one_event(struct trace_array *tr, struct xbc_node *gnode,
+ 		else if (apply_event_filter(file, buf) < 0)
+ 			pr_err("Failed to apply filter: %s\n", buf);
+ 	}
+-
++#ifdef CONFIG_HIST_TRIGGERS
+ 	xbc_node_for_each_array_value(enode, "actions", anode, p) {
+ 		if (strlcpy(buf, p, ARRAY_SIZE(buf)) >= ARRAY_SIZE(buf))
+ 			pr_err("action string is too long: %s\n", p);
+ 		else if (trigger_process_regex(file, buf) < 0)
+ 			pr_err("Failed to apply an action: %s\n", buf);
+ 	}
++#endif
+ 
+ 	if (xbc_node_find_value(enode, "enable", NULL)) {
+ 		if (trace_event_enable_disable(file, 1, 0) < 0)
 
-
- tools/bootconfig/scripts/bconf2ftrace.sh |   97 ++++++++++++++++++++++++++++++
- tools/bootconfig/scripts/ftrace2bconf.sh |   24 ++++++-
- tools/bootconfig/scripts/xbc.sh          |    4 +
- 3 files changed, 117 insertions(+), 8 deletions(-)
-
--- 
-Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
