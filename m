@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FD83E1DB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 23:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E174A3E1DB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 23:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241754AbhHEVIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 17:08:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58912 "EHLO mail.kernel.org"
+        id S241795AbhHEVKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 17:10:25 -0400
+Received: from mga03.intel.com ([134.134.136.65]:28323 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241387AbhHEVIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 17:08:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71EF260EBC;
-        Thu,  5 Aug 2021 21:08:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628197704;
-        bh=SRtaowijoG8twAxHHQPP1frqmBFYAiBOGw+39md1RVo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nHRGhN7ts/aOENkjY13K+SLhMIvNR351kTPTtkF6AnSvp5rr/ExKU5kckq0dKRbpY
-         O6+vZb5T1E5OZ/iJVTPbClsqti5PgCkvIULQYEfLc0ffrXYE6czPD2xZPkOCzDu0SV
-         ehNOYEfQBriqlXvRGwYghWT9mMTFacUzReWgtgHw1jGf1UAvE7bUBwx9WqPmgffoPa
-         i9djO3u2yhnd6R7dbjnJz8WaI/kVG/o44IsEbL2vTumJaocbnWNIcQFwHTL6F6bm2b
-         3+R3xcp+yWN5TVVD8yR9/UpOnGZCf9kcbEu5i/Sb0t0eoF37mJWDuGa9wfdujoTxhR
-         9Ih14r7LrNMmQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3D48D5C271F; Thu,  5 Aug 2021 14:08:24 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 14:08:24 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     josh@joshtriplett.org, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org, peterz@infradead.org,
-        bigeasy@linutronix.de, tglx@linutronix.de, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: Make rcu_normal_after_boot writable on RT
-Message-ID: <20210805210824.GA1203206@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210805080123.16320-1-juri.lelli@redhat.com>
- <20210805160337.GI4397@paulmck-ThinkPad-P17-Gen-1>
+        id S241748AbhHEVKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 17:10:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="214281567"
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="214281567"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 14:10:09 -0700
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="437941254"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.183.241]) ([10.212.183.241])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 14:10:09 -0700
+Subject: Re: [PATCH v1] driver: base: Add driver filter support
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YQrqhYEL64CSLRTy@kroah.com>
+ <f2b1d564-8174-f8e9-9fee-12e938c6d846@linux.intel.com>
+ <YQuYCePPZEmVbkfc@kroah.com> <YQuZdVuaGG/Cr62y@kroah.com>
+ <YQuaJ78y8j1UmBoz@kroah.com>
+ <fdf8b6b6-58c3-8392-2fc6-1908a314e991@linux.intel.com>
+ <YQwlHrJBw79xhTSI@kroah.com>
+ <21db8884-5aa1-3971-79ef-f173a0a95bef@linux.intel.com>
+ <YQwpa+LAYt7YZ5dh@kroah.com>
+ <1e0967ee-c41e-fd5d-f553-e4d7ab88838c@linux.intel.com>
+ <CAPcyv4h26QmPhJKjtUB-VPc4TP95rBAer78OzkgXncg77tFWVw@mail.gmail.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <9b2956f5-3acf-e798-ff0f-002d2d5254db@linux.intel.com>
+Date:   Thu, 5 Aug 2021 14:10:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805160337.GI4397@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <CAPcyv4h26QmPhJKjtUB-VPc4TP95rBAer78OzkgXncg77tFWVw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 09:03:37AM -0700, Paul E. McKenney wrote:
-> On Thu, Aug 05, 2021 at 10:01:23AM +0200, Juri Lelli wrote:
-> > Certain configurations (e.g., systems that make heavy use of netns)
-> > need to use synchronize_rcu_expedited() to service RCU grace periods
-> > even after boot.
-> > 
-> > Even though synchronize_rcu_expedited() has been traditionally
-> > considered harmful for RT for the heavy use of IPIs, it is perfectly
-> > usable under certain conditions (e.g. nohz_full).
-> > 
-> > Make rcupdate.rcu_normal_after_boot= again writeable on RT, but keep
-> > its default value to 1 (enabled) to avoid regressions. Users who need
-> > synchronize_rcu_expedited() will boot with rcupdate.rcu_normal_after_
-> > boot=0 in the kernel cmdline.
-> > 
-> > Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-> 
-> Makes sense to me!
-> 
-> But would another of the -rt people be willing to give an Acked-by?
-> For example, maybe they would prefer this kernel boot parameter to be
-> exposed only if (!PREEMPT_RT || NO_HZ_FULL).  Or are there !NO_HZ_FULL
-> situations where rcu_normal_after_boot makes sense?
 
-Ah, and this will also need to be reflected in the WARN_ON_ONCE()
-in synchronize_rcu_expedited_wait() in kernel/rcu/tree_exp.h.
+On 8/5/2021 12:01 PM, Dan Williams wrote:
 
-							Thanx, Paul
+>> That's why I think the builtin allow list hook is still needed. Thoughts?
+> I see nothing that prevents a built-in allow list to augment the
+> driver-core default. Is there a gap I'm missing?
 
-> > ---
-> >  kernel/rcu/update.c | 2 --
-> >  1 file changed, 2 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-> > index c21b38cc25e9..0fdbf937edac 100644
-> > --- a/kernel/rcu/update.c
-> > +++ b/kernel/rcu/update.c
-> > @@ -57,9 +57,7 @@
-> >  module_param(rcu_expedited, int, 0);
-> >  module_param(rcu_normal, int, 0);
-> >  static int rcu_normal_after_boot = IS_ENABLED(CONFIG_PREEMPT_RT);
-> > -#ifndef CONFIG_PREEMPT_RT
-> >  module_param(rcu_normal_after_boot, int, 0);
-> > -#endif
-> >  #endif /* #ifndef CONFIG_TINY_RCU */
-> >  
-> >  #ifdef CONFIG_DEBUG_LOCK_ALLOC
-> > -- 
-> > 2.31.1
-> > 
+
+Okay so you're suggesting to build the builtin allow list on top of the 
+existing framework?
+
+I thought Greg's suggestion was to only rely on user space only.
+
+But if we have a way to change the authorized defaults by device (not 
+just bus) from inside the kernel at early boot that could well work.
+
+Doing it only on the bus level I suspect wouldn't work though.
+
+-Andi
+
+
