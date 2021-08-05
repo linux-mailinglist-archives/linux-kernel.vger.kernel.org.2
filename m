@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB8A3E1852
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A5C3E1854
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242366AbhHEPmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:42:07 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43596 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241840AbhHEPlc (ORCPT
+        id S242444AbhHEPmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:42:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242232AbhHEPlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:41:32 -0400
-Message-ID: <20210805153953.330389528@linutronix.de>
+        Thu, 5 Aug 2021 11:41:35 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF61C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 08:41:20 -0700 (PDT)
+Message-ID: <20210805153953.391807152@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628178077;
+        s=2020; t=1628178079;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=qoh8d3hfSvvuGtm/7GyzaEgA5QXxkK7VldYhzUcnH+E=;
-        b=G5LiPg5EuCaYAo0EdtqfTnHtXuqi7+5o9vLP9ZvCQuoj+QAG3Gcpzsd7yaN+nfGjFK7LFL
-        E38omGm+2PGL+VCOBlGRmpyOcGbOSVsB630m3ulacesaLXhkCBdCDfcjzLQrfpduJyCc0A
-        78SRtg8MgOPt6hD0YE3K2KXfGEuZWRWZOIVpzQGbYNq2lr5ns60dMNqoy1g7DNGku5bQLh
-        DP9MLMtmJXYzdairHfU1XZbQMbrCWObN3ZN7OGTlIOYyrWWZCM5i+dtpvfAwBIlcIPPQVh
-        BUrruQ50NCk7D0T1xG68q87N/j1us8vE5e4vwDstmm+85kspC/Yz/30zcmfl6w==
+        bh=e1natWO/LXHPRnM5qXZ/LReMzOYIhDCno0JUDxBnFkU=;
+        b=CJzMhwYFGCsBjvwKuE0EGCB79CeM7F3cmNTG1beo12Kt71DqLSXBq5EN0/fpoE9Gx97S19
+        8M+TOY5XZ+9ICv7ia/6wFNd2mVGi4iwO6cWRaCcrfzBqRVzBtOJIL5jB+/WhXauhEtGewN
+        oaZCB/O70J5caSEv/rAbRpi4Bx339YGsqeGEl8vc1PMXjuqbIHcjKVvV1Hh1ZceqenJZf0
+        nhgwX2Li5wOIdJXdk5cddnuqVl05+qK9YgPT8ITKcXHKvvQbRwHKdDLAbcIz2DyZdPR1Ya
+        bxprysR1WdK4X4Xr0HFin5E7lyPeiqSbvBfvHxtLlD9ZIgZTamkhmoSpjVv2gA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628178077;
+        s=2020e; t=1628178079;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=qoh8d3hfSvvuGtm/7GyzaEgA5QXxkK7VldYhzUcnH+E=;
-        b=KJjhJYkrDJJ1u+0fBOijL+KTAelpND0u7z2Wwl+5ltHv/MWYSm1PiOsrnPOinN7bO3Pi1Y
-        stWem+z2Mzo1vKAQ==
-Date:   Thu, 05 Aug 2021 17:13:09 +0200
+        bh=e1natWO/LXHPRnM5qXZ/LReMzOYIhDCno0JUDxBnFkU=;
+        b=Y7zoDmCf6YOKrsXttbUocBUozBr0fzfHGc2vlLX8FWDkno1Zt16iTDhPK0olKasssvSv0Y
+        C3N3/rYba19BQFCQ==
+Date:   Thu, 05 Aug 2021 17:13:10 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -46,7 +49,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V3 09/64] rtmutex: Remove rt_mutex_is_locked()
+Subject: [patch V3 10/64] rtmutex: Convert macros to inlines
 References: <20210805151300.330412127@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,34 +58,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-No more users.
+Inlines are typesafe...
 
-Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- include/linux/rtmutex.h |   11 -----------
- 1 file changed, 11 deletions(-)
-
---- a/include/linux/rtmutex.h
-+++ b/include/linux/rtmutex.h
-@@ -67,17 +67,6 @@ do { \
- #define DEFINE_RT_MUTEX(mutexname) \
- 	struct rt_mutex mutexname = __RT_MUTEX_INITIALIZER(mutexname)
+ kernel/locking/rtmutex.c |   31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
+---
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -141,8 +141,19 @@ static __always_inline void fixup_rt_mut
+  * set up.
+  */
+ #ifndef CONFIG_DEBUG_RT_MUTEXES
+-# define rt_mutex_cmpxchg_acquire(l,c,n) (cmpxchg_acquire(&l->owner, c, n) == c)
+-# define rt_mutex_cmpxchg_release(l,c,n) (cmpxchg_release(&l->owner, c, n) == c)
++static __always_inline bool rt_mutex_cmpxchg_acquire(struct rt_mutex *lock,
++						     struct task_struct *old,
++						     struct task_struct *new)
++{
++	return cmpxchg_acquire(&lock->owner, old, new) == old;
++}
++
++static __always_inline bool rt_mutex_cmpxchg_release(struct rt_mutex *lock,
++						     struct task_struct *old,
++						     struct task_struct *new)
++{
++	return cmpxchg_release(&lock->owner, old, new) == old;
++}
  
--/**
-- * rt_mutex_is_locked - is the mutex locked
-- * @lock: the mutex to be queried
-- *
-- * Returns 1 if the mutex is locked, 0 if unlocked.
-- */
--static inline int rt_mutex_is_locked(struct rt_mutex *lock)
--{
--	return lock->owner != NULL;
--}
--
- extern void __rt_mutex_init(struct rt_mutex *lock, const char *name, struct lock_class_key *key);
+ /*
+  * Callers must hold the ->wait_lock -- which is the whole purpose as we force
+@@ -201,8 +212,20 @@ static __always_inline bool unlock_rt_mu
+ }
  
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ #else
+-# define rt_mutex_cmpxchg_acquire(l,c,n)	(0)
+-# define rt_mutex_cmpxchg_release(l,c,n)	(0)
++static __always_inline bool rt_mutex_cmpxchg_acquire(struct rt_mutex *lock,
++						     struct task_struct *old,
++						     struct task_struct *new)
++{
++	return false;
++
++}
++
++static __always_inline bool rt_mutex_cmpxchg_release(struct rt_mutex *lock,
++						     struct task_struct *old,
++						     struct task_struct *new)
++{
++	return false;
++}
+ 
+ static __always_inline void mark_rt_mutex_waiters(struct rt_mutex *lock)
+ {
 
