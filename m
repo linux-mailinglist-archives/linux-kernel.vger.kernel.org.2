@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90AF83E1F67
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D68A3E1F68
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242481AbhHEXbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 19:31:36 -0400
+        id S242458AbhHEXbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 19:31:38 -0400
 Received: from mga02.intel.com ([134.134.136.20]:6546 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242385AbhHEXbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242395AbhHEXbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Aug 2021 19:31:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="201448377"
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="201448378"
 X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="201448377"
+   d="scan'208";a="201448378"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 16:31:10 -0700
 X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="481043911"
+   d="scan'208";a="481043918"
 Received: from rmgular-mobl2.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.138.25])
   by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 16:31:09 -0700
 From:   Kuppuswamy Sathyanarayanan 
@@ -36,9 +36,9 @@ Cc:     "H . Peter Anvin" <hpa@zytor.com>,
         "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>
-Subject: [PATCH v3 4/5] Add taint flag for TDX overrides
-Date:   Thu,  5 Aug 2021 16:30:35 -0700
-Message-Id: <20210805233036.2949674-5-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v3 5/5] x86/tdx: Add option to override prot values
+Date:   Thu,  5 Aug 2021 16:30:36 -0700
+Message-Id: <20210805233036.2949674-6-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210805233036.2949674-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20210805233036.2949674-1-sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -50,78 +50,105 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andi Kleen <ak@linux.intel.com>
 
-Add a new taint flag TAINT_CONF_NO_LOCKDOWN that is set when
-the default hardening against untrusted hosts in TDX is overridden
-on the command line. The flag is set when the device or ACPI
-filters are disabled.
-
-The main use cases is for applications to detect that they
-might run in a potentially insecure configuration through
-/proc/sys/kernel/taint.
-
-The setting is not intended for attestation, which should attest the
-kernel command line anyways.
-
-I picked 'Y' for the oops flag, although this type of taint is probably
-not too useful for crashes, since there weren't any other good letters
-left.
+The kernel internally uses prot_guest_has to configure various behavior
+specific to confidential guests. Allow to clear a single value. This is
+mainly useful for debugging and not very user friendly because the hex
+values from the include file have to be used. But for debugging it's
+good enough and it matches the existing clear_cpuid option.
 
 Signed-off-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
- Documentation/admin-guide/tainted-kernels.rst | 7 ++++++-
- include/linux/panic.h                         | 3 ++-
- kernel/panic.c                                | 1 +
- 3 files changed, 9 insertions(+), 2 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt |  8 ++++++++
+ arch/x86/include/asm/tdx.h                      |  2 ++
+ arch/x86/kernel/tdx.c                           | 15 +++++++++++++++
+ 3 files changed, 25 insertions(+)
 
-diff --git a/Documentation/admin-guide/tainted-kernels.rst b/Documentation/admin-guide/tainted-kernels.rst
-index ceeed7b0798d..65c58092ec35 100644
---- a/Documentation/admin-guide/tainted-kernels.rst
-+++ b/Documentation/admin-guide/tainted-kernels.rst
-@@ -100,7 +100,8 @@ Bit  Log  Number  Reason that got the kernel tainted
-  15  _/K   32768  kernel has been live patched
-  16  _/X   65536  auxiliary taint, defined for and used by distros
-  17  _/T  131072  kernel was built with the struct randomization plugin
--===  ===  ======  ========================================================
-+ 18  _/Y  262144  confidential guest (like TDX guest) without full lockdown
-+===  ===  ======  =========================================================
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index ba390be62f89..10776a743e74 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5573,6 +5573,14 @@
  
- Note: The character ``_`` is representing a blank in this table to make reading
- easier.
-@@ -175,3 +176,7 @@ More detailed explanation for tainting
-      produce extremely unusual kernel structure layouts (even performance
-      pathological ones), which is important to know when debugging. Set at
-      build time.
+ 	tdfx=		[HW,DRM]
+ 
++	tdx_prot_clear=val
++			Clear a prot setting for TDX. See
++			include/linux/protected_guest.h for the allowed
++			values. Only a single value can be overridden.
++			Note that invalid values here may break the TDX kernel,
++			this is mainly for debugging. Clearing protections
++			may cause security holes.
 +
-+ 18) ``Y`` Kernel is running as a confidential guest on a untrusted
-+     hypervisor (e.g. TDX), but has disabled some lock down options that could
-+     make the kernel attackable from the host.
-diff --git a/include/linux/panic.h b/include/linux/panic.h
-index f5844908a089..9ac10689a432 100644
---- a/include/linux/panic.h
-+++ b/include/linux/panic.h
-@@ -74,7 +74,8 @@ static inline void set_arch_panic_timeout(int timeout, int arch_default_timeout)
- #define TAINT_LIVEPATCH			15
- #define TAINT_AUX			16
- #define TAINT_RANDSTRUCT		17
--#define TAINT_FLAGS_COUNT		18
-+#define TAINT_CONF_NO_LOCKDOWN		18
-+#define TAINT_FLAGS_COUNT		19
- #define TAINT_FLAGS_MAX			((1UL << TAINT_FLAGS_COUNT) - 1)
+ 	test_suspend=	[SUSPEND][,N]
+ 			Specify "mem" (for Suspend-to-RAM) or "standby" (for
+ 			standby suspend) or "freeze" (for suspend type freeze)
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index 665c8cf57d5b..dd5459ece9aa 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -67,6 +67,8 @@ enum tdx_map_type {
  
- struct taint_flag {
-diff --git a/kernel/panic.c b/kernel/panic.c
-index edad89660a2b..1557f864bec0 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -387,6 +387,7 @@ const struct taint_flag taint_flags[TAINT_FLAGS_COUNT] = {
- 	[ TAINT_LIVEPATCH ]		= { 'K', ' ', true },
- 	[ TAINT_AUX ]			= { 'X', ' ', true },
- 	[ TAINT_RANDSTRUCT ]		= { 'T', ' ', true },
-+	[ TAINT_CONF_NO_LOCKDOWN ]	= { 'Y', ' ', true },
- };
+ #ifdef CONFIG_INTEL_TDX_GUEST
  
- /**
++extern unsigned int tdg_disable_prot;
++
+ void __init tdx_early_init(void);
+ 
+ bool tdx_prot_guest_has(unsigned long flag);
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index 644e90dfa587..bfa168f3f09c 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -12,6 +12,7 @@
+ #include <asm/vmx.h>
+ #include <asm/insn.h>
+ #include <asm/insn-eval.h>
++#include <asm/cmdline.h>
+ #include <linux/sched/signal.h> /* force_sig_fault() */
+ #include <linux/swiotlb.h>
+ 
+@@ -41,6 +42,8 @@ static struct {
+ 	unsigned long attributes;
+ } td_info __ro_after_init;
+ 
++unsigned int tdg_disable_prot = -1;
++
+ /*
+  * Wrapper for standard use of __tdx_hypercall with BUG_ON() check
+  * for TDCALL error.
+@@ -111,6 +114,9 @@ static inline bool cpuid_has_tdx_guest(void)
+ 
+ bool tdx_prot_guest_has(unsigned long flag)
+ {
++	if (flag == tdg_disable_prot)
++		return false;
++
+ 	switch (flag) {
+ 	case PATTR_GUEST_TDX:
+ 	case PATTR_GUEST_UNROLL_STRING_IO:
+@@ -555,6 +561,8 @@ __init bool tdg_early_handle_ve(struct pt_regs *regs)
+ 
+ void __init tdx_early_init(void)
+ {
++	char prot_clear[30];
++
+ 	if (!cpuid_has_tdx_guest())
+ 		return;
+ 
+@@ -572,5 +580,12 @@ void __init tdx_early_init(void)
+ 	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "tdg:cpu_hotplug",
+ 			  NULL, tdg_cpu_offline_prepare);
+ 
++	if (cmdline_find_option(boot_command_line, "tdx_prot_clear",
++				prot_clear, sizeof(prot_clear))) {
++		if (kstrtouint(prot_clear, 0, &tdg_disable_prot))
++			pr_err("Unparsable tdx_prot_clear= option\n");
++		add_taint(TAINT_CONF_NO_LOCKDOWN, LOCKDEP_STILL_OK);
++	}
++
+ 	pr_info("Guest initialized\n");
+ }
 -- 
 2.25.1
 
