@@ -2,204 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0EB3E1AFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 800CE3E1AF7
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240973AbhHESKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
+        id S229867AbhHESJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240942AbhHESKD (ORCPT
+        with ESMTP id S232818AbhHESJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:10:03 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5A7C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:09:47 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id a93so10518075ybi.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:09:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U8HsCzGiYHCZBDfypa8N82te7eUp4Bk6shNFm27b7NU=;
-        b=qp80yKWHYgvCk7Z/Cx/rUSLn80PPXquMnWUxPFG7j5q68E79Fs4N4Z8q5L0km8sqWh
-         +yXPaSPw3HA9dyjXFvYqNuNhui4G+MyGHmuwIcKd2mrLQY0+UuO+IzwuQD/hs/HOvUaf
-         PNb7i5anWuNHNbuuxvkfhvpYx7Z4UM4K2O4aA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U8HsCzGiYHCZBDfypa8N82te7eUp4Bk6shNFm27b7NU=;
-        b=uO/408ZMt4sw/Z7I+3vTNLOFlziBNKPr8+LV02ZWvFNbTp7kmDqK4g5AbLHdYyT6aQ
-         lXgO/4g/uAc70Vn5jzYutB1Jq5YylCBPVSXDgjquwcUOaRlNqn82Qdj2BYKiPQY+5l6I
-         kTiyjxrAwEy5EZuGskSFqVdIibLZN2h6NmlnTSwZYEHBrB1dDSWgOGcv4/hJqCG22IKf
-         71cS0GOYSnf8dI/y8q4b7We/lph1VdFgoqGyHjN/X5xZvc70YFjfsvVgiiK1qEz8qT5l
-         7RcVb6WApI8/zdczvVTPF6PXUClMbZtY8xqYjpDCCaqVKbzep4GTytNBjTh0aHHDvXNp
-         u1bQ==
-X-Gm-Message-State: AOAM530btdipOdP+IeAwuYZ61Xhws94bppeFrvZzJg1LMfg6Z6WytQuS
-        F8mAxlCsmUOo9Fs/rXr9LKiGknQkGw/xrS3yxriE
-X-Google-Smtp-Source: ABdhPJzOJ3LNizTbKDigKKWFg+6t1R1Utwh0pqRKavYrB9YN400Yh0NfZj/2noUPVsnFCijHcD83n2PccSv8FNwPPjk=
-X-Received: by 2002:a25:3bcb:: with SMTP id i194mr7335693yba.442.1628186986830;
- Thu, 05 Aug 2021 11:09:46 -0700 (PDT)
+        Thu, 5 Aug 2021 14:09:54 -0400
+Received: from caffeine.csclub.uwaterloo.ca (caffeine.csclub.uwaterloo.ca [IPv6:2620:101:f000:4901:c5c:0:caff:e12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA963C061765;
+        Thu,  5 Aug 2021 11:09:39 -0700 (PDT)
+Received: by caffeine.csclub.uwaterloo.ca (Postfix, from userid 20367)
+        id 0C7844609A1; Thu,  5 Aug 2021 14:09:37 -0400 (EDT)
+Date:   Thu, 5 Aug 2021 14:09:37 -0400
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: macvlan breaks garp for vrrp
+Message-ID: <20210805180936.GB6676@csclub.uwaterloo.ca>
+References: <20210715153720.GA2378@csclub.uwaterloo.ca>
 MIME-Version: 1.0
-References: <CAOnJCUL9uU5G1LOgfYPz9Ny77yFYaP5sgtdxG3_w=Zcsi+f96Q@mail.gmail.com>
- <mhng-c9300c9e-6877-492f-a290-7c51066d3920@palmerdabbelt-glaptop>
- <20210805023024.GA12312@x1> <CANBLGcwczBsc-mfU2t9=7No7KhHfBFHFzGy=5hdyEE+4VN8ksg@mail.gmail.com>
-In-Reply-To: <CANBLGcwczBsc-mfU2t9=7No7KhHfBFHFzGy=5hdyEE+4VN8ksg@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Thu, 5 Aug 2021 11:09:36 -0700
-Message-ID: <CAOnJCU+-orqjP5dND0QNh+08UhXitS=LPpg1VpnBcp=6YJU7EQ@mail.gmail.com>
-Subject: Re: [PATCH v4] dt-bindings: riscv: add starfive jh7100 bindings
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     Drew Fustini <drew@pdp7.com>, Palmer Dabbelt <palmer@dabbelt.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Fu Wei <tekkamanninja@gmail.com>, jack.zhu@starfivetech.com,
-        leyfoon.tan@starfivetech.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715153720.GA2378@csclub.uwaterloo.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Lennart Sorensen <lsorense@csclub.uwaterloo.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 1:13 AM Emil Renner Berthing <kernel@esmil.dk> wrote:
->
-> On Thu, 5 Aug 2021 at 04:30, Drew Fustini <drew@pdp7.com> wrote:
-> > On Wed, Aug 04, 2021 at 02:13:47PM -0700, Palmer Dabbelt wrote:
-> > > On Wed, 04 Aug 2021 13:54:16 PDT (-0700), atishp@atishpatra.org wrote:
-> > > > On Wed, Aug 4, 2021 at 1:33 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> > > > >
-> > > > > On Thu, 15 Jul 2021 19:17:23 PDT (-0700), bmeng.cn@gmail.com wrote:
-> > > > > > On Tue, Jul 13, 2021 at 2:34 PM Drew Fustini <drew@beagleboard.org> wrote:
-> > > > > >>
-> > > > > >> Add DT binding documentation for the StarFive JH7100 Soc [1] and the
-> > > > > >> BeagleV Starlight JH7100 board [2].
-> > > > > >>
-> > > > > >> [1] https://github.com/starfive-tech/beaglev_doc
-> > > > > >> [2] https://github.com/beagleboard/beaglev-starlight
-> > > > > >>
-> > > > > >> Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> > > > > >> ---
-> > > > > >> v4 changes:
-> > > > > >> - removed JH7100 SoC revision number after discussion with Geert
-> > > > > >>
-> > > > > >> v3 changes:
-> > > > > >> - added revision number for the board and soc after question from Palmer
-> > > > > >>
-> > > > > >> v2 changes:
-> > > > > >> - removed "items:" entry that only had "const: starfive,jh7100"
-> > > > > >> - correct typo in Description:
-> > > > > >>
-> > > > > >> Results of running checks:
-> > > > > >>   $ make -j8 ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- dt_binding_check \
-> > > > > >>     DT_SCHEMA_FILES=Documentation/devicetree/bindings/riscv/starfive.yaml
-> > > > > >>     CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
-> > > > > >>     DTEX    Documentation/devicetree/bindings/riscv/starfive.example.dts
-> > > > > >>     SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
-> > > > > >>     DTC     Documentation/devicetree/bindings/riscv/starfive.example.dt.yaml
-> > > > > >>     CHECK   Documentation/devicetree/bindings/riscv/starfive.example.dt.yaml
-> > > > > >>   $ make -j8 ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- dtbs_check \
-> > > > > >>     DT_SCHEMA_FILES=Documentation/devicetree/bindings/riscv/starfive.yaml
-> > > > > >>     SYNC    include/config/auto.conf.cmd
-> > > > > >>     UPD     include/config/kernel.release
-> > > > > >>     SCHEMA  Documentation/devicetree/bindings/processed-schema.json
-> > > > > >>     DTC     arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dtb
-> > > > > >>     DTC     arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dt.yaml
-> > > > > >>     DTC     arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dt.yaml
-> > > > > >>     DTC     arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dt.yaml
-> > > > > >>     CHECK   arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dt.yaml
-> > > > > >>     CHECK   arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dt.yaml
-> > > > > >>     CHECK   arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dt.yaml
-> > > > > >>
-> > > > > >> The dts file is from vendor repo and is being cleaned up right now in
-> > > > > >> preperation for submitting to the mailing list:
-> > > > > >> https://github.com/starfive-tech/linux/tree/beaglev/arch/riscv/boot/dts/starfive
-> > > > > >>
-> > > > > >>  .../devicetree/bindings/riscv/starfive.yaml   | 27 +++++++++++++++++++
-> > > > > >>  1 file changed, 27 insertions(+)
-> > > > > >>  create mode 100644 Documentation/devicetree/bindings/riscv/starfive.yaml
-> > > > > >>
-> > > > > >
-> > > > > > Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
-> > > > >
-> > > > > Thanks.  This is on for-next, as Rob suggested taking it via the RISC-V
-> > > > > tree.
-> > > > >
-> > > > Given that beagleV starlight mass production is cancelled [1], are we
-> > > > still upstreaming the support for this ?
-> > >
-> > > I'm not sure, but I wasn't quite sure where to have that discussion.  I
-> > > figured that the boards exist so there's no reason to shoot this down, given
-> > > that it's just the vendor DT list.  At a bare minimum there's out of tree
-> > > support for this, so having the DT strings defined seems sane as that's a
-> > > defacto interface with bootloaders.
-> > >
-> > > Maybe this is more of a question for Drew: I think we were all OK working
-> > > through the issues with the first-run chip when there was going to be a lot
-> > > of them, but with such a small number produced I'm not sure if there's going
-> > > to be enough interested to take on all that effort.
-> > >
-> > > I'm not quite sure where we stand on support for this: at some point there
-> > > were some ideas floating around as to a way to support it without major
-> > > software changes (allocating into the non-caching regions).  If that pans
-> > > out then I'm fine handling this, at least from the RISC-V side, but if we're
-> > > going to have to go through all the ISA/SBI stuff then it's probably not
-> > > worth it.  Also not sure if there are a bunch of starfive-specific drivers
-> > > that would be needed to make this boot, in which case it's probably best to
-> > > wait for whatever comes next.
-> >
-> > I think that the discontinued beta prototype could be useful as a native
-> > build host for those of you that have it and don't have an Unmatched.
->
-> Also according to this statement [1], they're still planning on
-> producing new boards with the JH7100 (same chip as on the BeagleV
-> prototype) at the end of Q3 and the JH7110 further in the future, so I
-> still think it'd make sense to support those.
->
-> [1]: https://www.design-reuse.com/news/50402/starfive-open-source-single-board-platform-q3-2021.html
->
+On Thu, Jul 15, 2021 at 11:37:20AM -0400, Lennart Sorensen wrote:
+> We are seeing an occational problem where a node in a cluster running
+> vrrp stops being able to send packets to the current master due to having
+> the wrong arp entry for the virtual IP.  It appears that what happens
+> is that if around the time vrrp changes who the master is, a packet is
+> sent from the new master to another node, that node will learn the mac
+> of the virtual IP as the mac of the physical interface of the master
+> (since it always transmits from the physical mac, not the virtual mac).
+> In most cases nodes seem to correctly send an arp request for the
+> virtual IP and get back the virtual mac (from the maclan interface
+> used by keepalived with use_vmac enabled), in which case all is fine.
+> Only if the timing is unlucky do you end up learning the wrong mac and
+> then you can no longer send packets back to the master since it doesn't
+> accept packets on the physical interface mac, only the virtual mac.
+> 
+> Of course one would have thought that the garp sent by the master would
+> take care of the problem, but unfortunately the macvlan code is not
+> allowing garp packets with a source mac macthing the macvlan interface to
+> reach the physical interface.  The code causing this is below.  keepalived
+> uses MACVLAN_MODE_PRIVATE which does not match the condition, so the code
+> tries to do its work and consumes the packet, and the physical interface
+> hence never gets to see it, and the arp table is hence not corrected.
+> I can't actually make sense of what this code is trying to do in this
+> case where the source mac of the packet matches the macvlan interface,
+> even though it was received from outside (from the current master in
+> the vrrp cluster).
+> 
+>         port = macvlan_port_get_rcu(skb->dev);
+>           if (is_multicast_ether_addr(eth->h_dest)) {
+>                   unsigned int hash;
+> 
+>                   skb = ip_check_defrag(dev_net(skb->dev), skb, IP_DEFRAG_MACVLAN);                                                                                           if (!skb)
+>                           return RX_HANDLER_CONSUMED;
+>                   *pskb = skb;
+>                   eth = eth_hdr(skb);
+>                   if (macvlan_forward_source(skb, port, eth->h_source))
+>                           return RX_HANDLER_CONSUMED;
+>                   src = macvlan_hash_lookup(port, eth->h_source);  <- this of course has a match
+>                   if (src && src->mode != MACVLAN_MODE_VEPA &&     <- so this is true and eats the packet
+>                       src->mode != MACVLAN_MODE_BRIDGE) {
+>                           /* forward to original port. */
+>                           vlan = src;
+>                           ret = macvlan_broadcast_one(skb, vlan, eth, 0) ?:
+>                                 netif_rx(skb);
+>                           handle_res = RX_HANDLER_CONSUMED;
+>                           goto out;
+>                   }
+> 
+>                   hash = mc_hash(NULL, eth->h_dest);
+>                   if (test_bit(hash, port->mc_filter))
+>                           macvlan_broadcast_enqueue(port, src, skb);
+> 
+>                   return RX_HANDLER_PASS;
+>           }
+> 
+> If I patch it to do:
+> 
+>                    if (src && src->mode != MACVLAN_MODE_VEPA &&
+> +                      src->mode != MACVLAN_MODE_PRIVATE &&
+>                        src->mode != MACVLAN_MODE_BRIDGE) {
+> 
+> the problem goes away, but since I don't understand what the idea of
+> this code was, that doesn't feel safe.
+> 
+> Can someone that understands the point of this code perhaps give an idea
+> how to correctly fix this?  Definitely packets received with the same
+> mac address as this macvlan should still be able to make it through to
+> the underlying interface, since that is how vrrp is supposed to operate
+> per the RFC.  Having the wrong arp entry is bad since each time we
+> receive a packet we increase the timeout so it never ages out, even
+> though it is the wrong mac address for actually replying (due to how
+> macvlan interfaces seem to work).
+> 
+> So far this doesn't seem to happen very often since the timing has to
+> be just "wrong" on the packets, but I have now seen it 4 or 5 times in
+> the last year.  The solution each time was to manually delete the arp
+> entry for the virtual IP on the affected node, after which it correctly
+> arp'd for the right mac and everything worked again.
+> 
+> To test it I would manually set a temp arp entry using the physical mac of
+> the interface on the master as the arp entry, and see if the garp ever
+> fixed it, and it did not until I made my small patch, after which it
+> does fix the arp table reliably as far as I can tell.
 
+Well I discovered that that my patch breaks other traffic, so clearly that
+doesn't work.
 
-
-> > The arch_sync_dma RFC from Atish [1] is key to the board running
-> > mainline. Most of the peripherals (USB, SD card, ethernet) are already
-> > supported by upstream Cadence and Synopsys drivers. However, the vendor
-> > kernel used ifdef's to flush the L2 cache at several points in those
-> > drivers and subsystem cores because the peripherals are on a non-cache
-> > coherent interconnect.
-> >
-> > Without the proposed solution from Atish that uses the non-cached DDR
-> > alias, then only serial console would work on mainline (assuming the
-> > system is running from a ramdisk that the vendor uboot loaded).
-> >
-
-We need the clock patches as well. If there is an agreed effort to
-upstream the clock patches
-and other bare minimum patches, I am happy to revise the DMA patches as well.
-
-However, I am not sure all the patches should be beagleV or
-starfive/starlight given the new announcement
-from StarFive. Does anybody know if they are going to mass produce the
-exact same SBC (JH7100) or some variant of it ?
-
-Maybe we should defer upstreaming until we see the new board ? We
-probably don't want two different versions of upstreaming support
-for the same board!
-
-> > Thanks,
-> > Drew
-> >
-> > [1] https://lore.kernel.org/linux-riscv/CAOnJCU+ip1ccc9CrREi3c+15ue4Grcq+ENbQ+z_gh3CH249aAg@mail.gmail.com/T/#md422e9de172a179f8625c5bb595cf40e5942db67
-
-
+Does anyone have any idea how to fix the code so garp packets from other
+systems with the sae macvlan mac address can actually be sent to the
+physical interface so the arp table can be updated?
 
 -- 
-Regards,
-Atish
+Len Sorensen
