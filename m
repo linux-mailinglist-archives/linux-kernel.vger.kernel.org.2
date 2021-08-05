@@ -2,97 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01B73E161F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C1F3E1627
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241807AbhHENyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 09:54:47 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:19621 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241375AbhHENyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 09:54:45 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628171671; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=bcr6vJTCmnIH6dipHg22HDP4Lj3skF7+z+y098CkOwU=; b=hKwk7PM47X2GGtnm8h483tPzPOemFsGOc0RWYCpo+gTgdYJtzQ44mHpLr1p8ELuxJixBgRUT
- pjQubhuPzO1DYlC7F6r8phZd7Q7p0iBjKoQJO9yjRysZoYGwpZGVGFNXUWbthbxR3FHltGFU
- CCaxBP5Xmt3jjWUWIVkkdWb2jE4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 610bed7db4dfc4b0ef3c8f9d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 05 Aug 2021 13:54:05
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4FF41C43147; Thu,  5 Aug 2021 13:54:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E3DC7C433F1;
-        Thu,  5 Aug 2021 13:53:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E3DC7C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Colin King <colin.king@canonical.com>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, netdev <netdev@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] brcmfmac: firmware: Fix uninitialized variable ret
-References: <20210803150904.80119-1-colin.king@canonical.com>
-        <CACRpkdZ5u-C8uH2pCr1689v_ndyzqevDDksXvtPYv=FfD=x_xg@mail.gmail.com>
-Date:   Thu, 05 Aug 2021 16:53:54 +0300
-In-Reply-To: <CACRpkdZ5u-C8uH2pCr1689v_ndyzqevDDksXvtPYv=FfD=x_xg@mail.gmail.com>
-        (Linus Walleij's message of "Tue, 3 Aug 2021 21:14:07 +0200")
-Message-ID: <875ywkc80d.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S241386AbhHEN6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 09:58:55 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:57078 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239757AbhHEN6y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 09:58:54 -0400
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 175DwLoB003434;
+        Thu, 5 Aug 2021 22:58:22 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 175DwLoB003434
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1628171902;
+        bh=IkfSllG+SbN/b97YNpBIEYdvlpJTUqg6G4RBryizSqQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ua05HcSeJ4GvTVEoegvZ/4UovWLE4o04xLtcLEgmKUiat7MByY6JV9RYXC/BKRqZq
+         bJ4GEPmNqOAS2we1MhN7g2DxlhTz/V4qJD2aRoup0IgEmSO0tEY7gz1pBFum+zt+fp
+         BOr/AGtvqAMKEfR26wckN+FCI1/Po8YmaWbo5d0BoDhxEOQQMNcXfrKHpmzGShwmsw
+         UajyYRmcA9TkCLDMwRip4TPZBuIr9STIhvQQHCSpw7ZHQN9LVNcFreo9oITw7vblks
+         WupTlOpeIMuKYqZJIXAS9raVZft2wpAWW8iCRkt4Fb6XXw5ss8b4iDTGtm+oXNk+fC
+         AkMsXX4WMYfRQ==
+X-Nifty-SrcIP: [209.85.216.47]
+Received: by mail-pj1-f47.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso9609585pjf.4;
+        Thu, 05 Aug 2021 06:58:22 -0700 (PDT)
+X-Gm-Message-State: AOAM530KqEPsaudEQ14PYggWt4dztn33bJnmHVy1Z4mrraPBsuBXX01/
+        mJcaHXAaYvBiCDJbyOGMjYpl1oYfNrW+XBcheY0=
+X-Google-Smtp-Source: ABdhPJw6/Efi1cfCY9CvameEnPfnwBuMScrNWAcgvk9GREiR8ZuGP8HHSkCOuhcsjtwB3fnqTQ6M0WbScGU9mQfZ4Q8=
+X-Received: by 2002:a17:90a:c506:: with SMTP id k6mr15434358pjt.198.1628171901401;
+ Thu, 05 Aug 2021 06:58:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210802183910.1802120-1-ndesaulniers@google.com> <20210802183910.1802120-4-ndesaulniers@google.com>
+In-Reply-To: <20210802183910.1802120-4-ndesaulniers@google.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 5 Aug 2021 22:57:44 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASkBNDzXWxweotPZGJH-z3J59rPQwGDV32rfH9hH+sVHQ@mail.gmail.com>
+Message-ID: <CAK7LNASkBNDzXWxweotPZGJH-z3J59rPQwGDV32rfH9hH+sVHQ@mail.gmail.com>
+Subject: Re: [PATCH v6 3/3] Documentation/llvm: update CROSS_COMPILE inferencing
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>, Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Walleij <linus.walleij@linaro.org> writes:
-
-> On Tue, Aug 3, 2021 at 5:09 PM Colin King <colin.king@canonical.com> wrote:
+On Tue, Aug 3, 2021 at 3:39 AM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
 >
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> Currently the variable ret is uninitialized and is only set if
->> the pointer alt_path is non-null. Fix this by ininitializing ret
->> to zero.
->>
->> Addresses-Coverity: ("Uninitialized scalar variable")
->> Fixes: 5ff013914c62 ("brcmfmac: firmware: Allow per-board firmware binaries")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> As noted by Masahiro, document how we can generally infer CROSS_COMPILE
+> (and the more specific details about --target and --prefix) based on
+> ARCH.
 >
-> Nice catch!
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Change use of env vars to command line parameters.
+>
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Reviewed-by: Fangrui Song <maskray@google.com>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+> Changes v5 -> v6:
+> * Pick up Fangrui's RB tag.
+> * Change use of env vars to command line parameters for consistency.
+>
+>  Documentation/kbuild/llvm.rst | 19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+> index b18401d2ba82..f8a360958f4c 100644
+> --- a/Documentation/kbuild/llvm.rst
+> +++ b/Documentation/kbuild/llvm.rst
+> @@ -38,7 +38,7 @@ Cross Compiling
+>  A single Clang compiler binary will typically contain all supported backends,
+>  which can help simplify cross compiling. ::
+>
+> -       ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CC=clang
+> +       make ARCH=arm64 CC=clang CROSS_COMPILE=aarch64-linux-gnu-
+>
+>  ``CROSS_COMPILE`` is not used to prefix the Clang compiler binary, instead
+>  ``CROSS_COMPILE`` is used to set a command line flag: ``--target=<triple>``. For
+> @@ -63,6 +63,23 @@ They can be enabled individually. The full list of the parameters: ::
+>  Currently, the integrated assembler is disabled by default. You can pass
+>  ``LLVM_IAS=1`` to enable it.
+>
+> +Omitting CROSS_COMPILE
+> +----------------------
+> +
+> +As explained above, ``CROSS_COMPILE`` is used to set ``--target=<triple>``.
+> +
+> +Unless ``LLVM_IAS=1`` is specified, ``CROSS_COMPILE`` is also used to derive
+> +``--prefix=<path>`` to search for the GNU assembler and linker.
 
-I assume this will be fixed by Linus' patch "brcmfmac: firmware: Fix
-firmware loading" and I should drop Colin's patch, correct?
+
+Is there any place where we rely on --prefix
+to search for the linker?
+
+In general, the compiler stops after generating an object
+since it is passed with the -c option.
+The linking stage is separated.
+
+In the old days, VDSO was an exceptional case
+where $(CC) was used as the linker driver, but
+commit fe00e50b2db8c60e4ec90befad1f5bab8ca2c800 fixed it.
+
+
+
+
+
+
+
+> +
+> +If ``CROSS_COMPILE`` is not specified, the ``--target=<triple>`` is inferred
+> +from ``ARCH``.
+> +
+> +That means if you use only LLVM tools, ``CROSS_COMPILE`` becomes unnecessary.
+> +
+> +For example, to cross-compile the arm64 kernel::
+> +
+> +       make ARCH=arm64 LLVM=1 LLVM_IAS=1
+> +
+>  Supported Architectures
+>  -----------------------
+>
+> --
+> 2.32.0.554.ge1b32706d8-goog
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210802183910.1802120-4-ndesaulniers%40google.com.
+
+
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Best Regards
+Masahiro Yamada
