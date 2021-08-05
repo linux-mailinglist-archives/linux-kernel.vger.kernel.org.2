@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6623E0BF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 03:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D213E0BF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 03:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236787AbhHEBIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 21:08:11 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:13230 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhHEBIJ (ORCPT
+        id S236914AbhHEBJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 21:09:03 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7926 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhHEBJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 21:08:09 -0400
+        Wed, 4 Aug 2021 21:09:01 -0400
 Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Gg9Sz2MYyz1CSWM;
-        Thu,  5 Aug 2021 09:07:47 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gg9Pf24ktz845H;
+        Thu,  5 Aug 2021 09:04:54 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
  dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 09:07:53 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 09:07:52 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <hawk@kernel.org>, <ilias.apalodimas@linaro.org>,
-        <mcroce@microsoft.com>, <willy@infradead.org>,
-        <alexander.duyck@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <chenhao288@hisilicon.com>
-Subject: [PATCH net] page_pool: mask the page->signature before the checking
-Date:   Thu, 5 Aug 2021 09:06:57 +0800
-Message-ID: <1628125617-49538-1-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 09:08:45 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 09:08:44 +0800
+Subject: Re: [PATCH 4.19 00/30] 4.19.201-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210802134334.081433902@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <7f52bac1-6e58-e764-2a8a-a381d278c6ac@huawei.com>
+Date:   Thu, 5 Aug 2021 09:08:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+In-Reply-To: <20210802134334.081433902@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As mentioned in commit c07aea3ef4d4 ("mm: add a signature
-in struct page"):
-"The page->signature field is aliased to page->lru.next and
-page->compound_head."
 
-And as the comment in page_is_pfmemalloc():
-"lru.next has bit 1 set if the page is allocated from the
-pfmemalloc reserves. Callers may simply overwrite it if they
-do not need to preserve that information."
 
-The page->signature is or’ed with PP_SIGNATURE when a page is
-allocated in page pool, see __page_pool_alloc_pages_slow(),
-and page->signature is checked directly with PP_SIGNATURE in
-page_pool_return_skb_page(), which might cause resoure leaking
-problem for a page from page pool if bit 1 of lru.next is set for
-a pfmemalloc page.
+On 2021/8/2 21:44, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.201 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 04 Aug 2021 13:43:24 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.201-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-As bit 0 is page->compound_head, So mask both bit 0 and 1 before
-the checking in page_pool_return_skb_page().
+Tested on arm64 and x86 for 4.19.201-rc1,
 
-Fixes: 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB recycling")
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- net/core/page_pool.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.19.y
+Version: 4.19.201-rc1
+Commit: 7d0b2cf6631fd9776096a6a1bc52a89946f15d4c
+Compiler: gcc version 7.3.0 (GCC)
 
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 5e4eb45..33b7dd7 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -634,7 +634,7 @@ bool page_pool_return_skb_page(struct page *page)
- 	struct page_pool *pp;
- 
- 	page = compound_head(page);
--	if (unlikely(page->pp_magic != PP_SIGNATURE))
-+	if (unlikely((page->pp_magic & ~0x3UL) != PP_SIGNATURE))
- 		return false;
- 
- 	pp = page->pp;
--- 
-2.7.4
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8858
+passed: 8858
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8858
+passed: 8858
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
