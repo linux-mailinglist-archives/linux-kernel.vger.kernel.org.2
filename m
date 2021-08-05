@@ -2,102 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DB23E14AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9DD3E14AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241345AbhHEMZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232651AbhHEMZ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:25:56 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 099D5C061765;
-        Thu,  5 Aug 2021 05:25:42 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so14391484pjs.0;
-        Thu, 05 Aug 2021 05:25:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UJbk09k54JECCeJwupO/QMHjbng2VO6NZjwCFKC+4og=;
-        b=vIiUOLk4ymGEs3kUO0OWcoeOACqc67F3aml1Sb5fmkRU07Owvljl4FI9i17uDQ+o3H
-         MUNiCsgvqCGXkub+4h/T8GAjFUG5Qvssi3Cl2z6aS1LG638Fd+7L2x+ETRFF35WAF2MP
-         MIy9wW8qqhCQjkP8V8s1qilD/Uv0tTK8Cs5l+E+0sJU1k5yYBPjL0eN3F/lSt8eFSiO2
-         UONwmUHQ7fkOXIgEa71YlLWSOoKmgDyPTaxBvknMP1uV3+RuJ77S2Dm2rpnYDu0HQweV
-         DR49upmccKgF5/fIxwbK1KMdBPk6z3HCiKdHWVFcnobHcCPz7af2Kh7HvmvWey65JlwI
-         zLQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UJbk09k54JECCeJwupO/QMHjbng2VO6NZjwCFKC+4og=;
-        b=svmDQX4KtNNDq+zyccH3C96P25HoeBxylKtVY1En60WwmiuMK8ZgAQeLEekfWUWwUE
-         loes9gSuvm+0kPZlEK32pNjjyL6Ve7dmqBhKp6/7pSvG0woofi7AZ3Hc9JEw2fYv8ZBV
-         nkmk4PSzLUV4ivgMv0COKvAVB8XJiyXScVKAjF5eGFfSAx4HPuvf8E/HmrR2t8xlUM+K
-         lHf58xqeLEo0aOBxUZw6Y20p9Rla3Z/r9+1cPF9U/DCv8uOG1LziRMBKYVy/um6NEhfN
-         rPGgPE3xDLONmHheQAh/0PhZiCW3JqgSgahKig3VtYYnSexi0UNlsYMYPZ7u6B0lhN+j
-         DHCg==
-X-Gm-Message-State: AOAM530RmezU4gRmHhE7opnntp3iZh7YiVQ4JrErMjpKfo1EMn7OgCoj
-        L9GMT3kIC5Y0Qxb181DE2abWfIMaQyRSLg==
-X-Google-Smtp-Source: ABdhPJwmkwA0iGRzHbQiSWzVXohzJrVc80mAqOSVmzENEENf11fckshBMIKix9T+tilGqhN3Qu8P/Q==
-X-Received: by 2002:a17:90a:ca93:: with SMTP id y19mr15517752pjt.142.1628166341613;
-        Thu, 05 Aug 2021 05:25:41 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.81])
-        by smtp.gmail.com with ESMTPSA id o8sm5970906pjm.21.2021.08.05.05.25.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 05:25:41 -0700 (PDT)
-From:   Tuo Li <islituo@gmail.com>
-To:     mike.marciniszyn@cornelisnetworks.com,
-        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        baijiaju1990@gmail.com, Tuo Li <islituo@gmail.com>,
-        TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: [PATCH] IB/hfi1: Fix possible null-pointer dereference in _extend_sdma_tx_descs()
-Date:   Thu,  5 Aug 2021 05:24:12 -0700
-Message-Id: <20210805122412.130007-1-islituo@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S241333AbhHEMYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:24:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241334AbhHEMYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 08:24:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A923B61131;
+        Thu,  5 Aug 2021 12:24:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628166269;
+        bh=xAKsVXMtDsN6WuuEdbzYy00yVMILRU7K1QCm3smm7Yw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iZwoMZWB/JfyLg5LYwLD9usdBVIhng5NbAaXAQh/S9S3Bxtnp8MXRyveVo7+rxMyN
+         oIAIDcrweL4e8P6gCe6/N2gTmwWIojJ8A8qU6DGSWb6qq0+6o66xD18xakiLaD3ARc
+         07NW3nL8kNWXoMYClP5kv/6fqmp8UW4H1MOqoivc=
+Date:   Thu, 5 Aug 2021 14:24:26 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sanjay R Mehta <Sanju.Mehta@amd.com>
+Cc:     vkoul@kernel.org, dan.j.williams@intel.com,
+        Thomas.Lendacky@amd.com, Shyam-sundar.S-k@amd.com,
+        Nehal-bakulchandra.Shah@amd.com, robh@kernel.org,
+        mchehab+samsung@kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v11 3/3] dmaengine: ptdma: Add debugfs entries for PTDMA
+Message-ID: <YQvYeorB7BniIdm2@kroah.com>
+References: <1627900375-80812-1-git-send-email-Sanju.Mehta@amd.com>
+ <1627900375-80812-4-git-send-email-Sanju.Mehta@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1627900375-80812-4-git-send-email-Sanju.Mehta@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmalloc_array() is called to allocate memory for tx->descp. If it fails, 
-the function __sdma_txclean() is called:
-  __sdma_txclean(dd, tx);
+On Mon, Aug 02, 2021 at 05:32:55AM -0500, Sanjay R Mehta wrote:
+> +void ptdma_debugfs_setup(struct pt_device *pt)
+> +{
+> +	struct pt_cmd_queue *cmd_q;
+> +	char name[MAX_NAME_LEN + 1];
+> +	struct dentry *debugfs_q_instance;
+> +
+> +	if (!debugfs_initialized())
+> +		return;
+> +
+> +	debugfs_create_file("info", 0400, pt->dma_dev.dbg_dev_root, pt,
+> +			    &pt_debugfs_info_fops);
+> +
+> +	debugfs_create_file("stats", 0400, pt->dma_dev.dbg_dev_root, pt,
+> +			    &pt_debugfs_stats_fops);
+> +
+> +	cmd_q = &pt->cmd_q;
+> +
+> +	snprintf(name, MAX_NAME_LEN - 1, "q");
 
-However, in the function __sdma_txclean(), tx-descp is dereferenced if 
-tx->num_desc is not zero:
-  sdma_unmap_desc(dd, &tx->descp[0]);
+You are calling snprintf() to format a string to be "q"?  Why?  You can
+just do:
 
-To fix this possible null-pointer dereference, assign 0 to tx->num_desc if
-kmalloc_array() returns NULL.
+> +
+> +	debugfs_q_instance =
+> +		debugfs_create_dir(name, pt->dma_dev.dbg_dev_root);
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
----
- drivers/infiniband/hw/hfi1/sdma.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+debugfs_create_dir("q", pt->....)
 
-diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
-index eb15c310d63d..00e29c3dfe96 100644
---- a/drivers/infiniband/hw/hfi1/sdma.c
-+++ b/drivers/infiniband/hw/hfi1/sdma.c
-@@ -3079,8 +3079,10 @@ static int _extend_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
- 			MAX_DESC,
- 			sizeof(struct sdma_desc),
- 			GFP_ATOMIC);
--	if (!tx->descp)
-+	if (!tx->descp) {
-+		tx->num_desc = 0;
- 		goto enomem;
-+	}
- 
- 	/* reserve last descriptor for coalescing */
- 	tx->desc_limit = MAX_DESC - 1;
--- 
-2.25.1
+here instead.
 
+thanks,
+
+greg k-h
