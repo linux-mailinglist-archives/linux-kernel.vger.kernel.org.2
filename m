@@ -2,97 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EE33E1CF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352623E1CFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239425AbhHETsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:48:06 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:57317 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S237113AbhHETsE (ORCPT
+        id S239462AbhHETwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231387AbhHETwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:48:04 -0400
-Received: (qmail 436831 invoked by uid 1000); 5 Aug 2021 15:47:49 -0400
-Date:   Thu, 5 Aug 2021 15:47:49 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Jade Alglave <j.alglave@ucl.ac.uk>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210805194749.GA436115@rowland.harvard.edu>
-References: <20210605145739.GB1712909@rowland.harvard.edu>
- <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <20210606012903.GA1723421@rowland.harvard.edu>
- <20210606115336.GS18427@gate.crashing.org>
- <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
- <20210606182213.GA1741684@rowland.harvard.edu>
- <CAHk-=whDrTbYT6Y=9+XUuSd5EAHWtB9NBUvQLMFxooHjxtzEGA@mail.gmail.com>
- <YL34NZ12mKoiSLvu@hirez.programming.kicks-ass.net>
- <20210607115234.GA7205@willie-the-truck>
- <20210730172020.GA32396@knuckles.cs.ucl.ac.uk>
+        Thu, 5 Aug 2021 15:52:11 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337A8C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 12:51:57 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id m9so8651348ljp.7
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 12:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CH/S1vxA5I8GeZeVb6jLgVXcxKJTGgioM4LVcjLmIww=;
+        b=sF9eufANix5PTHYDsMIpQJRgHz57CSFrOyr8yOntdCzOHJHuRdd6Kr211Rgoh9lUZj
+         ANqjbrVZH5SEvSfCnqpANWoOrCxEkhRZSjJr9p9G8tFhvoI0cOMNI+36Ymic7Q4Ym2Y1
+         74d5b6l/po0QTBNrwfPe2J90Ust/u30xsOJdKa+fuoWxmne9pCOt6T22Sr3QfGVASYtQ
+         EW6GQSTiakWJF0HR9xXev2wP9/D5yWQ5wR0D0TXeHyK4DL4Mt9M3vSRSCmF//9rAMC4+
+         Z2aEkNvmGCvc5UKPRpE0t5iXiCiQRhhrBS5G02mcux2Gy7vKvVFo0NSiFfCRukIW9xYv
+         M8fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CH/S1vxA5I8GeZeVb6jLgVXcxKJTGgioM4LVcjLmIww=;
+        b=F/lAesZRe7RGDBvZZbtigw36XeBCJhg495P4RS6SkB3HQ6v/aLNp90+afdO5vxFnvb
+         qQ5hSGt1SLSSwmUcPFfRN/AcBKxJYxj76AMAonvX07AFFoL7JvSPW2xF6sPSQQTqIBdl
+         na0xM1j6YsXJ5BN2ozVQMkHV1E8fbqqEVEzvEGat/4rDDk0FBQp8b8BCqXmtM7BQ86T5
+         vBj/xsaJUHFx3tkylTQh9FwDYY6vUQa7bvUbG02UGxxyEtcdyovpurCMVwJMkXOso+yL
+         qowUJBbPx59J08Rtm/78VDtXFmRVd4yGJ4JinWN9pgTxszCJdkpjT8s8Lx6GQsBX8Ck2
+         FWcA==
+X-Gm-Message-State: AOAM533hH0Cbo5R82knuHjbk2h6TKJF6eYNb1EOn/OljHnH48SpBUnmC
+        AYbIkrGOXlC1VJ0OBpl/ujMUtos94EMnhpShkkuSuA==
+X-Google-Smtp-Source: ABdhPJyAVqp4dLfEEurCIL5rV06z2J2twMqwp9yzx4nkKVQIVFbTbWhEhGAohxhOMCzeCbqLPNdewFrW2gIO1hgQsc8=
+X-Received: by 2002:a2e:a911:: with SMTP id j17mr4145550ljq.341.1628193115272;
+ Thu, 05 Aug 2021 12:51:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730172020.GA32396@knuckles.cs.ucl.ac.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210803223609.1627280-1-nathan@kernel.org> <20210805185807.3296077-1-nathan@kernel.org>
+ <20210805185807.3296077-4-nathan@kernel.org>
+In-Reply-To: <20210805185807.3296077-4-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 5 Aug 2021 12:51:44 -0700
+Message-ID: <CAKwvOdkvtB0mimF-3c+jfOPrSGwWp98RZCK5+v3LGT3ZrajbaA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] staging: r8188eu: Remove pointless NULL check in rtw_check_join_candidate()
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 06:20:22PM +0100, Jade Alglave wrote:
-> I hope this material can help inform this conversation and I would love
-> to hear your thoughts.
+On Thu, Aug 5, 2021 at 11:58 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Clang warns:
+>
+> drivers/staging/r8188eu/core/rtw_mlme.c:1629:28: warning: address of
+> array 'pmlmepriv->assoc_ssid.Ssid' will always evaluate to 'true'
+> [-Wpointer-bool-conversion]
+>         if (pmlmepriv->assoc_ssid.Ssid && pmlmepriv->assoc_ssid.SsidLength) {
+>             ~~~~~~~~~~~~~~~~~~~~~~^~~~ ~~
+> 1 warning generated.
+>
+> Ssid is an array not at the beginning of a struct so its address cannot
+> be NULL so remove the check.
+>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  drivers/staging/r8188eu/core/rtw_mlme.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
+> index e3d5a721d25c..95b952871e67 100644
+> --- a/drivers/staging/r8188eu/core/rtw_mlme.c
+> +++ b/drivers/staging/r8188eu/core/rtw_mlme.c
+> @@ -1622,7 +1622,7 @@ static int rtw_check_join_candidate(struct mlme_priv *pmlmepriv
+>         }
+>
+>         /* check ssid, if needed */
+> -       if (pmlmepriv->assoc_ssid.Ssid && pmlmepriv->assoc_ssid.SsidLength) {
+> +       if (pmlmepriv->assoc_ssid.SsidLength) {
 
-Thoughts on section 3...
+Perhaps they meant to check `pmlmepriv->assoc_ssid.Ssid[0]` but the
+length should probably reflect that anyways.
 
-The paragraph on Branching Effect is pretty meager.  Exactly what 
-effects does a conditional branch instruction generate?  I imagine 
-there's a register read of the flags register, to see whether the branch 
-should be taken.  And evidently there's a branch effect, which may take 
-the register read as input but doesn't have any obvious outputs.  
-Anything else? -- there don't seem to be any register writes.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Why are Store Exclusive instructions explicitly disallowed in the 
-definition of dependency through registers?  Is this because ARM CPUs 
-don't forward values written by such instructions to po-later reads?  If 
-so, why don't they?  (Paul asked a similar question.)
+>                 if (competitor->network.Ssid.SsidLength != pmlmepriv->assoc_ssid.SsidLength ||
+>                     memcmp(competitor->network.Ssid.Ssid, pmlmepriv->assoc_ssid.Ssid, pmlmepriv->assoc_ssid.SsidLength))
+>                         goto exit;
+> --
+> 2.33.0.rc0
+>
 
-Since the recursive definition of dependency through registers starts 
-with either a register write or intrinsic order of events in an 
-instruction, it appears that there cannot be any dependency through 
-registers starting from a branching effect.  So why does the definition 
-of address dependency talk about a dependency through registers from B4 
-(a branching effect) to R2?  (Paul also asked about this -- does writing 
-to the program counter get treated as a register write?  But almost no 
-instructions explicitly read from the program counter.)
 
-What is the whole point of the special handling of branching effects in 
-the definition of address dependencies?  It isn't obvious and the text 
-doesn't explain it.
-
-Figure 26 includes a lot of terms that seem like herd primitives.  They 
-must be relatively new, because they aren't mentioned in the 
-documentation that I've got.  (I'm referring to such terms as iico_data, 
-iico_ctrl, intrinsic, same-instance, DATA, and NDATA.)  Are they 
-explained anywhere?
-
-Way back in Section 1, various Intrinsic dependency relations were 
-introduced.  The reason for treating Intrinsic control dependencies 
-specially seems to be that the CPU can speculate past such dependencies 
-(though it would be nice if the text made this point explicitly).  But 
-why do you differentiate between data and order Intrinsic dependencies?  
-Is this also related to some specific behavior of ARM CPUs?
-
-Alan
+-- 
+Thanks,
+~Nick Desaulniers
