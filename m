@@ -2,133 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B059C3E0DFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052383E0E2E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236133AbhHEGOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 02:14:05 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:36425 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230445AbhHEGOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 02:14:03 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        id S237520AbhHEGSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 02:18:42 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:35756
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236825AbhHEGR5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 02:17:57 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GgJG20Slyz9sRR;
-        Thu,  5 Aug 2021 16:13:45 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1628144028;
-        bh=AaeKzUY4cQd9+YNvX25PrxBV+zlU6inRR6HWZxDBVmU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=LOp9N8lIe4VUmzG6DfvicD53CAUxPORkm0XJwE1a9xANkRb/+6ME4NuygO5GE8Mej
-         ExH/jDhSMfhJXv4+iCYoZm0MPeG7qykHijpoR2O2QiyMoSZ54CKlTFyxl8Pb/HjWTj
-         ojQtOwC8qzNZsF3BVu9cV8r0TbyqhcXzkroai6KiQ6XpKlPgwXHkQTQ24tBc6GKh0g
-         gRcpOsuZYX4n2Qi4o2bDcTv2R8lmsHwCGjYXvrXvvDJDeomLdE66gJSKrCjtqDsR9R
-         VNv3dEHvkny4A2J7R6e5KHPZaqJzpf5ARTAhbmU0E6cXiQUp5xJhiqNrhNiRpAk+3c
-         Ea2XEXcIqSnaw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Pu Lehui <pulehui@huawei.com>, oleg@redhat.com,
-        benh@kernel.crashing.org, paulus@samba.org,
-        naveen.n.rao@linux.vnet.ibm.com, mhiramat@kernel.org,
-        christophe.leroy@csgroup.eu, peterz@infradead.org,
-        npiggin@gmail.com, ruscur@russell.cc
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        zhangjinhao2@huawei.com, xukuohai@huawei.com, pulehui@huawei.com
-Subject: Re: [PATCH] powerpc/kprobes: Fix kprobe Oops happens in booke
-In-Reply-To: <20210804143735.148547-1-pulehui@huawei.com>
-References: <20210804143735.148547-1-pulehui@huawei.com>
-Date:   Thu, 05 Aug 2021 16:13:41 +1000
-Message-ID: <87fsvoo1uy.fsf@mpe.ellerman.id.au>
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id ABE0340643
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 06:17:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628144262;
+        bh=/l4qpCPQmBoC8kqZhVgLt1Wh0qZICy0rU+2tYIrhr84=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=Ge2rKVXd0qYV5HJ1ALnKq4cEOjYgaUN5mqLPcNsmU+ZvN2gikFD7ESf+MFFVaPQ8v
+         OmMt5QZR3FfaVgQVvQySi7bbkzy+fUQy9DGPaj24wkVa6ocRcBMN3/iLZlIm3sng0C
+         8ms52+r3FNrr1yaEAdN+OIIpkgRElZbIBdEkPEDZl0qCmC+EaZ0WypuCZh09JKbPzL
+         FNbemjVUheQPjkU8A/TFllMd2kkPDbqkp3mTvDa6n/0hGZ5oZifHud3ni85GYhrR7g
+         mq5aqjz+MwKU8qqp+zfUhtPwKrzKu+FjjDbC4Y8lQiGNL8x3kD/ZuuyAO+iXuV2hqH
+         iIK04gGx+JJ1g==
+Received: by mail-ed1-f71.google.com with SMTP id y22-20020a0564023596b02903bd9452ad5cso2608829edc.20
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 23:17:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/l4qpCPQmBoC8kqZhVgLt1Wh0qZICy0rU+2tYIrhr84=;
+        b=AyOoLrVXHKqRNbvrkk/LToORa6st8lZWIsKTtns9DOLZYnYJf/D7z4EWV5+VP6i2jJ
+         ymg/PvuI5t2jc1wsahiziQWqTLg2v35Fk8odbfyLZU7a/6lr1dlfX/aAPU7vNjKu62KL
+         ApuLYhhw4BgqxNUw749LMXhJJ2tw7VlijikBz4aOHrTQQ1tOOw5Hru2VuahNibMhkaoF
+         Mtleush6bw5ShQzHSAr7rPTwVhyUUYCipT2l9N3/UUDU9rhMewcH4nuHXRlf1DYngakj
+         2k4GiTjREjkrkGueKrJsFY4rnYUfePy0YV68o6bCAYmZRIi2zBRyW9xJzput5UUvkzTd
+         Nmlw==
+X-Gm-Message-State: AOAM531ZugxCIRUULa8BxUiKvzEARSf7o/1OrypPDIVlU5RS3jMpjEr9
+        qrlmheXb2LFO2Oyf5sRI00qT7CukQI/LWgaf0gRMZI4gUdz/Nsxh8k2TLlKVo6LzVdfLHUcGtGe
+        DLFGLjjHMWSjr6PNolx0UVV+zC5EP2CnalAsF03GEoVcL7P1hfMsyJnznxg==
+X-Received: by 2002:a17:907:9d2:: with SMTP id bx18mr3154776ejc.117.1628144262358;
+        Wed, 04 Aug 2021 23:17:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJygNacTUbcuFV81B08v/ncs8QieT7alT4MAVBYt9dyBZbLuB4azxH4DJ6P2ce3YEApHx7shyEeirvVFH5uj+/o=
+X-Received: by 2002:a17:907:9d2:: with SMTP id bx18mr3154762ejc.117.1628144262115;
+ Wed, 04 Aug 2021 23:17:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210804160949.592227-1-kai.heng.feng@canonical.com> <2d594d0b06401887debd5ec462edcffdc813318a.camel@perches.com>
+In-Reply-To: <2d594d0b06401887debd5ec462edcffdc813318a.camel@perches.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 5 Aug 2021 14:17:26 +0800
+Message-ID: <CAAd53p4dXVkuBXShCesEQkPi52CuaVm3tRBnD4S13saLdEGsRQ@mail.gmail.com>
+Subject: Re: [PATCH] get_maintainer: Append parenthesis back to trimmed
+ subsystem name
+To:     Joe Perches <joe@perches.com>
+Cc:     open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pu Lehui <pulehui@huawei.com> writes:
-> When using kprobe on powerpc booke series processor, Oops happens
-> as show bellow:
+On Thu, Aug 5, 2021 at 12:22 AM Joe Perches <joe@perches.com> wrote:
 >
-> [   35.861352] Oops: Exception in kernel mode, sig: 5 [#1]
-> [   35.861676] BE PAGE_SIZE=4K SMP NR_CPUS=24 QEMU e500
-> [   35.861905] Modules linked in:
-> [   35.862144] CPU: 0 PID: 76 Comm: sh Not tainted 5.14.0-rc3-00060-g7e96bf476270 #18
-> [   35.862610] NIP:  c0b96470 LR: c00107b4 CTR: c0161c80
-> [   35.862805] REGS: c387fe70 TRAP: 0700   Not tainted (5.14.0-rc3-00060-g7e96bf476270)
-> [   35.863198] MSR:  00029002 <CE,EE,ME>  CR: 24022824  XER: 20000000
-> [   35.863577]
-> [   35.863577] GPR00: c0015218 c387ff20 c313e300 c387ff50 00000004 40000002 40000000 0a1a2cce
-> [   35.863577] GPR08: 00000000 00000004 00000000 59764000 24022422 102490c2 00000000 00000000
-> [   35.863577] GPR16: 00000000 00000000 00000040 10240000 10240000 10240000 10240000 10220000
-> [   35.863577] GPR24: ffffffff 10240000 00000000 00000000 bfc655e8 00000800 c387ff50 00000000
-> [   35.865367] NIP [c0b96470] schedule+0x0/0x130
-> [   35.865606] LR [c00107b4] interrupt_exit_user_prepare_main+0xf4/0x100
-> [   35.865974] Call Trace:
-> [   35.866142] [c387ff20] [c0053224] irq_exit+0x114/0x120 (unreliable)
-> [   35.866472] [c387ff40] [c0015218] interrupt_return+0x14/0x13c
-> [   35.866728] --- interrupt: 900 at 0x100af3dc
-> [   35.866963] NIP:  100af3dc LR: 100de020 CTR: 00000000
-> [   35.867177] REGS: c387ff50 TRAP: 0900   Not tainted (5.14.0-rc3-00060-g7e96bf476270)
-> [   35.867488] MSR:  0002f902 <CE,EE,PR,FP,ME>  CR: 20022422  XER: 20000000
-> [   35.867808]
-> [   35.867808] GPR00: c001509c bfc65570 1024b4d0 00000000 100de020 20022422 bfc655a8 100af3dc
-> [   35.867808] GPR08: 0002f902 00000000 00000000 00000000 72656773 102490c2 00000000 00000000
-> [   35.867808] GPR16: 00000000 00000000 00000040 10240000 10240000 10240000 10240000 10220000
-> [   35.867808] GPR24: ffffffff 10240000 00000000 00000000 bfc655e8 10245910 ffffffff 00000001
-> [   35.869406] NIP [100af3dc] 0x100af3dc
-> [   35.869578] LR [100de020] 0x100de020
-> [   35.869751] --- interrupt: 900
-> [   35.870001] Instruction dump:
-> [   35.870283] 40c20010 815e0518 714a0100 41e2fd04 39200000 913e00c0 3b1e0450 4bfffd80
-> [   35.870666] 0fe00000 92a10024 4bfff1a9 60000000 <7fe00008> 7c0802a6 93e1001c 7c5f1378
-> [   35.871339] ---[ end trace 23ff848139efa9b9 ]---
+> On Thu, 2021-08-05 at 00:09 +0800, Kai-Heng Feng wrote:
+> > When a closing parenthesis gets trimmed, there can be unmatched
+> > parenthesis in the subsystem name. This doesn't play well with
+> > git-send-email:
+> > (cc-cmd) Adding cc: intel-gfx@lists.freedesktop.org (open list:INTEL DRM DRIVERS (excluding Poulsbo, Moorestow...) from: 'scripts/get_maintainer.pl'
+> > Unmatched () '(open list:INTEL DRM DRIVERS (excluding Poulsbo, Moorestow...)' '' at /usr/lib/git-core/git-send-email line 554.
+> > error: unable to extract a valid address from: intel-gfx@lists.freedesktop.org (open list:INTEL DRM DRIVERS (excluding Poulsbo, Moorestow...)
+> >
+> > So append parenthesis back if it was trimmed to make git-send-email
+> > work again:
+> > (cc-cmd) Adding cc: intel-gfx@lists.freedesktop.org (open list:INTEL DRM DRIVERS (excluding Poulsbo, Mooresto...)) from: 'scripts/get_maintainer.pl'
 >
-> There is no real mode for booke arch and the MMU translation is
-> always on. The corresponding MSR_IS/MSR_DS bit in booke is used
-> to switch the address space, but not for real mode judgment.
+> Probably better just to add --norolestats to the invoking command-line.
+
+This can solve the issue beautifully, thanks!
+
 >
-> Fixes: 21f8b2fa3ca5 ("powerpc/kprobes: Ignore traps that happened in real mode")
-> Signed-off-by: Pu Lehui <pulehui@huawei.com>
-> ---
->  arch/powerpc/include/asm/ptrace.h | 6 ++++++
->  arch/powerpc/kernel/kprobes.c     | 5 +----
->  2 files changed, 7 insertions(+), 4 deletions(-)
+> > diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
+> []
+> > @@ -1252,9 +1252,10 @@ sub get_subsystem_name {
+> >
+> >
+> >      my $subsystem = $typevalue[$start];
+> >      if ($output_section_maxlen && length($subsystem) > $output_section_maxlen) {
+> > -     $subsystem = substr($subsystem, 0, $output_section_maxlen - 3);
+> > +     my $parenthesis = substr($subsystem, -1) eq ")";
+> > +     $subsystem = substr($subsystem, 0, $output_section_maxlen - ($parenthesis ? 4 : 3));
+> >       $subsystem =~ s/\s*$//;
+> > -     $subsystem = $subsystem . "...";
+> > +     $subsystem = $subsystem . "..." . ($parenthesis ? ")" : "");
 >
-> diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
-> index 3e5d470a6155..4aec1a97024b 100644
-> --- a/arch/powerpc/include/asm/ptrace.h
-> +++ b/arch/powerpc/include/asm/ptrace.h
-> @@ -187,6 +187,12 @@ static inline unsigned long frame_pointer(struct pt_regs *regs)
->  #define user_mode(regs) (((regs)->msr & MSR_PR) != 0)
->  #endif
->  
-> +#ifdef CONFIG_BOOKE
-> +#define real_mode(regs)	0
-> +#else
-> +#define real_mode(regs)	(!((regs)->msr & MSR_IR) || !((regs)->msr & MSR_DR))
-> +#endif
+> Given an $output_section_maxlen number of possible parentheses, this should
+> probably use a while...
 
-I'm not sure about this helper.
+Or maybe count the parentheses in two runs?
 
-Arguably it should only return true if both MSR_IR and MSR_DR are clear.
+diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
+index 2075db0c08b8e..08315074acffa 100755
+--- a/scripts/get_maintainer.pl
++++ b/scripts/get_maintainer.pl
+@@ -1252,9 +1252,21 @@ sub get_subsystem_name {
 
+     my $subsystem = $typevalue[$start];
+     if ($output_section_maxlen && length($subsystem) >
+$output_section_maxlen) {
++       my $need_closing = 0;
+        $subsystem = substr($subsystem, 0, $output_section_maxlen - 3);
+        $subsystem =~ s/\s*$//;
+-       $subsystem = $subsystem . "...";
++
++       if (substr($subsystem, -1) eq "(") {
++           $subsystem = substr($subsystem, 0, -2);
++       } else {
++           my $opening = () = $subsystem =~ /\(/g;
++           my $closing = () = $subsystem =~ /\)/g;
++           if ($opening != $closing) {
++               $need_closing = 1;
++           }
++       }
++
++       $subsystem = $subsystem . "..." . ($need_closing ? ")" : "");
+     }
+     return $subsystem;
 
-> diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
-> index cbc28d1a2e1b..fac9a5974718 100644
-> --- a/arch/powerpc/kernel/kprobes.c
-> +++ b/arch/powerpc/kernel/kprobes.c
-> @@ -289,10 +289,7 @@ int kprobe_handler(struct pt_regs *regs)
->  	unsigned int *addr = (unsigned int *)regs->nip;
->  	struct kprobe_ctlblk *kcb;
->  
-> -	if (user_mode(regs))
-> -		return 0;
-> -
-> -	if (!(regs->msr & MSR_IR) || !(regs->msr & MSR_DR))
-> +	if (user_mode(regs) || real_mode(regs))
->  		return 0;
-
-I think just adding an IS_ENABLED(CONFIG_BOOKE) here might be better.
-
-cheers
+>
+>
