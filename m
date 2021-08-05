@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C215C3E1850
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 205EA3E184C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242356AbhHEPmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:42:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242131AbhHEPl0 (ORCPT
+        id S242300AbhHEPln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:41:43 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43574 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242199AbhHEPl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:41:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A26C06179A
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 08:41:09 -0700 (PDT)
-Message-ID: <20210805153952.975036149@linutronix.de>
+        Thu, 5 Aug 2021 11:41:27 -0400
+Message-ID: <20210805153953.034726466@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628178068;
+        s=2020; t=1628178069;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=3IhxnMI2OIRewYxeWiR9+ECOACRr6AXapsWArm6PkW8=;
-        b=1IBg0IA32RcObnl/T8iu3pMCDzR9J6E3pKdBi1EMYU+i9kkCLPMKQcY2jPw3fwKndxydRZ
-        v+WieoS9wHVU+YR5fNz6WCcM3GKohcCTmFscwICGblfiF4F1VeJ4xqxa6vhiJ7hNJ708MA
-        W9KM9OWSVV4topYfd+QglUxngOse5+kXj+dojt5hyagv7RCPdbNBSM4gq0QcgNbYMi8ouR
-        5U++69zZPzOXGHAO0GL8XNNDfBoF+xajqgxGHASdEqo+dXNyfQ86FS6Tz1Ub/vsNe2otl8
-        159vUsZAefaa3BUa/IksMyBeCh4mmRe9sfB7QqFuzNkqAIgTft1C1zkpoxl6Qw==
+        bh=F8LxoGGkgyQYd78AdcU8ZYtDSYavqf2fzRmtAcUhUBE=;
+        b=t+MkSgaWc4fAorZ3rp0i430Wjah5qKYJ9HS60dfqP/x9Ed/evtP4B8xiXVr1oqwk81f45u
+        PlK1NqP2qq3iPx6vfkdR7EwktHKQ2IOmPtzwJtpzJPBhGtl8VX/0GMBK80BPa9fzdS0atB
+        IaGT2Jpj9VEWJVAGNO8qEuijd6RgCW/o1vL4wuT919gKxeovKlJOnRjAIGQDDo7ItStiJY
+        DAQx6jyepS9Q6BIGvhUpepFZEb5Mj0klzx6KJMBP/DpqhgCfGD8/ZN6aitcgkEc1aFiQ+p
+        qshFqb9PMfHu0Y8yOmZX1kakWHraxFQ0lgUVyWGgCb+pw4du6ro8Mhfycbz7mg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628178068;
+        s=2020e; t=1628178069;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=3IhxnMI2OIRewYxeWiR9+ECOACRr6AXapsWArm6PkW8=;
-        b=nfmg70F2jnRx4OkuXGBKfJWPU+9L9sHyTMzS49Pbi544yghxX7dbn47zBAKjl9EpQXIi3f
-        RJKCVAN69TJmcfDA==
-Date:   Thu, 05 Aug 2021 17:13:03 +0200
+        bh=F8LxoGGkgyQYd78AdcU8ZYtDSYavqf2fzRmtAcUhUBE=;
+        b=onBlVSSd2rGG7dy5u59PE1KPXIoNTJw4M0axNJVui6YYboC1XL97+8HOl9JC5Yi0MRDSqC
+        REGTQK7NdUbl8BDQ==
+Date:   Thu, 05 Aug 2021 17:13:04 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -49,7 +46,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V3 03/64] sched: Reorganize current::__state helpers
+Subject: [patch V3 04/64] sched: Prepare for RT sleeping spin/rwlocks
 References: <20210805151300.330412127@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,109 +55,195 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to avoid more duplicate implementations for the debug and
-non-debug variants of the state change macros, split the debug portion out
-and make that conditional on CONFIG_DEBUG_ATOMIC_SLEEP.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-Suggested-by: Waiman Long <longman@redhat.com>
+Waiting for spinlocks and rwlocks on non RT enabled kernels is task::state
+preserving. Any wakeup which matches the state is valid.
+
+RT enabled kernels substitutes them with 'sleeping' spinlocks. This creates
+an issue vs. task::state.
+
+In order to block on the lock the task has to overwrite task::state and a
+consecutive wakeup issued by the unlocker sets the state back to
+TASK_RUNNING. As a consequence the task loses the state which was set
+before the lock acquire and also any regular wakeup targeted at the task
+while it is blocked on the lock.
+
+To handle this gracefully add a 'saved_state' member to task_struct which
+is used in the following way:
+
+ 1) When a task blocks on a 'sleeping' spinlock, the current state is saved
+    in task::saved_state before it is set to TASK_RTLOCK_WAIT.
+
+ 2) When the task unblocks and after acquiring the lock, it restores the saved
+    state.
+
+ 3) When a regular wakeup happens for a task while it is blocked then the
+    state change of that wakeup is redirected to operate on task::saved_state.
+
+    This is also required when the task state is running because the task
+    might have been woken up from the lock wait and has not yet restored
+    the saved state.
+
+To make it complete provide the necessary helpers to save and restore the
+saved state along with the necessary documentation how the RT lock blocking
+is supposed to work.
+
+For non-RT kernels there is no functional change.
+
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V3: New patch.
+ include/linux/sched.h |   66 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ kernel/sched/core.c   |   33 +++++++++++++++++++++++++
+ 2 files changed, 99 insertions(+)
 ---
- include/linux/sched.h |   48 +++++++++++++++++++++++-------------------------
- 1 file changed, 23 insertions(+), 25 deletions(-)
-
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
-@@ -123,8 +123,6 @@ struct task_group;
- 
- #define task_is_stopped_or_traced(task)	((READ_ONCE(task->__state) & (__TASK_STOPPED | __TASK_TRACED)) != 0)
- 
--#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
--
- /*
-  * Special states are those that do not use the normal wait-loop pattern. See
-  * the comment with set_special_state().
-@@ -132,30 +130,24 @@ struct task_group;
- #define is_special_task_state(state)				\
- 	((state) & (__TASK_STOPPED | __TASK_TRACED | TASK_PARKED | TASK_DEAD))
- 
--#define __set_current_state(state_value)			\
--	do {							\
--		WARN_ON_ONCE(is_special_task_state(state_value));\
--		current->task_state_change = _THIS_IP_;		\
--		WRITE_ONCE(current->__state, (state_value));	\
--	} while (0)
--
--#define set_current_state(state_value)				\
--	do {							\
--		WARN_ON_ONCE(is_special_task_state(state_value));\
--		current->task_state_change = _THIS_IP_;		\
--		smp_store_mb(current->__state, (state_value));	\
-+#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
-+# define debug_normal_state_change(state_value)				\
-+	do {								\
-+		WARN_ON_ONCE(is_special_task_state(state_value));	\
-+		current->task_state_change = _THIS_IP_;			\
- 	} while (0)
- 
--#define set_special_state(state_value)					\
-+# define debug_special_state_change(state_value)			\
- 	do {								\
--		unsigned long flags; /* may shadow */			\
- 		WARN_ON_ONCE(!is_special_task_state(state_value));	\
--		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
+@@ -143,9 +143,22 @@ struct task_group;
  		current->task_state_change = _THIS_IP_;			\
--		WRITE_ONCE(current->__state, (state_value));		\
--		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
  	} while (0)
+ 
++# define debug_rtlock_wait_set_state()					\
++	do {								 \
++		current->saved_state_change = current->task_state_change;\
++		current->task_state_change = _THIS_IP_;			 \
++	} while (0)
++
++# define debug_rtlock_wait_restore_state()				\
++	do {								 \
++		current->task_state_change = current->saved_state_change;\
++	} while (0)
 +
  #else
-+# define debug_normal_state_change(cond)	do { } while (0)
-+# define debug_special_state_change(cond)	do { } while (0)
-+#endif
-+
- /*
-  * set_current_state() includes a barrier so that the write of current->state
-  * is correctly serialised wrt the caller's subsequent test of whether to
-@@ -194,27 +186,33 @@ struct task_group;
-  * Also see the comments of try_to_wake_up().
-  */
- #define __set_current_state(state_value)				\
--	WRITE_ONCE(current->__state, (state_value))
-+	do {								\
-+		debug_normal_state_change((state_value));		\
-+		WRITE_ONCE(current->__state, (state_value));		\
-+	} while (0)
- 
- #define set_current_state(state_value)					\
--	smp_store_mb(current->__state, (state_value))
-+	do {								\
-+		debug_normal_state_change((state_value));		\
-+		smp_store_mb(current->__state, (state_value));		\
-+	} while (0)
+ # define debug_normal_state_change(cond)	do { } while (0)
+ # define debug_special_state_change(cond)	do { } while (0)
++# define debug_rtlock_wait_set_state()		do { } while (0)
++# define debug_rtlock_wait_restore_state()	do { } while (0)
+ #endif
  
  /*
-  * set_special_state() should be used for those states when the blocking task
-  * can not use the regular condition based wait-loop. In that case we must
-- * serialize against wakeups such that any possible in-flight TASK_RUNNING stores
-- * will not collide with our state change.
-+ * serialize against wakeups such that any possible in-flight TASK_RUNNING
-+ * stores will not collide with our state change.
-  */
- #define set_special_state(state_value)					\
- 	do {								\
- 		unsigned long flags; /* may shadow */			\
-+									\
- 		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
-+		debug_special_state_change((state_value));		\
- 		WRITE_ONCE(current->__state, (state_value));		\
+@@ -213,6 +226,51 @@ struct task_group;
  		raw_spin_unlock_irqrestore(&current->pi_lock, flags);	\
  	} while (0)
  
--#endif
--
++/*
++ * PREEMPT_RT specific variants for "sleeping" spin/rwlocks
++ *
++ * RT's spin/rwlock substitutions are state preserving. The state of the
++ * task when blocking on the lock is saved in task_struct::saved_state and
++ * restored after the lock has been acquired.  These operations are
++ * serialized by task_struct::pi_lock against try_to_wake_up(). Any non RT
++ * lock related wakeups while the task is blocked on the lock are
++ * redirected to operate on task_struct::saved_state to ensure that these
++ * are not dropped. On restore task_struct::saved_state is set to
++ * TASK_RUNNING so any wakeup attempt redirected to saved_state will fail.
++ *
++ * The lock operation looks like this:
++ *
++ *	current_save_and_set_rtlock_wait_state();
++ *	for (;;) {
++ *		if (try_lock())
++ *			break;
++ *		raw_spin_unlock_irq(&lock->wait_lock);
++ *		schedule_rtlock();
++ *		raw_spin_lock_irq(&lock->wait_lock);
++ *		set_current_state(TASK_RTLOCK_WAIT);
++ *	}
++ *	current_restore_rtlock_saved_state();
++ */
++#define current_save_and_set_rtlock_wait_state()			\
++	do {								\
++		lockdep_assert_irqs_disabled();				\
++		raw_spin_lock(&current->pi_lock);			\
++		current->saved_state = current->__state;		\
++		debug_rtlock_wait_set_state();				\
++		WRITE_ONCE(current->__state, TASK_RTLOCK_WAIT);		\
++		raw_spin_unlock(&current->pi_lock);			\
++	} while (0);
++
++#define current_restore_rtlock_saved_state()				\
++	do {								\
++		lockdep_assert_irqs_disabled();				\
++		raw_spin_lock(&current->pi_lock);			\
++		debug_rtlock_wait_restore_state();			\
++		WRITE_ONCE(current->__state, current->saved_state);	\
++		current->saved_state = TASK_RUNNING;			\
++		raw_spin_unlock(&current->pi_lock);			\
++	} while (0);
++
  #define get_current_state()	READ_ONCE(current->__state)
  
  /* Task command name length: */
+@@ -668,6 +726,11 @@ struct task_struct {
+ #endif
+ 	unsigned int			__state;
+ 
++#ifdef CONFIG_PREEMPT_RT
++	/* saved state for "spinlock sleepers" */
++	unsigned int			saved_state;
++#endif
++
+ 	/*
+ 	 * This begins the randomizable portion of task_struct. Only
+ 	 * scheduling-critical items should be added above here.
+@@ -1357,6 +1420,9 @@ struct task_struct {
+ 	struct kmap_ctrl		kmap_ctrl;
+ #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
+ 	unsigned long			task_state_change;
++# ifdef CONFIG_PREEMPT_RT
++	unsigned long			saved_state_change;
++# endif
+ #endif
+ 	int				pagefault_disabled;
+ #ifdef CONFIG_MMU
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3568,14 +3568,47 @@ static void ttwu_queue(struct task_struc
+  *
+  * The caller holds p::pi_lock if p != current or has preemption
+  * disabled when p == current.
++ *
++ * The rules of PREEMPT_RT saved_state:
++ *
++ *   The related locking code always holds p::pi_lock when updating
++ *   p::saved_state, which means the code is fully serialized in both cases.
++ *
++ *   The lock wait and lock wakeups happen via TASK_RTLOCK_WAIT. No other
++ *   bits set. This allows to distinguish all wakeup scenarios.
+  */
+ static __always_inline
+ bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
+ {
++	if (IS_ENABLED(CONFIG_DEBUG_PREEMPT)) {
++		WARN_ON_ONCE((state & TASK_RTLOCK_WAIT) &&
++			     state != TASK_RTLOCK_WAIT);
++	}
++
+ 	if (READ_ONCE(p->__state) & state) {
+ 		*success = 1;
+ 		return true;
+ 	}
++
++#ifdef CONFIG_PREEMPT_RT
++	/*
++	 * Saved state preserves the task state across blocking on
++	 * a RT lock.  If the state matches, set p::saved_state to
++	 * TASK_RUNNING, but do not wake the task because it waits
++	 * for a lock wakeup. Also indicate success because from
++	 * the regular waker's point of view this has succeeded.
++	 *
++	 * After acquiring the lock the task will restore p::state
++	 * from p::saved_state which ensures that the regular
++	 * wakeup is not lost. The restore will also set
++	 * p::saved_state to TASK_RUNNING so any further tests will
++	 * not result in false positives vs. @success
++	 */
++	if (p->saved_state & state) {
++		p->saved_state = TASK_RUNNING;
++		*success = 1;
++	}
++#endif
+ 	return false;
+ }
+ 
 
