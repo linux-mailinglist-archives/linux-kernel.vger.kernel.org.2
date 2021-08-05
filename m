@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467F13E1C97
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3843E1C9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbhHETZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhHETZb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:25:31 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59036C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 12:25:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=rrLmuxgXV+8M0AVHq3xn5uFJNy/UFq1cbVRewb2LU0E=; b=bui2tZ2wcMKdPyoIDcheJQZ/ib
-        kUnzX2Qm9zW56+u0rVa978ELH0oYuA1AMDg5MYRwtGHDK+UWzrElu0Y/LHqFy5TPPNpOrPyv3toQ7
-        SyPNk0aYtRHU+8yKd2i+jcmvOelVDYt/0YKnqxjlhCxfEeZJS3s8zMDHaAV9D6ecs9rKNXFoMM+4n
-        gXSyGL5wNs/KwJMpJ9QcWSJpZapO/r9ka3C1QI47vjqIlcpbbOk2qaXg5t0+Tjf7LJBfOu+pnXfsU
-        St7jr1JJzvZ7GxDAdyU9SBJ//gEX1FC/8vWXAb4BliRXwCWGNF3hUYv5d2pApi+PG04ldkWKnXR2C
-        B10eOEoA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBizK-0069bi-ML; Thu, 05 Aug 2021 19:25:08 +0000
-Subject: Re: [kbuild-all] Re: make[2]: *** [arch/powerpc/Makefile.postlink:31:
- vmlinux] Error 1
-To:     "Chen, Rong A" <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Feng Tang <feng.tang@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <202107301612.rQ29n76B-lkp@intel.com>
- <c3e9247d-95cd-718c-d8a5-f0cd5e5a3598@infradead.org>
- <176ab0a5-72dd-dc24-be64-6919cffba9ed@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f0aa87df-89e2-05b0-52a0-c12236a1d778@infradead.org>
-Date:   Thu, 5 Aug 2021 12:25:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S241778AbhHET0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:26:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhHET0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 15:26:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE8A860D07;
+        Thu,  5 Aug 2021 19:25:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628191555;
+        bh=k8L/Ltlw63soxka83qnmxC/gaq+y1TowO7Y0MWuG5h0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Hjmutc8VKaQIMGpTtCDm9S6zpTXcSnJDiB+9Rhx0w/oIjC6n4qCtYJt1qZm4Sq4h2
+         gVIkqT1nDncR2y+LxKX6jY5/TV3M/WVAsfBoYd9MgsvBCXHHBz5wmCsEcchtUGVswM
+         vNJalVWzjkfIXgpjx9jKwHDag4HJTIGRoYP+OetGwgb/rO6DMBmR/4nX93ZD3yVm+s
+         9tVuQmUYcnjiDpj4SElNNbagybJJOoqCAEme7mtdqcDg1yUnDj6nUwwJGEqMQAnHfO
+         U1SlMGQ9+RBbGopftCmChU3xG0yqAtfR5Nh4clQ63a+2btitZ+692pIoZ1m+trAqUe
+         3gL2QRXCWfQ0Q==
+Message-ID: <ce95d07e585ce8ff184c26c9b26c8211921f1546.camel@kernel.org>
+Subject: Re: [PATCH v2] ceph: fix possible null-pointer dereference in
+ ceph_mdsmap_decode()
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Tuo Li <islituo@gmail.com>, idryomov@gmail.com
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        baijiaju1990@gmail.com, TOTE Robot <oslab@tsinghua.edu.cn>
+Date:   Thu, 05 Aug 2021 15:25:53 -0400
+In-Reply-To: <20210805151434.142619-1-islituo@gmail.com>
+References: <20210805151434.142619-1-islituo@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-In-Reply-To: <176ab0a5-72dd-dc24-be64-6919cffba9ed@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/21 3:28 AM, Chen, Rong A wrote:
+On Thu, 2021-08-05 at 08:14 -0700, Tuo Li wrote:
+> kcalloc() is called to allocate memory for m->m_info, and if it fails,
+> ceph_mdsmap_destroy() behind the label out_err will be called:
+>   ceph_mdsmap_destroy(m);
 > 
+> In ceph_mdsmap_destroy(), m->m_info is dereferenced through:
+>   kfree(m->m_info[i].export_targets);
 > 
-> On 8/4/2021 11:10 AM, Randy Dunlap wrote:
->> On 7/30/21 1:29 AM, kernel test robot wrote:
->>> tree: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>> head:   764a5bc89b12b82c18ce7ca5d7c1b10dd748a440
->>> commit: cf536e185869d4815d506e777bcca6edd9966a6e Makefile: extend 32B aligned debug option to 64B aligned
->>> date:   10 weeks ago
->>> config: powerpc64-randconfig-c023-20210730 (attached as .config)
->>> compiler: powerpc-linux-gcc (GCC) 10.3.0
->>> reproduce (this is a W=1 build):
->>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>>          chmod +x ~/bin/make.cross
->>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cf536e185869d4815d506e777bcca6edd9966a6e
->>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>          git fetch --no-tags linus master
->>>          git checkout cf536e185869d4815d506e777bcca6edd9966a6e
->>>          # save the attached .config to linux build tree
->>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross ARCH=powerpc64
->>>
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kernel test robot <lkp@intel.com>
->>>
->>> All errors (new ones prefixed by >>):
->>>
->>>>> make[2]: *** [arch/powerpc/Makefile.postlink:31: vmlinux] Error 1
->>>
->>> ---
->>
->> Hi ktr/lkp,
->>
->> This is not "All errors". I suggest that you improve your output by
->> (also) grepping for "ERROR:", so that the following lines would be
->> included here:
->>
->> ERROR: start_text address is c000000000000200, should be c000000000000100
->> ERROR: try to enable LD_HEAD_STUB_CATCH config option
->> ERROR: see comments in arch/powerpc/tools/head_check.sh
+> To fix this possible null-pointer dereference, check m->m_info before the 
+> for loop to free m->m_info[i].export_targets.
 > 
-> Hi Randy,
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Tuo Li <islituo@gmail.com>
+> ---
+> v2:
+> * Put an "if (m->m_info)" around the for loop in ceph_mdsmap_destroy()
+> instead of freeing m and returning -ENOMEM in ceph_mdsmap_decode().
+>   Thank Jeff Layton for helpful advice.
+> ---
+>  fs/ceph/mdsmap.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
-> Thanks for the advice, the "ERROR:" lines weren't redirected to stderr, so the bot didn't notice them, it looks difficult to change the output.
+> diff --git a/fs/ceph/mdsmap.c b/fs/ceph/mdsmap.c
+> index abd9af7727ad..26d6fa049b44 100644
+> --- a/fs/ceph/mdsmap.c
+> +++ b/fs/ceph/mdsmap.c
+> @@ -393,9 +393,11 @@ struct ceph_mdsmap *ceph_mdsmap_decode(void **p, void *end, bool msgr2)
+>  void ceph_mdsmap_destroy(struct ceph_mdsmap *m)
+>  {
+>  	int i;
+> -
+> -	for (i = 0; i < m->possible_max_rank; i++)
+> -		kfree(m->m_info[i].export_targets);
+> +	
 
-Hi Rong,
+This patch added some whitespace damage above. I went ahead and fixed it
+up before merging.
 
-So 0day bot only checks stderr for errors?
-That is almost reasonable (IMO).
+> +	if (m->m_info) {
+> +		for (i = 0; i < m->possible_max_rank; i++)
+> +			kfree(m->m_info[i].export_targets);
+> +	}
+>  	kfree(m->m_info);
 
-Michael, in the file arch/powerpc/tools/head_check.sh,
-what do you think about redirecting all of the ERROR: lines
-to stdout (echo "..." >&2)?
+I also moved the above kfree into the if statement since we have to
+check it anyway (no need to do it twice).
 
+>  	kfree(m->m_data_pg_pools);
+>  	kfree(m);
 
-> Best Regards,
-> Rong Chen
-> 
->>
->>
->> and yes, enabling LD_HEAD_STUB_CATCH does fix this build error.
-
-
-
->> thanks.
-
+Merged! Thanks for the patch.
 -- 
-~Randy
+Jeff Layton <jlayton@kernel.org>
 
