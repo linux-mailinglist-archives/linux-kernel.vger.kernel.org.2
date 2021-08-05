@@ -2,177 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D253E113B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DCD3E1141
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237788AbhHEJWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 05:22:24 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:59100 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236825AbhHEJWX (ORCPT
+        id S236711AbhHEJZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 05:25:36 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16049 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhHEJZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:22:23 -0400
-Received: from mailhost.synopsys.com (us03-mailhost2.synopsys.com [10.4.17.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id CF3B040C23;
-        Thu,  5 Aug 2021 09:22:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1628155329; bh=sB7bxPxYLhOSCJUlqZaHorD23szwXuAT37xh33E4zps=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=jPAoehWR5HjdniGAkHyN0ZeLk+KSpWYwrdKF1Sur7m2k7xX3io1EI4Eb22e7NJsBH
-         b8a6aA1VZ3XLcWAmlKL5QTOa62aTHeJQ0GuIMIFc0QT6VNdB29W/h927qEy+ibTYs3
-         6IpbzCtCP2o7fmL2FzqA0tiGvPVFNZK1/ZVENomgsmERLJqpvPtuZD/O+EZmxBKOXy
-         f13JEzNni845NsDUKNIjRchJ8kDe2JrkN9LI9mAzlOVQNIhZdf5zBhM97w4rjhvEC4
-         0vh3C/WfGm3vF3CZU8lmtBs/DhWB/fTIb2+4BvZp6TK2RYh2wCGLC93/+si9BsbRdw
-         6IbKNF7szscqg==
-Received: from o365relay-in.synopsys.com (us03-o365relay1.synopsys.com [10.4.161.137])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "o365relay-in.synopsys.com", Issuer "Entrust Certification Authority - L1K" (verified OK))
-        by mailhost.synopsys.com (Postfix) with ESMTPS id 4E231A0081;
-        Thu,  5 Aug 2021 09:22:07 +0000 (UTC)
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2041.outbound.protection.outlook.com [104.47.73.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 71E0180219;
-        Thu,  5 Aug 2021 09:22:07 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=hminas@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="DE5R0s2/";
-        dkim-atps=neutral
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NqWbnuWOEHrO4VlHxXovvse6efNw2no/3umHgSSQ+ILnbnOFXFhM8OGnvTHhsOE4zswvWvrufQ2F/rpCKuu5IYoElXCXEaVmOSfR6gipzxXkinIV+bHkaaA0GfhRs5+JG0cjbMU9mkoyX6zTQJ19XTTgncz3183NZKPJ8znDYgjPyl4elhfaBKJR9Eyc/jhzLmWSb0zn8+OP6gDRBrhWeWnBMYltTdFS9Si3tH2UgPjE1qpcV57l3tzN49Sa3kyG/va53waF5NYs/oUUoucwRNJxRxs6XuXKNupaRzlyz45Fou1eZmpBt0VwT4NX4cNhZHCEI8RuKRNIHXuVcywDfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sB7bxPxYLhOSCJUlqZaHorD23szwXuAT37xh33E4zps=;
- b=Hag+/HgCwmSenB5EM9t4ZXF4peWmFn9KF7xoMV0nYmQflQCnMxetOX3PZQ93bDDDaeEbBNXTaxdEe6HD6BRe447VAtggbrYswmnFF0dXuogmuc+lY9yivA/Qp/KF7n2RSnUMMjDtd4KaqlS7njIWQ0Ixh7T7kFHn/3wWYtBeDTni6lg0bvdKv8omxqsPD3o4Rzl+2XMTPho00kQmuJyod2Lwp5UeIB692ABQfyOpfkLSuihkSbyXlcGDaktyJZ9S42h+GanHp4xL+eln6inCgutnZWZeQmyRIX/oXElSk59zNaxNcAhUyMeuw8jGtQEcv5gaHtkuu11+1s7qQdtVBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sB7bxPxYLhOSCJUlqZaHorD23szwXuAT37xh33E4zps=;
- b=DE5R0s2/vUbTUkwh2pixA+t2DqConVJM9jSGW52MbFlVwHczsPsDYr16Q77OlY5AD7GVj0omlxVWk5mhw0Hq70xsREUgWNyIVfpiAYVWEe7O/o/AzmWXixuoWy/fRIzEWFlPM9/XNlfePIb4hpH+RKdRL+eEWCCgkkaohcXqEDU=
-Received: from DM4PR12MB5390.namprd12.prod.outlook.com (2603:10b6:5:39a::12)
- by DM4PR12MB5311.namprd12.prod.outlook.com (2603:10b6:5:39f::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Thu, 5 Aug
- 2021 09:22:05 +0000
-Received: from DM4PR12MB5390.namprd12.prod.outlook.com
- ([fe80::d97c:7079:8a93:cd4]) by DM4PR12MB5390.namprd12.prod.outlook.com
- ([fe80::d97c:7079:8a93:cd4%3]) with mapi id 15.20.4373.026; Thu, 5 Aug 2021
- 09:22:05 +0000
-X-SNPS-Relay: synopsys.com
-From:   Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 1/2] usb: dwc2: rename DWC2_POWER_DOWN_PARAM_NONE state
-Thread-Topic: [PATCH 1/2] usb: dwc2: rename DWC2_POWER_DOWN_PARAM_NONE state
-Thread-Index: AQHXiSYbucVglw0ktUGxisP/QMlkOatkoqEAgAABxwA=
-Date:   Thu, 5 Aug 2021 09:22:05 +0000
-Message-ID: <b7855705-892c-14e5-0290-ce7c49b87121@synopsys.com>
-References: <CGME20210804114433eucas1p134417b605abeb57728d358fc2f42162b@eucas1p1.samsung.com>
- <20210804114421.10282-1-m.szyprowski@samsung.com>
- <YQusPurbybrNly+b@kroah.com>
-In-Reply-To: <YQusPurbybrNly+b@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=synopsys.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1084e823-548e-4fc9-bbe2-08d957f27dbe
-x-ms-traffictypediagnostic: DM4PR12MB5311:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM4PR12MB5311C04100C22DB3465D0AB9A7F29@DM4PR12MB5311.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cVYbwiaSGurpk57Vrsfdy6EB3ycQh8Po+hEBlj7IYVWuZdKQBeozBRXjS88inhVcWoNHCoRo46B+JeKXRbvCfzewwXDp50em19Gm2j6FzFUVBCcW4xcxYBJmkMRPxgZqFU3fyIgTagKkUltH55Wdf2R7eiDJd1kaXLKgU462ggIkw0OTvAAgZgRAXYWZt2tHtDaBveXys669gm5U4SVTkeXoxbRdY2ipbaNdqKKqnhNJRq5peDNzg/LawdUXw7o43ZguI8pgYZxxrq5UFtTwbi3jwlXkFtQaLDb/oRsxeaiSR7wLknep8btZ8s4OUiO7W7Vq5kxHUUzE7wDfimfXDVhzwZX6vsKp0JjhUHFJ1jPieKw4N0iwtCwZDgTZlkc1V3bodnXoLe9YldVbs7/WEFLm4IFdyev6I2RlWn4NiYzyNPL5wtCFzxJ71n5t1Zii4FlnBGSz0/WVP1vGEMOwNHp5bbMYCCjFlzNdsNCPKKklayDbdB8Jo9M2gUSohj3HZ2FPFwladSOgNKT0yEKOs4uaVB+7TKoLIvjwwDYZF6/RlDf6k+dXWHHCGUdNccC8d+i4h0KJsWPv0VDmI+nVQrUl8LihWe1fY3tTFEx96IkZHDL4IAwXXbfYew1qyz/dlOsMpCH83Ls8vEWEPnhYcrTKacehotpzVQ/0me7tcq3oQehg9cAU0IeOw1K/QDDaKO51c13ZJJQ6it3g3GqZiCOZTVjgNigOLy2VuiGeeS162ntuWLVW7NWmx6fXhFd8q0JwzFuccfEceoFSHXOdX6lVKwNfy5xVjza7+AovaSQMCdSngRh5lgW9h+blCSVOX5uQOTMkumYOrTDbNjU4u8Wnl3EWh/ur32Gtc/un3n4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5390.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6506007)(26005)(38100700002)(122000001)(53546011)(966005)(66446008)(508600001)(186003)(4326008)(316002)(110136005)(64756008)(66556008)(76116006)(54906003)(91956017)(31686004)(83380400001)(2906002)(8936002)(66476007)(66946007)(71200400001)(38070700005)(36756003)(2616005)(31696002)(6486002)(86362001)(4744005)(5660300002)(8676002)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VTh5cVlkdXZ3SlYrZE9hK1BZRDNmWlVKNUFFbnJWTUUyczVhR0NMQ0lwOVF4?=
- =?utf-8?B?eE1kM1UrYkgzWnNYNTFqc3VxUjZYcEZEY3RjT3RqSTJ4UFpIUncxYnQ2UnVl?=
- =?utf-8?B?UzFtUTRRNjNNV0hKNkZnNHBrWUIrMUxuM0c0OFNSREdUUEpna2dEYzFhYjVs?=
- =?utf-8?B?QzU3UHlGRC91MlZmM01iWDlvVGZYRVpReThjalhqTGJSSUV3akpVSlBZRERX?=
- =?utf-8?B?eW5adm1jaE1LODl1NTlEUUowSmhNOCsvMmxMMnJLWUF0VlZmTEhURnlONGhP?=
- =?utf-8?B?Ylc5ZGJhT0NyWkkyODNHN2E3cS9LcHF3L2o4ZVFabnVkWVFZaGJhVHNPaXNO?=
- =?utf-8?B?K2V4bWZFaXdiZllTd2hEVE4vektHWDJZVmpjOFlMZVRIZ3p1cXBDN1dIajU0?=
- =?utf-8?B?b3VyM1lOK2h2dXI3RDNmUFhwOGN3NHZNRXZ5aGRnUHNoRjhMRWR6aFlscVpN?=
- =?utf-8?B?Q2ZhM2NsclVZQ093ckdma0dvaVJmNVlVUk41VS80WStoL0FmV3F2Vm5VTm1H?=
- =?utf-8?B?U3U2R3BQMHhkeUN3R0dTYlVuMDJJRlptSmxVRnBaWFJEcVJPSVZUR04zakla?=
- =?utf-8?B?Nm45WXBLd25mVlNBcWhJYzZuRnNDdXBFOGlwdzcvN2E4bDlrS1Fid3dzdHJu?=
- =?utf-8?B?dU9uL3l4KzZvc3pZSGNscWlPbXR6RGNSM0NQeElrRTlZWlFVemdqUm10dndj?=
- =?utf-8?B?dUZ5WnlEZTlhU2xhNEJ1ZStFb3cva2Y3bEx2MHRYUXQ5N0NKZWVlVW1yUUlN?=
- =?utf-8?B?dTQyZFZZTGk1WEh0dU0zSHE2OVpNckxCWXAyVTh2eFdWS3hzL1pSNmpoMFA2?=
- =?utf-8?B?YXlQdmE0a3JkUTYvYk1iQmppektUMnBvN2N1MFVnK3YxUThRaUhJRkRrMzlK?=
- =?utf-8?B?REQ5cHhzUVBpbXQ5ekNnUHh2akpGcnIzRmREMy9vZkd1bjVPZXJweEVJakhp?=
- =?utf-8?B?dG1zblRoRXoyejk1Tk53d0xwTmFSS2NCOStXTjRkT0NyTHZqWmppVHhwVUdh?=
- =?utf-8?B?cy9Vc1dMeGQzdWpDUDQrZWdvWnZJME9SZTZ5ZmNlYXBTZGpPaTJmUm92N2tN?=
- =?utf-8?B?WXZLTTdWWGloaXBVdGFEVDJmMWJMbVJ0dGZZUjlTd3JScy9jMjJtRWU4RERI?=
- =?utf-8?B?K0FQdjBFZE1jUVA4U0Rtdkp4T2picFlWdEJxVGQxRUlhQWljaVd1VzhUYUE2?=
- =?utf-8?B?cGI2Wk41VXNnR2hIZVFqbDhTWlRqbUdrMno1UkwvREFFWUN3NWdGaUFEL1BJ?=
- =?utf-8?B?Yi9ZVGliMURPUTlLMWlsbUtEWFJiUnlSdnNQd2hGcncxMXFrWWNraFZwQ1A3?=
- =?utf-8?B?L2xCNkpJVVA1Y2RYVzFyZWhHZ09XWkV6dWdtUGJ1QWI3Vjh4NnFOVGtEZU1m?=
- =?utf-8?B?ZDFwTmpHeGNZVTM5WGlPUytrcmYxOFcwYk5sbDJwdnlpbkhLMjJkdWFqQXQ3?=
- =?utf-8?B?a3FyV1hHbUQzT2F3cTR6Y1JBa1VEc3lFWjcyQzdIWE5tcHcyWDNscU9od2xX?=
- =?utf-8?B?SkMxa1NrMmZTbVZGSy96NWVCZ3UwZllDMUk3S0k0S01NdG9sdzFPZHpFQzlw?=
- =?utf-8?B?MHp4VXZoQzFCd0FFbDF5SG5qYURoNEZ0WHBtZDZpTDdlZjRNR2xDakMwL3lX?=
- =?utf-8?B?YnNQODY5NmgzZ0dwR2NpdzI4Yzk1RndJcVlCTnQ4cW9ua2tOUkFnaGhGSzJM?=
- =?utf-8?B?REhNVFRNWkFHQ2Jwcld3bzEyN2pFVzVmTFpBcDhlby9oT3dJS2pHeHhrOWV6?=
- =?utf-8?Q?aP92o0Ifnq4Q7xl0z2E/utOwspta0qXd+xPu4WT?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AED39C068D195C4D950F6E3893E1B40A@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 5 Aug 2021 05:25:35 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GgNQx2lxTzZxK2;
+        Thu,  5 Aug 2021 17:21:45 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 17:25:19 +0800
+Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
+ (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 5 Aug
+ 2021 17:25:19 +0800
+Subject: Re: [PATCH v2] arm64: kprobe: Enable OPTPROBE for arm64
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+CC:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
+        <davem@davemloft.net>, <linux-arm-kernel@lists.infradead.org>,
+        <song.bao.hua@hisilicon.com>, <prime.zeng@hisilicon.com>,
+        <robin.murphy@arm.com>, <f.fangjian@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20210804060209.95817-1-liuqi115@huawei.com>
+ <20210805105401.4acd3217c566b4e3933f355c@kernel.org>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <d3e0c9ee-19b5-8042-d251-05348e8ac49e@huawei.com>
+Date:   Thu, 5 Aug 2021 17:25:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5390.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1084e823-548e-4fc9-bbe2-08d957f27dbe
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2021 09:22:05.2641
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rhkdVnGgkztXA5mFnAvXRmKJv1QMkssC/HstIk0w4TSXvcC2poyqHedCtuRlQxM0u/FU3BBhNBJKKdsRxucreQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5311
+In-Reply-To: <20210805105401.4acd3217c566b4e3933f355c@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.203]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgR3JlZywNCg0KT24gOC81LzIwMjEgMToxNSBQTSwgR3JlZyBLSCB3cm90ZToNCj4gT24gV2Vk
-LCBBdWcgMDQsIDIwMjEgYXQgMDE6NDQ6MjBQTSArMDIwMCwgTWFyZWsgU3p5cHJvd3NraSB3cm90
-ZToNCj4+IERXQzJfUE9XRVJfRE9XTl9QQVJBTV9OT05FIHJlYWxseSBtZWFucyB0aGF0IHRoZSBk
-cml2ZXIgc3RpbGwgdXNlcyBjbG9jaw0KPj4gZ2F0aW5nIHRvIHNhdmUgcG93ZXIgd2hlbiBoYXJk
-d2FyZSBpcyBub3QgdXNlZC4gUmVuYW1lIHRoZSBzdGF0ZSBuYW1lIHRvDQo+PiBEV0MyX1BPV0VS
-X0RPV05fUEFSQU1fQ0xPQ0tfR0FUSU5HIHRvIG1hdGNoIHRoZSBkcml2ZXIgYmVoYXZpb3IuDQo+
-Pg0KPj4gU3VnZ2VzdGVkLWJ5OiBNaW5hcyBIYXJ1dHl1bnlhbiA8TWluYXMuSGFydXR5dW55YW5A
-c3lub3BzeXMuY29tPg0KPj4gU2lnbmVkLW9mZi1ieTogTWFyZWsgU3p5cHJvd3NraSA8bS5zenlw
-cm93c2tpQHNhbXN1bmcuY29tPg0KPj4gLS0tDQo+PiBUaGlzIGlzIGEgZm9sbG93LXVwIG9mIHRo
-aXMgZGlzY3Vzc2lvbjoNCj4+IGh0dHBzOi8vdXJsZGVmZW5zZS5jb20vdjMvX19odHRwczovL2xv
-cmUua2VybmVsLm9yZy9saW51eC11c2IvMjYwOTlkZTEtODI2Zi00MmJmLTBkZTctNzU5YTQ3ZmFm
-NGEwQHNhbXN1bmcuY29tL19fOyEhQTRGMlI5R19wZyFMRzAxMkU0THpPNHFWZ1daSHVfM2VUYlo1
-em1kSTRxRU5IYk91dUx3bS1JbGhIRjlLS0lhWXlKTmFZMnZYZWckDQo+Pg0KPj4gVGhpcyBzaG91
-bGQgYmUgYXBwbGllZCBvbiB0b3Agb2YgdjUuMTQtcmMzLg0KPiANCj4gV2hhdCBlbHNlIHdvdWxk
-IEkgYXBwbHkgaXQgb24gdG9wIG9mLCB3ZSBjYW4ndCBnbyBiYWNrIGluIHRpbWUgOikNCj4gDQo+
-IFdoZXJlIGlzIHRoaXMgbmVlZGVkIGZvciA1LjE0LWZpbmFsLCBvciBmb3IgNS4xNS1yYzE/DQo+
-IA0KDQpJIHdvdWxkIHByZWZlciB0byBhcHBseSB0byA1LjE0LWZpbmFsLiBKdXN0IEkgbmVlZCAx
-IG1vcmUgZGF5IHRvIA0KY29tcGxldGUgdGVzdGluZy4gSGF2ZSBJIHRoaXMgYWRkaXRpb25hbCBk
-YXk/DQoNClRoYW5rcywNCk1pbmFzDQoNCj4gdGhhbmtzLA0KPiANCj4gZ3JlZyBrLWgNCj4gDQoN
-Cg==
+
+Hi Masami,
+
+On 2021/8/5 9:54, Masami Hiramatsu wrote:
+> On Wed, 4 Aug 2021 14:02:09 +0800
+> Qi Liu <liuqi115@huawei.com> wrote:
+> 
+>> This patch introduce optprobe for ARM64. In optprobe, probed
+>> instruction is replaced by a branch instruction to detour
+>> buffer. Detour buffer contains trampoline code and a call to
+>> optimized_callback(). optimized_callback() calls opt_pre_handler()
+>> to execute kprobe handler.
+>>
+>> Limitations:
+>> - We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
+>> guarantee the offset between probe point and kprobe pre_handler
+>> is not larger than 128MiB.
+>>
+>> Performance of optprobe on Hip08 platform is test using kprobe
+>> example module[1] to analyze the latency of a kernel function,
+>> and here is the result:
+>>
+>> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/samples/kprobes/kretprobe_example.c
+>>
+>> kprobe before optimized:
+>> [280709.846380] do_empty returned 0 and took 1530 ns to execute
+>> [280709.852057] do_empty returned 0 and took 550 ns to execute
+>> [280709.857631] do_empty returned 0 and took 440 ns to execute
+>> [280709.863215] do_empty returned 0 and took 380 ns to execute
+>> [280709.868787] do_empty returned 0 and took 360 ns to execute
+>> [280709.874362] do_empty returned 0 and took 340 ns to execute
+>> [280709.879936] do_empty returned 0 and took 320 ns to execute
+>> [280709.885505] do_empty returned 0 and took 300 ns to execute
+>> [280709.891075] do_empty returned 0 and took 280 ns to execute
+>> [280709.896646] do_empty returned 0 and took 290 ns to execute
+>> [280709.902220] do_empty returned 0 and took 290 ns to execute
+>> [280709.907807] do_empty returned 0 and took 290 ns to execute
+>>
+>> optprobe:
+>> [ 2965.964572] do_empty returned 0 and took 90 ns to execute
+>> [ 2965.969952] do_empty returned 0 and took 80 ns to execute
+>> [ 2965.975332] do_empty returned 0 and took 70 ns to execute
+>> [ 2965.980714] do_empty returned 0 and took 60 ns to execute
+>> [ 2965.986128] do_empty returned 0 and took 80 ns to execute
+>> [ 2965.991507] do_empty returned 0 and took 70 ns to execute
+>> [ 2965.996884] do_empty returned 0 and took 70 ns to execute
+>> [ 2966.002262] do_empty returned 0 and took 80 ns to execute
+>> [ 2966.007642] do_empty returned 0 and took 70 ns to execute
+>> [ 2966.013020] do_empty returned 0 and took 70 ns to execute
+>> [ 2966.018400] do_empty returned 0 and took 70 ns to execute
+>> [ 2966.023779] do_empty returned 0 and took 70 ns to execute
+>> [ 2966.029158] do_empty returned 0 and took 70 ns to execute
+>>
+>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+>>
+>> ---
+>>
+>> Changes since V1:
+>> - Address the comments from Masami, checks for all branch instructions, and
+>> use aarch64_insn_patch_text_nosync() instead of aarch64_insn_patch_text()
+>> in each probe.
+> 
+> Is it safe for the multicore system? If it is safe because it modifies
+> just one instruction (modifying 32bit in atomic), I understand it.
+
+Seems raw_spin_lock_irqsave is used in aarch64_insn_patch_text_nosync() 
+and spinlock could support a protection in multicore system.
+> BTW, anyway, you should use _nosync() variant in arch_prepare_optimized_kprobe()
+> too, beacause the optprobe insn buffer is not touched until the probed instruction
+> is optimized by br.
+> 
+Yes, sounds resonable.
+> [...]
+>> +int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *orig)
+>> +{
+>> +	kprobe_opcode_t *code;
+>> +	u32 insn;
+>> +	int ret, i;
+>> +	void *addrs[TMPL_END_IDX];
+>> +	void *addr;
+>> +
+>> +	code = get_optinsn_slot();
+>> +	if (!code)
+>> +		return -ENOMEM;
+>> +
+>> +	if (!is_offset_in_range((unsigned long)code,
+>> +				(unsigned long)orig->addr + 8))
+>> +		goto error;
+>> +
+>> +	if (!is_offset_in_range((unsigned long)code + TMPL_CALL_BACK,
+>> +				(unsigned long)optimized_callback))
+>> +		goto error;
+>> +
+>> +	if (!is_offset_in_range((unsigned long)&code[TMPL_RESTORE_END],
+>> +				(unsigned long)op->kp.addr + 4))
+>> +		goto error;
+>> +
+>> +	/* Setup template */
+>> +	for (i = 0; i < TMPL_END_IDX; i++)
+>> +		addrs[i] = code + i;
+>> +
+>> +	ret = aarch64_insn_patch_text(addrs, optprobe_template_entry,
+>> +				      TMPL_END_IDX);
+> 
+> You should use aarch64_insn_patch_text_nosync() here (and all the
+> aarch64_insn_patch_text() in this function too), because the insn
+> buffer must not executed until the probe point is optimized.
+> 
+aarch64_insn_patch_text() could patch multi instructions to code[] each 
+time and aarch64_insn_patch_text_nosync() could only patch one 
+instruction each time, so maybe aarch64_insn_patch_text() is better here.
+
+I'll replace other aarch64_insn_patch_text() in this function.
+
+Thanks,
+Qi
+
+>> +	if (ret < 0)
+>> +		goto error;
+>> +
+>> +	/* Set probe information */
+>> +	addr = code + TMPL_VAL_IDX;
+>> +	insn =  (unsigned long long)op & 0xffffffff;
+>> +	aarch64_insn_patch_text(&addr, &insn, 1);
+>> +
+>> +	addr = addr + 4;
+>> +	insn = ((unsigned long long)op & GENMASK_ULL(63, 32)) >> 32;
+>> +	aarch64_insn_patch_text(&addr, &insn, 1);
+>> +
+>> +	addr = code + TMPL_CALL_BACK;
+>> +	insn =  aarch64_insn_gen_branch_imm((unsigned long)addr,
+>> +				(unsigned long)optimized_callback,
+>> +				AARCH64_INSN_BRANCH_LINK);
+>> +	aarch64_insn_patch_text(&addr, &insn, 1);
+>> +
+>> +	/* The original probed instruction */
+>> +	addr = code + TMPL_RESTORE_ORIGN_INSN;
+>> +	insn =  orig->opcode;
+>> +	aarch64_insn_patch_text(&addr, &insn, 1);
+>> +
+>> +	/* Jump back to next instruction */
+>> +	addr = code + TMPL_RESTORE_END;
+>> +	insn = aarch64_insn_gen_branch_imm(
+>> +				(unsigned long)(&code[TMPL_RESTORE_END]),
+>> +				(unsigned long)(op->kp.addr) + 4,
+>> +				AARCH64_INSN_BRANCH_NOLINK);
+>> +	aarch64_insn_patch_text(&addr, &insn, 1);
+>> +
+>> +	flush_icache_range((unsigned long)code,
+>> +			   (unsigned long)(&code[TMPL_END_IDX]));
+>> +	/* Set op->optinsn.insn means prepared. */
+>> +	op->optinsn.insn = code;
+>> +
+>> +	return 0;
+> 
+> Thank you,
+> 
+> 
+> 
+
