@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E460C3E1849
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 108C73E184A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242150AbhHEPlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:41:32 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43516 "EHLO
+        id S242294AbhHEPlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:41:36 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43534 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242050AbhHEPlT (ORCPT
+        with ESMTP id S242122AbhHEPlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:41:19 -0400
-Message-ID: <20210805153952.857071447@linutronix.de>
+        Thu, 5 Aug 2021 11:41:21 -0400
+Message-ID: <20210805153952.915852871@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628178064;
+        s=2020; t=1628178066;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=PpGuo07G9t6v+7usOIACbdlfiq93zM9BMMU3eJZRQkc=;
-        b=CU9j4CTwunF6bzRZ96LzuGA5YHIs+gl+5cccQlzz/UZz8TGXty1953gF/etQ0qOAookDbF
-        zjWwf7ADbCTxM1Vq3igf0Y1AlweIMr/fBL5lK2lDZdZLryiZvqf64QPDoOe5Dfg9drHCRW
-        xGgAVWTbE6IpPCvbA011lBsJeJr0dcbVQo/51hiJo/Er5Jn0iHvKduUkxzSbTdwL3LpRbc
-        S8yhRDIVBHZWNwCMWAu3WKzHl/+uFg59cD2FpVI359pPRhV2ckYXCK6pEQyM+u8V6nRw4L
-        hBHWQyZcaBSw8vbrvJ4PpuWjbgF0heh7Fmro7YRnbDlLziZMcvfMUL/KqV/CPQ==
+        bh=WIMYaUbQvMHlYNNUFXv+w1HG9bfXJ2KrG4bDzh/ft1Q=;
+        b=P57u8dF3oUNaFZmBBtp0d4/EFTZc5pO01USUfb7cjgCRwNh+S8CQiD4hjUr5fYnQrbVW6c
+        ZJVzO0H2/UYPcC6Eb/7/bcbRok6VLAgztzf2Orrs+IVMbVJb4dHikHF/LutRuymf7djSL3
+        MRBchAP6kjpydbshtouH3oi7OxyHBKoJEPo/JFsh+eRh/TO/6U75ykXoYUdy/VrphOFCFf
+        egRaW0WFekCfVp62wJguirOmcF8ImytfM46ydFMXvUOMmHOHW9akRH4RK7sbtgyP8gDftn
+        77FCRGAbiiuiVYu/iPTk0dTfeSyDaMuF80Em542OXtGvipy3epwyB+mAPYBL/Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628178064;
+        s=2020e; t=1628178066;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=PpGuo07G9t6v+7usOIACbdlfiq93zM9BMMU3eJZRQkc=;
-        b=hoCU1boixuQXstoyd/mktg6vgrkDthGQkqIKcTWuJ6DFXaxTFLYHqhVqc1jgqvGSqlnyqF
-        TrSRv/xZ1ewC6lCg==
-Date:   Thu, 05 Aug 2021 17:13:01 +0200
+        bh=WIMYaUbQvMHlYNNUFXv+w1HG9bfXJ2KrG4bDzh/ft1Q=;
+        b=ssoydGluFe63D7B62elZGLZvTqIx8TlFfWzDCOoA1xyMUEG5byu6xSn4g7o3Gtbl/Khyi4
+        uKYkujOxsZUBgMCw==
+Date:   Thu, 05 Aug 2021 17:13:02 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -46,7 +46,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V3 01/64] sched: Split out the wakeup state check
+Subject: [patch V3 02/64] sched: Introduce TASK_RTLOCK_WAIT
 References: <20210805151300.330412127@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,75 +57,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-RT kernels have a slightly more complicated handling of wakeups due to
-'sleeping' spin/rwlocks. If a task is blocked on such a lock then the
-original state of the task is preserved over the blocking and any regular
-(non lock related) wakeup has to be targeted at the saved state to ensure
-that these wakeups are not lost. Once the task acquired the lock it
-restores the task state from the saved state.
+RT kernels have an extra quirk for try_to_wake_up() to handle task state
+preservation across blocking on a 'sleeping' spin/rwlock.
 
-To avoid cluttering try_to_wake_up() with that logic, split the wake up
-state check out into an inline helper and use it at both places where
-task::state is checked against the state argument of try_to_wake_up().
+For this to function correctly and under all circumstances try_to_wake_up()
+must be able to identify whether the wakeup is lock related or not and
+whether the task is waiting for a lock or not.
 
-No functional change.
+The original approach was to use a special wake_flag argument for
+try_to_wake_up() and just use TASK_UNINTERRUPTIBLE for the tasks wait state
+and the try_to_wake_up() state argument.
+
+This works in principle, but due to the fact that try_to_wake_up() cannot
+determine whether the task is waiting for a RT lock wakeup or for a regular
+wakeup it's suboptimal.
+
+RT kernels save the original task state when blocking on a RT lock and
+restore it when the lock has been acquired. Any non lock related wakeup is
+checked against the saved state and if it matches the saved state is set to
+running so that the wakeup is not lost when the state is restored.
+
+While the necessary logic for the wake_flag based solution is trivial the
+downside is that any regular wakeup with TASK_UNINTERRUPTIBLE in the state
+argument set will wake the task despite the fact that it is still blocked
+on the lock. That's not a fatal problem as the lock wait has do deal with
+spurious wakeups anyway, but it introduces unnecessary latencies.
+
+Introduce the TASK_RTLOCK_WAIT state bit which will be set when a task
+blocks on a RT lock.
+
+The lock wakeup will use wake_up_state(TASK_RTLOCK_WAIT) so both the
+waiting state and the wakeup state are distinguishable, which avoids
+spurious wakeups and allows better analysis.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/sched/core.c |   24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ include/linux/sched.h |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 ---
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3564,6 +3564,22 @@ static void ttwu_queue(struct task_struc
- }
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -95,7 +95,9 @@ struct task_group;
+ #define TASK_WAKING			0x0200
+ #define TASK_NOLOAD			0x0400
+ #define TASK_NEW			0x0800
+-#define TASK_STATE_MAX			0x1000
++/* RT specific auxilliary flag to mark RT lock waiters */
++#define TASK_RTLOCK_WAIT		0x1000
++#define TASK_STATE_MAX			0x2000
  
- /*
-+ * Invoked from try_to_wake_up() to check whether the task can be woken up.
-+ *
-+ * The caller holds p::pi_lock if p != current or has preemption
-+ * disabled when p == current.
-+ */
-+static __always_inline
-+bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
-+{
-+	if (READ_ONCE(p->__state) & state) {
-+		*success = 1;
-+		return true;
-+	}
-+	return false;
-+}
-+
-+/*
-  * Notes on Program-Order guarantees on SMP systems.
-  *
-  *  MIGRATION
-@@ -3702,10 +3718,9 @@ try_to_wake_up(struct task_struct *p, un
- 		 *  - we're serialized against set_special_state() by virtue of
- 		 *    it disabling IRQs (this allows not taking ->pi_lock).
- 		 */
--		if (!(READ_ONCE(p->__state) & state))
-+		if (!ttwu_state_match(p, state, &success))
- 			goto out;
- 
--		success = 1;
- 		trace_sched_waking(p);
- 		WRITE_ONCE(p->__state, TASK_RUNNING);
- 		trace_sched_wakeup(p);
-@@ -3720,14 +3735,11 @@ try_to_wake_up(struct task_struct *p, un
- 	 */
- 	raw_spin_lock_irqsave(&p->pi_lock, flags);
- 	smp_mb__after_spinlock();
--	if (!(READ_ONCE(p->__state) & state))
-+	if (!ttwu_state_match(p, state, &success))
- 		goto unlock;
- 
- 	trace_sched_waking(p);
- 
--	/* We're going to change ->state: */
--	success = 1;
--
- 	/*
- 	 * Ensure we load p->on_rq _after_ p->state, otherwise it would
- 	 * be possible to, falsely, observe p->on_rq == 0 and get stuck
+ /* Convenience macros for the sake of set_current_state: */
+ #define TASK_KILLABLE			(TASK_WAKEKILL | TASK_UNINTERRUPTIBLE)
 
