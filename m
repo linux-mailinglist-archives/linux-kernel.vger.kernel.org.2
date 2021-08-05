@@ -2,80 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 739703E13A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718F93E13AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240921AbhHELOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:14:33 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:37496 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240826AbhHELOa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:14:30 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Ui1z.hC_1628162053;
-Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Ui1z.hC_1628162053)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 05 Aug 2021 19:14:13 +0800
-Subject: Re: [PATCH v3 1/2] tty: hvc: pass DMA capable memory to put_chars()
-To:     Jiri Slaby <jirislaby@kernel.org>, gregkh@linuxfoundation.org,
-        amit@kernel.org, arnd@arndb.de, osandov@fb.com
-Cc:     linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210804025453.93543-1-xianting.tian@linux.alibaba.com>
- <0f26a1c3-53e8-9282-69e8-8d81a9cafc59@kernel.org>
- <f1b92c7d-0eaf-4eac-ecd2-fbb74fb63b52@kernel.org>
-From:   Xianting Tian <xianting.tian@linux.alibaba.com>
-Message-ID: <202cf491-5cdd-999f-d556-a5ebd2b4e266@linux.alibaba.com>
-Date:   Thu, 5 Aug 2021 19:14:13 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        id S240931AbhHELSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:18:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232896AbhHELSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 07:18:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01ED2600EF;
+        Thu,  5 Aug 2021 11:17:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628162269;
+        bh=AsV/wDbpXC+UOCKSfs8l5fzQWjjqdm3HA4mMajue9/E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jcAzjAPrg3YBlPkj1H7r6YAfJXoCH1Ndh5cB22qa4K4rV3uuq5NbbafmcItCgLpO7
+         YgEAAt/Yk2A07O9Y3RqHm8KPmqL0S+EgcwGr27LI9ajPA3QbCaFdcOypiy7fu7vMTw
+         TwHj1njGqqru3KEW8Iqwc/5ks7zg9IP2YPOuYd8E=
+Date:   Thu, 5 Aug 2021 13:17:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jhih-Ming Huang <fbihjmeric@gmail.com>
+Cc:     fabioaiuto83@gmail.com, ross.schm.dev@gmail.com,
+        maqianga@uniontech.com, marcocesati@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v7] rtw_security: fix cast to restricted __le32
+Message-ID: <YQvI2z/W+Crfb4CE@kroah.com>
+References: <YOIGbc2ymnWrThVK@kroah.com>
+ <20210801155152.242089-1-fbihjmeric@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <f1b92c7d-0eaf-4eac-ecd2-fbb74fb63b52@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210801155152.242089-1-fbihjmeric@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 01, 2021 at 11:51:52PM +0800, Jhih-Ming Huang wrote:
+> This patch fixes the sparse warning of fix cast to restricted __le32.
+> 
+> There was a change for replacing private CRC-32 routines with in kernel
+> ones.
+> However, the author used le32_to_cpu to convert crc32_le(), and we
+> should use cpu_to_le32.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Jhih-Ming Huang <fbihjmeric@gmail.com>
+> ---
+>  changes from v6:
+>    using get_unaligned_le32 to get the value and comparing it with crc,
+>    instead of using memcmp with raw pointers.
+> 
+>  drivers/staging/rtl8723bs/core/rtw_security.c | 12 +++---------
+>  1 file changed, 3 insertions(+), 9 deletions(-)
 
-在 2021/8/5 下午4:09, Jiri Slaby 写道:
-> On 05. 08. 21, 9:58, Jiri Slaby wrote:
->> Hi,
->>
->> On 04. 08. 21, 4:54, Xianting Tian wrote:
->>> @@ -933,6 +949,16 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, 
->>> int data,
->>>       hp->outbuf_size = outbuf_size;
->>>       hp->outbuf = &((char *)hp)[ALIGN(sizeof(*hp), sizeof(long))];
->
-> This deserves cleanup too. Why is "outbuf" not "char outbuf[0] 
-> __ALIGNED__" at the end of the structure? The allocation would be 
-> easier (using struct_size()) and this line would be gone completely.
-I will make the cleanup in v4.
->
->>> +    /*
->>> +     * hvc_con_outbuf is guaranteed to be aligned at least to the
->>> +     * size(N_OUTBUF) by kmalloc().
->>> +     */
->>> +    hp->hvc_con_outbuf = kzalloc(N_OUTBUF, GFP_KERNEL);
->>> +    if (!hp->hvc_con_outbuf)
->>> +        return ERR_PTR(-ENOMEM);
->>
->> This leaks hp, right?
->
-> Actually, why don't you make
-> char c[N_OUTBUF] __ALIGNED__;
->
-> part of struct hvc_struct directly?
-thanks, it a good idea, I will change it in v4.
->
->> BTW your 2 patches are still not threaded, that is hard to follow.
->>
->>> +
->>> +    spin_lock_init(&hp->hvc_con_lock);
->>> +
->>>       tty_port_init(&hp->port);
->>>       hp->port.ops = &hvc_port_ops;
->>
->> thanks,
+Does not apply to the tree :(
