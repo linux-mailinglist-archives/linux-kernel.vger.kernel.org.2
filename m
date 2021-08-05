@@ -2,169 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61303E1911
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033553E1915
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242894AbhHEQHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 12:07:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242883AbhHEQHB (ORCPT
+        id S231390AbhHEQHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 12:07:54 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.171]:18308 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhHEQHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 12:07:01 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E5DC0613D5
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 09:06:45 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so16013625pjs.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 09:06:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gS8FXqlIEEYizkg3i3gXTEp2lHp5Ys6haxL7lS48eI8=;
-        b=miRBqZUA8BbUIlZohBuu/kNx4j1tzah82MIu4dyhQGdEA0VMlmks9FBmM8o1OfLbDE
-         LGg4+1FIyJnQojI0aE/D+9o3NVgjua82cVV6t/gUhboPyFCqN1Ga74AYWV9Jbb2ojx+G
-         uLC4Pgxq4AkM+pZeaTQLCNQU/tyWOi6ibMtFPKZz+vvNd09+DzLB69uQbWRTkmc8Ikfq
-         yXXsy0CRAsx1PBm96IIT769fOoDdkgQRaP/gRlJsFrRJ/tLJTCkzqB8ZYW0zLfb48Ts2
-         Rdm/QpnNp4zkbO2BE0eQBajw936AYGGnR1Oh5MUJEzCS3tgshADKN0dnaEhaBa0UlrpL
-         oszA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gS8FXqlIEEYizkg3i3gXTEp2lHp5Ys6haxL7lS48eI8=;
-        b=H3gVQNVAoOdefUvmGOTEMWRdFzNOl9UhNGT4Cd3MRxWNUZU3f8393x5E4jffWaEXbl
-         3W7xwMKqUt3IImySS0zGLXQsurYJqCpoLLLfUfWvUVGu5pCOqsHV2adVp/z/Uo9XJ1gi
-         b3v0ogYZZMrDf/hTbmKn4i1mR4otTy3fjCnC7AIiWs7/3ueQDMHRr7aF2JucravN7jQi
-         kT5zXwVKQCDnEIVlvMH4sWeB0R+6v7dbzDFXfFy2SFHU6Nhn3CUoeImK2w6+2bgN8vG8
-         q/lLsHzX9JSuWJmNhPSMYAtSwrAmKGE8uwdQH/bmMwmuQpc4CVWInm3Z4T7eAXBXPAmC
-         NJNA==
-X-Gm-Message-State: AOAM533tASmz7QVf2DdnwxkhdIdIxcWUUpwHusEeAY9Rw8WoD8IDk0/x
-        NwRZSsBScTVr1RgMLlOKMtJnKA==
-X-Google-Smtp-Source: ABdhPJxelZ+Nxxc4JwbVy64K4qs/9MVt5N26BOgWzQ/3UeKKo3CG9tIj7GO/UOHPjDVmDR4y9iuAoQ==
-X-Received: by 2002:a17:90a:150d:: with SMTP id l13mr5379126pja.93.1628179605081;
-        Thu, 05 Aug 2021 09:06:45 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id a21sm10421833pjo.15.2021.08.05.09.06.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 09:06:44 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 16:06:41 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>
-Subject: Re: [RFC PATCH v2 41/69] KVM: x86: Add infrastructure for stolen GPA
- bits
-Message-ID: <YQwMkbBFUuNGnGFw@google.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <c958a131ded780808a687b0f25c02127ca14418a.1625186503.git.isaku.yamahata@intel.com>
- <20210805234424.d14386b79413845b990a18ac@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805234424.d14386b79413845b990a18ac@intel.com>
+        Thu, 5 Aug 2021 12:07:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628179642;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=TK4Z4SGFS8N8geJ9iPm+eTLiTkHLkJnX7aTss4SlKQM=;
+    b=ZXlkVoOBf575FzjuzPu7Z2k0mk6nsQYnpyymLg0ZhYe/I2KvVNqvKOVZa0uZ4tZQMP
+    gjFq6HmGXTQB+AcaNXcMG5FkwvkEo4QLWA4Wps/ewyASgGhtu306yP22re/vCGABvWOA
+    3Rq8dKeFNu0D2t76f/RdtWHkmCY1p2OvjofJrwNgLnaFcJ0mswQYykyVYyBCBA8pBSoY
+    E3EeSkfYoX3qz5mkhOU4Z8Kpfa0QlkTUAiLgJ6mHnzoNeM8UlQoFhfEH6lOGe7qYMIsU
+    z7bDicNTYPmpZGk51rIfXtKK1Y7mmDpklLF6L7A6A3N5JMfP5WEOdVd+xfPFbJ+hc0oF
+    BEPg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw4rovw=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.31.0 DYNA|AUTH)
+    with ESMTPSA id Q02727x75G7L7X8
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Thu, 5 Aug 2021 18:07:21 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v2 8/8] [RFC] drm/ingenic: convert to component framework
+ for jz4780 hdmi
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <YQv+DC5yTEGlJYuD@pendragon.ideasonboard.com>
+Date:   Thu, 5 Aug 2021 18:07:20 +0200
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
+        Paul Boddie <paul@boddie.org.uk>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <BDF501D1-BA1D-4866-8EAF-3862F6CEC6F4@goldelico.com>
+References: <cover.1628172477.git.hns@goldelico.com>
+ <77554dd2612f418f6ab74a8be06c82b71410e0e6.1628172477.git.hns@goldelico.com>
+ <YQv+DC5yTEGlJYuD@pendragon.ideasonboard.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021, Kai Huang wrote:
-> On Fri, 2 Jul 2021 15:04:47 -0700 isaku.yamahata@intel.com wrote:
-> > From: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> > @@ -2020,6 +2032,7 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
-> >  	sp = kvm_mmu_alloc_page(vcpu, direct);
-> >  
-> >  	sp->gfn = gfn;
-> > +	sp->gfn_stolen_bits = gfn_stolen_bits;
-> >  	sp->role = role;
-> >  	hlist_add_head(&sp->hash_link, sp_list);
-> >  	if (!direct) {
-> > @@ -2044,6 +2057,13 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
-> >  	return sp;
-> >  }
-> 
-> 
-> Sorry for replying old thread,
+Hi Laurent,
 
-Ha, one month isn't old, it's barely even mature.
+> Am 05.08.2021 um 17:04 schrieb Laurent Pinchart =
+<laurent.pinchart@ideasonboard.com>:
+>=20
+> Hi Nikolaus,
+>=20
+> Thank you for the patch.
+>=20
+> On Thu, Aug 05, 2021 at 04:07:57PM +0200, H. Nikolaus Schaller wrote:
+>> This patch attempts to convert the ingenic-dw-hdmi driver
+>> into a version that uses the component framework.
+>=20
+> Why ? What problem would this solve ?
 
-> but to me it looks weird to have gfn_stolen_bits
-> in 'struct kvm_mmu_page'.  If I understand correctly, above code basically
-> means that GFN with different stolen bit will have different 'struct
-> kvm_mmu_page', but in the context of this patch, mappings with different
-> stolen bits still use the same root,
+Well, it was suggested in a v1 we did post several months ago. I have =
+not
+looked up by whom and do not exactly remember the reasons.
 
-You're conflating "mapping" with "PTE".  The GFN is a per-PTE value.  Yes, there
-is a final GFN that is representative of the mapping, but more directly the final
-GFN is associated with the leaf PTE.
+We now simply thought that it is common style since dome dw-hdmi drivers
+make use of it but some others don't. And we got it working without.
 
-TDX effectively adds the restriction that all PTEs used for a mapping must have
-the same shared/private status, so mapping and PTE are somewhat interchangeable
-when talking about stolen bits (the shared bit), but in the context of this patch,
-the stolen bits are a property of the PTE.
+If it is not needed/requested by anyone, we can drop it from v3 (or add =
+later).
 
-Back to your statement, it's incorrect.  PTEs (effectively mappings in TDX) with
-different stolen bits will _not_ use the same root.  kvm_mmu_get_page() includes
-the stolen bits in both the hash lookup and in the comparison, i.e. restores the
-stolen bits when looking for an existing shadow page at the target GFN.
-
-@@ -1978,9 +1990,9 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
-                role.quadrant = quadrant;
-        }
-
--       sp_list = &vcpu->kvm->arch.mmu_page_hash[kvm_page_table_hashfn(gfn)];
-+       sp_list = &vcpu->kvm->arch.mmu_page_hash[kvm_page_table_hashfn(gfn_and_stolen)];
-        for_each_valid_sp(vcpu->kvm, sp, sp_list) {
--               if (sp->gfn != gfn) {
-+               if ((sp->gfn | sp->gfn_stolen_bits) != gfn_and_stolen) {
-                        collisions++;
-                        continue;
-                }
-
-> which means gfn_stolen_bits doesn't make a lot of sense at least for root
-> page table. 
-
-It does make sense, even without a follow-up patch.  In Rick's original series,
-stealing a bit for execute-only guest memory, there was only a single root.  And
-except for TDX, there can only ever be a single root because the shared EPTP isn't
-usable, i.e. there's only the regular/private EPTP.
-
-> Instead, having gfn_stolen_bits in 'struct kvm_mmu_page' only makes sense in
-> the context of TDX, since TDX requires two separate roots for private and
-> shared mappings.
-
-> So given we cannot tell whether the same root, or different roots should be
-> used for different stolen bits, I think we should not add 'gfn_stolen_bits' to
-> 'struct kvm_mmu_page' and use it to determine whether to allocate a new table
-> for the same GFN, but should use a new role (i.e role.private) to determine.
-
-A new role would work, too, but it has the disadvantage of not automagically
-working for all uses of stolen bits, e.g. XO support would have to add another
-role bit.
-
-> And removing 'gfn_stolen_bits' in 'struct kvm_mmu_page' could also save some
-> memory.
-
-But I do like saving memory...  One potentially bad idea would be to unionize
-gfn and stolen bits by shifting the stolen bits after they're extracted from the
-gpa, e.g.
-
-	union {
-		gfn_t gfn_and_stolen;
-		struct {
-			gfn_t gfn:52;
-			gfn_t stolen:12;
-		}
-	};
-
-the downsides being that accessing just the gfn would require an additional masking
-operation, and the stolen bits wouldn't align with reality.
+BR and thanks,
+Nikolaus=
