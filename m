@@ -2,124 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1363E171E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 656E03E172F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241849AbhHEOmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:42:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:47416 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229892AbhHEOmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:42:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C9A531B;
-        Thu,  5 Aug 2021 07:42:04 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 59A733F66F;
-        Thu,  5 Aug 2021 07:42:03 -0700 (PDT)
-Subject: Re: [PATCH] iommu/arm-smmu-v3: Remove some unneeded init in
- arm_smmu_cmdq_issue_cmdlist()
-To:     John Garry <john.garry@huawei.com>, will@kernel.org
-Cc:     joro@8bytes.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com
-References: <1624293394-202509-1-git-send-email-john.garry@huawei.com>
- <ee1f3ab5-3acc-f442-f2d2-898cf88bc447@arm.com>
- <45a8af4f-4202-ecd8-0882-507acf9b2eb2@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <577a625a-4fc5-7402-8e4f-4e0e5be93144@arm.com>
-Date:   Thu, 5 Aug 2021 15:41:57 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <45a8af4f-4202-ecd8-0882-507acf9b2eb2@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+        id S242013AbhHEOpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 10:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233059AbhHEOnK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 10:43:10 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965E1C061765;
+        Thu,  5 Aug 2021 07:42:56 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id C14C51F44097
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+To:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev
+Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ezequiel Garcia <elezegarcia@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
+Subject: [PATCH v3 00/10] VP9 codec V4L2 control interface
+Date:   Thu,  5 Aug 2021 16:42:36 +0200
+Message-Id: <20210805144246.11998-1-andrzej.p@collabora.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-05 14:40, John Garry wrote:
-> On 05/08/2021 12:24, Robin Murphy wrote:
->> On 2021-06-21 17:36, John Garry wrote:
->>> Members of struct "llq" will be zero-inited, apart from member 
->>> max_n_shift.
->>> But we write llq.val straight after the init, so it was pointless to 
->>> zero
->>> init those other members. As such, separately init member max_n_shift
->>> only.
->>>
->>> In addition, struct "head" is initialised to "llq" only so that member
->>> max_n_shift is set. But that member is never referenced for "head", so
->>> remove any init there.
->>>
->>> Removing these initializations is seen as a small performance 
->>> optimisation,
->>> as this code is (very) hot path.
->>
->> I looked at this and immediately thought "surely the compiler can see 
->> that all the prod/cons/val fields are written anyway and elide the 
->> initialisation?", so I dumped the before and after disassembly, and... 
->> oh.
->>
->> You should probably clarify that it's zero-initialising all the 
->> cacheline padding which is both pointless and painful. With that,
->>
->> Reviewed-by: Robin Murphy <robin.murphy@arm.com>
->>
->> However, having looked this closely I'm now tangentially wondering why 
->> max_n_shift isn't inside the padded union? It's read at the same time 
->> as both prod and cons by queue_has_space(), and never updated, so 
->> there doesn't appear to be any benefit to it being in a separate 
->> cacheline all by itself, and llq is already twice as big as it needs 
->> to be.
-> 
-> I think that the problem is if the prod+cons 64b value and the shift are 
-> on the same cacheline, then we have a chance of accessing a stale 
-> cacheline twice:
-> 
-> static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
->                         u64 *cmds, int n, bool sync)
-> {
->      u64 cmd_sync[CMDQ_ENT_DWORDS];
->      u32 prod;
->      unsigned long flags;
->      bool owner;
->      struct arm_smmu_cmdq *cmdq = &smmu->cmdq;
->      struct arm_smmu_ll_queue llq = {
->          .max_n_shift = cmdq->q.llq.max_n_shift,    // here
->      }, head = llq;
->      int ret = 0;
-> 
->      /* 1. Allocate some space in the queue */
->      local_irq_save(flags);
->      llq.val = READ_ONCE(cmdq->q.llq.val);    // and again here
-> 
-> 
-> since cmdq->q.llq is per-SMMU. If max_n_shift is on a separate 
-> cacheline, then it should never be stale.
+Dear all,
 
-Ah, right, even though the accesses are always going to be close 
-together, I suppose it could still technically cause some false sharing 
-if someone else is trying to update prod at exactly the right time. I 
-guess that might be why we need the explicit padding there in the first 
-place, it's just a shame that it ends up wasting even more space with 
-implicit padding at the end too (and I have a vague memory that trying 
-to force member alignment and structure packing at the same time doesn't 
-work well). Oh well.
+This patch series adds VP9 codec V4L2 control interface and two drivers
+using the new controls. It is a follow-up of previous RFC v2 series [1].
 
-> I suppose they could be combined into a smaller sub-struct and loaded in 
-> a single operation, but it looks messy, and prob without much gain.
+In this new iteration, we've implemented VP9 hardware decoding on two devices:
+Rockchip VDEC and Hantro G2, and tested on RK3399, i.MX8MQ and i.MX8MP.
+The i.MX8M driver needs proper power domains support, though, which is a
+subject of a different effort, but in all 3 cases we were able to run the
+drivers.
 
-Indeed I wouldn't say that saving memory is the primary concern here, 
-and any more convoluted code is hardly going to help performance. Plus 
-it still wouldn't help the other cases where we're just copying the size 
-into a fake queue to do some prod arithmetic - I hadn't fully clocked 
-what was going on there when I skimmed through things earlier.
+GStreamer support is also available, the needed changes have been submitted
+by Daniel Almeida [2]. This MR is ready to be merged, and just needs the
+VP9 V4L2 controls to be merged and released.
 
-Disregarding the bogus layout change, though, do you reckon the rest of 
-my idea makes sense?
+Both rkvdec and hantro drivers are passing a significant number of VP9 tests
+using Fluster[3]. There are still a few tests that are not passing, due to
+dynamic frame resize (not yet supported by V4L2) and small size videos
+(due to IP block limitations).
 
-Cheers,
-Robin.
+The series adds the VP9 codec V4L2 control API as uAPI, so it aims at being
+merged without passing through staging, as agreed[4]. The ABI has been checked
+for padding and verified to contain no holes. Please note, though,
+that I kindly ask not to merge this until Nicolas Dufresne reviews it.
+
+[1] https://patchwork.linuxtv.org/project/linux-media/cover/20210505123836.9573-1-andrzej.p@collabora.com/
+[2] https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/merge_requests/2144
+[3] https://github.com/fluendo/fluster
+[4] https://lore.kernel.org/linux-media/b8f83c93-67fd-09f5-9314-15746cbfdc61@xs4all.nl/
+
+Changes related to the RFC v2:
+
+- added another driver including a postprocessor to de-tile
+        codec-specific tiling
+- reworked uAPI structs layout to follow VP8 style
+- changed validation of loop filter params
+- changed validation of segmentation params
+- changed validation of VP9 frame params
+- removed level lookup array from loop filter struct
+        (can be computed by drivers)
+- renamed some enum values to match the spec more closely
+- V4L2 VP9 library changed the 'eob' member of
+        'struct v4l2_vp9_frame_symbol_counts' so that it is an array
+        of pointers instead of an array of pointers to arrays
+        (IPs such as g2 creatively pass parts of the 'eob' counts in
+        the 'coeff' counts)
+- factored out several repeated portions of code
+- minor nitpicks and cleanups
+
+The series depends on the YUV tiled format support prepared by Ezequiel:
+https://patchwork.linuxtv.org/project/linux-media/list/?series=6049.
+
+Andrzej Pietrasiewicz (4):
+  media: uapi: Add VP9 stateless decoder controls
+  media: Add VP9 v4l2 library
+  media: hantro: Prepare for other G2 codecs
+  media: hantro: Support VP9 on the G2 core
+
+Boris Brezillon (1):
+  media: rkvdec: Add the VP9 backend
+
+Ezequiel Garcia (5):
+  hantro: postproc: Fix motion vector space size
+  hantro: postproc: Introduce struct hantro_postproc_ops
+  hantro: Simplify postprocessor
+  hantro: Add quirk for NV12/NV12_4L4 capture format
+  media: hantro: Support NV12 on the G2 core
+
+ .../userspace-api/media/v4l/biblio.rst        |   10 +
+ .../media/v4l/ext-ctrls-codec-stateless.rst   |  545 +++++
+ .../media/v4l/pixfmt-compressed.rst           |   15 +
+ .../media/v4l/vidioc-g-ext-ctrls.rst          |    8 +
+ .../media/v4l/vidioc-queryctrl.rst            |   12 +
+ .../media/videodev2.h.rst.exceptions          |    2 +
+ drivers/media/v4l2-core/Kconfig               |    4 +
+ drivers/media/v4l2-core/Makefile              |    1 +
+ drivers/media/v4l2-core/v4l2-ctrls-core.c     |  174 ++
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c     |    8 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
+ drivers/media/v4l2-core/v4l2-vp9.c            | 1850 +++++++++++++++++
+ drivers/staging/media/hantro/Kconfig          |    1 +
+ drivers/staging/media/hantro/Makefile         |    7 +-
+ drivers/staging/media/hantro/hantro.h         |   40 +-
+ drivers/staging/media/hantro/hantro_drv.c     |   18 +-
+ drivers/staging/media/hantro/hantro_g2.c      |   27 +
+ .../staging/media/hantro/hantro_g2_hevc_dec.c |   31 -
+ drivers/staging/media/hantro/hantro_g2_regs.h |  104 +
+ .../staging/media/hantro/hantro_g2_vp9_dec.c  |  978 +++++++++
+ drivers/staging/media/hantro/hantro_hw.h      |   83 +-
+ .../staging/media/hantro/hantro_postproc.c    |   79 +-
+ drivers/staging/media/hantro/hantro_v4l2.c    |   20 +
+ drivers/staging/media/hantro/hantro_vp9.c     |  240 +++
+ drivers/staging/media/hantro/hantro_vp9.h     |  103 +
+ drivers/staging/media/hantro/imx8m_vpu_hw.c   |   38 +-
+ .../staging/media/hantro/rockchip_vpu_hw.c    |    7 +-
+ .../staging/media/hantro/sama5d4_vdec_hw.c    |    3 +-
+ drivers/staging/media/rkvdec/Kconfig          |    1 +
+ drivers/staging/media/rkvdec/Makefile         |    2 +-
+ drivers/staging/media/rkvdec/rkvdec-vp9.c     | 1078 ++++++++++
+ drivers/staging/media/rkvdec/rkvdec.c         |   52 +-
+ drivers/staging/media/rkvdec/rkvdec.h         |   12 +-
+ include/media/v4l2-ctrls.h                    |    4 +
+ include/media/v4l2-vp9.h                      |  182 ++
+ include/uapi/linux/v4l2-controls.h            |  433 ++++
+ include/uapi/linux/videodev2.h                |    6 +
+ 37 files changed, 6108 insertions(+), 71 deletions(-)
+ create mode 100644 drivers/media/v4l2-core/v4l2-vp9.c
+ create mode 100644 drivers/staging/media/hantro/hantro_g2.c
+ create mode 100644 drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+ create mode 100644 drivers/staging/media/hantro/hantro_vp9.c
+ create mode 100644 drivers/staging/media/hantro/hantro_vp9.h
+ create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
+ create mode 100644 include/media/v4l2-vp9.h
+
+
+base-commit: bfee75f73c37a2f46a6326eaa06f5db701f76f01
+-- 
+2.17.1
+
