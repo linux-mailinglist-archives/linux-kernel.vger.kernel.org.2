@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08B83E0F8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFFD3E0F91
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234188AbhHEHts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 03:49:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229674AbhHEHtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 03:49:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8D3760E52;
-        Thu,  5 Aug 2021 07:49:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628149772;
-        bh=8V+u9ge4g03YYnm+FPxnFp01rnH/4iSe0E9VA7TrEdk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CmHw5yb4esLTnKfFpAaoQ8pxDVHHmm8BYTMBcsvZQEMl7aB5eIJ6qcdTstvlPal8d
-         swb2mwhd1jyaDp6Vyjpg0nZ+lkIwymc2EemWpdneueZtABBYvr7M162Ls9umiWe+pX
-         CeqDl9K35PslCTkOrpCFgZx7daNA+em/DYu8UtjM=
-Date:   Thu, 5 Aug 2021 09:49:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-Message-ID: <YQuYCePPZEmVbkfc@kroah.com>
-References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQrqhYEL64CSLRTy@kroah.com>
- <f2b1d564-8174-f8e9-9fee-12e938c6d846@linux.intel.com>
+        id S238733AbhHEHuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 03:50:12 -0400
+Received: from mail-ed1-f52.google.com ([209.85.208.52]:38700 "EHLO
+        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229674AbhHEHuL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 03:50:11 -0400
+Received: by mail-ed1-f52.google.com with SMTP id y7so7062533eda.5;
+        Thu, 05 Aug 2021 00:49:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9imV97Ad6WYuvPH2ugJvx2YUE8x6OeUHcu+XGnBPGbQ=;
+        b=r8s3MRApQfsvCWQi29fqXPwI0mJaxcZ6HaH20OtkTdK1ItJ2V7AGQvJ9S2iqGpDZ/f
+         dvw1+j4Q1x21yhtOnzw4RyaogB0BhCX1A8NXSguzTq09qLL2bq/sMo7WYcl943RkC/JF
+         pzKodynCHZUzA/xJD47+YRuBpKO5/v2Iuzqx/Xc4lQWSxXFVcqwV71Cl33R9FBr7zr36
+         GOkjLw30+E4NFXU5TPOcP39zSOzZIzpmaXN27z/YVXczNGmlTxn5kARbVqR73F9DFkuy
+         h4z0jVgJ5jmUhpIPCWk0h6GU5c2xBbBT6njiZvcKBsVE/6xao9dMVAsXB4vYVvhbNrve
+         +6rA==
+X-Gm-Message-State: AOAM533j30jqx7OPf+fTlW/bL0wq37JnYRaKV5d8HtDK2WRfx9SmszCs
+        vytRBBuPAKWT1VKdsDuiJys=
+X-Google-Smtp-Source: ABdhPJy5mfk+ekbYHHyshhd4t5KAiMoCWiLkn4OrTESc6Ilms5hyKTlFZ+sW/7yEuB9zubx6zvwdaw==
+X-Received: by 2002:a05:6402:270f:: with SMTP id y15mr4835943edd.65.1628149795612;
+        Thu, 05 Aug 2021 00:49:55 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.googlemail.com with ESMTPSA id h19sm1934341edt.87.2021.08.05.00.49.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Aug 2021 00:49:54 -0700 (PDT)
+To:     Chester Lin <clin@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-9-clin@suse.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 8/8] MAINTAINERS: Add an entry for NXP S32G2 boards
+Message-ID: <32310c2a-9800-8b04-b6ac-d8ada044c0f8@kernel.org>
+Date:   Thu, 5 Aug 2021 09:49:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f2b1d564-8174-f8e9-9fee-12e938c6d846@linux.intel.com>
+In-Reply-To: <20210805065429.27485-9-clin@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 12:50:24PM -0700, Andi Kleen wrote:
+On 05/08/2021 08:54, Chester Lin wrote:
+> Add a new entry for the maintenance of NXP S32G2 DT files.
 > 
-> > So you are trying to work around the "problem" that distro kernels
-> > provides drivers for everything by adding additional kernel complexity?
-> > 
-> > What prevents you from using a sane, stripped down, kernel image for
-> > these vms which would keep things sane and simpler and easier to audit
-> > and most importantly, prove, that the image is not doing something you
-> > don't expect it to do?
-> > 
-> > Why not just make distros that want to support this type of platform,
-> > also provide these tiny kernel images?  Why are you pushing this work on
-> > the kernel community instead?
+> Signed-off-by: Chester Lin <clin@suse.com>
+> ---
+>  MAINTAINERS | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> 
-> Greg, I'm surprised by your comment. Traditionally we've been tried to
-> support all platforms in unified binary kernels and gone to considerable
-> complications to do so. That has been standard Linux practice for at least
-> the 90ies. In some cases we went to considerable pain to support that, for
-> example for the 5 level page tables or for paravirt ops.
-> 
-> Imagine there were 10 new features or platforms and they would all ask
-> distributions to produce custom kernels for them, they would need to
-> maintain 10 different kernel packages forever for all these different cases.
-> It's totally reasonable that they don't want to do that.
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 36aee8517ab0..3c6ba6cefd8f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2281,6 +2281,12 @@ F:	arch/arm/boot/dts/nuvoton-wpcm450*
+>  F:	arch/arm/mach-npcm/wpcm450.c
+>  F:	drivers/*/*wpcm*
+>  
+> +ARM/NXP S32G2 ARCHITECTURE
+> +M:	Chester Lin <clin@suse.com>
+> +L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> +S:	Maintained
+> +F:	arch/arm64/boot/dts/freescale/s32g2*
 
-Ok, but that's not what it sounded like you wanted to have here.
+I support the idea of sub-sub-architecture maintainers but I think idea
+of in-file addresses was preferred:
+https://lore.kernel.org/lkml/20200830122922.3884-1-shawnguo@kernel.org/
 
-It looked like you wanted something like a "stripped down kernel with
-only a specific number of drivers allowed to work", which for a virtual
-system, would seem to imply a uniform kernel image/configuration.
 
-> Also even if they were willing to do custom configs it's not clear how this
-> could be maintained and distributed. We would either have a standard TDX
-> config and get everyone to agree on it (very difficult).
-
-Why not try that?  Can't hurt and no need to change anything in the
-kernel at all.  'make tdx_defconfig' should be trivial enough for you
-all to maintain a single config file template, right?
-
-> Or some enforcement
-> mechanism at the Kconfig level that forces most drivers to be disabled when
-> TDX is on, which would be also a considerable new mechanism and
-> complication. In addition there are drivers which are not covered by Kconfig
-> today (like quite a few of the basic platform drivers), but which we still
-> want to filter. So to implement a full build time mechanism would likely
-> need more changes than this relatively straight forward run time mechanism
-> based on the driver model.
-> 
-> And of course there other use cases for a run time filter mechanism. For
-> example let's say you want filtering for Thunderbolt security. In this case
-> it has to be done at runtime because it's not practical to have a kernel
-> that is only built for Thunderbolt drivers, but doesn't support anything
-> else that is on the SOC. The only sane way to handle such a case is to make
-> a runtime distinction.
-
-We already have filtering for thunderbolt driver security in the kernel,
-why do you want to add more?
-
-> > And what's wrong with the current method of removing drivers from
-> > devices that you do not want them to be bound to?  We offer that support
-> > for all busses now that want to do it, what driver types are you needing
-> > to "control" here that does not take advantage of the existing
-> > infrastructure that we currently have for this type of thing?
-> 
-> I'm not sure what mechanism you're referring to here, but in general don't
-> want the drivers to initialize at all because they might get exploited in
-> any code that they execute.
-
-That is exactly the mechanism we have today in the kernel for all busses
-if they wish to take advantage of it.  We have had this for all USB
-drivers for well over a decade now, this is not a new feature.  Please
-use that instead.
-
-> The intention is to disable all drivers except
-> for a small allow list, because it's not practical to harden all 25M lines
-> of Linux code.
-
-Great, do that in userspace using the functionality we have today
-please.
-
-thanks,
-
-greg k-h
+Best regards,
+Krzysztof
