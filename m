@@ -2,722 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8554B3E0E60
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4755C3E0E66
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237112AbhHEGaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 02:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
+        id S237175AbhHEGbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 02:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234535AbhHEGaT (ORCPT
+        with ESMTP id S235812AbhHEGbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 02:30:19 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA99C061765;
-        Wed,  4 Aug 2021 23:30:04 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so7130623pjh.3;
-        Wed, 04 Aug 2021 23:30:04 -0700 (PDT)
+        Thu, 5 Aug 2021 02:31:24 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28335C0613C1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 23:31:10 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id k4so2589852wms.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 23:31:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GKO4K5MwSctG4FOgHSNHSYv8KvV/XZJmvX7uOQYolBo=;
-        b=UTyUiiP1RgYelH163si+fB64BV0vNDsCiabdioaBfpEJTJ5JSA3daANdnYTzG18zJV
-         ohWRApDHI0bIW2BRNeSQ4gQ8yVrLgzxWLMDjwoZLr9lV8ylCFHLRf0NNbzg6g55yx6dx
-         KH+pjAKEw1nYMx7g58RzdRgqdHKuT6Nnx0DyXfeEDOscycIJQoEI9IKVMpYi0VQ7XutP
-         jk73AkMWDpbNXxJXa8L/toSb3+bGHI3WN3pVpk5FXGWJhM9WAKl4KvLp7txe0qPkSz70
-         3LzGUHifd6MACwtIiwJKTAFQVforv7UctatLtWj8GA43nXiMazpgpoC5jp9zxrlvQ6aU
-         x7ew==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6jUhEtKSiG7ZerzsDL2H1kO7Htn4R9iX/da1sgzTYhQ=;
+        b=sVkwhLsN7lFzvmfY3MOh+638o1qqgcCi1P8Mz/17oEAwPa4qnuPqbFxbhny+sYRAkX
+         l3KQp/WFPkwKHO/sgBLIC6Gswo9/GKzE+u9ZBqmOq1NQd+DXQbd4Hd3BCbdCWQ57pTin
+         1xA7/h53c5t/wsXjIkv0R62LWSm25FluPws1e4TUmKiDrcJMVdszVF+tf/jqCn61AC8g
+         YgeQTyFVuuqAzA+PWHr9sWy3gwEKX9YYxL0mwH1uclnJaRIkiSUchCftUP8ZPwfyOQ4F
+         xgNzj2zblW+nFiQcaXNTapERV2fNgVVo45D7LUjFk2u8kg4ENZEEpBNg5RnOBCZG/7t6
+         XImw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GKO4K5MwSctG4FOgHSNHSYv8KvV/XZJmvX7uOQYolBo=;
-        b=knD+wnsHFuZl5DSZSRBpMvZWqpe81A3H6EEP8t40Jk2Z7TGplogxEzlTwWHDteHQRW
-         ibxHI0PinPxs2O8ijaOCia6SNOaadj8kuaL7GGwmEVYSYgMEvFDnu7Ro0MwyAtpWzTA1
-         Z3NIkWPP1BfppZUd9a2vjGhLRmaavSX3V8uWUqtAVw3aMfiT4Sbmi0wD3xAluy6Gvy/V
-         bMde+my5JH0VpHahc3n3HFNif/imbKV8WL1kQxbU5DwT2X/iIYDn8aP361QC2dnDkXKE
-         yaPd3WuP+zOzOrLBMfUsel5TK+pOq4Y9BQrWwhol/FVzESh8icbeaYMLVc2vW95IJtGT
-         yPAA==
-X-Gm-Message-State: AOAM532wVZY5HZ0+5ZlJgaBxZdNaenInTC5MBv9ie0gB9V1RDuzmymPW
-        L0m3MzREudZG7knfoAh3ZYCZW9Y89FRK8VmSH1k=
-X-Google-Smtp-Source: ABdhPJw5Xv1wbSz0Ku9JBzfgO/sxGzOqobf7i46MojIHTKFN4r4rKyl326A1xSR7BxuWXQYiWT0jCw==
-X-Received: by 2002:a63:f154:: with SMTP id o20mr1525046pgk.172.1628145004084;
-        Wed, 04 Aug 2021 23:30:04 -0700 (PDT)
-Received: from smtp.gmail.com ([2804:14c:73:9a01::1005])
-        by smtp.gmail.com with ESMTPSA id w18sm5050827pjg.50.2021.08.04.23.30.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Aug 2021 23:30:03 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 03:29:59 -0300
-From:   Lucas Stankus <lucas.p.stankus@gmail.com>
-To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        robh+dt@kernel.org, Dragos.Bogdan@analog.com,
-        Darius.Berghe@analog.com
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] iio: accel: Add driver support for ADXL313
-Message-ID: <22ad63af54e6cfc9486d44d05ba3d2f7482c7b1e.1628143857.git.lucas.p.stankus@gmail.com>
-References: <cover.1628143857.git.lucas.p.stankus@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=6jUhEtKSiG7ZerzsDL2H1kO7Htn4R9iX/da1sgzTYhQ=;
+        b=s9YWQqTO4UCvD5KgAukSDqICUyrIeS6X50lQxGDcWOBWh/Xj2qwJGV8DgKCOb1Rtq3
+         pbFadlcbu0+y3BOdaNCSPYOfllgNHbAQMt/jVq6PGRDErasWV7k8xoqIquN5BbEO2SgQ
+         ElBUgTK0+zhfDShmFBDQaZEqBD/csXd4deQ05GHbG3bn553szN0/kCr4+gE3BAwjzYuq
+         NyMqpPKMFrhrzC7i/9jxqsfjZKIOu7AnorJpbTO0shGti/YLpmL0RUb5GW5QgZDSILQh
+         GP4Jg6i3SoOTuIlLLR8I2RXkHaHeydYgzFjbp0VQHh9n2RMnUNIJ92T0pVTNt0E6KtgD
+         Uc9Q==
+X-Gm-Message-State: AOAM533TgobvqH4b+0pfEYKLRAWfkJYL+KIwJ4FCaay+3ziqMUBvFkne
+        locAlOqaAuz3/Of0YLRymHiQnQ==
+X-Google-Smtp-Source: ABdhPJwhzVUVFwT3U+v9V/pf/bnOjk+HxXuJhP6KwE+dmCvAuziAmYWEXS/ynfioDbEwv2YrnygzVg==
+X-Received: by 2002:a1c:cc1a:: with SMTP id h26mr3169713wmb.47.1628145068651;
+        Wed, 04 Aug 2021 23:31:08 -0700 (PDT)
+Received: from [10.1.3.29] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id j14sm4735302wrr.16.2021.08.04.23.31.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 23:31:08 -0700 (PDT)
+Subject: Re: [PATCH 1/2] irqchip: irq-meson-gpio: make it possible to build as
+ a module
+To:     Saravana Kannan <saravanak@google.com>,
+        Marc Zyngier <maz@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+References: <20201020072532.949137-1-narmstrong@baylibre.com>
+ <20201020072532.949137-2-narmstrong@baylibre.com>
+ <7hsga8kb8z.fsf@baylibre.com>
+ <CAF2Aj3g6c8FEZb3e1by6sd8LpKLaeN5hsKrrQkZUvh8hosiW9A@mail.gmail.com>
+ <87r1hwwier.wl-maz@kernel.org> <7h7diwgjup.fsf@baylibre.com>
+ <87im0m277h.wl-maz@kernel.org>
+ <CAGETcx9OukoWM_qprMse9aXdzCE=GFUgFEkfhhNjg44YYsOQLw@mail.gmail.com>
+ <87sfzpwq4f.wl-maz@kernel.org>
+ <CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com>
+ <CAGETcx8bpWQEnkpJ0YW9GqX8WE0ewT45zqkbWWdZ0ktJBhG4yQ@mail.gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <4e98d876-330f-21a4-846e-94e1f01f0eed@baylibre.com>
+Date:   Thu, 5 Aug 2021 08:31:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1628143857.git.lucas.p.stankus@gmail.com>
+In-Reply-To: <CAGETcx8bpWQEnkpJ0YW9GqX8WE0ewT45zqkbWWdZ0ktJBhG4yQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ADXL313 is a small, thin, low power, 3-axis accelerometer with high
-resolution measurement up to +/-4g. It includes an integrated 32-level
-FIFO and has activity and inactivity sensing capabilities.
+Hi Saravana,
 
-Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL313.pdf
-Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
----
- MAINTAINERS                      |   9 +
- drivers/iio/accel/Kconfig        |  29 +++
- drivers/iio/accel/Makefile       |   3 +
- drivers/iio/accel/adxl313.h      |  63 ++++++
- drivers/iio/accel/adxl313_core.c | 321 +++++++++++++++++++++++++++++++
- drivers/iio/accel/adxl313_i2c.c  |  65 +++++++
- drivers/iio/accel/adxl313_spi.c  |  85 ++++++++
- 7 files changed, 575 insertions(+)
- create mode 100644 drivers/iio/accel/adxl313.h
- create mode 100644 drivers/iio/accel/adxl313_core.c
- create mode 100644 drivers/iio/accel/adxl313_i2c.c
- create mode 100644 drivers/iio/accel/adxl313_spi.c
+On 04/08/2021 23:47, Saravana Kannan wrote:
+> On Wed, Aug 4, 2021 at 11:20 AM Saravana Kannan <saravanak@google.com> wrote:
+>>
+>> On Wed, Aug 4, 2021 at 1:50 AM Marc Zyngier <maz@kernel.org> wrote:
+>>>
+>>> On Wed, 04 Aug 2021 02:36:45 +0100,
+>>> Saravana Kannan <saravanak@google.com> wrote:
+>>>
+>>> Hi Saravana,
+>>>
+>>> Thanks for looking into this.
+>>
+>> You are welcome. I just don't want people to think fw_devlink is broken :)
+>>
+>>>
+>>> [...]
+>>>
+>>>>> Saravana, could you please have a look from a fw_devlink perspective?
+>>>>
+>>>> Sigh... I spent several hours looking at this and wrote up an analysis
+>>>> and then realized I might be looking at the wrong DT files.
+>>>>
+>>>> Marc, can you point me to the board file in upstream that corresponds
+>>>> to the platform in which you see this issue? I'm not asking for [1],
+>>>> but the actual final .dts (not .dtsi) file that corresponds to the
+>>>> platform/board/system.
+>>>
+>>> The platform I can reproduce this on is described in
+>>> arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts. It is an
+>>> intricate maze of inclusion, node merge and other DT subtleties. I
+>>> suggest you look at the decompiled version to get a view of the
+>>> result.
+>>
+>> Thanks. After decompiling it, it looks something like (stripped a
+>> bunch of reg and address properties and added the labels back):
+>>
+>> eth_phy: mdio-multiplexer@4c000 {
+>>         compatible = "amlogic,g12a-mdio-mux";
+>>         clocks = <0x02 0x13 0x1e 0x02 0xb1>;
+>>         clock-names = "pclk\0clkin0\0clkin1";
+>>         mdio-parent-bus = <0x22>;
+>>
+>>         ext_mdio: mdio@0 {
+>>                 reg = <0x00>;
+>>
+>>                 ethernet-phy@0 {
+>>                         max-speed = <0x3e8>;
+>>                         interrupt-parent = <0x23>;
+>>                         interrupts = <0x1a 0x08>;
+>>                         phandle = <0x16>;
+>>                 };
+>>         };
+>>
+>>         int_mdio: mdio@1 {
+>>                 ...
+>>         }
+>> }
+>>
+>> And phandle 0x23 refers to the gpio_intc interrupt controller with the
+>> modular driver.
+>>
+>>>> Based on your error messages, it's failing for mdio@0 which
+>>>> corresponds to ext_mdio. But none of the board dts files in upstream
+>>>> have a compatible property for "ext_mdio". Which means fw_devlink
+>>>> _should_ propagate the gpio_intc IRQ dependency all the way up to
+>>>> eth_phy.
+>>>>
+>>>> Also, in the failing case, can you run:
+>>>> ls -ld supplier:*
+>>>>
+>>>> in the /sys/devices/....<something>/ folder that corresponds to the
+>>>> "eth_phy: mdio-multiplexer@4c000" DT node and tell me what it shows?
+>>>
+>>> Here you go:
+>>>
+>>> root@tiger-roach:~# find /sys/devices/ -name 'supplier*'|grep -i mdio | xargs ls -ld
+>>> lrwxrwxrwx 1 root root 0 Aug  4 09:47 /sys/devices/platform/soc/ff600000.bus/ff64c000.mdio-multiplexer/supplier:platform:ff63c000.system-controller:clock-controller -> ../../../../virtual/devlink/platform:ff63c000.system-controller:clock-controller--platform:ff64c000.mdio-multiplexer
+>>
+>> As we discussed over chat, this was taken after the mdio-multiplexer
+>> driver "successfully" probes this device. This will cause
+>> SYNC_STATE_ONLY device links created by fw_devlink to be deleted
+>> (because they are useless after a device probes). So, this doesn't
+>> show the info I was hoping to demonstrate.
+>>
+>> In any case, one can see that fw_devlink properly created the device
+>> link for the clocks dependency. So fw_devlink is parsing this node
+>> properly. But it doesn't create a similar probe order enforcing device
+>> link between the mdio-multiplexer and the gpio_intc because the
+>> dependency is only present in a grand child DT node (ethernet-phy@0
+>> under ext_mdio). So fw_devlink is working as intended.
+>>
+>> I spent several hours squinting at the code/DT yesterday. Here's what
+>> is going on and causing the problem:
+>>
+>> The failing driver in this case is
+>> drivers/net/mdio/mdio-mux-meson-g12a.c. And the only DT node it's
+>> handling is what I pasted above in this email. In the failure case,
+>> the call flow is something like this:
+>>
+>> g12a_mdio_mux_probe()
+>> -> mdio_mux_init()
+>> -> of_mdiobus_register(ext_mdio DT node)
+>> -> of_mdiobus_register_phy(ext_mdio DT node)
+>> -> several calls deep fwnode_mdiobus_phy_device_register(ethernet_phy DT node)
+>> -> Tried to get the IRQ listed in ethernet_phy and fails with
+>> -EPROBE_DEFER because the IRQ driver isn't loaded yet.
+>>
+>> The error is propagated correctly all the way up to of_mdiobus_register(), but
+>> mdio_mux_init() ignores the -EPROBE_DEFER from of_mdiobus_register() and just
+>> continues on with the rest of the stuff and returns success as long as
+>> one of the child nodes (in this case int_mdio) succeeds.
+>>
+>> Since the probe returns 0 without really succeeding, networking stuff
+>> just fails badly after this. So, IMO, the real problem is with
+>> mdio_mux_init() not propagating up the -EPROBE_DEFER. I gave Marc a
+>> quick hack (pasted at the end of this email) to test my theory and he
+>> confirmed that it fixes the issue (a few deferred probes later, things
+>> work properly).
+>>
+>> Andrew, I don't see any good reason for mdio_mux_init() not
+>> propagating the errors up correctly (at least for EPROBE_DEFER). I'll
+>> send a patch to fix this. Please let me know if there's a reason it
+>> has to stay as-is.
+> 
+> I sent out the proper fix as a series:
+> https://lore.kernel.org/lkml/20210804214333.927985-1-saravanak@google.com/T/#t
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a61f4f3b78a9..566055450b6b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -585,6 +585,15 @@ L:	platform-driver-x86@vger.kernel.org
- S:	Maintained
- F:	drivers/platform/x86/adv_swbutton.c
- 
-+ADXL313 THREE-AXIS DIGITAL ACCELEROMETER DRIVER
-+M:	Lucas Stankus <lucas.p.stankus@gmail.com>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
-+F:	drivers/iio/accel/adxl313.h
-+F:	drivers/iio/accel/adxl313_core.c
-+F:	drivers/iio/accel/adxl313_i2c.c
-+F:	drivers/iio/accel/adxl313_spi.c
-+
- ADXL34X THREE-AXIS DIGITAL ACCELEROMETER DRIVER (ADXL345/ADXL346)
- M:	Michael Hennerich <michael.hennerich@analog.com>
- S:	Supported
-diff --git a/drivers/iio/accel/Kconfig b/drivers/iio/accel/Kconfig
-index 0e56ace61103..ae621532e716 100644
---- a/drivers/iio/accel/Kconfig
-+++ b/drivers/iio/accel/Kconfig
-@@ -30,6 +30,35 @@ config ADIS16209
- 	  To compile this driver as a module, say M here: the module will be
- 	  called adis16209.
- 
-+config ADXL313
-+	tristate
-+
-+config ADXL313_I2C
-+	tristate "Analog Devices ADXL313 3-Axis Digital Accelerometer I2C Driver"
-+	depends on I2C
-+	select ADXL313
-+	select REGMAP_I2C
-+	help
-+	  Say Y here if you want to build i2c support for the Analog Devices
-+	  ADXL313 3-axis digital accelerometer.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called adxl313_i2c and you will also get adxl313_core
-+	  for the core module.
-+
-+config ADXL313_SPI
-+	tristate "Analog Devices ADXL313 3-Axis Digital Accelerometer SPI Driver"
-+	depends on SPI
-+	select ADXL313
-+	select REGMAP_SPI
-+	help
-+	  Say Y here if you want to build spi support for the Analog Devices
-+	  ADXL313 3-axis digital accelerometer.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called adxl313_spi and you will also get adxl313_core
-+	  for the core module.
-+
- config ADXL345
- 	tristate
- 
-diff --git a/drivers/iio/accel/Makefile b/drivers/iio/accel/Makefile
-index 89280e823bcd..fadc92816e24 100644
---- a/drivers/iio/accel/Makefile
-+++ b/drivers/iio/accel/Makefile
-@@ -6,6 +6,9 @@
- # When adding new entries keep the list in alphabetical order
- obj-$(CONFIG_ADIS16201) += adis16201.o
- obj-$(CONFIG_ADIS16209) += adis16209.o
-+obj-$(CONFIG_ADXL313) += adxl313_core.o
-+obj-$(CONFIG_ADXL313_I2C) += adxl313_i2c.o
-+obj-$(CONFIG_ADXL313_SPI) += adxl313_spi.o
- obj-$(CONFIG_ADXL345) += adxl345_core.o
- obj-$(CONFIG_ADXL345_I2C) += adxl345_i2c.o
- obj-$(CONFIG_ADXL345_SPI) += adxl345_spi.o
-diff --git a/drivers/iio/accel/adxl313.h b/drivers/iio/accel/adxl313.h
-new file mode 100644
-index 000000000000..ea5994227a2e
---- /dev/null
-+++ b/drivers/iio/accel/adxl313.h
-@@ -0,0 +1,63 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * ADXL313 3-Axis Digital Accelerometer
-+ *
-+ * Copyright (c) 2021 Lucas Stankus <lucas.p.stankus@gmail.com>
-+ */
-+
-+#ifndef _ADXL313_H_
-+#define _ADXL313_H_
-+
-+/* ADXL313 register definitions */
-+#define ADXL313_REG_DEVID0		0x00
-+#define ADXL313_REG_DEVID1		0x01
-+#define ADXL313_REG_PARTID		0x02
-+#define ADXL313_REG_XID			0x04
-+#define ADXL313_REG_SOFT_RESET		0x18
-+#define ADXL313_REG_OFS_AXIS(index)	(0x1E + (index))
-+#define ADXL313_REG_THRESH_ACT		0x24
-+#define ADXL313_REG_ACT_INACT_CTL	0x27
-+#define ADXL313_REG_BW_RATE		0x2C
-+#define ADXL313_REG_POWER_CTL		0x2D
-+#define ADXL313_REG_INT_MAP		0x2F
-+#define ADXL313_REG_DATA_FORMAT		0x31
-+#define ADXL313_REG_DATAX		0x32
-+#define ADXL313_REG_DATAY		0x34
-+#define ADXL313_REG_DATAZ		0x36
-+#define ADXL313_REG_FIFO_CTL		0x38
-+#define ADXL313_REG_FIFO_STATUS		0x39
-+
-+#define ADXL313_DEVID0			0xAD
-+#define ADXL313_DEVID1			0x1D
-+#define ADXL313_PARTID			0xCB
-+#define ADXL313_SOFT_RESET		0x52
-+
-+#define ADXL313_RATE_MSK		GENMASK(3, 0)
-+#define ADXL313_RATE_BASE		6
-+
-+#define ADXL313_POWER_CTL_MSK		GENMASK(3, 2)
-+#define ADXL313_MEASUREMENT_MODE	BIT(3)
-+
-+#define ADXL313_RANGE_MSK		GENMASK(1, 0)
-+#define ADXL313_RANGE_4G		3
-+
-+#define ADXL313_FULL_RES		BIT(3)
-+#define ADXL313_SPI_3WIRE		BIT(6)
-+#define ADXL313_I2C_DISABLE		BIT(6)
-+
-+/*
-+ * Scale for any g range is given in datasheet as
-+ * 1024 LSB/g = 0.0009765625 * 9.80665 = 0.009576806640625 m/s^2
-+ */
-+#define ADXL313_NSCALE 9576806
-+
-+extern const struct regmap_access_table adxl313_readable_regs_table;
-+
-+extern const struct regmap_access_table adxl313_writable_regs_table;
-+
-+int adxl313_core_probe(struct device *dev,
-+		       struct regmap *regmap,
-+		       const char *name,
-+		       int (*interface_specific_setup)(struct device *,
-+						       struct regmap *));
-+#endif /* _ADXL313_H_ */
-diff --git a/drivers/iio/accel/adxl313_core.c b/drivers/iio/accel/adxl313_core.c
-new file mode 100644
-index 000000000000..ed4484607556
---- /dev/null
-+++ b/drivers/iio/accel/adxl313_core.c
-@@ -0,0 +1,321 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * ADXL313 3-Axis Digital Accelerometer
-+ *
-+ * Copyright (c) 2021 Lucas Stankus <lucas.p.stankus@gmail.com>
-+ *
-+ * Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL313.pdf
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/iio/iio.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+
-+#include "adxl313.h"
-+
-+const struct regmap_range adxl313_readable_reg_range[] = {
-+	regmap_reg_range(ADXL313_REG_DEVID0, ADXL313_REG_XID),
-+	regmap_reg_range(ADXL313_REG_SOFT_RESET, ADXL313_REG_SOFT_RESET),
-+	regmap_reg_range(ADXL313_REG_OFS_AXIS(0), ADXL313_REG_OFS_AXIS(2)),
-+	regmap_reg_range(ADXL313_REG_THRESH_ACT, ADXL313_REG_ACT_INACT_CTL),
-+	regmap_reg_range(ADXL313_REG_BW_RATE, ADXL313_REG_FIFO_STATUS)
-+};
-+
-+const struct regmap_access_table adxl313_readable_regs_table = {
-+	.yes_ranges = adxl313_readable_reg_range,
-+	.n_yes_ranges = ARRAY_SIZE(adxl313_readable_reg_range)
-+};
-+EXPORT_SYMBOL_GPL(adxl313_readable_regs_table);
-+
-+const struct regmap_range adxl313_writable_reg_range[] = {
-+	regmap_reg_range(ADXL313_REG_SOFT_RESET, ADXL313_REG_SOFT_RESET),
-+	regmap_reg_range(ADXL313_REG_OFS_AXIS(0), ADXL313_REG_OFS_AXIS(2)),
-+	regmap_reg_range(ADXL313_REG_THRESH_ACT, ADXL313_REG_ACT_INACT_CTL),
-+	regmap_reg_range(ADXL313_REG_BW_RATE, ADXL313_REG_INT_MAP),
-+	regmap_reg_range(ADXL313_REG_DATA_FORMAT, ADXL313_REG_DATA_FORMAT),
-+	regmap_reg_range(ADXL313_REG_FIFO_CTL, ADXL313_REG_FIFO_CTL)
-+};
-+
-+const struct regmap_access_table adxl313_writable_regs_table = {
-+	.yes_ranges = adxl313_writable_reg_range,
-+	.n_yes_ranges = ARRAY_SIZE(adxl313_writable_reg_range)
-+};
-+EXPORT_SYMBOL_GPL(adxl313_writable_regs_table);
-+
-+struct adxl313_data {
-+	struct regmap	*regmap;
-+	struct mutex	lock; /* lock to protect transf_buf */
-+	__le16		transf_buf ____cacheline_aligned;
-+};
-+
-+static const int adxl313_odr_freqs[][2] = {
-+	[0] = { 6, 250000 },
-+	[1] = { 12, 500000 },
-+	[2] = { 25, 0 },
-+	[3] = { 50, 0 },
-+	[4] = { 100, 0 },
-+	[5] = { 200, 0 },
-+	[6] = { 400, 0 },
-+	[7] = { 800, 0 },
-+	[8] = { 1600, 0 },
-+	[9] = { 3200, 0 },
-+};
-+
-+#define ADXL313_ACCEL_CHANNEL(index, addr, axis) {			\
-+	.type = IIO_ACCEL,						\
-+	.address = addr,						\
-+	.modified = 1,							\
-+	.channel2 = IIO_MOD_##axis,					\
-+	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |			\
-+			      BIT(IIO_CHAN_INFO_CALIBBIAS),		\
-+	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE) |		\
-+				    BIT(IIO_CHAN_INFO_SAMP_FREQ),	\
-+	.info_mask_shared_by_type_available =				\
-+		BIT(IIO_CHAN_INFO_SAMP_FREQ),				\
-+	.scan_index = index,						\
-+	.scan_type = {							\
-+		.sign = 's',						\
-+		.realbits = 13,						\
-+		.storagebits = 16,					\
-+		.endianness = IIO_LE,					\
-+	},								\
-+}
-+
-+static const struct iio_chan_spec adxl313_channels[] = {
-+	ADXL313_ACCEL_CHANNEL(0, ADXL313_REG_DATAX, X),
-+	ADXL313_ACCEL_CHANNEL(1, ADXL313_REG_DATAY, Y),
-+	ADXL313_ACCEL_CHANNEL(2, ADXL313_REG_DATAZ, Z),
-+};
-+
-+static int adxl313_set_odr(struct adxl313_data *data,
-+			   unsigned int freq1, unsigned int freq2)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(adxl313_odr_freqs); i++) {
-+		if (adxl313_odr_freqs[i][0] == freq1 &&
-+		    adxl313_odr_freqs[i][1] == freq2)
-+			break;
-+	}
-+
-+	if (i == ARRAY_SIZE(adxl313_odr_freqs))
-+		return -EINVAL;
-+
-+	return regmap_update_bits(data->regmap, ADXL313_REG_BW_RATE,
-+				  ADXL313_RATE_MSK,
-+				  FIELD_PREP(ADXL313_RATE_MSK,
-+					     ADXL313_RATE_BASE + i));
-+}
-+
-+static int adxl313_read_axis(struct adxl313_data *data,
-+			     struct iio_chan_spec const *chan)
-+{
-+	int ret;
-+
-+	mutex_lock(&data->lock);
-+
-+	ret = regmap_bulk_read(data->regmap,
-+			       chan->address,
-+			       &data->transf_buf, 2);
-+	if (ret)
-+		goto unlock_ret;
-+
-+	ret = le16_to_cpu(data->transf_buf);
-+
-+unlock_ret:
-+	mutex_unlock(&data->lock);
-+	return ret;
-+}
-+
-+static int adxl313_read_freq_avail(struct iio_dev *indio_dev,
-+				   struct iio_chan_spec const *chan,
-+				   const int **vals, int *type, int *length,
-+				   long mask)
-+{
-+	switch (mask) {
-+	case IIO_CHAN_INFO_SAMP_FREQ:
-+		*vals = (const int *)adxl313_odr_freqs;
-+		*length = ARRAY_SIZE(adxl313_odr_freqs) * 2;
-+		*type = IIO_VAL_INT_PLUS_MICRO;
-+		return IIO_AVAIL_LIST;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int adxl313_read_raw(struct iio_dev *indio_dev,
-+			    struct iio_chan_spec const *chan,
-+			    int *val, int *val2, long mask)
-+{
-+	struct adxl313_data *data = iio_priv(indio_dev);
-+	unsigned int regval;
-+	int ret;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_RAW:
-+		ret = adxl313_read_axis(data, chan);
-+		if (ret < 0)
-+			return ret;
-+
-+		*val = sign_extend32(ret, chan->scan_type.realbits - 1);
-+		return IIO_VAL_INT;
-+	case IIO_CHAN_INFO_SCALE:
-+		*val = 0;
-+		*val2 = ADXL313_NSCALE;
-+		return IIO_VAL_INT_PLUS_NANO;
-+	case IIO_CHAN_INFO_CALIBBIAS:
-+		ret = regmap_read(data->regmap,
-+				  ADXL313_REG_OFS_AXIS(chan->scan_index),
-+				  &regval);
-+		if (ret)
-+			return ret;
-+
-+		/*
-+		 * 8-bit resolution at +/- 0.5g, that is 4x accel data scale
-+		 * factor at full resolution
-+		 */
-+		*val = sign_extend32(regval, 7) * 4;
-+		return IIO_VAL_INT;
-+	case IIO_CHAN_INFO_SAMP_FREQ:
-+		ret = regmap_read(data->regmap, ADXL313_REG_BW_RATE, &regval);
-+		if (ret)
-+			return ret;
-+
-+		ret = FIELD_GET(ADXL313_RATE_MSK, regval) - ADXL313_RATE_BASE;
-+		*val = adxl313_odr_freqs[ret][0];
-+		*val2 = adxl313_odr_freqs[ret][1];
-+		return IIO_VAL_INT_PLUS_MICRO;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int adxl313_write_raw(struct iio_dev *indio_dev,
-+			     struct iio_chan_spec const *chan,
-+			     int val, int val2, long mask)
-+{
-+	struct adxl313_data *data = iio_priv(indio_dev);
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_CALIBBIAS:
-+		/*
-+		 * 8-bit resolution at +/- 0.5g, that is 4x accel data scale
-+		 * factor at full resolution
-+		 */
-+		if (val > 127 * 4 || val < -128 * 4)
-+			return -EINVAL;
-+
-+		return regmap_write(data->regmap,
-+				    ADXL313_REG_OFS_AXIS(chan->scan_index),
-+				    val / 4);
-+	case IIO_CHAN_INFO_SAMP_FREQ:
-+		return adxl313_set_odr(data, val, val2);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static const struct iio_info adxl313_info = {
-+	.read_raw	= adxl313_read_raw,
-+	.write_raw	= adxl313_write_raw,
-+	.read_avail	= adxl313_read_freq_avail
-+};
-+
-+static int adxl313_setup(struct device *dev, struct adxl313_data *data,
-+			 int (*interface_specific_setup)(struct device *,
-+							 struct regmap *))
-+{
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(data->regmap, ADXL313_REG_DEVID0, &regval);
-+	if (ret)
-+		return ret;
-+
-+	if (interface_specific_setup) {
-+		ret = interface_specific_setup(dev, data->regmap);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	if (regval != ADXL313_DEVID0) {
-+		dev_err(dev, "Invalid manufacturer ID: 0x%02x\n", regval);
-+		return -ENODEV;
-+	}
-+
-+	ret = regmap_read(data->regmap, ADXL313_REG_DEVID1, &regval);
-+	if (ret)
-+		return ret;
-+
-+	if (regval != ADXL313_DEVID1) {
-+		dev_err(dev, "Invalid mems ID: 0x%02x\n", regval);
-+		return -ENODEV;
-+	}
-+
-+	ret = regmap_read(data->regmap, ADXL313_REG_PARTID, &regval);
-+	if (ret)
-+		return ret;
-+
-+	if (regval != ADXL313_PARTID) {
-+		dev_err(dev, "Invalid device ID: 0x%02x\n", regval);
-+		return -ENODEV;
-+	}
-+
-+	/* Sets the range to +/- 4g */
-+	ret = regmap_update_bits(data->regmap, ADXL313_REG_DATA_FORMAT,
-+				 ADXL313_RANGE_MSK,
-+				 FIELD_PREP(ADXL313_RANGE_MSK,
-+					    ADXL313_RANGE_4G));
-+	if (ret)
-+		return ret;
-+
-+	/* Enables full resolution */
-+	ret = regmap_update_bits(data->regmap, ADXL313_REG_DATA_FORMAT,
-+				 ADXL313_FULL_RES, ADXL313_FULL_RES);
-+	if (ret)
-+		return ret;
-+
-+	/* Enables measurement mode */
-+	return regmap_update_bits(data->regmap, ADXL313_REG_POWER_CTL,
-+				  ADXL313_POWER_CTL_MSK,
-+				  ADXL313_MEASUREMENT_MODE);
-+}
-+
-+int adxl313_core_probe(struct device *dev,
-+		       struct regmap *regmap,
-+		       const char *name,
-+		       int (*interface_specific_setup)(struct device *,
-+						       struct regmap *))
-+{
-+	struct adxl313_data *data;
-+	struct iio_dev *indio_dev;
-+	int ret;
-+
-+	indio_dev = devm_iio_device_alloc(dev, sizeof(*data));
-+	if (!indio_dev)
-+		return -ENOMEM;
-+
-+	data = iio_priv(indio_dev);
-+	data->regmap = regmap;
-+	mutex_init(&data->lock);
-+
-+	indio_dev->name = name;
-+	indio_dev->info = &adxl313_info;
-+	indio_dev->modes = INDIO_DIRECT_MODE;
-+	indio_dev->channels = adxl313_channels;
-+	indio_dev->num_channels = ARRAY_SIZE(adxl313_channels);
-+
-+	ret = adxl313_setup(dev, data, interface_specific_setup);
-+	if (ret) {
-+		dev_err(dev, "ADXL313 setup failed\n");
-+		return ret;
-+	}
-+
-+	return devm_iio_device_register(dev, indio_dev);
-+}
-+EXPORT_SYMBOL_GPL(adxl313_core_probe);
-+
-+MODULE_AUTHOR("Lucas Stankus <lucas.p.stankus@gmail.com>");
-+MODULE_DESCRIPTION("ADXL313 3-Axis Digital Accelerometer core driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/iio/accel/adxl313_i2c.c b/drivers/iio/accel/adxl313_i2c.c
-new file mode 100644
-index 000000000000..d60e757cae07
---- /dev/null
-+++ b/drivers/iio/accel/adxl313_i2c.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * ADXL313 3-Axis Digital Accelerometer
-+ *
-+ * Copyright (c) 2021 Lucas Stankus <lucas.p.stankus@gmail.com>
-+ *
-+ * Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL313.pdf
-+ */
-+
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+
-+#include "adxl313.h"
-+
-+static const struct regmap_config adxl313_i2c_regmap_config = {
-+	.reg_bits	= 8,
-+	.val_bits	= 8,
-+	.rd_table	= &adxl313_readable_regs_table,
-+	.wr_table	= &adxl313_writable_regs_table,
-+	.max_register	= 0x39
-+};
-+
-+static int adxl313_i2c_probe(struct i2c_client *client)
-+{
-+	struct regmap *regmap;
-+
-+	regmap = devm_regmap_init_i2c(client, &adxl313_i2c_regmap_config);
-+	if (IS_ERR(regmap)) {
-+		dev_err(&client->dev, "Error initializing i2c regmap: %ld\n",
-+			PTR_ERR(regmap));
-+		return PTR_ERR(regmap);
-+	}
-+
-+	return adxl313_core_probe(&client->dev, regmap, client->name, NULL);
-+}
-+
-+static const struct i2c_device_id adxl313_i2c_id[] = {
-+	{ "adxl313" },
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(i2c, adxl313_i2c_id);
-+
-+static const struct of_device_id adxl313_of_match[] = {
-+	{ .compatible = "adi,adxl313" },
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(of, adxl313_of_match);
-+
-+static struct i2c_driver adxl313_i2c_driver = {
-+	.driver = {
-+		.name	= "adxl313_i2c",
-+		.of_match_table = adxl313_of_match,
-+	},
-+	.probe_new	= adxl313_i2c_probe,
-+	.id_table	= adxl313_i2c_id
-+};
-+
-+module_i2c_driver(adxl313_i2c_driver);
-+
-+MODULE_AUTHOR("Lucas Stankus <lucas.p.stankus@gmail.com>");
-+MODULE_DESCRIPTION("ADXL313 3-Axis Digital Accelerometer I2C driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/iio/accel/adxl313_spi.c b/drivers/iio/accel/adxl313_spi.c
-new file mode 100644
-index 000000000000..b5804522d9ff
---- /dev/null
-+++ b/drivers/iio/accel/adxl313_spi.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * ADXL313 3-Axis Digital Accelerometer
-+ *
-+ * Copyright (c) 2021 Lucas Stankus <lucas.p.stankus@gmail.com>
-+ *
-+ * Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL313.pdf
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/spi/spi.h>
-+
-+#include "adxl313.h"
-+
-+static const struct regmap_config adxl313_spi_regmap_config = {
-+	.reg_bits	= 8,
-+	.val_bits	= 8,
-+	.rd_table	= &adxl313_readable_regs_table,
-+	.wr_table	= &adxl313_writable_regs_table,
-+	.max_register	= 0x39,
-+	 /* Setting bits 7 and 6 enables multiple-byte read */
-+	.read_flag_mask	= BIT(7) | BIT(6)
-+};
-+
-+static int adxl313_spi_setup(struct device *dev, struct regmap *regmap)
-+{
-+	struct spi_device *spi = container_of(dev, struct spi_device, dev);
-+	int ret;
-+
-+	if (spi->mode & SPI_3WIRE) {
-+		ret = regmap_write(regmap, ADXL313_REG_DATA_FORMAT,
-+				   ADXL313_SPI_3WIRE);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return regmap_update_bits(regmap, ADXL313_REG_POWER_CTL,
-+				  ADXL313_I2C_DISABLE, ADXL313_I2C_DISABLE);
-+}
-+
-+static int adxl313_spi_probe(struct spi_device *spi)
-+{
-+	const struct spi_device_id *id = spi_get_device_id(spi);
-+	struct regmap *regmap;
-+
-+	regmap = devm_regmap_init_spi(spi, &adxl313_spi_regmap_config);
-+	if (IS_ERR(regmap)) {
-+		dev_err(&spi->dev, "Error initializing spi regmap: %ld\n",
-+			PTR_ERR(regmap));
-+		return PTR_ERR(regmap);
-+	}
-+
-+	return adxl313_core_probe(&spi->dev, regmap, id->name,
-+				  &adxl313_spi_setup);
-+}
-+
-+static const struct spi_device_id adxl313_spi_id[] = {
-+	{ "adxl313" },
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(spi, adxl313_spi_id);
-+
-+static const struct of_device_id adxl313_of_match[] = {
-+	{ .compatible = "adi,adxl313" },
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(of, adxl313_of_match);
-+
-+static struct spi_driver adxl313_spi_driver = {
-+	.driver = {
-+		.name	= "adxl313_spi",
-+		.of_match_table = adxl313_of_match,
-+	},
-+	.probe		= adxl313_spi_probe,
-+	.id_table	= adxl313_spi_id
-+};
-+
-+module_spi_driver(adxl313_spi_driver);
-+
-+MODULE_AUTHOR("Lucas Stankus <lucas.p.stankus@gmail.com>");
-+MODULE_DESCRIPTION("ADXL313 3-Axis Digital Accelerometer SPI driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.32.0
+Thanks a lot for digging here and providing the appropriate fixes !
+
+Neil
+
+> 
+> Marc, can you give it a shot please?
+> 
+> -Saravana
+> 
+>>
+>> -Saravana
+>>
+>> index 110e4ee85785..d973a267151f 100644
+>> --- a/drivers/net/mdio/mdio-mux.c
+>> +++ b/drivers/net/mdio/mdio-mux.c
+>> @@ -170,6 +170,9 @@ int mdio_mux_init(struct device *dev,
+>>                                 child_bus_node);
+>>                         mdiobus_free(cb->mii_bus);
+>>                         devm_kfree(dev, cb);
+>> +                       /* Not a final fix. I think it can cause UAF issues. */
+>> +                       mdio_mux_uninit(pb);
+>> +                       return r;
+>>                 } else {
+>>                         cb->next = pb->children;
+>>                         pb->children = cb;
 
