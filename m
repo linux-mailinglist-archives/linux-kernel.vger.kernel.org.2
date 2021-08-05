@@ -2,195 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3143E1A66
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5303E1A74
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239468AbhHERaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:30:20 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:39474 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbhHERaT (ORCPT
+        id S239998AbhHERfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231278AbhHERfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:30:19 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 175HU0FI098138;
-        Thu, 5 Aug 2021 12:30:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1628184600;
-        bh=5HM42TrhyJ+dgEI137mtVY8Bi0VP1NjSvoUG5V2ri7Y=;
-        h=From:To:CC:Subject:Date;
-        b=biO80seR2jRd+IM5MS6A/+gqawLY/l0vuPJ7+XQahafLhe9p6d/glLRtQT5H2Xhzo
-         nVO5cuAL1oYqmIg9GoYJof9giMyyfebt2Ow7O9RT7YiFru/YEfH5Sfr/x9pjk+AfV4
-         i2KrJsw4DIuJ28hDiLtQTtqP3Is4yQMNnvOh7wro=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 175HU0K7054890
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 5 Aug 2021 12:30:00 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 5 Aug
- 2021 12:29:59 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 5 Aug 2021 12:29:59 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 175HTwRc002706;
-        Thu, 5 Aug 2021 12:29:58 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     Tony Lindgren <tony@atomide.com>, <linux-omap@vger.kernel.org>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH v2] ARM: dts: am335x-bone: switch to new cpsw switch drv
-Date:   Thu, 5 Aug 2021 20:29:54 +0300
-Message-ID: <20210805172954.5409-1-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 5 Aug 2021 13:35:09 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0FFC061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 10:34:55 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id y12so9492901edo.6
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 10:34:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9kMAajMtAAkQ+B+kyhrLYpvECyySrIVX4pfb5IgDdJ4=;
+        b=P5pTwd5Dc7XsWEoDMScfA5rcLY5hIs22eHaZzPfkT6+qKz66AeSNpFZdKpVMi0gQft
+         6r+XIHuyZ/Q9aIhWPyXK0h44Qzj0rZr+ROxIb9QsuIcBDi4rI0/0Xp5+9pIU/Bno4YuK
+         sRKECaYco050svSwkio1vMKl1liCAbl7GeDQ1WR+sSd4YX2yq1rh2mQ1WSmNAMfE+YuA
+         4uZ95xOMbKZAlj6r1s/50Y4zpI31l/cvfEOydcp0wCGvIF6i9d2u57PfHIsESFPrkA2I
+         rgVy+0X8EnI8OXHduu8Z61ON7l7UtAGHzGBjSm5rD288MZSIk8NkFpQP/cnzmFvfi8DK
+         4PZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9kMAajMtAAkQ+B+kyhrLYpvECyySrIVX4pfb5IgDdJ4=;
+        b=YmII8SC+8Auc6b7aBlIMJeXj3hxWr5nfO2UUd9sFvMXmtDHQOnfys+9l5pBMUpE/nz
+         x3IzHywJDAyzt+XX92HTMyS3jjAt7DZFI4xuLzcupONVjpdbBT10A0ekcMRKzduWi85e
+         IqtFEmj8ToWTTrFF2e2rqmGQIvSg+XbdHSA115Bmxbwx6mYR31aRFP54sGfSAkthusAK
+         78kq1P6TZ/jSF8yrqcB2douy575/ZooJ2ryyVbnT2tDsIdZWZJYG30JcBt2FkM6cq50n
+         nDn+p6wID/0i8vcvSlDvftfLgzxrR9U5vco9jLEgVFN1lgYWngr1F/T+5dmzknZm98vv
+         GPRQ==
+X-Gm-Message-State: AOAM533YzcC9IT75JvDIKDYjKLMV97Zj1JtPFccOB+q3GgOUtp9T5b3j
+        IslICKGIbem0HN5omnpserI10U5AiNjc3kKOu0M=
+X-Google-Smtp-Source: ABdhPJy/sJZYP3/YtPmXGxs/cjsuvNPnwb4N3jPPElnhzQF8nDpTkB+1lzk4cqmZyqs73qhbs+LyMtOr9nx6dh7fzIo=
+X-Received: by 2002:aa7:d899:: with SMTP id u25mr8031341edq.151.1628184893816;
+ Thu, 05 Aug 2021 10:34:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <cover.1628174413.git.baolin.wang@linux.alibaba.com> <11d1f8fc954a83945930a5b11f47e00c063bdc1b.1628174413.git.baolin.wang@linux.alibaba.com>
+In-Reply-To: <11d1f8fc954a83945930a5b11f47e00c063bdc1b.1628174413.git.baolin.wang@linux.alibaba.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 5 Aug 2021 10:34:42 -0700
+Message-ID: <CAHbLzkqX9E3NQiOmGxg5ovmjTqyMkeVPmS2pZYdmrhkfb+cT2g@mail.gmail.com>
+Subject: Re: [PATCH 4/5] mm: migrate: Change to use bool type for 'page_was_mapped'
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dual_mac mode has been preserved the same way between legacy and new
-driver, and one port devices works the same as 1 dual_mac port - it's safe
-to switch drivers.
+On Thu, Aug 5, 2021 at 8:06 AM Baolin Wang
+<baolin.wang@linux.alibaba.com> wrote:
+>
+> Change to use bool type for 'page_was_mapped' variable making it
+> more readable.
 
-So, Switch BeagleBone boards to use new cpsw switch driver. Those boards
-have or 2 Ext. port wired and configured in dual_mac mode by default, or
-only 1 Ext. port.
+Seems better to me. Reviewed-by: Yang Shi <shy828301@gmail.com>
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
-v2: only rebase
-
- arch/arm/boot/dts/am335x-bone-common.dtsi     | 13 +++++---
- .../boot/dts/am335x-boneblack-wireless.dts    |  2 +-
- .../boot/dts/am335x-bonegreen-wireless.dts    |  2 +-
- .../boot/dts/am335x-sancloud-bbe-common.dtsi  | 33 ++-----------------
- 4 files changed, 12 insertions(+), 38 deletions(-)
-
-diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
-index 34a0045b5f65..0ccdc7cd463b 100644
---- a/arch/arm/boot/dts/am335x-bone-common.dtsi
-+++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
-@@ -353,24 +353,27 @@
- 	};
- };
- 
--&cpsw_emac0 {
-+&cpsw_port1 {
- 	phy-handle = <&ethphy0>;
- 	phy-mode = "mii";
-+	ti,dual-emac-pvid = <1>;
- };
- 
--&mac {
--	slaves = <1>;
-+&cpsw_port2 {
-+	status = "disabled";
-+};
-+
-+&mac_sw {
- 	pinctrl-names = "default", "sleep";
- 	pinctrl-0 = <&cpsw_default>;
- 	pinctrl-1 = <&cpsw_sleep>;
- 	status = "okay";
- };
- 
--&davinci_mdio {
-+&davinci_mdio_sw {
- 	pinctrl-names = "default", "sleep";
- 	pinctrl-0 = <&davinci_mdio_default>;
- 	pinctrl-1 = <&davinci_mdio_sleep>;
--	status = "okay";
- 
- 	ethphy0: ethernet-phy@0 {
- 		reg = <0>;
-diff --git a/arch/arm/boot/dts/am335x-boneblack-wireless.dts b/arch/arm/boot/dts/am335x-boneblack-wireless.dts
-index 8b2b24c80670..c72b09ab8da0 100644
---- a/arch/arm/boot/dts/am335x-boneblack-wireless.dts
-+++ b/arch/arm/boot/dts/am335x-boneblack-wireless.dts
-@@ -63,7 +63,7 @@
- 	};
- };
- 
--&mac {
-+&mac_sw {
- 	status = "disabled";
- };
- 
-diff --git a/arch/arm/boot/dts/am335x-bonegreen-wireless.dts b/arch/arm/boot/dts/am335x-bonegreen-wireless.dts
-index 74db0fc39397..215f279e476b 100644
---- a/arch/arm/boot/dts/am335x-bonegreen-wireless.dts
-+++ b/arch/arm/boot/dts/am335x-bonegreen-wireless.dts
-@@ -62,7 +62,7 @@
- 	};
- };
- 
--&mac {
-+&mac_sw {
- 	status = "disabled";
- };
- 
-diff --git a/arch/arm/boot/dts/am335x-sancloud-bbe-common.dtsi b/arch/arm/boot/dts/am335x-sancloud-bbe-common.dtsi
-index bd9c21813192..2513d7cde09c 100644
---- a/arch/arm/boot/dts/am335x-sancloud-bbe-common.dtsi
-+++ b/arch/arm/boot/dts/am335x-sancloud-bbe-common.dtsi
-@@ -40,22 +40,6 @@
- 		>;
- 	};
- 
--	davinci_mdio_default: davinci_mdio_default {
--		pinctrl-single,pins = <
--			/* MDIO */
--			AM33XX_PADCONF(AM335X_PIN_MDIO, PIN_INPUT_PULLUP | SLEWCTRL_FAST, MUX_MODE0)
--			AM33XX_PADCONF(AM335X_PIN_MDC, PIN_OUTPUT_PULLUP, MUX_MODE0)
--		>;
--	};
--
--	davinci_mdio_sleep: davinci_mdio_sleep {
--		pinctrl-single,pins = <
--			/* MDIO reset value */
--			AM33XX_PADCONF(AM335X_PIN_MDIO, PIN_INPUT_PULLDOWN, MUX_MODE7)
--			AM33XX_PADCONF(AM335X_PIN_MDC, PIN_INPUT_PULLDOWN, MUX_MODE7)
--		>;
--	};
--
- 	usb_hub_ctrl: usb_hub_ctrl {
- 		pinctrl-single,pins = <
- 			AM33XX_PADCONF(AM335X_PIN_RMII1_REF_CLK, PIN_OUTPUT_PULLUP, MUX_MODE7)     /* rmii1_refclk.gpio0_29 */
-@@ -63,25 +47,12 @@
- 	};
- };
- 
--&mac {
--	pinctrl-names = "default", "sleep";
-+&mac_sw {
- 	pinctrl-0 = <&cpsw_default>;
- 	pinctrl-1 = <&cpsw_sleep>;
--	status = "okay";
--};
--
--&davinci_mdio {
--	pinctrl-names = "default", "sleep";
--	pinctrl-0 = <&davinci_mdio_default>;
--	pinctrl-1 = <&davinci_mdio_sleep>;
--	status = "okay";
--
--	ethphy0: ethernet-phy@0 {
--		reg = <0>;
--	};
- };
- 
--&cpsw_emac0 {
-+&cpsw_port1 {
- 	phy-handle = <&ethphy0>;
- 	phy-mode = "rgmii-id";
- };
--- 
-2.17.1
-
+>
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> ---
+>  mm/migrate.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 6f048a8..0ab364f 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -957,7 +957,7 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>                                 int force, enum migrate_mode mode)
+>  {
+>         int rc = -EAGAIN;
+> -       int page_was_mapped = 0;
+> +       bool page_was_mapped = false;
+>         struct anon_vma *anon_vma = NULL;
+>         bool is_lru = !__PageMovable(page);
+>
+> @@ -1060,7 +1060,7 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
+>                 VM_BUG_ON_PAGE(PageAnon(page) && !PageKsm(page) && !anon_vma,
+>                                 page);
+>                 try_to_migrate(page, 0);
+> -               page_was_mapped = 1;
+> +               page_was_mapped = true;
+>         }
+>
+>         if (!page_mapped(page))
+> --
+> 1.8.3.1
+>
+>
