@@ -2,414 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194B13E13DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8738B3E13E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241088AbhHEL1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241022AbhHEL1F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:27:05 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44CDC06179B
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 04:26:49 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so8566659pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 04:26:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=aJTPpUh6t2Es8y7Iu7RimXwcA3En7rLzswEc/EhXmpU=;
-        b=YSkpZre0qFUWOKnFiY6mD1Cfh1gxdhUbV2KEMmeE/TB+fsbO6IC2Gr40mVUf0+K7jw
-         +rRHi2t0fXELui3TCNi2aAW/aRLZGj5Fp83Fw71AZI46Hrb5LqC35XoNCPdGmN+OYfkK
-         7JVBREinP2hsOhGxW+ch2yMvYujlN2TxFl6IOwjcfFW7npU/dEwXi1zqvovZk5QU7HBz
-         uWZ430mPivPU/3iaz1PTlSWKwR5tXF5Il0HRTwqwEG7/2a0w/XfNYb/styG4Beu0q/bt
-         7uW5FI48i+2Dx2dTuYsWdBQ7B64wmrUz7UrhZBGTUWPQ886UC09Omontgy6cfHa6q2Q3
-         uQYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=aJTPpUh6t2Es8y7Iu7RimXwcA3En7rLzswEc/EhXmpU=;
-        b=WT8kCEZ9T9P95Wcj22457FrbAOzvBogSr9pSSJvmfKF4OtDJ9567mycNi4T7NlLZzS
-         0DDsOG0PH9sguIjoyaKPrRlZuok4wyNgQ8oIQ/EkomZddsKyMBtOYjILdF1FHKBQmk+c
-         fqFuevGSEM/xnx5AKqKjnK1lAOEHXExll+v54AeSOkFiSOLs63vaAa7s+0bAmdf5ulIV
-         gE3Fvi2fzdlnAsIdDSNIZLaf2zgFXZuEggK/pYceppTa91geQ23YYuWQqGQOb+O12M24
-         a2J6uNmGTXvdkBkHOjSWw/LhsMc2sCV89ENw32C4iQqeB9hcl7HKMGS1sf8VBg7UL8rV
-         heSQ==
-X-Gm-Message-State: AOAM531Ie0+b0jXgqc0yEodZauoH9X8bWaDbquKeOBBxiWqmIM64YMNb
-        S0y4MJEp2P/y0BRxwQQlWjmZ2g==
-X-Google-Smtp-Source: ABdhPJzv+MboVfqPh0q+vDLPaa8pd6outUQJG4TuEMiFxmK76373FG4avjK/7bnF3wpUokDchlHCMQ==
-X-Received: by 2002:aa7:8d10:0:b029:303:8d17:7b8d with SMTP id j16-20020aa78d100000b02903038d177b8dmr4836361pfe.26.1628162809328;
-        Thu, 05 Aug 2021 04:26:49 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id j16sm6923193pfi.165.2021.08.05.04.26.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 04:26:48 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 16:56:46 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+        id S241091AbhHEL1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:27:34 -0400
+Received: from mail-bn7nam10on2074.outbound.protection.outlook.com ([40.107.92.74]:32608
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241022AbhHEL1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 07:27:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xdq8JHUG9KU7c3qn0WP24uYxcoshQjuXWe+rSsr/EDLfSrUf07ZUOcEsPM9G72vi7sucdQu8GKQmVFwUIHC753+tIZ/+a/HI+ADN0wdxmS2alDIIAbqSjjqGxSWTwIVwdORqQbVaig1wPBapR7+IxlRuS4lWLNgtqSDH2nK7ugkp/+nGN33gqv/amfPVdSlQ3J+7v4pyBr751rN7RgfPmhtZUxjgjmb93a1xeHS/eyXStnJQ+tyIz6vc2+O7ciq4WFAS6EOeZRD5TLRpu00WwC0nAmwwgLharTPVIAeipDY66FjUR5o9WNbROfLq9wO+EvLBsjzFLBNLATIc5+JTIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/ABRnOqvn6Pyo06AlJXTr47rHRrubGpQns2+C1Oqcyw=;
+ b=lGublZaKZUDukJFGyxFN38LBU7SqZGr4wOwDmxqe0cI5rTBDV4iqEEmXrlwMeM+fJ2IUfy5EaxMpK5mTRto1bJRwq+mCgS9XeEBFRy3mXUw6QVeUn6E5/m9DRx+T1usaUDqWfUSn6EemsuB1p/EFmqJWWfrs7ixhoDnon/FCTpovG0xxYd4MWvk6HIliZAHadEVk2zIAXJtD8vOEyH/7bO6Wta8PD1NbRl9+7VsB1yjDxVcE3+JPmPVA8ZzRyfv7QtihckeGPAW01kPzZTKE9ELFcJnz+WOdVfEab7mq0m02tD6sTe4iKbN03gQEt1IVmP9PUd7BUJDs4bAlBVoPTw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/ABRnOqvn6Pyo06AlJXTr47rHRrubGpQns2+C1Oqcyw=;
+ b=jfQfSSo7Devzo9CRUyeJDX2gsn9Sy2IWO8pzuOC4hQqzLvkI1fECQeaRnkqY4drZxocBZKAQCHsg8xBYmBD+xp45YyeeanoQ/5K4rNOr+qEwSkEQI8n383iawmMaAVEnhB8WUV35nY38HFi+9qvxjTkZwxPxmcRYs7kZuJrAsXcZ0e7yUGQg9F1W2fVqdyn9ZYbMrpPSV/+a6EL3BMub0iKehB5zsnZ2pTL6Qt27OXQ6U1kIQWUqIbp3K2A8OiT2eAdxknlPVRLfCqWHTE8ZgKvgKfcUKkK8B/CEOnb3J/wq/Rnxly/rk6HTBOl/vR4tdjrI+xTNCL4hKrTONedk7g==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5222.namprd12.prod.outlook.com (2603:10b6:208:31e::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.25; Thu, 5 Aug
+ 2021 11:27:15 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336%7]) with mapi id 15.20.4394.018; Thu, 5 Aug 2021
+ 11:27:15 +0000
+Date:   Thu, 5 Aug 2021 08:27:13 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     David Gibson <david@gibson.dropbear.id.au>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>,
         Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH V4 2/2] gpio: virtio: Add IRQ support
-Message-ID: <20210805112646.lgkurm3wjilf5xrv@vireshk-i7>
-References: <cover.1627989586.git.viresh.kumar@linaro.org>
- <75c8e6e5e8dfa1889938f3a6b2d991763c7a3717.1627989586.git.viresh.kumar@linaro.org>
- <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
-MIME-Version: 1.0
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [RFC v2] /dev/iommu uAPI proposal
+Message-ID: <20210805112713.GN1721383@nvidia.com>
+References: <BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <YP4/KJoYfbaf5U94@yekko>
+ <20210730145123.GW1721383@nvidia.com>
+ <BN9PR11MB5433C34222B3E727B3D0E5638CEF9@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210804140447.GH1721383@nvidia.com>
+ <BN9PR11MB54330D97D0935F1C1E0E346C8CF19@BN9PR11MB5433.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <BN9PR11MB54330D97D0935F1C1E0E346C8CF19@BN9PR11MB5433.namprd11.prod.outlook.com>
+X-ClientProxiedBy: CH2PR11CA0025.namprd11.prod.outlook.com
+ (2603:10b6:610:54::35) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR11CA0025.namprd11.prod.outlook.com (2603:10b6:610:54::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Thu, 5 Aug 2021 11:27:15 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mBbWr-00DDeR-DN; Thu, 05 Aug 2021 08:27:13 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9f356322-5653-4d21-0c94-08d95803fa06
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5222:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB52223122FD3CB2D6282DF3DDC2F29@BL1PR12MB5222.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xHSf+ufjFjS+4SectuZQg9MnQ2HtFg0OoFovC7s2xyrOZRdv/mvCkJR0izLwM9OyTNNuKt+H+Rm3JTyglfdjRxyBv4zrW5mYz/uT7qD9WuV4Z/DQRSfbPyB6Xw3uvDkEiKxn/gbO4DpMTpnw5e7KH0nRXxpj6Au9nbilkMzn7InU7pEUBdodSehYEVwQJPEscNyOS/B+KxGQB6q0gTEugA0iZw2RbNMZEI+bnwpegeHrDKk2rQcAU8BJ9c8TgHW89bjnOU5o1WBhb8LmDFnUJDPmsYkOJapVYZLFnAeHq49NU67UWc/jZF5CKV9QIqOZ4T+8vMmQ1eNhgXOcoGJxg6JIq1Zc7KnTAC6KOV5ryeZDjmpBHe2AwSPPZxkh+IMbxlpLoqMt086AFoSWCsgffFeoT08KlQ6JEWSZkxmFx7Qd7lUPtYJVxu09aFHP0C+vfW6Ios0AruIAK7rYCug4psVAvNBwkwsdSciduUa+XIY+xN+BRWquvXNPYjKvLKkLkMvwZOdy6noD46elnFR45ZBRkgRRv8BQLAexuf1SNUdmhMRGPbbTeL52PRRpnZ4q7Mu2tBLn4jvcWP3gYqeks3b5cThlEf2wmMo3xNlAMairmWnOxm9Llk5PD7po/kKtd4WaOK9z32NbFXwWlfRnsQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(366004)(396003)(136003)(9786002)(36756003)(478600001)(9746002)(316002)(5660300002)(66946007)(7416002)(33656002)(66556008)(66476007)(86362001)(38100700002)(6916009)(2616005)(54906003)(426003)(2906002)(186003)(4326008)(26005)(1076003)(8936002)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6+GvoW2Gy4+xr5HRNHFTdO+JHL6kSYKN7scCRIq/+GfnhH5yL+mFcwgCaba1?=
+ =?us-ascii?Q?jtDyl5C2h5KsahOxMAmiRAe7WZstNGkbJRjGBVBKYeYZHv/CWxR1r8HgXOxK?=
+ =?us-ascii?Q?rm9DrWxUIDWD2P4Hv83rimjAzQAjr6uouuxlzN9kXOjwoGOx5IiEPGesLZ6v?=
+ =?us-ascii?Q?8fLQlBiyEgPEUNUWryw/kQpe6liH/E21OFYOMYZIZHup9h5Rhn+s+Jn0i0j1?=
+ =?us-ascii?Q?IF2Hfp4yaVwBv1jG23kcgoAjGcuyD5ymuPRYt4jUSn74xhfG4+ZUUD8vXkw6?=
+ =?us-ascii?Q?6ndLxsGnivFBCmnj2Fr/REp6mJLFqrhnFz/ao6c8L5Q3QvP9fQvVKbkws4Z2?=
+ =?us-ascii?Q?wgOGDMA6uqSWaWzS2C3Zt+l/d3WwzNM5BURkv2AaznrY90NKEFimqnqP5e+y?=
+ =?us-ascii?Q?iWABYnjFG0JxpNvao2arPzBEcGR1hJnwFxBH0E1TgOlhFdlaCQ48mOyKQD5i?=
+ =?us-ascii?Q?GatkQacuwqnoltyIIBODrU/P2Q/iANvzDD7/f/lb7w4h6omnIUdLexHyAoDs?=
+ =?us-ascii?Q?JfhBlGGdysNKfqfR7G30ZZ1FmfDhEDV0ogpgslYCWjhHwU1ee3chxD7+YZlI?=
+ =?us-ascii?Q?v42OwKRRJEQAuEVuu7ZkMdTDQkkepJ41+sLGhYyM3fdydirqu9xwZrAhyqp5?=
+ =?us-ascii?Q?EH3krMdqZ4T32fvB+nqVWg5HMtbmBeU6Cc+XwfYJQmXRC+4GtcuAnfMg+PTD?=
+ =?us-ascii?Q?RFLlnNvKy5zdsNG4MYGGu6K8wNrbbuk+4KcJXg8dDVqadULhtoN3oCaZlhLB?=
+ =?us-ascii?Q?dk5xHC3LfNmuml+xBM5AEbzR1EzXeaUxam7BvjluBTwS0l3s22ztKqbOdLsK?=
+ =?us-ascii?Q?+uJL4UJv+4H37UFBWFuCYOMQg0XuWeyB5erLJhbgO2Wc126PkPOavSOxZX0b?=
+ =?us-ascii?Q?TruoBXGc9+vBzqB6s4NpohFH71xPe9s7ZCy3hTQkBM+GNNkCFEKhWmx4PX1p?=
+ =?us-ascii?Q?YhkU3avswLPWAMPZC01ujLwowsVxeus6xI0hJ9ReRAMrYGrEyTKBx3+CV1rU?=
+ =?us-ascii?Q?ovoyG3GCvBsBe6LsyhE9zGJ+jr9mzw45YYFjRlCVqq+SWvUjl18OIcjC+bhV?=
+ =?us-ascii?Q?dorH3fBw9sowlrEotnNXItuSa7j1SFlw5Ss4eTmKBDVzicbreQHFelkRcDZJ?=
+ =?us-ascii?Q?wc62+v4wQXJJk8DDl9oECF1KxHNIw/U1Y9SGW1b7CCYK4XEoon96hyxN452B?=
+ =?us-ascii?Q?gBzKkT//t2ZVYQ2D08L39OVZCMm2xdLDnNc4IRCg0KISGTD+UCEXjGKhA+rX?=
+ =?us-ascii?Q?dXngHW5afQpn+95WMGgGoRUhiiZLZytlVhs9UCOX8flVqgej30Jer4SfICgS?=
+ =?us-ascii?Q?zVxrdu6MFL9N1d6Uo2OOM1tx?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f356322-5653-4d21-0c94-08d95803fa06
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2021 11:27:15.5180
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5qOLVmToY+/se2ulBewv84zqtYYPzvdX0zsoeGivaVv0du+vmLuQFzkb7MNUpkvx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5222
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-08-21, 17:01, Arnd Bergmann wrote:
-> As far as I can tell, the update_irq_type() message would lead to the
-> interrupt getting delivered when it was armed and is now getting disabled,
-> but I don't see why we would call update_irq_type() as a result of the
-> eventq notification.
+On Wed, Aug 04, 2021 at 10:59:21PM +0000, Tian, Kevin wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Wednesday, August 4, 2021 10:05 PM
+> > 
+> > On Mon, Aug 02, 2021 at 02:49:44AM +0000, Tian, Kevin wrote:
+> > 
+> > > Can you elaborate? IMO the user only cares about the label (device cookie
+> > > plus optional vPASID) which is generated by itself when doing the attaching
+> > > call, and expects this virtual label being used in various spots (invalidation,
+> > > page fault, etc.). How the system labels the traffic (the physical RID or RID+
+> > > PASID) should be completely invisible to userspace.
+> > 
+> > I don't think that is true if the vIOMMU driver is also emulating
+> > PASID. Presumably the same is true for other PASID-like schemes.
+> > 
+> 
+> I'm getting even more confused with this comment. Isn't it the
+> consensus from day one that physical PASID should not be exposed
+> to userspace as doing so breaks live migration? 
 
-Based on discussion we had today (offline), I changed the design a bit
-and used handle_level_irq() instead, as it provides consistent calls
-to mask/unmask(), which simplified the whole thing a bit.
+Uh, no?
 
-Also I have broken the rule from specs, maybe we should update spec
-with that, where the specs said that the buffer must not be queued
-before enabling the interrupt. I just queue the buffer unconditionally
-now from unmask().
+> with PASID emulation vIOMMU only cares about vPASID instead of
+> pPASID, and the uAPI only requires user to register vPASID instead
+> of reporting pPASID back to userspace...
 
-I am not sure but there may be some race around the "queued" flag and
-I wonder if we can land in a scenario where the buffer is left
-un-queued somehow, while an interrupt is enabled.
+vPASID is only a feature of one device in existance, so we can't make
+vPASID mandatory.
 
-diff --git a/drivers/gpio/gpio-virtio.c b/drivers/gpio/gpio-virtio.c
-index 199f8ace1e88..114ce2640944 100644
---- a/drivers/gpio/gpio-virtio.c
-+++ b/drivers/gpio/gpio-virtio.c
-@@ -28,6 +28,17 @@ struct virtio_gpio_line {
- 	unsigned int rxlen;
- };
- 
-+struct vgpio_irq_line {
-+	u8 type;
-+	bool type_pending;
-+	bool masked;
-+	bool mask_pending;
-+	bool queued;
-+
-+	struct virtio_gpio_irq_request ireq ____cacheline_aligned;
-+	struct virtio_gpio_irq_response ires ____cacheline_aligned;
-+};
-+
- struct virtio_gpio {
- 	struct virtio_device *vdev;
- 	struct mutex lock; /* Protects virtqueue operation */
-@@ -35,6 +46,11 @@ struct virtio_gpio {
- 	struct virtio_gpio_config config;
- 	struct virtio_gpio_line *lines;
- 	struct virtqueue *request_vq;
-+
-+	/* irq support */
-+	struct virtqueue *event_vq;
-+	struct mutex irq_lock; /* Protects irq operation */
-+	struct vgpio_irq_line *irq_lines;
- };
- 
- static int _virtio_gpio_req(struct virtio_gpio *vgpio, u16 type, u16 gpio,
-@@ -187,6 +203,186 @@ static void virtio_gpio_set(struct gpio_chip *gc, unsigned int gpio, int value)
- 	virtio_gpio_req(vgpio, VIRTIO_GPIO_MSG_SET_VALUE, gpio, value, NULL);
- }
- 
-+/* Interrupt handling */
-+static void virtio_gpio_irq_prepare(struct virtio_gpio *vgpio, u16 gpio)
-+{
-+	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[gpio];
-+	struct virtio_gpio_irq_request *ireq = &irq_line->ireq;
-+	struct virtio_gpio_irq_response *ires = &irq_line->ires;
-+	struct scatterlist *sgs[2], req_sg, res_sg;
-+	int ret;
-+
-+	if (unlikely(irq_line->queued))
-+		return;
-+
-+	ireq->gpio = cpu_to_le16(gpio);
-+	sg_init_one(&req_sg, ireq, sizeof(*ireq));
-+	sg_init_one(&res_sg, ires, sizeof(*ires));
-+	sgs[0] = &req_sg;
-+	sgs[1] = &res_sg;
-+
-+	ret = virtqueue_add_sgs(vgpio->event_vq, sgs, 1, 1, irq_line, GFP_ATOMIC);
-+	if (ret) {
-+		dev_err(&vgpio->vdev->dev, "failed to add request to eventq\n");
-+		return;
-+	}
-+
-+	irq_line->queued = true;
-+	virtqueue_kick(vgpio->event_vq);
-+}
-+
-+static void virtio_gpio_irq_mask(struct irq_data *d)
-+{
-+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-+	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
-+	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[d->hwirq];
-+
-+	if (irq_line->masked)
-+		return;
-+
-+	irq_line->masked = true;
-+	irq_line->mask_pending = !irq_line->mask_pending;
-+}
-+
-+static void virtio_gpio_irq_unmask(struct irq_data *d)
-+{
-+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-+	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
-+	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[d->hwirq];
-+
-+	/* Queue the buffer unconditionally on unmask */
-+	virtio_gpio_irq_prepare(vgpio, d->hwirq);
-+
-+	if (!irq_line->masked)
-+		return;
-+
-+	irq_line->masked = false;
-+	irq_line->mask_pending = !irq_line->mask_pending;
-+}
-+
-+static int virtio_gpio_irq_set_type(struct irq_data *d, unsigned int type)
-+{
-+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-+	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
-+	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[d->hwirq];
-+
-+	switch (type) {
-+	case IRQ_TYPE_NONE:
-+		type = VIRTIO_GPIO_IRQ_TYPE_NONE;
-+		break;
-+	case IRQ_TYPE_EDGE_RISING:
-+		type = VIRTIO_GPIO_IRQ_TYPE_EDGE_RISING;
-+		break;
-+	case IRQ_TYPE_EDGE_FALLING:
-+		type = VIRTIO_GPIO_IRQ_TYPE_EDGE_FALLING;
-+		break;
-+	case IRQ_TYPE_EDGE_BOTH:
-+		type = VIRTIO_GPIO_IRQ_TYPE_EDGE_BOTH;
-+		break;
-+	case IRQ_TYPE_LEVEL_LOW:
-+		type = VIRTIO_GPIO_IRQ_TYPE_LEVEL_LOW;
-+		break;
-+	case IRQ_TYPE_LEVEL_HIGH:
-+		type = VIRTIO_GPIO_IRQ_TYPE_LEVEL_HIGH;
-+		break;
-+	default:
-+		dev_err(&vgpio->vdev->dev, "unsupported irq type: %u\n", type);
-+		return -EINVAL;
-+	}
-+
-+	irq_line->type = type;
-+	irq_line->type_pending = true;
-+
-+	return 0;
-+}
-+
-+static void update_irq_type(struct virtio_gpio *vgpio, u16 gpio, u8 type)
-+{
-+	virtio_gpio_req(vgpio, VIRTIO_GPIO_MSG_IRQ_TYPE, gpio, type, NULL);
-+}
-+
-+static void virtio_gpio_irq_bus_lock(struct irq_data *d)
-+{
-+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-+	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
-+
-+	mutex_lock(&vgpio->irq_lock);
-+}
-+
-+static void virtio_gpio_irq_bus_sync_unlock(struct irq_data *d)
-+{
-+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-+	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
-+	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[d->hwirq];
-+	u8 type = irq_line->masked ? VIRTIO_GPIO_IRQ_TYPE_NONE : irq_line->type;
-+
-+	if (irq_line->mask_pending || irq_line->type_pending) {
-+		irq_line->mask_pending = false;
-+		irq_line->type_pending = false;
-+		update_irq_type(vgpio, d->hwirq, type);
-+	}
-+
-+	mutex_unlock(&vgpio->irq_lock);
-+}
-+
-+static struct irq_chip vgpio_irq_chip = {
-+	.name			= "virtio-gpio",
-+	.irq_mask		= virtio_gpio_irq_mask,
-+	.irq_unmask		= virtio_gpio_irq_unmask,
-+	.irq_set_type		= virtio_gpio_irq_set_type,
-+
-+	/* These are required to implement irqchip for slow busses */
-+	.irq_bus_lock		= virtio_gpio_irq_bus_lock,
-+	.irq_bus_sync_unlock	= virtio_gpio_irq_bus_sync_unlock,
-+};
-+
-+static void virtio_gpio_event_vq(struct virtqueue *vq)
-+{
-+	struct virtio_gpio *vgpio = vq->vdev->priv;
-+	struct device *dev = &vgpio->vdev->dev;
-+	struct vgpio_irq_line *irq_line;
-+	int irq, gpio, ret;
-+	unsigned int len;
-+
-+	while (true) {
-+		irq_line = virtqueue_get_buf(vgpio->event_vq, &len);
-+		if (!irq_line)
-+			break;
-+
-+		if (len != sizeof(irq_line->ires)) {
-+			dev_err(dev, "irq with incorrect length (%u : %u)\n",
-+				len, (unsigned)sizeof(irq_line->ires));
-+			continue;
-+		}
-+
-+		WARN_ON(!irq_line->queued);
-+		irq_line->queued = false;
-+
-+		/* Buffer is returned after interrupt is masked */
-+		if (irq_line->ires.status == VIRTIO_GPIO_IRQ_STATUS_INVALID)
-+			continue;
-+
-+		if (WARN_ON(irq_line->ires.status != VIRTIO_GPIO_IRQ_STATUS_VALID))
-+			continue;
-+
-+		/*
-+		 * Find GPIO line number from the offset of irq_line within the
-+		 * irq_lines block. We can also get GPIO number from
-+		 * irq-request, but better not rely on a value returned by
-+		 * remote.
-+		 */
-+		gpio = irq_line - vgpio->irq_lines;
-+		WARN_ON(gpio >= vgpio->config.ngpio);
-+
-+		irq = irq_find_mapping(vgpio->gc.irq.domain, gpio);
-+		WARN_ON(!irq);
-+
-+		ret = generic_handle_irq(irq);
-+		if (ret)
-+			dev_err(dev, "failed to handle interrupt: %d\n", ret);
-+	};
-+}
-+
- static void virtio_gpio_request_vq(struct virtqueue *vq)
- {
- 	struct virtio_gpio_line *line;
-@@ -211,14 +407,15 @@ static void virtio_gpio_free_vqs(struct virtio_device *vdev)
- static int virtio_gpio_alloc_vqs(struct virtio_gpio *vgpio,
- 				 struct virtio_device *vdev)
- {
--	const char * const names[] = { "requestq" };
-+	const char * const names[] = { "requestq", "eventq" };
- 	vq_callback_t *cbs[] = {
- 		virtio_gpio_request_vq,
-+		virtio_gpio_event_vq,
- 	};
--	struct virtqueue *vqs[1] = { NULL };
-+	struct virtqueue *vqs[2] = { NULL, NULL };
- 	int ret;
- 
--	ret = virtio_find_vqs(vdev, 1, vqs, cbs, names, NULL);
-+	ret = virtio_find_vqs(vdev, vgpio->irq_lines ? 2 : 1, vqs, cbs, names, NULL);
- 	if (ret) {
- 		dev_err(&vdev->dev, "failed to find vqs: %d\n", ret);
- 		return ret;
-@@ -226,11 +423,23 @@ static int virtio_gpio_alloc_vqs(struct virtio_gpio *vgpio,
- 
- 	if (!vqs[0]) {
- 		dev_err(&vdev->dev, "failed to find requestq vq\n");
--		return -ENODEV;
-+		goto out;
- 	}
- 	vgpio->request_vq = vqs[0];
- 
-+	if (vgpio->irq_lines && !vqs[1]) {
-+		dev_err(&vdev->dev, "failed to find eventq vq\n");
-+		goto out;
-+	}
-+	vgpio->event_vq = vqs[1];
-+
- 	return 0;
-+
-+out:
-+	if (vqs[0] || vqs[1])
-+		virtio_gpio_free_vqs(vdev);
-+
-+	return -ENODEV;
- }
- 
- static const char **virtio_gpio_get_names(struct virtio_gpio *vgpio)
-@@ -326,6 +535,30 @@ static int virtio_gpio_probe(struct virtio_device *vdev)
- 	vgpio->gc.owner			= THIS_MODULE;
- 	vgpio->gc.can_sleep		= true;
- 
-+	/* Interrupt support */
-+	if (virtio_has_feature(vdev, VIRTIO_GPIO_F_IRQ)) {
-+		vgpio->irq_lines = devm_kcalloc(dev, config->ngpio,
-+						sizeof(*vgpio->irq_lines),
-+						GFP_KERNEL);
-+		if (!vgpio->irq_lines)
-+			return -ENOMEM;
-+
-+		/* The event comes from the outside so no parent handler */
-+		vgpio->gc.irq.parent_handler	= NULL;
-+		vgpio->gc.irq.num_parents	= 0;
-+		vgpio->gc.irq.parents		= NULL;
-+		vgpio->gc.irq.default_type	= IRQ_TYPE_NONE;
-+		vgpio->gc.irq.handler		= handle_level_irq;
-+		vgpio->gc.irq.chip		= &vgpio_irq_chip;
-+
-+		for (i = 0; i < config->ngpio; i++) {
-+			vgpio->irq_lines[i].type = VIRTIO_GPIO_IRQ_TYPE_NONE;
-+			vgpio->irq_lines[i].masked = true;
-+		}
-+
-+		mutex_init(&vgpio->irq_lock);
-+	}
-+
- 	ret = virtio_gpio_alloc_vqs(vgpio, vdev);
- 	if (ret)
- 		return ret;
-@@ -358,7 +591,13 @@ static const struct virtio_device_id id_table[] = {
- };
- MODULE_DEVICE_TABLE(virtio, id_table);
- 
-+static const unsigned int features[] = {
-+	VIRTIO_GPIO_F_IRQ,
-+};
-+
- static struct virtio_driver virtio_gpio_driver = {
-+	.feature_table		= features,
-+	.feature_table_size	= ARRAY_SIZE(features),
- 	.id_table		= id_table,
- 	.probe			= virtio_gpio_probe,
- 	.remove			= virtio_gpio_remove,
+Jason
