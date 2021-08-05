@@ -2,98 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6283E1A4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601143E1A4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239562AbhHERXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:23:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230172AbhHERXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:23:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E498461040;
-        Thu,  5 Aug 2021 17:23:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628184196;
-        bh=449gq+Na7KsB0w5p/YYNbxeSQ7SEH1snnxDkgA337kM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WG0EHHaJgCTZY/XJnC5ybhEMOPyoljGy/kU1kKCb07WQTvZ/+BtK2G4mNhlM9iah/
-         vfOUjGT7wYOYLLC4K/vX5bA+2IaYI4PrrjCrT/sHnxwGPtVUapdcKAlxaT3nTXv9TW
-         Cjo4pbl/XDfq8xoIqKs1XXL8X/8uqlrr5hrEGAfjkGJZ93bXLxV/Js5Ndn8qKwYNm/
-         YXVa5eKaBJwCdyQraOUGaksp4NnG7jpYHylraPtVJ/VEYOvoF8YPDQ+W4KugxZLg5t
-         PgPhjqmKVWmn0WGJswu7eJC1P7dRFk3zOmrgePIc0tdzWY8jNSGtgzfq3mMhh+X+Oc
-         Qwb7apa9/KqfQ==
-Date:   Thu, 5 Aug 2021 18:23:00 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: RFC power domain vs generic supply regulator
-Message-ID: <20210805172300.GR26252@sirena.org.uk>
-References: <CAOf5uwnZvJWhwf=h8nx=MmZz4BOyaq_BTr8vyDcGHqnBO7jK1Q@mail.gmail.com>
+        id S230172AbhHERXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:23:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238198AbhHERXj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 13:23:39 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F60C061765;
+        Thu,  5 Aug 2021 10:23:25 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id cl16-20020a17090af690b02901782c35c4ccso7447101pjb.5;
+        Thu, 05 Aug 2021 10:23:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CCA4VfC8oJsngcHNQHqxfvcnSQIQ9FY8OuEOGE4n/ac=;
+        b=cZavTf7ANl8OFNfJo563qA51fsfdLu+lGVjrKfWZApxc9LCwUJIVKLARVzKNDKTrfD
+         yaDhlep9ypUPzIMOIB6QvD4Z2FbwiGGYsBNSZFpYaKvJBZGaa0e2eiBfanGv9uFiBnsh
+         gFQX/iBVdVtVi1SLQQACfqq5Pc45KU6RG62xVK6yiBtRg9m0/q78o7XUVOXB3H/zhnJ4
+         BUwcKYTPEd303BZgpXjDzdK6CkHVkzLPiMgATGRFqPsrHU5cuvdEJ4xYfIeRQ1OKnIf1
+         aRdLHWkr4yupNpC5KNaSJotTkSIHkCZusf0P81XtY4LGMpY/Dc0g3yCfEpIh+BDrcsX4
+         TPLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CCA4VfC8oJsngcHNQHqxfvcnSQIQ9FY8OuEOGE4n/ac=;
+        b=asdgkSWMZRmOVMsCsMwEfkr0tGZ5eJ1kgUeVvUkcJv3rbLiNDntX3hzTAqEDgeRD7k
+         l6dGEzFrNpRV3wWD0PIsDb+kkoWWhdqI/wAJ/u52SwZUvpUFLbfcC9rL6PBR1HSgdtP+
+         Ror+WC5v52uUTdN5YNvZz9J6/ClpHOM8Iz4+8in7dCWKxYmakmJ+Y94E2iE6o8cOPTvg
+         8gCh0xjkz5XDr21fulOt8uX3sopI1+AyYTU5mlkb/+Lt9W8NhKPh2fWyERH2KIU54zz3
+         4vNmZV3GD+iBpweJkh8VShp56jcQN5V7pd/EBx0QIIuEAr/1FChytpoNxwjoBfB4D4kC
+         u8Fg==
+X-Gm-Message-State: AOAM533bhuDW8y1w6NXesa3mW1M1TkEX+1j1D8Gqzwsh7grHM24ZDq5o
+        ka/gDEwJ7PDmPnxmMMPOP4I=
+X-Google-Smtp-Source: ABdhPJxwNlBA5AefYt8BJuAxtTtzEWiCghRdd7UiBDfhSVo+ZgTTYiDj+LCAR2b5qmqgwsbo0yoUZw==
+X-Received: by 2002:a63:a0f:: with SMTP id 15mr452388pgk.80.1628184204831;
+        Thu, 05 Aug 2021 10:23:24 -0700 (PDT)
+Received: from haswell-ubuntu20.lan ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id j187sm7381115pfb.132.2021.08.05.10.23.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 10:23:24 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: dsa: mt7530: drop untagged frames on VLAN-aware ports without PVID
+Date:   Fri,  6 Aug 2021 01:23:14 +0800
+Message-Id: <20210805172315.362165-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2qwbT0JTInWqknst"
-Content-Disposition: inline
-In-Reply-To: <CAOf5uwnZvJWhwf=h8nx=MmZz4BOyaq_BTr8vyDcGHqnBO7jK1Q@mail.gmail.com>
-X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The driver currently still accepts untagged frames on VLAN-aware ports
+without PVID. Use PVC.ACC_FRM to drop untagged frames in that case.
 
---2qwbT0JTInWqknst
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+---
+ drivers/net/dsa/mt7530.c | 32 ++++++++++++++++++++++++++++++--
+ drivers/net/dsa/mt7530.h |  7 +++++++
+ 2 files changed, 37 insertions(+), 2 deletions(-)
 
-On Tue, Jun 08, 2021 at 08:01:20AM +0200, Michael Nazzareno Trimarchi wrote:
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index 385e169080d9..df167f0529bb 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -1257,9 +1257,11 @@ mt7530_port_set_vlan_unaware(struct dsa_switch *ds, int port)
+ 		mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
+ 			   MT7530_PORT_FALLBACK_MODE);
+ 
+-	mt7530_rmw(priv, MT7530_PVC_P(port), VLAN_ATTR_MASK | PVC_EG_TAG_MASK,
++	mt7530_rmw(priv, MT7530_PVC_P(port),
++		   VLAN_ATTR_MASK | PVC_EG_TAG_MASK | ACC_FRM_MASK,
+ 		   VLAN_ATTR(MT7530_VLAN_TRANSPARENT) |
+-		   PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT));
++		   PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT) |
++		   MT7530_VLAN_ACC_ALL);
+ 
+ 	/* Set PVID to 0 */
+ 	mt7530_rmw(priv, MT7530_PPBV1_P(port), G0_PORT_VID_MASK,
+@@ -1297,6 +1299,11 @@ mt7530_port_set_vlan_aware(struct dsa_switch *ds, int port)
+ 			   MT7530_PORT_SECURITY_MODE);
+ 		mt7530_rmw(priv, MT7530_PPBV1_P(port), G0_PORT_VID_MASK,
+ 			   G0_PORT_VID(priv->ports[port].pvid));
++
++		/* Only accept tagged frames if PVID is not set */
++		if (!priv->ports[port].pvid)
++			mt7530_rmw(priv, MT7530_PVC_P(port), ACC_FRM_MASK,
++				   MT7530_VLAN_ACC_TAGGED);
+ 	}
+ 
+ 	/* Set the port as a user port which is to be able to recognize VID
+@@ -1624,11 +1631,26 @@ mt7530_port_vlan_add(struct dsa_switch *ds, int port,
+ 	if (pvid) {
+ 		priv->ports[port].pvid = vlan->vid;
+ 
++		/* Accept all frames if PVID is set */
++		mt7530_rmw(priv, MT7530_PVC_P(port), ACC_FRM_MASK,
++			   MT7530_VLAN_ACC_ALL);
++
+ 		/* Only configure PVID if VLAN filtering is enabled */
+ 		if (dsa_port_is_vlan_filtering(dsa_to_port(ds, port)))
+ 			mt7530_rmw(priv, MT7530_PPBV1_P(port),
+ 				   G0_PORT_VID_MASK,
+ 				   G0_PORT_VID(vlan->vid));
++	} else if (priv->ports[port].pvid == vlan->vid) {
++		/* This VLAN is overwritten without PVID, so unset it */
++		priv->ports[port].pvid = G0_PORT_VID_DEF;
++
++		/* Only accept tagged frames if the port is VLAN-aware */
++		if (dsa_port_is_vlan_filtering(dsa_to_port(ds, port)))
++			mt7530_rmw(priv, MT7530_PVC_P(port), ACC_FRM_MASK,
++				   MT7530_VLAN_ACC_TAGGED);
++
++		mt7530_rmw(priv, MT7530_PPBV1_P(port), G0_PORT_VID_MASK,
++			   G0_PORT_VID_DEF);
+ 	}
+ 
+ 	mutex_unlock(&priv->reg_mutex);
+@@ -1654,6 +1676,12 @@ mt7530_port_vlan_del(struct dsa_switch *ds, int port,
+ 	 */
+ 	if (priv->ports[port].pvid == vlan->vid) {
+ 		priv->ports[port].pvid = G0_PORT_VID_DEF;
++
++		/* Only accept tagged frames if the port is VLAN-aware */
++		if (dsa_port_is_vlan_filtering(dsa_to_port(ds, port)))
++			mt7530_rmw(priv, MT7530_PVC_P(port), ACC_FRM_MASK,
++				   MT7530_VLAN_ACC_TAGGED);
++
+ 		mt7530_rmw(priv, MT7530_PPBV1_P(port), G0_PORT_VID_MASK,
+ 			   G0_PORT_VID_DEF);
+ 	}
+diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
+index 4a91d80f51bb..fe4cd2ac26d0 100644
+--- a/drivers/net/dsa/mt7530.h
++++ b/drivers/net/dsa/mt7530.h
+@@ -238,6 +238,7 @@ enum mt7530_port_mode {
+ #define  PVC_EG_TAG_MASK		PVC_EG_TAG(7)
+ #define  VLAN_ATTR(x)			(((x) & 0x3) << 6)
+ #define  VLAN_ATTR_MASK			VLAN_ATTR(3)
++#define  ACC_FRM_MASK			GENMASK(1, 0)
+ 
+ enum mt7530_vlan_port_eg_tag {
+ 	MT7530_VLAN_EG_DISABLED = 0,
+@@ -249,6 +250,12 @@ enum mt7530_vlan_port_attr {
+ 	MT7530_VLAN_TRANSPARENT = 3,
+ };
+ 
++enum mt7530_vlan_port_acc_frm {
++	MT7530_VLAN_ACC_ALL = 0,
++	MT7530_VLAN_ACC_TAGGED = 1,
++	MT7530_VLAN_ACC_UNTAGGED = 2,
++};
++
+ #define  STAG_VPID			(((x) & 0xffff) << 16)
+ 
+ /* Register for port port-and-protocol based vlan 1 control */
+-- 
+2.25.1
 
-> I'm trying to understand how to deal with devices that do not provide
-> a supply handle connection using the device tree, or if there is a
-> generic way
-> to connect to a regulator. The pinctrl has a generic binding inside
-> dd.c that allow to mux pinout during probing or it allows to define a
-> power domain,
-> According to the code I read the power domain can be only connected to
-> the SoC power domain but in general a generic power domain can be
-> connected
-> to any source aka a regulator. For example and spi-nor can be powered
-> but a gpio regulator or any kind of supply connection and bunch of
-> devices
-> can just need a supply if they are probed or binded runtime. Can
-> someone give me feedback on this topic?
-
-I'm having a really hard time parsing the issue you're trying to solve
-here.  Power domains and regulators are different things, power domains
-represent blocks with a SoC which have some kind of power control which
-may involve a combination of things, the drivers for the devices within
-those domains generally just do runtime PM and then let the driver core
-figure out what's going on with them.  Regulators are for things with
-physical supplies that can be seen in the schematic for the board, in
-general anything that uses a regulator should explicitly say so in its
-binding - supporting some sort of generic mapping isn't great since it
-means that we don't have any control over which regulator is which and
-that makes it hard to add control of the regulators later.  Power
-domanis may possibly have regulators among the resources they use but
-that would just be a normal device binding for the power domain.  All of
-this is orthogonal to when drivers for devices get loaded, that can
-happen at any point while the system is running and doesn't really
-affect how the relationships are described.
-
---2qwbT0JTInWqknst
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEMHnMACgkQJNaLcl1U
-h9DD1gf+PHowNvrKDS3RQBg1lraOVRV4tu1K7RxIn8jTcrVhwuFUqzg2wdZVdmaq
-dyCaNB6Fcj0zOFIqqXahLfjLy1c0NEC3qqInbsm6lPbWWVG4whhoE9gnuzl1lRNF
-8wwU5phofNxICoqJzWny79za5gNgSGwLSy82HJ79Yc9k4zjcgx0rZGToTF1fE6xF
-bGb47tH9u8SQryDy0yaIP0AeUf4UOZSJBBXHK66TrTDxUCzSLJL+ybG/n+Sk5jx9
-u6aGzMr/+peG7folgu+A7eeOEAEJda+sv+9rTIeAGreclRpM7fyWTNDsWWSP8dYT
-wVS2LWTlGxyWZBcJbZj2GH4iqkAmmg==
-=ZZ0x
------END PGP SIGNATURE-----
-
---2qwbT0JTInWqknst--
