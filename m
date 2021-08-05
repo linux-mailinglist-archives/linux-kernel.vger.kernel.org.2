@@ -2,143 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 147B73E136D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394F63E1380
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240705AbhHELGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:06:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57360 "EHLO mail.kernel.org"
+        id S240805AbhHELHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:07:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240478AbhHELGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:06:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B85A5610A2;
-        Thu,  5 Aug 2021 11:05:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628161546;
-        bh=6r3dbKDvyT5cZqmYK6vc77hmBJKzLoB7xhGJx7/6m1w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uEsBX1TKdfuwokOl8iYcfq+ccV+McYDjTnEbVau1ncWJoxR1AVlPJk3qrg2btDzsy
-         NBXOWciskx5rz8HCmiqflpSRoleqdP5ayyET19x11eTtzmR66Tcg5VjXsRf4ZPr0Vp
-         bK666yoMxRZHgttISiaubkaoIv/qA4IicTLz3zh1fX0POrUl0oHbdJwJYmqINbRJD8
-         dmtsH58fZ0FBfybg33zh0FM0dd1HheVEzcxdtrHrrNGPPF3iHrbiNC8NYuDaVHb5AP
-         S1gkfIMQsO2jri4SWKah0q86425BkfOxy9IaxZIPUHtBIqyXXH9cIk3UrFWSZ/MIYO
-         tqVM/GkjWY0Ow==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH net-next v1] netdevsim: Forbid devlink reload when adding or deleting ports
-Date:   Thu,  5 Aug 2021 14:05:41 +0300
-Message-Id: <53cd1a28dd34ced9fb4c39885c6e13523e97d62c.1628161323.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S240799AbhHELHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 07:07:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8E8061004;
+        Thu,  5 Aug 2021 11:07:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628161651;
+        bh=ZimSHSr81sxCTYUBZ1LOL41Alcaubv55ZtIbHYn9Yhw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1U0qi+U9pqFAzjgGKwCbEsQTp557pdYeUAVPsLRZ3gUGw4ZQG4+cdC9pVqTcHVKA8
+         Z8qr4UbicAb3McT5TzBRioQ178yfENkKF1dhi7UNyOOwEd4gKwGX40QKZiJQYJLrTj
+         jZBcGGpdhDHdV7XfSdnxlp6R1mt/OX+ESkbRkUK8=
+Date:   Thu, 5 Aug 2021 13:07:28 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: r8188eu: remove RT_TRACE and DBG_88E prints
+ from usb_intf.c
+Message-ID: <YQvGcDMLX5OTSzIr@kroah.com>
+References: <20210801173023.1370-1-martin@kaiser.cx>
+ <20210804141031.12303-1-martin@kaiser.cx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210804141031.12303-1-martin@kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Wed, Aug 04, 2021 at 04:10:31PM +0200, Martin Kaiser wrote:
+> We should use the standard mechanism for debug prints. Remove the
+> prints that use driver-specific macros.
+> 
+> Handle errors from the usb_autopm_get_interface call instead of just
+> showing a debug print.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+> v2:
+>  - bring back usb_autopm_get_interface, handle errors
 
-In order to remove complexity in devlink core related to
-devlink_reload_enable/disable, let's rewrite new_port/del_port
-logic to rely on internal to netdevsim lock.
+This is a v2 of patch 1 in a series?
 
-We should protect only reload_down flow because it destroys nsim_dev,
-which is needed for nsim_dev_port_add/nsim_dev_port_del to hold
-port_list_lock.
+Or something else?
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
-Changelog:
- v1:
- * fixed typo in the commit message
- v0: https://lore.kernel.org/netdev/53cd1a28dd34ced9fb4c39885c6e13523e97d62c.1628161323.git.leonro@nvidia.com/T/#u
----
- drivers/net/netdevsim/bus.c | 16 ++++------------
- drivers/net/netdevsim/dev.c |  7 +++++++
- 2 files changed, 11 insertions(+), 12 deletions(-)
+When resending a new version, please always send out a whole new series
+to make it obvious what to do when reviewing them.
 
-diff --git a/drivers/net/netdevsim/bus.c b/drivers/net/netdevsim/bus.c
-index ff01e5bdc72e..a29ec264119d 100644
---- a/drivers/net/netdevsim/bus.c
-+++ b/drivers/net/netdevsim/bus.c
-@@ -183,8 +183,6 @@ new_port_store(struct device *dev, struct device_attribute *attr,
- 	       const char *buf, size_t count)
- {
- 	struct nsim_bus_dev *nsim_bus_dev = to_nsim_bus_dev(dev);
--	struct nsim_dev *nsim_dev = dev_get_drvdata(dev);
--	struct devlink *devlink;
- 	unsigned int port_index;
- 	int ret;
- 
-@@ -195,12 +193,10 @@ new_port_store(struct device *dev, struct device_attribute *attr,
- 	if (ret)
- 		return ret;
- 
--	devlink = priv_to_devlink(nsim_dev);
-+	if (!mutex_trylock(&nsim_bus_dev->nsim_bus_reload_lock))
-+		return -EBUSY;
- 
--	mutex_lock(&nsim_bus_dev->nsim_bus_reload_lock);
--	devlink_reload_disable(devlink);
- 	ret = nsim_dev_port_add(nsim_bus_dev, NSIM_DEV_PORT_TYPE_PF, port_index);
--	devlink_reload_enable(devlink);
- 	mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
- 	return ret ? ret : count;
- }
-@@ -212,8 +208,6 @@ del_port_store(struct device *dev, struct device_attribute *attr,
- 	       const char *buf, size_t count)
- {
- 	struct nsim_bus_dev *nsim_bus_dev = to_nsim_bus_dev(dev);
--	struct nsim_dev *nsim_dev = dev_get_drvdata(dev);
--	struct devlink *devlink;
- 	unsigned int port_index;
- 	int ret;
- 
-@@ -224,12 +218,10 @@ del_port_store(struct device *dev, struct device_attribute *attr,
- 	if (ret)
- 		return ret;
- 
--	devlink = priv_to_devlink(nsim_dev);
-+	if (!mutex_trylock(&nsim_bus_dev->nsim_bus_reload_lock))
-+		return -EBUSY;
- 
--	mutex_lock(&nsim_bus_dev->nsim_bus_reload_lock);
--	devlink_reload_disable(devlink);
- 	ret = nsim_dev_port_del(nsim_bus_dev, NSIM_DEV_PORT_TYPE_PF, port_index);
--	devlink_reload_enable(devlink);
- 	mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
- 	return ret ? ret : count;
- }
-diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
-index d538a39d4225..ff5714209b86 100644
---- a/drivers/net/netdevsim/dev.c
-+++ b/drivers/net/netdevsim/dev.c
-@@ -864,16 +864,23 @@ static int nsim_dev_reload_down(struct devlink *devlink, bool netns_change,
- 				struct netlink_ext_ack *extack)
- {
- 	struct nsim_dev *nsim_dev = devlink_priv(devlink);
-+	struct nsim_bus_dev *nsim_bus_dev;
-+
-+	nsim_bus_dev = nsim_dev->nsim_bus_dev;
-+	if (!mutex_trylock(&nsim_bus_dev->nsim_bus_reload_lock))
-+		return -EOPNOTSUPP;
- 
- 	if (nsim_dev->dont_allow_reload) {
- 		/* For testing purposes, user set debugfs dont_allow_reload
- 		 * value to true. So forbid it.
- 		 */
- 		NL_SET_ERR_MSG_MOD(extack, "User forbid the reload for testing purposes");
-+		mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
- 		return -EOPNOTSUPP;
- 	}
- 
- 	nsim_dev_reload_destroy(nsim_dev);
-+	mutex_unlock(&nsim_bus_dev->nsim_bus_reload_lock);
- 	return 0;
- }
- 
--- 
-2.31.1
+I've dropped this series, please fix up and resend.
 
+thanks,
+
+greg k-h
