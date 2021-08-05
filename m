@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E83573E18E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED7D3E18EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242787AbhHEP5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:57:15 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:20424 "EHLO
+        id S242818AbhHEP5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:57:24 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:33136 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242756AbhHEP4x (ORCPT
+        with ESMTP id S242754AbhHEP5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:56:53 -0400
+        Thu, 5 Aug 2021 11:57:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1628178999; x=1659714999;
+  t=1628179015; x=1659715015;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=0QVxHcmZ9L6f6OEKoKgRnF1g91VpcBy5zpzMgpahQWE=;
-  b=aOPzmsqO2T3V6i/obe130FwvbuadBJ6b2iUl4bHE2rkZdWkqnkpu/WQU
-   ScDYZuY8MnXWuo+rDDTtyL89JR7cUFipJMMAtwd3NOAxpLcJzAsuW7qsj
-   UdxejzcOtzYV+twm7DhzbtjS+8hjiwvvLxlyNh4IhgcKUyvpLmTw2XcsM
-   HY12/sX5Bk+0FvQRlQh30+F3D33rreNawIC+pvfmymKfps067GD4ljRym
-   xNpbvRyAPZH3uDWLJobInkHGc4K2VeC9i1e7qIIpWDcMcbWWuwOMtirYc
-   IMDJHtn9Qfghk4cLWbqxTTlwwTv9en6vesQghRsIYB1POj+nD/RkRkqYx
-   w==;
-IronPort-SDR: Aot8wCgC0XDJxvzxn7KL/e6cAU4FgIY7HrtMZTwpze2SkxzbJorMvg1RpuKmYE/ksgbbOThbbA
- aWLHNxgZtj03HLb/dkkxqFe5/XrwZLvzerPFd74ld8oiAtCd1uH9dH7GutJN4sSgUIVH5nL6BU
- iei0YtV7GymumNfmXIvZQLnbvI+e/g+BphhIurXi2F7tXo/TicbU16TGJTdkW2i1zZMKTCiDS/
- idEqGz3/hV9R5qUprjrBG/8+HNpefMJeIcCwodqdGqfpIl8M0vxu71yIBZbK3e3JLdzkLIDYUG
- 78m2f+hnTq1ZtQdmKqQri/V4
+  bh=ba3PMiW36nZ+DW3AnbgSVLgStmXrbfUqHhLyUQwshzg=;
+  b=TdjJ/XtHfCvlYBLotvXQ9+gdaG2vIjgV0IKaXe06Zo+hM1e/5FdMjZ6V
+   0Kq9w+lI9lrnEB5fdosWV012rSgc7tZXCVzRS4fKQajvyehV3v6aaXyGg
+   LCvZOco4sFI/HyCFKJceBTCGfTYRqE9u8gInEEMl3IdFT9CpVnNrs9sRA
+   7gdfiLuN5GxK/x6hsnssL5J3ttP9MVCX2P0yj/jYbPwsTmZorFD6c8eXY
+   ysk1cxGKFtRUf/sm0PpiOB4T94n3EbJZhLUxGk9WcjBQo+oEvTaeX3Hut
+   xGHCzaAxz1GrVbP552PQABb+FdNNfFbbDGt7IKmoP79hosnpCU0LijpXq
+   Q==;
+IronPort-SDR: smDePm7d2kBBMXYpxVzF4KURZX+MRqBWV9nvdX7urDDOe1i9XVGnpG5DETiyH4tNGQwStfeTdJ
+ 2iuGCVs1A0Bwjoq8xcusoA04aGQlTz/H81icsuECqVqiA6W1eZjFn3sDfy6VkYqLo2Lz8Vt+Bv
+ j/ZtVjEZ0B4A11Vg7aDH/SGboGbnFQ0bH8HCsDa+5zFUx9Alnm19Kb9b+cCrgUh1An92Y3IsLq
+ E6bBOY9wyzc4q5Vghd1OCV0U1638QVwIaIPAYu6s3wgSopk5jkVhpmII/VqDVOP5bX5tr5t/ZD
+ 1z06RoOqasVl/MHEsS/0NE3N
 X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="127242289"
+   d="scan'208";a="124734202"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Aug 2021 08:56:32 -0700
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Aug 2021 08:56:54 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 08:56:32 -0700
+ 15.1.2176.2; Thu, 5 Aug 2021 08:56:54 -0700
 Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 5 Aug 2021 08:56:25 -0700
+ 15.1.2176.2 via Frontend Transport; Thu, 5 Aug 2021 08:56:32 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
         <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
@@ -48,9 +48,9 @@ To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 2/7] dt-bindings: add vendor prefix for exegin
-Date:   Thu, 5 Aug 2021 18:53:52 +0300
-Message-ID: <20210805155357.594414-3-claudiu.beznea@microchip.com>
+Subject: [PATCH 3/7] dt-bindings: ARM: at91: document exegin q5xr5 board
+Date:   Thu, 5 Aug 2021 18:53:53 +0300
+Message-ID: <20210805155357.594414-4-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210805155357.594414-1-claudiu.beznea@microchip.com>
 References: <20210805155357.594414-1-claudiu.beznea@microchip.com>
@@ -61,26 +61,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add vendor prefix for Exegin Technologies Limited.
+Document Exegin Q5xR5 board.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/arm/atmel-at91.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 07fb0d25fc15..2fa00c7b7ee2 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -391,6 +391,8 @@ patternProperties:
-     description: Exar Corporation
-   "^excito,.*":
-     description: Excito
-+  "^exegin,.*":
-+    description: Exegin Technologies Limited
-   "^ezchip,.*":
-     description: EZchip Semiconductor
-   "^facebook,.*":
+diff --git a/Documentation/devicetree/bindings/arm/atmel-at91.yaml b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
+index fba071b9af1d..a9ab18510fef 100644
+--- a/Documentation/devicetree/bindings/arm/atmel-at91.yaml
++++ b/Documentation/devicetree/bindings/arm/atmel-at91.yaml
+@@ -126,6 +126,12 @@ properties:
+           - const: atmel,sama5d3
+           - const: atmel,sama5
+ 
++      - description: CalAmp LMU5000 board
++        items:
++          - const: calamp,lmu5000
++          - const: atmel,at91sam9g20
++          - const: atmel,at91sam9
++
+       - items:
+           - enum:
+               - atmel,sama5d31
 -- 
 2.25.1
 
