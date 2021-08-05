@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54ABC3E1F4E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3180E3E1F50
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234470AbhHEXWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 19:22:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229626AbhHEXWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 19:22:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09D3060EB9;
-        Thu,  5 Aug 2021 23:22:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1628205727;
-        bh=i33xhaeVpXGV2BhPzbhlBwQZn8O01SRCEx1xg2D/ogc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PTOpokADg1joo1BVq/LCyTP9Dfnys2JPYFddBTo/oM2s9Oq8QuhsyXA1enMA2eGac
-         0x4GIL0nALbQznW9/AXuBTYRAWOBBTmZ1dxdvKyj5e0dgMs+brROUIjE84aqWvlSR8
-         Dddsnpxxa3os65Jvg4JFsDxb4S8YyKSRDuS2cUWc=
-Date:   Thu, 5 Aug 2021 16:22:06 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>, Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] mm/vmstat: Protect per cpu variables with preempt
- disable on RT
-Message-Id: <20210805162206.664dfc8c090f2be5ea313d57@linux-foundation.org>
-In-Reply-To: <20210805160019.1137-2-mgorman@techsingularity.net>
-References: <20210805160019.1137-1-mgorman@techsingularity.net>
-        <20210805160019.1137-2-mgorman@techsingularity.net>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235821AbhHEXYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 19:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhHEXYI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 19:24:08 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBF0C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 16:23:52 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id n6so9291113ljp.9
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 16:23:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=47DQLvtp4ztjhlhi+MnYXklbjCJaPGn/G49mrBRqTus=;
+        b=rHqn6IRzSOxAV2XWjy54lh6YeMg/2a70afq/Hk/j1VmuUN6NpsxEz25LYnWS5LKon7
+         lKjoKzXZYVEnD94O3NyvkLAThg5Mkh0B0ibRIrVPRJfCovodU4V5b/nkqLVcWYUam4Gb
+         Z30f5zmYEN2FFEudIeny+FvrNFxkLs7KEhfgPBq6fECsaONt2O+U52oSYsQPDbLePpxt
+         Htj4ElIMixweOxYhChvhzpvoosdNQ9DCuRfleo9mA+9OYJYeV25VRjwxOS7FH99jEeRG
+         hz0JyXBrYEWoKWRra9aiBW/kDuJXyz4Dq+gxGPLHRKxFedyqjfkC876jA5rekNua288e
+         CkKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=47DQLvtp4ztjhlhi+MnYXklbjCJaPGn/G49mrBRqTus=;
+        b=BGEdawxN9iSl9pUGI8apkB07m4q5ySYVR15Nk7cvOe83pZkjDxDcJiEzPkO1XYG7zg
+         HSBBP8krrN6KHitNCmBXib24jocVnv6l3Kki6RG/orCBijOJQkLTJq+VOP/yz8RAZK+H
+         GFFwWkGt8OeMcJy1FCWWzbWk2GeFH+l0lCD3jAjCOI197YqFPf2Wzffn6SV/v8LrRGSw
+         aiPam0FFC9lLdPKDaffWXSsye+aw6TADQjWeZaBGEzYjvBqaj1MAKNE913zqO0wwRJuA
+         z6fBnHxven0oznnz6Czpb6H/AXROr51EtpPNLJxW6+K7iWxC9HREPbMEDoQbZqfR3jnB
+         uLTA==
+X-Gm-Message-State: AOAM530m2Cw/PsP4xO7TAR7N+mfeob8/Akgy8bzujPuACe2xQ+ePBiDs
+        Iks/AqYYLtcpTnFW+fIhgqzdNPeKmy1dHvOAnf5fYPRhpgC6IDs/
+X-Google-Smtp-Source: ABdhPJxJqsDZYK+zTrKpHR/WGOAJHzqAxDx5HJhRSJns86qkPnv24HqIlnmCzXa7UFQhWhJU97kgYj5LBQz+MYOtpgs=
+X-Received: by 2002:a05:651c:38f:: with SMTP id e15mr4651454ljp.233.1628205831069;
+ Thu, 05 Aug 2021 16:23:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <202108060412.oMqAe0rc-lkp@intel.com>
+In-Reply-To: <202108060412.oMqAe0rc-lkp@intel.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 5 Aug 2021 16:23:40 -0700
+Message-ID: <CAKwvOdk6PNK1unJ2Yym4WHV=AXjdYwEyfWf_fPxO013ZtJa6Yw@mail.gmail.com>
+Subject: Re: [linux-stable-rc:linux-4.19.y 1181/1498] ERROR:
+ "__compiletime_assert_491" [drivers/gpu/drm/i915/i915.ko] undefined!
+To:     kernel test robot <lkp@intel.com>
+Cc:     clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  5 Aug 2021 17:00:19 +0100 Mel Gorman <mgorman@techsingularity.net> wrote:
-
-> From: Ingo Molnar <mingo@elte.hu>
-> 
-> Disable preemption on -RT for the vmstat code. On vanila the code runs
-> in IRQ-off regions while on -RT it may not when stats are updated under
-> a local_lock. "preempt_disable" ensures that the same resources is not
-> updated in parallel due to preemption.
-> 
-> This patch differs from the preempt-rt version where __count_vm_event and
-> __count_vm_events are also protected. The counters are explicitly "allowed
-> to be to be racy" so there is no need to protect them from preemption. Only
-> the accurate page stats that are updated by a read-modify-write need
-> protection. This patch also differs in that a preempt_[en|dis]able_rt
-> helper is not used. As vmstat is the only user of the helper, it was
-> suggested that it be open-coded in vmstat.c instead of risking the helper
-> being used in unnecessary contexts.
-> 
-> ...
+On Thu, Aug 5, 2021 at 1:24 PM kernel test robot <lkp@intel.com> wrote:
 >
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -319,6 +319,16 @@ void __mod_zone_page_state(struct zone *zone, enum zone_stat_item item,
->  	long x;
->  	long t;
->  
-> +	/*
-> +	 * Accurate vmstat updates require a RMW. On !PREEMPT_RT kernels,
-> +	 * atomicity is provided by IRQs being disabled -- either explicitly
-> +	 * or via local_lock_irq. On PREEMPT_RT, local_lock_irq only disables
-> +	 * CPU migrations and preemption potentially corrupts a counter so
-> +	 * disable preemption.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> +		preempt_disable();
+> Hi Nick,
+>
+> First bad commit (maybe != root cause):
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> head:   7457eed4b647560ae1b1800c295efc5f1db22e4b
+> commit: 7c29fd831799d09474dfdae556207b7102647a45 [1181/1498] lib/string.c: implement stpcpy
+> config: x86_64-randconfig-r024-20210805 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 31a71a393f65d9e07b5b0756fef9dd16690950ee)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=7c29fd831799d09474dfdae556207b7102647a45
+>         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>         git fetch --no-tags linux-stable-rc linux-4.19.y
+>         git checkout 7c29fd831799d09474dfdae556207b7102647a45
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+> >> ERROR: "__compiletime_assert_491" [drivers/gpu/drm/i915/i915.ko] undefined!
 
-This is so obvious I expect it has been discussed, but...  why not
+^ I'm actively trying to improve these diagnostics in LLVM at the
+moment. Hopefully that will make this report clearer!
+https://reviews.llvm.org/D106030
 
-static inline void preempt_disable_if_rt(void)
-{
-	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-		preempt_disable();
-}
-
-?
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
 
+
+-- 
+Thanks,
+~Nick Desaulniers
