@@ -2,164 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37523E150D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8343E1514
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235161AbhHEMtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241492AbhHEMtl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:49:41 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B90C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 05:49:26 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so14462276pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 05:49:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=F1MbFXcnuN9pjWPNAa72glUadkAUJinAs+z8GV+IyLk=;
-        b=GPPWMa0bFoy0buCBXmfsNtAnrv5MXxcRHUZJ7/r7DHglcCHVdT5R2BkodtNr8fXb9E
-         wPevm0KEqOa9H8wb/A3lHwCeo8e090BOPSSbzj+FsYFI3DUeUnHD8HjOHwVMfiWeQ1wh
-         wTknrNOO8Sig9Lj5qWg7ty5OgIgw194KG4e165244BPRJ3xWGTmJFMoV8LtbfRCIXTII
-         P5dlErGWaZzNzirHtL2HKOfUAdVztx58SsHeyqTIBzCmqyp+TZvk6npEI3Nfiw6ZErVE
-         PW4aWzRFnLQFh4gxeXk8A6mZVTR8SBP+jVOccXd568slgkD5dKs9L+UBx8GzZDKuDZha
-         dZPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=F1MbFXcnuN9pjWPNAa72glUadkAUJinAs+z8GV+IyLk=;
-        b=h1ByqlQ9wYkaHTG9/My/lSlzEIM22szoXBVDMK9rhBlfVr7DiiRM/vGZZAKJWexyCD
-         w0s8p9sA7npNgEXA5ifxGBw203C1K/Mp64Sr54zUlCyVH+pQToSIj+7TkMFTMv/iL/Or
-         YpGC9Zk+djwXq0W316QB+KnoQpumWDQ6eWfPwmkBbiaBVTh3WVtKTTH8JBQ3w1zKABGt
-         QAlLqn/ukNCQz1cV1ugsss0jRI40nzlaH5NKjcGS05chzGuq0lhwVXcRmWllPLVAzDIy
-         vYteC+/Vqtc1XXLCuyHjMZoIaV8gPO91gcmyX8iZ+WuttA86vucO1CC+IZtXbV3bUxTU
-         80gg==
-X-Gm-Message-State: AOAM533gxBT8060/Snsq7iX44bMXAzJoWaBcN7sxhazPih41O3ZX4AJb
-        mQGlpqUdGkzM/zsNcEeM9/9/Ww==
-X-Google-Smtp-Source: ABdhPJz0h7q3yTGaeHYn8lFKeSzJMOv94e7fkfP1oY5TE3vNb42+mj6TLtrxhtTA2RCH7pmg/EpgDw==
-X-Received: by 2002:a17:90a:1f8a:: with SMTP id x10mr4472178pja.167.1628167766138;
-        Thu, 05 Aug 2021 05:49:26 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id u16sm7963740pgh.53.2021.08.05.05.49.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 05:49:25 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 18:19:22 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [Stratos-dev] [PATCH V4 2/2] gpio: virtio: Add IRQ support
-Message-ID: <20210805124922.j7lts7tfmm4t2kpf@vireshk-i7>
-References: <cover.1627989586.git.viresh.kumar@linaro.org>
- <75c8e6e5e8dfa1889938f3a6b2d991763c7a3717.1627989586.git.viresh.kumar@linaro.org>
- <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
- <0100017b1610f711-c53c79f2-9e28-4c45-bb42-8db09688b18e-000000@email.amazonses.com>
- <CAK8P3a0DWkfQcZpmyfKcdNt1MHf8ha6a9L2LmLt1Tv-j0HDr3w@mail.gmail.com>
+        id S241513AbhHEMw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:52:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50230 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241507AbhHEMwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 08:52:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06B0260EE8;
+        Thu,  5 Aug 2021 12:52:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628167960;
+        bh=IpzjKLVVmhem0b5z44HFZxcy+4+L1YcTtu7KuvKg/E4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dwdNPolwOOM0HPoJPhj8LP/Q0VkWhqNbn3YNJeQ5tkTDH92n7BZxcIdUbbuZAPm7K
+         SSvr12FZJEY7oa6n8YraHa130FtzFC0esoYCube60r/FCCvq/gofpYHj0NIROfMAEo
+         zU2HVdzEz4CQhlgDG8sdqh/N3sGvm2ZESxWbLBmA=
+Date:   Thu, 5 Aug 2021 14:52:31 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     andriy.shevchenko@linux.intel.com, yury.norov@gmail.com,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        dave.hansen@intel.com, linux@rasmusvillemoes.dk, rafael@kernel.org,
+        rdunlap@infradead.org, agordeev@linux.ibm.com, sbrivio@redhat.com,
+        jianpeng.ma@intel.com, valentin.schneider@arm.com,
+        peterz@infradead.org, bristot@redhat.com, guodong.xu@linaro.org,
+        tangchengchang@huawei.com, prime.zeng@hisilicon.com,
+        yangyicong@huawei.com, tim.c.chen@linux.intel.com,
+        linuxarm@huawei.com, Tian Tao <tiantao6@hisilicon.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v8 1/5] cpumask: introduce cpumap_print_to_buf to support
+ large bitmask and list
+Message-ID: <YQvfD701nvqbClLd@kroah.com>
+References: <20210729054208.1800-1-song.bao.hua@hisilicon.com>
+ <20210729054208.1800-2-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a0DWkfQcZpmyfKcdNt1MHf8ha6a9L2LmLt1Tv-j0HDr3w@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210729054208.1800-2-song.bao.hua@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-08-21, 14:03, Arnd Bergmann wrote:
-> On Thu, Aug 5, 2021 at 1:26 PM Viresh Kumar via Stratos-dev
-> > Based on discussion we had today (offline), I changed the design a bit
-> > and used handle_level_irq() instead, as it provides consistent calls
-> > to mask/unmask(), which simplified the whole thing a bit.
+On Thu, Jul 29, 2021 at 05:42:04PM +1200, Barry Song wrote:
+> From: Tian Tao <tiantao6@hisilicon.com>
 > 
-> The new flow looks much nicer to me, without the workqueue, and
-> doing the requeue directly in the unmask() operation.
+> The existing cpumap_print_to_pagebuf() is used by cpu topology and other
+> drivers to export hexadecimal bitmask and decimal list to userspace by
+> sysfs ABI.
 > 
-> I don't quite understand the purpose of the type_pending and
-> mask_pending flags yet, can you explain what they actually
-> do?
-
-They are required to make sure we don't send unnecessary
-VIRTIO_GPIO_MSG_IRQ_TYPE events to the device, every time bus_unlock()
-is called.
-
-mask_pending tracks if the masked state has changed since the time
-last bus_unlock() was called. So on an interrupt, both mask() and
-unmask() will get called by the irq-core now and mask_pending will
-change to true (in mask()} and then false (in unmask()). And
-eventually in bus_unlock() we won't send an extra
-VIRTIO_GPIO_MSG_IRQ_TYPE message.
-
-> Also, I have no idea about whether using the handle_level_irq()
-> function is actually correct here. I suppose if necessary, the driver
-> could provide its own irq.handler callback in place of that.
-
-After looking at internals of these, I felt handle_level_irq() suits
-much better in our case as we need to queue the buffer only at
-unmask(). With handle_fasteoi_irq(), we would be required to do the
-same from multiple places, unmask(), eoi().
-
-> > Also I have broken the rule from specs, maybe we should update spec
-> > with that, where the specs said that the buffer must not be queued
-> > before enabling the interrupt. I just queue the buffer unconditionally
-> > now from unmask().
-> >
-> > I am not sure but there may be some race around the "queued" flag and
-> > I wonder if we can land in a scenario where the buffer is left
-> > un-queued somehow, while an interrupt is enabled.
+> Right now, those drivers are using a normal attribute for this kind of
+> ABIs. A normal attribute typically has show entry as below:
 > 
-> Can that be integrated with the "masked" state now? It looks like
-> the two flags are always opposites now.
+> static ssize_t example_dev_show(struct device *dev,
+>                 struct device_attribute *attr, char *buf)
+> {
+> 	...
+> 	return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
+> }
+> show entry of attribute has no offset and count parameters and this
+> means the file is limited to one page only.
+> 
+> cpumap_print_to_pagebuf() API works terribly well for this kind of
+> normal attribute with buf parameter and without offset, count:
+> 
+> static inline ssize_t
+> cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
+> {
+> 	return bitmap_print_to_pagebuf(list, buf, cpumask_bits(mask),
+> 				       nr_cpu_ids);
+> }
+> 
+> The problem is once we have many cpus, we have a chance to make bitmask
+> or list more than one page. Especially for list, it could be as complex
+> as 0,3,5,7,9,...... We have no simple way to know it exact size.
+> 
+> It turns out bin_attribute is a way to break this limit. bin_attribute
+> has show entry as below:
+> static ssize_t
+> example_bin_attribute_show(struct file *filp, struct kobject *kobj,
+>              struct bin_attribute *attr, char *buf,
+>              loff_t offset, size_t count)
+> {
+> 	...
+> }
+> 
+> With the new offset and count parameters, this makes sysfs ABI be able
+> to support file size more than one page. For example, offset could be
+> >= 4096.
+> 
+> This patch introduces cpumap_print_to_buf() and its bitmap infrastructure
+> bitmap_print_to_buf() so that those drivers can move to bin_attribute to
+> support large bitmask and list. At the same time, we have to pass those
+> corresponding parameters such as offset, count from bin_attribute to this
+> new API.
+> 
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Stefano Brivio <sbrivio@redhat.com>
+> Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+> Cc: "Ma, Jianpeng" <jianpeng.ma@intel.com>
+> Cc: Yury Norov <yury.norov@gmail.com>
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> ---
+>  include/linux/bitmap.h  |  2 ++
+>  include/linux/cpumask.h | 63 +++++++++++++++++++++++++++++++++
+>  lib/bitmap.c            | 78 +++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 143 insertions(+)
+> 
+> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> index a36cfcec4e77..0de6effa2797 100644
+> --- a/include/linux/bitmap.h
+> +++ b/include/linux/bitmap.h
+> @@ -226,6 +226,8 @@ void bitmap_copy_le(unsigned long *dst, const unsigned long *src, unsigned int n
+>  unsigned int bitmap_ord_to_pos(const unsigned long *bitmap, unsigned int ord, unsigned int nbits);
+>  int bitmap_print_to_pagebuf(bool list, char *buf,
+>  				   const unsigned long *maskp, int nmaskbits);
+> +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
+> +			int nmaskbits, loff_t off, size_t count);
+>  
+>  #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
+>  #define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
+> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> index f3689a52bfd0..4b838eb6294c 100644
+> --- a/include/linux/cpumask.h
+> +++ b/include/linux/cpumask.h
+> @@ -983,6 +983,69 @@ cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
+>  				      nr_cpu_ids);
+>  }
+>  
+> +/**
+> + * cpumap_print_to_buf  - copies the cpumask into the buffer
+> + * @list: indicates whether the cpumap must be list
+> + *      true:  print in decimal list format
+> + *      false: print in hexadecimal bitmask format
+> + *
+> + * The existing cpumap_print_to_pagebuf() is used by cpu topology and other
+> + * drivers to export hexadecimal bitmask and decimal list to userspace by
+> + * sysfs ABI.
+> + * Drivers might be using a normal attribute for this kind of ABIs. A
+> + * normal attribute typically has show entry as below:
+> + * static ssize_t example_attribute_show(struct device *dev,
+> + * 		struct device_attribute *attr, char *buf)
+> + * {
+> + * 	...
+> + * 	return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
+> + * }
+> + * show entry of attribute has no offset and count parameters. this means
+> + * the file is limited to one page only.
+> + * cpumap_print_to_pagebuf() API works terribly well for this kind of
+> + * normal attribute with buf parameter and without offset, count:
+> + * cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
+> + * {
+> + * }
+> + * The problem is once we have many cpus, we have a chance to make bitmask
+> + * or list more than one page. Especially for list, it could be as complex
+> + * as 0,3,5,7,9,... We have no simple way to know it exact size.
+> + * It turns out bin_attribute is a way to break this limit. bin_attribute
+> + * has show entry as below:
+> + * static ssize_t
+> + * example_bin_attribute_show(struct file *filp, struct kobject *kobj,
+> + * 		struct bin_attribute *attr, char *buf,
+> + * 		loff_t offset, size_t count)
+> + * {
+> + * 	...
+> + * }
+> + * With the new offset and count parameters, this makes sysfs ABI be able
+> + * to support file size more than one page. For example, offset could be
+> + * >= 4096.
+> + * cpumap_print_to_buf() makes those drivers be able to support large
+> + * bitmask and list after they move to use bin_attribute. In result, we
+> + * have to pass the corresponding parameters such as off, count from
+> + * bin_attribute show entry to this API.
+> + *
+> + * @mask: the cpumask to copy
+> + * @buf: the buffer to copy into
+> + * @off: in the string from which we are copying, We copy to @buf
+> + * @count: the maximum number of bytes to print
+> + *
+> + * The function copies the cpumask into the buffer either as comma-separated
+> + * list of cpus or hex values of cpumask; Typically used by bin_attribute to
+> + * export cpumask bitmask and list ABI.
+> + *
+> + * Returns the length of how many bytes have been copied.
+> + */
+> +static inline ssize_t
+> +cpumap_print_to_buf(bool list, char *buf, const struct cpumask *mask,
+> +		loff_t off, size_t count)
+> +{
+> +	return bitmap_print_to_buf(list, buf, cpumask_bits(mask),
+> +				   nr_cpu_ids, off, count);
+> +}
+> +
+>  #if NR_CPUS <= BITS_PER_LONG
+>  #define CPU_MASK_ALL							\
+>  (cpumask_t) { {								\
+> diff --git a/lib/bitmap.c b/lib/bitmap.c
+> index 9401d39e4722..56bcffe2fa8c 100644
+> --- a/lib/bitmap.c
+> +++ b/lib/bitmap.c
+> @@ -487,6 +487,84 @@ int bitmap_print_to_pagebuf(bool list, char *buf, const unsigned long *maskp,
+>  }
+>  EXPORT_SYMBOL(bitmap_print_to_pagebuf);
+>  
+> +/**
+> + * bitmap_print_to_buf  - convert bitmap to list or hex format ASCII string
+> + * @list: indicates whether the bitmap must be list
+> + *      true:  print in decimal list format
+> + *      false: print in hexadecimal bitmask format
 
-Yeah, but then there can be races and keeping them separate is a
-better thing IMO.
+I do not understand "list" or not here.  Having binary values in a
+function makes it almost impossible to read when they are being called
+without having to go dig up the real user.
 
-I was thinking of something on these lines, disable_irq() followed by
-enable_irq():
+Are you using this in both ways?  If so, make this the common, static
+function and have:
+	bitmap_print_list_to_buf()
+	bitmap_print_bitmask_to_buf()
 
-CPU0                                                 CPU1
-
-disable_irq()
- -> irq_bus_lock()
- -> irq_mask()
- -> irq_bus_sync_unlock()
-   -> sends blocking VIRTIO_GPIO_MSG_IRQ_TYPE
-      to disable interrupt
-                                                     Backend (at host) disables irq and 
-                                                     returns the unused buffer.
-
-enable_irq()
- -> irq_bus_lock()
- -> irq_unmask()
-   -> Tries to queues buffer again
-      Finds it already queued and returns.
-                                                     - virtio_gpio_event_vq() runs at guest
-                                                     - Finds VIRTIO_GPIO_IRQ_STATUS_INVALID in status
-                                                     - returns without doing anything
- -> irq_bus_sync_unlock()
-   -> sends blocking VIRTIO_GPIO_MSG_IRQ_TYPE
-      to enable interrupt
+so that the caller knows exactly what is happening here.
 
 
 
-So the irq is still enabled and the buffer isn't queued. Yes, need
-some locking here for sure, confirmed :)
+> + *
+> + * The bitmap_print_to_pagebuf() is used indirectly via its cpumap wrapper
+> + * cpumap_print_to_pagebuf() or directly by drivers to export hexadecimal
+> + * bitmask and decimal list to userspace by sysfs ABI.
+> + * Drivers might be using a normal attribute for this kind of ABIs. A
+> + * normal attribute typically has show entry as below:
+> + * static ssize_t example_attribute_show(struct device *dev,
+> + * 		struct device_attribute *attr, char *buf)
+> + * {
+> + * 	...
+> + * 	return bitmap_print_to_pagebuf(true, buf, &mask, nr_trig_max);
+> + * }
+> + * show entry of attribute has no offset and count parameters and this
+> + * means the file is limited to one page only.
+> + * bitmap_print_to_pagebuf() API works terribly well for this kind of
+> + * normal attribute with buf parameter and without offset, count:
+> + * bitmap_print_to_pagebuf(bool list, char *buf, const unsigned long *maskp,
+> + * 			   int nmaskbits)
+> + * {
+> + * }
+> + * The problem is once we have a large bitmap, we have a chance to get a
+> + * bitmask or list more than one page. Especially for list, it could be
+> + * as complex as 0,3,5,7,9,... We have no simple way to know it exact size.
+> + * It turns out bin_attribute is a way to break this limit. bin_attribute
+> + * has show entry as below:
+> + * static ssize_t
+> + * example_bin_attribute_show(struct file *filp, struct kobject *kobj,
+> + * 		struct bin_attribute *attr, char *buf,
+> + * 		loff_t offset, size_t count)
+> + * {
+> + * 	...
+> + * }
+> + * With the new offset and count parameters, this makes sysfs ABI be able
+> + * to support file size more than one page. For example, offset could be
+> + * >= 4096.
+> + * bitmap_print_to_buf() and its cpumap wrapper cpumap_print_to_buf() makes
+> + * those drivers be able to support large bitmask and list after they move
+> + * to use bin_attribute. In result, we have to pass the corresponding
+> + * parameters such as off, count from bin_attribute show entry to this API.
+> + *
+> + * @buf: buffer into which string is placed
+> + * @maskp: pointer to bitmap to convert
+> + * @nmaskbits: size of bitmap, in bits
+> + * @off: in the string from which we are copying, We copy to @buf
+> + * @count: the maximum number of bytes to print
+> + *
+> + * The role of cpumap_print_to_buf() and cpumap_print_to_pagebuf() is similar,
+> + * the difference is that bitmap_print_to_pagebuf() mainly serves sysfs
+> + * attribute with the assumption the destination buffer is exactly one page
+> + * and won't be more than one page. cpumap_print_to_buf(), on the other hand,
+> + * mainly serves bin_attribute which doesn't work with exact one page, and it
+> + * can break the size limit of converted decimal list and hexadecimal bitmask.
+> + *
+> + * Returns the number of characters actually printed to @buf
+> + */
+> +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
+> +		int nmaskbits, loff_t off, size_t count)
 
--- 
-viresh
+No need to put the kernel doc for both the .h and .c file, only put it
+in one place please (where ever it ties into the kernel documentation)
+
+thanks,
+
+greg k-h
