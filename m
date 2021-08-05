@@ -2,151 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F3F3E19C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4485A3E19D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234280AbhHEQqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 12:46:08 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:60890 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhHEQqG (ORCPT
+        id S230472AbhHEQtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 12:49:42 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:36082 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhHEQtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 12:46:06 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 12AC11F4015F
-Received: by earth.universe (Postfix, from userid 1000)
-        id 1EA8F3C0C9B; Thu,  5 Aug 2021 18:45:46 +0200 (CEST)
-Date:   Thu, 5 Aug 2021 18:45:46 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Ting Wang <zxc52fgh@gmail.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, wangting11 <wangting11@xiaomi.com>
-Subject: Re: [PATCH v11 3/4] power: supply: core: add wireless signal
- strength property
-Message-ID: <20210805164546.i4psvxng6h6fscow@earth.universe>
-References: <cover.1627992564.git.wangting11@xiaomi.com>
- <8599adb4d1c966c8d0cd6e25137a660546c1115c.1627992564.git.wangting11@xiaomi.com>
+        Thu, 5 Aug 2021 12:49:41 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:57788)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mBgYg-00ABB9-Dj; Thu, 05 Aug 2021 10:49:26 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:42762 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mBgYf-00FT5v-4E; Thu, 05 Aug 2021 10:49:25 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Sven Schnelle <svens@linux.ibm.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20210730062854.3601635-1-svens@linux.ibm.com>
+        <YQn+GomdRCoYc/E8@Ryzen-9-3900X.localdomain> <875ywlat5e.fsf@disp2133>
+        <94478003-8259-4b57-6d93-5a07e0750946@kernel.org>
+Date:   Thu, 05 Aug 2021 11:48:43 -0500
+In-Reply-To: <94478003-8259-4b57-6d93-5a07e0750946@kernel.org> (Nathan
+        Chancellor's message of "Wed, 4 Aug 2021 13:27:08 -0700")
+Message-ID: <87v94jalck.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yqzemd5iw44vgp46"
-Content-Disposition: inline
-In-Reply-To: <8599adb4d1c966c8d0cd6e25137a660546c1115c.1627992564.git.wangting11@xiaomi.com>
+Content-Type: text/plain
+X-XM-SPF: eid=1mBgYf-00FT5v-4E;;;mid=<87v94jalck.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/tcQBGG4D+OO8lCnuXPrF8Pc6wuKFJrlU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XM_B_SpammyWords,
+        XM_B_SpammyWords2 autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.8 XM_B_SpammyWords2 Two or more commony used spammy words
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Nathan Chancellor <nathan@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 574 ms - load_scoreonly_sql: 0.11 (0.0%),
+        signal_user_changed: 12 (2.0%), b_tie_ro: 10 (1.7%), parse: 1.30
+        (0.2%), extract_message_metadata: 6 (1.0%), get_uri_detail_list: 3.2
+        (0.6%), tests_pri_-1000: 4.1 (0.7%), tests_pri_-950: 1.41 (0.2%),
+        tests_pri_-900: 1.20 (0.2%), tests_pri_-90: 83 (14.4%), check_bayes:
+        81 (14.2%), b_tokenize: 11 (1.9%), b_tok_get_all: 11 (2.0%),
+        b_comp_prob: 3.2 (0.6%), b_tok_touch_all: 52 (9.1%), b_finish: 0.83
+        (0.1%), tests_pri_0: 446 (77.8%), check_dkim_signature: 0.67 (0.1%),
+        check_dkim_adsp: 3.0 (0.5%), poll_dns_idle: 0.93 (0.2%), tests_pri_10:
+        2.3 (0.4%), tests_pri_500: 7 (1.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v3] ucounts: add missing data type changes
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Nathan Chancellor <nathan@kernel.org> writes:
 
---yqzemd5iw44vgp46
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Hi Eric,
+>
+> On 8/4/2021 12:47 PM, Eric W. Biederman wrote:
+>> Nathan Chancellor <nathan@kernel.org> writes:
+>>
+>>> On Fri, Jul 30, 2021 at 08:28:54AM +0200, Sven Schnelle wrote:
+>>>> commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
+>>>> changed the data type of ucounts/ucounts_max to long, but missed to
+>>>> adjust a few other places. This is noticeable on big endian platforms
+>>>> from user space because the /proc/sys/user/max_*_names files all
+>>>> contain 0.
+>>>>
+>>>> Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
+>>>> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+>>>
+>>> This patch in -next as commit e43fc41d1f7f ("ucounts: add missing data type
+>>> changes") causes Windows Subsystem for Linux to fail to start:
+>>>
+>>> [error 0x8007010b when launching `wsl.exe -d Arch'] Could not access starting
+>>> directory "\\wsl$\Arch\home\nathan"
+>>>
+>>> Specifically, it is the change to max_user_watches in
+>>> fs/notify/inotify/inotify_user.c, as the below diff gets me back to working.
+>>> Unfortunately, I have no additional information to offer beyond that as WSL's
+>>> init is custom and closed source (as far as I am aware) and there are no real
+>>> debugging utilities.
+>>
+>> Could you try this patch and tell us what value is being set?
+>>
+>> The only think I can imagine is that someone wants unlimited watches and
+>> sets the value to a ridiculously large value and the interpretation of
+>> that value winds up being different between int and long.
+>>
+>> This should allow you to read either dmesg or the kernel's log as it
+>> boots up and see what value is being written.  From there it should
+>> be relatively straight forward to figure out what is going on.
+>
+> I applied this diff on top of mine and running 'dmesg |& grep intvec' shows:
+>
+> [    0.282500] intvec: dmesg_restrict <- 0
+> [    0.282510] intvec: max_user_watches <- 524288
+>
+> This seems much smaller than INT_MAX so I am not sure how the value could be
+> different between int and long but I am not at all familiar with the sysctl
+> code.
+>
+> More than happy to continue to test debug patches or provide any additional
+> information as I can.
 
-Hi,
+Yes.  Very strange.
 
-On Wed, Aug 04, 2021 at 07:02:00PM +0800, Ting Wang wrote:
-> From: wangting11 <wangting11@xiaomi.com>
->=20
-> reports wireless signal strength.
-> The value show degree of coupling between tx and rx.
->=20
-> Signed-off-by: wangting11 <wangting11@xiaomi.com>
-> ---
+Could you perhaps try the instrumenting proc_doulongvec_minmax the same
+way and see what is written in the failing case?
 
-You also need a user for this property.
+While looking at the code I did see one other serious bug.  The min and
+max values are int constants intstead of long constants.
 
->  Documentation/ABI/testing/sysfs-class-power | 22 +++++++++++++++++++++
->  drivers/power/supply/power_supply_sysfs.c   |  1 +
->  include/linux/power_supply.h                |  1 +
->  3 files changed, 24 insertions(+)
->=20
-> diff --git a/Documentation/ABI/testing/sysfs-class-power b/Documentation/=
-ABI/testing/sysfs-class-power
-> index 36808bf8731b..4a6b4970cb7d 100644
-> --- a/Documentation/ABI/testing/sysfs-class-power
-> +++ b/Documentation/ABI/testing/sysfs-class-power
-> @@ -785,3 +785,25 @@ Description:
->  			13: ADAPTER_VOICE_BOX,
->  			14: ADAPTER_PRIVATE_PD_50W.
-> =20
-> +What:		/sys/class/power_supply/<supply_name>/signal_strength
-> +Date:		Jul 2020
-> +Contact:	Fei Jiang <jiangfei1@xiaomi.com>
-> +Description:
-> +		In PING phase, RX transmits a signal strength packet as the
-> +		first communication packet to instruct the base to keep power
-> +		signal on.The value reports wireless signal strength and show
-> +		degree of coupling.
-> +
-> +		The Qi Wireless Power Transfer System is published by the
-> +		Wireless Power Consortium.The ping phase is the necessary stage
-> +		for matching transmitter and receiver. In this phase,the Power
-> +		Transmitter executes a Digital Ping, and listens for a response.
-> +		If the Power Transmitter discovers a Power Receiver, the Power
-> +		Transmitter may extend the Digital Ping,i.e. maintain the Power
-> +		Signal at the level of the Digital Ping. This causes the system
-> +		to proceed to the identification & configuration phase. If the
-> +		Power Transmitter does not extend the Digital Ping, the system
-> +		shall revert to the selection phase.
+Could you test the change below and see if it makes a difference?
 
-A lot of text, but not much information what 'signal_strength' reports.
-IIUIC it could be rephrased like this simple sentence?
+Eric
 
-Reports the degree coupling between wireless RX and TX side of a
-wireless charger in %.
 
--- Sebastian
+diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+index 6576657a1a25..28b67cb9458d 100644
+--- a/fs/notify/fanotify/fanotify_user.c
++++ b/fs/notify/fanotify/fanotify_user.c
+@@ -54,6 +54,9 @@ static int fanotify_max_queued_events __read_mostly;
+ 
+ #include <linux/sysctl.h>
+ 
++static long ft_zero = 0;
++static long ft_int_max = INT_MAX;
++
+ struct ctl_table fanotify_table[] = {
+ 	{
+ 		.procname	= "max_user_groups",
+@@ -61,8 +64,8 @@ struct ctl_table fanotify_table[] = {
+ 		.maxlen		= sizeof(long),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_doulongvec_minmax,
+-		.extra1		= SYSCTL_ZERO,
+-		.extra2		= SYSCTL_INT_MAX,
++		.extra1		= &ft_zero,
++		.extra2		= &ft_int_max,
+ 	},
+ 	{
+ 		.procname	= "max_user_marks",
+@@ -70,8 +73,8 @@ struct ctl_table fanotify_table[] = {
+ 		.maxlen		= sizeof(long),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_doulongvec_minmax,
+-		.extra1		= SYSCTL_ZERO,
+-		.extra2		= SYSCTL_INT_MAX,
++		.extra1		= &ft_zero,
++		.extra2		= &ft_int_max,
+ 	},
+ 	{
+ 		.procname	= "max_queued_events",
+diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+index 55fe7cdea2fb..62051247f6d2 100644
+--- a/fs/notify/inotify/inotify_user.c
++++ b/fs/notify/inotify/inotify_user.c
+@@ -55,6 +55,9 @@ struct kmem_cache *inotify_inode_mark_cachep __read_mostly;
+ 
+ #include <linux/sysctl.h>
+ 
++static long it_zero = 0;
++static long it_int_max = INT_MAX;
++
+ struct ctl_table inotify_table[] = {
+ 	{
+ 		.procname	= "max_user_instances",
+@@ -62,8 +65,8 @@ struct ctl_table inotify_table[] = {
+ 		.maxlen		= sizeof(long),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_doulongvec_minmax,
+-		.extra1		= SYSCTL_ZERO,
+-		.extra2		= SYSCTL_INT_MAX,
++		.extra1		= &it_zero,
++		.extra2		= &it_int_max,
+ 	},
+ 	{
+ 		.procname	= "max_user_watches",
+@@ -71,8 +74,8 @@ struct ctl_table inotify_table[] = {
+ 		.maxlen		= sizeof(long),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_doulongvec_minmax,
+-		.extra1		= SYSCTL_ZERO,
+-		.extra2		= SYSCTL_INT_MAX,
++		.extra1		= &it_zero,
++		.extra2		= &it_int_max,
+ 	},
+ 	{
+ 		.procname	= "max_queued_events",
+diff --git a/kernel/ucount.c b/kernel/ucount.c
+index 260ae7da815f..bb51849e6375 100644
+--- a/kernel/ucount.c
++++ b/kernel/ucount.c
+@@ -58,14 +58,17 @@ static struct ctl_table_root set_root = {
+ 	.permissions = set_permissions,
+ };
+ 
++static long ue_zero = 0;
++static long ue_int_max = INT_MAX;
++
+ #define UCOUNT_ENTRY(name)					\
+ 	{							\
+ 		.procname	= name,				\
+ 		.maxlen		= sizeof(long),			\
+ 		.mode		= 0644,				\
+ 		.proc_handler	= proc_doulongvec_minmax,	\
+-		.extra1		= SYSCTL_ZERO,			\
+-		.extra2		= SYSCTL_INT_MAX,		\
++		.extra1		= &ue_zero,			\
++		.extra2		= &ue_int_max,			\
+ 	}
+ static struct ctl_table user_table[] = {
+ 	UCOUNT_ENTRY("max_user_namespaces"),
 
-> +		Access: Read-Only
-> +		Valid values: 0 - 100
-> diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/su=
-pply/power_supply_sysfs.c
-> index 561cffef9d61..4de91dce2001 100644
-> --- a/drivers/power/supply/power_supply_sysfs.c
-> +++ b/drivers/power/supply/power_supply_sysfs.c
-> @@ -213,6 +213,7 @@ static struct power_supply_attr power_supply_attrs[] =
-=3D {
->  	POWER_SUPPLY_ATTR(SERIAL_NUMBER),
->  	POWER_SUPPLY_ATTR(QUICK_CHARGE_TYPE),
->  	POWER_SUPPLY_ATTR(TX_ADAPTER),
-> +	POWER_SUPPLY_ATTR(SIGNAL_STRENGTH),
->  };
-> =20
->  static struct attribute *
-> diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-> index bcfadf2a995f..0dfec19cb473 100644
-> --- a/include/linux/power_supply.h
-> +++ b/include/linux/power_supply.h
-> @@ -173,6 +173,7 @@ enum power_supply_property {
->  	POWER_SUPPLY_PROP_SERIAL_NUMBER,
->  	POWER_SUPPLY_PROP_QUICK_CHARGE_TYPE,
->  	POWER_SUPPLY_PROP_TX_ADAPTER,
-> +	POWER_SUPPLY_PROP_SIGNAL_STRENGTH,
->  };
-> =20
->  enum power_supply_type {
-> --=20
-> 2.17.1
->=20
 
---yqzemd5iw44vgp46
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEMFbkACgkQ2O7X88g7
-+pp91g/9E4Kx9jkSG0p9sdKDpD3+XWsWBxtSY4H9N3uEVCfolFH0ePFAJ3PkF5Re
-1VHobmqrl7WvUgjlJmsnGGs4i4IN8e1KL/ERxGDA/PtOgBuKEXPDrBWBCus7boZ4
-UihxBM93L9Ry837Gb54CPLa36yx79ZUh2KwNeMS2oZfINjK+C2hz53NP4i/iRgNh
-JxH+QoeLCMFlzb0y6cz91YtV/2tVbEC+QtWQkWMn2IhEx3TRYkuS5yL6ixVTCylc
-YfLXzHcPFRtWWib7jdWvGxtnt1wcvbeBxRpns7vf1aTiFdPXe4Ay1gsAWcsjYkAG
-n3S5faNNiWzvjG77z1KdgmSX1uDkaGElqQWPwlhT13aVEAH0iNfpeVTFKCjv5Ing
-pJ68t3YTdBo1GyLkrmqPfNN6DYxxnXgqr6hL8azzbxaV/TQzXCYDuqX3rIWjEsoI
-JIs9XiDr7xQd1JbN8WGJRyOZIRQf1nobbqQrC5kpE6Rido1mjwt+Ucr15JWFk6lk
-dnFMVzR6CNj/zn2+0Gggea6HRaD4Sx2/eAYli3bYFBzUDXWKdmLlzMLxUw9VEmPj
-ktiy0w0eFKefhevIkS1Skv0F4R2jXOf7qSSvKy7ywOvi6KIUu5MQwJIM+bZvm8ST
-S7Bo1Cj3/Ox6Tlwy85jBbeHWsMqbTdukvQHLKMz3pdTbQKAKzCE=
-=jlp5
------END PGP SIGNATURE-----
-
---yqzemd5iw44vgp46--
