@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4EB3E1C10
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D373E1C0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242924AbhHETFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:05:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242436AbhHETEv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:04:51 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4C2C061384;
-        Thu,  5 Aug 2021 12:04:24 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id l34-20020a05600c1d22b02902573c214807so7091803wms.2;
-        Thu, 05 Aug 2021 12:04:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oTE2yvgvW8glea98LSY/ffZ1b6poaqIV5ugiE4I/bJE=;
-        b=lNNGt2hJtFLKaKfbRjcNF8QqPU6aHLbcEsKqIcUgkcBGaXt7+2Gc3JP83833YrWOIv
-         7jlaYW6QhcblMUqhSdwb6y+Myp+VyNclNkEOqYgO2WYj/LLZvzv79PPIfufk5L6ZVNnS
-         MSdFq1BZ3wz0ebR5WbqMUEcNA4+zP/6OV7D3dSQtXmcb6K5WlGGX0qpHJLHJX3N7sQOX
-         gIJt3pV2aV/+tmX7rD0tIWBiz/gSxp/mANKC65ED/b/DurNYsao+j0pGMqqf1/n1sZY/
-         Z4fa5X+QBDUhRVtgcpPrIjj2Aia7Q6ubvHXo36kvFKm+El3DLIOoGtnqcR3WsK3Mopk1
-         2uvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oTE2yvgvW8glea98LSY/ffZ1b6poaqIV5ugiE4I/bJE=;
-        b=UgbDm7bPkyFquM7YFD16kFchpEshIUCDca3Z3sXOWktZdRC4hmaJQbcTdpYg1hsQDc
-         P7h8ZH3IYUwfEOrc4VQX7xMucXsMIASEGRZfZgkmFNKsBS1W9u+mtJw5zMtlvVxOF/qY
-         +IZIJOjNlYWUjpE34tFphr/Y4uHLzZDly/nh1LyY9vFwP5V7d8kD+A0+2ZJjE1IhfFI4
-         OZkkbHJ14Hh+HlhccDEEFbAj1eQxtxKUyNjkZ0pYjWfwNeTJWdKUapQBshvFAn9RtHzO
-         e/nrp5QeeYzVnA1TauMeVLR37tZpCRy5eesWH4IS9/DtF8fzyjGysnySidTYPUxvtH8Y
-         mIwg==
-X-Gm-Message-State: AOAM531Eta7Lgf1xupvS2G2uzkQC4NMKULvULyeEwJBGTFxmVBUyadkS
-        bCbWcGhUEYIQV6g05QayWGI=
-X-Google-Smtp-Source: ABdhPJwkC/YeGz/Dyo9+y84CiGmImn7JArYQpWwTejOvMX6UfS/2NsjkB1EpQntC8fZ8bP7wy08HGQ==
-X-Received: by 2002:a1c:2b04:: with SMTP id r4mr6508448wmr.168.1628190263065;
-        Thu, 05 Aug 2021 12:04:23 -0700 (PDT)
-Received: from kista.localdomain (cpe-86-58-46-198.static.triera.net. [86.58.46.198])
-        by smtp.gmail.com with ESMTPSA id q7sm6329781wmq.33.2021.08.05.12.04.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 12:04:22 -0700 (PDT)
-From:   Jernej Skrabec <jernej.skrabec@gmail.com>
-To:     ezequiel@collabora.com, p.zabel@pengutronix.de
-Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, emil.velikov@collabora.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: [PATCH] media: hantro: Fix check for single irq
-Date:   Thu,  5 Aug 2021 21:04:16 +0200
-Message-Id: <20210805190416.332563-1-jernej.skrabec@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S241966AbhHETE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:04:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242738AbhHETEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 15:04:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B181E61040;
+        Thu,  5 Aug 2021 19:04:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628190273;
+        bh=MCjQlxL9X2EkS0NeQyUENlq89cm31kXmcOUCJ7S5w88=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eSHeL83kJiujAp3E2VNZ5OVoar3YqffDDKloJt/BA1uRmgNRI9incZpNZDIAAcN1K
+         MeBj8BpWE351bla1Jc49Sih1o+Y9zRULjZSmUuG7swPSsI+FXdyAcJfQPVL03QnsKQ
+         9hsoJwIfDMs0A5iEs8wffChG4iWsnBDbeO882OWpgU3syrWd7ucqhWfSuA8MLKMoDW
+         fpMdMX8L7ra72Z622VVYxOPRaIYjW7QsR/m5Q4ZioFp/MMdJl0JoZbwxUt5dsM1kLd
+         fZPK9kGtmKHV0/x0EeQT8RZ2IjOdWs+yPaCuNjKSfptZh3XRYC94qvKPBnGSTDYTXm
+         NUijFVea6Pumw==
+Date:   Thu, 5 Aug 2021 12:04:31 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [gustavoars-linux:for-next/clang-fallthrough 1/1] warning:
+ fallthrough annotation in unreachable code/
+Message-ID: <YQw2P8esj8PMNRQn@Ryzen-9-3900X.localdomain>
+References: <202108051403.tBfqfI49-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202108051403.tBfqfI49-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some cores use only one interrupt and in such case interrupt name in DT
-is not needed. Driver supposedly accounted that, but due to the wrong
-field check it never worked. Fix that.
+On Thu, Aug 05, 2021 at 02:21:34PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/clang-fallthrough
+> head:   58d0d2d2e7dc1b1a4997bb9c47d6cf428f2d3a00
+> commit: 58d0d2d2e7dc1b1a4997bb9c47d6cf428f2d3a00 [1/1] Revert "Revert "Makefile: Enable -Wimplicit-fallthrough for Clang""
+> config: hexagon-randconfig-r023-20210804 (attached as .config)
+> compiler: clang version 12.0.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?id=58d0d2d2e7dc1b1a4997bb9c47d6cf428f2d3a00
+>         git remote add gustavoars-linux https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git
+>         git fetch --no-tags gustavoars-linux for-next/clang-fallthrough
+>         git checkout 58d0d2d2e7dc1b1a4997bb9c47d6cf428f2d3a00
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
+> >> warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
+>    2 warnings generated.
 
-Fixes: 18d6c8b7b4c9 ("media: hantro: add fallback handling for single irq/clk")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
----
- drivers/staging/media/hantro/hantro_drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+With a newer version of clang that shows proper line numbers:
 
-diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-index 8a2edd67f2c6..20e508158871 100644
---- a/drivers/staging/media/hantro/hantro_drv.c
-+++ b/drivers/staging/media/hantro/hantro_drv.c
-@@ -919,7 +919,7 @@ static int hantro_probe(struct platform_device *pdev)
- 		if (!vpu->variant->irqs[i].handler)
- 			continue;
- 
--		if (vpu->variant->num_clocks > 1) {
-+		if (vpu->variant->num_irqs > 1) {
- 			irq_name = vpu->variant->irqs[i].name;
- 			irq = platform_get_irq_byname(vpu->pdev, irq_name);
- 		} else {
--- 
-2.32.0
+sound/core/pcm_native.c:3812:3: warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
+                fallthrough;
+                ^
+include/linux/compiler_attributes.h:211:41: note: expanded from macro 'fallthrough'
+# define fallthrough                    __attribute__((__fallthrough__))
+                                        ^
+sound/core/pcm_native.c:3820:3: warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
+                fallthrough;
+                ^
+include/linux/compiler_attributes.h:211:41: note: expanded from macro 'fallthrough'
+# define fallthrough                    __attribute__((__fallthrough__))
+                                        ^
+2 warnings generated.
 
+Which is already being tracked: https://github.com/ClangBuiltLinux/linux/issues/1429
+
+Cheers,
+Nathan
