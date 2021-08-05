@@ -2,132 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D2A3E0DDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 07:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393843E0DE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 07:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235269AbhHEFpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 01:45:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34832 "EHLO
+        id S233487AbhHEFt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 01:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhHEFpC (ORCPT
+        with ESMTP id S231143AbhHEFt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 01:45:02 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10480C061765
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 22:44:48 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mBWBQ-0001es-OB; Thu, 05 Aug 2021 07:44:44 +0200
-Subject: Re: [PATCH v1 2/2] drm/panel: simple: add LOGIC Technologies
- LTTD800480070-L6WH-RT
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        =?UTF-8?Q?S=c3=b8ren_Ander?= =?UTF-8?Q?sen?= <san@skov.dk>,
-        Sam Ravnborg <sam@ravnborg.org>
-References: <20210805043702.24715-1-o.rempel@pengutronix.de>
- <20210805043702.24715-2-o.rempel@pengutronix.de>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <a72ad0e5-fb60-e19b-710e-7afbcb157f4f@pengutronix.de>
-Date:   Thu, 5 Aug 2021 07:44:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 5 Aug 2021 01:49:26 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BBBC0613C1
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 22:49:12 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so12418957pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 22:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=dNsQY+F/nTZDlRa7s8E02CpCEHGRnjF0leqZ8/MnW8A=;
+        b=XlRrQdL9k7bXH9baTOiW0UScO0BXEPiwuTl8Ed5xr1VY4LwTSCHjHNHUdxdHo1xgun
+         HOyIPLyZ0sXVDlyztY+TJGlCWpHwQX+cEMOj1Ezq1Act+q9Lq1CjbUzbPm/a+tTkHkkT
+         1QAKMZlgAqTXh/ShUtsRC8Jot8Elr5U958dhkuqDFna618ZYUT6TearZNMmCwyvRtDzF
+         gK6VnVJBUnlvi8mCCXeL/GYrcSCHGqZz5SiTWGh0cL56p8CdE4rztSX6IvO2Zxl/u7fk
+         LWfTs+x8UBBqY3OnBJaMP7fSODsRhvCCWw57l/qhkoz0Mj6HpbVR5pPD08XRcC3maJgc
+         AdGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=dNsQY+F/nTZDlRa7s8E02CpCEHGRnjF0leqZ8/MnW8A=;
+        b=tXG6Eml+ATOUbJgZnuShb96UyooIe84X+6CCxwQDq3F+uaLApuYqQPwLAIN8HlNjEl
+         E4cUW+q1lueE7LgWOOTbPKVv9Jz6Y6CqS5l4hIcfIa0ZOPLtzdJWpYlGrnO6+VK/2VMR
+         R4mAMnzxxW1o2iXlYXTNFlx98shvYkXYZr/Rbrq8Uiwde0As+vSWL/evqHRfkt2bnV/l
+         VTr3tDFlc3hBRqiq61IHyCTior9DNWabZXB5lA8Qt+Q/66hOvOzn0y59WXmkcvaBYHWC
+         TdrSi8kNti5ioXFURDTrascU5VdOXDQAH8O1l/goRSsz+FjYbn9NvMSZL1yG9fdAIWkl
+         ZZjw==
+X-Gm-Message-State: AOAM533nPdDiIPgbmWJwLh1QQOsSbi9M4hl4vl+92UbJgjpcNTA5bS4E
+        lmAqq3kPg9RBkZZwFCzjlHKlJQ==
+X-Google-Smtp-Source: ABdhPJyq36kr7e5TFNOzJSVQEXm6NeJWJM6IIWNfcQVUeMByEtQjPVrmwruLaFRK0kiCDYVpeqsClQ==
+X-Received: by 2002:a17:902:6bc8:b029:117:6a8a:f7af with SMTP id m8-20020a1709026bc8b02901176a8af7afmr2530078plt.51.1628142551592;
+        Wed, 04 Aug 2021 22:49:11 -0700 (PDT)
+Received: from localhost (110-175-254-242.static.tpgi.com.au. [110.175.254.242])
+        by smtp.gmail.com with UTF8SMTPSA id g19sm8114748pjl.25.2021.08.04.22.49.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Aug 2021 22:49:11 -0700 (PDT)
+Message-ID: <b2d4af96-ea66-982f-54c0-919546d39aa3@ozlabs.ru>
+Date:   Thu, 5 Aug 2021 15:49:05 +1000
 MIME-Version: 1.0
-In-Reply-To: <20210805043702.24715-2-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
+ Thunderbird/88.0
+Subject: Re: [PATCH] KVM: Do not leak memory for duplicate debugfs directories
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210804093737.2536206-1-pbonzini@redhat.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <20210804093737.2536206-1-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Oleksi,
 
-On 05.08.21 06:37, Oleksij Rempel wrote:
-> From: Søren Andersen <san@skov.dk>
+
+On 8/4/21 19:37, Paolo Bonzini wrote:
+> KVM creates a debugfs directory for each VM in order to store statistics
+> about the virtual machine.  The directory name is built from the process
+> pid and a VM fd.  While generally unique, it is possible to keep a
+> file descriptor alive in a way that causes duplicate directories, which
+> manifests as these messages:
 > 
-> Add support for the LOGIC Technologies, Inc LTTD800480070-L6WH-RT
+>    [  471.846235] debugfs: Directory '20245-4' with parent 'kvm' already present!
 > 
-> Co-Developed-by: Søren Andersen <san@skov.dk>
-> Co-Developed-by: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: Søren Andersen <san@skov.dk>
-> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Even though this should not happen in practice, it is more or less
+> expected in the case of KVM for testcases that call KVM_CREATE_VM and
+> close the resulting file descriptor repeatedly and in parallel.
+> 
+> When this happens, debugfs_create_dir() returns an error but
+> kvm_create_vm_debugfs() goes on to allocate stat data structs which are
+> later leaked.  The slow memory leak was spotted by syzkaller, where it
+> caused OOM reports.
+> 
+> Since the issue only affects debugfs, do a lookup before calling
+> debugfs_create_dir, so that the message is downgraded and rate-limited.
+> While at it, ensure kvm->debugfs_dentry is NULL rather than an error
+> if it is not created.  This fixes kvm_destroy_vm_debugfs, which was not
+> checking IS_ERR_OR_NULL correctly.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 536a6f88c49d ("KVM: Create debugfs dir and stat files for each VM")
+> Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+
+
+after another try, works brilliant.
+
+Reviewed-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Tested-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+
+Thanks,
+
+
 > ---
->  drivers/gpu/drm/panel/panel-simple.c | 34 ++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
+>   virt/kvm/kvm_main.c | 18 ++++++++++++++++--
+>   1 file changed, 16 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> index fda79a986d12..e5213a610ae9 100644
-> --- a/drivers/gpu/drm/panel/panel-simple.c
-> +++ b/drivers/gpu/drm/panel/panel-simple.c
-> @@ -2967,6 +2967,37 @@ static const struct panel_desc logictechno_lt170410_2whc = {
->  	.connector_type = DRM_MODE_CONNECTOR_LVDS,
->  };
->  
-> +static const struct drm_display_mode logictechno_lttd800480070_l6wh_rt_mode = {
-> +	.clock = 33000,
-> +	.hdisplay = 800,
-> +	.hsync_start = 800 + 154,
-> +	.hsync_end = 800 + 154 + 3,
-> +	.htotal = 800 + 154 + 3 + 43,
-> +	.vdisplay = 480,
-> +	.vsync_start = 480 + 47,
-> +	.vsync_end = 480 + 47 + 3,
-> +	.vtotal = 480 + 47 + 3 + 20,
-> +	.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
-> +};
-> +
-> +static const struct panel_desc logictechno_lttd800480070_l6wh_rt = {
-> +	.modes = &logictechno_lttd800480070_l6wh_rt_mode,
-> +	.num_modes = 1,
-> +	.bpc = 8,
-> +	.size = {
-> +		.width = 154,
-> +		.height = 86,
-> +	},
-> +	.delay = {
-> +		.prepare = 45,
-> +		.enable = 100,
-> +		.disable = 100,
-> +		.unprepare = 45
-> +	},
-> +	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
-> +	.bus_flags = DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE,
-
-This lacks a .connector_type. I think recent kernels warn about that?
-
-Cheers,
-Ahmad
-
-> +};
-> +
->  static const struct drm_display_mode mitsubishi_aa070mc01_mode = {
->  	.clock = 30400,
->  	.hdisplay = 800,
-> @@ -4492,6 +4523,9 @@ static const struct of_device_id platform_of_match[] = {
->  	}, {
->  		.compatible = "logictechno,lt170410-2whc",
->  		.data = &logictechno_lt170410_2whc,
-> +	}, {
-> +		.compatible = "logictechno,lttd800480070-l6wh-rt",
-> +		.data = &logictechno_lttd800480070_l6wh_rt,
->  	}, {
->  		.compatible = "mitsubishi,aa070mc01-ca1",
->  		.data = &mitsubishi_aa070mc01,
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index d20fba0fc290..b50dbe269f4b 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -892,6 +892,8 @@ static void kvm_destroy_vm_debugfs(struct kvm *kvm)
+>   
+>   static int kvm_create_vm_debugfs(struct kvm *kvm, int fd)
+>   {
+> +	static DEFINE_MUTEX(kvm_debugfs_lock);
+> +	struct dentry *dent;
+>   	char dir_name[ITOA_MAX_LEN * 2];
+>   	struct kvm_stat_data *stat_data;
+>   	const struct _kvm_stats_desc *pdesc;
+> @@ -903,8 +905,20 @@ static int kvm_create_vm_debugfs(struct kvm *kvm, int fd)
+>   		return 0;
+>   
+>   	snprintf(dir_name, sizeof(dir_name), "%d-%d", task_pid_nr(current), fd);
+> -	kvm->debugfs_dentry = debugfs_create_dir(dir_name, kvm_debugfs_dir);
+> +	mutex_lock(&kvm_debugfs_lock);
+> +	dent = debugfs_lookup(dir_name, kvm_debugfs_dir);
+> +	if (dent) {
+> +		pr_warn_ratelimited("KVM: debugfs: duplicate directory %s\n", dir_name);
+> +		dput(dent);
+> +		mutex_unlock(&kvm_debugfs_lock);
+> +		return 0;
+> +	}
+> +	dent = debugfs_create_dir(dir_name, kvm_debugfs_dir);
+> +	mutex_unlock(&kvm_debugfs_lock);
+> +	if (IS_ERR(dent))
+> +		return 0;
+>   
+> +	kvm->debugfs_dentry = dent;
+>   	kvm->debugfs_stat_data = kcalloc(kvm_debugfs_num_entries,
+>   					 sizeof(*kvm->debugfs_stat_data),
+>   					 GFP_KERNEL_ACCOUNT);
+> @@ -5201,7 +5215,7 @@ static void kvm_uevent_notify_change(unsigned int type, struct kvm *kvm)
+>   	}
+>   	add_uevent_var(env, "PID=%d", kvm->userspace_pid);
+>   
+> -	if (!IS_ERR_OR_NULL(kvm->debugfs_dentry)) {
+> +	if (kvm->debugfs_dentry) {
+>   		char *tmp, *p = kmalloc(PATH_MAX, GFP_KERNEL_ACCOUNT);
+>   
+>   		if (p) {
 > 
-
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Alexey
