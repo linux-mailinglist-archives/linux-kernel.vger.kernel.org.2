@@ -2,190 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C48A3E1802
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C3D3E1808
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238005AbhHEPaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
+        id S242048AbhHEPaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233376AbhHEPaY (ORCPT
+        with ESMTP id S240747AbhHEPat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:30:24 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EECC061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 08:30:09 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id k65so9568164yba.13
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 08:30:09 -0700 (PDT)
+        Thu, 5 Aug 2021 11:30:49 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B3FC061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 08:30:35 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id y1so3313925vsc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 08:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2tU8mV4kGo7B6sAAhPR8hBvbRKDUXIJ345PeY/aAOBg=;
-        b=f42bJF/1Dk3qBScrNnooaWUVAZzkLtIj7HBfdCOwEgtizu7GOgYeHzhTLcHYniO5F6
-         RUlhXZJ1NNv0m4d/N4jpYoMs/zsueUVLfWdpg32nakElzLVGY8ajhUKdySHoSr2NtLlr
-         WJheTug+4Cbr13BVfdGuZj4ZUVtzQCecn+o6GQkgOBmPnv6QoQqprx6zAUQYfI5J3j8Y
-         ysTwi12ZG2dpM8CUh1bywMCrTFnmv8pgkKTAshspGbXaZU9u8WqgFHth7/1RlhOAS/jv
-         lhqAalia4DP3BPSMN/cvfzFbrEzR0VVEvk+KSP19fPYmndIQ9+8hiD3URpC82jIongpY
-         zmoA==
+        bh=2HwiUKZxqy53dDfBp1901/849S4t5mjJtJjeA2wMPec=;
+        b=wg/GjsYLif0ZYYHMg3KnRLOxv3tYLMjO5yw61rpFo2U6f/PHccXPTRMbf7TjDmFtIy
+         SaTMUBl6mtykhQHxwVxwXJdpsqEsHECguuguS4suj2+mcgflMfdF0s+ZKBY/mMwQDdPU
+         akilIu+Sq0Sui1mKolQYpIPGxSkmZDxq5dA+WIymASwSwHXudWOYS2o/qCTkvAHocnl3
+         C/RrpZm24VqvSY06dlB6yx07zS4xtnbXplFKA/cAVOVuu+r+47pbvV9OUzUTh6gqIuEK
+         Ra4N9BqLgbBx/+PV59gv17Jp1pvOjvaqtB6MrhpxChT5YJ6s07YTularepv+VbeBnprM
+         biwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2tU8mV4kGo7B6sAAhPR8hBvbRKDUXIJ345PeY/aAOBg=;
-        b=nU1H3JjWMxn6m+6lk2gmJTNeea1OHTOVQmH/iQQQw3Qhe956yA2h25JTTc0ABE/jNH
-         SXWRlviypSFamkV+5pJxcSEZkgTo8GnCNjXeBgVyl2T4G4rGiv2X+XjAuycmfblNKh2k
-         eYhUz+obC+AyoIGL/47yawefBCJRo7EFpwIbnzvVZLnkpzCx91xCwqNaMztsKkVXk+Uh
-         lHMw6ecMpgtwJwxBrFQSgNeN5J4DRlvwT2NRrtzc+r0qaSZJvLk0LlwKh/EGc0l23J/Z
-         lgRpq0POi5cppez5C68sdS85RL3WpSqJo3vVm8fXamoyfW1kZ17u5MaPcsjqN9BXiu4K
-         Im8g==
-X-Gm-Message-State: AOAM532RWUZoKV4EMUjp1uOT9hKweQDM3SgW4fW2cgSAOs7H+Lz1JAOA
-        jOMnqQ5GrrrUDW8LKpMS3/IenvM6EBvxPzYOyq5Ehw==
-X-Google-Smtp-Source: ABdhPJxUS4czW0V1Clmo2rkCzA8soyzkXMnFhkpuCErHWLlAEPCH8nIhEIa3XsBc7kIhmxFERhlxoO1fRLGjHS5wrn0=
-X-Received: by 2002:a25:4216:: with SMTP id p22mr6237785yba.397.1628177408208;
- Thu, 05 Aug 2021 08:30:08 -0700 (PDT)
+        bh=2HwiUKZxqy53dDfBp1901/849S4t5mjJtJjeA2wMPec=;
+        b=UpLDEm+8Goaim+0EG3zGvetiIvXLcKMZA1lD4W/yJwWN3HB2Bl60HsPS/Vl7C/lez8
+         Gxu3qo8G7ecWA1bERD/idLULenJqXn8RpeI4OQ/xU7RpxXsMxHr19Jo1pTpfg9VN8IAB
+         zdQVdiyNns7o/DP0LzY9COD99Ik3J2TByVjUIAdZDTX5oWdFpPUHZ69vGi1BfJt/kTER
+         OlxhAYTkLY+y+vz7k3TREokh60GkZZV0J5kMnnYnQ9gr57b4dXz/zkA5UVpkwPNmLoza
+         x+epJv1d8r+I/TUkc3KT5ZQB2O5thYiMMx/zaKDuCK00MT8VdEIm9aYx30aGF0WXAMoN
+         AfTA==
+X-Gm-Message-State: AOAM533bxohYAnHxwYhGQi2yn4rU1aO/ytok5prSoa9vLFv5TsURpkQS
+        n87rlgeSqqysF5ZsKLUpooh16Y360OljJ3g/CqFPMg==
+X-Google-Smtp-Source: ABdhPJz7ndSuSpMNkkGlw9G/nEeHBUu9O9atQyI5vE3atZWBaEoYd/rSmKp8dYwaj/T41dDFjGZta+VdrhSjdEuiiNo=
+X-Received: by 2002:a67:de06:: with SMTP id q6mr5210772vsk.57.1628177434529;
+ Thu, 05 Aug 2021 08:30:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210804185004.1304692-1-surenb@google.com> <YQuO36AeQUwsAyU1@dhcp22.suse.cz>
-In-Reply-To: <YQuO36AeQUwsAyU1@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 5 Aug 2021 08:29:57 -0700
-Message-ID: <CAJuCfpF1JSTSRu5v8s9wG0J-S+-p57tMO+0dUF+P16_6yYV7Mg@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] mm: introduce process_mrelease system call
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-13-semen.protsenko@linaro.org> <15871f8ced3c757fad1ab3b6e62c4e64@misterjones.org>
+ <CAPLW+4=v4bDcuxGVqs06mobGj34At4cD+vg48b4dPujarS07Tg@mail.gmail.com>
+ <87k0l1w8y5.wl-maz@kernel.org> <CAPLW+4mMF9B2BiY2hTgHz5=DNbDJZ7TDzt=Xefb5tDKwQhpEew@mail.gmail.com>
+ <87y29gbas7.wl-maz@kernel.org>
+In-Reply-To: <87y29gbas7.wl-maz@kernel.org>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Thu, 5 Aug 2021 18:30:23 +0300
+Message-ID: <CAPLW+4nCfSBfwMcemaVvU5MgBACgnhXaW9eAAjw66G6Zhz2Gbw@mail.gmail.com>
+Subject: Re: [PATCH 12/12] arm64: dts: exynos: Add Exynos850 SoC support
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 12:10 AM Michal Hocko <mhocko@suse.com> wrote:
+On Thu, 5 Aug 2021 at 10:39, Marc Zyngier <maz@kernel.org> wrote:
 >
-> On Wed 04-08-21 11:50:03, Suren Baghdasaryan wrote:
-> [...]
-> > +SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
-> > +{
-> > +#ifdef CONFIG_MMU
-> > +     struct mm_struct *mm = NULL;
-> > +     struct task_struct *task;
-> > +     unsigned int f_flags;
-> > +     struct pid *pid;
-> > +     long ret = 0;
-> > +
-> > +     if (flags)
-> > +             return -EINVAL;
-> > +
-> > +     pid = pidfd_get_pid(pidfd, &f_flags);
-> > +     if (IS_ERR(pid))
-> > +             return PTR_ERR(pid);
-> > +
-> > +     task = get_pid_task(pid, PIDTYPE_PID);
-> > +     if (!task) {
-> > +             ret = -ESRCH;
-> > +             goto put_pid;
-> > +     }
-> > +
-> > +     /*
-> > +      * If the task is dying and in the process of releasing its memory
-> > +      * then get its mm.
-> > +      */
-> > +     task = find_lock_task_mm(task);
+> On Wed, 04 Aug 2021 19:37:24 +0100,
+> Sam Protsenko <semen.protsenko@linaro.org> wrote:
+> >
+> > On Wed, 4 Aug 2021 at 18:01, Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > On Wed, 04 Aug 2021 15:39:38 +0100,
+> > > Sam Protsenko <semen.protsenko@linaro.org> wrote:
+> > >
+> > > > > You are also missing the hypervisor virtual timer interrupt.
+> > > > >
+> > > >
+> > > > Checked SoC TRM, there is no PPI for hypervisor virtual timer
+> > > > interrupt, and no mentioning of it at all. Likewise, I checked ARMv8
+> > > > ARM and TRM, almost no description of it. Also, I checked other
+> > > > platforms, and seems like everyone does the same (having only 4
+> > > > interrupts). And I wasn't able to find any documentation on that, so I
+> > > > guess I'll leave it as is, if you don't mind.
+> > >
+> > > I *do* mind, and other DTs being wrong isn't a good enough excuse! ;-)
+> > >
+> > > From the ARMv8 ARM (ARM DDI 0487G.b)
+> > > <quote>
+> > > D11.2.4 Timers
+> > >
+> > > In an implementation of the Generic Timer that includes EL3, if EL3
+> > > can use AArch64, the following timers are implemented:
+> > >
+> > > * An EL1 physical timer, that:
+> > >   - In Secure state, can be accessed from EL1.
+> > >   - In Non-secure state, can be accessed from EL1 unless those
+> > >     accesses are trapped to EL2.
+> > >     When this timer can be accessed from EL1, an EL1 control
+> > >     determines whether it can be accessed from EL0.
+> > > * A Non-secure EL2 physical timer.
+> > > * A Secure EL3 physical timer. An EL3 control determines whether this
+> > >   register is accessible from Secure EL1.
+> > > * An EL1 virtual timer.
+> > > * When FEAT_VHE is implemented, a Non-secure EL2 virtual timer.
+> > > * When FEAT_SEL2 is implemented, a Secure EL2 physical timer.
+> > > * When FEAT_SEL2 is implemented, a Secure EL2 virtual timer.
+> > > </quote>
+> > >
+> > > Cortex-A55 being an ARMv8.2 implementation, it has FEAT_VHE, and thus
+> > > it does have a NS-EL2 virtual timer. This is further confirmed by the
+> > > TRM which documents CNTHV*_EL2 as valid system registers[1].
+> > >
+> > > So the timer exists, the signal is routed out of the core, and it
+> > > is likely that it is connected to the GIC.
+> > >
+> > > If the designers have omitted it, then it needs to be documented as
+> > > such.
+> > >
+> >
+> > Ok, I've checked thoroughly all docs again, and it seems like there is
+> > no dedicated PPI number for this "EL2 Hypervisor Virtual Timer" in
+> > Exynos850 SoC. The timer instance itself might exist of course, but
+> > interrupt line is probably wasn't connected to GIC by SoC designers,
+> > at least it's not documented.
 >
-> You want a different task_struct because the returned one might be
-> different from the given one and you already hold a reference which you
-> do not want to leak
+> Can you try and check this? You can directly program the virtual timer
+> so that it has a pending interrupt, and then check the pending
+> register on the same CPU to see if there is anything appearing there.
+>
+> > Moreover, from [1,2] it looks like if it were existing it would have
+> > been PPI=12 (INTID=28). But in GIC-400 TRM this PPI is assigned to
+> > "Legacy FIQ signal",
+>
+> No. That's only if you set the bypass bits in GICD_CTLR, which nobody
+> with half a brain would consider doing.
+>
+> > and all there is no PPI for Hypervisor Virtual
+> > Timer documented there as well. In Exynos850 TRM the source for this
+> > PPI's interrupt source is marked as "-", which means it's not used.
+> >
+> > So if you know something that I don't know -- please point me out the
+> > doc where this PPI line is documented. Otherwise I can add the comment
+> > to device tree, stating that this interrupt line is not present in
+> > SoC's GIC, i.e. something like this:
+> >
+> > 8<------------------------------------------------------------------------------->8
+> >     timer {
+> >         compatible = "arm,armv8-timer";
+> >         interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(8) |
+> >                       IRQ_TYPE_LEVEL_LOW)>,
+> >                  <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(8) |
+> >                       IRQ_TYPE_LEVEL_LOW)>,
+> >                  <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(8) |
+> >                       IRQ_TYPE_LEVEL_LOW)>,
+> >                  <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(8) |
+> >                       IRQ_TYPE_LEVEL_LOW)>;
+> >         /* Hypervisor Virtual Timer PPI is not present in this SoC GIC */
+> >     };
+> > 8<------------------------------------------------------------------------------->8
+> >
+> > Is that ok with you?
+>
+> I'd rather you verify the above first. And if you can't, I'd like a
+> comment that is a bit more explicit:
+>
 
-Ah, right. I was looking at the task locking and find_lock_task_mm()
-handles that but I missed the task pinning part. Will fix.
+I'm afraid I won't be able to verify your idea: seems like CNTHV_EL2
+can be only modified (or read) in EL2. I tried to read that reg
+anyway, which unsurprisingly resulted in el1_undef() BUG. The kernel
+on my board is running in EL1, and I don't have access to the source
+code for EL3 bootloaders. I have the source code for the last
+bootloader, but it's already running in EL1.
 
->
-> > +     if (!task) {
-> > +             ret = -ESRCH;
-> > +             goto put_pid;
-> > +     }
-> > +     if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
-> > +             mm = task->mm;
-> > +             mmget(mm);
-> > +     }
-> > +     task_unlock(task);
-> > +     if (!mm) {
-> > +             ret = -EINVAL;
-> > +             goto put_task;
-> > +     }
-> > +
-> > +     if (test_bit(MMF_OOM_SKIP, &mm->flags))
-> > +             goto put_mm;
->
-> This is too late to check for MMF_OOM_SKIP. task_will_free_mem will fail
-> with the flag being set. I believe you want something like the
-> following:
->
->         p = find_lock_task_mm(task);
->         mm = p->mm;
->
->         /* The work has been done already */
->         if (test_bit(MMF_OOM_SKIP, &mm->flags)) {
->                 task_unlock(p);
->                 goto put_task;
->         }
->
->         i
->         if (!task_will_free_mem(p)) {
->                 task_unlock(p);
->                 goto put_task;
->         }
->
->         mmget(mm);
->         task_unlock(p);
+> /* The vendor couldn't be bothered to wire the EL2 Virtual Timers */
 >
 
-I see. Let me update the patch and will ask Andrew to remove the
-previous version from mm tree.
-Thanks for reviewing and pointing out the issues!
+I'll add the comment as you suggested. I propose we come back to this
+issue later, either when the need for HV timer arises or when I have
+some means to test your theory about existing PPI.
 
+Thanks!
+
+> Thanks,
 >
-> > +
-> > +     if (mmap_read_lock_killable(mm)) {
-> > +             ret = -EINTR;
-> > +             goto put_mm;
-> > +     }
-> > +     if (!__oom_reap_task_mm(mm))
-> > +             ret = -EAGAIN;
-> > +     mmap_read_unlock(mm);
-> > +
-> > +put_mm:
-> > +     mmput(mm);
-> > +put_task:
-> > +     put_task_struct(task);
-> > +put_pid:
-> > +     put_pid(pid);
-> > +     return ret;
-> > +#else
-> > +     return -ENOSYS;
-> > +#endif /* CONFIG_MMU */
-> > +}
-> > --
-> > 2.32.0.554.ge1b32706d8-goog
+>         M.
 >
 > --
-> Michal Hocko
-> SUSE Labs
+> Without deviation from the norm, progress is not possible.
