@@ -2,228 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88D03E17BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B633E17C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240623AbhHEPT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236413AbhHEPTY (ORCPT
+        id S242032AbhHEPUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:20:39 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59088 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236413AbhHEPUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:19:24 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DEF2C061765;
-        Thu,  5 Aug 2021 08:18:56 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id w197so5286168qkb.1;
-        Thu, 05 Aug 2021 08:18:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yDxgi4QuDiLFwBjP43H0Okt4+DMON7aEHD6wSYhjwNE=;
-        b=Xduq6v10TZWlZnR8DNL7gSIN7evZHrm8YOqzcBT+ypQvSa6T4lGMk0xX1xDkDPDobT
-         q96qIfSdd2eA/C0BRG0ghA5rQNW8S86ZBXpfWxHx+Fr6rq3IAsZjK/aopxU6gZkD9S4L
-         dzQRGSJP1EktNKnO5Y7f1GpaWgDbxfXC+C2yAZH7VDz40jNtJS9ZoHcdAN5WWpvL9+sn
-         a3im5uNFMjEXG7R909CG62KD4ruCsziZkYBXT0V6XJH8cSVvsdrzqr5tjfsm9GKH271U
-         PwgKZ5SRLz2CZRm1MDBGC2/hL1VQK0fl3ni026MoyiV2ZO6ZTBCSvKKlztIktMyzl6qb
-         UgcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yDxgi4QuDiLFwBjP43H0Okt4+DMON7aEHD6wSYhjwNE=;
-        b=DuHMTzGK/J5ImM8k9uYE8FiVzRzCclPPyA+n3crtd+2xIh42PX3AE6j0+99eEWfsyO
-         xcIfyVYe7hRAxUhtb74RS9HbSO9ETPHUfyM1RTc1F9ggweZLZtef7/2w0poOfmFScIm4
-         V6cqp3Vmo0eX3cXpKgNXyHEKSUIlyZoo7SiZvUWhWaUCTsogcFo5q0PEfHri+xW1Gdyv
-         kfLGOQQ8nxuEiXTAYsHs2ENuqSizZAGOYYM7PIl0qLUsfmcPViof4VFRWFltihdtf4CV
-         sjihXi4JYjN52u0Db8O1dxfz46ezCNjUXT80WwL8QBUy3/zLI1zHW/uvOYAP2ipVoS6y
-         Ue0g==
-X-Gm-Message-State: AOAM533YLYDcBKwjmse0b6RylYwJ+gDt4JyHjmvu3nzh7WMMvz4TPXH0
-        rd00Gjqj17MO1Xjzob6N04kaIoURwpsoK97Dnwk=
-X-Google-Smtp-Source: ABdhPJxLXtamZNxmKFRp6STk4zGKOeD01CDQfPTvkf0ZQe65Uqg7pknPxHmpV4sRvDPv9RJyGLTEDydUMgNP6e1+aig=
-X-Received: by 2002:ae9:f201:: with SMTP id m1mr5279060qkg.381.1628176735385;
- Thu, 05 Aug 2021 08:18:55 -0700 (PDT)
+        Thu, 5 Aug 2021 11:20:19 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1C1511FE69;
+        Thu,  5 Aug 2021 15:20:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628176804; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=H7zCUfzj361+POKHcjwZQfDPrt3HnbaF/3ibAzfE4Zo=;
+        b=l41EJ5jMgMFajF4fFJw6Ow54BGmKB0syrkn8GMbz3RkILETvjIGesnhQABhYqJAM6C/2nr
+        7xiD/j+nzBtasmB4kfa7Xto2FIdz1jm81trWu4yyOUREsAb7P82uqlZ2KGvfDZnuIGEoKf
+        JUKWbzznbfcp9Qgkh8ZtBm4nnjv5Wl8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628176804;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=H7zCUfzj361+POKHcjwZQfDPrt3HnbaF/3ibAzfE4Zo=;
+        b=E9EHcIDAo4bkaRZcdwPpz+IhsmFvjtq8KH4NlLkbE+qFJriYv5nqDcJJjnCBbl1nHL53Ka
+        Gd8j/BUDUeiPNDDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CFA1913DA8;
+        Thu,  5 Aug 2021 15:20:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id nC/aMKMBDGFDdQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 05 Aug 2021 15:20:03 +0000
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Mike Galbraith <efault@gmx.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH v4 00/35] SLUB: reduce irq disabled scope and make it RT compatible
+Date:   Thu,  5 Aug 2021 17:19:25 +0200
+Message-Id: <20210805152000.12817-1-vbabka@suse.cz>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210802234304.3519577-1-ndesaulniers@google.com> <CAK7LNATWm94K=UcSNn88PyPST38rfe_31vLLpDf=ERPnKnBvVA@mail.gmail.com>
-In-Reply-To: <CAK7LNATWm94K=UcSNn88PyPST38rfe_31vLLpDf=ERPnKnBvVA@mail.gmail.com>
-From:   Khem Raj <raj.khem@gmail.com>
-Date:   Thu, 5 Aug 2021 08:18:28 -0700
-Message-ID: <CAMKF1squPYXQ1DV_oiWP1DYpnBuy87Rkp3WFq4CZkCgFzM5PJw@mail.gmail.com>
-Subject: Re: [PATCH] scripts/Makefile.clang: default to LLVM_IAS=1
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:SIFIVE DRIVERS" <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 8:16 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Tue, Aug 3, 2021 at 8:43 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > LLVM_IAS=1 controls enabling clang's integrated assembler via
-> > -integrated-as. This was an explicit opt in until we could enable
-> > assembler support in Clang for more architecures. Now we have support
-> > and CI coverage of LLVM_IAS=1 for all architecures except a few more
-> > bugs affecting s390 and powerpc.
-> >
-> > This commit flips the default from opt in via LLVM_IAS=1 to opt out via
-> > LLVM_IAS=0.  CI systems or developers that were previously doing builds
-> > with CC=clang or LLVM=1 without explicitly setting LLVM_IAS must now
-> > explicitly opt out via LLVM_IAS=0, otherwise they will be implicitly
-> > opted-in.
-> >
-> > This finally shortens the command line invocation when cross compiling
-> > with LLVM to simply:
-> >
-> > $ make ARCH=arm64 LLVM=1
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1434
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> > Note: base is:
-> > https://lore.kernel.org/lkml/20210802183910.1802120-1-ndesaulniers@google.com/
-> >
-> >  Documentation/kbuild/llvm.rst | 14 ++++++++------
-> >  Makefile                      |  2 +-
-> >  arch/riscv/Makefile           |  2 +-
-> >  scripts/Makefile.clang        |  6 +++---
-> >  4 files changed, 13 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-> > index f8a360958f4c..16712fab4d3a 100644
-> > --- a/Documentation/kbuild/llvm.rst
-> > +++ b/Documentation/kbuild/llvm.rst
-> > @@ -60,17 +60,14 @@ They can be enabled individually. The full list of the parameters: ::
-> >           OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump READELF=llvm-readelf \
-> >           HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld
-> >
-> > -Currently, the integrated assembler is disabled by default. You can pass
-> > -``LLVM_IAS=1`` to enable it.
-> > +Currently, the integrated assembler is enabled by default. You can pass
-> > +``LLVM_IAS=0`` to disable it.
-> >
-> >  Omitting CROSS_COMPILE
-> >  ----------------------
-> >
-> >  As explained above, ``CROSS_COMPILE`` is used to set ``--target=<triple>``.
-> >
-> > -Unless ``LLVM_IAS=1`` is specified, ``CROSS_COMPILE`` is also used to derive
-> > -``--prefix=<path>`` to search for the GNU assembler and linker.
-> > -
-> >  If ``CROSS_COMPILE`` is not specified, the ``--target=<triple>`` is inferred
-> >  from ``ARCH``.
-> >
-> > @@ -78,7 +75,12 @@ That means if you use only LLVM tools, ``CROSS_COMPILE`` becomes unnecessary.
-> >
-> >  For example, to cross-compile the arm64 kernel::
-> >
-> > -       make ARCH=arm64 LLVM=1 LLVM_IAS=1
-> > +       make ARCH=arm64 LLVM=1
-> > +
-> > +If ``LLVM_IAS=0`` is specified, ``CROSS_COMPILE`` is also used to derive
-> > +``--prefix=<path>`` to search for the GNU assembler and linker. ::
-> > +
-> > +       make ARCH=arm64 LLVM=1 LLVM_IAS=0 CROSS_COMPILE=aarch64-linux-gnu-
-> >
-> >  Supported Architectures
-> >  -----------------------
-> > diff --git a/Makefile b/Makefile
-> > index 444558e62cbc..b24b48c9ebb7 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -845,7 +845,7 @@ else
-> >  DEBUG_CFLAGS   += -g
-> >  endif
-> >
-> > -ifneq ($(LLVM_IAS),1)
-> > +ifeq ($(LLVM_IAS),0)
-> >  KBUILD_AFLAGS  += -Wa,-gdwarf-2
-> >  endif
-> >
-> > diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-> > index bc74afdbf31e..807f7c94bc6f 100644
-> > --- a/arch/riscv/Makefile
-> > +++ b/arch/riscv/Makefile
-> > @@ -41,7 +41,7 @@ endif
-> >  ifeq ($(CONFIG_LD_IS_LLD),y)
-> >         KBUILD_CFLAGS += -mno-relax
-> >         KBUILD_AFLAGS += -mno-relax
-> > -ifneq ($(LLVM_IAS),1)
-> > +ifeq ($(LLVM_IAS),0)
-> >         KBUILD_CFLAGS += -Wa,-mno-relax
-> >         KBUILD_AFLAGS += -Wa,-mno-relax
-> >  endif
->
->
->
-> Please drop these two hunks.
->
-> I will apply my patch instead.
-> https://lore.kernel.org/patchwork/patch/1472580/
->
->
->
->
->
->
-> > diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-> > index 1f4e3eb70f88..3ae63bd35582 100644
-> > --- a/scripts/Makefile.clang
-> > +++ b/scripts/Makefile.clang
-> > @@ -22,12 +22,12 @@ else
-> >  CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> >  endif # CROSS_COMPILE
-> >
-> > -ifeq ($(LLVM_IAS),1)
-> > -CLANG_FLAGS    += -integrated-as
-> > -else
-> > +ifeq ($(LLVM_IAS),0)
-> >  CLANG_FLAGS    += -no-integrated-as
-> >  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
-> >  CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-> > +else
-> > +CLANG_FLAGS    += -integrated-as
-> >  endif
-> >  CLANG_FLAGS    += -Werror=unknown-warning-option
-> >  KBUILD_CFLAGS  += $(CLANG_FLAGS)
-> >
-> > base-commit: d7a86429dbc691bf540688fcc8542cc20246a85b
-> > prerequisite-patch-id: 0d3072ecb5fd06ff6fd6ea81fe601f6c54c23910
-> > prerequisite-patch-id: 2654829756eb8a094a0ffad1679caa75a4d86619
-> > prerequisite-patch-id: a51e7885ca2376d008bbf146a5589da247806f7b
-> > --
-> > 2.32.0.554.ge1b32706d8-goog
-> >
->
->
-> When we negate a flag that is enabled by default,
-> which is a common way?
->  - set it to '0'
->  - set is to empty
->
->
-> So, I was wondering if we should support
-> not only LLVM_IAS=0 but also LLVM_IAS=.
->
-> What do you think?
+Hi Andrew,
 
-always asking for 0 or 1 is perhaps better.
+I believe the series is ready for mmotm. No known bugs, Mel found no !RT perf
+regressions in v3 [9], Mike also (details below). RT guys validated it on RT
+config and already incorporated the series in the RT tree.
 
->
->
-> --
-> Best Regards
-> Masahiro Yamada
+Thanks, Vlastimil.
+
+Changes since v3 [8]:
+* Rebase to 5.14-rc4
+* Fix unbounded percpu partial list growth reported by Sebastian Andrzej Siewior
+* Prevent spurious uninitialized local variable warning reported by Mel Gorman
+
+Changes since v2 [5]:
+* Rebase to 5.14-rc3
+* A number of fixes to the RT parts, big thanks to Mike Galbraith for testing
+  and debugging!
+  * The largest fix is to protect kmem_cache_cpu->partial by local_lock instead
+    of cmpxchg tricks, which are insufficient on RT. To avoid divergence
+    between RT and !RT, just do it everywhere. Affected mainly patch 25 and a
+    new patch 33. This also addresses a theoretical race raised earlier by Jann
+    Horn.
+* Smaller fixes reported by Sebastian Andrzej Siewior and Cyrill Gorcunov
+
+Changes since RFC v1 [1]:
+* Addressed feedback from Christoph and Mel, added their acks.
+* Finished RT conversion, adopting 2 patches from the RT tree.
+* The local_lock conversion has to sacrifice lockless fathpaths on PREEMPT_RT
+* Added some more cleanup patches to the front.
+
+This series was initially inspired by Mel's pcplist local_lock rewrite, and
+also interest to better understand SLUB's locking and the new primitives and RT
+variants and implications. It should make SLUB more preemption-friendly,
+especially for RT, hopefully without noticeable regressions, as the fast paths
+are not affected.
+
+Series is based on 5.14-rc4 and also available as a git branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=slub-local-lock-v4r0
+
+The series should now be sufficiently tested in both RT and !RT configs, mainly
+thanks to Mike. The RFC/v1 version also got basic performance screening by
+Mel that didn't show major regressions. Mike's testing with hackbench of v2 on
+!RT reported negligible differences [6]:
+
+virgin(ish) tip
+5.13.0.g60ab3ed-tip
+          7,320.67 msec task-clock                #    7.792 CPUs utilized            ( +-  0.31% )
+           221,215      context-switches          #    0.030 M/sec                    ( +-  3.97% )
+            16,234      cpu-migrations            #    0.002 M/sec                    ( +-  4.07% )
+            13,233      page-faults               #    0.002 M/sec                    ( +-  0.91% )
+    27,592,205,252      cycles                    #    3.769 GHz                      ( +-  0.32% )
+     8,309,495,040      instructions              #    0.30  insn per cycle           ( +-  0.37% )
+     1,555,210,607      branches                  #  212.441 M/sec                    ( +-  0.42% )
+         5,484,209      branch-misses             #    0.35% of all branches          ( +-  2.13% )
+
+           0.93949 +- 0.00423 seconds time elapsed  ( +-  0.45% )
+           0.94608 +- 0.00384 seconds time elapsed  ( +-  0.41% ) (repeat)
+           0.94422 +- 0.00410 seconds time elapsed  ( +-  0.43% )
+
+5.13.0.g60ab3ed-tip +slub-local-lock-v2r3
+          7,343.57 msec task-clock                #    7.776 CPUs utilized            ( +-  0.44% )
+           223,044      context-switches          #    0.030 M/sec                    ( +-  3.02% )
+            16,057      cpu-migrations            #    0.002 M/sec                    ( +-  4.03% )
+            13,164      page-faults               #    0.002 M/sec                    ( +-  0.97% )
+    27,684,906,017      cycles                    #    3.770 GHz                      ( +-  0.45% )
+     8,323,273,871      instructions              #    0.30  insn per cycle           ( +-  0.28% )
+     1,556,106,680      branches                  #  211.901 M/sec                    ( +-  0.31% )
+         5,463,468      branch-misses             #    0.35% of all branches          ( +-  1.33% )
+
+           0.94440 +- 0.00352 seconds time elapsed  ( +-  0.37% )
+           0.94830 +- 0.00228 seconds time elapsed  ( +-  0.24% ) (repeat)
+           0.93813 +- 0.00440 seconds time elapsed  ( +-  0.47% ) (repeat)
+
+RT configs showed some throughput regressions, but that's expected tradeoff for
+the preemption improvements through the RT mutex. It didn't prevent the v2 to
+be incorporated to the 5.13 RT tree [7], leading to testing exposure and
+bugfixes.
+
+Before the series, SLUB is lockless in both allocation and free fast paths, but
+elsewhere, it's disabling irqs for considerable periods of time - especially in
+allocation slowpath and the bulk allocation, where IRQs are re-enabled only
+when a new page from the page allocator is needed, and the context allows
+blocking. The irq disabled sections can then include deactivate_slab() which
+walks a full freelist and frees the slab back to page allocator or
+unfreeze_partials() going through a list of percpu partial slabs. The RT tree
+currently has some patches mitigating these, but we can do much better in
+mainline too.
+
+Patches 1-6 are straightforward improvements or cleanups that could exist
+outside of this series too, but are prerequsities.
+
+Patches 7-10 are also preparatory code changes without functional changes, but
+not so useful without the rest of the series.
+
+Patch 11 simplifies the fast paths on systems with preemption, based on
+(hopefully correct) observation that the current loops to verify tid are
+unnecessary.
+
+Patches 12-21 focus on reducing irq disabled scope in the allocation slowpath.
+
+Patch 12 moves disabling of irqs into ___slab_alloc() from its callers, which
+are the allocation slowpath, and bulk allocation. Instead these callers only
+disable preemption to stabilize the cpu. The following patches then gradually
+reduce the scope of disabled irqs in ___slab_alloc() and the functions called
+from there. As of patch 15, the re-enabling of irqs based on gfp flags before
+calling the page allocator is removed from allocate_slab(). As of patch 18,
+it's possible to reach the page allocator (in case of existing slabs depleted)
+without disabling and re-enabling irqs a single time.
+
+Pathces 22-27 reduce the scope of disabled irqs in functions related to
+unfreezing percpu partial slab.
+
+Patch 28 is preparatory. Patch 29 is adopted from the RT tree and converts the
+flushing of percpu slabs on all cpus from using IPI to workqueue, so that the
+processing isn't happening with irqs disabled in the IPI handler. The flushing
+is not performance critical so it should be acceptable.
+
+Patch 30 also comes from RT tree and makes object_map_lock RT compatible.
+
+Patches 31-32 make slab_lock irq-safe on RT where we cannot rely on having
+irq disabled from the list_lock spin lock usage.
+
+Patch 33 changes kmem_cache_cpu->partial handling in put_cpu_partial() from
+cmpxchg loop to a short irq disabled section, which is used by all other code
+modifying the field. This addresses a theoretical race scenario pointed out by
+Jann, and makes the critical section safe wrt with RT local_lock semantics
+after the conversion in patch 35.
+
+Patch 34 changes preempt disable to migrate disable, so that the nested
+list_lock spinlock is safe to take on RT. Because migrate_disable() is a
+function call even on !RT, a small set of private wrappers is introduced
+to keep using the cheaper preempt_disable() on !PREEMPT_RT configurations.
+
+As of this patch, SLUB should be compatible with RT's lock semantics, to the
+best of my knowledge.
+
+Finally, patch 35 changes irq disabled sections that protect kmem_cache_cpu
+fields in the slow paths, with a local lock. However on PREEMPT_RT it means the
+lockless fast paths can now preempt slow paths which don't expect that, so the
+local lock has to be taken also in the fast paths and they are no longer
+lockless. It's up to RT folks to decide if this is a good tradeoff.
+The patch also updates the locking documentation in the file's comment.
+
+The main results of this series:
+
+* irq disabling is only done for minimum amount of time needed to protect the
+  kmem_cache_cpu data and as part of spin lock, local lock and bit lock
+  operations to make them irq-safe
+
+* SLUB should be fully PREEMPT_RT compatible
+
+This should have obvious implications for better preemptibility, especially on RT.
+
+Some details are different than how the previous SLUB RT tree patches were
+implemented:
+
+  mm: sl[au]b: Change list_lock to raw_spinlock_t [2] - the SLAB part can be
+  dropped as a different patch restricts RT to SLUB anyway. And after this series
+  the list_lock in SLUB is never used with irqs disabled before taking the lock
+  so it doesn't have to be converted to raw_spinlock_t.
+
+  mm: slub: Move discard_slab() invocations out of IRQ-off sections [3] should be
+  unnecessary as this series does move these invocations outside irq disabled
+  sections in a different way.
+
+The remaining patches to upstream from the RT tree are small ones related to
+KConfig. The patch that restricts PREEMPT_RT to SLUB (not SLAB or SLOB) makes
+sense. The patch that disables CONFIG_SLUB_CPU_PARTIAL with PREEMPT_RT could
+perhaps be re-evaluated as the series addresses some latency issues with it.
+
+[1] https://lore.kernel.org/lkml/20210524233946.20352-1-vbabka@suse.cz/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/tree/patches/0001-mm-sl-au-b-Change-list_lock-to-raw_spinlock_t.patch?h=linux-5.12.y-rt-patches
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/tree/patches/0004-mm-slub-Move-discard_slab-invocations-out-of-IRQ-off.patch?h=linux-5.12.y-rt-patches
+[4] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/tree/patches/0005-mm-slub-Move-flush_cpu_slab-invocations-__free_slab-.patch?h=linux-5.12.y-rt-patches
+[5] https://lore.kernel.org/lkml/20210609113903.1421-1-vbabka@suse.cz/
+[6] https://lore.kernel.org/lkml/891dc24e38106f8542f4c72831d52dc1a1863ae8.camel@gmx.de
+[7] https://lore.kernel.org/linux-rt-users/87tul5p2fa.ffs@nanos.tec.linutronix.de/
+[8] https://lore.kernel.org/lkml/20210729132132.19691-1-vbabka@suse.cz/
+[9] https://lore.kernel.org/lkml/20210804120522.GD6464@techsingularity.net/
+
+Sebastian Andrzej Siewior (2):
+  mm: slub: Move flush_cpu_slab() invocations __free_slab() invocations
+    out of IRQ context
+  mm: slub: Make object_map_lock a raw_spinlock_t
+
+Vlastimil Babka (33):
+  mm, slub: don't call flush_all() from slab_debug_trace_open()
+  mm, slub: allocate private object map for debugfs listings
+  mm, slub: allocate private object map for validate_slab_cache()
+  mm, slub: don't disable irq for debug_check_no_locks_freed()
+  mm, slub: remove redundant unfreeze_partials() from put_cpu_partial()
+  mm, slub: unify cmpxchg_double_slab() and __cmpxchg_double_slab()
+  mm, slub: extract get_partial() from new_slab_objects()
+  mm, slub: dissolve new_slab_objects() into ___slab_alloc()
+  mm, slub: return slab page from get_partial() and set c->page
+    afterwards
+  mm, slub: restructure new page checks in ___slab_alloc()
+  mm, slub: simplify kmem_cache_cpu and tid setup
+  mm, slub: move disabling/enabling irqs to ___slab_alloc()
+  mm, slub: do initial checks in ___slab_alloc() with irqs enabled
+  mm, slub: move disabling irqs closer to get_partial() in
+    ___slab_alloc()
+  mm, slub: restore irqs around calling new_slab()
+  mm, slub: validate slab from partial list or page allocator before
+    making it cpu slab
+  mm, slub: check new pages with restored irqs
+  mm, slub: stop disabling irqs around get_partial()
+  mm, slub: move reset of c->page and freelist out of deactivate_slab()
+  mm, slub: make locking in deactivate_slab() irq-safe
+  mm, slub: call deactivate_slab() without disabling irqs
+  mm, slub: move irq control into unfreeze_partials()
+  mm, slub: discard slabs in unfreeze_partials() without irqs disabled
+  mm, slub: detach whole partial list at once in unfreeze_partials()
+  mm, slub: separate detaching of partial list in unfreeze_partials()
+    from unfreezing
+  mm, slub: only disable irq with spin_lock in __unfreeze_partials()
+  mm, slub: don't disable irqs in slub_cpu_dead()
+  mm, slab: make flush_slab() possible to call with irqs enabled
+  mm, slub: optionally save/restore irqs in slab_[un]lock()/
+  mm, slub: make slab_lock() disable irqs with PREEMPT_RT
+  mm, slub: protect put_cpu_partial() with disabled irqs instead of
+    cmpxchg
+  mm, slub: use migrate_disable() on PREEMPT_RT
+  mm, slub: convert kmem_cpu_slab protection to local_lock
+
+ include/linux/slub_def.h |   2 +
+ mm/slub.c                | 809 +++++++++++++++++++++++++--------------
+ 2 files changed, 531 insertions(+), 280 deletions(-)
+
+-- 
+2.32.0
+
