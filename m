@@ -2,94 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100543E1B54
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA063E1B7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241245AbhHESaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:30:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53988 "EHLO mail.kernel.org"
+        id S241508AbhHESi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:38:57 -0400
+Received: from mga01.intel.com ([192.55.52.88]:4238 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238354AbhHESaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:30:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F37660F02;
-        Thu,  5 Aug 2021 18:29:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628188186;
-        bh=g+LoOLtzde4IFS+UuVya/xo96UmrefQYwhGrlJnmR7g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Oae8wfEMxY/Am+GcbqdvZs4z6kpzYIGvpoABCoPgAfwc+xG0mYtPgO8DuZytQiy2+
-         tVQHkPC16jomktkLPV+GZ7xQsmit6MaoV3MIcZqoynjZpmWqSvEijan6dnVu+ZKihN
-         JMmTjKlXcnVEIwGho+nlSLdch262MFBCF6Sj7atY=
-Date:   Thu, 5 Aug 2021 20:29:44 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: r8188eu: remove label at the end of a
- function
-Message-ID: <YQwuGLEpq7O+P2GM@kroah.com>
-References: <20210805130750.7974-1-martin@kaiser.cx>
- <20210805145026.14572-1-martin@kaiser.cx>
+        id S241019AbhHESiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:38:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="236197431"
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="236197431"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 11:38:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="419925391"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 05 Aug 2021 11:38:33 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 7FB9D15E; Thu,  5 Aug 2021 21:31:06 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Loic Poulain <loic.poulain@linaro.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] wwan: core: Avoid returning error pointer from wwan_create_dev()
+Date:   Thu,  5 Aug 2021 21:31:00 +0300
+Message-Id: <20210805183100.49071-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210805145026.14572-1-martin@kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 04:50:26PM +0200, Martin Kaiser wrote:
-> Compilation fails for me
-> 
-> drivers/staging/r8188eu/hal/rtl8188e_dm.c: In function ‘rtl8188e_HalDmWatchDog’:
-> drivers/staging/r8188eu/hal/rtl8188e_dm.c:182:1: error: label at end of compound statement
->   182 | skip_dm:
->       | ^~~~~~~
-> 
-> Remove the label at the end of the function. Replace the jump to this label
-> with a return statement.
-> 
-> Fixes: b398ff88aa36 ("staging: r8188eu: remove return from void functions")
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
-> v2:
->  - add Fixes tag
-> 
->  drivers/staging/r8188eu/hal/rtl8188e_dm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/hal/rtl8188e_dm.c b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-> index b5f42127a751..72b3130eddd2 100644
-> --- a/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-> +++ b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-> @@ -145,7 +145,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
->  	hw_init_completed = Adapter->hw_init_completed;
->  
->  	if (!hw_init_completed)
-> -		goto skip_dm;
-> +		return;
->  
->  	fw_cur_in_ps = Adapter->pwrctrlpriv.bFwCurrentInPSMode;
->  	rtw_hal_get_hwreg(Adapter, HW_VAR_FWLPS_RF_ON, (u8 *)(&fw_ps_awake));
-> @@ -179,7 +179,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
->  		ODM_CmnInfoUpdate(&hal_data->odmpriv, ODM_CMNINFO_LINK, bLinked);
->  		ODM_DMWatchdog(&hal_data->odmpriv);
->  	}
-> -skip_dm:
-> +
->  	/*  Check GPIO to determine current RF on/off and Pbc status. */
->  	/*  Check Hardware Radio ON/OFF or not */
->  }
-> -- 
-> 2.20.1
+wwan_create_dev() is expected to return either valid pointer or NULL,
+In some cases it might return the error pointer. Prevent this by converting
+it to NULL after wwan_dev_get_by_parent().
 
-https://lore.kernel.org/r/20210805140941.9130-1-straube.linux@gmail.com
-just submitted the same thing right before you, I'll go add both
-signed-off-by as you both did the same thing...
+Fixes: 9a44c1cc6388 ("net: Add a WWAN subsystem")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/net/wwan/wwan_core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-thanks,
+diff --git a/drivers/net/wwan/wwan_core.c b/drivers/net/wwan/wwan_core.c
+index 674a81d79db3..35e10a98e774 100644
+--- a/drivers/net/wwan/wwan_core.c
++++ b/drivers/net/wwan/wwan_core.c
+@@ -160,7 +160,9 @@ static struct wwan_device *wwan_create_dev(struct device *parent)
+ 
+ 	/* If wwandev already exists, return it */
+ 	wwandev = wwan_dev_get_by_parent(parent);
+-	if (!IS_ERR(wwandev))
++	if (IS_ERR(wwandev))
++		wwandev = NULL;
++	else
+ 		goto done_unlock;
+ 
+ 	id = ida_alloc(&wwan_dev_ids, GFP_KERNEL);
+-- 
+2.30.2
 
-greg k-h
