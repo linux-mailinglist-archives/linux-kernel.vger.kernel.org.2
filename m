@@ -2,121 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10FA3E0CDA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 05:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262F33E0CDF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 05:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238548AbhHEDlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 23:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbhHEDlG (ORCPT
+        id S238571AbhHEDpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 23:45:22 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:58634
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238552AbhHEDpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 23:41:06 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCEFC061765
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 20:40:52 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id a12so2990695qtb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 20:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yBtiUC/DqJCFyQ7ZmzGjMneaNful/xPGIES5YDgZBg0=;
-        b=kihQiWwbBwUWEV5CjWsqhY6HExovObfvVrQkYJIjNnQPi1ZuACiFo6ZnS2VMCy1FTs
-         /M++ELHrNNxsI0eky/SnDkGuprUiBEAUhu4fS+oGq9TBaJiPHV8FU1BSrCUSJYYbDgJe
-         augwd8ykKjzAUTFUIIsV0T6bgk6mh7tiYSYdI=
+        Wed, 4 Aug 2021 23:45:21 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 0E4173F09E
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 03:45:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628135107;
+        bh=APPuhfsQfqQEMobjGYPZbM2beq7YPUNg/7gJvMYzqEQ=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=k8FkWpuWU6RVUROcm4UJeUpMEfhfTleKouatsYloqzfDTd74Pcmhrn5ZSlqM37nn2
+         2Z8CgQL/uM4cAGcuNyF30ImOg1UvllPEYgdVpDfKgm5cYohPFCsBtmau+PkbrLmtTh
+         eXkq514pru53dFZp7+z6gPVeizJVT93TS0QY0C1IVn4yq5nhPsJjOxOTmY33aAUGxz
+         sKSbWAeJ8Petu1M2Bd9AJOZ8ifFxmecpH8SZYtzu8MkaJJEh1He+qa7jaRNAVrBtIJ
+         dhPzEqi1B5C4cmutra0f/BSoNL2uEAdTsURUVpqhG9V2UaVWXzGrPxIruvoVLk/UCD
+         ld856R9E++8lA==
+Received: by mail-ed1-f71.google.com with SMTP id l3-20020aa7c3030000b02903bccf1897f9so2465289edq.19
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 20:45:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yBtiUC/DqJCFyQ7ZmzGjMneaNful/xPGIES5YDgZBg0=;
-        b=SvGXfDgxDdHyMxN5cY9NncLu0NMpAkC1SpwetfOAZIK5iiAt508POGKbJ6/Wt26jwf
-         lUT557/o/H1659NHF388iVnL1prkuZPwhm3BRcAeovYu8dSDFOpGi77IzaLRRVQQV8bg
-         dYblLbEMxL0ltTeBYLDT5OIETZYR1+YkpJG3eA7teT5uAr/2UcQRtylh/zfto2nYCw65
-         SQ/z4dVvyq1ihWd8ZxyeL+VY993R29PLQ8zSmls9Wbs1njU5V93UpHXTmVSOwWqXOaHf
-         TOkwnOwup2X2LpGHlghwZBVX7aMx11Lm7o77EQ66AkRTragxIgSA8DAa8i/fdLdoMCtX
-         XMZw==
-X-Gm-Message-State: AOAM530N1JuJ5gNMaB+W5o24HdKKNWOvKFxk7booehCLwLV0FYznfbNk
-        h5yT8xXlpua35hb+ZiznWesFPyYPJUV2uY0jXDGTJA==
-X-Google-Smtp-Source: ABdhPJxe+N69yLZ01P7SKYrFtU+HLW34drGDN+erTrJ2h39C/3stVphQDQjtsWq75Gl0wDxTucOTk5Pd3fRtIaKwUU8=
-X-Received: by 2002:a05:622a:209:: with SMTP id b9mr2775066qtx.136.1628134851882;
- Wed, 04 Aug 2021 20:40:51 -0700 (PDT)
+        bh=APPuhfsQfqQEMobjGYPZbM2beq7YPUNg/7gJvMYzqEQ=;
+        b=nkH2oMqVCk+aBrqPCdInLHzUIiDCQ4hrYR//eS1KN/daU0Mus16B75ZrIBars3DKKg
+         PHeZXQes+iYZYK8Ic7Slk9GvzdYHhKaiTYnrOhcHfq4BRR4+PIENvR+OAQ58qRuIJeG+
+         03S9NAc1WA3jVX6Dpdrjml1CxTTy9i7rO705KUKPr8z3wzDIzoOyO7aH8LcLlSGUPkhP
+         mmOhvDPq6tCZ6rPHTEV9j61RJZUB0tG2IfqzB5ysyvFsUL1FHToz8wbVQ3vOivadFn41
+         HUoLFnWN/6lyssT+vBvLQeTEr708GLc8xhtjmLvZ2F+m85XEC3o/dTWbOI9z3n26ASy1
+         mYLw==
+X-Gm-Message-State: AOAM531UR0VpVV99kpD4+OJOUpddQhAUSFkh8bBfQByGwuSPibvjPcCv
+        8ybEsYywHQp2D+6bOT7yiEoJz9sjkDOuwMnLqkmFuQ1WIlWYVndERIAl8VrcIdIfs3eWOLjCvwR
+        tM/FZtnKMWPPqLoKl7zEa2a/uNWtUc3qpCZDbfReMhgvAtcOViQlUuNcytA==
+X-Received: by 2002:a17:906:4e52:: with SMTP id g18mr2646044ejw.432.1628135106722;
+        Wed, 04 Aug 2021 20:45:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxJs7u574RmyzXvUoIjt5iNmjnIw4M3B7uVx7H1vvmyilGjodSKKXJCaZP1PbcOo+n1gu13DGiBpmXYHSHP1GI=
+X-Received: by 2002:a17:906:4e52:: with SMTP id g18mr2646023ejw.432.1628135106429;
+ Wed, 04 Aug 2021 20:45:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210709033502.3545820-1-stevensd@google.com> <20210709033502.3545820-2-stevensd@google.com>
- <20210802133037.GB28547@willie-the-truck>
-In-Reply-To: <20210802133037.GB28547@willie-the-truck>
-From:   David Stevens <stevensd@chromium.org>
-Date:   Thu, 5 Aug 2021 12:40:40 +0900
-Message-ID: <CAD=HUj6BoCZ31Dd-jeWKKbmt-jSWXiS2ZLwrFg40FFdPm0y7cA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] dma-iommu: fix sync_sg with swiotlb
-To:     Will Deacon <will@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210514071452.25220-1-kai.heng.feng@canonical.com>
+ <20210802030538.2023-1-hdanton@sina.com> <CAAd53p4NO3KJkn2Zp=hxQOtR8vynkJpcPmNtwv2R6z=zei056Q@mail.gmail.com>
+ <20210803074722.2383-1-hdanton@sina.com> <CAAd53p6wi7pk6yFgTnG-JDd9e4zCn3F40bioYyGbAqYg5kMHZQ@mail.gmail.com>
+ <20210805030024.2603-1-hdanton@sina.com>
+In-Reply-To: <20210805030024.2603-1-hdanton@sina.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 5 Aug 2021 11:44:50 +0800
+Message-ID: <CAAd53p439uW9D1rK07JUQFhVfs1FCvm_rECExp0JmzFHB7dGNg@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: Shutdown controller after workqueues are
+ flushed or cancelled
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Bluez <linux-bluetooth@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 10:30 PM Will Deacon <will@kernel.org> wrote:
+On Thu, Aug 5, 2021 at 11:00 AM Hillf Danton <hdanton@sina.com> wrote:
 >
-> On Fri, Jul 09, 2021 at 12:34:59PM +0900, David Stevens wrote:
-> > From: David Stevens <stevensd@chromium.org>
+> On Wed, 4 Aug 2021 22:35:43 +0800 Kai-Heng Feng wrote:
+> >On Tue, Aug 3, 2021 at 3:47 PM Hillf Danton <hdanton@sina.com> wrote:
+> >>
+> >> On Tue, 3 Aug 2021 14:45:07 +0800 Kai-Heng Feng wrote:
+> >> >On Mon, Aug 2, 2021 at 11:05 AM Hillf Danton <hdanton@sina.com> wrote:
+> >> >>
+> >> >> Given the skb_get in hci_req_sync_complete makes it safe to free skb on
+> >> >> driver side, I doubt this patch is the correct fix as it is.
+> >> >
+> >> >Some workqueues are still active.
+> >> >The shutdown() should be called at least after hci_request_cancel_all().
+> >>
+> >> What is muddy then is how active workqueues prevent skb_get from protecting
+> >> kfree_skb. Can you spot what workqueue it is?
 > >
-> > The is_swiotlb_buffer function takes the physical address of the swiotlb
-> > buffer, not the physical address of the original buffer. The sglist
-> > contains the physical addresses of the original buffer, so for the
-> > sync_sg functions to work properly when a bounce buffer might have been
-> > used, we need to use iommu_iova_to_phys to look up the physical address.
-> > This is what sync_single does, so call that function on each sglist
-> > segment.
-> >
-> > The previous code mostly worked because swiotlb does the transfer on map
-> > and unmap. However, any callers which use DMA_ATTR_SKIP_CPU_SYNC with
-> > sglists or which call sync_sg would not have had anything copied to the
-> > bounce buffer.
-> >
-> > Fixes: 82612d66d51d ("iommu: Allow the dma-iommu api to use bounce buffers")
-> > Signed-off-by: David Stevens <stevensd@chromium.org>
-> > ---
-> >  drivers/iommu/dma-iommu.c | 26 +++++++++++++-------------
-> >  1 file changed, 13 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> > index 7bcdd1205535..eac65302439e 100644
-> > --- a/drivers/iommu/dma-iommu.c
-> > +++ b/drivers/iommu/dma-iommu.c
-> > @@ -811,14 +811,14 @@ static void iommu_dma_sync_sg_for_cpu(struct device *dev,
-> >       if (dev_is_dma_coherent(dev) && !dev_is_untrusted(dev))
-> >               return;
-> >
-> > -     for_each_sg(sgl, sg, nelems, i) {
-> > -             if (!dev_is_dma_coherent(dev))
-> > -                     arch_sync_dma_for_cpu(sg_phys(sg), sg->length, dir);
-> > -
-> > -             if (is_swiotlb_buffer(sg_phys(sg)))
-> > +     if (dev_is_untrusted(dev))
-> > +             for_each_sg(sgl, sg, nelems, i)
-> > +                     iommu_dma_sync_single_for_cpu(dev, sg_dma_address(sg),
-> > +                                                   sg->length, dir);
-> > +     else
-> > +             for_each_sg(sgl, sg, nelems, i)
-> >                       swiotlb_sync_single_for_cpu(dev, sg_phys(sg),
-> >                                                   sg->length, dir);
+> >I managed to reproduce the issue with another kernel splat:
+> >------------[ cut here ]------------
+> >kernel BUG at mm/slub.c:321!
+> >invalid opcode: 0000 [#1] SMP NOPTI
+> >CPU: 2 PID: 2208 Comm: kworker/u9:3 Not tainted 5.14.0-rc4+ #16
+> >Hardware name: HP HP ProBook 650 G8 Notebook PC/87ED, BIOS T74 Ver.
+> >01.03.04 01/07/2021
+> >Workqueue: hci0 discov_update [bluetooth]
+> >RIP: 0010:__slab_free+0x20c/0x3a0
+> >Code: 00 44 0f b6 54 24 1a 8b 74 24 14 44 0f b6 4c 24 1b 44 8b 44 24
+> >1c 48 89 44 24 08 48 8b 54 24 20 48 8b 7c 24 28 e9 ad fe ff ff <0f> 0b
+> >49 3b 54 24 28 0f 85 6b ff ff ff 49 89 5c 24 20 49 89 4c 24
+> >RSP: 0018:ffffaa0e4164fc50 EFLAGS: 00010246
+> >RAX: ffff9cc9a217e668 RBX: ffff9cc9a217e600 RCX: ffff9cc9a217e600
+> >RDX: 000000008010000e RSI: ffffd09044885f80 RDI: ffff9cc980e96500
+> >RBP: ffffaa0e4164fd00 R08: 0000000000000001 R09: ffffffff885b3a4e
+> >R10: ffff9cc999aab800 R11: ffff9cc9a217e600 R12: ffffd09044885f80
+> >R13: ffff9cc9a217e600 R14: ffff9cc980e96500 R15: ffff9cc9a217e600
+> >FS:  0000000000000000(0000) GS:ffff9cca2b900000(0000) knlGS:0000000000000000
+> >CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >CR2: 00007ffe164d5b98 CR3: 000000013f410002 CR4: 0000000000770ee0
+> >PKRU: 55555554
+> >Call Trace:
+> > ? psi_task_switch+0xc3/0x1e0
+> > ? __switch_to_asm+0x36/0x70
+> > ? skb_free_head+0x67/0x80
+> > kmem_cache_free+0x370/0x3d0
+> > ? kfree_skbmem+0x4e/0x90
+> > kfree_skbmem+0x4e/0x90
+> > kfree_skb+0x47/0xb0
+> > __hci_req_sync+0x134/0x2a0 [bluetooth]
+> > ? wait_woken+0x70/0x70
+> > discov_update+0x2ae/0x310 [bluetooth]
+> > process_one_work+0x21d/0x3c0
+> > worker_thread+0x53/0x420
+> > ? process_one_work+0x3c0/0x3c0
+> > kthread+0x127/0x150
+> > ? set_kthread_struct+0x50/0x50
+> > ret_from_fork+0x1f/0x30
 >
-> Doesn't this skip arch_sync_dma_for_cpu() for non-coherent trusted devices?
+> [...]
+>
+> >
+> >So hci_request_cancel_all() -> cancel_work_sync(&hdev->discov_update)
+> >and can prevent the race from happening.
+>
+> Given
+>
+> __hci_req_sync
+>   err = hci_req_run_skb(&req, hci_req_sync_complete);
+>   kfree_skb(hdev->req_skb);
+>
+> hci_req_sync_complete
+>   if (skb)
+>         hdev->req_skb = skb_get(skb);
+>
+> once more skb_get makes the above race hard to understand, though it should
+> better check error before freeing skb there to avoid blind free.
+>
+> >
+> >And the kernel splat is just one symptom of the issue, most of the
+>
+> It fails to support your reasoning so far.
 
-Whoops, this was supposed to be a call to arch_sync_dma_for_cpu, not
-to swiotlb_sync_single_for_cpu. Similar to the sync_sg_for_device
-case.
+How? Most of the time the BT controller can't be brought up again
+after shutdown(), and we need to stop other activities before that.
+What other reasoning is expected?
 
-> Why not skip the extra dev_is_untrusted(dev) call here and just call
-> iommu_dma_sync_single_for_cpu() for each entry regardless?
+Kai-Heng
 
-iommu_dma_sync_single_for_cpu calls iommu_iova_to_phys to translate
-the dma_addr_t to a phys_addr_t. Since the physical address is readily
-available, I think it's better to avoid that extra work.
-
-> Will
+>
+> >time it's just "Bluetooth: hci0: HCI reset during shutdown failed" in
+> >dmesg.
+> >
+> >Kai-Heng
+>
+>
+> +++ x/net/bluetooth/hci_request.c
+> @@ -257,8 +257,10 @@ int __hci_req_sync(struct hci_dev *hdev,
+>                 break;
+>         }
+>
+> -       kfree_skb(hdev->req_skb);
+> -       hdev->req_skb = NULL;
+> +       if (!err) {
+> +               kfree_skb(hdev->req_skb);
+> +               hdev->req_skb = NULL;
+> +       }
+>         hdev->req_status = hdev->req_result = 0;
+>
+>         bt_dev_dbg(hdev, "end: err %d", err);
