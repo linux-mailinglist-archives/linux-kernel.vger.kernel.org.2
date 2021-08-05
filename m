@@ -2,132 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2423E1500
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F703E1501
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241460AbhHEMqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:46:39 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:12456 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240237AbhHEMqi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:46:38 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GgStv3bbkzcl9Q;
-        Thu,  5 Aug 2021 20:42:47 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 20:46:22 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 20:46:21 +0800
-Subject: Re: [PATCH v2 1/3] vmalloc: Choose a better start address in
- vm_area_register_early()
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     Will Deacon <will@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kasan-dev@googlegroups.com>,
-        <linux-mm@kvack.org>
-References: <20210720025105.103680-1-wangkefeng.wang@huawei.com>
- <20210720025105.103680-2-wangkefeng.wang@huawei.com>
- <20210801152311.GB28489@arm.com>
- <0de87be6-7041-c58b-a01f-3d6e3333c6f0@huawei.com>
- <20210804111402.GB4857@arm.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <d2280ab3-2c31-7525-b03d-b4717273b2c3@huawei.com>
-Date:   Thu, 5 Aug 2021 20:46:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S241466AbhHEMqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:46:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241470AbhHEMqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 08:46:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D76F5601FC;
+        Thu,  5 Aug 2021 12:46:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628167591;
+        bh=Mn/G0KCkUMAJFwHK0RFSgD6IFurZnc/p5na5NyaXLjw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ulhTEQGa9uWD4LYg1sl9gveYCt+jx8wegvx7A0EOUFxsNBEpBvN9XDOiJBJxUPk42
+         OAThkChfsiwV5Pg7XdQuVeHXwgkUTeKhlIknzl3iN6CKR7WS74VLx4x1Z7TDtn0fTS
+         vwSZQvMcePdZMmdUOGRukAy8tA7bv8AswLhTaOxo=
+Date:   Thu, 5 Aug 2021 14:46:29 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: Re: [PATCH 00/15] staging: r8188eu: remove core dir RT_TRACE calls
+Message-ID: <YQvdpUzKztxFNlvb@kroah.com>
+References: <20210801190437.82017-1-phil@philpotter.co.uk>
+ <YQvAyd2meIE8btpR@kroah.com>
+ <CAA=Fs0mViTb_vys9t1DKhFW-1fXxhLRuJM8o=BWqT6MrY9BXsQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210804111402.GB4857@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA=Fs0mViTb_vys9t1DKhFW-1fXxhLRuJM8o=BWqT6MrY9BXsQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 05, 2021 at 01:37:06PM +0100, Phillip Potter wrote:
+> On Thu, 5 Aug 2021 at 11:43, Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Sun, Aug 01, 2021 at 08:04:22PM +0100, Phillip Potter wrote:
+> > > This series removes all RT_TRACE calls from code within the core directory.
+> > >
+> > > Phillip Potter (15):
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_cmd.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_pwrctrl.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_wlan_util.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_ieee80211.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_io.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_ioctl_set.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_mlme.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_mlme_ext.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_mp.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_security.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_sta_mgt.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_xmit.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_led.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_mp_ioctl.c
+> > >   staging: r8188eu: remove RT_TRACE calls from core/rtw_recv.c
+> >
+> > I applied the patches here that I could, others conflicted with other
+> > changes I have taken recently.  Can you rebase and resend the remaining
+> > ones now?
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> Dear Greg,
+> 
+> Many thanks, and of course - will be this evening though after work
+> though (BST). Hope that's ok.
 
-On 2021/8/4 19:14, Catalin Marinas wrote:
-> On Mon, Aug 02, 2021 at 10:39:04AM +0800, Kefeng Wang wrote:
->> On 2021/8/1 23:23, Catalin Marinas wrote:
->>> On Tue, Jul 20, 2021 at 10:51:03AM +0800, Kefeng Wang wrote:
->>>> There are some fixed locations in the vmalloc area be reserved
->>>> in ARM(see iotable_init()) and ARM64(see map_kernel()), but for
->>>> pcpu_page_first_chunk(), it calls vm_area_register_early() and
->>>> choose VMALLOC_START as the start address of vmap area which
->>>> could be conflicted with above address, then could trigger a
->>>> BUG_ON in vm_area_add_early().
->>>>
->>>> Let's choose the end of existing address range in vmlist as the
->>>> start address instead of VMALLOC_START to avoid the BUG_ON.
->>>>
->>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->>>> ---
->>>>    mm/vmalloc.c | 8 +++++---
->>>>    1 file changed, 5 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
->>>> index d5cd52805149..a98cf97f032f 100644
->>>> --- a/mm/vmalloc.c
->>>> +++ b/mm/vmalloc.c
->>>> @@ -2238,12 +2238,14 @@ void __init vm_area_add_early(struct vm_struct *vm)
->>>>     */
->>>>    void __init vm_area_register_early(struct vm_struct *vm, size_t align)
->>>>    {
->>>> -	static size_t vm_init_off __initdata;
->>>> +	unsigned long vm_start = VMALLOC_START;
->>>> +	struct vm_struct *tmp;
->>>>    	unsigned long addr;
->>>> -	addr = ALIGN(VMALLOC_START + vm_init_off, align);
->>>> -	vm_init_off = PFN_ALIGN(addr + vm->size) - VMALLOC_START;
->>>> +	for (tmp = vmlist; tmp; tmp = tmp->next)
->>>> +		vm_start = (unsigned long)tmp->addr + tmp->size;
->>>> +	addr = ALIGN(vm_start, align);
->>>>    	vm->addr = (void *)addr;
->>>>    	vm_area_add_early(vm);
->>> Is there a risk of breaking other architectures? It doesn't look like to
->>> me but I thought I'd ask.
->> Before this patch, vm_init_off is to record the offset from VMALLOC_START,
->>
->> but it use VMALLOC_START as start address on the function
->> vm_area_register_early()
->>
->> called firstly,  this will cause the BUG_ON.
->>
->> With this patch, the most important change is that we choose the start
->> address via
->>
->> dynamic calculate the 'start' address by traversing the list.
->>
->> [wkf@localhost linux-next]$ git grep vm_area_register_early
->> arch/alpha/mm/init.c: vm_area_register_early(&console_remap_vm, PAGE_SIZE);
->> arch/x86/xen/p2m.c:     vm_area_register_early(&vm, PMD_SIZE *
->> PMDS_PER_MID_PAGE);
->> mm/percpu.c:    vm_area_register_early(&vm, PAGE_SIZE);
->> [wkf@localhost linux-next]$ git grep vm_area_add_early
->> arch/arm/mm/ioremap.c:  vm_area_add_early(vm);
->> arch/arm64/mm/mmu.c:    vm_area_add_early(vma);
->>
->> x86/alpha won't call vm_area_add_early(), only arm64 could call both vm_area_add_early()
->> and  vm_area_register_early() when this patchset is merged. so it won't break other architectures.
-> Thanks for checking.
->
->>> Also, instead of always picking the end, could we search for a range
->>> that fits?
->> We only need a space in vmalloc range,  using end or a range in the middle
->> is not different.
-> I was thinking of making it more future-proof in case one registers a
-> vm area towards the end of the range. It's fairly easy to pick a range
-> in the middle now that you are adding a list traversal.
-ok,  will chose a suitable hole in the vmalloc range.
->
+Sure, no rush, we have no deadlines here :)
+
+thanks,
+
+greg k-h
