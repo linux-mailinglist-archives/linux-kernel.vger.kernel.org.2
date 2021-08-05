@@ -2,84 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6203E1DC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 23:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D26913E1DD6
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 23:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241903AbhHEVM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 17:12:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:52430 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241884AbhHEVMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 17:12:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C262813D5;
-        Thu,  5 Aug 2021 14:12:09 -0700 (PDT)
-Received: from u200856.usa.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 225F83F719;
-        Thu,  5 Aug 2021 14:12:09 -0700 (PDT)
-From:   Jeremy Linton <jeremy.linton@arm.com>
-To:     linux-pci@vger.kernel.org
-Cc:     lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
-        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jeremy Linton <jeremy.linton@arm.com>
-Subject: [PATCH 3/3] PCI/ACPI: Add new quirk detection, enable bcm2711
-Date:   Thu,  5 Aug 2021 16:12:00 -0500
-Message-Id: <20210805211200.491275-4-jeremy.linton@arm.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210805211200.491275-1-jeremy.linton@arm.com>
-References: <20210805211200.491275-1-jeremy.linton@arm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S241961AbhHEVYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 17:24:51 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:46466 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhHEVYr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 17:24:47 -0400
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+        by linux.microsoft.com (Postfix) with ESMTPSA id CD703209F5E1;
+        Thu,  5 Aug 2021 14:24:32 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CD703209F5E1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1628198672;
+        bh=0fsoNf54k8+IhiUVxg/cIDHFce/dbXd7b9LfIZWeFhk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TbWe4vRNzD8r0McIPtrjqwc99FVOxfuRoY5yt6IWvmVUSOoD7ENRxUKEV4WHgetpg
+         2DOhYNKRQB3KodT+6+vLlE+AGdodmgTcETbdy5hifycY5yEIGY3hM62h07+yv+lHUe
+         V8YdOQEMNuSwWetEH8XVLXrUJdRNzFH3DjWyrH1o=
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+To:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org, mikelley@microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        wei.liu@kernel.org, vkuznets@redhat.com, ligrassi@microsoft.com,
+        kys@microsoft.com, sthemmin@microsoft.com,
+        anbelski@linux.microsoft.com
+Subject: [PATCH v2 00/19] Microsoft Hypervisor root partition ioctl interface
+Date:   Thu,  5 Aug 2021 14:23:42 -0700
+Message-Id: <1628198641-791-1-git-send-email-nunodasneves@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have a bcm2711 quirk, we need to be able to
-detect it when the MCFG is missing. Use a namespace
-property as an alternative to the MCFG OEM.
+This patch series provides a userspace interface for creating and running guest
+virtual machines while running on the Microsoft Hypervisor [0].
 
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
----
- drivers/acpi/pci_mcfg.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Since managing guest machines can only be done when Linux is the root partition,
+this series depends on Wei Liu's patch series merged in 5.12:
+https://lore.kernel.org/linux-hyperv/20210203150435.27941-1-wei.liu@kernel.org/
 
-diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
-index 53cab975f612..7d77fc72c2a4 100644
---- a/drivers/acpi/pci_mcfg.c
-+++ b/drivers/acpi/pci_mcfg.c
-@@ -169,6 +169,9 @@ static struct mcfg_fixup mcfg_quirks[] = {
- 	ALTRA_ECAM_QUIRK(1, 13),
- 	ALTRA_ECAM_QUIRK(1, 14),
- 	ALTRA_ECAM_QUIRK(1, 15),
-+
-+	{ "bcm2711", "", 0, 0, MCFG_BUS_ANY, &bcm2711_pcie_ops,
-+	  DEFINE_RES_MEM(0xFD500000, 0xA000) },
- };
- 
- static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
-@@ -198,8 +201,19 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
- 	u16 segment = root->segment;
- 	struct resource *bus_range = &root->secondary;
- 	struct mcfg_fixup *f;
-+	const char *soc;
- 	int i;
- 
-+	/*
-+	 * This could be a machine with a PCI/SMC conduit,
-+	 * which means it doens't have MCFG. Get the machineid from
-+	 * the namespace definition instead.
-+	 */
-+	if (!fwnode_property_read_string(acpi_fwnode_handle(root->device),
-+					 "linux,pcie-quirk", &soc)) {
-+		memcpy(mcfg_oem_id, soc, ACPI_OEM_ID_SIZE);
-+	}
-+
- 	for (i = 0, f = mcfg_quirks; i < ARRAY_SIZE(mcfg_quirks); i++, f++) {
- 		if (pci_mcfg_quirk_matches(f, segment, bus_range)) {
- 			if (f->cfgres.start)
+The first two patches provide some helpers for converting hypervisor status
+codes to linux error codes, and printing hypervisor status codes to dmesg for
+debugging.
+
+Hyper-V related headers asm-generic/hyperv-tlfs.h and x86/asm/hyperv-tlfs.h are
+split into uapi and non-uapi. The uapi versions contain structures used in both
+the ioctl interface and the kernel.
+
+The mshv API is introduced in drivers/hv/mshv_main.c. As each interface is
+introduced, documentation is added in Documentation/virt/mshv/api.rst.
+The API is file-desciptor based, like KVM. The entry point is /dev/mshv.
+
+/dev/mshv ioctls:
+MSHV_CHECK_EXTENSION
+MSHV_CREATE_PARTITION
+
+Partition (vm) ioctls:
+MSHV_MAP_GUEST_MEMORY, MSHV_UNMAP_GUEST_MEMORY
+MSHV_INSTALL_INTERCEPT
+MSHV_ASSERT_INTERRUPT
+MSHV_GET_PARTITION_PROPERTY, MSHV_SET_PARTITION_PROPERTY
+MSHV_CREATE_VP
+
+Vp (vcpu) ioctls:
+MSHV_GET_VP_REGISTERS, MSHV_SET_VP_REGISTERS
+MSHV_RUN_VP
+MSHV_GET_VP_STATE, MSHV_SET_VP_STATE
+MSHV_VP_TRANSLATE_GVA
+mmap() (register page)
+
+[0] Hyper-V is more well-known, but it really refers to the whole stack
+    including the hypervisor and other components that run in Windows kernel
+    and userspace.
+
+Changes since v1:
+1. Correct mshv_dev mode to octal 0600
+2. Fix bug in mshv_vp_iotcl_run - correctly set suspend registers on early exit
+3. Fix bug in translate gva patch, provided by Anatol Belski
+4. Address comments from Wei Liu, Sunil Muthuswamy, and Vitaly Kuznetsov
+5. Run checkpatch.pl - fix whitespace and other style issues
+
+Changes since RFC:
+1. Moved code from virt/mshv to drivers/hv
+2. Split hypercall helper functions and synic code to hv_call.c and hv_synic.c
+3. MSHV_REQUEST_VERSION ioctl replaced with MSHV_CHECK_EXTENSION
+3. Numerous suggestions, fixes, style changes, etc from Michael Kelley, Vitaly
+   Kuznetsov, Wei Liu, and Vineeth Pillai
+4. Added patch to enable hypervisor enlightenments on partition creation
+5. Added Wei Liu's patch for GVA to GPA translation
+
+Nuno Das Neves (18):
+  x86/hyperv: convert hyperv statuses to linux error codes
+  x86/hyperv: convert hyperv statuses to strings
+  drivers/hv: minimal mshv module (/dev/mshv/)
+  drivers/hv: check extension ioctl
+  drivers/hv: create partition ioctl
+  drivers/hv: create, initialize, finalize, delete partition hypercalls
+  drivers/hv: withdraw memory hypercall
+  drivers/hv: map and unmap guest memory
+  drivers/hv: create vcpu ioctl
+  drivers/hv: get and set vcpu registers ioctls
+  drivers/hv: set up synic pages for intercept messages
+  drivers/hv: run vp ioctl and isr
+  drivers/hv: install intercept ioctl
+  drivers/hv: assert interrupt ioctl
+  drivers/hv: get and set vp state ioctls
+  drivers/hv: mmap vp register page
+  drivers/hv: get and set partition property ioctls
+  drivers/hv: Add enlightenment bits to create partition ioctl
+
+Wei Liu (1):
+  drivers/hv: Translate GVA to GPA
+
+ .../userspace-api/ioctl/ioctl-number.rst      |    2 +
+ Documentation/virt/mshv/api.rst               |  173 +++
+ arch/x86/hyperv/Makefile                      |    1 +
+ arch/x86/hyperv/hv_init.c                     |    2 +-
+ arch/x86/hyperv/hv_proc.c                     |   51 +-
+ arch/x86/include/asm/hyperv-tlfs.h            |   15 +-
+ arch/x86/include/asm/mshyperv.h               |    1 +
+ arch/x86/include/uapi/asm/hyperv-tlfs.h       | 1274 +++++++++++++++++
+ arch/x86/kernel/cpu/mshyperv.c                |   16 +
+ drivers/hv/Kconfig                            |   18 +
+ drivers/hv/Makefile                           |    3 +
+ drivers/hv/hv_call.c                          |  742 ++++++++++
+ drivers/hv/hv_synic.c                         |  181 +++
+ drivers/hv/mshv.h                             |  120 ++
+ drivers/hv/mshv_main.c                        | 1166 +++++++++++++++
+ include/asm-generic/hyperv-tlfs.h             |  354 +++--
+ include/asm-generic/mshyperv.h                |    4 +
+ include/linux/mshv.h                          |   61 +
+ include/uapi/asm-generic/hyperv-tlfs.h        |  242 ++++
+ include/uapi/linux/mshv.h                     |  117 ++
+ 20 files changed, 4398 insertions(+), 145 deletions(-)
+ create mode 100644 Documentation/virt/mshv/api.rst
+ create mode 100644 arch/x86/include/uapi/asm/hyperv-tlfs.h
+ create mode 100644 drivers/hv/hv_call.c
+ create mode 100644 drivers/hv/hv_synic.c
+ create mode 100644 drivers/hv/mshv.h
+ create mode 100644 drivers/hv/mshv_main.c
+ create mode 100644 include/linux/mshv.h
+ create mode 100644 include/uapi/asm-generic/hyperv-tlfs.h
+ create mode 100644 include/uapi/linux/mshv.h
+
 -- 
-2.31.1
+2.23.4
 
