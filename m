@@ -2,275 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5453E1A12
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C4B3E1A15
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237881AbhHERIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:08:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53209 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236146AbhHERIr (ORCPT
+        id S238019AbhHERJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232905AbhHERJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:08:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628183312;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cmH6Fr1v5dKikdp8IvedcWQSNzuiqYnvmJ72YO3MhX0=;
-        b=SMwRP5ZLK4SwjPvqfucMPkZ5JNJk56IS+yhPhPgM9rXMnQ+bWFxwe0I1yWoU7BGdTr9P+S
-        VufOYltyb2hMO9VtHQseu1Uf9Eoro6nqDW+G6pcaCvxwgVM/7nOfAyDC+c4yPdvWcrKJ9C
-        3ESnCF5MCH/mfyVAI50RAlLTqxUziCk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-129-xi5TlknyO4Kf0UWmzL52HQ-1; Thu, 05 Aug 2021 13:08:31 -0400
-X-MC-Unique: xi5TlknyO4Kf0UWmzL52HQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A25793920;
-        Thu,  5 Aug 2021 17:08:30 +0000 (UTC)
-Received: from [172.30.41.16] (ovpn-113-77.phx2.redhat.com [10.3.113.77])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1691F19C87;
-        Thu,  5 Aug 2021 17:08:22 +0000 (UTC)
-Subject: [PATCH 7/7] vfio/pci: Remove map-on-fault behavior
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     alex.williamson@redhat.com
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, jgg@nvidia.com, peterx@redhat.com
-Date:   Thu, 05 Aug 2021 11:08:21 -0600
-Message-ID: <162818330190.1511194.10498114924408843888.stgit@omen>
-In-Reply-To: <162818167535.1511194.6614962507750594786.stgit@omen>
-References: <162818167535.1511194.6614962507750594786.stgit@omen>
-User-Agent: StGit/1.0-8-g6af9-dirty
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Thu, 5 Aug 2021 13:09:18 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6E0C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 10:09:04 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id b9-20020a5b07890000b0290558245b7eabso6866202ybq.10
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 10:09:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=+zx+R/aH4qWZGyHwkR7SYHeyFa/mTVIB2xoTRcOL2kA=;
+        b=X15w+hbY202HoRF2BgKV3TBwnxFPKHmSRGo/2/e2OazC8uosEGVOuMtTJ7K174GU7M
+         D5q/EkjLW+LFcLEoOU1vGdktpk/6jBrc5xiF8KGLF7n4hAk+3ns+2p+mHOzjhdvfbNFW
+         xZr2RaRnDl9QvEXzqUCY2lCyXbYuboWR/f/rURbhmljhhQ2jYEehy98BYIe96/oMvbYp
+         XUWxoX6vFc568Z1Hv7aPodzf9B8VyxoT6xAEPNBShApOwPWx7ob6KuLXZtCNjOykyRbc
+         hXuuGNvCpl0VitcwSc1J6/gnC3rjzkFzhy1f+b+OjwwoMxh+TN5YuehviRQb4N1CoKzu
+         DKTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=+zx+R/aH4qWZGyHwkR7SYHeyFa/mTVIB2xoTRcOL2kA=;
+        b=jVEzCoem4GhE9cQWHf/cee8y3Iq4O7TO2EcRuKh3eJoEc5otxawN9CTRQxRAf4x2OD
+         4q80JWmbu8ZFR97zePhegAIa/LinMbfF3lDpqOf+w+tJqWt30dHmVnrVZIL/luNktxT+
+         lnNgZZ4+CkbZSf1O9neRRpV82VtU5Lku0DMwRFbqsIhLJ9OYYgTQpLteWA6GRMjRq7EA
+         BsRvfh84zxOIcD62EyYuUZZvC4zHrQpLAEESp26JFQMybGegC7ddEgIqolwZHZD1N2pj
+         0LLStxApMAZO9amEgJhGqtNJTHcfoMKDRKJ3J0gYwvXTkL7CTfyj5Z4+gpSwQ/sLmP8t
+         aoOw==
+X-Gm-Message-State: AOAM533a4lrTkTVv8oQMGrTeWjnTEp0j24jO1/eKYnEni8RtYwAeZgAJ
+        XNi2Hz/eexn2h79Wc8RP4WrADWzuG+4=
+X-Google-Smtp-Source: ABdhPJx0EeQxp7X7u3YJ02gccOazao9ljKDcwhBexeAx/YYHjWfxyBmLkqV4o6hkTPQ++gsLYD6uurwPeRc=
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:bc94:77da:4200:8d37])
+ (user=surenb job=sendgmr) by 2002:a25:4fc4:: with SMTP id d187mr7092225ybb.245.1628183343179;
+ Thu, 05 Aug 2021 10:09:03 -0700 (PDT)
+Date:   Thu,  5 Aug 2021 10:08:58 -0700
+Message-Id: <20210805170859.2389276-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+Subject: [PATCH v7 1/2] mm: introduce process_mrelease system call
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
+        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
+        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
+        hch@infradead.org, oleg@redhat.com, david@redhat.com,
+        jannh@google.com, shakeelb@google.com, luto@kernel.org,
+        christian.brauner@ubuntu.com, fweimer@redhat.com, jengelh@inai.de,
+        timmurray@google.com, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With vfio_device_io_remap_mapping_range() we can repopulate vmas with
-device mappings around manipulation of the device rather than waiting
-for an access.  This allows us to go back to the more standard use
-case of io_remap_pfn_range() for device memory while still preventing
-access to device memory through mmaps when the device is disabled.
+In modern systems it's not unusual to have a system component monitoring
+memory conditions of the system and tasked with keeping system memory
+pressure under control. One way to accomplish that is to kill
+non-essential processes to free up memory for more important ones.
+Examples of this are Facebook's OOM killer daemon called oomd and
+Android's low memory killer daemon called lmkd.
+For such system component it's important to be able to free memory
+quickly and efficiently. Unfortunately the time process takes to free
+up its memory after receiving a SIGKILL might vary based on the state
+of the process (uninterruptible sleep), size and OPP level of the core
+the process is running. A mechanism to free resources of the target
+process in a more predictable way would improve system's ability to
+control its memory pressure.
+Introduce process_mrelease system call that releases memory of a dying
+process from the context of the caller. This way the memory is freed in
+a more controllable way with CPU affinity and priority of the caller.
+The workload of freeing the memory will also be charged to the caller.
+The operation is allowed only on a dying process.
 
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+After previous discussions [1, 2, 3] the decision was made [4] to introduce
+a dedicated system call to cover this use case.
+
+The API is as follows,
+
+          int process_mrelease(int pidfd, unsigned int flags);
+
+        DESCRIPTION
+          The process_mrelease() system call is used to free the memory of
+          an exiting process.
+
+          The pidfd selects the process referred to by the PID file
+          descriptor.
+          (See pidfd_open(2) for further information)
+
+          The flags argument is reserved for future use; currently, this
+          argument must be specified as 0.
+
+        RETURN VALUE
+          On success, process_mrelease() returns 0. On error, -1 is
+          returned and errno is set to indicate the error.
+
+        ERRORS
+          EBADF  pidfd is not a valid PID file descriptor.
+
+          EAGAIN Failed to release part of the address space.
+
+          EINTR  The call was interrupted by a signal; see signal(7).
+
+          EINVAL flags is not 0.
+
+          EINVAL The memory of the task cannot be released because the
+                 process is not exiting, the address space is shared
+                 with another live process or there is a core dump in
+                 progress.
+
+          ENOSYS This system call is not supported, for example, without
+                 MMU support built into Linux.
+
+          ESRCH  The target process does not exist (i.e., it has terminated
+                 and been waited on).
+
+[1] https://lore.kernel.org/lkml/20190411014353.113252-3-surenb@google.com/
+[2] https://lore.kernel.org/linux-api/20201113173448.1863419-1-surenb@google.com/
+[3] https://lore.kernel.org/linux-api/20201124053943.1684874-3-surenb@google.com/
+[4] https://lore.kernel.org/linux-api/20201223075712.GA4719@lst.de/
+
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 ---
- drivers/vfio/pci/vfio_pci.c         |   80 +++++++++++++++++------------------
- drivers/vfio/pci/vfio_pci_config.c  |    8 ++--
- drivers/vfio/pci/vfio_pci_private.h |    3 +
- 3 files changed, 45 insertions(+), 46 deletions(-)
+changes in v7:
+- Fixed pidfd_open misspelling, per Andrew Morton
+- Fixed wrong task pinning after find_lock_task_mm() issue, per Michal Hocko
+- Moved MMF_OOM_SKIP check before task_will_free_mem(), per Michal Hocko
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index 7a9f67cfc0a2..196b8002447b 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -447,6 +447,7 @@ static void vfio_pci_disable(struct vfio_pci_device *vdev)
- 		kfree(dummy_res);
- 	}
- 
-+	vdev->zapped_bars = false;
- 	vdev->needs_reset = true;
- 
- 	/*
-@@ -1057,7 +1058,7 @@ static long vfio_pci_ioctl(struct vfio_device *core_vdev,
- 
- 		vfio_pci_zap_and_down_write_memory_lock(vdev);
- 		ret = pci_try_reset_function(vdev->pdev);
--		up_write(&vdev->memory_lock);
-+		vfio_pci_test_and_up_write_memory_lock(vdev);
- 
- 		return ret;
- 
-@@ -1256,7 +1257,7 @@ static long vfio_pci_ioctl(struct vfio_device *core_vdev,
- 		for (i = 0; i < devs.cur_index; i++) {
- 			struct vfio_pci_device *tmp = devs.devices[i];
- 
--			up_write(&tmp->memory_lock);
-+			vfio_pci_test_and_up_write_memory_lock(tmp);
- 			vfio_device_put(&tmp->vdev);
- 		}
- 		kfree(devs.devices);
-@@ -1413,6 +1414,14 @@ static void vfio_pci_zap_bars(struct vfio_pci_device *vdev)
- 			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX),
- 			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_ROM_REGION_INDEX) -
- 			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX));
+ mm/oom_kill.c | 73 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
+
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index c729a4c4a1ac..a4d917b43c73 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -28,6 +28,7 @@
+ #include <linux/sched/task.h>
+ #include <linux/sched/debug.h>
+ #include <linux/swap.h>
++#include <linux/syscalls.h>
+ #include <linux/timex.h>
+ #include <linux/jiffies.h>
+ #include <linux/cpuset.h>
+@@ -1141,3 +1142,75 @@ void pagefault_out_of_memory(void)
+ 	out_of_memory(&oc);
+ 	mutex_unlock(&oom_lock);
+ }
++
++SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
++{
++#ifdef CONFIG_MMU
++	struct mm_struct *mm = NULL;
++	struct task_struct *task;
++	struct task_struct *p;
++	unsigned int f_flags;
++	struct pid *pid;
++	long ret = 0;
++
++	if (flags)
++		return -EINVAL;
++
++	pid = pidfd_get_pid(pidfd, &f_flags);
++	if (IS_ERR(pid))
++		return PTR_ERR(pid);
++
++	task = get_pid_task(pid, PIDTYPE_PID);
++	if (!task) {
++		ret = -ESRCH;
++		goto put_pid;
++	}
 +
 +	/*
-+	 * Modified under memory_lock write semaphore.  Device handoff
-+	 * with memory enabled, therefore any disable will zap and setup
-+	 * a remap when re-enabled.  io_remap_pfn_range() is not forgiving
-+	 * of duplicate mappings so we must track.
++	 * If the task is dying and in the process of releasing its memory
++	 * then get its mm.
 +	 */
-+	vdev->zapped_bars = true;
- }
- 
- void vfio_pci_zap_and_down_write_memory_lock(struct vfio_pci_device *vdev)
-@@ -1421,6 +1430,18 @@ void vfio_pci_zap_and_down_write_memory_lock(struct vfio_pci_device *vdev)
- 	vfio_pci_zap_bars(vdev);
- }
- 
-+void vfio_pci_test_and_up_write_memory_lock(struct vfio_pci_device *vdev)
-+{
-+	if (vdev->zapped_bars && __vfio_pci_memory_enabled(vdev)) {
-+		WARN_ON(vfio_device_io_remap_mapping_range(&vdev->vdev,
-+			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX),
-+			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_ROM_REGION_INDEX) -
-+			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX)));
-+		vdev->zapped_bars = false;
++	p = find_lock_task_mm(task);
++	if (!p) {
++		ret = -ESRCH;
++		goto put_pid;
 +	}
-+	up_write(&vdev->memory_lock);
-+}
++	if (task != p) {
++		get_task_struct(p);
++		put_task_struct(task);
++		task = p;
++	}
 +
- u16 vfio_pci_memory_lock_and_enable(struct vfio_pci_device *vdev)
- {
- 	u16 cmd;
-@@ -1464,39 +1485,6 @@ static int vfio_pci_bar_vma_to_pfn(struct vfio_device *core_vdev,
- 	return 0;
- }
- 
--static vm_fault_t vfio_pci_mmap_fault(struct vm_fault *vmf)
--{
--	struct vm_area_struct *vma = vmf->vma;
--	struct vfio_pci_device *vdev = vma->vm_private_data;
--	unsigned long vaddr, pfn;
--	vm_fault_t ret = VM_FAULT_SIGBUS;
--
--	if (vfio_pci_bar_vma_to_pfn(&vdev->vdev, vma, &pfn))
--		return ret;
--
--	down_read(&vdev->memory_lock);
--
--	if (__vfio_pci_memory_enabled(vdev)) {
--		for (vaddr = vma->vm_start;
--		     vaddr < vma->vm_end; vaddr += PAGE_SIZE, pfn++) {
--			ret = vmf_insert_pfn(vma, vaddr, pfn);
--			if (ret != VM_FAULT_NOPAGE) {
--				zap_vma_ptes(vma, vma->vm_start,
--					     vaddr - vma->vm_start);
--				break;
--			}
--		}
--	}
--
--	up_read(&vdev->memory_lock);
--
--	return ret;
--}
--
--static const struct vm_operations_struct vfio_pci_mmap_ops = {
--	.fault = vfio_pci_mmap_fault,
--};
--
- static int vfio_pci_mmap(struct vfio_device *core_vdev, struct vm_area_struct *vma)
- {
- 	struct vfio_pci_device *vdev =
-@@ -1504,6 +1492,7 @@ static int vfio_pci_mmap(struct vfio_device *core_vdev, struct vm_area_struct *v
- 	struct pci_dev *pdev = vdev->pdev;
- 	unsigned int index;
- 	u64 phys_len, req_len, pgoff, req_start;
-+	unsigned long pfn;
- 	int ret;
- 
- 	index = vma->vm_pgoff >> (VFIO_PCI_OFFSET_SHIFT - PAGE_SHIFT);
-@@ -1554,18 +1543,25 @@ static int vfio_pci_mmap(struct vfio_device *core_vdev, struct vm_area_struct *v
- 		}
- 	}
- 
--	vma->vm_private_data = vdev;
-+	ret = vfio_pci_bar_vma_to_pfn(core_vdev, vma, &pfn);
-+	if (ret)
-+		return ret;
++	/* If the work has been done already, just exit with success */
++	if (test_bit(MMF_OOM_SKIP, &task->mm->flags))
++		goto put_task;
 +
- 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
--	vma->vm_page_prot = pgprot_decrypted(vma->vm_page_prot);
- 
-+	down_read(&vdev->memory_lock);
- 	/*
--	 * See remap_pfn_range(), called from vfio_pci_fault() but we can't
--	 * change vm_flags within the fault handler.  Set them now.
-+	 * Only perform the mapping now if BAR is not in zapped state, VFs
-+	 * always report memory enabled so relying on device enable state
-+	 * could lead to duplicate remaps.
- 	 */
--	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
--	vma->vm_ops = &vfio_pci_mmap_ops;
-+	if (!vdev->zapped_bars)
-+		ret = io_remap_pfn_range(vma, vma->vm_start, pfn,
-+					 vma->vm_end - vma->vm_start,
-+					 vma->vm_page_prot);
-+	up_read(&vdev->memory_lock);
- 
--	return 0;
++	if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
++		mm = task->mm;
++		mmget(mm);
++	}
++	task_unlock(task);
++	if (!mm) {
++		ret = -EINVAL;
++		goto put_task;
++	}
++
++	if (mmap_read_lock_killable(mm)) {
++		ret = -EINTR;
++		goto put_mm;
++	}
++	if (!__oom_reap_task_mm(mm))
++		ret = -EAGAIN;
++	mmap_read_unlock(mm);
++
++put_mm:
++	mmput(mm);
++put_task:
++	put_task_struct(task);
++put_pid:
++	put_pid(pid);
 +	return ret;
- }
- 
- static void vfio_pci_request(struct vfio_device *core_vdev, unsigned int count)
-diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-index 70e28efbc51f..4220057b253c 100644
---- a/drivers/vfio/pci/vfio_pci_config.c
-+++ b/drivers/vfio/pci/vfio_pci_config.c
-@@ -605,7 +605,7 @@ static int vfio_basic_config_write(struct vfio_pci_device *vdev, int pos,
- 	count = vfio_default_config_write(vdev, pos, count, perm, offset, val);
- 	if (count < 0) {
- 		if (offset == PCI_COMMAND)
--			up_write(&vdev->memory_lock);
-+			vfio_pci_test_and_up_write_memory_lock(vdev);
- 		return count;
- 	}
- 
-@@ -619,7 +619,7 @@ static int vfio_basic_config_write(struct vfio_pci_device *vdev, int pos,
- 		*virt_cmd &= cpu_to_le16(~mask);
- 		*virt_cmd |= cpu_to_le16(new_cmd & mask);
- 
--		up_write(&vdev->memory_lock);
-+		vfio_pci_test_and_up_write_memory_lock(vdev);
- 	}
- 
- 	/* Emulate INTx disable */
-@@ -860,7 +860,7 @@ static int vfio_exp_config_write(struct vfio_pci_device *vdev, int pos,
- 		if (!ret && (cap & PCI_EXP_DEVCAP_FLR)) {
- 			vfio_pci_zap_and_down_write_memory_lock(vdev);
- 			pci_try_reset_function(vdev->pdev);
--			up_write(&vdev->memory_lock);
-+			vfio_pci_test_and_up_write_memory_lock(vdev);
- 		}
- 	}
- 
-@@ -942,7 +942,7 @@ static int vfio_af_config_write(struct vfio_pci_device *vdev, int pos,
- 		if (!ret && (cap & PCI_AF_CAP_FLR) && (cap & PCI_AF_CAP_TP)) {
- 			vfio_pci_zap_and_down_write_memory_lock(vdev);
- 			pci_try_reset_function(vdev->pdev);
--			up_write(&vdev->memory_lock);
-+			vfio_pci_test_and_up_write_memory_lock(vdev);
- 		}
- 	}
- 
-diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_pci_private.h
-index 0aa542fa1e26..9aedb78a4ae3 100644
---- a/drivers/vfio/pci/vfio_pci_private.h
-+++ b/drivers/vfio/pci/vfio_pci_private.h
-@@ -128,6 +128,7 @@ struct vfio_pci_device {
- 	bool			needs_reset;
- 	bool			nointx;
- 	bool			needs_pm_restore;
-+	bool			zapped_bars;
- 	struct pci_saved_state	*pci_saved_state;
- 	struct pci_saved_state	*pm_save;
- 	struct vfio_pci_reflck	*reflck;
-@@ -186,6 +187,8 @@ extern int vfio_pci_set_power_state(struct vfio_pci_device *vdev,
- extern bool __vfio_pci_memory_enabled(struct vfio_pci_device *vdev);
- extern void vfio_pci_zap_and_down_write_memory_lock(struct vfio_pci_device
- 						    *vdev);
-+extern void vfio_pci_test_and_up_write_memory_lock(struct vfio_pci_device
-+						   *vdev);
- extern u16 vfio_pci_memory_lock_and_enable(struct vfio_pci_device *vdev);
- extern void vfio_pci_memory_unlock_and_restore(struct vfio_pci_device *vdev,
- 					       u16 cmd);
-
++#else
++	return -ENOSYS;
++#endif /* CONFIG_MMU */
++}
+-- 
+2.32.0.554.ge1b32706d8-goog
 
