@@ -2,119 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A263E1B99
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35DD3E1B98
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241472AbhHESox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:44:53 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:22754 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241592AbhHESou (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:44:50 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Ayn/lL6Ff6gNM5rP5pLqE+ceALOsnbusQ8zAX?=
- =?us-ascii?q?PidKOHlom62j5qKTdZsgvyMc5Ax9ZJhCo6HiBEDjexLhHPdOiOF7AV7FZmXbUQ?=
- =?us-ascii?q?CTQr2Kg7GM/9StIU3DytI=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,296,1620684000"; 
-   d="scan'208";a="522913201"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 20:44:34 +0200
-Date:   Thu, 5 Aug 2021 20:44:34 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Joe Perches <joe@perches.com>
-cc:     Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        cocci <cocci@systeme.lip6.fr>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] checkpatch: prefer = {} initializations to = {0}
-In-Reply-To: <83ffab14de1c2af00d38d532ffecdda1f9e936ab.camel@perches.com>
-Message-ID: <alpine.DEB.2.22.394.2108052043260.16100@hadrien>
-References: <20210805104353.GD26417@kili>  <117021b44dc9ba570a0f48736d14a267a8701d0a.camel@perches.com>  <e07845c0348f389756b76e34b4728a95aa48038a.camel@perches.com>  <alpine.DEB.2.22.394.2108052016220.16100@hadrien>
- <83ffab14de1c2af00d38d532ffecdda1f9e936ab.camel@perches.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S241617AbhHESow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:44:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241568AbhHESot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:44:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5783560F01;
+        Thu,  5 Aug 2021 18:44:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628189074;
+        bh=V+yClbERtd7wR+Quq7Ck+f5fI7p0BVNHghH2h61vC5w=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=i/JOA3obDm/t8FHfX/Xt8EPazAVkBXdScd7XlsrQJXPAsuHuwxxn7bjGTC/FzMVyJ
+         Xad6/KroTVtmH5Ez43wC1ZvZ+Ts2Wp0JmvtxG0k9TZhcLbiDs2xdfOcr6T+vhgEDm3
+         wZTwIs8ioQHnXD6ZdN91prn+iAe6ry84ScHuAUnWWYjrZasYw0JfvsSCTJR+YzPBhA
+         2lEuQraoTbbvIDEi6eVFW4LH2elbgbrCj2ovCAfaYrpk16Jhy5JzZFL4NWalMY/Dxj
+         aBEGH4Xytj/mr3WQToz9H13g4o5QCa12knMUYL7tzhyFP0febL8s86NicQGaPMiu0b
+         9/X28esndF70g==
+Subject: Re: [PATCH v3] riscv: explicitly use symbol offsets for VDSO
+To:     Saleem Abdulrasool <abdulras@google.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        clang-built-linux@googlegroups.com
+References: <20210804173214.1027994-1-abdulras@google.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <615fafba-bdcc-7f13-483d-6f3ef405924c@kernel.org>
+Date:   Thu, 5 Aug 2021 11:44:34 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210804173214.1027994-1-abdulras@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/4/2021 10:32 AM, 'Saleem Abdulrasool' via Clang Built Linux wrote:
+> The current implementation of the `__rt_sigaction` reference computed an
+> absolute offset relative to the mapped base of the VDSO.  While this can
+> be handled in the medlow model, the medany model cannot handle this as
+> it is meant to be position independent.  The current implementation
+> relied on the BFD linker relaxing the PC-relative relocation into an
+> absolute relocation as it was a near-zero address allowing it to be
+> referenced relative to `zero`.
+> 
+> We now extract the offsets and create a generated header allowing the
+> build with LLVM and lld to succeed as we no longer depend on the linker
+> rewriting address references near zero.  This change was largely
+> modelled after the ARM64 target which does something similar.
+> 
+> Signed-off-by: Saleem Abdulrasool <abdulras@google.com>
 
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-On Thu, 5 Aug 2021, Joe Perches wrote:
-
-> On Thu, 2021-08-05 at 20:17 +0200, Julia Lawall wrote:
-> > On Thu, 5 Aug 2021, Joe Perches wrote:
-> > > On Thu, 2021-08-05 at 05:27 -0700, Joe Perches wrote:
-> > > > On Thu, 2021-08-05 at 13:43 +0300, Dan Carpenter wrote:
-> > > > > The "= {};" style empty struct initializer is preferred over = {0}.
-> > > > > It avoids the situation where the first struct member is a pointer and
-> > > > > that generates a Sparse warning about assigning using zero instead of
-> > > > > NULL.  Also it's just nicer to look at.
-> > >
-> > > Perhaps a cocci script like the below could help too:
-> > >
-> > > $ cat zero_init_struct.cocci
-> > > @@
-> > > identifier name;
-> > > identifier t;
-> > > @@
-> > >
-> > > 	struct name t = {
-> > > -	       0
-> > > 	};
-> > >
-> > > @@
-> > > identifier name;
-> > > identifier t;
-> > > identifier member;
-> > > @@
-> > >
-> > > 	struct name t = {
-> > > 	       ...,
-> > > 		.member = {
-> > > -		0
-> > > 		},
-> > > 		...,
-> > > 	};
-> >
-> > My test turns up over 1900 occurrences.  There is the question of whether
-> > {} or { } is preferred.  The above semantic patch replaces {0} by {} and
-> > ( 0 } by { }.
->
-> I saw that and I don't recall how to force one style or another
-> to be output.
-
-If you remove something and put it back, then Coccinelle takes care of
-pretty printing it.  So the following produces {} everywhere.  Fortunately
-Dan seems to prefer that...
-
-@@
-identifier name;
-identifier t;
-@@
-
-        struct name t =
--              {0}
-+              {}
-        ;
-
-@@
-identifier name;
-identifier t;
-identifier member;
-@@
-
-        struct name t = {
-               ...,
-                .member =
--               {0}
-+               {}
-                ,
-                ...,
-        };
-
-julia
+> ---
+>   arch/riscv/Makefile                        |  4 ++++
+>   arch/riscv/include/asm/vdso.h              | 14 ++----------
+>   arch/riscv/kernel/vdso/Makefile            | 25 ++++++++++------------
+>   arch/riscv/kernel/vdso/gen_vdso_offsets.sh |  5 +++++
+>   arch/riscv/kernel/vdso/so2s.sh             |  6 ------
+>   5 files changed, 22 insertions(+), 32 deletions(-)
+>   create mode 100755 arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+>   delete mode 100755 arch/riscv/kernel/vdso/so2s.sh
+> 
+> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+> index bc74afdbf31e..e026b2d0a5a4 100644
+> --- a/arch/riscv/Makefile
+> +++ b/arch/riscv/Makefile
+> @@ -108,6 +108,10 @@ PHONY += vdso_install
+>   vdso_install:
+>   	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso $@
+>   
+> +prepare: vdso_prepare
+> +vdso_prepare: prepare0
+> +	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso include/generated/vdso-offsets.h
+> +
+>   ifneq ($(CONFIG_XIP_KERNEL),y)
+>   ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN),yy)
+>   KBUILD_IMAGE := $(boot)/loader.bin
+> diff --git a/arch/riscv/include/asm/vdso.h b/arch/riscv/include/asm/vdso.h
+> index 1453a2f563bc..d8d003c2b5a3 100644
+> --- a/arch/riscv/include/asm/vdso.h
+> +++ b/arch/riscv/include/asm/vdso.h
+> @@ -9,25 +9,15 @@
+>   #define _ASM_RISCV_VDSO_H
+>   
+>   #include <linux/types.h>
+> +#include <generated/vdso-offsets.h>
+>   
+>   #ifndef CONFIG_GENERIC_TIME_VSYSCALL
+>   struct vdso_data {
+>   };
+>   #endif
+>   
+> -/*
+> - * The VDSO symbols are mapped into Linux so we can just use regular symbol
+> - * addressing to get their offsets in userspace.  The symbols are mapped at an
+> - * offset of 0, but since the linker must support setting weak undefined
+> - * symbols to the absolute address 0 it also happens to support other low
+> - * addresses even when the code model suggests those low addresses would not
+> - * otherwise be availiable.
+> - */
+>   #define VDSO_SYMBOL(base, name)							\
+> -({										\
+> -	extern const char __vdso_##name[];					\
+> -	(void __user *)((unsigned long)(base) + __vdso_##name);			\
+> -})
+> +	(void __user *)((unsigned long)(base) + __vdso_##name##_offset)
+>   
+>   asmlinkage long sys_riscv_flush_icache(uintptr_t, uintptr_t, uintptr_t);
+>   
+> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+> index 24d936c147cd..f8cb9144a284 100644
+> --- a/arch/riscv/kernel/vdso/Makefile
+> +++ b/arch/riscv/kernel/vdso/Makefile
+> @@ -23,10 +23,10 @@ ifneq ($(c-gettimeofday-y),)
+>   endif
+>   
+>   # Build rules
+> -targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds vdso-syms.S
+> +targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds
+>   obj-vdso := $(addprefix $(obj)/, $(obj-vdso))
+>   
+> -obj-y += vdso.o vdso-syms.o
+> +obj-y += vdso.o
+>   CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
+>   
+>   # Disable -pg to prevent insert call site
+> @@ -43,20 +43,22 @@ $(obj)/vdso.o: $(obj)/vdso.so
+>   # link rule for the .so file, .lds has to be first
+>   $(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) FORCE
+>   	$(call if_changed,vdsold)
+> -LDFLAGS_vdso.so.dbg = -shared -s -soname=linux-vdso.so.1 \
+> +LDFLAGS_vdso.so.dbg = -shared -S -soname=linux-vdso.so.1 \
+>   	--build-id=sha1 --hash-style=both --eh-frame-hdr
+>   
+> -# We also create a special relocatable object that should mirror the symbol
+> -# table and layout of the linked DSO. With ld --just-symbols we can then
+> -# refer to these symbols in the kernel code rather than hand-coded addresses.
+> -$(obj)/vdso-syms.S: $(obj)/vdso.so FORCE
+> -	$(call if_changed,so2s)
+> -
+>   # strip rule for the .so file
+>   $(obj)/%.so: OBJCOPYFLAGS := -S
+>   $(obj)/%.so: $(obj)/%.so.dbg FORCE
+>   	$(call if_changed,objcopy)
+>   
+> +# Generate VDSO offsets using helper script
+> +gen-vdsosym := $(srctree)/$(src)/gen_vdso_offsets.sh
+> +quiet_cmd_vdsosym = VDSOSYM $@
+> +	cmd_vdsosym = $(NM) $< | $(gen-vdsosym) | LC_ALL=C sort > $@
+> +
+> +include/generated/vdso-offsets.h: $(obj)/vdso.so.dbg FORCE
+> +	$(call if_changed,vdsosym)
+> +
+>   # actual build commands
+>   # The DSO images are built using a special linker script
+>   # Make sure only to export the intended __vdso_xxx symbol offsets.
+> @@ -65,11 +67,6 @@ quiet_cmd_vdsold = VDSOLD  $@
+>                      $(OBJCOPY) $(patsubst %, -G __vdso_%, $(vdso-syms)) $@.tmp $@ && \
+>                      rm $@.tmp
+>   
+> -# Extracts symbol offsets from the VDSO, converting them into an assembly file
+> -# that contains the same symbols at the same offsets.
+> -quiet_cmd_so2s = SO2S    $@
+> -      cmd_so2s = $(NM) -D $< | $(srctree)/$(src)/so2s.sh > $@
+> -
+>   # install commands for the unstripped file
+>   quiet_cmd_vdso_install = INSTALL $@
+>         cmd_vdso_install = cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
+> diff --git a/arch/riscv/kernel/vdso/gen_vdso_offsets.sh b/arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+> new file mode 100755
+> index 000000000000..c2e5613f3495
+> --- /dev/null
+> +++ b/arch/riscv/kernel/vdso/gen_vdso_offsets.sh
+> @@ -0,0 +1,5 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +LC_ALL=C
+> +sed -n -e 's/^[0]\+\(0[0-9a-fA-F]*\) . \(__vdso_[a-zA-Z0-9_]*\)$/\#define \2_offset\t0x\1/p'
+> diff --git a/arch/riscv/kernel/vdso/so2s.sh b/arch/riscv/kernel/vdso/so2s.sh
+> deleted file mode 100755
+> index e64cb6d9440e..000000000000
+> --- a/arch/riscv/kernel/vdso/so2s.sh
+> +++ /dev/null
+> @@ -1,6 +0,0 @@
+> -#!/bin/sh
+> -# SPDX-License-Identifier: GPL-2.0+
+> -# Copyright 2020 Palmer Dabbelt <palmerdabbelt@google.com>
+> -
+> -sed 's!\([0-9a-f]*\) T \([a-z0-9_]*\)\(@@LINUX_4.15\)*!.global \2\n.set \2,0x\1!' \
+> -| grep '^\.'
+> 
