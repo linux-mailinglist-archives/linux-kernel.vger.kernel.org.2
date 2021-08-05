@@ -2,108 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589A53E1B13
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFD13E1B17
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241052AbhHESRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:17:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232969AbhHESRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:17:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DD556044F;
-        Thu,  5 Aug 2021 18:17:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628187426;
-        bh=BHkLr8RyM5LfUpw3kjUHGAEgyKjazgrTeuyD8z7tr7s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JRrBH6XoeiVtgg/0EXT3NHWAM6gpsR5pntg8vy4jRMu6XrVfC/+OfuOKoZy6F2TBE
-         P8yQiWVD+JhHK8RP9hNBWFLaeWgxtn3LwmUBFRTaxVhOAmBpbqATPPHySc4VXKjbkO
-         W1Bo/cON+KPowuhm5xAWkPRF4WpAGFCRB2/JwqyU=
-Date:   Thu, 5 Aug 2021 20:17:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     longli@linuxonhyperv.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        Long Li <longli@microsoft.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>, linux-doc@vger.kernel.org
-Subject: Re: [Patch v5 2/3] Drivers: hv: add Azure Blob driver
-Message-ID: <YQwrH58lpXxeL2cP@kroah.com>
-References: <1628146812-29798-1-git-send-email-longli@linuxonhyperv.com>
- <1628146812-29798-3-git-send-email-longli@linuxonhyperv.com>
- <b6404b38-9ea2-b438-dc1b-1196f8e4a158@acm.org>
+        id S241077AbhHESSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232969AbhHESSG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:18:06 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB25C061765;
+        Thu,  5 Aug 2021 11:17:52 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id f8so6063094ilr.4;
+        Thu, 05 Aug 2021 11:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wrqyGrlzJbaQiQwV6UU8HEiTXlXj9XwABefl+sGFyRs=;
+        b=Ban+ybOof8hxsRRxNPJ2VMCbfacPMCGVJ6mBT1wwqsf/SKwJL6ha3pHlVu5s4o1K+D
+         ZjnJdB511f3l64hjTiG+TGj/S8mBo7lwqzy0C2qtmYawW+XIwckuWt2gUlpUravfo11M
+         KwRYjYZK6ZbuMhmMDcpexL5nRo+02sh+6XdFHtZlr2/554olkE4M/2+Vhz8YIAKChRge
+         7NBOIq+/giaX3VcA8ZWA1ss56KMpnhyszNCbqMvZbQk1TKrp93CVFmpXZcVvkGYK7kzh
+         iLYFdqXwO86zEaCgUAzFKOFiLConEuxnf7ZJKXR9yIxdipY001SRlAwimravcGjyX2qT
+         9hVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wrqyGrlzJbaQiQwV6UU8HEiTXlXj9XwABefl+sGFyRs=;
+        b=X+bTYRLYH9mHPGCSkGdj1cqL2f7s7tFwtK9r7oYEV0iVxH7sDiWoxbnnySGQJJWRys
+         tMmbnBsMBtI0VcUf/CRnMILHUFx5aLzONQrDJE8prj+7vO1rbMmqC7/DHQkCJryhx2qV
+         /mkF9FwXvqd4RY3U9MnI4tndGoTgcGD1Vs4Z9YIjdg5yGSeK0DUFiZr6ggrkR7gQjiox
+         VsfiqDwoAqPXngdKtWwGi3BrLpzIuXOKYR2cdEMR7iQevipYMBvwQbb/MsfC+HRNIBT9
+         QymftHfJKg21+ap4UAbWDF+3mMtXlZjPO75rOatsP6sYbVkocsGy3tPOzwJe1bfvZHEO
+         V/xw==
+X-Gm-Message-State: AOAM530sznEj1TJP5ML/V9Ha53psEPadgKTi5NoRls/eXG7zKI9mlJ6G
+        T2MQCa2OH6laKJs5brHFTJiDlDfIPiAy91W+eM0=
+X-Google-Smtp-Source: ABdhPJxk224epffKzdwfCMkaspSFRHJ6HJetar8YOaBxdFYNm/GLKKNPTw3O0uXNvKudsh4EH8kBwidEHDD2CPRBoow=
+X-Received: by 2002:a92:b74d:: with SMTP id c13mr535113ilm.176.1628187470918;
+ Thu, 05 Aug 2021 11:17:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b6404b38-9ea2-b438-dc1b-1196f8e4a158@acm.org>
+References: <20210802183910.1802120-1-ndesaulniers@google.com> <20210802183910.1802120-3-ndesaulniers@google.com>
+In-Reply-To: <20210802183910.1802120-3-ndesaulniers@google.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 5 Aug 2021 20:17:40 +0200
+Message-ID: <CANiq72ng4a1g8TDFWb652TNhch2NDrQsHkJyP5HrrkJREGg8jg@mail.gmail.com>
+Subject: Re: [PATCH v6 2/3] Makefile: infer --target from ARCH for CC=clang
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 10:06:03AM -0700, Bart Van Assche wrote:
-> On 8/5/21 12:00 AM, longli@linuxonhyperv.com wrote:
-> > diff --git a/include/uapi/misc/hv_azure_blob.h b/include/uapi/misc/hv_azure_blob.h
-> > new file mode 100644
-> > index 0000000..87a3f77
-> > --- /dev/null
-> > +++ b/include/uapi/misc/hv_azure_blob.h
-> > @@ -0,0 +1,35 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
-> > +/* Copyright (c) 2021 Microsoft Corporation. */
-> > +
-> > +#ifndef _AZ_BLOB_H
-> > +#define _AZ_BLOB_H
-> > +
-> > +#include <linux/ioctl.h>
-> > +#include <linux/uuid.h>
-> > +#include <linux/types.h>
-> > +
-> > +/* user-mode sync request sent through ioctl */
-> > +struct az_blob_request_sync_response {
-> > +	__u32 status;
-> > +	__u32 response_len;
-> > +};
-> > +
-> > +struct az_blob_request_sync {
-> > +	guid_t guid;
-> > +	__u32 timeout;
-> > +	__u32 request_len;
-> > +	__u32 response_len;
-> > +	__u32 data_len;
-> > +	__u32 data_valid;
-> > +	__aligned_u64 request_buffer;
-> > +	__aligned_u64 response_buffer;
-> > +	__aligned_u64 data_buffer;
-> > +	struct az_blob_request_sync_response response;
-> > +};
-> > +
-> > +#define AZ_BLOB_MAGIC_NUMBER	'R'
-> > +#define IOCTL_AZ_BLOB_DRIVER_USER_REQUEST \
-> > +		_IOWR(AZ_BLOB_MAGIC_NUMBER, 0xf0, \
-> > +			struct az_blob_request_sync)
-> > +
-> > +#endif /* define _AZ_BLOB_H */
-> 
-> So this driver only supports synchronous requests? Is it likely that users
-> will ask for support of an API that supports having multiple requests
-> outstanding at the same time without having to create multiple user space
-> threads?
+On Mon, Aug 2, 2021 at 8:39 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> We get constant feedback that the command line invocation of make is too
+> long when compiling with LLVM. CROSS_COMPILE is helpful when a toolchain
+> has a prefix of the target triple, or is an absolute path outside of
+> $PATH.
+>
+> Since a Clang binary is generally multi-targeted, we can infer a given
+> target from SRCARCH/ARCH.  If CROSS_COMPILE is not set, simply set
+> --target= for CLANG_FLAGS, KBUILD_CFLAGS, and KBUILD_AFLAGS based on
+> $SRCARCH.
+>
+> Previously, we'd cross compile via:
+> $ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make LLVM=1 LLVM_IAS=1
+> Now:
+> $ ARCH=arm64 make LLVM=1 LLVM_IAS=1
+>
+> For native builds (not involving cross compilation) we now explicitly
+> specify a target triple rather than rely on the implicit host triple.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1399
+> Suggested-by: Arnd Bergmann <arnd@kernel.org>
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> Acked-by: Arnd Bergmann <arnd@kernel.org>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-They seem to want to go around the block layer and reinvent it all from
-scratch, which is crazy, so let them have their slow i/o :(
+Acked-by: Miguel Ojeda <ojeda@kernel.org>
 
-
+Cheers,
+Miguel
