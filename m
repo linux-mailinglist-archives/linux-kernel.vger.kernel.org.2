@@ -2,180 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3933E1705
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54EB3E1649
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241719AbhHEOcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233183AbhHEOco (ORCPT
+        id S241434AbhHEOCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 10:02:30 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:13238 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233088AbhHEOC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:32:44 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71D7C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 07:32:29 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id j18-20020a17090aeb12b029017737e6c349so9111340pjz.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 07:32:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Hxir+KJT92ne4sjUq07glKFb4339EmPmh/a5GVlr1ko=;
-        b=k3719/z8eUSedQ6lU1Ji4Phj9b5Y8l0i6R93Er8eQtkwn8oV31S9CxSR/eMF8GtlH1
-         xjWqTZwBxPmQfL0Fm2rHuHHJMLShvWbTxr8VBc2YiKbAHxEuCChtZvgmN3DTD0imxKK1
-         oS6rtUVkpsmk2kEb9R0U4Csl2IWbJRtZsVqSOL202172DyPqWAoK0xb58hAC+b2bk0e9
-         JPaySdp1odFbAvM3gJRsak/89lSYGKrBbDzA9kH+zTUYhV0ir3IlKnGeeARonQYLnqUJ
-         mRH09CtOCUWg6lmFaIZdQKUR7lM5V4gSzK5N96JNSgwEQ48WmP5e+YtBxE/j4IRuEFNi
-         xYxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Hxir+KJT92ne4sjUq07glKFb4339EmPmh/a5GVlr1ko=;
-        b=FmNO9t7vwh7SBStNrljSdwZmR+w1BRVmXGgiIID+GRZW5oAZyzFI8RxmRPZQJvc9KZ
-         x4phPNDOFapUgQvc2iEPgxvTuC01Di5t0SkevsVtEYxHDMBqyw/zlUOGUcPAZhyMUfqz
-         QVBbGg4WQOSe72t8cMlzcuvHzpJMQZTuJL3Ey32sCVajBqgKa/4Htzo5tC6h+zUHfKaE
-         sKzLR1gARXNmfgEAXLFRC+N6O/1aB9zA6Yr8x9e5yB6Mwzh8817bsMvv8otOPYrJEePB
-         2dSXhL7YUSbKKjFC4MIp8ZsF8k5QFypHeW3YqLo4uhFt3GQ9DkEzAq1KPHHQQQU2Wtwe
-         ZAGA==
-X-Gm-Message-State: AOAM533WKk5bwSmTZe3CQb4Rf4dOwt/I0NB3V3Pws4yXOdEWy6M2qNdO
-        0nV7CnVLw6IjFcYJE2UTlvgytPxNEQbqGeFItvzW7w==
-X-Google-Smtp-Source: ABdhPJzmKvsuXnbAiJTCr2Ie3c70evLDQtBHyeupRXjhU286jch5hsPG3GMDBTl8uNZmPk7w39U7rdBJi7Zo+CSGIZw=
-X-Received: by 2002:a17:90a:604b:: with SMTP id h11mr4973185pjm.220.1628173948924;
- Thu, 05 Aug 2021 07:32:28 -0700 (PDT)
+        Thu, 5 Aug 2021 10:02:29 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GgVfM2l6cz1CRvV;
+        Thu,  5 Aug 2021 22:02:03 +0800 (CST)
+Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 22:02:10 +0800
+Received: from localhost.huawei.com (10.175.124.27) by
+ dggema773-chm.china.huawei.com (10.1.198.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 22:02:09 +0800
+From:   <lijinlin3@huawei.com>
+To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <john.garry@huawei.com>, <bvanassche@acm.org>,
+        <qiulaibin@huawei.com>, <linfeilong@huawei.com>,
+        <wubo40@huawei.com>, <lijinlin3@huawei.com>
+Subject: [PATCH] scsi: core: Run queue first after running device.
+Date:   Thu, 5 Aug 2021 22:32:31 +0800
+Message-ID: <20210805143231.1713299-1-lijinlin3@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <cover.1628172477.git.hns@goldelico.com> <15187eccabf39561de226acd8be40b93503cac49.1628172477.git.hns@goldelico.com>
-In-Reply-To: <15187eccabf39561de226acd8be40b93503cac49.1628172477.git.hns@goldelico.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Thu, 5 Aug 2021 16:32:17 +0200
-Message-ID: <CAG3jFyu50h2oLW0U6hJSpxiKp3Hb5Ow8Ujvg2qdKRuy+uhaahw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/8] drm/bridge: synopsis: Add mode_fixup and bridge
- timings support
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        letux-kernel@openphoenux.org, Paul Boddie <paul@boddie.org.uk>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema773-chm.china.huawei.com (10.1.198.217)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Nikolaus,
+From: Li Jinlin <lijinlin3@huawei.com>
 
-Thanks for submitting this series.
+We found a hang issue, the test steps are as follows:
+  1. echo "blocked" >/sys/block/sda/device/state
+  2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
+  3. echo none > /sys/block/sda/queue/scheduler
+  4. echo "running" >/sys/block/sda/device/state
 
-On Thu, 5 Aug 2021 at 16:08, H. Nikolaus Schaller <hns@goldelico.com> wrote:
->
-> From: Paul Boddie <paul@boddie.org.uk>
->
-> The platform-specific configuration structure is augmented with
-> mode_fixup and timings members so that specialisations of the
-> Synopsys driver can introduce mode flags and bus flags.
->
-> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> ---
->  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 16 ++++++++++++++++
->  include/drm/bridge/dw_hdmi.h              |  5 +++++
->  2 files changed, 21 insertions(+)
->
-> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> index e7c7c9b9c646f..e8499eb11328c 100644
-> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> @@ -2810,6 +2810,19 @@ dw_hdmi_bridge_mode_valid(struct drm_bridge *bridge,
->         return mode_status;
->  }
->
-> +static bool
-> +dw_hdmi_bridge_mode_fixup(struct drm_bridge *bridge,
-> +                         const struct drm_display_mode *mode,
-> +                         struct drm_display_mode *adjusted_mode)
-> +{
-> +       struct dw_hdmi *hdmi = bridge->driver_private;
-> +
-> +       if (hdmi->plat_data->mode_fixup)
-> +               return hdmi->plat_data->mode_fixup(bridge, mode, adjusted_mode);
-> +
-> +       return true;
-> +}
-> +
->  static void dw_hdmi_bridge_mode_set(struct drm_bridge *bridge,
->                                     const struct drm_display_mode *orig_mode,
->                                     const struct drm_display_mode *mode)
-> @@ -2883,6 +2896,7 @@ static const struct drm_bridge_funcs dw_hdmi_bridge_funcs = {
->         .atomic_disable = dw_hdmi_bridge_atomic_disable,
->         .mode_set = dw_hdmi_bridge_mode_set,
->         .mode_valid = dw_hdmi_bridge_mode_valid,
-> +       .mode_fixup = dw_hdmi_bridge_mode_fixup,
+Step3 and Step4 should finish this work after Step4, but them hangs.
 
-mode_fixup() has been deprecated[1] in favor of atomic_check(), care
-has to be taken when switching to atomic_check() as it has access to
-the full atomic commit.
+  CPU#0               CPU#1                CPU#2
+  ---------------     ----------------     ----------------
+                                           Step1: blocking device
 
-Looking at this driver, it's using mode_set as well, which should be fixed.
+                                           Step2: dd xxxx
+                                                  ^^^^^^ get request
+                                                         q_usage_counter++
 
-[1] https://lore.kernel.org/dri-devel/20210722062246.2512666-8-sam@ravnborg.org/
+                      Step3: switching scheculer
+                      elv_iosched_store
+                        elevator_switch
+                          blk_mq_freeze_queue
+                            blk_freeze_queue
+                              > blk_freeze_queue_start
+                                ^^^^^^ mq_freeze_depth++
 
->         .detect = dw_hdmi_bridge_detect,
->         .get_edid = dw_hdmi_bridge_get_edid,
->  };
-> @@ -3364,6 +3378,8 @@ struct dw_hdmi *dw_hdmi_probe(struct platform_device *pdev,
->  #ifdef CONFIG_OF
->         hdmi->bridge.of_node = pdev->dev.of_node;
->  #endif
-> +       if (plat_data->timings)
-> +               hdmi->bridge.timings = plat_data->timings;
->
->         memset(&pdevinfo, 0, sizeof(pdevinfo));
->         pdevinfo.parent = dev;
-> diff --git a/include/drm/bridge/dw_hdmi.h b/include/drm/bridge/dw_hdmi.h
-> index 6a5716655619b..677137445d534 100644
-> --- a/include/drm/bridge/dw_hdmi.h
-> +++ b/include/drm/bridge/dw_hdmi.h
-> @@ -8,6 +8,7 @@
->
->  #include <sound/hdmi-codec.h>
->
-> +struct drm_bridge;
->  struct drm_display_info;
->  struct drm_display_mode;
->  struct drm_encoder;
-> @@ -140,6 +141,10 @@ struct dw_hdmi_plat_data {
->         enum drm_mode_status (*mode_valid)(struct dw_hdmi *hdmi, void *data,
->                                            const struct drm_display_info *info,
->                                            const struct drm_display_mode *mode);
-> +       bool (*mode_fixup)(struct drm_bridge *bridge,
-> +                          const struct drm_display_mode *mode,
-> +                          struct drm_display_mode *adjusted_mode);
-> +       const struct drm_bridge_timings *timings;
->
->         /* Vendor PHY support */
->         const struct dw_hdmi_phy_ops *phy_ops;
-> --
-> 2.31.1
->
+                              > blk_mq_run_hw_queues
+                                ^^^^^^ can't run queue when dev blocked
+
+                              > blk_mq_freeze_queue_wait
+                                ^^^^^^ Hang here!!! 
+                                       wait q_usage_counter==0
+
+  Step4: running device
+  store_state_field
+    scsi_rescan_device
+      scsi_attach_vpd
+        scsi_vpd_inquiry
+          __scsi_execute
+            blk_get_request
+              blk_mq_alloc_request
+                blk_queue_enter
+                ^^^^^^ Hang here!!!
+                       wait mq_freeze_depth==0 
+
+    blk_mq_run_hw_queues                                           
+    ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
+
+                            blk_mq_unfreeze_queue
+                            ^^^^^ mq_freeze_depth--
+
+Step3 and Step4 wait for each other, caused hangs.
+
+This requires run queue frist to fix this issue when the device state
+changes to SDEV_RUNNING.
+
+Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
+Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
+Signed-off-by: Qiu Laibin <qiulaibin@huawei.com>
+Signed-off-by: Wu Bo <wubo40@huawei.com>
+---
+ drivers/scsi/scsi_sysfs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+index c3a710bceba0..aa701582c950 100644
+--- a/drivers/scsi/scsi_sysfs.c
++++ b/drivers/scsi/scsi_sysfs.c
+@@ -809,12 +809,12 @@ store_state_field(struct device *dev, struct device_attribute *attr,
+ 	ret = scsi_device_set_state(sdev, state);
+ 	/*
+ 	 * If the device state changes to SDEV_RUNNING, we need to
+-	 * rescan the device to revalidate it, and run the queue to
+-	 * avoid I/O hang.
++	 * run the queue to avoid I/O hang, and rescan the device
++	 * to revalidate it.
+ 	 */
+ 	if (ret == 0 && state == SDEV_RUNNING) {
+-		scsi_rescan_device(dev);
+ 		blk_mq_run_hw_queues(sdev->request_queue, true);
++		scsi_rescan_device(dev);
+ 	}
+ 	mutex_unlock(&sdev->state_mutex);
+ 
+-- 
+2.27.0
+
