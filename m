@@ -2,175 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6008E3E1EC4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB36C3E1ECD
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 00:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240012AbhHEWdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 18:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
+        id S240738AbhHEWfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 18:35:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbhHEWdQ (ORCPT
+        with ESMTP id S240533AbhHEWfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 18:33:16 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79331C061798
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 15:33:01 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id ca5so12468559pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 15:33:01 -0700 (PDT)
+        Thu, 5 Aug 2021 18:35:19 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A9DC061798
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 15:35:04 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id dw2-20020a17090b0942b0290177cb475142so18487157pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 15:35:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dhXk37eFC15pZKelOTmIoz91X3bzOOO01NaZQtp+pC0=;
-        b=ajPRBLJkLHrlBjvvz7qW4niZDr0o3O4uy8cuF/Qa0I69yg6wp1RTWapwcaDOuVqv1A
-         XSrw6E1Fd/rWKvnNwUY1gVxa7oExBRB45ozwUBE9YyCb9GoSwGEiKPz86155Or4mAMUi
-         IB8yDX+WCefwKsxMXsEAF6T+s+wg3nQsEO4TVznBUEUxRPbsXhsLD88QzzK8ris5TPAR
-         dRptKgrdBaYLdWXuNXhKZ2w+vHtA2B3pWlinOzxeOpUBB9n9ffNHozuT04krg8rOJxJS
-         57EdyBwidZYhCiw2GhjG0DAZxS2B+sTyPdH6GB83CcKxWRBY8/yJYNuof2IUbiRx1Af0
-         m5FQ==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KcO4lvjnu3cqSavtHa0vi62hVqJGIYj0uCi6qLCTukk=;
+        b=pqenJBmlitgkdTgYvxHX0fWULNvELRnrDRZbQXoUtoAjR9cn8Lsv0UPnniV1MTke1w
+         oAeOqLI0K6nbDWMshXQmZ3G+rrP02ae+izq+HJLbXEYRrnT5DTamX6AztS7QCgVDnVSJ
+         U+TMHcOcaQGOwzPXZPqNy+i/tMvnlDmjoob5Sei+Q7oIB8ulQldD2EUsX0Fwdn2dbzHj
+         s66yEVKily6FLePbVKUtNnAI94TIUokp2BapbXBp7dVaU4a8yT++MPg1i10HY7k39JrB
+         /+9OBQBPXrAiFqlibpcW9pMjxLwkCLuJE/Zq4mA+z0tfWzeP0TwlCBrhsl9v4unQkuTL
+         Lq5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dhXk37eFC15pZKelOTmIoz91X3bzOOO01NaZQtp+pC0=;
-        b=nr6Km3VSeISA8wPiC2thkiqSGc3OrTTsANo2x73SjFdUchC+zSmM/WIxZ9310NFrcr
-         yQwKhRfVfDBelOMq6oat40woOfFrKzcXtrIXgy/GljXfnhUxm1FIk1HpR8aZS/xhRt0G
-         jZnndapXRAcDSjMMCtsBRFCl0JXCzXjgg8KXXbS4Q8CIs3q8u0rwogH2FTGk6VpCbIxl
-         I20H+uY23bvuzSxQU0FJThhvYUbWySBofYlxPloYCECFwRm1mTR3btCXzKmN0g6gNqvY
-         7DqnR7ghGgr97otq8BnWnbYrBiK2sZk+2adgEIunhPKXNNjLkHyA7hzIc1Fb6TKxYqvk
-         IbAw==
-X-Gm-Message-State: AOAM532H7rVfzreaD+BadQdBRb2eH/e6TqPB3AZ8OEP0SiD8HQcGGIYh
-        Fv6TtNxn7V0a1jAv4fdkZa8dcg==
-X-Google-Smtp-Source: ABdhPJzFiCwBTBptI/4xg1FauXtCo55lGOg5JCiA28mQCJsWk8h1ajuQt+NG6YmnQFKlgsV4Js2KxQ==
-X-Received: by 2002:a17:90a:d985:: with SMTP id d5mr6879897pjv.12.1628202780753;
-        Thu, 05 Aug 2021 15:33:00 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id u16sm9284456pgh.53.2021.08.05.15.33.00
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KcO4lvjnu3cqSavtHa0vi62hVqJGIYj0uCi6qLCTukk=;
+        b=tvzAAh8qQbgotJZydHUDnM5Scnm735l+ctKxBw8Oh2m8cpNl3hTKja0389XTe6o3sc
+         KKPZ9IRzDEhPAXRmjk+56O3X7zHkKy4G1dlNYXdoM9hO+0xLG38CblpERBm90oJzovv4
+         9aXFRTSemN1BdI3uJ9T5gVUlML1FFA4/qJyNiyLSxTI61wTYaSd0cvDOicAh4B7v2Jg0
+         dFuPuTOu6nTWn+O0QWSN9lUHBkidTkBEsfWFaThDdhtEYCLjQEP2NtIwR0iL+sX5Xouu
+         +Lm9N70goHQ4vjwN/c4USpbIPWq1ZGHu6qTQoazHpjAQ6FdsgKdR2vEhAAROsewUoAA0
+         R5dQ==
+X-Gm-Message-State: AOAM531dr3dMtnJwTs1cH+yHVBfu6mYW3O7LvCocaKkVZ28RWPEPLadt
+        RjqWUJjrLMvcOyh8jw4nZAowGg==
+X-Google-Smtp-Source: ABdhPJyk6OQTY1jbncrw9oG2ihZzoZY3iNajitoOztK8kD4V5vZULO46zvKoC8pkGRBxh8KE48ygJg==
+X-Received: by 2002:a63:86c8:: with SMTP id x191mr467778pgd.166.1628202903769;
+        Thu, 05 Aug 2021 15:35:03 -0700 (PDT)
+Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
+        by smtp.gmail.com with ESMTPSA id z8sm7931638pfa.113.2021.08.05.15.35.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 15:33:00 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 22:32:56 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Zeng Guang <guang.zeng@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Robert Hu <robert.hu@intel.com>,
-        Gao Chao <chao.gao@intel.com>,
-        Robert Hoo <robert.hu@linux.intel.com>
-Subject: Re: [PATCH v3 2/6] KVM: VMX: Extend BUILD_CONTROLS_SHADOW macro to
- support 64-bit variation
-Message-ID: <YQxnGIT7XLQvPkrz@google.com>
-References: <20210805151317.19054-1-guang.zeng@intel.com>
- <20210805151317.19054-3-guang.zeng@intel.com>
+        Thu, 05 Aug 2021 15:35:03 -0700 (PDT)
+From:   Jiang Wang <jiang.wang@bytedance.com>
+To:     netdev@vger.kernel.org
+Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
+        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v5 0/5] sockmap: add sockmap support for unix stream socket
+Date:   Thu,  5 Aug 2021 22:34:37 +0000
+Message-Id: <20210805223445.624330-1-jiang.wang@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805151317.19054-3-guang.zeng@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021, Zeng Guang wrote:
-> From: Robert Hoo <robert.hu@linux.intel.com>
-> 
-> The Tertiary VM-Exec Control, different from previous control fields, is 64
-> bit. So extend BUILD_CONTROLS_SHADOW() by adding a 'bit' parameter, to
-> support both 32 bit and 64 bit fields' auxiliary functions building.
-> Also, define the auxiliary functions for Tertiary control field here, using
-> the new BUILD_CONTROLS_SHADOW().
-> 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Robert Hoo <robert.hu@linux.intel.com>
-> ---
->  arch/x86/kvm/vmx/vmx.h | 23 ++++++++++++-----------
->  1 file changed, 12 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 3979a947933a..945c6639ce24 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -413,31 +413,32 @@ static inline u8 vmx_get_rvi(void)
->  	return vmcs_read16(GUEST_INTR_STATUS) & 0xff;
->  }
->  
-> -#define BUILD_CONTROLS_SHADOW(lname, uname)				    \
-> -static inline void lname##_controls_set(struct vcpu_vmx *vmx, u32 val)	    \
-> +#define BUILD_CONTROLS_SHADOW(lname, uname, bits)			    \
-> +static inline void lname##_controls_set(struct vcpu_vmx *vmx, u##bits val) \
+This patch series add support for unix stream type
+for sockmap. Sockmap already supports TCP, UDP,
+unix dgram types. The unix stream support is similar
+to unix dgram.
 
-Align the trailing backslashes (with tabs when possible).  It's a lot of unfortunate
-churn, but it really does make the code easier to read.  An alternative is to split
-"static inline" to a separate line.
+Also add selftests for unix stream type in sockmap tests.
 
->  {									    \
->  	if (vmx->loaded_vmcs->controls_shadow.lname != val) {		    \
-> -		vmcs_write32(uname, val);				    \
-> +		vmcs_write##bits(uname, val);				    \
->  		vmx->loaded_vmcs->controls_shadow.lname = val;		    \
->  	}								    \
->  }									    \
-> -static inline u32 lname##_controls_get(struct vcpu_vmx *vmx)		    \
-> +static inline u##bits lname##_controls_get(struct vcpu_vmx *vmx)	    \
->  {									    \
->  	return vmx->loaded_vmcs->controls_shadow.lname;			    \
->  }									    \
-> -static inline void lname##_controls_setbit(struct vcpu_vmx *vmx, u32 val)   \
-> +static inline void lname##_controls_setbit(struct vcpu_vmx *vmx, u##bits val)   \
->  {									    \
->  	lname##_controls_set(vmx, lname##_controls_get(vmx) | val);	    \
->  }									    \
-> -static inline void lname##_controls_clearbit(struct vcpu_vmx *vmx, u32 val) \
-> +static inline void lname##_controls_clearbit(struct vcpu_vmx *vmx, u##bits val) \
->  {									    \
->  	lname##_controls_set(vmx, lname##_controls_get(vmx) & ~val);	    \
->  }
-> -BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS)
-> -BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS)
-> -BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL)
-> -BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL)
-> -BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL)
-> +BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS, 32)
-> +BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS, 32)
-> +BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL, 32)
-> +BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL, 32)
-> +BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL, 32)
-> +BUILD_CONTROLS_SHADOW(tertiary_exec, TERTIARY_VM_EXEC_CONTROL, 64)
+Jiang Wang (5):
+  af_unix: add read_sock for stream socket types
+  af_unix: add unix_stream_proto for sockmap
+  selftest/bpf: add tests for sockmap with unix stream type.
+  selftest/bpf: change udp to inet in some function names
+  selftest/bpf: add new tests in sockmap for unix stream to tcp.
 
-This fails to compile because all the TERTIARY collateral is in a later patch.
+ include/net/af_unix.h                         |  8 +-
+ net/unix/af_unix.c                            | 87 ++++++++++++++---
+ net/unix/unix_bpf.c                           | 93 ++++++++++++++-----
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 48 ++++++----
+ 4 files changed, 184 insertions(+), 52 deletions(-)
 
-I think I'd also prefer hiding the 32/64 param via more macros, e.g.
+v1 -> v2 :
+ - Call unhash in shutdown.
+ - Clean up unix_create1 a bit.
+ - Return -ENOTCONN if socket is not connected.
 
-#define __BUILD_CONTROLS_SHADOW(lname, uname, bits)				\
-static inline void lname##_controls_set(struct vcpu_vmx *vmx, u##bits val)	\
-{										\
-	if (vmx->loaded_vmcs->controls_shadow.lname != val) {			\
-		vmcs_write##bits(uname, val);					\
-		vmx->loaded_vmcs->controls_shadow.lname = val;			\
-	}									\
-}										\
-static inline u##bits lname##_controls_get(struct vcpu_vmx *vmx)		\
-{										\
-	return vmx->loaded_vmcs->controls_shadow.lname;				\
-}										\
-static inline void lname##_controls_setbit(struct vcpu_vmx *vmx, u##bits val)	\
-{										\
-	lname##_controls_set(vmx, lname##_controls_get(vmx) | val);		\
-}										\
-static inline void lname##_controls_clearbit(struct vcpu_vmx *vmx, u##bits val)	\
-{										\
-	lname##_controls_set(vmx, lname##_controls_get(vmx) & ~val);		\
-}
-#define BUILD_CONTROLS_SHADOW(lname, uname)   __BUILD_CONTROLS_SHADOW(lname, uname, 32)
-#define BUILD_CONTROLS_SHADOW64(lname, uname) __BUILD_CONTROLS_SHADOW(lname, uname, 64)
+v2 -> v3 :
+ - check for stream type in update_proto
+ - remove intermediate variable in __unix_stream_recvmsg
+ - fix compile warning in unix_stream_recvmsg
+
+v3 -> v4 :
+ - remove sk_is_unix_stream, just check TCP_ESTABLISHED for UNIX sockets.
+ - add READ_ONCE in unix_dgram_recvmsg
+ - remove type check in unix_stream_bpf_update_proto
+
+v4 -> v5 :
+ - add two missing READ_ONCE for sk_prot.
+
+-- 
+2.20.1
+
