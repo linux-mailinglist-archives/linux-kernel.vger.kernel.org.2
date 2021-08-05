@@ -2,130 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B8B3E13D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4023E13D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241036AbhHEL0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241017AbhHEL0E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:26:04 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5F2C061765;
-        Thu,  5 Aug 2021 04:25:50 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id c25so8994553ejb.3;
-        Thu, 05 Aug 2021 04:25:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wK3ZJoH77yoKanvAl+zgzlJtnSE4+vr1Ve33ojGjCOE=;
-        b=H6rW1PuxyG7LRiK3aNO7vdFpTE0sBZHyCjyC5JbxVlo75rcg7cfqcTSCffshLp3o9c
-         fgBa5OwAsgslrbgq9tObBRZ2HOZBybiWDj3dKNLTv8H7Vd0m1fRiOh0h8ziuEMVWg/s8
-         qiGPNm82pDemRXXlP/xBg3IUiQEwHGCwB/180vogrrTOquDlPYit8ibx5Y+E2s846nEO
-         V1UOLd8nIJQgOxdAzjT0s8+jcxobJxDu3gZlsizunLso2nDFuyO6vR5ZbQdm6Nil/YLA
-         GZqyR4xhWvnAdLmsgpgiggoxLBbWFlsEAkF7JRXXrzWBH0SPyDyQNnD4z+MxZGk0SMh9
-         40jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wK3ZJoH77yoKanvAl+zgzlJtnSE4+vr1Ve33ojGjCOE=;
-        b=dccEWi0Gca/t6sj3uyq7RmmF66ynbgPQqOFT43IZBEL/FpX/6s9OCZT0+W76lxkwRR
-         wFF11Tii3aCUERNxV6lpIAdXk7NKefth57m0uOELG2nfauPjAMoXjZjcdhe+K/ZPbNwC
-         9pohxOhAT7DhyX3b2oplpqzHKs8N3lPAvhCrru7mHNaiJBGYP0F4t8Mct4LB3w7c/yP1
-         eCj7aah2FPIqrcNe8T6sDkk2n2y8vkex5UwMCgmZqTA5D0iipICTYjoj84TqUE4k1f5w
-         O8CE3btFyNpXg9ALWK0jCAuqyZT1GUVVOpCmbdvIOQ766NmkNJXJm9fqE0pwyjkITSGz
-         Ql6Q==
-X-Gm-Message-State: AOAM532798yKHcwWdH8TQAJQR1/e3jLIWR1okf/9xcWHFBzmwTTTPdfd
-        hx+fWJatSiGKUqpnNCBE4oU=
-X-Google-Smtp-Source: ABdhPJyjTU6ynYTsEPafAJj25937KUEfLcs5YClTtbWT5v+uoyXuh1mI+f0GFry2gYrpPG6F+i7ujA==
-X-Received: by 2002:a17:906:3915:: with SMTP id f21mr4407704eje.178.1628162748494;
-        Thu, 05 Aug 2021 04:25:48 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id mf11sm1627077ejb.27.2021.08.05.04.25.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 04:25:48 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 14:25:46 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Yangbo Lu <yangbo.lu@nxp.com>, netdev@vger.kernel.org,
+        id S241048AbhHEL0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:26:19 -0400
+Received: from mga03.intel.com ([134.134.136.65]:43033 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241017AbhHEL0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 07:26:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="214158748"
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="214158748"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 04:26:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="458987333"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 05 Aug 2021 04:25:58 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id A0164142; Thu,  5 Aug 2021 14:26:28 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Pavel Machek <pavel@ucw.cz>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Amireddy Mallikarjuna reddy 
+        <mallikarjunax.reddy@linux.intel.com>, linux-leds@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] dsa: sja1105: fix reverse dependency
-Message-ID: <20210805112546.gitosuu7bzogbzyf@skbuf>
-References: <20210805110048.1696362-1-arnd@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>
+Subject: [PATCH v1 1/1] leds: lgm-sso: Propagate error codes from callee to caller
+Date:   Thu,  5 Aug 2021 14:26:19 +0300
+Message-Id: <20210805112619.65116-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805110048.1696362-1-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+The one of the latest change to the driver reveals the problem that
+the error codes from callee aren't propagated to the caller of
+__sso_led_dt_parse(). Fix this accordingly.
 
-On Thu, Aug 05, 2021 at 01:00:28PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The DSA driver and the tag driver for sja1105 are closely linked,
-> and recently the dependency started becoming visible in the form
-> of the sja1110_process_meta_tstamp() that gets exported by one
-> and used by the other.
->
-> This causes a rare build failure with CONFIG_NET_DSA_TAG_SJA1105=y
-> and CONFIG_NET_DSA_SJA1105=m, as the 'select' statement only
-> prevents the opposite configuration:
->
-> aarch64-linux-ld: net/dsa/tag_sja1105.o: in function `sja1110_rcv':
-> tag_sja1105.c:(.text.sja1110_rcv+0x164): undefined reference to `sja1110_process_meta_tstamp'
->
-> Add a stricter dependency for the CONFIG_NET_DSA_TAG_SJA110y to
-> prevent it from being built-in when the other one is not.
->
-> Fixes: 566b18c8b752 ("net: dsa: sja1105: implement TX timestamping for SJA1110")
-> Fixes: 227d07a07ef1 ("net: dsa: sja1105: Add support for traffic through standalone ports")
+Fixes: 9999908ca1ab ("leds: lgm-sso: Put fwnode in any case during ->probe()")
+Fixes: c3987cd2bca3 ("leds: lgm: Add LED controller driver for LGM SoC")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/leds/blink/leds-lgm-sso.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-The second Fixes: tag makes no sense.
+diff --git a/drivers/leds/blink/leds-lgm-sso.c b/drivers/leds/blink/leds-lgm-sso.c
+index e47c47e421d6..fd8b7573285a 100644
+--- a/drivers/leds/blink/leds-lgm-sso.c
++++ b/drivers/leds/blink/leds-lgm-sso.c
+@@ -640,7 +640,7 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
+ 							      fwnode_child,
+ 							      GPIOD_ASIS, NULL);
+ 		if (IS_ERR(led->gpiod)) {
+-			dev_err_probe(dev, PTR_ERR(led->gpiod), "led: get gpio fail!\n");
++			ret = dev_err_probe(dev, PTR_ERR(led->gpiod), "led: get gpio fail!\n");
+ 			goto __dt_err;
+ 		}
+ 
+@@ -660,8 +660,11 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
+ 			desc->panic_indicator = 1;
+ 
+ 		ret = fwnode_property_read_u32(fwnode_child, "reg", &prop);
+-		if (ret != 0 || prop >= SSO_LED_MAX_NUM) {
++		if (ret)
++			goto __dt_err;
++		if (prop >= SSO_LED_MAX_NUM) {
+ 			dev_err(dev, "invalid LED pin:%u\n", prop);
++			ret = -EINVAL;
+ 			goto __dt_err;
+ 		}
+ 		desc->pin = prop;
+@@ -697,7 +700,8 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
+ 				desc->brightness = LED_FULL;
+ 		}
+ 
+-		if (sso_create_led(priv, led, fwnode_child))
++		ret = sso_create_led(priv, led, fwnode_child);
++		if (ret)
+ 			goto __dt_err;
+ 	}
+ 
+@@ -709,7 +713,7 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
+ 	list_for_each_entry(led, &priv->led_list, list)
+ 		sso_led_shutdown(led);
+ 
+-	return -EINVAL;
++	return ret;
+ }
+ 
+ static int sso_led_dt_parse(struct sso_led_priv *priv)
+-- 
+2.30.2
 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> Not sure if there is a more logical way to deal with this,
-> but the added dependency does help avoid the build failure.
->
-> I found this one while verifying the PTP dependency patch, but
-> it's really a separate issue.
-> ---
->  net/dsa/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
-> index bca1b5d66df2..548285539752 100644
-> --- a/net/dsa/Kconfig
-> +++ b/net/dsa/Kconfig
-> @@ -138,6 +138,7 @@ config NET_DSA_TAG_LAN9303
->
->  config NET_DSA_TAG_SJA1105
->  	tristate "Tag driver for NXP SJA1105 switches"
-> +	depends on NET_DSA_SJA1105 || !NET_DSA_SJA1105
-
-I think I would prefer an optional "build as module if NET_DSA_SJA1105 is a module"
-dependency only if NET_DSA_SJA1105_PTP is enabled. I think this is how that is
-expressed:
-
-	depends on (NET_DSA_SJA1105 && NET_DSA_SJA1105_PTP) || !NET_DSA_SJA1105 || !NET_DSA_SJA1105_PTP
-
->  	select PACKING
->  	help
->  	  Say Y or M if you want to enable support for tagging frames with the
-> --
-> 2.29.2
->
