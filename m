@@ -2,169 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F71E3E1B7D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BC43E1B7F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241525AbhHESjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236929AbhHESjc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:39:32 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13061C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:39:18 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id k2-20020ac847820000b029024ea3acef5bso3140985qtq.12
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:39:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=gut7KGVOXGVwjDuVjJlBum3fd0OxKnF/3/p9WcIAzgA=;
-        b=OYB1dard195uli2R1UDCQfCJd8J/f2bMU8DFe6YCCvQzjUDDmQod0q/0Ke5zwKOs7Z
-         Jo2QNXcnUqfu7c0jqYrkMTgHZDQGuv5ijMnsRm4bnn184xNJGxuu8UwFwjgVqvXF/m36
-         DpsozUaZ1e80Q5epqlc9dGZu6GeLkaUBaZq82JIOeTXtLGHJhezKlON+MBztI0n2e3zw
-         jFMOqlCfsvqqHVEmu2HCwZkNDfGZMZscK1pVOKUaUNdEcydraRmuzRr5+l8TJ3tfqozw
-         iDoTOUWykAsKpkhk4MXqO3idulyXljEmo6/BnY8A6JYXHqJfd1xDMx2/tMOwL1q96d8C
-         hq/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=gut7KGVOXGVwjDuVjJlBum3fd0OxKnF/3/p9WcIAzgA=;
-        b=CKLU2AYTV1eE1EPjEPX18UTW+/lALsSqooUGlu3lTLYX9QZ/StrpAhXdivx2AstvoX
-         54PK0KEhYyeRb6i/hwxnAEDHtSutFuJkzjNroIkgnG32Og/kQJPR9NV8Kl2HW07RsymU
-         MJ6HgizX9jGlLUj9LGXtOHOXBg70fQxKF2VGow7uSdYyljIUvLbStinvDaOWyqGk3297
-         afBxy9OVUfCF68ZVivs0Iplty3b4G8lRt9d6IinPerUYSrVtZCtGFB2mvTsz8Y30oyTV
-         0bGx/t3w+F58ZVikz/7BXh6KYDKb4tpORtslYBfxD03IZBg9u9TeRCDHUE8pYiBq/JQn
-         wIDw==
-X-Gm-Message-State: AOAM532gnDF+Qzm77I1K6RhdzyL4EfqVNbDv67CfuzJqtxnl7TrDWpZ1
-        rpxaOXsYd8I6Hih//wHmgkiUoUyVnvU=
-X-Google-Smtp-Source: ABdhPJxiby64Xc2Lz8eTQrM/JBed8r5wAEVYcaSgk1A/lfJLpvCVkeJeWWeUl/JbBAPJNukHU9o0ztEuuZY=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e041:28e5:75db:9055])
- (user=seanjc job=sendgmr) by 2002:a05:6214:2ce:: with SMTP id
- g14mr6665890qvu.46.1628188757204; Thu, 05 Aug 2021 11:39:17 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  5 Aug 2021 11:38:04 -0700
-Message-Id: <20210805183804.1221554-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-Subject: [PATCH] KVM: x86: Allow guest to set EFER.NX=1 on non-PAE 32-bit kernels
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S241528AbhHESkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:40:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229892AbhHESkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:40:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A384D601FF;
+        Thu,  5 Aug 2021 18:40:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628188801;
+        bh=uieYp5dhE+BgI7VoI96Hu2v7JqETU3Mt5VK7tX6c9+4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GBqWXZTK4SvQZPLH6flfZWcY/SIWBu7fUYdkdHKHHgPo2QKkibu16RRHUFGqHdRQA
+         RmfWLeB5aUFlLzFrqKeAb57N1MThNF3YdPMRIF+TnzZBqPQMBqSfJEzskEeWhvO8yH
+         xXPx29sFSPYObnTH9vqEC24WsQ68Dsv8A7msmsOA=
+Date:   Thu, 5 Aug 2021 20:39:58 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: USB xhci crash under load on 5.14-rc3
+Message-ID: <YQwwfn2rQGvCrvXS@kroah.com>
+References: <YQpJLk42b+0g7WFB@kroah.com>
+ <9bb1d58b-5c68-86b7-13df-2faa749880c5@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9bb1d58b-5c68-86b7-13df-2faa749880c5@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove an ancient restriction that disallowed exposing EFER.NX to the
-guest if EFER.NX=0 on the host, even if NX is fully supported by the CPU.
-The motivation of the check, added by commit 2cc51560aed0 ("KVM: VMX:
-Avoid saving and restoring msr_efer on lightweight vmexit"), was to rule
-out the case of host.EFER.NX=0 and guest.EFER.NX=1 so that KVM could run
-the guest with the host's EFER.NX and thus avoid context switching EFER
-if the only divergence was the NX bit.
+On Thu, Aug 05, 2021 at 05:59:00PM +0300, Mathias Nyman wrote:
+> On 4.8.2021 11.00, Greg KH wrote:
+> > Hi,
+> > 
+> > I was doing some filesystem backups from one USB device to another one
+> > this weekend and kept running into the problem of the xhci controller
+> > shutting down after an hour or so of high volume traffic.
+> > 
+> > I finally captured the problem in the kernel log as this would also take
+> > out my keyboard, making it hard to recover from :)
+> > 
+> > The log is below for when the problem happens, and then the devices are
+> > disconnected from the bus (ignore the filesystem errors, those are
+> > expected when i/o is in flight and we disconnect a device.
+> > 
+> > Any hint as to what the IO_PAGE_FAULT error messages are?
+> > 
+> 
+> No idea, unfortunately.
+> 
+> > I'll go back to 5.13.y now and see if I can reproduce it there or not,
+> > as my backups are not yet done...
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> > 
+> > [Aug 4 09:48] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff00000 flags=0x0000]
+> > [  +0.000012] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff00f80 flags=0x0000]
+> > [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff01000 flags=0x0000]
+> > [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff01f80 flags=0x0000]
+> > [  +0.000005] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff02000 flags=0x0000]
+> > [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff02f80 flags=0x0000]
+> > [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff03000 flags=0x0000]
+> > [  +0.000005] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff03f80 flags=0x0000]
+> > [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff04000 flags=0x0000]
+> > [Aug 4 09:49] sd 3:0:0:0: [sdc] tag#21 uas_eh_abort_handler 0 uas-tag 1 inflight: CMD IN 
+> > [  +0.000011] sd 3:0:0:0: [sdc] tag#21 CDB: Read(16) 88 00 00 00 00 01 8a 44 08 b0 00 00 00 08 00 00
+> > [  +5.106493] xhci_hcd 0000:47:00.1: xHCI host not responding to stop endpoint command.
+> > [  +0.000010] xhci_hcd 0000:47:00.1: USBSTS: HCHalted HSE
+> 
+> 
+> HSE "Host System Error" bit is set, meaning xHC hardware detected a serious error and stopped the host.
+> HSE was probably set 5-10 seconds earlier, but only discovered here.
+> 
+> Specs state:
+> 
+> xHC sets this bit to ‘1’ when a serious error
+> is detected, either internal to the xHC or during a host system access involving the xHC module.
+> (In a PCI system, conditions that set this bit to ‘1’ include PCI Parity error, PCI Master Abort, and
+> PCI Target Abort.)
 
-Fast forward to today, and KVM has long since stopped running the guest
-with the host's EFER.NX.  Not only does KVM context switch EFER if
-host.EFER.NX=1 && guest.EFER.NX=0, KVM also forces host.EFER.NX=0 &&
-guest.EFER.NX=1 when using shadow paging (to emulate SMEP).  Furthermore,
-the entire motivation for the restriction was made obsolete over a decade
-ago when Intel added dedicated host and guest EFER fields in the VMCS
-(Nehalem timeframe), which reduced the overhead of context switching EFER
-from 400+ cycles (2 * WRMSR + 1 * RDMSR) to a mere ~2 cycles.
+Ok, I would believe in a PCI error here, hammering a xhci controller
+with read/write streams to two different storage devices on the same bus
+for a few hours as fast as the bus allows is a good stress test.
 
-In practice, the removed restriction only affects non-PAE 32-bit kernels,
-as EFER.NX is set during boot if NX is supported and the kernel will use
-PAE paging (32-bit or 64-bit), regardless of whether or not the kernel
-will actually use NX itself (mark PTEs non-executable).
+I tried splitting this across PCI devices, and can not seem to duplicate
+the failure in the xhci controllers, now the devices fail with disk
+errors after about a terrabyte of traffic, but are recoverable after
+unplug/plugging them back in and running fsck.
 
-Alternatively and/or complementarily, startup_32_smp() in head_32.S could
-be modified to set EFER.NX=1 regardless of paging mode, thus eliminating
-the scenario where NX is supported but not enabled.  However, that runs
-the risk of breaking non-KVM non-PAE kernels (though the risk is very,
-very low as there are no known EFER.NX errata), and also eliminates an
-easy-to-use mechanism for stressing KVM's handling of guest vs. host EFER
-across nested virtualization transitions.
+Cheap USB storage, gotta love it...
 
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
+If I come up with a reproducable failure, I'll let you know, thanks for
+the help,
 
-As alluded to in the changelog, I abandoned the idea of forcing EFER.NX for
-PSE paging.  With this obsolete optimization remove, forcing EFER.NX in the
-host doesn't buy us anything.  Shadow paging doesn't consume host EFER, nor
-does EPT, and NPT is already incompatible with !PAE in the host.
-
- arch/x86/kvm/cpuid.c | 28 +---------------------------
- 1 file changed, 1 insertion(+), 27 deletions(-)
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 739be5da3bca..fe03bd978761 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -208,30 +208,6 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
- 	kvm_mmu_after_set_cpuid(vcpu);
- }
- 
--static int is_efer_nx(void)
--{
--	return host_efer & EFER_NX;
--}
--
--static void cpuid_fix_nx_cap(struct kvm_vcpu *vcpu)
--{
--	int i;
--	struct kvm_cpuid_entry2 *e, *entry;
--
--	entry = NULL;
--	for (i = 0; i < vcpu->arch.cpuid_nent; ++i) {
--		e = &vcpu->arch.cpuid_entries[i];
--		if (e->function == 0x80000001) {
--			entry = e;
--			break;
--		}
--	}
--	if (entry && cpuid_entry_has(entry, X86_FEATURE_NX) && !is_efer_nx()) {
--		cpuid_entry_clear(entry, X86_FEATURE_NX);
--		printk(KERN_INFO "kvm: guest NX capability removed\n");
--	}
--}
--
- int cpuid_query_maxphyaddr(struct kvm_vcpu *vcpu)
- {
- 	struct kvm_cpuid_entry2 *best;
-@@ -302,7 +278,6 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
- 	vcpu->arch.cpuid_entries = e2;
- 	vcpu->arch.cpuid_nent = cpuid->nent;
- 
--	cpuid_fix_nx_cap(vcpu);
- 	kvm_update_cpuid_runtime(vcpu);
- 	kvm_vcpu_after_set_cpuid(vcpu);
- 
-@@ -401,7 +376,6 @@ static __always_inline void kvm_cpu_cap_mask(enum cpuid_leafs leaf, u32 mask)
- 
- void kvm_set_cpu_caps(void)
- {
--	unsigned int f_nx = is_efer_nx() ? F(NX) : 0;
- #ifdef CONFIG_X86_64
- 	unsigned int f_gbpages = F(GBPAGES);
- 	unsigned int f_lm = F(LM);
-@@ -515,7 +489,7 @@ void kvm_set_cpu_caps(void)
- 		F(CX8) | F(APIC) | 0 /* Reserved */ | F(SYSCALL) |
- 		F(MTRR) | F(PGE) | F(MCA) | F(CMOV) |
- 		F(PAT) | F(PSE36) | 0 /* Reserved */ |
--		f_nx | 0 /* Reserved */ | F(MMXEXT) | F(MMX) |
-+		F(NX) | 0 /* Reserved */ | F(MMXEXT) | F(MMX) |
- 		F(FXSR) | F(FXSR_OPT) | f_gbpages | F(RDTSCP) |
- 		0 /* Reserved */ | f_lm | F(3DNOWEXT) | F(3DNOW)
- 	);
--- 
-2.32.0.605.g8dce9f2422-goog
-
+greg k-h
