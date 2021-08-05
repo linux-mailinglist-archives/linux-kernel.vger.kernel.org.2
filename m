@@ -2,88 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DEB3E0FC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2DC3E0FCC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239144AbhHEIAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 04:00:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231377AbhHEIAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 04:00:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CDD76044F;
-        Thu,  5 Aug 2021 07:59:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628150389;
-        bh=VQPRznZKq+7/Y3xFggDbn6ktS/w4o5Cb+eH7BbGxrd8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O9H/9+JgombTsydBEcmzdDXyDw/rn6nu5MBVtZ/uJNpBT/JYFnBisZoTHptUkOgFh
-         zMcyxW6TGCf4JIXbpooxPBou4SQ6MN+o+1pjvwyrBJbtxy7584rJv+wxGfs+j621JR
-         Rt6QUUtudd0bFHig25Rt+x2T925xgAvx6rZAtwJA=
-Date:   Thu, 5 Aug 2021 09:59:45 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-Message-ID: <YQuaceNDNdBqidyQ@kroah.com>
-References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQrqhYEL64CSLRTy@kroah.com>
- <CAPcyv4iEEDCz5719d0vNi=zi=6oN5vctcVfY5P=WQ9j_Zpz6eA@mail.gmail.com>
- <YQsBfAVPomaC97Rm@casper.infradead.org>
- <CAPcyv4gSsL5hk=CSk=9duqCN3VDS_T2LaYRL+_zK9VOkO8NB+A@mail.gmail.com>
+        id S239164AbhHEIA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 04:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231377AbhHEIA1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 04:00:27 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A28C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 01:00:12 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id c9so5274191wri.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 01:00:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wumc4OZ7mBGOruxhA75GZYnXNkQhB5mW1nT6BqQbhoM=;
+        b=OzEDvkO70XEjJpSxi59DeN+Dn6kIot+RdgCjtY4yI40znzqsrqBWxOANTs5It1hlVQ
+         wWl7kpglPubk2ubzYbZPHmqRadHU2jbkvRemE5TEh5xjIByLkJxxxZF1Cf1/Hxa/4o3Z
+         EMF1lgFJsvGL3bRxSmf3SLeuUYOo6wZI4xcHtsZiJAqRf7D/EqeGkXU/KmX0OXwXC1gV
+         5gEOrbj+bXMZ35y70DOAqq2L+kXBst0eJJ6YjpuDbcrCIy2GAzQLTnLdHvka4Uw5I6wx
+         xoEfm6xYSKMY3+A+cGWn8XLltL9F0QnvsT7EmpF6gAgRlGKwCmcO9Rq1bnRJFaLnquuS
+         Ggdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wumc4OZ7mBGOruxhA75GZYnXNkQhB5mW1nT6BqQbhoM=;
+        b=TEZQ3iwYdoOxyzcx/a3V0Y00yoTrlzHj4+nHl0SLZno/nQNcbx4sKUZKgCZfgSSyIw
+         TDFgXMKht/fmKhcAJlQ0oYWJ8HqRvg0WiwLQZxHesmbkcRdcNUOmW5GZuo2qDju2hBrE
+         xZ5OWIqZzTYc4TPENk6nfzDrwflMlg9Vxm67ROtasb0T7h7i+3foOs1jgazMewN63rlC
+         ZGizpOHOFAz877vHtfHLzRXJVzb5BGkp7AZqbzWJt0yIyjyCt6RtYgeExWipmCinCV3q
+         okwcpwLO5V7sKh2kYvtlCKiHOahkZXXJtLtrieOYANxXnA21t0lLXgVtW02sGnD8y7+1
+         yVQQ==
+X-Gm-Message-State: AOAM530mXM4XhX9fU5YSscPnDlBRiCeMXU/HmVsdB+A4/e9d7T9ooHBA
+        LNm14UKyM4smSE8AqJFPZXEfTA==
+X-Google-Smtp-Source: ABdhPJwwI7OpevysCPXVydCiImYOL403jvLwB9REh/tzZacm4rsI/wiorAFciqp4F5XD5r0f76eBSQ==
+X-Received: by 2002:a5d:424d:: with SMTP id s13mr3652510wrr.356.1628150411445;
+        Thu, 05 Aug 2021 01:00:11 -0700 (PDT)
+Received: from google.com ([109.180.115.228])
+        by smtp.gmail.com with ESMTPSA id f15sm5133528wrp.12.2021.08.05.01.00.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 01:00:10 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 09:00:09 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        phone-devel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mfd: db8500-prcmu: Handle missing FW variant
+Message-ID: <YQuaiW/MSZY4bmok@google.com>
+References: <20210801233314.3150754-1-linus.walleij@linaro.org>
+ <20210801233314.3150754-2-linus.walleij@linaro.org>
+ <YQejHNP1AzFHZ6gK@google.com>
+ <CACRpkdaK0pBgmFSazjJ5NOj9rF9DzUyCfumxyi8PNaS_61_=Ww@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAPcyv4gSsL5hk=CSk=9duqCN3VDS_T2LaYRL+_zK9VOkO8NB+A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdaK0pBgmFSazjJ5NOj9rF9DzUyCfumxyi8PNaS_61_=Ww@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 02:28:32PM -0700, Dan Williams wrote:
-> On Wed, Aug 4, 2021 at 2:07 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Thu, 05 Aug 2021, Linus Walleij wrote:
+
+> On Mon, Aug 2, 2021 at 9:47 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > On Mon, 02 Aug 2021, Linus Walleij wrote:
 > >
-> > On Wed, Aug 04, 2021 at 01:11:27PM -0700, Dan Williams wrote:
-> > > On Wed, Aug 4, 2021 at 12:29 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > > Why not just make distros that want to support this type of platform,
-> > > > also provide these tiny kernel images?  Why are you pushing this work on
-> > > > the kernel community instead?
+> > > There was an "unknown" firmware variant turning up in the wild
+> > > causing problems in the clock driver. Add this missing variant
+> > > and clarify that varian 11 and 15 are Samsung variants, as this
+> > > is now very well known from released products.
 > > >
-> > > In fact, these questions are where I started when first encountering
-> > > this proposal. Andi has addressed the single kernel image constraint,
-> > > but I want to pick up on this "pushing work to the kernel community"
-> > > contention. The small list of vetted drivers that a TDX guest needs
-> > > will be built-in and maintained in the kernel by the protected guest
-> > > developer community, so no "pushing work" there. However, given that
-> > > any driver disable mechanism needs to touch the driver core I
-> > > advocated to go ahead and make this a general purpose capability to
-> > > pick up where this [1] conversation left off. I.e. a general facility
-> > > for the corner cases that modprobe and kernel config policy can not
-> > > reach. Corner cases like VMM attacking the VM, or broken hardware with
-> > > a built-in driver that can't be unbound after the fact.
+> > > Cc: Michael Turquette <mturquette@baylibre.com>
+> > > Cc: Stephen Boyd <sboyd@kernel.org>
+> > > Cc: linux-clk@vger.kernel.org
+> > > Cc: phone-devel@vger.kernel.org
+> > > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> > > ---
+> > > Clock maintainers: could you please ACK this so Lee can take
+> > > this into the MFD tree? The chances of merge collisions are
+> > > zero, this code changes very seldom.
+> > > ---
+> > >  drivers/clk/ux500/u8500_of_clk.c | 3 ++-
 > >
-> > I don't understand how this defends against a hypervisor attacking a
-> > guest.  If the hardware exists, the hypervisor can access it, regardless
-> > of whether the driver is default-disabled by configuration.
+> > >  drivers/mfd/db8500-prcmu.c       | 6 ++++--
+> > >  include/linux/mfd/dbx500-prcmu.h | 3 ++-
+> >
+> > Acked-by: Lee Jones <lee.jones@linaro.org>
 > 
-> The "hardware" in this case is virtual devices presented by the VMM to
-> the VM. So if a driver misbehaves in a useful way for an attacker to
-> exploit, they can stimulate that behavior with a custom crafted
-> virtual device, and that driver will autoload unaware of the threat
-> without this filter for vetted drivers.
+> Actually I intended for the clock people to ACK it for you
+> but since it is completely independent of 1/2 it actually works
+> either way, maybe they will rather pick it up, who knows? :D
 
-As I just said elsewhere in this thread, we have support for this today
-for thunderbolt and USB, please just expand that to all bus types and
-that should be fine.
+That's fine too.
 
-thanks,
+I assume they will not require an immutable branch, as the turn-over
+in this file is very low.
 
-greg k-h
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
