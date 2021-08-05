@@ -2,103 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9803E1564
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931663E1566
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241607AbhHENKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 09:10:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234312AbhHENKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 09:10:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABB0361154;
-        Thu,  5 Aug 2021 13:10:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628169039;
-        bh=QQA9M84zOLiXjfuh5E6eK/hBQlM1baUtTQpzmyypR74=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lYvAt3pYUj5qCKGcwZag2MBqCBLHe+LYMTpWbEfxmsKWOfXwvyrfM3XzqDqcxY7b0
-         9O0aqh8h4rzfX2gcgwoXXjkeJP0a2J3tr3Lq51hWxQd62Gq9cRJ81UuTuBTQT8jGRQ
-         LCKWKXAhiyAjHjVbd227yP7HayDzBj2fshsAbWiG/vGARRYvSgmTv1VwjmZyS1a/8b
-         Hu6GQhCdxJW84TzerlaDPtKGLYa/UTZl2GYP234UxAJb77h53ny7Q1C6o7IjGBMbr6
-         FBpMLa9+hFZ/c9uPWRiX2FVB+bPzMa71QARedLKVTfsi4lLvlPcVRuxtkTSCJunH6h
-         tILehCGum1Lkg==
-Received: by mail-wr1-f53.google.com with SMTP id b13so6494078wrs.3;
-        Thu, 05 Aug 2021 06:10:39 -0700 (PDT)
-X-Gm-Message-State: AOAM533LcvDjErX03TelsMVRn37ITAVIcOSwLHfd/P7tAWKoCPu83o0w
-        XbIYFth+2oxTCCOsXgCNQMkBjEJqR2jUhF9SSnM=
-X-Google-Smtp-Source: ABdhPJzJ3q23yWULPmYarFc6LQ2f+oqZKR52QPdkY3aJ7YFOrTLLCmAZkoj2nKCXOgFeRCWRllATQUfJVza16VQTrmY=
-X-Received: by 2002:adf:fd90:: with SMTP id d16mr5479015wrr.105.1628169038272;
- Thu, 05 Aug 2021 06:10:38 -0700 (PDT)
+        id S241634AbhHENLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 09:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234312AbhHENL2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 09:11:28 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C45C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 06:11:13 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id yk17so9444748ejb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 06:11:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YuTZiK//J9JAwj4PAE08Ebr5Vz170oeRV5G9mQzcF20=;
+        b=P+W6LH2gBtT85pYdgfDnKnsj9a7BZd/vMK0QLxTDymVHEMh/nH2OoZ/OnOoaDINqFK
+         etABbv7sTQdonN4K7P1uonfzn6cR6yt/iftCbnjS6RYn8MEuNXCQ5TocU1Mjz1JxoiUN
+         rpzC0lp4X/qB9QML+TBH8z6+RwolIRFWCKby+Rl0EUNj6/KvvQvKlq4KkRxL3UGxJw1r
+         GhA1cjrzbgg/rlDoYrCP+h4UOQJ+ImkAlroD5YUp8cuF5LeUY5aWrIVdRoqke439tTMj
+         3vBqMUebKR8IHFCK0mo/CBbkwyetArmYtJgJ/IWhxrt7VWXP1/6b4Tx3pdSHu6wWXwvF
+         mQrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YuTZiK//J9JAwj4PAE08Ebr5Vz170oeRV5G9mQzcF20=;
+        b=W9Vmquf3aQacqOiiRhTLY/Is6DCR6NeDU4txfjChqaGdLkVICP/s/c6rW6q+9BauWC
+         z9LGqE2luPt/chgsKMJ2O4kHI/XVsXZXWBva+Vuw1zKD1PP3NlV4x+kuGYZpJOaq6Jmz
+         MpkhOBbw+Jx+eTZMpWwqvmpzYnfgH3OgrbA40zNwvXaVAT3bK6Xf6uRK9q2WtddqzxKw
+         tRnJl30cb9iLlPiVpD3JPriCF7+qPQuu98QK5HeyhSCM4CkXWCySq09Ya2+KoqUBkLUR
+         sv8nln0TELTaFgPVdGvk191nRFN8KoX+inDVMixxjsWE4OeZsmHgsm5gjKkMDd6FUi38
+         UlIQ==
+X-Gm-Message-State: AOAM532fl6hmGfiJjszFK8FsMZ0RDaETwwnibXMt7VxmI02mwA6jvxgQ
+        CHqCx/Leusl+/W3dvv1tNPs=
+X-Google-Smtp-Source: ABdhPJwD9ix9lfeQvlComKKmYrqugIKWAfczOqDdQChbDntLD4DZCMZaRNTNQF1239hApg5LvUo9Aw==
+X-Received: by 2002:a17:906:b34c:: with SMTP id cd12mr4844963ejb.104.1628169071952;
+        Thu, 05 Aug 2021 06:11:11 -0700 (PDT)
+Received: from localhost.localdomain (host-82-51-42-96.retail.telecomitalia.it. [82.51.42.96])
+        by smtp.gmail.com with ESMTPSA id qa34sm1690363ejc.120.2021.08.05.06.11.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 06:11:11 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] staging: r8188eu: Fix incorrect types in arguments
+Date:   Thu,  5 Aug 2021 15:11:08 +0200
+Message-Id: <20210805131108.19775-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <cover.1627989586.git.viresh.kumar@linaro.org> <75c8e6e5e8dfa1889938f3a6b2d991763c7a3717.1627989586.git.viresh.kumar@linaro.org>
- <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
- <0100017b1610f711-c53c79f2-9e28-4c45-bb42-8db09688b18e-000000@email.amazonses.com>
- <CAK8P3a0DWkfQcZpmyfKcdNt1MHf8ha6a9L2LmLt1Tv-j0HDr3w@mail.gmail.com> <20210805124922.j7lts7tfmm4t2kpf@vireshk-i7>
-In-Reply-To: <20210805124922.j7lts7tfmm4t2kpf@vireshk-i7>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 5 Aug 2021 15:10:21 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0kbmPLGCBrjAv7-dW=JWq-pdSBeGUHCxUFmMKvKhCg7w@mail.gmail.com>
-Message-ID: <CAK8P3a0kbmPLGCBrjAv7-dW=JWq-pdSBeGUHCxUFmMKvKhCg7w@mail.gmail.com>
-Subject: Re: [Stratos-dev] [PATCH V4 2/2] gpio: virtio: Add IRQ support
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jason Wang <jasowang@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 2:49 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 05-08-21, 14:03, Arnd Bergmann wrote:
-> > On Thu, Aug 5, 2021 at 1:26 PM Viresh Kumar via Stratos-dev
-> > > Based on discussion we had today (offline), I changed the design a bit
-> > > and used handle_level_irq() instead, as it provides consistent calls
-> > > to mask/unmask(), which simplified the whole thing a bit.
-> >
-> > The new flow looks much nicer to me, without the workqueue, and
-> > doing the requeue directly in the unmask() operation.
-> >
-> > I don't quite understand the purpose of the type_pending and
-> > mask_pending flags yet, can you explain what they actually
-> > do?
->
-> They are required to make sure we don't send unnecessary
-> VIRTIO_GPIO_MSG_IRQ_TYPE events to the device, every time bus_unlock()
-> is called.
->
-> mask_pending tracks if the masked state has changed since the time
-> last bus_unlock() was called. So on an interrupt, both mask() and
-> unmask() will get called by the irq-core now and mask_pending will
-> change to true (in mask()} and then false (in unmask()). And
-> eventually in bus_unlock() we won't send an extra
-> VIRTIO_GPIO_MSG_IRQ_TYPE message.
+GCC + Sparse emit warnings of passing incorrect type in arguments of 
+some functions because of different base types. Fix them by changing 
+the types of the parameters of the above-mentioned functions.
+In the meantime, remove the unnecessary casts of those arguments
+which are then passed to memcpy() within those same functions.
 
-I hope this can still be simplified by working out better which state
-transitions are needed exactly. In particular, I would expect that we
-can get away with not sending a VIRTIO_GPIO_MSG_IRQ_TYPE
-for 'mask' state changes at all, but use that only for forcing 'enabled'
-state changes.
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_br_ext.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-One part that I think is missing though is remembering the case
-when an eventq message came in after an interrupt got masked
-when the message was already armed. In this case, the
-virtio_gpio_event_vq() function would not call the irq handler,
-but the subsequent "unmask" callback would need to arrange
-having it called.
+diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+index 27c8ec3b7d62..e4110d5bc6f2 100644
+--- a/drivers/staging/r8188eu/core/rtw_br_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+@@ -134,37 +134,37 @@ static inline void __nat25_generate_ipv4_network_addr(unsigned char *networkAddr
+ }
+ 
+ static inline void __nat25_generate_ipx_network_addr_with_node(unsigned char *networkAddr,
+-				unsigned int *ipxNetAddr, unsigned char *ipxNodeAddr)
++				__be32 *ipxNetAddr, unsigned char *ipxNodeAddr)
+ {
+ 	memset(networkAddr, 0, MAX_NETWORK_ADDR_LEN);
+ 
+ 	networkAddr[0] = NAT25_IPX;
+-	memcpy(networkAddr+1, (unsigned char *)ipxNetAddr, 4);
++	memcpy(networkAddr+1, ipxNetAddr, 4);
+ 	memcpy(networkAddr+5, ipxNodeAddr, 6);
+ }
+ 
+ static inline void __nat25_generate_ipx_network_addr_with_socket(unsigned char *networkAddr,
+-				unsigned int *ipxNetAddr, unsigned short *ipxSocketAddr)
++				__be32 *ipxNetAddr, __be16 *ipxSocketAddr)
+ {
+ 	memset(networkAddr, 0, MAX_NETWORK_ADDR_LEN);
+ 
+ 	networkAddr[0] = NAT25_IPX;
+-	memcpy(networkAddr+1, (unsigned char *)ipxNetAddr, 4);
+-	memcpy(networkAddr+5, (unsigned char *)ipxSocketAddr, 2);
++	memcpy(networkAddr+1, ipxNetAddr, 4);
++	memcpy(networkAddr+5, ipxSocketAddr, 2);
+ }
+ 
+ static inline void __nat25_generate_apple_network_addr(unsigned char *networkAddr,
+-				unsigned short *network, unsigned char *node)
++				__be16 *network, unsigned char *node)
+ {
+ 	memset(networkAddr, 0, MAX_NETWORK_ADDR_LEN);
+ 
+ 	networkAddr[0] = NAT25_APPLE;
+-	memcpy(networkAddr+1, (unsigned char *)network, 2);
++	memcpy(networkAddr+1, network, 2);
+ 	networkAddr[3] = *node;
+ }
+ 
+ static inline void __nat25_generate_pppoe_network_addr(unsigned char *networkAddr,
+-				unsigned char *ac_mac, unsigned short *sid)
++				unsigned char *ac_mac, __be16 *sid)
+ {
+ 	memset(networkAddr, 0, MAX_NETWORK_ADDR_LEN);
+ 
+-- 
+2.32.0
 
-        Arnd
