@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428063E1863
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8FC3E1865
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242585AbhHEPnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59030 "EHLO
+        id S242615AbhHEPn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242376AbhHEPlz (ORCPT
+        with ESMTP id S242389AbhHEPl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:41:55 -0400
+        Thu, 5 Aug 2021 11:41:58 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5528C06179E
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 08:41:40 -0700 (PDT)
-Message-ID: <20210805153954.152415874@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDB9C0617B1
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 08:41:42 -0700 (PDT)
+Message-ID: <20210805153954.219339421@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628178099;
+        s=2020; t=1628178100;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=fJADVdH2q12brck4NzvtHNn6yyFVAP01XRTvQyvvUxU=;
-        b=0Utooe4UHA3aJtrAyZxiov5gx4N4kf/BundLXSXZjHTXmdykQSYaB/d8I418kSxYvMnYg8
-        M0Zdc1pYjn8OhEFu6kWDRW1Q3q8/ICOomQx4UNDXqQ0pXCF4riCFdHhFvBL9hKKhAf3+yc
-        aCRAT9VxlgmeFgiwy1vAByzKZYUYZIUsPemDSrp4YvU0Ude6Cxf3iiILRG6bhuAzffeiBG
-        yHrw9JiTBGbcjXisHoRSjUMmLYcWsI27k28LPpkasEVn7OxuAJ1eUQP8DwbCaIyE+FI47p
-        /6rwpzIeXNqvJDTAtlhkNpU/WlyaoJ+K8S2LeNWE/vckYt2HPLCS5nBNs4t8Gw==
+        bh=rVwGzvQPLMUsg69NUA8v9NgaYhkJ7rz2s+2TPWwsUac=;
+        b=kfydsCtmizBoPrPu+0K0SJ9Fs5mBPmNLCmu23uMYaQt2yCyO+rw6jnEvwab6net7zhz7Dl
+        pitpY+X9+C6g7o9Dr4bBwNs9/UsOdRWUdj0pRGaJmnBc7g+z5MB2dINdLiDpOCSJ8FrdT7
+        q99Or32sDayvbgO7yNSK6DHRUGsOM6HBJTK8CmaMhXuvo9IICe9KAWMCSP22kqY4UAHB+I
+        5eRC97c18tTsmrKvlwPlQgfeeCx/JDGt43UbWh2fC2FU0vuMPJZaUlR9PJrh3McZr/9elQ
+        VxiTZpHFpD91x+Xvo3MIRxZmNW/1xDHbY7qbrNAYKqi/C+dhrT2R5GrksGfwFw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628178099;
+        s=2020e; t=1628178100;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=fJADVdH2q12brck4NzvtHNn6yyFVAP01XRTvQyvvUxU=;
-        b=MdELRHbVndFI73C8VVnTUs1qmhiD6YeS+pSNCb0+/MpwcKnD/NgFxwyxD6CPTbU3lQQOif
-        oOcQYrJoDTOczeDQ==
-Date:   Thu, 05 Aug 2021 17:13:23 +0200
+        bh=rVwGzvQPLMUsg69NUA8v9NgaYhkJ7rz2s+2TPWwsUac=;
+        b=6UMVzXVxOH+/eCba39S9QywO+7XsSXL0N2Ik9PiC8Jd3kvYTWTjIq4uTfKNqsgxUxiPBgk
+        9wfqBdC54LMbeqCg==
+Date:   Thu, 05 Aug 2021 17:13:24 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -49,7 +49,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V3 23/64] locking/spinlock: Split the lock types header
+Subject: [patch V3 24/64] locking/rtmutex: Prevent future include recursion hell
 References: <20210805151300.330412127@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,192 +58,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Move raw_spinlock into its own file. Prepare for RT 'sleeping spinlocks' to
-avoid header recursion as RT locks require rtmutex.h which in turn requires
-the raw spinlock types.
+rtmutex only needs raw_spinlock_t, but it includes spinlock_types.h which
+is not a problem on an non RT enabled kernel.
 
-No functional change.
+RT kernels substitute regular spinlocks with 'sleeping' spinlocks which
+are based on rtmutexes and therefore must be able to include rtmutex.h.
 
+Include spinlock_types_raw.h instead.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V3: Remove the duplicate defines
+ include/linux/rtmutex.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 ---
- include/linux/rwlock_types.h       |    4 ++
- include/linux/spinlock.h           |    4 ++
- include/linux/spinlock_types.h     |   59 ---------------------------------
- include/linux/spinlock_types_raw.h |   65 +++++++++++++++++++++++++++++++++++++
- 4 files changed, 74 insertions(+), 58 deletions(-)
- create mode 100644 include/linux/spinlock_types_raw.h
----
---- a/include/linux/rwlock_types.h
-+++ b/include/linux/rwlock_types.h
-@@ -1,6 +1,10 @@
- #ifndef __LINUX_RWLOCK_TYPES_H
- #define __LINUX_RWLOCK_TYPES_H
+--- a/include/linux/rtmutex.h
++++ b/include/linux/rtmutex.h
+@@ -15,7 +15,7 @@
  
-+#if !defined(__LINUX_SPINLOCK_TYPES_H)
-+# error "Do not include directly, include spinlock_types.h"
-+#endif
-+
- /*
-  * include/linux/rwlock_types.h - generic rwlock type definitions
-  *				  and initializers
---- a/include/linux/spinlock.h
-+++ b/include/linux/spinlock.h
-@@ -12,6 +12,8 @@
-  *  asm/spinlock_types.h: contains the arch_spinlock_t/arch_rwlock_t and the
-  *                        initializers
-  *
-+ *  linux/spinlock_types_raw:
-+ *			  The raw types and initializers
-  *  linux/spinlock_types.h:
-  *                        defines the generic type and initializers
-  *
-@@ -31,6 +33,8 @@
-  *                        contains the generic, simplified UP spinlock type.
-  *                        (which is an empty structure on non-debug builds)
-  *
-+ *  linux/spinlock_types_raw:
-+ *			  The raw RT types and initializers
-  *  linux/spinlock_types.h:
-  *                        defines the generic type and initializers
-  *
---- a/include/linux/spinlock_types.h
-+++ b/include/linux/spinlock_types.h
-@@ -9,64 +9,7 @@
-  * Released under the General Public License (GPL).
-  */
- 
--#if defined(CONFIG_SMP)
--# include <asm/spinlock_types.h>
--#else
--# include <linux/spinlock_types_up.h>
--#endif
--
--#include <linux/lockdep_types.h>
--
--typedef struct raw_spinlock {
--	arch_spinlock_t raw_lock;
--#ifdef CONFIG_DEBUG_SPINLOCK
--	unsigned int magic, owner_cpu;
--	void *owner;
--#endif
--#ifdef CONFIG_DEBUG_LOCK_ALLOC
--	struct lockdep_map dep_map;
--#endif
--} raw_spinlock_t;
--
--#define SPINLOCK_MAGIC		0xdead4ead
--
--#define SPINLOCK_OWNER_INIT	((void *)-1L)
--
--#ifdef CONFIG_DEBUG_LOCK_ALLOC
--# define RAW_SPIN_DEP_MAP_INIT(lockname)		\
--	.dep_map = {					\
--		.name = #lockname,			\
--		.wait_type_inner = LD_WAIT_SPIN,	\
--	}
--# define SPIN_DEP_MAP_INIT(lockname)			\
--	.dep_map = {					\
--		.name = #lockname,			\
--		.wait_type_inner = LD_WAIT_CONFIG,	\
--	}
--#else
--# define RAW_SPIN_DEP_MAP_INIT(lockname)
--# define SPIN_DEP_MAP_INIT(lockname)
--#endif
--
--#ifdef CONFIG_DEBUG_SPINLOCK
--# define SPIN_DEBUG_INIT(lockname)		\
--	.magic = SPINLOCK_MAGIC,		\
--	.owner_cpu = -1,			\
--	.owner = SPINLOCK_OWNER_INIT,
--#else
--# define SPIN_DEBUG_INIT(lockname)
--#endif
--
--#define __RAW_SPIN_LOCK_INITIALIZER(lockname)	\
--	{					\
--	.raw_lock = __ARCH_SPIN_LOCK_UNLOCKED,	\
--	SPIN_DEBUG_INIT(lockname)		\
--	RAW_SPIN_DEP_MAP_INIT(lockname) }
--
--#define __RAW_SPIN_LOCK_UNLOCKED(lockname)	\
--	(raw_spinlock_t) __RAW_SPIN_LOCK_INITIALIZER(lockname)
--
--#define DEFINE_RAW_SPINLOCK(x)	raw_spinlock_t x = __RAW_SPIN_LOCK_UNLOCKED(x)
+ #include <linux/linkage.h>
+ #include <linux/rbtree.h>
+-#include <linux/spinlock_types.h>
 +#include <linux/spinlock_types_raw.h>
  
- typedef struct spinlock {
- 	union {
---- /dev/null
-+++ b/include/linux/spinlock_types_raw.h
-@@ -0,0 +1,65 @@
-+#ifndef __LINUX_SPINLOCK_TYPES_RAW_H
-+#define __LINUX_SPINLOCK_TYPES_RAW_H
-+
-+#include <linux/types.h>
-+
-+#if defined(CONFIG_SMP)
-+# include <asm/spinlock_types.h>
-+#else
-+# include <linux/spinlock_types_up.h>
-+#endif
-+
-+#include <linux/lockdep_types.h>
-+
-+typedef struct raw_spinlock {
-+	arch_spinlock_t raw_lock;
-+#ifdef CONFIG_DEBUG_SPINLOCK
-+	unsigned int magic, owner_cpu;
-+	void *owner;
-+#endif
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+	struct lockdep_map dep_map;
-+#endif
-+} raw_spinlock_t;
-+
-+#define SPINLOCK_MAGIC		0xdead4ead
-+
-+#define SPINLOCK_OWNER_INIT	((void *)-1L)
-+
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+# define RAW_SPIN_DEP_MAP_INIT(lockname)		\
-+	.dep_map = {					\
-+		.name = #lockname,			\
-+		.wait_type_inner = LD_WAIT_SPIN,	\
-+	}
-+# define SPIN_DEP_MAP_INIT(lockname)			\
-+	.dep_map = {					\
-+		.name = #lockname,			\
-+		.wait_type_inner = LD_WAIT_CONFIG,	\
-+	}
-+#else
-+# define RAW_SPIN_DEP_MAP_INIT(lockname)
-+# define SPIN_DEP_MAP_INIT(lockname)
-+#endif
-+
-+#ifdef CONFIG_DEBUG_SPINLOCK
-+# define SPIN_DEBUG_INIT(lockname)		\
-+	.magic = SPINLOCK_MAGIC,		\
-+	.owner_cpu = -1,			\
-+	.owner = SPINLOCK_OWNER_INIT,
-+#else
-+# define SPIN_DEBUG_INIT(lockname)
-+#endif
-+
-+#define __RAW_SPIN_LOCK_INITIALIZER(lockname)	\
-+{						\
-+	.raw_lock = __ARCH_SPIN_LOCK_UNLOCKED,	\
-+	SPIN_DEBUG_INIT(lockname)		\
-+	RAW_SPIN_DEP_MAP_INIT(lockname) }
-+
-+#define __RAW_SPIN_LOCK_UNLOCKED(lockname)	\
-+	(raw_spinlock_t) __RAW_SPIN_LOCK_INITIALIZER(lockname)
-+
-+#define DEFINE_RAW_SPINLOCK(x)  raw_spinlock_t x = __RAW_SPIN_LOCK_UNLOCKED(x)
-+
-+#endif
+ extern int max_lock_depth; /* for sysctl */
+ 
 
