@@ -2,130 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30FA3E1175
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4703E1172
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239135AbhHEJiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 05:38:24 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:53986 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238744AbhHEJiW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S238895AbhHEJiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 5 Aug 2021 05:38:22 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1759Xnvp021646;
-        Thu, 5 Aug 2021 11:37:35 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=/lg8ln5qr6r8cxbsCBbPBe1Cx7VPnaMBPEeubKnLIRo=;
- b=TLSpPOjvLLeQEHxlNixNz7uG3OhF5Z1ff8BzJ11oGK21VGlL5S/idaK/R14zIPFJbghr
- glCMHtfiJXM3/JYPFR1Yv0PupQidR7IEUL+vkTNdfRn8Ng+hSbiJBWMHY5sfxz32ec2D
- MNCT7IHdvxkcvZIlHKcndmkEUlaYY/Q5EUuNtGf7gbusKOlUjAUkLAH8ejRXN/dVmr/l
- HK1C3fNyH1LTWElur1fqfbrcs9vIQL7hh+smB6mXnEWgFyO6KxlW27fHwOZ85l82STLK
- G3NlyzMBMaSwM/J0giioS86ZIVg6DVO9qc7FcFWImS7OXh5yTVRHfaU9mdY4ARXqd2Tr ug== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3a8bpvrnp1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Aug 2021 11:37:35 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 86185100034;
-        Thu,  5 Aug 2021 11:37:32 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5C7E22138F9;
-        Thu,  5 Aug 2021 11:37:32 +0200 (CEST)
-Received: from lmecxl0912.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 5 Aug
- 2021 11:37:30 +0200
-Subject: Re: [PATCH v4 2/3] ARM: dts: stm32: fix dtbs_check warning on ili9341
- dts binding
-To:     Dillon Min <dillon.minfei@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Peter Robinson <pbrobinson@gmail.com>
-CC:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        =?UTF-8?Q?Noralf_Tr=c3=b8nnes?= <noralf@tronnes.org>,
-        <kbuild-all@lists.01.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <1627098243-2742-1-git-send-email-dillon.minfei@gmail.com>
- <1627098243-2742-3-git-send-email-dillon.minfei@gmail.com>
- <CACRpkdYReUdg_7oSTqcsA_+9tS9w6MH90=KV1rGyr4YWT=NW-w@mail.gmail.com>
- <CAL9mu0LfcLS1iNQnamxA_oTrxu8eEBpUm+u92V2d9-8qz6hvow@mail.gmail.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Message-ID: <ecffd445-7f18-518f-2093-19e393588c1e@foss.st.com>
-Date:   Thu, 5 Aug 2021 11:37:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Received: from foss.arm.com ([217.140.110.172]:41792 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238146AbhHEJiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 05:38:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 168B16D;
+        Thu,  5 Aug 2021 02:38:05 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DFEED3F719;
+        Thu,  5 Aug 2021 02:38:03 -0700 (PDT)
+Subject: Re: [PATCH v3 02/25] iommu/amd: Drop IOVA cookie management
+From:   Robin Murphy <robin.murphy@arm.com>
+To:     joro@8bytes.org, will@kernel.org
+Cc:     linux-kernel@vger.kernel.org, dianders@chromium.org,
+        iommu@lists.linux-foundation.org, rajatja@google.com,
+        linux-arm-kernel@lists.infradead.org
+References: <cover.1628094600.git.robin.murphy@arm.com>
+ <ebc82f082d5fde58557efbec66f34b1be6a12599.1628094600.git.robin.murphy@arm.com>
+Message-ID: <44f5c699-1177-7f1d-479e-59a8a42efab6@arm.com>
+Date:   Thu, 5 Aug 2021 10:37:58 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAL9mu0LfcLS1iNQnamxA_oTrxu8eEBpUm+u92V2d9-8qz6hvow@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+In-Reply-To: <ebc82f082d5fde58557efbec66f34b1be6a12599.1628094600.git.robin.murphy@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-05_03:2021-08-05,2021-08-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dillon
+On 2021-08-04 18:15, Robin Murphy wrote:
+> The core code bakes its own cookies now.
+> 
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> 
+> ---
+> 
+> v3: Also remove unneeded include
+> ---
+>   drivers/iommu/amd/iommu.c | 13 -------------
+>   1 file changed, 13 deletions(-)
+> 
+> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+> index 52fe2326042a..92f7cbe3d14a 100644
+> --- a/drivers/iommu/amd/iommu.c
+> +++ b/drivers/iommu/amd/iommu.c
+> @@ -20,7 +20,6 @@
+>   #include <linux/scatterlist.h>
+>   #include <linux/dma-map-ops.h>
+>   #include <linux/dma-direct.h>
+> -#include <linux/dma-iommu.h>
 
-On 8/5/21 11:19 AM, Dillon Min wrote:
-> Hi Linus
-> 
-> Thanks.
-> 
-> On Thu, 5 Aug 2021 at 17:11, Linus Walleij <linus.walleij@linaro.org> wrote:
->>
->> On Sat, Jul 24, 2021 at 5:44 AM <dillon.minfei@gmail.com> wrote:
->>
->>> From: Dillon Min <dillon.minfei@gmail.com>
->>>
->>> Since the compatible string defined from ilitek,ili9341.yaml is
->>> "st,sf-tc240t-9370-t", "ilitek,ili9341"
->>>
->>> so, append "ilitek,ili9341" to avoid the below dtbs_check warning.
->>>
->>> arch/arm/boot/dts/stm32f429-disco.dt.yaml: display@1: compatible:
->>> ['st,sf-tc240t-9370-t'] is too short
->>>
->>> Fixes: a726e2f000ec ("ARM: dts: stm32: enable ltdc binding with ili9341, gyro l3gd20 on stm32429-disco board")
->>> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
->>> Reported-by: kernel test robot <lkp@intel.com>
->>> ---
->>> v4: no change.
->>
->> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->>
->> Please funnel this patch through the STM and ARM SoC tree.
-> 
-> Sure, I will let Alex know. Thanks for your help on this driver.
-> 
-> Hi Alex,
-> Should I send v5 with Linus's Reviewed-by tag on this patch? thanks.
+Oh dear, how embarrassing... I went through all the drivers making that 
+decision based on iommu_dma* references but totally forgot about 
+iommu_setup_dma_ops() here. And then of course fell into the trap of 
+"such a minor change I don't need to re-rest it" hubris... sigh, roll 
+back to v2 for this one.
 
-No, I'll do it.
+Apologies,
+Robin.
 
-cheers
-alex
-
+>   #include <linux/iommu-helper.h>
+>   #include <linux/delay.h>
+>   #include <linux/amd-iommu.h>
+> @@ -1918,16 +1917,7 @@ static struct iommu_domain *amd_iommu_domain_alloc(unsigned type)
+>   	domain->domain.geometry.aperture_end   = ~0ULL;
+>   	domain->domain.geometry.force_aperture = true;
+>   
+> -	if (type == IOMMU_DOMAIN_DMA &&
+> -	    iommu_get_dma_cookie(&domain->domain) == -ENOMEM)
+> -		goto free_domain;
+> -
+>   	return &domain->domain;
+> -
+> -free_domain:
+> -	protection_domain_free(domain);
+> -
+> -	return NULL;
+>   }
+>   
+>   static void amd_iommu_domain_free(struct iommu_domain *dom)
+> @@ -1944,9 +1934,6 @@ static void amd_iommu_domain_free(struct iommu_domain *dom)
+>   	if (!dom)
+>   		return;
+>   
+> -	if (dom->type == IOMMU_DOMAIN_DMA)
+> -		iommu_put_dma_cookie(&domain->domain);
+> -
+>   	if (domain->flags & PD_IOMMUV2_MASK)
+>   		free_gcr3_table(domain);
+>   
 > 
-> Best Regards
-> Dillon
-> 
->>
->> Yours,
->> Linus Walleij
-
