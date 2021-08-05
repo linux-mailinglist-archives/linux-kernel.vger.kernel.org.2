@@ -2,98 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D64F3E19E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE443E19F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235930AbhHEREz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235555AbhHEREy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:04:54 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD5FC061765;
-        Thu,  5 Aug 2021 10:04:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=04CagU5EAbNrLiuUdGw8amWt7aWpnxKksRF0oFOax3Q=; b=lwo4gDq0fIYCO+T+z3kf+zBidA
-        uYdhe1Qfs/OqSQis3rmaZ5T3FyeZePaFsfSK9l3/wU0HqXYdESB49J0N178X/97zQABIR/pYQlbW9
-        QFhV7NNqTqOjJl9WevN8lr39j5r4AevHiZ2+JBiUd6grkM2elRGqACy457XvU0tGFRu1Akj6IvxpN
-        LDbx2nlhH64DMx88GmKFzKG/eVI5sb81NgyhNJnUd/jhPt8+RciEDhSyy+6Te/XACN2u82k65EoLG
-        AJHMrT07NeWpg9l5FQzlH8z3R4/qO7zuoVOpOiojZu7EQt+bsS2zunwIkyQvNcZcc6M12fbTfuZko
-        UKaedd9w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBgnJ-0067e2-CW; Thu, 05 Aug 2021 17:04:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8D76E300084;
-        Thu,  5 Aug 2021 19:04:32 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6E5FF2C9EB240; Thu,  5 Aug 2021 19:04:32 +0200 (CEST)
-Date:   Thu, 5 Aug 2021 19:04:32 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Cc:     "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Vladimir Isaev <Vladimir.Isaev@synopsys.com>
-Subject: Re: [PATCH 00/11] ARC atomics update
-Message-ID: <YQwaIIFvzdNcWnww@hirez.programming.kicks-ass.net>
-References: <20210804191554.1252776-1-vgupta@synopsys.com>
- <20210805090209.GA22037@worktop.programming.kicks-ass.net>
- <2c2bed36-1bcf-ae34-0e94-9110c7e2b242@synopsys.com>
+        id S236188AbhHERFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:05:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230316AbhHERFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 13:05:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D8A960234;
+        Thu,  5 Aug 2021 17:05:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628183117;
+        bh=CRhPrYxnVEvIcMGMbhRFRO4XCc+UnB3IwZ/ROUIRfao=;
+        h=From:To:Cc:Subject:Date:From;
+        b=F/7cpNUx1ypBWf9khNoyBz+MNSJH2F0cSHb9tUoEYI8jBIlvYVxpND59C6LqB4RzK
+         7sC2gJqUSr58RZ8+XGv/MSgKQy1zTu0huv+gPqOxm4sSM5E1VoKpthRaZh1jLaXc/h
+         D3WEGG0VGL7z9+5OEfVpGrpQRgd401k3NXdxSxSHso2vtNOTgAVhOziXPRpTHA2EJN
+         mEQZUfIEfTem/xbM0F78lQDhA4k4yo+Jrda3gA1M5dGyTrrYb5FgseNyWeDVmIYAAH
+         Dx/O5yX9K5TRPH3Vjsqlq/Ghzu+9drvjCr60AIFJU8i5SqqOdgwh4dmZqsBwvotRD0
+         ALx1sukm9wRew==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Tree for Aug 5
+Date:   Thu,  5 Aug 2021 18:04:40 +0100
+Message-Id: <20210805170440.47433-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2c2bed36-1bcf-ae34-0e94-9110c7e2b242@synopsys.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 04:18:29PM +0000, Vineet Gupta wrote:
-> On 8/5/21 2:02 AM, Peter Zijlstra wrote:
-> > On Wed, Aug 04, 2021 at 12:15:43PM -0700, Vineet Gupta wrote:
-> > 
-> >> Vineet Gupta (10):
-> >>    ARC: atomics: disintegrate header
-> >>    ARC: atomic: !LLSC: remove hack in atomic_set() for for UP
-> >>    ARC: atomic: !LLSC: use int data type consistently
-> >>    ARC: atomic64: LLSC: elide unused atomic_{and,or,xor,andnot}_return
-> >>    ARC: atomics: implement relaxed variants
-> >>    ARC: bitops: fls/ffs to take int (vs long) per asm-generic defines
-> >>    ARC: xchg: !LLSC: remove UP micro-optimization/hack
-> >>    ARC: cmpxchg/xchg: rewrite as macros to make type safe
-> >>    ARC: cmpxchg/xchg: implement relaxed variants (LLSC config only)
-> >>    ARC: atomic_cmpxchg/atomic_xchg: implement relaxed variants
-> >>
-> >> Will Deacon (1):
-> >>    ARC: switch to generic bitops
-> > 
-> > Didn't see any weird things:
-> > 
-> > Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> 
-> Thx Peter. A lot of this is your code anyways ;-)
-> 
-> Any initial thoughts/comments on patch 06/11 - is there an obvious 
-> reason that generic bitops take signed @nr or the hurdle is need to be 
-> done consistently cross-arch.
+Hi all,
 
-That does indeed seem daft and ready for a cleanup. Will any
-recollection from when you touched this?
+Changes since 20210804:
 
-AFAICT bitops/atomic.h is consistently 'unsigned int nr', but
-bitops/non-atomic.h is 'int nr' while bitops/instrumented-non-atomic.h
-is consistently 'long nr'.
+The net-next had a build failure so I used the tree from 20210804.
 
-I'm thinking 'unsigned int nr' is the most sensible allround, but I've
-not gone through all the cases.
+Non-merge commits (relative to Linus' tree): 4844
+ 5408 files changed, 339533 insertions(+), 133369 deletions(-)
+
+----------------------------------------------------------------------------
+
+I have created today's linux-next tree at
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+are tracking the linux-next tree using git, you should not use "git pull"
+to do so as that will try to merge the new linux-next release with the
+old one.  You should use "git fetch" and checkout or reset to the new
+master.
+
+You can see which trees have been included by looking in the Next/Trees
+file in the source.  There are also quilt-import.log and merge.log
+files in the Next directory.  Between each merge, the tree was built
+with an arm64 defconfig, an allmodconfig for x86_64, a
+multi_v7_defconfig for arm and a native build of tools/perf. After
+the final fixups (if any), I do an x86_64 modules_install followed by
+builds for x86_64 allnoconfig, arm64 allnoconfig and i386, and htmldocs.
+
+Below is a summary of the state of the merge.
+
+I am currently merging 333 trees (counting Linus' and 90 trees of bug
+fix patches pending for the current merge release).
+
+Stats about the size of the tree over time can be seen at
+http://neuling.org/linux-next-size.html .
+
+Status of my local build tests will be at
+http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+advice about cross compilers/configs that work, we are always open to add
+more builds.
+
+Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+Gortmaker for triage and bug fixes.
