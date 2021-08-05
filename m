@@ -2,185 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F333E1699
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2AC3E1698
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241944AbhHEOLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:11:45 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49102 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241954AbhHEOLm (ORCPT
+        id S241941AbhHEOLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 10:11:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240281AbhHEOLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:11:42 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A07ED223A5;
-        Thu,  5 Aug 2021 14:11:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628172687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cac2K7UyIrNiZxU9wp02mcCd//sOnFqsP30dJ/UcrhA=;
-        b=nRzdXtEEFavfgJz3zKm8R4Kzg+rvMW+39U5hi4lsROR++ngJCWqK+6OMTFRLE9GpOP+ok7
-        XBEn5fyktWZlW2LKTSmiDUCeyWfXeox66QOxmTnNUmM32JNv7XWCw1vyBvHX3buggnrm+5
-        zuvctQ0jQR4EsVa/1fgA2BomGpAmBFM=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C9FEFA3D3E;
-        Thu,  5 Aug 2021 14:11:26 +0000 (UTC)
-Date:   Thu, 5 Aug 2021 16:11:11 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     chenguanyou <chenguanyou9338@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        keescook@chromium.org, lukas.bulwahn@gmail.com, vbabka@suse.cz,
-        gpiccoli@canonical.com, chenguanyou <chenguanyou@xiaomi.com>
-Subject: Re: [PATCH v2] hungtask: add filter kthread
-Message-ID: <YQvxf0KqvlVSO+R5@dhcp22.suse.cz>
-References: <20210805134747.29621-1-chenguanyou@xiaomi.com>
+        Thu, 5 Aug 2021 10:11:36 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE9BC061765;
+        Thu,  5 Aug 2021 07:11:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jkC5BHIA+OoNY3RA1kKnhanE39KSJUyRxPOSK5PxKJ4=; b=NpK5dm+naHAd5M7wUtL/qC/RhT
+        nGHX3syeHhPuA3sfp5l5vyJZ4oFPJma7Okjn2xmj23ibbR+deob9R03yRcpcb1vPfB0zp5XXnsxu4
+        Rp+XgTVrPzP6P+1uzFbsuLsxyrOJSmezjewXrEeB6hxOl8iuesS76wo+dBcyMTsEaiTWONPISAx3B
+        bhhdJZXGqcXTrl5IAbJ2RppLykyyktmPNP4DXfNydlxD92JIr0QTvNN9CRR2cc0y3YWpLnMTKWtnm
+        SWG56G+XRDu5TIONm8BzzDsPYUzz0Elut2rgRNyhV61BtEUzzYx/gqMo+WkF94eCfNlTuo4Y+bvot
+        40+t3O8g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mBe5g-0064Rw-L3; Thu, 05 Aug 2021 14:11:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7AEF03002C1;
+        Thu,  5 Aug 2021 16:11:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5BFD82028D0D9; Thu,  5 Aug 2021 16:11:19 +0200 (CEST)
+Date:   Thu, 5 Aug 2021 16:11:19 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tianyu Lan <ltykernel@gmail.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        Tianyu.Lan@microsoft.com, rppt@kernel.org,
+        kirill.shutemov@linux.intel.com, akpm@linux-foundation.org,
+        brijesh.singh@amd.com, thomas.lendacky@amd.com, pgonda@google.com,
+        david@redhat.com, krish.sadhukhan@oracle.com, saravanand@fb.com,
+        aneesh.kumar@linux.ibm.com, xen-devel@lists.xenproject.org,
+        martin.b.radev@gmail.com, ardb@kernel.org, rientjes@google.com,
+        tj@kernel.org, keescook@chromium.org,
+        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
+        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com, parri.andrea@gmail.com
+Subject: Re: [PATCH V2 03/14] x86/set_memory: Add x86_set_memory_enc static
+ call support
+Message-ID: <YQvxhyn5O1POQTF/@hirez.programming.kicks-ass.net>
+References: <20210804184513.512888-1-ltykernel@gmail.com>
+ <20210804184513.512888-4-ltykernel@gmail.com>
+ <5823af8a-7dbb-dbb0-5ea2-d9846aa2a36a@intel.com>
+ <942e6fcb-3bdf-9294-d3db-ca311db440d3@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210805134747.29621-1-chenguanyou@xiaomi.com>
+In-Reply-To: <942e6fcb-3bdf-9294-d3db-ca311db440d3@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 05-08-21 21:47:47, chenguanyou wrote:
-> Some kernel threads are always in D state, when we enable hung_task,
-> it will misjudge, we should skip these to narrow the scope.
-> 
-> exp mediatek:
-> root            435   435      2       0      0 mtk_lpm_monitor_thread 0 D LPM-0
-> root            436   436      2       0      0 mtk_lpm_monitor_thread 0 D LPM-1
-> root            437   437      2       0      0 mtk_lpm_monitor_thread 0 D LPM-2
-> root            438   438      2       0      0 mtk_lpm_monitor_thread 0 D LPM-3
-> root            439   439      2       0      0 mtk_lpm_monitor_thread 0 D LPM-4
-> root            440   440      2       0      0 mtk_lpm_monitor_thread 0 D LPM-5
-> root            441   441      2       0      0 mtk_lpm_monitor_thread 0 D LPM-6
-> root            442   442      2       0      0 mtk_lpm_monitor_thread 0 D LPM-7
+On Thu, Aug 05, 2021 at 10:05:17PM +0800, Tianyu Lan wrote:
+> +static int default_set_memory_enc(unsigned long addr, int numpages, bool
+> enc)
+> +{
+> +	return 0;
+> +}
+> +
+> +DEFINE_STATIC_CALL(x86_set_memory_enc, default_set_memory_enc);
 
-A similar approch has been proposed in the past (sorry I do not have
-links handy) and always deemed a wrong way to approach the problem.
-Either those kernel threads should be fixed to use less sleep or
-annotate the sleep properly (TASK_IDLE).
+That's spelled:
 
-> Signed-off-by: chenguanyou <chenguanyou@xiaomi.com>
-> ---
->  Documentation/admin-guide/sysctl/kernel.rst | 10 ++++++++++
->  include/linux/sched/sysctl.h                |  1 +
->  kernel/hung_task.c                          |  8 ++++++++
->  kernel/sysctl.c                             |  9 +++++++++
->  lib/Kconfig.debug                           | 15 +++++++++++++++
->  5 files changed, 43 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-> index 68b21395a743..3c7c74b26d95 100644
-> --- a/Documentation/admin-guide/sysctl/kernel.rst
-> +++ b/Documentation/admin-guide/sysctl/kernel.rst
-> @@ -405,6 +405,16 @@ This file shows up if ``CONFIG_DETECT_HUNG_TASK`` is enabled.
->  
->  -1: report an infinite number of warnings.
->  
-> +hung_task_filter_kthread
-> +========================
-> +
-> +We should skip kthread when a hung task is detected.
-> +This file shows up if ``CONFIG_DEFAULT_HUNG_TASK_FILTER_KTHREAD`` is enabled.
-> +
-> += =========================================================
-> +0 Not skip detect kthread.
-> +1 Skip detect kthread.
-> += =========================================================
->  
->  hyperv_record_panic_msg
->  =======================
-> diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
-> index db2c0f34aaaf..2b8b01b57559 100644
-> --- a/include/linux/sched/sysctl.h
-> +++ b/include/linux/sched/sysctl.h
-> @@ -19,6 +19,7 @@ extern unsigned int  sysctl_hung_task_panic;
->  extern unsigned long sysctl_hung_task_timeout_secs;
->  extern unsigned long sysctl_hung_task_check_interval_secs;
->  extern int sysctl_hung_task_warnings;
-> +extern unsigned int sysctl_hung_task_filter_kthread;
->  int proc_dohung_task_timeout_secs(struct ctl_table *table, int write,
->  		void *buffer, size_t *lenp, loff_t *ppos);
->  #else
-> diff --git a/kernel/hung_task.c b/kernel/hung_task.c
-> index 396ebaebea3f..74ad75c2dde8 100644
-> --- a/kernel/hung_task.c
-> +++ b/kernel/hung_task.c
-> @@ -48,6 +48,11 @@ unsigned long __read_mostly sysctl_hung_task_timeout_secs = CONFIG_DEFAULT_HUNG_
->   */
->  unsigned long __read_mostly sysctl_hung_task_check_interval_secs;
->  
-> +/*
-> + * Non-zero means no checking kthread
-> + */
-> +unsigned int __read_mostly sysctl_hung_task_filter_kthread = CONFIG_DEFAULT_HUNG_TASK_FILTER_KTHREAD;
-> +
->  int __read_mostly sysctl_hung_task_warnings = 10;
->  
->  static int __read_mostly did_panic;
-> @@ -88,6 +93,9 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
->  {
->  	unsigned long switch_count = t->nvcsw + t->nivcsw;
->  
-> +	if (unlikely(sysctl_hung_task_filter_kthread && t->flags & PF_KTHREAD))
-> +		return;
-> +
->  	/*
->  	 * Ensure the task is not frozen.
->  	 * Also, skip vfork and any other user process that freezer should skip.
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index d4a78e08f6d8..62067b9db486 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -2513,6 +2513,15 @@ static struct ctl_table kern_table[] = {
->  		.proc_handler	= proc_dointvec_minmax,
->  		.extra1		= &neg_one,
->  	},
-> +	{
-> +		.procname	= "hung_task_filter_kthread",
-> +		.data		= &sysctl_hung_task_filter_kthread,
-> +		.maxlen		= sizeof(int),
-> +		.mode		= 0644,
-> +		.proc_handler   = proc_dointvec_minmax,
-> +		.extra1		= SYSCTL_ZERO,
-> +		.extra2		= SYSCTL_ONE,
-> +	},
->  #endif
->  #ifdef CONFIG_RT_MUTEXES
->  	{
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 678c13967580..d7063f955987 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1110,6 +1110,21 @@ config DEFAULT_HUNG_TASK_TIMEOUT
->  	  A timeout of 0 disables the check.  The default is two minutes.
->  	  Keeping the default should be fine in most cases.
->  
-> +config DEFAULT_HUNG_TASK_FILTER_KTHREAD
-> +	int "Default filter kthread for hung task"
-> +	depends on DETECT_HUNG_TASK
-> +	range 0 1
-> +	default 0
-> +	help
-> +	  This option controls filter kthread uses to determine when
-> +	  a kernel task has become "state=TASK_UNINTERRUPTIBLE" and should be skipped.
-> +
-> +	  It can be adjusted at runtime via the kernel.hung_task_filter_kthread
-> +	  sysctl or by writing a value to
-> +	  /proc/sys/kernel/hung_task_filter_kthread.
-> +
-> +	  A filter of 1 disables the check.
-> +
->  config BOOTPARAM_HUNG_TASK_PANIC
->  	bool "Panic (Reboot) On Hung Tasks"
->  	depends on DETECT_HUNG_TASK
-> -- 
-> 2.17.1
+DEFINE_STATIC_CALL_RET0(x86_set_memory_enc, __set_memory_enc_dec);
 
--- 
-Michal Hocko
-SUSE Labs
+And then you can remove the default_set_memory_enc() thing.
