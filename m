@@ -2,154 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9403E139E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739703E13A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240895AbhHELNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:13:53 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:44136 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240712AbhHELNw (ORCPT
+        id S240921AbhHELOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:14:33 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:37496 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240826AbhHELOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:13:52 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628162018; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=qPcpN9NQyxrV+wjCTwJrY2/3PkHEbQq5DmexGizOL5A=; b=XFdLksZMApnxhymehCxz/D7dsalZ/Ytlx4FDOgTfQw84YdRoZcBTNE4I4oEX/DdXBmTrMspB
- BZ/fo4QMu7yeZxZrKQBJQQnNfORuFCKVFuMkJZ4di3Oz2Dn4STumb6nJ6sUMB/H/9uopomUn
- V9HBMy0CBPvwvXkspm3tgjgGDI4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 610bc7e2b4dfc4b0ef7135b3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 05 Aug 2021 11:13:38
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 552F5C433D3; Thu,  5 Aug 2021 11:13:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 33275C433F1;
-        Thu,  5 Aug 2021 11:13:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 33275C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=deesin@codeaurora.org
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-To:     bjorn.andersson@linaro.org, swboyd@chromium.org,
-        clew@codeaurora.org, sibis@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-Subject: [PATCH V5 2/2] soc: qcom: aoss: Add debugfs entry
-Date:   Thu,  5 Aug 2021 16:42:54 +0530
-Message-Id: <1628161974-7182-3-git-send-email-deesin@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628161974-7182-1-git-send-email-deesin@codeaurora.org>
-References: <1628161974-7182-1-git-send-email-deesin@codeaurora.org>
+        Thu, 5 Aug 2021 07:14:30 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Ui1z.hC_1628162053;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Ui1z.hC_1628162053)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 05 Aug 2021 19:14:13 +0800
+Subject: Re: [PATCH v3 1/2] tty: hvc: pass DMA capable memory to put_chars()
+To:     Jiri Slaby <jirislaby@kernel.org>, gregkh@linuxfoundation.org,
+        amit@kernel.org, arnd@arndb.de, osandov@fb.com
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210804025453.93543-1-xianting.tian@linux.alibaba.com>
+ <0f26a1c3-53e8-9282-69e8-8d81a9cafc59@kernel.org>
+ <f1b92c7d-0eaf-4eac-ecd2-fbb74fb63b52@kernel.org>
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+Message-ID: <202cf491-5cdd-999f-d556-a5ebd2b4e266@linux.alibaba.com>
+Date:   Thu, 5 Aug 2021 19:14:13 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <f1b92c7d-0eaf-4eac-ecd2-fbb74fb63b52@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It can be useful to control the different power states of various
-parts of hardware for device testing. Add a debugfs node for qmp so
-messages can be sent to aoss for debugging and testing purposes.
 
-Signed-off-by: Chris Lew <clew@codeaurora.org>
-Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
----
- drivers/soc/qcom/qcom_aoss.c | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
-
-diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-index b84cb31..16e3d65 100644
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -4,6 +4,7 @@
-  */
- #include <dt-bindings/power/qcom-aoss-qmp.h>
- #include <linux/clk-provider.h>
-+#include <linux/debugfs.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/mailbox_client.h>
-@@ -86,6 +87,9 @@ struct qmp {
- 	struct clk_hw qdss_clk;
- 	struct genpd_onecell_data pd_data;
- 	struct qmp_cooling_device *cooling_devs;
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	struct dentry *debugfs_file;
-+#endif /* CONFIG_DEBUG_FS */
- };
- 
- struct qmp_pd {
-@@ -558,6 +562,33 @@ void qmp_put(struct qmp *qmp)
- }
- EXPORT_SYMBOL(qmp_put);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+static ssize_t aoss_dbg_write(struct file *file, const char __user *userstr,
-+			      size_t len, loff_t *pos)
-+{
-+	struct qmp *qmp = file->private_data;
-+	char buf[QMP_MSG_LEN] = {};
-+	int ret;
-+
-+	if (!len || len >= QMP_MSG_LEN)
-+		return -EINVAL;
-+
-+	ret  = copy_from_user(buf, userstr, len);
-+	if (ret) {
-+		return -EFAULT;
-+	}
-+
-+	ret = qmp_send(qmp, buf, QMP_MSG_LEN);
-+
-+	return ret ? ret : len;
-+}
-+
-+static const struct file_operations aoss_dbg_fops = {
-+	.open = simple_open,
-+	.write = aoss_dbg_write,
-+};
-+#endif /* CONFIG_DEBUG_FS */
-+
- static int qmp_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
-@@ -612,6 +643,11 @@ static int qmp_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, qmp);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	qmp->debugfs_file = debugfs_create_file("aoss_send_message", 0220, NULL,
-+						qmp, &aoss_dbg_fops);
-+#endif /* CONFIG_DEBUG_FS */
-+
- 	return 0;
- 
- err_remove_qdss_clk:
-@@ -628,6 +664,10 @@ static int qmp_remove(struct platform_device *pdev)
- {
- 	struct qmp *qmp = platform_get_drvdata(pdev);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	debugfs_remove(qmp->debugfs_file);
-+#endif /* CONFIG_DEBUG_FS */
-+
- 	qmp_qdss_clk_remove(qmp);
- 	qmp_pd_remove(qmp);
- 	qmp_cooling_devices_remove(qmp);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+在 2021/8/5 下午4:09, Jiri Slaby 写道:
+> On 05. 08. 21, 9:58, Jiri Slaby wrote:
+>> Hi,
+>>
+>> On 04. 08. 21, 4:54, Xianting Tian wrote:
+>>> @@ -933,6 +949,16 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, 
+>>> int data,
+>>>       hp->outbuf_size = outbuf_size;
+>>>       hp->outbuf = &((char *)hp)[ALIGN(sizeof(*hp), sizeof(long))];
+>
+> This deserves cleanup too. Why is "outbuf" not "char outbuf[0] 
+> __ALIGNED__" at the end of the structure? The allocation would be 
+> easier (using struct_size()) and this line would be gone completely.
+I will make the cleanup in v4.
+>
+>>> +    /*
+>>> +     * hvc_con_outbuf is guaranteed to be aligned at least to the
+>>> +     * size(N_OUTBUF) by kmalloc().
+>>> +     */
+>>> +    hp->hvc_con_outbuf = kzalloc(N_OUTBUF, GFP_KERNEL);
+>>> +    if (!hp->hvc_con_outbuf)
+>>> +        return ERR_PTR(-ENOMEM);
+>>
+>> This leaks hp, right?
+>
+> Actually, why don't you make
+> char c[N_OUTBUF] __ALIGNED__;
+>
+> part of struct hvc_struct directly?
+thanks, it a good idea, I will change it in v4.
+>
+>> BTW your 2 patches are still not threaded, that is hard to follow.
+>>
+>>> +
+>>> +    spin_lock_init(&hp->hvc_con_lock);
+>>> +
+>>>       tty_port_init(&hp->port);
+>>>       hp->port.ops = &hvc_port_ops;
+>>
+>> thanks,
