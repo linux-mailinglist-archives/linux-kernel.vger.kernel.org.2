@@ -2,344 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60B43E1A26
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B81E3E1A28
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238599AbhHERLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:11:50 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48390 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238633AbhHERLp (ORCPT
+        id S238547AbhHERN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237497AbhHERN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:11:45 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 82F1F1FDC9;
-        Thu,  5 Aug 2021 17:11:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628183490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hbSKxhFL75AVaZrCZ/aIHYq28wd3Dn4cdIO5Rcoxzmw=;
-        b=qoAe+iPYymbW4ChAM2aO9a3bdN9Cfk5zmqN52MscYMYdGCbTBMTj1+xjqHcfHk2O3gBfl0
-        TlI20oFmnygpLuJlFlSJId7LUuC2t2BQwiqepV2t2JAsgsnf5jZLaCqNK3UQ3CzP34BZsd
-        Fw9V3bFjGopoodBK6umxMZGlHCIQgdk=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 5FC2AA49F6;
-        Thu,  5 Aug 2021 17:11:30 +0000 (UTC)
-Date:   Thu, 5 Aug 2021 19:11:28 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Thu, 5 Aug 2021 13:13:26 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B26C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 10:13:11 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id nh14so10468640pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 10:13:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QA00P76bflJpvFVXRXCqF/ydJ5VOL2iYfCDbkN0GqY8=;
+        b=dPL//LUqTtrv8CLM5kof9yFH7N2piQ/iZSo6IKnwqe6aj5AsKoXqNSIm7k7gjlxR8O
+         iuzUumNd3+dySQUHoINH6ZvB7cYFzRnwohovKAaUAeBoejGAUrIzOHUBOugv3D9j/5CE
+         8L/RmhA0fyA7Xxm7rDs7T9A6IZxLETE0paOods9c+ot1mUkJOeOr2QMW83MnyDP6R5SG
+         UEE7ncNeKzEmkjtosOO+xCKNwYqwv7SoOQBgwy6iFEGHcjI8cjvpwxFHbLA1lcIe6ggf
+         14HVTtNF4RRJEOP65jqQb3Pv/E7YIVdSPMARry9mZT3x2yd4qROW9JvMiKVmlZYfb+wp
+         9QMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=QA00P76bflJpvFVXRXCqF/ydJ5VOL2iYfCDbkN0GqY8=;
+        b=dwkAiPrgckwgeLWuhfszY9ESIYYmYitz1DEHdm+EF5bpbaKj6l7Bi3gWbjeN0LzivR
+         iTq4kTkOVeZJNfnzYZgYQl5DRLEfJ6owiiRnL8B9NgcQlTK61xLf7PhWLysKbIutbMR5
+         d6vVmn7LdUMTk++kNIGsG+DgfcOlhU+fM6KbcwYLi5vQlLUP+CRum2VHUqvWX8Wc4pII
+         oxDswuiaORiNTlI9J3lMehamtmliAdFUUr/6+vz4SNkkGwanGF3sY3/WAFPTEsRPzh2z
+         0mDwZeLJ1ozTIyG+ERFhr3UksPCS2QqDJCDj6uvdIAI58deAeHP83v6JFfpqymvCUIbM
+         kZew==
+X-Gm-Message-State: AOAM533EU+up086Ngs2fRXZGB3U2nOFQowpXKH4fehabZuCV77S1LvPc
+        bLG2EWXtRVlTIPVUqdD1qY8=
+X-Google-Smtp-Source: ABdhPJxX4D3KwnOrHMR0fi0zPokEsF0OiWg9Ye/AaA06LrH3XFRI9rd5cNxLnJ9xehybB6O48X0hJw==
+X-Received: by 2002:a17:902:8bc3:b029:124:919f:6213 with SMTP id r3-20020a1709028bc3b0290124919f6213mr4867351plo.51.1628183591035;
+        Thu, 05 Aug 2021 10:13:11 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:71c8])
+        by smtp.gmail.com with ESMTPSA id y26sm7412826pfp.176.2021.08.05.10.13.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 10:13:10 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 5 Aug 2021 07:13:06 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH printk v1 08/10] printk: introduce kernel sync mode
-Message-ID: <YQwbwJmhzXklJrGq@alley>
-References: <20210803131301.5588-1-john.ogness@linutronix.de>
- <20210803131301.5588-9-john.ogness@linutronix.de>
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        Rik van Riel <riel@surriel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] sched: cgroup SCHED_IDLE support
+Message-ID: <YQwcIpnKq3TYYIIL@mtj.duckdns.org>
+References: <20210730020019.1487127-1-joshdon@google.com>
+ <20210730020019.1487127-2-joshdon@google.com>
+ <20210805101849.GH8057@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210803131301.5588-9-john.ogness@linutronix.de>
+In-Reply-To: <20210805101849.GH8057@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-08-03 15:18:59, John Ogness wrote:
-> Introduce "sync mode", which means that all printk calls will
-> synchronously write to the console. Once activated, this mode is
-> never deactivated. It is used when the kernel is about to end
-> (such as panic, oops, shutdown, reboot).
-> 
-> Sync mode can only be activated if atomic consoles are available.
-> 
-> In sync mode:
-> 
-> - only atomic consoles (write_atomic() callback) will print
-> - printing occurs within vprintk_store() instead of console_unlock()
-> 
-> CONSOLE_LOG_MAX is moved to printk.h to support the per-console
-> buffer used in sync mode.
-> 
-> diff --git a/include/linux/console.h b/include/linux/console.h
-> index 2f11b604e487..eda9b96e3fb6 100644
-> --- a/include/linux/console.h
-> +++ b/include/linux/console.h
-> @@ -151,6 +151,9 @@ struct console {
->  	short	flags;
->  	short	index;
->  	int	cflag;
-> +#if defined(CONFIG_PRINTK) && defined(CONFIG_HAVE_ATOMIC_CONSOLE)
-> +	char	sync_buf[CONSOLE_LOG_MAX];
+Hello,
 
-Could it be allocated in register_console()?
+On Thu, Aug 05, 2021 at 12:18:49PM +0200, Peter Zijlstra wrote:
+> So I'm tempted to apply this, but last time TJ wasn't liking it much for
+> the interface or somesuch. His argument that this encodes the
+> hierarchical scheduling behaviour, but I'm not really buying that
+> argument, as it doesn't really add more constraints than we already have
+> by the hierarchical relative weight.
 
-It is needed only when sync_write() callback is defined...
+Interface-wise, writing 1 to idle file is fine. This does move away
+the interface from being a purely semantical weight tree, which is a
+concern and I have a difficult time seeing that the stated benefits
+are significant enough to justify the changes. That said, this is
+primarily a scheduler decision, so if you think the addition is
+justified, please go ahead.
 
-> +#endif
->  	void	*data;
->  	struct	 console *next;
->  };
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> +static bool print_sync(struct console *con, u64 *seq)
-> +{
-> +	struct printk_info info;
-> +	struct printk_record r;
-> +	size_t text_len;
-> +
-> +	prb_rec_init_rd(&r, &info, &con->sync_buf[0], sizeof(con->sync_buf));
-> +
-> +	if (!prb_read_valid(prb, *seq, &r))
-> +		return false;
-> +
+Acked-by: Tejun Heo <tj@kernel.org>
 
-It should check suppress_message_printing().
+Thanks.
 
-> +	text_len = record_print_text(&r, console_msg_format & MSG_FORMAT_SYSLOG, printk_time);
-> +
-> +	con->write_atomic(con, &con->sync_buf[0], text_len);
-> +
-> +	*seq = r.info->seq;
-> +
-> +	touch_softlockup_watchdog_sync();
-> +	clocksource_touch_watchdog();
-> +	rcu_cpu_stall_reset();
-> +	touch_nmi_watchdog();
-> +
-> +	if (text_len)
-> +		printk_delay(r.info->level);
-> +
-> +	return true;
-> +}
-> +
-> +static void print_sync_to(struct console *con, u64 seq)
-> +{
-> +	u64 printk_seq;
-> +
-> +	while (!__printk_cpu_trylock())
-> +		__printk_wait_on_cpu_lock();
-> +
-> +	for (;;) {
-> +		printk_seq = read_console_seq();
-> +		if (printk_seq > seq)
-> +			break;
-> +		if (!print_sync(con, &printk_seq))
-> +			break;
-> +#ifdef CONFIG_PRINTK_NMI
-> +		if (in_nmi()) {
-> +			latched_seq_write(&console_sync_nmi_seq, printk_seq + 1);
-> +			continue;
-> +		}
-> +#endif
-> +		latched_seq_write(&console_sync_seq, printk_seq + 1);
-> +	}
-> +
-> +	__printk_cpu_unlock();
-> +}
-> +
-> +static void call_sync_console_drivers(u64 seq)
-> +{
-> +	struct console *con;
-> +
-> +	for_each_console(con) {
-> +		if (!(con->flags & CON_ENABLED))
-> +			continue;
-> +		if (!con->write_atomic)
-> +			continue;
-> +		print_sync_to(con, seq);
-> +	}
-> +}
-> +#else
-> +
-> +#define read_console_seq()		latched_seq_read_nolock(&console_seq)
-> +#define in_sync_mode()			false
-> +#define enable_sync_mode()
-> +#define call_sync_console_drivers(seq)	((void)seq)
-> +
-> +#endif /* CONFIG_HAVE_ATOMIC_CONSOLE */
-> +
->  /*
->   * Special console_lock variants that help to reduce the risk of soft-lockups.
->   * They allow to pass console_lock to another printk() call using a busy wait.
-> @@ -2084,6 +2231,8 @@ static void call_console_drivers(const char *ext_text, size_t ext_len,
->  		if (!cpu_online(smp_processor_id()) &&
->  		    !(con->flags & CON_ANYTIME))
->  			continue;
-> +		if (in_sync_mode())
-> +			continue;
-
-IMHO, this causes that console_unlock() will iterate over all pending
-messsages without calling console. But it will still increment
-console_seq.
-
-As a result, the messages will be skipped also by print_sync_to() because
-read_console_seq() will return the incremented value.
-
-I think that we need to break the iteration in console_unlock().
-
-Or do I miss something?
-
-
->  		if (con->flags & CON_EXTENDED)
->  			con->write(con, ext_text, ext_len);
->  		else {
-> @@ -2251,6 +2400,7 @@ int vprintk_store(int facility, int level,
->  	const u32 caller_id = printk_caller_id();
->  	struct prb_reserved_entry e;
->  	enum printk_info_flags flags = 0;
-> +	bool final_commit = false;
->  	struct printk_record r;
->  	unsigned long irqflags;
->  	u16 trunc_msg_len = 0;
-> @@ -2261,6 +2411,7 @@ int vprintk_store(int facility, int level,
->  	u16 text_len;
->  	int ret = 0;
->  	u64 ts_nsec;
-> +	u64 seq;
->  
->  	/*
->  	 * Since the duration of printk() can vary depending on the message
-> @@ -2299,6 +2450,7 @@ int vprintk_store(int facility, int level,
->  	if (flags & LOG_CONT) {
->  		prb_rec_init_wr(&r, reserve_size);
->  		if (prb_reserve_in_last(&e, prb, &r, caller_id, LOG_LINE_MAX)) {
-> +			seq = r.info->seq;
->  			text_len = printk_sprint(&r.text_buf[r.info->text_len], reserve_size,
->  						 facility, &flags, fmt, args);
->  			r.info->text_len += text_len;
-> @@ -2306,6 +2458,7 @@ int vprintk_store(int facility, int level,
->  			if (flags & LOG_NEWLINE) {
->  				r.info->flags |= LOG_NEWLINE;
->  				prb_final_commit(&e);
-> +				final_commit = true;
->  			} else {
->  				prb_commit(&e);
->  			}
-> @@ -2330,6 +2483,8 @@ int vprintk_store(int facility, int level,
->  			goto out;
->  	}
->  
-> +	seq = r.info->seq;
-> +
->  	/* fill message */
->  	text_len = printk_sprint(&r.text_buf[0], reserve_size, facility, &flags, fmt, args);
->  	if (trunc_msg_len)
-> @@ -2344,13 +2499,19 @@ int vprintk_store(int facility, int level,
->  		memcpy(&r.info->dev_info, dev_info, sizeof(r.info->dev_info));
->  
->  	/* A message without a trailing newline can be continued. */
-> -	if (!(flags & LOG_NEWLINE))
-> +	if (!(flags & LOG_NEWLINE)) {
->  		prb_commit(&e);
-> -	else
-> +	} else {
->  		prb_final_commit(&e);
-> +		final_commit = true;
-> +	}
->  
->  	ret = text_len + trunc_msg_len;
->  out:
-> +	/* only the kernel may perform synchronous printing */
-> +	if (in_sync_mode() && facility == 0 && final_commit)
-> +		call_sync_console_drivers(seq);
-
-Is there any reason why this is called from vprintk_emit()?
-
-I guess that you wanted to call it before releasing IRQ.
-But is it really necessary? call_sync_console_drivers(seq)
-reads the message again via the seq number anyway.
-
-I have to say that the new code makes the printk() code/api much more
-twisted. It is a combination of the naming scheme and design.
-
-The original code path is:
-
-  + printk()
-    + vprintk_emit()
-      + vprintk_store()
-      + console_trylock()
-      + console_unlock()
-	+ prb_read_valid()
-	+ record_print_text()
-	+ call_console_drivers()
-	  + con->write()
-
-The new code path is:
-
-  + printk()
-    + vprintk_emit()
-      + vprintk_store()
-	+ call_sync_console_drivers()
-	  + printk_sync_to()
-	    + print_sync()
-	      + prb_read_valid()
-	      + record_print_text()
-	      + con->write_atomic()
-
-
-One thing is the ordering of the api names:
-
-  + printk -> vprintk -> console -> record_print -> call_console -> con -> write
-vs.
-  + printk -> vprintk -> call_console -> print -> record_print -> con -> write
-
-
-The original patch called console() API from printk() API. The most
-ugly things were:
-
-    + console_unlock() flushed the messages to the console.
-      A cleaner API would be:
-
-	console_lock();
-	console_flush();
-	console_unlock();
-
-
-    + record_print() called from console_unlock(). The "print" name
-      name makes it hard to distinguish from the "printk" API.
-      But it does a completely different job:
-
-	+ "printk" API stores the message and call console
-	+ "record_print" API converts the message into the console format
-
-
-The new code adds even more twists:
-
-    + Adds yet another "print" API. It has another meaning than
-      "printk" or "record_print" API:
-
-	+ "printk" API stores the message and call console
-	+ "print" API prints the message to the console
-	+ "record_print" API converts the message into the console format
-
-
-    + call_sync_console_drivers() does similar job as console_unlock()
-      (iterates over all pending messages, read, format, call console).
-      While the original call_console_drivers() only called the
-      console. The logic is somehow inside out.
-
-
-
-This is why I opened the discussion about the behavior with console
-kthreads.
-
-I think that we might need another synchronous mode also for the early
-boot, suspend, kexec, panic, for non-atomic consoles. We might need
-another cycle/solution when there are per-console kthreads.
-
-I would prefer to somehow refactor the existing console_unlock()
-so that the iteration over pending messages and call_console_drivers()
-might be usable also in the other sync modes, console kthreads, ...
-
-Best Regards,
-Petr
-
-
-PS: I have vacation the following two weeks. I am still going to work
-    tomorrow (Friday) but I am not sure how much time I will have to
-    discuss this. I am afraid that I won't be able to help much before
-    I am back from the vacation.
+-- 
+tejun
