@@ -2,158 +2,414 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA443E13DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194B13E13DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241066AbhHEL1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:27:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:43118 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241022AbhHEL1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:27:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 604E11FB;
-        Thu,  5 Aug 2021 04:26:46 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9F3753F719;
-        Thu,  5 Aug 2021 04:26:44 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 12:26:39 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tom Joseph <tjoseph@cadence.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, nadeem@cadence.com
-Subject: Re: [PATCH v2 5/6] misc: pci_endpoint_test: Do not request or
- allocate IRQs in probe
-Message-ID: <20210805112639.GA20438@lpieralisi>
-References: <20210803074932.19820-1-kishon@ti.com>
- <20210803074932.19820-6-kishon@ti.com>
- <20210803095839.GA11252@lpieralisi>
- <02c1ddb7-539e-20a0-1bef-e10e76922a0e@ti.com>
+        id S241088AbhHEL1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241022AbhHEL1F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 07:27:05 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44CDC06179B
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 04:26:49 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id pj14-20020a17090b4f4eb029017786cf98f9so8566659pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 04:26:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=aJTPpUh6t2Es8y7Iu7RimXwcA3En7rLzswEc/EhXmpU=;
+        b=YSkpZre0qFUWOKnFiY6mD1Cfh1gxdhUbV2KEMmeE/TB+fsbO6IC2Gr40mVUf0+K7jw
+         +rRHi2t0fXELui3TCNi2aAW/aRLZGj5Fp83Fw71AZI46Hrb5LqC35XoNCPdGmN+OYfkK
+         7JVBREinP2hsOhGxW+ch2yMvYujlN2TxFl6IOwjcfFW7npU/dEwXi1zqvovZk5QU7HBz
+         uWZ430mPivPU/3iaz1PTlSWKwR5tXF5Il0HRTwqwEG7/2a0w/XfNYb/styG4Beu0q/bt
+         7uW5FI48i+2Dx2dTuYsWdBQ7B64wmrUz7UrhZBGTUWPQ886UC09Omontgy6cfHa6q2Q3
+         uQYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aJTPpUh6t2Es8y7Iu7RimXwcA3En7rLzswEc/EhXmpU=;
+        b=WT8kCEZ9T9P95Wcj22457FrbAOzvBogSr9pSSJvmfKF4OtDJ9567mycNi4T7NlLZzS
+         0DDsOG0PH9sguIjoyaKPrRlZuok4wyNgQ8oIQ/EkomZddsKyMBtOYjILdF1FHKBQmk+c
+         fqFuevGSEM/xnx5AKqKjnK1lAOEHXExll+v54AeSOkFiSOLs63vaAa7s+0bAmdf5ulIV
+         gE3Fvi2fzdlnAsIdDSNIZLaf2zgFXZuEggK/pYceppTa91geQ23YYuWQqGQOb+O12M24
+         a2J6uNmGTXvdkBkHOjSWw/LhsMc2sCV89ENw32C4iQqeB9hcl7HKMGS1sf8VBg7UL8rV
+         heSQ==
+X-Gm-Message-State: AOAM531Ie0+b0jXgqc0yEodZauoH9X8bWaDbquKeOBBxiWqmIM64YMNb
+        S0y4MJEp2P/y0BRxwQQlWjmZ2g==
+X-Google-Smtp-Source: ABdhPJzv+MboVfqPh0q+vDLPaa8pd6outUQJG4TuEMiFxmK76373FG4avjK/7bnF3wpUokDchlHCMQ==
+X-Received: by 2002:aa7:8d10:0:b029:303:8d17:7b8d with SMTP id j16-20020aa78d100000b02903038d177b8dmr4836361pfe.26.1628162809328;
+        Thu, 05 Aug 2021 04:26:49 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id j16sm6923193pfi.165.2021.08.05.04.26.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 04:26:48 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 16:56:46 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH V4 2/2] gpio: virtio: Add IRQ support
+Message-ID: <20210805112646.lgkurm3wjilf5xrv@vireshk-i7>
+References: <cover.1627989586.git.viresh.kumar@linaro.org>
+ <75c8e6e5e8dfa1889938f3a6b2d991763c7a3717.1627989586.git.viresh.kumar@linaro.org>
+ <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <02c1ddb7-539e-20a0-1bef-e10e76922a0e@ti.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 07:32:44PM +0530, Kishon Vijay Abraham I wrote:
-> Hi Lorenzo,
-> 
-> On 03/08/21 3:28 pm, Lorenzo Pieralisi wrote:
-> > On Tue, Aug 03, 2021 at 01:19:31PM +0530, Kishon Vijay Abraham I wrote:
-> >> Allocation of IRQ vectors and requesting IRQ is done as part of
-> >> PCITEST_SET_IRQTYPE. Do not request or allocate IRQs in probe for
-> >> AM654 and J721E so that the user space test script has better control
-> >> of the devices for which the IRQs are configured. Since certain user
-> >> space scripts could rely on allocation of IRQ vectors during probe,
-> >> remove allocation of IRQs only for TI's K3 platform.
-> >>
-> >> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> >> ---
-> >>  drivers/misc/pci_endpoint_test.c | 19 +++++++++++++------
-> >>  1 file changed, 13 insertions(+), 6 deletions(-)
-> > 
-> > I don't claim to understand the inner details of the endpoint test
-> > device but it looks like this approach should be redesigned.
-> > 
-> > I don't believe using devices quirks is the best approach to
-> > expose/remove a feature to userspace, this can soon become
-> > unmaintenable.
-> > 
-> > Maybe you can elaborate a bit more on what the real issue is please ?
-> 
-> The actual reason for introducing this patch (affects only AM654 and
-> J721E) is due to Errata ID #i2101 GIC: ITS Misbehavior
-> (https://www.ti.com/lit/er/sprz455a/sprz455a.pdf). So if more than 5
-> devices use GIC ITS simultaneously, GIC fails to raise interrupts.
-> 
-> Though this patch is not an actual workaround for the issue (the
-> workaround is in GIC ITS driver provided in the errata document), it
-> helps to keep testing PCIe RC/EP using pci-endpoint-test even when
-> multiple pci-epf-test endpoint devices are connected (Normal test-setup
-> having J721E-J721E back to back connection can support 21 pci-epf-test
-> devices). So this patch lets user to individually enable interrupts for
-> each of the devices and could disable after the interrupt test.
-> 
-> Since pci_endpoint_test is used only for testing PCIE RC/EP
-> communication and pci-endpoint-test has already implemented
-> PCITEST_SET_IRQTYPE for the userspace to enable interrupt, tried to not
-> enable the interrupts of all the devices by default in the probe (for
-> AM654 and J721E where this errata applies).
+On 03-08-21, 17:01, Arnd Bergmann wrote:
+> As far as I can tell, the update_irq_type() message would lead to the
+> interrupt getting delivered when it was armed and is now getting disabled,
+> but I don't see why we would call update_irq_type() as a result of the
+> eventq notification.
 
-I understand - what I am asking is:
+Based on discussion we had today (offline), I changed the design a bit
+and used handle_level_irq() instead, as it provides consistent calls
+to mask/unmask(), which simplified the whole thing a bit.
 
-is it possible, instead of applying this patch, to make
+Also I have broken the rule from specs, maybe we should update spec
+with that, where the specs said that the buffer must not be queued
+before enabling the interrupt. I just queue the buffer unconditionally
+now from unmask().
 
-pci_endpoint_test_alloc_irq_vectors() and pci_endpoint_test_request_irq()
+I am not sure but there may be some race around the "queued" flag and
+I wonder if we can land in a scenario where the buffer is left
+un-queued somehow, while an interrupt is enabled.
 
-fail in the target platforms instead of preventing to call them ?
-
-My worry is that you may end up with more corner cases in the future
-and peppering code with is_() calls to work around them which does
-not look right.
-
-Thanks,
-Lorenzo
-
-> Thanks,
-> Kishon
-> 
-> > 
-> > Thanks,
-> > Lorenzo
-> > 
-> >> diff --git a/drivers/misc/pci_endpoint_test.c b/drivers/misc/pci_endpoint_test.c
-> >> index c7ee34013485..9740f2a0e7cd 100644
-> >> --- a/drivers/misc/pci_endpoint_test.c
-> >> +++ b/drivers/misc/pci_endpoint_test.c
-> >> @@ -79,6 +79,9 @@
-> >>  #define PCI_DEVICE_ID_RENESAS_R8A774C0		0x002d
-> >>  #define PCI_DEVICE_ID_RENESAS_R8A774E1		0x0025
-> >>  
-> >> +#define is_j721e_pci_dev(pdev)         \
-> >> +		((pdev)->device == PCI_DEVICE_ID_TI_J721E)
-> >> +
-> >>  static DEFINE_IDA(pci_endpoint_test_ida);
-> >>  
-> >>  #define to_endpoint_test(priv) container_of((priv), struct pci_endpoint_test, \
-> >> @@ -810,9 +813,11 @@ static int pci_endpoint_test_probe(struct pci_dev *pdev,
-> >>  
-> >>  	pci_set_master(pdev);
-> >>  
-> >> -	if (!pci_endpoint_test_alloc_irq_vectors(test, irq_type)) {
-> >> -		err = -EINVAL;
-> >> -		goto err_disable_irq;
-> >> +	if (!(is_am654_pci_dev(pdev) || is_j721e_pci_dev(pdev))) {
-> >> +		if (!pci_endpoint_test_alloc_irq_vectors(test, irq_type)) {
-> >> +			err = -EINVAL;
-> >> +			goto err_disable_irq;
-> >> +		}
-> >>  	}
-> >>  
-> >>  	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++) {
-> >> @@ -850,9 +855,11 @@ static int pci_endpoint_test_probe(struct pci_dev *pdev,
-> >>  		goto err_ida_remove;
-> >>  	}
-> >>  
-> >> -	if (!pci_endpoint_test_request_irq(test)) {
-> >> -		err = -EINVAL;
-> >> -		goto err_kfree_test_name;
-> >> +	if (!(is_am654_pci_dev(pdev) || is_j721e_pci_dev(pdev))) {
-> >> +		if (!pci_endpoint_test_request_irq(test)) {
-> >> +			err = -EINVAL;
-> >> +			goto err_kfree_test_name;
-> >> +		}
-> >>  	}
-> >>  
-> >>  	misc_device = &test->miscdev;
-> >> -- 
-> >> 2.17.1
-> >>
+diff --git a/drivers/gpio/gpio-virtio.c b/drivers/gpio/gpio-virtio.c
+index 199f8ace1e88..114ce2640944 100644
+--- a/drivers/gpio/gpio-virtio.c
++++ b/drivers/gpio/gpio-virtio.c
+@@ -28,6 +28,17 @@ struct virtio_gpio_line {
+ 	unsigned int rxlen;
+ };
+ 
++struct vgpio_irq_line {
++	u8 type;
++	bool type_pending;
++	bool masked;
++	bool mask_pending;
++	bool queued;
++
++	struct virtio_gpio_irq_request ireq ____cacheline_aligned;
++	struct virtio_gpio_irq_response ires ____cacheline_aligned;
++};
++
+ struct virtio_gpio {
+ 	struct virtio_device *vdev;
+ 	struct mutex lock; /* Protects virtqueue operation */
+@@ -35,6 +46,11 @@ struct virtio_gpio {
+ 	struct virtio_gpio_config config;
+ 	struct virtio_gpio_line *lines;
+ 	struct virtqueue *request_vq;
++
++	/* irq support */
++	struct virtqueue *event_vq;
++	struct mutex irq_lock; /* Protects irq operation */
++	struct vgpio_irq_line *irq_lines;
+ };
+ 
+ static int _virtio_gpio_req(struct virtio_gpio *vgpio, u16 type, u16 gpio,
+@@ -187,6 +203,186 @@ static void virtio_gpio_set(struct gpio_chip *gc, unsigned int gpio, int value)
+ 	virtio_gpio_req(vgpio, VIRTIO_GPIO_MSG_SET_VALUE, gpio, value, NULL);
+ }
+ 
++/* Interrupt handling */
++static void virtio_gpio_irq_prepare(struct virtio_gpio *vgpio, u16 gpio)
++{
++	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[gpio];
++	struct virtio_gpio_irq_request *ireq = &irq_line->ireq;
++	struct virtio_gpio_irq_response *ires = &irq_line->ires;
++	struct scatterlist *sgs[2], req_sg, res_sg;
++	int ret;
++
++	if (unlikely(irq_line->queued))
++		return;
++
++	ireq->gpio = cpu_to_le16(gpio);
++	sg_init_one(&req_sg, ireq, sizeof(*ireq));
++	sg_init_one(&res_sg, ires, sizeof(*ires));
++	sgs[0] = &req_sg;
++	sgs[1] = &res_sg;
++
++	ret = virtqueue_add_sgs(vgpio->event_vq, sgs, 1, 1, irq_line, GFP_ATOMIC);
++	if (ret) {
++		dev_err(&vgpio->vdev->dev, "failed to add request to eventq\n");
++		return;
++	}
++
++	irq_line->queued = true;
++	virtqueue_kick(vgpio->event_vq);
++}
++
++static void virtio_gpio_irq_mask(struct irq_data *d)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
++	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[d->hwirq];
++
++	if (irq_line->masked)
++		return;
++
++	irq_line->masked = true;
++	irq_line->mask_pending = !irq_line->mask_pending;
++}
++
++static void virtio_gpio_irq_unmask(struct irq_data *d)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
++	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[d->hwirq];
++
++	/* Queue the buffer unconditionally on unmask */
++	virtio_gpio_irq_prepare(vgpio, d->hwirq);
++
++	if (!irq_line->masked)
++		return;
++
++	irq_line->masked = false;
++	irq_line->mask_pending = !irq_line->mask_pending;
++}
++
++static int virtio_gpio_irq_set_type(struct irq_data *d, unsigned int type)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
++	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[d->hwirq];
++
++	switch (type) {
++	case IRQ_TYPE_NONE:
++		type = VIRTIO_GPIO_IRQ_TYPE_NONE;
++		break;
++	case IRQ_TYPE_EDGE_RISING:
++		type = VIRTIO_GPIO_IRQ_TYPE_EDGE_RISING;
++		break;
++	case IRQ_TYPE_EDGE_FALLING:
++		type = VIRTIO_GPIO_IRQ_TYPE_EDGE_FALLING;
++		break;
++	case IRQ_TYPE_EDGE_BOTH:
++		type = VIRTIO_GPIO_IRQ_TYPE_EDGE_BOTH;
++		break;
++	case IRQ_TYPE_LEVEL_LOW:
++		type = VIRTIO_GPIO_IRQ_TYPE_LEVEL_LOW;
++		break;
++	case IRQ_TYPE_LEVEL_HIGH:
++		type = VIRTIO_GPIO_IRQ_TYPE_LEVEL_HIGH;
++		break;
++	default:
++		dev_err(&vgpio->vdev->dev, "unsupported irq type: %u\n", type);
++		return -EINVAL;
++	}
++
++	irq_line->type = type;
++	irq_line->type_pending = true;
++
++	return 0;
++}
++
++static void update_irq_type(struct virtio_gpio *vgpio, u16 gpio, u8 type)
++{
++	virtio_gpio_req(vgpio, VIRTIO_GPIO_MSG_IRQ_TYPE, gpio, type, NULL);
++}
++
++static void virtio_gpio_irq_bus_lock(struct irq_data *d)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
++
++	mutex_lock(&vgpio->irq_lock);
++}
++
++static void virtio_gpio_irq_bus_sync_unlock(struct irq_data *d)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
++	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[d->hwirq];
++	u8 type = irq_line->masked ? VIRTIO_GPIO_IRQ_TYPE_NONE : irq_line->type;
++
++	if (irq_line->mask_pending || irq_line->type_pending) {
++		irq_line->mask_pending = false;
++		irq_line->type_pending = false;
++		update_irq_type(vgpio, d->hwirq, type);
++	}
++
++	mutex_unlock(&vgpio->irq_lock);
++}
++
++static struct irq_chip vgpio_irq_chip = {
++	.name			= "virtio-gpio",
++	.irq_mask		= virtio_gpio_irq_mask,
++	.irq_unmask		= virtio_gpio_irq_unmask,
++	.irq_set_type		= virtio_gpio_irq_set_type,
++
++	/* These are required to implement irqchip for slow busses */
++	.irq_bus_lock		= virtio_gpio_irq_bus_lock,
++	.irq_bus_sync_unlock	= virtio_gpio_irq_bus_sync_unlock,
++};
++
++static void virtio_gpio_event_vq(struct virtqueue *vq)
++{
++	struct virtio_gpio *vgpio = vq->vdev->priv;
++	struct device *dev = &vgpio->vdev->dev;
++	struct vgpio_irq_line *irq_line;
++	int irq, gpio, ret;
++	unsigned int len;
++
++	while (true) {
++		irq_line = virtqueue_get_buf(vgpio->event_vq, &len);
++		if (!irq_line)
++			break;
++
++		if (len != sizeof(irq_line->ires)) {
++			dev_err(dev, "irq with incorrect length (%u : %u)\n",
++				len, (unsigned)sizeof(irq_line->ires));
++			continue;
++		}
++
++		WARN_ON(!irq_line->queued);
++		irq_line->queued = false;
++
++		/* Buffer is returned after interrupt is masked */
++		if (irq_line->ires.status == VIRTIO_GPIO_IRQ_STATUS_INVALID)
++			continue;
++
++		if (WARN_ON(irq_line->ires.status != VIRTIO_GPIO_IRQ_STATUS_VALID))
++			continue;
++
++		/*
++		 * Find GPIO line number from the offset of irq_line within the
++		 * irq_lines block. We can also get GPIO number from
++		 * irq-request, but better not rely on a value returned by
++		 * remote.
++		 */
++		gpio = irq_line - vgpio->irq_lines;
++		WARN_ON(gpio >= vgpio->config.ngpio);
++
++		irq = irq_find_mapping(vgpio->gc.irq.domain, gpio);
++		WARN_ON(!irq);
++
++		ret = generic_handle_irq(irq);
++		if (ret)
++			dev_err(dev, "failed to handle interrupt: %d\n", ret);
++	};
++}
++
+ static void virtio_gpio_request_vq(struct virtqueue *vq)
+ {
+ 	struct virtio_gpio_line *line;
+@@ -211,14 +407,15 @@ static void virtio_gpio_free_vqs(struct virtio_device *vdev)
+ static int virtio_gpio_alloc_vqs(struct virtio_gpio *vgpio,
+ 				 struct virtio_device *vdev)
+ {
+-	const char * const names[] = { "requestq" };
++	const char * const names[] = { "requestq", "eventq" };
+ 	vq_callback_t *cbs[] = {
+ 		virtio_gpio_request_vq,
++		virtio_gpio_event_vq,
+ 	};
+-	struct virtqueue *vqs[1] = { NULL };
++	struct virtqueue *vqs[2] = { NULL, NULL };
+ 	int ret;
+ 
+-	ret = virtio_find_vqs(vdev, 1, vqs, cbs, names, NULL);
++	ret = virtio_find_vqs(vdev, vgpio->irq_lines ? 2 : 1, vqs, cbs, names, NULL);
+ 	if (ret) {
+ 		dev_err(&vdev->dev, "failed to find vqs: %d\n", ret);
+ 		return ret;
+@@ -226,11 +423,23 @@ static int virtio_gpio_alloc_vqs(struct virtio_gpio *vgpio,
+ 
+ 	if (!vqs[0]) {
+ 		dev_err(&vdev->dev, "failed to find requestq vq\n");
+-		return -ENODEV;
++		goto out;
+ 	}
+ 	vgpio->request_vq = vqs[0];
+ 
++	if (vgpio->irq_lines && !vqs[1]) {
++		dev_err(&vdev->dev, "failed to find eventq vq\n");
++		goto out;
++	}
++	vgpio->event_vq = vqs[1];
++
+ 	return 0;
++
++out:
++	if (vqs[0] || vqs[1])
++		virtio_gpio_free_vqs(vdev);
++
++	return -ENODEV;
+ }
+ 
+ static const char **virtio_gpio_get_names(struct virtio_gpio *vgpio)
+@@ -326,6 +535,30 @@ static int virtio_gpio_probe(struct virtio_device *vdev)
+ 	vgpio->gc.owner			= THIS_MODULE;
+ 	vgpio->gc.can_sleep		= true;
+ 
++	/* Interrupt support */
++	if (virtio_has_feature(vdev, VIRTIO_GPIO_F_IRQ)) {
++		vgpio->irq_lines = devm_kcalloc(dev, config->ngpio,
++						sizeof(*vgpio->irq_lines),
++						GFP_KERNEL);
++		if (!vgpio->irq_lines)
++			return -ENOMEM;
++
++		/* The event comes from the outside so no parent handler */
++		vgpio->gc.irq.parent_handler	= NULL;
++		vgpio->gc.irq.num_parents	= 0;
++		vgpio->gc.irq.parents		= NULL;
++		vgpio->gc.irq.default_type	= IRQ_TYPE_NONE;
++		vgpio->gc.irq.handler		= handle_level_irq;
++		vgpio->gc.irq.chip		= &vgpio_irq_chip;
++
++		for (i = 0; i < config->ngpio; i++) {
++			vgpio->irq_lines[i].type = VIRTIO_GPIO_IRQ_TYPE_NONE;
++			vgpio->irq_lines[i].masked = true;
++		}
++
++		mutex_init(&vgpio->irq_lock);
++	}
++
+ 	ret = virtio_gpio_alloc_vqs(vgpio, vdev);
+ 	if (ret)
+ 		return ret;
+@@ -358,7 +591,13 @@ static const struct virtio_device_id id_table[] = {
+ };
+ MODULE_DEVICE_TABLE(virtio, id_table);
+ 
++static const unsigned int features[] = {
++	VIRTIO_GPIO_F_IRQ,
++};
++
+ static struct virtio_driver virtio_gpio_driver = {
++	.feature_table		= features,
++	.feature_table_size	= ARRAY_SIZE(features),
+ 	.id_table		= id_table,
+ 	.probe			= virtio_gpio_probe,
+ 	.remove			= virtio_gpio_remove,
