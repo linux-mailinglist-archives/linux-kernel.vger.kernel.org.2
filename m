@@ -2,113 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBA63E150B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37523E150D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241489AbhHEMtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:49:39 -0400
-Received: from thoth.sbs.de ([192.35.17.2]:47409 "EHLO thoth.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235161AbhHEMtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:49:39 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 175CnB0j001791
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 5 Aug 2021 14:49:11 +0200
-Received: from [167.87.0.185] ([167.87.0.185])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 175CnAiP027338;
-        Thu, 5 Aug 2021 14:49:10 +0200
-Subject: Re: [PATCH v2 0/6] CAN: Add support for CAN in AM65,J721e and AM64
-To:     Aswath Govindraju <a-govindraju@ti.com>, Nishanth Menon <nm@ti.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>
-References: <20210726101012.26983-1-a-govindraju@ti.com>
- <20210802124509.z23lfg7xxkqaakbo@truce>
- <36011cee-f617-02ed-7446-c297ba65e6bf@ti.com>
- <35b0e2dc-0591-0a2f-8e3d-4177792a13fa@siemens.com>
- <cfd7df02-37ed-6286-0232-2e92bf1f67b4@ti.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <caa97a4e-5e84-2aa6-3a4c-3bbe29fb7a58@siemens.com>
-Date:   Thu, 5 Aug 2021 14:49:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S235161AbhHEMtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241492AbhHEMtl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 08:49:41 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B90C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 05:49:26 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so14462276pjb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 05:49:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=F1MbFXcnuN9pjWPNAa72glUadkAUJinAs+z8GV+IyLk=;
+        b=GPPWMa0bFoy0buCBXmfsNtAnrv5MXxcRHUZJ7/r7DHglcCHVdT5R2BkodtNr8fXb9E
+         wPevm0KEqOa9H8wb/A3lHwCeo8e090BOPSSbzj+FsYFI3DUeUnHD8HjOHwVMfiWeQ1wh
+         wTknrNOO8Sig9Lj5qWg7ty5OgIgw194KG4e165244BPRJ3xWGTmJFMoV8LtbfRCIXTII
+         P5dlErGWaZzNzirHtL2HKOfUAdVztx58SsHeyqTIBzCmqyp+TZvk6npEI3Nfiw6ZErVE
+         PW4aWzRFnLQFh4gxeXk8A6mZVTR8SBP+jVOccXd568slgkD5dKs9L+UBx8GzZDKuDZha
+         dZPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=F1MbFXcnuN9pjWPNAa72glUadkAUJinAs+z8GV+IyLk=;
+        b=h1ByqlQ9wYkaHTG9/My/lSlzEIM22szoXBVDMK9rhBlfVr7DiiRM/vGZZAKJWexyCD
+         w0s8p9sA7npNgEXA5ifxGBw203C1K/Mp64Sr54zUlCyVH+pQToSIj+7TkMFTMv/iL/Or
+         YpGC9Zk+djwXq0W316QB+KnoQpumWDQ6eWfPwmkBbiaBVTh3WVtKTTH8JBQ3w1zKABGt
+         QAlLqn/ukNCQz1cV1ugsss0jRI40nzlaH5NKjcGS05chzGuq0lhwVXcRmWllPLVAzDIy
+         vYteC+/Vqtc1XXLCuyHjMZoIaV8gPO91gcmyX8iZ+WuttA86vucO1CC+IZtXbV3bUxTU
+         80gg==
+X-Gm-Message-State: AOAM533gxBT8060/Snsq7iX44bMXAzJoWaBcN7sxhazPih41O3ZX4AJb
+        mQGlpqUdGkzM/zsNcEeM9/9/Ww==
+X-Google-Smtp-Source: ABdhPJz0h7q3yTGaeHYn8lFKeSzJMOv94e7fkfP1oY5TE3vNb42+mj6TLtrxhtTA2RCH7pmg/EpgDw==
+X-Received: by 2002:a17:90a:1f8a:: with SMTP id x10mr4472178pja.167.1628167766138;
+        Thu, 05 Aug 2021 05:49:26 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id u16sm7963740pgh.53.2021.08.05.05.49.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 05:49:25 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 18:19:22 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [Stratos-dev] [PATCH V4 2/2] gpio: virtio: Add IRQ support
+Message-ID: <20210805124922.j7lts7tfmm4t2kpf@vireshk-i7>
+References: <cover.1627989586.git.viresh.kumar@linaro.org>
+ <75c8e6e5e8dfa1889938f3a6b2d991763c7a3717.1627989586.git.viresh.kumar@linaro.org>
+ <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
+ <0100017b1610f711-c53c79f2-9e28-4c45-bb42-8db09688b18e-000000@email.amazonses.com>
+ <CAK8P3a0DWkfQcZpmyfKcdNt1MHf8ha6a9L2LmLt1Tv-j0HDr3w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <cfd7df02-37ed-6286-0232-2e92bf1f67b4@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0DWkfQcZpmyfKcdNt1MHf8ha6a9L2LmLt1Tv-j0HDr3w@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.08.21 14:44, Aswath Govindraju wrote:
-> Hi Jan,
+On 05-08-21, 14:03, Arnd Bergmann wrote:
+> On Thu, Aug 5, 2021 at 1:26 PM Viresh Kumar via Stratos-dev
+> > Based on discussion we had today (offline), I changed the design a bit
+> > and used handle_level_irq() instead, as it provides consistent calls
+> > to mask/unmask(), which simplified the whole thing a bit.
 > 
-> On 05/08/21 6:10 pm, Jan Kiszka wrote:
->> On 05.08.21 14:32, Aswath Govindraju wrote:
->>> Hi,
->>>
->>> On 02/08/21 6:15 pm, Nishanth Menon wrote:
->>>> On 15:40-20210726, Aswath Govindraju wrote:
->>>>> The following series of patches add support for CAN in SoC's AM65, J721e
->>>>> and AM64.
->>>>>
->>>>> This patch series is dependent on [1] and [2] and I have requested for an
->>>>> immutable tag from the Marc Kleine-Budde(maintainer of net tree).
->>>>>
->>>>> [1] - https://lore.kernel.org/patchwork/patch/1423048/
->>>>> [2] - https://www.spinics.net/lists/linux-can/msg08108.html
->>>>>
->>>>> changes since v1 -
->>>>> - changed the message ram configuration to use the maximum value
->>>>>   in each field, for better performance.
->>>>>
->>>>> Aswath Govindraju (3):
->>>>>   arm64: dts: ti: am654-base-board: Disable mcan nodes
->>>>>   arm64: dts: ti: k3-am64-main: Add support for MCAN
->>>>>   arm64: dts: ti: k3-am642-evm/sk: Add support for main domain mcan
->>>>>     nodes in EVM and disable them on SK
->>>>>
->>>>> Faiz Abbas (3):
->>>>>   arm64: dts: ti: k3-am65-mcu: Add Support for MCAN
->>>>>   arm64: dts: ti: k3-j721e: Add support for MCAN nodes
->>>>>   arm64: dts: ti: k3-j721e-common-proc-board: Add support for mcu_mcan
->>>>>     nodes
->>>>
->>>> I noticed in my checkup: https://pastebin.ubuntu.com/p/zSk39M943N/
->>>> warnings with dtbs_check, I think the bindings need a little more help
->>>> here (please also notice the iot platform warnings getting introduced).
->>>>
->>>
->>> Jan,
->>>
->>> Can you please point me to the schematics for iot platform? Also, is CAN
->>> subsystem brought out on the iot platform boards?
->>
->> Schematics aren't publicly available. If you have specific questions, I
->> may help, though.
->>
->> CAN is not in use yet (not connected AFAIK).
->>
+> The new flow looks much nicer to me, without the workqueue, and
+> doing the requeue directly in the unmask() operation.
 > 
-> Thank you for clarifying this. I will disable the CAN DT nodes in
-> k3-am65-iot2050-common.dtsi in my respin.
+> I don't quite understand the purpose of the type_pending and
+> mask_pending flags yet, can you explain what they actually
+> do?
+
+They are required to make sure we don't send unnecessary
+VIRTIO_GPIO_MSG_IRQ_TYPE events to the device, every time bus_unlock()
+is called.
+
+mask_pending tracks if the masked state has changed since the time
+last bus_unlock() was called. So on an interrupt, both mask() and
+unmask() will get called by the irq-core now and mask_pending will
+change to true (in mask()} and then false (in unmask()). And
+eventually in bus_unlock() we won't send an extra
+VIRTIO_GPIO_MSG_IRQ_TYPE message.
+
+> Also, I have no idea about whether using the handle_level_irq()
+> function is actually correct here. I suppose if necessary, the driver
+> could provide its own irq.handler callback in place of that.
+
+After looking at internals of these, I felt handle_level_irq() suits
+much better in our case as we need to queue the buffer only at
+unmask(). With handle_fasteoi_irq(), we would be required to do the
+same from multiple places, unmask(), eoi().
+
+> > Also I have broken the rule from specs, maybe we should update spec
+> > with that, where the specs said that the buffer must not be queued
+> > before enabling the interrupt. I just queue the buffer unconditionally
+> > now from unmask().
+> >
+> > I am not sure but there may be some race around the "queued" flag and
+> > I wonder if we can land in a scenario where the buffer is left
+> > un-queued somehow, while an interrupt is enabled.
 > 
+> Can that be integrated with the "masked" state now? It looks like
+> the two flags are always opposites now.
 
-That is not a problem for the current design, so you can go ahead with it.
+Yeah, but then there can be races and keeping them separate is a
+better thing IMO.
 
-Current defconfig - though not yet upstream based - can be found at [1].
-The CAN subsystem is enabled, but not the AM65x CAN driver.
+I was thinking of something on these lines, disable_irq() followed by
+enable_irq():
 
-Jan
+CPU0                                                 CPU1
 
-[1]
-https://github.com/siemens/meta-iot2050/tree/master/recipes-kernel/linux/files
+disable_irq()
+ -> irq_bus_lock()
+ -> irq_mask()
+ -> irq_bus_sync_unlock()
+   -> sends blocking VIRTIO_GPIO_MSG_IRQ_TYPE
+      to disable interrupt
+                                                     Backend (at host) disables irq and 
+                                                     returns the unused buffer.
+
+enable_irq()
+ -> irq_bus_lock()
+ -> irq_unmask()
+   -> Tries to queues buffer again
+      Finds it already queued and returns.
+                                                     - virtio_gpio_event_vq() runs at guest
+                                                     - Finds VIRTIO_GPIO_IRQ_STATUS_INVALID in status
+                                                     - returns without doing anything
+ -> irq_bus_sync_unlock()
+   -> sends blocking VIRTIO_GPIO_MSG_IRQ_TYPE
+      to enable interrupt
+
+
+
+So the irq is still enabled and the buffer isn't queued. Yes, need
+some locking here for sure, confirmed :)
 
 -- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+viresh
