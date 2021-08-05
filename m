@@ -2,93 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD3E3E1416
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3C23E1418
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241099AbhHELrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:47:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33064 "EHLO
+        id S241067AbhHELtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235877AbhHELrY (ORCPT
+        with ESMTP id S232513AbhHELs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:47:24 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A39C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 04:47:09 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id h9so9088449ejs.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 04:47:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qBX3Xccp6bI54eSUznvP+6mMefHCK9TZwZhPwT50a08=;
-        b=lTrn5cZNoWXqzAgGOwj5Ih69j5jyWhRh9SlLjGef3DYLtYYBKx4o4Wm5ZBnuHXfK4M
-         zp7cHfSB7Xsehk15UR36MVM/Oo26W8d3pYNxu2ivajL8gILjIjc94J+L3XzcUaerMaJA
-         YUzsBMifPy0Ah0b6qgiSVaMSEmgYzA+J2ciFOsogudhUKFgXSkiraIV8JiXifUGsSz5I
-         efof0eYyge0emxB8J/bwPuMU0s3oJMXCL0YDAH+MVjzQhy+AwEy4u0goH5t9n29MJobN
-         Hq3ItNV2cd+2mkwQ5kOqSSqASGdcVWMAwhQRI06F+3EABE1AYSxE/uU8hE5w2c4OkbLl
-         JkYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qBX3Xccp6bI54eSUznvP+6mMefHCK9TZwZhPwT50a08=;
-        b=nxEp5/UPPQ/3OkP/xHAFan46aMjKjFTz/lOnDkOMPgKySa64lvRGl4tDpWCLC1oFnr
-         Dw1q0CUgM/tnVxRpqzayO4iRvNEPW2B/77fpr521+1a+ohMXosAHxY4WoysSI5gZ5REk
-         xj/1ZY6ql9GkAOfYNPRjvTg9UDkKCIqS20695n8x1oxtnwCy7iPF817NHY7FAA2TEb6V
-         DKAkKHKViPHJuw3ScZqZY06L45fPkgLD5yA0g/5+Yp6Lee86GlXGUyzVmABTHNi2nMJ4
-         VTKW3ZbT2JOUiVEveYm/vbdYXt+1qP7PYuuHBscMuG5SL4Ieb9PepTwVMHvrS458yxml
-         YG/g==
-X-Gm-Message-State: AOAM532S4jPUn3ZU/6GXZ45gngZLoMSqUskY1qgm95pgFFOkKOYNJUZS
-        iUpENEYK/rO3LWb5QzzGmJc=
-X-Google-Smtp-Source: ABdhPJypvf/JPpUIIfitGvd/jw8HyAKKFLrzW6oH2/GdeZY6KY0SHKIkBSz61OkRgPcNfYuemUn/3g==
-X-Received: by 2002:a17:906:24c3:: with SMTP id f3mr4397984ejb.145.1628164027969;
-        Thu, 05 Aug 2021 04:47:07 -0700 (PDT)
-Received: from localhost.localdomain (host-82-51-42-96.retail.telecomitalia.it. [82.51.42.96])
-        by smtp.gmail.com with ESMTPSA id o23sm2179103eds.75.2021.08.05.04.47.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 04:47:07 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] staging: r8188eu: core: Remove rtw_mfree_all_stainfo()
-Date:   Thu, 05 Aug 2021 13:47:06 +0200
-Message-ID: <4588980.OG3HjkdD0c@localhost.localdomain>
-In-Reply-To: <406c6f84-a2f6-1a0e-3a52-9406df41973c@lwfinger.net>
-References: <20210802005517.12815-1-fmdefrancesco@gmail.com> <CAP71bdUDEX=B6Km9wZO1AyHpVzqqkGNw6xNvspBz3qUABSKMEQ@mail.gmail.com> <406c6f84-a2f6-1a0e-3a52-9406df41973c@lwfinger.net>
+        Thu, 5 Aug 2021 07:48:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41482C061765;
+        Thu,  5 Aug 2021 04:48:45 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 13:48:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628164121;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=4CWYMOj5K/+9Dsnoaz9DJw6EXH78exnXAHH9daSyTIY=;
+        b=YBx42bid4thUkvh16LziI3p0FlSLNMUJoGdnOUCQ9idooRrbAt4bdh80HA9bNtlq49hBHT
+        bMgvROTJ+knGc8zVUonKQ0wdI5jKD56bwkIHY+L/ILS8FU6Q5p3KGBc8NaJllSaHD3EAt5
+        RG332ldh2qjkt81Z6mBC8GcdsBXSOZdNwajsEJAHWBf7UOOUMAOTMgt4ovvn1nkODeUqyZ
+        XN6jUUSzFJzGx8d12C5jXG+M3T4UvYh/MoF6u30GuGp/TSadnpcYh04T4Q0uhBmSI57Nnb
+        CepB2K9cPB1UQGVII7g51kxg8s4wMn+22/8NA4NDjtMlOiA0ZnE2pC2FkiqT1w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628164121;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=4CWYMOj5K/+9Dsnoaz9DJw6EXH78exnXAHH9daSyTIY=;
+        b=2N9QgUQS4gIqLxXgdJfP437KBJ+Hq5bMOsBYL8bmEHr4ich26Jg0S6t/4CnLjVG2Al1KOn
+        HLjJxt/NLxhV0KAw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v5.14-rc4-rt6
+Message-ID: <20210805114839.n4nfqqtqhvoepynn@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, August 4, 2021 8:10:37 PM CEST Larry Finger wrote:
-> On 8/4/21 10:09 AM, Larry Finger wrote:
-> 
-> []
->
-> After looking at the original code for several other drivers, routine
-> rtw_mfree_stainfo() just ends up calling a couple of routines that free a
-> spinlock. That operation for Windows and FreeBSD is not trivial, but for 
-Linux,
-> the routine does nothing. Thus, despite its name, rtw_mfree_stainfo() does 
-not
-> free anything, and it can be deleted.
-> 
-> The original patch is
-> 
-> Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
-> 
-> Larry
+Dear RT folks!
 
-Larry, 
+I'm pleased to announce the v5.14-rc4-rt6 patch set. 
 
-Thanks for looking at that routine and acking my patch,
+Changes since v5.14-rc4-rt5:
 
-Fabio
+  - The locking bits haven been updated:
+    
+	- Compile fixes. Regressions were reported by Mike Galbraith,
+	  Daniel Wagner and Daniel Bristot de Oliveira.
+    
+        - Thomas Gleixner addressed Peter Zijlstra's review comments.
 
+Known issues
+     - netconsole triggers WARN.
 
+     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
 
+     - A RCU and ARM64 warning has been fixed by Valentin Schneider. It is
+       still not clear if the RCU related change is correct.
+
+The delta patch against v5.14-rc4-rt5 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/incr/patch-5.14-rc4-rt5-rt6.patch.xz
+
+You can get this release via the git tree at:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.14-rc4-rt6
+
+The RT patch against v5.14-rc4 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patch-5.14-rc4-rt6.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patches-5.14-rc4-rt6.tar.xz
+
+Sebastian
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index d3daccb0097ea..b77d65f677f66 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -127,33 +127,34 @@ struct task_group;
+ 	((state) & (__TASK_STOPPED | __TASK_TRACED | TASK_PARKED | TASK_DEAD))
+ 
+ #ifdef CONFIG_DEBUG_ATOMIC_SLEEP
+-# debug_normal_state_change(state_value)				\
++# define debug_normal_state_change(state_value)				\
+ 	do {								\
+ 		WARN_ON_ONCE(is_special_task_state(state_value));	\
+ 		current->task_state_change = _THIS_IP_;			\
+ 	} while (0)
+ 
+-# debug_special_state_change(state_value)				\
++# define debug_special_state_change(state_value)			\
+ 	do {								\
+ 		WARN_ON_ONCE(!is_special_task_state(state_value));	\
+ 		current->task_state_change = _THIS_IP_;			\
+ 	} while (0)
+ 
+-# debug_rtlock_wait_set_state()						 \
++# define debug_rtlock_wait_set_state()					\
+ 	do {								 \
+ 		current->saved_state_change = current->task_state_change;\
+ 		current->task_state_change = _THIS_IP_;			 \
+ 	} while (0)
+ 
+-# debug_rtlock_wait_restore_state()					 \
++# define debug_rtlock_wait_restore_state()				\
+ 	do {								 \
+ 		current->task_state_change = current->saved_state_change;\
+ 	} while (0)
++
+ #else
+-# debug_normal_state_change(cond)	do { } while (0)
+-# debug_special_state_change(cond)	do { } while (0)
+-# debug_rtlock_wait_set_state()		do { } while (0)
+-# debug_rtlock_wait_restore_state()	do { } while (0)
++# define debug_normal_state_change(cond)	do { } while (0)
++# define debug_special_state_change(cond)	do { } while (0)
++# define debug_rtlock_wait_set_state()		do { } while (0)
++# define debug_rtlock_wait_restore_state()	do { } while (0)
+ #endif
+ 
+ /*
+diff --git a/include/linux/spinlock_types.h b/include/linux/spinlock_types.h
+index 572aa058a98a1..8a9aadbaf2938 100644
+--- a/include/linux/spinlock_types.h
++++ b/include/linux/spinlock_types.h
+@@ -11,46 +11,6 @@
+ 
+ #include <linux/spinlock_types_raw.h>
+ 
+-#define SPINLOCK_MAGIC		0xdead4ead
+-
+-#define SPINLOCK_OWNER_INIT	((void *)-1L)
+-
+-#ifdef CONFIG_DEBUG_LOCK_ALLOC
+-# define RAW_SPIN_DEP_MAP_INIT(lockname)		\
+-	.dep_map = {					\
+-		.name = #lockname,			\
+-		.wait_type_inner = LD_WAIT_SPIN,	\
+-	}
+-# define SPIN_DEP_MAP_INIT(lockname)			\
+-	.dep_map = {					\
+-		.name = #lockname,			\
+-		.wait_type_inner = LD_WAIT_CONFIG,	\
+-	}
+-#else
+-# define RAW_SPIN_DEP_MAP_INIT(lockname)
+-# define SPIN_DEP_MAP_INIT(lockname)
+-#endif
+-
+-#ifdef CONFIG_DEBUG_SPINLOCK
+-# define SPIN_DEBUG_INIT(lockname)		\
+-	.magic = SPINLOCK_MAGIC,		\
+-	.owner_cpu = -1,			\
+-	.owner = SPINLOCK_OWNER_INIT,
+-#else
+-# define SPIN_DEBUG_INIT(lockname)
+-#endif
+-
+-#define __RAW_SPIN_LOCK_INITIALIZER(lockname)	\
+-	{					\
+-	.raw_lock = __ARCH_SPIN_LOCK_UNLOCKED,	\
+-	SPIN_DEBUG_INIT(lockname)		\
+-	RAW_SPIN_DEP_MAP_INIT(lockname) }
+-
+-#define __RAW_SPIN_LOCK_UNLOCKED(lockname)	\
+-	(raw_spinlock_t) __RAW_SPIN_LOCK_INITIALIZER(lockname)
+-
+-#define DEFINE_RAW_SPINLOCK(x)	raw_spinlock_t x = __RAW_SPIN_LOCK_UNLOCKED(x)
+-
+ #ifndef CONFIG_PREEMPT_RT
+ 
+ /* Non PREEMPT_RT kernels map spinlock to raw_spinlock */
+diff --git a/kernel/futex.c b/kernel/futex.c
+index c05a33a2f865c..41e3d63160a78 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1896,14 +1896,14 @@ static inline void futex_requeue_pi_complete(struct futex_q *q, int locked)
+ 		if (locked >= 0) {
+ 			/* Requeue succeeded. Set DONE or LOCKED */
+ 			WARN_ON_ONCE(old != Q_REQUEUE_PI_IN_PROGRESS &&
+-				     old != Q_REQUEUE_PI_WAIT)
++				     old != Q_REQUEUE_PI_WAIT);
+ 			new = Q_REQUEUE_PI_DONE + locked;
+ 		} else if (old == Q_REQUEUE_PI_IN_PROGRESS) {
+ 			/* Deadlock, no early wakeup interleave */
+ 			new = Q_REQUEUE_PI_NONE;
+ 		} else {
+ 			/* Deadlock, early wakeup interleave. */
+-			WARN_ON_ONCE(old != Q_REQUEUE_PI_IN_WAIT);
++			WARN_ON_ONCE(old != Q_REQUEUE_PI_WAIT);
+ 			new = Q_REQUEUE_PI_IGNORE;
+ 		}
+ 	} while (!atomic_try_cmpxchg(&q->requeue_state, &old, new));
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index eadaface1fd29..7522c3abacb6c 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -1303,7 +1303,8 @@ static bool rtmutex_adaptive_spinwait(struct rt_mutex_base *lock,
+ 		 * checking the above to be valid.
+ 		 */
+ 		barrier();
+-		if (!owner->on_cpu) {
++		if (!owner->on_cpu || need_resched() ||
++		    vcpu_is_preempted(task_cpu(owner))) {
+ 			res = false;
+ 			break;
+ 		}
+diff --git a/kernel/locking/spinlock_rt.c b/kernel/locking/spinlock_rt.c
+index dd23fbbc89c65..d54681d6ad078 100644
+--- a/kernel/locking/spinlock_rt.c
++++ b/kernel/locking/spinlock_rt.c
+@@ -11,7 +11,7 @@
+  *   during that time are redirected to the saved state so no wake up is
+  *   missed.
+  *
+- * - Non RT spin/rw_locks disable preemption and evtl. interrupts.
++ * - Non RT spin/rw_locks disable preemption and eventually interrupts.
+  *   Disabling preemption has the side effect of disabling migration and
+  *   preventing RCU grace periods.
+  *
+diff --git a/localversion-rt b/localversion-rt
+index 0efe7ba1930e1..8fc605d806670 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt5
++-rt6
