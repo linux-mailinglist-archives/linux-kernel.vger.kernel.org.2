@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522AA3E1019
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261B83E101E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239409AbhHEIVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 04:21:50 -0400
-Received: from mga14.intel.com ([192.55.52.115]:24872 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231359AbhHEIVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 04:21:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="213828904"
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="213828904"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 01:21:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="503320064"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Aug 2021 01:21:34 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mBYdB-000Fh9-GV; Thu, 05 Aug 2021 08:21:33 +0000
-Date:   Thu, 5 Aug 2021 16:20:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Sven Peter <sven@svenpeter.dev>
-Subject: [PATCH] nvme: fix semicolon.cocci warnings
-Message-ID: <20210805082059.GA115555@19488c064008>
-References: <202108051646.vdMMUBea-lkp@intel.com>
+        id S239446AbhHEIV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 04:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231359AbhHEIVz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 04:21:55 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2CEC061765;
+        Thu,  5 Aug 2021 01:21:41 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so12909196pjb.3;
+        Thu, 05 Aug 2021 01:21:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KN00QyUePsg/nfcJcgy2UYBcl0jMuOx+ehoRGZbZcX4=;
+        b=Zjl8qznF1QgqiUJuycxBpGxXHqxwRQhTCI3RXTSfNUoaXb6q6QBOaQNYzesrJKl20b
+         UAqWwZY0fx6/3hG63OJUH+fLSg/onSppLd3kYf7A3zrB5cFWKym37DdIYC+NEHrgk5sx
+         fSIjlzcQ9zV7Rar/GhB0X4Lmjlw+pSlSVMVrdfq+K2MCIeF6JjVY7hFCi81M9a8BH263
+         Hz8kha5k2kF+WgayGmw3ZjwAPKutYm4H11BG+l2dAgxHaESdGWoLj6Ab0ujXSpvfcMQv
+         XPjdKXSnwF4k4UPyDOIAhUVE7j1UpWB0RfWhu4+PUrA7RsHcFCIpNlx4ca5TuI+GIzF4
+         X9TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KN00QyUePsg/nfcJcgy2UYBcl0jMuOx+ehoRGZbZcX4=;
+        b=Je/F5/Z7ly8W9NMv3zEE48Tb1P3C6pwTwBmvtWZNZrGKMgDgN4hyLp4Y670F2aqRzA
+         K4RKyUYTsxQnTtsShPoeqXLo7vHPDrxJX0EKTr/kJtvX5VinnTl+lC8AS6NkO1mufoUR
+         NBTZ/1iHPI2vUNj5mSeyh1k4lirpiCzI8TrG6FKuh5+GVzCmi1YOYZx1V1dE5MKdPr+H
+         BRn0RyX9UapG3EUXHGeBwGmpwagII/T6e1RU3dAkG7Y9oXhhAvql7Ah2cnjvwN6fRDkH
+         9T/pxU1HDYocz63NgpDZhAUJRW+5ZxqxstiljbJbakIKyW3rwtJgEaZ5K+GPBlrFA0si
+         GK9w==
+X-Gm-Message-State: AOAM5319YmHaAXMw04xPtoZj2Tpl0j2InHypP5Bp2f7pMJFizk7ByAoI
+        xL57rndS2lTPLkJZCb529t1zWpg2fPWZmvqHKVc=
+X-Google-Smtp-Source: ABdhPJztRzTRnYhc1zuSCEMBALMx9NoK8WeoBL24jmVXJI6AnTZaiOOAeBp4l+SSdKjI/j0TRotXmkWbiyz+f6FXF/I=
+X-Received: by 2002:a17:90b:912:: with SMTP id bo18mr3531824pjb.228.1628151700671;
+ Thu, 05 Aug 2021 01:21:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202108051646.vdMMUBea-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210804142959.67981-1-andriy.shevchenko@linux.intel.com> <e34fdf56-4fdb-b422-17d6-0b35779e37b7@kernel.org>
+In-Reply-To: <e34fdf56-4fdb-b422-17d6-0b35779e37b7@kernel.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 5 Aug 2021 11:21:01 +0300
+Message-ID: <CAHp75VfSt=vibmiSEVP68UkAHmkDJ3tXt0W7yxmQ8UH-CTYCAA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] serdev: Split and export serdev_acpi_get_uart_resource()
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Thu, Aug 5, 2021 at 10:36 AM Jiri Slaby <jirislaby@kernel.org> wrote:
+> On 04. 08. 21, 16:29, Andy Shevchenko wrote:
 
-drivers/nvme/host/pci.c:2249:2-3: Unneeded semicolon
+...
 
+> > +/**
+> > + * serdev_acpi_get_uart_resource - Gets UARTSerialBus resource if type matches
+> > + * @ares:    ACPI resource
+> > + * @uart:    Pointer to UARTSerialBus resource will be returned here
+> > + *
+> > + * Checks if the given ACPI resource is of type UARTSerialBus.
+> > + * In this case, returns a pointer to it to the caller.
+> > + *
+> > + * Returns true if resource type is of UARTSerialBus, otherwise false.
+>
+> Better to write:
+>   * Return: True if resource type is of UARTSerialBus, otherwise false.
+> which is recognized by sphinx.
 
- Remove unneeded semicolon.
+Will fix it in v3.
 
-Generated by: scripts/coccinelle/misc/semicolon.cocci
+> > + */
 
-Fixes: 52fea7af90e4 ("nvme: skip remapping BAR on non-PCI devices")
-CC: Arnd Bergmann <arnd@arndb.de>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
+...
 
-tree:   https://github.com/AsahiLinux/linux nvme/dev
-head:   70ce58861f9029c98ddcfb26787a58bbac183cc2
-commit: 52fea7af90e4babd35f8d004ef26758a50fe53ed [13/17] nvme: skip remapping BAR on non-PCI devices
-:::::: branch date: 5 days ago
-:::::: commit date: 5 days ago
+> Why don't you return NULL, or sb, thus eliminating the parameter?
 
- pci.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+1. That's how other similar APIs are done.
+2. It will save a line of code in the callers. Usual pattern
+  if (...get_res(..., &sb))
+   return ERR_or_so;
 
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -2246,7 +2246,7 @@ static int nvme_setup_io_queues(struct n
- 			break;
- 		if (!--nr_io_queues)
- 			return -ENOMEM;
--	};
-+	}
- 	adminq->q_db = dev->dbs;
- 
-  retry:
+With your proposal
+
+  sb = get_res(...);
+  if (!sb)
+    return ERR_or_so;
+
+> > +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
