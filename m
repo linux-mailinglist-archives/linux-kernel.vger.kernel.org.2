@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633C73E1421
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14ECE3E1422
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241130AbhHELwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241116AbhHELwB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:52:01 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652A0C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 04:51:46 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id m13so6293370iol.7
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 04:51:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TsqI2f4PszkolvCq0Vj/MJlhnRVimXlHdN3ztF9TtDc=;
-        b=h9Ihuy67i+BPHbno8ksO+l7rRWsFMJu0B6yiBfPHRxv4EmpMJbRxqk5YJXlz6W7+CO
-         uE3dUWZx6q63v5aX0O09Q1JMpskADy5RGDyKu0RfrPTskZomGnqFq8kR03Wv17C8H9jf
-         N+IXJJsN/bX0rJY4TQlkBqADVsXV/DK/cCjXZwEJGTXFlh3gOL3PIs38B+fbEyzOFZ+c
-         Cs6INT1PEHeTw3r58VBWcelXrfih83TPWsmxr7DYsBdHtP6IXYj3+Javgv7UWyjjAqdt
-         kdrp9QL8apoFudTcrcGvz2k3dGUHLWb20nIxajEAC2b+aZCBG2qEr/us4XG0zUJbVouw
-         yVqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TsqI2f4PszkolvCq0Vj/MJlhnRVimXlHdN3ztF9TtDc=;
-        b=jh7l2FSx3J/UP9hQQ+bWFqKAPznQZ0Jr0g/Ks8q1STzCMyZcSMI2rRllXsnPnHv6DJ
-         52UAaPNvdZTo87UtRT7bU2PIEfHrHvazyhUkRSviE660vfh1AAdZBcKvfOeA+LmHFF36
-         ULLf6xqlJBTX3HWFqUOnzKQ+LObl5tNdEffAuZWFkrxFqRrrks2qgarR0KOMP6DVy3fU
-         5W4x0r33OsBDJyRYq8N5mNktE6jageGzWddTjrthuC2Q1Y3hqSfKJ9omqn5wvQtn7Xee
-         QMvm8OKEeoZOqo3C2ukqbH0Baw18D5cZq8YGkqZWM0tO5pacr2aVNI//F6Em1UqviZNp
-         q1VQ==
-X-Gm-Message-State: AOAM532b4yF1VdJoJaoW5274ICeKKK2PgPfyiz+j1FRLByIx0W9zFdPu
-        Y3wRH2k7Q+oB9itNEG5/70GPNvi+4e8ikIq1c2nSww==
-X-Google-Smtp-Source: ABdhPJwN2okbkH6vhEz2oQAP4lCx3J40CVTNusFx6KveRCIE/34YDrRFFEclMt3GEqmVWTQ5dVQczfBztrR21Vfltj4=
-X-Received: by 2002:a02:cf2e:: with SMTP id s14mr4381393jar.74.1628164305688;
- Thu, 05 Aug 2021 04:51:45 -0700 (PDT)
+        id S241142AbhHELwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:52:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:43352 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241116AbhHELwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 07:52:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 317291042;
+        Thu,  5 Aug 2021 04:51:55 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 429323F719;
+        Thu,  5 Aug 2021 04:51:53 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 2/2] rcutorture: Nudge ksoftirqd priority for RCU boost testing
+In-Reply-To: <20210804225332.GB4397@paulmck-ThinkPad-P17-Gen-1>
+References: <20210803225437.3612591-1-valentin.schneider@arm.com> <20210803225437.3612591-3-valentin.schneider@arm.com> <20210803234231.GW4397@paulmck-ThinkPad-P17-Gen-1> <87tuk5a4yk.mognet@arm.com> <20210804225332.GB4397@paulmck-ThinkPad-P17-Gen-1>
+Date:   Thu, 05 Aug 2021 12:51:48 +0100
+Message-ID: <87mtpw9kiz.mognet@arm.com>
 MIME-Version: 1.0
-References: <20210705053258.1614177-1-acourbot@chromium.org>
- <20210705053258.1614177-12-acourbot@chromium.org> <8929c97f-b105-ee35-d882-1cd218edcfd1@xs4all.nl>
-In-Reply-To: <8929c97f-b105-ee35-d882-1cd218edcfd1@xs4all.nl>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Thu, 5 Aug 2021 19:51:34 +0800
-Message-ID: <CA+Px+wWARA-TF66x3k8nY+TNqNo90Cn2Q_c73a66JUXWkY0dsg@mail.gmail.com>
-Subject: Re: [PATCH v6 11/14] media: mtk-vcodec: vdec: support stateless H.264 decoding
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Yunfei Dong <Yunfei.Dong@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 6:52 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
-> Several new structs do not have any field documentation, but they do start with /**,
-> so I get complaints about missing field docs.
+On 04/08/21 15:53, Paul E. McKenney wrote:
+> On Wed, Aug 04, 2021 at 11:18:11AM +0100, Valentin Schneider wrote:
+>>
+>> Hm so v5.13-rt1 has this commit:
+>>
+>>   5e59fba573e6 ("rcutorture: Fix testing of RCU priority boosting")
+>>
+>> which gates RCU boost torture testing under CONFIG_PREEMPT_RT. Now, AFAICT
+>> the TIMER_SOFTIRQ priority problem is there regardless of
+>> CONFIG_PREEMPT_RT, so this patch would (should?) make sense even on
+>> !CONFIG_PREEMPT_RT.
 >
-> After manually changing this to /*, I still get a few remaining warnings:
-Will fix in next version.
-
-> mtk-vcodec/vdec/vdec_h264_req_if.c:189: warning: Function parameter or member 'h264_slice_params' not described in 'vdec_h264_vsi'
-> mtk-vcodec/vdec/vdec_h264_req_if.c:210: warning: Function parameter or member 'h264_slice_param' not described in 'vdec_h264_slice_inst'
-> mtk-vcodec/vdec/vdec_h264_req_if.c:210: warning: Function parameter or member 'dpb' not described in 'vdec_h264_slice_inst'
+> What rcutorture scenario TREE03 does is to boot with tree.use_softirq=0
+> and threadirqs.  I see your point about timers and softirq, but this
+> does run reliably for me.
 >
-> Can you fix this?
-Will fix in next version.
-
-> I also want to take this patch series at the same time:
+> Ah, I see why.  Commit ea6d962e80b6 ("rcutorture: Judge RCU priority
+> boosting on grace periods, not callbacks") includes boosting the priority
+> of the ksoftirqd kthreads.  But only when running rcutorture builtin,
+> not as a module.  Here is the code in rcu_torture_init():
 >
-> https://patchwork.linuxtv.org/project/linux-media/cover/20210630085247.27554-1-irui.wang@mediatek.com/
+>               // Testing RCU priority boosting requires rcutorture do
+>               // some serious abuse.  Counter this by running ksoftirqd
+>               // at higher priority.
+>               if (IS_BUILTIN(CONFIG_RCU_TORTURE_TEST)) {
+>                       for_each_online_cpu(cpu) {
+>                               struct sched_param sp;
+>                               struct task_struct *t;
 >
-> Can you verify that this would not cause any problems with your series? As far as
-> I can see it is fine, but a second pair of eyeballs wouldn't hurt.
-Series [1] shouldn't cause any problems with this series.
+>                               t = per_cpu(ksoftirqd, cpu);
+>                               WARN_ON_ONCE(!t);
+>                               sp.sched_priority = 2;
+>                               sched_setscheduler_nocheck(t, SCHED_FIFO, &sp);
+>                       }
+>               }
+>
+> I take it that you were running rcutorture as a module?
+>
+> This describes how to run it built-in, if that works for you:
+>
+> https://paulmck.livejournal.com/61432.html
+>
+> More specifically: https://paulmck.livejournal.com/57769.html
+>
+> Alternatively, the "IS_BUILTIN(CONFIG_RCU_TORTURE_TEST)" check could be
+> removed in the above code, and the ksoftirqd kthreads could have their
+> original priority restored in rcu_torture_cleanup().
+>
+> Thoughts?
+>
 
-However, series [1] doesn't apply after this series (conflicted with
-[2]).  It needs to rebase and send another version after fixing the
-typo anyway.
+I actually run rcutorture as a builtin, but from what I can tell the above
+patch came in v5.14-rc1, and ofc I'm running my tests on v5.13-rt1... I
+should have paid closer attention to what was in the latest mainline,
+apologies for the noise. 
 
-[1]: https://patchwork.linuxtv.org/project/linux-media/cover/20210630085247.27554-1-irui.wang@mediatek.com/
-[2]: https://patchwork.linuxtv.org/project/linux-media/patch/20210630085247.27554-3-irui.wang@mediatek.com/
+FWIW tweaking ksoftirqd priority only when the torture module is builtin
+makes sense to me.
