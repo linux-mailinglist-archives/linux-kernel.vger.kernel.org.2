@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C932F3E15B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A833E15B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240757AbhHENbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 09:31:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231162AbhHENbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 09:31:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B55F60D07;
-        Thu,  5 Aug 2021 13:31:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628170263;
-        bh=JgZfnGslfqp/znxG0wr4ON7p64h3QH4jX6hdzhwkSy8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=e2j4Jzm/+ngWy+h13j3kNnu5YPHrXRAClhE0rE7QeGSs8XQIDzV0ZhdsZNwuo9n0I
-         c114gVNx3acfTmS1+KlxdxAsYs3810FBDa8+5cKE2PWjifIn2rNbzFzGE7OXLqWuUU
-         as/a6FRc/f3oApFBn4wf/x10U+h91YSvFSD8pNSuMpw5Y6HkDCP+jvHbRJzEXtfpyK
-         RxI33YR3HHOcLw7SLjhwKse7XmJ73ZULsylMm1DM0MROWTicZhgsRk26NdI4T4XCf5
-         j98kMTzIohJViS0Nge2YeI+7zpK30VAjZajBrIYRmPvOYdP8GECU+FJAZ8Hr15TQC0
-         Q7U4td/WzHHbg==
-Date:   Thu, 5 Aug 2021 06:31:00 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Lukasz Czapnik <lukasz.czapnik@intel.com>,
-        Marcin Kubiak <marcin.kubiak@intel.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Netanel Belgazal <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>, Andrew Lunn <andrew@lunn.ch>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jian Shen <shenjian15@huawei.com>,
-        Petr Vorel <petr.vorel@gmail.com>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 03/21] ethtool, stats: introduce standard XDP
- statistics
-Message-ID: <20210805063100.0c376dda@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210805111826.252-1-alexandr.lobakin@intel.com>
-References: <20210803163641.3743-1-alexandr.lobakin@intel.com>
-        <20210803163641.3743-4-alexandr.lobakin@intel.com>
-        <20210803134900.578b4c37@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <ec0aefbc987575d1979f9102d331bd3e8f809824.camel@kernel.org>
-        <20210804053650.22aa8a5b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20210804155327.337-1-alexandr.lobakin@intel.com>
-        <20210804095716.35387fcd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20210805111826.252-1-alexandr.lobakin@intel.com>
+        id S241654AbhHENbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 09:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231162AbhHENbd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 09:31:33 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E165DC0613C1
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 06:31:18 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id k38-20020a05600c1ca6b029025af5e0f38bso6324062wms.5
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 06:31:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=zs+Z1KlvhHEW9OY5xJG2JR+/SH7cHwYmUg91uA47VDU=;
+        b=Kl5dsNC2zDDGoySUkNYlbcc93SIM93mVI+ajJXWI2zMKUj/2ZYQhwx3nfvX6Kwvtm1
+         qufZuTDcLFUI7vM0MuuwSeiSJcwtmmhMwyfKLSl/9wull3p7Fmc1SSYR5DYnA80lmdmU
+         UPHtF1VW8pBRjLswW51iq+lVOFvyTluXAO5+kVms/dQ9bVImq0RBra/jCyqiartXxf7J
+         YCuFIA2UiGGiOkhvCmOc8MAW9eLHnuNM6a4QZqYXPXwCX/bJIdKcH+IoTAzpeOqVSIAh
+         4Gzq1SIOd9tjf4WHJ0vU3pzpQEocsISGfcIH9G4GzjQRsW2M3jMkviYgqvlXsrbTAPxp
+         EgNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=zs+Z1KlvhHEW9OY5xJG2JR+/SH7cHwYmUg91uA47VDU=;
+        b=DqtZrDQPbHuyTL4+dpHeYDkrJwzlXHt8PtwD8m01ADdFOGVNFVhZTxnazOmob8I+j2
+         NnLacGdjN9yJ2lGjbqGtoxtuQ9nt3bF/w3+j/tNCGNKGstjJ01zAzK495jVUgRzq11RW
+         TeF7puFLfyL15tlOfOji2fBoANSjs40DaCxPK5ZEYvHmBMufmTclrewvVflQFrX2Wrzh
+         jAUydMh303Cw/NworeyZ8pV8L+KhrnLFrtzvtAmsg4YsTWqmfsHQZXpGtWMpyz7OtmRQ
+         7Q0NUs4vtHnfs7SJLmIh8Teu61S0Kr0i4+WRKtSEnJ703bmylEcg9/kKmsbpBf+NIg8+
+         0yZg==
+X-Gm-Message-State: AOAM530UnhQEX9hOQZwoTo/A+4pREYUXz+sG0U5ty4BJ/oO2sGXJDG9j
+        HTZeNGlbmAInCHpAJqNEdmXBfQ==
+X-Google-Smtp-Source: ABdhPJxHMBhwxopjuu/lU4IUKdR1Y2ZaCLba2PO1PDGFOr6TIPBGJXbymC1x8UIlVO6dIoZJUAK2EA==
+X-Received: by 2002:a7b:c441:: with SMTP id l1mr5126255wmi.69.1628170277551;
+        Thu, 05 Aug 2021 06:31:17 -0700 (PDT)
+Received: from google.com ([109.180.115.228])
+        by smtp.gmail.com with ESMTPSA id u23sm8921636wmc.24.2021.08.05.06.31.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 06:31:16 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 14:31:15 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/7] mfd: tqmx86: remove incorrect TQMx90UC board ID
+Message-ID: <YQvoI74FeFiAHsae@google.com>
+References: <cover.1626429286.git.matthias.schiffer@ew.tq-group.com>
+ <5bb8c96ee6a755f18d82375927515ad504869b9e.1626429286.git.matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5bb8c96ee6a755f18d82375927515ad504869b9e.1626429286.git.matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  5 Aug 2021 13:18:26 +0200 Alexander Lobakin wrote:
->  - encourage driver developers to use this new API when they want to
->    provide any XDP stats, not the Ethtool stats which are already
->    overburdened and mix HW, SW and whatnot in most of the complex
->    drivers.
+On Fri, 16 Jul 2021, Matthias Schiffer wrote:
 
-On the question of adding the stats in general I'd still ask for 
-(a) performance analysis or (b) to start with just the exception 
-stats which I'd think should be uncontroversial.
+> No TQMx90UC exists at the moment, and it is undecided whether ID 10 will
+> be used eventually (and if it is, how that SoM will be named).
+> 
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> ---
+> 
+> v2: new patch
+> v3: remove Fixes line
+> 
+>  drivers/mfd/tqmx86.c | 4 ----
+>  1 file changed, 4 deletions(-)
+
+For my own reference (apply this as-is to your sign-off block):
+
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
