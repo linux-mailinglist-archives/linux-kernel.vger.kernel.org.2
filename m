@@ -2,112 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0973E13D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA443E13DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241055AbhHEL1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:27:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32097 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240893AbhHEL1A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S241066AbhHEL1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:27:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:43118 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241022AbhHEL1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Aug 2021 07:27:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628162805;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DjMNCHMyDCy1jfhKIOW9ACx2HA3RpxUNEcWNfn6GUuE=;
-        b=DJnjIu79BOe5QPcWlhQ8n/kBSDdgij5TofhD/qjPHuBOZworvCr0GQcbUfo8mc+WeEkhLU
-        DdV1sb4YJ9OquIvLiSOgQgc+xajntw9rXoGM1OytmZwBQ1x5K/sQTCXC9D5s4F+kkOco9r
-        86dkP1TvbIJW5vThZf5fdFdPPEFgNPw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-xGV4-VKZPp-6CLV0ThoiMA-1; Thu, 05 Aug 2021 07:26:44 -0400
-X-MC-Unique: xGV4-VKZPp-6CLV0ThoiMA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 664D01084F4C;
-        Thu,  5 Aug 2021 11:26:42 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0029060BD9;
-        Thu,  5 Aug 2021 11:26:39 +0000 (UTC)
-Message-ID: <63b556880ceaf9a9455eca9517d47c7b33e7260d.camel@redhat.com>
-Subject: Re: [PATCH] KVM: x86/mmu: Fix per-cpu counter corruption on 32-bit
- builds
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Date:   Thu, 05 Aug 2021 14:26:38 +0300
-In-Reply-To: <20210804214609.1096003-1-seanjc@google.com>
-References: <20210804214609.1096003-1-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 604E11FB;
+        Thu,  5 Aug 2021 04:26:46 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9F3753F719;
+        Thu,  5 Aug 2021 04:26:44 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 12:26:39 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tom Joseph <tjoseph@cadence.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, nadeem@cadence.com
+Subject: Re: [PATCH v2 5/6] misc: pci_endpoint_test: Do not request or
+ allocate IRQs in probe
+Message-ID: <20210805112639.GA20438@lpieralisi>
+References: <20210803074932.19820-1-kishon@ti.com>
+ <20210803074932.19820-6-kishon@ti.com>
+ <20210803095839.GA11252@lpieralisi>
+ <02c1ddb7-539e-20a0-1bef-e10e76922a0e@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <02c1ddb7-539e-20a0-1bef-e10e76922a0e@ti.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-08-04 at 14:46 -0700, Sean Christopherson wrote:
-> Take a signed 'long' instead of an 'unsigned long' for the number of
-> pages to add/subtract to the total number of pages used by the MMU.  This
-> fixes a zero-extension bug on 32-bit kernels that effectively corrupts
-> the per-cpu counter used by the shrinker.
+On Wed, Aug 04, 2021 at 07:32:44PM +0530, Kishon Vijay Abraham I wrote:
+> Hi Lorenzo,
 > 
-> Per-cpu counters take a signed 64-bit value on both 32-bit and 64-bit
-> kernels, whereas kvm_mod_used_mmu_pages() takes an unsigned long and thus
-> an unsigned 32-bit value on 32-bit kernels.  As a result, the value used
-> to adjust the per-cpu counter is zero-extended (unsigned -> signed), not
-> sign-extended (signed -> signed), and so KVM's intended -1 gets morphed to
-> 4294967295 and effectively corrupts the counter.
+> On 03/08/21 3:28 pm, Lorenzo Pieralisi wrote:
+> > On Tue, Aug 03, 2021 at 01:19:31PM +0530, Kishon Vijay Abraham I wrote:
+> >> Allocation of IRQ vectors and requesting IRQ is done as part of
+> >> PCITEST_SET_IRQTYPE. Do not request or allocate IRQs in probe for
+> >> AM654 and J721E so that the user space test script has better control
+> >> of the devices for which the IRQs are configured. Since certain user
+> >> space scripts could rely on allocation of IRQ vectors during probe,
+> >> remove allocation of IRQs only for TI's K3 platform.
+> >>
+> >> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> >> ---
+> >>  drivers/misc/pci_endpoint_test.c | 19 +++++++++++++------
+> >>  1 file changed, 13 insertions(+), 6 deletions(-)
+> > 
+> > I don't claim to understand the inner details of the endpoint test
+> > device but it looks like this approach should be redesigned.
+> > 
+> > I don't believe using devices quirks is the best approach to
+> > expose/remove a feature to userspace, this can soon become
+> > unmaintenable.
+> > 
+> > Maybe you can elaborate a bit more on what the real issue is please ?
 > 
-> This was found by a staggering amount of sheer dumb luck when running
-> kvm-unit-tests on a 32-bit KVM build.  The shrinker just happened to kick
-> in while running tests and do_shrink_slab() logged an error about trying
-> to free a negative number of objects.  The truly lucky part is that the
-> kernel just happened to be a slightly stale build, as the shrinker no
-> longer yells about negative objects as of commit 18bb473e5031 ("mm:
-> vmscan: shrink deferred objects proportional to priority").
+> The actual reason for introducing this patch (affects only AM654 and
+> J721E) is due to Errata ID #i2101 GIC: ITS Misbehavior
+> (https://www.ti.com/lit/er/sprz455a/sprz455a.pdf). So if more than 5
+> devices use GIC ITS simultaneously, GIC fails to raise interrupts.
 > 
->  vmscan: shrink_slab: mmu_shrink_scan+0x0/0x210 [kvm] negative objects to delete nr=-858993460
+> Though this patch is not an actual workaround for the issue (the
+> workaround is in GIC ITS driver provided in the errata document), it
+> helps to keep testing PCIe RC/EP using pci-endpoint-test even when
+> multiple pci-epf-test endpoint devices are connected (Normal test-setup
+> having J721E-J721E back to back connection can support 21 pci-epf-test
+> devices). So this patch lets user to individually enable interrupts for
+> each of the devices and could disable after the interrupt test.
 > 
-> Fixes: bc8a3d8925a8 ("kvm: mmu: Fix overflow on kvm mmu page limit calculation")
-> Cc: stable@vger.kernel.org
-> Cc: Ben Gardon <bgardon@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index b4b65c21b2ca..082a0ba79edd 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -1700,7 +1700,7 @@ static int is_empty_shadow_page(u64 *spt)
->   * aggregate version in order to make the slab shrinker
->   * faster
->   */
-> -static inline void kvm_mod_used_mmu_pages(struct kvm *kvm, unsigned long nr)
-> +static inline void kvm_mod_used_mmu_pages(struct kvm *kvm, long nr)
->  {
->  	kvm->arch.n_used_mmu_pages += nr;
->  	percpu_counter_add(&kvm_total_used_mmu_pages, nr);
+> Since pci_endpoint_test is used only for testing PCIE RC/EP
+> communication and pci-endpoint-test has already implemented
+> PCITEST_SET_IRQTYPE for the userspace to enable interrupt, tried to not
+> enable the interrupts of all the devices by default in the probe (for
+> AM654 and J721E where this errata applies).
 
-I am almost sure that I seen this bug as well (I do test 32 bit KVM hosts,
-even with nested 32 bit guests once in a while), but I didn't dare to investigate
-it due to the fact the 32 bit KVM host is a very rare thing these days.
+I understand - what I am asking is:
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+is it possible, instead of applying this patch, to make
 
-Best regards,
-	Maxim Levitsky
+pci_endpoint_test_alloc_irq_vectors() and pci_endpoint_test_request_irq()
 
+fail in the target platforms instead of preventing to call them ?
+
+My worry is that you may end up with more corner cases in the future
+and peppering code with is_() calls to work around them which does
+not look right.
+
+Thanks,
+Lorenzo
+
+> Thanks,
+> Kishon
+> 
+> > 
+> > Thanks,
+> > Lorenzo
+> > 
+> >> diff --git a/drivers/misc/pci_endpoint_test.c b/drivers/misc/pci_endpoint_test.c
+> >> index c7ee34013485..9740f2a0e7cd 100644
+> >> --- a/drivers/misc/pci_endpoint_test.c
+> >> +++ b/drivers/misc/pci_endpoint_test.c
+> >> @@ -79,6 +79,9 @@
+> >>  #define PCI_DEVICE_ID_RENESAS_R8A774C0		0x002d
+> >>  #define PCI_DEVICE_ID_RENESAS_R8A774E1		0x0025
+> >>  
+> >> +#define is_j721e_pci_dev(pdev)         \
+> >> +		((pdev)->device == PCI_DEVICE_ID_TI_J721E)
+> >> +
+> >>  static DEFINE_IDA(pci_endpoint_test_ida);
+> >>  
+> >>  #define to_endpoint_test(priv) container_of((priv), struct pci_endpoint_test, \
+> >> @@ -810,9 +813,11 @@ static int pci_endpoint_test_probe(struct pci_dev *pdev,
+> >>  
+> >>  	pci_set_master(pdev);
+> >>  
+> >> -	if (!pci_endpoint_test_alloc_irq_vectors(test, irq_type)) {
+> >> -		err = -EINVAL;
+> >> -		goto err_disable_irq;
+> >> +	if (!(is_am654_pci_dev(pdev) || is_j721e_pci_dev(pdev))) {
+> >> +		if (!pci_endpoint_test_alloc_irq_vectors(test, irq_type)) {
+> >> +			err = -EINVAL;
+> >> +			goto err_disable_irq;
+> >> +		}
+> >>  	}
+> >>  
+> >>  	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++) {
+> >> @@ -850,9 +855,11 @@ static int pci_endpoint_test_probe(struct pci_dev *pdev,
+> >>  		goto err_ida_remove;
+> >>  	}
+> >>  
+> >> -	if (!pci_endpoint_test_request_irq(test)) {
+> >> -		err = -EINVAL;
+> >> -		goto err_kfree_test_name;
+> >> +	if (!(is_am654_pci_dev(pdev) || is_j721e_pci_dev(pdev))) {
+> >> +		if (!pci_endpoint_test_request_irq(test)) {
+> >> +			err = -EINVAL;
+> >> +			goto err_kfree_test_name;
+> >> +		}
+> >>  	}
+> >>  
+> >>  	misc_device = &test->miscdev;
+> >> -- 
+> >> 2.17.1
+> >>
