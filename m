@@ -2,128 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2A73E14F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6004C3E14FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241457AbhHEMom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
+        id S241455AbhHEMqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241430AbhHEMok (ORCPT
+        with ESMTP id S240545AbhHEMqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:44:40 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C344C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 05:44:26 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mBcjW-0000iY-TQ; Thu, 05 Aug 2021 14:44:22 +0200
-Subject: Re: [PATCH v2 2/2] drm/panel: simple: add LOGIC Technologies
- LTTD800480070-L6WH-RT
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        =?UTF-8?Q?S=c3=b8ren_Ander?= =?UTF-8?Q?sen?= <san@skov.dk>,
-        Sam Ravnborg <sam@ravnborg.org>
-References: <20210805111944.13533-1-o.rempel@pengutronix.de>
- <20210805111944.13533-3-o.rempel@pengutronix.de>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <051daae4-a91b-92b6-7bf4-de505a321174@pengutronix.de>
-Date:   Thu, 5 Aug 2021 14:44:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Thu, 5 Aug 2021 08:46:05 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7857DC061765;
+        Thu,  5 Aug 2021 05:45:50 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id cl16-20020a17090af690b02901782c35c4ccso5324390pjb.5;
+        Thu, 05 Aug 2021 05:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UnQ03oOngNmEkX2RgYECAHu+zjiI5dLikqmWa8ZL0fs=;
+        b=UDFSEnFX+P4D9dsBIpJXdiBDvFFosSFjV5A69fRAMBpYEuPR/kPhRSQT3t5X9zzZKT
+         Vrm2OtKTz8EhYg6VE+HJJYVkvpoPT20eHrl0bUD9R3aKUqckaqhXIqKySeliUj954Ml2
+         bZddEqAIyd2Os0Nw/zD4AzC/gPjf4LGKvd9l0mFEOcajMDhklpqkyzKbTfbc9dTAl0Eu
+         2MbKnuC0XAVQoUzGUQUs3NDbtWnkaT9siO8g5mXDko/Y58pnN40zMNu/dUsbw5FSj24u
+         sXHacU7T0WuWEKWp4GJzAz/mJlcviQzTggQVQiEuKbTK/sHfxPpTM7KK9whHv0N7d0MS
+         Sj7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UnQ03oOngNmEkX2RgYECAHu+zjiI5dLikqmWa8ZL0fs=;
+        b=mo+0QLA/3run/+qB5PSu6l7C2HY2HUisHwAMuDn2PG16qHWZ5k92FK8Lrme6jvBIZF
+         8XsXU0nX83Ihx5RGliIQVYuZUjrsJTHmEfMIGkYxQUwi6w81ZwjyF2TYzAVnVOM8FIxa
+         9PWdtQm3zXpqF2tlFtBad6k3+i0QEkiM2gspcuD+E/C28zEjn06aqMmtWYqt9l6bZ3FI
+         xcwjIg90I66p90fxhg+xVpaAN/MGM8BDPZjHlSWkNsxQrc/J5pZTtXnLjsZNFqqvwqKc
+         efhxvbYTgILhN26Uenmpz4iY2OAuAjU6/CRJI/wCnptQ+gB83diryfI6Ma8KJC65wZZ3
+         pV0Q==
+X-Gm-Message-State: AOAM533xjirdHaLyKjlF56GvDv+xgdN/hFkWEZL0OI2n00dIA40jZQ7H
+        bx0C8wAE6QXocCTC0yAuN28=
+X-Google-Smtp-Source: ABdhPJyPIvuRj0WS5honl3gpwUJRNlaY/tqyu7YrNlWPhrOIfYzyCSQx6EuxhZ5KXVdagwF6xp7ecA==
+X-Received: by 2002:a62:878c:0:b029:3c5:f729:ef00 with SMTP id i134-20020a62878c0000b02903c5f729ef00mr4911562pfe.43.1628167550056;
+        Thu, 05 Aug 2021 05:45:50 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:18:efec::4b1])
+        by smtp.gmail.com with ESMTPSA id s5sm1983191pji.56.2021.08.05.05.45.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Aug 2021 05:45:49 -0700 (PDT)
+Subject: Re: [PATCH] x86/Hyper-V: Initialize Hyper-V stimer after enabling
+ lapic
+To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>,
+        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        michael.h.kelley@microsoft.com
+Cc:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        vkuznets@redhat.com
+References: <20210804184843.513524-1-ltykernel@gmail.com>
+ <db8d38c9-e11d-1abe-8617-d8a231cc22e2@linux.microsoft.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <4ceb1504-205a-26fc-2fec-2d87f8601b31@gmail.com>
+Date:   Thu, 5 Aug 2021 20:45:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210805111944.13533-3-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <db8d38c9-e11d-1abe-8617-d8a231cc22e2@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.08.21 13:19, Oleksij Rempel wrote:
-> From: Søren Andersen <san@skov.dk>
-> 
-> Add support for the LOGIC Technologies, Inc LTTD800480070-L6WH-RT
-> 
-> Co-Developed-by: Søren Andersen <san@skov.dk>
-> Co-Developed-by: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: Søren Andersen <san@skov.dk>
-> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Hi Praveen:
+     Thanks for your review.
 
-Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-
-> ---
->  drivers/gpu/drm/panel/panel-simple.c | 35 ++++++++++++++++++++++++++++
->  1 file changed, 35 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> index 58ba26dbf852..b48ed9db1ac0 100644
-> --- a/drivers/gpu/drm/panel/panel-simple.c
-> +++ b/drivers/gpu/drm/panel/panel-simple.c
-> @@ -2967,6 +2967,38 @@ static const struct panel_desc logictechno_lt170410_2whc = {
->  	.connector_type = DRM_MODE_CONNECTOR_LVDS,
->  };
->  
-> +static const struct drm_display_mode logictechno_lttd800480070_l6wh_rt_mode = {
-> +	.clock = 33000,
-> +	.hdisplay = 800,
-> +	.hsync_start = 800 + 154,
-> +	.hsync_end = 800 + 154 + 3,
-> +	.htotal = 800 + 154 + 3 + 43,
-> +	.vdisplay = 480,
-> +	.vsync_start = 480 + 47,
-> +	.vsync_end = 480 + 47 + 3,
-> +	.vtotal = 480 + 47 + 3 + 20,
-> +	.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
-> +};
-> +
-> +static const struct panel_desc logictechno_lttd800480070_l6wh_rt = {
-> +	.modes = &logictechno_lttd800480070_l6wh_rt_mode,
-> +	.num_modes = 1,
-> +	.bpc = 8,
-> +	.size = {
-> +		.width = 154,
-> +		.height = 86,
-> +	},
-> +	.delay = {
-> +		.prepare = 45,
-> +		.enable = 100,
-> +		.disable = 100,
-> +		.unprepare = 45
-> +	},
-> +	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
-> +	.bus_flags = DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE,
-> +	.connector_type = DRM_MODE_CONNECTOR_DPI,
-> +};
-> +
->  static const struct drm_display_mode mitsubishi_aa070mc01_mode = {
->  	.clock = 30400,
->  	.hdisplay = 800,
-> @@ -4492,6 +4524,9 @@ static const struct of_device_id platform_of_match[] = {
->  	}, {
->  		.compatible = "logictechno,lt170410-2whc",
->  		.data = &logictechno_lt170410_2whc,
-> +	}, {
-> +		.compatible = "logictechno,lttd800480070-l6wh-rt",
-> +		.data = &logictechno_lttd800480070_l6wh_rt,
->  	}, {
->  		.compatible = "mitsubishi,aa070mc01-ca1",
->  		.data = &mitsubishi_aa070mc01,
+On 8/5/2021 2:41 PM, Praveen Kumar wrote:
+>> +
+>> +static void __init hv_setup_initr_mode(void)
+>> +{
+>> +	if (old_setup_initr_mode)
+>> +		old_setup_initr_mode();
+>> +
+>> +	/*
+>> +	 * The direct-mode STIMER depends on LAPIC and so allocate
+>> +	 * STIMER after calling initr node callback.
+>> +	 */
+>> +	(void)hv_stimer_alloc(false);
+> In my understanding, in previous implementation we were ignoring the return error as there was a fallback handling for LAPIC.
+> However, I'm not seeing the same here, or am I missing something ?
 > 
 
+Nice catch. The original comment should be keep and will add back in the 
+next version.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
