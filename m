@@ -2,168 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBD23E18B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1A13E18B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242644AbhHEPuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:50:50 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:48976
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242637AbhHEPus (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:50:48 -0400
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S242561AbhHEPun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:50:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242338AbhHEPul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 11:50:41 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 3E92340672
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 15:50:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628178626;
-        bh=D1l7i5Vb28UXsgNtCBHcCcosslzh2sOmteJR8SBleRE=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=g2AAadfmeyKla1dH/Y+Xk1fHUWovHttV+mLNaoWNrMugWEcRlIF2iLfSy+B+yuVb+
-         VU0X09spn5cxjmwDlhVkSJpd7LIK0URshF5JWtde5lW6o92OvqlOnBetFF31parjIk
-         DMNaeNryvmULBtBoQAIXvojjkVChBI8ep9bo7Jk+efKC3xX6QxcXwrjI52j6vmmlWZ
-         A0CDEW0hZpW0jg8pKILrTxTPcXbSijIBCzipwRnC9MxX4ifb0W2BMfa5DgWm3rFAb2
-         YWcvKSva2VJHHgrDLq5ThgNgRR4vMdPTgW7O1o6/bc8dMyNB6rlYURBKivRzO47MbD
-         71U7sDa9yC81Q==
-Received: by mail-ej1-f71.google.com with SMTP id q19-20020a170906b293b029058a1e75c819so2178226ejz.16
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 08:50:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D1l7i5Vb28UXsgNtCBHcCcosslzh2sOmteJR8SBleRE=;
-        b=t/3iAjuC6d72lL1iNIfM3L/yl21JEC91QMY8iLNYqHW+AeX/KdKo054FFe0sXa4vDJ
-         14vh29sFoKtkVCqqyAGF047UWD5cSIvGy0tXu9n0ORkaop1M5hT5SS0sOUD7kR03t4yq
-         jpUzqsuyTnz8+RbMkoVerCJyMj/zGPUbXpQCMtMVjoXbIdDhYLLM6525QfTT2n0JM6Cm
-         ru/z3BGGHwv8rjV3dfn5kpAdAxN6z3wL+1k1lV7phd3YrdYQyWpPxNj3imLpDZXzW/r1
-         +aXAn89QK+JCWwPkAx52IspyUKrAYZleP2RkEPtJ6H7E5rtz3QHr7H5iyTElDy9TgpZD
-         yYEg==
-X-Gm-Message-State: AOAM532Zsab0L4S+Xnu7xP97QiWAVlMhNNCbgVz2QvgsVqP/sItWz+ad
-        KPGyMb0Nqo6+Sy0rmN9DVM61s+hJ2kXgG9Nm0wYMhMewzrIBSQMUo80n3aV65GN2eMARchcIXK/
-        T3e7kkOWmb+NLb+yDl1Sk43hPDhMz6lQOX0tYdAmzQDJkjuIUirLyIy1YHw==
-X-Received: by 2002:a17:907:9d2:: with SMTP id bx18mr5515900ejc.117.1628178625867;
-        Thu, 05 Aug 2021 08:50:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzv/WSADBZGHTodg1DBbwRBVFcjOn0YB5R69RD6u/wvTjmlwPTmtgTeS5cInQdde63/dbkb+r7CykRPnppdfSg=
-X-Received: by 2002:a17:907:9d2:: with SMTP id bx18mr5515871ejc.117.1628178625561;
- Thu, 05 Aug 2021 08:50:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210514071452.25220-1-kai.heng.feng@canonical.com>
- <576B26FD-81F8-4632-82F6-57C4A7C096C4@holtmann.org> <8735ryk0o7.fsf@baylibre.com>
- <CAAd53p7Zc3Zk21rwj_x1BLgf8tWRxaKBmXARkM6d7Kpkb+fDZA@mail.gmail.com>
- <87y29o58su.fsf@baylibre.com> <CAAd53p4Ss1Z-7CB4g=_xZYxo1xDz6ih6GHUuMcgncy+yNAfU4w@mail.gmail.com>
- <87a6lzx7jf.fsf@baylibre.com> <CAAd53p6T_K67CPthLPObF=OWWCEChW4pMFMwuq87qWmTmzP2VA@mail.gmail.com>
- <87bl6cnzy2.fsf@baylibre.com>
-In-Reply-To: <87bl6cnzy2.fsf@baylibre.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 5 Aug 2021 23:50:09 +0800
-Message-ID: <CAAd53p5TVJk3G4cArS_UO7cgUpJLONNGVHnpezXy0XTYoXd_uw@mail.gmail.com>
-Subject: Re: [PATCH v2] Bluetooth: Shutdown controller after workqueues are
- flushed or cancelled
-To:     Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        by mail.kernel.org (Postfix) with ESMTPSA id 44A9860234;
+        Thu,  5 Aug 2021 15:50:27 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mBfdZ-003AmT-3i; Thu, 05 Aug 2021 16:50:25 +0100
+Date:   Thu, 05 Aug 2021 16:50:24 +0100
+Message-ID: <87sfznc2m7.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Subject: Re: [PATCH 12/12] arm64: dts: exynos: Add Exynos850 SoC support
+In-Reply-To: <CAPLW+4nCfSBfwMcemaVvU5MgBACgnhXaW9eAAjw66G6Zhz2Gbw@mail.gmail.com>
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+        <20210730144922.29111-13-semen.protsenko@linaro.org>
+        <15871f8ced3c757fad1ab3b6e62c4e64@misterjones.org>
+        <CAPLW+4=v4bDcuxGVqs06mobGj34At4cD+vg48b4dPujarS07Tg@mail.gmail.com>
+        <87k0l1w8y5.wl-maz@kernel.org>
+        <CAPLW+4mMF9B2BiY2hTgHz5=DNbDJZ7TDzt=Xefb5tDKwQhpEew@mail.gmail.com>
+        <87y29gbas7.wl-maz@kernel.org>
+        <CAPLW+4nCfSBfwMcemaVvU5MgBACgnhXaW9eAAjw66G6Zhz2Gbw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: semen.protsenko@linaro.org, s.nawrocki@samsung.com, cw00.choi@samsung.com, krzysztof.kozlowski@canonical.com, linus.walleij@linaro.org, tomasz.figa@gmail.com, robh+dt@kernel.org, sboyd@kernel.org, mturquette@baylibre.com, jirislaby@kernel.org, gregkh@linuxfoundation.org, ckeepax@opensource.wolfsonmicro.com, ryu.real@samsung.com, tom.gall@linaro.org, sumit.semwal@linaro.org, john.stultz@linaro.org, amit.pundir@linaro.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mattijs,
+On Thu, 05 Aug 2021 16:30:23 +0100,
+Sam Protsenko <semen.protsenko@linaro.org> wrote:
+> 
+> On Thu, 5 Aug 2021 at 10:39, Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Wed, 04 Aug 2021 19:37:24 +0100,
+> > Sam Protsenko <semen.protsenko@linaro.org> wrote:
+> > >
+> > > On Wed, 4 Aug 2021 at 18:01, Marc Zyngier <maz@kernel.org> wrote:
+> > > >
+> > > > On Wed, 04 Aug 2021 15:39:38 +0100,
+> > > > Sam Protsenko <semen.protsenko@linaro.org> wrote:
+> > > >
+> > > > > > You are also missing the hypervisor virtual timer interrupt.
+> > > > > >
+> > > > >
+> > > > > Checked SoC TRM, there is no PPI for hypervisor virtual timer
+> > > > > interrupt, and no mentioning of it at all. Likewise, I checked ARMv8
+> > > > > ARM and TRM, almost no description of it. Also, I checked other
+> > > > > platforms, and seems like everyone does the same (having only 4
+> > > > > interrupts). And I wasn't able to find any documentation on that, so I
+> > > > > guess I'll leave it as is, if you don't mind.
+> > > >
+> > > > I *do* mind, and other DTs being wrong isn't a good enough excuse! ;-)
+> > > >
+> > > > From the ARMv8 ARM (ARM DDI 0487G.b)
+> > > > <quote>
+> > > > D11.2.4 Timers
+> > > >
+> > > > In an implementation of the Generic Timer that includes EL3, if EL3
+> > > > can use AArch64, the following timers are implemented:
+> > > >
+> > > > * An EL1 physical timer, that:
+> > > >   - In Secure state, can be accessed from EL1.
+> > > >   - In Non-secure state, can be accessed from EL1 unless those
+> > > >     accesses are trapped to EL2.
+> > > >     When this timer can be accessed from EL1, an EL1 control
+> > > >     determines whether it can be accessed from EL0.
+> > > > * A Non-secure EL2 physical timer.
+> > > > * A Secure EL3 physical timer. An EL3 control determines whether this
+> > > >   register is accessible from Secure EL1.
+> > > > * An EL1 virtual timer.
+> > > > * When FEAT_VHE is implemented, a Non-secure EL2 virtual timer.
+> > > > * When FEAT_SEL2 is implemented, a Secure EL2 physical timer.
+> > > > * When FEAT_SEL2 is implemented, a Secure EL2 virtual timer.
+> > > > </quote>
+> > > >
+> > > > Cortex-A55 being an ARMv8.2 implementation, it has FEAT_VHE, and thus
+> > > > it does have a NS-EL2 virtual timer. This is further confirmed by the
+> > > > TRM which documents CNTHV*_EL2 as valid system registers[1].
+> > > >
+> > > > So the timer exists, the signal is routed out of the core, and it
+> > > > is likely that it is connected to the GIC.
+> > > >
+> > > > If the designers have omitted it, then it needs to be documented as
+> > > > such.
+> > > >
+> > >
+> > > Ok, I've checked thoroughly all docs again, and it seems like there is
+> > > no dedicated PPI number for this "EL2 Hypervisor Virtual Timer" in
+> > > Exynos850 SoC. The timer instance itself might exist of course, but
+> > > interrupt line is probably wasn't connected to GIC by SoC designers,
+> > > at least it's not documented.
+> >
+> > Can you try and check this? You can directly program the virtual timer
+> > so that it has a pending interrupt, and then check the pending
+> > register on the same CPU to see if there is anything appearing there.
+> >
+> > > Moreover, from [1,2] it looks like if it were existing it would have
+> > > been PPI=12 (INTID=28). But in GIC-400 TRM this PPI is assigned to
+> > > "Legacy FIQ signal",
+> >
+> > No. That's only if you set the bypass bits in GICD_CTLR, which nobody
+> > with half a brain would consider doing.
+> >
+> > > and all there is no PPI for Hypervisor Virtual
+> > > Timer documented there as well. In Exynos850 TRM the source for this
+> > > PPI's interrupt source is marked as "-", which means it's not used.
+> > >
+> > > So if you know something that I don't know -- please point me out the
+> > > doc where this PPI line is documented. Otherwise I can add the comment
+> > > to device tree, stating that this interrupt line is not present in
+> > > SoC's GIC, i.e. something like this:
+> > >
+> > > 8<------------------------------------------------------------------------------->8
+> > >     timer {
+> > >         compatible = "arm,armv8-timer";
+> > >         interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(8) |
+> > >                       IRQ_TYPE_LEVEL_LOW)>,
+> > >                  <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(8) |
+> > >                       IRQ_TYPE_LEVEL_LOW)>,
+> > >                  <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(8) |
+> > >                       IRQ_TYPE_LEVEL_LOW)>,
+> > >                  <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(8) |
+> > >                       IRQ_TYPE_LEVEL_LOW)>;
+> > >         /* Hypervisor Virtual Timer PPI is not present in this SoC GIC */
+> > >     };
+> > > 8<------------------------------------------------------------------------------->8
+> > >
+> > > Is that ok with you?
+> >
+> > I'd rather you verify the above first. And if you can't, I'd like a
+> > comment that is a bit more explicit:
+> >
+> 
+> I'm afraid I won't be able to verify your idea: seems like CNTHV_EL2
+> can be only modified (or read) in EL2. I tried to read that reg
+> anyway, which unsurprisingly resulted in el1_undef() BUG. The kernel
+> on my board is running in EL1, and I don't have access to the source
+> code for EL3 bootloaders. I have the source code for the last
+> bootloader, but it's already running in EL1.
 
-On Thu, Aug 5, 2021 at 2:55 PM Mattijs Korpershoek
-<mkorpershoek@baylibre.com> wrote:
->
-> Hi Kai-Heng,
->
-> Thanks for your patch,
->
-> Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
->
+Excellent. Yet another half-usable machine on the block. Just what we
+need.
 
-[snipped]
+> 
+> > /* The vendor couldn't be bothered to wire the EL2 Virtual Timers */
+> >
+> 
+> I'll add the comment as you suggested. I propose we come back to this
+> issue later, either when the need for HV timer arises or when I have
+> some means to test your theory about existing PPI.
 
-> I confirm this diff works for me:
->
-> root@i500-pumpkin:~# hciconfig hci0 up
-> root@i500-pumpkin:~# hciconfig hci0 down
-> root@i500-pumpkin:~# hciconfig hci0 up
-> root@i500-pumpkin:~# hciconfig hci0
-> hci0:   Type: Primary  Bus: SDIO
->         BD Address: 00:0C:E7:55:FF:12  ACL MTU: 1021:8  SCO MTU: 244:4
->         UP RUNNING
->         RX bytes:11268 acl:0 sco:0 events:829 errors:0
->         TX bytes:182569 acl:0 sco:0 commands:829 errors:0
->
-> root@i500-pumpkin:~# hcitool scan
-> Scanning ...
->         <redacted>       Pixel 3 XL
->
-> Tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+If you depend on the vendor to get EL2 access, it is a lost cause,
+unfortunately.
 
-I found that btmtksdio_flush() only cancels the work instead of doing
-flush_work(). That probably explains why putting ->shutdown right
-before ->flush doesn't work.
-So can you please test the following again:
-diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
-index 9872ef18f9fea..b33c05ad2150b 100644
---- a/drivers/bluetooth/btmtksdio.c
-+++ b/drivers/bluetooth/btmtksdio.c
-@@ -649,9 +649,9 @@ static int btmtksdio_flush(struct hci_dev *hdev)
- {
-        struct btmtksdio_dev *bdev = hci_get_drvdata(hdev);
+	M.
 
--       skb_queue_purge(&bdev->txq);
-+       flush_work(&bdev->tx_work);
-
--       cancel_work_sync(&bdev->tx_work);
-+       skb_queue_purge(&bdev->txq);
-
-        return 0;
- }
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 2560ed2f144d4..a61e610a400cb 100644
-
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1785,6 +1785,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
-        aosp_do_close(hdev);
-        msft_do_close(hdev);
-
-+       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
-+           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
-+           test_bit(HCI_UP, &hdev->flags)) {
-+               /* Execute vendor specific shutdown routine */
-+               if (hdev->shutdown)
-+                       hdev->shutdown(hdev);
-+       }
-+
-        if (hdev->flush)
-                hdev->flush(hdev);
-
-@@ -1798,14 +1806,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
-                clear_bit(HCI_INIT, &hdev->flags);
-        }
-
--       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
--           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
--           test_bit(HCI_UP, &hdev->flags)) {
--               /* Execute vendor specific shutdown routine */
--               if (hdev->shutdown)
--                       hdev->shutdown(hdev);
--       }
--
-        /* flush cmd  work */
-        flush_work(&hdev->cmd_work);
-
-Kai-Heng
+-- 
+Without deviation from the norm, progress is not possible.
