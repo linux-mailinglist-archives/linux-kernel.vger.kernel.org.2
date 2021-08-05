@@ -2,106 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BC43E1B7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177F43E1B85
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241528AbhHESkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:40:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229892AbhHESkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:40:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A384D601FF;
-        Thu,  5 Aug 2021 18:40:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628188801;
-        bh=uieYp5dhE+BgI7VoI96Hu2v7JqETU3Mt5VK7tX6c9+4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GBqWXZTK4SvQZPLH6flfZWcY/SIWBu7fUYdkdHKHHgPo2QKkibu16RRHUFGqHdRQA
-         RmfWLeB5aUFlLzFrqKeAb57N1MThNF3YdPMRIF+TnzZBqPQMBqSfJEzskEeWhvO8yH
-         xXPx29sFSPYObnTH9vqEC24WsQ68Dsv8A7msmsOA=
-Date:   Thu, 5 Aug 2021 20:39:58 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mathias Nyman <mathias.nyman@linux.intel.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: USB xhci crash under load on 5.14-rc3
-Message-ID: <YQwwfn2rQGvCrvXS@kroah.com>
-References: <YQpJLk42b+0g7WFB@kroah.com>
- <9bb1d58b-5c68-86b7-13df-2faa749880c5@linux.intel.com>
+        id S241221AbhHESko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240379AbhHESkn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:40:43 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7698C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:40:27 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id y34so12932466lfa.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:40:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PIMmN8s4yzOklVrFNPAhUIzghEwqDAddYwZBgHlhoQY=;
+        b=Jk7ddJUfGVWAW2ritnMlzyPA56WazGgdT9bYKCAeF8cea10/iq+6gu5FhADG0nfih3
+         uweNh2YYjGYUKbEFzyrkb6j+Xh2YzwgQ3+I4Xx4DMLeoAweSMgkjqi7L1PxYh76UDNAW
+         ExElvdu6nX016+ipoQ3CaGLSvqE+cWzD9SYQAfgRJKCN1LE4TgT4YtrVOyKwRgf3cNwG
+         GRTlr0UMYxHWHudYO0vYXiTGwUMRM8rjcbWOyTAmMDpiSJgV6qcwhwT1JifdPRIaFdFM
+         1tYmnkT0+O6gC2408aDLeHYLF/0eN5kQbgv4DF+h8b8QJ0aS0n5HDTF63mO3w32Na8+n
+         N8kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PIMmN8s4yzOklVrFNPAhUIzghEwqDAddYwZBgHlhoQY=;
+        b=fZKJbrIgQH7jAlITSvZAVHIds1oA+H+rD7fUogjzSUrbcq7pDO2jgv72dmN5Ugi3qR
+         ED2mLRwAeZUnJpsGovr1BRrqRAmYR7FYpzeSJVVXlhfSqjzQfSLACugqRybklSvzuq7V
+         EmD89ehfN0hdHQaCSyEc1DgXOytxDonG18sIxG6gaxD9Cc6J42uM0SvC+MBYD7vyO8r2
+         KlURJzoRN7j2iyr4EvXWrBTy9Ca5roPUROaC2PrWK429ExEX0le7cVjh6qkUNS7fYhf5
+         HD1lxIc/f2E0zMtWSd9Bu0OAkJeKvEGSWg3lcKBv6OAQcs0YgdByxuVzqcX4FdR/Tdzm
+         /RbQ==
+X-Gm-Message-State: AOAM532pywhj0pKbshkvz4MMUlP6LOSWvMD6SraluPqk/4xooq0ySmZ4
+        pnMgivRP/7V4DKmeMtc2cWv+p6rMZlsQrzFFhIC8tQ==
+X-Google-Smtp-Source: ABdhPJwKZ0bGNLeTtSOs0C2EEHN8+kzI+49yaZkYoccxWYUpb641owH5DpLRRXUpUFAvyXvR4ehtxAApRyk4oi8LQKI=
+X-Received: by 2002:a05:6512:71:: with SMTP id i17mr4612395lfo.368.1628188825887;
+ Thu, 05 Aug 2021 11:40:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9bb1d58b-5c68-86b7-13df-2faa749880c5@linux.intel.com>
+References: <20210802234304.3519577-1-ndesaulniers@google.com> <CAK7LNATWm94K=UcSNn88PyPST38rfe_31vLLpDf=ERPnKnBvVA@mail.gmail.com>
+In-Reply-To: <CAK7LNATWm94K=UcSNn88PyPST38rfe_31vLLpDf=ERPnKnBvVA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 5 Aug 2021 11:40:15 -0700
+Message-ID: <CAKwvOdkVuzD68bQuAWS7fS0tat_wdR0bxb=Eh=Te84RtoRgZ8g@mail.gmail.com>
+Subject: Re: [PATCH] scripts/Makefile.clang: default to LLVM_IAS=1
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Khem Raj <raj.khem@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:SIFIVE DRIVERS" <linux-riscv@lists.infradead.org>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 05:59:00PM +0300, Mathias Nyman wrote:
-> On 4.8.2021 11.00, Greg KH wrote:
-> > Hi,
-> > 
-> > I was doing some filesystem backups from one USB device to another one
-> > this weekend and kept running into the problem of the xhci controller
-> > shutting down after an hour or so of high volume traffic.
-> > 
-> > I finally captured the problem in the kernel log as this would also take
-> > out my keyboard, making it hard to recover from :)
-> > 
-> > The log is below for when the problem happens, and then the devices are
-> > disconnected from the bus (ignore the filesystem errors, those are
-> > expected when i/o is in flight and we disconnect a device.
-> > 
-> > Any hint as to what the IO_PAGE_FAULT error messages are?
-> > 
-> 
-> No idea, unfortunately.
-> 
-> > I'll go back to 5.13.y now and see if I can reproduce it there or not,
-> > as my backups are not yet done...
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> > 
-> > [Aug 4 09:48] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff00000 flags=0x0000]
-> > [  +0.000012] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff00f80 flags=0x0000]
-> > [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff01000 flags=0x0000]
-> > [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff01f80 flags=0x0000]
-> > [  +0.000005] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff02000 flags=0x0000]
-> > [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff02f80 flags=0x0000]
-> > [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff03000 flags=0x0000]
-> > [  +0.000005] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff03f80 flags=0x0000]
-> > [  +0.000006] xhci_hcd 0000:47:00.1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0032 address=0xfffffff04000 flags=0x0000]
-> > [Aug 4 09:49] sd 3:0:0:0: [sdc] tag#21 uas_eh_abort_handler 0 uas-tag 1 inflight: CMD IN 
-> > [  +0.000011] sd 3:0:0:0: [sdc] tag#21 CDB: Read(16) 88 00 00 00 00 01 8a 44 08 b0 00 00 00 08 00 00
-> > [  +5.106493] xhci_hcd 0000:47:00.1: xHCI host not responding to stop endpoint command.
-> > [  +0.000010] xhci_hcd 0000:47:00.1: USBSTS: HCHalted HSE
-> 
-> 
-> HSE "Host System Error" bit is set, meaning xHC hardware detected a serious error and stopped the host.
-> HSE was probably set 5-10 seconds earlier, but only discovered here.
-> 
-> Specs state:
-> 
-> xHC sets this bit to ‘1’ when a serious error
-> is detected, either internal to the xHC or during a host system access involving the xHC module.
-> (In a PCI system, conditions that set this bit to ‘1’ include PCI Parity error, PCI Master Abort, and
-> PCI Target Abort.)
+On Thu, Aug 5, 2021 at 8:16 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Tue, Aug 3, 2021 at 8:43 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 444558e62cbc..b24b48c9ebb7 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -845,7 +845,7 @@ else
+> >  DEBUG_CFLAGS   += -g
+> >  endif
+> >
+> > -ifneq ($(LLVM_IAS),1)
+> > +ifeq ($(LLVM_IAS),0)
+> >  KBUILD_AFLAGS  += -Wa,-gdwarf-2
+> >  endif
+> >
+> > diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+> > index bc74afdbf31e..807f7c94bc6f 100644
+> > --- a/arch/riscv/Makefile
+> > +++ b/arch/riscv/Makefile
+> > @@ -41,7 +41,7 @@ endif
+> >  ifeq ($(CONFIG_LD_IS_LLD),y)
+> >         KBUILD_CFLAGS += -mno-relax
+> >         KBUILD_AFLAGS += -mno-relax
+> > -ifneq ($(LLVM_IAS),1)
+> > +ifeq ($(LLVM_IAS),0)
+> >         KBUILD_CFLAGS += -Wa,-mno-relax
+> >         KBUILD_AFLAGS += -Wa,-mno-relax
+> >  endif
+>
+>
+>
+> Please drop these two hunks.
+>
+> I will apply my patch instead.
+> https://lore.kernel.org/patchwork/patch/1472580/
 
-Ok, I would believe in a PCI error here, hammering a xhci controller
-with read/write streams to two different storage devices on the same bus
-for a few hours as fast as the bus allows is a good stress test.
+Sure.  Will send a v2 with Matthew's suggestion as well.
 
-I tried splitting this across PCI devices, and can not seem to duplicate
-the failure in the xhci controllers, now the devices fail with disk
-errors after about a terrabyte of traffic, but are recoverable after
-unplug/plugging them back in and running fsck.
+> When we negate a flag that is enabled by default,
+> which is a common way?
+>  - set it to '0'
+>  - set is to empty
+>
+>
+> So, I was wondering if we should support
+> not only LLVM_IAS=0 but also LLVM_IAS=.
+>
+> What do you think?
 
-Cheap USB storage, gotta love it...
+LLVM_IAS= looks weird (so I agree with Khem's response), but if it's
+common/expected then maybe if there's a way to write a concise check
+for either =<blank> or =0?  I don't feel strongly about how it's
+specified to disable the integrated assembler, but let's sort that out
+_before_ I send a v2.
 
-If I come up with a reproducable failure, I'll let you know, thanks for
-the help,
-
-greg k-h
+How can you tell the difference between `make CC=clang` and `make
+CC=clang LLVM_IAS=`? (maybe that doesn't matter here, as either imply
+"don't use clang as the assembler when compiling with clang")
+-- 
+Thanks,
+~Nick Desaulniers
