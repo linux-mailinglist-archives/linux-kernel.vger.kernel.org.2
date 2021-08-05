@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E018B3E19F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16533E19FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236225AbhHERGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:06:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59242 "EHLO mail.kernel.org"
+        id S236754AbhHERGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:06:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236191AbhHERGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:06:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D5ED61132;
-        Thu,  5 Aug 2021 17:05:47 +0000 (UTC)
-Date:   Thu, 5 Aug 2021 18:05:40 +0100
+        id S236666AbhHERGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 13:06:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9D52610FB;
+        Thu,  5 Aug 2021 17:06:07 +0000 (UTC)
+Date:   Thu, 5 Aug 2021 18:06:00 +0100
 From:   Catalin Marinas <catalin.marinas@arm.com>
 To:     Anshuman Khandual <anshuman.khandual@arm.com>
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, akpm@linux-foundation.org,
         suzuki.poulose@arm.com, mark.rutland@arm.com, will@kernel.org,
         maz@kernel.org, james.morse@arm.com, steven.price@arm.com
-Subject: Re: [RFC V2 02/10] arm64/mm: Consolidate TCR_EL1 fields
-Message-ID: <20210805170540.GC6719@arm.com>
+Subject: Re: [RFC V2 03/10] arm64/mm: Add FEAT_LPA2 specific TCR_EL1.DS field
+Message-ID: <20210805170559.GD6719@arm.com>
 References: <1627281445-12445-1-git-send-email-anshuman.khandual@arm.com>
- <1627281445-12445-3-git-send-email-anshuman.khandual@arm.com>
+ <1627281445-12445-4-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1627281445-12445-3-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1627281445-12445-4-git-send-email-anshuman.khandual@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 12:07:17PM +0530, Anshuman Khandual wrote:
-> This renames and moves SYS_TCR_EL1_TCMA1 and SYS_TCR_EL1_TCMA0 definitions
-> into pgtable-hwdef.h thus consolidating all TCR fields in a single header.
-> This does not cause any functional change.
+On Mon, Jul 26, 2021 at 12:07:18PM +0530, Anshuman Khandual wrote:
+> As per ARM ARM (0487G.A) TCR_EL1.DS fields controls whether 52 bit input
+> and output address get supported on 4K and 16K page size configuration,
+> when FEAT_LPA2 is known to have been implemented. This adds TCR_DS field
+> definition which would be used when FEAT_LPA2 gets enabled.
 > 
 > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-
-Not sure how we ended up with TCR definitions in two places.
 
 Acked-by: Catalin Marinas <catalin.marinas@arm.com>
