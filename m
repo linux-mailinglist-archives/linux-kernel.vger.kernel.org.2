@@ -2,170 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD3B3E1402
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8685F3E1386
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241104AbhHELie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241085AbhHELic (ORCPT
+        id S240821AbhHELIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:08:46 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:13237 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240746AbhHELIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:38:32 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE36C0613D5;
-        Thu,  5 Aug 2021 04:38:17 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id a93so8525718ybi.1;
-        Thu, 05 Aug 2021 04:38:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4sNrBXG3cmsa/j58MXPnQY+ureLEZb7SFaI4axcJxYI=;
-        b=H8OXe89Tmp4MidjEkZBmS7XtFY8sjphNOTOYu9/ij5S66Qb3c5KocBgfP01ZQVagyh
-         YrrqdxdrFzx0Qarw6B0M/H8U6W90XFtHPJm+7R14WRuhZnFuLVbau51Yf3JGUmZiRA8X
-         Ii1eYJof4JY4Ea2+kyrX8z+3hcxUUvY5fX1S04QPozNHNjQ5Txh0XfnIbPgB/04sjk5G
-         3XwB75A4357/Rk3X4oMa8FCNaq+hqukWR/XlDQFtE3AAhKNkb4OECHprlgQENXZs5VIm
-         IGQMJSwhWkm6JIv6mlKXTg777F1U3shiJoBNX6at1WMOE2aVZ3s0i9jeY9WRfuP1BXGA
-         yZ/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4sNrBXG3cmsa/j58MXPnQY+ureLEZb7SFaI4axcJxYI=;
-        b=K+d7gL7w3qeiPqnNQpbs2djulssDzX5KEUHHaytqgmkXzAL7C681gO/RWfgw2gHswd
-         FVlHCptQKdrXo3IlU1G/+Vv7VwKmjJpON2NbHp44Ga4U3uX9mFSiiHM14TL88nuk5qJA
-         rvq8DOwl+g2dkTrWIv16A0uLHa43ZvJhFib9uRozQejq53vaFmSW6uOkUfuutgZSuoMf
-         CYzuY0kebsR+wfgC+AOMFnNMHACHiXJtanmqFANCqt8t05UZODHsHuyXOPtExF0Rs51m
-         P2RNpKmYHZS5z8LwIB0oapYEeAHazCGDF2nBiIwCrzRSV0svUPxRteLrMmpshS5pjh8s
-         r4JA==
-X-Gm-Message-State: AOAM531reMHzhbc6WJxKTXhFP/dy8Nj3G2rc31YdciU8IOne08vOaaCu
-        J8J+h1/+ikP6er0xQM+iZnZ00hBbZM/9hcdFLyk=
-X-Google-Smtp-Source: ABdhPJzNaVthwQzy/5Yu04j/gS54ZLHj33w/D2H88qsv5NOCWA4KIoWAOx6COVtIiUVpXk1pr1ta8u9P0brUJ/vhurE=
-X-Received: by 2002:a5b:108:: with SMTP id 8mr5534615ybx.174.1628163496897;
- Thu, 05 Aug 2021 04:38:16 -0700 (PDT)
+        Thu, 5 Aug 2021 07:08:44 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GgQnx5cF7z1CSh5;
+        Thu,  5 Aug 2021 19:08:21 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 19:08:28 +0800
+Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 5 Aug 2021
+ 19:08:28 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH -next] riscv: Enable HAVE_ARCH_HUGE_VMAP for 64BIT
+Date:   Thu, 5 Aug 2021 19:38:37 +0800
+Message-ID: <20210805113837.805805-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.18.0.huawei.25
 MIME-Version: 1.0
-References: <CGME20210804143357epcas1p1c67eca591d8bb557c11b8175baaa8550@epcas1p1.samsung.com>
- <CAMdYzYrx8pgeyK7u=kcopZ+Wae+fQdr_uM4AuVjqWKfZYikgcA@mail.gmail.com> <a9aa636e-326f-a848-dd69-41df87c013af@samsung.com>
-In-Reply-To: <a9aa636e-326f-a848-dd69-41df87c013af@samsung.com>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Thu, 5 Aug 2021 07:38:06 -0400
-Message-ID: <CAMdYzYr9PX-9=kkCAfGe8Q0-D+gRo_qCwse8SiGVsmod7fffiA@mail.gmail.com>
-Subject: Re: [BUG] mmc_regulator_set_ocr can't cope with regulator-fixed
-To:     Jaehoon Chung <jh80.chung@samsung.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-mmc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 5:59 AM Jaehoon Chung <jh80.chung@samsung.com> wrote:
->
-> Hi,
->
-> On 8/4/21 11:32 PM, Peter Geis wrote:
-> > Good Morning,
-> >
-> > I've encountered a fun issue with the dw-mmc driver while working on
-> > enabling support for the Quartz-64 Model A.
-> > The regulator-fixed driver supports enabling via a gpio, but does not
-> > have the ops to set voltage as it is fixed.
-> > The dw-mmc calls mmc_regulator_set_ocr for vmmc, which attempts to set
-> > the voltage first but fails due to the lack of the voltage ops. It
-> > then bails returning -EINVAL.
-> > This leads to the following message :
-> > dwmmc_rockchip fe2b0000.mmc: could not set regulator OCR (-22)
->
-> What is vdd value (ocr_avail value) on your target?
-> I didn't see its case until now. If there is a real bug, I will try to check again.
+This sets the HAVE_ARCH_HUGE_VMAP option. Enable pmd vmap support and
+define the required page table functions(Currently, riscv has only
+three-level page tables support for 64BIT).
 
-What brought this front and center is actually another bug with the
-dw-mmc-rk driver (I don't know if it affects other dw-mmc drivers)
-vmmc is 3.3v on this board, but with broken-cd set polling causes the
-following splat constantly.
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+---
+ .../features/vm/huge-vmap/arch-support.txt    |  2 +-
+ arch/riscv/Kconfig                            |  1 +
+ arch/riscv/include/asm/vmalloc.h              | 12 +++++
+ arch/riscv/mm/Makefile                        |  1 +
+ arch/riscv/mm/pgtable.c                       | 53 +++++++++++++++++++
+ 5 files changed, 68 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/mm/pgtable.c
 
-[   30.719846] dwmmc_rockchip fe2b0000.mmc: could not set regulator OCR (-22)
-[   30.720488] dwmmc_rockchip fe2b0000.mmc: failed to enable vmmc regulator
-[   30.763736] dwmmc_rockchip fe2b0000.mmc: could not set regulator OCR (-22)
-[   30.764379] dwmmc_rockchip fe2b0000.mmc: failed to enable vmmc regulator
-[   30.778231] dwmmc_rockchip fe2b0000.mmc: failed to set rate 300000Hz
-[   30.795042] dwmmc_rockchip fe2b0000.mmc: failed to set rate 300000Hz
-[   30.798735] dwmmc_rockchip fe2b0000.mmc: failed to set rate 300000Hz
-[   30.816591] dwmmc_rockchip fe2b0000.mmc: failed to set rate 300000Hz
-[   30.820303] dwmmc_rockchip fe2b0000.mmc: could not set regulator OCR (-22)
-[   30.820944] dwmmc_rockchip fe2b0000.mmc: failed to enable vmmc regulator
-[   30.834794] dwmmc_rockchip fe2b0000.mmc: failed to set rate 200000Hz
-[   30.851606] dwmmc_rockchip fe2b0000.mmc: failed to set rate 200000Hz
-[   30.855264] dwmmc_rockchip fe2b0000.mmc: failed to set rate 200000Hz
-[   30.873197] dwmmc_rockchip fe2b0000.mmc: failed to set rate 200000Hz
-[   30.876908] dwmmc_rockchip fe2b0000.mmc: could not set regulator OCR (-22)
-[   30.877549] dwmmc_rockchip fe2b0000.mmc: failed to enable vmmc regulator
-[   30.891396] dwmmc_rockchip fe2b0000.mmc: failed to set rate 100000Hz
-[   30.911704] dwmmc_rockchip fe2b0000.mmc: failed to set rate 100000Hz
-[   30.915586] dwmmc_rockchip fe2b0000.mmc: failed to set rate 100000Hz
-[   30.948637] dwmmc_rockchip fe2b0000.mmc: failed to set rate 100000Hz
-
-I looked through the code path and if the OCR voltage is set to the
-fixed regulator voltage it should just return success. I think I need
-to change that error to output the voltage it tried to set, just to
-see if something weird is going on.
-
-Also, I've got a possible fix to the dw-mmc issue, the following patch
-changes the behavior to only enable a fixed regulator, not try to set
-the voltage. It's a split between the behavior when vmmc isn't defined
-at all and when its a variable regulator:
-
-diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-index d333130d1531..b30102980261 100644
---- a/drivers/mmc/host/dw_mmc.c
-+++ b/drivers/mmc/host/dw_mmc.c
-@@ -1446,11 +1446,13 @@ static void dw_mci_set_ios(struct mmc_host
-*mmc, struct mmc_ios *ios)
-  switch (ios->power_mode) {
-  case MMC_POWER_UP:
-  if (!IS_ERR(mmc->supply.vmmc)) {
-- ret = mmc_regulator_set_ocr(mmc, mmc->supply.vmmc,
-- ios->vdd);
-+ if (mmc->ocr_avail > 0)
-+ ret = mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, ios->vdd);
-+ else
-+ ret = regulator_enable(mmc->supply.vmmc);
+diff --git a/Documentation/features/vm/huge-vmap/arch-support.txt b/Documentation/features/vm/huge-vmap/arch-support.txt
+index 439fd9069b8b..0ff394acc9cf 100644
+--- a/Documentation/features/vm/huge-vmap/arch-support.txt
++++ b/Documentation/features/vm/huge-vmap/arch-support.txt
+@@ -22,7 +22,7 @@
+     |    openrisc: | TODO |
+     |      parisc: | TODO |
+     |     powerpc: |  ok  |
+-    |       riscv: | TODO |
++    |       riscv: |  ok  |
+     |        s390: | TODO |
+     |          sh: | TODO |
+     |       sparc: | TODO |
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 8fcceb8eda07..94cc2a254773 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -61,6 +61,7 @@ config RISCV
+ 	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
+ 	select HANDLE_DOMAIN_IRQ
+ 	select HAVE_ARCH_AUDITSYSCALL
++	select HAVE_ARCH_HUGE_VMAP if MMU && 64BIT
+ 	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
+ 	select HAVE_ARCH_KASAN if MMU && 64BIT
+diff --git a/arch/riscv/include/asm/vmalloc.h b/arch/riscv/include/asm/vmalloc.h
+index ff9abc00d139..8f17f421f80c 100644
+--- a/arch/riscv/include/asm/vmalloc.h
++++ b/arch/riscv/include/asm/vmalloc.h
+@@ -1,4 +1,16 @@
+ #ifndef _ASM_RISCV_VMALLOC_H
+ #define _ASM_RISCV_VMALLOC_H
+ 
++#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
 +
-  if (ret) {
-- dev_err(slot->host->dev,
-- "failed to enable vmmc regulator\n");
-+ dev_err(slot->host->dev, "failed to enable vmmc regulator\n");
-  /*return, if failed turn on vmmc*/
-  return;
-  }
++#define IOREMAP_MAX_ORDER (PMD_SHIFT)
++
++#define arch_vmap_pmd_supported	arch_vmap_pmd_supported
++static inline bool __init arch_vmap_pmd_supported(pgprot_t prot)
++{
++	return true;
++}
++
++#endif
++
+ #endif /* _ASM_RISCV_VMALLOC_H */
+diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
+index 7ebaef10ea1b..f932b4d69946 100644
+--- a/arch/riscv/mm/Makefile
++++ b/arch/riscv/mm/Makefile
+@@ -13,6 +13,7 @@ obj-y += extable.o
+ obj-$(CONFIG_MMU) += fault.o pageattr.o
+ obj-y += cacheflush.o
+ obj-y += context.o
++obj-y += pgtable.o
+ 
+ ifeq ($(CONFIG_MMU),y)
+ obj-$(CONFIG_SMP) += tlbflush.o
+diff --git a/arch/riscv/mm/pgtable.c b/arch/riscv/mm/pgtable.c
+new file mode 100644
+index 000000000000..f68dd2b71dce
+--- /dev/null
++++ b/arch/riscv/mm/pgtable.c
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <asm/pgalloc.h>
++#include <linux/gfp.h>
++#include <linux/kernel.h>
++#include <linux/pgtable.h>
++
++#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
++
++int pud_set_huge(pud_t *pud, phys_addr_t phys, pgprot_t prot)
++{
++	return 0;
++}
++
++int pud_clear_huge(pud_t *pud)
++{
++	return 0;
++}
++
++int pud_free_pmd_page(pud_t *pud, unsigned long addr)
++{
++	return 0;
++}
++
++int pmd_set_huge(pmd_t *pmd, phys_addr_t phys, pgprot_t prot)
++{
++	pmd_t new_pmd = pfn_pmd(__phys_to_pfn(phys), prot);
++
++	set_pmd(pmd, new_pmd);
++	return 1;
++}
++
++int pmd_clear_huge(pmd_t *pmd)
++{
++	if (!pmd_leaf(READ_ONCE(*pmd)))
++		return 0;
++	pmd_clear(pmd);
++	return 1;
++}
++
++int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
++{
++	pte_t *pte;
++
++	pte = (pte_t *)pmd_page_vaddr(*pmd);
++	pmd_clear(pmd);
++
++	flush_tlb_kernel_range(addr, addr + PMD_SIZE);
++	pte_free_kernel(NULL, pte);
++	return 1;
++}
++
++#endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+-- 
+2.18.0.huawei.25
 
->
-> Best Regards,
-> Jaehoon Chung
->
-> >
-> > This can be fixed by switching to regulator-gpio for the vmmc supply
-> > to the sdmmc controller, however the sdio controller vmmc is provided
-> > by a fixed regulator that is always on. Obviously the regulator-gpio
-> > isn't an option, as it has no gpio to enable.
-> >
-> > Removing the vmmc phandle from the sdio node is an option, but then it
-> > doesn't fully describe the hardware (it's also a non-standard 4.4v).
-> > I had considered changing the check in dw-mmc.c [1] to continue in the
-> > case of -EINVAL, but there are other places in the regulator framework
-> > that can also return that and it doesn't address the underlying issue.
-> >
-> > As such I'm reaching out to the experts to see what the best course of
-> > action is here.
-> > Please weigh in with what you think.
-> >
-> > Very Respectfully,
-> > Peter Geis
-> >
->
