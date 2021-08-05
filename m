@@ -2,86 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A2B3E0E86
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F6D3E0E88
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237804AbhHEGnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 02:43:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40300 "EHLO mail.kernel.org"
+        id S237892AbhHEGpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 02:45:09 -0400
+Received: from m12-13.163.com ([220.181.12.13]:48310 "EHLO m12-13.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231418AbhHEGnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 02:43:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62BF460462;
-        Thu,  5 Aug 2021 06:43:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628145817;
-        bh=VJd3dRzsYJ2FfUYxQrivjngv0CEl6bodWlWAEugcJRo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j7neluQDnMex0X+f/p2QgZB9pQ2LdnmtHPm+ah+7iwczNeN6J6CHL5OnKc1ACL6Vc
-         VePonkSTqVdV9E43syKf7CnntbdUKWj55yYWhbBpDG46T+aW83j/uA64vYeIcS9UaU
-         1YgaU83ji2vNK/je2adaGu3py7flEw8sDIyyOWP/ISIVz0jE+WgYS1GxGojsyRqWNS
-         43A/QGJug0Pf82JAON30YLwFqBMbfqPNlGUsxbeEM8U4ksTseyZwV2xqBbpz5aguW1
-         fvJWRxEQ1XHxtmNSkqZYggxojUffq2VHGBPbWnh350o9A9+MfH2KrOFTqdLG6My3Qb
-         NQE5trcKuB7Cw==
-Date:   Thu, 5 Aug 2021 09:43:33 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx5: return the EFAULT per ibv_advise_mr(3)
-Message-ID: <YQuIlUT9jZLeFPNH@unreal>
-References: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
- <20210803162507.GA2892108@nvidia.com>
- <YQmDZpbCy3uTS5jv@unreal>
- <20210803181341.GE1721383@nvidia.com>
- <YQonIu3VMTlGj0TJ@unreal>
- <20210804185022.GM1721383@nvidia.com>
+        id S231418AbhHEGpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 02:45:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=RfB/J
+        nJf9EP8SNAwmDp79LofGOgEFWPMAYpseX6FoDI=; b=FlCE++Mc+hr6Q/36HOak7
+        FAaK3PAbnvhXSTYyQ8TxErZ1xQ5O1cKDqFvIaHDPZBc1h3vqkYGNpgyXkHrvSrui
+        bd+p5//Ew5XKarrVVvhsxOFWCvVKhHoZdZRiZpF66XqzmpxGLJSqSjaAmvY7EwmV
+        N4a5YY8e6X4l9nOHeme6iI=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp9 (Coremail) with SMTP id DcCowAA3PZHKiAthGZjwOA--.41047S2;
+        Thu, 05 Aug 2021 14:44:30 +0800 (CST)
+From:   dingsenjie@163.com
+To:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] net: mac80211: Remove unnecessary variable and label
+Date:   Thu,  5 Aug 2021 14:43:49 +0800
+Message-Id: <20210805064349.202148-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804185022.GM1721383@nvidia.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DcCowAA3PZHKiAthGZjwOA--.41047S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7AF48trWfZFW8Wr4rZw47urg_yoW8Xw1xpF
+        9xK34DtrWkJr15Aw1rAryqqF95Cr40ka40gr4xJ3Z3ZFsI9rn8Gr1Uuw4FqFyYkFZrt34a
+        vFWv9r45Zw1DGrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jmwZ7UUUUU=
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiHgThyFSIwHli5QABsQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 03:50:22PM -0300, Jason Gunthorpe wrote:
-> On Wed, Aug 04, 2021 at 08:35:30AM +0300, Leon Romanovsky wrote:
-> > On Tue, Aug 03, 2021 at 03:13:41PM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Aug 03, 2021 at 08:56:54PM +0300, Leon Romanovsky wrote:
-> > > > On Tue, Aug 03, 2021 at 01:25:07PM -0300, Jason Gunthorpe wrote:
-> > > > > On Sun, Aug 01, 2021 at 05:20:50PM +0800, Li Zhijian wrote:
-> > > > > > ibv_advise_mr(3) says:
-> > > > > > EFAULT In one of the following: o When the range requested is out of the  MR  bounds,
-> > > > > >        or  when  parts of it are not part of the process address space. o One of the
-> > > > > >        lkeys provided in the scatter gather list is invalid or with wrong write access
-> > > > > > 
-> > > > > > Actually get_prefetchable_mr() will return NULL if it see above conditions
-> > > > > 
-> > > > > No, get_prefetchable_mr() returns NULL if the mkey is invalid
-> > > > 
-> > > > And what is this?
-> > > >   1701 static struct mlx5_ib_mr *                         
-> > > >   1702 get_prefetchable_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
-> > > >   1703                     u32 lkey)
-> > > > 
-> > > > ...
-> > > > 
-> > > >   1721         /* prefetch with write-access must be supported by the MR */
-> > > >   1722         if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
-> > > >   1723             !mr->umem->writable) {
-> > > >   1724                 mr = NULL;
-> > > >   1725                 goto end;
-> > > >   1726         }
-> > > 
-> > > I would say that is an invalid mkey
-> > 
-> > I see it is as wrong write access.
-> 
-> It just means the man page is wrong
+From: dingsenjie <dingsenjie@yulong.com>
 
-ok, it can be a solution too.
+The variable ret and label just used as return, so we delete it and
+use the return statement instead of the goto statement.
 
-Thanks
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+---
+ net/mac80211/ibss.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-> 
-> Jason
+diff --git a/net/mac80211/ibss.c b/net/mac80211/ibss.c
+index 1f552f3..9115b68 100644
+--- a/net/mac80211/ibss.c
++++ b/net/mac80211/ibss.c
+@@ -489,7 +489,6 @@ int ieee80211_ibss_csa_beacon(struct ieee80211_sub_if_data *sdata,
+ 	const struct cfg80211_bss_ies *ies;
+ 	u16 capability = WLAN_CAPABILITY_IBSS;
+ 	u64 tsf;
+-	int ret = 0;
+ 
+ 	sdata_assert_lock(sdata);
+ 
+@@ -501,10 +500,8 @@ int ieee80211_ibss_csa_beacon(struct ieee80211_sub_if_data *sdata,
+ 				ifibss->ssid_len, IEEE80211_BSS_TYPE_IBSS,
+ 				IEEE80211_PRIVACY(ifibss->privacy));
+ 
+-	if (WARN_ON(!cbss)) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
++	if (WARN_ON(!cbss))
++		return -EINVAL;
+ 
+ 	rcu_read_lock();
+ 	ies = rcu_dereference(cbss->ies);
+@@ -520,18 +517,14 @@ int ieee80211_ibss_csa_beacon(struct ieee80211_sub_if_data *sdata,
+ 					   sdata->vif.bss_conf.basic_rates,
+ 					   capability, tsf, &ifibss->chandef,
+ 					   NULL, csa_settings);
+-	if (!presp) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!presp)
++		return -ENOMEM;
+ 
+ 	rcu_assign_pointer(ifibss->presp, presp);
+ 	if (old_presp)
+ 		kfree_rcu(old_presp, rcu_head);
+ 
+ 	return BSS_CHANGED_BEACON;
+- out:
+-	return ret;
+ }
+ 
+ int ieee80211_ibss_finish_csa(struct ieee80211_sub_if_data *sdata)
+-- 
+1.9.1
+
+
