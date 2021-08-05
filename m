@@ -2,74 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ADDC3E1270
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176603E1284
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240087AbhHEKTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 06:19:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39385 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240017AbhHEKTi (ORCPT
+        id S240232AbhHEKWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 06:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240017AbhHEKWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 06:19:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628158764;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=tPLv8/FqEnF6zrBT0uL4PeS5Q8+ujikNSGDD6GSwxto=;
-        b=L5I/eSx6icegeYWa5DasTkK8aCr1SNwvNF7vkBiYjcOb+e5rLI8PfSPU3ptY4Bg/HW+4cf
-        H/FaG3JxwZp4ebmDvutdH2XBAEXA7Er/7Qo1CrNwR+rnHX53eAsKke1lq+Bib0BE7NvhMu
-        1O0nYX9DaQx97EYXUN1yJKZfwQqSNO0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-139-9SCv9aALMnql9atHZRlg2g-1; Thu, 05 Aug 2021 06:19:21 -0400
-X-MC-Unique: 9SCv9aALMnql9atHZRlg2g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 852AC87D541;
-        Thu,  5 Aug 2021 10:19:19 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E55B0100238C;
-        Thu,  5 Aug 2021 10:19:17 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     linux-fsdevel@vger.kernel.org
-cc:     dhowells@redhat.com, jlayton@kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        dchinner@redhat.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Could it be made possible to offer "supplementary" data to a DIO write ?
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1017389.1628158757.1@warthog.procyon.org.uk>
-Date:   Thu, 05 Aug 2021 11:19:17 +0100
-Message-ID: <1017390.1628158757@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Thu, 5 Aug 2021 06:22:11 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B0DC061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 03:21:57 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id q9-20020a05620a0c89b02903ba3e0f08d7so3902341qki.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 03:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=E+bvdWx1drc2FEFV8hKAnzU+DC5vzXuWPKzeSXz10zw=;
+        b=RhZ4LcB7yyr8tTPU+hboS6wJm7zS8dAqGoUlU6cR/r25zaCg1rCHseLiF4+Z/VSADo
+         L5yerIOB0Tt4wtJwTbnYrT+DdIw7MAAlGs4QmVT+j1z+lFGuKcwXzQEnoOuBrO8Dm8f5
+         R+l+k6hIMMbee9RlFQgs1U1B6OLRlDVZyU04qU4SFXtSMeCimaP22KAdcJtsZ5gfEgXX
+         cJYhUL/tsAxn67TAU7UlkuV7uKLH2SBQuONjfVh/KJO98lhhULxc1KIdFUtvTUSxJWfg
+         r1EmplzAXhRjZ7i8jl9pBfunKSvldohjXvH/Z8N+GJ3XrS0TboZnwzZwfdtzByjFnHU9
+         1aWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=E+bvdWx1drc2FEFV8hKAnzU+DC5vzXuWPKzeSXz10zw=;
+        b=VKYg4SOzJxD3eCleo5t0eMGdNiNeHE/C1EXPoQjToJIWML68HNcJPGoc+h5xuuwxyD
+         cud+lND4ckt35/9rFPiMQGuJQRHxj+Tia+BL5wB64zGIpqCeSlWeeMA3nrLCLXblbN9o
+         0xrkz5J5CN2SEZJhOPokli5WRzwIn4IyhBtAjgcC2jtYhLwBbPmRT8mDS0gYw5tNW1Ly
+         E0eiFeOxMFi1He+FHzLIMUVFnqjSLsBd/AJJeYtbwz5JajL0OjC1RHj1pQH8Hth+LybV
+         uaSEKUuWb08ZIfiKIxnTv+yGHb473vLXtPud2mL6AraFccD1w2ANkj+71Z0EjK2xO8nx
+         ZDmg==
+X-Gm-Message-State: AOAM532nyLxrvmspc+pQ70mq0m9fghOaDc7O+V0FoGAfDZO6f3cdBwQc
+        yB8o2BBRBjYyj8ZBEEVEvRTkZroxO4uu
+X-Google-Smtp-Source: ABdhPJzzt9ip0a2x5WisLHYFXak7p+2iOOpfqJtbGoInHi5puXss+vkBDtezTnAiusErgOdn611+1bim6dUz
+X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:fd92:a1bb:45f5:2fef])
+ (user=qperret job=sendgmr) by 2002:a0c:e44f:: with SMTP id
+ d15mr4402792qvm.18.1628158916746; Thu, 05 Aug 2021 03:21:56 -0700 (PDT)
+Date:   Thu,  5 Aug 2021 11:21:52 +0100
+Message-Id: <20210805102154.590709-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.554.ge1b32706d8-goog
+Subject: [PATCH v5 0/2] A couple of uclamp fixes
+From:   Quentin Perret <qperret@google.com>
+To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, qais.yousef@arm.com, rickyiu@google.com,
+        wvw@google.com, patrick.bellasi@matbug.net
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi all,
 
-I'm working on network filesystem write helpers to go with the read helpers,
-and I see situations where I want to write a few bytes to the cache, but have
-more available that could be written also if it would allow the
-filesystem/blockdev to optimise its layout.
+This is another round of uclamp fixes, previously posted here:
 
-Say, for example, I need to write a 3-byte change from a page, where that page
-is part of a 256K sequence in the pagecache.  Currently, I have to round the
-3-bytes out to DIO size/alignment, but I could say to the API, for example,
-"here's a 256K iterator - I need bytes 225-227 written, but you can write more
-if you want to"?
+https://lore.kernel.org/lkml/20210719161656.3833943-1-qperret@google.com/
 
-Would it be useful/feasible to have some sort of interface that allows the
-offer to be made?
+Changes since v4:
+ - rebased on tip/sched/core
+ - improved commit message in patch 01 (Dietmar)
 
-David
+Thanks!
+
+Quentin Perret (2):
+  sched: Fix UCLAMP_FLAG_IDLE setting
+  sched: Skip priority checks with SCHED_FLAG_KEEP_PARAMS
+
+ kernel/sched/core.c | 44 ++++++++++++++++++++++++++++++++------------
+ 1 file changed, 32 insertions(+), 12 deletions(-)
+
+-- 
+2.32.0.554.ge1b32706d8-goog
 
