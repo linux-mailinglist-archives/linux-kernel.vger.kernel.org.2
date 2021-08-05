@@ -2,112 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FC53E1D31
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 22:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30D13E1D38
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 22:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240683AbhHEUNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 16:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbhHEUNA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 16:13:00 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D74C061765;
-        Thu,  5 Aug 2021 13:12:45 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id g13so13415044lfj.12;
-        Thu, 05 Aug 2021 13:12:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7cDAy/hM62deBfq6ttiHsWSYbyGEgdxOznCk9r6mwx4=;
-        b=Bvvt5aoIWv5dVzyfr07BljucZerag+oOkWwMSEKFgMx3wVi8bOjWIdGxPUm1c/9ahz
-         4zzOFapuFIr2z3Tv6vHEJyEfOUZZ44l0Ws5yh9nDP+/usyoFx9wT1pc33Ol15ziSoSha
-         jsrXc41dyOaFb+VdqgbZpRmXqV+jLlSQtMCkMo4p7U9cxZqm4iPR6vEp7zuN61gGdKjx
-         XF7q4cfIGB5gBjTNAzQAAVgAq4u91j9PfyGkesAwG5Hmm97zTB8HTSkVbC2eY465RUhv
-         vJ0ZVfy83TnRJiE61GX5bpEApt10KBUP4j3Tqm+OvDFxhgFRH2FtO6MFbI2N9eAcj13f
-         AhCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7cDAy/hM62deBfq6ttiHsWSYbyGEgdxOznCk9r6mwx4=;
-        b=rEQqvlN5AgZddzz3VNyhnai8O6JvpoEL9YTSDS3X2nUPf6bswZNd9MVr31mrx2Gwe3
-         aFiXyfOC3lo4SdFbhEICufrgQmr2CYsxM8nJqKPG778G4fGC83QkRXQgJY/3jeeCByjZ
-         oMq0ZfSTgMJWw0p4HKhEjGyasPaCF59q+QYdgxRP0eRNHiG5Wj3iT+JK1lpqOP42msMc
-         qSxUZPXHwBSu9e6Bxml7buuS+B9XgDIbu/Z6rzQJnue2Dp9wZkxxdV/Dp7+ntaK4kTR+
-         xhrShj5qUjhwvZFfCvb+rJJdisS5VGJihubJIiJZQaGOAD64Jc1B0/VhSBEbV8UyPse3
-         mJWA==
-X-Gm-Message-State: AOAM533re7EMkbXd9dmm9U44cKR7hf+2AZkCmTwD2fBH5AxVTnx50JsC
-        QHg3VJ8zk95cul4r7DRljdY=
-X-Google-Smtp-Source: ABdhPJyM3E4/+J/uczIZaXlDC8WCiou9HizPIzeO8DQM13cPc5t9e2D/4PGHwJPSXvnU6AQZdkcKIw==
-X-Received: by 2002:a05:6512:b08:: with SMTP id w8mr4739545lfu.557.1628194363516;
-        Thu, 05 Aug 2021 13:12:43 -0700 (PDT)
-Received: from [192.168.1.11] ([94.103.226.235])
-        by smtp.gmail.com with ESMTPSA id a12sm312970lfr.305.2021.08.05.13.12.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Aug 2021 13:12:43 -0700 (PDT)
-Subject: Re: [PATCH] ext4: avoid huge mmp update interval value
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, johann@whamcloud.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
-References: <20210805151418.30659-1-paskripkin@gmail.com>
- <YQw/2PuZ8z22Qice@mit.edu>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <2e940500-6d77-2871-407b-201ca29f24fc@gmail.com>
-Date:   Thu, 5 Aug 2021 23:12:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S240703AbhHEUQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 16:16:23 -0400
+Received: from smtp-31-i2.italiaonline.it ([213.209.12.31]:43264 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229765AbhHEUQW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 16:16:22 -0400
+Received: from oxapps-35-162.iol.local ([10.101.8.208])
+        by smtp-31.iol.local with ESMTPA
+        id Bjmgm5TujzHnRBjmgmO1r6; Thu, 05 Aug 2021 22:16:06 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1628194566; bh=VpohMvBfsZqbfNbBMTVaNf8bFAKmlnd6RyJI3PigMS0=;
+        h=From;
+        b=e383E/s3/nkklTiY7s3DUW0vGCOy3KDF6A4jyra1LG/8ecHM5AvivwB4R4ligQAqO
+         0u8miRhi6c7xB5l0Kqt06WQJzpmiu4z9tSRwg9K0YNxyYhd6UjnOq/roKWauulWLFp
+         p6ZkYj0zPUVoVM48xOBQEgFB3A1DnPtFRa/K0osUBIledAQwp6Pcn5tTeKZZaJkDV1
+         usY7ELCTyjoSL684/SszQKSAQqGkNf03jNtF6eHX303brXTurPTygbG2vM5GXrnDeb
+         MqxZZv81LpM18LASSk2GMHlToHmF+3ZAJBiHeWeFJFLJg3lSnZD4doc8xCdnbIWbl2
+         p0QdfijDZB4VQ==
+X-CNFS-Analysis: v=2.4 cv=L6DY/8f8 c=1 sm=1 tr=0 ts=610c4706 cx=a_exe
+ a=OCAZjQWm+uh9gf1btJle/A==:117 a=J7go-RGC33AA:10 a=IkcTkHD0fZMA:10
+ a=nep-EciQ0nEA:10 a=bGNZPXyTAAAA:8 a=wn1pJw0M0rjdo80TUYYA:9 a=QEXdDO2ut3YA:10
+ a=yL4RfsBhuEsimFDS2qtJ:22
+Date:   Thu, 5 Aug 2021 22:16:06 +0200 (CEST)
+From:   Dario Binacchi <dariobin@libero.it>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Gianluca Falavigna <gianluca.falavigna@inwind.it>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Message-ID: <1485600069.218377.1628194566441@mail1.libero.it>
+In-Reply-To: <20210804094515.ariv7d24t2i4hic5@pengutronix.de>
+References: <20210725161150.11801-1-dariobin@libero.it>
+ <20210725161150.11801-5-dariobin@libero.it>
+ <20210804094515.ariv7d24t2i4hic5@pengutronix.de>
+Subject: Re: [RESEND PATCH 4/4] can: c_can: cache frames to operate as a
+ true FIFO
 MIME-Version: 1.0
-In-Reply-To: <YQw/2PuZ8z22Qice@mit.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
+X-Originating-IP: 82.60.87.158
+X-Originating-Client: open-xchange-appsuite
+x-libjamsun: WyJBSNMH9kkd8tqUyBiVLSk9X7CgnRUG
+x-libjamv: SgYUR9btM7M=
+X-CMAE-Envelope: MS4xfOvJk5+0VcReNnxjPbprZydZvfc/h79Lj17mJlHQGb8bhqaF+hIxSGjJiExPt5qV11Woh2U4bmqa0Yd3sXC63y1JQFXrHwoRc3iYxmbkYazZD+ji1lni
+ cNlbXgyWAHzG+gF2OoMHXaqsarzBLhBWHokpVyrNf0m0BYI2pHe7SfxGSI/Gw5d8gFaRxGcOZxutGlPkq/XxBYkTQvivRZ9ZCSC/NDjhHg8fBA5UwNzH5Cyn
+ GY1aWtCEqNVzs4p7VTRYjpGi9g8hRg3v2zxi4ih5YMlkV5nOvoJb+tum+zfviUgIwCY/2+1rSW2LtsFBc3n7dzDQVs0i3ugoT9CI9nuKPmMsVaY8nvoKsCCO
+ b4XXnWxlA1Yv0bdJKxmta3DDiMYIKzTqvB4WgWFsS/WtwoHvscaRDfEFToeMfUnzgiXqIkr5Ddd5hjQP7XBGGKaJALjsro/9xMjig3YUpNRVGnp9yVJabBCf
+ ABHhZsSiMMe/zMDT35gfsrBNRjehea7C8AEE2ZpweEa/N2/ih8S0o2Vs/PEVdRAoJv5qPzjOSfLMWhmv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/21 10:45 PM, Theodore Ts'o wrote:
-> On Thu, Aug 05, 2021 at 06:14:18PM +0300, Pavel Skripkin wrote:
->> Syzbot reported task hung bug in ext4_fill_super(). The problem was in
->> too huge mmp update interval.
->> 
->> Syzkaller reproducer setted s_mmp_update_interval to 39785 seconds. This
->> update interaval is unreasonable huge and it can cause tasks to hung on
->> kthread_stop() call, since it will wait until timeout timer expires.
+Hi Marc,
+
+> Il 04/08/2021 11:45 Marc Kleine-Budde <mkl@pengutronix.de> ha scritto:
 > 
-> I must be missing something.  kthread_stop() should wake up the
-> kmmpd() thread, which should see kthread_should_stop(), and then it
-> should exit.  What is causing it to wait until the timeout timer
-> expires?
+>  
+> On 25.07.2021 18:11:50, Dario Binacchi wrote:
+> > diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+> > index 8fe7e2138620..fc499a70b797 100644
+> > --- a/drivers/net/can/c_can/c_can.h
+> > +++ b/drivers/net/can/c_can/c_can.h
+> > @@ -200,6 +200,7 @@ struct c_can_priv {
+> >  	atomic_t sie_pending;
+> >  	unsigned long tx_dir;
+> >  	int last_status;
+> > +	spinlock_t tx_lock;
 > 
-> 					- Ted
+> What does the spin lock protect?
+> 
+> >  	struct c_can_tx_ring tx;
+> >  	u16 (*read_reg)(const struct c_can_priv *priv, enum reg index);
+> >  	void (*write_reg)(const struct c_can_priv *priv, enum reg index, u16 val);
+> > @@ -236,4 +237,9 @@ static inline u8 c_can_get_tx_tail(const struct c_can_tx_ring *ring)
+> >  	return ring->tail & (ring->obj_num - 1);
+> >  }
+> >  
+> > +static inline u8 c_can_get_tx_free(const struct c_can_tx_ring *ring)
+> > +{
+> > +	return ring->obj_num - (ring->head - ring->tail);
+> > +}
+> > +
+> >  #endif /* C_CAN_H */
+> > diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c_can_main.c
+> > index 451ac9a9586a..4c061fef002c 100644
+> > --- a/drivers/net/can/c_can/c_can_main.c
+> > +++ b/drivers/net/can/c_can/c_can_main.c
+> > @@ -427,20 +427,6 @@ static void c_can_setup_receive_object(struct net_device *dev, int iface,
+> >  	c_can_object_put(dev, iface, obj, IF_COMM_RCV_SETUP);
+> >  }
+> >  
+> > -static u8 c_can_get_tx_free(const struct c_can_tx_ring *ring)
+> > -{
+> > -	u8 head = c_can_get_tx_head(ring);
+> > -	u8 tail = c_can_get_tx_tail(ring);
+> > -
+> > -	/* This is not a FIFO. C/D_CAN sends out the buffers
+> > -	 * prioritized. The lowest buffer number wins.
+> > -	 */
+> > -	if (head < tail)
+> > -		return 0;
+> > -
+> > -	return ring->obj_num - head;
+> > -}
+> > -
+> >  static bool c_can_tx_busy(const struct c_can_priv *priv,
+> >  			  const struct c_can_tx_ring *tx_ring)
+> >  {
+> > @@ -470,7 +456,7 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff *skb,
+> >  	struct can_frame *frame = (struct can_frame *)skb->data;
+> >  	struct c_can_priv *priv = netdev_priv(dev);
+> >  	struct c_can_tx_ring *tx_ring = &priv->tx;
+> > -	u32 idx, obj;
+> > +	u32 idx, obj, cmd = IF_COMM_TX;
+> >  
+> >  	if (can_dropped_invalid_skb(dev, skb))
+> >  		return NETDEV_TX_OK;
+> > @@ -483,7 +469,11 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff *skb,
+> >  	if (c_can_get_tx_free(tx_ring) == 0)
+> >  		netif_stop_queue(dev);
+> >  
+> > -	obj = idx + priv->msg_obj_tx_first;
+> > +	spin_lock_bh(&priv->tx_lock);
+> 
+> What does the spin_lock protect? The ndo_start_xmit function is properly
+> serialized by the networking core.
 > 
 
+The spin_lock protects the access to the IF_TX interface. Enabling the transmission 
+of cached messages occur inside interrupt and the use of the IF_RX interface,
+which would avoid the use of the spinlock, has not been validated by
+the tests.
 
-Hi, Ted!
+Thanks and regards,
+Dario
 
-I guess, I've explained my idea badly, sorry :)
-
-I mean, that there is a chance to hit this situation:
-
-CPU0				CPU1
-				kthread_should_stop()  <-- false
-kthread_stop()
-set_bit(KTHREAD_SHOULD_STOP)				
-wake_up_process()
-wait_for_completion()
-				schedule_timeout_interruptible()
-
-*waits until timer expires*
-
-
-Since there wasn't any validation checks for mmp_update_interval, CPU0 
-will wait for up to (1 << 16) seconds (s_mmp_update_interval it __le16).
-
-
-With regards,
-Pavel Skripkin
+> Otherwise the patch looks good!
+> 
+> Marc
+> 
+> -- 
+> Pengutronix e.K.                 | Marc Kleine-Budde           |
+> Embedded Linux                   | https://www.pengutronix.de  |
+> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
