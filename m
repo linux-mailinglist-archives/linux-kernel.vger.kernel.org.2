@@ -2,95 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086703E183C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD7D3E1841
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242218AbhHEPjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:39:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23855 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242316AbhHEPjM (ORCPT
+        id S242266AbhHEPjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241840AbhHEPjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:39:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628177937;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=k3S29HjL3Vb9q9YH8bmWKld33b/KN/RqQKdhy40cdvM=;
-        b=AlcyC1+zNr3FjMU74IPVPVDeSGiTQijnPJ6x4SwwXF4XjD6p7d9rM5S3LMdKivC3G5/48z
-        6bfh+41Apnx4Z4JvNEs4yhH/D/QjIARvOuOTPaCO9nxUgt7KpbDPLGCRurSacQP0/heyTL
-        wf3lfHwnkfEBolGK8OshRl1rEbfSfOY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-145-NJ6bkOBkNAebOHEifdG9_A-1; Thu, 05 Aug 2021 11:38:56 -0400
-X-MC-Unique: NJ6bkOBkNAebOHEifdG9_A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7ED0100CA8C;
-        Thu,  5 Aug 2021 15:38:54 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 32A0460CA1;
-        Thu,  5 Aug 2021 15:38:53 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YQv+iwmhhZJ+/ndc@casper.infradead.org>
-References: <YQv+iwmhhZJ+/ndc@casper.infradead.org> <YQvpDP/tdkG4MMGs@casper.infradead.org> <YQvbiCubotHz6cN7@casper.infradead.org> <1017390.1628158757@warthog.procyon.org.uk> <1170464.1628168823@warthog.procyon.org.uk> <1186271.1628174281@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        jlayton@kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        dchinner@redhat.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Could it be made possible to offer "supplementary" data to a DIO write ?
+        Thu, 5 Aug 2021 11:39:42 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED049C061765;
+        Thu,  5 Aug 2021 08:39:26 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so15722209pjb.3;
+        Thu, 05 Aug 2021 08:39:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5vBIrdt8B8CVa9oETvI/wFhOCaIABa5EmEBz4zWZ01I=;
+        b=Gg6667v/ufxR+ZJaa1GECyIPiUAgnOnIHtmOWBZkrSlCb/f29ngyB/Y5YYjDO1b3zN
+         vOr0+vQUEhKQw3YDnTttWdS7WkkIV2K2ggxxOp0g0HAMXB6DTpqDBm7Rd8xIvEq8z1Vr
+         +nL45S2Q9gt3ZsnBXUroCx1LZm4/OmcfXAjuBc1WsU9hYUBsh/KuowOhuoDouAozO23Q
+         bNJxQir0bF8ekbmMGDXMxFoy3XU3K6mmPms56dKPNOQq2q6OAEFdTuYOTn53X1YnpSO+
+         Ic7LyGTKafpb4w9Gx8nLuXoW4FwpguvakzmZg5HiI/9hWi0OMNpbL7ZBen57OhmY6wte
+         0Pyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5vBIrdt8B8CVa9oETvI/wFhOCaIABa5EmEBz4zWZ01I=;
+        b=rupzMTPg4wTGstpifztfR2ScxRk2M1Ii/Y9gys3jnhviKyVpW7IJp2gJwQEC15n//q
+         iecM4yu4KWaXZNxdLP6ncMBCepqPACgmAOLjA+mnk3FeVwaHZW/GpBB9rTYbi+sXQtWG
+         2mYGpUZY7wjqdI+Va6rVvyt+3mAkixb8s5CBHQbPtV2nMg3qWnZfiVk8YxYUt96vkOU1
+         JzdgQCmqCbzM5B9hlbDjOGLT6TQOf/xLwIg5gaWyFLs6hbLzE+5UOC8X1Q56DhmWUKDm
+         EosP577l4V7PRM993TMIJPM4ho/bVwpU8QhPcKNrIxT4FW84VPoD52BXuiHawQyuFz+J
+         yHDw==
+X-Gm-Message-State: AOAM532D0eYnGO7Ewn3woPJvh0hgnY87SI8+O4v0xaIhyVqNosExL0ha
+        iVOG6kRC6NvA71Bt8XvF3fs=
+X-Google-Smtp-Source: ABdhPJzf3lTIGiMS4P/exM38/Nyj0q06ZBOyeQapWim+xLd79Q9eNN7cBIDMLwGU0eieDdUMrsVbNw==
+X-Received: by 2002:a62:bd15:0:b029:31c:a584:5f97 with SMTP id a21-20020a62bd150000b029031ca5845f97mr5935776pff.33.1628177966550;
+        Thu, 05 Aug 2021 08:39:26 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.81])
+        by smtp.gmail.com with ESMTPSA id p53sm7222242pfw.143.2021.08.05.08.39.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 08:39:26 -0700 (PDT)
+From:   Tuo Li <islituo@gmail.com>
+To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
+        Tuo Li <islituo@gmail.com>, TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH] ath: dfs_pattern_detector: Fix possible null-pointer dereference in channel_detector_create()
+Date:   Thu,  5 Aug 2021 08:38:53 -0700
+Message-Id: <20210805153854.154066-1-islituo@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1216853.1628177932.1@warthog.procyon.org.uk>
-Date:   Thu, 05 Aug 2021 16:38:52 +0100
-Message-ID: <1216854.1628177932@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+kzalloc() is used to allocate memory for cd->detectors, and if it fails,
+channel_detector_exit() behind the label fail will be called:
+  channel_detector_exit(dpd, cd);
 
-> > Note that PAGE_SIZE varies across arches and folios are going to
-> > exacerbate this.  What I don't want to happen is that you read from a
-> > file, it creates, say, a 4M (or larger) folio; you change three bytes and
-> > then you're forced to write back the entire 4M folio.
-> 
-> Actually, you do.  Two situations:
-> 
-> 1. Application uses MADVISE_HUGEPAGE.  In response, we create a 2MB
-> page and mmap it aligned.  We use a PMD sized TLB entry and then the
-> CPU dirties a few bytes with a store.  There's no sub-TLB-entry tracking
-> of dirtiness.  It's just the whole 2MB.
+In channel_detector_exit(), cd->detectors is dereferenced through:
+  struct pri_detector *de = cd->detectors[i];
 
-That's a special case.  The app specifically asked for it.  I'll grant with
-mmap you have to mark a whole page as being dirty - but if you mmapped it, you
-need to understand that's what will happen.
+To fix this possible null-pointer dereference, check cd->detectors before 
+the for loop to dereference cd->detectors. 
 
-> 2. The bigger the folio, the more writes it will absorb before being
-> written back.  So when you're writing back that 4MB folio, you're not
-> just servicing this 3 byte write, you're servicing every other write
-> which hit this 4MB chunk of the file.
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+---
+ drivers/net/wireless/ath/dfs_pattern_detector.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-You can argue it that way - but we already do it bytewise in some filesystems,
-so what you want would necessitate a change of behaviour.
-
-Note also that if the page size > max RPC payload size (1MB in NFS, I think),
-you have to make multiple write operations to fulfil that writeback; further,
-if you have an object-based system you might be making writes to multiple
-servers, some of which will not actually make a change, to make that
-writeback.
-
-I wonder if this needs pushing onto the various network filesystem mailing
-lists to find out what they want and why.
-
-David
+diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.c b/drivers/net/wireless/ath/dfs_pattern_detector.c
+index 80390495ea25..75cb53a3ec15 100644
+--- a/drivers/net/wireless/ath/dfs_pattern_detector.c
++++ b/drivers/net/wireless/ath/dfs_pattern_detector.c
+@@ -183,10 +183,12 @@ static void channel_detector_exit(struct dfs_pattern_detector *dpd,
+ 	if (cd == NULL)
+ 		return;
+ 	list_del(&cd->head);
+-	for (i = 0; i < dpd->num_radar_types; i++) {
+-		struct pri_detector *de = cd->detectors[i];
+-		if (de != NULL)
+-			de->exit(de);
++	if (cd->detectors) {
++		for (i = 0; i < dpd->num_radar_types; i++) {
++			struct pri_detector *de = cd->detectors[i];
++			if (de != NULL)
++				de->exit(de);
++		}
+ 	}
+ 	kfree(cd->detectors);
+ 	kfree(cd);
+-- 
+2.25.1
 
