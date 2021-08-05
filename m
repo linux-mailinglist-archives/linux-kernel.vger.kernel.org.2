@@ -2,215 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E743E1CA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDB93E1CA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242879AbhHET0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:26:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231154AbhHET0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:26:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61D7060E8D;
-        Thu,  5 Aug 2021 19:26:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628191599;
-        bh=/SIk1Ct6Y5mcuV42VIGuw7hDXxZz8BmlXHlb3k2//zU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=TCIM/Fx/5X4uoIgBylthoxp417pA0rWdMteKRtWmeh700Me4N/0GnDBYMIgB00Xv2
-         JCdRoSpfNGxYXsQENrQq240uX41QsT0lo48zIUzyZ7kVsAKl8TR/397+qt7534g9j3
-         WNI2r4NQkzZPDD9TLxsbSpbY0OpKB8QMMWUGGS2fjCpTMab0wl3RuEWU5pr9VNDfpq
-         cfXZzPzWn7YCAjlFFZKYTMM2E0mLV2LYtNkZhgG4wRmeyu92+PpApSbWRX9BcuL4+K
-         WUaoa3LFSuoc/RPD+tU1o2Sn926fEF4GnkrYTaOJArnjL9o3F8AnwEbn8Eznqkdv2M
-         fydkVg589xleQ==
-Subject: Re: [PATCH v3] ucounts: add missing data type changes
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210730062854.3601635-1-svens@linux.ibm.com>
- <YQn+GomdRCoYc/E8@Ryzen-9-3900X.localdomain> <875ywlat5e.fsf@disp2133>
- <94478003-8259-4b57-6d93-5a07e0750946@kernel.org> <87v94jalck.fsf@disp2133>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <56b7c0fe-f2e1-7c4f-eb1b-1d9793dea5a8@kernel.org>
-Date:   Thu, 5 Aug 2021 12:26:39 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S242962AbhHET1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231154AbhHET1N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 15:27:13 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7ED0C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 12:26:57 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id o17-20020a4a64110000b0290263e1ba7ff9so1615083ooc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 12:26:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Glxub6hV3jqhhp28yTigWHrUbsNVWVHgWYvGXbOQq1c=;
+        b=Lx1OOOqVuTpkHy0vBHzXaOabbHyoF/CuaHRZNuJkSfgnDy8Dn44IVBVsVEnZRFLSbP
+         XJL13ySueGym4tP70+o/ccJ2K+H1gZglh7cZjKQIZc2YdFyenyCrW1tB+cMDs9g6F5vH
+         3uA+f59eQc0LHJL9IixjAxUSiQo3CZ20z2GpdIfePPimU71XCBJd//SM5QLojG9r97q5
+         lJqrsjXaZ9Ja92cvLQw5AK8+TsMmAf+cBW36ZyfEJP9d1oC6qoNDvjErgAZethbp/TVu
+         BT5hoUFU8nLmOF2nxRrojM6MZ/WiQgaKPv+xGWPyS/+1CPKtKJueRnahrNOoH+pAnuqZ
+         ub+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=Glxub6hV3jqhhp28yTigWHrUbsNVWVHgWYvGXbOQq1c=;
+        b=n7pwl+vj1B2jS2AG2vUeSPCiaD6CadVa/8xFspnQa1eD4dAUYjUjHkEtBWCBoV9uCZ
+         LqW1xZpxu08lqpPzWe60lF/13hsfsNm62OIHUf+o6Cy2cDMocq5WUrYESYyVljLsRgaE
+         UA8j0pQ2UdgJ9MarD+CXkTnlk11gJZNDkdQmkR9fJQJynfgy9ufGSsHfUMR89EKvYYNu
+         eSG8DJSClqDOrdfrqV6lQ4YlOe+aqf/GJNSrs7WE1EFeNLeux04yFy6BbZJYLUdIHJVR
+         GWXDk+i19cGfzPp5VcpVw6eZj5LB/q/6HWYO40QokOS2LvU4IXOlqO6WmMNNb+RmC7L6
+         i0Mg==
+X-Gm-Message-State: AOAM5332ArXck2si9ALNUEMbl4xh5yGjR2rp1NW4LiQen/LHvs+0TOLG
+        /pZb1fNZrcgVldC12emZDzY=
+X-Google-Smtp-Source: ABdhPJzSvdRF+3sQloTadq9Va7C7feKQ0VYo/CWzvp/DgteLSw0et32kEQxfOygNz8EkkLOAgqWePQ==
+X-Received: by 2002:a05:6820:302:: with SMTP id l2mr4417171ooe.87.1628191617116;
+        Thu, 05 Aug 2021 12:26:57 -0700 (PDT)
+Received: from 2603-8090-2005-39b3-0000-0000-0000-1016.res6.spectrum.com.com (2603-8090-2005-39b3-0000-0000-0000-1016.res6.spectrum.com. [2603:8090:2005:39b3::1016])
+        by smtp.gmail.com with ESMTPSA id n7sm1143479otf.45.2021.08.05.12.26.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 12:26:56 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+To:     gregkh@linuxfoundation.org
+Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Larry Finger <Larry.Finger@lwfinger.net>
+Subject: [PATCH 2/6] staging: r8188eu: Remove wrapper routine rtw_msleep_os()
+Date:   Thu,  5 Aug 2021 14:26:40 -0500
+Message-Id: <20210805192644.15978-2-Larry.Finger@lwfinger.net>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210805192644.15978-1-Larry.Finger@lwfinger.net>
+References: <20210805192644.15978-1-Larry.Finger@lwfinger.net>
 MIME-Version: 1.0
-In-Reply-To: <87v94jalck.fsf@disp2133>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/2021 9:48 AM, Eric W. Biederman wrote:
-> Nathan Chancellor <nathan@kernel.org> writes:
-> 
->> Hi Eric,
->>
->> On 8/4/2021 12:47 PM, Eric W. Biederman wrote:
->>> Nathan Chancellor <nathan@kernel.org> writes:
->>>
->>>> On Fri, Jul 30, 2021 at 08:28:54AM +0200, Sven Schnelle wrote:
->>>>> commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
->>>>> changed the data type of ucounts/ucounts_max to long, but missed to
->>>>> adjust a few other places. This is noticeable on big endian platforms
->>>>> from user space because the /proc/sys/user/max_*_names files all
->>>>> contain 0.
->>>>>
->>>>> Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
->>>>> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
->>>>
->>>> This patch in -next as commit e43fc41d1f7f ("ucounts: add missing data type
->>>> changes") causes Windows Subsystem for Linux to fail to start:
->>>>
->>>> [error 0x8007010b when launching `wsl.exe -d Arch'] Could not access starting
->>>> directory "\\wsl$\Arch\home\nathan"
->>>>
->>>> Specifically, it is the change to max_user_watches in
->>>> fs/notify/inotify/inotify_user.c, as the below diff gets me back to working.
->>>> Unfortunately, I have no additional information to offer beyond that as WSL's
->>>> init is custom and closed source (as far as I am aware) and there are no real
->>>> debugging utilities.
->>>
->>> Could you try this patch and tell us what value is being set?
->>>
->>> The only think I can imagine is that someone wants unlimited watches and
->>> sets the value to a ridiculously large value and the interpretation of
->>> that value winds up being different between int and long.
->>>
->>> This should allow you to read either dmesg or the kernel's log as it
->>> boots up and see what value is being written.  From there it should
->>> be relatively straight forward to figure out what is going on.
->>
->> I applied this diff on top of mine and running 'dmesg |& grep intvec' shows:
->>
->> [    0.282500] intvec: dmesg_restrict <- 0
->> [    0.282510] intvec: max_user_watches <- 524288
->>
->> This seems much smaller than INT_MAX so I am not sure how the value could be
->> different between int and long but I am not at all familiar with the sysctl
->> code.
->>
->> More than happy to continue to test debug patches or provide any additional
->> information as I can.
-> 
-> Yes.  Very strange.
-> 
-> Could you perhaps try the instrumenting proc_doulongvec_minmax the same
-> way and see what is written in the failing case?
-> 
-> While looking at the code I did see one other serious bug.  The min and
-> max values are int constants intstead of long constants.
-> 
-> Could you test the change below and see if it makes a difference?
+The effect of this macro is to call msleep(). Remove the wrapper.
 
-That indeed fixes the issue! I assume you will squash it into the 
-original commit but if not, feel free to add:
+Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+---
+ drivers/staging/r8188eu/core/rtw_cmd.c          |  4 ++--
+ drivers/staging/r8188eu/core/rtw_mlme.c         |  2 +-
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c     | 16 ++++++++--------
+ drivers/staging/r8188eu/core/rtw_mp.c           |  4 ++--
+ drivers/staging/r8188eu/core/rtw_mp_ioctl.c     |  6 +++---
+ drivers/staging/r8188eu/core/rtw_pwrctrl.c      |  4 ++--
+ drivers/staging/r8188eu/core/rtw_xmit.c         |  4 ++--
+ drivers/staging/r8188eu/hal/odm_interface.c     |  2 +-
+ drivers/staging/r8188eu/hal/rtl8188e_mp.c       |  6 +++---
+ drivers/staging/r8188eu/include/osdep_service.h |  1 -
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c    | 10 +++++-----
+ drivers/staging/r8188eu/os_dep/osdep_service.c  |  5 -----
+ 12 files changed, 29 insertions(+), 35 deletions(-)
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
+index 720b534c29ad..3462543ae143 100644
+--- a/drivers/staging/r8188eu/core/rtw_cmd.c
++++ b/drivers/staging/r8188eu/core/rtw_cmd.c
+@@ -81,7 +81,7 @@ void rtw_free_evt_priv(struct	evt_priv *pevtpriv)
+ 
+ 	_cancel_workitem_sync(&pevtpriv->c2h_wk);
+ 	while (pevtpriv->c2h_wk_alive)
+-		rtw_msleep_os(10);
++		msleep(10);
+ 
+ 	while (!rtw_cbuf_empty(pevtpriv->c2h_queue)) {
+ 		void *c2h = rtw_cbuf_pop(pevtpriv->c2h_queue);
+@@ -1820,7 +1820,7 @@ static void rtw_chk_hi_queue_hdl(struct adapter *padapter)
+ 		rtw_hal_get_hwreg(padapter, HW_VAR_CHK_HI_QUEUE_EMPTY, &val);
+ 
+ 		while (!val) {
+-			rtw_msleep_os(100);
++			msleep(100);
+ 
+ 			cnt++;
+ 
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
+index e3d5a721d25c..d4b40c8664af 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme.c
+@@ -1001,7 +1001,7 @@ void rtw_scan_abort(struct adapter *adapter)
+ 		if (adapter->bDriverStopped || adapter->bSurpriseRemoved)
+ 			break;
+ 		DBG_88E(FUNC_NDEV_FMT"fw_state=_FW_UNDER_SURVEY!\n", FUNC_NDEV_ARG(adapter->pnetdev));
+-		rtw_msleep_os(20);
++		msleep(20);
+ 	}
+ 	if (check_fwstate(pmlmepriv, _FW_UNDER_SURVEY)) {
+ 		if (!adapter->bDriverStopped && !adapter->bSurpriseRemoved)
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+index fe24f72a3cf1..a9a4007ce063 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+@@ -3776,7 +3776,7 @@ int issue_probereq_p2p_ex(struct adapter *adapter, u8 *da, int try_cnt, int wait
+ 			break;
+ 
+ 		if (i < try_cnt && wait_ms > 0 && ret == _FAIL)
+-			rtw_msleep_os(wait_ms);
++			msleep(wait_ms);
+ 	} while ((i < try_cnt) && ((ret == _FAIL) || (wait_ms == 0)));
+ 
+ 	if (ret != _FAIL) {
+@@ -4913,7 +4913,7 @@ int issue_probereq_ex(struct adapter *padapter, struct ndis_802_11_ssid *pssid,
+ 			break;
+ 
+ 		if (i < try_cnt && wait_ms > 0 && ret == _FAIL)
+-			rtw_msleep_os(wait_ms);
++			msleep(wait_ms);
+ 
+ 	} while ((i < try_cnt) && ((ret == _FAIL) || (wait_ms == 0)));
+ 
+@@ -5628,7 +5628,7 @@ int issue_nulldata(struct adapter *padapter, unsigned char *da, unsigned int pow
+ 			break;
+ 
+ 		if (i < try_cnt && wait_ms > 0 && ret == _FAIL)
+-			rtw_msleep_os(wait_ms);
++			msleep(wait_ms);
+ 	} while ((i < try_cnt) && ((ret == _FAIL) || (wait_ms == 0)));
+ 
+ 	if (ret != _FAIL) {
+@@ -5751,7 +5751,7 @@ int issue_qos_nulldata(struct adapter *padapter, unsigned char *da, u16 tid, int
+ 			break;
+ 
+ 		if (i < try_cnt && wait_ms > 0 && ret == _FAIL)
+-			rtw_msleep_os(wait_ms);
++			msleep(wait_ms);
+ 	} while ((i < try_cnt) && ((ret == _FAIL) || (wait_ms == 0)));
+ 
+ 	if (ret != _FAIL) {
+@@ -5862,7 +5862,7 @@ int issue_deauth_ex(struct adapter *padapter, u8 *da, unsigned short reason, int
+ 			break;
+ 
+ 		if (i < try_cnt && wait_ms > 0 && ret == _FAIL)
+-			rtw_msleep_os(wait_ms);
++			msleep(wait_ms);
+ 	} while ((i < try_cnt) && ((ret == _FAIL) || (wait_ms == 0)));
+ 
+ 	if (ret != _FAIL) {
+@@ -6350,7 +6350,7 @@ void site_survey(struct adapter *padapter)
+ 					if (pmlmeext->sitesurvey_res.ssid[i].SsidLength) {
+ 						/* todo: to issue two probe req??? */
+ 						issue_probereq(padapter, &(pmlmeext->sitesurvey_res.ssid[i]), NULL);
+-						/* rtw_msleep_os(SURVEY_TO>>1); */
++						/* msleep(SURVEY_TO>>1); */
+ 						issue_probereq(padapter, &(pmlmeext->sitesurvey_res.ssid[i]), NULL);
+ 					}
+ 				}
+@@ -6358,7 +6358,7 @@ void site_survey(struct adapter *padapter)
+ 				if (pmlmeext->sitesurvey_res.scan_mode == SCAN_ACTIVE) {
+ 					/* todo: to issue two probe req??? */
+ 					issue_probereq(padapter, NULL, NULL);
+-					/* rtw_msleep_os(SURVEY_TO>>1); */
++					/* msleep(SURVEY_TO>>1); */
+ 					issue_probereq(padapter, NULL, NULL);
+ 				}
+ 			}
+@@ -8255,7 +8255,7 @@ u8 tx_beacon_hdl(struct adapter *padapter, unsigned char *pbuf)
+ 			return H2C_SUCCESS;
+ 
+ 		if ((pstapriv->tim_bitmap&BIT(0)) && (psta_bmc->sleepq_len > 0)) {
+-			rtw_msleep_os(10);/*  10ms, ATIM(HIQ) Windows */
++			msleep(10);/*  10ms, ATIM(HIQ) Windows */
+ 			spin_lock_bh(&psta_bmc->sleep_q.lock);
+ 
+ 			xmitframe_phead = get_list_head(&psta_bmc->sleep_q);
+diff --git a/drivers/staging/r8188eu/core/rtw_mp.c b/drivers/staging/r8188eu/core/rtw_mp.c
+index 9ff0a19cc680..76db563d3969 100644
+--- a/drivers/staging/r8188eu/core/rtw_mp.c
++++ b/drivers/staging/r8188eu/core/rtw_mp.c
+@@ -591,7 +591,7 @@ static int mp_xmit_packet_thread(void *context)
+ 			    padapter->bDriverStopped) {
+ 				goto exit;
+ 			} else {
+-				rtw_msleep_os(1);
++				msleep(1);
+ 				continue;
+ 			}
+ 		}
+@@ -895,7 +895,7 @@ u32 mp_query_psd(struct adapter *pAdapter, u8 *data)
+ 		i++;
+ 	}
+ 
+-	rtw_msleep_os(100);
++	msleep(100);
+ 	return strlen(data)+1;
+ }
+ 
+diff --git a/drivers/staging/r8188eu/core/rtw_mp_ioctl.c b/drivers/staging/r8188eu/core/rtw_mp_ioctl.c
+index f465acfa20b8..8fcc74598e5f 100644
+--- a/drivers/staging/r8188eu/core/rtw_mp_ioctl.c
++++ b/drivers/staging/r8188eu/core/rtw_mp_ioctl.c
+@@ -513,7 +513,7 @@ int rtl8188eu_oid_rt_pro_set_continuous_tx_hdl(struct oid_par_priv *poid_par_pri
+ 		if (pmp_priv->tx.stop == 0) {
+ 			pmp_priv->tx.stop = 1;
+ 			DBG_88E("%s: pkt tx is running...\n", __func__);
+-			rtw_msleep_os(5);
++			msleep(5);
+ 		}
+ 		pmp_priv->tx.stop = 0;
+ 		pmp_priv->tx.count = 1;
+@@ -542,7 +542,7 @@ int rtl8188eu_oid_rt_pro_set_single_carrier_tx_hdl(struct oid_par_priv *poid_par
+ 		if (pmp_priv->tx.stop == 0) {
+ 			pmp_priv->tx.stop = 1;
+ 			DBG_88E("%s: pkt tx is running...\n", __func__);
+-			rtw_msleep_os(5);
++			msleep(5);
+ 		}
+ 		pmp_priv->tx.stop = 0;
+ 		pmp_priv->tx.count = 1;
+@@ -571,7 +571,7 @@ int rtl8188eu_oid_rt_pro_set_carrier_suppression_tx_hdl(struct oid_par_priv *poi
+ 		if (pmp_priv->tx.stop == 0) {
+ 			pmp_priv->tx.stop = 1;
+ 			DBG_88E("%s: pkt tx is running...\n", __func__);
+-			rtw_msleep_os(5);
++			msleep(5);
+ 		}
+ 		pmp_priv->tx.stop = 0;
+ 		pmp_priv->tx.count = 1;
+diff --git a/drivers/staging/r8188eu/core/rtw_pwrctrl.c b/drivers/staging/r8188eu/core/rtw_pwrctrl.c
+index 2c029f85d63d..710bc02180c1 100644
+--- a/drivers/staging/r8188eu/core/rtw_pwrctrl.c
++++ b/drivers/staging/r8188eu/core/rtw_pwrctrl.c
+@@ -507,7 +507,7 @@ int _rtw_pwr_wakeup(struct adapter *padapter, u32 ips_deffer_ms, const char *cal
+ 	if (pwrpriv->ps_processing) {
+ 		DBG_88E("%s wait ps_processing...\n", __func__);
+ 		while (pwrpriv->ps_processing && rtw_get_passing_time_ms(start) <= 3000)
+-			rtw_msleep_os(10);
++			msleep(10);
+ 		if (pwrpriv->ps_processing)
+ 			DBG_88E("%s wait ps_processing timeout\n", __func__);
+ 		else
+@@ -519,7 +519,7 @@ int _rtw_pwr_wakeup(struct adapter *padapter, u32 ips_deffer_ms, const char *cal
+ 		while (pwrpriv->bInSuspend &&
+ 		       (rtw_get_passing_time_ms(start) <= 3000 ||
+ 		       (rtw_get_passing_time_ms(start) <= 500)))
+-				rtw_msleep_os(10);
++				msleep(10);
+ 		if (pwrpriv->bInSuspend)
+ 			DBG_88E("%s wait bInSuspend timeout\n", __func__);
+ 		else
+diff --git a/drivers/staging/r8188eu/core/rtw_xmit.c b/drivers/staging/r8188eu/core/rtw_xmit.c
+index edd5746be556..036f1f9a5d0f 100644
+--- a/drivers/staging/r8188eu/core/rtw_xmit.c
++++ b/drivers/staging/r8188eu/core/rtw_xmit.c
+@@ -134,7 +134,7 @@ s32	_rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, struct adapter *padapter)
+ 		/* Tx buf allocation may fail sometimes, so sleep and retry. */
+ 		res = rtw_os_xmit_resource_alloc(padapter, pxmitbuf, (MAX_XMITBUF_SZ + XMITBUF_ALIGN_SZ));
+ 		if (res == _FAIL) {
+-			rtw_msleep_os(10);
++			msleep(10);
+ 			res = rtw_os_xmit_resource_alloc(padapter, pxmitbuf, (MAX_XMITBUF_SZ + XMITBUF_ALIGN_SZ));
+ 			if (res == _FAIL) {
+ 				goto exit;
+@@ -652,7 +652,7 @@ static s32 xmitframe_addmic(struct adapter *padapter, struct xmit_frame *pxmitfr
+ 				rtw_secmicsetkey(&micdata, psecuritypriv->dot118021XGrptxmickey[psecuritypriv->dot118021XGrpKeyid].skey);
+ 			} else {
+ 				if (!memcmp(&stainfo->dot11tkiptxmickey.skey[0], null_key, 16)) {
+-					/* rtw_msleep_os(10); */
++					/* msleep(10); */
+ 					return _FAIL;
+ 				}
+ 				/* start to calculate the mic code */
+diff --git a/drivers/staging/r8188eu/hal/odm_interface.c b/drivers/staging/r8188eu/hal/odm_interface.c
+index 38f6ae410e53..d39556d4a347 100644
+--- a/drivers/staging/r8188eu/hal/odm_interface.c
++++ b/drivers/staging/r8188eu/hal/odm_interface.c
+@@ -147,7 +147,7 @@ void ODM_delay_us(u32 us)
+ 
+ void ODM_sleep_ms(u32 ms)
+ {
+-	rtw_msleep_os(ms);
++	msleep(ms);
+ }
+ 
+ void ODM_sleep_us(u32 us)
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_mp.c b/drivers/staging/r8188eu/hal/rtl8188e_mp.c
+index 3defe1a6904d..cc24684945ef 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_mp.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_mp.c
+@@ -541,7 +541,7 @@ u8 Hal_ReadRFThermalMeter(struct adapter *pAdapter)
+ void Hal_GetThermalMeter(struct adapter *pAdapter, u8 *value)
+ {
+ 	Hal_TriggerRFThermalMeter(pAdapter);
+-	rtw_msleep_os(1000);
++	msleep(1000);
+ 	*value = Hal_ReadRFThermalMeter(pAdapter);
+ }
+ 
+@@ -571,7 +571,7 @@ void Hal_SetSingleCarrierTx(struct adapter *pAdapter, u8 bStart)
+ 		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMContinueTx, bDisable);
+ 		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleCarrier, bDisable);
+ 		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleTone, bDisable);
+-		rtw_msleep_os(10);
++		msleep(10);
+ 
+ 		/* BB Reset */
+ 		write_bbreg(pAdapter, rPMAC_Reset, bBBResetB, 0x0);
+@@ -773,7 +773,7 @@ void Hal_SetOFDMContinuousTx(struct adapter *pAdapter, u8 bStart)
+ 		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleCarrier, bDisable);
+ 		write_bbreg(pAdapter, rOFDM1_LSTF, bOFDMSingleTone, bDisable);
+ 		/* Delay 10 ms */
+-		rtw_msleep_os(10);
++		msleep(10);
+ 		/* BB Reset */
+ 		write_bbreg(pAdapter, rPMAC_Reset, bBBResetB, 0x0);
+ 		write_bbreg(pAdapter, rPMAC_Reset, bBBResetB, 0x1);
+diff --git a/drivers/staging/r8188eu/include/osdep_service.h b/drivers/staging/r8188eu/include/osdep_service.h
+index 87315d1a5c72..5b83f2efd94c 100644
+--- a/drivers/staging/r8188eu/include/osdep_service.h
++++ b/drivers/staging/r8188eu/include/osdep_service.h
+@@ -232,7 +232,6 @@ s32  rtw_get_time_interval_ms(u32 start, u32 end);
+ 
+ void rtw_sleep_schedulable(int ms);
+ 
+-void rtw_msleep_os(int ms);
+ void rtw_usleep_os(int us);
+ 
+ u32  rtw_atoi(u8 *s);
+diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+index 11301e0f287a..34dce01e469c 100644
+--- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
++++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+@@ -1431,7 +1431,7 @@ static int rtw_wx_get_scan(struct net_device *dev, struct iw_request_info *a,
+ 	wait_status = _FW_UNDER_SURVEY | _FW_UNDER_LINKING;
+ 
+ 	while (check_fwstate(pmlmepriv, wait_status)) {
+-		rtw_msleep_os(30);
++		msleep(30);
+ 		cnt++;
+ 		if (cnt > wait_for_surveydone)
+ 			break;
+@@ -2566,7 +2566,7 @@ static int rtw_get_ap_info(struct net_device *dev,
+ 	}
+ 
+ 	while ((check_fwstate(pmlmepriv, (_FW_UNDER_SURVEY|_FW_UNDER_LINKING)))) {
+-		rtw_msleep_os(30);
++		msleep(30);
+ 		cnt++;
+ 		if (cnt > 100)
+ 			break;
+@@ -6957,7 +6957,7 @@ static int rtw_mp_ctx(struct net_device *dev,
+ 		struct mp_priv *pmp_priv = &padapter->mppriv;
+ 		if (pmp_priv->tx.stop == 0) {
+ 			pmp_priv->tx.stop = 1;
+-			rtw_msleep_os(5);
++			msleep(5);
+ 		}
+ 		pmp_priv->tx.stop = 0;
+ 		pmp_priv->tx.count = 1;
+@@ -7172,7 +7172,7 @@ static int rtw_mp_reset_stats(struct net_device *dev,
+ 
+ 	/* reset phy counter */
+ 	write_bbreg(padapter, 0xf14, BIT16, 0x1);
+-	rtw_msleep_os(10);
++	msleep(10);
+ 	write_bbreg(padapter, 0xf14, BIT16, 0x0);
+ 
+ 	return 0;
+@@ -7449,7 +7449,7 @@ static int rtw_mp_get(struct net_device *dev,
+ 		break;
+ 	}
+ 
+-	rtw_msleep_os(10); /* delay 5ms for sending pkt before exit adb shell operation */
++	msleep(10); /* delay 5ms for sending pkt before exit adb shell operation */
+ 	return 0;
+ }
+ 
+diff --git a/drivers/staging/r8188eu/os_dep/osdep_service.c b/drivers/staging/r8188eu/os_dep/osdep_service.c
+index e0eddf44b5c7..a29d10f281e9 100644
+--- a/drivers/staging/r8188eu/os_dep/osdep_service.c
++++ b/drivers/staging/r8188eu/os_dep/osdep_service.c
+@@ -133,11 +133,6 @@ void rtw_sleep_schedulable(int ms)
+ 		return;
+ }
+ 
+-void rtw_msleep_os(int ms)
+-{
+-	msleep((unsigned int)ms);
+-}
+-
+ void rtw_usleep_os(int us)
+ {
+ 	if (1 < (us/1000))
+-- 
+2.32.0
 
-> Eric
-> 
-> 
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> index 6576657a1a25..28b67cb9458d 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -54,6 +54,9 @@ static int fanotify_max_queued_events __read_mostly;
->   
->   #include <linux/sysctl.h>
->   
-> +static long ft_zero = 0;
-> +static long ft_int_max = INT_MAX;
-> +
->   struct ctl_table fanotify_table[] = {
->   	{
->   		.procname	= "max_user_groups",
-> @@ -61,8 +64,8 @@ struct ctl_table fanotify_table[] = {
->   		.maxlen		= sizeof(long),
->   		.mode		= 0644,
->   		.proc_handler	= proc_doulongvec_minmax,
-> -		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= SYSCTL_INT_MAX,
-> +		.extra1		= &ft_zero,
-> +		.extra2		= &ft_int_max,
->   	},
->   	{
->   		.procname	= "max_user_marks",
-> @@ -70,8 +73,8 @@ struct ctl_table fanotify_table[] = {
->   		.maxlen		= sizeof(long),
->   		.mode		= 0644,
->   		.proc_handler	= proc_doulongvec_minmax,
-> -		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= SYSCTL_INT_MAX,
-> +		.extra1		= &ft_zero,
-> +		.extra2		= &ft_int_max,
->   	},
->   	{
->   		.procname	= "max_queued_events",
-> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
-> index 55fe7cdea2fb..62051247f6d2 100644
-> --- a/fs/notify/inotify/inotify_user.c
-> +++ b/fs/notify/inotify/inotify_user.c
-> @@ -55,6 +55,9 @@ struct kmem_cache *inotify_inode_mark_cachep __read_mostly;
->   
->   #include <linux/sysctl.h>
->   
-> +static long it_zero = 0;
-> +static long it_int_max = INT_MAX;
-> +
->   struct ctl_table inotify_table[] = {
->   	{
->   		.procname	= "max_user_instances",
-> @@ -62,8 +65,8 @@ struct ctl_table inotify_table[] = {
->   		.maxlen		= sizeof(long),
->   		.mode		= 0644,
->   		.proc_handler	= proc_doulongvec_minmax,
-> -		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= SYSCTL_INT_MAX,
-> +		.extra1		= &it_zero,
-> +		.extra2		= &it_int_max,
->   	},
->   	{
->   		.procname	= "max_user_watches",
-> @@ -71,8 +74,8 @@ struct ctl_table inotify_table[] = {
->   		.maxlen		= sizeof(long),
->   		.mode		= 0644,
->   		.proc_handler	= proc_doulongvec_minmax,
-> -		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= SYSCTL_INT_MAX,
-> +		.extra1		= &it_zero,
-> +		.extra2		= &it_int_max,
->   	},
->   	{
->   		.procname	= "max_queued_events",
-> diff --git a/kernel/ucount.c b/kernel/ucount.c
-> index 260ae7da815f..bb51849e6375 100644
-> --- a/kernel/ucount.c
-> +++ b/kernel/ucount.c
-> @@ -58,14 +58,17 @@ static struct ctl_table_root set_root = {
->   	.permissions = set_permissions,
->   };
->   
-> +static long ue_zero = 0;
-> +static long ue_int_max = INT_MAX;
-> +
->   #define UCOUNT_ENTRY(name)					\
->   	{							\
->   		.procname	= name,				\
->   		.maxlen		= sizeof(long),			\
->   		.mode		= 0644,				\
->   		.proc_handler	= proc_doulongvec_minmax,	\
-> -		.extra1		= SYSCTL_ZERO,			\
-> -		.extra2		= SYSCTL_INT_MAX,		\
-> +		.extra1		= &ue_zero,			\
-> +		.extra2		= &ue_int_max,			\
->   	}
->   static struct ctl_table user_table[] = {
->   	UCOUNT_ENTRY("max_user_namespaces"),
-> 
-> 
-> 
