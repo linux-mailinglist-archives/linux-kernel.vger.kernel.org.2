@@ -2,61 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E443E1353
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC7F3E1355
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240609AbhHEK7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 06:59:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51332 "EHLO mail.kernel.org"
+        id S240625AbhHEK7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 06:59:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240080AbhHEK7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 06:59:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4BF5610CC;
-        Thu,  5 Aug 2021 10:58:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628161130;
-        bh=W5+8fOY46ERocNkBVQLYJeWbPtwbDFyp6xF/ik8h/eM=;
+        id S240080AbhHEK7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 06:59:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F181961102;
+        Thu,  5 Aug 2021 10:58:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628161137;
+        bh=jpkqtKgVH0TlomV9uVXBdAe4Wn7c/wCtXDz5usqUrOU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1jsVLZwZ58FQkjNBQRcEM5qgjbwjB6z6jei1avtf1LG6AbM7JyCWX1x/rpZ3vpJo3
-         qd1CIWmtgof+cxjrxI3WPi1+CuKpg+wd1VxGpGWe7pFh+kFy5L9Ij9dw97tyas20PV
-         7YES607a+ZXIbHjVs2/OlRZKulfaieBp2Rhq+2Nc=
-Date:   Thu, 5 Aug 2021 12:58:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
+        b=pE9xZA0Y5HxP2T+20HNxQvo8BInmCpOlCJMcB+2rRpDaFpCTZ9ei39sZeCcVo3nUd
+         zor/Ftyl+UcpK0KNqTHj3su1Veaf7rjT8wMETFKUJGFcg2pg9r2A+Ly2clPNgvwPux
+         G+gwhBu+jsK+veuLE8sfoxJ0xVtEfszZHNbtvuFeHpCwH/QsjOoarmEP703AJg9M9A
+         Ev/NniToNtQWNu35ykqTkUzTWPKtisS5XhG0Wrzl+rcd0z7CGVMSYGcIwb0FhE3Yy7
+         kp3tGuVfOW2v5LC8pd9Tgf4D534td0dU36H8cd437vE8PltSvSykBCUijWvKHWGNao
+         pbBAo/3JaKHAg==
+Date:   Thu, 5 Aug 2021 13:58:53 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     liangwenpeng@huawei.com, liweihang@huawei.com, dledford@redhat.com,
+        jgg@ziepe.ca, chenglang@huawei.com, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/10] Various cleanups of driver
-Message-ID: <YQvEZDF6DiBxZv38@kroah.com>
-References: <20210803135223.12543-1-Larry.Finger@lwfinger.net>
+Subject: Re: [PATCH -next] RDMA/hns: Fix return in hns_roce_rereg_user_mr()
+Message-ID: <YQvEbUp9cE5G535E@unreal>
+References: <20210804125939.20516-1-yuehaibing@huawei.com>
+ <YQqb0U43eQUGK641@unreal>
+ <f0921aa3-a95d-f7e4-a13b-db15d4a5f259@huawei.com>
+ <YQtdswHgMXhC7Mf5@unreal>
+ <974d3309-3617-6413-5a8d-c92b1b2f8dfe@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210803135223.12543-1-Larry.Finger@lwfinger.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <974d3309-3617-6413-5a8d-c92b1b2f8dfe@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 08:52:13AM -0500, Larry Finger wrote:
-> This set of patches removes some wrappers around simple actions,
-> and replaces some of the home-built bit manipulation macros.
+On Thu, Aug 05, 2021 at 05:29:25PM +0800, YueHaibing wrote:
+> On 2021/8/5 11:40, Leon Romanovsky wrote:
+> > On Thu, Aug 05, 2021 at 10:36:03AM +0800, YueHaibing wrote:
+> >> On 2021/8/4 21:53, Leon Romanovsky wrote:
+> >>> On Wed, Aug 04, 2021 at 08:59:39PM +0800, YueHaibing wrote:
+> >>>> If re-registering an MR in hns_roce_rereg_user_mr(), we should
+> >>>> return NULL instead of pass 0 to ERR_PTR.
+> >>>>
+> >>>> Fixes: 4e9fc1dae2a9 ("RDMA/hns: Optimize the MR registration process")
+> >>>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> >>>> ---
+> >>>>  drivers/infiniband/hw/hns/hns_roce_mr.c | 4 +++-
+> >>>>  1 file changed, 3 insertions(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+> >>>> index 006c84bb3f9f..7089ac780291 100644
+> >>>> --- a/drivers/infiniband/hw/hns/hns_roce_mr.c
+> >>>> +++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+> >>>> @@ -352,7 +352,9 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
+> >>>>  free_cmd_mbox:
+> >>>>  	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+> >>>>  
+> >>>> -	return ERR_PTR(ret);
+> >>>> +	if (ret)
+> >>>> +		return ERR_PTR(ret);
+> >>>> +	return NULL;
+> >>>>  }
+> >>>
+> >>> I don't understand this function, it returns or ERR_PTR() or NULL, but
+> >>> should return &mr->ibmr in success path. How does it work?
+> >>
+> >> Did you means hns_roce_reg_user_mr()?
+> >>
+> >> hns_roce_rereg_user_mr() returns ERR_PTR() on failure, and return NULL on success,
+> >>
+> >> In ib_uverbs_rereg_mr(), old mr will be used if rereg_user_mr() return NULL, see:
+> >>
+> >>  829         new_mr = ib_dev->ops.rereg_user_mr(mr, cmd.flags, cmd.start, cmd.length,
+> >>  830                                            cmd.hca_va, cmd.access_flags, new_pd,
+> >>  831                                            &attrs->driver_udata);
+> >>  832         if (IS_ERR(new_mr)) {
+> >>  833                 ret = PTR_ERR(new_mr);
+> >>  834                 goto put_new_uobj;
+> >>  835         }
+> >>  836         if (new_mr) {
+> >> .....
+> >>  860                 mr = new_mr;
+> >>  861         } else {
+> >>  862                 if (cmd.flags & IB_MR_REREG_PD) {
+> >>  863                         atomic_dec(&orig_pd->usecnt);
+> >>  864                         mr->pd = new_pd;
+> >>  865                         atomic_inc(&new_pd->usecnt);
+> >>  866                 }
+> >>  867                 if (cmd.flags & IB_MR_REREG_TRANS)
+> >>  868                         mr->iova = cmd.hca_va;
+> >>  869         }
+> > 
+> > You overwrite various fields in old_mr when executing hns_roce_rereg_user_mr().
+> > For example mr->access flags, which is not returned to the original
+> > state after all failures.
 > 
-> Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+> IMO, if ibv_rereg_mr failed, the mr is in undefined state, user needs to call
+> ibv_dereg_mr in order to release it, so there no need to recover the original state.
+
+The thing is that it undefined state in the kernel.
+What will be if user will change access_flags and try to use that
+"broken" MR anyway? Will you catch it?
+
 > 
+> Also， mlx4_ib_rereg_user_mr seems to do the same thing.
+
+mlx4 does many crazy things.
+
 > 
-> Larry Finger (10):
->   staging: r8188eu: Remove wrappers for kalloc() and kzalloc()
->   staging: r8188eu: Remove wrapper around vfree
->   staging: r8188eu: Remove wrappers for atomic operations
->   staging: r8188eu: Remove 4 empty routines from os_sep/service.c
->   staging: r8188eu: Remove all calls to _rtw_spinlock_free()
->   staging: r8188eu: Remove more empty routines
->   staging: r8188eu: Remove rtw_division64()
->   staging: r8188eu: Remove wrapper around do_div
->   staging: r8188eu: Remove some unused and ugly macros
->   staging: r8188eu: Remove some bit manipulation macros
-
-Portions of this series applied, again, can you rebase and resend?
-
-thanks,
-
-greg k-h
+> > 
+> > Also I'm not so sure about if it is valid to return NULL in all flows.
+> > 
+> > Thanks
+> > 
+> >>
+> >>
+> >>>
+> >>> Thanks
+> >>>
+> >>>>  
+> >>>>  int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+> >>>> -- 
+> >>>> 2.17.1
+> >>>>
+> >>> .
+> >>>
+> > .
+> > 
