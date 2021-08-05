@@ -2,123 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BB73E141E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633C73E1421
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241115AbhHELvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33908 "EHLO
+        id S241130AbhHELwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:52:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232513AbhHELvI (ORCPT
+        with ESMTP id S241116AbhHELwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:51:08 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BF8C061765;
-        Thu,  5 Aug 2021 04:50:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jwTUKdnUOWzKUoGdDvWps429sFSTOQ6uJd0xwXBgDQU=; b=GW2GxMPdGI3+eboXYgxVAvqvyR
-        Yvq4mWzeNlEOE9mBAaOcyMoxy95M0W/l7NytTuNPdj7zdTCMqsMD4azTtAGjiFCOLCdZm+sUNmoLO
-        mojECtQfz/WhlkVHOHSs8d/sfXmiJbdA2Meh/PxfJYRhxlS4pCGZaXEtAnNR00BNCXi2owa1KNA07
-        p+g32C+I95Q4QLf/EbrIK3PCFBhVQOj5TJLKQej7kq9p2O2gKEf5aiJvgAYvBHlZeWKNYHm8GrePb
-        LCiWQ1pahXzrB2s0QHAiuCi7aE1M4VQaqn0+/FIybwazM1DfH09rh6GUhx5t/y6qSQXI/F2YLuS78
-        ipPUIDUQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBbtV-0061J3-Mo; Thu, 05 Aug 2021 11:50:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E5FCE300084;
-        Thu,  5 Aug 2021 13:50:35 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CA98F20D8934D; Thu,  5 Aug 2021 13:50:35 +0200 (CEST)
-Date:   Thu, 5 Aug 2021 13:50:35 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        tj@kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] freezer,sched: Rewrite core freezer logic
-Message-ID: <YQvQiyn3xz2hte9v@hirez.programming.kicks-ass.net>
-References: <20210624092156.332208049@infradead.org>
- <20210624092616.009504322@infradead.org>
- <20210707141412.GA17818@redhat.com>
+        Thu, 5 Aug 2021 07:52:01 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652A0C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 04:51:46 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id m13so6293370iol.7
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 04:51:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TsqI2f4PszkolvCq0Vj/MJlhnRVimXlHdN3ztF9TtDc=;
+        b=h9Ihuy67i+BPHbno8ksO+l7rRWsFMJu0B6yiBfPHRxv4EmpMJbRxqk5YJXlz6W7+CO
+         uE3dUWZx6q63v5aX0O09Q1JMpskADy5RGDyKu0RfrPTskZomGnqFq8kR03Wv17C8H9jf
+         N+IXJJsN/bX0rJY4TQlkBqADVsXV/DK/cCjXZwEJGTXFlh3gOL3PIs38B+fbEyzOFZ+c
+         Cs6INT1PEHeTw3r58VBWcelXrfih83TPWsmxr7DYsBdHtP6IXYj3+Javgv7UWyjjAqdt
+         kdrp9QL8apoFudTcrcGvz2k3dGUHLWb20nIxajEAC2b+aZCBG2qEr/us4XG0zUJbVouw
+         yVqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TsqI2f4PszkolvCq0Vj/MJlhnRVimXlHdN3ztF9TtDc=;
+        b=jh7l2FSx3J/UP9hQQ+bWFqKAPznQZ0Jr0g/Ks8q1STzCMyZcSMI2rRllXsnPnHv6DJ
+         52UAaPNvdZTo87UtRT7bU2PIEfHrHvazyhUkRSviE660vfh1AAdZBcKvfOeA+LmHFF36
+         ULLf6xqlJBTX3HWFqUOnzKQ+LObl5tNdEffAuZWFkrxFqRrrks2qgarR0KOMP6DVy3fU
+         5W4x0r33OsBDJyRYq8N5mNktE6jageGzWddTjrthuC2Q1Y3hqSfKJ9omqn5wvQtn7Xee
+         QMvm8OKEeoZOqo3C2ukqbH0Baw18D5cZq8YGkqZWM0tO5pacr2aVNI//F6Em1UqviZNp
+         q1VQ==
+X-Gm-Message-State: AOAM532b4yF1VdJoJaoW5274ICeKKK2PgPfyiz+j1FRLByIx0W9zFdPu
+        Y3wRH2k7Q+oB9itNEG5/70GPNvi+4e8ikIq1c2nSww==
+X-Google-Smtp-Source: ABdhPJwN2okbkH6vhEz2oQAP4lCx3J40CVTNusFx6KveRCIE/34YDrRFFEclMt3GEqmVWTQ5dVQczfBztrR21Vfltj4=
+X-Received: by 2002:a02:cf2e:: with SMTP id s14mr4381393jar.74.1628164305688;
+ Thu, 05 Aug 2021 04:51:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707141412.GA17818@redhat.com>
+References: <20210705053258.1614177-1-acourbot@chromium.org>
+ <20210705053258.1614177-12-acourbot@chromium.org> <8929c97f-b105-ee35-d882-1cd218edcfd1@xs4all.nl>
+In-Reply-To: <8929c97f-b105-ee35-d882-1cd218edcfd1@xs4all.nl>
+From:   Tzung-Bi Shih <tzungbi@google.com>
+Date:   Thu, 5 Aug 2021 19:51:34 +0800
+Message-ID: <CA+Px+wWARA-TF66x3k8nY+TNqNo90Cn2Q_c73a66JUXWkY0dsg@mail.gmail.com>
+Subject: Re: [PATCH v6 11/14] media: mtk-vcodec: vdec: support stateless H.264 decoding
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Alexandre Courbot <acourbot@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Yunfei Dong <Yunfei.Dong@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 04:14:12PM +0200, Oleg Nesterov wrote:
-> sorry for delay...
+On Tue, Jul 20, 2021 at 6:52 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+> Several new structs do not have any field documentation, but they do start with /**,
+> so I get complaints about missing field docs.
+>
+> After manually changing this to /*, I still get a few remaining warnings:
+Will fix in next version.
 
-And me.. :/
+> mtk-vcodec/vdec/vdec_h264_req_if.c:189: warning: Function parameter or member 'h264_slice_params' not described in 'vdec_h264_vsi'
+> mtk-vcodec/vdec/vdec_h264_req_if.c:210: warning: Function parameter or member 'h264_slice_param' not described in 'vdec_h264_slice_inst'
+> mtk-vcodec/vdec/vdec_h264_req_if.c:210: warning: Function parameter or member 'dpb' not described in 'vdec_h264_slice_inst'
+>
+> Can you fix this?
+Will fix in next version.
 
-> I am still trying to understand this series, just one note for now.
+> I also want to take this patch series at the same time:
+>
+> https://patchwork.linuxtv.org/project/linux-media/cover/20210630085247.27554-1-irui.wang@mediatek.com/
+>
+> Can you verify that this would not cause any problems with your series? As far as
+> I can see it is fine, but a second pair of eyeballs wouldn't hurt.
+Series [1] shouldn't cause any problems with this series.
 
-The main motivation is to ensure tasks don't wake up early on resume.
-The current code has a problem between clearing pm_freezing and calling
-__thaw_task(), a task can get spuriously woken there.
+However, series [1] doesn't apply after this series (conflicted with
+[2]).  It needs to rebase and send another version after fixing the
+typo anyway.
 
-(Will is doing unspeakable things that suffer there.)
-
-I'm trying to fix that by making frozen a special wait state, but that
-then gets me complications vs the existing special states.
-
-I also don't want to change the wakeup path, as you suggested earlier
-because that's adding code (abeit fairly trivial) to every single wakeup
-for the benefit of these exceptional cases, which I feel is just wrong
-(tempting as it might be).
-
-> On 06/24, Peter Zijlstra wrote:
-> >
-> > +static bool __freeze_task(struct task_struct *p)
-> > +{
-> > +	unsigned long flags;
-> > +	unsigned int state;
-> > +	bool frozen = false;
-> > +
-> > +	raw_spin_lock_irqsave(&p->pi_lock, flags);
-> > +	state = READ_ONCE(p->__state);
-> > +	if (state & (TASK_FREEZABLE|__TASK_STOPPED|__TASK_TRACED)) {
-> > +		/*
-> > +		 * Only TASK_NORMAL can be augmented with TASK_FREEZABLE,
-> > +		 * since they can suffer spurious wakeups.
-> > +		 */
-> > +		if (state & TASK_FREEZABLE)
-> > +			WARN_ON_ONCE(!(state & TASK_NORMAL));
-> > +
-> > +#ifdef CONFIG_LOCKDEP
-> > +		/*
-> > +		 * It's dangerous to freeze with locks held; there be dragons there.
-> > +		 */
-> > +		if (!(state & __TASK_FREEZABLE_UNSAFE))
-> > +			WARN_ON_ONCE(debug_locks && p->lockdep_depth);
-> > +#endif
-> > +
-> > +		if (state & (__TASK_STOPPED|__TASK_TRACED))
-> > +			WRITE_ONCE(p->__state, TASK_FROZEN|__TASK_FROZEN_SPECIAL);
-> 
-> Well, this doesn't look right.
-
-> But the main problem is that you can't simply remove __TASK_TRACED,
-> this can confuse the debugger, any ptrace() request will fail as if
-> the tracee was killed.
-
-Urgh.. indeed. I missed the obvious *again* :/ Other, not-yet-frozen,
-tasks will observe this 'intermediate' state and misbehave. And similar
-on wakeup I suppose, if we wake the ptracer before the tracee it again
-can observe this state.
-
-I suppose we could cure that, have stopped/trace users use a special
-accessor for task::__state... not pretty. Let me see if I can come up
-with anything else.
-
-
+[1]: https://patchwork.linuxtv.org/project/linux-media/cover/20210630085247.27554-1-irui.wang@mediatek.com/
+[2]: https://patchwork.linuxtv.org/project/linux-media/patch/20210630085247.27554-3-irui.wang@mediatek.com/
