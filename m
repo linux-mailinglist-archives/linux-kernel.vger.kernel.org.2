@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D94073E17C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038863E17C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242036AbhHEPVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:21:23 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33922 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241278AbhHEPUT (ORCPT
+        id S242081AbhHEPVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:21:38 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59128 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241648AbhHEPUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Aug 2021 11:20:19 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A5599222F6;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D3BD11FE6B;
         Thu,  5 Aug 2021 15:20:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1628176804; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+MtcQcuDEhAh9t+4qt7WXHGBfICrnJNPjNJealierhA=;
-        b=cIYJjwR9/rtM5EKHCjmf+2Td+AVCm4z/hmpf8urUcTgXtffjpzZEIHuSTQAsehxuzdk7+L
-        6KYd0uWbvOdQzviWy8LZiPOrCfM78SEUmraAVstQcE8tq25b9aKsyEx8Ih/72RvrQ5Vu1H
-        rpRj5sdAWC+2bcPrtnX6BMEGoUPjacc=
+        bh=lTsDSIorHtI/bRezBrdulDQrR5vC48QgDFFiQA8tLvI=;
+        b=3JaHwK4hvn8kZijvccNuzHpUhUr6A8OrzNP/9YhEhV2mePIOzf2BGS1VNDb4MTDEu9hjLt
+        LgonWKEWRfaGH06p3iwj9ujITvyu1YM2DZCcY4JMrA/SGnmHCEwbVUYgdT0Hm7G/6ROOiN
+        20szfMxMdgUzSBfwK+z5k/4w6/7ymYY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1628176804;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+MtcQcuDEhAh9t+4qt7WXHGBfICrnJNPjNJealierhA=;
-        b=QrN2eWuMaRmbaihzrQgQmHyiQZg7V5Kqb1cbTOIirwNBF37qjtMKWeMNxfHfRwUM6qCyG6
-        LUOogkBDOUjq9PCQ==
+        bh=lTsDSIorHtI/bRezBrdulDQrR5vC48QgDFFiQA8tLvI=;
+        b=1OgaD/IaAqPOkdKXCXYFXhYYnwlN9B9rn7CkGZHZ9TciG2VICAIOpXZ10R6iKWw1OX+Xse
+        k9OVrpNB2xmmPlBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7693C13DAC;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A661C13DA8;
         Thu,  5 Aug 2021 15:20:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id GHNTHKQBDGFDdQAAMHmgww
+        id gBX8J6QBDGFDdQAAMHmgww
         (envelope-from <vbabka@suse.cz>); Thu, 05 Aug 2021 15:20:04 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     Andrew Morton <akpm@linux-foundation.org>,
@@ -59,9 +59,9 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Mel Gorman <mgorman@techsingularity.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v4 03/35] mm, slub: allocate private object map for validate_slab_cache()
-Date:   Thu,  5 Aug 2021 17:19:28 +0200
-Message-Id: <20210805152000.12817-4-vbabka@suse.cz>
+Subject: [PATCH v4 04/35] mm, slub: don't disable irq for debug_check_no_locks_freed()
+Date:   Thu,  5 Aug 2021 17:19:29 +0200
+Message-Id: <20210805152000.12817-5-vbabka@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210805152000.12817-1-vbabka@suse.cz>
 References: <20210805152000.12817-1-vbabka@suse.cz>
@@ -71,98 +71,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-validate_slab_cache() is called either to handle a sysfs write, or from a
-self-test context. In both situations it's straightforward to preallocate a
-private object bitmap instead of grabbing the shared static one meant for
-critical sections, so let's do that.
+In slab_free_hook() we disable irqs around the debug_check_no_locks_freed()
+call, which is unnecessary, as irqs are already being disabled inside the call.
+This seems to be leftover from the past where there were more calls inside the
+irq disabled sections. Remove the irq disable/enable operations.
+
+Mel noted:
+> Looks like it was needed for kmemcheck which went away back in 4.15
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-Acked-by: Christoph Lameter <cl@linux.com>
 Acked-by: Mel Gorman <mgorman@techsingularity.net>
 ---
- mm/slub.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ mm/slub.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 211d380d94d1..e1889b26a889 100644
+index e1889b26a889..4ac4ad021fca 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -4676,11 +4676,11 @@ static int count_total(struct page *page)
- #endif
- 
- #ifdef CONFIG_SLUB_DEBUG
--static void validate_slab(struct kmem_cache *s, struct page *page)
-+static void validate_slab(struct kmem_cache *s, struct page *page,
-+			  unsigned long *obj_map)
+@@ -1588,20 +1588,8 @@ static __always_inline bool slab_free_hook(struct kmem_cache *s,
  {
- 	void *p;
- 	void *addr = page_address(page);
--	unsigned long *map;
+ 	kmemleak_free_recursive(x, s->flags);
  
- 	slab_lock(page);
+-	/*
+-	 * Trouble is that we may no longer disable interrupts in the fast path
+-	 * So in order to make the debug calls that expect irqs to be
+-	 * disabled we need to disable interrupts temporarily.
+-	 */
+-#ifdef CONFIG_LOCKDEP
+-	{
+-		unsigned long flags;
++	debug_check_no_locks_freed(x, s->object_size);
  
-@@ -4688,21 +4688,20 @@ static void validate_slab(struct kmem_cache *s, struct page *page)
- 		goto unlock;
+-		local_irq_save(flags);
+-		debug_check_no_locks_freed(x, s->object_size);
+-		local_irq_restore(flags);
+-	}
+-#endif
+ 	if (!(s->flags & SLAB_DEBUG_OBJECTS))
+ 		debug_check_no_obj_freed(x, s->object_size);
  
- 	/* Now we know that a valid freelist exists */
--	map = get_map(s, page);
-+	__fill_map(obj_map, s, page);
- 	for_each_object(p, s, addr, page->objects) {
--		u8 val = test_bit(__obj_to_index(s, addr, p), map) ?
-+		u8 val = test_bit(__obj_to_index(s, addr, p), obj_map) ?
- 			 SLUB_RED_INACTIVE : SLUB_RED_ACTIVE;
- 
- 		if (!check_object(s, page, p, val))
- 			break;
- 	}
--	put_map(map);
- unlock:
- 	slab_unlock(page);
- }
- 
- static int validate_slab_node(struct kmem_cache *s,
--		struct kmem_cache_node *n)
-+		struct kmem_cache_node *n, unsigned long *obj_map)
- {
- 	unsigned long count = 0;
- 	struct page *page;
-@@ -4711,7 +4710,7 @@ static int validate_slab_node(struct kmem_cache *s,
- 	spin_lock_irqsave(&n->list_lock, flags);
- 
- 	list_for_each_entry(page, &n->partial, slab_list) {
--		validate_slab(s, page);
-+		validate_slab(s, page, obj_map);
- 		count++;
- 	}
- 	if (count != n->nr_partial) {
-@@ -4724,7 +4723,7 @@ static int validate_slab_node(struct kmem_cache *s,
- 		goto out;
- 
- 	list_for_each_entry(page, &n->full, slab_list) {
--		validate_slab(s, page);
-+		validate_slab(s, page, obj_map);
- 		count++;
- 	}
- 	if (count != atomic_long_read(&n->nr_slabs)) {
-@@ -4743,10 +4742,17 @@ long validate_slab_cache(struct kmem_cache *s)
- 	int node;
- 	unsigned long count = 0;
- 	struct kmem_cache_node *n;
-+	unsigned long *obj_map;
-+
-+	obj_map = bitmap_alloc(oo_objects(s->oo), GFP_KERNEL);
-+	if (!obj_map)
-+		return -ENOMEM;
- 
- 	flush_all(s);
- 	for_each_kmem_cache_node(s, node, n)
--		count += validate_slab_node(s, n);
-+		count += validate_slab_node(s, n, obj_map);
-+
-+	bitmap_free(obj_map);
- 
- 	return count;
- }
 -- 
 2.32.0
 
