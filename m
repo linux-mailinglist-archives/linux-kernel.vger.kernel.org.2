@@ -2,222 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CAA13E1B9D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE303E1B9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241635AbhHESo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241642AbhHESoz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:44:55 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D75C061798
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:44:40 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id p38so13098466lfa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:44:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=INk3XSw8EkiiqWSqdb59L6OOJd8smcU62HiHOCZ/eNY=;
-        b=qMLBzO6WhhUWnOWwFvXaPVjifn5YOEjQwvC516itc7t6Mwr4H8VCjaT3jBqjzLeGhY
-         3CUPlSirGnmvkmFCbqVwxqZR+2pGt3y58ZpMSA1gvcFuDPQt/XlYrqC+fJEhGHuOvlbh
-         cn8SqEgzJN8b4Q31k84p4Znd3NPG42xgCQ2Jc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=INk3XSw8EkiiqWSqdb59L6OOJd8smcU62HiHOCZ/eNY=;
-        b=VjBcgsj8shM0HPQzqCDD/fXQ0+KPTDQX7AM1Y148/wr+oFdICvqxT1LXLocd6ErjSk
-         sevqvaaH9oYYKHigO3IPYpt1W/NxtqkT1pS2gxG/s2RNY0erMvGL9yK0rT+SZCKYY2+R
-         /EWPZGOnjrmQjuQ5rXcfG2FJtpJNm7RyrfdRZrNrnZBv9j5lzFYnTtJyfk6psFwQeZTD
-         i8ZJm401fsiU5/unjYeZlM8f+qQyxaGEwtTkPinJ36Lm9cGmPwjBjpNAalnP73d4DZvi
-         Nws931pAUUaGk5qKKO7W6F2vOYQaEok00p5lORGncEWURxyejQ/cc5KEdISqSAU2H8hb
-         jETA==
-X-Gm-Message-State: AOAM531snDA2ffQSwzyyQL6eWEeIfnGdFdUeDw+G9w8xX705hfGGsxfy
-        t5sH0phgWx00gAA9gMSRCGe8eQ==
-X-Google-Smtp-Source: ABdhPJzyPq0ysU2CTi312TtSkUo2U7Utcg5KrzfhL0ZenWSLzwonHZ35S8TOFPmBzOicf3YiKwRHlg==
-X-Received: by 2002:a05:6512:260e:: with SMTP id bt14mr4621782lfb.491.1628189079192;
-        Thu, 05 Aug 2021 11:44:39 -0700 (PDT)
-Received: from cloudflare.com (79.191.182.217.ipv4.supernova.orange.pl. [79.191.182.217])
-        by smtp.gmail.com with ESMTPSA id v16sm469447ljn.93.2021.08.05.11.44.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 11:44:38 -0700 (PDT)
-References: <20210805051340.3798543-1-jiang.wang@bytedance.com>
- <20210805051340.3798543-3-jiang.wang@bytedance.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Jiang Wang <jiang.wang@bytedance.com>
-Cc:     netdev@vger.kernel.org, cong.wang@bytedance.com,
-        duanxiongchun@bytedance.com, xieyongji@bytedance.com,
-        chaiwen.cc@bytedance.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v4 2/5] af_unix: add unix_stream_proto for sockmap
-In-reply-to: <20210805051340.3798543-3-jiang.wang@bytedance.com>
-Date:   Thu, 05 Aug 2021 20:44:37 +0200
-Message-ID: <87y29fd94a.fsf@cloudflare.com>
+        id S241706AbhHESpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:45:06 -0400
+Received: from mga18.intel.com ([134.134.136.126]:3907 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241704AbhHESpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:45:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="201414252"
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="201414252"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 11:44:48 -0700
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="437890038"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.183.241]) ([10.212.183.241])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 11:44:47 -0700
+Subject: Re: [PATCH v1] driver: base: Add driver filter support
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20210804174322.2898409-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YQrqhYEL64CSLRTy@kroah.com>
+ <f2b1d564-8174-f8e9-9fee-12e938c6d846@linux.intel.com>
+ <YQuYCePPZEmVbkfc@kroah.com> <YQuZdVuaGG/Cr62y@kroah.com>
+ <YQuaJ78y8j1UmBoz@kroah.com>
+ <fdf8b6b6-58c3-8392-2fc6-1908a314e991@linux.intel.com>
+ <YQwlHrJBw79xhTSI@kroah.com>
+ <21db8884-5aa1-3971-79ef-f173a0a95bef@linux.intel.com>
+ <YQwpa+LAYt7YZ5dh@kroah.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <1e0967ee-c41e-fd5d-f553-e4d7ab88838c@linux.intel.com>
+Date:   Thu, 5 Aug 2021 11:44:47 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YQwpa+LAYt7YZ5dh@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 07:13 AM CEST, Jiang Wang wrote:
 
-[...]
+On 8/5/2021 11:09 AM, Greg Kroah-Hartman wrote:
+> On Thu, Aug 05, 2021 at 10:58:46AM -0700, Andi Kleen wrote:
+>> On 8/5/2021 10:51 AM, Greg Kroah-Hartman wrote:
+>>> It's controlled by whatever you want to use in userspace.  usbguard has
+>>> been handling this logic in userspace for over a decade now just fine.
+>>
+>> So how does that work with builtin USB drivers? Do you delay the USB binding
+>> until usbguard starts up?
+> Yes.
 
-> --- a/net/unix/af_unix.c
-> +++ b/net/unix/af_unix.c
-> @@ -791,17 +791,35 @@ static void unix_close(struct sock *sk, long timeout)
->  	 */
->  }
->
-> -struct proto unix_proto = {
-> -	.name			= "UNIX",
-> +static void unix_unhash(struct sock *sk)
-> +{
-> +	/* Nothing to do here, unix socket does not need a ->unhash().
-> +	 * This is merely for sockmap.
-> +	 */
-> +}
-> +
-> +struct proto unix_dgram_proto = {
-> +	.name			= "UNIX-DGRAM",
-> +	.owner			= THIS_MODULE,
-> +	.obj_size		= sizeof(struct unix_sock),
-> +	.close			= unix_close,
-> +#ifdef CONFIG_BPF_SYSCALL
-> +	.psock_update_sk_prot	= unix_dgram_bpf_update_proto,
-> +#endif
-> +};
-> +
-> +struct proto unix_stream_proto = {
-> +	.name			= "UNIX-STREAM",
->  	.owner			= THIS_MODULE,
->  	.obj_size		= sizeof(struct unix_sock),
->  	.close			= unix_close,
-> +	.unhash			= unix_unhash,
->  #ifdef CONFIG_BPF_SYSCALL
-> -	.psock_update_sk_prot	= unix_bpf_update_proto,
-> +	.psock_update_sk_prot	= unix_stream_bpf_update_proto,
->  #endif
->  };
->
-> -static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
-> +static struct sock *unix_create1(struct net *net, struct socket *sock, int kern, int type)
->  {
->  	struct sock *sk = NULL;
->  	struct unix_sock *u;
-> @@ -810,7 +828,11 @@ static struct sock *unix_create1(struct net *net, struct socket *sock, int kern)
->  	if (atomic_long_read(&unix_nr_socks) > 2 * get_max_files())
->  		goto out;
->
-> -	sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_proto, kern);
-> +	if (type == SOCK_STREAM)
-> +		sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_stream_proto, kern);
-> +	else /*dgram and  seqpacket */
-> +		sk = sk_alloc(net, PF_UNIX, GFP_KERNEL, &unix_dgram_proto, kern);
-> +
->  	if (!sk)
->  		goto out;
->
-> @@ -872,7 +894,7 @@ static int unix_create(struct net *net, struct socket *sock, int protocol,
->  		return -ESOCKTNOSUPPORT;
->  	}
->
-> -	return unix_create1(net, sock, kern) ? 0 : -ENOMEM;
-> +	return unix_create1(net, sock, kern, sock->type) ? 0 : -ENOMEM;
->  }
->
->  static int unix_release(struct socket *sock)
-> @@ -1286,7 +1308,7 @@ static int unix_stream_connect(struct socket *sock, struct sockaddr *uaddr,
->  	err = -ENOMEM;
->
->  	/* create new sock for complete connection */
-> -	newsk = unix_create1(sock_net(sk), NULL, 0);
-> +	newsk = unix_create1(sock_net(sk), NULL, 0, sock->type);
->  	if (newsk == NULL)
->  		goto out;
->
-> @@ -2261,7 +2283,7 @@ static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg, size_t si
->  	struct sock *sk = sock->sk;
->
->  #ifdef CONFIG_BPF_SYSCALL
-> -	if (sk->sk_prot != &unix_proto)
-> +	if (READ_ONCE(sk->sk_prot) != &unix_dgram_proto)
->  		return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
->  					    flags & ~MSG_DONTWAIT, NULL);
+That won't work for confidential guests, e.g. we need a virtio driver 
+for the console and some other things.
 
-Notice we have two reads from sk->sk_prot here.  And the value
-sk->sk_prot holds might change between reads (that is when we remove the
-socket from sockmap). So we want to load it just once.
 
-Otherwise, it seems possible that sk->sk_prot->recvmsg will be called,
-when sk->sk_prot == unix_proto. Which means sk->sk_prot->recvmsg is NULL.
-
->  #endif
-> @@ -2580,6 +2602,20 @@ static int unix_stream_read_actor(struct sk_buff *skb,
->  	return ret ?: chunk;
->  }
 >
-> +int __unix_stream_recvmsg(struct sock *sk, struct msghdr *msg,
-> +			  size_t size, int flags)
-> +{
-> +	struct unix_stream_read_state state = {
-> +		.recv_actor = unix_stream_read_actor,
-> +		.socket = sk->sk_socket,
-> +		.msg = msg,
-> +		.size = size,
-> +		.flags = flags
-> +	};
-> +
-> +	return unix_stream_read_generic(&state, true);
-> +}
-> +
->  static int unix_stream_recvmsg(struct socket *sock, struct msghdr *msg,
->  			       size_t size, int flags)
->  {
-> @@ -2591,6 +2627,12 @@ static int unix_stream_recvmsg(struct socket *sock, struct msghdr *msg,
->  		.flags = flags
->  	};
+>>>> This doesn't help us handle builtin drivers that initialize before user
+>>>> space is up.
+>>> Then have the default setting for your bus be "unauthorized" like we
+>>> allow for some busses today.
+>> We need some early boot drivers, just not all of them. For example in your
+>> scheme we would need to reject all early platform drivers, which would break
+>> booting. Or allow all early platform drivers, but then we exactly get into
+>> the problem that there are far too many of them to properly harden.
+> Define "harden" please.  Why not just allow all platform drivers, they
+> should all be trusted.  If not, well, you have bigger problems...
+
+Trusted here means someone audited them and also fuzzed them. That's all 
+a lot of work and also needs to be maintained forever so we're trying to 
+do only a minimum set. There are actually quite a few platform drivers, 
+it's difficult to audit them all.
+
+
 >
-> +#ifdef CONFIG_BPF_SYSCALL
-> +	struct sock *sk = sock->sk;
-> +	if (sk->sk_prot != &unix_stream_proto)
-> +		return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
-> +					    flags & ~MSG_DONTWAIT, NULL);
+> Anyway, feel free to build on top of the existing scheme please, but do
+> not ignore it and try to create yet-another-way-to-do-this that I have
+> to maintain for the next 20+ years.
 
-Also needs READ_ONCE annotations.
+We have to establish the existing scheme solves the problem statement 
+first. So far it seems it doesn't seem to solve the problem at all for 
+early drivers that are needed for booting. Unless I'm missing something?
 
-> +#endif
->  	return unix_stream_read_generic(&state, true);
->  }
+For late (e.g. modular) drivers it would probably be usable, but it 
+would complicate deployment quite a bit with complex user space changes, 
+so I can't say it looks very attractive.
+
+But if we solve the problem for the early drivers then I don't think we 
+need the user space controlled scheme at all, because it should work all 
+the same.
+
+So it seems they existing approach is not really cutting it.
+
+That's why I think the builtin allow list hook is still needed. Thoughts?
+
+
+-Andi
+
+
 >
-> @@ -2652,6 +2694,7 @@ static int unix_shutdown(struct socket *sock, int mode)
->
->  		int peer_mode = 0;
->
-> +		other->sk_prot->unhash(other);
-
-Here as well.
-
->  		if (mode&RCV_SHUTDOWN)
->  			peer_mode |= SEND_SHUTDOWN;
->  		if (mode&SEND_SHUTDOWN)
-
-[...]
