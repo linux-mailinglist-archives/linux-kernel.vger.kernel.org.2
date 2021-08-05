@@ -2,102 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976883E1690
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF3F3E1688
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241913AbhHEOLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241528AbhHEOLC (ORCPT
+        id S241880AbhHEOKQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Aug 2021 10:10:16 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:59748 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237597AbhHEOKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:11:02 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6914BC061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 07:10:47 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id k4so6793609wrc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 07:10:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NpYEEmebE1fM+RY82LCVN07dqLDtpFtPH1UGzt+rFWI=;
-        b=ujvzu/O1UZC6bAJ5as3xw1NKNWNBU18ZzJk/7RFqgYVbmv+8/vFqA1Opvpj/h7HB15
-         /HKvI/9dosCTr2ZCyRZ9c5i6hLc3BAkjYDxyxgK+5tIq9spTuvN6qn0HTEEUTjJtkvA4
-         CrG8sSGZQ44Ad0GUuBf+13pS1Ur6yCNx3g2J0u9DTHXC7s5RN9l9UYyN8LrJEIjEYQqJ
-         SNAWPIvrEfHZYhGcZZgaQkNU8uRmEEMsa8HUF/CyM6l6nJUGHV8ovYNOQfloQa/fGkC6
-         wZf59gdsP8jzZ8BXDW7JPacpN7Tkzt+zvPfb8RzBshs0tmIJOGCsJwkq8AJ8j9nvC52m
-         kqWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NpYEEmebE1fM+RY82LCVN07dqLDtpFtPH1UGzt+rFWI=;
-        b=aA1U8xonSZSniNPdxcwtxpd9vylhNwAr26wb0NvRpAdehp8FMxB7U/rupQOqKVQtit
-         WFbVIfjqMpr+9zxYPig88sF1fC58EoSEy2ZcNMQpmHPsfXzoySXpWjohMzRBhZTaJM13
-         bpqDhz/qtt/X5ybSEeQo5mTbpw/5VeOotAX4jAeOnzASLuPFle9s4e/OJZKNcH0L0f6d
-         lZP7dTXEmCf0kxuG9JseazCkzvCM5dfRcsasuHDXRObPgALA/D22aLMybfqlCiGJ+nj2
-         T4402yMDPXmnbeMsTolWTn9dnKNHNMwkjK7nwU+jU/xKJMO8JPqDFoHl1hXNzaY7T2NK
-         69fg==
-X-Gm-Message-State: AOAM533qZ9Muna1pjClwSL4NBGeualqrynVcVDUoXD33VIdR894GJhZk
-        9LNMFk8Gk+IotOX5QOJrLnBtB9XeQ+U=
-X-Google-Smtp-Source: ABdhPJyrwF4DJ04n3fohJbZTYjK3r5jsm9ITPhzQvH2fBiVzxN0xfbDx3XKq0kbVuX09uYzHvcLK+g==
-X-Received: by 2002:a5d:53cf:: with SMTP id a15mr5456874wrw.410.1628172646066;
-        Thu, 05 Aug 2021 07:10:46 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::996b])
-        by smtp.gmail.com with ESMTPSA id 104sm6223950wrc.4.2021.08.05.07.10.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 07:10:45 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] staging: r8188eu: fix build error
-Date:   Thu,  5 Aug 2021 16:09:41 +0200
-Message-Id: <20210805140941.9130-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 5 Aug 2021 10:10:15 -0400
+Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 6D03BCECF1;
+        Thu,  5 Aug 2021 16:09:59 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH v2] Bluetooth: btusb: Add support different nvm to
+ distinguish different factory for WCN6855 controller
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <1628152661-5669-1-git-send-email-zijuhu@codeaurora.org>
+Date:   Thu, 5 Aug 2021 16:09:58 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        BlueZ <linux-bluetooth@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        c-hbandi@codeaurora.org, Hemantg <hemantg@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rocky Liao <rjliao@codeaurora.org>, tjiang@codeaurora.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <39D59603-402F-4B5E-869E-F4852D06EB62@holtmann.org>
+References: <1628152661-5669-1-git-send-email-zijuhu@codeaurora.org>
+To:     Zijun Hu <zijuhu@codeaurora.org>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary label to fix build error introduced with
-commit b398ff88aa36 ("staging: r8188eu: remove return from void functions")
+Hi Zijun,
 
-drivers/staging/r8188eu/hal/rtl8188e_dm.c:182:1: error: label at end of compound statement
+> we have different factory to produce wcn6855 soc chip, so we should
+> use different nvm file with suffix to distinguish them.
+> 
+> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+> ---
+> drivers/bluetooth/btusb.c | 60 +++++++++++++++++++++++++++++++++++++----------
+> 1 file changed, 47 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index b1a05bb9f4bf..18b1ef2497ec 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -4013,6 +4013,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
+> #define QCA_DFU_TIMEOUT		3000
+> #define QCA_FLAG_MULTI_NVM      0x80
+> 
+> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
+> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
+> +
+> struct qca_version {
+> 	__le32	rom_version;
+> 	__le32	patch_version;
+> @@ -4044,6 +4047,7 @@ static const struct qca_device_info qca_devices_table[] = {
+> 	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+> 	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+> 	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
+> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+> };
+> 
+> static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
+> @@ -4198,6 +4202,42 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
+> 	return err;
+> }
+> 
+> +static int btusb_setup_qca_form_nvm_name(char **fwname,
+> +					int max_size,
+> +					struct qca_version *ver,
+> +					char *factory)
+> +{
+> +	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> +		/* if boardid equal 0, use default nvm without suffix */
+> +		if (le16_to_cpu(ver->board_id) == 0x0) {
+> +			/* we add suffix factory to distinguish with different factory. */
+> +			if (factory != NULL) {
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/hal/rtl8188e_dm.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+the coding style is if (!factory) btw.
 
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_dm.c b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-index b5f42127a751..7ac4257d7ebe 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-@@ -145,7 +145,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
- 	hw_init_completed = Adapter->hw_init_completed;
- 
- 	if (!hw_init_completed)
--		goto skip_dm;
-+		return;
- 
- 	fw_cur_in_ps = Adapter->pwrctrlpriv.bFwCurrentInPSMode;
- 	rtw_hal_get_hwreg(Adapter, HW_VAR_FWLPS_RF_ON, (u8 *)(&fw_ps_awake));
-@@ -179,9 +179,6 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
- 		ODM_CmnInfoUpdate(&hal_data->odmpriv, ODM_CMNINFO_LINK, bLinked);
- 		ODM_DMWatchdog(&hal_data->odmpriv);
- 	}
--skip_dm:
--	/*  Check GPIO to determine current RF on/off and Pbc status. */
--	/*  Check Hardware Radio ON/OFF or not */
- }
- 
- void rtl8188e_init_dm_priv(struct adapter *Adapter)
--- 
-2.32.0
+> +				snprintf(*fwname, max_size, "qca/nvm_usb_%08x_%s.bin",
+> +					 le32_to_cpu(ver->rom_version),
+> +					 factory);
+> +			} else {
+> +				snprintf(*fwname, max_size, "qca/nvm_usb_%08x.bin",
+> +					 le32_to_cpu(ver->rom_version));
+> +			}
+> +		} else {
+> +			if (factory != NULL) {
+> +				snprintf(*fwname, max_size, "qca/nvm_usb_%08x_%s_%04x.bin",
+> +					le32_to_cpu(ver->rom_version),
+> +					factory,
+> +					le16_to_cpu(ver->board_id));
+> +			} else {
+> +				snprintf(*fwname, max_size, "qca/nvm_usb_%08x_%04x.bin",
+> +					le32_to_cpu(ver->rom_version),
+> +					le16_to_cpu(ver->board_id));
+> +			}
+> +		}
+> +	} else {
+> +		snprintf(*fwname, max_size, "qca/nvm_usb_%08x.bin",
+> +			 le32_to_cpu(ver->rom_version));
+> +	}
+> +
+> +}
+> +
+
+I still don’t like the nested ifs here. Can you not just figure out something simpler. Something like a table as I mentioned in my previous review.
+
+> static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+> 				    struct qca_version *ver,
+> 				    const struct qca_device_info *info)
+> @@ -4206,19 +4246,13 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+> 	char fwname[64];
+> 	int err;
+> 
+> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> -		/* if boardid equal 0, use default nvm without surfix */
+> -		if (le16_to_cpu(ver->board_id) == 0x0) {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -				 le32_to_cpu(ver->rom_version));
+> -		} else {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+> -				le32_to_cpu(ver->rom_version),
+> -				le16_to_cpu(ver->board_id));
+> -		}
+> -	} else {
+> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -			 le32_to_cpu(ver->rom_version));
+> +	switch (ver->ram_version) {
+> +	case WCN6855_2_0_RAM_VERSION_GF:
+> +	case WCN6855_2_1_RAM_VERSION_GF:
+> +		btusb_setup_qca_form_nvm_name(&fwname, sizeof(fwname), ver, "gf");
+> +		break;
+> +	default:
+> +		btusb_setup_qca_form_nvm_name(&fwname, sizeof(fwname), ver, NULL);
+
+This is missing a break.
+
+> 	}
+> 
+> 	err = request_firmware(&fw, fwname, &hdev->dev);
+
+Regards
+
+Marcel
 
