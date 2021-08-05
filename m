@@ -2,121 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9033E3E114E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6DB3E115A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237958AbhHEJcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 05:32:08 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7933 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhHEJcG (ORCPT
+        id S238838AbhHEJer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 05:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237469AbhHEJeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:32:06 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GgNZ56lcJz84FQ;
-        Thu,  5 Aug 2021 17:27:57 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 17:31:49 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 5 Aug 2021
- 17:31:49 +0800
-Subject: Re: [PATCH net] page_pool: mask the page->signature before the
- checking
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Matthew Wilcox <willy@infradead.org>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <hawk@kernel.org>, <mcroce@microsoft.com>,
-        <alexander.duyck@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <chenhao288@hisilicon.com>
-References: <1628125617-49538-1-git-send-email-linyunsheng@huawei.com>
- <YQtDynWsDxZ/T41e@casper.infradead.org>
- <19955a79-3a6a-9534-7665-7f868eb7db1f@huawei.com>
- <YQunSivvZZFRETYn@enceladus>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <bfdfd736-68b2-635b-0c59-017574620f8c@huawei.com>
-Date:   Thu, 5 Aug 2021 17:31:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 5 Aug 2021 05:34:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE643C061765;
+        Thu,  5 Aug 2021 02:34:30 -0700 (PDT)
+Date:   Thu, 05 Aug 2021 09:34:27 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628156069;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6XbCgTl5w8QLCcz16XQmvLycNsbxxrobmRVN4aHmUjA=;
+        b=N0Iq6/elG3pSK1lyelG96HNlvpG0/wbL4FKWzRgXNq26OBTNGdXgHjSDnmmD7Ebi69daN4
+        5dXDi2Q1Yl5Gk3EAoG+HArvp666gUZ9la7Lo1JVLtkDpP6RgfEcYHu/DtRGWJsNmiY9Xk7
+        LrqgamN7NLdFf3kSJj3t7jNOuOM3PcqGUEPllOSSSLsPgkM707H0MQuhK7sVzJAWr7pfG2
+        g9iNL6WicU/nssF6EDfWyL/XBqgnTC5wSGt4Y0QuJgwCxnnDfOJfxlN1GgwnMvmO91r8mu
+        drPL7gPOnUzJbXfpYPU/4C7x1uZYThmddHfK2wzClgwAIKB3lrfyB3JyF79cSw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628156069;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6XbCgTl5w8QLCcz16XQmvLycNsbxxrobmRVN4aHmUjA=;
+        b=bIv9O4jfmRqyb2JvFIMTR036icwNWxs4MjAGxltEvskj22YKX9nS/ar/c1Ksm4laDzls4j
+        xmdkceQKutE76lDw==
+From:   "tip-bot2 for Colin Ian King" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86: remove unused assignment to pointer e
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210804115710.109608-1-colin.king@canonical.com>
+References: <20210804115710.109608-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <YQunSivvZZFRETYn@enceladus>
+Message-ID: <162815606779.395.10577182627193770345.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/5 16:54, Ilias Apalodimas wrote:
-> On Thu, Aug 05, 2021 at 10:14:39AM +0800, Yunsheng Lin wrote:
->> On 2021/8/5 9:50, Matthew Wilcox wrote:
->>> On Thu, Aug 05, 2021 at 09:06:57AM +0800, Yunsheng Lin wrote:
->>>> As mentioned in commit c07aea3ef4d4 ("mm: add a signature
->>>> in struct page"):
->>>> "The page->signature field is aliased to page->lru.next and
->>>> page->compound_head."
->>>>
->>>> And as the comment in page_is_pfmemalloc():
->>>> "lru.next has bit 1 set if the page is allocated from the
->>>> pfmemalloc reserves. Callers may simply overwrite it if they
->>>> do not need to preserve that information."
->>>>
->>>> The page->signature is or???ed with PP_SIGNATURE when a page is
->>>> allocated in page pool, see __page_pool_alloc_pages_slow(),
->>>> and page->signature is checked directly with PP_SIGNATURE in
->>>> page_pool_return_skb_page(), which might cause resoure leaking
->>>> problem for a page from page pool if bit 1 of lru.next is set for
->>>> a pfmemalloc page.
->>>>
->>>> As bit 0 is page->compound_head, So mask both bit 0 and 1 before
->>>> the checking in page_pool_return_skb_page().
->>>
->>> No, you don't understand.  We *want* the check to fail if we were low
->>> on memory so we return the emergency allocation.
->>
->> If the check failed, but the page pool assume the page is not from page
->> pool and will not do the resource cleaning(like dma unmapping), as the
->> page pool still use the page with pfmemalloc set and dma map the page
->> if pp_flags & PP_FLAG_DMA_MAP is true in __page_pool_alloc_pages_slow().
->>
->> The returning the emergency allocation you mentioned seems to be handled
->> in __page_pool_put_page(), see:
->>
->> https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L411
->>
->> We just use the page with pfmemalloc one time and do the resource cleaning
->> before returning the page back to page allocator. Or did I miss something
->> here?
->>
->>> .
->>>
-> 
-> I think you are right here.  What happens is that the original
-> pp->signature is OR'ed after the allocation in order to preserve any
-> existing bits.  When those are present though the if which will trigger the
-> recycling will fail and those DMA mapping will be left stale.
-> 
-> If we mask the bits during the check (as your patch does), we'll end up not
-> recycling the page anyway since it has the pfmemalloc bit set. The page
-> pool recycle function will end up releasing the page and the DMA mappings right?
+The following commit has been merged into the perf/core branch of tip:
 
-Yes.
-The problem might be magnified when frag page in page pool is added, because
-page pool only hold one ref of the page, and page_pool_return_skb_page() might
-dec the page ref twice if the frag page has two users, supposing the above
-checking fail with the pfmemalloc page, leaving to the below log:
+Commit-ID:     79551ec0782895af27d6aa9b3abb6d547b7260d3
+Gitweb:        https://git.kernel.org/tip/79551ec0782895af27d6aa9b3abb6d547b7260d3
+Author:        Colin Ian King <colin.king@canonical.com>
+AuthorDate:    Wed, 04 Aug 2021 12:57:10 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 04 Aug 2021 15:16:39 +02:00
 
-[   49.584990] BUG: Bad page state in process iperf  pfn:20af242
-[   49.584992] page:(____ptrval____) refcount:-1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x20af242
+perf/x86: remove unused assignment to pointer e
 
-> 
-> Regards
-> /Ilias
-> .
-> 
+The pointer e is being assigned a value that is never read, the assignment
+is redundant and can be removed.
+
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210804115710.109608-1-colin.king@canonical.com
+---
+ arch/x86/events/core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index c0167d5..f4e5fa7 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -1085,10 +1085,8 @@ int x86_schedule_events(struct cpu_hw_events *cpuc, int n, int *assign)
+ 	 * validate an event group (assign == NULL)
+ 	 */
+ 	if (!unsched && assign) {
+-		for (i = 0; i < n; i++) {
+-			e = cpuc->event_list[i];
++		for (i = 0; i < n; i++)
+ 			static_call_cond(x86_pmu_commit_scheduling)(cpuc, i, assign[i]);
+-		}
+ 	} else {
+ 		for (i = n0; i < n; i++) {
+ 			e = cpuc->event_list[i];
