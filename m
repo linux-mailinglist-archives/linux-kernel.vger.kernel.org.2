@@ -2,101 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE31E3E1265
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2501F3E126A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240477AbhHEKPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 06:15:09 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:41340 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbhHEKPH (ORCPT
+        id S239909AbhHEKRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 06:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240126AbhHEKRI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 06:15:07 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 175AECGq041313;
-        Thu, 5 Aug 2021 05:14:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1628158453;
-        bh=wXXYvUKbgAewe2Dkhit4put0hvhHFaTNeZ1ZUFaL7RA=;
-        h=From:To:CC:Subject:Date;
-        b=D8AK4XisRZMEgaqE5PxNrJMCzMfpfse+UAFix30Ipjwv8kWHsgvI8VZgfWlZckp5y
-         W/bTzB5fldi8v4gn8tdCq0s/UMqqr/d3mczCx80ZN5z4Y3zIes1Qalt2yajyDZnGxX
-         CMHpcmnnEOYPq3nGdjgxb7wQnz1KVgHUUQ7ctJZg=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 175AECCF108467
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 5 Aug 2021 05:14:12 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 5 Aug
- 2021 05:14:12 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 5 Aug 2021 05:14:12 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 175AEBcI037522;
-        Thu, 5 Aug 2021 05:14:12 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH] net: ethernet: ti: am65-cpsw: fix crash in am65_cpsw_port_offload_fwd_mark_update()
-Date:   Thu, 5 Aug 2021 13:14:09 +0300
-Message-ID: <20210805101409.3366-1-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 5 Aug 2021 06:17:08 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB284C061765;
+        Thu,  5 Aug 2021 03:16:54 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id mt6so7536358pjb.1;
+        Thu, 05 Aug 2021 03:16:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uxYTdS6bgnfx+2Ini0fwp3kDF4xi+vc1vXsFnljggKE=;
+        b=JtEg/md2Yb41+lcJXe0vA8ZSpStUi8dmGPgMckSn8GNINukwB+ruPr97a/iHlXfhPz
+         tAalqCJiLpoS195wRcmC8yJvRMyKPo/YkNrM9NUBQ2qlfOc32ztPM7YldPLNnk3r+PeA
+         jdJ1aVLKQrfpCupHt43bipmklPq+GVI+oImgws/r3M096q3leCRSbAFXiiW5+twDCZ5a
+         C5vHVCdnP1TIvdOukQbc6Mi22tGiMGQ2oTQe3tyyEN92JHvwC4mFFCg/DNPGApK+EZmt
+         0x+2mcC8l2PXBFQ9R22X/soj19riBMzXr/o7Vz5pLl1imicG2uHNDO4TwmW2gvW7T3+Y
+         ybbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uxYTdS6bgnfx+2Ini0fwp3kDF4xi+vc1vXsFnljggKE=;
+        b=ftT7NwwPdUbMlztzUDZ/EuSFmoR6efKuakVm4VjXldSQzb7DP8luFOQgBnVAuDKaWI
+         BfLKT7psWwsmdyl2CjZ8bBAL/BL089Cvd2+PF2EQkP+80LWceLsBpyCBxJF9Fgkjauo8
+         rcOgx2D6qTRu5DWWG3hf/+bYHOyMvufvVTT4QE4vQKa7KbvXDGPpEe+zM/K+416W8Zpt
+         ne3l7AnF5n/JL9HumHHJ/cHrrdg78dv9X76Gt++TRu1aC3QiHN/OKCw0pI0k/hNLvrOF
+         gFYRQ2gB4zbuvYkjxxN0fwYSARktZ8A0FHpTaTuf543luQxnenFL3u875Q+m3hcj1jYs
+         lpfg==
+X-Gm-Message-State: AOAM533dCWFOWJY+ZzwpKdeFr/haCxa0b7OSXeDYSVnag9n1yytAYAbU
+        pytcWslV9/3XO3zeKGUghNz3mfmCuUaENPwAOuE=
+X-Google-Smtp-Source: ABdhPJzQdp79YDSUT7pRlIuSy1Usr2PJofPj14rvaki1F07Zhcat3klZF8hM1ON/1nirWpPekkeKplXaq4gQ26K/OTY=
+X-Received: by 2002:a17:90b:33c5:: with SMTP id lk5mr14831776pjb.129.1628158614242;
+ Thu, 05 Aug 2021 03:16:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <1627098243-2742-1-git-send-email-dillon.minfei@gmail.com>
+In-Reply-To: <1627098243-2742-1-git-send-email-dillon.minfei@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 5 Aug 2021 13:16:14 +0300
+Message-ID: <CAHp75Vc5fJM-UiBiosAiTraq=6P0AFefmw1rmtFcvyWVb6rfLA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] Add ilitek ili9341 panel driver
+To:     dillon.minfei@gmail.com
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        =?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        kbuild-all@lists.01.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The am65_cpsw_port_offload_fwd_mark_update() causes NULL exception crash
-when there is at least one disabled port and any other port added to the
-bridge first time.
+On Sat, Jul 24, 2021 at 6:46 AM <dillon.minfei@gmail.com> wrote:
+>
+> From: Dillon Min <dillon.minfei@gmail.com>
+>
+> Since the st,sf-tc240t-9370-t dts binding already exist in stm32f429-disco.dts
+> but, the panel driver didn't get accepted from mainline. it's time to submit
+> patch fot it.
+>
+> This driver can support two different interface by different dts bindings:
+> - spi+dpi, use spi to configure register, dpi for graphic data.
+>   st,sf-tc240t-9370-t
+> - only spi, just like tiny/ili9341.c (actually, this part is copy from tiny)
+>   adafruit,yx240qv29
 
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000858
-pc : am65_cpsw_port_offload_fwd_mark_update+0x54/0x68
-lr : am65_cpsw_netdevice_event+0x8c/0xf0
-Call trace:
-am65_cpsw_port_offload_fwd_mark_update+0x54/0x68
-notifier_call_chain+0x54/0x98
-raw_notifier_call_chain+0x14/0x20
-call_netdevice_notifiers_info+0x34/0x78
-__netdev_upper_dev_link+0x1c8/0x290
-netdev_master_upper_dev_link+0x1c/0x28
-br_add_if+0x3f0/0x6d0 [bridge]
+...
 
-Fix it by adding proper check for port->ndev != NULL.
+> I was submited the first patch last year, you can find it at [1].
 
-Fixes: 2934db9bcb30 ("net: ti: am65-cpsw-nuss: Add netdevice notifiers")
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+submitted
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 718539cdd2f2..67a08cbba859 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -2060,8 +2060,12 @@ static void am65_cpsw_port_offload_fwd_mark_update(struct am65_cpsw_common *comm
- 
- 	for (i = 1; i <= common->port_num; i++) {
- 		struct am65_cpsw_port *port = am65_common_get_port(common, i);
--		struct am65_cpsw_ndev_priv *priv = am65_ndev_to_priv(port->ndev);
-+		struct am65_cpsw_ndev_priv *priv;
- 
-+		if (!port->ndev)
-+			continue;
-+
-+		priv = am65_ndev_to_priv(port->ndev);
- 		priv->offload_fwd_mark = set_val;
- 	}
- }
+> this patch has one major difference from that one, which is replace the low
+> level communication way, from spi_sync() to mipi_dbi_{command,
+> command_stackbuf}() interface, referred from Linus's patch [2].
+
+Can you shed a light on the road map here.
+I have the SPI panel (tiny) based on the ILI9341 and I'm using
+actually mi0283qt driver. With yours we will have 3 (three!) drivers
+for the same chip. I really do not want this. Without road map on the
+prospective of these all drivers, NAK.
+
 -- 
-2.17.1
-
+With Best Regards,
+Andy Shevchenko
