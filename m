@@ -2,194 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C1C3E0F5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87B03E0F5F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238153AbhHEHgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 03:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhHEHfc (ORCPT
+        id S238694AbhHEHhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 03:37:07 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:44094
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238273AbhHEHhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 03:35:32 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C866C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 00:35:19 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so12754225pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 00:35:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=O3kHV4CzCnHG+bTxMB2iuVhcRuwS9UsO30Dc+RBSeUU=;
-        b=WYUdnXCDrH8VBrbfaAAugJXz8374zHKiMgI8l5nkCwqRhu6+T6CIkzeXGsZUdfsovr
-         Ydc5rmuyvTCHujAcxpS9ZgsUEfnaxgrfdl2NBos+9MNSLcMRNn8KGB7fQZOZ9L5jggnd
-         L8C4+JiNsGKtStcx9LifH+WrR225zuWN3uWo/UIWBmzx5FMX0RFtEkCmvsxee9px9zOS
-         jd/SVEKEKko4HDBMYMi5vM8tgIBkHB6qP7emlje7IEe85zaaSLlILP0K4rErrXoYDDK5
-         1uc7HMPa3PIwGVaruLdb/XJxLy/tJSbg3Us6H8PHRbl65DpAGCp/sjcudtuUcLHcD3kU
-         4KFA==
+        Thu, 5 Aug 2021 03:37:03 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 3F5143F347
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 07:36:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628149009;
+        bh=FkL9np5HE5mawBpGWfUQVMs1Jp3nZ1r2uXir2/3ncE4=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=Oc8nntu2s1I/sH9u0Ys5OwwSkRUrZ/9sSoexGgFm5QOHfcRBuigXHmNU0IM62epdD
+         klE4/5jQ0ATH81HHCssh7EHv0GLU+JAVr3gv1tOBjJiom3cZft0a53/8ieQCNVQtag
+         ie2fHmEmD+0mqbEC/dLIEINGUT8tYsP46iwFTTxirTkxI6U1qNYv4aksoa8tyfLIsl
+         nk2aNhzd+baubu0DtTEEef11RQ5VPOeLNtXj1clqr2W/ALIlnJY69+dqTXfIsKFZhx
+         9tSwOkBiTw9XNjOBH3ZjXuxitIXuU1hBig4w+C0XLst/5bstd4LEBQ9LsZq4f2aGMM
+         /K3CYSqZ81XXw==
+Received: by mail-ed1-f70.google.com with SMTP id dn10-20020a05640222eab02903bd023ea9f6so2701159edb.14
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 00:36:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=O3kHV4CzCnHG+bTxMB2iuVhcRuwS9UsO30Dc+RBSeUU=;
-        b=PDQL4opCVjrnqOvPvvYfJPwCuo9Atwlq3W5jgtlSfp3fDQ3Cbh0FXdL8KyOIp+23eG
-         CIR7a9x0bFigwVQ69BdLYU7Qi0saPmRKFcxJb0d91XUpJHN4TjszQx6JmaC3GlBCG16P
-         mdWeHBEj4h8pchO+xPdwMt93qlzsVbrp2Yj3+IPNPYoSy4qWPG3ifDRYfvr23rnxK22H
-         1t8e5z3KMH7tj6zJ7wPDPSXiy0gb85XutFiske/slJcDAlIGvzDy4aRTrThpYnp9cfyv
-         4lf+V9oDb+0OgmPww//PxTUcV0IViZH7+slRGO8zHhnDdK2gU50GlXdFdRXKyCjHkebd
-         srgA==
-X-Gm-Message-State: AOAM530ygkBfwTG3Fyp5/62D77g7r5SbADi7BMhBHzYSrna9xNShInbb
-        GUDyj/GLu6P9ea133hqdF96C3Q==
-X-Google-Smtp-Source: ABdhPJxc6BeCQ7/WLKBo+mP4K21u22l91OshxYvB4S3tTfjkjkPEXzSufI9TGNK9nKPQ8vA/DbCFAg==
-X-Received: by 2002:a63:f904:: with SMTP id h4mr327718pgi.238.1628148918688;
-        Thu, 05 Aug 2021 00:35:18 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id r7sm6352968pga.44.2021.08.05.00.35.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 00:35:18 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 13:05:16 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Kevin Hao <haokexin@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] cpufreq: schedutil: Use kobject release() method to
- free sugov_tunables
-Message-ID: <20210805073516.qzpzifjoqluqfwhy@vireshk-i7>
-References: <20210805072917.8762-1-haokexin@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FkL9np5HE5mawBpGWfUQVMs1Jp3nZ1r2uXir2/3ncE4=;
+        b=lJXVCrwj7XqBCdyR0pqUhsflOEBaCtkSAn+WudNBUuRiouzV/gA0wu8sYn8DGRDucq
+         7KNGh31V8QWmVBHJFIehOMPrGMi3sNLCdAkuQFrKI8blg8/U9fRrrrjCcDakjwu3IcFN
+         ByxYWayw3vfoi1QNRqpzS7VB9fAKFk/CkaDzF4sOgDGAQHPWjzSsNiNVMiz4glpP9Nsi
+         qhJpymmHaIfe7ETp35PMUxmLF5DPRsGDrnPyN0vfC+ns/Mkbd12mgiwjin2uSFJUri9A
+         vlqJSvsUuF6s9dXkspiH95XkREY+Ih0sclh0tevWbCobaR1J7mcBL9XKiXCs/jEBX9k/
+         TMhw==
+X-Gm-Message-State: AOAM531AaFMtihZI0FnuXJZW5GBff5dslGnhV9XR5jqmWVxzMa6iD0ZT
+        FL2695vs6CYGd7tghvhhFfBvrjLdqpDr/w+nhh57KlqSMryNYZWz+HZ9t/S5R7vxpF1Hn9AY6B/
+        IvT8oaAqFnJoKZNepj3GRvMuvojgBAeq8PLT10L6adA==
+X-Received: by 2002:aa7:c68e:: with SMTP id n14mr4845829edq.66.1628149008733;
+        Thu, 05 Aug 2021 00:36:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzNcrJVCuj4cNRpvfe7GyxnsvAMJjkp36MUOe1r9B6do8nVXIxKRiZrUJlh02P0wyiqgg+kpw==
+X-Received: by 2002:aa7:c68e:: with SMTP id n14mr4845805edq.66.1628149008579;
+        Thu, 05 Aug 2021 00:36:48 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id u4sm1403189eje.81.2021.08.05.00.36.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Aug 2021 00:36:48 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: exynos: correct GIC CPU interfaces address
+ range on Exynos7
+To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Pankaj Dubey <pankaj.dubey@samsung.com>,
+        Sam Protsenko <semen.protsenko@linaro.org>,
+        Marc Zyngier <maz@kernel.org>
+References: <20210805072110.4730-1-krzysztof.kozlowski@canonical.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <b0d6ff2a-24af-96c1-62a1-8b920c63e05a@canonical.com>
+Date:   Thu, 5 Aug 2021 09:36:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805072917.8762-1-haokexin@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210805072110.4730-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-08-21, 15:29, Kevin Hao wrote:
-> The struct sugov_tunables is protected by the kobject, so we can't free
-> it directly. Otherwise we would get a call trace like this:
->   ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x30
->   WARNING: CPU: 3 PID: 720 at lib/debugobjects.c:505 debug_print_object+0xb8/0x100
->   Modules linked in:
->   CPU: 3 PID: 720 Comm: a.sh Tainted: G        W         5.14.0-rc1-next-20210715-yocto-standard+ #507
->   Hardware name: Marvell OcteonTX CN96XX board (DT)
->   pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
->   pc : debug_print_object+0xb8/0x100
->   lr : debug_print_object+0xb8/0x100
->   sp : ffff80001ecaf910
->   x29: ffff80001ecaf910 x28: ffff00011b10b8d0 x27: ffff800011043d80
->   x26: ffff00011a8f0000 x25: ffff800013cb3ff0 x24: 0000000000000000
->   x23: ffff80001142aa68 x22: ffff800011043d80 x21: ffff00010de46f20
->   x20: ffff800013c0c520 x19: ffff800011d8f5b0 x18: 0000000000000010
->   x17: 6e6968207473696c x16: 5f72656d6974203a x15: 6570797420746365
->   x14: 6a626f2029302065 x13: 303378302f307830 x12: 2b6e665f72656d69
->   x11: ffff8000124b1560 x10: ffff800012331520 x9 : ffff8000100ca6b0
->   x8 : 000000000017ffe8 x7 : c0000000fffeffff x6 : 0000000000000001
->   x5 : ffff800011d8c000 x4 : ffff800011d8c740 x3 : 0000000000000000
->   x2 : ffff0001108301c0 x1 : ab3c90eedf9c0f00 x0 : 0000000000000000
->   Call trace:
->    debug_print_object+0xb8/0x100
->    __debug_check_no_obj_freed+0x1c0/0x230
->    debug_check_no_obj_freed+0x20/0x88
->    slab_free_freelist_hook+0x154/0x1c8
->    kfree+0x114/0x5d0
->    sugov_exit+0xbc/0xc0
->    cpufreq_exit_governor+0x44/0x90
->    cpufreq_set_policy+0x268/0x4a8
->    store_scaling_governor+0xe0/0x128
->    store+0xc0/0xf0
->    sysfs_kf_write+0x54/0x80
->    kernfs_fop_write_iter+0x128/0x1c0
->    new_sync_write+0xf0/0x190
->    vfs_write+0x2d4/0x478
->    ksys_write+0x74/0x100
->    __arm64_sys_write+0x24/0x30
->    invoke_syscall.constprop.0+0x54/0xe0
->    do_el0_svc+0x64/0x158
->    el0_svc+0x2c/0xb0
->    el0t_64_sync_handler+0xb0/0xb8
->    el0t_64_sync+0x198/0x19c
->   irq event stamp: 5518
->   hardirqs last  enabled at (5517): [<ffff8000100cbd7c>] console_unlock+0x554/0x6c8
->   hardirqs last disabled at (5518): [<ffff800010fc0638>] el1_dbg+0x28/0xa0
->   softirqs last  enabled at (5504): [<ffff8000100106e0>] __do_softirq+0x4d0/0x6c0
->   softirqs last disabled at (5483): [<ffff800010049548>] irq_exit+0x1b0/0x1b8
+On 05/08/2021 09:21, Krzysztof Kozlowski wrote:
+> The GIC-400 CPU interfaces address range is defined as 0x2000-0x3FFF (by
+> ARM).
 > 
-> So split the original sugov_tunables_free() into two functions,
-> sugov_clear_global_tunables() is just used to clear the global_tunables
-> and the new sugov_tunables_free() is used as kobj_type::release to
-> release the sugov_tunables safely.
-> 
-> Fixes: 9bdcb44e391d ("cpufreq: schedutil: New governor based on scheduler utilization data")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Kevin Hao <haokexin@gmail.com>
+
+I underestimated the issue - this is actually bug as there is a GICC_DIR
+register at offset 0x1000. Therefore:
+
+Fixes: b9024cbc937d ("arm64: dts: Add initial device tree support for exynos7")
+
+> Reported-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Reported-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 > ---
-> v2: Introduce sugov_clear_global_tunables() as suggested by Rafael.
+>  arch/arm64/boot/dts/exynos/exynos7.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->  kernel/sched/cpufreq_schedutil.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
+> diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+> index 8b06397ba6e7..c73a597ca66e 100644
+> --- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+> @@ -137,7 +137,7 @@ gic: interrupt-controller@11001000 {
+>  			#address-cells = <0>;
+>  			interrupt-controller;
+>  			reg =	<0x11001000 0x1000>,
+> -				<0x11002000 0x1000>,
+> +				<0x11002000 0x2000>,
+>  				<0x11004000 0x2000>,
+>  				<0x11006000 0x2000>;
+>  		};
 > 
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index 57124614363d..e7af18857371 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -537,9 +537,17 @@ static struct attribute *sugov_attrs[] = {
->  };
->  ATTRIBUTE_GROUPS(sugov);
->  
-> +static void sugov_tunables_free(struct kobject *kobj)
-> +{
-> +	struct gov_attr_set *attr_set = container_of(kobj, struct gov_attr_set, kobj);
-> +
-> +	kfree(to_sugov_tunables(attr_set));
-> +}
-> +
->  static struct kobj_type sugov_tunables_ktype = {
->  	.default_groups = sugov_groups,
->  	.sysfs_ops = &governor_sysfs_ops,
-> +	.release = &sugov_tunables_free,
->  };
->  
->  /********************** cpufreq governor interface *********************/
-> @@ -639,12 +647,10 @@ static struct sugov_tunables *sugov_tunables_alloc(struct sugov_policy *sg_polic
->  	return tunables;
->  }
->  
-> -static void sugov_tunables_free(struct sugov_tunables *tunables)
-> +static void sugov_clear_global_tunables(void)
->  {
->  	if (!have_governor_per_policy())
->  		global_tunables = NULL;
-> -
-> -	kfree(tunables);
->  }
->  
->  static int sugov_init(struct cpufreq_policy *policy)
-> @@ -707,7 +713,7 @@ static int sugov_init(struct cpufreq_policy *policy)
->  fail:
->  	kobject_put(&tunables->attr_set.kobj);
->  	policy->governor_data = NULL;
-> -	sugov_tunables_free(tunables);
-> +	sugov_clear_global_tunables();
->  
->  stop_kthread:
->  	sugov_kthread_stop(sg_policy);
-> @@ -734,7 +740,7 @@ static void sugov_exit(struct cpufreq_policy *policy)
->  	count = gov_attr_set_put(&tunables->attr_set, &sg_policy->tunables_hook);
->  	policy->governor_data = NULL;
->  	if (!count)
-> -		sugov_tunables_free(tunables);
-> +		sugov_clear_global_tunables();
->  
->  	mutex_unlock(&global_tunables_lock);
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
--- 
-viresh
+Best regards,
+Krzysztof
