@@ -2,102 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 116D33E1567
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CF83E156A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 15:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241637AbhHENLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 09:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234312AbhHENLu (ORCPT
+        id S241647AbhHENNG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 5 Aug 2021 09:13:06 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:60318 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241639AbhHENNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 09:11:50 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1466BC061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 06:11:36 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so3669484wmb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 06:11:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=q0Y9EJOlDnNb/+I39cpASpqd6Fuefl2cgQJXE7mywug=;
-        b=DYr5glB8RCCFOi01femBA2bpOwEtgJWAOHgftx4YlFHK8+ruZM5GIl+deaDlfgIKLM
-         ewKw+ODYhOaV8hJNtCeRukUNdWrtfPZOOmUEyLLyNzgAe1ppF5LqcmfZB1vbb5oy5YYO
-         1BfhrS5rClYe3dqLaxmXTDX8dz+yeOUPwDENJ6PvMRFkCMwwy1MM8B4wW9AG+URRVnh4
-         2v4zUqUxtoEd5kqI37PFEKnVh7IOZoaBiBNreP+Ug34BJGovWP3QR+pdOwATROVn1Ca1
-         FW2Ub+lu/jIMFwOdONAb/u6M5EgpQFQ9XQil0V5QSvnetH78pXzXhmS4cilRDmijdMF/
-         qdnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=q0Y9EJOlDnNb/+I39cpASpqd6Fuefl2cgQJXE7mywug=;
-        b=I30asyc0EbRvA0WH5+d5a5nTBEvLrNkENtaeOWz49z8YJctW56vR6oUG4R771qI8oO
-         DR5iOFkwOmv1/1a7j+0eysuBA6NQLCihBhwr/8zENxX9+EFsUEfevrEe5wNFY80z6l94
-         KwJXqiRIWlCbhVv+oB+YlRy+66QmpUoqMbMCTLNe8fb5SO2AT4Z5oa6m2Txk8GXGQb+/
-         l1qT4eU7x+xMZFwrGl3v4yY3X3Owo7uf6nevMnFZpda9mXjhHy3MVa9UqJquIpp3rERi
-         6mnZlhU2VgGEjh6nAJ7N9Qvn41iYRFA5qVD5kSaJLGDKUqHdp1lC9GPusWklqSZgzUjO
-         n4zw==
-X-Gm-Message-State: AOAM532xLSOXsMNBALsCtMi/SNLBU9w/DOn084qxJzXFKcjOkdJHXzps
-        oI5GGrZYItsKxqKPjdYVpFeFqg==
-X-Google-Smtp-Source: ABdhPJz65oYHYRNnnIeKu0HkFdOtB2lwysomHE1VVtDlpUi42R3sguTZkl0FwOR5s0ALMSyb3C+TRg==
-X-Received: by 2002:a05:600c:293:: with SMTP id 19mr4885103wmk.179.1628169094747;
-        Thu, 05 Aug 2021 06:11:34 -0700 (PDT)
-Received: from google.com ([109.180.115.228])
-        by smtp.gmail.com with ESMTPSA id p2sm6441721wrr.21.2021.08.05.06.11.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 06:11:34 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 14:11:32 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>, C++ / GCC <cpp@gcc.lt>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: axp20x: Add supplied-from property to
- axp288_fuel_gauge cell
-Message-ID: <YQvjhKmGU/HdPmgw@google.com>
-References: <20210717162528.272797-1-hdegoede@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210717162528.272797-1-hdegoede@redhat.com>
+        Thu, 5 Aug 2021 09:13:05 -0400
+Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 4EC50CECF0;
+        Thu,  5 Aug 2021 15:12:49 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH v5 1/2] Bluetooth: btusb: Record debug log for Mediatek
+ Chip.
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <4e9d536cb6a7cffb829f105183f2bb5bceb4122c.camel@linux.intel.com>
+Date:   Thu, 5 Aug 2021 15:12:48 +0200
+Cc:     Mark-YW.Chen@mediatek.com, Johan Hedberg <johan.hedberg@gmail.com>,
+        chris.lu@mediatek.com, will-cy.lee@mediatek.com,
+        Sean Wang <sean.wang@mediatek.com>,
+        BlueZ <linux-bluetooth@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Michael Sun <michaelfsun@google.com>, shawnku@google.com,
+        jemele@google.com, Archie Pusaka <apusaka@google.com>,
+        Miao-chen Chou <mcchou@chromium.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <22F94464-EF65-4676-AC61-1E13E22A837F@holtmann.org>
+References: <20210804090316.12080-1-mark-yw.chen@mediatek.com>
+ <8988B918-95FD-42DE-95FA-3BAC4A144165@holtmann.org>
+ <4e9d536cb6a7cffb829f105183f2bb5bceb4122c.camel@linux.intel.com>
+To:     Tedd Ho-Jeong An <tedd.an@linux.intel.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 17 Jul 2021, Hans de Goede wrote:
+Hi Tedd,
 
-> The power-supply framework has the notion of one power-supply device
-> being supplied by another. A typical example of this is a charger
-> charging a battery.
+> I cannot find the original patch email and CI report, however this patch throws this warning.
 > 
-> A tablet getting plugged in to charge (or plugged out) only results in
-> events seen by the axp288_charger device / MFD cell. Which means that
-> a change udev-event only gets send for the charger power-supply class
-> device, not for the battery (the axp288_fuel_gauge device).
-> 
-> The axp288_fuel_gauge does have an external_power_change'd callback
-> which will generate a change udev-event when called. But before this
-> commit this never got called because the power-supply core only calls
-> this when a power-supply class device's supplier changes and the
-> supplier link from axp288_charger to axp288_fuel_gauge was missing.
-> 
-> Add a "supplied-from" property to axp288_fuel_gauge cell, pointing
-> to the "axp288_charger" power-supply class device, so that the
-> axp288_fuel_gauge's external_power_change'd callback gets called on
-> axp288_charger state changes.
-> 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  drivers/mfd/axp20x.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+> drivers/bluetooth/btusb.c: In function ‘btusb_recv_acl_mtk’:
+> drivers/bluetooth/btusb.c:4033:3: warning: this statement may fall through [-Wimplicit-fallthrough=]
+> 4033 |   usb_disable_autosuspend(data->udev);
+>      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/bluetooth/btusb.c:4034:2: note: here
+> 4034 |  case 0x05ff:  /* Firmware debug logging 1 */
+>      |  ^~~~
 
-Applied, thanks.
+the /* fall through */ comment is missing.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Regards
+
+Marcel
+
