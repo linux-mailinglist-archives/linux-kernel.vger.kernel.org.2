@@ -2,271 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E443E0CE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 05:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F723E0CF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 05:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238576AbhHEDrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 23:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231535AbhHEDrB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 23:47:01 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FFBC061765
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 20:46:47 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628135204;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Uk5CAK1ofKH4/IrVtMIiLz8ZUZ925UDJRRzDYZI2vDw=;
-        b=mGVTHKFa39+pFN2vjyvDnOkW7UyNhwn6C5SPH1m5CSlBOrEc9s6E73EomrlR/KPRE7kzWI
-        q92fxtGTZTwnVRjluB00r4plp7y4pEAyDMRTapzwjcD2KyO4I49teT0glwxZz/vD8cmGRx
-        gBnt1qLw13BWoxyoTxL+OW6ngTdGbWPo6EiFKg5gMfu4BrsLS3YIvLq3qTxO0XQAYYtsep
-        fIjGUI0Onp3VfN/NYNmK1FMEMZgetbfw/aBgAp4efMAEIECbZR+qAxy02DSptuvBO1BIPB
-        ACbOwCeXpvlA96KwIxE5M1ojitMxsSY+0Ge8kP2vLY8EQezGCdCP4YvWCLVbfA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628135204;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Uk5CAK1ofKH4/IrVtMIiLz8ZUZ925UDJRRzDYZI2vDw=;
-        b=86MJ/1DoOSnpngKET2bKmE2kIiPxxoqcvs+HqG5oHdfSFQrQx/m9o1L0SjnZQPmCqVoRDB
-        ckN+EL5bxz0l8QDA==
-To:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Chengyang Fan <cy.fan@huawei.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev@lists.ozlabs.org, kgdb-bugreport@lists.sourceforge.net
-Subject: Re: [PATCH printk v1 03/10] kgdb: delay roundup if holding printk cpulock
-In-Reply-To: <20210804150431.qtra3wvh2n4m6j64@maple.lan>
-References: <20210803131301.5588-1-john.ogness@linutronix.de> <20210803131301.5588-4-john.ogness@linutronix.de> <20210803142558.cz7apumpgijs5y4y@maple.lan> <87tuk635rb.fsf@jogness.linutronix.de> <20210804113159.lsnoyylifg6v5i35@maple.lan> <YQqEJtmNFxVxH3U/@alley> <20210804150431.qtra3wvh2n4m6j64@maple.lan>
-Date:   Thu, 05 Aug 2021 05:52:43 +0206
-Message-ID: <87tuk4lfj0.fsf@jogness.linutronix.de>
+        id S235919AbhHED4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 23:56:07 -0400
+Received: from mail-bn1nam07on2064.outbound.protection.outlook.com ([40.107.212.64]:4318
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231533AbhHED4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 4 Aug 2021 23:56:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FNAybr4LWR19O0cdNzdRdcNSPx6zx1gPhAYfUHtEc22ni7xHct/qZbCJsOkjWDj5CD71WAaofdyPAi1TuuvPott6e6XHvcDrcQPO/XL9BrxQV4BupEk/FpE+Q5zP1rz7H4aHY2+AkIEiXbJ9WNSsbRWMW2XniXEboV1/+8cPfkUyOQ2SoeEj7Ok8/m+MfzHa1FF6BDv2XAuQW0tkw6SfGevPgW1pXZV9Musz/ZZk7/iLBWvl+j62AblQWV7A/7pXBpxdFjoIvpN6S91ewOOOSwEmCxG7tQZKeUoXOKut09N1yGzLVxfER6ggjFRkC3nycMZ1Vm9+Ul2pvesFp0Uq6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NvJC6CkESSLItiM/VQ2fRE/3CmXQ+Q9HMIrYZdk+dnA=;
+ b=AEbSIZlT5PKfyg+mIm7V22wwjd7xDxrS+sW/PX6azpdz5uG3RrAZ+W5AC5MyXHN60ZM2TgNNTXeEnjpiNzuR44IPQ+YUFWxidZPe1tQ9TzSbYNuSEe8L9ap2mq3ZBKX2kDytsbHsXutLyTRf91wBmHiK88DaDTe8a2+UpBLlkMalduuFUMFJYPcr9qdcfuQAKfmq+c6tgLWp5SbKu9c5V3RrDq3ZvTTxVKhMM0EqNbVj17GxxI92rXWSoJm11gA7tnkT2NHswE+TuDiTvTWfpsufnFdcP2cm0ll1xWAtdrrxg1a2GhYvzIJwU/R4xdxszB47nnfpJVRFytfUXFDSvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.35) smtp.rcpttodomain=rjwysocki.net smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NvJC6CkESSLItiM/VQ2fRE/3CmXQ+Q9HMIrYZdk+dnA=;
+ b=fg8kAveA4b0kaJw+Mb9Ce1EJZHiNjgN5mQlCJzyt40vOXciAngqsuG3Yt6+/ZRgFEqI5a23atdRq36tXIID1ybtOU8/Ek3NqYFtdflIIfdmJJt7jewfWj5Xo8fyItMDtIMO+5oaoLKMg5+xfVmYdTOpQlc0PIe4bo9N63EaxHyBc0fb8gLi9GlH64HTmUahwSBBZpT6l+v3Q24PkfJCf5tWmt3Nhll0AkD+2uaPzsalXhYtwDh59wuZocR0e/Mr/4u46eAKAQjfHMZs0AZF+4K86NzVa2zPbXFacH00xs5Ff/aVUly4W+adZ82LG0gdt8LmBKDjD0CVIsj00m+Kd5Q==
+Received: from BN9PR03CA0425.namprd03.prod.outlook.com (2603:10b6:408:113::10)
+ by MN2PR12MB3583.namprd12.prod.outlook.com (2603:10b6:208:c5::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16; Thu, 5 Aug
+ 2021 03:55:49 +0000
+Received: from BN8NAM11FT051.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:113:cafe::41) by BN9PR03CA0425.outlook.office365.com
+ (2603:10b6:408:113::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17 via Frontend
+ Transport; Thu, 5 Aug 2021 03:55:49 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
+ smtp.mailfrom=nvidia.com; rjwysocki.net; dkim=none (message not signed)
+ header.d=none;rjwysocki.net; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.35; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.35) by
+ BN8NAM11FT051.mail.protection.outlook.com (10.13.177.66) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4394.16 via Frontend Transport; Thu, 5 Aug 2021 03:55:49 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 5 Aug
+ 2021 03:55:49 +0000
+Received: from [10.20.23.47] (172.20.187.6) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 5 Aug 2021
+ 03:55:47 +0000
+Subject: Re: [PATCH v14 5/9] PCI: Allow userspace to query and set device
+ reset mechanism
+To:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     <alex.williamson@redhat.com>,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kw@linux.com>, Sinan Kaya <okaya@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+References: <20210804204201.1282-1-ameynarkhede03@gmail.com>
+ <20210804204201.1282-6-ameynarkhede03@gmail.com>
+From:   Shanker R Donthineni <sdonthineni@nvidia.com>
+Message-ID: <81810acc-b3b6-1ca7-4f03-aa3c33b80b40@nvidia.com>
+Date:   Wed, 4 Aug 2021 22:55:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210804204201.1282-6-ameynarkhede03@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e84671f2-f4d2-4c47-af8a-08d957c4e9dd
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3583:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB3583A5A7D51FDEA7FC1DC483C7F29@MN2PR12MB3583.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:136;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /ZhBkOpvEhMmjxll6lKeHcut8bU+hrCWFIk7htgjAiaJY5WHUd4DDK4uIsm7fRP7IzkLUMrghOfJuIaAy9jTgZezlRg/Kw51ADs3ifkB/xlv92SwBprwYImpuMc6SsBTmXsBVznllGi7ftS7emMQyAZHsI254wbYFg45WZoRnmm+plru4aw3oFaQtDn2Lo3tIlqAC63LV5hBsZgEyuz/I3VhXZ+BqDpI5ptFJm2FLE6vxAKF9rXmlz4DRuOar0B/9j+KEDvPuMb3kPSnbrfSLU81q8ZWrkPO+FruS/goM3wm3pDC2FoSrFRYuycs3DUQ8sGxR8mpd7cwRcFew/eXX5HAdu6Y3eTC9qiyczaRuFyj04faw3CEuGDCFNAFZbxxRurLwbZBAI7s/xbyZrbav0eQneg3HzSyscOKesAEAJ9vAMA8ohd6J0uQwJm0Oxc2PMkow5aeNsajTQEcICJhbqxcusjkOOHYkThxim7/GTkR31I3XWMGja808MEgjRWFhDtOb+/5K7M6QgsB0TOgE2Btzab81Vv3vGcbW97ysMk5+mWaYO3luMtBcDw0Kvb4ldsC2MVsj/GFrPQkQKqzQ2zqeqsE3YrsNtidNdiIMtWFVYNnSXUk4/vUReHtzugF6lRQejp3FaALRnmhv9yDBvb4eYorrnZwJL7Lcnp+TRFgWAUkZu3uYp7fNU7dBQY7T3F6RShVZiYHPR9d28VfcDK3GbnRCZHl+wG1G92nDT8=
+X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(39860400002)(376002)(46966006)(36840700001)(26005)(36906005)(8676002)(53546011)(4326008)(31696002)(47076005)(82740400003)(36860700001)(2906002)(316002)(186003)(336012)(8936002)(16576012)(426003)(110136005)(70586007)(86362001)(54906003)(70206006)(2616005)(7416002)(83380400001)(5660300002)(7636003)(82310400003)(36756003)(31686004)(478600001)(16526019)(356005)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2021 03:55:49.6803
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e84671f2-f4d2-4c47-af8a-08d957c4e9dd
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT051.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3583
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-04, Daniel Thompson <daniel.thompson@linaro.org> wrote:
-> On Wed, Aug 04, 2021 at 02:12:22PM +0200, Petr Mladek wrote:
->> On Wed 2021-08-04 12:31:59, Daniel Thompson wrote:
->> > On Tue, Aug 03, 2021 at 05:36:32PM +0206, John Ogness wrote:
->> > > On 2021-08-03, Daniel Thompson <daniel.thompson@linaro.org> wrote:
->> > > > On Tue, Aug 03, 2021 at 03:18:54PM +0206, John Ogness wrote:
->> > > >> kgdb makes use of its own cpulock (@dbg_master_lock, @kgdb_active)
->> > > >> during cpu roundup. This will conflict with the printk cpulock.
->> > > >
->> > > > When the full vision is realized what will be the purpose of the printk
->> > > > cpulock?
->> > > >
->> > > > I'm asking largely because it's current role is actively unhelpful
->> > > > w.r.t. kdb. It is possible that cautious use of in_dbg_master() might
->> > > > be a better (and safer) solution. However it sounds like there is a
->> > > > larger role planned for the printk cpulock...
->> > > 
->> > > The printk cpulock is used as a synchronization mechanism for
->> > > implementing atomic consoles, which need to be able to safely interrupt
->> > > the console write() activity at any time and immediately continue with
->> > > their own printing. The ultimate goal is to move all console printing
->> > > into per-console dedicated kthreads, so the primary function of the
->> > > printk cpulock is really to immediately _stop_ the CPU/kthread
->> > > performing write() in order to allow write_atomic() (from any context on
->> > > any CPU) to safely and reliably take over.
->> > 
->> > I see.
->> > 
->> > Is there any mileage in allowing in_dbg_master() to suppress taking
->> > the console lock?
->> > 
->> > There's a couple of reasons to worry about the current approach.
->> > 
->> > The first is that we don't want this code to trigger in the case when
->> > kgdb is enabled and kdb is not since it is only kdb (a self-hosted
->> > debugger) than uses the consoles. This case is relatively trivial to
->> > address since we can rename it kdb_roundup_delay() and alter the way it
->> > is conditionally compiled.
+Hi Amey,
 
-Well, _I_ want this code to trigger even without kdb. The printk cpulock
-is meant to be the innermost locking for the entire kernel. No code is
-allowed to block/spin on any kind of lock if holding the printk
-cpulock. This is the only way to guarantee the functionality of the
-atomic consoles.
-
-For example, if the kernel were to crash while inside kgdb code, we want
-to see the backtrace.
-
-Since kgdb _does_ take locks (spinning on @dbg_slave_lock during roundup
-and the master's own cpu lock as a retry loop on @dbg_master_lock),
-clearly it is not allowed to hold the printk cpulock. The simplest
-solution I could find was just to make sure kgdb_cpu_enter() isn't
-called while holding the printk cpulock.
-
->> > The second is more of a problem however. kdb will only call into the
->> > console code from the debug master. By default this is the CPU that
->> > takes the debug trap so initial prints will work fine. However it is
->> > possible to switch to a different master (so we can read per-CPU
->> > registers and things like that). This will result in one of the CPUs
->> > that did the IPI round up calling into console code and this is unsafe
->> > in that instance.
-
-It is only unsafe if a CPU enters "kgdb/kdb context" while holding the
-printk cpulock. That is what I want to prevent.
-
->> > There are a couple of tricks we could adopt to work around this but
->> > given the slightly odd calling context for kdb (all CPUs quiesced, no
->> > log interleaving possible) it sounds like it would remain safe to
->> > bypass the lock if in_dbg_master() is true.
->> > 
->> > Bypassing an inconvenient lock might sound icky but:
->> > 
->> > 1. If the lock is not owned by any CPU then what kdb will do is safe.
-
-No. The printk cpulock exists for low-level synchronization. The atomic
-consoles need this synchronization. (For example, the 8250 needs this
-for correct tracking of its interrupt register, even for
-serial8250_put_poll_char().)
-
->> > 2. If the lock is owned by any CPU then we have quiesced it anyway
->> >    and this makes is safe for the owning CPU to share its ownership
->> >    (since it isn't much different to recursive acquisition on a single
->> >    CPU)
-
-Quiescing the printk cpulock is not permitted.
-
-Just because it is kdb, does not mean that the atomic consoles were
-interrupted in a convenient place. The whole purpose of the atomic
-consoles is so that we can have guaranteed console output from _any_
-context and _any_ line of code in the kernel.
-
->> I think about the following:
->> 
->> void kgdb_roundup_cpus(void)
->> {
->> 	__printk_cpu_lock();
->> 	__kgdb_roundup_cpus();
->> }
->> 
->> , where __printk_cpu_lock() waits/takes printk_cpu_lock()
->> 	__kgdb_roundup_cpus() is the original kgdb_roundup_cpus();
->> 
->> 
->> The idea is that kgdb_roundup_cpus() caller takes the printk_cpu lock.
->> The owner will be well defined.
->> 
->> As a result any other CPU will not be able to take the printk_cpu lock
->> as long as it is owned by the kgdb lock. But as you say, kgdb will
->> make sure that everything is serialized at this stage. So that
->> the original raw_printk_cpu_lock_irqsave() might just disable
->> IRQs when called under debugger.
->> 
->> Does it make any sense?
+On 8/4/21 3:41 PM, Amey Narkhede wrote:
+> External email: Use caution opening links or attachments
 >
-> Yes but I think it is still has problems.
 >
-> Primarily is doesn't solve the issue I raised. It would still be unsafe
-> to change debug master: we can guarantee the initial master owns the
-> lock but if it has been multiply acquired we cannot transfer ownership
-> when we want to change master.
+> Add reset_method sysfs attribute to enable user to query and set user
+> preferred device reset methods and their ordering.
 >
-> Additionally it will delay the round up of cores that do not own the
-> lock. The quiescing is never atomic and the operator needs to know
-> that but the longer CPUs are allows to execute for the more confusing
-> things can become for the operator.
+> Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-pci |  19 ++++
+>  drivers/pci/pci-sysfs.c                 |   1 +
+>  drivers/pci/pci.c                       | 116 ++++++++++++++++++++++++
+>  drivers/pci/pci.h                       |   2 +
+>  4 files changed, 138 insertions(+)
 >
-> Finally on machines without an NMI this could cause trouble with the
-> interrupt disable in raw_printk_cpu_lock_irqsave() (or any outer level
-> interrupt disable). If the master get the lock then the other processes
-> will become incapable of being rounded up if they are waiting for the
-> printk lock).
-
-I am also not happy with such a solution. Aside from Daniel's comments,
-it also violates the basic principle of the printk cpulock by allowing
-further locking while holding the print cpulock. That is a recipe for
-deadlock.
-
->> I have to say that it is a bit hairy. But it looks slightly better
->> than the delayed/repeated IPI proposed by this patch.
+> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> index ef00fada2efb..ef66b62bf025 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-pci
+> +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> @@ -121,6 +121,25 @@ Description:
+>                 child buses, and re-discover devices removed earlier
+>                 from this part of the device tree.
 >
-> I'd like to reserve judgement for now which one is least worst...
-> largely because if the purpose of the lock simply to prevent interleaving
-> of console output then the debugger quiescing code should already have
-> this covered.
+> +What:          /sys/bus/pci/devices/.../reset_method
+> +Date:          March 2021
+> +Contact:       Amey Narkhede <ameynarkhede03@gmail.com>
+> +Description:
+> +               Some devices allow an individual function to be reset
+> +               without affecting other functions in the same slot.
+> +
+> +               For devices that have this support, a file named
+> +               reset_method will be present in sysfs. Initially reading
+> +               this file will give names of the device supported reset
+> +               methods and their ordering. After write, this file will
+> +               give names and ordering of currently enabled reset methods.
+> +               Writing the name or space separated list of names of any of
+> +               the device supported reset methods to this file will set
+> +               the reset methods and their ordering to be used when
+> +               resetting the device. Writing empty string to this file
+> +               will disable ability to reset the device and writing
+> +               "default" will return to the original value.
+> +
+>  What:          /sys/bus/pci/devices/.../reset
+>  Date:          July 2009
+>  Contact:       Michael S. Tsirkin <mst@redhat.com>
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index 316f70c3e3b4..54ee7193b463 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -1491,6 +1491,7 @@ const struct attribute_group *pci_dev_groups[] = {
+>         &pci_dev_config_attr_group,
+>         &pci_dev_rom_attr_group,
+>         &pci_dev_reset_attr_group,
+> +       &pci_dev_reset_method_attr_group,
+>         &pci_dev_vpd_attr_group,
+>  #ifdef CONFIG_DMI
+>         &pci_dev_smbios_attr_group,
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 8a516e9ca316..994426b2b502 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -5132,6 +5132,122 @@ static const struct pci_reset_fn_method pci_reset_fn_methods[] = {
+>         { pci_reset_bus_function, .name = "bus" },
+>  };
 >
-> It leaves me wondering if a change like the one below is sufficient
-> (based on code without John's patches but hopefully still clear enough).
-> I've given the new code it's own branch which it doesn't, strictly
-> speaking, need but it is easier to comment this way... and perhaps also
-> just a little easier for people who have not set CONFIG_KGDB to
-> ignore ;-).
+> +static ssize_t reset_method_show(struct device *dev,
+> +                                struct device_attribute *attr, char *buf)
+> +{
+> +       struct pci_dev *pdev = to_pci_dev(dev);
+> +       ssize_t len = 0;
+> +       int i, m;
+> +
+> +       for (i = 0; i < PCI_NUM_RESET_METHODS; i++) {
+> +               m = pdev->reset_methods[i];
+> +               if (!m)
+> +                       break;
+> +
+> +               len += sysfs_emit_at(buf, len, "%s%s", len ? " " : "",
+> +                                    pci_reset_fn_methods[m].name);
+> +       }
+> +
+> +       if (len)
+> +               len += sysfs_emit_at(buf, len, "\n");
+> +
+> +       return len;
+> +}
+> +
+> +static ssize_t reset_method_store(struct device *dev,
+> +                                 struct device_attribute *attr,
+> +                                 const char *buf, size_t count)
+> +{
+> +       struct pci_dev *pdev = to_pci_dev(dev);
+> +       int i, m, n = 0;
+> +       char *name, *options = NULL;
+> +
+> +       if (count >= (PAGE_SIZE - 1))
+> +               return -EINVAL;
+> +
+> +       if (sysfs_streq(buf, "")) {
+> +               goto free_and_exit;
+> +       }
+> +
+> +       if (sysfs_streq(buf, "default")) {
+> +               pci_init_reset_methods(pdev);
+> +               return count;
+> +       }
+> +
+> +       options = kstrndup(buf, count, GFP_KERNEL);
+> +       if (!options)
+> +               return -ENOMEM;
+> +
+> +       while ((name = strsep(&options, " ")) != NULL) {
+> +               if (sysfs_streq(name, ""))
+> +                       continue;
+> +
+> +               name = strim(name);
+> +
+> +               for (m = 1; m < PCI_NUM_RESET_METHODS; m++) {
+> +                       if (sysfs_streq(name, pci_reset_fn_methods[m].name))
+> +                               break;
+> +               }
+> +
+> +               if (m == PCI_NUM_RESET_METHODS) {
+> +                       pci_warn(pdev, "Skip invalid reset method '%s'", name);
+> +                       continue;
+> +               }
+> +
+> +               for (i = 0; i < n; i++) {
+> +                       if (pdev->reset_methods[i] == m)
+> +                               break;
+> +               }
+> +
+> +               if (i < n)
+> +                       continue;
+> +
+> +               if (pci_reset_fn_methods[m].reset_fn(pdev, 1)) {
+> +                       pci_warn(pdev, "Unsupported reset method '%s'", name);
+> +                       continue;
+> +               }
+> +
+> +               pdev->reset_methods[n++] = m;
+> +               BUG_ON(n == PCI_NUM_RESET_METHODS);
+> +       }
+> +
+> +free_and_exit:
+> +       kfree(options);
+No need to initialize 'options' to NULL if you move label 'free_and_exit) to after kfree().
+and also improves the code readability. 
+
+> +       /* All the reset methods are invalid */
+> +       if (n == 0 && m == PCI_NUM_RESET_METHODS)
+> +               return -EINVAL;
+
+Coding bug, uninitialized variable 'm' reference. It contains garbage value
+if the user writes NULL string to 'reset_method'. Bjorn also suggested in v10
+discard junk/invalid reset methods and return OK to user in case of errors.
+
+Either remove the above two lines or initialize variable 'm' to zero at the
+beginning the function to fix the issue.
+
+> +       pdev->reset_methods[n] = 0;
+> +       if (pdev->reset_methods[0] == 0) {
+> +               pci_warn(pdev, "All device reset methods disabled by user");
+> +       } else if ((pdev->reset_methods[0] != 1) &&
+> +                  !pci_reset_fn_methods[1].reset_fn(pdev, 1)) {
+> +               pci_warn(pdev, "Device specific reset disabled/de-prioritized by user");
+> +       }
+> +       return count;
+> +}
 >
-> ~~~
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 142a58d124d9..41a7e103bb66 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -3599,6 +3599,18 @@ int __printk_cpu_trylock(void)
->                 /* This CPU is already the owner. */
->                 atomic_inc(&printk_cpulock_nested);
->                 return 1;
-> +       } else if (in_dbg_master()) {
-> +               /*
-> +                * If we are executing as the primary CPU and with the debugger
-> +                * active than all other CPUs in the system are quiesced by
-> +                * the time kdb winds up calling this function. To execute this
-> +                * branch then the lock must be owned by one of the quiesced CPUs.
-> +                * Happily, because it is quiesced and cannot release it, it is
-> +                * safe for us to allow the lock to be taken from a different CPU!
-> +                * The lock will be released prior to resuming the real owner.
-> +                */
-> +               atomic_inc(&printk_cpulock_nested);
-> +               return 1;
->         }
->  
->         return 0;
-> ~~~
 
-Being in kgdb/kdb context is similar to being in atomic console
-context. (Of course, they are both using cpu locks.) But the contexts
-are not the same. It is incorrect to handle them as the same.
-
-We need to decide who is inside of who. Either printk is the innermost,
-in which case the printk cpulock cannot be held when calling
-kgdb_cpu_enter(). Or kgdb is the innermost, meaning that the atomic
-consoles are no longer atomic/reliable while in kgdb.
-
-I prefer and am pushing for the first, but am willing to accept the
-second (i.e. that kgdb is the innermost function of the kernel).
-
-> PS In the interested of full disclosure there is a special case
->    in the debugger to allow it to try to cope if it fails to
->    quiesce a CPU and I deliberately omitted this from the long
->    comment above. That special case is expected to be unstable
->    but since the alternative is likely to be a permanent deadlock
->    without any indication of why we choose to take the risk of
->    continuing. Personally I don't recommend reasoning about
->    console safety based on this emergency case hence omitting the
->    comment.
-
-John Ogness
