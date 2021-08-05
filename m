@@ -2,208 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913463E1641
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD09E3E1695
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241828AbhHEOBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:01:08 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12732 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238069AbhHEOBH (ORCPT
+        id S241935AbhHEOLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 10:11:32 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:53633 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241767AbhHEOLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:01:07 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 175DZAVU064983;
-        Thu, 5 Aug 2021 10:00:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=wouwzQZTCNlnpx1DBk0AV8sywz7PyVmLvpTAhdYJBxY=;
- b=eZvtyKD7C82YMCP1szP4BSGOtS3u6aONh02QNEaBc8W2rAZ3iRRBZtCEDZEoY9u1tu3B
- UIwVvNjDS2/QXYB3wYL9oBFNKXEA9xTdc0kNUTIahpySOgMmHjbfFDo53fwxm8nIL8cQ
- uE+2iRT1ZhhNehcVshwaX4lSLELzTvdKF6kcOqck+DlF5MyKyvczMrsJhI3mc4nWh2wo
- 3i6I2qbQwYjhvrLCeHt0MW3uG/rBtnUlvCLFa/ae0eUUqVNyr3v11MD9dug+ZfjItLcG
- G5OUepNpaxnVsb5wBlTvkJcMyrw1WgAAL5RtPJIDH0+XEjeJBBpylN8AoeF7sU6b6OQ3 XA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a897nn8dg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Aug 2021 10:00:31 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 175DnlYK136073;
-        Thu, 5 Aug 2021 10:00:30 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a897nn8b6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Aug 2021 10:00:30 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 175Dwrtt024086;
-        Thu, 5 Aug 2021 14:00:27 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma02fra.de.ibm.com with ESMTP id 3a4x58t51y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 05 Aug 2021 14:00:27 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 175DvQvg31588654
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 5 Aug 2021 13:57:26 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 45C1FAE05A;
-        Thu,  5 Aug 2021 14:00:24 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 349D1AE0A6;
-        Thu,  5 Aug 2021 14:00:19 +0000 (GMT)
-Received: from sig-9-65-205-127.ibm.com (unknown [9.65.205.127])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  5 Aug 2021 14:00:18 +0000 (GMT)
-Message-ID: <456fea5f63f14a342791388e6e8d34605ef13eb5.camel@linux.ibm.com>
-Subject: Re: [PATCH RFC v2 02/12] KEYS: CA link restriction
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org, dhowells@redhat.com,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jarkko@kernel.org, jmorris@namei.org,
-        serge@hallyn.com
-Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
-        torvalds@linux-foundation.org, scott.branden@broadcom.com,
-        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
-        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        glin@suse.com, konrad.wilk@oracle.com
-Date:   Thu, 05 Aug 2021 10:00:18 -0400
-In-Reply-To: <20210726171319.3133879-3-eric.snowberg@oracle.com>
-References: <20210726171319.3133879-1-eric.snowberg@oracle.com>
-         <20210726171319.3133879-3-eric.snowberg@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: H3nh4gAsq6mDfpVhyljeEIsVgs87D9JY
-X-Proofpoint-GUID: sHb-rYluSo52uSCH5PQ8YjaifqQNNbBa
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-05_04:2021-08-05,2021-08-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 mlxscore=0 spamscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=999 phishscore=0 suspectscore=0 bulkscore=0
- adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108050082
+        Thu, 5 Aug 2021 10:11:24 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MvaO8-1n2mGv19JG-00sdeU; Thu, 05 Aug 2021 16:02:39 +0200
+Received: by mail-wr1-f50.google.com with SMTP id n12so6726844wrr.2;
+        Thu, 05 Aug 2021 07:02:39 -0700 (PDT)
+X-Gm-Message-State: AOAM532EFEW8QRavdIayHs5iFht0Ud02FL+B2YTu5izqZFhr6JAvdq2z
+        niLS9lPa+YzKGDTMTY6DUEw6ZtSsIR1FecvKApQ=
+X-Google-Smtp-Source: ABdhPJx9IZJbvIVNFqSD8EaAMHGmqYjDHcu2Q9CDLbmcwVFlS1Z+L6F23N3gLM/O9axRTpzdv9Z96Atgun6IsSBoIpw=
+X-Received: by 2002:adf:f446:: with SMTP id f6mr5663745wrp.361.1628172158975;
+ Thu, 05 Aug 2021 07:02:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210805133213.700-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210805133213.700-1-lukas.bulwahn@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 5 Aug 2021 16:02:22 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3aNuxaEtAiewd+Wjc8hKtca0NrcV2kykkNC-qKT_HhzQ@mail.gmail.com>
+Message-ID: <CAK8P3a3aNuxaEtAiewd+Wjc8hKtca0NrcV2kykkNC-qKT_HhzQ@mail.gmail.com>
+Subject: Re: [PATCH] rbtree: remove unneeded explicit alignment in struct rb_node
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Michel Lespinasse <michel@lespinasse.org>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mete Polat <metepolat2000@gmail.com>,
+        Jesper Nilsson <jesper@jni.nu>, Arnd Bergmann <arnd@arndb.de>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:7XNpPq5iYsHfDhqRQDzw2R1dBZxBT+c/X9okG2p8NNHxdAMg8vo
+ GwdMHBo5KUeykq/QODG1hzrZIn44/r7Sr9liqRpP6NE2yq+xPoV5OIp3uI1UVnGePzc69Qr
+ z0huAlc1HHm0zTNKmqv43SXpm/rdR/9NC8ligtIjfSyqoJSbvnpmJFNeC9Gb1zZw9HgreMD
+ cVm1tS9IARBJKKOkUHiKQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hFdSdPkGpOc=:MOYjvq2WcPq0Hu0VBhZCRC
+ GcJOFqDGPVo3TcljuB4FzFtjqtTQ4V3+sRX4Tj9A2V2mzw1p7J5e/K8tGtV3G/56e6ua/2u5S
+ D2QM/eEtc08cJvygTEZeYK6tGrYTvwENuaF4tkdxG73/pNysKIjze3O5PXik3PB00drPuJ0K+
+ o+r8r6vz2JrgWkWJN74/XP8u/m9IU144ZRCp8fgzp5yBPxTpWU3IMqGpsuVSOka0QfKkuB2ci
+ /k+uwXq01WIBe+BZP6EZZpQy2uW3OLpiuo5ve9QpDatV5T8EtUh4JXQlky2+CrqugrpcCBqPr
+ gX+gVHGz8MesxTTOmByxwT0uR2AgfP7w//EFQusOUAjpPFA5sAKT/oYtLVWQKFi8bNNjRMoej
+ hOVat2vo0Yt7qBQVp3J+lFgpH23TL/BoGmX9cmJZuRiZE4KOeALDwfCBAtAD0uoBZxfgcXejM
+ JeNJPivLFUTlGAF3dPSvXWMn92AX0D+cj4a8jvvU7w16AdrNDoEqzsNTccLWPXsKQq6m/ojYa
+ D6mZ2nfZyGddBOKxv30xVsWxrE7wl3kfUK18DqBuOvmL60gDRVTjGU3Kf6C4rX5IQuNF+63ft
+ eeF3Y6yDWzJ/G74aMLyJcvvYJktFKvk2/fq4Kk83dYifGtUZhoaQEkZ1cDTMcz/vZqghGhEti
+ 7mPbMCjmjX+QXRXa/6uFmarXFs0jlpfqfGMSgOOoWOIg0XPkIFG6etOv+R+vKD2BsbR4DvdlU
+ sM9EI2ikiumOq2auQzzgQtd8QF1FRP8GKaq0/AkbKDuYa9grfJZ9Kq+bx2uN09b2ixuzxGguZ
+ aDSsCahx8ZC/LmXEOglPBfNSiRRLdSOayPBTJobkQCZclfuk+31R8v7lPTrYvXzW/lhgF9Q
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-07-26 at 13:13 -0400, Eric Snowberg wrote:
-> Add a new link restriction.  Restrict the addition of keys in a keyring
-> based on the key to be added being a CA (self-signed) or by being
-> vouched for by a key in either the built-in or the secondary trusted
-> keyrings.
-> 
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+On Thu, Aug 5, 2021 at 3:32 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> Commit e977145aeaad ("[RBTREE] Add explicit alignment to sizeof(long) for
+> struct rb_node.") adds an explicit alignment to the struct rb_node due to
+> some speciality of the CRIS architecture.
+>
+> The support for the CRIS architecture was removed with commit c690eddc2f3b
+> ("CRIS: Drop support for the CRIS port")
+>
+> So, remove this now unneeded explicit alignment in struct rb_node as well.
+>
+> This basically reverts commit e977145aeaad ("[RBTREE] Add explicit
+> alignment to sizeof(long) for struct rb_node.").
+>
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: Mete Polat <metepolat2000@gmail.com>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> applies cleanly on next-20210804, but only x86 compile-checked.
+>
+> Michel, Davidlohr, Jesper, David, please ack.
+>
+> Mete, you might want to re-run your RBT test suite for this change.
+>
+> Andrew, once acked, please pick this minor cleanup into your tree.
 
-As discussed, please remove "or by being vouched for by a key in
-either the built-in or the secondary trusted keyrings."
+Do you know why it needed the extra alignment on cris at the time?
 
-If these keys were to be loaded onto a keyring other than the platform
-keyring, they should be loaded onto the secondary keyring.  The
-secondary restriction currently allows certificates signed by keys on
-either the builtin or the secondary keyring, to be loaded onto the
-secondary keyring.   A new restriction would also allow certificates
-signed by keys on the ".mok" keyring.
+The revert would appear to change the alignment to 16 bits instead
+of 32 bits on m68k as well (not 8 bits as on cris), but I don't know if that
+can cause problems there.
 
-> +/**
-> + * restrict_link_by_ca - Restrict additions to a ring of public keys
-> + * based on it being a CA
-> + * @dest_keyring: Keyring being linked to.
-> + * @type: The type of key being added.
-> + * @payload: The payload of the new key.
-> + * @trusted: A key or ring of keys that can be used to vouch for the new cert.
-> + *
-> + * Check if the new certificate is a CA or if they key can be vouched for
-> + * by keys already linked in the destination keyring or the trusted
-> + * keyring.  If one of those is the signing key or it is self signed, then
-> + * mark the new certificate as being ok to link.
-> + *
-> + * Returns 0 if the new certificate was accepted, -ENOKEY if we could not find
-> + * a matching parent certificate in the trusted list.  -ENOPKG if the signature
-> + * uses unsupported crypto, or some other error if there is a matching
-> + * certificate  but the signature check cannot be performed.
-> + */
-
-Please update the function description as discussed, removing "or if they
-key can be vouched for by keys already linked in the destination
-keyring or the trusted keyring."
-
-The kernel doc "Brief description of function" should not wrap.  The
-variable definition shouldn't be suffixed with a period.  Please refer
-to Documentation/doc-guide/kernel-doc.rst.
-
-> +int restrict_link_by_ca(struct key *dest_keyring,
-
-The UEFI db CA keys should only be loaded on boot.  Should this be
-annotated as __init?
-
-> +			const struct key_type *type,
-> +			const union key_payload *payload,
-> +			struct key *trust_keyring)
-> +{
-> +	const struct public_key_signature *sig;
-> +	const struct public_key *pkey;
-> +	struct key *key;
-> +	int ret;
-> +
-> +	if (type != &key_type_asymmetric)
-> +		return -EOPNOTSUPP;
-> +
-> +	sig = payload->data[asym_auth];
-> +	if (!sig)
-> +		return -ENOPKG;
-> +
-> +	if (!sig->auth_ids[0] && !sig->auth_ids[1])
-> +		return -ENOKEY;
-> +
-> +	pkey = payload->data[asym_crypto];
-> +	if (!pkey)
-> +		return -ENOPKG;
-> +
-> +	ret = public_key_verify_signature(pkey, sig);
-> +	if (!ret)
-> +		return 0;
-> +
-> +	if (!trust_keyring)
-> +		return -ENOKEY;
-> +
-> +	key = find_asymmetric_key(trust_keyring,
-> +				  sig->auth_ids[0], sig->auth_ids[1],
-> +				  false);
-> +	if (IS_ERR(key))
-> +		return -ENOKEY;
-> +
-> +	ret = verify_signature(key, sig);
-> +	key_put(key);
-> +	return ret;
-> +}
-> +
->  static bool match_either_id(const struct asymmetric_key_ids *pair,
->  			    const struct asymmetric_key_id *single)
->  {
-
-
-> +extern int restrict_link_by_system_trusted_or_ca(
-> +	struct key *dest_keyring,
-> +	const struct key_type *type,
-> +	const union key_payload *payload,
-> +	struct key *restrict_key);
-
-After the discussed change, this shouldn't be needed.
-
-thanks,
-
-Mimi
-
-> +
->  #ifdef CONFIG_SECONDARY_TRUSTED_KEYRING
->  extern int restrict_link_by_builtin_and_secondary_trusted(
->  	struct key *keyring,
-
-
+        Arnd
