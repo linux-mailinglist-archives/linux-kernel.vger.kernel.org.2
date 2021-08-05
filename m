@@ -2,151 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8617E3E0EF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B4AA3E0EFD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 09:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237800AbhHEHNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 03:13:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59651 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230037AbhHEHNF (ORCPT
+        id S237712AbhHEHRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 03:17:33 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:39750
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232009AbhHEHRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 03:13:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628147571;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n0VxlG+I9DtspBlzYcgwvjsV5zD4hYtPEcF5uDUSb8k=;
-        b=WnKShFfOo6rJV5EhQ9lb/uy7ktJQ7UGiYB787gx3g1QbQjDkMN2WZaPNV3i6eIIRfd7lWW
-        xpPS6on/6Pslm66W77lCqGMyNUHz/W8xC7Pt8oXhPyihmDUVYm0crXhsdApFNo91BKeQti
-        nD3m68uyx3SX8yz1rQkutZ6tX+65Omw=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-569-JmYAQgcHO8i4yI-utcAZbA-1; Thu, 05 Aug 2021 03:12:50 -0400
-X-MC-Unique: JmYAQgcHO8i4yI-utcAZbA-1
-Received: by mail-pj1-f70.google.com with SMTP id r13-20020a17090a4dcdb0290176dc35536aso4424576pjl.8
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 00:12:49 -0700 (PDT)
+        Thu, 5 Aug 2021 03:17:32 -0400
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id DC79A40670
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 07:17:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628147837;
+        bh=6jE8SFRe7ptXY9h+Q9iewRO8CdNFo9CcZ4yJYWrZSWc=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=X8me6tE4lw5QmZkYAWw87/0jieDfkIdskKwB0YU2RfwGKgXXqTZJIuemK/wZpC543
+         XVtoiXvK94yHZqxU4E2BXK7cOMU9A23pzeELv3elWKjGK+6AhE9KDbbWftSpTMl5pA
+         lVvKYhcBknN+jOrTzeNKWd/0ecP5SWDNkl+upEioIUAmS205wgzBrdfhO6iPOutyDW
+         Y5BgGQSJfoZZpipnu5JjA3/O20DCR4/9HDOY23hn4DXHYtqskD3noQTNSCKoJK6A2R
+         QfB8e16w7ww2y3u9GCSpPP7nt6rFUQHMQb3MzMGVrXjachoHlbItsaWwLyUUYWH6o6
+         drTimwEheaPeA==
+Received: by mail-ej1-f72.google.com with SMTP id k22-20020a1709061596b02905a370b2f477so1702396ejd.17
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 00:17:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=n0VxlG+I9DtspBlzYcgwvjsV5zD4hYtPEcF5uDUSb8k=;
-        b=VBcUBSudKBG6S+QliSUrb5i8WODvZj7ttV7YA5tTX6TP4byckpaeECLEEvBWCKl159
-         HdUVKBhOKYVf32LcXBxH793uFuTm8KSpFuKCQzZdzRh4LQTsFrKL5y6jCMkfrodLgMUw
-         cQUmG47CaoL7Q2GOrpSVfa9VajGI2AoGkhZjOJbNzn0GhgZ8+mmCQwC56IY1zStUoPhp
-         DCOz2gUlLuOX5vgpS6qQ2SE1sSaNPBO8YC14OVoiLtTWeP//hWbqpzv4aeUUC3va4gzk
-         CcjU9j4yF30HslfEsCW5vg9xvQ8oQ3tm8I98tGWYU5hfMOaTbnD0roOXg30Gv+kEkN0t
-         B97w==
-X-Gm-Message-State: AOAM531ar4TvYYcTR2WUmvd2XAYvKJvAZsQDV893iJL5T+TvBD+KlyIB
-        BICeVJZItQK/swU/MyUbCXmZO1F0rb4dWadI+qKr3F4TvjldvhbV/Y9UoXZcGYFTfpFovQBqXhe
-        LDsVynmVHbhueDLemCTpyf6JWZ4XljLwEGG4Bj+/UKROIJteIg7gfRsWicGOJVS6PcF398Vb1hy
-        Hq
-X-Received: by 2002:a63:190b:: with SMTP id z11mr654577pgl.320.1628147568844;
-        Thu, 05 Aug 2021 00:12:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxUfHRxG/dXx9YH24cRrMopBNWNIkigiB28PNmXNoiyFNr8yDY8zBJY64Y2tGLqmxO/3wI2WA==
-X-Received: by 2002:a63:190b:: with SMTP id z11mr654537pgl.320.1628147568588;
-        Thu, 05 Aug 2021 00:12:48 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id k8sm5028086pfu.116.2021.08.05.00.12.40
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6jE8SFRe7ptXY9h+Q9iewRO8CdNFo9CcZ4yJYWrZSWc=;
+        b=lhguZVlSDKRpblrcYUmpUXvKv2z38Lcg0l/tX7bgJyCy+9mY6BltnM9tTQelddaRum
+         GYlOt7LyRX+E9NrymJix4uaS1pLzuDqbIJhdUrSRHpJBG5SOjnpPQows1cEx1RXPAgyg
+         qrHld6TyfJaYtJJH6/e4ZM9wL2LTwRnc+6jdouzXCJvq6M0W0irAnw3PGskfuEwO96FX
+         iWiDcfzvSse+3Npm5uDlQpGeh090NITB1myituLYTm5NRNL66/8+7iRcd7BKG7SywWJE
+         fT6yDWxDR9CSz+OA4LlV3ofmDNX15vicMGoasRRsSWhpHnERHAdUX8MB6WPRgjjTC1G+
+         prwg==
+X-Gm-Message-State: AOAM533jad0KvJz/yuDoalhelNot6p9X0MaGHVH8gTtuppkUA/648rWT
+        sy4JoZ34i0gpEynpm0JC/1LgIIRaRO+2B4ZmAr/RJzaRhZ67LeUaiZLy+bkBec0yqVDgIJAQJ07
+        nNP2DF6Q6CmakBZY1RgEwPQDNyLZz9ZHiygPqoKnDoQ==
+X-Received: by 2002:a17:906:814:: with SMTP id e20mr3376562ejd.497.1628147837579;
+        Thu, 05 Aug 2021 00:17:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwmqkhGtSvkGYoSPphNi/E1sqEExfzHFCc595MmtVHJLYYLMLjFqUPCQbwvvoYcfaH54ftfTQ==
+X-Received: by 2002:a17:906:814:: with SMTP id e20mr3376533ejd.497.1628147837423;
+        Thu, 05 Aug 2021 00:17:17 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id g10sm1391412ejj.44.2021.08.05.00.17.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Aug 2021 00:12:48 -0700 (PDT)
-Subject: Re: [PATCH v10 10/17] virtio: Handle device reset failure in
- register_virtio_device()
-To:     Yongji Xie <xieyongji@bytedance.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        He Zhe <zhe.he@windriver.com>,
-        Liu Xiaodong <xiaodong.liu@intel.com>,
-        Joe Perches <joe@perches.com>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210729073503.187-1-xieyongji@bytedance.com>
- <20210729073503.187-11-xieyongji@bytedance.com>
- <6bb6c689-e6dd-cfa2-094b-a0ca4258aded@redhat.com>
- <CACycT3v7BHxYY0OFYJRFU41Bz1=_v8iMRwzYKgX6cJM-SiNH+A@mail.gmail.com>
- <fdcb0224-11f9-caf2-a44e-e6406087fd50@redhat.com>
- <CACycT3v0EQVrv_A1K1bKmiYu0q5aFE=t+0yRaWKC7T3_H3oB-Q@mail.gmail.com>
- <bd48ec76-0d5c-2efb-8406-894286b28f6b@redhat.com>
- <CACycT3tUwJXUV24PK7OvzPrHYYeQ5Q3qUW_vbuFMjwig0dBw2g@mail.gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <ae529e8a-67a2-b235-1404-4623d57031d6@redhat.com>
-Date:   Thu, 5 Aug 2021 15:12:39 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Thu, 05 Aug 2021 00:17:16 -0700 (PDT)
+Subject: Re: [PATCH 12/12] arm64: dts: exynos: Add Exynos850 SoC support
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-13-semen.protsenko@linaro.org>
+ <15871f8ced3c757fad1ab3b6e62c4e64@misterjones.org>
+ <CAPLW+4=v4bDcuxGVqs06mobGj34At4cD+vg48b4dPujarS07Tg@mail.gmail.com>
+ <bf21badb-804f-45f0-c02b-80ff57ab9931@canonical.com>
+ <CAPLW+4nY=hozOR+B_0sPZODrk9PXaXg+NB-9pVhDbAjEy7yjhg@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <e264f96e-a230-456b-08a5-dbe3a31bdb43@canonical.com>
+Date:   Thu, 5 Aug 2021 09:17:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CACycT3tUwJXUV24PK7OvzPrHYYeQ5Q3qUW_vbuFMjwig0dBw2g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPLW+4nY=hozOR+B_0sPZODrk9PXaXg+NB-9pVhDbAjEy7yjhg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/8/4 下午5:07, Yongji Xie 写道:
-> On Wed, Aug 4, 2021 at 4:54 PM Jason Wang <jasowang@redhat.com> wrote:
+On 04/08/2021 23:30, Sam Protsenko wrote:
+>>>
+>>> Nice catch! Actually there is an error (typo?) in SoC's TRM, saying
+>>> that Virtual Interface Control Register starts at 0x3000 offset (from
+>>> 0x12a00000), where it obviously should be 0x4000, that's probably
+>>> where this dts error originates from. Btw, I'm also seeing the same
+>>> error in exynos7.dtsi.
 >>
->> 在 2021/8/4 下午4:50, Yongji Xie 写道:
->>> On Wed, Aug 4, 2021 at 4:32 PM Jason Wang <jasowang@redhat.com> wrote:
->>>> 在 2021/8/3 下午5:38, Yongji Xie 写道:
->>>>> On Tue, Aug 3, 2021 at 4:09 PM Jason Wang <jasowang@redhat.com> wrote:
->>>>>> 在 2021/7/29 下午3:34, Xie Yongji 写道:
->>>>>>> The device reset may fail in virtio-vdpa case now, so add checks to
->>>>>>> its return value and fail the register_virtio_device().
->>>>>> So the reset() would be called by the driver during remove as well, or
->>>>>> is it sufficient to deal only with the reset during probe?
->>>>>>
->>>>> Actually there is no way to handle failure during removal. And it
->>>>> should be safe with the protection of software IOTLB even if the
->>>>> reset() fails.
->>>>>
->>>>> Thanks,
->>>>> Yongji
->>>> If this is true, does it mean we don't even need to care about reset
->>>> failure?
->>>>
->>> But we need to handle the failure in the vhost-vdpa case, isn't it?
+>> What's the error exactly? The "Virtual interface control register"
+>> offset (3rd region) is set properly to 0x4000 on Exynos7. Also one for
+>> the Exynos5433 looks correct.
 >>
->> Yes, but:
+> 
+> The issue is that 2nd region's size is 0x1000, but it must be 0x2000.
+> It's defined by GIC-400 architecture, as I understand. Please look at
+> [1], table 3-1 has very specific offsets and sizes for each functional
+> block, and each particular SoC must adhere to that spec. So having
+> 0x1000 for 2nd region can't be correct. And because exynos7.dtsi has
+> GIC-400 as well, and 0x1000 is specified there for 2nd region size
+> too, so I presume there is the same mistake there.
+
+I understand, the range length has indeed same mistake. However it does
+not matter that much There are no registers pass 0x10C (so pass 0x1000).
+This address space is not used.
+
+> Can you please check the TRM for Exynos7 SoC (if you have one in your
+> possession), and see if there is a typo there? E.g. in case of
+> Exynos850 TRM I can see that in "Register Map Summary" section the
+> offset for the first register (GICH_HCR) in "Virtual Interface Control
+> Register" region is specified as 0x3000, where it should be 0x4000, so
+> it's probably a typo. But the register description is correct, saying
+> that: "Address = Base Address + 0x4000".
+
+The starting addresses of each registers range is different issue and
+this one matters. Except same typo as you say, all looks good - they
+start at 0x4000.
+
+> 
+> [1] https://developer.arm.com/documentation/ddi0471/b/programmers-model/gic-400-register-map
+
+> 
+>>> Though I don't have a TRM for Exynos7 SoCs, so
+>>> not sure if I should go ahead and fix that too. Anyway, for Exynos850,
+>>> I'll fix that in v2 series.
 >>
->> - This patch is for virtio not for vhost, if we don't care virtio, we
->> can avoid the changes
->> - For vhost, there could be two ways probably:
 >>
->> 1) let the set_status to report error
->> 2) require userspace to re-read for status
+>> However while we are at addresses - why are you using address-cells 2?
+>> It adds everywhere additional 0x0 before actual address.
 >>
->> It looks to me you want to go with 1) and I'm not sure whether or not
->> it's too late to go with 2).
->>
-> Looks like 2) can't work if reset failure happens in
-> vhost_vdpa_release() and vhost_vdpa_open().
+> 
+> Right. For "cpus" node I'll change the address-cells to 1 in my v2
+> series. I'll keep address-cells=2 for the root node, but I'm going to
+> encapsulate some nodes into soc node (as you suggested earlier), where
+> I'll make address-cells=1. That's pretty much how it's done in
+> exynos7.dtsi and in exynos5433.dtsi, so I guess that's should be fine
+> (to get rid of superfluous 0x0 and conform with other Exynos DTs)?
+
+Yes, thanks.
 
 
-Yes, you're right.
-
-Thanks
-
-
->
-> Thanks,
-> Yongji
->
-
+Best regards,
+Krzysztof
