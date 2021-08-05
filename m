@@ -2,256 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5417C3E1896
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 911753E18A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242817AbhHEPqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:46:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48006 "EHLO mail.kernel.org"
+        id S242377AbhHEPtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:49:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242469AbhHEPnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:43:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3181C61131;
-        Thu,  5 Aug 2021 15:43:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628178216;
-        bh=Od3r7blUP8259lLUtMQfNUBmcPQ7dH40P9iBonzpcCU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Au0bkH7F0biOGCZAk1NheMQtJfIspTOAvzacZbFqb8QyaARwy47bsyWN9O/kvxVKU
-         /9eXUx9TtSzY0M7ovcE0izT7Aowggyv1vE+lqFqnLIXHTbB535zkMtm1CT8iElkwit
-         CoK19dzcZJUhp6Ih3LVFIV5t//Ams5WLuVO8cVzqKUYPKV1ktl7O0CbCoGf7PIlIzA
-         RFGwqPuzQ/qFv8bFOTiAOl5onwzXvSDlvG2joxY9LhkbgVgjn53LtAVVex0xFwovzK
-         uOBi9ajVX8BwuubAmLZ7j3321SiyXM2ZonpZneNLbm60a7XICWPzLOx/wU1oZ6Q0TB
-         eJZD+xI3zSiVw==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Networking for 5.14-rc5
-Date:   Thu,  5 Aug 2021 08:43:35 -0700
-Message-Id: <20210805154335.1070064-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S242016AbhHEPtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 11:49:51 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D933260234;
+        Thu,  5 Aug 2021 15:49:36 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1mBfcl-0037v6-H8; Thu, 05 Aug 2021 11:49:35 -0400
+Message-ID: <20210805154336.208362117@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Thu, 05 Aug 2021 11:43:36 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-linus][PATCH 0/6] tracing: Fixes for 5.14-rc4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus!
+Various tracing fixes:
 
-Small PR this week, maybe it's cucumber time, maybe just bad
-timing vs subtree PRs, maybe both. The share of v5.14 bugs
-vs bugs in older code seems to be skewing the right way for rc5,
-so no cause for alarm.
+- Fix NULL pointer dereference caused by an error path
 
-The following changes since commit c7d102232649226a69dddd58a4942cf13cff4f7c:
+- Give histogram calculation fields a size, otherwise it breaks synthetic
+  creation based on them.
 
-  Merge tag 'net-5.14-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2021-07-30 16:01:36 -0700)
+- Reject strings being used for number calculations.
 
-are available in the Git repository at:
+- Fix recordmcount.pl warning on llvm building RISC-V allmodconfig
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.14-rc5
+- Fix the draw_functrace.py script to handle the new trace output
 
-for you to fetch changes up to 6bb5318ce501cb744e58105ba56cd5308e75004d:
+- Fix warning of smp_processor_id() in preemptible code
 
-  Merge branch 'net-fix-use-after-free-bugs' (2021-08-05 07:29:55 -0700)
 
-----------------------------------------------------------------
-Networking fixes for 5.14-rc5, including fixes from ipsec.
+Hui Su (1):
+      scripts/tracing: fix the bug that can't parse raw_trace_func
 
-Current release - regressions:
+Kamal Agrawal (1):
+      tracing: Fix NULL pointer dereference in start_creating
 
- - sched: taprio: fix init procedure to avoid inf loop when dumping
+Masami Hiramatsu (1):
+      tracing: Reject string operand in the histogram expression
 
- - sctp: move the active_key update after sh_keys is added
+Nathan Chancellor (1):
+      scripts/recordmcount.pl: Remove check_objcopy() and $can_use_local
 
-Current release - new code bugs:
+Steven Rostedt (VMware) (2):
+      tracing / histogram: Give calculation hist_fields a size
+      tracing: Quiet smp_processor_id() use in preemptable warning in hwlat
 
- - sparx5: fix build with old GCC & bitmask on 32-bit targets
-
-Previous releases - regressions:
-
- - xfrm: redo the PREEMPT_RT RCU vs hash_resize_mutex deadlock fix
-
- - xfrm: fixes for the compat netlink attribute translator
-
- - phy: micrel: Fix detection of ksz87xx switch
-
-Previous releases - always broken:
-
- - gro: set inner transport header offset in tcp/udp GRO hook to avoid
-        crashes when such packets reach GSO
-
- - vsock: handle VIRTIO_VSOCK_OP_CREDIT_REQUEST, as required by spec
-
- - dsa: sja1105: fix static FDB entries on SJA1105P/Q/R/S and SJA1110
-
- - bridge: validate the NUD_PERMANENT bit when adding an extern_learn FDB entry
-
- - usb: lan78xx: don't modify phy_device state concurrently
-
- - usb: pegasus: check for errors of IO routines
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-
-----------------------------------------------------------------
-Antoine Tenart (1):
-      net: ipv6: fix returned variable type in ip6_skb_dst_mtu
-
-Arnd Bergmann (1):
-      net: sparx5: fix bitmask on 32-bit targets
-
-Bijie Xu (2):
-      net: flow_offload: correct comments mismatch with code
-      net: sched: provide missing kdoc for tcf_pkt_info and tcf_ematch_ops
-
-Dan Carpenter (1):
-      bnx2x: fix an error code in bnx2x_nic_load()
-
-David S. Miller (6):
-      mhi: Fix networking tree build.
-      Merge branch 'sja1105-fdb-fixes'
-      net: really fix the build...
-      Merge branch 'pegasus-errors'
-      Merge branch 'master' of git://git.kernel.org/pub/scm/linux/kernel/git/klassert/ipsec
-      Merge branch 'eean-iosm-fixes'
-
-Dmitry Safonov (2):
-      net/xfrm/compat: Copy xfrm_spdattr_type_t atributes
-      selftests/net/ipsec: Add test for xfrm_spdattr_type_t
-
-Fei Qin (1):
-      nfp: update ethtool reporting of pauseframe control
-
-Frederic Weisbecker (1):
-      xfrm: Fix RCU vs hash_resize_mutex lock inversion
-
-Geliang Tang (1):
-      mptcp: drop unused rcu member in mptcp_pm_addr_entry
-
-Grygorii Strashko (1):
-      net: ethernet: ti: am65-cpsw: fix crash in am65_cpsw_port_offload_fwd_mark_update()
-
-Harshavardhan Unnibhavi (1):
-      VSOCK: handle VIRTIO_VSOCK_OP_CREDIT_REQUEST
-
-Harshvardhan Jha (1):
-      net: xfrm: Fix end of loop tests for list_for_each_entry
-
-Ivan T. Ivanov (1):
-      net: usb: lan78xx: don't modify phy_device state concurrently
-
-Jakub Kicinski (6):
-      net: sparx5: fix compiletime_assert for GCC 4.9
-      docs: operstates: fix typo
-      docs: operstates: document IF_OPER_TESTING
-      Revert "mhi: Fix networking tree build."
-      docs: networking: netdevsim rules
-      Merge branch 'net-fix-use-after-free-bugs'
-
-Jakub Sitnicki (1):
-      net, gro: Set inner transport header offset in tcp/udp GRO hook
-
-Leon Romanovsky (1):
-      net/prestera: Fix devlink groups leakage in error flow
-
-M Chetan Kumar (4):
-      net: wwan: iosm: fix lkp buildbot warning
-      net: wwan: iosm: endianness type correction
-      net: wwan: iosm: correct data protocol mask bit
-      net: wwan: iosm: fix recursive lock acquire in unregister
-
-Oleksij Rempel (1):
-      net: dsa: qca: ar9331: reorder MDIO write sequence
-
-Pavel Skripkin (4):
-      net: xfrm: fix memory leak in xfrm_user_rcv_msg
-      net: pegasus: fix uninit-value in get_interrupt_interval
-      net: fec: fix use-after-free in fec_drv_remove
-      net: vxge: fix use-after-free in vxge_device_unregister
-
-Petko Manolov (2):
-      net: usb: pegasus: Check the return value of get_geristers() and friends;
-      net: usb: pegasus: Remove the changelog and DRIVER_VERSION.
-
-Prabhakar Kushwaha (1):
-      qede: fix crash in rmmod qede while automatic debug collection
-
-Steffen Klassert (2):
-      Revert "xfrm: policy: Read seqcount outside of rcu-read side in xfrm_policy_lookup_bytype"
-      Merge branch 'xfrm/compat: Fix xfrm_spdattr_type_t copying'
-
-Steve Bennett (1):
-      net: phy: micrel: Fix detection of ksz87xx switch
-
-Vladimir Oltean (7):
-      net: dsa: sja1105: fix static FDB writes for SJA1110
-      net: dsa: sja1105: overwrite dynamic FDB entries with static ones in .port_fdb_add
-      net: dsa: sja1105: invalidate dynamic FDB entries learned concurrently with statically added ones
-      net: dsa: sja1105: ignore the FDB entry for unknown multicast when adding a new address
-      net: dsa: sja1105: be stateless with FDB entries on SJA1105P/Q/R/S/SJA1110 too
-      net: dsa: sja1105: match FDB entries regardless of inner/outer VLAN tag
-      net: bridge: validate the NUD_PERMANENT bit when adding an extern_learn FDB entry
-
-Wang Hai (1):
-      net: natsemi: Fix missing pci_disable_device() in probe and remove
-
-Xin Long (1):
-      sctp: move the active_key update after sh_keys is added
-
-Yannick Vignon (1):
-      net/sched: taprio: Fix init procedure
-
-Yunsheng Lin (1):
-      net: sched: fix lockdep_set_class() typo error for sch->seqlock
-
- Documentation/networking/netdev-FAQ.rst            |  17 +++
- Documentation/networking/operstates.rst            |   6 +-
- drivers/bus/mhi/core/internal.h                    |   2 +-
- drivers/bus/mhi/core/main.c                        |   9 +-
- drivers/net/dsa/qca/ar9331.c                       |  14 +-
- drivers/net/dsa/sja1105/sja1105_dynamic_config.c   |  27 ++--
- drivers/net/dsa/sja1105/sja1105_main.c             |  94 +++++++++---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c    |   3 +-
- drivers/net/ethernet/freescale/fec_main.c          |   2 +-
- .../ethernet/marvell/prestera/prestera_devlink.c   |   2 +
- .../net/ethernet/microchip/sparx5/sparx5_netdev.c  |  21 ++-
- drivers/net/ethernet/natsemi/natsemi.c             |   8 +-
- drivers/net/ethernet/neterion/vxge/vxge-main.c     |   6 +-
- .../net/ethernet/netronome/nfp/nfp_net_ethtool.c   |   2 +
- drivers/net/ethernet/qlogic/qede/qede.h            |   1 +
- drivers/net/ethernet/qlogic/qede/qede_main.c       |   8 +
- drivers/net/ethernet/ti/am65-cpsw-nuss.c           |   6 +-
- drivers/net/mhi/net.c                              |   2 +-
- drivers/net/phy/micrel.c                           |  10 +-
- drivers/net/usb/lan78xx.c                          |  16 +-
- drivers/net/usb/pegasus.c                          | 152 +++++++++++--------
- drivers/net/wwan/iosm/iosm_ipc_mmio.h              |   4 +-
- drivers/net/wwan/iosm/iosm_ipc_mux_codec.c         |   4 +-
- drivers/net/wwan/iosm/iosm_ipc_mux_codec.h         |   2 +-
- drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c      |   4 +-
- drivers/net/wwan/iosm/iosm_ipc_wwan.c              |   2 +-
- drivers/net/wwan/mhi_wwan_ctrl.c                   |   2 +-
- include/linux/mhi.h                                |   7 +-
- include/net/flow_offload.h                         |   2 +-
- include/net/ip6_route.h                            |   2 +-
- include/net/netns/xfrm.h                           |   1 +
- include/net/pkt_cls.h                              |   4 +
- net/bridge/br.c                                    |   3 +-
- net/bridge/br_fdb.c                                |  30 +++-
- net/bridge/br_private.h                            |   2 +-
- net/ipv4/tcp_offload.c                             |   3 +
- net/ipv4/udp_offload.c                             |   4 +
- net/mptcp/pm_netlink.c                             |   1 -
- net/qrtr/mhi.c                                     |  16 +-
- net/sched/sch_generic.c                            |   2 +-
- net/sched/sch_taprio.c                             |   2 -
- net/sctp/auth.c                                    |  14 +-
- net/vmw_vsock/virtio_transport_common.c            |   3 +
- net/xfrm/xfrm_compat.c                             |  49 +++++-
- net/xfrm/xfrm_ipcomp.c                             |   2 +-
- net/xfrm/xfrm_policy.c                             |  32 ++--
- net/xfrm/xfrm_user.c                               |  10 ++
- tools/testing/selftests/net/ipsec.c                | 165 ++++++++++++++++++++-
- 48 files changed, 583 insertions(+), 197 deletions(-)
+----
+ Makefile                          |  1 -
+ kernel/trace/trace.c              |  4 +++-
+ kernel/trace/trace_events_hist.c  | 24 ++++++++++++++++++++++-
+ kernel/trace/trace_hwlat.c        |  2 +-
+ scripts/recordmcount.pl           | 40 ---------------------------------------
+ scripts/tracing/draw_functrace.py |  6 +++---
+ 6 files changed, 30 insertions(+), 47 deletions(-)
