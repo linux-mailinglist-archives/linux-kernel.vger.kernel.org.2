@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984953E1F5F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0322D3E1F62
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 01:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234289AbhHEXbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 19:31:23 -0400
+        id S242403AbhHEXb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 19:31:26 -0400
 Received: from mga02.intel.com ([134.134.136.20]:6542 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236808AbhHEXbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236895AbhHEXbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 5 Aug 2021 19:31:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="201448365"
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="201448367"
 X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="201448365"
+   d="scan'208";a="201448367"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 16:31:07 -0700
 X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="481043884"
+   d="scan'208";a="481043888"
 Received: from rmgular-mobl2.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.138.25])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 16:31:06 -0700
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 16:31:07 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -36,70 +36,132 @@ Cc:     "H . Peter Anvin" <hpa@zytor.com>,
         "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>
-Subject: [PATCH v3 0/5] Add TDX Guest Support (Debug support)
-Date:   Thu,  5 Aug 2021 16:30:31 -0700
-Message-Id: <20210805233036.2949674-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v3 1/5] x86/tdx: Add #VE tracepoint
+Date:   Thu,  5 Aug 2021 16:30:32 -0700
+Message-Id: <20210805233036.2949674-2-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210805233036.2949674-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20210805233036.2949674-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
-hosts and some physical attacks.
+Add tracepoint for tracing TDX guest #VE exceptions. It will dump
+RIP, exit reason, exit qual, GPA, instruction length and instruction
+info for each #VE exception occurred.
 
-Following patches adds tracepoint support for TDX Guest TDCALL requests
-and #VE exceptions. It also includes helper function to detect TD-DEBUG
-mode which will be used by patches in other TDX series to add TD-DEBUG
-mode specific features support.
+Also, make trace points RCU idle safe to avoid warnings when RCU
+debugging is enabled.
 
-This series is the continuation of the following TDX guest related patches.
-
-[set 1, v5] - https://lore.kernel.org/patchwork/project/lkml/list/?series=510805
-[set 2, v4] - https://lore.kernel.org/patchwork/project/lkml/list/?series=510814
-[set 3, v4] - https://lore.kernel.org/patchwork/project/lkml/list/?series=510816
-[set 4, v4] - https://lore.kernel.org/patchwork/project/lkml/list/?series=510836
-
-Also please note that this series alone is not necessarily fully
-functional. You need to apply all the above 4 patch series to get 
-a fully functional TDX guest.
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
 
 Changes since v2:
- * Added taint flag support for TDX overrides.
- * Moved patch titled "x86/tdx: Add tdg_debug_enabled() interface" to
-   the patch series which actually uses it.
- * Added support to override protected guest flags.
+ * Modified tdg_virtualization_exception() to dump cx,ax,dx
+   register contents.
 
-Changes since v1:
- * Rebased on top of v5.14-rc1.
-
-Andi Kleen (2):
-  Add taint flag for TDX overrides
-  x86/tdx: Add option to override prot values
-
-Kuppuswamy Sathyanarayanan (2):
-  x86/tdx: Add TDCALL tracepoint
-  x86/tdx: Expose TDX Guest #VE count in /proc/interrupts
-
-Sean Christopherson (1):
-  x86/tdx: Add #VE tracepoint
-
- .../admin-guide/kernel-parameters.txt         |   8 +
- Documentation/admin-guide/tainted-kernels.rst |   7 +-
- arch/x86/include/asm/hardirq.h                |   3 +
- arch/x86/include/asm/tdx.h                    |   2 +
- arch/x86/include/asm/trace/tdx.h              | 158 ++++++++++++++++++
- arch/x86/kernel/irq.c                         |   6 +
- arch/x86/kernel/tdx.c                         |  88 ++++++++--
- arch/x86/kernel/traps.c                       |   2 +
- include/linux/panic.h                         |   3 +-
- kernel/panic.c                                |   1 +
- 10 files changed, 263 insertions(+), 15 deletions(-)
+ arch/x86/include/asm/trace/tdx.h | 59 ++++++++++++++++++++++++++++++++
+ arch/x86/kernel/tdx.c            |  7 ++++
+ 2 files changed, 66 insertions(+)
  create mode 100644 arch/x86/include/asm/trace/tdx.h
 
+diff --git a/arch/x86/include/asm/trace/tdx.h b/arch/x86/include/asm/trace/tdx.h
+new file mode 100644
+index 000000000000..46bae44e12e5
+--- /dev/null
++++ b/arch/x86/include/asm/trace/tdx.h
+@@ -0,0 +1,59 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#if !defined(_TRACE_TDX_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_TDX_H
++
++#include <linux/tracepoint.h>
++
++#include <uapi/asm/vmx.h>
++
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM tdx
++
++#ifdef CONFIG_INTEL_TDX_GUEST
++
++TRACE_EVENT(tdg_virtualization_exception,
++	    TP_PROTO(u64 rip, u32 exit_reason, u64 exit_qual,
++		     u64 gpa, u32 instr_len, u32 instr_info,
++		     u64 cx, u64 ax, u64 dx),
++	    TP_ARGS(rip, exit_reason, exit_qual, gpa, instr_len,
++		    instr_info, cx, ax, dx),
++	    TP_STRUCT__entry(
++			     __field(u64, rip)
++			     __field(u64, exit_qual)
++			     __field(u64, gpa)
++			     __field(u32, exit_reason)
++			     __field(u32, instr_len)
++			     __field(u32, instr_info)
++			     __field(u64, cx)
++			     __field(u64, ax)
++			     __field(u64, dx)
++			     ),
++	    TP_fast_assign(
++			   __entry->rip = rip;
++			   __entry->exit_qual = exit_qual;
++			   __entry->gpa = gpa;
++			   __entry->exit_reason = exit_reason;
++			   __entry->instr_len = instr_len;
++			   __entry->instr_info = instr_info;
++			   __entry->cx = cx;
++			   __entry->ax = ax;
++			   __entry->dx = dx;
++			   ),
++	    TP_printk("reason %s rip 0x%016llx len %u info 0x%08x qual 0x%016llx gpa 0x%016llx cx %llx ax %llx dx %llx",
++		      __print_symbolic(__entry->exit_reason, VMX_EXIT_REASONS),
++		      __entry->rip, __entry->instr_len, __entry->instr_info,
++		      __entry->exit_qual, __entry->gpa,
++		      __entry->cx, __entry->ax, __entry->dx
++		      )
++	    );
++
++#endif // CONFIG_INTEL_TDX_GUEST
++
++#undef TRACE_INCLUDE_PATH
++#define TRACE_INCLUDE_PATH asm/trace/
++#undef TRACE_INCLUDE_FILE
++#define TRACE_INCLUDE_FILE tdx
++#endif /* _TRACE_TDX_H */
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index 1cf2443edb90..4b41baa56958 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -15,6 +15,9 @@
+ #include <linux/sched/signal.h> /* force_sig_fault() */
+ #include <linux/swiotlb.h>
+ 
++#define CREATE_TRACE_POINTS
++#include <asm/trace/tdx.h>
++
+ /* TDX Module call Leaf IDs */
+ #define TDINFO				1
+ #define TDGETVEINFO			3
+@@ -407,6 +410,10 @@ int tdg_handle_virtualization_exception(struct pt_regs *regs,
+ 	unsigned long val;
+ 	int ret = 0;
+ 
++	trace_tdg_virtualization_exception_rcuidle(regs->ip, ve->exit_reason,
++		ve->exit_qual, ve->gpa, ve->instr_len, ve->instr_info,
++		regs->cx, regs->ax, regs->dx);
++
+ 	switch (ve->exit_reason) {
+ 	case EXIT_REASON_HLT:
+ 		tdg_halt();
 -- 
 2.25.1
 
