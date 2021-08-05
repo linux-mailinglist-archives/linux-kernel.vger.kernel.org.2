@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F04F3E19FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFA93E19FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236939AbhHERHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:07:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28765 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236937AbhHERHV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:07:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628183227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=l4Uq7TB3YUFBMp+pdj8dichS5azt5tuf8mailmjW03g=;
-        b=WC0TxSMR292U9pD1S7at1qHGFlCf58VXjMp3SdE7TEfapZi3PlY3IrPIKJ1hp+JCHAfuDL
-        K70Dp5zSNg1yBMdfdnAo9ShENMDksCQNGi9j8ju2yk+ywFyxh1Ls5KDQJ8k6W320h2UU0s
-        fVkxXg/k8YvOsYR7P7LfnST+iKw8VME=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-571-fLq1oFuCP2yEXpceXJwwMA-1; Thu, 05 Aug 2021 13:07:05 -0400
-X-MC-Unique: fLq1oFuCP2yEXpceXJwwMA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S236876AbhHERHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:07:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235799AbhHERHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 13:07:17 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 678DF101C8A5;
-        Thu,  5 Aug 2021 17:07:04 +0000 (UTC)
-Received: from [172.30.41.16] (ovpn-113-77.phx2.redhat.com [10.3.113.77])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4BFA560BF4;
-        Thu,  5 Aug 2021 17:06:57 +0000 (UTC)
-Subject: [PATCH 0/7] vfio: device fd address space and vfio-pci mmap
- invalidation cleanup
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     alex.williamson@redhat.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org, jgg@nvidia.com,
-        peterx@redhat.com
-Date:   Thu, 05 Aug 2021 11:06:57 -0600
-Message-ID: <162818167535.1511194.6614962507750594786.stgit@omen>
-User-Agent: StGit/1.0-8-g6af9-dirty
+        by mail.kernel.org (Postfix) with ESMTPSA id 24BA960F02;
+        Thu,  5 Aug 2021 17:07:02 +0000 (UTC)
+Date:   Thu, 5 Aug 2021 13:07:00 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Stefan Metzmacher <metze@samba.org>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] Fix: tracepoint: static call: compare data on
+ transition from 2->1 callees
+Message-ID: <20210805130700.0bc7e52a@oasis.local.home>
+In-Reply-To: <20210805132717.23813-2-mathieu.desnoyers@efficios.com>
+References: <20210805132717.23813-1-mathieu.desnoyers@efficios.com>
+        <20210805132717.23813-2-mathieu.desnoyers@efficios.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vfio-pci currently goes through some pretty nasty locking algorithms
-since commit abafbc551fdd ("vfio-pci: Invalidate mmaps and block MMIO
-access on disabled memory") was added to invalidate and re-fault mmaps
-to device MMIO around cases where device memory is disabled.  This
-series greatly simplifies that by making use of an address space on
-the vfio device file descriptor, as suggested by Jason Gunthorpe.
-This allows us to use unmap_mapping_range() on the device fd to zap
-such mappings, and by creating a vma-to-pfn callback, we can implement
-a reverse function to restore all mappings.
+On Thu,  5 Aug 2021 09:27:15 -0400
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-This series was originally part of a larger series which also added a
-callback to get a vfio device from a vma, which allows the IOMMU
-backend to limit pfnmaps to vfio device memory.  The long term goal
-is to implement the vma-to-pfn for all vfio device drivers to enable
-this in the IOMMU backend and proceed with a mechanism to also
-invalidate DMA mappings to device memory while disabled.
+> On transition from 2->1 callees, we should be comparing .data rather
+> than .func, because the same callback can be registered twice with
+> different data, and what we care about here is that the data of array
+> element 0 is unchanged to skip rcu sync.
+> 
+> Link: https://lore.kernel.org/io-uring/4ebea8f0-58c9-e571-fd30-0ce4f6f09c70@samba.org/
 
-Given my slow progress towards that longer goal, I'd like to get this
-in as an interim cleanup as it seems worthwhile on its own.  I'll
-intend to rework this on top of Jason's device_open/close series.
-Thanks,
+FYI, You only need to show one Fixes.
 
-Alex
+> Fixes: d25e37d89dd2 ("tracepoint: Optimize using static_call()")
 
----
+The above is fixed by the one below. Which means all the stable kernels
+that have the above, will also have the below, and thus the above is
+just redundant.
 
-Alex Williamson (7):
-      vfio: Create vfio_fs_type with inode per device
-      vfio: Export unmap_mapping_range() wrapper
-      vfio/pci: Use vfio_device_unmap_mapping_range()
-      vfio,vfio-pci: Add vma to pfn callback
-      mm/interval_tree.c: Export vma interval tree iterators
-      vfio: Add vfio_device_io_remap_mapping_range()
-      vfio/pci: Remove map-on-fault behavior
+> Fixes: 547305a64632 ("tracepoint: Fix out of sync data passing by static caller")
 
+The above is what the patch actually fixes.
 
- drivers/vfio/pci/vfio_pci.c         | 279 +++++++---------------------
- drivers/vfio/pci/vfio_pci_config.c  |   8 +-
- drivers/vfio/pci/vfio_pci_private.h |   5 +-
- drivers/vfio/vfio.c                 |  69 ++++++-
- include/linux/vfio.h                |  10 +
- mm/interval_tree.c                  |   3 +
- 6 files changed, 156 insertions(+), 218 deletions(-)
+> Fixes: 352384d5c84e ("tracepoints: Update static_call before tp_funcs when adding a tracepoint")
+
+How does this patch fix the above? Perhaps the above did not go enough
+to fix the issue, but it's unrelated.
+
+I'll remove the first and last Fixes tag.
+
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Stefan Metzmacher <metze@samba.org>
+> Cc: <stable@vger.kernel.org> # 5.10+
+
+The "# 5.10+" is now obsolete, and not needed. The Fixes tag is used to
+determine where this gets backported to.
+
+Other than that. This patch looks good.
+
+-- Steve
+
+> ---
+>  kernel/tracepoint.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+> index fc32821f8240..133b6454b287 100644
+> --- a/kernel/tracepoint.c
+> +++ b/kernel/tracepoint.c
+> @@ -338,7 +338,7 @@ static int tracepoint_remove_func(struct tracepoint *tp,
+>  	} else {
+>  		rcu_assign_pointer(tp->funcs, tp_funcs);
+>  		tracepoint_update_call(tp, tp_funcs,
+> -				       tp_funcs[0].func != old[0].func);
+> +				       tp_funcs[0].data != old[0].data);
+>  	}
+>  	release_probes(old);
+>  	return 0;
 
