@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445473E1CC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1B03E1CC2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242992AbhHETb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
+        id S242064AbhHETcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236261AbhHETbY (ORCPT
+        with ESMTP id S235225AbhHETcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:31:24 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BDCCC0613D5
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 12:31:09 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id z128so10839764ybc.10
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 12:31:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fL8fo3oMGGdyhjep5qev4L9S+lO3A55pCdtFOtBwaxs=;
-        b=susPQoo7vDrRfrwzXtBy22f4mKDn99gxcKYS3WdgIv0Ttkg+CxyTBlKqI73LsdPEx4
-         DR0rXmw+2M9BrAFs+9Cyc5jmMnJlNuJwJwd/e9fsd3mQP/AroV8yein4SlqXHcgcFtod
-         qnviLaCCI41xrhhJrrSSknBzTEd333w3q5ltYQJ3BpPfKI2XnTn3a0SfPAOk4feNEWmi
-         b7Z9sNYTlbZX6rp+EmlakSpUCymwol4dLhPbUwiRnKsVI9X8fBtcFt/b6P/P25LFEYj+
-         FtKPbw9seF6TpGIB1zr1EyQLxjIF2xewalSu+FUe6bizmrcG+kN9OtKY3sCGdWke66ps
-         GODQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fL8fo3oMGGdyhjep5qev4L9S+lO3A55pCdtFOtBwaxs=;
-        b=mpTc3zAB5Cb8FtJWd/mFG0InW4lOTG+S1b9fxv4wDerOMv/u+DQzHs3opPI4sak3zT
-         GwWsfkXJyKodD3SuMK7x94CerFDqN6C49V+dnZ6OF4vTxZdRuQoUFhzxVXdzdPzPuONg
-         zDFfuIlhrdAzsc2NbIs/eUUihiPrX2kWy65QOYEgSg30upGj93/aBY7E1HGB50Xhyi3W
-         8CvQUrMAZldmjnKHzirHdPaufM86lIFYWAKPYgkbSJ11npPQ2k+ou8NIHTw/h+52gy0t
-         D+5TXbak0QsAM/fLf05LxSPopWlyK5bPzJ60HeZZruG+Czo495l1Bc6EMUAs9m0EiNlh
-         rmHA==
-X-Gm-Message-State: AOAM532EXO2Wl0rCw8oGwpiVX8ddjwgCDNQHVwYzJcN1kEFn2r5ulr0o
-        RHwLG1MPYK5ftBgXfmbiiUTOzsl32BYJ6I6dEObFbQ==
-X-Google-Smtp-Source: ABdhPJwCu69IUV8/73ADKF8rJAeJL2gGGYFSxKuIudS+v8IePJBtkREFBqch3JyZnL622pPLRF9YZCwdVFS53Bk5er8=
-X-Received: by 2002:a25:bc2:: with SMTP id 185mr7963251ybl.23.1628191868491;
- Thu, 05 Aug 2021 12:31:08 -0700 (PDT)
+        Thu, 5 Aug 2021 15:32:16 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FE7C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 12:32:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=GbnUV28bxkOp7gCXE/AS1YBxe5QFYfSNYycGqaP8y10=; b=OH0IAeHpUImkTwBEYEVKJ/88ip
+        pi2GLuVtwMBuBVg4pLCGAijvR1GC6Xa0X4zc5h9uwcYNJzsA0YGZ2FLOCxxFwsHmspsYuYFS4RX+4
+        qqeiHWTLUx/SWGArKspUWhXYS5IbLuBnvVv45iVz03el/CXwGb69HVCbebf8N68Aj/46CI7g0Dg0S
+        9EYwvXHaZ1LwXipPw+1Nd84MG1VlrVMIahWOqekza7QcB0YKdS+yFmkoJHW4S+8c2OHPYM3X+N808
+        VbEM+3k/orhmjIprEOydp/XXApn/zJIKqJaDIaVvh8P56iYP+c/zbeE8FD+K1y2U2dGi4SM3in4QO
+        98r2HgIA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mBj5i-0069hG-Ib; Thu, 05 Aug 2021 19:31:42 +0000
+Subject: Re: [PATCH] openrisc: Fix compiler warnings in setup
+To:     Stafford Horne <shorne@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Openrisc <openrisc@lists.librecores.org>,
+        kernel test robot <lkp@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+References: <20210805030035.2994973-1-shorne@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <655ef6e0-defb-7467-25df-f9a13ab96694@infradead.org>
+Date:   Thu, 5 Aug 2021 12:31:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <CAMpxmJWZm_N3yPKa2+32PNOyCUuSbjqWiDBSO3WHjKekZj8Fzg@mail.gmail.com>
- <1626670001-22832-1-git-send-email-akhilrajeev@nvidia.com>
-In-Reply-To: <1626670001-22832-1-git-send-email-akhilrajeev@nvidia.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 5 Aug 2021 21:30:57 +0200
-Message-ID: <CAMpxmJWDX8GifOWcAgnn0BMPhyRpLSkWEcAsr=F4rZ-1OhUqUw@mail.gmail.com>
-Subject: Re: [PATCH v6] gpio: tegra186: Add ACPI support
-To:     Akhil R <akhilrajeev@nvidia.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>, kyarlagadda@nvidia.com,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>, mperttunen@nvidia.com,
-        smangipudi@nvidia.com, Thierry Reding <thierry.reding@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210805030035.2994973-1-shorne@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 6:47 AM Akhil R <akhilrajeev@nvidia.com> wrote:
->
-> Add ACPI module ID to probe the driver from the ACPI based bootloader
-> firmware.
->
-> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+On 8/4/21 8:00 PM, Stafford Horne wrote:
+> This was pointed out with the recent name change of or32_early_setup to
+> or1k_early_setup.  Investigating the file I found a few other warnings
+> so cleaning them up here.
+> 
+>      arch/openrisc/kernel/setup.c:220:13: warning: no previous prototype for 'or1k_early_setup' [-Wmissing-prototypes]
+>        220 | void __init or1k_early_setup(void *fdt)
+> 	  |             ^~~~~~~~~~~~~~~~
+> 
+> Fix this the missing or1k_early_setup prototype warning by adding an
+> asm/setup.h file to define the prototype.
+> 
+>      arch/openrisc/kernel/setup.c:246:13: warning: no previous prototype for 'detect_unit_config' [-Wmissing-prototypes]
+>        246 | void __init detect_unit_config(unsigned long upr, unsigned long mask,
+> 	  |             ^~~~~~~~~~~~~~~~~~
+> 
+> The function detect_unit_config is not used, just remove it.
+> 
+>      arch/openrisc/kernel/setup.c:221: warning: Function parameter or member 'fdt' not described in 'or1k_early_setup'
+> 
+> Add @fdt docs to the function comment to suppress this warning.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Stafford Horne <shorne@gmail.com>
+
+Hi Stafford,
+
+Does this patch apply to your openrisc tree, but not to
+linux-next?  I get a patch error when trying to apply it
+to linux-next-20210805 and this warning is still present:
+
+../arch/openrisc/kernel/setup.c:221:13: warning: no previous prototype for 'or32_early_setup' [-Wmissing-prototypes]
+   221 | void __init or32_early_setup(void *fdt)
+       |             ^~~~~~~~~~~~~~~~
+
+presumably because some openrisc patches are not yet in linux-next??
+
+thanks.
+
 > ---
-> v6 changes:
->         * Rebased on top of v5.14-rc1
->
->  drivers/gpio/gpio-tegra186.c | 30 ++++++++++++++++++++++++------
->  1 file changed, 24 insertions(+), 6 deletions(-)
->
+>   arch/openrisc/include/asm/setup.h | 14 ++++++++++++++
+>   arch/openrisc/kernel/setup.c      | 16 +---------------
+>   2 files changed, 15 insertions(+), 15 deletions(-)
+>   create mode 100644 arch/openrisc/include/asm/setup.h
+> 
 
-Applied, thanks!
 
-Bartosz
+
+-- 
+~Randy
+
