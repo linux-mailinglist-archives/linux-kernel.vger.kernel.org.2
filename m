@@ -2,688 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D91A3E11B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EA43E11B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239977AbhHEJ5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 05:57:02 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:35061 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239986AbhHEJ5A (ORCPT
+        id S239970AbhHEJ45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 05:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232930AbhHEJ44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:57:00 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id A0EDB200004;
-        Thu,  5 Aug 2021 09:56:40 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH RFC] riscv: Introduce compile-time early page table for XIP kernel
-Date:   Thu,  5 Aug 2021 11:55:38 +0200
-Message-Id: <20210805095538.641737-1-alex@ghiti.fr>
-X-Mailer: git-send-email 2.30.2
+        Thu, 5 Aug 2021 05:56:56 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B63C061765;
+        Thu,  5 Aug 2021 02:56:42 -0700 (PDT)
+Received: from [IPv6:2a02:810a:880:f54:e5eb:348e:79df:e71f] (unknown [IPv6:2a02:810a:880:f54:e5eb:348e:79df:e71f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id F386C1F40C6F;
+        Thu,  5 Aug 2021 10:56:39 +0100 (BST)
+Subject: Re: [PATCH v4 14/15] media: mtk-vcodec: venc: support START and STOP
+ commands
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+To:     Alexandre Courbot <acourbot@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+References: <20210427111526.1772293-1-acourbot@chromium.org>
+ <20210427111526.1772293-15-acourbot@chromium.org>
+ <59b6a19a-0ed6-e142-cb67-0f7c6b64dd6d@collabora.com>
+Message-ID: <4989433f-6243-496f-ba3a-02d848c2902d@collabora.com>
+Date:   Thu, 5 Aug 2021 11:56:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <59b6a19a-0ed6-e142-cb67-0f7c6b64dd6d@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As described in [1], XIP kernel current implementation introduces a few
-drawbacks caused by the 'fixups'.
 
-All those fixups are necessary because the MMU is not enabled soon enough:
-this patch introduces a way to compute the early page table at
-'compile-time' by generating, from the XIP config, a linker script that
-contains the early page table definition.
 
-A python script is used to generate the early page table: for now, it
-redefines quite a few macros from the C code, but I have at least one
-way to retrieve those values to avoid duplicating their definitions.
+On 04.08.21 14:53, Dafna Hirschfeld wrote:
+> 
+> 
+> On 27.04.21 13:15, Alexandre Courbot wrote:
+>> The V4L2 encoder specification requires encoders to support the
+>> V4L2_ENC_CMD_START and V4L2_ENC_CMD_STOP commands. Add support for these
+>> to the mtk-vcodec encoder by reusing the same flush buffer as used by
+>> the decoder driver.
+>>
+>> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+>> ---
+>>   .../platform/mtk-vcodec/mtk_vcodec_drv.h      |   2 +
+>>   .../platform/mtk-vcodec/mtk_vcodec_enc.c      | 123 +++++++++++++++++-
+>>   .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  |   4 +
+>>   3 files changed, 122 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+>> index c2f4cad6cfc2..1b61d722d313 100644
+>> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+>> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+>> @@ -252,6 +252,7 @@ struct vdec_pic_info {
+>>    * @last_decoded_picinfo: pic information get from latest decode
+>>    * @empty_flush_buf: a fake size-0 capture buffer that indicates flush. Only
+>>    *             to be used with encoder and stateful decoder.
+>> + * @is_flushing: set to true if flushing is in progress.
+>>    * @current_codec: current set input codec, in V4L2 pixel format
+>>    *
+>>    * @colorspace: enum v4l2_colorspace; supplemental to pixelformat
+>> @@ -291,6 +292,7 @@ struct mtk_vcodec_ctx {
+>>       struct work_struct encode_work;
+>>       struct vdec_pic_info last_decoded_picinfo;
+>>       struct v4l2_m2m_buffer empty_flush_buf;
+>> +    bool is_flushing;
+>>       u32 current_codec;
+>> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+>> index 4831052f475d..8058331dc553 100644
+>> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+>> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+>> @@ -659,6 +659,7 @@ static int vidioc_venc_dqbuf(struct file *file, void *priv,
+>>                    struct v4l2_buffer *buf)
+>>   {
+>>       struct mtk_vcodec_ctx *ctx = fh_to_ctx(priv);
+>> +    int ret;
+>>       if (ctx->state == MTK_STATE_ABORT) {
+>>           mtk_v4l2_err("[%d] Call on QBUF after unrecoverable error",
+>> @@ -666,7 +667,77 @@ static int vidioc_venc_dqbuf(struct file *file, void *priv,
+>>           return -EIO;
+>>       }
+>> -    return v4l2_m2m_dqbuf(file, ctx->m2m_ctx, buf);
+>> +    ret = v4l2_m2m_dqbuf(file, ctx->m2m_ctx, buf);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    /*
+>> +     * Complete flush if the user dequeued the 0-payload LAST buffer.
+>> +     * We check the payload because a buffer with the LAST flag can also
+>> +     * be seen during resolution changes. If we happen to be flushing at
+>> +     * that time, the last buffer before the resolution changes could be
+>> +     * misinterpreted for the buffer generated by the flush and terminate
+>> +     * it earlier than we want.
+>> +     */
+>> +    if (!V4L2_TYPE_IS_OUTPUT(buf->type) &&
+>> +        buf->flags & V4L2_BUF_FLAG_LAST &&
+>> +        buf->m.planes[0].bytesused == 0 &&
+>> +        ctx->is_flushing) {
+>> +        /*
+>> +         * Last CAPTURE buffer is dequeued, we can allow another flush
+>> +         * to take place.
+>> +         */
+>> +        ctx->is_flushing = false;
+>> +    }
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static int vidioc_encoder_cmd(struct file *file, void *priv,
+>> +                  struct v4l2_encoder_cmd *cmd)
+>> +{
+>> +    struct mtk_vcodec_ctx *ctx = fh_to_ctx(priv);
+>> +    struct vb2_queue *src_vq, *dst_vq;
+>> +    int ret;
+>> +
+>> +    ret = v4l2_m2m_ioctl_try_encoder_cmd(file, priv, cmd);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    /* Calling START or STOP is invalid if a flush is in progress */
+>> +    if (ctx->is_flushing)
+>> +        return -EBUSY;
+>> +
+>> +    mtk_v4l2_debug(1, "encoder cmd=%u", cmd->cmd);
+>> +
+>> +    dst_vq = v4l2_m2m_get_vq(ctx->m2m_ctx,
+>> +                V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE);
+>> +    switch (cmd->cmd) {
+>> +    case V4L2_ENC_CMD_STOP:
+>> +        src_vq = v4l2_m2m_get_vq(ctx->m2m_ctx,
+>> +                V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE);
+>> +        if (!vb2_is_streaming(src_vq)) {
+>> +            mtk_v4l2_debug(1, "Output stream is off. No need to flush.");
+>> +            return 0;
+>> +        }
+>> +        if (!vb2_is_streaming(dst_vq)) {
+>> +            mtk_v4l2_debug(1, "Capture stream is off. No need to flush.");
+>> +            return 0;
+>> +        }
+>> +        ctx->is_flushing = true;
+>> +        v4l2_m2m_buf_queue(ctx->m2m_ctx, &ctx->empty_flush_buf.vb);
+>> +        v4l2_m2m_try_schedule(ctx->m2m_ctx);
+>> +        break;
+>> +
+>> +    case V4L2_ENC_CMD_START:
+>> +        vb2_clear_last_buffer_dequeued(dst_vq);
+>> +        break;
+>> +
+>> +    default:
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    return 0;
+>>   }
+>>   const struct v4l2_ioctl_ops mtk_venc_ioctl_ops = {
+>> @@ -702,6 +773,9 @@ const struct v4l2_ioctl_ops mtk_venc_ioctl_ops = {
+>>       .vidioc_g_selection        = vidioc_venc_g_selection,
+>>       .vidioc_s_selection        = vidioc_venc_s_selection,
+>> +
+>> +    .vidioc_encoder_cmd        = vidioc_encoder_cmd,
+>> +    .vidioc_try_encoder_cmd        = v4l2_m2m_ioctl_try_encoder_cmd,
+>>   };
+>>   static int vb2ops_venc_queue_setup(struct vb2_queue *vq,
+>> @@ -869,9 +943,27 @@ static void vb2ops_venc_stop_streaming(struct vb2_queue *q)
+>>               dst_buf->vb2_buf.planes[0].bytesused = 0;
+>>               v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_ERROR);
+>>           }
+>> +        /* STREAMOFF on the CAPTURE queue completes any ongoing flush */
+>> +        if (ctx->is_flushing) {
+>> +            mtk_v4l2_debug(1, "STREAMOFF called while flushing");
+>> +            v4l2_m2m_buf_remove_by_buf(&ctx->m2m_ctx->out_q_ctx,
+>> +                           &ctx->empty_flush_buf.vb);
+>> +            ctx->is_flushing = false;
+>> +        }
+>>       } else {
+>> -        while ((src_buf = v4l2_m2m_src_buf_remove(ctx->m2m_ctx)))
+>> -            v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_ERROR);
+>> +        while ((src_buf = v4l2_m2m_src_buf_remove(ctx->m2m_ctx))) {
+>> +            if (src_buf != &ctx->empty_flush_buf.vb)
+>> +                v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_ERROR);
+>> +        }
+>> +        if (ctx->is_flushing) {
+>> +            /*
+>> +             * If we are in the middle of a flush, put the flush
+>> +             * buffer back into the queue so the next CAPTURE
+>> +             * buffer gets returned with the LAST flag set.
+>> +             */
+>> +            v4l2_m2m_buf_queue(ctx->m2m_ctx,
+>> +                       &ctx->empty_flush_buf.vb);
+>> +        }
+>>       }
+>>       if ((q->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE &&
+>> @@ -971,12 +1063,15 @@ static int mtk_venc_param_change(struct mtk_vcodec_ctx *ctx)
+>>   {
+>>       struct venc_enc_param enc_prm;
+>>       struct vb2_v4l2_buffer *vb2_v4l2 = v4l2_m2m_next_src_buf(ctx->m2m_ctx);
+>> -    struct mtk_video_enc_buf *mtk_buf =
+>> -            container_of(vb2_v4l2, struct mtk_video_enc_buf,
+>> -                     m2m_buf.vb);
+>> -
+>> +    struct mtk_video_enc_buf *mtk_buf;
+>>       int ret = 0;
+>> +    /* Don't upcast the empty flush buffer */
+>> +    if (vb2_v4l2 == &ctx->empty_flush_buf.vb)
+>> +        return 0;
+> 
+> Hi, this check should also be in vb2ops_venc_buf_queue before upcasting
 
-XIP kernel then loads the static early page table before accessing any
-global variable in C and then avoids all the fixups.
-
-This is an RFC as there are quite a few things to clean and improve.
-
-[1] https://patchwork.kernel.org/project/linux-riscv/patch/20210618142353.2114854-1-alex@ghiti.fr/
-
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
----
- arch/riscv/Makefile                           |  11 ++
- arch/riscv/include/asm/pgtable.h              |  22 +--
- .../riscv/kernel/generate-early-page-table.py | 154 ++++++++++++++++++
- arch/riscv/kernel/head.S                      |  62 +++++--
- arch/riscv/kernel/setup.c                     |   2 +-
- arch/riscv/kernel/vmlinux-xip.lds.S           |   3 +
- arch/riscv/mm/init.c                          | 140 ++++++++--------
- 7 files changed, 286 insertions(+), 108 deletions(-)
- create mode 100755 arch/riscv/kernel/generate-early-page-table.py
-
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index bc74afdbf31e..6adb28bacc1a 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -123,6 +123,17 @@ $(BOOT_TARGETS): vmlinux
- 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
- 	@$(kecho) '  Kernel: $(boot)/$@ is ready'
- 
-+ifeq ($(CONFIG_XIP_KERNEL),y)
-+vmlinux: early-page-table.lds.S
-+
-+quiet_cmd_generate_early_page_table = GENPGT  $@
-+cmd_generate_early_page_table =	$(srctree)/arch/riscv/kernel/generate-early-page-table.py .config
-+
-+# TODO this is always called even without modifications!
-+early-page-table.lds.S: $(srctree)/arch/riscv/kernel/generate-early-page-table.py
-+	$(call if_changed,generate_early_page_table)
-+endif
-+
- Image.%: Image
- 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
- 
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index 39b550310ec6..8fef6f7bc22d 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -94,17 +94,6 @@
- #include <asm/pgtable-32.h>
- #endif /* CONFIG_64BIT */
- 
--#ifdef CONFIG_XIP_KERNEL
--#define XIP_FIXUP(addr) ({							\
--	uintptr_t __a = (uintptr_t)(addr);					\
--	(__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?	\
--		__a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
--		__a;								\
--	})
--#else
--#define XIP_FIXUP(addr)		(addr)
--#endif /* CONFIG_XIP_KERNEL */
--
- #ifdef CONFIG_MMU
- /* Number of entries in the page global directory */
- #define PTRS_PER_PGD    (PAGE_SIZE / sizeof(pgd_t))
-@@ -680,15 +669,8 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
- #define kern_addr_valid(addr)   (1) /* FIXME */
- 
- extern char _start[];
--extern void *_dtb_early_va;
--extern uintptr_t _dtb_early_pa;
--#if defined(CONFIG_XIP_KERNEL) && defined(CONFIG_MMU)
--#define dtb_early_va	(*(void **)XIP_FIXUP(&_dtb_early_va))
--#define dtb_early_pa	(*(uintptr_t *)XIP_FIXUP(&_dtb_early_pa))
--#else
--#define dtb_early_va	_dtb_early_va
--#define dtb_early_pa	_dtb_early_pa
--#endif /* CONFIG_XIP_KERNEL */
-+extern void *dtb_early_va;
-+extern uintptr_t dtb_early_pa;
- 
- void paging_init(void);
- void misc_mem_init(void);
-diff --git a/arch/riscv/kernel/generate-early-page-table.py b/arch/riscv/kernel/generate-early-page-table.py
-new file mode 100755
-index 000000000000..98a401355932
---- /dev/null
-+++ b/arch/riscv/kernel/generate-early-page-table.py
-@@ -0,0 +1,154 @@
-+#!/usr/bin/env python
-+
-+from os import path
-+import sys
-+import re
-+
-+if len(sys.argv) != 2:
-+	print("Usage: %s PATH_TO_CONFIG" % sys.argv[0])
-+	sys.exit(1)
-+
-+EARLY_PAGE_TABLE_LDS_PATH = path.join(path.dirname(path.abspath(__file__)), "early-page-table.lds.S")
-+
-+# PAGE_SIZE / sizeof(uint64_t)
-+PTRS_PER_PGD = 512
-+PTRS_PER_PMD = 512
-+PTRS_PER_PTE = 512
-+
-+KERNEL_PGDS_NR = int(PTRS_PER_PGD / 2)
-+
-+PAGE_PFN_SHIFT = 10
-+PAGE_SHIFT = 12
-+PAGE_SIZE = 1 << PAGE_SHIFT
-+PMD_SIZE = 1 << 21
-+PGDIR_SIZE = 1 << 30
-+
-+TASK_SIZE = int(PGDIR_SIZE * PTRS_PER_PGD / 2)
-+KERNEL_MAPPING_BASE_ADDR = 0xFFFFFFFFFFFFFFFF - TASK_SIZE + 1
-+KERNEL_LINK_ADDR = 0xFFFFFFFF80000000
-+FIXADDR_START = 0xFFFFFFCEFEE00000
-+DTB_EARLY_BASE_VA = PGDIR_SIZE
-+
-+PAGE_KERNEL_EXEC = (1 << 1) | (1 << 2) | (1 << 0) | (1 << 6) | (1 << 7) | (1 << 5) | (1 << 3)
-+PAGE_TABLE = (1 << 0)
-+
-+XIP_OFFSET = 8 * 1024 * 1024
-+
-+def extract_addr_from_config(config_path):
-+	with open(config_path, "r") as fconfig:
-+		content = fconfig.read()
-+		p = re.compile('CONFIG_PHYS_RAM_BASE=.*').search(content)
-+		if p:
-+			phys_ram_base = p.group().split('=')[1]
-+		else:
-+			print("Can't find CONFIG_PHYS_RAM_BASE in .config!")
-+			sys.exit(1)
-+
-+		p = re.compile("CONFIG_XIP_PHYS_ADDR=.*").search(content)
-+		if p:
-+			xip_phys_addr = p.group().split('=')[1]
-+		else:
-+			print("Can't find CONFIG_XIP_PHYS_ADDR in .config!")
-+			sys.exit(1)
-+
-+		p = re.compile("CONFIG_BUILTIN_DTB.*").search(content)
-+		if p:
-+			builtin_dtb = True if p.group() == "CONFIG_BUILTIN_DTB=y" else False
-+		else:
-+			builtin_dtb = False
-+
-+	return (phys_ram_base, xip_phys_addr, builtin_dtb)
-+
-+def pte_page_table(phys_addr):
-+	return "((({}) >> {}) << {}) | 0x{:x}".format(phys_addr, PAGE_SHIFT, PAGE_PFN_SHIFT, PAGE_TABLE)
-+
-+def pte_page_kernel_exec(phys_addr):
-+	return "((({}) >> {}) << {}) | 0x{:x}".format(phys_addr, PAGE_SHIFT, PAGE_PFN_SHIFT, PAGE_KERNEL_EXEC)
-+
-+def pgd_entry_index(addr):
-+	if addr >= KERNEL_MAPPING_BASE_ADDR:
-+		return int((addr  - KERNEL_MAPPING_BASE_ADDR) / PGDIR_SIZE) + KERNEL_PGDS_NR
-+	else:
-+		return int(addr / PGDIR_SIZE)
-+
-+def pmd_entry_index(addr):
-+	offset_in_pgdir = addr & (PGDIR_SIZE - 1)
-+	return int(offset_in_pgdir / PMD_SIZE)
-+
-+def pte_entry_index(addr):
-+	offset_in_pgdir = addr & (PMD_SIZE - 1)
-+	return int(offset_in_pgdir / PAGE_SIZE)
-+
-+def create_kernel_page_table():
-+	pgdir_kernel_mapping_entry = pgd_entry_index(KERNEL_LINK_ADDR)
-+	early_pg_dir[pgdir_kernel_mapping_entry] = pte_page_table("XIP_PHYS_ADDR(early_pmd)")
-+
-+	# First half resides in flash
-+	for i in range(0, int(XIP_OFFSET / PMD_SIZE)):
-+		early_pmd[i] = pte_page_kernel_exec(str(hex(int(xip_phys_addr, 0) + i * PMD_SIZE)))
-+
-+	# Second half is in RAM
-+	for i in range(int(XIP_OFFSET / PMD_SIZE), int(2 * XIP_OFFSET / PMD_SIZE)):
-+		early_pmd[i] = pte_page_kernel_exec(str(hex(int(phys_ram_base, 0) + i * PMD_SIZE - XIP_OFFSET)))
-+
-+def create_fixaddr_page_table():
-+	pgdir_fixaddr_entry = pgd_entry_index(FIXADDR_START)
-+	early_pg_dir[pgdir_fixaddr_entry] = pte_page_table("RAM_PHYS_ADDR(fixmap_pmd)")
-+
-+	pmd_fixaddr_entry = pmd_entry_index(FIXADDR_START)
-+	fixmap_pmd[pmd_fixaddr_entry] = pte_page_table("RAM_PHYS_ADDR(fixmap_pte)")
-+
-+def create_fdt_early_page_table():
-+	pgdir_fdt_entry = pgd_entry_index(DTB_EARLY_BASE_VA)
-+	early_pg_dir[pgdir_fdt_entry] = pte_page_table("RAM_PHYS_ADDR(early_dtb_pmd)")
-+
-+	pmd_fdt_entry = pmd_entry_index(DTB_EARLY_BASE_VA)
-+	early_dtb_pmd[pmd_fdt_entry] = pte_page_kernel_exec("XIP_PHYS_ADDR(__dtb_start)")
-+	early_dtb_pmd[pmd_fdt_entry + 1] = pte_page_kernel_exec("XIP_PHYS_ADDR(__dtb_start) + {}".format(PMD_SIZE))
-+
-+def setup_vm():
-+	create_kernel_page_table()
-+	create_fixaddr_page_table()
-+	if not builtin_dtb:
-+		create_fdt_early_page_table()
-+
-+def dump_macros(f):
-+	f.write("#define XIP_PHYS_ADDR(x) ((x) - KERNEL_LINK_ADDR + {})\n".format(xip_phys_addr))
-+	f.write("#define RAM_PHYS_ADDR(x) ((x) - KERNEL_LINK_ADDR + {} - 0x{:x})\n".format(phys_ram_base, XIP_OFFSET))
-+	f.write("\n")
-+
-+def dump_section_header(f):
-+	f.write(".init.early_page_table :\n")
-+	f.write("{\n")
-+
-+def dump_section_footer(f):
-+	f.write("}\n")
-+
-+def dump_page_table_level(f, ptl, nr_entries, ptl_name):
-+	f.write("\t{} = .;\n".format(ptl_name))
-+	for i in range(0, nr_entries):
-+		f.write("\tQUAD({})\n".format(ptl[i]))
-+
-+def dump_page_table(f):
-+	dump_page_table_level(f, early_pg_dir, PTRS_PER_PGD, "early_pg_dir")
-+	dump_page_table_level(f, early_pmd, PTRS_PER_PMD, "early_pmd")
-+	dump_page_table_level(f, fixmap_pmd, PTRS_PER_PMD, "fixmap_pmd")
-+	dump_page_table_level(f, fixmap_pte, PTRS_PER_PTE, "fixmap_pte")
-+	if not builtin_dtb:
-+		dump_page_table_level(f, early_dtb_pmd, PTRS_PER_PMD, "early_dtb_pmd")
-+
-+early_pg_dir = [ "0" ] * PTRS_PER_PGD
-+early_pmd = [ "0" ] * PTRS_PER_PMD
-+fixmap_pmd = [ "0" ] * PTRS_PER_PMD
-+fixmap_pte = [ "0" ] * PTRS_PER_PTE
-+early_dtb_pmd = [ "0" ] * PTRS_PER_PMD
-+
-+(phys_ram_base, xip_phys_addr, builtin_dtb) = extract_addr_from_config(sys.argv[1])
-+
-+setup_vm()
-+
-+with open(EARLY_PAGE_TABLE_LDS_PATH, "w") as flds:
-+	dump_macros(flds)
-+	dump_section_header(flds)
-+	dump_page_table(flds)
-+	dump_section_footer(flds)
-diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
-index fce5184b22c3..bbc42c335cdb 100644
---- a/arch/riscv/kernel/head.S
-+++ b/arch/riscv/kernel/head.S
-@@ -79,11 +79,12 @@ pe_head_start:
- 
- .align 2
- #ifdef CONFIG_MMU
-+
-+# a0: page directory address
-+# a1: kernel virtual address
-+# returns: relocated return address
- relocate:
- 	/* Relocate return address */
--	la a1, kernel_map
--	XIP_FIXUP_OFFSET a1
--	REG_L a1, KERNEL_MAP_VIRT_ADDR(a1)
- 	la a2, _start
- 	sub a1, a1, a2
- 	add ra, ra, a1
-@@ -98,6 +99,7 @@ relocate:
- 	li a1, SATP_MODE
- 	or a2, a2, a1
- 
-+#ifndef CONFIG_XIP_KERNEL
- 	/*
- 	 * Load trampoline page directory, which will cause us to trap to
- 	 * stvec if VA != PA, or simply fall through if VA == PA.  We need a
-@@ -105,11 +107,21 @@ relocate:
- 	 * to ensure the new translations are in use.
- 	 */
- 	la a0, trampoline_pg_dir
--	XIP_FIXUP_OFFSET a0
- 	srl a0, a0, PAGE_SHIFT
- 	or a0, a0, a1
- 	sfence.vma
- 	csrw CSR_SATP, a0
-+#else
-+	/*
-+	 * Switch to kernel page tables.  A full fence is necessary in order to
-+	 * avoid using the trampoline translations, which are only correct for
-+	 * the first superpage.  Fetching the fence is guarnteed to work
-+	 * because that first superpage is translated the same way.
-+	 */
-+	csrw CSR_SATP, a2
-+	sfence.vma
-+#endif
-+
- .align 2
- 1:
- 	/* Set trap vector to spin forever to help debug */
-@@ -121,7 +133,7 @@ relocate:
- .option norelax
- 	la gp, __global_pointer$
- .option pop
--
-+#ifndef CONFIG_XIP_KERNEL
- 	/*
- 	 * Switch to kernel page tables.  A full fence is necessary in order to
- 	 * avoid using the trampoline translations, which are only correct for
-@@ -130,6 +142,7 @@ relocate:
- 	 */
- 	csrw CSR_SATP, a2
- 	sfence.vma
-+#endif
- 
- 	ret
- #endif /* CONFIG_MMU */
-@@ -174,6 +187,8 @@ secondary_start_common:
- 	/* Enable virtual memory and relocate to virtual address */
- 	la a0, swapper_pg_dir
- 	XIP_FIXUP_OFFSET a0
-+	la a1, kernel_map
-+	REG_L a1, KERNEL_MAP_VIRT_ADDR(a1)
- 	call relocate
- #endif
- 	call setup_trap_vector
-@@ -280,7 +295,25 @@ pmp_done:
- 	mv a0, s0
- #endif
- 
--#ifndef CONFIG_XIP_KERNEL
-+	/* Save hart ID and DTB physical address */
-+	mv s0, a0
-+	mv s1, a1
-+
-+#ifdef CONFIG_XIP_KERNEL
-+	/* Keep DTB physical address before switching to virtual addressing */
-+	la s2, __dtb_start
-+	/* No need to fixup early_pg_dir as it is read-only */
-+	la a0, early_pg_dir
-+	li a1, KERNEL_LINK_ADDR
-+	call relocate
-+#ifdef CONFIG_BUILTIN_DTB
-+	mv a0, s2
-+#else
-+	mv a0, s1
-+#endif /* CONFIG_BUILTIN_DTB */
-+	la sp, init_thread_union + THREAD_SIZE
-+	call setup_vm
-+#else /* CONFIG_XIP_KERNEL */
- 	/* Clear BSS for flat non-ELF images */
- 	la a3, __bss_start
- 	la a4, __bss_stop
-@@ -290,18 +323,8 @@ clear_bss:
- 	add a3, a3, RISCV_SZPTR
- 	blt a3, a4, clear_bss
- clear_bss_done:
--#endif
--	/* Save hart ID and DTB physical address */
--	mv s0, a0
--	mv s1, a1
--
--	la a2, boot_cpu_hartid
--	XIP_FIXUP_OFFSET a2
--	REG_S a0, (a2)
--
- 	/* Initialize page tables and relocate to virtual addresses */
- 	la sp, init_thread_union + THREAD_SIZE
--	XIP_FIXUP_OFFSET sp
- #ifdef CONFIG_BUILTIN_DTB
- 	la a0, __dtb_start
- #else
-@@ -310,9 +333,14 @@ clear_bss_done:
- 	call setup_vm
- #ifdef CONFIG_MMU
- 	la a0, early_pg_dir
--	XIP_FIXUP_OFFSET a0
-+	la a1, kernel_map
-+	REG_L a1, KERNEL_MAP_VIRT_ADDR(a1)
- 	call relocate
- #endif /* CONFIG_MMU */
-+#endif /* CONFIG_XIP_KERNEL */
-+
-+	la a2, boot_cpu_hartid
-+	REG_S s0, (a2)
- 
- 	call setup_trap_vector
- 	/* Restore C environment */
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index 18bd0e4bc36c..19b416900f68 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -276,7 +276,7 @@ void __init setup_arch(char **cmdline_p)
- #if IS_ENABLED(CONFIG_BUILTIN_DTB)
- 	unflatten_and_copy_device_tree();
- #else
--	if (early_init_dt_verify(__va(XIP_FIXUP(dtb_early_pa))))
-+	if (early_init_dt_verify(__va(dtb_early_pa)))
- 		unflatten_device_tree();
- 	else
- 		pr_err("No DTB found in kernel mappings\n");
-diff --git a/arch/riscv/kernel/vmlinux-xip.lds.S b/arch/riscv/kernel/vmlinux-xip.lds.S
-index af776555ded9..6aba03f3eadf 100644
---- a/arch/riscv/kernel/vmlinux-xip.lds.S
-+++ b/arch/riscv/kernel/vmlinux-xip.lds.S
-@@ -77,6 +77,9 @@ SECTIONS
- 	}
- 	__end_ro_after_init = .;
- 
-+	. = ALIGN(PAGE_SIZE);
-+#include "early-page-table.lds.S"
-+
- 	. = ALIGN(PAGE_SIZE);
- 	__init_begin = .;
- 	.init.data : {
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index e2c8f188ad95..d5098b366274 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -32,9 +32,6 @@
- 
- struct kernel_mapping kernel_map __ro_after_init;
- EXPORT_SYMBOL(kernel_map);
--#ifdef CONFIG_XIP_KERNEL
--#define kernel_map	(*(struct kernel_mapping *)XIP_FIXUP(&kernel_map))
--#endif
- 
- phys_addr_t phys_ram_base __ro_after_init;
- EXPORT_SYMBOL(phys_ram_base);
-@@ -49,8 +46,8 @@ EXPORT_SYMBOL(empty_zero_page);
- 
- extern char _start[];
- #define DTB_EARLY_BASE_VA      PGDIR_SIZE
--void *_dtb_early_va __initdata;
--uintptr_t _dtb_early_pa __initdata;
-+void *dtb_early_va __initdata;
-+uintptr_t dtb_early_pa __initdata;
- 
- struct pt_alloc_ops {
- 	pte_t *(*get_pte_virt)(phys_addr_t pa);
-@@ -212,29 +209,22 @@ static void __init setup_bootmem(void)
- }
- 
- #ifdef CONFIG_MMU
--static struct pt_alloc_ops _pt_ops __initdata;
--
--#ifdef CONFIG_XIP_KERNEL
--#define pt_ops (*(struct pt_alloc_ops *)XIP_FIXUP(&_pt_ops))
--#else
--#define pt_ops _pt_ops
--#endif
-+static struct pt_alloc_ops pt_ops __initdata;
- 
- unsigned long pfn_base __ro_after_init;
- EXPORT_SYMBOL(pfn_base);
- 
- pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
- pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
-+#ifdef CONFIG_XIP_KERNEL
-+extern pte_t fixmap_pte[PTRS_PER_PTE];
-+extern pgd_t early_pg_dir[PTRS_PER_PGD];
-+#else
- static pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
--
- pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
--static pmd_t __maybe_unused early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
-+#endif
- 
--#ifdef CONFIG_XIP_KERNEL
--#define trampoline_pg_dir      ((pgd_t *)XIP_FIXUP(trampoline_pg_dir))
--#define fixmap_pte             ((pte_t *)XIP_FIXUP(fixmap_pte))
--#define early_pg_dir           ((pgd_t *)XIP_FIXUP(early_pg_dir))
--#endif /* CONFIG_XIP_KERNEL */
-+static pmd_t __maybe_unused early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
- 
- void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
- {
-@@ -306,17 +296,16 @@ static void __init create_pte_mapping(pte_t *ptep,
- 
- #ifndef __PAGETABLE_PMD_FOLDED
- 
-+#ifdef CONFIG_XIP_KERNEL
-+extern pmd_t fixmap_pmd[PTRS_PER_PMD];
-+extern pmd_t early_pmd[PTRS_PER_PMD];
-+#else
- static pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
- static pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
- static pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
-+#endif
- 
--#ifdef CONFIG_XIP_KERNEL
--#define trampoline_pmd ((pmd_t *)XIP_FIXUP(trampoline_pmd))
--#define fixmap_pmd     ((pmd_t *)XIP_FIXUP(fixmap_pmd))
--#define early_pmd      ((pmd_t *)XIP_FIXUP(early_pmd))
--#endif /* CONFIG_XIP_KERNEL */
--
--static pmd_t *__init get_pmd_virt_early(phys_addr_t pa)
-+static __maybe_unused pmd_t *__init get_pmd_virt_early(phys_addr_t pa)
- {
- 	/* Before MMU is enabled */
- 	return (pmd_t *)((uintptr_t)pa);
-@@ -333,7 +322,7 @@ static pmd_t *__init get_pmd_virt_late(phys_addr_t pa)
- 	return (pmd_t *) __va(pa);
- }
- 
--static phys_addr_t __init alloc_pmd_early(uintptr_t va)
-+static __maybe_unused phys_addr_t __init alloc_pmd_early(uintptr_t va)
- {
- 	BUG_ON((va - kernel_map.virt_addr) >> PGDIR_SHIFT);
- 
-@@ -521,6 +510,14 @@ static void __init create_kernel_page_table(pgd_t *pgdir,
- 				   kernel_map.phys_addr + (va - (kernel_map.virt_addr + XIP_OFFSET)),
- 				   PMD_SIZE, PAGE_KERNEL);
- }
-+
-+static void __init setup_early_page_table(uintptr_t dtb_pa)
-+{
-+	/*
-+	 * Nothing must be done here since the early page table is generated at
-+	 * compile-time.
-+	*/
-+}
- #else
- static void __init create_kernel_page_table(pgd_t *pgdir, bool early)
- {
-@@ -534,7 +531,6 @@ static void __init create_kernel_page_table(pgd_t *pgdir, bool early)
- 				   early ?
- 					PAGE_KERNEL_EXEC : pgprot_from_va(va));
- }
--#endif
- 
- /*
-  * Setup a 4MB mapping that encompasses the device tree: for 64-bit kernel,
-@@ -557,20 +553,48 @@ static void __init create_fdt_early_page_table(pgd_t *pgdir, uintptr_t dtb_pa)
- 		create_pmd_mapping(early_dtb_pmd, DTB_EARLY_BASE_VA + PMD_SIZE,
- 				   pa + PMD_SIZE, PMD_SIZE, PAGE_KERNEL);
- 	}
-+#endif
-+}
- 
--	dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PMD_SIZE - 1));
-+static void __init setup_early_page_table(uintptr_t dtb_pa)
-+{
-+	pt_ops.alloc_pte = alloc_pte_early;
-+	pt_ops.get_pte_virt = get_pte_virt_early;
-+#ifndef __PAGETABLE_PMD_FOLDED
-+	pt_ops.alloc_pmd = alloc_pmd_early;
-+	pt_ops.get_pmd_virt = get_pmd_virt_early;
-+#endif
-+	/* Setup early PGD for fixmap */
-+	create_pgd_mapping(early_pg_dir, FIXADDR_START,
-+			   (uintptr_t)fixmap_pgd_next, PGDIR_SIZE, PAGE_TABLE);
-+
-+#ifndef __PAGETABLE_PMD_FOLDED
-+	/* Setup fixmap PMD */
-+	create_pmd_mapping(fixmap_pmd, FIXADDR_START,
-+			   (uintptr_t)fixmap_pte, PMD_SIZE, PAGE_TABLE);
-+	/* Setup trampoline PGD and PMD */
-+	create_pgd_mapping(trampoline_pg_dir, kernel_map.virt_addr,
-+			   (uintptr_t)trampoline_pmd, PGDIR_SIZE, PAGE_TABLE);
-+
-+	create_pmd_mapping(trampoline_pmd, kernel_map.virt_addr,
-+			   kernel_map.phys_addr, PMD_SIZE, PAGE_KERNEL_EXEC);
- #else
-+	/* Setup trampoline PGD */
-+	create_pgd_mapping(trampoline_pg_dir, kernel_map.virt_addr,
-+			   kernel_map.phys_addr, PGDIR_SIZE, PAGE_KERNEL_EXEC);
-+#endif
-+
- 	/*
--	 * For 64-bit kernel, __va can't be used since it would return a linear
--	 * mapping address whereas dtb_early_va will be used before
--	 * setup_vm_final installs the linear mapping. For 32-bit kernel, as the
--	 * kernel is mapped in the linear mapping, that makes no difference.
-+	 * Setup early PGD covering entire kernel which will allow
-+	 * us to reach paging_init(). We map all memory banks later
-+	 * in setup_vm_final() below.
- 	 */
--	dtb_early_va = kernel_mapping_pa_to_va(XIP_FIXUP(dtb_pa));
--#endif
-+	create_kernel_page_table(early_pg_dir, true);
- 
--	dtb_early_pa = dtb_pa;
-+	/* Setup early mapping for FDT early scan */
-+	create_fdt_early_page_table(early_pg_dir, dtb_pa);
- }
-+#endif
- 
- asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- {
-@@ -600,45 +624,21 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- 	BUG_ON((PAGE_OFFSET % PGDIR_SIZE) != 0);
- 	BUG_ON((kernel_map.phys_addr % PMD_SIZE) != 0);
- 
--	pt_ops.alloc_pte = alloc_pte_early;
--	pt_ops.get_pte_virt = get_pte_virt_early;
--#ifndef __PAGETABLE_PMD_FOLDED
--	pt_ops.alloc_pmd = alloc_pmd_early;
--	pt_ops.get_pmd_virt = get_pmd_virt_early;
--#endif
--	/* Setup early PGD for fixmap */
--	create_pgd_mapping(early_pg_dir, FIXADDR_START,
--			   (uintptr_t)fixmap_pgd_next, PGDIR_SIZE, PAGE_TABLE);
-+	setup_early_page_table(dtb_pa);
- 
--#ifndef __PAGETABLE_PMD_FOLDED
--	/* Setup fixmap PMD */
--	create_pmd_mapping(fixmap_pmd, FIXADDR_START,
--			   (uintptr_t)fixmap_pte, PMD_SIZE, PAGE_TABLE);
--	/* Setup trampoline PGD and PMD */
--	create_pgd_mapping(trampoline_pg_dir, kernel_map.virt_addr,
--			   (uintptr_t)trampoline_pmd, PGDIR_SIZE, PAGE_TABLE);
--#ifdef CONFIG_XIP_KERNEL
--	create_pmd_mapping(trampoline_pmd, kernel_map.virt_addr,
--			   kernel_map.xiprom, PMD_SIZE, PAGE_KERNEL_EXEC);
--#else
--	create_pmd_mapping(trampoline_pmd, kernel_map.virt_addr,
--			   kernel_map.phys_addr, PMD_SIZE, PAGE_KERNEL_EXEC);
--#endif
-+#ifndef CONFIG_BUILTIN_DTB
-+	dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PMD_SIZE - 1));
- #else
--	/* Setup trampoline PGD */
--	create_pgd_mapping(trampoline_pg_dir, kernel_map.virt_addr,
--			   kernel_map.phys_addr, PGDIR_SIZE, PAGE_KERNEL_EXEC);
--#endif
--
- 	/*
--	 * Setup early PGD covering entire kernel which will allow
--	 * us to reach paging_init(). We map all memory banks later
--	 * in setup_vm_final() below.
-+	 * For 64-bit kernel, __va can't be used since it would return a linear
-+	 * mapping address whereas dtb_early_va will be used before
-+	 * setup_vm_final installs the linear mapping. For 32-bit kernel, as the
-+	 * kernel is mapped in the linear mapping, that makes no difference.
- 	 */
--	create_kernel_page_table(early_pg_dir, true);
-+	dtb_early_va = kernel_mapping_pa_to_va(dtb_pa);
-+#endif
- 
--	/* Setup early mapping for FDT early scan */
--	create_fdt_early_page_table(early_pg_dir, dtb_pa);
-+	dtb_early_pa = dtb_pa;
- 
- 	/*
- 	 * Bootime fixmap only can handle PMD_SIZE mapping. Thus, boot-ioremap
--- 
-2.30.2
-
+oh, sorry, the empty_flush_buf can't come from userspace so this test is not needed there.
+> 
+> Thanks,
+> Dafna
+> 
+>> +
+>> +    mtk_buf = container_of(vb2_v4l2, struct mtk_video_enc_buf, m2m_buf.vb);
+>> +
+>>       memset(&enc_prm, 0, sizeof(enc_prm));
+>>       if (mtk_buf->param_change == MTK_ENCODE_PARAM_NONE)
+>>           return 0;
+>> @@ -1062,6 +1157,20 @@ static void mtk_venc_worker(struct work_struct *work)
+>>       }
+>>       src_buf = v4l2_m2m_src_buf_remove(ctx->m2m_ctx);
+>> +
+>> +    /*
+>> +     * If we see the flush buffer, send an empty buffer with the LAST flag
+>> +     * to the client. is_flushing will be reset at the time the buffer
+>> +     * is dequeued.
+>> +     */
+>> +    if (src_buf == &ctx->empty_flush_buf.vb) {
+>> +        vb2_set_plane_payload(&dst_buf->vb2_buf, 0, 0);
+>> +        dst_buf->flags |= V4L2_BUF_FLAG_LAST;
+>> +        v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_DONE);
+>> +        v4l2_m2m_job_finish(ctx->dev->m2m_dev_enc, ctx->m2m_ctx);
+>> +        return;
+>> +    }
+>> +
+>>       memset(&frm_buf, 0, sizeof(frm_buf));
+>>       for (i = 0; i < src_buf->vb2_buf.num_planes ; i++) {
+>>           frm_buf.fb_addr[i].dma_addr =
+>> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+>> index 7d7b8cfc2cc5..2dd6fef896df 100644
+>> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+>> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+>> @@ -131,6 +131,7 @@ static int fops_vcodec_open(struct file *file)
+>>       struct mtk_vcodec_dev *dev = video_drvdata(file);
+>>       struct mtk_vcodec_ctx *ctx = NULL;
+>>       int ret = 0;
+>> +    struct vb2_queue *src_vq;
+>>       ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+>>       if (!ctx)
+>> @@ -164,6 +165,9 @@ static int fops_vcodec_open(struct file *file)
+>>                   ret);
+>>           goto err_m2m_ctx_init;
+>>       }
+>> +    src_vq = v4l2_m2m_get_vq(ctx->m2m_ctx,
+>> +                V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE);
+>> +    ctx->empty_flush_buf.vb.vb2_buf.vb2_queue = src_vq;
+>>       mtk_vcodec_enc_set_default_params(ctx);
+>>       if (v4l2_fh_is_singular(&ctx->fh)) {
+>>
