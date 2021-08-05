@@ -2,94 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D16BD3E1AD3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C8D3E1AD5
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240804AbhHERzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:55:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229873AbhHERze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:55:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CDB26113C;
-        Thu,  5 Aug 2021 17:55:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628186119;
-        bh=rVLtjqrUhdZh425E1Zy2DDDa3FlbKL1Kbob+il2W9Kg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gu70gbNtuIx8/+txbiiTbjsW9EBw/QR8zhEnUK8cbgiA5KbbU0BU4Kq3bw2YB8bJZ
-         CzvbT0lCcj0KEERKYY61eaK3VEywNX8I9W1hTu3aAtYsxvTGm1fVTC6pTrP4+D+e7A
-         tXyevUp8Djybpox7SCAVJOUciqn3LLEZGpB32+I0=
-Date:   Thu, 5 Aug 2021 19:55:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: r8188eu: remove label at the end of a
- function
-Message-ID: <YQwmBEAdUiPCbIj0@kroah.com>
-References: <20210805130750.7974-1-martin@kaiser.cx>
- <20210805145026.14572-1-martin@kaiser.cx>
+        id S229873AbhHERzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:55:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54117 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240808AbhHERzq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 13:55:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628186131;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TY2vPAYrdCbgz7dO6xO7134YAuWg1cL9bDHqg/h8rfY=;
+        b=I5jph/acZWIFQBGnTZ7AcMO2avtxnb1+qYVkeMgKkPkM97uojnIi+feLGHVpL2nPcDbDyx
+        URNn+aQWYgffFyVv+yOK1W7GN49BQYcHjKG3PXd3UW+PD9gg3W+yRA8d4ve6KfPsiY7JE3
+        Dy7xl/HMeKQu3iwonANw4GGPNu3AO4w=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-86-l7aSsEdBPIWQwyfk--LZTA-1; Thu, 05 Aug 2021 13:55:30 -0400
+X-MC-Unique: l7aSsEdBPIWQwyfk--LZTA-1
+Received: by mail-wm1-f69.google.com with SMTP id n17-20020a7bc5d10000b0290228d7e174f1so1418854wmk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 10:55:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=TY2vPAYrdCbgz7dO6xO7134YAuWg1cL9bDHqg/h8rfY=;
+        b=Ti3Kc+Fwhch8QI5VOPgzC85OUnY9yh1LtDJoRcI8v0mYk3fIWeG9GDDPVZl6ydB50H
+         wMKO1QPck1thMXv06KXX/dgZ8l71DFdokF+UT0EWeghDnIqA8ENeasB2keY/BTeCdhu/
+         jaFkOx0RCe3RHW5D2WZhyZ9tedHBqmg/u2PF1dEkw1QWmFU0fJILQlUPQ0t1JncxLwmY
+         9r0w2GjdjuY6tmy7stqABxmYS/G5qPPuQgxNGXzs/9kD7hUtDSzlIwp1SxsuZL8o151S
+         MSu9UX+Vp84lEIe3Lcezf4ef7ogryPsOYG/o0QGg4IJCLX7ibNCRJx+fJZisM6WdADjN
+         VRnw==
+X-Gm-Message-State: AOAM533FGqw7R4M/Jcgb2xyHX0bzgSQvI8Q0vFoQhiqLnB1/vk1CPxGg
+        Spzt/g1hHHMuko2xVMrkdGSGXym8Tv0ImYYFg5GVP46SInzlhyaqgQoW8DuZ+maCqPUi6DF22XF
+        eTqLXePv2fzE4O4AIZnVbNxR4
+X-Received: by 2002:a1c:a543:: with SMTP id o64mr6117737wme.103.1628186128899;
+        Thu, 05 Aug 2021 10:55:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJym/WQV4l/ckfV4N8yXvNxdGaRbZVHNTFQGyYKvQ1ClNTG4b7G4ZUej4Xqj3dWztJ3MVSXyTA==
+X-Received: by 2002:a1c:a543:: with SMTP id o64mr6117708wme.103.1628186128694;
+        Thu, 05 Aug 2021 10:55:28 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c630b.dip0.t-ipconnect.de. [91.12.99.11])
+        by smtp.gmail.com with ESMTPSA id 104sm6800116wrc.4.2021.08.05.10.55.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Aug 2021 10:55:28 -0700 (PDT)
+Subject: Re: [PATCH v7 1/2] mm: introduce process_mrelease system call
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+References: <20210805170859.2389276-1-surenb@google.com>
+ <46998d10-d0ca-aeeb-8dcd-41b8130fb756@redhat.com>
+ <CAJuCfpGvqgUWpdL_KNE1tnqH2OjqX64QjBYttoPRtGgXWfONRQ@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <96203d51-5948-d063-4a9c-2eb33e631502@redhat.com>
+Date:   Thu, 5 Aug 2021 19:55:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210805145026.14572-1-martin@kaiser.cx>
+In-Reply-To: <CAJuCfpGvqgUWpdL_KNE1tnqH2OjqX64QjBYttoPRtGgXWfONRQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 04:50:26PM +0200, Martin Kaiser wrote:
-> Compilation fails for me
+On 05.08.21 19:49, Suren Baghdasaryan wrote:
+> On Thu, Aug 5, 2021 at 10:29 AM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 05.08.21 19:08, Suren Baghdasaryan wrote:
+>>> In modern systems it's not unusual to have a system component monitoring
+>>> memory conditions of the system and tasked with keeping system memory
+>>> pressure under control. One way to accomplish that is to kill
+>>> non-essential processes to free up memory for more important ones.
+>>> Examples of this are Facebook's OOM killer daemon called oomd and
+>>> Android's low memory killer daemon called lmkd.
+>>> For such system component it's important to be able to free memory
+>>> quickly and efficiently. Unfortunately the time process takes to free
+>>> up its memory after receiving a SIGKILL might vary based on the state
+>>> of the process (uninterruptible sleep), size and OPP level of the core
+>>> the process is running. A mechanism to free resources of the target
+>>> process in a more predictable way would improve system's ability to
+>>> control its memory pressure.
+>>> Introduce process_mrelease system call that releases memory of a dying
+>>> process from the context of the caller. This way the memory is freed in
+>>> a more controllable way with CPU affinity and priority of the caller.
+>>> The workload of freeing the memory will also be charged to the caller.
+>>> The operation is allowed only on a dying process.
+>>>
+>>> After previous discussions [1, 2, 3] the decision was made [4] to introduce
+>>> a dedicated system call to cover this use case.
+>>>
+>>> The API is as follows,
+>>>
+>>>             int process_mrelease(int pidfd, unsigned int flags);
+>>>
+>>>           DESCRIPTION
+>>>             The process_mrelease() system call is used to free the memory of
+>>>             an exiting process.
+>>>
+>>>             The pidfd selects the process referred to by the PID file
+>>>             descriptor.
+>>>             (See pidfd_open(2) for further information)
+>>>
+>>>             The flags argument is reserved for future use; currently, this
+>>>             argument must be specified as 0.
+>>>
+>>>           RETURN VALUE
+>>>             On success, process_mrelease() returns 0. On error, -1 is
+>>>             returned and errno is set to indicate the error.
+>>>
+>>>           ERRORS
+>>>             EBADF  pidfd is not a valid PID file descriptor.
+>>>
+>>>             EAGAIN Failed to release part of the address space.
+>>>
+>>>             EINTR  The call was interrupted by a signal; see signal(7).
+>>>
+>>>             EINVAL flags is not 0.
+>>>
+>>>             EINVAL The memory of the task cannot be released because the
+>>>                    process is not exiting, the address space is shared
+>>>                    with another live process or there is a core dump in
+>>>                    progress.
+>>>
+>>>             ENOSYS This system call is not supported, for example, without
+>>>                    MMU support built into Linux.
+>>>
+>>>             ESRCH  The target process does not exist (i.e., it has terminated
+>>>                    and been waited on).
+>>>
+>>> [1] https://lore.kernel.org/lkml/20190411014353.113252-3-surenb@google.com/
+>>> [2] https://lore.kernel.org/linux-api/20201113173448.1863419-1-surenb@google.com/
+>>> [3] https://lore.kernel.org/linux-api/20201124053943.1684874-3-surenb@google.com/
+>>> [4] https://lore.kernel.org/linux-api/20201223075712.GA4719@lst.de/
+>>>
+>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>>> ---
+>>> changes in v7:
+>>> - Fixed pidfd_open misspelling, per Andrew Morton
+>>> - Fixed wrong task pinning after find_lock_task_mm() issue, per Michal Hocko
+>>> - Moved MMF_OOM_SKIP check before task_will_free_mem(), per Michal Hocko
+>>>
+>>>    mm/oom_kill.c | 73 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>>>    1 file changed, 73 insertions(+)
+>>>
+>>> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+>>> index c729a4c4a1ac..a4d917b43c73 100644
+>>> --- a/mm/oom_kill.c
+>>> +++ b/mm/oom_kill.c
+>>> @@ -28,6 +28,7 @@
+>>>    #include <linux/sched/task.h>
+>>>    #include <linux/sched/debug.h>
+>>>    #include <linux/swap.h>
+>>> +#include <linux/syscalls.h>
+>>>    #include <linux/timex.h>
+>>>    #include <linux/jiffies.h>
+>>>    #include <linux/cpuset.h>
+>>> @@ -1141,3 +1142,75 @@ void pagefault_out_of_memory(void)
+>>>        out_of_memory(&oc);
+>>>        mutex_unlock(&oom_lock);
+>>>    }
+>>> +
+>>> +SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
+>>> +{
+>>> +#ifdef CONFIG_MMU
+>>> +     struct mm_struct *mm = NULL;
+>>> +     struct task_struct *task;
+>>> +     struct task_struct *p;
+>>> +     unsigned int f_flags;
+>>> +     struct pid *pid;
+>>> +     long ret = 0;
+>>> +
+>>> +     if (flags)
+>>> +             return -EINVAL;
+>>> +
+>>> +     pid = pidfd_get_pid(pidfd, &f_flags);
+>>> +     if (IS_ERR(pid))
+>>> +             return PTR_ERR(pid);
+>>> +
+>>> +     task = get_pid_task(pid, PIDTYPE_PID);
+>>> +     if (!task) {
+>>> +             ret = -ESRCH;
+>>> +             goto put_pid;
+>>> +     }
+>>> +
+>>> +     /*
+>>> +      * If the task is dying and in the process of releasing its memory
+>>> +      * then get its mm.
+>>> +      */
+>>> +     p = find_lock_task_mm(task);
+>>> +     if (!p) {
+>>> +             ret = -ESRCH;
+>>> +             goto put_pid;
+>>> +     }
+>>> +     if (task != p) {
+>>> +             get_task_struct(p);
+>>
+>>
+>> Wouldn't we want to obtain the mm from p ? I thought that was the whole
+>> exercise of going via find_lock_task_mm().
 > 
-> drivers/staging/r8188eu/hal/rtl8188e_dm.c: In function ‘rtl8188e_HalDmWatchDog’:
-> drivers/staging/r8188eu/hal/rtl8188e_dm.c:182:1: error: label at end of compound statement
->   182 | skip_dm:
->       | ^~~~~~~
-> 
-> Remove the label at the end of the function. Replace the jump to this label
-> with a return statement.
-> 
-> Fixes: b398ff88aa36 ("staging: r8188eu: remove return from void functions")
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
-> v2:
->  - add Fixes tag
-> 
->  drivers/staging/r8188eu/hal/rtl8188e_dm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/hal/rtl8188e_dm.c b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-> index b5f42127a751..72b3130eddd2 100644
-> --- a/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-> +++ b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
-> @@ -145,7 +145,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
->  	hw_init_completed = Adapter->hw_init_completed;
->  
->  	if (!hw_init_completed)
-> -		goto skip_dm;
-> +		return;
->  
->  	fw_cur_in_ps = Adapter->pwrctrlpriv.bFwCurrentInPSMode;
->  	rtw_hal_get_hwreg(Adapter, HW_VAR_FWLPS_RF_ON, (u8 *)(&fw_ps_awake));
-> @@ -179,7 +179,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
->  		ODM_CmnInfoUpdate(&hal_data->odmpriv, ODM_CMNINFO_LINK, bLinked);
->  		ODM_DMWatchdog(&hal_data->odmpriv);
->  	}
-> -skip_dm:
-> +
->  	/*  Check GPIO to determine current RF on/off and Pbc status. */
->  	/*  Check Hardware Radio ON/OFF or not */
->  }
-> -- 
-> 2.20.1
-> 
-> 
+> Yes, that's what we do after checking task_will_free_mem().
+> task_will_free_mem() requires us to hold task_lock and
+> find_lock_task_mm() achieves that ensuring that mm is still valid, but
+> it might return a task other than the original one. That's why we do
+> this dance with pinning the new task and unpinning the original one.
+> The same dance is performed in __oom_kill_process(). I was
+> contemplating adding a parameter to find_lock_task_mm() to request
+> this unpin/pin be done within that function but then decided to keep
+> it simple for now.
+> Did I address your question or did I misunderstand it?
 
-How is this not showing up in my build tests?  Odd, let me figure that
-out...
+Excuse my tired eyes, I missed the "task = p;"
+
+Feel free to carry my ack along, even if there are minor changes.
 
 
-greg k-h
+-- 
+Thanks,
+
+David / dhildenb
+
