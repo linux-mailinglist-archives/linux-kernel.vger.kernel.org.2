@@ -2,151 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE653E100A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD963E100D
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239304AbhHEIQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 04:16:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57567 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236074AbhHEIQo (ORCPT
+        id S239360AbhHEIRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 04:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236074AbhHEIR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 04:16:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628151389;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6OyR0YfL10Tzc6NgaDRh/ypwnT8Ag5v6wg9jvLHKd/M=;
-        b=XPzR8oNojsq7z7q3hL7D+ImjGm86H3szaJ5heuJlJRLja6LXmo/prqWT18PX4EEwI/83Jn
-        lStdb7QfUGWE6HDGSb0Ec5hLD34LFH3wTQXqyfPYCxmA4lOVEKrugyvxbCSqCzzL7k9+vs
-        azWYFcUOlJt65womdoHu2CmyGQdtBOI=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-25-UO16ge8sNVCwn9zWkvvZNg-1; Thu, 05 Aug 2021 04:16:28 -0400
-X-MC-Unique: UO16ge8sNVCwn9zWkvvZNg-1
-Received: by mail-ed1-f70.google.com with SMTP id p2-20020a50c9420000b02903a12bbba1ebso2765914edh.6
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 01:16:28 -0700 (PDT)
+        Thu, 5 Aug 2021 04:17:29 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBD6C061765;
+        Thu,  5 Aug 2021 01:17:16 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso7449314pjf.4;
+        Thu, 05 Aug 2021 01:17:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VLbA3pgLzbzCc3X933M7ARwzctVjqF+Nf5QOnSHEp98=;
+        b=IUESRdTzFXaOquIZZ4ewtVnhUnMqT/P0njRRvWcD3Zq2uCgn+tThkF2AOVCfvRxK2Y
+         7SSPkBjGv9RUJU4DD4kyQoZwWmeRORRI2aLAxxzp7x+kxhw4JjIgLlWomI1gQ9rG4A/l
+         rJdpPUXzDF5g4ZGuqHsar2aCWeQvBjUy4blnt7cIKrM6dCyvI9LaxZXGwHXD81rt4GNy
+         R38b5snEdQV8kaWXCudVG2F2uGfMJ3YSCaJO3rMnXO8qXKQOY6/KeieFODhps2TqqXa/
+         nZ0eRfz+P2ihCAHLYvQ6jd7XnhWzLVZR80FMNRS+0E/cKoAe1HqimOFKckraTCp/cMMe
+         HGmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6OyR0YfL10Tzc6NgaDRh/ypwnT8Ag5v6wg9jvLHKd/M=;
-        b=FnCb8BBPbOyBIxwN4pFgtuSpyT2iPxiPZctK/EuXtAYhaYpTt1ih/KknOB9X7HluqN
-         Iq2mNcd9lkus2fKDny+yqFO4ptGquZVp4kcGxs+g0jr26g8g4/uXchxFKx9V/v9k6YI3
-         wzGy0Vz6KmRc+xOsSiyiswxp+xkTePXh+MwTrwN5iR7eRZsbrn9tyjr9iGXlJ+H4cxDJ
-         JErrZJSFIC5iBlFSt33V/nnLGNR/tuDUHzFklzhD5/azAf7jgyuwEdVXPfMRaQgEEgyl
-         uSr+k4BbjpQRsY9Tskk9dcCnXyGKGxZKu5CDA4Mzwj9CdrIYCkcR7ycRVgXoWY3WLx2h
-         4ufA==
-X-Gm-Message-State: AOAM531O2J6hPfXlaerN6MBkyCQdY41b3ZnKvg9SSK1b9xN5igqlcfdU
-        qsVWbcpozgCVTzzm1xaFwEaUk7ovT/pzIvjeQPQvRjyHUlVAHk/L8Tywzd+fcWCGesu14W5KXeI
-        QbdpY93kr/8YteJOetTfFXWWdCsUfAp3Zg6GoOvM0VOvXlICS8qETZjCL8dlYC3VrIrNq92s08U
-        g=
-X-Received: by 2002:a17:906:7c86:: with SMTP id w6mr3525127ejo.493.1628151387563;
-        Thu, 05 Aug 2021 01:16:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwyGY/DfLY8NO+nraUr0WGHor2n79Up5aQSWrTgibfh+xxr7NoXg+UU+z+WjkXoLmCOr5v//A==
-X-Received: by 2002:a17:906:7c86:: with SMTP id w6mr3525114ejo.493.1628151387345;
-        Thu, 05 Aug 2021 01:16:27 -0700 (PDT)
-Received: from x1.bristot.me (host-95-239-202-226.retail.telecomitalia.it. [95.239.202.226])
-        by smtp.gmail.com with ESMTPSA id d23sm1457728ejc.4.2021.08.05.01.16.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Aug 2021 01:16:27 -0700 (PDT)
-Subject: Re: [PATCH] sched/deadline: Fix missing clock update in
- migrate_task_rq_dl()
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bruno Goncalves <bgoncalv@redhat.com>,
-        linux-kernel@vger.kernel.org
-References: <20210804135925.3734605-1-dietmar.eggemann@arm.com>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <57f2dfe5-c1f5-4efb-e565-2e174228ee9a@redhat.com>
-Date:   Thu, 5 Aug 2021 10:16:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VLbA3pgLzbzCc3X933M7ARwzctVjqF+Nf5QOnSHEp98=;
+        b=Qo5tjtbxEy939QEYIR6W0ZosYhIyjnALxjfbsFu2+/qnQ+vjuy4y4bkMiekFYMdRQd
+         dN5tsLKhgeeWcjYNW6rTOyYt1PTsKYR/+14e4UOvd1Wsg33Ec66FFDXoZfKwJlqUyyTX
+         kc3x0CqB+FW/HpPquz7L5qku69r8ZKMOIJfFKtYQm9c2BAN+s7v4pHp5ZhiSfSIyENzR
+         +k3Nt0Ri0x4kbq4ceklkr+uKRNiqvW2VJpN7bdYijoBqgUC0PoZ+w/NwZWL90m1xNhpF
+         vp5i1Ty81kkYIKocN1r0yj/NLG/bnh2zgm9DdoVFfLoCF2qoQHMThbOdeDZ8DEfLYlkr
+         e2zg==
+X-Gm-Message-State: AOAM5324B+gr77Lef0jaYk0BhUm7GXbxY/F5z1Eos0auVYdItogqgaw4
+        ZLFXGAu8BC761cFmp7/fYZVA1fcq+tXcpdPrqxk=
+X-Google-Smtp-Source: ABdhPJy2U8fgEiATTBwkiHyAXSrvD9p45K+VRxiZceHSAtwBpFLi2doKXU6y/syUM84A4X4tcbK84TFXLB2aExO9np4=
+X-Received: by 2002:a63:40c1:: with SMTP id n184mr203926pga.74.1628151435574;
+ Thu, 05 Aug 2021 01:17:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210804135925.3734605-1-dietmar.eggemann@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210804213843.498937-1-david.e.box@linux.intel.com>
+In-Reply-To: <20210804213843.498937-1-david.e.box@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 5 Aug 2021 11:16:36 +0300
+Message-ID: <CAHp75VdCy5P4DKj5EWdG=wsNbfg3XfyOPrW5pELVnoF=qTxqvg@mail.gmail.com>
+Subject: Re: [PATCH v2] platform/x86: intel_pmc_core: Prevent possibile overflow
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        Evgeny Novikov <novikov@ispras.ru>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/21 3:59 PM, Dietmar Eggemann wrote:
-> A missing clock update is causing the following warning:
-> 
-> rq->clock_update_flags < RQCF_ACT_SKIP
-> WARNING: CPU: 112 PID: 2041 at kernel/sched/sched.h:1453
-> sub_running_bw.isra.0+0x190/0x1a0
-> ...
-> CPU: 112 PID: 2041 Comm: sugov:112 Tainted: G W 5.14.0-rc1 #1
-> Hardware name: WIWYNN Mt.Jade Server System
-> B81.030Z1.0007/Mt.Jade Motherboard, BIOS 1.6.20210526 (SCP:
-> 1.06.20210526) 2021/05/26
-> ...
-> Call trace:
->   sub_running_bw.isra.0+0x190/0x1a0
->   migrate_task_rq_dl+0xf8/0x1e0
->   set_task_cpu+0xa8/0x1f0
->   try_to_wake_up+0x150/0x3d4
->   wake_up_q+0x64/0xc0
->   __up_write+0xd0/0x1c0
->   up_write+0x4c/0x2b0
->   cppc_set_perf+0x120/0x2d0
->   cppc_cpufreq_set_target+0xe0/0x1a4 [cppc_cpufreq]
->   __cpufreq_driver_target+0x74/0x140
->   sugov_work+0x64/0x80
->   kthread_worker_fn+0xe0/0x230
->   kthread+0x138/0x140
->   ret_from_fork+0x10/0x18
-> 
-> The task causing this is the `cppc_fie` DL task introduced by
-> commit 1eb5dde674f5 ("cpufreq: CPPC: Add support for frequency
-> invariance").
-> 
-> With CONFIG_ACPI_CPPC_CPUFREQ_FIE=y and schedutil cpufreq governor on
-> slow-switching system (like on this Ampere Altra WIWYNN Mt. Jade Arm
-> Server):
-> 
-> DL task `curr=sugov:112` lets `p=cppc_fie` migrate and since the latter
-> is in `non_contending` state, migrate_task_rq_dl() calls
-> 
->   sub_running_bw()->__sub_running_bw()->cpufreq_update_util()->
->   rq_clock()->assert_clock_updated()
-> 
-> on p.
-> 
-> Fix this by updating the clock for a non_contending task in
-> migrate_task_rq_dl() before calling sub_running_bw().
-> 
-> Reported-by: Bruno Goncalves <bgoncalv@redhat.com>
-> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+On Thu, Aug 5, 2021 at 12:40 AM David E. Box
+<david.e.box@linux.intel.com> wrote:
+>
+> Low Power Mode (LPM) priority is encoded in 4 bits. Yet, this value is used
+> as an index to an array whose element size was less than 16, leading to the
+> possibility of overflow should we read a larger than expected priority.  In
+> addition to the overflow, bad values can lead to incorrect state reporting.
+> So rework the priority code to prevent the overflow and perform some
+> validation of the register. Use the priority register values if they give
+> an ordering of unique numbers between 0 and the maximum number of states.
+> Otherwise, use a default ordering instead.
 
-Reviewed-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+...
 
--- Daniel
 
-> ---
->  kernel/sched/deadline.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index aaacd6cfd42f..4920f498492f 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -1733,6 +1733,7 @@ static void migrate_task_rq_dl(struct task_struct *p, int new_cpu __maybe_unused
->  	 */
->  	raw_spin_rq_lock(rq);
->  	if (p->dl.dl_non_contending) {
-> +		update_rq_clock(rq);
->  		sub_running_bw(&p->dl, &rq->dl);
->  		p->dl.dl_non_contending = 0;
->  		/*
-> 
+> +       if (!bad_pri_reg) {
 
+Not sure why you need three separate blocks each of them with the same
+conditional?
+Perhaps you need to refactor this code, because like this it doesn't look good.
+
+Yes, after I read more I see it, but i think something like
+
+bad_pri_reg = foo1(..., bad_pri_reg);
+...foo2(...);
+...foo3(...);
+
+might be better (or variations of the above).
+
+> +               /*
+> +                * Each byte contains gives the priority level for 2 modes (7:4 and 3:0).
+> +                * In a 32 bit register this allows for describing 8 modes. Store the
+> +                * levels and look for values out of range.
+> +                */
+> +               for (mode = 0; mode < 8; mode++) {
+
+> +                       int level = GENMASK(3, 0) & lpm_pri;
+
+Yoda style?
+
+> -               lpm_priority[pri0] = mode;
+> -               lpm_priority[pri1] = mode + 1;
+> +                       if (level >= LPM_MAX_NUM_MODES) {
+> +                               bad_pri_reg = true;
+> +                               break;
+> +                       }
+> +
+> +                       mode_order[mode] = level;
+> +                       lpm_pri >>= 4;
+> +               }
+>         }
+>
+> +       if (!bad_pri_reg) {
+> +               /* Check that we have unique values */
+> +               for (i = 0; i < LPM_MAX_NUM_MODES - 1; i++)
+> +                       for (j = i + 1; j < LPM_MAX_NUM_MODES; j++)
+> +                               if (mode_order[i] == mode_order[j]) {
+> +                                       bad_pri_reg = true;
+> +                                       break;
+> +                               }
+> +       }
+> +
+> +       /*
+> +        * If bad_pri_reg is false, then mode_order must contain unique values for
+> +        * all priority levels from 0 to LPM_MAX_NUM_MODES and this loop with properly
+
+proper? property?
+
+> +        * overwrite our default ordering. Otherwise just use the default.
+> +        */
+> +       if (!bad_pri_reg)
+> +               /* Get list of modes in priority order */
+> +               for (mode = 0; mode < LPM_MAX_NUM_MODES; mode++)
+> +                       pri_order[mode_order[mode]] = mode;
+> +       else
+> +               dev_warn(&pdev->dev, "Assuming a default substate order for this platform\n");
+> +
+>         /*
+>          * Loop though all modes from lowest to highest priority,
+
+throught
+
+>          * and capture all enabled modes in order
+>          */
+
+...
+
+>  #define LPM_MAX_NUM_MODES                      8
+
+> +/* Must contain LPM_MAX_NUM_MODES elements */
+
+Instead of the comment the static_assert() against ARRAY_SIZE may be better.
+
+> +#define LPM_DEFAULT_PRI                                { 7, 5, 2, 6, 4, 3, 1, 0 }
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
