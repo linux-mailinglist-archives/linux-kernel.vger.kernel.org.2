@@ -2,210 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D62E3E173B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963013E173E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242130AbhHEOqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242005AbhHEOnT (ORCPT
+        id S242165AbhHEOqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 10:46:30 -0400
+Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.120]:16053 "EHLO
+        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242043AbhHEOpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:43:19 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35264C06179B;
-        Thu,  5 Aug 2021 07:43:05 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id F40061F440D0
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <elezegarcia@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Heiko Stuebner <heiko@sntech.de>,
+        Thu, 5 Aug 2021 10:45:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628174703;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=CwTGY3tyiTggufhRZZc5PzbzDRbM+7takEiiMkRCKhk=;
+    b=elT9VPKWNBWzSvkelUN0gWixQmUlXXcWO7AmpcOBD3rKdjd1tidT/v1U7xKBz2BqUv
+    db1DutcLhpQ17stiaAOWSQhgtCHCCDkDXSPVs1lnoUfifFNpkeNqM+LcxxR5lCma9QGB
+    2fHpKTZw4onCNbaguC/7bS2jvumxXGo4xkvDpEMY1xG+50BNNdlGKULbF/uxAIvJJwrZ
+    ruKbf6y0BmX6hlQUM3Pc5d10hKMEShI2HQsA53QfcBqyogUhpW7+/3Bicf9jgGMlBsix
+    1iwNCP0uK4My6YFMqoXQkfrMWEPUrqmssmQ4plgju9GFnEHSh/KyQs1llzrj1weFP0i1
+    SmbQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw4rovw=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.31.0 DYNA|AUTH)
+    with ESMTPSA id Q02727x75Ej27Hh
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Thu, 5 Aug 2021 16:45:02 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v2 1/8] drm/bridge: synopsis: Add mode_fixup and bridge
+ timings support
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <CAG3jFyu50h2oLW0U6hJSpxiKp3Hb5Ow8Ujvg2qdKRuy+uhaahw@mail.gmail.com>
+Date:   Thu, 5 Aug 2021 16:45:01 +0200
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH v3 10/10] media: hantro: Support NV12 on the G2 core
-Date:   Thu,  5 Aug 2021 16:42:46 +0200
-Message-Id: <20210805144246.11998-11-andrzej.p@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210805144246.11998-1-andrzej.p@collabora.com>
-References: <20210805144246.11998-1-andrzej.p@collabora.com>
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        letux-kernel@openphoenux.org, Paul Boddie <paul@boddie.org.uk>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <8F63582D-08E9-4B9D-B2E2-B862830C57D1@goldelico.com>
+References: <cover.1628172477.git.hns@goldelico.com>
+ <15187eccabf39561de226acd8be40b93503cac49.1628172477.git.hns@goldelico.com>
+ <CAG3jFyu50h2oLW0U6hJSpxiKp3Hb5Ow8Ujvg2qdKRuy+uhaahw@mail.gmail.com>
+To:     Robert Foss <robert.foss@linaro.org>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ezequiel Garcia <ezequiel@collabora.com>
+Hi Robert,
 
-The G2 decoder block produces NV12 4x4 tiled format (NV12_4L4).
-Enable the G2 post-processor block, in order to produce regular NV12.
+> Am 05.08.2021 um 16:32 schrieb Robert Foss <robert.foss@linaro.org>:
+>=20
+> Hey Nikolaus,
+>=20
+> Thanks for submitting this series.
+>=20
+> On Thu, 5 Aug 2021 at 16:08, H. Nikolaus Schaller <hns@goldelico.com> =
+wrote:
+>>=20
+>> From: Paul Boddie <paul@boddie.org.uk>
+>>=20
+>> +       .mode_fixup =3D dw_hdmi_bridge_mode_fixup,
+>=20
+> mode_fixup() has been deprecated[1] in favor of atomic_check(), care
+> has to be taken when switching to atomic_check() as it has access to
+> the full atomic commit.
+>=20
+> Looking at this driver, it's using mode_set as well, which should be =
+fixed.
+>=20
+> [1] =
+https://lore.kernel.org/dri-devel/20210722062246.2512666-8-sam@ravnborg.or=
+g/
 
-The logic in hantro_postproc.c is leveraged to take care of allocating
-the extra buffers and configure the post-processor, which is
-significantly simpler than the one on the G1.
+Thanks for this link!
 
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
----
- .../staging/media/hantro/hantro_g2_vp9_dec.c  |  6 ++--
- drivers/staging/media/hantro/hantro_hw.h      |  1 +
- .../staging/media/hantro/hantro_postproc.c    | 31 +++++++++++++++++++
- drivers/staging/media/hantro/imx8m_vpu_hw.c   | 11 +++++++
- 4 files changed, 46 insertions(+), 3 deletions(-)
+I have found some patches which convert mode_fixup -> atomic_check (e.g. =
+3afb2a28fa2404)
+and atomic_check was apparently introduced by b86d895524ab72
 
-diff --git a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-index 45a7be4a43fa..23463f2c10f4 100644
---- a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-+++ b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-@@ -152,7 +152,7 @@ static void config_output(struct hantro_ctx *ctx,
- 	hantro_reg_write(ctx->dev, &g2_out_dis, 0);
- 	hantro_reg_write(ctx->dev, &g2_output_format, 0);
- 
--	luma_addr = vb2_dma_contig_plane_dma_addr(&dst->base.vb.vb2_buf, 0);
-+	luma_addr = hantro_get_dec_buf_addr(ctx, &dst->base.vb.vb2_buf);
- 	hantro_write_addr(ctx->dev, G2_ADDR_DST, luma_addr);
- 
- 	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
-@@ -191,7 +191,7 @@ static void config_ref(struct hantro_ctx *ctx,
- 	hantro_reg_write(ctx->dev, &ref_reg->hor_scale, (refw << 14) / dst->vp9.width);
- 	hantro_reg_write(ctx->dev, &ref_reg->ver_scale, (refh << 14) / dst->vp9.height);
- 
--	luma_addr = vb2_dma_contig_plane_dma_addr(&buf->base.vb.vb2_buf, 0);
-+	luma_addr = hantro_get_dec_buf_addr(ctx, &buf->base.vb.vb2_buf);
- 	hantro_write_addr(ctx->dev, ref_reg->y_base, luma_addr);
- 
- 	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
-@@ -236,7 +236,7 @@ static void config_ref_registers(struct hantro_ctx *ctx,
- 	config_ref(ctx, dst, &ref_regs[1], dec_params, dec_params->golden_frame_ts);
- 	config_ref(ctx, dst, &ref_regs[2], dec_params, dec_params->alt_frame_ts);
- 
--	mv_addr = vb2_dma_contig_plane_dma_addr(&mv_ref->base.vb.vb2_buf, 0) +
-+	mv_addr = hantro_get_dec_buf_addr(ctx, &mv_ref->base.vb.vb2_buf) +
- 		  mv_offset(ctx, dec_params);
- 	hantro_write_addr(ctx->dev, G2_REG_DMV_REF(0), mv_addr);
- 
-diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-index 2961d399fd60..3d4a5dc1e6d5 100644
---- a/drivers/staging/media/hantro/hantro_hw.h
-+++ b/drivers/staging/media/hantro/hantro_hw.h
-@@ -274,6 +274,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
- extern const struct hantro_variant sama5d4_vdec_variant;
- 
- extern const struct hantro_postproc_ops hantro_g1_postproc_ops;
-+extern const struct hantro_postproc_ops hantro_g2_postproc_ops;
- 
- extern const u32 hantro_vp8_dec_mc_filter[8][6];
- 
-diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/staging/media/hantro/hantro_postproc.c
-index 4549aec08feb..bc94bf46d218 100644
---- a/drivers/staging/media/hantro/hantro_postproc.c
-+++ b/drivers/staging/media/hantro/hantro_postproc.c
-@@ -11,6 +11,7 @@
- #include "hantro.h"
- #include "hantro_hw.h"
- #include "hantro_g1_regs.h"
-+#include "hantro_g2_regs.h"
- 
- #define HANTRO_PP_REG_WRITE(vpu, reg_name, val) \
- { \
-@@ -99,6 +100,21 @@ static void hantro_postproc_g1_enable(struct hantro_ctx *ctx)
- 	HANTRO_PP_REG_WRITE(vpu, display_width, ctx->dst_fmt.width);
- }
- 
-+static void hantro_postproc_g2_enable(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+	struct vb2_v4l2_buffer *dst_buf;
-+	size_t chroma_offset = ctx->dst_fmt.width * ctx->dst_fmt.height;
-+	dma_addr_t dst_dma;
-+
-+	dst_buf = hantro_get_dst_buf(ctx);
-+	dst_dma = vb2_dma_contig_plane_dma_addr(&dst_buf->vb2_buf, 0);
-+
-+	hantro_write_addr(vpu, G2_RASTER_SCAN, dst_dma);
-+	hantro_write_addr(vpu, G2_RASTER_SCAN_CHR, dst_dma + chroma_offset);
-+	hantro_reg_write(vpu, &g2_out_rs_e, 1);
-+}
-+
- void hantro_postproc_free(struct hantro_ctx *ctx)
- {
- 	struct hantro_dev *vpu = ctx->dev;
-@@ -127,6 +143,9 @@ int hantro_postproc_alloc(struct hantro_ctx *ctx)
- 	if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_H264_SLICE)
- 		buf_size += hantro_h264_mv_size(ctx->dst_fmt.width,
- 						ctx->dst_fmt.height);
-+	else if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_VP9_FRAME)
-+		buf_size += hantro_vp9_mv_size(ctx->dst_fmt.width,
-+					       ctx->dst_fmt.height);
- 
- 	for (i = 0; i < num_buffers; ++i) {
- 		struct hantro_aux_buf *priv = &ctx->postproc.dec_q[i];
-@@ -152,6 +171,13 @@ static void hantro_postproc_g1_disable(struct hantro_ctx *ctx)
- 	HANTRO_PP_REG_WRITE_S(vpu, pipeline_en, 0x0);
- }
- 
-+static void hantro_postproc_g2_disable(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+
-+	hantro_reg_write(vpu, &g2_out_rs_e, 0);
-+}
-+
- void hantro_postproc_disable(struct hantro_ctx *ctx)
- {
- 	struct hantro_dev *vpu = ctx->dev;
-@@ -172,3 +198,8 @@ const struct hantro_postproc_ops hantro_g1_postproc_ops = {
- 	.enable = hantro_postproc_g1_enable,
- 	.disable = hantro_postproc_g1_disable,
- };
-+
-+const struct hantro_postproc_ops hantro_g2_postproc_ops = {
-+	.enable = hantro_postproc_g2_enable,
-+	.disable = hantro_postproc_g2_disable,
-+};
-diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-index 455a107ffb02..1a43f6fceef9 100644
---- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
-+++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-@@ -132,6 +132,14 @@ static const struct hantro_fmt imx8m_vpu_dec_fmts[] = {
- 	},
- };
- 
-+static const struct hantro_fmt imx8m_vpu_g2_postproc_fmts[] = {
-+	{
-+		.fourcc = V4L2_PIX_FMT_NV12,
-+		.codec_mode = HANTRO_MODE_NONE,
-+		.postprocessed = true,
-+	},
-+};
-+
- static const struct hantro_fmt imx8m_vpu_g2_dec_fmts[] = {
- 	{
- 		.fourcc = V4L2_PIX_FMT_NV12_4L4,
-@@ -301,6 +309,9 @@ const struct hantro_variant imx8mq_vpu_g2_variant = {
- 	.dec_offset = 0x0,
- 	.dec_fmts = imx8m_vpu_g2_dec_fmts,
- 	.num_dec_fmts = ARRAY_SIZE(imx8m_vpu_g2_dec_fmts),
-+	.postproc_fmts = imx8m_vpu_g2_postproc_fmts,
-+	.num_postproc_fmts = ARRAY_SIZE(imx8m_vpu_g2_postproc_fmts),
-+	.postproc_ops = &hantro_g2_postproc_ops,
- 	.codec = HANTRO_HEVC_DECODER | HANTRO_VP9_DECODER,
- 	.codec_ops = imx8mq_vpu_g2_codec_ops,
- 	.init = imx8mq_vpu_hw_init,
--- 
-2.17.1
+That should be sufficient information that we can modify it.
+
+BR and thanks,
+Nikolaus
 
