@@ -2,161 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED643E1A8E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0EA53E1A91
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240333AbhHERja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
+        id S232239AbhHERkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:40:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239557AbhHERj2 (ORCPT
+        with ESMTP id S231225AbhHERkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:39:28 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D468C061765
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 10:39:14 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so16625967pjr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 10:39:14 -0700 (PDT)
+        Thu, 5 Aug 2021 13:40:09 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530A3C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 10:39:54 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id j1so10644902pjv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 10:39:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=25dI2qwAi7TSMZKSjGmJYglQgYbrwOJcxN6GHCDQJtY=;
-        b=uFTSZPbFCNjb65mQPn0Er3edoI5Tmo52V5M7wb5ifPkYDUeTgC/9MnNHvvfC5T4c6D
-         fg9Hf9rnez9xcFsdyFWGWwMsaYVxXUtpI3M0YlwSoG00LC07NRKudSF7L7svQjkGaWlm
-         SnDiKDpT/ncc0KXEeCLwfBU4UOqtHjsqxieGTHZe1/TRJQvEF3XilbYTdFQ6iTWGwGVO
-         bf63iXpy7D3DFsaAmEVEOEROXRQ+dA8w5RfaWGPayfYPszXElngWAshhZgXFVYSGvIYI
-         vAewl8g3XCgeJLYC7KC756Imz2qE8gu7BOzxLBF0o4EioAMBrMAR7grb9J+qR6SyWhXS
-         ReZA==
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qJru5ZDdfo3OsMr7JwiDXcZi7jogvDxDa1GYS35xUbk=;
+        b=m2EGBRm8Rqi+BfXOMMYhmsG3yGBPwwDfgWavRM29H0wBr/zlBio0IfCWNSvYTDuiHW
+         0oyQN0tRT1CJSo0nCm2sWqzq/8UxMKkg1ac4WCNBZTL21/o8NCqmksd5MFuHx14HI2Ra
+         sTE7BLzjN812BY5VgP5sHxUGi8gedh4JJ7wbk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=25dI2qwAi7TSMZKSjGmJYglQgYbrwOJcxN6GHCDQJtY=;
-        b=PzB5FRWtZnKX5wZ1lMbsHet9ZFJ3e9ghvzNIhXd+t56dl97MaWCcH3VTYllLFrJum0
-         1YQl0UQAVxkqPzANqSKF4xqzSeSPq/TvUrRfxKfRlaweI6CfywA765E5bkJ1QGun40UR
-         hILmp1Aa3/GDhJElP4GVy2/zcI+5K30Qzd00reryP3WC4k7D1k3flGvewdK59PolcWNt
-         xdtLlQakXj/0iTcjzjEK5rdmIvFQCtt1ZVKdjkJhvc4eyTwNdPVtkbfMGatzN0qDz4bF
-         Z/Wk/cWfyrkT8f9UMAhtMFfs3d3WeoGALq90NRcQr8n9RCp17DV23zk+3tIpYFet0j4l
-         la5Q==
-X-Gm-Message-State: AOAM5328kL2XpMDubWcHgGiF+7QI32LZZNN3hi08piXuQ2PM5HdCzLzU
-        lF9Zuo6X8Hd8WyhzQ21TVker0w==
-X-Google-Smtp-Source: ABdhPJwQ/vFVl7z3DmEv/wlvSs11OrMFHcZMvxz1lW0lUCxyJlJX0BFvN1tmkExqXFlN2th6Y5N+dA==
-X-Received: by 2002:a17:90a:8049:: with SMTP id e9mr16826271pjw.160.1628185153210;
-        Thu, 05 Aug 2021 10:39:13 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j3sm7677397pfe.98.2021.08.05.10.39.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 10:39:12 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 17:39:08 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "Huang, Kai" <kai.huang@intel.com>,
-        "erdemaktas@google.com" <erdemaktas@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "ckuehl@redhat.com" <ckuehl@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>
-Subject: Re: [RFC PATCH v2 41/69] KVM: x86: Add infrastructure for stolen GPA
- bits
-Message-ID: <YQwiPNRYHtnMA5AL@google.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <c958a131ded780808a687b0f25c02127ca14418a.1625186503.git.isaku.yamahata@intel.com>
- <20210805234424.d14386b79413845b990a18ac@intel.com>
- <YQwMkbBFUuNGnGFw@google.com>
- <78b802bbcf72a087bcf118340eae89f97024d09c.camel@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qJru5ZDdfo3OsMr7JwiDXcZi7jogvDxDa1GYS35xUbk=;
+        b=ZokTZR6MnlYFAjKJS5UlZ5AN/kNbjYx09In3ZZRI1neM96AZ+dsssyezDsZOUDKHaX
+         dDyEozrEgg/+nJd4aYxCVblT0ImM4nblnUif4ebWyZnOuc5RZK3uXp6WhDLbavN7mrsN
+         QGrY8gzUdy0nyhwikAh02lBc1z6tNF9+MQhCg1HOIUrrcmpc18IVi+WO8zVz9etk28X9
+         ZUisGPC7T9LmyIzkpSq9ffMs6VlIS9kwp5JnJU7dDa/j0TQi7OZU9Yer6rJm157Itw78
+         W/EACYTVI0LM7n9jDXOBgJfoBlD0g5sokuPRrbcdzoE6HwoZEEtDv+DSG+3r7eloBIq1
+         EkVw==
+X-Gm-Message-State: AOAM5304JaiSTJ12cDQmfPsjronuzEv+Nsrc/KZMR77YK9ZX3P1cdNli
+        LZHJR5s5X0agBQn3S1mcQweTuSDeF21olVNYJnAxjg==
+X-Google-Smtp-Source: ABdhPJyjJ0q3qYxxZiIvgojFVnsQqIiH/SwwPxtBFFad2j6bNGquDjnugA5USCKDfAtHfa0sPgPywwIPTQ9nyPFayTA=
+X-Received: by 2002:a17:90a:b303:: with SMTP id d3mr5835173pjr.199.1628185193587;
+ Thu, 05 Aug 2021 10:39:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <78b802bbcf72a087bcf118340eae89f97024d09c.camel@intel.com>
+References: <CAOf5uwnZvJWhwf=h8nx=MmZz4BOyaq_BTr8vyDcGHqnBO7jK1Q@mail.gmail.com>
+ <20210805172300.GR26252@sirena.org.uk>
+In-Reply-To: <20210805172300.GR26252@sirena.org.uk>
+From:   Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Date:   Thu, 5 Aug 2021 19:39:42 +0200
+Message-ID: <CAOf5uw=BZ98KGskd-C4NyHQozi7kpca4ZCQE9c8wxkg-W0Aewg@mail.gmail.com>
+Subject: Re: RFC power domain vs generic supply regulator
+To:     Mark Brown <broonie@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021, Edgecombe, Rick P wrote:
-> On Thu, 2021-08-05 at 16:06 +0000, Sean Christopherson wrote:
-> > On Thu, Aug 05, 2021, Kai Huang wrote:
-> > > And removing 'gfn_stolen_bits' in 'struct kvm_mmu_page' could also save
-> > > some memory.
-> > 
-> > But I do like saving memory...  One potentially bad idea would be to
-> > unionize gfn and stolen bits by shifting the stolen bits after they're
-> > extracted from the gpa, e.g.
-> > 
-> > 	union {
-> > 		gfn_t gfn_and_stolen;
-> > 		struct {
-> > 			gfn_t gfn:52;
-> > 			gfn_t stolen:12;
-> > 		}
-> > 	};
-> > 
-> > the downsides being that accessing just the gfn would require an additional
-> > masking operation, and the stolen bits wouldn't align with reality.
-> 
-> It definitely seems like the sp could be packed more efficiently.
+Hi Mark
 
-Yeah, in general it could be optimized.  But for TDP/direct MMUs, we don't care
-thaaat much because there are relatively few shadow pages, versus indirect MMUs
-with thousands or tens of thousands of shadow pages.  Of course, indirect MMUs
-are also the most gluttonous due to the unsync_child_bitmap, gfns, write flooding
-count, etc...
+On Thu, Aug 5, 2021 at 7:23 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Jun 08, 2021 at 08:01:20AM +0200, Michael Nazzareno Trimarchi wrote:
+>
+> > I'm trying to understand how to deal with devices that do not provide
+> > a supply handle connection using the device tree, or if there is a
+> > generic way
+> > to connect to a regulator. The pinctrl has a generic binding inside
+> > dd.c that allow to mux pinout during probing or it allows to define a
+> > power domain,
+> > According to the code I read the power domain can be only connected to
+> > the SoC power domain but in general a generic power domain can be
+> > connected
+> > to any source aka a regulator. For example and spi-nor can be powered
+> > but a gpio regulator or any kind of supply connection and bunch of
+> > devices
+> > can just need a supply if they are probed or binded runtime. Can
+> > someone give me feedback on this topic?
+>
+> I'm having a really hard time parsing the issue you're trying to solve
+> here.  Power domains and regulators are different things, power domains
+> represent blocks with a SoC which have some kind of power control which
+> may involve a combination of things, the drivers for the devices within
+> those domains generally just do runtime PM and then let the driver core
+> figure out what's going on with them.  Regulators are for things with
+> physical supplies that can be seen in the schematic for the board, in
+> general anything that uses a regulator should explicitly say so in its
+> binding - supporting some sort of generic mapping isn't great since it
+> means that we don't have any control over which regulator is which and
+> that makes it hard to add control of the regulators later.  Power
+> domanis may possibly have regulators among the resources they use but
+> that would just be a normal device binding for the power domain.  All of
+> this is orthogonal to when drivers for devices get loaded, that can
+> happen at any point while the system is running and doesn't really
+> affect how the relationships are described.
 
-If we really want to reduce the memory footprint for the common case (TDP MMU),
-the crud that's used only by indirect shadow pages could be shoved into a
-different struct by abusing the struct layout and and wrapping accesses to the
-indirect-only fields with casts/container_of and helpers, e.g.
+So in short you said that if I have a device that has no definition of
+supply in his
+documentation, this device needs to support the supply in his binding
+and make to sense
+to create something like:
 
-struct kvm_mmu_indirect_page {
-	struct kvm_mmu_page this;
+generic-supply = <&regulator_device>;
 
-	gfn_t *gfns;
-	unsigned int unsync_children;
-	DECLARE_BITMAP(unsync_child_bitmap, 512);
+and let dd to pick them up
 
-#ifdef CONFIG_X86_32
-	/*
-	 * Used out of the mmu-lock to avoid reading spte values while an
-	 * update is in progress; see the comments in __get_spte_lockless().
-	 */
-	int clear_spte_count;
-#endif
-
-	/* Number of writes since the last time traversal visited this page.  */
-	atomic_t write_flooding_count;
-}
+Michael
 
 
-> One other idea is the stolen bits could just be recovered from the role
-> bits with a helper, like how the page fault error code stolen bits
-> encoding version of this works.
-
-As in, a generic "stolen_gfn_bits" in the role instead of a per-feature role bit?
-That would avoid the problem of per-feature role bits leading to a pile of
-marshalling code, and wouldn't suffer the masking cost when accessing ->gfn,
-though I'm not sure that matters much.
-
-> If the stolen bits are not fed into the hash calculation though it
-> would change the behavior a bit. Not sure if for better or worse. Also
-> the calculation of hash collisions would need to be aware.
-
-The role is already factored into the collision logic.
-
-> FWIW, I kind of like something like Sean's proposal. It's a bit
-> convoluted, but there are more unused bits in the gfn than the role.
-
-And tightly bound, i.e. there can't be more than gfn_t gfn+gfn_stolen bits.
-
-> Also they are a little more related.
 
 
+-- 
+Michael Nazzareno Trimarchi
+Co-Founder & Chief Executive Officer
+M. +39 347 913 2170
+michael@amarulasolutions.com
+__________________________________
+
+Amarula Solutions BV
+Joop Geesinkweg 125, 1114 AB, Amsterdam, NL
+T. +31 (0)85 111 9172
+info@amarulasolutions.com
+www.amarulasolutions.com
