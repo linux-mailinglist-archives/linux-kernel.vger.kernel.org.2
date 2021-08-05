@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A0F3E152E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BAE3E152B
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241564AbhHEM5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:57:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:44926 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241557AbhHEM5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:57:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 134F411FB;
-        Thu,  5 Aug 2021 05:57:29 -0700 (PDT)
-Received: from e121896.arm.com (unknown [10.57.40.41])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A3F4D3F719;
-        Thu,  5 Aug 2021 05:57:26 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     acme@kernel.org, mathieu.poirier@linaro.org, leo.yan@linaro.org,
-        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org
-Cc:     suzuki.poulose@arm.com, mike.leach@linaro.org,
-        James Clark <james.clark@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/1] perf cs-etm: Add warnings for missing DSOs
-Date:   Thu,  5 Aug 2021 13:56:34 +0100
-Message-Id: <20210805125634.873368-2-james.clark@arm.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20210805125634.873368-1-james.clark@arm.com>
-References: <20210805125634.873368-1-james.clark@arm.com>
+        id S241539AbhHEM5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:57:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42778 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232615AbhHEM5J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 08:57:09 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628168213;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RVf3PfykKYQU3CTBy9ZESamUrkWVChfXxQyzL80BiXo=;
+        b=peYGOaIZKlNcKu82FZ+29EvQTK9tEiX9kAm7iStGMPWHKrfF5CKz0fUUr3DKoGChDSRNhZ
+        W2onQknbLQQk9eXa7/bsxV7qyF7xILLb6R0/dqSl2cCCULJFViJD8v3Q/R1oazJYnq5ttu
+        Ei9HChS0r0EJBqGLLS4KaqThoDy/M1Noqi7u4D7CKVIaBDtlhRIMTIsKd7P2k6e2CGX6oC
+        1cx9E60OjNHEn88P88FtxNrD2vjNChOuX9B/4HZSq3qK6xmwh+KZLif0ShScod+k3krRlu
+        n5FISmyIo33SzWJX78HtSQqcqKaqdBHSUz+piX+WjM69mbBp64XvpMjwrHh/hw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628168213;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RVf3PfykKYQU3CTBy9ZESamUrkWVChfXxQyzL80BiXo=;
+        b=lGkYg8f60GgKq3ZFgWC+c4sOHP6+KK3gi0j7kzgpuabkhVPPQbRS3Os2psr65fU4LDaRk3
+        Hm9RSNyD5dvCB+BQ==
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Hugh Dickins <hughd@google.com>, Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 2/2] mm/vmstat: Protect per cpu variables with preempt
+ disable on RT
+In-Reply-To: <20210804142306.GE6464@techsingularity.net>
+References: <20210723100034.13353-1-mgorman@techsingularity.net>
+ <20210723100034.13353-3-mgorman@techsingularity.net> <87czqu2iew.ffs@tglx>
+ <20210804095425.GA6464@techsingularity.net>
+ <91b2f893-eb6a-d91d-3769-baba8601b0f6@suse.cz>
+ <20210804142306.GE6464@techsingularity.net>
+Date:   Thu, 05 Aug 2021 14:56:53 +0200
+Message-ID: <87h7g4123u.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently decode will silently fail if no binary data is available for
-the decode. This is made worse if only partial data is available because
-the decode will appear to work, but any trace from that missing DSO will
-silently not be generated.
+On Wed, Aug 04 2021 at 15:23, Mel Gorman wrote:
+Mel,
 
-Add a UI popup once if there is any data missing, and then warn in the
-bottom left for each individual DSO that's missing.
+> On Wed, Aug 04, 2021 at 03:42:25PM +0200, Vlastimil Babka wrote:
+>> The idea was not build-time, but runtime (hidden behind lockdep, VM_DEBUG or
+>> whatnot), i.e.:
+>> 
+>> <sched_expert> what that code needs is switch(item) { case foo1: case foo2:
+>> lockdep_assert_irqs_disabled(); break; case bar1: case bar2:
+>> lockdep_assert_preempt_disabled(); lockdep_assert_no_in_irq(); break; } or
+>> something along those lines
+>> 
+> Ok, that would potentially work. It may not even need to split the stats
+> into different enums. Simply document which stats need protection from
+> IRQ or preemption and use PROVE_LOCKING to check if preemption or IRQs
+> are disabled depending on the kernel config. I don't think it gets rid
+> of preempt_disable_rt unless the API was completely reworked with entry
+> points that describe the locking requirements. That would be tricky
+> because the requirements differ between kernel configurations.
 
-Signed-off-by: James Clark <james.clark@arm.com>
----
- tools/perf/util/cs-etm.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+Right. This won't get rid of the preempt disabling on RT, but I think we
+should rather open code this
 
-diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-index f4b2bff533f3..b59d234e437d 100644
---- a/tools/perf/util/cs-etm.c
-+++ b/tools/perf/util/cs-etm.c
-@@ -716,8 +716,17 @@ static u32 cs_etm__mem_access(struct cs_etm_queue *etmq, u8 trace_chan_id,
- 
- 	len = dso__data_read_offset(al.map->dso, machine, offset, buffer, size);
- 
--	if (len <= 0)
-+	if (len <= 0) {
-+		ui__warning_once("CS ETM Trace: Missing DSO. Use 'perf archive' or debuginfod to export data from the traced system.\n"
-+				 "              Enable CONFIG_PROC_KCORE or use option '-k /path/to/vmlinux' for kernel symbols.\n");
-+		if (!al.map->dso->auxtrace_warned) {
-+			pr_err("CS ETM Trace: Debug data not found for address %#"PRIx64" in %s\n",
-+				    address,
-+				    al.map->dso->long_name ? al.map->dso->long_name : "Unknown");
-+			al.map->dso->auxtrace_warned = true;
-+		}
- 		return 0;
-+	}
- 
- 	return len;
- }
--- 
-2.23.0
+       if (IS_ENABLED(CONFIG_PREEMPT_RT))
+       		preempt_dis/enable();
 
+instead of proliferating these helper macros which have only one user left.
+
+Thanks,
+
+        tglx
