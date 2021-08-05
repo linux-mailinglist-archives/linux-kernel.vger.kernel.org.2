@@ -2,253 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802043E18F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B36F3E18E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242843AbhHEP54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:57:56 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:20531 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242837AbhHEP5u (ORCPT
+        id S242801AbhHEP5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242750AbhHEP5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:57:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1628179056; x=1659715056;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=AQl9AlCuDacGfJoIF98Qycj10z8f5287AQL5vcdN88k=;
-  b=TeXVFCBHPVWKctvrYcQ+3fuzCmis0XZ/8jUWNz3Wrfblv4oJTsPfH2jm
-   vZvuVRpbcI+0AeftRJvykGQOTUm775eGtIZVTQZOBOLjpLYpSiwdSXXkG
-   2BSBWVPiwz6eeP3nhdDDOvKslDdRa4RKs00J/Zb1uRYqzVLBoaGOzccj+
-   0zV9nr8IMLwbsZ4LNsqRY2BXdZLc9rKWxD4xfmRIJ01GfETWxA/8Te2rY
-   uuU9Tu95MSpeuulPGP3HVSz40TF6Cgb9mp+K5WUMvGGFGfJfvHX+lubMY
-   JK3eU+L3viIa21C/qy90BrdPGca+MBjizD8Jb23m+uKQxzapABAgXwHAV
-   A==;
-IronPort-SDR: UfZ+c3PsOzRwMGoeRX9G5K4cr37RM9qbpUsnKFxmPFvrtdZ9BtoYJdT8n/e2B1MKhNE0XNSzkW
- 4PCYuEl39IzuUP2JiEHBRLqEmoABq/AwoGiT9Dq1Sq0sY7WNh7CcInijDO0JnxgZQ4456P2p/6
- FDvnMH2euq9vjNOB/AMlVUUVpMDF87kyWB2RPpaI7AwCM0STBJlvf45GD7JYJFG2MaEc9vJ4yo
- N0ZfPuLBS0KQIJrJxOVIiccgiphL6YrtV7GOA4c/v5lZ3Kfc1HNA03UU0sqWNACyyRrypfOvPp
- tIH/Z26bgxSPSeXXBSbailrP
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="127242435"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Aug 2021 08:57:35 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 08:57:35 -0700
-Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 5 Aug 2021 08:57:31 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
-        <arnd@arndb.de>, <olof@lixom.net>, <soc@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Adam Porter <porter.adam@gmail.com>,
-        "Claudiu Beznea" <claudiu.beznea@microchip.com>
-Subject: [PATCH 7/7] ARM: dts: at91: add CalAmp LMU5000 board
-Date:   Thu, 5 Aug 2021 18:53:57 +0300
-Message-ID: <20210805155357.594414-8-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210805155357.594414-1-claudiu.beznea@microchip.com>
-References: <20210805155357.594414-1-claudiu.beznea@microchip.com>
+        Thu, 5 Aug 2021 11:57:02 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6431C061765;
+        Thu,  5 Aug 2021 08:56:45 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so15936500pjs.0;
+        Thu, 05 Aug 2021 08:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RCTsDCtEUr9crU7FdVukkrAFOZDkX3iu2puUZlCshpI=;
+        b=QLTD+I4si6TRStW3i+byEh+1Irtr6ILej9vo4oW1Nn2U3wtKPus5Q6l0kyCkqfLQ+P
+         hZ8yjDAd0Nuc6MtizkDbmXNItH98ZjFBLjtXtMxv39zNJnaZWCHW2ngj5q4Pu9jNvfq8
+         bzNSavZ4ty6c8S6Sfv/hFxaTSSnUMx90F8xfVWQm9z5xV1zhBRpVu10ETufiRpOiQTD9
+         RzE6mO6mQczpUPW+Q+r00eX58g42C1HasWKWfZ2UVeAFyJj+HwJU606hzf87gKJ/+ooV
+         BuwmRJ98aX+tfm7YNSXUbt4iN34dCtoubVxnaF1USweLp+Vjbulgjcf9sDEiBTuejvtR
+         5IZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RCTsDCtEUr9crU7FdVukkrAFOZDkX3iu2puUZlCshpI=;
+        b=EHfJJozw/hQz5GwvsaCq8Iq3qEMyOZtJi0XpHavyO1KW0I5B7auRPW5tlJrZHThPYv
+         kk+7dZ3hT8+2rZ8ryzNhxb8dpdcBrIqXnARc0m+08jj8SBIxy+pB5xYzTGWCBDdDft67
+         3Nl84dBBsTXpduqY5o2XugHIQT2ITRoosnjR1tHKPh+u45fYF64iCO1lt6kUN0pYIUF/
+         AWyQPIFO3qq3EJ29UuKCEJVgka1NGKNz3D/HXx4ZPkM3mb8oMNVMwJKc2gUb4PDu04gm
+         tlELCcwPHCcn7vRVHSw4GvMtG9IHkU64YP9lqXN2bCAcI5mlybvWWRKDLDDffn1Vh2aI
+         BWJA==
+X-Gm-Message-State: AOAM531/PFKc26owJu55j2MRHOwuPlKSZTDd9nL5zjTMybOWj3mR/RFR
+        uSEtHfLqnHjPrLcGQMBmP40=
+X-Google-Smtp-Source: ABdhPJx2CcJ9YMvvKydKzMmm/L2XWhlBqcisHtQ6BBUyv1YcZ1T2Ns9MTQ4Jit08qy2zQW953vHgXw==
+X-Received: by 2002:a17:902:9a46:b029:12c:9aae:daac with SMTP id x6-20020a1709029a46b029012c9aaedaacmr4504908plv.78.1628179005359;
+        Thu, 05 Aug 2021 08:56:45 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
+        by smtp.gmail.com with ESMTPSA id m1sm4685977pfk.84.2021.08.05.08.56.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Aug 2021 08:56:45 -0700 (PDT)
+Subject: Re: [PATCH V2 10/14] DMA: Add dma_map_decrypted/dma_unmap_encrypted()
+ function
+From:   Tianyu Lan <ltykernel@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        Tianyu.Lan@microsoft.com, rppt@kernel.org,
+        kirill.shutemov@linux.intel.com, akpm@linux-foundation.org,
+        brijesh.singh@amd.com, thomas.lendacky@amd.com, pgonda@google.com,
+        david@redhat.com, krish.sadhukhan@oracle.com, saravanand@fb.com,
+        aneesh.kumar@linux.ibm.com, xen-devel@lists.xenproject.org,
+        martin.b.radev@gmail.com, ardb@kernel.org, rientjes@google.com,
+        tj@kernel.org, keescook@chromium.org,
+        michael.h.kelley@microsoft.com
+References: <20210804184513.512888-1-ltykernel@gmail.com>
+ <20210804184513.512888-11-ltykernel@gmail.com>
+Message-ID: <fc36c85f-cc34-5ad2-8f9c-06dbe85ca165@gmail.com>
+Date:   Thu, 5 Aug 2021 23:56:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <20210804184513.512888-11-ltykernel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adam Porter <porter.adam@gmail.com>
+Hi Christoph:
+      Could you have a look at this patch? It adds new API 
+dma_map_decrypted() to do memory decrypted and remap. It will
+be used in the swiotlb code.
 
-Add CalAmp LMU5000 board. The base device tree is from OpenWrt tree and
-with the addition of this patch there will be no need to maintain it
-separatelly in OpenWrt.
+Thanks.
 
-[porter.adam: original author of patch in OpenWrt]
-Signed-off-by: Adam Porter <porter.adam@gmail.com>
-[claudiu.beznea: fixed compilation warnings, use &<lable> syntax,
- sorted nodes in alphabetical order, adapted flash to new support
- in kernel 5.14, use proper compatibles according to kernel 5.14,
- use macros instead of hard coded numbers for pinctrl phandles and
- for all pinctrl references, add pinctrl-names, pinctrl-X where
- necessary]
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- arch/arm/boot/dts/Makefile         |   1 +
- arch/arm/boot/dts/at91-lmu5000.dts | 148 +++++++++++++++++++++++++++++
- 2 files changed, 149 insertions(+)
- create mode 100644 arch/arm/boot/dts/at91-lmu5000.dts
-
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 34f6ead22048..07be55262516 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -25,6 +25,7 @@ dtb-$(CONFIG_SOC_AT91SAM9) += \
- 	usb_a9263.dtb \
- 	at91-foxg20.dtb \
- 	at91-kizbox.dtb \
-+	at91-lmu5000.dtb \
- 	at91sam9g20ek.dtb \
- 	at91sam9g20ek_2mmc.dtb \
- 	tny_a9g20.dtb \
-diff --git a/arch/arm/boot/dts/at91-lmu5000.dts b/arch/arm/boot/dts/at91-lmu5000.dts
-new file mode 100644
-index 000000000000..6a52728cc98f
---- /dev/null
-+++ b/arch/arm/boot/dts/at91-lmu5000.dts
-@@ -0,0 +1,148 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Device Tree file for CalAmp LMU5000 board
-+ *
-+ * Copyright (C) 2013 Adam Porter <porter.adam@gmail.com>
-+ */
-+
-+/dts-v1/;
-+#include "at91sam9g20.dtsi"
-+
-+/ {
-+	model = "CalAmp LMU5000";
-+	compatible = "calamp,lmu5000", "atmel,at91sam9g20", "atmel,at91sam9";
-+
-+	chosen {
-+		bootargs = "mem=64M console=ttyS0,115200 rootfstype=jffs2";
-+	};
-+
-+	memory {
-+		reg = <0x20000000 0x4000000>;
-+	};
-+
-+	clocks {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges;
-+
-+		main_clock: clock@0 {
-+			compatible = "atmel,osc", "fixed-clock";
-+			clock-frequency = <18432000>;
-+		};
-+	};
-+};
-+
-+&dbgu {
-+	status = "okay";
-+};
-+
-+&ebi {
-+	status = "okay";
-+
-+	nand_controller: nand-controller {
-+		pinctrl-0 = <&pinctrl_nand_cs &pinctrl_nand_rb>;
-+		pinctrl-names = "default";
-+		status = "okay";
-+
-+		nand@3 {
-+			reg = <0x3 0x0 0x800000>;
-+			rb-gpios = <&pioC 13 GPIO_ACTIVE_HIGH>;
-+			cs-gpios = <&pioC 14 GPIO_ACTIVE_HIGH>;
-+			nand-bus-width = <8>;
-+			nand-ecc-mode = "soft";
-+			nand-on-flash-bbt;
-+			label = "atmel_nand";
-+			status = "okay";
-+
-+			partitions {
-+				compatible = "fixed-partitions";
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+
-+				kernel@0 {
-+					label = "kernel";
-+					reg = <0x0 0x400000>;
-+				};
-+
-+				rootfs@400000 {
-+					label = "rootfs";
-+					reg = <0x400000 0x3C00000>;
-+				};
-+
-+				user1@4000000 {
-+					label = "user1";
-+					reg = <0x4000000 0x2000000>;
-+				};
-+
-+				user2@6000000 {
-+					label = "user2";
-+					reg = <0x6000000 0x2000000>;
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&macb0 {
-+	phy-mode = "mii";
-+	status = "okay";
-+};
-+
-+&pinctrl {
-+	board {
-+		pinctrl_pck0_as_mck: pck0_as_mck {
-+			atmel,pins = <AT91_PIOC 1 AT91_PERIPH_B AT91_PINCTRL_NONE>;
-+		};
-+	};
-+
-+	usb0 {
-+		pinctrl_usb1_vbus_gpio: usb0_vbus_gpio {
-+			atmel,pins = <AT91_PIOC 5 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
-+		};
-+	};
-+};
-+
-+&ssc0 {
-+	status = "okay";
-+	pinctrl-0 = <&pinctrl_ssc0_tx>;
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	status = "okay";
-+};
-+
-+&usart0 {
-+	pinctrl-0 =
-+		<&pinctrl_usart0
-+		 &pinctrl_usart0_rts
-+		 &pinctrl_usart0_cts
-+		 &pinctrl_usart0_dtr_dsr
-+		 &pinctrl_usart0_dcd
-+		 &pinctrl_usart0_ri>;
-+	status = "okay";
-+};
-+
-+&usart2 {
-+	status = "okay";
-+};
-+
-+&usb0 {
-+	num-ports = <2>;
-+	status = "okay";
-+};
-+
-+&usb1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usb1_vbus_gpio>;
-+	atmel,vbus-gpio = <&pioC 5 GPIO_ACTIVE_HIGH>;
-+	status = "okay";
-+};
-+
-+&watchdog {
-+	status = "okay";
-+};
-+
--- 
-2.25.1
-
+On 8/5/2021 2:45 AM, Tianyu Lan wrote:
+> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+> 
+> In Hyper-V Isolation VM with AMD SEV, swiotlb boucne buffer
+> needs to be mapped into address space above vTOM and so
+> introduce dma_map_decrypted/dma_unmap_encrypted() to map/unmap
+> bounce buffer memory. The platform can populate man/unmap callback
+> in the dma memory decrypted ops.
+> 
+> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+> ---
+>   include/linux/dma-map-ops.h |  9 +++++++++
+>   kernel/dma/mapping.c        | 22 ++++++++++++++++++++++
+>   2 files changed, 31 insertions(+)
+> 
+> diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
+> index 0d53a96a3d64..01d60a024e45 100644
+> --- a/include/linux/dma-map-ops.h
+> +++ b/include/linux/dma-map-ops.h
+> @@ -71,6 +71,11 @@ struct dma_map_ops {
+>   	unsigned long (*get_merge_boundary)(struct device *dev);
+>   };
+>   
+> +struct dma_memory_decrypted_ops {
+> +	void *(*map)(void *addr, unsigned long size);
+> +	void (*unmap)(void *addr);
+> +};
+> +
+>   #ifdef CONFIG_DMA_OPS
+>   #include <asm/dma-mapping.h>
+>   
+> @@ -374,6 +379,10 @@ static inline void debug_dma_dump_mappings(struct device *dev)
+>   }
+>   #endif /* CONFIG_DMA_API_DEBUG */
+>   
+> +void *dma_map_decrypted(void *addr, unsigned long size);
+> +int dma_unmap_decrypted(void *addr, unsigned long size);
+> +
+>   extern const struct dma_map_ops dma_dummy_ops;
+> +extern struct dma_memory_decrypted_ops dma_memory_generic_decrypted_ops;
+>   
+>   #endif /* _LINUX_DMA_MAP_OPS_H */
+> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+> index 2b06a809d0b9..6fb150dc1750 100644
+> --- a/kernel/dma/mapping.c
+> +++ b/kernel/dma/mapping.c
+> @@ -13,11 +13,13 @@
+>   #include <linux/of_device.h>
+>   #include <linux/slab.h>
+>   #include <linux/vmalloc.h>
+> +#include <asm/set_memory.h>
+>   #include "debug.h"
+>   #include "direct.h"
+>   
+>   bool dma_default_coherent;
+>   
+> +struct dma_memory_decrypted_ops dma_memory_generic_decrypted_ops;
+>   /*
+>    * Managed DMA API
+>    */
+> @@ -736,3 +738,23 @@ unsigned long dma_get_merge_boundary(struct device *dev)
+>   	return ops->get_merge_boundary(dev);
+>   }
+>   EXPORT_SYMBOL_GPL(dma_get_merge_boundary);
+> +
+> +void *dma_map_decrypted(void *addr, unsigned long size)
+> +{
+> +	if (set_memory_decrypted((unsigned long)addr,
+> +				 size / PAGE_SIZE))
+> +		return NULL;
+> +
+> +	if (dma_memory_generic_decrypted_ops.map)
+> +		return dma_memory_generic_decrypted_ops.map(addr, size);
+> +	else
+> +		return addr;
+> +}
+> +
+> +int dma_unmap_encrypted(void *addr, unsigned long size)
+> +{
+> +	if (dma_memory_generic_decrypted_ops.unmap)
+> +		dma_memory_generic_decrypted_ops.unmap(addr);
+> +
+> +	return set_memory_encrypted((unsigned long)addr, size / PAGE_SIZE);
+> +}
+> 
