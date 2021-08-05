@@ -2,61 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E26E3E1AB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7F63E1B38
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240407AbhHERoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:44:03 -0400
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:44080 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240726AbhHERn4 (ORCPT
+        id S241184AbhHES2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:28:05 -0400
+Received: from tartarus.angband.pl ([51.83.246.204]:60480 "EHLO
+        tartarus.angband.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229771AbhHES2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:43:56 -0400
-Received: from localhost.localdomain ([217.128.214.245])
-        by mwinf5d63 with ME
-        id dtje250085JEng903tjfsu; Thu, 05 Aug 2021 19:43:39 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 05 Aug 2021 19:43:39 +0200
-X-ME-IP: 217.128.214.245
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     haris.iqbal@ionos.com, jinpu.wang@ionos.com, dledford@redhat.com,
-        jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] RDMA/rtrs: Remove a useless kfree
-Date:   Thu,  5 Aug 2021 19:43:36 +0200
-Message-Id: <9a57c9f837fa2c6f0070578a1bc4840688f62962.1628185335.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Thu, 5 Aug 2021 14:28:03 -0400
+X-Greylist: delayed 2259 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Aug 2021 14:28:03 EDT
+Received: from kilobyte by tartarus.angband.pl with local (Exim 4.94.2)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1mBhR0-001psM-2y; Thu, 05 Aug 2021 19:45:34 +0200
+Date:   Thu, 5 Aug 2021 19:45:34 +0200
+From:   Adam Borowski <kilobyte@angband.pl>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, jlayton@kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        dchinner@redhat.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Could it be made possible to offer "supplementary" data to a DIO
+ write ?
+Message-ID: <YQwjvlvnBNPJbMwc@angband.pl>
+References: <YQvpDP/tdkG4MMGs@casper.infradead.org>
+ <YQvbiCubotHz6cN7@casper.infradead.org>
+ <1017390.1628158757@warthog.procyon.org.uk>
+ <1170464.1628168823@warthog.procyon.org.uk>
+ <1186271.1628174281@warthog.procyon.org.uk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1186271.1628174281@warthog.procyon.org.uk>
+X-Junkbait: aaron@angband.pl, zzyx@angband.pl
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'sess->rbufs' is known to be NULL here, so there is no point in kfree'ing
-it. It is just a no-op.
+On Thu, Aug 05, 2021 at 03:38:01PM +0100, David Howells wrote:
+> Generally, I prefer to write back the minimum I can get away with (as does the
+> Linux NFS client AFAICT).
+> 
+> However, if everyone agrees that we should only ever write back a multiple of
+> a certain block size, even to network filesystems, what block size should that
+> be?  Note that PAGE_SIZE varies across arches and folios are going to
+> exacerbate this.  What I don't want to happen is that you read from a file, it
+> creates, say, a 4M (or larger) folio; you change three bytes and then you're
+> forced to write back the entire 4M folio.
 
-Remove the useless kfree.
+grep . /sys/class/block/*/queue/minimum_io_size
+and also hw_sector_size, logical_block_size, physical_block_size.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 1 -
- 1 file changed, 1 deletion(-)
+The data seems suspect to me, though.  I get 4096 for a spinner (looks
+sane), 512 for nvme (less than page size), and 4096 for pmem (I'd expect
+cacheline or ECC block).
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index ece3205531b8..fc440a08e112 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1844,7 +1844,6 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
- 		}
- 
- 		if (!sess->rbufs) {
--			kfree(sess->rbufs);
- 			sess->rbufs = kcalloc(queue_depth, sizeof(*sess->rbufs),
- 					      GFP_KERNEL);
- 			if (!sess->rbufs)
+
+Meow!
 -- 
-2.30.2
-
+⢀⣴⠾⠻⢶⣦⠀
+⣾⠁⢠⠒⠀⣿⡁
+⢿⡄⠘⠷⠚⠋⠀ Certified airhead; got the CT scan to prove that!
+⠈⠳⣄⠀⠀⠀⠀
