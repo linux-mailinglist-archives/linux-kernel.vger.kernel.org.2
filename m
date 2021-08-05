@@ -2,145 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D831A3E0C17
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 03:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319103E0C16
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 03:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237506AbhHEBc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 21:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
+        id S237422AbhHEBcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 21:32:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231964AbhHEBcY (ORCPT
+        with ESMTP id S229655AbhHEBcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 21:32:24 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB2B6C061765
-        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 18:32:10 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id a13so4736407iol.5
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 18:32:10 -0700 (PDT)
+        Wed, 4 Aug 2021 21:32:23 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99DA1C061765
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 18:32:04 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id dk2so2149262qvb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 18:32:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8t/9JoKQ84VqwJveoASuBq/SiF9ShqKfSF5avleoS2Y=;
-        b=C3RFGN7uI0MtXGUlkyPzFRzTC7Jzkn64LIwBYM7TWUhOmBbdsUpjtSCMzkohdYtoVT
-         iN0+5LFxboXB/T7fqk5b8IgBrBYIVEZXMGY2Ad4Q4kaZdI+ZGQ2QxkI+rkwGnEQ6s7K5
-         /L3qGhmGAxscO5B/+LDX9PbWsXhF9XaRPttrghAWkUq8Q6ZyAss+q8Eu/ASKSokft8M2
-         oMxe4CGA+y76Az387YSOjUjZQHFJQwE0sPC4XyrzkG+vBmg0/178+fuEBJUkdlxQwJC9
-         c+9xby+JIzF1vDElt1CCimQyz/jC9TcSV5iGPeoYe+eVsc7dMoOTOWdAHO5j/riHwxbl
-         ty/A==
+         :cc:content-transfer-encoding;
+        bh=YAY2Qb7WkkEBSO40d4z2FxXhlVqwrIfM7DdfegF+11A=;
+        b=oYHCWdyF1pjme34fzDrFdwZKziOMp7upVq+xM0ncoBA0N8GvIjlBqOlFl9gcgKvdiI
+         3JMm+rFVd9/bAKdars2xy6UTpgl3leFMmWYmeeDu8Dz2KyOrAT+CRoFDSfibqji+a9Fp
+         4ZDmpvcETx38unSGLiDw5YOUyHzt4uYHhagVxab20nZpbnKwBWBjCvC+b/Vd7M7fmy1H
+         hOxH3TDXfq7WoBXHpaRP4WQewOxB/yJJeumXPnHPWgGHxBXuNaQ8IVOicuNtHnC0n01d
+         eUNN1HNiuoB6m9ijCPxSci89r0q42Q9mEVX0vVfZWj4dPXg2z6C6IjC0LC0ch0LNLxAd
+         cs6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8t/9JoKQ84VqwJveoASuBq/SiF9ShqKfSF5avleoS2Y=;
-        b=e8A5UPGqmMgoCs2T33DPpgdtSK4cbuHrKBLRacE89Upe8fJgbFBCJfCZSAxBLWqj9E
-         m48pUl6Mr0z1lXRDdatW6hWcLDILF34XxjfmJ14v9JwlO2qRkhLSiiRQ8ytSUGPe1EQW
-         pJyNoxHpnmUdISaEVmFcXGRkTrnhb+ziIuGHcu78vA3G6J3RxXV2qyNxCdv0ZEdEWsH+
-         NlALKplCVL319525hXqA+Z1QQZ5J5ISmkUnKQ+MXBAdmSNaW+BsjEKza6dVi9pWet8CM
-         9J0VySnuwexOlrAo9WlmtaZ0gFfGpv7gOX+gEqFG/uKhj1kPe+ROwQf2ON2dCtzC+HXA
-         ScIQ==
-X-Gm-Message-State: AOAM532IfqVojAtuPTi7ZSvCtmEKhJJr1v3YjIIKQitJg16qAn8fbKeb
-        4ySpdzz8+lVA37y7Isvep5EGDCxvgKNYsLAI69kAoQ==
-X-Google-Smtp-Source: ABdhPJzNeGoDTJThBCcssnSIlKytrqrh3D64Eh70SDGoDko9ZUB1isVRapNEbTGJvaYTkuJ7lq07oarOMyLEXuSukyQ=
-X-Received: by 2002:a02:5d0a:: with SMTP id w10mr2158883jaa.47.1628127129927;
- Wed, 04 Aug 2021 18:32:09 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YAY2Qb7WkkEBSO40d4z2FxXhlVqwrIfM7DdfegF+11A=;
+        b=am5JxpPfb7MsfIiAr5i/8RpwlgFDjDUczMziKc10qWcZZxvwsTOQSJS0flsJjjTf/g
+         BWqHDAaKPQykjSShPRDuiTxBB3KTAfDBPxAtLlY4lo7aVb6iH38ckzh7A9mzXBNJAoB1
+         I3fgbzbFq0HfpKzlUNrGC0qjNh60CkKf8o78R90Fg0b7YnraAd7a61lOwkKahdzynSlu
+         3oPfnTncm6dyKWvODSTJE3eYEEBIHnCz7utSJMx3MSHlUP1tlpVOiS3xJ9gTEDP5rTh1
+         XGJ58p8Zn676Mop/XBrzo6X2GMF+XzS5p3ltDNZ7AMdEmmPuYU0+WvbmJTWMX9sORjGh
+         /D7g==
+X-Gm-Message-State: AOAM532aRUg1Wgm49OJgutFIQJ7/JBuMEQ1KZndwbclCTtvdJAkNp/x2
+        qi3Dq20ZTfj16S+e5NAWY7NNxMGGgJabnjWRpRU=
+X-Google-Smtp-Source: ABdhPJxn8VYtM2x1dqkiuk6cvTb/7aMUyJ6ikEzvDB1KNkAkgWmFP5FkNoAdR64QBCWsWsxnNYIA/SwMvysBsv+8lTk=
+X-Received: by 2002:a05:6214:7f2:: with SMTP id bp18mr2558742qvb.9.1628127123631;
+ Wed, 04 Aug 2021 18:32:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1624978790.git.ashish.kalra@amd.com> <8fce27b8477073b9c7750f7cfc0c68f7ebd3a97d.1624978790.git.ashish.kalra@amd.com>
-In-Reply-To: <8fce27b8477073b9c7750f7cfc0c68f7ebd3a97d.1624978790.git.ashish.kalra@amd.com>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Wed, 4 Aug 2021 18:31:34 -0700
-Message-ID: <CABayD+eiT0VW3=psF0Wrai9WfqkXkLr-GoxSNWvkSCXu1dH8VQ@mail.gmail.com>
-Subject: Re: [PATCH v5 6/6] x86/kvm: Add kexec support for SEV Live Migration.
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, joro@8bytes.org, bp@alien8.de,
-        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, brijesh.singh@amd.com
+References: <DM8PR11MB57506E8A74FE33AC50899F81BDF19@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <DM6PR11MB2540671F57AA4E16782FB502F9F29@DM6PR11MB2540.namprd11.prod.outlook.com>
+In-Reply-To: <DM6PR11MB2540671F57AA4E16782FB502F9F29@DM6PR11MB2540.namprd11.prod.outlook.com>
+From:   Luming Yu <luming.yu@gmail.com>
+Date:   Thu, 5 Aug 2021 09:31:46 +0800
+Message-ID: <CAJRGBZxncgsMP4qu+YbVgUaTBt=Uxp=2XPvAg1-QAvh+0p=Z_Q@mail.gmail.com>
+Subject: Re: Questions on patch set: x86/fault: #PF improvements, mostly
+ related to USER bit
+To:     "Yu, Luming" <luming.yu@intel.com>
+Cc:     "Lutomirski, Andy" <luto@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Han, Jing1" <jing1.han@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 8:14 AM Ashish Kalra <Ashish.Kalra@amd.com> wrote:
->
-> From: Ashish Kalra <ashish.kalra@amd.com>
->
-> Reset the host's shared pages list related to kernel
-> specific page encryption status settings before we load a
-> new kernel by kexec. We cannot reset the complete
-> shared pages list here as we need to retain the
-> UEFI/OVMF firmware specific settings.
->
-> The host's shared pages list is maintained for the
-> guest to keep track of all unencrypted guest memory regions,
-> therefore we need to explicitly mark all shared pages as
-> encrypted again before rebooting into the new guest kernel.
->
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->  arch/x86/kernel/kvm.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index a014c9bb5066..a55712ee58a1 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -869,10 +869,35 @@ static void __init kvm_init_platform(void)
->         if (sev_active() &&
->             kvm_para_has_feature(KVM_FEATURE_MIGRATION_CONTROL)) {
->                 unsigned long nr_pages;
-> +               int i;
->
->                 pv_ops.mmu.notify_page_enc_status_changed =
->                         kvm_sev_hc_page_enc_status;
->
-> +               /*
-> +                * Reset the host's shared pages list related to kernel
-> +                * specific page encryption status settings before we load a
-> +                * new kernel by kexec. Reset the page encryption status
-> +                * during early boot intead of just before kexec to avoid SMP
-> +                * races during kvm_pv_guest_cpu_reboot().
-> +                * NOTE: We cannot reset the complete shared pages list
-> +                * here as we need to retain the UEFI/OVMF firmware
-> +                * specific settings.
-> +                */
-> +
-> +               for (i = 0; i < e820_table->nr_entries; i++) {
-> +                       struct e820_entry *entry = &e820_table->entries[i];
-> +
-> +                       if (entry->type != E820_TYPE_RAM)
-> +                               continue;
-> +
-> +                       nr_pages = DIV_ROUND_UP(entry->size, PAGE_SIZE);
-> +
-> +                       kvm_hypercall3(KVM_HC_MAP_GPA_RANGE, entry->addr,
-> +                                      nr_pages,
-> +                                      KVM_MAP_GPA_RANGE_ENCRYPTED | KVM_MAP_GPA_RANGE_PAGE_SZ_4K);
-> +               }
-> +
->                 /*
->                  * Ensure that _bss_decrypted section is marked as decrypted in the
->                  * shared pages list.
-> --
-> 2.17.1
->
+try again.
 
-Re-reading things, I've convinced myself that kexec is fine. I was
-previously concerned with KEXEC_PRESERVE_CONTEXT. In particular, since
-the guest does not re-call the encryption status hypercalls after it
-jumps back, the host will be out of the loop, and continue believing
-the guest is in the same state as it was while running the
-intermediate kernel. As a result, it would have an inaccurate list of
-which pages are shared/private after a kexecing and jumping back.
-
-The bit that I neglected is that the new kernel (just like the
-original kernel) will disable live migration before jumping back (if
-it enabled live migration at all). And the original kernel will never
-re-enable. This is sub-optimal, since a VM that previously supported
-migration can reach a state where it will stop supporting live
-migration. But that's unavoidable. Kexecing a kernel that does not
-support live migration does the same thing.
-
-This looks good to me.
-
-Reviewed-by: Steve Rutherford<srutherford@google.com>
+On Thu, Aug 5, 2021 at 9:28 AM Yu, Luming <luming.yu@intel.com> wrote:
+>
+> Cc=E2=80=99 gregkh
+>
+>
+>
+> It would be nice if we can see the patch set available in 5.10-xx stable =
+tree.
+>
+> But Jing=E2=80=99s finding on Linus tree about the commit seemed to indic=
+ate the commit id
+>
+> Of the patch and the commit  log and patch could not lead to the  revisio=
+n of arch/x86/mm/fault.c
+>
+> By the patch of the commit itself. So it is hard for Jing to do a clean b=
+ack port with the inconsistent git log.
+>
+>
+>
+> BR
+>
+> Luming
+>
+>
+>
+> From: Han, Jing1 <jing1.han@intel.com>
+> Sent: Wednesday, August 4, 2021 8:44 PM
+> To: Lutomirski, Andy <luto@kernel.org>
+> Cc: Yu, Luming <luming.yu@intel.com>
+> Subject: Questions on patch set: x86/fault: #PF improvements, mostly rela=
+ted to USER bit
+>
+>
+>
+> Hi Luto,
+>
+>
+>
+> When trying to backport your patch from upstream to 5.10.18: https://lore=
+.kernel.org/lkml/cover.1612924255.git.luto@kernel.org/
+>
+> I find something wrong with this commit: 2cc624b0a7e68ba8957b18600181f7d5=
+b0f3e1b6 x86/fault: Split the OOPS code out from no_context()
+>
+> The code after this commit in upstream does not align with the code showe=
+d in the patch.
+>
+> To be exactly, the function name is =E2=80=9Cno_context=E2=80=9D in the p=
+atch, while it is =E2=80=9Ckernelmode_fixup_or_oops=E2=80=9D in upstream co=
+de.
+>
+> Could you please check what is the problem?
+>
+> (Another confusion is, there are 14 patches total in the link above, but =
+13 patches in upstream code.)
+>
+>
+>
+> I do the backport it because it is preparation for CET, I will backport C=
+ET to 5.10.18 when it is upstreamed as there is customer request.
+>
+> Will you provide the backport patch to 5.10 stable branch?
+>
+>
+>
+> Thank you very much,
+>
+> Jing
+>
+>
