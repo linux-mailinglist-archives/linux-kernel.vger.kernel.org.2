@@ -2,57 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB223E12E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0083E12E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240494AbhHEKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 06:43:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:42568 "EHLO foss.arm.com"
+        id S240519AbhHEKnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 06:43:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240388AbhHEKng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 06:43:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C06E81FB;
-        Thu,  5 Aug 2021 03:43:21 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.41.33])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 438F63F719;
-        Thu,  5 Aug 2021 03:43:20 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     bhelgaas@google.com,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        jonathanh@nvidia.com, thierry.reding@gmail.com, robh@kernel.org
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] PCI: tegra: Fix OF node reference leak
-Date:   Thu,  5 Aug 2021 11:43:14 +0100
-Message-Id: <162816017970.17991.9169417632084960512.b4-ty@arm.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <55b11e9a7fa2987fbc0869d68ae59888954d65e2.1620148539.git.christophe.jaillet@wanadoo.fr>
-References: <55b11e9a7fa2987fbc0869d68ae59888954d65e2.1620148539.git.christophe.jaillet@wanadoo.fr>
+        id S240524AbhHEKnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 06:43:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 817FA60F02;
+        Thu,  5 Aug 2021 10:43:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628160212;
+        bh=WPW+099jCWQFswbfNHI98R3QSSOtgUtsUZb+/HnroHg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gEdpzqMiCBVXZ/gBxrgS+XpnM0g6gv4aWvpQiQ1dvPRldexfQjUbiJh/bRihReIaq
+         FTvW+a8cVKPAE5aU/VCpgt+jpvRGvhg7KN7+k5zmyNNoYFXhUBOJ2ZMo+CruqYUDVZ
+         rPkjj2brAqJbKEpvvVeoudqx8fJWNZ+IGACPgoXQ=
+Date:   Thu, 5 Aug 2021 12:43:21 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, martin@kaiser.cx
+Subject: Re: [PATCH 00/15] staging: r8188eu: remove core dir RT_TRACE calls
+Message-ID: <YQvAyd2meIE8btpR@kroah.com>
+References: <20210801190437.82017-1-phil@philpotter.co.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210801190437.82017-1-phil@philpotter.co.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 4 May 2021 19:17:42 +0200, Christophe JAILLET wrote:
-> Commit 9e38e690ace3 ("PCI: tegra: Fix OF node reference leak") has fixed
-> some node reference leaks in this function but missed some of them.
+On Sun, Aug 01, 2021 at 08:04:22PM +0100, Phillip Potter wrote:
+> This series removes all RT_TRACE calls from code within the core directory.
 > 
-> In fact, having 'port' referenced in the 'rp' structure is not enough to
-> prevent the leak, until 'rp' is actually added in the 'pcie->ports' list.
-> 
-> Add the missing 'goto err_node_put' accordingly.
+> Phillip Potter (15):
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_cmd.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_pwrctrl.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_wlan_util.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_ieee80211.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_io.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_ioctl_set.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_mlme.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_mlme_ext.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_mp.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_security.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_sta_mgt.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_xmit.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_led.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_mp_ioctl.c
+>   staging: r8188eu: remove RT_TRACE calls from core/rtw_recv.c
 
-Applied to pci/tegra, thanks!
+I applied the patches here that I could, others conflicted with other
+changes I have taken recently.  Can you rebase and resend the remaining
+ones now?
 
-[1/3] PCI: tegra: Fix OF node reference leak
-      https://git.kernel.org/lpieralisi/pci/c/eff21f5da3
-[2/3] PCI: tegra: Use 'seq_puts' instead of 'seq_printf'
-      https://git.kernel.org/lpieralisi/pci/c/804b2b6f2a
-[3/3] PCI: tegra: make const array err_msg static
-      https://git.kernel.org/lpieralisi/pci/c/fd44e8efcc
+thanks,
 
-Thanks,
-Lorenzo
+greg k-h
