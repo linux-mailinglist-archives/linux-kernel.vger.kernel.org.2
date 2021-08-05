@@ -2,75 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7A63E1A7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387563E1A88
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240229AbhHERgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:36:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57772 "EHLO mail.kernel.org"
+        id S240335AbhHERg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:36:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240060AbhHERgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:36:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D565060F42;
-        Thu,  5 Aug 2021 17:36:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628184964;
-        bh=AnGQRaP8nkqNwiFWtMqvZz6Ciyna+r9FB3Un0pnNMWY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BnUO66Jl6tej8HglOHBrL2fhDWV24R4mTC8gWe0UlnUc7LLdvTR8fQlp4XlIcLFqh
-         dkRqmMQPxo1O/SdyP7NVOjH/70QlTGLjg+r2n7Jl3IykNyuXG4aW6d4rzQIvuw8dOR
-         Uh2pt2p0WIoyOQ1hjWrTYIccFxJFu3ovlKexZ1nmQUyhGhxmKzAHmoX28y247psB79
-         lY3BxE2QbHHih6awfQ4fYjKYGU17TgNFVvIWDV8qmpUUMsVGvqs1SEO9E1gs+F171j
-         sEWkLIW6PkWZTXC+B/4XARcT6IzBxPaGzuBvRON5N8zM88KmFs4gsVnGUuN23s66BU
-         Ms89efTXKbh7w==
-Date:   Thu, 5 Aug 2021 20:35:59 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v1] netdevsim: Forbid devlink reload when adding
- or deleting ports
-Message-ID: <YQwhf+3oeqOv/OMU@unreal>
-References: <53cd1a28dd34ced9fb4c39885c6e13523e97d62c.1628161323.git.leonro@nvidia.com>
- <20210805061547.3e0869ad@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YQvs4wRIIEDG6Dcu@unreal>
- <20210805072342.17faf851@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YQv2v5cTqLvoPc4n@unreal>
- <20210805082756.0b4e61d7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S239498AbhHERgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 13:36:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0683E610A2;
+        Thu,  5 Aug 2021 17:36:32 +0000 (UTC)
+Date:   Thu, 5 Aug 2021 18:36:25 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        John Crispin <john@phrozen.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+Subject: Re: [PATCH 1/3] arch: Export machine_restart() instances so they can
+ be called from modules
+Message-ID: <20210805173625.GH6719@arm.com>
+References: <20210805075032.723037-1-lee.jones@linaro.org>
+ <20210805075032.723037-2-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210805082756.0b4e61d7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210805075032.723037-2-lee.jones@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 08:27:56AM -0700, Jakub Kicinski wrote:
-> On Thu, 5 Aug 2021 17:33:35 +0300 Leon Romanovsky wrote:
-> > On Thu, Aug 05, 2021 at 07:23:42AM -0700, Jakub Kicinski wrote:
-> > > > This is what devlink_reload_disable() returns, so I kept same error.
-> > > > It is not important at all.
-> > > > 
-> > > > What about the following change on top of this patch?  
-> > > 
-> > > LGTM, the only question is whether we should leave in_reload true 
-> > > if nsim_dev->fail_reload is set.  
-> > 
-> > I don't think so, it will block add/delete ports.
-> 
-> As it should, given add/delete ports takes the port_list_lock which is
-> destroyed by down but not (due to the forced failure) re-initialized by
-> up.
-> 
-> If we want to handle adding ports while down we can just bump port
-> count and return, although I don't think there's a practical need
-> to support that.
+On Thu, Aug 05, 2021 at 08:50:30AM +0100, Lee Jones wrote:
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index b4bb67f17a2ca..cf89ce91d7145 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -212,6 +212,7 @@ void machine_restart(char *cmd)
+>  	printk("Reboot failed -- System halted\n");
+>  	while (1);
+>  }
+> +EXPORT_SYMBOL(machine_restart);
 
-Sorry, but for me netdevsim looks like complete dumpster. It was
-intended for fast prototyping, but ended to be huge pile of debugfs
-entries and selftest to execute random flows.
+Should we make this EXPORT_SYMBOL_GPL? I suppose it's not for general
+use by out of tree drivers and it matches the other pm_power_off symbol
+we export in this file.
 
-Do you want me to move in_reload = false line to be after if (nsim_dev->fail_reload)
-check?
+Either way:
 
-Thanks
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
