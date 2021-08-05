@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59A43E1A47
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C363E1A49
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239471AbhHERUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:20:39 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:53776 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhHERUi (ORCPT
+        id S239595AbhHERUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239562AbhHERUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:20:38 -0400
-Date:   Thu, 05 Aug 2021 17:19:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1628183990;
-        bh=Q0e3u15i1PAFg63iMP+b35YREVf5I1jWy7jkFOGimb8=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=ru/jpoHZaF0+zqT+SS4ttIG34OcfeGCHPEWs0dKerxQXDLOfUuaI2hp0WozBGeJKv
-         dNzBf9gsqozxYPNyykBCvGQ3xPNikduz2Tcj2NY7X/6eiat+/pXlVpdkUSHnL9IFmd
-         wyrbLFJ0ejNonKCSS5y0XE/A6i7/iKV3KstOVdMY=
-To:     bjorn.andersson@linaro.org, sboyd@kernel.org
-From:   Sireesh Kodali <sireeshkodali@protonmail.com>
-Cc:     agross@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Vladimir Lypak <junak.pub@gmail.com>,
-        Adam Skladowski <a_skl39@protonmail.com>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Sireesh Kodali <sireeshkodali@protonmail.com>
-Reply-To: Sireesh Kodali <sireeshkodali@protonmail.com>
-Subject: [PATCH 2/2] clk: qcom: rpmcc: Add support for MSM8953 RPM clocks.
-Message-ID: <QZ0fkozlubDdc7CvqjZPhAviFmjJ28ht7Y4PT3rYM@cp4-web-038.plabs.ch>
+        Thu, 5 Aug 2021 13:20:44 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DDEC061765;
+        Thu,  5 Aug 2021 10:20:30 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id c9so7513053wri.8;
+        Thu, 05 Aug 2021 10:20:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Yewv8eLDuGQeemlSPQSqp+7rB89rcOX4qDuzzTlqfT8=;
+        b=EsowHEOyEYYrO9vnkTAEE8IY9xW1VG4R14262m++D4LfZdV/Aj7s3UlE2WKcuz2mFz
+         MzW/pNBbbBDnPK2q3yGTwqs4TBr04kU1+bnOFW4xPtcV2PcASq5Mig+iXVaBIusf2bs2
+         jpv85JF/RDxHA6QL81xnes3joy4MYEUeQJFdwrujN3ThNPQSSx1w8ZPjRChaE6wpvF4c
+         ixAYbvjs7qWGmWc0JMfhE13FaHlHBlCnawj0w1c0jTzfAXV8J7HFUyxzJx9SBYhYBXiD
+         fQueO7HqbgcldgMjOuvg7871gDH/TixuNQcwiicG3A4dNA0eJGIR0EKnMq79DDq/Om5g
+         2n3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yewv8eLDuGQeemlSPQSqp+7rB89rcOX4qDuzzTlqfT8=;
+        b=kW5FtSvPfomQWNNWTtlmBmcEHYfNcYOFTE+zGckzHrSELvI9f7Czgh7E9b9GmwceE8
+         /rzLKwjo+1F5WNsPoXBOu9ewFEOruxQyXjAxDRMfzosK2cavufNIP5tM/kpCuxmLlPLG
+         x+zjqwrEzFu7vVeaqzwsbydAKgukz6efMPO+z0Q9+6k9tVB28SOSLeKcPJFY7jK18295
+         YaqMfQ29YNGqXXCCwc5G9OM54cvCgIhgyMiLOj81fPmXlN3U7mUozedWyWY9+IdXMGJP
+         zoz3OM0a0O+IY71RZpGdSCcGXSuoyhOrJd+Jy6oKhM23juBrbD6/vln/TSI8JUuDd0eu
+         B2zg==
+X-Gm-Message-State: AOAM533qVSQ2FFdKZJXEs/jpoKy9dqmJiXVSYMUqHnH4k7NBacM5k+vD
+        aFsRVA/1QYNvTfLFTH+l30I=
+X-Google-Smtp-Source: ABdhPJxCiTfqldjm4hmLDiEc6fvPdlmv3Z2zkV8UiudjVMrbhWeJgGjYXREJlzrxpvyDVmrlFQL0Fg==
+X-Received: by 2002:adf:f74f:: with SMTP id z15mr6555518wrp.54.1628184028927;
+        Thu, 05 Aug 2021 10:20:28 -0700 (PDT)
+Received: from precision (aftr-62-216-202-140.dynamic.mnet-online.de. [62.216.202.140])
+        by smtp.gmail.com with ESMTPSA id d7sm6872606wrs.39.2021.08.05.10.20.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 10:20:28 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 19:20:26 +0200
+From:   Mete Polat <metepolat2000@gmail.com>
+To:     Davidlohr Bueso <dbueso@suse.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mete Polat <metepolat2000@gmail.com>,
+        Jesper Nilsson <jesper@jni.nu>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] rbtree: remove unneeded explicit alignment in struct
+ rb_node
+Message-ID: <YQwd2puXiSiUWEE1@precision>
+References: <20210805133213.700-1-lukas.bulwahn@gmail.com>
+ <CAK8P3a3aNuxaEtAiewd+Wjc8hKtca0NrcV2kykkNC-qKT_HhzQ@mail.gmail.com>
+ <50ad4c8b848bd371b4b42959167ef03d@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <50ad4c8b848bd371b4b42959167ef03d@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Lypak <junak.pub@gmail.com>
+On Thu, Aug 05, 2021 at 08:02:28AM -0700, Davidlohr Bueso wrote:
+> On 2021-08-05 07:02, Arnd Bergmann wrote:
+> > The revert would appear to change the alignment to 16 bits instead
+> > of 32 bits on m68k as well (not 8 bits as on cris), but I don't know if
+> > that
+> > can cause problems there.
+> 
+> Yeah I tried this a while back and it broke m68k, so it was a no go:
+> 
+> https://lore.kernel.org/lkml/CAMuHMdXeZvJ0X6Ah2CpLRoQJm+YhxAWBt-rUpxoyfOLTcHp+0g@mail.gmail.com/
 
-Add definitions for RPM clocks used on MSM8953 platform.
+The problem is that the field '__rb_parent_color' in struct rb_node is
+storing the color AND the pointer to the parent node at the same time.
+The color is stored in the least significant bit which is fine when
+rb_node is at least 16-bit aligned. I guess, it does not work on m68k
+because the makro
 
-Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
-Signed-off-by: Adam Skladowski <a_skl39@protonmail.com>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Signed-off-by: Sireesh Kodali <sireeshkodali@protonmail.com>
----
- drivers/clk/qcom/clk-smd-rpm.c | 37 ++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+#define __rb_parent(pc)    ((struct rb_node *)(pc & ~3))
 
-diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.=
-c
-index 800b2fef1887..e99131016911 100644
---- a/drivers/clk/qcom/clk-smd-rpm.c
-+++ b/drivers/clk/qcom/clk-smd-rpm.c
-@@ -913,10 +913,47 @@ static const struct rpm_smd_clk_desc rpm_clk_sdm660 =
-=3D {
- =09.num_clks =3D ARRAY_SIZE(sdm660_clks),
- };
-=20
-+static struct clk_smd_rpm *msm8953_clks[] =3D {
-+=09[RPM_SMD_XO_CLK_SRC]=09=09=3D &sdm660_bi_tcxo,
-+=09[RPM_SMD_XO_A_CLK_SRC]=09=09=3D &sdm660_bi_tcxo_a,
-+=09[RPM_SMD_PCNOC_CLK]=09=09=3D &msm8916_pcnoc_clk,
-+=09[RPM_SMD_PCNOC_A_CLK]=09=09=3D &msm8916_pcnoc_a_clk,
-+=09[RPM_SMD_SNOC_CLK]=09=09=3D &msm8916_snoc_clk,
-+=09[RPM_SMD_SNOC_A_CLK]=09=09=3D &msm8916_snoc_a_clk,
-+=09[RPM_SMD_BIMC_CLK]=09=09=3D &msm8916_bimc_clk,
-+=09[RPM_SMD_BIMC_A_CLK]=09=09=3D &msm8916_bimc_a_clk,
-+=09[RPM_SMD_IPA_CLK]=09=09=3D &msm8976_ipa_clk,
-+=09[RPM_SMD_IPA_A_CLK]=09=09=3D &msm8976_ipa_a_clk,
-+=09[RPM_SMD_SYSMMNOC_CLK]=09=09=3D &msm8936_sysmmnoc_clk,
-+=09[RPM_SMD_SYSMMNOC_A_CLK]=09=3D &msm8936_sysmmnoc_a_clk,
-+=09[RPM_SMD_QDSS_CLK]=09=09=3D &msm8916_qdss_clk,
-+=09[RPM_SMD_QDSS_A_CLK]=09=09=3D &msm8916_qdss_a_clk,
-+=09[RPM_SMD_BB_CLK1]=09=09=3D &msm8916_bb_clk1,
-+=09[RPM_SMD_BB_CLK1_A]=09=09=3D &msm8916_bb_clk1_a,
-+=09[RPM_SMD_BB_CLK2]=09=09=3D &msm8916_bb_clk2,
-+=09[RPM_SMD_BB_CLK2_A]=09=09=3D &msm8916_bb_clk2_a,
-+=09[RPM_SMD_RF_CLK2]=09=09=3D &msm8916_rf_clk2,
-+=09[RPM_SMD_RF_CLK2_A]=09=09=3D &msm8916_rf_clk2_a,
-+=09[RPM_SMD_RF_CLK3]=09=09=3D &msm8992_ln_bb_clk,
-+=09[RPM_SMD_RF_CLK3_A]=09=09=3D &msm8992_ln_bb_a_clk,
-+=09[RPM_SMD_DIV_CLK2]=09=09=3D &msm8974_div_clk2,
-+=09[RPM_SMD_DIV_A_CLK2]=09=09=3D &msm8974_div_a_clk2,
-+=09[RPM_SMD_BB_CLK1_PIN]=09=09=3D &msm8916_bb_clk1_pin,
-+=09[RPM_SMD_BB_CLK1_A_PIN]=09=09=3D &msm8916_bb_clk1_a_pin,
-+=09[RPM_SMD_BB_CLK2_PIN]=09=09=3D &msm8916_bb_clk2_pin,
-+=09[RPM_SMD_BB_CLK2_A_PIN]=09=09=3D &msm8916_bb_clk2_a_pin,
-+};
-+
-+static const struct rpm_smd_clk_desc rpm_clk_msm8953 =3D {
-+=09.clks =3D msm8953_clks,
-+=09.num_clks =3D ARRAY_SIZE(msm8953_clks),
-+};
-+
- static const struct of_device_id rpm_smd_clk_match_table[] =3D {
- =09{ .compatible =3D "qcom,rpmcc-msm8226", .data =3D &rpm_clk_msm8974 },
- =09{ .compatible =3D "qcom,rpmcc-msm8916", .data =3D &rpm_clk_msm8916 },
- =09{ .compatible =3D "qcom,rpmcc-msm8936", .data =3D &rpm_clk_msm8936 },
-+=09{ .compatible =3D "qcom,rpmcc-msm8953", .data =3D &rpm_clk_msm8953 },
- =09{ .compatible =3D "qcom,rpmcc-msm8974", .data =3D &rpm_clk_msm8974 },
- =09{ .compatible =3D "qcom,rpmcc-msm8976", .data =3D &rpm_clk_msm8976 },
- =09{ .compatible =3D "qcom,rpmcc-msm8992", .data =3D &rpm_clk_msm8992 },
---=20
-2.32.0
+used to retrieve the parent pointer zeros the first two bits, not only
+the first one.
 
+Maybe the effiency to store this one color bit in another field was
+required in the early days but I think moving the color to a seperate
+field is really the better way to go. It also makes reasoning about the
+algorithm easier.
 
+I will create a patch.
+
+Mete
+> 
+> Thanks, Davidlohr
