@@ -2,175 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E4B3E0E74
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D55193E0E7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237569AbhHEGgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 02:36:03 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:18384 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230183AbhHEGgB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 02:36:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1628145347; x=1659681347;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=1mC1jv4AnmuLHSweHyjPT9qCK5jwKZdPgFGLWXnfw4Q=;
-  b=jGT27xdQZjinuEPbHYy2aFEoD2MUwMx0QVEGjwt6aaheInkbJH2bm05A
-   zQHX/yGt9DoOLt+hF/wWPSQi6eFTIAlpd2qhlPrhQYZ+vYi363Iiw1i1D
-   SORGAxZzL+lOtXEdiurqKbLU26K8a0/l1rfEawl+AjL4c/ydO9NDbg4pF
-   gO8udAHP5pQ3mO8lfxSvrCiSRI1eosov7ltjLkDXCWRCaKrqgTsIDiqxj
-   FNeSVG6nQMzorz6IIqD/ZT/PV9JcAmGje/Jmbz6nIM11xwk4huLrInBMH
-   xsKVVzgQ0aKQiP/n+Ip/zCZ2WRwcppCvby3MKwfjwlo34IG9PnRCIujnq
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.84,296,1620662400"; 
-   d="scan'208";a="280215639"
-Received: from mail-dm6nam12lp2174.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.174])
-  by ob1.hgst.iphmx.com with ESMTP; 05 Aug 2021 14:35:46 +0800
+        id S237009AbhHEGjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 02:39:20 -0400
+Received: from mail-eopbgr1310138.outbound.protection.outlook.com ([40.107.131.138]:59392
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230183AbhHEGjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 02:39:18 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OorktE2eepOXT5GWq2qR0vaB40SQ69wKIVWYeqlRqaV+PhLoWFe3+cwfxVWRbVNsbmGbwt+QdrihHnHWAhlc3JRU/yLCyvIeFWYAEOtpbXH3bVtRn5HTlLnDLDjgSTl1lqJcViTZbegsxIcNWREX+I9iRaDwLPXHldODIz9QXaP837NWqAMNz+Uk52mNH2jPedGRCgNIh8/WR1JRSizRTRHGkzsWF33uxgR/RHzMGyBhQFYonZKLUVEcGFOXkp+KNpxB46XMp1mdOc8ci6VtCB0zX2UTUoc7uOrBqB2YaarfW711DU+OsgWAb0/h2pZz7QmU7jTxApItWfALosCYAA==
+ b=ne0YZlImbVocUhSS/mL/QkMFrXJhd0odAV7qzrtX1XJI0WOB+op0ayyR9AeZbNiBIurxxxVN/hzMtKEYDKKWKyIhcTypYvLiVVYu9hL46mM9f5342M8QV2oTyNKE5RYUc8QV6ju+KkrPnb7uvM0hfd5rusEJ1p/BB9NiAm74hY2i+GumVfLL3u9mNVuPCZpyydQ6wTSlc+5uq3RlxsGk0ISpthbN6InXeUfpRDZvXeP5E6avIHVEkOgk5Gz3BZREy60czCZaR2J88+MOUM4bh+LTqWphdHsTaU3GJB3LCQF5HjqaTr9H91Hm+ZwDWN0ro6BPVfMw2evo081BPKJsiQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XAMYT9uYkzdYowMlnHbiYm+P5kNC0WYp0Yk7404EveE=;
- b=DFYjPg8ovPI96aVFJdF7Z9CCOMrqPeCQ2AjYQWG15TbVxxBDMUcvis/jQFaM4fchAU0eyxjcE/4gQL4RbU89SDyBtZ9nF8moKjC3Px0hekqkEFQQ0R4jUQXVTO1eyf4EtnauXyhblfueWFKquQVTrPDQeQixDCG8zTv++ucaaW8sdkPI5V68T/HlSJCRJLYKNe5WzqjGXxwvQGA1U97NNAleGpyDWhA7G+GZuH3bR/dLZGf1ze7UAns6TNo0J/AvwkCI+xClUtaLbpylr5+hnLZ0Lj3dCyr0aJZ/oF99eZ4Jim8OUNd3FS0lKej9MSKlEDVWvrZ+1IG7+LzWXFAocg==
+ bh=bQPIktSbJ2X8FaFVAuAix71n5zAUPKwrmNlYYTCPOhw=;
+ b=ZXuonecxYeZoKfUFLjfgBr48ogIuVpV1qCoRe/lRxKmTZiTE3uUc0IZ5YEYY5KuZ791m6+CluxLv23CkGlBvWeKawb5AqiLB+54Z4Hz0kqlisA+isljnotHqDAXLNJ4EZ7v4qdoqioz72F8bE5W26f7GbyDNmaTTTYxtKuW4jBxBYiB31pyCohemF9cfAV5Wp7YgiRyjbAVYi/V62SI9Mj2JZ4rdMtcr2SCG5jFcWMXE+z2/ZOVf2Zkloww1ci1hXVunzreJjKq/Zjd8BE1U9VEhKAVyN+1jlLkt5kYoMGhK72ESOj/a+kDsK6/+y47N0YglGM/bANbXVuzLpA8ulw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ smtp.mailfrom=zeku.com; dmarc=pass action=none header.from=zeku.com;
+ dkim=pass header.d=zeku.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zeku.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XAMYT9uYkzdYowMlnHbiYm+P5kNC0WYp0Yk7404EveE=;
- b=h0p/9VJ21x0tYAxKQse5Hde4vmoCSgMb9dLHD9T9YGJ2PXYvh3au8rhz0Z/CejER7THtXXwo8/X5gOP8IUCiigoNFT81jVFK6TiCpGvI48pi6vrMvFLyfV9Ax1eF9JkiQm6IpRA5w7aHh4SPqbFnpKdJ9050uzNHOkc2OOlXx+M=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM5PR04MB1132.namprd04.prod.outlook.com (2603:10b6:3:a4::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4373.26; Thu, 5 Aug 2021 06:35:44 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::ccfd:eb59:ccfe:66e4]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::ccfd:eb59:ccfe:66e4%7]) with mapi id 15.20.4373.026; Thu, 5 Aug 2021
- 06:35:44 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Bean Huo <huobean@gmail.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "daejun7.park@samsung.com" <daejun7.park@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v1 2/2] scsi: ufs: Add lu_enable sysfs node
-Thread-Topic: [PATCH v1 2/2] scsi: ufs: Add lu_enable sysfs node
-Thread-Index: AQHXiV2VphT64o2uAUWAn60TCQgVQatkdSMw
-Date:   Thu, 5 Aug 2021 06:35:44 +0000
-Message-ID: <DM6PR04MB657589C9EE72DD8B4F62C6BDFCF29@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210804182128.458356-1-huobean@gmail.com>
- <20210804182128.458356-3-huobean@gmail.com>
-In-Reply-To: <20210804182128.458356-3-huobean@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6f8d0e8d-875a-4b71-8517-08d957db4090
-x-ms-traffictypediagnostic: DM5PR04MB1132:
-x-microsoft-antispam-prvs: <DM5PR04MB1132C22105F9493A4DC103A2FCF29@DM5PR04MB1132.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:341;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oG7FxCTDETTQCu//vmc6tlQDnitkdzlsTA1ULCu463balA+n+eNJlIh7c1v1KxECXjEftpR5sepc728pzZbMVlbHJVSCzjAS862FMdafPmR1dqG67IbXddlEGwwXFRzRlCL8ogDuqVBT+Zjzj4jgrQ1DAyQXVLGuODWL3kkCeoWD1/DFi588W9u/hmYtUpfi4etPVbUvxbxr6HE43qO8AD+ZaonCmCB5FXmQzVZnRnt+rrSGb2HWO4skxYDm00SHnUwPdgUQPCQXfpLDcE/x046bdcY090U0rNikmN1i9lpRpDF3yKcI5JyJhIKZiUVCm2c0Hf+YidLmOaeCVsLIg5XBi9mV5SZeQ8WiXFtSyQyaI80oQr9DEAbS2dwzfYWLsL4Tt0Sx+PUwhVtK40E42Pn3HS/iOYq4NVWP53E0jYUmNvS4UVuU3Fh48Bp5PEwVOxp8l77QbBiVbt/CRNORhRlzAvCPu8iOcVApTT40tUAt+Ajk1irlhlynDKmO+4AZ9T+MJXWIf9AP1x1qCa3jiH93oActwy0mJUfkpeIhEGKTd31xCeNxYNYcBlcnIgRAyFpDV5xl+dFRF5reWp/exD4QrTe3CXNan6YQt5rj1D1lqB8q1OkzL+s7w/B3GaDhQeZOJODwhs4N1XxayFnOkRfwR8A+54ERsaNtsfyagrJHtKVKrl/Q8Iuq5s/K27L2+UlXU6T0Fxcw+bXAzwTEN2hBT7OrcPnHj8Jq1o2tPTg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(136003)(366004)(376002)(52536014)(122000001)(76116006)(66476007)(186003)(478600001)(66556008)(71200400001)(9686003)(66946007)(64756008)(66446008)(316002)(54906003)(921005)(38100700002)(110136005)(2906002)(7416002)(38070700005)(55016002)(7696005)(5660300002)(33656002)(86362001)(8676002)(83380400001)(4326008)(26005)(6506007)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/lZiKPaxGiGInLqrf4Q7+T07V7bVOXjcgehIGRlU6cdqo8XyB4tBdYBC3w6K?=
- =?us-ascii?Q?Drtkmo31RVKgF2yLFen0I9vbNqleFOjFNv41uShM9/aEhGohu55bSRRzoiuz?=
- =?us-ascii?Q?HOu08XAvm4s582Hm7cvvhk7u3XQRoIIpwFj6HtqAaGrY4MiE/AnQ3+mskjaB?=
- =?us-ascii?Q?8zIV4hGker7U8yxqj0+2TgtEGfSJ0yyelV5aX/YMHWexs2lSMZkDaLQ6hd9n?=
- =?us-ascii?Q?vHg88f1FOFgxktwFi4IDPdKqalNPp3B6jHSEsoPp1fGhrKQVymojW1Nx5tOB?=
- =?us-ascii?Q?y4x76NE0mOVQosf/y4i1RaIGNfB7fYTryGBEnKL2vl/cWRCJYnpwtsChuW32?=
- =?us-ascii?Q?ApGIplVFF5gZo681U0EYY205Qf2CgUanZHuUAUrULV0KdV4ZaKpNw4m/0moF?=
- =?us-ascii?Q?wA24O9XtHV56SB1hxGih2OMgXkSmG7yT4Tt9dz3bLoBytcGzrKo7Mce9ucTm?=
- =?us-ascii?Q?6fvYY3m2ZcBtvisZ2z/Nwsum00p3skNijjrEwBkPtszB82fu/t9CV6z4i5ur?=
- =?us-ascii?Q?9k3v94ZbRzjZgIZCAVN02GqZOb5WagpIRcEPRldtD+nk+g0M04lfvIqvG3O3?=
- =?us-ascii?Q?EGW4rbeLz9gdZ9ioP01n3lzqj8fFwAJ+K1hQ6bBgEkTgZ9aRyDao9u9jqTnt?=
- =?us-ascii?Q?cw8AetmEGLRpMitAcUwe/a67A0jMIidIpLfDvhLjcn4N0neJplKOTJvafs/z?=
- =?us-ascii?Q?SaLkuACqk+xdHcUDVPeqEtdPqGGAq1tSdMqOe7XohY4lN3goxGPH5Sw7sx7k?=
- =?us-ascii?Q?1GWJACckkxyAO9cKnte/KupwtFVFkTcLB2uKWYUN3LUChlA3mHUKOEmM7FAA?=
- =?us-ascii?Q?p/1ZDcKc/U5FBA7aqwT2I4B1HdgdulFqVZ4eoJ/3DB5TQHIoVekKMwtOJl5N?=
- =?us-ascii?Q?tK6o9hqsr23hSTqd0H9YTZOjP1tBCrG6O5xBgPsgegTtbkRAhetp+g32i8f2?=
- =?us-ascii?Q?v7oBh6C8DO/VcMiFNGP3+/r36g1WDcstfuPDnm1pf4IS1Y8jxTy/menaxpHr?=
- =?us-ascii?Q?Pu8MmAsC94R1A7Qmfp5x3C6fTg09BTXQibTqyBu7tWeBfny4fxy9PyoHSGYs?=
- =?us-ascii?Q?UVt/yegHKuVpjW8qvQr7OshsAEk6V0OVusPvyZkcPdCxptzFSTmgDRWc7IMo?=
- =?us-ascii?Q?Poz6UERaC5bH7dMU+3RKVpWT7f0YUk2RapYmJOzP8wHa7LFHy1wus5OPO1LZ?=
- =?us-ascii?Q?xNfUVtKSep0XNXadMq8VhHIi0Y4fTd1u4kBSGT1/Yy7Yt8RrvtnUrzvfgAD4?=
- =?us-ascii?Q?qRj6+eMzEyxPqd2vYHuWvYU3TpUR8PE99UtyeW6tcMwT6nb8UKk4Km/Na5sk?=
- =?us-ascii?Q?oUnApiTGT85njj54+Vld3BWX?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ bh=bQPIktSbJ2X8FaFVAuAix71n5zAUPKwrmNlYYTCPOhw=;
+ b=AeL1evHxHB5WI8sQOuGI6RqgZFltR0lrOEBdS7roL7azKTa6BaSe3XM4FgspXhk3hk2TwcEO/gF7BZrHK6VFlaHeD07+g+4Q4ZXgP/P8OKpOKmLGK9U58wQRLdegUmwtzHnliehI6n+YykD3189wiIAqyFF6zabDCqZR335OXooPc2KLIPdCpo6sb8KUehkO/EQ8YR9MPzqPjVIseMg1EbL3cpp/PPGuOT6NingKT6zGnYCn64hssiRzd1CwAtC/cYGeLQS1FLpDHfiSJNqu4QDmK5ZG6coZuyiADGhSP05K+3xkdvktoVoWz/eTwobn2niF4LNsAekA2PiGIdb0GQ==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=zeku.com;
+Received: from KL1PR02MB4788.apcprd02.prod.outlook.com (2603:1096:820:5a::11)
+ by KL1PR02MB4739.apcprd02.prod.outlook.com (2603:1096:820:54::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Thu, 5 Aug
+ 2021 06:39:02 +0000
+Received: from KL1PR02MB4788.apcprd02.prod.outlook.com
+ ([fe80::c93f:f5ca:e24a:cdc6]) by KL1PR02MB4788.apcprd02.prod.outlook.com
+ ([fe80::c93f:f5ca:e24a:cdc6%4]) with mapi id 15.20.4394.017; Thu, 5 Aug 2021
+ 06:39:02 +0000
+From:   Hui Su <suhui@zeku.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org
+Cc:     Hui Su <suhui@zeku.com>
+Subject: [PATCH] sched/core_sched.c: remove some unused func declarations
+Date:   Thu,  5 Aug 2021 14:38:52 +0800
+Message-Id: <20210805063852.304-1-suhui@zeku.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK0PR03CA0100.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::16) To KL1PR02MB4788.apcprd02.prod.outlook.com
+ (2603:1096:820:5a::11)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from N50001309.adc.com (58.255.79.106) by HK0PR03CA0100.apcprd03.prod.outlook.com (2603:1096:203:b0::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17 via Frontend Transport; Thu, 5 Aug 2021 06:39:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 10c3afc2-969e-4031-8148-08d957dbb6db
+X-MS-TrafficTypeDiagnostic: KL1PR02MB4739:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <KL1PR02MB47398EBE487CE84D79BF0A61C6F29@KL1PR02MB4739.apcprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1060;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9MuthbRULXXYsAgmiB7D7DZY69UVUwZUIx/Mb9gYArtAcq9sjW5rEMAm5XFQe6c+T2Mbjoghjb/U8PA5mFhCmSBzDpCnKYsl1uOhl6+Mc3X3rVRZtiwKY/OaO/VdFVFcwoKOxssxkqeeXhqm0hv9qRPa1JIAJx2ISPjCxlgGGj4yntB5kE6Zh99y1S/Bpo5hbJL9eIdlrXXRtP0uTdgtJWRM7KlH4dRS/ECu1JfNxfSIzWw2iDdos2rEf1SGmPlIc3/YWMRdIuzdEm17LYDIQ5UuR4TotVe/GnktvoCBshyXxT5PxHRounJzm8CDTpJ4BXdlwSy/UCd/UXpiMDnhZ6nlZsldMDXkx2ak4Aqap7Mp6A/p0nsLPSiUaLaop9ySnhlLAqVFPqzx8+ovhpzuWtd51ClMducbGK/KVZwsfe7ldGrxd/upJ3nb+BLHbb6/zIkaXO/VIg6r/mhaonDoANfjTwy9vs/CeZqsq8qeXStdky5tfrZjvNMkZYLmyabegQq38SNLbP6VOxxfVN+UEsktk+YdwQfMrbVxa1uyYLc3P8pR0UxjxSx7x2RdgeOpmAPhZ8KPT0GoX3GFHjctTttH7uHgB39zSewwVoGv1WtGxibeIkslMq7V8t392nTcAR2J8gFWhmDh4OrqGN5sGxU2QtMbjBeaSwV2MrQoYQM/IWXwT+TGvms0nYm5fqPnA4fV2OPpTfB9e24oahMIsS3SEzbmHXjfOiBQuAucMwyNVqXO7Mj8OteF4jxkWRgQ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR02MB4788.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(508600001)(7416002)(6512007)(921005)(107886003)(316002)(36756003)(8676002)(8936002)(6486002)(52116002)(86362001)(6506007)(4326008)(38100700002)(38350700002)(2616005)(956004)(6666004)(5660300002)(83380400001)(26005)(2906002)(66476007)(186003)(66556008)(66946007)(1076003)(11606007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tzkTYt6dfXD6VkESmJSExc/vQw1CgWEBF37xb0KtF0ihTulMp+AgspXgBsJI?=
+ =?us-ascii?Q?DxZfj5aeH/WkEYycuhk4fbzKimKwFYUWbJIJ3UnuTi24fNLf6gBgJDpqevH0?=
+ =?us-ascii?Q?ZSgjtw1i7r0NhhWtRzu+bgjp2an9W8/OlOnrzlL88WOOml7y2ryAGg/e8yKD?=
+ =?us-ascii?Q?4/ptdTqKwqJ8EmUzB0We6MhdpMbHGWJ90W7cvGwNbHCda6R3+w+VTTyVJ4GQ?=
+ =?us-ascii?Q?+N34T1QuJEMBM3fvpTqb5hY449t4z9B/9dLELLTGKnmw9IwhdmPFjOsUNakN?=
+ =?us-ascii?Q?wF3tnVncg1G2NTnsTii9z4VIr5Hw2Vsso28w/a9PoeNNw0O7AFT65NdMsxsL?=
+ =?us-ascii?Q?Bk0KmUwC4BaTLk9rbfU65gxDT7hdISc2cmfgcCSQo7d/q1wVYdy5LdYgHxNs?=
+ =?us-ascii?Q?BjZA9vrKJVnMWyoCjwi5mO+wh4PDLtq5y2ZZ7k/RCCVd+S4fIz6BaRga/rst?=
+ =?us-ascii?Q?THkaDjtIf7dhpoLp0gOKB5RgIVRoob5OCO8uvNOmHGfQISSnBbPlVREBflnW?=
+ =?us-ascii?Q?fIfbfXcSAWEdCf9ohFcyEq1grSVUJi2Fejj+tIAVvs5SPTt6EzvgL9Jd7/03?=
+ =?us-ascii?Q?BR7o1WJM6/rUg2704zxvMXvtu0tdq5L2LJuBB1oSDp5mDCCN0J/keMcoizWm?=
+ =?us-ascii?Q?mm3y4oHCjfY3b6mQCjqOo9BaHoZZf0PIes9WFKewtAPFoT4+xzGimF1Xu3SE?=
+ =?us-ascii?Q?imiUTv+dUt9yN5upjWSWy/GbeCvyB7nrJ/bvlZMXW7g0K8F7/rKMw2LyFBl/?=
+ =?us-ascii?Q?XEfja1cZGALMvbSDcnZaQXd/UJxCVzoAGsxkoV6vgeeJwfPcRJxb8GzJrd7z?=
+ =?us-ascii?Q?7Jz2uTNpdGiRMgDgTOkTfbWG+LdYGYMPSFI4VPTCfJLv0zbBItHjSiXZYWFp?=
+ =?us-ascii?Q?pg55eG7vv1upajVFXzQGWSTOC0z/coOk7YG5W0+pUSBUZrqzMrSu2wJYjs9B?=
+ =?us-ascii?Q?MAAtedyHv22+2jzqOUAOTqLl6pcMfgqHbRO8iCdlr8srG4CLNU896yKy5oOb?=
+ =?us-ascii?Q?JFgxpTLDX7L1u8d4oOcjuJfZVZkP36X+E0uK4JdcN+v3khBAZe1WmEyWKkli?=
+ =?us-ascii?Q?AORXg0vPNFBicmt81Gv5S9+9DVzTjNgqz96kZ4tmjOJaDNAaXM1fVXEH+brd?=
+ =?us-ascii?Q?H11vOTGLqPMNVlXK1ZPrdA36mNVIXC+TdFr8yYyd/0oeiE3u9MKVui0xexJL?=
+ =?us-ascii?Q?49XUcyMx9qbZi+2Q3fN7BAONfW416TKriAyAABoGaNkPMvgKnMvJR+BCsMEM?=
+ =?us-ascii?Q?g95GobwVE68MSin7DF5K7jLFot5TN8dG7v9JS9K4btQBmHSYMTkKwMM3eT5e?=
+ =?us-ascii?Q?7LUezX44tzZP5wtreC3daja6?=
+X-OriginatorOrg: zeku.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10c3afc2-969e-4031-8148-08d957dbb6db
+X-MS-Exchange-CrossTenant-AuthSource: KL1PR02MB4788.apcprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f8d0e8d-875a-4b71-8517-08d957db4090
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Aug 2021 06:35:44.1397
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2021 06:39:02.8591
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Obg8L/KQXh/SphglscC7kd9p28rPzWEXjflBku5uovYpJw0Qdg8bqc/jU+HrAgi4QJfLZDc4tHwxp0Vrmc8C+Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB1132
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 171aedba-f024-43df-bc82-290d40e185ac
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Cv5OvUuQ82ANF8ZVu89F7IGWstmnt8kT2bf31Fhk7NSKx/tJe/PjXl9kwF0oaGiy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR02MB4739
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Bean Huo <beanhuo@micron.com>
->=20
-> We need to check HPB being enabled on which LU from the userspace tool,
-> so, add lu_enable sysfs node.
->=20
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Tested-by: Avri Altman <avri.altman@wdc.com>
+remove some unused func declarations and make
+the definitions static
 
-> ---
->  drivers/scsi/ufs/ufs-sysfs.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-> index 08fe037069bc..5c405ff7b6ea 100644
-> --- a/drivers/scsi/ufs/ufs-sysfs.c
-> +++ b/drivers/scsi/ufs/ufs-sysfs.c
-> @@ -1163,6 +1163,7 @@ static DEVICE_ATTR_RO(_pname)
->  #define UFS_UNIT_DESC_PARAM(_name, _uname, _size)                      \
->         UFS_LUN_DESC_PARAM(_name, _uname, UNIT, _size)
->=20
-> +UFS_UNIT_DESC_PARAM(lu_enable, _LU_ENABLE, 1);
->  UFS_UNIT_DESC_PARAM(boot_lun_id, _BOOT_LUN_ID, 1);
->  UFS_UNIT_DESC_PARAM(lun_write_protect, _LU_WR_PROTECT, 1);
->  UFS_UNIT_DESC_PARAM(lun_queue_depth, _LU_Q_DEPTH, 1);
-> @@ -1181,8 +1182,8 @@
-> UFS_UNIT_DESC_PARAM(hpb_pinned_region_start_offset,
-> _HPB_PIN_RGN_START_OFF, 2);
->  UFS_UNIT_DESC_PARAM(hpb_number_pinned_regions,
-> _HPB_NUM_PIN_RGNS, 2);
->  UFS_UNIT_DESC_PARAM(wb_buf_alloc_units, _WB_BUF_ALLOC_UNITS, 4);
->=20
-> -
->  static struct attribute *ufs_sysfs_unit_descriptor[] =3D {
-> +       &dev_attr_lu_enable.attr,
->         &dev_attr_boot_lun_id.attr,
->         &dev_attr_lun_write_protect.attr,
->         &dev_attr_lun_queue_depth.attr,
-> --
-> 2.25.1
+Signed-off-by: Hui Su <suhui@zeku.com>
+---
+ kernel/sched/core_sched.c | 9 ++++-----
+ kernel/sched/sched.h      | 5 -----
+ 2 files changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/sched/core_sched.c b/kernel/sched/core_sched.c
+index 9a80e9a474c0..3ddfed5231c8 100644
+--- a/kernel/sched/core_sched.c
++++ b/kernel/sched/core_sched.c
+@@ -11,7 +11,7 @@ struct sched_core_cookie {
+ 	refcount_t refcnt;
+ };
+ 
+-unsigned long sched_core_alloc_cookie(void)
++static unsigned long sched_core_alloc_cookie(void)
+ {
+ 	struct sched_core_cookie *ck = kmalloc(sizeof(*ck), GFP_KERNEL);
+ 	if (!ck)
+@@ -23,7 +23,7 @@ unsigned long sched_core_alloc_cookie(void)
+ 	return (unsigned long)ck;
+ }
+ 
+-void sched_core_put_cookie(unsigned long cookie)
++static void sched_core_put_cookie(unsigned long cookie)
+ {
+ 	struct sched_core_cookie *ptr = (void *)cookie;
+ 
+@@ -33,7 +33,7 @@ void sched_core_put_cookie(unsigned long cookie)
+ 	}
+ }
+ 
+-unsigned long sched_core_get_cookie(unsigned long cookie)
++static unsigned long sched_core_get_cookie(unsigned long cookie)
+ {
+ 	struct sched_core_cookie *ptr = (void *)cookie;
+ 
+@@ -53,7 +53,7 @@ unsigned long sched_core_get_cookie(unsigned long cookie)
+  *
+  * Returns: the old cookie
+  */
+-unsigned long sched_core_update_cookie(struct task_struct *p, unsigned long cookie)
++static unsigned long sched_core_update_cookie(struct task_struct *p, unsigned long cookie)
+ {
+ 	unsigned long old_cookie;
+ 	struct rq_flags rf;
+@@ -226,4 +226,3 @@ int sched_core_share_pid(unsigned int cmd, pid_t pid, enum pid_type type,
+ 	put_task_struct(task);
+ 	return err;
+ }
+-
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 14a41a243f7b..69b5da925da3 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1244,11 +1244,6 @@ extern void sched_core_dequeue(struct rq *rq, struct task_struct *p);
+ extern void sched_core_get(void);
+ extern void sched_core_put(void);
+ 
+-extern unsigned long sched_core_alloc_cookie(void);
+-extern void sched_core_put_cookie(unsigned long cookie);
+-extern unsigned long sched_core_get_cookie(unsigned long cookie);
+-extern unsigned long sched_core_update_cookie(struct task_struct *p, unsigned long cookie);
+-
+ #else /* !CONFIG_SCHED_CORE */
+ 
+ static inline bool sched_core_enabled(struct rq *rq)
+-- 
+2.30.2
 
