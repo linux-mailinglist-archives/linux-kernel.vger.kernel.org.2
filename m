@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55F13E1884
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F09A3E187E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242425AbhHEPpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:45:43 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43820 "EHLO
+        id S242524AbhHEPpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:45:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44274 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242432AbhHEPma (ORCPT
+        with ESMTP id S240747AbhHEPmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:42:30 -0400
-Message-ID: <20210805153955.483052271@linutronix.de>
+        Thu, 5 Aug 2021 11:42:33 -0400
+Message-ID: <20210805153955.539144983@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628178135;
+        s=2020; t=1628178137;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=lzQ6SJUWO+cQIKpc/IWE3nb8cj8Ps+LzIGeiMNlvMc8=;
-        b=lUPB2tcN+2F/XGs1lyoFqd9v7lQbX0PSfzAtg8MJjNKRe40pmSXCiGtfflsMyaelJG/6Lj
-        KMup2DjyCnFMhQ6XKp5YXvwXtAvj2hHGjUBDp273sZnPzTsPII/S7lLRqThKBukXP5bNy9
-        v1B02Xmf+6CXLLS/22CgvySQk/iNqLBvQA51UqY66knqKJid1M5WtfzCz4kANyLXD724iL
-        2qOQfh/3g1BKvuqWZ5vvH5tu+0WuWNX+G/QpY1WOvNxprKUDEIceSPlU22PAZwa5G3Exis
-        pEZEPXauYtERzgMVU38iibMMvSdQ4EIqzjd4WY1Hqnlw6Doe0gc8+IT8MdzOQA==
+        bh=MJbhoSWNuYj+bWle6aksdkFrxsJ6cTJTB/qdnCZsORI=;
+        b=4yd9/MTEvvKhgGFAE4HCV4upy8Q2Qd7J4xLrR9Q26De9oU41+LQUD28kCQcnI/FMx21elo
+        6c6D5mMfMiqtXm1rAIWFMsdncHRiq5vBoYEMEdX7TD3sqRJyIVjxTYYeTACkMuk4VAGcP4
+        bPtQViYjjl3+D9fNRictjmtnb0e53dddAoVjZR+h8nwzMEJdp/rme/D3m1gRdRuVhn2a0P
+        SGYuYI0VgOZFyRjH9P3E/CtNF3PGDTrqdDEdO18R9UQqc0vg1DQUN3qLJzvMnFFNOGwKHn
+        pquAh/m+crc9RdOTqDzVRN/VXTEm624nAiiLql1ay5LSNa2uZHPdxaMBCJnLww==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628178135;
+        s=2020e; t=1628178137;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=lzQ6SJUWO+cQIKpc/IWE3nb8cj8Ps+LzIGeiMNlvMc8=;
-        b=p5mplgLdLuKQOq+KYwU7x4Ka0iPpt0xyvgikNK6UovKAkbydf0JxRsbqjRcEgwcT6a59q9
-        BYgDcYuyjxK4mjCQ==
-Date:   Thu, 05 Aug 2021 17:13:46 +0200
+        bh=MJbhoSWNuYj+bWle6aksdkFrxsJ6cTJTB/qdnCZsORI=;
+        b=b/g8MQxXdLJUPE/jjgA63ZT7ACvycTxSXrm8YpDB8H2tSheEmEJRnfWUVQqdtHz5fms17o
+        nSDh7mYDYTpIpPBw==
+Date:   Thu, 05 Aug 2021 17:13:47 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -46,7 +46,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Davidlohr Bueso <dave@stgolabs.net>,
         Mike Galbraith <efault@gmx.de>
-Subject: [patch V3 46/64] locking/ww_mutex: Abstract internal lock access
+Subject: [patch V3 47/64] locking/ww_mutex: Implement rt_mutex accessors
 References: <20210805151300.330412127@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,117 +55,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Accessing the internal wait_lock of mutex and rtmutex is slightly
-different. Provide helper functions for that.
+From: Peter Zijlstra <peterz@infradead.org>
 
+Provide the type defines and the helper inlines for rtmutex based ww_mutexes.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- include/linux/ww_mutex.h  |   13 +++++++++----
- kernel/locking/ww_mutex.h |   23 +++++++++++++++++++----
- 2 files changed, 28 insertions(+), 8 deletions(-)
 
---- a/include/linux/ww_mutex.h
-+++ b/include/linux/ww_mutex.h
-@@ -19,6 +19,11 @@
- 
- #include <linux/mutex.h>
- 
-+#define WW_MUTEX_BASE			mutex
-+#define ww_mutex_base_init(l,n,k)	__mutex_init(l,n,k)
-+#define ww_mutex_base_trylock(l)	mutex_trylock(l)
-+#define ww_mutex_base_is_locked(b)	mutex_is_locked((b))
-+
- struct ww_class {
- 	atomic_long_t stamp;
- 	struct lock_class_key acquire_key;
-@@ -29,7 +34,7 @@ struct ww_class {
- };
- 
- struct ww_mutex {
--	struct mutex base;
-+	struct WW_MUTEX_BASE base;
- 	struct ww_acquire_ctx *ctx;
- #ifdef CONFIG_DEBUG_MUTEXES
- 	struct ww_class *ww_class;
-@@ -82,7 +87,7 @@ struct ww_acquire_ctx {
- static inline void ww_mutex_init(struct ww_mutex *lock,
- 				 struct ww_class *ww_class)
- {
--	__mutex_init(&lock->base, ww_class->mutex_name, &ww_class->mutex_key);
-+	ww_mutex_base_init(&lock->base, ww_class->mutex_name, &ww_class->mutex_key);
- 	lock->ctx = NULL;
- #ifdef CONFIG_DEBUG_MUTEXES
- 	lock->ww_class = ww_class;
-@@ -330,7 +335,7 @@ extern void ww_mutex_unlock(struct ww_mu
-  */
- static inline int __must_check ww_mutex_trylock(struct ww_mutex *lock)
- {
--	return mutex_trylock(&lock->base);
-+	return ww_mutex_base_trylock(&lock->base);
- }
- 
- /***
-@@ -354,7 +359,7 @@ static inline void ww_mutex_destroy(stru
-  */
- static inline bool ww_mutex_is_locked(struct ww_mutex *lock)
- {
--	return mutex_is_locked(&lock->base);
-+	return ww_mutex_base_is_locked(&lock->base);
- }
- 
- #endif
+---
+ kernel/locking/ww_mutex.h |   80 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+---
 --- a/kernel/locking/ww_mutex.h
 +++ b/kernel/locking/ww_mutex.h
-@@ -68,6 +68,21 @@ static inline bool
- 	return atomic_long_read(&lock->owner) & MUTEX_FLAG_WAITERS;
+@@ -1,5 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ 
++#ifndef WW_RT
++
+ #define MUTEX		mutex
+ #define MUTEX_WAITER	mutex_waiter
+ 
+@@ -83,6 +85,82 @@ static inline void lockdep_assert_wait_l
+ 	lockdep_assert_held(&lock->wait_lock);
  }
  
-+static inline void lock_wait_lock(struct mutex *lock)
++#else /* WW_RT */
++
++#define MUTEX		rt_mutex
++#define MUTEX_WAITER	rt_mutex_waiter
++
++static inline struct rt_mutex_waiter *
++__ww_waiter_first(struct rt_mutex *lock)
 +{
-+	raw_spin_lock(&lock->wait_lock);
++	struct rb_node *n = rb_first(&lock->rtmutex.waiters.rb_root);
++	if (!n)
++		return NULL;
++	return rb_entry(n, struct rt_mutex_waiter, tree_entry);
 +}
 +
-+static inline void unlock_wait_lock(struct mutex *lock)
++static inline struct rt_mutex_waiter *
++__ww_waiter_next(struct rt_mutex *lock, struct rt_mutex_waiter *w)
 +{
-+	raw_spin_unlock(&lock->wait_lock);
++	struct rb_node *n = rb_next(&w->tree_entry);
++	if (!n)
++		return NULL;
++	return rb_entry(n, struct rt_mutex_waiter, tree_entry);
 +}
 +
-+static inline void lockdep_assert_wait_lock_held(struct mutex *lock)
++static inline struct rt_mutex_waiter *
++__ww_waiter_prev(struct rt_mutex *lock, struct rt_mutex_waiter *w)
 +{
-+	lockdep_assert_held(&lock->wait_lock);
++	struct rb_node *n = rb_prev(&w->tree_entry);
++	if (!n)
++		return NULL;
++	return rb_entry(n, struct rt_mutex_waiter, tree_entry);
 +}
++
++static inline struct rt_mutex_waiter *
++__ww_waiter_last(struct rt_mutex *lock)
++{
++	struct rb_node *n = rb_last(&lock->rtmutex.waiters.rb_root);
++	if (!n)
++		return NULL;
++	return rb_entry(n, struct rt_mutex_waiter, tree_entry);
++}
++
++static inline void
++__ww_waiter_add(struct rt_mutex *lock, struct rt_mutex_waiter *waiter, struct rt_mutex_waiter *pos)
++{
++	/* RT unconditionally adds the waiter first and then removes it on error */
++}
++
++static inline struct task_struct *
++__ww_mutex_owner(struct rt_mutex *lock)
++{
++	return rt_mutex_owner(&lock->rtmutex);
++}
++
++static inline bool
++__ww_mutex_has_waiters(struct rt_mutex *lock)
++{
++	return rt_mutex_has_waiters(&lock->rtmutex);
++}
++
++static inline void lock_wait_lock(struct rt_mutex *lock)
++{
++	raw_spin_lock(&lock->rtmutex.wait_lock);
++}
++
++static inline void unlock_wait_lock(struct rt_mutex *lock)
++{
++	raw_spin_unlock(&lock->rtmutex.wait_lock);
++}
++
++static inline void lockdep_assert_wait_lock_held(struct rt_mutex *lock)
++{
++	lockdep_assert_held(&lock->rtmutex.wait_lock);
++}
++
++#endif /* WW_RT */
 +
  /*
   * Wait-Die:
   *   The newer transactions are killed when:
-@@ -174,7 +189,7 @@ static bool __ww_mutex_wound(struct MUTE
- {
- 	struct task_struct *owner = __ww_mutex_owner(lock);
+@@ -169,7 +247,9 @@ static bool
  
--	lockdep_assert_held(&lock->wait_lock);
-+	lockdep_assert_wait_lock_held(lock);
+ 	if (waiter->ww_ctx->acquired > 0 &&
+ 			__ww_ctx_stamp_after(waiter->ww_ctx, ww_ctx)) {
++#ifndef WW_RT
+ 		debug_mutex_wake_waiter(lock, waiter);
++#endif
+ 		wake_up_process(waiter->task);
+ 	}
  
- 	/*
- 	 * Possible through __ww_mutex_add_waiter() when we race with
-@@ -227,7 +242,7 @@ static void
- {
- 	struct MUTEX_WAITER *cur;
- 
--	lockdep_assert_held(&lock->wait_lock);
-+	lockdep_assert_wait_lock_held(lock);
- 
- 	for (cur = __ww_waiter_first(lock); cur;
- 	     cur = __ww_waiter_next(lock, cur)) {
-@@ -275,9 +290,9 @@ ww_mutex_set_context_fastpath(struct ww_
- 	 * Uh oh, we raced in fastpath, check if any of the waiters need to
- 	 * die or wound us.
- 	 */
--	raw_spin_lock(&lock->base.wait_lock);
-+	lock_wait_lock(&lock->base);
- 	__ww_mutex_check_waiters(&lock->base, ctx);
--	raw_spin_unlock(&lock->base.wait_lock);
-+	unlock_wait_lock(&lock->base);
- }
- 
- static __always_inline int
 
