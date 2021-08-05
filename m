@@ -2,77 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7083E100F
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B04623E1015
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239377AbhHEIS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 04:18:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236074AbhHEISz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 04:18:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F0196104F;
-        Thu,  5 Aug 2021 08:18:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628151520;
-        bh=3Qyqz/XehSHX/KN//v96jroYOCaR+p2m3HMTILA0UBA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1tfTAD2SzzVKWhuczBMWWCBkLmJujhVs6ns1DA/ZOSo0U1X148bi5U7Tw/q0OrooI
-         fejyLXMwHkCrIrbtlW97iHgOA0bXRKN2IF340MROLRuSypoXuueXE/6sTbuuy6aRu+
-         umdeCMGPzCKRl1oD9ddTkCi+WD9x7kM4XxVtbiqA=
-Date:   Thu, 5 Aug 2021 10:18:38 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xianting Tian <xianting.tian@linux.alibaba.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, amit@kernel.org, arnd@arndb.de,
-        osandov@fb.com, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] tty: hvc: pass DMA capable memory to put_chars()
-Message-ID: <YQue3tK98e6fAqwP@kroah.com>
-References: <20210804025453.93543-1-xianting.tian@linux.alibaba.com>
- <0f26a1c3-53e8-9282-69e8-8d81a9cafc59@kernel.org>
- <40f78d10-0a57-4620-e7e2-f806bd61abca@linux.alibaba.com>
+        id S239379AbhHEIUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 04:20:36 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:26599 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231359AbhHEIUf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 04:20:35 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-222-ItXAGynfMm2D6VX6lXBPsw-1; Thu, 05 Aug 2021 09:20:16 +0100
+X-MC-Unique: ItXAGynfMm2D6VX6lXBPsw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Thu, 5 Aug 2021 09:20:15 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Thu, 5 Aug 2021 09:20:15 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Palmer Dabbelt' <palmer@dabbelt.com>,
+        "mcroce@linux.microsoft.com" <mcroce@linux.microsoft.com>,
+        "mcroce@linux.microsoft.com" <mcroce@linux.microsoft.com>
+CC:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        "kernel@esmil.dk" <kernel@esmil.dk>,
+        "akira.tsukamoto@gmail.com" <akira.tsukamoto@gmail.com>,
+        "drew@beagleboard.org" <drew@beagleboard.org>,
+        "bmeng.cn@gmail.com" <bmeng.cn@gmail.com>,
+        "guoren@kernel.org" <guoren@kernel.org>,
+        "Christoph Hellwig" <hch@infradead.org>
+Subject: RE: [PATCH] riscv: use the generic string routines
+Thread-Topic: [PATCH] riscv: use the generic string routines
+Thread-Index: AQHXiXDwMuHx//JaRE+MHXqCWo1pFatkkT8w
+Date:   Thu, 5 Aug 2021 08:20:15 +0000
+Message-ID: <b8d9437cae2248c7a2cb6244f5d760ec@AcuMS.aculab.com>
+References: <CAFnufp1QpMc87+-hwPa887iQQGCjjkGNanVSKOUsE-0ti82jrA@mail.gmail.com>
+ <mhng-7b8d3a12-e223-4b69-a35a-617b0d7ac8f7@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-7b8d3a12-e223-4b69-a35a-617b0d7ac8f7@palmerdabbelt-glaptop>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <40f78d10-0a57-4620-e7e2-f806bd61abca@linux.alibaba.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 04:08:46PM +0800, Xianting Tian wrote:
-> 
-> 在 2021/8/5 下午3:58, Jiri Slaby 写道:
-> > Hi,
-> > 
-> > On 04. 08. 21, 4:54, Xianting Tian wrote:
-> > > @@ -933,6 +949,16 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno,
-> > > int data,
-> > >       hp->outbuf_size = outbuf_size;
-> > >       hp->outbuf = &((char *)hp)[ALIGN(sizeof(*hp), sizeof(long))];
-> > >   +    /*
-> > > +     * hvc_con_outbuf is guaranteed to be aligned at least to the
-> > > +     * size(N_OUTBUF) by kmalloc().
-> > > +     */
-> > > +    hp->hvc_con_outbuf = kzalloc(N_OUTBUF, GFP_KERNEL);
-> > > +    if (!hp->hvc_con_outbuf)
-> > > +        return ERR_PTR(-ENOMEM);
-> > 
-> > This leaks hp, right?
-> > 
-> > BTW your 2 patches are still not threaded, that is hard to follow.
-> 
-> yes, thanks, I found the bug, I am preparing to do this in v4.
-> 
-> It is the first time I send series patches(number >1), I checked the method
-> for sending series patch on LKML.org, I should send '0/2' which is the
-> history info for series patches.
+RnJvbTogUGFsbWVyIERhYmJlbHQNCj4gU2VudDogMDQgQXVndXN0IDIwMjEgMjE6NDANCj4gDQo+
+IE9uIFR1ZSwgMDMgQXVnIDIwMjEgMDk6NTQ6MzQgUERUICgtMDcwMCksIG1jcm9jZUBsaW51eC5t
+aWNyb3NvZnQuY29tIHdyb3RlOg0KPiA+IE9uIE1vbiwgSnVsIDE5LCAyMDIxIGF0IDE6NDQgUE0g
+TWF0dGVvIENyb2NlIDxtY3JvY2VAbGludXgubWljcm9zb2Z0LmNvbT4gd3JvdGU6DQo+ID4+DQo+
+ID4+IEZyb206IE1hdHRlbyBDcm9jZSA8bWNyb2NlQG1pY3Jvc29mdC5jb20+DQo+ID4+DQo+ID4+
+IFVzZSB0aGUgZ2VuZXJpYyByb3V0aW5lcyB3aGljaCBoYW5kbGUgYWxpZ25tZW50IHByb3Blcmx5
+Lg0KPiA+Pg0KPiA+PiBUaGVzZSBhcmUgdGhlIHBlcmZvcm1hbmNlcyBtZWFzdXJlZCBvbiBhIEJl
+YWdsZVYgbWFjaGluZSBmb3IgYQ0KPiA+PiAzMiBtYnl0ZSBidWZmZXI6DQo+ID4+DQo+ID4+IG1l
+bWNweToNCj4gPj4gb3JpZ2luYWwgYWxpZ25lZDogICAgICAgIDc1IE1iL3MNCj4gPj4gb3JpZ2lu
+YWwgdW5hbGlnbmVkOiAgICAgIDc1IE1iL3MNCj4gPj4gbmV3IGFsaWduZWQ6ICAgICAgICAgICAg
+MTE0IE1iL3MNCj4gPj4gbmV3IHVuYWxpZ25lZDogICAgICAgICAgMTA3IE1iL3MNCj4gPj4NCj4g
+Pj4gbWVtc2V0Og0KPiA+PiBvcmlnaW5hbCBhbGlnbmVkOiAgICAgICAxNDAgTWIvcw0KPiA+PiBv
+cmlnaW5hbCB1bmFsaWduZWQ6ICAgICAxNDAgTWIvcw0KPiA+PiBuZXcgYWxpZ25lZDogICAgICAg
+ICAgICAyNDEgTWIvcw0KPiA+PiBuZXcgdW5hbGlnbmVkOiAgICAgICAgICAyNDEgTWIvcw0KPiA+
+Pg0KPiA+PiBUQ1AgdGhyb3VnaHB1dCB3aXRoIGlwZXJmMyBnaXZlcyBhIHNpbWlsYXIgaW1wcm92
+ZW1lbnQgYXMgd2VsbC4NCj4gPj4NCj4gPj4gVGhpcyBpcyB0aGUgYmluYXJ5IHNpemUgaW5jcmVh
+c2UgYWNjb3JkaW5nIHRvIGJsb2F0LW8tbWV0ZXI6DQo+ID4+DQo+ID4+IGFkZC9yZW1vdmU6IDAv
+MCBncm93L3NocmluazogNC8yIHVwL2Rvd246IDQzMi8tMzYgKDM5NikNCj4gPj4gRnVuY3Rpb24g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb2xkICAgICBuZXcgICBkZWx0YQ0K
+PiA+PiBtZW1jcHkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMzYgICAg
+IDMyNCAgICArMjg4DQo+ID4+IG1lbXNldCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAzMiAgICAgMTQ4ICAgICsxMTYNCj4gPj4gc3RybGNweSAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgMTE2ICAgICAxMzIgICAgICsxNg0KPiA+PiBzdHJzY3B5X3Bh
+ZCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgODQgICAgICA5NiAgICAgKzEyDQo+
+ID4+IHN0cmxjYXQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDE3NiAgICAg
+MTY0ICAgICAtMTINCj4gPj4gbWVtbW92ZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIDc2ICAgICAgNTIgICAgIC0yNA0KPiA+PiBUb3RhbDogQmVmb3JlPTEyMjUzNzEsIEFm
+dGVyPTEyMjU3NjcsIGNoZyArMC4wMyUNCj4gPj4NCj4gPj4gU2lnbmVkLW9mZi1ieTogTWF0dGVv
+IENyb2NlIDxtY3JvY2VAbWljcm9zb2Z0LmNvbT4NCj4gPj4gU2lnbmVkLW9mZi1ieTogRW1pbCBS
+ZW5uZXIgQmVydGhpbmcgPGtlcm5lbEBlc21pbC5kaz4NCj4gPj4gLS0tDQo+ID4NCj4gPiBIaSwN
+Cj4gPg0KPiA+IGNhbiBzb21lb25lIGhhdmUgYSBsb29rIGF0IHRoaXMgY2hhbmdlIGFuZCBzaGFy
+ZSBvcGluaW9ucz8NCj4gDQo+IFRoaXMgTEdUTS4gIEhvdyBhcmUgdGhlIGdlbmVyaWMgc3RyaW5n
+IHJvdXRpbmVzIGxhbmRpbmc/ICBJJ20gaGFwcHkgdG8NCj4gdGFrZSB0aGlzIGludG8gbXkgZm9y
+LW5leHQsIGJ1dCBJSVVDIHdlIG5lZWQgdGhlIG9wdGltaXplZCBnZW5lcmljDQo+IHZlcnNpb25z
+IGZpcnN0IHNvIHdlIGRvbid0IGhhdmUgYSBwZXJmb3JtYW5jZSByZWdyZXNzaW9uIGZhbGxpbmcg
+YmFjayB0bw0KPiB0aGUgdHJpdmlhbCBvbmVzIGZvciBhIGJpdC4gIElzIHRoZXJlIGEgc2hhcmVk
+IHRhZyBJIGNhbiBwdWxsIGluPw0KDQpJIHRob3VnaHQgdGhlIGFjdHVhbCBwcm9ibGVtIHdhcyB0
+aGF0IHRoZSBhc20gY29weSBmdW5jdGlvbnMgd2VyZQ0KZG9pbmcgbWlzYWxpZ25lZCB0cmFuc2Zl
+cnMgYW5kIGZhdWx0aW5nLg0KDQpUaGVyZSBpcyBubyB3YXkgdGhhdCB0aGUgc2ltcGxlIEMgbG9v
+cCBzaG91bGQgYmUgYXMgZmFzdCBhcw0KdGhlIGFzbSBmdW5jdGlvbiBnaXZlbiB0aGUgZGVsYXkg
+Y3ljbGVzIHJlYWRpbmcgZnJvbSBtZW1vcnkuDQoNCllvdSBkZWZpbml0ZWx5IG5lZWQgdG8gdGVz
+dCBtdWNoIHNtYWxsZXIgY29waWVzIHdoZXJlIHRoZQ0KYnVmZmVycyBhcmUgcmVzaWRlbnQgaW4g
+dGhlIEwxIGRhdGEgY2FjaGUuDQpBbnl0aGluZyBlbHNlIGlzIGNvbXBsZXRlbHkgZG9taW5hdGVk
+IGJ5IHRoZSBjYWNoZSBsaW5lIGZpbGxzL3NwaWxscy4NCg0KWW91IGFsc28gbmVlZCB0byB0ZXN0
+IG9uIHRoZSBtdWNoIGZhc3RlciByaXNjdiBpbXBsZW1lbnRhdGlvbnMNCm5vdCBqdXN0IG9uIHRo
+ZSBiZWFnbGV2IGJvYXJkLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2Vz
+aWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVL
+DQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Please use 'git send-email' to send the full series all at once,
-otherwise it is hard to make the emails threaded "by hand" if you do not
-do so.
-
-thanks,
-
-greg k-h
