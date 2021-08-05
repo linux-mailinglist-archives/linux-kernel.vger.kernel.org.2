@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC2E3E1C00
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BAE3E1C01
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242479AbhHETEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:04:16 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:60197 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241974AbhHETEF (ORCPT
+        id S241994AbhHETER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:04:17 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:36613 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242166AbhHETEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:04:05 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5E30B5C0163;
-        Thu,  5 Aug 2021 15:03:50 -0400 (EDT)
+        Thu, 5 Aug 2021 15:04:06 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 83F4A5810B7;
+        Thu,  5 Aug 2021 15:03:51 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 05 Aug 2021 15:03:50 -0400
+  by compute6.internal (MEProxy); Thu, 05 Aug 2021 15:03:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
         :to:cc:subject:date:message-id:in-reply-to:references:reply-to
-        :mime-version:content-transfer-encoding; s=fm1; bh=Lf+Lo5XZBjeZj
-        26CYxZH/xK3V5qmXEQIAGQy9/M8Fos=; b=BU7jEjGIWBuA7nBnSpdOo189jkLI5
-        NwRqb67cGvmHezcEdmUpqZKPS3139uAuuaE3a/BBl+dukvx51LWU4ohrNfGAqfuX
-        ylUL80D/dHflw7e+u+bJJUkDYqlBvvT0N5DHnVq1B+adObgI+yCtI5OTI2aNvTj5
-        uJE1yMuyJSl63XF7j+hNDPP9pns04qrqXZvE9MGcwIe8qvV9STIYiYnuFQ/06ux5
-        6kp8Dgv/Hxlw77Fq0m+2q1GTiUK3bPzuqsfiR0oya9dKhUixJB9Dg158nERscoLF
-        3/VzMXrmYw74Aak9nOcxFRU66AJobAPCLnWM5zLw8xrNXLm2jFkLUgjuQ==
+        :mime-version:content-transfer-encoding; s=fm1; bh=zNBa+DPw6skCL
+        5zqb415g/XSwtRXkYRjfljqWc0rqOw=; b=DyQb67WDvRtWM6HaUooUM/LJ7FBVe
+        RHKFGNkJpgMc/hVEhEU3bBY0j9e1ACpLPdzYhMBgcjDe25DJVAzXtC8OyYQaCVVT
+        DVkY8uIRXHprEmZd7qBlwTwWuaxBZ9hOYHN4GMeCh1CiCofOD28h/6oouXhqIR0t
+        oKln8pn7sD+jD8rKJ0OfZcRP17juq9szZlAFNHgLyTc/QAno4D+VnlxhSsuynNfP
+        61sbW9SZYU5psQ4GG81DYucrG+Xv1iJYadVgCmDdHfkO6F3fiRucb/vyijDk16O9
+        /Tu4nUObFASN79yNgjfLeDeMHRAtJC2KV1GiUeMazMZWkFNAisJysmBTw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:reply-to:subject
         :to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=Lf+Lo5XZBjeZj26CYxZH/xK3V5qmXEQIAGQy9/M8Fos=; b=B1r8L+Yo
-        PD3pvwzCaLIj12NCvVTj3l6HRer7jSt3363+mRBlrkicVMcqmsmWA/zRfWKJjgKU
-        Ku3V9kJAn+ei1wTRrKpgK52IKHzV9+e3GSfK6NwUrD2j49U3uribv/2sQxgw4LyH
-        9olPYqQOzd2nlVPRP+WB5UrGREV8c2sb6uCWi0kEGK7mGwHwYqLXV8xKAFcSg6rb
-        VQMuanJUr8g94pni2ctv1BfiwaqXYwfgGvPdetXBQeaWIO8ek+HC8OqZXa2UKySD
-        pv9/OwADCaeePO6T1P4KCWW0u76cDg0xaHRxg4dMChvq2cJtWBQTSHvgwWRxSJLA
-        FsTUFmX9h1fz7A==
-X-ME-Sender: <xms:FjYMYeONCo2jmYer6JbRfAkvHJg87moEwJUxpDvqCPZEsA4pCYLx8A>
-    <xme:FjYMYc93MnhvrivmCyF2rWPb0MCIIL528woPsfQXkR3oQ7uF4XnfDwCSkpkHBEXb3
-    RxK8aYP8gTYVzIC2g>
-X-ME-Received: <xmr:FjYMYVRVVXESTdxLATeNUlYNraPvQepc93cjF97b6nEncBKpOmSIBt8BkxtQSpR_NeGZlJ5Y>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieelgddufedtucetufdoteggodetrfdotf
+        fm3; bh=zNBa+DPw6skCL5zqb415g/XSwtRXkYRjfljqWc0rqOw=; b=gWQXO1i0
+        jN0W7VaDRO9ZJs7svTKOs6Zt3cVW8ykYAN5L20lmCsOwVLSyKKEZwcwAy8VLeDO+
+        +cKpfta9nOpdlS3fPnazuUW3DIx4T86hKG9WnNFqjnCwKTmzfFsvE9oh/Mdk21IY
+        ZVbWKhhb5FA53N0Ec0CWeZHZKCmTAAiFT07RnyvlxwVi6mE/6AZGO8VqkOWJuOan
+        ijipS8ZISTZ+UgBOT8KfSFZxVWMUbObBRGAXGyM93Vp8IG6cNc/lcud6npqT4vDF
+        sQHBgCvQgM9uEJk8sIkfHmI/yaEFNhrihPBkIuGmwTxRC6bG58BsFou2qiW9cT3Z
+        UG97Hfi+X2S+MA==
+X-ME-Sender: <xms:FjYMYWW4oxNHvU7lI9eRIpHTG09e0c1my46csr1FG6tiDZEgWRK3Ng>
+    <xme:FjYMYSldck-jKxeuI4jDQIm-p7e-gf_xoiLpMP2QCv3kTflx-f9AKry1liyYwnNQu
+    9UzwjhwjbNzQdtY0w>
+X-ME-Received: <xmr:FjYMYabYkPq_xiag4riYUMLB3Rzd6rBLmmCuas3wkTxJWcq_klWVrjKCvcT3p-Td0tjAhhf->
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrieelgdduvdelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvufffkffojghfrhgggfestdhqredtredttdenucfhrhhomhepkghiucgj
     rghnuceoiihirdihrghnsehsvghnthdrtghomheqnecuggftrfgrthhtvghrnhepieejue
     dvueduuefhgefhheeiuedvtedvuefgieegveetueeiueehtdegudehfeelnecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepiihirdihrghnsehsvg
+    thgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepiihirdihrghnsehsvg
     hnthdrtghomh
-X-ME-Proxy: <xmx:FjYMYes4UrKNIYJX0jYJwf_mJIb8iGd08KBq8xSSXwGYUILi_MfdeA>
-    <xmx:FjYMYWciDUtPwKNvu3Rla7BSraVWYE3i3FnV6zYczerpvKJoledTTw>
-    <xmx:FjYMYS3MWkv6z1UzSxvVwcR2wbV72BYCdV52Cs8Eh_11F3VFrHWr2A>
-    <xmx:FjYMYdw6FNP8JXTixRliANw3TIp_p4_gVwOY0uh54b6xYS7Jo6Is_A>
+X-ME-Proxy: <xmx:FjYMYdXOPMQeHnQByY3au_gzNEx7nTJIcu47Ewhok_eBMOBld7rgag>
+    <xmx:FjYMYQkzV85mgqK4o_O-z-OHWrPy8bM9RR-q2VsmdhktdC0XgAZw5Q>
+    <xmx:FjYMYSdtLY7nyjI8pkKPgaNOIjJxast0TW71rRW0fFrj-Szwapk43Q>
+    <xmx:FzYMYekZVBc0z-UMbrmd-RymDusXtIvlcGjmK4G8K2deWYBaunPf1w>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 5 Aug 2021 15:03:49 -0400 (EDT)
+ 5 Aug 2021 15:03:50 -0400 (EDT)
 From:   Zi Yan <zi.yan@sent.com>
 To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org
 Cc:     Matthew Wilcox <willy@infradead.org>,
@@ -63,10 +63,15 @@ Cc:     Matthew Wilcox <willy@infradead.org>,
         Mike Kravetz <mike.kravetz@oracle.com>,
         Michal Hocko <mhocko@kernel.org>,
         John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>
-Subject: [RFC PATCH 07/15] mm: hugetlb: use PAGES_PER_SECTION to check mem_map discontiguity
-Date:   Thu,  5 Aug 2021 15:02:45 -0400
-Message-Id: <20210805190253.2795604-8-zi.yan@sent.com>
+        linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Ying Chen <chenying.kernel@bytedance.com>,
+        Feng Zhou <zhoufeng.zf@bytedance.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: [RFC PATCH 08/15] fs: proc: use PAGES_PER_SECTION for page offline checking period.
+Date:   Thu,  5 Aug 2021 15:02:46 -0400
+Message-Id: <20210805190253.2795604-9-zi.yan@sent.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210805190253.2795604-1-zi.yan@sent.com>
 References: <20210805190253.2795604-1-zi.yan@sent.com>
@@ -79,30 +84,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zi Yan <ziy@nvidia.com>
 
-mem_map is only guaranteed to be virtually contiguous within a section.
-Use PAGES_PER_SECTION to check the condition properly.
+It keeps the existing behavior after MAX_ORDER is increased beyond
+a section size.
 
 Signed-off-by: Zi Yan <ziy@nvidia.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Ying Chen <chenying.kernel@bytedance.com>
+Cc: Feng Zhou <zhoufeng.zf@bytedance.com>
+Cc: linux-fsdevel@vger.kernel.org
 Cc: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org
 ---
- mm/hugetlb.c | 2 +-
+ fs/proc/kcore.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index ce79d76c42ce..7f78203d6feb 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1784,7 +1784,7 @@ pgoff_t hugetlb_basepage_index(struct page *page)
- 	pgoff_t index =3D page_index(page_head);
- 	unsigned long compound_idx;
+diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+index 3f148759a5fd..77b7ba48fb44 100644
+--- a/fs/proc/kcore.c
++++ b/fs/proc/kcore.c
+@@ -486,7 +486,7 @@ read_kcore(struct file *file, char __user *buffer, size=
+_t buflen, loff_t *fpos)
+ 			}
+ 		}
 =20
--	if (compound_order(page_head) >=3D MAX_ORDER)
-+	if (compound_order(page_head) >=3D PAGES_PER_SECTION)
- 		compound_idx =3D page_to_pfn(page) - page_to_pfn(page_head);
- 	else
- 		compound_idx =3D page - page_head;
+-		if (page_offline_frozen++ % MAX_ORDER_NR_PAGES =3D=3D 0) {
++		if (page_offline_frozen++ % PAGES_PER_SECTION =3D=3D 0) {
+ 			page_offline_thaw();
+ 			cond_resched();
+ 			page_offline_freeze();
 --=20
 2.30.2
 
