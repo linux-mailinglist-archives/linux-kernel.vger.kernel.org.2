@@ -2,98 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE653E19C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0E83E19C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 18:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233482AbhHEQmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 12:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
+        id S233725AbhHEQma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 12:42:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbhHEQmO (ORCPT
+        with ESMTP id S233551AbhHEQm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 12:42:14 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB65C061765;
-        Thu,  5 Aug 2021 09:41:58 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id i10-20020a05600c354ab029025a0f317abfso6807097wmq.3;
-        Thu, 05 Aug 2021 09:41:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FPukj0sc+USjJnTorQ63Q8/krzolyQ2sY5zYNJxrZDo=;
-        b=WmBlcTbAHtBl+yyJN/NxbZVW2zlQ9P34ZkiJhQfLIovDVDrNm0RD+WDN9hi/8qqAN5
-         YPtCqYSFNjML8MCIZmmTetC/ISG8lRWojsdOc4oT23bgZQD6Lv6auIovuo8/sUj/TdqG
-         ntqt8btgZQhoyaLM9/s4jwS13pU1A9U81O4R34TwXDDKQ33SdbPmzo+1ScIFXZ8bnLEU
-         Nk9jGkMm9Y2xgmwtPuaG5S6uZ9Kd8TZ1IverZrYXnw4hsPNPokGdIrrfGEWelayQ3sSc
-         32eEq7Q25njbCi6dotbPkSI/gqAyG2qV2HmCA83K8DGN3YVkrivRREpJf2LBRO4PgC/x
-         UOfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FPukj0sc+USjJnTorQ63Q8/krzolyQ2sY5zYNJxrZDo=;
-        b=ADfGvyDWB42hhqFPikceWI+nknmpdne2bIAdZPdMuzAnYIYhEKeRP3gtA1tsiadmpG
-         to98q5Kq9LWL3vuJLhSNs5dWYyP+KBab02qUQi4cFf+m4koUaKoOZ0nPe1Xc2yzC/F6x
-         puoG8ni981yV6u5xoGpAK25E08Eg1+1LFEYht6OhmY1pwQmQZSYUmqXR7gjRuk5E5Z3G
-         IHPYoMfLE9oIh7xBEsk3D1O1Qi6m5xrcRyB3RIQFLOjBP68Jj8itHBzAwcXem5Ii8qnt
-         x8KwPkMCNtGtN4P+GAsokOq/tT48kaXLq1yuLDy618Z5goQaZr/nQrJJMediTmyxQvJY
-         Nk3w==
-X-Gm-Message-State: AOAM5328Oa+ppcXVqLxQPbE8Wck0H+ZTHRXGpkCs35nqSRdm1oz0+v1D
-        iuQXRja/QZtG2G8b8B1EuIs=
-X-Google-Smtp-Source: ABdhPJxjeciPuz3Y6G6V0UiOjBsGcL7vPRp1WDtha3ArtQVyYe7wjx7XSIEkPmhp1Oc+yA1lmv6PnQ==
-X-Received: by 2002:a7b:c939:: with SMTP id h25mr15605379wml.13.1628181716774;
-        Thu, 05 Aug 2021 09:41:56 -0700 (PDT)
-Received: from localhost.localdomain ([5.170.128.83])
-        by smtp.gmail.com with ESMTPSA id o17sm6755884wru.11.2021.08.05.09.41.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 09:41:56 -0700 (PDT)
-From:   Jose Blanquicet <blanquicet@gmail.com>
-X-Google-Original-From: Jose Blanquicet <josebl@microsoft.com>
-Cc:     blanquicet@gmail.com, Jose Blanquicet <josebl@microsoft.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests/bpf: Fix bpf-iter-tcp4 test to print correctly the dest IP
-Date:   Thu,  5 Aug 2021 18:40:36 +0200
-Message-Id: <20210805164044.527903-1-josebl@microsoft.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 5 Aug 2021 12:42:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6661CC061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 09:42:14 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 18:42:10 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628181731;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M5DpbKfEBRwBFlm77J4m5ItMsLEEb0OMPYwxyZqu6YI=;
+        b=QNdLCPGZZ/iz1RjEuSkliemqXTyHiUmWicguY/gxljUxCs9zDW5Tw4WwU5cHhFTaiG40RE
+        ABR5g43Mf72L0H/181LUM4wNCO7IRzA4FZY+8zf5rpUwNHQ4zla82YpxwoyPbkiexSiXmf
+        K9xi6fsgy31PynJjD4/9DNw/VCed7dR8R9mFjxS0ObIagBdAFDCNTH4xl+movtnmUS4yz2
+        kfjCSWGNH+S+g83d/1CWwOxLluzUGHjgfAYp0CARDNi+0DTsIJl7yY1peCPSKfuAqvwVFq
+        EHyN2lsRrsN+miB8JqaqnGT3lq9jrf6t6O2BOoVhnFVgZ3sJiNlzwx+hnGWsXA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628181731;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M5DpbKfEBRwBFlm77J4m5ItMsLEEb0OMPYwxyZqu6YI=;
+        b=PRg9KRgp6YeiJqW4dowBin3ardQDUnL4/r+IbIvDyKgXtuxleW0fzuOfMIHYtKiz0sTw29
+        R+y+PxxkoLxo6/BQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Mike Galbraith <efault@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH v4 00/35] SLUB: reduce irq disabled scope and make it RT
+ compatible
+Message-ID: <20210805164210.2zxpzn2sdogf4kx3@linutronix.de>
+References: <20210805152000.12817-1-vbabka@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210805152000.12817-1-vbabka@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, this test is incorrectly printing the destination port
-in place of the destination IP.
+On 2021-08-05 17:19:25 [+0200], Vlastimil Babka wrote:
+> Hi Andrew,
+Hi,
 
-Signed-off-by: Jose Blanquicet <josebl@microsoft.com>
----
- tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> I believe the series is ready for mmotm. No known bugs, Mel found no !RT =
+perf
+> regressions in v3 [9], Mike also (details below). RT guys validated it on=
+ RT
+> config and already incorporated the series in the RT tree.
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c b/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-index 2e4775c35414..92267abb462f 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-@@ -121,7 +121,7 @@ static int dump_tcp_sock(struct seq_file *seq, struct tcp_sock *tp,
- 	}
- 
- 	BPF_SEQ_PRINTF(seq, "%4d: %08X:%04X %08X:%04X ",
--		       seq_num, src, srcp, destp, destp);
-+		       seq_num, src, srcp, dest, destp);
- 	BPF_SEQ_PRINTF(seq, "%02X %08X:%08X %02X:%08lX %08X %5u %8d %lu %d ",
- 		       state,
- 		       tp->write_seq - tp->snd_una, rx_queue,
--- 
-2.25.1
+Correct, incl. the percpu-partial list fix.
 
+=E2=80=A6
+> RT configs showed some throughput regressions, but that's expected tradeo=
+ff for
+> the preemption improvements through the RT mutex. It didn't prevent the v=
+2 to
+> be incorporated to the 5.13 RT tree [7], leading to testing exposure and
+> bugfixes.
+
+There was throughput regression in RT compared to previous releases
+(without this series). The regression was (based on my testing) only
+visible in hackbench and was addressed by adding adaptiv spinning to
+RT-mutex. With that we almost back to what we had before :)
+
+=E2=80=A6
+> The remaining patches to upstream from the RT tree are small ones related=
+ to
+> KConfig. The patch that restricts PREEMPT_RT to SLUB (not SLAB or SLOB) m=
+akes
+> sense. The patch that disables CONFIG_SLUB_CPU_PARTIAL with PREEMPT_RT co=
+uld
+> perhaps be re-evaluated as the series addresses some latency issues with =
+it.
+
+With your rework CONFIG_SLUB_CPU_PARTIAL can be enabled in RT since
+v5.14-rc3-rt1. So it has been re-evaluated :)
+
+Regarding SLAB/SLOB: SLOB has a few design parts which are incompatible
+with RT (if my memory suits me so it was never attempted to get it
+working). SLAB was used before SLUB and required a lot of love. SLUB
+performed better compared to SLAB (in both throughput and latency) and
+after a while the SLAB patches were dropped.
+
+Sebastian
