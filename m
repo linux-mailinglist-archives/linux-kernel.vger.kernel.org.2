@@ -2,114 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3453A3E0FCE
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1053E0FD3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 10:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239178AbhHEIBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 04:01:42 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:12453 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbhHEIBk (ORCPT
+        id S239351AbhHEIEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 04:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236777AbhHEIDK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 04:01:40 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GgLZ60XsJzcl9Q;
-        Thu,  5 Aug 2021 15:57:50 +0800 (CST)
-Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 5 Aug 2021 16:01:24 +0800
-Received: from [127.0.0.1] (10.69.38.203) by dggema757-chm.china.huawei.com
- (10.1.198.199) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 5 Aug
- 2021 16:01:23 +0800
-Subject: Re: [PATCH 0/2] coresight: ultrasoc: Add support for System Memory
- Buffer device
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Linuxarm <linuxarm@huawei.com>
-CC:     "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20210719111737.47891-1-liuqi115@huawei.com>
- <41661d60-d8ef-9d50-57eb-8964c6f6eef8@huawei.com>
- <CANLsYky2+D8cwquyX3iXgJtu6vND0gZZBtCL_vBobJ8pBwwvfA@mail.gmail.com>
-From:   "liuqi (BA)" <liuqi115@huawei.com>
-Message-ID: <78495198-9b9d-20ce-030b-6243426c8a47@huawei.com>
-Date:   Thu, 5 Aug 2021 16:01:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 5 Aug 2021 04:03:10 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A271C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 01:02:51 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id d8so5307288wrm.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 01:02:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=zEZrBAG3edsTrFza0Z8asjlbiX/HavgDkBINPKbvcAM=;
+        b=sf80PQyh0g4hqBFV2TeLsR48iW9FzUNYMQtGJnB2UKqddxMbNPT+BPJZz5FuAQw8xG
+         xhYqpXvfw3s1mega4WRUoJhw5f//zQM2c01D7UG9TNYCxsAJvnZUI3C25hxl621Oarxy
+         17pq6gAsMk/wJZd4OG+5RoYP2JjAQNmZ3aF8RK/eWh8tKsYdIHnezfsmR/qkT1b02/A/
+         zJY0cNNo4gjgIaEro6Gmgcx1tFFkR+nuei3ZCtOvLh+F51Yb307nZ5MEM3e2f/JoQs3p
+         Y2woAOqBBOCe4kuXh3ruFoSxyu0ScZviLpypM7a4yx/8vepxSRWEyPecBoDdwfxU25Nd
+         kowQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=zEZrBAG3edsTrFza0Z8asjlbiX/HavgDkBINPKbvcAM=;
+        b=GAEIgvo0GxH58y1rJ+8cvQ9IXgo+0RVx5bbwMbiXpjSVNvrS+oh1CNrb+AEq/FE7q9
+         XgKlzR3L6DcTAQXrXLlOBBiK8fIE6jK9ugcNhFz92de8Aj5qwD1N9uQrHUObrt8rvNXk
+         gDogE52KP9fHQv3plHWQRevOvzSTh1miBVKqafbol3FXDEiYVIU3uZPK7X39l+HL/gY3
+         HwkjGg2/Yvni5uYVqOwDQVWycggJY1kqc5zBjByNcJ4lhs5d18uIr5lDr0c3sYbMY787
+         YWMLRpxDP+Q7HPUPHhRJJaJQFCw08vRgiFl6n54POqgd5GH3y2OO3vELnR5DJwdTo0bg
+         R6+Q==
+X-Gm-Message-State: AOAM531EKWMXngO94H2MXJ/M/8+/TImIahDdukmhFU+4Oi9JHCvxMmWJ
+        MWt/BG3ySw+kLr1b7r1IGgsUbQ==
+X-Google-Smtp-Source: ABdhPJwUHpbXsr54oVwa43NvkS8OBXErBcSn8URfjx8+/Xk332hqlN0C6QceSdH6I98R6nixioU/wQ==
+X-Received: by 2002:a5d:6912:: with SMTP id t18mr3674677wru.234.1628150569746;
+        Thu, 05 Aug 2021 01:02:49 -0700 (PDT)
+Received: from google.com ([109.180.115.228])
+        by smtp.gmail.com with ESMTPSA id j1sm8032594wmo.4.2021.08.05.01.02.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 01:02:49 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 09:02:47 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v2 3/4] mfd: intel_quark_i2c_gpio: Convert GPIO to use
+ software nodes
+Message-ID: <YQubJ1s2YuEZk4lm@google.com>
+References: <20210804160019.77105-1-andriy.shevchenko@linux.intel.com>
+ <20210804160019.77105-3-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CANLsYky2+D8cwquyX3iXgJtu6vND0gZZBtCL_vBobJ8pBwwvfA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.203]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema757-chm.china.huawei.com (10.1.198.199)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210804160019.77105-3-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 04 Aug 2021, Andy Shevchenko wrote:
 
-
-On 2021/8/4 22:31, Mathieu Poirier wrote:
-> On Wed, 4 Aug 2021 at 02:05, liuqi (BA) <liuqi115@huawei.com> wrote:
->>
->> Gentle ping...
->> Hi Mathieu and Suzuki, can you have a look at this patchset? thanks.
->>
+> The driver can provide a software node group instead of
+> passing legacy platform data. This will allow to drop
+> the legacy platform data structures along with unifying
+> a child device driver to use same interface for all
+> property providers, i.e. Device Tree, ACPI, and board files.
 > 
-> On August 2nd I got back to you privately saying I won't be able to
-> review this patchset before the last week of August or the first week
-> of September.  Pinging me again on it won't change that reality.
-> 
-Hi Mathieu,
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Tested-by: Serge Semin <fancer.lancer@gmail.com>
+> ---
+> v2: added tag (Serge)
+>  drivers/mfd/intel_quark_i2c_gpio.c | 70 ++++++++++++++++--------------
+>  1 file changed, 37 insertions(+), 33 deletions(-)
 
-Sorry for pinging again as I didn't see that email, perhaps because it 
-is not captured to my coresight subfolder by my mailbox filtering rule 
-:(. I'll wait patiently for your reply.
+For my own reference (apply this as-is to your sign-off block):
 
-Thanks,
-Qi
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 
->> On 2021/7/19 19:17, Qi Liu wrote:
->>> This patchset add support for SMB(System Memory Buffer) device, SMB
->>> obtains CPU instructions from Coresight ETM device and stores these
->>> messages in system memory.
->>> SMB is developed by Ultrasoc technology, which is acquired by Siemens,
->>> and we still use "Ultrasoc" to name document and driver.
->>>
->>> Change since RFC:
->>> - Move ultrasoc driver to drivers/hwtracing/coresight.
->>> - Remove ultrasoc-axi-com.c, as AXI-COM doesn't need to be configured in
->>>     basic tracing function.
->>> - Remove ultrasoc.c as SMB does not need to register with the ultrasoc core.
->>> - Address the comments from Mathieu and Suzuki.
->>> - Link: https://lists.linaro.org/pipermail/coresight/2021-June/006535.html
->>>
->>> Qi Liu (2):
->>>     Documentation: tracing: Documentation for ultrasoc SMB drivers
->>>     coresight: ultrasoc: Add System Memory Buffer driver
->>>
->>>    .../trace/coresight/ultrasoc-trace.rst        | 193 +++++
->>>    MAINTAINERS                                   |   7 +
->>>    drivers/hwtracing/coresight/Kconfig           |   3 +
->>>    drivers/hwtracing/coresight/Makefile          |   2 +
->>>    drivers/hwtracing/coresight/ultrasoc/Kconfig  |  12 +
->>>    drivers/hwtracing/coresight/ultrasoc/Makefile |   6 +
->>>    .../coresight/ultrasoc/ultrasoc-smb.c         | 722 ++++++++++++++++++
->>>    .../coresight/ultrasoc/ultrasoc-smb.h         | 142 ++++
->>>    8 files changed, 1087 insertions(+)
->>>    create mode 100644 Documentation/trace/coresight/ultrasoc-trace.rst
->>>    create mode 100644 drivers/hwtracing/coresight/ultrasoc/Kconfig
->>>    create mode 100644 drivers/hwtracing/coresight/ultrasoc/Makefile
->>>    create mode 100644 drivers/hwtracing/coresight/ultrasoc/ultrasoc-smb.c
->>>    create mode 100644 drivers/hwtracing/coresight/ultrasoc/ultrasoc-smb.h
->>>
->>
-> .
-> 
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
