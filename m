@@ -2,194 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0E73E1439
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9643E1433
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 13:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241169AbhHELzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 07:55:48 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:50384 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbhHELzr (ORCPT
+        id S241167AbhHELzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 07:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230446AbhHELzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 07:55:47 -0400
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 175Bt3iE011866;
-        Thu, 5 Aug 2021 20:55:04 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 175Bt3iE011866
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1628164504;
-        bh=QtmFIMbSkPrFHJ5F2MOHK1582vI0vTuaUebcEfPiA5I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=P2xXn+b35DN1tjVaqBC5J0Eoh24Uq4fU5ixhEuAyg8ZgoPFU+vQmBTV7o32YcfXj+
-         KEe288tTzDZBmtGWDcybLxztOpuglgDFKb0oTajI4aaJDJpDXgheo/FjiR2/lq6mBB
-         i2Xt8feKtE9Min3x9RRWywKVgQWAJFx1PzPHSEHI0ym/eNe8Frwek1vCtKLdd4C5sp
-         vE/EWZ2mUehmQz0ZsGOAIpSb8Lzc0IGQLm37zWGe3GcHlm+zVmx2nsZ3TiVD1y5cNc
-         DR5SOCNrE4xKPuxOmTO6TT+U5R2hn0lpKk4xwwtoi3WSEIzRdKFl2CrAOj0CjDVVSV
-         4rSc4WypAOL1A==
-X-Nifty-SrcIP: [209.85.216.44]
-Received: by mail-pj1-f44.google.com with SMTP id cl16-20020a17090af690b02901782c35c4ccso4969357pjb.5;
-        Thu, 05 Aug 2021 04:55:03 -0700 (PDT)
-X-Gm-Message-State: AOAM5336A2wdWgtkke5PtxzC2eRtOWVZ7apwcV8DZ7wreOes+DVdwXIh
-        ggHJiVbQRXFrhGz66+30hKcQJCp2ac+bjbTxDrk=
-X-Google-Smtp-Source: ABdhPJyIJzICcuvyV7P/46KDij6cT86sBszR/MDTE6vE0qa6ddqSBrO7rm3TcQHy6WMDIOLdzqww4IsmdoMZ7o7nfis=
-X-Received: by 2002:a63:dd51:: with SMTP id g17mr1794883pgj.47.1628164503024;
- Thu, 05 Aug 2021 04:55:03 -0700 (PDT)
+        Thu, 5 Aug 2021 07:55:13 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8848C061765;
+        Thu,  5 Aug 2021 04:54:58 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1628164495;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DWfoldmLRLq80DZdsLCKJEoZaBQ6+NbZZHi/F4hDQ/s=;
+        b=qp8pE5Ns0L6FGItYvYTd+qjUmHViF2N72s5huxJj0qYVBp+S1hwFf0D0p6Nuv19l7AHeMs
+        cg4QYCgSyQ2qz1njp9zJSyxphIW6YrHoBn7kkFmao40fDhWPOOBkCK/jOGVgiVN3V4fL0e
+        yc3ydWbJnyjB/O+sY9hNU/tuLwmsKMo=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH net-next] netdevice: add the case if dev is NULL
+Date:   Thu,  5 Aug 2021 19:54:34 +0800
+Message-Id: <20210805115434.19248-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-References: <cover.1625734629.git.hns@goldelico.com> <4AC1CCE9-CCAF-4D4B-BAD5-CEB9E5155FDF@goldelico.com>
- <CAKwvOd=FdZsQZCGqqpnbzgVZ+s2=ffyh337RwqyTAzHMcjUb+w@mail.gmail.com> <BFB4FABC-60B7-445D-ACEB-4AAE177AF8D4@goldelico.com>
-In-Reply-To: <BFB4FABC-60B7-445D-ACEB-4AAE177AF8D4@goldelico.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 5 Aug 2021 20:54:26 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARLJwwqp0j9yFH9CCfR1VN5yfLyCDjLD8nJ3F4kdG1ZyA@mail.gmail.com>
-Message-ID: <CAK7LNARLJwwqp0j9yFH9CCfR1VN5yfLyCDjLD8nJ3F4kdG1ZyA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Regex fixes for mips and x86 cross-compile
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel@pyra-handheld.com,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 12:59 AM H. Nikolaus Schaller <hns@goldelico.com> wrote:
->
-> Hi all,
-> any chance to get that reviewed and merged into v5.15-rc1 and backported to stable?
-> Thank you,
-> Nikolaus Schaller
+Add the case if dev is NULL in dev_{put, hold}, so the caller doesn't
+need to care whether dev is NULL or not.
 
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ include/linux/netdevice.h | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-
-I have a macbook (macOS catalina), and was able to
-reproduce this issue.
-
-I applied both to kbuild tree.
-Thanks.
-
-
-
-
-
->
-> > Am 19.07.2021 um 22:37 schrieb Nick Desaulniers <ndesaulniers@google.com>:
-> >
-> > + Masahiro, linux-kbuild (EOM)
-> >
-> > On Mon, Jul 19, 2021 at 12:07 PM H. Nikolaus Schaller <hns@goldelico.com> wrote:
-> >>
-> >> Any chance that it gets merged?
-> >>
-> >>> Am 08.07.2021 um 10:57 schrieb H. Nikolaus Schaller <hns@goldelico.com>:
-> >>>
-> >>> Trying to run the x86 relocs tool on a BSD based HOSTCC (cross
-> >>> compilation environment) leads to errors like
-> >>>
-> >>> VOFFSET arch/x86/boot/compressed/../voffset.h - due to: vmlinux
-> >>> CC      arch/x86/boot/compressed/misc.o - due to: arch/x86/boot/compressed/../voffset.h
-> >>> OBJCOPY arch/x86/boot/compressed/vmlinux.bin - due to: vmlinux
-> >>> RELOCS  arch/x86/boot/compressed/vmlinux.relocs - due to: vmlinux
-> >>> empty (sub)expressionarch/x86/boot/compressed/Makefile:118: recipe for target 'arch/x86/boot/compressed/vmlinux.relocs' failed
-> >>> make[3]: *** [arch/x86/boot/compressed/vmlinux.relocs] Error 1
-> >>>
-> >>> and when cross compiling a MIPS kernel on a BSD based HOSTCC
-> >>> we get errors like
-> >>>
-> >>> SYNC    include/config/auto.conf.cmd - due to: .config
-> >>> egrep: empty (sub)expression
-> >>> UPD     include/config/kernel.release
-> >>> HOSTCC  scripts/dtc/dtc.o - due to target missing
-> >>>
-> >>> It turns out that relocs.c on x86 uses patterns like
-> >>>
-> >>>      "something(|_end)"
-> >>>
-> >>> while MIPS uses egrep with
-> >>>
-> >>>      (|MINOR_|PATCHLEVEL_)
-> >>>
-> >>> In both cases it is not valid syntax or gives undefined results
-> >>> according to POSIX 9.5.3 ERE Grammar
-> >>>
-> >>>      https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html
-> >>>
-> >>> It seems to be silently accepted by the Linux regcmp() or egrep
-> >>> implementation while a BSD host complains.
-> >>>
-> >>> Such patterns can be replaced by a transformation like
-> >>>
-> >>>      "(|p1|p2)" -> "(p1|p2)?"
-> >>>
-> >>> Test Linux:
-> >>>
-> >>> root@letux:~# echo foo | egrep '^(|foo)$'
-> >>> foo
-> >>> root@letux:~# echo fool | egrep '^(foo)?$'
-> >>> root@letux:~# echo fun | egrep '^(|foo)$'
-> >>> root@letux:~# echo f | egrep '^(|foo)$'
-> >>> root@letux:~# echo | egrep '^(|foo)$'
-> >>>
-> >>> root@letux:~# echo foo | egrep '^(foo)?$'
-> >>> foo
-> >>> root@letux:~# echo fool | egrep '^(foo)?$'
-> >>> root@letux:~# echo fun | egrep '^(foo)?$'
-> >>> root@letux:~# echo f | egrep '^(foo)?$'
-> >>> root@letux:~# echo | egrep '^(foo)?$'
-> >>>
-> >>> root@letux:~#
-> >>>
-> >>> Test BSD:
-> >>>
-> >>> iMac:master hns$ echo foo | egrep '^(|foo)$'
-> >>> egrep: empty (sub)expression
-> >>> iMac:master hns$ echo fool | egrep '^(foo)?$'
-> >>> egrep: empty (sub)expression
-> >>> iMac:master hns$ echo fun | egrep '^(|foo)$'
-> >>> egrep: empty (sub)expression
-> >>> iMac:master hns$ echo f | egrep '^(|foo)$'
-> >>> egrep: empty (sub)expression
-> >>> iMac:master hns$ echo | egrep '^(|foo)$'
-> >>> egrep: empty (sub)expression
-> >>> iMac:master hns$ echo foo | egrep '^(foo)?$'
-> >>> foo
-> >>> iMac:master hns$ echo fool | egrep '^(foo)?$'
-> >>> iMac:master hns$ echo fun | egrep '^(foo)?$'
-> >>> iMac:master hns$ echo f | egrep '^(foo)?$'
-> >>> iMac:master hns$ echo | egrep '^(foo)?$'
-> >>>
-> >>> iMac:master hns$
-> >>>
-> >>>
-> >>> H. Nikolaus Schaller (2):
-> >>> x86/tools/relocs: Fix non-POSIX regexp
-> >>> arch: mips: Fix non-POSIX regexp
-> >>>
-> >>> arch/mips/Makefile      | 2 +-
-> >>> arch/x86/tools/relocs.c | 8 ++++----
-> >>> 2 files changed, 5 insertions(+), 5 deletions(-)
-> >>>
-> >>> --
-> >>> 2.31.1
-> >>>
-> >>
-> >
-> >
-> > --
-> > Thanks,
-> > ~Nick Desaulniers
->
-
-
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 1b4d4509d04b..135c943699d0 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -4143,11 +4143,13 @@ void netdev_run_todo(void);
+  */
+ static inline void dev_put(struct net_device *dev)
+ {
++	if (dev) {
+ #ifdef CONFIG_PCPU_DEV_REFCNT
+-	this_cpu_dec(*dev->pcpu_refcnt);
++		this_cpu_dec(*dev->pcpu_refcnt);
+ #else
+-	refcount_dec(&dev->dev_refcnt);
++		refcount_dec(&dev->dev_refcnt);
+ #endif
++	}
+ }
+ 
+ /**
+@@ -4158,11 +4160,13 @@ static inline void dev_put(struct net_device *dev)
+  */
+ static inline void dev_hold(struct net_device *dev)
+ {
++	if (dev) {
+ #ifdef CONFIG_PCPU_DEV_REFCNT
+-	this_cpu_inc(*dev->pcpu_refcnt);
++		this_cpu_inc(*dev->pcpu_refcnt);
+ #else
+-	refcount_inc(&dev->dev_refcnt);
++		refcount_inc(&dev->dev_refcnt);
+ #endif
++	}
+ }
+ 
+ /* Carrier loss detection, dial on demand. The functions netif_carrier_on
 -- 
-Best Regards
-Masahiro Yamada
+2.32.0
+
