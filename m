@@ -2,163 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E261A3E12AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31FB3E12AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240386AbhHEKbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 06:31:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239963AbhHEKbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 06:31:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA33360E53;
-        Thu,  5 Aug 2021 10:31:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628159465;
-        bh=zu65XBxVpjazUM+E3UnPxlO5E9qLFLV5tZCxDuJiUn0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=esZv8NEBCw/H058ypgv7duUMbhNpcjKvelWwVJyDb5lqwcngKNGQCch/nzhIiM16b
-         8hRI640nTCrXhbIMbiyxXwhi1jXYLBIm5G5D9PBwP2mu5iB4wchAq+Wg3O1WMH8mFo
-         hxsld+meCSwNjHTcln0DIjUbEUY34WDicdyL2oDEcNvKIYfUWOhc2jXT1+OcALtTtI
-         o4WR2hnNEuToH7USMqZJxLBu0tMwUntT9+rPJNFJ2ZQURMAcjFP1bQ503KN4QEZ54W
-         4ZVomGasrHqxP3EwSjFYAFWX230YqtNeK7SZlE/bO8FTYnJyIRyytLf7EOGYbHTgfr
-         Ys676rC5USI3w==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mBaeV-001GiB-Do; Thu, 05 Aug 2021 12:31:03 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Yu Chen <chenyu56@huawei.com>,
-        John Stultz <john.stultz@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH] dt-bindings: misc: add schema for USB hub on Kirin devices
-Date:   Thu,  5 Aug 2021 12:31:00 +0200
-Message-Id: <d428b90bb655c7992e9e13fc50130ed223812d2d.1628159456.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S240389AbhHEKb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 06:31:56 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:47730 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239963AbhHEKbx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 06:31:53 -0400
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8FAB920B36ED;
+        Thu,  5 Aug 2021 03:31:39 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8FAB920B36ED
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1628159499;
+        bh=ePlKPhwRIbIIFc+MuT827+okoKvGxizkUBUP/w4ErsE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pjAa4Q58vbxnUikwyYqOtoHBFxksV2ox51gdNK8v6ZdmyeLfBka8OCjfdWkiu/oQR
+         8Io+iu0nNtKxyKl2Jn9y+eBlz9MQWvgCaFoqtiQcluqUgeqL1GkwiDN+LfVHszd+np
+         EA0N1IBvlOvftaEGDTq/I2JWJJ+4umT2At7V+VHc=
+Received: by mail-pj1-f46.google.com with SMTP id l19so7669616pjz.0;
+        Thu, 05 Aug 2021 03:31:39 -0700 (PDT)
+X-Gm-Message-State: AOAM531YqyRCmOidWnKiMz3RXQMB2X9PlCofjzHNSLBQ7VcYRrPbtViB
+        ooyqRNyUMoxdffXmugKa2rTjm9F8qBllXgbVQZk=
+X-Google-Smtp-Source: ABdhPJxdohcSXq2Fna33fIGUiEu6kUIdxZ6/UhzFU8Koaz6JrTkw4lOh1yVNgX/OfIBQqhE040kGEhxRvLm7q8DNB0E=
+X-Received: by 2002:aa7:80d1:0:b029:399:ce3a:d617 with SMTP id
+ a17-20020aa780d10000b0290399ce3ad617mr4286293pfn.16.1628159499106; Thu, 05
+ Aug 2021 03:31:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <CAFnufp1QpMc87+-hwPa887iQQGCjjkGNanVSKOUsE-0ti82jrA@mail.gmail.com>
+ <mhng-7b8d3a12-e223-4b69-a35a-617b0d7ac8f7@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-7b8d3a12-e223-4b69-a35a-617b0d7ac8f7@palmerdabbelt-glaptop>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Thu, 5 Aug 2021 12:31:04 +0200
+X-Gmail-Original-Message-ID: <CAFnufp0eVejrDJoGE900D2U5-9qi-srVEmPOc9zHC5mSH4DgLg@mail.gmail.com>
+Message-ID: <CAFnufp0eVejrDJoGE900D2U5-9qi-srVEmPOc9zHC5mSH4DgLg@mail.gmail.com>
+Subject: Re: [PATCH] riscv: use the generic string routines
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Guo Ren <guoren@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Chen <chenyu56@huawei.com>
+On Wed, Aug 4, 2021 at 10:40 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Tue, 03 Aug 2021 09:54:34 PDT (-0700), mcroce@linux.microsoft.com wrote:
+> > On Mon, Jul 19, 2021 at 1:44 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> >>
+> >> From: Matteo Croce <mcroce@microsoft.com>
+> >>
+> >> Use the generic routines which handle alignment properly.
+> >>
+> >> These are the performances measured on a BeagleV machine for a
+> >> 32 mbyte buffer:
+> >>
+> >> memcpy:
+> >> original aligned:        75 Mb/s
+> >> original unaligned:      75 Mb/s
+> >> new aligned:            114 Mb/s
+> >> new unaligned:          107 Mb/s
+> >>
+> >> memset:
+> >> original aligned:       140 Mb/s
+> >> original unaligned:     140 Mb/s
+> >> new aligned:            241 Mb/s
+> >> new unaligned:          241 Mb/s
+> >>
+> >> TCP throughput with iperf3 gives a similar improvement as well.
+> >>
+> >> This is the binary size increase according to bloat-o-meter:
+> >>
+> >> add/remove: 0/0 grow/shrink: 4/2 up/down: 432/-36 (396)
+> >> Function                                     old     new   delta
+> >> memcpy                                        36     324    +288
+> >> memset                                        32     148    +116
+> >> strlcpy                                      116     132     +16
+> >> strscpy_pad                                   84      96     +12
+> >> strlcat                                      176     164     -12
+> >> memmove                                       76      52     -24
+> >> Total: Before=1225371, After=1225767, chg +0.03%
+> >>
+> >> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+> >> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> >> ---
+> >
+> > Hi,
+> >
+> > can someone have a look at this change and share opinions?
+>
+> This LGTM.  How are the generic string routines landing?  I'm happy to
+> take this into my for-next, but IIUC we need the optimized generic
+> versions first so we don't have a performance regression falling back to
+> the trivial ones for a bit.  Is there a shared tag I can pull in?
 
-This patch adds binding documentation to support USB HUB and
-USB data role switch of HiSilicon HiKey960 and HiKey970 boards.
+Hi,
 
-[mchehab: updated OF names and added support for HiKey970]
-Signed-off-by: Yu Chen <chenyu56@huawei.com>
-Signed-off-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../bindings/misc/hisilicon,hikey-usb.yaml    | 95 +++++++++++++++++++
- 1 file changed, 95 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
+I see them only in linux-next by now.
 
-diff --git a/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml b/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
-new file mode 100644
-index 000000000000..857f9bd802fe
---- /dev/null
-+++ b/Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
-@@ -0,0 +1,95 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2019 Linaro Ltd.
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/misc/hisilicon,hikey-usb.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: HiKey960/970 onboard USB GPIO Hub
-+
-+maintainers:
-+  - John Stultz <john.stultz@linaro.org>
-+
-+description: |
-+  Supports the onboard USB GPIO hub found on HiKey960/970.
-+  The HUB, which acts as a role-switch intermediary to detect the state of
-+  the USB-C port, to switch the hub into dual-role USB-C or host mode,
-+  which enables the onboard USB-A host ports.
-+
-+  Schematics about the hub can be found here:
-+    https://github.com/96boards/documentation/raw/master/consumer/hikey/hikey960/hardware-docs/HiKey960_Schematics.pdf
-+    https://www.96boards.org/documentation/consumer/hikey/hikey970/hardware-docs/files/hikey970-schematics.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - hisilicon,gpio_hubv1
-+      - hisilicon,kirin970_hikey_usbhub
-+
-+  typec-vbus:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description: phandle to the typec-vbus gpio
-+
-+  otg-switch:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description: phandle to the otg-switch gpio
-+
-+  hub-vdd33-en:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description: phandle to the hub 3.3v power enablement gpio
-+
-+  hub_reset_en_gpio:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: phandle to the hub reset gpio
-+
-+  usb-role-switch:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: Support role switch.
-+
-+  hub-vdd-supply:
-+    description: regulator for hub power
-+
-+  port:
-+    description: |
-+      any connector to the data bus of this controller should be modelled
-+      using the OF graph bindings specified, if the "usb-role-switch"
-+      property is used. Note for this driver, two ports are supported,
-+      the first being the endpoint that will be notified by this driver,
-+      and the second being the endpoint that notifies this driver of a
-+      role switch.
-+
-+
-+required:
-+  - compatible
-+  - typec-vbus
-+  - otg-switch
-+  - usb-role-switch
-+  - port
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    hisi_hikey_usb: hisi_hikey_usb {
-+        compatible = "hisilicon,gpio_hubv1";
-+        typec-vbus = <&gpio25 2 GPIO_ACTIVE_HIGH>;
-+        otg-switch = <&gpio25 6 GPIO_ACTIVE_HIGH>;
-+        hub-vdd33-en = <&gpio5 6 GPIO_ACTIVE_HIGH>;
-+        usb-role-switch;
-+
-+        port {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+
-+            hikey_usb_ep0: endpoint@0 {
-+                reg = <0>;
-+                remote-endpoint = <&dwc3_role_switch>;
-+            };
-+            hikey_usb_ep1: endpoint@1 {
-+                reg = <1>;
-+                remote-endpoint = <&rt1711h_ep>;
-+            };
-+        };
-+    };
 -- 
-2.31.1
-
+per aspera ad upstream
