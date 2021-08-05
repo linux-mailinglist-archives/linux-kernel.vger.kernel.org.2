@@ -2,141 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C54B3E1BCB
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4389C3E1BCD
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241747AbhHESzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:55:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30476 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241446AbhHESzq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:55:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628189731;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=khcR5qip36FZVs38owIp+mLzByBcI2rs63Ak5IXHYuU=;
-        b=HGZCdcv0vA8eCJzwsZbEK0Y4vwUEiwXpEanWlZ81P5X09jvf+RjyqZoFZFbaZ3hEONWBSY
-        DbxeEMyn/yFY80vaL+yGRSb1a3yad76VudN/7B4JBewAh5pk0MPcpk1qPAWSpmJtIAQCBm
-        C8uHjTSaK+sroUF7cm6xUqiOSjQtM+Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-289-DrEljoW8Ooi3vYmmuGqB6A-1; Thu, 05 Aug 2021 14:55:30 -0400
-X-MC-Unique: DrEljoW8Ooi3vYmmuGqB6A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S241753AbhHES4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:56:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241061AbhHES4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:56:53 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 746DB1800D41
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 18:55:29 +0000 (UTC)
-Received: from crecklin.bos.com (unknown [10.22.18.143])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F094F6091B;
-        Thu,  5 Aug 2021 18:55:28 +0000 (UTC)
-From:   Chris von Recklinghausen <crecklin@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH] fix UBSAN splat in test_scanf
-Date:   Thu,  5 Aug 2021 14:55:26 -0400
-Message-Id: <20210805185526.317202-1-crecklin@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 9AB9460EE9;
+        Thu,  5 Aug 2021 18:56:38 +0000 (UTC)
+Date:   Thu, 5 Aug 2021 14:56:31 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Stefan Metzmacher <metze@samba.org>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] Fix: tracepoint: static call function vs data state
+ mismatch (v2)
+Message-ID: <20210805145631.609e0a80@oasis.local.home>
+In-Reply-To: <20210805132717.23813-3-mathieu.desnoyers@efficios.com>
+References: <20210805132717.23813-1-mathieu.desnoyers@efficios.com>
+        <20210805132717.23813-3-mathieu.desnoyers@efficios.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a system with CONFIG_UBSAN_SHIFT=y, the following splat was observed:
 
-[  104.676826] test_scanf: loaded.
-[  104.680862] ================================================================================
-[  104.690304] UBSAN: shift-out-of-bounds in lib/test_scanf.c:274:51
-[  104.697144] shift exponent 32 is too large for 32-bit type 'unsigned int'
-[  104.704747] CPU: 18 PID: 1790 Comm: modprobe Tainted: G S                5.14.0-rc4 #1
-[  104.713592] Hardware name: Intel Corporation S2600CP/S2600CP, BIOS SE5C600.86B.02.01.0002.082220131453 08/22/2013
-[  104.725052] Call Trace:
-[  104.727787]  dump_stack_lvl+0x44/0x57
-[  104.731888]  ubsan_epilogue+0x5/0x40
-[  104.735882]  __ubsan_handle_shift_out_of_bounds.cold.14+0x14/0x98
-[  104.742704]  next_test_random+0x3f/0x56 [test_scanf]
-[  104.748253]  numbers_list+0x1e91/0x3364 [test_scanf]
-[  104.753807]  ? numbers_list_field_width_typemax+0x3859/0x3859 [test_scanf]
-[  104.761501]  ? numbers_simple+0x3839/0x388f [test_scanf]
-[  104.767436]  ? load_module+0x6ba5/0x7200
-[  104.771822]  ? _test+0x152/0x152 [test_scanf]
-[  104.776690]  ? hlock_class+0x4e/0x120
-[  104.780784]  ? __lock_acquire+0x171d/0x2f80
-[  104.785459]  ? lock_is_held_type+0x99/0x100
-[  104.790153]  ? find_held_lock+0x3a/0x1c0
-[  104.794557]  ? rcu_read_lock_bh_held+0xc0/0xc0
-[  104.799529]  ? __kasan_kmalloc+0x7f/0xa0
-[  104.803916]  ? kmem_cache_alloc_trace+0x185/0x270
-[  104.809172]  ? test_scanf_init+0xe3/0x11cd [test_scanf]
-[  104.815010]  ? rcu_read_lock_sched_held+0xaf/0xe0
-[  104.820272]  test_scanf_init+0x17e/0x11cd [test_scanf]
-[  104.826014]  ? numbers_list+0x3364/0x3364 [test_scanf]
-[  104.831757]  ? numbers_list+0x3364/0x3364 [test_scanf]
-[  104.837497]  ? rcu_read_lock_sched_held+0xaf/0xe0
-[  104.842760]  ? rcu_read_lock_bh_held+0xc0/0xc0
-[  104.847730]  ? numbers_list+0x3364/0x3364 [test_scanf]
-[  104.853473]  do_one_initcall+0xfb/0x540
-[  104.857776]  ? perf_trace_initcall_level+0x490/0x490
-[  104.863328]  ? __kasan_kmalloc+0x7f/0xa0
-[  104.867714]  ? kmem_cache_alloc_trace+0x185/0x270
-[  104.872969]  ? do_init_module+0x4e/0x760
-[  104.877350]  ? kasan_unpoison+0x23/0x50
-[  104.881650]  do_init_module+0x1f2/0x760
-[  104.885945]  load_module+0x6ba5/0x7200
-[  104.890174]  ? layout_and_allocate+0x2c00/0x2c00
-[  104.895337]  ? ima_read_file+0x150/0x150
-[  104.899734]  ? kernel_read_file+0x2f6/0x710
-[  104.904415]  ? __x64_sys_fsconfig+0x6a0/0x6a0
-[  104.909300]  ? __do_sys_finit_module+0xff/0x180
-[  104.914363]  __do_sys_finit_module+0xff/0x180
-[  104.919230]  ? __ia32_sys_init_module+0xa0/0xa0
-[  104.924294]  ? rcu_read_unlock+0x50/0x50
-[  104.928679]  ? kfree+0x2fd/0x3c0
-[  104.932316]  do_syscall_64+0x3a/0x80
-[  104.936316]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  104.941971] RIP: 0033:0x7f7d8220e52d
-[  104.945962] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 79 2c 00 f7 d8 64 89 01 48
-[  104.966933] RSP: 002b:00007ffd1a1a9448 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-[  104.975392] RAX: ffffffffffffffda RBX: 00005611e43bde40 RCX: 00007f7d8220e52d
-[  104.983360] RDX: 0000000000000000 RSI: 00005611e401d7d6 RDI: 0000000000000003
-[  104.991327] RBP: 00005611e401d7d6 R08: 0000000000000000 R09: 0000000000000000
-[  104.999294] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
-[  105.007261] R13: 00005611e43bdec0 R14: 0000000000040000 R15: 0000000000000000
-[  105.015285] ================================================================================
-[  105.026917] test_scanf: all 2545 tests passed
-[  105.045896] test_scanf: unloaded.
+Note, there shouldn't be a "(v2)" outside the "[PATCH ]" part.
+Otherwise it gets added into the git commit during "git am".
 
-This is due to n_bits having a value of 0 in next_test_random. Avoid this by
-repeatedly calling hweight32(prandom_u32_state(&rnd_state)) % (max_bits + 1)
-until n_bits is nonzero.
+On Thu,  5 Aug 2021 09:27:16 -0400
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
----
- lib/test_scanf.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> On a 1->0->1 callbacks transition, there is an issue with the new
+> callback using the old callback's data.
+> 
+> Considering __DO_TRACE_CALL:
+> 
+>         do {                                                            \
+>                 struct tracepoint_func *it_func_ptr;                    \
+>                 void *__data;                                           \
+>                 it_func_ptr =                                           \
+>                         rcu_dereference_raw((&__tracepoint_##name)->funcs); \
+>                 if (it_func_ptr) {                                      \
+>                         __data = (it_func_ptr)->data;                   \
+> 
+> ----> [ delayed here on one CPU (e.g. vcpu preempted by the host) ]  
+> 
+>                         static_call(tp_func_##name)(__data, args);      \
+>                 }                                                       \
+>         } while (0)
+> 
+> It has loaded the tp->funcs of the old callback, so it will try to use the old
+> data. This can be fixed by adding a RCU sync anywhere in the 1->0->1
+> transition chain.
+> 
+> On a N->2->1 transition, we need an rcu-sync because you may have a
+> sequence of 3->2->1 (or 1->2->1) where the element 0 data is unchanged
+> between 2->1, but was changed from 3->2 (or from 1->2), which may be
+> observed by the static call. This can be fixed by adding an
+> unconditional RCU sync in transition 2->1.
+> 
+> A follow up fix will introduce a more lightweight scheme based on RCU
+> get_state and cond_sync.
 
-diff --git a/lib/test_scanf.c b/lib/test_scanf.c
-index 84fe09eaf55e..4e3754b916f2 100644
---- a/lib/test_scanf.c
-+++ b/lib/test_scanf.c
-@@ -269,7 +269,13 @@ static void __init numbers_simple(void)
-  */
- static u32 __init next_test_random(u32 max_bits)
- {
--	u32 n_bits = hweight32(prandom_u32_state(&rnd_state)) % (max_bits + 1);
-+	u32 n_bits;
-+
-+	/* shifting a 32 bit unsigned int by 32 is undefined behavior */
-+	do {
-+		n_bits = hweight32(prandom_u32_state(&rnd_state))
-+			% (max_bits + 1);
-+	} while (n_bits == 0);
- 
- 	return prandom_u32_state(&rnd_state) & (UINT_MAX >> (32 - n_bits));
- }
--- 
-2.27.0
+I'll add here that this patch will cause a huge performance regression
+on disabling the trace events, but the follow up patch will fix that.
 
+Before this patch:
+
+  # trace-cmd start -e all
+  # time trace-cmd start -p nop
+
+  real	0m0.778s
+  user	0m0.000s
+  sys	0m0.061s
+
+After this patch:
+
+  # trace-cmd start -e all
+  # time trace-cmd start -p nop
+
+  real	0m10.593s
+  user	0m0.017s
+  sys	0m0.259s
+
+
+That's more than 10x slow down. Just under a second to disable all
+events now goes to over 10 seconds!
+
+But after the next patch:
+
+  # trace-cmd start -e all
+  # time trace-cmd start -p nop
+
+  real	0m0.878s
+  user	0m0.000s
+  sys	0m0.103s
+
+Which is in the noise from before this patch.
+
+This is a big enough regression, I'll even add a Fixes tag to the next
+patch on the final sha1 of this patch! Such that this patch won't be
+backported without the next patch.
+
+> 
+> Link: https://lore.kernel.org/io-uring/4ebea8f0-58c9-e571-fd30-0ce4f6f09c70@samba.org/
+> Fixes: d25e37d89dd2 ("tracepoint: Optimize using static_call()")
+
+For this patch, I would say the above is what this fixes.
+
+-- Steve
+
+> Fixes: 547305a64632 ("tracepoint: Fix out of sync data passing by static caller")
+> Fixes: 352384d5c84e ("tracepoints: Update static_call before tp_funcs when adding a tracepoint")
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Stefan Metzmacher <metze@samba.org>
+> Cc: <stable@vger.kernel.org> # 5.10+
+> ---
