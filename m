@@ -2,133 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3F03E119C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6183E11A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 11:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239858AbhHEJr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 05:47:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51598 "EHLO mail.kernel.org"
+        id S239726AbhHEJwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 05:52:19 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:58397 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232930AbhHEJrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:47:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81ABA60F22;
-        Thu,  5 Aug 2021 09:47:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628156861;
-        bh=lP9P2emkoqaG3Y9UVECzCsJ31BDk9yKNVY61WSeDVew=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qiCc98zsym+9rcbvymO2HBrLqBXWGeCZQiv/bDHs1HymgTauy4tD1ze+NpLNlA4XI
-         AwbAWnUdbZDEsz0ioo/WGC33LQq5O4tKlqjNvTTZ7ykDOM0JKJm4WU/3BmEqqg9XV6
-         EV1Z6xiUhk4vCnWBajzsjkVlNQXKi246rerCwU+tsh8iHLP197BrMEAjAHsQLyeF1U
-         DYWTLO5tpXgMbFomOTxfSP70Ki71AugGbv+ViA5VxOHnWCRIgEPHJA29OTU7y+ZPCI
-         fzvyQIcTyr9d+tn5pg9hmM/9KrXWzgxHXk+ztwrKuiwPS3jGr6xx5tfYmNABMEZPQc
-         lz7MqkJozCyCg==
-From:   Will Deacon <will@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
-        Claire Chang <tientzu@chromium.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH] of: restricted dma: Don't fail device probe on rmem init failure
-Date:   Thu,  5 Aug 2021 10:47:36 +0100
-Message-Id: <20210805094736.902-1-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S234746AbhHEJwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 05:52:19 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GgP5v3k0pz9sWG;
+        Thu,  5 Aug 2021 11:52:03 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 9fqZ0To087zT; Thu,  5 Aug 2021 11:52:03 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GgP5v1hyjz9sST;
+        Thu,  5 Aug 2021 11:52:03 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DC22D8B7BD;
+        Thu,  5 Aug 2021 11:52:02 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id QxKh0RqSaX8k; Thu,  5 Aug 2021 11:52:02 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6F8EE8B7C0;
+        Thu,  5 Aug 2021 11:51:56 +0200 (CEST)
+Subject: Re: [PATCH] powerpc/kprobes: Fix kprobe Oops happens in booke
+To:     Pu Lehui <pulehui@huawei.com>, oleg@redhat.com, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        naveen.n.rao@linux.vnet.ibm.com, mhiramat@kernel.org,
+        peterz@infradead.org, npiggin@gmail.com, ruscur@russell.cc
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        zhangjinhao2@huawei.com, xukuohai@huawei.com
+References: <20210804143735.148547-1-pulehui@huawei.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <021cf081-77a9-8e4e-a246-4faaf3937dbe@csgroup.eu>
+Date:   Thu, 5 Aug 2021 11:51:57 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <20210804143735.148547-1-pulehui@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_DMA_RESTRICTED_POOL=n then probing a device with a reference
-to a "restricted-dma-pool" will fail with a reasonably cryptic error:
 
-  | pci-host-generic: probe of 10000.pci failed with error -22
 
-Print a more helpful message in this case and try to continue probing
-the device as we do if the kernel doesn't have the restricted DMA patches
-applied or either CONFIG_OF_ADDRESS or CONFIG_HAS_DMA =n.
+Le 04/08/2021 à 16:37, Pu Lehui a écrit :
+> When using kprobe on powerpc booke series processor, Oops happens
+> as show bellow:
+> 
+> [   35.861352] Oops: Exception in kernel mode, sig: 5 [#1]
+> [   35.861676] BE PAGE_SIZE=4K SMP NR_CPUS=24 QEMU e500
+> [   35.861905] Modules linked in:
+> [   35.862144] CPU: 0 PID: 76 Comm: sh Not tainted 5.14.0-rc3-00060-g7e96bf476270 #18
+> [   35.862610] NIP:  c0b96470 LR: c00107b4 CTR: c0161c80
+> [   35.862805] REGS: c387fe70 TRAP: 0700   Not tainted (5.14.0-rc3-00060-g7e96bf476270)
+> [   35.863198] MSR:  00029002 <CE,EE,ME>  CR: 24022824  XER: 20000000
+> [   35.863577]
+> [   35.863577] GPR00: c0015218 c387ff20 c313e300 c387ff50 00000004 40000002 40000000 0a1a2cce
+> [   35.863577] GPR08: 00000000 00000004 00000000 59764000 24022422 102490c2 00000000 00000000
+> [   35.863577] GPR16: 00000000 00000000 00000040 10240000 10240000 10240000 10240000 10220000
+> [   35.863577] GPR24: ffffffff 10240000 00000000 00000000 bfc655e8 00000800 c387ff50 00000000
+> [   35.865367] NIP [c0b96470] schedule+0x0/0x130
+> [   35.865606] LR [c00107b4] interrupt_exit_user_prepare_main+0xf4/0x100
+> [   35.865974] Call Trace:
+> [   35.866142] [c387ff20] [c0053224] irq_exit+0x114/0x120 (unreliable)
+> [   35.866472] [c387ff40] [c0015218] interrupt_return+0x14/0x13c
+> [   35.866728] --- interrupt: 900 at 0x100af3dc
+> [   35.866963] NIP:  100af3dc LR: 100de020 CTR: 00000000
+> [   35.867177] REGS: c387ff50 TRAP: 0900   Not tainted (5.14.0-rc3-00060-g7e96bf476270)
+> [   35.867488] MSR:  0002f902 <CE,EE,PR,FP,ME>  CR: 20022422  XER: 20000000
+> [   35.867808]
+> [   35.867808] GPR00: c001509c bfc65570 1024b4d0 00000000 100de020 20022422 bfc655a8 100af3dc
+> [   35.867808] GPR08: 0002f902 00000000 00000000 00000000 72656773 102490c2 00000000 00000000
+> [   35.867808] GPR16: 00000000 00000000 00000040 10240000 10240000 10240000 10240000 10220000
+> [   35.867808] GPR24: ffffffff 10240000 00000000 00000000 bfc655e8 10245910 ffffffff 00000001
+> [   35.869406] NIP [100af3dc] 0x100af3dc
+> [   35.869578] LR [100de020] 0x100de020
+> [   35.869751] --- interrupt: 900
+> [   35.870001] Instruction dump:
+> [   35.870283] 40c20010 815e0518 714a0100 41e2fd04 39200000 913e00c0 3b1e0450 4bfffd80
+> [   35.870666] 0fe00000 92a10024 4bfff1a9 60000000 <7fe00008> 7c0802a6 93e1001c 7c5f1378
+> [   35.871339] ---[ end trace 23ff848139efa9b9 ]---
+> 
+> There is no real mode for booke arch and the MMU translation is
+> always on. The corresponding MSR_IS/MSR_DS bit in booke is used
+> to switch the address space, but not for real mode judgment.
 
-Cc: Claire Chang <tientzu@chromium.org>
-Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- drivers/of/address.c    | 8 ++++----
- drivers/of/device.c     | 2 +-
- drivers/of/of_private.h | 8 +++-----
- 3 files changed, 8 insertions(+), 10 deletions(-)
+Can you explain more the link between that explanation and the Oops itself ?
 
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index 973257434398..f6bf4b423c2a 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -997,7 +997,7 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
- 	return ret;
- }
- 
--int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np)
-+void of_dma_set_restricted_buffer(struct device *dev, struct device_node *np)
- {
- 	struct device_node *node, *of_node = dev->of_node;
- 	int count, i;
-@@ -1022,11 +1022,11 @@ int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np)
- 		 */
- 		if (of_device_is_compatible(node, "restricted-dma-pool") &&
- 		    of_device_is_available(node))
--			return of_reserved_mem_device_init_by_idx(dev, of_node,
--								  i);
-+			break;
- 	}
- 
--	return 0;
-+	if (i != count && of_reserved_mem_device_init_by_idx(dev, of_node, i))
-+		dev_warn(dev, "failed to initialise \"restricted-dma-pool\" memory node\n");
- }
- #endif /* CONFIG_HAS_DMA */
- 
-diff --git a/drivers/of/device.c b/drivers/of/device.c
-index 2defdca418ec..258a2b099410 100644
---- a/drivers/of/device.c
-+++ b/drivers/of/device.c
-@@ -166,7 +166,7 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
- 	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
- 
- 	if (!iommu)
--		return of_dma_set_restricted_buffer(dev, np);
-+		of_dma_set_restricted_buffer(dev, np);
- 
- 	return 0;
- }
-diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-index f557bd22b0cf..bc883f69496b 100644
---- a/drivers/of/of_private.h
-+++ b/drivers/of/of_private.h
-@@ -163,18 +163,16 @@ struct bus_dma_region;
- #if defined(CONFIG_OF_ADDRESS) && defined(CONFIG_HAS_DMA)
- int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map);
--int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np);
-+void of_dma_set_restricted_buffer(struct device *dev, struct device_node *np);
- #else
- static inline int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map)
- {
- 	return -ENODEV;
- }
--static inline int of_dma_set_restricted_buffer(struct device *dev,
--					       struct device_node *np)
-+static inline void of_dma_set_restricted_buffer(struct device *dev,
-+						struct device_node *np)
- {
--	/* Do nothing, successfully. */
--	return 0;
- }
- #endif
- 
--- 
-2.32.0.605.g8dce9f2422-goog
+> 
+> Fixes: 21f8b2fa3ca5 ("powerpc/kprobes: Ignore traps that happened in real mode")
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
+>   arch/powerpc/include/asm/ptrace.h | 6 ++++++
+>   arch/powerpc/kernel/kprobes.c     | 5 +----
+>   2 files changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
+> index 3e5d470a6155..4aec1a97024b 100644
+> --- a/arch/powerpc/include/asm/ptrace.h
+> +++ b/arch/powerpc/include/asm/ptrace.h
+> @@ -187,6 +187,12 @@ static inline unsigned long frame_pointer(struct pt_regs *regs)
+>   #define user_mode(regs) (((regs)->msr & MSR_PR) != 0)
+>   #endif
+>   
+> +#ifdef CONFIG_BOOKE
+> +#define real_mode(regs)	0
+> +#else
+> +#define real_mode(regs)	(!((regs)->msr & MSR_IR) || !((regs)->msr & MSR_DR))
+> +#endif
+> +
 
+You don't need an #ifdef stuff here, you can base your testing on IS_ENABLED(CONFIG_BOOKE)
+
+>   #define force_successful_syscall_return()   \
+>   	do { \
+>   		set_thread_flag(TIF_NOERROR); \
+> diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
+> index cbc28d1a2e1b..fac9a5974718 100644
+> --- a/arch/powerpc/kernel/kprobes.c
+> +++ b/arch/powerpc/kernel/kprobes.c
+> @@ -289,10 +289,7 @@ int kprobe_handler(struct pt_regs *regs)
+>   	unsigned int *addr = (unsigned int *)regs->nip;
+>   	struct kprobe_ctlblk *kcb;
+>   
+> -	if (user_mode(regs))
+> -		return 0;
+> -
+> -	if (!(regs->msr & MSR_IR) || !(regs->msr & MSR_DR))
+> +	if (user_mode(regs) || real_mode(regs))
+>   		return 0;
+>   
+>   	/*
+> 
