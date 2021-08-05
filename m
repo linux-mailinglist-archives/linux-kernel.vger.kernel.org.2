@@ -2,98 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316D03E11C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4F83E11CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240065AbhHEKAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 06:00:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:42106 "EHLO foss.arm.com"
+        id S240124AbhHEKA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 06:00:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239980AbhHEKAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 06:00:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 373706D;
-        Thu,  5 Aug 2021 03:00:03 -0700 (PDT)
-Received: from [10.57.6.87] (unknown [10.57.6.87])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4BE503F719;
-        Thu,  5 Aug 2021 02:59:59 -0700 (PDT)
-Subject: Re: [PATCH v3] PM: EM: Increase energy calculation precision
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Chris Redpath <Chris.Redpath@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        CCj.Yeh@mediatek.com
-References: <20210803102744.23654-1-lukasz.luba@arm.com>
- <4e6b02fb-b421-860b-4a07-ed6cccdc1570@arm.com>
- <CAJZ5v0hgpM+ErHMTYLFFasvn=Ptc0MyaaFn=HSxOcGcDcBwMVg@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <c23f8fac-4515-5891-0778-18e65eeb7087@arm.com>
-Date:   Thu, 5 Aug 2021 10:59:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S240021AbhHEKAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 06:00:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9C1B361108;
+        Thu,  5 Aug 2021 10:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628157605;
+        bh=nhfHHaTG+BB6zlYyzCgWIha6OSgDvkxetAeXUhsmXqM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Q2q0ZEq8b39SiaZImETqZoMsxseKE5ES+lQC5KjVsWCfbdzC/YVBUJA3xffwnNnxJ
+         ST2hJjHN/at6Ri4oUom1E037HK1qL3iMvl9ydtJ6e1OUmURUiX7YrhFtkYitJy+joP
+         bKcm9CiYxG1Rn6Dhy67Tfnys/Rkno42nRlri3yijCYzHQ+rrwtc8QdYtBA38iZnu43
+         8FWi0+BpD/4sMOKX6Lqz2r6AsyfGyDKYxAImHwykqKOgsQCNcndwfesPuxliNo52PH
+         v6h14ROeL66EyfthpejFBE5A8g1TdyRBZwvt7bGvBlTFXF80BhkCrekOrIgcRC7Jni
+         0DoIhv5q2h4og==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8DAD760A7C;
+        Thu,  5 Aug 2021 10:00:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0hgpM+ErHMTYLFFasvn=Ptc0MyaaFn=HSxOcGcDcBwMVg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH][next] mctp: remove duplicated assignment of pointer hdr
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162815760557.30466.3323577657561138862.git-patchwork-notify@kernel.org>
+Date:   Thu, 05 Aug 2021 10:00:05 +0000
+References: <20210804121530.110521-1-colin.king@canonical.com>
+In-Reply-To: <20210804121530.110521-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     jk@codeconstruct.com.au, matt@codeconstruct.com.au,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On 8/4/21 7:10 PM, Rafael J. Wysocki wrote:
-> On Tue, Aug 3, 2021 at 3:31 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> Hi Rafael,
->>
->> On 8/3/21 11:27 AM, Lukasz Luba wrote:
->>
->> [snip]
->>
->>>
->>> Fixes: 27871f7a8a341ef ("PM: Introduce an Energy Model management framework")
->>> Reported-by: CCJ Yeh <CCj.Yeh@mediatek.com>
->>> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
->>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>> ---
->>>
->>> v3 changes:
->>> - adjusted patch description according to Dietmar's comments
->>> - added Dietmar's review tag
->>> - added one empty line in the code to separate them
->>>
->>>    include/linux/energy_model.h | 16 ++++++++++++++++
->>>    kernel/power/energy_model.c  |  4 +++-
->>>    2 files changed, 19 insertions(+), 1 deletion(-)
->>>
->>
->> Could you take this patch via your PM tree, please?
+On Wed,  4 Aug 2021 13:15:30 +0100 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> I can do that, but do you want a Cc:stable tag on it?
+> The pointer hdr is being initialized and also re-assigned with the
+> same value from the call to function mctp_hdr. Static analysis reports
+> that the initializated value is unused. The second assignment is
+> duplicated and can be removed.
 > 
+> [...]
 
-No, thank you. I'll prepare a dedicated patches and send them after this
-patch gets a proper commit ID. I've done similar things recently with
-some thermal stuff and different stable versions [1].
+Here is the summary with links:
+  - [next] mctp: remove duplicated assignment of pointer hdr
+    https://git.kernel.org/netdev/net-next/c/df7ba0eb25ed
 
-Please take this patch. I will handle the stable testing, preparation
-separately.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Regards,
-Lukasz
 
-[1] https://lore.kernel.org/lkml/20210514104916.19975-1-lukasz.luba@arm.com/
