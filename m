@@ -2,95 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C273E11F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CBF63E125F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240163AbhHEKGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 06:06:08 -0400
-Received: from esa11.hc1455-7.c3s2.iphmx.com ([207.54.90.137]:47900 "EHLO
-        esa11.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234156AbhHEKGA (ORCPT
+        id S240314AbhHEKNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 06:13:30 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:53234 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240304AbhHEKNY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 06:06:00 -0400
-X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Aug 2021 06:06:00 EDT
-IronPort-SDR: vaamKXEsIZb88hJ8qX91HpxT9PZILJS5Hc+vlrHxW/ZZNwyhH7VBYLYs3Z4bpG3yrGhepiOEcw
- hYu4RVjcsbjqlVR7OtJnb6Hfi/QN5xW69OdlGJI/UJS2cYX67VOYMLLIOoEpKkAqSrtDfqnem5
- TrdtBq2ZdxAf3lr4+o7d+2uazDOaOy8UtfkFCG6L9kxORjTdraWUajNszH9bYSk9mTfY0O2g5K
- 4aQM60EGbnFqt0IEBU4KxrRHQaam+3055klT7tGW0CsSCJ49ficgSvVtKXLSDIOHHFHD+IPjIj
- pgstRPoZBizyX47Ldhoy1arh
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="18797132"
-X-IronPort-AV: E=Sophos;i="5.84,296,1620658800"; 
-   d="scan'208";a="18797132"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
-  by esa11.hc1455-7.c3s2.iphmx.com with ESMTP; 05 Aug 2021 18:58:35 +0900
-Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com [192.168.83.66])
-        by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 66430EB380;
-        Thu,  5 Aug 2021 18:58:34 +0900 (JST)
-Received: from yto-om2.fujitsu.com (yto-om2.o.css.fujitsu.com [10.128.89.163])
-        by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id B9B1EE37C2;
-        Thu,  5 Aug 2021 18:58:33 +0900 (JST)
-Received: from localhost.localdomain (luna3.soft.fujitsu.com [10.124.196.199])
-        by yto-om2.fujitsu.com (Postfix) with ESMTP id 96071400C23C5;
-        Thu,  5 Aug 2021 18:58:33 +0900 (JST)
-From:   Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
-To:     keescook@chromium.org, linux-kselftest@vger.kernel.org
-Cc:     skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        misono.tomohiro@jp.fujitsu.com
-Subject: [PATCH] selftest/lkdtm: Skip stack-entropy test if lkdtm is not available
-Date:   Thu,  5 Aug 2021 19:12:36 +0900
-Message-Id: <20210805101236.1140381-1-misono.tomohiro@jp.fujitsu.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 5 Aug 2021 06:13:24 -0400
+Received: by mail-il1-f197.google.com with SMTP id y15-20020a92c98f0000b0290222e6d4efbfso1110964iln.19
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 03:13:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=mfp3dcRamri2wGmkRJSK01Pfy3daGYI42UfXp0QgTjU=;
+        b=VFDLKSG+OQf252zRNBWfGlighiPaWlaRH6DOJ5w53Slkqkx7KuDORV6gNmWrfvH8ox
+         n1XR5HeT9mPgpjygQkC8McdiSe9znd40rPx5z0dRUo+H5a3txoK7R9WRrYBkVE20kFt7
+         +s+3eRVtemtlDd4nOseE1kFAtXM8bybOyZVVX+Usnu/d595MgQlOVrh7JrjeHuQVYhp/
+         zfxyRNH0VrLYVXJIQPSmGSTwSaXH7VGHZ84LujZ1XyzqQN/LkkU++gTEruZ6zSBZyIg0
+         PduC3O6iYSjVdcohDIgv4UwWcaoeW1qzH1j8y1L40YR+8XcmpoTkGqjM1v67YPggGs3F
+         roFA==
+X-Gm-Message-State: AOAM532ThaRAT0uA241GTB91FUSEFnPnugXtAqtN4Zllv4JqQxe7U/+I
+        JZemBb02Vf1mh5nongzHXpJ5KZF6sYN2nFrpX5oXQzu/wmLJ
+X-Google-Smtp-Source: ABdhPJzPTZ4ctrrUGavvOHBH4NTS8BJbXcUPvlgq/7QfOSLC+LhG2uxQJN+Qfdv0epwVMqtQzdMZM9CmWaSpH6ty4Vl8Ed/4Bek7
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+X-Received: by 2002:a6b:28a:: with SMTP id 132mr527433ioc.157.1628158390707;
+ Thu, 05 Aug 2021 03:13:10 -0700 (PDT)
+Date:   Thu, 05 Aug 2021 03:13:10 -0700
+In-Reply-To: <00000000000040b7ba05ae32a94a@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000842d2f05c8cd2ac7@google.com>
+Subject: Re: [syzbot] possible deadlock in __sock_release
+From:   syzbot <syzbot+8e467b009209f1fcf666@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, dave@pr1mo.net, davem@davemloft.net,
+        dsahern@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Exit with return code 4 if lkdtm is not available like other tests
-in order to properly skip the test.
+syzbot suspects this issue was fixed by commit:
 
-Signed-off-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
----
-I saw the same problem reported here (on 5.14-rc4):
-https://lore.kernel.org/lkml/2836f48a-d4e2-7f00-f06c-9f556fbd6332@linuxfoundation.org/
+commit 8fb4792f091e608a0a1d353dfdf07ef55a719db5
+Author: Paolo Abeni <pabeni@redhat.com>
+Date:   Tue Jul 20 13:08:40 2021 +0000
 
- tools/testing/selftests/lkdtm/stack-entropy.sh | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+    ipv6: fix another slab-out-of-bounds in fib6_nh_flush_exceptions
 
-diff --git a/tools/testing/selftests/lkdtm/stack-entropy.sh b/tools/testing/selftests/lkdtm/stack-entropy.sh
-index 1b4d95d575f8..14fedeef762e 100755
---- a/tools/testing/selftests/lkdtm/stack-entropy.sh
-+++ b/tools/testing/selftests/lkdtm/stack-entropy.sh
-@@ -4,13 +4,27 @@
- # Measure kernel stack entropy by sampling via LKDTM's REPORT_STACK test.
- set -e
- samples="${1:-1000}"
-+TRIGGER=/sys/kernel/debug/provoke-crash/DIRECT
-+KSELFTEST_SKIP_TEST=4
-+
-+# Verify we have LKDTM available in the kernel.
-+if [ ! -r $TRIGGER ] ; then
-+	/sbin/modprobe -q lkdtm || true
-+	if [ ! -r $TRIGGER ] ; then
-+		echo "Cannot find $TRIGGER (missing CONFIG_LKDTM?)"
-+	else
-+		echo "Cannot write $TRIGGER (need to run as root?)"
-+	fi
-+	# Skip this test
-+	exit $KSELFTEST_SKIP_TEST
-+fi
- 
- # Capture dmesg continuously since it may fill up depending on sample size.
- log=$(mktemp -t stack-entropy-XXXXXX)
- dmesg --follow >"$log" & pid=$!
- report=-1
- for i in $(seq 1 $samples); do
--        echo "REPORT_STACK" >/sys/kernel/debug/provoke-crash/DIRECT
-+        echo "REPORT_STACK" > $TRIGGER
- 	if [ -t 1 ]; then
- 		percent=$(( 100 * $i / $samples ))
- 		if [ "$percent" -ne "$report" ]; then
--- 
-2.31.1
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=113a99f1300000
+start commit:   c6c205ed442e Merge branch 'stmmac-ptp'
+git tree:       net
+kernel config:  https://syzkaller.appspot.com/x/.config?x=26b64b13fcecb7e1
+dashboard link: https://syzkaller.appspot.com/bug?extid=8e467b009209f1fcf666
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=152188d2300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d5493c300000
 
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: ipv6: fix another slab-out-of-bounds in fib6_nh_flush_exceptions
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
