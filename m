@@ -2,167 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86BF3E1228
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1CD3E1244
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 12:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240355AbhHEKJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 06:09:38 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:53337 "EHLO pegase2.c-s.fr"
+        id S240419AbhHEKKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 06:10:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240055AbhHEKJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 06:09:36 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4GgPTs0GH3z9sWL;
-        Thu,  5 Aug 2021 12:09:21 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id hrCC9IOrwgJL; Thu,  5 Aug 2021 12:09:20 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4GgPTq5Q1rz9sWH;
-        Thu,  5 Aug 2021 12:09:19 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 94D538B7BF;
-        Thu,  5 Aug 2021 12:09:19 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 1RA1AC0yMRHI; Thu,  5 Aug 2021 12:09:19 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B02EA8B7BD;
-        Thu,  5 Aug 2021 12:09:18 +0200 (CEST)
-Subject: Re: [RFC PATCH 3/4] powerpc: Optimize register usage for dear
- register
-To:     sxwjean@me.com, linuxppc-dev@lists.ozlabs.org
-Cc:     oleg@redhat.com, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, ravi.bangoria@linux.ibm.com, npiggin@gmail.com,
-        aneesh.kumar@linux.ibm.com, sandipan@linux.ibm.com,
-        efremov@linux.com, peterx@redhat.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
-References: <20210726143053.532839-1-sxwjean@me.com>
- <20210726143053.532839-3-sxwjean@me.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <56d9e3ce-f303-fd41-bd16-5655d9dc5e52@csgroup.eu>
-Date:   Thu, 5 Aug 2021 12:09:19 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S240361AbhHEKKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 06:10:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E2E7A6105A;
+        Thu,  5 Aug 2021 10:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628158206;
+        bh=LdDU1hP7nfKV0oIxWUczwubMmAzkHkKxMQJ6M4XkNc8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=W7va8qbYM0uNpVRMqT/V7mC1BBmI5UQDMyxJkBURsiYBoZFpb7IAFk79kZ7sAsnpk
+         sfbmSe2y427cBD7zpr4+VG57/g85vaeAfN8NZwj2VTahcDGcdo0HfO/MyA824dPBl7
+         h7fhsHKhNAU2Cz2B5XAENmQISdpH4nYRWisDhBOY3Bn393XFQzXDDal8rTRAR/y88V
+         BZ/1f80pSuSSnrX+dyT9ORwg9WqWDwibTaKIP+/u5ml73jneZsAN6lFjEjKJYpc6zP
+         E/Gq/Z2xVx/yVUc2iigBREoX8k1pJBNTbe4iFPvswNJUe1wg5zB+yfvyp/nWSDKr/d
+         UbvH/nKg9582A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D29F960A88;
+        Thu,  5 Aug 2021 10:10:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210726143053.532839-3-sxwjean@me.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: ipa: fix IPA v4.9 interconnects
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162815820685.2686.2694998463518499326.git-patchwork-notify@kernel.org>
+Date:   Thu, 05 Aug 2021 10:10:06 +0000
+References: <20210804135407.1358606-1-elder@linaro.org>
+In-Reply-To: <20210804135407.1358606-1-elder@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Le 26/07/2021 à 16:30, sxwjean@me.com a écrit :
-> From: Xiongwei Song <sxwjean@gmail.com>
+On Wed,  4 Aug 2021 08:54:07 -0500 you wrote:
+> Three interconnects are defined for IPA version 4.9, but there
+> should only be two.  They should also use names that match what's
+> used for other platforms (and specified in the Device Tree binding).
 > 
-> Create an anonymous union for dar and dear regsiters, we can reference
-> dear to get the effective address when CONFIG_4xx=y or CONFIG_BOOKE=y.
-> Otherwise, reference dar. This makes code more clear.
-
-Same comment here as for patch 1.
-
-
-> 
-> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+> Signed-off-by: Alex Elder <elder@linaro.org>
 > ---
->   arch/powerpc/include/asm/ptrace.h      | 5 ++++-
->   arch/powerpc/include/uapi/asm/ptrace.h | 5 ++++-
->   arch/powerpc/kernel/process.c          | 2 +-
->   arch/powerpc/kernel/ptrace/ptrace.c    | 2 ++
->   arch/powerpc/kernel/traps.c            | 5 ++++-
->   arch/powerpc/mm/fault.c                | 2 +-
->   6 files changed, 16 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
-> index c252d04b1206..fa725e3238c2 100644
-> --- a/arch/powerpc/include/asm/ptrace.h
-> +++ b/arch/powerpc/include/asm/ptrace.h
-> @@ -43,7 +43,10 @@ struct pt_regs
->   			unsigned long mq;
->   #endif
->   			unsigned long trap;
-> -			unsigned long dar;
-> +			union {
-> +				unsigned long dar;
-> +				unsigned long dear;
-> +			};
->   			union {
->   				unsigned long dsisr;
->   				unsigned long esr;
-> diff --git a/arch/powerpc/include/uapi/asm/ptrace.h b/arch/powerpc/include/uapi/asm/ptrace.h
-> index e357288b5f34..9ae150fb4c4b 100644
-> --- a/arch/powerpc/include/uapi/asm/ptrace.h
-> +++ b/arch/powerpc/include/uapi/asm/ptrace.h
-> @@ -52,7 +52,10 @@ struct pt_regs
->   	unsigned long trap;		/* Reason for being here */
->   	/* N.B. for critical exceptions on 4xx, the dar and dsisr
->   	   fields are overloaded to hold srr0 and srr1. */
-> -	unsigned long dar;		/* Fault registers */
-> +	union {
-> +		unsigned long dar;		/* Fault registers */
-> +		unsigned long dear;
-> +	};
->   	union {
->   		unsigned long dsisr;		/* on Book-S used for DSISR */
->   		unsigned long esr;		/* on 4xx/Book-E used for ESR */
-> diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-> index f74af8f9133c..50436b52c213 100644
-> --- a/arch/powerpc/kernel/process.c
-> +++ b/arch/powerpc/kernel/process.c
-> @@ -1499,7 +1499,7 @@ static void __show_regs(struct pt_regs *regs)
->   	    trap == INTERRUPT_DATA_STORAGE ||
->   	    trap == INTERRUPT_ALIGNMENT) {
->   		if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
-> -			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, regs->esr);
-> +			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dear, regs->esr);
->   		else
->   			pr_cont("DAR: "REG" DSISR: %08lx ", regs->dar, regs->dsisr);
->   	}
-> diff --git a/arch/powerpc/kernel/ptrace/ptrace.c b/arch/powerpc/kernel/ptrace/ptrace.c
-> index 00789ad2c4a3..969dca8b0718 100644
-> --- a/arch/powerpc/kernel/ptrace/ptrace.c
-> +++ b/arch/powerpc/kernel/ptrace/ptrace.c
-> @@ -373,6 +373,8 @@ void __init pt_regs_check(void)
->   		     offsetof(struct user_pt_regs, trap));
->   	BUILD_BUG_ON(offsetof(struct pt_regs, dar) !=
->   		     offsetof(struct user_pt_regs, dar));
-> +	BUILD_BUG_ON(offsetof(struct pt_regs, dear) !=
-> +		     offsetof(struct user_pt_regs, dear));
->   	BUILD_BUG_ON(offsetof(struct pt_regs, dsisr) !=
->   		     offsetof(struct user_pt_regs, dsisr));
->   	BUILD_BUG_ON(offsetof(struct pt_regs, esr) !=
-> diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-> index 2164f5705a0b..0796630d3d23 100644
-> --- a/arch/powerpc/kernel/traps.c
-> +++ b/arch/powerpc/kernel/traps.c
-> @@ -1609,7 +1609,10 @@ DEFINE_INTERRUPT_HANDLER(alignment_exception)
->   	}
->   bad:
->   	if (user_mode(regs))
-> -		_exception(sig, regs, code, regs->dar);
-> +		if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
-> +			_exception(sig, regs, code, regs->dear);
-> +		else
-> +			_exception(sig, regs, code, regs->dar);
->   	else
->   		bad_page_fault(regs, sig);
->   }
-> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-> index 62953d4e7c93..3db6b39a1178 100644
-> --- a/arch/powerpc/mm/fault.c
-> +++ b/arch/powerpc/mm/fault.c
-> @@ -542,7 +542,7 @@ static __always_inline void __do_page_fault(struct pt_regs *regs)
->   	long err;
->   
->   	if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
-> -		err = ___do_page_fault(regs, regs->dar, regs->esr);
-> +		err = ___do_page_fault(regs, regs->dear, regs->esr);
->   	else
->   		err = ___do_page_fault(regs, regs->dar, regs->dsisr);
->   
-> 
+>  drivers/net/ipa/ipa_data-v4.9.c | 9 ++-------
+>  1 file changed, 2 insertions(+), 7 deletions(-)
+
+Here is the summary with links:
+  - [net-next] net: ipa: fix IPA v4.9 interconnects
+    https://git.kernel.org/netdev/net-next/c/0fd75f5760b6
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
