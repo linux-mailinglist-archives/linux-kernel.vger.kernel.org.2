@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0143E19DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A95B3E19E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 19:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235264AbhHERAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 13:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49130 "EHLO
+        id S235316AbhHERCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 13:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235024AbhHERAl (ORCPT
+        with ESMTP id S230343AbhHERCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 13:00:41 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5ADAC061798;
-        Thu,  5 Aug 2021 10:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RfOqjCAhidLnWaJDwZvSEiIqNFmEzZQSFH1l77b3IKE=; b=b3DxMoLgrueXZ0QM4bH5bDn9HU
-        /n+lDznAfHRFbpt+i/Vy/OMlJgYfw/HnOG/+rxF1Q2EJciRa09mEIsxN1JgXHQ39BlmhokBBHhcjj
-        MW1l7pCOMGDbQZ0qPm3QZqeQPyTNoMHFDSUo28oYCS1lwTjJGgha1XopiNZsdzbaqDDTXCymyVeX5
-        /ShtA3kJT0HslnzF1UlxcIgpLeE38I64GPIQQNNdzcL0fXApsiiiu8rShmo6KFW+dpwmFeopf8iDw
-        lBv1UrgVzyKRnrKZOUa6G907Bt58aF3HDqc8F7iF/gw0gFWcpo/Unrq29ZBCMikUDwa9q8ZKvto4r
-        /lz0sL7Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mBgj5-0067Zp-Sf; Thu, 05 Aug 2021 17:00:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7E5B7300084;
-        Thu,  5 Aug 2021 19:00:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 381132139818C; Thu,  5 Aug 2021 19:00:10 +0200 (CEST)
-Date:   Thu, 5 Aug 2021 19:00:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Eugene Syromiatnikov <esyr@redhat.com>
-Cc:     joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
-        mingo@kernel.org, vincent.guittot@linaro.org,
-        valentin.schneider@arm.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        linux-api@vger.kernel.org, ldv@strace.io
-Subject: Re: [PATCH 18/19] sched: prctl() core-scheduling interface
-Message-ID: <YQwZGjjugfJTV2s6@hirez.programming.kicks-ass.net>
-References: <20210422120459.447350175@infradead.org>
- <20210422123309.039845339@infradead.org>
- <20210805165319.GA5916@asgard.redhat.com>
+        Thu, 5 Aug 2021 13:02:53 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10105C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 10:02:39 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id y34so12400052lfa.8
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 10:02:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=iO3iUPhlFRB+uW9z5SZwNaeJSIsWMT9aIwajKIN1Hug=;
+        b=fwuVwcRGj1t7o0djle32NfY3yrLhJAl7N5UBdttp7uNarmBA2ssIxaNM6F0FhTFQc4
+         CPPiRgV0am6vFTGKIfRdZjpdc5621n7MGYGNSF/jrFPFoOZvgjvvHg/DrA+ELDJr/Prt
+         FcNxNK7vmiI+vFWqCtUTi+Yi4o+YUzFsIDjj48o3RHXw6rOAnrMbtHBlv0x7UbyYKMly
+         +nBOQse6zlIkzcIabX8ZqlWAM7MBE7vMPFmWTxspWD2tQ+/CMm2ZicwJ9yH6ujTtd1Lj
+         rIiz9pvZNG5DDrSig2ujCEomNv/Vt/SqD5EP7H03FxuNPgSWmJvBD80NA/w22ArX0zF5
+         I6+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=iO3iUPhlFRB+uW9z5SZwNaeJSIsWMT9aIwajKIN1Hug=;
+        b=pcHTO/Z4W44h2dFwsWXvE/6b96hrA5vkB602XtDCHCgDY+nDsukGbc74POgCeG4DD1
+         /90KHtBoLflh2rKtUPMf+V8gZWGa3GvSYlK9V7+kWKn873Fgr3rr9s6rX452vQuUdKGE
+         DFj7d0j3eB4WZ/PdKfp7zA2Z4MXLTgDSNfZpDo9QQs1IAH0w6TG6W6XGPMv4HXwj7vht
+         TqWBzLmfuLBwOhRX7+J7fsuoNG5L5CV09aUF/oTQnXyrgkRK95fH5LGXw2+dQumFf2mo
+         h5LvHo4WY/eaD4dtyIZBT1FGO8R/sbxM76jwqDbs661/L9kBDXKyt5uRQYzoT/LSwBjN
+         pK0g==
+X-Gm-Message-State: AOAM531XZds2TDNtgcBc1DcZ8y/g8AK3buWCa3ri7AuOtH5hZ46uP18v
+        pgE1OB0gEmjsLZZke3lpM1nj8KxxVmpsoiF0FlA=
+X-Google-Smtp-Source: ABdhPJwB5SGR3JpA2Q065mGTiNAh4uNngHlia6OZjilDE4Ouo5jFdLZexBymJIr+WBMiyE1iGLwyo2cAW96TNosk7TU=
+X-Received: by 2002:ac2:4152:: with SMTP id c18mr4502703lfi.645.1628182957354;
+ Thu, 05 Aug 2021 10:02:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805165319.GA5916@asgard.redhat.com>
+Sender: pavelbirukou105@gmail.com
+Received: by 2002:a2e:9e0c:0:0:0:0:0 with HTTP; Thu, 5 Aug 2021 10:02:36 -0700 (PDT)
+From:   Alexandra Kelly <alexandrakelly779@gmail.com>
+Date:   Thu, 5 Aug 2021 18:02:36 +0100
+X-Google-Sender-Auth: rGTmEIcaoT2Mh21xvYD8iAVfryc
+Message-ID: <CAJHpm0z3qpFdCWkQECajnOZpUZ9qHbbY6y0XcqBG7C-iZXfuOw@mail.gmail.com>
+Subject: Urgent Response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 06:53:19PM +0200, Eugene Syromiatnikov wrote:
-> On Thu, Apr 22, 2021 at 02:05:17PM +0200, Peter Zijlstra wrote:
-> > API:
-> > 
-> >   prctl(PR_SCHED_CORE, PR_SCHED_CORE_GET, tgtpid, pidtype, &cookie)
-> >   prctl(PR_SCHED_CORE, PR_SCHED_CORE_CREATE, tgtpid, pidtype, NULL)
-> >   prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_TO, tgtpid, pidtype, NULL)
-> >   prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_FROM, srcpid, pidtype, NULL)
-> > 
-> > where 'tgtpid/srcpid == 0' implies the current process and pidtype is
-> > kernel enum pid_type {PIDTYPE_PID, PIDTYPE_TGID, PIDTYPE_PGID, ...}.
-> 
-> It means that enum pid_tipe has to be a part of UAPI now.  Would you
-> like to address it, or rather I'd send a patch?
+Dear friend,
 
-Please send a patch; I'm more sparse than usual atm.
+
+I am contacting you independently of my investigation in
+my bank and no one is informed of this communication. I need your
+urgent assistance in transferring the sum of $5.3 million dollars to
+your private account,that belongs to one of our foreign customers who
+died a longtime with his supposed NEXT OF KIN since July 22, 2003. The
+money has been here in our Bank lying dormant for years now without
+anybody coming to claim it.
+
+I want to release the money to you as the relative to our deceased
+customer , the Banking laws here does not allow such money to stay
+more than 18 years, because the money will be recalled to the Bank
+treasury account as unclaimed fund. I am ready to share with you 40%
+for you and 60% will be kept for me, by indicating your interest i
+will send you the full details on how the business will be executed, i
+will be waiting for your urgent response.
