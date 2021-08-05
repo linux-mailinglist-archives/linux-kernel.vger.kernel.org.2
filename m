@@ -2,97 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E583E1521
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDE03E1528
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241535AbhHEMzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:55:36 -0400
-Received: from relay.sw.ru ([185.231.240.75]:46324 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232615AbhHEMzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:55:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=k7doBg0e3JXjBZq/zURAjt4EJ5ZAbtwrV59dNqCZYJA=; b=zEm0nOAsAaQ7PAk+4
-        10tK5qsVpCEZi2uwaq6GIjMXzj95niq3fpstkC6W5zCcwKpUQHuOt7Sh/uO/bFfIQlki36J6O4MLr
-        a4E3SeGJLE2fMRFcupv2UoRVXWxG73CTf21LwyKzvN4RG6YxrYR4WTK08WbzJoSni0j5y0/AXgm+o
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mBcu4-006UwH-E1; Thu, 05 Aug 2021 15:55:16 +0300
-Subject: Re: [PATCH NET v3 5/7] vrf: use skb_expand_head in vrf_finish_output
-To:     Julian Wiedmann <jwi@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <15eba3b2-80e2-5547-8ad9-167d810ad7e3@virtuozzo.com>
- <cover.1627891754.git.vvs@virtuozzo.com>
- <e4ca1ef1-56f3-5bce-eec8-617e24bc7b1a@virtuozzo.com>
- <ccce7edb-54dd-e6bf-1e84-0ec320d8886c@linux.ibm.com>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <08c09fff-87f3-b29c-f681-88b031b0bb0d@virtuozzo.com>
-Date:   Thu, 5 Aug 2021 15:55:15 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S241481AbhHEM44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:56:56 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:25229 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232615AbhHEM4y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 08:56:54 -0400
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 175CuNhC014299;
+        Thu, 5 Aug 2021 21:56:24 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 175CuNhC014299
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1628168184;
+        bh=/8/3wCfLu/4cFvkS/DxXUoTejOJZixLrqpyNHz7+H/k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FCGRuPzW2ZdOkpr1FDIjYrWAaUQWM+HNlOPFh99beLhWIXJW1PBIC1iJzQjteiEOs
+         FmCP3LEs363NVX0VTREBIckBk5cYAyUVHvHuU6bzkG2YcN71KnM1FKZ79S4D1J4QVt
+         kT/Bui1zSKl80/7ANnQ2qu61O9NDYTGO49s6103eflKXLGKifG8B1N78nlToutnyZX
+         H4Qhr1GwbkN4632NEdi6n6QVPTaf9bEHIBr1bbQfqMacuoLzRDSQhQaCRruJ2EtdUW
+         LX5pe6Ki3yYOp+BXx5wjEZVABbp0zV7YjJMgVsrF2UYqZSqq7COpLp81ySoml+L1Ly
+         xley5dWU5pGPA==
+X-Nifty-SrcIP: [209.85.216.48]
+Received: by mail-pj1-f48.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so11328278pji.5;
+        Thu, 05 Aug 2021 05:56:24 -0700 (PDT)
+X-Gm-Message-State: AOAM532DrIpz6kEiZowAylET5D9hnJgV0ji52SEzhHPfIVo5Xlwm/1dC
+        mONVQtq2EFL9akTrQU9WjkMYlereqY1QtkRGLCg=
+X-Google-Smtp-Source: ABdhPJzy4AKrESjk80SzDSvhoYIeOF8an2S+dqlAkQPqcCtbkFOCN9DfXQZa4vKnQG0geqMg7iRfmO0ynHOO0Oah/fI=
+X-Received: by 2002:a17:902:a5c5:b029:12c:a867:a839 with SMTP id
+ t5-20020a170902a5c5b029012ca867a839mr1763754plq.71.1628168183373; Thu, 05 Aug
+ 2021 05:56:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ccce7edb-54dd-e6bf-1e84-0ec320d8886c@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210802183910.1802120-1-ndesaulniers@google.com>
+ <20210802183910.1802120-2-ndesaulniers@google.com> <CAFP8O3Jc=iwzAQojgBZZzdT8iVBY9TO6GLTq+0vkXoo6L5JJ-A@mail.gmail.com>
+In-Reply-To: <CAFP8O3Jc=iwzAQojgBZZzdT8iVBY9TO6GLTq+0vkXoo6L5JJ-A@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 5 Aug 2021 21:55:46 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS4wQNvWd0H1bEG-zbznkm_kfQHEZWKUOPQqReA+Cru3w@mail.gmail.com>
+Message-ID: <CAK7LNAS4wQNvWd0H1bEG-zbznkm_kfQHEZWKUOPQqReA+Cru3w@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] Makefile: move initial clang flag handling into scripts/Makefile.clang
+To:     =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/21 2:55 PM, Julian Wiedmann wrote:
-> On 02.08.21 11:52, Vasily Averin wrote:
->> Unlike skb_realloc_headroom, new helper skb_expand_head
->> does not allocate a new skb if possible.
->>
->> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
->> ---
->>  drivers/net/vrf.c | 21 +++++++--------------
->>  1 file changed, 7 insertions(+), 14 deletions(-)
->>
-> 
-> [...]
-> 
->>  	/* Be paranoid, rather than too clever. */
->>  	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
->> -		struct sk_buff *skb2;
->> -
->> -		skb2 = skb_realloc_headroom(skb, LL_RESERVED_SPACE(dev));
->> -		if (!skb2) {
->> -			ret = -ENOMEM;
->> -			goto err;
->> +		skb = skb_expand_head(skb, hh_len);
->> +		if (!skb) {
->> +			skb->dev->stats.tx_errors++;
->> +			return -ENOMEM;
-> 
-> Hello Vasily,
-> 
-> FYI, Coverity complains that we check skb != NULL here but then
-> still dereference skb->dev:
-> 
-> 
-> *** CID 1506214:  Null pointer dereferences  (FORWARD_NULL)
-> /drivers/net/vrf.c: 867 in vrf_finish_output()
-> 861     	nf_reset_ct(skb);
-> 862     
-> 863     	/* Be paranoid, rather than too clever. */
-> 864     	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
-> 865     		skb = skb_expand_head(skb, hh_len);
-> 866     		if (!skb) {
->>>>     CID 1506214:  Null pointer dereferences  (FORWARD_NULL)
->>>>     Dereferencing null pointer "skb".
-> 867     			skb->dev->stats.tx_errors++;
-> 868     			return -ENOMEM;
+On Tue, Aug 3, 2021 at 6:06 AM 'F=C4=81ng-ru=C3=AC S=C3=B2ng' via Clang Bui=
+lt Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> On Mon, Aug 2, 2021 at 11:39 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > With some of the changes we'd like to make to CROSS_COMPILE, the initia=
+l
+> > block of clang flag handling which controls things like the target trip=
+le,
+> > whether or not to use the integrated assembler and how to find GAS,
+> > and erroring on unknown warnings is becoming unwieldy. Move it into its
+> > own file under scripts/.
+> >
+> > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > ---
+> >  MAINTAINERS            |  1 +
+> >  Makefile               | 15 +--------------
+> >  scripts/Makefile.clang | 14 ++++++++++++++
+> >  3 files changed, 16 insertions(+), 14 deletions(-)
+> >  create mode 100644 scripts/Makefile.clang
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 19135a9d778e..3af8d39f43ef 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -4501,6 +4501,7 @@ B:        https://github.com/ClangBuiltLinux/linu=
+x/issues
+> >  C:     irc://chat.freenode.net/clangbuiltlinux
+> >  F:     Documentation/kbuild/llvm.rst
+> >  F:     include/linux/compiler-clang.h
+> > +F:     scripts/Makefile.clang
+> >  F:     scripts/clang-tools/
+> >  K:     \b(?i:clang|llvm)\b
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 6b555f64df06..444558e62cbc 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -586,20 +586,7 @@ endif
+> >  CC_VERSION_TEXT =3D $(subst $(pound),,$(shell $(CC) --version 2>/dev/n=
+ull | head -n 1))
+> >
+> >  ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+> > -ifneq ($(CROSS_COMPILE),)
+> > -CLANG_FLAGS    +=3D --target=3D$(notdir $(CROSS_COMPILE:%-=3D%))
+> > -endif
+> > -ifeq ($(LLVM_IAS),1)
+> > -CLANG_FLAGS    +=3D -integrated-as
+> > -else
+> > -CLANG_FLAGS    +=3D -no-integrated-as
+> > -GCC_TOOLCHAIN_DIR :=3D $(dir $(shell which $(CROSS_COMPILE)elfedit))
+> > -CLANG_FLAGS    +=3D --prefix=3D$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_CO=
+MPILE))
+> > -endif
+> > -CLANG_FLAGS    +=3D -Werror=3Dunknown-warning-option
+> > -KBUILD_CFLAGS  +=3D $(CLANG_FLAGS)
+> > -KBUILD_AFLAGS  +=3D $(CLANG_FLAGS)
+> > -export CLANG_FLAGS
+> > +include $(srctree)/scripts/Makefile.clang
+> >  endif
+> >
+> >  # Include this also for config targets because some architectures need
+> > diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+> > new file mode 100644
+> > index 000000000000..297932e973d4
+> > --- /dev/null
+> > +++ b/scripts/Makefile.clang
+> > @@ -0,0 +1,14 @@
+> > +ifneq ($(CROSS_COMPILE),)
+> > +CLANG_FLAGS    +=3D --target=3D$(notdir $(CROSS_COMPILE:%-=3D%))
+> > +endif
+> > +ifeq ($(LLVM_IAS),1)
+> > +CLANG_FLAGS    +=3D -integrated-as
+>
+> -i* options are for includes. -fintegrated-as is the canonical spelling.
 
-My fault, I missed it.
 
-Thank you,
-	Vasily Averin
+If -fintegrated-as is preferred to -integrated-as,
+please send a patch.
+(on top of this series)
+
+
+Thanks.
+
+
+
+
+
+
+> Since -fintegrated-as is the default (for most llvm/lib/Target/
+> targets and the ones clang builds actually support),
+> it can even be deleted.
+>
+> > +else
+> > +CLANG_FLAGS    +=3D -no-integrated-as
+> > +GCC_TOOLCHAIN_DIR :=3D $(dir $(shell which $(CROSS_COMPILE)elfedit))
+> > +CLANG_FLAGS    +=3D --prefix=3D$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_CO=
+MPILE))
+> > +endif
+> > +CLANG_FLAGS    +=3D -Werror=3Dunknown-warning-option
+> > +KBUILD_CFLAGS  +=3D $(CLANG_FLAGS)
+> > +KBUILD_AFLAGS  +=3D $(CLANG_FLAGS)
+> > +export CLANG_FLAGS
+> > --
+> > 2.32.0.554.ge1b32706d8-goog
+> >
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/clang-built-linux/CAFP8O3Jc%3DiwzAQojgBZZzdT8iVBY9TO6GLTq%2B0vkXoo6L5JJ-A=
+%40mail.gmail.com.
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
