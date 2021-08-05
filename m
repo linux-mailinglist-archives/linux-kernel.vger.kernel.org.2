@@ -2,98 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A15C3E1C2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4283E1C35
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242307AbhHETJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242501AbhHETJV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:09:21 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5E3C061799
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 12:09:04 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id w17so10724498ybl.11
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 12:09:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=66klr3RRk6o66gBKNdZEM7W2NMGH3F3MK/aEyxf87PI=;
-        b=n/RdEz7x4Hdz972oDHKkOLKisyM+jGDoux+WTvW8scFrttaTpF7jvhZvrEe7sA0E/9
-         AA5A5hzv/R7EUmAyoHMqBw1MeqDbJFfK1idnqIjR26dLjaJiwb6qdHMck+n2WqUqZZw/
-         TB1Hab00zIU6gIG8ODCyQIV5VKvKstBT8cqdWR/3VMIqObWAAdCkWmp7YDPM381priUE
-         IYlETrBGENW2IEIL5h6+nEJvgZHohoYMLp275zXc7+u8ZoFtBYPbzbOIFPxhKdj4kYl4
-         CApL86Zh+6UveyxJtjeM6FqW6Hh97L8R+Jcpq7ZpWm7ZrKkAYhIAFArfgyssbthugUDm
-         6UVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=66klr3RRk6o66gBKNdZEM7W2NMGH3F3MK/aEyxf87PI=;
-        b=WMfQx1wzBqpSca04yfGtPFSZYLXa/C3lC4R3ZBQQtcjUuZw4757Gox1mF+PQ19IUYq
-         MeYRKwfB6yth9Oe/yS31cEyE50iin10SOy9GpOha5X1VtLjMQJj8IU1kQ/Usy3QHNt9j
-         B5vZ8LMxlMsMggNmI34dEAl7a2gt6XTwaWXMsL3HUVSsLuIw9YuujoU3J/oQYssOk/nQ
-         g9sWspIB8tMIGLGGpR0+e0N9pZaKSvQ1s+7xG58lHjZIPkIEf7kk5qzSBP5iv8fAgwr3
-         iH3mnYoXvShYmQRHgHjwv6EQE+qZTATJe7eOdsRXKBoISZzB1fGBq7RLxkm1sWy1Oky3
-         CUjA==
-X-Gm-Message-State: AOAM531EJVU5Wmmb/VaIcw+ISTvgxO6EYAYYpNNQPhI0j4fOsYuyXced
-        K1hOKPhFf+evZiD2lJ1HnNF58bC3F5Au70AH8a5goQ==
-X-Google-Smtp-Source: ABdhPJzW09jDFnZCROZvMGrpzmvOaLe++zLkGJEfyvO5tZXGesyIoWyTosfywba8jYtMHoOawEh2J1DGnf1TAwFpxf4=
-X-Received: by 2002:a25:db89:: with SMTP id g131mr7906029ybf.302.1628190543546;
- Thu, 05 Aug 2021 12:09:03 -0700 (PDT)
+        id S242442AbhHETMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:12:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242328AbhHETMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 15:12:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE46561078;
+        Thu,  5 Aug 2021 19:12:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628190723;
+        bh=3/P9jMgnr17dFIwUnHvNdPBy4enCxguNdG2aEY+cqFU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y86CkqGBkt6pIWqke11q2NocT2RAXbi0S/FRYLXu4lwcXPzXr3nyX2LxIjY8lO6I7
+         K/M0BEEtZiwhLJYHExq23brlNtjBwPQsDxRcP8YN5vWnF3pi2pExkMeXJDaEvdZKGM
+         CQMaoQFLwuLb+0rZrZIcntSPI/USQT1OmIuLtlvc=
+Date:   Thu, 5 Aug 2021 21:12:00 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v1] driver: base: Add driver filter support
+Message-ID: <YQw4AEwIUGe3RpCx@kroah.com>
+References: <YQrqhYEL64CSLRTy@kroah.com>
+ <f2b1d564-8174-f8e9-9fee-12e938c6d846@linux.intel.com>
+ <YQuYCePPZEmVbkfc@kroah.com>
+ <YQuZdVuaGG/Cr62y@kroah.com>
+ <YQuaJ78y8j1UmBoz@kroah.com>
+ <fdf8b6b6-58c3-8392-2fc6-1908a314e991@linux.intel.com>
+ <YQwlHrJBw79xhTSI@kroah.com>
+ <21db8884-5aa1-3971-79ef-f173a0a95bef@linux.intel.com>
+ <YQwpa+LAYt7YZ5dh@kroah.com>
+ <7d6751b1-c476-51d3-25c6-b65c0e93d23b@linux.intel.com>
 MIME-Version: 1.0
-References: <1628105086-8172-1-git-send-email-raagjadav@gmail.com> <1628105086-8172-3-git-send-email-raagjadav@gmail.com>
-In-Reply-To: <1628105086-8172-3-git-send-email-raagjadav@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 5 Aug 2021 21:08:52 +0200
-Message-ID: <CAMpxmJXsOHR0xTsMNqdqydboRiaj7iRnCSQT98uGX2woUUPVEA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] dt-bindings: at24: add ON Semi CAT24C04 and CAT24C05
-To:     Raag Jadav <raagjadav@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7d6751b1-c476-51d3-25c6-b65c0e93d23b@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 9:25 PM Raag Jadav <raagjadav@gmail.com> wrote:
->
-> Add bindings for ON Semi CAT24C04 and CAT24C05 eeproms,
-> which are compatible with Atmel AT24C04.
->
-> Signed-off-by: Raag Jadav <raagjadav@gmail.com>
-> ---
->  Documentation/devicetree/bindings/eeprom/at24.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/eeprom/at24.yaml b/Documentation/devicetree/bindings/eeprom/at24.yaml
-> index 914a423..4c5396a 100644
-> --- a/Documentation/devicetree/bindings/eeprom/at24.yaml
-> +++ b/Documentation/devicetree/bindings/eeprom/at24.yaml
-> @@ -98,6 +98,12 @@ properties:
->            - const: nxp,se97b
->            - const: atmel,24c02
->        - items:
-> +          - const: onnn,cat24c04
-> +          - const: atmel,24c04
-> +      - items:
-> +          - const: onnn,cat24c05
-> +          - const: atmel,24c04
-> +      - items:
->            - const: renesas,r1ex24002
->            - const: atmel,24c02
->        - items:
-> --
-> 2.7.4
->
+On Thu, Aug 05, 2021 at 11:53:52AM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> I am not sure how USB and Thunderbolt "authorzied" model works. But I
+> don't think it prevents built-in driver probes during kernel boot right?
 
-Applied, thanks!
+Yes it does.
 
-Bartosz
+Again Intel created this framework well over a decade ago for busses
+that it deemed that it did not want to "trust" to instantly probe
+drivers for and made it part of the Wireless USB specification.
+
+Then Intel went and added the same framework to Thunderbolt for the same
+reason.
+
+To ignore this work is quite odd, you might want to talk to your
+coworkers...
+
+greg k-h
