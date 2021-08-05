@@ -2,100 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2B93E0E8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBF73E0E92
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 08:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235727AbhHEGvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 02:51:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231418AbhHEGvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 02:51:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6B6960F41
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 06:50:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628146258;
-        bh=qMsPpqQgFUPSSPnZfZavNoLnNsZYb+hVgAtPZNQBy5w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ObhBf+NN4GqwQxNx/Lx+8AMAwuGlEvoXaj2dr50XEIYqzYy/HZE2xI7CL2r/XBdRm
-         h7Jl0yGq7YppbC5Qi+io0LfpKg8+sqkjPa7VgkgDzQj7MZ8Za/g84FRPLsS/geIrib
-         XeHHxL9J9xr5FwusDdEI8d630JA5vK4xwDEB/ag73EcJ8nyoA5iocv71E6axsMyg03
-         MQJsYEqpOGmzbPpV4barhyJ1DNTVMGbVfR76rJJ/glh7MLH4aQwApNRc3MqRkjAboQ
-         UO7cggith/pKaisdmkMHzNieFdV7GQLpIG3V5j64ROArAcaNQjL0LWYWAPOA436KVE
-         lr78sf0ffppPw==
-Received: by mail-wr1-f44.google.com with SMTP id p5so5076257wro.7
-        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 23:50:58 -0700 (PDT)
-X-Gm-Message-State: AOAM533mvrVpQ8XuUCJ4BJBd/Iw/y7IjxVfgXHIWvO5iYprt+/3ORBEY
-        /ZIuHUaHwTopmioowzJd4noLCE0apWHS7jqUGwA=
-X-Google-Smtp-Source: ABdhPJznMWhOISmuIYDXrWpGkt4y1m+fqzTgxmRqDkmkTEHJHsPKR7IHYLL2Gk1DFScHpZ5gzgXyDTyRE3rrOBfVhqs=
-X-Received: by 2002:adf:f7c5:: with SMTP id a5mr3290312wrq.99.1628146257464;
- Wed, 04 Aug 2021 23:50:57 -0700 (PDT)
+        id S237420AbhHEGwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 02:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231418AbhHEGwe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 02:52:34 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C1CC0613C1;
+        Wed,  4 Aug 2021 23:52:19 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id l19so6690011pjz.0;
+        Wed, 04 Aug 2021 23:52:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GlmMJcvsNL7r2fqrc4Rymp5aSqY0XLGbpUjwdzjt8TE=;
+        b=s4jwRYLozfAWXk3CdFQRL+6GIY85SN+v/QOTmDuaxwPo39Q711NlDvjCbBcbulWsLj
+         7NiQhtHqqRRe29Xi1RBJD3UjJ5cbPyWJipn3Pwrny3d8dRd8MgVY3Qz61l6zSAGfDXOF
+         /ZLk+ROT9+dyKdzKgvCBvUCRWH0Mcq1LKoopZrMjXPrBpjxUJGfs+DBAhH7EWywMVeCQ
+         Otz9QF3U3tev21aAlCWh9wGLHsivMRe/DH4+Hhm+a+r2c7JoqeECGkq+L8o7WbZZyA1u
+         rfnqC/IEpAS5vpw7CnC9dXkUnoPKt+1uVlNb1Kaup8QZ+QNn7bFb5HQFLtUuklaLpDaK
+         v6jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GlmMJcvsNL7r2fqrc4Rymp5aSqY0XLGbpUjwdzjt8TE=;
+        b=B2FWc82d+afgDFvjDtyfcB+hTZ0U0oNbBn0jDoejSsUbIX6fkx7XAVEr1sVXA971/K
+         rkM9OniYJeKdRp03hWFNVZgFWA14AF866miZn6V/1o8OGpQGqJLO6LVjqZ/LrAAmPAoI
+         qUBXxfgdxdL0S6Hl1JLjYBQZ98yIyh66UkR9J0tcd9BOUTiaez7VmjnDuGU5/zu6UrIl
+         HKvBxJT80tV8nzBqgyc+NZr7kWYuaYbLjBeV9vRrUyT1PN/nHyfMmm5OA+RkVdC3sSP4
+         q1RZCYVKfCGU2iTElczivQn/rNYixdQtacQLTRyfddU5Q3EG3AG3lMaLLKRRqH9m5oVh
+         EUBw==
+X-Gm-Message-State: AOAM530EAukknpg+NoL9xQceW6ZZvqOq6jxJQ3J3otWzAZdUwyNQEjCV
+        Tk7TOYjJtGm1Pdt3uGNnRCA=
+X-Google-Smtp-Source: ABdhPJyxRn4WdhDjQJdsYQc6bC6ojEMmWOv6W9V6kigMMmMlKBLxxYaU6M0/n8LxQ0lpTosPugc5vQ==
+X-Received: by 2002:aa7:8d10:0:b029:303:8d17:7b8d with SMTP id j16-20020aa78d100000b02903038d177b8dmr3690606pfe.26.1628146339294;
+        Wed, 04 Aug 2021 23:52:19 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id i18sm6623194pgb.83.2021.08.04.23.52.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 23:52:18 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yong.yiran@zte.com.cn
+To:     mpe@ellerman.id.au
+Cc:     benh@kernel.crashing.org, paulus@samba.org, shuah@kernel.org,
+        yong.yiran@zte.com.cn, linuxppc-dev@lists.ozlabs.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] powerpc/tm: remove duplicate include in tm-poison.c
+Date:   Wed,  4 Aug 2021 23:52:55 -0700
+Message-Id: <20210805065255.628170-1-yong.yiran@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAK8P3a0i0WP24Z0TScmPqKxmM2ovtKnmm+qZq6+Tc1ju+hma0w@mail.gmail.com>
- <20210804141049.499767-1-kherbst@redhat.com> <CAK8P3a136c_L3yVn-841Sbfib9UMOf1M-pk+2SqWt0wD2zfRKQ@mail.gmail.com>
- <CACO55tsLpURTm=Jf=4gRVtYQbit5h2OBYw_MFb6Vf1PFvTV7dw@mail.gmail.com>
- <CACO55tuy5Am9zbcR490KWYYAg7MguBN5m82vbjzifGN5KpGbxw@mail.gmail.com>
- <CAK8P3a3hZ7X5+kM5E+_Y+COUp49Kt6iDjiqMFtimiSbPk4byzQ@mail.gmail.com> <CACO55tsj_dgo8NENArCQ_=qcuJoMPg9k-gfkWxZ_8FCQUOTY1A@mail.gmail.com>
-In-Reply-To: <CACO55tsj_dgo8NENArCQ_=qcuJoMPg9k-gfkWxZ_8FCQUOTY1A@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 5 Aug 2021 08:50:41 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1rAr0BH6cNLkhES+81x2hWW31RTLZkHLDJYK-r8+x6Gg@mail.gmail.com>
-Message-ID: <CAK8P3a1rAr0BH6cNLkhES+81x2hWW31RTLZkHLDJYK-r8+x6Gg@mail.gmail.com>
-Subject: Re: [PATCH] depend on BACKLIGHT_CLASS_DEVICE for more devices
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lyude Paul <lyude@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        ML nouveau <nouveau@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 12:01 AM Karol Herbst <kherbst@redhat.com> wrote:
->
-> On Wed, Aug 4, 2021 at 11:10 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > On Wed, Aug 4, 2021 at 8:59 PM Karol Herbst <kherbst@redhat.com> wrote:
-> > > On Wed, Aug 4, 2021 at 4:43 PM Karol Herbst <kherbst@redhat.com> wrote:
-> > > > On Wed, Aug 4, 2021 at 4:19 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > > > > On Wed, Aug 4, 2021 at 4:10 PM Karol Herbst <kherbst@redhat.com> wrote:
-> > > > > >
-> > > > > > playing around a little bit with this, I think the original "select
-> > > > > > BACKLIGHT_CLASS_DEVICE" is fine. Atm we kind of have this weird mix of
-> > > > > > drivers selecting and others depending on it. We could of course convert
-> > > > > > everything over to depend, and break those cycling dependency issues with
-> > > > > > this.
-> > > > > >
-> > > > > > Anyway this change on top of my initial patch is enough to make Kconfig
-> > > > > > happy and has the advantage of not having to mess with the deps of nouveau
-> > > > > > too much.
-> > > > >
-> > > > > Looks good to me. We'd probably want to make the BACKLIGHT_CLASS_DEVICE
-> > > > > option itself 'default FB || DRM' though, to ensure that defconfigs
-> > > > > keep working.
-> > > > >
-> > > >
-> > > > okay cool. Will send out a proper updated patch series soonish.
-> > > >
-> > >
-> > > mhh, actually that breaks drivers selecting FB_BACKLIGHT as now
-> > > BACKLIGHT_CLASS_DEVICE might be disabled :(
-> >
-> > Are you sure? It should already be the case that any driver that selects
-> > FB_BACKLIGHT either 'depends on BACKLIGHT_CLASS_DEVICE'
-> > or 'select BACKLIGHT_CLASS_DEVICE'.
-> >
-> none of the fb drivers seem to do that.
+From: yong yiran <yong.yiran@zte.com.cn>
 
-Ah, right, I see now that my randconfig series has a couple of patches
-applied that deal with other random failures, including this one:
+'inttypes.h' included in 'tm-poison.c' is duplicated.
+Remove all but the first include of inttypes.h from tm-poison.c.
 
-https://patchwork.kernel.org/project/linux-fbdev/patch/20200417155553.675905-8-arnd@arndb.de/
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: yong yiran <yong.yiran@zte.com.cn>
+---
+ tools/testing/selftests/powerpc/tm/tm-poison.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Part of the series went in (through different ways) now, but this one
-never did.
+diff --git a/tools/testing/selftests/powerpc/tm/tm-poison.c b/tools/testing/selftests/powerpc/tm/tm-poison.c
+index 29e5f26af7b9..27c083a03d1f 100644
+--- a/tools/testing/selftests/powerpc/tm/tm-poison.c
++++ b/tools/testing/selftests/powerpc/tm/tm-poison.c
+@@ -20,7 +20,6 @@
+ #include <sched.h>
+ #include <sys/types.h>
+ #include <signal.h>
+-#include <inttypes.h>
+ 
+ #include "tm.h"
+ 
+-- 
+2.25.1
 
-      Arnd
