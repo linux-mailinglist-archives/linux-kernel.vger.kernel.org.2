@@ -2,114 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07B53E1CAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D4B3E1CB1
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242989AbhHET11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242972AbhHET1R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:27:17 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC54C061798
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 12:27:02 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id v8-20020a0568301bc8b02904d5b4e5ca3aso6236576ota.13
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 12:27:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+2GkonpAjzQlhehYjYguHvSSepjeMUJwajjpApl9URk=;
-        b=W23+wiO5tB+1OZ4oOv00K9e+qwTM4+xZ+P7BVed3D2ocK1prqmZ8PxbFCn4BjpH2zD
-         UgT7nMQY3uwWTZsgvVesP2pL1oN9TEexyatyWy45scoQJyUwQZFNRHQCVwV6ELQNguZG
-         zl7WWHnszZt58bqeJ+WcOuqLaTdEhg72IMhJkeiWoVm03tgkLqmptdunWZqfXBezgdg2
-         GAt8+Uplr1bL8FOrhLlDOIbKPPMwL/zVSOxY9oUcgLQ5sjFR/f6+2uby2iOzosgVA186
-         8REAhmNCAG4s5stxmsUToIlo4FvKkmrZ/1H8npSZbZyrEq5oQTkYwXj+6r0A8OAhIYim
-         M8+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=+2GkonpAjzQlhehYjYguHvSSepjeMUJwajjpApl9URk=;
-        b=Fia4iwgNpmHkSzKFbR7gEYWdYeuuZSq5R0Tqll2oAtF4qUWq+6Jv3V5/rf05Pa36yi
-         lszVpG3EnZNMNDbzMXA9Kw0NZg8l/mNE1F1f0JrMz0YS8BXidwT2v5WM5mD6tanag5Su
-         /RQoZ3/GPwNY2pkDMKT9364Ok/melfYo0ky+p8SZ+Ai+5XNLW5MPhZExjy6mQSyRNBOC
-         UqUffokQEYpiTuf+EcQkDeV8q3eJHVlleycxMURlpld/JcUUTzYMbUuIHFHckZogjwWx
-         tVNhWO5qKw53DHEW9KeVPklpdF9K29+SicN0Ny5aOpDBIhOnBMJs6iEPaIl/p6VwWzCP
-         JqGA==
-X-Gm-Message-State: AOAM530WKVjQC4I2gxttC11zTfiO+ZEBgkJs7GFabGZIlcZ2SNw0yKFM
-        /H0w+4qcPXan91vkzBU5Dxs=
-X-Google-Smtp-Source: ABdhPJwWQwMCrKmmuzV1VF7+FHaetNl3cJrnXurZuRmf3MAgkZieDvvDhHtnLOC6g2ym3BjJNnDqdg==
-X-Received: by 2002:a9d:75d4:: with SMTP id c20mr4817944otl.85.1628191622003;
-        Thu, 05 Aug 2021 12:27:02 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-1016.res6.spectrum.com.com (2603-8090-2005-39b3-0000-0000-0000-1016.res6.spectrum.com. [2603:8090:2005:39b3::1016])
-        by smtp.gmail.com with ESMTPSA id n7sm1143479otf.45.2021.08.05.12.27.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 12:27:01 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-To:     gregkh@linuxfoundation.org
-Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Subject: [PATCH 6/6] staging: r8188eu: Remove wrapper rtw_sleep_schedulable()
-Date:   Thu,  5 Aug 2021 14:26:44 -0500
-Message-Id: <20210805192644.15978-6-Larry.Finger@lwfinger.net>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210805192644.15978-1-Larry.Finger@lwfinger.net>
-References: <20210805192644.15978-1-Larry.Finger@lwfinger.net>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230077AbhHET2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:28:25 -0400
+Received: from smtp-32.italiaonline.it ([213.209.10.32]:48658 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230513AbhHET2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 15:28:23 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([82.60.87.158])
+        by smtp-32.iol.local with ESMTPA
+        id Bj29mFVCOPvRTBj2DmCFmv; Thu, 05 Aug 2021 21:28:06 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1628191686; bh=ovU+K9dCeH924H7d43lXZI742Ly2v3I9DHb1WZh8TOc=;
+        h=From;
+        b=LPS8IsRgxYc0qFeub/igX7l9u+HcwMfTxUsncvrl1gMxAZzLU+STcKMNVqKa0KO6y
+         vrKg6aZg69qtpll+Sj1tPsVFKT88J9jeO83fD4cVwIlL/VKtfAuB6juehqsrXRcE92
+         hvk2WjA6D5JyIgDHcRCjDJSSkXg0g/pxWGgzZrSMX/DfaTaWiDcweqo2yz4cnkeK6x
+         YbGy0o+FKo0twzaJiTLcmc/FMT2QDf51Sfpjm0crIIheTPZta9eGTG0RsArCRaA56d
+         z1eBQKl8MQnKtgkQWJBNM4+Nfxq0RVIvHCievynX9CchSvOVfhkGjEQG9J4/BHdRGM
+         O7D1aEVmn5h0Q==
+X-CNFS-Analysis: v=2.4 cv=NqgUz+RJ c=1 sm=1 tr=0 ts=610c3bc6 cx=a_exe
+ a=Hc/BMeSBGyun2kpB8NmEvQ==:117 a=Hc/BMeSBGyun2kpB8NmEvQ==:17 a=gEfo2CItAAAA:8
+ a=p_hF36_8n4bHhE57Z5sA:9 a=4Mw1SIdcLJOoZDVX:21 a=uq95oRJrG9BvWHuX:21
+ a=sptkURWiP4Gy88Gu7hUp:22
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dariobin@libero.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        devicetree@vger.kernel.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v5] dt-bindings: net: can: c_can: convert to json-schema
+Date:   Thu,  5 Aug 2021 21:27:50 +0200
+Message-Id: <20210805192750.9051-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+X-CMAE-Envelope: MS4xfMJZUreXtdoXwnW6voTjepbJyx7hsY02Q2/poIPhNXunXtjH4cv2vvQcJPankzge42XRVAXFWGsptOhVzlOtwhp65QQWUzy03WAM4SmIQ4NSjpG794bx
+ 068eaY6/CyKqdtY536dlwnSWz030tGjopKRKK6kW9popmrfvVD8hXJdxh8PaDabrDR7ydrsU4VDRi6kXyO53L2xYfVOSjMxfbxGA1BlWsFSfVmT49cbcgKAW
+ zgbvGNcISZGyWRp0oqMCKWYBgpPgJFM9gRzVsi9YEMVXZXylLHrq9UMxTeR84TXRJoyUce7+SOzj71xZPvivPO/rm3wyBRRN3+3GTLNueikfjzzaGXtF0qd6
+ fRX0YxFK/S6DH1pXvQni77P6mo/QArmLkntoL6JtxF1YF3GD8bvBPQCR+MVaqsJXXJxqKaHrDk83wVmMvrnTWkOTf3ZbhrhHDgCCbRt4d0UkCjcKWdaSa/Wx
+ W/nzxEFArW8ZS+faLqrBow+KDjpIEqRVN0v5YKspOeNln24iPWWJpsl7rN4=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This wrapper is never used.
+Convert the Bosch C_CAN/D_CAN controller device tree binding
+documentation to json-schema.
 
-Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+Document missing properties.
+Remove "ti,hwmods" as it is no longer used in TI dts.
+Make "clocks" required as it is used in all dts.
+Update the examples.
+
+Signed-off-by: Dario Binacchi <dariobin@libero.it>
+
 ---
- drivers/staging/r8188eu/include/osdep_service.h |  2 --
- drivers/staging/r8188eu/os_dep/osdep_service.c  | 12 ------------
- 2 files changed, 14 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/include/osdep_service.h b/drivers/staging/r8188eu/include/osdep_service.h
-index 1d1889539973..7e002009f9a0 100644
---- a/drivers/staging/r8188eu/include/osdep_service.h
-+++ b/drivers/staging/r8188eu/include/osdep_service.h
-@@ -229,8 +229,6 @@ u32  rtw_systime_to_ms(u32 systime);
- u32  rtw_ms_to_systime(u32 ms);
- s32  rtw_get_passing_time_ms(u32 start);
- 
--void rtw_sleep_schedulable(int ms);
+Changes in v5:
+ - Complete 'interrupts' property description
+
+Changes in v4:
+ - Fix 'syscon-raminit' property to pass checks.
+ - Drop 'status' property from CAN node of examples.
+ - Replace CAN node of examples (compatible = "bosch,d_can")  with a
+   recent version taken from socfpga.dtsi dts.
+ - Update the 'interrupts' property due to the examples updating.
+ - Add 'resets' property due to the examples updating.
+
+Changes in v3:
+ - Add type (phandle-array) and size (maxItems: 2) to syscon-raminit
+   property.
+
+Changes in v2:
+ - Drop Documentation references.
+
+ .../bindings/net/can/bosch,c_can.yaml         | 119 ++++++++++++++++++
+ .../devicetree/bindings/net/can/c_can.txt     |  65 ----------
+ 2 files changed, 119 insertions(+), 65 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
+
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
+new file mode 100644
+index 000000000000..2cd145a642f1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
+@@ -0,0 +1,119 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/bosch,c_can.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Bosch C_CAN/D_CAN controller Device Tree Bindings
++
++description: Bosch C_CAN/D_CAN controller for CAN bus
++
++maintainers:
++  - Dario Binacchi <dariobin@libero.it>
++
++allOf:
++  - $ref: can-controller.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - enum:
++          - bosch,c_can
++          - bosch,d_can
++          - ti,dra7-d_can
++          - ti,am3352-d_can
++      - items:
++          - enum:
++              - ti,am4372-d_can
++          - const: ti,am3352-d_can
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    minItems: 1
++    maxItems: 4
++
++  power-domains:
++    description: |
++      Should contain a phandle to a PM domain provider node and an args
++      specifier containing the DCAN device id value. It's mandatory for
++      Keystone 2 66AK2G SoCs only.
++    maxItems: 1
++
++  clocks:
++    description: |
++      CAN functional clock phandle.
++    maxItems: 1
++
++  clock-names:
++    maxItems: 1
++
++  syscon-raminit:
++    description: |
++      Handle to system control region that contains the RAMINIT register,
++      register offset to the RAMINIT register and the CAN instance number (0
++      offset).
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    items:
++      items:
++        - description: The phandle to the system control region.
++        - description: The register offset.
++        - description: The CAN instance number.
++
++  resets:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++
++if:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - bosch,d_can
++
++then:
++  properties:
++    interrupts:
++      minItems: 4
++      maxItems: 4
++      items:
++        - description: Error and status IRQ
++        - description: Message object IRQ
++        - description: RAM ECC correctable error IRQ
++        - description: RAM ECC non-correctable error IRQ
++
++else:
++  properties:
++    interrupts:
++      maxItems: 1
++      items:
++        - description: Error and status IRQ
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/reset/altr,rst-mgr.h>
++
++    can@ffc00000 {
++       compatible = "bosch,d_can";
++       reg = <0xffc00000 0x1000>;
++       interrupts = <0 131 4>, <0 132 4>, <0 133 4>, <0 134 4>;
++       clocks = <&can0_clk>;
++       resets = <&rst CAN0_RESET>;
++    };
++  - |
++    can@0 {
++        compatible = "ti,am3352-d_can";
++        reg = <0x0 0x2000>;
++        clocks = <&dcan1_fck>;
++        clock-names = "fck";
++        syscon-raminit = <&scm_conf 0x644 1>;
++        interrupts = <55>;
++    };
+diff --git a/Documentation/devicetree/bindings/net/can/c_can.txt b/Documentation/devicetree/bindings/net/can/c_can.txt
+deleted file mode 100644
+index 366479806acb..000000000000
+--- a/Documentation/devicetree/bindings/net/can/c_can.txt
++++ /dev/null
+@@ -1,65 +0,0 @@
+-Bosch C_CAN/D_CAN controller Device Tree Bindings
+--------------------------------------------------
 -
- void rtw_usleep_os(int us);
- 
- u32  rtw_atoi(u8 *s);
-diff --git a/drivers/staging/r8188eu/os_dep/osdep_service.c b/drivers/staging/r8188eu/os_dep/osdep_service.c
-index 79f12b0d643e..9f097f2b3ddd 100644
---- a/drivers/staging/r8188eu/os_dep/osdep_service.c
-+++ b/drivers/staging/r8188eu/os_dep/osdep_service.c
-@@ -116,18 +116,6 @@ inline s32 rtw_get_passing_time_ms(u32 start)
- 	return rtw_systime_to_ms(jiffies-start);
- }
- 
--void rtw_sleep_schedulable(int ms)
--{
--	u32 delta;
+-Required properties:
+-- compatible		: Should be "bosch,c_can" for C_CAN controllers and
+-			  "bosch,d_can" for D_CAN controllers.
+-			  Can be "ti,dra7-d_can", "ti,am3352-d_can" or
+-			  "ti,am4372-d_can".
+-- reg			: physical base address and size of the C_CAN/D_CAN
+-			  registers map
+-- interrupts		: property with a value describing the interrupt
+-			  number
 -
--	delta = (ms * HZ)/1000;/* ms) */
--	if (delta == 0)
--		delta = 1;/*  1 ms */
--	set_current_state(TASK_INTERRUPTIBLE);
--	if (schedule_timeout(delta) != 0)
--		return;
--}
+-The following are mandatory properties for DRA7x, AM33xx and AM43xx SoCs only:
+-- ti,hwmods		: Must be "d_can<n>" or "c_can<n>", n being the
+-			  instance number
 -
- void rtw_usleep_os(int us)
- {
- 	if (1 < (us/1000))
+-The following are mandatory properties for Keystone 2 66AK2G SoCs only:
+-- power-domains		: Should contain a phandle to a PM domain provider node
+-			  and an args specifier containing the DCAN device id
+-			  value. This property is as per the binding,
+-			  Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
+-- clocks		: CAN functional clock phandle. This property is as per the
+-			  binding,
+-			  Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
+-
+-Optional properties:
+-- syscon-raminit	: Handle to system control region that contains the
+-			  RAMINIT register, register offset to the RAMINIT
+-			  register and the CAN instance number (0 offset).
+-
+-Note: "ti,hwmods" field is used to fetch the base address and irq
+-resources from TI, omap hwmod data base during device registration.
+-Future plan is to migrate hwmod data base contents into device tree
+-blob so that, all the required data will be used from device tree dts
+-file.
+-
+-Example:
+-
+-Step1: SoC common .dtsi file
+-
+-	dcan1: d_can@481d0000 {
+-		compatible = "bosch,d_can";
+-		reg = <0x481d0000 0x2000>;
+-		interrupts = <55>;
+-		interrupt-parent = <&intc>;
+-		status = "disabled";
+-	};
+-
+-(or)
+-
+-	dcan1: d_can@481d0000 {
+-		compatible = "bosch,d_can";
+-		ti,hwmods = "d_can1";
+-		reg = <0x481d0000 0x2000>;
+-		interrupts = <55>;
+-		interrupt-parent = <&intc>;
+-		status = "disabled";
+-	};
+-
+-Step 2: board specific .dts file
+-
+-	&dcan1 {
+-		status = "okay";
+-	};
 -- 
-2.32.0
+2.17.1
 
