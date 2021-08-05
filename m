@@ -2,179 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD99A3E1B34
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4B03E1B3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240689AbhHES0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241184AbhHESZw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:25:52 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E00C061798
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:25:37 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id o20so8537993oiw.12
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:25:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=gbLW+QJDyMH5Sf+1Cq2rIN5slJ0ZGcO1ZiPIvxeYo5w=;
-        b=edHXr9Em2Ae1iDzPPrZwEFUi2pZrq6mEx+CwbOtGzU/xz69mA/UXUkPeRrtIVdw/H7
-         Rg7Kz3vsJUP4zuvaBGEJXuRbBfQvE5waRO06uyVUVpNvUfN5tuHtDpT5uJrKvPWIkHy4
-         HyizBwDg/4vL19+901+B/P+dH7mPCyiPprMpo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=gbLW+QJDyMH5Sf+1Cq2rIN5slJ0ZGcO1ZiPIvxeYo5w=;
-        b=Me+WAghhuIlRqH75DsJ9GjME9X2Bs+rZ7L1/1dZlJOc3h/csA5tsrZ0I86+ezpk8xT
-         ++QeNiuxPfX5DX4Cij9PGNAcaa6+pdpgabP5KjNeld17WM7HPn91xGBgbtr/YzWL8W3F
-         vPCc2Mx2DMZ1mm7sQeQodaEwyEC0p/KM1UGHsYG4V3xddRl7QpIVp8WF1cn9gAWTa8AM
-         3uFTl1zGuznr0nEilEW9s5VVL8X/Phwu/iFdJrBYqAUXVeUlfut8GgZaQDl/+D5pBJCJ
-         b9+YH0VLAEAKfQSfn+1rBNt9ZIjdSYMGWKcGwbbPhaFybQITGmdl9sYWBoW97a5svFMX
-         YStg==
-X-Gm-Message-State: AOAM532GeLJWVjfQ23/k6nbS7BL1d4ca9rTxux9tjsEOaLVRC/ZvXLuu
-        W34j7kFkyeCizJxtmhdgGEtRdRhdj2bIh8Y2aIqYoA==
-X-Google-Smtp-Source: ABdhPJyccareZr9XYB2TNH6O7ILoE1pab7v0BuEsi+iAsQ3sDIOPWDdP+Rr3mQqXnnLWw+u1pFTieFO8dUukUSequwg=
-X-Received: by 2002:a54:468d:: with SMTP id k13mr12082607oic.125.1628187936930;
- Thu, 05 Aug 2021 11:25:36 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 5 Aug 2021 11:25:36 -0700
+        id S241217AbhHES2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:28:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241202AbhHES2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:28:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0F3E6115C;
+        Thu,  5 Aug 2021 18:27:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628188073;
+        bh=yapX10/EEWgFV+kGLrlITQAuWVnJxAaeKMtYDb+1ltA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cKkGEHglxR+36IT1loJzHpO8DG5v8nDfFN8JQe3e0ohtAcffgIE54UXPQjYEuZvJt
+         OKhABrkHRuf81f06gXXGnWft/S+R/nB7Xoh3bYIQXvlwkIYf4TpoWp7hxLbJ75nhY1
+         sQi05cs72mCNVSrfsqSzanWw0SVTVSDmVxIezBsc=
+Date:   Thu, 5 Aug 2021 20:27:50 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: r8188eu: remove label at the end of a
+ function
+Message-ID: <YQwtpmV88creZIuE@kroah.com>
+References: <20210805130750.7974-1-martin@kaiser.cx>
+ <20210805145026.14572-1-martin@kaiser.cx>
+ <YQwmBEAdUiPCbIj0@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <352d549f40dfa2ae51589649652d2e97@codeaurora.org>
-References: <1627581885-32165-1-git-send-email-sibis@codeaurora.org>
- <1627581885-32165-3-git-send-email-sibis@codeaurora.org> <CAE-0n53cH749NC9JPqJvMZGBQf47AZ3qY66eoqk2CiQHvuumkg@mail.gmail.com>
- <352d549f40dfa2ae51589649652d2e97@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 5 Aug 2021 11:25:36 -0700
-Message-ID: <CAE-0n53b2M7hAw=NnUDW1_EG2N-521K=URQHmARH0DmLf7hwhA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] cpufreq: qcom: Re-arrange register offsets to support
- per core L3 DCVS
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, mka@chromium.org, robh+dt@kernel.org,
-        viresh.kumar@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dianders@chromium.org, tdas@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YQwmBEAdUiPCbIj0@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sibi Sankar (2021-08-05 10:47:20)
-> Stephen,
->
-> Thanks for taking time to review
-> the series.
->
-> On 2021-08-05 00:31, Stephen Boyd wrote:
-> > Quoting Sibi Sankar (2021-07-29 11:04:43)
-> >> Qualcomm SoCs (starting with SM8350) support per core voting for L3
-> >> cache
-> >> frequency.
-> >
-> > And the L3 cache frequency voting code can't be put into this cpufreq
-> > driver?
->
-> Yes, it could have gone either into
-> the cpufreq driver or l3 interconnect
-> provider driver. Taniya/Odelu preferred
-> the latter, because of the need for other
-> clients to vote for l3 frequencies in
-> the future.
+On Thu, Aug 05, 2021 at 07:55:16PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Aug 05, 2021 at 04:50:26PM +0200, Martin Kaiser wrote:
+> > Compilation fails for me
+> > 
+> > drivers/staging/r8188eu/hal/rtl8188e_dm.c: In function ‘rtl8188e_HalDmWatchDog’:
+> > drivers/staging/r8188eu/hal/rtl8188e_dm.c:182:1: error: label at end of compound statement
+> >   182 | skip_dm:
+> >       | ^~~~~~~
+> > 
+> > Remove the label at the end of the function. Replace the jump to this label
+> > with a return statement.
+> > 
+> > Fixes: b398ff88aa36 ("staging: r8188eu: remove return from void functions")
+> > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> > ---
+> > v2:
+> >  - add Fixes tag
+> > 
+> >  drivers/staging/r8188eu/hal/rtl8188e_dm.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/staging/r8188eu/hal/rtl8188e_dm.c b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+> > index b5f42127a751..72b3130eddd2 100644
+> > --- a/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+> > +++ b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+> > @@ -145,7 +145,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
+> >  	hw_init_completed = Adapter->hw_init_completed;
+> >  
+> >  	if (!hw_init_completed)
+> > -		goto skip_dm;
+> > +		return;
+> >  
+> >  	fw_cur_in_ps = Adapter->pwrctrlpriv.bFwCurrentInPSMode;
+> >  	rtw_hal_get_hwreg(Adapter, HW_VAR_FWLPS_RF_ON, (u8 *)(&fw_ps_awake));
+> > @@ -179,7 +179,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
+> >  		ODM_CmnInfoUpdate(&hal_data->odmpriv, ODM_CMNINFO_LINK, bLinked);
+> >  		ODM_DMWatchdog(&hal_data->odmpriv);
+> >  	}
+> > -skip_dm:
+> > +
+> >  	/*  Check GPIO to determine current RF on/off and Pbc status. */
+> >  	/*  Check Hardware Radio ON/OFF or not */
+> >  }
+> > -- 
+> > 2.20.1
+> > 
+> > 
+> 
+> How is this not showing up in my build tests?  Odd, let me figure that
+> out...
 
-What other clients are those?
-
-> The other option to prevent
-> register re-arrangement would involve
-> using syscons from the cpufreq node, which
-> really wasn't necessary since there
-> wasn't any register overlap between the
-> two drivers.
-
-Let's not do that.
-
->
-> >
-> >> So, re-arrange the cpufreq register offsets to allow access for
-> >> the L3 interconnect to implement per core control. Also prevent
-> >> binding
-> >> breakage caused by register offset shuffling by using the
-> >> SM8250/SM8350
-> >> EPSS compatible.
-> >>
-> >> Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
-> >> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> >> ---
-> >>  drivers/cpufreq/qcom-cpufreq-hw.c | 23 +++++++++++++++++++----
-> >>  1 file changed, 19 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c
-> >> b/drivers/cpufreq/qcom-cpufreq-hw.c
-> >> index f86859bf76f1..74ef3b38343b 100644
-> >> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> >> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> >> @@ -28,6 +28,7 @@ struct qcom_cpufreq_soc_data {
-> >>         u32 reg_volt_lut;
-> >>         u32 reg_perf_state;
-> >>         u8 lut_row_size;
-> >> +       bool skip_enable;
-> >>  };
-> >>
-> >>  struct qcom_cpufreq_data {
-> >> @@ -257,19 +258,31 @@ static const struct qcom_cpufreq_soc_data
-> >> qcom_soc_data = {
-> >>         .reg_volt_lut = 0x114,
-> >>         .reg_perf_state = 0x920,
-> >>         .lut_row_size = 32,
-> >> +       .skip_enable = false,
-> >>  };
-> >>
-> >>  static const struct qcom_cpufreq_soc_data epss_soc_data = {
-> >> +       .reg_freq_lut = 0x0,
-> >> +       .reg_volt_lut = 0x100,
-> >> +       .reg_perf_state = 0x220,
-> >> +       .lut_row_size = 4,
-> >> +       .skip_enable = true,
-> >> +};
-> >> +
-> >> +static const struct qcom_cpufreq_soc_data epss_sm8250_soc_data = {
-> >>         .reg_enable = 0x0,
-> >>         .reg_freq_lut = 0x100,
-> >>         .reg_volt_lut = 0x200,
-> >>         .reg_perf_state = 0x320,
-> >>         .lut_row_size = 4,
-> >> +       .skip_enable = false,
-> >>  };
-> >>
-> >>  static const struct of_device_id qcom_cpufreq_hw_match[] = {
-> >>         { .compatible = "qcom,cpufreq-hw", .data = &qcom_soc_data },
-> >>         { .compatible = "qcom,cpufreq-epss", .data = &epss_soc_data },
-> >> +       { .compatible = "qcom,sm8250-cpufreq-epss", .data =
-> >> &epss_sm8250_soc_data },
-> >> +       { .compatible = "qcom,sm8350-cpufreq-epss", .data =
-> >> &epss_sm8250_soc_data },
-> >>         {}
-> >>  };
-> >>  MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
-> >> @@ -334,10 +347,12 @@ static int qcom_cpufreq_hw_cpu_init(struct
-> >> cpufreq_policy *policy)
-> >>         data->res = res;
-> >>
-> >>         /* HW should be in enabled state to proceed */
-> >
-> > It looks odd that we're no longer making sure that the clk domain is
-> > enabled when we probe the driver. Why is that OK?
->
-> On newer EPSS hw it's no longer
-> required to perform the additional
-> hw enable check. IIRC we don't do
-> that on corresponding downstream
-> kernels as well.
-
-It's fairly clear that we no longer perform the additional check. The
-question is why that's OK.
+odd, I think this is a gcc bug, the code above here is correct.  But
+I'll take the fix for it...
