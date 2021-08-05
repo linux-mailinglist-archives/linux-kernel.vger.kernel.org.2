@@ -2,73 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2B53E174E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57803E1752
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240992AbhHEOuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:50:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233088AbhHEOuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:50:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 42EF161158;
-        Thu,  5 Aug 2021 14:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628175006;
-        bh=erYl14tDj3mv4/TVWmONkGfxb0ywMwdNkd8GpI9HiPs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=N4FLdObSBqfvg+aP34s2ncD4nGGK5ZMAD0M0EuzH/l2M8GcOk464XPEqVqKJmPW8A
-         wJx+KpzzyBXZXwgOqMNdFalJnvxZG588wwMsnCd7IwCFxGTFznblsTaa0tmZJUJ8fO
-         QxM36YawCdS0MmyKf6F1metsF6bwGiBDVwJ858P3CbVb3+19ZSXG2v7B0yOandYgN7
-         cCDloU99R+EWjSPjBkhhimQBvWLM85jz90yaD9xFA8yDJ6z7ENie/zw9CnkRtJREtm
-         4UAhgzG09iCfwwfDpLvG+YR9coNyR07savpfs4yN8PInhfPhgS+HTVubw9RDJbHOKt
-         3ZVUeL/mNnNow==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 35880609D7;
-        Thu,  5 Aug 2021 14:50:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S240556AbhHEOv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 10:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233040AbhHEOv0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 10:51:26 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9588C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 07:51:11 -0700 (PDT)
+Received: from dslb-188-096-137-143.188.096.pools.vodafone-ip.de ([188.96.137.143] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1mBei8-0003eR-4B; Thu, 05 Aug 2021 16:51:04 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH v2] staging: r8188eu: remove label at the end of a function
+Date:   Thu,  5 Aug 2021 16:50:26 +0200
+Message-Id: <20210805145026.14572-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210805130750.7974-1-martin@kaiser.cx>
+References: <20210805130750.7974-1-martin@kaiser.cx>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/2] net: fix use-after-free bugs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162817500621.11382.5799205341486244507.git-patchwork-notify@kernel.org>
-Date:   Thu, 05 Aug 2021 14:50:06 +0000
-References: <cover.1628091954.git.paskripkin@gmail.com>
-In-Reply-To: <cover.1628091954.git.paskripkin@gmail.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, qiangqing.zhang@nxp.com,
-        hslester96@gmail.com, fugang.duan@nxp.com, jdmason@kudzu.us,
-        jesse.brandeburg@intel.com, colin.king@canonical.com,
-        dan.carpenter@oracle.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Compilation fails for me
 
-This series was applied to netdev/net.git (refs/heads/master):
+drivers/staging/r8188eu/hal/rtl8188e_dm.c: In function ‘rtl8188e_HalDmWatchDog’:
+drivers/staging/r8188eu/hal/rtl8188e_dm.c:182:1: error: label at end of compound statement
+  182 | skip_dm:
+      | ^~~~~~~
 
-On Wed,  4 Aug 2021 18:48:57 +0300 you wrote:
-> I've added new checker to smatch yesterday. It warns about using
-> netdev_priv() pointer after free_{netdev,candev}() call. I hope, it will
-> get into next smatch release.
-> 
-> Some of the reported bugs are fixed and upstreamed already, but Dan ran new
-> smatch with allmodconfig and found 2 more. Big thanks to Dan for doing it,
-> because I totally forgot to do it.
-> 
-> [...]
+Remove the label at the end of the function. Replace the jump to this label
+with a return statement.
 
-Here is the summary with links:
-  - [1/2] net: fec: fix use-after-free in fec_drv_remove
-    https://git.kernel.org/netdev/net/c/44712965bf12
-  - [2/2] net: vxge: fix use-after-free in vxge_device_unregister
-    https://git.kernel.org/netdev/net/c/942e560a3d38
+Fixes: b398ff88aa36 ("staging: r8188eu: remove return from void functions")
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+---
+v2:
+ - add Fixes tag
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+ drivers/staging/r8188eu/hal/rtl8188e_dm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_dm.c b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+index b5f42127a751..72b3130eddd2 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_dm.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+@@ -145,7 +145,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
+ 	hw_init_completed = Adapter->hw_init_completed;
+ 
+ 	if (!hw_init_completed)
+-		goto skip_dm;
++		return;
+ 
+ 	fw_cur_in_ps = Adapter->pwrctrlpriv.bFwCurrentInPSMode;
+ 	rtw_hal_get_hwreg(Adapter, HW_VAR_FWLPS_RF_ON, (u8 *)(&fw_ps_awake));
+@@ -179,7 +179,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
+ 		ODM_CmnInfoUpdate(&hal_data->odmpriv, ODM_CMNINFO_LINK, bLinked);
+ 		ODM_DMWatchdog(&hal_data->odmpriv);
+ 	}
+-skip_dm:
++
+ 	/*  Check GPIO to determine current RF on/off and Pbc status. */
+ 	/*  Check Hardware Radio ON/OFF or not */
+ }
+-- 
+2.20.1
 
