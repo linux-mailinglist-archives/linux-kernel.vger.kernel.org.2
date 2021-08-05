@@ -2,165 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DAB03E1C3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B9F3E1C40
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 21:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242493AbhHETOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 15:14:33 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:53912 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242383AbhHETOc (ORCPT
+        id S242025AbhHETQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 15:16:00 -0400
+Received: from mail.efficios.com ([167.114.26.124]:42972 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241945AbhHETP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 15:14:32 -0400
-Received: from mailhost.synopsys.com (sv1-mailhost1.synopsys.com [10.205.2.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id D1DB6463B9;
-        Thu,  5 Aug 2021 19:14:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1628190857; bh=FIJHlm9Oeck01oRbTOwcXlwmWsrlbmTLxX4fL7vtOCw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a1Yf2opcY13IMkJZskMdfodkmnSDmgbc5mnOxZlET7IJwgbCplACG8NEsL5+CXrZz
-         cMzw/zLsItWOWiC7RKePUWusvGfLyCHL0HSSMElPc/EOw9jMJbq2ZFPhDLUxNF8OuY
-         ASEiiJEhBvLed01eZR9RCsI0BuhPOGbFGlSJVUgBFzfpiiBVCV95qAgOKx8vcT8YYs
-         j0tfPjBF3ofSw3RQbLKP6iIzQ/UY+8ISLkqk51qS2PNy0vuCg2GY4d9CNybhTOs83e
-         NS8FHTudKYKB15in7atPzURYab5zhVUK7AfJ4cFDHBD9r0VG1QVxgfRdw2K+3+GYiH
-         rgvvX4wHIe+XQ==
-Received: from vineetg-Latitude-7400.internal.synopsys.com (snps-fugpbdpduq.internal.synopsys.com [10.202.17.37])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by mailhost.synopsys.com (Postfix) with ESMTPSA id 9A53DA029E;
-        Thu,  5 Aug 2021 19:14:14 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Subject: [RFC] bitops/non-atomic: make @nr unsigned to avoid any DIV
-Date:   Thu,  5 Aug 2021 12:14:08 -0700
-Message-Id: <20210805191408.2003237-1-vgupta@synopsys.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <YQwaIIFvzdNcWnww@hirez.programming.kicks-ass.net>
-References: <YQwaIIFvzdNcWnww@hirez.programming.kicks-ass.net>
+        Thu, 5 Aug 2021 15:15:59 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 83617372E0F;
+        Thu,  5 Aug 2021 15:15:44 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id wYvbfDrBUFde; Thu,  5 Aug 2021 15:15:43 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 6B9B6372A4E;
+        Thu,  5 Aug 2021 15:15:43 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 6B9B6372A4E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1628190943;
+        bh=Ty7RbvkQqrCPIxm+YfHG7bWLDDAioo2iU/vXWJG3ZLY=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=F7yl5RjfT3tytzXm6NvhJURLm2mDJevaq35feG8HgbkWAG56TVUPwE6Q1ifEEUQ63
+         pp8Wc3pvW+a+G+V3kh9fJEHIgiSl+tsQCZZYk5Ltt+ybVEyhQYMTjJ+ymn7rRjTWtq
+         TrLK38eJLo9VKpVI/VzyUuZQkuqbNgxxCodGgas0ecqYf2/KeivHKhu44wIojSFmMT
+         +Wu39o3qYbNdBTpYmYc3O26j4KXuIgbkEJc5agiS34M2M2QH1kt/sezUbsUEvIFHVW
+         rVAP/OxJnhshQXulsc5+p7j9VCxqrsq29cxw2sJ8WtrDKnLaFDzHhjBhrqjH2tRNVx
+         UtKjidwHSOrUw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id X73s26ayJ0cP; Thu,  5 Aug 2021 15:15:43 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 56EAA372E0E;
+        Thu,  5 Aug 2021 15:15:43 -0400 (EDT)
+Date:   Thu, 5 Aug 2021 15:15:43 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        paulmck <paulmck@kernel.org>,
+        Stefan Metzmacher <metze@samba.org>,
+        stable <stable@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1058325468.7289.1628190943244.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210805145631.609e0a80@oasis.local.home>
+References: <20210805132717.23813-1-mathieu.desnoyers@efficios.com> <20210805132717.23813-3-mathieu.desnoyers@efficios.com> <20210805145631.609e0a80@oasis.local.home>
+Subject: Re: [PATCH 2/3] Fix: tracepoint: static call function vs data state
+ mismatch (v2)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4101 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
+Thread-Topic: tracepoint: static call function vs data state mismatch (v2)
+Thread-Index: ern69LtzYAjFuaxy6YMDzDYXlkUC1w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-signed math causes generation of costlier instructions such as DIV when
-they could be done by barrerl shifter.
+----- On Aug 5, 2021, at 2:56 PM, rostedt rostedt@goodmis.org wrote:
 
-Worse part is this is not caught by things like bloat-o-meter since
-instruction length / symbols are typically same size.
+> Note, there shouldn't be a "(v2)" outside the "[PATCH ]" part.
+> Otherwise it gets added into the git commit during "git am".
 
-e.g.
+Out of curiosity, do you know any way to annotate my local commits to have the
+[PATCH v2] tag automatically generated by git send-email ?
 
-stock (signed math)
-__________________
+> 
+> On Thu,  5 Aug 2021 09:27:16 -0400
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> 
+>> On a 1->0->1 callbacks transition, there is an issue with the new
+>> callback using the old callback's data.
+>> 
+>> Considering __DO_TRACE_CALL:
+>> 
+>>         do {                                                            \
+>>                 struct tracepoint_func *it_func_ptr;                    \
+>>                 void *__data;                                           \
+>>                 it_func_ptr =                                           \
+>>                         rcu_dereference_raw((&__tracepoint_##name)->funcs); \
+>>                 if (it_func_ptr) {                                      \
+>>                         __data = (it_func_ptr)->data;                   \
+>> 
+>> ----> [ delayed here on one CPU (e.g. vcpu preempted by the host) ]
+>> 
+>>                         static_call(tp_func_##name)(__data, args);      \
+>>                 }                                                       \
+>>         } while (0)
+>> 
+>> It has loaded the tp->funcs of the old callback, so it will try to use the old
+>> data. This can be fixed by adding a RCU sync anywhere in the 1->0->1
+>> transition chain.
+>> 
+>> On a N->2->1 transition, we need an rcu-sync because you may have a
+>> sequence of 3->2->1 (or 1->2->1) where the element 0 data is unchanged
+>> between 2->1, but was changed from 3->2 (or from 1->2), which may be
+>> observed by the static call. This can be fixed by adding an
+>> unconditional RCU sync in transition 2->1.
+>> 
+>> A follow up fix will introduce a more lightweight scheme based on RCU
+>> get_state and cond_sync.
+> 
+> I'll add here that this patch will cause a huge performance regression
+> on disabling the trace events, but the follow up patch will fix that.
+> 
+> Before this patch:
+> 
+>  # trace-cmd start -e all
+>  # time trace-cmd start -p nop
+> 
+>  real	0m0.778s
+>  user	0m0.000s
+>  sys	0m0.061s
+> 
+> After this patch:
+> 
+>  # trace-cmd start -e all
+>  # time trace-cmd start -p nop
+> 
+>  real	0m10.593s
+>  user	0m0.017s
+>  sys	0m0.259s
+> 
+> 
+> That's more than 10x slow down. Just under a second to disable all
+> events now goes to over 10 seconds!
+> 
+> But after the next patch:
+> 
+>  # trace-cmd start -e all
+>  # time trace-cmd start -p nop
+> 
+>  real	0m0.878s
+>  user	0m0.000s
+>  sys	0m0.103s
+> 
+> Which is in the noise from before this patch.
+> 
+> This is a big enough regression, I'll even add a Fixes tag to the next
+> patch on the final sha1 of this patch! Such that this patch won't be
+> backported without the next patch.
 
-919b4614 <test_taint>:
-919b4614:	div	r2,r0,0x20
-                ^^^
-919b4618:	add2	r2,0x920f6050,r2
-919b4620:	ld_s	r2,[r2,0]
-919b4622:	lsr	r0,r2,r0
-919b4626:	j_s.d	[blink]
-919b4628:	bmsk_s	r0,r0,0
-919b462a:	nop_s
+This makes sense. I still wanted to keep the two patches separate so we would
+introduce the (slow) state machine in the first patch, and optimize for
+speed in the second. My intent is to facilitate of small logical changes,
+and make bisection more precise in the future if we introduce an issue
+here.
 
-(patched) unsigned math
-__________________
+Calling out more clearly how slow things become with this patch is indeed
+important.
 
-919b4614 <test_taint>:
-919b4614:	lsr	r2,r0,0x5  @nr/32
-                ^^^
-919b4618:	add2	r2,0x920f6050,r2
-919b4620:	ld_s	r2,[r2,0]
-919b4622:	lsr	r0,r2,r0     #test_bit()
-919b4626:	j_s.d	[blink]
-919b4628:	bmsk_s	r0,r0,0
-919b462a:	nop_s
+> 
+>> 
+>> Link:
+>> https://lore.kernel.org/io-uring/4ebea8f0-58c9-e571-fd30-0ce4f6f09c70@samba.org/
+>> Fixes: d25e37d89dd2 ("tracepoint: Optimize using static_call()")
+> 
+> For this patch, I would say the above is what this fixes.
 
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
----
-This is an RFC for feeback, I understand this impacts every arch,
-but as of now it is only buld/run tested on ARC.
----
----
- include/asm-generic/bitops/non-atomic.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Yes.
 
-diff --git a/include/asm-generic/bitops/non-atomic.h b/include/asm-generic/bitops/non-atomic.h
-index 7e10c4b50c5d..c5a7d8eb9c2b 100644
---- a/include/asm-generic/bitops/non-atomic.h
-+++ b/include/asm-generic/bitops/non-atomic.h
-@@ -13,7 +13,7 @@
-  * If it's called on the same region of memory simultaneously, the effect
-  * may be that only one operation succeeds.
-  */
--static inline void __set_bit(int nr, volatile unsigned long *addr)
-+static inline void __set_bit(unsigned int nr, volatile unsigned long *addr)
- {
- 	unsigned long mask = BIT_MASK(nr);
- 	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-@@ -21,7 +21,7 @@ static inline void __set_bit(int nr, volatile unsigned long *addr)
- 	*p  |= mask;
- }
- 
--static inline void __clear_bit(int nr, volatile unsigned long *addr)
-+static inline void __clear_bit(unsigned int nr, volatile unsigned long *addr)
- {
- 	unsigned long mask = BIT_MASK(nr);
- 	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-@@ -38,7 +38,7 @@ static inline void __clear_bit(int nr, volatile unsigned long *addr)
-  * If it's called on the same region of memory simultaneously, the effect
-  * may be that only one operation succeeds.
-  */
--static inline void __change_bit(int nr, volatile unsigned long *addr)
-+static inline void __change_bit(unsigned int nr, volatile unsigned long *addr)
- {
- 	unsigned long mask = BIT_MASK(nr);
- 	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-@@ -55,7 +55,7 @@ static inline void __change_bit(int nr, volatile unsigned long *addr)
-  * If two examples of this operation race, one can appear to succeed
-  * but actually fail.  You must protect multiple accesses with a lock.
-  */
--static inline int __test_and_set_bit(int nr, volatile unsigned long *addr)
-+static inline int __test_and_set_bit(unsigned int nr, volatile unsigned long *addr)
- {
- 	unsigned long mask = BIT_MASK(nr);
- 	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-@@ -74,7 +74,7 @@ static inline int __test_and_set_bit(int nr, volatile unsigned long *addr)
-  * If two examples of this operation race, one can appear to succeed
-  * but actually fail.  You must protect multiple accesses with a lock.
-  */
--static inline int __test_and_clear_bit(int nr, volatile unsigned long *addr)
-+static inline int __test_and_clear_bit(unsigned int nr, volatile unsigned long *addr)
- {
- 	unsigned long mask = BIT_MASK(nr);
- 	unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-@@ -85,7 +85,7 @@ static inline int __test_and_clear_bit(int nr, volatile unsigned long *addr)
- }
- 
- /* WARNING: non atomic and it can be reordered! */
--static inline int __test_and_change_bit(int nr,
-+static inline int __test_and_change_bit(unsigned int nr,
- 					    volatile unsigned long *addr)
- {
- 	unsigned long mask = BIT_MASK(nr);
-@@ -101,7 +101,7 @@ static inline int __test_and_change_bit(int nr,
-  * @nr: bit number to test
-  * @addr: Address to start counting from
-  */
--static inline int test_bit(int nr, const volatile unsigned long *addr)
-+static inline int test_bit(unsigned int nr, const volatile unsigned long *addr)
- {
- 	return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
- }
+Thanks,
+
+Mathieu
+
+> 
+> -- Steve
+> 
+>> Fixes: 547305a64632 ("tracepoint: Fix out of sync data passing by static
+>> caller")
+>> Fixes: 352384d5c84e ("tracepoints: Update static_call before tp_funcs when
+>> adding a tracepoint")
+>> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>> Cc: Steven Rostedt <rostedt@goodmis.org>
+>> Cc: Ingo Molnar <mingo@redhat.com>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+>> Cc: Stefan Metzmacher <metze@samba.org>
+>> Cc: <stable@vger.kernel.org> # 5.10+
+> > ---
+
 -- 
-2.25.1
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
