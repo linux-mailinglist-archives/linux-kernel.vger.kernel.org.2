@@ -2,137 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3B13E0D15
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 06:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849893E0D18
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 06:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236236AbhHEES1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 00:18:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230215AbhHEES0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 00:18:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA10F60EE8;
-        Thu,  5 Aug 2021 04:18:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628137092;
-        bh=mB5MPS4/ftvIsrloxEwJS3TMsTJM3QZc0j0Jm9hQDTU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ft/IvNgtM0BjaNgo8URgJEl9VK4qdiNqXXHbKxXc2OEo95uBzW+IO/BAgxGjDzsdp
-         HFLR+Fzy/p/NrEkV2M3hCF8skWxinorua25+mbs6oKE71XNjVnkIxVhqF28zhBBBmG
-         MD3E2nYng9lEAoPG3Oj1tc3FiucKaK/Z5xNbhInDCqQXnbsVLKoBlRpu3ponfCNyRQ
-         JGeYBxgNyIZi7MfPRvF3F/RJ5q9kRAtaYAZp3QS+0qIgAI0FBTLaTvZL6MBVKNwpOz
-         BqCdawVBLSuBqUsHtz4xEGRkF70spLCNj4/gDPa55hUpgAk3XnpCXeWlil+YammEtP
-         qYLByuFGplkSA==
-Date:   Wed, 4 Aug 2021 23:20:53 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH v2 4/4][next] scsi: megaraid_sas: Replace one-element array
- with flexible-array member in MR_PD_CFG_SEQ_NUM_SYNC
-Message-ID: <3860f4f6f06dff8e6aea4a8318e9515a0e9cbde3.1628136510.git.gustavoars@kernel.org>
-References: <cover.1628136510.git.gustavoars@kernel.org>
+        id S234999AbhHEEYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 00:24:32 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:35817 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhHEEYb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 00:24:31 -0400
+Received: by mail-io1-f71.google.com with SMTP id j22-20020a5d9d160000b0290583f3b421c0so1317252ioj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 21:24:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+B1Oyoz1vKj8Z5fN7Yk/E0suPXqkJLWYmR/b+JcV0aA=;
+        b=M5BNcWvnTo/MQEU1YgycSw89gB3HvV6fwEmVHUU7wQv522XXcTviMHFcMcFc3nADVZ
+         xWefS3y9NldqqKap1CFXpKxI6zODC8Z/YhxMVtmi8rM4P0NkTZLSE227BtTTk7QC7ptS
+         nXd9aQ5djrAfI41NVZWBDhiBIcU6bvdW4rj8qXOg9o8DdBi98SahGzMV9ZYo1uwucUXq
+         T2KdxDm6lh3ONSVrAVznI5HHWjPw74sRm6O20Lf3zK86TJL3Zo2U5/1WhTnbuNqL1LyB
+         wKWw1pBbUGc61NdKShSmJb8zZa+qY4L3MAsn/L6+co3hyoZE5Avr211AOZUpxoKRU3GI
+         k8Hw==
+X-Gm-Message-State: AOAM530mt9FKwWM9IAXCytJxStE1kfdEipyKk2I8ez7AqJw9TzWaxV1G
+        C7MEteKBiyQeeX7lfk916DtOc6dHbwqPRWAIrkgmyXFiVi5r
+X-Google-Smtp-Source: ABdhPJw3GXN2tx68UvB/aWCxB5sco4T9R68HvE0FWH34vaRFkwVVc6SBXyvu91fO8M1hWTCqIs9zKGjy/fN14KffsXzsISSiiSzR
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1628136510.git.gustavoars@kernel.org>
+X-Received: by 2002:a5e:9918:: with SMTP id t24mr353169ioj.24.1628137457835;
+ Wed, 04 Aug 2021 21:24:17 -0700 (PDT)
+Date:   Wed, 04 Aug 2021 21:24:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d1e42f05c8c84a2e@google.com>
+Subject: [syzbot] bpf-next boot error: WARNING: refcount bug in fib_create_info
+From:   syzbot <syzbot+1b77abb9701d04a66180@syzkaller.appspotmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        dsahern@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace one-element array with a flexible-array member in struct
-MR_PD_CFG_SEQ_NUM_SYNC and use the struct_size() helper.
+Hello,
 
-This helps with the ongoing efforts to globally enable -Warray-bounds
-and get us closer to being able to tighten the FORTIFY_SOURCE routines
-on memcpy().
+syzbot found the following issue on:
 
-Link: https://en.wikipedia.org/wiki/Flexible_array_member
-Link: https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
-Link: https://github.com/KSPP/linux/issues/79
-Link: https://github.com/KSPP/linux/issues/109
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+HEAD commit:    344a5797417c bpf: Fix off-by-one in tail call count limiting
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1350cfda300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f9bb42efdc6f1d7
+dashboard link: https://syzkaller.appspot.com/bug?extid=1b77abb9701d04a66180
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1b77abb9701d04a66180@syzkaller.appspotmail.com
+
+Key type encrypted registered
+AppArmor: AppArmor sha1 policy hashing enabled
+ima: No TPM chip found, activating TPM-bypass!
+Loading compiled-in module X.509 certificates
+Loaded X.509 cert 'Build time autogenerated kernel key: f850c787ad998c396ae089c083b940ff0a9abb77'
+ima: Allocated hash algorithm: sha256
+ima: No architecture policies found
+evm: Initialising EVM extended attributes:
+evm: security.selinux (disabled)
+evm: security.SMACK64 (disabled)
+evm: security.SMACK64EXEC (disabled)
+evm: security.SMACK64TRANSMUTE (disabled)
+evm: security.SMACK64MMAP (disabled)
+evm: security.apparmor
+evm: security.ima
+evm: security.capability
+evm: HMAC attrs: 0x1
+PM:   Magic number: 1:864:648
+tty ttynull: hash matches
+tty ptydd: hash matches
+acpi LNXCPU:01: hash matches
+printk: console [netcon0] enabled
+netconsole: network logging started
+gtp: GTP module loaded (pdp ctx size 104 bytes)
+rdma_rxe: loaded
+cfg80211: Loading compiled-in X.509 certificates for regulatory database
+cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+ALSA device list:
+  #0: Dummy 1
+  #1: Loopback 1
+  #2: Virtual MIDI Card 1
+md: Waiting for all devices to be available before autodetect
+md: If you don't use raid, use raid=noautodetect
+md: Autodetecting RAID arrays.
+md: autorun ...
+md: ... autorun DONE.
+EXT4-fs (sda1): mounted filesystem without journal. Opts: (null). Quota mode: none.
+VFS: Mounted root (ext4 filesystem) readonly on device 8:1.
+devtmpfs: mounted
+Freeing unused kernel image (initmem) memory: 4476K
+Write protecting the kernel read-only data: 169984k
+Freeing unused kernel image (text/rodata gap) memory: 2012K
+Freeing unused kernel image (rodata/data gap) memory: 1516K
+Run /sbin/init as init process
+systemd[1]: systemd 232 running in system mode. (+PAM +AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +SECCOMP +BLKID +ELFUTILS +KMOD +IDN)
+systemd[1]: Detected virtualization kvm.
+systemd[1]: Detected architecture x86-64.
+systemd[1]: Set hostname to <syzkaller>.
+------------[ cut here ]------------
+refcount_t: addition on 0; use-after-free.
+WARNING: CPU: 1 PID: 1 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+Modules linked in:
+CPU: 1 PID: 1 Comm: systemd Not tainted 5.14.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+Code: 09 31 ff 89 de e8 d7 fa 9e fd 84 db 0f 85 36 ff ff ff e8 8a f4 9e fd 48 c7 c7 c0 81 e3 89 c6 05 f0 50 81 09 01 e8 48 f8 13 05 <0f> 0b e9 17 ff ff ff e8 6b f4 9e fd 0f b6 1d d5 50 81 09 31 ff 89
+RSP: 0018:ffffc90000c66ab0 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff888140160000 RSI: ffffffff815d7b25 RDI: fffff5200018cd48
+RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff815d195e R11: 0000000000000000 R12: 0000000000000004
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff8880149fe200
+FS:  00007f2c0c1be500(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055e1a3c85368 CR3: 0000000027fdc000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __refcount_add include/linux/refcount.h:199 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ fib_create_info+0x36af/0x4910 net/ipv4/fib_semantics.c:1554
+ fib_table_insert+0x1cd/0x1af0 net/ipv4/fib_trie.c:1224
+ fib_magic+0x455/0x540 net/ipv4/fib_frontend.c:1087
+ fib_add_ifaddr+0x16c/0x500 net/ipv4/fib_frontend.c:1109
+ fib_inetaddr_event+0x162/0x2a0 net/ipv4/fib_frontend.c:1420
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ blocking_notifier_call_chain kernel/notifier.c:337 [inline]
+ blocking_notifier_call_chain+0x67/0x90 kernel/notifier.c:325
+ __inet_insert_ifa+0x919/0xc20 net/ipv4/devinet.c:553
+ inet_insert_ifa net/ipv4/devinet.c:560 [inline]
+ inetdev_event+0x1243/0x15d0 net/ipv4/devinet.c:1570
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2123
+ call_netdevice_notifiers_extack net/core/dev.c:2135 [inline]
+ call_netdevice_notifiers net/core/dev.c:2149 [inline]
+ __dev_notify_flags+0x110/0x2b0 net/core/dev.c:8878
+ dev_change_flags+0x112/0x170 net/core/dev.c:8916
+ do_setlink+0x913/0x3910 net/core/rtnetlink.c:2710
+ rtnl_setlink+0x24d/0x3c0 net/core/rtnetlink.c:3003
+ rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ __sys_sendto+0x21c/0x320 net/socket.c:2030
+ __do_sys_sendto net/socket.c:2042 [inline]
+ __se_sys_sendto net/socket.c:2038 [inline]
+ __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2038
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f2c0aa5b693
+Code: 79 20 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb cd 66 0f 1f 44 00 00 83 3d 39 bd 20 00 00 75 13 49 89 ca b8 2c 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 34 c3 48 83 ec 08 e8 cb f7 ff ff 48 89 04 24
+RSP: 002b:00007ffc2c0069a8 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 000055e1a3c7b9a0 RCX: 00007f2c0aa5b693
+RDX: 0000000000000020 RSI: 000055e1a3c7b2b0 RDI: 0000000000000004
+RBP: 000055e1a3c7bab0 R08: 00007ffc2c0069b0 R09: 0000000000000010
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc2c006a14
+R13: 0000000000000001 R14: 0000000000000001 R15: 0000000000000001
+
+
 ---
-Changes in v2:
- - None.
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- drivers/scsi/megaraid/megaraid_sas_base.c   | 14 +++++++-------
- drivers/scsi/megaraid/megaraid_sas_fusion.c |  2 +-
- drivers/scsi/megaraid/megaraid_sas_fusion.h |  2 +-
- 3 files changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-index d072f9caeb4a..a4131dd510e3 100644
---- a/drivers/scsi/megaraid/megaraid_sas_base.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-@@ -5782,10 +5782,10 @@ megasas_setup_jbod_map(struct megasas_instance *instance)
- {
- 	int i;
- 	struct fusion_context *fusion = instance->ctrl_context;
--	u32 pd_seq_map_sz;
-+	size_t pd_seq_map_sz;
- 
--	pd_seq_map_sz = sizeof(struct MR_PD_CFG_SEQ_NUM_SYNC) +
--		(sizeof(struct MR_PD_CFG_SEQ) * (MAX_PHYSICAL_DEVICES - 1));
-+	pd_seq_map_sz = struct_size((struct MR_PD_CFG_SEQ_NUM_SYNC *)0, seq,
-+				    MAX_PHYSICAL_DEVICES);
- 
- 	instance->use_seqnum_jbod_fp =
- 		instance->support_seqnum_jbod_fp;
-@@ -7961,7 +7961,7 @@ static void megasas_detach_one(struct pci_dev *pdev)
- 	struct Scsi_Host *host;
- 	struct megasas_instance *instance;
- 	struct fusion_context *fusion;
--	u32 pd_seq_map_sz;
-+	size_t pd_seq_map_sz;
- 
- 	instance = pci_get_drvdata(pdev);
- 
-@@ -8033,9 +8033,9 @@ static void megasas_detach_one(struct pci_dev *pdev)
- 
- 	if (instance->adapter_type != MFI_SERIES) {
- 		megasas_release_fusion(instance);
--			pd_seq_map_sz = sizeof(struct MR_PD_CFG_SEQ_NUM_SYNC) +
--				(sizeof(struct MR_PD_CFG_SEQ) *
--					(MAX_PHYSICAL_DEVICES - 1));
-+			pd_seq_map_sz =
-+				struct_size((struct MR_PD_CFG_SEQ_NUM_SYNC *)0,
-+					    seq, MAX_PHYSICAL_DEVICES);
- 		for (i = 0; i < 2 ; i++) {
- 			if (fusion->ld_map[i])
- 				dma_free_coherent(&instance->pdev->dev,
-diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-index 06399c026a8d..a824fb641fda 100644
---- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-@@ -1310,7 +1310,7 @@ megasas_sync_pd_seq_num(struct megasas_instance *instance, bool pend) {
- 
- 	pd_sync = (void *)fusion->pd_seq_sync[(instance->pd_seq_map_id & 1)];
- 	pd_seq_h = fusion->pd_seq_phys[(instance->pd_seq_map_id & 1)];
--	pd_seq_map_sz = struct_size(pd_sync, seq, MAX_PHYSICAL_DEVICES - 1);
-+	pd_seq_map_sz = struct_size(pd_sync, seq, MAX_PHYSICAL_DEVICES);
- 
- 	cmd = megasas_get_cmd(instance);
- 	if (!cmd) {
-diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.h b/drivers/scsi/megaraid/megaraid_sas_fusion.h
-index 5fe2f7a6eebe..af39d9c20cc6 100644
---- a/drivers/scsi/megaraid/megaraid_sas_fusion.h
-+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.h
-@@ -1249,7 +1249,7 @@ struct MR_PD_CFG_SEQ {
- struct MR_PD_CFG_SEQ_NUM_SYNC {
- 	__le32 size;
- 	__le32 count;
--	struct MR_PD_CFG_SEQ seq[1];
-+	struct MR_PD_CFG_SEQ seq[];
- } __packed;
- 
- /* stream detection */
--- 
-2.27.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
