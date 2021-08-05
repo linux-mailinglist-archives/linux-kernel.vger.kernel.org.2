@@ -2,117 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80B33E0C70
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 04:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193F63E0C75
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 04:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233444AbhHEC3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 4 Aug 2021 22:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48274 "EHLO
+        id S238349AbhHECam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 4 Aug 2021 22:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbhHEC3f (ORCPT
+        with ESMTP id S229807AbhHECal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 4 Aug 2021 22:29:35 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521E3C061765;
-        Wed,  4 Aug 2021 19:29:20 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id x14so6132627edr.12;
-        Wed, 04 Aug 2021 19:29:20 -0700 (PDT)
+        Wed, 4 Aug 2021 22:30:41 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17611C061765
+        for <linux-kernel@vger.kernel.org>; Wed,  4 Aug 2021 19:30:28 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id l19so5931528pjz.0
+        for <linux-kernel@vger.kernel.org>; Wed, 04 Aug 2021 19:30:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Hcrbuo/eI/947WksZPPotw6nEi7GjDzfNHwXQNC+UzE=;
-        b=nwwkLudnzjFmnS9SJehZ6QB75IhJdVsdr1SqDdsngdllPPsdShPqH4mvn05+tbjwl7
-         h1M8QWUIJQIkDFlUQ7DYan/GKhx1DLrWW5lbKk4ikGwnGeqVUlFQlBMXK22IUvDlPXxu
-         DNYGTL4nqt8rXGz8aS0FJVRBmaqLvDJG6c6OGs6320JZJrKhTyo/mH9EOsd9ubua9H23
-         F3UwljHEB7WwIUsOMyOEQWuOWqIJf8OkgI372dOcbChPo7dcIHOH/awCjWSaKHDZIDEr
-         zPCVpOt8YvhfawBtDvzrpkwp6IveOkPV81WnfEzRVPFwSTY1n5zPw9fvusDY0RmBnGMc
-         umHQ==
+        d=pdp7-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vdygkbgOoifQ2P3uS173U/W4DkZaZSva1QHWbIr+JoI=;
+        b=eYBCE9AHR3MLbexOdgpJeNUt8ue0DcQvnep8V2CdXekpSbK750mX5sv5aI7XlzcNmf
+         ASxatPjlZ+xL8whJR888VZR30wYLyRHho8Tutpvv33YwC0VnTWYOnIs6sH+X0orilpS3
+         y+FKwls2Kvsn3hBENrdbuQrGCE1AhqFVkEtqkEq4H/VF1j0U0mDsHtrFknYVZu2i/Nxe
+         +8RfjhVvsQen/8b9D0D2JeI0nXqg9Ue9AfOYQ/7Yljd1REYtyY58HrNvtR2/0PU0PUul
+         3gLW0emPdallHJ8f8BDhgm6gN35aQRHNKVPN3Hi8prUBgytdQuM/MZ3Xf2MVLdErReY7
+         quVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Hcrbuo/eI/947WksZPPotw6nEi7GjDzfNHwXQNC+UzE=;
-        b=eQjaS8OEHpAIg3yLbt55cxx3xNv820YZ9p/5xgEVSNT/9J6FiF46b2co5ItK+PcBKA
-         4Zptxm13ZLSfGOwRCdYvvWgdVVk65Tjtlga4PGVcdS7b0kC7wZZZF/wzl4Laf4H+JXr+
-         DUq1JJ95ufFsLuCRYrlE2Ik4Jb1zz3po4vexTRyMm4RfGyan/uhXpyPOwUYfJiMUuOMA
-         FrLzgmBbblylcgCiHOskOLfSvTYPaCykzvOOzj+sLc269BDuh6R6QEVxxgib5G5lGMrj
-         krCIgqpyqvLWQ6s5tMqyoy2Ix9Ka3/uPO/dhr0VWnG50xd6Vu6dllDw59o8sVQZZ22m9
-         Op2w==
-X-Gm-Message-State: AOAM533OsonKC2KkNSmgUQuK6/r0IRggSa3eTK2xsMpe2806n8wgW1sZ
-        TLgxzbVpNADaeXJ0Nj0Bfr1/d1UU94kOFNrSeQQ=
-X-Google-Smtp-Source: ABdhPJzb+2TzxJfJb2e8HF5avLFj3koEXDKBINkpVYO2yKgjLo5Y+Jh85kkSOsc1M8Cjy8sVEk/+kU36IMoj3ebg2vI=
-X-Received: by 2002:a05:6402:510:: with SMTP id m16mr3354641edv.280.1628130559007;
- Wed, 04 Aug 2021 19:29:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vdygkbgOoifQ2P3uS173U/W4DkZaZSva1QHWbIr+JoI=;
+        b=AF9MSo2PVLahxSQriIyyHIuUB90lWzhejWV27e8d2Rs2ub9hmi9J9L9mdMwHbkded+
+         8YcXNk4R6jsNNxVhS13TvmIk17EQdG81u+5tBs35pX9ROYYZtvG6OcmT26eie0uelomJ
+         O5gg8hfKWFlBUv4+tHt66bfG1mxtzzW4u3c1fOp2KU1QteSKwmtd5kVZuRi9VWTYsIda
+         LyrYVBkP+xdPkJZNND3IxXP73vcGbOtlSb/DWr1h7j77G788/VZY9IhZzZ+bOocMWoVj
+         b2q+4ja1HanVQZwNiNPDOoOMd8wvXjSLZsfXlR3Qe2q5qAPATf8hQ/Rox0/U6+/YzdFd
+         kAKQ==
+X-Gm-Message-State: AOAM532rfFAdkipDHTMiMCDL6q2L4PaSuFtsTGxEcZxPDD7EtEIJlDlR
+        shNBm5PrkrpRl0FmS+cYf9mRHQ==
+X-Google-Smtp-Source: ABdhPJySAd8vmVVvU3tqw0td5HWMMUYoY9S1Qy9OO1Zx+ygWd4e1FtwfDUEhJSRER70AzJoDJ01r5w==
+X-Received: by 2002:a63:1621:: with SMTP id w33mr539976pgl.291.1628130627580;
+        Wed, 04 Aug 2021 19:30:27 -0700 (PDT)
+Received: from x1 ([174.127.163.79])
+        by smtp.gmail.com with ESMTPSA id 22sm1918868pgn.88.2021.08.04.19.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Aug 2021 19:30:27 -0700 (PDT)
+Date:   Wed, 4 Aug 2021 19:30:24 -0700
+From:   Drew Fustini <drew@pdp7.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     atishp@atishpatra.org, drew@beagleboard.org, bmeng.cn@gmail.com,
+        robh+dt@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
+        michael.zhu@starfivetech.com, tekkamanninja@gmail.com,
+        jack.zhu@starfivetech.com, leyfoon.tan@starfivetech.com,
+        geert@linux-m68k.org, kernel@esmil.dk, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] dt-bindings: riscv: add starfive jh7100 bindings
+Message-ID: <20210805023024.GA12312@x1>
+References: <CAOnJCUL9uU5G1LOgfYPz9Ny77yFYaP5sgtdxG3_w=Zcsi+f96Q@mail.gmail.com>
+ <mhng-c9300c9e-6877-492f-a290-7c51066d3920@palmerdabbelt-glaptop>
 MIME-Version: 1.0
-References: <cover.1627992564.git.wangting11@xiaomi.com> <YQqCNKoLdwaCjmIl@kroah.com>
-In-Reply-To: <YQqCNKoLdwaCjmIl@kroah.com>
-From:   =?UTF-8?B?5ZCnIeeOi+Wptw==?= <zxc52fgh@gmail.com>
-Date:   Thu, 5 Aug 2021 10:29:08 +0800
-Message-ID: <CAA=jPj2RVcQ3eyrcu2=2uPrZoTU0ffB9vsM-bpy8yGOu2w8odQ@mail.gmail.com>
-Subject: Re: [PATCH v11 0/4] add some power supply properties about
- wireless/wired charging
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     sre@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wangting11 <wangting11@xiaomi.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <mhng-c9300c9e-6877-492f-a290-7c51066d3920@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Wed, Aug 04, 2021 at 02:13:47PM -0700, Palmer Dabbelt wrote:
+> On Wed, 04 Aug 2021 13:54:16 PDT (-0700), atishp@atishpatra.org wrote:
+> > On Wed, Aug 4, 2021 at 1:33 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> > > 
+> > > On Thu, 15 Jul 2021 19:17:23 PDT (-0700), bmeng.cn@gmail.com wrote:
+> > > > On Tue, Jul 13, 2021 at 2:34 PM Drew Fustini <drew@beagleboard.org> wrote:
+> > > >>
+> > > >> Add DT binding documentation for the StarFive JH7100 Soc [1] and the
+> > > >> BeagleV Starlight JH7100 board [2].
+> > > >>
+> > > >> [1] https://github.com/starfive-tech/beaglev_doc
+> > > >> [2] https://github.com/beagleboard/beaglev-starlight
+> > > >>
+> > > >> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> > > >> ---
+> > > >> v4 changes:
+> > > >> - removed JH7100 SoC revision number after discussion with Geert
+> > > >>
+> > > >> v3 changes:
+> > > >> - added revision number for the board and soc after question from Palmer
+> > > >>
+> > > >> v2 changes:
+> > > >> - removed "items:" entry that only had "const: starfive,jh7100"
+> > > >> - correct typo in Description:
+> > > >>
+> > > >> Results of running checks:
+> > > >>   $ make -j8 ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- dt_binding_check \
+> > > >>     DT_SCHEMA_FILES=Documentation/devicetree/bindings/riscv/starfive.yaml
+> > > >>     CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+> > > >>     DTEX    Documentation/devicetree/bindings/riscv/starfive.example.dts
+> > > >>     SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+> > > >>     DTC     Documentation/devicetree/bindings/riscv/starfive.example.dt.yaml
+> > > >>     CHECK   Documentation/devicetree/bindings/riscv/starfive.example.dt.yaml
+> > > >>   $ make -j8 ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- dtbs_check \
+> > > >>     DT_SCHEMA_FILES=Documentation/devicetree/bindings/riscv/starfive.yaml
+> > > >>     SYNC    include/config/auto.conf.cmd
+> > > >>     UPD     include/config/kernel.release
+> > > >>     SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+> > > >>     DTC     arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dtb
+> > > >>     DTC     arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dt.yaml
+> > > >>     DTC     arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dt.yaml
+> > > >>     DTC     arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dt.yaml
+> > > >>     CHECK   arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dt.yaml
+> > > >>     CHECK   arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dt.yaml
+> > > >>     CHECK   arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dt.yaml
+> > > >>
+> > > >> The dts file is from vendor repo and is being cleaned up right now in
+> > > >> preperation for submitting to the mailing list:
+> > > >> https://github.com/starfive-tech/linux/tree/beaglev/arch/riscv/boot/dts/starfive
+> > > >>
+> > > >>  .../devicetree/bindings/riscv/starfive.yaml   | 27 +++++++++++++++++++
+> > > >>  1 file changed, 27 insertions(+)
+> > > >>  create mode 100644 Documentation/devicetree/bindings/riscv/starfive.yaml
+> > > >>
+> > > >
+> > > > Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
+> > > 
+> > > Thanks.  This is on for-next, as Rob suggested taking it via the RISC-V
+> > > tree.
+> > > 
+> > Given that beagleV starlight mass production is cancelled [1], are we
+> > still upstreaming the support for this ?
+> 
+> I'm not sure, but I wasn't quite sure where to have that discussion.  I
+> figured that the boards exist so there's no reason to shoot this down, given
+> that it's just the vendor DT list.  At a bare minimum there's out of tree
+> support for this, so having the DT strings defined seems sane as that's a
+> defacto interface with bootloaders.
+> 
+> Maybe this is more of a question for Drew: I think we were all OK working
+> through the issues with the first-run chip when there was going to be a lot
+> of them, but with such a small number produced I'm not sure if there's going
+> to be enough interested to take on all that effort.
+> 
+> I'm not quite sure where we stand on support for this: at some point there
+> were some ideas floating around as to a way to support it without major
+> software changes (allocating into the non-caching regions).  If that pans
+> out then I'm fine handling this, at least from the RISC-V side, but if we're
+> going to have to go through all the ISA/SBI stuff then it's probably not
+> worth it.  Also not sure if there are a bunch of starfive-specific drivers
+> that would be needed to make this boot, in which case it's probably best to
+> wait for whatever comes next.
 
- A demo of =E2=80=9CThe usage of quick charge type property=E2=80=9D is upl=
-oaded in
-PATCH v11 1/4 drivers/power/supply/qcom_smbb.c.
+I think that the discontinued beta prototype could be useful as a native
+build host for those of you that have it and don't have an Unmatched.
 
+The arch_sync_dma RFC from Atish [1] is key to the board running
+mainline. Most of the peripherals (USB, SD card, ethernet) are already
+supported by upstream Cadence and Synopsys drivers. However, the vendor
+kernel used ifdef's to flush the L2 cache at several points in those
+drivers and subsystem cores because the peripherals are on a non-cache
+coherent interconnect.
 
-The usage of the other three properties is about wireless charging.The
-code of our driver can refer to the link below.
+Without the proposed solution from Atish that uses the non-cached DDR
+alias, then only serial console would work on mainline (assuming the 
+system is running from a ramdisk that the vendor uboot loaded).
 
-POWER_SUPPLY_PROP_QUICK_CHARGE_TYPE=EF=BC=9A
-https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/umi-q-oss/drivers/p=
-ower/supply/qcom/qpnp-smb5.c#L1434
+Thanks,
+Drew
 
-POWER_SUPPLY_PROP_REVERSE_CHG_MODE=EF=BC=9A
-https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/umi-q-oss/drivers/p=
-ower/supply/qcom/qpnp-smb5.c#L2572
-
-POWER_SUPPLY_PROP_TX_ADAPTER=EF=BC=9A
-https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/umi-q-oss/drivers/p=
-ower/supply/qcom/qpnp-smb5.c#L2633
-
-POWER_SUPPLY_PROP_SIGNAL_STRENGTH=EF=BC=9A
-https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/umi-q-oss/drivers/p=
-ower/supply/qcom/qpnp-smb5.c#L2609
-
-Thanks=EF=BC=8C
-Wangting
-
-Greg KH <gregkh@linuxfoundation.org> =E4=BA=8E2021=E5=B9=B48=E6=9C=884=E6=
-=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=888:04=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Wed, Aug 04, 2021 at 07:01:57PM +0800, Ting Wang wrote:
-> > From: wangting11 <wangting11@xiaomi.com>
-> >
-> > This patchset aims to provide power supply properties about wireless/wi=
-red charging.
-> > "quick_charge_type" reports different types of quick charge based on th=
-e charging power;
-> > "tx_adapter" shows" the type of wireless charging adapter;
-> > "signal_strength" shows the coupling level between TX and RX;
-> > "reverse_chg_mode" provides the interface of enabling/disabling wireles=
-s reverse charging.
-> >
-> > Changes in V11
-> >  - Fix build error on linus/master
-> >  - Fix build error on power-supply/for-next
-> >  - Fix conflict
->
-> Where are the users of these new properties?  Shouldn't drivers be
-> submitted with them as well, otherwise why would these be added?
->
-> thanks,
->
-> greg k-h
+[1] https://lore.kernel.org/linux-riscv/CAOnJCU+ip1ccc9CrREi3c+15ue4Grcq+ENbQ+z_gh3CH249aAg@mail.gmail.com/T/#md422e9de172a179f8625c5bb595cf40e5942db67
