@@ -2,185 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E963E1694
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976883E1690
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241929AbhHEOLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:11:25 -0400
-Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.178]:36623 "EHLO
-        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241528AbhHEOLU (ORCPT
+        id S241913AbhHEOLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 10:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241528AbhHEOLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:11:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628172486;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=CliIVqvNzA/bGBlLAYmf7rIejrGR22i5z/kGrFUsuDU=;
-    b=aQQJPEJ0jCM1iMaL2MFUfRGIIzKEaRcDNf2tGiFM8NcjZCfz4p8vQhjt1lrN7k83ZO
-    BzAU7bAQB9qHCReArzr1c6eZ37KgHwnTGuom6o8amMiIRiaD6CzR3lexc1yketsDJ/Jg
-    pIF7LOcdEkFt83UmjT+B1Z+Aoas3a6BwuStYAzUjWVtM1AIDYeiEiC30DeuJaIjTkK12
-    dEduqK0sP6iJghpdd/R5/cmb1H9RTxOFL47/C8jmtBLJKxB7OIZeELY0TjU2sBEBHQJb
-    MM/BWyMduC99sODYMs4Lx+Lwpd9KaVCIb4CMIanxDUVLhkiSzvEboTPjsPUg6/AjtFml
-    TKJg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdbLzk="
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 47.31.0 DYNA|AUTH)
-    with ESMTPSA id Q02727x75E85789
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 5 Aug 2021 16:08:05 +0200 (CEST)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        Paul Boddie <paul@boddie.org.uk>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v2 8/8] [RFC] drm/ingenic: convert to component framework for jz4780 hdmi
-Date:   Thu,  5 Aug 2021 16:07:57 +0200
-Message-Id: <77554dd2612f418f6ab74a8be06c82b71410e0e6.1628172477.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1628172477.git.hns@goldelico.com>
-References: <cover.1628172477.git.hns@goldelico.com>
+        Thu, 5 Aug 2021 10:11:02 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6914BC061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 07:10:47 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id k4so6793609wrc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 07:10:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NpYEEmebE1fM+RY82LCVN07dqLDtpFtPH1UGzt+rFWI=;
+        b=ujvzu/O1UZC6bAJ5as3xw1NKNWNBU18ZzJk/7RFqgYVbmv+8/vFqA1Opvpj/h7HB15
+         /HKvI/9dosCTr2ZCyRZ9c5i6hLc3BAkjYDxyxgK+5tIq9spTuvN6qn0HTEEUTjJtkvA4
+         CrG8sSGZQ44Ad0GUuBf+13pS1Ur6yCNx3g2J0u9DTHXC7s5RN9l9UYyN8LrJEIjEYQqJ
+         SNAWPIvrEfHZYhGcZZgaQkNU8uRmEEMsa8HUF/CyM6l6nJUGHV8ovYNOQfloQa/fGkC6
+         wZf59gdsP8jzZ8BXDW7JPacpN7Tkzt+zvPfb8RzBshs0tmIJOGCsJwkq8AJ8j9nvC52m
+         kqWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NpYEEmebE1fM+RY82LCVN07dqLDtpFtPH1UGzt+rFWI=;
+        b=aA1U8xonSZSniNPdxcwtxpd9vylhNwAr26wb0NvRpAdehp8FMxB7U/rupQOqKVQtit
+         WFbVIfjqMpr+9zxYPig88sF1fC58EoSEy2ZcNMQpmHPsfXzoySXpWjohMzRBhZTaJM13
+         bpqDhz/qtt/X5ybSEeQo5mTbpw/5VeOotAX4jAeOnzASLuPFle9s4e/OJZKNcH0L0f6d
+         lZP7dTXEmCf0kxuG9JseazCkzvCM5dfRcsasuHDXRObPgALA/D22aLMybfqlCiGJ+nj2
+         T4402yMDPXmnbeMsTolWTn9dnKNHNMwkjK7nwU+jU/xKJMO8JPqDFoHl1hXNzaY7T2NK
+         69fg==
+X-Gm-Message-State: AOAM533qZ9Muna1pjClwSL4NBGeualqrynVcVDUoXD33VIdR894GJhZk
+        9LNMFk8Gk+IotOX5QOJrLnBtB9XeQ+U=
+X-Google-Smtp-Source: ABdhPJyrwF4DJ04n3fohJbZTYjK3r5jsm9ITPhzQvH2fBiVzxN0xfbDx3XKq0kbVuX09uYzHvcLK+g==
+X-Received: by 2002:a5d:53cf:: with SMTP id a15mr5456874wrw.410.1628172646066;
+        Thu, 05 Aug 2021 07:10:46 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::996b])
+        by smtp.gmail.com with ESMTPSA id 104sm6223950wrc.4.2021.08.05.07.10.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 07:10:45 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] staging: r8188eu: fix build error
+Date:   Thu,  5 Aug 2021 16:09:41 +0200
+Message-Id: <20210805140941.9130-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch attempts to convert the ingenic-dw-hdmi driver
-into a version that uses the component framework.
+Remove unnecessary label to fix build error introduced with
+commit b398ff88aa36 ("staging: r8188eu: remove return from void functions")
 
-Unfortunately the new version does not work.
+drivers/staging/r8188eu/hal/rtl8188e_dm.c:182:1: error: label at end of compound statement
 
-Debugging shows that ingenic_dw_hdmi_bind() is never called.
-
-Suggestions for reasons and fixes are welcome.
-
-Signed-off-by: Paul Boddie <paul@boddie.org.uk>
-Co-authored-by: Paul Boddie <paul@boddie.org.uk>
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c | 57 ++++++++++++++++++-----
- 1 file changed, 46 insertions(+), 11 deletions(-)
+ drivers/staging/r8188eu/hal/rtl8188e_dm.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c b/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-index 61e7a57d7cec1..a5ba0b69baa8c 100644
---- a/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-@@ -1,17 +1,24 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (C) 2011-2013 Freescale Semiconductor, Inc.
-- * Copyright (C) 2019, 2020 Paul Boddie <paul@boddie.org.uk>
-+ * Copyright (C) 2019, 2020, 2021 Paul Boddie <paul@boddie.org.uk>
-  *
-  * Derived from dw_hdmi-imx.c with i.MX portions removed.
-- * Probe and remove operations derived from rcar_dw_hdmi.c.
-  */
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_dm.c b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+index b5f42127a751..7ac4257d7ebe 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_dm.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+@@ -145,7 +145,7 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
+ 	hw_init_completed = Adapter->hw_init_completed;
  
-+#include <linux/component.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
+ 	if (!hw_init_completed)
+-		goto skip_dm;
++		return;
  
- #include <drm/bridge/dw_hdmi.h>
- #include <drm/drm_of.h>
-+#include <drm/drm_modeset_helper_vtables.h>
-+#include <drm/drm_simple_kms_helper.h>
-+
-+struct ingenic_dw_hdmi_encoder {
-+	struct drm_encoder encoder;
-+	struct dw_hdmi *hdmi;
-+};
- 
- static const struct dw_hdmi_mpll_config ingenic_mpll_cfg[] = {
- 	{ 45250000,  { { 0x01e0, 0x0000 }, { 0x21e1, 0x0000 }, { 0x41e2, 0x0000 } } },
-@@ -87,24 +94,52 @@ static const struct of_device_id ingenic_dw_hdmi_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, ingenic_dw_hdmi_dt_ids);
- 
--static int ingenic_dw_hdmi_probe(struct platform_device *pdev)
-+static int ingenic_dw_hdmi_bind(struct device *dev, struct device *master,
-+				void *data)
- {
--	struct dw_hdmi *hdmi;
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct drm_device *drm = data;
-+	struct drm_encoder *enc;
-+	struct ingenic_dw_hdmi_encoder *hdmi_encoder;
- 
--	hdmi = dw_hdmi_probe(pdev, &ingenic_dw_hdmi_plat_data);
--	if (IS_ERR(hdmi))
--		return PTR_ERR(hdmi);
-+	hdmi_encoder = drmm_simple_encoder_alloc(drm, struct ingenic_dw_hdmi_encoder,
-+						 encoder, DRM_MODE_ENCODER_TMDS);
-+	if (IS_ERR(hdmi_encoder))
-+		return PTR_ERR(hdmi_encoder);
- 
--	platform_set_drvdata(pdev, hdmi);
-+	enc = &hdmi_encoder->encoder;
-+	drm_encoder_helper_add(enc, NULL);
-+	hdmi_encoder->hdmi = dw_hdmi_bind(pdev, enc, &ingenic_dw_hdmi_plat_data);
-+
-+	if (IS_ERR(hdmi_encoder->hdmi))
-+		return PTR_ERR(hdmi_encoder->hdmi);
-+
-+	dev_set_drvdata(dev, hdmi_encoder->hdmi);
- 
- 	return 0;
+ 	fw_cur_in_ps = Adapter->pwrctrlpriv.bFwCurrentInPSMode;
+ 	rtw_hal_get_hwreg(Adapter, HW_VAR_FWLPS_RF_ON, (u8 *)(&fw_ps_awake));
+@@ -179,9 +179,6 @@ void rtl8188e_HalDmWatchDog(struct adapter *Adapter)
+ 		ODM_CmnInfoUpdate(&hal_data->odmpriv, ODM_CMNINFO_LINK, bLinked);
+ 		ODM_DMWatchdog(&hal_data->odmpriv);
+ 	}
+-skip_dm:
+-	/*  Check GPIO to determine current RF on/off and Pbc status. */
+-	/*  Check Hardware Radio ON/OFF or not */
  }
  
--static int ingenic_dw_hdmi_remove(struct platform_device *pdev)
-+static void ingenic_dw_hdmi_unbind(struct device *dev, struct device *master,
-+				   void *data)
-+{
-+	struct dw_hdmi *hdmi = dev_get_drvdata(dev);
-+
-+	dw_hdmi_unbind(hdmi);
-+}
-+
-+static const struct component_ops ingenic_dw_hdmi_ops = {
-+	.bind	= ingenic_dw_hdmi_bind,
-+	.unbind	= ingenic_dw_hdmi_unbind,
-+};
-+
-+static int ingenic_dw_hdmi_probe(struct platform_device *pdev)
- {
--	struct dw_hdmi *hdmi = platform_get_drvdata(pdev);
-+	return component_add(&pdev->dev, &ingenic_dw_hdmi_ops);
-+}
- 
--	dw_hdmi_remove(hdmi);
-+static int ingenic_dw_hdmi_remove(struct platform_device *pdev)
-+{
-+	component_del(&pdev->dev, &ingenic_dw_hdmi_ops);
- 
- 	return 0;
- }
+ void rtl8188e_init_dm_priv(struct adapter *Adapter)
 -- 
-2.31.1
+2.32.0
 
