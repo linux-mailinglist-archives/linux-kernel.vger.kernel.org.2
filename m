@@ -2,244 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F45B3E168A
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F333E1699
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 16:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241891AbhHEOKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 10:10:39 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:56452 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237597AbhHEOKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:10:38 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mBe4f-0007Cv-Qb; Thu, 05 Aug 2021 16:10:17 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Jianqun Xu <jay.xu@rock-chips.com>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Johan Jonker <jbx6244@gmail.com>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/3] soc: rockchip: io-domain: add rk3568 support
-Date:   Thu, 05 Aug 2021 16:10:17 +0200
-Message-ID: <2984191.q0ZmV6gNhb@diego>
-In-Reply-To: <CAMdYzYpxvEbc-gAk6xEkec-bXaqe7wNM0awRVAPV64v0OVcGSg@mail.gmail.com>
-References: <20210527082905.1447591-1-jay.xu@rock-chips.com> <20210527082905.1447591-3-jay.xu@rock-chips.com> <CAMdYzYpxvEbc-gAk6xEkec-bXaqe7wNM0awRVAPV64v0OVcGSg@mail.gmail.com>
+        id S241944AbhHEOLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 10:11:45 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49102 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241954AbhHEOLm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 10:11:42 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A07ED223A5;
+        Thu,  5 Aug 2021 14:11:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1628172687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cac2K7UyIrNiZxU9wp02mcCd//sOnFqsP30dJ/UcrhA=;
+        b=nRzdXtEEFavfgJz3zKm8R4Kzg+rvMW+39U5hi4lsROR++ngJCWqK+6OMTFRLE9GpOP+ok7
+        XBEn5fyktWZlW2LKTSmiDUCeyWfXeox66QOxmTnNUmM32JNv7XWCw1vyBvHX3buggnrm+5
+        zuvctQ0jQR4EsVa/1fgA2BomGpAmBFM=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id C9FEFA3D3E;
+        Thu,  5 Aug 2021 14:11:26 +0000 (UTC)
+Date:   Thu, 5 Aug 2021 16:11:11 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     chenguanyou <chenguanyou9338@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        keescook@chromium.org, lukas.bulwahn@gmail.com, vbabka@suse.cz,
+        gpiccoli@canonical.com, chenguanyou <chenguanyou@xiaomi.com>
+Subject: Re: [PATCH v2] hungtask: add filter kthread
+Message-ID: <YQvxf0KqvlVSO+R5@dhcp22.suse.cz>
+References: <20210805134747.29621-1-chenguanyou@xiaomi.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210805134747.29621-1-chenguanyou@xiaomi.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, 5. August 2021, 15:02:21 CEST schrieb Peter Geis:
-> On Thu, May 27, 2021 at 4:31 AM Jianqun Xu <jay.xu@rock-chips.com> wrote:
-> >
-> > The io-domain registers on RK3568 SoCs have three separated bits to
-> > enable/disable the 1.8v/2.5v/3.3v power.
-> >
-> > This patch make the write to be a operation, allow rk3568 uses a private
-> > register set function.
-> >
-> > Since the 2.5v is not used on RK3568, so the driver only set
-> > 1.8v [enable] + 3.3v [disable] for 1.8v mode
-> > 1.8v [disable] + 3.3v [enable] for 3.3v mode
+On Thu 05-08-21 21:47:47, chenguanyou wrote:
+> Some kernel threads are always in D state, when we enable hung_task,
+> it will misjudge, we should skip these to narrow the scope.
 > 
-> Good Morning,
+> exp mediatek:
+> root            435   435      2       0      0 mtk_lpm_monitor_thread 0 D LPM-0
+> root            436   436      2       0      0 mtk_lpm_monitor_thread 0 D LPM-1
+> root            437   437      2       0      0 mtk_lpm_monitor_thread 0 D LPM-2
+> root            438   438      2       0      0 mtk_lpm_monitor_thread 0 D LPM-3
+> root            439   439      2       0      0 mtk_lpm_monitor_thread 0 D LPM-4
+> root            440   440      2       0      0 mtk_lpm_monitor_thread 0 D LPM-5
+> root            441   441      2       0      0 mtk_lpm_monitor_thread 0 D LPM-6
+> root            442   442      2       0      0 mtk_lpm_monitor_thread 0 D LPM-7
+
+A similar approch has been proposed in the past (sorry I do not have
+links handy) and always deemed a wrong way to approach the problem.
+Either those kernel threads should be fixed to use less sleep or
+annotate the sleep properly (TASK_IDLE).
+
+> Signed-off-by: chenguanyou <chenguanyou@xiaomi.com>
+> ---
+>  Documentation/admin-guide/sysctl/kernel.rst | 10 ++++++++++
+>  include/linux/sched/sysctl.h                |  1 +
+>  kernel/hung_task.c                          |  8 ++++++++
+>  kernel/sysctl.c                             |  9 +++++++++
+>  lib/Kconfig.debug                           | 15 +++++++++++++++
+>  5 files changed, 43 insertions(+)
 > 
-> I see this still hasn't landed, but for what it's worth I've been
-> running it for months and it seems to work well.
-> (Also it's necessary for sdio support)
-> 
-> Tested on Quartz64 Model A, Quartz64 Model B.
-> So - Tested-by: Peter Geis <pgwipeout@gmail.com>
+> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+> index 68b21395a743..3c7c74b26d95 100644
+> --- a/Documentation/admin-guide/sysctl/kernel.rst
+> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> @@ -405,6 +405,16 @@ This file shows up if ``CONFIG_DETECT_HUNG_TASK`` is enabled.
+>  
+>  -1: report an infinite number of warnings.
+>  
+> +hung_task_filter_kthread
+> +========================
+> +
+> +We should skip kthread when a hung task is detected.
+> +This file shows up if ``CONFIG_DEFAULT_HUNG_TASK_FILTER_KTHREAD`` is enabled.
+> +
+> += =========================================================
+> +0 Not skip detect kthread.
+> +1 Skip detect kthread.
+> += =========================================================
+>  
+>  hyperv_record_panic_msg
+>  =======================
+> diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
+> index db2c0f34aaaf..2b8b01b57559 100644
+> --- a/include/linux/sched/sysctl.h
+> +++ b/include/linux/sched/sysctl.h
+> @@ -19,6 +19,7 @@ extern unsigned int  sysctl_hung_task_panic;
+>  extern unsigned long sysctl_hung_task_timeout_secs;
+>  extern unsigned long sysctl_hung_task_check_interval_secs;
+>  extern int sysctl_hung_task_warnings;
+> +extern unsigned int sysctl_hung_task_filter_kthread;
+>  int proc_dohung_task_timeout_secs(struct ctl_table *table, int write,
+>  		void *buffer, size_t *lenp, loff_t *ppos);
+>  #else
+> diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+> index 396ebaebea3f..74ad75c2dde8 100644
+> --- a/kernel/hung_task.c
+> +++ b/kernel/hung_task.c
+> @@ -48,6 +48,11 @@ unsigned long __read_mostly sysctl_hung_task_timeout_secs = CONFIG_DEFAULT_HUNG_
+>   */
+>  unsigned long __read_mostly sysctl_hung_task_check_interval_secs;
+>  
+> +/*
+> + * Non-zero means no checking kthread
+> + */
+> +unsigned int __read_mostly sysctl_hung_task_filter_kthread = CONFIG_DEFAULT_HUNG_TASK_FILTER_KTHREAD;
+> +
+>  int __read_mostly sysctl_hung_task_warnings = 10;
+>  
+>  static int __read_mostly did_panic;
+> @@ -88,6 +93,9 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+>  {
+>  	unsigned long switch_count = t->nvcsw + t->nivcsw;
+>  
+> +	if (unlikely(sysctl_hung_task_filter_kthread && t->flags & PF_KTHREAD))
+> +		return;
+> +
+>  	/*
+>  	 * Ensure the task is not frozen.
+>  	 * Also, skip vfork and any other user process that freezer should skip.
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index d4a78e08f6d8..62067b9db486 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -2513,6 +2513,15 @@ static struct ctl_table kern_table[] = {
+>  		.proc_handler	= proc_dointvec_minmax,
+>  		.extra1		= &neg_one,
+>  	},
+> +	{
+> +		.procname	= "hung_task_filter_kthread",
+> +		.data		= &sysctl_hung_task_filter_kthread,
+> +		.maxlen		= sizeof(int),
+> +		.mode		= 0644,
+> +		.proc_handler   = proc_dointvec_minmax,
+> +		.extra1		= SYSCTL_ZERO,
+> +		.extra2		= SYSCTL_ONE,
+> +	},
+>  #endif
+>  #ifdef CONFIG_RT_MUTEXES
+>  	{
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 678c13967580..d7063f955987 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1110,6 +1110,21 @@ config DEFAULT_HUNG_TASK_TIMEOUT
+>  	  A timeout of 0 disables the check.  The default is two minutes.
+>  	  Keeping the default should be fine in most cases.
+>  
+> +config DEFAULT_HUNG_TASK_FILTER_KTHREAD
+> +	int "Default filter kthread for hung task"
+> +	depends on DETECT_HUNG_TASK
+> +	range 0 1
+> +	default 0
+> +	help
+> +	  This option controls filter kthread uses to determine when
+> +	  a kernel task has become "state=TASK_UNINTERRUPTIBLE" and should be skipped.
+> +
+> +	  It can be adjusted at runtime via the kernel.hung_task_filter_kthread
+> +	  sysctl or by writing a value to
+> +	  /proc/sys/kernel/hung_task_filter_kthread.
+> +
+> +	  A filter of 1 disables the check.
+> +
+>  config BOOTPARAM_HUNG_TASK_PANIC
+>  	bool "Panic (Reboot) On Hung Tasks"
+>  	depends on DETECT_HUNG_TASK
+> -- 
+> 2.17.1
 
-Just for people reading along, Michael has picked this up and adapted
-the binding addition to the already landed yaml conversion, see
-
-https://lore.kernel.org/r/20210805120107.27007-1-michael.riesch@wolfvision.net
-
-
-Heiko
-
-> 
-> >
-> > There is not register order requirement which has been cleared by our IC
-> > team.
-> >
-> > Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
-> > ---
-> > v2:
-> > - none
-> >  drivers/soc/rockchip/io-domain.c | 88 +++++++++++++++++++++++++++++---
-> >  1 file changed, 80 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
-> > index cf8182fc3642..13c446fd33a9 100644
-> > --- a/drivers/soc/rockchip/io-domain.c
-> > +++ b/drivers/soc/rockchip/io-domain.c
-> > @@ -51,13 +51,11 @@
-> >  #define RK3399_PMUGRF_CON0_VSEL                BIT(8)
-> >  #define RK3399_PMUGRF_VSEL_SUPPLY_NUM  9
-> >
-> > -struct rockchip_iodomain;
-> > +#define RK3568_PMU_GRF_IO_VSEL0                (0x0140)
-> > +#define RK3568_PMU_GRF_IO_VSEL1                (0x0144)
-> > +#define RK3568_PMU_GRF_IO_VSEL2                (0x0148)
-> >
-> > -struct rockchip_iodomain_soc_data {
-> > -       int grf_offset;
-> > -       const char *supply_names[MAX_SUPPLIES];
-> > -       void (*init)(struct rockchip_iodomain *iod);
-> > -};
-> > +struct rockchip_iodomain;
-> >
-> >  struct rockchip_iodomain_supply {
-> >         struct rockchip_iodomain *iod;
-> > @@ -66,13 +64,62 @@ struct rockchip_iodomain_supply {
-> >         int idx;
-> >  };
-> >
-> > +struct rockchip_iodomain_soc_data {
-> > +       int grf_offset;
-> > +       const char *supply_names[MAX_SUPPLIES];
-> > +       void (*init)(struct rockchip_iodomain *iod);
-> > +       int (*write)(struct rockchip_iodomain_supply *supply, int uV);
-> > +};
-> > +
-> >  struct rockchip_iodomain {
-> >         struct device *dev;
-> >         struct regmap *grf;
-> >         const struct rockchip_iodomain_soc_data *soc_data;
-> >         struct rockchip_iodomain_supply supplies[MAX_SUPPLIES];
-> > +       int (*write)(struct rockchip_iodomain_supply *supply, int uV);
-> >  };
-> >
-> > +static int rk3568_iodomain_write(struct rockchip_iodomain_supply *supply, int uV)
-> > +{
-> > +       struct rockchip_iodomain *iod = supply->iod;
-> > +       u32 is_3v3 = uV > MAX_VOLTAGE_1_8;
-> > +       u32 val0, val1;
-> > +       int b;
-> > +
-> > +       switch (supply->idx) {
-> > +       case 0: /* pmuio1 */
-> > +               break;
-> > +       case 1: /* pmuio2 */
-> > +               b = supply->idx;
-> > +               val0 = BIT(16 + b) | (is_3v3 ? 0 : BIT(b));
-> > +               b = supply->idx + 4;
-> > +               val1 = BIT(16 + b) | (is_3v3 ? BIT(b) : 0);
-> > +
-> > +               regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL2, val0);
-> > +               regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL2, val1);
-> > +               break;
-> > +       case 3: /* vccio2 */
-> > +               break;
-> > +       case 2: /* vccio1 */
-> > +       case 4: /* vccio3 */
-> > +       case 5: /* vccio4 */
-> > +       case 6: /* vccio5 */
-> > +       case 7: /* vccio6 */
-> > +       case 8: /* vccio7 */
-> > +               b = supply->idx - 1;
-> > +               val0 = BIT(16 + b) | (is_3v3 ? 0 : BIT(b));
-> > +               val1 = BIT(16 + b) | (is_3v3 ? BIT(b) : 0);
-> > +
-> > +               regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL0, val0);
-> > +               regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL1, val1);
-> > +               break;
-> > +       default:
-> > +               return -EINVAL;
-> > +       };
-> > +
-> > +       return 0;
-> > +}
-> > +
-> >  static int rockchip_iodomain_write(struct rockchip_iodomain_supply *supply,
-> >                                    int uV)
-> >  {
-> > @@ -136,7 +183,7 @@ static int rockchip_iodomain_notify(struct notifier_block *nb,
-> >                         return NOTIFY_BAD;
-> >         }
-> >
-> > -       ret = rockchip_iodomain_write(supply, uV);
-> > +       ret = supply->iod->write(supply, uV);
-> >         if (ret && event == REGULATOR_EVENT_PRE_VOLTAGE_CHANGE)
-> >                 return NOTIFY_BAD;
-> >
-> > @@ -398,6 +445,22 @@ static const struct rockchip_iodomain_soc_data soc_data_rk3399_pmu = {
-> >         .init = rk3399_pmu_iodomain_init,
-> >  };
-> >
-> > +static const struct rockchip_iodomain_soc_data soc_data_rk3568_pmu = {
-> > +       .grf_offset = 0x140,
-> > +       .supply_names = {
-> > +               "pmuio1",
-> > +               "pmuio2",
-> > +               "vccio1",
-> > +               "vccio2",
-> > +               "vccio3",
-> > +               "vccio4",
-> > +               "vccio5",
-> > +               "vccio6",
-> > +               "vccio7",
-> > +       },
-> > +       .write = rk3568_iodomain_write,
-> > +};
-> > +
-> >  static const struct rockchip_iodomain_soc_data soc_data_rv1108 = {
-> >         .grf_offset = 0x404,
-> >         .supply_names = {
-> > @@ -469,6 +532,10 @@ static const struct of_device_id rockchip_iodomain_match[] = {
-> >                 .compatible = "rockchip,rk3399-pmu-io-voltage-domain",
-> >                 .data = &soc_data_rk3399_pmu
-> >         },
-> > +       {
-> > +               .compatible = "rockchip,rk3568-pmu-io-voltage-domain",
-> > +               .data = &soc_data_rk3568_pmu
-> > +       },
-> >         {
-> >                 .compatible = "rockchip,rv1108-io-voltage-domain",
-> >                 .data = &soc_data_rv1108
-> > @@ -502,6 +569,11 @@ static int rockchip_iodomain_probe(struct platform_device *pdev)
-> >         match = of_match_node(rockchip_iodomain_match, np);
-> >         iod->soc_data = match->data;
-> >
-> > +       if (iod->soc_data->write)
-> > +               iod->write = iod->soc_data->write;
-> > +       else
-> > +               iod->write = rockchip_iodomain_write;
-> > +
-> >         parent = pdev->dev.parent;
-> >         if (parent && parent->of_node) {
-> >                 iod->grf = syscon_node_to_regmap(parent->of_node);
-> > @@ -562,7 +634,7 @@ static int rockchip_iodomain_probe(struct platform_device *pdev)
-> >                 supply->reg = reg;
-> >                 supply->nb.notifier_call = rockchip_iodomain_notify;
-> >
-> > -               ret = rockchip_iodomain_write(supply, uV);
-> > +               ret = iod->write(supply, uV);
-> >                 if (ret) {
-> >                         supply->reg = NULL;
-> >                         goto unreg_notify;
-> > --
-> > 2.25.1
-> >
-> >
-> >
-> >
-> > _______________________________________________
-> > Linux-rockchip mailing list
-> > Linux-rockchip@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-rockchip
-> 
-
-
-
-
+-- 
+Michal Hocko
+SUSE Labs
