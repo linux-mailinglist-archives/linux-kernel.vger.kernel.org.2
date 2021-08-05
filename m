@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561993E1B09
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F223E1B0E
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235231AbhHESPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233384AbhHESPO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:15:14 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1BE5C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:14:58 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso11576410pjo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:14:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uYldJwdsql0xBaO1sKZOJMQPzD9lyreF8UumtGeLwiM=;
-        b=QWKcGa6Bq0wgTfZN+2z+g7oAboQKIql9gyrBd+aax2vyJSxivlISSyMyuHoMd3c1Sc
-         o05wBdkEpym7arFZ2BcKYnd3ykim0MQJwXpSxGuoj63IGtw59qMi9R6+w9yV1O1lcQ4+
-         I8KsWJ95A+hJXyHdONBcAEe+WPGjIZ9dIXamG2sMqoSuU15hubVLoH7ymfHv2QXy4EZm
-         jMy51GoGt2Zcr6QffAPpyI2SwA2YHtMn7ff1uOfofZJZFwVtkwe0EurjBp9+E4WSf4WR
-         mFiNS4vEa6MaeBaJb6l6d9dlvYERr+7CI0ytK+uxFsMSqprJeBXb/0CIH73rIHiqEbDV
-         fHSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uYldJwdsql0xBaO1sKZOJMQPzD9lyreF8UumtGeLwiM=;
-        b=q23sjp5e/9FfOvTDdofyAKhR5A+YXo5ZYDJtXukuJMzX2vxZpB/yzSTKZ8R0Auu15a
-         3NLCBAYWx4eJGb1IBGDdC14rcDIygN9JTjoFp9XnbwLzyUaQPVQfiz8JnbJ7FYdVnjM4
-         6BpDpDMEuOQMR3irdFsZS6eG/lzIVoVfu83HqpgHsRJB3Q/QyX5Lb5HxCK3ghw2g+MGY
-         k7e+wHZdIoF1wBhrfeNaxj2Q6+spNJyuJ9NVMCDV06abAi7f9uys+Gzp1ypLcJ/dQ9qA
-         kf34qm5pJ3eN6IVrYHayOLew/BfDYhd9ikk4qRmtPSYd9gbFCmy2N1LBtHVXbUdxNjxM
-         tMeQ==
-X-Gm-Message-State: AOAM531jaY+ExHqwKVb/p3K5tVECTERDjs2bRmjaxgCM6rXQAgiXdJUx
-        BWQfFaS/PbG5juPSujyjciPnl3eL4PJk4JKCJ6As2w==
-X-Google-Smtp-Source: ABdhPJxi/GLd77d+bxDF94SYcXRVvNToYZiSJ9wBaBVpMqXd+INkyV8All4ZBD6lrWvOjHWkbM8U5nvy9WCVQHq/sUg=
-X-Received: by 2002:a17:902:8ec6:b029:12b:ab33:15d4 with SMTP id
- x6-20020a1709028ec6b029012bab3315d4mr5044138plo.80.1628187298193; Thu, 05 Aug
- 2021 11:14:58 -0700 (PDT)
+        id S241032AbhHESQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:16:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233076AbhHESQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:16:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 430E460E8D;
+        Thu,  5 Aug 2021 18:16:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628187380;
+        bh=fRMwCzEryajqu2xcp0mEV1Y2KxW3CpaQzsE/wiiybfE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1z8mJt/GTpAKS88ThuPPyGJyJBQupScZMqntaDa9Igf0v2pzgnXML0W6mYw4oyqtX
+         jlx1lVmUjC4FWjO9yUdDy2ND6Hbl88qvFmLaPEkTFcxlYQHG9WI6PHvpTPqyerqXpT
+         28wdqke0BajafjDpnLSssqqbelxZS0QiD7YVN6C8=
+Date:   Thu, 5 Aug 2021 20:16:18 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Long Li <longli@microsoft.com>
+Cc:     "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Hannes Reinecke <hare@suse.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [Patch v5 2/3] Drivers: hv: add Azure Blob driver
+Message-ID: <YQwq8tDGx/Zes/sU@kroah.com>
+References: <1628146812-29798-1-git-send-email-longli@linuxonhyperv.com>
+ <1628146812-29798-3-git-send-email-longli@linuxonhyperv.com>
+ <YQuPJUX4+HZ3FeKC@kroah.com>
+ <BY5PR21MB15061507ED1B0CE1CDC7EE3ECEF29@BY5PR21MB1506.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210804050809.628266-1-davidgow@google.com>
-In-Reply-To: <20210804050809.628266-1-davidgow@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 5 Aug 2021 11:14:47 -0700
-Message-ID: <CAFd5g44suSKUDXhAh6CNewGeg00BDJurYNMyY4vaAsaEZ1puWQ@mail.gmail.com>
-Subject: Re: [PATCH v2] kunit: Print test statistics on failure
-To:     David Gow <davidgow@google.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Rae Moar <rmoar@google.com>, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BY5PR21MB15061507ED1B0CE1CDC7EE3ECEF29@BY5PR21MB1506.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 3, 2021 at 10:08 PM David Gow <davidgow@google.com> wrote:
->
-> When a number of tests fail, it can be useful to get higher-level
-> statistics of how many tests are failing (or how many parameters are
-> failing in parameterised tests), and in what cases or suites. This is
-> already done by some non-KUnit tests, so add support for automatically
-> generating these for KUnit tests.
->
-> This change adds a 'kunit.stats_enabled' switch which has three values:
-> - 0: No stats are printed (current behaviour)
-> - 1: Stats are printed only for tests/suites with more than one
->      subtest (new default)
-> - 2: Always print test statistics
->
-> For parameterised tests, the summary line looks as follows:
-> "    # inode_test_xtimestamp_decoding: pass:16 fail:0 skip:0 total:16"
-> For test suites, there are two lines looking like this:
-> "# ext4_inode_test: pass:1 fail:0 skip:0 total:1"
-> "# Totals: pass:16 fail:0 skip:0 total:16"
->
-> The first line gives the number of direct subtests, the second "Totals"
-> line is the accumulated sum of all tests and test parameters.
->
-> This format is based on the one used by kselftest[1].
->
-> [1]: https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/kselftest.h#L109
->
-> Signed-off-by: David Gow <davidgow@google.com>
+On Thu, Aug 05, 2021 at 06:07:31PM +0000, Long Li wrote:
+> > Subject: Re: [Patch v5 2/3] Drivers: hv: add Azure Blob driver
+> > 
+> > On Thu, Aug 05, 2021 at 12:00:11AM -0700, longli@linuxonhyperv.com wrote:
+> > > +static int az_blob_create_device(struct az_blob_device *dev) {
+> > > +	int ret;
+> > > +	struct dentry *debugfs_root;
+> > > +
+> > > +	dev->misc.minor	= MISC_DYNAMIC_MINOR,
+> > > +	dev->misc.name	= "azure_blob",
+> > > +	dev->misc.fops	= &az_blob_client_fops,
+> > > +
+> > > +	ret = misc_register(&dev->misc);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	debugfs_root = debugfs_create_dir("az_blob", NULL);
+> > 
+> > So you try to create a directory in the root of debugfs called "az_blob"
+> > for every device in the system of this one type?
+> > 
+> > That will blow up when you have multiple devices of the same type, please
+> > fix.
+> 
+> The Hyper-V presents one such device for the whole VM.
 
-This looks great, David!
+Today, maybe, tomorrow, who knows.  Do not write code that we know will
+be wrong if you have multiple devices in the system of the same type.
+It takes almost no effort to get this correct.
 
-My only suggestion, can you maybe provide a sample of the TAP output
-with your change running on the thread? I think it looks great, but I
-imagine that it has the potential of being more interesting to people
-other than you, Daniel, and myself rather than the actual code change.
-(To be clear, I think the summary and the code both look good, IMO.)
+> I'm sorry I may have misunderstood. Are you suggesting I should create
+> a directory "hyperv" in the root of debugfs and put all the Hyper-V
+> driver debug information there?
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Ideally, yes, if the hyperv subsystem uses debugfs, it should make a
+subdir and you should use that.  If not, then do whatever you want, but
+do not do something that you know will be broken if you have multiple
+devices of the same type in the system, like the current code is
+showing.
 
-Cheers!
+thanks,
+
+greg k-h
