@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA063E1B7B
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588123E1B5F
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241508AbhHESi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:38:57 -0400
-Received: from mga01.intel.com ([192.55.52.88]:4238 "EHLO mga01.intel.com"
+        id S241286AbhHESda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:33:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241019AbhHESiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:38:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="236197431"
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="236197431"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 11:38:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="419925391"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 05 Aug 2021 11:38:33 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 7FB9D15E; Thu,  5 Aug 2021 21:31:06 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Loic Poulain <loic.poulain@linaro.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] wwan: core: Avoid returning error pointer from wwan_create_dev()
-Date:   Thu,  5 Aug 2021 21:31:00 +0300
-Message-Id: <20210805183100.49071-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S241267AbhHESd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 14:33:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB26C6024A;
+        Thu,  5 Aug 2021 18:33:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628188394;
+        bh=Vnb2zcxGZEUexMV2u0dJ0rRLWcI7bnDKV6XRlcLWR9E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z9W8hNUJp8lnnAeyXwWTxCG0RWta6sug3LqEdz4dRsTtNv0EeSU1/6+VnMPPeXL2y
+         S2GQ2LUVFzDK7K438MVEn29b3QIv1ifxoyj/ElMfsJQtRUn1Eyx5WDS16zbNFCcWgB
+         cjHOTTbrpjFv5tfPA2gPMmfZFXucQ0GHgF6fTxjk=
+Date:   Thu, 5 Aug 2021 20:33:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Long Li <longli@microsoft.com>
+Cc:     "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [Patch v5 0/3] Introduce a driver to support host accelerated
+ access to Microsoft Azure Blob for Azure VM
+Message-ID: <YQwu5z3fx0xhqz3W@kroah.com>
+References: <1628146812-29798-1-git-send-email-longli@linuxonhyperv.com>
+ <YQuOca6cmsY/CIiW@kroah.com>
+ <BY5PR21MB1506213A9BBC8285C01D1EB3CEF29@BY5PR21MB1506.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BY5PR21MB1506213A9BBC8285C01D1EB3CEF29@BY5PR21MB1506.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-wwan_create_dev() is expected to return either valid pointer or NULL,
-In some cases it might return the error pointer. Prevent this by converting
-it to NULL after wwan_dev_get_by_parent().
+On Thu, Aug 05, 2021 at 06:27:59PM +0000, Long Li wrote:
+> > Subject: Re: [Patch v5 0/3] Introduce a driver to support host accelerated
+> > access to Microsoft Azure Blob for Azure VM
+> > 
+> > On Thu, Aug 05, 2021 at 12:00:09AM -0700, longli@linuxonhyperv.com wrote:
+> > > v5:
+> > > Added problem statement and test numbers to patch 0
+> > 
+> > patch 0 does not show up in the changelog, please put that in the patch that
+> > adds the driver, otherwise we will never see that information in the future.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> I will fix this.  Do you want me to send the v6, or re-spin v5?
 
-Fixes: 9a44c1cc6388 ("net: Add a WWAN subsystem")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/net/wwan/wwan_core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+If you fix a v5, that turns into v6, right?
 
-diff --git a/drivers/net/wwan/wwan_core.c b/drivers/net/wwan/wwan_core.c
-index 674a81d79db3..35e10a98e774 100644
---- a/drivers/net/wwan/wwan_core.c
-+++ b/drivers/net/wwan/wwan_core.c
-@@ -160,7 +160,9 @@ static struct wwan_device *wwan_create_dev(struct device *parent)
- 
- 	/* If wwandev already exists, return it */
- 	wwandev = wwan_dev_get_by_parent(parent);
--	if (!IS_ERR(wwandev))
-+	if (IS_ERR(wwandev))
-+		wwandev = NULL;
-+	else
- 		goto done_unlock;
- 
- 	id = ida_alloc(&wwan_dev_ids, GFP_KERNEL);
--- 
-2.30.2
 
