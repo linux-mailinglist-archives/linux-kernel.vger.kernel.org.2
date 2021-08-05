@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58393E17DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765BE3E17DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242139AbhHEPZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:25:03 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59186 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241976AbhHEPUX (ORCPT
+        id S242146AbhHEPZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:25:14 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33984 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241984AbhHEPUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:20:23 -0400
+        Thu, 5 Aug 2021 11:20:24 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1AF1320251;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 454AB223E4;
         Thu,  5 Aug 2021 15:20:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1628176808; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=I+km54IEPBOKgP/D/7ZOaIi7iJCeyYI5BJRJug56I9U=;
-        b=lDXAMIyvlaG6mfBd1jCTB2dIbZMXqJjIoIb2C+TVMb1GxoQa5CymtXNqQiDaBCP89T6hDM
-        /Gs5UnrvAZ/qqUGi1Gx2ioDsThcKhvacoT/vbc90YeSaj8JIe5UTDFyljdsmCDOVy01SeH
-        kNftAVXufaFTU8IAbsEBNVJ55kjzwqE=
+        bh=IlQnS0KMVe89QhFjv1FK06xzb00jNMRlRCiWXsCz02c=;
+        b=04pc/Vnd5KuV/y8Xl4FFuxRtTZ/DeAYz1+h0Mg6imSH+zO4a4SaWDvkAkzJfo1ZmR3GySA
+        SY6Yx+WlEBkr2ks0yUZnGWuWcXeboL7pzh0zY2irIZJPeQKeKNzUBmICLtZKZsK/bc7XID
+        Jj879GhvKObRygiIbfXaxqS/VBbPmTM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1628176808;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=I+km54IEPBOKgP/D/7ZOaIi7iJCeyYI5BJRJug56I9U=;
-        b=eiw1RcUFI1FkrToAj4XGAguk+9BLD80N/FvNfrOsFUG5Sl5YiT3UODroySMZ0lMxhVA3K9
-        h9j74kMOhHDUcpDA==
+        bh=IlQnS0KMVe89QhFjv1FK06xzb00jNMRlRCiWXsCz02c=;
+        b=FUhpoqS+8g/S0XTpWS5mCfQZBbhITH0HS83EgASFh5hlK0TdYBgNxroKJQeRbXqfTKy6dy
+        hZMWvSRcL77WtUCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E586E13DAC;
-        Thu,  5 Aug 2021 15:20:07 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1B62813DA8;
+        Thu,  5 Aug 2021 15:20:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id OEFtN6cBDGFDdQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 05 Aug 2021 15:20:07 +0000
+        id SH8tBqgBDGFDdQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 05 Aug 2021 15:20:08 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Christoph Lameter <cl@linux.com>,
@@ -59,9 +59,9 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Mel Gorman <mgorman@techsingularity.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v4 21/35] mm, slub: call deactivate_slab() without disabling irqs
-Date:   Thu,  5 Aug 2021 17:19:46 +0200
-Message-Id: <20210805152000.12817-22-vbabka@suse.cz>
+Subject: [PATCH v4 22/35] mm, slub: move irq control into unfreeze_partials()
+Date:   Thu,  5 Aug 2021 17:19:47 +0200
+Message-Id: <20210805152000.12817-23-vbabka@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210805152000.12817-1-vbabka@suse.cz>
 References: <20210805152000.12817-1-vbabka@suse.cz>
@@ -71,75 +71,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function is now safe to be called with irqs enabled, so move the calls
-outside of irq disabled sections.
-
-When called from ___slab_alloc() -> flush_slab() we have irqs disabled, so to
-reenable them before deactivate_slab() we need to open-code flush_slab() in
-___slab_alloc() and reenable irqs after modifying the kmem_cache_cpu fields.
-But that means a IRQ handler meanwhile might have assigned a new page to
-kmem_cache_cpu.page so we have to retry the whole check.
-
-The remaining callers of flush_slab() are the IPI handler which has disabled
-irqs anyway, and slub_cpu_dead() which will be dealt with in the following
-patch.
+unfreeze_partials() can be optimized so that it doesn't need irqs disabled for
+the whole time. As the first step, move irq control into the function and
+remove it from the put_cpu_partial() caller.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+ mm/slub.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 27c98f4fb3f5..8de4ead2dbf3 100644
+index 8de4ead2dbf3..51f8d83d3ea8 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2749,8 +2749,8 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 	freelist = c->freelist;
- 	c->page = NULL;
- 	c->freelist = NULL;
--	deactivate_slab(s, page, freelist);
- 	local_irq_restore(flags);
-+	deactivate_slab(s, page, freelist);
- 
- new_slab:
- 
-@@ -2818,18 +2818,32 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		 */
- 		goto return_single;
- 
-+retry_load_page:
+@@ -2333,9 +2333,8 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+ /*
+  * Unfreeze all the cpu partial slabs.
+  *
+- * This function must be called with interrupts disabled
+- * for the cpu using c (or some other guarantee must be there
+- * to guarantee no concurrent accesses).
++ * This function must be called with preemption or migration
++ * disabled with c local to the cpu.
+  */
+ static void unfreeze_partials(struct kmem_cache *s,
+ 		struct kmem_cache_cpu *c)
+@@ -2343,6 +2342,9 @@ static void unfreeze_partials(struct kmem_cache *s,
+ #ifdef CONFIG_SLUB_CPU_PARTIAL
+ 	struct kmem_cache_node *n = NULL, *n2 = NULL;
+ 	struct page *page, *discard_page = NULL;
++	unsigned long flags;
 +
- 	local_irq_save(flags);
--	if (unlikely(c->page))
--		flush_slab(s, c);
-+	if (unlikely(c->page)) {
-+		void *flush_freelist = c->freelist;
-+		struct page *flush_page = c->page;
-+
-+		c->page = NULL;
-+		c->freelist = NULL;
-+		c->tid = next_tid(c->tid);
-+
-+		local_irq_restore(flags);
-+
-+		deactivate_slab(s, flush_page, flush_freelist);
-+
-+		stat(s, CPUSLAB_FLUSH);
-+
-+		goto retry_load_page;
-+	}
- 	c->page = page;
++	local_irq_save(flags);
  
- 	goto load_freelist;
- 
- return_single:
- 
--	local_irq_save(flags);
- 	deactivate_slab(s, page, get_freepointer(s, freelist));
--	local_irq_restore(flags);
- 	return freelist;
+ 	while ((page = slub_percpu_partial(c))) {
+ 		struct page new;
+@@ -2395,6 +2397,8 @@ static void unfreeze_partials(struct kmem_cache *s,
+ 		discard_slab(s, page);
+ 		stat(s, FREE_SLAB);
+ 	}
++
++	local_irq_restore(flags);
+ #endif	/* CONFIG_SLUB_CPU_PARTIAL */
  }
  
+@@ -2422,14 +2426,11 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
+ 			pobjects = oldpage->pobjects;
+ 			pages = oldpage->pages;
+ 			if (drain && pobjects > slub_cpu_partial(s)) {
+-				unsigned long flags;
+ 				/*
+ 				 * partial array is full. Move the existing
+ 				 * set to the per node partial list.
+ 				 */
+-				local_irq_save(flags);
+ 				unfreeze_partials(s, this_cpu_ptr(s->cpu_slab));
+-				local_irq_restore(flags);
+ 				oldpage = NULL;
+ 				pobjects = 0;
+ 				pages = 0;
 -- 
 2.32.0
 
