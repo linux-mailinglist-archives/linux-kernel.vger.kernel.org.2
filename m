@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BABDE3E18BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B7E3E18DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 17:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242695AbhHEPwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 11:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhHEPwP (ORCPT
+        id S242729AbhHEP41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 11:56:27 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:2504 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242655AbhHEP4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 11:52:15 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF64C061765;
-        Thu,  5 Aug 2021 08:52:00 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id ca5so9842992pjb.5;
-        Thu, 05 Aug 2021 08:52:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+WAVvy3jG8c4BM1UieKc0hBr5+TPYkK4USUWUu/waLs=;
-        b=f9NRItGcA82zfK89pCSO+FmqIIS9do5TDWjGS2Phwk71Ji2CmZnf8PxAfzm2UDR9km
-         lAgg56lZbpeu+K8iuYKOH1bUmUq+Y/w/ympLbW5zEuqcXD+Ru4sUL4cDWR8qGdqEidfP
-         ziOfCCbUfhxx8uX8F2JJ2xPz5qHc78AmuoWiHkw+umEWamoItzUkWexCOBGuIR0ULKl+
-         eOmE9bSQ4nk3xuDfmkfuO0ZE6gpw9xgYHGc/K8FFsdr9ojyhAkwggIRaPFhLl1LTpS6j
-         IdRxy4GUR6A7AcO0BdasFcNqOb53Xf4LXDenQVsPE/VC2bZYgbJo499AOTpLdDoOb8Uh
-         Zbqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+WAVvy3jG8c4BM1UieKc0hBr5+TPYkK4USUWUu/waLs=;
-        b=NoeS6ZRxQ1QcJMIGRcj7d4+uvlDHdtilLojbYj+nf17zY89IjJdgbcp/zciueQjmGv
-         JwYYyh9grmMiq1lURn/IqMs21AXfzLyHYkWp2DXi2KJ3+03QM7p57JXHSZPRZyqoQSSW
-         idQWMxJtvlnAXPQDwJMFsdjea9Cq1SmNG0tLvdOtYp0VMG3DubMr10J5va+i/hDqvnml
-         FiKNvDO5VSId4bs+nhiNYCFGmByGeXxfXP12Cf9KTpiSfJj0REmfb2RJtW29eb7yphh0
-         GDYnzVwtjNz9EcYPBoHWSuT8Jhil341Mdg0w3VydmqDY/BjaouOkbS3qxwVmkhSiim7s
-         iUIg==
-X-Gm-Message-State: AOAM531iuRyfO625zkJSTzxGQUdV/t+QL39O8hCBCdlEN36+V7r+55VZ
-        6bAan7oNqsnFJaW53NKQOU4=
-X-Google-Smtp-Source: ABdhPJzLAimd4Y4p28t2bHcnYkc9F26SFPNdWJKKxX6QGrlC4uJA5cMAwBVxgkywklDtK+gtxm7ShA==
-X-Received: by 2002:a62:d447:0:b029:291:19f7:ddcd with SMTP id u7-20020a62d4470000b029029119f7ddcdmr169701pfl.54.1628178720447;
-        Thu, 05 Aug 2021 08:52:00 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
-        by smtp.gmail.com with ESMTPSA id w11sm8659286pgk.34.2021.08.05.08.51.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Aug 2021 08:51:59 -0700 (PDT)
-Subject: Re: [PATCH V2 03/14] x86/set_memory: Add x86_set_memory_enc static
- call support
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        Tianyu.Lan@microsoft.com, rppt@kernel.org,
-        kirill.shutemov@linux.intel.com, akpm@linux-foundation.org,
-        brijesh.singh@amd.com, thomas.lendacky@amd.com, pgonda@google.com,
-        david@redhat.com, krish.sadhukhan@oracle.com, saravanand@fb.com,
-        aneesh.kumar@linux.ibm.com, xen-devel@lists.xenproject.org,
-        martin.b.radev@gmail.com, ardb@kernel.org, rientjes@google.com,
-        tj@kernel.org, keescook@chromium.org,
-        michael.h.kelley@microsoft.com, iommu@lists.linux-foundation.org,
-        linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com, parri.andrea@gmail.com
-References: <20210804184513.512888-1-ltykernel@gmail.com>
- <20210804184513.512888-4-ltykernel@gmail.com>
- <5823af8a-7dbb-dbb0-5ea2-d9846aa2a36a@intel.com>
- <942e6fcb-3bdf-9294-d3db-ca311db440d3@gmail.com>
- <YQv0bRBUq1N5+jgG@hirez.programming.kicks-ass.net>
- <fa63e6ad-9536-d5e9-d754-fa04fad69252@intel.com>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <01d2f33c-6e50-ae88-73ff-84042504c26e@gmail.com>
-Date:   Thu, 5 Aug 2021 23:51:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 5 Aug 2021 11:56:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1628178971; x=1659714971;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=81T3ky8ph63ood5pQ7YHc+7hsAzYVUGV/KsU2nTP3y0=;
+  b=gQb+9MYkNmNPOOEEXCXWPgxpwP7msYPpB6tKyTNEO0G4wExaA2pAcskC
+   P9QvnOHvIIlDAJl2AuHGBvUis94hHvJk+Slc5ndbGu+YBUchs5duHYuQR
+   Fga9j5ehp50PszOv2hmq434Lj42jRsiAeZGstKHMh10OvHX+ad26xFQv+
+   fwJNt+DtvppfaLMOzeU/2b4sirqzu2LSzo7hCeoUAYAnvsJCYyQV2ZLvo
+   oVJiROgrkHlLrc1TtqT6tg7GwRf6ss5+hGAz1B7cEpfhhU3+GZY7OWJk9
+   JTY63eIaHjnliddnhmAiDopJdmgUMDeZpq5HHq18WiakaS+5RZtx5s27C
+   w==;
+IronPort-SDR: QpyF9jmWrkSPZ/OK/apAvqbwN7X0djrfrAh05jX/GF0Ghw8TGzwCGKcWgAEFE0ggetctzP8jYQ
+ N0t7tUuJ+NzBvzQLL+fWsLJJbN/o8/HUy8ebxzrtbvmjOu0+g+I2Lgl2bcZvttYxw16tXYhd/V
+ ElekBNKPYsR55ragKf9onJtyaqv6mk/pJPPFHsdVvY9e54rDqPbo0qHDsieO1HNvGe3gAooPIX
+ avXQZ0Os4JG8+NnPbTHG1/GM5az0BpWDnLk93qZ9YwThwvFe8m0EcXQavj2xDlxp8CGzVeOr+w
+ Hur4Eji3bJJBZwr/AdQ/vlRH
+X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
+   d="scan'208";a="64834627"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 05 Aug 2021 08:56:05 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 08:56:05 -0700
+Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 5 Aug 2021 08:56:01 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>,
+        <arnd@arndb.de>, <olof@lixom.net>, <soc@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH 0/7] ARM: dts: at91: add Exegin Q5xR5 and CalAmp LMU5000
+Date:   Thu, 5 Aug 2021 18:53:50 +0300
+Message-ID: <20210805155357.594414-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <fa63e6ad-9536-d5e9-d754-fa04fad69252@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/2021 10:29 PM, Dave Hansen wrote:
-> On 8/5/21 7:23 AM, Peter Zijlstra wrote:
->> This is assuming any of this is actually performance critical, based off
->> of this using static_call() to begin with.
-> 
-> This code is not performance critical.
-> 
-> I think I sent folks off on a wild goose chase when I asked that we make
-> an effort to optimize code that does:
-> 
-> 	if (some_hyperv_check())
-> 		foo();
-> 
-> 	if (some_amd_feature_check())
-> 		bar();
-> 
-> with checks that will actually compile away when Hyper-V or
-> some_amd_feature() is disabled.  That's less about performance and just
-> about good hygiene.  I *wanted* to see
-> cpu_feature_enabled(X86_FEATURE...) checks.
-> 
-> Someone suggested using static calls, and off we went...
-> 
-> Could we please just use cpu_feature_enabled()?
->
+Hi,
 
-Yes, cpu_feature_enabled() works. The target is just to run platform 
-code after platform check. I will update this in the next version.
+This series adds support for Exegin Q5xR5 and CalAmp LMU5000 boards
+which were maintained up to this moment, separatelly, in OpenWrt tree.
+With these patches the support for these boards will be included in
+upstream kernel and there will be no need to forward port the proper
+patches in OpenWrt every time the OpenWrt kernel version is changed.
+
+Thank you,
+Claudiu Beznea
+
+Adam Porter (1):
+  ARM: dts: at91: add CalAmp LMU5000 board
+
+Claudiu Beznea (5):
+  ARM: dts: at91: at91sam9260: add pinctrl label
+  dt-bindings: add vendor prefix for exegin
+  dt-bindings: ARM: at91: document exegin q5xr5 board
+  dt-bindings: add vendor prefix for calamp
+  dt-bindings: ARM: at91: document CalAmp LMU5000 board
+
+Owen Kirby (1):
+  ARM: dts: at91: add Exegin Q5xR5 board
+
+ .../devicetree/bindings/arm/atmel-at91.yaml   |  12 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   4 +
+ arch/arm/boot/dts/Makefile                    |   2 +
+ arch/arm/boot/dts/at91-lmu5000.dts            | 148 +++++++++++++
+ arch/arm/boot/dts/at91-q5xr5.dts              | 200 ++++++++++++++++++
+ arch/arm/boot/dts/at91sam9260.dtsi            |   2 +-
+ 6 files changed, 367 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/at91-lmu5000.dts
+ create mode 100644 arch/arm/boot/dts/at91-q5xr5.dts
+
+-- 
+2.25.1
+
