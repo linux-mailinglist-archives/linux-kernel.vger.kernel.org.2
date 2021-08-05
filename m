@@ -2,111 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EAD3E14EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438053E14EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 14:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241443AbhHEMkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 08:40:40 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:37820 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240369AbhHEMkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 08:40:39 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 175CeAd8001024
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 5 Aug 2021 14:40:10 +0200
-Received: from [167.87.0.185] ([167.87.0.185])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 175Ce702021254;
-        Thu, 5 Aug 2021 14:40:08 +0200
-Subject: Re: [PATCH v2 0/6] CAN: Add support for CAN in AM65,J721e and AM64
-To:     Aswath Govindraju <a-govindraju@ti.com>, Nishanth Menon <nm@ti.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>
-References: <20210726101012.26983-1-a-govindraju@ti.com>
- <20210802124509.z23lfg7xxkqaakbo@truce>
- <36011cee-f617-02ed-7446-c297ba65e6bf@ti.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <35b0e2dc-0591-0a2f-8e3d-4177792a13fa@siemens.com>
-Date:   Thu, 5 Aug 2021 14:40:07 +0200
+        id S241433AbhHEMls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 08:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240237AbhHEMlr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 08:41:47 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424C7C061765
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 05:41:33 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mBcgj-0000aH-O7; Thu, 05 Aug 2021 14:41:29 +0200
+Subject: Re: [PATCH v2 1/2] drm/panel: simple: add Multi-Innotechnology
+ MI1010AIT-1CP1
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     =?UTF-8?Q?Ulrich_=c3=96lmann?= <u.oelmann@pengutronix.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sam Ravnborg <sam@ravnborg.org>
+References: <20210805111944.13533-1-o.rempel@pengutronix.de>
+ <20210805111944.13533-2-o.rempel@pengutronix.de>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <babc1e28-e3e4-a848-7471-a015f0f54932@pengutronix.de>
+Date:   Thu, 5 Aug 2021 14:41:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <36011cee-f617-02ed-7446-c297ba65e6bf@ti.com>
+In-Reply-To: <20210805111944.13533-2-o.rempel@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.08.21 14:32, Aswath Govindraju wrote:
-> Hi,
+On 05.08.21 13:19, Oleksij Rempel wrote:
+> From: Sam Ravnborg <sam@ravnborg.org>
 > 
-> On 02/08/21 6:15 pm, Nishanth Menon wrote:
->> On 15:40-20210726, Aswath Govindraju wrote:
->>> The following series of patches add support for CAN in SoC's AM65, J721e
->>> and AM64.
->>>
->>> This patch series is dependent on [1] and [2] and I have requested for an
->>> immutable tag from the Marc Kleine-Budde(maintainer of net tree).
->>>
->>> [1] - https://lore.kernel.org/patchwork/patch/1423048/
->>> [2] - https://www.spinics.net/lists/linux-can/msg08108.html
->>>
->>> changes since v1 -
->>> - changed the message ram configuration to use the maximum value
->>>   in each field, for better performance.
->>>
->>> Aswath Govindraju (3):
->>>   arm64: dts: ti: am654-base-board: Disable mcan nodes
->>>   arm64: dts: ti: k3-am64-main: Add support for MCAN
->>>   arm64: dts: ti: k3-am642-evm/sk: Add support for main domain mcan
->>>     nodes in EVM and disable them on SK
->>>
->>> Faiz Abbas (3):
->>>   arm64: dts: ti: k3-am65-mcu: Add Support for MCAN
->>>   arm64: dts: ti: k3-j721e: Add support for MCAN nodes
->>>   arm64: dts: ti: k3-j721e-common-proc-board: Add support for mcu_mcan
->>>     nodes
->>
->> I noticed in my checkup: https://pastebin.ubuntu.com/p/zSk39M943N/
->> warnings with dtbs_check, I think the bindings need a little more help
->> here (please also notice the iot platform warnings getting introduced).
->>
+> The Multi Innotechnology is a 10.1" 1280x800 panel.
 > 
-> Jan,
+> The datasheet did not specify specific values for sync, back, front porch.
+> The values are a best guess based on values for similar panels.
 > 
-> Can you please point me to the schematics for iot platform? Also, is CAN
-> subsystem brought out on the iot platform boards?
+> Co-Developed-by: Sam Ravnborg <sam@ravnborg.org>
+> Co-Developed-by: Ulrich Ölmann <u.oelmann@pengutronix.de>
+> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+> Signed-off-by: Ulrich Ölmann <u.oelmann@pengutronix.de>
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-Schematics aren't publicly available. If you have specific questions, I
-may help, though.
+Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-CAN is not in use yet (not connected AFAIK).
+> ---
+>  drivers/gpu/drm/panel/panel-simple.c | 34 ++++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> index 1b80290c2b53..58ba26dbf852 100644
+> --- a/drivers/gpu/drm/panel/panel-simple.c
+> +++ b/drivers/gpu/drm/panel/panel-simple.c
+> @@ -3033,6 +3033,37 @@ static const struct panel_desc mitsubishi_aa070mc01 = {
+>  	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
+>  };
+>  
+> +static const struct display_timing multi_inno_mi1010ait_1cp_timing = {
+> +	.pixelclock = { 68900000, 70000000, 73400000 },
+> +	.hactive = { 1280, 1280, 1280 },
+> +	.hfront_porch = { 30, 60, 71 },
+> +	.hback_porch = { 30, 60, 71 },
+> +	.hsync_len = { 10, 10, 48 },
+> +	.vactive = { 800, 800, 800 },
+> +	.vfront_porch = { 5, 10, 10 },
+> +	.vback_porch = { 5, 10, 10 },
+> +	.vsync_len = { 5, 6, 13 },
+> +	.flags = DISPLAY_FLAGS_HSYNC_LOW | DISPLAY_FLAGS_VSYNC_LOW |
+> +		 DISPLAY_FLAGS_DE_HIGH,
+> +};
+> +
+> +static const struct panel_desc multi_inno_mi1010ait_1cp = {
+> +	.timings = &multi_inno_mi1010ait_1cp_timing,
+> +	.num_timings = 1,
+> +	.bpc = 8,
+> +	.size = {
+> +		.width = 217,
+> +		.height = 136,
+> +	},
+> +	.delay = {
+> +		.enable = 50,
+> +		.disable = 50,
+> +	},
+> +	.bus_format = MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
+> +	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
+> +	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+> +};
+> +
+>  static const struct display_timing nec_nl12880bc20_05_timing = {
+>  	.pixelclock = { 67000000, 71000000, 75000000 },
+>  	.hactive = { 1280, 1280, 1280 },
+> @@ -4464,6 +4495,9 @@ static const struct of_device_id platform_of_match[] = {
+>  	}, {
+>  		.compatible = "mitsubishi,aa070mc01-ca1",
+>  		.data = &mitsubishi_aa070mc01,
+> +	}, {
+> +		.compatible = "multi-inno,mi1010ait-1cp",
+> +		.data = &multi_inno_mi1010ait_1cp,
+>  	}, {
+>  		.compatible = "nec,nl12880bc20-05",
+>  		.data = &nec_nl12880bc20_05,
+> 
 
-Jan
-
-> 
->> Since we are still working on the bindings[1], lets clean that up
->> before we consider the dts addition. I suspect we need to cook this
->> more towards the next cycle.
->>
->> [1] https://lore.kernel.org/patchwork/patch/1470806/
->>
-> 
-> Nishanth,
-> 
-> Sorry for not taking of this earlier. I'll try to get everything ready
-> for next release.
-> 
-> Thanks,
-> Aswath
-> 
 
 -- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
