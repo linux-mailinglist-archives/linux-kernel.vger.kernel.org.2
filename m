@@ -2,152 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59013E1D2E
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 22:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FC53E1D31
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 22:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240593AbhHEUMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 16:12:37 -0400
-Received: from smtp-31-i2.italiaonline.it ([213.209.12.31]:33587 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230479AbhHEUMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 16:12:36 -0400
-Received: from oxapps-35-162.iol.local ([10.101.8.208])
-        by smtp-31.iol.local with ESMTPA
-        id Bjj1m5S9tzHnRBjj1mO1JO; Thu, 05 Aug 2021 22:12:20 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1628194340; bh=1J5aPU1fgy/RfqWkhF1b2fqgF1PKccxV9uZUSHRwS/M=;
-        h=From;
-        b=xx/QPmJ1ilp5UnX9CSNfhClMIFSWubXddyKFAHW+HiP1Wr4i1ZdQdvIWJf8GbTSTx
-         5Wtre3yam9MdgyolHxg4ofylJNY1GjD2fFaFaw8NGF5/e+Z88JhnwXZ1Wrm4u9Fja9
-         Hz7QOu5LYF/OhcjkQXfVwIXl5mdkMB53qOD10RQI/jNBmltx8X5DUK6Mqgz3JGUIeN
-         Y8t4y9eoYAUsjbLIYM0GDoL0fmcWjXZ2wmcz0wDf4NukeY/AblD8YF+IeXoVTsZwmw
-         Vh13XXDZJ2oZiQw2wJagAzfBOXAZ+WeXFBlWSaXfEMTbVvlSND9NaEItidQglWwvDw
-         SY0OZcROabgvA==
-X-CNFS-Analysis: v=2.4 cv=L6DY/8f8 c=1 sm=1 tr=0 ts=610c4624 cx=a_exe
- a=OCAZjQWm+uh9gf1btJle/A==:117 a=J7go-RGC33AA:10 a=IkcTkHD0fZMA:10
- a=nep-EciQ0nEA:10 a=bGNZPXyTAAAA:8 a=wn1pJw0M0rjdo80TUYYA:9
- a=S33eJTiIa1C7FzhL:21 a=cSzkvvT6OTDMtG98:21 a=QEXdDO2ut3YA:10
- a=yL4RfsBhuEsimFDS2qtJ:22
-Date:   Thu, 5 Aug 2021 22:12:18 +0200 (CEST)
-From:   Dario Binacchi <dariobin@libero.it>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Gianluca Falavigna <gianluca.falavigna@inwind.it>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Message-ID: <1172393027.218339.1628194339000@mail1.libero.it>
-In-Reply-To: <20210804093423.ms2p245f5oiw4xn4@pengutronix.de>
-References: <20210725161150.11801-1-dariobin@libero.it>
- <20210725161150.11801-5-dariobin@libero.it>
- <20210804093423.ms2p245f5oiw4xn4@pengutronix.de>
-Subject: Re: [RESEND PATCH 4/4] can: c_can: cache frames to operate as a
- true FIFO
+        id S240683AbhHEUNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 16:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230479AbhHEUNA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 16:13:00 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D74C061765;
+        Thu,  5 Aug 2021 13:12:45 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id g13so13415044lfj.12;
+        Thu, 05 Aug 2021 13:12:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7cDAy/hM62deBfq6ttiHsWSYbyGEgdxOznCk9r6mwx4=;
+        b=Bvvt5aoIWv5dVzyfr07BljucZerag+oOkWwMSEKFgMx3wVi8bOjWIdGxPUm1c/9ahz
+         4zzOFapuFIr2z3Tv6vHEJyEfOUZZ44l0Ws5yh9nDP+/usyoFx9wT1pc33Ol15ziSoSha
+         jsrXc41dyOaFb+VdqgbZpRmXqV+jLlSQtMCkMo4p7U9cxZqm4iPR6vEp7zuN61gGdKjx
+         XF7q4cfIGB5gBjTNAzQAAVgAq4u91j9PfyGkesAwG5Hmm97zTB8HTSkVbC2eY465RUhv
+         vJ0ZVfy83TnRJiE61GX5bpEApt10KBUP4j3Tqm+OvDFxhgFRH2FtO6MFbI2N9eAcj13f
+         AhCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7cDAy/hM62deBfq6ttiHsWSYbyGEgdxOznCk9r6mwx4=;
+        b=rEQqvlN5AgZddzz3VNyhnai8O6JvpoEL9YTSDS3X2nUPf6bswZNd9MVr31mrx2Gwe3
+         aFiXyfOC3lo4SdFbhEICufrgQmr2CYsxM8nJqKPG778G4fGC83QkRXQgJY/3jeeCByjZ
+         oMq0ZfSTgMJWw0p4HKhEjGyasPaCF59q+QYdgxRP0eRNHiG5Wj3iT+JK1lpqOP42msMc
+         qSxUZPXHwBSu9e6Bxml7buuS+B9XgDIbu/Z6rzQJnue2Dp9wZkxxdV/Dp7+ntaK4kTR+
+         xhrShj5qUjhwvZFfCvb+rJJdisS5VGJihubJIiJZQaGOAD64Jc1B0/VhSBEbV8UyPse3
+         mJWA==
+X-Gm-Message-State: AOAM533re7EMkbXd9dmm9U44cKR7hf+2AZkCmTwD2fBH5AxVTnx50JsC
+        QHg3VJ8zk95cul4r7DRljdY=
+X-Google-Smtp-Source: ABdhPJyM3E4/+J/uczIZaXlDC8WCiou9HizPIzeO8DQM13cPc5t9e2D/4PGHwJPSXvnU6AQZdkcKIw==
+X-Received: by 2002:a05:6512:b08:: with SMTP id w8mr4739545lfu.557.1628194363516;
+        Thu, 05 Aug 2021 13:12:43 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.226.235])
+        by smtp.gmail.com with ESMTPSA id a12sm312970lfr.305.2021.08.05.13.12.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Aug 2021 13:12:43 -0700 (PDT)
+Subject: Re: [PATCH] ext4: avoid huge mmp update interval value
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, johann@whamcloud.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+c9ff4822a62eee994ea3@syzkaller.appspotmail.com
+References: <20210805151418.30659-1-paskripkin@gmail.com>
+ <YQw/2PuZ8z22Qice@mit.edu>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <2e940500-6d77-2871-407b-201ca29f24fc@gmail.com>
+Date:   Thu, 5 Aug 2021 23:12:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <YQw/2PuZ8z22Qice@mit.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
-X-Originating-IP: 82.60.87.158
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: bxvGk6IQYMshaJt8Lq3yzglMBGdMK7FO
-x-libjamv: +8bcFj4z+iY=
-X-CMAE-Envelope: MS4xfIJvIiDBn5RyDY/2gszC1bv8IJM3R/HAKPpLM6XmOaWj6r9fGFRniG+h54c4oXjCNTvE0LUUC8I2zeIyabUC1R+K71mq3usl9sJfbwEDVWtHpLJxQh8f
- h6+aqsHQdNFx6RQfVrrdMnvJAZh12wsynJuY1k8dvN3gU2GO6xw6cXtvfN1KzohFETO/gUDNXtzsEZmP5YTGDojO8J8eW8yVwErmAMvXAfAWAaKGCt3uSKt+
- GqVAwm9iD4d0CCcRj1t+7xVj+bDGfKLvB8/W0vXwuNzZPK+pl/UOhuGEHhCTlqo54pTHhmBuUw75U9uP8nPlnyd45oKlkAIR87hKv/YJbGs2wckU12xclPMc
- ilHNNqLNJrqPIAiXBDR9Pxf7cfLWC6AOZ3Qig15OhSl8IeOmRkXmDkWj1LoY4K4iTkcO0AQ0VErpqhkrTQiiMlidMYs8le7WV3fW9df5kgsSS4AXPiTr+12p
- PbHAeMsGcvXPve7O8CqrI64Lj17Q48HueoeZSr1Z19gO6euYPNU09JJqsB+NJGymq0j0e6rcWhllH//m
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-> Il 04/08/2021 11:34 Marc Kleine-Budde <mkl@pengutronix.de> ha scritto:
+On 8/5/21 10:45 PM, Theodore Ts'o wrote:
+> On Thu, Aug 05, 2021 at 06:14:18PM +0300, Pavel Skripkin wrote:
+>> Syzbot reported task hung bug in ext4_fill_super(). The problem was in
+>> too huge mmp update interval.
+>> 
+>> Syzkaller reproducer setted s_mmp_update_interval to 39785 seconds. This
+>> update interaval is unreasonable huge and it can cause tasks to hung on
+>> kthread_stop() call, since it will wait until timeout timer expires.
 > 
->  
-> On 25.07.2021 18:11:50, Dario Binacchi wrote:
-> > As reported by a comment in the c_can_start_xmit() this was not a FIFO.
-> > C/D_CAN controller sends out the buffers prioritized so that the lowest
-> > buffer number wins.
-> > 
-> > What did c_can_start_xmit() do if head was less tail in the tx ring ? It
-> > waited until all the frames queued in the FIFO was actually transmitted
-> > by the controller before accepting a new CAN frame to transmit, even if
-> > the FIFO was not full, to ensure that the messages were transmitted in
-> > the order in which they were loaded.
-> > 
-> > By storing the frames in the FIFO without requiring its transmission, we
-> > will be able to use the full size of the FIFO even in cases such as the
-> > one described above. The transmission interrupt will trigger their
-> > transmission only when all the messages previously loaded but stored in
-> > less priority positions of the buffers have been transmitted.
-> > 
-> > Suggested-by: Gianluca Falavigna <gianluca.falavigna@inwind.it>
-> > Signed-off-by: Dario Binacchi <dariobin@libero.it>
-> > 
-> > ---
-> > 
-> >  drivers/net/can/c_can/c_can.h      |  6 +++++
-> >  drivers/net/can/c_can/c_can_main.c | 42 +++++++++++++++++-------------
-> >  2 files changed, 30 insertions(+), 18 deletions(-)
-> > 
-> > diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
-> > index 8fe7e2138620..fc499a70b797 100644
-> > --- a/drivers/net/can/c_can/c_can.h
-> > +++ b/drivers/net/can/c_can/c_can.h
-> > +static inline u8 c_can_get_tx_free(const struct c_can_tx_ring *ring)
-> > +{
-> > +	return ring->obj_num - (ring->head - ring->tail);
-> > +}
-> > +
-> >  #endif /* C_CAN_H */
-> > diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c_can_main.c
-> > index 451ac9a9586a..4c061fef002c 100644
-> > --- a/drivers/net/can/c_can/c_can_main.c
-> > +++ b/drivers/net/can/c_can/c_can_main.c
-> > @@ -427,20 +427,6 @@ static void c_can_setup_receive_object(struct net_device *dev, int iface,
-> >  	c_can_object_put(dev, iface, obj, IF_COMM_RCV_SETUP);
-> >  }
-> >  
-> > -static u8 c_can_get_tx_free(const struct c_can_tx_ring *ring)
-> > -{
-> > -	u8 head = c_can_get_tx_head(ring);
-> > -	u8 tail = c_can_get_tx_tail(ring);
-> > -
-> > -	/* This is not a FIFO. C/D_CAN sends out the buffers
-> > -	 * prioritized. The lowest buffer number wins.
-> > -	 */
-> > -	if (head < tail)
-> > -		return 0;
-> > -
-> > -	return ring->obj_num - head;
-> > -}
-> > -
+> I must be missing something.  kthread_stop() should wake up the
+> kmmpd() thread, which should see kthread_should_stop(), and then it
+> should exit.  What is causing it to wait until the timeout timer
+> expires?
 > 
-> Can you move that change into patch 3?
-
-Patch 3 adds the ring transmission algorithm without compromising the
-message transmission order. This is not a FIFO. C/D_CAN controller sends
-out the buffers prioritized. The lowest buffer number wins, so moving the
-change into patch 3 may not guarantee the transmission order.
-In patch 3, however, I will move c_can_get_tx_free() from c_can_main.c to 
-c_can.h, so that in patch 4 it will be clearer how the routine has changed.
-
-Thanks and regards,
-Dario
-
+> 					- Ted
 > 
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                 | Marc Kleine-Budde           |
-> Embedded Linux                   | https://www.pengutronix.de  |
-> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+Hi, Ted!
+
+I guess, I've explained my idea badly, sorry :)
+
+I mean, that there is a chance to hit this situation:
+
+CPU0				CPU1
+				kthread_should_stop()  <-- false
+kthread_stop()
+set_bit(KTHREAD_SHOULD_STOP)				
+wake_up_process()
+wait_for_completion()
+				schedule_timeout_interruptible()
+
+*waits until timer expires*
+
+
+Since there wasn't any validation checks for mmp_update_interval, CPU0 
+will wait for up to (1 << 16) seconds (s_mmp_update_interval it __le16).
+
+
+With regards,
+Pavel Skripkin
