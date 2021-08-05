@@ -2,139 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BF03E1BC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C54B3E1BCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  5 Aug 2021 20:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241533AbhHESyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 14:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241446AbhHESyr (ORCPT
+        id S241747AbhHESzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 14:55:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30476 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241446AbhHESzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 14:54:47 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AB5C06179B
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 11:54:32 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id h14so7830899wrx.10
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 11:54:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=mCmxN128wN048rQ3mL+tGyaLgz6ahBPx10bueA4yYQQ=;
-        b=GOrV3VP+r8pYdlSiWQTpaesHdYyjntzU0PvvHrN5y3GEyAm/V0Gk6/Q2DVPAjUOuHG
-         cg9PKnXKTT6euec26ur9UeGp7ZJ1lMFf0XKNZ8JHvT1V9wtuX3S5sCHtymzoXEU9qj2q
-         qvrLHR5Nn9+CzXn368JWDViQsPx0sYdfYo81GedinLwzH0j/KWAgMJ76cgcFRANa52Ap
-         k/HeuXbl/H4MM5n9iS0qwck3lV1RsVGsi6ht6u6CHCiFHc0J5dQij11Gxp4rS/NpUOOz
-         xuYYqbl/V2ElVpVt72G3YEr+BRDilwSbeYw+9JCFvZusmxJWVls+zLhfdxvvorH6XeKQ
-         WnMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=mCmxN128wN048rQ3mL+tGyaLgz6ahBPx10bueA4yYQQ=;
-        b=GQy8rfV/8eo8gYL3IC2iRSNVPSuoQMlSLh/W56Jawh/Y6WIHYPmKt6Q0dxjf4TOmeQ
-         3lohvThs4+IMMR9ZDMY0u4YxiViLaCVPWTEeqrph5WWx4ZUhWwF31Lep+huKfGx3RSv5
-         90QgaDsLCj+0f9e/+iIM8ps0WdoX8BUkfPqOxjycWb/JlzID3d5IdCmSdpsy0biaA7AH
-         rQE9G4IG8sZnTTpCRu9mdxBN6i2kvuXAg0kKfl4ahPPQvsC5/Adi3s55l3whQuomw8YP
-         c716yiaVaYgnCX9DRQSI50geol6FzX14t0JYwOTcRVIiUguxiuh9eueZhf4Ms9AnoV0i
-         c8rA==
-X-Gm-Message-State: AOAM530TILnTMp8HVyMgYv47IL03QhzyxPzbd1xjdUJX6dUHT3oAleMU
-        easnjOmaUzKc9kWPZBWLWuCoBA==
-X-Google-Smtp-Source: ABdhPJwssE+mX4OXOdITg+L7JFPUjj2TqXmuwypTLByy6roZIhynzabMmSfypihLZgWIBDpfU85saA==
-X-Received: by 2002:a5d:5906:: with SMTP id v6mr6899987wrd.194.1628189670642;
-        Thu, 05 Aug 2021 11:54:30 -0700 (PDT)
-Received: from google.com ([109.180.115.228])
-        by smtp.gmail.com with ESMTPSA id p5sm7799843wrd.25.2021.08.05.11.54.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 11:54:30 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 19:54:27 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        John Crispin <john@phrozen.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH 1/3] arch: Export machine_restart() instances so they can
- be called from modules
-Message-ID: <YQwz4xkuxvfrCnag@google.com>
-References: <20210805075032.723037-1-lee.jones@linaro.org>
- <20210805075032.723037-2-lee.jones@linaro.org>
- <20210805173625.GH6719@arm.com>
- <YQww08x2whx/LIIT@kroah.com>
+        Thu, 5 Aug 2021 14:55:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628189731;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=khcR5qip36FZVs38owIp+mLzByBcI2rs63Ak5IXHYuU=;
+        b=HGZCdcv0vA8eCJzwsZbEK0Y4vwUEiwXpEanWlZ81P5X09jvf+RjyqZoFZFbaZ3hEONWBSY
+        DbxeEMyn/yFY80vaL+yGRSb1a3yad76VudN/7B4JBewAh5pk0MPcpk1qPAWSpmJtIAQCBm
+        C8uHjTSaK+sroUF7cm6xUqiOSjQtM+Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-DrEljoW8Ooi3vYmmuGqB6A-1; Thu, 05 Aug 2021 14:55:30 -0400
+X-MC-Unique: DrEljoW8Ooi3vYmmuGqB6A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 746DB1800D41
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 18:55:29 +0000 (UTC)
+Received: from crecklin.bos.com (unknown [10.22.18.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F094F6091B;
+        Thu,  5 Aug 2021 18:55:28 +0000 (UTC)
+From:   Chris von Recklinghausen <crecklin@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH] fix UBSAN splat in test_scanf
+Date:   Thu,  5 Aug 2021 14:55:26 -0400
+Message-Id: <20210805185526.317202-1-crecklin@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YQww08x2whx/LIIT@kroah.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Aug 2021, Greg Kroah-Hartman wrote:
+On a system with CONFIG_UBSAN_SHIFT=y, the following splat was observed:
 
-> On Thu, Aug 05, 2021 at 06:36:25PM +0100, Catalin Marinas wrote:
-> > On Thu, Aug 05, 2021 at 08:50:30AM +0100, Lee Jones wrote:
-> > > diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> > > index b4bb67f17a2ca..cf89ce91d7145 100644
-> > > --- a/arch/arm64/kernel/process.c
-> > > +++ b/arch/arm64/kernel/process.c
-> > > @@ -212,6 +212,7 @@ void machine_restart(char *cmd)
-> > >  	printk("Reboot failed -- System halted\n");
-> > >  	while (1);
-> > >  }
-> > > +EXPORT_SYMBOL(machine_restart);
-> > 
-> > Should we make this EXPORT_SYMBOL_GPL? I suppose it's not for general
-> > use by out of tree drivers and it matches the other pm_power_off symbol
-> > we export in this file.
-> 
-> Yes please.
+[  104.676826] test_scanf: loaded.
+[  104.680862] ================================================================================
+[  104.690304] UBSAN: shift-out-of-bounds in lib/test_scanf.c:274:51
+[  104.697144] shift exponent 32 is too large for 32-bit type 'unsigned int'
+[  104.704747] CPU: 18 PID: 1790 Comm: modprobe Tainted: G S                5.14.0-rc4 #1
+[  104.713592] Hardware name: Intel Corporation S2600CP/S2600CP, BIOS SE5C600.86B.02.01.0002.082220131453 08/22/2013
+[  104.725052] Call Trace:
+[  104.727787]  dump_stack_lvl+0x44/0x57
+[  104.731888]  ubsan_epilogue+0x5/0x40
+[  104.735882]  __ubsan_handle_shift_out_of_bounds.cold.14+0x14/0x98
+[  104.742704]  next_test_random+0x3f/0x56 [test_scanf]
+[  104.748253]  numbers_list+0x1e91/0x3364 [test_scanf]
+[  104.753807]  ? numbers_list_field_width_typemax+0x3859/0x3859 [test_scanf]
+[  104.761501]  ? numbers_simple+0x3839/0x388f [test_scanf]
+[  104.767436]  ? load_module+0x6ba5/0x7200
+[  104.771822]  ? _test+0x152/0x152 [test_scanf]
+[  104.776690]  ? hlock_class+0x4e/0x120
+[  104.780784]  ? __lock_acquire+0x171d/0x2f80
+[  104.785459]  ? lock_is_held_type+0x99/0x100
+[  104.790153]  ? find_held_lock+0x3a/0x1c0
+[  104.794557]  ? rcu_read_lock_bh_held+0xc0/0xc0
+[  104.799529]  ? __kasan_kmalloc+0x7f/0xa0
+[  104.803916]  ? kmem_cache_alloc_trace+0x185/0x270
+[  104.809172]  ? test_scanf_init+0xe3/0x11cd [test_scanf]
+[  104.815010]  ? rcu_read_lock_sched_held+0xaf/0xe0
+[  104.820272]  test_scanf_init+0x17e/0x11cd [test_scanf]
+[  104.826014]  ? numbers_list+0x3364/0x3364 [test_scanf]
+[  104.831757]  ? numbers_list+0x3364/0x3364 [test_scanf]
+[  104.837497]  ? rcu_read_lock_sched_held+0xaf/0xe0
+[  104.842760]  ? rcu_read_lock_bh_held+0xc0/0xc0
+[  104.847730]  ? numbers_list+0x3364/0x3364 [test_scanf]
+[  104.853473]  do_one_initcall+0xfb/0x540
+[  104.857776]  ? perf_trace_initcall_level+0x490/0x490
+[  104.863328]  ? __kasan_kmalloc+0x7f/0xa0
+[  104.867714]  ? kmem_cache_alloc_trace+0x185/0x270
+[  104.872969]  ? do_init_module+0x4e/0x760
+[  104.877350]  ? kasan_unpoison+0x23/0x50
+[  104.881650]  do_init_module+0x1f2/0x760
+[  104.885945]  load_module+0x6ba5/0x7200
+[  104.890174]  ? layout_and_allocate+0x2c00/0x2c00
+[  104.895337]  ? ima_read_file+0x150/0x150
+[  104.899734]  ? kernel_read_file+0x2f6/0x710
+[  104.904415]  ? __x64_sys_fsconfig+0x6a0/0x6a0
+[  104.909300]  ? __do_sys_finit_module+0xff/0x180
+[  104.914363]  __do_sys_finit_module+0xff/0x180
+[  104.919230]  ? __ia32_sys_init_module+0xa0/0xa0
+[  104.924294]  ? rcu_read_unlock+0x50/0x50
+[  104.928679]  ? kfree+0x2fd/0x3c0
+[  104.932316]  do_syscall_64+0x3a/0x80
+[  104.936316]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  104.941971] RIP: 0033:0x7f7d8220e52d
+[  104.945962] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 79 2c 00 f7 d8 64 89 01 48
+[  104.966933] RSP: 002b:00007ffd1a1a9448 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+[  104.975392] RAX: ffffffffffffffda RBX: 00005611e43bde40 RCX: 00007f7d8220e52d
+[  104.983360] RDX: 0000000000000000 RSI: 00005611e401d7d6 RDI: 0000000000000003
+[  104.991327] RBP: 00005611e401d7d6 R08: 0000000000000000 R09: 0000000000000000
+[  104.999294] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000000000
+[  105.007261] R13: 00005611e43bdec0 R14: 0000000000040000 R15: 0000000000000000
+[  105.015285] ================================================================================
+[  105.026917] test_scanf: all 2545 tests passed
+[  105.045896] test_scanf: unloaded.
 
-Sure.
+This is due to n_bits having a value of 0 in next_test_random. Avoid this by
+repeatedly calling hweight32(prandom_u32_state(&rnd_state)) % (max_bits + 1)
+until n_bits is nonzero.
 
-Thanks for the feedback.
+Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
+---
+ lib/test_scanf.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
+diff --git a/lib/test_scanf.c b/lib/test_scanf.c
+index 84fe09eaf55e..4e3754b916f2 100644
+--- a/lib/test_scanf.c
++++ b/lib/test_scanf.c
+@@ -269,7 +269,13 @@ static void __init numbers_simple(void)
+  */
+ static u32 __init next_test_random(u32 max_bits)
+ {
+-	u32 n_bits = hweight32(prandom_u32_state(&rnd_state)) % (max_bits + 1);
++	u32 n_bits;
++
++	/* shifting a 32 bit unsigned int by 32 is undefined behavior */
++	do {
++		n_bits = hweight32(prandom_u32_state(&rnd_state))
++			% (max_bits + 1);
++	} while (n_bits == 0);
+ 
+ 	return prandom_u32_state(&rnd_state) & (UINT_MAX >> (32 - n_bits));
+ }
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.27.0
+
