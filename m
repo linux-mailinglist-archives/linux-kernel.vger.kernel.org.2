@@ -2,252 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67493E2D70
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E7C3E2D76
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244197AbhHFPR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 11:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbhHFPR2 (ORCPT
+        id S244167AbhHFPTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 11:19:37 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55048 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232021AbhHFPTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 11:17:28 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36006C0613CF;
-        Fri,  6 Aug 2021 08:17:12 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id m19so5881828wms.0;
-        Fri, 06 Aug 2021 08:17:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=j/xa8qZshCFoVyKlVsIewNJFCDwxE/FrxKwLU0KiPE4=;
-        b=WPrLOCzNvhv8KNqSShRQUBN2qwuptA051kIsiir7ru9+zj2d49CdZObiE6GgQ8NpM2
-         DxKYyKwCo55SxjGm1k581sD7oj6BSRrxXaybPR5LvRW+47WoqzQXdmJaXH/+yLnYjXD7
-         dnSgl076wT0+pRoPHqO0N+NzokNv9fOtrm1L6FfJHWZNpHlGpUGs51LptXDpvHE4gEhJ
-         KR7hyRQIDYS86NUksGq1ASINqG7QKs6LePp+XEkzG6n8xbwju4LHBXHZipC9Dn7MfciD
-         MCa/GA/5abNUpxBJyorJdmZrDwp5w4/cmskzlZPIWcnq8gzFx7vSS1EUlq53JpKa8klv
-         UwzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=j/xa8qZshCFoVyKlVsIewNJFCDwxE/FrxKwLU0KiPE4=;
-        b=grKzAKZQq3axa2gVCF2zdvQz/aNJ3t6ergwRzQmwwKDd/Il8YHKNMAWBhSZHZO8Yu+
-         GdnOFOA2abi9s+kH51I5enYdcgy86whsw9zHKXKBJJj1xOosdIOdkc4RgUYDbGvIyamt
-         Meoi1DLhoSrBmAVqtPqHHcWWRFjR3a+yHYhKSiALvQIPwadx0nKWR8sLx4t+HfYvx1yz
-         sDMFkH7n7OowFJhccdbIpHoICOBH/+LeMPtozL9lR2wIUFTIRd/m/kHmL2DbNHz3sTDu
-         L3BMrcf39E6W0Je6PirJLB/cI1cheIrgsIbMAxCTVyd+y5F9zs2Z02yEeS1IHLvUoXlG
-         49mA==
-X-Gm-Message-State: AOAM530auQ3VKrxHGqjzhuGOxVzi0MgTY/26Ynb0MwC2wkdQpPp/gdo0
-        koZkCkb5mD1sNEFICLtK8DQ=
-X-Google-Smtp-Source: ABdhPJxFTP9E5ZhcnGK/Dd1vsXBwE3Hk/wGttb3x40ysCdrU5NSJYankQRiDNvXfZesQtqW57+WGow==
-X-Received: by 2002:a7b:c204:: with SMTP id x4mr3823549wmi.70.1628263030758;
-        Fri, 06 Aug 2021 08:17:10 -0700 (PDT)
-Received: from ziggy.stardust (static-55-132-6-89.ipcom.comunitel.net. [89.6.132.55])
-        by smtp.gmail.com with ESMTPSA id l41sm9573096wmp.23.2021.08.06.08.17.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 08:17:10 -0700 (PDT)
-Subject: Re: [PATCH v4 1/1] arm64: dts: mediatek: add MT6779 spi master dts
- node
-To:     Mason Zhang <mason.zhang@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com
-References: <20210624021137.11513-1-mason.zhang@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <358eca25-34b5-bf12-67aa-98491bbcc9d2@gmail.com>
-Date:   Fri, 6 Aug 2021 17:17:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210624021137.11513-1-mason.zhang@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 6 Aug 2021 11:19:36 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 176F4Voc189122;
+        Fri, 6 Aug 2021 11:18:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=rgO1hBqZC57c2+Sv/vVXfN88h8j4+dvlSPH4nRvftfA=;
+ b=Wka4jACSVCTnFGdewURKfL0kkFh0fdao526RdszASXCXY8NneaqPwj/U5PRt5TuayslZ
+ Xsp9wE08uI4BP0XL1QDrBGkq+yCgU2VLGwDs4ggXQKqbDoWmc7fmMR0cNhKisrHUC+H5
+ tw5fkwlkH4nz1uOo57IHYo/LcfZVbp7FkMVO1LEqutXzxC7sqQMz+vHyP3+YgV2JzDDo
+ a4EnCxGpI3U3CoHmKcfx9eOv3WdN6rdJkCpf1PZ3XV7bRcMTnzDqB54lgSXv5bHBDwbl
+ VXGojnwxcgFZo6QXApY+MkkAD26L+9B2/FC6OaMU4ZGdF/ge4fH+avlhUxDVVb4x+8zS 9A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a8j8j1spq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Aug 2021 11:18:43 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 176F5ADk004444;
+        Fri, 6 Aug 2021 11:18:42 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a8j8j1snp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Aug 2021 11:18:42 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 176FIE6Z014168;
+        Fri, 6 Aug 2021 15:18:40 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04fra.de.ibm.com with ESMTP id 3a8dcqj4y9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Aug 2021 15:18:40 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 176FIbdQ55378386
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Aug 2021 15:18:37 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B4DF511C05B;
+        Fri,  6 Aug 2021 15:18:37 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 87BB111C05E;
+        Fri,  6 Aug 2021 15:18:32 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.118.168])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  6 Aug 2021 15:18:32 +0000 (GMT)
+Message-ID: <dc76d9463bb5e081d10154e909321b0d75391846.camel@linux.ibm.com>
+Subject: Re: [PATCH RFC v2 10/12] KEYS: link system_trusted_keys to
+ mok_trusted_keys
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     keyrings@vger.kernel.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
+        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+        scott.branden@broadcom.com, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        lszubowi@redhat.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
+        glin@suse.com, "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>
+Date:   Fri, 06 Aug 2021 11:18:31 -0400
+In-Reply-To: <21CB8F51-9066-4095-9C6E-428FF9E86443@oracle.com>
+References: <20210726171319.3133879-1-eric.snowberg@oracle.com>
+         <20210726171319.3133879-11-eric.snowberg@oracle.com>
+         <6c751dadf4ce7385d0391ea26f1c7e4e910219e0.camel@linux.ibm.com>
+         <44ADB68B-4310-462B-96A8-2F69759BA2D8@oracle.com>
+         <d85bfe88bb4abd06e47a36743f53d0610da0a259.camel@linux.ibm.com>
+         <21CB8F51-9066-4095-9C6E-428FF9E86443@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Udv4oSrDO2ieLhANn4kq7bqpT8Hrhvos
+X-Proofpoint-ORIG-GUID: 365LpGflS7WoQs4sMb9ihzyLVcO8nzIM
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-06_05:2021-08-05,2021-08-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ priorityscore=1501 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
+ adultscore=0 spamscore=0 impostorscore=0 bulkscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108060104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 24/06/2021 04:11, Mason Zhang wrote:
-> From: Mason Zhang <Mason.Zhang@mediatek.com>
+On Fri, 2021-08-06 at 09:00 -0600, Eric Snowberg wrote:
+> > On Aug 5, 2021, at 9:19 PM, Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > 
+> > On Thu, 2021-08-05 at 19:29 -0600, Eric Snowberg wrote:
+> > 
+> >>> From the thread discussion on 00/12:
+> >>> 
+> >>> Only the builtin keys should ever be on the builtin keyring.  The
+> >>> builtin keyring would need to be linked to the mok keyring.  But in the
+> >>> secondary keyring case, the mok keyring would be linked to the
+> >>> secondary keyring, similar to how the builtin keyring is linked to the
+> >>> secondary keyring.
+> >>> 
+> >>>       if (key_link(secondary_trusted_keys, builtin_trusted_keys) < 0)
+> >>>               panic("Can't link trusted keyrings\n");
+> >> 
+> >> 
+> >> This part is confusing me though.
+> >> 
+> >> Here are some of the tests I’m performing with the current series:
+> >> 
+> >> Initial setup:
+> >> Create and enroll my own key into the MOK.
+> >> Sign a kernel, kernel module and IMA key with my new CA key.
+> >> Boot with lockdown enabled (to enforce sig validation).
+> >> 
+> >> Kernel built with CONFIG_SECONDARY_TRUSTED_KEYRING=y
+> >> 
+> >> $ keyctl show %:.secondary_trusted_keys
+> >> Keyring
+> >> 530463486 ---lswrv      0     0  keyring: .secondary_trusted_keys
+> >> 411466727 ---lswrv      0     0   \_ keyring: .builtin_trusted_keys
+> >> 979167715 ---lswrv      0     0   |   \_ asymmetric: Build time autogenerated kernel key: 07a56e29cfa1e21379aff2c522efff7d1963202a
+> >> 534573591 ---lswrv      0     0   |   \_ asymmetric: Oracle-CA: Oracle certificate signing key: aeefb4bfde095cacaabff81dd266974b1b4e23b8
+> >> 968109018 ---lswrv      0     0   \_ keyring: .mok
+> >> 857795115 ---lswrv      0     0       \_ asymmetric: Erics-CA: UEK signing key: 9bfa6860483aa46bd83f7fa1289d9fc35799e93b
+> >> 
+> >> With this setup I can:
+> >> * load a kernel module signed with my CA key
+> >> * run "kexec -ls" with the kernel signed with my CA key
+> >> * run "kexec -ls" with a kernel signed by a key in the platform keyring
+> >> * load another key into the secondary trusted keyring that is signed by my CA key
+> >> * load a key into the ima keyring, signed by my CA key
+> >> 
+> >> Kernel built without CONFIG_SECONDARY_TRUSTED_KEYRING defined
+> >> 
+> >> $ keyctl show %:.builtin_trusted_keys
+> >> Keyring
+> >> 812785375 ---lswrv      0     0  keyring: .builtin_trusted_keys
+> >> 455418681 ---lswrv      0     0   \_ keyring: .mok
+> >> 910809006 ---lswrv      0     0   |   \_ asymmetric: Erics-CA: UEK signing key: 9bfa6860483aa46bd83f7fa1289d9fc35799e93b
+> >> 115345009 ---lswrv      0     0   \_ asymmetric: Oracle-CA: Oracle certificate signing key: aeefb4bfde095cacaabff81dd266974b1b4e23b8
+> >> 513131506 ---lswrv      0     0   \_ asymmetric: Build time autogenerated kernel key: 22353509f203b55b84f15d0aadeddc134b646185
+> >> 
+> >> With this setup I can:
+> >> * load a kernel module signed with my CA key
+> >> * run "kexec -ls" with the kernel signed with my CA key
+> >> * run "kexec -ls" with a kernel signed by a key in the platform keyring
+> >> * load a key into the ima keyring, signed by my CA key
+> >> 
+> >> So why would the linking need to be switched?  Is there a test I’m
+> >> missing?  Thanks.
+> > 
+> > It's a question of semantics.  The builtin keyring name is self
+> > describing.  It should only contain the keys compiled into the kernel
+> > or inserted post build into the reserved memory.  Not only the kernel
+> > uses the builtin keyring, but userspace may as well[1].  Other users of
+> > the builtin keyring might not want to trust the mok keyring as well.
 > 
-> This patch add spi master dts node for MT6779 SOC.
-> 
-> Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
-> ---
->  arch/arm64/boot/dts/mediatek/mt6779.dtsi | 112 +++++++++++++++++++++++
->  1 file changed, 112 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt6779.dtsi b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-> index 370f309d32de..c81e76865d1b 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-> @@ -219,6 +219,118 @@
->  			status = "disabled";
->  		};
->  
-> +		spi0: spi0@1100a000 {
-> +			compatible = "mediatek,mt6779-spi",
-> +				     "mediatek,mt6765-spi";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			mediatek,pad-select = <0>;
+> Should this feature only work with kernels built with 
+> CONFIG_SECONDARY_TRUSTED_KEYRING defined?  If so, I could drop support in 
+> the next version for kernels built without it.
 
-pad-select should be part of board DTS.
+Support for loading the CA keys stored in the MOK db onto the mok
+keyring, only if the secondary keyring is configured would really
+simplify the code.   Support for using the mok  keyring without the
+secondary keyring being configured, could always be added later.  As
+long as the other distros agree, I'm all for it.
 
-> +			reg = <0 0x1100a000 0 0x1000>;
-> +			interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_LOW 0>;
-> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-> +				<&topckgen CLK_TOP_SPI>,
-> +				<&infracfg_ao CLK_INFRA_SPI0>;
-> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
+thanks,
 
-Should be disabled by default and enabled in board DTS.
+Mimi
 
-> +		};
-
-This gives me the following warning:
-arch/arm64/boot/dts/mediatek/mt6779.dtsi:145.4-27: Warning
-(interrupts_property): /soc/spi0@1100a000:#interrupt-cells: size is (16),
-expected multiple of 12
-
-arch/arm64/boot/dts/mediatek/mt6779.dtsi:145.4-27: Warning
-(interrupts_property): /soc/spi1@11010000:#interrupt-cells: size is (16),
-expected multiple of 12
-
-arch/arm64/boot/dts/mediatek/mt6779.dtsi:145.4-27: Warning
-(interrupts_property): /soc/spi2@11012000:#interrupt-cells: size is (16),
-expected multiple of 12
-
-arch/arm64/boot/dts/mediatek/mt6779.dtsi:145.4-27: Warning
-(interrupts_property): /soc/spi3@11013000:#interrupt-cells: size is (16),
-expected multiple of 12
-
-arch/arm64/boot/dts/mediatek/mt6779.dtsi:145.4-27: Warning
-(interrupts_property): /soc/spi4@11018000:#interrupt-cells: size is (16),
-expected multiple of 12
-
-arch/arm64/boot/dts/mediatek/mt6779.dtsi:145.4-27: Warning
-(interrupts_property): /soc/spi5@11019000:#interrupt-cells: size is (16),
-expected multiple of 12
-
-arch/arm64/boot/dts/mediatek/mt6779.dtsi:145.4-27: Warning
-(interrupts_property): /soc/spi6@1101d000:#interrupt-cells: size is (16),
-expected multiple of 12
-
-arch/arm64/boot/dts/mediatek/mt6779.dtsi:145.4-27: Warning
-(interrupts_property): /soc/spi7@1101e000:#interrupt-cells: size is (16),
-expected multiple of 12
-
-
-Regards,
-Matthias
-
-> +
-> +		spi1: spi1@11010000 {
-> +			compatible = "mediatek,mt6779-spi",
-> +				     "mediatek,mt6765-spi";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			mediatek,pad-select = <0>;
-> +			reg = <0 0x11010000 0 0x1000>;
-> +			interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_LOW 0>;
-> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-> +				<&topckgen CLK_TOP_SPI>,
-> +				<&infracfg_ao CLK_INFRA_SPI1>;
-> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
-> +		};
-> +
-> +		spi2: spi2@11012000 {
-> +			compatible = "mediatek,mt6779-spi",
-> +				     "mediatek,mt6765-spi";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			mediatek,pad-select = <0>;
-> +			reg = <0 0x11012000 0 0x1000>;
-> +			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_LOW 0>;
-> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-> +				 <&topckgen CLK_TOP_SPI>,
-> +				<&infracfg_ao CLK_INFRA_SPI2>;
-> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
-> +		};
-> +
-> +		spi3: spi3@11013000 {
-> +			compatible = "mediatek,mt6779-spi",
-> +				     "mediatek,mt6765-spi";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			mediatek,pad-select = <0>;
-> +			reg = <0 0x11013000 0 0x1000>;
-> +			interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_LOW 0>;
-> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-> +				 <&topckgen CLK_TOP_SPI>,
-> +				 <&infracfg_ao CLK_INFRA_SPI3>;
-> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
-> +		};
-> +
-> +		spi4: spi4@11018000 {
-> +			compatible = "mediatek,mt6779-spi",
-> +				     "mediatek,mt6765-spi";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			mediatek,pad-select = <0>;
-> +			reg = <0 0x11018000 0 0x1000>;
-> +			interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_LOW 0>;
-> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-> +				 <&topckgen CLK_TOP_SPI>,
-> +				 <&infracfg_ao CLK_INFRA_SPI4>;
-> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
-> +		};
-> +
-> +		spi5: spi5@11019000 {
-> +			compatible = "mediatek,mt6779-spi",
-> +				     "mediatek,mt6765-spi";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			mediatek,pad-select = <0>;
-> +			reg = <0 0x11019000 0 0x1000>;
-> +			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_LOW 0>;
-> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-> +				<&topckgen CLK_TOP_SPI>,
-> +				<&infracfg_ao CLK_INFRA_SPI5>;
-> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
-> +		};
-> +
-> +		spi6: spi6@1101d000 {
-> +			compatible = "mediatek,mt6779-spi",
-> +				     "mediatek,mt6765-spi";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			mediatek,pad-select = <0>;
-> +			reg = <0 0x1101d000 0 0x1000>;
-> +			interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_LOW 0>;
-> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-> +				 <&topckgen CLK_TOP_SPI>,
-> +				 <&infracfg_ao CLK_INFRA_SPI6>;
-> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
-> +		};
-> +
-> +		spi7: spi7@1101e000 {
-> +			compatible = "mediatek,mt6779-spi",
-> +				     "mediatek,mt6765-spi";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			mediatek,pad-select = <0>;
-> +			reg = <0 0x1101e000 0 0x1000>;
-> +			interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_LOW 0>;
-> +			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-> +				 <&topckgen CLK_TOP_SPI>,
-> +				 <&infracfg_ao CLK_INFRA_SPI7>;
-> +			clock-names = "parent-clk", "sel-clk", "spi-clk";
-> +		};
-> +
->  		audio: clock-controller@11210000 {
->  			compatible = "mediatek,mt6779-audio", "syscon";
->  			reg = <0 0x11210000 0 0x1000>;
-> 
