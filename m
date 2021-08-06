@@ -2,146 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C21E3E3169
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888EA3E316C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245373AbhHFVvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 17:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44952 "EHLO
+        id S245378AbhHFVvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 17:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245368AbhHFVvJ (ORCPT
+        with ESMTP id S245379AbhHFVvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 17:51:09 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98068C0613CF;
-        Fri,  6 Aug 2021 14:50:53 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 867F21F4088D
-Received: by earth.universe (Postfix, from userid 1000)
-        id 925243C0C99; Fri,  6 Aug 2021 23:50:50 +0200 (CEST)
-Date:   Fri, 6 Aug 2021 23:50:50 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] power: supply: sbs-battery: add support for
- time_to_empty_now attribute
-Message-ID: <20210806215050.3pgcqwtcsg22de7c@earth.universe>
-References: <cd466515301fcb19e9b858b2287d8bcc10cc3de1.1626678985.git.matthias.schiffer@ew.tq-group.com>
- <7238b56cca93c8101288b069fd044024da81db1f.1626678985.git.matthias.schiffer@ew.tq-group.com>
+        Fri, 6 Aug 2021 17:51:31 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE0BC06179A
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 14:51:15 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so24696910pjr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 14:51:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tWEiCkw+fSiz6EiygCnTJiJ8o5BtcEILDKNkLL6Uu3s=;
+        b=BX3+BEAylAbE/hNGLDIXMbDFoR+/KM+Z/rF4MghjRq7IjV4KWs0jpcGEkJ6fKEsODl
+         Sljvlv9qUJMBY5XiRx9uKD/LhdqKaGq6TLZPuICLdBGv1ppOSNElnsGhKuN4jDK9cpni
+         2w2ZKDN5VMjaV5qs5QjjNdjIC11LlKq5QilWw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tWEiCkw+fSiz6EiygCnTJiJ8o5BtcEILDKNkLL6Uu3s=;
+        b=Ya/exgSr/Q61H816zjecmcGznuYjtwl3CN9wx+3CXsLmbffY8IYjm7jeLtTIAgOv0w
+         ZOtbYmsYAmH5j6pRUtSYkYtGtUboNoDV06jkN0ms0UevcErLD2VmwRGv21Ariogi8++0
+         rC/ogDNiO8WHWeZGSIMy1awKzi8L05FzU9Cvtxo927ygR5LJdcHYFR8xtTYSXQfoFuJJ
+         2wBCBdo51tVJxdxdv8G2pAr3LWox8ATJNFLT/cOYPHmFQpQ5GIsg5SEFDG+71JwrbG5H
+         NpBeM4yzsHZVeQROsVVTaiObf3ihNVUxdcwVjaA7nh7Zj5knH75IIkf2cbTIKF79mXQj
+         +AyQ==
+X-Gm-Message-State: AOAM533bSxbxhKUhgy1Fx/3ie66eNnev0ebs8TzU1X7Ehan9uxg4MZBi
+        NZvbIhccP4Pktq4P4JOfIAyoFQ==
+X-Google-Smtp-Source: ABdhPJz6V63GlXJdSmLLP/MTaSIOKcIhloT+lM9y1AYLFfR1I8ESY4FgdjJkGIx6PLfRg6qjDqmUnQ==
+X-Received: by 2002:a05:6a00:16c6:b029:32d:e190:9dd0 with SMTP id l6-20020a056a0016c6b029032de1909dd0mr12475598pfc.70.1628286674964;
+        Fri, 06 Aug 2021 14:51:14 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y2sm10734979pjl.6.2021.08.06.14.51.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 14:51:14 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Kees Cook <keescook@chromium.org>, David Sterba <dsterba@suse.cz>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] mac80211: radiotap: Use BIT() instead of shifts
+Date:   Fri,  6 Aug 2021 14:51:12 -0700
+Message-Id: <20210806215112.2874773-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2sjvvldoig5bjkfm"
-Content-Disposition: inline
-In-Reply-To: <7238b56cca93c8101288b069fd044024da81db1f.1626678985.git.matthias.schiffer@ew.tq-group.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8683; h=from:subject; bh=czSMCGdMP4Zyrr8fUtCTJKV3QkH9XMp2P84y9iqGzvE=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhDa7Q05vzCyv/C+X37SFm9tonPHNTDPmeDyfL6WJM WkJDsZeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYQ2u0AAKCRCJcvTf3G3AJtu4D/ 9A0n0fkYoVF8zOcW4lzqhOH07vbnwGmnmVpT5O2rGg06I/UNQb+aRBQMa829A3FDw6fcXwgBe5sY6N 8EHPntfbYtlXviGJbn8pwD4kW412i9EkJcTvNMsg77pSGe0q+UhfRNCp+aGY4y5yXbKhAnFGUFBQIs IoJ91oCvEEcjSZS3cUvERUUd5ZyqfAcB6Eof/qUE1+kUyNooIwvDITDWi6LvlGQsa4mwvn5sJzRAJ6 rIAmQ92s2nVPwLpMhhT4ASNMmjiqAlTE+p7bBdHe/lZ0yDV5U1kP8CbP5vkFmNvNNuNJLyeLXVSdye 1OgWpKWJI8I3Tag3wFyiziPzMEILbN28XB5W7tIwKC68FfBAdAX2Nym4aufAyaGLuY5mzvgQTP4vIE 2eVEin4OZzRMGgntdVZWXFGEdHVOqrvERClSqA/ttEBP+0ayFvqmYQDCaPIqTF7cWEgkaYl8ChhxCp 87ILfTh+5N+GGQWCmCRYcy3gdUD/R5ZJkCMBNfXy9VenyN5O6kSo5ZawqC+/aP2mtyZxRzAMuDpRqa OMJdnxN97T9OYKHTZC5uKvjVW3Ny8Icp5u2QPPecYL240muMsKE6vSYgMXMddFMfUJlrXEZYGZ3Ssu heeaGoUa6GKH6XLFykaCXSrPGZDo1XP1s72Ys09ItwmovFscP3HhNjUmXgEg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+IEEE80211_RADIOTAP_EXT has a value of 31, which means if shift was ever
+cast to 64-bit, the result would become sign-extended. As a matter of
+robustness, just replace all the open-coded shifts with BIT().
 
---2sjvvldoig5bjkfm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Suggested-by: David Sterba <dsterba@suse.cz>
+Link: https://lore.kernel.org/lkml/20210728092323.GW5047@twin.jikos.cz/
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ net/mac80211/rx.c       | 22 +++++++++++-----------
+ net/mac80211/status.c   | 16 ++++++++--------
+ net/wireless/radiotap.c |  4 ++--
+ 3 files changed, 21 insertions(+), 21 deletions(-)
 
-Hi,
+diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
+index 2563473b5cf1..3eb7b03b23c6 100644
+--- a/net/mac80211/rx.c
++++ b/net/mac80211/rx.c
+@@ -372,7 +372,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+ 			ieee80211_calculate_rx_timestamp(local, status,
+ 							 mpdulen, 0),
+ 			pos);
+-		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_TSFT);
++		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_TSFT));
+ 		pos += 8;
+ 	}
+ 
+@@ -396,7 +396,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+ 		*pos = 0;
+ 	} else {
+ 		int shift = 0;
+-		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_RATE);
++		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_RATE));
+ 		if (status->bw == RATE_INFO_BW_10)
+ 			shift = 1;
+ 		else if (status->bw == RATE_INFO_BW_5)
+@@ -433,7 +433,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+ 	    !(status->flag & RX_FLAG_NO_SIGNAL_VAL)) {
+ 		*pos = status->signal;
+ 		rthdr->it_present |=
+-			cpu_to_le32(1 << IEEE80211_RADIOTAP_DBM_ANTSIGNAL);
++			cpu_to_le32(BIT(IEEE80211_RADIOTAP_DBM_ANTSIGNAL));
+ 		pos++;
+ 	}
+ 
+@@ -459,7 +459,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+ 	if (status->encoding == RX_ENC_HT) {
+ 		unsigned int stbc;
+ 
+-		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_MCS);
++		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_MCS));
+ 		*pos++ = local->hw.radiotap_mcs_details;
+ 		*pos = 0;
+ 		if (status->enc_flags & RX_ENC_FLAG_SHORT_GI)
+@@ -483,7 +483,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+ 		while ((pos - (u8 *)rthdr) & 3)
+ 			pos++;
+ 		rthdr->it_present |=
+-			cpu_to_le32(1 << IEEE80211_RADIOTAP_AMPDU_STATUS);
++			cpu_to_le32(BIT(IEEE80211_RADIOTAP_AMPDU_STATUS));
+ 		put_unaligned_le32(status->ampdu_reference, pos);
+ 		pos += 4;
+ 		if (status->flag & RX_FLAG_AMPDU_LAST_KNOWN)
+@@ -510,7 +510,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+ 	if (status->encoding == RX_ENC_VHT) {
+ 		u16 known = local->hw.radiotap_vht_details;
+ 
+-		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_VHT);
++		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_VHT));
+ 		put_unaligned_le16(known, pos);
+ 		pos += 2;
+ 		/* flags */
+@@ -554,7 +554,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+ 		u8 flags = IEEE80211_RADIOTAP_TIMESTAMP_FLAG_32BIT;
+ 
+ 		rthdr->it_present |=
+-			cpu_to_le32(1 << IEEE80211_RADIOTAP_TIMESTAMP);
++			cpu_to_le32(BIT(IEEE80211_RADIOTAP_TIMESTAMP));
+ 
+ 		/* ensure 8 byte alignment */
+ 		while ((pos - (u8 *)rthdr) & 7)
+@@ -642,7 +642,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+ 		/* ensure 2 byte alignment */
+ 		while ((pos - (u8 *)rthdr) & 1)
+ 			pos++;
+-		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_HE);
++		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_HE));
+ 		memcpy(pos, &he, sizeof(he));
+ 		pos += sizeof(he);
+ 	}
+@@ -652,14 +652,14 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+ 		/* ensure 2 byte alignment */
+ 		while ((pos - (u8 *)rthdr) & 1)
+ 			pos++;
+-		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_HE_MU);
++		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_HE_MU));
+ 		memcpy(pos, &he_mu, sizeof(he_mu));
+ 		pos += sizeof(he_mu);
+ 	}
+ 
+ 	if (status->flag & RX_FLAG_NO_PSDU) {
+ 		rthdr->it_present |=
+-			cpu_to_le32(1 << IEEE80211_RADIOTAP_ZERO_LEN_PSDU);
++			cpu_to_le32(BIT(IEEE80211_RADIOTAP_ZERO_LEN_PSDU));
+ 		*pos++ = status->zero_length_psdu_type;
+ 	}
+ 
+@@ -667,7 +667,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+ 		/* ensure 2 byte alignment */
+ 		while ((pos - (u8 *)rthdr) & 1)
+ 			pos++;
+-		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_LSIG);
++		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_LSIG));
+ 		memcpy(pos, &lsig, sizeof(lsig));
+ 		pos += sizeof(lsig);
+ 	}
+diff --git a/net/mac80211/status.c b/net/mac80211/status.c
+index bae321ff77f6..1f295e5721ef 100644
+--- a/net/mac80211/status.c
++++ b/net/mac80211/status.c
+@@ -305,8 +305,8 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
+ 	memset(rthdr, 0, rtap_len);
+ 	rthdr->it_len = cpu_to_le16(rtap_len);
+ 	rthdr->it_present =
+-		cpu_to_le32((1 << IEEE80211_RADIOTAP_TX_FLAGS) |
+-			    (1 << IEEE80211_RADIOTAP_DATA_RETRIES));
++		cpu_to_le32(BIT(IEEE80211_RADIOTAP_TX_FLAGS) |
++			    BIT(IEEE80211_RADIOTAP_DATA_RETRIES));
+ 	pos = (unsigned char *)(rthdr + 1);
+ 
+ 	/*
+@@ -331,7 +331,7 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
+ 			sband->bitrates[info->status.rates[0].idx].bitrate;
+ 
+ 	if (legacy_rate) {
+-		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_RATE);
++		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_RATE));
+ 		*pos = DIV_ROUND_UP(legacy_rate, 5 * (1 << shift));
+ 		/* padding for tx flags */
+ 		pos += 2;
+@@ -358,7 +358,7 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
+ 
+ 	if (status && status->rate &&
+ 	    (status->rate->flags & RATE_INFO_FLAGS_MCS)) {
+-		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_MCS);
++		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_MCS));
+ 		pos[0] = IEEE80211_RADIOTAP_MCS_HAVE_MCS |
+ 			 IEEE80211_RADIOTAP_MCS_HAVE_GI |
+ 			 IEEE80211_RADIOTAP_MCS_HAVE_BW;
+@@ -374,7 +374,7 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
+ 			(IEEE80211_RADIOTAP_VHT_KNOWN_GI |
+ 			 IEEE80211_RADIOTAP_VHT_KNOWN_BANDWIDTH);
+ 
+-		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_VHT);
++		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_VHT));
+ 
+ 		/* required alignment from rthdr */
+ 		pos = (u8 *)rthdr + ALIGN(pos - (u8 *)rthdr, 2);
+@@ -419,7 +419,7 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
+ 		   (status->rate->flags & RATE_INFO_FLAGS_HE_MCS)) {
+ 		struct ieee80211_radiotap_he *he;
+ 
+-		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_HE);
++		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_HE));
+ 
+ 		/* required alignment from rthdr */
+ 		pos = (u8 *)rthdr + ALIGN(pos - (u8 *)rthdr, 2);
+@@ -495,7 +495,7 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
+ 	/* IEEE80211_RADIOTAP_MCS
+ 	 * IEEE80211_RADIOTAP_VHT */
+ 	if (info->status.rates[0].flags & IEEE80211_TX_RC_MCS) {
+-		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_MCS);
++		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_MCS));
+ 		pos[0] = IEEE80211_RADIOTAP_MCS_HAVE_MCS |
+ 			 IEEE80211_RADIOTAP_MCS_HAVE_GI |
+ 			 IEEE80211_RADIOTAP_MCS_HAVE_BW;
+@@ -512,7 +512,7 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
+ 			(IEEE80211_RADIOTAP_VHT_KNOWN_GI |
+ 			 IEEE80211_RADIOTAP_VHT_KNOWN_BANDWIDTH);
+ 
+-		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_VHT);
++		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_VHT));
+ 
+ 		/* required alignment from rthdr */
+ 		pos = (u8 *)rthdr + ALIGN(pos - (u8 *)rthdr, 2);
+diff --git a/net/wireless/radiotap.c b/net/wireless/radiotap.c
+index 36f1b59a78bf..8099c9564a59 100644
+--- a/net/wireless/radiotap.c
++++ b/net/wireless/radiotap.c
+@@ -125,13 +125,13 @@ int ieee80211_radiotap_iterator_init(
+ 
+ 	/* find payload start allowing for extended bitmap(s) */
+ 
+-	if (iterator->_bitmap_shifter & (1<<IEEE80211_RADIOTAP_EXT)) {
++	if (iterator->_bitmap_shifter & (BIT(IEEE80211_RADIOTAP_EXT))) {
+ 		if ((unsigned long)iterator->_arg -
+ 		    (unsigned long)iterator->_rtheader + sizeof(uint32_t) >
+ 		    (unsigned long)iterator->_max_length)
+ 			return -EINVAL;
+ 		while (get_unaligned_le32(iterator->_arg) &
+-					(1 << IEEE80211_RADIOTAP_EXT)) {
++					(BIT(IEEE80211_RADIOTAP_EXT))) {
+ 			iterator->_arg += sizeof(uint32_t);
+ 
+ 			/*
+-- 
+2.30.2
 
-On Mon, Jul 19, 2021 at 09:20:19AM +0200, Matthias Schiffer wrote:
-> As defined by the Smart Battery Data Specification.
->=20
-> An _AVG suffix is added to the enum values REG_TIME_TO_EMPTY and
-> REG_TIME_TO_FULL to make the distinction clear.
->=20
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> ---
-
-Thanks, queued.
-
--- Sebastian
-
->  drivers/power/supply/sbs-battery.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sb=
-s-battery.c
-> index 3d6b8247d450..c4a95b01463a 100644
-> --- a/drivers/power/supply/sbs-battery.c
-> +++ b/drivers/power/supply/sbs-battery.c
-> @@ -31,8 +31,9 @@ enum {
->  	REG_CURRENT_AVG,
->  	REG_MAX_ERR,
->  	REG_CAPACITY,
-> -	REG_TIME_TO_EMPTY,
-> -	REG_TIME_TO_FULL,
-> +	REG_TIME_TO_EMPTY_NOW,
-> +	REG_TIME_TO_EMPTY_AVG,
-> +	REG_TIME_TO_FULL_AVG,
->  	REG_STATUS,
->  	REG_CAPACITY_LEVEL,
->  	REG_CYCLE_COUNT,
-> @@ -119,9 +120,11 @@ static const struct chip_data {
->  		SBS_DATA(POWER_SUPPLY_PROP_ENERGY_FULL, 0x10, 0, 65535),
->  	[REG_FULL_CHARGE_CAPACITY_CHARGE] =3D
->  		SBS_DATA(POWER_SUPPLY_PROP_CHARGE_FULL, 0x10, 0, 65535),
-> -	[REG_TIME_TO_EMPTY] =3D
-> +	[REG_TIME_TO_EMPTY_NOW] =3D
-> +		SBS_DATA(POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW, 0x11, 0, 65535),
-> +	[REG_TIME_TO_EMPTY_AVG] =3D
->  		SBS_DATA(POWER_SUPPLY_PROP_TIME_TO_EMPTY_AVG, 0x12, 0, 65535),
-> -	[REG_TIME_TO_FULL] =3D
-> +	[REG_TIME_TO_FULL_AVG] =3D
->  		SBS_DATA(POWER_SUPPLY_PROP_TIME_TO_FULL_AVG, 0x13, 0, 65535),
->  	[REG_CHARGE_CURRENT] =3D
->  		SBS_DATA(POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX, 0x14, 0, 65535=
-),
-> @@ -165,6 +168,7 @@ static const enum power_supply_property sbs_propertie=
-s[] =3D {
->  	POWER_SUPPLY_PROP_CAPACITY,
->  	POWER_SUPPLY_PROP_CAPACITY_ERROR_MARGIN,
->  	POWER_SUPPLY_PROP_TEMP,
-> +	POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW,
->  	POWER_SUPPLY_PROP_TIME_TO_EMPTY_AVG,
->  	POWER_SUPPLY_PROP_TIME_TO_FULL_AVG,
->  	POWER_SUPPLY_PROP_SERIAL_NUMBER,
-> @@ -748,6 +752,7 @@ static void  sbs_unit_adjustment(struct i2c_client *c=
-lient,
->  		val->intval -=3D TEMP_KELVIN_TO_CELSIUS;
->  		break;
-> =20
-> +	case POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW:
->  	case POWER_SUPPLY_PROP_TIME_TO_EMPTY_AVG:
->  	case POWER_SUPPLY_PROP_TIME_TO_FULL_AVG:
->  		/* sbs provides time to empty and time to full in minutes.
-> @@ -966,6 +971,7 @@ static int sbs_get_property(struct power_supply *psy,
->  	case POWER_SUPPLY_PROP_CURRENT_NOW:
->  	case POWER_SUPPLY_PROP_CURRENT_AVG:
->  	case POWER_SUPPLY_PROP_TEMP:
-> +	case POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW:
->  	case POWER_SUPPLY_PROP_TIME_TO_EMPTY_AVG:
->  	case POWER_SUPPLY_PROP_TIME_TO_FULL_AVG:
->  	case POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN:
-> --=20
-> 2.17.1
->=20
-
---2sjvvldoig5bjkfm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmENrroACgkQ2O7X88g7
-+prZSA//XvPKJzAPD+EW+Q59E8R4i9DnilFbRVN8L6YWeCu2cKMwIE3vKm+CBl0f
-BsJVfbOY+KG8ZTx4f3F4jA2P0fOX49gDeh7BrGu3yWbMFshP8lF5ZnkYT5ITcSxB
-h7hZWftbZIP+46StFwqxhq4cPauEyRJhZEjphyj8xDNdRsrtLzgEcXCspDTXtymD
-iZRBN+BfYfhEKpbO7IJxvzqbFox4aOp/DGv4XUZIwed57KXChDCga0Ri+u5d3PqM
-MAJO2KmUzw3dO3d1V15nHKuo8O6WZDUH3mta1RcXHE9Je7GTZvuxJ0THX3WXy9Ga
-msRh1HmoR2KSRPzBfTpKYyv+ZXhNCU5B4ahy4eWwzocb7uXkAnmfQ78IljIgvV4T
-yhHlHS8DFGpPsilqWLvgEz8SXEfa+09JrYAnJ9hgyjOLsSxeU8Vsv/B6La7hnESb
-KKYFrS+2s/G213BXMYH1j0k0eTzxsBdvpxfymEnbWpe3JJSMFnOMvNq/QGngmSSN
-+c9o1PW+8rpe2fl4o0dEpOPRGJDdyjkhuaCz/aMKAcRAk6cxyqahHj8lraZSxmj0
-gNLhNQ54tCJGrL3gCB27rw2SkRgpU2fUbPUJmqSOihr14HO1LpPg46B9P4FUceMW
-MbipmxfoDtQWOdBFCpxzoC/ii5fhlS+DvRmbz+U9gN1KCvxrHns=
-=S2d7
------END PGP SIGNATURE-----
-
---2sjvvldoig5bjkfm--
