@@ -2,76 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7C73E315D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E573E3164
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245326AbhHFVrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 17:47:49 -0400
-Received: from mail-io1-f48.google.com ([209.85.166.48]:33444 "EHLO
-        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241587AbhHFVrs (ORCPT
+        id S245347AbhHFVu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 17:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245328AbhHFVuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 17:47:48 -0400
-Received: by mail-io1-f48.google.com with SMTP id n19so14339013ioz.0;
-        Fri, 06 Aug 2021 14:47:31 -0700 (PDT)
+        Fri, 6 Aug 2021 17:50:24 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D64BC06179A
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 14:50:07 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so21468229pji.5
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 14:50:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gUraSkyrsAFaSY8vAulmKjK0D4+3OOrGidTEIITk1eo=;
+        b=GSvN543bPKhIK1/VBr27ma7W3pkmJTDziVDbKx6nLAjCtDC/ehiZ9JOsj7z6lqSHJ8
+         IEOKsaCojcFPOZnl6C2vV7yN51EgstGQpoIXr/0fHnejdpEqGnEpXnpHznS9GlWD1piM
+         3ohPvYVp9IUF/Rrc8YGRd1gxDX9Cg6qjXsqIU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BnsmwWZ5UV2/LE+aqdhfs09L7FfJpBqefxeuDQt77V0=;
-        b=fzpBgXoWW8yy3JLsV+xOPngXts/ZTyUi1jq9dDWruHulYyECjCaWyOhVkJ/lHXoqL/
-         1bTYZIMErgW+Y6BK9TaCsy0Bf9B70EX4eDhVontnLWxzfhihiqYW5VADoTprX1H2FTQn
-         Vy9mbT48z9oZiAov6QCeN5qM5dpqoeXEOYQtIWt5MF5zqzITuReN87JPcPfii/seJGnl
-         KyLnKSdARFH5SygpGGBsb0A/tTpbG0xaQVCEoeY6x7spKfT3/khhZpzkELCI3AkNeijD
-         IhwoGtdn7ALp1nbdO8m5WwUVU+jnZrnW9suRzLVn1HMLuomqRUI0LJ6uxlHwEB2aJK6p
-         /CLg==
-X-Gm-Message-State: AOAM532lGT56UplbA8HOFC3gOEOUd60VVGgTkvFNhvWu8mGY2CWPK+Pg
-        /D026RkVTbm7jykh3mRfTg==
-X-Google-Smtp-Source: ABdhPJwY3vn+yJ5z1R0ZdpqJAsHZRNWFU1oMd54Rjtxc4mGO4QSs/gfI94S40UfF3mOemJERn/2Ohw==
-X-Received: by 2002:a05:6e02:1d8d:: with SMTP id h13mr289082ila.40.1628286450854;
-        Fri, 06 Aug 2021 14:47:30 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id q2sm1054502iog.22.2021.08.06.14.47.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gUraSkyrsAFaSY8vAulmKjK0D4+3OOrGidTEIITk1eo=;
+        b=L9nCsxv0rErHy9VqAKrTml5urkOWyRgo3cAi1HEOZPdlvPy1T5PRWeKe91kQYxnXwC
+         Y7QoFYJhktM+iXM4KOh6uRilz5pYb6HQvmZXSAfi16CzeBy4IRHjLEfhjnZqOe0jYClN
+         +1Kq9j9p58plDW0kvQb3JcIHDQrs9+Y3qcudPXpTs/a5wOMmqfnSU3DwGKS+WZwiP67O
+         FRlztBItkExKHm7TbiNrXXOhksE1t+LV75FBfpQ9GipNEwGeQfDPcy/vTY6/5NhXAaA/
+         gzTB4gXpropxt7I6xbsZRMwrd9FX4Y86I4fYwv5vaZmYlarbETVO//ayBgT0J99CekzE
+         5kmA==
+X-Gm-Message-State: AOAM531MdnI4EcgxPFCJEnFDyQHTpHgEN0vN8CcPUjZsMBh7iWALYRf6
+        YcFOOo6ABghwD6dbOA0KyeNG4g==
+X-Google-Smtp-Source: ABdhPJy+Kf7w5KI+XVSjt2FRNsyGEVYPhSvhEaOPRhbq81cdArt7SKdqZQl0wkZFCGqq39jvuqcP6A==
+X-Received: by 2002:a05:6a00:2150:b029:399:711c:826f with SMTP id o16-20020a056a002150b0290399711c826fmr12556355pfk.14.1628286606720;
+        Fri, 06 Aug 2021 14:50:06 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d65sm9570610pjk.45.2021.08.06.14.50.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 14:47:30 -0700 (PDT)
-Received: (nullmailer pid 1862298 invoked by uid 1000);
-        Fri, 06 Aug 2021 21:47:28 -0000
-Date:   Fri, 6 Aug 2021 15:47:28 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Eizan Miyamoto <eizan@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        chunkuang.hu@kernel.org, Rob Herring <robh+dt@kernel.org>,
-        yong.wu@mediatek.com, linux-media@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, houlong.wei@mediatek.com,
-        linux-arm-kernel@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        enric.balletbo@collabora.com, wenst@chromium.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 9/9] dt-bindings: mediatek: remove vpu requirement
- from mtk-mdp
-Message-ID: <YQ2t8DMqz/Ju1Qng@robh.at.kernel.org>
-References: <20210802121215.703023-1-eizan@chromium.org>
- <20210802220943.v6.9.If10dbdfade9f48710e485efe79e53e6e65144a2f@changeid>
+        Fri, 06 Aug 2021 14:50:06 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] net/mlx5e: Avoid field-overflowing memcpy()
+Date:   Fri,  6 Aug 2021 14:50:03 -0700
+Message-Id: <20210806215003.2874554-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210802220943.v6.9.If10dbdfade9f48710e485efe79e53e6e65144a2f@changeid>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5742; h=from:subject; bh=cNvlrfIsT1+CpfN0obpPhHEUYJYVuyHpzp3wiLEFNWY=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhDa6Lh9EgIloqfj+/VgCfcSonsAQDYPZHBgpoEloD KYt3DsWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYQ2uiwAKCRCJcvTf3G3AJnYvD/ 46bzI0R7MoSLbJUL279MLp9QvSKekQ5AU6B8TL3gvQCC0+AndVvPGLMApL4SjdqpWEP/xLTA4NAgd8 TwofoWZpghQUnERjXPWKrfAjpv85TiEavVzg+rL2xBQFDJaH+6uD2dY5ixrf6RZl0yxTQiqARGzoUl Hzd62Un2FAdrFIbWmwVnhi2BYW45O+GQD6QrswwFzAOsuxjxqQ0yuEZOt8e6tpp2KgQ25ax1Bx1FtQ U9cpPuzkV8TxVLlLyLRQOuu2g/BbbdJC9EBygPYsL2a6+sqRJWYu9fEonuPIiD1usOfaIhNnJ2RO10 FS4YpWMtGALnc/oBChPKuAQ22XFzyDVT+xOAkZEeZF5TUccm+j+357Dl1z/2DJO14INhyP40ADTrx/ hiD0Fassaskv+ktJZObYWplbSaagAD1wRHQW2ptAPJVjkr14QfUa5Z13gWnIEA88XIt5RHLuGHiCFQ HdKMCjuBX/6546bFr5enEtYZmiC02XtEMbovzMsmLYGPK9n43ypS9F9p3v+zighMrbISJ5GTioVb8a Tu/9N1yGPGfwb4caiDgVwSiTPzho318vT4MvoMSQFClrLIet9toEDfMYwaHhUm1TIsl/4Xd3/qfOX9 U8H6Ne/VTSWPNc7Qc/xtGU5OZRqSNBUC2NFAtFyN7zljXkJDUcZGWniJ2A5w==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Aug 2021 22:12:15 +1000, Eizan Miyamoto wrote:
-> It is no longer needed by the mtk-mdp driver
-> 
-> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
-> ---
-> 
-> (no changes since v1)
-> 
->  Documentation/devicetree/bindings/media/mediatek-mdp.txt | 3 ---
->  1 file changed, 3 deletions(-)
-> 
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy(), memmove(), and memset(), avoid
+intentionally writing across neighboring fields.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Use flexible arrays instead of zero-element arrays (which look like they
+are always overflowing) and split the cross-field memcpy() into two halves
+that can be appropriately bounds-checked by the compiler.
+
+We were doing:
+
+	#define ETH_HLEN  14
+	#define VLAN_HLEN  4
+	...
+	#define MLX5E_XDP_MIN_INLINE (ETH_HLEN + VLAN_HLEN)
+	...
+        struct mlx5e_tx_wqe      *wqe  = mlx5_wq_cyc_get_wqe(wq, pi);
+	...
+        struct mlx5_wqe_eth_seg  *eseg = &wqe->eth;
+        struct mlx5_wqe_data_seg *dseg = wqe->data;
+	...
+	memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
+
+target is wqe->eth.inline_hdr.start (which the compiler sees as being
+2 bytes in size), but copying 18, intending to write across start
+(really vlan_tci, 2 bytes). The remaining 16 bytes get written into
+wqe->data[0], covering byte_count (4 bytes), lkey (4 bytes), and addr
+(8 bytes).
+
+struct mlx5e_tx_wqe {
+        struct mlx5_wqe_ctrl_seg   ctrl;                 /*     0    16 */
+        struct mlx5_wqe_eth_seg    eth;                  /*    16    16 */
+        struct mlx5_wqe_data_seg   data[];               /*    32     0 */
+
+        /* size: 32, cachelines: 1, members: 3 */
+        /* last cacheline: 32 bytes */
+};
+
+struct mlx5_wqe_eth_seg {
+        u8                         swp_outer_l4_offset;  /*     0     1 */
+        u8                         swp_outer_l3_offset;  /*     1     1 */
+        u8                         swp_inner_l4_offset;  /*     2     1 */
+        u8                         swp_inner_l3_offset;  /*     3     1 */
+        u8                         cs_flags;             /*     4     1 */
+        u8                         swp_flags;            /*     5     1 */
+        __be16                     mss;                  /*     6     2 */
+        __be32                     flow_table_metadata;  /*     8     4 */
+        union {
+                struct {
+                        __be16     sz;                   /*    12     2 */
+                        u8         start[2];             /*    14     2 */
+                } inline_hdr;                            /*    12     4 */
+                struct {
+                        __be16     type;                 /*    12     2 */
+                        __be16     vlan_tci;             /*    14     2 */
+                } insert;                                /*    12     4 */
+                __be32             trailer;              /*    12     4 */
+        };                                               /*    12     4 */
+
+        /* size: 16, cachelines: 1, members: 9 */
+        /* last cacheline: 16 bytes */
+};
+
+struct mlx5_wqe_data_seg {
+        __be32                     byte_count;           /*     0     4 */
+        __be32                     lkey;                 /*     4     4 */
+        __be64                     addr;                 /*     8     8 */
+
+        /* size: 16, cachelines: 1, members: 3 */
+        /* last cacheline: 16 bytes */
+};
+
+So, split the memcpy() so the compiler can reason about the buffer
+sizes.
+
+"pahole" shows no size nor member offset changes to struct mlx5e_tx_wqe
+nor struct mlx5e_umr_wqe. "objdump -d" shows no meaningful object
+code changes (i.e. only source line number induced differences and
+optimizations).
+
+Cc: Saeed Mahameed <saeedm@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: linux-rdma@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en.h     | 4 ++--
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c | 4 +++-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+index 35668986878a..40af561c98d9 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+@@ -201,7 +201,7 @@ static inline int mlx5e_get_max_num_channels(struct mlx5_core_dev *mdev)
+ struct mlx5e_tx_wqe {
+ 	struct mlx5_wqe_ctrl_seg ctrl;
+ 	struct mlx5_wqe_eth_seg  eth;
+-	struct mlx5_wqe_data_seg data[0];
++	struct mlx5_wqe_data_seg data[];
+ };
+ 
+ struct mlx5e_rx_wqe_ll {
+@@ -217,7 +217,7 @@ struct mlx5e_umr_wqe {
+ 	struct mlx5_wqe_ctrl_seg       ctrl;
+ 	struct mlx5_wqe_umr_ctrl_seg   uctrl;
+ 	struct mlx5_mkey_seg           mkc;
+-	struct mlx5_mtt                inline_mtts[0];
++	struct mlx5_mtt                inline_mtts[];
+ };
+ 
+ extern const char mlx5e_self_tests[][ETH_GSTRING_LEN];
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+index 2f0df5cc1a2d..efae2444c26f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+@@ -341,8 +341,10 @@ mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
+ 
+ 	/* copy the inline part if required */
+ 	if (sq->min_inline_mode != MLX5_INLINE_MODE_NONE) {
+-		memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
++		memcpy(eseg->inline_hdr.start, xdptxd->data, sizeof(eseg->inline_hdr.start));
+ 		eseg->inline_hdr.sz = cpu_to_be16(MLX5E_XDP_MIN_INLINE);
++		memcpy(dseg, xdptxd->data + sizeof(eseg->inline_hdr.start),
++		       MLX5E_XDP_MIN_INLINE - sizeof(eseg->inline_hdr.start));
+ 		dma_len  -= MLX5E_XDP_MIN_INLINE;
+ 		dma_addr += MLX5E_XDP_MIN_INLINE;
+ 		dseg++;
+-- 
+2.30.2
+
