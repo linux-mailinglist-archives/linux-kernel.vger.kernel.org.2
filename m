@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8CDB3E261E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BFB93E2625
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244115AbhHFI3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:29:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33264 "EHLO mail.kernel.org"
+        id S234568AbhHFIbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:31:52 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:51744 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244688AbhHFI3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:29:20 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9EFD604DB;
-        Fri,  6 Aug 2021 08:29:04 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mBvDy-003JiD-SH; Fri, 06 Aug 2021 09:29:03 +0100
+        id S230119AbhHFIbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:31:49 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mBvGO-0007NM-Sh; Fri, 06 Aug 2021 16:31:32 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mBvGM-0003QS-Dv; Fri, 06 Aug 2021 16:31:30 +0800
+Date:   Fri, 6 Aug 2021 16:31:30 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Kai Ye <yekai13@huawei.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wangzhou1@hisilicon.com
+Subject: Re: [PATCH 2/5] crypto: hisilicon/sec - delete the print of fallback
+ tfm application failure
+Message-ID: <20210806083130.GA13132@gondor.apana.org.au>
+References: <1627701996-4589-1-git-send-email-yekai13@huawei.com>
+ <1627701996-4589-3-git-send-email-yekai13@huawei.com>
 MIME-Version: 1.0
-Date:   Fri, 06 Aug 2021 09:29:02 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/7] PCI: aardvark: Check for virq mapping when processing
- INTx IRQ
-In-Reply-To: <20210625090319.10220-3-pali@kernel.org>
-References: <20210625090319.10220-1-pali@kernel.org>
- <20210625090319.10220-3-pali@kernel.org>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <f38ad6edfb6ee63f273a430154e1038f@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: pali@kernel.org, lorenzo.pieralisi@arm.com, thomas.petazzoni@bootlin.com, bhelgaas@google.com, robh@kernel.org, kabel@kernel.org, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1627701996-4589-3-git-send-email-yekai13@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-25 10:03, Pali Rohár wrote:
-> It is possible that we receive spurious INTx interrupt. So add needed 
-> check
-> before calling generic_handle_irq() function.
+On Sat, Jul 31, 2021 at 11:26:33AM +0800, Kai Ye wrote:
+> Modify the print of information that might lead to user misunderstanding.
+> Currently only XTS mode need the fallback tfm when using 192bit key.
+> Others algs not need soft fallback tfm. So others algs can return
+> directly.
 > 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Reviewed-by: Marek Behún <kabel@kernel.org>
-> Cc: stable@vger.kernel.org
+> Signed-off-by: Kai Ye <yekai13@huawei.com>
 > ---
->  drivers/pci/controller/pci-aardvark.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/pci-aardvark.c
-> b/drivers/pci/controller/pci-aardvark.c
-> index 36fcc077ec72..59f91fad2481 100644
-> --- a/drivers/pci/controller/pci-aardvark.c
-> +++ b/drivers/pci/controller/pci-aardvark.c
-> @@ -1226,7 +1226,11 @@ static void advk_pcie_handle_int(struct 
-> advk_pcie *pcie)
->  			    PCIE_ISR1_REG);
-> 
->  		virq = irq_find_mapping(pcie->irq_domain, i);
-> -		generic_handle_irq(virq);
-> +		if (virq)
-> +			generic_handle_irq(virq);
-> +		else
-> +			dev_err_ratelimited(&pcie->pdev->dev, "unexpected INT%c IRQ\n",
-> +					    (char)i+'A');
->  	}
->  }
+>  drivers/crypto/hisilicon/sec2/sec_crypto.c | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
 
-Please use generic_handle_domain_irq() instead of irq_find_mapping()
-and generic_handle_irq().
+I don't think this is a good change.
+
+> @@ -2032,13 +2032,12 @@ static int sec_skcipher_soft_crypto(struct sec_ctx *ctx,
+>  				    struct skcipher_request *sreq, bool encrypt)
+>  {
+>  	struct sec_cipher_ctx *c_ctx = &ctx->c_ctx;
+> +	SYNC_SKCIPHER_REQUEST_ON_STACK(subreq, c_ctx->fbtfm);
+>  	struct device *dev = ctx->dev;
+>  	int ret;
+>  
+> -	SYNC_SKCIPHER_REQUEST_ON_STACK(subreq, c_ctx->fbtfm);
+> -
+>  	if (!c_ctx->fbtfm) {
+> -		dev_err(dev, "failed to check fallback tfm\n");
+> +		dev_err(dev, "the soft tfm isn't supported in the current system.\n");
+
+If we end up in this code path you'll be spamming the printk buffer
+on every single request.  This is not acceptable.  At least rate limit
+these messages.
 
 Thanks,
-
-         M.
 -- 
-Jazz is not dead. It just smells funny...
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
