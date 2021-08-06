@@ -2,181 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9EC3E2B7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE3A3E2B82
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344119AbhHFNiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 09:38:00 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:47021 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243524AbhHFNh7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 09:37:59 -0400
-Received: by mail-oi1-f182.google.com with SMTP id o185so12085399oih.13;
-        Fri, 06 Aug 2021 06:37:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WBz3yCwovYGiUJQyt7oAsv1t5Ex82kjmh1q1MQXkgNQ=;
-        b=gfDlHBJjLwVc/+42dsdLYWGVZ//LJ1v4WBd2Nli/c+tjaXmr5o6rD7VwNLHLKfnEDY
-         NwUGuT0s3s5h/vBMI/JL5LtXgp1beVY3++6/alIH3qmhX0O5XRX1Yg37Gl0Nk1XNKgZh
-         cumKLPPXq6jXwTRA62WH7XA0yVjFC8j3UZ6SDpZFrhbXWIop+o9z5+auiYSbxPfPuk6I
-         Uo6J58CwFdUebi744oDfcXGXrzT1FbnQ0YvXdtnhXZa9CFbgTU7ItVoK27rjBn/cUvHy
-         qahkQf1lVYOocoExnhmD09nD2vzmV+3o8WharQv7F3zoY2t8n+J24sKnEaOuQxmGkdS2
-         v6YA==
-X-Gm-Message-State: AOAM533RhRk2x8YXsCjFreSfem6iFUk/R3JGTLwjgwjKnm8eHr8LHD88
-        IaG1fuGBUagnxSBmbCGkQ6XeCUO8N43suHwFrw4=
-X-Google-Smtp-Source: ABdhPJwIEWeMHn6ZahOrVey+k37ofDhI6ttbToCchd2fppgEyqJYg1/obs+8u3udRwYNUmSYoaugqBbGz0j5eOjwWCw=
-X-Received: by 2002:aca:c416:: with SMTP id u22mr578501oif.71.1628257063251;
- Fri, 06 Aug 2021 06:37:43 -0700 (PDT)
+        id S1344132AbhHFNie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 09:38:34 -0400
+Received: from mga17.intel.com ([192.55.52.151]:9818 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344071AbhHFNid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 09:38:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10068"; a="194641027"
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="194641027"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 06:38:14 -0700
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="523463276"
+Received: from vmm_a4_icx.sh.intel.com (HELO localhost.localdomain) ([10.239.53.245])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 06:38:09 -0700
+From:   Zhu Lingshan <lingshan.zhu@intel.com>
+To:     peterz@infradead.org, pbonzini@redhat.com
+Cc:     bp@alien8.de, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        kan.liang@linux.intel.com, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        like.xu.linux@gmail.com, boris.ostrvsky@oracle.com,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: [PATCH V10 00/18] KVM: x86/pmu: Add *basic* support to enable guest PEBS via DS
+Date:   Fri,  6 Aug 2021 21:37:44 +0800
+Message-Id: <20210806133802.3528-1-lingshan.zhu@intel.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210805072917.8762-1-haokexin@gmail.com> <20210805073516.qzpzifjoqluqfwhy@vireshk-i7>
-In-Reply-To: <20210805073516.qzpzifjoqluqfwhy@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 6 Aug 2021 15:37:32 +0200
-Message-ID: <CAJZ5v0ht4v9ch9ZKY28v4B0JKQ0tOgwd3SpwHZGBwuiYSJjh8g@mail.gmail.com>
-Subject: Re: [PATCH v2] cpufreq: schedutil: Use kobject release() method to
- free sugov_tunables
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Kevin Hao <haokexin@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 9:35 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 05-08-21, 15:29, Kevin Hao wrote:
-> > The struct sugov_tunables is protected by the kobject, so we can't free
-> > it directly. Otherwise we would get a call trace like this:
-> >   ODEBUG: free active (active state 0) object type: timer_list hint: delayed_work_timer_fn+0x0/0x30
-> >   WARNING: CPU: 3 PID: 720 at lib/debugobjects.c:505 debug_print_object+0xb8/0x100
-> >   Modules linked in:
-> >   CPU: 3 PID: 720 Comm: a.sh Tainted: G        W         5.14.0-rc1-next-20210715-yocto-standard+ #507
-> >   Hardware name: Marvell OcteonTX CN96XX board (DT)
-> >   pstate: 40400009 (nZcv daif +PAN -UAO -TCO BTYPE=--)
-> >   pc : debug_print_object+0xb8/0x100
-> >   lr : debug_print_object+0xb8/0x100
-> >   sp : ffff80001ecaf910
-> >   x29: ffff80001ecaf910 x28: ffff00011b10b8d0 x27: ffff800011043d80
-> >   x26: ffff00011a8f0000 x25: ffff800013cb3ff0 x24: 0000000000000000
-> >   x23: ffff80001142aa68 x22: ffff800011043d80 x21: ffff00010de46f20
-> >   x20: ffff800013c0c520 x19: ffff800011d8f5b0 x18: 0000000000000010
-> >   x17: 6e6968207473696c x16: 5f72656d6974203a x15: 6570797420746365
-> >   x14: 6a626f2029302065 x13: 303378302f307830 x12: 2b6e665f72656d69
-> >   x11: ffff8000124b1560 x10: ffff800012331520 x9 : ffff8000100ca6b0
-> >   x8 : 000000000017ffe8 x7 : c0000000fffeffff x6 : 0000000000000001
-> >   x5 : ffff800011d8c000 x4 : ffff800011d8c740 x3 : 0000000000000000
-> >   x2 : ffff0001108301c0 x1 : ab3c90eedf9c0f00 x0 : 0000000000000000
-> >   Call trace:
-> >    debug_print_object+0xb8/0x100
-> >    __debug_check_no_obj_freed+0x1c0/0x230
-> >    debug_check_no_obj_freed+0x20/0x88
-> >    slab_free_freelist_hook+0x154/0x1c8
-> >    kfree+0x114/0x5d0
-> >    sugov_exit+0xbc/0xc0
-> >    cpufreq_exit_governor+0x44/0x90
-> >    cpufreq_set_policy+0x268/0x4a8
-> >    store_scaling_governor+0xe0/0x128
-> >    store+0xc0/0xf0
-> >    sysfs_kf_write+0x54/0x80
-> >    kernfs_fop_write_iter+0x128/0x1c0
-> >    new_sync_write+0xf0/0x190
-> >    vfs_write+0x2d4/0x478
-> >    ksys_write+0x74/0x100
-> >    __arm64_sys_write+0x24/0x30
-> >    invoke_syscall.constprop.0+0x54/0xe0
-> >    do_el0_svc+0x64/0x158
-> >    el0_svc+0x2c/0xb0
-> >    el0t_64_sync_handler+0xb0/0xb8
-> >    el0t_64_sync+0x198/0x19c
-> >   irq event stamp: 5518
-> >   hardirqs last  enabled at (5517): [<ffff8000100cbd7c>] console_unlock+0x554/0x6c8
-> >   hardirqs last disabled at (5518): [<ffff800010fc0638>] el1_dbg+0x28/0xa0
-> >   softirqs last  enabled at (5504): [<ffff8000100106e0>] __do_softirq+0x4d0/0x6c0
-> >   softirqs last disabled at (5483): [<ffff800010049548>] irq_exit+0x1b0/0x1b8
-> >
-> > So split the original sugov_tunables_free() into two functions,
-> > sugov_clear_global_tunables() is just used to clear the global_tunables
-> > and the new sugov_tunables_free() is used as kobj_type::release to
-> > release the sugov_tunables safely.
-> >
-> > Fixes: 9bdcb44e391d ("cpufreq: schedutil: New governor based on scheduler utilization data")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Kevin Hao <haokexin@gmail.com>
-> > ---
-> > v2: Introduce sugov_clear_global_tunables() as suggested by Rafael.
-> >
-> >  kernel/sched/cpufreq_schedutil.c | 16 +++++++++++-----
-> >  1 file changed, 11 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > index 57124614363d..e7af18857371 100644
-> > --- a/kernel/sched/cpufreq_schedutil.c
-> > +++ b/kernel/sched/cpufreq_schedutil.c
-> > @@ -537,9 +537,17 @@ static struct attribute *sugov_attrs[] = {
-> >  };
-> >  ATTRIBUTE_GROUPS(sugov);
-> >
-> > +static void sugov_tunables_free(struct kobject *kobj)
-> > +{
-> > +     struct gov_attr_set *attr_set = container_of(kobj, struct gov_attr_set, kobj);
-> > +
-> > +     kfree(to_sugov_tunables(attr_set));
-> > +}
-> > +
-> >  static struct kobj_type sugov_tunables_ktype = {
-> >       .default_groups = sugov_groups,
-> >       .sysfs_ops = &governor_sysfs_ops,
-> > +     .release = &sugov_tunables_free,
-> >  };
-> >
-> >  /********************** cpufreq governor interface *********************/
-> > @@ -639,12 +647,10 @@ static struct sugov_tunables *sugov_tunables_alloc(struct sugov_policy *sg_polic
-> >       return tunables;
-> >  }
-> >
-> > -static void sugov_tunables_free(struct sugov_tunables *tunables)
-> > +static void sugov_clear_global_tunables(void)
-> >  {
-> >       if (!have_governor_per_policy())
-> >               global_tunables = NULL;
-> > -
-> > -     kfree(tunables);
-> >  }
-> >
-> >  static int sugov_init(struct cpufreq_policy *policy)
-> > @@ -707,7 +713,7 @@ static int sugov_init(struct cpufreq_policy *policy)
-> >  fail:
-> >       kobject_put(&tunables->attr_set.kobj);
-> >       policy->governor_data = NULL;
-> > -     sugov_tunables_free(tunables);
-> > +     sugov_clear_global_tunables();
-> >
-> >  stop_kthread:
-> >       sugov_kthread_stop(sg_policy);
-> > @@ -734,7 +740,7 @@ static void sugov_exit(struct cpufreq_policy *policy)
-> >       count = gov_attr_set_put(&tunables->attr_set, &sg_policy->tunables_hook);
-> >       policy->governor_data = NULL;
-> >       if (!count)
-> > -             sugov_tunables_free(tunables);
-> > +             sugov_clear_global_tunables();
-> >
-> >       mutex_unlock(&global_tunables_lock);
->
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+The guest Precise Event Based Sampling (PEBS) feature can provide an
+architectural state of the instruction executed after the guest instruction
+that exactly caused the event. It needs new hardware facility only available
+on Intel Ice Lake Server platforms. This patch set enables the basic PEBS
+feature for KVM guests on ICX.
 
-Applied as 5.15 material.
+We can use PEBS feature on the Linux guest like native:
 
-However, since I'm on vacation next week, it will show up in
-linux-next after -rc6.
+   # echo 0 > /proc/sys/kernel/watchdog (on the host)
+   # perf record -e instructions:ppp ./br_instr a
+   # perf record -c 100000 -e instructions:pp ./br_instr a
 
-Thanks!
+To emulate guest PEBS facility for the above perf usages,
+we need to implement 2 code paths:
+
+1) Fast path
+
+This is when the host assigned physical PMC has an identical index as the
+virtual PMC (e.g. using physical PMC0 to emulate virtual PMC0).
+This path is used in most common use cases.
+
+2) Slow path
+
+This is when the host assigned physical PMC has a different index from the
+virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0) In this case,
+KVM needs to rewrite the PEBS records to change the applicable counter indexes
+to the virtual PMC indexes, which would otherwise contain the physical counter
+index written by PEBS facility, and switch the counter reset values to the
+offset corresponding to the physical counter indexes in the DS data structure.
+
+The previous version [0] enables both fast path and slow path, which seems
+a bit more complex as the first step. In this patchset, we want to start with
+the fast path to get the basic guest PEBS enabled while keeping the slow path
+disabled. More focused discussion on the slow path [1] is planned to be put to
+another patchset in the next step.
+
+Compared to later versions in subsequent steps, the functionality to support
+host-guest PEBS both enabled and the functionality to emulate guest PEBS when
+the counter is cross-mapped are missing in this patch set
+(neither of these are typical scenarios).
+
+With the basic support, the guest can retrieve the correct PEBS information from
+its own PEBS records on the Ice Lake servers. And we expect it should work when
+migrating to another Ice Lake and no regression about host perf is expected.
+
+Here are the results of pebs test from guest/host for same workload:
+
+perf report on guest:
+# Samples: 2K of event 'instructions:ppp', # Event count (approx.): 1473377250 # Overhead  Command   Shared Object      Symbol
+   57.74%  br_instr  br_instr           [.] lfsr_cond
+   41.40%  br_instr  br_instr           [.] cmp_end
+    0.21%  br_instr  [kernel.kallsyms]  [k] __lock_acquire
+
+perf report on host:
+# Samples: 2K of event 'instructions:ppp', # Event count (approx.): 1462721386 # Overhead  Command   Shared Object     Symbol
+   57.90%  br_instr  br_instr          [.] lfsr_cond
+   41.95%  br_instr  br_instr          [.] cmp_end
+    0.05%  br_instr  [kernel.vmlinux]  [k] lock_acquire
+    Conclusion: the profiling results on the guest are similar tothat on the host.
+
+A minimum guest kernel version may be v5.4 or a backport version support
+Icelake server PEBS.
+
+Please check more details in each commit and feel free to comment.
+
+Previous:
+https://lore.kernel.org/kvm/20210722054159.4459-1-lingshan.zhu@intel.com/
+
+[0]
+https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/
+[1]
+https://lore.kernel.org/kvm/20210115191113.nktlnmivc3edstiv@two.firstfloor.org/
+
+V9->V10:
+- improve readability in core.c(Peter Z)
+- reuse guest_pebs_idxs(Liu XiangDong)
+V8 -> V9 Changelog:
+-fix a brackets error in xen_guest_state()
+
+V7 -> V8 Changelog:
+- fix coding style, add {} for single statement of multiple lines(Peter Z)
+- fix coding style in xen_guest_state() (Boris Ostrovsky)
+- s/pmu/kvm_pmu/ in intel_guest_get_msrs() (Peter Z)
+- put lower cost branch in the first place for x86_pmu_handle_guest_pebs() (Peter Z)
+
+V6 -> V7 Changelog:
+- Fix conditions order and call x86_pmu_handle_guest_pebs() unconditionally; (PeterZ)
+- Add a new patch to make all that perf_guest_cbs stuff suck less; (PeterZ)
+- Document IA32_MISC_ENABLE[7] that that behavior matches bare metal; (Sean & Venkatesh)
+- Update commit message for fixed counter mask refactoring;(PeterZ)
+- Clarifying comments about {.host and .guest} for intel_guest_get_msrs(); (PeterZ)
+- Add pebs_capable to store valid PEBS_COUNTER_MASK value; (PeterZ)
+- Add more comments for perf's precise_ip field; (Andi & PeterZ)
+- Refactor perf_overflow_handler_t and make it more legible; (PeterZ)
+- Use "(unsigned long)cpuc->ds" instead of __this_cpu_read(cpu_hw_events.ds); (PeterZ)
+- Keep using "(struct kvm_pmu *)data" to follow K&R; (Andi)
+
+Like Xu (17):
+  perf/core: Use static_call to optimize perf_guest_info_callbacks
+  perf/x86/intel: Add EPT-Friendly PEBS for Ice Lake Server
+  perf/x86/intel: Handle guest PEBS overflow PMI for KVM guest
+  perf/x86/core: Pass "struct kvm_pmu *" to determine the guest values
+  KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit when vPMU is enabled
+  KVM: x86/pmu: Introduce the ctrl_mask value for fixed counter
+  KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS
+  KVM: x86/pmu: Reprogram PEBS event to emulate guest PEBS counter
+  KVM: x86/pmu: Adjust precise_ip to emulate Ice Lake guest PDIR counter
+  KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to support guest DS
+  KVM: x86/pmu: Add PEBS_DATA_CFG MSR emulation to support adaptive PEBS
+  KVM: x86: Set PEBS_UNAVAIL in IA32_MISC_ENABLE when PEBS is enabled
+  KVM: x86/pmu: Move pmc_speculative_in_use() to arch/x86/kvm/pmu.h
+  KVM: x86/pmu: Disable guest PEBS temporarily in two rare situations
+  KVM: x86/pmu: Add kvm_pmu_cap to optimize perf_get_x86_pmu_capability
+  KVM: x86/cpuid: Refactor host/guest CPU model consistency check
+  KVM: x86/pmu: Expose CPUIDs feature bits PDCM, DS, DTES64
+
+Peter Zijlstra (Intel) (1):
+  x86/perf/core: Add pebs_capable to store valid PEBS_COUNTER_MASK value
+
+ arch/arm/kernel/perf_callchain.c   |  16 +--
+ arch/arm64/kernel/perf_callchain.c |  29 +++--
+ arch/arm64/kvm/perf.c              |  22 ++--
+ arch/csky/kernel/perf_callchain.c  |   4 +-
+ arch/nds32/kernel/perf_event_cpu.c |  16 +--
+ arch/riscv/kernel/perf_callchain.c |   4 +-
+ arch/x86/events/core.c             |  44 ++++++--
+ arch/x86/events/intel/core.c       | 167 +++++++++++++++++++++++------
+ arch/x86/events/perf_event.h       |   6 +-
+ arch/x86/include/asm/kvm_host.h    |  18 +++-
+ arch/x86/include/asm/msr-index.h   |   6 ++
+ arch/x86/include/asm/perf_event.h  |   5 +-
+ arch/x86/kvm/cpuid.c               |  26 ++---
+ arch/x86/kvm/cpuid.h               |   5 +
+ arch/x86/kvm/pmu.c                 |  60 ++++++++---
+ arch/x86/kvm/pmu.h                 |  38 +++++++
+ arch/x86/kvm/vmx/capabilities.h    |  26 +++--
+ arch/x86/kvm/vmx/pmu_intel.c       | 116 ++++++++++++++++----
+ arch/x86/kvm/vmx/vmx.c             |  24 ++++-
+ arch/x86/kvm/vmx/vmx.h             |   2 +-
+ arch/x86/kvm/x86.c                 |  51 +++++----
+ arch/x86/xen/pmu.c                 |  33 +++---
+ include/linux/perf_event.h         |  12 ++-
+ kernel/events/core.c               |   9 ++
+ 24 files changed, 548 insertions(+), 191 deletions(-)
+
+-- 
+2.27.0
+
