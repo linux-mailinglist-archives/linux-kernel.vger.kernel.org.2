@@ -2,118 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C103E2ECE
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 19:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394703E2ED1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 19:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240778AbhHFRQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 13:16:48 -0400
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21384 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhHFRQr (ORCPT
+        id S240928AbhHFRSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 13:18:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229632AbhHFRSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 13:16:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1628270186; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=MGYtQv0N2P0s4WpiI/7SCa5cluFDHsRicj9t8o0lEPYl7ybY21fLcNmv/cZweNleSYwhzKSyFP3V31E0wivExUUng5HlsYr9xuxhWToOTVqAMxktDN5ihJRPzPU0l666KpLQTiSh6s/DFjgadI0EdMv0rc5w+9yCcN7w8VF7i9c=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1628270186; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=Mn1q6DOADEao/FpQAv/Cs8j4Ne3BhAG2jvQPfdsruQ0=; 
-        b=UD3tLECcrs4Eqdk6YG5M4dzkAD7PI5J8Em3RX7qKPvXXgrg36xHXBaCAUuIUAhijs8CwO71gWcPjkqHkARxxUmOr5v2V1VXqtgtdByw65e2hGGvgpHILS4IhpX2VYfFlvDJyER8SG0Uh30YF/7/URKZUEaOiJmIvu3bgMO9VE4g=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=anirudhrb.com;
-        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
-        dmarc=pass header.from=<mail@anirudhrb.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1628270186;
-        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
-        bh=Mn1q6DOADEao/FpQAv/Cs8j4Ne3BhAG2jvQPfdsruQ0=;
-        b=wylVa7iXI5evEarzbIu/ZfcEs+YR148aez8XrDpaDfH4SI+OQDrCNc9HK6gXL4ws
-        0fwofMCKNEgaaaCjwsNOtXbIjkp+eGuhkpcXbVZSF+oXf6m95aXUewQI+FFgMSLZ7Ju
-        Ywb2N0xdQfUAoIN9+7GVHb/RWOJHn2oQpdEkits0=
-Received: from anirudhrb.com (106.51.104.154 [106.51.104.154]) by mx.zohomail.com
-        with SMTPS id 1628270183513352.4266722757876; Fri, 6 Aug 2021 10:16:23 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 22:46:17 +0530
-From:   Anirudh Rayabharam <mail@anirudhrb.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usbip: give back URBs for unsent unlink requests during
- cleanup
-Message-ID: <YQ1uYSQ2T5kMrwfI@anirudhrb.com>
-References: <20210806164015.25263-1-mail@anirudhrb.com>
- <YQ1nun3dwdd620TN@kroah.com>
+        Fri, 6 Aug 2021 13:18:16 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CA0C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 10:17:59 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id f13so13969937edq.13
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 10:17:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=akuG98DV2ldxk7RDY1w9lLgWyZHnVwVPQDD0gLmW4EI=;
+        b=jT8ambbqt+XSdwwCcL2yCfnODT3i6eC9frjA1EAARfD9wCLS+WDDsyzA1/siLRxzQ3
+         4WUyhJ7GqaG6pqFZvVrpnWILJ45wI6Ek9rRnGx8M3t7sNezAZlf7t/Y+rPOOIdf6EKn/
+         qeGpIV3pejz+/sr12DQzvHrqFzL9MB2oUzYepyEf/9sFW0nKGv2+s93lozPlG9Zvw/hw
+         0GBQLxrInQOaCfdoE5pT+4ilHbg5+PLbmpRDG85QOFH5YRZF+Wn6+oM7RuVHqcE41qYC
+         +1Im1MZJl/QUwP/HDgMDq1SEcbTHr2K1C5uMTTfhGoOpy+MbgK/rQG99nueMo3euvgc8
+         Gh+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=akuG98DV2ldxk7RDY1w9lLgWyZHnVwVPQDD0gLmW4EI=;
+        b=g+9pT+2/qBA6o7EzPOKGZYRtXcfQh1I+HcndYiS2txk/JEPTcKOtkmj1T/QxS9KBk8
+         v6OZSJYkRu+yppbI0qDOFeCT8vjcu4gOR97nFeW7iwge20FwwmmdSVd8rYRHFDPlJZfz
+         /qig973YXUnb/RkLxqhUbIh0EkYOHagu2q08R8+NJ88wf5ewKCnlnoYdKlJfNO/sw+6G
+         JYtfql/TNZyYNHwHnJftDnor3ybHydBiUEpP4IqM+82p4jCps34M6p/3zfejxSdpyYi+
+         Oe6z6Kl2khUtFIwT2gQL1anm08xfJYxdUBfHzqKjk3rcwG1BXJsQHRCZUjFxK38o9yc4
+         3rQg==
+X-Gm-Message-State: AOAM531Ky/47KSJOE9smoTUz0v82z3hog4Rr61gew44LNAYXDUoq+swQ
+        WuMl7Vo1E/c6AG45qBK6MmviDXMWzcgWCe56qdv5J+rUAIo=
+X-Google-Smtp-Source: ABdhPJwrR1PSnrQQSoNoiQt+kbY2/PgyWalfYpMMLO7+4WMAqsmImJ0GpJm5h61wk+FRmSJsvka3Bf3Piak21gS9Bh0=
+X-Received: by 2002:a05:6402:386:: with SMTP id o6mr14357685edv.294.1628270277721;
+ Fri, 06 Aug 2021 10:17:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQ1nun3dwdd620TN@kroah.com>
-X-ZohoMailClient: External
+References: <cover.1628174413.git.baolin.wang@linux.alibaba.com>
+ <d359dcf73a7a868f1b126cb73368fea64aec1f25.1628174413.git.baolin.wang@linux.alibaba.com>
+ <CAHbLzkrqwOp0a_6Vzn29h9qwCiwVSLL6QzsMLfOYTWj7mtkNZg@mail.gmail.com> <98937827-89ec-2a3b-b389-da28f8493cb1@linux.alibaba.com>
+In-Reply-To: <98937827-89ec-2a3b-b389-da28f8493cb1@linux.alibaba.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 6 Aug 2021 10:17:46 -0700
+Message-ID: <CAHbLzko_spW=SPnP3jgQWCNzY=7xn7JDCFfFtY5_9yRfCApLTA@mail.gmail.com>
+Subject: Re: [PATCH 5/5] mm: migrate: Remove redundant goto labels
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 06:47:54PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Aug 06, 2021 at 10:10:14PM +0530, Anirudh Rayabharam wrote:
-> > In vhci_device_unlink_cleanup(), the URBs for unsent unlink requests are
-> > not given back. This sometimes causes usb_kill_urb to wait indefinitely
-> > for that urb to be given back. syzbot has reported a hung task issue [1]
-> > for this.
-> > 
-> > To fix this, give back the urbs corresponding to unsent unlink requests
-> > (unlink_tx list) similar to how urbs corresponding to unanswered unlink
-> > requests (unlink_rx list) are given back. Since the code is almost the
-> > same, extract it into a new function and call it for both unlink_rx and
-> > unlink_tx lists.
-> > 
-> > [1]: https://syzkaller.appspot.com/bug?id=08f12df95ae7da69814e64eb5515d5a85ed06b76
-> > 
-> > Reported-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
-> > Tested-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
-> > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-> > ---
-> >  drivers/usb/usbip/vhci_hcd.c | 47 ++++++++++++++++++++++++++----------
-> >  1 file changed, 34 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-> > index 4ba6bcdaa8e9..45f98aa12895 100644
-> > --- a/drivers/usb/usbip/vhci_hcd.c
-> > +++ b/drivers/usb/usbip/vhci_hcd.c
-> > @@ -945,7 +945,8 @@ static int vhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
-> >  	return 0;
-> >  }
-> >  
-> > -static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
-> > +static void __vhci_cleanup_unlink_list(struct vhci_device *vdev,
-> > +		struct list_head *unlink_list)
-> >  {
-> >  	struct vhci_hcd *vhci_hcd = vdev_to_vhci_hcd(vdev);
-> >  	struct usb_hcd *hcd = vhci_hcd_to_hcd(vhci_hcd);
-> > @@ -953,23 +954,25 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
-> >  	struct vhci_unlink *unlink, *tmp;
-> >  	unsigned long flags;
-> >  
-> > +	if (unlink_list != &vdev->unlink_tx
-> > +			&& unlink_list != &vdev->unlink_rx) {
-> > +		pr_err("Invalid list passed to __vhci_cleanup_unlink_list\n");
-> > +		BUG();
-> 
-> Do not allow the system to crash, that is not ok.
-> 
-> > +		return;
-> 
-> This call makes no sense as you just rebooted the machine :(
-> 
-> Handle errors properly and recover from them and move on.  A single tiny
-> driver should not take down the whole system.
+On Thu, Aug 5, 2021 at 8:19 PM Baolin Wang
+<baolin.wang@linux.alibaba.com> wrote:
+>
+> Hi Yang,
+>
+> > On Thu, Aug 5, 2021 at 8:06 AM Baolin Wang
+> > <baolin.wang@linux.alibaba.com> wrote:
+> >>
+> >> Remove redundant goto labels to simplify the code.
+> >
+> > TBH I don't see too much benefit. The "goto" makes the functions have
+> > a single exit point.
+>
+> Yes, I agree that the 'goto' statement can make things easier when a
+> function exits from multiple locations and some common work such as
+> cleanup has to be done, as well as introducing complexity to reading the
+> code. So per the coding style documentation, "If there is no cleanup
+> needed then just return directly", which can make code more readable I
+> think :)
+>
+> But I have no strong opinion on this, I can drop this patch if you still
+> think this is unnecessary. Thanks for your review and comments.
 
-The execution can reach only if there is a developer error and they passed
-some random list in `unlink_list`. So, BUG() here crashes the kernel and
-draws attention to this fact. Is WARN() a better option here? There is
-no way to recover from this and continue with the rest of the function.
-Either we WARN()/BUG() or we return silently.
+Thanks, IMHO I'd like to drop it for now.
 
-Thanks!
-
-	- Anirudh.
+>
+> >> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> >> ---
+> >>   mm/migrate.c | 8 +++-----
+> >>   1 file changed, 3 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/mm/migrate.c b/mm/migrate.c
+> >> index 0ab364f..ed74fda 100644
+> >> --- a/mm/migrate.c
+> >> +++ b/mm/migrate.c
+> >> @@ -911,9 +911,8 @@ static int move_to_new_page(struct page *newpage, struct page *page,
+> >>                   */
+> >>                  VM_BUG_ON_PAGE(!PageIsolated(page), page);
+> >>                  if (!PageMovable(page)) {
+> >> -                       rc = MIGRATEPAGE_SUCCESS;
+> >>                          __ClearPageIsolated(page);
+> >> -                       goto out;
+> >> +                       return MIGRATEPAGE_SUCCESS;
+> >>                  }
+> >>
+> >>                  rc = mapping->a_ops->migratepage(mapping, newpage,
+> >> @@ -949,7 +948,7 @@ static int move_to_new_page(struct page *newpage, struct page *page,
+> >>                          flush_dcache_page(newpage);
+> >>
+> >>          }
+> >> -out:
+> >> +
+> >>          return rc;
+> >>   }
+> >>
+> >> @@ -2095,11 +2094,10 @@ static struct page *alloc_misplaced_dst_page_thp(struct page *page,
+> >>          newpage = alloc_pages_node(nid, (GFP_TRANSHUGE_LIGHT | __GFP_THISNODE),
+> >>                                     HPAGE_PMD_ORDER);
+> >>          if (!newpage)
+> >> -               goto out;
+> >> +               return NULL;
+> >>
+> >>          prep_transhuge_page(newpage);
+> >>
+> >> -out:
+> >>          return newpage;
+> >>   }
+> >>
+> >> --
+> >> 1.8.3.1
+> >>
+> >>
