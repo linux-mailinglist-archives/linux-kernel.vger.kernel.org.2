@@ -2,69 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8873E2C48
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F8D3E2C4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237040AbhHFONt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 10:13:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235485AbhHFONp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 10:13:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD852611C5;
-        Fri,  6 Aug 2021 14:13:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628259209;
-        bh=pQ865Q4sX30TZz9yJEK9ucr+Ft03RkQ52dLK+GbcGKE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ERgysFFPiCZ9YnqZDv53bDg4Z6/0JghiR0lGOLgGN8cp/8303V9vSV+CSH9HuFdVb
-         QZyhD4s0RQ0eXUq5jEJhW9qOIOVJ5JySQgsvCl2CwtnMms2x4ZLc7oFtUCWqaUPLeK
-         TVE+wLyDSqHWZBwfn4XPYAnF157yWYh+fnZ1koVIBBnCOz8IDz89esLAEoAEti12dA
-         ad5GYpjLrApp8LjhrX/6cEspwWQ+j4dqmOqFsSgKJYfyKpx9UCGxDw0OMOZrMDuVOi
-         +9Pr+jmtUN5uqd/Bu7HrcQz69bEWv/w3UnO/EwRdhoHlBy9JTcIhfyQCIkVRsUNktH
-         dy04PVnKVqZhw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Greg KH <greg@kroah.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-Subject: linux-next: manual merge of the usb tree with the qcom tree
-Date:   Fri,  6 Aug 2021 15:13:12 +0100
-Message-Id: <20210806141312.23309-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S237351AbhHFOO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 10:14:26 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:47552 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237233AbhHFOOL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 10:14:11 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id D545C1F44A85
+Message-ID: <79673df0562db410753c90f9957125f202c5a1b2.camel@collabora.com>
+Subject: Re: [PATCH] media: hantro: Fix check for single irq
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Jernej =?UTF-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
+        p.zabel@pengutronix.de
+Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, emil.velikov@collabora.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Date:   Fri, 06 Aug 2021 11:13:46 -0300
+In-Reply-To: <8101406.vZ8PxZ7URt@jernej-laptop>
+References: <20210805190416.332563-1-jernej.skrabec@gmail.com>
+         <6761bb11f4554e9f9cbe468b5ff8f851c57515ef.camel@collabora.com>
+         <8101406.vZ8PxZ7URt@jernej-laptop>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Fri, 2021-08-06 at 06:44 +0200, Jernej Škrabec wrote:
+> Dne petek, 06. avgust 2021 ob 00:03:36 CEST je Ezequiel Garcia napisal(a):
+> > Hi Jernej,
+> > 
+> > On Thu, 2021-08-05 at 21:04 +0200, Jernej Skrabec wrote:
+> > > Some cores use only one interrupt and in such case interrupt name in DT
+> > > is not needed. Driver supposedly accounted that, but due to the wrong
+> > > field check it never worked. Fix that.
+> > > 
+> > > Fixes: 18d6c8b7b4c9 ("media: hantro: add fallback handling for single
+> > > irq/clk") Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> > > ---
+> > >  drivers/staging/media/hantro/hantro_drv.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/staging/media/hantro/hantro_drv.c
+> > > b/drivers/staging/media/hantro/hantro_drv.c index
+> > > 8a2edd67f2c6..20e508158871 100644
+> > > --- a/drivers/staging/media/hantro/hantro_drv.c
+> > > +++ b/drivers/staging/media/hantro/hantro_drv.c
+> > > @@ -919,7 +919,7 @@ static int hantro_probe(struct platform_device *pdev)
+> > >                 if (!vpu->variant->irqs[i].handler)
+> > >                         continue;
+> > >  
+> > > -               if (vpu->variant->num_clocks > 1) {
+> > > +               if (vpu->variant->num_irqs > 1) {
+> > 
+> > Oops, thanks for spotting this.
+> > 
+> > How about this instead?
+> 
+> No, original solution is more robust. With solution below, you're assuming 
+> that irq order in driver array is same as in DT. That doesn't matter if there 
+> is only one name or if names match. However, if there is a typo, either in DT 
+> node or in driver, driver will still happily assign clock based on index and 
+> that might not be correct one. Even if it works out, you can easily miss that 
+> you have a typo. Driver doesn't tell you which irq is used, if it is 
+> successfully acquired.
+> 
 
-Today's linux-next merge of the usb tree got a conflict in:
+I find it odd to iterate up to num_irqs but then
+have a case for num_irqs == 1, and call
+platform_get_irq(vpu->pdev, 0).
 
-  arch/arm64/boot/dts/qcom/sc7280.dtsi
+But OTOH, your fix is correct and it's a oneliner.
 
-between commit:
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
 
-  298c81a7d44f ("arm64: dts: qcom: sc7280: Add nodes for eMMC and SD card")
+Thanks,
+Ezequiel
 
-from the qcom tree and commit:
-
-  bb9efa59c665 ("arm64: dts: qcom: sc7280: Add USB related nodes")
-
-from the usb tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
-diff --cc arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 53a21d086178,cd6908f3fd09..000000000000
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
