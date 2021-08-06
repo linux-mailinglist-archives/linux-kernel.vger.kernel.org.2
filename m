@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471E43E2B86
+	by mail.lfdr.de (Postfix) with ESMTP id B29773E2B87
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344138AbhHFNif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 09:38:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31732 "EHLO
+        id S1344147AbhHFNiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 09:38:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36415 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344121AbhHFNid (ORCPT
+        by vger.kernel.org with ESMTP id S1344120AbhHFNiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 09:38:33 -0400
+        Fri, 6 Aug 2021 09:38:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628257097;
+        s=mimecast20190719; t=1628257110;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fYa8CRqasptaxs6yBt32BGt8NUuLhgiXe4Y6xRunAnw=;
-        b=HEa0YZ953YMtddG/VbucmoFKw2HnHXJ2XzEzfxUdqKP6aEg4JHgbBAAw/EOGVgHunCrIuz
-        WWwb+aDbh847V+12Wlo9Z4mWlLvZLxpA4vuXxbI5z7oZGbthzeZNOHmwcnxtIVePiLpR3w
-        pmiQzD+GA0pMYo4AXuLc325aS0B3qWQ=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-133-OZ5gqisxMci3x-B4Zh7gEA-1; Fri, 06 Aug 2021 09:38:14 -0400
-X-MC-Unique: OZ5gqisxMci3x-B4Zh7gEA-1
-Received: by mail-ej1-f71.google.com with SMTP id nb40-20020a1709071ca8b02905992266c319so3091050ejc.21
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 06:38:14 -0700 (PDT)
+        bh=N/1ERJ3ikPtd7jbQkJKjNQFBl4bQ6myErCA7cprevbw=;
+        b=cT7JWxbFyvXZBnbv1mEKV+fyS239wEm5B2ox4E9qL9NKsPj5Lkc0bSyGmqEtLrW/kv1btP
+        GAEC5r1XZTrX0gqCOvr07YVx15fqcbT4Hd4ttKZGucJ38Xmt/KQeN6uKUwqQ97hqDF5ox0
+        wXTqueix1MjshhZpytqAl7SuFq04jeo=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-hyUFk2c6N16epjHfu3ujVA-1; Fri, 06 Aug 2021 09:38:28 -0400
+X-MC-Unique: hyUFk2c6N16epjHfu3ujVA-1
+Received: by mail-ej1-f69.google.com with SMTP id z20-20020a1709069454b0290595651dca8eso3134118ejx.23
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 06:38:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=fYa8CRqasptaxs6yBt32BGt8NUuLhgiXe4Y6xRunAnw=;
-        b=RkoBlNgEzp2OV73XuagXrXEmC/6pe1LwVu3YXx2QE6FrftEQsxgbNnE5Xptq/vWy9g
-         Qy1BiqoZWHO3WVJugENZ4DkbFD0TP/Y3vx9YIGx7k0k5Ck5ZNzh+P4ZEnZ+ZC0Mvwt40
-         Yppky5v6FMiTJcKk6Cu62v/q4k9wM/92VsEc1RFlXDGZ0GOJp3vPaTnJNmakuReDsaCn
-         QiifJ36BhduW4zLPAYj/+L7Nqy4zU4E+Io0MYW9yWzER0cs7/cIb5bq2eKMO9mHxipEf
-         TA12G5BPJU1LD5/I4QKmWv07lOyHr5hwaFuSnmCzfSBRJRJ/X6qgz+fq/0ApvIi/f0p8
-         TcHw==
-X-Gm-Message-State: AOAM533g3Dr/yErjBhIrZqIfiKaDNktfVtqNW9ZZfN7hXKhhQzwAJpnx
-        jA9jJqEazh54xQ/BIjvekSfRnz2wmke+EGMHvN/WCh4YYy5u36qZZqzyRPZ5aPvSHg9WRJlU6hs
-        YD4rVVqT4Ct0p9mSCxpFl/ZxY
-X-Received: by 2002:aa7:c042:: with SMTP id k2mr13334958edo.104.1628257093439;
-        Fri, 06 Aug 2021 06:38:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwZn/rzGnyhcNYCt1sjBcqqMA7zco7p97DVv+8sA09OIOtnDGJqNrEGDKYG57+uhfsgiO3NTQ==
-X-Received: by 2002:aa7:c042:: with SMTP id k2mr13334947edo.104.1628257093340;
-        Fri, 06 Aug 2021 06:38:13 -0700 (PDT)
+        bh=N/1ERJ3ikPtd7jbQkJKjNQFBl4bQ6myErCA7cprevbw=;
+        b=sYoNKUqqjD4qK+SY/iZOCbVA+y5XbrkITvmau+DeBQWrPW5Opsan9cbTqsslxsICGa
+         RNzOAEgXigC1yCD1mATObvisiriYUrQQaDgk7BL8S3dA22m+rOX5JjnX5s6wmwTLWyM7
+         DKPwvuoQZzo4Unnku/KjiE4uvxCheVjwbhV1TrmdvO0TLleITTVFsVll2B7a2cYrhQq1
+         0WkTDLDX9NrsDCTsC7ogpNpivV5OmbBllSNbNt+22Tm+hJ/KHUcHgRowSAaD0r0GXu6L
+         OpmZ9rEVroCuLoJwJiKSm4Q21DlimVsN2pdYrZtAZgtaBQiYsd2zC42MHkJBzMpSdq8y
+         /3XA==
+X-Gm-Message-State: AOAM532OPrvLnr0gadfehUDjtahmgitWNT8hWPqXQod23c8pWoNCYyfr
+        0OoZWEWq+lQDrC2dbWCzQqDdodpSDYSbw8501LzRP2LFgt5FBZbJqOOIZ5ZVIa4nPknt2PV+kyI
+        X6+yVjNHTsmrSLDzBO3B2VACG
+X-Received: by 2002:a17:906:2990:: with SMTP id x16mr9623669eje.554.1628257107260;
+        Fri, 06 Aug 2021 06:38:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxg72QNJtYoafjptIvMkFJ8PPCCK3QiR4nn8AN/qCiJQJKvy6Dqc7q61DLbV1Sm9cC9EUZa9A==
+X-Received: by 2002:a17:906:2990:: with SMTP id x16mr9623650eje.554.1628257107119;
+        Fri, 06 Aug 2021 06:38:27 -0700 (PDT)
 Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id e7sm3959181edk.3.2021.08.06.06.38.12
+        by smtp.gmail.com with ESMTPSA id u9sm747033edt.60.2021.08.06.06.38.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 06:38:13 -0700 (PDT)
-Subject: Re: [PATCH v1 1/1] platform/surface: surface3_power: Use
- i2c_acpi_get_i2c_resource() helper
+        Fri, 06 Aug 2021 06:38:26 -0700 (PDT)
+Subject: Re: [PATCH v2 1/1] platform/surface: aggregator: Use y instead of
+ objs in Makefile
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
         platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>
-References: <20210803163252.60141-1-andriy.shevchenko@linux.intel.com>
+Cc:     Mark Gross <mgross@linux.intel.com>
+References: <20210803192524.67031-1-andriy.shevchenko@linux.intel.com>
 From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <69085eb2-7695-4998-dfb0-75e644d76131@redhat.com>
-Date:   Fri, 6 Aug 2021 15:38:12 +0200
+Message-ID: <342c0563-ebe8-2981-c5d6-22463175a88c@redhat.com>
+Date:   Fri, 6 Aug 2021 15:38:26 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210803163252.60141-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210803192524.67031-1-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 8/3/21 6:32 PM, Andy Shevchenko wrote:
-> ACPI provides a generic helper to get I²C Serial Bus resources.
-> Use it instead of open coded variant.
+On 8/3/21 9:25 PM, Andy Shevchenko wrote:
+> The 'objs' is for user space tools, for the kernel modules
+> we should use 'y'.
 > 
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
 
 Thank you for your patch, I've applied this patch to my review-hans 
 branch:
@@ -99,27 +100,32 @@ Hans
 
 
 > ---
->  drivers/platform/surface/surface3_power.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
+> v2: fixed typo, annihilated ifeq, added Rb tag (Maximilian)
+>  drivers/platform/surface/aggregator/Makefile | 15 ++++++---------
+>  1 file changed, 6 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/platform/surface/surface3_power.c b/drivers/platform/surface/surface3_power.c
-> index dea82aa1abd4..90c1568ea4e0 100644
-> --- a/drivers/platform/surface/surface3_power.c
-> +++ b/drivers/platform/surface/surface3_power.c
-> @@ -384,13 +384,7 @@ mshw0011_space_handler(u32 function, acpi_physical_address command,
->  	if (ACPI_FAILURE(ret))
->  		return ret;
+> diff --git a/drivers/platform/surface/aggregator/Makefile b/drivers/platform/surface/aggregator/Makefile
+> index c8498c41e758..c0d550eda5cd 100644
+> --- a/drivers/platform/surface/aggregator/Makefile
+> +++ b/drivers/platform/surface/aggregator/Makefile
+> @@ -6,12 +6,9 @@ CFLAGS_core.o = -I$(src)
 >  
-> -	if (!value64 || ares->type != ACPI_RESOURCE_TYPE_SERIAL_BUS) {
-> -		ret = AE_BAD_PARAMETER;
-> -		goto err;
-> -	}
+>  obj-$(CONFIG_SURFACE_AGGREGATOR) += surface_aggregator.o
+>  
+> -surface_aggregator-objs := core.o
+> -surface_aggregator-objs += ssh_parser.o
+> -surface_aggregator-objs += ssh_packet_layer.o
+> -surface_aggregator-objs += ssh_request_layer.o
+> -surface_aggregator-objs += controller.o
 > -
-> -	sb = &ares->data.i2c_serial_bus;
-> -	if (sb->type != ACPI_RESOURCE_SERIAL_TYPE_I2C) {
-> +	if (!value64 || !i2c_acpi_get_i2c_resource(ares, &sb)) {
->  		ret = AE_BAD_PARAMETER;
->  		goto err;
->  	}
+> -ifeq ($(CONFIG_SURFACE_AGGREGATOR_BUS),y)
+> -surface_aggregator-objs += bus.o
+> -endif
+> +surface_aggregator-y := core.o
+> +surface_aggregator-y += ssh_parser.o
+> +surface_aggregator-y += ssh_packet_layer.o
+> +surface_aggregator-y += ssh_request_layer.o
+> +surface_aggregator-$(CONFIG_SURFACE_AGGREGATOR_BUS) += bus.o
+> +surface_aggregator-y += controller.o
 > 
 
