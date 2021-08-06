@@ -2,198 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D6A3E221D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 05:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4AF3E2224
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 05:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242072AbhHFDRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 23:17:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbhHFDRh (ORCPT
+        id S242320AbhHFDUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 23:20:38 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7578 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229458AbhHFDUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 23:17:37 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164CFC061798
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 20:17:22 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id u13so9927150lje.5
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 20:17:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zj33fEFxiHh9L7Od2CChfLnX3PMn/v2vhh53C69leEc=;
-        b=WhJOF6lEfMQ7PQ2Dm44rut4BwLCIYnh9rETAXNH5YTGCKRwlkP1XvNoa92JL0ffDms
-         NiEFnBw+QmXNL8dXPXTHqiBQcfHOrsE966ffYqT5ty1kGZfzAQV4Al6p0trJzTT+kdgK
-         vy4Gk11erETBeoWtOJt4AebhLFddQQiA6tSlEuRNmYfcLawEaT1izurTpwCqy/SLwVmL
-         TDamTFmrotMv/2tjzYLxYi3VXu9Jz/YLxhqzObYt+JYVI+7ku7748W8nmQwrWtBgxvI4
-         L28kwCjCaRgI/2Jn3wPpaBYWcxjepmUawi3xLktc/5CbJqH6EWMxmiCh3P7lixxjvB5C
-         iZbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zj33fEFxiHh9L7Od2CChfLnX3PMn/v2vhh53C69leEc=;
-        b=SxTw0EuX3IeWTjOAw+hx4BHBbmLHD4VeVYVB9zEhsoBawpWtPGFbVsYYBxTM9NXXec
-         M+YTwl/lIuosQ9dShOPRIEyypFDYWZPPinyTFDabk2qM/NAjH47NrniLfhwQ1GEeyUqt
-         /Cxn+JqqH4wWQ2ZYUVHJ0lnt0lF2yB+fIhvlL/u+JRpnZqXUkQBthQCX8Z0sknjEejJ3
-         CR96Ls6T8KeQOwEHawqYOx5S1gcRI2E1nLT51hxBamqtv+WBnJRqwqCruEsl8fbmZ1jz
-         NisZnR5LYedWVi0qsSXXkptsRyPZr1/L6622j6+dIBDTsOWRP3e9haDSkWGZIPVOa+ay
-         qZbw==
-X-Gm-Message-State: AOAM53272l6+byCXMQffxEft/9ty17C2teA64lJ/ip84UPjeha0JUi9w
-        HKPLkOed1gc4nakyAbFXo/4wfRujEHC4e1W+tDE=
-X-Google-Smtp-Source: ABdhPJyuuwxWUKFdUjxHxsIpU5QiCpC61h0PQQO10OgYsJ21Jq7XYltBMp1TAtD21Z5CMnGJqfLkXM41gflbVGwHShg=
-X-Received: by 2002:a2e:3312:: with SMTP id d18mr5169021ljc.297.1628219839913;
- Thu, 05 Aug 2021 20:17:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210726143053.532839-1-sxwjean@me.com> <20210726143053.532839-3-sxwjean@me.com>
- <56d9e3ce-f303-fd41-bd16-5655d9dc5e52@csgroup.eu>
-In-Reply-To: <56d9e3ce-f303-fd41-bd16-5655d9dc5e52@csgroup.eu>
-From:   Xiongwei Song <sxwjean@gmail.com>
-Date:   Fri, 6 Aug 2021 11:16:53 +0800
-Message-ID: <CAEVVKH95gAp-j1JM4TSSGPS1x_B2T7f9DQyryzzvZMcsKCgxWQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/4] powerpc: Optimize register usage for dear register
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Xiongwei Song <sxwjean@me.com>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>, oleg@redhat.com,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, ravi.bangoria@linux.ibm.com,
-        npiggin@gmail.com, aneesh.kumar@linux.ibm.com,
-        sandipan@linux.ibm.com, efremov@linux.com, peterx@redhat.com,
-        akpm@linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Thu, 5 Aug 2021 23:20:35 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17634Xxv030791;
+        Thu, 5 Aug 2021 23:19:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=Gv92TnluNfUfdqlDXrvWyiTsnjlFwKv1kG7Zm7PMzvs=;
+ b=K4oo7G8zvdE/YQCikwRlomxctcy21Ku/ilde1iOXnApfhJwUEJIqOStF/d2v1iI+AUH2
+ GNeNUzXZ3sDMfoe+/20dSC2l22N4H5ADMeE65UBZ4IioRCPl2JJRV2GBSytT3PCP4ZZR
+ rAW66jwj1oEbya15PxRgYjkpFJDE7+cLHwqkK1wFvVJgVSyVY9GH3PWXlhZUDewLO8Na
+ 9k1htYkGEKrtgU37eoouxyWO+0v8Q7yBYt7Yg9/NIQHklf2T/9Mb/MH/UJUHk0m7Z47B
+ RtvysEljDIt3mUaJ/4gSG65yh8vbuu7NBHx0vVjdQg79JetXMANZQsi5CZmzrs8kOEff 2Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a8q2yy4gv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Aug 2021 23:19:52 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17634cMj031358;
+        Thu, 5 Aug 2021 23:19:52 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a8q2yy4ge-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 Aug 2021 23:19:51 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1763E5Hk032178;
+        Fri, 6 Aug 2021 03:19:49 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 3a4x594crh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Aug 2021 03:19:49 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1763Jkij50987374
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Aug 2021 03:19:47 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D9BA011C052;
+        Fri,  6 Aug 2021 03:19:46 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E0A0611C058;
+        Fri,  6 Aug 2021 03:19:40 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.26.150])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  6 Aug 2021 03:19:40 +0000 (GMT)
+Message-ID: <d85bfe88bb4abd06e47a36743f53d0610da0a259.camel@linux.ibm.com>
+Subject: Re: [PATCH RFC v2 10/12] KEYS: link system_trusted_keys to
+ mok_trusted_keys
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     keyrings@vger.kernel.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
+        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+        scott.branden@broadcom.com, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        nramas@linux.microsoft.com, lszubowi@redhat.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
+        glin@suse.com, "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>
+Date:   Thu, 05 Aug 2021 23:19:39 -0400
+In-Reply-To: <44ADB68B-4310-462B-96A8-2F69759BA2D8@oracle.com>
+References: <20210726171319.3133879-1-eric.snowberg@oracle.com>
+         <20210726171319.3133879-11-eric.snowberg@oracle.com>
+         <6c751dadf4ce7385d0391ea26f1c7e4e910219e0.camel@linux.ibm.com>
+         <44ADB68B-4310-462B-96A8-2F69759BA2D8@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DK3h-KN9gjkjfQ6rFdX3uWqOg8XJydjB
+X-Proofpoint-ORIG-GUID: chi8FZeyI1ijZTb-eFW33FRARzMP7ZLz
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-06_01:2021-08-05,2021-08-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 mlxscore=0 mlxlogscore=846 spamscore=0 malwarescore=0
+ clxscore=1015 adultscore=0 bulkscore=0 impostorscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108060017
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 6:09 PM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 26/07/2021 =C3=A0 16:30, sxwjean@me.com a =C3=A9crit :
-> > From: Xiongwei Song <sxwjean@gmail.com>
-> >
-> > Create an anonymous union for dar and dear regsiters, we can reference
-> > dear to get the effective address when CONFIG_4xx=3Dy or CONFIG_BOOKE=
-=3Dy.
-> > Otherwise, reference dar. This makes code more clear.
->
-> Same comment here as for patch 1.
+On Thu, 2021-08-05 at 19:29 -0600, Eric Snowberg wrote:
 
-Same reply for the patch 1.
-Thank you.
+> > From the thread discussion on 00/12:
+> > 
+> > Only the builtin keys should ever be on the builtin keyring.  The
+> > builtin keyring would need to be linked to the mok keyring.  But in the
+> > secondary keyring case, the mok keyring would be linked to the
+> > secondary keyring, similar to how the builtin keyring is linked to the
+> > secondary keyring.
+> > 
+> >        if (key_link(secondary_trusted_keys, builtin_trusted_keys) < 0)
+> >                panic("Can't link trusted keyrings\n");
+> 
+> 
+> This part is confusing me though.
+> 
+> Here are some of the tests I’m performing with the current series:
+> 
+> Initial setup:
+> Create and enroll my own key into the MOK.
+> Sign a kernel, kernel module and IMA key with my new CA key.
+> Boot with lockdown enabled (to enforce sig validation).
+> 
+> Kernel built with CONFIG_SECONDARY_TRUSTED_KEYRING=y
+> 
+> $ keyctl show %:.secondary_trusted_keys
+> Keyring
+>  530463486 ---lswrv      0     0  keyring: .secondary_trusted_keys
+>  411466727 ---lswrv      0     0   \_ keyring: .builtin_trusted_keys
+>  979167715 ---lswrv      0     0   |   \_ asymmetric: Build time autogenerated kernel key: 07a56e29cfa1e21379aff2c522efff7d1963202a
+>  534573591 ---lswrv      0     0   |   \_ asymmetric: Oracle-CA: Oracle certificate signing key: aeefb4bfde095cacaabff81dd266974b1b4e23b8
+>  968109018 ---lswrv      0     0   \_ keyring: .mok
+>  857795115 ---lswrv      0     0       \_ asymmetric: Erics-CA: UEK signing key: 9bfa6860483aa46bd83f7fa1289d9fc35799e93b
+> 
+> With this setup I can:
+> * load a kernel module signed with my CA key
+> * run "kexec -ls" with the kernel signed with my CA key
+> * run "kexec -ls" with a kernel signed by a key in the platform keyring
+> * load another key into the secondary trusted keyring that is signed by my CA key
+> * load a key into the ima keyring, signed by my CA key
+> 
+> Kernel built without CONFIG_SECONDARY_TRUSTED_KEYRING defined
+> 
+> $ keyctl show %:.builtin_trusted_keys
+> Keyring
+>  812785375 ---lswrv      0     0  keyring: .builtin_trusted_keys
+>  455418681 ---lswrv      0     0   \_ keyring: .mok
+>  910809006 ---lswrv      0     0   |   \_ asymmetric: Erics-CA: UEK signing key: 9bfa6860483aa46bd83f7fa1289d9fc35799e93b
+>  115345009 ---lswrv      0     0   \_ asymmetric: Oracle-CA: Oracle certificate signing key: aeefb4bfde095cacaabff81dd266974b1b4e23b8
+>  513131506 ---lswrv      0     0   \_ asymmetric: Build time autogenerated kernel key: 22353509f203b55b84f15d0aadeddc134b646185
+> 
+> With this setup I can:
+> * load a kernel module signed with my CA key
+> * run "kexec -ls" with the kernel signed with my CA key
+> * run "kexec -ls" with a kernel signed by a key in the platform keyring
+> * load a key into the ima keyring, signed by my CA key
+> 
+> So why would the linking need to be switched?  Is there a test I’m
+> missing?  Thanks.
 
->
->
-> >
-> > Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
-> > ---
-> >   arch/powerpc/include/asm/ptrace.h      | 5 ++++-
-> >   arch/powerpc/include/uapi/asm/ptrace.h | 5 ++++-
-> >   arch/powerpc/kernel/process.c          | 2 +-
-> >   arch/powerpc/kernel/ptrace/ptrace.c    | 2 ++
-> >   arch/powerpc/kernel/traps.c            | 5 ++++-
-> >   arch/powerpc/mm/fault.c                | 2 +-
-> >   6 files changed, 16 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/a=
-sm/ptrace.h
-> > index c252d04b1206..fa725e3238c2 100644
-> > --- a/arch/powerpc/include/asm/ptrace.h
-> > +++ b/arch/powerpc/include/asm/ptrace.h
-> > @@ -43,7 +43,10 @@ struct pt_regs
-> >                       unsigned long mq;
-> >   #endif
-> >                       unsigned long trap;
-> > -                     unsigned long dar;
-> > +                     union {
-> > +                             unsigned long dar;
-> > +                             unsigned long dear;
-> > +                     };
-> >                       union {
-> >                               unsigned long dsisr;
-> >                               unsigned long esr;
-> > diff --git a/arch/powerpc/include/uapi/asm/ptrace.h b/arch/powerpc/incl=
-ude/uapi/asm/ptrace.h
-> > index e357288b5f34..9ae150fb4c4b 100644
-> > --- a/arch/powerpc/include/uapi/asm/ptrace.h
-> > +++ b/arch/powerpc/include/uapi/asm/ptrace.h
-> > @@ -52,7 +52,10 @@ struct pt_regs
-> >       unsigned long trap;             /* Reason for being here */
-> >       /* N.B. for critical exceptions on 4xx, the dar and dsisr
-> >          fields are overloaded to hold srr0 and srr1. */
-> > -     unsigned long dar;              /* Fault registers */
-> > +     union {
-> > +             unsigned long dar;              /* Fault registers */
-> > +             unsigned long dear;
-> > +     };
-> >       union {
-> >               unsigned long dsisr;            /* on Book-S used for DSI=
-SR */
-> >               unsigned long esr;              /* on 4xx/Book-E used for=
- ESR */
-> > diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/proces=
-s.c
-> > index f74af8f9133c..50436b52c213 100644
-> > --- a/arch/powerpc/kernel/process.c
-> > +++ b/arch/powerpc/kernel/process.c
-> > @@ -1499,7 +1499,7 @@ static void __show_regs(struct pt_regs *regs)
-> >           trap =3D=3D INTERRUPT_DATA_STORAGE ||
-> >           trap =3D=3D INTERRUPT_ALIGNMENT) {
-> >               if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
-> > -                     pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, reg=
-s->esr);
-> > +                     pr_cont("DEAR: "REG" ESR: "REG" ", regs->dear, re=
-gs->esr);
-> >               else
-> >                       pr_cont("DAR: "REG" DSISR: %08lx ", regs->dar, re=
-gs->dsisr);
-> >       }
-> > diff --git a/arch/powerpc/kernel/ptrace/ptrace.c b/arch/powerpc/kernel/=
-ptrace/ptrace.c
-> > index 00789ad2c4a3..969dca8b0718 100644
-> > --- a/arch/powerpc/kernel/ptrace/ptrace.c
-> > +++ b/arch/powerpc/kernel/ptrace/ptrace.c
-> > @@ -373,6 +373,8 @@ void __init pt_regs_check(void)
-> >                    offsetof(struct user_pt_regs, trap));
-> >       BUILD_BUG_ON(offsetof(struct pt_regs, dar) !=3D
-> >                    offsetof(struct user_pt_regs, dar));
-> > +     BUILD_BUG_ON(offsetof(struct pt_regs, dear) !=3D
-> > +                  offsetof(struct user_pt_regs, dear));
-> >       BUILD_BUG_ON(offsetof(struct pt_regs, dsisr) !=3D
-> >                    offsetof(struct user_pt_regs, dsisr));
-> >       BUILD_BUG_ON(offsetof(struct pt_regs, esr) !=3D
-> > diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-> > index 2164f5705a0b..0796630d3d23 100644
-> > --- a/arch/powerpc/kernel/traps.c
-> > +++ b/arch/powerpc/kernel/traps.c
-> > @@ -1609,7 +1609,10 @@ DEFINE_INTERRUPT_HANDLER(alignment_exception)
-> >       }
-> >   bad:
-> >       if (user_mode(regs))
-> > -             _exception(sig, regs, code, regs->dar);
-> > +             if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
-> > +                     _exception(sig, regs, code, regs->dear);
-> > +             else
-> > +                     _exception(sig, regs, code, regs->dar);
-> >       else
-> >               bad_page_fault(regs, sig);
-> >   }
-> > diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-> > index 62953d4e7c93..3db6b39a1178 100644
-> > --- a/arch/powerpc/mm/fault.c
-> > +++ b/arch/powerpc/mm/fault.c
-> > @@ -542,7 +542,7 @@ static __always_inline void __do_page_fault(struct =
-pt_regs *regs)
-> >       long err;
-> >
-> >       if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
-> > -             err =3D ___do_page_fault(regs, regs->dar, regs->esr);
-> > +             err =3D ___do_page_fault(regs, regs->dear, regs->esr);
-> >       else
-> >               err =3D ___do_page_fault(regs, regs->dar, regs->dsisr);
-> >
-> >
+It's a question of semantics.  The builtin keyring name is self
+describing.  It should only contain the keys compiled into the kernel
+or inserted post build into the reserved memory.  Not only the kernel
+uses the builtin keyring, but userspace may as well[1].  Other users of
+the builtin keyring might not want to trust the mok keyring as well.
+
+thanks,
+
+Mimi
+
+[1] Refer to Mat Martineau's LSS 2019 talk titled "Using and
+Implementing Keyring Restrictions in Userspace". 
+
