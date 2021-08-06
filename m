@@ -2,125 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B871E3E2BF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1FE3E2BD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233008AbhHFNwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 09:52:04 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:42015 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231474AbhHFNwD (ORCPT
+        id S1344422AbhHFNpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 09:45:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58740 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344415AbhHFNpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 09:52:03 -0400
-X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Fri, 06 Aug 2021 09:52:03 EDT
-Received: from cust-57f2be97 ([IPv6:fc0c:c196:c6c4:fdf1:aa47:ab6:e251:d2a8])
-        by smtp-cloud8.xs4all.net with ESMTPSA
-        id C09JmDhQokUPmC09Lm1HHo; Fri, 06 Aug 2021 15:44:35 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1628257475; bh=h1lgkCqX7mpCxD6KJKyAUkBnmQSnmXKoX/90+mxcIcA=;
-        h=To:From:Subject:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=Wp2jdwoUdPsgY7FZfeqLDzXSBeVyGm38jH0c6IyN2pXg/fw5X5CNtnJNG4ggiKIWU
-         lE5O0prh7A9x5guwUTmBNRZaNsR2KKDzHcnLg0vTMB4Yun5TiBLHgP0+71Z65M7p8z
-         HFVWKN8oMIzkE4BR3+jSaEVJCdmLGdSKxyetoGYqjtYJA/Bzb68VRijqKHt+vkIHeq
-         pGCsXI/BO3Ir5vFvO5x804nilKhceHi8B1FLYL5sfZJUYHnsxaDd1UNQ6bFDvdnbD5
-         5HUXwQ+y31s3nmTb6tHHTwN6Y6ycV9Vca1F/ss57N7Fv9r3BD9/B4lcfsU/gvq7rfj
-         wFLCjbKLLykvQ==
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Udo van den Heuvel <udovdh@xs4all.nl>
-Subject: 5.6.19 WARNING: CPU: 4 PID: 170452 at kernel/rcu/tree_plugin.h:297
- rcu_note_context_switch+0x37/0x3d0
-Organization: hierzo
-Message-ID: <95f7ed29-24ec-acf2-573e-ed79189971c5@xs4all.nl>
-Date:   Fri, 6 Aug 2021 15:44:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 6 Aug 2021 09:45:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628257504;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0VbV96j7hcbKHoJWYg0a5r9V2HBRp69cIOXkwt8uqKA=;
+        b=N6El3VVjFmnT95+GPNfWAz/C1CEfof63ytJq96royJbO3lZ+T0TcilvNH4t2ALq3Gy7qZo
+        14Zjlq27rlBcrudWUFbBG+9KCzK6u9QQVCpxi0G9cWkE/iqN54r80DISVB68OBSbR0aGT7
+        fcabZ6LeAj6oz+544RkXNehbaj0V+oA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-208-o9kCuQ05PaaOrCW-qhce1A-1; Fri, 06 Aug 2021 09:45:03 -0400
+X-MC-Unique: o9kCuQ05PaaOrCW-qhce1A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA11296DCFF;
+        Fri,  6 Aug 2021 13:45:00 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E6BD75D9D5;
+        Fri,  6 Aug 2021 13:44:49 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YQx4lx7vEbvmfBnE@casper.infradead.org>
+References: <YQx4lx7vEbvmfBnE@casper.infradead.org> <YQv+iwmhhZJ+/ndc@casper.infradead.org> <YQvpDP/tdkG4MMGs@casper.infradead.org> <YQvbiCubotHz6cN7@casper.infradead.org> <1017390.1628158757@warthog.procyon.org.uk> <1170464.1628168823@warthog.procyon.org.uk> <1186271.1628174281@warthog.procyon.org.uk> <1219713.1628181333@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, Anna Schumaker <anna.schumaker@netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        devel@lists.orangefs.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Canvassing for network filesystem write size vs page size
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfJc5pZhrYQAUOZhoVLbI/WADtKfgTxJC49qnPLT/GRR2CmoP85kYlLJrIqCMqsJT8gwrW3VF6B8jgyhMt1Tcs7WzR8G+KyNHeYds/fEHYYMU3aaZcgrp
- B/bD7tw544AdBBCXitzFsgHGAVLUUFN4yUZ/OB3VoLIx0umc2jZDEtQ10T+o7rbCOlkMWFA1T8Ld6Ua37x1owiHvB+NbpCAZiJ8=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1302764.1628257488.1@warthog.procyon.org.uk>
+Date:   Fri, 06 Aug 2021 14:44:48 +0100
+Message-ID: <1302765.1628257488@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Matthew Wilcox <willy@infradead.org> wrote:
 
-Found the warning below in my dmesg.
-What happened?
+> Filesystems should not make an assumption about this ... I suspect
+> the optimum page size scales with I/O bandwidth; taking PCI bandwidth
+> as a reasonable proxy, it's doubled five times in twenty years.
 
-Udo
+There are a lot more factors than you make out.  Local caching, content
+crypto, transport crypto, cost of setting up RPC calls, compounding calls to
+multiple servers.
 
+David
 
-[107610.034111] ------------[ cut here ]------------
-[107610.034118] WARNING: CPU: 4 PID: 170452 at 
-kernel/rcu/tree_plugin.h:297 rcu_note_context_switch+0x37/0x3d0
-[107610.034133] Modules linked in: snd_seq_dummy mq_deadline 
-xt_MASQUERADE iptable_nat nf_nat ipt_REJECT nf_reject_ipv4 xt_u32 
-xt_multiport iptable_filter nf_conntrack_netbios_ns 
-nf_conntrack_broadcast ip6t_REJECT nf_reject_ipv6 xt_tcpudp xt_state 
-xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 it87 
-ip6table_filter hwmon_vid ip6_tables msr uvcvideo snd_usb_audio 
-videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 snd_hwdep videodev 
-snd_hda_codec_realtek cdc_acm snd_usbmidi_lib videobuf2_common 
-snd_hda_codec_generic snd_rawmidi lzo_rle snd_hda_intel lzo_compress 
-snd_intel_dspcfg snd_hda_codec snd_seq snd_hda_core k10temp 
-snd_seq_device bfq snd_pcm snd_timer snd i2c_piix4 evdev acpi_cpufreq 
-p_lkrg binfmt_misc fuse configfs zram zsmalloc ip_tables x_tables sr_mod 
-aesni_intel cdrom amdgpu drm_ttm_helper ttm gpu_sched hid_generic usbhid 
-i2c_dev autofs4
-[107610.034218] CPU: 4 PID: 170452 Comm: bash Not tainted 5.12.19 #21
-[107610.034225] Hardware name: Gigabyte Technology Co., Ltd. X570 AORUS 
-PRO/X570 AORUS PRO, BIOS F33h 04/23/2021
-[107610.034229] RIP: 0010:rcu_note_context_switch+0x37/0x3d0
-[107610.034237] Code: 02 00 65 4c 8b 2c 25 00 6c 01 00 e8 a3 f2 6a 00 89 
-c0 48 03 1c c5 20 65 ee b2 40 84 ed 75 0d 41 8b 95 fc 02 00 00 85 d2 7e 
-02 <0f> 0b 65 48 8b 04 25 00 6c 01 00 8b 80 fc 02 00 00 85 c0 7e 0a 41
-[107610.034242] RSP: 0000:ffffb8fdc5237c50 EFLAGS: 00010002
-[107610.034248] RAX: 0000000000000004 RBX: ffff95a6ff120a00 RCX: 
-0000000000000000
-[107610.034253] RDX: 0000000000000001 RSI: ffffffffb2e6cb51 RDI: 
-ffffffffb2e7cf7e
-[107610.034256] RBP: 0000000000000000 R08: 0000000000000001 R09: 
-ffff95a3feced118
-[107610.034259] R10: 0000000000000000 R11: 0000000000000000 R12: 
-ffff95a6ff11fd40
-[107610.034263] R13: ffff95a3cb5cc1c0 R14: ffff95a3cb5cc1c0 R15: 
-ffffffffb30084a8
-[107610.034266] FS:  00007f4009fb0740(0000) GS:ffff95a6ff100000(0000) 
-knlGS:0000000000000000
-[107610.034271] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[107610.034275] CR2: 000055acc46b2350 CR3: 00000001015e4000 CR4: 
-00000000003506e0
-[107610.034279] Call Trace:
-[107610.034284]  __schedule+0x86/0x7d0
-[107610.034294]  schedule+0x40/0xe0
-[107610.034300]  io_schedule+0x3d/0x60
-[107610.034307]  wait_on_page_bit_common+0x11b/0x390
-[107610.034315]  ? __filemap_set_wb_err+0x10/0x10
-[107610.034321]  __lock_page_or_retry+0x13f/0x1d0
-[107610.034327]  do_swap_page+0x35e/0x670
-[107610.034335]  __handle_mm_fault+0x926/0x1180
-[107610.034341]  handle_mm_fault+0x6c/0x1b0
-[107610.034346]  ? find_vma+0x11/0x70
-[107610.034350]  do_user_addr_fault+0x1b8/0x5e0
-[107610.034358]  exc_page_fault+0x5b/0x80
-[107610.034364]  ? asm_exc_page_fault+0x8/0x30
-[107610.034369]  asm_exc_page_fault+0x1e/0x30
-[107610.034374] RIP: 0033:0x55acc27763b0
-[107610.034379] Code: 00 00 48 8b 44 24 28 48 8b 5c 24 20 48 83 7c 24 18 
-00 48 8b 00 0f 95 44 24 0f 48 8b 1c d8 48 85 db 0f 84 83 00 00 00 0f 1f 
-00 <48> 8b 7b 10 48 8b 4c 24 10 b8 01 00 00 00 48 89 3c 24 48 85 c9 74
-[107610.034384] RSP: 002b:00007ffcd6c53390 EFLAGS: 00010202
-[107610.034388] RAX: 000055acc45d6fd0 RBX: 000055acc46b2340 RCX: 
-000055acc26c6bf0
-[107610.034391] RDX: 000055acc45d3690 RSI: 000055acc26c6bf0 RDI: 
-000055acc467de20
-[107610.034394] RBP: 000055acc460f750 R08: 000055acc460c840 R09: 
-000055acc45d0010
-[107610.034397] R10: 00007f400a176a00 R11: 0000000000000003 R12: 
-00000000000002c8
-[107610.034400] R13: 000055acc26c6bf0 R14: 0000000000000000 R15: 
-000055acc460c840
-[107610.034406] ---[ end trace bc84e30ad6b9cfbe ]---
