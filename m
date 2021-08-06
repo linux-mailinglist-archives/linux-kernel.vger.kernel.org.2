@@ -2,87 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73C13E29CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5703E29D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245546AbhHFLiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:38:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240755AbhHFLiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:38:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B7BA60FE7;
-        Fri,  6 Aug 2021 11:38:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628249887;
-        bh=gHwP7vxb5aRgHKwYrdHY0/RGdX7tYBYUp42oKa4+bYI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WoTDQAO0+/zi9/aizS09IIFliQeV+6tU9IobFZ+lG40KODR6cRZS1jk73SC9Yjrqi
-         FDUIn189PKaOrWsjrPW3finDOIGYSq/U/tj6Kj5OXdXIKjCn8wexT1JWj+dln1xglZ
-         AoDCUvUSM/hwSLtgJ0KbZKdtT8RPJfpaNE7KTbVLIQvPscJSDNiqRgcUe/kH641bKU
-         qzwjXIy3Dfn4c+J99FH54/8OX4RUP3IUF3dfVEYVs6idNkSYySvJ3h3H/blmyK8mVo
-         mym2OuwwaH2Glq8paHP3oDWi28eQCfrQJaxxOfBXnjgASlxVImC8X7C+5/MCyFFpkg
-         q/KqDKZIXErAQ==
-Date:   Fri, 6 Aug 2021 12:38:02 +0100
-From:   Will Deacon <will@kernel.org>
-To:     David Stevens <stevensd@chromium.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Tom Murphy <murphyt7@tcd.ie>, iommu@lists.linux-foundation.org,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/4] dma-iommu: pass SKIP_CPU_SYNC to swiotlb unmap
-Message-ID: <20210806113802.GB2531@willie-the-truck>
-References: <20210709033502.3545820-1-stevensd@google.com>
- <20210709033502.3545820-4-stevensd@google.com>
- <20210802135446.GE28547@willie-the-truck>
- <CAD=HUj4+62dYZTWfbPjh8eLRY6FQak8nBS8OD85t0xk_+JvDpA@mail.gmail.com>
+        id S245571AbhHFLi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:38:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238926AbhHFLi4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 07:38:56 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B270C061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 04:38:40 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id p5so10695187wro.7
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 04:38:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=s9wnVnDyd/BCxuk/HASH4KODRxCJv7VlRo5y7kgnv28=;
+        b=qJk2DxUF3xFKcfqISlcX5FsEolwmVRPARV1u5OIJr2JkgRn8MxeQrgpdJwgictJQXW
+         68MHh5DsUeRKtY7grsf24MV7xFCfhzlIG192rze6AAV/bhP7kl6fotqQeK5N3VRBqLGf
+         TLkFsGzO74BAZcl2NPQaVsPyof91VeIkrheYpzMBd1h5DCTbcQCaTez7DlVlOgIsa4G5
+         QCTSPib/tvfv+yBnDp69b1NlqIK1JhSy/shdWP0AOeKXaBwQJEu1Vm7qCo3I4+CMeUrG
+         IBwq675kfMkljraZull58XzT2wlvm6x2KrXxl/HAddxt+wUxKsIFSStuY+XGKHNSgvMd
+         PrdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=s9wnVnDyd/BCxuk/HASH4KODRxCJv7VlRo5y7kgnv28=;
+        b=i28IOzb+5H6LOCwZhgx6YJ3+BRcqlvOY7EY0fTzeTgawUi2cPm3Fhr1LeqABkiy/64
+         jB2NpDKImrrprtuo/t8dHwXyHegE0ljEWJm6Z2IwcCu8gxD75xwHbI6gl+KJfvjcrqF5
+         iKHtirs/N6aMqCLU2nBNRxUFcbHjrNowUQ1Dbg+VXmfFTSyJEUgAH0pTat6qRs6PR/WP
+         8NpCxrzdlTcNrYemaKRsbM+Ahd13aPbDlL2W+9fkN3e3V6BDgpe7goCyjR6xBhsQE96Y
+         949t/VPZyKuSJdYqsQaTYnyO8NA7tfmcBVUhpY2J0m3Fq6ftVh/bJ+3hHr8INzNUTJ4V
+         5X3g==
+X-Gm-Message-State: AOAM530vJ05c5xpXUB8QlProXjhziAkvRrDWtgVWvjwrYXQzfwfKJQzB
+        ZeBQrvPG7BJvCWq6JiwSvjH0yg==
+X-Google-Smtp-Source: ABdhPJy3RvWjqo+uo7Q4r/toVYPAJ3vfivdBc8oWppyqpHaF+NSsJEUDyP5mAgQrwCkNPSzB2L393A==
+X-Received: by 2002:a5d:6a89:: with SMTP id s9mr10293739wru.309.1628249918939;
+        Fri, 06 Aug 2021 04:38:38 -0700 (PDT)
+Received: from google.com ([109.180.115.228])
+        by smtp.gmail.com with ESMTPSA id l5sm10683955wrc.90.2021.08.06.04.38.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 04:38:38 -0700 (PDT)
+Date:   Fri, 6 Aug 2021 12:38:36 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH v9 03/12] mfd: simple-mfd-i2c: Save the register client
+ data
+Message-ID: <YQ0fPEeZGYe7f1cC@google.com>
+References: <20210806091058.141-1-alistair@alistair23.me>
+ <20210806091058.141-4-alistair@alistair23.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAD=HUj4+62dYZTWfbPjh8eLRY6FQak8nBS8OD85t0xk_+JvDpA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210806091058.141-4-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 02:26:10PM +0900, David Stevens wrote:
-> On Mon, Aug 2, 2021 at 10:54 PM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Fri, Jul 09, 2021 at 12:35:01PM +0900, David Stevens wrote:
-> > > From: David Stevens <stevensd@chromium.org>
-> > >
-> > > If SKIP_CPU_SYNC isn't already set, then iommu_dma_unmap_(page|sg) has
-> > > already called iommu_dma_sync_(single|sg)_for_cpu, so there is no need
-> > > to copy from the bounce buffer again.
-> > >
-> > > Signed-off-by: David Stevens <stevensd@chromium.org>
-> > > ---
-> > >  drivers/iommu/dma-iommu.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> > > index e79e274d2dc5..0a9a9a343e64 100644
-> > > --- a/drivers/iommu/dma-iommu.c
-> > > +++ b/drivers/iommu/dma-iommu.c
-> > > @@ -505,7 +505,8 @@ static void __iommu_dma_unmap_swiotlb(struct device *dev, dma_addr_t dma_addr,
-> > >       __iommu_dma_unmap(dev, dma_addr, size);
-> > >
-> > >       if (unlikely(is_swiotlb_buffer(phys)))
-> > > -             swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
-> > > +             swiotlb_tbl_unmap_single(dev, phys, size, dir,
-> > > +                                      attrs | DMA_ATTR_SKIP_CPU_SYNC);
-> > >  }
-> >
-> > I think it would be cleaner to drop DMA_ATTR_SKIP_CPU_SYNC in the callers
-> > once they've called iommu_dma_sync_*_for_cpu().
+On Fri, 06 Aug 2021, Alistair Francis wrote:
+
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  drivers/mfd/simple-mfd-i2c.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Dropping that flag in iommu_dma_unmap_* would result in always copying
-> from the swiotlb here, which is the opposite direction of what this
-> patch is trying to do.
+> diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.c
+> index 583e8c7924af..633a2b28b6cb 100644
+> --- a/drivers/mfd/simple-mfd-i2c.c
+> +++ b/drivers/mfd/simple-mfd-i2c.c
+> @@ -48,6 +48,8 @@ static int simple_mfd_i2c_probe(struct i2c_client *i2c)
+>  	if (IS_ERR(regmap))
+>  		return PTR_ERR(regmap);
+>  
+> +	i2c_set_clientdata(i2c, regmap);
+> +
 
-Sorry, probably poor wording on my part. What I mean is, rather than add
-DMA_ATTR_SKIP_CPU_SYNC here, how about having the callers include it
-in attrs instead, since they're the ones doing the initial sync?
+No need to store this here.
 
-Will
+Just do this in the child device:
+
+     dev_get_regmap(pdev->dev.parent, NULL);
+
+>  	/* If no MFD cells are spedified, use register the DT child nodes instead */
+>  	if (!simple_mfd_data || !simple_mfd_data->mfd_cell)
+>  		return devm_of_platform_populate(&i2c->dev);
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
