@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EA43E2AA4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1C63E2AB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343730AbhHFMeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 08:34:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:60020 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238794AbhHFMeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 08:34:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4617E31B;
-        Fri,  6 Aug 2021 05:33:51 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13C7A3F40C;
-        Fri,  6 Aug 2021 05:33:48 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 13:33:46 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Yanfei Xu <yanfei.xu@windriver.com>
-Subject: Re: [PATCH rcu 02/18] rcu: Fix stall-warning deadlock due to
- non-release of rcu_node ->lock
-Message-ID: <20210806123346.qkddi4kqi4z4666e@e107158-lin.cambridge.arm.com>
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-2-paulmck@kernel.org>
- <20210806095730.tw3bgnjtsytrqqfq@e107158-lin.cambridge.arm.com>
- <20210806114327.GP4397@paulmck-ThinkPad-P17-Gen-1>
+        id S1343740AbhHFMfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 08:35:42 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:15845 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343726AbhHFMfk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 08:35:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628253325; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=N2y4oRCNfmsOR5AcLj7KTqZExbR4TqZaeaiHeBAWq7o=; b=M7590IRswx6ENvjU4ImqR90UPbfjcWCRx/3eSpuPm4i5vB6zdO7vbKgQF3B23sw7KfMZ06Hy
+ 01SoasJMkf0E1fhx+GgEny733KSUFn3rc7Fp3lQEClUyH4YaVZqkhnqMgQnkryTXc+iG3n1U
+ NfHArYAqUDqffSUKxgz9k7z3v5U=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 610d2c815c73bba6fbbc3542 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Aug 2021 12:35:13
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 81AB6C43145; Fri,  6 Aug 2021 12:35:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D3A5AC433F1;
+        Fri,  6 Aug 2021 12:35:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D3A5AC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev <netdev@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] brcmfmac: firmware: Fix uninitialized variable ret
+References: <20210803150904.80119-1-colin.king@canonical.com>
+        <CACRpkdZ5u-C8uH2pCr1689v_ndyzqevDDksXvtPYv=FfD=x_xg@mail.gmail.com>
+        <875ywkc80d.fsf@codeaurora.org>
+        <96709926-30c6-457e-3e80-eb7ad6e9d778@broadcom.com>
+        <b2034ac5-0080-a2fb-32ef-61ad50dfd248@canonical.com>
+Date:   Fri, 06 Aug 2021 15:35:05 +0300
+In-Reply-To: <b2034ac5-0080-a2fb-32ef-61ad50dfd248@canonical.com> (Colin Ian
+        King's message of "Fri, 6 Aug 2021 12:28:29 +0100")
+Message-ID: <87eeb6bvk6.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210806114327.GP4397@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/06/21 04:43, Paul E. McKenney wrote:
-> On Fri, Aug 06, 2021 at 10:57:30AM +0100, Qais Yousef wrote:
-> > On 07/21/21 13:21, Paul E. McKenney wrote:
-> > > From: Yanfei Xu <yanfei.xu@windriver.com>
-> > > 
-> > > If rcu_print_task_stall() is invoked on an rcu_node structure that does
-> > > not contain any tasks blocking the current grace period, it takes an
-> > > early exit that fails to release that rcu_node structure's lock.  This
-> > > results in a self-deadlock, which is detected by lockdep.
-> > > 
-> > > To reproduce this bug:
-> > > 
-> > > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --trust-make --configs "TREE03" --kconfig "CONFIG_PROVE_LOCKING=y" --bootargs "rcutorture.stall_cpu=30 rcutorture.stall_cpu_block=1 rcutorture.fwd_progress=0 rcutorture.test_boost=0"
-> > > 
-> > > This will also result in other complaints, including RCU's scheduler
-> > > hook complaining about blocking rather than preemption and an rcutorture
-> > > writer stall.
-> > > 
-> > > Only a partial RCU CPU stall warning message will be printed because of
-> > > the self-deadlock.
-> > > 
-> > > This commit therefore releases the lock on the rcu_print_task_stall()
-> > > function's early exit path.
-> > > 
-> > > Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-> > > Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > ---
-> > 
-> > We were seeing similar issue on Android 5.10. Applying patches 1 and 2 did fix
-> > the deadlock problem and we get proper RCU stall splat now.
-> > 
-> > For patches 1 and 2:
-> > 
-> > Tested-by: Qais Yousef <qais.yousef@arm.com>
-> 
-> Thank you, and I will apply this on the next rebase.
-> 
-> > They have Fixes tags, so should end up in 5.10 stable I presume.
-> 
-> Here is hoping!  ;-)
+Colin Ian King <colin.king@canonical.com> writes:
 
-Leave it with me, I've got a todo to make sure this happens ;-)
+> On 06/08/2021 12:23, Arend van Spriel wrote:
+>> On 05-08-2021 15:53, Kalle Valo wrote:
+>>> Linus Walleij <linus.walleij@linaro.org> writes:
+>>>
+>>>> On Tue, Aug 3, 2021 at 5:09 PM Colin King <colin.king@canonical.com>
+>>>> wrote:
+>>>>
+>>>>> From: Colin Ian King <colin.king@canonical.com>
+>>>>>
+>>>>> Currently the variable ret is uninitialized and is only set if
+>>>>> the pointer alt_path is non-null. Fix this by ininitializing ret
+>>>>> to zero.
+>>>>>
+>>>>> Addresses-Coverity: ("Uninitialized scalar variable")
+>>>>> Fixes: 5ff013914c62 ("brcmfmac: firmware: Allow per-board firmware
+>>>>> binaries")
+>>>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>>>>
+>>>> Nice catch!
+>>>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>>>
+>>> I assume this will be fixed by Linus' patch "brcmfmac: firmware: Fix
+>>> firmware loading" and I should drop Colin's patch, correct?
+>> 
+>> That would be my assumption as well, but not sure when he will submit
+>> another revision of it. You probably know what to do ;-)
+>
+> I'd prefer my patch to be dropped in preference to Linus' fix.
 
-Thanks!
+Ok, I'll then drop Colin's patch.
 
---
-Qais Yousef
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
