@@ -2,162 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809023E2218
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 05:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC903E221A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 05:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241681AbhHFDOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 23:14:15 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:3326 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236244AbhHFDOL (ORCPT
+        id S242009AbhHFDQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 23:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236035AbhHFDQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 23:14:11 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1763B4r5008646;
-        Fri, 6 Aug 2021 03:13:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2021-07-09;
- bh=mQ/GZjmzwjhrztS7G5qHC7xLDAtx5Phc7ExaYRanPo8=;
- b=zGP303l5C7l9Ryc9n7aJ1wTLuGmmTMGp0gIvCxOHXLG14xeuSBSXH0hlwk5kLztdgMnF
- aqBlPoGg+dLEZ5U0AYL7FDhFKkJu88QXv+aYtbCiXLbmz6VC2ppih3nmaYm4bioyQAJs
- 7bjdN8OUG2qCnVe7K2LSovYuIliPfy49t9WN6TV5/udDvE8x1N9kZPRJE6rmhpZu5XWr
- 3IeAFVnrkbBkNoKgPjdDJ8aVBJlJqWdNh0X33iljDp6VoGwSr/1QJliL3ozfxxoRl2bu
- P0uQ0QuEVQeZOBws7vI6EhgvrNV4a3E+6Fa5qj0ulxjs0EBDrSaKR2e2dcGapq5Frjtm uA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=mQ/GZjmzwjhrztS7G5qHC7xLDAtx5Phc7ExaYRanPo8=;
- b=o7rh4f4V2AKH8o51sdEOZfQ7+xTq+dAj3v+CCs5lHWmkBDOd1Y9+hJlclc1dwwixoM5K
- AVVv0odEze6wc+QgL8CWIFGeNMqBYKKUmfPtE/AJy/6Tcd8IG1dI70s+BMK/HqQl5YQP
- 9mFpSsUFOtfl3jlY5l15DiZLyEGPgrArQcnLuzO3D6DQMVIGeV0YmsutFiBCiMutdhC3
- 6MYEXwUBQ8oj7vSw7pbu1aULeMjAekuUuTiSE0oiJkev/+PCvdJTEB2F9uJXIOZRh6fv
- ArydxOXyDRDrd+GAwmblJelAhLYQqzhujFgjhNCUest7B+6mvudkYBQ9V9D3c8ciqnoX xg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3a7wqubu4j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Aug 2021 03:13:51 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1763A78F135429;
-        Fri, 6 Aug 2021 03:13:50 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
-        by aserp3020.oracle.com with ESMTP id 3a7r4av2gx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Aug 2021 03:13:50 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I/oI7P020R8rA+1JkIYNzzKpuu6vy4gpa8AQOvbNsW4cYp2TFsYUMr9YWErSpP8FC3ii//oGgu/mmqLoymkuzlKjp6Z01SY448CvE0hrfgKoVjzvRhqjA4LueLLsG1OsPndSx1bRT8/3+HlqK/iwx0MRSDez1zMaIY+SBqtFGFmFLvcy6c3R5imGzJbpkwYEEgdE6D2CIMXBe/zeMkCknTwTnpwZPRLlTArfUNS82Ztsq0Oi+5hAkmZ/Xspu5yhQ1zaiOomdFg44H96J8yytzCog/m61Xy9VR3QC4yzZ99/x4B0icOSGfe3cEXg4/DSYBBIH2KIEEB6UgPdxXEKwJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mQ/GZjmzwjhrztS7G5qHC7xLDAtx5Phc7ExaYRanPo8=;
- b=jBOGm43gP5KzsRK+rx/RzMkrJWx0n0acZFeXcShhYy/E9y8UFnttA76sUofLcNOfKYVUSLRsN34pIZt18upvNWFVcC1VdCaO0WxlAOy8SC4iPS5mfc0epJNphqA4JS/ZD9LPW4mucOBUltykB9yvvEx5ktE6pxNQUQuGfKxfKgB4pVU4AzPhTHurIHQYLyxsQCH6RzfVatjcrBpdKY9F1dB0cT5EYuolgjSVBpStR99tnxk2j4RVr/iFJD91wPgLnevCnGJWbWgM+VXk97JBXfdAxuQlonkLofya5pSbsvjXQOpxfr20v5GSGtzAW4kPbAriuHdCBn4cpp2ac+mqDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 5 Aug 2021 23:16:48 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2BDC061798
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 20:16:32 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id b21so9906181ljo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 20:16:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mQ/GZjmzwjhrztS7G5qHC7xLDAtx5Phc7ExaYRanPo8=;
- b=fWo6c0g6Y12iwqJRoF76PbMClNTlAlufcuYuNg5Ephe9c3GCEDids8hn+qePN5GaLqnljrGhgRFClM1L2a253WF4dFkBtqqiC0eYhwdyllK++GAo/jP6AvMoONeF3Y+mYIFiWt67FuPqtQdNTV/dobiJTfQ83MVmqIQ1t72zMz4=
-Authentication-Results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB5420.namprd10.prod.outlook.com (2603:10b6:510:d7::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Fri, 6 Aug
- 2021 03:13:49 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::153e:22d1:d177:d4f1]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::153e:22d1:d177:d4f1%8]) with mapi id 15.20.4373.026; Fri, 6 Aug 2021
- 03:13:49 +0000
-To:     Colin King <colin.king@canonical.com>
-Cc:     Nilesh Javali <njavali@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next[next]] scsi: qla2xxx: Remove redundant
- initialization of variable num_cnt
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1k0kzfeou.fsf@ca-mkp.ca.oracle.com>
-References: <20210804131344.112635-1-colin.king@canonical.com>
-Date:   Thu, 05 Aug 2021 23:13:45 -0400
-In-Reply-To: <20210804131344.112635-1-colin.king@canonical.com> (Colin King's
-        message of "Wed, 4 Aug 2021 14:13:44 +0100")
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR13CA0057.namprd13.prod.outlook.com
- (2603:10b6:a03:2c2::32) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RmRATZxrymVsUqvsQ5vTjEe605V0iyo3kp0EeC+Y5p0=;
+        b=rhj+LKN7OY+Dw294X/vOBki1UE3swP8RONHxScGZ7Hv+7g4gBrjmBaXsx8KO8Hp6id
+         BgWsaCrCobvAHJOXFFegrft7dWq2iaRmGR/b+nJap0fGkiIuLJrgvzyOZImgFM+B6Ouj
+         dgQPpkIneBAy6IHHMSHeUvkQQpuhdeI52uLhPfU5ZzimjlknZUYLLH1HNagBLAS+pQdZ
+         W3D9LzppADUM5iC/3mwXBjaa3/q9ki3O3uCJb1srwpSq0S0c1yeRgvY96abxDkofqdDr
+         +djfgy4X6+odkKsouZySCtHVr1D6pXo1PDx+3PzYQO7bBvgSBIHfiekM467zD44/Y2Y0
+         Njkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RmRATZxrymVsUqvsQ5vTjEe605V0iyo3kp0EeC+Y5p0=;
+        b=OFSH32VX5r4sJxaaXPL14513dF/N7DnWkGsqPFyXNlvO10ih8CyLt6Jv7rN+519ANf
+         70awt2NP/rY1rRtZ/eInmJ0Fz74Dz7zv9tQP2IyHauLn8I2WgYHzUPJFbA6+HyikyqCk
+         /oXp7DBd1qrqU2Vx4Kf6/7GfoMRo6nfAxLOtLue+C+XA7q43bx7EYHMTeu1oL7ogTtp3
+         gbLAf3v36mDDHkJuvP5T4mg2bffMlvTnb6xXhYBovz2i0dOqXMd0lGfWqyvbvaeb48DP
+         GcXklMnx0w75oTF/BcjG+nPXjVZceRKtr6Fs+wrp/WPehJOwnwZ9HYUSKXcU9dULsA9x
+         35WA==
+X-Gm-Message-State: AOAM532QqNkVMim7qNj0ExP+YyPzzizNOQmnrdwf0np802Lt6sxH6olU
+        wwOS6OVynG+oTpTMY0CqPsa+exKx0E6xglufUBI=
+X-Google-Smtp-Source: ABdhPJzUdM+HDWSM1iZqx4YSWjIdow+6ZgqSIaqlID5PznpvQ1vjprIINnFT39mCGJtkScok9g5Y6Y9HmXCNs8TUW7k=
+X-Received: by 2002:a2e:a817:: with SMTP id l23mr5193557ljq.86.1628219791097;
+ Thu, 05 Aug 2021 20:16:31 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR13CA0057.namprd13.prod.outlook.com (2603:10b6:a03:2c2::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.5 via Frontend Transport; Fri, 6 Aug 2021 03:13:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1d6f1136-1438-4aa7-caec-08d9588835be
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5420:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB5420974B03FCF0C4DF35CE678EF39@PH0PR10MB5420.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gPaTsPve21I6IDhUHfPEU36Qs1jnZo6/laJ7ISAgGKyu0LM4grgv/hmWifIJK43CF9iwT+VuudhUryveT2P4SSnW5KDqo0nV7nuPR3YlKvTyAGBMF6Fw/RD0PFcootSaPLZQl5rFny0szIIaehowPhK1TNhcpE+WGRctbmDbbGY/YjTHx8+QA35thabq5VKz8JKwXV3tt3vDu+PwAm5Lo4ynLiG9pko3e7KfJ+eovoHLW7jnSIox9n6gNIbrF71IXDuqnPJbfwrpfpw5kcCuFxFFqGkasH0TAuRGbpAoTjiJUCqPOISpxsWg83K5KwzNfFRzEreSde0f5vDQoI0YfVs+LX9iEWvkzUfOPo/R5k59upDgYBa49F0e7zZ7FD9V49aN8VzzoVSNZ4ICz2Ow4ghr7Ww1V9KS3pEJoHu93TjFAiSLLP2gMYehwCR79Lx9kOh1sC9sx+t3LCsF8tRa7QwqRV0RtLyuPO9D9P18LMxHmq8bD597Rw/cga9UA6dsWhQ80UgrVpJ0SnBSwQK78x2bk3qKtZfd1hZlgObbQ1T+YumOxyiVk9mOX9CB/6p6UOagIuGnt1GOAhL8WuD1RUFOXRUEzI9R9fB+dnAY+pZVN695S041vpanlbk0OrboctJ1C+g6cbSeb4ozKJUOp6xH4YYnmpuNLkHmn4I8q3gQgsNAC784OLiwSFk1214nbQJptfNVGSK0yELtftAhPQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(366004)(376002)(39860400002)(136003)(55016002)(36916002)(26005)(186003)(52116002)(478600001)(8936002)(7696005)(8676002)(66556008)(66476007)(66946007)(956004)(6666004)(558084003)(83380400001)(4326008)(38350700002)(5660300002)(38100700002)(6916009)(54906003)(2906002)(86362001)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/cIPjwvFMTypXmZS+eTmeaQAT46c5IdiUvmsu2JMZSNKJJaec2Vhna5FU5cR?=
- =?us-ascii?Q?S+oebDLxDgvnyptbX4pK35eTTlbt1zKJwRpBRPwrEc2NXrYF1GBrVzkxiCSR?=
- =?us-ascii?Q?mJLjjF80LTeax2+z6zJGFPwIikp97YMG6d/VZX2utU3ZimRY5iX2P7OXdNNJ?=
- =?us-ascii?Q?deXSINaR0ltUlqc0KquOD6fWCf3ZQTEBAyWVLJNThQV3wMcRYPhIoJD/3QjD?=
- =?us-ascii?Q?OZFk/GehDpyx6PK25fFWnB+HO3Kso1A6/JSsbYFxCUoguwdD6NyFHk6+UOIr?=
- =?us-ascii?Q?yAHDIO2z5f7R63NPuZRA+WpUP9cT21IjL38OhO7UEMtktC+5rNXO/CSeBYq5?=
- =?us-ascii?Q?IsByJyTyRpgJq9amhO/9wUvHj8HdmgZCUh0QbmK+MKQ7+6JeKU9YNAeNABqt?=
- =?us-ascii?Q?HoipfHxXDgcn1PIOa7+qiteZ1pLpwL/TWy48gwrnogBh7PwRRqKWgDLQ8auE?=
- =?us-ascii?Q?LURKBpJsD0RoOqWePa0ZnN+2cWCcBAtwoVK1B5TbAvQVQLVKayBY8v9MwxdK?=
- =?us-ascii?Q?eRZ8KKyGHCdYGerWwkGKPSHIlwC3vuw3iUgfXrZtVsb4hf/ch+Ee+Gjw7yCI?=
- =?us-ascii?Q?d6zvMgyhDK6/seiGmtmagG4TkC5aDg2p7xhgoQmsR9NPYw7LlHHgaiF1wA29?=
- =?us-ascii?Q?A2vfw9r2OqvKZVusghPSXwIqpHF28OllaXEf2c/KsVb0Id7k1dz3f4P/crNF?=
- =?us-ascii?Q?bgxdmuynfkHlv1+72V0fScAwt/SAf3GMBGmHGdhMl5pQXXrMxsARGp9QvB8K?=
- =?us-ascii?Q?rKPzpUDylxikVc4lKHT48oQKfkQsX6RywZElNOJgm805e42nitJiu11luX3o?=
- =?us-ascii?Q?qerayzTumga55JpEsLRTdx9EP9KABjMKNCaUbHBRVYCYiEdcQ5IHTfm+SfGz?=
- =?us-ascii?Q?do1lv4nJzObW4Y9fNgo5nlJ4v6FTIUyiAcG70eTlxTPR4gtpt4baAySVqDCx?=
- =?us-ascii?Q?7CCm5vWQ/D80hXhud/LDxBQhaa0bwDZMfiULVPHSE5k9aWYotNSlhUeEy8oh?=
- =?us-ascii?Q?YgNhF3OHZqSue0N/xQAeb1hLFLAEm9Ej0aaTLCEG/HjG5uuhyBzadM/vXasT?=
- =?us-ascii?Q?FGuC5v73tTBDd8LFiI/LA/osNoZOxKMO7C4z0nlDcblRfHTumUte9u83ZYQC?=
- =?us-ascii?Q?WB+LtLSzfkRnAN23pczzeTAQqSZwp3ebXlgXykXUoN/UNEEJMdo4nV+hi5f8?=
- =?us-ascii?Q?brpqrXyHkx4OjXqqWAILWu0pnSmaa1earZD8BqpZKaO8Vp/h1fkUuCR3fUTq?=
- =?us-ascii?Q?HIMr5IYXQmBDiV6AHpnDf446xmn6vnPWzROy2EWkbBdo0T3QSsLoTNw75Vup?=
- =?us-ascii?Q?dspVxp7tZkRZfjvcmprUiBGF?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d6f1136-1438-4aa7-caec-08d9588835be
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2021 03:13:49.1343
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yGEJIhL8qF3kTJhrzdJ177YxhjfUyt7S9wrFqn1lj4efKvaV0Yrr+t2bHfd86nrEzXLVr0g+yMcyU6JmhBC9QdL4ZhXS5UYfJT57H9muqTE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5420
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10067 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
- suspectscore=0 mlxlogscore=999 phishscore=0 spamscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108060018
-X-Proofpoint-GUID: UGOSI3-I5-NgN4WBqUAF8lKFU8lmVR_f
-X-Proofpoint-ORIG-GUID: UGOSI3-I5-NgN4WBqUAF8lKFU8lmVR_f
+References: <20210726143053.532839-1-sxwjean@me.com> <5e2336aa-90bf-b820-b5e4-e9a63088930f@csgroup.eu>
+In-Reply-To: <5e2336aa-90bf-b820-b5e4-e9a63088930f@csgroup.eu>
+From:   Xiongwei Song <sxwjean@gmail.com>
+Date:   Fri, 6 Aug 2021 11:16:04 +0800
+Message-ID: <CAEVVKH-rht+xpwTUL=ny6qENe2Fb0n=3e7DEmc5qzpSq2_1gTA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/4] powerpc: Optimize register usage for esr register
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Xiongwei Song <sxwjean@me.com>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>, oleg@redhat.com,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, ravi.bangoria@linux.ibm.com,
+        npiggin@gmail.com, aneesh.kumar@linux.ibm.com,
+        sandipan@linux.ibm.com, efremov@linux.com, peterx@redhat.com,
+        akpm@linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 5, 2021 at 6:06 PM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+>
+>
+> Le 26/07/2021 =C3=A0 16:30, sxwjean@me.com a =C3=A9crit :
+> > From: Xiongwei Song <sxwjean@gmail.com>
+> >
+> > Create an anonymous union for dsisr and esr regsiters, we can reference
+> > esr to get the exception detail when CONFIG_4xx=3Dy or CONFIG_BOOKE=3Dy=
+.
+> > Otherwise, reference dsisr. This makes code more clear.
+>
+> I'm not sure it is worth doing that.
+Why don't we use "esr" as reference manauls mentioned?
 
-Colin,
+>
+> What is the point in doing the following when you know that regs->esr and=
+ regs->dsisr are exactly
+> the same:
+>
+>  > -    err =3D ___do_page_fault(regs, regs->dar, regs->dsisr);
+>  > +    if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
+>  > +            err =3D ___do_page_fault(regs, regs->dar, regs->esr);
+>  > +    else
+>  > +            err =3D ___do_page_fault(regs, regs->dar, regs->dsisr);
+>  > +
+Yes, we can drop this. But it's a bit vague.
 
-> The variable num_cnt is being initialized with a value that is never
-> read, it is being updated later on. The assignment is redundant and
-> can be removed.
+> Or even
+>
+>  > -    int is_write =3D page_fault_is_write(regs->dsisr);
+>  > +    unsigned long err_reg;
+>  > +    int is_write;
+>  > +
+>  > +    if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
+>  > +            err_reg =3D regs->esr;
+>  > +    else
+>  > +            err_reg =3D regs->dsisr;
+>  > +
+>  > +    is_write =3D page_fault_is_write(err_reg);
+>
+>
+> Artificially growing the code for that makes no sense to me.
 
-Applied to 5.15/scsi-staging, thanks!
+We can drop this too.
+>
+>
+> To avoid anbiguity, maybe the best would be to rename regs->dsisr to some=
+thing like regs->sr , so
+> that we know it represents the status register, which is DSISR or ESR dep=
+ending on the platform.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+If so, this would make other people more confused. My consideration is
+to follow what the reference
+manuals represent.
+
+Thank you so much for your comments.
+
+Regards,
+Xiongwei
+>
+>
+> >
+> > Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+> > ---
+> >   arch/powerpc/include/asm/ptrace.h          |  5 ++++-
+> >   arch/powerpc/include/uapi/asm/ptrace.h     |  5 ++++-
+> >   arch/powerpc/kernel/process.c              |  2 +-
+> >   arch/powerpc/kernel/ptrace/ptrace.c        |  2 ++
+> >   arch/powerpc/kernel/traps.c                |  2 +-
+> >   arch/powerpc/mm/fault.c                    | 16 ++++++++++++++--
+> >   arch/powerpc/platforms/44x/machine_check.c |  4 ++--
+> >   arch/powerpc/platforms/4xx/machine_check.c |  2 +-
+> >   8 files changed, 29 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/a=
+sm/ptrace.h
+> > index 3e5d470a6155..c252d04b1206 100644
+> > --- a/arch/powerpc/include/asm/ptrace.h
+> > +++ b/arch/powerpc/include/asm/ptrace.h
+> > @@ -44,7 +44,10 @@ struct pt_regs
+> >   #endif
+> >                       unsigned long trap;
+> >                       unsigned long dar;
+> > -                     unsigned long dsisr;
+> > +                     union {
+> > +                             unsigned long dsisr;
+> > +                             unsigned long esr;
+> > +                     };
+> >                       unsigned long result;
+> >               };
+> >       };
+> > diff --git a/arch/powerpc/include/uapi/asm/ptrace.h b/arch/powerpc/incl=
+ude/uapi/asm/ptrace.h
+> > index 7004cfea3f5f..e357288b5f34 100644
+> > --- a/arch/powerpc/include/uapi/asm/ptrace.h
+> > +++ b/arch/powerpc/include/uapi/asm/ptrace.h
+> > @@ -53,7 +53,10 @@ struct pt_regs
+> >       /* N.B. for critical exceptions on 4xx, the dar and dsisr
+> >          fields are overloaded to hold srr0 and srr1. */
+> >       unsigned long dar;              /* Fault registers */
+> > -     unsigned long dsisr;            /* on 4xx/Book-E used for ESR */
+> > +     union {
+> > +             unsigned long dsisr;            /* on Book-S used for DSI=
+SR */
+> > +             unsigned long esr;              /* on 4xx/Book-E used for=
+ ESR */
+> > +     };
+> >       unsigned long result;           /* Result of a system call */
+> >   };
+> >
+> > diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/proces=
+s.c
+> > index 185beb290580..f74af8f9133c 100644
+> > --- a/arch/powerpc/kernel/process.c
+> > +++ b/arch/powerpc/kernel/process.c
+> > @@ -1499,7 +1499,7 @@ static void __show_regs(struct pt_regs *regs)
+> >           trap =3D=3D INTERRUPT_DATA_STORAGE ||
+> >           trap =3D=3D INTERRUPT_ALIGNMENT) {
+> >               if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
+> > -                     pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, reg=
+s->dsisr);
+> > +                     pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, reg=
+s->esr);
+> >               else
+> >                       pr_cont("DAR: "REG" DSISR: %08lx ", regs->dar, re=
+gs->dsisr);
+> >       }
+> > diff --git a/arch/powerpc/kernel/ptrace/ptrace.c b/arch/powerpc/kernel/=
+ptrace/ptrace.c
+> > index 0a0a33eb0d28..00789ad2c4a3 100644
+> > --- a/arch/powerpc/kernel/ptrace/ptrace.c
+> > +++ b/arch/powerpc/kernel/ptrace/ptrace.c
+> > @@ -375,6 +375,8 @@ void __init pt_regs_check(void)
+> >                    offsetof(struct user_pt_regs, dar));
+> >       BUILD_BUG_ON(offsetof(struct pt_regs, dsisr) !=3D
+> >                    offsetof(struct user_pt_regs, dsisr));
+> > +     BUILD_BUG_ON(offsetof(struct pt_regs, esr) !=3D
+> > +                  offsetof(struct user_pt_regs, esr));
+> >       BUILD_BUG_ON(offsetof(struct pt_regs, result) !=3D
+> >                    offsetof(struct user_pt_regs, result));
+> >
+> > diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+> > index dfbce527c98e..2164f5705a0b 100644
+> > --- a/arch/powerpc/kernel/traps.c
+> > +++ b/arch/powerpc/kernel/traps.c
+> > @@ -562,7 +562,7 @@ static inline int check_io_access(struct pt_regs *r=
+egs)
+> >   #ifdef CONFIG_PPC_ADV_DEBUG_REGS
+> >   /* On 4xx, the reason for the machine check or program exception
+> >      is in the ESR. */
+> > -#define get_reason(regs)     ((regs)->dsisr)
+> > +#define get_reason(regs)     ((regs)->esr)
+> >   #define REASON_FP           ESR_FP
+> >   #define REASON_ILLEGAL              (ESR_PIL | ESR_PUO)
+> >   #define REASON_PRIVILEGED   ESR_PPR
+> > diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+> > index a8d0ce85d39a..62953d4e7c93 100644
+> > --- a/arch/powerpc/mm/fault.c
+> > +++ b/arch/powerpc/mm/fault.c
+> > @@ -541,7 +541,11 @@ static __always_inline void __do_page_fault(struct=
+ pt_regs *regs)
+> >   {
+> >       long err;
+> >
+> > -     err =3D ___do_page_fault(regs, regs->dar, regs->dsisr);
+> > +     if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
+> > +             err =3D ___do_page_fault(regs, regs->dar, regs->esr);
+> > +     else
+> > +             err =3D ___do_page_fault(regs, regs->dar, regs->dsisr);
+> > +
+> >       if (unlikely(err))
+> >               bad_page_fault(regs, err);
+> >   }
+> > @@ -567,7 +571,15 @@ NOKPROBE_SYMBOL(hash__do_page_fault);
+> >    */
+> >   static void __bad_page_fault(struct pt_regs *regs, int sig)
+> >   {
+> > -     int is_write =3D page_fault_is_write(regs->dsisr);
+> > +     unsigned long err_reg;
+> > +     int is_write;
+> > +
+> > +     if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
+> > +             err_reg =3D regs->esr;
+> > +     else
+> > +             err_reg =3D regs->dsisr;
+> > +
+> > +     is_write =3D page_fault_is_write(err_reg);
+> >
+> >       /* kernel has accessed a bad area */
+> >
+> > diff --git a/arch/powerpc/platforms/44x/machine_check.c b/arch/powerpc/=
+platforms/44x/machine_check.c
+> > index a5c898bb9bab..5d19daacd78a 100644
+> > --- a/arch/powerpc/platforms/44x/machine_check.c
+> > +++ b/arch/powerpc/platforms/44x/machine_check.c
+> > @@ -11,7 +11,7 @@
+> >
+> >   int machine_check_440A(struct pt_regs *regs)
+> >   {
+> > -     unsigned long reason =3D regs->dsisr;
+> > +     unsigned long reason =3D regs->esr;
+> >
+> >       printk("Machine check in kernel mode.\n");
+> >       if (reason & ESR_IMCP){
+> > @@ -48,7 +48,7 @@ int machine_check_440A(struct pt_regs *regs)
+> >   #ifdef CONFIG_PPC_47x
+> >   int machine_check_47x(struct pt_regs *regs)
+> >   {
+> > -     unsigned long reason =3D regs->dsisr;
+> > +     unsigned long reason =3D regs->esr;
+> >       u32 mcsr;
+> >
+> >       printk(KERN_ERR "Machine check in kernel mode.\n");
+> > diff --git a/arch/powerpc/platforms/4xx/machine_check.c b/arch/powerpc/=
+platforms/4xx/machine_check.c
+> > index a71c29892a91..a905da1d6f41 100644
+> > --- a/arch/powerpc/platforms/4xx/machine_check.c
+> > +++ b/arch/powerpc/platforms/4xx/machine_check.c
+> > @@ -10,7 +10,7 @@
+> >
+> >   int machine_check_4xx(struct pt_regs *regs)
+> >   {
+> > -     unsigned long reason =3D regs->dsisr;
+> > +     unsigned long reason =3D regs->esr;
+> >
+> >       if (reason & ESR_IMCP) {
+> >               printk("Instruction");
+> >
