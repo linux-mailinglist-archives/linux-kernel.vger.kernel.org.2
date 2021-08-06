@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10733E24A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5AF3E24A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241950AbhHFIBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:01:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230119AbhHFIBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:01:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9554E61164;
-        Fri,  6 Aug 2021 08:01:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628236860;
-        bh=ztwkXxuWZMz/g6yZbgT0o5O4xY3oCyRVtcaRxW+vzjc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GJcB4WYC17pGs7DrCFLhOVLYml6GF4ytUAgy+rJpR/UpPv+ykfP9B+7FDb65CjZMf
-         EQ9P7LssjEowBvl7E+IYCesSfHJUBCNu4sMbwbNkQ8Wl4+cB4lmB6xoB/pj+J5UHSV
-         mm+XML2WZBrGO0/3DMsY2W40k8Qjng1CqIAHlhMmdhC6/ISkLC4AQXRtJ/dJc9bRVp
-         73yeP//jZ6tpI7O6cYQW6riWzLkTH15TVGrbOz7d+kk/8PEMKcEbnEMUuNyfxe70M3
-         Ksy0Y+uOxu3/6mmIpHDgzBN2KpCySBf2GTMbp6MddPn4cn+oIxVJ0Zxiu1qpJ5XRkZ
-         H8/5hxq6Tfqog==
-Received: by mail-wr1-f49.google.com with SMTP id c9so9884393wri.8;
-        Fri, 06 Aug 2021 01:01:00 -0700 (PDT)
-X-Gm-Message-State: AOAM531nGkBErkA5AQucV+qGafBwBE99QHbCBm5qxq2HdzBQ4kU5kbD4
-        cAeYvSalAoPPiy03zt0vbNYeFbm6LXZdgnQ7cJE=
-X-Google-Smtp-Source: ABdhPJwo6F2j4b2SHDNHGQozJB+IoZwYRfg4nlpJNBaRYbtLxX3J/PyAE2/Fn575dufIMYN5qJa9QILoPOtN4acsUKE=
-X-Received: by 2002:a5d:44c7:: with SMTP id z7mr9646198wrr.286.1628236859101;
- Fri, 06 Aug 2021 01:00:59 -0700 (PDT)
+        id S241947AbhHFIDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:03:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45478 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240526AbhHFIDv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:03:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628237016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=z83rkc119CYen1Gzw7e82XAQWuLBSFUnY84qbnJ1F9Q=;
+        b=FKOwSJ1ehnLB0w6NMCy8vPoJl5CjHLnNxo4zjK5IBHpq8tq5Pn7lxnZLaNTqb6BL6wiWXE
+        4ozbkJgfXMk6lBzrDYUJCiOQknCuQq0m4S5SnwIFaGtZlDzaDvo0o/wvr+ZLua2teY1QjT
+        sR5X6owcs47aAPZOcTPZhtBERhBw9hg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-437-OPg4AHfGNTiWlnVVRqRQvA-1; Fri, 06 Aug 2021 04:03:35 -0400
+X-MC-Unique: OPg4AHfGNTiWlnVVRqRQvA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C611A939;
+        Fri,  6 Aug 2021 08:03:33 +0000 (UTC)
+Received: from localhost (ovpn-13-152.pek2.redhat.com [10.72.13.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7979E5D9DE;
+        Fri,  6 Aug 2021 08:03:29 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Ming Lei <ming.lei@redhat.com>
+Subject: [PATCH V4 0/7] loop: cleanup charging io to mem/blkcg
+Date:   Fri,  6 Aug 2021 16:02:55 +0800
+Message-Id: <20210806080302.298297-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-References: <cover.1627989586.git.viresh.kumar@linaro.org> <75c8e6e5e8dfa1889938f3a6b2d991763c7a3717.1627989586.git.viresh.kumar@linaro.org>
- <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
- <0100017b1610f711-c53c79f2-9e28-4c45-bb42-8db09688b18e-000000@email.amazonses.com>
- <CAK8P3a0DWkfQcZpmyfKcdNt1MHf8ha6a9L2LmLt1Tv-j0HDr3w@mail.gmail.com>
- <20210805124922.j7lts7tfmm4t2kpf@vireshk-i7> <CAK8P3a0kbmPLGCBrjAv7-dW=JWq-pdSBeGUHCxUFmMKvKhCg7w@mail.gmail.com>
- <0100017b1a6c0a05-e41dc16c-b326-4017-a63d-a24a6c1fde70-000000@email.amazonses.com>
-In-Reply-To: <0100017b1a6c0a05-e41dc16c-b326-4017-a63d-a24a6c1fde70-000000@email.amazonses.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 6 Aug 2021 10:00:42 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2rrueXJHZxuiiShgVmLD916RaxW7xQHHjQXNFkM3Fpvg@mail.gmail.com>
-Message-ID: <CAK8P3a2rrueXJHZxuiiShgVmLD916RaxW7xQHHjQXNFkM3Fpvg@mail.gmail.com>
-Subject: Re: [Stratos-dev] [PATCH V4 2/2] gpio: virtio: Add IRQ support
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jason Wang <jasowang@redhat.com>,
-        Stratos Mailing List <stratos-dev@op-lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 6, 2021 at 9:44 AM Viresh Kumar via Stratos-dev
-<stratos-dev@op-lists.linaro.org> wrote:
->
-> On 05-08-21, 15:10, Arnd Bergmann wrote:
-> > I hope this can still be simplified by working out better which state
-> > transitions are needed exactly. In particular, I would expect that we
-> > can get away with not sending a VIRTIO_GPIO_MSG_IRQ_TYPE
-> > for 'mask' state changes at all, but use that only for forcing 'enabled'
-> > state changes.
->
-> Something like this ?
+Hello Guys,
 
-> static void virtio_gpio_irq_mask(struct irq_data *d)
-> {
->         /* Nothing to do here */
-> }
+Cleanup charging io to mem/blkcg a bit:
 
-You'd have to do /something/ here I think, if only setting the flag
-that we don't want to deliver the next interrupt.
+- avoid to store blkcg_css/memcg_css in loop_cmd, and store blkcg_css in
+loop_worker instead
 
-> static void virtio_gpio_irq_unmask(struct irq_data *d)
-> {
->         struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
->         struct virtio_gpio *vgpio = gpiochip_get_data(gc);
->
->         /* Queue the buffer unconditionally on unmask */
->         virtio_gpio_irq_prepare(vgpio, d->hwirq);
-> }
+- avoid to acquire ->lo_work_lock in IO path
 
-And check the flag here to not requeue it if it's masked.
+- simplify blkcg_css query via xarray
 
-Now, there is already a flag in the irq descriptor, so rather than
-having double accounting, the easy way may be to
-just use irqd_irq_masked()/irq_state_set_masked(), or
-have the irq core take care of this.
+- other misc cleanup
 
-     Arnd
+V4:
+	- fix build failure in case of !CONFIG_CGROUPS: changed to use
+	'struct cgroup_subsys_state' as parameter of the added memcg helper;
+	meantime add helper loop_blkcg_css_id()
+
+V3:
+	- one patch style change in 7/7
+	- rebase patch 4/7 against for-5.15/block
+	- add acked-by tag
+
+V2:
+	- add helper of memcg_get_e_css
+	- cleanup #ifdef
+	- improve the last patch, as discussed with Dan Schatzberg
+
+
+Ming Lei (7):
+  mm: memcontrol: add helper of memcg_get_e_css
+  loop: clean up blkcg association
+  loop: conver timer for monitoring idle worker into dwork
+  loop: add __loop_free_idle_workers() for covering freeing workers in
+    clearing FD
+  loop: improve loop_process_work
+  loop: use xarray to store workers
+  loop: don't add worker into idle list
+
+ drivers/block/loop.c       | 331 +++++++++++++++++++++----------------
+ drivers/block/loop.h       |   7 +-
+ include/linux/memcontrol.h |  10 ++
+ 3 files changed, 201 insertions(+), 147 deletions(-)
+
+-- 
+2.31.1
+
