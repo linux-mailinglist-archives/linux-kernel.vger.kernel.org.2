@@ -2,154 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BA53E2B1D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7A33E2B26
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343952AbhHFNEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 09:04:37 -0400
-Received: from mga11.intel.com ([192.55.52.93]:11073 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343883AbhHFNEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 09:04:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="211261951"
-X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
-   d="scan'208";a="211261951"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 06:04:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
-   d="scan'208";a="504017952"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga004.fm.intel.com with ESMTP; 06 Aug 2021 06:04:09 -0700
-Subject: [PATCH V5] scsi: ufshcd: Fix device links when BOOT WLUN fails to
- probe
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-References: <20210716114408.17320-1-adrian.hunter@intel.com>
- <20210716114408.17320-3-adrian.hunter@intel.com>
- <c78aac34-5c55-f6b6-3450-d5c3f09781fa@intel.com>
- <35b2bd0f-5766-debd-2b4c-c642a85df367@acm.org>
- <yq1czqrguch.fsf@ca-mkp.ca.oracle.com>
- <739a1abf-fca0-458e-5c8c-1d6ed90b56e0@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <a1c9bac8-b560-b662-f0aa-58c7e000cbbd@intel.com>
-Date:   Fri, 6 Aug 2021 16:04:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S1343967AbhHFNGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 09:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240896AbhHFNGx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 09:06:53 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D55C061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 06:06:37 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id x144so5184379vsx.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 06:06:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sNHkxBimwZ6Jh8WXRWXbNnhP/dPnhpFJMNiTGn9qTtg=;
+        b=LYI5PnJT3RUxp9wDoBeVQkNxLzQXFX/cosiPt6l+YdPQlcdBwlQP3ZxmoX0KLHLESH
+         rcHbLlv2mHbUf/5uV9Ir1MD3sXlk3KXNjK49vVrD/pE6xbscxSZ22pWYNQFHV88elTB1
+         4iCjPw6nLaUE8oVVkltpF8WL6Pt3MUEV0+TI8b8qNd6T5EMgnK3kDgY17lnu9MLFs1DA
+         skzELY6JzdOsXJy2/KbXinHkzhWWU70N0TUqeOq/lbEykjvDCZkYzfjOAmaa5RGMKJeq
+         ItFX60cAhggdeFBKMf6k73IKJzPYKLOtdntTBxIinYtVxsNLm4et087M1pKosP/J7hKl
+         preQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sNHkxBimwZ6Jh8WXRWXbNnhP/dPnhpFJMNiTGn9qTtg=;
+        b=iKgMIcmQOsrf88CSFfzmnzE3Gms5OiXp8nTxn6DATUfPQ/m/BGXQaNn6fSWAUaCeBn
+         MNBA+qvfOChYRjju0OoDdFsDruJ3PP6h0eqVjeBi+uKsGHk5/NV5hc7KPP8ws0UbQa5h
+         2lQ8lL2NaJnxk0c6aunpFkkkHAXq4YTOFUc6s71n1E2FU0WdtDg5nJGvDJ1ITAzTblcV
+         aXDHse2QFAUUbF/c08SiRKVhjj8+S2inhZTleYpzXs92wSarJ/raUSiWAU1FZMsRNYlS
+         1WVtzOjNoEsB2bd42v7DgmCCmYZ4XdUhb8klMsZ+EBki5CXl3rjX5wh6d0kxggTKjskl
+         p70w==
+X-Gm-Message-State: AOAM531FO6dCzuSQFyPSMzCVwsMaPWTEhPhfLIR41XcMrCX8dPSTRywV
+        fA0i+BZNn+dH19P1IDYtNrHZ5Kj8hQRLNx/hzKlAmg==
+X-Google-Smtp-Source: ABdhPJx7LQQ+qPQvXevHz49FTYEayCd9sFB68rW6zgcqcR0ElsNX5LPKVGqHH+cM85lbgA/GVPwxHYheJZhzMzDbZyw=
+X-Received: by 2002:a67:7c14:: with SMTP id x20mr9059463vsc.42.1628255196328;
+ Fri, 06 Aug 2021 06:06:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <739a1abf-fca0-458e-5c8c-1d6ed90b56e0@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210730063309.8194-1-rashmi.a@intel.com> <20210730063309.8194-3-rashmi.a@intel.com>
+In-Reply-To: <20210730063309.8194-3-rashmi.a@intel.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 6 Aug 2021 15:06:00 +0200
+Message-ID: <CAPDyKFqZ-H3+OnYyyY7y611YrRAAMFq+W65DMfM4wSNvY_fzjA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mmc: sdhci-of-arasan: Add intel Thunder Bay SOC
+ support to the arasan eMMC driver
+To:     rashmi.a@intel.com
+Cc:     linux-drivers-review-request@eclists.intel.com,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kishon <kishon@ti.com>, Vinod Koul <vkoul@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-phy@lists.infradead.org, Mark Gross <mgross@linux.intel.com>,
+        kris.pan@linux.intel.com, furong.zhou@intel.com,
+        mallikarjunappa.sangannavar@intel.com,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        mahesh.r.vaidya@intel.com, nandhini.srikandan@intel.com,
+        kenchappa.demakkanavar@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Managed device links are deleted by device_del(). However it is possible to
-add a device link to a consumer before device_add(), and then discovering
-an error prevents the device from being used. In that case normally
-references to the device would be dropped and the device would be deleted.
-However the device link holds a reference to the device, so the device link
-and device remain indefinitely (unless the supplier is deleted).
+On Fri, 30 Jul 2021 at 08:33, <rashmi.a@intel.com> wrote:
+>
+> From: Rashmi A <rashmi.a@intel.com>
+>
+> Intel Thunder Bay SoC eMMC controller is based on Arasan
+> eMMC 5.1 host controller IP
+>
+> Signed-off-by: Rashmi A <rashmi.a@intel.com>
+> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
 
-For UFSHCD, if a LUN fails to probe (e.g. absent BOOT WLUN), the device
-will not have been registered but can still have a device link holding a
-reference to the device. The unwanted device link will prevent runtime
-suspend indefinitely.
+Rashmi, is it safe to apply this separately from the phy driver/dt
+changes? Then I can queue this via my mmc tree, if you like.
 
-Amend device link removal to accept removal of a link with an unregistered
-consumer device (suggested by Rafael), and fix UFSHCD by explicitly
-deleting the device link when SCSI destroys the SCSI device.
+Kind regards
+Uffe
 
-Fixes: b294ff3e34490 ("scsi: ufs: core: Enable power management for wlun")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
----
-
-
-Patch "driver core: Prevent warning when removing a device link from
-unregistered consumer" is already in Linus' tree:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e64daad660a0c9ace3acdc57099fffe5ed83f977
-
-
-Changes in V5:
-
-  Rebase on 5.15/scsi-staging
-
-
-
- drivers/base/core.c       |  2 ++
- drivers/scsi/ufs/ufshcd.c | 23 +++++++++++++++++++++--
- 2 files changed, 23 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index cadcade65825..9badd7f7fe62 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -884,6 +884,8 @@ static void device_link_put_kref(struct device_link *link)
- {
- 	if (link->flags & DL_FLAG_STATELESS)
- 		kref_put(&link->kref, __device_link_del);
-+	else if (!device_is_registered(link->consumer))
-+		__device_link_del(&link->kref);
- 	else
- 		WARN(1, "Unable to drop a managed device link reference\n");
- }
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 6c263e94144b..9f72698ff597 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -5028,6 +5028,7 @@ static int ufshcd_slave_configure(struct scsi_device *sdev)
- static void ufshcd_slave_destroy(struct scsi_device *sdev)
- {
- 	struct ufs_hba *hba;
-+	unsigned long flags;
- 
- 	hba = shost_priv(sdev->host);
- 
-@@ -5035,11 +5036,29 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
- 
- 	/* Drop the reference as it won't be needed anymore */
- 	if (ufshcd_scsi_to_upiu_lun(sdev->lun) == UFS_UPIU_UFS_DEVICE_WLUN) {
--		unsigned long flags;
--
- 		spin_lock_irqsave(hba->host->host_lock, flags);
- 		hba->sdev_ufs_device = NULL;
- 		spin_unlock_irqrestore(hba->host->host_lock, flags);
-+	} else if (hba->sdev_ufs_device) {
-+		struct device *supplier = NULL;
-+
-+		/* Ensure UFS Device WLUN exists and does not disappear */
-+		spin_lock_irqsave(hba->host->host_lock, flags);
-+		if (hba->sdev_ufs_device) {
-+			supplier = &hba->sdev_ufs_device->sdev_gendev;
-+			get_device(supplier);
-+		}
-+		spin_unlock_irqrestore(hba->host->host_lock, flags);
-+
-+		if (supplier) {
-+			/*
-+			 * If a LUN fails to probe (e.g. absent BOOT WLUN), the
-+			 * device will not have been registered but can still
-+			 * have a device link holding a reference to the device.
-+			 */
-+			device_link_remove(&sdev->sdev_gendev, supplier);
-+			put_device(supplier);
-+		}
- 	}
- }
- 
--- 
-2.17.1
-
+> ---
+>  drivers/mmc/host/sdhci-of-arasan.c | 29 ++++++++++++++++++++++++++++-
+>  1 file changed, 28 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+> index 839965f7c717..6f202fb7a546 100644
+> --- a/drivers/mmc/host/sdhci-of-arasan.c
+> +++ b/drivers/mmc/host/sdhci-of-arasan.c
+> @@ -185,6 +185,13 @@ static const struct sdhci_arasan_soc_ctl_map intel_lgm_sdxc_soc_ctl_map = {
+>         .hiword_update = false,
+>  };
+>
+> +static const struct sdhci_arasan_soc_ctl_map thunderbay_soc_ctl_map = {
+> +       .baseclkfreq = { .reg = 0x0, .width = 8, .shift = 14 },
+> +       .clockmultiplier = { .reg = 0x4, .width = 8, .shift = 14 },
+> +       .support64b = { .reg = 0x4, .width = 1, .shift = 24 },
+> +       .hiword_update = false,
+> +};
+> +
+>  static const struct sdhci_arasan_soc_ctl_map intel_keembay_soc_ctl_map = {
+>         .baseclkfreq = { .reg = 0x0, .width = 8, .shift = 14 },
+>         .clockmultiplier = { .reg = 0x4, .width = 8, .shift = 14 },
+> @@ -430,6 +437,15 @@ static const struct sdhci_pltfm_data sdhci_arasan_cqe_pdata = {
+>                         SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN,
+>  };
+>
+> +static const struct sdhci_pltfm_data sdhci_arasan_thunderbay_pdata = {
+> +       .ops = &sdhci_arasan_cqe_ops,
+> +       .quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN | SDHCI_QUIRK_NO_ENDATTR_IN_NOPDESC,
+> +       .quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+> +               SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN |
+> +               SDHCI_QUIRK2_STOP_WITH_TC |
+> +               SDHCI_QUIRK2_CAPS_BIT63_FOR_HS400,
+> +};
+> +
+>  #ifdef CONFIG_PM_SLEEP
+>  /**
+>   * sdhci_arasan_suspend - Suspend method for the driver
+> @@ -1098,6 +1114,12 @@ static struct sdhci_arasan_of_data sdhci_arasan_generic_data = {
+>         .clk_ops = &arasan_clk_ops,
+>  };
+>
+> +static const struct sdhci_arasan_of_data sdhci_arasan_thunderbay_data = {
+> +       .soc_ctl_map = &thunderbay_soc_ctl_map,
+> +       .pdata = &sdhci_arasan_thunderbay_pdata,
+> +       .clk_ops = &arasan_clk_ops,
+> +};
+> +
+>  static const struct sdhci_pltfm_data sdhci_keembay_emmc_pdata = {
+>         .ops = &sdhci_arasan_cqe_ops,
+>         .quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN |
+> @@ -1231,6 +1253,10 @@ static const struct of_device_id sdhci_arasan_of_match[] = {
+>                 .compatible = "intel,keembay-sdhci-5.1-sdio",
+>                 .data = &intel_keembay_sdio_data,
+>         },
+> +       {
+> +               .compatible = "intel,thunderbay-sdhci-5.1",
+> +               .data = &sdhci_arasan_thunderbay_data,
+> +       },
+>         /* Generic compatible below here */
+>         {
+>                 .compatible = "arasan,sdhci-8.9a",
+> @@ -1582,7 +1608,8 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+>
+>         if (of_device_is_compatible(np, "intel,keembay-sdhci-5.1-emmc") ||
+>             of_device_is_compatible(np, "intel,keembay-sdhci-5.1-sd") ||
+> -           of_device_is_compatible(np, "intel,keembay-sdhci-5.1-sdio")) {
+> +           of_device_is_compatible(np, "intel,keembay-sdhci-5.1-sdio") ||
+> +           of_device_is_compatible(np, "intel,thunderbay-sdhci-5.1")) {
+>                 sdhci_arasan_update_clockmultiplier(host, 0x0);
+>                 sdhci_arasan_update_support64b(host, 0x0);
+>
+> --
+> 2.17.1
+>
