@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F543E2F7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E8E3E2F80
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhHFSyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 14:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243429AbhHFSy3 (ORCPT
+        id S231661AbhHFSyp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Aug 2021 14:54:45 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:37163 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229918AbhHFSyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 14:54:29 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA7DC0613CF;
-        Fri,  6 Aug 2021 11:54:12 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id az7so10949680qkb.5;
-        Fri, 06 Aug 2021 11:54:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ukOHyjXaZwRM7DApW60zHscwgybdaHrIkrvrkuNcGnw=;
-        b=DugJcaj0yP1tAvYcQOIoXE9IyRuPV4wqsfIoErzO8+KSRWd9bmabIAODM6+lxfCrRM
-         4rN2O4mZewqIc+5jyH/U3Ux2ywnL9Hr2iCqil0JT9DyCGR6x2p4eNr3LHBEqJSMbLxvq
-         KwrE7rEDLnYtIzz7Vi2sVRYPA1vUB1kE5svHf2esL0988N09MX2ES5gvkQuLjKZxemO2
-         Jb4geJdh5Y/VuZ54NgK5BoypGvsgmcXwb5q2ylXa+DtnvcYh77mYdCj542EZEj1aJVBQ
-         MtPWdWQx2zdSekxE7TL1oFWvnea5KISarkKsQUFaSVfB1tuwIHR5kFOGh8xzjw6Dgn7+
-         /KjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ukOHyjXaZwRM7DApW60zHscwgybdaHrIkrvrkuNcGnw=;
-        b=oj8ZM59/YlfYyvrDHTvs5Y80z7VXOJ5CL3He0ZgtOJDdCUv1ffYlsAcKae1q0noxUz
-         bZqi8XY3jjp1RdhWmTn4XqgztugfxNhgVT0pM47Abo7MYDrP9afgf6S1YA/BEcbKp3QI
-         EtnSZ35Sn8tVTsX2EI/tsFIhXwWxcX8EdCuH9UlsNcPb30Nrn5PtJ/w88gv3zGXvmSjZ
-         2J1n91nZAA/AUq4DeclK6iWPY0gjMWfz4CAwYn316JMRZ/mDzuv9Q6SOMje+lhgMayHA
-         Y6hapZ2+t+/m4aX4iON15xq89eTO+R3NzI8UMIZmlMH8iYiopD36fwX8BRzJiKjMgwu7
-         PuiA==
-X-Gm-Message-State: AOAM530C+jmY9/6Ne50F2Jt5wNNBxgBhTCMXerTZTMhc4bJKLeN64yqP
-        e/TkQIvowg1FRqOICWRMGtU=
-X-Google-Smtp-Source: ABdhPJxhS4lIwNvHN7DPB1kygf/LhPlurkdKREGECoP+gWsigcmAt3rHji2pxXTn4009b5l6PBEaWA==
-X-Received: by 2002:a05:620a:448c:: with SMTP id x12mr11391509qkp.39.1628276051272;
-        Fri, 06 Aug 2021 11:54:11 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t124sm5061621qke.16.2021.08.06.11.54.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 11:54:10 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 5.13 32/35] Revert "spi: mediatek: fix fifo rx mode"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Peter Hess <peter.hess@ph-home.de>,
-        Frank Wunderlich <frank-w@public-files.de>,
+        Fri, 6 Aug 2021 14:54:43 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 33ABB100004;
+        Fri,  6 Aug 2021 18:54:24 +0000 (UTC)
+Date:   Fri, 6 Aug 2021 20:54:24 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Apurva Nandan <a-nandan@ti.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
         Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-References: <20210806081113.718626745@linuxfoundation.org>
- <20210806081114.781183194@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <1be93ec0-43cd-f86b-aeb8-64971b4fcedd@roeck-us.net>
-Date:   Fri, 6 Aug 2021 11:54:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+Subject: Re: [PATCH 06/13] mtd: spinand: Add macros for Octal DTR page read
+ and write operations
+Message-ID: <20210806205424.51511388@xps13>
+In-Reply-To: <20210713130538.646-7-a-nandan@ti.com>
+References: <20210713130538.646-1-a-nandan@ti.com>
+        <20210713130538.646-7-a-nandan@ti.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210806081114.781183194@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/21 1:17 AM, Greg Kroah-Hartman wrote:
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> This reverts commit 09b8cc7810587257e5f82080884001301e1a1ba9 which is
-> commit 3a70dd2d050331ee4cf5ad9d5c0a32d83ead9a43 upstream.
-> 
-> It has been found to have problems.
-> 
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Cc: Peter Hess <peter.hess@ph-home.de>
-> Cc: Frank Wunderlich <frank-w@public-files.de>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Sasha Levin <sashal@kernel.org>
-> Link: https://lore.kernel.org/r/efee3a58-a4d2-af22-0931-e81b877ab539@roeck-us.net
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Hi Apurva,
 
-The problem with the reverted patch has now been fixed in the mainline
-kernel with commit 0d5c3954b35e ("spi: mediatek: Fix fifo transfer").
-So an alternative to this revert might be to apply commit 0d5c3954b35e
-instead.
+Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:31
++0000:
+
+> Define new PAGE_READ_FROM_CACHE and PROG_LOAD op templates for Octal
+> DTR SPI mode. These templates would used in op_variants and
+
+                                will be
+
+> op_templates for defining Octal DTR read from cache and write to
+> cache operations.
+> 
+> Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
+> 
+> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+> ---
+>  include/linux/mtd/spinand.h | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> index ebb19b2cec84..35816b8cfe81 100644
+> --- a/include/linux/mtd/spinand.h
+> +++ b/include/linux/mtd/spinand.h
+> @@ -122,6 +122,12 @@
+>  		   SPI_MEM_OP_DUMMY(ndummy, 4),				\
+>  		   SPI_MEM_OP_DATA_IN(len, buf, 4))
+>  
+> +#define SPINAND_PAGE_READ_FROM_CACHE_OCTALIO_DTR_OP(addr, ndummy, buf, len) \
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD_DTR(2, 0x9d9d, 8),			\
+> +		   SPI_MEM_OP_ADDR_DTR(2, addr, 8),			\
+> +		   SPI_MEM_OP_DUMMY_DTR(ndummy, 8),			\
+> +		   SPI_MEM_OP_DATA_IN_DTR(len, buf, 8))
+> +
+>  #define SPINAND_PROG_EXEC_OP(addr)					\
+>  	SPI_MEM_OP(SPI_MEM_OP_CMD(0x10, 1),				\
+>  		   SPI_MEM_OP_ADDR(3, addr, 1),				\
+> @@ -140,6 +146,12 @@
+>  		   SPI_MEM_OP_NO_DUMMY,					\
+>  		   SPI_MEM_OP_DATA_OUT(len, buf, 4))
+>  
+> +#define SPINAND_PROG_LOAD_OCTALIO_DTR(reset, addr, buf, len)		\
+> +	SPI_MEM_OP(SPI_MEM_OP_CMD_DTR(2, reset ? 0x0202 : 0x8484, 8),	\
+> +		   SPI_MEM_OP_ADDR_DTR(2, addr, 8),			\
+> +		   SPI_MEM_OP_NO_DUMMY,					\
+> +		   SPI_MEM_OP_DATA_OUT_DTR(len, buf, 8))
+> +
+>  #define SPINAND_PROTO_BUSWIDTH_MASK	GENMASK(6, 0)
+>  #define SPINAND_PROTO_DTR_BIT		BIT(7)
+>  
 
 Thanks,
-Guenter
+Miquèl
