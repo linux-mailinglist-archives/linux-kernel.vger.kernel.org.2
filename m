@@ -2,111 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85243E29EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C29C3E29F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245652AbhHFLng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240091AbhHFLnf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:43:35 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D6AC061798;
-        Fri,  6 Aug 2021 04:43:19 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id b11so10715661wrx.6;
-        Fri, 06 Aug 2021 04:43:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gc3S+v0WYsSbPNetify2yT5xI0BcVIWyyU5ydgMV3Sc=;
-        b=IPbfNVB0w3ZpEq6jRu9ETKWlaCzP45JOcCfWweUo5iZF1eVw0on9idRjVRaSg1Qyij
-         oD8oJSofTL9dREYjOSjIr3YMCjTCg3m7RTbd/7OrKMDxLVuDB4twmwDKAECE0ht+pe/f
-         idcVWBZMZ+7XaGLrSeWT6JK0kYCQySg7jzCIxIZja4671pXEFqvJ39J/Aj4fiRd+k1tN
-         Y67kQ1c3fEK2p5CcjLwq7P4af1qCrt+oruboPf/PmwaenQNnfSsWtFjKQojRIU7V4/B5
-         qYy6af+ICpIQdk1+OOVJaIA2P1ZslTGdoFS9wr34WCqTfdJeQYRi6P5UTgfwO9/dLFdR
-         l/kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gc3S+v0WYsSbPNetify2yT5xI0BcVIWyyU5ydgMV3Sc=;
-        b=IoIBCYiiPty0cMPVslM2EXVPrDmKsfUIV/p89nNVWp4rmL03SueDDg7wUas2qS2yMf
-         Vl2ivD4ndwRnTM5l4oTu4MGmp92koI8s1lCQZgR/251BONIihrOPsC2RfGTO4rouiTfB
-         kIIfE+FTcYXpXh7BBVSioyHX3rmyPJzPLgs8ty5RyAThq6tGf3TqVnEE5InAbwh30HK7
-         bLTeaGNLAwvJ9EvNyyphnXHKqRzO0XxgXYoB3Q7AW0YJlV4U512WQ74NdBufT55z681w
-         YhFL3nQIhphIVEp9HUJnU+IHJmNW+Tyg1PLEuf7i7l+A+A9s2z4be9M5FFmquU3ssPN6
-         VGVw==
-X-Gm-Message-State: AOAM531OIdKr8lGCgeIue1eaNnuE6YEduyXgas7MWRrH0DDuhCC7R1ni
-        0k6FSypa1JM23Osi8Zccncs=
-X-Google-Smtp-Source: ABdhPJwiytsZL5qmxhuH0TmtWLFQN7lk4RhxQtowzzxVSQeJLkjGg1Dr/gT+LkmO+CRdUDo0JhnCQA==
-X-Received: by 2002:adf:f046:: with SMTP id t6mr10640255wro.266.1628250197835;
-        Fri, 06 Aug 2021 04:43:17 -0700 (PDT)
-Received: from localhost.localdomain ([85.255.237.205])
-        by smtp.gmail.com with ESMTPSA id a12sm11720548wmj.22.2021.08.06.04.43.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 04:43:17 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC] mm: optimise generic_file_read_iter
-Date:   Fri,  6 Aug 2021 12:42:43 +0100
-Message-Id: <07bd408d6cad95166b776911823b40044160b434.1628248975.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S245669AbhHFLno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:43:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245658AbhHFLnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 07:43:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A67F660EBB;
+        Fri,  6 Aug 2021 11:43:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628250207;
+        bh=RdfzBal/14TQvtJAuKHwVFSH6zN0Zcpar6uZTm/4OTM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=EsxVBnmmYDHQPqWJbjSeiIA2LjDoU4tOlFYKFzZW35DR6QAC9SDwZVoQJLmC8lRgn
+         cQwbEwkaA8VAl/m31kTQcxZkMDtvYK3iiw9ZWRqGqWHjj7JwRX5WzQmLiaImQbs1RQ
+         zkI9OSJptDiFYR0t/iKQ6DW+boeIg6IeyE30HFGY+CnyZLyDcHFofAvOd1cOK5/Bbt
+         ZohdGF/MieDvN6PjNnnjA5inovUxAFrE35rRytKrPPBhfTW5+gwV2Tx6OwdG7LB7+m
+         FGLT2+qHZT7K50U677uMPSHjUpqOo14LKlAle766DNzwicVxydSsWaHeN9Z5YaRi4Q
+         zq9fbYrZhLekQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6FE0E5C1718; Fri,  6 Aug 2021 04:43:27 -0700 (PDT)
+Date:   Fri, 6 Aug 2021 04:43:27 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Yanfei Xu <yanfei.xu@windriver.com>
+Subject: Re: [PATCH rcu 02/18] rcu: Fix stall-warning deadlock due to
+ non-release of rcu_node ->lock
+Message-ID: <20210806114327.GP4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
+ <20210721202127.2129660-2-paulmck@kernel.org>
+ <20210806095730.tw3bgnjtsytrqqfq@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806095730.tw3bgnjtsytrqqfq@e107158-lin.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unless direct I/O path of generic_file_read_iter() ended up with an
-error or a short read, it doesn't use inode. So, load inode and size
-later, only when they're needed. This cuts two memory reads and also
-imrpoves code generation, e.g. loads from stack.
+On Fri, Aug 06, 2021 at 10:57:30AM +0100, Qais Yousef wrote:
+> On 07/21/21 13:21, Paul E. McKenney wrote:
+> > From: Yanfei Xu <yanfei.xu@windriver.com>
+> > 
+> > If rcu_print_task_stall() is invoked on an rcu_node structure that does
+> > not contain any tasks blocking the current grace period, it takes an
+> > early exit that fails to release that rcu_node structure's lock.  This
+> > results in a self-deadlock, which is detected by lockdep.
+> > 
+> > To reproduce this bug:
+> > 
+> > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --trust-make --configs "TREE03" --kconfig "CONFIG_PROVE_LOCKING=y" --bootargs "rcutorture.stall_cpu=30 rcutorture.stall_cpu_block=1 rcutorture.fwd_progress=0 rcutorture.test_boost=0"
+> > 
+> > This will also result in other complaints, including RCU's scheduler
+> > hook complaining about blocking rather than preemption and an rcutorture
+> > writer stall.
+> > 
+> > Only a partial RCU CPU stall warning message will be printed because of
+> > the self-deadlock.
+> > 
+> > This commit therefore releases the lock on the rcu_print_task_stall()
+> > function's early exit path.
+> > 
+> > Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
+> > Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> 
+> We were seeing similar issue on Android 5.10. Applying patches 1 and 2 did fix
+> the deadlock problem and we get proper RCU stall splat now.
+> 
+> For patches 1 and 2:
+> 
+> Tested-by: Qais Yousef <qais.yousef@arm.com>
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
+Thank you, and I will apply this on the next rebase.
 
-NOTE: as a side effect, it reads inode->i_size after ->direct_IO(), and
-I'm not sure whether that's valid, so would be great to get feedback
-from someone who knows better.
+> They have Fixes tags, so should end up in 5.10 stable I presume.
 
- mm/filemap.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Here is hoping!  ;-)
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index d1458ecf2f51..0030c454ec35 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2658,10 +2658,8 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 	if (iocb->ki_flags & IOCB_DIRECT) {
- 		struct file *file = iocb->ki_filp;
- 		struct address_space *mapping = file->f_mapping;
--		struct inode *inode = mapping->host;
--		loff_t size;
-+		struct inode *inode;
- 
--		size = i_size_read(inode);
- 		if (iocb->ki_flags & IOCB_NOWAIT) {
- 			if (filemap_range_needs_writeback(mapping, iocb->ki_pos,
- 						iocb->ki_pos + count - 1))
-@@ -2693,8 +2691,10 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 		 * the rest of the read.  Buffered reads will not work for
- 		 * DAX files, so don't bother trying.
- 		 */
--		if (retval < 0 || !count || iocb->ki_pos >= size ||
--		    IS_DAX(inode))
-+		if (retval < 0 || !count)
-+			return retval;
-+		inode = mapping->host;
-+		if (iocb->ki_pos >= i_size_read(inode) || IS_DAX(inode))
- 			return retval;
- 	}
- 
--- 
-2.32.0
-
+							Thanx, Paul
