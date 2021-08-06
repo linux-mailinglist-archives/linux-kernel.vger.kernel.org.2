@@ -2,115 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1C63E2AB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DE33E2AB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343740AbhHFMfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 08:35:42 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:15845 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343726AbhHFMfk (ORCPT
+        id S1343766AbhHFMjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 08:39:14 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42022 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343743AbhHFMjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 08:35:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628253325; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=N2y4oRCNfmsOR5AcLj7KTqZExbR4TqZaeaiHeBAWq7o=; b=M7590IRswx6ENvjU4ImqR90UPbfjcWCRx/3eSpuPm4i5vB6zdO7vbKgQF3B23sw7KfMZ06Hy
- 01SoasJMkf0E1fhx+GgEny733KSUFn3rc7Fp3lQEClUyH4YaVZqkhnqMgQnkryTXc+iG3n1U
- NfHArYAqUDqffSUKxgz9k7z3v5U=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 610d2c815c73bba6fbbc3542 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Aug 2021 12:35:13
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 81AB6C43145; Fri,  6 Aug 2021 12:35:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 6 Aug 2021 08:39:11 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D3A5AC433F1;
-        Fri,  6 Aug 2021 12:35:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D3A5AC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, netdev <netdev@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] brcmfmac: firmware: Fix uninitialized variable ret
-References: <20210803150904.80119-1-colin.king@canonical.com>
-        <CACRpkdZ5u-C8uH2pCr1689v_ndyzqevDDksXvtPYv=FfD=x_xg@mail.gmail.com>
-        <875ywkc80d.fsf@codeaurora.org>
-        <96709926-30c6-457e-3e80-eb7ad6e9d778@broadcom.com>
-        <b2034ac5-0080-a2fb-32ef-61ad50dfd248@canonical.com>
-Date:   Fri, 06 Aug 2021 15:35:05 +0300
-In-Reply-To: <b2034ac5-0080-a2fb-32ef-61ad50dfd248@canonical.com> (Colin Ian
-        King's message of "Fri, 6 Aug 2021 12:28:29 +0100")
-Message-ID: <87eeb6bvk6.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 466E722238;
+        Fri,  6 Aug 2021 12:38:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628253535; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fVnQMqrob9/IFuGf5EbNL3WQENObUrkXU+LC4+olYdY=;
+        b=yikrRqNKDzssgPajRQZtzuJzAdAgmFAi8Q7QuojndI5AoZIPHbeq22FZXncR0jfjYYRv6s
+        nFMlgnvNJqDjiVNHUNVKBRmoT53NKFyGtWrBIpNFUb6Lq5c66y76S9jdxRZXr1mNgiD8nh
+        bmL4Mn3RjNgSW4tO23hcKpHXTuj4be4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628253535;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fVnQMqrob9/IFuGf5EbNL3WQENObUrkXU+LC4+olYdY=;
+        b=Li6bD+Fg/AYldNcFmarfwiFRStRjdnW2AX7iH8+FMFKnyvDMhpJfgRQ7SP3cEFB4XRE8Ro
+        4gzyYiytkmhxQSAg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1BF5413A82;
+        Fri,  6 Aug 2021 12:38:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id WjdwBV8tDWF5dwAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Fri, 06 Aug 2021 12:38:55 +0000
+Subject: Re: [PATCH 1/1] mm/vmstat: Protect per cpu variables with preempt
+ disable on RT
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Hugh Dickins <hughd@google.com>, Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210805160019.1137-1-mgorman@techsingularity.net>
+ <20210805160019.1137-2-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <d54e0958-5680-0d5c-e4a7-6ec4afe53b48@suse.cz>
+Date:   Fri, 6 Aug 2021 14:38:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210805160019.1137-2-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Colin Ian King <colin.king@canonical.com> writes:
+On 8/5/21 6:00 PM, Mel Gorman wrote:
+> From: Ingo Molnar <mingo@elte.hu>
+> 
+> Disable preemption on -RT for the vmstat code. On vanila the code runs
+> in IRQ-off regions while on -RT it may not when stats are updated under
+> a local_lock. "preempt_disable" ensures that the same resources is not
+> updated in parallel due to preemption.
+> 
+> This patch differs from the preempt-rt version where __count_vm_event and
+> __count_vm_events are also protected. The counters are explicitly "allowed
+> to be to be racy" so there is no need to protect them from preemption. Only
+> the accurate page stats that are updated by a read-modify-write need
+> protection. This patch also differs in that a preempt_[en|dis]able_rt
+> helper is not used. As vmstat is the only user of the helper, it was
+> suggested that it be open-coded in vmstat.c instead of risking the helper
+> being used in unnecessary contexts.
+> 
+> Signed-off-by: Ingo Molnar <mingo@elte.hu>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-> On 06/08/2021 12:23, Arend van Spriel wrote:
->> On 05-08-2021 15:53, Kalle Valo wrote:
->>> Linus Walleij <linus.walleij@linaro.org> writes:
->>>
->>>> On Tue, Aug 3, 2021 at 5:09 PM Colin King <colin.king@canonical.com>
->>>> wrote:
->>>>
->>>>> From: Colin Ian King <colin.king@canonical.com>
->>>>>
->>>>> Currently the variable ret is uninitialized and is only set if
->>>>> the pointer alt_path is non-null. Fix this by ininitializing ret
->>>>> to zero.
->>>>>
->>>>> Addresses-Coverity: ("Uninitialized scalar variable")
->>>>> Fixes: 5ff013914c62 ("brcmfmac: firmware: Allow per-board firmware
->>>>> binaries")
->>>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->>>>
->>>> Nice catch!
->>>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->>>
->>> I assume this will be fixed by Linus' patch "brcmfmac: firmware: Fix
->>> firmware loading" and I should drop Colin's patch, correct?
->> 
->> That would be my assumption as well, but not sure when he will submit
->> another revision of it. You probably know what to do ;-)
->
-> I'd prefer my patch to be dropped in preference to Linus' fix.
-
-Ok, I'll then drop Colin's patch.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
