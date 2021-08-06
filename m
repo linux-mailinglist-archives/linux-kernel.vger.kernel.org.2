@@ -2,35 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CAD3E2FBC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 21:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF513E2FC4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 21:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243878AbhHFTOr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Aug 2021 15:14:47 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:56853 "EHLO
+        id S243883AbhHFT1Q convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Aug 2021 15:27:16 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:59579 "EHLO
         relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243827AbhHFTOm (ORCPT
+        with ESMTP id S243805AbhHFT1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 15:14:42 -0400
+        Fri, 6 Aug 2021 15:27:15 -0400
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 11D6860004;
-        Fri,  6 Aug 2021 19:14:24 +0000 (UTC)
-Date:   Fri, 6 Aug 2021 21:14:23 +0200
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 669B360005;
+        Fri,  6 Aug 2021 19:26:56 +0000 (UTC)
+Date:   Fri, 6 Aug 2021 21:26:55 +0200
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Apurva Nandan <a-nandan@ti.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     <richard@nod.at>, <vigneshr@ti.com>, <bbrezillon@kernel.org>,
         <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
-Subject: Re: [PATCH 13/13] mtd: spinand: Add support for Winbond W35N01JW
- SPI NAND flash
-Message-ID: <20210806211423.5c9d3e96@xps13>
-In-Reply-To: <20210713130538.646-14-a-nandan@ti.com>
-References: <20210713130538.646-1-a-nandan@ti.com>
-        <20210713130538.646-14-a-nandan@ti.com>
+        <yukuai3@huawei.com>
+Subject: Re: [PATCH 2/2] mtd: mtdconcat: Remove concat_{read|write}_oob
+Message-ID: <20210806212655.16e4d03d@xps13>
+In-Reply-To: <20210731023243.3977104-3-chengzhihao1@huawei.com>
+References: <20210731023243.3977104-1-chengzhihao1@huawei.com>
+        <20210731023243.3977104-3-chengzhihao1@huawei.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
@@ -40,224 +35,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Apurva,
+Hi Zhihao,
 
-Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:38
-+0000:
+Richard, a question for you below :)
 
-> Winbond W35N01JW is SPI NAND flash supporting Octal DTR SPI protocol.
+Zhihao Cheng <chengzhihao1@huawei.com> wrote on Sat, 31 Jul 2021
+10:32:43 +0800:
 
-                     a
-
-> Add op_vairants for W35N01JW, which include the Octal DTR read/write
-
-variants
-
-> page ops as well. Add W35N01JW's oob layout functions for the
-
-                                   OOB
-
-> mtd_ooblayout_ops. Add all op adjustments required for Octal DTR SPI
-> mode using the adjust_op(). Finally, add an entry for W35N01JW in
-> spinand_info table.
+> Since 2431c4f5b46c3("mtd: Implement mtd_{read,write}() as wrappers
+> around mtd_{read,write}_oob()") don't allow _write|_read and
+> _write_oob|_read_oob existing at the same time. We should stop these
+> two callback functions assigning, otherwise following warning occurs
+> while making concatenated device:
 > 
-> Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
+>   WARNING: CPU: 2 PID: 6728 at drivers/mtd/mtdcore.c:595
+>   add_mtd_device+0x7f/0x7b0
 > 
-
-Maybe we can split this into two parts:
-1/ support the chip
-2/ add 8-D support
-
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+> Fixes: 2431c4f5b46c3("mtd: Implement mtd_{read,write}() around ...")
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 > ---
->  drivers/mtd/nand/spi/winbond.c | 116 ++++++++++++++++++++++++++++++---
->  1 file changed, 107 insertions(+), 9 deletions(-)
+>  drivers/mtd/mtdconcat.c | 113 +---------------------------------------
+>  1 file changed, 1 insertion(+), 112 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
-> index 58cda07c15a0..5c2b9e61b624 100644
-> --- a/drivers/mtd/nand/spi/winbond.c
-> +++ b/drivers/mtd/nand/spi/winbond.c
-> @@ -16,6 +16,13 @@
->  
->  #define WINBOND_CFG_BUF_READ		BIT(3)
->  
-> +#define WINBOND_BLK_ERASE_OPCODE	0xD8
-> +#define WINBOND_PAGE_READ_OPCODE	0x13
-> +#define WINBOND_PROG_EXEC_OPCODE	0x10
-> +#define WINBOND_READ_REG_OPCODE_1	0x05
-> +#define WINBOND_READ_REG_OPCODE_2	0x0F
-> +#define WINBOND_READ_VCR_OPCODE		0x85
-> +
->  /* Octal DTR SPI mode (8D-8D-8D) with Data Strobe output*/
->  #define WINBOND_IO_MODE_VCR_OCTAL_DTR	0xE7
->  #define WINBOND_IO_MODE_VCR_ADDR	0x00
-> @@ -24,7 +31,7 @@
->  #define WINBOND_DUMMY_CLK_COUNT		12
->  #define WINBOND_DUMMY_CLK_VCR_ADDR	0x01
->  
-> -static SPINAND_OP_VARIANTS(read_cache_variants,
-> +static SPINAND_OP_VARIANTS(read_cache_variants_w25xxgv,
->  		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
->  		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
->  		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
-> @@ -32,14 +39,27 @@ static SPINAND_OP_VARIANTS(read_cache_variants,
->  		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
->  		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
->  
-> -static SPINAND_OP_VARIANTS(write_cache_variants,
-> +static SPINAND_OP_VARIANTS(write_cache_variants_w25xxgv,
->  		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
->  		SPINAND_PROG_LOAD(true, 0, NULL, 0));
->  
-> -static SPINAND_OP_VARIANTS(update_cache_variants,
-> +static SPINAND_OP_VARIANTS(update_cache_variants_w25xxgv,
->  		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
->  		SPINAND_PROG_LOAD(false, 0, NULL, 0));
->  
-> +static SPINAND_OP_VARIANTS(read_cache_variants_w35n01jw,
-> +		SPINAND_PAGE_READ_FROM_CACHE_OCTALIO_DTR_OP(0, 24, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-> +		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-> +
-> +static SPINAND_OP_VARIANTS(write_cache_variants_w35n01jw,
-> +		SPINAND_PROG_LOAD_OCTALIO_DTR(true, 0, NULL, 0),
-> +		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-> +
-> +static SPINAND_OP_VARIANTS(update_cache_variants_w35n01jw,
-> +		SPINAND_PROG_LOAD_OCTALIO_DTR(false, 0, NULL, 0),
-> +		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-> +
->  static int w25m02gv_ooblayout_ecc(struct mtd_info *mtd, int section,
->  				  struct mtd_oob_region *region)
->  {
-> @@ -64,11 +84,40 @@ static int w25m02gv_ooblayout_free(struct mtd_info *mtd, int section,
->  	return 0;
+> diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+> index ea130eeb54d5..98d1c79cf51d 100644
+> --- a/drivers/mtd/mtdconcat.c
+> +++ b/drivers/mtd/mtdconcat.c
+> @@ -256,110 +256,6 @@ concat_writev(struct mtd_info *mtd, const struct kvec *vecs,
+>  	return err;
 >  }
 >  
-> +static int w35n01jw_ooblayout_ecc(struct mtd_info *mtd, int section,
-> +				  struct mtd_oob_region *region)
-> +{
-> +	if (section > 7)
-> +		return -ERANGE;
-> +
-> +	region->offset = (16 * section) + 12;
-> +	region->length = 4;
-> +
-> +	return 0;
-> +}
-> +
-> +static int w35n01jw_ooblayout_free(struct mtd_info *mtd, int section,
-> +				   struct mtd_oob_region *region)
-> +{
-> +	if (section > 7)
-> +		return -ERANGE;
-> +
-> +	region->offset = (16 * section) + 2;
-> +	region->length = 10;
-> +
-> +	return 0;
-> +}
-> +
->  static const struct mtd_ooblayout_ops w25m02gv_ooblayout = {
->  	.ecc = w25m02gv_ooblayout_ecc,
->  	.free = w25m02gv_ooblayout_free,
->  };
->  
-> +static const struct mtd_ooblayout_ops w35n01jw_ooblayout = {
-> +	.ecc = w35n01jw_ooblayout_ecc,
-> +	.free = w35n01jw_ooblayout_free,
-> +};
-> +
->  static int w25m02gv_select_target(struct spinand_device *spinand,
->  				  unsigned int target)
+> -static int
+> -concat_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
+> -{
+> -	struct mtd_concat *concat = CONCAT(mtd);
+> -	struct mtd_oob_ops devops = *ops;
+> -	int i, err, ret = 0;
+> -
+> -	ops->retlen = ops->oobretlen = 0;
+> -
+> -	for (i = 0; i < concat->num_subdev; i++) {
+> -		struct mtd_info *subdev = concat->subdev[i];
+> -
+> -		if (from >= subdev->size) {
+> -			from -= subdev->size;
+> -			continue;
+> -		}
+> -
+> -		/* partial read ? */
+> -		if (from + devops.len > subdev->size)
+> -			devops.len = subdev->size - from;
+> -
+> -		err = mtd_read_oob(subdev, from, &devops);
+> -		ops->retlen += devops.retlen;
+> -		ops->oobretlen += devops.oobretlen;
+> -
+> -		/* Save information about bitflips! */
+> -		if (unlikely(err)) {
+> -			if (mtd_is_eccerr(err)) {
+> -				mtd->ecc_stats.failed++;
+> -				ret = err;
+> -			} else if (mtd_is_bitflip(err)) {
+> -				mtd->ecc_stats.corrected++;
+> -				/* Do not overwrite -EBADMSG !! */
+> -				if (!ret)
+> -					ret = err;
+> -			} else
+> -				return err;
+> -		}
+> -
+> -		if (devops.datbuf) {
+> -			devops.len = ops->len - ops->retlen;
+> -			if (!devops.len)
+> -				return ret;
+> -			devops.datbuf += devops.retlen;
+> -		}
+> -		if (devops.oobbuf) {
+> -			devops.ooblen = ops->ooblen - ops->oobretlen;
+> -			if (!devops.ooblen)
+> -				return ret;
+> -			devops.oobbuf += ops->oobretlen;
+> -		}
+> -
+> -		from = 0;
+> -	}
+> -	return -EINVAL;
+> -}
+> -
+> -static int
+> -concat_write_oob(struct mtd_info *mtd, loff_t to, struct mtd_oob_ops *ops)
+> -{
+> -	struct mtd_concat *concat = CONCAT(mtd);
+> -	struct mtd_oob_ops devops = *ops;
+> -	int i, err;
+> -
+> -	if (!(mtd->flags & MTD_WRITEABLE))
+> -		return -EROFS;
+> -
+> -	ops->retlen = ops->oobretlen = 0;
+> -
+> -	for (i = 0; i < concat->num_subdev; i++) {
+> -		struct mtd_info *subdev = concat->subdev[i];
+> -
+> -		if (to >= subdev->size) {
+> -			to -= subdev->size;
+> -			continue;
+> -		}
+> -
+> -		/* partial write ? */
+> -		if (to + devops.len > subdev->size)
+> -			devops.len = subdev->size - to;
+> -
+> -		err = mtd_write_oob(subdev, to, &devops);
+> -		ops->retlen += devops.retlen;
+> -		ops->oobretlen += devops.oobretlen;
+> -		if (err)
+> -			return err;
+> -
+> -		if (devops.datbuf) {
+> -			devops.len = ops->len - ops->retlen;
+> -			if (!devops.len)
+> -				return 0;
+> -			devops.datbuf += devops.retlen;
+> -		}
+> -		if (devops.oobbuf) {
+> -			devops.ooblen = ops->ooblen - ops->oobretlen;
+> -			if (!devops.ooblen)
+> -				return 0;
+> -			devops.oobbuf += devops.oobretlen;
+> -		}
+> -		to = 0;
+> -	}
+> -	return -EINVAL;
+> -}
+> -
+>  static int concat_erase(struct mtd_info *mtd, struct erase_info *instr)
 >  {
-> @@ -88,9 +137,9 @@ static const struct spinand_info winbond_spinand_table[] = {
->  		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xab),
->  		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 2),
->  		     NAND_ECCREQ(1, 512),
-> -		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> -					      &write_cache_variants,
-> -					      &update_cache_variants),
-> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_w25xxgv,
-> +					      &write_cache_variants_w25xxgv,
-> +					      &update_cache_variants_w25xxgv),
->  		     0,
->  		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL),
->  		     SPINAND_SELECT_TARGET(w25m02gv_select_target)),
-> @@ -98,11 +147,22 @@ static const struct spinand_info winbond_spinand_table[] = {
->  		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xaa),
->  		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
->  		     NAND_ECCREQ(1, 512),
-> -		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> -					      &write_cache_variants,
-> -					      &update_cache_variants),
-> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_w25xxgv,
-> +					      &write_cache_variants_w25xxgv,
-> +					      &update_cache_variants_w25xxgv),
->  		     0,
->  		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
-> +	SPINAND_INFO("W35N01JW",
-> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0xdc),
-> +		     NAND_MEMORG(1, 4096, 128, 64, 512, 20, 1, 1, 1),
-> +		     NAND_ECCREQ(1, 512),
-> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_w35n01jw,
-> +					      &write_cache_variants_w35n01jw,
-> +					      &update_cache_variants_w35n01jw),
-> +		     SPINAND_HAS_OCTAL_DTR_BIT | SPINAND_HAS_POR_CMD_BIT |
-> +		     SPINAND_HAS_CR_FEAT_BIT,
-> +		     SPINAND_ECCINFO(&w35n01jw_ooblayout, NULL)),
-> +
->  };
+>  	struct mtd_concat *concat = CONCAT(mtd);
+> @@ -684,10 +580,6 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+>  	subdev_master = mtd_get_master(subdev[0]);
+>  	if (subdev_master->_writev)
+>  		concat->mtd._writev = concat_writev;
+> -	if (subdev_master->_read_oob)
+> -		concat->mtd._read_oob = concat_read_oob;
+> -	if (subdev_master->_write_oob)
+> -		concat->mtd._write_oob = concat_write_oob;
+
+Actually I am not sure _read|write_oob() is the right callback to
+remove.
+
+Richard, what is your input on this? Shall we remove _read|write()
+instead? I don't remember the exact rationale behind these two helpers.
+
+>  	if (subdev_master->_block_isbad)
+>  		concat->mtd._block_isbad = concat_block_isbad;
+>  	if (subdev_master->_block_markbad)
+> @@ -724,15 +616,12 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+>  				    subdev[i]->flags & MTD_WRITEABLE;
+>  		}
 >  
->  static int winbond_spinand_init(struct spinand_device *spinand)
-> @@ -183,9 +243,47 @@ static int winbond_spinand_octal_dtr_enable(struct spinand_device *spinand)
->  	return 0;
->  }
->  
-> +static void winbond_spinand_adjust_op(struct spi_mem_op *op,
-> +				      const enum spinand_proto reg_proto)
-> +{
-> +	/*
-> +	 * To support both 1 byte opcode and 2 byte opcodes, extract the MSB
-> +	 * byte from the opcode as the LSB byte in 2 byte opcode is treated as
-> +	 * don't care.
-> +	 */
-> +	u8 opcode = op->cmd.opcode >> (8 * (op->cmd.nbytes - 1));
-> +
-> +	if (reg_proto == SPINAND_OCTAL_DTR) {
-> +		switch (opcode) {
-> +		case WINBOND_READ_REG_OPCODE_1:
-> +		case WINBOND_READ_REG_OPCODE_2:
-> +			op->dummy.nbytes = 14;
-> +			op->dummy.buswidth = 8;
-> +			op->dummy.dtr = true;
-> +			return;
-> +
-> +		case WINBOND_READ_VCR_OPCODE:
-> +			op->dummy.nbytes = 16;
-> +			op->dummy.buswidth = 8;
-> +			op->dummy.dtr = true;
-> +			return;
-> +
-> +		case WINBOND_BLK_ERASE_OPCODE:
-> +		case WINBOND_PAGE_READ_OPCODE:
-> +		case WINBOND_PROG_EXEC_OPCODE:
-> +			op->addr.nbytes = 2;
-> +			return;
-> +
-> +		default:
-> +			return;
-> +		}
-> +	}
-> +}
-> +
->  static const struct spinand_manufacturer_ops winbond_spinand_manuf_ops = {
->  	.init = winbond_spinand_init,
->  	.octal_dtr_enable = winbond_spinand_octal_dtr_enable,
-> +	.adjust_op = winbond_spinand_adjust_op,
->  };
->  
->  const struct spinand_manufacturer winbond_spinand_manufacturer = {
+> -		subdev_master = mtd_get_master(subdev[i]);
+>  		concat->mtd.size += subdev[i]->size;
+>  		concat->mtd.ecc_stats.badblocks +=
+>  			subdev[i]->ecc_stats.badblocks;
+>  		if (concat->mtd.writesize   !=  subdev[i]->writesize ||
+>  		    concat->mtd.subpage_sft != subdev[i]->subpage_sft ||
+> -		    concat->mtd.oobsize    !=  subdev[i]->oobsize ||
+> -		    !concat->mtd._read_oob  != !subdev_master->_read_oob ||
+> -		    !concat->mtd._write_oob != !subdev_master->_write_oob) {
+> +		    concat->mtd.oobsize    !=  subdev[i]->oobsize) {
+>  			kfree(concat);
+>  			printk("Incompatible OOB or ECC data on \"%s\"\n",
+>  			       subdev[i]->name);
 
 Thanks,
 Miquèl
