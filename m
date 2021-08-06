@@ -2,195 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3829F3E2613
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3CD63E2619
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244316AbhHFI2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58990 "EHLO
+        id S243870AbhHFI3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244211AbhHFI2L (ORCPT
+        with ESMTP id S244190AbhHFI24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:28:11 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B441C0612E8
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 01:22:33 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id j10so4723851vsl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 01:22:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K/7VZdsD0kvuXLXJN0Hxz/V1UWqWN2j9QnpBmRsIinU=;
-        b=j7PbhC3w+UIrt4Z4VMtrxMZLYbBm2D/n5snIzK50TkfmeP+1txpOo1oL1WKoe9lFpu
-         Te4zFR/fANLwAx2rBj4K83LiuJkxppIfVTQfBj9gn2XkOXqEGrh8vkf5/YbhaznaTSa0
-         7g6y/q9w/GG71WiXd4VLSc00irkaVaX1p/ukQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K/7VZdsD0kvuXLXJN0Hxz/V1UWqWN2j9QnpBmRsIinU=;
-        b=MmDF3lmeJPU3l5ki1S08/xpU1mSUv71+EdOeN4jWkUs/sNc1HhFfYXz9LR00gaMLRy
-         wYPPl2HoTUuidCsHL4u+1Oh0HC0Z3/1nb0uGU3wYcbiZWGNtNdoKenO+KkccKzVClSd2
-         hLeYLjzWT8N7S/nsqMFeZz9fbqB3pRpNWtOz/Z483nUpjxuOy/2Z30RKX0r1gpNNi8Xx
-         424Sc6VJEa65Mx4bQ/fJAWGTL7kzyX8GxkAS645QAmqxb3gLtOIUX4OKIhlgMHqB9t85
-         JKEGv8qr1BNC2+CyXaMxj6BGzRfKm+2xIXLdVQ9dwdfcgA9IZvhEk8l4nnCT5w+MNMw0
-         lKcQ==
-X-Gm-Message-State: AOAM531dYJGF1uYgI+vGWlDdw/SjSYKZYfvaUp43vROAKei0d6rfetUo
-        rJyGVssdI/9UIStFT5c/W1c4izLUVFfeDPBlc6OHyg==
-X-Google-Smtp-Source: ABdhPJwPAml5ZEmZwjKSwjiJlKadiTx+81kSdiJB8ki3ka/cQSkYdRdLaMQoklBOewL90Bvr1F26iiFyqVu68brWQL0=
-X-Received: by 2002:a05:6102:34d9:: with SMTP id a25mr8076699vst.0.1628238152502;
- Fri, 06 Aug 2021 01:22:32 -0700 (PDT)
+        Fri, 6 Aug 2021 04:28:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656C5C061199
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 01:25:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WgUB9XS+K/dJBgBtcRVvUCChqOB+hRaKcnIXrDZf5Ns=; b=vDNtImF3KwH4DkaRC4akHk6qpu
+        YatYbDnoQX59d/THl5lJJFPpon/H1icjuRFqXX+82i58maHeO9H1EYE0A2N0KgrUxx2fWSbz/ItXW
+        4iVDfRV2UqsEmzM6j5+ohAjVsZkzlJYM6SJjNstPGTThpttw0ZGR3V83zRpTQZqJ9waMt7OUP/Wu2
+        onHCeM+PAkA7+5dWBJBacv9h/SoHYO1zryB/gtP035CidAasgABZVlDqRXBTHq7iZOojrgpPA6Zy1
+        LAixQ67QzkBjAzwAcr4s7gjNsR8QwAp+FoDvhyMFQ++ypcfy6wBLV8oSb3t8dLDBJs6ORaM+c5Sl1
+        vqOiSUKQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mBv8T-007yQH-Rn; Fri, 06 Aug 2021 08:23:39 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A9449981053; Fri,  6 Aug 2021 10:23:20 +0200 (CEST)
+Date:   Fri, 6 Aug 2021 10:23:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     mingo@redhat.com, Will Deacon <will@kernel.org>,
+        longman@redhat.com, boqun.feng@gmail.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>, rjw@rjwysocki.net,
+        lenb@kernel.org, Hanjun Guo <guohanjun@huawei.com>,
+        "xiaoqian9@huawei.com" <xiaoqian9@huawei.com>,
+        "wangle6@huawei.com" <wangle6@huawei.com>
+Subject: Re: Question: Can I call down() in an atomic context?
+Message-ID: <20210806082320.GD22037@worktop.programming.kicks-ass.net>
+References: <6b5e1da8-4360-e9da-ad42-a5365fb853fa@huawei.com>
 MIME-Version: 1.0
-References: <737687ee-3449-aa3d-ee29-bd75ca0a18a9@canonical.com> <CAOQ4uxgbqyyhQ+78j0L+GxkEJ8rOW43X9ann_kMs1098WkNe8Q@mail.gmail.com>
-In-Reply-To: <CAOQ4uxgbqyyhQ+78j0L+GxkEJ8rOW43X9ann_kMs1098WkNe8Q@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 6 Aug 2021 10:22:21 +0200
-Message-ID: <CAJfpegs5gBiB1YoYoDS6VDwKYrFbXHX6f1fsHPmA_yjH0+kfpA@mail.gmail.com>
-Subject: Re: ovl: uninitialized pointer read in ovl_lookup_real_one
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6b5e1da8-4360-e9da-ad42-a5365fb853fa@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 24 Jul 2021 at 09:36, Amir Goldstein <amir73il@gmail.com> wrote:
->
-> On Sat, Jul 24, 2021 at 1:26 AM Colin Ian King <colin.king@canonical.com> wrote:
-> >
-> > Hi,
-> >
-> > Static analysis with Coverity has detected an uninitialized pointer read
-> > in function ovl_lookup_real_one in fs/overlayfs/export.c
-> >
-> > The issue was introduced with the following commit:
-> >
-> > commit 3985b70a3e3f58109dc6ae347eafe6e8610be41e
-> > Author: Amir Goldstein <amir73il@gmail.com>
-> > Date:   Thu Dec 28 18:36:16 2017 +0200
-> >
-> >     ovl: decode connected upper dir file handles
-> >
-> > The analysis is as follows:
-> >
-> > 365static struct dentry *ovl_lookup_real_one(struct dentry *connected,
-> > 366                                          struct dentry *real,
-> > 367                                          const struct ovl_layer *layer)
-> > 368{
-> > 369        struct inode *dir = d_inode(connected);
-> > 370        struct dentry *this, *parent = NULL;
-> >
-> >    1. var_decl: Declaring variable name without initializer.
-> >
-> > 371        struct name_snapshot name;
-> > 372        int err;
-> > 373
-> > 374        /*
-> > 375         * Lookup child overlay dentry by real name. The dir mutex
-> > protects us
-> > 376         * from racing with overlay rename. If the overlay dentry
-> > that is above
-> > 377         * real has already been moved to a parent that is not under the
-> > 378         * connected overlay dir, we return -ECHILD and restart the
-> > lookup of
-> > 379         * connected real path from the top.
-> > 380         */
-> > 381        inode_lock_nested(dir, I_MUTEX_PARENT);
-> > 382        err = -ECHILD;
-> > 383        parent = dget_parent(real);
-> >
-> >    2. Condition ovl_dentry_real_at(connected, layer->idx) != parent,
-> > taking true branch.
-> >
-> > 384        if (ovl_dentry_real_at(connected, layer->idx) != parent)
-> >
-> >    3. Jumping to label fail.
-> >
-> > 385                goto fail;
-> > 386
-> > 387        /*
-> > 388         * We also need to take a snapshot of real dentry name to
-> > protect us
-> > 389         * from racing with underlying layer rename. In this case, we
-> > don't
-> > 390         * care about returning ESTALE, only from dereferencing a
-> > free name
-> > 391         * pointer because we hold no lock on the real dentry.
-> > 392         */
-> > 393        take_dentry_name_snapshot(&name, real);
-> > 394        this = lookup_one_len(name.name.name, connected, name.name.len);
-> > 395        err = PTR_ERR(this);
-> > 396        if (IS_ERR(this)) {
-> > 397                goto fail;
-> > 398        } else if (!this || !this->d_inode) {
-> > 399                dput(this);
-> > 400                err = -ENOENT;
-> > 401                goto fail;
-> > 402        } else if (ovl_dentry_real_at(this, layer->idx) != real) {
-> > 403                dput(this);
-> > 404                err = -ESTALE;
-> > 405                goto fail;
-> > 406        }
-> > 407
-> > 408out:
-> >
-> >    Uninitialized pointer read
-> >    6. uninit_use_in_call: Using uninitialized value name.name.name when
-> > calling release_dentry_name_snapshot.
-> >
-> > 409        release_dentry_name_snapshot(&name);
-> > 410        dput(parent);
-> > 411        inode_unlock(dir);
-> > 412        return this;
-> > 413
-> > 414fail:
-> >
-> >    4. Condition ___ratelimit(&_rs, <anonymous>), taking false branch
-> > .
-> > 415        pr_warn_ratelimited("failed to lookup one by real (%pd2,
-> > layer=%d, connected=%pd2, err=%i)\n",
-> > 416                            real, layer->idx, connected, err);
-> > 417        this = ERR_PTR(err);
-> >
-> >    5. Jumping to label out.
-> >
-> > 418        goto out;
-> > 419}
-> >
-> > The error exit path on line 395 ends up with an uninitialized structure
-> > name being passed to function release_dentry_name_snapshot() on line 409
-> > and this accesses the pointer name.name.name, see /fs/dcache.c as follows:
-> >
-> > 303void release_dentry_name_snapshot(struct name_snapshot *name)
-> > 304{
-> >
-> >    1. read_value: Reading value name->name.name.
-> >    2. Condition !!(name->name.name != name->inline_name), taking true
-> > branch.
-> >
-> > 305        if (unlikely(name->name.name != name->inline_name)) {
-> > 306                struct external_name *p;
-> >
-> >    3. Condition 0 /* !!(!__builtin_types_compatible_p() &&
-> > !__builtin_types_compatible_p()) */, taking false branch.
-> >
-> >
-> > I suspect name should be initialized in line 371, e.g. name = { } and a
-> > null name check should be performed on line 409 before calling
-> > release_dentry_name_snapshot, but this seems a bit message as a fix.
-> >
->
-> Thanks for the report.
-> A simpler fix is to move take_dentry_name_snapshot() to top of the
-> function before goto fail.
+On Fri, Aug 06, 2021 at 10:35:36AM +0800, Xiaoming Ni wrote:
+> might_sleep() is called in kernel/locking/rwsem.c (API:
+> down_read/down_write/...)
+> but not in kernel/locking/semaphore.c (API: down/down_timeout/..).
+> Was it designed so purposely, or was it missed by mistake?
 
-Even simpler:  move the release_dentry_name_snapshot to just after lookup.
+Simply forgotten I suspect. The semaphore is definitely a sleeping lock.
 
-Commit 89741437981a ("ovl: fix uninitialized pointer read in
-ovl_lookup_real_one()") pushed to #overlayfs-next.
+> After I added might_sleep() to kernel/locking/semaphore.c,
+> an alarm log was occasionally detected in my test environment:
+> 
+> 	BUG: sleeping function called from invalid context at
+> kernel/locking/semaphore.c:163
+> 	in_atomic(): 1, irqs_disabled(): 128, pid: 0, name: swapper/8
+> 	...
+> 	Call trace:
+> 	dump_backtrace+0x0/0x3c
+> 	dump_backtrace+0x2c/0x3c
+> 	show_stack+0x24/0x34
+> 	dump_stack+0xb0/0xf0
+> 	___might_sleep+0x130/0x144
+> 	__might_sleep+0x78/0x88
+> 	down_timeout+0x40/0xc8
+> 	acpi_os_wait_semaphore+0x78/0xa0  drivers/acpi/osl.c#L1266
+> 	acpi_ut_acquire_mutex+0x50/0xb4   drivers/acpi/acpica/utmutex.c#L241
+> 	acpi_get_table+0x3c/0xc8          drivers/acpi/acpica/tbxface.c#L318
+> 	acpi_find_last_cache_level+0x7c/0x140  drivers/acpi/pptt.c#L602
+> 	_init_cache_level+0xd0/0xd8    arch/arm64/kernel/cacheinfo.c#L64
+> 	flush_smp_call_function_queue+0x138/0x160   kernel/smp.c#L561
+> 	generic_smp_call_function_single_interrupt+0x18/0x24
+> 	handle_IPI+0x1d0/0x50c
+> 	gic_handle_irq+0x13c/0x140
+> 	el1_irq+0xcc/0x180
+> 	arch_cpu_idle+0xc0/0x16c
+> 	default_idle_call+0x34/0x38
+> 	cpu_startup_entry+0x2b4/0x358
+> 	secondary_start_kernel+0x1a8/0x1dc
+> 
+> Does this mean that it is necessary to add might_sleep in
+> kernel/locking/semaphore.c?
 
-Thanks,
-Miklos
+Necessary might be the wrong word, but yes, I think the whole down_*()
+family (with exception of down_trylock() obvs) could do with a
+might_sleep().
