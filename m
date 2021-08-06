@@ -2,125 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBD23E2208
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 05:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629B63E220E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 05:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241308AbhHFDCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 23:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhHFDCt (ORCPT
+        id S241328AbhHFDHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 23:07:02 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:20248 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230127AbhHFDHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 23:02:49 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4F1C061798;
-        Thu,  5 Aug 2021 20:02:34 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id o2-20020a9d22020000b0290462f0ab0800so7410356ota.11;
-        Thu, 05 Aug 2021 20:02:34 -0700 (PDT)
+        Thu, 5 Aug 2021 23:07:00 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1762tYiY011888;
+        Fri, 6 Aug 2021 03:04:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=RFlk/4n9YjHv95qLTUAeUlBQHaWHNmXOvqmaDpogwLw=;
+ b=pAlNtAhKRYrHUjBpk1NgIXH11dikoxJrLh5SjbvHCGiRTlkYbheFPVTU/OtLmg7/RLC3
+ IryDgTEb9ej+1/KUH4pok10wDxhzDOPMJd0c9yqG5DS+fpAfQthykMg3IAXaojZd7CeX
+ maEs2LTb+AaRlVfVEYnQTqPxdjSewscnZn/hJ9ZgehdxLrWn3E1oqRel9xQXmKIURrrz
+ Dht/COsbD55rhl5EZbjpFwLgc04h/t2w5czBe8Ztgo4UeRIFAZOQ1SlPaSodDtSXAv+N
+ h40XtujdR1RlflP+5cu/i67VnONxGgTwGIMcrLOcf9oRsCmG/PA1XleRUbNUJ/vQ0rfE iA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=RFlk/4n9YjHv95qLTUAeUlBQHaWHNmXOvqmaDpogwLw=;
+ b=oCoLEYYsadmfblU7qfxCoadphrD+7Nh9Mf3vXSIbADhyDt8mOmmuUhBiuafkkHLex0YO
+ HTWl+h+xh/5fv8fA32FSbPq5CCd8VW4OPTC3dD3VXipEwiMt8FizWbjbBhcFx97m23uz
+ QFtGWJfz3PewYmNP1xTnhLJVjgbwExqsTm059NrH6ZprpyxvE6LfMCSXwOiXg0ij4S+G
+ 4OrGK8XM/1wLpo3mNRmsqbsunL6YUhpxOrtJxQVIXM169Hky7fAPiPEIYJH9gZHb3ick
+ jVh/T4pOuG83MAbjOZopiUO8z5Otk6JwkqIMsrr4fKtme90a+kqhqVLHpkT42v2KUzDn gQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3a8p6rgjfn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Aug 2021 03:04:37 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1762u7I0100016;
+        Fri, 6 Aug 2021 03:04:36 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
+        by aserp3020.oracle.com with ESMTP id 3a7r4aurk4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Aug 2021 03:04:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bVXPEHJNNE1hd+ucT6z4Yet5ozzsfqulACOH4gO4ob5nE3PF2jer+gtFb9c2QWy1IAA1Qf6gu6h9516m3Rgtjk1prel38Rhvww1ikq8gKEPTQl1fhFKrcKTeR5zHuUWrgy2PFAZ83CLDEWjmviKaloBNDzdT2Q5lj+gdx/EYyJOFLngX8c7x+4UDzLAQTzxECy83UFlcU6Pwu46D8YvGk7UX8oIk0q8L/n2EjJGXKB8M6sMTyJFtfED+APbTOKdubH2dPJjOKTC7pgHJCbmVPueDLUq+1rsXEdoXplw1NT55ruTaXA40vvnOIEt0osyQjKuivKG+V+kSUrkpa8qneg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RFlk/4n9YjHv95qLTUAeUlBQHaWHNmXOvqmaDpogwLw=;
+ b=SS4HylG6Wm5od4SgT4xfQ8Kaa+Mh+21pJP5Hwb93bE6s4RDhhLEPgetMKrqOGQEocMLB6J4trmO6oLgsUC5xbvekwVFEtmvmvrl1VruhGnJQL38sn+eq01o3+Nw4qrMGrNhOe+M/mVjqWMUOrH0H0szJkePQfxptOj6JuT4PWZh73Qi0f0xd/i7sElwuFY2G06Fx6uFmR2/Ew49Fa+H8G518BmHgbUkBiApRx9Pat1147P3IdHr8zkpM88OrvsbNe7FDgwOgkL3raIrlLAlp12ASp0msu0FBTxjTwoHDy9VSYmQW2B1agSjUcwavWGwcFGooWv8JnzlxeQGxSC1b8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EA05tSQWqSs4HKkvaMBpD7HoBLTyMYIgWdky50GfsB8=;
-        b=kNMZYDjdidsmhRJ6GOD0Zi5nQ4FaLJMbn2MkdS+1DNbUOc55MxRWQ9qIrM5W1uALWP
-         xYXviusk0sFAGolTJWPQJ3+W39fG6zC/UfjqbEoEdGK92et4yLNULkjl80IWx2VYa/Hf
-         nvxmHxpszIbY9rwXIR9PRv+WmsnEDZbuUFihGYdeO84W4mo4BPxYQEwwfq7bOLdjL1QW
-         YqTC01gcxvzSEaZ/vMO9/+XKMdwD+LJjNuIkZGAaIke0CBBh3M8FiPhZq8jrGaX+klUm
-         UXRacezk+Yfk62zKpgeyYpjUZ4bMfTBLtvsgqmIdm2tAONCFATtLMxyzmoFiqXjx+UEy
-         /Cjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EA05tSQWqSs4HKkvaMBpD7HoBLTyMYIgWdky50GfsB8=;
-        b=Qu8B/PdbkTBYcLHAyX1WrRlFS2WGgU/wGiy1g/4tmn0KcP8NmcK1qyy9hcdKLoTTjB
-         m1656+IEYevBgCxOgHjTNwlOBVezC4jfW2SWtcXzOSNMDl0bsZQPPp1p1rpLC4aPuUfT
-         g/xBHVtowPdfZYEr2Q61aOGY4zd4A9hM5JufsfR3HoM408K32FAwKCEJtoBvi7SZaH8A
-         ipOgdNc4305sC4yW75lV3x7a+QjpRUQrHXUt5v9PXewu9wAXomMm1SC4XFLqgipuRt07
-         gBnr4cygffiDRXR1JteJfWBqGRNXycbptIJfdnN6TY2DrbLKYsD0niOvsHJXqbsgItsX
-         lBtg==
-X-Gm-Message-State: AOAM532wFRC5vGfZS+iW/ZXVx5FjON2JiMjq1cKhVR6DwI2DaF3TDG8J
-        0pGfQ5VAeMtnoLjPu1bqlHs=
-X-Google-Smtp-Source: ABdhPJwfYB6fS6GG/E20fTPdKfxYyTtuw5Bp2moupTwoHqmOheH4cOjZnRCFfpzfeqFM0ebpRwr7Dw==
-X-Received: by 2002:a05:6830:144f:: with SMTP id w15mr2065560otp.161.1628218953849;
-        Thu, 05 Aug 2021 20:02:33 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id bc42sm1101795oob.39.2021.08.05.20.02.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Aug 2021 20:02:33 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [v8,1/2] dt-bindings: reset: mt8195: add toprgu reset-controller
- header file
-To:     Christine Zhu <Christine.Zhu@mediatek.com>, wim@linux-watchdog.org,
-        robh+dt@kernel.org, matthias.bgg@gmail.com
-Cc:     srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        seiya.wang@mediatek.com
-References: <20210806023606.16867-1-Christine.Zhu@mediatek.com>
- <20210806023606.16867-2-Christine.Zhu@mediatek.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <daa97d7e-2184-0b1e-3afd-c357b022c966@roeck-us.net>
-Date:   Thu, 5 Aug 2021 20:02:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RFlk/4n9YjHv95qLTUAeUlBQHaWHNmXOvqmaDpogwLw=;
+ b=OyKPcLBcL232lVdrDMT9DP2kCcJ7bMjBwhHBwb01+/X3qsMfxFcn5PuTCkJ4L+b+3LrKB7HgxF6tdr6H+gRRIfQZGEg3jHT/Dd5k6g0B38k4oTFtC2lxW8JVcKanF71VdAFbO3JYqDVZ6vNQH232XuJTQSVmN97UYEDvon3k3SA=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4648.namprd10.prod.outlook.com (2603:10b6:510:30::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.24; Fri, 6 Aug
+ 2021 03:04:33 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::153e:22d1:d177:d4f1]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::153e:22d1:d177:d4f1%8]) with mapi id 15.20.4373.026; Fri, 6 Aug 2021
+ 03:04:32 +0000
+To:     Nitesh Lal <nilal@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, jassisinghbrar@gmail.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Tushar.Khandelwal@arm.com, manivannan.sadhasivam@linaro.org,
+        lewis.hanly@microchip.com, ley.foon.tan@intel.com,
+        kabel@kernel.org, huangguangbin2@huawei.com, davem@davemloft.net,
+        benve@cisco.com, govind@gmx.com, kashyap.desai@broadcom.com,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        suganath-prabu.subramani@broadcom.com, ajit.khaparde@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+        linux-pci@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        rostedt@goodmis.org, Marc Zyngier <maz@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        akpm@linuxfoundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        chris.friesen@windriver.com, Neil Horman <nhorman@tuxdriver.com>,
+        pjwaskiewicz@gmail.com, Stefan Assmann <sassmann@redhat.com>,
+        Tomas Henzl <thenzl@redhat.com>, james.smart@broadcom.com,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Ken Cox <jkc@redhat.com>, faisal.latif@intel.com,
+        shiraz.saleem@intel.com, tariqt@nvidia.com,
+        Alaa Hleihel <ahleihel@redhat.com>,
+        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
+        saeedm@nvidia.com,
+        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Al Stone <ahs3@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        bjorn.andersson@linaro.org, chunkuang.hu@kernel.org,
+        yongqiang.niu@mediatek.com, baolin.wang7@gmail.com,
+        Petr Oros <poros@redhat.com>, Ming Lei <minlei@redhat.com>,
+        Ewan Milne <emilne@redhat.com>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH v5 00/14] genirq: Cleanup the abuse of
+ irq_set_affinity_hint()
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq11r77gtq0.fsf@ca-mkp.ca.oracle.com>
+References: <20210720232624.1493424-1-nitesh@redhat.com>
+        <CAFki+LkNzk0ajUeuBnJZ6mp1kxB0+zZf60tw1Vfq+nPy-bvftQ@mail.gmail.com>
+Date:   Thu, 05 Aug 2021 23:04:28 -0400
+In-Reply-To: <CAFki+LkNzk0ajUeuBnJZ6mp1kxB0+zZf60tw1Vfq+nPy-bvftQ@mail.gmail.com>
+        (Nitesh Lal's message of "Mon, 2 Aug 2021 11:26:39 -0400")
+Content-Type: text/plain
+X-ClientProxiedBy: SA0PR12CA0012.namprd12.prod.outlook.com
+ (2603:10b6:806:6f::17) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-In-Reply-To: <20210806023606.16867-2-Christine.Zhu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SA0PR12CA0012.namprd12.prod.outlook.com (2603:10b6:806:6f::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17 via Frontend Transport; Fri, 6 Aug 2021 03:04:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ab48ed34-4aa0-410c-84e6-08d95886ea06
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4648:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4648AC32D0D6969750ECA7428EF39@PH0PR10MB4648.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: K+wo+KFhAWE3OISkkQDhNnMBFJScsoGUC1EqMNowmp6M9Hnsrksqcw22AfmZzmOq0faAr4aGF0zcUtll6blLzKPX+l7Q1/1KIwCNzDkVaZywv7Iwh1PpwOf9Ht501DW/xjpKAqlUcsBT7RuNY0O0Z9KTfhdxbRTX79WVmdbXfk34nrWNS6g+erpDoArLj7ibJRfA2QUPhrZ20294X6VH0iV6aSNa45FODwOYSV0Y6Lqr8sOPPtYeTPeGfW3XBJFEKccVWdOnBAAN8lZncK070kOfggSWB4LRBXUoje2Sr8PrmZ8kplC5cco+qz+s+kRlqb221c2+b8KTkt93RBvYi9O0F9+EPKvZarAaMhZxDyLq7rJxYiERS5CAZFt9p+m+zCCfW3Z14izTonXeK509+AnKMkPpmLISPNuYZqeWZE7zlwRYyr1lkthJrylknHKhX+rbStHsLQKWF46lcicbmHAaDcaqZ5pXBfide4WNkHW6xjeMN6qpN42+jg5UNnfkWOL5dXbkHUKSzjbXbpYHZOtcQ0gKADIbPOTHbodsmkuI+UkL8vFp/+fyF41UFxFToO6N4mXd8QgeLqKuBzYrS8mVn4jBCswYM9kDcegAU74Y9INWNk9j+XK5xCddVEMbQGfh4PhMUJCVXNAwu/pvCA+OABLnCc3DO17RE9BD5y1CcaIQvGjTJdMDAiFaT44jHVQPTADNYmX8gBiwFeo2EQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(396003)(39860400002)(366004)(5660300002)(55016002)(186003)(86362001)(558084003)(478600001)(956004)(8676002)(316002)(54906003)(66476007)(66556008)(66946007)(7406005)(7696005)(36916002)(38100700002)(4326008)(6666004)(7416002)(6916009)(7366002)(8936002)(38350700002)(26005)(2906002)(52116002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?S5mdj/itJrqcM8RrZ74MjLcPjYmbfrb0igFGwFgOy9EXbq5FeTRKXCikGUFA?=
+ =?us-ascii?Q?eVFIq8DUVqMAWxM80oAG69NrtDJUVIHDsVE03HtR6V/AZoo9ara4ElAQbO45?=
+ =?us-ascii?Q?PVGPRy/CnfyWhhjru/cHfBCkqEjBFnq6PJNvfXgqbk+YacddLWBz2cObu50l?=
+ =?us-ascii?Q?1CfaN1MsijD8vxG4uYXnhSFhPee717fRhbQd41F8bZVm0pg6H0J19VRSUG4e?=
+ =?us-ascii?Q?h6EpcFipnZCV/WO75KyIC0KeK0mARNqEZ5Sbvv0fyQAIaDECvhRFDTbcYMpU?=
+ =?us-ascii?Q?BiDOQ13uyk6RuJi/dyBaWsiY5RO0GOH7KLUjWhocaE/0hcQeGMkYqUushnNl?=
+ =?us-ascii?Q?lGWhm4ozBpziAJ/cr+lIt1vqD/445HmJUbnfmRIeJ7RIy88MenBXygSaAXXz?=
+ =?us-ascii?Q?lewj0tZzfbs4Q8laMfhB/n1WB6Cg1PEElEzmo0HHPwybaXuy77ikgCzv+MXM?=
+ =?us-ascii?Q?cnAKvx9NndV5NDmtKOyuODcjF8S789ny4LElYBV1S/1DKJWO050yMEq4J3TA?=
+ =?us-ascii?Q?w2jwk3F384Xp9TS2LtLAYA3r3A/piMbWAa13wGZXIn9m+p5nloT6VT3Vcxv/?=
+ =?us-ascii?Q?o4bvUUoFDliYYPlDUZw8p1t4rpEa7Lz4X+iEudp+4vuxtuPHbJEyxn/qeAMm?=
+ =?us-ascii?Q?hg1Llaaur6hj4cMPdL5rxc88uYwilfd5m8TdobRUp97MssFySqkbUAUmPB5g?=
+ =?us-ascii?Q?432eO4LLI5ZJQ0gfNQ3B8YeL53qcVeSXs6CO79BRd0tB9WMQNpvCRHrdNTR7?=
+ =?us-ascii?Q?q5riBiqREv9+UKk1mhvp7/9ReCxtj09LHyyPrk/Pj7AU0GN1sFf60hG88Xc5?=
+ =?us-ascii?Q?MH2A0zlQ22FiwMFqtpDDUkiBI0AQKCER1YhQaACsYqjEqnYlOoT1T1clvnei?=
+ =?us-ascii?Q?y7dXaK/vNoWod+1lQ/yX2ruqX5h4+tpJjq1dx7WmE6YsADE5Gh2+fLydAqMV?=
+ =?us-ascii?Q?bikdLIPyEl2OGQ+id+DdHWwgVMgI4nbFsm4fUFdKDJfYkfqjGDLKpezB4Giv?=
+ =?us-ascii?Q?cmV5O3+6+O4/NvoG9gnqndvCoebF7gb4IL/rP27M2DIE89Nwo5gb/S+11SAt?=
+ =?us-ascii?Q?hyofjPj8TP40KgkcwowHRuZt04i6pDPr6um5Gqlm7yVth1gSRIO5JhmgDBnN?=
+ =?us-ascii?Q?vN/rBTyW3OMs8it1Zd9MUOqqxkfoDRFctfmVQlLpWlh+a6Wj9nDyQsJvw0Tf?=
+ =?us-ascii?Q?6lpaHzDrvGnBZdBvtUmoa+3a1MZaoKJTgYgdMK5dqyPskuk0YgyoyPDdMO72?=
+ =?us-ascii?Q?PY2DdhzidEg6/h4TrmLdZ94VtPdxGRzWsHAT6tolWFJPjSD0nzgFA6N6VUW1?=
+ =?us-ascii?Q?DTfgqE8Cbqc+Gq/k778JtHv6?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab48ed34-4aa0-410c-84e6-08d95886ea06
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2021 03:04:32.7760
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7vXuWf/Fegg79HMRDXXgirViFLIUu7RUDt+igoKM3+jOLb4gLKZsWDvkbfdiVAnfhfRkU1WfQmR8cmdNeIWN2TqQMprFxkEOu0fqxhAo9sU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4648
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10067 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 spamscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108060016
+X-Proofpoint-ORIG-GUID: sbf64KitpW5FvO_465RRzKiMh6Xtmlax
+X-Proofpoint-GUID: sbf64KitpW5FvO_465RRzKiMh6Xtmlax
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/21 7:36 PM, Christine Zhu wrote:
-> Add toprgu reset-controller header file for MT8195 platform.
-> 
-> Signed-off-by: Christine Zhu <Christine.Zhu@mediatek.com>
-> Acked-by: Rob Herring <robh@kernel.org>
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Nitesh,
 
-> ---
->   include/dt-bindings/reset/mt8195-resets.h | 29 +++++++++++++++++++++++
->   1 file changed, 29 insertions(+)
->   create mode 100644 include/dt-bindings/reset/mt8195-resets.h
-> 
-> diff --git a/include/dt-bindings/reset/mt8195-resets.h b/include/dt-bindings/reset/mt8195-resets.h
-> new file mode 100644
-> index 000000000000..a26bccc8b957
-> --- /dev/null
-> +++ b/include/dt-bindings/reset/mt8195-resets.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)*/
-> +/*
-> + * Copyright (c) 2021 MediaTek Inc.
-> + * Author: Christine Zhu <christine.zhu@mediatek.com>
-> + */
-> +
-> +#ifndef _DT_BINDINGS_RESET_CONTROLLER_MT8195
-> +#define _DT_BINDINGS_RESET_CONTROLLER_MT8195
-> +
-> +#define MT8195_TOPRGU_CONN_MCU_SW_RST          0
-> +#define MT8195_TOPRGU_INFRA_GRST_SW_RST        1
-> +#define MT8195_TOPRGU_APU_SW_RST               2
-> +#define MT8195_TOPRGU_INFRA_AO_GRST_SW_RST     6
-> +#define MT8195_TOPRGU_MMSYS_SW_RST             7
-> +#define MT8195_TOPRGU_MFG_SW_RST               8
-> +#define MT8195_TOPRGU_VENC_SW_RST              9
-> +#define MT8195_TOPRGU_VDEC_SW_RST              10
-> +#define MT8195_TOPRGU_IMG_SW_RST               11
-> +#define MT8195_TOPRGU_APMIXEDSYS_SW_RST        13
-> +#define MT8195_TOPRGU_AUDIO_SW_RST             14
-> +#define MT8195_TOPRGU_CAMSYS_SW_RST            15
-> +#define MT8195_TOPRGU_EDPTX_SW_RST             16
-> +#define MT8195_TOPRGU_ADSPSYS_SW_RST           21
-> +#define MT8195_TOPRGU_DPTX_SW_RST              22
-> +#define MT8195_TOPRGU_SPMI_MST_SW_RST          23
-> +
-> +#define MT8195_TOPRGU_SW_RST_NUM               16
-> +
-> +#endif  /* _DT_BINDINGS_RESET_CONTROLLER_MT8195 */
-> 
+> Gentle ping.
+> Any comments on the following patches:
+>
+>   scsi: megaraid_sas: Use irq_set_affinity_and_hint
+>   scsi: mpt3sas: Use irq_set_affinity_and_hint
 
+Sumit and Sreekanth: Please review.
+
+Thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
