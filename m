@@ -2,115 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4A23E29EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134483E29E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245650AbhHFLlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:41:45 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:51748 "EHLO deadmen.hmeau.com"
+        id S245511AbhHFLlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:41:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242420AbhHFLln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:41:43 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mByE4-0002eZ-I7; Fri, 06 Aug 2021 19:41:20 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mByDi-0003cs-CN; Fri, 06 Aug 2021 19:40:58 +0800
-Date:   Fri, 6 Aug 2021 19:40:58 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Byungchul Park <byungchul.park@lge.com>
-Cc:     torvalds@linux-foundation.org, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
-        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
-        chris@chris-wilson.co.uk, duyuyang@gmail.com,
-        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-        bfields@fieldses.org, gregkh@linuxfoundation.org,
-        kernel-team@lge.com
-Subject: Re: [REPORT] Request for reviewing crypto code wrt
- wait_for_completion()
-Message-ID: <20210806114058.GA13896@gondor.apana.org.au>
-References: <20210803021611.GA28236@X58A-UD3R>
- <20210806080344.GA5788@X58A-UD3R>
+        id S233299AbhHFLlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 07:41:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA3E060E96;
+        Fri,  6 Aug 2021 11:41:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628250080;
+        bh=VFZN0rBpppBNLUjU4jzi8gHijERiKL8ZEpIblAjfEFI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kIbH3DRTq2Yh0J8aQC6p0lG3UyMCrFt0k7rpAiM0ndNHnjsYKHVTrN1zsXHLfmQS2
+         7tVJj2nnPHe9jf1CTytZeqBuRtq0T00xT252KhG41zIFSJRL8qG8bEREUhbTuGoiKc
+         r2KoAKBhRm+w7dcePHZ3sd/Ry03/rGFU7qNwA8V1OEI5c81LKutKxxCG0eNsuoaqqg
+         4ULK7MibdtcRy/lzmvpSksKuvu1dyKKZ6lcK0HR95hRmftAbKWLyE3Bydq+Yb6MExK
+         JxoGxAULAzi64wh5k4esUAFVXlw38EzFQDaAzX6uuzDhe+C6BOttTSldrDlsQmA4Di
+         ztC0VPwcEPVBw==
+Date:   Fri, 6 Aug 2021 12:41:15 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Claire Chang <tientzu@chromium.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH] of: restricted dma: Don't fail device probe on rmem init
+ failure
+Message-ID: <20210806114114.GC2531@willie-the-truck>
+References: <20210805094736.902-1-will@kernel.org>
+ <af998e69-671c-6d13-bd9b-da71b389575c@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210806080344.GA5788@X58A-UD3R>
+In-Reply-To: <af998e69-671c-6d13-bd9b-da71b389575c@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 05:03:44PM +0900, Byungchul Park wrote:
-> Hello crypto folks,
+On Thu, Aug 05, 2021 at 11:26:15AM +0100, Robin Murphy wrote:
+> On 2021-08-05 10:47, Will Deacon wrote:
+> > If CONFIG_DMA_RESTRICTED_POOL=n then probing a device with a reference
+> > to a "restricted-dma-pool" will fail with a reasonably cryptic error:
+> > 
+> >    | pci-host-generic: probe of 10000.pci failed with error -22
+> > 
+> > Print a more helpful message in this case and try to continue probing
+> > the device as we do if the kernel doesn't have the restricted DMA patches
+> > applied or either CONFIG_OF_ADDRESS or CONFIG_HAS_DMA =n.
 > 
-> I developed a tool for tracking waiters and reporting if any of the
-> events that the waiters are waiting for would never happen, say, a
-> deadlock. Yes, it would look like Lockdep but more inclusive.
+> Makes sense to me;
 > 
-> While I ran the tool(Dept: Dependency Tracker) on v5.4.96, I got some
-> reports from the tool. One of them is related to crypto subsystem.
-> Because I'm not that familiar with the code, I'd like to ask you guys to
-> review the related code.
-> 
-> If I understand correctly, it doesn't actually cause deadlock but looks
-> like a problematic code. I know you are not used to the format of the
-> report from Dept so.. let me summerize the result.
-> 
-> The simplified call trace looks like when the problem araised :
-> 
-> THREAD A
-> --------
-> A1 crypto_alg_mod_lookup()
-> A2    crypto_probing_notify(CRYPTO_MSG_ALG_REQUEST)
-> A3       cryptomgr_schedule_probe()
-> A4          kthread_run(cyptomgr_probe) ---> Start THREAD B
-> 
-> A5    crypto_larval_wait()
-> A6       wait_for_completion_killable_timeout(c) /* waiting for B10 */
+> Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
-This larval would be an instantiation larval, and it can only be
-woken up by thread B, not C.
+Cheers.
 
-> THREAD B
-> --------
-> B1 cryptomgr_probe()
-> B2    pkcslpad_create()
-> B3       crypto_wait_for_test()
-> B4          crypto_probing_notify(CRYPTO_MSG_ALG_REGISTER)
-> B5             cryptomgr_schedule_test()
-> B6                kthread_run(cyptomgr_test) ---> Start THREAD C
-> 
-> B7    tmpl->alloc()
-> B8    crupto_register_instance()
-> B9          wait_for_completion_killable(c) /* waiting for C3 */
-> B10   complete_all(c)
+> Although if we allow probe to succeed when a pool really was there for a
+> reason, it may end up being much more fatal if the driver then tries to do a
+> DMA transfer to any old memory and the device access causes an SError, or
+> the VM to be killed, or whatever. That's not quite the same as the stubbed
+> cases where the respective platforms couldn't have a genuine pool to parse
+> either way, but as you say it is what could happen already if the user tried
+> to use an older kernel, and I think the chance of
+> of_reserved_mem_device_init_by_idx() failing without something being
+> terminally wrong anyway - invalid DT, not enough RAM, etc. - is low enough
+> that it's probably not a major concern. Plus I'd hope that the memory
+> protection schemes people do actually implement don't take such such a
+> zero-tolerance approach anyway - allowing a malicious or malfunctioning
+> device to take down the system because it tried to make a rogue access which
+> *was* already contained seems a bit silly.
 
-I presume you're talking about about the wait_for_completion from
-crypto_wait_for_test, in which case it can only be woken by thread
-C.  After which thread B will return to cryptomgr_probe and wake up
-thread A.
+There's also a case where swiotlb is forced (swiotlb=force) but restricted
+DMA pools have been sized and allocated for individual devices in the DT.
+In this case, having the guest fallback to the default shared swiotlb
+buffer is better than failing the probe if CONFIG_DMA_RESTRICTED_POOL=n.
 
-> THREAD C
-> --------
-> C1 cryptomgr_test()
-> C2    crypto_alg_tested()
-> C3       complete_all(c)
-> 
-> ---
-> 
-> For example, in this situation, I think C3 could wake up both A6 and B9
-> before THREAD B reaches B10 which is not desired by A6. Say, is it okay
-> to wake up A6 with B7 ~ B9 having yet to complete?
-
-AFAICS thread C only wakes up test larvals, not instantiation larvals.
-Please let me know if you have any further issues.
-
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Will
