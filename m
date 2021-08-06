@@ -2,101 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCD43E309A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 22:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471FB3E309E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237744AbhHFVAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 17:00:04 -0400
-Received: from mail-io1-f51.google.com ([209.85.166.51]:34777 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbhHFVAD (ORCPT
+        id S238068AbhHFVDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 17:03:19 -0400
+Received: from mail-io1-f50.google.com ([209.85.166.50]:36526 "EHLO
+        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231603AbhHFVDS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 17:00:03 -0400
-Received: by mail-io1-f51.google.com with SMTP id i7so7748344iow.1;
-        Fri, 06 Aug 2021 13:59:47 -0700 (PDT)
+        Fri, 6 Aug 2021 17:03:18 -0400
+Received: by mail-io1-f50.google.com with SMTP id f11so13945318ioj.3;
+        Fri, 06 Aug 2021 14:03:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Abd72sZNRU0BLu7YkKaiYFwOHr3rHD24N77jTkRPs6M=;
-        b=S6eLliLe7ltUIrJKB7yXXjmFUuic5LYPK2j3Z5h8BAZduQjSCD5648dRh536Nc6xEL
-         5ZT+swkMy3lOskddtC0cBCFZoyMeMcUyiqQyEfxRe5BEKGlyFWeW19WJlYgQLjCARKOm
-         9t5jnvsL1JfYrwvsP9a10BCBgLIm39xC9G7eE5vk2ynKYJUXa/NaJiaNgKl6TR9W9Ws2
-         VLkfF+l769zxE3IdJQa/VH3mtpWrwb8qEaaEWRM5f+lOi4o9hxl8kZiCzDlRAbZttO65
-         6gV/7EAbB8mPY04oKNnMU56CVxWaDC/zsKlzgppseBVh4+whb+3XeZM5Uugfj0bIZny9
-         b9Tg==
-X-Gm-Message-State: AOAM531yCyURlXUSZbFDVOj+MVbZu9sSeH+9AXed9rkhBWs2DqhDENj3
-        JdIYa6WGzAz790X40OHghA==
-X-Google-Smtp-Source: ABdhPJzyr3XOBq5uPxRDKXpTJOdZ6Sg4iLb6fl58mEob9P0bnfHDB8LAbg+1E/tRB8RW8/BxSSQcUg==
-X-Received: by 2002:a05:6602:14f:: with SMTP id v15mr136277iot.206.1628283586727;
-        Fri, 06 Aug 2021 13:59:46 -0700 (PDT)
+        bh=TQ+1J/oSmyy58ro7pu71MH0rvdIYdla0sRpmF6tCuWM=;
+        b=ISnhRSe8nFytHYNchJnHfNXZFHdQBZw2KdsQfWUQRfi6FqDCOZJFkrf5S/xEX8B7g0
+         Z2Xcgnezy/NH0FVtbRvjO7T37V+HpBnI7HWe5iAUV7NMyyivyDM/6dR8dnRhesD71YPu
+         nofvv/EzF4kVjoqoflEhTdu/wHz+3K/EWcKkh5/9p2zgf7TVXqCyOUSW1JCZcObrqu8q
+         S5Om2DC1wB5qG3p+EA8AWV7cJGaoRep45ru/SpQf7fEHiN/nG7Z7MFNg6GyxbcKOl+O0
+         8ZRryVawcupEgpZau2p7Bq3klc36W9L4qbdZilWVQYUpm8LYIP8xVRAI7CIPIzhZmsbE
+         aVKA==
+X-Gm-Message-State: AOAM531yP6EQxCAHNH9LCBZWVdYE9niFR+i4tg65aFGJEb/gCVywgVym
+        mscqKLCU6yioNk7tg+jhJg==
+X-Google-Smtp-Source: ABdhPJz7k/I8gGPnzKdwDC+lKONhc+T7+etGmbtEnhSUA3ROo258cn7y+zIEVRvrbYIcHh3fc1Rcnw==
+X-Received: by 2002:a5e:d91a:: with SMTP id n26mr565726iop.96.1628283781117;
+        Fri, 06 Aug 2021 14:03:01 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id b23sm4530328iof.8.2021.08.06.13.59.45
+        by smtp.gmail.com with ESMTPSA id u9sm2991459ilv.75.2021.08.06.14.02.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 13:59:45 -0700 (PDT)
-Received: (nullmailer pid 1787406 invoked by uid 1000);
-        Fri, 06 Aug 2021 20:59:44 -0000
-Date:   Fri, 6 Aug 2021 14:59:44 -0600
+        Fri, 06 Aug 2021 14:03:00 -0700 (PDT)
+Received: (nullmailer pid 1792397 invoked by uid 1000);
+        Fri, 06 Aug 2021 21:02:58 -0000
+Date:   Fri, 6 Aug 2021 15:02:58 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Bert Vermeulen <bert@biot.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, John Crispin <john@phrozen.org>,
-        Felix Fietkau <nbd@nbd.name>
-Subject: Re: [PATCH 3/5] ARM: dts: Add basic support for EcoNet EN7523
-Message-ID: <YQ2iwIcSuDwcw/s5@robh.at.kernel.org>
+Cc:     Sam Ravnborg <sam@ravnborg.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Max Merchel <Max.Merchel@tq-group.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Hao Fang <fanghao11@huawei.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Felix Fietkau <nbd@nbd.name>, linux-kernel@vger.kernel.org,
+        John Crispin <john@phrozen.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Palmer <daniel@0x0f.com>
+Subject: Re: [PATCH 1/5] dt-bindings: Add vendor prefix for EcoNet
+Message-ID: <YQ2jgnAvtMNyx2c/@robh.at.kernel.org>
 References: <20210730134552.853350-1-bert@biot.com>
- <20210730134552.853350-4-bert@biot.com>
- <20210730144627.GB19569@C02TD0UTHF1T.local>
- <d0ff051b-280c-4021-f4ee-7bfda5e356d3@biot.com>
+ <20210730134552.853350-2-bert@biot.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d0ff051b-280c-4021-f4ee-7bfda5e356d3@biot.com>
+In-Reply-To: <20210730134552.853350-2-bert@biot.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 06:41:55PM +0200, Bert Vermeulen wrote:
-> On 7/30/21 4:46 PM, Mark Rutland wrote:
-> > On Fri, Jul 30, 2021 at 03:45:50PM +0200, Bert Vermeulen wrote:
-> > > +	timer {
-> > > +		compatible = "arm,armv8-timer";
-> > 
-> > This should be "arm,armv7-timer".
-> > 
-> > > +		interrupt-parent = <&gic>;
-> > > +		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-> > > +			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-> > > +			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-> > > +			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
-> > 
-> > GICv3 doesn't have a cpumask in its PPI description, so the
-> > GIC_CPU_MASK_SIMPLE() bits should be removed.
+On Fri, 30 Jul 2021 15:45:48 +0200, Bert Vermeulen wrote:
+> From: John Crispin <john@phrozen.org>
 > 
-> Ok, will fix.
+> Add vendor prefix "econet" for EcoNet.
 > 
-> > > +		clock-frequency = <25000000>;
-> > 
-> > Please have your FW configure CNTFRQ on each CPU; the clock-frequency
-> > property in the DT is a workaround for broken FW, and it's *vastly*
-> > preferable for FW to configure this correctly (e.g. as it means VMs
-> > should "just work").
+> Signed-off-by: John Crispin <john@phrozen.org>
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> I've since got hold of the modified U-Boot that runs on my eval board, and
-> indeed it doesn't set CNTFRQ. So the kernel does need this, for the moment.
 
-Can't you write CNTFRQ in the u-boot shell/script?
-
-> I may get a chance to upstream support for this SoC in U-Boot, but I can't
-> control what people are going to ship with their board. Is it ok to leave
-> this in?
-
-If they want a working upstream Linux, then you can control it.
-
-I seem to recall this being rejected in other cases. That may have been 
-on v8 which has taken stricter stances (but arguably any new v7 stuff 
-should too).
-
-Rob
+Acked-by: Rob Herring <robh@kernel.org>
