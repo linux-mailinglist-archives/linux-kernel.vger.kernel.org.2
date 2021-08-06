@@ -2,99 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381FB3E27CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348543E2795
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244746AbhHFJwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 05:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242756AbhHFJwd (ORCPT
+        id S244654AbhHFJn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:43:29 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:12461 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242680AbhHFJn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:52:33 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60D8C061799;
-        Fri,  6 Aug 2021 02:52:17 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id c130so936117qkg.7;
-        Fri, 06 Aug 2021 02:52:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=fkNeqpNF5jRo/BI/tlSB7kvGxORHyjBjoaBmdA8dbl8=;
-        b=mSgqOk5xrXiP+7KgsXvpGH/KV/+ch8Yl1hT2lHmA/1bl6zuSQjjTh6U9gKu9qHuqPR
-         0TIeX0w1kc4lYP6hI6OCZuIFlZns8xXKcPPOTIRBY3c6JcXXb1KycI3odIN11Fk33AHr
-         Kumx+KuN74BS6U74VDe23dPIyBhpyKchDKNJGQyeiGibfBod4zKYz/g5YQqOz+CcaIep
-         LzDaCj7rwVS6Q5ljIgrLspcdh+Bo3iPu8yHZ4rqJN+b+bXR6DryvHgn4+GKUCQat3XeE
-         VB9EmbjIVWSFZffAOveJf1ZTJA1QlCWsj+xkNioxjr/6O603THzaxKUfdm7WX3vZm1tk
-         +oDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=fkNeqpNF5jRo/BI/tlSB7kvGxORHyjBjoaBmdA8dbl8=;
-        b=ryUfvfU5l90vM8jL82fPjbWz7c7plaJkefdcTeVr0fksUbg0A5Q0RisVhIzd6iistO
-         4hwY1T+a6dqVzEDz3r7WAwUwcyq1aU4VEBYFbpFC46AC4UtNhWLm+lnT3rrgxDz7hTST
-         BN8zIXOgNq9+9ODgEGDw8snc1mbYRZpd1Yhm1koxUHiG6pi0HnAnRXTDiBmILIxAER33
-         P7A/fJ5WRUIhxsefJo41XTI3Vz/FTFUJ9Dm/0X4zSMelO2mvQHdrPtqeJPNXHmBbo5yJ
-         U5WmFp8dEQ4oCPH9JtBAMK0hx0QspVfrh5NokHVlVF83Wn8flvRR3rqMNPyxh5BDloC2
-         iwxA==
-X-Gm-Message-State: AOAM533dZIIOTbnt6lpiMrUy/wngdMsSF5ohBTNX0570UfLm8eAUeoHP
-        F5CpeYwpu+aE4TW4CTDJF6A=
-X-Google-Smtp-Source: ABdhPJxXhnPB2PZjfQlVlu8XQeA93JPqeH4IZUQ8g2nUjUzpDWq9chilNp7gyB3Xtqo4865m7hXUDw==
-X-Received: by 2002:a05:620a:158c:: with SMTP id d12mr9271433qkk.391.1628243537041;
-        Fri, 06 Aug 2021 02:52:17 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id s3sm3296915qtn.4.2021.08.06.02.52.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 02:52:16 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     SeongJae Park <sjpark@amazon.de>, rdunlap@infradead.org,
-        broonie@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
-        willy@infradead.org, linux-damon@amazon.com
-Subject: [PATCH 2/2] mm/damon/Kconfig: Remove unnecessary PAGE_EXTENSION setup
-Date:   Fri,  6 Aug 2021 09:51:53 +0000
-Message-Id: <20210806095153.6444-2-sj38.park@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210806095153.6444-1-sj38.park@gmail.com>
-References: <20210806092246.30301-1-sjpark@amazon.de>
- <20210806095153.6444-1-sj38.park@gmail.com>
+        Fri, 6 Aug 2021 05:43:28 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gh0n33x5wzckT3;
+        Fri,  6 Aug 2021 17:39:35 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 6 Aug 2021 17:43:09 +0800
+Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
+ (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 6 Aug
+ 2021 17:43:09 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <miklos@szeredi.hu>, <amir73il@gmail.com>
+CC:     <linux-unionfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH] ovl: nfs_export: Parse index inode's nlink when 'd_inode(lowerdentry)->i_nlink == 1'
+Date:   Fri, 6 Aug 2021 17:53:54 +0800
+Message-ID: <20210806095354.2336263-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+For overlayfs mounted by "nfs_export=on", all files/directories will be
+indexed regardless of whether 'nlink > 1' satisfies. Following process
+may cause breaking hard links on copy up:
 
-Commit 13d49dbd0123 ("mm/damon: implement primitives for the virtual
-memory address spaces") of linux-mm[1] makes DAMON_VADDR to set
-PAGE_IDLE_FLAG.  PAGE_IDLE_FLAG sets PAGE_EXTENSION if !64BIT.  However,
-DAMON_VADDR do the same work again.  This commit removes the unnecessary
-duplicate.
+  mkdir low upper work merge
+  touch low/file
+  mount -t overlay over
+    -oupperdir=upper,lowerdir=low,workdir=work,nfs_export=on merge
+  chmod +x merge/file
+  #  Now nlink of upper/file's correspoding index file equals to 2,
+     and we have xattr "trusted.overlay.nlink=U-1" on upper/file
+  echo 3 > /proc/sys/vm/drop_caches
+  # merge/file's nlink changes to 2
 
-[1] https://github.com/hnaz/linux-mm/commit/13d49dbd0123
+For nfs_export enabled overlayfs, don't ignore parsing index inode's nlink
+when 'd_inode(lowerdentry)->i_nlink == 1'.
 
-Fixes: 13d49dbd0123 ("mm/damon: implement primitives for the virtual memory address spaces")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Fixes: f168f1098dd9038 ("ovl: add support for "nfs_export" configuration")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- mm/damon/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ fs/overlayfs/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/mm/damon/Kconfig b/mm/damon/Kconfig
-index 455995152697..37024798a97c 100644
---- a/mm/damon/Kconfig
-+++ b/mm/damon/Kconfig
-@@ -27,7 +27,6 @@ config DAMON_KUNIT_TEST
- config DAMON_VADDR
- 	bool "Data access monitoring primitives for virtual address spaces"
- 	depends on DAMON && MMU
--	select PAGE_EXTENSION if !64BIT
- 	select PAGE_IDLE_FLAG
- 	help
- 	  This builds the default data access monitoring primitives for DAMON
+diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
+index 5e828a1c98a8..75a61243371c 100644
+--- a/fs/overlayfs/inode.c
++++ b/fs/overlayfs/inode.c
+@@ -832,7 +832,8 @@ unsigned int ovl_get_nlink(struct ovl_fs *ofs, struct dentry *lowerdentry,
+ 	char buf[13];
+ 	int err;
+ 
+-	if (!lowerdentry || !upperdentry || d_inode(lowerdentry)->i_nlink == 1)
++	if (!lowerdentry || !upperdentry ||
++		(!ofs->config.nfs_export && d_inode(lowerdentry)->i_nlink == 1))
+ 		return fallback;
+ 
+ 	err = ovl_do_getxattr(ofs, upperdentry, OVL_XATTR_NLINK,
 -- 
-2.17.1
+2.31.1
 
