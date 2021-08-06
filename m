@@ -2,160 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C469F3E222B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 05:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CACA93E222E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 05:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242634AbhHFDWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 23:22:19 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:42406 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231173AbhHFDWR (ORCPT
+        id S239498AbhHFDaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 23:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231173AbhHFDaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 23:22:17 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1763L86X018074;
-        Fri, 6 Aug 2021 03:21:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2021-07-09;
- bh=jdDMDV7nb2kaPlbKCpuwUhGTfkoCCRNPmCo04oqCvR0=;
- b=pGrda0lkLc6SF/dQ0Gn7CpRooR433tLrudpTtuEoOOks4Turk2DqvMjECeoQAbwLaPsJ
- DwadbFFXGa2P6EZZSkaFvc4Bvc6svFuHfiFK9XqUI38MbmszpiSEgryqKPnHV1YP6BBL
- 4TB5XLj6Wvk81lZsLJ0XmDsxeyTSLIoTefowrIaEt0zbcDHB5OGvNOmrIoScztxq+IND
- t+NFpJHKLw0Q2IWHqwLajxqfLAGvWqQvPrH27MygjMvfXwS8DIAmZkYjGa+C+JBvOzm0
- 9GcxY07R845u7GXy3MaRQRRLWHTblkx4kX1TMaL7vwS/MpIOYf46MrgVBMepnjuRX6fQ mg== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=jdDMDV7nb2kaPlbKCpuwUhGTfkoCCRNPmCo04oqCvR0=;
- b=g1rBErBFx3OLGNW5GIyjC9dXIvSkf5lQr9N2Ms1tGYbTosYs1/+tzOkMuummaLL1Lziz
- N/ZD+npOfcyddPzeibV8noFg/hoyTXlk2b8FXEP1UZWPB+KBKGY5ECPb4Zd5kY15FMiN
- TGmq7Y0hr2bENBSXGnQ7kgHt0rg55wWU5KuR6M3Ff67SH8aG++qRfuwp68HulRczPX7c
- Ca8AcW1vo8XN0gQ/h52B0Mi2mfK5KQv7J8fliil0eNrRi/yE01Pe1HYsOqJ+DT91N1aM
- oPjFvbBFI6Blyxpr/JWi55FPw6ICZ1fuC0XbtcKqX9n8gH6frbYNfzD0ZEONfbSeZyOA 5A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3a7wqv3tm0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Aug 2021 03:21:49 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1763KAHi155777;
-        Fri, 6 Aug 2021 03:21:48 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2108.outbound.protection.outlook.com [104.47.55.108])
-        by aserp3020.oracle.com with ESMTP id 3a7r4avc9a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Aug 2021 03:21:48 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nQefmSWQBbq9pXGEC0VP4aW7rFOY04KD2K7P01EiXBFpn1XYLhh0/XhizYMsBXQWbFgmOqBJqNlVlEG6zBcCfFEXvtkWeThkxhWCkmo/ujCWk2U2AX7bh4QUA5Qj5EM3/zn6gtN/m84cMJ5ko1JFLFKTaLEUolbT+AG/NOryqGGXHbIL2qET4Fs5upQa8t3FkKZieGea/yPogiS6BVTnlL+gmnvAEbAUANZAd8axsK8AUg7u9MFT8wsnjlqiWhlB0Js2ue7CtL9e5lELFA5rxDxNXv+ced+AKdQkYJQdrIwb1A0mtJPYQw6PJXDs+3N0W3CNNMfG087/NYvvODqjyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jdDMDV7nb2kaPlbKCpuwUhGTfkoCCRNPmCo04oqCvR0=;
- b=YouFqVTiv8KCNsvytPGAKunP/ekvfdD+LtADmykeGLW7SsJcwH7kwLhx3DETmyngoSzw4eMcIgzfmuKbRj9O8gQXpZ1TqRt4ARsxOs2mUo5faz5kRKGtJMWABnVPb2giKfaqAoMT7RtVFPWscT3mix+mmfNkC2Q4q5LliicHBj4e7EYq0il7P2VwKwRCY2Wf65tWcYyZXyrj5crexobwsmH1azlfhET5ux3OsBKbfGHjIeCbvHl43t+GZir/iLnrItEdKf/Cos42NxEtnWvHhUfz6KkcyWS69GW2waMjgO/pGXuPo7IEVCzHoXDF8/Ykv/KzGDQOPaSqo2xADUZ1vA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 5 Aug 2021 23:30:15 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99938C061798;
+        Thu,  5 Aug 2021 20:29:57 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id mt6so14004607pjb.1;
+        Thu, 05 Aug 2021 20:29:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jdDMDV7nb2kaPlbKCpuwUhGTfkoCCRNPmCo04oqCvR0=;
- b=LySfsxReHsxyfPsjfko0yMVW7pdrnerddidsqypB1nwWaQXhbaWMYv31voWgzbFloa8dT/ktvkwsDQTBMjr9Rfz/l+Le0yuHi61Aas8YQstU1jIyu9kmQJVXE6DkIbaZQcibUaqFJmaC0jW3TA+QJ2UncVEddNHqO8GGO5BoG44=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4663.namprd10.prod.outlook.com (2603:10b6:510:34::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Fri, 6 Aug
- 2021 03:21:46 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::153e:22d1:d177:d4f1]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::153e:22d1:d177:d4f1%8]) with mapi id 15.20.4373.026; Fri, 6 Aug 2021
- 03:21:46 +0000
-To:     Bean Huo <huobean@gmail.com>
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, cang@codeaurora.org,
-        daejun7.park@samsung.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/2] two changes for UFS/HPB
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1eeb7febp.fsf@ca-mkp.ca.oracle.com>
-References: <20210804182128.458356-1-huobean@gmail.com>
-Date:   Thu, 05 Aug 2021 23:21:42 -0400
-In-Reply-To: <20210804182128.458356-1-huobean@gmail.com> (Bean Huo's message
-        of "Wed, 4 Aug 2021 20:21:26 +0200")
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR13CA0040.namprd13.prod.outlook.com
- (2603:10b6:a03:2c2::15) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=fS+XTOKPP/A+4Ea3Vfvk2lusfIUrsBa+uJZOXKxOTBs=;
+        b=ONTPD9LmSno01aJOy1CjhKkYK3doqsHNZJrZJypUlYU/TnSa8zfSp1hgMhRtYwTIlq
+         ffoizk7QD3R1/qUjFO1u3vDNlJFWDvgrSfY+yBrHMxgy2pPR/+1lfsCgB47FAIEBq/Z0
+         u0cijgJtcZG2L58LElWv5Dw+zz8MMtvFAIt2eur6osbqkGOV07jUP6c7sa23yruL/MP/
+         PvvaISEbIJcwiOgZQEj+pCdlMpY598g9v7h+lpjoSRYbDQtzsfOcsDxuu+6bMqCRGOwX
+         4iAzKeGCSrchlHPqDnpyZQ7NtexcrLUUPSU7XWisGSrph402NGg7B3B2OsVaIF9xGicX
+         CEtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=fS+XTOKPP/A+4Ea3Vfvk2lusfIUrsBa+uJZOXKxOTBs=;
+        b=Yx4ex47yUmX2BnWX35pIBkLIws/51OKl5zUntq6BPVJf+16BcFOcxG4/CCxsZE1QkY
+         9gnF3pjTTlR1M6zXI7M+hTri+oLG4Hjmn6mQAYg53JCz8cGm9Nh/iJwNHSkI9HMUmgD3
+         lGn74w2MH1l9uUXd5pisTVVm27NmQUSGId5Q7ekrpn5rhkCBThWQ98YO5KL6zUzTnWSx
+         WZunY6tjBrSkcSflUKHU2+AnQ9Y2c2Jg5NBC0C1asyhUHMGo5oNEhFFbYww4TJ29ALai
+         86EoRzLZtNxOPMfYtWK/lD4rgUSJDxqAFQZdFqJfRKfIdE2M981AECxNdC+hDeUqGElb
+         xtTA==
+X-Gm-Message-State: AOAM530ts6Iii6r0MbZsRrxLdp0fT7k8w4Su+CR4MjuDrZtQh5qkS+h+
+        bIoDnjrq/aXoJj5EeIMK2+w=
+X-Google-Smtp-Source: ABdhPJwwWTURvjJ6ZonVIkYlcjFJ8ZdvWN6X+EzmB8O32dYuQDvMmXI9NMayJiB5K5hZhN3jBLnXaw==
+X-Received: by 2002:a17:90a:4204:: with SMTP id o4mr18366892pjg.199.1628220597080;
+        Thu, 05 Aug 2021 20:29:57 -0700 (PDT)
+Received: from [10.173.0.66] ([45.135.186.87])
+        by smtp.gmail.com with ESMTPSA id nr6sm962042pjb.39.2021.08.05.20.29.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Aug 2021 20:29:56 -0700 (PDT)
+Subject: Re: [BUG] power: supply: 88pm860x_battery: possible
+ uninitialized-variable access in measure_vbatt()
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        baijiaju1990@gmail.com, "Jett.Zhou" <jtzhou@marvell.com>
+References: <e2080eb9-bbe2-5077-761d-b5594edb6006@gmail.com>
+ <20210805174908.ctg6n5iwmg5izap3@earth.universe>
+From:   Tuo Li <islituo@gmail.com>
+Message-ID: <94bb8568-3f3b-b3af-c98f-9d9bf36528e1@gmail.com>
+Date:   Fri, 6 Aug 2021 11:29:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR13CA0040.namprd13.prod.outlook.com (2603:10b6:a03:2c2::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.4 via Frontend Transport; Fri, 6 Aug 2021 03:21:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 302db5b2-27a1-4032-056f-08d95889523b
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4663:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB46637B6695F48467F8EB58DC8EF39@PH0PR10MB4663.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MbqwswRdV0ggQQ1RW8z5z9R5VHRa+FBrh/z1LUMJ1mAKAtsax9/a5FAUqz5dhdFHtbDZX0Kv13VdBlpA+9O4wq6p/4EVvzs7A1RWFOdSxHKA+20udLxOQY/xX31eoRpGUwm2jI3zTVZCZvMhDulR/7gfvhzm96st3SS6zvMlm1Dfs/lg2UeHEqd2GHlQmjAmAzPdL/ZmwEpM3jV8YUvgmAOfzlPm3sPD/S1yljSun1VZym0Gx7JeIrCK9WmmdDHPz8boT3L+kePUGJQ1sJputYGnbycmBgIt1r6eNbLwd5dq3YfQVLad+v/7NW84JQ3SJOrpk5c/CcMfwoDtbB9LD1xFRlw6Eq8H+E5tc0YaDYiMFAr8rujcfRXOBUCdLeH6qNl9g6trISQ5uqqnJiq/Faiil4TQVg4j/4GF+yixbQknBljdHmpGXpLvsCCH6yJphhZAqnHh43BubHkx1PrEa+XuSvNBo0V7yLkuyYJ3x+uiy0+t2HzDCUXGZl6JMgjEIWBW9SOnbJq6wD5iaECVV+C7xVfsbzBONPBuJPTRVpe5bDvaGJrfRKom242FjkJXcsx+jjYaQe43sWQ4dB3K8EBk9n/C3kEGQF/ny8ws3WVyCTA1SZ/EDt4iuvMQ0nApGCSBcjQ1kWXcwM7KbemgrLMJV5P/UriAftWH1FboSbJZNOhuyONVy2Hu45gPRPBddQTYYS/HgcbrwM+bum1NiQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(396003)(39860400002)(346002)(66476007)(186003)(86362001)(66946007)(5660300002)(4326008)(7416002)(66556008)(26005)(2906002)(8936002)(6666004)(316002)(478600001)(55016002)(52116002)(36916002)(558084003)(38100700002)(8676002)(7696005)(38350700002)(956004)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mGfdzf98f31grmgaVMcGLJQpxHlqjThv5X4G43L9zGl8pnxNSc17CG0Cf+ki?=
- =?us-ascii?Q?Wl2slvsEI9a94H9n3DwlTF7ixyTjrSmZZcx3LYloLtX2cprLRO6MbHpvZBzU?=
- =?us-ascii?Q?TXtYv3Xgakh8kiqK9RejFGUiyJBpE4R2ARREZ/bbyTisFyithttvwGxEv6rn?=
- =?us-ascii?Q?ssU1oIaJP1Xd+Hh9/C+D21j6VrF2OFXAc4waaJM2fIMKSbx+i9wBQ2kRogi5?=
- =?us-ascii?Q?eGDEWtTmVV0szcS06hDZ5tSjKw6vpuUryqQyO5mu5mDJZUSi8Sp6miuqGKBd?=
- =?us-ascii?Q?/u4sbwYvnynY9uc6rve5tDyCjwAKQ9V9MWnV/bRhYWWcR+aD77Of1okIjAYz?=
- =?us-ascii?Q?GzJ9523QsZSsvqzLmU2k/4jE7E7Bu//qhH4+7F0UiGJVQW8fMq/psq1hZOXC?=
- =?us-ascii?Q?OVrmwuAfkPKS/1Lbo1//U1h1IWYcdP6XLyqk3+QnvJZ502MjkT4YJLbp35Xh?=
- =?us-ascii?Q?7dxDrC5ehm/VZj/gevPq1G8KNV7SjaIK9BS1g4ZCHxdIxXUFuosR5yfBMlug?=
- =?us-ascii?Q?XdmU66bZSIE94AJhwPPBOPdgydXVQiBh1sf0xcnKgBGeUHPVVKsxeoSUOiXD?=
- =?us-ascii?Q?urXwKiWGdWOghze6PwB9A0jgMFwERbZiFl+LstrLv/Z88hvMZGhaDUteWsJT?=
- =?us-ascii?Q?Rav5Zy1qhFWbkDOEWXVWpMXUZjWEBiDQog4otufqdmrpgS++4J0ILEQGpET3?=
- =?us-ascii?Q?EbtYwSFU5nNQQ8NuXj4xGhLZzzQqNhECRvjz60lhC6uSe99ZLHf03+pDzGVA?=
- =?us-ascii?Q?YMyO9BxqkpwxLOVWqWY+xTqH28XXszpZzZe3Y9bVr9qIQ4gCyPrBjj7kxqSn?=
- =?us-ascii?Q?l+5gc8w83Ph7W6sPcdVpdKEZuNt9/gDkXUNWfhKUu7W4WRBLfy1HdV+/Ekr4?=
- =?us-ascii?Q?tQbLhaKgtmt6qmoRdxwMF05h6bd7AiaQkSb3mUtdO66IJU1C9RwpLAx4azHh?=
- =?us-ascii?Q?6usO6FKFgFokM2pj+pbXCGyMM9+mkbgPMVsVEQdQOm928NxuxhMXnT8cL0LX?=
- =?us-ascii?Q?M+uDFHUBQc+4tZGQA+zTDA/AutHD6MvP/JOhHUT+TrAr3SZ+coHUl1oN0USm?=
- =?us-ascii?Q?bm1d4XNpsGosrIcwZb0JgwFA46kNuZQpUDUc4AQx5FiB4Zeb6cCazpfzOUrH?=
- =?us-ascii?Q?5eTOWw2nPPZx8msqGlfT95BNSxwazI/KKaSdGmfV2xuxU5uJk0qV7HkKWVWB?=
- =?us-ascii?Q?CKd85Y9oYBUQIor/dJZB02Y/nr9illyXspu2USxNi4bg9E8Vz6Nr902biG+P?=
- =?us-ascii?Q?ph/L2iS+sYad6+wkKMXIrOOcyp8wrLmzrGE1jmyjcckyqbc3MSIQjJm1P5GX?=
- =?us-ascii?Q?JnkwJ7Va/zquuVPluq3YAhf2?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 302db5b2-27a1-4032-056f-08d95889523b
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2021 03:21:46.4233
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fAqbc0bxQBLvvFaBuFVaIBZCMqKLlWblYy0TjYAk/Q9T/KkKR9Dw7uN3zqsonKybU9lR9A7PzRkW1a9qujZy1G1X09zjYrbCnPUkBaN+zrE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4663
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10067 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
- suspectscore=0 mlxlogscore=999 phishscore=0 spamscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108060019
-X-Proofpoint-GUID: uziiS8Xfr31n5Owvh88rCeEJ8jOctj3w
-X-Proofpoint-ORIG-GUID: uziiS8Xfr31n5Owvh88rCeEJ8jOctj3w
+In-Reply-To: <20210805174908.ctg6n5iwmg5izap3@earth.universe>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks for your feedback, and any further feedback about this problem 
+would be appreciated.
 
-Bean,
+Best wishes,
+Tuo Li
 
-> These patches are based on the Martin's git Repo 5.15/scsi-staging
-> branch
+On 2021/8/6 1:49, Sebastian Reichel wrote:
+> [adding Jett Zhou to Cc who introduced the driver]
+>
+> Hi,
+>
+> On Wed, Jul 28, 2021 at 06:24:12PM +0800, Li Tuo wrote:
+>> Our static analysis tool finds a possible uninitialized-variable access in
+>> the 88pm860x_battery driver in Linux 5.14.0-rc3:
+>>
+>> In calc_soc():
+>> 369:    int ocv;
+>> 376:    switch (state) {
+>> 380:    case OCV_MODE_SLEEP:
+>> 381:        ret = measure_vbatt(info, OCV_MODE_SLEEP, &ocv);
+>>
+>> In measure_vbatt(struct pm860x_battery_info *info, int state, int *data)
+>> 176:    switch (state) {
+>> 184:    case OCV_MODE_SLEEP:
+>> 201:        *data = ((*data & 0xff) * 27 * 25) >> 9;
+>>
+>> If the variable state is OCV_MODE_SLEEP, the function measure_vbatt() is
+>> called with the argument &ocv, and the corresponding parameter is data.
+>> Thus *data is uninitialized but it is used at line 201.
+>>
+>> I am not quite sure whether this possible uninitialized-variable access is
+>> real and how to fix it if it is real.
+>> Any feedback would be appreciated, thanks!
+>>
+>> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> I suppose the code is suppose to look like this:
+>
+> 201:        *data = ((ret & 0xff) * 27 * 25) >> 9;
+>
+> Considering quite some code is spent before to setup ret, which is
+> never used. I don't have the device (nor datasheets) though. Considering
+> the driver has only seen trivial cleanups over the last 9 years, maybe
+> it can just be removed?
+>
+> -- Sebastian
 
-Applied to 5.15/scsi-staging, thanks!
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
