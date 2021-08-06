@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973283E250B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6025F3E2518
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243941AbhHFIQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:16:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45448 "EHLO mail.kernel.org"
+        id S243902AbhHFIRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:17:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243873AbhHFIPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:15:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CB0061163;
-        Fri,  6 Aug 2021 08:15:20 +0000 (UTC)
+        id S243727AbhHFIPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:15:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E621611CC;
+        Fri,  6 Aug 2021 08:15:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628237721;
-        bh=cqrmoG3pWPnwv2ePXPLEv+hxWnGFEpxQzJAktEFRZgk=;
+        s=korg; t=1628237738;
+        bh=IEMBuGM2e14tCOC30Js/a/PP3e+BUjqDR2jRxGaGQkc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hiMvZE1xGFL5v4RSXZm0kMrqPHtQLgI7xfkqIrtpFL5GImJO9GgtGbcnarBH/FNsi
-         X4miOa4Q05fLCoRvCZlCFGPMTIlsoMF97zyigegF5PINyDdE5By8BLbsCT+P39Lv5d
-         y2uFeD2CZtz8BXYNCh+kRjak4vAJUuckKRI/tWZA=
+        b=oKfV/Z1FDsN8yWLN3bdN+E5nzJdq+ZV+LD/1/J/LcFF+X10J3dbix2FMcAxztyV3n
+         TzMQd+ZYKGohAxe1e625NI/UGSQpbcJKVlioFMhgPFI2+pcziqmhy06clcaYuFQ8+W
+         BKXuvG4WFdzlJTJb5/w6VomH6C5Ugab6Pbx4JmRA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4.9 7/7] can: raw: raw_setsockopt(): fix raw_rcv panic for sock UAF
-Date:   Fri,  6 Aug 2021 10:14:46 +0200
-Message-Id: <20210806081109.557682000@linuxfoundation.org>
+        stable@vger.kernel.org, Lijian Zhang <Lijian.Zhang@arm.com>,
+        Jia He <justin.he@arm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 04/11] qed: fix possible unpaired spin_{un}lock_bh in _qed_mcp_cmd_and_union()
+Date:   Fri,  6 Aug 2021 10:14:47 +0200
+Message-Id: <20210806081110.659147198@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210806081109.324409899@linuxfoundation.org>
-References: <20210806081109.324409899@linuxfoundation.org>
+In-Reply-To: <20210806081110.511221879@linuxfoundation.org>
+References: <20210806081110.511221879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,163 +41,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Jia He <justin.he@arm.com>
 
-commit 54f93336d000229f72c26d8a3f69dd256b744528 upstream.
+[ Upstream commit 6206b7981a36476f4695d661ae139f7db36a802d ]
 
-We get a bug during ltp can_filter test as following.
+Liajian reported a bug_on hit on a ThunderX2 arm64 server with FastLinQ
+QL41000 ethernet controller:
+ BUG: scheduling while atomic: kworker/0:4/531/0x00000200
+  [qed_probe:488()]hw prepare failed
+  kernel BUG at mm/vmalloc.c:2355!
+  Internal error: Oops - BUG: 0 [#1] SMP
+  CPU: 0 PID: 531 Comm: kworker/0:4 Tainted: G W 5.4.0-77-generic #86-Ubuntu
+  pstate: 00400009 (nzcv daif +PAN -UAO)
+ Call trace:
+  vunmap+0x4c/0x50
+  iounmap+0x48/0x58
+  qed_free_pci+0x60/0x80 [qed]
+  qed_probe+0x35c/0x688 [qed]
+  __qede_probe+0x88/0x5c8 [qede]
+  qede_probe+0x60/0xe0 [qede]
+  local_pci_probe+0x48/0xa0
+  work_for_cpu_fn+0x24/0x38
+  process_one_work+0x1d0/0x468
+  worker_thread+0x238/0x4e0
+  kthread+0xf0/0x118
+  ret_from_fork+0x10/0x18
 
-===========================================
-[60919.264984] BUG: unable to handle kernel NULL pointer dereference at 0000000000000010
-[60919.265223] PGD 8000003dda726067 P4D 8000003dda726067 PUD 3dda727067 PMD 0
-[60919.265443] Oops: 0000 [#1] SMP PTI
-[60919.265550] CPU: 30 PID: 3638365 Comm: can_filter Kdump: loaded Tainted: G        W         4.19.90+ #1
-[60919.266068] RIP: 0010:selinux_socket_sock_rcv_skb+0x3e/0x200
-[60919.293289] RSP: 0018:ffff8d53bfc03cf8 EFLAGS: 00010246
-[60919.307140] RAX: 0000000000000000 RBX: 000000000000001d RCX: 0000000000000007
-[60919.320756] RDX: 0000000000000001 RSI: ffff8d5104a8ed00 RDI: ffff8d53bfc03d30
-[60919.334319] RBP: ffff8d9338056800 R08: ffff8d53bfc29d80 R09: 0000000000000001
-[60919.347969] R10: ffff8d53bfc03ec0 R11: ffffb8526ef47c98 R12: ffff8d53bfc03d30
-[60919.350320] perf: interrupt took too long (3063 > 2500), lowering kernel.perf_event_max_sample_rate to 65000
-[60919.361148] R13: 0000000000000001 R14: ffff8d53bcf90000 R15: 0000000000000000
-[60919.361151] FS:  00007fb78b6b3600(0000) GS:ffff8d53bfc00000(0000) knlGS:0000000000000000
-[60919.400812] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[60919.413730] CR2: 0000000000000010 CR3: 0000003e3f784006 CR4: 00000000007606e0
-[60919.426479] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[60919.439339] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[60919.451608] PKRU: 55555554
-[60919.463622] Call Trace:
-[60919.475617]  <IRQ>
-[60919.487122]  ? update_load_avg+0x89/0x5d0
-[60919.498478]  ? update_load_avg+0x89/0x5d0
-[60919.509822]  ? account_entity_enqueue+0xc5/0xf0
-[60919.520709]  security_sock_rcv_skb+0x2a/0x40
-[60919.531413]  sk_filter_trim_cap+0x47/0x1b0
-[60919.542178]  ? kmem_cache_alloc+0x38/0x1b0
-[60919.552444]  sock_queue_rcv_skb+0x17/0x30
-[60919.562477]  raw_rcv+0x110/0x190 [can_raw]
-[60919.572539]  can_rcv_filter+0xbc/0x1b0 [can]
-[60919.582173]  can_receive+0x6b/0xb0 [can]
-[60919.591595]  can_rcv+0x31/0x70 [can]
-[60919.600783]  __netif_receive_skb_one_core+0x5a/0x80
-[60919.609864]  process_backlog+0x9b/0x150
-[60919.618691]  net_rx_action+0x156/0x400
-[60919.627310]  ? sched_clock_cpu+0xc/0xa0
-[60919.635714]  __do_softirq+0xe8/0x2e9
-[60919.644161]  do_softirq_own_stack+0x2a/0x40
-[60919.652154]  </IRQ>
-[60919.659899]  do_softirq.part.17+0x4f/0x60
-[60919.667475]  __local_bh_enable_ip+0x60/0x70
-[60919.675089]  __dev_queue_xmit+0x539/0x920
-[60919.682267]  ? finish_wait+0x80/0x80
-[60919.689218]  ? finish_wait+0x80/0x80
-[60919.695886]  ? sock_alloc_send_pskb+0x211/0x230
-[60919.702395]  ? can_send+0xe5/0x1f0 [can]
-[60919.708882]  can_send+0xe5/0x1f0 [can]
-[60919.715037]  raw_sendmsg+0x16d/0x268 [can_raw]
+In this case, qed_hw_prepare() returns error due to hw/fw error, but in
+theory work queue should be in process context instead of interrupt.
 
-It's because raw_setsockopt() concurrently with
-unregister_netdevice_many(). Concurrent scenario as following.
+The root cause might be the unpaired spin_{un}lock_bh() in
+_qed_mcp_cmd_and_union(), which causes botton half is disabled incorrectly.
 
-	cpu0						cpu1
-raw_bind
-raw_setsockopt					unregister_netdevice_many
-						unlist_netdevice
-dev_get_by_index				raw_notifier
-raw_enable_filters				......
-can_rx_register
-can_rcv_list_find(..., net->can.rx_alldev_list)
-
-......
-
-sock_close
-raw_release(sock_a)
-
-......
-
-can_receive
-can_rcv_filter(net->can.rx_alldev_list, ...)
-raw_rcv(skb, sock_a)
-BUG
-
-After unlist_netdevice(), dev_get_by_index() return NULL in
-raw_setsockopt(). Function raw_enable_filters() will add sock
-and can_filter to net->can.rx_alldev_list. Then the sock is closed.
-Followed by, we sock_sendmsg() to a new vcan device use the same
-can_filter. Protocol stack match the old receiver whose sock has
-been released on net->can.rx_alldev_list in can_rcv_filter().
-Function raw_rcv() uses the freed sock. UAF BUG is triggered.
-
-We can find that the key issue is that net_device has not been
-protected in raw_setsockopt(). Use rtnl_lock to protect net_device
-in raw_setsockopt().
-
-Fixes: c18ce101f2e4 ("[CAN]: Add raw protocol")
-Link: https://lore.kernel.org/r/20210722070819.1048263-1-william.xuanziyang@huawei.com
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Lijian Zhang <Lijian.Zhang@arm.com>
+Signed-off-by: Jia He <justin.he@arm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/raw.c |   20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/qlogic/qed/qed_mcp.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -541,10 +541,18 @@ static int raw_setsockopt(struct socket
- 				return -EFAULT;
- 		}
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_mcp.c b/drivers/net/ethernet/qlogic/qed/qed_mcp.c
+index ef17ca09d303..789ecc19c412 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_mcp.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_mcp.c
+@@ -497,14 +497,18 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
  
-+		rtnl_lock();
- 		lock_sock(sk);
+ 		spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
  
--		if (ro->bound && ro->ifindex)
-+		if (ro->bound && ro->ifindex) {
- 			dev = dev_get_by_index(&init_net, ro->ifindex);
-+			if (!dev) {
-+				if (count > 1)
-+					kfree(filter);
-+				err = -ENODEV;
-+				goto out_fil;
-+			}
+-		if (!qed_mcp_has_pending_cmd(p_hwfn))
++		if (!qed_mcp_has_pending_cmd(p_hwfn)) {
++			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 			break;
 +		}
  
- 		if (ro->bound) {
- 			/* (try to) register the new filters */
-@@ -581,6 +589,7 @@ static int raw_setsockopt(struct socket
- 			dev_put(dev);
- 
- 		release_sock(sk);
-+		rtnl_unlock();
- 
- 		break;
- 
-@@ -593,10 +602,16 @@ static int raw_setsockopt(struct socket
- 
- 		err_mask &= CAN_ERR_MASK;
- 
-+		rtnl_lock();
- 		lock_sock(sk);
- 
--		if (ro->bound && ro->ifindex)
-+		if (ro->bound && ro->ifindex) {
- 			dev = dev_get_by_index(&init_net, ro->ifindex);
-+			if (!dev) {
-+				err = -ENODEV;
-+				goto out_err;
-+			}
+ 		rc = qed_mcp_update_pending_cmd(p_hwfn, p_ptt);
+-		if (!rc)
++		if (!rc) {
++			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 			break;
+-		else if (rc != -EAGAIN)
++		} else if (rc != -EAGAIN) {
+ 			goto err;
 +		}
  
- 		/* remove current error mask */
- 		if (ro->bound) {
-@@ -618,6 +633,7 @@ static int raw_setsockopt(struct socket
- 			dev_put(dev);
+ 		spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
  
- 		release_sock(sk);
-+		rtnl_unlock();
+@@ -521,6 +525,8 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
+ 		return -EAGAIN;
+ 	}
  
- 		break;
++	spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
++
+ 	/* Send the mailbox command */
+ 	qed_mcp_reread_offsets(p_hwfn, p_ptt);
+ 	seq_num = ++p_hwfn->mcp_info->drv_mb_seq;
+@@ -547,14 +553,18 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
  
+ 		spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 
+-		if (p_cmd_elem->b_is_completed)
++		if (p_cmd_elem->b_is_completed) {
++			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 			break;
++		}
+ 
+ 		rc = qed_mcp_update_pending_cmd(p_hwfn, p_ptt);
+-		if (!rc)
++		if (!rc) {
++			spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 			break;
+-		else if (rc != -EAGAIN)
++		} else if (rc != -EAGAIN) {
+ 			goto err;
++		}
+ 
+ 		spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 	} while (++cnt < max_retries);
+@@ -575,6 +585,7 @@ _qed_mcp_cmd_and_union(struct qed_hwfn *p_hwfn,
+ 		return -EAGAIN;
+ 	}
+ 
++	spin_lock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 	qed_mcp_cmd_del_elem(p_hwfn, p_cmd_elem);
+ 	spin_unlock_bh(&p_hwfn->mcp_info->cmd_lock);
+ 
+-- 
+2.30.2
+
 
 
