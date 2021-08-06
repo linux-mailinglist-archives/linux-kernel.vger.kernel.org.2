@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CD43E2537
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF9F3E2512
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243994AbhHFISP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:18:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45704 "EHLO mail.kernel.org"
+        id S244021AbhHFIQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:16:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243928AbhHFIQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:16:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E507561163;
-        Fri,  6 Aug 2021 08:15:57 +0000 (UTC)
+        id S243659AbhHFIPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:15:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1BAD61209;
+        Fri,  6 Aug 2021 08:15:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628237758;
-        bh=KxhQ2Lk/yyDZbj6EJ6D+FpbwFeQW/dOuACsTvOBpKnI=;
+        s=korg; t=1628237728;
+        bh=xLBjq4gldfHI73hTK0Tka1mRhox3yHzQyBstCKafKGc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BNfpIBdbqwz5WbsNllkiMTYTW0gGJjAmvYDCLLvEl8xcCVSVCyYVzsJckbzict30J
-         ijSDdx8smYrwvs3rSnN4v7B7+cTpCVtKBr4vtibcWmaQv2vipon2brTgWfuEvMxxnu
-         sHnmr+hcPsdj0rqw+hEwFM1HLrKxtYRy9IqtyIrM=
+        b=Btgx/BL+tBoO9HtXH4t0Xc8UjEzgdJM56dSClaPknmEYgMhYdvgxbYSt/3blzqI6+
+         /7VS1CVDtWWHuocsNeOE1uAWMwHDayu2P5USX1GDuZOy+G933wJZFQwWp8WakFRMJE
+         nz0c3hKnJ4BEoPCOCRpcx93BNrqORnBUwTtxnRMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 01/16] btrfs: mark compressed range uptodate only if all bio succeed
-Date:   Fri,  6 Aug 2021 10:14:52 +0200
-Message-Id: <20210806081111.193594472@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ovidiu Panait <ovidiu.panait@windriver.com>
+Subject: [PATCH 4.14 10/11] KVM: Use kvm_pfn_t for local PFN variable in hva_to_pfn_remapped()
+Date:   Fri,  6 Aug 2021 10:14:53 +0200
+Message-Id: <20210806081110.847017266@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210806081111.144943357@linuxfoundation.org>
-References: <20210806081111.144943357@linuxfoundation.org>
+In-Reply-To: <20210806081110.511221879@linuxfoundation.org>
+References: <20210806081110.511221879@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,46 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Goldwyn Rodrigues <rgoldwyn@suse.de>
+From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit 240246f6b913b0c23733cfd2def1d283f8cc9bbe ]
+commit a9545779ee9e9e103648f6f2552e73cfe808d0f4 upstream.
 
-In compression write endio sequence, the range which the compressed_bio
-writes is marked as uptodate if the last bio of the compressed (sub)bios
-is completed successfully. There could be previous bio which may
-have failed which is recorded in cb->errors.
+Use kvm_pfn_t, a.k.a. u64, for the local 'pfn' variable when retrieving
+a so called "remapped" hva/pfn pair.  In theory, the hva could resolve to
+a pfn in high memory on a 32-bit kernel.
 
-Set the writeback range as uptodate only if cb->errors is zero, as opposed
-to checking only the last bio's status.
+This bug was inadvertantly exposed by commit bd2fae8da794 ("KVM: do not
+assume PTE is writable after follow_pfn"), which added an error PFN value
+to the mix, causing gcc to comlain about overflowing the unsigned long.
 
-Backporting notes: in all versions up to 4.4 the last argument is always
-replaced by "!cb->errors".
+  arch/x86/kvm/../../../virt/kvm/kvm_main.c: In function ‘hva_to_pfn_remapped’:
+  include/linux/kvm_host.h:89:30: error: conversion from ‘long long unsigned int’
+                                  to ‘long unsigned int’ changes value from
+                                  ‘9218868437227405314’ to ‘2’ [-Werror=overflow]
+   89 | #define KVM_PFN_ERR_RO_FAULT (KVM_PFN_ERR_MASK + 2)
+      |                              ^
+virt/kvm/kvm_main.c:1935:9: note: in expansion of macro ‘KVM_PFN_ERR_RO_FAULT’
 
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: add6a0cd1c5b ("KVM: MMU: try to fix up page faults before giving up")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210208201940.1258328-1-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/compression.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ virt/kvm/kvm_main.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index c71e534ca7ef..919c033b9e31 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -270,8 +270,7 @@ static void end_compressed_bio_write(struct bio *bio)
- 					 cb->start,
- 					 cb->start + cb->len - 1,
- 					 NULL,
--					 bio->bi_status ?
--					 BLK_STS_OK : BLK_STS_NOTSUPP);
-+					 !cb->errors);
- 	cb->compressed_pages[0]->mapping = NULL;
- 
- 	end_compressed_writeback(inode, cb);
--- 
-2.30.2
-
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1497,7 +1497,7 @@ static int hva_to_pfn_remapped(struct vm
+ 			       bool write_fault, bool *writable,
+ 			       kvm_pfn_t *p_pfn)
+ {
+-	unsigned long pfn;
++	kvm_pfn_t pfn;
+ 	pte_t *ptep;
+ 	spinlock_t *ptl;
+ 	int r;
 
 
