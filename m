@@ -2,68 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C352B3E26EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9A73E26FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244354AbhHFJMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 05:12:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244258AbhHFJMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:12:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ECDA16113C;
-        Fri,  6 Aug 2021 09:12:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628241158;
-        bh=gVfakN+vVEJEkHVwWBvwIWcsbdvB9+grIspJr8mNPEU=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=Y+v10eWW1J89wUgq2yYaMGLzvwigXh/mmmmi9nVT//xG34nNrbe1IZkeBEVWz/8dI
-         rToriWczbHQ6NH3KF8P375IE+zqapbU12B+we/ctGGbTy0nRUFtUsY6+d+7uKsmKKw
-         w5Y4b4iEE7Ux/SwRRxl8iO/ES3cYyuv5n/Dei1BTtb8jZBXB+Mre5aVWMhermYLoRH
-         0Tk3sfqfsvGChV2RseF5eF3vuewwbE/wqJO3N516fpFY5zJ7dgJzuVwoGCrezscflH
-         U+NA4mkpd2cg1WsjaNztiAF1bOHjOT5ytPU2Ia9O7lFU9vIPBj1YhnO2lxo/Thbmhj
-         y2MDDAqyFA01A==
-Subject: Re: [PATCH v3 2/3] erofs: dax support for non-tailpacking regular
- file
-To:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        nvdimm@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Liu Bo <bo.liu@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>,
-        Huang Jianan <huangjianan@oppo.com>,
-        Tao Ma <boyu.mt@taobao.com>
-References: <20210805003601.183063-1-hsiangkao@linux.alibaba.com>
- <20210805003601.183063-3-hsiangkao@linux.alibaba.com>
- <7aa650b8-a853-368d-7a81-f435194eec33@kernel.org>
- <YQtZ+CtvB3P+7Xim@B-P7TQMD6M-0146.local>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <2bdaab77-c219-3f42-f50d-2af856386006@kernel.org>
-Date:   Fri, 6 Aug 2021 17:12:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S244369AbhHFJNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244111AbhHFJNm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 05:13:42 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E18C061798;
+        Fri,  6 Aug 2021 02:13:26 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id o20so11194288oiw.12;
+        Fri, 06 Aug 2021 02:13:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PoecnVoD3Bxqi3xm6UevMA69VoNd0wqCyLoJplrzsfI=;
+        b=GLbGHlp4Tzgp/lxH8C8MSLFVzRHnJWq+da96tM2fohROhaR/4o2rSQ3PycwAXsRSS7
+         OraSgbLTNReLBaNU/yinXcvpQJKbHMqJ/KtBwSpapHdHQY/MA8W068ZYCFpced9luynD
+         uFyX0lv8fAgK40p7a70DjOSUpx/5ThPVwdwenyU+AedIdXQAwQ0xQ6704YovGxSztZ/J
+         h67htb/VuzfOyvKUdheL/XU4oqSDN9ZDSRQZrIftdtvV2dbYjRDPOews/rzQtH8XsEJw
+         GRBJJRZ95N2JSD+kZnrThvjnYGbP0fZTxedQs1THUlj5uAc3HpvrVUuBpMKvSDKn7L6L
+         NWXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PoecnVoD3Bxqi3xm6UevMA69VoNd0wqCyLoJplrzsfI=;
+        b=QeCdiOYOzr/VPo0Dqfon8Ngo16pM5Z4U0/7egEbxlDBh26qDuKx+/whJwRdHKqW/Uk
+         ATnIukIeknKEs524NDvML67uex1x2ZpO5JTZbGh7eF3RrsHBdDhi77zWB169dj++bcJo
+         /HKJ/H3TONV5gtyhA8RZAfHJiYEIF/KIB7LjTQfliNMQ7hRysCc7sHix55QbukEWy1xU
+         Uh3mGZOaKX0Y5dld82xnabki4uTRZBigzKoBEe9UbdRhE97AWZSc79Jk/7oq8JJlWwZu
+         aYQn5lwoWnW8Wiez9QjwSYCrYUj+MZY1wBGSplijtHqa/g0IA+W7OYnLZFWdrKe47s9B
+         KL/A==
+X-Gm-Message-State: AOAM530/VojcPsKUO4zK4JngnBBCmCZC3saiej5ZozAkLkaJI6b1xDop
+        38SW0zTyxjzFKgWBpFeLNYtEDzfTS00ZM9SYHyM=
+X-Google-Smtp-Source: ABdhPJx0pU969KNy9/wc2riYYj7RNK2B+BdZ1TnGYVPL90fN4QasAdlCkXv+AIBarXL/meUiuXRb6ITibvea0SsYmo8=
+X-Received: by 2002:aca:eb0f:: with SMTP id j15mr4701991oih.63.1628241206045;
+ Fri, 06 Aug 2021 02:13:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YQtZ+CtvB3P+7Xim@B-P7TQMD6M-0146.local>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210805183100.49071-1-andriy.shevchenko@linux.intel.com>
+ <CAMZdPi_+GpG8h2tJ1AxOj6HaPiXXDh6aC2RvO=+zXRy_AQpWkg@mail.gmail.com> <YQz75yaecp016zOb@smile.fi.intel.com>
+In-Reply-To: <YQz75yaecp016zOb@smile.fi.intel.com>
+From:   Sergey Ryazanov <ryazanov.s.a@gmail.com>
+Date:   Fri, 6 Aug 2021 12:13:15 +0300
+Message-ID: <CAHNKnsSDX_vRJ7ot1SBfGxcFfd+EoYtdz-fyF66U=t8egmfu9g@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] wwan: core: Avoid returning error pointer from wwan_create_dev()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xiang,
+Hello Andy,
 
-On 2021/8/5 11:24, Gao Xiang wrote:
-> Thanks, it originally inherited from filesystems/ext2.rst, I will update
-> this into
-> dax, dax={always,never}      .....
+On Fri, Aug 6, 2021 at 12:08 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Thu, Aug 05, 2021 at 09:53:57PM +0200, Loic Poulain wrote:
+>> On Thu, 5 Aug 2021 at 20:38, Andy Shevchenko
+>> <andriy.shevchenko@linux.intel.com> wrote:
+>>>
+>>> wwan_create_dev() is expected to return either valid pointer or NULL,
+>>> In some cases it might return the error pointer. Prevent this by converting
+>>> it to NULL after wwan_dev_get_by_parent().
+>>
+>> wwan_create_dev is called both from wwan_register_ops() and
+>> wwan_create_port(), one using IS_ERR and the other using NULL testing,
+>> they should be aligned as well.
+>
+> Ah, good catch!
+>
+> I just sent v2, but eventually I have decided to switch to error pointer since
+> it seems the most used pattern in the code.
 
-Above change looks fine to me, thanks.
+I agree that returning the error pointer is a good solution here.
+Thank you for the fix.
 
-> 
-> Since for such image vm-shared memory scenario, no need to add per-file
-> DAX (at least for now.)
-
-Agreed.
-
-Thanks,
+-- 
+Sergey
