@@ -2,287 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446693E21DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 04:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAF13E21D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 04:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241573AbhHFCry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 22:47:54 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:13287 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240082AbhHFCrj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 22:47:39 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GgqWl3pZHz83GT;
-        Fri,  6 Aug 2021 10:42:27 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 6 Aug 2021 10:47:20 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 6 Aug 2021 10:47:19 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
-        <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <chenhao288@hisilicon.com>
-Subject: [PATCH net-next v2 4/4] net: hns3: support skb's frag page recycling based on page pool
-Date:   Fri, 6 Aug 2021 10:46:22 +0800
-Message-ID: <1628217982-53533-5-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
-References: <1628217982-53533-1-git-send-email-linyunsheng@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+        id S240058AbhHFCrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 22:47:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231467AbhHFCrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 22:47:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A433B611B0;
+        Fri,  6 Aug 2021 02:46:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1628218008;
+        bh=dkCDB267ZWw9PWJD6Hdit7UqFmsf8fKmLIBQVdAi3wU=;
+        h=Date:From:To:Subject:From;
+        b=plcqvVJb6ycCyJuZuLVout/tQPVIQz2Bm6+6pB/PWzSwEd4/QnXitAS16hksvINE2
+         lAbcnZvf8OYahbWe4YoC32WYtJiXDXXqAzc37hDJCy9jB96rNwKcgkpPo9ujlmFgc4
+         KjJhCEUD9vH9Ti5YqLaroWnwEb5eECSAPEwwd3nM=
+Date:   Thu, 05 Aug 2021 19:46:48 -0700
+From:   akpm@linux-foundation.org
+To:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
+Subject:  mmotm 2021-08-05-19-46 uploaded
+Message-ID: <20210806024648.V0Ye_YURy%akpm@linux-foundation.org>
+User-Agent: s-nail v14.8.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds skb's frag page recycling support based on
-the frag page support in page pool.
+The mm-of-the-moment snapshot 2021-08-05-19-46 has been uploaded to
 
-The performance improves above 10~20% for single thread iperf
-TCP flow with IOMMU disabled when iperf server and irq/NAPI
-have a different CPU.
+   https://www.ozlabs.org/~akpm/mmotm/
 
-The performance improves about 135%(14Gbit to 33Gbit) for single
-thread iperf TCP flow when IOMMU is in strict mode and iperf
-server shares the same cpu with irq/NAPI.
+mmotm-readme.txt says
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- drivers/net/ethernet/hisilicon/Kconfig          |  1 +
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 79 +++++++++++++++++++++++--
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.h |  3 +
- 3 files changed, 78 insertions(+), 5 deletions(-)
+README for mm-of-the-moment:
 
-diff --git a/drivers/net/ethernet/hisilicon/Kconfig b/drivers/net/ethernet/hisilicon/Kconfig
-index 094e4a3..2ba0e7b 100644
---- a/drivers/net/ethernet/hisilicon/Kconfig
-+++ b/drivers/net/ethernet/hisilicon/Kconfig
-@@ -91,6 +91,7 @@ config HNS3
- 	tristate "Hisilicon Network Subsystem Support HNS3 (Framework)"
- 	depends on PCI
- 	select NET_DEVLINK
-+	select PAGE_POOL
- 	help
- 	  This selects the framework support for Hisilicon Network Subsystem 3.
- 	  This layer facilitates clients like ENET, RoCE and user-space ethernet
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index cb8d5da..fcbeb1f 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -3205,6 +3205,21 @@ static int hns3_alloc_buffer(struct hns3_enet_ring *ring,
- 	unsigned int order = hns3_page_order(ring);
- 	struct page *p;
- 
-+	if (ring->page_pool) {
-+		p = page_pool_dev_alloc_frag(ring->page_pool,
-+					     &cb->page_offset,
-+					     hns3_buf_size(ring));
-+		if (unlikely(!p))
-+			return -ENOMEM;
-+
-+		cb->priv = p;
-+		cb->buf = page_address(p);
-+		cb->dma = page_pool_get_dma_addr(p);
-+		cb->type = DESC_TYPE_PP_FRAG;
-+		cb->reuse_flag = 0;
-+		return 0;
-+	}
-+
- 	p = dev_alloc_pages(order);
- 	if (!p)
- 		return -ENOMEM;
-@@ -3227,8 +3242,13 @@ static void hns3_free_buffer(struct hns3_enet_ring *ring,
- 	if (cb->type & (DESC_TYPE_SKB | DESC_TYPE_BOUNCE_HEAD |
- 			DESC_TYPE_BOUNCE_ALL | DESC_TYPE_SGL_SKB))
- 		napi_consume_skb(cb->priv, budget);
--	else if (!HNAE3_IS_TX_RING(ring) && cb->pagecnt_bias)
--		__page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
-+	else if (!HNAE3_IS_TX_RING(ring)) {
-+		if (cb->type & DESC_TYPE_PAGE && cb->pagecnt_bias)
-+			__page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
-+		else if (cb->type & DESC_TYPE_PP_FRAG)
-+			page_pool_put_full_page(ring->page_pool, cb->priv,
-+						false);
-+	}
- 	memset(cb, 0, sizeof(*cb));
- }
- 
-@@ -3315,7 +3335,7 @@ static int hns3_alloc_and_map_buffer(struct hns3_enet_ring *ring,
- 	int ret;
- 
- 	ret = hns3_alloc_buffer(ring, cb);
--	if (ret)
-+	if (ret || ring->page_pool)
- 		goto out;
- 
- 	ret = hns3_map_buffer(ring, cb);
-@@ -3337,7 +3357,8 @@ static int hns3_alloc_and_attach_buffer(struct hns3_enet_ring *ring, int i)
- 	if (ret)
- 		return ret;
- 
--	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
-+	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
-+					 ring->desc_cb[i].page_offset);
- 
- 	return 0;
- }
-@@ -3367,7 +3388,8 @@ static void hns3_replace_buffer(struct hns3_enet_ring *ring, int i,
- {
- 	hns3_unmap_buffer(ring, &ring->desc_cb[i]);
- 	ring->desc_cb[i] = *res_cb;
--	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma);
-+	ring->desc[i].addr = cpu_to_le64(ring->desc_cb[i].dma +
-+					 ring->desc_cb[i].page_offset);
- 	ring->desc[i].rx.bd_base_info = 0;
- }
- 
-@@ -3539,6 +3561,12 @@ static void hns3_nic_reuse_page(struct sk_buff *skb, int i,
- 	u32 frag_size = size - pull_len;
- 	bool reused;
- 
-+	if (ring->page_pool) {
-+		skb_add_rx_frag(skb, i, desc_cb->priv, frag_offset,
-+				frag_size, truesize);
-+		return;
-+	}
-+
- 	/* Avoid re-using remote or pfmem page */
- 	if (unlikely(!dev_page_is_reusable(desc_cb->priv)))
- 		goto out;
-@@ -3856,6 +3884,9 @@ static int hns3_alloc_skb(struct hns3_enet_ring *ring, unsigned int length,
- 		/* We can reuse buffer as-is, just make sure it is reusable */
- 		if (dev_page_is_reusable(desc_cb->priv))
- 			desc_cb->reuse_flag = 1;
-+		else if (desc_cb->type & DESC_TYPE_PP_FRAG)
-+			page_pool_put_full_page(ring->page_pool, desc_cb->priv,
-+						false);
- 		else /* This page cannot be reused so discard it */
- 			__page_frag_cache_drain(desc_cb->priv,
- 						desc_cb->pagecnt_bias);
-@@ -3863,6 +3894,10 @@ static int hns3_alloc_skb(struct hns3_enet_ring *ring, unsigned int length,
- 		hns3_rx_ring_move_fw(ring);
- 		return 0;
- 	}
-+
-+	if (ring->page_pool)
-+		skb_mark_for_recycle(skb);
-+
- 	u64_stats_update_begin(&ring->syncp);
- 	ring->stats.seg_pkt_cnt++;
- 	u64_stats_update_end(&ring->syncp);
-@@ -3901,6 +3936,10 @@ static int hns3_add_frag(struct hns3_enet_ring *ring)
- 					    "alloc rx fraglist skb fail\n");
- 				return -ENXIO;
- 			}
-+
-+			if (ring->page_pool)
-+				skb_mark_for_recycle(new_skb);
-+
- 			ring->frag_num = 0;
- 
- 			if (ring->tail_skb) {
-@@ -4705,6 +4744,29 @@ static void hns3_put_ring_config(struct hns3_nic_priv *priv)
- 	priv->ring = NULL;
- }
- 
-+static void hns3_alloc_page_pool(struct hns3_enet_ring *ring)
-+{
-+	struct page_pool_params pp_params = {
-+		.flags = PP_FLAG_DMA_MAP | PP_FLAG_PAGE_FRAG |
-+				PP_FLAG_DMA_SYNC_DEV,
-+		.order = hns3_page_order(ring),
-+		.pool_size = ring->desc_num * hns3_buf_size(ring) /
-+				(PAGE_SIZE << hns3_page_order(ring)),
-+		.nid = dev_to_node(ring_to_dev(ring)),
-+		.dev = ring_to_dev(ring),
-+		.dma_dir = DMA_FROM_DEVICE,
-+		.offset = 0,
-+		.max_len = PAGE_SIZE << hns3_page_order(ring),
-+	};
-+
-+	ring->page_pool = page_pool_create(&pp_params);
-+	if (IS_ERR(ring->page_pool)) {
-+		dev_warn(ring_to_dev(ring), "page pool creation failed: %ld\n",
-+			 PTR_ERR(ring->page_pool));
-+		ring->page_pool = NULL;
-+	}
-+}
-+
- static int hns3_alloc_ring_memory(struct hns3_enet_ring *ring)
- {
- 	int ret;
-@@ -4724,6 +4786,8 @@ static int hns3_alloc_ring_memory(struct hns3_enet_ring *ring)
- 		goto out_with_desc_cb;
- 
- 	if (!HNAE3_IS_TX_RING(ring)) {
-+		hns3_alloc_page_pool(ring);
-+
- 		ret = hns3_alloc_ring_buffers(ring);
- 		if (ret)
- 			goto out_with_desc;
-@@ -4764,6 +4828,11 @@ void hns3_fini_ring(struct hns3_enet_ring *ring)
- 		devm_kfree(ring_to_dev(ring), tx_spare);
- 		ring->tx_spare = NULL;
- 	}
-+
-+	if (!HNAE3_IS_TX_RING(ring) && ring->page_pool) {
-+		page_pool_destroy(ring->page_pool);
-+		ring->page_pool = NULL;
-+	}
- }
- 
- static int hns3_buf_size2type(u32 buf_size)
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-index 15af3d9..27809d6 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
-@@ -6,6 +6,7 @@
- 
- #include <linux/dim.h>
- #include <linux/if_vlan.h>
-+#include <net/page_pool.h>
- 
- #include "hnae3.h"
- 
-@@ -307,6 +308,7 @@ enum hns3_desc_type {
- 	DESC_TYPE_BOUNCE_ALL		= 1 << 3,
- 	DESC_TYPE_BOUNCE_HEAD		= 1 << 4,
- 	DESC_TYPE_SGL_SKB		= 1 << 5,
-+	DESC_TYPE_PP_FRAG		= 1 << 6,
- };
- 
- struct hns3_desc_cb {
-@@ -451,6 +453,7 @@ struct hns3_enet_ring {
- 	struct hnae3_queue *tqp;
- 	int queue_index;
- 	struct device *dev; /* will be used for DMA mapping of descriptors */
-+	struct page_pool *page_pool;
- 
- 	/* statistic */
- 	struct ring_stats stats;
--- 
-2.7.4
+https://www.ozlabs.org/~akpm/mmotm/
 
+This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+more than once a week.
+
+You will need quilt to apply these patches to the latest Linus release (5.x
+or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+https://ozlabs.org/~akpm/mmotm/series
+
+The file broken-out.tar.gz contains two datestamp files: .DATE and
+.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+followed by the base kernel version against which this patch series is to
+be applied.
+
+This tree is partially included in linux-next.  To see which patches are
+included in linux-next, consult the `series' file.  Only the patches
+within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
+linux-next.
+
+
+A full copy of the full kernel tree with the linux-next and mmotm patches
+already applied is available through git within an hour of the mmotm
+release.  Individual mmotm releases are tagged.  The master branch always
+points to the latest release, so it's constantly rebasing.
+
+	https://github.com/hnaz/linux-mm
+
+The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
+contains daily snapshots of the -mm tree.  It is updated more frequently
+than mmotm, and is untested.
+
+A git copy of this tree is also available at
+
+	https://github.com/hnaz/linux-mm
+
+
+
+This mmotm tree contains the following patches against 5.14-rc4:
+(patches marked "*" will be included in linux-next)
+
+  origin.patch
+* procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
+* slub-fix-kmalloc_pagealloc_invalid_free-unit-test.patch
+* mm-slub-fix-slub_debug-disablement-for-list-of-slabs.patch
+* mm-madvise-report-sigbus-as-efault-for-madv_populate_readwrite.patch
+* mm-memcg-fix-incorrect-flushing-of-lruvec-data-in-obj_stock.patch
+* lib-use-pfn_phys-in-devmem_is_allowed.patch
+* shmem_swapin_page-fix-error-processing-for-get_swap_device.patch
+* kasan-kmemleak-reset-tags-when-scanning-block.patch
+* kasan-slub-reset-tag-when-printing-address.patch
+* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
+* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
+* init-move-usermodehelper_enable-to-populate_rootfs.patch
+* ocfs2-remove-an-unnecessary-condition.patch
+* ocfs2-reflink-deadlock-when-clone-file-to-the-same-directory-simultaneously.patch
+* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
+* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
+* lib-fix-bugoncocci-warnings.patch
+  mm.patch
+* mm-move-kvmalloc-related-functions-to-slabh.patch
+* mm-slub-dont-call-flush_all-from-slab_debug_trace_open.patch
+* mm-slub-allocate-private-object-map-for-debugfs-listings.patch
+* mm-slub-allocate-private-object-map-for-validate_slab_cache.patch
+* mm-slub-dont-disable-irq-for-debug_check_no_locks_freed.patch
+* mm-slub-remove-redundant-unfreeze_partials-from-put_cpu_partial.patch
+* mm-slub-unify-cmpxchg_double_slab-and-__cmpxchg_double_slab.patch
+* mm-slub-extract-get_partial-from-new_slab_objects.patch
+* mm-slub-dissolve-new_slab_objects-into-___slab_alloc.patch
+* mm-slub-return-slab-page-from-get_partial-and-set-c-page-afterwards.patch
+* mm-slub-restructure-new-page-checks-in-___slab_alloc.patch
+* mm-slub-simplify-kmem_cache_cpu-and-tid-setup.patch
+* mm-slub-move-disabling-enabling-irqs-to-___slab_alloc.patch
+* mm-slub-do-initial-checks-in-___slab_alloc-with-irqs-enabled.patch
+* mm-slub-move-disabling-irqs-closer-to-get_partial-in-___slab_alloc.patch
+* mm-slub-restore-irqs-around-calling-new_slab.patch
+* mm-slub-validate-slab-from-partial-list-or-page-allocator-before-making-it-cpu-slab.patch
+* mm-slub-check-new-pages-with-restored-irqs.patch
+* mm-slub-stop-disabling-irqs-around-get_partial.patch
+* mm-slub-move-reset-of-c-page-and-freelist-out-of-deactivate_slab.patch
+* mm-slub-make-locking-in-deactivate_slab-irq-safe.patch
+* mm-slub-call-deactivate_slab-without-disabling-irqs.patch
+* mm-slub-move-irq-control-into-unfreeze_partials.patch
+* mm-slub-discard-slabs-in-unfreeze_partials-without-irqs-disabled.patch
+* mm-slub-detach-whole-partial-list-at-once-in-unfreeze_partials.patch
+* mm-slub-separate-detaching-of-partial-list-in-unfreeze_partials-from-unfreezing.patch
+* mm-slub-only-disable-irq-with-spin_lock-in-__unfreeze_partials.patch
+* mm-slub-dont-disable-irqs-in-slub_cpu_dead.patch
+* mm-slab-make-flush_slab-possible-to-call-with-irqs-enabled.patch
+* mm-slub-move-flush_cpu_slab-invocations-__free_slab-invocations-out-of-irq-context.patch
+* mm-slub-make-object_map_lock-a-raw_spinlock_t.patch
+* mm-slub-optionally-save-restore-irqs-in-slab_lock.patch
+* mm-slub-make-slab_lock-disable-irqs-with-preempt_rt.patch
+* mm-slub-protect-put_cpu_partial-with-disabled-irqs-instead-of-cmpxchg.patch
+* mm-slub-use-migrate_disable-on-preempt_rt.patch
+* mm-slub-convert-kmem_cpu_slab-protection-to-local_lock.patch
+* mm-debug_vm_pgtable-introduce-struct-pgtable_debug_args.patch
+* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-basic-tests.patch
+* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-leaf-and-savewrite-tests.patch
+* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-protnone-and-devmap-tests.patch
+* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-soft_dirty-and-swap-tests.patch
+* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-migration-and-thp-tests.patch
+* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-pte-modifying-tests.patch
+* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-pmd-modifying-tests.patch
+* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-pud-modifying-tests.patch
+* mm-debug_vm_pgtable-use-struct-pgtable_debug_args-in-pgd-and-p4d-modifying-tests.patch
+* mm-debug_vm_pgtable-remove-unused-code.patch
+* mm-debug_vm_pgtable-fix-corrupted-page-flag.patch
+* mm-report-a-more-useful-address-for-reclaim-acquisition.patch
+* mm-mark-idle-page-tracking-as-broken.patch
+* writeback-track-number-of-inodes-under-writeback.patch
+* writeback-reliably-update-bandwidth-estimation.patch
+* writeback-fix-bandwidth-estimate-for-spiky-workload.patch
+* writeback-fix-bandwidth-estimate-for-spiky-workload-fix.patch
+* writeback-rename-domain_update_bandwidth.patch
+* writeback-use-read_once-for-unlocked-reads-of-writeback-stats.patch
+* mm-remove-irqsave-restore-locking-from-contexts-with-irqs-enabled.patch
+* fs-drop_caches-fix-skipping-over-shadow-cache-inodes.patch
+* fs-inode-count-invalidated-shadow-pages-in-pginodesteal.patch
+* vfs-keep-inodes-with-page-cache-off-the-inode-shrinker-lru.patch
+* writeback-memcg-simplify-cgroup_writeback_by_id.patch
+* fs-mm-fix-race-in-unlinking-swapfile.patch
+* mm-delete-unused-get_kernel_page.patch
+* mm-memcg-add-mem_cgroup_disabled-checks-in-vmpressure-and-swap-related-functions.patch
+* mm-memcg-inline-mem_cgroup_charge-uncharge-to-improve-disabled-memcg-config.patch
+* mm-memcg-inline-swap-related-functions-to-improve-disabled-memcg-config.patch
+* memcg-enable-accounting-for-pids-in-nested-pid-namespaces.patch
+* memcg-switch-lruvec-stats-to-rstat.patch
+* memcg-infrastructure-to-flush-memcg-stats.patch
+* memcg-infrastructure-to-flush-memcg-stats-v5.patch
+* memcg-charge-fs_context-and-legacy_fs_context.patch
+* memcg-enable-accounting-for-mnt_cache-entries.patch
+* memcg-enable-accounting-for-pollfd-and-select-bits-arrays.patch
+* memcg-enable-accounting-for-file-lock-caches.patch
+* memcg-enable-accounting-for-fasync_cache.patch
+* memcg-enable-accounting-for-new-namesapces-and-struct-nsproxy.patch
+* memcg-enable-accounting-of-ipc-resources.patch
+* memcg-enable-accounting-for-signals.patch
+* memcg-enable-accounting-for-posix_timers_cache-slab.patch
+* memcg-enable-accounting-for-ldt_struct-objects.patch
+* memcg-cleanup-racy-sum-avoidance-code.patch
+* memcg-replace-in_interrupt-by-in_task-in-active_memcg.patch
+* mm-memcontrol-set-the-correct-memcg-swappiness-restriction.patch
+* lazy-tlb-introduce-lazy-mm-refcount-helper-functions.patch
+* lazy-tlb-introduce-lazy-mm-refcount-helper-functions-fix.patch
+* lazy-tlb-allow-lazy-tlb-mm-refcounting-to-be-configurable.patch
+* lazy-tlb-allow-lazy-tlb-mm-refcounting-to-be-configurable-fix.patch
+* lazy-tlb-allow-lazy-tlb-mm-refcounting-to-be-configurable-fix-2.patch
+* lazy-tlb-shoot-lazies-a-non-refcounting-lazy-tlb-option.patch
+* lazy-tlb-shoot-lazies-a-non-refcounting-lazy-tlb-option-fix.patch
+* powerpc-64s-enable-mmu_lazy_tlb_shootdown.patch
+* mmc-jz4740-remove-the-flush_kernel_dcache_page-call-in-jz4740_mmc_read_data.patch
+* mmc-mmc_spi-replace-flush_kernel_dcache_page-with-flush_dcache_page.patch
+* scatterlist-replace-flush_kernel_dcache_page-with-flush_dcache_page.patch
+* mm-remove-flush_kernel_dcache_page.patch
+* mmdo_huge_pmd_numa_page-remove-unnecessary-tlb-flushing-code.patch
+* mm-change-fault_in_pages_-to-have-an-unsigned-size-parameter.patch
+* add-mmap_assert_locked-annotations-to-find_vma.patch
+* add-mmap_assert_locked-annotations-to-find_vma-fix.patch
+* mm-mremap-fix-memory-account-on-do_munmap-failure.patch
+* mm-mremap-dont-account-pages-in-vma_to_resize.patch
+* mm-sparse-pass-section_nr-to-section_mark_present.patch
+* mm-sparse-pass-section_nr-to-find_memory_block.patch
+* mm-sparse-remove-__section_nr-function.patch
+* mm-sparse-set-section_nid_shift-to-6.patch
+* avoid-a-warning-in-sparse-memory-support.patch
+* mm-sparse-clarify-pgdat_to_phys.patch
+* mm-vmalloc-use-batched-page-requests-in-bulk-allocator.patch
+* mm-vmalloc-remove-gfpflags_allow_blocking-check.patch
+* lib-test_vmallocc-add-a-new-nr_pages-parameter.patch
+* mm-vmalloc-fix-wrong-behavior-in-vread.patch
+* mm-kasan-move-kasanfault-to-mm-kasan-reportc.patch
+* mm-page_alloc-always-initialize-memory-map-for-the-holes.patch
+* mm-page_alloc-always-initialize-memory-map-for-the-holes-fix.patch
+* microblaze-simplify-pte_alloc_one_kernel.patch
+* mm-introduce-memmap_alloc-to-unify-memory-map-allocation.patch
+* memblock-stop-poisoning-raw-allocations.patch
+* fix-zone_id-may-be-used-uninitialized-in-this-function-warning.patch
+* mm-page_alloc-make-alloc_node_mem_map-__init-rather-than-__ref.patch
+* hugetlb-simplify-prep_compound_gigantic_page-ref-count-racing-code.patch
+* hugetlb-drop-ref-count-earlier-after-page-allocation.patch
+* hugetlb-before-freeing-hugetlb-page-set-dtor-to-appropriate-value.patch
+* mm-numa-automatically-generate-node-migration-order.patch
+* mm-migrate-update-node-demotion-order-on-hotplug-events.patch
+* mm-migrate-enable-returning-precise-migrate_pages-success-count.patch
+* mm-migrate-demote-pages-during-reclaim.patch
+* mm-migrate-demote-pages-during-reclaim-v11.patch
+* mm-vmscan-add-page-demotion-counter.patch
+* mm-vmscan-add-helper-for-querying-ability-to-age-anonymous-pages.patch
+* mm-vmscan-add-helper-for-querying-ability-to-age-anonymous-pages-v11.patch
+* mm-vmscan-consider-anonymous-pages-without-swap.patch
+* mm-vmscan-consider-anonymous-pages-without-swap-v11.patch
+* mm-vmscan-never-demote-for-memcg-reclaim.patch
+* mm-migrate-add-sysfs-interface-to-enable-reclaim-migration.patch
+* mm-vmpressure-replace-vmpressure_to_css-with-vmpressure_to_memcg.patch
+* mm-vmscan-remove-the-pagedirty-check-after-madv_free-pages-are-page_ref_freezed.patch
+* mm-vmscan-remove-misleading-setting-to-sc-priority.patch
+* mm-vmscan-remove-unneeded-return-value-of-kswapd_run.patch
+* mm-vmscan-add-else-to-remove-check_pending-label.patch
+* mm-compaction-optimize-proactive-compaction-deferrals.patch
+* mm-compaction-optimize-proactive-compaction-deferrals-fix.patch
+* mm-compaction-support-triggering-of-proactive-compaction-by-user.patch
+* mm-compaction-support-triggering-of-proactive-compaction-by-user-fix.patch
+* mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch
+* mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt-fix.patch
+* mm-mempolicy-use-readable-numa_no_node-macro-instead-of-magic-numer.patch
+* mm-mempolicy-add-mpol_preferred_many-for-multiple-preferred-nodes.patch
+* mm-memplicy-add-page-allocation-function-for-mpol_preferred_many-policy.patch
+* mm-hugetlb-add-support-for-mempolicy-mpol_preferred_many.patch
+* mm-mempolicy-advertise-new-mpol_preferred_many.patch
+* mm-mempolicy-unify-the-create-func-for-bind-interleave-prefer-many-policies.patch
+* memblock-make-memblock_find_in_range-method-private.patch
+* oom_kill-oom_score_adj-broken-for-processes-with-small-memory-usage.patch
+* mm-thp-make-alloc_split_ptlocks-dependent-on-use_split_pte_ptlocks.patch
+* selftests-vm-add-ksm-merge-test.patch
+* selftests-vm-add-ksm-unmerge-test.patch
+* selftests-vm-add-ksm-zero-page-merging-test.patch
+* selftests-vm-add-ksm-merging-across-nodes-test.patch
+* selftests-vm-add-ksm-merging-time-test.patch
+* selftests-vm-add-cow-time-test-for-ksm-pages.patch
+* mm-vmstat-correct-some-wrong-comments.patch
+* mm-vmstat-simplify-the-array-size-calculation.patch
+* mm-vmstat-remove-unneeded-return-value.patch
+* preempt-provide-preempt__nort-variants.patch
+* mm-madvise-add-madv_willneed-to-process_madvise.patch
+* memory-hotplugrst-remove-locking-details-from-admin-guide.patch
+* memory-hotplugrst-complete-admin-guide-overhaul.patch
+* mm-remove-pfn_valid_within-and-config_holes_in_zone.patch
+* mm-memory_hotplug-cleanup-after-removal-of-pfn_valid_within.patch
+* mm-memory_hotplug-use-unsigned-long-for-pfn-in-zone_for_pfn_range.patch
+* mm-memory_hotplug-remove-nid-parameter-from-arch_remove_memory.patch
+* mm-memory_hotplug-remove-nid-parameter-from-remove_memory-and-friends.patch
+* acpi-memhotplug-memory-resources-cannot-be-enabled-yet.patch
+* mm-track-present-early-pages-per-zone.patch
+* mm-memory_hotplug-introduce-auto-movable-online-policy.patch
+* drivers-base-memory-introduce-memory-groups-to-logically-group-memory-blocks.patch
+* mm-memory_hotplug-track-present-pages-in-memory-groups.patch
+* acpi-memhotplug-use-a-single-static-memory-group-for-a-single-memory-device.patch
+* dax-kmem-use-a-single-static-memory-group-for-a-single-probed-unit.patch
+* virtio-mem-use-a-single-dynamic-memory-group-for-a-single-virtio-mem-device.patch
+* mm-memory_hotplug-memory-group-aware-auto-movable-online-policy.patch
+* mm-memory_hotplug-memory-group-aware-auto-movable-online-policy-fix.patch
+* mm-memory_hotplug-improved-dynamic-memory-group-aware-auto-movable-online-policy.patch
+* mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount.patch
+* mm-zsmallocc-close-race-window-between-zs_pool_dec_isolated-and-zs_unregister_migration.patch
+* mm-zsmallocc-combine-two-atomic-ops-in-zs_pool_dec_isolated.patch
+* mm-highmem-remove-deprecated-kmap_atomic.patch
+* kfence-show-cpu-and-timestamp-in-alloc-free-info.patch
+* mm-introduce-data-access-monitor-damon.patch
+* mm-damon-core-implement-region-based-sampling.patch
+* mm-damon-adaptively-adjust-regions.patch
+* mm-idle_page_tracking-make-pg_idle-reusable.patch
+* mm-damon-implement-primitives-for-the-virtual-memory-address-spaces.patch
+* mm-damon-implement-primitives-for-the-virtual-memory-address-spaces-fix.patch
+* mm-damon-add-a-tracepoint.patch
+* mm-damon-implement-a-debugfs-based-user-space-interface.patch
+* mm-damon-implement-a-debugfs-based-user-space-interface-fix.patch
+* mm-damon-implement-a-debugfs-based-user-space-interface-fix-fix.patch
+* mm-damon-dbgfs-export-kdamond-pid-to-the-user-space.patch
+* mm-damon-dbgfs-support-multiple-contexts.patch
+* documentation-add-documents-for-damon.patch
+* mm-damon-add-kunit-tests.patch
+* mm-damon-add-user-space-selftests.patch
+* maintainers-update-for-damon.patch
+* info-task-hung-in-generic_file_write_iter.patch
+* info-task-hung-in-generic_file_write-fix.patch
+* kernel-hung_taskc-monitor-killed-tasks.patch
+* percpu-remove-export-of-pcpu_base_addr.patch
+* fs-proc-kcorec-add-mmap-interface.patch
+* connector-send-event-on-write-to-proc-comm.patch
+* proc-sysctl-make-protected_-world-readable.patch
+* arch-kconfig-fix-spelling-mistake-seperate-separate.patch
+* once-fix-trivia-typo-not-note.patch
+* acct-use-dedicated-helper-to-access-rlimit-values.patch
+* math-make-rational-tristate.patch
+* math-rational_kunit_test-should-depend-on-rational-instead-of-selecting-it.patch
+* lib-string-optimized-memcpy.patch
+* lib-string-optimized-memmove.patch
+* lib-string-optimized-memset.patch
+* lib-test-convert-test_sortc-to-use-kunit.patch
+* checkpatch-support-wide-strings.patch
+* fs-epoll-use-a-per-cpu-counter-for-users-watches-count.patch
+* fs-epoll-use-a-per-cpu-counter-for-users-watches-count-fix.patch
+* fs-epoll-use-a-per-cpu-counter-for-users-watches-count-fix-fix.patch
+* init-mainc-silence-some-wunused-parameter-warnings.patch
+* nilfs2-fix-memory-leak-in-nilfs_sysfs_create_device_group.patch
+* nilfs2-fix-null-pointer-in-nilfs_name_attr_release.patch
+* nilfs2-fix-memory-leak-in-nilfs_sysfs_create_name_group.patch
+* nilfs2-fix-memory-leak-in-nilfs_sysfs_delete_name_group.patch
+* nilfs2-fix-memory-leak-in-nilfs_sysfs_create_snapshot_group.patch
+* nilfs2-fix-memory-leak-in-nilfs_sysfs_delete_snapshot_group.patch
+* hfsplus-fix-out-of-bounds-warnings-in-__hfsplus_setxattr.patch
+* log-if-a-core-dump-is-aborted-due-to-changed-file-permissions.patch
+* log-if-a-core-dump-is-aborted-due-to-changed-file-permissions-fix.patch
+* pid-cleanup-the-stale-comment-mentioning-pidmap_init.patch
+* prctl-allow-to-setup-brk-for-et_dyn-executables.patch
+* configs-remove-the-obsolete-config_input_polldev.patch
+* selftests-memfd-remove-unused-variable.patch
+  linux-next.patch
+  linux-next-rejects.patch
+  linux-next-git-rejects.patch
+* scripts-check_extable-fix-typo-in-user-error-message.patch
+* kexec-move-locking-into-do_kexec_load.patch
+* kexec-avoid-compat_alloc_user_space.patch
+* mm-simplify-compat_sys_move_pages.patch
+* mm-simplify-compat-numa-syscalls.patch
+* mm-simplify-compat-numa-syscalls-fix.patch
+* compat-remove-some-compat-entry-points.patch
+* arch-remove-compat_alloc_user_space.patch
+  make-sure-nobodys-leaking-resources.patch
+  releasing-resources-with-children.patch
+  mutex-subsystem-synchro-test-module.patch
+  kernel-forkc-export-kernel_thread-to-modules.patch
+  workaround-for-a-pci-restoring-bug.patch
