@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08FB3E25D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6DB3E25E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241273AbhHFIWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:22:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48492 "EHLO mail.kernel.org"
+        id S244457AbhHFIXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:23:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243489AbhHFITk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:19:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B09FA61181;
-        Fri,  6 Aug 2021 08:19:24 +0000 (UTC)
+        id S243538AbhHFIUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:20:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDC2161211;
+        Fri,  6 Aug 2021 08:20:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628237965;
-        bh=SdhviKGqWh5NJAAVoC4paW7+mtc3p0pRaBRx3sLjAJ8=;
+        s=korg; t=1628238006;
+        bh=FiM9Ouxl3/T/dWjCq1Yq1eASepxBbDOq7itEEDXVa9Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K/NqDVsKQsXah5agFNPBHdJ73u/MgOnXWOiesV5nOvsUcEpWtRbc20kC+QQPrb3S/
-         tVMqqyNk1ZkICtMfLLS6YF9H5NSKf+5puxlcl6+URPfVPjZcshOabJnvWXYrpU3oMv
-         YqGS0BPj6y581zO0YHRQruHOVottSIQDcJFTXyRM=
+        b=Mf3l0uB9tBf+9/JhK+SCXpI1i1x/M86LFCnNFaE98GMVQXJAi9g/54b8tIr3/I+wZ
+         7Lt7DUdDw8p3aasH8kbT3FmFSiLbwHkOSlgYXMmCpUY5tmpv2Q2h4cnq1CaXHnh6Vg
+         IDoAEB53akJWObtNzwJDPfdgXcQuWwgQIbE8CxEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Alain Volmat <alain.volmat@foss.st.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 21/30] Revert "Bluetooth: Shutdown controller after workqueues are flushed or cancelled"
+Subject: [PATCH 5.13 16/35] spi: stm32h7: fix full duplex irq handler handling
 Date:   Fri,  6 Aug 2021 10:16:59 +0200
-Message-Id: <20210806081113.842771022@linuxfoundation.org>
+Message-Id: <20210806081114.252079907@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210806081113.126861800@linuxfoundation.org>
-References: <20210806081113.126861800@linuxfoundation.org>
+In-Reply-To: <20210806081113.718626745@linuxfoundation.org>
+References: <20210806081113.718626745@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Alain Volmat <alain.volmat@foss.st.com>
 
-This reverts commit 60789afc02f592b8d91217b60930e7a76271ae07 which is
-commit 0ea9fd001a14ebc294f112b0361a4e601551d508 upstream.
+[ Upstream commit e4a5c19888a5f8a9390860ca493e643be58c8791 ]
 
-It has been reported to have problems:
-	https://lore.kernel.org/linux-bluetooth/8735ryk0o7.fsf@baylibre.com/
+In case of Full-Duplex mode, DXP flag is set when RXP and TXP flags are
+set. But to avoid 2 different handlings, just add TXP and RXP flag in
+the mask instead of DXP, and then keep the initial handling of TXP and
+RXP events.
+Also rephrase comment about EOTIE which is one of the interrupt enable
+bits. It is not triggered by any event.
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: Marcel Holtmann <marcel@holtmann.org>
-Cc: Sasha Levin <sashal@kernel.org>
-Link: https://lore.kernel.org/r/efee3a58-a4d2-af22-0931-e81b877ab539@roeck-us.net
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Reviewed-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Link: https://lore.kernel.org/r/1625042723-661-3-git-send-email-alain.volmat@foss.st.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_core.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/spi/spi-stm32.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1713,6 +1713,14 @@ int hci_dev_do_close(struct hci_dev *hde
+diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
+index a92a28933edb..05618a618939 100644
+--- a/drivers/spi/spi-stm32.c
++++ b/drivers/spi/spi-stm32.c
+@@ -884,15 +884,18 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
+ 	ier = readl_relaxed(spi->base + STM32H7_SPI_IER);
  
- 	BT_DBG("%s %p", hdev->name, hdev);
- 
-+	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
-+	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
-+	    test_bit(HCI_UP, &hdev->flags)) {
-+		/* Execute vendor specific shutdown routine */
-+		if (hdev->shutdown)
-+			hdev->shutdown(hdev);
-+	}
+ 	mask = ier;
+-	/* EOTIE is triggered on EOT, SUSP and TXC events. */
++	/*
++	 * EOTIE enables irq from EOT, SUSP and TXC events. We need to set
++	 * SUSP to acknowledge it later. TXC is automatically cleared
++	 */
 +
- 	cancel_delayed_work(&hdev->power_off);
+ 	mask |= STM32H7_SPI_SR_SUSP;
+ 	/*
+-	 * When TXTF is set, DXPIE and TXPIE are cleared. So in case of
+-	 * Full-Duplex, need to poll RXP event to know if there are remaining
+-	 * data, before disabling SPI.
++	 * DXPIE is set in Full-Duplex, one IT will be raised if TXP and RXP
++	 * are set. So in case of Full-Duplex, need to poll TXP and RXP event.
+ 	 */
+-	if (spi->rx_buf && !spi->cur_usedma)
+-		mask |= STM32H7_SPI_SR_RXP;
++	if ((spi->cur_comm == SPI_FULL_DUPLEX) && !spi->cur_usedma)
++		mask |= STM32H7_SPI_SR_TXP | STM32H7_SPI_SR_RXP;
  
- 	hci_request_cancel_all(hdev);
-@@ -1788,14 +1796,6 @@ int hci_dev_do_close(struct hci_dev *hde
- 		clear_bit(HCI_INIT, &hdev->flags);
- 	}
- 
--	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
--	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
--	    test_bit(HCI_UP, &hdev->flags)) {
--		/* Execute vendor specific shutdown routine */
--		if (hdev->shutdown)
--			hdev->shutdown(hdev);
--	}
--
- 	/* flush cmd  work */
- 	flush_work(&hdev->cmd_work);
- 
+ 	if (!(sr & mask)) {
+ 		dev_warn(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
+-- 
+2.30.2
+
 
 
