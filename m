@@ -2,60 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D091D3E200D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CEB3E200F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241050AbhHFAeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 20:34:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229587AbhHFAeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 20:34:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2129461184;
-        Fri,  6 Aug 2021 00:34:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628210046;
-        bh=KWGKxT0s2vEJJ4Bf65qKXqIKH5Jwt+0N/UWrxrHOKKs=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=bh41k+qH9JL5hJPQZn9T0FlcpkB256RLMPQZ9ROcdjcIxzlsVPLRU7Z/25VIwQ2J3
-         xAUzGQWettX3V9PSb8rs/VM7Up6XmZC4PZCaxLKmsRi5dF/j+HLJ/BDkN4udu3ZsSZ
-         SLQI+O4oH1qfurYLRTKkiIP9IdwaYd7eQ3M/notx/No8iifkycljfUTF24TLBk+ngO
-         ApL77F+xXmBMwEy8dPFuzS/JX9Rmpqp4gAkHsG1PMLIpJy4P1tsFZM/3jvoXPFJ2/A
-         shHRefcDTjeiGvVSdXoB/hTARe0G5ocGTHa5KFpuXmy4sUFD4T13t0j0Ut1lZBDflk
-         wmwFhkRVJh3nA==
-Content-Type: text/plain; charset="utf-8"
+        id S242842AbhHFAk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 20:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241173AbhHFAkz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 20:40:55 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258C7C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 17:40:38 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id x17so4461152wmc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 17:40:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oISZJr8Fi5GT7T+pxi9D17g6rw6l8wM7jO5drTaEEK4=;
+        b=kN0CLFbFWMQ4cIrPs5JEohh3co8KFaSsU7OdRzME8Ive6wCTyl+48lLhM/b4ctrkFq
+         PJYliLqXc0z6f6xEfl6FCGWHfXYXL9b0dvbS/2bG7vAJ8U2tUtuXNC7N5PJRYg0zbtfY
+         dwP8vL2J60WkIJ9KtWdetrzWW4Yodv91p/fBgxmruprtd2VeJD2YK5RWhyfCN8pa5m7P
+         RnxtafT7uNO2p38DnBizOBPSmiFHORZ2jxQVOzIJt7vhUim2w5ZHjJv5yX5rwuGXll8J
+         Wz9MGBoGNNFh4f+X2b1P4fLOzHBOyWJG44D8gh76u7o/PkY5U5aWKakg94YndkQOkhEX
+         snkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oISZJr8Fi5GT7T+pxi9D17g6rw6l8wM7jO5drTaEEK4=;
+        b=LMmfsxGjYXSEYeIwynXBq9SZRPMchxJ4mGJsHh3GiJ/yjpb7IxNCF/s5jN2SkGW23I
+         y0MFbdnVpbgX91BwAlBG1ko26r1BcrpPGY/p7rIr++ZrEg9d78qCTVD52yNLEWVsHhxP
+         8d79iiTqkI/r0blFMKDHoC8ixuQWRWhDr6+r2T6rq6RbvECIy32D/H0IHD5nYrweZJH4
+         GOCFXf3iJnRkOk7iEnLUCC7r19vzxtC0JnZXeMxz3YqfEL9rrpIEPxdL48lec2nM833Y
+         2/mXAJ//gDIgMkog0+SKf25ISR9HwaireelY0NRn6t2uCpL+0+MSK/NK4ycVn5Zzf2we
+         /D6A==
+X-Gm-Message-State: AOAM531nMa7HNl/6i99pov2aZf3fp8ss4kpKj31PdFX4WQZPkn8cHDrb
+        vRBdXV8OJlg8EQueDn3X+7ypAM7RXvjU0fQT
+X-Google-Smtp-Source: ABdhPJz3bhWxi7JOdsCUygLq0dX5WsnnzbXYpj9WGzm7a5l0pdNXVD77SR6dU7ONFEBy7afgydOtbQ==
+X-Received: by 2002:a1c:a4c1:: with SMTP id n184mr683384wme.8.1628210437202;
+        Thu, 05 Aug 2021 17:40:37 -0700 (PDT)
+Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
+        by smtp.gmail.com with ESMTPSA id y19sm10727181wmq.5.2021.08.05.17.40.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 17:40:36 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, martin@kaiser.cx
+Subject: [PATCH v2 00/11] staging: r8188eu: remove core dir RT_TRACE calls
+Date:   Fri,  6 Aug 2021 01:40:23 +0100
+Message-Id: <20210806004034.82233-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210731132226.424853-1-wangborong@cdjrlc.com>
-References: <20210731132226.424853-1-wangborong@cdjrlc.com>
-Subject: Re: [PATCH] clk: palmas: Add a missing SPDX license header
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     mturquette@baylibre.com, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jason Wang <wangborong@cdjrlc.com>
-To:     Jason Wang <wangborong@cdjrlc.com>
-Date:   Thu, 05 Aug 2021 17:34:04 -0700
-Message-ID: <162821004487.19113.11370841376423221944@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jason Wang (2021-07-31 06:22:26)
-> Add the missing SPDX license header to drivers/clk/clk-palmas.c.
->=20
-> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
-> ---
->  drivers/clk/clk-palmas.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/clk/clk-palmas.c b/drivers/clk/clk-palmas.c
-> index e41a3a9f7528..84dcb1aca4a5 100644
-> --- a/drivers/clk/clk-palmas.c
-> +++ b/drivers/clk/clk-palmas.c
-> @@ -1,3 +1,4 @@
-> +// SPDX-License-Identifier: GPL-2.0
->  /*
->   * Clock driver for Palmas device.
->   *
+This v2 series just contains new versions of the patches that could not
+apply to the staging-testing branch due to the level of change caused by
+other commits. It also fixes up some kernel test robot warnings
+introduced by the patches that did merge properly from the first series.
 
-Shouldn't we remove the license text in the comment at the same time?
+Phillip Potter (11):
+  staging: r8188eu: remove RT_TRACE calls from core/rtw_cmd.c
+  staging: r8188eu: remove RT_TRACE calls from core/rtw_ioctl_set.c
+  staging: r8188eu: remove RT_TRACE calls from core/rtw_mlme.c
+  staging: r8188eu: remove RT_TRACE calls from core/rtw_mlme_ext.c
+  staging: r8188eu: remove RT_TRACE calls from core/rtw_mp.c
+  staging: r8188eu: remove RT_TRACE calls from core/rtw_security.c
+  staging: r8188eu: remove RT_TRACE calls from core/rtw_sta_mgt.c
+  staging: r8188eu: remove RT_TRACE calls from core/rtw_xmit.c
+  staging: r8188eu: remove RT_TRACE calls from core/rtw_recv.c
+  staging: r8188eu: fix unused variable warnings in core/rtw_ieee80211.c
+  staging: r8188eu: remove two set but unused variables in
+    core/rtw_mp_ioctl.c
+
+ drivers/staging/r8188eu/core/rtw_cmd.c        |  66 +-----
+ drivers/staging/r8188eu/core/rtw_ieee80211.c  |   4 +-
+ drivers/staging/r8188eu/core/rtw_ioctl_set.c  | 218 +-----------------
+ drivers/staging/r8188eu/core/rtw_mlme.c       | 130 +----------
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c   |  39 +---
+ drivers/staging/r8188eu/core/rtw_mp.c         |  12 +-
+ drivers/staging/r8188eu/core/rtw_mp_ioctl.c   |   6 +-
+ drivers/staging/r8188eu/core/rtw_recv.c       | 161 +------------
+ drivers/staging/r8188eu/core/rtw_security.c   |  44 +---
+ drivers/staging/r8188eu/core/rtw_sta_mgt.c    |   8 -
+ drivers/staging/r8188eu/core/rtw_xmit.c       |  83 +------
+ drivers/staging/r8188eu/include/rtw_mlme.h    |   2 -
+ .../staging/r8188eu/include/rtw_mlme_ext.h    |   4 +-
+ 13 files changed, 53 insertions(+), 724 deletions(-)
+
+-- 
+2.31.1
+
