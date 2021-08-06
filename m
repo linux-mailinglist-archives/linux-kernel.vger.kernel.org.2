@@ -2,185 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE8F3E28DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2379A3E28D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245232AbhHFKoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:44:55 -0400
-Received: from mail-bn1nam07on2127.outbound.protection.outlook.com ([40.107.212.127]:53119
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S245195AbhHFKox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:44:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WSTHSLTe4VJwTQVT2ADP0YblAEGmTnU2wadmXuH5YxvIkszdXWLGH/nnHHfve+1iPT4NxiEtv+Q5EX9PUazXvHcTFPrX+GBsMQArtWzm8fyKl/aDmgvxOO061zmqEYHn2Ld8cAKPC6jqolf1sIxUHjh9aFFs8KeWqWqcGY8P6E6WlJDlj87JHn10NG+jk7ITU9WKkjBS+h7uuqbH2iOKr8sMFeP70icOBdyAXoS+ILFRRXOm5FhBjXQSTpYxFTTjW8psaPzmVkVJpAS6oKEAjn3Z9c1+dutVOGKwJGeuuY2OG9kKr+LdwAKR/TLHqGVtpaz3fkiv5jYrc+Op2Z7oDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WheNvOQb7m5Nb2xbnVsY1/4nzMe7gWxmw7EIWbYnNb0=;
- b=mZfWO46ns920ceWEUhpiDhLXL8d7SmXHZElvdgbnJq+vd3esf5XN74WKYfGBK5PRbUBQph4pBfXLZpMsDA4lS35vIhbOpCKe4TUSn7qbAO85wb0AuZzfjmEod4mLsa/MDCxPiYDbFC/29Arcojz2r+zspKTeH5cMYLonnDqJ7rrCZJf/5eakQKlxllxqIMPncAs+AcSv8E9TsuLcQGZRwbV/5u5FFRpjVtVDtfalxd0ZYIRO0uO40WfjK/2FIWZxpmTLw9+UBdHET7RbgaBBOldN03dLTc0KBjlQlSI43Fshk3YGOqPyX5W3GERkq4rb+N71UINEbsLVQVPskel3sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+        id S245220AbhHFKo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:44:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231765AbhHFKoZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 06:44:25 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C31C0C061798;
+        Fri,  6 Aug 2021 03:44:09 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id j1so15978237pjv.3;
+        Fri, 06 Aug 2021 03:44:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WheNvOQb7m5Nb2xbnVsY1/4nzMe7gWxmw7EIWbYnNb0=;
- b=2kDruD6PD4TBqhlQYQrec553vOwYuSE0IUy7yEgtA8cyl70242m4nxdDUU3yRe3H6i1xgaiUnrrynFvxlKFajqhM+kx4L2jrZgwQkJv0kzcnXseqcA5bdIrdh21d9s9kCXPPZHCpGm1ys0arbhF1E/FsxraUInYjiVSoCm/aOwY=
-Authentication-Results: analogixsemi.com; dkim=none (message not signed)
- header.d=none;analogixsemi.com; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BYAPR04MB4584.namprd04.prod.outlook.com (2603:10b6:a03:16::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.19; Fri, 6 Aug
- 2021 10:44:34 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::5c0e:fbe5:2bd6:ec6]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::5c0e:fbe5:2bd6:ec6%3]) with mapi id 15.20.4394.019; Fri, 6 Aug 2021
- 10:44:34 +0000
-From:   Xin Ji <xji@analogixsemi.com>
-To:     robert.foss@linaro.org, drinkcat@google.com, a.hajda@samsung.com
-Cc:     narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, dan.carpenter@oracle.com, airlied@linux.ie,
-        daniel@ffwll.ch, boris.brezillon@collabora.com, sam@ravnborg.org,
-        hsinyi@chromium.org, duwe@lst.de, anarsoul@gmail.com,
-        m.szyprowski@samsung.com, bliang@analogixsemi.com,
-        qwen@analogixsemi.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        Xin Ji <xji@analogixsemi.com>
-Subject: [PATCH v2] drm/bridge: anx7625: Tune K value for IVO panel
-Date:   Fri,  6 Aug 2021 18:44:07 +0800
-Message-Id: <20210806104407.2208538-1-xji@analogixsemi.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HKAPR04CA0012.apcprd04.prod.outlook.com
- (2603:1096:203:d0::22) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HKAPR04CA0012.apcprd04.prod.outlook.com (2603:1096:203:d0::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Fri, 6 Aug 2021 10:44:33 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4289bf28-1872-4e4e-d695-08d958c72da3
-X-MS-TrafficTypeDiagnostic: BYAPR04MB4584:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR04MB4584FDD7945F263A9294F0FCC7F39@BYAPR04MB4584.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: C6zww95OaxL5Xwgt4mc/VF2oFWLNxYJqIz5c39W9vfpEh636LJW0AH0KeuKEwI93eHkICZfq8uGAy7XM5PavNQL8zdvZPq0eIBfl42+RxdjEwFiEPTqne8YOn/cVGx/JPa6gqpK30038/Xiq9CEve5ERLe/4n4/q0IC/9lJvenGLnJHp7sqjPFLtCNGo/gZOe/juuLfUBI3fIAnmIGZpaCLL4OX2SvLOpCjSoGC4+YSfjI8j+8Xva5g/Um+8QOMig+SrLS+2z/EEdpPPEYLEGNoglUfd/BmSmUSbqf2W6cjNvK29srq8QAPDJsDBLEbBrkRPsufba+e0/PEkVcpsGy2XTeFRqFQEOjTd6rdqaBzp57i4MaXbzUzgutCOBqP7wIde7tZiLJmcIfniQRCl6uP/P31AcmMHwY68Un0LBJrVVfy2N0pyAYh28hfs7pmSvqjR0Lftpg6cfDpfZ/qOjo2gHFZX8RP3mzvgV7m/5hrs0khzswojfQH+eg4WeNyB2cK2jLiTyW6qc69DhygIwK2Ksc2P9oNAaOO3SjOLSJtwaQLNVv2ilySZUBr8X5ebP8uVQl9Z2Dm0XL+oa6gatG4vKK6Drg5LrpdDKiu6nIrcNW9JDE+CJM2HaQ1X3CMbZjO89isJnCLkkAFPjCO9lXeT79ABgxRT4owQ7pHOQxNgY45jcZ3F8lcHOLdLDI8ZXfV/xt+qYHREw6bnIl4HsA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39840400004)(366004)(396003)(346002)(136003)(8936002)(6486002)(956004)(26005)(5660300002)(2616005)(66556008)(316002)(8676002)(66476007)(38100700002)(38350700002)(1076003)(186003)(86362001)(66946007)(107886003)(7416002)(6666004)(55236004)(6496006)(36756003)(4326008)(478600001)(52116002)(2906002)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mgfCQbizHrEp9NPfW9thSSBcJRVrWG5dzeOX0mf8uAMppfVXORHcTkzfLpVh?=
- =?us-ascii?Q?bOzn/noWwmvJHSnyTaeKKEgU30MAKhOzT1PQ8kg94hC4FHbpO8AG40RJw20O?=
- =?us-ascii?Q?xLHzYeTSj6816SWWiMzmjlU3+JU/+r2LuKM0hy75WixN7PoFioHUb1ziLDVn?=
- =?us-ascii?Q?RIvZ0OE79DVWsxTLQGCZBowKqalV13yoDAH3yL2uPkozEzFqrI6MqhUeCdUr?=
- =?us-ascii?Q?p25HfrDfh35FX7+keAIS9DAnH+rCtcsZgnBg29/m8q1oQI+yCeUoUF2yFTlH?=
- =?us-ascii?Q?bkIRtfsgAlg4qIiDZ3G2ZSJ1c25KqOv/RtEqGQG8k+nQ+N/MP62n9cCYbTgS?=
- =?us-ascii?Q?vFmEGmgqWvMI9O20nLxQx77lNYGa6b16FuF0ioeuRhQ29TsSg02gdfUkyUGq?=
- =?us-ascii?Q?Sn2EAFXMdnNBjdrAtM9uuUABvs9doXgJbj3dislXZJ5IiPo7VEeDG/7cw2O9?=
- =?us-ascii?Q?klTKgv3P943fcJXPytjKz/9NdU4Mpw45hPJf2B2kvBZmqIxsMP5DsxSoJo9G?=
- =?us-ascii?Q?h3oLZ5padTrWpOpgCFbTKVrnjMokA/pSQcWnHw1NX/+9LzNj8bRauWyiQsZ8?=
- =?us-ascii?Q?n+bPd4ec/cS8Jsr4v6/jT2qkw9xwmf7C4rp1Stlp2gmimc2m1pJN9v3s4j1f?=
- =?us-ascii?Q?BnaAIJ3PkjscHSYwh/guj+/r8OZ8SyFBahd5YzVBjEtTiHLVK8Q70G4vL7WN?=
- =?us-ascii?Q?1hvZhKkIK+8OfT4/9P+V75Ks8DvmrU1sAA/iGfUpkbd8PynGQT3PirrjReiJ?=
- =?us-ascii?Q?q4WgzU/EEcr2thz5nIRVTHyLFjbqQBASm/YS/ag9QdMYBcY6+ea4u6SXvYFT?=
- =?us-ascii?Q?ZedWVY3cZrPY0SYCIumYpbX8swrV09q76XtIfUG4C56t7gdBd0myfNxUaHAy?=
- =?us-ascii?Q?tSZgc5OPInJIkap0wOHQF4iGRqYRPr9jF06TQu7Xp7jLVGqc3G1eXLWTcaGP?=
- =?us-ascii?Q?RkfpprVWqAwqxNwXpYE6T79JhnjZ+FSRh4NSEJV/RHcM3JopnyTCSQqlvrYO?=
- =?us-ascii?Q?EvtVuhENCt+9Y84DA8hNmaIsz0RnxHXfMEHHlUg6PoiFfzgEU381FFMMXmQc?=
- =?us-ascii?Q?3NhYAaICyTzFt6bHS+nA1Sy456zXdrW7PVqw6pkeXLlLPTQeTuwx0svAODNK?=
- =?us-ascii?Q?iCzSdrFMhzNdI6AcRc14eSWuZzaNfykIocww2PcFamOUlWBGCHCzmyaYZqLm?=
- =?us-ascii?Q?6kMnMd++PR3dlTFMPv4KHOuK8GOOfNg08/GE97/Rc/eVH3YlSzQ1+RKhe19X?=
- =?us-ascii?Q?4hIswpnaY3KWjkI5wJLiNNxwOSbOuwML5jwp59ZK5ef54vezn5c6dRrispEA?=
- =?us-ascii?Q?uGfTOY4Zl7SObi3n0jJ96N3k?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4289bf28-1872-4e4e-d695-08d958c72da3
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2021 10:44:33.9692
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mR9pnNfKgs5Nl5DtOD5raDTAtlBv6fNfTbF7rWE5kocgGCmWHnbnWT2CcGX2Z5wrQhOnXCVRHxBH9tAXcgxhNA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4584
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=roAYVUMp9WAxmVPsD/OSHjWzRPnF3uQ31tcMfrnozE0=;
+        b=jIBazFpm2apO6eiXOj345zGD5KTrnuJfxgh83k+EM4ZTk4p8FwVWjIvURxIUr+NxAk
+         N+SmPhxrG1+hjSqElRBY+xOuhAGUCVnYDXyU8Lv+gYx67gy8q+e9KwgTVPD8CK+FuYcr
+         fO9Ii2dYoYul1sQDXdLAG0Gd0v44+3zKXq1bLGDr2zSQvXljCHGyhj7jzJ5OJ8VilG/x
+         10e9oNCHg85rYDOxqRliAQCglCf9Agdtx7IwgJQDzIp/5gA9AoDHqBf22rgmWkYcGrhA
+         5maVTD1kO9ti1MQobfo7WZHwfYJjqrP8/H3sfJJEH6ikrY0gk0MKeP42r98jvrbLPYe1
+         YFnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=roAYVUMp9WAxmVPsD/OSHjWzRPnF3uQ31tcMfrnozE0=;
+        b=t5w3ipKslNz74IW8+6n0KItseCYgLiQj+TkiCUpeKKlfvzAcS+0w2dQ94CCeDBHBy4
+         v/eC2crYn+9FGvC9IP6hVN8UB1Joa6GNJ+hfh6jQRL5nIRnMDlUk4dELnwczSyT3+rhP
+         Hpt1SOz525pb+STdbLblPshIkXQZbeMpadlArbyay+mUzriDk85HZD9yeHjrmye22IEy
+         xFMsBxHVZS2bhOph4DfLLD4IZg+RbT86Rvvt/CWux+++GvEYJXZB1Zg3ZH5ne0Y6XYDT
+         X85KIOZdOiUbU8aQINfgLGKCtJT2yBuijNUd7+qRph46E4lv23mf2t+gLvAl2Okf9/IZ
+         9XDw==
+X-Gm-Message-State: AOAM5308Rs8qulp9l/91XBYUCNuqXK0lYbPzP0pVI3qRPLiOexTiDSfW
+        HUcw4vlysmocOni9X+9mpNRTH8/PMKfIU3VLdqA=
+X-Google-Smtp-Source: ABdhPJzHn6ooXk3TPW1vtHKO0qNzVlKoF8CvYfpPTHbWhtPhynSy9XRMSCJfrqtkvAhqYV6xedXzKA==
+X-Received: by 2002:a17:90b:4393:: with SMTP id in19mr10098346pjb.124.1628246648972;
+        Fri, 06 Aug 2021 03:44:08 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
+        by smtp.gmail.com with ESMTPSA id l18sm5311662pff.24.2021.08.06.03.44.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 03:44:08 -0700 (PDT)
+Message-ID: <610d1278.1c69fb81.3a1e9.e853@mx.google.com>
+Date:   Fri, 06 Aug 2021 03:44:08 -0700 (PDT)
+X-Google-Original-Date: Fri, 06 Aug 2021 10:44:02 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210806081113.718626745@linuxfoundation.org>
+Subject: RE: [PATCH 5.13 00/35] 5.13.9-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IVO panel require less input video clock variation than video clock
-variation in DP CTS spec.
+On Fri,  6 Aug 2021 10:16:43 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.13.9 release.
+> There are 35 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.9-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-This patch decreases the K value of ANX7625 which will shrink eDP Tx
-video clock variation to meet IVO panel's requirement.
-
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
-Signed-off-by: Xin Ji <xji@analogixsemi.com>
----
- drivers/gpu/drm/bridge/analogix/anx7625.c | 24 ++++++++++++++++++++---
- drivers/gpu/drm/bridge/analogix/anx7625.h |  4 +++-
- 2 files changed, 24 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index a3d82377066b..9b9e3984dd38 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -384,6 +384,25 @@ static int anx7625_odfc_config(struct anx7625_data *ctx,
- 	return ret;
- }
- 
-+/*
-+ * The MIPI source video data exist large variation (e.g. 59Hz ~ 61Hz),
-+ * anx7625 defined K ratio for matching MIPI input video clock and
-+ * DP output video clock. Increase K value can match bigger video data
-+ * variation. IVO panel has small variation than DP CTS spec, need
-+ * decrease the K value.
-+ */
-+static int anx7625_set_k_value(struct anx7625_data *ctx)
-+{
-+	struct edid *edid = (struct edid *)ctx->slimport_edid_p.edid_raw_data;
-+
-+	if (edid->mfg_id[0] == IVO_MID0 && edid->mfg_id[1] == IVO_MID1)
-+		return anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
-+					 MIPI_DIGITAL_ADJ_1, 0x3B);
-+
-+	return anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
-+				 MIPI_DIGITAL_ADJ_1, 0x3D);
-+}
-+
- static int anx7625_dsi_video_timing_config(struct anx7625_data *ctx)
- {
- 	struct device *dev = &ctx->client->dev;
-@@ -470,9 +489,8 @@ static int anx7625_dsi_video_timing_config(struct anx7625_data *ctx)
- 			MIPI_PLL_N_NUM_15_8, (n >> 8) & 0xff);
- 	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client, MIPI_PLL_N_NUM_7_0,
- 			(n & 0xff));
--	/* Diff */
--	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
--			MIPI_DIGITAL_ADJ_1, 0x3D);
-+
-+	anx7625_set_k_value(ctx);
- 
- 	ret |= anx7625_odfc_config(ctx, post_divider - 1);
- 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
-index 034c3840028f..6dcf64c703f9 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.h
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
-@@ -210,7 +210,9 @@
- #define  MIPI_VIDEO_STABLE_CNT           0x0A
- 
- #define  MIPI_LANE_CTRL_10               0x0F
--#define  MIPI_DIGITAL_ADJ_1   0x1B
-+#define  MIPI_DIGITAL_ADJ_1     0x1B
-+#define  IVO_MID0               0x26
-+#define  IVO_MID1               0xCF
- 
- #define  MIPI_PLL_M_NUM_23_16   0x1E
- #define  MIPI_PLL_M_NUM_15_8    0x1F
--- 
-2.25.1
+5.13.9-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
