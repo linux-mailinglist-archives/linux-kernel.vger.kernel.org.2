@@ -2,124 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9BD3E2C87
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C21FB3E2C8A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239503AbhHFOaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 10:30:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20710 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239476AbhHFOaT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 10:30:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628260202;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g02NNSi8BKXFu9HdVxcvonhWT7pRtGQw5k4dnx6xGH8=;
-        b=FGapoo/Ohv7RdQacsThHPyAfct4uzNiqBIUhBjvv+BTdFsxF5gmT8D8LX42E+79e7xNWLs
-        MTpJWFgP2inLxW0SQ5aIys61v4Y4Jd/etSv0SgCYX13dZ5lrNdINh4ho3RWSKCY0FC+FPu
-        XrXdvK5snQ0Bzz5qIybpCYu7srFkl4M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-135-r9AMVNqAPeescJAOslgJSA-1; Fri, 06 Aug 2021 10:30:01 -0400
-X-MC-Unique: r9AMVNqAPeescJAOslgJSA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B972FDF8A0;
-        Fri,  6 Aug 2021 14:29:59 +0000 (UTC)
-Received: from localhost.localdomain.com (unknown [10.40.192.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A72415D9D5;
-        Fri,  6 Aug 2021 14:29:48 +0000 (UTC)
-From:   pkalever@redhat.com
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
-        josef@toxicpanda.com, axboe@kernel.dk, idryomov@redhat.com,
-        xiubli@redhat.com,
-        Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
-Subject: [PATCH v1 2/2] nbd: reset the queue/io_timeout to default on disconnect
-Date:   Fri,  6 Aug 2021 19:59:14 +0530
-Message-Id: <20210806142914.70556-3-pkalever@redhat.com>
-In-Reply-To: <20210806142914.70556-1-pkalever@redhat.com>
-References: <20210806142914.70556-1-pkalever@redhat.com>
+        id S239630AbhHFOal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 10:30:41 -0400
+Received: from mga05.intel.com ([192.55.52.43]:45009 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232085AbhHFOag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 10:30:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10068"; a="299967299"
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="299967299"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 07:30:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="504038869"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga004.fm.intel.com with ESMTP; 06 Aug 2021 07:30:18 -0700
+Subject: Re: [PATCH V3 1/2] mmc: sdhci: Introduce max_timeout_count variable
+ in sdhci_host
+To:     Sarthak Garg <sartgarg@codeaurora.org>, ulf.hansson@linaro.org
+Cc:     vbadigan@codeaurora.org, stummala@codeaurora.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <1627534001-17256-2-git-send-email-sartgarg@codeaurora.org>
+ <1628232901-30897-1-git-send-email-sartgarg@codeaurora.org>
+ <1628232901-30897-2-git-send-email-sartgarg@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <d0aec4e6-e803-70c0-74a5-8de51e0ffe7e@intel.com>
+Date:   Fri, 6 Aug 2021 17:30:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <1628232901-30897-2-git-send-email-sartgarg@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
+On 6/08/21 9:54 am, Sarthak Garg wrote:
+> Introduce max_timeout_count variable in the sdhci_host structure
+> and use in timeout calculation. By default its set to 0xE
+> (max timeout register value as per SDHC spec). But at the same time
+> vendors drivers can update it if they support different max timeout
+> register value than 0xE.
+> 
+> Signed-off-by: Sarthak Garg <sartgarg@codeaurora.org>
 
-Without any changes to NBD_ATTR_TIMEOUT (default is 30 secs),
-$ rbd-nbd map rbd-pool/image0 --try-netlink
-/dev/nbd0
-$ cat /sys/block/nbd0/queue/io_timeout
-30000
-$ rbd-nbd unmap /dev/nbd0
-$ cat /sys/block/nbd0/queue/io_timeout
-30000
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Now user sets NBD_ATTR_TIMEOUT to 60,
-$ rbd-nbd map rbd-pool/image0 --try-netlink --io-timeout 60
-/dev/nbd0
-$ cat /sys/block/nbd0/queue/io_timeout
-60000
-$ rbd-nbd unmap /dev/nbd0
-$ cat /sys/block/nbd0/queue/io_timeout
-60000
-
-Now user doesn't alter NBD_ATTR_TIMEOUT, but sysfs still shows it as 60,
-$ rbd-nbd map rbd-pool/image0 --try-netlink
-/dev/nbd0
-$ cat /sys/block/nbd0/queue/io_timeout
-60000
-$ rbd-nbd unmap /dev/nbd0
-$ cat /sys/block/nbd0/queue/io_timeout
-60000
-
-The problem exists with ioctl interface too.
-
-Signed-off-by: Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
----
- drivers/block/nbd.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 16a1a14b1fd1..a45aabc4914b 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -158,6 +158,7 @@ static void nbd_connect_reply(struct genl_info *info, int index);
- static int nbd_genl_status(struct sk_buff *skb, struct genl_info *info);
- static void nbd_dead_link_work(struct work_struct *work);
- static void nbd_disconnect_and_put(struct nbd_device *nbd);
-+static void nbd_set_cmd_timeout(struct nbd_device *nbd, u64 timeout);
- 
- static inline struct device *nbd_to_dev(struct nbd_device *nbd)
- {
-@@ -1250,7 +1251,7 @@ static void nbd_config_put(struct nbd_device *nbd)
- 			destroy_workqueue(nbd->recv_workq);
- 		nbd->recv_workq = NULL;
- 
--		nbd->tag_set.timeout = 0;
-+		nbd_set_cmd_timeout(nbd, 0);
- 		nbd->disk->queue->limits.discard_granularity = 0;
- 		nbd->disk->queue->limits.discard_alignment = 0;
- 		blk_queue_max_discard_sectors(nbd->disk->queue, UINT_MAX);
-@@ -2124,6 +2125,10 @@ static int nbd_genl_reconfigure(struct sk_buff *skb, struct genl_info *info)
- 	if (ret)
- 		goto out;
- 
-+	/*
-+	 * On reconfigure, if NBD_ATTR_TIMEOUT is not provided, we will
-+	 * continue to use the cmd timeout provided with connect initially.
-+	 */
- 	if (info->attrs[NBD_ATTR_TIMEOUT])
- 		nbd_set_cmd_timeout(nbd,
- 				    nla_get_u64(info->attrs[NBD_ATTR_TIMEOUT]));
--- 
-2.31.1
+> ---
+>  drivers/mmc/host/sdhci.c | 16 +++++++++-------
+>  drivers/mmc/host/sdhci.h |  1 +
+>  2 files changed, 10 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index aba6e10..613e1ab 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -934,21 +934,21 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
+>  
+>  	/*
+>  	 * If the host controller provides us with an incorrect timeout
+> -	 * value, just skip the check and use 0xE.  The hardware may take
+> +	 * value, just skip the check and use the maximum. The hardware may take
+>  	 * longer to time out, but that's much better than having a too-short
+>  	 * timeout value.
+>  	 */
+>  	if (host->quirks & SDHCI_QUIRK_BROKEN_TIMEOUT_VAL)
+> -		return 0xE;
+> +		return host->max_timeout_count;
+>  
+>  	/* Unspecified command, asume max */
+>  	if (cmd == NULL)
+> -		return 0xE;
+> +		return host->max_timeout_count;
+>  
+>  	data = cmd->data;
+>  	/* Unspecified timeout, assume max */
+>  	if (!data && !cmd->busy_timeout)
+> -		return 0xE;
+> +		return host->max_timeout_count;
+>  
+>  	/* timeout in us */
+>  	target_timeout = sdhci_target_timeout(host, cmd, data);
+> @@ -968,15 +968,15 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd,
+>  	while (current_timeout < target_timeout) {
+>  		count++;
+>  		current_timeout <<= 1;
+> -		if (count >= 0xF)
+> +		if (count > host->max_timeout_count)
+>  			break;
+>  	}
+>  
+> -	if (count >= 0xF) {
+> +	if (count > host->max_timeout_count) {
+>  		if (!(host->quirks2 & SDHCI_QUIRK2_DISABLE_HW_TIMEOUT))
+>  			DBG("Too large timeout 0x%x requested for CMD%d!\n",
+>  			    count, cmd->opcode);
+> -		count = 0xE;
+> +		count = host->max_timeout_count;
+>  	} else {
+>  		*too_big = false;
+>  	}
+> @@ -3940,6 +3940,8 @@ struct sdhci_host *sdhci_alloc_host(struct device *dev,
+>  	 */
+>  	host->adma_table_cnt = SDHCI_MAX_SEGS * 2 + 1;
+>  
+> +	host->max_timeout_count = 0xE;
+> +
+>  	return host;
+>  }
+>  
+> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+> index 074dc18..e8d04e4 100644
+> --- a/drivers/mmc/host/sdhci.h
+> +++ b/drivers/mmc/host/sdhci.h
+> @@ -517,6 +517,7 @@ struct sdhci_host {
+>  
+>  	unsigned int max_clk;	/* Max possible freq (MHz) */
+>  	unsigned int timeout_clk;	/* Timeout freq (KHz) */
+> +	u8 max_timeout_count;	/* Vendor specific max timeout count */
+>  	unsigned int clk_mul;	/* Clock Muliplier value */
+>  
+>  	unsigned int clock;	/* Current clock (MHz) */
+> 
 
