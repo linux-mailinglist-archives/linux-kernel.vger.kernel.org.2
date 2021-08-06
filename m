@@ -2,177 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF73A3E31F0
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 00:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4E43E31F2
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 00:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245614AbhHFWvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 18:51:53 -0400
-Received: from mail-io1-f53.google.com ([209.85.166.53]:35418 "EHLO
-        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244611AbhHFWvt (ORCPT
+        id S245635AbhHFWwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 18:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244611AbhHFWwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 18:51:49 -0400
-Received: by mail-io1-f53.google.com with SMTP id s184so14577652ios.2;
-        Fri, 06 Aug 2021 15:51:33 -0700 (PDT)
+        Fri, 6 Aug 2021 18:52:07 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 072E4C0613CF;
+        Fri,  6 Aug 2021 15:51:50 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id s21-20020a4ae5550000b02902667598672bso2620435oot.12;
+        Fri, 06 Aug 2021 15:51:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mxn7llJ5mZ0hc2ANTwcNCtoQg7U/UkmI/LGIHOAc8EE=;
+        b=U3oMmwKAQziuR7DJ97t0wQ0+qI2imBrqiFWvdXM0cBnNVVlRy/jfZJvUaKQjUnEwUl
+         aD2lAarJtc2qGWZHpFDjKwL+tEdPXUOB3PlSqrhTDRq0+tvVfd8IzgSDgWX9IE4+TKRS
+         xF/fk5nlTN15q/S8nhLRH/ZS7f7SJqe9BRzXkGXz5I9CAnzWKPJdL75akvyipojo5M2O
+         psLE9dq5Di0H9h+Fds5z5ZDl9FuNOcFPSu938dx1zUytGSqCWW4VSNyxolZjzcWusm4u
+         bzPJ2UxU/A77wKPQvnYFOTy3DooDqoYU55NHMe5VEXr5fBHzt1Oz+kHcsqVVNjhoUJ54
+         1ppg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9Hgxz19RdIXBXlB6JUJjJ2L0EQ+QiZ5LkbfFS3m/GYk=;
-        b=A3wVp94HsyeUyQdn0pikzsalbPcW1jdq3pd/PX4xOsHnCUl0nJDvoIDRUtylQS+mIV
-         yvxV5i/bFlgMmXNCmB5GgiVOMevh3B++2gQyohWF9p69RrKeYZeqcYRggRFw3bOw1dXl
-         2TeKqMlPw2x9H1Xy7bIpSqnD/t9gxcTGKB11SL9aosbnpX/LwUW+sA1LGswW+V9qmaAF
-         eslam4+s3ccjf4z9pfeLu5yiIUgq199Ia0MhdHzRIs7Y0HnsNuVmoPJhVK04FmNUrIVz
-         fEL9VPgo2Ss8YTimGF19TiD1bpKFrZn+rrNJl+/B3VeJxb5yQpegCztSdFa0YRf1GO5b
-         WWrw==
-X-Gm-Message-State: AOAM530shl+yEt9grZ8i3RfvLuSTQte7UnGisJCrjIDTuV7va2vvn7i7
-        Hf02Clp0BCDEhRH6O5FaIw==
-X-Google-Smtp-Source: ABdhPJybqm/xp7N1NbKP6o213fl3HnTmjQCNX5M7YLK2eyLxm2rPTJks5eQ7ZIRUluTW84b4OKwFVg==
-X-Received: by 2002:a6b:b502:: with SMTP id e2mr734725iof.152.1628290293125;
-        Fri, 06 Aug 2021 15:51:33 -0700 (PDT)
-Received: from xps15.herring.priv ([64.188.179.248])
-        by smtp.googlemail.com with ESMTPSA id x11sm5670338ilu.3.2021.08.06.15.51.31
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mxn7llJ5mZ0hc2ANTwcNCtoQg7U/UkmI/LGIHOAc8EE=;
+        b=DHA0C/ssJCEt1GVYHwwleGsYzO55+wlNb3OxhMREcgT5b3jyWCr1BWGpsNuIO2q0ut
+         9THQHik9F7ybMI5YHpq32uORBjBvyFy7ohwEI5UTK6l8eur0xwJgmMhSHXNbI3FyGbR+
+         1KpPVNVyMIIs8AEP/88RmRXeBR6HCPNwdRoESvAl1Ewj315R0IdZ7KAKFPNzX4ATuqkI
+         w+p9Ebmn9ENcc5fi5YkhUetm6j5/Yz0EDOJsx7E8omK6lj31vpdg9X+gTVrJolotq2X3
+         xKfkYQVrk4cY3whWGN9XJrkvG5MqNACWW9Bns9dimarXVXRb/+9JJbZ6YerrPBne0DvY
+         rUTQ==
+X-Gm-Message-State: AOAM533YGsM6IKXJ5Nebsi6wqaJGS7JslLotlAe9aiR0NMx+qoQcSZj1
+        ueoTndtPxEcS0kLfhRvio76gS8QSPuE=
+X-Google-Smtp-Source: ABdhPJzEiY/mdoLGpKdu+X5ieV7KcHPjb6jgu4o6xwcrppAhlvDaotoMJjqXIn3H8Ta4eO6R7PWrKA==
+X-Received: by 2002:a4a:6507:: with SMTP id y7mr5598750ooc.38.1628290309336;
+        Fri, 06 Aug 2021 15:51:49 -0700 (PDT)
+Received: from fstone04p1.aus.stglabs.ibm.com ([129.41.86.7])
+        by smtp.gmail.com with ESMTPSA id g1sm1783966otk.21.2021.08.06.15.51.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 15:51:32 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
-        Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH v9 3/3] Documentation: arm64: Document PMU counters access from userspace
-Date:   Fri,  6 Aug 2021 16:51:23 -0600
-Message-Id: <20210806225123.1958497-4-robh@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210806225123.1958497-1-robh@kernel.org>
-References: <20210806225123.1958497-1-robh@kernel.org>
+        Fri, 06 Aug 2021 15:51:48 -0700 (PDT)
+From:   Brandon Wyman <bjwyman@gmail.com>
+To:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Eddie James <eajames@linux.ibm.com>
+Cc:     "B. J. Wyman" <bjwyman@gmail.com>
+Subject: [PATCH v2] hwmon: (pmbus/ibm-cffps) Fix write bits for LED control
+Date:   Fri,  6 Aug 2021 22:51:31 +0000
+Message-Id: <20210806225131.1808759-1-bjwyman@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raphael Gault <raphael.gault@arm.com>
+From: "B. J. Wyman" <bjwyman@gmail.com>
 
-Add documentation to describe the access to the pmu hardware counters from
-userspace.
+When doing a PMBus write for the LED control on the IBM Common Form
+Factor Power Supplies (ibm-cffps), the DAh command requires that bit 7
+be low and bit 6 be high in order to indicate that you are truly
+attempting to do a write.
 
-Signed-off-by: Raphael Gault <raphael.gault@arm.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
 ---
-v9:
- - No change
-v8:
- - Reword that config1:1 must always be set to request user access
-v7:
- - Merge into existing arm64 perf.rst
-v6:
-  - Update the chained event section with attr.config1 details
-v2:
-  - Update links to test examples
-
-Changes from Raphael's v4:
-  - Convert to rSt
-  - Update chained event status
-  - Add section for heterogeneous systems
+V1 -> V2: Use full name instead of initials in Signed-off-by line.
 ---
- Documentation/arm64/perf.rst | 68 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 67 insertions(+), 1 deletion(-)
+ drivers/hwmon/pmbus/ibm-cffps.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/arm64/perf.rst b/Documentation/arm64/perf.rst
-index b567f177d385..fa8706df2281 100644
---- a/Documentation/arm64/perf.rst
-+++ b/Documentation/arm64/perf.rst
-@@ -2,7 +2,10 @@
+diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
+index 5668d8305b78..df712ce4b164 100644
+--- a/drivers/hwmon/pmbus/ibm-cffps.c
++++ b/drivers/hwmon/pmbus/ibm-cffps.c
+@@ -50,9 +50,9 @@
+ #define CFFPS_MFR_VAUX_FAULT			BIT(6)
+ #define CFFPS_MFR_CURRENT_SHARE_WARNING		BIT(7)
  
- .. _perf_index:
+-#define CFFPS_LED_BLINK				BIT(0)
+-#define CFFPS_LED_ON				BIT(1)
+-#define CFFPS_LED_OFF				BIT(2)
++#define CFFPS_LED_BLINK				(BIT(0) | BIT(6))
++#define CFFPS_LED_ON				(BIT(1) | BIT(6))
++#define CFFPS_LED_OFF				(BIT(2) | BIT(6))
+ #define CFFPS_BLINK_RATE_MS			250
  
--=====================
-+====
-+Perf
-+====
-+
- Perf Event Attributes
- =====================
- 
-@@ -88,3 +91,66 @@ exclude_host. However when using !exclude_hv there is a small blackout
- window at the guest entry/exit where host events are not captured.
- 
- On VHE systems there are no blackout windows.
-+
-+Perf Userspace PMU Hardware Counter Access
-+==========================================
-+
-+Overview
-+--------
-+The perf userspace tool relies on the PMU to monitor events. It offers an
-+abstraction layer over the hardware counters since the underlying
-+implementation is cpu-dependent.
-+Arm64 allows userspace tools to have access to the registers storing the
-+hardware counters' values directly.
-+
-+This targets specifically self-monitoring tasks in order to reduce the overhead
-+by directly accessing the registers without having to go through the kernel.
-+
-+How-to
-+------
-+The focus is set on the armv8 PMUv3 which makes sure that the access to the pmu
-+registers is enabled and that the userspace has access to the relevant
-+information in order to use them.
-+
-+In order to have access to the hardware counter it is necessary to open the
-+event using the perf tool interface with config1:1 attr bit set: the
-+sys_perf_event_open syscall returns a fd which can subsequently be used
-+with the mmap syscall in order to retrieve a page of memory containing
-+information about the event. The PMU driver uses this page to expose to
-+the user the hardware counter's index and other necessary data. Using
-+this index enables the user to access the PMU registers using the `mrs`
-+instruction.
-+
-+The userspace access is supported in libperf using the perf_evsel__mmap()
-+and perf_evsel__read() functions. See `tools/lib/perf/tests/test-evsel.c`_ for
-+an example.
-+
-+About heterogeneous systems
-+---------------------------
-+On heterogeneous systems such as big.LITTLE, userspace PMU counter access can
-+only be enabled when the tasks are pinned to a homogeneous subset of cores and
-+the corresponding PMU instance is opened by specifying the 'type' attribute.
-+The use of generic event types is not supported in this case.
-+
-+Have a look at `tools/perf/arch/arm64/tests/user-events.c`_ for an example. It
-+can be run using the perf tool to check that the access to the registers works
-+correctly from userspace:
-+
-+.. code-block:: sh
-+
-+  perf test -v user
-+
-+About chained events and 64-bit counters
-+----------------------------------------
-+Chained events are not supported in conjunction with userspace counter
-+access. If a 64-bit counter is requested (attr.config1:0) with userspace
-+access (attr.config1:1 set), then counter chaining will be disabled. The
-+'pmc_width' in the user page will indicate the actual width of the
-+counter which could be only 32-bits depending on the event and PMU
-+features.
-+
-+.. Links
-+.. _tools/perf/arch/arm64/tests/user-events.c:
-+   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/arm64/tests/user-events.c
-+.. _tools/lib/perf/tests/test-evsel.c:
-+   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/tests/test-evsel.c
+ enum {
 -- 
-2.30.2
+2.25.1
 
