@@ -2,66 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EAE13E22D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 07:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B71C3E22DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 07:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243055AbhHFFSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 01:18:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240658AbhHFFSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 01:18:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A9ED611C9;
-        Fri,  6 Aug 2021 05:17:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628227072;
-        bh=HHDwMPDhQd31WUDg2yNG4zsdt0gODM4KSj7IzsG0d6o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L4fzPjJJUTFkd5AsX6mdvrqupvJcVmu/lzg9vYQCzfJbn6EOH6K4MhWZQ9TnQ4d2+
-         BByIuPIBFaYdp2t31KZRJkvaWr3a/oamUBWN2zJdm+Gu50uO/qETmyY5R280+EwItZ
-         hL2TJgLVf0AxLKq4LCOZ5vCYrgXIoUDu3F8NjtCg=
-Date:   Fri, 6 Aug 2021 07:17:50 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        id S243059AbhHFFVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 01:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240526AbhHFFVn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 01:21:43 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4F4C061798
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 22:21:28 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id m12so4318210qvt.1
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 22:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=zcQ8sL2CqDTX+4kbgN4gpZBAnX2ERdxEAX8JcULAxIw=;
+        b=gUNzJSOkj20KGKHXFPVIgJjwzfkmpuadqQVQpncG4R9KzZkgDK7F33mliEcdzrl5ep
+         8A2fWKG5yycXn0Wm0gXcCfdmVRENQuZGBzUcUTbIjoymlifLcaASCmqk34KrHyI7k5wZ
+         /wjyfSaCTB9U7DgfOrP5kz4ACwISxt/Nl1cXRSqkGnEu/LWRcJfBD+gAZ96FE551038H
+         chdRHjClBWCNo80PpjOw1TXVOvt3UcianthQ0Fd4q8id+rjkVB3F48iuzM3AKao/OL2t
+         phCu6ig+mjf+7opPXQB86ugRjpibTknZgynHrR2aY+DNUZ5NVBNiXx6CIXOSLc15/TZY
+         LyYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=zcQ8sL2CqDTX+4kbgN4gpZBAnX2ERdxEAX8JcULAxIw=;
+        b=L+Z8CKHPrdGC/At8j2dSUu72gPyjRjE2qFtUyzbn6BxukpP+a5CuAT05lVhSVGlpX+
+         Pkbx7K4CSX/l6iU9NFjxG7oaKJWnxFrSLz1Pht8ouQn4/HPXebiGr5A4D+2ishT0H4HP
+         FvWmXlPWNgcczkm7kpfPN0axcHejqXgybPs0393FENMPckO4JyxYBP6eyS1h8YkQo81u
+         743Iuw5t+aQLfeEJcAJ8f+T96u4O3Ch58XTnv40J1t+QFBTOhCOjXa8QuRSYck969+uK
+         XwvX3F2vNVQOYq6x7olc4IxABkVs+nQEnVgW9JF0sQ8+TXb0ZI1lzwD9HOS/wNGoeiNH
+         XUpA==
+X-Gm-Message-State: AOAM531LwcoWxqHPy14JfatUVDjYPNQztQ6AdstK55Fes9OEgvCDu3Fv
+        ueMKB5lOmdRLk8+qetmeMfm5mQ==
+X-Google-Smtp-Source: ABdhPJx2TIa3URYgDE8tF8OrtnfZbT+pjWok+3pEMPuWe/4OFj/lOx3ydolPsjWS9Et4I5nTeiWVeQ==
+X-Received: by 2002:ad4:4312:: with SMTP id c18mr9113165qvs.54.1628227287282;
+        Thu, 05 Aug 2021 22:21:27 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id q3sm4181366qkn.14.2021.08.05.22.21.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 22:21:26 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 22:21:24 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Yang Shi <shy828301@gmail.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-Message-ID: <YQzF/utgrJfbZuHh@kroah.com>
-References: <YQuZdVuaGG/Cr62y@kroah.com>
- <YQuaJ78y8j1UmBoz@kroah.com>
- <fdf8b6b6-58c3-8392-2fc6-1908a314e991@linux.intel.com>
- <YQwlHrJBw79xhTSI@kroah.com>
- <21db8884-5aa1-3971-79ef-f173a0a95bef@linux.intel.com>
- <YQwpa+LAYt7YZ5dh@kroah.com>
- <1e0967ee-c41e-fd5d-f553-e4d7ab88838c@linux.intel.com>
- <CAPcyv4h26QmPhJKjtUB-VPc4TP95rBAer78OzkgXncg77tFWVw@mail.gmail.com>
- <9b2956f5-3acf-e798-ff0f-002d2d5254db@linux.intel.com>
- <CAPcyv4ju0kzUuamiuE=xC_DoEArk1KxD+n+-TUw0LLTWoSj2VA@mail.gmail.com>
+        linux-api@vger.kernel.org, Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH 06/16] huge tmpfs: shmem_is_huge(vma, inode, index)
+In-Reply-To: <CAHbLzkrvOCCbN3EcDeKwfqWrtU6kH0+7fuSv7aahyjpKtsHn3g@mail.gmail.com>
+Message-ID: <5add2467-3b23-f8b8-e07b-82d8a573ecb7@google.com>
+References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com> <dae523ab-c75b-f532-af9d-8b6a1d4e29b@google.com> <CAHbLzkoKZ9OdUfP5DX81CKOJWrRZ0GANrmenNeKWNmSOgUh0bQ@mail.gmail.com> <e7374d7e-4773-aba1-763-8fa2c953f917@google.com>
+ <CAHbLzko_wg4mx-LTbJ6JcJo-6VzMh5BAcuMV8PXKPsFXOBVASw@mail.gmail.com> <8baad8b2-8f7a-2589-ce21-4135a59c5dc6@google.com> <CAHbLzkrvOCCbN3EcDeKwfqWrtU6kH0+7fuSv7aahyjpKtsHn3g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4ju0kzUuamiuE=xC_DoEArk1KxD+n+-TUw0LLTWoSj2VA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 06:00:25PM -0700, Dan Williams wrote:
-> That said, per-device authorization is a little bit different than
-> per-driver trust. Driver trust is easy to reason about for a built-in
-> policy, while per-device authorization is easy for userspace to reason
-> about for "why is this device not talking to its driver?".
+On Wed, 4 Aug 2021, Yang Shi wrote:
+> On Wed, Aug 4, 2021 at 1:28 AM Hugh Dickins <hughd@google.com> wrote:
+> >
+> > Thanks, but despite us agreeing that the race is too unlikely to be worth
+> > optimizing against, it does still nag at me ever since you questioned it:
+> > silly, but I can't quite be convinced by my own dismissals.
+> >
+> > I do still want to get rid of SGP_HUGE and SGP_NOHUGE, clearing up those
+> > huge allocation decisions remains the intention; but now think to add
+> > SGP_NOALLOC for collapse_file() in place of SGP_NOHUGE or SGP_CACHE -
+> > to rule out that possibility of mischarge after racing hole-punch,
+> > no matter whether it's huge or small.  If any such race occurs,
+> > collapse_file() should just give up.
+> >
+> > This being the "Stupid me" SGP_READ idea, except that of course would
+> > not work: because half the point of that block in collapse_file() is
+> > to initialize the !Uptodate pages, whereas SGP_READ avoids doing so.
+> >
+> > There is, of course, the danger that in fixing this unlikely mischarge,
+> > I've got the code wrong and am introducing a bug: here's what a 17/16
+> > would look like, though it will be better inserted early.  I got sick
+> > of all the "if (page "s, and was glad of the opportunity to fix that
+> > outdated "bring it back from swap" comment - swap got done above.
+> >
+> > What do you think? Should I add this in or leave it out?
+> 
+> Thanks for keeping investigating this. The patch looks good to me. I
+> think we could go this way. Just a nit below.
 
-See my other email about how the "per driver" trust is the wrong model,
-you need to stick to "per device" trust.  Especially given that you are
-giving control of your kernel drivers over to third parties, you already
-trust them to do the right thing.
+Thanks, I'll add it into the series, a patch before SGP_NOHUGE goes away;
+but I'm not intending to respin the series until there's more feedback
+from others - fcntl versus fadvise is the main issue so far.
 
-thanks,
+> > --- a/include/linux/shmem_fs.h
+> > +++ b/include/linux/shmem_fs.h
+> > @@ -108,6 +108,7 @@ extern unsigned long shmem_partial_swap_usage(struct address_space *mapping,
+> >  /* Flag allocation requirements to shmem_getpage */
+> >  enum sgp_type {
+> >         SGP_READ,       /* don't exceed i_size, don't allocate page */
+> > +       SGP_NOALLOC,    /* like SGP_READ, but do use fallocated page */
+> 
+> The comment looks misleading, it seems SGP_NOALLOC does clear the
+> Uptodate flag but SGP_READ doesn't. Or it is fine not to distinguish
+> this difference?
 
-greg k-h
+I think you meant to say, SGP_NOALLOC does *set* the Uptodate flag but
+SGP_READ doesn't.  And a more significant difference, as coded to suit
+collapse_file(), is that SGP_NOALLOC returns failure on hole, whereas
+SGP_READ returns success: I should have mentioned that.
+
+When I wrote "like SGP_READ" there, I just meant "like what's said in
+the line above": would "ditto" be okay with you, and I say
+	SGP_NOALLOC,	/* ditto, but fail on hole, or use fallocated page */
+
+I don't really want to get into the "Uptodate" business there.
+And I'm afraid someone is going to ask me to write multi-line comments
+on each of those SGP_flags, and I'm going to plead "read the source"!
+
+Oh, now I see why you said SGP_NOALLOC does clear the Uptodate flag:
+"goto clear", haha: when we clear the page we set the Uptodate flag.
+
+And I may have another patch to slot in: I was half expecting you to
+question why SGP_READ behaves as it does, so in preparing its defence
+I checked, and found it was not doing quite what I remembered: changes
+were made a long time ago, which have left it slightly suboptimal.
+But that really has nothing to do with the rest of this series,
+and I don't need to run it past you before reposting.
+
+I hope that some of the features in this series can be useful to you.
+
+Thanks,
+Hugh
