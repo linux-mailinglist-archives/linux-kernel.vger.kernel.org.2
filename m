@@ -2,133 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705453E2898
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8AA3E289C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245088AbhHFKa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:30:58 -0400
-Received: from mga17.intel.com ([192.55.52.151]:44299 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231794AbhHFKa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:30:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="194617524"
-X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
-   d="scan'208";a="194617524"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 03:30:41 -0700
-X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
-   d="scan'208";a="481427756"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.29.52]) ([10.255.29.52])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 03:30:39 -0700
-Subject: Re: [kbuild-all] Re: make[2]: *** [arch/powerpc/Makefile.postlink:31:
- vmlinux] Error 1
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Feng Tang <feng.tang@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <202107301612.rQ29n76B-lkp@intel.com>
- <c3e9247d-95cd-718c-d8a5-f0cd5e5a3598@infradead.org>
- <176ab0a5-72dd-dc24-be64-6919cffba9ed@intel.com>
- <f0aa87df-89e2-05b0-52a0-c12236a1d778@infradead.org>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <4f38fd30-450e-b19e-f475-914fe0623d9d@intel.com>
-Date:   Fri, 6 Aug 2021 18:30:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S245102AbhHFKbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:31:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244908AbhHFKbl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 06:31:41 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4136C061799
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:31:24 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id y7so12397874eda.5
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 03:31:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/SdOA0uji50FSR13/XDPx4weRv/KxkeY+zmfiRSKHVU=;
+        b=YLQ0ExyEqhh+Ndr0E2FoKznXutZgcW6fp6swLkYTyCT+jp+/dNxi8HGdEgO1LdgkgS
+         AeUDS3Ivq9l1+Ux57KggrGJzBgelk4g9GudQLZ+mv7lF8AwhPyQQMWeLK+9ucH+uEkxp
+         zqWAcZDCbO7sC9X5qRbBe7I1isNpXJRI2LVuTvbz46tAYGJ6ho3WXTY5x3N8/1RdWcWo
+         yM0ly0MAxiSNN+X2ji4gW2O0wKwA35LCNnBhkFrjGmh2fz+O3/4NOQP6YLkqG1rz4lUp
+         P+kHok44xVzRkO3/lBmeMVeiNTggc7v0HgoUN76eI+hlSiMHVND5Cj0CJdxfzAUJcuV7
+         qBqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=/SdOA0uji50FSR13/XDPx4weRv/KxkeY+zmfiRSKHVU=;
+        b=mmlTIhnYoD20D/6bUBFYQ9ITYe3jmevxBFAqzA4VKebUQSEuCABHEnG+9UTT/UcPdg
+         J2D9jhrei4Vj7mBNpt9gUKDulsip3gCl8cgCC8IkqqQbYvDpCUZW5XLvt5vy5ornj4he
+         fFigTvavFC47Sm8hDhMaJy9DLp0MgGKC9WgHM3/IGEmlo33al/yn/mUO0R5WRN/v8jqM
+         NW8+3A90ENltrA6hnR4UbG3/xeH+pCOzHVS8t6zyVO0mwEk9DyDBrMoqwH0caB5k6Nfq
+         40WJlorGlYTOlnj2Aijj+ck3S83NlhnZabd0gU9ocSPiLlOg+UTqORDFThx4QKkbcNx6
+         L6pw==
+X-Gm-Message-State: AOAM531+UkEzMpMajJuDW01Uz/Uc9QVMLj0SBOghvRSxu9QDoha4b1UK
+        NH0auDYu9S+ZSF/uKHGw5BfRHMXj6asKtlip
+X-Google-Smtp-Source: ABdhPJwHmikLlTk+xILgOuQnia/v0mNRSDmWhPkeIRoviyGlpipqMGrdAl3VymOjhcMHhL5XIL+oMQ==
+X-Received: by 2002:a05:6402:1289:: with SMTP id w9mr12075996edv.127.1628245883311;
+        Fri, 06 Aug 2021 03:31:23 -0700 (PDT)
+Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id ec38sm3615755edb.40.2021.08.06.03.31.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 06 Aug 2021 03:31:23 -0700 (PDT)
+Sender: Michal Simek <monstr@monstr.eu>
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        devicetree@vger.kernel.org
+Subject: [PATCH] dt-bindings: timer: Remove binding for energymicro,efm32-timer.txt
+Date:   Fri,  6 Aug 2021 12:31:22 +0200
+Message-Id: <571fc4b2e6d41c61b7f4445601a79bb50aace2e7.1628245879.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <f0aa87df-89e2-05b0-52a0-c12236a1d778@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The driver has been removed by commit 523d83ef0979
+("clocksource/drivers/efm32: Drop unused timer code") that's why binding
+doc shouldn't be also valid anymore.
 
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
 
-On 8/6/2021 3:25 AM, Randy Dunlap wrote:
-> On 8/5/21 3:28 AM, Chen, Rong A wrote:
->>
->>
->> On 8/4/2021 11:10 AM, Randy Dunlap wrote:
->>> On 7/30/21 1:29 AM, kernel test robot wrote:
->>>> tree: 
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 
->>>> master
->>>> head:   764a5bc89b12b82c18ce7ca5d7c1b10dd748a440
->>>> commit: cf536e185869d4815d506e777bcca6edd9966a6e Makefile: extend 
->>>> 32B aligned debug option to 64B aligned
->>>> date:   10 weeks ago
->>>> config: powerpc64-randconfig-c023-20210730 (attached as .config)
->>>> compiler: powerpc-linux-gcc (GCC) 10.3.0
->>>> reproduce (this is a W=1 build):
->>>>          wget 
->>>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
->>>> -O ~/bin/make.cross
->>>>          chmod +x ~/bin/make.cross
->>>>          # 
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cf536e185869d4815d506e777bcca6edd9966a6e 
->>>>
->>>>          git remote add linus 
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>>>          git fetch --no-tags linus master
->>>>          git checkout cf536e185869d4815d506e777bcca6edd9966a6e
->>>>          # save the attached .config to linux build tree
->>>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 
->>>> make.cross ARCH=powerpc64
->>>>
->>>> If you fix the issue, kindly add following tag as appropriate
->>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>
->>>> All errors (new ones prefixed by >>):
->>>>
->>>>>> make[2]: *** [arch/powerpc/Makefile.postlink:31: vmlinux] Error 1
->>>>
->>>> ---
->>>
->>> Hi ktr/lkp,
->>>
->>> This is not "All errors". I suggest that you improve your output by
->>> (also) grepping for "ERROR:", so that the following lines would be
->>> included here:
->>>
->>> ERROR: start_text address is c000000000000200, should be 
->>> c000000000000100
->>> ERROR: try to enable LD_HEAD_STUB_CATCH config option
->>> ERROR: see comments in arch/powerpc/tools/head_check.sh
->>
->> Hi Randy,
->>
->> Thanks for the advice, the "ERROR:" lines weren't redirected to 
->> stderr, so the bot didn't notice them, it looks difficult to change 
->> the output.
-> 
-> Hi Rong,
-> 
-> So 0day bot only checks stderr for errors?
+ .../timer/energymicro,efm32-timer.txt         | 23 -------------------
+ 1 file changed, 23 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/timer/energymicro,efm32-timer.txt
 
-yes, as far as it goes.
+diff --git a/Documentation/devicetree/bindings/timer/energymicro,efm32-timer.txt b/Documentation/devicetree/bindings/timer/energymicro,efm32-timer.txt
+deleted file mode 100644
+index e502c11b2211..000000000000
+--- a/Documentation/devicetree/bindings/timer/energymicro,efm32-timer.txt
++++ /dev/null
+@@ -1,23 +0,0 @@
+-* EFM32 timer hardware
+-
+-The efm32 Giant Gecko SoCs come with four 16 bit timers. Two counters can be
+-connected to form a 32 bit counter. Each timer has three Compare/Capture
+-channels and can be used as PWM or Quadrature Decoder. Available clock sources
+-are the cpu's HFPERCLK (with a 10-bit prescaler) or an external pin.
+-
+-Required properties:
+-- compatible : Should be "energymicro,efm32-timer"
+-- reg : Address and length of the register set
+-- clocks : Should contain a reference to the HFPERCLK
+-
+-Optional properties:
+-- interrupts : Reference to the timer interrupt
+-
+-Example:
+-
+-timer@40010c00 {
+-	compatible = "energymicro,efm32-timer";
+-	reg = <0x40010c00 0x400>;
+-	interrupts = <14>;
+-	clocks = <&cmu clk_HFPERCLKTIMER3>;
+-};
+-- 
+2.32.0
 
-Best Regards,
-Rong Chen
-
-> That is almost reasonable (IMO).
-> 
-> Michael, in the file arch/powerpc/tools/head_check.sh,
-> what do you think about redirecting all of the ERROR: lines
-> to stdout (echo "..." >&2)?
-> 
-> 
->> Best Regards,
->> Rong Chen
->>
->>>
->>>
->>> and yes, enabling LD_HEAD_STUB_CATCH does fix this build error.
-> 
-> 
-> 
->>> thanks.
-> 
