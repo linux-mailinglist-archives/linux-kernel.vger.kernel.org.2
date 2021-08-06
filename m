@@ -2,75 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0F93E26B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0693E26BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244057AbhHFJEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 05:04:39 -0400
-Received: from mga11.intel.com ([192.55.52.93]:10069 "EHLO mga11.intel.com"
+        id S244072AbhHFJFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:05:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243794AbhHFJEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:04:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="211233378"
-X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
-   d="scan'208";a="211233378"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 02:04:21 -0700
-X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
-   d="scan'208";a="672125541"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 02:04:19 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mBvm1-005lgs-Rb; Fri, 06 Aug 2021 12:04:13 +0300
-Date:   Fri, 6 Aug 2021 12:04:13 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Gross <mgross@linux.intel.com>
-Subject: Re: [RFT, PATCH v1 1/1] platform/x86: dell-smo8800: Convert to be a
- platform driver
-Message-ID: <YQz7DV4lOSD7+RJ8@smile.fi.intel.com>
-References: <20210803194039.35083-1-andriy.shevchenko@linux.intel.com>
- <20210805192221.s7uoi5gh6zzkqinh@pali>
+        id S243794AbhHFJFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 05:05:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1797611C9;
+        Fri,  6 Aug 2021 09:05:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628240721;
+        bh=TNTkDivd9iEayXno0KqWQGcsGWF9R2u7kmQVVbQ599o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IOIlyUjaXAIuXdnTMnPwQo/aRvckN2cFjeGIwEcVA/JnWN635BXz1yFWYglNQMCMw
+         ENAcRMHBLzQ98S4YcQHfrrcChDNFN68+q4cx1Qy/Pe49/qq5tx90bTAucGYSB2JSni
+         YTdk54Q6ES6FoHBhAqT8F9lDvwLJ6rrZGI9fMmaC6tz1V7uk3TBMRhp1pdSHdPe9Un
+         aUyeeMoUGhMWaLS0VuY1J30l9Fj0kKVM+xNLaxXUL7OMTBKZYtqnhYTOJq1s/hGtQp
+         RKNks++OVG9nii5IZ0RhnXR4YoDT8P/gPx7HRgJLyLDPFDfmaLDinjrDMqDk8dSmRi
+         vgKuh03oMWIyw==
+Received: by mail-oo1-f52.google.com with SMTP id z3-20020a4a98430000b029025f4693434bso2060550ooi.3;
+        Fri, 06 Aug 2021 02:05:21 -0700 (PDT)
+X-Gm-Message-State: AOAM530mDlKZhDKT503b/V+fR1LydP/L/jcAClk6DiJdWdLG1YURb1c6
+        uAiDtsgyrqpeyV4Er8GoNsdrzBrzCM4Tnqp+Wrc=
+X-Google-Smtp-Source: ABdhPJx5KVGcVwubPN1s9jELV2wY6UX+s5VXewRK26P7IoSSx07z6hMOluoz7TrsWlBZBqLl7JuHLA5ZfZ/G3bchqXE=
+X-Received: by 2002:a4a:e750:: with SMTP id n16mr4229495oov.13.1628240721001;
+ Fri, 06 Aug 2021 02:05:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210805192221.s7uoi5gh6zzkqinh@pali>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210730134155.1005358-1-chouhan.shreyansh630@gmail.com> <20210806082320.GA12731@gondor.apana.org.au>
+In-Reply-To: <20210806082320.GA12731@gondor.apana.org.au>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 6 Aug 2021 11:05:09 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFnCK5xiuGzxkj6rOP43a7OuA7uUP9-eJqsgb54MmuZPQ@mail.gmail.com>
+Message-ID: <CAMj1kXFnCK5xiuGzxkj6rOP43a7OuA7uUP9-eJqsgb54MmuZPQ@mail.gmail.com>
+Subject: Re: [PATCH] crypto: add missing kernel_fpu_end() call
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 09:22:21PM +0200, Pali Rohár wrote:
-> On Tuesday 03 August 2021 22:40:39 Andy Shevchenko wrote:
-> > ACPI core in conjunction with platform driver core provides
-> > an infrastructure to enumerate ACPI devices. Use it in order
-> > to remove a lot of boilerplate code.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> Tested on Dell Latitude E6440. After applying this patch /dev/freefall
-> device is created and can be opened (for waiting for disk fall). Also
-> interrupt is registered in /proc/interrupts file:
-> 
->  23:          0          0          0          0  IR-IO-APIC  23-edge      smo8800
-> 
-> But I have not done real hard disk fall on this machine :-) so I guess
-> it would work as before applying this patch.
+On Fri, 6 Aug 2021 at 10:23, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>
+> On Fri, Jul 30, 2021 at 07:11:55PM +0530, Shreyansh Chouhan wrote:
+> > xts_crypt() code doesn't call kernel_fpu_end() after calling
+> > kernel_fpu_begin() if walk.nbytes is 0. Add a call to kernel_fpu_end()
+> > for this case.
+> >
+> > Reported-by: syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+> > Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+> > ---
+> >  arch/x86/crypto/aesni-intel_glue.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+>
+> Ard?
+>
+> > diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
+> > index 2144e54a6c89..bd55a0cd7bde 100644
+> > --- a/arch/x86/crypto/aesni-intel_glue.c
+> > +++ b/arch/x86/crypto/aesni-intel_glue.c
+> > @@ -894,6 +894,9 @@ static int xts_crypt(struct skcipher_request *req, bool encrypt)
+> >                       kernel_fpu_begin();
+> >       }
+> >
+> > +     if (walk.nbytes == 0)
+> > +             kernel_fpu_end();
+> > +
 
-At least the change doesn't touch any functional parts except device driver
-enumeration.
-
-> Reviewed-by: Pali Rohár <pali@kernel.org>
-> Tested-by: Pali Rohár <pali@kernel.org>
-
-Thank you!
-
--- 
-With Best Regards,
-Andy Shevchenko
+Don't we end up calling kernel_fpu_end() twice this way if we do enter
+the while() loop at least once?
 
 
+> >       if (unlikely(tail > 0 && !err)) {
+> >               struct scatterlist sg_src[2], sg_dst[2];
+> >               struct scatterlist *src, *dst;
+> > --
+> > 2.31.1
+>
+> --
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
