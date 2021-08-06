@@ -2,141 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EEB03E294E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB263E294C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245381AbhHFLQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:16:28 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3604 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229836AbhHFLQ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:16:27 -0400
-Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Gh2w70PJGz6BCPp;
-        Fri,  6 Aug 2021 19:15:51 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 6 Aug 2021 13:16:09 +0200
-Received: from localhost (10.52.123.57) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 6 Aug 2021
- 12:16:08 +0100
-Date:   Fri, 6 Aug 2021 12:15:38 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Linux Doc Mailing List" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-Message-ID: <20210806121538.00004e7d@Huawei.com>
-In-Reply-To: <CAPcyv4g1oBU3J3qpd+hDy9cKMYqn0FAsAO4BxxfrNCnpaxzO9g@mail.gmail.com>
-References: <YQuYCePPZEmVbkfc@kroah.com>
-        <YQuZdVuaGG/Cr62y@kroah.com>
-        <YQuaJ78y8j1UmBoz@kroah.com>
-        <fdf8b6b6-58c3-8392-2fc6-1908a314e991@linux.intel.com>
-        <YQwlHrJBw79xhTSI@kroah.com>
-        <21db8884-5aa1-3971-79ef-f173a0a95bef@linux.intel.com>
-        <YQwpa+LAYt7YZ5dh@kroah.com>
-        <7d6751b1-c476-51d3-25c6-b65c0e93d23b@linux.intel.com>
-        <YQw4AEwIUGe3RpCx@kroah.com>
-        <CAPcyv4gV9GK93rgtoHxhshzDGk0ueJn0d9LXYitJ8=wJWzmWHg@mail.gmail.com>
-        <YQw71hBx4/w14Fir@kroah.com>
-        <CAPcyv4g1oBU3J3qpd+hDy9cKMYqn0FAsAO4BxxfrNCnpaxzO9g@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S245372AbhHFLQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:16:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240038AbhHFLP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 07:15:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 119EE601FD;
+        Fri,  6 Aug 2021 11:15:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628248543;
+        bh=wRWDcF2YvttmXXcK3mW0+9W5kfOoLugUDOW/UaWhK/g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZFfadV2wZfUfftS3tuNCS3lDCRxqy0SIxSA7Pd3Na7gyPSfqrr+73Q22PCgXbtowU
+         BsmhB8kV1szXFyghUE8sotwL8y5F2LaQ9l+F9hRc4oxDLYN9QbFJWB4xFdS3Xykmzs
+         ydsERGOAGgw56NIyrWtqpvdF/mSRSzEhPj5wo2LQQ3JsjB2rrnQxI+n2tJluq8qHoz
+         eXOLxF0fI4XiRYT2ey8J2UpTzsCymIqUL2epYxRe45N31oZtMNJscdatxENnJesvya
+         nMyJueJmj9inE8RcsrUqLYZc0lc9HU7EqdF+yMQdDNYNDEA1m806m/I6h5VAD8zpAS
+         VFNj8KiBfOG+g==
+Date:   Fri, 6 Aug 2021 16:45:39 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Peter Chen <peter.chen@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v3 4/7] phy: cdns-dphy: Add Rx support
+Message-ID: <YQ0Z2wYQYAFn2KCY@matsya>
+References: <20210624184108.21312-1-p.yadav@ti.com>
+ <20210624184108.21312-5-p.yadav@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.123.57]
-X-ClientProxiedBy: lhreml740-chm.china.huawei.com (10.201.108.190) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210624184108.21312-5-p.yadav@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Aug 2021 12:52:30 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
-
-> [ add Jonathan ]
+On 25-06-21, 00:11, Pratyush Yadav wrote:
+> The Cadence DPHY can be used to receive image data over the CSI-2
+> protocol. Add support for Rx mode. The programming sequence differs from
+> the Tx mode so it is added as a separate set of hooks to isolate the two
+> paths.
 > 
-> On Thu, Aug 5, 2021 at 12:28 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Thu, Aug 05, 2021 at 12:18:12PM -0700, Dan Williams wrote:  
-> > > On Thu, Aug 5, 2021 at 12:12 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:  
-> > > >
-> > > > On Thu, Aug 05, 2021 at 11:53:52AM -0700, Kuppuswamy, Sathyanarayanan wrote:  
-> > > > > I am not sure how USB and Thunderbolt "authorzied" model works. But I
-> > > > > don't think it prevents built-in driver probes during kernel boot right?  
-> > > >
-> > > > Yes it does.
-> > > >
-> > > > Again Intel created this framework well over a decade ago for busses
-> > > > that it deemed that it did not want to "trust" to instantly probe
-> > > > drivers for and made it part of the Wireless USB specification.
-> > > >
-> > > > Then Intel went and added the same framework to Thunderbolt for the same
-> > > > reason.
-> > > >
-> > > > To ignore this work is quite odd, you might want to talk to your
-> > > > coworkers...  
-> > >
-> > > Sometimes we need upstream to connect us wayward drones back into the
-> > > hive mind. Forgive me for not immediately recognizing that the
-> > > existing 'authorized' mechanisms might be repurposed for this use
-> > > case.  
-> >
-> > Not your fault, I'm more amazed that Andi doesn't remember this, he's
-> > been around longer :)
-> >  
+> The PHY is in Tx mode by default and it needs to be set in Rx mode by
+> setting the submode to PHY_MIPI_DPHY_SUBMODE_RX in the set_mode()
+> callback.
 > 
-> In the driver core? No, not so much, and I do remember it flying by,
-> just did not connect the dots. In fact, it had just gone upstream when
-> you and I had that thread about blocking PCI drivers [1], September
-> 2017 vs June 2017 when the Thunderbolt connection manager was merged.
-> There was no internal review process back then so I failed to
-> internalize its implications for this TDX filter. You had taken the
-> time to review it in a way that I had not.
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 > 
-> > But the first instinct should not be "let's go add a new feature", but
-> > rather, "how has this problem been solved by others first" because,
-> > really, this is not a new issue at all.  You should not rely on just me
-> > to point out existing kernel features, we do have documentation you
-> > know...  
+> ---
 > 
-> I have added, "review driver core attribute proposal for duplication
-> of bus-local capabilities" to my review checklist.
+> Changes in v3:
+> - Use a table to select the band.
+> - Use a table to poll the data lane ready bits.
+> - Multiply the DPHY HS clock rate by 2 to get the bit rate since the
+>   clock is DDR.
 > 
-> The good news is I think this generic authorization support in the
-> core may answer one of Jonathan's questions about how to integrate PCI
-> SPDM/CMA support [2].
-
-Definitely an interesting discussion, and the SPDM stuff
-feeds into Greg's point about establishing trust with hardware.
-
-If anyone is looking at the USB authentication specification (which is
-more or less SPDM), would be good to align on that.
-
-My current model is really basic (driver checks and fails probe if
-failure occurs). Definitely better to bolt into standard approach.
-
-*Goes off to read up on this topic*
-
-Thanks for highlighting this thread Dan,
-
-Jonathan
-
+>  drivers/phy/cadence/cdns-dphy.c | 174 ++++++++++++++++++++++++++++++++
+>  1 file changed, 174 insertions(+)
 > 
-> [1]: https://lore.kernel.org/lkml/20170928090901.GC12599@kroah.com/
-> [2]: https://lore.kernel.org/r/20210804161839.3492053-1-Jonathan.Cameron@huawei.com
+> diff --git a/drivers/phy/cadence/cdns-dphy.c b/drivers/phy/cadence/cdns-dphy.c
+> index 7d5f7b333893..7534ec957dc5 100644
+> --- a/drivers/phy/cadence/cdns-dphy.c
+> +++ b/drivers/phy/cadence/cdns-dphy.c
+> @@ -1,11 +1,14 @@
+>  // SPDX-License-Identifier: GPL-2.0+
+>  /*
+>   * Copyright: 2017-2018 Cadence Design Systems, Inc.
+> + * Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com/
+>   */
+>  
+>  #include <linux/bitops.h>
+> +#include <linux/bitfield.h>
+>  #include <linux/clk.h>
+>  #include <linux/io.h>
+> +#include <linux/iopoll.h>
+>  #include <linux/module.h>
+>  #include <linux/of_address.h>
+>  #include <linux/of_device.h>
+> @@ -25,10 +28,14 @@
+>  #define DPHY_PMA_RCLK(reg)		(0x600 + (reg))
+>  #define DPHY_PMA_RDATA(lane, reg)	(0x700 + ((lane) * 0x100) + (reg))
+>  #define DPHY_PCS(reg)			(0xb00 + (reg))
+> +#define DPHY_ISO(reg)			(0xc00 + (reg))
+>  
+>  #define DPHY_CMN_SSM			DPHY_PMA_CMN(0x20)
+>  #define DPHY_CMN_SSM_EN			BIT(0)
+> +#define DPHY_CMN_RX_BANDGAP_TIMER_MASK	GENMASK(8, 1)
+>  #define DPHY_CMN_TX_MODE_EN		BIT(9)
+> +#define DPHY_CMN_RX_MODE_EN		BIT(10)
+> +#define DPHY_CMN_RX_BANDGAP_TIMER	0x14
+>  
+>  #define DPHY_CMN_PWM			DPHY_PMA_CMN(0x40)
+>  #define DPHY_CMN_PWM_DIV(x)		((x) << 20)
+> @@ -45,10 +52,27 @@
+>  #define DPHY_CMN_OPDIV_FROM_REG		BIT(6)
+>  #define DPHY_CMN_OPDIV(x)		((x) << 7)
+>  
+> +#define DPHY_BAND_CFG			DPHY_PCS(0x0)
+> +#define DPHY_BAND_CFG_LEFT_BAND		GENMASK(4, 0)
+> +#define DPHY_BAND_CFG_RIGHT_BAND	GENMASK(9, 5)
+> +
+>  #define DPHY_PSM_CFG			DPHY_PCS(0x4)
+>  #define DPHY_PSM_CFG_FROM_REG		BIT(0)
+>  #define DPHY_PSM_CLK_DIV(x)		((x) << 1)
+>  
+> +#define DPHY_POWER_ISLAND_EN_DATA	DPHY_PCS(0x8)
+> +#define DPHY_POWER_ISLAND_EN_DATA_VAL	0xaaaaaaaa
+> +#define DPHY_POWER_ISLAND_EN_CLK	DPHY_PCS(0xc)
+> +#define DPHY_POWER_ISLAND_EN_CLK_VAL	0xaa
+> +
+> +#define DPHY_ISO_CL_CTRL_L		DPHY_ISO(0x10)
+> +#define DPHY_ISO_DL_CTRL_L0		DPHY_ISO(0x14)
+> +#define DPHY_ISO_DL_CTRL_L1		DPHY_ISO(0x20)
+> +#define DPHY_ISO_DL_CTRL_L2		DPHY_ISO(0x30)
+> +#define DPHY_ISO_DL_CTRL_L3		DPHY_ISO(0x3c)
+> +#define DPHY_ISO_LANE_READY_BIT		0
+> +#define DPHY_ISO_LANE_READY_TIMEOUT_MS	100UL
+> +
+>  #define DSI_HBP_FRAME_OVERHEAD		12
+>  #define DSI_HSA_FRAME_OVERHEAD		14
+>  #define DSI_HFP_FRAME_OVERHEAD		6
+> @@ -57,6 +81,9 @@
+>  #define DSI_NULL_FRAME_OVERHEAD		6
+>  #define DSI_EOT_PKT_SIZE		4
+>  
+> +#define DPHY_LANES_MIN			1
+> +#define DPHY_LANES_MAX			4
+> +
+>  struct cdns_dphy_cfg {
+>  	u8 pll_ipdiv;
+>  	u8 pll_opdiv;
+> @@ -103,6 +130,22 @@ struct cdns_dphy_driver_data {
+>  	const struct cdns_dphy_ops *rx;
+>  };
+>  
+> +struct cdns_dphy_rx_band {
+> +	unsigned int min_rate;
+> +	unsigned int max_rate;
+> +};
+> +
+> +/* Order of bands is important since the index is the band number. */
+> +struct cdns_dphy_rx_band bands[] = {
+> +	{80, 100}, {100, 120}, {120, 160}, {160, 200}, {200, 240},
+> +	{240, 280}, {280, 320}, {320, 360}, {360, 400}, {400, 480},
+> +	{480, 560}, {560, 640}, {640, 720}, {720, 800}, {800, 880},
+> +	{880, 1040}, {1040, 1200}, {1200, 1350}, {1350, 1500}, {1500, 1750},
+> +	{1750, 2000}, {2000, 2250}, {2250, 2500}
+> +};
+> +
+> +int num_bands = ARRAY_SIZE(bands);
+> +
+>  static int cdns_dsi_get_dphy_pll_cfg(struct cdns_dphy *dphy,
+>  				     struct cdns_dphy_cfg *cfg,
+>  				     struct phy_configure_opts_mipi_dphy *opts,
+> @@ -312,6 +355,135 @@ static const struct cdns_dphy_ops tx_ref_dphy_ops = {
+>  	.set_psm_div = cdns_dphy_ref_set_psm_div,
+>  };
+>  
+> +static int cdns_dphy_rx_power_on(struct cdns_dphy *dphy)
+> +{
+> +	/* Start RX state machine. */
+> +	writel(DPHY_CMN_SSM_EN | DPHY_CMN_RX_MODE_EN |
+> +	       FIELD_PREP(DPHY_CMN_RX_BANDGAP_TIMER_MASK,
+> +			  DPHY_CMN_RX_BANDGAP_TIMER),
+> +	       dphy->regs + DPHY_CMN_SSM);
+> +
+> +	return 0;
+> +}
+> +
+> +static int cdns_dphy_rx_power_off(struct cdns_dphy *dphy)
+> +{
+> +	writel(0, dphy->regs + DPHY_CMN_SSM);
+> +
+> +	return 0;
+> +}
+> +
+> +static int cdns_dphy_rx_get_band_ctrl(unsigned long hs_clk_rate)
+> +{
+> +	unsigned int rate;
+> +	int i;
+> +
+> +	rate = hs_clk_rate / 1000000UL;
+> +	/* Since CSI-2 clock is DDR, the bit rate is twice the clock rate. */
+> +	rate *= 2;
+> +
+> +	if (rate < bands[0].min_rate || rate >= bands[num_bands - 1].max_rate)
+> +		return -EOPNOTSUPP;
+> +
+> +	for (i = 0; i < num_bands; i++) {
+> +		if (rate >= bands[i].min_rate && rate < bands[i].max_rate)
+> +			return i;
+> +	}
+> +
+> +	/* Unreachable. */
+> +	WARN(1, "Reached unreachable code.");
+> +	return -EINVAL;
+> +}
+> +
+> +static int cdns_dphy_rx_wait_for_bit(void __iomem *addr, unsigned int bit)
+> +{
+> +	u32 val;
+> +
+> +	return readl_relaxed_poll_timeout(addr, val, val & BIT(bit), 10,
+> +					  DPHY_ISO_LANE_READY_TIMEOUT_MS * 1000);
 
+this looks wrong, val is not initialized, so what/when is condition to
+be met..?
+-- 
+~Vinod
