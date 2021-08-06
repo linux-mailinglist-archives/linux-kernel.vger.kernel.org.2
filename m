@@ -2,156 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AAF63E2549
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9E13E258F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242946AbhHFITB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:19:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46830 "EHLO mail.kernel.org"
+        id S243752AbhHFIUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:20:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243998AbhHFIQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:16:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A80F61205;
-        Fri,  6 Aug 2021 08:16:16 +0000 (UTC)
+        id S244076AbhHFISe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:18:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 374826120F;
+        Fri,  6 Aug 2021 08:18:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628237776;
-        bh=5Abe2X7deOpV8qBiC/8PkTAVKIbX3prv6qZg1VjtK3c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cj2/I7uev1BNNOEE4n2WQdONbrN0bsCNSiCIXCZE+iGvFu2gRmG5BLzMfyV2RPapQ
-         hjkREHMTO4bJ4WEXy/pU4HQwBkoZSZzxbw8jcCGY3BK6d0X30OFqswiEy2kZfC2Efv
-         VSyNeOHM9rjbz0qQnAvhISf1Tl1x1V9HU19gZ7Xk=
+        s=korg; t=1628237896;
+        bh=ezieQ8IoVR0D/G8ChF9rSrfAccx9aT4VBjwCOrO+AsM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ayTsTgCrw60Yceeuyo94nswOgIL/gMj3+bu11iB3QSbCgjlOVVqYbQk3Uae04WMZX
+         gi15tTgET0jDU6skRQEaUCyeK2z8pRfDdjHxONLpPk6vCjOx1QH55vHvZumr/lcmBt
+         U0Wdo2Y+f4ObDBYX+9ZlZ7NGYbZOU8Es2lEYUOVI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        linux-crypto@vger.kernel.org,
-        Yang Yingliang <yangyingliang@huawei.com>
-Subject: [PATCH 4.19 16/16] padata: add separate cpuhp node for CPUHP_PADATA_DEAD
-Date:   Fri,  6 Aug 2021 10:15:07 +0200
-Message-Id: <20210806081111.662287213@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.4 00/23] 5.4.139-rc1 review
+Date:   Fri,  6 Aug 2021 10:16:32 +0200
+Message-Id: <20210806081112.104686873@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210806081111.144943357@linuxfoundation.org>
-References: <20210806081111.144943357@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.139-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.4.139-rc1
+X-KernelTest-Deadline: 2021-08-08T08:11+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Jordan <daniel.m.jordan@oracle.com>
+This is the start of the stable review cycle for the 5.4.139 release.
+There are 23 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit 3c2214b6027ff37945799de717c417212e1a8c54 upstream.
+Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
+Anything received after that time might be too late.
 
-Removing the pcrypt module triggers this:
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.139-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+and the diffstat can be found below.
 
-  general protection fault, probably for non-canonical
-    address 0xdead000000000122
-  CPU: 5 PID: 264 Comm: modprobe Not tainted 5.6.0+ #2
-  Hardware name: QEMU Standard PC
-  RIP: 0010:__cpuhp_state_remove_instance+0xcc/0x120
-  Call Trace:
-   padata_sysfs_release+0x74/0xce
-   kobject_put+0x81/0xd0
-   padata_free+0x12/0x20
-   pcrypt_exit+0x43/0x8ee [pcrypt]
+thanks,
 
-padata instances wrongly use the same hlist node for the online and dead
-states, so __padata_free()'s second cpuhp remove call chokes on the node
-that the first poisoned.
+greg k-h
 
-cpuhp multi-instance callbacks only walk forward in cpuhp_step->list and
-the same node is linked in both the online and dead lists, so the list
-corruption that results from padata_alloc() adding the node to a second
-list without removing it from the first doesn't cause problems as long
-as no instances are freed.
+-------------
+Pseudo-Shortlog of commits:
 
-Avoid the issue by giving each state its own node.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.4.139-rc1
 
-Fixes: 894c9ef9780c ("padata: validate cpumask without removed CPU during offline")
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org # v5.4+
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/linux/padata.h |    6 ++++--
- kernel/padata.c        |   14 ++++++++------
- 2 files changed, 12 insertions(+), 8 deletions(-)
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf, selftests: Adjust few selftest outcomes wrt unreachable code
 
---- a/include/linux/padata.h
-+++ b/include/linux/padata.h
-@@ -138,7 +138,8 @@ struct parallel_data {
- /**
-  * struct padata_instance - The overall control structure.
-  *
-- * @cpu_notifier: cpu hotplug notifier.
-+ * @cpu_online_node: Linkage for CPU online callback.
-+ * @cpu_dead_node: Linkage for CPU offline callback.
-  * @wq: The workqueue in use.
-  * @pd: The internal control structure.
-  * @cpumask: User supplied cpumasks for parallel and serial works.
-@@ -150,7 +151,8 @@ struct parallel_data {
-  * @flags: padata flags.
-  */
- struct padata_instance {
--	struct hlist_node		 node;
-+	struct hlist_node		cpu_online_node;
-+	struct hlist_node		cpu_dead_node;
- 	struct workqueue_struct		*wq;
- 	struct parallel_data		*pd;
- 	struct padata_cpumask		cpumask;
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -748,7 +748,7 @@ static int padata_cpu_online(unsigned in
- 	struct padata_instance *pinst;
- 	int ret;
- 
--	pinst = hlist_entry_safe(node, struct padata_instance, node);
-+	pinst = hlist_entry_safe(node, struct padata_instance, cpu_online_node);
- 	if (!pinst_has_cpu(pinst, cpu))
- 		return 0;
- 
-@@ -763,7 +763,7 @@ static int padata_cpu_dead(unsigned int
- 	struct padata_instance *pinst;
- 	int ret;
- 
--	pinst = hlist_entry_safe(node, struct padata_instance, node);
-+	pinst = hlist_entry_safe(node, struct padata_instance, cpu_dead_node);
- 	if (!pinst_has_cpu(pinst, cpu))
- 		return 0;
- 
-@@ -779,8 +779,9 @@ static enum cpuhp_state hp_online;
- static void __padata_free(struct padata_instance *pinst)
- {
- #ifdef CONFIG_HOTPLUG_CPU
--	cpuhp_state_remove_instance_nocalls(CPUHP_PADATA_DEAD, &pinst->node);
--	cpuhp_state_remove_instance_nocalls(hp_online, &pinst->node);
-+	cpuhp_state_remove_instance_nocalls(CPUHP_PADATA_DEAD,
-+					    &pinst->cpu_dead_node);
-+	cpuhp_state_remove_instance_nocalls(hp_online, &pinst->cpu_online_node);
- #endif
- 
- 	padata_stop(pinst);
-@@ -964,9 +965,10 @@ static struct padata_instance *padata_al
- 	mutex_init(&pinst->lock);
- 
- #ifdef CONFIG_HOTPLUG_CPU
--	cpuhp_state_add_instance_nocalls_cpuslocked(hp_online, &pinst->node);
-+	cpuhp_state_add_instance_nocalls_cpuslocked(hp_online,
-+						    &pinst->cpu_online_node);
- 	cpuhp_state_add_instance_nocalls_cpuslocked(CPUHP_PADATA_DEAD,
--						    &pinst->node);
-+						    &pinst->cpu_dead_node);
- #endif
- 	return pinst;
- 
+John Fastabend <john.fastabend@gmail.com>
+    bpf, selftests: Add a verifier test for assigning 32bit reg states to 64bit ones
+
+John Fastabend <john.fastabend@gmail.com>
+    bpf: Test_verifier, add alu32 bounds tracking tests
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Fix leakage under speculation on mispredicted branches
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Do not mark insn as seen under speculative path verification
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Inherit expanded/patched seen count from old aux data
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "watchdog: iTCO_wdt: Account for rebooting on second timeout"
+
+Cristian Marussi <cristian.marussi@arm.com>
+    firmware: arm_scmi: Add delayed response status check
+
+Sudeep Holla <sudeep.holla@arm.com>
+    firmware: arm_scmi: Ensure drivers provide a probe function
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "Bluetooth: Shutdown controller after workqueues are flushed or cancelled"
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "spi: mediatek: fix fifo rx mode"
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    ACPI: fix NULL pointer dereference
+
+Keith Busch <kbusch@kernel.org>
+    nvme: fix nvme_setup_command metadata trace event
+
+Pravin B Shelar <pshelar@ovn.org>
+    net: Fix zero-copy head len calculation.
+
+Jia He <justin.he@arm.com>
+    qed: fix possible unpaired spin_{un}lock_bh in _qed_mcp_cmd_and_union()
+
+Takashi Iwai <tiwai@suse.de>
+    r8152: Fix potential PM refcount imbalance
+
+Kyle Russell <bkylerussell@gmail.com>
+    ASoC: tlv320aic31xx: fix reversed bclk/wclk master bits
+
+Alain Volmat <alain.volmat@foss.st.com>
+    spi: stm32h7: fix full duplex irq handler handling
+
+Axel Lin <axel.lin@ingics.com>
+    regulator: rt5033: Fix n_voltages settings for BUCK and LDO
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: fix lost inode on log replay after mix of fsync, rename and inode eviction
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: fix race causing unnecessary inode logging during link and rename
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: do not commit logs and transactions during link and rename operations
+
+Randy Dunlap <rdunlap@infradead.org>
+    btrfs: delete duplicated words + other fixes in comments
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |   4 +-
+ drivers/firmware/arm_scmi/bus.c                    |   3 +
+ drivers/firmware/arm_scmi/driver.c                 |   8 +-
+ drivers/net/ethernet/qlogic/qed/qed_mcp.c          |  23 +++--
+ drivers/net/usb/r8152.c                            |   3 +-
+ drivers/nvme/host/trace.h                          |   6 +-
+ drivers/spi/spi-mt65xx.c                           |  16 +--
+ drivers/spi/spi-stm32.c                            |  15 +--
+ drivers/watchdog/iTCO_wdt.c                        |  12 +--
+ fs/btrfs/block-group.c                             |   2 +-
+ fs/btrfs/ctree.c                                   |   2 +-
+ fs/btrfs/disk-io.c                                 |   2 +-
+ fs/btrfs/extent_io.c                               |   2 +-
+ fs/btrfs/free-space-cache.c                        |   2 +-
+ fs/btrfs/inode.c                                   | 115 +++------------------
+ fs/btrfs/qgroup.c                                  |   2 +-
+ fs/btrfs/tree-log.c                                | 107 +++++++++----------
+ fs/btrfs/tree-log.h                                |  14 +--
+ include/acpi/acpi_bus.h                            |   3 +-
+ include/linux/mfd/rt5033-private.h                 |   4 +-
+ kernel/bpf/verifier.c                              |  65 ++++++++++--
+ net/bluetooth/hci_core.c                           |  16 +--
+ net/core/skbuff.c                                  |   5 +-
+ sound/soc/codecs/tlv320aic31xx.h                   |   4 +-
+ tools/testing/selftests/bpf/test_verifier.c        |   2 +-
+ tools/testing/selftests/bpf/verifier/bounds.c      |  65 ++++++++++++
+ tools/testing/selftests/bpf/verifier/dead_code.c   |   2 +
+ tools/testing/selftests/bpf/verifier/jmp32.c       |  22 ++++
+ tools/testing/selftests/bpf/verifier/jset.c        |  10 +-
+ tools/testing/selftests/bpf/verifier/unpriv.c      |   2 +
+ .../selftests/bpf/verifier/value_ptr_arith.c       |   7 +-
+ 31 files changed, 295 insertions(+), 250 deletions(-)
 
 
