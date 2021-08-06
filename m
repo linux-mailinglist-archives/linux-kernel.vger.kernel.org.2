@@ -2,81 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C213E203C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD8B3E202F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243096AbhHFAsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 20:48:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51334 "EHLO mail.kernel.org"
+        id S241662AbhHFAsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 20:48:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243074AbhHFAsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 20:48:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D492E61179;
-        Fri,  6 Aug 2021 00:48:24 +0000 (UTC)
+        id S229735AbhHFAsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 20:48:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58E4F61179;
+        Fri,  6 Aug 2021 00:48:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628210905;
-        bh=XCKCjF9rtbkSXxfMIlWo2vEd1fgxQl2IfyYBjvxa+hI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FPIx9KWHxyQ0k/Peet1kxIcywpTFGpHpIV515+nYyAD0Kqvt3ynOafhk6gcYR6E5n
-         nmrG80vYOvyXuyzhR141OV9ryDGDEwLP39QfZk1rbI5yGDcTbRCPHmJtKgZOuarVA0
-         9Deq/0fUPzN3b002dkawayfW4384ju7DpErkWzh8CQGtLvwF7jNO1md2q1aRKCQ9CS
-         TR71FkLNuY8mogaJwNuIfOb/a5zuD57cOY69kSGEHtt2Uvxxk24YrqNERjIEsyFCpc
-         +5TYikblKmXSohpJgNsAJLFDEorXDyjGv8997VyvqrHoKdguDElzmaeYQ9nNLH1mZE
-         GgS5K9cccWuuA==
+        s=k20201202; t=1628210887;
+        bh=EQVYbPRoxJQ4RDDnm9QlLivnidLNRB1ZkU1u4/jsb40=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uVRLF7TmG9WBy7/D1W7ZK6BhAarkTioUDyPc2Fg0Vf3OY+k/JxHfd0XBkRYQId1el
+         gn/Y2xiar/5/FvluK/+7C1Tc1l+yPxHnei2CWCIp0gLKf29ca9j/0A7bzu5D93i9HM
+         VEsGVT1+b2XUdQEhfLye6ANb+3njgeRe8RSbNii/tpq5TqUvrTL4XBQEr0zr/s/xU+
+         l4xGBJmksCVaDeil1jrNL6paz6nxDiRhoHHRbii3355dZhcHKRtm6OvuAB1etisJHm
+         xsxd0t8+rH5iP7hN+RnET/yb2dtBMc9CJ5Bp53G5gdqvA9CUKHwWCvXxMYuvgVUilH
+         xlQpTXIPYGQsQ==
+Date:   Fri, 6 Aug 2021 01:47:51 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v1] ASoC: rt5640: Silence warning message about missing interrupt
-Date:   Fri,  6 Aug 2021 01:47:49 +0100
-Message-Id: <162821054282.18754.14831223964648226804.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210802185258.1881-1-digetx@gmail.com>
-References: <20210802185258.1881-1-digetx@gmail.com>
+To:     "quanyang.wang" <quanyang.wang@windriver.com>
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: spi-zynq-qspi: use wait_for_completion_timeout to
+ make zynq_qspi_exec_mem_op not interruptible
+Message-ID: <20210806004751.GU26252@sirena.org.uk>
+References: <20210730031753.1317917-1-quanyang.wang@windriver.com>
+ <e639bfc1-ce6f-c5d3-6412-70d03706127d@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="msgLTjjeumHWYklJ"
+Content-Disposition: inline
+In-Reply-To: <e639bfc1-ce6f-c5d3-6412-70d03706127d@windriver.com>
+X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Aug 2021 21:52:58 +0300, Dmitry Osipenko wrote:
-> Interrupt is optional for the RT5640 codec. Nexus 7 doesn't use interrupt,
-> this results in a noisy warning message that looks like a error condition.
-> Make interrupt explicitly optional to silence the message, use modern
-> IRQF_NO_AUTOEN flag and correct the reg[q]uest typo in the message.
-> 
-> 
-> 
-> [...]
 
-Applied to
+--msgLTjjeumHWYklJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Fri, Aug 06, 2021 at 08:41:41AM +0800, quanyang.wang wrote:
+> ping.
 
-Thanks!
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
 
-[1/1] ASoC: rt5640: Silence warning message about missing interrupt
-      commit: 585fb31c2c3aad38a5add009171d7e3277b76d45
+Sending content free pings adds to the mail volume (if they are seen at
+all) which is often the problem and since they can't be reviewed
+directly if something has gone wrong you'll have to resend the patches
+anyway, so sending again is generally a better approach though there are
+some other maintainers who like them - if in doubt look at how patches
+for the subsystem are normally handled.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+--msgLTjjeumHWYklJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEMhrcACgkQJNaLcl1U
+h9BAkQf/XzqzDaswEkmzzfYPCGH2UHyvags44BukN9JEi3TbVUfxPl0fiGJPX3Kw
+60fLwAkhvh1q9aXtDwkb4CdUod2mXFQDIpONil6EZrTlx8TQ2WFJ/VrAnNNXAQ3I
+KiJNUlF7SIogdvLfMbAgN9F7HusIjSCL394xe2QfgvpisXSJGwRcjgXHqKFY8cEI
+33m/2bVvGqThj0YS8F87/lSFbEmnnvZE1/tcc7kS0l1y/aiZ5pKwCo570GdYSdhr
+HmPXGBSKKKCDg3VxKc2BH4zMZbbkwtR9DpvrNvr5gKFqUw/nkocgvQppu2QsJbA7
+VDcEWDEkn2ebe5v24TZFr/WNAueh8w==
+=CSVE
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--msgLTjjeumHWYklJ--
