@@ -2,118 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 715BB3E2185
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 04:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954FE3E218C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 04:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238836AbhHFCbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 22:31:05 -0400
-Received: from mo-csw1116.securemx.jp ([210.130.202.158]:50840 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235436AbhHFCbE (ORCPT
+        id S235436AbhHFCcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 22:32:51 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:47220 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230247AbhHFCct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 22:31:04 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 1762UM0Z018226; Fri, 6 Aug 2021 11:30:22 +0900
-X-Iguazu-Qid: 2wHH6p2Z55RWRMUUb5
-X-Iguazu-QSIG: v=2; s=0; t=1628217021; q=2wHH6p2Z55RWRMUUb5; m=XhIfeWvlkywXvJV7VPOP/gYb0Hv37lf82puMh8EKdu8=
-Received: from imx12-a.toshiba.co.jp (imx12-a.toshiba.co.jp [61.202.160.135])
-        by relay.securemx.jp (mx-mr1110) id 1762UJYa001048
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 6 Aug 2021 11:30:20 +0900
-Received: from enc02.toshiba.co.jp (enc02.toshiba.co.jp [61.202.160.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by imx12-a.toshiba.co.jp (Postfix) with ESMTPS id BB69910013E;
-        Fri,  6 Aug 2021 11:30:19 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 1762UJOf000469;
-        Fri, 6 Aug 2021 11:30:19 +0900
-Date:   Fri, 6 Aug 2021 11:30:17 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-pci@vger.kernel.org,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        devicetree@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] PCI: visconti: Add Toshiba Visconti PCIe host
- controller driver
-X-TSB-HOP: ON
-Message-ID: <20210806023017.jtd3uk3p7fgupy4m@toshiba.co.jp>
-References: <20210723221421.113575-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210723221421.113575-3-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210805105908.GA19244@lpieralisi>
+        Thu, 5 Aug 2021 22:32:49 -0400
+X-UUID: 09e01316fb6c4820b29f97c1ac351a03-20210806
+X-UUID: 09e01316fb6c4820b29f97c1ac351a03-20210806
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <derong.liu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1892728303; Fri, 06 Aug 2021 10:32:32 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 6 Aug 2021 10:32:30 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Fri, 6 Aug 2021 10:32:30 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 6 Aug 2021 10:32:29 +0800
+From:   Derong Liu <derong.liu@mediatek.com>
+To:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <linux-mmc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wsp_upstream@mediatek.com>,
+        Peng Zhou <peng.zhou@mediatek.com>,
+        Derong Liu <derong.liu@mediatek.com>
+Subject: [PATCH] mmc: mediatek: add wait dma stop done flow
+Date:   Fri, 6 Aug 2021 10:30:55 +0800
+Message-ID: <20210806023055.29524-1-derong.liu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805105908.GA19244@lpieralisi>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: mtk13858 <derong.liu@mediatek.com>
 
-Thank you for your review.
+it needs to wait for dma stop done after set dma stop.
 
-On Thu, Aug 05, 2021 at 11:59:08AM +0100, Lorenzo Pieralisi wrote:
-> On Sat, Jul 24, 2021 at 07:14:20AM +0900, Nobuhiro Iwamatsu wrote:
-> > Add support to PCIe RC controller on Toshiba Visconti ARM SoCs. PCIe
-> > controller is based of Synopsys DesignWare PCIe core.
-> > 
-> > This patch does not yet use the clock framework to control the clock.
-> > This will be replaced in the future.
-> 
-> This is not relevant information. I expect the commit log to describe
-> the change and the reasons behind the choices.
+Signed-off-by: mtk13858 <derong.liu@mediatek.com>
+---
+ drivers/mmc/host/mtk-sd.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-OK, I will drop this sentence.
-
-> 
-> Speaking of which, I'd like to understand what
-> 
-> > This patch does not yet use the clock framework to control the clock.
-> 
-> means and why it can't be done within this series.
-
-Visconti5 has a clock control IP, but the driver for this is still under
-development and has not been applied into mainline. Instead, the clock
-for this driver is running using DT's fixed-clock. This will be
-replaced by a clock driver.
-
-> 
-> > Signed-off-by: Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>
-> > Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> > 
-> > ---
-> >  drivers/pci/controller/dwc/Kconfig         |   9 +
-> >  drivers/pci/controller/dwc/Makefile        |   1 +
-> >  drivers/pci/controller/dwc/pcie-visconti.c | 333 +++++++++++++++++++++
-> >  3 files changed, 343 insertions(+)
-> >  create mode 100644 drivers/pci/controller/dwc/pcie-visconti.c
-> > 
-
-<snip>
-
-> > +
-> > +static int
-> > +visconti_add_pcie_port(struct visconti_pcie *pcie, struct platform_device *pdev)
-> 
-> Nit: don't split lines like this, it is better to keep return value
-> type and function name in one single line.
-> 
-> Do it like this:
-> 
-> static int visconti_add_pcie_port(struct visconti_pcie *pcie,
->  				  struct platform_device *pdev)
-> 
-
-OK, I will fix in v6.
-
-> Lorenzo
-> 
-
-
-Best regards,
-  Nobuhiro
+diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+index 4dfc246c5f95..1dfd2842471b 100644
+--- a/drivers/mmc/host/mtk-sd.c
++++ b/drivers/mmc/host/mtk-sd.c
+@@ -2339,6 +2339,8 @@ static void msdc_cqe_disable(struct mmc_host *mmc, bool recovery)
+ 	if (recovery) {
+ 		sdr_set_field(host->base + MSDC_DMA_CTRL,
+ 			      MSDC_DMA_CTRL_STOP, 1);
++		while (readl(host->base + MSDC_DMA_CFG) & MSDC_DMA_CFG_STS)
++			cpu_relax();
+ 		msdc_reset_hw(host);
+ 	}
+ }
+-- 
+2.18.0
 
