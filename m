@@ -2,73 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344043E2724
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BC73E2774
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244447AbhHFJWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 05:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243821AbhHFJWl (ORCPT
+        id S244613AbhHFJkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:40:18 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29106 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S244184AbhHFJkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:22:41 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0AC0C061799
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 02:22:25 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id ca5so15678486pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 02:22:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4e0e8RzJHNC8NMBSDrNb+O++Kfle4Og9kFyfQoKTp+Y=;
-        b=tPMSFqN689ucOJGdfodJAUX/dWUYhOjpbSQcBsw6vVF45SJ4pKulia0I5G16s0U0Sz
-         qz2IuEh7v8QBo+H6S1XLE9A9+d/TXDE/c1d0B0elSSP+St7keSGj6UFYdKmyJWlhjpG2
-         ydyRRN7cbFlIHm010nv/ypG9aE9sE1pMjOVrAVg3NnuyjryEf0GmG74LMcFrknqWdelw
-         bqPRwFvY3n0vlEw5bFynzJm/99MzXSxgxOW8x3gOlCdz0lvTGAqYsrh4CJSMYHVuogFp
-         xmLa9psx+JbOcQJBxdDR9BfRw8DB2IYJnvN20vE5WN9i/bfpeo05FXQ/TOTdX8MNerRw
-         kR9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4e0e8RzJHNC8NMBSDrNb+O++Kfle4Og9kFyfQoKTp+Y=;
-        b=HPwOYh4TPtGnGXh1L5BniMj8xv0Y6DYG2T4HWuoFjfDR6OOfgT82UlbePAbKmaBrnH
-         PGKrs8Ez1HuakvKa77czs8KMzOhnnelXU8EkQoKsnJvOWLz6LYVHwP4aBswyH6SWj56k
-         4cxcDiTG2UvGNnBNpKnDoRX5feks8p7Y5Wa6NoRU8lKPf5ZB3qBhyQEay5Tb9EDnT6jv
-         l4Q9jCZEmrMThamSLdpLYr9AgHSNuvPipgEgeRbW50DMh5ppGKlvqprlIAMuZK9Dp0O9
-         4qyJDL3etXwOaHobHl4nXWB4ZdO8Fff/RSQNO9BskE+cebHa4BXqyLEw4CK/iNaiwQeh
-         yRCw==
-X-Gm-Message-State: AOAM533gjOdF+WdT1zXJ+mcAKD+SX72taLGgq+1DQoASQpONSAUb5M2Q
-        H6JQ8b7jYrtWoVU5cXqOVVTFAMaNZAOm7DEOeb5xxA==
-X-Google-Smtp-Source: ABdhPJxtO9TQLjXBXT8b34CKFnwdZ8VY47y9UF1MPjqpnSRcDVModYWb7Ko1e3WykXeNwqXC1OCEWgHry60+UoKXx68=
-X-Received: by 2002:a17:90a:5982:: with SMTP id l2mr9575814pji.18.1628241745166;
- Fri, 06 Aug 2021 02:22:25 -0700 (PDT)
+        Fri, 6 Aug 2021 05:40:14 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1769XdLs095633;
+        Fri, 6 Aug 2021 05:39:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Es24adhOplHrbQpzTAx/TK8IcWMvknJcpk9DIPx9bPc=;
+ b=Yp1536M+UoTaAJ3cjbrt374gU67MAGzPpOtrKAQ9yG4q5G8tpnYBBNlSFkJiSzylegYp
+ S5d9ecllj750efumwlUf1BZlNYA99XWM5MbgLUdZ/s9czYI77u+WMVmiVk32lYZaEGyM
+ 4g3KKkU2zg8d2VNLCbDYywmSK+9oxnC2LRb3GOQwgFICvZj6fdFcqVeTD3ToGVbz3mq0
+ DVtyW7JJJA3AJ4cXGK+o3poBe8d+S8ddhGxxv/X2yebXejdEy6DoT6Zr6ZCsJ200a1Sl
+ pMkuzu0JVgKj1bV7EXM8n+o9zKf0WaUyPzVyh6uXldagoY8GRLLfOF15hSE20O17z1Ng hQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a8r5qwx3k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Aug 2021 05:39:58 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1769YVkn101646;
+        Fri, 6 Aug 2021 05:39:58 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3a8r5qwx2f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Aug 2021 05:39:58 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1769Vh8m007601;
+        Fri, 6 Aug 2021 09:34:56 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3a4wshvyf9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Aug 2021 09:34:56 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1769Yp6228836220
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Aug 2021 09:34:51 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BD55142056;
+        Fri,  6 Aug 2021 09:34:51 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 52A704204B;
+        Fri,  6 Aug 2021 09:34:51 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.6.208])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  6 Aug 2021 09:34:51 +0000 (GMT)
+Date:   Fri, 6 Aug 2021 11:32:44 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     kvm@vger.kernel.org, cohuck@redhat.com, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, thuth@redhat.com, pasic@linux.ibm.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulrich.Weigand@de.ibm.com
+Subject: Re: [PATCH v3 03/14] KVM: s390: pv: leak the ASCE page when destroy
+ fails
+Message-ID: <20210806113244.4d0712d2@p-imbrenda>
+In-Reply-To: <6b75cc71-b996-cf3d-ce57-dbcd475ebc3a@redhat.com>
+References: <20210804154046.88552-1-imbrenda@linux.ibm.com>
+        <20210804154046.88552-4-imbrenda@linux.ibm.com>
+        <6b75cc71-b996-cf3d-ce57-dbcd475ebc3a@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210806085413.61536-1-andriy.shevchenko@linux.intel.com> <20210806085413.61536-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210806085413.61536-2-andriy.shevchenko@linux.intel.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Fri, 6 Aug 2021 11:32:05 +0200
-Message-ID: <CAMZdPi-OWJBwso=ZMA7E0VKck0wGt-RsbTMBSX+q118c=TSPsA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] wwan: core: Unshadow error code returned by ida_alloc_range))
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 383vxRM3eEFQr1HkCojJn6nzT7c4RSec
+X-Proofpoint-ORIG-GUID: 7GKBbEyUDX3-Aax2ZTLr8Ea1xTGqDHn1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-06_02:2021-08-05,2021-08-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 clxscore=1015 mlxscore=0 suspectscore=0 phishscore=0
+ bulkscore=0 adultscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108060067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Aug 2021 at 11:00, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> ida_alloc_range)) may return other than -ENOMEM error code.
-> Unshadow it in the wwan_create_port().
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Fri, 6 Aug 2021 09:31:54 +0200
+David Hildenbrand <david@redhat.com> wrote:
 
-Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+> On 04.08.21 17:40, Claudio Imbrenda wrote:
+> > When a protected VM is created, the topmost level of page tables of
+> > its ASCE is marked by the Ultravisor; any attempt to use that
+> > memory for protected virtualization will result in failure.
+> > 
+> > Only a successful Destroy Configuration UVC will remove the marking.
+> > 
+> > When the Destroy Configuration UVC fails, the topmost level of page
+> > tables of the VM does not get its marking cleared; to avoid issues
+> > it must not be used again.
+> > 
+> > Since the page becomes in practice unusable, we set it aside and
+> > leak it.  
+> 
+> Instead of leaking, can't we add it to some list and try again later?
+> Or do we only expect permanent errors?
+
+once the secure VM has been destroyed unsuccessfully, there is nothing
+that can be done, this is a permanent error
+
+> Also, we really should bail out loud (pr_warn) to tell the admin that 
+> something really nasty is going on.
+
+when a destroy secure VM UVC fails, there are already other warnings
+printed, no need to add one more
+
