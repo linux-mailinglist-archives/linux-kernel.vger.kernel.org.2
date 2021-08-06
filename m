@@ -2,83 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8103E2EF4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 19:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE1563E2EF8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 19:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241631AbhHFRoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 13:44:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231776AbhHFRo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 13:44:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1BD96115C;
-        Fri,  6 Aug 2021 17:44:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628271851;
-        bh=uSuJHg6HLpSIc2RgweeUEidWnwRjqdoYEFwHJKSZkF0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rFOe6DyQWR6aPGFt0DZnkUKqtant8N5X5tglQZwhMJyn0kxSzByqc7T8s5NC0W2ue
-         6bULkEjc/9DTmB9ibbBT7q8kC5RYDihSOjBxTCbYLRSUwWDlvvBRONEWLc2T4DqcFd
-         XR+VAeTVfXIHYmLi/W9pKw+qIPxzmBSWFxb6lOUgakcyouuz8V9OHQNZ/6Dv6Jnkdd
-         +fFfNzzVAa5ZKCBoPYtn6rR+w4Gmxc06G/lYHVOxgb2QCpbzgKGBVWE8SnPiIOB1Ds
-         iv4uuFZBChOh5vNE0pE1YDVa573PZ8u9RYwWWWFcPAwi7nT16loR/n0HlyvevXiMKD
-         FiX7669EEUA0Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AD7115C0546; Fri,  6 Aug 2021 10:44:11 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 10:44:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Juri Lelli <juri.lelli@redhat.com>, josh@joshtriplett.org,
-        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        peterz@infradead.org, tglx@linutronix.de, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: Make rcu_normal_after_boot writable on RT
-Message-ID: <20210806174411.GQ4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210805080123.16320-1-juri.lelli@redhat.com>
- <20210805160337.GI4397@paulmck-ThinkPad-P17-Gen-1>
- <20210806080455.wkhlebgt7howjcrk@linutronix.de>
+        id S241802AbhHFRph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 13:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231776AbhHFRpe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 13:45:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F0DC0613CF;
+        Fri,  6 Aug 2021 10:45:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qRduPNPCLfBMTFYoq3QGcw3w+yL4nRTomePXW3/qUjU=; b=iqeWAgdtlkNbV8x9UpOR22Kofq
+        vOZK1ssLyeBoWZ6PDtdLTbF21sQzm4KeIOOlGD0Xs6Dkf3ypCp/Vp1wesR8+RiSCT+im1Oc3gxOJW
+        dBrg/iKozPAmVjNh/ri6w0VGgybsTFZp+m445sNHeCCR+TPBcqloIfDTZ/njdo/hUHXpah+E6g70s
+        sWhe6WJ8RsenGANYYvYfV+vEntvL8O1lGzL5pldMrAPdLCNSLq/uGNbEit2kSIBbF6GS4EnRcRSNC
+        Ib4lvbL2z90SJV7tSOi2SPnoXv9ooHjtQAzdrDVQnDLeEuCBhJH1rDYfTrSnYRQydKkGTvyf8DJK5
+        4SItqBXA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mC3tz-006QB3-Ln; Fri, 06 Aug 2021 17:45:00 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5E17498632E; Fri,  6 Aug 2021 19:44:57 +0200 (CEST)
+Date:   Fri, 6 Aug 2021 19:44:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mete Polat <metepolat2000@gmail.com>
+Cc:     Michel Lespinasse <michel@lespinasse.org>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jesper Nilsson <jesper@jni.nu>, Arnd Bergmann <arnd@arndb.de>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH v2] rbtree: remove unneeded explicit alignment in struct
+ rb_node
+Message-ID: <20210806174457.GA2184@worktop.programming.kicks-ass.net>
+References: <YQ1ToK8EMdAO4CyH@precision>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210806080455.wkhlebgt7howjcrk@linutronix.de>
+In-Reply-To: <YQ1ToK8EMdAO4CyH@precision>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 10:04:55AM +0200, Sebastian Andrzej Siewior wrote:
-> On 2021-08-05 09:03:37 [-0700], Paul E. McKenney wrote:
-> > Makes sense to me!
-> > 
-> > But would another of the -rt people be willing to give an Acked-by?
-> > For example, maybe they would prefer this kernel boot parameter to be
-> > exposed only if (!PREEMPT_RT || NO_HZ_FULL).  Or are there !NO_HZ_FULL
-> > situations where rcu_normal_after_boot makes sense?
+On Fri, Aug 06, 2021 at 05:22:08PM +0200, Mete Polat wrote:
+> Commit e977145aeaad ("[RBTREE] Add explicit alignment to sizeof(long) for
+> struct rb_node.") adds an explicit alignment to the struct rb_node due to
+> some speciality of the CRIS architecture.
 > 
-> Julia crafted that "rcu_normal_after_boot = 1" for RT after we had more
-> and more synchronize_rcu_expedited() users popping up. I would like to
-> keep that part (default value) since it good to have for most users.
+> The support for the CRIS architecture was removed with commit c690eddc2f3b
+> ("CRIS: Drop support for the CRIS port")
 > 
-> I don't mind removing CONFIG_PREEMPT_RT part here if there are legitimate
-> use cases for using "rcu_normal_after_boot = 0".
-> Paul suggested initially to restrict that option for PREEMPT_RT and I
-> would follow here Paul's guidance to either remove it or restrict it to
-> NO_HZ_FULL in RT's case (as suggested).
+> So, remove this now unneeded explicit alignment in struct rb_node as well.
+> 
+> This basically reverts commit e977145aeaad ("[RBTREE] Add explicit
+> alignment to sizeof(long) for struct rb_node.").
+> 
+> The rbtree node color is stored in the LSB of '__rb_parent_color'.
+> Only mask the first bit in '__rb_parent()', otherwise it modifies the
+> node's parent address on m68k.
 
-Given what I know now, I suggest the following:
+I still don't believe for a second this will actually work. We rely on
+rcu_assign_pointer() and rcu_dereference() to work on the
+rb_{left,right} members, and I don't think any architecture can provide
+single copy atomic loads and stores that are not naturally aligned (eg.
+when they straddle a cache or page boundary).
 
-o	Restrict the option to !PREEMPT_RT unless NO_HZ_FULL.
-	Maybe "!defined(CONFIG_PREEMPT_RT) || defined(CONFIG_NO_HZ_FULL)".
-
-	If there is some non-NO_HZ_FULL PREEMPT_RT configuration that
-	tolerates expedited grace periods, this would need to change.
-
-o	Change the permissions from "0" to "0444", if desired.	If you
-	would rather not, I can do this in a follow-up patch.  (No idea
-	why I let such an ugly serviceability issue through, but the
-	previous pair of module_param() instances have the same problem.)
-
-Anything I am missing?
-
-							Thanx, Paul
