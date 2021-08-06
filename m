@@ -2,210 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B9C3E2A7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 984483E2A7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243762AbhHFMWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 08:22:06 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7802 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243653AbhHFMWF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 08:22:05 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gh4N14mJXzYlPK;
-        Fri,  6 Aug 2021 20:21:37 +0800 (CST)
-Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 6 Aug 2021 20:21:43 +0800
-Received: from [10.174.179.2] (10.174.179.2) by dggema773-chm.china.huawei.com
- (10.1.198.217) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 6 Aug
- 2021 20:21:42 +0800
-Subject: Re: [PATCH] scsi: core: Run queue first after running device
-To:     John Garry <john.garry@huawei.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <bvanassche@acm.org>, <qiulaibin@huawei.com>,
-        <linfeilong@huawei.com>, <wubo40@huawei.com>
-References: <20210805143231.1713299-1-lijinlin3@huawei.com>
- <908bb2bb-c511-06a4-e0b6-577d90bb9b57@huawei.com>
- <0d27db3f-4236-4a30-97a0-ad1dcbf4bcfa@huawei.com>
-From:   lijinlin <lijinlin3@huawei.com>
-Message-ID: <b9894e12-c214-8cea-7f02-96ad99aca2f8@huawei.com>
-Date:   Fri, 6 Aug 2021 20:21:42 +0800
+        id S1343646AbhHFMXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 08:23:54 -0400
+Received: from mga02.intel.com ([134.134.136.20]:61545 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243697AbhHFMXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 08:23:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="201532833"
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="201532833"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 05:23:29 -0700
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="481458026"
+Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.249.174.155]) ([10.249.174.155])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 05:23:24 -0700
+Subject: Re: [PATCH V9 03/18] perf/x86/intel: Handle guest PEBS overflow PMI
+ for KVM guest
+To:     Liuxiangdong <liuxiangdong5@huawei.com>, peterz@infradead.org,
+        pbonzini@redhat.com
+Cc:     bp@alien8.de, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        kan.liang@linux.intel.com, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        like.xu.linux@gmail.com, boris.ostrvsky@oracle.com,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210722054159.4459-1-lingshan.zhu@intel.com>
+ <20210722054159.4459-4-lingshan.zhu@intel.com> <610B3BBE.8080204@huawei.com>
+From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
+Message-ID: <02c324f0-37e0-f58f-4572-a5967c2e54f1@intel.com>
+Date:   Fri, 6 Aug 2021 20:23:23 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <0d27db3f-4236-4a30-97a0-ad1dcbf4bcfa@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <610B3BBE.8080204@huawei.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.2]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema773-chm.china.huawei.com (10.1.198.217)
-X-CFilter-Loop: Reflected
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/6 17:00, John Garry wrote:
-> On 06/08/2021 09:58, John Garry wrote:
-> 
-> And the patch subject is ambiguous
+
+
+On 8/5/2021 9:15 AM, Liuxiangdong wrote:
+>
+>
+> On 2021/7/22 13:41, Zhu Lingshan wrote:
+>> From: Like Xu <like.xu@linux.intel.com>
+>>
+>> With PEBS virtualization, the guest PEBS records get delivered to the
+>> guest DS, and the host pmi handler uses perf_guest_cbs->is_in_guest()
+>> to distinguish whether the PMI comes from the guest code like Intel PT.
+>>
+>> No matter how many guest PEBS counters are overflowed, only triggering
+>> one fake event is enough. The fake event causes the KVM PMI callback to
+>> be called, thereby injecting the PEBS overflow PMI into the guest.
+>>
+>> KVM may inject the PMI with BUFFER_OVF set, even if the guest DS is
+>> empty. That should really be harmless. Thus guest PEBS handler would
+>> retrieve the correct information from its own PEBS records buffer.
+>>
+>> Originally-by: Andi Kleen <ak@linux.intel.com>
+>> Co-developed-by: Kan Liang <kan.liang@linux.intel.com>
+>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+>> ---
+>>   arch/x86/events/intel/core.c | 45 ++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 45 insertions(+)
+>>
+>> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+>> index da835f5a37e2..2eceb73cd303 100644
+>> --- a/arch/x86/events/intel/core.c
+>> +++ b/arch/x86/events/intel/core.c
+>> @@ -2783,6 +2783,50 @@ static void intel_pmu_reset(void)
+>>   }
+>>     DECLARE_STATIC_CALL(x86_guest_handle_intel_pt_intr, 
+>> *(perf_guest_cbs->handle_intel_pt_intr));
+>> +DECLARE_STATIC_CALL(x86_guest_state, *(perf_guest_cbs->state));
+>> +
+>> +/*
+>> + * We may be running with guest PEBS events created by KVM, and the
+>> + * PEBS records are logged into the guest's DS and invisible to host.
+>> + *
+>> + * In the case of guest PEBS overflow, we only trigger a fake event
+>> + * to emulate the PEBS overflow PMI for guest PBES counters in KVM.
+>> + * The guest will then vm-entry and check the guest DS area to read
+>> + * the guest PEBS records.
+>> + *
+>> + * The contents and other behavior of the guest event do not matter.
+>> + */
+>> +static void x86_pmu_handle_guest_pebs(struct pt_regs *regs,
+>> +                      struct perf_sample_data *data)
+>> +{
+>> +    struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>> +    u64 guest_pebs_idxs = cpuc->pebs_enabled & 
+>> ~cpuc->intel_ctrl_host_mask;
+>
+> guest_pebs_idxs has been defined here.
+>
+>> +    struct perf_event *event = NULL;
+>> +    unsigned int guest = 0;
+>> +    int bit;
+>> +
+>> +    guest = static_call(x86_guest_state)();
+>> +    if (!(guest & PERF_GUEST_ACTIVE))
+>> +        return;
+>> +
+>> +    if (!x86_pmu.pebs_vmx || !x86_pmu.pebs_active ||
+>> +        !(cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask))
+>> +        return;
+>> +
+> Why not use guest_pebs_idxs?
+>
+> +    if (!x86_pmu.pebs_vmx || !x86_pmu.pebs_active ||
+> +        !guest_pebs_idxs)
+> +        return;
+Thanks, I have apply this change in V10
+
+Thanks
+>
+>
+>> + for_each_set_bit(bit, (unsigned long *)&guest_pebs_idxs,
+>> +             INTEL_PMC_IDX_FIXED + x86_pmu.num_counters_fixed) {
+>> +        event = cpuc->events[bit];
+>> +        if (!event->attr.precise_ip)
+>> +            continue;
+>> +
+>> +        perf_sample_data_init(data, 0, event->hw.last_period);
+>> +        if (perf_event_overflow(event, data, regs))
+>> +            x86_pmu_stop(event, 0);
+>> +
+>> +        /* Inject one fake event is enough. */
+>> +        break;
+>> +    }
+>> +}
+>>     static int handle_pmi_common(struct pt_regs *regs, u64 status)
+>>   {
+>> @@ -2835,6 +2879,7 @@ static int handle_pmi_common(struct pt_regs 
+>> *regs, u64 status)
+>>           u64 pebs_enabled = cpuc->pebs_enabled;
+>>             handled++;
+>> +        x86_pmu_handle_guest_pebs(regs, &data);
+>>           x86_pmu.drain_pebs(regs, &data);
+>>           status &= intel_ctrl | GLOBAL_STATUS_TRACE_TOPAPMI;
 >
 
-Thanks.
-I will modify the patch subject and message in patch v2.
- 
->> On 05/08/2021 15:32, lijinlin3@huawei.com wrote:
->>> From: Li Jinlin<lijinlin3@huawei.com>
->>>
->>> We found a hang issue, the test steps are as follows:
->>> Â Â  1. echo "blocked" >/sys/block/sda/device/state
->>> Â Â  2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
->>> Â Â  3. echo none > /sys/block/sda/queue/scheduler
->>> Â Â  4. echo "running" >/sys/block/sda/device/state
->>>
->>> Step3 and Step4 should finish this work after Step4, but them hangs.
->>>
->>>  CPU#0               CPU#1                CPU#2
->>>  ---------------     ----------------     ----------------
->>>                                           Step1: blocking device
->>>
->>>                                           Step2: dd xxxx
->>>                                                  ^^^^^^ get request
->>>                                                         q_usage_counter++
->>>
->>>                      Step3: switching scheculer
->>>                      elv_iosched_store
->>>                        elevator_switch
->>>                          blk_mq_freeze_queue
->>>                            blk_freeze_queue
->>>                              > blk_freeze_queue_start
->>>                                ^^^^^^ mq_freeze_depth++
->>>
->>>                              > blk_mq_run_hw_queues
->>>                                ^^^^^^ can't run queue when dev blocked
->>>
->>>                              > blk_mq_freeze_queue_wait
->>>                                ^^^^^^ Hang here!!! 
->>>                                       wait q_usage_counter==0
->>>
->>>  Step4: running device
->>>  store_state_field
->>>    scsi_rescan_device
->>>      scsi_attach_vpd
->>>        scsi_vpd_inquiry
->>>          __scsi_execute
->>>            blk_get_request
->>>              blk_mq_alloc_request
->>>                blk_queue_enter
->>>                ^^^^^^ Hang here!!!
->>>                       wait mq_freeze_depth==0 
->>>
->>>    blk_mq_run_hw_queues
->>>    ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
->>>
->>>                            blk_mq_unfreeze_queue
->>>                            ^^^^^ mq_freeze_depth--
->>>
->>> Step3 and Step4 wait for each other, caused hangs.
->>>
->>> This requires run queue frist to fix this issue when the device state
->>
->> frist>>
->>> changes to SDEV_RUNNING.
->>>
->>> Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
->>> Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
->>> Signed-off-by: Qiu Laibin <qiulaibin@huawei.com>
->>> Signed-off-by: Wu Bo <wubo40@huawei.com>
->>
->> what kind of SoB is this?
->>
->>> ---
->>> Â  drivers/scsi/scsi_sysfs.c | 6 +++---
->>> Â  1 file changed, 3 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
->>> index c3a710bceba0..aa701582c950 100644
->>> --- a/drivers/scsi/scsi_sysfs.c
->>> +++ b/drivers/scsi/scsi_sysfs.c
->>> @@ -809,12 +809,12 @@ store_state_field(struct device *dev, struct device_attribute *attr,
->>> Â Â Â Â Â  ret = scsi_device_set_state(sdev, state);
->>> Â Â Â Â Â  /*
->>> Â Â Â Â Â Â  * If the device state changes to SDEV_RUNNING, we need to
->>> -Â Â Â Â  * rescan the device to revalidate it, and run the queue to
->>> -Â Â Â Â  * avoid I/O hang.
->>> +Â Â Â Â  * run the queue to avoid I/O hang, and rescan the device
->>> +Â Â Â Â  * to revalidate it.
->>
->> A bit more description of the IO hang would be useful
->>
->>> Â Â Â Â Â Â  */
->>> Â Â Â Â Â  if (ret == 0 && state == SDEV_RUNNING) {
->>> -Â Â Â Â Â Â Â  scsi_rescan_device(dev);
->>>                 blk_mq_run_hw_queues(sdev->request_queue, true);
->>> +Â Â Â Â Â Â Â  scsi_rescan_device(dev);
->>
->> This would not have happened if scsi_rescan_device() was ran outside the mutex lock region, like I suggested originally.
->>
->> Indeed, I doubt blk_mq_run_hw_queues() needs to be run with the sdev state_mutex held either.
-
-I think blk_mq_run_hw_queues() and scsi_rescan_device() needs to be run with the sdev state_mutex held.
-Otherwise, Step4 will hang in the following situations.
-
-  CPU#0               CPU#1                CPU#2                  CPU#3
-  ---------------     ----------------     -----------------      ----------------
-                                           Step1: blocking device
-
-                                           Step2: dd xxxx
-                                                  ^^^^^^ get request
-                                                         q_usage_counter++
-
-                      Step3: switching scheculer
-                      elv_iosched_store
-                        elevator_switch
-                          blk_mq_freeze_queue
-                            blk_freeze_queue
-                              > blk_freeze_queue_start
-                                ^^^^^^ mq_freeze_depth++
-
-                              > blk_mq_run_hw_queues
-                                ^^^^^^ can't run queue when dev blocked
-
-                              > blk_mq_freeze_queue_wait
-                                ^^^^^^ Hang here!!! 
-                                       wait q_usage_counter==0
-
-  Step4: running device  
-  store_state_field
-    mutex_lock(&sdev->state_mutex);
-    scsi_device_set_state(sdev, state);
-    mutex_unlock(&sdev->state_mutex);
-                                                                  Step5: blocking device
-                                                                  store_state_field
-                                                                     mutex_lock(&sdev->state_mutex);
-                                                                     scsi_device_set_state(sdev, state);                                                             
-    blk_mq_run_hw_queues 
-    ^^^^^^ can't run queue when dev blocked
-                                                                     mutex_unlock(&sdev->state_mutex);
-    scsi_rescan_device
-      scsi_attach_vpd
-        scsi_vpd_inquiry
-          __scsi_execute
-            blk_get_request
-              blk_mq_alloc_request
-                blk_queue_enter
-                ^^^^^^ Hang here!!!
-                       wait mq_freeze_depth==0 
-
->>
->>> Â Â Â Â Â  }
->>> Â Â Â Â Â  mutex_unlock(&sdev->state_mutex);
->>> --Â 
->>
->> .
-> 
-> .
