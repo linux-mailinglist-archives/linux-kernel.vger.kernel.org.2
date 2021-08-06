@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07913E2499
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10733E24A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241932AbhHFH5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 03:57:39 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:52301 "EHLO m43-7.mailgun.net"
+        id S241950AbhHFIBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:01:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229992AbhHFH5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 03:57:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628236643; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=J6PBzDHz2JLjAPZzxlx7hTcbbesUbDjh8NFkE0SzyZA=;
- b=VuqJ+n/68CK1ErsJgbi05gErKjWjSfYkUfBFxwY2EnxomuPi30bvBrV+MZ6OmYJWaeex5/gY
- CaHYzjIiFBu0NzM94GmhgEYfML8WSHhowCsUG0HDJhtVP+2B3+oR2EX/gz2QJW+gHIiNJYO8
- PeqQPitDsHqOareFSTclAHdnZwI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 610ceb62ad1af63949afa699 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Aug 2021 07:57:22
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B6442C43144; Fri,  6 Aug 2021 07:57:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C7C26C433F1;
-        Fri,  6 Aug 2021 07:57:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C7C26C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S230119AbhHFIBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:01:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9554E61164;
+        Fri,  6 Aug 2021 08:01:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628236860;
+        bh=ztwkXxuWZMz/g6yZbgT0o5O4xY3oCyRVtcaRxW+vzjc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GJcB4WYC17pGs7DrCFLhOVLYml6GF4ytUAgy+rJpR/UpPv+ykfP9B+7FDb65CjZMf
+         EQ9P7LssjEowBvl7E+IYCesSfHJUBCNu4sMbwbNkQ8Wl4+cB4lmB6xoB/pj+J5UHSV
+         mm+XML2WZBrGO0/3DMsY2W40k8Qjng1CqIAHlhMmdhC6/ISkLC4AQXRtJ/dJc9bRVp
+         73yeP//jZ6tpI7O6cYQW6riWzLkTH15TVGrbOz7d+kk/8PEMKcEbnEMUuNyfxe70M3
+         Ksy0Y+uOxu3/6mmIpHDgzBN2KpCySBf2GTMbp6MddPn4cn+oIxVJ0Zxiu1qpJ5XRkZ
+         H8/5hxq6Tfqog==
+Received: by mail-wr1-f49.google.com with SMTP id c9so9884393wri.8;
+        Fri, 06 Aug 2021 01:01:00 -0700 (PDT)
+X-Gm-Message-State: AOAM531nGkBErkA5AQucV+qGafBwBE99QHbCBm5qxq2HdzBQ4kU5kbD4
+        cAeYvSalAoPPiy03zt0vbNYeFbm6LXZdgnQ7cJE=
+X-Google-Smtp-Source: ABdhPJwo6F2j4b2SHDNHGQozJB+IoZwYRfg4nlpJNBaRYbtLxX3J/PyAE2/Fn575dufIMYN5qJa9QILoPOtN4acsUKE=
+X-Received: by 2002:a5d:44c7:: with SMTP id z7mr9646198wrr.286.1628236859101;
+ Fri, 06 Aug 2021 01:00:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] mt76: fix enum type mismatch
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210721150745.1914829-1-arnd@kernel.org>
-References: <20210721150745.1914829-1-arnd@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Soul Huang <Soul.Huang@mediatek.com>,
-        Deren Wu <deren.wu@mediatek.com>,
-        Xing Song <xing.song@mediatek.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210806075721.B6442C43144@smtp.codeaurora.org>
-Date:   Fri,  6 Aug 2021 07:57:21 +0000 (UTC)
+References: <cover.1627989586.git.viresh.kumar@linaro.org> <75c8e6e5e8dfa1889938f3a6b2d991763c7a3717.1627989586.git.viresh.kumar@linaro.org>
+ <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
+ <0100017b1610f711-c53c79f2-9e28-4c45-bb42-8db09688b18e-000000@email.amazonses.com>
+ <CAK8P3a0DWkfQcZpmyfKcdNt1MHf8ha6a9L2LmLt1Tv-j0HDr3w@mail.gmail.com>
+ <20210805124922.j7lts7tfmm4t2kpf@vireshk-i7> <CAK8P3a0kbmPLGCBrjAv7-dW=JWq-pdSBeGUHCxUFmMKvKhCg7w@mail.gmail.com>
+ <0100017b1a6c0a05-e41dc16c-b326-4017-a63d-a24a6c1fde70-000000@email.amazonses.com>
+In-Reply-To: <0100017b1a6c0a05-e41dc16c-b326-4017-a63d-a24a6c1fde70-000000@email.amazonses.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 6 Aug 2021 10:00:42 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2rrueXJHZxuiiShgVmLD916RaxW7xQHHjQXNFkM3Fpvg@mail.gmail.com>
+Message-ID: <CAK8P3a2rrueXJHZxuiiShgVmLD916RaxW7xQHHjQXNFkM3Fpvg@mail.gmail.com>
+Subject: Re: [Stratos-dev] [PATCH V4 2/2] gpio: virtio: Add IRQ support
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jason Wang <jasowang@redhat.com>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> wrote:
+On Fri, Aug 6, 2021 at 9:44 AM Viresh Kumar via Stratos-dev
+<stratos-dev@op-lists.linaro.org> wrote:
+>
+> On 05-08-21, 15:10, Arnd Bergmann wrote:
+> > I hope this can still be simplified by working out better which state
+> > transitions are needed exactly. In particular, I would expect that we
+> > can get away with not sending a VIRTIO_GPIO_MSG_IRQ_TYPE
+> > for 'mask' state changes at all, but use that only for forcing 'enabled'
+> > state changes.
+>
+> Something like this ?
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> There is no 'NONE' version of 'enum mcu_cipher_type', and returning
-> 'MT_CIPHER_NONE' causes a warning:
-> 
-> drivers/net/wireless/mediatek/mt76/mt7921/mcu.c: In function 'mt7921_mcu_get_cipher':
-> drivers/net/wireless/mediatek/mt76/mt7921/mcu.c:114:24: error: implicit conversion from 'enum mt76_cipher_type' to 'enum mcu_cipher_type' [-Werror=enum-conversion]
->   114 |                 return MT_CIPHER_NONE;
->       |                        ^~~~~~~~~~~~~~
-> 
-> Add the missing MCU_CIPHER_NONE defintion that fits in here with
-> the same value.
-> 
-> Fixes: c368362c36d3 ("mt76: fix iv and CCMP header insertion")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> static void virtio_gpio_irq_mask(struct irq_data *d)
+> {
+>         /* Nothing to do here */
+> }
 
-Patch applied to wireless-drivers.git, thanks.
+You'd have to do /something/ here I think, if only setting the flag
+that we don't want to deliver the next interrupt.
 
-abf3d98dee7c mt76: fix enum type mismatch
+> static void virtio_gpio_irq_unmask(struct irq_data *d)
+> {
+>         struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+>         struct virtio_gpio *vgpio = gpiochip_get_data(gc);
+>
+>         /* Queue the buffer unconditionally on unmask */
+>         virtio_gpio_irq_prepare(vgpio, d->hwirq);
+> }
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210721150745.1914829-1-arnd@kernel.org/
+And check the flag here to not requeue it if it's masked.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Now, there is already a flag in the irq descriptor, so rather than
+having double accounting, the easy way may be to
+just use irqd_irq_masked()/irq_state_set_masked(), or
+have the irq core take care of this.
 
+     Arnd
