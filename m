@@ -2,69 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B973E247A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D783E247C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242332AbhHFHu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 03:50:29 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:35670 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241930AbhHFHuU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 03:50:20 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 12FA81FEB1;
-        Fri,  6 Aug 2021 07:50:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628236204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6+laCi4KxR5UVLdNnL6puwvywYfdNwxG0t+wvdhSYH8=;
-        b=qq2EMQnh29L5obPz8YFw/w1f8NhcK8RC4DwMtK0HU8cUBRohMfnkNeiVcv5rt0cdHaBmP8
-        c/U03ADuVgVibyy9YrhilRBvLVw7jaJyTq3hb0vxY/dsT086RpXqHXfk/l2Qx6iMuspEGo
-        C/pyta0kFCzohOfDumCANsYItxZZOuE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628236204;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6+laCi4KxR5UVLdNnL6puwvywYfdNwxG0t+wvdhSYH8=;
-        b=BJmvFa6xukjL3UBb1FBe2vxD0SyqyqGCPtB4dNBZu6K3we9h1ZTZTHiUhmUO6tQ8w1N/tT
-        w7e737fKM3XzR5AQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id E85C213990;
-        Fri,  6 Aug 2021 07:50:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id N88gOKvpDGEcGgAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Fri, 06 Aug 2021 07:50:03 +0000
-Subject: Re: [PATCH 1/1] mm/vmstat: Protect per cpu variables with preempt
- disable on RT
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Hugh Dickins <hughd@google.com>, Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210805160019.1137-1-mgorman@techsingularity.net>
- <20210805160019.1137-2-mgorman@techsingularity.net>
- <20210805162206.664dfc8c090f2be5ea313d57@linux-foundation.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <df1f16f9-1a29-5525-4673-f437fb03dc92@suse.cz>
-Date:   Fri, 6 Aug 2021 09:50:03 +0200
+        id S241578AbhHFHuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 03:50:32 -0400
+Received: from relay.sw.ru ([185.231.240.75]:36286 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242209AbhHFHuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 03:50:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=CcmfkmJYo6kZODF8AVqH6bbGmNVNZI3ZHZIA+228wdg=; b=wtG+eg9IA5qkeBCiTWc
+        L3lm8E8CykZWwx0OZLZdPnyhDiaeOVeSnH1n6Pi1QO5xLryq7EBFnf5Te0GL1aaSHS1WPNGZS1UGD
+        8T7fSVzgNodazH4i2ter8nNSiyWBMhPcEdgUKppixj2+tsVMmqziVvspG3iFuRrJzvTa0xmfqkw=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mBucG-006af6-Qq; Fri, 06 Aug 2021 10:50:04 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH NET v4 2/7] ipv6: use skb_expand_head in ip6_finish_output2
+To:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@openvz.org, Julian Wiedmann <jwi@linux.ibm.com>
+References: <ccce7edb-54dd-e6bf-1e84-0ec320d8886c@linux.ibm.com>
+ <cover.1628235065.git.vvs@virtuozzo.com>
+Message-ID: <973dd226-6a0f-d8c8-26c7-7a368ff11d5d@virtuozzo.com>
+Date:   Fri, 6 Aug 2021 10:50:04 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210805162206.664dfc8c090f2be5ea313d57@linux-foundation.org>
+In-Reply-To: <cover.1628235065.git.vvs@virtuozzo.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -72,51 +44,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/21 1:22 AM, Andrew Morton wrote:
-> On Thu,  5 Aug 2021 17:00:19 +0100 Mel Gorman <mgorman@techsingularity.net> wrote:
-> 
->> From: Ingo Molnar <mingo@elte.hu>
->> 
->> Disable preemption on -RT for the vmstat code. On vanila the code runs
->> in IRQ-off regions while on -RT it may not when stats are updated under
->> a local_lock. "preempt_disable" ensures that the same resources is not
->> updated in parallel due to preemption.
->> 
->> This patch differs from the preempt-rt version where __count_vm_event and
->> __count_vm_events are also protected. The counters are explicitly "allowed
->> to be to be racy" so there is no need to protect them from preemption. Only
->> the accurate page stats that are updated by a read-modify-write need
->> protection. This patch also differs in that a preempt_[en|dis]able_rt
->> helper is not used. As vmstat is the only user of the helper, it was
->> suggested that it be open-coded in vmstat.c instead of risking the helper
->> being used in unnecessary contexts.
->> 
->> ...
->>
->> --- a/mm/vmstat.c
->> +++ b/mm/vmstat.c
->> @@ -319,6 +319,16 @@ void __mod_zone_page_state(struct zone *zone, enum zone_stat_item item,
->>  	long x;
->>  	long t;
->>  
->> +	/*
->> +	 * Accurate vmstat updates require a RMW. On !PREEMPT_RT kernels,
->> +	 * atomicity is provided by IRQs being disabled -- either explicitly
->> +	 * or via local_lock_irq. On PREEMPT_RT, local_lock_irq only disables
->> +	 * CPU migrations and preemption potentially corrupts a counter so
->> +	 * disable preemption.
->> +	 */
->> +	if (IS_ENABLED(CONFIG_PREEMPT_RT))
->> +		preempt_disable();
-> 
-> This is so obvious I expect it has been discussed, but...  why not
-> 
-> static inline void preempt_disable_if_rt(void)
-> {
-> 	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> 		preempt_disable();
-> }
+Unlike skb_realloc_headroom, new helper skb_expand_head does not allocate
+a new skb if possible.
 
-Yeah v1 introduced similar more generic ones in include/linux/preempt.h and
-Thomas didn't like that. I guess it would be more acceptable when confined to
-mm/vmstat.c
+Additionally this patch replaces commonly used dereferencing with variables.
+
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+ net/ipv6/ip6_output.c | 51 ++++++++++++++++-----------------------------------
+ 1 file changed, 16 insertions(+), 35 deletions(-)
+
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index 8e6ca9a..7d2ec25 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -60,46 +60,29 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
+ {
+ 	struct dst_entry *dst = skb_dst(skb);
+ 	struct net_device *dev = dst->dev;
++	struct inet6_dev *idev = ip6_dst_idev(dst);
+ 	unsigned int hh_len = LL_RESERVED_SPACE(dev);
+-	int delta = hh_len - skb_headroom(skb);
+-	const struct in6_addr *nexthop;
++	const struct in6_addr *daddr, *nexthop;
++	struct ipv6hdr *hdr;
+ 	struct neighbour *neigh;
+ 	int ret;
+ 
+ 	/* Be paranoid, rather than too clever. */
+-	if (unlikely(delta > 0) && dev->header_ops) {
+-		/* pskb_expand_head() might crash, if skb is shared */
+-		if (skb_shared(skb)) {
+-			struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+-
+-			if (likely(nskb)) {
+-				if (skb->sk)
+-					skb_set_owner_w(nskb, skb->sk);
+-				consume_skb(skb);
+-			} else {
+-				kfree_skb(skb);
+-			}
+-			skb = nskb;
+-		}
+-		if (skb &&
+-		    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
+-			kfree_skb(skb);
+-			skb = NULL;
+-		}
++	if (unlikely(hh_len > skb_headroom(skb)) && dev->header_ops) {
++		skb = skb_expand_head(skb, hh_len);
+ 		if (!skb) {
+-			IP6_INC_STATS(net, ip6_dst_idev(dst), IPSTATS_MIB_OUTDISCARDS);
++			IP6_INC_STATS(net, idev, IPSTATS_MIB_OUTDISCARDS);
+ 			return -ENOMEM;
+ 		}
+ 	}
+ 
+-	if (ipv6_addr_is_multicast(&ipv6_hdr(skb)->daddr)) {
+-		struct inet6_dev *idev = ip6_dst_idev(skb_dst(skb));
+-
++	hdr = ipv6_hdr(skb);
++	daddr = &hdr->daddr;
++	if (ipv6_addr_is_multicast(daddr)) {
+ 		if (!(dev->flags & IFF_LOOPBACK) && sk_mc_loop(sk) &&
+ 		    ((mroute6_is_socket(net, skb) &&
+ 		     !(IP6CB(skb)->flags & IP6SKB_FORWARDED)) ||
+-		     ipv6_chk_mcast_addr(dev, &ipv6_hdr(skb)->daddr,
+-					 &ipv6_hdr(skb)->saddr))) {
++		     ipv6_chk_mcast_addr(dev, daddr, &hdr->saddr))) {
+ 			struct sk_buff *newskb = skb_clone(skb, GFP_ATOMIC);
+ 
+ 			/* Do not check for IFF_ALLMULTI; multicast routing
+@@ -110,7 +93,7 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
+ 					net, sk, newskb, NULL, newskb->dev,
+ 					dev_loopback_xmit);
+ 
+-			if (ipv6_hdr(skb)->hop_limit == 0) {
++			if (hdr->hop_limit == 0) {
+ 				IP6_INC_STATS(net, idev,
+ 					      IPSTATS_MIB_OUTDISCARDS);
+ 				kfree_skb(skb);
+@@ -119,9 +102,7 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
+ 		}
+ 
+ 		IP6_UPD_PO_STATS(net, idev, IPSTATS_MIB_OUTMCAST, skb->len);
+-
+-		if (IPV6_ADDR_MC_SCOPE(&ipv6_hdr(skb)->daddr) <=
+-		    IPV6_ADDR_SCOPE_NODELOCAL &&
++		if (IPV6_ADDR_MC_SCOPE(daddr) <= IPV6_ADDR_SCOPE_NODELOCAL &&
+ 		    !(dev->flags & IFF_LOOPBACK)) {
+ 			kfree_skb(skb);
+ 			return 0;
+@@ -136,10 +117,10 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
+ 	}
+ 
+ 	rcu_read_lock_bh();
+-	nexthop = rt6_nexthop((struct rt6_info *)dst, &ipv6_hdr(skb)->daddr);
+-	neigh = __ipv6_neigh_lookup_noref(dst->dev, nexthop);
++	nexthop = rt6_nexthop((struct rt6_info *)dst, daddr);
++	neigh = __ipv6_neigh_lookup_noref(dev, nexthop);
+ 	if (unlikely(!neigh))
+-		neigh = __neigh_create(&nd_tbl, nexthop, dst->dev, false);
++		neigh = __neigh_create(&nd_tbl, nexthop, dev, false);
+ 	if (!IS_ERR(neigh)) {
+ 		sock_confirm_neigh(skb, neigh);
+ 		ret = neigh_output(neigh, skb, false);
+@@ -148,7 +129,7 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
+ 	}
+ 	rcu_read_unlock_bh();
+ 
+-	IP6_INC_STATS(net, ip6_dst_idev(dst), IPSTATS_MIB_OUTNOROUTES);
++	IP6_INC_STATS(net, idev, IPSTATS_MIB_OUTNOROUTES);
+ 	kfree_skb(skb);
+ 	return -EINVAL;
+ }
+-- 
+1.8.3.1
+
