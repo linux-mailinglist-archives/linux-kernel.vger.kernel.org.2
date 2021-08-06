@@ -2,54 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BEEC3E213F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 03:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BF23E214E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 03:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243304AbhHFBvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 21:51:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230437AbhHFBvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 21:51:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E6E361184;
-        Fri,  6 Aug 2021 01:50:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628214651;
-        bh=Y20m4fzhDqO1uu3REta8tfDLdL1byQtADOr200QbLO8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=EX8ML/QvqmnKl/RTB52GJ5AB/+mckwevNgE1J5w8da6+ZqXEewWRGC+OUFgbLn1Sy
-         Kcpsvu8o6h/6ZwaZNydc/XidvgUHMGA+AjDOZfFQMGCV2hoA0lC/4YhgJwmtcXZFLg
-         ajllwxjiWenwAF5wz4tkZs8zMa6btnLNAMn4Kbd3RPfmhmObn7n8JRCnnj2q6AKn7d
-         UI77Kw4AG25PXNrhYvVPcsgw+ECDAa5pbNr/QX8SrWOwF21YVgodpauiINTDyKVCyJ
-         ahS/cbWmYH0PowOnx9H75TIoGVJW+0w4dWWBtCwJbR7ZIJD2VxZ0VPp9aTkrdYwNc1
-         E5tvQDhOgCxDQ==
-Content-Type: text/plain; charset="utf-8"
+        id S233551AbhHFB54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 21:57:56 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:12458 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230012AbhHFB5z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 21:57:55 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GgpRv3x3TzcgKC;
+        Fri,  6 Aug 2021 09:54:03 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 6 Aug 2021 09:57:38 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 6 Aug
+ 2021 09:57:38 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <paolo.valente@linaro.org>, <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH v2 0/4] optimize the bfq queue idle judgment
+Date:   Fri, 6 Aug 2021 10:08:22 +0800
+Message-ID: <20210806020826.1407257-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210721225329.3035779-1-bjorn.andersson@linaro.org>
-References: <20210721225329.3035779-1-bjorn.andersson@linaro.org>
-Subject: Re: [PATCH] clk: qcom: gpucc-sm8150: Add SC8180x support
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>
-Date:   Thu, 05 Aug 2021 18:50:50 -0700
-Message-ID: <162821465017.19113.3601448394011862755@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-07-21 15:53:29)
-> The GPU clock controller found in SC8180x is a variant of the same block
-> found in SM8150, but with one additional clock frequency for the
-> gmu_clk_src clock.
->=20
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
+Chagnes in V2:
+ - as suggested by Paolo, add support to track if root_group have any
+ pending requests, and use that to handle the situation when only one
+ group is activated while root group doesn't have any pending requests.
+ - modify commit message in patch 2
 
-Applied to clk-next
+Yu Kuai (4):
+  block, bfq: add support to track if root_group have any pending
+    requests
+  block, bfq: do not idle if only one cgroup is activated
+  block, bfq: add support to record request size information
+  block, bfq: consider request size in bfq_asymmetric_scenario()
+
+ block/bfq-iosched.c | 69 ++++++++++++++++++++++++++++++++++++++-------
+ block/bfq-iosched.h | 29 +++++++++++++++++--
+ block/bfq-wf2q.c    | 37 +++++++++++++++---------
+ 3 files changed, 110 insertions(+), 25 deletions(-)
+
+-- 
+2.31.1
+
