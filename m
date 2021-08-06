@@ -2,116 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019083E3175
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71C13E3178
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245379AbhHFVzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 17:55:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
+        id S245432AbhHFV5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 17:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239757AbhHFVzc (ORCPT
+        with ESMTP id S242102AbhHFV5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 17:55:32 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B154C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 14:55:16 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d1so8898643pll.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 14:55:16 -0700 (PDT)
+        Fri, 6 Aug 2021 17:57:53 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A24DC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 14:57:36 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id j3so8887206plx.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 14:57:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LAkuuVzSZOMgsc54tfGr8RYbH7ddYcl/vqWLmDPxePs=;
-        b=vRA20efsvfEJEX32rKjbIhVFbrv/o/E6wBp2Uinl2YYFNZ87lI50zv1Qik64bDrKUG
-         bL7HDgtpo5fd6yy6jBUp3b1O63Dh28Ec3wMN6zlpfBD9MFY+mpknYaLBKxHsuEGRD0sI
-         i2mIW3tEyh7SwXks0vOHzSGMJM8ifcth7Wf/HCjIlDqYWMXom/qp8KEoEzybMLL03VnB
-         4PI3+GnAAF0/dWIjAff3HtebGSB3f86EGmdjGJpf28vMFH8WP9yWw93dmjtOJ++vW2CJ
-         t6fXsf7XF71pPwlct/p3XmwyaaaQ9uqfDkvzAZj8SyRsiOqxEQ2M7U3mMH82U+Vb+Dy9
-         iLtA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AY970ncUJAZ3XFO8vIsQqriyIPN/r8JHpDac7fWieeM=;
+        b=GRldI1oetU6ItCaJ5fQcboBOkS3kNm2NJPpnSaaazigE6TM8n6i0NiIJP8y33/Xxwa
+         X1jAnVhjjyuIS90Qp8RPwxHhAgqIXbZqVgNoEV0eule5rbSNSOwhCx8kbtPOAu5r+kt7
+         l/iGkMkrDTQIRoGctxtnHVFRWFZ5GSeRqK0SQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LAkuuVzSZOMgsc54tfGr8RYbH7ddYcl/vqWLmDPxePs=;
-        b=ehSHoEVL8Q2gx3h6xFNYSmLucJL/Lbp827XjII244i1/AqyN3RuzJXx8DxXSl9Q2BD
-         0D6unQrKkCzsBRca0oEj2KXUhEtLjSubcmBtUjU3dBrVYAI+SfMlrGoUUj7U2LX7xQz7
-         qdFgfkPAYrtEHpz91i6Xe9yebK0ayfAk9n3djSzDaYuEP/88eaHRKTMHXKrUmifg/SB6
-         fBA5qvs+thGqb+E/4WOqkiF0D0d7RytYdwhqZx2IEqZFtJ/n87uHjDqehD9h6+XBsPPQ
-         hiK/cODBOh/Xo/Uc7FM5lcqOg8dbjTv/yVddhWB6u3X8ycaTyXyOdrlV78mn1254d+SX
-         wbRA==
-X-Gm-Message-State: AOAM53339lV5s9Rym8i1FF0P550FkocBbhFSKhr8Np3kMLf7GvK3+OKt
-        40iz+r7t1wSW1sYF+ladhVANoldbU7nFww==
-X-Google-Smtp-Source: ABdhPJxS6d1f/au4PsJaM5RTfaDcu4UKpsrza3xbMbYBGp4480w+irCPsqbjpbHe5QkY2U/oLjtUpA==
-X-Received: by 2002:a17:902:6905:b029:12b:8f6a:7c60 with SMTP id j5-20020a1709026905b029012b8f6a7c60mr10346281plk.24.1628286915736;
-        Fri, 06 Aug 2021 14:55:15 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f16sm8411631pfv.73.2021.08.06.14.55.14
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AY970ncUJAZ3XFO8vIsQqriyIPN/r8JHpDac7fWieeM=;
+        b=McMlqwJY4IsRvlS+GuGmcwsxI6kR9rubRmEEGFi9nuB82NGOQ43xTNN37K12JIcaop
+         7H4FqDDAvcOurODKkrEElHkyFhlxjV/Rz9AUwcoOd1iOYEMf3OKy4tg5wDot5oBljJ7W
+         C+M+L7+KCavvk2FGUGh1mZBqYwM6j9X2lwgHrhAk8K5RpxEFRBJB2cOqFGJjXGjZ/yNy
+         vCxRwNCnadQ2MkvSiD6teJ8wyQauP4rEd/iZRS6KiDHKSu0TnDfqsgcsV3uJUnSrQoMd
+         05vttRqi/VXpXRy5llnucRHJ+83WctivgwakBirHxizf071bs/OVpAXEZibMwygjz2Wa
+         SMGg==
+X-Gm-Message-State: AOAM530VUgrlj+Lqq63+QVXRL9Qud437kRXxTdHDu3c1Z634yBM/+wd3
+        PCVhmRrUn4WaeQ1RPPxsVrtPDg==
+X-Google-Smtp-Source: ABdhPJzl6uHhzenJtj16rXyHOXA9lloApy8P+OInYnPj3mA9JONQ+nAAQl57sYQLIY6HcAjxwW1oJg==
+X-Received: by 2002:a63:d607:: with SMTP id q7mr347628pgg.268.1628287055799;
+        Fri, 06 Aug 2021 14:57:35 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v7sm9814110pjk.37.2021.08.06.14.57.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 14:55:15 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 21:55:11 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Subject: Re: KVM's support for non default APIC base
-Message-ID: <YQ2vv7EXGN2jgQBb@google.com>
-References: <20210713142023.106183-1-mlevitsk@redhat.com>
- <20210713142023.106183-9-mlevitsk@redhat.com>
- <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
- <YPXJQxLaJuoF6aXl@google.com>
- <564fd4461c73a4ec08d68e2364401db981ecba3a.camel@redhat.com>
+        Fri, 06 Aug 2021 14:57:35 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] pcmcia: ray_cs: Split memcpy() to avoid bounds check warning
+Date:   Fri,  6 Aug 2021 14:57:33 -0700
+Message-Id: <20210806215733.2875927-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <564fd4461c73a4ec08d68e2364401db981ecba3a.camel@redhat.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1806; h=from:subject; bh=MoN9sZmmdDw0lR5vW36Fdr39zzqTtcOilmLJ144gA30=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhDbBMeJZHHO3+hbAJbiz+YaA05/E7kfaAlhhB+qwX bgM8lUWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYQ2wTAAKCRCJcvTf3G3AJhexD/ kB913c39c5/NcFF+4Bg7joDZ0bnRbO13Ww9Wcn2hoK3sgl3q35x2wuzAdruejBJR/7gKFmzHIor4am aQJFNLZmnb6GPsvPww07WjJfTTEL2aIlKw6+RWECbMmIYaZ37VzT15AZWr7/vFYGDiK3mdL9xbL/me Cqo5qkyChQRNlo/+/yNVveUiJl+1pMkhAmiBJtqpSbz/wsuhbUHV6CTpAr0QbVgJ016V/YJq7thei/ Cxa0BcbWyYKVWQLlUIX5ZHYSD/jLrNRFd6//Q/VIQDxOYsOmsi+CpByAkVxj+lZSZY6tKX8r3nNlOn 7QP7eGd/6oYfB2vi/QzQi0xblqs/V0+YUydIQl82RZVXNrZ4lt2XuUWH0jDHKJA4FFWzIhxEU2zzqO u6boGH1JLSgNFuIqvxpAz2jC0jdOgJzEv7J1/ixrvO2YX1Qwn7wkEuZF1CPlnqb/kbIwhw9xROvpaJ UbKIBV6X3neOI7A6xFItNCs1/NMdpia3JLKGL1rOlEAa+4LJvYDTOk8P64wH6mXxcNW2BfXIMdCM1K 7uSnblp9J+MeWF5KAkfhocRvIvvSLERrXvxiHUeewIlTIZr4emNWe5kaN3svEFMY98VTx6nZI6VQd9 EEqmYPMVOmWup8WfcCrwxyCI6XU8OI1DxJN9glwcxMBWsW1g9DqqZnU9uh1g==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021, Maxim Levitsky wrote:
-> On Mon, 2021-07-19 at 18:49 +0000, Sean Christopherson wrote:
-> > On Sun, Jul 18, 2021, Maxim Levitsky wrote:
-> -> APIC MMIO area has to be MMIO for 'apic_mmio_write' to be called,
->    thus must contain no guest memslots.
->    If the guest relocates the APIC base somewhere where we have a memslot, 
->    memslot will take priority, while on real hardware, LAPIC is likely to
->    take priority.
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy(), memmove(), and memset(), avoid
+intentionally writing across neighboring fields.
 
-Yep.  The thing that really bites us is that other vCPUs should still be able to
-access the memory defined by the memslot, e.g. to make it work we'd have to run
-the vCPU with a completely different MMU root.
+Split memcpy() for each address range to help memcpy() correctly reason
+about the bounds checking. Avoids the future warning:
 
-> As far as I know the only good reason to relocate APIC base is to access it
-> from the real mode which is not something that is done these days by modern
-> BIOSes.
-> 
-> I vote to make it read only (#GP on MSR_IA32_APICBASE write when non default
-> base is set and apic enabled) and remove all remains of the support for
-> variable APIC base.
+In function 'fortify_memcpy_chk',
+    inlined from 'memcpy_toio' at ./include/asm-generic/io.h:1204:2,
+    inlined from 'ray_build_header.constprop' at drivers/net/wireless/ray_cs.c:984:3:
+./include/linux/fortify-string.h:285:4: warning: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
+  285 |    __write_overflow_field(p_size_field, size);
+      |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Making up our own behavior is almost never the right approach.  E.g. _best_ case
-scenario for an unexpected #GP is the guest immediately terminates.  Worst case
-scenario is the guest eats the #GP and continues on, which is basically the status
-quo, except it's guaranteed to now work, whereas todays behavior can at least let
-the guest function, for some definitions of "function".
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/wireless/ray_cs.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-I think the only viable "solution" is to exit to userspace on the guilty WRMSR.
-Whether or not we can do that without breaking userspace is probably the big
-question.  Fully emulating APIC base relocation would be a tremendous amount of
-effort and complexity for practically zero benefit.
+diff --git a/drivers/net/wireless/ray_cs.c b/drivers/net/wireless/ray_cs.c
+index 590bd974d94f..d57bbe551630 100644
+--- a/drivers/net/wireless/ray_cs.c
++++ b/drivers/net/wireless/ray_cs.c
+@@ -982,7 +982,9 @@ AP to AP	1	1	dest AP		src AP		dest	source
+ 	if (local->net_type == ADHOC) {
+ 		writeb(0, &ptx->mac.frame_ctl_2);
+ 		memcpy_toio(ptx->mac.addr_1, ((struct ethhdr *)data)->h_dest,
+-			    2 * ADDRLEN);
++			    ADDRLEN);
++		memcpy_toio(ptx->mac.addr_2, ((struct ethhdr *)data)->h_source,
++			    ADDRLEN);
+ 		memcpy_toio(ptx->mac.addr_3, local->bss_id, ADDRLEN);
+ 	} else { /* infrastructure */
+ 
+-- 
+2.30.2
 
-> (we already have a warning when APIC base is set to non default value)
-
-FWIW, that warning is worthless because it's _once(), i.e. won't help detect a
-misbehaving guest unless it's the first guest to misbehave on a particular
-instantiation of KVM.   _ratelimited() would improve the situation, but not
-completely eliminate the possibility of a misbehaving guest going unnoticed.
-Anything else isn't an option becuase it's obviously guest triggerable.
