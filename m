@@ -2,198 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E573E3164
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE323E3166
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245347AbhHFVu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 17:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245328AbhHFVuY (ORCPT
+        id S245355AbhHFVus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 17:50:48 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:52532 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237987AbhHFVur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 17:50:24 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D64BC06179A
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 14:50:07 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so21468229pji.5
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 14:50:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gUraSkyrsAFaSY8vAulmKjK0D4+3OOrGidTEIITk1eo=;
-        b=GSvN543bPKhIK1/VBr27ma7W3pkmJTDziVDbKx6nLAjCtDC/ehiZ9JOsj7z6lqSHJ8
-         IEOKsaCojcFPOZnl6C2vV7yN51EgstGQpoIXr/0fHnejdpEqGnEpXnpHznS9GlWD1piM
-         3ohPvYVp9IUF/Rrc8YGRd1gxDX9Cg6qjXsqIU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gUraSkyrsAFaSY8vAulmKjK0D4+3OOrGidTEIITk1eo=;
-        b=L9nCsxv0rErHy9VqAKrTml5urkOWyRgo3cAi1HEOZPdlvPy1T5PRWeKe91kQYxnXwC
-         Y7QoFYJhktM+iXM4KOh6uRilz5pYb6HQvmZXSAfi16CzeBy4IRHjLEfhjnZqOe0jYClN
-         +1Kq9j9p58plDW0kvQb3JcIHDQrs9+Y3qcudPXpTs/a5wOMmqfnSU3DwGKS+WZwiP67O
-         FRlztBItkExKHm7TbiNrXXOhksE1t+LV75FBfpQ9GipNEwGeQfDPcy/vTY6/5NhXAaA/
-         gzTB4gXpropxt7I6xbsZRMwrd9FX4Y86I4fYwv5vaZmYlarbETVO//ayBgT0J99CekzE
-         5kmA==
-X-Gm-Message-State: AOAM531MdnI4EcgxPFCJEnFDyQHTpHgEN0vN8CcPUjZsMBh7iWALYRf6
-        YcFOOo6ABghwD6dbOA0KyeNG4g==
-X-Google-Smtp-Source: ABdhPJy+Kf7w5KI+XVSjt2FRNsyGEVYPhSvhEaOPRhbq81cdArt7SKdqZQl0wkZFCGqq39jvuqcP6A==
-X-Received: by 2002:a05:6a00:2150:b029:399:711c:826f with SMTP id o16-20020a056a002150b0290399711c826fmr12556355pfk.14.1628286606720;
-        Fri, 06 Aug 2021 14:50:06 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d65sm9570610pjk.45.2021.08.06.14.50.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 14:50:06 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] net/mlx5e: Avoid field-overflowing memcpy()
-Date:   Fri,  6 Aug 2021 14:50:03 -0700
-Message-Id: <20210806215003.2874554-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Fri, 6 Aug 2021 17:50:47 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 551B31F44DF3
+Received: by earth.universe (Postfix, from userid 1000)
+        id 613BB3C0C99; Fri,  6 Aug 2021 23:50:28 +0200 (CEST)
+Date:   Fri, 6 Aug 2021 23:50:28 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] power: supply: sbs-battery: relax voltage limit
+Message-ID: <20210806215028.pok7ec3dyrifaupk@earth.universe>
+References: <cd466515301fcb19e9b858b2287d8bcc10cc3de1.1626678985.git.matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5742; h=from:subject; bh=cNvlrfIsT1+CpfN0obpPhHEUYJYVuyHpzp3wiLEFNWY=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhDa6Lh9EgIloqfj+/VgCfcSonsAQDYPZHBgpoEloD KYt3DsWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYQ2uiwAKCRCJcvTf3G3AJnYvD/ 46bzI0R7MoSLbJUL279MLp9QvSKekQ5AU6B8TL3gvQCC0+AndVvPGLMApL4SjdqpWEP/xLTA4NAgd8 TwofoWZpghQUnERjXPWKrfAjpv85TiEavVzg+rL2xBQFDJaH+6uD2dY5ixrf6RZl0yxTQiqARGzoUl Hzd62Un2FAdrFIbWmwVnhi2BYW45O+GQD6QrswwFzAOsuxjxqQ0yuEZOt8e6tpp2KgQ25ax1Bx1FtQ U9cpPuzkV8TxVLlLyLRQOuu2g/BbbdJC9EBygPYsL2a6+sqRJWYu9fEonuPIiD1usOfaIhNnJ2RO10 FS4YpWMtGALnc/oBChPKuAQ22XFzyDVT+xOAkZEeZF5TUccm+j+357Dl1z/2DJO14INhyP40ADTrx/ hiD0Fassaskv+ktJZObYWplbSaagAD1wRHQW2ptAPJVjkr14QfUa5Z13gWnIEA88XIt5RHLuGHiCFQ HdKMCjuBX/6546bFr5enEtYZmiC02XtEMbovzMsmLYGPK9n43ypS9F9p3v+zighMrbISJ5GTioVb8a Tu/9N1yGPGfwb4caiDgVwSiTPzho318vT4MvoMSQFClrLIet9toEDfMYwaHhUm1TIsl/4Xd3/qfOX9 U8H6Ne/VTSWPNc7Qc/xtGU5OZRqSNBUC2NFAtFyN7zljXkJDUcZGWniJ2A5w==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cvo6efs4un35zhrv"
+Content-Disposition: inline
+In-Reply-To: <cd466515301fcb19e9b858b2287d8bcc10cc3de1.1626678985.git.matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
 
-Use flexible arrays instead of zero-element arrays (which look like they
-are always overflowing) and split the cross-field memcpy() into two halves
-that can be appropriately bounds-checked by the compiler.
+--cvo6efs4un35zhrv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We were doing:
+Hi,
 
-	#define ETH_HLEN  14
-	#define VLAN_HLEN  4
-	...
-	#define MLX5E_XDP_MIN_INLINE (ETH_HLEN + VLAN_HLEN)
-	...
-        struct mlx5e_tx_wqe      *wqe  = mlx5_wq_cyc_get_wqe(wq, pi);
-	...
-        struct mlx5_wqe_eth_seg  *eseg = &wqe->eth;
-        struct mlx5_wqe_data_seg *dseg = wqe->data;
-	...
-	memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
+On Mon, Jul 19, 2021 at 09:20:18AM +0200, Matthias Schiffer wrote:
+> The Smart Battery Data Specification allows for values 0..65535 mV,
+> there is no reason to limit the value to 20000.
+>=20
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> ---
 
-target is wqe->eth.inline_hdr.start (which the compiler sees as being
-2 bytes in size), but copying 18, intending to write across start
-(really vlan_tci, 2 bytes). The remaining 16 bytes get written into
-wqe->data[0], covering byte_count (4 bytes), lkey (4 bytes), and addr
-(8 bytes).
+Thanks, queued.
 
-struct mlx5e_tx_wqe {
-        struct mlx5_wqe_ctrl_seg   ctrl;                 /*     0    16 */
-        struct mlx5_wqe_eth_seg    eth;                  /*    16    16 */
-        struct mlx5_wqe_data_seg   data[];               /*    32     0 */
+-- Sebastian
 
-        /* size: 32, cachelines: 1, members: 3 */
-        /* last cacheline: 32 bytes */
-};
+>  drivers/power/supply/sbs-battery.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sb=
+s-battery.c
+> index f84dbaab283a..3d6b8247d450 100644
+> --- a/drivers/power/supply/sbs-battery.c
+> +++ b/drivers/power/supply/sbs-battery.c
+> @@ -102,7 +102,7 @@ static const struct chip_data {
+>  	[REG_TEMPERATURE] =3D
+>  		SBS_DATA(POWER_SUPPLY_PROP_TEMP, 0x08, 0, 65535),
+>  	[REG_VOLTAGE] =3D
+> -		SBS_DATA(POWER_SUPPLY_PROP_VOLTAGE_NOW, 0x09, 0, 20000),
+> +		SBS_DATA(POWER_SUPPLY_PROP_VOLTAGE_NOW, 0x09, 0, 65535),
+>  	[REG_CURRENT_NOW] =3D
+>  		SBS_DATA(POWER_SUPPLY_PROP_CURRENT_NOW, 0x0A, -32768, 32767),
+>  	[REG_CURRENT_AVG] =3D
+> --=20
+> 2.17.1
+>=20
 
-struct mlx5_wqe_eth_seg {
-        u8                         swp_outer_l4_offset;  /*     0     1 */
-        u8                         swp_outer_l3_offset;  /*     1     1 */
-        u8                         swp_inner_l4_offset;  /*     2     1 */
-        u8                         swp_inner_l3_offset;  /*     3     1 */
-        u8                         cs_flags;             /*     4     1 */
-        u8                         swp_flags;            /*     5     1 */
-        __be16                     mss;                  /*     6     2 */
-        __be32                     flow_table_metadata;  /*     8     4 */
-        union {
-                struct {
-                        __be16     sz;                   /*    12     2 */
-                        u8         start[2];             /*    14     2 */
-                } inline_hdr;                            /*    12     4 */
-                struct {
-                        __be16     type;                 /*    12     2 */
-                        __be16     vlan_tci;             /*    14     2 */
-                } insert;                                /*    12     4 */
-                __be32             trailer;              /*    12     4 */
-        };                                               /*    12     4 */
+--cvo6efs4un35zhrv
+Content-Type: application/pgp-signature; name="signature.asc"
 
-        /* size: 16, cachelines: 1, members: 9 */
-        /* last cacheline: 16 bytes */
-};
+-----BEGIN PGP SIGNATURE-----
 
-struct mlx5_wqe_data_seg {
-        __be32                     byte_count;           /*     0     4 */
-        __be32                     lkey;                 /*     4     4 */
-        __be64                     addr;                 /*     8     8 */
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmENrqQACgkQ2O7X88g7
++pqIBg//bA01H1vqmBod+OFPSoZyqaW+qNMBp3o6R2GsGrTMWrDOZY+XOqCCCmnL
+CHujWi9OSwoofhx/0JwAau+2TVDxV0dMnRpxg7yHh7Aar/XU2S6Bt09ZnHvm5O5O
+1CkeHX9osz3/qbS/xCjB+bju/jSJcFqLV4XsK2rCeXB0fnb8l83mD+4/YM/TcLq5
+2L5ilE1RDQZKWCICWtxYd0xbEjCXVEz7SrQX9vWprgu4ifpiXSbpKhfXHV78YT2I
+RN9lr5ISkaDFzvzGcMppEUzlw50/GllHoGAzpPU4NIOpku6EeUROX+jK/A6Fd2Hs
+j28M95ax44d1JeAZ2anal5HD4BMH6z9jyVgYPTMOCj9JVNvXV9PZ7thgVW6EmS7w
+DcgxtP/w5Mj3C2sMCuRsy4E4iOqx1jgKhBzeeGq9N4lb7yJHTKJ3ekkSHtogyGra
+dyL0SpJu4ZI6W9xuhwN8UYamMbnd+azTQAs7ggKJ25C4xJPGUHvgjiju/pOrF6Fl
+YCPLgrm1eC8e9z216iGKj5qSPi5j4DHpG12uA5AwYgQZJkLYUyfhKc7F26r/fRSA
+fs4kpXoQnsBfrBvEDE50piCSLEFGwx/yKHUC7Goao5oKwduD9rzOMAyamcBTfUpY
+CU0q4lSqIuR/MVREv9zmDi2j7UOS+xDCAMvw4sQnwP3d3z7dO7k=
+=LSpE
+-----END PGP SIGNATURE-----
 
-        /* size: 16, cachelines: 1, members: 3 */
-        /* last cacheline: 16 bytes */
-};
-
-So, split the memcpy() so the compiler can reason about the buffer
-sizes.
-
-"pahole" shows no size nor member offset changes to struct mlx5e_tx_wqe
-nor struct mlx5e_umr_wqe. "objdump -d" shows no meaningful object
-code changes (i.e. only source line number induced differences and
-optimizations).
-
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: linux-rdma@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/en.h     | 4 ++--
- drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c | 4 +++-
- 2 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index 35668986878a..40af561c98d9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -201,7 +201,7 @@ static inline int mlx5e_get_max_num_channels(struct mlx5_core_dev *mdev)
- struct mlx5e_tx_wqe {
- 	struct mlx5_wqe_ctrl_seg ctrl;
- 	struct mlx5_wqe_eth_seg  eth;
--	struct mlx5_wqe_data_seg data[0];
-+	struct mlx5_wqe_data_seg data[];
- };
- 
- struct mlx5e_rx_wqe_ll {
-@@ -217,7 +217,7 @@ struct mlx5e_umr_wqe {
- 	struct mlx5_wqe_ctrl_seg       ctrl;
- 	struct mlx5_wqe_umr_ctrl_seg   uctrl;
- 	struct mlx5_mkey_seg           mkc;
--	struct mlx5_mtt                inline_mtts[0];
-+	struct mlx5_mtt                inline_mtts[];
- };
- 
- extern const char mlx5e_self_tests[][ETH_GSTRING_LEN];
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index 2f0df5cc1a2d..efae2444c26f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -341,8 +341,10 @@ mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
- 
- 	/* copy the inline part if required */
- 	if (sq->min_inline_mode != MLX5_INLINE_MODE_NONE) {
--		memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
-+		memcpy(eseg->inline_hdr.start, xdptxd->data, sizeof(eseg->inline_hdr.start));
- 		eseg->inline_hdr.sz = cpu_to_be16(MLX5E_XDP_MIN_INLINE);
-+		memcpy(dseg, xdptxd->data + sizeof(eseg->inline_hdr.start),
-+		       MLX5E_XDP_MIN_INLINE - sizeof(eseg->inline_hdr.start));
- 		dma_len  -= MLX5E_XDP_MIN_INLINE;
- 		dma_addr += MLX5E_XDP_MIN_INLINE;
- 		dseg++;
--- 
-2.30.2
-
+--cvo6efs4un35zhrv--
