@@ -2,87 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580C13E2586
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6353A3E25D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243400AbhHFIUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:20:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48794 "EHLO mail.kernel.org"
+        id S243728AbhHFIWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:22:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242384AbhHFISV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:18:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D56B6120C;
-        Fri,  6 Aug 2021 08:18:04 +0000 (UTC)
+        id S244273AbhHFITc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:19:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBC216120D;
+        Fri,  6 Aug 2021 08:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628237885;
-        bh=tJ1D1zFs0Ylz1KRKABjtoasSqKI0FcM1HowOtKwSuPE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dO9zF/Gu4a+3NvnUnf/2NG7SRU6WMRg67rtBqqI0/MF1O2Dv9g88vF5jxkeWXP82+
-         tBzmp6raecGks1yISgHmWe+mTk52XBtR1ChuwnwfAlNRonOU80QkL2qovbSq/x/1Bt
-         mOf6mb/QsQwe/fwJlF++GINotWp2JI98GbXDgn6k=
+        s=korg; t=1628237955;
+        bh=RTwdxbk2mr34Wy0D5fjScpdzoBJPiMGygSsvcwUxzBQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=A1Tpf/a3HmUDCa4uvgb20iPRMv83JFoAks+k3EfzUK5HUC34uLsaxvPVC+Q3k/jEI
+         n/G2IIGUDfoJzeQr/BeRiEnfLFFWCQorZ/nj6h2yxwneQHcAR3F/9Qa6P/WORi8Jif
+         zGzJQaIdIuhNQaZlgw9elShja60ZPIWprJJXwF6A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 05/23] regulator: rt5033: Fix n_voltages settings for BUCK and LDO
-Date:   Fri,  6 Aug 2021 10:16:37 +0200
-Message-Id: <20210806081112.289232518@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.10 00/30] 5.10.57-rc1 review
+Date:   Fri,  6 Aug 2021 10:16:38 +0200
+Message-Id: <20210806081113.126861800@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210806081112.104686873@linuxfoundation.org>
-References: <20210806081112.104686873@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.57-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.10.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.10.57-rc1
+X-KernelTest-Deadline: 2021-08-08T08:11+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Axel Lin <axel.lin@ingics.com>
+This is the start of the stable review cycle for the 5.10.57 release.
+There are 30 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-[ Upstream commit 6549c46af8551b346bcc0b9043f93848319acd5c ]
+Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
+Anything received after that time might be too late.
 
-For linear regulators, the n_voltages should be (max - min) / step + 1.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.57-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+and the diffstat can be found below.
 
-Buck voltage from 1v to 3V, per step 100mV, and vout mask is 0x1f.
-If value is from 20 to 31, the voltage will all be fixed to 3V.
-And LDO also, just vout range is different from 1.2v to 3v, step is the
-same. If value is from 18 to 31, the voltage will also be fixed to 3v.
+thanks,
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Reviewed-by: ChiYuan Huang <cy_huang@richtek.com>
-Link: https://lore.kernel.org/r/20210627080418.1718127-1-axel.lin@ingics.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- include/linux/mfd/rt5033-private.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+greg k-h
 
-diff --git a/include/linux/mfd/rt5033-private.h b/include/linux/mfd/rt5033-private.h
-index f812105c538c..f2271bfb3273 100644
---- a/include/linux/mfd/rt5033-private.h
-+++ b/include/linux/mfd/rt5033-private.h
-@@ -200,13 +200,13 @@ enum rt5033_reg {
- #define RT5033_REGULATOR_BUCK_VOLTAGE_MIN		1000000U
- #define RT5033_REGULATOR_BUCK_VOLTAGE_MAX		3000000U
- #define RT5033_REGULATOR_BUCK_VOLTAGE_STEP		100000U
--#define RT5033_REGULATOR_BUCK_VOLTAGE_STEP_NUM		32
-+#define RT5033_REGULATOR_BUCK_VOLTAGE_STEP_NUM		21
- 
- /* RT5033 regulator LDO output voltage uV */
- #define RT5033_REGULATOR_LDO_VOLTAGE_MIN		1200000U
- #define RT5033_REGULATOR_LDO_VOLTAGE_MAX		3000000U
- #define RT5033_REGULATOR_LDO_VOLTAGE_STEP		100000U
--#define RT5033_REGULATOR_LDO_VOLTAGE_STEP_NUM		32
-+#define RT5033_REGULATOR_LDO_VOLTAGE_STEP_NUM		19
- 
- /* RT5033 regulator SAFE LDO output voltage uV */
- #define RT5033_REGULATOR_SAFE_LDO_VOLTAGE		4900000U
--- 
-2.30.2
+-------------
+Pseudo-Shortlog of commits:
 
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.10.57-rc1
+
+Andrei Matei <andreimatei1@gmail.com>
+    selftest/bpf: Verifier tests for var-off access
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf, selftests: Adjust few selftest outcomes wrt unreachable code
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Update selftests to reflect new error states
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf, selftests: Adjust few selftest result_unpriv outcomes
+
+Andrei Matei <andreimatei1@gmail.com>
+    selftest/bpf: Adjust expected verifier errors
+
+Yonghong Song <yhs@fb.com>
+    selftests/bpf: Add a test for ptr_to_map_value on stack for helper access
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "watchdog: iTCO_wdt: Account for rebooting on second timeout"
+
+Cristian Marussi <cristian.marussi@arm.com>
+    firmware: arm_scmi: Add delayed response status check
+
+Sudeep Holla <sudeep.holla@arm.com>
+    firmware: arm_scmi: Ensure drivers provide a probe function
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "Bluetooth: Shutdown controller after workqueues are flushed or cancelled"
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "spi: mediatek: fix fifo rx mode"
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    ACPI: fix NULL pointer dereference
+
+Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+    drm/amd/display: Fix max vstartup calculation for modes with borders
+
+Victor Lu <victorchengchi.lu@amd.com>
+    drm/amd/display: Fix comparison error in dcn21 DML
+
+Keith Busch <kbusch@kernel.org>
+    nvme: fix nvme_setup_command metadata trace event
+
+Borislav Petkov <bp@suse.de>
+    efi/mokvar: Reserve the table only if it is in boot services data
+
+Peter Ujfalusi <peter.ujfalusi@gmail.com>
+    ASoC: ti: j721e-evm: Check for not initialized parent_clk_id
+
+Peter Ujfalusi <peter.ujfalusi@gmail.com>
+    ASoC: ti: j721e-evm: Fix unbalanced domain activity tracking during startup
+
+Pravin B Shelar <pshelar@ovn.org>
+    net: Fix zero-copy head len calculation.
+
+Oder Chiou <oder_chiou@realtek.com>
+    ASoC: rt5682: Fix the issue of garbled recording after powerd_dbus_suspend
+
+Jia He <justin.he@arm.com>
+    qed: fix possible unpaired spin_{un}lock_bh in _qed_mcp_cmd_and_union()
+
+Takashi Iwai <tiwai@suse.de>
+    r8152: Fix potential PM refcount imbalance
+
+Kyle Russell <bkylerussell@gmail.com>
+    ASoC: tlv320aic31xx: fix reversed bclk/wclk master bits
+
+Alain Volmat <alain.volmat@foss.st.com>
+    spi: stm32h7: fix full duplex irq handler handling
+
+Axel Lin <axel.lin@ingics.com>
+    regulator: rt5033: Fix n_voltages settings for BUCK and LDO
+
+ChiYuan Huang <cy_huang@richtek.com>
+    regulator: rtmv20: Fix wrong mask for strobe-polarity-high
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: fix lost inode on log replay after mix of fsync, rename and inode eviction
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: fix race causing unnecessary inode logging during link and rename
+
+Jason Ekstrand <jason@jlekstrand.net>
+    Revert "drm/i915: Propagate errors on awaiting already signaled fences"
+
+Jason Ekstrand <jason@jlekstrand.net>
+    drm/i915: Revert "drm/i915/gem: Asynchronous cmdparser"
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |   4 +-
+ drivers/firmware/arm_scmi/bus.c                    |   3 +
+ drivers/firmware/arm_scmi/driver.c                 |   8 +-
+ drivers/firmware/efi/mokvar-table.c                |   5 +-
+ .../gpu/drm/amd/display/dc/dcn20/dcn20_resource.c  |   6 +-
+ .../amd/display/dc/dml/dcn21/display_mode_vba_21.c |   2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c     | 164 ++-------------------
+ drivers/gpu/drm/i915/i915_cmd_parser.c             |  28 ++--
+ drivers/gpu/drm/i915/i915_request.c                |   8 +-
+ drivers/net/ethernet/qlogic/qed/qed_mcp.c          |  23 ++-
+ drivers/net/usb/r8152.c                            |   3 +-
+ drivers/nvme/host/trace.h                          |   6 +-
+ drivers/regulator/rtmv20-regulator.c               |   2 +-
+ drivers/spi/spi-mt65xx.c                           |  16 +-
+ drivers/spi/spi-stm32.c                            |  15 +-
+ drivers/watchdog/iTCO_wdt.c                        |  12 +-
+ fs/btrfs/tree-log.c                                |   5 +-
+ include/acpi/acpi_bus.h                            |   3 +-
+ include/linux/mfd/rt5033-private.h                 |   4 +-
+ net/bluetooth/hci_core.c                           |  16 +-
+ net/core/skbuff.c                                  |   5 +-
+ sound/soc/codecs/rt5682.c                          |   8 +-
+ sound/soc/codecs/tlv320aic31xx.h                   |   4 +-
+ sound/soc/ti/j721e-evm.c                           |  18 ++-
+ tools/testing/selftests/bpf/progs/bpf_iter_task.c  |   3 +-
+ tools/testing/selftests/bpf/test_verifier.c        |   2 +-
+ tools/testing/selftests/bpf/verifier/and.c         |   2 +
+ tools/testing/selftests/bpf/verifier/basic_stack.c |   2 +-
+ tools/testing/selftests/bpf/verifier/bounds.c      |  19 ++-
+ .../selftests/bpf/verifier/bounds_deduction.c      |  21 +--
+ .../bpf/verifier/bounds_mix_sign_unsign.c          |  13 --
+ tools/testing/selftests/bpf/verifier/calls.c       |   4 +-
+ tools/testing/selftests/bpf/verifier/const_or.c    |   4 +-
+ tools/testing/selftests/bpf/verifier/dead_code.c   |   2 +
+ .../selftests/bpf/verifier/helper_access_var_len.c |  12 +-
+ tools/testing/selftests/bpf/verifier/int_ptr.c     |   6 +-
+ tools/testing/selftests/bpf/verifier/jmp32.c       |  22 +++
+ tools/testing/selftests/bpf/verifier/jset.c        |  10 +-
+ tools/testing/selftests/bpf/verifier/map_ptr.c     |   4 +-
+ tools/testing/selftests/bpf/verifier/raw_stack.c   |  10 +-
+ tools/testing/selftests/bpf/verifier/stack_ptr.c   |  22 +--
+ tools/testing/selftests/bpf/verifier/unpriv.c      |   9 +-
+ .../selftests/bpf/verifier/value_ptr_arith.c       |  17 +--
+ tools/testing/selftests/bpf/verifier/var_off.c     | 115 +++++++++++++--
+ 44 files changed, 331 insertions(+), 336 deletions(-)
 
 
