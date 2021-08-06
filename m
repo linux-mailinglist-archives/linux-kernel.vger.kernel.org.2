@@ -2,81 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1563E2EF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 19:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 005DF3E2EFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 19:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241802AbhHFRph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 13:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231776AbhHFRpe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 13:45:34 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F0DC0613CF;
-        Fri,  6 Aug 2021 10:45:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qRduPNPCLfBMTFYoq3QGcw3w+yL4nRTomePXW3/qUjU=; b=iqeWAgdtlkNbV8x9UpOR22Kofq
-        vOZK1ssLyeBoWZ6PDtdLTbF21sQzm4KeIOOlGD0Xs6Dkf3ypCp/Vp1wesR8+RiSCT+im1Oc3gxOJW
-        dBrg/iKozPAmVjNh/ri6w0VGgybsTFZp+m445sNHeCCR+TPBcqloIfDTZ/njdo/hUHXpah+E6g70s
-        sWhe6WJ8RsenGANYYvYfV+vEntvL8O1lGzL5pldMrAPdLCNSLq/uGNbEit2kSIBbF6GS4EnRcRSNC
-        Ib4lvbL2z90SJV7tSOi2SPnoXv9ooHjtQAzdrDVQnDLeEuCBhJH1rDYfTrSnYRQydKkGTvyf8DJK5
-        4SItqBXA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mC3tz-006QB3-Ln; Fri, 06 Aug 2021 17:45:00 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5E17498632E; Fri,  6 Aug 2021 19:44:57 +0200 (CEST)
-Date:   Fri, 6 Aug 2021 19:44:57 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mete Polat <metepolat2000@gmail.com>
-Cc:     Michel Lespinasse <michel@lespinasse.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Jesper Nilsson <jesper@jni.nu>, Arnd Bergmann <arnd@arndb.de>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [PATCH v2] rbtree: remove unneeded explicit alignment in struct
- rb_node
-Message-ID: <20210806174457.GA2184@worktop.programming.kicks-ass.net>
-References: <YQ1ToK8EMdAO4CyH@precision>
+        id S241858AbhHFRti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 13:49:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231776AbhHFRtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 13:49:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A8F1610E7;
+        Fri,  6 Aug 2021 17:49:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628272160;
+        bh=T7XbKNjz6J9bdpleiSzEHZfZGDNL3V/Rt8lKFm7vdVI=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=qehl2nYGu56NQ47YvZFb3tco6q5uF6+RgLz1Kn3KSngor7+15bJVjupCtFsHtlJm5
+         Jgniw7UjdxMvraFBDsq0orNLK92elvMPSHcGjXwkvMA+6fiVbHRqoYqwjc21b+awvV
+         /pbrbeMp6W1j4eN3+GBjqMpOTRhW0DFMkiPReSNTSxyBEuKYi/CC0Jacy6WEGThrdH
+         tPl/XiPEJxNKmoHE2GN/ndBSeBB64dLJsSgWzq5M4odHaFpnZK9wddB5lxSV552tt4
+         k3pGnMXJs13mqRPLQvDtprHOE5jMpGMNF4US0eUt02ghnSVyTw8g+2++lz3J2LXC4L
+         mpkbSXSuftc0g==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQ1ToK8EMdAO4CyH@precision>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1627972461-2627-5-git-send-email-hsin-hsiung.wang@mediatek.com>
+References: <1627972461-2627-1-git-send-email-hsin-hsiung.wang@mediatek.com> <1627972461-2627-5-git-send-email-hsin-hsiung.wang@mediatek.com>
+Subject: Re: [PATCH v10 4/5] spmi: mediatek: Add support for MT8195
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Henry Chen <henryc.chen@mediatek.com>
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 06 Aug 2021 10:49:19 -0700
+Message-ID: <162827215909.1975443.852277412377742323@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 05:22:08PM +0200, Mete Polat wrote:
-> Commit e977145aeaad ("[RBTREE] Add explicit alignment to sizeof(long) for
-> struct rb_node.") adds an explicit alignment to the struct rb_node due to
-> some speciality of the CRIS architecture.
-> 
-> The support for the CRIS architecture was removed with commit c690eddc2f3b
-> ("CRIS: Drop support for the CRIS port")
-> 
-> So, remove this now unneeded explicit alignment in struct rb_node as well.
-> 
-> This basically reverts commit e977145aeaad ("[RBTREE] Add explicit
-> alignment to sizeof(long) for struct rb_node.").
-> 
-> The rbtree node color is stored in the LSB of '__rb_parent_color'.
-> Only mask the first bit in '__rb_parent()', otherwise it modifies the
-> node's parent address on m68k.
+Quoting Hsin-Hsiung Wang (2021-08-02 23:34:20)
+> From: Henry Chen <henryc.chen@mediatek.com>
+>=20
+> Add spmi support for MT8195.
+>=20
+> Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
 
-I still don't believe for a second this will actually work. We rely on
-rcu_assign_pointer() and rcu_dereference() to work on the
-rb_{left,right} members, and I don't think any architecture can provide
-single copy atomic loads and stores that are not naturally aligned (eg.
-when they straddle a cache or page boundary).
+Missing Signed-off-by from hsin-hsiung.wang here
 
+> ---
+> changes since v9:
+> - No change.
+> ---
+>  drivers/spmi/spmi-mtk-pmif.c | 90 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 90 insertions(+)
+>=20
+> diff --git a/drivers/spmi/spmi-mtk-pmif.c b/drivers/spmi/spmi-mtk-pmif.c
+> index 94c45d46ab0c..0c320801c9d5 100644
+> --- a/drivers/spmi/spmi-mtk-pmif.c
+> +++ b/drivers/spmi/spmi-mtk-pmif.c
+> @@ -348,6 +427,14 @@ static const struct pmif_data mt6873_pmif_arb =3D {
+>         .soc_chan =3D 2,
+>  };
+> =20
+> +static const struct pmif_data mt8195_pmif_arb[] =3D {
+
+This is an array of type pmif_data.
+
+> +       {
+> +               .regs =3D mt8195_regs,
+> +               .spmimst_regs =3D mt8195_spmi_regs,
+> +               .soc_chan =3D 2,
+> +       },
+> +};
+> +
+>  static int mtk_spmi_probe(struct platform_device *pdev)
+>  {
+>         struct pmif *arb;
+> @@ -444,6 +531,9 @@ static const struct of_device_id mtk_spmi_match_table=
+[] =3D {
+>         {
+>                 .compatible =3D "mediatek,mt6873-spmi",
+>                 .data =3D &mt6873_pmif_arb,
+
+mt6873_pmif_arb is not an array, see the context header above.
+
+How does this work? Has this been tested?
+
+> +       }, {
+> +               .compatible =3D "mediatek,mt8195-spmi",
+> +               .data =3D &mt8195_pmif_arb,
+>         }, {
+>                 /* sentinel */
+>         },
+> --=20
+> 2.18.0
+>
