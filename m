@@ -2,114 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3482D3E2A5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0973E2A5A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343590AbhHFMJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 08:09:48 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18856 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243761AbhHFMJr (ORCPT
+        id S1343581AbhHFMJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 08:09:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56431 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243761AbhHFMJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 08:09:47 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 176C3JsU040130;
-        Fri, 6 Aug 2021 08:09:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=gp7o6nsUz02cEmUbe1aDvwX7ROQjyHwgHhxzlCBJ8iw=;
- b=ng1OBnph6HoyGSZT22pXtF+vHuITdsWlju0jNsFEsyTBjT25DBULjHIdKaFV40oPsY+a
- ogFS8NfbWdJq0k9J6y7t7sIoaoWxuMSheQO87Cdlnd7bsez//YyA4zFGwq8L49DOs7rf
- gX1c0wl9nHV5NxlkFZKHuJvbWIp1VXglzsf1odLoG5gaKTAq/uWLjmbB7oWfSNp1xkL8
- gqa/UQ5OIardZk5kh7JVRU4zCOmbG+Vu7rGJwjAgEQrx412P8dlRaEgAPKbBILpylziT
- QMCt/rwuFXs2wZQ1kicc+kX6CloMvn5IP7PrBNuFlLbDUaheEvAHkzgeIgIe+me+CoBm Cg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a9356u1ju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Aug 2021 08:09:30 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 176C3cUK042272;
-        Fri, 6 Aug 2021 08:09:30 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a9356u1j4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Aug 2021 08:09:30 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 176C7HHm019801;
-        Fri, 6 Aug 2021 12:09:29 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma01wdc.us.ibm.com with ESMTP id 3a8gwu6cwu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Aug 2021 12:09:28 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 176C8SOX34210146
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 6 Aug 2021 12:08:28 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00A71124058;
-        Fri,  6 Aug 2021 12:08:28 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C70F012405A;
-        Fri,  6 Aug 2021 12:08:27 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri,  6 Aug 2021 12:08:27 +0000 (GMT)
-Subject: Re: [PATCH v3 1/2] tpm: ibmvtpm: Rename tpm_process_cmd to tpm_status
- and define flag
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>,
-        George Wilson <gcwilson@linux.ibm.com>
-References: <20210805215256.1293987-1-stefanb@linux.vnet.ibm.com>
- <20210805215256.1293987-2-stefanb@linux.vnet.ibm.com>
- <20210806112557.y7q2av6pk7r4xorm@kernel.org>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <cddf0b42-c69f-c110-9543-e16d30c9927a@linux.ibm.com>
-Date:   Fri, 6 Aug 2021 08:08:27 -0400
+        Fri, 6 Aug 2021 08:09:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628251726;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V4AdJPieWv1AGBhnfr6N7NI4S2zg5FETvWvC3QgBc/s=;
+        b=IHNA7G2sMKgyYEq0Cp38H08zmxCKZhK14ZI1Jp1y3LSTT3+3N/NU1AeEp/5gJnRw5p/Pdm
+        k2HZxbww3HTw7glPz0b7Sz3CtozyXpPxvGNWof0okareN8CoC66LrCNHzG0ADR57tGwaHp
+        jT4J3q9e8D0kMylv1YT+FUeqkkID9gw=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-415-Xw7faXBnPJy-sR8x43ECzw-1; Fri, 06 Aug 2021 08:08:45 -0400
+X-MC-Unique: Xw7faXBnPJy-sR8x43ECzw-1
+Received: by mail-ed1-f71.google.com with SMTP id p2-20020a50c9420000b02903a12bbba1ebso4800697edh.6
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 05:08:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V4AdJPieWv1AGBhnfr6N7NI4S2zg5FETvWvC3QgBc/s=;
+        b=HHTusSduOmntRLN12j7lqbLndcQBkmCmpPNvnaY9RYxtpp2G3ZsP3z0cTI4rcKfFBX
+         kfKotsI810t04E7QuaVZNcLzTSCJH0lhB7fGJajJvsIwA06IfqM8IIXt/arrcs76O4Hf
+         iPN5mOtz0yi6iaewteOu8CnlalrI4x4a4xnJZqfclcQQD7yokaiQ3/zESRo4ISIM/oRO
+         NSS4/mIQnPKvAtaDnJK7Z4c9l9S7+dE6igFGvlGVLoBc0NUzrl7KfyEdCQ34M2i3QyLS
+         eqQPYFeu5mz7GkYc6hOMWQ9CjaV7fFxFvCZyhNFjbDh+4UxQMvQCkyK0j/n/e6vbjXWx
+         k1Qg==
+X-Gm-Message-State: AOAM5336+WP6ye1XamZExfhNgENLsnYjUdcygLmfGTxo9pTZobjo+iHI
+        IcNnCUvo7+X3N1P6jYZ1Ld/JthfQscKSyLxoBkJm84AO8Rg1kaerIg4YbRP963CWtQbeG/Tyf/3
+        O1uKkbIB9gnBC9pcFqR1jdG8Y
+X-Received: by 2002:aa7:c541:: with SMTP id s1mr12750568edr.327.1628251724037;
+        Fri, 06 Aug 2021 05:08:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzLIdXKzTovwMCJ/mrOdvKOkViUKmJ8dKu7a05333lEFVX4pxiAwiXziYx/lnIsFREOBCAjjQ==
+X-Received: by 2002:aa7:c541:: with SMTP id s1mr12750551edr.327.1628251723909;
+        Fri, 06 Aug 2021 05:08:43 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id i10sm3811930edf.12.2021.08.06.05.08.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Aug 2021 05:08:43 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] serdev: Split and export
+ serdev_acpi_get_uart_resource()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Cc:     Mark Gross <mgross@linux.intel.com>, Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+References: <20210806111736.66591-1-andriy.shevchenko@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a955083a-a985-0b7d-460f-af196c5113c5@redhat.com>
+Date:   Fri, 6 Aug 2021 14:08:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210806112557.y7q2av6pk7r4xorm@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210806111736.66591-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: npSS4fNHEm-p9shLGVI87GjUlCCjE5o8
-X-Proofpoint-GUID: UhUePdO4yOSxS7z4ffmMHClSqeZDp5IZ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-06_04:2021-08-05,2021-08-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=999 malwarescore=0 priorityscore=1501 spamscore=0 mlxscore=0
- phishscore=0 bulkscore=0 adultscore=0 suspectscore=0 impostorscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108060085
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 8/6/21 7:25 AM, Jarkko Sakkinen wrote:
-> On Thu, Aug 05, 2021 at 05:52:55PM -0400, Stefan Berger wrote:
->> From: Stefan Berger <stefanb@linux.ibm.com>
->>
->> Rename the field tpm_processing_cmd to tpm_status in ibmvtpm_dev and set
->> the TPM_STATUS_BUSY flag while the vTPM is busy processing a command.
->>
->> Fixes: 6674ff145eef ("tpm_ibmvtpm: properly handle interrupted packet receptions")
->> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
->> Cc: Nayna Jain <nayna@linux.ibm.com>
->> Cc: George Wilson <gcwilson@linux.ibm.com>
-> Please put the bug fix first because otherwise it will be dependent of this
-> patch, which is bad thing when it comes to backporting.
+On 8/6/21 1:17 PM, Andy Shevchenko wrote:
+> The same as for I²C Serial Bus resource split and export
+> serdev_acpi_get_uart_resource(). We have already a few users
+> one of which is converted here.
+> 
+> Rationale of this is to consolidate parsing UART Serial Bus
+> resource in one place as it's done, e.g., for I²C Serial Bus.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-Yes, and that's why I have this one here also with a Fix tag. I 
-basically don't want to logically '&' with the 'true' flag but want this 
-TPM_STATUS_BUSY flag first.
+As mentioned before I believe it is best if this series is
+merged in its entirety through to the tty tree, here is my
+ack for patch 2/2 for that:
 
-    Stefan
+Acked-by: Hans de Goede <hdegoede@redhat.com>
 
->
-> /Jarkko
+Greg, can you pickup the entire series please?
+
+Regards,
+
+Hans
+
+
+> ---
+> v3: amended kernel doc to have RETURN section (Jiri)
+>  drivers/tty/serdev/core.c | 36 +++++++++++++++++++++++++++++-------
+>  include/linux/serdev.h    | 14 ++++++++++++++
+>  2 files changed, 43 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
+> index 92498961fd92..f1324fe99378 100644
+> --- a/drivers/tty/serdev/core.c
+> +++ b/drivers/tty/serdev/core.c
+> @@ -562,23 +562,45 @@ struct acpi_serdev_lookup {
+>  	int index;
+>  };
+>  
+> +/**
+> + * serdev_acpi_get_uart_resource - Gets UARTSerialBus resource if type matches
+> + * @ares:	ACPI resource
+> + * @uart:	Pointer to UARTSerialBus resource will be returned here
+> + *
+> + * Checks if the given ACPI resource is of type UARTSerialBus.
+> + * In this case, returns a pointer to it to the caller.
+> + *
+> + * Return: True if resource type is of UARTSerialBus, otherwise false.
+> + */
+> +bool serdev_acpi_get_uart_resource(struct acpi_resource *ares,
+> +				   struct acpi_resource_uart_serialbus **uart)
+> +{
+> +	struct acpi_resource_uart_serialbus *sb;
+> +
+> +	if (ares->type != ACPI_RESOURCE_TYPE_SERIAL_BUS)
+> +		return false;
+> +
+> +	sb = &ares->data.uart_serial_bus;
+> +	if (sb->type != ACPI_RESOURCE_SERIAL_TYPE_UART)
+> +		return false;
+> +
+> +	*uart = sb;
+> +	return true;
+> +}
+> +EXPORT_SYMBOL_GPL(serdev_acpi_get_uart_resource);
+> +
+>  static int acpi_serdev_parse_resource(struct acpi_resource *ares, void *data)
+>  {
+>  	struct acpi_serdev_lookup *lookup = data;
+>  	struct acpi_resource_uart_serialbus *sb;
+>  	acpi_status status;
+>  
+> -	if (ares->type != ACPI_RESOURCE_TYPE_SERIAL_BUS)
+> -		return 1;
+> -
+> -	if (ares->data.common_serial_bus.type != ACPI_RESOURCE_SERIAL_TYPE_UART)
+> +	if (!serdev_acpi_get_uart_resource(ares, &sb))
+>  		return 1;
+>  
+>  	if (lookup->index != -1 && lookup->n++ != lookup->index)
+>  		return 1;
+>  
+> -	sb = &ares->data.uart_serial_bus;
+> -
+>  	status = acpi_get_handle(lookup->device_handle,
+>  				 sb->resource_source.string_ptr,
+>  				 &lookup->controller_handle);
+> @@ -586,7 +608,7 @@ static int acpi_serdev_parse_resource(struct acpi_resource *ares, void *data)
+>  		return 1;
+>  
+>  	/*
+> -	 * NOTE: Ideally, we would also want to retreive other properties here,
+> +	 * NOTE: Ideally, we would also want to retrieve other properties here,
+>  	 * once setting them before opening the device is supported by serdev.
+>  	 */
+>  
+> diff --git a/include/linux/serdev.h b/include/linux/serdev.h
+> index 9f14f9c12ec4..3368c261ab62 100644
+> --- a/include/linux/serdev.h
+> +++ b/include/linux/serdev.h
+> @@ -327,4 +327,18 @@ static inline int serdev_tty_port_unregister(struct tty_port *port)
+>  }
+>  #endif /* CONFIG_SERIAL_DEV_CTRL_TTYPORT */
+>  
+> +struct acpi_resource;
+> +struct acpi_resource_uart_serialbus;
+> +
+> +#ifdef CONFIG_ACPI
+> +bool serdev_acpi_get_uart_resource(struct acpi_resource *ares,
+> +				   struct acpi_resource_uart_serialbus **uart);
+> +#else
+> +static inline bool serdev_acpi_get_uart_resource(struct acpi_resource *ares,
+> +						 struct acpi_resource_uart_serialbus **uart)
+> +{
+> +	return false;
+> +}
+> +#endif /* CONFIG_ACPI */
+> +
+>  #endif /*_LINUX_SERDEV_H */
+> 
+
