@@ -2,223 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02B63E28C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D75D03E28C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245216AbhHFKhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:37:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
+        id S245231AbhHFKhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245202AbhHFKhT (ORCPT
+        with ESMTP id S245218AbhHFKhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:37:19 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0921FC061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:37:04 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id cf5so12424716edb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 03:37:03 -0700 (PDT)
+        Fri, 6 Aug 2021 06:37:35 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE196C061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:37:19 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id u3so14407801ejz.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 03:37:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ohHKSh+HZImpSVaLM9TW5relpABftXO5BlsVkkQC4Nk=;
-        b=XYiFbQ2l+Q6VnSuV3mymGTcQZDcTePXH6XonuZpjEeql1yzQTM9ZnH8pilXV4DIuID
-         wDH6SxZ84yHVSzT+rneEwPYnY764gFXIXf+HhKFw7pmiVPSjBq66l4ZgWjUYSTCwwRHD
-         IPUSw5iy2QAwSXR9NEQ5CBeG7ZOJ+tyXlrZf35KtgHVSkmO5gEgpWhPREtxIAigx7Q54
-         /hu2yhPbubYXMAm1n8gepSozQnWaaEkBbWQywVgce/BXCouIbuLE2sAWeH61kwRES3zS
-         fHjzaJPB1ce1I3VvVfSeTCjBvFwjrnOijjBB/6aF9nibTWs7Gs7GGnIyfOOz03U6K9Op
-         uzKg==
+         :cc:content-transfer-encoding;
+        bh=TVGZoE5gGRjdrzp11QJfyMJlwcXTvAtUoyy+JrT+IQA=;
+        b=tQEG6YzPxZYaUfm8emfjyn1WQFufEBobsHOf2wIgqUNzArRiVwdyJkOY9t8gOk+3IR
+         vT4VvKckYd0jrRQzATYiCfUCoy0TfUxwzzwpq1OiS3Q2AVq4m4gWgAuxZTIlEjnWwt59
+         pru94xbHnAJzrcoxhCAjzHTTkUatiOXaVXRPaBj3jlvDw59GHBlSTGPMwoAw9FgvgDPE
+         ImlV2e+CmYICx4ZkMx2AEiu4CTp7EN4OJRYRS8xKzf8vFaCKrEczCWyGFdtMOUcU2Y8p
+         xKBVtmt6XWAeTvFKPxe/ZbI+NAH/K7fa1hKIbwr16XrJzECI4N3fCdDLiTLk5l4e8CEQ
+         aVIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ohHKSh+HZImpSVaLM9TW5relpABftXO5BlsVkkQC4Nk=;
-        b=kVzr8AHQhYG8HoV6MVQUol5NFFyljYuiTYO3s8XaXNSeqJ0qRYNmTwzTeoeXnydy39
-         0Ba2bRlS5IElhlLEQgO/0e4Vx4jsooHiUkeZxyh7Biq7bNwhAinoBEzkxw/Y3+jr6jP5
-         M2fXzSmD1GqDYdkp/e6j5HWqvf9Npj8CBv0NWxmb/K1+wr/j0o73bRWGU2q4RqWp8a/R
-         WAjgT1SxWiElP7BeZ5I0p9NZWLJYQvy/637h3fjh570c4frkQ8vSfEv58Fh9xEk/YzrR
-         Dk3I6YmVn8SWppxGBYbMkZn9x56ITShp+mtuL/qajYNk+fd4ExJssip+GR4LUijru7ME
-         DXqQ==
-X-Gm-Message-State: AOAM532+R6BszAH4Km20Kx4BUOk2jc3spSemoZXQw8TXeZklAF462Oa2
-        kvAIRpbg4tfsHgRwq0Ocwa3rhLYUSpKmuEAI8v3zJw==
-X-Google-Smtp-Source: ABdhPJwngALTFtP2SGuhZhQaLpak7jWhSExOZMtTGHS+YF1ZqsrJ8bWECzb9vFagDm+wJhPNQAl8V06+xBILBLJxK/U=
-X-Received: by 2002:aa7:c805:: with SMTP id a5mr11962205edt.23.1628246222536;
- Fri, 06 Aug 2021 03:37:02 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TVGZoE5gGRjdrzp11QJfyMJlwcXTvAtUoyy+JrT+IQA=;
+        b=Wa7rmdL+Pp7CzHMDtBSyCw6S7Cxc3s/BVcVxNBS0h8EAjvs6dQfWn1ZxwSY4+MmXFF
+         TvRUtcD6v2MkuvebQHW/AxzNaP1KupHlaJbm9hIDamGQH+mxVk4ZQd//2dYZYVO1ea4E
+         y2Jx+CqUT31jLSPk7LF0dKWb/oLUJA5tS1msw2lVynzA4JHtozVpJC7N1TyqNmxL2Aj8
+         llHwcPA+ZmA+gC7WNyCw9brm1Mda/vX+LG/TN0HUQF/bKObkdORmcDDeRkE3PTMTNq+b
+         7Eglb4jzPmuhoGdgHvmS6jwyzZTMKOLkRi3j00niLHfHa2wJBXW4wLB/hTWp1FwW0SJ8
+         umMg==
+X-Gm-Message-State: AOAM530UTZDytopkRb9wezT9YvtyLyroXzFk4ZQ5rzpgcZP3nHlG9R+k
+        Xjvsx/lKu+OPbW10+t2RaSBvuEcTSZlMLbxZhhBlzw==
+X-Google-Smtp-Source: ABdhPJxTJcwPze+uSxEQwjciI5+zYaAJQYWtC+KmZeML3RJiEQnV0SiGzTiN96DDfWVpuQf7vTNj/fNHDmuyFMk/5Lc=
+X-Received: by 2002:a17:907:1b06:: with SMTP id mp6mr9404647ejc.188.1628246238490;
+ Fri, 06 Aug 2021 03:37:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210730062854.3601635-1-svens@linux.ibm.com> <YQn+GomdRCoYc/E8@Ryzen-9-3900X.localdomain>
- <875ywlat5e.fsf@disp2133> <94478003-8259-4b57-6d93-5a07e0750946@kernel.org>
- <87v94jalck.fsf@disp2133> <56b7c0fe-f2e1-7c4f-eb1b-1d9793dea5a8@kernel.org>
-In-Reply-To: <56b7c0fe-f2e1-7c4f-eb1b-1d9793dea5a8@kernel.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 6 Aug 2021 16:06:51 +0530
-Message-ID: <CA+G9fYv+Azmu+_YUv6+C6RRM990k0FhUc0hgSJKssubmsWfvhA@mail.gmail.com>
-Subject: Re: [PATCH v3] ucounts: add missing data type changes
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Alexey Gladkov <legion@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        LTP List <ltp@lists.linux.it>, linux-fsdevel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>
+References: <20210323025501.1568039-1-quanyang.wang@windriver.com> <YFquZaW4JTTM7ogS@pendragon.ideasonboard.com>
+In-Reply-To: <YFquZaW4JTTM7ogS@pendragon.ideasonboard.com>
+From:   Michal Simek <monstr@monstr.eu>
+Date:   Fri, 6 Aug 2021 12:37:07 +0200
+Message-ID: <CAHTX3d+uZsqevn0+7Lo+z62mk-1+S7n7VuO-QU8Q1Y-gP0Ugyw@mail.gmail.com>
+Subject: Re: [V2][PATCH] drm: xlnx: zynqmp: release reset to DP controller
+ before accessing DP registers
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Quanyang Wang <quanyang.wang@windriver.com>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Aug 2021 at 00:56, Nathan Chancellor <nathan@kernel.org> wrote:
+Hi,
+
+st 24. 3. 2021 v 4:15 odes=C3=ADlatel Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> napsal:
 >
-> On 8/5/2021 9:48 AM, Eric W. Biederman wrote:
-> > Nathan Chancellor <nathan@kernel.org> writes:
+> Hi Quanyang,
+>
+> Thank you for the patch.
+>
+> On Tue, Mar 23, 2021 at 10:55:01AM +0800, quanyang.wang@windriver.com wro=
+te:
+> > From: Quanyang Wang <quanyang.wang@windriver.com>
 > >
-> >> Hi Eric,
-> >>
-> >> On 8/4/2021 12:47 PM, Eric W. Biederman wrote:
-> >>> Nathan Chancellor <nathan@kernel.org> writes:
-> >>>
-> >>>> On Fri, Jul 30, 2021 at 08:28:54AM +0200, Sven Schnelle wrote:
-> >>>>> commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
-> >>>>> changed the data type of ucounts/ucounts_max to long, but missed to
-> >>>>> adjust a few other places. This is noticeable on big endian platforms
-> >>>>> from user space because the /proc/sys/user/max_*_names files all
-> >>>>> contain 0.
-> >>>>>
-> >>>>> Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
-> >>>>> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-> >>>>
-> >>>> This patch in -next as commit e43fc41d1f7f ("ucounts: add missing data type
-> >>>> changes") causes Windows Subsystem for Linux to fail to start:
-
-On Linux next-20210802..next-20210805 we have been noticing
-that LTP syscalls inotify06 test case getting failed all architectures.
-
-BAD:
-  Linux next-20210802
-  inotify06.c:57: TBROK: Failed to close FILE
-'/proc/sys/fs/inotify/max_user_instances': EINVAL (22)
-  inotify06.c:107: TWARN: Failed to close FILE
-'/proc/sys/fs/inotify/max_user_instances': EINVAL (22)
-
-GOOD:
-  Linux next-20210730
-  inotify06.c:92: TPASS: kernel survived inotify beating
-
-Investigation:
-Following changes found between good and bad Linux next tags under fs/notify
-git log --oneline --stat next-20210730..next-20210802 fs/notify
-e43fc41d1f7f ucounts: add missing data type changes
- fs/notify/fanotify/fanotify_user.c | 10 ++++++----
- fs/notify/inotify/inotify_user.c   | 10 ++++++----
- 2 files changed, 12 insertions(+), 8 deletions(-)
-
-Conclusion:
-We have confirmed this patch caused the LTP syscalls inotify06 test failure.
-
-After applying your proposed fix patch [1] the reported test getting pass.
-However, I have to run full test plan to confirm this do not cause regressions.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-[1] https://lore.kernel.org/lkml/87v94jalck.fsf@disp2133/
-
-
-> > diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> > index 6576657a1a25..28b67cb9458d 100644
-> > --- a/fs/notify/fanotify/fanotify_user.c
-> > +++ b/fs/notify/fanotify/fanotify_user.c
-> > @@ -54,6 +54,9 @@ static int fanotify_max_queued_events __read_mostly;
+> > When insmod zynqmp-dpsub.ko after rmmod it, system will hang with the
+> > error log as below:
 > >
-> >   #include <linux/sysctl.h>
+> > root@xilinx-zynqmp:~# insmod zynqmp-dpsub.ko
+> > [   88.391289] [drm] Initialized zynqmp-dpsub 1.0.0 20130509 for fd4a00=
+00.display on minor 0
+> > [   88.529906] Console: switching to colour frame buffer device 128x48
+> > [   88.549402] zynqmp-dpsub fd4a0000.display: [drm] fb0: zynqmp-dpsubdr=
+m frame buffer device
+> > [   88.571624] zynqmp-dpsub fd4a0000.display: ZynqMP DisplayPort Subsys=
+tem driver probed
+> > root@xilinx-zynqmp:~# rmmod zynqmp_dpsub
+> > [   94.023404] Console: switching to colour dummy device 80x25
+> > root@xilinx-zynqmp:~# insmod zynqmp-dpsub.ko
+> >       <hang here>
 > >
-> > +static long ft_zero = 0;
-> > +static long ft_int_max = INT_MAX;
-> > +
-> >   struct ctl_table fanotify_table[] = {
-> >       {
-> >               .procname       = "max_user_groups",
-> > @@ -61,8 +64,8 @@ struct ctl_table fanotify_table[] = {
-> >               .maxlen         = sizeof(long),
-> >               .mode           = 0644,
-> >               .proc_handler   = proc_doulongvec_minmax,
-> > -             .extra1         = SYSCTL_ZERO,
-> > -             .extra2         = SYSCTL_INT_MAX,
-> > +             .extra1         = &ft_zero,
-> > +             .extra2         = &ft_int_max,
-> >       },
-> >       {
-> >               .procname       = "max_user_marks",
-> > @@ -70,8 +73,8 @@ struct ctl_table fanotify_table[] = {
-> >               .maxlen         = sizeof(long),
-> >               .mode           = 0644,
-> >               .proc_handler   = proc_doulongvec_minmax,
-> > -             .extra1         = SYSCTL_ZERO,
-> > -             .extra2         = SYSCTL_INT_MAX,
-> > +             .extra1         = &ft_zero,
-> > +             .extra2         = &ft_int_max,
-> >       },
-> >       {
-> >               .procname       = "max_queued_events",
-> > diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
-> > index 55fe7cdea2fb..62051247f6d2 100644
-> > --- a/fs/notify/inotify/inotify_user.c
-> > +++ b/fs/notify/inotify/inotify_user.c
-> > @@ -55,6 +55,9 @@ struct kmem_cache *inotify_inode_mark_cachep __read_mostly;
+> > This is because that in zynqmp_dp_probe it tries to access some DP
+> > registers while the DP controller is still in the reset state. When
+> > running "rmmod zynqmp_dpsub", zynqmp_dp_reset(dp, true) in
+> > zynqmp_dp_phy_exit is called to force the DP controller into the reset
+> > state. Then insmod will call zynqmp_dp_probe to program the DP register=
+s,
+> > but at this moment the DP controller hasn't been brought out of the res=
+et
+> > state yet since the function zynqmp_dp_reset(dp, false) is called later=
+ and
+> > this will result the system hang.
 > >
-> >   #include <linux/sysctl.h>
+> > Releasing the reset to DP controller before any read/write operation to=
+ it
+> > will fix this issue. And for symmetry, move zynqmp_dp_reset() call from
+> > zynqmp_dp_phy_exit() to zynqmp_dp_remove().
 > >
-> > +static long it_zero = 0;
-> > +static long it_int_max = INT_MAX;
-> > +
-> >   struct ctl_table inotify_table[] = {
-> >       {
-> >               .procname       = "max_user_instances",
-> > @@ -62,8 +65,8 @@ struct ctl_table inotify_table[] = {
-> >               .maxlen         = sizeof(long),
-> >               .mode           = 0644,
-> >               .proc_handler   = proc_doulongvec_minmax,
-> > -             .extra1         = SYSCTL_ZERO,
-> > -             .extra2         = SYSCTL_INT_MAX,
-> > +             .extra1         = &it_zero,
-> > +             .extra2         = &it_int_max,
-> >       },
-> >       {
-> >               .procname       = "max_user_watches",
-> > @@ -71,8 +74,8 @@ struct ctl_table inotify_table[] = {
-> >               .maxlen         = sizeof(long),
-> >               .mode           = 0644,
-> >               .proc_handler   = proc_doulongvec_minmax,
-> > -             .extra1         = SYSCTL_ZERO,
-> > -             .extra2         = SYSCTL_INT_MAX,
-> > +             .extra1         = &it_zero,
-> > +             .extra2         = &it_int_max,
-> >       },
-> >       {
-> >               .procname       = "max_queued_events",
-> > diff --git a/kernel/ucount.c b/kernel/ucount.c
-> > index 260ae7da815f..bb51849e6375 100644
-> > --- a/kernel/ucount.c
-> > +++ b/kernel/ucount.c
-> > @@ -58,14 +58,17 @@ static struct ctl_table_root set_root = {
-> >       .permissions = set_permissions,
-> >   };
-> >
-> > +static long ue_zero = 0;
-> > +static long ue_int_max = INT_MAX;
-> > +
-> >   #define UCOUNT_ENTRY(name)                                  \
-> >       {                                                       \
-> >               .procname       = name,                         \
-> >               .maxlen         = sizeof(long),                 \
-> >               .mode           = 0644,                         \
-> >               .proc_handler   = proc_doulongvec_minmax,       \
-> > -             .extra1         = SYSCTL_ZERO,                  \
-> > -             .extra2         = SYSCTL_INT_MAX,               \
-> > +             .extra1         = &ue_zero,                     \
-> > +             .extra2         = &ue_int_max,                  \
-> >       }
-> >   static struct ctl_table user_table[] = {
-> >       UCOUNT_ENTRY("max_user_namespaces"),
+> > Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
+Can someone pick this patch?
 
---
-Linaro LKFT
-https://lkft.linaro.org
+Thanks,
+Michal
