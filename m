@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D973E283E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904933E2844
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244948AbhHFKKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:10:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244803AbhHFKKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:10:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 856F960F38;
-        Fri,  6 Aug 2021 10:10:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628244605;
-        bh=3Pe8hwT2buE5kXzwoDdCANVVnBs/mAUECX7qj/9osBk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=W53LcKvO5efRagllpmALGbmuaKuLNq0Tvd8CmQlNp/12xn3f47r576EWeTpnC7ooe
-         bM1L+bNX0wLPZ4k6WShu9D+8f3yg6E4N0hWal+O32/E5uyXJq5XUP8dPOF0S9jvF5R
-         jRpPKKDIdo/inUAd1QG7piSB+//WmZMKwcpIsSipRQ9idKZMDhkYu1AWyQsSQA5oj1
-         SiVsT8CWZwoVKk/hH/6N7bitM+J3Slz/6ELPqA0Et7Ot1FBS2dUc6wqZzHU2Av+s7S
-         ZKXD/33KTpWPkjAMHdNG6wPZsF4+3zmsv75ibVtCQ5qQ8pNygdXgh5iJb0EgFg8OdD
-         6z93SZ48Suyig==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 74B9960A7C;
-        Fri,  6 Aug 2021 10:10:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S244915AbhHFKKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244803AbhHFKKs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 06:10:48 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08BE9C061798;
+        Fri,  6 Aug 2021 03:10:33 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id p38so16996009lfa.0;
+        Fri, 06 Aug 2021 03:10:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=Cg4WXIsZYnbUd442Oahs9GZTt+sKbIJi8MwnGCykt+Q=;
+        b=XPqTayydqB7XeIci2sFJG36nePUJsDxmFlECE42HuKuMz35087FwU3R8m2z8rbyHs1
+         yLyT/0OI0INIF1Uc6JL7iSxDCeWL+dueJp7+GHhHXzbKMHuFFIjqcOPu2zPH4uHF4Ju5
+         WNI+8pQFlUjJ4HxxVXKVQKCPTK3IS450KPaJHEXptdTMUWGp4hFb9TN/ttNHUJ5aDApl
+         jB3vzdjkd8ltExrmJyZ5NTh2KjNWzshLkWd+0Iv+79fPSKwMaenJAmnUHXVL+JFe0bxQ
+         luKyJiMbTVcWvpRPloQMQB775StJgoBumr4jQP60ZUVVy64EbQBgP0oZDnBNJQs6p3SK
+         xXqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Cg4WXIsZYnbUd442Oahs9GZTt+sKbIJi8MwnGCykt+Q=;
+        b=iQpDvyHFRW3OaqZ3/kId5zezvOYofWBM55qP+nPoyRAo3rdIyweMhZWljt+T7DQF0o
+         4w7PRrs0onPOoUv1/vb5mCG9EAVRQDfs+3HagPTE51yqJoCpYA7Z7rFZIQUURGhtGPtW
+         YoD0CdVujqT+CqdTjpcjk0nJ+DVbGf+tmEC9GEJOD1wsCrYrkfcg7x9IC6jlBuJraCos
+         YZLJgciucWi2X2jo7VBowmkwk+w/qDsPWUrXVE9SDTGyCvr7moL9JL7rrDwjHnR/u2ak
+         GC/zo7BoQiyWgEcTM9bevaxGLMSGCQpm4Mq6rrSNHp27FKIfBDoQtvJaO7Rpc3O/kmfY
+         fGYg==
+X-Gm-Message-State: AOAM5339+H4iXywIjWIcNyXmDNmz7wxqkkex7NijUk3D0Xsgexrdd3/k
+        y7BexOxTeTG0AFmzhzsmapg=
+X-Google-Smtp-Source: ABdhPJyvIQJSwcNKYPOAlz/6bQ9oXP1Rr6I9mtMx2ZN31ncfx4sv/abaI1tq6YjaNJ2Sr/ZX44IAkw==
+X-Received: by 2002:a05:6512:131d:: with SMTP id x29mr7572790lfu.655.1628244631438;
+        Fri, 06 Aug 2021 03:10:31 -0700 (PDT)
+Received: from asus ([93.95.240.58])
+        by smtp.gmail.com with ESMTPSA id s12sm640722ljg.60.2021.08.06.03.10.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 03:10:30 -0700 (PDT)
+Date:   Fri, 6 Aug 2021 16:10:26 +0600
+From:   Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+To:     akpm@linux-foundation.org, shuah@kernel.org
+Cc:     linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tyhicks@linux.microsoft.com,
+        pasha.tatashin@soleen.com
+Subject: [PATCH v2 0/2] add KSM performance tests
+Message-ID: <cover.1628199399.git.zhansayabagdaulet@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] net: ethernet: ti: am65-cpsw: use
- napi_complete_done() in TX completion
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162824460547.4294.14719198165397613138.git-patchwork-notify@kernel.org>
-Date:   Fri, 06 Aug 2021 10:10:05 +0000
-References: <20210805225532.2667-1-grygorii.strashko@ti.com>
-In-Reply-To: <20210805225532.2667-1-grygorii.strashko@ti.com>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, vigneshr@ti.com, lokeshvutla@ti.com,
-        edumazet@google.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Extend KSM self tests with a performance benchmark. These tests are not
+part of regular regression testing, as they are mainly intended to be
+used by developers making changes to the memory management subsystem.
+This patchset is a respin of the previous series:
+https://lore.kernel.org/lkml/cover.1627828548.git.zhansayabagdaulet@gmail.com/
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+Zhansaya Bagdauletkyzy (2):
+  selftests: vm: add KSM merging time test
+  selftests: vm: add COW time test for KSM pages
 
-On Fri, 6 Aug 2021 01:55:30 +0300 you wrote:
-> hi
-> 
-> The intention of this series is to fully enable hard irqs deferral feature
-> (hrtimers based HW IRQ coalescing) from Eric Dumazet [1] for TI K3 CPSW driver
-> by using napi_complete_done() in TX completion path, so the combination of
-> parameters (/sys/class/net/ethX/):
->  napi_defer_hard_irqs
->  gro_flush_timeout
-> can be used for hard irqs deferral.
-> 
-> [...]
+v1 -> v2:
+ - replace MB with MiB
+ - address COW test review comments
 
-Here is the summary with links:
-  - [net-next,1/2] net: ti: am65-cpsw-nuss: fix RX IRQ state after .ndo_stop()
-    https://git.kernel.org/netdev/net-next/c/47bfc4d128de
-  - [net-next,2/2] net: ethernet: ti: am65-cpsw: use napi_complete_done() in TX completion
-    https://git.kernel.org/netdev/net-next/c/3bacbe04251b
+ tools/testing/selftests/vm/ksm_tests.c | 152 ++++++++++++++++++++++++-
+ 1 file changed, 148 insertions(+), 4 deletions(-)
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+-- 
+2.25.1
 
