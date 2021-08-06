@@ -2,161 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A7E3E26AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BFD3E26B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244149AbhHFJBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 05:01:40 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3602 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243869AbhHFJBj (ORCPT
+        id S243931AbhHFJDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:03:40 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:40747 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243794AbhHFJDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:01:39 -0400
-Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ggzwc4q27z6BCTG;
-        Fri,  6 Aug 2021 17:01:04 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 6 Aug 2021 11:01:22 +0200
-Received: from [10.47.24.8] (10.47.24.8) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 6 Aug 2021
- 10:01:21 +0100
-Subject: Re: [PATCH] scsi: core: Run queue first after running device.
-From:   John Garry <john.garry@huawei.com>
-To:     <lijinlin3@huawei.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <bvanassche@acm.org>, <qiulaibin@huawei.com>,
-        <linfeilong@huawei.com>, <wubo40@huawei.com>
-References: <20210805143231.1713299-1-lijinlin3@huawei.com>
- <908bb2bb-c511-06a4-e0b6-577d90bb9b57@huawei.com>
-Message-ID: <0d27db3f-4236-4a30-97a0-ad1dcbf4bcfa@huawei.com>
-Date:   Fri, 6 Aug 2021 10:00:48 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Fri, 6 Aug 2021 05:03:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628240603; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=X1qWQpq0Sf+GBW+SGHJTfGW1V3rTwlAwDVIchdBetig=; b=LKbGosEMUsYrtsM4UqiXsCkuas+3CGUO4gTMhtjc42iHvAvMEy/TQkjYsPTUj1dL/0hv74D2
+ kV/IaMuG3BkbOzDa959X7PtQHoRLAZ5OT5Q/mA3imipiZK7zO181oSPrJK1MAd5ZxYGz/KaU
+ f4cM3rZ6FNlRUAGEAPaQG3n0Qxg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 610cfad8ad1af63949d8b8af (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Aug 2021 09:03:20
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 345FEC4338A; Fri,  6 Aug 2021 09:03:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 30D6FC433F1;
+        Fri,  6 Aug 2021 09:03:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 30D6FC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     chris.chiu@canonical.com
+Cc:     jes.sorensen@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        code@reto-schneider.ch, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rtl8xxxu: Fix the handling of TX A-MPDU aggregation
+References: <20210804151325.86600-1-chris.chiu@canonical.com>
+Date:   Fri, 06 Aug 2021 12:03:12 +0300
+In-Reply-To: <20210804151325.86600-1-chris.chiu@canonical.com> (chris chiu's
+        message of "Wed, 4 Aug 2021 23:13:25 +0800")
+Message-ID: <87wnozaqsv.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <908bb2bb-c511-06a4-e0b6-577d90bb9b57@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.24.8]
-X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08/2021 09:58, John Garry wrote:
+chris.chiu@canonical.com writes:
 
-And the patch subject is ambiguous
+> From: Chris Chiu <chris.chiu@canonical.com>
+>
+> The TX A-MPDU aggregation is not handled in the driver since the
+> ieee80211_start_tx_ba_session has never been started properly.
+> Start and stop the TX BA session by tracking the TX aggregation
+> status of each TID. Fix the ampdu_action and the tx descriptor
+> accordingly with the given TID.
+>
+> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
 
-> On 05/08/2021 15:32, lijinlin3@huawei.com wrote:
->> From: Li Jinlin<lijinlin3@huawei.com>
->>
->> We found a hang issue, the test steps are as follows:
->>    1. echo "blocked" >/sys/block/sda/device/state
->>    2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
->>    3. echo none > /sys/block/sda/queue/scheduler
->>    4. echo "running" >/sys/block/sda/device/state
->>
->> Step3 and Step4 should finish this work after Step4, but them hangs.
->>
->>    CPU#0               CPU#1                CPU#2
->>    ---------------     ----------------     ----------------
->>                                             Step1: blocking device
->>
->>                                             Step2: dd xxxx
->>                                                    ^^^^^^ get request
->>                                                           
->> q_usage_counter++
->>
->>                        Step3: switching scheculer
->>                        elv_iosched_store
->>                          elevator_switch
->>                            blk_mq_freeze_queue
->>                              blk_freeze_queue
->>                                > blk_freeze_queue_start
->>                                  ^^^^^^ mq_freeze_depth++
->>
->>                                > blk_mq_run_hw_queues
->>                                  ^^^^^^ can't run queue when dev blocked
->>
->>                                > blk_mq_freeze_queue_wait
->>                                  ^^^^^^ Hang here!!!
->>                                         wait q_usage_counter==0
->>
->>    Step4: running device
->>    store_state_field
->>      scsi_rescan_device
->>        scsi_attach_vpd
->>          scsi_vpd_inquiry
->>            __scsi_execute
->>              blk_get_request
->>                blk_mq_alloc_request
->>                  blk_queue_enter
->>                  ^^^^^^ Hang here!!!
->>                         wait mq_freeze_depth==0
->>
->>      blk_mq_run_hw_queues
->>      ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
->>
->>                              blk_mq_unfreeze_queue
->>                              ^^^^^ mq_freeze_depth--
->>
->> Step3 and Step4 wait for each other, caused hangs.
->>
->> This requires run queue frist to fix this issue when the device state
-> 
-> frist ?
-> 
->> changes to SDEV_RUNNING.
->>
->> Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after 
->> offlinining device")
->> Signed-off-by: Li Jinlin<lijinlin3@huawei.com>
->> Signed-off-by: Qiu Laibin<qiulaibin@huawei.com>
->> Signed-off-by: Wu Bo<wubo40@huawei.com>
-> 
-> what kind of SoB is this?
-> 
->> ---
->>   drivers/scsi/scsi_sysfs.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
->> index c3a710bceba0..aa701582c950 100644
->> --- a/drivers/scsi/scsi_sysfs.c
->> +++ b/drivers/scsi/scsi_sysfs.c
->> @@ -809,12 +809,12 @@ store_state_field(struct device *dev, struct 
->> device_attribute *attr,
->>       ret = scsi_device_set_state(sdev, state);
->>       /*
->>        * If the device state changes to SDEV_RUNNING, we need to
->> -     * rescan the device to revalidate it, and run the queue to
->> -     * avoid I/O hang.
->> +     * run the queue to avoid I/O hang, and rescan the device
->> +     * to revalidate it.
-> 
-> A bit more description of the IO hang would be useful
-> 
->>        */
->>       if (ret == 0 && state == SDEV_RUNNING) {
->> -        scsi_rescan_device(dev);
->>           blk_mq_run_hw_queues(sdev->request_queue, true);
->> +        scsi_rescan_device(dev);
-> 
-> This would not have happened if scsi_rescan_device() was ran outside the 
-> mutex lock region, like I suggested originally.
-> 
-> Indeed, I doubt blk_mq_run_hw_queues() needs to be run with the sdev 
-> state_mutex held either.
-> 
->>       }
->>       mutex_unlock(&sdev->state_mutex);
->> -- 
-> 
-> .
+Is this ok to take?
 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
