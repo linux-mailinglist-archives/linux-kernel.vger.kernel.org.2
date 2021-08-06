@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0D33E2977
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F1A3E2980
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245455AbhHFLXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:23:31 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:49210
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231173AbhHFLXa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:23:30 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 7CB9C3F049;
-        Fri,  6 Aug 2021 11:23:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628248993;
-        bh=H1p/HXx7/C4MAn4Q4UfTW04vI5AaqbugvXyofQ0obOw=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=TpI9lSCmRlzMVuV3y9ww8ZdpkNWG4J8Gk5L//ujzTGfFHwA99qmPBv7ndCCzlLsSp
-         P9vyYOC2j+zHjDjv6fakqwsYGzLCb6MnHvmBaswtRVQSbf+SBuLVZ87CKGHeuHmF8C
-         4CsjJOr+l8RKrTxbmn6F8f6+LevmfWVZhFc4wKynJU/AYOmJmJrAL34KYFNFWpjYnJ
-         OLMMCWNlHhpR2GeUTZUeGFjqGsOaw1IhQQox9pnSaLvPk35RzZcV2BVUN8eafQcRTH
-         SDSiWFV2XgA9tD/D7nkF6tqwuyjyIBZiIG8mYF5b6KdEI0Q4IC8hytIJfu0ci600XW
-         SNJSlI4VXl/KQ==
-From:   Colin King <colin.king@canonical.com>
-To:     Karan Tilak Kumar <kartilak@cisco.com>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: snic: Remove redundant assignment to variable ret
-Date:   Fri,  6 Aug 2021 12:23:13 +0100
-Message-Id: <20210806112313.12434-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S245485AbhHFLYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:24:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245465AbhHFLYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 07:24:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AEB461176;
+        Fri,  6 Aug 2021 11:24:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628249050;
+        bh=dFhpkoJ7MfTkaqb3AWepwV1LJZX0iriP7IMwTHp77uI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bcETpNsVaE6/DYkXDUj1HNemf4ajaX6LWB0jKe4nKiaMwU6y1yXOPkvWpRXE7qrtu
+         X/Xmfd62juU2QfJ+43lt8ccmKukEyl5GoGHtI8JN3IXAIJBjy8ebJqW+vuVPRlCXni
+         zzVNWY2MGml9jUSxuOl2Uobd8Mjwka0KFKkYZJfItUXy4Mw8nlhoOobpvb7YtW7jOJ
+         0y6yn3gYzoK4btegAZnQXbO4X/5l0SM+hG59q3bRzoobTr2iXicKtNdtdO7QH68Ug5
+         JsO4zKw7wboauPXoPkTBF8vuZUgzm7gGsTj1yiCt45sKWHOdaV53heEA9QjAHCVJSH
+         zgZpOkaryhO1Q==
+Date:   Fri, 6 Aug 2021 12:23:53 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: Re: linux-next: manual merge of the qcom tree with the usb tree
+Message-ID: <20210806112353.GA33586@sirena.org.uk>
+References: <20210806102138.27373-1-broonie@kernel.org>
+ <YQ0YKiFVx0KrkW5s@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
+Content-Disposition: inline
+In-Reply-To: <YQ0YKiFVx0KrkW5s@kroah.com>
+X-Cookie: if it GLISTENS, gobble it!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-The variable ret is being initialized with a value that is never read,
-the assignment is redundant and can be removed.
+--5vNYLRcllDrimb99
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/scsi/snic/snic_scsi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Aug 06, 2021 at 01:08:26PM +0200, Greg Kroah-Hartman wrote:
+> On Fri, Aug 06, 2021 at 11:21:38AM +0100, Mark Brown wrote:
 
-diff --git a/drivers/scsi/snic/snic_scsi.c b/drivers/scsi/snic/snic_scsi.c
-index 6dd0ff188bb4..92f5b65c2a27 100644
---- a/drivers/scsi/snic/snic_scsi.c
-+++ b/drivers/scsi/snic/snic_scsi.c
-@@ -2383,7 +2383,7 @@ snic_host_reset(struct scsi_cmnd *sc)
- {
- 	struct Scsi_Host *shost = sc->device->host;
- 	u32 start_time  = jiffies;
--	int ret = FAILED;
-+	int ret;
- 
- 	SNIC_SCSI_DBG(shost,
- 		      "host reset:sc %p sc_cmd 0x%x req %p tag %d flags 0x%llx\n",
--- 
-2.31.1
+> > diff --cc arch/arm64/boot/dts/qcom/msm8996.dtsi
+> > index 78c55ca10ba9,31686950004e..000000000000
+> > --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+>=20
+> Love the fix, did something go wrong?  :)
 
+The fix will be whatever was in HEAD.
+
+--5vNYLRcllDrimb99
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmENG8kACgkQJNaLcl1U
+h9D6zAf+Krf2wBiZrjp3SHLH7WN1Zlx4aBn+fs/Ky3GfoHG1LF5l2XfZOY1M7iT9
+QS3UxCCbQ3MPsEM81qkByUgKaSgf4xE/lCx3vgfCsjiIGH2ZPlQQyHp47ungmCui
+/+r7WLcEwoHM6B31P4hq2JVtBCjR9enCiJ5DQfDRIgONliyrJDe01veTvSKuHzBb
+A9aadg31bFPMrkvoToexpGppL7Vmta60JVl9UFYWruwCJP+lCh2VSDYUFnifzxUj
+B5Sved8fZ83RlQgOEPD3svQRWmhNPO35Wvo6Tv8SAuan0K4+19yRJQQR9GQxHdW4
+3gFnewCj/mChhXW4GVOQoE9OAysPKw==
+=TJYa
+-----END PGP SIGNATURE-----
+
+--5vNYLRcllDrimb99--
