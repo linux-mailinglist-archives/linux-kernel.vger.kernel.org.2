@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3E63E2601
+	by mail.lfdr.de (Postfix) with ESMTP id 8920D3E2602
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244069AbhHFIZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:25:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52360 "EHLO mail.kernel.org"
+        id S244147AbhHFIZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:25:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244220AbhHFIVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:21:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 319F561052;
-        Fri,  6 Aug 2021 08:21:05 +0000 (UTC)
+        id S244380AbhHFIVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:21:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABB9061246;
+        Fri,  6 Aug 2021 08:21:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628238066;
-        bh=fLUtY4f+huXtYcYoyIYEvo1j3B1AhkHJ/JR08t4lg6E=;
+        s=korg; t=1628238069;
+        bh=GsUR3eFBk9QBw/kYGHobqfEsbKBD2IC+iY9bTejvPtA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=alsa1ESwhJkFKPEIfwVx9K19mDEUu0tZFaaGeHNaYI+DXdUjTPkU4cVj7PGAXHj2B
-         a2woK93Glr0/htD+sWzEilx16+LI9gOZ49hVk/N8K8e9bPd++uLLEzeUPUZ2HgsP4l
-         +K/+GyLqLNCIfXbGfxq5s879wrrrGyzWIXaD8LsY=
+        b=1TvNqKIs6SodradlfU1LuGhjebasbAwMe2xHv7M4j8UMJ0sYNLwM/BMrPEl6xigtN
+         WF03xKAAyPSwzU+rxFkb8iW41NA1Mav4idrJfSDwkDgxQxtumM3xNSRafcZvY0VR+S
+         28NCRhXkTNKXF2v4IG1PiHDy4d3oR+9H0mSFQ7as=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
-        Pavel Shilovsky <pshilovsky@samba.org>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Xiaoli Feng <xifeng@redhat.com>,
         Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 07/35] cifs: use helpers when parsing uid/gid mount options and validate them
-Date:   Fri,  6 Aug 2021 10:16:50 +0200
-Message-Id: <20210806081113.951060612@linuxfoundation.org>
+Subject: [PATCH 5.13 08/35] cifs: add missing parsing of backupuid
+Date:   Fri,  6 Aug 2021 10:16:51 +0200
+Message-Id: <20210806081113.982390511@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210806081113.718626745@linuxfoundation.org>
 References: <20210806081113.718626745@linuxfoundation.org>
@@ -43,88 +44,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-[ Upstream commit e0a3cbcd5cef00cace01546cc6eaaa3b31940da9 ]
+[ Upstream commit b946dbcfa4df80ec81b442964e07ad37000cc059 ]
 
-Use the nice helpers to initialize and the uid/gid/cred_uid when passed as mount arguments.
+We lost parsing of backupuid in the switch to new mount API.
+Add it back.
 
 Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Acked-by: Pavel Shilovsky <pshilovsky@samba.org>
+Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
+Cc: <stable@vger.kernel.org> # v5.11+
+Reported-by: Xiaoli Feng <xifeng@redhat.com>
 Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/fs_context.c | 24 +++++++++++++++++++-----
- fs/cifs/fs_context.h |  1 +
- 2 files changed, 20 insertions(+), 5 deletions(-)
+ fs/cifs/fs_context.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/fs/cifs/fs_context.c b/fs/cifs/fs_context.c
-index 92d4ab029c91..553adfbcc22a 100644
+index 553adfbcc22a..72742eb1df4a 100644
 --- a/fs/cifs/fs_context.c
 +++ b/fs/cifs/fs_context.c
-@@ -322,7 +322,6 @@ smb3_fs_context_dup(struct smb3_fs_context *new_ctx, struct smb3_fs_context *ctx
- 	new_ctx->UNC = NULL;
- 	new_ctx->source = NULL;
- 	new_ctx->iocharset = NULL;
--
- 	/*
- 	 * Make sure to stay in sync with smb3_cleanup_fs_context_contents()
- 	 */
-@@ -792,6 +791,8 @@ static int smb3_fs_context_parse_param(struct fs_context *fc,
- 	int i, opt;
- 	bool is_smb3 = !strcmp(fc->fs_type->name, "smb3");
- 	bool skip_parsing = false;
-+	kuid_t uid;
-+	kgid_t gid;
- 
- 	cifs_dbg(FYI, "CIFS: parsing cifs mount option '%s'\n", param->key);
- 
-@@ -904,18 +905,31 @@ static int smb3_fs_context_parse_param(struct fs_context *fc,
- 		}
+@@ -918,6 +918,13 @@ static int smb3_fs_context_parse_param(struct fs_context *fc,
+ 		ctx->cred_uid = uid;
+ 		ctx->cruid_specified = true;
  		break;
- 	case Opt_uid:
--		ctx->linux_uid.val = result.uint_32;
++	case Opt_backupuid:
 +		uid = make_kuid(current_user_ns(), result.uint_32);
 +		if (!uid_valid(uid))
 +			goto cifs_parse_mount_err;
-+		ctx->linux_uid = uid;
- 		ctx->uid_specified = true;
- 		break;
- 	case Opt_cruid:
--		ctx->cred_uid.val = result.uint_32;
-+		uid = make_kuid(current_user_ns(), result.uint_32);
-+		if (!uid_valid(uid))
-+			goto cifs_parse_mount_err;
-+		ctx->cred_uid = uid;
-+		ctx->cruid_specified = true;
- 		break;
++		ctx->backupuid = uid;
++		ctx->backupuid_specified = true;
++		break;
  	case Opt_backupgid:
--		ctx->backupgid.val = result.uint_32;
-+		gid = make_kgid(current_user_ns(), result.uint_32);
-+		if (!gid_valid(gid))
-+			goto cifs_parse_mount_err;
-+		ctx->backupgid = gid;
- 		ctx->backupgid_specified = true;
- 		break;
- 	case Opt_gid:
--		ctx->linux_gid.val = result.uint_32;
-+		gid = make_kgid(current_user_ns(), result.uint_32);
-+		if (!gid_valid(gid))
-+			goto cifs_parse_mount_err;
-+		ctx->linux_gid = gid;
- 		ctx->gid_specified = true;
- 		break;
- 	case Opt_port:
-diff --git a/fs/cifs/fs_context.h b/fs/cifs/fs_context.h
-index 2a71c8e411ac..b6243972edf3 100644
---- a/fs/cifs/fs_context.h
-+++ b/fs/cifs/fs_context.h
-@@ -155,6 +155,7 @@ enum cifs_param {
- 
- struct smb3_fs_context {
- 	bool uid_specified;
-+	bool cruid_specified;
- 	bool gid_specified;
- 	bool sloppy;
- 	bool got_ip;
+ 		gid = make_kgid(current_user_ns(), result.uint_32);
+ 		if (!gid_valid(gid))
 -- 
 2.30.2
 
