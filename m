@@ -2,213 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885733E23CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61943E23D7
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243569AbhHFHRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 03:17:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37985 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243553AbhHFHRF (ORCPT
+        id S243572AbhHFHSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 03:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230115AbhHFHSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 03:17:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628234209;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4h9NXCahpaPwahhaO5hMLHu+0Sj92iJsupdJcdmnrx4=;
-        b=QyZvqAEae9RwU2R0wLA6NaPiHcc/a+2+C0owzLknw8Q1Qj1llWV8wkmcsG3Q6SxYK+PszG
-        3jPOe19/VP3p5+VzlPJpuFx7MSqGb83bb9gRRf/l05XxtifBphT1M48vnOwc8vmxYGGsk0
-        Q7y2O5vUIbBCDMFxyF/Ig1DjUtFf9Q4=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-zUZgUsTYNwirvLCxYnmUDQ-1; Fri, 06 Aug 2021 03:16:48 -0400
-X-MC-Unique: zUZgUsTYNwirvLCxYnmUDQ-1
-Received: by mail-ej1-f69.google.com with SMTP id lu19-20020a170906fad3b029058768348f55so2872808ejb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 00:16:48 -0700 (PDT)
+        Fri, 6 Aug 2021 03:18:54 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C647FC061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 00:18:38 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id i13so7822885ilm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 00:18:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AfXhjKpSCetGLLmH2wYSMbPYpbDKNCyV0HNRYyDMQeA=;
+        b=HIqw9q6X5vyWEvkesEX5PjXRQM7ZTPej9g4yoakHyG9UUz9ZBim9nm2/15AqQwjYbp
+         FtLwFHfS7IuNoFwdgnAIGGIyI8drUyaEYoJ0wwedxxz4/wsxqNrAD+2RiKbI1AXYgzTz
+         HU7n7gdfF8E0WkfKempmVH+MvIVnLNUdDDeiDt8CyoVaWyTAzI43z8wxQw532biv1uEP
+         tMg8757wAA1hzr8cexj2ijuu8Jk9dxtGyhDmzDIEoxOMDFSGp8ZbKm2aGx90wawj3Gsa
+         hvjhMUYXqgsXgMX7Lc3AHP243i/srho+LQddDkpdGGOEgyNM6Mj8eBcvTjfieCNG97xY
+         GlfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4h9NXCahpaPwahhaO5hMLHu+0Sj92iJsupdJcdmnrx4=;
-        b=OaK4ar70hS5xkkyxDSnyiA2llI/5vBP/l77nsPNRu+JotN+rrvqCO0mhWI6g2ENhJx
-         DQwVnVva230pI4KgDxqLhTRS5quhgHMMpua5cM/coz/H0wG8ZxyS66zUSYUBaWiOxLsd
-         G57eylrXFxOHSnqLENK0oZez+3ujQX0Au8FAMaxgkasnEQAvhSbVUeQYTaY4QxUvuIMF
-         lZUgpWOQPsT9ke7QHoEAKAs4NibEvVJ5BWLweeG5b7XnVRax21/C5VssezlTmyRE9DWC
-         iXDF3Nw0pyU9DkUv9ORH6JMfun4GWUhEcr5mUPs1XrMe6jKvQ0flrotS1RhCZQbCb49r
-         SPBA==
-X-Gm-Message-State: AOAM530XEGT/9WZ6rtnR+8ZD+nXt63V5HN7jbkpwdi2LzPgUNWHB5ipg
-        dLK/KQTv78bdlWJWiwA+P/VjZzCH9Q6Tv/QrH7igO5gs2JBPEkOqw1QVhpPrNpuwXe2353lt8dd
-        nYPnQirjffeBJvejto4i2wJjb
-X-Received: by 2002:a05:6402:3552:: with SMTP id f18mr11179140edd.82.1628234206525;
-        Fri, 06 Aug 2021 00:16:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwYURfrjKTFZrJHZ9Mcw5cT6VZwzIqZ9tPmHg4AX/+74PdKLsXxtkvp1Vnsgy4/vQl/I70njg==
-X-Received: by 2002:a05:6402:3552:: with SMTP id f18mr11179120edd.82.1628234206380;
-        Fri, 06 Aug 2021 00:16:46 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id gv7sm2535932ejc.5.2021.08.06.00.16.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 00:16:46 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 09:16:43 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-Subject: Re: [!!Mass Mail KSE][MASSMAIL KLMS] Re: [RFC PATCH v1 0/7]
- virtio/vsock: introduce MSG_EOR flag for SEQPACKET
-Message-ID: <20210806071643.byebg4hmm3dtnb2x@steredhat>
-References: <20210726163137.2589102-1-arseny.krasnov@kaspersky.com>
- <20210804125737.kbgc6mg2v5lw25wu@steredhat>
- <8e44442c-4cac-dcbc-a88d-17d9878e7d32@kaspersky.com>
- <20210805090657.y2sz3pzhruuolncq@steredhat>
- <8bd80d3f-3e00-5e31-42a1-300ff29100ae@kaspersky.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AfXhjKpSCetGLLmH2wYSMbPYpbDKNCyV0HNRYyDMQeA=;
+        b=TO/LDKgSd4d7eNDGvt9xlQ6FdOeZ/ZY2TWRpUwIHTJh6fppxLZzOlG6ZbQXBG4RwSt
+         wn1YBF9TnrueYtCjua4wP2+6CzGVJZ57+k+MYey6lAOcfQe5/zu99Kg8zBa3VFlfGUKY
+         tJcWXN/KzBtjtXd6LcbGyGO3iYlgxoraOY2h9dsNyFKH8Z9ubpinQBHGCQml0/xfL/dL
+         4VYT7UoO0aKUAcM6hjxiVWrlYTn7v8VM26s28lSh9LZaKXctnmFAHCSC3ft+QqGDYR+z
+         YZbwquzguUxXJ7EwhN6KqUBL4ufEV4UWVJWbXEQ8kn8KsVFH6CU/8mzynki4BoPqIq7U
+         0DSg==
+X-Gm-Message-State: AOAM531Cw3fJmi0hkOfZOQVDz2NpD80J2UYsQkiZsiHnQBGiTO35zqMB
+        r/IuFkjbf9WWoPqoENFvbONqrvpKmpkARKG5+Ra1nw==
+X-Google-Smtp-Source: ABdhPJzDCVLK5V7LZPwSnnK3Ot1kGmgymxUIyCMxFioYlPkMkJkf6Zof5u9E1YTx97xz6BpltLo57X22iVIcj1sQcu0=
+X-Received: by 2002:a92:d3d2:: with SMTP id c18mr360857ilh.192.1628234317999;
+ Fri, 06 Aug 2021 00:18:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <8bd80d3f-3e00-5e31-42a1-300ff29100ae@kaspersky.com>
+References: <2c40741c-8c8f-a105-1846-aa1ed15a6c7e@gnuweeb.org>
+ <20210804085651.2452-1-hdanton@sina.com> <80e24ed7-a34a-7fac-c709-06ccad6d2612@gnuweeb.org>
+In-Reply-To: <80e24ed7-a34a-7fac-c709-06ccad6d2612@gnuweeb.org>
+From:   "Anand K. Mistry" <amistry@google.com>
+Date:   Fri, 6 Aug 2021 17:18:25 +1000
+Message-ID: <CAATStaMjeyzU3Gj7D-Q1zGMdioC5ENoXbf4QB9Rmw8TCWRiagg@mail.gmail.com>
+Subject: Re: WARNING: possible circular locking dependency detected (hci_sock_dev_event+0x17d/0x1f0)
+To:     Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Cc:     Hillf Danton <hdanton@sina.com>, Lin Ma <linma@zju.edu.cn>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Ammar Faizi <ammarfaizi2@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 12:21:57PM +0300, Arseny Krasnov wrote:
+On Wed, 4 Aug 2021 at 21:43, Ammar Faizi <ammarfaizi2@gnuweeb.org> wrote:
 >
->On 05.08.2021 12:06, Stefano Garzarella wrote:
->> Caution: This is an external email. Be cautious while opening links or attachments.
->>
->>
->>
->> On Thu, Aug 05, 2021 at 11:33:12AM +0300, Arseny Krasnov wrote:
->>> On 04.08.2021 15:57, Stefano Garzarella wrote:
->>>> Caution: This is an external email. Be cautious while opening links or attachments.
->>>>
->>>>
->>>>
->>>> Hi Arseny,
->>>>
->>>> On Mon, Jul 26, 2021 at 07:31:33PM +0300, Arseny Krasnov wrote:
->>>>>       This patchset implements support of MSG_EOR bit for SEQPACKET
->>>>> AF_VSOCK sockets over virtio transport.
->>>>>       Idea is to distinguish concepts of 'messages' and 'records'.
->>>>> Message is result of sending calls: 'write()', 'send()', 'sendmsg()'
->>>>> etc. It has fixed maximum length, and it bounds are visible using
->>>>> return from receive calls: 'read()', 'recv()', 'recvmsg()' etc.
->>>>> Current implementation based on message definition above.
->>>> Okay, so the implementation we merged is wrong right?
->>>> Should we disable the feature bit in stable kernels that contain it? Or
->>>> maybe we can backport the fixes...
->>> Hi,
->>>
->>> No, this is correct and it is message boundary based. Idea of this
->>> patchset is to add extra boundaries marker which i think could be
->>> useful when we want to send data in seqpacket mode which length
->>> is bigger than maximum message length(this is limited by transport).
->>> Of course we can fragment big piece of data too small messages, but
->>> this
->>> requires to carry fragmentation info in data protocol. So In this case
->>> when we want to maintain boundaries receiver calls recvmsg() until
->>> MSG_EOR found.
->>> But when receiver knows, that data is fit in maximum datagram length,
->>> it doesn't care about checking MSG_EOR just calling recv() or
->>> read()(e.g.
->>> message based mode).
->> I'm not sure we should maintain boundaries of multiple send(), from
->> POSIX standard [1]:
+> See the original report here:
+> https://lore.kernel.org/lkml/2c40741c-8c8f-a105-1846-aa1ed15a6c7e@gnuweeb.org/
 >
->Yes, but also from POSIX: such calls like send() and sendmsg()
+> On 8/4/21 3:56 PM, Hillf Danton wrote:
+> > On Mon, 2 Aug 2021 20:17:02 +0700 Ammar Faizi wrote:
+> >> Hi everyone,
+> >>
+> >> I found a potential deadlock at hci_sock_dev_event.
+> >
+> > Thanks for your report.
+> >
+> > Can you try and see if reverting e305509e678b3a4af2b3cfd410f409f7cdaabb52
+> > ("Bluetooth: use correct lock to prevent UAF of hdev object") is a cure.
+> >
 >
->operates with "message" and if we check recvmsg() we will
+> Hi Hillf,
 >
->find the following thing:
+> Thank you for your response.
+>
+> Here is what I have tried:
+> 1. Reverted e305509e678b3a4af2b3cfd410f409f7cdaabb52.
+> 2. Compile and install reverted version.
+> 3. Rebooted 5.14.0-rc3 (c7d102232649, before revert) and try to
+> reproduce again. At this point I am able to reproduce it.
+> 4. Booted 5.14.0-rc3 (the reverted version). The deadlock warning is
+> gone after reverting it. No more deadlock warning.
+
+Can you try patching in
+https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.git/commit/?id=58ce6d5b271ab25fb2056f84a8e5546945eb5fc9
+and see if that fixes it.
+
+>
+> ------------------------------------------------------------
+> [ 51207ee38ab65db86554655300a912e8c661525e is my local revert. ]
+> Revert diff:
+> ammarfaizi2@integral:~/project/now/linux$ git diff
+> c7d102232649226a69dddd58a4942cf13cff4f7c
+> diff --git a/net/bluetooth/hci_sock.c b/net/bluetooth/hci_sock.c
+> index b04a5a02ecf3..590467345c5f 100644
+> --- a/net/bluetooth/hci_sock.c
+> +++ b/net/bluetooth/hci_sock.c
+> @@ -762,7 +762,7 @@ void hci_sock_dev_event(struct hci_dev *hdev, int event)
+>                 /* Detach sockets from device */
+>                 read_lock(&hci_sk_list.lock);
+>                 sk_for_each(sk, &hci_sk_list.head) {
+> -                       lock_sock(sk);
+> +                       bh_lock_sock_nested(sk);
+>                         if (hci_pi(sk)->hdev == hdev) {
+>                                 hci_pi(sk)->hdev = NULL;
+>                                 sk->sk_err = EPIPE;
+> @@ -771,7 +771,7 @@ void hci_sock_dev_event(struct hci_dev *hdev, int event)
+>
+>                                 hci_dev_put(hdev);
+>                         }
+> -                       release_sock(sk);
+> +                       bh_unlock_sock(sk);
+>                 }
+>                 read_unlock(&hci_sk_list.lock);
+>         }
+> ammarfaizi2@integral:~/project/now/linux$
+> ------------------------------------------------------------
+>
+> Summary:
+> Reverting e305509e678b3a4af2b3cfd410f409f7cdaabb52 is a cure.
+>
+> Although it fixes the deadlock, there is probably something still goes
+> wrong regarding "prevent UAF" as the commit message says.
+>
+> Will anyone create a patch for this?
+> I want to be the tester, I am new at kernel development and want to
+> start contributing, so please guide me :)
+>
+> I also attached dmesg log before and after revert if you want to see the
+> full log.
+>
+> Adding Lin as the author of e305509e678b3a4af2b3cfd410f409f7cdaabb52 to
+> CC list...
 >
 >
->For message-based sockets, such as SOCK_DGRAM and SOCK_SEQPACKET, the entire
->
->message shall be read in a single operation. If a message is too long to fit in the supplied
->
->buffers, and MSG_PEEK is not set in the flags argument, the excess bytes shall be discarded.
->
->
->I understand this, that send() boundaries also must be maintained.
->
->I've checked SEQPACKET in AF_UNIX and AX_25 - both doesn't support
->
->MSG_EOR, so send() boundaries must be supported.
->
->>
->>    SOCK_SEQPACKET
->>      Provides sequenced, reliable, bidirectional, connection-mode
->>      transmission paths for records. A record can be sent using one or
->>      more output operations and received using one or more input
->>      operations, but a single operation never transfers part of more than
->>      one record. Record boundaries are visible to the receiver via the
->>      MSG_EOR flag.
->>
->>  From my understanding a record could be sent with multiple send() 
->>  and
->> received, for example, with a single recvmsg().
->> The only boundary should be the MSG_EOR flag set by the user on the 
->> last
->> send() of a record.
->You are right, if we talking about "record".
->>
->>  From send() description [2]:
->>
->>    MSG_EOR
->>      Terminates a record (if supported by the protocol).
->>
->>  From recvmsg() description [3]:
->>
->>    MSG_EOR
->>      End-of-record was received (if supported by the protocol).
->>
->> Thanks,
->> Stefano
->>
->> [1]
->> https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
->> [2] 
->> https://pubs.opengroup.org/onlinepubs/9699919799/functions/send.html
->> [3]
->> https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html
->
->P.S.: seems SEQPACKET is too exotic thing that everyone implements it 
->in
->
->own manner, because i've tested SCTP seqpacket implementation, and 
->found
->
->that:
->
->1) It doesn't support MSG_EOR bit at send side, but uses MSG_EOR at 
->receiver
->
->side to mark MESSAGE boundary.
->
->2) According POSIX any extra bytes that didn't fit in user's buffer 
->must be dropped,
->
->but SCTP doesn't drop it - you can read rest of datagram in next calls.
+> --
+> Ammar
 >
 
-Thanks for this useful information, now I see the differences and why we 
-should support both.
 
-I think is better to include them in the cover letter.
-
-I'm going to review the paches right now :-)
-
-Stefano
-
+-- 
+Anand K. Mistry
+Software Engineer
+Google Australia
