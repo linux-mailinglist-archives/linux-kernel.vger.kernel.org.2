@@ -2,307 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1A63E3172
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019083E3175
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245421AbhHFVxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 17:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45574 "EHLO
+        id S245379AbhHFVzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 17:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245412AbhHFVxj (ORCPT
+        with ESMTP id S239757AbhHFVzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 17:53:39 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5ECC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 14:53:23 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id e5so8878838pld.6
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 14:53:23 -0700 (PDT)
+        Fri, 6 Aug 2021 17:55:32 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B154C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 14:55:16 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d1so8898643pll.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 14:55:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RutxsrGFq4wLvMg0gjjT3e2ZEmBLiSblhcYV8FIMQa4=;
-        b=ONO2acq/6Q1yJCbWPs3wgpqKqtjFqtwAZ55Q6DorUZGlravykkSge50US36jvOhEz0
-         emnPanf58Ogj2kiSAxbkhC7XbggLrvkGPPLGOAhmcfdUQRAcVQ091wdtQGZG6LLh9g++
-         8XCicMNewVPOPUIe9R21mbl4OAkir9rhimFscQYsyqnrqmPG2NA7yN1m3n5Tx3SPkpIn
-         RHkH54j+Et9p44rBf6m4y41vGDh8aI9wAoUXi2CVOEXA7dTtfxb03IXOLwFDMa7ZCxnF
-         vj703BhiS/oolsN5Pn9V/Fz1F4ufAZDogEHJu03XMcOfDNBhbg2QXgbYYlvV1cwh8c7p
-         T4DQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LAkuuVzSZOMgsc54tfGr8RYbH7ddYcl/vqWLmDPxePs=;
+        b=vRA20efsvfEJEX32rKjbIhVFbrv/o/E6wBp2Uinl2YYFNZ87lI50zv1Qik64bDrKUG
+         bL7HDgtpo5fd6yy6jBUp3b1O63Dh28Ec3wMN6zlpfBD9MFY+mpknYaLBKxHsuEGRD0sI
+         i2mIW3tEyh7SwXks0vOHzSGMJM8ifcth7Wf/HCjIlDqYWMXom/qp8KEoEzybMLL03VnB
+         4PI3+GnAAF0/dWIjAff3HtebGSB3f86EGmdjGJpf28vMFH8WP9yWw93dmjtOJ++vW2CJ
+         t6fXsf7XF71pPwlct/p3XmwyaaaQ9uqfDkvzAZj8SyRsiOqxEQ2M7U3mMH82U+Vb+Dy9
+         iLtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RutxsrGFq4wLvMg0gjjT3e2ZEmBLiSblhcYV8FIMQa4=;
-        b=TEC86ic73at4r9msgIy8vn99rG550vsZZxxAc1LV4liKdWwefGxmcNOYW73B4QGtRx
-         qit7MI2rBzBshwwOqogjoYV6Eu1H4GiBbwgg8/KU4q/pS9/MDOtxrjUDm0qyNblFGk8s
-         LeTKIB0Vr56aELal51JqB/NRzX+fsJ/wiQdty4bjG8Qg4DpBlewRmkcfqVm3OkvHwOjO
-         DcvCd27zlsmYlLiPjAJl5IdzV3D5qzqJmwZFPVS4ff3U0fvy4KWs6TjGWjG9JqOK9uZM
-         Aw0+dH4wUXrh8KiY5tAfas9jPzhfb2ovDDCnWEjiLrdvrVhi5FpvUYh0Qf92d0PwioVz
-         V0ZQ==
-X-Gm-Message-State: AOAM530AX4LYl5Y/VYyIdWza9qKPNgcAumpUieT1En1l60nzReOaYvEs
-        0O5gSGqdGvDurjJ+z6V14Hy8ywgNlqM=
-X-Google-Smtp-Source: ABdhPJyOWfbdzWVGUwlRdWgXxjG8k3A68KoJVGcmMT47i1YA3eR9uH06ws6OhT9JpuDZ2OkUhpyLpQ==
-X-Received: by 2002:a17:902:c404:b029:12c:4e68:ba6e with SMTP id k4-20020a170902c404b029012c4e68ba6emr8178884plk.39.1628286802172;
-        Fri, 06 Aug 2021 14:53:22 -0700 (PDT)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:8903:771d:9f7c:b057])
-        by smtp.gmail.com with ESMTPSA id v16sm3718451pje.24.2021.08.06.14.53.21
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LAkuuVzSZOMgsc54tfGr8RYbH7ddYcl/vqWLmDPxePs=;
+        b=ehSHoEVL8Q2gx3h6xFNYSmLucJL/Lbp827XjII244i1/AqyN3RuzJXx8DxXSl9Q2BD
+         0D6unQrKkCzsBRca0oEj2KXUhEtLjSubcmBtUjU3dBrVYAI+SfMlrGoUUj7U2LX7xQz7
+         qdFgfkPAYrtEHpz91i6Xe9yebK0ayfAk9n3djSzDaYuEP/88eaHRKTMHXKrUmifg/SB6
+         fBA5qvs+thGqb+E/4WOqkiF0D0d7RytYdwhqZx2IEqZFtJ/n87uHjDqehD9h6+XBsPPQ
+         hiK/cODBOh/Xo/Uc7FM5lcqOg8dbjTv/yVddhWB6u3X8ycaTyXyOdrlV78mn1254d+SX
+         wbRA==
+X-Gm-Message-State: AOAM53339lV5s9Rym8i1FF0P550FkocBbhFSKhr8Np3kMLf7GvK3+OKt
+        40iz+r7t1wSW1sYF+ladhVANoldbU7nFww==
+X-Google-Smtp-Source: ABdhPJxS6d1f/au4PsJaM5RTfaDcu4UKpsrza3xbMbYBGp4480w+irCPsqbjpbHe5QkY2U/oLjtUpA==
+X-Received: by 2002:a17:902:6905:b029:12b:8f6a:7c60 with SMTP id j5-20020a1709026905b029012b8f6a7c60mr10346281plk.24.1628286915736;
+        Fri, 06 Aug 2021 14:55:15 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id f16sm8411631pfv.73.2021.08.06.14.55.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 14:53:21 -0700 (PDT)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH] f2fs: introduce blk_alloc_mode mount option
-Date:   Fri,  6 Aug 2021 14:53:18 -0700
-Message-Id: <20210806215318.1165945-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+        Fri, 06 Aug 2021 14:55:15 -0700 (PDT)
+Date:   Fri, 6 Aug 2021 21:55:11 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Subject: Re: KVM's support for non default APIC base
+Message-ID: <YQ2vv7EXGN2jgQBb@google.com>
+References: <20210713142023.106183-1-mlevitsk@redhat.com>
+ <20210713142023.106183-9-mlevitsk@redhat.com>
+ <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
+ <YPXJQxLaJuoF6aXl@google.com>
+ <564fd4461c73a4ec08d68e2364401db981ecba3a.camel@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <564fd4461c73a4ec08d68e2364401db981ecba3a.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+On Thu, Jul 22, 2021, Maxim Levitsky wrote:
+> On Mon, 2021-07-19 at 18:49 +0000, Sean Christopherson wrote:
+> > On Sun, Jul 18, 2021, Maxim Levitsky wrote:
+> -> APIC MMIO area has to be MMIO for 'apic_mmio_write' to be called,
+>    thus must contain no guest memslots.
+>    If the guest relocates the APIC base somewhere where we have a memslot, 
+>    memslot will take priority, while on real hardware, LAPIC is likely to
+>    take priority.
 
-Added a mount option to control block allocation mode for filesystem
-developer to simulate filesystem fragmentation and after-GC situation
-for experimental reasons to understand the filesystem behaviors well
-under the severe condition. This supports "normal", "seg_random" and
-"blk_random:<num>" options.
+Yep.  The thing that really bites us is that other vCPUs should still be able to
+access the memory defined by the memslot, e.g. to make it work we'd have to run
+the vCPU with a completely different MMU root.
 
-"normal" (default): f2fs allocates blocks in the normal way.
-"seg_random": f2fs allocates a new segment in ramdom position.
-              With this, we can simulate the after-GC condition.
-"blk_random:<num>": We can make f2fs allocate only 1..<num> blocks
-                    in a row and forcibly change the segment randomly.
-                    With this, the newly allocated blocks will be scatter
-                    throughout the whole partition and we can simulate
-                    filesystem fragmentation condition.
+> As far as I know the only good reason to relocate APIC base is to access it
+> from the real mode which is not something that is done these days by modern
+> BIOSes.
+> 
+> I vote to make it read only (#GP on MSR_IA32_APICBASE write when non default
+> base is set and apic enabled) and remove all remains of the support for
+> variable APIC base.
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
- Documentation/filesystems/f2fs.rst | 16 ++++++++++
- fs/f2fs/f2fs.h                     | 17 +++++++++++
- fs/f2fs/gc.c                       |  5 +++-
- fs/f2fs/segment.c                  | 12 ++++++++
- fs/f2fs/super.c                    | 47 ++++++++++++++++++++++++++++++
- 5 files changed, 96 insertions(+), 1 deletion(-)
+Making up our own behavior is almost never the right approach.  E.g. _best_ case
+scenario for an unexpected #GP is the guest immediately terminates.  Worst case
+scenario is the guest eats the #GP and continues on, which is basically the status
+quo, except it's guaranteed to now work, whereas todays behavior can at least let
+the guest function, for some definitions of "function".
 
-diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-index ff9e7cc97c65..c2d09fa98f9f 100644
---- a/Documentation/filesystems/f2fs.rst
-+++ b/Documentation/filesystems/f2fs.rst
-@@ -312,6 +312,22 @@ inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
- 			 Documentation/block/inline-encryption.rst.
- atgc			 Enable age-threshold garbage collection, it provides high
- 			 effectiveness and efficiency on background GC.
-+bl_alloc_mode=%s	 Control block allocation mode. This is a developer option
-+			 for experiments to simulate filesystem fragmentation and
-+			 after-GC situation. The developers use this mode to understand
-+			 filesystem fragmentation and after-GC condition well, and
-+			 eventually get the insight to handle them better.
-+			 This supports "normal", "seg_random" and "blk_random:<num>" modes.
-+			 In "normal" mode (default), f2fs allocates blocks in the normal way.
-+			 In "seg_random", f2fs allocates a new segment in ramdom position.
-+			 With this, we can simulate the after-GC condition.
-+			 In "blk_random:<num>", we can make f2fs allocate only 1..<num>
-+			 blocks in a segment and forcibly change the segment randomly.
-+			 You can set the <num> within 1 .. <blocks per segment> number.
-+			 With this, the newly allocated blocks will be scatter throughout
-+			 the whole partition and we can simulate filesystem fragmentation
-+			 condition. Please, use this option for your experiments and we
-+			 strongly recommand a filesystem format after using this option.
- ======================== ============================================================
- 
- Debugfs Entries
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index fccee18ab776..bdd33d78d9fc 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -155,6 +155,9 @@ struct f2fs_mount_info {
- 	int compress_mode;			/* compression mode */
- 	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
- 	unsigned char noextensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN]; /* extensions */
-+
-+	int blk_alloc_mode;		/* block allocation mode */
-+	int blk_alloc_random_max;	/* the maximum chunk size for block random allocation mode */
- };
- 
- #define F2FS_FEATURE_ENCRYPT		0x0001
-@@ -1740,6 +1743,8 @@ struct f2fs_sb_info {
- 
- 	unsigned long seq_file_ra_mul;		/* multiplier for ra_pages of seq. files in fadvise */
- 
-+	int blk_alloc_remained;			/* remained block count for this block allocation period */
-+
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- 	struct kmem_cache *page_array_slab;	/* page array entry */
- 	unsigned int page_array_slab_size;	/* default page array slab size */
-@@ -3619,6 +3624,18 @@ unsigned int f2fs_usable_segs_in_sec(struct f2fs_sb_info *sbi,
- unsigned int f2fs_usable_blks_in_seg(struct f2fs_sb_info *sbi,
- 			unsigned int segno);
- 
-+enum {
-+	BLK_ALLOC_MODE_NORMAL,		/* normal block allocation mode */
-+	BLK_ALLOC_MODE_SEG_RANDOM,	/* make segment allocation random */
-+	BLK_ALLOC_MODE_BLK_RANDOM,	/* make block allocation random */
-+};
-+
-+static inline bool f2fs_need_seg_random(struct f2fs_sb_info *sbi)
-+{
-+	return F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_SEG_RANDOM ||
-+		F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_BLK_RANDOM;
-+}
-+
- /*
-  * checkpoint.c
-  */
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index 9dce44619069..571b50322e6e 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -14,6 +14,7 @@
- #include <linux/delay.h>
- #include <linux/freezer.h>
- #include <linux/sched/signal.h>
-+#include <linux/random.h>
- 
- #include "f2fs.h"
- #include "node.h"
-@@ -256,7 +257,9 @@ static void select_policy(struct f2fs_sb_info *sbi, int gc_type,
- 		p->max_search = sbi->max_victim_search;
- 
- 	/* let's select beginning hot/small space first in no_heap mode*/
--	if (test_opt(sbi, NOHEAP) &&
-+	if (f2fs_need_seg_random(sbi))
-+		p->offset = prandom_u32() % (MAIN_SECS(sbi) * sbi->segs_per_sec);
-+	else if (test_opt(sbi, NOHEAP) &&
- 		(type == CURSEG_HOT_DATA || IS_NODESEG(type)))
- 		p->offset = 0;
- 	else
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index f9b7fb785e1d..6dff2d36ad6b 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -15,6 +15,7 @@
- #include <linux/timer.h>
- #include <linux/freezer.h>
- #include <linux/sched/signal.h>
-+#include <linux/random.h>
- 
- #include "f2fs.h"
- #include "segment.h"
-@@ -2587,6 +2588,8 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
- 	unsigned short seg_type = curseg->seg_type;
- 
- 	sanity_check_seg_type(sbi, seg_type);
-+	if (f2fs_need_seg_random(sbi))
-+		return prandom_u32() % (MAIN_SECS(sbi) * sbi->segs_per_sec);
- 
- 	/* if segs_per_sec is large than 1, we need to keep original policy. */
- 	if (__is_large_section(sbi))
-@@ -3150,6 +3153,15 @@ int f2fs_trim_fs(struct f2fs_sb_info *sbi, struct fstrim_range *range)
- static bool __has_curseg_space(struct f2fs_sb_info *sbi,
- 					struct curseg_info *curseg)
- {
-+	/* To allocate block chunks in different sizes, use random number */
-+	if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_BLK_RANDOM) {
-+		if (--sbi->blk_alloc_remained < 0) {
-+			sbi->blk_alloc_remained = prandom_u32() %
-+				F2FS_OPTION(sbi).blk_alloc_random_max;
-+			return false;
-+		}
-+	}
-+
- 	return curseg->next_blkoff < f2fs_usable_blks_in_seg(sbi,
- 							curseg->segno);
- }
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 9ead6d2e703b..801981547fe0 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -155,6 +155,7 @@ enum {
- 	Opt_atgc,
- 	Opt_gc_merge,
- 	Opt_nogc_merge,
-+	Opt_blk_alloc_mode,
- 	Opt_err,
- };
- 
-@@ -231,6 +232,7 @@ static match_table_t f2fs_tokens = {
- 	{Opt_atgc, "atgc"},
- 	{Opt_gc_merge, "gc_merge"},
- 	{Opt_nogc_merge, "nogc_merge"},
-+	{Opt_blk_alloc_mode, "blk_alloc_mode=%s"},
- 	{Opt_err, NULL},
- };
- 
-@@ -1173,6 +1175,40 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 		case Opt_nogc_merge:
- 			clear_opt(sbi, GC_MERGE);
- 			break;
-+		case Opt_blk_alloc_mode:
-+			name = match_strdup(&args[0]);
-+			if (!name)
-+				return -ENOMEM;
-+			if (!strcmp(name, "normal")) {
-+				F2FS_OPTION(sbi).blk_alloc_mode =
-+					BLK_ALLOC_MODE_NORMAL;
-+			} else if (!strcmp(name, "seg_random")) {
-+				F2FS_OPTION(sbi).blk_alloc_mode =
-+					BLK_ALLOC_MODE_SEG_RANDOM;
-+			} else if (!strncmp(name, "blk_random:", 11)) {
-+				const char *num = name + 11;
-+				long size;
-+
-+				ret = kstrtol(num, 10, &size);
-+				if (ret) {
-+					kfree(name);
-+					return ret;
-+				}
-+				if (size < 1)
-+					size = 1;
-+				else if (size > sbi->blocks_per_seg)
-+					size = sbi->blocks_per_seg;
-+
-+				F2FS_OPTION(sbi).blk_alloc_mode =
-+					BLK_ALLOC_MODE_BLK_RANDOM;
-+				F2FS_OPTION(sbi).blk_alloc_random_max =	size;
-+				sbi->blk_alloc_remained = size;
-+			} else {
-+				kfree(name);
-+				return -EINVAL;
-+			}
-+			kfree(name);
-+			break;
- 		default:
- 			f2fs_err(sbi, "Unrecognized mount option \"%s\" or missing value",
- 				 p);
-@@ -1919,6 +1955,14 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
- 	else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_NOBARRIER)
- 		seq_printf(seq, ",fsync_mode=%s", "nobarrier");
- 
-+	if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_NORMAL)
-+		seq_printf(seq, ",blk_alloc_mode=%s", "normal");
-+	else if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_SEG_RANDOM)
-+		seq_printf(seq, ",blk_alloc_mode=%s", "seg_random");
-+	else if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_BLK_RANDOM)
-+		seq_printf(seq, ",blk_alloc_mode=%s:%d", "blk_random",
-+				F2FS_OPTION(sbi).blk_alloc_random_max);
-+
- #ifdef CONFIG_F2FS_FS_COMPRESSION
- 	f2fs_show_compress_options(seq, sbi->sb);
- #endif
-@@ -1947,6 +1991,9 @@ static void default_options(struct f2fs_sb_info *sbi)
- 	F2FS_OPTION(sbi).compress_ext_cnt = 0;
- 	F2FS_OPTION(sbi).compress_mode = COMPR_MODE_FS;
- 	F2FS_OPTION(sbi).bggc_mode = BGGC_MODE_ON;
-+	F2FS_OPTION(sbi).blk_alloc_mode = BLK_ALLOC_MODE_NORMAL;
-+	F2FS_OPTION(sbi).blk_alloc_random_max = sbi->blocks_per_seg;
-+	sbi->blk_alloc_remained = sbi->blocks_per_seg;
- 
- 	sbi->sb->s_flags &= ~SB_INLINECRYPT;
- 
--- 
-2.32.0.605.g8dce9f2422-goog
+I think the only viable "solution" is to exit to userspace on the guilty WRMSR.
+Whether or not we can do that without breaking userspace is probably the big
+question.  Fully emulating APIC base relocation would be a tremendous amount of
+effort and complexity for practically zero benefit.
 
+> (we already have a warning when APIC base is set to non default value)
+
+FWIW, that warning is worthless because it's _once(), i.e. won't help detect a
+misbehaving guest unless it's the first guest to misbehave on a particular
+instantiation of KVM.   _ratelimited() would improve the situation, but not
+completely eliminate the possibility of a misbehaving guest going unnoticed.
+Anything else isn't an option becuase it's obviously guest triggerable.
