@@ -2,113 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45963E2E20
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C45F3E2E23
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235633AbhHFQHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 12:07:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23406 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231778AbhHFQH0 (ORCPT
+        id S231224AbhHFQH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 12:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229773AbhHFQH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 12:07:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628266030;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QDMPpNAqPC6c45pDZs2yjH7PLpb9RWebANU8kuJcJMc=;
-        b=YhAl93vYm324FEnBzwDrvM2ST4GuHfXvYm7ASleSNC/wQFhlWqIONIB0NncxIS6JITX2bP
-        ScSZocnFRMIMoaWNm42o08tPLdhml7MY/KVl32aXxtMELVFTDGHoMhK7D1pbhzb9sfHLTQ
-        t2sMDOHDZcLsTxm7n+n+gkdSREE2K3k=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-294-Dlj6xao0OZCfyc3Q6W-_tQ-1; Fri, 06 Aug 2021 12:07:08 -0400
-X-MC-Unique: Dlj6xao0OZCfyc3Q6W-_tQ-1
-Received: by mail-ed1-f72.google.com with SMTP id eg53-20020a05640228b5b02903bd6e6f620cso5176371edb.23
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 09:07:08 -0700 (PDT)
+        Fri, 6 Aug 2021 12:07:57 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75C1C061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 09:07:41 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id m193so16054833ybf.9
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 09:07:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iPa6gpCFto1S8Anmjbtf+lIZ5pc8QBEuFieat3/oBzA=;
+        b=kTUbPF5bYWWgLbhYQS3gr9X4Bbz9A7Hw/wdSPQ6B3cZ6W5X64uvJT65/hMuDYACbXt
+         B6E92tLsooMGIp4kZPX8L5GZxuGWZHgjloEYiIIRNkb4dOEw0hLST1NZXysc3aIhRUl9
+         B5SODDpfG9MLdOeu/BuGEFmaCqEhLum1pKTtbtWXwzAs0dY7jU6qHCZsuV2z4k1SX/m5
+         hq+kO0uclbmfSwmSpPtRdARCKy6lvWxemLl4dS43drZ+FJO2h7z1L039l+mkNfYk2N8H
+         p7/J0QTh16ACpV+AeHzFrS1kwWVWHekATOYLVjf1CUbF/25QMpBhvAVuyeee/25cO0RW
+         W2GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QDMPpNAqPC6c45pDZs2yjH7PLpb9RWebANU8kuJcJMc=;
-        b=pGiDPChOmnI1fjEN557aLZJTf281P6HJOGaY/ZQvYdvfBOHBOriSjNcYGMr/fdK3tM
-         Sj1PKKEV8G1RhnDSBLOmbnsGU7EiNhoAcHDO/TUS7gFn0HJvTZztZmFljyJZRYroz5nQ
-         6gUF4MXPJR4JJvKc5+6fo9VO4+JEOM5PXMgCw/Vg/fD30Q5/6ednxVrf4daCy1j9Z/US
-         s9s09f7UgUMZ6OSlY7qOiK3mwDm5caqSh71Gsiksm4fqnOgOJqRF1sA82IOSLhujdsCG
-         Ar//dYqQALgrwTJaWyX01AkqSlnn0yEx6Hrxhf7aNNQ9Re6G4efZ6pgbuFcGZQUhIRlH
-         vx6Q==
-X-Gm-Message-State: AOAM531lf0mrL9WdomG9nzZDP97SapDBzOjBULsJ5Bqu49dFV6bUTIo7
-        /LfdA5z/zKCYj42+5/zIJIQdKrqF8xvFVNVTdN+kmQ2XYmvr3wNcLGwVmyYGx2IfqzYbq9Xqr7G
-        9s9fpGPyQUoMbWXwQaHYMZiTu
-X-Received: by 2002:aa7:d6cd:: with SMTP id x13mr13924593edr.300.1628266027560;
-        Fri, 06 Aug 2021 09:07:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwNut+zkF53aMyAth4YpbAYiNqCg0tB+sVJKxD8iKoH3db7FvFgJxKcgEjHFLbV48HftTBN/g==
-X-Received: by 2002:aa7:d6cd:: with SMTP id x13mr13924568edr.300.1628266027375;
-        Fri, 06 Aug 2021 09:07:07 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id ch5sm2738049edb.61.2021.08.06.09.07.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 09:07:06 -0700 (PDT)
-Subject: Re: [RFC PATCH 00/10] KVM: x86/mmu: simplify argument to kvm page
- fault handler
-To:     David Matlack <dmatlack@google.com>
-Cc:     Isaku Yamahata <isaku.yamahata@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>
-References: <cover.1618914692.git.isaku.yamahata@intel.com>
- <YK65V++S2Kt1OLTu@google.com>
- <936b00e2-1bcc-d5cc-5ae1-59f43ab5325f@redhat.com>
- <20210610220056.GA642297@private.email.ne.jp>
- <CALzav=d2m+HffSLu5e3gz0cYk=MZ2uc1a3K+vP8VRVvLRiwd9g@mail.gmail.com>
- <92ffcffb-74c1-1876-fe86-a47553a2aa5b@redhat.com>
- <CALzav=eSrEGt9Xn99YtmHnWE1hm7ExZ4o_wjn_Rc0ZokLpizeQ@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <97ea1a31-4763-cefd-bfb8-8eeef46931b9@redhat.com>
-Date:   Fri, 6 Aug 2021 18:07:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iPa6gpCFto1S8Anmjbtf+lIZ5pc8QBEuFieat3/oBzA=;
+        b=mib/9UIfVPefR9SkLyKzE7JSOKGdYjfF+6N6+gAOaHt9T15bI9nay3EbFn+NXxBlyR
+         Ncs9qJMVRKo+o5WFOZb+9s7WF6g7rG7IvqRWdV0fBE4UCLfx3Q/mGDN0MP+6Nm99+6NF
+         KxoYFfgpY+RapgPb/foKkxDnRe9ZskgDhlsyHLbqlAR5pSWaMr19hWSOrf4KE5fGSTPa
+         PaIF+1fE90ejdDNq9I+pphsXxZmSPMATIDUg7+dnqOwkt7i1LF5+D0JHwWtaR1XquN/C
+         1UMuetPki2C2ucV81sYswZLelDArQw4Or9/hp3lcg9rTzyD8fE0oL8x1hFJPoVk0L2rh
+         7vfg==
+X-Gm-Message-State: AOAM530iX8yCtP0ac76JUq0/2FxeJ5albLkw121JHvL6M1KyFmBi0GAs
+        d9UjtPj5ElhNOmfwtNA8Lger5YzhhHbE4Ei7pnqijA==
+X-Google-Smtp-Source: ABdhPJzqY00horHS8j6EKD2oP+k4vF7kKq9+gpuCgDvcEQ+vpxPPTyWaMOSn+vrADZbw1CTpsIc0CBOkQqfptXgSAHg=
+X-Received: by 2002:a25:7ec4:: with SMTP id z187mr14175379ybc.136.1628266059961;
+ Fri, 06 Aug 2021 09:07:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALzav=eSrEGt9Xn99YtmHnWE1hm7ExZ4o_wjn_Rc0ZokLpizeQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210805170859.2389276-1-surenb@google.com> <YQzZSmRqYmxFJ61y@dhcp22.suse.cz>
+In-Reply-To: <YQzZSmRqYmxFJ61y@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 6 Aug 2021 09:07:28 -0700
+Message-ID: <CAJuCfpFL_7Zk4Nk5E_kCSnsCsXgmWGW9R3AnXW-T5EH7URUkRg@mail.gmail.com>
+Subject: Re: [PATCH v7 1/2] mm: introduce process_mrelease system call
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/07/21 19:24, David Matlack wrote:
-> On Thu, Jul 29, 2021 at 10:17 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->>
->> On 29/07/21 18:48, David Matlack wrote:
->>> On Thu, Jun 10, 2021 at 3:05 PM Isaku Yamahata <isaku.yamahata@gmail.com> wrote:
->>>>
->>>> Thanks for feedback. Let me respin it.
->>>
->>> Hi Isaku,
->>>
->>> I'm working on a series to plumb the memslot backing the faulting gfn
->>> through the page fault handling stack to avoid redundant lookups. This
->>> would be much cleaner to implement on top of your struct
->>> kvm_page_fault series than the existing code.
->>>
->>> Are you still planning to send another version of this series? Or if
->>> you have decided to drop it or go in a different direction?
->>
->> I can work on this and post updated patches next week.
-> 
-> Sounds good. For the record I'm also looking at adding an per-vCPU LRU
-> slot, which *may* obviate the need to pass around the slot. (Isaku's
-> series is still a nice cleanup regardless.)
+On Thu, Aug 5, 2021 at 11:40 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Thu 05-08-21 10:08:58, Suren Baghdasaryan wrote:
+> [...]
+> > +     /*
+> > +      * If the task is dying and in the process of releasing its memory
+> > +      * then get its mm.
+> > +      */
+> > +     p = find_lock_task_mm(task);
+> > +     if (!p) {
+> > +             ret = -ESRCH;
+> > +             goto put_pid;
+> > +     }
+> > +     if (task != p) {
+> > +             get_task_struct(p);
+> > +             put_task_struct(task);
+> > +             task = p;
+> > +     }
+>
+> Why do you need to take a reference to the p here? You are under
+> task_lock so this will not go away and you only need p to get your mm.
 
-Backport done, but not tested very well yet (and it's scary :)).
+True.
 
-Paolo
+>
+> > +
+> > +     /* If the work has been done already, just exit with success */
+> > +     if (test_bit(MMF_OOM_SKIP, &task->mm->flags))
+> > +             goto put_task;
+>
+> You want to release the task_lock
 
+Missed it again :(
+
+>
+> > +
+> > +     if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
+>
+> you want task_will_free_mem(p) and what is the point of the PF_KTHREAD
+> check?
+
+Yeah, looks like task_will_free_mem() covers that case already.
+
+>
+> > +             mm = task->mm;
+> > +             mmget(mm);
+>
+> All you need is to make sure mm will not get released under your feet
+> once task_lock is released so mmgrab is the right thing to do here. The
+> address space can be torn down in parallel and that is OK and desirable.
+>
+> I think you really want something like this:
+>
+>         if (flags)
+>                 return -EINVAL;
+>
+>         pid = pidfd_get_pid(fd, &f_flags);
+>         if (IS_ERR(pid))
+>                 return PTR_ERR(pid);
+>         task = get_pid_task(pid, PIDTYPE_PID);
+>         if (!task) {
+>                 ret = -ESRCH;
+>                 goto put_pid;
+>         }
+>
+>         /*
+>          * Make sure to chose a thread which still has a reference to mm
+>          * during the group exit
+>          */
+>         p = find_lock_task_mm(task);
+>         if (!p) {
+>                 ret = -ESRCH;
+>                 goto put_task;
+>         }
+>
+>         mm = task->mm;
+>         mmgrab(mm);
+>         reap = true;
+>         /* If the work has been done already, just exit with success */
+>         if (test_bit(MMF_OOM_SKIP, &mm->flags)) {
+>                 reap = false;
+>         } else if (!task_will_free_mem(p)) {
+>                 reap = false;
+>                 ret = -EINVAL;
+>         }
+>         task_unlock(p);
+>
+>         if (!reap)
+>                 goto dropmm;;
+>
+>         /* Do the work*/
+>
+>
+> dropmm:
+>         mmdrop(mm);
+> put_task:
+>         put_task(task);
+> put_pid:
+>         put_pid(pid);
+>
+>         return ret;
+>
+
+This is indeed simpler to follow. I'll adopt your version. Thanks!
+
+> --
+> Michal Hocko
+> SUSE Labs
