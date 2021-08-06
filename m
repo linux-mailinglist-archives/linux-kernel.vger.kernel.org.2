@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428053E25EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C049F3E25C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244685AbhHFIYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:24:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52360 "EHLO mail.kernel.org"
+        id S244509AbhHFIWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:22:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244255AbhHFIUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:20:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98D7A61206;
-        Fri,  6 Aug 2021 08:20:15 +0000 (UTC)
+        id S244269AbhHFITc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:19:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0CE66120C;
+        Fri,  6 Aug 2021 08:19:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628238016;
-        bh=vV1kBFJSLi3yOLCobttpep3V2bs02zHCnpF5GWEKdV8=;
+        s=korg; t=1628237950;
+        bh=2r0Fhs8d3a9+YKMSBs+/2VBJgb52qadIj/04nLw/YKU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fp7fbE7EjzqU6/lTfutHsnVlSNrExeOSE8lTphb8M2N5lsRvUqT+LdhLZSXuUGkbN
-         Rom6mYCXoXiuBfxaobNZ2KT8WjWn6nBtxDLigdJ1XxWfiYcxbNMPJrgq9yOMmmIHXB
-         Pb3pbp2+ctxwDJIVyNIuCz2E9zHLauMlX6vZL2wo=
+        b=1+pHWhGHht0SIzW3EPF7wB8w9PrQKWKPMqkvBqhtkiyxDpV8zLudh7jFcV/Wzbe6T
+         HoHrmhDysxHWpSY2c5sgH4kkX669HLSkZO4hEH1hgGtwiiL97AG3CVDD4bsCt8hmgU
+         14ClqwVd5ICpqUsvmYJKuNIJr257LNSlte97HeTM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Ekstrand <jason@jlekstrand.net>,
-        Marcin Slusarz <marcin.slusarz@intel.com>,
-        Jason Ekstrand <jason.ekstrand@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jon Bloomfield <jon.bloomfield@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        stable@vger.kernel.org, Kyle Russell <bkylerussell@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 02/35] Revert "drm/i915: Propagate errors on awaiting already signaled fences"
-Date:   Fri,  6 Aug 2021 10:16:45 +0200
-Message-Id: <20210806081113.796798036@linuxfoundation.org>
+Subject: [PATCH 5.10 08/30] ASoC: tlv320aic31xx: fix reversed bclk/wclk master bits
+Date:   Fri,  6 Aug 2021 10:16:46 +0200
+Message-Id: <20210806081113.411913317@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210806081113.718626745@linuxfoundation.org>
-References: <20210806081113.718626745@linuxfoundation.org>
+In-Reply-To: <20210806081113.126861800@linuxfoundation.org>
+References: <20210806081113.126861800@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,91 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Ekstrand <jason@jlekstrand.net>
+From: Kyle Russell <bkylerussell@gmail.com>
 
-commit 3761baae908a7b5012be08d70fa553cc2eb82305 upstream.
+[ Upstream commit 9cf76a72af6ab81030dea6481b1d7bdd814fbdaf ]
 
-This reverts commit 9e31c1fe45d555a948ff66f1f0e3fe1f83ca63f7.  Ever
-since that commit, we've been having issues where a hang in one client
-can propagate to another.  In particular, a hang in an app can propagate
-to the X server which causes the whole desktop to lock up.
+These are backwards from Table 7-71 of the TLV320AIC3100 spec [1].
 
-Error propagation along fences sound like a good idea, but as your bug
-shows, surprising consequences, since propagating errors across security
-boundaries is not a good thing.
+This was broken in 12eb4d66ba2e when BCLK_MASTER and WCLK_MASTER
+were converted from 0x08 and 0x04 to BIT(2) and BIT(3), respectively.
 
-What we do have is track the hangs on the ctx, and report information to
-userspace using RESET_STATS. That's how arb_robustness works. Also, if my
-understanding is still correct, the EIO from execbuf is when your context
-is banned (because not recoverable or too many hangs). And in all these
-cases it's up to userspace to figure out what is all impacted and should
-be reported to the application, that's not on the kernel to guess and
-automatically propagate.
+-#define AIC31XX_BCLK_MASTER		0x08
+-#define AIC31XX_WCLK_MASTER		0x04
++#define AIC31XX_BCLK_MASTER		BIT(2)
++#define AIC31XX_WCLK_MASTER		BIT(3)
 
-What's more, we're also building more features on top of ctx error
-reporting with RESET_STATS ioctl: Encrypted buffers use the same, and the
-userspace fence wait also relies on that mechanism. So it is the path
-going forward for reporting gpu hangs and resets to userspace.
+Probably just a typo since the defines were not listed in bit order.
 
-So all together that's why I think we should just bury this idea again as
-not quite the direction we want to go to, hence why I think the revert is
-the right option here.
+[1] https://www.ti.com/lit/gpn/tlv320aic3100
 
-For backporters: Please note that you _must_ have a backport of
-https://lore.kernel.org/dri-devel/20210602164149.391653-2-jason@jlekstrand.net/
-for otherwise backporting just this patch opens up a security bug.
-
-v2: Augment commit message. Also restore Jason's sob that I
-accidentally lost.
-
-v3: Add a note for backporters
-
-Signed-off-by: Jason Ekstrand <jason@jlekstrand.net>
-Reported-by: Marcin Slusarz <marcin.slusarz@intel.com>
-Cc: <stable@vger.kernel.org> # v5.6+
-Cc: Jason Ekstrand <jason.ekstrand@intel.com>
-Cc: Marcin Slusarz <marcin.slusarz@intel.com>
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3080
-Fixes: 9e31c1fe45d5 ("drm/i915: Propagate errors on awaiting already signaled fences")
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Reviewed-by: Jon Bloomfield <jon.bloomfield@intel.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210714193419.1459723-3-jason@jlekstrand.net
-(cherry picked from commit 93a2711cddd5760e2f0f901817d71c93183c3b87)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Signed-off-by: Kyle Russell <bkylerussell@gmail.com>
+Link: https://lore.kernel.org/r/20210622010941.241386-1-bkylerussell@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/i915_request.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/i915_request.c b/drivers/gpu/drm/i915/i915_request.c
-index bec9c3652188..59d48a6a83d2 100644
---- a/drivers/gpu/drm/i915/i915_request.c
-+++ b/drivers/gpu/drm/i915/i915_request.c
-@@ -1426,10 +1426,8 @@ i915_request_await_execution(struct i915_request *rq,
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index 81952984613d..2513922a0292 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -151,8 +151,8 @@ struct aic31xx_pdata {
+ #define AIC31XX_WORD_LEN_24BITS		0x02
+ #define AIC31XX_WORD_LEN_32BITS		0x03
+ #define AIC31XX_IFACE1_MASTER_MASK	GENMASK(3, 2)
+-#define AIC31XX_BCLK_MASTER		BIT(2)
+-#define AIC31XX_WCLK_MASTER		BIT(3)
++#define AIC31XX_BCLK_MASTER		BIT(3)
++#define AIC31XX_WCLK_MASTER		BIT(2)
  
- 	do {
- 		fence = *child++;
--		if (test_bit(DMA_FENCE_FLAG_SIGNALED_BIT, &fence->flags)) {
--			i915_sw_fence_set_error_once(&rq->submit, fence->error);
-+		if (test_bit(DMA_FENCE_FLAG_SIGNALED_BIT, &fence->flags))
- 			continue;
--		}
- 
- 		if (fence->context == rq->fence.context)
- 			continue;
-@@ -1527,10 +1525,8 @@ i915_request_await_dma_fence(struct i915_request *rq, struct dma_fence *fence)
- 
- 	do {
- 		fence = *child++;
--		if (test_bit(DMA_FENCE_FLAG_SIGNALED_BIT, &fence->flags)) {
--			i915_sw_fence_set_error_once(&rq->submit, fence->error);
-+		if (test_bit(DMA_FENCE_FLAG_SIGNALED_BIT, &fence->flags))
- 			continue;
--		}
- 
- 		/*
- 		 * Requests on the same timeline are explicitly ordered, along
+ /* AIC31XX_DATA_OFFSET */
+ #define AIC31XX_DATA_OFFSET_MASK	GENMASK(7, 0)
 -- 
 2.30.2
 
