@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C8B3E25E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549C93E25D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243733AbhHFIXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:23:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52162 "EHLO mail.kernel.org"
+        id S244361AbhHFIW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:22:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244182AbhHFIUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:20:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5653D6103B;
-        Fri,  6 Aug 2021 08:20:08 +0000 (UTC)
+        id S243136AbhHFITp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:19:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3CBD61131;
+        Fri,  6 Aug 2021 08:19:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628238008;
-        bh=2r0Fhs8d3a9+YKMSBs+/2VBJgb52qadIj/04nLw/YKU=;
+        s=korg; t=1628237970;
+        bh=/1rvwdDxaYdDSPUX7l2VGsQveUviF0T/6kVQQgn0Wns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hSnVtK1ikjIkjQv+XQxRBa4avYxn60ZZzFK19VztqgbuNzIxPKRX5Lid5WOpsVdzM
-         5O62eYNxhBsIBGRNUWYOQxyCS5vfP9AoxNqwBoeckwToh9aSDMBuV8vNDpd3smp/pP
-         llMmiXYWhoM/cqEezVFLgA7WZmpn1p3ZEBxvnlng=
+        b=0htH57Pbp3XeBA8TcB2WVpURVoj977kY9LANxJHms6bu0k/waQmNvx8/GeysCryPN
+         zKOImAIgefD9VRJM0AWqp2opUgwuUbZBdR+bAru/ruxQbeNDICnNduK0f5p+jaTUeF
+         T3XKlfBM1IkiZhP62zlfQLg49xsCxeo/9IkZ8zKw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kyle Russell <bkylerussell@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 17/35] ASoC: tlv320aic31xx: fix reversed bclk/wclk master bits
-Date:   Fri,  6 Aug 2021 10:17:00 +0200
-Message-Id: <20210806081114.291039573@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: [PATCH 5.10 23/30] firmware: arm_scmi: Add delayed response status check
+Date:   Fri,  6 Aug 2021 10:17:01 +0200
+Message-Id: <20210806081113.919744983@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210806081113.718626745@linuxfoundation.org>
-References: <20210806081113.718626745@linuxfoundation.org>
+In-Reply-To: <20210806081113.126861800@linuxfoundation.org>
+References: <20210806081113.126861800@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kyle Russell <bkylerussell@gmail.com>
+From: Cristian Marussi <cristian.marussi@arm.com>
 
-[ Upstream commit 9cf76a72af6ab81030dea6481b1d7bdd814fbdaf ]
+commit f1748b1ee1fa0fd1a074504045b530b62f949188 upstream.
 
-These are backwards from Table 7-71 of the TLV320AIC3100 spec [1].
+A successfully received delayed response could anyway report a failure at
+the protocol layer in the message status field.
 
-This was broken in 12eb4d66ba2e when BCLK_MASTER and WCLK_MASTER
-were converted from 0x08 and 0x04 to BIT(2) and BIT(3), respectively.
+Add a check also for this error condition.
 
--#define AIC31XX_BCLK_MASTER		0x08
--#define AIC31XX_WCLK_MASTER		0x04
-+#define AIC31XX_BCLK_MASTER		BIT(2)
-+#define AIC31XX_WCLK_MASTER		BIT(3)
-
-Probably just a typo since the defines were not listed in bit order.
-
-[1] https://www.ti.com/lit/gpn/tlv320aic3100
-
-Signed-off-by: Kyle Russell <bkylerussell@gmail.com>
-Link: https://lore.kernel.org/r/20210622010941.241386-1-bkylerussell@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/20210608103056.3388-1-cristian.marussi@arm.com
+Fixes: 58ecdf03dbb9 ("firmware: arm_scmi: Add support for asynchronous commands and delayed response")
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/codecs/tlv320aic31xx.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/firmware/arm_scmi/driver.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
-index 81952984613d..2513922a0292 100644
---- a/sound/soc/codecs/tlv320aic31xx.h
-+++ b/sound/soc/codecs/tlv320aic31xx.h
-@@ -151,8 +151,8 @@ struct aic31xx_pdata {
- #define AIC31XX_WORD_LEN_24BITS		0x02
- #define AIC31XX_WORD_LEN_32BITS		0x03
- #define AIC31XX_IFACE1_MASTER_MASK	GENMASK(3, 2)
--#define AIC31XX_BCLK_MASTER		BIT(2)
--#define AIC31XX_WCLK_MASTER		BIT(3)
-+#define AIC31XX_BCLK_MASTER		BIT(3)
-+#define AIC31XX_WCLK_MASTER		BIT(2)
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -436,8 +436,12 @@ int scmi_do_xfer_with_response(const str
+ 	xfer->async_done = &async_response;
  
- /* AIC31XX_DATA_OFFSET */
- #define AIC31XX_DATA_OFFSET_MASK	GENMASK(7, 0)
--- 
-2.30.2
-
+ 	ret = scmi_do_xfer(handle, xfer);
+-	if (!ret && !wait_for_completion_timeout(xfer->async_done, timeout))
+-		ret = -ETIMEDOUT;
++	if (!ret) {
++		if (!wait_for_completion_timeout(xfer->async_done, timeout))
++			ret = -ETIMEDOUT;
++		else if (xfer->hdr.status)
++			ret = scmi_to_linux_errno(xfer->hdr.status);
++	}
+ 
+ 	xfer->async_done = NULL;
+ 	return ret;
 
 
