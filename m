@@ -2,172 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755693E238D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 08:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F98C3E2392
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 08:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243444AbhHFGxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 02:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhHFGxh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 02:53:37 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDAF2C061798
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 23:53:21 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Ggx5B1S6Wz9sCD;
-        Fri,  6 Aug 2021 16:53:17 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1628232798;
-        bh=vD1LTdPK6JfRXO2TE9cg4Rh9PKZx4+TBHw0WLGKC9bU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=GVGwvFBGLVzVFjPmETJqgZJ/hNeJU5weXVURVKih5fKtMwzCjHMLjXuPm45N12vOp
-         Vt6XopcGqXqlT3nEItSo7f5Y3vV5WTJz0POh+T0BOXc7y4DHJwUOBBuhwE+6UAaJWS
-         MD/zjJc6lde91EIXiCeaIstPtyrr7kupmStC2oEzbiawq7S6UHRtOX/hbcphSmqTU3
-         hSAfl5ju8dTzc/ZoSiAR6ohFFZx+2CDnYOlhavYAwnY3R3A/oIYj5dAsPNpIIT4zgd
-         ZYmfx++fkitquwKoVs1KVZYeQXU6OyMWznfHqJN4Ll2SkUbnPBygxyAtgwMom/v0pe
-         Mz+ZGp9D9InZg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     sxwjean@me.com, linuxppc-dev@lists.ozlabs.org
-Cc:     oleg@redhat.com, benh@kernel.crashing.org, paulus@samba.org,
-        ravi.bangoria@linux.ibm.com, christophe.leroy@csgroup.eu,
-        npiggin@gmail.com, aneesh.kumar@linux.ibm.com,
-        sandipan@linux.ibm.com, efremov@linux.com, peterx@redhat.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        Xiongwei Song <sxwjean@gmail.com>
-Subject: Re: [RFC PATCH 1/4] powerpc: Optimize register usage for esr register
-In-Reply-To: <20210726143053.532839-1-sxwjean@me.com>
-References: <20210726143053.532839-1-sxwjean@me.com>
-Date:   Fri, 06 Aug 2021 16:53:14 +1000
-Message-ID: <874kc3njxh.fsf@mpe.ellerman.id.au>
+        id S243462AbhHFGxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 02:53:54 -0400
+Received: from mail-dm6nam10on2070.outbound.protection.outlook.com ([40.107.93.70]:32097
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229635AbhHFGxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 02:53:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QLQ8cDHnFdbFspIZCISJXnx4tVi7fMg51sbfYB12vOZchkge61tfaobjtqY0beZPO46RA9+RZw8YUzqyoNQGxcGbTR4r53R/EJ4acnL0c0l27qrWZV2dnipLdICd7YZhYd2F+MkqMFmYiSdV4xbbspw2yoUdDK2qvfWUtkuAJQMNCdMk+gBT4mmhfxja1dRxj3vW9fov+h7Nyjbu8OjMpyLXEmaomfithFdzsTaGhGLs7hpWaoY2wcPsWzeU9Pn9I0RNSvNlG5DKHS9KGs3m9/LdH96wGUYriRObqW2Etnvmcv+RANF/UAv+EPe+POHDJADa3kM9P/8dZtltth7g7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zDUQk891/yzCAmBUgUjNk4g+NqLk1QEetLUqMTpYQMY=;
+ b=gZ0fUSUGl3lZU1kiRNS2URBQVYl1RC4fiYfT2VxDKJmEgBCEfBm0/U76biHCp2fSC1NGyEAGlTklRIVMIhQfHoGC6YGZEF6516pBMLMgjUXTf4m7M6H0+dy4i5ExltMS62hiRsNSA5zRrCLJfK8DoGdfJxv7MGHmT65L3rB6m8huiWKP21h5cT6qeGWwrZXxGqglOKo/neSRafWUD3ki42ZgXWSpe4dFaGwB7R4g2nqB++5Q1vYAZHn6HOMXa17jIPKzIAY3/dYHy5CwCtWYGooawhn54DuWzvPtPw9gWm12w0nL7UG4UM6jRCuHGDZYCzAWKCRPXLitatvZz6ql6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.36) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zDUQk891/yzCAmBUgUjNk4g+NqLk1QEetLUqMTpYQMY=;
+ b=r2Fs+jbgcugJyKt0UB5vR28iuztcEDm7yjG7J+Fs4RSDrqg3XzOUutUx5B8DXabF3EXMKG8ENoFrQ+4jUBACOEl27HSaVNSFDrZUwY1j8EFgFtifuPW2ZTnEBFsPc1Q7CuV7SrcTJMXygBfm5NzJT5tHyvtuzQx+AXWeTeP8NnmFDIeZ/f6iJ2tddV+yIVfol9vQnIXxwTTqa/7lHKIRfH+lbywzixSHCXbqADxPpD9Pe8lHH/g0jxVUT7srX7jSTz30A1EGOTgsfr1+ncD48DBQEDX3X/CcnuYzr3eM7ngGbKo7aaDlmha2g0ocySHZXwnklCiUZbY0F+EiQ30Jew==
+Received: from MWHPR12CA0042.namprd12.prod.outlook.com (2603:10b6:301:2::28)
+ by DM6PR12MB5024.namprd12.prod.outlook.com (2603:10b6:5:20a::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.25; Fri, 6 Aug
+ 2021 06:53:33 +0000
+Received: from CO1NAM11FT012.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:301:2:cafe::af) by MWHPR12CA0042.outlook.office365.com
+ (2603:10b6:301:2::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend
+ Transport; Fri, 6 Aug 2021 06:53:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.36; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.36) by
+ CO1NAM11FT012.mail.protection.outlook.com (10.13.175.192) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4394.16 via Frontend Transport; Fri, 6 Aug 2021 06:53:33 +0000
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 6 Aug
+ 2021 06:53:32 +0000
+Received: from sandstorm.attlocal.net (172.20.187.5) by mail.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 6 Aug 2021 06:53:32 +0000
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+CC:     "David S . Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Sven Auhagen" <sven.auhagen@voleatech.de>,
+        Matteo Croce <mcroce@microsoft.com>
+Subject: [PATCH] net: mvvp2: fix short frame size on s390
+Date:   Thu, 5 Aug 2021 23:53:30 -0700
+Message-ID: <20210806065330.23000-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 11c2c6ea-8a12-4256-239f-08d958a6e846
+X-MS-TrafficTypeDiagnostic: DM6PR12MB5024:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB5024CF7EC7564CF4BE6B0371A8F39@DM6PR12MB5024.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:56;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: l4oxJ3gAfeE1dsB2mdmDHjUalV95m5UF7Iwhe95/LiIQkkNW3LJ2bPEFrd1SaeI4+NcLvCcE7Sj7XNP5IAMbc02XAtipA+e6/eXkU5UlpBKNfVaJDe0uxM9iMDkdyBxM16mTmHWEmcPeloUy/O/tjtod6Rj6m06/w1S89VNcRjbxIgPsIv2oEUJ0+12ar13uqgO5lOQ4n77gMsOtITzkaqiCQ5nCUNqnwIRL42dyJ0etE08CqDfRT65VS+BjsuERUniNQj9+F7ZjsQdCUGelSzNYsORW6jqz8gTeoB/X4Wx1jyleBGckmnaTv/CIOLrpcIwW9OHECOUvCB0NOkdX7/QtO4S7VupLzHXVSTFGjRal2D7ZeBXntFU7u8fPHP0vxXTEzP1jNQrtP5t7KDvP2CA6PObqEi34lNY8LpagR3B12P+6lNIhfsi9gle8JiVHznasisA7e+ImwFEhBZ+xw1WxlvZ65Bt6tTWEwUyJlqtxiF9VpQAbsnV6qROUKTOkBeHXuHvWigWMmQeNjO4xnxW4xOeCjgOOFrFa8zt7FvNP3yii9dbFBi+NAa2HSQxCKSszvpoloGKfb9281BsRov+V/4ARKaf6HscVm/bRExbaI53M1CL2mYUHUOjjmM6yEfnka1WUzapHiBplra6YyjFnrgABug/VVPfmJxhf0/aZjHcenaTLw2kw9sxKEidow20Hi9s6IHvUoUc3TYduAA==
+X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(70206006)(7636003)(54906003)(110136005)(5660300002)(70586007)(186003)(2906002)(8936002)(8676002)(336012)(4326008)(26005)(316002)(36860700001)(45080400002)(36906005)(508600001)(1076003)(356005)(47076005)(83380400001)(36756003)(86362001)(7416002)(426003)(82310400003)(2616005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2021 06:53:33.3262
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11c2c6ea-8a12-4256-239f-08d958a6e846
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT012.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5024
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sxwjean@me.com writes:
-> From: Xiongwei Song <sxwjean@gmail.com>
->
-> Create an anonymous union for dsisr and esr regsiters, we can reference
-> esr to get the exception detail when CONFIG_4xx=y or CONFIG_BOOKE=y.
-> Otherwise, reference dsisr. This makes code more clear.
->
-> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
-> ---
->  arch/powerpc/include/asm/ptrace.h          |  5 ++++-
->  arch/powerpc/include/uapi/asm/ptrace.h     |  5 ++++-
->  arch/powerpc/kernel/process.c              |  2 +-
->  arch/powerpc/kernel/ptrace/ptrace.c        |  2 ++
->  arch/powerpc/kernel/traps.c                |  2 +-
->  arch/powerpc/mm/fault.c                    | 16 ++++++++++++++--
->  arch/powerpc/platforms/44x/machine_check.c |  4 ++--
->  arch/powerpc/platforms/4xx/machine_check.c |  2 +-
->  8 files changed, 29 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
-> index 3e5d470a6155..c252d04b1206 100644
-> --- a/arch/powerpc/include/asm/ptrace.h
-> +++ b/arch/powerpc/include/asm/ptrace.h
-> @@ -44,7 +44,10 @@ struct pt_regs
->  #endif
->  			unsigned long trap;
->  			unsigned long dar;
-> -			unsigned long dsisr;
-> +			union {
-> +				unsigned long dsisr;
-> +				unsigned long esr;
-> +			};
+On s390, the following build warning occurs:
 
-I don't mind doing that.
+drivers/net/ethernet/marvell/mvpp2/mvpp2.h:844:2: warning: overflow in
+conversion from 'long unsigned int' to 'int' changes value from
+'18446744073709551584' to '-32' [-Woverflow]
+844 |  ((total_size) - MVPP2_SKB_HEADROOM - MVPP2_SKB_SHINFO_SIZE)
 
->  			unsigned long result;
->  		};
->  	};
-> diff --git a/arch/powerpc/include/uapi/asm/ptrace.h b/arch/powerpc/include/uapi/asm/ptrace.h
-> index 7004cfea3f5f..e357288b5f34 100644
-> --- a/arch/powerpc/include/uapi/asm/ptrace.h
-> +++ b/arch/powerpc/include/uapi/asm/ptrace.h
-> @@ -53,7 +53,10 @@ struct pt_regs
->  	/* N.B. for critical exceptions on 4xx, the dar and dsisr
->  	   fields are overloaded to hold srr0 and srr1. */
->  	unsigned long dar;		/* Fault registers */
-> -	unsigned long dsisr;		/* on 4xx/Book-E used for ESR */
-> +	union {
-> +		unsigned long dsisr;		/* on Book-S used for DSISR */
-> +		unsigned long esr;		/* on 4xx/Book-E used for ESR */
-> +	};
->  	unsigned long result;		/* Result of a system call */
->  };
+This happens because MVPP2_SKB_SHINFO_SIZE, which is 320 bytes (which is
+already 64-byte aligned) on some architectures, actually gets ALIGN'd up
+to 512 bytes in the s390 case.
 
-But I'm not sure about the use of anonymous unions in UAPI headers. Old
-compilers don't support them, so there's a risk of breakage.
+So then, when this is invoked:
 
-I'd rather we didn't touch the uapi version.
+    MVPP2_RX_MAX_PKT_SIZE(MVPP2_BM_SHORT_FRAME_SIZE)
+
+...that turns into:
+
+     704 - 224 - 512 == -32
+
+...which is not a good frame size to end up with! The warning above is a
+bit lucky: it notices a signed/unsigned bad behavior here, which leads
+to the real problem of a frame that is too short for its contents.
+
+Increase MVPP2_BM_SHORT_FRAME_SIZE by 32 (from 704 to 736), which is
+just exactly big enough. (The other values can't readily be changed
+without causing a lot of other problems.)
+
+Fixes: 07dd0a7aae7f ("mvpp2: add basic XDP support")
+Cc: Sven Auhagen <sven.auhagen@voleatech.de>
+Cc: Matteo Croce <mcroce@microsoft.com>
+Cc: David S. Miller <davem@davemloft.net>
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+---
+
+Hi,
+
+This patch is based on today's linux.git (commit 902e7f373fff).
+
+thanks,
+John Hubbard
+NVIDIA
 
 
-> diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-> index 185beb290580..f74af8f9133c 100644
-> --- a/arch/powerpc/kernel/process.c
-> +++ b/arch/powerpc/kernel/process.c
-> @@ -1499,7 +1499,7 @@ static void __show_regs(struct pt_regs *regs)
->  	    trap == INTERRUPT_DATA_STORAGE ||
->  	    trap == INTERRUPT_ALIGNMENT) {
->  		if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
-> -			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, regs->dsisr);
-> +			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, regs->esr);
->  		else
->  			pr_cont("DAR: "REG" DSISR: %08lx ", regs->dar, regs->dsisr);
->  	}
-> diff --git a/arch/powerpc/kernel/ptrace/ptrace.c b/arch/powerpc/kernel/ptrace/ptrace.c
-> index 0a0a33eb0d28..00789ad2c4a3 100644
-> --- a/arch/powerpc/kernel/ptrace/ptrace.c
-> +++ b/arch/powerpc/kernel/ptrace/ptrace.c
-> @@ -375,6 +375,8 @@ void __init pt_regs_check(void)
->  		     offsetof(struct user_pt_regs, dar));
->  	BUILD_BUG_ON(offsetof(struct pt_regs, dsisr) !=
->  		     offsetof(struct user_pt_regs, dsisr));
-> +	BUILD_BUG_ON(offsetof(struct pt_regs, esr) !=
-> +		     offsetof(struct user_pt_regs, esr));
->  	BUILD_BUG_ON(offsetof(struct pt_regs, result) !=
->  		     offsetof(struct user_pt_regs, result));
->  
-> diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-> index dfbce527c98e..2164f5705a0b 100644
-> --- a/arch/powerpc/kernel/traps.c
-> +++ b/arch/powerpc/kernel/traps.c
-> @@ -562,7 +562,7 @@ static inline int check_io_access(struct pt_regs *regs)
->  #ifdef CONFIG_PPC_ADV_DEBUG_REGS
->  /* On 4xx, the reason for the machine check or program exception
->     is in the ESR. */
-> -#define get_reason(regs)	((regs)->dsisr)
-> +#define get_reason(regs)	((regs)->esr)
->  #define REASON_FP		ESR_FP
->  #define REASON_ILLEGAL		(ESR_PIL | ESR_PUO)
->  #define REASON_PRIVILEGED	ESR_PPR
-> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-> index a8d0ce85d39a..62953d4e7c93 100644
-> --- a/arch/powerpc/mm/fault.c
-> +++ b/arch/powerpc/mm/fault.c
-> @@ -541,7 +541,11 @@ static __always_inline void __do_page_fault(struct pt_regs *regs)
->  {
->  	long err;
->  
-> -	err = ___do_page_fault(regs, regs->dar, regs->dsisr);
-> +	if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
-> +		err = ___do_page_fault(regs, regs->dar, regs->esr);
-> +	else
-> +		err = ___do_page_fault(regs, regs->dar, regs->dsisr);
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-As Christophe said, I don't thinks this is an improvement.
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+index b9fbc9f000f2..cf8acabb90ac 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+@@ -938,7 +938,7 @@ enum mvpp22_ptp_packet_format {
+ #define MVPP2_BM_COOKIE_POOL_OFFS	8
+ #define MVPP2_BM_COOKIE_CPU_OFFS	24
+ 
+-#define MVPP2_BM_SHORT_FRAME_SIZE	704	/* frame size 128 */
++#define MVPP2_BM_SHORT_FRAME_SIZE	736	/* frame size 128 */
+ #define MVPP2_BM_LONG_FRAME_SIZE	2240	/* frame size 1664 */
+ #define MVPP2_BM_JUMBO_FRAME_SIZE	10432	/* frame size 9856 */
+ /* BM short pool packet size
+-- 
+2.32.0
 
-It makes the code less readable. If anyone is confused about what is
-passed to ___do_page_fault() they can either read the comment above it,
-or look at the definition of pt_regs to see that esr and dsisr share
-storage.
-
-cheers
