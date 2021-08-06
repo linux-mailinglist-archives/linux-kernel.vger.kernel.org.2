@@ -2,462 +2,1168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AB53E2852
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888473E2853
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245015AbhHFKNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:13:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
+        id S244986AbhHFKNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244807AbhHFKM3 (ORCPT
+        with ESMTP id S244904AbhHFKMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:12:29 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07159C06179B
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:12:13 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id x90so12313226ede.8
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 03:12:12 -0700 (PDT)
+        Fri, 6 Aug 2021 06:12:32 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF67C06179E
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:12:14 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id hw6so14287992ejc.10
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 03:12:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=i7YO0/Pn02gHV8wWj0iQ01w2IFReGMwlPas1ZweFr5Q=;
-        b=SnxeU4xET8i+zRRGiqhZxeftrptJSoLLKUyrrv8Y17LYDZ3AH4ug2EKDTu0ychOmI6
-         mH0MCcZlLEMux93R7UVyYB3xnATx1JwnP4eRYMXhBDpKC9V2Mdt/O+Dmq+oE0kSYkJIy
-         q0vO7uuoA/gisc7NzHarFpgU8tstAAlvsRWNAxCtPTGLoeZKHnHb3lLD4vLBCf/EYCsG
-         B14MnloiTxsOiOtfj9XHZPnYrg9XF5574wb6iYOhXM11VpQqZEb+Qpn6ZqwCqU1tB+5o
-         ZjJBRuElQ6nd1x6dEcZyBAR4wnvpVppRJW2SZHdkLbZGhwnl9Z90dOl9yKieB6Y129yr
-         2+ew==
+        bh=g5QHSgyF6DG7gCTAmLMnEIvFyiY1EO3kEnHj1RQZ7Jo=;
+        b=YCq+4G39EFyzXNLeelnKdSswrseMlaDIhvXLL0Y//wg1fCq6K59nhsaf3Exgj8qaY6
+         /8VvxSBI5NySGbKoHSzGlhJEzflX/ZkDWNk8pWzkaZQ4TjVe3K5muw/bqBm2latLQVKA
+         Tsc/WhVM+vzQ+MbpTGahDpXgJDqePK8vjktmMmCuWDfoeUT6rBgzYBN0RqCL3cpt7xee
+         oMRj9WHZkKhawOKibldWuRy5WWo2kdWxRGGW2CuCa58nNonP4KthyNFG7udr+3qTBq7g
+         8IVdm+WHGMPQhJLOuZfWFZyyaBCWtuHgzpPojM7MuDewbYgJy+xwirkEk1vNSRdSWNIK
+         +Avw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=i7YO0/Pn02gHV8wWj0iQ01w2IFReGMwlPas1ZweFr5Q=;
-        b=LlHjW/ufKe7VpQVpVjPn5Zi2y6zgC+/8MoMrVkDojkgpP1S0OqpgrMCk2F7Vg8qLL4
-         2AxfEuWQyES8Ei/F9CQtiTyzQq3svK4sSZ1bU6SE+bRvqoWlti7vUWjA2jlGiOhF/gvH
-         pB9o+5vtNDEd476NZQ2XXCHMKkvagqUaZP1K1J6/27u7TtCIv5F47SjEBxzB2MAIAk5W
-         juWROQoSNcDtIHlbE1VU928bvTeLqSpeV/DscDuXGfoWSyLo8alYiSpRO53H9RGhf5hE
-         J3bawEGMjeTQOzPKNez35O6IYpt2SnbYXuSJED8m4RdKQzZGSiXAgweJKVl2tIECUOhL
-         TDuw==
-X-Gm-Message-State: AOAM532/QahJptV6c2FQ+LQ/tmzmWVbAu5qkz4Jvr2DSsP17NAKzukRk
-        68o8+mlhbgoa9HRHb2+Sx/Y1V0Jrk6U+UOUn
-X-Google-Smtp-Source: ABdhPJxHU+89uDHUoB8IjUqExlR4OkklA+08ZEAaHQPte2KOFfNmS6coagMmf4poOUCWbw1lgd3SEQ==
-X-Received: by 2002:a50:d091:: with SMTP id v17mr12225995edd.4.1628244731453;
-        Fri, 06 Aug 2021 03:12:11 -0700 (PDT)
+        bh=g5QHSgyF6DG7gCTAmLMnEIvFyiY1EO3kEnHj1RQZ7Jo=;
+        b=UpiDrmD9UQbUZpxfwwBCG+SzFN34DGKtCL7msFcMK7hI8FGPu+3x0G3o6gFad53odw
+         6KOlYbUPaNIBmN4Hbh7DVpiRnU18KngOfJ/Fl0Oi+DbhBHZoxEpJHkEWxj9TXjVYd+/g
+         gIZuMv1TY6L/IfqDlcDjDoc5M/aYEIcrpIGJXitvQrBnDPN65Iy7kfoEVQwqtbgr6LcU
+         fKI+MkmPO0mql4Zb3aB4W9/8HQ64CeGXi6zdT9/wdV9w/nUDkz8SSwurpXmEBDM+2IHT
+         KrU0vOIy8hytE3GNKK3XliPfK3x4jLAmtZtI/LaJEKUk8mnp6G7LanVj1ldOHJkbBR5X
+         79hg==
+X-Gm-Message-State: AOAM533uSdR9exeRPVFdpMB3W3nb3Q9JffE+vsCy2heZOwpOSLnTfEw+
+        7JhDtgcptUWVBkfBge6kRRTDvDVIWnxDRHJj
+X-Google-Smtp-Source: ABdhPJwXPuYg3trtD3BMyyl5P7weenS5FnEXI3XhXUKbDGxpB3uDblg4fjUzI4ovEop9EbwKJ+B5tg==
+X-Received: by 2002:a17:906:2c45:: with SMTP id f5mr8856126ejh.464.1628244732832;
+        Fri, 06 Aug 2021 03:12:12 -0700 (PDT)
 Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id zp23sm2717498ejb.118.2021.08.06.03.12.11
+        by smtp.gmail.com with ESMTPSA id m21sm3593026edc.5.2021.08.06.03.12.12
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 06 Aug 2021 03:12:11 -0700 (PDT)
+        Fri, 06 Aug 2021 03:12:12 -0700 (PDT)
 Sender: Michal Simek <monstr@monstr.eu>
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
         michal.simek@xilinx.com, git@xilinx.com,
         Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
         Krzysztof Kozlowski <krzk@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Quanyang Wang <quanyang.wang@windriver.com>,
+        Michael Walle <michael@walle.cc>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 1/2] arm64: zynqmp: Enable xlnx,zynqmp-dwc3 driver for xilinx boards
-Date:   Fri,  6 Aug 2021 12:12:07 +0200
-Message-Id: <640a3bc0dc3e32560d3e84c2f78b5ae561396eb0.1628244703.git.michal.simek@xilinx.com>
+Subject: [PATCH v3 2/2] arm64: zynqmp: Add support for Xilinx Kria SOM board
+Date:   Fri,  6 Aug 2021 12:12:08 +0200
+Message-Id: <e780a2fef00e78c44c21cf3b918631bf20262688.1628244703.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <cover.1628244703.git.michal.simek@xilinx.com>
 References: <cover.1628244703.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 84770f028fab ("usb: dwc3: Add driver for Xilinx platforms")
-finally add proper support for Xilinx dwc3 driver. This patch is adding DT
-description for it.
+There are couple of revisions of SOMs (k26) and associated carrier cards
+(kv260).
+SOM itself has two major versions:
+sm-k26 - SOM with EMMC
+smk-k26 - SOM without EMMC used on starter kit with preprogrammed firmware
+in QSPI.
+
+SOMs are describing only devices available on the SOM or connections which
+are described in specification (for example UART, fwuen).
 
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
 
 Changes in v3:
-- usb node name fix, remove undocumented properties reported by Michael Tretter
-- Also remove status property from dwc3_0/1 nodes reported by Michael
-  Tretter
+- Fix led node name
+- Fix compatible string for xlnx,zynqmp-sk-kv260-revA/Y/Z
+- Fix headers alignment
 - Move USB3 PHY properties from DWC3 node to USB node - reported by Manish
   Narani
+- Change dtb names generated with dtbo
+- Fix emmc comment style
+-
 
 Changes in v2:
-- New patch in the series
+- Use sugar syntax - reported by Geert
+- Update copyright years
+- Fix SD3.0 comment alignment
+- Remove one newline from Makefile
 
- .../dts/xilinx/zynqmp-zc1751-xm015-dc1.dts    |  8 ++-
- .../dts/xilinx/zynqmp-zc1751-xm016-dc2.dts    |  7 +++
- .../dts/xilinx/zynqmp-zc1751-xm017-dc3.dts    | 14 +++++
- .../boot/dts/xilinx/zynqmp-zcu100-revC.dts    | 14 ++++-
- .../boot/dts/xilinx/zynqmp-zcu102-revA.dts    |  8 ++-
- .../boot/dts/xilinx/zynqmp-zcu104-revA.dts    |  8 ++-
- .../boot/dts/xilinx/zynqmp-zcu104-revC.dts    |  8 ++-
- .../boot/dts/xilinx/zynqmp-zcu106-revA.dts    |  8 ++-
- .../boot/dts/xilinx/zynqmp-zcu111-revA.dts    |  8 ++-
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi        | 60 +++++++++++++++----
- 10 files changed, 122 insertions(+), 21 deletions(-)
+https://www.xilinx.com/products/som/kria.html
+---
+ .../devicetree/bindings/arm/xilinx.yaml       |  31 ++
+ arch/arm64/boot/dts/xilinx/Makefile           |  13 +
+ .../boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts  | 335 ++++++++++++++++++
+ .../boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts  | 318 +++++++++++++++++
+ .../boot/dts/xilinx/zynqmp-sm-k26-revA.dts    | 289 +++++++++++++++
+ .../boot/dts/xilinx/zynqmp-smk-k26-revA.dts   |  21 ++
+ 6 files changed, 1007 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
+ create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
+ create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
+ create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
-index d93fe2efa39d..b05be2552826 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dts
-@@ -27,6 +27,7 @@ aliases {
- 		rtc0 = &rtc;
- 		serial0 = &uart0;
- 		spi0 = &qspi;
-+		usb0 = &usb0;
- 	};
+diff --git a/Documentation/devicetree/bindings/arm/xilinx.yaml b/Documentation/devicetree/bindings/arm/xilinx.yaml
+index a0b1ae6e3e71..31b86a6363b8 100644
+--- a/Documentation/devicetree/bindings/arm/xilinx.yaml
++++ b/Documentation/devicetree/bindings/arm/xilinx.yaml
+@@ -116,6 +116,37 @@ properties:
+           - const: xlnx,zynqmp-zcu111
+           - const: xlnx,zynqmp
  
- 	chosen {
-@@ -404,9 +405,14 @@ &usb0 {
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_usb0_default>;
--	dr_mode = "host";
- 	phy-names = "usb3-phy";
- 	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
++      - description: Xilinx Kria SOMs
++        items:
++          - const: xlnx,zynqmp-sm-k26-rev1
++          - const: xlnx,zynqmp-sm-k26-revB
++          - const: xlnx,zynqmp-sm-k26-revA
++          - const: xlnx,zynqmp-sm-k26
++          - const: xlnx,zynqmp
++
++      - description: Xilinx Kria SOMs (starter)
++        items:
++          - const: xlnx,zynqmp-smk-k26-rev1
++          - const: xlnx,zynqmp-smk-k26-revB
++          - const: xlnx,zynqmp-smk-k26-revA
++          - const: xlnx,zynqmp-smk-k26
++          - const: xlnx,zynqmp
++
++      - description: Xilinx Kria Carrier Cards (revA/Y/Z)
++        items:
++          - const: xlnx,zynqmp-sk-kv260-revA
++          - const: xlnx,zynqmp-sk-kv260-revY
++          - const: xlnx,zynqmp-sk-kv260-revZ
++          - const: xlnx,zynqmp-sk-k260
++          - const: xlnx,zynqmp
++
++      - description: Xilinx Kria Carrier Cards (rev1/B)
++        items:
++          - const: xlnx,zynqmp-sk-kv260-rev1
++          - const: xlnx,zynqmp-sk-kv260-revB
++          - const: xlnx,zynqmp-sk-k260
++          - const: xlnx,zynqmp
++
+ additionalProperties: true
+ 
+ ...
+diff --git a/arch/arm64/boot/dts/xilinx/Makefile b/arch/arm64/boot/dts/xilinx/Makefile
+index 083ed52337fd..4e159540d031 100644
+--- a/arch/arm64/boot/dts/xilinx/Makefile
++++ b/arch/arm64/boot/dts/xilinx/Makefile
+@@ -17,3 +17,16 @@ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revA.dtb
+ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revC.dtb
+ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu106-revA.dtb
+ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu111-revA.dtb
++
++dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-sm-k26-revA.dtb
++dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-smk-k26-revA.dtb
++
++sm-k26-revA-sck-kv-g-revA-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kv-g-revA.dtbo
++sm-k26-revA-sck-kv-g-revB-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kv-g-revB.dtbo
++smk-k26-revA-sm-k26-revA-sck-kv-g-revA-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kv-g-revA.dtbo
++smk-k26-revA-sm-k26-revA-sck-kv-g-revB-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kv-g-revB.dtbo
++
++dtb-$(CONFIG_ARCH_ZYNQMP) += sm-k26-revA-sck-kv-g-revA.dtb
++dtb-$(CONFIG_ARCH_ZYNQMP) += sm-k26-revA-sck-kv-g-revB.dtb
++dtb-$(CONFIG_ARCH_ZYNQMP) += smk-k26-revA-sm-k26-revA-sck-kv-g-revA.dtb
++dtb-$(CONFIG_ARCH_ZYNQMP) += smk-k26-revA-sm-k26-revA-sck-kv-g-revB.dtb
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
+new file mode 100644
+index 000000000000..22602d8c33f8
+--- /dev/null
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
+@@ -0,0 +1,335 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * dts file for KV260 revA Carrier Card
++ *
++ * (C) Copyright 2020 - 2021, Xilinx, Inc.
++ *
++ * SD level shifter:
++ * "A" – A01 board un-modified (NXP)
++ * "Y" – A01 board modified with legacy interposer (Nexperia)
++ * "Z" – A01 board modified with Diode interposer
++ *
++ * Michal Simek <michal.simek@xilinx.com>
++ */
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/net/ti-dp83867.h>
++#include <dt-bindings/phy/phy.h>
++#include <dt-bindings/pinctrl/pinctrl-zynqmp.h>
++
++/dts-v1/;
++/plugin/;
++
++&{/} {
++	compatible = "xlnx,zynqmp-sk-kv260-revA",
++		     "xlnx,zynqmp-sk-kv260-revY",
++		     "xlnx,zynqmp-sk-kv260-revZ",
++		     "xlnx,zynqmp-sk-kv260", "xlnx,zynqmp";
++};
++
++&i2c1 { /* I2C_SCK C23/C24 - MIO from SOM */
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default", "gpio";
++	pinctrl-0 = <&pinctrl_i2c1_default>;
++	pinctrl-1 = <&pinctrl_i2c1_gpio>;
++	scl-gpios = <&gpio 24 GPIO_ACTIVE_HIGH>;
++	sda-gpios = <&gpio 25 GPIO_ACTIVE_HIGH>;
++
++	u14: ina260@40 { /* u14 */
++		compatible = "ti,ina260";
++		#io-channel-cells = <1>;
++		label = "ina260-u14";
++		reg = <0x40>;
++	};
++	/* u27 - 0xe0 - STDP4320 DP/HDMI splitter */
++};
++
++&amba {
++	ina260-u14 {
++		compatible = "iio-hwmon";
++		io-channels = <&u14 0>, <&u14 1>, <&u14 2>;
++	};
++
++	si5332_0: si5332_0 { /* u17 */
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <125000000>;
++	};
++
++	si5332_1: si5332_1 { /* u17 */
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <25000000>;
++	};
++
++	si5332_2: si5332_2 { /* u17 */
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <48000000>;
++	};
++
++	si5332_3: si5332_3 { /* u17 */
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <24000000>;
++	};
++
++	si5332_4: si5332_4 { /* u17 */
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <26000000>;
++	};
++
++	si5332_5: si5332_5 { /* u17 */
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <27000000>;
++	};
++};
++
++/* DP/USB 3.0 and SATA */
++&psgtr {
++	status = "okay";
++	/* pcie, usb3, sata */
++	clocks = <&si5332_5>, <&si5332_4>, <&si5332_0>;
++	clock-names = "ref0", "ref1", "ref2";
++};
++
++&sata {
++	status = "okay";
++	/* SATA OOB timing settings */
++	ceva,p0-cominit-params = /bits/ 8 <0x18 0x40 0x18 0x28>;
++	ceva,p0-comwake-params = /bits/ 8 <0x06 0x14 0x08 0x0E>;
++	ceva,p0-burst-params = /bits/ 8 <0x13 0x08 0x4A 0x06>;
++	ceva,p0-retry-params = /bits/ 16 <0x96A4 0x3FFC>;
++	ceva,p1-cominit-params = /bits/ 8 <0x18 0x40 0x18 0x28>;
++	ceva,p1-comwake-params = /bits/ 8 <0x06 0x14 0x08 0x0E>;
++	ceva,p1-burst-params = /bits/ 8 <0x13 0x08 0x4A 0x06>;
++	ceva,p1-retry-params = /bits/ 16 <0x96A4 0x3FFC>;
++	phy-names = "sata-phy";
++	phys = <&psgtr 3 PHY_TYPE_SATA 1 2>;
++};
++
++&zynqmp_dpsub {
++	status = "disabled";
++	phy-names = "dp-phy0", "dp-phy1";
++	phys = <&psgtr 1 PHY_TYPE_DP 0 0>, <&psgtr 0 PHY_TYPE_DP 1 0>;
++};
++
++&zynqmp_dpdma {
++	status = "okay";
++};
++
++&usb0 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usb0_default>;
++	phy-names = "usb3-phy";
++	phys = <&psgtr 2 PHY_TYPE_USB3 0 1>;
++	usbhub: usb5744 { /* u43 */
++		compatible = "microchip,usb5744";
++		reset-gpios = <&gpio 44 GPIO_ACTIVE_HIGH>;
++	};
 +};
 +
 +&dwc3_0 {
 +	status = "okay";
 +	dr_mode = "host";
 +	snps,usb3_lpm_capable;
- 	maximum-speed = "super-speed";
- };
- 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts
-index cd61550c52e5..938b76bd0527 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dts
-@@ -26,6 +26,7 @@ aliases {
- 		serial1 = &uart1;
- 		spi0 = &spi0;
- 		spi1 = &spi1;
-+		usb0 = &usb1;
- 	};
- 
- 	chosen {
-@@ -479,7 +480,13 @@ &usb1 {
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_usb1_default>;
++	maximum-speed = "super-speed";
 +};
 +
-+&dwc3_1 {
++&sdhci1 { /* on CC with tuned parameters */
 +	status = "okay";
- 	dr_mode = "host";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_sdhci1_default>;
++	/*
++	 * SD 3.0 requires level shifter and this property
++	 * should be removed if the board has level shifter and
++	 * need to work in UHS mode
++	 */
++	no-1-8-v;
++	disable-wp;
++	xlnx,mio-bank = <1>;
++};
++
++&gem3 { /* required by spec */
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gem3_default>;
++	phy-handle = <&phy0>;
++	phy-mode = "rgmii-id";
++
++	mdio: mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reset-gpios = <&gpio 38 GPIO_ACTIVE_LOW>;
++		reset-delay-us = <2>;
++
++		phy0: ethernet-phy@1 {
++			#phy-cells = <1>;
++			reg = <1>;
++			ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
++			ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_75_NS>;
++			ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
++			ti,dp83867-rxctrl-strap-quirk;
++		};
++	};
++};
++
++&pinctrl0 { /* required by spec */
++	status = "okay";
++
++	pinctrl_uart1_default: uart1-default {
++		conf {
++			groups = "uart1_9_grp";
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++			drive-strength = <12>;
++		};
++
++		conf-rx {
++			pins = "MIO37";
++			bias-high-impedance;
++		};
++
++		conf-tx {
++			pins = "MIO36";
++			bias-disable;
++		};
++
++		mux {
++			groups = "uart1_9_grp";
++			function = "uart1";
++		};
++	};
++
++	pinctrl_i2c1_default: i2c1-default {
++		conf {
++			groups = "i2c1_6_grp";
++			bias-pull-up;
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++		};
++
++		mux {
++			groups = "i2c1_6_grp";
++			function = "i2c1";
++		};
++	};
++
++	pinctrl_i2c1_gpio: i2c1-gpio {
++		conf {
++			groups = "gpio0_24_grp", "gpio0_25_grp";
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++		};
++
++		mux {
++			groups = "gpio0_24_grp", "gpio0_25_grp";
++			function = "gpio0";
++		};
++	};
++
++	pinctrl_gem3_default: gem3-default {
++		conf {
++			groups = "ethernet3_0_grp";
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++		};
++
++		conf-rx {
++			pins = "MIO70", "MIO72", "MIO74";
++			bias-high-impedance;
++			low-power-disable;
++		};
++
++		conf-bootstrap {
++			pins = "MIO71", "MIO73", "MIO75";
++			bias-disable;
++			low-power-disable;
++		};
++
++		conf-tx {
++			pins = "MIO64", "MIO65", "MIO66",
++				"MIO67", "MIO68", "MIO69";
++			bias-disable;
++			low-power-enable;
++		};
++
++		conf-mdio {
++			groups = "mdio3_0_grp";
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++			bias-disable;
++		};
++
++		mux-mdio {
++			function = "mdio3";
++			groups = "mdio3_0_grp";
++		};
++
++		mux {
++			function = "ethernet3";
++			groups = "ethernet3_0_grp";
++		};
++	};
++
++	pinctrl_usb0_default: usb0-default {
++		conf {
++			groups = "usb0_0_grp";
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++		};
++
++		conf-rx {
++			pins = "MIO52", "MIO53", "MIO55";
++			bias-high-impedance;
++		};
++
++		conf-tx {
++			pins = "MIO54", "MIO56", "MIO57", "MIO58", "MIO59",
++			"MIO60", "MIO61", "MIO62", "MIO63";
++			bias-disable;
++		};
++
++		mux {
++			groups = "usb0_0_grp";
++			function = "usb0";
++		};
++	};
++
++	pinctrl_sdhci1_default: sdhci1-default {
++		conf {
++			groups = "sdio1_0_grp";
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++			bias-disable;
++		};
++
++		conf-cd {
++			groups = "sdio1_cd_0_grp";
++			bias-high-impedance;
++			bias-pull-up;
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++		};
++
++		mux-cd {
++			groups = "sdio1_cd_0_grp";
++			function = "sdio1_cd";
++		};
++
++		mux {
++			groups = "sdio1_0_grp";
++			function = "sdio1";
++		};
++	};
++};
++
++&uart1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart1_default>;
++};
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
+new file mode 100644
+index 000000000000..df054e152a77
+--- /dev/null
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
+@@ -0,0 +1,318 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * dts file for KV260 revA Carrier Card
++ *
++ * (C) Copyright 2020 - 2021, Xilinx, Inc.
++ *
++ * Michal Simek <michal.simek@xilinx.com>
++ */
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/net/ti-dp83867.h>
++#include <dt-bindings/phy/phy.h>
++#include <dt-bindings/pinctrl/pinctrl-zynqmp.h>
++
++/dts-v1/;
++/plugin/;
++
++&{/} {
++	compatible = "xlnx,zynqmp-sk-kv260-rev1",
++		     "xlnx,zynqmp-sk-kv260-revB",
++		     "xlnx,zynqmp-sk-kv260", "xlnx,zynqmp";
++};
++
++&i2c1 { /* I2C_SCK C23/C24 - MIO from SOM */
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default", "gpio";
++	pinctrl-0 = <&pinctrl_i2c1_default>;
++	pinctrl-1 = <&pinctrl_i2c1_gpio>;
++	scl-gpios = <&gpio 24 GPIO_ACTIVE_HIGH>;
++	sda-gpios = <&gpio 25 GPIO_ACTIVE_HIGH>;
++
++	u14: ina260@40 { /* u14 */
++		compatible = "ti,ina260";
++		#io-channel-cells = <1>;
++		label = "ina260-u14";
++		reg = <0x40>;
++	};
++	usbhub: usb5744@2d { /* u43 */
++		compatible = "microchip,usb5744";
++		reg = <0x2d>;
++		reset-gpios = <&gpio 44 GPIO_ACTIVE_HIGH>;
++	};
++	/* u27 - 0xe0 - STDP4320 DP/HDMI splitter */
++};
++
++&amba {
++	ina260-u14 {
++		compatible = "iio-hwmon";
++		io-channels = <&u14 0>, <&u14 1>, <&u14 2>;
++	};
++
++	si5332_0: si5332_0 { /* u17 */
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <125000000>;
++	};
++
++	si5332_1: si5332_1 { /* u17 */
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <25000000>;
++	};
++
++	si5332_2: si5332_2 { /* u17 */
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <48000000>;
++	};
++
++	si5332_3: si5332_3 { /* u17 */
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <24000000>;
++	};
++
++	si5332_4: si5332_4 { /* u17 */
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <26000000>;
++	};
++
++	si5332_5: si5332_5 { /* u17 */
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <27000000>;
++	};
++};
++
++/* DP/USB 3.0 */
++&psgtr {
++	status = "okay";
++	/* pcie, usb3, sata */
++	clocks = <&si5332_5>, <&si5332_4>, <&si5332_0>;
++	clock-names = "ref0", "ref1", "ref2";
++};
++
++&zynqmp_dpsub {
++	status = "disabled";
++	phy-names = "dp-phy0", "dp-phy1";
++	phys = <&psgtr 1 PHY_TYPE_DP 0 0>, <&psgtr 0 PHY_TYPE_DP 1 0>;
++};
++
++&zynqmp_dpdma {
++	status = "okay";
++};
++
++&usb0 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usb0_default>;
++	phy-names = "usb3-phy";
++	phys = <&psgtr 2 PHY_TYPE_USB3 0 1>;
++};
++
++&dwc3_0 {
++	status = "okay";
++	dr_mode = "host";
 +	snps,usb3_lpm_capable;
 +	maximum-speed = "super-speed";
- };
- 
- &uart0 {
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dts
-index ba7f1f21c579..4394ec3b6a23 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dts
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dts
-@@ -24,6 +24,8 @@ aliases {
- 		rtc0 = &rtc;
- 		serial0 = &uart0;
- 		serial1 = &uart1;
++};
++
++&sdhci1 { /* on CC with tuned parameters */
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_sdhci1_default>;
++	/*
++	 * SD 3.0 requires level shifter and this property
++	 * should be removed if the board has level shifter and
++	 * need to work in UHS mode
++	 */
++	no-1-8-v;
++	disable-wp;
++	xlnx,mio-bank = <1>;
++	clk-phase-sd-hs = <126>, <60>;
++	clk-phase-uhs-sdr25 = <120>, <60>;
++	clk-phase-uhs-ddr50 = <126>, <48>;
++};
++
++&gem3 { /* required by spec */
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gem3_default>;
++	phy-handle = <&phy0>;
++	phy-mode = "rgmii-id";
++
++	mdio: mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reset-gpios = <&gpio 38 GPIO_ACTIVE_LOW>;
++		reset-delay-us = <2>;
++
++		phy0: ethernet-phy@1 {
++			#phy-cells = <1>;
++			reg = <1>;
++			ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
++			ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_75_NS>;
++			ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
++			ti,dp83867-rxctrl-strap-quirk;
++		};
++	};
++};
++
++&pinctrl0 { /* required by spec */
++	status = "okay";
++
++	pinctrl_uart1_default: uart1-default {
++		conf {
++			groups = "uart1_9_grp";
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++			drive-strength = <12>;
++		};
++
++		conf-rx {
++			pins = "MIO37";
++			bias-high-impedance;
++		};
++
++		conf-tx {
++			pins = "MIO36";
++			bias-disable;
++		};
++
++		mux {
++			groups = "uart1_9_grp";
++			function = "uart1";
++		};
++	};
++
++	pinctrl_i2c1_default: i2c1-default {
++		conf {
++			groups = "i2c1_6_grp";
++			bias-pull-up;
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++		};
++
++		mux {
++			groups = "i2c1_6_grp";
++			function = "i2c1";
++		};
++	};
++
++	pinctrl_i2c1_gpio: i2c1-gpio {
++		conf {
++			groups = "gpio0_24_grp", "gpio0_25_grp";
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++		};
++
++		mux {
++			groups = "gpio0_24_grp", "gpio0_25_grp";
++			function = "gpio0";
++		};
++	};
++
++	pinctrl_gem3_default: gem3-default {
++		conf {
++			groups = "ethernet3_0_grp";
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++		};
++
++		conf-rx {
++			pins = "MIO70", "MIO72", "MIO74";
++			bias-high-impedance;
++			low-power-disable;
++		};
++
++		conf-bootstrap {
++			pins = "MIO71", "MIO73", "MIO75";
++			bias-disable;
++			low-power-disable;
++		};
++
++		conf-tx {
++			pins = "MIO64", "MIO65", "MIO66",
++				"MIO67", "MIO68", "MIO69";
++			bias-disable;
++			low-power-enable;
++		};
++
++		conf-mdio {
++			groups = "mdio3_0_grp";
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++			bias-disable;
++		};
++
++		mux-mdio {
++			function = "mdio3";
++			groups = "mdio3_0_grp";
++		};
++
++		mux {
++			function = "ethernet3";
++			groups = "ethernet3_0_grp";
++		};
++	};
++
++	pinctrl_usb0_default: usb0-default {
++		conf {
++			groups = "usb0_0_grp";
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++		};
++
++		conf-rx {
++			pins = "MIO52", "MIO53", "MIO55";
++			bias-high-impedance;
++		};
++
++		conf-tx {
++			pins = "MIO54", "MIO56", "MIO57", "MIO58", "MIO59",
++			"MIO60", "MIO61", "MIO62", "MIO63";
++			bias-disable;
++		};
++
++		mux {
++			groups = "usb0_0_grp";
++			function = "usb0";
++		};
++	};
++
++	pinctrl_sdhci1_default: sdhci1-default {
++		conf {
++			groups = "sdio1_0_grp";
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++			bias-disable;
++		};
++
++		conf-cd {
++			groups = "sdio1_cd_0_grp";
++			bias-high-impedance;
++			bias-pull-up;
++			slew-rate = <SLEW_RATE_SLOW>;
++			power-source = <IO_STANDARD_LVCMOS18>;
++		};
++
++		mux-cd {
++			groups = "sdio1_cd_0_grp";
++			function = "sdio1_cd";
++		};
++
++		mux {
++			groups = "sdio1_0_grp";
++			function = "sdio1";
++		};
++	};
++};
++
++&uart1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart1_default>;
++};
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
+new file mode 100644
+index 000000000000..550b389153e6
+--- /dev/null
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
+@@ -0,0 +1,289 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * dts file for Xilinx ZynqMP SM-K26 rev1/B/A
++ *
++ * (C) Copyright 2020 - 2021, Xilinx, Inc.
++ *
++ * Michal Simek <michal.simek@xilinx.com>
++ */
++
++/dts-v1/;
++
++#include "zynqmp.dtsi"
++#include "zynqmp-clk-ccf.dtsi"
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/phy/phy.h>
++
++/ {
++	model = "ZynqMP SM-K26 Rev1/B/A";
++	compatible = "xlnx,zynqmp-sm-k26-rev1", "xlnx,zynqmp-sm-k26-revB",
++		     "xlnx,zynqmp-sm-k26-revA", "xlnx,zynqmp-sm-k26",
++		     "xlnx,zynqmp";
++
++	aliases {
++		i2c0 = &i2c0;
++		i2c1 = &i2c1;
++		mmc0 = &sdhci0;
++		mmc1 = &sdhci1;
++		nvmem0 = &eeprom;
++		nvmem1 = &eeprom_cc;
++		rtc0 = &rtc;
++		serial0 = &uart0;
++		serial1 = &uart1;
++		serial2 = &dcc;
++		spi0 = &qspi;
++		spi1 = &spi0;
++		spi2 = &spi1;
 +		usb0 = &usb0;
 +		usb1 = &usb1;
- 	};
- 
- 	chosen {
-@@ -147,11 +149,23 @@ &uart1 {
- 
- &usb0 {
- 	status = "okay";
++	};
++
++	chosen {
++		bootargs = "earlycon";
++		stdout-path = "serial1:115200n8";
++	};
++
++	memory@0 {
++		device_type = "memory"; /* 4GB */
++		reg = <0x0 0x0 0x0 0x80000000>, <0x8 0x00000000 0x0 0x80000000>;
++	};
++
++	gpio-keys {
++		compatible = "gpio-keys";
++		autorepeat;
++		fwuen {
++			label = "fwuen";
++			gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	leds {
++		compatible = "gpio-leds";
++		ds35-led {
++			label = "heartbeat";
++			gpios = <&gpio 7 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "heartbeat";
++		};
++
++		ds36-led {
++			label = "vbus_det";
++			gpios = <&gpio 8 GPIO_ACTIVE_HIGH>;
++			default-state = "on";
++		};
++	};
 +};
 +
-+&dwc3_0 {
++&uart1 { /* MIO36/MIO37 */
 +	status = "okay";
- 	dr_mode = "host";
-+	snps,usb3_lpm_capable;
-+	maximum-speed = "super-speed";
- };
- 
- /* ULPI SMSC USB3320 */
- &usb1 {
- 	status = "okay";
 +};
 +
-+&dwc3_1 {
++&qspi { /* MIO 0-5 - U143 */
 +	status = "okay";
- 	dr_mode = "host";
-+	snps,usb3_lpm_capable;
-+	maximum-speed = "super-speed";
- };
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-index 80415e202814..f6aad4159ccd 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
-@@ -30,6 +30,8 @@ aliases {
- 		serial2 = &dcc;
- 		spi0 = &spi0;
- 		spi1 = &spi1;
-+		usb0 = &usb0;
-+		usb1 = &usb1;
- 		mmc0 = &sdhci0;
- 		mmc1 = &sdhci1;
- 	};
-@@ -537,9 +539,13 @@ &usb0 {
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_usb0_default>;
--	dr_mode = "peripheral";
- 	phy-names = "usb3-phy";
- 	phys = <&psgtr 2 PHY_TYPE_USB3 0 0>;
++	flash@0 { /* MT25QU512A */
++		compatible = "mt25qu512a", "jedec,spi-nor"; /* 64MB */
++		#address-cells = <1>;
++		#size-cells = <1>;
++		reg = <0>;
++		spi-tx-bus-width = <1>;
++		spi-rx-bus-width = <4>;
++		spi-max-frequency = <40000000>; /* 40MHz */
++		partition@0 {
++			label = "Image Selector";
++			reg = <0x0 0x80000>; /* 512KB */
++			read-only;
++			lock;
++		};
++		partition@80000 {
++			label = "Image Selector Golden";
++			reg = <0x80000 0x80000>; /* 512KB */
++			read-only;
++			lock;
++		};
++		partition@100000 {
++			label = "Persistent Register";
++			reg = <0x100000 0x20000>; /* 128KB */
++		};
++		partition@120000 {
++			label = "Persistent Register Backup";
++			reg = <0x120000 0x20000>; /* 128KB */
++		};
++		partition@140000 {
++			label = "Open_1";
++			reg = <0x140000 0xC0000>; /* 768KB */
++		};
++		partition@200000 {
++			label = "Image A (FSBL, PMU, ATF, U-Boot)";
++			reg = <0x200000 0xD00000>; /* 13MB */
++		};
++		partition@f00000 {
++			label = "ImgSel Image A Catch";
++			reg = <0xF00000 0x80000>; /* 512KB */
++			read-only;
++			lock;
++		};
++		partition@f80000 {
++			label = "Image B (FSBL, PMU, ATF, U-Boot)";
++			reg = <0xF80000 0xD00000>; /* 13MB */
++		};
++		partition@1c80000 {
++			label = "ImgSel Image B Catch";
++			reg = <0x1C80000 0x80000>; /* 512KB */
++			read-only;
++			lock;
++		};
++		partition@1d00000 {
++			label = "Open_2";
++			reg = <0x1D00000 0x100000>; /* 1MB */
++		};
++		partition@1e00000 {
++			label = "Recovery Image";
++			reg = <0x1E00000 0x200000>; /* 2MB */
++			read-only;
++			lock;
++		};
++		partition@2000000 {
++			label = "Recovery Image Backup";
++			reg = <0x2000000 0x200000>; /* 2MB */
++			read-only;
++			lock;
++		};
++		partition@2200000 {
++			label = "U-Boot storage variables";
++			reg = <0x2200000 0x20000>; /* 128KB */
++		};
++		partition@2220000 {
++			label = "U-Boot storage variables backup";
++			reg = <0x2220000 0x20000>; /* 128KB */
++		};
++		partition@2240000 {
++			label = "SHA256";
++			reg = <0x2240000 0x10000>; /* 256B but 64KB sector */
++			read-only;
++			lock;
++		};
++		partition@2250000 {
++			label = "User";
++			reg = <0x2250000 0x1db0000>; /* 29.5 MB */
++		};
++	};
 +};
 +
-+&dwc3_0 {
++&sdhci0 { /* MIO13-23 - 16GB emmc MTFC16GAPALBH-IT - U133A */
 +	status = "okay";
-+	dr_mode = "peripheral";
- 	maximum-speed = "super-speed";
- };
- 
-@@ -548,9 +554,13 @@ &usb1 {
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_usb1_default>;
--	dr_mode = "host";
- 	phy-names = "usb3-phy";
- 	phys = <&psgtr 3 PHY_TYPE_USB3 1 0>;
++	non-removable;
++	disable-wp;
++	bus-width = <8>;
++	xlnx,mio-bank = <0>;
 +};
 +
-+&dwc3_1 {
++&spi1 { /* MIO6, 9-11 */
 +	status = "okay";
-+	dr_mode = "host";
- 	maximum-speed = "super-speed";
- };
- 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
-index 3d8d14ef1ede..7b9a88b125d1 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dts
-@@ -31,6 +31,7 @@ aliases {
- 		serial1 = &uart1;
- 		serial2 = &dcc;
- 		spi0 = &qspi;
-+		usb0 = &usb0;
- 	};
- 
- 	chosen {
-@@ -997,9 +998,14 @@ &usb0 {
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_usb0_default>;
--	dr_mode = "host";
- 	phy-names = "usb3-phy";
- 	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
++	label = "TPM";
++	num-cs = <1>;
++	tpm@0 { /* slm9670 - U144 */
++		compatible = "infineon,slb9670", "tcg,tpm_tis-spi";
++		reg = <0>;
++		spi-max-frequency = <18500000>;
++	};
 +};
 +
-+&dwc3_0 {
++&i2c1 {
 +	status = "okay";
-+	dr_mode = "host";
-+	snps,usb3_lpm_capable;
- 	maximum-speed = "super-speed";
- };
- 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
-index 86fff3632c7d..bd8f20f3223d 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dts
-@@ -29,6 +29,7 @@ aliases {
- 		serial1 = &uart1;
- 		serial2 = &dcc;
- 		spi0 = &qspi;
-+		usb0 = &usb0;
- 	};
- 
- 	chosen {
-@@ -481,9 +482,14 @@ &usb0 {
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_usb0_default>;
--	dr_mode = "host";
- 	phy-names = "usb3-phy";
- 	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
-+};
++	clock-frequency = <400000>;
++	scl-gpios = <&gpio 24 GPIO_ACTIVE_HIGH>;
++	sda-gpios = <&gpio 25 GPIO_ACTIVE_HIGH>;
 +
-+&dwc3_0 {
-+	status = "okay";
-+	dr_mode = "host";
-+	snps,usb3_lpm_capable;
- 	maximum-speed = "super-speed";
- };
- 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
-index 2a872d439804..96feaad30166 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dts
-@@ -29,6 +29,7 @@ aliases {
- 		serial1 = &uart1;
- 		serial2 = &dcc;
- 		spi0 = &qspi;
-+		usb0 = &usb0;
- 	};
- 
- 	chosen {
-@@ -493,9 +494,14 @@ &usb0 {
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_usb0_default>;
--	dr_mode = "host";
- 	phy-names = "usb3-phy";
- 	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
-+};
++	eeprom: eeprom@50 { /* u46 - also at address 0x58 */
++		compatible = "st,24c64", "atmel,24c64"; /* st m24c64 */
++		reg = <0x50>;
++		/* WP pin EE_WP_EN connected to slg7x644092@68 */
++	};
 +
-+&dwc3_0 {
-+	status = "okay";
-+	dr_mode = "host";
-+	snps,usb3_lpm_capable;
- 	maximum-speed = "super-speed";
- };
- 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
-index 057c04352591..20b7c75bb1d3 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dts
-@@ -31,6 +31,7 @@ aliases {
- 		serial1 = &uart1;
- 		serial2 = &dcc;
- 		spi0 = &qspi;
-+		usb0 = &usb0;
- 	};
- 
- 	chosen {
-@@ -990,9 +991,14 @@ &usb0 {
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_usb0_default>;
--	dr_mode = "host";
- 	phy-names = "usb3-phy";
- 	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
-+};
++	eeprom_cc: eeprom@51 { /* required by spec - also at address 0x59 */
++		compatible = "st,24c64", "atmel,24c64"; /* st m24c64 */
++		reg = <0x51>;
++	};
 +
-+&dwc3_0 {
-+	status = "okay";
-+	dr_mode = "host";
-+	snps,usb3_lpm_capable;
- 	maximum-speed = "super-speed";
- };
- 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
-index e1fff62a4cd5..e36df6adbeee 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dts
-@@ -30,6 +30,7 @@ aliases {
- 		serial0 = &uart0;
- 		serial1 = &dcc;
- 		spi0 = &qspi;
-+		usb0 = &usb0;
- 	};
- 
- 	chosen {
-@@ -827,9 +828,14 @@ &usb0 {
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_usb0_default>;
--	dr_mode = "host";
- 	phy-names = "usb3-phy";
- 	phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
-+};
-+
-+&dwc3_0 {
-+	status = "okay";
-+	dr_mode = "host";
-+	snps,usb3_lpm_capable;
- 	maximum-speed = "super-speed";
- };
- 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index b5fde9dddca5..74e66443e4ce 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -2,7 +2,7 @@
- /*
-  * dts file for Xilinx ZynqMP
-  *
-- * (C) Copyright 2014 - 2019, Xilinx, Inc.
-+ * (C) Copyright 2014 - 2021, Xilinx, Inc.
-  *
-  * Michal Simek <michal.simek@xilinx.com>
-  *
-@@ -805,24 +805,58 @@ uart1: serial@ff010000 {
- 			power-domains = <&zynqmp_firmware PD_UART_1>;
- 		};
- 
--		usb0: usb@fe200000 {
--			compatible = "snps,dwc3";
-+		usb0: usb@ff9d0000 {
-+			#address-cells = <2>;
-+			#size-cells = <2>;
- 			status = "disabled";
--			interrupt-parent = <&gic>;
--			interrupts = <0 65 4>;
--			reg = <0x0 0xfe200000 0x0 0x40000>;
--			clock-names = "clk_xin", "clk_ahb";
-+			compatible = "xlnx,zynqmp-dwc3";
-+			reg = <0x0 0xff9d0000 0x0 0x100>;
-+			clock-names = "bus_clk", "ref_clk";
- 			power-domains = <&zynqmp_firmware PD_USB_0>;
-+			resets = <&zynqmp_reset ZYNQMP_RESET_USB0_CORERESET>,
-+				 <&zynqmp_reset ZYNQMP_RESET_USB0_HIBERRESET>,
-+				 <&zynqmp_reset ZYNQMP_RESET_USB0_APB>;
-+			reset-names = "usb_crst", "usb_hibrst", "usb_apbrst";
-+			ranges;
-+
-+			dwc3_0: usb@fe200000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x0 0xfe200000 0x0 0x40000>;
-+				interrupt-parent = <&gic>;
-+				interrupt-names = "dwc_usb3", "otg";
-+				interrupts = <0 65 4>, <0 69 4>;
-+				#stream-id-cells = <1>;
-+				iommus = <&smmu 0x860>;
-+				snps,quirk-frame-length-adjustment = <0x20>;
-+				/* dma-coherent; */
++	/* da9062@30 - u170 - also at address 0x31 */
++	/* da9131@33 - u167 */
++	da9131: pmic@33 {
++		compatible = "dlg,da9131";
++		reg = <0x33>;
++		regulators {
++			da9131_buck1: buck1 {
++				regulator-name = "da9131_buck1";
++				regulator-boot-on;
++				regulator-always-on;
 +			};
- 		};
- 
--		usb1: usb@fe300000 {
--			compatible = "snps,dwc3";
-+		usb1: usb@ff9e0000 {
-+			#address-cells = <2>;
-+			#size-cells = <2>;
- 			status = "disabled";
--			interrupt-parent = <&gic>;
--			interrupts = <0 70 4>;
--			reg = <0x0 0xfe300000 0x0 0x40000>;
--			clock-names = "clk_xin", "clk_ahb";
-+			compatible = "xlnx,zynqmp-dwc3";
-+			reg = <0x0 0xff9e0000 0x0 0x100>;
-+			clock-names = "bus_clk", "ref_clk";
- 			power-domains = <&zynqmp_firmware PD_USB_1>;
-+			resets = <&zynqmp_reset ZYNQMP_RESET_USB1_CORERESET>,
-+				 <&zynqmp_reset ZYNQMP_RESET_USB1_HIBERRESET>,
-+				 <&zynqmp_reset ZYNQMP_RESET_USB1_APB>;
-+			reset-names = "usb_crst", "usb_hibrst", "usb_apbrst";
-+			ranges;
-+
-+			dwc3_1: usb@fe300000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x0 0xfe300000 0x0 0x40000>;
-+				interrupt-parent = <&gic>;
-+				interrupt-names = "dwc_usb3", "otg";
-+				interrupts = <0 70 4>, <0 74 4>;
-+				#stream-id-cells = <1>;
-+				iommus = <&smmu 0x861>;
-+				snps,quirk-frame-length-adjustment = <0x20>;
-+				/* dma-coherent; */
++			da9131_buck2: buck2 {
++				regulator-name = "da9131_buck2";
++				regulator-boot-on;
++				regulator-always-on;
 +			};
- 		};
- 
- 		watchdog0: watchdog@fd4d0000 {
++		};
++	};
++
++	/* da9130@32 - u166 */
++	da9130: pmic@32 {
++		compatible = "dlg,da9130";
++		reg = <0x32>;
++		regulators {
++			da9130_buck1: buck1 {
++				regulator-name = "da9130_buck1";
++				regulator-boot-on;
++				regulator-always-on;
++			};
++		};
++	};
++
++	/* slg7x644091@70 - u168 NOT accessible due to address conflict with stdp4320 */
++	/*
++	 * stdp4320 - u27 FW has below two issues to be fixed in next board revision.
++	 * Device acknowledging to addresses 0x5C, 0x5D, 0x70, 0x72, 0x76.
++	 * Address conflict with slg7x644091@70 making both the devices NOT accessible.
++	 * With the FW fix, stdp4320 should respond to address 0x73 only.
++	 */
++	/* slg7x644092@68 - u169 */
++	/* Also connected via JA1C as C23/C24 */
++};
++
++&gpio {
++	status = "okay";
++	gpio-line-names = "QSPI_CLK", "QSPI_DQ1", "QSPI_DQ2", "QSPI_DQ3", "QSPI_DQ0", /* 0 - 4 */
++			  "QSPI_CS_B", "SPI_CLK", "LED1", "LED2", "SPI_CS_B", /* 5 - 9 */
++			  "SPI_MISO", "SPI_MOSI", "FWUEN", "EMMC_DAT0", "EMMC_DAT1", /* 10 - 14 */
++			  "EMMC_DAT2", "EMMC_DAT3", "EMMC_DAT4", "EMMC_DAT5", "EMMC_DAT6", /* 15 - 19 */
++			  "EMMC_DAT7", "EMMC_CMD", "EMMC_CLK", "EMMC_RST", "I2C1_SCL", /* 20 - 24 */
++			  "I2C1_SDA", "", "", "", "", /* 25 - 29 */
++			  "", "", "", "", "", /* 30 - 34 */
++			  "", "", "", "", "", /* 35 - 39 */
++			  "", "", "", "", "", /* 40 - 44 */
++			  "", "", "", "", "", /* 45 - 49 */
++			  "", "", "", "", "", /* 50 - 54 */
++			  "", "", "", "", "", /* 55 - 59 */
++			  "", "", "", "", "", /* 60 - 64 */
++			  "", "", "", "", "", /* 65 - 69 */
++			  "", "", "", "", "", /* 70 - 74 */
++			  "", "", "", /* 75 - 77, MIO end and EMIO start */
++			  "", "", /* 78 - 79 */
++			  "", "", "", "", "", /* 80 - 84 */
++			  "", "", "", "", "", /* 85 - 89 */
++			  "", "", "", "", "", /* 90 - 94 */
++			  "", "", "", "", "", /* 95 - 99 */
++			  "", "", "", "", "", /* 100 - 104 */
++			  "", "", "", "", "", /* 105 - 109 */
++			  "", "", "", "", "", /* 110 - 114 */
++			  "", "", "", "", "", /* 115 - 119 */
++			  "", "", "", "", "", /* 120 - 124 */
++			  "", "", "", "", "", /* 125 - 129 */
++			  "", "", "", "", "", /* 130 - 134 */
++			  "", "", "", "", "", /* 135 - 139 */
++			  "", "", "", "", "", /* 140 - 144 */
++			  "", "", "", "", "", /* 145 - 149 */
++			  "", "", "", "", "", /* 150 - 154 */
++			  "", "", "", "", "", /* 155 - 159 */
++			  "", "", "", "", "", /* 160 - 164 */
++			  "", "", "", "", "", /* 165 - 169 */
++			  "", "", "", ""; /* 170 - 174 */
++};
+diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts b/arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
+new file mode 100644
+index 000000000000..c70966c1f344
+--- /dev/null
++++ b/arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * dts file for Xilinx ZynqMP SMK-K26 rev1/B/A
++ *
++ * (C) Copyright 2020 - 2021, Xilinx, Inc.
++ *
++ * Michal Simek <michal.simek@xilinx.com>
++ */
++
++#include "zynqmp-sm-k26-revA.dts"
++
++/ {
++	model = "ZynqMP SMK-K26 Rev1/B/A";
++	compatible = "xlnx,zynqmp-smk-k26-rev1", "xlnx,zynqmp-smk-k26-revB",
++		     "xlnx,zynqmp-smk-k26-revA", "xlnx,zynqmp-smk-k26",
++		     "xlnx,zynqmp";
++};
++
++&sdhci0 {
++	status = "disabled";
++};
 -- 
 2.32.0
 
