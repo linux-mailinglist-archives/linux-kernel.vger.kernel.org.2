@@ -2,152 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971243E2E70
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72AA33E2E79
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233949AbhHFQk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 12:40:57 -0400
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21327 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232307AbhHFQky (ORCPT
+        id S234796AbhHFQm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 12:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhHFQmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 12:40:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1628268032; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=VjQJn9Yo2OOs2lPyzpvrg2ToDE4Vp7D2uB0cA68eq8P+NJHkuvncFWhQOG0hGf1qlATGtouPxN7sPQwYow0U0S1VB5hgbDUUm2STg61vE0iMLlWZ3ToYLNerAyUgvixcgWS4olWVJKJ60IoSxLMGusVbPXQeghAspWjxUVeho34=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1628268032; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=U9Xt7jrxQ/s2c7DQyTWN6yPX3RSqwfnsXbplw4auAIs=; 
-        b=GVmCaGAQMDWJVUp8ajik39ajOVQyBNiy52AOcpdcqAr7xG1cPCyg9CK5uGqr1N4KXOx42bU8LKo1wDLlSldxruFNfCoOy/QeRNQ38aeTBm64LNCGE/jarK3ctStuQP/V/E6AIDiKgGtXMb1OgMUTVo1GuJAZFC6yvFv5lIFcCw4=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=anirudhrb.com;
-        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
-        dmarc=pass header.from=<mail@anirudhrb.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1628268032;
-        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
-        bh=U9Xt7jrxQ/s2c7DQyTWN6yPX3RSqwfnsXbplw4auAIs=;
-        b=rmdYF9QZwZjLaNHbgvxOMTrM7e98RiqJCp861A2CcrgJcK2WXjz/ngQvOHopLw2u
-        v4u+4dyvJ1zrXZGy6i3hWGp6pnZIi6iqpZf+d7uFP39houJq5roVmyNcQpNT/9BVbKL
-        c5jWAse35mxLZTU1G34GIdhGm7/9Xf1IfVQrGgLM=
-Received: from localhost.localdomain (106.51.104.154 [106.51.104.154]) by mx.zohomail.com
-        with SMTPS id 1628268027927634.6221552768395; Fri, 6 Aug 2021 09:40:27 -0700 (PDT)
-From:   Anirudh Rayabharam <mail@anirudhrb.com>
-To:     Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usbip: give back URBs for unsent unlink requests during cleanup
-Date:   Fri,  6 Aug 2021 22:10:14 +0530
-Message-Id: <20210806164015.25263-1-mail@anirudhrb.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 6 Aug 2021 12:42:55 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C8EC0613CF;
+        Fri,  6 Aug 2021 09:42:39 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628268155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kk2lzokAVmZhhmkoXQnRu32luG8afaBCbXzoD+9YANs=;
+        b=pke0WyKqyLslgXt8ga5uRGMHIMozL9ODi2HhdKyMRJl/NDaTF74UXoIlbFP4kdYwnvHcCV
+        F7nZnMwmdEg36la0yAhu3/lLoM2kzV8M1c5gEWOqahvdeuAjnJ+xbYiiK2XttOXAzSfMfs
+        cwB3lAFoNnucYlXPk2WtiAJhIgUa8ctfLEKYn0CZABYM6XQIJ3SnJgNrZU6WSKb2LZkoam
+        Rwpyv3rnETO68VCM57ehWLrTyyrUPW/T4FT02VjuUF+lX8sx3N1Q4ifxSL+QLWXSynFQla
+        NaQTLXjvx+YYMZUobc/n4dFRSznQcsGLfXSmDkEEw/MJDyGXtqfZiLW4t/iqEw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628268155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kk2lzokAVmZhhmkoXQnRu32luG8afaBCbXzoD+9YANs=;
+        b=YSd5JfAfV6IzC8uvqRz8mwPXcWjMwmovQi+0B7GjCOEKNKr6VEnkIrNTGqqxnDpHV1pUUU
+        h15SW/nRltGrgeBw==
+To:     syzbot <syzbot+66e110c312ed4ae684a8@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [syzbot] KASAN: use-after-free Read in timerfd_clock_was_set
+In-Reply-To: <000000000000fdf3e205c88fa4cf@google.com>
+References: <000000000000fdf3e205c88fa4cf@google.com>
+Date:   Fri, 06 Aug 2021 18:42:34 +0200
+Message-ID: <877dgy5xtx.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In vhci_device_unlink_cleanup(), the URBs for unsent unlink requests are
-not given back. This sometimes causes usb_kill_urb to wait indefinitely
-for that urb to be given back. syzbot has reported a hung task issue [1]
-for this.
+Hi!
 
-To fix this, give back the urbs corresponding to unsent unlink requests
-(unlink_tx list) similar to how urbs corresponding to unanswered unlink
-requests (unlink_rx list) are given back. Since the code is almost the
-same, extract it into a new function and call it for both unlink_rx and
-unlink_tx lists.
+On Mon, Aug 02 2021 at 01:49, syzbot wrote:
+> syzbot found the following issue on:
+>
+> HEAD commit:    4010a528219e Merge tag 'fixes_for_v5.14-rc4' of git://git...
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13611f5c300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1dee114394f7d2c2
+> dashboard link: https://syzkaller.appspot.com/bug?extid=66e110c312ed4ae684a8
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+66e110c312ed4ae684a8@syzkaller.appspotmail.com
+>
+> ==================================================================
+> BUG: KASAN: use-after-free in timerfd_clock_was_set+0x2b8/0x2e0
+> fs/timerfd.c:104
 
-[1]: https://syzkaller.appspot.com/bug?id=08f12df95ae7da69814e64eb5515d5a85ed06b76
+103	rcu_read_lock();
+104	list_for_each_entry_rcu(ctx, &cancel_list, clist) {
 
-Reported-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
-Tested-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
----
- drivers/usb/usbip/vhci_hcd.c | 47 ++++++++++++++++++++++++++----------
- 1 file changed, 34 insertions(+), 13 deletions(-)
+>  timerfd_clock_was_set+0x2b8/0x2e0 fs/timerfd.c:104
+>  timekeeping_inject_offset+0x4af/0x620 kernel/time/timekeeping.c:1375
+>  do_adjtimex+0x28f/0xa30 kernel/time/timekeeping.c:2406
+>  do_clock_adjtime kernel/time/posix-timers.c:1109 [inline]
+>  __do_sys_clock_adjtime+0x163/0x270 kernel/time/posix-timers.c:1121
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
 
-diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-index 4ba6bcdaa8e9..45f98aa12895 100644
---- a/drivers/usb/usbip/vhci_hcd.c
-+++ b/drivers/usb/usbip/vhci_hcd.c
-@@ -945,7 +945,8 @@ static int vhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
- 	return 0;
- }
- 
--static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
-+static void __vhci_cleanup_unlink_list(struct vhci_device *vdev,
-+		struct list_head *unlink_list)
- {
- 	struct vhci_hcd *vhci_hcd = vdev_to_vhci_hcd(vdev);
- 	struct usb_hcd *hcd = vhci_hcd_to_hcd(vhci_hcd);
-@@ -953,23 +954,25 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
- 	struct vhci_unlink *unlink, *tmp;
- 	unsigned long flags;
- 
-+	if (unlink_list != &vdev->unlink_tx
-+			&& unlink_list != &vdev->unlink_rx) {
-+		pr_err("Invalid list passed to __vhci_cleanup_unlink_list\n");
-+		BUG();
-+		return;
-+	}
-+
- 	spin_lock_irqsave(&vhci->lock, flags);
- 	spin_lock(&vdev->priv_lock);
- 
--	list_for_each_entry_safe(unlink, tmp, &vdev->unlink_tx, list) {
--		pr_info("unlink cleanup tx %lu\n", unlink->unlink_seqnum);
--		list_del(&unlink->list);
--		kfree(unlink);
--	}
--
--	while (!list_empty(&vdev->unlink_rx)) {
-+	list_for_each_entry_safe(unlink, tmp, unlink_list, list) {
- 		struct urb *urb;
- 
--		unlink = list_first_entry(&vdev->unlink_rx, struct vhci_unlink,
--			list);
--
--		/* give back URB of unanswered unlink request */
--		pr_info("unlink cleanup rx %lu\n", unlink->unlink_seqnum);
-+		if (unlink_list == &vdev->unlink_tx)
-+			pr_info("unlink cleanup tx %lu\n",
-+					unlink->unlink_seqnum);
-+		else
-+			pr_info("unlink cleanup rx %lu\n",
-+					unlink->unlink_seqnum);
- 
- 		urb = pickup_urb_and_free_priv(vdev, unlink->unlink_seqnum);
- 		if (!urb) {
-@@ -1001,6 +1004,24 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
- 	spin_unlock_irqrestore(&vhci->lock, flags);
- }
- 
-+static inline void vhci_cleanup_unlink_tx(struct vhci_device *vdev)
-+{
-+	__vhci_cleanup_unlink_list(vdev, &vdev->unlink_tx);
-+}
-+
-+static inline void vhci_cleanup_unlink_rx(struct vhci_device *vdev)
-+{
-+	__vhci_cleanup_unlink_list(vdev, &vdev->unlink_rx);
-+}
-+
-+static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
-+{
-+	/* give back URBs of unsent unlink requests */
-+	vhci_cleanup_unlink_tx(vdev);
-+	/* give back URBs of unanswered unlink requests */
-+	vhci_cleanup_unlink_rx(vdev);
-+}
-+
- /*
-  * The important thing is that only one context begins cleanup.
-  * This is why error handling and cleanup become simple.
--- 
-2.26.2
+...
+
+> Allocated by task 1:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track mm/kasan/common.c:46 [inline]
+>  set_alloc_info mm/kasan/common.c:434 [inline]
+>  ____kasan_kmalloc mm/kasan/common.c:513 [inline]
+>  ____kasan_kmalloc mm/kasan/common.c:472 [inline]
+>  __kasan_kmalloc+0x98/0xc0 mm/kasan/common.c:522
+>  kasan_kmalloc include/linux/kasan.h:264 [inline]
+>  kmem_cache_alloc_trace+0x1e4/0x480 mm/slab.c:3575
+>  kmalloc include/linux/slab.h:591 [inline]
+>  kzalloc include/linux/slab.h:721 [inline]
+>  __do_sys_timerfd_create+0x265/0x370 fs/timerfd.c:412
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+...
+
+> Freed by task 3306:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+>  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
+>  ____kasan_slab_free mm/kasan/common.c:366 [inline]
+>  ____kasan_slab_free mm/kasan/common.c:328 [inline]
+>  __kasan_slab_free+0xcd/0x100 mm/kasan/common.c:374
+>  kasan_slab_free include/linux/kasan.h:230 [inline]
+>  __cache_free mm/slab.c:3445 [inline]
+>  kfree+0x106/0x2c0 mm/slab.c:3803
+>  kvfree+0x42/0x50 mm/util.c:616
+>  kfree_rcu_work+0x5b7/0x870 kernel/rcu/tree.c:3359
+>  process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+>  worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+>  kthread+0x3e5/0x4d0 kernel/kthread.c:319
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+So the free of the timerfd context happens while the context is
+still linked in the cancel list, which does not make sense because
+
+> Last potentially related work creation:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_record_aux_stack+0xa4/0xd0 mm/kasan/generic.c:348
+>  kvfree_call_rcu+0x74/0x990 kernel/rcu/tree.c:3594
+>  timerfd_release+0x105/0x290 fs/timerfd.c:229
+
+timerfd_release() invokes timerfd_remove_cancel(context) before invoking
+kfree_rcu().
+
+>  __fput+0x288/0x920 fs/file_table.c:280
+>  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+>  tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+>  exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+>  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The only reason why timerfd_remove_cancel() would not remove it from the
+list is when context->might_cancel is false. But that would mean it's a
+memory corruption of some sort which went undetected. I can't spot
+anything in the timerfd code itself which would cause that.
+
+Confused.
+
+Thanks,
+
+        tglx
+
 
