@@ -2,92 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7DF3E3187
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 00:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F6C3E318B
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 00:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245471AbhHFWJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 18:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239019AbhHFWJ4 (ORCPT
+        id S241205AbhHFWNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 18:13:02 -0400
+Received: from mail-pj1-f42.google.com ([209.85.216.42]:39794 "EHLO
+        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231577AbhHFWNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 18:09:56 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1BEC061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 15:09:40 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so19986899pjh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 15:09:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yXtLp5mFbNs2K0XuuKSxUcF4dNWpNzn+5MPoGaJAJtU=;
-        b=aSgDj0Y/r/a3naWQ65dmyylrY/CsJ6633DvELHg1r0k6vPieJelzG/b2jAcM3dDthJ
-         wN8V8lFRUQH19JnK1STNdvVn92fIbgD3Uf+H613h2nNkFz6vWO6X660DRp1ypAU1EKWX
-         v4k9UfqP641eCpZomgsyJ9w/L33qXNsr5WQAN5BX7BYOmzzyTN9nqBVkmUU69dl5dss9
-         3/3C4R6LtKQGcZxU9nApBIdgwB+LWSz4BlTlQKa+lIMmytzEYpTu5qlW2MRGkbfq/Sxr
-         ioZr10k9Ogkzi+1Wv6dMdS0enZJAEVpIcI1FfS7QXw+XBwmQOYXJ0WfGZOUrFxcwRr2Y
-         cK8Q==
+        Fri, 6 Aug 2021 18:13:00 -0400
+Received: by mail-pj1-f42.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so15838608pjn.4;
+        Fri, 06 Aug 2021 15:12:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yXtLp5mFbNs2K0XuuKSxUcF4dNWpNzn+5MPoGaJAJtU=;
-        b=CITs5j343q/TErI2PyTteDsF2buSYBzwqm+C7I95pLppEEZ1+Va1jc3X7qlEqI3lp+
-         kZSFyZm5A7ZXi8zWIkIzX+N4hLPw6yMgo6HNDmKGRTbhhIbDwqqLDkA7z1u8wJ2ttNrW
-         ln5pNP6FDW2yldNr7feYSqOVsR+6jicUIWcvyZWpOzKnZRoUtnRFuawj74AO/58STacf
-         9ooudG8YQr/wSNJZDI/GGJ9AZ1Obl0xXb1pFhChQXiLgXWm+sOoXMA96svcsL81gbgoZ
-         EMWXSXlW2RQiXRRQfumZW8x+Ox9fqnLLq5o+ExoCnrtDygnv5pgUZITPaNnScXU3dlGg
-         iivg==
-X-Gm-Message-State: AOAM531/ooe/E9n6ULNcKpk68q7/77rO3DmC7n4+AcL9VRlcoKFZoqG8
-        VEXinpKKNP9De+4ckzLshIUmUQ==
-X-Google-Smtp-Source: ABdhPJyhhVa3xTLuiQI9QTy9DGbWO9kLU8eJ91KOYmDq8h019tDOaczTDzNrzWk9rEiBQKJeFV83AQ==
-X-Received: by 2002:a17:90b:4ac8:: with SMTP id mh8mr12080592pjb.5.1628287779379;
-        Fri, 06 Aug 2021 15:09:39 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id qe3sm13080347pjb.21.2021.08.06.15.09.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 15:09:38 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 22:09:35 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>
-Subject: Re: [RFC PATCH v2 41/69] KVM: x86: Add infrastructure for stolen GPA
- bits
-Message-ID: <YQ2zH+XiLCLQWs0l@google.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <c958a131ded780808a687b0f25c02127ca14418a.1625186503.git.isaku.yamahata@intel.com>
- <20210805234424.d14386b79413845b990a18ac@intel.com>
- <YQwMkbBFUuNGnGFw@google.com>
- <20210806095922.6e2ca6587dc6f5b4fe8d52e7@intel.com>
- <YQ2HT3dL/bFjdEdS@google.com>
- <20210807100006.3518bf9fbdecf13006030c22@intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6HRtuA39Az3shzqSL/ACCUU5ZgIfTtFc9KrRUNMmSP4=;
+        b=dR0lZ+7ooWetMcKxWb99/s7oUghRVaXSOLEtRg9R7YSknwbXbbDi4ecVXz/EHlnkVf
+         IHqzi+LYhJgBnRpA20ZQfg8awX535CeviTaWBz4IJmrFScb+rvd6BN7mWYi9QsUIhvPl
+         CGwoc9WWMlyo5gmPqQyPD8isrLGNG3Adj8aCmsUVpZpIA1YfZ9Bn7X/+E/uQPEX/gc8+
+         1JVo7vz+jKZ2hjflpraZpaCnhEcmlGBkh2VC8AOWY07V1eryrOceH3A2YFIuq3EfEtYX
+         Hv9JfwgUy9FnRS3ZKO8pfueHHEeeJgYv6N6u+hDWnlyGJlZttUlNvC340qPujGs+vNog
+         d/mQ==
+X-Gm-Message-State: AOAM5315r1hU5ddVWT7+EBVMSxnk4pGbuOD3PukmiiAHqOXkd9cua5yL
+        XIK9WwttmV4+WE7+a8CQb6aBJP+CnCI0+HId
+X-Google-Smtp-Source: ABdhPJxqqw23/WJD2xpyIGP6m110WAwWM2tiap/cmyMtoOaPY4n5iapk4141156XtFjGgtsqkQ2O8g==
+X-Received: by 2002:a63:2fc2:: with SMTP id v185mr116386pgv.71.1628287962249;
+        Fri, 06 Aug 2021 15:12:42 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:1655:15af:599e:3de1])
+        by smtp.gmail.com with ESMTPSA id p8sm11362530pfw.35.2021.08.06.15.12.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Aug 2021 15:12:41 -0700 (PDT)
+Subject: Re: [PATCH][next] scsi: ufs: Fix unsigned int compared with less than
+ zero
+To:     Colin King <colin.king@canonical.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        linux-scsi@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210806144301.19864-1-colin.king@canonical.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <e9e4dcf0-f42d-a4c6-0be8-5c7cb84c91ea@acm.org>
+Date:   Fri, 6 Aug 2021 15:12:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210807100006.3518bf9fbdecf13006030c22@intel.com>
+In-Reply-To: <20210806144301.19864-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 07, 2021, Kai Huang wrote:
-> So could we have your final suggestion? :)
+On 8/6/21 7:43 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Variable tag is currently and unsigned int and is being compared to
+> less than zero, this check is always false. Fix this by making tag
+> an int.
+> 
+> Addresses-Coverity: ("Macro compares unsigned to 0")
+> Fixes: 4728ab4a8e64 ("scsi: ufs: Remove ufshcd_valid_tag()")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   drivers/scsi/ufs/ufshcd.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 47a5085f16a9..21378682cb4f 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -6976,7 +6976,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+>   {
+>   	struct Scsi_Host *host = cmd->device->host;
+>   	struct ufs_hba *hba = shost_priv(host);
+> -	unsigned int tag = cmd->request->tag;
+> +	int tag = cmd->request->tag;
+>   	struct ufshcd_lrb *lrbp = &hba->lrb[tag];
+>   	unsigned long flags;
+>   	int err = FAILED;
 
-Try the kvm_mmu_page_role.private approach.  So long as it doesn't end up splattering
-code everywhere, I think that's more aligned with how KVM generally wants to treat
-the shared bit.
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 
-In the changelog for this patch, make it very clear that ensuring different aliases
-get different shadow page (if necessary) is the responsiblity of each individual
-feature that leverages stolen gfn bits.
+Thanks!
+
+Bart.
