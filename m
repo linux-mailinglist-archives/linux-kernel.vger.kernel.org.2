@@ -2,164 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0AB3E30EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 243043E3111
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239729AbhHFVVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 17:21:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36412 "EHLO mail.kernel.org"
+        id S240881AbhHFVZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 17:25:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232115AbhHFVVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 17:21:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A264A60EE8;
-        Fri,  6 Aug 2021 21:21:22 +0000 (UTC)
+        id S240338AbhHFVZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 17:25:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4064360EE8;
+        Fri,  6 Aug 2021 21:24:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628284882;
-        bh=Bchx560CKUF229KPJgM7uqaIc2EZoNRJI+Mks07iNHA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hsT5SBu9WiktHQmjlAf031vszOskjOHRl5E3ZRNpWssWT8YkfpKYXmMGPlYPY6o8w
-         QOiuOyOjVe+Osj3J66HLKuDcrlGwNdjG5vGZgGUQgbEGcBurbuIRsns2PsjDRuNZ17
-         dlr5ioNtV/Yvv+YVA6YSDuEU5TDGaLVcOIgAXnVTXj0Ii1ooe5xoh16l+WcrvN8lyK
-         TbnN+Por8sMt01tRSrqNSMGz9x1cxnlaF06iHFFAv6caRFgri7YXQCvDaiZf7jIQHW
-         NpBwpb+sRoCrOV/Qs1r9YAYWS2yO9tTeDaFBfsrgSb/BcLRRLwSygGKZ6tSF4RJ+lH
-         lsB8s1bH3JVCQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 713095C0546; Fri,  6 Aug 2021 14:21:22 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 14:21:22 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     syzbot <syzbot+66e110c312ed4ae684a8@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] KASAN: use-after-free Read in timerfd_clock_was_set
-Message-ID: <20210806212122.GT4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <000000000000fdf3e205c88fa4cf@google.com>
- <877dgy5xtx.ffs@tglx>
+        s=k20201202; t=1628285093;
+        bh=OJXVvQV1lg0BTpnm4/Nv7ym7sLl0HIhqKTRdfOznYwg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=goH/1yJM9CgOOo+OcwLI85KOcKMTJKy8qsbi9kmA/eUKLp96x9J8M/JAw+C0HoXtl
+         LLP9C54GqLgkjnKpGR9kkrYUXUKz/g5bCUA/CpaOzR6XQzlUTgr5y3Dk7zGrmBxX8N
+         en5fOF69mFY7iz78CR1nGEcyNekjfw/CZ0EQbDXeU3Hh82nmIhL0nXS2kQ3mhduoVP
+         XswzHNEybaPpFHtw5KHBi3RP5f5dPsW9v9eFEsYvxzj76KiOdi8Bw4rMEV5B6PvQ1z
+         CLKL2wH1wGanKV5ZinDF8ZSKormkVT85L0UCSY8TizkDvEv+r8Jkclod/etLJWRRFl
+         2rifLx8uQfKtA==
+Date:   Fri, 6 Aug 2021 16:24:52 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-pci@vger.kernel.org, Alexander Duyck <alexanderduyck@fb.com>,
+        Russell Currey <ruscur@russell.cc>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        oss-drivers@corigine.com, Paul Mackerras <paulus@samba.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-perf-users@vger.kernel.org,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-scsi@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Ido Schimmel <idosch@nvidia.com>, x86@kernel.org,
+        qat-linux@intel.com,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-wireless@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Michael Buesch <m@bues.ch>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        xen-devel@lists.xenproject.org, Vadym Kochan <vkochan@marvell.com>,
+        MPT-FusionLinux.pdl@broadcom.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        linux-kernel@vger.kernel.org, Taras Chornyi <tchornyi@marvell.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
+        netdev@vger.kernel.org, Frederic Barrat <fbarrat@linux.ibm.com>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v2 0/6] PCI: Drop duplicated tracking of a pci_dev's
+ bound driver
+Message-ID: <20210806212452.GA1867870@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <877dgy5xtx.ffs@tglx>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210806064623.3lxl4clzbjpmchef@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 06:42:34PM +0200, Thomas Gleixner wrote:
-> Hi!
-> 
-> On Mon, Aug 02 2021 at 01:49, syzbot wrote:
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    4010a528219e Merge tag 'fixes_for_v5.14-rc4' of git://git...
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=13611f5c300000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=1dee114394f7d2c2
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=66e110c312ed4ae684a8
-> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+66e110c312ed4ae684a8@syzkaller.appspotmail.com
-> >
-> > ==================================================================
-> > BUG: KASAN: use-after-free in timerfd_clock_was_set+0x2b8/0x2e0
-> > fs/timerfd.c:104
-> 
-> 103	rcu_read_lock();
-> 104	list_for_each_entry_rcu(ctx, &cancel_list, clist) {
-> 
-> >  timerfd_clock_was_set+0x2b8/0x2e0 fs/timerfd.c:104
-> >  timekeeping_inject_offset+0x4af/0x620 kernel/time/timekeeping.c:1375
-> >  do_adjtimex+0x28f/0xa30 kernel/time/timekeeping.c:2406
-> >  do_clock_adjtime kernel/time/posix-timers.c:1109 [inline]
-> >  __do_sys_clock_adjtime+0x163/0x270 kernel/time/posix-timers.c:1121
-> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-> 
-> ...
-> 
-> > Allocated by task 1:
-> >  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
-> >  kasan_set_track mm/kasan/common.c:46 [inline]
-> >  set_alloc_info mm/kasan/common.c:434 [inline]
-> >  ____kasan_kmalloc mm/kasan/common.c:513 [inline]
-> >  ____kasan_kmalloc mm/kasan/common.c:472 [inline]
-> >  __kasan_kmalloc+0x98/0xc0 mm/kasan/common.c:522
-> >  kasan_kmalloc include/linux/kasan.h:264 [inline]
-> >  kmem_cache_alloc_trace+0x1e4/0x480 mm/slab.c:3575
-> >  kmalloc include/linux/slab.h:591 [inline]
-> >  kzalloc include/linux/slab.h:721 [inline]
-> >  __do_sys_timerfd_create+0x265/0x370 fs/timerfd.c:412
-> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> ...
-> 
-> > Freed by task 3306:
-> >  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
-> >  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
-> >  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
-> >  ____kasan_slab_free mm/kasan/common.c:366 [inline]
-> >  ____kasan_slab_free mm/kasan/common.c:328 [inline]
-> >  __kasan_slab_free+0xcd/0x100 mm/kasan/common.c:374
-> >  kasan_slab_free include/linux/kasan.h:230 [inline]
-> >  __cache_free mm/slab.c:3445 [inline]
-> >  kfree+0x106/0x2c0 mm/slab.c:3803
-> >  kvfree+0x42/0x50 mm/util.c:616
-> >  kfree_rcu_work+0x5b7/0x870 kernel/rcu/tree.c:3359
-> >  process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
-> >  worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
-> >  kthread+0x3e5/0x4d0 kernel/kthread.c:319
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> 
-> So the free of the timerfd context happens while the context is
-> still linked in the cancel list, which does not make sense because
-> 
-> > Last potentially related work creation:
-> >  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
-> >  kasan_record_aux_stack+0xa4/0xd0 mm/kasan/generic.c:348
-> >  kvfree_call_rcu+0x74/0x990 kernel/rcu/tree.c:3594
-> >  timerfd_release+0x105/0x290 fs/timerfd.c:229
-> 
-> timerfd_release() invokes timerfd_remove_cancel(context) before invoking
-> kfree_rcu().
+On Fri, Aug 06, 2021 at 08:46:23AM +0200, Uwe Kleine-König wrote:
+> On Thu, Aug 05, 2021 at 06:42:34PM -0500, Bjorn Helgaas wrote:
 
-And the list being deleted from is the same list that is being scanned.
-
-> >  __fput+0x288/0x920 fs/file_table.c:280
-> >  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
-> >  tracehook_notify_resume include/linux/tracehook.h:189 [inline]
-> >  exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
-> >  exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
-> >  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
-> >  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
-> >  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > I looked at all the bus_type.probe() methods, it looks like pci_dev is
+> > not the only offender here.  At least the following also have a driver
+> > pointer in the device struct:
+> > 
+> >   parisc_device.driver
+> >   acpi_device.driver
+> >   dio_dev.driver
+> >   hid_device.driver
+> >   pci_dev.driver
+> >   pnp_dev.driver
+> >   rio_dev.driver
+> >   zorro_dev.driver
 > 
-> The only reason why timerfd_remove_cancel() would not remove it from the
-> list is when context->might_cancel is false. But that would mean it's a
-> memory corruption of some sort which went undetected. I can't spot
-> anything in the timerfd code itself which would cause that.
+> Right, when I converted zorro_dev it was pointed out that the code was
+> copied from pci and the latter has the same construct. :-)
+> See
+> https://lore.kernel.org/r/20210730191035.1455248-5-u.kleine-koenig@pengutronix.de
+> for the patch, I don't find where pci was pointed out, maybe it was on
+> irc only.
+
+Oh, thanks!  I looked to see if you'd done something similar
+elsewhere, but I missed this one.
+
+> > Looking through the places that care about pci_dev.driver (the ones
+> > updated by patch 5/6), many of them are ... a little dubious to begin
+> > with.  A few need the "struct pci_error_handlers *err_handler"
+> > pointer, so that's probably legitimate.  But many just need a name,
+> > and should probably be using dev_driver_string() instead.
 > 
-> Confused.
+> Yeah, I considered adding a function to get the driver name from a
+> pci_dev and a function to get the error handlers. Maybe it's an idea to
+> introduce these two and then use to_pci_driver(pdev->dev.driver) for the
+> few remaining users? Maybe doing that on top of my current series makes
+> sense to have a clean switch from pdev->driver to pdev->dev.driver?!
 
-You and me!
+I'd propose using dev_driver_string() for these places:
 
-This kernel is built with CONFIG_PREEMPT_RCU=y, so a stray schedule()
-in the RCU read-side critical section would not cause this to happen
-(as it might on a CONFIG_PREEMPT_RCU=n kernel).  Besides, I am not seeing
-any sign of a stray schedule() in that code.
+  eeh_driver_name() (could change callers to use dev_driver_string())
+  bcma_host_pci_probe()
+  qm_alloc_uacce()
+  hns3_get_drvinfo()
+  prestera_pci_probe()
+  mlxsw_pci_probe()
+  nfp_get_drvinfo()
+  ssb_pcihost_probe()
 
-This could of course be a too-short RCU grace period, but I have been
-hammering RCU rather hard of late.  No guarantee, of course, but...
+The use in mpt_device_driver_register() looks unnecessary: it's only
+to get a struct pci_device_id *, which is passed to ->probe()
+functions that don't need it.
 
-This kernel is already built with CONFIG_DEBUG_OBJECTS=y and also with
-CONFIG_DEBUG_OBJECTS_RCU_HEAD=y, which is my usual suggestion in this
-situation.
+The use in adf_enable_aer() looks wrong: it sets the err_handler
+pointer in one of the adf_driver structs.  I think those structs
+should be basically immutable, and the drivers that call
+adf_enable_aer() from their .probe() methods should set
+".err_handler = &adf_err_handler" in their static adf_driver
+definitions instead.
 
-There are a bunch of "Directory bread(block 6) failed" messages before
-this splat.  Are those expected behavior, or might they be related?
+I think that basically leaves these:
 
-							Thanx, Paul
+  uncore_pci_probe()     # .id_table, custom driver "registration"
+  match_id()             # .id_table, arch/x86/kernel/probe_roms.c
+  xhci_pci_quirks()      # .id_table
+  pci_error_handlers()   # roll-your-own AER handling, drivers/misc/cxl/guest.c
+
+I think it would be fine to use to_pci_driver(pdev->dev.driver) for
+these few.
+
+Bjorn
