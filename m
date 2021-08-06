@@ -2,83 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934803E2A12
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF363E2A13
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245720AbhHFLuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
+        id S245727AbhHFLw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:52:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243556AbhHFLuy (ORCPT
+        with ESMTP id S231811AbhHFLwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:50:54 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FC2C061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 04:50:39 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628250637;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wzkzg82CcnzDEB0oMUakpBB4hZUoV99SYb8903gM7pE=;
-        b=EM04dC8dAdbAD/ZPq5eW5kBea7gLF5rQbuud8bI1b4Ab7Et0nl0aCjuI+SQyY4nThYxWGd
-        oV0h4x3ulPO8JgsuJlDQpV27wG2c5Q2zvCi0GX82V0jWVM0w6UKHxFDq/wdhoeZERAsPmA
-        SUb7EMKF2XFawmQ0tyObGjP5x6EF5w28cmUnFu97xsZRppSfAlVCxmWzCISDY77QpOgMMf
-        mAGACKpxniRldvdRkjYAptrcazdPFkvznF2gjnLMmcXYM5OlqoIFfYv4kgX7Q05IDGcVO4
-        TEwWfn0vxZSWEH9XWNx/MATzaHI2eht15oUbaobedFw9Kirh9Bz0Ss9+NedHmg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628250637;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wzkzg82CcnzDEB0oMUakpBB4hZUoV99SYb8903gM7pE=;
-        b=WfOaaDJAL7hIhtPhZu0RUNwCOCA2MXJskoqAo6g/lGddVUQZTF8h3KjP5aMCzTTCI2TpEx
-        qG6Q+B7mluSWL2Cg==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Fri, 6 Aug 2021 07:52:23 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86ADC061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 04:52:07 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id u21-20020a17090a8915b02901782c36f543so13462268pjn.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 04:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=asA0Ub0/xhYqLYHlNNxTcENpmvj49OeKJZ/JEYJFvM8=;
+        b=q5BdQhFDmEyv26B/H0n63ZK+Rh4G56toYP/AgcY0rIGb7YNTEBvTtlBbPPY4YL435M
+         uDmaeNThxx82CNOVC7yCNskVuOWKS3thkxWhtt0IiCvcelIpuzCsT8sj5NOc+n9WR7Lu
+         28KhvZQBAG1VKQMS60AonYBFj9xUvAB3Z8q++0I+m7GqKQbNXq1dVkGgesNK4dXFk6Z1
+         UWH7VX9D1BW/mxSSR4XOn+d1UxnU1G3ubBwhx+RYlePTH9hToSc5MYgtp7eONJ07HNCA
+         ODs124Bw3SnnGLPEg5o7LFkNzlIMD7wmC2iljqLroSya7nRCQ/Lmk8e3ta1QhBmxrst1
+         ypJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=asA0Ub0/xhYqLYHlNNxTcENpmvj49OeKJZ/JEYJFvM8=;
+        b=Xf+RRZx9vcw+2p7BBWgzWz3q8ep+Avs7e/C65gyfkfb/r1pfq+X8geXL4eRWwn+jb6
+         lqBTZhECiE+wla9tqTA9g6ZveudkizrsC7XzcIoJ9ABWt2iSNfWgnPtRuhJNQBAlE5zc
+         Mne2du2K9dIBU1VDS0OHg79AwD7ZWoenxul3pZ/7HT7Q9hgJt8R09ESCemZ5pnIc1MAl
+         p1bHbXt0pOgguxljtD3QCOwRA0CGywslXeZZmjtNLAPl/bOpdH/wGSuuIyYqNZSbL2bJ
+         COXM2P6oi+wfB93bmojEzn4R/eI4v6PcDoZNSIJ9+i40MOFBgow7u6e04dpeGDibJ+/b
+         0+Qw==
+X-Gm-Message-State: AOAM530t/9o8n0NjvrZcov99pOoUFzzwpsrOrnRkNxiiKH1F5h71EjIl
+        CzWzxl+LET0/wUyID11Qrv+hwQ==
+X-Google-Smtp-Source: ABdhPJyNuw9EDtxDCBskyq1NRyT0OJ02HnLnshfcel7lcpgJY4HHIVXVd9fMs6F7JIEw59fFFQDS6A==
+X-Received: by 2002:a17:90a:404a:: with SMTP id k10mr10147405pjg.145.1628250727264;
+        Fri, 06 Aug 2021 04:52:07 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([210.0.159.74])
+        by smtp.gmail.com with ESMTPSA id o8sm12735737pjh.20.2021.08.06.04.52.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 04:52:06 -0700 (PDT)
+Date:   Fri, 6 Aug 2021 19:52:00 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     acme@kernel.org, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org, al.grant@arm.com,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        mike.leach@linaro.org, John Garry <john.garry@huawei.com>,
         Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [patch V3 48/64] locking/ww_mutex: Add RT priority to W/W order
-In-Reply-To: <20210806104835.GE22037@worktop.programming.kicks-ass.net>
-References: <20210805151300.330412127@linutronix.de>
- <20210805153955.595804799@linutronix.de>
- <20210806104835.GE22037@worktop.programming.kicks-ass.net>
-Date:   Fri, 06 Aug 2021 13:50:37 +0200
-Message-ID: <87czqq6bci.ffs@tglx>
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 6/6] perf cs-etm: Print the decoder name
+Message-ID: <20210806115200.GD68808@leoy-ThinkPad-X240s>
+References: <20210721090706.21523-1-james.clark@arm.com>
+ <20210721090706.21523-7-james.clark@arm.com>
+ <20210731073037.GF7437@leoy-ThinkPad-X240s>
+ <077ebe58-f692-9adb-9cb5-ed35a9b508c1@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <077ebe58-f692-9adb-9cb5-ed35a9b508c1@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06 2021 at 12:48, Peter Zijlstra wrote:
+On Fri, Aug 06, 2021 at 10:43:25AM +0100, James Clark wrote:
+> On 31/07/2021 08:30, Leo Yan wrote:
+> >> @@ -658,7 +658,7 @@ cs_etm_decoder__create_etm_decoder(struct cs_etm_decoder_params *d_params,
+> >>  
+> >>  		return 0;
+> >>  	} else if (d_params->operation == CS_ETM_OPERATION_PRINT) {
+> >> -		if (ocsd_dt_create_decoder(decoder->dcd_tree, decoder_name,
+> >> +		if (ocsd_dt_create_decoder(decoder->dcd_tree, decoder->decoder_name,
+> >>  					   OCSD_CREATE_FLG_PACKET_PROC,
+> >>  					   trace_config, &csid))
+> >>  			return -1;
+> >> @@ -790,3 +790,8 @@ void cs_etm_decoder__free(struct cs_etm_decoder *decoder)
+> >>  	decoder->dcd_tree = NULL;
+> >>  	free(decoder);
+> >>  }
+> >> +
+> >> +const char *cs_etm_decoder__get_name(struct cs_etm_decoder *decoder)
+> >> +{
+> >> +	return decoder->decoder_name;
+> >> +}
+> > Maybe can consider to place this function into the header file with
+> > "static inline" specifier.
+> 
+> I tried this, but because the struct is defined in the .c file it can't
+> be done without moving the struct to the header. It's also only used
+> for the --dump-raw-trace path so performance isn't critical anyway.
 
-> On Thu, Aug 05, 2021 at 05:13:48PM +0200, Thomas Gleixner wrote:
->>  static inline bool
->> +__ww_ctx_less(struct ww_acquire_ctx *a, struct ww_acquire_ctx *b)
->>  {
->> +/*
->> + * Can only do the RT prio for WW_RT because task->prio isn't stable due to PI,
->> + * so the wait_list ordering will go wobbly. rt_mutex re-queues the waiter and
->> + * isn't affected by this.
->> + */
->> +#ifdef WW_RT
->> +	/* kernel prio; less is more */
->> +	int a_prio = a->task->prio;
->> +	int b_prio = b->task->prio;
->> +
->> +	if (dl_prio(a_prio) || dl_prio(b_prio)) {
->
-> Whoever wrote this was an idiot :-) Both should be rt_prio().
-
-Along with the idiot who picked that up and stared at it for quite some
-time.
+It's fine to keep current patch, and thanks for trying.
