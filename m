@@ -2,140 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0DB3E2D36
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1331E3E2D43
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243755AbhHFPIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 11:08:02 -0400
-Received: from mail-db8eur05on2137.outbound.protection.outlook.com ([40.107.20.137]:62977
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243246AbhHFPIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 11:08:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eS0nwM0j6aqTmgdaKavEXzqXkZD9Xko8qqdg6RY83LIldeGK29SUGpP8I6cUWZ8h+3l5dPF1z5LRo+2T0ppI8lcAC+xRP+zvT31bG8X07VNpEyRpyiAaDL5oFqv/KnPoj67hvQC1K0SSVtXqqjNRjYJN7aJ9a/RZibCapcxl4fqjJzYWGGG3IFDT8pc6lVu7/swYwjp205GjbLoPfLYaINGpgTilxYRnO7c0Dz2Aw/ytaZk7+0KatxzQ2eFmmQ6SK/cHMP6ktEiHuIEovEJyYpbcQSHAzngkzYU8gI305PFJXBxNdmp0B0+FUu8VbGGIKodFxT1+qo/K/3is0irIWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X+qXWYcBDOy5YA6cEwn13lmOuVUO7BtUajzb62Wg12Y=;
- b=CdLxeZWY39GQBtOQTOqxLFBNgBcRA16vOby7LlUNaFPIbKHQqEipHftoR/2HzYC0fhUBpm4h6ZxTiHrb8Rq6kwBIL1CYMpP5X0POWETHAvpAi/a9NfHCd2Kuo/D6FgGd94zZ8tFOjqXUJZr0xTBxt55Ru4Vw0nMBOmWXf0azK1CjmLJFwy7gdM+X2oyAvb65jfBvEgZ/9CLDt2EcZdrtc1nwqqYVVYDWTWRKi0WoHFNPgkXSYB5PYo5oYZGt8jM5fyoIygyqsU56jPhI8/JbT4ESTrY/UlJW9UUR28kahTVEdhbuvd7PhLXO7oRort4Gyv2iHCSnXyPBYn0F3Maapw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=esd.eu; dmarc=pass action=none header.from=esd.eu; dkim=pass
- header.d=esd.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=esdhannover.onmicrosoft.com; s=selector1-esdhannover-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X+qXWYcBDOy5YA6cEwn13lmOuVUO7BtUajzb62Wg12Y=;
- b=uC9jOTb6AiVkdaSWj/bd55YogFLwmXfAgYPlV/VQMSAQDWathDdMT3rIyuLkUjEBFh0BofZtOQddyKmUQo6HSh7LwLCx/e6XvDgsYmO+moi5fJ29n7DBa7HXAVBkZ0PFCg7WdJgPVZAJ31qo2aouRjFbw0E0CSNwM23Rkq+gTZs=
-Received: from AM9PR03MB6929.eurprd03.prod.outlook.com (2603:10a6:20b:287::7)
- by AM9PR03MB6738.eurprd03.prod.outlook.com (2603:10a6:20b:2dc::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.19; Fri, 6 Aug
- 2021 15:07:43 +0000
-Received: from AM9PR03MB6929.eurprd03.prod.outlook.com
- ([fe80::5900:9630:4661:9b0d]) by AM9PR03MB6929.eurprd03.prod.outlook.com
- ([fe80::5900:9630:4661:9b0d%6]) with mapi id 15.20.4373.027; Fri, 6 Aug 2021
- 15:07:43 +0000
-From:   =?utf-8?B?U3RlZmFuIE3DpHRqZQ==?= <Stefan.Maetje@esd.eu>
-To:     "mkl@pengutronix.de" <mkl@pengutronix.de>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Subject: Re: [PATCH] mailmap: update email address of Matthias Fuchs
-Thread-Topic: [PATCH] mailmap: update email address of Matthias Fuchs
-Thread-Index: AQHXirCeglqz0Unlkk66HIEFwudub6tmlDoA
-Date:   Fri, 6 Aug 2021 15:07:43 +0000
-Message-ID: <10024d316c23d7be2ce6037f7994aa2af033208f.camel@esd.eu>
-References: <20210806104833.102081-1-mkl@pengutronix.de>
-In-Reply-To: <20210806104833.102081-1-mkl@pengutronix.de>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.30.5-1.1 
-authentication-results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=esd.eu;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f3bdc086-c2b4-45ef-614e-08d958ebf106
-x-ms-traffictypediagnostic: AM9PR03MB6738:
-x-microsoft-antispam-prvs: <AM9PR03MB67389C0564059301F8EB5B0C81F39@AM9PR03MB6738.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: L0ZofHnR8k8D3eS77buBkDwtGp0wSnbOQKvaPiNWgB65q9D8hMXMObHNYVA6sH5zbZ5mWxltQGQLoOd4gdHNgcg3HRZ9OAM+YvJwUemtFnFbgWmBIsT9dH7c7sEVSRN1gEa3pEuvqmoU6lnz7iuYy42RzmvJoeQ7/HZ/fNEu+j5flGgKB7gA3C12fQKPFYVUuce33tlunDsmCHRcmw0nbvGlGs8MzDJKriukqoTTlls7WQ7Gnx3YYZnX5OLQpwEn7LjnwuLy/fLgEB/OtwmuCq3sd//uPEQmSGMqOBHsgqKazS/p1b75STr8yZ0Z4HJOY2XmIAtqdYf6fqyRf7pe2CX8YcOz/sj9WtR9Jn+sUQ5GNN8cV+C3vAe97fNh+hlnMfh80FXWODtAhzj3SHpGNJ0MiVXl5q01cWtoTQ21xCY/UZzTb+bJ7abbaHEdoB9VtXGKgVNqfGSe//UvYkYzqS6XvvM/F7Y4zKao3mERWUkAOK+e1SzYdX7chpPjC1Piwf0bGfRVeP02kDuA2RwjqoV5pq/djSTh0oL749dLa1JoOg49fUKcwOgINwUfxbviuhxS/vPTjtXcdWbkLgCi2RXtfZB9NrMe94m51CjV5pu8N5G2ER8rG8sorZrZ+ZKs9LxF987vgiIXH21STj0qLvijqy7TJsRCpWyfOn/zo8iNVY2beBXsEwIyp9RwbvXf41qH3WbbdBacgdrM45l6gA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR03MB6929.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(39830400003)(396003)(376002)(136003)(478600001)(2616005)(38100700002)(54906003)(316002)(6506007)(36756003)(66946007)(64756008)(66446008)(66556008)(86362001)(85182001)(66476007)(122000001)(4744005)(2906002)(38070700005)(6916009)(8676002)(6512007)(76116006)(8936002)(91956017)(4326008)(71200400001)(6486002)(5660300002)(83380400001)(85202003)(66574015)(186003)(15650500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?L3hSMGRpKzNia1lHY0VWUUIza1ZiamdtZmxORU1sYjFRNEVBRnJtc0Z2TEdG?=
- =?utf-8?B?WlFlV25idHhlS081TFhrRnV2ZXRNYm5oNG9vUTFwamdNTTZHUG9rR0lnR0JM?=
- =?utf-8?B?OGtYYzZvOGZxczE4RHdrOUJIVG5nYWdOejJ1cnYrTERvcklubGtsYklIUEFh?=
- =?utf-8?B?dXdzbGJqbDR3VXVldTJBWm4xTUdCdlRZQXQ0SmU3c25EWmJBRW5hYjlRSFA4?=
- =?utf-8?B?UkViWHlFdnFCeFpYdWo3ZDJWNmF3Myt3ZlNTZ3lZR205ZWM3MU1rSEVOQWd1?=
- =?utf-8?B?L1pGdXNCMzJLZFkzNVROQjh1MEpnb2lxMGk3WXlNS2MxRWEwV2VCY01UZjdE?=
- =?utf-8?B?c3Zhcy93WUMrczVEVDdzY3dtNVhOc3BLcEtya3dqcmdqUlRDSEp1RCs0dFpE?=
- =?utf-8?B?U200UFVuK0cyWkhYUHhDeE91OWpxK2VKdEdnN0trb2lzZEV6VmUyaUhCc0JG?=
- =?utf-8?B?QnNhS2JoNjlub0xGcUp4dWFKTWJDRWJBU1ZCazNyNTZtbGdpdTd2Ym4yK0tM?=
- =?utf-8?B?RHBiQUp3ZldmODE1cWdmSWdEeitlZDVSSE5vS0hKMHZoR2UxODk1MjJGVEZj?=
- =?utf-8?B?Uk9VR1hoRGFkamNwUlduNTUwQ25BUklkOTloUk5qNlVScUtaN25XTlgydkFF?=
- =?utf-8?B?a3pTYWowVGduOFMyQVpnU2VzSnZUbjNkNCtQVUtEVzIyeW9MNXh0cERxZldQ?=
- =?utf-8?B?TWdvRTMrWk8veUJPT2V3aC9vYi8rc1hoSjdPbDd1WWtvdEFEQ0o5a3B0L2s4?=
- =?utf-8?B?cHRpTlNZRTkvN285bWxOVWowQUNNWEVEc2k3OEpsMnR3KzBwMCtjOVVKUFd6?=
- =?utf-8?B?TkJDSUZITDdTT2JRR2t2L2Fqa3FqQ0FSazVnOWw2b045Wm9RSWtzTklpKyt3?=
- =?utf-8?B?aFhTQlc4YWt3QVh0azlJY0xmeCt0NksvcjFPdDRMdFRDMW04Q3dpRmpJMTFo?=
- =?utf-8?B?TEhFa1FzVGRXaE14TmpEQmJ3Rk9mMFVrSnZpVDZONitnMVFJMnNQL0ZGVEMr?=
- =?utf-8?B?RGhIU1lxRjFWWlZTSmJqd01rKzJiN05tcmg3L3ZZUXM5SzZDMGxpTnhOK0tE?=
- =?utf-8?B?dmp0Q1IvMjVsUlBSZ0RsemxZUmtURjNGdXZhRDZ5ZXphdFBQUmRKSVppU0Zi?=
- =?utf-8?B?R0txUXpvdHBUUFBleWFQaVdIN25JRURlWWcxRWloVDU2OTUybVpkQnBGeFo4?=
- =?utf-8?B?cmc2cWpueGVJMVFlMmtiekJmbE5WR0U2eHIxcE5hWkdFQVU4MHFGUDZUdkFa?=
- =?utf-8?B?Vjh4TVlmTzR1dnBZVjJsOFVvM1JUbTVKaVNGZXlzNWxhanJxRGh6SHZ0cGxp?=
- =?utf-8?B?UnRCakN1dlNybHNJbzhzdU53UzFXY202VHVjMWJVL2ZLS2J2bGJ6TGtKV1Aw?=
- =?utf-8?B?MVhCLzhrVXBYTHpKQVc3U0ZnNUdYV09yN2E3YkNhQi9CRWJLbW9yc1FHcU03?=
- =?utf-8?B?K1dFaXBXSVlzQnRrbERzT1pNcDhjY1ZQU3ZiUzFzOWVFWG80NjBEMzYzVjBQ?=
- =?utf-8?B?bzh1OFVOalVrd0JCOUI0M2trQ3ArOWdHMlhOUitVVitkT085eWVzY2F6em4y?=
- =?utf-8?B?eURTTU5zN0hiRWxBS2NJdnMyaUFKOXlVY0RBeVJWT3plWDFBaytFVUpRVHVH?=
- =?utf-8?B?Sm0zZi9xbU9sMHo0YmtLa0xCVjZuVGNRV3NHd01TNmFreHZNb0ljYnVBZjFk?=
- =?utf-8?B?MnVFYjVGamxyaE1BeUZZdVA3THlRUDFtVnlGTXJadURIbXNoUExBS3RyV1ZM?=
- =?utf-8?B?QnpTOHpTL01pbXZGcmExcHFTS0Q5N3RvMDcyMGsxZkw2MThJOVU5ZWxvRS8x?=
- =?utf-8?B?b3FoWTgwNTk2TFE5NE5PQ3Z2R2ppcmxWZmJEcHZHWGgrVmR1N0lrczVYcjIx?=
- =?utf-8?Q?dZo+RLJxQyK5F?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1C1F12AB0F47754D9AC54620EFCF4090@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S243760AbhHFPKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 11:10:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242756AbhHFPKS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 11:10:18 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6ABC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 08:10:02 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1mC1Tf-0006Dt-Sv; Fri, 06 Aug 2021 17:09:39 +0200
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1mC1Td-0001mU-C3; Fri, 06 Aug 2021 17:09:37 +0200
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     kernel@pengutronix.de, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        David Howells <dhowells@redhat.com>,
+        linux-fscrypt@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] fscrypt: support trusted keys
+Date:   Fri,  6 Aug 2021 17:09:28 +0200
+Message-Id: <20210806150928.27857-1-a.fatoum@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-OriginatorOrg: esd.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR03MB6929.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3bdc086-c2b4-45ef-614e-08d958ebf106
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Aug 2021 15:07:43.2946
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5a9c3a1d-52db-4235-b74c-9fd851db2e6b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Imz1azu7M5l4fhUJ3fhy1ID/QO5E0kHS6qSN3kRqWAOytrCELkpbe4zmXgHkdYnPO/EhTac937neeyu2gYZs+w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR03MB6738
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gTWFyYywNCg0KSSB3YXMgbm90IGF3YXJlIG9mIHRoZSAubWFpbG1hcCBmaWxlIGFuZCBp
-dHMgd29ya2luZ3MuIA0KDQpNeSBxdWVzdGlvbiBpcyBzaG91bGQgdGhlbiBhbHNvIDx0aG9tYXMu
-a29lcnBlckBlc2QuZXU+IGJlIHB1dCBpbiB0aGlzDQpmaWxlIGJlY2F1c2UgaGUgaXMgdGhlIGNv
-LWF1dGhvciBvZiB0aGUgcGF0Y2ggeW91J3JlIHJldmlld2luZyBhdG0uIGFuZA0KaGlzIGVtYWls
-IGFkZHJlc3Mgc2hvd3MgdXAgaW4gTU9EVUxFX0FVVEhPUigpIG1hY3JvLg0KSGUgYWxzbyBsZWZ0
-IG91ciBjb21wYW55IGFscmVhZHkuDQoNCkFtIEZyZWl0YWcsIGRlbiAwNi4wOC4yMDIxLCAxMjo0
-OCArMDIwMCBzY2hyaWViIE1hcmMgS2xlaW5lLUJ1ZGRlOg0KPiBNYXR0aGlhcyBGdWNocydzIGVt
-YWlsIGlzbid0IHZhbGlkIGFueW1vcmUuIFVzZSB0aGUgbmV3bHkgY3JlYXRlZCByb2xlDQo+IGFj
-Y291bnQgaW5zdGVhZC4NCj4gDQo+IENjOiBzb2NrZXRjYW5AZXNkLmV1DQo+IENjOiBTdGVmYW4g
-TcOkdGplIDxTdGVmYW4uTWFldGplQGVzZC5ldT4NCj4gU2lnbmVkLW9mZi1ieTogTWFyYyBLbGVp
-bmUtQnVkZGUgPG1rbEBwZW5ndXRyb25peC5kZT4NCj4gLS0tDQo+ICAubWFpbG1hcCB8IDEgKw0K
-PiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvLm1h
-aWxtYXAgYi8ubWFpbG1hcA0KPiBpbmRleCBhMzVhZTI0NGRmZGEuLjg2YTYzMGQyNmNmYiAxMDA2
-NDQNCj4gLS0tIGEvLm1haWxtYXANCj4gKysrIGIvLm1haWxtYXANCj4gQEAgLTMzMCw2ICszMzAs
-NyBAQCBTaHVhaCBLaGFuIDxzaHVhaEBrZXJuZWwub3JnPiA8c2h1YWhraEBvc2cuc2Ftc3VuZy5j
-b20+DQo+ICBTaHVhaCBLaGFuIDxzaHVhaEBrZXJuZWwub3JnPiA8c2h1YWgua2hAc2Ftc3VuZy5j
-b20+DQo+ICBTaW1vbiBBcmxvdHQgPHNpbW9uQG9jdGlyb24ubmV0PiA8c2ltb25AZmlyZS5scDAu
-ZXU+DQo+ICBTaW1vbiBLZWxsZXkgPHNpbW9uQHRoZWtlbGxleXMub3JnLnVrPg0KPiArPHNvY2tl
-dGNhbkBlc2QuZXU+IDxtYXR0aGlhcy5mdWNoc0Blc2QuZXU+DQo+ICBTdMOpcGhhbmUgV2l0em1h
-bm4gPHN0ZXBoYW5lLndpdHptYW5uQHVicG1lcy51bml2LWJwY2xlcm1vbnQuZnI+DQo+ICBTdGVw
-aGVuIEhlbW1pbmdlciA8c2hlbW1pbmdlckBvc2RsLm9yZz4NCj4gIFN0ZXZlIFdpc2UgPGxhcnJ5
-c3RldmVud2lzZUBnbWFpbC5jb20+IDxzd2lzZUBjaGVsc2lvLmNvbT4NCg==
+Kernel trusted keys don't require userspace knowledge of the raw key
+material and instead export a sealed blob, which can be persisted to
+unencrypted storage. Userspace can then load this blob into the kernel,
+where it's unsealed and from there on usable for kernel crypto.
+
+This is incompatible with fscrypt, where userspace is supposed to supply
+the raw key material. For TPMs, a work around is to do key unsealing in
+userspace, but this may not be feasible for other trusted key backends.
+
+Make it possible to benefit from both fscrypt and trusted key sealing
+by extending fscrypt_add_key_arg::key_id to hold either the ID of a
+fscrypt-provisioning or a trusted key.
+
+A non fscrypt-provisioning key_id was so far prohibited, so additionally
+allowing trusted keys won't break backwards compatibility.
+
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+---
+Tested with:
+https://github.com/google/fscryptctl/pull/23
+
+v1 here:
+https://lore.kernel.org/linux-fscrypt/20210727144349.11215-1-a.fatoum@pengutronix.de/T/#u
+
+v1 -> v2:
+  - Drop encrypted key support and key_extract_material
+  - Use key_id instead of repurposing raw (Eric)
+  - Shift focus to trusted key sealing for non-TPM as a rationale
+    why this integration is worthwhile (Eric)
+  - Extend documentation with rationale on why one would
+    use trusted keys and warn about trusted key reuse
+
+To: "Theodore Y. Ts'o" <tytso@mit.edu>
+To: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: James Morris <jmorris@namei.org>
+Cc: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: James Bottomley <jejb@linux.ibm.com>
+Cc: Mimi Zohar <zohar@linux.ibm.com>
+Cc: Sumit Garg <sumit.garg@linaro.org>
+Cc: David Howells <dhowells@redhat.com>
+Cc: linux-fscrypt@vger.kernel.org
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-integrity@vger.kernel.org
+Cc: linux-security-module@vger.kernel.org
+Cc: keyrings@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ Documentation/filesystems/fscrypt.rst | 31 ++++++++++++++-----
+ fs/crypto/keyring.c                   | 43 +++++++++++++++++++--------
+ 2 files changed, 54 insertions(+), 20 deletions(-)
+
+diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+index 44b67ebd6e40..c1811fa4285a 100644
+--- a/Documentation/filesystems/fscrypt.rst
++++ b/Documentation/filesystems/fscrypt.rst
+@@ -734,23 +734,40 @@ as follows:
+ 
+ - ``key_id`` is 0 if the raw key is given directly in the ``raw``
+   field.  Otherwise ``key_id`` is the ID of a Linux keyring key of
+-  type "fscrypt-provisioning" whose payload is
++  type "fscrypt-provisioning" or "trusted":
++  "fscrypt-provisioning" keys have a payload of
+   struct fscrypt_provisioning_key_payload whose ``raw`` field contains
+   the raw key and whose ``type`` field matches ``key_spec.type``.
+   Since ``raw`` is variable-length, the total size of this key's
+   payload must be ``sizeof(struct fscrypt_provisioning_key_payload)``
+-  plus the raw key size.  The process must have Search permission on
+-  this key.
+-
+-  Most users should leave this 0 and specify the raw key directly.
+-  The support for specifying a Linux keyring key is intended mainly to
+-  allow re-adding keys after a filesystem is unmounted and re-mounted,
++  plus the raw key size.
++  For "trusted" keys, the payload is directly taken as the raw key.
++
++  The process must have Search permission on this key.
++
++  Most users leave this 0 and specify the raw key directly.
++  "trusted" keys are useful to leverage kernel support for sealing
++  and unsealing key material. Sealed keys can be persisted to
++  unencrypted storage and later be used to decrypt the file system
++  without requiring userspace to have knowledge of the raw key
++  material.
++  "fscrypt-provisioning" key support is intended mainly to allow
++  re-adding keys after a filesystem is unmounted and re-mounted,
+   without having to store the raw keys in userspace memory.
+ 
+ - ``raw`` is a variable-length field which must contain the actual
+   key, ``raw_size`` bytes long.  Alternatively, if ``key_id`` is
+   nonzero, then this field is unused.
+ 
++.. note::
++
++   Users should take care not to reuse the fscrypt key material with
++   different ciphers or in multiple contexts as this may make it
++   easier to deduce the key.
++   This also applies when the key material is supplied indirectly
++   via a kernel trusted key. In this case, the trusted key should
++   perferably be used only in a single context.
++
+ For v2 policy keys, the kernel keeps track of which user (identified
+ by effective user ID) added the key, and only allows the key to be
+ removed by that user --- or by "root", if they use
+diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
+index 0b3ffbb4faf4..721f5da51416 100644
+--- a/fs/crypto/keyring.c
++++ b/fs/crypto/keyring.c
+@@ -20,6 +20,7 @@
+ 
+ #include <crypto/skcipher.h>
+ #include <linux/key-type.h>
++#include <keys/trusted-type.h>
+ #include <linux/random.h>
+ #include <linux/seq_file.h>
+ 
+@@ -577,28 +578,44 @@ static int get_keyring_key(u32 key_id, u32 type,
+ 	key_ref_t ref;
+ 	struct key *key;
+ 	const struct fscrypt_provisioning_key_payload *payload;
+-	int err;
++	int err = 0;
+ 
+ 	ref = lookup_user_key(key_id, 0, KEY_NEED_SEARCH);
+ 	if (IS_ERR(ref))
+ 		return PTR_ERR(ref);
+ 	key = key_ref_to_ptr(ref);
+ 
+-	if (key->type != &key_type_fscrypt_provisioning)
+-		goto bad_key;
+-	payload = key->payload.data[0];
++	if (key->type == &key_type_fscrypt_provisioning) {
++		payload = key->payload.data[0];
+ 
+-	/* Don't allow fscrypt v1 keys to be used as v2 keys and vice versa. */
+-	if (payload->type != type)
+-		goto bad_key;
++		/* Don't allow fscrypt v1 keys to be used as v2 keys and vice versa. */
++		if (payload->type != type) {
++			err = -EKEYREJECTED;
++			goto out_put;
++		}
+ 
+-	secret->size = key->datalen - sizeof(*payload);
+-	memcpy(secret->raw, payload->raw, secret->size);
+-	err = 0;
+-	goto out_put;
++		secret->size = key->datalen - sizeof(*payload);
++		memcpy(secret->raw, payload->raw, secret->size);
++	} else if (IS_REACHABLE(CONFIG_TRUSTED_KEYS) && key->type == &key_type_trusted) {
++		struct trusted_key_payload *tkp;
++
++		/* avoid reseal changing payload while we memcpy key */
++		down_read(&key->sem);
++		tkp = key->payload.data[0];
++		if (!tkp || tkp->key_len < FSCRYPT_MIN_KEY_SIZE ||
++		    tkp->key_len > FSCRYPT_MAX_KEY_SIZE) {
++			up_read(&key->sem);
++			err = -EINVAL;
++			goto out_put;
++		}
++
++		secret->size = tkp->key_len;
++		memcpy(secret->raw, tkp->key, secret->size);
++		up_read(&key->sem);
++	} else {
++		err = -EKEYREJECTED;
++	}
+ 
+-bad_key:
+-	err = -EKEYREJECTED;
+ out_put:
+ 	key_ref_put(ref);
+ 	return err;
+-- 
+2.30.2
+
