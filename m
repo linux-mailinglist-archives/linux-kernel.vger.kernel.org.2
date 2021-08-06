@@ -2,126 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CAC73E2C7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF413E2C82
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239205AbhHFO2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 10:28:42 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60806 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238446AbhHFO2g (ORCPT
+        id S239380AbhHFO35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 10:29:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27652 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239309AbhHFO34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 10:28:36 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 176ESFNA082549;
-        Fri, 6 Aug 2021 09:28:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1628260095;
-        bh=BilTB8yGmwYUQpauRBnVTlubDNoaX2E2FswH6R2Se1Q=;
-        h=From:To:CC:Subject:Date;
-        b=KtxHbrOQBNvw8E6nJ04+p0zF+7+XPmAe5jge98qRmOUmD6n2NJYiswB+55FpUzIJc
-         qcn8u4Y5anh6cP9UyW6IkaKRWRTgsoXWxUaGQhHbg6mYzACYtnWVgig5A3ptZBYbYL
-         1IR0seu2Zs7dWy1z/6D5Ka/fkM/3narztc5HxMaw=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 176ESFoP119293
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 6 Aug 2021 09:28:15 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 6 Aug
- 2021 09:28:15 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 6 Aug 2021 09:28:15 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 176ESEIp094816;
-        Fri, 6 Aug 2021 09:28:14 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Ben Hutchings <ben.hutchings@essensium.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-omap@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH net-next] net: ethernet: ti: davinci_cpdma: revert "drop frame padding"
-Date:   Fri, 6 Aug 2021 17:28:09 +0300
-Message-ID: <20210806142809.15069-1-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 6 Aug 2021 10:29:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628260180;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+yI0uptNoP6G4N0IJZFLL/DMeGNN+zepZ14xcoCNN6E=;
+        b=QWwBQPbaerNgQH5EZs9W/mdNQXkcUk4U68/JzchADJ8w9mKtkhxMMFogfBMzYr+dTpzBj+
+        7U2GaPRfKKXZynP4z/WQwZhNFfLOL9rLJ7CxHOrYG0SYsoW0mvKqWzFzYtEkpI1VutddLD
+        p/jfL6QvatbvWHb8X5cXzrSLHGiaQ+Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-521-xKLAKPfBM76PMbAKYo_Dmg-1; Fri, 06 Aug 2021 10:29:38 -0400
+X-MC-Unique: xKLAKPfBM76PMbAKYo_Dmg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 376EA87D541;
+        Fri,  6 Aug 2021 14:29:37 +0000 (UTC)
+Received: from localhost.localdomain.com (unknown [10.40.192.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 52DD55DA61;
+        Fri,  6 Aug 2021 14:29:20 +0000 (UTC)
+From:   pkalever@redhat.com
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
+        josef@toxicpanda.com, axboe@kernel.dk, idryomov@redhat.com,
+        xiubli@redhat.com,
+        Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
+Subject: [PATCH v1 0/2] nbd: reset the queue/io_timeout to default on disconnect
+Date:   Fri,  6 Aug 2021 19:59:12 +0530
+Message-Id: <20210806142914.70556-1-pkalever@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 9ffc513f95ee ("net: ethernet: ti: davinci_cpdma: drop
-frame padding") which has depndency from not yet merged patch [1] and so
-breaks cpsw_new driver.
+From: Prasanna Kumar Kalever <prasanna.kalever@redhat.com>
 
-[1] https://patchwork.kernel.org/project/netdevbpf/patch/20210805145511.12016-1-grygorii.strashko@ti.com/
-Fixes: 9ffc513f95ee ("net: ethernet: ti: davinci_cpdma: drop frame padding")
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/net/ethernet/ti/cpsw_priv.c     | 1 +
- drivers/net/ethernet/ti/davinci_cpdma.c | 5 +++++
- drivers/net/ethernet/ti/davinci_cpdma.h | 1 +
- drivers/net/ethernet/ti/davinci_emac.c  | 1 +
- 4 files changed, 8 insertions(+)
+Hi,
 
-diff --git a/drivers/net/ethernet/ti/cpsw_priv.c b/drivers/net/ethernet/ti/cpsw_priv.c
-index d97a72c9ec53..ecc2a6b7e28f 100644
---- a/drivers/net/ethernet/ti/cpsw_priv.c
-+++ b/drivers/net/ethernet/ti/cpsw_priv.c
-@@ -518,6 +518,7 @@ int cpsw_init_common(struct cpsw_common *cpsw, void __iomem *ss_regs,
- 
- 	dma_params.num_chan		= data->channels;
- 	dma_params.has_soft_reset	= true;
-+	dma_params.min_packet_size	= CPSW_MIN_PACKET_SIZE;
- 	dma_params.desc_mem_size	= data->bd_ram_size;
- 	dma_params.desc_align		= 16;
- 	dma_params.has_ext_regs		= true;
-diff --git a/drivers/net/ethernet/ti/davinci_cpdma.c b/drivers/net/ethernet/ti/davinci_cpdma.c
-index 753d94c9915a..d2eab5cd1e0c 100644
---- a/drivers/net/ethernet/ti/davinci_cpdma.c
-+++ b/drivers/net/ethernet/ti/davinci_cpdma.c
-@@ -1034,6 +1034,11 @@ static int cpdma_chan_submit_si(struct submit_info *si)
- 		return -ENOMEM;
- 	}
- 
-+	if (len < ctlr->params.min_packet_size) {
-+		len = ctlr->params.min_packet_size;
-+		chan->stats.runt_transmit_buff++;
-+	}
-+
- 	mode = CPDMA_DESC_OWNER | CPDMA_DESC_SOP | CPDMA_DESC_EOP;
- 	cpdma_desc_to_port(chan, mode, si->directed);
- 
-diff --git a/drivers/net/ethernet/ti/davinci_cpdma.h b/drivers/net/ethernet/ti/davinci_cpdma.h
-index 62151f13c7ce..d3cfe234d16a 100644
---- a/drivers/net/ethernet/ti/davinci_cpdma.h
-+++ b/drivers/net/ethernet/ti/davinci_cpdma.h
-@@ -26,6 +26,7 @@ struct cpdma_params {
- 	void __iomem		*rxthresh, *rxfree;
- 	int			num_chan;
- 	bool			has_soft_reset;
-+	int			min_packet_size;
- 	dma_addr_t		desc_mem_phys;
- 	dma_addr_t		desc_hw_addr;
- 	int			desc_mem_size;
-diff --git a/drivers/net/ethernet/ti/davinci_emac.c b/drivers/net/ethernet/ti/davinci_emac.c
-index cd2ef0282f38..b1c5cbe7478b 100644
---- a/drivers/net/ethernet/ti/davinci_emac.c
-+++ b/drivers/net/ethernet/ti/davinci_emac.c
-@@ -1850,6 +1850,7 @@ static int davinci_emac_probe(struct platform_device *pdev)
- 	dma_params.txcp			= priv->emac_base + 0x640;
- 	dma_params.rxcp			= priv->emac_base + 0x660;
- 	dma_params.num_chan		= EMAC_MAX_TXRX_CHANNELS;
-+	dma_params.min_packet_size	= EMAC_DEF_MIN_ETHPKTSIZE;
- 	dma_params.desc_hw_addr		= hw_ram_addr;
- 	dma_params.desc_mem_size	= pdata->ctrl_ram_size;
- 	dma_params.desc_align		= 16;
+This series has changes to reset the queue/io_timeout for nbd devices and
+a cleanup patch.
+
+Thank you!
+
+Prasanna Kumar Kalever (2):
+  block: cleanup: define default command timeout and use it
+  nbd: reset the queue/io_timeout to default on disconnect
+
+ block/blk-mq.c         | 2 +-
+ drivers/block/nbd.c    | 9 +++++++--
+ include/linux/blkdev.h | 2 ++
+ 3 files changed, 10 insertions(+), 3 deletions(-)
+
 -- 
-2.17.1
+2.31.1
 
