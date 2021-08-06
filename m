@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8AA3E289C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B3F3E28A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245102AbhHFKbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
+        id S245111AbhHFKc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244908AbhHFKbl (ORCPT
+        with ESMTP id S245080AbhHFKc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:31:41 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4136C061799
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:31:24 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id y7so12397874eda.5
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 03:31:24 -0700 (PDT)
+        Fri, 6 Aug 2021 06:32:56 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4232C061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:32:39 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id hw6so14361011ejc.10
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 03:32:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
         h=sender:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=/SdOA0uji50FSR13/XDPx4weRv/KxkeY+zmfiRSKHVU=;
-        b=YLQ0ExyEqhh+Ndr0E2FoKznXutZgcW6fp6swLkYTyCT+jp+/dNxi8HGdEgO1LdgkgS
-         AeUDS3Ivq9l1+Ux57KggrGJzBgelk4g9GudQLZ+mv7lF8AwhPyQQMWeLK+9ucH+uEkxp
-         zqWAcZDCbO7sC9X5qRbBe7I1isNpXJRI2LVuTvbz46tAYGJ6ho3WXTY5x3N8/1RdWcWo
-         yM0ly0MAxiSNN+X2ji4gW2O0wKwA35LCNnBhkFrjGmh2fz+O3/4NOQP6YLkqG1rz4lUp
-         P+kHok44xVzRkO3/lBmeMVeiNTggc7v0HgoUN76eI+hlSiMHVND5Cj0CJdxfzAUJcuV7
-         qBqA==
+        bh=NzqyjrYIBeWCGp4vCGl3UI9o/hw+FXbMB/HbH1LcnCo=;
+        b=H74jU4I4/FFYziWvg3BJKRxIrH+pkgr0yg6YrmexFLaE2qjlVPFyvNUCPkGwNyHDWb
+         IsUFph0SEVNJP6Yi9JVme6Zpl5xQcSYSL43qNcEwzkQWvD6F+ezP/AStSc2TbTL9T/yq
+         ruyWuxPUhMH7mTYlnqsWO4fdakfZnX/Pt4gPhb3aBJv86wPuvP6rY2c2JtngiCmu4JFV
+         lYEEmLqHSrV1fLw91o73o6MqF5IvQXe6ZsGDP85lgS2+f4R7FLqDJpvy/PlkRZGaOgTX
+         2aA1Ancot6hdPtn6XbgaI5dOsDwfv4jC1KNFQBFL1onHam/8q1wYj6CeS6e9IxUipITi
+         D32Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :mime-version:content-transfer-encoding;
-        bh=/SdOA0uji50FSR13/XDPx4weRv/KxkeY+zmfiRSKHVU=;
-        b=mmlTIhnYoD20D/6bUBFYQ9ITYe3jmevxBFAqzA4VKebUQSEuCABHEnG+9UTT/UcPdg
-         J2D9jhrei4Vj7mBNpt9gUKDulsip3gCl8cgCC8IkqqQbYvDpCUZW5XLvt5vy5ornj4he
-         fFigTvavFC47Sm8hDhMaJy9DLp0MgGKC9WgHM3/IGEmlo33al/yn/mUO0R5WRN/v8jqM
-         NW8+3A90ENltrA6hnR4UbG3/xeH+pCOzHVS8t6zyVO0mwEk9DyDBrMoqwH0caB5k6Nfq
-         40WJlorGlYTOlnj2Aijj+ck3S83NlhnZabd0gU9ocSPiLlOg+UTqORDFThx4QKkbcNx6
-         L6pw==
-X-Gm-Message-State: AOAM531+UkEzMpMajJuDW01Uz/Uc9QVMLj0SBOghvRSxu9QDoha4b1UK
-        NH0auDYu9S+ZSF/uKHGw5BfRHMXj6asKtlip
-X-Google-Smtp-Source: ABdhPJwHmikLlTk+xILgOuQnia/v0mNRSDmWhPkeIRoviyGlpipqMGrdAl3VymOjhcMHhL5XIL+oMQ==
-X-Received: by 2002:a05:6402:1289:: with SMTP id w9mr12075996edv.127.1628245883311;
-        Fri, 06 Aug 2021 03:31:23 -0700 (PDT)
+        bh=NzqyjrYIBeWCGp4vCGl3UI9o/hw+FXbMB/HbH1LcnCo=;
+        b=anJ8lDA4AZ2k9KJqjRujsTXBW3Trw32AI3RNh5Ngcr/Q01WR0i0rwshXEZvBV52vGU
+         2xQqW90HiC8txb2AYaAdnPujvKZ6B8gwd6MD8KRKYcURa04yOCJzxQ8QDbWMUi7+TR8I
+         5zDlAtciEJ9kfXMp73kDbDvwMhEfANc/OIVxwNYY6LK4J9YowDqjEt2LThEuq5V3MPmz
+         wqsuoLdH8DA39OuIFd+P+HHv7rDWJyPCY0AbMyw8Gz/tkcS303+RxYOI4rW2wfF9M7e+
+         /nJuYFyZXctXyTx5TU2Byskl5q6Hv3o6YBEzMLiQ1vRRuw++pm7WbyIM5NZqXR9V12hh
+         jJPg==
+X-Gm-Message-State: AOAM5306UnXnXt9x0jtADmijwIyVIU3vUy6HbpmfpwbcE/1FQiUXT//l
+        HrFmd/o1kCnfH8f4fCk7LMYxzB4KQNeDTGJ2
+X-Google-Smtp-Source: ABdhPJwGNUYk3CQLuKeTTNIFOzV7Vh7UtM0ic2MpZ7OaH/qmkeiKrVQurhSstkF3y3lNOgcYO2CadQ==
+X-Received: by 2002:a17:906:ecf7:: with SMTP id qt23mr9135127ejb.64.1628245958124;
+        Fri, 06 Aug 2021 03:32:38 -0700 (PDT)
 Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id ec38sm3615755edb.40.2021.08.06.03.31.22
+        by smtp.gmail.com with ESMTPSA id e14sm3659432edr.59.2021.08.06.03.32.37
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 06 Aug 2021 03:31:23 -0700 (PDT)
+        Fri, 06 Aug 2021 03:32:37 -0700 (PDT)
 Sender: Michal Simek <monstr@monstr.eu>
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
         michal.simek@xilinx.com, git@xilinx.com
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        devicetree@vger.kernel.org
-Subject: [PATCH] dt-bindings: timer: Remove binding for energymicro,efm32-timer.txt
-Date:   Fri,  6 Aug 2021 12:31:22 +0200
-Message-Id: <571fc4b2e6d41c61b7f4445601a79bb50aace2e7.1628245879.git.michal.simek@xilinx.com>
+Cc:     Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Manish Narani <manish.narani@xilinx.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Tejas Patel <tejas.patel@xilinx.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] firmware: xilinx: Fix incorrect names in kernel-doc
+Date:   Fri,  6 Aug 2021 12:32:36 +0200
+Message-Id: <a81edd4fc6cff4bd7e4984fceda941b9e9ab01bf.1628245954.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -66,46 +71,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver has been removed by commit 523d83ef0979
-("clocksource/drivers/efm32: Drop unused timer code") that's why binding
-doc shouldn't be also valid anymore.
+There are some c&p issues reported by kernel-doc as:
+drivers/firmware/xilinx/zynqmp.c:676: warning: expecting prototype for
+zynqmp_pm_write_ggs(). Prototype was for zynqmp_pm_read_ggs() instead
+drivers/firmware/xilinx/zynqmp.c:710: warning: expecting prototype for
+zynqmp_pm_write_pggs(). Prototype was for zynqmp_pm_read_pggs() instead
+drivers/firmware/xilinx/zynqmp.c:1023: warning: expecting prototype for
+zynqmp_pm_aes(). Prototype was for zynqmp_pm_aes_engine() instead
 
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 ---
 
- .../timer/energymicro,efm32-timer.txt         | 23 -------------------
- 1 file changed, 23 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/timer/energymicro,efm32-timer.txt
+ drivers/firmware/xilinx/zynqmp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/timer/energymicro,efm32-timer.txt b/Documentation/devicetree/bindings/timer/energymicro,efm32-timer.txt
-deleted file mode 100644
-index e502c11b2211..000000000000
---- a/Documentation/devicetree/bindings/timer/energymicro,efm32-timer.txt
-+++ /dev/null
-@@ -1,23 +0,0 @@
--* EFM32 timer hardware
--
--The efm32 Giant Gecko SoCs come with four 16 bit timers. Two counters can be
--connected to form a 32 bit counter. Each timer has three Compare/Capture
--channels and can be used as PWM or Quadrature Decoder. Available clock sources
--are the cpu's HFPERCLK (with a 10-bit prescaler) or an external pin.
--
--Required properties:
--- compatible : Should be "energymicro,efm32-timer"
--- reg : Address and length of the register set
--- clocks : Should contain a reference to the HFPERCLK
--
--Optional properties:
--- interrupts : Reference to the timer interrupt
--
--Example:
--
--timer@40010c00 {
--	compatible = "energymicro,efm32-timer";
--	reg = <0x40010c00 0x400>;
--	interrupts = <14>;
--	clocks = <&cmu clk_HFPERCLKTIMER3>;
--};
+diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
+index 15b138326ecc..a9849e298d7f 100644
+--- a/drivers/firmware/xilinx/zynqmp.c
++++ b/drivers/firmware/xilinx/zynqmp.c
+@@ -664,7 +664,7 @@ int zynqmp_pm_write_ggs(u32 index, u32 value)
+ EXPORT_SYMBOL_GPL(zynqmp_pm_write_ggs);
+ 
+ /**
+- * zynqmp_pm_write_ggs() - PM API for reading global general storage (ggs)
++ * zynqmp_pm_read_ggs() - PM API for reading global general storage (ggs)
+  * @index:	GGS register index
+  * @value:	Register value to be written
+  *
+@@ -697,7 +697,7 @@ int zynqmp_pm_write_pggs(u32 index, u32 value)
+ EXPORT_SYMBOL_GPL(zynqmp_pm_write_pggs);
+ 
+ /**
+- * zynqmp_pm_write_pggs() - PM API for reading persistent global general
++ * zynqmp_pm_read_pggs() - PM API for reading persistent global general
+  *			     storage (pggs)
+  * @index:	PGGS register index
+  * @value:	Register value to be written
+@@ -1012,7 +1012,7 @@ int zynqmp_pm_set_requirement(const u32 node, const u32 capabilities,
+ EXPORT_SYMBOL_GPL(zynqmp_pm_set_requirement);
+ 
+ /**
+- * zynqmp_pm_aes - Access AES hardware to encrypt/decrypt the data using
++ * zynqmp_pm_aes_engine - Access AES hardware to encrypt/decrypt the data using
+  * AES-GCM core.
+  * @address:	Address of the AesParams structure.
+  * @out:	Returned output value
 -- 
 2.32.0
 
