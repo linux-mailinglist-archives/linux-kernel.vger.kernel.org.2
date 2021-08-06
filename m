@@ -2,82 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B5D3E23E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692123E23E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243608AbhHFHVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 03:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
+        id S243178AbhHFHVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 03:21:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243599AbhHFHU6 (ORCPT
+        with ESMTP id S235225AbhHFHVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 03:20:58 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C614C061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 00:20:41 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id x144so4658606vsx.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 00:20:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OcY+NhjZCxDCc6fzI/JMYTvUJ3ohCx1BhlM5JB9bQ6c=;
-        b=J3lNdliQzbk3pJH/RUiwJjKq9xf2/J7wLsjKTtnHdvLrVFVazpThcttNeuAXG5WWoh
-         vAJmmVBxfe+N0fq50fwFVgkfN3aXdVmvcVwgdu1spbWh1sVx1t4Sw5FGC1Y6YmH95Vp+
-         ASQe6IPEvrs/ZAlP1cyHlROienYUHOCoXc8GY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OcY+NhjZCxDCc6fzI/JMYTvUJ3ohCx1BhlM5JB9bQ6c=;
-        b=lKnVX2QASAuSKNzWtQTmuSN71pEZNNQJYznVK6b6MKcON4cm3rEnZSwTZssW7Dea1z
-         1BPIFkYMbakh0CQQuYGEteKoxVG3t4Kf061vjuH7K2Dn2aMtK2RBuS0ZesrOF0hHpM9G
-         oIDtsXASvEEL5k30sssM2a4MUDS6bYJE9q9DDRbjSgpKucjVGu1/a1hBunBurDkkpiAA
-         gMcw/OOE/NDntbcZCjJ4VolVaGd3z1I5m+xk/6NqgehB2WpyNHPyaICpUX3tkLTV/fce
-         fCAPW56VKiEeufeWYrrGs0IxaaWv2RFcMA/pURi6xyHXn8kFnaPmIDZPUWmNgUrTvZy4
-         MbjA==
-X-Gm-Message-State: AOAM533cVc+6kwig+kjjTU2gVp0/MkAD79mU6db6E5jZ5i90kvEzgacP
-        uK367jzBMqEfA6QHsjt0cCz+XgVHfdqUostWC16qCw==
-X-Google-Smtp-Source: ABdhPJzTE3mmzftvUeFfpXLtrsr52EidXjI+2jHkP2Wx8+U1MSmy0ZqLrEZ6em36Vyk5Qei/P5cOrqb9hi8jpV9vS1s=
-X-Received: by 2002:a05:6102:34d9:: with SMTP id a25mr7990025vst.0.1628234440687;
- Fri, 06 Aug 2021 00:20:40 -0700 (PDT)
+        Fri, 6 Aug 2021 03:21:14 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967FEC061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 00:20:58 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mBu9y-0002hU-1c; Fri, 06 Aug 2021 09:20:50 +0200
+Received: from pengutronix.de (unknown [IPv6:2a02:810a:8940:aa0:66f0:974b:98ab:a2fd])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 1B0BC661BEA;
+        Fri,  6 Aug 2021 07:20:46 +0000 (UTC)
+Date:   Fri, 6 Aug 2021 09:20:45 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        devicetree@vger.kernel.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v5] dt-bindings: net: can: c_can: convert to json-schema
+Message-ID: <20210806072045.akase7hseu4wrxxt@pengutronix.de>
+References: <20210805192750.9051-1-dariobin@libero.it>
 MIME-Version: 1.0
-References: <00000000000001b19a05c85fdb77@google.com>
-In-Reply-To: <00000000000001b19a05c85fdb77@google.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 6 Aug 2021 09:20:30 +0200
-Message-ID: <CAJfpegs=bJZ+ekx7=LJ9nZEivyhu7PctnH22HxPAVJCNZErn9A@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in fuse_get_tree
-To:     syzbot <syzbot+afacc3ce1215afa24615@syzkaller.appspotmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ywt3kfhn3c2zmo73"
+Content-Disposition: inline
+In-Reply-To: <20210805192750.9051-1-dariobin@libero.it>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 31 Jul 2021 at 01:48, syzbot
-<syzbot+afacc3ce1215afa24615@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    2265c5286967 Add linux-next specific files for 20210726
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=102c92b6300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=531dbd796dcea4b4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=afacc3ce1215afa24615
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d97fca300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=174a53f8300000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+afacc3ce1215afa24615@syzkaller.appspotmail.com
 
-Fix folded into fuse.git#for-next
+--ywt3kfhn3c2zmo73
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-#syz fix: fuse: allow sharing existing sb
+On 05.08.2021 21:27:50, Dario Binacchi wrote:
+> Convert the Bosch C_CAN/D_CAN controller device tree binding
+> documentation to json-schema.
+>=20
+> Document missing properties.
+> Remove "ti,hwmods" as it is no longer used in TI dts.
+> Make "clocks" required as it is used in all dts.
+> Update the examples.
+>=20
+> Signed-off-by: Dario Binacchi <dariobin@libero.it>
 
-Thanks,
-Miklos
+[...]
+
+> +if:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        enum:
+> +          - bosch,d_can
+> +
+> +then:
+> +  properties:
+> +    interrupts:
+> +      minItems: 4
+> +      maxItems: 4
+
+The driver uses only 1 interrupt, on the other hand the only in-tree
+user the bosch,d_can compatible specifies 4 interrupts.
+
+Marc
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--ywt3kfhn3c2zmo73
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmEM4ssACgkQqclaivrt
+76kH+wf/Us0Znp2pcbUwxbQq8O11+Bbroua1J8Na8qc7NwTESuk9N2Qu0zpUO8Tz
+oTTsibqJD9m3Z3AXxILJcv0mueNL4NbvFdjQ2hd7kl28X7B1KgqJvx63DLRrI9Vp
+ZtY1ve+ZEqf1ZwG0CnHThvLBqAR0102h29X7HrjS1JGD9mVNXiobqArfcLfh5Lpu
+7rGXUYj6OtQmg+QoWsduOpMAwod91M0bCkvGuTDZGqdCOxyTb/TZPZTtQOTS0e2Z
+FBSD8hp8mp4AffaX3MXe2rEbDCSY/ZRFlhth3WRigVSu0rpf5m0al9QiRcOe9nUc
+0hcetz9jGIIn4gNvOm6nxBKRXO10MA==
+=Boa7
+-----END PGP SIGNATURE-----
+
+--ywt3kfhn3c2zmo73--
