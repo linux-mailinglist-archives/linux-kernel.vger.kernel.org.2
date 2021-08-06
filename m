@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50F43E2E7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9323E2E81
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235611AbhHFQqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 12:46:52 -0400
-Received: from mga06.intel.com ([134.134.136.31]:62418 "EHLO mga06.intel.com"
+        id S236367AbhHFQsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 12:48:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235319AbhHFQqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 12:46:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10068"; a="275447371"
-X-IronPort-AV: E=Sophos;i="5.84,301,1620716400"; 
-   d="scan'208";a="275447371"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 09:46:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,301,1620716400"; 
-   d="scan'208";a="523560916"
-Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
-  by fmsmga002.fm.intel.com with ESMTP; 06 Aug 2021 09:46:29 -0700
-Received: from tjmaciei-mobl5.localnet (10.212.136.161) by
- IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Fri, 6 Aug 2021 17:46:26 +0100
-From:   Thiago Macieira <thiago.macieira@intel.com>
-To:     <bp@suse.de>, <luto@kernel.org>, <tglx@linutronix.de>,
-        <mingo@kernel.org>, <x86@kernel.org>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>
-CC:     <len.brown@intel.com>, <dave.hansen@intel.com>,
-        <jing2.liu@intel.com>, <ravi.v.shankar@intel.com>,
-        <linux-kernel@vger.kernel.org>, <chang.seok.bae@intel.com>
-Subject: Re: [PATCH v9 14/26] x86/arch_prctl: Create ARCH_SET_STATE_ENABLE/ARCH_GET_STATE_ENABLE
-Date:   Fri, 6 Aug 2021 09:46:22 -0700
-Message-ID: <3718618.i2J648eyUT@tjmaciei-mobl5>
-Organization: Intel Corporation
-In-Reply-To: <20210730145957.7927-15-chang.seok.bae@intel.com>
-References: <20210730145957.7927-1-chang.seok.bae@intel.com> <20210730145957.7927-15-chang.seok.bae@intel.com>
+        id S235319AbhHFQsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 12:48:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1410D61163;
+        Fri,  6 Aug 2021 16:47:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628268478;
+        bh=pDK0bkXKmVreCJ5VsYO8Jcq4mOV4T4XgB6OpvbG+IDs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tDgBevHwAVItkmlQn2fF9OPUCIIuu03MsLLjRYl8BmJn1VDWySQZGHOIXkyUyZ6Nh
+         jqAzPtCjR2nY0fT6YzlOOwYahnLBALGtR+pkUiwJu+5yGOboSa0464KBHIZqXL/KOL
+         8fDlk6umALau3ftWKi+4CjqaLpc0ZsZlSGj+Zrmg=
+Date:   Fri, 6 Aug 2021 18:47:54 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Anirudh Rayabharam <mail@anirudhrb.com>
+Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usbip: give back URBs for unsent unlink requests during
+ cleanup
+Message-ID: <YQ1nun3dwdd620TN@kroah.com>
+References: <20210806164015.25263-1-mail@anirudhrb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [10.212.136.161]
-X-ClientProxiedBy: orsmsx605.amr.corp.intel.com (10.22.229.18) To
- IRSMSX605.ger.corp.intel.com (163.33.146.138)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806164015.25263-1-mail@anirudhrb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, 30 July 2021 07:59:45 PDT Chang S. Bae wrote:
-> +       for_each_thread(tsk, t) {
-> +               t->thread.fpu.dynamic_state_perm |= req_dynstate_perm;
-> +               nr_threads++;
-> +       }
-> +
-> +       if (nr_threads != tsk->signal->nr_threads) {
-> +               for_each_thread(tsk, t)
-> +                       t->thread.fpu.dynamic_state_perm =
-> old_dynstate_perm; 
-> +               pr_err("x86/fpu: ARCH_XSTATE_PERM failed
-> as thread number mismatched.\n"); 
-> +               return -EBUSY;
-> +       }
-> +       return 0;
-> +}
+On Fri, Aug 06, 2021 at 10:10:14PM +0530, Anirudh Rayabharam wrote:
+> In vhci_device_unlink_cleanup(), the URBs for unsent unlink requests are
+> not given back. This sometimes causes usb_kill_urb to wait indefinitely
+> for that urb to be given back. syzbot has reported a hung task issue [1]
+> for this.
+> 
+> To fix this, give back the urbs corresponding to unsent unlink requests
+> (unlink_tx list) similar to how urbs corresponding to unanswered unlink
+> requests (unlink_rx list) are given back. Since the code is almost the
+> same, extract it into a new function and call it for both unlink_rx and
+> unlink_tx lists.
+> 
+> [1]: https://syzkaller.appspot.com/bug?id=08f12df95ae7da69814e64eb5515d5a85ed06b76
+> 
+> Reported-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
+> Tested-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
+> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+> ---
+>  drivers/usb/usbip/vhci_hcd.c | 47 ++++++++++++++++++++++++++----------
+>  1 file changed, 34 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
+> index 4ba6bcdaa8e9..45f98aa12895 100644
+> --- a/drivers/usb/usbip/vhci_hcd.c
+> +++ b/drivers/usb/usbip/vhci_hcd.c
+> @@ -945,7 +945,8 @@ static int vhci_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
+>  	return 0;
+>  }
+>  
+> -static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
+> +static void __vhci_cleanup_unlink_list(struct vhci_device *vdev,
+> +		struct list_head *unlink_list)
+>  {
+>  	struct vhci_hcd *vhci_hcd = vdev_to_vhci_hcd(vdev);
+>  	struct usb_hcd *hcd = vhci_hcd_to_hcd(vhci_hcd);
+> @@ -953,23 +954,25 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
+>  	struct vhci_unlink *unlink, *tmp;
+>  	unsigned long flags;
+>  
+> +	if (unlink_list != &vdev->unlink_tx
+> +			&& unlink_list != &vdev->unlink_rx) {
+> +		pr_err("Invalid list passed to __vhci_cleanup_unlink_list\n");
+> +		BUG();
 
-Hello all
+Do not allow the system to crash, that is not ok.
 
-As I was trying to write the matching userspace code, I think the solution 
-above had two problems. 
+> +		return;
 
-First the simpler one: that EBUSY. It must go and you can do that with a lock. 
-Library code cannot ensure that it is running in single-threaded state and 
-that no other threads are started or exit while they make the system call. 
-There's nothing the library in question can do if it got an EBUSY. Do you want 
-me to try again? What if it fails again? What's the state of the dynamically 
-permitted states after an EBUSY? It's probably inconsistent. Moreover, there's 
-an ABA problem there: what happens if a thread starts and another exits while 
-this system call is running? And what happens if two threads are making this 
-system call? 
-(also, shouldn't tsk->signal->nr_threads be an atomic read?)
+This call makes no sense as you just rebooted the machine :(
 
-The second and bigger problem is the consequence of not issuing the 
-ARCH_SET_STATE_ENABLE call: a SIGILL. Up until now, this hasn't happened, so I 
-expect this to be a surprise to people, in the worst possible way. The Intel 
-Software Developer Manual and every single tutorial out there says that the 
-sequence of actions is:
- 1) check that OSXSAVE is enabled
- 2) check that the AVX, AVX512 or AMX instructions are supported with CPUID
- 3) execute XGETBV EAX=0
- 4) disable any instructions whose matching state is not enabled by the OS
+Handle errors properly and recover from them and move on.  A single tiny
+driver should not take down the whole system.
 
-This is what software developers will write for AMX and any new future state, 
-until they learn better. This is also all that other OSes will require to run. 
-Moreover, until developers can actually run their software on CPUs with AMX 
-support, they will not notice any missed system calls (the Software 
-Development Emulator tool will execute the instructions whether you've issued 
-the syscall or not).
+thanks,
 
-As a consequence, there's a large chance that a test escape like that will 
-cause software to start crashing when run on AMX-capable CPUs when those start 
-showing up and get enabled in public clouds.
-
-So I have to insist that the XGETBV instruction's result match exactly what is 
-permitted to run. That means we either enable AMX unconditionally with no need 
-for system calls (with or without XFD trapping to dynamically allocate more 
-state), or that the XCR0 register be set without the AMX bits by default, 
-until the system call is issued.
-
--- 
-Thiago Macieira - thiago.macieira (AT) intel.com
-  Software Architect - Intel DPG Cloud Engineering
-
-
-
+greg k-h
