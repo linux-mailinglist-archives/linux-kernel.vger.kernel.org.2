@@ -2,277 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 888EA3E316C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACE43E316E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245378AbhHFVvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 17:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245379AbhHFVvb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 17:51:31 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE0BC06179A
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 14:51:15 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so24696910pjr.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 14:51:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tWEiCkw+fSiz6EiygCnTJiJ8o5BtcEILDKNkLL6Uu3s=;
-        b=BX3+BEAylAbE/hNGLDIXMbDFoR+/KM+Z/rF4MghjRq7IjV4KWs0jpcGEkJ6fKEsODl
-         Sljvlv9qUJMBY5XiRx9uKD/LhdqKaGq6TLZPuICLdBGv1ppOSNElnsGhKuN4jDK9cpni
-         2w2ZKDN5VMjaV5qs5QjjNdjIC11LlKq5QilWw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tWEiCkw+fSiz6EiygCnTJiJ8o5BtcEILDKNkLL6Uu3s=;
-        b=Ya/exgSr/Q61H816zjecmcGznuYjtwl3CN9wx+3CXsLmbffY8IYjm7jeLtTIAgOv0w
-         ZOtbYmsYAmH5j6pRUtSYkYtGtUboNoDV06jkN0ms0UevcErLD2VmwRGv21Ariogi8++0
-         rC/ogDNiO8WHWeZGSIMy1awKzi8L05FzU9Cvtxo927ygR5LJdcHYFR8xtTYSXQfoFuJJ
-         2wBCBdo51tVJxdxdv8G2pAr3LWox8ATJNFLT/cOYPHmFQpQ5GIsg5SEFDG+71JwrbG5H
-         NpBeM4yzsHZVeQROsVVTaiObf3ihNVUxdcwVjaA7nh7Zj5knH75IIkf2cbTIKF79mXQj
-         +AyQ==
-X-Gm-Message-State: AOAM533bSxbxhKUhgy1Fx/3ie66eNnev0ebs8TzU1X7Ehan9uxg4MZBi
-        NZvbIhccP4Pktq4P4JOfIAyoFQ==
-X-Google-Smtp-Source: ABdhPJz6V63GlXJdSmLLP/MTaSIOKcIhloT+lM9y1AYLFfR1I8ESY4FgdjJkGIx6PLfRg6qjDqmUnQ==
-X-Received: by 2002:a05:6a00:16c6:b029:32d:e190:9dd0 with SMTP id l6-20020a056a0016c6b029032de1909dd0mr12475598pfc.70.1628286674964;
-        Fri, 06 Aug 2021 14:51:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y2sm10734979pjl.6.2021.08.06.14.51.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 14:51:14 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Kees Cook <keescook@chromium.org>, David Sterba <dsterba@suse.cz>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] mac80211: radiotap: Use BIT() instead of shifts
-Date:   Fri,  6 Aug 2021 14:51:12 -0700
-Message-Id: <20210806215112.2874773-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        id S232032AbhHFVwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 17:52:05 -0400
+Received: from mail-bn7nam10on2125.outbound.protection.outlook.com ([40.107.92.125]:14433
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S245379AbhHFVwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 17:52:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WsMLZHviycuRIk+UDuWssAPUPp4JP8RFXvdsFJLFuiDQm8jViyKFGWe4H1kgOid0RZEAyhEIg0fJSXTg5u3iihmNefEjvNOupknhflh/UdKzFNebvQpZM58S4TPRZCZy2qd5E1N0Hv5cS5kyvuaRsuz1jJDtdMe/kADxYWY2tLf961F7QuZRLDnM4H0jCkSWXiIN+LudlGFEc/7Jc8LrUbBaqHy7ORbEcSoSzRquAXPARRy1jSkHbDdo2KXMpN23//MAejX478+jjBue2W+CbI4NNEdpefIurrvO05yCSfZjQiWNatc9xvFaLeO/iKg5CJR6fxtRJH/YeCYs1z6D8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XgY13AHPrXlv4dU4zEw02sCOnR0rf53F75U8dN2YYeU=;
+ b=V+h0QaS5xjKVIulXVBDTmmvlvpU0n96acUAKyEytXUyFr3EuXtKIJkrWaGilaFmC/8RP9XLqt1w9mDIwPqLAXtwBRCUYJyjIk8x25Bs3+CHcM1sYY45wj4l3ehWtqtWEcUeOHFPxh9cKdTPXGekKBugCcjphJSri7t4Ofj3k1jqCKF9FpCLvBGKy5f22JXY8sDt3GrTF/N29mp7nI9AN2MwjvihuhI+DPoI8EItc6kc0wr+e6/mXBcblVy55pEe4ZRFilM5wHFKDQay8/7DiP6UGqGa6gzAorHuq2TkyRsn/mImiBRO9Wf4G7Bm7j5xCKu+pqMadKoW868yMMTXbtw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XgY13AHPrXlv4dU4zEw02sCOnR0rf53F75U8dN2YYeU=;
+ b=N3SXp+V42TnINJUxAscA3Rkymwa++iFnWIawqbc16dCvBfQyffqu7orWxqZX0Q2LmG83ENmfhbsPxJ3Vhy3QNn/RoD8Ham7plLYH3+H4H8Tcju5tW2lVA9i/xUOExXW7jFnIF/ph7rNmuePUhQ9p8LPjFJjrkr/EkpQudIY1ZhA=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MW2PR2101MB1772.namprd21.prod.outlook.com (2603:10b6:302:c::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.1; Fri, 6 Aug
+ 2021 21:51:35 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::e8f7:b582:9e2d:ba55]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::e8f7:b582:9e2d:ba55%2]) with mapi id 15.20.4415.005; Fri, 6 Aug 2021
+ 21:51:35 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     =?windows-1255?B?+uXu+CDg4eXo4eXs?= <tomer432100@gmail.com>,
+        David Mozes <david.mozes@silk.us>
+CC:     David Moses <mosesster@gmail.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] x86/hyper-v: guard against cpu mask changes in
+ hyperv_flush_tlb_others()
+Thread-Topic: [PATCH] x86/hyper-v: guard against cpu mask changes in
+ hyperv_flush_tlb_others()
+Thread-Index: AQHXiqRED5Xjx5or60CuT0JToyz6HatmQkqQgAB7OICAAAfkgIAANwRQ
+Date:   Fri, 6 Aug 2021 21:51:35 +0000
+Message-ID: <MWHPR21MB15935468547C25294A253E0AD7F39@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <CA+qYZY3a-FHfWNL2=na6O8TRJYu9kaeyp80VNDxaDTi2EBGoog@mail.gmail.com>
+ <MWHPR21MB1593A75E765DBFFE2B12C627D7F39@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <VI1PR0401MB2415830F31160F734300C576F1F39@VI1PR0401MB2415.eurprd04.prod.outlook.com>
+ <CAHkVu0-ZCXDRZL92d_G3oKpPuKvmY=YEbu9nbx9vkZHnhHFD8Q@mail.gmail.com>
+In-Reply-To: <CAHkVu0-ZCXDRZL92d_G3oKpPuKvmY=YEbu9nbx9vkZHnhHFD8Q@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c4ff1eb6-e146-4e98-acdc-9935188359e4;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-08-06T21:20:15Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0b7c24ad-eb44-4869-efb1-08d959245ca3
+x-ms-traffictypediagnostic: MW2PR2101MB1772:
+x-microsoft-antispam-prvs: <MW2PR2101MB1772C6A82E2A47C754545886D7F39@MW2PR2101MB1772.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1332;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9NNbpexhur0vpHM9Uqc9lHtutgN+hdGLoIz38Wh1qqUhhtl/d25jeRVBQzBTYjJYJ5ayk6TwwhG7+hbwUb+x8VCnIJh3CWK1SCIpwW+MA8bUpyCx8G/SNQLNvBjUCb0FFIiHzT/vDQsTnhZACLM/amfhxyTKZBKaNFSuFzn/opgKJhofo73qNmgTPZk7NILanabfbSLq6tZYfT4QCDVbMcpcuVJP8A8MthNOuAK/g0ja0v8qkqjnBatGBcj9KmihbK+B+rox8pu0EUJhVWL6jeYDUREcBtApjE5//j1uIY5BbwELkFUE9RM+Ti/O65bnBJ6uspyQ3Nd7dNzorDUs43kd8XLZymJLlTSUCqgb1yEEJeBc2FJ9rivL2B3vUQieql2Bnb0O+F6DQSLm1FRVbZGhcsPM/PKZAiVSn3XzG1CaTobnQJWmiMD9lZH66Pvpl7JbhjfdHtmeTG21PLqBbboz7RCjCzoxEx3R15HgSLe6nkM7y7tMNKKtvHQsRv1lIkre9I4OaLUGTr17ily4C7IwgVn/OLVOsYOCe/hl6crX90ZTnKO9xQUlo+y69uenbPUDvt5T65tZw/Tj0w5SDPEFItRzxqt3fiwPhxtwkKIe6s4eEJSYqhE6k+1EIQFNh1CidAnxGfiSeIzNa0WeHwAM58VV5h0XEuM8Rar/dAJXrtNhOdcwsYoPPUUQ7VlpQJqmi5jQbCKJJ8G429eZUA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(54906003)(82950400001)(33656002)(82960400001)(71200400001)(4326008)(52536014)(8936002)(38100700002)(186003)(55016002)(8990500004)(9686003)(38070700005)(122000001)(8676002)(26005)(5660300002)(2906002)(83380400001)(6506007)(508600001)(10290500003)(66946007)(66476007)(66556008)(66446008)(110136005)(7696005)(316002)(64756008)(76116006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?windows-1255?Q?MTmHSVTuap+InjtXPNeydgPveQYHWd4s+zqCiPPsEwr6kkpclANF4NYM?=
+ =?windows-1255?Q?dqWz/QqNynHdJ+TBj2D7q4hhDKRrq9h2fmfuqwWv8pCbdS9U+c8S4Aop?=
+ =?windows-1255?Q?We52Ln5SZTj1SoaTkwpO6jSZfHbTrJ9IeY8tQHZGdZ58nP8nk5kz8RZR?=
+ =?windows-1255?Q?Ebb8uRjfDYVq9F665uC+DB1XWLbSpRzMNYUtnGyS7H+mMuHO4+7UKofM?=
+ =?windows-1255?Q?/XO3SOpAThqQZVed0PR9m3118f0A9s9Z2P2L8sEzvFJhJ/0wS3LRFQ0I?=
+ =?windows-1255?Q?u0PmbjJq4HsRFxNXYsDH8kbGqzVjA/T/ByOs6j+Pbu+iTWCvXLEqb3Et?=
+ =?windows-1255?Q?t8bGRfYXRDGOA8WGwMD5CyYFRVdEOC1HUkPpw932WeNplycTj2Hc8U0V?=
+ =?windows-1255?Q?/2n00ljIPTKnMViJL7vo7z4h4dckKKnlh7PiAPNW8HJRY/7lykxL4bHO?=
+ =?windows-1255?Q?tHF6OcEOFoAYKci9niYPGk+hsvVozQUXkulFJHuoX2MYS5MqAYk+FuFc?=
+ =?windows-1255?Q?91M9I6VSqNiZnKKhZC7NviGCU3Hlqm6kg6d/fEJfQqiPDqBYcyQID4QY?=
+ =?windows-1255?Q?VNFB6nvXAKH+RwdrQaWh/vhni2fBdYvyfeFV4EvMshtMtl8t1ibt0/e4?=
+ =?windows-1255?Q?WMzFISuMr9HLRj10UBUrjBWvIZBVW+XMGRaL7DSVSDSB/yQDtCxldNi5?=
+ =?windows-1255?Q?0K3dPV1QZCeWoHZr7b5SpPbKT/uO83NQkU+ysiyVPCA/EADsOx3gyLeg?=
+ =?windows-1255?Q?w8FAVEC6zhtM56aihGHTnQ81OoncD8JWezJFfrR6y4kDWZG0p0yfRpZ6?=
+ =?windows-1255?Q?bvCKbmCjaKiwpn4zD0weOOQhsC25VI9OwAxuYOjC4luOw2MkA//XRsXv?=
+ =?windows-1255?Q?KUzhMqDRbKPKDXIApcq4Ih8e/fVxPdBoq+O/W9hDDM3TwB9HjN/9setG?=
+ =?windows-1255?Q?vmBSNDfuqE79+0nx7iDrHl/2ayJ7oFHlGhP33cz9waZfPYTKqyOtCqFE?=
+ =?windows-1255?Q?83x/iBo4L9ANPTOJl3DGFB/PP2dJz0ZCa1zzJW1nNNIxHWOqxO6+XpzZ?=
+ =?windows-1255?Q?WE+pIK9NDP9qiWVzoQ92bkvmeMz6cQAo21D5dOFfeGBgVNbQRtkmUocI?=
+ =?windows-1255?Q?KnqRQ4Y6W4hVdxdB4EQeaHGd6sm5X3WbkQxR7T60GfRbxXi5e8JbPqqP?=
+ =?windows-1255?Q?24OFHOHr3cLcogCS68iDkZG8pSmfGLo/m4/1Z3/ASlpEX9qH7S3UWz/K?=
+ =?windows-1255?Q?fj1fiOzI7n22M9tmYq65FN0BvEl+sn+GGkUqfSYlxsnUVp9XfwWpQoMe?=
+ =?windows-1255?Q?mYbrOK5AEiLB7gQ+bNH7pjuVkPkjiEP00NhyFOkUn8HeyKWsWi42PSzo?=
+ =?windows-1255?Q?2s1DdvhwNklWioO57kUlZA9Qd33RSvaFwAbHFUUFHGFQ+hZ3M/2jeaVh?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="windows-1255"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8683; h=from:subject; bh=czSMCGdMP4Zyrr8fUtCTJKV3QkH9XMp2P84y9iqGzvE=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhDa7Q05vzCyv/C+X37SFm9tonPHNTDPmeDyfL6WJM WkJDsZeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYQ2u0AAKCRCJcvTf3G3AJtu4D/ 9A0n0fkYoVF8zOcW4lzqhOH07vbnwGmnmVpT5O2rGg06I/UNQb+aRBQMa829A3FDw6fcXwgBe5sY6N 8EHPntfbYtlXviGJbn8pwD4kW412i9EkJcTvNMsg77pSGe0q+UhfRNCp+aGY4y5yXbKhAnFGUFBQIs IoJ91oCvEEcjSZS3cUvERUUd5ZyqfAcB6Eof/qUE1+kUyNooIwvDITDWi6LvlGQsa4mwvn5sJzRAJ6 rIAmQ92s2nVPwLpMhhT4ASNMmjiqAlTE+p7bBdHe/lZ0yDV5U1kP8CbP5vkFmNvNNuNJLyeLXVSdye 1OgWpKWJI8I3Tag3wFyiziPzMEILbN28XB5W7tIwKC68FfBAdAX2Nym4aufAyaGLuY5mzvgQTP4vIE 2eVEin4OZzRMGgntdVZWXFGEdHVOqrvERClSqA/ttEBP+0ayFvqmYQDCaPIqTF7cWEgkaYl8ChhxCp 87ILfTh+5N+GGQWCmCRYcy3gdUD/R5ZJkCMBNfXy9VenyN5O6kSo5ZawqC+/aP2mtyZxRzAMuDpRqa OMJdnxN97T9OYKHTZC5uKvjVW3Ny8Icp5u2QPPecYL240muMsKE6vSYgMXMddFMfUJlrXEZYGZ3Ssu heeaGoUa6GKH6XLFykaCXSrPGZDo1XP1s72Ys09ItwmovFscP3HhNjUmXgEg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b7c24ad-eb44-4869-efb1-08d959245ca3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Aug 2021 21:51:35.7108
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cJMRDe23N6gV4/kJ65mUNY/oPv7gFCF4BdX6ixDQSqGTNR7MXzmoMZ+hIdDduTbQU0xKpu0cbDtHMVJkdAx/zDfEaHniaT3sGLgYoFur2DA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1772
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IEEE80211_RADIOTAP_EXT has a value of 31, which means if shift was ever
-cast to 64-bit, the result would become sign-extended. As a matter of
-robustness, just replace all the open-coded shifts with BIT().
+From: =FA=E5=EE=F8 =E0=E1=E5=E8=E1=E5=EC <tomer432100@gmail.com>  Sent: Fri=
+day, August 6, 2021 11:03 AM
 
-Suggested-by: David Sterba <dsterba@suse.cz>
-Link: https://lore.kernel.org/lkml/20210728092323.GW5047@twin.jikos.cz/
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-wireless@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- net/mac80211/rx.c       | 22 +++++++++++-----------
- net/mac80211/status.c   | 16 ++++++++--------
- net/wireless/radiotap.c |  4 ++--
- 3 files changed, 21 insertions(+), 21 deletions(-)
+> Attaching the patches Michael asked for debugging=20
+> 1) Print the cpumask when < num_possible_cpus():
+> diff --git a/arch/x86/hyperv/mmu.c b/arch/x86/hyperv/mmu.c
+> index e666f7eaf32d..620f656d6195 100644
+> --- a/arch/x86/hyperv/mmu.c
+> +++ b/arch/x86/hyperv/mmu.c
+> @@ -60,6 +60,7 @@ static void hyperv_flush_tlb_others(const struct cpumas=
+k *cpus,
+> =A0 =A0 =A0 =A0 struct hv_tlb_flush *flush;
+> =A0 =A0 =A0 =A0 u64 status =3D U64_MAX;
+> =A0 =A0 =A0 =A0 unsigned long flags;
+> + =A0 =A0 =A0 unsigned int cpu_last;
+>
+>=A0 =A0 =A0 =A0 trace_hyperv_mmu_flush_tlb_others(cpus, info);
+>
+> @@ -68,6 +69,11 @@ static void hyperv_flush_tlb_others(const struct cpuma=
+sk *cpus,
+>
+>=A0 =A0 =A0 =A0 local_irq_save(flags);
+>
+> + =A0 =A0 =A0 cpu_last =3D cpumask_last(cpus);
+> + =A0 =A0 =A0 if (cpu_last > num_possible_cpus()) {
 
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index 2563473b5cf1..3eb7b03b23c6 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -372,7 +372,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
- 			ieee80211_calculate_rx_timestamp(local, status,
- 							 mpdulen, 0),
- 			pos);
--		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_TSFT);
-+		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_TSFT));
- 		pos += 8;
- 	}
- 
-@@ -396,7 +396,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
- 		*pos = 0;
- 	} else {
- 		int shift = 0;
--		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_RATE);
-+		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_RATE));
- 		if (status->bw == RATE_INFO_BW_10)
- 			shift = 1;
- 		else if (status->bw == RATE_INFO_BW_5)
-@@ -433,7 +433,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
- 	    !(status->flag & RX_FLAG_NO_SIGNAL_VAL)) {
- 		*pos = status->signal;
- 		rthdr->it_present |=
--			cpu_to_le32(1 << IEEE80211_RADIOTAP_DBM_ANTSIGNAL);
-+			cpu_to_le32(BIT(IEEE80211_RADIOTAP_DBM_ANTSIGNAL));
- 		pos++;
- 	}
- 
-@@ -459,7 +459,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
- 	if (status->encoding == RX_ENC_HT) {
- 		unsigned int stbc;
- 
--		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_MCS);
-+		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_MCS));
- 		*pos++ = local->hw.radiotap_mcs_details;
- 		*pos = 0;
- 		if (status->enc_flags & RX_ENC_FLAG_SHORT_GI)
-@@ -483,7 +483,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
- 		while ((pos - (u8 *)rthdr) & 3)
- 			pos++;
- 		rthdr->it_present |=
--			cpu_to_le32(1 << IEEE80211_RADIOTAP_AMPDU_STATUS);
-+			cpu_to_le32(BIT(IEEE80211_RADIOTAP_AMPDU_STATUS));
- 		put_unaligned_le32(status->ampdu_reference, pos);
- 		pos += 4;
- 		if (status->flag & RX_FLAG_AMPDU_LAST_KNOWN)
-@@ -510,7 +510,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
- 	if (status->encoding == RX_ENC_VHT) {
- 		u16 known = local->hw.radiotap_vht_details;
- 
--		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_VHT);
-+		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_VHT));
- 		put_unaligned_le16(known, pos);
- 		pos += 2;
- 		/* flags */
-@@ -554,7 +554,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
- 		u8 flags = IEEE80211_RADIOTAP_TIMESTAMP_FLAG_32BIT;
- 
- 		rthdr->it_present |=
--			cpu_to_le32(1 << IEEE80211_RADIOTAP_TIMESTAMP);
-+			cpu_to_le32(BIT(IEEE80211_RADIOTAP_TIMESTAMP));
- 
- 		/* ensure 8 byte alignment */
- 		while ((pos - (u8 *)rthdr) & 7)
-@@ -642,7 +642,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
- 		/* ensure 2 byte alignment */
- 		while ((pos - (u8 *)rthdr) & 1)
- 			pos++;
--		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_HE);
-+		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_HE));
- 		memcpy(pos, &he, sizeof(he));
- 		pos += sizeof(he);
- 	}
-@@ -652,14 +652,14 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
- 		/* ensure 2 byte alignment */
- 		while ((pos - (u8 *)rthdr) & 1)
- 			pos++;
--		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_HE_MU);
-+		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_HE_MU));
- 		memcpy(pos, &he_mu, sizeof(he_mu));
- 		pos += sizeof(he_mu);
- 	}
- 
- 	if (status->flag & RX_FLAG_NO_PSDU) {
- 		rthdr->it_present |=
--			cpu_to_le32(1 << IEEE80211_RADIOTAP_ZERO_LEN_PSDU);
-+			cpu_to_le32(BIT(IEEE80211_RADIOTAP_ZERO_LEN_PSDU));
- 		*pos++ = status->zero_length_psdu_type;
- 	}
- 
-@@ -667,7 +667,7 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
- 		/* ensure 2 byte alignment */
- 		while ((pos - (u8 *)rthdr) & 1)
- 			pos++;
--		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_LSIG);
-+		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_LSIG));
- 		memcpy(pos, &lsig, sizeof(lsig));
- 		pos += sizeof(lsig);
- 	}
-diff --git a/net/mac80211/status.c b/net/mac80211/status.c
-index bae321ff77f6..1f295e5721ef 100644
---- a/net/mac80211/status.c
-+++ b/net/mac80211/status.c
-@@ -305,8 +305,8 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
- 	memset(rthdr, 0, rtap_len);
- 	rthdr->it_len = cpu_to_le16(rtap_len);
- 	rthdr->it_present =
--		cpu_to_le32((1 << IEEE80211_RADIOTAP_TX_FLAGS) |
--			    (1 << IEEE80211_RADIOTAP_DATA_RETRIES));
-+		cpu_to_le32(BIT(IEEE80211_RADIOTAP_TX_FLAGS) |
-+			    BIT(IEEE80211_RADIOTAP_DATA_RETRIES));
- 	pos = (unsigned char *)(rthdr + 1);
- 
- 	/*
-@@ -331,7 +331,7 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
- 			sband->bitrates[info->status.rates[0].idx].bitrate;
- 
- 	if (legacy_rate) {
--		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_RATE);
-+		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_RATE));
- 		*pos = DIV_ROUND_UP(legacy_rate, 5 * (1 << shift));
- 		/* padding for tx flags */
- 		pos += 2;
-@@ -358,7 +358,7 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
- 
- 	if (status && status->rate &&
- 	    (status->rate->flags & RATE_INFO_FLAGS_MCS)) {
--		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_MCS);
-+		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_MCS));
- 		pos[0] = IEEE80211_RADIOTAP_MCS_HAVE_MCS |
- 			 IEEE80211_RADIOTAP_MCS_HAVE_GI |
- 			 IEEE80211_RADIOTAP_MCS_HAVE_BW;
-@@ -374,7 +374,7 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
- 			(IEEE80211_RADIOTAP_VHT_KNOWN_GI |
- 			 IEEE80211_RADIOTAP_VHT_KNOWN_BANDWIDTH);
- 
--		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_VHT);
-+		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_VHT));
- 
- 		/* required alignment from rthdr */
- 		pos = (u8 *)rthdr + ALIGN(pos - (u8 *)rthdr, 2);
-@@ -419,7 +419,7 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
- 		   (status->rate->flags & RATE_INFO_FLAGS_HE_MCS)) {
- 		struct ieee80211_radiotap_he *he;
- 
--		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_HE);
-+		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_HE));
- 
- 		/* required alignment from rthdr */
- 		pos = (u8 *)rthdr + ALIGN(pos - (u8 *)rthdr, 2);
-@@ -495,7 +495,7 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
- 	/* IEEE80211_RADIOTAP_MCS
- 	 * IEEE80211_RADIOTAP_VHT */
- 	if (info->status.rates[0].flags & IEEE80211_TX_RC_MCS) {
--		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_MCS);
-+		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_MCS));
- 		pos[0] = IEEE80211_RADIOTAP_MCS_HAVE_MCS |
- 			 IEEE80211_RADIOTAP_MCS_HAVE_GI |
- 			 IEEE80211_RADIOTAP_MCS_HAVE_BW;
-@@ -512,7 +512,7 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
- 			(IEEE80211_RADIOTAP_VHT_KNOWN_GI |
- 			 IEEE80211_RADIOTAP_VHT_KNOWN_BANDWIDTH);
- 
--		rthdr->it_present |= cpu_to_le32(1 << IEEE80211_RADIOTAP_VHT);
-+		rthdr->it_present |= cpu_to_le32(BIT(IEEE80211_RADIOTAP_VHT));
- 
- 		/* required alignment from rthdr */
- 		pos = (u8 *)rthdr + ALIGN(pos - (u8 *)rthdr, 2);
-diff --git a/net/wireless/radiotap.c b/net/wireless/radiotap.c
-index 36f1b59a78bf..8099c9564a59 100644
---- a/net/wireless/radiotap.c
-+++ b/net/wireless/radiotap.c
-@@ -125,13 +125,13 @@ int ieee80211_radiotap_iterator_init(
- 
- 	/* find payload start allowing for extended bitmap(s) */
- 
--	if (iterator->_bitmap_shifter & (1<<IEEE80211_RADIOTAP_EXT)) {
-+	if (iterator->_bitmap_shifter & (BIT(IEEE80211_RADIOTAP_EXT))) {
- 		if ((unsigned long)iterator->_arg -
- 		    (unsigned long)iterator->_rtheader + sizeof(uint32_t) >
- 		    (unsigned long)iterator->_max_length)
- 			return -EINVAL;
- 		while (get_unaligned_le32(iterator->_arg) &
--					(1 << IEEE80211_RADIOTAP_EXT)) {
-+					(BIT(IEEE80211_RADIOTAP_EXT))) {
- 			iterator->_arg += sizeof(uint32_t);
- 
- 			/*
--- 
-2.30.2
+I think this should be ">=3D" since cpus are numbered starting at zero.
+In your VM with 64 CPUs, having CPU #64 in the list would be error.
 
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_emerg("ERROR_HYPERV: cpu_last=3D%*pbl", =
+cpumask_pr_args(cpus));
+> + =A0 =A0 =A0 }
+> +
+>=A0 =A0 =A0 =A0 /*
+>=A0 =A0 =A0 =A0 =A0* Only check the mask _after_ interrupt has been disabl=
+ed to avoid the
+>=A0 =A0 =A0 =A0 =A0* mask changing under our feet.
+>
+> 2) disable the Hyper-V specific flush routines:
+> diff --git a/arch/x86/hyperv/mmu.c b/arch/x86/hyperv/mmu.c
+> index e666f7eaf32d..8e77cc84775a 100644
+> --- a/arch/x86/hyperv/mmu.c
+> +++ b/arch/x86/hyperv/mmu.c
+> @@ -235,6 +235,7 @@ static u64 hyperv_flush_tlb_others_ex(const struct cp=
+umask *cpus,
+>
+> void hyperv_setup_mmu_ops(void)
+>=A0{
+> + =A0return;
+>=A0 =A0 =A0 =A0 if (!(ms_hyperv.hints & HV_X64_REMOTE_TLB_FLUSH_RECOMMENDE=
+D))
+>=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return;
+
+Otherwise, this code looks good to me and matches what I had in mind.
+
+Note that the function native_flush_tlb_others() is used when the Hyper-V s=
+pecific
+flush function is disabled per patch #2 above, or when hv_cpu_to_vp_index()=
+ returns
+VP_INVALID.  In a quick glance through the code, it appears that native_flu=
+sh_tlb_others()
+will work even if there's a non-existent CPU in the cpumask that is passed =
+as an argument.
+So perhaps an immediate workaround is Patch #2 above. =20
+
+Perhaps hyperv_flush_tlb_others() should be made equally tolerant of a non-=
+existent
+CPU being in the list. But if you are willing, I'm still interested in the =
+results of an
+experiment with just Patch #1.  I'm curious about what the CPU list looks l=
+ike when
+it has a non-existent CPU.  Is it complete garbage, or is there just one no=
+n-existent
+CPU?
+
+The other curiosity is that I haven't seen this Linux panic reported by oth=
+er users,
+and I think it would have come to our attention if it were happening with a=
+ny frequency.
+You see the problem fairly regularly.  So I'm wondering what the difference=
+ is.
+
+Michael
