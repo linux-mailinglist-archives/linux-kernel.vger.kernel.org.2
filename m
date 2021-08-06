@@ -2,130 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA413E2DB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9EE83E2DB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244608AbhHFPXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 11:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244667AbhHFPXK (ORCPT
+        id S244660AbhHFPYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 11:24:09 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:48209 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244480AbhHFPX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 11:23:10 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FE4C061371;
-        Fri,  6 Aug 2021 08:22:13 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id o7-20020a05600c5107b0290257f956e02dso9257660wms.1;
-        Fri, 06 Aug 2021 08:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=4hP5EFCo5371tB5JgIut0p+iw6oHDNxFxSxtkYd2mP0=;
-        b=UlZnp+lfGGHy4+bRfTqLgXqKXdnc10XVCiL8ICCsf/cLMkFpA+1EnYD4wH2bXHsT57
-         nSPdgVl5vcK4nyZebLWtFu2pfRxBPZZrOyNiKngJg6+rwOWNZ2Ve25BBKjJqMMzkTUSL
-         QZ6EHsC26K2A3lpaCm+zmWviONfIoHfXsYQvRZ1+Cx3mdwfbeA9Kc/Sb8U/VIysVlntz
-         dFPivCDGq5yYzdnvOu+GiKf8G2wo5r/Dpl5lQmOs96oG1uF+y7VSI/ZSaR9GCBWvbHSp
-         o6t+ngaestGl7RoeSUBgcUiuNB5CTxZ6sdLJRqHCAHbc/l7W0tbxkfRSctz6HrXNNrgI
-         rc6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=4hP5EFCo5371tB5JgIut0p+iw6oHDNxFxSxtkYd2mP0=;
-        b=fdW2movEq/hKlRXVxN7D+Lw6uHK9WYqVimcB/ocZMf87XDb6t0hdx2tXeTmr4ia0Zo
-         1+psQmPrsZ6jmFGG6Bz7BKpnMtlyBYOWKXqQ7y+yRtb8Imhp6kzCSaJaQ9jARCti6VFa
-         najC1ivlbEAgczIEN+8lqvGdcNKVPg51Up9bzZwwq8UKCp5yb/XidV5vqhtY9nnyAuFs
-         tcOWJkSr7DOK5cPHlkAIYKz8Ae2AyTwKefCjJbW/aljYsmsHxnlKohEioEYf4j9OcI7M
-         LrnvDr5GegTpZbWHesP7kqWV608JTaTwPJMwmGLX7FQHuF5vHwZUX/6XRW0kRx4N0kx3
-         jlsw==
-X-Gm-Message-State: AOAM530MKHLd1+0GIK6g40KY0hcoqhTq5l6hteOA4RhXb2rK68BY2SFE
-        yYIIcB2t6z4Zr5I436w40TWSFUmXdyuLCaZD
-X-Google-Smtp-Source: ABdhPJyrExZu6DwoTxsC65fugZwJekFV9gpV8k/RTLbJBOCe+a2FR4z1r7FLDq1rJvPlsXMBwj5NLA==
-X-Received: by 2002:a1c:208e:: with SMTP id g136mr20873244wmg.142.1628263331754;
-        Fri, 06 Aug 2021 08:22:11 -0700 (PDT)
-Received: from precision (aftr-62-216-202-158.dynamic.mnet-online.de. [62.216.202.158])
-        by smtp.gmail.com with ESMTPSA id h14sm9844922wrp.55.2021.08.06.08.22.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 08:22:11 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 17:22:08 +0200
-From:   Mete Polat <metepolat2000@gmail.com>
-To:     Michel Lespinasse <michel@lespinasse.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Jesper Nilsson <jesper@jni.nu>, Arnd Bergmann <arnd@arndb.de>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: [PATCH v2] rbtree: remove unneeded explicit alignment in struct
- rb_node
-Message-ID: <YQ1ToK8EMdAO4CyH@precision>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        Fri, 6 Aug 2021 11:23:59 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 69D3D5C00D5;
+        Fri,  6 Aug 2021 11:23:37 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute6.internal (MEProxy); Fri, 06 Aug 2021 11:23:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        stressinduktion.org; h=mime-version:message-id:in-reply-to
+        :references:date:from:to:cc:subject:content-type; s=fm1; bh=B4fX
+        XNqDcExo5PbK//XdrezpKXKEhtECX/f5RWkRlZM=; b=oeI36COyVM9U1hXuidYJ
+        OUB3cq3QS+PVb52AWBJBSqTKV6FUxqvvN9UQMthDKepf4RfCMOtI41tKWxcsdjs+
+        tjEJVtZ5mYj5ihsEse+58Ym4Cc2scgOJChF9kMP94GacuL+MGS0baUYS/fJlPq6Y
+        +7kMKFhOw1+yxuqZRjBBEGFiQlIDfGRMxsxkowM8Cu7miXuCNpTBfWmgHXyGIxro
+        id8hv9wruBFAvY1kk8WDO0JmWSh6g1mYemoWhzAKHe6nGg2lROt2nG18v6SSlVYT
+        r/+eWhhayDTweBKcseTydEVW76f1uNTiL1Hne9O6XcOslVHDGK6DmRFnNKtBb8YA
+        Dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=B4fXXN
+        qDcExo5PbK//XdrezpKXKEhtECX/f5RWkRlZM=; b=BMKDWBvcJFPk5WNNhCEOWv
+        v8bd8jHxiC2ZEGjZLk5EEZdfw8U0zA5K4OCp8E69nkYT3AXoSxztx8rvkJ04FPvO
+        O+r/6MGiEbC0V1hOWCF0YuzeuTmmEb1d2sLOyNUuEcfy/TD52Zoj4INwoXZ5sXWi
+        /yGrT+/j927HT3pILOQHvqtqneJacsLZiJqcykTjOs1zanicr765koGTVgWfqZnR
+        5GJnEgIDEbBp1hKA34YtL4tA1JtAHGxALptOcsxPtTR4W9KPclOezfyzGqcNkNDt
+        PLYpY2XR3nqf1mR2LLZK3BUykCWtF7kBJl7MbqZtre/Ao/fueZqsyp8l17rhhrjw
+        ==
+X-ME-Sender: <xms:-FMNYba3wbcKbyf9wgYkWVyK2gJnFDx1quK4B4kw29HKqD-7DnHNGQ>
+    <xme:-FMNYabYRsDk8sX58hVCHVMbJdpVtRQsjuBjVXLy-wmFybNKV80lENSMmjtI_h8HV
+    1qP64SpaObNQUncbw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjedugdekgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfjfgrnhhn
+    vghsucfhrhgvuggvrhhitgcuufhofigrfdcuoehhrghnnhgvshesshhtrhgvshhsihhnug
+    hukhhtihhonhdrohhrgheqnecuggftrfgrthhtvghrnhepveetteehffdtgeeihfduueel
+    heeljeeiffffueevveeugeejkeefkefffedvfedtnecuffhomhgrihhnpehkvghrnhgvlh
+    drohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    pehhrghnnhgvshesshhtrhgvshhsihhnughukhhtihhonhdrohhrgh
+X-ME-Proxy: <xmx:-FMNYd-6Nynv3FvFpCl0ivD04HtNLANjzdfQIiMHYdysxZvHO9e9Bg>
+    <xmx:-FMNYRpXFovffZVtkS3pwoBG0-FOw98OB8RRIfFQT-abPz1TeAQORw>
+    <xmx:-FMNYWo2AF8US5zq7s7I2IHjhUj_wruSHcKhppwBI02Qd3Xd6vghOA>
+    <xmx:-VMNYXd2hFUZLvXSXOQZ_F94EL9omos_Nj06k_TU2-YhkYNzgWuqwA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 5115AA03D9B; Fri,  6 Aug 2021 11:23:36 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-552-g2afffd2709-fm-20210805.001-g2afffd27
+Mime-Version: 1.0
+Message-Id: <7ae60193-0114-46d2-9770-697a2f88b85b@www.fastmail.com>
+In-Reply-To: <20210806082124.96607-1-wangkefeng.wang@huawei.com>
+References: <20210806082124.96607-1-wangkefeng.wang@huawei.com>
+Date:   Fri, 06 Aug 2021 17:22:55 +0200
+From:   "Hannes Frederic Sowa" <hannes@stressinduktion.org>
+To:     "Kefeng Wang" <wangkefeng.wang@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        "David Miller" <davem@davemloft.net>
+Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        "Minmin chen" <chenmingmin@huawei.com>
+Subject: Re: [PATCH v2] once: Fix panic when module unload
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e977145aeaad ("[RBTREE] Add explicit alignment to sizeof(long) for
-struct rb_node.") adds an explicit alignment to the struct rb_node due to
-some speciality of the CRIS architecture.
+On Fri, Aug 6, 2021, at 10:21, Kefeng Wang wrote:
+> DO_ONCE
+> DEFINE_STATIC_KEY_TRUE(___once_key);
+> __do_once_done
+>   once_disable_jump(once_key);
+>     INIT_WORK(&w->work, once_deferred);
+>     struct once_work *w;
+>     w->key = key;
+>     schedule_work(&w->work);                     module unload
+>                                                    //*the key is
+> destroy*
+> process_one_work
+>   once_deferred
+>     BUG_ON(!static_key_enabled(work->key));
+>        static_key_count((struct static_key *)x)    //*access key, crash*
+> 
+> When module uses DO_ONCE mechanism, it could crash due to the above
+> concurrency problem, we could reproduce it with link[1].
+> 
+> Fix it by add/put module refcount in the once work process.
+> 
+> [1] 
+> https://lore.kernel.org/netdev/eaa6c371-465e-57eb-6be9-f4b16b9d7cbf@huawei.com/
+> 
+> Cc: Hannes Frederic Sowa <hannes@stressinduktion.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Reported-by: Minmin chen <chenmingmin@huawei.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-The support for the CRIS architecture was removed with commit c690eddc2f3b
-("CRIS: Drop support for the CRIS port")
+Acked-by: Hannes Frederic Sowa <hannes@stressinduktion.org>
 
-So, remove this now unneeded explicit alignment in struct rb_node as well.
-
-This basically reverts commit e977145aeaad ("[RBTREE] Add explicit
-alignment to sizeof(long) for struct rb_node.").
-
-The rbtree node color is stored in the LSB of '__rb_parent_color'.
-Only mask the first bit in '__rb_parent()', otherwise it modifies the
-node's parent address on m68k.
-
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: Mete Polat <metepolat2000@gmail.com>
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Mete Polat <metepolat2000@gmail.com>
----
-I have tested it on x86, but not on m68k. Can you ack that Geert?
-
- include/linux/rbtree.h           | 3 +--
- include/linux/rbtree_augmented.h | 2 +-
- 2 files changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/rbtree.h b/include/linux/rbtree.h
-index d31ecaf4fdd3..e9390be1ba67 100644
---- a/include/linux/rbtree.h
-+++ b/include/linux/rbtree.h
-@@ -25,8 +25,7 @@ struct rb_node {
- 	unsigned long  __rb_parent_color;
- 	struct rb_node *rb_right;
- 	struct rb_node *rb_left;
--} __attribute__((aligned(sizeof(long))));
--    /* The alignment might seem pointless, but allegedly CRIS needs it */
-+};
- 
- struct rb_root {
- 	struct rb_node *rb_node;
-diff --git a/include/linux/rbtree_augmented.h b/include/linux/rbtree_augmented.h
-index d1c53e9d8c75..94b6a0f4499e 100644
---- a/include/linux/rbtree_augmented.h
-+++ b/include/linux/rbtree_augmented.h
-@@ -145,7 +145,7 @@ RB_DECLARE_CALLBACKS(RBSTATIC, RBNAME,					      \
- #define	RB_RED		0
- #define	RB_BLACK	1
- 
--#define __rb_parent(pc)    ((struct rb_node *)(pc & ~3))
-+#define __rb_parent(pc)    ((struct rb_node *)(pc & ~1))
- 
- #define __rb_color(pc)     ((pc) & 1)
- #define __rb_is_black(pc)  __rb_color(pc)
--- 
-2.32.0
-
+Thanks,
+Hannes
