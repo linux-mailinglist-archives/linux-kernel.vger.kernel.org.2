@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7B13E2691
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA76B3E269E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243939AbhHFI6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
+        id S244023AbhHFJAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhHFI6s (ORCPT
+        with ESMTP id S243999AbhHFJAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:58:48 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83722C061799
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 01:58:32 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id p21so12063844edi.9
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 01:58:32 -0700 (PDT)
+        Fri, 6 Aug 2021 05:00:08 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC86C06179A
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 01:59:51 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id c9so10093186wri.8
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 01:59:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=df8++FWbj/c7Rh+fJ0cVDnwCyH2C0VRncjI6Of0tQHA=;
-        b=YECZkR66h+JemyGlKtd1DC46CNFe+tcn9k+1kLw3r/0y3hcDvQ7Z7kkBdqx19GlDfv
-         P6NiEshdvVAi1HbjT0AJ9/dpDFqN4/9VpqjYu0u9bfC42gMo5xHwuzocQu8wodBN1gW1
-         Mk1VVPTu5csTaFFLjZ1OpP22O6Uj5W8fX65RLaSJBFVL94UeQ1jZOa3uU05hcdFs5N4A
-         VK+XiRuM3qaZojKEQ23AY5gflCgOxCf5gNX8DN4WSOr9il6HWXMauocYgMxicD2bM/Pg
-         ZxeuWTKTvq1XiooBFc3W2feOKdgQ8sAcAcYtM7bGBB8m56sF03cw7j2Z9aqCJ2fwmN4f
-         OrMw==
+        bh=vxK+zMmGDONmI7WIfXVr+8WBGLkcNBTLLe2aNcDSEh0=;
+        b=ee+ZouvgPjCHKBIKONHKjNK+HhdwZ3dfG+T8JdGJHKzyRTx+OZNy6xiGo9jZpWD1HU
+         dk7Sz+Tpe/QSvy9SS0rjN4JdO0XFqAB0N7U1ywRrDYDRs8XAyx8bdObs2cyGnlRMYbse
+         7RGIygz4FQt6Nh/z5Msobvpb5yjG4w2g9TY38DN64CcoaXoFH3lE715+sQAPTJL4y88H
+         rj07YQaMc9C427YWHdI6Kv66l36x9tvY2PI0gCFyHOCHTRnpKODqwF28v16yzp4OTYKW
+         fOsYd1fjRdnZaTzCh3RRf8XqbTss9weN+Sja2IhOHkBbZOb9YRst3kHs1QogJDXzMo+X
+         DlKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=df8++FWbj/c7Rh+fJ0cVDnwCyH2C0VRncjI6Of0tQHA=;
-        b=QGawuk7//G8HbI+S/aWWMfauOO619FwdH1PsqQctRQnzQvPVj7Xl+UXqAad94bJObG
-         bfuXdLLCO3pXNlfvqkYQweflH/PxDZIo1WemMUQuVBrcFveQ19zCo4ghscV1409Gk04W
-         QrsDz+ZeqlhmqiFyGC7eXbw4bh6XEZZAMH4fxU8Yd4FE+vydoXOPXnKZi9UnLaT/k13w
-         YU6vMlCAAJdsQu4c0fftFq42wdhop8KN7KjQQgwG1yWtaYauymR0/f2BhwQ6GgtsxfCa
-         e4/gKbEu9yERuONvfnyOFgzrjLNSGq4y99mIqKIWrruQTOQIxTZJyuOqLDX/+qrf7g1W
-         HxcA==
-X-Gm-Message-State: AOAM531moAAmTCKS3FY9r5FGF/GVjDsmcGbzRR62Jwf3gCPFZ6nmgyJK
-        9MrnPqHgBlEDDqyOAgOnU6+JOD0jcJ9/uL4c
-X-Google-Smtp-Source: ABdhPJwsvtrtc7fMRuiirzMDyAVf9Yx9mJc0J92M3T9DMI7XTYrl2912kA/R+4jwlZn/qUaOHS7LRg==
-X-Received: by 2002:aa7:d696:: with SMTP id d22mr11669106edr.309.1628240310947;
-        Fri, 06 Aug 2021 01:58:30 -0700 (PDT)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id o17sm2631318ejb.84.2021.08.06.01.58.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 06 Aug 2021 01:58:30 -0700 (PDT)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] arm64: zynqmp: Fix serial compatible string
-Date:   Fri,  6 Aug 2021 10:58:29 +0200
-Message-Id: <89b36e0a6187cc6b05b27a035efdf79173bd4486.1628240307.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vxK+zMmGDONmI7WIfXVr+8WBGLkcNBTLLe2aNcDSEh0=;
+        b=WXdmvOO99IdzyAC34t9hhZdtf86TVBgjdM5gcpF7qP3KfcP9MZIhpDp5Z2rRijJjrl
+         qUKU7EweC3OGlw+kTMIrrIkmWY59asPVMbnKaz9s9pc76b6A8FdpOLfliIXFDV3tZXRG
+         EKtoEGAVETi61LO2R9T9JHvn7lhG1eglJSgRm2sm4PSABYUVXFlYc/yekAoPAVyzxcD1
+         zt+PeHNMcPYK+GUsBk9YbMCGu9X74wSTr/K70h1FXa8RWE+NI2aTfySZhI6V/uKrGS7F
+         u/LxyCTAEt/UdUJZUAfI1z72ybEVrcdcp8GbVl3iQcBXjrE1+ayqSekMvu7iGrN4BoDw
+         8jfQ==
+X-Gm-Message-State: AOAM530yo5/1aVHZQYpZFXncs9DtOwutKRkUgSVmyiZKWV9LAd+VLN0t
+        e0AW74G85uO/C6oza/Dahc4tFA==
+X-Google-Smtp-Source: ABdhPJxQZefqzxkYiso8YGxQFPxwhTpRO+NEUTCQZ99TUphrLhJ63rt6yHq44uXS+aMzMSDFaqwiMg==
+X-Received: by 2002:a5d:6b8f:: with SMTP id n15mr9416463wrx.103.1628240390316;
+        Fri, 06 Aug 2021 01:59:50 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id x18sm8506144wrw.19.2021.08.06.01.59.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 01:59:49 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/4] nvmem: patches (set 1) for 5.15
+Date:   Fri,  6 Aug 2021 09:59:43 +0100
+Message-Id: <20210806085947.22682-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Based on commit 65a2c14d4f00 ("dt-bindings: serial: convert Cadence UART
-bindings to YAML") compatible string should look like differently that's
-why fix it to be aligned with dt binding.
+Hi Greg,
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+Here are some nvmem patches for 5.14 which includes
+- these are mostly qfprom provider powerdomain support patches.
+- fix in core for incorrect error handing in nvmem_register path
 
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Can you please queue them up for 5.15.
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index 6f0fcec28ae2..b5fde9dddca5 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -786,7 +786,7 @@ ttc3: timer@ff140000 {
- 		};
- 
- 		uart0: serial@ff000000 {
--			compatible = "cdns,uart-r1p12", "xlnx,xuartps";
-+			compatible = "xlnx,zynqmp-uart", "cdns,uart-r1p12";
- 			status = "disabled";
- 			interrupt-parent = <&gic>;
- 			interrupts = <0 21 4>;
-@@ -796,7 +796,7 @@ uart0: serial@ff000000 {
- 		};
- 
- 		uart1: serial@ff010000 {
--			compatible = "cdns,uart-r1p12", "xlnx,xuartps";
-+			compatible = "xlnx,zynqmp-uart", "cdns,uart-r1p12";
- 			status = "disabled";
- 			interrupt-parent = <&gic>;
- 			interrupts = <0 22 4>;
+thanks for you help,
+srini
+
+Rajendra Nayak (3):
+  dt-bindings: nvmem: qfprom: Add optional power-domains property
+  nvmem: qfprom: Fix up qfprom_disable_fuse_blowing() ordering
+  nvmem: qfprom: sc7280: Handle the additional power-domains vote
+
+Srinivas Kandagatla (1):
+  nvmem: core: fix error handling while validating keepout regions
+
+ .../bindings/nvmem/qcom,qfprom.yaml           |  3 ++
+ drivers/nvmem/core.c                          |  7 +++--
+ drivers/nvmem/qfprom.c                        | 31 +++++++++++++++++--
+ 3 files changed, 36 insertions(+), 5 deletions(-)
+
 -- 
-2.32.0
+2.21.0
 
