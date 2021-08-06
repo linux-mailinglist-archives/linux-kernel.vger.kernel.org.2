@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5893E2CE0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3663E2CF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241355AbhHFOnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 10:43:24 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:41306
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238046AbhHFOnX (ORCPT
+        id S232263AbhHFOwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 10:52:22 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:58923 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231577AbhHFOwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 10:43:23 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id C2DDB40660;
-        Fri,  6 Aug 2021 14:43:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1628260981;
-        bh=4FcsXIKOCTXdkCXO47xOoDczDuk4vb+/L+ksQUFW4os=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=cDWY6Pqb2XPx2YyXcpAFYQn209DWyKMhg+ZrWWHmKOduA7dp0NNrcRBxWaXSAN3xc
-         yxqDw9t5xjQsXaqwFjDNI+esMm8xTWI5PR6D/uLJf1X6BwwX+T5GHd8+NsuqMBZ2W8
-         UuZI+GAadjQZ1tGbeHdCFJXSrHiHB5JM3KK6auGQD8m18VWkusOqUYklT64DM4lPCw
-         1k65CkR+SuDDU/HAzPF1dzeDoihLh4TCaiAYJtuuNCK7+jKqv1LioTRcZQPQWDb7jC
-         rg5Twvo8GFVmXYHnvGd41oZ69N7FaYHDiXK1VwTer19PhFrS5nNhy/+9Ax1ydwrWlq
-         jWpx9EvGvThLg==
-From:   Colin King <colin.king@canonical.com>
-To:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        linux-scsi@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] scsi: ufs: Fix unsigned int compared with less than zero
-Date:   Fri,  6 Aug 2021 15:43:01 +0100
-Message-Id: <20210806144301.19864-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 6 Aug 2021 10:52:21 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M42Ss-1mC1Ce0iLw-0007mA for <linux-kernel@vger.kernel.org>; Fri, 06 Aug
+ 2021 16:52:04 +0200
+Received: by mail-wr1-f50.google.com with SMTP id b13so11437422wrs.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 07:52:04 -0700 (PDT)
+X-Gm-Message-State: AOAM530i+MDVvDkDoFbTqM/ildS2nGThNI3AiC8fR/e3nrtIIYSGk+3m
+        G2T8K9k+/gvtT5sCP/1KdF1lD5OD+iV5nmnWwME=
+X-Google-Smtp-Source: ABdhPJzaR6qJfePFLgCHPEvS2rl+ctcdCp7KoQ3Fcdv85XiJXg5JdFJiE2fEE5Q5uLbt8pe01lz22DOOlzKs3X1rUrA=
+X-Received: by 2002:adf:f446:: with SMTP id f6mr11689710wrp.361.1628261523856;
+ Fri, 06 Aug 2021 07:52:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210806030138.123479-1-xianting.tian@linux.alibaba.com> <20210806030138.123479-2-xianting.tian@linux.alibaba.com>
+In-Reply-To: <20210806030138.123479-2-xianting.tian@linux.alibaba.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 6 Aug 2021 16:51:47 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2=BmVv0tvUKaca+LYxuAussAJtAJW9O3fRN2CbV2-9aw@mail.gmail.com>
+Message-ID: <CAK8P3a2=BmVv0tvUKaca+LYxuAussAJtAJW9O3fRN2CbV2-9aw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] tty: hvc: pass DMA capable memory to put_chars()
+To:     Xianting Tian <xianting.tian@linux.alibaba.com>
+Cc:     gregkh <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Amit Shah <amit@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Omar Sandoval <osandov@fb.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:DuTto7kTHONKfiGCgAJejg3DLsCVVBUeFiGoJnb9xvfdOo7xrIM
+ eNwunxdMv6eTZmqn2f59Rix3H5l1J3LcK88TIf0Y/lQhU6g7QUYjv6Vp8RdlXIZbP8Rebad
+ ISzo0vr9P5R5VIXjvnFhVjwjM2CXz98fdNsoyYB5wVN+TGWiI+7ZtD+04W65nsoHzyGawcV
+ 4RArcs0f8TPApUtVmLkXg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ubePW391dT4=:3EGI5fK9+AfIrYBqm9Mpbt
+ Kr46qGeuHAc7VCc9wEfh3IBS+FS+2P8fUyI9KbOqKq6rXXWrPTxNoZZTRTO83n8dyP8zCyhSI
+ 2WalzlHfdaIfXvgekXIr+lA4tpwdTCIbAmq3CqWLtlUqIQMdj8kXq+uFz175Dh+XhAyOQUjBB
+ PX6RQtOc5UmJuyeQ2nLVxBn3cpb9fluuoFOGvDOUZBGuWMIESfSWNcJ9/WS+ybSVAAdsTOB2+
+ L74mykklgJO13ZBoLwu//TciX7W5atD1NWIgZL5bNMpCkym1TJogdO7AyEDMjbTOJuY6y4pGw
+ P4rwYHN1TFwcqz/8l5kUUSn0c1De+KGHoQXT25Rr5uysAWwLa0NjB1OFjopX+LEXLuNGdgygm
+ 29FXmjFCzbnifBiOIA1V3WCPd6lS3bt+9e5WSrI7zg7kWvRouh2VVCbQpzUpYTDrIlFRypex8
+ rRVnbqvqqcR/QRpxyHdf3+yZtMJ11ya4QiMYYhx+743vQpYEJgdl8M4WJnt9Mr6kY+H7eOBAH
+ Bvl1T+cvB9+A631ZjiY9FVq/eLZ4n7MbZyV/Z9Mv4yhHsREO/FXBL4hCaWo9v2M9jlLcJwdFU
+ eJK1+jO4r44uMOOLw3h64pHoKXJ3gekPDJ+T76oWrbt6E+m4LMHW6CYo15mqx3vfmp1Aa/mof
+ q0xfpIt8pdpxZev/RoYy96ypqCr81ljX86cqwWykUuVpBOXDByhuKrkRNWHv/ga87Pas+ywqV
+ f2TbZVfnLAwaldb1DZ6tyolB1bro6QE7ox4D0XCXojPkHLkMNpaXLNevzMkXVbk681+GRB8mB
+ FRxfO9t/IgK81JXfjcdWFA4Oe4O50SQl6KJhW+tkysnAHmpXT9KAqUmlij7yJnI5GtQAoyp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, Aug 6, 2021 at 5:01 AM Xianting Tian
+<xianting.tian@linux.alibaba.com> wrote:
+> @@ -163,6 +155,13 @@ static void hvc_console_print(struct console *co, const char *b,
+>         if (vtermnos[index] == -1)
+>                 return;
+>
+> +       list_for_each_entry(hp, &hvc_structs, next)
+> +               if (hp->vtermno == vtermnos[index])
+> +                       break;
+> +
+> +       c = hp->c;
+> +
+> +       spin_lock_irqsave(&hp->c_lock, flags);
 
-Variable tag is currently and unsigned int and is being compared to
-less than zero, this check is always false. Fix this by making tag
-an int.
+The loop looks like it might race against changes to the list. It seems strange
+that the print function has to actually search for the structure here.
 
-Addresses-Coverity: ("Macro compares unsigned to 0")
-Fixes: 4728ab4a8e64 ("scsi: ufs: Remove ufshcd_valid_tag()")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/scsi/ufs/ufshcd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It may be better to have yet another array for the buffer pointers next to
+the cons_ops[] and vtermnos[] arrays.
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 47a5085f16a9..21378682cb4f 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6976,7 +6976,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
- {
- 	struct Scsi_Host *host = cmd->device->host;
- 	struct ufs_hba *hba = shost_priv(host);
--	unsigned int tag = cmd->request->tag;
-+	int tag = cmd->request->tag;
- 	struct ufshcd_lrb *lrbp = &hba->lrb[tag];
- 	unsigned long flags;
- 	int err = FAILED;
--- 
-2.31.1
+> +/*
+> + * These sizes are most efficient for vio, because they are the
+> + * native transfer size. We could make them selectable in the
+> + * future to better deal with backends that want other buffer sizes.
+> + */
+> +#define N_OUTBUF       16
+> +#define N_INBUF                16
+> +
+> +#define __ALIGNED__ __attribute__((__aligned__(sizeof(long))))
 
+I think you need a higher alignment for DMA buffers, instead of sizeof(long),
+I would suggest ARCH_DMA_MINALIGN.
+
+       Arnd
