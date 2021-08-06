@@ -2,69 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40CF3E28E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C263E2890
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245234AbhHFKsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:48:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50328 "EHLO mail.kernel.org"
+        id S245099AbhHFK3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:29:14 -0400
+Received: from mga17.intel.com ([192.55.52.151]:44193 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231627AbhHFKsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:48:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A955600D4;
-        Fri,  6 Aug 2021 10:48:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628246917;
-        bh=K7xSW1BrPtsORLTEfeXSn9ivIG1WzzGR6n91TTw+1uk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=T2BsGEgfH2Q9ZDOvY5ShbZZtBpwkY8OYtxCeB7WohECeAMVaEDBmQ66cKKrOS2Bmr
-         ypAIHABLopzFwBxBSo3w9pvXz8PHjnKRtGRFkn3JqnobHr04xoHNDtFYUeTJZIyHQG
-         uTR8GB6yVUkjcmrMkLvalnphzl1ygl0xS684iMBARi4zjeEL7Mqjg0ug1mYibdtp5I
-         43+5dLQKZIrmC8s+glAqK4r06Y5zDcZW8/nHHfrFRN2UHw8EJm9h4tbs+WUUWNW5cq
-         OEthq1rSo+QiJEAcjKIW1LZCvEgBHbLpNaEjaZtLZ+axPAucRq84L9Ll27lwTCgT5t
-         NN1Ooo2bhnMdQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Gross <agross@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: linux-next: manual merge of the qcom tree with the usb tree
-Date:   Fri,  6 Aug 2021 11:21:38 +0100
-Message-Id: <20210806102138.27373-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S245094AbhHFK3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 06:29:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="194617369"
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="194617369"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 03:28:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="459325358"
+Received: from pl-dbox.sh.intel.com (HELO pl-dbox) ([10.239.159.39])
+  by orsmga007.jf.intel.com with ESMTP; 06 Aug 2021 03:28:53 -0700
+Date:   Fri, 6 Aug 2021 18:22:46 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Chen Rong <rong.a.chen@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: ERROR: modpost: "__raw_writesl"
+ [drivers/i3c/master/i3c-master-cdns.ko] undefined!
+Message-ID: <20210806102246.GB1330186@pl-dbox>
+References: <202108041936.52T4sUU6-lkp@intel.com>
+ <CAKwvOdmOTNTGvGeaRKSp4f6M1PC-HQLjMoaeQU6WM9ygxuU5_w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdmOTNTGvGeaRKSp4f6M1PC-HQLjMoaeQU6WM9ygxuU5_w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Wed, Aug 04, 2021 at 10:18:10AM -0700, Nick Desaulniers wrote:
+> On Wed, Aug 4, 2021 at 4:39 AM kernel test robot <lkp@intel.com> wrote:
+> >
+> > Hi Nathan,
+> >
+> > First bad commit (maybe != root cause):
+> >
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   d5ad8ec3cfb56a017de6a784835666475b4be349
+> > commit: 6fef087d0d37ba7dba8f3d75566eb4c256cd6742 hexagon: handle {,SOFT}IRQENTRY_TEXT in linker script
+> > date:   4 weeks ago
+> > config: hexagon-randconfig-r023-20210804 (attached as .config)
+> 
+> cool, one of the first reports from 0day bot of hexagon :)
+:-) yeah, we just enabled it. BTW: we use one specific version of clang,
+does such hexagon support work in latest clang 14.0.0?
 
-Today's linux-next merge of the qcom tree got a conflict in:
+Thanks
 
-  arch/arm64/boot/dts/qcom/msm8996.dtsi
-
-between commit:
-
-  1f958f3dff42 ("Revert "arm64: dts: qcom: Harmonize DWC USB3 DT nodes name"")
-
-from the usb tree and commit:
-
-  9da65e441d4d ("arm64: dts: qcom: Add support for SONY Xperia X Performance / XZ / XZs (msm8996, Tone platform)")
-
-from the qcom tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
-diff --cc arch/arm64/boot/dts/qcom/msm8996.dtsi
-index 78c55ca10ba9,31686950004e..000000000000
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> 
+> > compiler: clang version 12.0.0
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6fef087d0d37ba7dba8f3d75566eb4c256cd6742
+> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> >         git fetch --no-tags linus master
+> >         git checkout 6fef087d0d37ba7dba8f3d75566eb4c256cd6742
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All errors (new ones prefixed by >>, old ones prefixed by <<):
+> >
+> > >> ERROR: modpost: "__raw_writesl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
+> > >> ERROR: modpost: "__raw_readsl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
+> >
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+> 
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
