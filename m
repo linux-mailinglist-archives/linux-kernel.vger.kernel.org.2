@@ -2,115 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3439E3E1FCF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CDD3E1FD8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240000AbhHFALu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 20:11:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40824 "EHLO mail.kernel.org"
+        id S235500AbhHFARa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 20:17:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242724AbhHFAL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 20:11:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFAD960F25;
-        Fri,  6 Aug 2021 00:11:10 +0000 (UTC)
+        id S231253AbhHFAR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 20:17:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA25E61164;
+        Fri,  6 Aug 2021 00:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628208671;
-        bh=09gEvtd2SL4jbKh/NXm632UOPNtYql6ThdlYDiUh+rM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j8pg/eWTT/OgVA9B/NL0ClMr5x1Y628jFqPTEDyYPcCM801Gwg5//uISO+5yPcF6F
-         sxMIcxe51R8d0JeUFz/o29ebJB6U4dXZjdbA/qm9z5z+ztEEwjzdRPqbk91DSDW+p6
-         RF9kjCNRVJGLq7CudkIi7cPm3rN9PVSDdW3cWl/7XGItYAONHMjqjxyPawexhenOqj
-         wNKFB09FGt1UT6juigM5EDop8YsNsbsOVQ6sW+L3qAb4ZGjMmjKwb+XrvR64ABgibO
-         egwzbh3E6BVMGBD+snVaQForZWapV5D3/fqEVZh/FdWgO4tNPrGQ9NTqnbxsuaQZOA
-         H+GIasUvVAP+g==
-Date:   Thu, 5 Aug 2021 17:11:10 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        stable@vger.kernel.org
-Subject: Re: [linux-stable-rc:linux-4.19.y 1181/1498] ERROR:
- "__compiletime_assert_491" [drivers/gpu/drm/i915/i915.ko] undefined!
-Message-ID: <YQx+HjjUrzIEkG/O@Ryzen-9-3900X.localdomain>
-References: <202108060412.oMqAe0rc-lkp@intel.com>
- <CAKwvOdk6PNK1unJ2Yym4WHV=AXjdYwEyfWf_fPxO013ZtJa6Yw@mail.gmail.com>
+        s=k20201202; t=1628209033;
+        bh=defyoJDmegfMyeFnTrjoa+8oq8G0jbIQzX8vKY3OKZU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dwtd4yWqnJ5Rx5Er8eZcWMCoJ0IRjKudBJFW/nlQgIQI6qKuc3Ev11FGKoF8NJF3q
+         Pj2GtkDSbkb5fm3yR056Tn/8OcyYRmaF4hJE8PyFe3lUCOdBbZ2wbUVRSNHK2pR4B9
+         nblnc1/XI7xQao2+/zE4MUmOM8YNJ7FmbTasr98H5CJuaxXY60TKxxFoN9rnf3wRxS
+         1P/H9Iig8vBkW4ITUyeJpEedSc5SUXuQStz032xiTVaNt+XWJ2DNyJEtDnHNOHhWhX
+         8uEbD9/Ak+FZDUoIys3m2ou7sublYIHD6ZjQb2RSvE3YPN5w8Sx9y8leT4IKrXUW/b
+         FOjMKa1wcyUww==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH v3 1/8] x86/sgx: Add /sys/kernel/debug/x86/sgx_total_mem
+Date:   Fri,  6 Aug 2021 03:16:57 +0300
+Message-Id: <20210806001704.667889-2-jarkko@kernel.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210806001704.667889-1-jarkko@kernel.org>
+References: <20210806001704.667889-1-jarkko@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdk6PNK1unJ2Yym4WHV=AXjdYwEyfWf_fPxO013ZtJa6Yw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 04:23:40PM -0700, Nick Desaulniers wrote:
-> On Thu, Aug 5, 2021 at 1:24 PM kernel test robot <lkp@intel.com> wrote:
-> >
-> > Hi Nick,
-> >
-> > First bad commit (maybe != root cause):
-> >
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> > head:   7457eed4b647560ae1b1800c295efc5f1db22e4b
-> > commit: 7c29fd831799d09474dfdae556207b7102647a45 [1181/1498] lib/string.c: implement stpcpy
-> > config: x86_64-randconfig-r024-20210805 (attached as .config)
-> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 31a71a393f65d9e07b5b0756fef9dd16690950ee)
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=7c29fd831799d09474dfdae556207b7102647a45
-> >         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> >         git fetch --no-tags linux-stable-rc linux-4.19.y
-> >         git checkout 7c29fd831799d09474dfdae556207b7102647a45
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> > >> ERROR: "__compiletime_assert_491" [drivers/gpu/drm/i915/i915.ko] undefined!
-> 
-> ^ I'm actively trying to improve these diagnostics in LLVM at the
-> moment. Hopefully that will make this report clearer!
-> https://reviews.llvm.org/D106030
+Just like normal memory, SGX memory can be overcommitted.  SGX has its
+own reclaim mechanism which kicks in when physical SGX memory (Enclave
+Page Cache / EPC) is exhausted.  That reclaim mechanism is relatively
+rarely exercised and needs selftests to poke at it.
 
-It does help :)
+The amount of EPC on the system is determined by the BIOS and it varies
+wildly between systems.  It can be dozens of MB on desktops, or many GB
+on servers.
 
-drivers/gpu/drm/i915/intel_engine_cs.c:466:2: error: call to '__compiletime_assert_491' declared with attribute error: BUILD_BUG_ON failed: (execlists_num_ports(execlists)) == 0 || (((execlists_num_ports(execlists)) & ((execlists_num_ports(execlists)) - 1)) != 0)
-        BUILD_BUG_ON_NOT_POWER_OF_2(execlists_num_ports(execlists));
-        ^
-include/linux/build_bug.h:21:2: note: expanded from macro 'BUILD_BUG_ON_NOT_POWER_OF_2'
-        BUILD_BUG_ON((n) == 0 || (((n) & ((n) - 1)) != 0))
-        ^
-include/linux/build_bug.h:69:2: note: expanded from macro 'BUILD_BUG_ON'
-        BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-        ^
-include/linux/build_bug.h:45:37: note: expanded from macro 'BUILD_BUG_ON_MSG'
-#define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-                                    ^
-note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-include/linux/compiler.h:336:2: note: expanded from macro '_compiletime_assert'
-        __compiletime_assert(condition, msg, prefix, suffix)
-        ^
-include/linux/compiler.h:329:4: note: expanded from macro '__compiletime_assert'
-                        prefix ## suffix();                             \
-                        ^
-<scratch space>:83:1: note: expanded from here
-__compiletime_assert_491
-^
-4 warnings and 1 error generated.
+To run in a reasonable amount of time, the selftest needs to know how
+much EPC there is in the system.
 
-As it turns out, this has come up before and it was fixed by commit
-410ed5731a65 ("drm/i915: Ensure intel_engine_init_execlist() builds with
-Clang").
+Introduce a new debugfs file to export that information.
 
-Greg and Sasha, could this be picked up for 4.19?
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Cheers,
-Nathan
+v3:
+* Describe the units of sgx_total_mem in Dcumentation/x86/sgx.rst.
+* Rewrite of the commit message (suggested by Dave):
+  https://lore.kernel.org/linux-sgx/5d3614af-2393-6744-9d85-7001241ca76e@intel.com/
+
+v2:
+* sgx_nr_all_pages -> sgx_total_mem
+---
+ Documentation/x86/sgx.rst      |  6 ++++++
+ arch/x86/kernel/cpu/sgx/main.c | 10 +++++++++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+index dd0ac96ff9ef..f11bfb331b93 100644
+--- a/Documentation/x86/sgx.rst
++++ b/Documentation/x86/sgx.rst
+@@ -250,3 +250,9 @@ user wants to deploy SGX applications both on the host and in guests
+ on the same machine, the user should reserve enough EPC (by taking out
+ total virtual EPC size of all SGX VMs from the physical EPC size) for
+ host SGX applications so they can run with acceptable performance.
++
++Debugging
++=========
++
++*/sys/kernel/debug/x86/sgx_total_mem* contains an integer describing
++the total SGX reserved memory in bytes, available in the system.
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 63d3de02bbcc..b65da19a53ee 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*  Copyright(c) 2016-20 Intel Corporation. */
+ 
++#include <linux/debugfs.h>
+ #include <linux/file.h>
+ #include <linux/freezer.h>
+ #include <linux/highmem.h>
+@@ -28,7 +29,10 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
+ static LIST_HEAD(sgx_active_page_list);
+ static DEFINE_SPINLOCK(sgx_reclaimer_lock);
+ 
+-/* The free page list lock protected variables prepend the lock. */
++/* Total EPC memory available in bytes. */
++static unsigned long sgx_total_mem;
++
++/* The number of free EPC pages in all nodes. */
+ static unsigned long sgx_nr_free_pages;
+ 
+ /* Nodes with one or more EPC sections. */
+@@ -656,6 +660,8 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
+ 		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
+ 	}
+ 
++	sgx_total_mem += nr_pages * PAGE_SIZE;
++
+ 	return true;
+ }
+ 
+@@ -823,6 +829,8 @@ static int __init sgx_init(void)
+ 	if (sgx_vepc_init() && ret)
+ 		goto err_provision;
+ 
++	debugfs_create_ulong("sgx_total_mem", 0444, arch_debugfs_dir, &sgx_total_mem);
++
+ 	return 0;
+ 
+ err_provision:
+-- 
+2.32.0
+
