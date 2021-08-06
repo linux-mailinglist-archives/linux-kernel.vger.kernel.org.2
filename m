@@ -2,50 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9353E2362
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 08:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D8E3E2365
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 08:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243397AbhHFGln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 02:41:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229625AbhHFGll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 02:41:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11FBD611B0;
-        Fri,  6 Aug 2021 06:41:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628232085;
-        bh=iuGbdZGYxA9aBjWOoujin9mNkUt7jmXvTheOfTYXCcQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r1m5rb1vWawHqiDT6Ol7HjLFTwjprnlRlUqniSZX16DkggMREEI4wyMmyHKncTbEH
-         XWl+TqkPWwyulEV9fCUTg8Ksvn5GGZ15zmwdVJOxK457KFiJQWTzToM+fMRFvR4uuT
-         wZuRuQdv+VT2o6H7DTkFg0GlaKAyA0CbF29oWbdU=
-Date:   Fri, 6 Aug 2021 08:41:22 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-stable <stable@vger.kernel.org>,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [PATCH stable 4.4 4.9] can: raw: raw_setsockopt(): fix raw_rcv
- panic for sock UAF
-Message-ID: <YQzZkjg20mPXHUqK@kroah.com>
-References: <20210803112241.3253-1-socketcan@hartkopp.net>
+        id S243404AbhHFGmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 02:42:02 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55344 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230386AbhHFGmB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 02:42:01 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6B4D9223AD;
+        Fri,  6 Aug 2021 06:41:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1628232105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L3TW/hbpU2iIogA7/HVgljoLbJH3MuJbKrYqp6bZxa8=;
+        b=lcGg7DjCd59pnNkutnkEqAUCpfRkb+2fqXYTowV1MgFCNq9kTkwmrTFxey1/CHITdFK8PR
+        8w/YX1C4MaaLQ/bnVpn3lSAxPaNjXCEqViCXRXq6j5H3izcB/1GkUsDh/q3x/dmwfYfyp0
+        mdUJfzAila9qn2TVoUc8Arqgr8gQdHA=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 2DE98A3B87;
+        Fri,  6 Aug 2021 06:41:45 +0000 (UTC)
+Date:   Fri, 6 Aug 2021 08:41:44 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v7 1/2] mm: introduce process_mrelease system call
+Message-ID: <YQzZqFwDP7eUxwcn@dhcp22.suse.cz>
+References: <20210805170859.2389276-1-surenb@google.com>
+ <46998d10-d0ca-aeeb-8dcd-41b8130fb756@redhat.com>
+ <CAJuCfpGvqgUWpdL_KNE1tnqH2OjqX64QjBYttoPRtGgXWfONRQ@mail.gmail.com>
+ <CALvZod5ANyddJJVmyrzArH5Z--PAufpt1DyTgipQixbpe3Du7Q@mail.gmail.com>
+ <CAJuCfpEgXh96WEpqn5aPE8mmmpW28j4KHoBkDQN-ob0vNOVHoQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210803112241.3253-1-socketcan@hartkopp.net>
+In-Reply-To: <CAJuCfpEgXh96WEpqn5aPE8mmmpW28j4KHoBkDQN-ob0vNOVHoQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 01:22:41PM +0200, Oliver Hartkopp wrote:
-> From: Ziyang Xuan <william.xuanziyang@huawei.com>
+On Thu 05-08-21 11:37:06, Suren Baghdasaryan wrote:
+[...]
+> > One question I have is why mmget() and not mmgrab()? I see mmgrab() in
+> > oom_kill.c.
 > 
-> commit 54f93336d000229f72c26d8a3f69dd256b744528 upstream.
-> 
-> We get a bug during ltp can_filter test as following.
+> You are likely right here. The caller's context probably can't be
+> considered a "real user" when reaping the mm. However, we take an
+> mmap_lock shortly after, so not sure if in practice there is much
+> difference.
+> Michal, WDYT?
 
-thanks for the backport.
-
-greg k-h
+As explained in other response. mmget is to pin address space to not go
+away. You do not need that for this purpose. All you need is to pin mm
+to not go away. Address space can be unmapped concurrently.
+-- 
+Michal Hocko
+SUSE Labs
