@@ -2,170 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 731B63E2AC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9163E2AC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343734AbhHFMoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 08:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236860AbhHFMoh (ORCPT
+        id S1343752AbhHFMrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 08:47:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41227 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231887AbhHFMru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 08:44:37 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E7FC061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 05:44:21 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id y7so766062ljp.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 05:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AUGZghFDl11vs00dn1bBhuFfeam16nyG6Ia09ASLgZs=;
-        b=Tn0SdedHjL8I2aKCvPSfOmnmBwXw8vTE0CtlDMTiP4CidYwjaChJwhKhyt2Qd/FO+g
-         UNTviRBd+PWByGSsuafxHFown5psNKCm/aGF1y700SAnmIryqlYGfeTPOtTO2mYSZIKb
-         ek5EmHa4RPVNeBM6k9n5y/HZ899fvQ0L8V9LhbwIIUvT+mtIF0iy0SgW9E57Gi61J8+Z
-         AykVPNP/IsKcFYAhWji4xE2feOtFH2fQBVGywMA1R6DIoEdCmMMsbMCb/uOBNuvpAOtI
-         xtn6vkB2vXZwQ7P9vfPQAB79eDq2LzRAcf9zaDbzA1VuIsg2d+rbf35/OkFCV5qeXbCm
-         +68A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AUGZghFDl11vs00dn1bBhuFfeam16nyG6Ia09ASLgZs=;
-        b=tG0YW5Plqf2g+14hAWJjy+JBZr39IIPOuay8aL8YLfVTk88+X7aYmog9AAI6OxpSoh
-         GnHYj7vLQ7R0aH6PyDLbFVNr60gZcj3dqz8WGq2Cak7iqVfmemxsLiohIXyVab7NyxD+
-         ax6HVXd8mlArQEFyHpXK4ziXTSCfufaAeThztnKMhgkPbNkgUaKNldwG1go//JfLj70j
-         KqZFHnJyUj8AkfUf57f1ItZ3sHidil8roda6dCPPzBjwxbLsgPorWRGOzPevmEhoQoEw
-         rRJ1fZOy7gzmXMm1fBZVGQIsL47oJLBGICseK1zI/z1hjYr3tKNKs9M/sunjopCHyE8+
-         5lwA==
-X-Gm-Message-State: AOAM532sJKd+3/cpeBILTrXgpF+Wcru6orYrlHpP79nM5NUdnikRecbB
-        7z1W7tiHaFmbtTIihcYmu0R9QXeXe3o1p34uEIU=
-X-Google-Smtp-Source: ABdhPJyw9UQdg2wcTF6X6YqWYALeU15zPaIeekDTsntEglCxKQbhjNwgbNs8ElgLyi66gGTX5Dv7Dw2Okzt7g1N24y8=
-X-Received: by 2002:a05:651c:b10:: with SMTP id b16mr6674355ljr.35.1628253858084;
- Fri, 06 Aug 2021 05:44:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210728135217.591173-1-suzuki.poulose@arm.com> <20210728135217.591173-8-suzuki.poulose@arm.com>
-In-Reply-To: <20210728135217.591173-8-suzuki.poulose@arm.com>
-From:   Linu Cherian <linuc.decode@gmail.com>
-Date:   Fri, 6 Aug 2021 18:14:06 +0530
-Message-ID: <CAAHhmWj=dTkobukjRYmdsP_BwmVwKQrcecH4=0kOjtgo8axVaQ@mail.gmail.com>
-Subject: Re: [PATCH 07/10] arm64: Add erratum detection for TRBE overwrite in
- FILL mode
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>, maz@kernel.org,
+        Fri, 6 Aug 2021 08:47:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628254054;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=971GhShz25Kr5BT/yqIK2pAuLtt/U3ecg5I+mmxzob0=;
+        b=C7lUokzjxdAMbLoqqe9EpvRvf655yQWkoH4igG/Ty5/2zCjfyNvJzXygMlLW0m9iJmUxy9
+        3mxp+gwuLhKb6s0TZNftkgEFZKZVNmaULgGQPsbgke2Dz+lH42//KiB/bDwwAN6N8ikTHi
+        HKWCjwhf1Z/yAXK4pDYwQU2QLbD5BTo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-201-M9FlUlnAMRCzKX-mM45-aQ-1; Fri, 06 Aug 2021 08:47:33 -0400
+X-MC-Unique: M9FlUlnAMRCzKX-mM45-aQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 06F2E1084F5F;
+        Fri,  6 Aug 2021 12:47:30 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.192.224])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 16DFE5D6A1;
+        Fri,  6 Aug 2021 12:47:16 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Marek Kedzierski <mkedzier@redhat.com>,
+        Hui Zhu <teawater@gmail.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
         Anshuman Khandual <anshuman.khandual@arm.com>,
-        catalin.marinas@arm.com, Coresight ML <coresight@lists.linaro.org>,
-        linux-kernel@vger.kernel.org, james.morse@arm.com,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Linu Cherian <lcherian@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-acpi@vger.kernel.org
+Subject: [PATCH v3 0/9] mm/memory_hotplug: "auto-movable" online policy and memory groups
+Date:   Fri,  6 Aug 2021 14:47:06 +0200
+Message-Id: <20210806124715.17090-1-david@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
+Hi,
 
-On Wed, Jul 28, 2021 at 7:23 PM Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->
-> Arm Neoverse-N2 and the Cortex-A710 cores are affected
-> by a CPU erratum where the TRBE will overwrite the trace buffer
-> in FILL mode. The TRBE doesn't stop (as expected in FILL mode)
-> when it reaches the limit and wraps to the base to continue
-> writing upto 3 cache lines. This will overwrite any trace that
-> was written previously.
->
-> Add the Neoverse-N2 erratumi(#2139208) and Cortex-A710 erratum
-> (#2119858) to the  detection logic.
->
-> This will be used by the TRBE driver in later patches to work
-> around the issue. The detection has been kept with the core
-> arm64 errata framework list to make sure :
->   - We don't duplicate the framework in TRBE driver
->   - The errata detection is advertised like the rest
->     of the CPU errata.
->
-> Note that the Kconfig entries will be added after we have added
-> the work around in the TRBE driver, which depends on the cpucap
-> from here.
->
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> cc: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  arch/arm64/kernel/cpu_errata.c | 25 +++++++++++++++++++++++++
->  arch/arm64/tools/cpucaps       |  1 +
->  2 files changed, 26 insertions(+)
->
-> diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
-> index e2c20c036442..ccd757373f36 100644
-> --- a/arch/arm64/kernel/cpu_errata.c
-> +++ b/arch/arm64/kernel/cpu_errata.c
-> @@ -340,6 +340,18 @@ static const struct midr_range erratum_1463225[] = {
->  };
->  #endif
->
-> +#ifdef CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
-> +static const struct midr_range trbe_overwrite_fill_mode_cpus[] = {
-> +#ifdef CONFIG_ARM64_ERRATUM_2139208
-> +       MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
-> +#endif
-> +#ifdef CONFIG_ARM64_ERRATUM_2119858
-> +       MIDR_ALL_VERSIONS(MIDR_CORTEX_A710),
-> +#endif
-> +       {},
-> +};
-> +#endif /* CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE */
-> +
->  const struct arm64_cpu_capabilities arm64_errata[] = {
->  #ifdef CONFIG_ARM64_WORKAROUND_CLEAN_CACHE
->         {
-> @@ -533,6 +545,19 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
->                 .capability = ARM64_WORKAROUND_NVIDIA_CARMEL_CNP,
->                 ERRATA_MIDR_ALL_VERSIONS(MIDR_NVIDIA_CARMEL),
->         },
-> +#endif
-> +#ifdef CONFIG_ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE
-> +       {
-> +               /*
-> +                * The erratum work around is handled within the TRBE
-> +                * driver and can be applied per-cpu. So, we can allow
-> +                * a late CPU to come online with this erratum.
-> +                */
-> +               .desc = "ARM erratum 2119858 or 2139208",
-> +               .capability = ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE,
-> +               .type = ARM64_CPUCAP_WEAK_LOCAL_CPU_FEATURE,
-> +               CAP_MIDR_RANGE_LIST(trbe_overwrite_fill_mode_cpus),
-> +       },
->  #endif
->         {
->         }
-> diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
-> index 49305c2e6dfd..1ccb92165bd8 100644
-> --- a/arch/arm64/tools/cpucaps
-> +++ b/arch/arm64/tools/cpucaps
-> @@ -53,6 +53,7 @@ WORKAROUND_1418040
->  WORKAROUND_1463225
->  WORKAROUND_1508412
->  WORKAROUND_1542419
-> +WORKAROUND_TRBE_OVERWRITE_FILL_MODE
->  WORKAROUND_CAVIUM_23154
->  WORKAROUND_CAVIUM_27456
->  WORKAROUND_CAVIUM_30115
+this series is based on v5.14-rc3, with [2] on top.
 
-We need to keep this list sorted ?
 
-> --
-> 2.24.1
->
-> _______________________________________________
-> CoreSight mailing list
-> CoreSight@lists.linaro.org
-> https://lists.linaro.org/mailman/listinfo/coresight
+I. Goal
+
+The goal of this series is improving in-kernel auto-online support. It
+tackles the fundamental problems that:
+
+ 1) We can create zone imbalances when onlining all memory blindly to
+    ZONE_MOVABLE, in the worst case crashing the system. We have to know
+    upfront how much memory we are going to hotplug such that we can
+    safely enable auto-onlining of all hotplugged memory to ZONE_MOVABLE
+    via "online_movable". This is far from practical and only applicable in
+    limited setups -- like inside VMs under the RHV/oVirt hypervisor which
+    will never hotplug more than 3 times the boot memory (and the
+    limitation is only in place due to the Linux limitation).
+
+ 2) We see more setups that implement dynamic VM resizing, hot(un)plugging
+    memory to resize VM memory. In these setups, we might hotplug a lot of
+    memory, but it might happen in various small steps in both directions
+    (e.g., 2 GiB -> 8 GiB -> 4 GiB -> 16 GiB ...). virtio-mem is the
+    primary driver of this upstream right now, performing such dynamic
+    resizing NUMA-aware via multiple virtio-mem devices.
+
+    Onlining all hotplugged memory to ZONE_NORMAL means we basically have
+    no hotunplug guarantees. Onlining all to ZONE_MOVABLE means we can
+    easily run into zone imbalances when growing a VM. We want a mixture,
+    and we want as much memory as reasonable/configured in ZONE_MOVABLE.
+    Details regarding zone imbalances can be found at [1].
+
+ 3) Memory devices consist of 1..X memory block devices, however, the
+    kernel doesn't really track the relationship. Consequently, also user
+    space has no idea. We want to make per-device decisions.
+
+    As one example, for memory hotunplug it doesn't make sense to use a
+    mixture of zones within a single DIMM: we want all MOVABLE if
+    possible, otherwise all !MOVABLE, because any !MOVABLE part will easily
+    block the whole DIMM from getting hotunplugged.
+
+    As another example, virtio-mem operates on individual units that span
+    1..X memory blocks. Similar to a DIMM, we want a unit to either be all
+    MOVABLE or !MOVABLE. A "unit" can be thought of like a DIMM, however,
+    all units of a virtio-mem device logically belong together and are
+    managed (added/removed) by a single driver. We want as much memory of
+    a virtio-mem device to be MOVABLE as possible.
+
+ 4) We want memory onlining to be done right from the kernel while adding
+    memory, not triggered by user space via udev rules; for example, this
+    is reqired for fast memory hotplug for drivers that add individual
+    memory blocks, like virito-mem. We want a way to configure a policy in
+    the kernel and avoid implementing advanced policies in user space.
+
+The auto-onlining support we have in the kernel is not sufficient. All we
+have is a) online everything MOVABLE (online_movable) b) online everything
+!MOVABLE (online_kernel) c) keep zones contiguous (online). This series
+allows configuring c) to mean instead "online movable if possible according
+to the coniguration, driven by a maximum MOVABLE:KERNEL ratio" -- a new
+onlining policy.
+
+
+II. Approach
+
+This series does 3 things:
+
+ 1) Introduces the "auto-movable" online policy that initially operates on
+    individual memory blocks only. It uses a maximum MOVABLE:KERNEL ratio
+    to make a decision whether a memory block will be onlined to
+    ZONE_MOVABLE or not. However, in the basic form, hotplugged KERNEL
+    memory does not allow for more MOVABLE memory (details in the
+    patches). CMA memory is treated like MOVABLE memory.
+
+ 2) Introduces static (e.g., DIMM) and dynamic (e.g., virtio-mem) memory
+    groups and uses group information to make decisions in the
+    "auto-movable" online policy across memory blocks of a single memory
+    device (modeled as memory group). More details can be found in patch
+    #3 or in the DIMM example below.
+
+ 3) Maximizes ZONE_MOVABLE memory within dynamic memory groups, by
+    allowing ZONE_NORMAL memory within a dynamic memory group to allow for
+    more ZONE_MOVABLE memory within the same memory group. The target use
+    case is dynamic VM resizing using virtio-mem. See the virtio-mem
+    example below.
+
+I remember that the basic idea of using a ratio to implement a policy in
+the kernel was once mentioned by Vitaly Kuznetsov, but I might be wrong
+(I lost the pointer to that discussion).
+
+For me, the main use case is using it along with virtio-mem (and
+DIMMs / ppc64 dlpar where necessary) for dynamic resizing of VMs,
+increasing the amount of memory we can hotunplug reliably again if we
+might eventually hotplug a lot of memory to a VM.
+
+
+III. Target Usage
+
+The target usage will be:
+
+ 1) Linux boots with "mhp_default_online_type=offline"
+
+ 2) User space (e.g., systemd unit) configures memory onlining (according
+    to a config file and system properties), for example:
+    * Setting memory_hotplug.online_policy=auto-movable
+    * Setting memory_hotplug.auto_movable_ratio=301
+    * Setting memory_hotplug.auto_movable_numa_aware=true
+
+ 3) User space enabled auto onlining via "echo online >
+    /sys/devices/system/memory/auto_online_blocks"
+
+ 4) User space triggers manual onlining of all already-offline memory
+    blocks (go over offline memory blocks and set them to "online")
+
+
+IV. Example
+
+For DIMMs, hotplugging 4 GiB DIMMs to a 4 GiB VM with a configured ratio of
+301% results in the following layout:
+	Memory block 0-15:    DMA32   (early)
+	Memory block 32-47:   Normal  (early)
+	Memory block 48-79:   Movable (DIMM 0)
+	Memory block 80-111:  Movable (DIMM 1)
+	Memory block 112-143: Movable (DIMM 2)
+	Memory block 144-275: Normal  (DIMM 3)
+	Memory block 176-207: Normal  (DIMM 4)
+	... all Normal
+	(-> hotplugged Normal memory does not allow for more Movable memory)
+
+For virtio-mem, using a simple, single virtio-mem device with a 4 GiB VM
+will result in the following layout:
+	Memory block 0-15:    DMA32   (early)
+	Memory block 32-47:   Normal  (early)
+	Memory block 48-143:  Movable (virtio-mem, first 12 GiB)
+	Memory block 144:     Normal  (virtio-mem, next 128 MiB)
+	Memory block 145-147: Movable (virtio-mem, next 384 MiB)
+	Memory block 148:     Normal  (virtio-mem, next 128 MiB)
+	Memory block 149-151: Movable (virtio-mem, next 384 MiB)
+	... Normal/Movable mixture as above
+	(-> hotplugged Normal memory allows for more Movable memory within
+	    the same device)
+
+Which gives us maximum flexibility when dynamically growing/shrinking a
+VM in smaller steps.
+
+
+V. Doc Update
+
+I'll update the memory-hotplug.rst documentation, once the overhaul [1] is
+usptream. Until then, details can be found in patch #2.
+
+
+VI. Future Work
+
+ 1) Use memory groups for ppc64 dlpar
+ 2) Being able to specify a portion of (early) kernel memory that will be
+    excluded from the ratio. Like "128 MiB globally/per node" are excluded.
+
+    This might be helpful when starting VMs with extremely small memory
+    footprint (e.g., 128 MiB) and hotplugging memory later -- not wanting
+    the first hotplugged units getting onlined to ZONE_MOVABLE. One
+    alternative would be a trigger to not consider ZONE_DMA memory
+    in the ratio. We'll have to see if this is really rrequired.
+ 3) Indicate to user space that MOVABLE might be a bad idea -- especially
+    relevant when memory ballooning without support for balloon compaction
+    is active.
+
+
+v2 -> v3:
+- "mm/memory_hotplug: introduce "auto-movable" online policy"
+-- Fixup !CONFIG_CMA compilation issue
+- "drivers/base/memory: introduce "memory groups" to logically group memory
+   blocks": Address Gregs feedback
+-- Rename and document group handling functions
+-- Store list of memory blocks instead of a reference count
+-- Return -EBUSY if memory_group_unregister() fails because there are
+   still memory blocks added
+-- Document why memory_group_register() copies the given structure
+-- Simplify return handling in register memory_group_register()
+-- Document "struct memory_group" properly
+- Adjust other code to renamed group handling functions
+- Minor comment fixes and add some more comments
+
+v1 -> v2:
+- Split out all cleanup patches into [2]
+- Minor patch description updates
+- "dax/kmem: use a single static memory group for a single probed unit"
+-- Added
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Marek Kedzierski <mkedzier@redhat.com>
+Cc: Hui Zhu <teawater@gmail.com>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Len Brown <lenb@kernel.org>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: virtualization@lists.linux-foundation.org
+Cc: linux-mm@kvack.org
+Cc: linux-acpi@vger.kernel.org
+
+[1] https://lkml.kernel.org/r/20210707073205.3835-1-david@redhat.com
+[2] https://lkml.kernel.org/r/20210712124052.26491-1-david@redhat.com
+
+David Hildenbrand (9):
+  mm: track present early pages per zone
+  mm/memory_hotplug: introduce "auto-movable" online policy
+  drivers/base/memory: introduce "memory groups" to logically group
+    memory blocks
+  mm/memory_hotplug: track present pages in memory groups
+  ACPI: memhotplug: use a single static memory group for a single memory
+    device
+  dax/kmem: use a single static memory group for a single probed unit
+  virtio-mem: use a single dynamic memory group for a single virtio-mem
+    device
+  mm/memory_hotplug: memory group aware "auto-movable" online policy
+  mm/memory_hotplug: improved dynamic memory group aware "auto-movable"
+    online policy
+
+ drivers/acpi/acpi_memhotplug.c |  35 +++-
+ drivers/base/memory.c          | 225 ++++++++++++++++++++---
+ drivers/dax/kmem.c             |  40 +++-
+ drivers/virtio/virtio_mem.c    |  22 ++-
+ include/linux/memory.h         |  55 +++++-
+ include/linux/memory_hotplug.h |  21 ++-
+ include/linux/mmzone.h         |   7 +
+ mm/memory_hotplug.c            | 325 ++++++++++++++++++++++++++++++++-
+ mm/page_alloc.c                |   3 +
+ 9 files changed, 683 insertions(+), 50 deletions(-)
+
+-- 
+2.31.1
+
