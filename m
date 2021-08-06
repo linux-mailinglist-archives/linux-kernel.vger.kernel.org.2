@@ -2,116 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665773E22FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 07:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C0A3E2305
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 07:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243162AbhHFFoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 01:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241468AbhHFFn6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 01:43:58 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A04EC06179A
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 22:43:42 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id 14so8806989qkc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 22:43:42 -0700 (PDT)
+        id S243171AbhHFFt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 01:49:28 -0400
+Received: from mail-bn8nam08on2054.outbound.protection.outlook.com ([40.107.100.54]:35009
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231405AbhHFFt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 01:49:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cCTwtJpmLD9PmEp7dXYKiupeyNeWrde4mNpiHryw/w7XASHA5Xcs/Md1LaNMYtEWlpPE+rJD0ZU1DOhn1/flJYSvB7z6tDiJk242lSgEPurRWVGnE00uH63mhOdDaaAWJbehBWFKIAsfAWOK8rGuIzcl6oCSrrmXBYLSzE1aYsUNcwJu8XruL8mU0is/A58H2g2YY363DxvYgQ5z1vDTQ3qt25UESF9EEB05MvAR0e+t0qZDnLwfB4oT4LHczN4WjzZ2GgH1vR/ZhSeSY2DDRQ+cQT+VVhMpT2yWxo9veV59xk0pbbQSsj/JW9Wrrv1+BBjErsHUIebJXkXShHINKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tPUzcZXglj1d9XICYVRN9OsHXMBHcN86Epy4t7xvEH0=;
+ b=FjU41RSLDCD6ktHX4nGCNzyTRfXTbbE5QV7IkSorcsW7qMUMvg3s1pE7fUaGwf6yqtLmgvcr7bX0LyMp8dlxBHgAYPbF6qGGoDyQKVAkQ+xrUDBGfPMWsyV09TyIM7PmG7SdPVetx4CyQOoswmHiT8++6Z7JeqxhhsP+JDxf78J4eLi1RZ8o0dYqBIJlWKW5UzXqlWc7w4CxdXNCi+ZEEtE1UzM25MCF3X0UVT4FeNS8pExmrxajncS3F1Kn9Xxc5VeGWUmjDUB/U8vbRwfUMftiz8wNM2F4nO1Bkyf/AR/PhGCj4XQEmRPROME6cyRJljSrXF8FVfMuPij+nFdv7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=nb0tzD291O2NpxD3QkJh5g66mFqozKrq3J7zV5XdneM=;
-        b=tPJQHXxZd9eovODzKBrQ7Z1rQFYYNBRweevMY3p3T4d+8apkd/mZ4TyiXxYdN5oBHu
-         +XFAycB1FnQvzN1zYjFLP5xEqwa6Lz90VqwX3n+BQPHkjfdn5gEk1NigAvwe9fXlD9SE
-         dS8tKra0w06ivJObMdFJ5EFEZhWLYXTvRc4kZiH0MbWzpk2ETptYZEtSqKyavpv2dLJr
-         zClQiwX0qS9s/UburEei25PU/qGv02H+kF28+HWanfBfj27acFef+4JzJA3Wic9Nrwxp
-         3xP1iJS5I0CYcBXgt9BGW6QPmuvSkHWUfkH/I9YOJXzCmWCKUTUQ86xrJrhkLbC+Mi5Y
-         4rMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=nb0tzD291O2NpxD3QkJh5g66mFqozKrq3J7zV5XdneM=;
-        b=BoJSQdqojcbUmm4ayWqM3lCkjDU/OPZ5WjNEUpVaSv4bwitoadyWK8Cj/TQWHCa9YO
-         SRrCiMHPxDXlzPOnnEjM4EyjuqbcrzVgZOpwcsuYDix+zngYih0cDo1P+JLg/fVWSER/
-         C1pBdZv7UqiBv62HJrUNoXfpIgvz3CQRxsdr4wAS2K718bnn8JMwX3160a5qzWrsL07r
-         9uR1FvgwEvPBjgwG4d75zijidB6mpX8YZpUd5WiNLGgHa43JgrwqD3QDOEF3iesBRTws
-         kzoKFHtrJ/TkcvCUFQqW+Ynv9CICJOaUMEm8mORj/niDxxrL3NYkWj1Pat/6WQaKIuBf
-         U01A==
-X-Gm-Message-State: AOAM530eMQ62IEEp8tjP22lp+6h5ovySpEVVBObUTAAWfNe6619DYk0H
-        T88hPrTof/1WomaBPgX7wl7/DQ==
-X-Google-Smtp-Source: ABdhPJwEfynqWrtytJi7KqnkQzjUoNcTR3OSX0gNN/t9rR4rDc5rHaI5jc76FJ1/rG7ENL+FdWpl4w==
-X-Received: by 2002:a37:5a02:: with SMTP id o2mr8487795qkb.476.1628228621102;
-        Thu, 05 Aug 2021 22:43:41 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id g4sm3970818qkk.104.2021.08.05.22.43.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 22:43:40 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 22:43:37 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Yang Shi <shy828301@gmail.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org, Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH 06/16] huge tmpfs: shmem_is_huge(vma, inode, index)
-In-Reply-To: <CAHbLzkqKQ_k_aipojZd=UiHyivaweCpCFJJn7WCWVcxhTijqAQ@mail.gmail.com>
-Message-ID: <749bcf72-efbd-d6c-db30-e9ff98242390@google.com>
-References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com> <dae523ab-c75b-f532-af9d-8b6a1d4e29b@google.com> <CAHbLzkoKZ9OdUfP5DX81CKOJWrRZ0GANrmenNeKWNmSOgUh0bQ@mail.gmail.com> <e7374d7e-4773-aba1-763-8fa2c953f917@google.com>
- <CAHbLzko_wg4mx-LTbJ6JcJo-6VzMh5BAcuMV8PXKPsFXOBVASw@mail.gmail.com> <CAHbLzkqKQ_k_aipojZd=UiHyivaweCpCFJJn7WCWVcxhTijqAQ@mail.gmail.com>
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tPUzcZXglj1d9XICYVRN9OsHXMBHcN86Epy4t7xvEH0=;
+ b=R23ynEkZ57c0gZy+96vypaQuH0wH8QrihcTL0D/Ry4EaaTOYTmcq79n7NyxlRAZT3eKmBxrZk6At/3bsdIlGJh8dEqkgKTs/iBlxOM3ntOiIEkJhqtZ/1xsT2xrGhokEG5l4RQDQfC40oCm2U/oHiOhEKdmm5FTH79FBYhlOa6c=
+Received: from SN4PR0501CA0108.namprd05.prod.outlook.com
+ (2603:10b6:803:42::25) by CH2PR02MB6773.namprd02.prod.outlook.com
+ (2603:10b6:610:7a::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.22; Fri, 6 Aug
+ 2021 05:49:08 +0000
+Received: from SN1NAM02FT0053.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:42:cafe::3f) by SN4PR0501CA0108.outlook.office365.com
+ (2603:10b6:803:42::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.4 via Frontend
+ Transport; Fri, 6 Aug 2021 05:49:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT0053.mail.protection.outlook.com (10.97.4.115) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4394.16 via Frontend Transport; Fri, 6 Aug 2021 05:49:08 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 22:49:07 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 5 Aug 2021 22:49:07 -0700
+Envelope-to: git@xilinx.com,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org,
+ linux-gpio@vger.kernel.org,
+ robh+dt@kernel.org,
+ bgolaszewski@baylibre.com,
+ iwamatsu@nigauri.org,
+ linus.walleij@linaro.org,
+ gregkh@linuxfoundation.org,
+ zou_wei@huawei.com,
+ arnd@arndb.de
+Received: from [172.30.17.109] (port=46834)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1mBsjB-000Duj-Qa; Thu, 05 Aug 2021 22:49:06 -0700
+Subject: Re: [PATCH V2 1/3] firmware: zynqmp: Add MMIO read and write support
+ for PS_MODE pin
+To:     Piyush Mehta <piyush.mehta@xilinx.com>, <arnd@arndb.de>,
+        <zou_wei@huawei.com>, <gregkh@linuxfoundation.org>,
+        <linus.walleij@linaro.org>, <michal.simek@xilinx.com>,
+        <wendy.liang@xilinx.com>, <iwamatsu@nigauri.org>,
+        <bgolaszewski@baylibre.com>, <robh+dt@kernel.org>,
+        <rajan.vaja@xilinx.com>
+CC:     <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <git@xilinx.com>, <sgoud@xilinx.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210805174219.3000667-1-piyush.mehta@xilinx.com>
+ <20210805174219.3000667-2-piyush.mehta@xilinx.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <2cef2e97-18f8-9765-2600-27aa219fb2b2@xilinx.com>
+Date:   Fri, 6 Aug 2021 07:49:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210805174219.3000667-2-piyush.mehta@xilinx.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0bdedfad-8d81-4e8e-8459-08d9589de87a
+X-MS-TrafficTypeDiagnostic: CH2PR02MB6773:
+X-Microsoft-Antispam-PRVS: <CH2PR02MB6773BC715F8BD9C46BB65C59C6F39@CH2PR02MB6773.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: H97kRNU/xEdrsJRuk9PYxxRHcdRn5oM1mMHA2qydFvSTzFCa6uYs8rmAAhORXJgs5VPW7kcH0ems1hzSot9svi0u0P+thFf5Xq9AZwGHgzeyCZ5FpmNMHbLQDzPutMi+Jq/GXiMNm3j+xbOqkRgbeYLphlCoCQX6EemqmycFwYmkCeYegei/tEmIng6nAvOKlPZivU5B+rejVru3ujyxXWrrYEgw4iJglDw8IxYb1AVj6rz0zoMq+Pc2Px+KZ5Ft5YYNn2DoCozzTu+ey11mUBH9epLT/ewur7DWP5FkezO5Phoj4pB7col97fHzvYSfaJqs+WxXuNkgoSGwWfL7SyOfQ6b50mHfLratM4PrxTrSvPtmxSQ7DqEGgn7SIt98F5MJLs5I9TPMUrkSqRUSCy6Dt1AURhh9IrsmS/jNiqM+j6VAgqEd00I5WPFBI7T1/JwdndlotFOVM7OYh0ovNde2iu3Re419AES8gNbb1J1kNp7Qh+TZNxLk1qflO9NK1T/k0BcyORXtj1ZmvcjSkVvpb14kOucMQhplxqirivI6OQQvLsogBI/7wEOdYxWHiHdxTCeKi/feBWDN9V2SJiQ/2Ohxykmf+1t3oCLBkJxGBBvyNgDEqJoL54twjy5REz84TjPuQ42noPRYwprT9Djktye7Coeks1Hlb8lfxqCGgwk4rW+P/KaQwtAl5xLST5kW3cjvdLOcUQSyghg0HEcmX+QC8M93DkyzqUlpFcTDBhc7bhvXr8+/uAhp+ZmwAV3Ah6Kas0GnkIfTNu/S+FLBHBHRgD2maEmZ55rWDHEWT8mAS92jDvvD0h3ckvipfvm3RHylbOVbz1hHwrGPeA==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(396003)(39860400002)(36840700001)(46966006)(336012)(82310400003)(8936002)(316002)(9786002)(36906005)(47076005)(31686004)(54906003)(36860700001)(186003)(6636002)(83380400001)(478600001)(8676002)(110136005)(31696002)(82740400003)(7416002)(4326008)(921005)(36756003)(53546011)(356005)(7636003)(2906002)(426003)(26005)(70206006)(44832011)(5660300002)(6666004)(70586007)(2616005)(50156003)(2101003)(83996005)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2021 05:49:08.2199
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0bdedfad-8d81-4e8e-8459-08d9589de87a
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0053.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6773
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Aug 2021, Yang Shi wrote:
+
+
+On 8/5/21 7:42 PM, Piyush Mehta wrote:
+> Add Xilinx ZynqMP firmware MMIO APIs support to set and get PS_MODE
+> pins value and status. These APIs create an interface path between
+> mode pin controller driver and low-level API to access GPIO pins.
 > 
-> By rereading the code, I think you are correct. Both cases do work
-> correctly without leaking. And the !CONFIG_NUMA case may carry the
-> huge page indefinitely.
+> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+> ---
+> Changes in v2:
+> - Added Xilinx ZynqMP firmware MMIO API support to set and get pin
+>   value and status.
+> ---
+>  drivers/firmware/xilinx/zynqmp.c     | 46 ++++++++++++++++++++++++++++++++++++
+>  include/linux/firmware/xlnx-zynqmp.h | 14 +++++++++++
+>  2 files changed, 60 insertions(+)
 > 
-> I think it is because khugepaged may collapse memory for another NUMA
-> node in the next loop, so it doesn't make too much sense to carry the
-> huge page, but it may be an optimization for !CONFIG_NUMA case.
-
-Yes, that is its intention.
-
+> diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
+> index 15b13832..0234423 100644
+> --- a/drivers/firmware/xilinx/zynqmp.c
+> +++ b/drivers/firmware/xilinx/zynqmp.c
+> @@ -28,6 +28,13 @@
+>  /* Max HashMap Order for PM API feature check (1<<7 = 128) */
+>  #define PM_API_FEATURE_CHECK_MAX_ORDER  7
+>  
+> +/* CRL registers and bitfields */
+> +#define CRL_APB_BASE			0xFF5E0000U
+> +/* BOOT_PIN_CTRL- Used to control the mode pins after boot */
+> +#define CRL_APB_BOOT_PIN_CTRL		(CRL_APB_BASE + (0x250U))
+> +/* BOOT_PIN_CTRL_MASK- out_val[11:8], out_en[3:0] */
+> +#define CRL_APB_BOOTPIN_CTRL_MASK	0xF0FU
+> +
+>  static bool feature_check_enabled;
+>  static DEFINE_HASHTABLE(pm_api_features_map, PM_API_FEATURE_CHECK_MAX_ORDER);
+>  
+> @@ -926,6 +933,45 @@ int zynqmp_pm_pinctrl_set_config(const u32 pin, const u32 param,
+>  EXPORT_SYMBOL_GPL(zynqmp_pm_pinctrl_set_config);
+>  
+>  /**
+> + * zynqmp_pm_bootmode_read() - PM Config API for read bootpin status
+> + * @ps_mode: Returned output value of ps_mode
+> + *
+> + * This API function is to be used for notify the power management controller
+> + * to read bootpin status.
+> + *
+> + * Return: status, either success or error+reason
+> + */
+> +unsigned int zynqmp_pm_bootmode_read(u32 *ps_mode)
+> +{
+> +	unsigned int ret;
+> +	u32 ret_payload[PAYLOAD_ARG_CNT];
+> +
+> +	ret = zynqmp_pm_invoke_fn(PM_MMIO_READ, CRL_APB_BOOT_PIN_CTRL, 0,
+> +				  0, 0, ret_payload);
+> +
+> +	*ps_mode = ret_payload[1];
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(zynqmp_pm_bootmode_read);
+> +
+> +/**
+> + * zynqmp_pm_bootmode_write() - PM Config API for Configure bootpin
+> + * @ps_mode: Value to be written to the bootpin ctrl register
+> + *
+> + * This API function is to be used for notify the power management controller
+> + * to configure bootpin.
+> + *
+> + * Return: Returns status, either success or error+reason
+> + */
+> +int zynqmp_pm_bootmode_write(u32 ps_mode)
+> +{
+> +	return zynqmp_pm_invoke_fn(PM_MMIO_WRITE, CRL_APB_BOOT_PIN_CTRL,
+> +				   CRL_APB_BOOTPIN_CTRL_MASK, ps_mode, 0, NULL);
+> +}
+> +EXPORT_SYMBOL_GPL(zynqmp_pm_bootmode_write);
+> +
+> +/**
+>   * zynqmp_pm_init_finalize() - PM call to inform firmware that the caller
+>   *			       master has initialized its own power management
+>   *
+> diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
+> index 9d1a5c1..dc6f39f 100644
+> --- a/include/linux/firmware/xlnx-zynqmp.h
+> +++ b/include/linux/firmware/xlnx-zynqmp.h
+> @@ -68,6 +68,8 @@ enum pm_api_id {
+>  	PM_SET_REQUIREMENT = 15,
+>  	PM_RESET_ASSERT = 17,
+>  	PM_RESET_GET_STATUS = 18,
+> +	PM_MMIO_WRITE = 19,
+> +	PM_MMIO_READ = 20,
+>  	PM_PM_INIT_FINALIZE = 21,
+>  	PM_FPGA_LOAD = 22,
+>  	PM_FPGA_GET_STATUS = 23,
+> @@ -386,6 +388,8 @@ int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type);
+>  int zynqmp_pm_reset_assert(const enum zynqmp_pm_reset reset,
+>  			   const enum zynqmp_pm_reset_action assert_flag);
+>  int zynqmp_pm_reset_get_status(const enum zynqmp_pm_reset reset, u32 *status);
+> +unsigned int zynqmp_pm_bootmode_read(u32 *ps_mode);
+> +int zynqmp_pm_bootmode_write(u32 ps_mode);
+>  int zynqmp_pm_init_finalize(void);
+>  int zynqmp_pm_set_suspend_mode(u32 mode);
+>  int zynqmp_pm_request_node(const u32 node, const u32 capabilities,
+> @@ -515,6 +519,16 @@ static inline int zynqmp_pm_reset_get_status(const enum zynqmp_pm_reset reset,
+>  	return -ENODEV;
+>  }
+>  
+> +static inline unsigned int zynqmp_pm_bootmode_read(u32 *ps_mode)
+> +{
+> +	return -ENODEV;
+> +}
+> +
+> +static inline int zynqmp_pm_bootmode_write(u32 ps_mode)
+> +{
+> +	return -ENODEV;
+> +}
+> +
+>  static inline int zynqmp_pm_init_finalize(void)
+>  {
+>  	return -ENODEV;
 > 
-> However, as I mentioned in earlier email the new pcp implementation
-> could cache THP now, so we might not need keep this convoluted logic
-> anymore. Just free the page if collapse is failed then re-allocate
-> THP. The carried THP might improve the success rate a little bit but I
-> doubt how noticeable it would be, may be not worth for the extra
-> complexity at all.
 
-It would be great if the new pcp implementation is good enough to
-get rid of khugepaged's confusing NUMA=y/NUMA=n differences; and all
-the *hpage stuff too, I hope.  That would be a welcome cleanup.
+Acked-by: Michal Simek <michal.simek@xilinx.com>
 
-> > > Collapse failure is not uncommon and leaking huge pages gets noticed.
-
-After writing that, I realized how I'm almost always testing a NUMA=y
-kernel (though on non-NUMA machines), and seldom try the NUMA=n build.
-So did so to check no leak, indeed; but was surprised, when comparing
-vmstats, that the NUMA=n run had done 5 times as much thp_collapse_alloc
-as the NUMA=y run.  I've merely made a note to look into that one day:
-maybe it was just a one-off oddity, or maybe the incrementing of stats
-is wrong down one path or the other.
-
-Hugh
+Thanks,
+Michal
