@@ -2,71 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193943E2E07
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9573E2DEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244976AbhHFP4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 11:56:48 -0400
-Received: from mga07.intel.com ([134.134.136.100]:5382 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244860AbhHFP4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 11:56:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10068"; a="278139335"
-X-IronPort-AV: E=Sophos;i="5.84,301,1620716400"; 
-   d="scan'208";a="278139335"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 08:56:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,301,1620716400"; 
-   d="scan'208";a="523545116"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 06 Aug 2021 08:56:29 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id EBA69DE; Fri,  6 Aug 2021 18:50:18 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "David E. Box" <david.e.box@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>
-Subject: [PATCH v1 1/1] platform/x86/intel: pmt: Use y instead of objs in Makefile
-Date:   Fri,  6 Aug 2021 18:50:17 +0300
-Message-Id: <20210806155017.4633-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S244774AbhHFPvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 11:51:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24847 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238025AbhHFPvW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 11:51:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628265065;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+MvzS92Uk60oNAzw+Z3d407dSFOjXozPlgK3Ui3EuhY=;
+        b=SRaw/YZvlGzVq9AnNY5qKTj+UvohuR2BOGecVwrRBt+Cl6f20+zsuVEU1S/BzgitCFWR8r
+        I+1/a4V7OGvzQeCpke1vlcFVM4kdZx0+mSXosNCwiuqVUIJlr9tVfOPHVPmst7RBM43WGg
+        V8zkyONvuHnOkEYvpuurqi1zNUZNTrc=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-zBw2lhEVMwicUlkkcuKw4A-1; Fri, 06 Aug 2021 11:51:04 -0400
+X-MC-Unique: zBw2lhEVMwicUlkkcuKw4A-1
+Received: by mail-ej1-f72.google.com with SMTP id a17-20020a1709062b11b02905882d7951afso3258944ejg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 08:51:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+MvzS92Uk60oNAzw+Z3d407dSFOjXozPlgK3Ui3EuhY=;
+        b=aTmDlRmPT9B12DawihX9fikqMQxOBIGz6qAQRJV1ePKAk/PRiPpTpX36U2IQPMF+UF
+         dghtejrg84qfdA4hKedtQHjdv9Rfl3r2H6UHsa3aIIy9T67gWEpXsc2t95MB+5br2UUU
+         lKZldhJBD+nTSdeYS9mp2Oo145u7n6JmW/QrntOBqtNlk1yuBLB3fPddKdfHGx1+LZdx
+         9VmbnNGGsN/QcMA3dmktpampMTavvy3N9G+9XmvsAl+obTauZHprBKQtp+QEV43o50FS
+         oB4lpmFg7R133cULpHWiXFlHECwHE13/N8iuj+2ly/kHpDmlzUqADkQxub3MqPPqUG4X
+         GzSQ==
+X-Gm-Message-State: AOAM530KzujOq10cqLCXvcjmYXV4Frhm0yK1Y7myel9TatgDhktOoWHP
+        4LBb9mDiBDhQbcDREFMc4lyhbw6fKAu94T7GTpc9XVoNfpNGkSW5eZ1TJytDcQZPG0ItpdsC3RL
+        pvm7Q8XGbB9/u0J2yEJ7De5UE
+X-Received: by 2002:a17:906:3b87:: with SMTP id u7mr10704604ejf.66.1628265063274;
+        Fri, 06 Aug 2021 08:51:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwAe7/Ac/Nrk5QJgOh1300wanbnDOg/CO6BneIJR56E9sgbBIU8cyOWTJf37lCWXFCHY+PAtw==
+X-Received: by 2002:a17:906:3b87:: with SMTP id u7mr10704593ejf.66.1628265063117;
+        Fri, 06 Aug 2021 08:51:03 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id hc19sm2735104ejc.0.2021.08.06.08.51.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Aug 2021 08:51:01 -0700 (PDT)
+Subject: Re: [PATCH v3 2/6] KVM: VMX: Extend BUILD_CONTROLS_SHADOW macro to
+ support 64-bit variation
+To:     Sean Christopherson <seanjc@google.com>,
+        Zeng Guang <guang.zeng@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Robert Hu <robert.hu@intel.com>,
+        Gao Chao <chao.gao@intel.com>,
+        Robert Hoo <robert.hu@linux.intel.com>
+References: <20210805151317.19054-1-guang.zeng@intel.com>
+ <20210805151317.19054-3-guang.zeng@intel.com> <YQxnGIT7XLQvPkrz@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a984cf7e-fe3e-98bd-744f-9d0ff3759e01@redhat.com>
+Date:   Fri, 6 Aug 2021 17:51:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YQxnGIT7XLQvPkrz@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'objs' is for user space tools, for the kernel modules
-we should use 'y'.
+On 06/08/21 00:32, Sean Christopherson wrote:
+>> -BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS)
+>> -BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS)
+>> -BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL)
+>> -BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL)
+>> -BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL)
+>> +BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS, 32)
+>> +BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS, 32)
+>> +BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL, 32)
+>> +BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL, 32)
+>> +BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL, 32)
+>> +BUILD_CONTROLS_SHADOW(tertiary_exec, TERTIARY_VM_EXEC_CONTROL, 64)
+> 
+> This fails to compile because all the TERTIARY collateral is in a later patch.
+> 
+> I think I'd also prefer hiding the 32/64 param via more macros, e.g.
+> 
+> #define __BUILD_CONTROLS_SHADOW(lname, uname, bits)				\
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
+No, please don't. :)  Also because the 64 bit version is used only once.
 
-Hans, feel free to fold in the original commit
+Agreed on keeping everything here except for TERTIARY_VM_EXEC_CONTROL, 
+and moving that line to patch 3.
 
- drivers/platform/x86/intel/pmt/Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/platform/x86/intel/pmt/Makefile b/drivers/platform/x86/intel/pmt/Makefile
-index 019103ee6522..279e158c7c23 100644
---- a/drivers/platform/x86/intel/pmt/Makefile
-+++ b/drivers/platform/x86/intel/pmt/Makefile
-@@ -4,9 +4,9 @@
- # Intel Platform Monitoring Technology Drivers
- #
- 
--pmt_class-objs				+= class.o
- obj-$(CONFIG_INTEL_PMT_CLASS)		+= pmt_class.o
--pmt_telemetry-objs			+= telemetry.o
-+pmt_class-y				:= class.o
- obj-$(CONFIG_INTEL_PMT_TELEMETRY)	+= pmt_telemetry.o
--pmt_crashlog-objs			+= crashlog.o
-+pmt_telemetry-y				:= telemetry.o
- obj-$(CONFIG_INTEL_PMT_CRASHLOG)	+= pmt_crashlog.o
-+pmt_crashlog-y				:= crashlog.o
--- 
-2.30.2
+Paolo
 
