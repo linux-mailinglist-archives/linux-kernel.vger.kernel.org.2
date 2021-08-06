@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6353E2BC3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE083E2BC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344386AbhHFNnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 09:43:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45584 "EHLO mail.kernel.org"
+        id S1344389AbhHFNnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 09:43:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344347AbhHFNnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 09:43:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A806160C41;
-        Fri,  6 Aug 2021 13:42:48 +0000 (UTC)
+        id S244377AbhHFNnp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 09:43:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 527BA61078;
+        Fri,  6 Aug 2021 13:43:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628257369;
-        bh=tz8ZRLoD2biYu7ZxhJ7U45RlqyfpQkBmhi9D2jv7cy8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bBmuahBBtWrCYnT6vHz1KFHrh8kUlPrkcF2F0+YfvpONFUlGG6LG2J9CLH89c8T03
-         k5MZu76bsBL3hShaERTnLZD6Btzkc9851Cqhui0THxE3RJCxUTA/rEQuU0WISMETGL
-         kMJdY6J9aCHAgLIu1S0CFtc++bYCnTwbAgT4t6yCHpLN5eHjXgzsLzfaoTdDOXfskj
-         sC8sL8czYCBRSHGRSbMnsOnpari7wxeXudo79aF3tMxzqE0mGL/pBj6YK8MnZ9c2rI
-         JH5N0fJU8yP7rOWYBc9kEW+rxKlcef1Ow1G7VGCGPWkPdL/a01OfqO/00If2Q9zLzA
-         lE8LJJWGc50gA==
-Date:   Fri, 6 Aug 2021 14:42:45 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org
-Subject: Re: [RFC] bitops/non-atomic: make @nr unsigned to avoid any DIV
-Message-ID: <20210806134244.GA2901@willie-the-truck>
-References: <YQwaIIFvzdNcWnww@hirez.programming.kicks-ass.net>
- <20210805191408.2003237-1-vgupta@synopsys.com>
+        s=k20201202; t=1628257409;
+        bh=xB3Efw0KXOZkZsJCIwg4mugkxOXkw3lNVMttVabtPSA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kGqpxt97w3mtx0+CKwBdCQ/SbUmUaTJDs7BbKjB6R6Y0XrjDTmUECv/YzfEntiPst
+         xP10VhgKHno40Ix6Jkk41Q/z+yOKopmGf0SeiLl0IACwOjoZYd6F/XTXux4+GC4//p
+         HUdfZ7g5JiBxqZkIkxV76Y71WSlv5ZOOoEjCsItlMYtZQgRjV1W2wIGWmrvE760a6Z
+         uqh3eQ9+NkfZoEN/hzHtQVYDC7/yYMVGjylHEUFrvS0F/O/AZRaQldzcojwCS95Zk3
+         aOko5fafiyQhvZnTwQ6pjRCNkyaLV3SSdaJyvc811BqE9LJVfjCALJ6re7Lyz1VTp8
+         qYTI/3iJAXq4Q==
+Date:   Fri, 6 Aug 2021 06:43:28 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        <gregkh@linuxfoundation.org>
+Cc:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <hannes@stressinduktion.org>, <davem@davemloft.net>,
+        <akpm@linux-foundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Minmin chen <chenmingmin@huawei.com>
+Subject: Re: [PATCH v2] once: Fix panic when module unload
+Message-ID: <20210806064328.1b54a7f0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210806082124.96607-1-wangkefeng.wang@huawei.com>
+References: <20210806082124.96607-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805191408.2003237-1-vgupta@synopsys.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 12:14:08PM -0700, Vineet Gupta wrote:
-> signed math causes generation of costlier instructions such as DIV when
-> they could be done by barrerl shifter.
+On Fri, 6 Aug 2021 16:21:24 +0800 Kefeng Wang wrote:
+> DO_ONCE
+> DEFINE_STATIC_KEY_TRUE(___once_key);
+> __do_once_done
+>   once_disable_jump(once_key);
+>     INIT_WORK(&w->work, once_deferred);
+>     struct once_work *w;
+>     w->key = key;
+>     schedule_work(&w->work);                     module unload
+>                                                    //*the key is
+> destroy*
+> process_one_work
+>   once_deferred
+>     BUG_ON(!static_key_enabled(work->key));
+>        static_key_count((struct static_key *)x)    //*access key, crash*
 > 
-> Worse part is this is not caught by things like bloat-o-meter since
-> instruction length / symbols are typically same size.
+> When module uses DO_ONCE mechanism, it could crash due to the above
+> concurrency problem, we could reproduce it with link[1].
 > 
-> e.g.
+> Fix it by add/put module refcount in the once work process.
 > 
-> stock (signed math)
-> __________________
-> 
-> 919b4614 <test_taint>:
-> 919b4614:	div	r2,r0,0x20
->                 ^^^
-> 919b4618:	add2	r2,0x920f6050,r2
-> 919b4620:	ld_s	r2,[r2,0]
-> 919b4622:	lsr	r0,r2,r0
-> 919b4626:	j_s.d	[blink]
-> 919b4628:	bmsk_s	r0,r0,0
-> 919b462a:	nop_s
-> 
-> (patched) unsigned math
-> __________________
-> 
-> 919b4614 <test_taint>:
-> 919b4614:	lsr	r2,r0,0x5  @nr/32
->                 ^^^
-> 919b4618:	add2	r2,0x920f6050,r2
-> 919b4620:	ld_s	r2,[r2,0]
-> 919b4622:	lsr	r0,r2,r0     #test_bit()
-> 919b4626:	j_s.d	[blink]
-> 919b4628:	bmsk_s	r0,r0,0
-> 919b462a:	nop_s
+> [1] https://lore.kernel.org/netdev/eaa6c371-465e-57eb-6be9-f4b16b9d7cbf@huawei.com/
 
-Just FYI, but on arm64 the existing codegen is alright as we have both
-arithmetic and logical shifts.
+Seems reasonable. Greg does it look good to you?
 
-> Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
-> ---
-> This is an RFC for feeback, I understand this impacts every arch,
-> but as of now it is only buld/run tested on ARC.
-> ---
-> ---
->  include/asm-generic/bitops/non-atomic.h | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-
-Acked-by: Will Deacon <will@kernel.org>
-
-We should really move test_bit() into the atomic header, but I failed to fix
-the resulting include mess last time I tried that.
-
-Will
+I think we can take it thru networking since nobody cared to pick up v1.
