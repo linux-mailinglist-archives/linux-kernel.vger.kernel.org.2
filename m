@@ -2,183 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B91593E2F93
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0C33E2F95
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235909AbhHFS7G convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Aug 2021 14:59:06 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:59659 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233266AbhHFS7E (ORCPT
+        id S236594AbhHFS7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 14:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236433AbhHFS7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 14:59:04 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id B461740003;
-        Fri,  6 Aug 2021 18:58:46 +0000 (UTC)
-Date:   Fri, 6 Aug 2021 20:58:45 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Apurva Nandan <a-nandan@ti.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
-Subject: Re: [PATCH 07/13] mtd: spinand: Allow enabling Octal DTR mode in
- the core
-Message-ID: <20210806205845.03dd97c9@xps13>
-In-Reply-To: <20210713130538.646-8-a-nandan@ti.com>
-References: <20210713130538.646-1-a-nandan@ti.com>
-        <20210713130538.646-8-a-nandan@ti.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Fri, 6 Aug 2021 14:59:09 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBFAC061798;
+        Fri,  6 Aug 2021 11:58:53 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id w197so9654507qkb.1;
+        Fri, 06 Aug 2021 11:58:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EwPwTGFLGnTMMYpnQ6JiBfLXzZWEL8LJcfsp89PFLeA=;
+        b=Kn86eCHmmJdwXwSGNE4czF6wC8+m/HN19fyjWSxLiSwXcD73AUioJiKriT/Q0Ry5OL
+         CwMsdWzvLfSL22KxU0Lm4oRfNwDDtGpReoJIku7aU20ouyPnaEuV7ptwKX9GL/0loRYg
+         SpcPEsq6EVQXmj1IDdbHwKenqe/8FfDcG2X02GfKU+kxvMfIxQO/UX9d7/VR8m6impOy
+         MZ1Ep+qgia8q+fZ5PO6AdFaBENc9C+OfUsuHFXNf41i1GoR4FvMlFZ/k0EkViG2faj+q
+         jeGHJJXKlDD3s20WFBABuK484uuiEnq20mlwmnI87YRlfRwTrAQURyn86vZJkRBhqkP3
+         BSFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=EwPwTGFLGnTMMYpnQ6JiBfLXzZWEL8LJcfsp89PFLeA=;
+        b=Qe0ZZ4vaNarnCUFPNrCKDbLXrsVXRgI4suKsoAnvTQSPr6FQHUP38vZLwKsOOY8cMI
+         cVBgt4fvKMI/wt9Jc3UgHUwomMuEknCUTROLlzfmvGSlomyOj57o2HZt4QWMm4pbqUMW
+         rTdx0mnRhMGg7Xv6tBlsneUPhF84peArE+JjC/NNQYz0ylRFXJJG7JUnorF1qlQj0rnO
+         BevqltQ3Z7OGI+8FBHKHNS8jneUdtCANQ2pRCW9bQJxastChlFyuTaBHEa/xITzwvedZ
+         ryVQKJsp9d+KohNIsnYyxP+2L+hbRJdcKI5NteVwMVn9Xv7RIXw1sU+6LPSOJMxUJ12g
+         cRDA==
+X-Gm-Message-State: AOAM530btGysUyY3sd/J6Q4ZELatEBkbzmXeE0LmDqJtRMrZDtP9zC8m
+        jvmdoM8+Gx46pxy+alSXqC0=
+X-Google-Smtp-Source: ABdhPJwwdy+sp/fVlM8ZA2BB3ybbm1bGTfb0k+Xz1w3XNY+NUohZqLcSOWvcPvnZKRgsM6j38ZJa+Q==
+X-Received: by 2002:a05:620a:1a0a:: with SMTP id bk10mr11461984qkb.274.1628276332570;
+        Fri, 06 Aug 2021 11:58:52 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q26sm43087qki.120.2021.08.06.11.58.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 11:58:52 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 6 Aug 2021 11:58:50 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/23] 5.4.139-rc1 review
+Message-ID: <20210806185850.GE2680592@roeck-us.net>
+References: <20210806081112.104686873@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806081112.104686873@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Apurva,
-
-Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:32
-+0000:
-
-> Enable Octal DTR SPI mode, i.e. 8D-8D-8D mode, if the SPI NAND flash
-> device supports it. Mixed OSPI (1S-1S-8S & 1S-8S-8S), mixed DTR modes
-> (1S-1D-8D), etc. aren't supported yet.
+On Fri, Aug 06, 2021 at 10:16:32AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.139 release.
+> There are 23 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> The method to switch to Octal DTR SPI mode may vary across
-> manufacturers. For example, for Winbond, it is enabled by writing
-> values to the volatile configuration register. So, let the
-> manufacturer's code have their own implementation for switching to
-> Octal DTR SPI mode. Mixed OSPI (1S-1S-8S & 1S-8S-8S), mixed DTR modes
-> (1S-1D-8D), etc. aren't supported yet.
-
-You can drop the final sentence which is a repetition of the previous
-paragraph.
-
-> Check for the SPI NAND device's support for Octal DTR mode using
-> spinand flags, and if the op_templates allow 8D-8D-8D, call
-                                         allows
-
-> octal_dtr_enable() manufacturer op. If the SPI controller doesn't
-> supports these modes, the selected op_templates would prevent switching
-
-                                                  will
-
-> to the Octal DTR mode. And finally update the spinand reg_proto
-> if success.
-
-  on
-
+> Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  drivers/mtd/nand/spi/core.c | 46 +++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/spinand.h |  3 +++
->  2 files changed, 49 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 1e619b6d777f..19d8affac058 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -256,6 +256,48 @@ static int spinand_init_quad_enable(struct spinand_device *spinand)
->  			       enable ? CFG_QUAD_ENABLE : 0);
->  }
->  
-> +static bool spinand_op_is_octal_dtr(const struct spi_mem_op *op)
-> +{
-> +	return  op->cmd.buswidth == 8 && op->cmd.dtr &&
-> +		op->addr.buswidth == 8 && op->addr.dtr &&
-> +		op->data.buswidth == 8 && op->data.dtr;
-> +}
-> +
-> +static int spinand_init_octal_dtr_enable(struct spinand_device *spinand)
-> +{
-> +	struct device *dev = &spinand->spimem->spi->dev;
-> +	int ret;
-> +
-> +	if (!(spinand->flags & SPINAND_HAS_OCTAL_DTR_BIT))
-> +		return 0;
-> +
-> +	if (!(spinand_op_is_octal_dtr(spinand->op_templates.read_cache) &&
-> +	      spinand_op_is_octal_dtr(spinand->op_templates.write_cache) &&
-> +	      spinand_op_is_octal_dtr(spinand->op_templates.update_cache)))
-> +		return 0;
-> +
-> +	if (!spinand->manufacturer->ops->octal_dtr_enable) {
-> +		dev_err(dev,
-> +			"Missing ->octal_dtr_enable(), unable to switch mode\n");
 
-I don't think we want an error here. Perhaps a debug or info call, but
-no more.
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 445 pass: 445 fail: 0
 
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = spinand->manufacturer->ops->octal_dtr_enable(spinand);
-> +	if (ret) {
-> +		dev_err(dev,
-> +			"Failed to enable Octal DTR SPI mode (err = %d)\n",
-> +			ret);
-> +		return ret;
-> +	}
-> +
-> +	spinand->reg_proto = SPINAND_OCTAL_DTR;
-> +
-> +	dev_dbg(dev,
-> +		"%s SPI NAND switched to Octal DTR SPI (8D-8D-8D) mode\n",
-> +		spinand->manufacturer->name);
-> +	return 0;
-> +}
-> +
->  static int spinand_ecc_enable(struct spinand_device *spinand,
->  			      bool enable)
->  {
-> @@ -1189,6 +1231,10 @@ static int spinand_init_flash(struct spinand_device *spinand)
->  	if (ret)
->  		return ret;
->  
-> +	ret = spinand_init_octal_dtr_enable(spinand);
-> +	if (ret)
-> +		return ret;
-> +
->  	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
->  	if (ret)
->  		return ret;
-> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-> index 35816b8cfe81..daa2ac5c3110 100644
-> --- a/include/linux/mtd/spinand.h
-> +++ b/include/linux/mtd/spinand.h
-> @@ -271,6 +271,7 @@ struct spinand_devid {
->   * @init: initialize a SPI NAND device
->   * @adjust_op: modify the ops for any variation in their cmd, address, dummy or
->   *	       data phase by the manufacturer
-> + * @octal_dtr_enable: switch the SPI NAND flash into Octal DTR SPI mode
->   * @cleanup: cleanup a SPI NAND device
->   *
->   * Each SPI NAND manufacturer driver should implement this interface so that
-> @@ -280,6 +281,7 @@ struct spinand_manufacturer_ops {
->  	int (*init)(struct spinand_device *spinand);
->  	void (*adjust_op)(struct spi_mem_op *op,
->  			  const enum spinand_proto reg_proto);
-> +	int (*octal_dtr_enable)(struct spinand_device *spinand);
->  	void (*cleanup)(struct spinand_device *spinand);
->  };
->  
-> @@ -348,6 +350,7 @@ struct spinand_ecc_info {
->  
->  #define SPINAND_HAS_QE_BIT		BIT(0)
->  #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
-> +#define SPINAND_HAS_OCTAL_DTR_BIT	BIT(2)
->  
->  /**
->   * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-
-
-
-Thanks,
-Miquèl
+Guenter
