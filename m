@@ -2,160 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2453E2536
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3829F3E2613
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243969AbhHFISL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:18:11 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7796 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243591AbhHFIQG (ORCPT
+        id S244316AbhHFI2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:28:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244211AbhHFI2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:16:06 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GgywD3GwRzYkqc;
-        Fri,  6 Aug 2021 16:15:40 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 6 Aug 2021 16:15:48 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 6 Aug 2021 16:15:48 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <hannes@stressinduktion.org>, <davem@davemloft.net>
-CC:     <akpm@linux-foundation.org>, <gregkh@linuxfoundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        Minmin chen <chenmingmin@huawei.com>
-Subject: [PATCH v2] once: Fix panic when module unload
-Date:   Fri, 6 Aug 2021 16:21:24 +0800
-Message-ID: <20210806082124.96607-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 6 Aug 2021 04:28:11 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B441C0612E8
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 01:22:33 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id j10so4723851vsl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 01:22:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K/7VZdsD0kvuXLXJN0Hxz/V1UWqWN2j9QnpBmRsIinU=;
+        b=j7PbhC3w+UIrt4Z4VMtrxMZLYbBm2D/n5snIzK50TkfmeP+1txpOo1oL1WKoe9lFpu
+         Te4zFR/fANLwAx2rBj4K83LiuJkxppIfVTQfBj9gn2XkOXqEGrh8vkf5/YbhaznaTSa0
+         7g6y/q9w/GG71WiXd4VLSc00irkaVaX1p/ukQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K/7VZdsD0kvuXLXJN0Hxz/V1UWqWN2j9QnpBmRsIinU=;
+        b=MmDF3lmeJPU3l5ki1S08/xpU1mSUv71+EdOeN4jWkUs/sNc1HhFfYXz9LR00gaMLRy
+         wYPPl2HoTUuidCsHL4u+1Oh0HC0Z3/1nb0uGU3wYcbiZWGNtNdoKenO+KkccKzVClSd2
+         hLeYLjzWT8N7S/nsqMFeZz9fbqB3pRpNWtOz/Z483nUpjxuOy/2Z30RKX0r1gpNNi8Xx
+         424Sc6VJEa65Mx4bQ/fJAWGTL7kzyX8GxkAS645QAmqxb3gLtOIUX4OKIhlgMHqB9t85
+         JKEGv8qr1BNC2+CyXaMxj6BGzRfKm+2xIXLdVQ9dwdfcgA9IZvhEk8l4nnCT5w+MNMw0
+         lKcQ==
+X-Gm-Message-State: AOAM531dYJGF1uYgI+vGWlDdw/SjSYKZYfvaUp43vROAKei0d6rfetUo
+        rJyGVssdI/9UIStFT5c/W1c4izLUVFfeDPBlc6OHyg==
+X-Google-Smtp-Source: ABdhPJwPAml5ZEmZwjKSwjiJlKadiTx+81kSdiJB8ki3ka/cQSkYdRdLaMQoklBOewL90Bvr1F26iiFyqVu68brWQL0=
+X-Received: by 2002:a05:6102:34d9:: with SMTP id a25mr8076699vst.0.1628238152502;
+ Fri, 06 Aug 2021 01:22:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+References: <737687ee-3449-aa3d-ee29-bd75ca0a18a9@canonical.com> <CAOQ4uxgbqyyhQ+78j0L+GxkEJ8rOW43X9ann_kMs1098WkNe8Q@mail.gmail.com>
+In-Reply-To: <CAOQ4uxgbqyyhQ+78j0L+GxkEJ8rOW43X9ann_kMs1098WkNe8Q@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 6 Aug 2021 10:22:21 +0200
+Message-ID: <CAJfpegs5gBiB1YoYoDS6VDwKYrFbXHX6f1fsHPmA_yjH0+kfpA@mail.gmail.com>
+Subject: Re: ovl: uninitialized pointer read in ovl_lookup_real_one
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DO_ONCE
-DEFINE_STATIC_KEY_TRUE(___once_key);
-__do_once_done
-  once_disable_jump(once_key);
-    INIT_WORK(&w->work, once_deferred);
-    struct once_work *w;
-    w->key = key;
-    schedule_work(&w->work);                     module unload
-                                                   //*the key is
-destroy*
-process_one_work
-  once_deferred
-    BUG_ON(!static_key_enabled(work->key));
-       static_key_count((struct static_key *)x)    //*access key, crash*
+On Sat, 24 Jul 2021 at 09:36, Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> On Sat, Jul 24, 2021 at 1:26 AM Colin Ian King <colin.king@canonical.com> wrote:
+> >
+> > Hi,
+> >
+> > Static analysis with Coverity has detected an uninitialized pointer read
+> > in function ovl_lookup_real_one in fs/overlayfs/export.c
+> >
+> > The issue was introduced with the following commit:
+> >
+> > commit 3985b70a3e3f58109dc6ae347eafe6e8610be41e
+> > Author: Amir Goldstein <amir73il@gmail.com>
+> > Date:   Thu Dec 28 18:36:16 2017 +0200
+> >
+> >     ovl: decode connected upper dir file handles
+> >
+> > The analysis is as follows:
+> >
+> > 365static struct dentry *ovl_lookup_real_one(struct dentry *connected,
+> > 366                                          struct dentry *real,
+> > 367                                          const struct ovl_layer *layer)
+> > 368{
+> > 369        struct inode *dir = d_inode(connected);
+> > 370        struct dentry *this, *parent = NULL;
+> >
+> >    1. var_decl: Declaring variable name without initializer.
+> >
+> > 371        struct name_snapshot name;
+> > 372        int err;
+> > 373
+> > 374        /*
+> > 375         * Lookup child overlay dentry by real name. The dir mutex
+> > protects us
+> > 376         * from racing with overlay rename. If the overlay dentry
+> > that is above
+> > 377         * real has already been moved to a parent that is not under the
+> > 378         * connected overlay dir, we return -ECHILD and restart the
+> > lookup of
+> > 379         * connected real path from the top.
+> > 380         */
+> > 381        inode_lock_nested(dir, I_MUTEX_PARENT);
+> > 382        err = -ECHILD;
+> > 383        parent = dget_parent(real);
+> >
+> >    2. Condition ovl_dentry_real_at(connected, layer->idx) != parent,
+> > taking true branch.
+> >
+> > 384        if (ovl_dentry_real_at(connected, layer->idx) != parent)
+> >
+> >    3. Jumping to label fail.
+> >
+> > 385                goto fail;
+> > 386
+> > 387        /*
+> > 388         * We also need to take a snapshot of real dentry name to
+> > protect us
+> > 389         * from racing with underlying layer rename. In this case, we
+> > don't
+> > 390         * care about returning ESTALE, only from dereferencing a
+> > free name
+> > 391         * pointer because we hold no lock on the real dentry.
+> > 392         */
+> > 393        take_dentry_name_snapshot(&name, real);
+> > 394        this = lookup_one_len(name.name.name, connected, name.name.len);
+> > 395        err = PTR_ERR(this);
+> > 396        if (IS_ERR(this)) {
+> > 397                goto fail;
+> > 398        } else if (!this || !this->d_inode) {
+> > 399                dput(this);
+> > 400                err = -ENOENT;
+> > 401                goto fail;
+> > 402        } else if (ovl_dentry_real_at(this, layer->idx) != real) {
+> > 403                dput(this);
+> > 404                err = -ESTALE;
+> > 405                goto fail;
+> > 406        }
+> > 407
+> > 408out:
+> >
+> >    Uninitialized pointer read
+> >    6. uninit_use_in_call: Using uninitialized value name.name.name when
+> > calling release_dentry_name_snapshot.
+> >
+> > 409        release_dentry_name_snapshot(&name);
+> > 410        dput(parent);
+> > 411        inode_unlock(dir);
+> > 412        return this;
+> > 413
+> > 414fail:
+> >
+> >    4. Condition ___ratelimit(&_rs, <anonymous>), taking false branch
+> > .
+> > 415        pr_warn_ratelimited("failed to lookup one by real (%pd2,
+> > layer=%d, connected=%pd2, err=%i)\n",
+> > 416                            real, layer->idx, connected, err);
+> > 417        this = ERR_PTR(err);
+> >
+> >    5. Jumping to label out.
+> >
+> > 418        goto out;
+> > 419}
+> >
+> > The error exit path on line 395 ends up with an uninitialized structure
+> > name being passed to function release_dentry_name_snapshot() on line 409
+> > and this accesses the pointer name.name.name, see /fs/dcache.c as follows:
+> >
+> > 303void release_dentry_name_snapshot(struct name_snapshot *name)
+> > 304{
+> >
+> >    1. read_value: Reading value name->name.name.
+> >    2. Condition !!(name->name.name != name->inline_name), taking true
+> > branch.
+> >
+> > 305        if (unlikely(name->name.name != name->inline_name)) {
+> > 306                struct external_name *p;
+> >
+> >    3. Condition 0 /* !!(!__builtin_types_compatible_p() &&
+> > !__builtin_types_compatible_p()) */, taking false branch.
+> >
+> >
+> > I suspect name should be initialized in line 371, e.g. name = { } and a
+> > null name check should be performed on line 409 before calling
+> > release_dentry_name_snapshot, but this seems a bit message as a fix.
+> >
+>
+> Thanks for the report.
+> A simpler fix is to move take_dentry_name_snapshot() to top of the
+> function before goto fail.
 
-When module uses DO_ONCE mechanism, it could crash due to the above
-concurrency problem, we could reproduce it with link[1].
+Even simpler:  move the release_dentry_name_snapshot to just after lookup.
 
-Fix it by add/put module refcount in the once work process.
+Commit 89741437981a ("ovl: fix uninitialized pointer read in
+ovl_lookup_real_one()") pushed to #overlayfs-next.
 
-[1] https://lore.kernel.org/netdev/eaa6c371-465e-57eb-6be9-f4b16b9d7cbf@huawei.com/
-
-Cc: Hannes Frederic Sowa <hannes@stressinduktion.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Reported-by: Minmin chen <chenmingmin@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
-v2: always pass THIS_MODULE to macro DO_ONCE(), suggested by hannes
-
- include/linux/once.h |  4 ++--
- lib/once.c           | 11 ++++++++---
- 2 files changed, 10 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/once.h b/include/linux/once.h
-index 9225ee6d96c7..ae6f4eb41cbe 100644
---- a/include/linux/once.h
-+++ b/include/linux/once.h
-@@ -7,7 +7,7 @@
- 
- bool __do_once_start(bool *done, unsigned long *flags);
- void __do_once_done(bool *done, struct static_key_true *once_key,
--		    unsigned long *flags);
-+		    unsigned long *flags, struct module *mod);
- 
- /* Call a function exactly once. The idea of DO_ONCE() is to perform
-  * a function call such as initialization of random seeds, etc, only
-@@ -46,7 +46,7 @@ void __do_once_done(bool *done, struct static_key_true *once_key,
- 			if (unlikely(___ret)) {				     \
- 				func(__VA_ARGS__);			     \
- 				__do_once_done(&___done, &___once_key,	     \
--					       &___flags);		     \
-+					       &___flags, THIS_MODULE);	     \
- 			}						     \
- 		}							     \
- 		___ret;							     \
-diff --git a/lib/once.c b/lib/once.c
-index 8b7d6235217e..59149bf3bfb4 100644
---- a/lib/once.c
-+++ b/lib/once.c
-@@ -3,10 +3,12 @@
- #include <linux/spinlock.h>
- #include <linux/once.h>
- #include <linux/random.h>
-+#include <linux/module.h>
- 
- struct once_work {
- 	struct work_struct work;
- 	struct static_key_true *key;
-+	struct module *module;
- };
- 
- static void once_deferred(struct work_struct *w)
-@@ -16,10 +18,11 @@ static void once_deferred(struct work_struct *w)
- 	work = container_of(w, struct once_work, work);
- 	BUG_ON(!static_key_enabled(work->key));
- 	static_branch_disable(work->key);
-+	module_put(work->module);
- 	kfree(work);
- }
- 
--static void once_disable_jump(struct static_key_true *key)
-+static void once_disable_jump(struct static_key_true *key, struct module *mod)
- {
- 	struct once_work *w;
- 
-@@ -29,6 +32,8 @@ static void once_disable_jump(struct static_key_true *key)
- 
- 	INIT_WORK(&w->work, once_deferred);
- 	w->key = key;
-+	w->module = mod;
-+	__module_get(mod);
- 	schedule_work(&w->work);
- }
- 
-@@ -53,11 +58,11 @@ bool __do_once_start(bool *done, unsigned long *flags)
- EXPORT_SYMBOL(__do_once_start);
- 
- void __do_once_done(bool *done, struct static_key_true *once_key,
--		    unsigned long *flags)
-+		    unsigned long *flags, struct module *mod)
- 	__releases(once_lock)
- {
- 	*done = true;
- 	spin_unlock_irqrestore(&once_lock, *flags);
--	once_disable_jump(once_key);
-+	once_disable_jump(once_key, mod);
- }
- EXPORT_SYMBOL(__do_once_done);
--- 
-2.26.2
-
+Thanks,
+Miklos
