@@ -2,121 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7B33E2854
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 478AE3E2851
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244972AbhHFKN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
+        id S244930AbhHFKMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244941AbhHFKMi (ORCPT
+        with ESMTP id S244798AbhHFKM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:12:38 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823F4C06179E
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:12:20 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id h17so144815vsu.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 03:12:20 -0700 (PDT)
+        Fri, 6 Aug 2021 06:12:28 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CD0C061799
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:12:11 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id x14so12294682edr.12
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 03:12:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RGtgXfwmYcFQbjYreqnR5225xrRr2PJrw8FOYkigses=;
-        b=drslwnriHb49yiA4FlJ2IAOAFa854aF5V1BZ0IoT2jib2a1c08xPzIctwuJfh7ZvLT
-         HQr0nBjioANUzY8Ll+Z58V5xQ/T+kjZy25luvbRQDaZMgfHEgJ2lD7p4B78HDw+pp8NB
-         PnfwpqwE2bOKGxHi0aaxuHgpVYVLLSC4CCsYOcICHDs57pJl7FTYAlvroXjvLOf5sC0E
-         1zEdGPqOEKNSjctAo9N3SRjxOWN3SgZUIKBSYff8wU1cZbbPqgtTCnZYny0YdE/p6ttT
-         p/3lQXqGZLETA8PTLFMCteCqyWQZ9h6bvJS7hs3s3BKN1VU+6juNwKsEyt+y4bBgQ2te
-         gkVQ==
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=maEr7GgR6cSiBFVlKBozSqDVYrZqVGSThMPhE+brgU0=;
+        b=NDCPY08xIjErW+6krceuHXAub3Wqk1f1DEYpZ4sCUFv0oz/xIN/ruEDFueVB7B4+kM
+         tMOHsWaesd0sRirmkp6hfRKQmc8V3sAblEvEgakVbEp2F/lPoQEYhCxAyFGQ4QidFBDU
+         EW7VP5apQPXQagfzOujWpIK8GpTqorl1WfgZEhhHBNtRvzE7WVAlN2in5/C+gXOrzdV+
+         enJ7l7ahNx3RvC0bYvvFn30E6oKW/XrVPxPsbIUjbz9FfqyxS22quqr3NcrglmvA0Zxx
+         8LyvmN7iODHrgidXueyAvgp9BZBpMtU/MSJ7jwKwRnMu59JBnm4TMwJbW6JnZwV/kSRX
+         Pzcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RGtgXfwmYcFQbjYreqnR5225xrRr2PJrw8FOYkigses=;
-        b=HBqN3aZ5a78jwYt1n3fKWxCt2hHVTkCg1NVI3fe3QFOUbczBlW2fEQviOxVssFEqj8
-         2AjBNwdtLBlA+EeJhEOn5zhD18WY5fhi1dNuvn3uGziwQm+nJ3x+/fyNxo7cBmVj8VQw
-         2H9WTnx1yFrLeEMlfI6tqMDoIdmGhbf/S54mJRkT2rEJq/ZEvT4EZJVjg7NnBt2DiYGV
-         HFSBHqwS3ngTd0owuST95XYKPTfuVr4H7YUC3vbMz8H7YDQLDoXoRDR9hjkXLKjXrtG7
-         m7eheyEiFWWWn5EdO9sX1gd3Nq867+3EzncUMOmQSuRXvMw3earaxUMm78tK2Tj9TOUD
-         wGkg==
-X-Gm-Message-State: AOAM5320mYhGmwdW7HRf0qkSUnXCxCnyZ8aEY7hXXzBU1rl6ImGmLaA0
-        88spbtu1mZXlx8xj+3L4qaZan/oMrmYvZXJ6oaOT7g==
-X-Google-Smtp-Source: ABdhPJwFvbyka1FymkHv0zUfPRnqStn9uGkOJdFEFPbVEBRbIhe7XbAdE8fyYW/ypueDW/Vqt2ndw67y3Ojhj50YFG4=
-X-Received: by 2002:a67:328f:: with SMTP id y137mr8365666vsy.34.1628244739559;
- Fri, 06 Aug 2021 03:12:19 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=maEr7GgR6cSiBFVlKBozSqDVYrZqVGSThMPhE+brgU0=;
+        b=TTRhz4cQ8cW9AnCeKeI7iDo5cK63s7Muy8yqr8r60byYKdSt3gTk1ivSTZ2vXnKzKP
+         5j7lTvYjPPTT23jMXsj27qOTTnrR+vc8TMzTYjmbjCigf2UgR9TyVMIZKRK3H1rbbHYv
+         RSCBkPW0XnK5R9w5g4qZhYAb46DEHFqD5K8IVaco559uaaRU8vEcbfUdHJ0yrWXh5WnD
+         DkabWoR+REtwcb7JrIslTaDL455Km6ULJigo/MYqUhRC5CIuOpHiFzOGjaU0aBJ9HAZS
+         DI+05BCbEGIdHOU12V9i9S2HqTT5JP8JIllciSnvLuax9hXFM1bXpQFobIydhq0viA6F
+         iQOw==
+X-Gm-Message-State: AOAM530KAO0CoTccVrsRrDgMVisvwLmF6h2wc8n8A2v8oMYrEfwAj5Hk
+        MmLINc88jBQsY/HfpTpweDtW8EbRbXYeO8cx
+X-Google-Smtp-Source: ABdhPJyk27Tr8jM9KuHDtmOgXZb6SB8YwaS/1sE6FWInUmr2/ciWyqD62EQbgAkeyZXPwbzEph+s+A==
+X-Received: by 2002:aa7:dbc8:: with SMTP id v8mr11654973edt.242.1628244730103;
+        Fri, 06 Aug 2021 03:12:10 -0700 (PDT)
+Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id b25sm3707545edv.9.2021.08.06.03.12.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 06 Aug 2021 03:12:09 -0700 (PDT)
+Sender: Michal Simek <monstr@monstr.eu>
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Michael Walle <michael@walle.cc>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v3 0/2] arm64: zynqmp: Extend board description
+Date:   Fri,  6 Aug 2021 12:12:06 +0200
+Message-Id: <cover.1628244703.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210722051414.8331-1-jasonlai.genesyslogic@gmail.com>
- <CAPDyKFqwiaTNNLKt_O6njyB6HPL35_gYy6KRZXqM4HRKJinShg@mail.gmail.com> <CAG0XXUG5q8_o-A3K0LNVXoeJmXHn=N=uyR81p2ai0H827SeS4Q@mail.gmail.com>
-In-Reply-To: <CAG0XXUG5q8_o-A3K0LNVXoeJmXHn=N=uyR81p2ai0H827SeS4Q@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 6 Aug 2021 12:11:43 +0200
-Message-ID: <CAPDyKFqB4nxv5andQktNDjGkf-vPfbiFVwkZ7PGOWW9NbdM+qA@mail.gmail.com>
-Subject: Re: [RFC PATCH v3.2 00/29] Add support UHS-II for GL9755
-To:     Lai Jason <jasonlai.genesyslogic@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        =?UTF-8?B?R3JlZ1R1W+adnOWVn+i7kl0=?= <greg.tu@genesyslogic.com.tw>,
-        AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Jason Lai <jason.lai@genesyslogic.com.tw>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Aug 2021 at 08:37, Lai Jason <jasonlai.genesyslogic@gmail.com> wr=
-ote:
->
-> On Tue, 03 Aug 2021 at 12:23,   Ulf Hansson <ulf.hansson@linaro.org>  wro=
-te:
-> >
-> > On Thu, 22 Jul 2021 at 07:14, Jason Lai <jasonlai.genesyslogic@gmail.co=
-m> wrote:
-> > >
-> > > Summary
-> > > =3D=3D=3D=3D=3D=3D=3D
-> > > In these patches we focus on uhs2 side to address Ulf's suggestion wh=
-ich
-> > > was mentioned in patch [mmc: core: Preparations to support SD UHS-II =
-cards].
-> > >
-> > >
-> > > I moved codes in uhs2.c to proper functions in sd_uhs2.c, which shoul=
-d meet
-> > > Ulf's expection.
-> > >
-> > > Please review this series (particularly Patch 29/29).
-> >
-> > I think you have misunderstood the intent with the series that I
-> > posted [1] a while ago. The idea was to add the foundation of what
-> > should be needed in the mmc core to support UHS-II cards. Note, it's
-> > only the foundation, not the complete code.
-> >
-> > In other words, I think you should base the next version of $subject
-> > series *on top* of my series [1], rather than the opposite.
-> >
-> Actually, I understand your intention is to implement functions which
-> can be applied to control all UHS-II cards.
-> However, why do I choose to base it on =E2=80=9C[RFC,v3.1,00/27] Add supp=
-ort
-> UHS-II for GL9755=E2=80=9D?
-> Because it contains a complete UHS-II interface(both host & card side)
-> and UHS-II card can work normally.
+Hi,
 
-It doesn't matter if things "work".
+over years couple of drivers were upstream and it is time to sync it up.
+On the top of it also adding new Kria boards which are using new overlay
+infrastructure which check if that overlays can be applied to base DT file.
 
-The code/patches need to be better organized than currently,
-especially the changes for the mmc core, which is why I stepped in and
-tried to help out earlier. Otherwise it is impossible for me to review
-the changes, but also to maintain the code in the long run.
+These two patches weren't applied the part of v2 series.
+https://lore.kernel.org/linux-devicetree/cover.1623684253.git.michal.simek@xilinx.com/
 
-The sdhci part is likely a bit more mature as it has been reviewed and
-iterated with Adrian/Ben/Akashi-san. However, new/more changes needed
-when my suggested changes for the mmc core come into play.
+Thanks,
+Michal
 
-[...]
+Changes in v3:
+- usb node name fix, remove undocumented properties reported by Michael Tretter
+- Also remove status property from dwc3_0/1 nodes reported by Michael
+  Tretter
+- Move USB3 PHY properties from DWC3 node to USB node - reported by Manish
+  Narani
+- Fix led node name
+- Fix compatible string for xlnx,zynqmp-sk-kv260-revA/Y/Z
+- Fix headers alignment
+- Move USB3 PHY properties from DWC3 node to USB node - reported by Manish
+  Narani
+- Change dtb names generated with dtbo
+- Fix emmc comment style
+-
 
-Kind regards
-Uffe
+Changes in v2:
+- New patch in the series
+- Use sugar syntax - reported by Geert
+- Update copyright years
+- Fix SD3.0 comment alignment
+- Remove one newline from Makefile
+
+Michal Simek (2):
+  arm64: zynqmp: Enable xlnx,zynqmp-dwc3 driver for xilinx boards
+  arm64: zynqmp: Add support for Xilinx Kria SOM board
+
+ .../devicetree/bindings/arm/xilinx.yaml       |  31 ++
+ arch/arm64/boot/dts/xilinx/Makefile           |  13 +
+ .../boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts  | 335 ++++++++++++++++++
+ .../boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts  | 318 +++++++++++++++++
+ .../boot/dts/xilinx/zynqmp-sm-k26-revA.dts    | 289 +++++++++++++++
+ .../boot/dts/xilinx/zynqmp-smk-k26-revA.dts   |  21 ++
+ .../dts/xilinx/zynqmp-zc1751-xm015-dc1.dts    |   8 +-
+ .../dts/xilinx/zynqmp-zc1751-xm016-dc2.dts    |   7 +
+ .../dts/xilinx/zynqmp-zc1751-xm017-dc3.dts    |  14 +
+ .../boot/dts/xilinx/zynqmp-zcu100-revC.dts    |  14 +-
+ .../boot/dts/xilinx/zynqmp-zcu102-revA.dts    |   8 +-
+ .../boot/dts/xilinx/zynqmp-zcu104-revA.dts    |   8 +-
+ .../boot/dts/xilinx/zynqmp-zcu104-revC.dts    |   8 +-
+ .../boot/dts/xilinx/zynqmp-zcu106-revA.dts    |   8 +-
+ .../boot/dts/xilinx/zynqmp-zcu111-revA.dts    |   8 +-
+ arch/arm64/boot/dts/xilinx/zynqmp.dtsi        |  60 +++-
+ 16 files changed, 1129 insertions(+), 21 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
+ create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
+ create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
+ create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
+
+-- 
+2.32.0
+
