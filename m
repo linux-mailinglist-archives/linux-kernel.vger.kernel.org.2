@@ -2,101 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213CF3E26C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B79413E26C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243914AbhHFJIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 05:08:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54200 "EHLO mail.kernel.org"
+        id S244099AbhHFJIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:08:23 -0400
+Received: from mga18.intel.com ([134.134.136.126]:60275 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231559AbhHFJIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:08:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 326C8610FC;
-        Fri,  6 Aug 2021 09:07:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628240875;
-        bh=ejOJ4yOTdt++hSuEVFyBcqe0mDTZq1Op+aa5WSDlpMw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=U7D7iPPKheAiktcC1WYe7ihJc7BGV/Z+IGFIg2T/Cl0Hz0Q0Qn+mHYhncf4MBPzLZ
-         vwriHDiBes5zJ35P/jf6DhXz1Ec8YL+zFQYl/aXrlWicARmsHprwZAyjQtTzPVwkWU
-         sDIxEE9RzG7WFc2rWSLRW5vZdaoMu38opbMytZs6fjR5sp2D6Nmih+0pQUQrZQmlhs
-         C20kJyYLwexuGxLgmKoawSszfqsIMLmQVZKEWAzuz6LgVAJxI+rCLBrYZYBU+zj9oJ
-         32GZPAWzgB1+sC8zpQJF+dpxqxtS3qIxNyRPOM3+hgM/wAjwuEtfRKfUFEgDh5xFld
-         vAuUxi4gm3k7g==
-Received: by mail-ot1-f44.google.com with SMTP id v24-20020a0568300918b02904f3d10c9742so4843419ott.4;
-        Fri, 06 Aug 2021 02:07:55 -0700 (PDT)
-X-Gm-Message-State: AOAM533aOe3H0oISSzLs0aBIo4t2GTx1f73I0RbmlH2bj2/CKmvP61y1
-        niGDD2/UfSSMGN2RwuLIaCePOxLyI3CyY+Gr2ng=
-X-Google-Smtp-Source: ABdhPJxiBXdPCPi0oYqZp3db0lOhP7eLSnW28s3ECdNbOKwYfQul0lJbuhizLqR5EcBaTo6rl/qeV25kX171MPaExBs=
-X-Received: by 2002:a9d:5c2:: with SMTP id 60mr6671258otd.77.1628240874580;
- Fri, 06 Aug 2021 02:07:54 -0700 (PDT)
+        id S244091AbhHFJIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 05:08:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="201521022"
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="201521022"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 02:07:59 -0700
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="501933393"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 02:07:57 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mBvpX-005lkH-8m; Fri, 06 Aug 2021 12:07:51 +0300
+Date:   Fri, 6 Aug 2021 12:07:51 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Loic Poulain <loic.poulain@linaro.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH v1 1/1] wwan: core: Avoid returning error pointer from
+ wwan_create_dev()
+Message-ID: <YQz75yaecp016zOb@smile.fi.intel.com>
+References: <20210805183100.49071-1-andriy.shevchenko@linux.intel.com>
+ <CAMZdPi_+GpG8h2tJ1AxOj6HaPiXXDh6aC2RvO=+zXRy_AQpWkg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210730134155.1005358-1-chouhan.shreyansh630@gmail.com>
- <20210806082320.GA12731@gondor.apana.org.au> <CAMj1kXFnCK5xiuGzxkj6rOP43a7OuA7uUP9-eJqsgb54MmuZPQ@mail.gmail.com>
-In-Reply-To: <CAMj1kXFnCK5xiuGzxkj6rOP43a7OuA7uUP9-eJqsgb54MmuZPQ@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 6 Aug 2021 11:07:43 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEYymiYaMUobuncmyO-vQxHrOByc7wQn4rKK_wdKuLgXQ@mail.gmail.com>
-Message-ID: <CAMj1kXEYymiYaMUobuncmyO-vQxHrOByc7wQn4rKK_wdKuLgXQ@mail.gmail.com>
-Subject: Re: [PATCH] crypto: add missing kernel_fpu_end() call
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZdPi_+GpG8h2tJ1AxOj6HaPiXXDh6aC2RvO=+zXRy_AQpWkg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Aug 2021 at 11:05, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Fri, 6 Aug 2021 at 10:23, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+On Thu, Aug 05, 2021 at 09:53:57PM +0200, Loic Poulain wrote:
+> On Thu, 5 Aug 2021 at 20:38, Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 > >
-> > On Fri, Jul 30, 2021 at 07:11:55PM +0530, Shreyansh Chouhan wrote:
-> > > xts_crypt() code doesn't call kernel_fpu_end() after calling
-> > > kernel_fpu_begin() if walk.nbytes is 0. Add a call to kernel_fpu_end()
-> > > for this case.
-> > >
-> > > Reported-by: syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
-> > > Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-> > > ---
-> > >  arch/x86/crypto/aesni-intel_glue.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> >
-> > Ard?
-> >
-> > > diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-> > > index 2144e54a6c89..bd55a0cd7bde 100644
-> > > --- a/arch/x86/crypto/aesni-intel_glue.c
-> > > +++ b/arch/x86/crypto/aesni-intel_glue.c
-> > > @@ -894,6 +894,9 @@ static int xts_crypt(struct skcipher_request *req, bool encrypt)
-> > >                       kernel_fpu_begin();
-> > >       }
-> > >
-> > > +     if (walk.nbytes == 0)
-> > > +             kernel_fpu_end();
-> > > +
->
-> Don't we end up calling kernel_fpu_end() twice this way if we do enter
-> the while() loop at least once?
->
+> > wwan_create_dev() is expected to return either valid pointer or NULL,
+> > In some cases it might return the error pointer. Prevent this by converting
+> > it to NULL after wwan_dev_get_by_parent().
+> 
+> wwan_create_dev is called both from wwan_register_ops() and
+> wwan_create_port(), one using IS_ERR and the other using NULL testing,
+> they should be aligned as well.
 
-How about the below instead, does that work?
+Ah, good catch!
 
---- a/arch/x86/crypto/aesni-intel_glue.c
-+++ b/arch/x86/crypto/aesni-intel_glue.c
-@@ -849,7 +849,7 @@ static int xts_crypt(struct skcipher_request *req,
-bool encrypt)
-                return -EINVAL;
+I just sent v2, but eventually I have decided to switch to error pointer since
+it seems the most used pattern in the code.
 
-        err = skcipher_walk_virt(&walk, req, false);
--       if (err)
-+       if (err || !walk.nbytes)
-                return err;
+-- 
+With Best Regards,
+Andy Shevchenko
 
-        if (unlikely(tail > 0 && walk.nbytes < walk.total)) {
+
