@@ -2,81 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01F43E27E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0133E27F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244731AbhHFJ5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 05:57:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:57228 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229725AbhHFJ5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:57:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C5F41042;
-        Fri,  6 Aug 2021 02:57:35 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A7963F719;
-        Fri,  6 Aug 2021 02:57:32 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 10:57:30 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Yanfei Xu <yanfei.xu@windriver.com>
-Subject: Re: [PATCH rcu 02/18] rcu: Fix stall-warning deadlock due to
- non-release of rcu_node ->lock
-Message-ID: <20210806095730.tw3bgnjtsytrqqfq@e107158-lin.cambridge.arm.com>
-References: <20210721202042.GA1472052@paulmck-ThinkPad-P17-Gen-1>
- <20210721202127.2129660-2-paulmck@kernel.org>
+        id S244800AbhHFJ7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:59:52 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7799 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242882AbhHFJ7t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 05:59:49 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gh1Cv3p1czYlm0;
+        Fri,  6 Aug 2021 17:59:23 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 6 Aug 2021 17:59:31 +0800
+Received: from huawei.com (10.69.192.56) by dggpeml500012.china.huawei.com
+ (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 6 Aug 2021
+ 17:59:30 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
+Subject: [PATCH 0/2] crypto: hisilicon - some misc bugfix for SEC engine
+Date:   Fri, 6 Aug 2021 17:58:32 +0800
+Message-ID: <1628243914-33224-1-git-send-email-yekai13@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210721202127.2129660-2-paulmck@kernel.org>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/21/21 13:21, Paul E. McKenney wrote:
-> From: Yanfei Xu <yanfei.xu@windriver.com>
-> 
-> If rcu_print_task_stall() is invoked on an rcu_node structure that does
-> not contain any tasks blocking the current grace period, it takes an
-> early exit that fails to release that rcu_node structure's lock.  This
-> results in a self-deadlock, which is detected by lockdep.
-> 
-> To reproduce this bug:
-> 
-> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --trust-make --configs "TREE03" --kconfig "CONFIG_PROVE_LOCKING=y" --bootargs "rcutorture.stall_cpu=30 rcutorture.stall_cpu_block=1 rcutorture.fwd_progress=0 rcutorture.test_boost=0"
-> 
-> This will also result in other complaints, including RCU's scheduler
-> hook complaining about blocking rather than preemption and an rcutorture
-> writer stall.
-> 
-> Only a partial RCU CPU stall warning message will be printed because of
-> the self-deadlock.
-> 
-> This commit therefore releases the lock on the rcu_print_task_stall()
-> function's early exit path.
-> 
-> Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
+some misc bugfix for SEC engine.
 
-We were seeing similar issue on Android 5.10. Applying patches 1 and 2 did fix
-the deadlock problem and we get proper RCU stall splat now.
+Kai Ye (2):
+  crypto: hisilicon/sec - fix the abnormal exiting process
+  crypto: hisilicon/sec - modify the hardware endian configuration
 
-For patches 1 and 2:
+ drivers/crypto/hisilicon/sec2/sec.h      |  5 -----
+ drivers/crypto/hisilicon/sec2/sec_main.c | 38 +++++++++++---------------------
+ 2 files changed, 13 insertions(+), 30 deletions(-)
 
-Tested-by: Qais Yousef <qais.yousef@arm.com>
+-- 
+2.7.4
 
-They have Fixes tags, so should end up in 5.10 stable I presume.
-
-Thanks!
-
---
-Qais Yousef
