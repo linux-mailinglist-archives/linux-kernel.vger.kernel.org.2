@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB97B3E3000
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 21:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32963E3001
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 21:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244293AbhHFT6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 15:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232086AbhHFT6o (ORCPT
+        id S244311AbhHFT7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 15:59:35 -0400
+Received: from mail-pl1-f180.google.com ([209.85.214.180]:33665 "EHLO
+        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231137AbhHFT7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 15:58:44 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE0EC0613CF;
-        Fri,  6 Aug 2021 12:58:27 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id e13-20020a056830200db02904f06fa2790cso10204528otp.1;
-        Fri, 06 Aug 2021 12:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=44uVScQ9Gw/XAJ45c0vruto85d4GkUi4W4Jmj+tsVH8=;
-        b=UlGtN2N+/E7iiZYxJKvzovkSO19giQwJd+k/KHky2IbaJkpv1Uak4W1uJn6H8BFiiU
-         G+xiGSKGeR+7ThNnHhDMmpUIROTHWo5oXjIWRUmY1IlldNyqs4V6G/GWO3ysIoNqa/wh
-         vZAarLxtlCu5ja19o3NIDmGyWxIf19NLbIbmwNmasbzJMDcsvWFSFYCy2+ClNx8Ih4Ok
-         UNa5v/n7S/SzlZ9icFqH6a/jd+XiAssHlSLipwEbvxLmhNu2dvEgmGmd3HVhMjzgP6kz
-         zIcc9/unMPkbQvBMHMGRoAJ9tPRVbr85crNJUdz8tSqqO9veN61s/GoH2EoQWrkESm3B
-         0E1g==
+        Fri, 6 Aug 2021 15:59:34 -0400
+Received: by mail-pl1-f180.google.com with SMTP id a20so8578829plm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 12:59:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=44uVScQ9Gw/XAJ45c0vruto85d4GkUi4W4Jmj+tsVH8=;
-        b=HpcEuA7O8LUvbwVP7Db+pUZq8L/qtZSlIX89HV0TV2gBZon4KrgJak8z1kQd2tdkg+
-         xVBG/al7IJfTrcPnLzHqhz0lsKFyh/eVsPkeFJJgeZp8aA8qVDieVqpMeyJhKg4h4ado
-         oba8rAwvhqhlDXC1FF1ascepn/eWIYl6RZOqicT1ltSPkE4Zzn9PekHv/6CMwz5bDBze
-         25/VIPwKxGvfEIMnPqh3xsBJbnHpnYykQl63MqOx09J1ken3w8OZlApqlO3iTEJB0WpI
-         I9+04klqWAFzSoGLBWoOiC2DkoBhESXBRa1uZRuZhRDdxtoeXAW63zRdfRjb6zxNK3k+
-         78SA==
-X-Gm-Message-State: AOAM532GZhl1Dd0FNpMq8tFGxuCFq0r+n7MwL/BfuUWgBfC4HLWMrBNC
-        GoGpI5eP5NYmIfqCktHa6n52STZp//F2bAR5VIU=
-X-Google-Smtp-Source: ABdhPJzE0kiTi3tio0eqHLhmqmarjNSaTtD71nxdFJt5HsgC+bAt6RW84ZuEyZFn6YnA0ktX645N1rir1CpUrop9OAI=
-X-Received: by 2002:a9d:5a15:: with SMTP id v21mr7881368oth.132.1628279906863;
- Fri, 06 Aug 2021 12:58:26 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3xIgCNAaZK0sIEmcnOuEBKGBHm8act9qqO5YgCOEC6M=;
+        b=TEdsMHzLo57iog4FDRs0Wgx8DQkMVPOr+mkVwv/zRjMbEuYJdC7URoGe2cL62FvhWT
+         T4T4GTT6bhtc+fq9SY8w7mcNmEroBLyyxQb0mT4eAJYKxr/AMCpEVnkW/MQZE41xMm6S
+         gsaieLo8ZVAppyZNT/MF+owCtfKW+gGQYUYtAec8GS1Gp+yjrgYkwFSKOTCp8ZizW780
+         L1+ldYmPV/3q3Dg/P7PEf0u6blX/ahhYa9oVDVh4P/2sLzKyS9wtdl1dIxna6higBUAq
+         U9Dd/M8FUJjkwt0S2tJEOsTWRGI+DYO3Hm/hCw3Egnm6NITEkMuUVZ2oCfMspnKuUDtE
+         TpEA==
+X-Gm-Message-State: AOAM533mlrVnGQm7wZRNekDiWZcK+r/ZnP2bXkuKkxq2t52Vs0+VLaZA
+        MOu8VeDbo0W/fsyHSlBCNGU=
+X-Google-Smtp-Source: ABdhPJyjtmQrOgrUjWWnqpG1hRQ5cnxUh/NvPNKbNRvyCYxgVMhOqZcamDHfenyBNaNu6hatxX4ETA==
+X-Received: by 2002:a63:e116:: with SMTP id z22mr409709pgh.361.1628279957382;
+        Fri, 06 Aug 2021 12:59:17 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:4a77:cdda:c1bf:a6b7? ([2601:647:4802:9070:4a77:cdda:c1bf:a6b7])
+        by smtp.gmail.com with ESMTPSA id a5sm11398251pfo.167.2021.08.06.12.59.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Aug 2021 12:59:16 -0700 (PDT)
+Subject: Re: [PATCH v4 8/8] nvme-rdma: Unfreeze queues on reconnect
+To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>, Hannes Reinecke <hare@suse.de>,
+        Wen Xiong <wenxiong@us.ibm.com>
+References: <20210802112658.75875-1-dwagner@suse.de>
+ <20210802112658.75875-9-dwagner@suse.de>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <46d4d7cb-314a-3822-f59d-00588609421a@grimberg.me>
+Date:   Fri, 6 Aug 2021 12:59:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210806111615.11803-1-colin.king@canonical.com>
-In-Reply-To: <20210806111615.11803-1-colin.king@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 6 Aug 2021 15:58:15 -0400
-Message-ID: <CADnq5_Nh57mfc+aXCGxy9+V2DFCEH0wO0Lcj1B9Qk93otY_t3w@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Remove redundant initialization of
- variable eng_id
-To:     Colin King <colin.king@canonical.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        xinhui pan <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Jun Lei <Jun.Lei@amd.com>,
-        Jimmy Kizito <Jimmy.Kizito@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210802112658.75875-9-dwagner@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
 
-Alex
-
-On Fri, Aug 6, 2021 at 7:16 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The variable eng_id is being initialized with a value that is never
-> read, it is being re-assigned on the next statment. The assignment
-> is redundant and can be removed.
->
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> During the queue teardown in nvme_rdma_teardown_io_queues() freeze is
+> called unconditionally. When we reconnect we need to pair the freeze
+> with an unfreeze to avoid hanging I/Os. For newly created connection
+> this is not needed.
+> 
+> Fixes: 9f98772ba307 ("nvme-rdma: fix controller reset hang during traffic")
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
 > ---
->  drivers/gpu/drm/amd/display/dc/core/dc_link_enc_cfg.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_enc_cfg.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_enc_cfg.c
-> index 1a89d565c92e..de80a9ea4cfa 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_enc_cfg.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_enc_cfg.c
-> @@ -305,7 +305,7 @@ struct link_encoder *link_enc_cfg_get_next_avail_link_enc(
->         const struct dc_state *state)
->  {
->         struct link_encoder *link_enc = NULL;
-> -       enum engine_id eng_id = ENGINE_ID_UNKNOWN;
-> +       enum engine_id eng_id;
->
->         eng_id = find_first_avail_link_enc(dc->ctx, state);
->         if (eng_id != ENGINE_ID_UNKNOWN)
-> --
-> 2.31.1
->
+>   drivers/nvme/host/rdma.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+> index de2a8950d282..21a8a5353af0 100644
+> --- a/drivers/nvme/host/rdma.c
+> +++ b/drivers/nvme/host/rdma.c
+> @@ -901,6 +901,8 @@ static int nvme_rdma_configure_admin_queue(struct nvme_rdma_ctrl *ctrl,
+>   			error = PTR_ERR(ctrl->ctrl.admin_q);
+>   			goto out_cleanup_fabrics_q;
+>   		}
+> +	} else {
+> +		nvme_unfreeze(&ctrl->ctrl);
+
+That seems misplaced.. unfreezing the I/O queues when setting up the 
+admin queue?
