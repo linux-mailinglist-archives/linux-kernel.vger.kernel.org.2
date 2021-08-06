@@ -2,102 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6655A3E2A06
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362343E2A09
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245610AbhHFLr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
+        id S245694AbhHFLs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:48:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhHFLry (ORCPT
+        with ESMTP id S245616AbhHFLsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:47:54 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E5CC061798;
-        Fri,  6 Aug 2021 04:47:39 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id 188so9210435ioa.8;
-        Fri, 06 Aug 2021 04:47:39 -0700 (PDT)
+        Fri, 6 Aug 2021 07:48:25 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D133C061798;
+        Fri,  6 Aug 2021 04:48:08 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id k13so6211024qth.10;
+        Fri, 06 Aug 2021 04:48:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zLpVKTCFA11+OnC1v/3aHjajQo+lN8JISFoIQ0gJsWw=;
-        b=hu9A7sDTQ5CTLyXUMb5kB1I1W1H5EZNTuovyxktDPPEAO5OnPRdeBrMpZCZeLbJOlc
-         /Zu4TAyQPSo1dTrgbymhgLaW2AwBi9vu6dFJPOnet17QVukPhOjRVussRd6MNrdmMbVO
-         cyr3ZQe5UdsvJCQCAXGiPWPz8AKUq6ZMk9YWP9DOCUOqdwnue5hicnxVZe5oNc8pDUTt
-         Bor14wUM2ozGZcSTXm29zchCH2xImMpLps8RncD1TR5WLsY6V1D769l5hRCwJWL/n21p
-         5xq4/gANiiC/3GkvgylENzuJLJQsPeqO/cU9TDdw1QkixzxjHLCS9esRaHkpacXHk+GG
-         bqeQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to;
+        bh=eGSjSqZSYbLxuQd8oI0XJgV6zBB7+cKt8LohYyTcZZs=;
+        b=BezIgjl+gGQUTu7iVDcfOPvYqkFN+zCpKnY1WYtZ2qYRtRrSSFvtopgNpJSq6VvpjU
+         DYXi60g8760AYS+P0KA+f0BEYyGvmEAiXmtncJQ7MNGiXxbif1z3dbvs6hgXGKmzvfjm
+         AjB9TlgbN8/YUQ8pXsLB2lRPIgUG1RXA8iuMGRw2cmNOuFVqQ00A79tnU485W/C/JyuR
+         2PQ2EYaAXzLNenIlToEISr+UYqfg2qUghKOHn6iCbU78+95HCRvWGf6KG+mluF+N1bDc
+         yuu7o7/9N1a5s5UXswE3FNOtyzppvVPGIDlQWUYfoBmSK3x/bGI1OaqV+vZxxUNT2P7S
+         sXcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zLpVKTCFA11+OnC1v/3aHjajQo+lN8JISFoIQ0gJsWw=;
-        b=boOGfMSQJYkz3FOtBHxknox3Js8DQ65JvLGft+YIxZTvnFe3zmmOOY3M2+QI0X6M48
-         SzsWq6Jrqr7oSOg4CEWEU3o8drWhQL7SBNfS8lq9i7wkbpd2d4ZAGH3VFSbm/mVmb+/G
-         cgdf8WREAijMbYiHqweVD1bhRjjLMgk3UkooEtDwqoS50NqTBNCB0VuofEC0e+eTAHZt
-         sedOC6OzRvhLURL364F5bBJ7xdwS1tZYWaZuNmk9puriVHj9nkvUnPPWAhIe1ryoBigj
-         0wZ0jRBPvsIIe7DuEd8igO5eKH6tgV068J7tm6l4XmnRauoCYCzpF3ZHqMj0sz0o+Xmj
-         IFVw==
-X-Gm-Message-State: AOAM532R/hMWMkPYqUCn16Lje3CeE/QqmohScHJQKWAeSxbCXQ1mJf5Z
-        gxH+P1P0kX5p6y6rNcT9o6huQkhR8BhuxoWF4H0=
-X-Google-Smtp-Source: ABdhPJzhZNlw9cWh7E098WLU6XWzjiUzPFJygP7XHy5Y/EnBmPJyrPMNj9BJYH5dgtffBynVPF4A+9oJ8woXfoCYzz4=
-X-Received: by 2002:a02:cc22:: with SMTP id o2mr9334421jap.26.1628250458544;
- Fri, 06 Aug 2021 04:47:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210806091058.141-1-alistair@alistair23.me> <20210806091058.141-3-alistair@alistair23.me>
- <YQ0fi8pV1DNZd4nP@google.com>
-In-Reply-To: <YQ0fi8pV1DNZd4nP@google.com>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Fri, 6 Aug 2021 21:47:12 +1000
-Message-ID: <CAKmqyKN6PJR6CiyZ-DVFf7FJVh2B36RGmHBrd+9owABzw8p_iQ@mail.gmail.com>
-Subject: Re: [PATCH v9 02/12] mfd: simple-mfd-i2c: Add a Kconfig name
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
-        Mark Brown <broonie@kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
+        bh=eGSjSqZSYbLxuQd8oI0XJgV6zBB7+cKt8LohYyTcZZs=;
+        b=h+Y7m+F65mx2Y+bj8VjOQC/uP/zKEU3WePQ/jBKHCUdc7gy2+bNEoNA6ilBtFYX/8P
+         R2QWA95T8OwdVcYxwkmAaQ94nA15SFxxtrU6GVe79gj1O2MunIkIdEbRmrUhyCsYCTCC
+         6NZCF3k4Vx2NgbJtnCgfbtIlocnPpALbuTPwiW3kR5GsNWslc9mcUnA5YYNvNPqkNwq9
+         TX6HdRVDC7cFXlk0OgMvG5cTEsgzPAbZQiI8EisX3I7/f2VM2xmTlPtTsOMRVLEtyJQJ
+         DBkzV7Z2nzO+HErCIcPW8YMwQ6eF6yCVseU8cpJvM6rllcB0EyudpqIW2vaHMZqp/Li0
+         4Cdg==
+X-Gm-Message-State: AOAM533ejJlq8j1yCsOkFl3+70KNzs+DeHNp3Fk3QkvP3veeKU+mOghL
+        zDl+JFwV4poIf/iy6wsQOv8=
+X-Google-Smtp-Source: ABdhPJzEJRoYEkGBXrvd5E849+FERj7uQF2zN7qzcOZdLpibeL+Tn2GWh/7otgjmTmgVEyjRBpWRPA==
+X-Received: by 2002:ac8:6886:: with SMTP id m6mr8681334qtq.255.1628250487810;
+        Fri, 06 Aug 2021 04:48:07 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id t64sm4470921qkd.71.2021.08.06.04.48.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 04:48:07 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj38.park@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@huawei.com,
+        amit@kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
+        foersleo@amazon.de, Greg Thelen <gthelen@google.com>,
+        jgowans@amazon.com, mheyne@amazon.de,
+        David Rientjes <rientjes@google.com>, sieberf@amazon.com,
+        Vlastimil Babka <vbabka@suse.cz>, linux-damon@amazon.com,
+        Linux MM <linux-mm@kvack.org>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, Wei Xu <weixugc@google.com>,
+        Paul Turner <pjt@google.com>, Yu Zhao <yuzhao@google.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Subject: Re: [PATCH v34 00/13] Introduce Data Access MONitor (DAMON)
+Date:   Fri,  6 Aug 2021 11:48:01 +0000
+Message-Id: <20210806114801.6958-1-sjpark@amazon.de>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210805170344.afbf5f1ceb00eb212082ca7b@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 6, 2021 at 9:39 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Fri, 06 Aug 2021, Alistair Francis wrote:
->
-> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> > ---
-> >  drivers/mfd/Kconfig | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > index 6a3fd2d75f96..09a939f8b7ff 100644
-> > --- a/drivers/mfd/Kconfig
-> > +++ b/drivers/mfd/Kconfig
-> > @@ -1176,7 +1176,7 @@ config MFD_SI476X_CORE
-> >         module will be called si476x-core.
-> >
-> >  config MFD_SIMPLE_MFD_I2C
-> > -     tristate
-> > +     tristate "Simple MFD device"
-> >       depends on I2C
-> >       select REGMAP_I2C
-> >       help
->
-> For what purpose?
+From: SeongJae Park <sjpark@amazon.de>
 
-It makes it easier to enable in menuconfig. That's the main reason :)
+On Thu, 5 Aug 2021 17:03:44 -0700 Andrew Morton <akpm@linux-foundation.org> wrote:
 
-Alistair
+> On Wed, 28 Jul 2021 08:36:43 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
+> 
+> > > DAMON does not expose stable APIs at the moment, so these can
+> > > be changed later if needed. I think it is ok to merge DAMON for some
+> > > exposure. However I do want to make this clear that the solution space
+> > > is not complete. The solution of system level monitoring is still
+> > > needed which can be a future extension to DAMON or more generalized
+> > > Multigen LRU.
+> > 
+> > Agreed.  We have lots more works to do.  Some of those are already posted as
+> > RFC patchsets[1,2,3,4].  I promise I will happily do the works.  But, how dare
+> > could only I get all the fun?  I'd like to do that together with others in this
+> > great community.  One major purpose of this patchset is thus providing a
+> > flexible framework for such collaboration.  The virtual address space
+> > monitoring, which this patchset provides in addition to the framework, is also
+> > for real-world usages, though.
+> > 
+> > Now all the patches have at least one 'Reviewed-by:' or 'Acked-by:' tags.  We
+> > didn't find serious problems since v26[5], which was posted about four months
+> > ago. so I'm thinking this patchset has passed the minimum qualification.  If
+> > you think there are more things to be done before this patchset is merged in
+> > the -mm tree or mainline, please let me know.  If not, Andrew, I'd like you to
+> > consider merging this patchset into '-mm' tree.
+> 
+> Shall take a look.  With some trepidation.
+> 
+> 1-2 years from now someone will pop up with a massive patchset
+> implementing some monitoring scheme and we'll say "why didn't you use
+> DAMON" and they'll say "it's unsuitable for <reasons>".
 
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+Agreed.  And I personally believe merging this in will help avoiding such
+situation, because the someone will be able to easily find the developer who is
+responsible to convince the person.  I will happily and definitely do my best
+for that.
+
+> 
+> I would like to see more thought/design go into how DAMON could be
+> modified to address Shakeel's other three requirements.  At least to
+> the point where we can confidently say "yes, we will be able to do
+> this".  Are you able to drive this discussion along please?
+
+Sure.  I will describe my plan for convincing Shakeel's usages in detail as a
+reply to this mail.
+
+
+Thanks,
+SeongJae Park
