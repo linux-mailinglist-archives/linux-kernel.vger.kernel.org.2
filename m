@@ -2,79 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1FE3E2BD0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8013E2BCE
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344422AbhHFNpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 09:45:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58740 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344415AbhHFNpU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 09:45:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628257504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0VbV96j7hcbKHoJWYg0a5r9V2HBRp69cIOXkwt8uqKA=;
-        b=N6El3VVjFmnT95+GPNfWAz/C1CEfof63ytJq96royJbO3lZ+T0TcilvNH4t2ALq3Gy7qZo
-        14Zjlq27rlBcrudWUFbBG+9KCzK6u9QQVCpxi0G9cWkE/iqN54r80DISVB68OBSbR0aGT7
-        fcabZ6LeAj6oz+544RkXNehbaj0V+oA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-208-o9kCuQ05PaaOrCW-qhce1A-1; Fri, 06 Aug 2021 09:45:03 -0400
-X-MC-Unique: o9kCuQ05PaaOrCW-qhce1A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA11296DCFF;
-        Fri,  6 Aug 2021 13:45:00 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E6BD75D9D5;
-        Fri,  6 Aug 2021 13:44:49 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YQx4lx7vEbvmfBnE@casper.infradead.org>
-References: <YQx4lx7vEbvmfBnE@casper.infradead.org> <YQv+iwmhhZJ+/ndc@casper.infradead.org> <YQvpDP/tdkG4MMGs@casper.infradead.org> <YQvbiCubotHz6cN7@casper.infradead.org> <1017390.1628158757@warthog.procyon.org.uk> <1170464.1628168823@warthog.procyon.org.uk> <1186271.1628174281@warthog.procyon.org.uk> <1219713.1628181333@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, Anna Schumaker <anna.schumaker@netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Canvassing for network filesystem write size vs page size
+        id S1344369AbhHFNpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 09:45:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344083AbhHFNpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 09:45:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4B7F6113C;
+        Fri,  6 Aug 2021 13:44:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628257494;
+        bh=Gn/JIf0T5l5y6XchfhaOisk1ME/3lTklwuWGQTVoKnU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zt9MxKbs2fGDBU8uwc3fj6G2dG+4iRTZzszNEFPOQ7rPEmv95HvA9b4M05mtpVUT/
+         FwnbFY9xAjlnMMb6bOiuC/d63Y11fkSmUYUo+Pli5BPShKHSsxzdrqBVeSFJnpgVNE
+         +GkvdS3gUNRlnOT0j38krn8AhUW9rMatJhApZZR5DFuGJqJ7asW3Ox+yzb2TOPfTNp
+         0iIuWw5D1+ONkIPVnXk69F5A62bWom+APfTtGLrmtmv0X4I9PWy5d3D0yC8CUhg/LP
+         5l3cPsEmGe/Sf+W981tYqVT+IgTJts6bpDhIpbTppC+whGf5mZi+Pp3uEE37301lys
+         ax0X0lXHERdaA==
+Date:   Fri, 6 Aug 2021 19:14:50 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] dmaengine: acpi: Check for errors from
+ acpi_register_gsi() separately
+Message-ID: <YQ080pMpNcXqt1ml@matsya>
+References: <20210802175532.54311-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1302764.1628257488.1@warthog.procyon.org.uk>
-Date:   Fri, 06 Aug 2021 14:44:48 +0100
-Message-ID: <1302765.1628257488@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802175532.54311-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+On 02-08-21, 20:55, Andy Shevchenko wrote:
+> While IRQ test agaist the returned variable in practice is a good enough
+> there is still a room for theoretical mistake in case the vIRQ of the
+> device contains the same error code that acpi_register_gsi() may return.
+> Due to this, check for error code separately from matching the vIRQs.
+> 
+> Besides that, append documentation to tell why acpi_gsi_to_irq() can't
+> be used and we call acpi_register_gsi() instead.
 
-> Filesystems should not make an assumption about this ... I suspect
-> the optimum page size scales with I/O bandwidth; taking PCI bandwidth
-> as a reasonable proxy, it's doubled five times in twenty years.
+patch fails to apply, pls rebase
 
-There are a lot more factors than you make out.  Local caching, content
-crypto, transport crypto, cost of setting up RPC calls, compounding calls to
-multiple servers.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/dma/acpi-dma.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dma/acpi-dma.c b/drivers/dma/acpi-dma.c
+> index 52768dc8ce12..5906eae26e2a 100644
+> --- a/drivers/dma/acpi-dma.c
+> +++ b/drivers/dma/acpi-dma.c
+> @@ -75,8 +75,16 @@ static int acpi_dma_parse_resource_group(const struct acpi_csrt_group *grp,
+>  	    si->mmio_base_high != upper_32_bits(mem))
+>  		return 0;
+>  
+> -	/* Match device by Linux vIRQ */
+> +	/*
+> +	 * acpi_gsi_to_irq() can't be used because some platforms do not save
+> +	 * registered IRQs in the MP table. Instead we just try to register
+> +	 * the GSI, which is the core part of the above mentioned function.
+> +	 */
+>  	ret = acpi_register_gsi(NULL, si->gsi_interrupt, si->interrupt_mode, si->interrupt_polarity);
+> +	if (ret < 0)
+> +		return 0;
+> +
+> +	/* Match device by Linux vIRQ */
+>  	if (ret != irq)
+>  		return 0;
+>  
+> -- 
+> 2.30.2
 
-David
-
+-- 
+~Vinod
