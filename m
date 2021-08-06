@@ -2,263 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2033E22F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 07:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665773E22FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 07:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243154AbhHFFhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 01:37:23 -0400
-Received: from mga01.intel.com ([192.55.52.88]:12492 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241943AbhHFFhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 01:37:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="236287737"
-X-IronPort-AV: E=Sophos;i="5.84,299,1620716400"; 
-   d="scan'208";a="236287737"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 22:37:06 -0700
-X-IronPort-AV: E=Sophos;i="5.84,299,1620716400"; 
-   d="scan'208";a="481275758"
-Received: from zengguan-mobl.ccr.corp.intel.com (HELO [10.238.0.133]) ([10.238.0.133])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 22:37:01 -0700
-Subject: Re: [PATCH v3 0/6] IPI virtualization support for VM
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hu, Robert" <robert.hu@intel.com>,
-        "Gao, Chao" <chao.gao@intel.com>
-References: <20210805151317.19054-1-guang.zeng@intel.com>
- <CALMp9eQ=W0XFstXkCWQNziu_QmWf4V2neNw3kn6imMThLc+SGw@mail.gmail.com>
-From:   Zeng Guang <guang.zeng@intel.com>
-Message-ID: <75e42262-cfa6-4990-b65b-2b1dcd9318a8@intel.com>
-Date:   Fri, 6 Aug 2021 13:36:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S243162AbhHFFoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 01:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241468AbhHFFn6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 01:43:58 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A04EC06179A
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 22:43:42 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id 14so8806989qkc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 22:43:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=nb0tzD291O2NpxD3QkJh5g66mFqozKrq3J7zV5XdneM=;
+        b=tPJQHXxZd9eovODzKBrQ7Z1rQFYYNBRweevMY3p3T4d+8apkd/mZ4TyiXxYdN5oBHu
+         +XFAycB1FnQvzN1zYjFLP5xEqwa6Lz90VqwX3n+BQPHkjfdn5gEk1NigAvwe9fXlD9SE
+         dS8tKra0w06ivJObMdFJ5EFEZhWLYXTvRc4kZiH0MbWzpk2ETptYZEtSqKyavpv2dLJr
+         zClQiwX0qS9s/UburEei25PU/qGv02H+kF28+HWanfBfj27acFef+4JzJA3Wic9Nrwxp
+         3xP1iJS5I0CYcBXgt9BGW6QPmuvSkHWUfkH/I9YOJXzCmWCKUTUQ86xrJrhkLbC+Mi5Y
+         4rMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=nb0tzD291O2NpxD3QkJh5g66mFqozKrq3J7zV5XdneM=;
+        b=BoJSQdqojcbUmm4ayWqM3lCkjDU/OPZ5WjNEUpVaSv4bwitoadyWK8Cj/TQWHCa9YO
+         SRrCiMHPxDXlzPOnnEjM4EyjuqbcrzVgZOpwcsuYDix+zngYih0cDo1P+JLg/fVWSER/
+         C1pBdZv7UqiBv62HJrUNoXfpIgvz3CQRxsdr4wAS2K718bnn8JMwX3160a5qzWrsL07r
+         9uR1FvgwEvPBjgwG4d75zijidB6mpX8YZpUd5WiNLGgHa43JgrwqD3QDOEF3iesBRTws
+         kzoKFHtrJ/TkcvCUFQqW+Ynv9CICJOaUMEm8mORj/niDxxrL3NYkWj1Pat/6WQaKIuBf
+         U01A==
+X-Gm-Message-State: AOAM530eMQ62IEEp8tjP22lp+6h5ovySpEVVBObUTAAWfNe6619DYk0H
+        T88hPrTof/1WomaBPgX7wl7/DQ==
+X-Google-Smtp-Source: ABdhPJwEfynqWrtytJi7KqnkQzjUoNcTR3OSX0gNN/t9rR4rDc5rHaI5jc76FJ1/rG7ENL+FdWpl4w==
+X-Received: by 2002:a37:5a02:: with SMTP id o2mr8487795qkb.476.1628228621102;
+        Thu, 05 Aug 2021 22:43:41 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id g4sm3970818qkk.104.2021.08.05.22.43.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 22:43:40 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 22:43:37 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     Yang Shi <shy828301@gmail.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org, Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH 06/16] huge tmpfs: shmem_is_huge(vma, inode, index)
+In-Reply-To: <CAHbLzkqKQ_k_aipojZd=UiHyivaweCpCFJJn7WCWVcxhTijqAQ@mail.gmail.com>
+Message-ID: <749bcf72-efbd-d6c-db30-e9ff98242390@google.com>
+References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com> <dae523ab-c75b-f532-af9d-8b6a1d4e29b@google.com> <CAHbLzkoKZ9OdUfP5DX81CKOJWrRZ0GANrmenNeKWNmSOgUh0bQ@mail.gmail.com> <e7374d7e-4773-aba1-763-8fa2c953f917@google.com>
+ <CAHbLzko_wg4mx-LTbJ6JcJo-6VzMh5BAcuMV8PXKPsFXOBVASw@mail.gmail.com> <CAHbLzkqKQ_k_aipojZd=UiHyivaweCpCFJJn7WCWVcxhTijqAQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CALMp9eQ=W0XFstXkCWQNziu_QmWf4V2neNw3kn6imMThLc+SGw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/2021 1:03 AM, Jim Mattson wrote:
-> On Thu, Aug 5, 2021 at 8:38 AM Zeng Guang <guang.zeng@intel.com> wrote:
->
-> Current IPI process in guest VM will virtualize the writing to interrupt
-> command register(ICR) of the local APIC which will cause VM-exit anyway
-> on source vCPU. Frequent VM-exit could induce much overhead accumulated
-> if running IPI intensive task.
->
-> IPI virtualization as a new VT-x feature targets to eliminate VM-exits
-> when issuing IPI on source vCPU. It introduces a new VM-execution
-> control - "IPI virtualization"(bit4) in the tertiary processor-based
-> VM-exection controls and a new data structure - "PID-pointer table
-> VM-execution
->> address" and "Last PID-pointer index" referenced by the VMCS. When "IPI
->> virtualization" is enabled, processor emulateds following kind of writes
-> emulates
-> to APIC registers that would send IPIs, moreover without causing VM-exits.
-> - Memory-mapped ICR writes
-> - MSR-mapped ICR writes
-> - SENDUIPI execution
->
-> This patch series implement IPI virtualization support in KVM.
-> implements
->> Patches 1-4 add tertiary processor-based VM-execution support
->> framework.
->>
->> Patch 5 implement interrupt dispatch support in x2APIC mode with
-> implements
->> APIC-write VM exit. In previous platform, no CPU would produce
->> APIC-write VM exit with exit qulification 300H when the "virtual x2APIC
-> qualification
->> mode" VM-execution control was 1.
->>
->> Patch 6 implement IPI virtualization related function including
->> feature enabling through tertiary processor-based VM-execution in
->> various scenario of VMCS configuration, PID table setup in vCPU creation
-> scenarios
->> and vCPU block consideration.
->>
->> Document for IPI virtualization is now available at the latest "Intel
->> Architecture Instruction Set Extensions Programming Reference".
->>
->> Document Link:
->> https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
->>
->> We did experiment to measure average time sending IPI from source vCPU
->> to the target vCPU completing the IPI handling by kvm unittest w/ and
->> w/o IPI virtualization. When IPI virtualizatin enabled, it will reduce
-> virtualization
->> 22.21% and 15.98% cycles consuming in xAPIC mode and x2APIC mode
->> respectly.
-> respectively
->> KMV unittest:vmexit/ipi, 2 vCPU, AP was modified to run in idle loop
-> KVM
+On Thu, 5 Aug 2021, Yang Shi wrote:
+> 
+> By rereading the code, I think you are correct. Both cases do work
+> correctly without leaking. And the !CONFIG_NUMA case may carry the
+> huge page indefinitely.
+> 
+> I think it is because khugepaged may collapse memory for another NUMA
+> node in the next loop, so it doesn't make too much sense to carry the
+> huge page, but it may be an optimization for !CONFIG_NUMA case.
 
-Thanks for your all corrections.
+Yes, that is its intention.
 
->> instead of halt to ensure no VM exit impact on target vCPU.
-> Are you going to post the kvm-init-test changes?
+> 
+> However, as I mentioned in earlier email the new pcp implementation
+> could cache THP now, so we might not need keep this convoluted logic
+> anymore. Just free the page if collapse is failed then re-allocate
+> THP. The carried THP might improve the success rate a little bit but I
+> doubt how noticeable it would be, may be not worth for the extra
+> complexity at all.
 
-We modified unit test common code specific for the IPIv test purpose, 
-currently no plan to post those changes to kvm-uint-tests.
->>                  Cycles of IPI
->>                  xAPIC mode              x2APIC mode
->>          test    w/o IPIv  w/ IPIv       w/o IPIv  w/ IPIv
->>          1       6106      4816          4265      3768
->>          2       6244      4656          4404      3546
->>          3       6165      4658          4233      3474
->>          4       5992      4710          4363      3430
->>          5       6083      4741          4215      3551
->>          6       6238      4904          4304      3547
->>          7       6164      4617          4263      3709
->>          8       5984      4763          4518      3779
->>          9       5931      4712          4645      3667
->>          10      5955      4530          4332      3724
->>          11      5897      4673          4283      3569
->>          12      6140      4794          4178      3598
->>          13      6183      4728          4363      3628
->>          14      5991      4994          4509      3842
->>          15      5866      4665          4520      3739
->>          16      6032      4654          4229      3701
->>          17      6050      4653          4185      3726
->>          18      6004      4792          4319      3746
->>          19      5961      4626          4196      3392
->>          20      6194      4576          4433      3760
->>
->> Average cycles  6059      4713.1        4337.85   3644.8
->> %Reduction                -22.21%                 -15.98%
->>
->> --------------------------------------
->> IPI microbenchmark:
->> (https://lore.kernel.org/kvm/20171219085010.4081-1-ynorov@caviumnetworks.com)
->>
->> 2 vCPUs, 1:1 pin vCPU to pCPU, guest VM runs with idle=poll, x2APIC mode
-> For dedicated CPUs, we would just disable the MONITOR/MWAIT intercepts
-> and expose MONITOR/MWAIT to the guest. We would not recommend that
-> anyone use idle=poll.
-OK. We thought that straightforward way to make guest keep running in 
-idle without side
-effect of VM exit and other factors, so used idle=poll for test.
->> Result with IPIv enabled:
->>
->> Dry-run:                         0,             272798 ns
->> Self-IPI:                  5094123,           11114037 ns
->> Normal IPI:              131697087,          173321200 ns
->> Broadcast IPI:                   0,          155649075 ns
->> Broadcast lock:                  0,          161518031 ns
->>
->> Result with IPIv disabled:
->>
->> Dry-run:                         0,             272766 ns
->> Self-IPI:                  5091788,           11123699 ns
->> Normal IPI:              145215772,          174558920 ns
->> Broadcast IPI:                   0,          175785384 ns
->> Broadcast lock:                  0,          149076195 ns
->>
->>
->> As IPIv can benefit unicast IPI to other CPU, Noraml IPI test case gain
-> Normal
->> about 9.73% time saving on average out of 15 test runs when IPIv is
->> enabled.
-> Can you share the CDFs?
-Normal IPI statistics:
-                 test            w/o IPIv  (unit:ns)        w/ IPIv 
-(unit:ns)
-                 1                153346049 140907046
-                 2                147218648 141660618
-                 3                145215772 117890672
-                 4                146621682 136430470
-                 5                144821472 136199421
-                 6                144704378 131676928
-                 7                141403224 131697087
-                 8                144775766 125476250
-                 9                140658192 137263330
-                 10              144768626 138593127
-                 11              145166679 131946752
-                 12              145020451 116852889
-                 13              148161353 131406280
-                 14              148378655 130174353
-                 15              148903652 127969674
->>                  w/o IPIv                w/ IPIv
->> Normal IPI:     145944306.6 ns          131742993.1 ns
->> %Reduction                              -9.73%
->>
->> --------------------------------------
->> hackbench:
->>
->> 8 vCPUs, guest VM free run, x2APIC mode
->> ./hackbench -p -l 100000
->>
->>                  w/o IPIv        w/ IPIv
->> Time:           91.887          74.605
->> %Reduction:                     -18.808%
->>
->> 96 vCPUs, guest VM free run, x2APIC mode
->> ./hackbench -p -l 1000000
->>
->>                  w/o IPIv        w/ IPIv
->> Time:           287.504         235.185
->> %Reduction:                     -18.198%
->>
->> --------------------------------------
->>
->> v2 -> v3:
->> 1. Misc change on tertiary execution control
->>     definition and capability setup
->> 2. Alternative to get tertiary execution
->>     control configuration
->>
->> v1 -> v2:
->> 1. Refine the IPIv enabling logic for VM.
->>     Remove ipiv_active definition per vCPU.
->>
->> Gao Chao (1):
->>    KVM: VMX: enable IPI virtualization
->>
->> Robert Hoo (4):
->>    x86/feat_ctl: Add new VMX feature, Tertiary VM-Execution control
->>    KVM: VMX: Extend BUILD_CONTROLS_SHADOW macro to support 64-bit
->>      variation
->>    KVM: VMX: Detect Tertiary VM-Execution control when setup VMCS config
->>    KVM: VMX: dump_vmcs() reports tertiary_exec_control field as well
->>
->> Zeng Guang (1):
->>    KVM: x86: Support interrupt dispatch in x2APIC mode with APIC-write VM
->>      exit
->>
->>   arch/x86/include/asm/msr-index.h   |   1 +
->>   arch/x86/include/asm/vmx.h         |  11 +++
->>   arch/x86/include/asm/vmxfeatures.h |   5 +-
->>   arch/x86/kernel/cpu/feat_ctl.c     |  11 ++-
->>   arch/x86/kvm/lapic.c               |   9 ++-
->>   arch/x86/kvm/vmx/capabilities.h    |  14 ++++
->>   arch/x86/kvm/vmx/evmcs.c           |   2 +
->>   arch/x86/kvm/vmx/evmcs.h           |   1 +
->>   arch/x86/kvm/vmx/posted_intr.c     |  22 ++++--
->>   arch/x86/kvm/vmx/vmcs.h            |   1 +
->>   arch/x86/kvm/vmx/vmx.c             | 114 +++++++++++++++++++++++++++--
->>   arch/x86/kvm/vmx/vmx.h             |  27 ++++---
->>   12 files changed, 193 insertions(+), 25 deletions(-)
->>
->> --
->> 2.25.1
->>
+It would be great if the new pcp implementation is good enough to
+get rid of khugepaged's confusing NUMA=y/NUMA=n differences; and all
+the *hpage stuff too, I hope.  That would be a welcome cleanup.
+
+> > > Collapse failure is not uncommon and leaking huge pages gets noticed.
+
+After writing that, I realized how I'm almost always testing a NUMA=y
+kernel (though on non-NUMA machines), and seldom try the NUMA=n build.
+So did so to check no leak, indeed; but was surprised, when comparing
+vmstats, that the NUMA=n run had done 5 times as much thp_collapse_alloc
+as the NUMA=y run.  I've merely made a note to look into that one day:
+maybe it was just a one-off oddity, or maybe the incrementing of stats
+is wrong down one path or the other.
+
+Hugh
