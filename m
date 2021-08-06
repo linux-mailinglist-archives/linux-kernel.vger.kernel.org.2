@@ -2,109 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15103E2E54
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C7F3E2E55
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232346AbhHFQbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 12:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231682AbhHFQbS (ORCPT
+        id S232533AbhHFQdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 12:33:10 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45578 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231682AbhHFQdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 12:31:18 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8A8C061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 09:31:01 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso18570032pjf.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 09:31:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=84hY5jDAppUM2aQUi/DIf2atf7Ty47vhaafi4V0naGE=;
-        b=KdvF1wfl42VsDxUShMXwSpC4rhv0zdr+gVFsmfAwaFUkHd6dylwqkqcDY3njHKRETd
-         s06qFvZCIekJr6w7GgTCTZ5h3Nfx/uu8wHKfqkQVBQBxnf6ae3oa3Ger6bdeMGLDKOGF
-         ISgPrQxVjOBP14Nw86opXLNvQ06SvJgbBOrjvjrfIMMJtj+Ik7ao8PnpFwtayUFflXuB
-         dIa+tOyZxCong/Tga8xXnXn+86OS5lNlCqgZsHkO2Xq2zV/834HUHXabeViOwLBP1Low
-         j2qk1swKizFSzRbW3RhpAWMOjPlYMj76B0oxTS7z4j3uI3Q5M2PE21ePHQcPDe0yMo9n
-         NrbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=84hY5jDAppUM2aQUi/DIf2atf7Ty47vhaafi4V0naGE=;
-        b=cBIaEY/r/3v3G78JP3gyJkgLOHfo8ON4xf/8gY7kF+Wg0CuSkmIt+SwFORqk+TBl9V
-         /r0X0fTZRhxV0TrObNC1dlZKQ2bykUoUunUPZK4520+cSu2BX2pNK0AYoymq3lztArSO
-         zz7gOAPG+Ff72am+soj+OJiGBplcazxCallJ1fP7amoj2TxFQDo1iUOx3HTgnxwptEoZ
-         /v62AtjDVNZgVvw8UbR2YLpVe7yu+zHlAHDzrgVjS2HXkLI3sDS6csIzgWIeIdlqkbU3
-         K8BFqFl7yRz04hGc8E7BTTjzfzBQrACOIiREUfoOOJ8lqsyUyA1yoF61HQbgoSx18BPM
-         1n3Q==
-X-Gm-Message-State: AOAM532ZAPyCnywW8HQDwc2PHpctjvb0XGmgCviY+7fNAIbFxB+KEvdl
-        v1sgTkAoROF+A9486L/e/5rPHg==
-X-Google-Smtp-Source: ABdhPJyCtsGwyPBwANptW14Gj0TNbhDEtRkyTTY5E91Himc0xAxv1pOEj0Ovr0v9/IsQL37B65Pt3w==
-X-Received: by 2002:a17:90a:4894:: with SMTP id b20mr11434237pjh.13.1628267460943;
-        Fri, 06 Aug 2021 09:31:00 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id iq4sm6145622pjb.28.2021.08.06.09.31.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 09:31:00 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 16:30:56 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Zeng Guang <guang.zeng@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Robert Hu <robert.hu@intel.com>,
-        Gao Chao <chao.gao@intel.com>,
-        Robert Hoo <robert.hu@linux.intel.com>
-Subject: Re: [PATCH v3 2/6] KVM: VMX: Extend BUILD_CONTROLS_SHADOW macro to
- support 64-bit variation
-Message-ID: <YQ1jwHuDoSNxKDVW@google.com>
-References: <20210805151317.19054-1-guang.zeng@intel.com>
- <20210805151317.19054-3-guang.zeng@intel.com>
- <YQxnGIT7XLQvPkrz@google.com>
- <a984cf7e-fe3e-98bd-744f-9d0ff3759e01@redhat.com>
+        Fri, 6 Aug 2021 12:33:08 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BE9D1223F7;
+        Fri,  6 Aug 2021 16:32:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628267571; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iPNej9lFt6dK2k5I9jgpntfFoN7CqbJ2BOa04lX6Q+8=;
+        b=wxWDlSJ21OYZs7EoTl7cXt2y5V9xHzSEvWrzFOGTI7YcsJhNZK7ENk25Y+jvyw3sknO7z6
+        zgmpvIsZVucZM9cB7ULQqd2lmIO/zoSKlBZHjPAMj7wIzFxL/ivSS00H5fmPfHk/Gy/4zT
+        hvOt/iqdSKLUA2QNWFsKIlkSwO7yCLE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628267571;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iPNej9lFt6dK2k5I9jgpntfFoN7CqbJ2BOa04lX6Q+8=;
+        b=WhoOmzvyvfhoS3zCSaKGc41C3UthceVWf4sqy3TTVdMZNyEd3t2T5EFKfSdtOZLO0y7VM1
+        H5/1UsX7Uw4KAjCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 943CB13A96;
+        Fri,  6 Aug 2021 16:32:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id gVJJIzNkDWFBaAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 06 Aug 2021 16:32:51 +0000
+Subject: Re: [RFC PATCH 00/15] Make MAX_ORDER adjustable as a kernel boot time
+ parameter.
+To:     Zi Yan <ziy@nvidia.com>, David Hildenbrand <david@redhat.com>,
+        linux-mm@kvack.org
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org
+References: <20210805190253.2795604-1-zi.yan@sent.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <0d374eed-cc52-a656-b338-1156782bdf7e@suse.cz>
+Date:   Fri, 6 Aug 2021 18:32:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a984cf7e-fe3e-98bd-744f-9d0ff3759e01@redhat.com>
+In-Reply-To: <20210805190253.2795604-1-zi.yan@sent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021, Paolo Bonzini wrote:
-> On 06/08/21 00:32, Sean Christopherson wrote:
-> > > -BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS)
-> > > -BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS)
-> > > -BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL)
-> > > -BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL)
-> > > -BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL)
-> > > +BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS, 32)
-> > > +BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS, 32)
-> > > +BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL, 32)
-> > > +BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL, 32)
-> > > +BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL, 32)
-> > > +BUILD_CONTROLS_SHADOW(tertiary_exec, TERTIARY_VM_EXEC_CONTROL, 64)
-> > 
-> > This fails to compile because all the TERTIARY collateral is in a later patch.
-> > 
-> > I think I'd also prefer hiding the 32/64 param via more macros, e.g.
-> > 
-> > #define __BUILD_CONTROLS_SHADOW(lname, uname, bits)				\
+On 8/5/21 9:02 PM, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
 > 
-> No, please don't. :)  Also because the 64 bit version is used only once.
+> Hi all,
+> 
+> This patchset add support for kernel boot time adjustable MAX_ORDER, so that
+> user can change the largest size of pages obtained from buddy allocator. It also
+> removes the restriction on MAX_ORDER based on SECTION_SIZE_BITS, so that
+> buddy allocator can merge PFNs across memory sections when SPARSEMEM_VMEMMAP is
+> set. It is on top of v5.14-rc4-mmotm-2021-08-02-18-51.
+> 
+> Motivation
+> ===
+> 
+> This enables kernel to allocate 1GB pages and is necessary for my ongoing work
+> on adding support for 1GB PUD THP[1]. This is also the conclusion I came up with
+> after some discussion with David Hildenbrand on what methods should be used for
+> allocating gigantic pages[2], since other approaches like using CMA allocator or
+> alloc_contig_pages() are regarded as suboptimal.
 
-LOL, fine.  I'm beginning to think you have a filter for "macros" that sounds off
-alarms and flashing lights ;-)
+I see references [1] [2] etc but no list of links at the end, did you
+forgot to include?
