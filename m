@@ -2,99 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46DC23E2E99
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A753E2E9F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237413AbhHFQwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 12:52:10 -0400
-Received: from esa.hc503-62.ca.iphmx.com ([216.71.131.47]:48512 "EHLO
-        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233896AbhHFQwJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 12:52:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
-  t=1628268713; x=1659804713;
-  h=to:cc:references:subject:in-reply-to:from:message-id:
-   date:mime-version:content-transfer-encoding;
-  bh=+Yk7jS1kCh4T4Z0jmOABLJsPkhmyd3gwrABdX6XLTLk=;
-  b=640keLWxsk9jFlZbDaL71I1fjJL6NUdYe4xIBBc8Vi8vIKvSmbd20GF+
-   Z5VZ+vtacIviOjK+8/G0r0Yp/KG43+y25qhkturbY6v080AJJWEjaOIfx
-   1/4MeaJaTShT4dZI0dU9AeHCJaz30MWlT5EPmq/Zvv0ORmWzCCmrU3X+M
-   Y=;
-Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
-  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Aug 2021 12:51:50 -0400
-Received: from [10.42.0.123] (10.32.240.218) by connhm04.connect.uwaterloo.ca
- (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 6 Aug
- 2021 12:51:49 -0400
-To:     <posk@google.com>
-CC:     <avagin@google.com>, <bsegall@google.com>, <jannh@google.com>,
-        <linux-api@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mingo@redhat.com>, <pabuhr@uwaterloo.ca>, <peterz@infradead.org>,
-        <pjt@google.com>, <posk@posk.io>, <tdelisle@uwaterloo.ca>,
-        <tglx@linutronix.de>
-References: <CAPNVh5fjcJHKJOuQP+UebpYf+GBMDkj5me1c=EzS9cpDSTbzfA@mail.gmail.com>
-Subject: Re: [PATCH 3/4 v0.4] sched/umcg: add
- Documentation/userspace-api/umcg.rst
-In-Reply-To: <CAPNVh5fjcJHKJOuQP+UebpYf+GBMDkj5me1c=EzS9cpDSTbzfA@mail.gmail.com>
-From:   Thierry Delisle <tdelisle@uwaterloo.ca>
-Message-ID: <1dc64d75-da9b-272a-a9ab-7d2ae7a85764@uwaterloo.ca>
-Date:   Fri, 6 Aug 2021 12:51:48 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S238269AbhHFQyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 12:54:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236878AbhHFQyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 12:54:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5B1560EBC;
+        Fri,  6 Aug 2021 16:54:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628268848;
+        bh=orPZ5AgBkaGsuEXI7ykCPkca837ZQrhZ4NKxQ/scOxM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tu+7dJONfzgi79h78xxwQ/bpXn+CLVQGBGPftks9XBB4699WogScIIDWo3bI///30
+         +M+aOJZ1GoJ3fdegtC0lB9gS7ALHdJjjW4JykoizEI4logN7lbt6EH0GQ8WzsI00MZ
+         GEZmWt1GLTJrBPc5SN/UPKRYQZwNpNZ1P5/QhTQ80+OICrvG/0p0O/KGmpJt0ZHd2g
+         1hc9PoukPfQQiw0wRt0ZAPm9XPofxV+2PfFTi5lC3xGvQ/91qmLVDETAgnjexfpmIy
+         ZWOirktT5MBdFbBi2rD5MwFC0LICudyvFEK/0cZD60sVsySrQ2yE44f4u9xgfzoC16
+         OT/XkBKVKSeNQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Tree for Aug 6
+Date:   Fri,  6 Aug 2021 17:53:51 +0100
+Message-Id: <20210806165351.10621-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.32.240.218]
-X-ClientProxiedBy: connhm03.connect.uwaterloo.ca (172.16.137.67) To
- connhm04.connect.uwaterloo.ca (172.16.137.68)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  > All _umcg_ state changes here happen in the userspace before
-  > sys_umcg_wait() is called. So:
-  >
-  > W1: cmpxchg W1:RUNNING => W1:IDLE
-  >  - if OK, call sys_umcg_wait()
-  >  - if failed, do something else (notes below)
-  >
-  > W2: cmpxchg W1:IDLE => W1:RUNNING
-  >  - if OK, lock itself, set W2:next_tid to W1, call sys_umcg_wait()
-  > (will not block nor spin), restore next_tid and state/unlock upon
-  > syscall return
-  >  - if failed, do something else
+Hi all,
 
-I am talking about the case where both cmpxchg() succeed and W2 sets
-*both* UMCG_WAIT_WAKE_ONLY and UMCG_WAIT_WF_CURRENT_CPU.  More
-specifically, if things are ordered like so: (ideally use monospace font)
+Stephen should be back on Monday and normal service resumed.
 
-          - w1 -                     - w2 -
+Changes since 20210805:
 
-w1:RUNNING => w1:IDLE|L   |
-S:IDLE => S:RUNNING       |
-sys_umcg_wait():          |
-      set ~UMCG_TF_LOCKED  |
-                           |   w1:IDLE => w1:RUNNING|L
-                           |   w2:RUNNING => w2:IDLE|L
-                           |   w2:next_tid := W1.tid
-                           |   w1:RUNNING|L => w1:RUNNING
-                           |   sys_umcg_wait():
-                           |       set ~UMCG_TF_LOCKED
-                           |       do_context_switch()
-      idle_loop()          |
+The qcom tree gained a conflict with the usb-fixes tree.
 
-What does ttwu() do with w1 if it has not reached idle_loop yet?
+The bluetooth tree gained a conflict with the net tree.
 
-I am not familiar with the details of kernel context-switching, but in
-user-level threading, more specifically Cforall, this would be a problem.
-Between the call to do_context_switch() and and idle_loop(), there is a
-window where 2 CPUs run the same thread at the same time. One thread is
-performing the front side of the context switch and the other threads
-wakes up on the backside of the context switch. This behaviour invariably
-corrupts the program stack of that thread. Again, I do not know if that
-applies here. I am not exactly sure how the program stack is handled when
-inside a system call.
+The drm tree gained a conflict with the drm-fixes tree.
 
+The usb tree gained multiple conflicts with the usb tree.
+
+Non-merge commits (relative to Linus' tree): 5276
+ 5749 files changed, 365137 insertions(+), 140581 deletions(-)
+
+----------------------------------------------------------------------------
+
+I have created today's linux-next tree at
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
+are tracking the linux-next tree using git, you should not use "git pull"
+to do so as that will try to merge the new linux-next release with the
+old one.  You should use "git fetch" and checkout or reset to the new
+master.
+
+You can see which trees have been included by looking in the Next/Trees
+file in the source.  There are also quilt-import.log and merge.log
+files in the Next directory.  Between each merge, the tree was built
+with an arm64 defconfig, an allmodconfig for x86_64, a
+multi_v7_defconfig for arm and a native build of tools/perf. After
+the final fixups (if any), I do an x86_64 modules_install followed by
+builds for x86_64 allnoconfig, arm64 allnoconfig and i386, and htmldocs.
+
+Below is a summary of the state of the merge.
+
+I am currently merging 333 trees (counting Linus' and 90 trees of bug
+fix patches pending for the current merge release).
+
+Stats about the size of the tree over time can be seen at
+http://neuling.org/linux-next-size.html .
+
+Status of my local build tests will be at
+http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+advice about cross compilers/configs that work, we are always open to add
+more builds.
+
+Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+Gortmaker for triage and bug fixes.
