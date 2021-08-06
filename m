@@ -2,163 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A4F3E25E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2453E2536
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244586AbhHFIXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:23:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29041 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244127AbhHFIUM (ORCPT
+        id S243969AbhHFISL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:18:11 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7796 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243591AbhHFIQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:20:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628237995;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ycQUvev7iFjmkY/FUwE/4xwJ5iynNiXFiSZ1F9WCv/o=;
-        b=aD+/c5HNYLPZB45GiBAPwX4v9JDSGixsLiDBHjNx9ziHhwzh7Vlv0SXEIvc843846TsFtm
-        uEE3zcEOhim86FasJV68c7MwZSpYgQTT8bSRhZnw5ulbqj8Wg2M0MyUtWNU0m4N13e/s0R
-        XMwFzLey7GxKhWafp/iiV7WuOPlZ4Es=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-345-xwwM32WiOMqcgt5UyQLRSQ-1; Fri, 06 Aug 2021 04:19:52 -0400
-X-MC-Unique: xwwM32WiOMqcgt5UyQLRSQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E10EC1006C80;
-        Fri,  6 Aug 2021 08:19:50 +0000 (UTC)
-Received: from localhost (ovpn-13-152.pek2.redhat.com [10.72.13.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 982141002D71;
-        Fri,  6 Aug 2021 08:19:45 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
-Subject: [RESEND PATCH V3] genirq/affinity: add helper of irq_affinity_calc_sets
-Date:   Fri,  6 Aug 2021 16:19:37 +0800
-Message-Id: <20210806081937.300166-1-ming.lei@redhat.com>
+        Fri, 6 Aug 2021 04:16:06 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GgywD3GwRzYkqc;
+        Fri,  6 Aug 2021 16:15:40 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 6 Aug 2021 16:15:48 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 6 Aug 2021 16:15:48 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <hannes@stressinduktion.org>, <davem@davemloft.net>
+CC:     <akpm@linux-foundation.org>, <gregkh@linuxfoundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Minmin chen <chenmingmin@huawei.com>
+Subject: [PATCH v2] once: Fix panic when module unload
+Date:   Fri, 6 Aug 2021 16:21:24 +0800
+Message-ID: <20210806082124.96607-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When driver requests to allocate irq affinity managed vectors,
-pci_alloc_irq_vectors_affinity() may fallback to single vector
-allocation. In this situation, we don't need to call
-irq_create_affinity_masks for calling into ->calc_sets() for
-avoiding potential memory leak, so add the helper for this purpose.
+DO_ONCE
+DEFINE_STATIC_KEY_TRUE(___once_key);
+__do_once_done
+  once_disable_jump(once_key);
+    INIT_WORK(&w->work, once_deferred);
+    struct once_work *w;
+    w->key = key;
+    schedule_work(&w->work);                     module unload
+                                                   //*the key is
+destroy*
+process_one_work
+  once_deferred
+    BUG_ON(!static_key_enabled(work->key));
+       static_key_count((struct static_key *)x)    //*access key, crash*
 
-Fixes: c66d4bd110a1 ("genirq/affinity: Add new callback for (re)calculating interrupt sets")
-Reported-by: Bjorn Helgaas <helgaas@kernel.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-pci@vger.kernel.org
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
+When module uses DO_ONCE mechanism, it could crash due to the above
+concurrency problem, we could reproduce it with link[1].
+
+Fix it by add/put module refcount in the once work process.
+
+[1] https://lore.kernel.org/netdev/eaa6c371-465e-57eb-6be9-f4b16b9d7cbf@huawei.com/
+
+Cc: Hannes Frederic Sowa <hannes@stressinduktion.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Reported-by: Minmin chen <chenmingmin@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
-V3:
-	- avoid pointless negations
-V2:
-	- move WARN_ON_ONCE() into irq_affinity_calc_sets
-	- don't install default calc_sets() callback as suggested by
-	Christoph
+v2: always pass THIS_MODULE to macro DO_ONCE(), suggested by hannes
 
- drivers/pci/msi.c         |  3 ++-
- include/linux/interrupt.h |  7 +++++++
- kernel/irq/affinity.c     | 28 +++++++++++++++++-----------
- 3 files changed, 26 insertions(+), 12 deletions(-)
+ include/linux/once.h |  4 ++--
+ lib/once.c           | 11 ++++++++---
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-index 9232255c8515..4e6fbdf0741c 100644
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -1224,7 +1224,8 @@ int pci_alloc_irq_vectors_affinity(struct pci_dev *dev, unsigned int min_vecs,
- 			 * for the single interrupt case.
- 			 */
- 			if (affd)
--				irq_create_affinity_masks(1, affd);
-+				irq_affinity_calc_sets(1, affd);
-+
- 			pci_intx(dev, 1);
- 			return 1;
- 		}
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 2ed65b01c961..c7ff84d60465 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -340,6 +340,7 @@ irq_create_affinity_masks(unsigned int nvec, struct irq_affinity *affd);
+diff --git a/include/linux/once.h b/include/linux/once.h
+index 9225ee6d96c7..ae6f4eb41cbe 100644
+--- a/include/linux/once.h
++++ b/include/linux/once.h
+@@ -7,7 +7,7 @@
  
- unsigned int irq_calc_affinity_vectors(unsigned int minvec, unsigned int maxvec,
- 				       const struct irq_affinity *affd);
-+int irq_affinity_calc_sets(unsigned int affvecs, struct irq_affinity *affd);
+ bool __do_once_start(bool *done, unsigned long *flags);
+ void __do_once_done(bool *done, struct static_key_true *once_key,
+-		    unsigned long *flags);
++		    unsigned long *flags, struct module *mod);
  
- #else /* CONFIG_SMP */
+ /* Call a function exactly once. The idea of DO_ONCE() is to perform
+  * a function call such as initialization of random seeds, etc, only
+@@ -46,7 +46,7 @@ void __do_once_done(bool *done, struct static_key_true *once_key,
+ 			if (unlikely(___ret)) {				     \
+ 				func(__VA_ARGS__);			     \
+ 				__do_once_done(&___done, &___once_key,	     \
+-					       &___flags);		     \
++					       &___flags, THIS_MODULE);	     \
+ 			}						     \
+ 		}							     \
+ 		___ret;							     \
+diff --git a/lib/once.c b/lib/once.c
+index 8b7d6235217e..59149bf3bfb4 100644
+--- a/lib/once.c
++++ b/lib/once.c
+@@ -3,10 +3,12 @@
+ #include <linux/spinlock.h>
+ #include <linux/once.h>
+ #include <linux/random.h>
++#include <linux/module.h>
  
-@@ -391,6 +392,12 @@ irq_calc_affinity_vectors(unsigned int minvec, unsigned int maxvec,
- 	return maxvec;
+ struct once_work {
+ 	struct work_struct work;
+ 	struct static_key_true *key;
++	struct module *module;
+ };
+ 
+ static void once_deferred(struct work_struct *w)
+@@ -16,10 +18,11 @@ static void once_deferred(struct work_struct *w)
+ 	work = container_of(w, struct once_work, work);
+ 	BUG_ON(!static_key_enabled(work->key));
+ 	static_branch_disable(work->key);
++	module_put(work->module);
+ 	kfree(work);
  }
  
-+static inline int irq_affinity_calc_sets(unsigned int affvecs,
-+					 struct irq_affinity *affd)
-+{
-+	return 0;
-+}
-+
- #endif /* CONFIG_SMP */
+-static void once_disable_jump(struct static_key_true *key)
++static void once_disable_jump(struct static_key_true *key, struct module *mod)
+ {
+ 	struct once_work *w;
  
- /*
-diff --git a/kernel/irq/affinity.c b/kernel/irq/affinity.c
-index 4d89ad4fae3b..2030770e8cff 100644
---- a/kernel/irq/affinity.c
-+++ b/kernel/irq/affinity.c
-@@ -405,6 +405,22 @@ static void default_calc_sets(struct irq_affinity *affd, unsigned int affvecs)
- 	affd->set_size[0] = affvecs;
+@@ -29,6 +32,8 @@ static void once_disable_jump(struct static_key_true *key)
+ 
+ 	INIT_WORK(&w->work, once_deferred);
+ 	w->key = key;
++	w->module = mod;
++	__module_get(mod);
+ 	schedule_work(&w->work);
  }
  
-+int irq_affinity_calc_sets(unsigned int affvecs, struct irq_affinity *affd)
-+{
-+	/*
-+	 * Simple invocations do not provide a calc_sets() callback. Call
-+	 * the generic one.
-+	 */
-+	if (affd->calc_sets)
-+		affd->calc_sets(affd, affvecs);
-+	else
-+		default_calc_sets(affd, affvecs);
-+
-+	if (WARN_ON_ONCE(affd->nr_sets > IRQ_AFFINITY_MAX_SETS))
-+		return -ERANGE;
-+	return 0;
-+}
-+
- /**
-  * irq_create_affinity_masks - Create affinity masks for multiqueue spreading
-  * @nvecs:	The total number of vectors
-@@ -429,17 +445,7 @@ irq_create_affinity_masks(unsigned int nvecs, struct irq_affinity *affd)
- 	else
- 		affvecs = 0;
+@@ -53,11 +58,11 @@ bool __do_once_start(bool *done, unsigned long *flags)
+ EXPORT_SYMBOL(__do_once_start);
  
--	/*
--	 * Simple invocations do not provide a calc_sets() callback. Install
--	 * the generic one.
--	 */
--	if (!affd->calc_sets)
--		affd->calc_sets = default_calc_sets;
--
--	/* Recalculate the sets */
--	affd->calc_sets(affd, affvecs);
--
--	if (WARN_ON_ONCE(affd->nr_sets > IRQ_AFFINITY_MAX_SETS))
-+	if (irq_affinity_calc_sets(affvecs, affd))
- 		return NULL;
- 
- 	/* Nothing to assign? */
+ void __do_once_done(bool *done, struct static_key_true *once_key,
+-		    unsigned long *flags)
++		    unsigned long *flags, struct module *mod)
+ 	__releases(once_lock)
+ {
+ 	*done = true;
+ 	spin_unlock_irqrestore(&once_lock, *flags);
+-	once_disable_jump(once_key);
++	once_disable_jump(once_key, mod);
+ }
+ EXPORT_SYMBOL(__do_once_done);
 -- 
-2.31.1
+2.26.2
 
