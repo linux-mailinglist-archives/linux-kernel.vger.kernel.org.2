@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254E93E2531
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA2B3E252D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243951AbhHFISH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:18:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46174 "EHLO mail.kernel.org"
+        id S241565AbhHFISE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:18:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231823AbhHFIQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:16:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9BFD61167;
-        Fri,  6 Aug 2021 08:15:48 +0000 (UTC)
+        id S243915AbhHFIQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:16:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3678F61222;
+        Fri,  6 Aug 2021 08:15:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628237749;
-        bh=zQV37iLZUQpmTgGqLJyg26WRtdpfR90zV+yIoY3A9vI=;
+        s=korg; t=1628237751;
+        bh=+xmTosoSFPH3ZaIjFEb2yQgC0CB+7ysS9MxFz1uM2iA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EVJU4l+EMqMuGvlRapjsdj5+EDCjKLUiD9qX2fJyITPaAD56WVI81GMAqifNVCoFg
-         d32Sk0P9YNVg9HcsgvCJqUBE7q2P4idd453Ai5WOvQHmNEnPHhmK8Uuf24crLz8IJd
-         6DxI4Y3BFXNYloZIDE4y7QvR9Esh7Dizksd5pXlY=
+        b=Q0l4AOG9/Q/+ill/GHS86mY9rYgphKXhlDHHsS6weeWwa3+GH+kUuo8ZBLnnzDL+V
+         STWV+T0jmQCr7GsOpbAb4/jfZ+3946d8WrT3qTOHlL0OKRcBzHkt5JGjnuUUqrPOiw
+         RyrKHTgQkPJAS2rwVI4nmzH33LLbWODFWhHPT/lY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Stevens <stevensd@google.com>,
-        3pvd@google.com, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.14 08/11] KVM: do not assume PTE is writable after follow_pfn
-Date:   Fri,  6 Aug 2021 10:14:51 +0200
-Message-Id: <20210806081110.785046751@linuxfoundation.org>
+Subject: [PATCH 4.14 09/11] KVM: do not allow mapping valid but non-reference-counted pages
+Date:   Fri,  6 Aug 2021 10:14:52 +0200
+Message-Id: <20210806081110.814801553@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210806081110.511221879@linuxfoundation.org>
 References: <20210806081110.511221879@linuxfoundation.org>
@@ -42,87 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-commit bd2fae8da794b55bf2ac02632da3a151b10e664c upstream.
+commit f8be156be163a052a067306417cd0ff679068c97 upstream.
 
-In order to convert an HVA to a PFN, KVM usually tries to use
-the get_user_pages family of functinso.  This however is not
-possible for VM_IO vmas; in that case, KVM instead uses follow_pfn.
+It's possible to create a region which maps valid but non-refcounted
+pages (e.g., tail pages of non-compound higher order allocations). These
+host pages can then be returned by gfn_to_page, gfn_to_pfn, etc., family
+of APIs, which take a reference to the page, which takes it from 0 to 1.
+When the reference is dropped, this will free the page incorrectly.
 
-In doing this however KVM loses the information on whether the
-PFN is writable.  That is usually not a problem because the main
-use of VM_IO vmas with KVM is for BARs in PCI device assignment,
-however it is a bug.  To fix it, use follow_pte and check pte_write
-while under the protection of the PTE lock.  The information can
-be used to fail hva_to_pfn_remapped or passed back to the
-caller via *writable.
+Fix this by only taking a reference on valid pages if it was non-zero,
+which indicates it is participating in normal refcounting (and can be
+released with put_page).
 
-Usage of follow_pfn was introduced in commit add6a0cd1c5b ("KVM: MMU: try to fix
-up page faults before giving up", 2016-07-05); however, even older version
-have the same issue, all the way back to commit 2e2e3738af33 ("KVM:
-Handle vma regions with no backing page", 2008-07-20), as they also did
-not check whether the PFN was writable.
+This addresses CVE-2021-22543.
 
-Fixes: 2e2e3738af33 ("KVM: Handle vma regions with no backing page")
-Reported-by: David Stevens <stevensd@google.com>
-Cc: 3pvd@google.com
-Cc: Jann Horn <jannh@google.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Tested-by: Paolo Bonzini <pbonzini@redhat.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-[OP: backport to 4.14, adjust follow_pte() -> follow_pte_pmd()]
 Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- virt/kvm/kvm_main.c |   15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ virt/kvm/kvm_main.c |   19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
 --- a/virt/kvm/kvm_main.c
 +++ b/virt/kvm/kvm_main.c
-@@ -1491,9 +1491,11 @@ static int hva_to_pfn_remapped(struct vm
- 			       kvm_pfn_t *p_pfn)
- {
- 	unsigned long pfn;
-+	pte_t *ptep;
-+	spinlock_t *ptl;
- 	int r;
- 
--	r = follow_pfn(vma, addr, &pfn);
-+	r = follow_pte_pmd(vma->vm_mm, addr, NULL, NULL, &ptep, NULL, &ptl);
- 	if (r) {
- 		/*
- 		 * get_user_pages fails for VM_IO and VM_PFNMAP vmas and does
-@@ -1508,14 +1510,19 @@ static int hva_to_pfn_remapped(struct vm
- 		if (r)
- 			return r;
- 
--		r = follow_pfn(vma, addr, &pfn);
-+		r = follow_pte_pmd(vma->vm_mm, addr, NULL, NULL, &ptep, NULL, &ptl);
- 		if (r)
- 			return r;
-+	}
- 
-+	if (write_fault && !pte_write(*ptep)) {
-+		pfn = KVM_PFN_ERR_RO_FAULT;
-+		goto out;
- 	}
- 
- 	if (writable)
--		*writable = true;
-+		*writable = pte_write(*ptep);
-+	pfn = pte_pfn(*ptep);
- 
- 	/*
- 	 * Get a reference here because callers of *hva_to_pfn* and
-@@ -1530,6 +1537,8 @@ static int hva_to_pfn_remapped(struct vm
- 	 */ 
- 	kvm_get_pfn(pfn);
- 
-+out:
-+	pte_unmap_unlock(ptep, ptl);
- 	*p_pfn = pfn;
- 	return 0;
+@@ -1485,6 +1485,13 @@ static bool vma_is_valid(struct vm_area_
+ 	return true;
  }
+ 
++static int kvm_try_get_pfn(kvm_pfn_t pfn)
++{
++	if (kvm_is_reserved_pfn(pfn))
++		return 1;
++	return get_page_unless_zero(pfn_to_page(pfn));
++}
++
+ static int hva_to_pfn_remapped(struct vm_area_struct *vma,
+ 			       unsigned long addr, bool *async,
+ 			       bool write_fault, bool *writable,
+@@ -1534,13 +1541,21 @@ static int hva_to_pfn_remapped(struct vm
+ 	 * Whoever called remap_pfn_range is also going to call e.g.
+ 	 * unmap_mapping_range before the underlying pages are freed,
+ 	 * causing a call to our MMU notifier.
++	 *
++	 * Certain IO or PFNMAP mappings can be backed with valid
++	 * struct pages, but be allocated without refcounting e.g.,
++	 * tail pages of non-compound higher order allocations, which
++	 * would then underflow the refcount when the caller does the
++	 * required put_page. Don't allow those pages here.
+ 	 */ 
+-	kvm_get_pfn(pfn);
++	if (!kvm_try_get_pfn(pfn))
++		r = -EFAULT;
+ 
+ out:
+ 	pte_unmap_unlock(ptep, ptl);
+ 	*p_pfn = pfn;
+-	return 0;
++
++	return r;
+ }
+ 
+ /*
 
 
