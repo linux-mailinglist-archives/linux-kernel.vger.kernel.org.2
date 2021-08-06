@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649BD3E2C69
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722DC3E2C5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238399AbhHFOUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 10:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237949AbhHFOUk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 10:20:40 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F81CC0613CF;
-        Fri,  6 Aug 2021 07:20:24 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id dw2-20020a17090b0942b0290177cb475142so22982472pjb.2;
-        Fri, 06 Aug 2021 07:20:24 -0700 (PDT)
+        id S238176AbhHFOSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 10:18:49 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:26533 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234520AbhHFOSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 10:18:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cQyfH/B3o+r7i7GqomphHABujjYKyAefRA4WKRWOcMk=;
-        b=hankjnwhHImOTCMQ4IzmrjIyTNmLskPlgmq0sYeqX+m3p+GMrH0ixj8SkYnTcB5Umb
-         ny+zRAru39Orzo9Yir176ki8wMwLwdx9H7tEAj64UAmdCXuXwThR+6fMJKq37d/A/xvl
-         304XjM5KJQwtBH7czyQ+2hRWhHu5QgCzmTb5NjT+rh4xlz8xeXzQEMyVeEDf47MmSbR4
-         G8f1FTixfAmxDqel99IzfxuZzhXuHKbMbMK9xgfnKfCMGRaSAtTQruuvpJHk2jopRZ5I
-         LGxwqqZSIJpDOKiLaHzSiIlOD2Ho0bXUwJ0/RY7dgK8fTj043pkH7IJUS52+V3wEefI5
-         FxxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cQyfH/B3o+r7i7GqomphHABujjYKyAefRA4WKRWOcMk=;
-        b=M/m8Sfg40uBYAuJRBIr4nIkdtLPZKLGiyXpIcvSzY/33FSAdUQrDR4I7oEPBhzxsy9
-         pITs94+YTWHL6q/7zSaQSXChuonWUg2744ZB6rIkgYncFoTlU+h0B3YLKMgoPsTkkX55
-         d8aiZNNKRwUnu1Jbdi3GzsG2JUHJpHF87KdjL401iTmlzFrQueSlWPaWBysHHpHNMmBi
-         C2tTYlmORkCL4vVnrpiZvzVSPb5HmA4KVmFk11jx2WaDQYk85HpMPvmxoov6yNTMoIVt
-         +TRPNTAKA88b7KLWtgnSpVhwYCDn06cU9H7zO8+ab+CbFc1CXqqlnt0AQ1tHnaClGUZB
-         ifHA==
-X-Gm-Message-State: AOAM530hM5mzn/EBEQ1xFRJkXZyqVr2Ronf94Oz/lE3615lpyRTqETxb
-        iK5wtSVdSSSIgQ/DSEdlrQh7lssB+KFb2NzjJVc=
-X-Google-Smtp-Source: ABdhPJzVseAOHYe2d5FFCv5CtRuFT6LvM0LifvBsAW56DD9NmHQQPfPVvJyPhACrN5iPJevxuz0AyTzgViPh/y1eDM4=
-X-Received: by 2002:a17:90b:33c5:: with SMTP id lk5mr21611142pjb.129.1628259623884;
- Fri, 06 Aug 2021 07:20:23 -0700 (PDT)
+  d=axis.com; q=dns/txt; s=axis-central1; t=1628259513;
+  x=1659795513;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=oJyVeNAsXlYCxq0SZK6pymR2gKq/VG3wMDOx/8a6DEE=;
+  b=XQHHBiVaRiIVwS+9yDJmB1arOFuwoWU9XOcAJa9e5+RIt3VlsfAIWROa
+   DkDE1Hc9G5jGrjyNLnzpK0ZUohcbqEikwOLHYmO949evFhp4RDtis5cYe
+   YUV2z3i8i/m4jBDoRMaes4GnvxuDM7rjhiIFoNIevvDwNwFYk2bJfXjqc
+   uO1RLAG7R7AsbzjRIJYbFr19WYDxPCKJ+D3ycW5OGubUJeVX8i33s88wl
+   nNGKD3dReUDD1aSb4WyvJmter7pr4M4VV1n/nuIXXxulXb4dyhSnQMre+
+   l03AyISOPKxXmDAnl3aII18jwu0cs9gS/WGU1vdTZHkYrg90uf2LJbZT+
+   Q==;
+Subject: Re: [PATCH v3] tpm: Add Upgrade/Reduced mode support for TPM2 modules
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Borys Movchan <Borys.Movchan@axis.com>
+CC:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        kernel <kernel@axis.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210804162132.24786-1-borysmn@axis.com>
+ <20210805205245.qcdqcuog7zmsp7j5@kernel.org>
+From:   Borys Movchan <borysmn@axis.com>
+Message-ID: <d6cd1eb6-48b5-c1ad-e063-a26bc7509d95@axis.com>
+Date:   Fri, 6 Aug 2021 16:20:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210806085413.61536-1-andriy.shevchenko@linux.intel.com>
- <20210806085413.61536-2-andriy.shevchenko@linux.intel.com> <CAHNKnsTPQp16FPuVxY+FtJVOXnSga7zt=K8bhXr2YG15M9Y0eQ@mail.gmail.com>
-In-Reply-To: <CAHNKnsTPQp16FPuVxY+FtJVOXnSga7zt=K8bhXr2YG15M9Y0eQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 6 Aug 2021 17:19:44 +0300
-Message-ID: <CAHp75VcbucQ4w1rki2NZvpS7p-z5b582HwWXDMW5G67C7C6f3w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] wwan: core: Unshadow error code returned by ida_alloc_range))
-To:     Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210805205245.qcdqcuog7zmsp7j5@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.0.5.60]
+X-ClientProxiedBy: se-mail04w.axis.com (10.20.40.10) To se-mail07w.axis.com
+ (10.20.40.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 6, 2021 at 5:14 PM Sergey Ryazanov <ryazanov.s.a@gmail.com> wrote:
-> On Fri, Aug 6, 2021 at 12:00 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > ida_alloc_range)) may return other than -ENOMEM error code.
-> > Unshadow it in the wwan_create_port().
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+On 8/5/21 10:52 PM, Jarkko Sakkinen wrote:
+> On Wed, Aug 04, 2021 at 06:21:31PM +0200, Borys Movchan wrote:
+>> If something went wrong during the TPM firmware upgrade, like power
+>> failure or the firmware image file get corrupted, the TPM might end
+>> up in Upgrade or Failure mode upon the next start. The state is
+>> persistent between the TPM power cycle/restart.
+>>
+>> According to TPM specification:
+>>  * If the TPM is in Upgrade mode, it will answer with TPM2_RC_UPGRADE
+>>    to all commands except Field Upgrade related ones.
+>>  * If the TPM is in Failure mode, it will allow performing TPM
+>>    initialization but will not provide any crypto operations.
+>>    Will happily respond to Field Upgrade calls.
+>>
+>> The fix changes the behavior of the `tpm2_auto_startup` function, so
+>                                 
+> In commit messages, you ought to use imperative form:
 >
-> A small nitpick, looks like "ida_alloc_range))" in the description is
-> a typo and should be "ida_alloc_range()". Besides this:
+> "Change the behaviour of tpm2_auto_startup(), ..."
+>
+Done
+>> it tries to detect what mode TPM is running in. If the chip is in the
+>> Upgrade or Failure mode, the function returns -EIO error code which
+>> can be used later to adjust driver behavior later.
+> *How* tpm2_auto_startup() detects the mode?
+Done
+>> After `tpm_chip_register` calls `tpm2_auto_startup` it checks for the
+> Please remove all these hyphens. They make the commit message a pain
+> to read. E.g. instead write tpm_chip_register(). This is not Github.
+Done
+>> error code. If the TPM is in Upgrade or Failure mode, set the
+>> `limited_mode` flag. The calls to `tpm2_get_cc_attrs_tbl`,
+>> `tpm_add_hwrng` and `tpm_get_pcr_allocation` will fail if the TPM is
+>> in Failure or Upgrade mode, so use `limited_mode` flag to exclude
+>> them from the module initialization sequence.
+>>
+>> Signed-off-by: Borys Movchan <borysmn@axis.com>
+>> ---
+>>
+>> Notes:
+>>     Commit message updated
+> v2:
+> * Commit message updated.
+>
+> Notes would be something that had existed already in the first version.
+> Here we want a simple change log.
+Corrected
+> /Jarkko
+>
 
-Shall I resend?
+Kind regards,
 
-> Reviewed-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
+Borys
 
-Thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
