@@ -2,140 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515CF3E31C2
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 00:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64C93E31C8
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 00:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245514AbhHFW2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 18:28:49 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22188 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237272AbhHFW2r (ORCPT
+        id S245544AbhHFWaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 18:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245534AbhHFWad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 18:28:47 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 176ML27K034486;
-        Fri, 6 Aug 2021 18:28:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=vzk8eIJzQpp5+lo/qyJnzpHXqej7XaaGcJFZ/7nY1U0=;
- b=ruuvX7GsdJC/J/GYsVuh+CCEEM4Vc2B70HYSqZfEgViGz9fN7K5+hE4QnoWvQAmGNgts
- JGZBFhuUaga+G8mHLt/UIjcRx3CPyAM17xx9M4hHHUIPAaO1fUl7BtB6TuFJC6dx7yME
- lgSMioHXxp0mCE/f5MHKuvvu1NPiyixjthbDzFtpvft9/qsfLHy/SRgh+MDkPkm3f76N
- vKH6pAgfnlrXM6v9gV4aeB+8FaNnbYyqKfWIHHDwXZZUOpVZeEpLXa+OvoIVaTqBfWH2
- xHGV/Y/YOi+sL1Ig3jnQvC+7M6VIV6ITuzcAAo03hZs9YRlTjVeCynBQUmhRejqMfHUd 5w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a9dst841b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Aug 2021 18:28:20 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 176MLIkv035535;
-        Fri, 6 Aug 2021 18:28:20 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a9dst8413-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Aug 2021 18:28:19 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 176MDPKv026405;
-        Fri, 6 Aug 2021 22:28:19 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma03wdc.us.ibm.com with ESMTP id 3a77h6bm9r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Aug 2021 22:28:19 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 176MSIpP43581700
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 6 Aug 2021 22:28:18 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5DA0CC605A;
-        Fri,  6 Aug 2021 22:28:18 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0BB07C605B;
-        Fri,  6 Aug 2021 22:28:16 +0000 (GMT)
-Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.77.144.67])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Fri,  6 Aug 2021 22:28:16 +0000 (GMT)
-Date:   Fri, 6 Aug 2021 17:28:10 -0500
-From:   "Paul A. Clarke" <pc@us.ibm.com>
-To:     Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf script python: fix unintended underline
-Message-ID: <20210806222810.GB66379@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-References: <20210806204502.110305-1-stephen.s.brennan@oracle.com>
- <20210806211348.GA66379@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
- <87bl6a1cwi.fsf@stepbren-lnx.us.oracle.com>
+        Fri, 6 Aug 2021 18:30:33 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDF7C06179A
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 15:30:16 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id j18-20020a17090aeb12b029017737e6c349so13507084pjz.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 15:30:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6t4R3/clPInEWqQYAYEqGtfb7Px8wNaCjYlpj80+2H8=;
+        b=KzU0uWQel4rrqucZdeNEFegtyMHl2eu1JNNVShfFEqSIZQRwT9iIriyUSrEtpZic3k
+         xGxqvfScDKAIukCjdhuRPVuxXq1bn5BBIFzAWjRZHxpKhDPQbRw8G6JLb+nhuFX04iXD
+         dzpXkbjuO3UPaRbJ37MGU7vlcPgt8zRMN2W2Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6t4R3/clPInEWqQYAYEqGtfb7Px8wNaCjYlpj80+2H8=;
+        b=EFdZ+qlLx/MTjBS3kEQ7GYgNYNsZltF+37UztdK185LARgCxKDaOfrsuBXs+OKm2g5
+         xrd/K8MEn1TdU9EFvBTAbsOdURhwb0xrs8SPtdaCbQlrGw3E5P/Txz1oR/vKsvNOzt5c
+         P6rq1sKZ/BSNVnNhBBhnrIeKVnDhKavrCsoe/smiH6VVw0jcN80NFQKZFFXYHLXhYpAL
+         c+6FCRBaL/1ERbufnM4aEsULbmI9283etfqb6AqKQ3bq3gRYJsC+ocNIGlkl0JR8u3RT
+         P6i+jaXP3AAAWZAtwuOdBueCnNgSPJPDwPHYrjY8rLGkUJQzQHrVbTLkc0RMNBR7WPsc
+         +eTA==
+X-Gm-Message-State: AOAM531kFRt5urktGDUakP0tGH2jk4PTKJhQfdIa+yYhNMwT+Q6Iuplz
+        catsq2x8VeiCuolep0OkD0H1+A==
+X-Google-Smtp-Source: ABdhPJzJNM8Y2Fq8MMmxSifX6jMF7S2TiaF1k771cOv/hwziioYA+1qaKgY1XfHH80q4W3Y3DA4Nvw==
+X-Received: by 2002:a62:3342:0:b029:3b7:6395:a93 with SMTP id z63-20020a6233420000b02903b763950a93mr6951533pfz.71.1628289015923;
+        Fri, 06 Aug 2021 15:30:15 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 2sm4058945pfe.37.2021.08.06.15.30.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 15:30:15 -0700 (PDT)
+Date:   Fri, 6 Aug 2021 15:30:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Stanislav Yakovlev <stas.yakovlev@gmail.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] ipw2x00: Avoid field-overflowing memcpy()
+Message-ID: <202108061529.07216CBF7@keescook>
+References: <20210806200855.2870554-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87bl6a1cwi.fsf@stepbren-lnx.us.oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nPfVkTvFumYO-KQA8R7h4Yygd4YgDTxc
-X-Proofpoint-ORIG-GUID: uKZgyrIMOLY-NNe_7UbEmUmG7i3zz8IL
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-06_07:2021-08-06,2021-08-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 adultscore=0 phishscore=0
- impostorscore=0 bulkscore=0 mlxlogscore=999 priorityscore=1501
- clxscore=1015 mlxscore=0 suspectscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108060140
+In-Reply-To: <20210806200855.2870554-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 02:28:13PM -0700, Stephen Brennan wrote:
-> "Paul A. Clarke" <pc@us.ibm.com> writes:
-> > On Fri, Aug 06, 2021 at 01:45:01PM -0700, Stephen Brennan wrote:
-> >> The text ranging from "subsystem__event_name" to
-> >> "raw_syscalls__sys_enter()" is interpreted by asciidoc as a pair of
-> >> unconstrained text formatting markers. The result is that the manual
-> >> page displayed this text as underlined, and the HTML pages displayed
-> >> this text as italicized. Escape the first double-underscore to prevent
-> >> this.
-> >
-> > I think it would be better to escape the second double-underscore as well,
-> > to prevent the same problem recurring with future changes.
-> >
-> >> diff --git a/tools/perf/Documentation/perf-script-python.txt b/tools/perf/Documentation/perf-script-python.txt
-> >> index 5e43cfa5ea1e..0250dc61cf98 100644
-> >> --- a/tools/perf/Documentation/perf-script-python.txt
-> >> +++ b/tools/perf/Documentation/perf-script-python.txt
-> >> @@ -167,7 +167,7 @@ below).
-> >> 
-> >>  Following those are the 'event handler' functions generated one for
-> >>  every event in the 'perf record' output.  The handler functions take
-> >> -the form subsystem__event_name, and contain named parameters, one for
-> >> +the form subsystem\__event_name, and contain named parameters, one for
-> >>  each field in the event; in this case, there's only one event,
-> >>  raw_syscalls__sys_enter().  (see the EVENT HANDLERS section below for
-> >
-> > escape this    ^ , too.
-> 
-> I've tried escaping a few combinations of these four underscores.
-> 
->   \__ __    - escaping the first but not the second (as this patch)
->               produces correct output
->   \_\_ \_\_ - escaping all underscores results in no underlines, but the
->               manual page shows "raw_syscalls\_\_sys_enter()" in its
->               output.
->   \_\_ __   - escaping the first two results in no underlines, but the
->               manual page shows "subsystem\_\_event_name"
->   \__ \__   - escaping the first of each double-underscore results in no
->               underlines, but the manual page shows
->               "raw_syscalls\__sys_enter()"
-> 
-> It seems that asciidoc only allows the first in a potential pair to be
-> escaped? I'll be the first to admit, I know nothing about asciidoc, so I
-> may have missed something here.
+On Fri, Aug 06, 2021 at 01:08:55PM -0700, Kees Cook wrote:
+> -	if (element_info == NULL)
+> +	if (!element_info || info_element || info_element->len != size - 2)
+>  		return -1;
+> -	if (info_element == NULL)
+> -		return -1;
 
-Ugh. Thanks for trying. I thought it would be easy, but that probably shows
-I know even less about asciidoc.  :-/
+Gah, a let a typo in. (should be !info_element.) v2 coming...
 
-PC
+-- 
+Kees Cook
