@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245963E306F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 22:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2A03E3077
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 22:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245024AbhHFUkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 16:40:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30405 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231572AbhHFUkM (ORCPT
+        id S245080AbhHFUnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 16:43:40 -0400
+Received: from mail-io1-f43.google.com ([209.85.166.43]:42778 "EHLO
+        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230221AbhHFUnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 16:40:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628282395;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aJ1NbDgyUix6sI0pu10YegsxYaaQe+q9Ty47N33Bk3U=;
-        b=AFcqUnAxtJSZ4EpflWt9HBhlsHzCUH9Cc8B8e7cfwNytTew30lqOPhv+Ltyxuc/1HG4wnF
-        cenAE3kji0RTkTQsOLZOhnVVvqavftut594iUmFqC14/cGeOnLB0IZ7mbsEM/iBxGUfqUb
-        XKO1WoY3zqLZq8WwDVwRDKSA2ABbQuk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-417-9SwcBtbyMGCEmXHajixaXA-1; Fri, 06 Aug 2021 16:39:52 -0400
-X-MC-Unique: 9SwcBtbyMGCEmXHajixaXA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07282801AC0;
-        Fri,  6 Aug 2021 20:39:51 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 58E5A5D9D5;
-        Fri,  6 Aug 2021 20:39:50 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     syzbot <syzbot+d40a01556c761b2cb385@syzkaller.appspotmail.com>
-Cc:     bcrl@kvack.org, linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] INFO: task hung in sys_io_destroy
-References: <0000000000007db08f05c79fc81f@google.com>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Fri, 06 Aug 2021 16:41:14 -0400
-In-Reply-To: <0000000000007db08f05c79fc81f@google.com> (syzbot's message of
-        "Wed, 21 Jul 2021 03:39:20 -0700")
-Message-ID: <x498s1ee26t.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 6 Aug 2021 16:43:39 -0400
+Received: by mail-io1-f43.google.com with SMTP id h1so13829891iol.9;
+        Fri, 06 Aug 2021 13:43:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=85KYKrivONUxgMBoJUEhliU3kHWvhvn/JV7RSsVVnI4=;
+        b=PfNgM1CjmZvbJh0ADTlCLhtSqzTCD8euq+pSnMQpK5lMw4VRBaHEkKtFOsAPNNhjfb
+         I+cpd8C/SEkRmLBfrdq8rbefDFcKvYaLmDaXW/lWCq3+rKHXlACzq8KwgPJ5aeRytpJP
+         EDYbymxr8r0N4fl6ymjic+5OlvyQ/Xn4Y6pTDeIYfmzbO4nu1ArFzvu1u/+65m39rZ5w
+         xtAwIelz19VA2wzwvDXapkDuftXNzqs8RDN0o97nW52qHU/V5RCvPM8DwjYsB8AnhwSP
+         8uGczceKTyyS/69/u83OCBmGsnpquzOkig/067g65ivvYp84HcvZ2Sb01AXCt1YhcqQg
+         Bq3w==
+X-Gm-Message-State: AOAM532j/pERC9/A3oSCuxXc/JHpokcxXAzZ6vtpbbEuGK2N19GK3FS6
+        ZMRnjJio7OizI9AqhAv/cw==
+X-Google-Smtp-Source: ABdhPJxjS2d6CDMmPdtPpkPsLbJ7cOc+rjjAk8K5YHLGu0WjzWd9rNma7ebUcLrn4Jb8r09ZzkTN4w==
+X-Received: by 2002:a92:de09:: with SMTP id x9mr130637ilm.284.1628282602559;
+        Fri, 06 Aug 2021 13:43:22 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id f16sm5253453ilc.53.2021.08.06.13.43.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 13:43:22 -0700 (PDT)
+Received: (nullmailer pid 1762401 invoked by uid 1000);
+        Fri, 06 Aug 2021 20:43:20 -0000
+Date:   Fri, 6 Aug 2021 14:43:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Eddie Hung <eddie.hung@mediatek.com>
+Subject: Re: [PATCH 03/11] dt-bindings: usb: mtk-xhci: add compatible for
+ mt8195
+Message-ID: <YQ2e6AGFi7beqp6Q@robh.at.kernel.org>
+References: <1627635002-24521-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1627635002-24521-3-git-send-email-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1627635002-24521-3-git-send-email-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot <syzbot+d40a01556c761b2cb385@syzkaller.appspotmail.com> writes:
+On Fri, Jul 30, 2021 at 04:49:54PM +0800, Chunfeng Yun wrote:
+> There are 4 USB controllers on MT8195, the controllers (IP1~IP3,
+> exclude IP0) have a wrong default SOF/ITP interval which is
+> calculated from the frame counter clock 24Mhz by default, but
+> in fact, the frame counter clock is 48Mhz, so we should set
+> the accurate interval according to 48Mhz. Here add a new compatible
+> for MT8195, it's also supported in driver. But the first controller
+> (IP0) has no such issue, we prefer to use generic compatible,
+> e.g. mt8192's compatible.
 
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    1d67c8d993ba Merge tag 'soc-fixes-5.14-1' of git://git.ker..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11b40232300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f1b998c1afc13578
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d40a01556c761b2cb385
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12453812300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11225922300000
->
-> Bisection is inconclusive: the issue happens on the oldest tested release.
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=127cac6a300000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=117cac6a300000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=167cac6a300000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d40a01556c761b2cb385@syzkaller.appspotmail.com
->
-> INFO: task syz-executor299:8807 blocked for more than 143 seconds.
->       Not tainted 5.14.0-rc1-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:syz-executor299 state:D stack:29400 pid: 8807 ppid:  8806 flags:0x00000000
-> Call Trace:
->  context_switch kernel/sched/core.c:4683 [inline]
->  __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
->  schedule+0xd3/0x270 kernel/sched/core.c:6019
->  schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1854
->  do_wait_for_common kernel/sched/completion.c:85 [inline]
->  __wait_for_common kernel/sched/completion.c:106 [inline]
->  wait_for_common kernel/sched/completion.c:117 [inline]
->  wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
->  __do_sys_io_destroy fs/aio.c:1402 [inline]
->  __se_sys_io_destroy fs/aio.c:1380 [inline]
->  __x64_sys_io_destroy+0x17e/0x1e0 fs/aio.c:1380
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
+That only works until you find some 8195 bug common to all instances. 
+Can't you read the clock frequency?
 
-The reproducer is creating a thread, issuing a IOCB_CMD_PREAD from a
-pipe in that thread, and then calling io_destroy from another thread.
-Because there is no writer on the other end of the pipe, the read will
-block.  Note that it also is not submitted asynchronously, as that's not
-supported.
-
-io_destroy is "hanging" because it's waiting for the read to finish.  If
-the read thread is killed, cleanup happens as usual.  I'm not sure I
-could classify this as a kernel bug.
-
--Jeff
-
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> index 61a0e550b5d6..753e043e5327 100644
+> --- a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> +++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> @@ -31,6 +31,7 @@ properties:
+>            - mediatek,mt8173-xhci
+>            - mediatek,mt8183-xhci
+>            - mediatek,mt8192-xhci
+> +          - mediatek,mt8195-xhci
+>        - const: mediatek,mtk-xhci
+>  
+>    reg:
+> -- 
+> 2.18.0
+> 
+> 
