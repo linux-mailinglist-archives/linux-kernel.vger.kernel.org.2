@@ -2,116 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE143E2B5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A1A3E2B5D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344048AbhHFN2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 09:28:36 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42380 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344043AbhHFN2c (ORCPT
+        id S1344053AbhHFN3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 09:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243990AbhHFN3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 09:28:32 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 78F891FED4;
-        Fri,  6 Aug 2021 13:28:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628256493; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5g2SBpEkCatphDUwYVXrJmzhDlPfjpgjUvk4dHWmc7s=;
-        b=DLBtZe2U5qpqD52Mi1+ZGD14Nn5rs0T1Hw9vcj21EBJL0BZTBlzKJfKG8qZlFjd/MTfxCs
-        gJeq1DOa+ka/YcKBwZFyF4cp3+P+0kPp3CuqHj6/hK6dgv8RfE25Z5GuZRGBpYuihfGAwK
-        KSbcnd4poQ0SqLt3VJEeGzg/S89FtLQ=
-Received: from suse.cz (mhocko.udp.ovpn2.prg.suse.de [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4B766A3B91;
-        Fri,  6 Aug 2021 13:28:13 +0000 (UTC)
-Date:   Fri, 6 Aug 2021 15:28:12 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH v7 1/5] mm/mempolicy: Add MPOL_PREFERRED_MANY for
- multiple preferred nodes
-Message-ID: <YQ047Gcakj2scjNK@dhcp22.suse.cz>
-References: <1627970362-61305-1-git-send-email-feng.tang@intel.com>
- <1627970362-61305-2-git-send-email-feng.tang@intel.com>
+        Fri, 6 Aug 2021 09:29:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE595C061798;
+        Fri,  6 Aug 2021 06:29:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PHNxu6/Kl0DC7lcu+1Gt0L58EXa9kH4/ZVb+vNkOLVA=; b=l9yljubBx1fxZLnpIoEV7PXJhb
+        QD4vjiNzw/vf1GMDlcI7LzoYLaHKy/mv/6fcaxP3cuPRO5s3C2SbpuxvNPqPJ0BKFGu1JUWA9BY0w
+        eQ+vYyEG0yWvN9gYG+ot6hXXi6BzG82FEc4EqzcCdOWNmzv0VzVsPmGWaW+E1pca4VLmBttuxip90
+        PyfoGe0+CNNDovkvjOizic1ZGd4dkNF2epriubUCPfi9Ht9eYM72HrN/jKGbEJ3mgGhdPGz1wMbJM
+        faJYoaGie2E5PQviFh9G9h0i/aobouqpKnVi4D+cf+fngqbAwfRbGE0GMKh2ykM/w01cJ/dlVY2N0
+        MafUlmEQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mBztl-008Dkf-0i; Fri, 06 Aug 2021 13:28:44 +0000
+Date:   Fri, 6 Aug 2021 14:28:28 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: optimise generic_write_check_limits()
+Message-ID: <YQ04/NFn8b6cykPQ@casper.infradead.org>
+References: <dc92d8ac746eaa95e5c22ca5e366b824c210a3f4.1628248828.git.asml.silence@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1627970362-61305-2-git-send-email-feng.tang@intel.com>
+In-Reply-To: <dc92d8ac746eaa95e5c22ca5e366b824c210a3f4.1628248828.git.asml.silence@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 03-08-21 13:59:18, Feng Tang wrote:
-> From: Dave Hansen <dave.hansen@linux.intel.com>
-> 
-> The NUMA APIs currently allow passing in a "preferred node" as a
-> single bit set in a nodemask.  If more than one bit it set, bits
-> after the first are ignored.
-> 
-> This single node is generally OK for location-based NUMA where
-> memory being allocated will eventually be operated on by a single
-> CPU.  However, in systems with multiple memory types, folks want
-> to target a *type* of memory instead of a location.  For instance,
-> someone might want some high-bandwidth memory but do not care about
-> the CPU next to which it is allocated.  Or, they want a cheap,
-> high capacity allocation and want to target all NUMA nodes which
-> have persistent memory in volatile mode.  In both of these cases,
-> the application wants to target a *set* of nodes, but does not
-> want strict MPOL_BIND behavior as that could lead to OOM killer or
-> SIGSEGV.
-> 
-> So add MPOL_PREFERRED_MANY policy to support the multiple preferred
-> nodes requirement. This is not a pie-in-the-sky dream for an API.
-> This was a response to a specific ask of more than one group at Intel.
-> Specifically:
-> 
-> 1. There are existing libraries that target memory types such as
->    https://github.com/memkind/memkind.  These are known to suffer
->    from SIGSEGV's when memory is low on targeted memory "kinds" that
->    span more than one node.  The MCDRAM on a Xeon Phi in "Cluster on
->    Die" mode is an example of this.
-> 2. Volatile-use persistent memory users want to have a memory policy
->    which is targeted at either "cheap and slow" (PMEM) or "expensive and
->    fast" (DRAM).  However, they do not want to experience allocation
->    failures when the targeted type is unavailable.
-> 3. Allocate-then-run.  Generally, we let the process scheduler decide
->    on which physical CPU to run a task.  That location provides a
->    default allocation policy, and memory availability is not generally
->    considered when placing tasks.  For situations where memory is
->    valuable and constrained, some users want to allocate memory first,
->    *then* allocate close compute resources to the allocation.  This is
->    the reverse of the normal (CPU) model.  Accelerators such as GPUs
->    that operate on core-mm-managed memory are interested in this model.
-> 
-> A check is added in sanitize_mpol_flags() to not permit 'prefer_many'
-> policy to be used for now, and will be removed in later patch after all
-> implementations for 'prefer_many' are ready, as suggested by Michal Hocko.
-> 
-> [Michal Hocko: suggest to refine policy_node/policy_nodemask handling]
-> Link: https://lore.kernel.org/r/20200630212517.308045-4-ben.widawsky@intel.com
-> Co-developed-by: Ben Widawsky <ben.widawsky@intel.com>
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
+On Fri, Aug 06, 2021 at 12:22:10PM +0100, Pavel Begunkov wrote:
+> Even though ->s_maxbytes is used by generic_write_check_limits() only in
+> case of O_LARGEFILE, the value is loaded unconditionally, which is heavy
+> and takes 4 indirect loads. Optimise it by not touching ->s_maxbytes,
+> if it's not going to be used.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+Is this "optimisation" actually worth anything?  Look at how
+force_o_largefile() is used.  I would suggest that on the vast majority
+of machines, O_LARGEFILE is always set.
