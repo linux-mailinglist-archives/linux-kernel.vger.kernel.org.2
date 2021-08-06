@@ -2,76 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23AD13E20E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 03:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CED3E20F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 03:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242224AbhHFBVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 21:21:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59122 "EHLO mail.kernel.org"
+        id S235464AbhHFB0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 21:26:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241839AbhHFBVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 21:21:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0318A61184;
-        Fri,  6 Aug 2021 01:21:36 +0000 (UTC)
+        id S229578AbhHFB0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 21:26:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78B2F611C5;
+        Fri,  6 Aug 2021 01:26:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628212897;
-        bh=N4h4dBuDJ4KHxr54fi8jhhcQmz/UXhAg6jZwfPXQ9ec=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=VO+dEf6Bju4jYaQDGVfD2VqWT3T814WQ4FVXr/tAAc9AOPmM5AF9nv1+bWhMrpsAG
-         ir0QNuvYR49EzzG0yBXKsDT3oAQ8mtjkbXhYa13lsEGTJ3sqEGhKPa+cmFOQm7Uxy0
-         PTYIarVunY+JfF0qWT+GVAvhaQIaSZvC2d6YaLXtM4Ficjh47T4gJ8Jh5r7QDnDlq4
-         xImwWvnUt/NejBpa9r2LPzKVZT7nKGkxhubxVshaG+SQrfR+4raXiz0NMSUSbEebsA
-         aUV+x/H0eCzA12y6zKkqN3tpm3Hhpix/DDmmoMQbhAnnBkee06D/Utr+z9XibgnjZV
-         ChfBct1MFfQfQ==
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1628213189;
+        bh=QvIgHk9TGLUizh9HoaiT/w3IVfdthAAaKnipBI+IXqU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aJyfd6vf4uGNUZ/z9XjXxkobtvILX3aPKo4R42Ju9t4tJ30ximrZFRSnOkAE85M4V
+         y4om5owCrwWGzyldynuTAeLFkbipXJKypkUFFt/Szom14eMqSwbzmXMoQnORAH0gjA
+         IgsPCjnX8K5EtbV8FfgDRnPYoODPWZ1tavyPS5ek5T343R52JcED2myQIlsiHwOikL
+         07hWjYj5K0MpaarYRttjohJynzeK4UNZp1rXUMDCiZtECI1CD0JMK6oIZ9tBR3jEU9
+         aBDKXMkbjDfserKT3Z0ftZkkdqnQTdWmw+kBKaEcwqOaB6XJmhIFA58kaXSUyA9h68
+         tp5Tp7y3nfRhw==
+Date:   Thu, 5 Aug 2021 18:26:28 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/6] net: ipa: don't suspend/resume modem if
+ not up
+Message-ID: <20210805182628.02ebf355@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210804153626.1549001-2-elder@linaro.org>
+References: <20210804153626.1549001-1-elder@linaro.org>
+        <20210804153626.1549001-2-elder@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210721224056.3035016-1-bjorn.andersson@linaro.org>
-References: <20210721224056.3035016-1-bjorn.andersson@linaro.org>
-Subject: Re: [PATCH v2] clk: qcom: gdsc: Ensure regulator init state matches GDSC state
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Mike Tipton <mdtipton@codeaurora.org>,
-        Taniya Das <tdas@codeaurora.org>, Vinod Koul <vkoul@kernel.org>
-Date:   Thu, 05 Aug 2021 18:21:35 -0700
-Message-ID: <162821289569.19113.17542153894487967394@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-07-21 15:40:56)
-> As GDSCs are registered and found to be already enabled gdsc_init()
-> ensures that 1) the kernel state matches the hardware state, and 2)
-> votable GDSCs are properly enabled from this master as well.
->=20
-> But as the (optional) supply regulator is enabled deep into
-> gdsc_toggle_logic(), which is only executed for votable GDSCs the
-> kernel's state of the regulator might not match the hardware. The
-> regulator might be automatically turned off if no other users are
-> present or the next call to gdsc_disable() would cause an unbalanced
-> regulator_disable().
->=20
-> But as the votable case deals with an already enabled GDSC, most of
-> gdsc_enable() and gdsc_toggle_logic() can be skipped. Reducing it to
-> just clearing the SW_COLLAPSE_MASK and enabling hardware control allow
-> us to simply call regulator_enable() in both cases.
->=20
-> The enablement of hardware control seems to be an independent property
-> from the GDSC being enabled, so this is moved outside that conditional
-> segment.
->=20
-> Lastly, as the propagation of ALWAY_ON to GENPD_FLAG_ALWAYS_ON needs to
-> happen regardless of the initial state this is grouped together with the
-> other sc->pd updates at the end of the function.
->=20
-> Cc: stable@vger.kernel.org
-> Fixes: 37416e554961 ("clk: qcom: gdsc: Handle GDSC regulator supplies")
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
+On Wed,  4 Aug 2021 10:36:21 -0500 Alex Elder wrote:
+> The modem network device is set up by ipa_modem_start().  But its
+> TX queue is not actually started and endpoints enabled until it is
+> opened.
+> 
+> So avoid stopping the modem network device TX queue and disabling
+> endpoints on suspend or stop unless the netdev is marked UP.  And
+> skip attempting to resume unless it is UP.
+> 
+> Signed-off-by: Alex Elder <elder@linaro.org>
 
-Applied to clk-fixes
+You said in the cover letter that in practice this fix doesn't matter.
+It seems trivial to test so perhaps it doesn't and we should leave the
+code be? Looking at dev->flags without holding rtnl_lock() seems
+suspicious, drivers commonly put the relevant portion of suspend/resume
+routines under rtnl_lock()/rtnl_unlock() (although to be completely
+frank IDK if it's actually possible for concurrent suspend +
+open/close to happen).
+
+Are there any callers of ipa_modem_stop() which don't hold rtnl_lock()? 
+
+> diff --git a/drivers/net/ipa/ipa_modem.c b/drivers/net/ipa/ipa_modem.c
+> index 4ea8287e9d237..663a610979e70 100644
+> --- a/drivers/net/ipa/ipa_modem.c
+> +++ b/drivers/net/ipa/ipa_modem.c
+> @@ -178,6 +178,9 @@ void ipa_modem_suspend(struct net_device *netdev)
+>  	struct ipa_priv *priv = netdev_priv(netdev);
+>  	struct ipa *ipa = priv->ipa;
+>  
+> +	if (!(netdev->flags & IFF_UP))
+> +		return;
+> +
+>  	netif_stop_queue(netdev);
+>  
+>  	ipa_endpoint_suspend_one(ipa->name_map[IPA_ENDPOINT_AP_MODEM_RX]);
+> @@ -194,6 +197,9 @@ void ipa_modem_resume(struct net_device *netdev)
+>  	struct ipa_priv *priv = netdev_priv(netdev);
+>  	struct ipa *ipa = priv->ipa;
+>  
+> +	if (!(netdev->flags & IFF_UP))
+> +		return;
+> +
+>  	ipa_endpoint_resume_one(ipa->name_map[IPA_ENDPOINT_AP_MODEM_TX]);
+>  	ipa_endpoint_resume_one(ipa->name_map[IPA_ENDPOINT_AP_MODEM_RX]);
+>  
+> @@ -265,9 +271,11 @@ int ipa_modem_stop(struct ipa *ipa)
+>  	/* Prevent the modem from triggering a call to ipa_setup() */
+>  	ipa_smp2p_disable(ipa);
+>  
+> -	/* Stop the queue and disable the endpoints if it's open */
+> +	/* Clean up the netdev and endpoints if it was started */
+>  	if (netdev) {
+> -		(void)ipa_stop(netdev);
+> +		/* If it was opened, stop it first */
+> +		if (netdev->flags & IFF_UP)
+> +			(void)ipa_stop(netdev);
+>  		ipa->name_map[IPA_ENDPOINT_AP_MODEM_RX]->netdev = NULL;
+>  		ipa->name_map[IPA_ENDPOINT_AP_MODEM_TX]->netdev = NULL;
+>  		ipa->modem_netdev = NULL;
+
