@@ -2,110 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F223E28BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEA33E28BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245264AbhHFKgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
+        id S245197AbhHFKgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245198AbhHFKfq (ORCPT
+        with ESMTP id S245103AbhHFKgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:35:46 -0400
+        Fri, 6 Aug 2021 06:36:35 -0400
 Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB16C06179C
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:35:30 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id nh14so15963613pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 03:35:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3E1C061798;
+        Fri,  6 Aug 2021 03:36:18 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id l19so16041445pjz.0;
+        Fri, 06 Aug 2021 03:36:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NBP1mI1eJEmFrRBUj3/dx1CqWPqkwlbz29Jcl4m2xAk=;
-        b=JdKNJSBvRopa3Urrf3WhX/uKXIwQujM9Ti8EciOTg67ZJ1j0meWMTB7/EibJ6XLLqC
-         dD+TEpkqMPtcqpcMHgpUGRGGUky93D3Yq8qYpfiQjSzT/wXJfKOP6ZkUmJDGlj3cxO4t
-         zJEiyJGmpXj/MnrRj0JdCX6l4yFXHk/TOLsgo=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KvDsWq0aD9C7qh0g19FSMx9NiSGhRzrfiTYiXVD5DrQ=;
+        b=MXxObmZt4nfxA1erJGVzMqnOkcazWAzBFX5WJDMmNvE3MS6cAmvs0dvfjU3xn03JSx
+         cbZp/3kn4sOISQ7g+gS9A+VMecWeUqBFmKASryFE10839CsGxmgBZuC+2jFuBfUSf8zP
+         WIN1PaRCRIz7t/UeIUYyocC8bWtXuav/ndV/D0VGIYI5LjrYVYQSltvCWwYI4iOMIHgk
+         L7YdQLzqgPpbH3hz+lB7poc8YggmvsjgT2vSp3UBDnC0P1AMfkD+CG8RmRDUvJ9T8dFe
+         xeLcnpvTRlgbcPVTvs/neCkXGWi6unA7fro9NlmHImu6uvXrNUAK/TrkZJLB2UlH63Va
+         G+AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NBP1mI1eJEmFrRBUj3/dx1CqWPqkwlbz29Jcl4m2xAk=;
-        b=c/UTPe/TT1LOsCmnZI44/H7NHMqVmoizUi3fHHHz5xehrjOt5GXM8gwwe5Hrge7KXO
-         pPoNLJInuMoy03FW50P9ZPkJMx8RHtXSK9Gr+jJgY9sEp6MxtcbxBiSpGEchdz3hgmrp
-         sL6OH+S7bpqiILv+iy8DgqA4VPYCeI8Je6pKI1hlV8sLuEmBmWsPks6HtFnhL0lnpRmZ
-         /G81oyc7MBxHyWMlinSMEyExhYrYMMcSdl6IkWem+F/tLeEKXq88WEBfvCGFGM5/VTXp
-         TxPhMD+pSe+A2iYNiqsDidrYBF/JNK1yvLbXmOXPud4xs2BYxijTF+tSI/f4a88XEx8a
-         +g0Q==
-X-Gm-Message-State: AOAM531yYBoAAZphxa+MhUryloh9SSNaohR+hR77kXlhR62ww48m9XXL
-        7ORInatQsXar29wdDqknJMuwXw==
-X-Google-Smtp-Source: ABdhPJyYJf8IZc/UBHsRMF484qyLGnbbn2jXQbe+CyHk6yZx9o4TB97jhd9dHES8sNQ5E1cwkJ1NBg==
-X-Received: by 2002:a17:90a:d190:: with SMTP id fu16mr20709870pjb.157.1628246130284;
-        Fri, 06 Aug 2021 03:35:30 -0700 (PDT)
-Received: from localhost ([2401:fa00:8f:203:6f20:cf00:347a:afc2])
-        by smtp.gmail.com with UTF8SMTPSA id 6sm12821707pjk.1.2021.08.06.03.35.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 03:35:30 -0700 (PDT)
-From:   David Stevens <stevensd@chromium.org>
-X-Google-Original-From: David Stevens <stevensd@google.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        David Stevens <stevensd@chromium.org>
-Subject: [PATCH v2 9/9] drm/i915: use DMA_ATTR_PERSISTENT_STREAMING flag
-Date:   Fri,  6 Aug 2021 19:34:23 +0900
-Message-Id: <20210806103423.3341285-10-stevensd@google.com>
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-In-Reply-To: <20210806103423.3341285-1-stevensd@google.com>
-References: <20210806103423.3341285-1-stevensd@google.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KvDsWq0aD9C7qh0g19FSMx9NiSGhRzrfiTYiXVD5DrQ=;
+        b=udb0e8I57VJW7NvFMUCUWknM4Xj8ziSxBzAPXylQuEQdogiX4XUWMAiIxRxMifGj1z
+         OLy3RhNFdgtjEgxSTEG3J0DNARj7syGN0e8bB00BdE7rs23dnytOmBoulF4QG4ijwH6F
+         hDVa2Bpva4yKG978pYNZYkXEZnN5EobXsAT8BGHYfLNMi7e2C2ghn+HAXWSinlxbA+xX
+         jtLWZZuGNHbRxmeKippcAdCMImATe7pVOijxbwf6iD3E9Ck9DE4m1BnELoAUMAuT0odO
+         v3/lC646wZK9+QyoyL7KwlgA70JerC8KSpFixpZW2m6MUM4X3aBMv4K8KfQmPgF/COwi
+         5i0Q==
+X-Gm-Message-State: AOAM530LrvNa8DimMgFHOgjUytu1GHYqOH1sdiI8C1M0eouf+o+fppLP
+        6i8ZT+Ud2NUI9HBw0qY04CE=
+X-Google-Smtp-Source: ABdhPJxJ2KOgE6CUJCASuhD/shIkShZeJY6pS1EEvW6wJxTZC7itD6HQkcSQ1JzqW6gUAC+aFF3Gcg==
+X-Received: by 2002:a17:90a:940e:: with SMTP id r14mr20097966pjo.41.1628246177736;
+        Fri, 06 Aug 2021 03:36:17 -0700 (PDT)
+Received: from fedora ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
+        by smtp.gmail.com with ESMTPSA id g7sm9477138pfv.66.2021.08.06.03.36.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 03:36:17 -0700 (PDT)
+Date:   Fri, 6 Aug 2021 16:06:11 +0530
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+Subject: Re: [PATCH] crypto: add missing kernel_fpu_end() call
+Message-ID: <YQ0Qm+Xs1g/7Eant@fedora>
+References: <20210730134155.1005358-1-chouhan.shreyansh630@gmail.com>
+ <20210806082320.GA12731@gondor.apana.org.au>
+ <CAMj1kXFnCK5xiuGzxkj6rOP43a7OuA7uUP9-eJqsgb54MmuZPQ@mail.gmail.com>
+ <CAMj1kXEYymiYaMUobuncmyO-vQxHrOByc7wQn4rKK_wdKuLgXQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXEYymiYaMUobuncmyO-vQxHrOByc7wQn4rKK_wdKuLgXQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Stevens <stevensd@chromium.org>
+Hi,
 
-Use the new DMA_ATTR_PERSISTENT_STREAMING for long lived dma mappings
-which directly handle CPU cache coherency instead of using dma_sync_*.
+On Fri, Aug 06, 2021 at 11:07:43AM +0200, Ard Biesheuvel wrote:
+> On Fri, 6 Aug 2021 at 11:05, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Fri, 6 Aug 2021 at 10:23, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+> > >
+> > > On Fri, Jul 30, 2021 at 07:11:55PM +0530, Shreyansh Chouhan wrote:
+> > > > xts_crypt() code doesn't call kernel_fpu_end() after calling
+> > > > kernel_fpu_begin() if walk.nbytes is 0. Add a call to kernel_fpu_end()
+> > > > for this case.
+> > > >
+> > > > Reported-by: syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+> > > > Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+> > > > ---
+> > > >  arch/x86/crypto/aesni-intel_glue.c | 3 +++
+> > > >  1 file changed, 3 insertions(+)
+> > >
+> > > Ard?
+> > >
+> > > > diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
+> > > > index 2144e54a6c89..bd55a0cd7bde 100644
+> > > > --- a/arch/x86/crypto/aesni-intel_glue.c
+> > > > +++ b/arch/x86/crypto/aesni-intel_glue.c
+> > > > @@ -894,6 +894,9 @@ static int xts_crypt(struct skcipher_request *req, bool encrypt)
+> > > >                       kernel_fpu_begin();
+> > > >       }
+> > > >
+> > > > +     if (walk.nbytes == 0)
+> > > > +             kernel_fpu_end();
+> > > > +
+> >
+> > Don't we end up calling kernel_fpu_end() twice this way if we do enter
+> > the while() loop at least once?
+> >
 
-Signed-off-by: David Stevens <stevensd@chromium.org>
----
- drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c | 4 +++-
- drivers/gpu/drm/i915/i915_gem_gtt.c        | 3 ++-
- 2 files changed, 5 insertions(+), 2 deletions(-)
+Oh ha, we do. I missed that.
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-index 616c3a2f1baf..df982cfb4f34 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-@@ -48,7 +48,9 @@ static struct sg_table *i915_gem_map_dma_buf(struct dma_buf_attachment *attachme
- 		src = sg_next(src);
- 	}
- 
--	ret = dma_map_sgtable(attachment->dev, st, dir, DMA_ATTR_SKIP_CPU_SYNC);
-+	ret = dma_map_sgtable(attachment->dev, st, dir,
-+			      DMA_ATTR_SKIP_CPU_SYNC |
-+			      DMA_ATTR_PERSISTENT_STREAMING);
- 	if (ret)
- 		goto err_free_sg;
- 
-diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
-index 36489be4896b..f27a849631f7 100644
---- a/drivers/gpu/drm/i915/i915_gem_gtt.c
-+++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
-@@ -33,7 +33,8 @@ int i915_gem_gtt_prepare_pages(struct drm_i915_gem_object *obj,
- 				     PCI_DMA_BIDIRECTIONAL,
- 				     DMA_ATTR_SKIP_CPU_SYNC |
- 				     DMA_ATTR_NO_KERNEL_MAPPING |
--				     DMA_ATTR_NO_WARN))
-+				     DMA_ATTR_NO_WARN |
-+				     DMA_ATTR_PERSISTENT_STREAMING))
- 			return 0;
- 
- 		/*
--- 
-2.32.0.605.g8dce9f2422-goog
+> 
+> How about the below instead, does that work?
+> 
 
+This should work. I will resend the updated patch.
+
+> --- a/arch/x86/crypto/aesni-intel_glue.c
+> +++ b/arch/x86/crypto/aesni-intel_glue.c
+> @@ -849,7 +849,7 @@ static int xts_crypt(struct skcipher_request *req,
+> bool encrypt)
+>                 return -EINVAL;
+> 
+>         err = skcipher_walk_virt(&walk, req, false);
+> -       if (err)
+> +       if (err || !walk.nbytes)
+>                 return err;
+> 
+>         if (unlikely(tail > 0 && walk.nbytes < walk.total)) {
+
+Thanks a lot for the review.
+
+Regards,
+Shreyansh Chouhan
