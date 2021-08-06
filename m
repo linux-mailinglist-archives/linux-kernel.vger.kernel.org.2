@@ -2,49 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52023E2347
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 08:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7307D3E2380
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 08:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243341AbhHFGbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 02:31:53 -0400
-Received: from muru.com ([72.249.23.125]:36910 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229581AbhHFGbw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 02:31:52 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 8A3508061;
-        Fri,  6 Aug 2021 06:31:56 +0000 (UTC)
-Date:   Fri, 6 Aug 2021 09:31:35 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     linux-omap@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v2] ARM: dts: am335x-bone: switch to new cpsw switch drv
-Message-ID: <YQzXR19MOwrJFL2S@atomide.com>
-References: <20210805230956.7379-1-grygorii.strashko@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805230956.7379-1-grygorii.strashko@ti.com>
+        id S243448AbhHFGtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 02:49:51 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:61382 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243431AbhHFGtp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 02:49:45 -0400
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210806064928epoutp0172b055e2d2699d8960b964ab4aadd4d8~YpOTZ1WRK0605806058epoutp015
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 06:49:28 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210806064928epoutp0172b055e2d2699d8960b964ab4aadd4d8~YpOTZ1WRK0605806058epoutp015
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1628232568;
+        bh=NvnK/Fwh8b7Ur3W/GLRR5w7l6zGNytrKdH5pTrP4IEY=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=mg53Jtj/slVkESkqB9EwbNR82EbiE57V6N9FCXl4tOWdHVZjoxTbTUVNy2UEnqXbp
+         KiJbPyzRMKJWrU6SJN//1TOl5Tqrr1m0Vt/UsTXlj/cDQZ1ODX5U11aRrulV1HInH9
+         UuHdwd0r2nXjF1ZrRfLX5hRM8a4GHqSugYVzN/Uo=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210806064926epcas2p4806d0a8c3b3c5d2cedc2f1dd98e2cd85~YpOSDM9zM2541125411epcas2p4G;
+        Fri,  6 Aug 2021 06:49:26 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.188]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4Ggx0h1QH2z4x9QM; Fri,  6 Aug
+        2021 06:49:24 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F2.92.09541.37BDC016; Fri,  6 Aug 2021 15:49:23 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210806064923epcas2p13dd6b442eed02404d87684afd9c1b229~YpOOzVuqx1862018620epcas2p1J;
+        Fri,  6 Aug 2021 06:49:23 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210806064923epsmtrp236082b7ae37728f51a0e8171f23cd635~YpOOybdt22658426584epsmtrp2a;
+        Fri,  6 Aug 2021 06:49:23 +0000 (GMT)
+X-AuditID: b6c32a46-095ff70000002545-73-610cdb7375c2
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7F.11.32548.37BDC016; Fri,  6 Aug 2021 15:49:23 +0900 (KST)
+Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210806064922epsmtip1578662061d7981f4d7841c3d43f5a84a~YpOOjjAAY3134831348epsmtip11;
+        Fri,  6 Aug 2021 06:49:22 +0000 (GMT)
+From:   Kiwoong Kim <kwmad.kim@samsung.com>
+To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com,
+        cang@codeaurora.org, adrian.hunter@intel.com, sc.suh@samsung.com,
+        hy50.seo@samsung.com, sh425.lee@samsung.com,
+        bhoon95.kim@samsung.com
+Cc:     Kiwoong Kim <kwmad.kim@samsung.com>
+Subject: [RFC PATCH v1 0/2] scsi: ufs: introduce vendor isr
+Date:   Fri,  6 Aug 2021 15:34:10 +0900
+Message-Id: <cover.1628231581.git.kwmad.kim@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgk+LIzCtJLcpLzFFi42LZdljTVLf4Nk+iwbpmc4uTT9awWTyYt43N
+        4uXPq2wWBx92slh8XfqM1eLT+mWsFqsXP2CxWHRjG5PFzS1HWSwu75rDZtF9fQebxfLj/5gs
+        uu7eYLRY+u8tiwOfx+W+XiaPxXteMnlMWHSA0eP7+g42j49Pb7F49G1ZxejxeZOcR/uBbqYA
+        jqgcm4zUxJTUIoXUvOT8lMy8dFsl7+B453hTMwNDXUNLC3MlhbzE3FRbJRefAF23zBygw5UU
+        yhJzSoFCAYnFxUr6djZF+aUlqQoZ+cUltkqpBSk5BYaGBXrFibnFpXnpesn5uVaGBgZGpkCV
+        CTkZb//nFbxlrjh1dgl7A2MvcxcjJ4eEgInE02XzWLoYuTiEBHYwShy+dZoNwvnEKDF35yUo
+        5zOjxI3mXnaYliczf0MldjFKzNs+hRHC+cEo8ftFLxtIFZuApsTTm1OZQGwRgX1MEkd3pYPY
+        zALqErsmnACLCwtYS3zufwpWzyKgKnFpQxeYzStgIfF6Gcw2OYmb5zqhjv3KLrFuuxaE7SLx
+        7XA7E4QtLPHq+BaoeimJz+/2skHY9RL7pjawghwnIdDDKPF03z9GiISxxKxn7UA2B9BBmhLr
+        d+mDmBICyhJHbrFAnMkn0XH4LztEmFeio00IolFZ4tekyVBDJCVm3rwDtdVDYtOxU2wg5UIC
+        sRJLN8ZOYJSdhTB+ASPjKkax1ILi3PTUYqMCI+Qo2sQITopabjsYp7z9oHeIkYmD8RCjBAez
+        kghv8mKuRCHelMTKqtSi/Pii0pzU4kOMpsDQmsgsJZqcD0zLeSXxhqZGZmYGlqYWpmZGFkri
+        vBpxXxOEBNITS1KzU1MLUotg+pg4OKUamHpmndO0uSQi13zPoap8tXBy+l21yGnPcxmVqvcE
+        8ix6feOxWcWrWiv5TQx8GY9F+afHPN9bPsO8qMZyqtuffbG5C/tnLGaP/WN5Z6nOWZVnjda8
+        37e7FnzM1HfTeZ9azGtgKNm8MDbE1mMZ+2tn8Tv/H//VvO8eGLw4Q7x4bkX8hUcNXDsEGd4v
+        5Yhv7n5pWzVpUklezi4+w63anmfmnhfT+uv4lOfE1Ws6y27/0n3DyG8udUFh2fTNzinxmtdm
+        nUs4mJ94iVE/THr7MsuE8z8eL5vM+f3XWZ5jPXUOfEc2hjm27TogNEG4nClY9Dn/qvKiU6/3
+        P3PJYcqr8T5abNqy/dwvOc0sgcz5pevvKLEUZyQaajEXFScCAHukuboTBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrILMWRmVeSWpSXmKPExsWy7bCSnG7xbZ5Eg3kTWSxOPlnDZvFg3jY2
+        i5c/r7JZHHzYyWLxdekzVotP65exWqxe/IDFYtGNbUwWN7ccZbG4vGsOm0X39R1sFsuP/2Oy
+        6Lp7g9Fi6b+3LA58Hpf7epk8Fu95yeQxYdEBRo/v6zvYPD4+vcXi0bdlFaPH501yHu0HupkC
+        OKK4bFJSczLLUov07RK4Mt7+zyt4y1xx6uwS9gbGXuYuRk4OCQETiSczf7N1MXJxCAnsYJSY
+        8301G0RCUuLEzueMELawxP2WI6wQRd8YJVp+vQbrZhPQlHh6cyoTSEJE4ByTxNTLS5lAEswC
+        6hK7JpwAs4UFrCU+9z8Fm8oioCpxaUMXmM0rYCHxelkvO8QGOYmb5zqZJzDyLGBkWMUomVpQ
+        nJueW2xYYJSXWq5XnJhbXJqXrpecn7uJERyqWlo7GPes+qB3iJGJg/EQowQHs5IIb/JirkQh
+        3pTEyqrUovz4otKc1OJDjNIcLErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamATFZbP+FM+9
+        cJ9LTDXO9s8jrbiVD3IS0i3yteYWPbp6s5ldWel8Gg+Hc6zX9CvrqpMKYpY3/91z+/GC5ryP
+        /OvEsn/3f9xyb1e65WXjBUq7Tn1O/iy9z72qWG+xekxN4Sbr2auYeHQusHT/y//G0N/hU6p/
+        76jh54s7zrWJK8v82Hc861XamrILztEi7Feu61z/wL5pysWwQ6ef3IzO3pA/qTZ+x/0jV2w3
+        rljdamVl/d0juOGe8lu+3bf9nzCUCPjlMgjl2SlW7z686/IzTq+96gLLmtUUGHx7j66Vf1+s
+        oVt1+JXiq9LbTmuTKyO/8Pht/JhvMGO7QFLYLMn+/4ZzRTdu8TvlXLZe/5zifSWW4oxEQy3m
+        ouJEAINGJQfEAgAA
+X-CMS-MailID: 20210806064923epcas2p13dd6b442eed02404d87684afd9c1b229
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210806064923epcas2p13dd6b442eed02404d87684afd9c1b229
+References: <CGME20210806064923epcas2p13dd6b442eed02404d87684afd9c1b229@epcas2p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Grygorii Strashko <grygorii.strashko@ti.com> [210806 02:10]:
-> The dual_mac mode has been preserved the same way between legacy and new
-> driver, and one port devices works the same as 1 dual_mac port - it's safe
-> to switch drivers.
-> 
-> So, Switch BeagleBone boards to use new cpsw switch driver. Those boards
-> have or 2 Ext. port wired and configured in dual_mac mode by default, or
-> only 1 Ext. port.
-> 
-> For am335x-sancloud-bbe-common.dtsi also removed duplicated davinci_mdio DT
-> nodes which already defined in am335x-bone-common.dtsi.
+This patch is to activate some interrupt sources
+that aren't defined in UFSHCI specifications. Those
+purpose could be error handling, workaround or whatever.
 
-Applying this too into omap-for-v5.15/dt.
+Kiwoong Kim (2):
+  scsi: ufs: introduce vendor isr
+  scsi: ufs: ufs-exynos: implement exynos isr
 
-Regards,
+ drivers/scsi/ufs/ufs-exynos.c | 78 +++++++++++++++++++++++++++++------
+ drivers/scsi/ufs/ufshcd.c     | 10 +++++
+ drivers/scsi/ufs/ufshcd.h     |  8 ++++
+ 3 files changed, 84 insertions(+), 12 deletions(-)
 
-Tony
+-- 
+2.31.1
+
