@@ -2,212 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45DF3E2D60
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303993E2D64
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244162AbhHFPMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 11:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244082AbhHFPMq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 11:12:46 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACD8C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 08:12:30 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mC1WK-0006yw-ON; Fri, 06 Aug 2021 17:12:24 +0200
-Subject: Re: [PATCH 0/4] KEYS: trusted: Introduce support for NXP CAAM-based
- trusted keys
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        James Bottomley <jejb@linux.ibm.com>
-Cc:     Jan Luebbe <j.luebbe@pengutronix.de>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        David Gstir <david@sigma-star.at>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        Richard Weinberger <richard@nod.at>,
-        James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
-        linux-integrity@vger.kernel.org,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
-Message-ID: <b9e44f8e-84a0-90be-6cfc-d3a0bde12178@pengutronix.de>
-Date:   Fri, 6 Aug 2021 17:12:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S243948AbhHFPOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 11:14:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:34680 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234841AbhHFPOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 11:14:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C96DF1042;
+        Fri,  6 Aug 2021 08:14:03 -0700 (PDT)
+Received: from [10.57.9.90] (unknown [10.57.9.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F3773F66F;
+        Fri,  6 Aug 2021 08:13:59 -0700 (PDT)
+Subject: Re: [PATCH v3] PM: EM: Increase energy calculation precision
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Chris Redpath <Chris.Redpath@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>, segall@google.com,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        CCj.Yeh@mediatek.com
+References: <20210803102744.23654-1-lukasz.luba@arm.com>
+ <4e6b02fb-b421-860b-4a07-ed6cccdc1570@arm.com>
+ <CAJZ5v0hgpM+ErHMTYLFFasvn=Ptc0MyaaFn=HSxOcGcDcBwMVg@mail.gmail.com>
+ <c23f8fac-4515-5891-0778-18e65eeb7087@arm.com>
+ <CAJZ5v0iB_vbbqzee6HSoLbVwVBWMmpvHWLZ_5_neWWqXr1JqoQ@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <fca3c5a9-a756-da87-698a-584effec8488@arm.com>
+Date:   Fri, 6 Aug 2021 16:13:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAJZ5v0iB_vbbqzee6HSoLbVwVBWMmpvHWLZ_5_neWWqXr1JqoQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear trusted key maintainers,
-
-On 21.07.21 18:48, Ahmad Fatoum wrote:
-> Series applies on top of
-> https://lore.kernel.org/linux-integrity/20210721160258.7024-1-a.fatoum@pengutronix.de/T/#u
-> 
-> v2 -> v3:
->  - Split off first Kconfig preparation patch. It fixes a regression,
->    so sent that out, so it can be applied separately (Sumit)
->  - Split off second key import patch. I'll send that out separately
->    as it's a development aid and not required within the CAAM series
->  - add MAINTAINERS entry
-
-Gentle ping. I'd appreciate feedback on this series.
-
-Cheers,
-Ahmad
-
-> 
-> v1 -> v2:
->  - Added new commit to make trusted key Kconfig option independent
->    of TPM and added new Kconfig file for trusted keys
->  - Add new commit for importing existing key material
->  - Allow users to force use of kernel RNG (Jarkko)
->  - Enforce maximum keymod size (Horia)
->  - Use append_seq_(in|out)_ptr_intlen instead of append_seq_(in|out)_ptr
->    (Horia)
->  - Make blobifier handle private to CAAM glue code file (Horia)
->  - Extend trusted keys documentation for CAAM
->  - Rebased and updated original cover letter:
-> 
-> The Cryptographic Acceleration and Assurance Module (CAAM) is an IP core
-> built into many newer i.MX and QorIQ SoCs by NXP.
-> 
-> Its blob mechanism can AES encrypt/decrypt user data using a unique
-> never-disclosed device-specific key.
-> 
-> There has been multiple discussions on how to represent this within the kernel:
-> 
-> The Cryptographic Acceleration and Assurance Module (CAAM) is an IP core
-> built into many newer i.MX and QorIQ SoCs by NXP.
-> 
-> Its blob mechanism can AES encrypt/decrypt user data using a unique
-> never-disclosed device-specific key. There has been multiple
-> discussions on how to represent this within the kernel:
-> 
->  - [RFC] crypto: caam - add red blobifier
->    Steffen implemented[1] a PoC sysfs driver to start a discussion on how to
->    best integrate the blob mechanism.
->    Mimi suggested that it could be used to implement trusted keys.
->    Trusted keys back then were a TPM-only feature.
-> 
->  - security/keys/secure_key: Adds the secure key support based on CAAM.
->    Udit added[2] a new "secure" key type with the CAAM as backend. The key
->    material stays within the kernel only.
->    Mimi and James agreed that this needs a generic interface, not specific
->    to CAAM. Mimi suggested trusted keys. Jan noted that this could serve as
->    basis for TEE-backed keys.
-> 
->  - [RFC] drivers: crypto: caam: key: Add caam_tk key type
->    Franck added[3] a new "caam_tk" key type based on Udit's work. This time
->    it uses CAAM "black blobs" instead of "red blobs", so key material stays
->    within the CAAM and isn't exposed to kernel in plaintext.
->    James voiced the opinion that there should be just one user-facing generic
->    wrap/unwrap key type with multiple possible handlers.
->    David suggested trusted keys.
-> 
->  - Introduce TEE based Trusted Keys support
->    Sumit reworked[4] trusted keys to support multiple possible backends with
->    one chosen at boot time and added a new TEE backend along with TPM.
->    This now sits in Jarkko's master branch to be sent out for v5.13
-> 
-> This patch series builds on top of Sumit's rework to have the CAAM as yet another
-> trusted key backend.
-> 
-> The CAAM bits are based on Steffen's initial patch from 2015. His work had been
-> used in the field for some years now, so I preferred not to deviate too much from it.
-> 
-> This series has been tested with dmcrypt[5] on an i.MX6DL.
-> 
-> Looking forward to your feedback.
-> 
-> Cheers,
-> Ahmad
-> 
->  [1]: https://lore.kernel.org/linux-crypto/1447082306-19946-2-git-send-email-s.trumtrar@pengutronix.de/
->  [2]: https://lore.kernel.org/linux-integrity/20180723111432.26830-1-udit.agarwal@nxp.com/
->  [3]: https://lore.kernel.org/lkml/1551456599-10603-2-git-send-email-franck.lenormand@nxp.com/
->  [4]: https://lore.kernel.org/lkml/1604419306-26105-1-git-send-email-sumit.garg@linaro.org/
->  [5]: https://lore.kernel.org/linux-integrity/20210122084321.24012-2-a.fatoum@pengutronix.de/
-> 
-> ---
-> To: Jarkko Sakkinen <jarkko@kernel.org>
-> To: "Horia Geantă" <horia.geanta@nxp.com>
-> To: Mimi Zohar <zohar@linux.ibm.com>
-> To: Aymen Sghaier <aymen.sghaier@nxp.com>
-> To: Herbert Xu <herbert@gondor.apana.org.au>
-> To: "David S. Miller" <davem@davemloft.net>
-> To: James Bottomley <jejb@linux.ibm.com>
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: James Morris <jmorris@namei.org>
-> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> Cc: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-> Cc: Udit Agarwal <udit.agarwal@nxp.com>
-> Cc: Jan Luebbe <j.luebbe@pengutronix.de>
-> Cc: David Gstir <david@sigma-star.at>
-> Cc: Eric Biggers <ebiggers@kernel.org>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Franck LENORMAND <franck.lenormand@nxp.com>
-> Cc: Sumit Garg <sumit.garg@linaro.org>
-> Cc: linux-integrity@vger.kernel.org
-> Cc: keyrings@vger.kernel.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-security-module@vger.kernel.org
-> 
-> Ahmad Fatoum (4):
->   KEYS: trusted: allow users to use kernel RNG for key material
->   KEYS: trusted: allow trust sources to use kernel RNG for key material
->   crypto: caam - add in-kernel interface for blob generator
->   KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
-> 
->  Documentation/admin-guide/kernel-parameters.txt   |   8 +-
->  Documentation/security/keys/trusted-encrypted.rst |  60 +++-
->  MAINTAINERS                                       |   9 +-
->  drivers/crypto/caam/Kconfig                       |   3 +-
->  drivers/crypto/caam/Makefile                      |   1 +-
->  drivers/crypto/caam/blob_gen.c                    | 230 +++++++++++++++-
->  include/keys/trusted-type.h                       |   2 +-
->  include/keys/trusted_caam.h                       |  11 +-
->  include/soc/fsl/caam-blob.h                       |  56 ++++-
->  security/keys/trusted-keys/Kconfig                |  11 +-
->  security/keys/trusted-keys/Makefile               |   2 +-
->  security/keys/trusted-keys/trusted_caam.c         |  74 +++++-
->  security/keys/trusted-keys/trusted_core.c         |  23 +-
->  13 files changed, 477 insertions(+), 13 deletions(-)
->  create mode 100644 drivers/crypto/caam/blob_gen.c
->  create mode 100644 include/keys/trusted_caam.h
->  create mode 100644 include/soc/fsl/caam-blob.h
->  create mode 100644 security/keys/trusted-keys/trusted_caam.c
-> 
-> base-commit: 97408d81ed533b953326c580ff2c3f1948b3fcee
-> 
 
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+On 8/6/21 2:32 PM, Rafael J. Wysocki wrote:
+
+[snip]
+
+> 
+> OK, applied as 5.15 material.
+
+Thank you Rafael!
+
+> 
+> However, since I'm on vacation next week, it will show up in
+> linux-next after -rc6.
+
+No worries. Have a nice vacation!
