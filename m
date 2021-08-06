@@ -2,74 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0973E2A5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3663B3E2A62
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343581AbhHFMJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 08:09:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56431 "EHLO
+        id S1343604AbhHFMKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 08:10:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30683 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243761AbhHFMJC (ORCPT
+        by vger.kernel.org with ESMTP id S1343589AbhHFMKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 08:09:02 -0400
+        Fri, 6 Aug 2021 08:10:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628251726;
+        s=mimecast20190719; t=1628251821;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=V4AdJPieWv1AGBhnfr6N7NI4S2zg5FETvWvC3QgBc/s=;
-        b=IHNA7G2sMKgyYEq0Cp38H08zmxCKZhK14ZI1Jp1y3LSTT3+3N/NU1AeEp/5gJnRw5p/Pdm
-        k2HZxbww3HTw7glPz0b7Sz3CtozyXpPxvGNWof0okareN8CoC66LrCNHzG0ADR57tGwaHp
-        jT4J3q9e8D0kMylv1YT+FUeqkkID9gw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-415-Xw7faXBnPJy-sR8x43ECzw-1; Fri, 06 Aug 2021 08:08:45 -0400
-X-MC-Unique: Xw7faXBnPJy-sR8x43ECzw-1
-Received: by mail-ed1-f71.google.com with SMTP id p2-20020a50c9420000b02903a12bbba1ebso4800697edh.6
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 05:08:45 -0700 (PDT)
+        bh=iUX9tkPbPQoCHmRVVBakL5GihoDlnIvlBLjyIrxXxlQ=;
+        b=LAow66GmT3jca8v5qZWQ/6Tv7iZKzy0EI7aaO1SR8Msy7YiX8dml201kibDgynQZ+pTc+3
+        DjJnz0pq3KeSrjf/P7ow79rklmBRSgl7yVofPBnOjFl9IRM6bvf0N+xHjapehj7vYZ/blZ
+        STZZd4fwijkhpg9xeeMhp/4/1V2Nor8=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-294-tTnGUh97PMmEfwDVh-D11A-1; Fri, 06 Aug 2021 08:10:20 -0400
+X-MC-Unique: tTnGUh97PMmEfwDVh-D11A-1
+Received: by mail-ej1-f70.google.com with SMTP id q19-20020a170906b293b029058a1e75c819so3036137ejz.16
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 05:10:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=V4AdJPieWv1AGBhnfr6N7NI4S2zg5FETvWvC3QgBc/s=;
-        b=HHTusSduOmntRLN12j7lqbLndcQBkmCmpPNvnaY9RYxtpp2G3ZsP3z0cTI4rcKfFBX
-         kfKotsI810t04E7QuaVZNcLzTSCJH0lhB7fGJajJvsIwA06IfqM8IIXt/arrcs76O4Hf
-         iPN5mOtz0yi6iaewteOu8CnlalrI4x4a4xnJZqfclcQQD7yokaiQ3/zESRo4ISIM/oRO
-         NSS4/mIQnPKvAtaDnJK7Z4c9l9S7+dE6igFGvlGVLoBc0NUzrl7KfyEdCQ34M2i3QyLS
-         eqQPYFeu5mz7GkYc6hOMWQ9CjaV7fFxFvCZyhNFjbDh+4UxQMvQCkyK0j/n/e6vbjXWx
-         k1Qg==
-X-Gm-Message-State: AOAM5336+WP6ye1XamZExfhNgENLsnYjUdcygLmfGTxo9pTZobjo+iHI
-        IcNnCUvo7+X3N1P6jYZ1Ld/JthfQscKSyLxoBkJm84AO8Rg1kaerIg4YbRP963CWtQbeG/Tyf/3
-        O1uKkbIB9gnBC9pcFqR1jdG8Y
-X-Received: by 2002:aa7:c541:: with SMTP id s1mr12750568edr.327.1628251724037;
-        Fri, 06 Aug 2021 05:08:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzLIdXKzTovwMCJ/mrOdvKOkViUKmJ8dKu7a05333lEFVX4pxiAwiXziYx/lnIsFREOBCAjjQ==
-X-Received: by 2002:aa7:c541:: with SMTP id s1mr12750551edr.327.1628251723909;
-        Fri, 06 Aug 2021 05:08:43 -0700 (PDT)
+        bh=iUX9tkPbPQoCHmRVVBakL5GihoDlnIvlBLjyIrxXxlQ=;
+        b=HZnKD0oWDYQkKvng5JAOEKY89EWiE+u98oXJ6TcMNTYzwIsINifV8h1Upomf0+stS2
+         pDri1k9zSAGLg2smVvz5DEciXOy089stVxmaViLPI5DW4MzIi6SvUhWGhnmGc8sB6oNH
+         0BTe/cvoN/7+wKpUxR93y3SARJ7bRDaefJSf2ucEGy4CAZihUb3FALF0kJGiSl3qrUjt
+         MVpYrMVgqj6zgvZkDoQkqFwcvCzhxT/gOppx4rh7lbr3+q4PZkx1M2pgWrWfelIhRluJ
+         jHcc6q1iaPvF0K7bkjgilLYxsMCUw9CCX99rFFM2XZ6ltvWcdezaOEphwjTv8FlTe4OC
+         nqLg==
+X-Gm-Message-State: AOAM531VEuXp9t3uoHeL99mC0UJ8RBd+qJge7hfohH54oDkUeOzyCAr2
+        ULTchY1R8ZAblXAQOi4PrLkkX5c333t38T3va/bZNvp+mf/3Ee4zNo4oglhPCyN/FI73ZsA/0fH
+        t8SkQLqpLYegzgqOKBJYHI32z
+X-Received: by 2002:a17:906:190c:: with SMTP id a12mr9606619eje.141.1628251818749;
+        Fri, 06 Aug 2021 05:10:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxIy7pPE5neyynmuNk+K1t2AeMYsAbqvWPh61GejqqHO3cLZMf+XAD32NUXkg67Vn1gH2F8cw==
+X-Received: by 2002:a17:906:190c:: with SMTP id a12mr9606597eje.141.1628251818587;
+        Fri, 06 Aug 2021 05:10:18 -0700 (PDT)
 Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id i10sm3811930edf.12.2021.08.06.05.08.43
+        by smtp.gmail.com with ESMTPSA id ov4sm2818048ejb.122.2021.08.06.05.10.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 05:08:43 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] serdev: Split and export
- serdev_acpi_get_uart_resource()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Cc:     Mark Gross <mgross@linux.intel.com>, Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-References: <20210806111736.66591-1-andriy.shevchenko@linux.intel.com>
+        Fri, 06 Aug 2021 05:10:18 -0700 (PDT)
+Subject: Re: [PATCH v4 0/7] Add TDX Guest Support (Attestation support)
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20210806000946.2951441-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <a955083a-a985-0b7d-460f-af196c5113c5@redhat.com>
-Date:   Fri, 6 Aug 2021 14:08:42 +0200
+Message-ID: <a9d0c7b3-31fa-b7d9-4631-7d0d44a7c848@redhat.com>
+Date:   Fri, 6 Aug 2021 14:10:17 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210806111736.66591-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210806000946.2951441-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,123 +90,117 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 8/6/21 1:17 PM, Andy Shevchenko wrote:
-> The same as for I²C Serial Bus resource split and export
-> serdev_acpi_get_uart_resource(). We have already a few users
-> one of which is converted here.
+On 8/6/21 2:09 AM, Kuppuswamy Sathyanarayanan wrote:
+> Hi All,
 > 
-> Rationale of this is to consolidate parsing UART Serial Bus
-> resource in one place as it's done, e.g., for I²C Serial Bus.
+> Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
+> hosts and some physical attacks. VM guest with TDX support is called
+> as TD Guest.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> In TD Guest, the attestationÂ process is used to verify the 
+> trustworthiness of TD guest to the 3rd party servers. Such attestation
+> process is required by 3rd party servers before sending sensitive
+> information to TD guests. One usage example is to get encryption keys
+> from the key server for mounting the encrypted rootfs or secondary drive.
+>     
+> Following patches adds the attestation support to TDX guest which
+> includes attestation user interface driver, user agent example, and
+> related hypercall support.
+> 
+> In this series, only following patches are in arch/x86 and are
+> intended for x86 maintainers review.
+> 
+> * x86/tdx: Add TDREPORT TDX Module call support
+> * x86/tdx: Add GetQuote TDX hypercall support
+> * x86/tdx: Add SetupEventNotifyInterrupt TDX hypercall support
+> 
+> Patch titled "platform/x86: intel_tdx_attest: Add TDX Guest attestation
+> interface driver" adds the attestation driver support. This is supposed
+> to be reviewed by platform-x86 maintainers.
 
-As mentioned before I believe it is best if this series is
-merged in its entirety through to the tty tree, here is my
-ack for patch 2/2 for that:
+Since the patches depend on each other I believe that it would be best
+if the entire series gets merged through the tip tree.
+
+Here is my ack for patch 6/7 for that:
 
 Acked-by: Hans de Goede <hdegoede@redhat.com>
-
-Greg, can you pickup the entire series please?
 
 Regards,
 
 Hans
 
 
-> ---
-> v3: amended kernel doc to have RETURN section (Jiri)
->  drivers/tty/serdev/core.c | 36 +++++++++++++++++++++++++++++-------
->  include/linux/serdev.h    | 14 ++++++++++++++
->  2 files changed, 43 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
-> index 92498961fd92..f1324fe99378 100644
-> --- a/drivers/tty/serdev/core.c
-> +++ b/drivers/tty/serdev/core.c
-> @@ -562,23 +562,45 @@ struct acpi_serdev_lookup {
->  	int index;
->  };
->  
-> +/**
-> + * serdev_acpi_get_uart_resource - Gets UARTSerialBus resource if type matches
-> + * @ares:	ACPI resource
-> + * @uart:	Pointer to UARTSerialBus resource will be returned here
-> + *
-> + * Checks if the given ACPI resource is of type UARTSerialBus.
-> + * In this case, returns a pointer to it to the caller.
-> + *
-> + * Return: True if resource type is of UARTSerialBus, otherwise false.
-> + */
-> +bool serdev_acpi_get_uart_resource(struct acpi_resource *ares,
-> +				   struct acpi_resource_uart_serialbus **uart)
-> +{
-> +	struct acpi_resource_uart_serialbus *sb;
-> +
-> +	if (ares->type != ACPI_RESOURCE_TYPE_SERIAL_BUS)
-> +		return false;
-> +
-> +	sb = &ares->data.uart_serial_bus;
-> +	if (sb->type != ACPI_RESOURCE_SERIAL_TYPE_UART)
-> +		return false;
-> +
-> +	*uart = sb;
-> +	return true;
-> +}
-> +EXPORT_SYMBOL_GPL(serdev_acpi_get_uart_resource);
-> +
->  static int acpi_serdev_parse_resource(struct acpi_resource *ares, void *data)
->  {
->  	struct acpi_serdev_lookup *lookup = data;
->  	struct acpi_resource_uart_serialbus *sb;
->  	acpi_status status;
->  
-> -	if (ares->type != ACPI_RESOURCE_TYPE_SERIAL_BUS)
-> -		return 1;
-> -
-> -	if (ares->data.common_serial_bus.type != ACPI_RESOURCE_SERIAL_TYPE_UART)
-> +	if (!serdev_acpi_get_uart_resource(ares, &sb))
->  		return 1;
->  
->  	if (lookup->index != -1 && lookup->n++ != lookup->index)
->  		return 1;
->  
-> -	sb = &ares->data.uart_serial_bus;
-> -
->  	status = acpi_get_handle(lookup->device_handle,
->  				 sb->resource_source.string_ptr,
->  				 &lookup->controller_handle);
-> @@ -586,7 +608,7 @@ static int acpi_serdev_parse_resource(struct acpi_resource *ares, void *data)
->  		return 1;
->  
->  	/*
-> -	 * NOTE: Ideally, we would also want to retreive other properties here,
-> +	 * NOTE: Ideally, we would also want to retrieve other properties here,
->  	 * once setting them before opening the device is supported by serdev.
->  	 */
->  
-> diff --git a/include/linux/serdev.h b/include/linux/serdev.h
-> index 9f14f9c12ec4..3368c261ab62 100644
-> --- a/include/linux/serdev.h
-> +++ b/include/linux/serdev.h
-> @@ -327,4 +327,18 @@ static inline int serdev_tty_port_unregister(struct tty_port *port)
->  }
->  #endif /* CONFIG_SERIAL_DEV_CTRL_TTYPORT */
->  
-> +struct acpi_resource;
-> +struct acpi_resource_uart_serialbus;
-> +
-> +#ifdef CONFIG_ACPI
-> +bool serdev_acpi_get_uart_resource(struct acpi_resource *ares,
-> +				   struct acpi_resource_uart_serialbus **uart);
-> +#else
-> +static inline bool serdev_acpi_get_uart_resource(struct acpi_resource *ares,
-> +						 struct acpi_resource_uart_serialbus **uart)
-> +{
-> +	return false;
-> +}
-> +#endif /* CONFIG_ACPI */
-> +
->  #endif /*_LINUX_SERDEV_H */
+> Also, patch titled "tools/tdx: Add a sample attestation user app" adds
+> a testing app for attestation feature which needs review from
+> bpf@vger.kernel.org.
+> 
+> This series is the continuation of the following TDX patch series which
+> added basic TDX guest support.
+> 
+> [set 1, v5] - https://lore.kernel.org/patchwork/project/lkml/list/?seriesQ0805
+> [set 2, v4] - https://lore.kernel.org/patchwork/project/lkml/list/?seriesQ0814
+> [set 3, v4] - https://lore.kernel.org/patchwork/project/lkml/list/?seriesQ0816
+> [set 4, v4] - https://lore.kernel.org/patchwork/project/lkml/list/?seriesQ0836
+> [set 5, v3] - https://lkml.org/lkml/2021/8/5/1195
+> 
+> Also please note that this series alone is not necessarily fully
+> functional.
+> 
+> You can find TDX related documents in the following link.
+> 
+> https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
+> 
+> Changes since v3:
+>  * Since the code added by patch titled "x86/tdx: Add tdg_debug_enabled()
+>    interface" is only used by other patches in this series, moved it here.
+>  * Rebased on top of Tom Lendacky's protected guest
+>    changes (https://lore.kernel.org/patchwork/cover/1468760/
+>  * Rest of the history is included in individual patches.
+> 
+> Changes since v2:
+>  * Rebased on top of v5.14-rc1.
+>  * Rest of the history is included in individual patches.
+> 
+> Changes since v1:
+>  * Included platform-x86 and test tool maintainers in recipient list.
+>  * Fixed commit log and comments in attestation driver as per Han's comments.
+> 
+> Kuppuswamy Sathyanarayanan (7):
+>   x86/tdx: Add tdg_debug_enabled() interface
+>   x86/tdx: Add TDREPORT TDX Module call support
+>   x86/tdx: Add GetQuote TDX hypercall support
+>   x86/tdx: Add SetupEventNotifyInterrupt TDX hypercall support
+>   x86/tdx: Add TDX Guest event notify interrupt vector support
+>   platform/x86: intel_tdx_attest: Add TDX Guest attestation interface
+>     driver
+>   tools/tdx: Add a sample attestation user app
+> 
+>  arch/x86/include/asm/hardirq.h                |   1 +
+>  arch/x86/include/asm/idtentry.h               |   4 +
+>  arch/x86/include/asm/irq_vectors.h            |   7 +-
+>  arch/x86/include/asm/tdx.h                    |   8 +
+>  arch/x86/kernel/irq.c                         |   7 +
+>  arch/x86/kernel/tdx.c                         | 140 +++++++++++
+>  drivers/platform/x86/intel/Kconfig            |   1 +
+>  drivers/platform/x86/intel/Makefile           |   1 +
+>  drivers/platform/x86/intel/tdx/Kconfig        |  13 +
+>  drivers/platform/x86/intel/tdx/Makefile       |   3 +
+>  .../platform/x86/intel/tdx/intel_tdx_attest.c | 212 ++++++++++++++++
+>  include/uapi/misc/tdx.h                       |  37 +++
+>  tools/Makefile                                |  13 +-
+>  tools/tdx/Makefile                            |  19 ++
+>  tools/tdx/attest/.gitignore                   |   2 +
+>  tools/tdx/attest/Makefile                     |  24 ++
+>  tools/tdx/attest/tdx-attest-test.c            | 232 ++++++++++++++++++
+>  17 files changed, 717 insertions(+), 7 deletions(-)
+>  create mode 100644 drivers/platform/x86/intel/tdx/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/tdx/Makefile
+>  create mode 100644 drivers/platform/x86/intel/tdx/intel_tdx_attest.c
+>  create mode 100644 include/uapi/misc/tdx.h
+>  create mode 100644 tools/tdx/Makefile
+>  create mode 100644 tools/tdx/attest/.gitignore
+>  create mode 100644 tools/tdx/attest/Makefile
+>  create mode 100644 tools/tdx/attest/tdx-attest-test.c
 > 
 
