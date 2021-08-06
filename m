@@ -2,344 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1FC3E21A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 04:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B900B3E2191
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 04:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243273AbhHFCfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 22:35:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57065 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242614AbhHFCfk (ORCPT
+        id S240475AbhHFCey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 22:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230093AbhHFCes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 22:35:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628217325;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5WME09711Dv5+upqol+WO8Dd3fTJ9djKLCDjpxZslkw=;
-        b=UMFVsXPvrJax3WAQh/mLgnG/eJSsNS6vFtARDCcDx/bRtff2kVJ4xUqOJGjPcYXQzIfPVC
-        KY9mI6mn+2Jdgapdwva1ams/77RfPQqwTbrquS7zzNvfkZfc6qdYI/rUtSVlPvjHqq36PV
-        VkF953hSMlgVcewARzvhO61Yzb5OVYI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-oJ5WXDR6NKmJxdXgLcNW9w-1; Thu, 05 Aug 2021 22:35:21 -0400
-X-MC-Unique: oJ5WXDR6NKmJxdXgLcNW9w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88F5C192CC49;
-        Fri,  6 Aug 2021 02:35:20 +0000 (UTC)
-Received: from localhost (ovpn-12-45.pek2.redhat.com [10.72.12.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3707B19811;
-        Fri,  6 Aug 2021 02:35:15 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Ming Lei <ming.lei@redhat.com>
-Subject: [PATCH V3 7/7] loop: don't add worker into idle list
+        Thu, 5 Aug 2021 22:34:48 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162E9C061798;
+        Thu,  5 Aug 2021 19:34:33 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id l19so13785103pjz.0;
+        Thu, 05 Aug 2021 19:34:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=YTL8rATwgxSuPGDhJbThhFcHRN/9Vn25uHPn0zaGPNM=;
+        b=X5I4I5hSZKO0FqOT8VVX6wA9MndpzlwOJSH1gYjIYGXpIfLfM3aat5kka3JlkO4NFn
+         ZWhYW53gk9CUN+zYaKp3kz3eDOopUYqQNjPGwZdn1f8ib0ZyQfE4SUxwtV7nq6+dmrGP
+         Vv9GchnSClXOq96Dy2xcpzTChtwai4GvWHp/BJbKMn8d6tK7CoQod1katCU/OUcNvOSz
+         cGrFcFlZFrfhxyTQqLLmh9m8yV5OXB2dRqqP/f52j8elj3xFjJNJdpyNbA51iyIb1HQN
+         I1CMXbd8q58ux+urT/kRwZfbaLfAIEQV0D6s9FQhHOUj3Ui/kDt3SgYe12XQnsVNBJcr
+         +5BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=YTL8rATwgxSuPGDhJbThhFcHRN/9Vn25uHPn0zaGPNM=;
+        b=QTMXsiMwR679yCQHfEF37zlHwDzxfERdAEm0mJKWpaXZRhXaWwI4aw1BgCeXUZhH6q
+         inDAoQ6E689NRFCe4lT/9AuJti3lnadoOtp8Urf6CyK3v+dhMpHEJqE/3mPsqQfQxG24
+         SNgEcVy/CRvD9avSJcRnvk/pzpuz0dV2oD77ql7Wc0mhlnNtl/MdekXw/LmKiXXgwyNn
+         lPfGswXg8mE1hAPGX7cIUsbTzh8Dj7USszpQvVz4HUKn0L0OdDXGlI9MBw6UZPthVgsi
+         4fA5sQIIfK6EUjkZb8R1LpD1ZzBGxdZM/3p01r2Uu44HyL+JgR54iigH6Gio7QDq76SM
+         W/Hg==
+X-Gm-Message-State: AOAM533DwkpcjVPw48fr3BMiPctsYCJpxuaGuJmX1XCylq2Tqlcvnupn
+        FAALLjJj8lAKxL4vItbQNgs=
+X-Google-Smtp-Source: ABdhPJwidkXXkUXiIi8CIl8fimh1qfF44CfoC43Ahyp84TqgG6PJhxxSaLVSz+5tjMZn88RSbcxqSQ==
+X-Received: by 2002:a17:90a:1b2a:: with SMTP id q39mr7615105pjq.219.1628217272638;
+        Thu, 05 Aug 2021 19:34:32 -0700 (PDT)
+Received: from haswell-ubuntu20.lan ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id b5sm7190597pjq.2.2021.08.05.19.34.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 19:34:31 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: dsa: mt7530: drop untagged frames on VLAN-aware ports without PVID
 Date:   Fri,  6 Aug 2021 10:34:23 +0800
-Message-Id: <20210806023423.131060-8-ming.lei@redhat.com>
-In-Reply-To: <20210806023423.131060-1-ming.lei@redhat.com>
-References: <20210806023423.131060-1-ming.lei@redhat.com>
+Message-Id: <20210806023423.519560-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210806001740.cayorz3vlfrvk75l@skbuf>
+References: <20210805172315.362165-1-dqfext@gmail.com> <20210806001740.cayorz3vlfrvk75l@skbuf>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can retrieve any workers via xarray, so not add it into idle list.
-Meantime reduce .lo_work_lock coverage, especially we don't need that
-in IO path except for adding/deleting worker into xarray.
+On Fri, Aug 06, 2021 at 03:17:40AM +0300, Vladimir Oltean wrote:
+> 
+> Good catch with this condition, sja1105 and ocelot are buggy in this
+> regard, it seems, probably others too. Need to fix them. Although
+> honestly I would probably rather spend the time patching the bridge
+> already to not accept duplicate VLAN entries from user space, just with
+> different flags, it's just too complex to handle the overwrites everywhere...
+> Plus, bridge accepting duplicate VLANs means we cannot refcount them on
+> DSA and CPU ports at the cross-chip level, which in turn means we can
+> never delete them from those ports.
+> 
+> Anyhow, enough rambling.
+> 
+> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-Also replace .last_ran_at with .reclaim_time, which is set when adding
-loop command into worker->cmd_list. Meantime reclaim the worker when
-the worker is expired and no any pending commands.
-
-Acked-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- drivers/block/loop.c | 172 ++++++++++++++++++++++++++-----------------
- 1 file changed, 104 insertions(+), 68 deletions(-)
-
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index fd07481058e5..ca91d143f1d9 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -973,10 +973,11 @@ static void loop_config_discard(struct loop_device *lo)
- struct loop_worker {
- 	struct work_struct work;
- 	struct list_head cmd_list;
--	struct list_head idle_list;
- 	struct loop_device *lo;
- 	struct cgroup_subsys_state *blkcg_css;
--	unsigned long last_ran_at;
-+	unsigned long reclaim_time;
-+	spinlock_t lock;
-+	refcount_t refcnt;
- };
- 
- static void loop_workfn(struct work_struct *work);
-@@ -1016,62 +1017,93 @@ static struct cgroup_subsys_state *loop_rq_get_memcg_css(
- 	return NULL;
- }
- 
--static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
-+static struct loop_worker *loop_alloc_or_get_worker(struct loop_device *lo,
-+		struct cgroup_subsys_state *blkcg_css)
- {
--	struct loop_worker *worker = NULL;
--	struct work_struct *work;
--	struct list_head *cmd_list;
--	struct cgroup_subsys_state *blkcg_css = loop_rq_blkcg_css(cmd);
- 	gfp_t gfp = GFP_NOWAIT | __GFP_NOWARN;
-+	struct loop_worker *worker = kzalloc(sizeof(*worker), gfp);
-+	struct loop_worker *worker_old;
- 
--	spin_lock(&lo->lo_work_lock);
--
--	if (queue_on_root_worker(blkcg_css))
--		goto queue_work;
--
--	/* css->id is unique in each cgroup subsystem */
--	worker = xa_load(&lo->workers, blkcg_css->id);
--	if (worker)
--		goto queue_work;
--
--	worker = kzalloc(sizeof(*worker), gfp);
--	/*
--	 * In the event we cannot allocate a worker, just queue on the
--	 * rootcg worker and issue the I/O as the rootcg
--	 */
- 	if (!worker)
--		goto queue_work;
-+		return NULL;
- 
- 	worker->blkcg_css = blkcg_css;
--	css_get(worker->blkcg_css);
- 	INIT_WORK(&worker->work, loop_workfn);
- 	INIT_LIST_HEAD(&worker->cmd_list);
--	INIT_LIST_HEAD(&worker->idle_list);
- 	worker->lo = lo;
-+	spin_lock_init(&worker->lock);
-+	refcount_set(&worker->refcnt, 2);	/* INIT + INC */
- 
--	if (xa_err(xa_store(&lo->workers, blkcg_css->id, worker, gfp))) {
-+	spin_lock(&lo->lo_work_lock);
-+	/* maybe someone is storing a new worker */
-+	worker_old = xa_load(&lo->workers, blkcg_css->id);
-+	if (!worker_old || !refcount_inc_not_zero(&worker_old->refcnt)) {
-+		if (xa_err(xa_store(&lo->workers, blkcg_css->id, worker, gfp))) {
-+			kfree(worker);
-+			worker = NULL;
-+		} else {
-+			if (!work_pending(&lo->idle_work.work))
-+				schedule_delayed_work(&lo->idle_work,
-+						LOOP_IDLE_WORKER_TIMEOUT);
-+			css_get(worker->blkcg_css);
-+		}
-+	} else {
- 		kfree(worker);
--		worker = NULL;
-+		worker = worker_old;
- 	}
-+	spin_unlock(&lo->lo_work_lock);
- 
--queue_work:
--	if (worker) {
-+	return worker;
-+}
-+
-+static void loop_release_worker(struct loop_worker *worker)
-+{
-+	css_put(worker->blkcg_css);
-+	kfree_rcu(worker);
-+}
-+
-+static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
-+{
-+	struct loop_worker *worker = NULL;
-+	struct work_struct *work;
-+	struct list_head *cmd_list;
-+	struct cgroup_subsys_state *blkcg_css = loop_rq_blkcg_css(cmd);
-+	spinlock_t	*lock;
-+
-+	if (!queue_on_root_worker(blkcg_css)) {
-+		int ret = 0;
-+
-+		rcu_read_lock();
-+		/* css->id is unique in each cgroup subsystem */
-+		worker = xa_load(&lo->workers, blkcg_css->id);
-+		if (worker)
-+			ret = refcount_inc_not_zero(&worker->refcnt);
-+		rcu_read_unlock();
-+
-+		if (!worker || !ret)
-+			worker = loop_alloc_or_get_worker(lo, blkcg_css);
- 		/*
--		 * We need to remove from the idle list here while
--		 * holding the lock so that the idle timer doesn't
--		 * free the worker
-+		 * In the event we cannot allocate a worker, just queue on the
-+		 * rootcg worker and issue the I/O as the rootcg
- 		 */
--		if (!list_empty(&worker->idle_list))
--			list_del_init(&worker->idle_list);
-+	}
-+
-+	if (worker) {
- 		work = &worker->work;
- 		cmd_list = &worker->cmd_list;
-+		lock = &worker->lock;
- 	} else {
- 		work = &lo->rootcg_work;
- 		cmd_list = &lo->rootcg_cmd_list;
-+		lock = &lo->lo_work_lock;
- 	}
-+
-+	spin_lock(lock);
- 	list_add_tail(&cmd->list_entry, cmd_list);
-+	if (worker)
-+		worker->reclaim_time = jiffies + LOOP_IDLE_WORKER_TIMEOUT;
-+	spin_unlock(lock);
- 	queue_work(lo->workqueue, work);
--	spin_unlock(&lo->lo_work_lock);
- }
- 
- static void loop_update_rotational(struct loop_device *lo)
-@@ -1193,28 +1225,38 @@ loop_set_status_from_info(struct loop_device *lo,
- 	return 0;
- }
- 
--static void loop_set_timer(struct loop_device *lo)
-+static bool loop_need_reclaim_worker(struct loop_worker *worker)
- {
--	schedule_delayed_work(&lo->idle_work, LOOP_IDLE_WORKER_TIMEOUT);
-+	bool reclaim;
-+
-+	spin_lock(&worker->lock);
-+	if (list_empty(&worker->cmd_list) &&
-+			time_is_before_jiffies(worker->reclaim_time))
-+		reclaim = true;
-+	else
-+		reclaim = false;
-+	spin_unlock(&worker->lock);
-+
-+	return reclaim;
- }
- 
- static void __loop_free_idle_workers(struct loop_device *lo, bool force)
- {
--	struct loop_worker *pos, *worker;
-+	struct loop_worker *worker;
-+	unsigned long id;
- 
- 	spin_lock(&lo->lo_work_lock);
--	list_for_each_entry_safe(worker, pos, &lo->idle_worker_list,
--				idle_list) {
--		if (!force && time_is_after_jiffies(worker->last_ran_at +
--						LOOP_IDLE_WORKER_TIMEOUT))
--			break;
--		list_del(&worker->idle_list);
--		xa_erase(&lo->workers, worker->blkcg_css->id);
--		css_put(worker->blkcg_css);
--		kfree(worker);
-+	xa_for_each(&lo->workers, id, worker) {
-+		if (!force && !loop_need_reclaim_worker(worker))
-+			continue;
-+
-+		xa_erase(&worker->lo->workers, worker->blkcg_css->id);
-+		if (refcount_dec_and_test(&worker->refcnt))
-+			loop_release_worker(worker);
- 	}
--	if (!list_empty(&lo->idle_worker_list))
--		loop_set_timer(lo);
-+	if (!xa_empty(&lo->workers))
-+		schedule_delayed_work(&lo->idle_work,
-+				LOOP_IDLE_WORKER_TIMEOUT);
- 	spin_unlock(&lo->lo_work_lock);
- }
- 
-@@ -2226,42 +2268,36 @@ static void loop_handle_cmd(struct loop_cmd *cmd)
- }
- 
- static void loop_process_work(struct loop_worker *worker,
--			struct list_head *cmd_list, struct loop_device *lo)
-+			struct list_head *cmd_list, spinlock_t *lock)
- {
- 	int orig_flags = current->flags;
- 	struct loop_cmd *cmd;
- 	LIST_HEAD(list);
-+	int cnt = 0;
- 
- 	current->flags |= PF_LOCAL_THROTTLE | PF_MEMALLOC_NOIO;
- 
--	spin_lock(&lo->lo_work_lock);
-+	spin_lock(lock);
-  again:
- 	list_splice_init(cmd_list, &list);
--	spin_unlock(&lo->lo_work_lock);
-+	spin_unlock(lock);
- 
- 	while (!list_empty(&list)) {
- 		cmd = list_first_entry(&list, struct loop_cmd, list_entry);
- 		list_del_init(&cmd->list_entry);
- 
- 		loop_handle_cmd(cmd);
-+		cnt++;
- 	}
- 
--	spin_lock(&lo->lo_work_lock);
-+	spin_lock(lock);
- 	if (!list_empty(cmd_list))
- 		goto again;
--
--	/*
--	 * We only add to the idle list if there are no pending cmds
--	 * *and* the worker will not run again which ensures that it
--	 * is safe to free any worker on the idle list
--	 */
--	if (worker && !work_pending(&worker->work)) {
--		worker->last_ran_at = jiffies;
--		list_add_tail(&worker->idle_list, &lo->idle_worker_list);
--		loop_set_timer(lo);
--	}
--	spin_unlock(&lo->lo_work_lock);
-+	spin_unlock(lock);
- 	current->flags = orig_flags;
-+
-+	if (worker && refcount_sub_and_test(cnt, &worker->refcnt))
-+		loop_release_worker(worker);
- }
- 
- static void loop_workfn(struct work_struct *work)
-@@ -2276,11 +2312,11 @@ static void loop_workfn(struct work_struct *work)
- 	if (memcg_css) {
- 		old_memcg = set_active_memcg(
- 				mem_cgroup_from_css(memcg_css));
--		loop_process_work(worker, &worker->cmd_list, worker->lo);
-+		loop_process_work(worker, &worker->cmd_list, &worker->lock);
- 		set_active_memcg(old_memcg);
- 		css_put(memcg_css);
- 	} else {
--		loop_process_work(worker, &worker->cmd_list, worker->lo);
-+		loop_process_work(worker, &worker->cmd_list, &worker->lock);
- 	}
- 	kthread_associate_blkcg(NULL);
- }
-@@ -2289,7 +2325,7 @@ static void loop_rootcg_workfn(struct work_struct *work)
- {
- 	struct loop_device *lo =
- 		container_of(work, struct loop_device, rootcg_work);
--	loop_process_work(NULL, &lo->rootcg_cmd_list, lo);
-+	loop_process_work(NULL, &lo->rootcg_cmd_list, &lo->lo_work_lock);
- }
- 
- static const struct blk_mq_ops loop_mq_ops = {
--- 
-2.31.1
-
+Please allow me to send a v2. This sets the CPU port's PVID to 0
+on boot, which causes some undefined behaviour..
