@@ -2,116 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9573E2DEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A5A3E2DF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244774AbhHFPvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 11:51:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24847 "EHLO
+        id S244838AbhHFPw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 11:52:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40269 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238025AbhHFPvW (ORCPT
+        by vger.kernel.org with ESMTP id S232233AbhHFPw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 11:51:22 -0400
+        Fri, 6 Aug 2021 11:52:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628265065;
+        s=mimecast20190719; t=1628265132;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+MvzS92Uk60oNAzw+Z3d407dSFOjXozPlgK3Ui3EuhY=;
-        b=SRaw/YZvlGzVq9AnNY5qKTj+UvohuR2BOGecVwrRBt+Cl6f20+zsuVEU1S/BzgitCFWR8r
-        I+1/a4V7OGvzQeCpke1vlcFVM4kdZx0+mSXosNCwiuqVUIJlr9tVfOPHVPmst7RBM43WGg
-        V8zkyONvuHnOkEYvpuurqi1zNUZNTrc=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-zBw2lhEVMwicUlkkcuKw4A-1; Fri, 06 Aug 2021 11:51:04 -0400
-X-MC-Unique: zBw2lhEVMwicUlkkcuKw4A-1
-Received: by mail-ej1-f72.google.com with SMTP id a17-20020a1709062b11b02905882d7951afso3258944ejg.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 08:51:04 -0700 (PDT)
+        bh=ocgP4yowhB/EUlnSIxuQMOG6kjLjSAHTmb8OYmd4EOQ=;
+        b=Kr6m1tpPchjzWu25UwcCdoz89ETW1+vRd7RRMfRNYX4nGIxHvllkR0L2F5v5mFFixMHvUc
+        JVeauVsbuSHqa0uzlJC2AqY9UW8RYUadGgK6czeLNAlX6KJLtbiOUdtYD6YYzQW2FzzXX8
+        dM9TF6Z098Bd+L/N5iDlu/5sscf8AAw=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-300--EgzG2cOOqmmSzv9Gbwh8Q-1; Fri, 06 Aug 2021 11:52:11 -0400
+X-MC-Unique: -EgzG2cOOqmmSzv9Gbwh8Q-1
+Received: by mail-lj1-f200.google.com with SMTP id y18-20020a2e95d20000b02901b29cf2565fso878872ljh.18
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 08:52:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+MvzS92Uk60oNAzw+Z3d407dSFOjXozPlgK3Ui3EuhY=;
-        b=aTmDlRmPT9B12DawihX9fikqMQxOBIGz6qAQRJV1ePKAk/PRiPpTpX36U2IQPMF+UF
-         dghtejrg84qfdA4hKedtQHjdv9Rfl3r2H6UHsa3aIIy9T67gWEpXsc2t95MB+5br2UUU
-         lKZldhJBD+nTSdeYS9mp2Oo145u7n6JmW/QrntOBqtNlk1yuBLB3fPddKdfHGx1+LZdx
-         9VmbnNGGsN/QcMA3dmktpampMTavvy3N9G+9XmvsAl+obTauZHprBKQtp+QEV43o50FS
-         oB4lpmFg7R133cULpHWiXFlHECwHE13/N8iuj+2ly/kHpDmlzUqADkQxub3MqPPqUG4X
-         GzSQ==
-X-Gm-Message-State: AOAM530KzujOq10cqLCXvcjmYXV4Frhm0yK1Y7myel9TatgDhktOoWHP
-        4LBb9mDiBDhQbcDREFMc4lyhbw6fKAu94T7GTpc9XVoNfpNGkSW5eZ1TJytDcQZPG0ItpdsC3RL
-        pvm7Q8XGbB9/u0J2yEJ7De5UE
-X-Received: by 2002:a17:906:3b87:: with SMTP id u7mr10704604ejf.66.1628265063274;
-        Fri, 06 Aug 2021 08:51:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwAe7/Ac/Nrk5QJgOh1300wanbnDOg/CO6BneIJR56E9sgbBIU8cyOWTJf37lCWXFCHY+PAtw==
-X-Received: by 2002:a17:906:3b87:: with SMTP id u7mr10704593ejf.66.1628265063117;
-        Fri, 06 Aug 2021 08:51:03 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id hc19sm2735104ejc.0.2021.08.06.08.51.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 08:51:01 -0700 (PDT)
-Subject: Re: [PATCH v3 2/6] KVM: VMX: Extend BUILD_CONTROLS_SHADOW macro to
- support 64-bit variation
-To:     Sean Christopherson <seanjc@google.com>,
-        Zeng Guang <guang.zeng@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Robert Hu <robert.hu@intel.com>,
-        Gao Chao <chao.gao@intel.com>,
-        Robert Hoo <robert.hu@linux.intel.com>
-References: <20210805151317.19054-1-guang.zeng@intel.com>
- <20210805151317.19054-3-guang.zeng@intel.com> <YQxnGIT7XLQvPkrz@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a984cf7e-fe3e-98bd-744f-9d0ff3759e01@redhat.com>
-Date:   Fri, 6 Aug 2021 17:51:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ocgP4yowhB/EUlnSIxuQMOG6kjLjSAHTmb8OYmd4EOQ=;
+        b=PHzk9QREayY7UUKlVUAlsLuM3dz8HEM6ZhtoYlCf6Sq4RCB36rR4neVg2hrfKZnH7e
+         6mI08lu9lJ+Rz0pyLLDbKxxMVzKOgmRhSyKH3xIt8ble31dC5i/HvcudTiFbFZjuormv
+         cpcbpusBi0KUsTroAphfQMVZsIwjE6H9hZrWAOTe5jFLSnRoACl3da9eR+JW4TNrHu8Z
+         UC9Pn4gw7hpNtLPOWKp8186+qYY0fsaweFsTdlkONL4SzeFu15dmMx4Rlz4523GRGZ0Y
+         vWprwpGtqOeIu0cKfAJvgicrvyMORZGNcARmchR0FD/s5q83eDTdl/VpAEsy7ao2K73a
+         tyMA==
+X-Gm-Message-State: AOAM5314VmCYuf8ZHERSKVjk4Ntkae/8bjyVxcPUBpSKkcDYdMBsDo7g
+        jdLPXrJBao0cLv8CA09wlYRdGDPqMfoDW1iPKsbtdMRXyjyoWX/F5hmZlFPosulzRczPV+UKU6Q
+        oGKCGyPdT5mwsVjOuqcayaoNw50ozhie9V8zWi2ZS
+X-Received: by 2002:ac2:446d:: with SMTP id y13mr8071815lfl.632.1628265129892;
+        Fri, 06 Aug 2021 08:52:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz9NmyUDGHNtqA5+JG3Fj8AovGBdtXdP/uo+X1AK+D5LYRCKOEMar1/c1smD31PF3dDW/0pEabI/MsAyUK/eQ0=
+X-Received: by 2002:ac2:446d:: with SMTP id y13mr8071774lfl.632.1628265129728;
+ Fri, 06 Aug 2021 08:52:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YQxnGIT7XLQvPkrz@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210720232624.1493424-1-nitesh@redhat.com> <20210720232624.1493424-2-nitesh@redhat.com>
+In-Reply-To: <20210720232624.1493424-2-nitesh@redhat.com>
+From:   Ming Lei <ming.lei@redhat.com>
+Date:   Fri, 6 Aug 2021 23:51:58 +0800
+Message-ID: <CAFj5m9+9asdQOCRHb0tZ=XSD-sOj+RLEDVEAObN81Z9y1JcgQg@mail.gmail.com>
+Subject: Re: [PATCH v5 01/14] genirq: Provide new interfaces for affinity hints
+To:     Nitesh Narayan Lal <nitesh@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-pci@vger.kernel.org,
+        tglx@linutronix.de, jesse.brandeburg@intel.com,
+        Robin Murphy <robin.murphy@arm.com>, mtosatti@redhat.com,
+        mingo@kernel.org, jbrandeb@kernel.org, frederic@kernel.org,
+        juri.lelli@redhat.com, abelits@marvell.com, bhelgaas@google.com,
+        rostedt@goodmis.org, peterz@infradead.org, davem@davemloft.net,
+        akpm@linux-foundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        chris.friesen@windriver.com, maz@kernel.org, nhorman@tuxdriver.com,
+        pjwaskiewicz@gmail.com, sassmann@redhat.com, thenzl@redhat.com,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        sumit.saxena@broadcom.com, shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com,
+        James Smart <james.smart@broadcom.com>,
+        dick.kennedy@broadcom.com, jkc@redhat.com, faisal.latif@intel.com,
+        shiraz.saleem@intel.com, tariqt@nvidia.com, ahleihel@redhat.com,
+        kheib@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
+        benve@cisco.com, govind@gmx.com, jassisinghbrar@gmail.com,
+        ajit.khaparde@broadcom.com, sriharsha.basavapatna@broadcom.com,
+        somnath.kotur@broadcom.com, nilal@redhat.com,
+        tatyana.e.nikolova@intel.com, mustafa.ismail@intel.com,
+        ahs3@redhat.com, leonro@nvidia.com,
+        chandrakanth.patil@broadcom.com, bjorn.andersson@linaro.org,
+        chunkuang.hu@kernel.org, yongqiang.niu@mediatek.com,
+        baolin.wang7@gmail.com, poros@redhat.com,
+        Ewan Milne <emilne@redhat.com>, jejb@linux.ibm.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>, _govind@gmx.com,
+        kabel@kernel.org, viresh.kumar@linaro.org,
+        Tushar.Khandelwal@arm.com, kuba@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08/21 00:32, Sean Christopherson wrote:
->> -BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS)
->> -BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS)
->> -BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL)
->> -BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL)
->> -BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL)
->> +BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS, 32)
->> +BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS, 32)
->> +BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL, 32)
->> +BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL, 32)
->> +BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL, 32)
->> +BUILD_CONTROLS_SHADOW(tertiary_exec, TERTIARY_VM_EXEC_CONTROL, 64)
-> 
-> This fails to compile because all the TERTIARY collateral is in a later patch.
-> 
-> I think I'd also prefer hiding the 32/64 param via more macros, e.g.
-> 
-> #define __BUILD_CONTROLS_SHADOW(lname, uname, bits)				\
+On Wed, Jul 21, 2021 at 7:26 AM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
+>
+> From: Thomas Gleixner <tglx@linutronix.de>
+>
+> The discussion about removing the side effect of irq_set_affinity_hint() of
+> actually applying the cpumask (if not NULL) as affinity to the interrupt,
+> unearthed a few unpleasantries:
+>
+>   1) The modular perf drivers rely on the current behaviour for the very
+>      wrong reasons.
+>
+>   2) While none of the other drivers prevents user space from changing
+>      the affinity, a cursorily inspection shows that there are at least
+>      expectations in some drivers.
+>
+> #1 needs to be cleaned up anyway, so that's not a problem
+>
+> #2 might result in subtle regressions especially when irqbalanced (which
+>    nowadays ignores the affinity hint) is disabled.
+>
+> Provide new interfaces:
+>
+>   irq_update_affinity_hint()  - Only sets the affinity hint pointer
+>   irq_set_affinity_and_hint() - Set the pointer and apply the affinity to
+>                                 the interrupt
+>
+> Make irq_set_affinity_hint() a wrapper around irq_apply_affinity_hint() and
+> document it to be phased out.
+>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+> Link: https://lore.kernel.org/r/20210501021832.743094-1-jesse.brandeburg@intel.com
 
-No, please don't. :)  Also because the 64 bit version is used only once.
-
-Agreed on keeping everything here except for TERTIARY_VM_EXEC_CONTROL, 
-and moving that line to patch 3.
-
-Paolo
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
