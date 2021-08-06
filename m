@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C8B3E3026
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 22:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6073E302A
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 22:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244726AbhHFULa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 16:11:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40046 "EHLO mail.kernel.org"
+        id S244913AbhHFULx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 16:11:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244657AbhHFUL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 16:11:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 90A9460EAF;
+        id S244666AbhHFUL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 16:11:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DD74A60EE9;
         Fri,  6 Aug 2021 20:11:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1628280670;
-        bh=i2oexJ5lCfI2E6ZEu88A/HWwKuDbWd0WWAmivugZcgU=;
+        bh=Pvk22jbQYb1CNoFJr9YZzQhtvI5Y1OiXPhfdxz7TTmU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=JzRUntZSt7/A0ZFmJU9hkDHz+wzBnYMe2BONc1WW3gSjbAESPZqdAZnRHVqxP6t6U
-         Qd8RuVFAcqT31RvJ59SBvY6WbzrN6sI5V4zkjItbq6deOI0WS0YkuMWjdHn869XDBh
-         u8+musVyBXFvntHAmERtSpNvdMJ1M8m0M2SU/v7TnNBrmr0r7k0zaMva2K/pqh+BZH
-         9vAVfPPV4wt8RWM8bp/SJuukAw3kn+dkK84vhfNpASDEtYGHVfhL/uVKtRETSTKZZv
-         cDSgKgt/7zeehLxDMG4JbhTWDDYSETf+ODSKSa0VD2qWFcpsp6B7ZM6Qk56Q2iYRfo
-         TEvKx7u0gYCdg==
+        b=SmkmF8u49+xBYHh/7X36phyl06V6VtzYtxT8EorL2dUR5mDUBbRU4pv+0HOzsMtMn
+         AFJTMmbmjN+b3pGDNz4AiizxVv6arwCnke3teUBkXlC3GRLTM/21+0SdsWiW1NMxSY
+         Z4GzVq7/ok1FeBfavGdUQOPPKif1BForKyeDfw3M0z5TRFJ61u+vUJ/Y0p7+fJUblg
+         g+KutcWkLGUkcP5jLw7AS1yZg2RCA6J7KOtt5QQJwfyE6qps8IwCcDD9vPLI7DzNju
+         2RyOYlPxy1Ed/VtML6iT9Xfruxy8rJgIgYpd4fz6w2ScxAsecfdOzzNHkrn7XgScwD
+         O8FXDb6qSgfEg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7EF7A609F1;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D6D6A609F1;
         Fri,  6 Aug 2021 20:11:10 +0000 (UTC)
-Subject: Re: [GIT PULL] ext4 fixes for v5.14-rc5
+Subject: Re: [GIT PULL] tracing: Fix race between tracepoint static call and its
+ callback data
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YQ1u+Acar/N3aUpm@mit.edu>
-References: <YQ1u+Acar/N3aUpm@mit.edu>
+In-Reply-To: <20210806141228.744aa3f0@oasis.local.home>
+References: <20210806141228.744aa3f0@oasis.local.home>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YQ1u+Acar/N3aUpm@mit.edu>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
-X-PR-Tracked-Commit-Id: 877ba3f729fd3d8ef0e29bc2a55e57cfa54b2e43
+X-PR-Tracked-Message-Id: <20210806141228.744aa3f0@oasis.local.home>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.14-rc4-2
+X-PR-Tracked-Commit-Id: 7b40066c97ec66a44e388f82fcf694987451768f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c9194f32bfd932e976a158d1af97a63be68a2aab
-Message-Id: <162828067046.25549.12030796103851495732.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 2c4b1ec683f28e0054bb25a55d50fe552d0611ea
+Message-Id: <162828067087.25549.9195621744178476457.pr-tracker-bot@kernel.org>
 Date:   Fri, 06 Aug 2021 20:11:10 +0000
-To:     Theodore Ts'o <tytso@mit.edu>
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 6 Aug 2021 13:18:48 -0400:
+The pull request you sent on Fri, 6 Aug 2021 14:12:28 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.14-rc4-2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c9194f32bfd932e976a158d1af97a63be68a2aab
+https://git.kernel.org/torvalds/c/2c4b1ec683f28e0054bb25a55d50fe552d0611ea
 
 Thank you!
 
