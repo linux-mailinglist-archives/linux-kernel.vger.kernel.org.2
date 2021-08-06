@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 722DC3E2C5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397A23E2C80
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238176AbhHFOSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 10:18:49 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:26533 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234520AbhHFOSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 10:18:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1628259513;
-  x=1659795513;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=oJyVeNAsXlYCxq0SZK6pymR2gKq/VG3wMDOx/8a6DEE=;
-  b=XQHHBiVaRiIVwS+9yDJmB1arOFuwoWU9XOcAJa9e5+RIt3VlsfAIWROa
-   DkDE1Hc9G5jGrjyNLnzpK0ZUohcbqEikwOLHYmO949evFhp4RDtis5cYe
-   YUV2z3i8i/m4jBDoRMaes4GnvxuDM7rjhiIFoNIevvDwNwFYk2bJfXjqc
-   uO1RLAG7R7AsbzjRIJYbFr19WYDxPCKJ+D3ycW5OGubUJeVX8i33s88wl
-   nNGKD3dReUDD1aSb4WyvJmter7pr4M4VV1n/nuIXXxulXb4dyhSnQMre+
-   l03AyISOPKxXmDAnl3aII18jwu0cs9gS/WGU1vdTZHkYrg90uf2LJbZT+
-   Q==;
-Subject: Re: [PATCH v3] tpm: Add Upgrade/Reduced mode support for TPM2 modules
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Borys Movchan <Borys.Movchan@axis.com>
-CC:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        kernel <kernel@axis.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210804162132.24786-1-borysmn@axis.com>
- <20210805205245.qcdqcuog7zmsp7j5@kernel.org>
-From:   Borys Movchan <borysmn@axis.com>
-Message-ID: <d6cd1eb6-48b5-c1ad-e063-a26bc7509d95@axis.com>
-Date:   Fri, 6 Aug 2021 16:20:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S239281AbhHFO3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 10:29:45 -0400
+Received: from mslow1.mail.gandi.net ([217.70.178.240]:32991 "EHLO
+        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231979AbhHFO3n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 10:29:43 -0400
+Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id C03ECC9857;
+        Fri,  6 Aug 2021 14:23:05 +0000 (UTC)
+Received: (Authenticated sender: thomas.petazzoni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id AADA6FF80D;
+        Fri,  6 Aug 2021 14:22:43 +0000 (UTC)
+Date:   Fri, 6 Aug 2021 16:22:42 +0200
+From:   Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+To:     Maksim <bigunclemax@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: marvell: fix MVNETA_TX_IN_PRGRS bit number
+Message-ID: <20210806162242.44a60c59@windsurf>
+In-Reply-To: <20210806140437.4016159-1-bigunclemax@gmail.com>
+References: <20210806140437.4016159-1-bigunclemax@gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210805205245.qcdqcuog7zmsp7j5@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail04w.axis.com (10.20.40.10) To se-mail07w.axis.com
- (10.20.40.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On 8/5/21 10:52 PM, Jarkko Sakkinen wrote:
-> On Wed, Aug 04, 2021 at 06:21:31PM +0200, Borys Movchan wrote:
->> If something went wrong during the TPM firmware upgrade, like power
->> failure or the firmware image file get corrupted, the TPM might end
->> up in Upgrade or Failure mode upon the next start. The state is
->> persistent between the TPM power cycle/restart.
->>
->> According to TPM specification:
->>  * If the TPM is in Upgrade mode, it will answer with TPM2_RC_UPGRADE
->>    to all commands except Field Upgrade related ones.
->>  * If the TPM is in Failure mode, it will allow performing TPM
->>    initialization but will not provide any crypto operations.
->>    Will happily respond to Field Upgrade calls.
->>
->> The fix changes the behavior of the `tpm2_auto_startup` function, so
->                                 
-> In commit messages, you ought to use imperative form:
->
-> "Change the behaviour of tpm2_auto_startup(), ..."
->
-Done
->> it tries to detect what mode TPM is running in. If the chip is in the
->> Upgrade or Failure mode, the function returns -EIO error code which
->> can be used later to adjust driver behavior later.
-> *How* tpm2_auto_startup() detects the mode?
-Done
->> After `tpm_chip_register` calls `tpm2_auto_startup` it checks for the
-> Please remove all these hyphens. They make the commit message a pain
-> to read. E.g. instead write tpm_chip_register(). This is not Github.
-Done
->> error code. If the TPM is in Upgrade or Failure mode, set the
->> `limited_mode` flag. The calls to `tpm2_get_cc_attrs_tbl`,
->> `tpm_add_hwrng` and `tpm_get_pcr_allocation` will fail if the TPM is
->> in Failure or Upgrade mode, so use `limited_mode` flag to exclude
->> them from the module initialization sequence.
->>
->> Signed-off-by: Borys Movchan <borysmn@axis.com>
->> ---
->>
->> Notes:
->>     Commit message updated
-> v2:
-> * Commit message updated.
->
-> Notes would be something that had existed already in the first version.
-> Here we want a simple change log.
-Corrected
-> /Jarkko
->
+On Fri,  6 Aug 2021 17:04:37 +0300
+Maksim <bigunclemax@gmail.com> wrote:
 
-Kind regards,
+> According to Armada XP datasheet bit at 0 position is corresponding for
+> TxInProg indication.
+> 
+> Signed-off-by: Maksim <bigunclemax@gmail.com>
+> ---
+>  drivers/net/ethernet/marvell/mvneta.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+> index 76a7777c746da..de32e5b49053b 100644
+> --- a/drivers/net/ethernet/marvell/mvneta.c
+> +++ b/drivers/net/ethernet/marvell/mvneta.c
+> @@ -105,7 +105,7 @@
+>  #define	MVNETA_VLAN_PRIO_TO_RXQ			 0x2440
+>  #define      MVNETA_VLAN_PRIO_RXQ_MAP(prio, rxq) ((rxq) << ((prio) * 3))
+>  #define MVNETA_PORT_STATUS                       0x2444
+> -#define      MVNETA_TX_IN_PRGRS                  BIT(1)
+> +#define      MVNETA_TX_IN_PRGRS                  BIT(0)
+>  #define      MVNETA_TX_FIFO_EMPTY                BIT(8)
+>  #define MVNETA_RX_MIN_FRAME_SIZE                 0x247c
+>  /* Only exists on Armada XP and Armada 370 */
 
-Borys
+Indeed, I just checked the datasheet, and it's bit 0 in this register
+that indicates if transmit is in progress. The only function using this
+is mvneta_port_down(), which polls until MVNETA_TX_FIFO_EMPTY is set
+and MVNETA_TX_IN_PRGRS is cleared in this register. Bit 1 in this
+register is marked as reserved, read-only and read as zero, so I
+suppose that mvneta_port_down() was basically never waiting for
+MVNETA_TX_IN_PRGRS to clear.
 
+Have you seen some actual visible issue, or was this just found by code
+inspection ?
+
+Best regards,
+
+Thomas
+-- 
+Thomas Petazzoni, co-owner and CEO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
