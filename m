@@ -2,90 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A2B3E2C13
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D09B3E2C16
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235275AbhHFOF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 10:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234249AbhHFOFy (ORCPT
+        id S235418AbhHFOHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 10:07:42 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50722 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234249AbhHFOHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 10:05:54 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B0EC0613CF;
-        Fri,  6 Aug 2021 07:05:38 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id x7so529549ljn.10;
-        Fri, 06 Aug 2021 07:05:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Hus37unWQtifpvoADvykgqUYzzDBdjAzOWr44VKS+/8=;
-        b=PLLmjZAkW67pCRxQVGMe74qVbgssttujHRRU85qn0wNlwQl0aQJKml8Tuu1zDo3xd2
-         OvxMP2apgteuHaZ6q0tb3ZlfPL6S8RoMYWF6hQbD5j01MicmZm4SYOPaUK4Fib44bc2G
-         3nVN3yj3+uV9axed28hMcymV/+ySWvNqKEKGiWPks7zGOn58Co9gqv35iIEYLVbNib/M
-         eWb9WooNyv+Aw453WQM/64t9lR0TwOJCDWmxIPQ4h19bdANLx0fKmYcsszOcc8meXLau
-         hP6g8h7of7GyMer6qGNUiEBOybd53KUTxccYUyWFhVNgtdNdGhV5sHfBE369CM1H7Ddn
-         dzqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Hus37unWQtifpvoADvykgqUYzzDBdjAzOWr44VKS+/8=;
-        b=WaVH/XO2XeYiq7gk8QSnvqCyiGOLnPrzaNtFXxlLjTk5H/7XsVaAUaqGB8v9YDsAvM
-         pt2NYahacQic5aWodDfZtySjgPogJsn4TCHC2wqdHBi1qQ5lm/gqCpGjYZKEAFpAilVy
-         O/s2tMfdBCHk/16gAdTpWMTDHUD8WMXOjCwPTbFgaUPw9vteRZBzDmIaGOMVlHJhxO5+
-         9HyDTT4IGSUd4YUOxp2GPNpujJb/yGtys0J5rXbfVK2p4L/SeMDq3ZLiKvis4r0+NT+v
-         BMY0u32L8IO3mBx/E50peedd0mMwTk/Xx4oIyP1k3Nh6S5YQVdg5MHB6n+2KHaG5K6c8
-         l0IQ==
-X-Gm-Message-State: AOAM5334vu7Azs7RcU3g4SctUklGz43hKANjQWkdFHi928m6sYcVA+Yt
-        0Z9/mMlt6W3CavgoxGXOkig=
-X-Google-Smtp-Source: ABdhPJySzgwhbHlP1vQ/DOqDLDD2IUNZXSmOLLrYQG82+xqgSmfdmTD0Xe9CD/Y3SQkret30elHpww==
-X-Received: by 2002:a2e:3c0d:: with SMTP id j13mr6692126lja.414.1628258736439;
-        Fri, 06 Aug 2021 07:05:36 -0700 (PDT)
-Received: from localhost.localdomain ([185.6.236.169])
-        by smtp.googlemail.com with ESMTPSA id o1sm848020lfl.67.2021.08.06.07.05.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 07:05:36 -0700 (PDT)
-From:   Maksim <bigunclemax@gmail.com>
-Cc:     Maksim <bigunclemax@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: marvell: fix MVNETA_TX_IN_PRGRS bit number
-Date:   Fri,  6 Aug 2021 17:04:37 +0300
-Message-Id: <20210806140437.4016159-1-bigunclemax@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 6 Aug 2021 10:07:36 -0400
+Date:   Fri, 6 Aug 2021 16:07:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628258839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=c5GroXma6kd3BTP+QwuDw/OXDe2Krk30mSb6hYmZBsk=;
+        b=Gui2SflCW5ESDdu86T6wg6Kwsapc/SPnCjmeo7RfRWG09shQ2K7Qh9us3ZhQazutbxjmAL
+        0MaEM8/RW+uVbiETGGd5Egyh3tbHlV1kqIiQxCc5tmV8IOiV/AN6hj8Z/Vf9uX+oDbsdFX
+        x2nmzEVoxl0+lZC80QCVLomjpBSpTzu/jsRz4cV5C1Ejaee2h1X1VHLhEphV1CVZe4h2Vt
+        4BirkoeCnNIIwmCQb6z5BWQtQQHrWm0XHM4DlRBg0I2LmIM5YbgCck06afswSopLeJ+FCx
+        BFaYl91Potj5/gsul1XwIRRCFIsHcv8y0ec+gJ9giGU4os8YSsmCGbcMAx0REQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628258839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=c5GroXma6kd3BTP+QwuDw/OXDe2Krk30mSb6hYmZBsk=;
+        b=cJX9KzWCokoUPpfOSPu311AQULU35wA+vVTSaycVIIHQY1fUcBkrWpXdnxUWgcSwJ3DfqV
+        oW/+G/Q2E/MzJ1Bg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH] notifier: Make atomic_notifiers use raw_spinlock
+Message-ID: <20210806140718.mxss3cbqijfebdo5@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to Armada XP datasheet bit at 0 position is corresponding for
-TxInProg indication.
+=46rom: Valentin Schneider <valentin.schneider@arm.com>
+Date: Sun, 22 Nov 2020 20:19:04 +0000
 
-Signed-off-by: Maksim <bigunclemax@gmail.com>
+Booting a recent PREEMPT_RT kernel (v5.10-rc3-rt7-rebase) on my arm64 Juno
+leads to the idle task blocking on an RT sleeping spinlock down some
+notifier path:
+
+|  BUG: scheduling while atomic: swapper/5/0/0x00000002
+=E2=80=A6
+|  atomic_notifier_call_chain_robust (kernel/notifier.c:71 kernel/notifier.=
+c:118 kernel/notifier.c:186)
+|  cpu_pm_enter (kernel/cpu_pm.c:39 kernel/cpu_pm.c:93)
+|  psci_enter_idle_state (drivers/cpuidle/cpuidle-psci.c:52 drivers/cpuidle=
+/cpuidle-psci.c:129)
+|  cpuidle_enter_state (drivers/cpuidle/cpuidle.c:238)
+|  cpuidle_enter (drivers/cpuidle/cpuidle.c:353)
+|  do_idle (kernel/sched/idle.c:132 kernel/sched/idle.c:213 kernel/sched/id=
+le.c:273)
+|  cpu_startup_entry (kernel/sched/idle.c:368 (discriminator 1))
+|  secondary_start_kernel (arch/arm64/kernel/smp.c:273)
+
+Two points worth noting:
+
+1) That this is conceptually the same issue as pointed out in:
+   313c8c16ee62 ("PM / CPU: replace raw_notifier with atomic_notifier")
+2) Only the _robust() variant of atomic_notifier callchains suffer from
+   this
+
+AFAICT only the cpu_pm_notifier_chain really needs to be changed, but
+singling it out would mean introducing a new (truly) non-blocking API. At
+the same time, callers that are fine with any blocking within the call
+chain should use blocking notifiers, so patching up all atomic_notifier's
+doesn't seem *too* crazy to me.
+
+Fixes: 70d932985757 ("notifier: Fix broken error handling pattern")
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+Link: https://lkml.kernel.org/r/20201122201904.30940-1-valentin.schneider@a=
+rm.com
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- drivers/net/ethernet/marvell/mvneta.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 76a7777c746da..de32e5b49053b 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -105,7 +105,7 @@
- #define	MVNETA_VLAN_PRIO_TO_RXQ			 0x2440
- #define      MVNETA_VLAN_PRIO_RXQ_MAP(prio, rxq) ((rxq) << ((prio) * 3))
- #define MVNETA_PORT_STATUS                       0x2444
--#define      MVNETA_TX_IN_PRGRS                  BIT(1)
-+#define      MVNETA_TX_IN_PRGRS                  BIT(0)
- #define      MVNETA_TX_FIFO_EMPTY                BIT(8)
- #define MVNETA_RX_MIN_FRAME_SIZE                 0x247c
- /* Only exists on Armada XP and Armada 370 */
--- 
-2.30.2
+What do we do with this?
+Do we merge this as-is, add another "robust atomic notifier" using only
+raw_spinlock_t for registration and notification (for only
+cpu_pm_notifier_chain) instead of switching to raw_spinlock_t for all
+atomic notifier in -tree?=20
+
+ include/linux/notifier.h |  6 +++---
+ kernel/notifier.c        | 12 ++++++------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/notifier.h b/include/linux/notifier.h
+index 2fb373a5c1ede..723bc2df63882 100644
+--- a/include/linux/notifier.h
++++ b/include/linux/notifier.h
+@@ -58,7 +58,7 @@ struct notifier_block {
+ };
+=20
+ struct atomic_notifier_head {
+-	spinlock_t lock;
++	raw_spinlock_t lock;
+ 	struct notifier_block __rcu *head;
+ };
+=20
+@@ -78,7 +78,7 @@ struct srcu_notifier_head {
+ };
+=20
+ #define ATOMIC_INIT_NOTIFIER_HEAD(name) do {	\
+-		spin_lock_init(&(name)->lock);	\
++		raw_spin_lock_init(&(name)->lock);	\
+ 		(name)->head =3D NULL;		\
+ 	} while (0)
+ #define BLOCKING_INIT_NOTIFIER_HEAD(name) do {	\
+@@ -95,7 +95,7 @@ extern void srcu_init_notifier_head(struct srcu_notifier_=
+head *nh);
+ 		cleanup_srcu_struct(&(name)->srcu);
+=20
+ #define ATOMIC_NOTIFIER_INIT(name) {				\
+-		.lock =3D __SPIN_LOCK_UNLOCKED(name.lock),	\
++		.lock =3D __RAW_SPIN_LOCK_UNLOCKED(name.lock),	\
+ 		.head =3D NULL }
+ #define BLOCKING_NOTIFIER_INIT(name) {				\
+ 		.rwsem =3D __RWSEM_INITIALIZER((name).rwsem),	\
+diff --git a/kernel/notifier.c b/kernel/notifier.c
+index 1b019cbca594a..c20782f076432 100644
+--- a/kernel/notifier.c
++++ b/kernel/notifier.c
+@@ -142,9 +142,9 @@ int atomic_notifier_chain_register(struct atomic_notifi=
+er_head *nh,
+ 	unsigned long flags;
+ 	int ret;
+=20
+-	spin_lock_irqsave(&nh->lock, flags);
++	raw_spin_lock_irqsave(&nh->lock, flags);
+ 	ret =3D notifier_chain_register(&nh->head, n);
+-	spin_unlock_irqrestore(&nh->lock, flags);
++	raw_spin_unlock_irqrestore(&nh->lock, flags);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(atomic_notifier_chain_register);
+@@ -164,9 +164,9 @@ int atomic_notifier_chain_unregister(struct atomic_noti=
+fier_head *nh,
+ 	unsigned long flags;
+ 	int ret;
+=20
+-	spin_lock_irqsave(&nh->lock, flags);
++	raw_spin_lock_irqsave(&nh->lock, flags);
+ 	ret =3D notifier_chain_unregister(&nh->head, n);
+-	spin_unlock_irqrestore(&nh->lock, flags);
++	raw_spin_unlock_irqrestore(&nh->lock, flags);
+ 	synchronize_rcu();
+ 	return ret;
+ }
+@@ -182,9 +182,9 @@ int atomic_notifier_call_chain_robust(struct atomic_not=
+ifier_head *nh,
+ 	 * Musn't use RCU; because then the notifier list can
+ 	 * change between the up and down traversal.
+ 	 */
+-	spin_lock_irqsave(&nh->lock, flags);
++	raw_spin_lock_irqsave(&nh->lock, flags);
+ 	ret =3D notifier_call_chain_robust(&nh->head, val_up, val_down, v);
+-	spin_unlock_irqrestore(&nh->lock, flags);
++	raw_spin_unlock_irqrestore(&nh->lock, flags);
+=20
+ 	return ret;
+ }
+--=20
+2.32.0
 
