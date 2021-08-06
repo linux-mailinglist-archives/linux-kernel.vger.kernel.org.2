@@ -2,169 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382913E274F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344043E2724
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244500AbhHFJc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 05:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46416 "EHLO
+        id S244447AbhHFJWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244184AbhHFJcz (ORCPT
+        with ESMTP id S243821AbhHFJWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:32:55 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7796DC061799
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 02:32:40 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id b138so4838382vsd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 02:32:40 -0700 (PDT)
+        Fri, 6 Aug 2021 05:22:41 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0AC0C061799
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 02:22:25 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id ca5so15678486pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 02:22:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hG7ad08wIaDvmaneskOxS98xzOuakO0shjMfqcJhf/0=;
-        b=hMu6wdmsIydv5n9UioqGMhi3NdWSB/gd114kREAS+K9yylruPgSJndFExuw8ozfeGO
-         GdtAjzm8rBOTxnmkHvqbu7kIjYoIlQVlFMcJu6gZwcMsEnTfAgWtR5bOCu8ULScBXQJJ
-         VcVw53SwVoCGiEySclc/39VPhrTmkILFH5aNXYcXbTYJcXc84+XPdsNGt04gU3EXEknv
-         987It+qBSY6m5j60ObfZ1xEocKkPVA3EMrVmgLpNOp2DRns9mVHCVAA1aakeRdTw5JoO
-         Z4/7cRQBAk228VIIWMTo+Wx8N4HchVa6WWVCZYoGpKP+CER9LgvANl5oVUC3K7A2/y04
-         5OPA==
+        bh=4e0e8RzJHNC8NMBSDrNb+O++Kfle4Og9kFyfQoKTp+Y=;
+        b=tPMSFqN689ucOJGdfodJAUX/dWUYhOjpbSQcBsw6vVF45SJ4pKulia0I5G16s0U0Sz
+         qz2IuEh7v8QBo+H6S1XLE9A9+d/TXDE/c1d0B0elSSP+St7keSGj6UFYdKmyJWlhjpG2
+         ydyRRN7cbFlIHm010nv/ypG9aE9sE1pMjOVrAVg3NnuyjryEf0GmG74LMcFrknqWdelw
+         bqPRwFvY3n0vlEw5bFynzJm/99MzXSxgxOW8x3gOlCdz0lvTGAqYsrh4CJSMYHVuogFp
+         xmLa9psx+JbOcQJBxdDR9BfRw8DB2IYJnvN20vE5WN9i/bfpeo05FXQ/TOTdX8MNerRw
+         kR9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hG7ad08wIaDvmaneskOxS98xzOuakO0shjMfqcJhf/0=;
-        b=pDYUfHL7MPlZoVT+Q5/myaeZTev4YITbtMQtDuTzc1PYbcNzcOUesRkH1laTZAms3b
-         Kh5Pnr4+hOBQCMtjahVKSV8HWem8g6U8TJgStzAQ+0kTxGlXBoQyRIyrAcYiuz7/iwVm
-         brG6FPeObVmWSkdF4rMCUoKr1kp+1pN4ePRGGdslKRiBvhYZyLut6CHVMne0rJbWHFoo
-         q1BYgcFPVkAxu+mmgu0B3wCDVXcoJVBpAX+drq4OCRlymrwlshyF4tTyCDy9Yn9/rcU7
-         QIv/hyujBMoSTuw1oZOaht1uBm9uSJ9S0+/2okr40773dPrzjYzobTh2Rkc2JAjzc0OA
-         O+eQ==
-X-Gm-Message-State: AOAM532TC8pv0dn0zWIx9+LmuWPk4CjG5PB/soSfkP80WLeqKMjEKYpH
-        MDZtDhzzWFKTp9lASvnrmZKkqqvEqciupfDObnUNvA==
-X-Google-Smtp-Source: ABdhPJynKc93n6ipIB8hMXdJbwfMvreyYjrVW9QsyI+/iIksqcj/6XpbRPGThpwYkyD6MPj4X1c9cqd6zqik6xU3kn8=
-X-Received: by 2002:a67:7c14:: with SMTP id x20mr8347304vsc.42.1628242359627;
- Fri, 06 Aug 2021 02:32:39 -0700 (PDT)
+        bh=4e0e8RzJHNC8NMBSDrNb+O++Kfle4Og9kFyfQoKTp+Y=;
+        b=HPwOYh4TPtGnGXh1L5BniMj8xv0Y6DYG2T4HWuoFjfDR6OOfgT82UlbePAbKmaBrnH
+         PGKrs8Ez1HuakvKa77czs8KMzOhnnelXU8EkQoKsnJvOWLz6LYVHwP4aBswyH6SWj56k
+         4cxcDiTG2UvGNnBNpKnDoRX5feks8p7Y5Wa6NoRU8lKPf5ZB3qBhyQEay5Tb9EDnT6jv
+         l4Q9jCZEmrMThamSLdpLYr9AgHSNuvPipgEgeRbW50DMh5ppGKlvqprlIAMuZK9Dp0O9
+         4qyJDL3etXwOaHobHl4nXWB4ZdO8Fff/RSQNO9BskE+cebHa4BXqyLEw4CK/iNaiwQeh
+         yRCw==
+X-Gm-Message-State: AOAM533gjOdF+WdT1zXJ+mcAKD+SX72taLGgq+1DQoASQpONSAUb5M2Q
+        H6JQ8b7jYrtWoVU5cXqOVVTFAMaNZAOm7DEOeb5xxA==
+X-Google-Smtp-Source: ABdhPJxtO9TQLjXBXT8b34CKFnwdZ8VY47y9UF1MPjqpnSRcDVModYWb7Ko1e3WykXeNwqXC1OCEWgHry60+UoKXx68=
+X-Received: by 2002:a17:90a:5982:: with SMTP id l2mr9575814pji.18.1628241745166;
+ Fri, 06 Aug 2021 02:22:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <1628074696-7979-1-git-send-email-rnayak@codeaurora.org> <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
-In-Reply-To: <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 6 Aug 2021 11:32:03 +0200
-Message-ID: <CAPDyKFrebwt5=S7hqXvcqRvt+-EXLcVmRSRZt1uPf-9n7_pRDg@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] PM / Domains: Add support for 'required-opps' to
- set default perf state
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>
+References: <20210806085413.61536-1-andriy.shevchenko@linux.intel.com> <20210806085413.61536-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210806085413.61536-2-andriy.shevchenko@linux.intel.com>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Fri, 6 Aug 2021 11:32:05 +0200
+Message-ID: <CAMZdPi-OWJBwso=ZMA7E0VKck0wGt-RsbTMBSX+q118c=TSPsA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] wwan: core: Unshadow error code returned by ida_alloc_range))
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 4 Aug 2021 at 12:58, Rajendra Nayak <rnayak@codeaurora.org> wrote:
+On Fri, 6 Aug 2021 at 11:00, Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> Some devices within power domains with performance states do not
-> support DVFS, but still need to vote on a default/static state
-> while they are active. They can express this using the 'required-opps'
-> property in device tree, which points to the phandle of the OPP
-> supported by the corresponding power-domains.
+> ida_alloc_range)) may return other than -ENOMEM error code.
+> Unshadow it in the wwan_create_port().
 >
-> Add support to parse this information from DT and then set the
-> specified performance state during attach and drop it on detach.
-> runtime suspend/resume callbacks already have logic to drop/set
-> the vote as needed and should take care of dropping the default
-> perf state vote on runtime suspend and restore it back on runtime
-> resume.
->
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
->  drivers/base/power/domain.c | 28 ++++++++++++++++++++++++++--
->  include/linux/pm_domain.h   |  1 +
->  2 files changed, 27 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index a934c67..b9b5a9b 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -2598,6 +2598,12 @@ static void genpd_dev_pm_detach(struct device *dev, bool power_off)
->
->         dev_dbg(dev, "removing from PM domain %s\n", pd->name);
->
-> +       /* Drop the default performance state */
-> +       if (dev_gpd_data(dev)->default_pstate) {
-> +               dev_pm_genpd_set_performance_state(dev, 0);
-> +               dev_gpd_data(dev)->default_pstate = 0;
-> +       }
-> +
->         for (i = 1; i < GENPD_RETRY_MAX_MS; i <<= 1) {
->                 ret = genpd_remove_device(pd, dev);
->                 if (ret != -EAGAIN)
-> @@ -2637,6 +2643,8 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->  {
->         struct of_phandle_args pd_args;
->         struct generic_pm_domain *pd;
-> +       struct device_node *np;
-> +       int pstate;
->         int ret;
->
->         ret = of_parse_phandle_with_args(dev->of_node, "power-domains",
-> @@ -2675,10 +2683,26 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
->                 genpd_unlock(pd);
->         }
->
-> -       if (ret)
-> +       if (ret) {
->                 genpd_remove_device(pd, dev);
-> +               return -EPROBE_DEFER;
-> +       }
-> +
-> +       /* Set the default performance state */
-> +       np = dev->of_node;
-> +       if (of_parse_phandle(np, "required-opps", index)) {
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Looks like Viresh thinks it's a good idea to drop the error print in
-of_get_required_opp_performance_state() when there is no
-"required-opps" specifier.
-
-Would you mind folding in a patch for that in the series, so this code
-can be simplified according to our earlier discussions?
-
-> +               pstate = of_get_required_opp_performance_state(np, index);
-> +               if (pstate < 0) {
-> +                       ret = pstate;
-> +                       dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
-> +                               pd->name, ret);
-> +               } else {
-> +                       dev_pm_genpd_set_performance_state(dev, pstate);
-> +                       dev_gpd_data(dev)->default_pstate = pstate;
-> +               }
-> +       }
->
-> -       return ret ? -EPROBE_DEFER : 1;
-> +       return ret ? ret : 1;
->  }
->
->  /**
-> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-> index 21a0577..67017c9 100644
-> --- a/include/linux/pm_domain.h
-> +++ b/include/linux/pm_domain.h
-> @@ -198,6 +198,7 @@ struct generic_pm_domain_data {
->         struct notifier_block *power_nb;
->         int cpu;
->         unsigned int performance_state;
-> +       unsigned int default_pstate;
->         unsigned int rpm_pstate;
->         ktime_t next_wakeup;
->         void *data;
-
-Other than the above, this looks good to me!
-
-Kind regards
-Uffe
+Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
