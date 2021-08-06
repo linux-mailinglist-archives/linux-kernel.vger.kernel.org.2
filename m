@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7235E3E2A2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4144F3E2A2F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243457AbhHFL4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhHFL4q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:56:46 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5399FC061798;
-        Fri,  6 Aug 2021 04:56:29 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id m28-20020a05600c3b1cb02902b5a8c22575so5727632wms.0;
-        Fri, 06 Aug 2021 04:56:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=xxcVP1unxQRf/ma4cBAw6r/5ynUOn9I8kcb6t03qdg8=;
-        b=KmpYP3BE+cpz+pElv0OWJBLzo3/xIuvq6uh/veRCW2SSq0AcAWTQVgRa9UU3JVcDpo
-         KPP9//VsYE8H7VHboJOQ6KzAVunWP8/1tGbsWCSk5v0IOl0Yy2lWfp+/y4PdkrYrGO04
-         PCUpVVNBag26yTzqCaIRcMjafZS5PtD/2WIJahUaewAf5Uu/OeAGdpGlXvTTSrmhc0SB
-         Vg7a29cY5yIVTqtwxWKveg/UrfoUVsZjvz2p1kf0ITrj4Z9Dgo/5cIkw7uIDGUYgfuFb
-         M/X9acr4R2leiRKc9InK6ryWne5pZyghXK0ehd0nBd8iTeHk9Ad7oj40MIvIabLmwa0E
-         0pBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=xxcVP1unxQRf/ma4cBAw6r/5ynUOn9I8kcb6t03qdg8=;
-        b=i4gnRwoXDhyzH0U80UGsQ5HSheqIwJ7mxCRmty9uJTXGHWrqxQjlhMVUYr3fF2KxNc
-         H/4FOnhSzuhJASUmrR21wPZDLWkvXAztDY24vN/ppyFa5qPMCn2Jpa82af/W4VJxflpx
-         yops00GV8QbT+r3P2qEHFAHiS00qr7Qpzqwd0YuxB7/CaGw6r7z+K0rnZ8aQ6+MXz2Yz
-         XJWIIE18b1ZpfPe6Q5wRtT0pzFURwR6mj9k23/GGRvWtkt4mJjSnEV+hsXJT93BJ8yCG
-         R0mePq/pXFeQQXOYot/Yfw6DWt5e4GXUay+j2UIt+zrIAJHm3Y0S0/VNMlPXUMDVVUn0
-         y+Cg==
-X-Gm-Message-State: AOAM531nUPC99plZggKSZx4refxeVnDkVk7oMxb9xvQQ1R96Psm3xnwP
-        W4uhTKRx/XMtow2xjzt9/h7M1kJPPQc=
-X-Google-Smtp-Source: ABdhPJz3R2vkklO+frfNX6r8aHKE/hIze3yPOvVFk5GPsQnq76HPSuv7pbeeg5nYhh+efbUjTnfXOA==
-X-Received: by 2002:a05:600c:4f49:: with SMTP id m9mr17814809wmq.82.1628250987602;
-        Fri, 06 Aug 2021 04:56:27 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2dc9:8d00:2198:3536:ca51:cd82])
-        by smtp.gmail.com with ESMTPSA id b20sm9195179wmj.48.2021.08.06.04.56.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 04:56:27 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Babu Moger <babu.moger@oracle.com>,
-        Don Zickus <dzickus@redhat.com>, linux-kbuild@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] Kconfig.debug: drop selecting non-existing HARDLOCKUP_DETECTOR_ARCH
-Date:   Fri,  6 Aug 2021 13:56:18 +0200
-Message-Id: <20210806115618.22088-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S245736AbhHFL5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:57:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhHFL5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 07:57:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6C40610CB;
+        Fri,  6 Aug 2021 11:56:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628251010;
+        bh=r8kvqaMszSSwZoRgi7xAfkmVF6R+Ig+dxYweEdMXW0k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ptw6kqOWyFt2EeI6RFgPcRgKeGMUgfdiAeewWhju8IcH10fruA7ERJKxjLchmHTpg
+         K8QNhgDmoumjP+rrG8onjydbOF052LkbMXEqMxJDws6IYS3LDT5IxXr87F3jnVWk2B
+         xo9CoU00FQwE9Ah/hEE/6fP/ryXXP+Dksi1UAB53QyGTKui8vQv/JIHD9pL2LlQzFX
+         hWHnefZzEooA3wcMN8cWYEdKSEnAFHbWYMzZmzk3/dP8ufPIiTFV/4UgbOoORkKZTQ
+         cKMl4ArrjN22YGGTfGkGUY9SKgNhGMyNZkJtFfTS2gGDyhEXkEi7auGbPARMngX/Rq
+         4iyFLLw+1MqGw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Subject: linux-next: manual merge of the bluetooth tree with the net tree
+Date:   Fri,  6 Aug 2021 12:56:33 +0100
+Message-Id: <20210806115633.23180-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 05a4a9527931 ("kernel/watchdog: split up config options") adds a
-new config HARDLOCKUP_DETECTOR, which selects the non-existing config
-HARDLOCKUP_DETECTOR_ARCH.
+Hi all,
 
-Hence, ./scripts/checkkconfigsymbols.py warns:
+Today's linux-next merge of the bluetooth tree got conflicts in:
 
-HARDLOCKUP_DETECTOR_ARCH
-Referencing files: lib/Kconfig.debug
+  net/bluetooth/hci_sysfs.c
+  net/bluetooth/hci_core.c
+  include/net/bluetooth/hci_core.h
 
-Simply drop selecting the non-existing HARDLOCKUP_DETECTOR_ARCH.
+between commit:
 
-Fixes: 05a4a9527931 ("kernel/watchdog: split up config options")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-Nicholas, please review and ack.
+  e04480920d1e ("Bluetooth: defer cleanup of resources in hci_unregister_dev()")
 
-Andrew, please pick this quick cleanup once Nicholas has acked it.
+from the net tree and commit:
 
- lib/Kconfig.debug | 1 -
- 1 file changed, 1 deletion(-)
+  58ce6d5b271a ("Bluetooth: defer cleanup of resources in hci_unregister_dev()")
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 090fb54ecff1..b6b951b0ed46 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1061,7 +1061,6 @@ config HARDLOCKUP_DETECTOR
- 	depends on HAVE_HARDLOCKUP_DETECTOR_PERF || HAVE_HARDLOCKUP_DETECTOR_ARCH
- 	select LOCKUP_DETECTOR
- 	select HARDLOCKUP_DETECTOR_PERF if HAVE_HARDLOCKUP_DETECTOR_PERF
--	select HARDLOCKUP_DETECTOR_ARCH if HAVE_HARDLOCKUP_DETECTOR_ARCH
- 	help
- 	  Say Y here to enable the kernel to act as a watchdog to detect
- 	  hard lockups.
--- 
-2.17.1
+from the bluetooth tree.
 
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+diff --cc include/net/bluetooth/hci_core.h
+index db4312e44d47,a7d06d7da602..000000000000
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+diff --cc net/bluetooth/hci_core.c
+index e1a545c8a69f,cb2e9e513907..000000000000
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+diff --cc net/bluetooth/hci_sysfs.c
+index b69d88b88d2e,ebf282d1eb2b..000000000000
+--- a/net/bluetooth/hci_sysfs.c
++++ b/net/bluetooth/hci_sysfs.c
