@@ -2,307 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA323E2DCE
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC8F3E2DD2
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244674AbhHFPa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 11:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242230AbhHFPaz (ORCPT
+        id S239384AbhHFPga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 11:36:30 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:45832
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232099AbhHFPg3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 11:30:55 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88664C0613CF;
-        Fri,  6 Aug 2021 08:30:38 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id p5so11602426wro.7;
-        Fri, 06 Aug 2021 08:30:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9RyRhnvurwPn12/G7TVlrpydgS2xDB57swul7r4N4us=;
-        b=lNFhSXP1DL5pMmE/6JDZ4nW0iioaoPdxGe0D3R5+51EjjoXr5TR1DSFfPnhR63aFtw
-         F1J7HegEtnyoj4GdgzB2/cB8PW6BrLfWnV7Jf+cjO4T/L7ZJk2J3PCrjpSOvrstn1MbU
-         vi4rdU/I773lqclN/rfogvNOpthL0O8FZYlwjI/6AaZdfiOftbp9wMtdIerh8te8Y72d
-         K/HzeGsy/Ksw+lWI/t5+Z2nDCgFrdHkAw2JRwaPvCFpkrJCCL7I8NfDKNFQYTlr8J1qP
-         t2K0RwRwuspoMKK7tozW5EPQJHzUUzHzaqTLzGGIR8u/d+b3Ost5H3Z25R9EGyHadwNH
-         jXEw==
+        Fri, 6 Aug 2021 11:36:29 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id A067D40657
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 15:36:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628264172;
+        bh=nn6L3pGPAVUAOexXMQWFiqKMMywY28ef7UC0JW8Ecg0=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=WmvDKVWor8VkbzreY0Ni/fYR8IV/8T3D77mb5VcXdxId8k4Z8ofYQzpJhl0+BFlyz
+         9RDw0LeysFrb33x2mNU5cR/1wh7hIjAHjWymIE3PUswEDj5ddKcpvm7n6TVxdr/rHN
+         U8T0N8ejw4HkpjxK4jXU0BJV0Jk5tY0ODSEyW8GMstckcLViqwojNT96MtGKdhpxiS
+         XvUD7so3iqMp7oe6aHpQuNYdOlwr5KzrXEeTDMRKv0dagi7P1U52o9MZ+xmgCdZJzl
+         u821woPThz5Wws3o3uiIwPSdZUtFtvnjrB7kofPSl2bnFnv9F8mYAywdMBiXuoLAD2
+         ADcFO5ppzEg5Q==
+Received: by mail-ed1-f72.google.com with SMTP id d12-20020a50fe8c0000b02903a4b519b413so5115789edt.9
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 08:36:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9RyRhnvurwPn12/G7TVlrpydgS2xDB57swul7r4N4us=;
-        b=ESZc7F2ykzhPZNkxTpIr32Z0rPfGvTary/V+pXwt3VZjIPjMnqoy9qyWMCwGag/lOy
-         5P1aObg9IdBqJ5Tv18XraRMxmkX9epOH+8SVbvapHO9/qDgHi1MOs1IiHxwc+hwJwI3b
-         6+9RuaZ+7lSTuAlvMG6LK22XdRypKjO9HRfLdol2ddCNhW+jz15KnH6Gg1fZtZdVhFRw
-         aXHFCQiM6A9uaMen9PRP73vsLik4e+atGoPXzUrIWuPi2Kr2OXUSYxG2Ta8+1FVfhiJ0
-         E03D+TZ+hIbj8J8fJlvcpIihw1HvsJY20L3pHONXDzThylxq7rLQ8L2P7PcX4i6WPQQ+
-         iYiA==
-X-Gm-Message-State: AOAM5328yo2KXV9KR+be74nWv1SK5NVAap1HzYR5EyO2/d4Fl6m5Vs2+
-        /wM/CLTCpvhA1cE0Eh4rzRY=
-X-Google-Smtp-Source: ABdhPJzM9mEM5XNEkNLxnwrQyxZXp2ZOGpb6+olfLob75HIm+kN3ofFHnjYhqR4B6GmE5FuIJyDvrQ==
-X-Received: by 2002:a5d:4fd0:: with SMTP id h16mr11763414wrw.268.1628263837071;
-        Fri, 06 Aug 2021 08:30:37 -0700 (PDT)
-Received: from ziggy.stardust (static-55-132-6-89.ipcom.comunitel.net. [89.6.132.55])
-        by smtp.gmail.com with ESMTPSA id o34sm12286763wms.10.2021.08.06.08.30.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 08:30:36 -0700 (PDT)
-Subject: Re: [PATCH v2 08/14] soc: mediatek: add mtk-mmsys config API for
- mt8195 vdosys1
-To:     "Nancy.Lin" <nancy.lin@mediatek.com>, CK Hu <ck.hu@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        singo.chang@mediatek.com, srv_heupstream@mediatek.com
-References: <20210722094551.15255-1-nancy.lin@mediatek.com>
- <20210722094551.15255-9-nancy.lin@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <b71be855-b1a5-af6c-3000-59e6e42c0a79@gmail.com>
-Date:   Fri, 6 Aug 2021 17:30:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nn6L3pGPAVUAOexXMQWFiqKMMywY28ef7UC0JW8Ecg0=;
+        b=CUrdwsIgv91VMchuTdxqStYhR+cVrQDUwFuoHgXgAR87QFq5aUTY6d5dbBNXIuaYs5
+         77O8C0gpoh11RlMLG2YuwZBHtssG4AYS/r5fMfHSOut7UfRz/SKqgth8eZcz4q+z15Xf
+         s2KWq7/PvwZqnCZWwJ76XiyauLAvP3/y13ryqV+5OIFXRdVbI84j/MhusDIWrixENPUr
+         757ibBk9qJUC9DuC1U9LWlk1OneiV3fQtDB+SSNPk4On9+6uYPSNw9MMsjUgLoc8UeiN
+         0dP09AIoLlyCdi1136/qrdyC1uf8foOTGqvMV/hb5JA02lS9Owk6KibwVLKop0sKz8Db
+         Gs3Q==
+X-Gm-Message-State: AOAM532f844YiwED02J79hA6Ys9xNi6yJV7ffPCabv3MuBlJsOddaj7h
+        lw+7U6QLp/bCceVNdxBbjrR1lXhitFhg4RysbeRdyZgtLorwkHyejig4oOQrckjCxXKrrpr0xVg
+        6w41RJHLJmhhdmgd7gVmcRPTFFu+CEC5UAFr4XDslHfsIAje7GSYGTDGCzA==
+X-Received: by 2002:a17:906:79a:: with SMTP id l26mr10772910ejc.192.1628264172327;
+        Fri, 06 Aug 2021 08:36:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwJqPGLR0PlJMC/OXDefak0pjjk5EqClsHvqh8s6/EmtI7kAm/K+l+Zroo4+IF9Cf6F8ZPDPs2bZKtQYy+55U0=
+X-Received: by 2002:a17:906:79a:: with SMTP id l26mr10772892ejc.192.1628264172061;
+ Fri, 06 Aug 2021 08:36:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210722094551.15255-9-nancy.lin@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210514071452.25220-1-kai.heng.feng@canonical.com>
+ <576B26FD-81F8-4632-82F6-57C4A7C096C4@holtmann.org> <8735ryk0o7.fsf@baylibre.com>
+ <CAAd53p7Zc3Zk21rwj_x1BLgf8tWRxaKBmXARkM6d7Kpkb+fDZA@mail.gmail.com>
+ <87y29o58su.fsf@baylibre.com> <CAAd53p4Ss1Z-7CB4g=_xZYxo1xDz6ih6GHUuMcgncy+yNAfU4w@mail.gmail.com>
+ <87a6lzx7jf.fsf@baylibre.com> <CAAd53p6T_K67CPthLPObF=OWWCEChW4pMFMwuq87qWmTmzP2VA@mail.gmail.com>
+ <87bl6cnzy2.fsf@baylibre.com> <CAAd53p5TVJk3G4cArS_UO7cgUpJLONNGVHnpezXy0XTYoXd_uw@mail.gmail.com>
+ <87tuk3j6rh.fsf@baylibre.com>
+In-Reply-To: <87tuk3j6rh.fsf@baylibre.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 6 Aug 2021 23:36:00 +0800
+Message-ID: <CAAd53p7BU2=GwmyLUECKZfGhD830UQUk12mxU2y9HsXv=F_AfA@mail.gmail.com>
+Subject: Re: [PATCH v2] Bluetooth: Shutdown controller after workqueues are
+ flushed or cancelled
+To:     Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mattijs,
 
+On Fri, Aug 6, 2021 at 4:51 PM Mattijs Korpershoek
+<mkorpershoek@baylibre.com> wrote:
+>
+> Hi Kai-Heng,
+>
+> Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
+>
+> > Hi Mattijs,
+> >
+> > On Thu, Aug 5, 2021 at 2:55 PM Mattijs Korpershoek
+> > <mkorpershoek@baylibre.com> wrote:
+> >>
+> >> Hi Kai-Heng,
+> >>
+> >> Thanks for your patch,
+> >>
+> >> Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
+> >>
+> >
+> > [snipped]
+> >
+> >> I confirm this diff works for me:
+> >>
+> >> root@i500-pumpkin:~# hciconfig hci0 up
+> >> root@i500-pumpkin:~# hciconfig hci0 down
+> >> root@i500-pumpkin:~# hciconfig hci0 up
+> >> root@i500-pumpkin:~# hciconfig hci0
+> >> hci0:   Type: Primary  Bus: SDIO
+> >>         BD Address: 00:0C:E7:55:FF:12  ACL MTU: 1021:8  SCO MTU: 244:4
+> >>         UP RUNNING
+> >>         RX bytes:11268 acl:0 sco:0 events:829 errors:0
+> >>         TX bytes:182569 acl:0 sco:0 commands:829 errors:0
+> >>
+> >> root@i500-pumpkin:~# hcitool scan
+> >> Scanning ...
+> >>         <redacted>       Pixel 3 XL
+> >>
+> >> Tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+> >
+> > I found that btmtksdio_flush() only cancels the work instead of doing
+> > flush_work(). That probably explains why putting ->shutdown right
+> > before ->flush doesn't work.
+> > So can you please test the following again:
+> > diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
+> > index 9872ef18f9fea..b33c05ad2150b 100644
+> > --- a/drivers/bluetooth/btmtksdio.c
+> > +++ b/drivers/bluetooth/btmtksdio.c
+> > @@ -649,9 +649,9 @@ static int btmtksdio_flush(struct hci_dev *hdev)
+> >  {
+> >         struct btmtksdio_dev *bdev = hci_get_drvdata(hdev);
+> >
+> > -       skb_queue_purge(&bdev->txq);
+> > +       flush_work(&bdev->tx_work);
+> >
+> > -       cancel_work_sync(&bdev->tx_work);
+> > +       skb_queue_purge(&bdev->txq);
+> >
+> >         return 0;
+> >  }
+> > diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> > index 2560ed2f144d4..a61e610a400cb 100644
+> >
+> > --- a/net/bluetooth/hci_core.c
+> > +++ b/net/bluetooth/hci_core.c
+> > @@ -1785,6 +1785,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
+> >         aosp_do_close(hdev);
+> >         msft_do_close(hdev);
+> >
+> > +       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+> > +           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+> > +           test_bit(HCI_UP, &hdev->flags)) {
+> > +               /* Execute vendor specific shutdown routine */
+> > +               if (hdev->shutdown)
+> > +                       hdev->shutdown(hdev);
+> > +       }
+> > +
+> >         if (hdev->flush)
+> >                 hdev->flush(hdev);
+> >
+> > @@ -1798,14 +1806,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
+> >                 clear_bit(HCI_INIT, &hdev->flags);
+> >         }
+> >
+> > -       if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
+> > -           !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
+> > -           test_bit(HCI_UP, &hdev->flags)) {
+> > -               /* Execute vendor specific shutdown routine */
+> > -               if (hdev->shutdown)
+> > -                       hdev->shutdown(hdev);
+> > -       }
+> > -
+> >         /* flush cmd  work */
+> >         flush_work(&hdev->cmd_work);
+> I've tried this but I have the same (broken) symptoms as before.
+>
+> Here are some logs of v3:
+> dmesg: https://pastebin.com/1x4UHkzy
+> ftrace: https://pastebin.com/Lm1d6AWy
 
-On 22/07/2021 11:45, Nancy.Lin wrote:
-> Add mmsys config API.
+Thanks for your testing. I think I finally got it:
+btmtksdio_shutdown()
+-> mtk_hci_wmt_sync()
+ -> __hci_cmd_send()
+  then waiting for BTMTKSDIO_TX_WAIT_VND_EVT, which is cleared in
+btmtksdio_recv_event():
+btmtksdio_recv_event()
+-> hci_recv_frame()
+ -> queue_work(hdev->workqueue, &hdev->rx_work);
 
-This patch is doing a lot of things, it adds a "config" and it adds cmdq
-support. Please explain better in the commit message what the config is for.
-Please add comments to the different values of struct mtk_mmsys_config.
+That means it has to be done before the following drain_workqueue() call.
+Can you please see if moving the ->shutdown() part right before
+drain_workqueue() can fix the issue?
 
-I understand that cmdq is optional, so please make addition to cmdq a separate
-patch.
-I'm a bit puzzled about that fact, can you please explain who you get the HW to
-behave the same way when you write the same value and offset to mmsys-regs and
-via cmdq.
+Kai-Heng
 
-Thanks,
-Matthias
-
-> 
-> Signed-off-by: Nancy.Lin <nancy.lin@mediatek.com>
-> ---
->  drivers/soc/mediatek/mt8195-mmsys.h    | 38 ++++++++++++++++++++
->  drivers/soc/mediatek/mtk-mmsys.c       | 50 ++++++++++++++++++++++++++
->  drivers/soc/mediatek/mtk-mmsys.h       | 10 ++++++
->  include/linux/soc/mediatek/mtk-mmsys.h | 18 ++++++++++
->  4 files changed, 116 insertions(+)
-> 
-> diff --git a/drivers/soc/mediatek/mt8195-mmsys.h b/drivers/soc/mediatek/mt8195-mmsys.h
-> index 104ba575f765..4bdb2087250c 100644
-> --- a/drivers/soc/mediatek/mt8195-mmsys.h
-> +++ b/drivers/soc/mediatek/mt8195-mmsys.h
-> @@ -154,6 +154,18 @@
->  #define DISP_DP_INTF0_SEL_IN_FROM_VDO0_MERGE_DL_ASYNC_MOUT	(1 << 0)
->  #define DISP_DP_INTF0_SEL_IN_FROM_VDO0_DSC_DL_ASYNC_MOUT	(2 << 0)
->  
-> +#define MT8195_VDO1_MERGE0_ASYNC_CFG_WD	0xe30
-> +#define MT8195_VDO1_MERGE1_ASYNC_CFG_WD	0xe40
-> +#define MT8195_VDO1_MERGE2_ASYNC_CFG_WD	0xe50
-> +#define MT8195_VDO1_MERGE3_ASYNC_CFG_WD	0xe60
-> +#define MT8195_VDO1_HDRBE_ASYNC_CFG_WD	0xe70
-> +#define MT8195_VDO1_HDR_TOP_CFG		0xd00
-> +#define MT8195_VDO1_MIXER_IN1_ALPHA	0xd30
-> +#define MT8195_VDO1_MIXER_IN2_ALPHA	0xd34
-> +#define MT8195_VDO1_MIXER_IN3_ALPHA	0xd38
-> +#define MT8195_VDO1_MIXER_IN4_ALPHA	0xd3c
-> +#define MT8195_VDO1_MIXER_IN4_PAD	0xd4c
-> +
->  static const struct mtk_mmsys_routes mmsys_mt8195_routing_table[] = {
->  	{
->  		DDP_COMPONENT_OVL0, DDP_COMPONENT_RDMA0,
-> @@ -261,4 +273,30 @@ static const struct mtk_mmsys_routes mmsys_mt8195_routing_table[] = {
->  	}
->  };
->  
-> +static const struct mtk_mmsys_config mmsys_mt8195_config_table[] = {
-> +	{ MMSYS_CONFIG_MERGE_ASYNC_WIDTH, 0, MT8195_VDO1_MERGE0_ASYNC_CFG_WD, GENMASK(13, 0), 0},
-> +	{ MMSYS_CONFIG_MERGE_ASYNC_HEIGHT, 0, MT8195_VDO1_MERGE0_ASYNC_CFG_WD, GENMASK(29, 16), 16},
-> +	{ MMSYS_CONFIG_MERGE_ASYNC_WIDTH, 1, MT8195_VDO1_MERGE1_ASYNC_CFG_WD, GENMASK(13, 0), 0},
-> +	{ MMSYS_CONFIG_MERGE_ASYNC_HEIGHT, 1, MT8195_VDO1_MERGE1_ASYNC_CFG_WD, GENMASK(29, 16), 16},
-> +	{ MMSYS_CONFIG_MERGE_ASYNC_WIDTH, 2, MT8195_VDO1_MERGE2_ASYNC_CFG_WD, GENMASK(13, 0), 0},
-> +	{ MMSYS_CONFIG_MERGE_ASYNC_HEIGHT, 2, MT8195_VDO1_MERGE2_ASYNC_CFG_WD, GENMASK(29, 16), 16},
-> +	{ MMSYS_CONFIG_MERGE_ASYNC_WIDTH, 3, MT8195_VDO1_MERGE3_ASYNC_CFG_WD, GENMASK(13, 0), 0},
-> +	{ MMSYS_CONFIG_MERGE_ASYNC_HEIGHT, 3, MT8195_VDO1_MERGE3_ASYNC_CFG_WD, GENMASK(29, 16), 16},
-> +	{ MMSYS_CONFIG_HDR_BE_ASYNC_WIDTH, 0, MT8195_VDO1_HDRBE_ASYNC_CFG_WD, GENMASK(13, 0), 0},
-> +	{ MMSYS_CONFIG_HDR_BE_ASYNC_HEIGHT, 0, MT8195_VDO1_HDRBE_ASYNC_CFG_WD, GENMASK(29, 16), 16},
-> +	{ MMSYS_CONFIG_MIXER_IN_ALPHA_ODD, 1, MT8195_VDO1_MIXER_IN1_ALPHA, GENMASK(8, 0), 0},
-> +	{ MMSYS_CONFIG_MIXER_IN_ALPHA_EVEN, 1, MT8195_VDO1_MIXER_IN1_ALPHA, GENMASK(24, 16), 16},
-> +	{ MMSYS_CONFIG_MIXER_IN_ALPHA_ODD, 2, MT8195_VDO1_MIXER_IN2_ALPHA, GENMASK(8, 0), 0},
-> +	{ MMSYS_CONFIG_MIXER_IN_ALPHA_EVEN, 2, MT8195_VDO1_MIXER_IN2_ALPHA, GENMASK(24, 16), 16},
-> +	{ MMSYS_CONFIG_MIXER_IN_ALPHA_ODD, 3, MT8195_VDO1_MIXER_IN3_ALPHA, GENMASK(8, 0), 0},
-> +	{ MMSYS_CONFIG_MIXER_IN_ALPHA_EVEN, 3, MT8195_VDO1_MIXER_IN3_ALPHA, GENMASK(24, 16), 16},
-> +	{ MMSYS_CONFIG_MIXER_IN_ALPHA_ODD, 4, MT8195_VDO1_MIXER_IN4_ALPHA, GENMASK(8, 0), 0},
-> +	{ MMSYS_CONFIG_MIXER_IN_ALPHA_EVEN, 4, MT8195_VDO1_MIXER_IN4_ALPHA, GENMASK(24, 16), 16},
-> +	{ MMSYS_CONFIG_MIXER_IN_CH_SWAP, 4, MT8195_VDO1_MIXER_IN4_PAD, GENMASK(4, 4), 4},
-> +	{ MMSYS_CONFIG_HDR_ALPHA_SEL, 1, MT8195_VDO1_HDR_TOP_CFG, GENMASK(20, 20), 20},
-> +	{ MMSYS_CONFIG_HDR_ALPHA_SEL, 2, MT8195_VDO1_HDR_TOP_CFG, GENMASK(21, 21), 21},
-> +	{ MMSYS_CONFIG_HDR_ALPHA_SEL, 3, MT8195_VDO1_HDR_TOP_CFG, GENMASK(22, 22), 22},
-> +	{ MMSYS_CONFIG_HDR_ALPHA_SEL, 4, MT8195_VDO1_HDR_TOP_CFG, GENMASK(23, 23), 23},
-> +};
-> +
->  #endif /* __SOC_MEDIATEK_MT8195_MMSYS_H */
-> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-> index 9e31aad6c5c8..d0f4a407f8f8 100644
-> --- a/drivers/soc/mediatek/mtk-mmsys.c
-> +++ b/drivers/soc/mediatek/mtk-mmsys.c
-> @@ -63,10 +63,13 @@ static const struct mtk_mmsys_driver_data mt8195_vdosys1_driver_data = {
->  	.clk_driver = "clk-mt8195-vdo1",
->  	.routes = mmsys_mt8195_routing_table,
->  	.num_routes = ARRAY_SIZE(mmsys_mt8195_routing_table),
-> +	.config = mmsys_mt8195_config_table,
-> +	.num_configs = ARRAY_SIZE(mmsys_mt8195_config_table),
->  };
->  
->  struct mtk_mmsys {
->  	void __iomem *regs;
-> +	struct cmdq_client_reg cmdq_base;
->  	const struct mtk_mmsys_driver_data *data;
->  };
->  
-> @@ -104,6 +107,47 @@ void mtk_mmsys_ddp_disconnect(struct device *dev,
->  }
->  EXPORT_SYMBOL_GPL(mtk_mmsys_ddp_disconnect);
->  
-> +void mtk_mmsys_ddp_config(struct device *dev, enum mtk_mmsys_config_type config,
-> +			  u32 id, u32 val, struct cmdq_pkt *cmdq_pkt)
-> +{
-> +	struct mtk_mmsys *mmsys = dev_get_drvdata(dev);
-> +	const struct mtk_mmsys_config *mmsys_config = mmsys->data->config;
-> +	u32 reg_val;
-> +	u32 mask;
-> +	u32 offset;
-> +	int i;
-> +
-> +	if (!mmsys->data->num_configs)
-> +		return;
-> +
-> +	for (i = 0; i < mmsys->data->num_configs; i++)
-> +		if (config == mmsys_config[i].config && id == mmsys_config[i].id)
-> +			break;
-> +
-> +	if (i == mmsys->data->num_configs)
-> +		return;
-> +
-> +	offset = mmsys_config[i].addr;
-> +	mask = mmsys_config[i].mask;
-> +	reg_val = val << mmsys_config[i].shift;
-> +
-> +#if IS_REACHABLE(CONFIG_MTK_CMDQ)
-> +	if (cmdq_pkt && mmsys->cmdq_base.size) {
-> +		cmdq_pkt_write_mask(cmdq_pkt, mmsys->cmdq_base.subsys,
-> +				    mmsys->cmdq_base.offset + offset, reg_val,
-> +				    mask);
-> +	} else {
-> +#endif
-> +		u32 tmp = readl(mmsys->regs + offset);
-> +
-> +		tmp = (tmp & ~mask) | reg_val;
-> +		writel(tmp, mmsys->regs + offset);
-> +#if IS_REACHABLE(CONFIG_MTK_CMDQ)
-> +	}
-> +#endif
-> +}
-> +EXPORT_SYMBOL_GPL(mtk_mmsys_ddp_config);
-> +
->  static int mtk_mmsys_probe(struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
-> @@ -124,6 +168,12 @@ static int mtk_mmsys_probe(struct platform_device *pdev)
->  	}
->  
->  	mmsys->data = of_device_get_match_data(&pdev->dev);
-> +
-> +#if IS_REACHABLE(CONFIG_MTK_CMDQ)
-> +	ret = cmdq_dev_get_client_reg(dev, &mmsys->cmdq_base, 0);
-> +	if (ret)
-> +		dev_dbg(dev, "No mediatek,gce-client-reg!\n");
-> +#endif
->  	platform_set_drvdata(pdev, mmsys);
->  
->  	clks = platform_device_register_data(&pdev->dev, mmsys->data->clk_driver,
-> diff --git a/drivers/soc/mediatek/mtk-mmsys.h b/drivers/soc/mediatek/mtk-mmsys.h
-> index a760a34e6eca..084b1f5f3c88 100644
-> --- a/drivers/soc/mediatek/mtk-mmsys.h
-> +++ b/drivers/soc/mediatek/mtk-mmsys.h
-> @@ -73,10 +73,20 @@ struct mtk_mmsys_routes {
->  	u32 val;
->  };
->  
-> +struct mtk_mmsys_config {
-> +	enum mtk_mmsys_config_type config;
-> +	u32 id;
-> +	u32 addr;
-> +	u32 mask;
-> +	u32 shift;
-> +};
-> +
->  struct mtk_mmsys_driver_data {
->  	const char *clk_driver;
->  	const struct mtk_mmsys_routes *routes;
->  	const unsigned int num_routes;
-> +	const struct mtk_mmsys_config *config;
-> +	const unsigned int num_configs;
->  };
->  
->  /*
-> diff --git a/include/linux/soc/mediatek/mtk-mmsys.h b/include/linux/soc/mediatek/mtk-mmsys.h
-> index 338c71570aeb..ba3925661cc9 100644
-> --- a/include/linux/soc/mediatek/mtk-mmsys.h
-> +++ b/include/linux/soc/mediatek/mtk-mmsys.h
-> @@ -6,6 +6,10 @@
->  #ifndef __MTK_MMSYS_H
->  #define __MTK_MMSYS_H
->  
-> +#include <linux/mailbox_controller.h>
-> +#include <linux/mailbox/mtk-cmdq-mailbox.h>
-> +#include <linux/soc/mediatek/mtk-cmdq.h>
-> +
->  enum mtk_ddp_comp_id;
->  struct device;
->  
-> @@ -54,6 +58,17 @@ enum mtk_ddp_comp_id {
->  	DDP_COMPONENT_ID_MAX,
->  };
->  
-> +enum mtk_mmsys_config_type {
-> +	MMSYS_CONFIG_MERGE_ASYNC_WIDTH,
-> +	MMSYS_CONFIG_MERGE_ASYNC_HEIGHT,
-> +	MMSYS_CONFIG_HDR_BE_ASYNC_WIDTH,
-> +	MMSYS_CONFIG_HDR_BE_ASYNC_HEIGHT,
-> +	MMSYS_CONFIG_HDR_ALPHA_SEL,
-> +	MMSYS_CONFIG_MIXER_IN_ALPHA_ODD,
-> +	MMSYS_CONFIG_MIXER_IN_ALPHA_EVEN,
-> +	MMSYS_CONFIG_MIXER_IN_CH_SWAP,
-> +};
-> +
->  void mtk_mmsys_ddp_connect(struct device *dev,
->  			   enum mtk_ddp_comp_id cur,
->  			   enum mtk_ddp_comp_id next);
-> @@ -62,4 +77,7 @@ void mtk_mmsys_ddp_disconnect(struct device *dev,
->  			      enum mtk_ddp_comp_id cur,
->  			      enum mtk_ddp_comp_id next);
->  
-> +void mtk_mmsys_ddp_config(struct device *dev, enum mtk_mmsys_config_type config,
-> +			  u32 id, u32 val, struct cmdq_pkt *cmdq_pkt);
-> +
->  #endif /* __MTK_MMSYS_H */
-> 
+>
+> Mattijs
+>
+> >
+> > Kai-Heng
