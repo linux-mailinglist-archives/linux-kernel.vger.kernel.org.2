@@ -2,94 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8963E2528
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E532F3E2551
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243852AbhHFISB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:18:01 -0400
+        id S244292AbhHFITd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:19:33 -0400
 Received: from mail.kernel.org ([198.145.29.99]:46112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243782AbhHFIQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:16:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CE8760238;
-        Fri,  6 Aug 2021 08:15:46 +0000 (UTC)
+        id S244061AbhHFIRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:17:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77C326120A;
+        Fri,  6 Aug 2021 08:16:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628237746;
-        bh=XOJsaRYVYTuMJJmgcRZaIbiBoeuFOeJ3eghoL6PTJUE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U5Jz5qCgk4CiIKMGTk77uMo2YflI492HSMz7Ndc3FzYk++3HV65xdj1RYdljJZ1hc
-         ENnfDPWKzWLGJEFZycJSeSiWbAwGe4m/7/3sypeLM+7QPe2nOJ7kqbQic7adRuqyQn
-         GMYSvTe27RWGc2xUD7VWD/ODftfc+ROpBlW5Qc74=
+        s=korg; t=1628237800;
+        bh=xjwII51qNefhiPOoLREh7N0Spr5NsPgdmJtZUk0/Rqg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lvZST/0bEd3OpZND4D5oFayH9HOxty52LWmd0Gp6+iFhkt9Jxw7Tha8Ti9avGxFJr
+         LRJCKxAKGUi/nxMddlhxhRhHK6sveSk5K3E6cRA2L8D9OVIaljbGzHPqLluhg0WQQd
+         zH4ibcrnv9R7HROFLhZ+duzQtTr/KDoOu10QVeoQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 07/11] Revert "Bluetooth: Shutdown controller after workqueues are flushed or cancelled"
-Date:   Fri,  6 Aug 2021 10:14:50 +0200
-Message-Id: <20210806081110.754296437@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.19 00/16] 4.19.202-rc1 review
+Date:   Fri,  6 Aug 2021 10:14:51 +0200
+Message-Id: <20210806081111.144943357@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210806081110.511221879@linuxfoundation.org>
-References: <20210806081110.511221879@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.202-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.202-rc1
+X-KernelTest-Deadline: 2021-08-08T08:11+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This is the start of the stable review cycle for the 4.19.202 release.
+There are 16 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-This reverts commit 854e6d767a33bd53b00902d65dced7d1e7abfe1a which is
-commit 0ea9fd001a14ebc294f112b0361a4e601551d508 upstream.
+Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
+Anything received after that time might be too late.
 
-It has been reported to have problems:
-	https://lore.kernel.org/linux-bluetooth/8735ryk0o7.fsf@baylibre.com/
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.202-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: Marcel Holtmann <marcel@holtmann.org>
-Cc: Sasha Levin <sashal@kernel.org>
-Link: https://lore.kernel.org/r/efee3a58-a4d2-af22-0931-e81b877ab539@roeck-us.net
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/bluetooth/hci_core.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+thanks,
 
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1569,6 +1569,14 @@ int hci_dev_do_close(struct hci_dev *hde
- 
- 	BT_DBG("%s %p", hdev->name, hdev);
- 
-+	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
-+	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
-+	    test_bit(HCI_UP, &hdev->flags)) {
-+		/* Execute vendor specific shutdown routine */
-+		if (hdev->shutdown)
-+			hdev->shutdown(hdev);
-+	}
-+
- 	cancel_delayed_work(&hdev->power_off);
- 
- 	hci_request_cancel_all(hdev);
-@@ -1636,14 +1644,6 @@ int hci_dev_do_close(struct hci_dev *hde
- 		clear_bit(HCI_INIT, &hdev->flags);
- 	}
- 
--	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
--	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
--	    test_bit(HCI_UP, &hdev->flags)) {
--		/* Execute vendor specific shutdown routine */
--		if (hdev->shutdown)
--			hdev->shutdown(hdev);
--	}
--
- 	/* flush cmd  work */
- 	flush_work(&hdev->cmd_work);
- 
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.202-rc1
+
+Daniel Jordan <daniel.m.jordan@oracle.com>
+    padata: add separate cpuhp node for CPUHP_PADATA_DEAD
+
+Daniel Jordan <daniel.m.jordan@oracle.com>
+    padata: validate cpumask without removed CPU during offline
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "watchdog: iTCO_wdt: Account for rebooting on second timeout"
+
+Sudeep Holla <sudeep.holla@arm.com>
+    firmware: arm_scmi: Ensure drivers provide a probe function
+
+Jani Nikula <jani.nikula@intel.com>
+    drm/i915: Ensure intel_engine_init_execlist() builds with Clang
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "Bluetooth: Shutdown controller after workqueues are flushed or cancelled"
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Revert "spi: mediatek: fix fifo rx mode"
+
+Christoph Hellwig <hch@lst.de>
+    bdi: add a ->dev_name field to struct backing_dev_info
+
+Yufen Yu <yuyufen@huawei.com>
+    bdi: use bdi_dev_name() to get device name
+
+Christoph Hellwig <hch@lst.de>
+    bdi: move bdi_dev_name out of line
+
+Pravin B Shelar <pshelar@ovn.org>
+    net: Fix zero-copy head len calculation.
+
+Jia He <justin.he@arm.com>
+    qed: fix possible unpaired spin_{un}lock_bh in _qed_mcp_cmd_and_union()
+
+Takashi Iwai <tiwai@suse.de>
+    r8152: Fix potential PM refcount imbalance
+
+Kyle Russell <bkylerussell@gmail.com>
+    ASoC: tlv320aic31xx: fix reversed bclk/wclk master bits
+
+Axel Lin <axel.lin@ingics.com>
+    regulator: rt5033: Fix n_voltages settings for BUCK and LDO
+
+Goldwyn Rodrigues <rgoldwyn@suse.de>
+    btrfs: mark compressed range uptodate only if all bio succeed
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                  |  4 ++--
+ block/bfq-iosched.c                       |  6 ++++--
+ block/blk-cgroup.c                        |  2 +-
+ drivers/firmware/arm_scmi/bus.c           |  3 +++
+ drivers/gpu/drm/i915/intel_engine_cs.c    |  2 +-
+ drivers/net/ethernet/qlogic/qed/qed_mcp.c | 23 +++++++++++++++++------
+ drivers/net/usb/r8152.c                   |  3 ++-
+ drivers/spi/spi-mt65xx.c                  | 16 +++-------------
+ drivers/watchdog/iTCO_wdt.c               | 12 +++---------
+ fs/btrfs/compression.c                    |  3 +--
+ fs/ceph/debugfs.c                         |  2 +-
+ include/linux/backing-dev-defs.h          |  1 +
+ include/linux/backing-dev.h               |  9 +--------
+ include/linux/cpuhotplug.h                |  1 +
+ include/linux/mfd/rt5033-private.h        |  4 ++--
+ include/linux/padata.h                    |  6 ++++--
+ include/trace/events/wbt.h                |  8 ++++----
+ kernel/padata.c                           | 28 ++++++++++++++++++++--------
+ mm/backing-dev.c                          | 13 +++++++++++--
+ net/bluetooth/hci_core.c                  | 16 ++++++++--------
+ net/core/skbuff.c                         |  5 ++++-
+ sound/soc/codecs/tlv320aic31xx.h          |  4 ++--
+ 22 files changed, 96 insertions(+), 75 deletions(-)
 
 
