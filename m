@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A413E2900
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74423E2902
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245239AbhHFLA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:00:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231700AbhHFLA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:00:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5056B61181;
-        Fri,  6 Aug 2021 11:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628247610;
-        bh=QpcuE6Xf3nDEPx4ouJJKA1Lw/VkQU5tSiR6QM0SDGjs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TGxIvA1adK17UB8Pb8OpkZJguwjCWUPpcMIbWJ55Hj2Gn/epB/L6shK2tky7YwjGq
-         zFnBiULVRqq8kU2wGF/m7I3DIIriIh+wHmBQdfFXuwPcXyPmsvDJhKA8nCCCnVDvQ/
-         EhEQ+aBwQTMgrHmLrCjEJKSbw7bQz3QCT9Q3x9C7VKPygtqaw2DZZvIgi3cZFg6iYl
-         gXYbLYPL+6JsKYte4VMdPhu4btEmIPpEF0xwZRYMGk0csA6RLr3qlpJDDPB9o/dYza
-         FiqJSghtKO29O4rRJtWx8y5TJUst/caNVm30P9AqnkkPqa91iiqdgY6Fgc/yZHitvw
-         dzv43fOo3x37g==
-Date:   Fri, 6 Aug 2021 11:59:54 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ravikumar Kattekola <callmerk1986@gmail.com>
-Cc:     Peter Geis <pgwipeout@gmail.com>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mmc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [BUG] mmc_regulator_set_ocr can't cope with regulator-fixed
-Message-ID: <20210806105954.GV26252@sirena.org.uk>
-References: <CGME20210804143357epcas1p1c67eca591d8bb557c11b8175baaa8550@epcas1p1.samsung.com>
- <CAMdYzYrx8pgeyK7u=kcopZ+Wae+fQdr_uM4AuVjqWKfZYikgcA@mail.gmail.com>
- <a9aa636e-326f-a848-dd69-41df87c013af@samsung.com>
- <CAMdYzYr9PX-9=kkCAfGe8Q0-D+gRo_qCwse8SiGVsmod7fffiA@mail.gmail.com>
- <20210805124650.GM26252@sirena.org.uk>
- <CAMdYzYpR6br7s1RD2ze92WzJjtEDZwy9qS6YhghgXy7F91keFg@mail.gmail.com>
- <20210805130842.GO26252@sirena.org.uk>
- <81006771-99bf-a5f9-4001-2cf3dc84f69d@gmail.com>
+        id S245242AbhHFLBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231700AbhHFLA5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 07:00:57 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799F4C061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 04:00:41 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id cl16-20020a17090af690b02901782c35c4ccso13331637pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 04:00:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bqezZ2/HwBTxC4hfR4A8RkBTbm8B6r0iUtltdIvH/WQ=;
+        b=wPfCjiqa1MALuiJUaKW5iy1FtNfG6I7bAdM+tcLUlHzl2neknstN3PG01WGezIG4Wn
+         AX67+2Wo1cV03hBdnAJyve/wr3U++Sv2+IO4fFRMwBMjg3MlY4LMXxnv9cUYr0J/w8ME
+         l0Btb8iRsW/UikCqCHgTYoJAbfIOOSYrxH6UeL81fCtnPOMXF1pOCqAmkKk5chBEiw6Z
+         yaTEYJbWUNoVt4HmP/4ut1Oa6QtRxGJUZVSJkrVVIiTdIOwLidoVSJUVDDptJehoEaTE
+         KjoaWncKZEYbCPNeDiBQIxq744EGlx7PnATR24qZV2yaDdvpXGHuLHdVuLaLwuvlgthS
+         ag0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bqezZ2/HwBTxC4hfR4A8RkBTbm8B6r0iUtltdIvH/WQ=;
+        b=alCO9MJMLhLrFiGrHUXN4rhWlRtCsYIgyI04jqX1L5RftLti1TewGmJMBl3A+PeyBA
+         31WGUfYFM54wzAqzBNhrKFZlgFUWDNNhlL20SVGA2GL6jjG1FSDOnsk0M4K/H5NopFCe
+         7kh9U8jkQB7thU5d7qqoEcmlKdQmnHJi69brpoGedroqvQzXBtvQtFmYp/ZVbngyV0/j
+         LHS9bnZHvFwC+PuFVBiJdWLHX/rXG9sMZVLa0Q99dJH6bgrQGg8gDfMi80kY1OZbztcY
+         bE49pyi+PeJsGxRkcfLCxQRO+/bhQbVFU3JmKuMIOQMOMUFwfo41cf/KNrz45D/CDfwb
+         eDeA==
+X-Gm-Message-State: AOAM53134IavF5+xENRWchDWJKC39LoppH5+oeHQONEa/VidC3mTMbFZ
+        eGnf4hafvEM7fiWe/mzfTSF9PD5iwdmx+WdXFmtA1w==
+X-Google-Smtp-Source: ABdhPJx2mx/FDsh5/262RxdOPkT6ydnEP3Uh2S21vtAYPtUS+Wn/DcQtgQAbZX/mXgpJQMdt+fMf5UfYoS3PcG5G/uw=
+X-Received: by 2002:a63:494f:: with SMTP id y15mr876560pgk.185.1628247641017;
+ Fri, 06 Aug 2021 04:00:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zvmqw4jX2vbPsMQB"
-Content-Disposition: inline
-In-Reply-To: <81006771-99bf-a5f9-4001-2cf3dc84f69d@gmail.com>
-X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210806104407.2208538-1-xji@analogixsemi.com>
+In-Reply-To: <20210806104407.2208538-1-xji@analogixsemi.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 6 Aug 2021 13:00:30 +0200
+Message-ID: <CAG3jFyuB-PJc5S+jPiBH8_shyWR_05JTBiO802+tg+8RvBQUcg@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/bridge: anx7625: Tune K value for IVO panel
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bernie Liang <bliang@analogixsemi.com>,
+        Qilin Wen <qwen@analogixsemi.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devel@driverdev.osuosl.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---zvmqw4jX2vbPsMQB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Aug 06, 2021 at 01:44:45PM +0530, Ravikumar Kattekola wrote:
-
-> But, IMO mmc core should check if the voltage can be changed or not
->=20
-> before trying to do regulator_set_voltage() in mmc_regulator_set_ocr().
-
-It does exactly that in mmc_regulator_get_ocrmask().
-
---zvmqw4jX2vbPsMQB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmENFikACgkQJNaLcl1U
-h9CJcAf/dMneLY3//GjYvaXP4Dl2LqP/fc83WqO6E4dJf+Q9FzvqkBneamuQfUYH
-QpjYRGO3aTuTAdw5sLmDfsZVMgbcMkQMumppkrTKP1QVWOSwHkMCLYeb061mmp5i
-Uf+FG0NaQ8HGEN/wk6ac3BuDntvg8tj5pPGu3RDU474sIzXDZb0q2FqCMyYlC3dp
-78ueiE8XQg4CMrcnwVfZ5nbmB1kM1t83UmkO8N8ZDLpwAWFbtwDm5NzaPSFVhWJV
-M7hYPYTOW6I+apyCHwArzVNMPMJEV8B5nQm92V6F5AQzqU0s529DKNPjv9YnSnP6
-DWoW7yM+miX/2so5WGlNRcexznpX8A==
-=a6Wc
------END PGP SIGNATURE-----
-
---zvmqw4jX2vbPsMQB--
+Applied to drm-misc-next
