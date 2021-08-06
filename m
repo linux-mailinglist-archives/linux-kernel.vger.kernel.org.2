@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2765F3E2332
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 08:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41493E233F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 08:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243336AbhHFGVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 02:21:11 -0400
-Received: from mga05.intel.com ([192.55.52.43]:11288 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229581AbhHFGVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 02:21:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="299904801"
-X-IronPort-AV: E=Sophos;i="5.84,299,1620716400"; 
-   d="scan'208";a="299904801"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 23:20:51 -0700
-X-IronPort-AV: E=Sophos;i="5.84,299,1620716400"; 
-   d="scan'208";a="481283967"
-Received: from zengguan-mobl.ccr.corp.intel.com (HELO [10.238.0.133]) ([10.238.0.133])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 23:20:46 -0700
-Subject: Re: [PATCH v3 3/6] KVM: VMX: Detect Tertiary VM-Execution control
- when setup VMCS config
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hu, Robert" <robert.hu@intel.com>,
-        "Gao, Chao" <chao.gao@intel.com>,
-        Robert Hoo <robert.hu@linux.intel.com>
-References: <20210805151317.19054-1-guang.zeng@intel.com>
- <20210805151317.19054-4-guang.zeng@intel.com> <YQxns0wQ74d4X5VD@google.com>
-From:   Zeng Guang <guang.zeng@intel.com>
-Message-ID: <561628db-6155-8e31-6f07-3c7f18810e65@intel.com>
-Date:   Fri, 6 Aug 2021 14:20:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S241983AbhHFG3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 02:29:01 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:45143 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229581AbhHFG3A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 02:29:00 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 7F7A6580B73;
+        Fri,  6 Aug 2021 02:28:44 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 06 Aug 2021 02:28:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=eWVlY49TeLxeXcwOp6RoCArUbxW
+        pC9ZgtJzQ3VYEJu8=; b=VKvPK9QLfcxaD53WyA4abxkXFYGC2lbJ9Sp3NVV75jH
+        HxY4YZp8zdAnhfYBgyGO8Hc7CHqrLoFyeb7U9KS9midrtgXn6ubeddqJfNCsIcUD
+        QgOMGWOyK0mfY55wYMl59jb4CTnWqKI4pJ6bDiSd3te8lOG1vDK0bP7Z7N+A5hqQ
+        QzxcH7bLizVOJA8G84krha94crfM8IeFvsEoe0tIikxupEPnvteHMMtG5G8ci2bp
+        59n8sDDaBxFISNAl13yjRUvc1ljYboeux1zjI7pzs2bRPXgq4ckecz0DzZUJPUgv
+        ZleVORvq5/110wAzHVh9+hHfrsZDUxPBTz6Hrdho53Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=eWVlY4
+        9TeLxeXcwOp6RoCArUbxWpC9ZgtJzQ3VYEJu8=; b=ANlIL+aE+oSIEyyaz/PfzR
+        4b8jxfX6peebx5ePhv/6TZpECcibgNjHncllgtanibeCYfJj1LUGRwmNhhqyXkJ1
+        KTOdRADhzdvWfOGMdFHWMvn0WIqddg4gSzIZG+H45V6gKZiGjgBnsjbPJGqANC0q
+        kcxj0Kkdhe6Ui2Q/m14fQ5XwXFZZV9Yv4ilu+tHcam8G1SSJiN2ogq+Zjse3MdYA
+        Q1oJTEbQnMgjeK6A8y87MQKYPy4jWOSUrhclgzxfIiDDE/lHzwZSAqkpURShXOgK
+        p4gS7SUdpa0ueFE8YuM5uHEOdfyrWx13rJJGo8eZzWIhUjWPnkfzUAhN4uAVEFIA
+        ==
+X-ME-Sender: <xms:mtYMYVp6y_ieYX6y4ebnfhcTn9KWN4XRWnUL4ILCKCF3QfIYGFXFFQ>
+    <xme:mtYMYXoQft32LmSDFR_XR5cRUWG735DEJTEJSOzLcB68Rjy1tnCkye_FH-iJDxgDM
+    DtvirlWIJczeQ>
+X-ME-Received: <xmr:mtYMYSP4UoVbL_Z856fJu5b56K6Lj3rOvMTN8sf666kno8Rz8u8NAUDokDOnPG4Nq_NqF1yuKNPno2t8M9amA7W3BSomwfAw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjedtgddutdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
+    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
+    nhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:mtYMYQ6Faq5UrKAc2pI9rf8uBbSquuHpMmLx2kDWGV9VHJnEN82unA>
+    <xmx:mtYMYU7_EACPS6gCwy-j4Co20eP1vnkb3U0la8GY6HuXoXSpmXnnlg>
+    <xmx:mtYMYYhka83FFa4WxHKy_uafoKKtJxtYr4AQHhRd9l9g0VKw6acSmg>
+    <xmx:nNYMYTQaWkg8Hz0jlC9zShaC4hHb1NY5v9j1XN9i5rVV8r7VQHi4Wg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 6 Aug 2021 02:28:42 -0400 (EDT)
+Date:   Fri, 6 Aug 2021 08:28:39 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Jean Delvare <jdelvare@suse.de>
+Cc:     linux-watchdog@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Michael Marley <michael@michaelmarley.com>
+Subject: Re: Faulty commit "watchdog: iTCO_wdt: Account for rebooting on
+ second timeout"
+Message-ID: <YQzWl9GeD6OgxzWA@kroah.com>
+References: <20210803165108.4154cd52@endymion>
 MIME-Version: 1.0
-In-Reply-To: <YQxns0wQ74d4X5VD@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803165108.4154cd52@endymion>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/2021 6:35 AM, Sean Christopherson wrote:
-> On Thu, Aug 05, 2021, Zeng Guang wrote:
->> +u64 vmx_tertiary_exec_control(struct vcpu_vmx *vmx)
-> Make this static and drop the declaration from vmx.h, there's no nested user (yet),
-> and I'm also working on a patch to rework how prepare_vmcs02_early() gets KVMs
-> desires without having to call these heleprs, i.e. I want to bury all of these in
-> vmx.c.
-OK. Thus it could be static.
->> +{
->> +	return vmcs_config.cpu_based_3rd_exec_ctrl;
->> +}
->> +
->>   /*
->>    * Adjust a single secondary execution control bit to intercept/allow an
->>    * instruction in the guest.  This is usually done based on whether or not a
->> @@ -4319,6 +4354,9 @@ static void init_vmcs(struct vcpu_vmx *vmx)
->>   		secondary_exec_controls_set(vmx, vmx->secondary_exec_control);
->>   	}
->>   
->> +	if (cpu_has_tertiary_exec_ctrls())
->> +		tertiary_exec_controls_set(vmx, vmx_tertiary_exec_control(vmx));
->> +
->>   	if (kvm_vcpu_apicv_active(&vmx->vcpu)) {
->>   		vmcs_write64(EOI_EXIT_BITMAP0, 0);
->>   		vmcs_write64(EOI_EXIT_BITMAP1, 0);
->> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
->> index 945c6639ce24..448006bd8fa7 100644
->> --- a/arch/x86/kvm/vmx/vmx.h
->> +++ b/arch/x86/kvm/vmx/vmx.h
->> @@ -478,6 +478,7 @@ static inline u32 vmx_vmexit_ctrl(void)
->>   
->>   u32 vmx_exec_control(struct vcpu_vmx *vmx);
->>   u32 vmx_pin_based_exec_ctrl(struct vcpu_vmx *vmx);
->> +u64 vmx_tertiary_exec_control(struct vcpu_vmx *vmx);
->>   
->>   static inline struct kvm_vmx *to_kvm_vmx(struct kvm *kvm)
->>   {
->> -- 
->> 2.25.1
->>
+On Tue, Aug 03, 2021 at 04:51:08PM +0200, Jean Delvare wrote:
+> Hi all,
+> 
+> Commit cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on
+> second timeout") causes a regression on several systems. Symptoms are:
+> system reboots automatically after a short period of time if watchdog
+> is enabled (by systemd for example). This has been reported in bugzilla:
+> 
+> https://bugzilla.kernel.org/show_bug.cgi?id=213809
+> 
+> Unfortunately this commit was backported to all stable kernel branches
+> (4.14, 4.19, 5.4, 5.10, 5.12 and 5.13). I'm not sure why that is the
+> case, BTW, as there is no Fixes tag and no Cc to stable@vger either.
+> And the fix is not trivial, has apparently not seen enough testing,
+> and addresses a problem that has a known and simple workaround. IMHO it
+> should never have been accepted as a stable patch in the first place.
+> Especially when the previous attempt to fix this issue already ended
+> with a regression and a revert.
+> 
+> Anyway... After a glance at the patch, I see what looks like a nice
+> thinko:
+> 
+> +	if (p->smi_res &&
+> +	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+> 
+> The author most certainly meant inl(SMI_EN(p)) (the register's value)
+> and not SMI_EN(p) (the register's address).
+
+Let me go revert this from the stable trees now, thanks for the report.
+
+greg k-h
