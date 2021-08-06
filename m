@@ -2,114 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FA83E315A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7C73E315D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245311AbhHFVrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 17:47:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241587AbhHFVrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 17:47:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8379610FD;
-        Fri,  6 Aug 2021 21:47:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628286436;
-        bh=eHdgp7qlzGkw1EVFauYqPH7BFtLqWWFTuQSQQ6Xf048=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dtkl0YpBpRhQ3FjBoHFGKcLd0r8S4RXgQMZ4NBwkjKP0qozw13+F351ZycLNAU4lb
-         sCf5OFwf43/Nn09phsWheA6ek9BhMCrfe3hZvKC9CUCN3Ijm5NJ5lOqad5LxiPijYJ
-         HyZNlfSiWMDVC5wYGekaD54v0O8fXGIQntQnLzZSeBUpBfB6FiaarO+pm6MNGtP3WY
-         c7/+UbZG9Ytpoe7Y+QwzY99b1lnsx88gSIBuX6ZXJZzAHDUto6syT5sKIPirIUyQ5E
-         HgakvUbgoUlm1YXLBKPxRQrVzcfx1KQLZZiUweNC+JJp8k9wADP9Fy8BOEzUtalKLf
-         Jr0FwDdI98wbg==
-Received: by earth.universe (Postfix, from userid 1000)
-        id D2CD53C0C99; Fri,  6 Aug 2021 23:47:13 +0200 (CEST)
-Date:   Fri, 6 Aug 2021 23:47:13 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: Re: [PATCH] power: supply: cpcap-battery: Use IS_ERR() to check and
- simplify code
-Message-ID: <20210806214713.p7ygp2iux6wjxk5n@earth.universe>
-References: <20210720061836.29148-1-tangbin@cmss.chinamobile.com>
+        id S245326AbhHFVrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 17:47:49 -0400
+Received: from mail-io1-f48.google.com ([209.85.166.48]:33444 "EHLO
+        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241587AbhHFVrs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 17:47:48 -0400
+Received: by mail-io1-f48.google.com with SMTP id n19so14339013ioz.0;
+        Fri, 06 Aug 2021 14:47:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BnsmwWZ5UV2/LE+aqdhfs09L7FfJpBqefxeuDQt77V0=;
+        b=fzpBgXoWW8yy3JLsV+xOPngXts/ZTyUi1jq9dDWruHulYyECjCaWyOhVkJ/lHXoqL/
+         1bTYZIMErgW+Y6BK9TaCsy0Bf9B70EX4eDhVontnLWxzfhihiqYW5VADoTprX1H2FTQn
+         Vy9mbT48z9oZiAov6QCeN5qM5dpqoeXEOYQtIWt5MF5zqzITuReN87JPcPfii/seJGnl
+         KyLnKSdARFH5SygpGGBsb0A/tTpbG0xaQVCEoeY6x7spKfT3/khhZpzkELCI3AkNeijD
+         IhwoGtdn7ALp1nbdO8m5WwUVU+jnZrnW9suRzLVn1HMLuomqRUI0LJ6uxlHwEB2aJK6p
+         /CLg==
+X-Gm-Message-State: AOAM532lGT56UplbA8HOFC3gOEOUd60VVGgTkvFNhvWu8mGY2CWPK+Pg
+        /D026RkVTbm7jykh3mRfTg==
+X-Google-Smtp-Source: ABdhPJwY3vn+yJ5z1R0ZdpqJAsHZRNWFU1oMd54Rjtxc4mGO4QSs/gfI94S40UfF3mOemJERn/2Ohw==
+X-Received: by 2002:a05:6e02:1d8d:: with SMTP id h13mr289082ila.40.1628286450854;
+        Fri, 06 Aug 2021 14:47:30 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id q2sm1054502iog.22.2021.08.06.14.47.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 14:47:30 -0700 (PDT)
+Received: (nullmailer pid 1862298 invoked by uid 1000);
+        Fri, 06 Aug 2021 21:47:28 -0000
+Date:   Fri, 6 Aug 2021 15:47:28 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Eizan Miyamoto <eizan@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        chunkuang.hu@kernel.org, Rob Herring <robh+dt@kernel.org>,
+        yong.wu@mediatek.com, linux-media@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, houlong.wei@mediatek.com,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        enric.balletbo@collabora.com, wenst@chromium.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 9/9] dt-bindings: mediatek: remove vpu requirement
+ from mtk-mdp
+Message-ID: <YQ2t8DMqz/Ju1Qng@robh.at.kernel.org>
+References: <20210802121215.703023-1-eizan@chromium.org>
+ <20210802220943.v6.9.If10dbdfade9f48710e485efe79e53e6e65144a2f@changeid>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ax6wwmzhmgmytfow"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210720061836.29148-1-tangbin@cmss.chinamobile.com>
+In-Reply-To: <20210802220943.v6.9.If10dbdfade9f48710e485efe79e53e6e65144a2f@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---ax6wwmzhmgmytfow
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Tue, Jul 20, 2021 at 02:18:36PM +0800, Tang Bin wrote:
-> Use IS_ERR() and PTR_ERR() instead of PTR_ERR_OR_ZERO() to
-> simplify code, avoid redundant judgements.
->=20
-> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+On Mon, 02 Aug 2021 22:12:15 +1000, Eizan Miyamoto wrote:
+> It is no longer needed by the mtk-mdp driver
+> 
+> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
 > ---
+> 
+> (no changes since v1)
+> 
+>  Documentation/devicetree/bindings/media/mediatek-mdp.txt | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
 
-I think the original variant is the simpler one. Also
-compiler should be able to optimize this.
-
--- Sebastian
-
->  drivers/power/supply/cpcap-battery.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/=
-cpcap-battery.c
-> index 90eba3646..7007e5d53 100644
-> --- a/drivers/power/supply/cpcap-battery.c
-> +++ b/drivers/power/supply/cpcap-battery.c
-> @@ -912,10 +912,9 @@ static int cpcap_battery_probe(struct platform_devic=
-e *pdev)
-> =20
->  	ddata->psy =3D devm_power_supply_register(ddata->dev, psy_desc,
->  						&psy_cfg);
-> -	error =3D PTR_ERR_OR_ZERO(ddata->psy);
-> -	if (error) {
-> +	if (IS_ERR(ddata->psy)) {
->  		dev_err(ddata->dev, "failed to register power supply\n");
-> -		return error;
-> +		return PTR_ERR(ddata->psy);
->  	}
-> =20
->  	atomic_set(&ddata->active, 1);
-> --=20
-> 2.20.1.windows.1
->=20
->=20
->=20
-
---ax6wwmzhmgmytfow
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmENreEACgkQ2O7X88g7
-+pp1QA/+KnBEXpwJMSs5kpz38wuxzFoBm/lCJzDq0AjouV7Jhgznpj09iYOZBDRR
-YCw5FCllWMIRBEDmX8Qr7OKfgiMkpm5P5J7Lqd8IbpWQy0W5Ym/gm+pLeTdQ5qN/
-lXbcPl0dRPRFymNvWUdPzVs6FjLR02G+c1segXKPfxzZTVXr6kN10j28PVZNGvvr
-Pl6Mt1nVbhJE1tS42vtQoW2jiQ7Y11nTRyUX39X6FBvmeUrv/FlrnJ76wQXElJCA
-KmsKVfyqur/rwUgzI1dhk9jyJ9+0fVsgflIAbm9bZFhzeGBRDnse5hHQd6nkjiSl
-rG4CktPPwJ0dG3wJyL4Z71YxDXmOxfu5X4tD7GrO11p4oAA7qlFmzLe1K1NEevmZ
-SZScT8hiRGKcOh/WOugYQHNg9EWAI7XH48nZ2w3WksTwWo/bVXJiT0fa1rLDhWfK
-zjrDrCq9BiSylc7swra3AVx3S07dMqsYlOR1ezTbCOqx40m5HJiXCvREJIwSZj7+
-7/VK5GNG7gjZRp9fFOAquy7Vfad6/McrTJUGLrMEJwiHAPSbGG4nWnqwl0THQ+m1
-nJTjBcvSybDUpnjcbhpcF1WIF3eXzPRG2elwq5vpEjxH8b3medD5HOY5DHzyNLfN
-CRpTZgp+fnGDHOaU3ZNm9F+opAPhWoCAqTRdiZ4or8lA3Q7iARA=
-=BOVH
------END PGP SIGNATURE-----
-
---ax6wwmzhmgmytfow--
+Acked-by: Rob Herring <robh@kernel.org>
