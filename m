@@ -2,95 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F103E23CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885733E23CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243551AbhHFHQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 03:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241864AbhHFHQX (ORCPT
+        id S243569AbhHFHRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 03:17:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37985 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243553AbhHFHRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 03:16:23 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8FFC061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 00:16:06 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id x11so13631807ejj.8
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 00:16:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=k3+PIl84BDEKsR+afDftURi+daSqqQKQrezVjb4o2gs=;
-        b=P3ylrGHSOs4hTwSgVigAQaV/JBnxL79QvrEEcp71nzljS/BxPNdrt2K36UkSad+Du1
-         GGHy/SqwnU3bFM3ko2R0lfWEhVF3UZbAPxy5RIQJjtvPtT1saEAmjc4UgOJ1+8ZB27Qq
-         UOoi0+0P56GWZzFHukvJR37iWmTG0D0RCJSEjokN5abEtHtXK59k2l5mlpODxR8/RmZN
-         75eoN8YKwYQRfzVwcbYLrNtKdQumbASi2Gw7KQM+cBCjFr+/QmZg7xSd7+G6RLXGOdtB
-         DNIgXH6wntcTm+o5ouUH8KMRONs+xqCm2nIyONh9uvd353EXqH+tr+7Lzibn4jflV+Yy
-         WwiQ==
+        Fri, 6 Aug 2021 03:17:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628234209;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4h9NXCahpaPwahhaO5hMLHu+0Sj92iJsupdJcdmnrx4=;
+        b=QyZvqAEae9RwU2R0wLA6NaPiHcc/a+2+C0owzLknw8Q1Qj1llWV8wkmcsG3Q6SxYK+PszG
+        3jPOe19/VP3p5+VzlPJpuFx7MSqGb83bb9gRRf/l05XxtifBphT1M48vnOwc8vmxYGGsk0
+        Q7y2O5vUIbBCDMFxyF/Ig1DjUtFf9Q4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-587-zUZgUsTYNwirvLCxYnmUDQ-1; Fri, 06 Aug 2021 03:16:48 -0400
+X-MC-Unique: zUZgUsTYNwirvLCxYnmUDQ-1
+Received: by mail-ej1-f69.google.com with SMTP id lu19-20020a170906fad3b029058768348f55so2872808ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 00:16:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=k3+PIl84BDEKsR+afDftURi+daSqqQKQrezVjb4o2gs=;
-        b=DRrMpJ+GCeZpFCGDwUMOYrWsDf3OugL/o8pvQW2nkusDf5Nsc7ZU56jn+0hSzFfAVh
-         3HbiSF6IWYRHHTwN+rXUgnVYduUC5kll5WHb5FaBBECnFIhY8XcPbhz065QifH4pjWl5
-         v7cOoxV3WMdjpfnmwcYkPJReDaMTIFy1lONDnpqj0jEkkAPdJr/stKGasI3/3z0+n4Se
-         RpZB2rxEvlFW50q2otiF1ARuWeJD+sdSCGTqUfYjuUN8S5eDIioU0akjIblUDdF3tQRg
-         3PZSqaqQOCrwnQHDTQo51LsfkhVw4R+jKtGAFCXWT+DvM8YmRH7azmiwkb0hAh4cwN2F
-         dJgg==
-X-Gm-Message-State: AOAM531LJ05HTYAfV9OPQpZjYHKMX8SI07nxIY0o1dm+yfgwd3B1fZ+X
-        EoX6jzpJyi8ejs2iCSgkdXYEBWdKs9WdE7ClHss=
-X-Google-Smtp-Source: ABdhPJyp0mmafGxNrE8hIorfmfTZTp1Nw/K+O1FtZh+lEsq9lhZNvoFecoSV9j2DriV9Gyoxy0K2mbjaTSYUK6bTXPM=
-X-Received: by 2002:a17:907:76b9:: with SMTP id jw25mr8436029ejc.393.1628234165510;
- Fri, 06 Aug 2021 00:16:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4h9NXCahpaPwahhaO5hMLHu+0Sj92iJsupdJcdmnrx4=;
+        b=OaK4ar70hS5xkkyxDSnyiA2llI/5vBP/l77nsPNRu+JotN+rrvqCO0mhWI6g2ENhJx
+         DQwVnVva230pI4KgDxqLhTRS5quhgHMMpua5cM/coz/H0wG8ZxyS66zUSYUBaWiOxLsd
+         G57eylrXFxOHSnqLENK0oZez+3ujQX0Au8FAMaxgkasnEQAvhSbVUeQYTaY4QxUvuIMF
+         lZUgpWOQPsT9ke7QHoEAKAs4NibEvVJ5BWLweeG5b7XnVRax21/C5VssezlTmyRE9DWC
+         iXDF3Nw0pyU9DkUv9ORH6JMfun4GWUhEcr5mUPs1XrMe6jKvQ0flrotS1RhCZQbCb49r
+         SPBA==
+X-Gm-Message-State: AOAM530XEGT/9WZ6rtnR+8ZD+nXt63V5HN7jbkpwdi2LzPgUNWHB5ipg
+        dLK/KQTv78bdlWJWiwA+P/VjZzCH9Q6Tv/QrH7igO5gs2JBPEkOqw1QVhpPrNpuwXe2353lt8dd
+        nYPnQirjffeBJvejto4i2wJjb
+X-Received: by 2002:a05:6402:3552:: with SMTP id f18mr11179140edd.82.1628234206525;
+        Fri, 06 Aug 2021 00:16:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwYURfrjKTFZrJHZ9Mcw5cT6VZwzIqZ9tPmHg4AX/+74PdKLsXxtkvp1Vnsgy4/vQl/I70njg==
+X-Received: by 2002:a05:6402:3552:: with SMTP id f18mr11179120edd.82.1628234206380;
+        Fri, 06 Aug 2021 00:16:46 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id gv7sm2535932ejc.5.2021.08.06.00.16.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 00:16:46 -0700 (PDT)
+Date:   Fri, 6 Aug 2021 09:16:43 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [!!Mass Mail KSE][MASSMAIL KLMS] Re: [RFC PATCH v1 0/7]
+ virtio/vsock: introduce MSG_EOR flag for SEQPACKET
+Message-ID: <20210806071643.byebg4hmm3dtnb2x@steredhat>
+References: <20210726163137.2589102-1-arseny.krasnov@kaspersky.com>
+ <20210804125737.kbgc6mg2v5lw25wu@steredhat>
+ <8e44442c-4cac-dcbc-a88d-17d9878e7d32@kaspersky.com>
+ <20210805090657.y2sz3pzhruuolncq@steredhat>
+ <8bd80d3f-3e00-5e31-42a1-300ff29100ae@kaspersky.com>
 MIME-Version: 1.0
-Sender: mrslila67hber@gmail.com
-Received: by 2002:a17:906:a857:0:0:0:0 with HTTP; Fri, 6 Aug 2021 00:16:05
- -0700 (PDT)
-From:   Mrs lila Haber <mrslilahabe2016@gmail.com>
-Date:   Fri, 6 Aug 2021 07:16:05 +0000
-X-Google-Sender-Auth: XWrWYRXp3XxgBMKPjw17t3dJa7Y
-Message-ID: <CAGq_i_1LZUDqSsUFnuOnzyojzfey9=u760NiDTvVrDJtpmOggg@mail.gmail.com>
-Subject: Dear Child of God
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <8bd80d3f-3e00-5e31-42a1-300ff29100ae@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Child of God,
+On Thu, Aug 05, 2021 at 12:21:57PM +0300, Arseny Krasnov wrote:
+>
+>On 05.08.2021 12:06, Stefano Garzarella wrote:
+>> Caution: This is an external email. Be cautious while opening links or attachments.
+>>
+>>
+>>
+>> On Thu, Aug 05, 2021 at 11:33:12AM +0300, Arseny Krasnov wrote:
+>>> On 04.08.2021 15:57, Stefano Garzarella wrote:
+>>>> Caution: This is an external email. Be cautious while opening links or attachments.
+>>>>
+>>>>
+>>>>
+>>>> Hi Arseny,
+>>>>
+>>>> On Mon, Jul 26, 2021 at 07:31:33PM +0300, Arseny Krasnov wrote:
+>>>>>       This patchset implements support of MSG_EOR bit for SEQPACKET
+>>>>> AF_VSOCK sockets over virtio transport.
+>>>>>       Idea is to distinguish concepts of 'messages' and 'records'.
+>>>>> Message is result of sending calls: 'write()', 'send()', 'sendmsg()'
+>>>>> etc. It has fixed maximum length, and it bounds are visible using
+>>>>> return from receive calls: 'read()', 'recv()', 'recvmsg()' etc.
+>>>>> Current implementation based on message definition above.
+>>>> Okay, so the implementation we merged is wrong right?
+>>>> Should we disable the feature bit in stable kernels that contain it? Or
+>>>> maybe we can backport the fixes...
+>>> Hi,
+>>>
+>>> No, this is correct and it is message boundary based. Idea of this
+>>> patchset is to add extra boundaries marker which i think could be
+>>> useful when we want to send data in seqpacket mode which length
+>>> is bigger than maximum message length(this is limited by transport).
+>>> Of course we can fragment big piece of data too small messages, but
+>>> this
+>>> requires to carry fragmentation info in data protocol. So In this case
+>>> when we want to maintain boundaries receiver calls recvmsg() until
+>>> MSG_EOR found.
+>>> But when receiver knows, that data is fit in maximum datagram length,
+>>> it doesn't care about checking MSG_EOR just calling recv() or
+>>> read()(e.g.
+>>> message based mode).
+>> I'm not sure we should maintain boundaries of multiple send(), from
+>> POSIX standard [1]:
+>
+>Yes, but also from POSIX: such calls like send() and sendmsg()
+>
+>operates with "message" and if we check recvmsg() we will
+>
+>find the following thing:
+>
+>
+>For message-based sockets, such as SOCK_DGRAM and SOCK_SEQPACKET, the entire
+>
+>message shall be read in a single operation. If a message is too long to fit in the supplied
+>
+>buffers, and MSG_PEEK is not set in the flags argument, the excess bytes shall be discarded.
+>
+>
+>I understand this, that send() boundaries also must be maintained.
+>
+>I've checked SEQPACKET in AF_UNIX and AX_25 - both doesn't support
+>
+>MSG_EOR, so send() boundaries must be supported.
+>
+>>
+>>    SOCK_SEQPACKET
+>>      Provides sequenced, reliable, bidirectional, connection-mode
+>>      transmission paths for records. A record can be sent using one or
+>>      more output operations and received using one or more input
+>>      operations, but a single operation never transfers part of more than
+>>      one record. Record boundaries are visible to the receiver via the
+>>      MSG_EOR flag.
+>>
+>>  From my understanding a record could be sent with multiple send() 
+>>  and
+>> received, for example, with a single recvmsg().
+>> The only boundary should be the MSG_EOR flag set by the user on the 
+>> last
+>> send() of a record.
+>You are right, if we talking about "record".
+>>
+>>  From send() description [2]:
+>>
+>>    MSG_EOR
+>>      Terminates a record (if supported by the protocol).
+>>
+>>  From recvmsg() description [3]:
+>>
+>>    MSG_EOR
+>>      End-of-record was received (if supported by the protocol).
+>>
+>> Thanks,
+>> Stefano
+>>
+>> [1]
+>> https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
+>> [2] 
+>> https://pubs.opengroup.org/onlinepubs/9699919799/functions/send.html
+>> [3]
+>> https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvmsg.html
+>
+>P.S.: seems SEQPACKET is too exotic thing that everyone implements it 
+>in
+>
+>own manner, because i've tested SCTP seqpacket implementation, and 
+>found
+>
+>that:
+>
+>1) It doesn't support MSG_EOR bit at send side, but uses MSG_EOR at 
+>receiver
+>
+>side to mark MESSAGE boundary.
+>
+>2) According POSIX any extra bytes that didn't fit in user's buffer 
+>must be dropped,
+>
+>but SCTP doesn't drop it - you can read rest of datagram in next calls.
+>
 
-Calvary Greetings in the name of the LORD Almighty and Our LORD JESUS
-CHRIST the giver of every good thing. Good day and compliments of the
-seasons, i know this letter will definitely come to you as a huge
-surprise, but I implore you to take the time to go through it
-carefully as the decision you make will go off a long way to determine
-my future and continued existence. I am Mrs Lila Haber aging widow of
-57 years old suffering from long time illness.I have some funds I
-inherited from my late husband, the sum of (19.1Million Dollars) and I
-needed a very honest and God fearing who can withdraw this money then
-use the funds for Charity works. I WISH TO GIVE THIS FUNDS TO YOU FOR
-CHARITY WORKS. I found your email address from the internet after
-honest prayers to the LORD to bring me a helper and i decided to
-contact you if you may be willing and interested to handle these trust
-funds in good faith before anything happens to me.
+Thanks for this useful information, now I see the differences and why we 
+should support both.
 
-I accept this decision because I do not have any child who will
-inherit this money after I die. I want your urgent reply to me so that
-I will give you the deposit receipt which the SECURITY COMPANY issued
-to me as next of kin for immediate transfer of the money to your
-account in your country, to start the good work of God, I want you to
-use the 25/percent of the total amount to help yourself in doing the
-project. I am desperately in keen need of assistance and I have
-summoned up courage to contact you for this task, you must not fail me
-and the millions of the poor people in our todays WORLD. This is no
-stolen money and there are no dangers involved,100% RISK FREE with
-full legal proof. Please if you would be able to use the funds for the
-Charity works kindly let me know immediately.I will appreciate your
-utmost confidentiality and trust in this matter to accomplish my heart
-desire, as I don't want anything that will jeopardize my last wish.
-Please
-kindly respond quickly for further details.
+I think is better to include them in the cover letter.
 
-Warmest Regards,
-Mrs Lila Haber
+I'm going to review the paches right now :-)
+
+Stefano
+
