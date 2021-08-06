@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5013B3E2A94
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEA33E2AA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343673AbhHFMcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 08:32:00 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:36978 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242089AbhHFMb7 (ORCPT
+        id S1343715AbhHFMct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 08:32:49 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:43971 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343689AbhHFMcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 08:31:59 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 2245D1C0B7A; Fri,  6 Aug 2021 14:31:42 +0200 (CEST)
-Date:   Fri, 6 Aug 2021 14:31:41 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/16] 4.19.202-rc1 review
-Message-ID: <20210806123141.GB11939@duo.ucw.cz>
-References: <20210806081111.144943357@linuxfoundation.org>
+        Fri, 6 Aug 2021 08:32:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628253151; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=64u7uNH1LgCuCacOvZPPHByj6Huub6A+vuiCo061RFw=; b=KnEgSVbe7WPMO449cVlkJppfbgGmr2q/cwBRnE83F7PbD1rf+mE5kTsVf6fU61Pf8sFf9Kkq
+ OTOJ4qP5EctBGHg9VNCtizjdU4xOXLYsBNSJ0sslUaa90m3WiEQwp/xnBH91BgOiG/GtW4OC
+ cWrUK9P3bvFxoqZpnG8igBFaV8U=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 610d2bbfb4dfc4b0efbb0241 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Aug 2021 12:31:59
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 48B99C4338A; Fri,  6 Aug 2021 12:31:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4B1ABC4338A;
+        Fri,  6 Aug 2021 12:31:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4B1ABC4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Reto Schneider <rs@hqv.ch>
+Cc:     chris.chiu@canonical.com, code@reto-schneider.ch,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jes.sorensen@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Subject: Re: [PATCH v2] rtl8xxxu: Fix the handling of TX A-MPDU aggregation
+References: <20210804151325.86600-1-chris.chiu@canonical.com>
+        <26f85a9f-552d-8420-0010-f5cda70d3a00@hqv.ch>
+Date:   Fri, 06 Aug 2021 15:31:52 +0300
+In-Reply-To: <26f85a9f-552d-8420-0010-f5cda70d3a00@hqv.ch> (Reto Schneider's
+        message of "Fri, 6 Aug 2021 12:03:18 +0200")
+Message-ID: <87o8aabvpj.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="uZ3hkaAS1mZxFaxD"
-Content-Disposition: inline
-In-Reply-To: <20210806081111.144943357@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Reto Schneider <rs@hqv.ch> writes:
 
---uZ3hkaAS1mZxFaxD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On 8/4/21 17:13, chris.chiu@canonical.com wrote:
+>> The TX A-MPDU aggregation is not handled in the driver since the
+>> ieee80211_start_tx_ba_session has never been started properly.
+>> Start and stop the TX BA session by tracking the TX aggregation
+>> status of each TID. Fix the ampdu_action and the tx descriptor
+>> accordingly with the given TID.
+>
+> I'd like to test this but I am not sure what to look for (before and
+> after applying the patch).
 
-Hi!
+Thanks, testing feedback is always very much appreciated.
 
-> This is the start of the stable review cycle for the 4.19.202 release.
-> There are 16 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> What should I look for when looking at the (sniffed) Wireshark traces?
 
-CIP testing did not find any problems here:
+From my (maintainer) point of view most important is that there are no
+regressions visible to users, for example no data stalls, crashes or
+anything like that.
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.19.y
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---uZ3hkaAS1mZxFaxD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYQ0rrQAKCRAw5/Bqldv6
-8mHYAKCTJs3X2oqKIDwFYxuAujyIqO+k6wCffz+DvEnBJaKH35SlT2wb7BF6lGs=
-=1fiP
------END PGP SIGNATURE-----
-
---uZ3hkaAS1mZxFaxD--
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
