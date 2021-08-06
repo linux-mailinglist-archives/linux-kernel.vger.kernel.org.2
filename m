@@ -2,187 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B4F3E29EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85243E29EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245647AbhHFLmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:42:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
+        id S245652AbhHFLng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240746AbhHFLl7 (ORCPT
+        with ESMTP id S240091AbhHFLnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:41:59 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3ADEC061799
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 04:41:42 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id k4so10731088wrc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 04:41:42 -0700 (PDT)
+        Fri, 6 Aug 2021 07:43:35 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D6AC061798;
+        Fri,  6 Aug 2021 04:43:19 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id b11so10715661wrx.6;
+        Fri, 06 Aug 2021 04:43:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nQLD+6skjkbCbAXtRVxzYJblr69u3sgrGea1Kimdkhg=;
-        b=YMTY0G5M62cdPoLzxttQkyu20HRsdhcn5QFufOxWmckQ6BoOiXNuMogNIMvO3y8Gqd
-         M9q814P+EwEhgqIl6V/jY65oG35Yl9whB0N8+RcDzLnNy0jY+/MLLe9sxBDRWnpBIW74
-         UxzkxRgoNIeke97eqbkc+kxukeufMwgDn0Ivj81TNMnNGSsx+3++GFJD3dUXfXIPHsRU
-         4UVMNRyjGJJG3rrjlx1jf/tL7WOCRiaAA6jmjwFaHjKG9vHpOOa5uONprUIG19E/Kl5i
-         zV2+t0yuv/fmE/KhPSQzyS67TzGwKowetfINbKZLNzdYG6yulUfh1cNOfU4cs5YU7Tb4
-         T5Pg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gc3S+v0WYsSbPNetify2yT5xI0BcVIWyyU5ydgMV3Sc=;
+        b=IPbfNVB0w3ZpEq6jRu9ETKWlaCzP45JOcCfWweUo5iZF1eVw0on9idRjVRaSg1Qyij
+         oD8oJSofTL9dREYjOSjIr3YMCjTCg3m7RTbd/7OrKMDxLVuDB4twmwDKAECE0ht+pe/f
+         idcVWBZMZ+7XaGLrSeWT6JK0kYCQySg7jzCIxIZja4671pXEFqvJ39J/Aj4fiRd+k1tN
+         Y67kQ1c3fEK2p5CcjLwq7P4af1qCrt+oruboPf/PmwaenQNnfSsWtFjKQojRIU7V4/B5
+         qYy6af+ICpIQdk1+OOVJaIA2P1ZslTGdoFS9wr34WCqTfdJeQYRi6P5UTgfwO9/dLFdR
+         l/kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nQLD+6skjkbCbAXtRVxzYJblr69u3sgrGea1Kimdkhg=;
-        b=sUCnhrumQt/hPAniVwt1PyXCAobxEi9Vz+3tWNVX5rK58813zY5WhImb1nysDWSYvQ
-         i1cEgI1F5nysNaGEkYDpz+wnLxR2b2X5PbKLRR3/TMi8CjIAYBqXN+no8fiX0EgXvhcE
-         BIovgUCgp/vnjzSd0LEux5kNKFczed479/AcGz1e57/Oe8ErZiH907dk5cV4+sTMUblN
-         MNtOVDy+S74Je/Vsgpb6PO6RBdb74oTJaODj0VnB3BIzpC8K5xwXKZwu9mX5PlCTktSz
-         aB1PYhz9SJpMXUWPn8KDgzx6nXM6Obh5yTcT7AIO99IdymOpK1NAXocGHw/ACcIr7WwJ
-         PJCQ==
-X-Gm-Message-State: AOAM531kf7HyFjBjQZgecUkh5fHwCBDFaqIgjHu4kZrCp6wtCbbpw4a3
-        K6HrNmjZH1cJzBKZA2TVVG/iWA==
-X-Google-Smtp-Source: ABdhPJxPrgNnqnmshXFC0/HxY+BGRcJNzx350Z8+o4pEaKCHvdJ5mFiFOMqdP4FbQcyb0DKcWqNxHw==
-X-Received: by 2002:a5d:6d8c:: with SMTP id l12mr10407911wrs.290.1628250101656;
-        Fri, 06 Aug 2021 04:41:41 -0700 (PDT)
-Received: from google.com ([109.180.115.228])
-        by smtp.gmail.com with ESMTPSA id f5sm9367814wrs.5.2021.08.06.04.41.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gc3S+v0WYsSbPNetify2yT5xI0BcVIWyyU5ydgMV3Sc=;
+        b=IoIBCYiiPty0cMPVslM2EXVPrDmKsfUIV/p89nNVWp4rmL03SueDDg7wUas2qS2yMf
+         Vl2ivD4ndwRnTM5l4oTu4MGmp92koI8s1lCQZgR/251BONIihrOPsC2RfGTO4rouiTfB
+         kIIfE+FTcYXpXh7BBVSioyHX3rmyPJzPLgs8ty5RyAThq6tGf3TqVnEE5InAbwh30HK7
+         bLTeaGNLAwvJ9EvNyyphnXHKqRzO0XxgXYoB3Q7AW0YJlV4U512WQ74NdBufT55z681w
+         YhFL3nQIhphIVEp9HUJnU+IHJmNW+Tyg1PLEuf7i7l+A+A9s2z4be9M5FFmquU3ssPN6
+         VGVw==
+X-Gm-Message-State: AOAM531OIdKr8lGCgeIue1eaNnuE6YEduyXgas7MWRrH0DDuhCC7R1ni
+        0k6FSypa1JM23Osi8Zccncs=
+X-Google-Smtp-Source: ABdhPJwiytsZL5qmxhuH0TmtWLFQN7lk4RhxQtowzzxVSQeJLkjGg1Dr/gT+LkmO+CRdUDo0JhnCQA==
+X-Received: by 2002:adf:f046:: with SMTP id t6mr10640255wro.266.1628250197835;
+        Fri, 06 Aug 2021 04:43:17 -0700 (PDT)
+Received: from localhost.localdomain ([85.255.237.205])
+        by smtp.gmail.com with ESMTPSA id a12sm11720548wmj.22.2021.08.06.04.43.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 04:41:41 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 12:41:38 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Alistair Francis <alistair23@gmail.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/1] mfd: simple-mfd-i2c: Add support for registering
- devices via MFD cells
-Message-ID: <YQ0f8hJSuLqR3SGQ@google.com>
-References: <20210805085611.864188-1-lee.jones@linaro.org>
- <CAKmqyKMPg8kikB7Ym6qc+VYAwt0DvyXK+xqu3SwgJwcaCyUrbA@mail.gmail.com>
+        Fri, 06 Aug 2021 04:43:17 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC] mm: optimise generic_file_read_iter
+Date:   Fri,  6 Aug 2021 12:42:43 +0100
+Message-Id: <07bd408d6cad95166b776911823b40044160b434.1628248975.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKmqyKMPg8kikB7Ym6qc+VYAwt0DvyXK+xqu3SwgJwcaCyUrbA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 06 Aug 2021, Alistair Francis wrote:
+Unless direct I/O path of generic_file_read_iter() ended up with an
+error or a short read, it doesn't use inode. So, load inode and size
+later, only when they're needed. This cuts two memory reads and also
+imrpoves code generation, e.g. loads from stack.
 
-> On Thu, Aug 5, 2021 at 6:56 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > More devices are cropping up requiring only Regmap initialisation and
-> > child registration functionality.  We currently only support that if
-> > all required devices are represented by their own Device Tree nodes
-> > complete with compatible strings.
-> >
-> > However, not everyone is happy with adding empty nodes that provide no
-> > additional device information into the Device Tree.
-> >
-> > Rather than have a plethora of mostly empty, function-less drivers in
-> > MFD, we'll support those simple cases in here instead via MFD cells.
-> >
-> > Cc: Michael Walle <michael@walle.cc>
-> > Cc: Mark Brown <broonie@kernel.org>
-> > Cc: Alistair Francis <alistair23@gmail.com>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> > v2:
-> >  - Check for empty of_device_id .data entry
-> >
-> >  drivers/mfd/simple-mfd-i2c.c | 41 +++++++++++++++++++++++++++++-------
-> >  drivers/mfd/simple-mfd-i2c.h | 32 ++++++++++++++++++++++++++++
-> >  2 files changed, 65 insertions(+), 8 deletions(-)
-> >  create mode 100644 drivers/mfd/simple-mfd-i2c.h
-> >
-> > diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.c
-> > index 87f684cff9a17..583e8c7924af0 100644
-> > --- a/drivers/mfd/simple-mfd-i2c.c
-> > +++ b/drivers/mfd/simple-mfd-i2c.c
-> > @@ -2,39 +2,64 @@
-> >  /*
-> >   * Simple MFD - I2C
-> >   *
-> > + * Author(s):
-> > + *     Michael Walle <michael@walle.cc>
-> > + *     Lee Jones <lee.jones@linaro.org>
-> > + *
-> >   * This driver creates a single register map with the intention for it to be
-> >   * shared by all sub-devices.  Children can use their parent's device structure
-> >   * (dev.parent) in order to reference it.
-> >   *
-> >   * Once the register map has been successfully initialised, any sub-devices
-> > - * represented by child nodes in Device Tree will be subsequently registered.
-> > + * represented by child nodes in Device Tree or via the MFD cells in this file
-> > + * will be subsequently registered.
-> >   */
-> >
-> >  #include <linux/i2c.h>
-> >  #include <linux/kernel.h>
-> > +#include <linux/mfd/core.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of_platform.h>
-> >  #include <linux/regmap.h>
-> >
-> > -static const struct regmap_config simple_regmap_config = {
-> > +#include "simple-mfd-i2c.h"
-> > +
-> > +static const struct regmap_config regmap_config_8r_8v = {
-> >         .reg_bits = 8,
-> >         .val_bits = 8,
-> >  };
-> >
-> >  static int simple_mfd_i2c_probe(struct i2c_client *i2c)
-> >  {
-> > -       const struct regmap_config *config;
-> > +       const struct simple_mfd_data *simple_mfd_data;
-> > +       const struct regmap_config *regmap_config;
-> >         struct regmap *regmap;
-> > +       int ret;
-> > +
-> > +       simple_mfd_data = device_get_match_data(&i2c->dev);
-> >
-> > -       config = device_get_match_data(&i2c->dev);
-> > -       if (!config)
-> > -               config = &simple_regmap_config;
-> > +       /* If no regmap_config is specified, use the default 8reg and 8val bits */
-> > +       if (!simple_mfd_data || !simple_mfd_data->regmap_config)
-> > +               regmap_config = &regmap_config_8r_8v;
-> > +       else
-> > +               regmap_config = simple_mfd_data->regmap_config;
-> >
-> > -       regmap = devm_regmap_init_i2c(i2c, config);
-> > +       regmap = devm_regmap_init_i2c(i2c, regmap_config);
-> >         if (IS_ERR(regmap))
-> >                 return PTR_ERR(regmap);
-> >
-> > -       return devm_of_platform_populate(&i2c->dev);
-> > +       /* If no MFD cells are spedified, use register the DT child nodes instead */
-> > +       if (!simple_mfd_data || !simple_mfd_data->mfd_cell)
-> > +               return devm_of_platform_populate(&i2c->dev);
-> > +
-> > +       ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_AUTO,
-> > +                                  simple_mfd_data->mfd_cell,
-> > +                                  simple_mfd_data->mfd_cell_size,
-> > +                                  NULL, 0, NULL);
-> > +       if (!ret)
-> 
-> Shouldn't this be `if (ret)` instead?
-> 
-> With that changed this works for me as well:
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+---
 
-You're right.  Will fix.
+NOTE: as a side effect, it reads inode->i_size after ->direct_IO(), and
+I'm not sure whether that's valid, so would be great to get feedback
+from someone who knows better.
 
-> Reviewed-by: Alistair Francis <alistair@alistair23.me>
-> Tested-by: Alistair Francis <alistair@alistair23.me>
+ mm/filemap.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Thanks.
-
+diff --git a/mm/filemap.c b/mm/filemap.c
+index d1458ecf2f51..0030c454ec35 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2658,10 +2658,8 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 	if (iocb->ki_flags & IOCB_DIRECT) {
+ 		struct file *file = iocb->ki_filp;
+ 		struct address_space *mapping = file->f_mapping;
+-		struct inode *inode = mapping->host;
+-		loff_t size;
++		struct inode *inode;
+ 
+-		size = i_size_read(inode);
+ 		if (iocb->ki_flags & IOCB_NOWAIT) {
+ 			if (filemap_range_needs_writeback(mapping, iocb->ki_pos,
+ 						iocb->ki_pos + count - 1))
+@@ -2693,8 +2691,10 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 		 * the rest of the read.  Buffered reads will not work for
+ 		 * DAX files, so don't bother trying.
+ 		 */
+-		if (retval < 0 || !count || iocb->ki_pos >= size ||
+-		    IS_DAX(inode))
++		if (retval < 0 || !count)
++			return retval;
++		inode = mapping->host;
++		if (iocb->ki_pos >= i_size_read(inode) || IS_DAX(inode))
+ 			return retval;
+ 	}
+ 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.32.0
+
