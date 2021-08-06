@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5543E256F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67FE3E25FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242852AbhHFIUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:20:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46778 "EHLO mail.kernel.org"
+        id S244619AbhHFIYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:24:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243815AbhHFISB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:18:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0976C61209;
-        Fri,  6 Aug 2021 08:17:44 +0000 (UTC)
+        id S244137AbhHFIVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:21:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22EC6606A5;
+        Fri,  6 Aug 2021 08:20:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628237865;
-        bh=aSJpNl/uek+xIGqZ0JJTRIWWo3ZbHl3UuNvzFbi43P4=;
+        s=korg; t=1628238059;
+        bh=LZf9PPRYKxEEZ+oplejD0zgRJqNJQO6ub14WE+rHuD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gW79/AqkyW28iAsFK+tYx8CZ0JRVxvPDCfz9CGADtmdxQP8lHQF0a3Gmjnj8U4HeK
-         AKYNcgR7v2zHaLqNYBQw5cH+OndZTj+uZC+mKYizVHRMUbzaHdMbXWPfchv9+EBNNF
-         Q+MN9+CVa2pRvd5+UGpWztMkGgRliDrC8MPaVld0=
+        b=PlZV8XRs2cJBqHOltA8vYurwuEwTYtIy4tdGt3rEEk8+ss4xCwv7C/AjZSWrpQEPW
+         mbIMr5ZQRMzuCPmEStaBmEWkHCrXMG2p2TuJdIJ84jpyfTWVFUq0Cbr+JobrPOOkwj
+         kbGh46yQ/iUzMT1RF6mRaYCJaaWVUg/C7X0phS+s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 14/23] Revert "Bluetooth: Shutdown controller after workqueues are flushed or cancelled"
-Date:   Fri,  6 Aug 2021 10:16:46 +0200
-Message-Id: <20210806081112.620516662@linuxfoundation.org>
+Subject: [PATCH 5.13 04/35] skmsg: Increase sk->sk_drops when dropping packets
+Date:   Fri,  6 Aug 2021 10:16:47 +0200
+Message-Id: <20210806081113.860850432@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210806081112.104686873@linuxfoundation.org>
-References: <20210806081112.104686873@linuxfoundation.org>
+In-Reply-To: <20210806081113.718626745@linuxfoundation.org>
+References: <20210806081113.718626745@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +42,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Cong Wang <cong.wang@bytedance.com>
 
-This reverts commit aa9a2ec7ee08dda41bb565b692f34c620d63b517 which is
-commit 0ea9fd001a14ebc294f112b0361a4e601551d508 upstream.
+[ Upstream commit 781dd0431eb549f9cb1fdddf91a50d985febe884 ]
 
-It has been reported to have problems:
-	https://lore.kernel.org/linux-bluetooth/8735ryk0o7.fsf@baylibre.com/
+It is hard to observe packet drops without increasing relevant
+drop counters, here we should increase sk->sk_drops which is
+a protocol-independent counter. Fortunately psock is always
+associated with a struct sock, we can just use psock->sk.
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: Marcel Holtmann <marcel@holtmann.org>
-Cc: Sasha Levin <sashal@kernel.org>
-Link: https://lore.kernel.org/r/efee3a58-a4d2-af22-0931-e81b877ab539@roeck-us.net
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+Link: https://lore.kernel.org/bpf/20210615021342.7416-9-xiyou.wangcong@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_core.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ net/core/skmsg.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1672,6 +1672,14 @@ int hci_dev_do_close(struct hci_dev *hde
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 45b3a3adc886..d428368a0d87 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -607,6 +607,12 @@ static int sk_psock_handle_skb(struct sk_psock *psock, struct sk_buff *skb,
+ 	return sk_psock_skb_ingress(psock, skb);
+ }
  
- 	BT_DBG("%s %p", hdev->name, hdev);
- 
-+	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
-+	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
-+	    test_bit(HCI_UP, &hdev->flags)) {
-+		/* Execute vendor specific shutdown routine */
-+		if (hdev->shutdown)
-+			hdev->shutdown(hdev);
-+	}
++static void sock_drop(struct sock *sk, struct sk_buff *skb)
++{
++	sk_drops_add(sk, skb);
++	kfree_skb(skb);
++}
 +
- 	cancel_delayed_work(&hdev->power_off);
+ static void sk_psock_backlog(struct work_struct *work)
+ {
+ 	struct sk_psock *psock = container_of(work, struct sk_psock, work);
+@@ -646,7 +652,7 @@ static void sk_psock_backlog(struct work_struct *work)
+ 				/* Hard errors break pipe and stop xmit. */
+ 				sk_psock_report_error(psock, ret ? -ret : EPIPE);
+ 				sk_psock_clear_state(psock, SK_PSOCK_TX_ENABLED);
+-				kfree_skb(skb);
++				sock_drop(psock->sk, skb);
+ 				goto end;
+ 			}
+ 			off += ret;
+@@ -737,7 +743,7 @@ static void __sk_psock_zap_ingress(struct sk_psock *psock)
  
- 	hci_request_cancel_all(hdev);
-@@ -1745,14 +1753,6 @@ int hci_dev_do_close(struct hci_dev *hde
- 		clear_bit(HCI_INIT, &hdev->flags);
+ 	while ((skb = skb_dequeue(&psock->ingress_skb)) != NULL) {
+ 		skb_bpf_redirect_clear(skb);
+-		kfree_skb(skb);
++		sock_drop(psock->sk, skb);
+ 	}
+ 	__sk_psock_purge_ingress_msg(psock);
+ }
+@@ -863,7 +869,7 @@ static int sk_psock_skb_redirect(struct sk_buff *skb)
+ 	 * return code, but then didn't set a redirect interface.
+ 	 */
+ 	if (unlikely(!sk_other)) {
+-		kfree_skb(skb);
++		sock_drop(from->sk, skb);
+ 		return -EIO;
+ 	}
+ 	psock_other = sk_psock(sk_other);
+@@ -873,14 +879,14 @@ static int sk_psock_skb_redirect(struct sk_buff *skb)
+ 	 */
+ 	if (!psock_other || sock_flag(sk_other, SOCK_DEAD)) {
+ 		skb_bpf_redirect_clear(skb);
+-		kfree_skb(skb);
++		sock_drop(from->sk, skb);
+ 		return -EIO;
+ 	}
+ 	spin_lock_bh(&psock_other->ingress_lock);
+ 	if (!sk_psock_test_state(psock_other, SK_PSOCK_TX_ENABLED)) {
+ 		spin_unlock_bh(&psock_other->ingress_lock);
+ 		skb_bpf_redirect_clear(skb);
+-		kfree_skb(skb);
++		sock_drop(from->sk, skb);
+ 		return -EIO;
  	}
  
--	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
--	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
--	    test_bit(HCI_UP, &hdev->flags)) {
--		/* Execute vendor specific shutdown routine */
--		if (hdev->shutdown)
--			hdev->shutdown(hdev);
--	}
--
- 	/* flush cmd  work */
- 	flush_work(&hdev->cmd_work);
+@@ -970,7 +976,7 @@ static int sk_psock_verdict_apply(struct sk_psock *psock, struct sk_buff *skb,
+ 	case __SK_DROP:
+ 	default:
+ out_free:
+-		kfree_skb(skb);
++		sock_drop(psock->sk, skb);
+ 	}
  
+ 	return err;
+@@ -1005,7 +1011,7 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
+ 	sk = strp->sk;
+ 	psock = sk_psock(sk);
+ 	if (unlikely(!psock)) {
+-		kfree_skb(skb);
++		sock_drop(sk, skb);
+ 		goto out;
+ 	}
+ 	prog = READ_ONCE(psock->progs.stream_verdict);
+@@ -1126,7 +1132,7 @@ static int sk_psock_verdict_recv(read_descriptor_t *desc, struct sk_buff *skb,
+ 	psock = sk_psock(sk);
+ 	if (unlikely(!psock)) {
+ 		len = 0;
+-		kfree_skb(skb);
++		sock_drop(sk, skb);
+ 		goto out;
+ 	}
+ 	prog = READ_ONCE(psock->progs.stream_verdict);
+-- 
+2.30.2
+
 
 
