@@ -2,100 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EA33E2429
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DFE83E242B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236411AbhHFHcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 03:32:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59185 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233871AbhHFHcN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 03:32:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628235117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pVWC3UDptA7H+V1Kg/+VGDadWKlNerXuJRs5msdmzWc=;
-        b=RZhsMLBqXDzNvYL/aZr4aClU+Jr1nmFS71BZnyBac0kixbV1q+vqn76qfcbZV7QJd73MqJ
-        MH4Hn4/5eS/wP6Pgaf31OLjf+BDE2uOiFA4YD5dokOGv2aEGzjg63/ucLFkJjZS7oKKP5e
-        AWH2ehg2p4gnQ2BFp+Ep2kDbxbZem+A=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-Yr1MV10cOhq5oOEc-Mm9MQ-1; Fri, 06 Aug 2021 03:31:56 -0400
-X-MC-Unique: Yr1MV10cOhq5oOEc-Mm9MQ-1
-Received: by mail-wr1-f72.google.com with SMTP id r17-20020adfda510000b02901526f76d738so2860159wrl.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 00:31:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=pVWC3UDptA7H+V1Kg/+VGDadWKlNerXuJRs5msdmzWc=;
-        b=lxAAzkOFAq20jYCyYrOaZHScJyBeMlSW/NeWe/DTJeZB0Fqaak149BhYm3VVU591PJ
-         klbeKovN/xKcmkT8lQaxY+zvCiBThiTG7wXHQl/fUseL0VARCmIvtixffIZ8jHOz4nIn
-         cLvdG2LIs+hbnGuoDF/vLlxqt/LIPXozEBU3etZ7PMcRbZs1S78NFmLhq1zX3AFWPt3v
-         NA0rq1ChslRP36DgbSKZmw1U1XfLAq+ADBrnkv71L53670RLnjYAAKSRitoWYfDfPuWg
-         GEsRfojDtfwESLYsxnQwve4htZMAelzY4sCy2PzrTMx6F8arNloQL475n2O56FOAPYrN
-         t+8w==
-X-Gm-Message-State: AOAM5310l5tarOjr07eWprthddNdelQXZow/acrOZQQUO6JkG4AIlMO6
-        Puw2tu9d9lb3ZRXxeK0Ez+8CUb/cd7JU0uSoD55RZHLElLWsF9UMPbQmpTAkSXsejx9QFeqCsDc
-        YvNzAKKQeHt+Pyz2vhpEGtF0s
-X-Received: by 2002:adf:d84b:: with SMTP id k11mr9111341wrl.135.1628235115559;
-        Fri, 06 Aug 2021 00:31:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxdlvx8qxBMUwmS1NtvHCTtU89EIX8U1VYvVts48XyoDGlCmxjLvN0ZVnYLEfLtdPlwCuIpmw==
-X-Received: by 2002:adf:d84b:: with SMTP id k11mr9111324wrl.135.1628235115424;
-        Fri, 06 Aug 2021 00:31:55 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6104.dip0.t-ipconnect.de. [91.12.97.4])
-        by smtp.gmail.com with ESMTPSA id o24sm9843900wmm.37.2021.08.06.00.31.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 00:31:55 -0700 (PDT)
-Subject: Re: [PATCH v3 03/14] KVM: s390: pv: leak the ASCE page when destroy
- fails
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
-        thuth@redhat.com, pasic@linux.ibm.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
-References: <20210804154046.88552-1-imbrenda@linux.ibm.com>
- <20210804154046.88552-4-imbrenda@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <6b75cc71-b996-cf3d-ce57-dbcd475ebc3a@redhat.com>
-Date:   Fri, 6 Aug 2021 09:31:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237147AbhHFHdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 03:33:07 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:49339 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229604AbhHFHdG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 03:33:06 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Ggxyn4TjKz9sVr;
+        Fri,  6 Aug 2021 09:32:49 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id UbRH5ufXxLP3; Fri,  6 Aug 2021 09:32:49 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Ggxyn31dfz9sVl;
+        Fri,  6 Aug 2021 09:32:49 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4554C8B80D;
+        Fri,  6 Aug 2021 09:32:49 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ul3L8Rnr0BtW; Fri,  6 Aug 2021 09:32:49 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D19948B7FD;
+        Fri,  6 Aug 2021 09:32:47 +0200 (CEST)
+Subject: Re: [RFC PATCH 1/4] powerpc: Optimize register usage for esr register
+To:     Xiongwei Song <sxwjean@gmail.com>
+Cc:     Xiongwei Song <sxwjean@me.com>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>, oleg@redhat.com,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, ravi.bangoria@linux.ibm.com,
+        npiggin@gmail.com, aneesh.kumar@linux.ibm.com,
+        sandipan@linux.ibm.com, efremov@linux.com, peterx@redhat.com,
+        akpm@linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210726143053.532839-1-sxwjean@me.com>
+ <5e2336aa-90bf-b820-b5e4-e9a63088930f@csgroup.eu>
+ <CAEVVKH-rht+xpwTUL=ny6qENe2Fb0n=3e7DEmc5qzpSq2_1gTA@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <26814448-c30a-1de1-bad4-79e2bffc3054@csgroup.eu>
+Date:   Fri, 6 Aug 2021 09:32:43 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210804154046.88552-4-imbrenda@linux.ibm.com>
+In-Reply-To: <CAEVVKH-rht+xpwTUL=ny6qENe2Fb0n=3e7DEmc5qzpSq2_1gTA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.08.21 17:40, Claudio Imbrenda wrote:
-> When a protected VM is created, the topmost level of page tables of its
-> ASCE is marked by the Ultravisor; any attempt to use that memory for
-> protected virtualization will result in failure.
+
+
+Le 06/08/2021 à 05:16, Xiongwei Song a écrit :
+> On Thu, Aug 5, 2021 at 6:06 PM Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>>
+>>
+>>
+>> Le 26/07/2021 à 16:30, sxwjean@me.com a écrit :
+>>> From: Xiongwei Song <sxwjean@gmail.com>
+>>>
+>>> Create an anonymous union for dsisr and esr regsiters, we can reference
+>>> esr to get the exception detail when CONFIG_4xx=y or CONFIG_BOOKE=y.
+>>> Otherwise, reference dsisr. This makes code more clear.
+>>
+>> I'm not sure it is worth doing that.
+> Why don't we use "esr" as reference manauls mentioned?
 > 
-> Only a successful Destroy Configuration UVC will remove the marking.
+>>
+>> What is the point in doing the following when you know that regs->esr and regs->dsisr are exactly
+>> the same:
+>>
+>>   > -    err = ___do_page_fault(regs, regs->dar, regs->dsisr);
+>>   > +    if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
+>>   > +            err = ___do_page_fault(regs, regs->dar, regs->esr);
+>>   > +    else
+>>   > +            err = ___do_page_fault(regs, regs->dar, regs->dsisr);
+>>   > +
+> Yes, we can drop this. But it's a bit vague.
 > 
-> When the Destroy Configuration UVC fails, the topmost level of page
-> tables of the VM does not get its marking cleared; to avoid issues it
-> must not be used again.
+>> Or even
+>>
+>>   > -    int is_write = page_fault_is_write(regs->dsisr);
+>>   > +    unsigned long err_reg;
+>>   > +    int is_write;
+>>   > +
+>>   > +    if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
+>>   > +            err_reg = regs->esr;
+>>   > +    else
+>>   > +            err_reg = regs->dsisr;
+>>   > +
+>>   > +    is_write = page_fault_is_write(err_reg);
+>>
+>>
+>> Artificially growing the code for that makes no sense to me.
 > 
-> Since the page becomes in practice unusable, we set it aside and leak it.
+> We can drop this too.
+>>
+>>
+>> To avoid anbiguity, maybe the best would be to rename regs->dsisr to something like regs->sr , so
+>> that we know it represents the status register, which is DSISR or ESR depending on the platform.
+> 
+> If so, this would make other people more confused. My consideration is
+> to follow what the reference
+> manuals represent.
 
-Instead of leaking, can't we add it to some list and try again later? Or 
-do we only expect permanent errors?
+Maybe then we could rename the fields as regs->dsisr_esr and regs->dar_dear
 
-Also, we really should bail out loud (pr_warn) to tell the admin that 
-something really nasty is going on.
+That would be more explicit for everyone.
 
--- 
-Thanks,
+The UAPI header however should remain as is because anonymous unions are not supported by old 
+compilers as mentioned by Michael.
 
-David / dhildenb
+But nevertheless, there are also situations where was is stored in regs->dsisr is not what we have 
+in DSISR register. For instance on an ISI exception, we store a subset of the content of SRR1 
+register into regs->dsisr.
 
+Christophe
