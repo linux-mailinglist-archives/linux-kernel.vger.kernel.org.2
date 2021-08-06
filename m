@@ -2,72 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8983E2B1E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BA53E2B1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343961AbhHFNEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 09:04:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55682 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343955AbhHFNEk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 09:04:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628255064;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4hs0w4oRs/L7L3VP+7skGyjzywBKMx60j6QPBGR1/Tg=;
-        b=aNkTdqAaYreM7RUhZIYMxKyxaBhoAuaMOycIOqOFv6qTJTJ05pl2NTXeFVqEhgiX18+fuS
-        6gnrAyq9HjKKlGq3m5ppmrw5wcbmrePgYPW3XmuMa+fiJ1GNWIUQ4E1XJA99dY3QUsohFK
-        0ebm6xusbf1H/f2/z5MGCKxWoz6nb24=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-195-sOKVw9pSMV2fFdQz9Xul2w-1; Fri, 06 Aug 2021 09:04:22 -0400
-X-MC-Unique: sOKVw9pSMV2fFdQz9Xul2w-1
-Received: by mail-ed1-f72.google.com with SMTP id u4-20020a50eac40000b02903bddc52675eso4718523edp.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 06:04:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4hs0w4oRs/L7L3VP+7skGyjzywBKMx60j6QPBGR1/Tg=;
-        b=LpDs1V/MXh1ZmDy3GU2qzys9WhX4Cq0VAZviiBOeiHUxqoH9t97ygaf3JVl/1eSTGY
-         Ti2/Mo++ykuvpGZfFRonBpFdd2ZhMwyzw+mWpTM7t8a1GzF1sJwbXB+fRzqwMTAOkU4l
-         skClCaTIIisvhSSNdD2MryAuHjXwkG6rd14pRVBrnjfrFcEXwZGBhhpIcW4l3YHssOlm
-         EJH0tn/B+V8FNksx0rKp90n4AN+OxCoKDjW3rG8f1z53xLJDsq6uFKn00iOz3/QhPflO
-         5VZBoTnLt+FQHlQBQPBVb2N5u3QQwtt4XgTj9t6thGwzxqHOx+QOArWfnOs++mFAPc6y
-         4jsg==
-X-Gm-Message-State: AOAM530qeYnDiDEL3JAjdSCiWyjPx1Sg6O6a+eK4AT0t5mUpB3VQjZgq
-        C0U6N23scERy4edpaAZS3J1SEe8APIF1e3WA/N/Ib1YhHDYsUTOcb5aIpwJIvhXSN9TuA1Jods0
-        QeqGZnQhrc7pp5PHCROy1uH+nj8S3rYwt1gA1n9OAE4lEbF61Fh9qWzf0PJrxRcEm8n+V2vsh2O
-        Y=
-X-Received: by 2002:a17:906:e089:: with SMTP id gh9mr9951467ejb.80.1628255061453;
-        Fri, 06 Aug 2021 06:04:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyXGv9I+aAgqWItLp0znSb2GfN8riI8mY1FQgntjET1H0kSpGYRoG2AAKoz4bkBdl+KgkZnnA==
-X-Received: by 2002:a17:906:e089:: with SMTP id gh9mr9951437ejb.80.1628255061201;
-        Fri, 06 Aug 2021 06:04:21 -0700 (PDT)
-Received: from x1.bristot.me (host-95-239-202-226.retail.telecomitalia.it. [95.239.202.226])
-        by smtp.gmail.com with ESMTPSA id y2sm1372927ejd.111.2021.08.06.06.04.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 06:04:20 -0700 (PDT)
-Subject: Re: [PATCH] kernel/hung_task.c: Fix a typo in check_hung_task()
- comment
-To:     Jun Miao <jun.miao@windriver.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, deller@gmx.de,
-        wei.liu@kernel.org
-Cc:     peterz@infradead.org, lukas.bulwahn@gmail.com,
-        linux-kernel@vger.kernel.org
-References: <20210806114049.649909-1-jun.miao@windriver.com>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <f0ba6af0-248d-b7ac-a06e-adba5798d582@redhat.com>
-Date:   Fri, 6 Aug 2021 15:04:19 +0200
+        id S1343952AbhHFNEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 09:04:37 -0400
+Received: from mga11.intel.com ([192.55.52.93]:11073 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343883AbhHFNEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 09:04:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="211261951"
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="211261951"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 06:04:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="504017952"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga004.fm.intel.com with ESMTP; 06 Aug 2021 06:04:09 -0700
+Subject: [PATCH V5] scsi: ufshcd: Fix device links when BOOT WLUN fails to
+ probe
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bart Van Assche <bvanassche@acm.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+References: <20210716114408.17320-1-adrian.hunter@intel.com>
+ <20210716114408.17320-3-adrian.hunter@intel.com>
+ <c78aac34-5c55-f6b6-3450-d5c3f09781fa@intel.com>
+ <35b2bd0f-5766-debd-2b4c-c642a85df367@acm.org>
+ <yq1czqrguch.fsf@ca-mkp.ca.oracle.com>
+ <739a1abf-fca0-458e-5c8c-1d6ed90b56e0@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <a1c9bac8-b560-b662-f0aa-58c7e000cbbd@intel.com>
+Date:   Fri, 6 Aug 2021 16:04:41 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210806114049.649909-1-jun.miao@windriver.com>
+In-Reply-To: <739a1abf-fca0-458e-5c8c-1d6ed90b56e0@intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -75,31 +55,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/21 1:40 PM, Jun Miao wrote:
+Managed device links are deleted by device_del(). However it is possible to
+add a device link to a consumer before device_add(), and then discovering
+an error prevents the device from being used. In that case normally
+references to the device would be dropped and the device would be deleted.
+However the device link holds a reference to the device, so the device link
+and device remain indefinitely (unless the supplier is deleted).
 
-> It's "mustn't", not "musn't". Let's fix that.
-> 
-> Signed-off-by: Jun Miao <jun.miao@windriver.com>
+For UFSHCD, if a LUN fails to probe (e.g. absent BOOT WLUN), the device
+will not have been registered but can still have a device link holding a
+reference to the device. The unwanted device link will prevent runtime
+suspend indefinitely.
 
-Reviewed-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Amend device link removal to accept removal of a link with an unregistered
+consumer device (suggested by Rafael), and fix UFSHCD by explicitly
+deleting the device link when SCSI destroys the SCSI device.
 
--- Daniel
-> ---
->  kernel/hung_task.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/hung_task.c b/kernel/hung_task.c
-> index 9888e2bc8c76..ea5ba912db06 100644
-> --- a/kernel/hung_task.c
-> +++ b/kernel/hung_task.c
-> @@ -99,7 +99,7 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
->  	/*
->  	 * When a freshly created task is scheduled once, changes its state to
->  	 * TASK_UNINTERRUPTIBLE without having ever been switched out once, it
-> -	 * musn't be checked.
-> +	 * mustn't be checked.
->  	 */
->  	if (unlikely(!switch_count))
->  		return;
-> 
+Fixes: b294ff3e34490 ("scsi: ufs: core: Enable power management for wlun")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
+---
+
+
+Patch "driver core: Prevent warning when removing a device link from
+unregistered consumer" is already in Linus' tree:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e64daad660a0c9ace3acdc57099fffe5ed83f977
+
+
+Changes in V5:
+
+  Rebase on 5.15/scsi-staging
+
+
+
+ drivers/base/core.c       |  2 ++
+ drivers/scsi/ufs/ufshcd.c | 23 +++++++++++++++++++++--
+ 2 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index cadcade65825..9badd7f7fe62 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -884,6 +884,8 @@ static void device_link_put_kref(struct device_link *link)
+ {
+ 	if (link->flags & DL_FLAG_STATELESS)
+ 		kref_put(&link->kref, __device_link_del);
++	else if (!device_is_registered(link->consumer))
++		__device_link_del(&link->kref);
+ 	else
+ 		WARN(1, "Unable to drop a managed device link reference\n");
+ }
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 6c263e94144b..9f72698ff597 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -5028,6 +5028,7 @@ static int ufshcd_slave_configure(struct scsi_device *sdev)
+ static void ufshcd_slave_destroy(struct scsi_device *sdev)
+ {
+ 	struct ufs_hba *hba;
++	unsigned long flags;
+ 
+ 	hba = shost_priv(sdev->host);
+ 
+@@ -5035,11 +5036,29 @@ static void ufshcd_slave_destroy(struct scsi_device *sdev)
+ 
+ 	/* Drop the reference as it won't be needed anymore */
+ 	if (ufshcd_scsi_to_upiu_lun(sdev->lun) == UFS_UPIU_UFS_DEVICE_WLUN) {
+-		unsigned long flags;
+-
+ 		spin_lock_irqsave(hba->host->host_lock, flags);
+ 		hba->sdev_ufs_device = NULL;
+ 		spin_unlock_irqrestore(hba->host->host_lock, flags);
++	} else if (hba->sdev_ufs_device) {
++		struct device *supplier = NULL;
++
++		/* Ensure UFS Device WLUN exists and does not disappear */
++		spin_lock_irqsave(hba->host->host_lock, flags);
++		if (hba->sdev_ufs_device) {
++			supplier = &hba->sdev_ufs_device->sdev_gendev;
++			get_device(supplier);
++		}
++		spin_unlock_irqrestore(hba->host->host_lock, flags);
++
++		if (supplier) {
++			/*
++			 * If a LUN fails to probe (e.g. absent BOOT WLUN), the
++			 * device will not have been registered but can still
++			 * have a device link holding a reference to the device.
++			 */
++			device_link_remove(&sdev->sdev_gendev, supplier);
++			put_device(supplier);
++		}
+ 	}
+ }
+ 
+-- 
+2.17.1
 
