@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB9F3E2868
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D163E286D
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245022AbhHFKQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244773AbhHFKQs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:16:48 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B437C061798;
-        Fri,  6 Aug 2021 03:16:28 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id k4so10436036wrc.0;
-        Fri, 06 Aug 2021 03:16:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=in-reply-to:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=ow/YCifQJGCqqdbMI3qwBTpDZquMwyp33IWsPkh/PBk=;
-        b=SCGPwxQ6KgkiYy5MzVMWte93J3GhGS0pJpxCILWPJYqM9CVJfJcNEYdhe+Fa946bwf
-         /QcpMwzY5VVNPjUzfBCL8vgaN7RDHvCzuCUksogEahUKF5Yp2H2sLmTsLzc7CAdxtN/9
-         17vPe5rrl9EAbwuVejV68rz+kQK5WD0OjmADECeDOsMyVESHuzupIvUfz973BXqYhqV4
-         mRy9o/pOzhRHZWY8KFMGYMFnxhGj0/MXjUIhATdrN1aAf2iEhn5d6ERGEeqrUwB+fR1x
-         HYI83rzvM8qMImZOiHbe/q/DS3yUxoGIp4GxawwPFQb6MvdnEpo0mvCJoxuNRCgZJHa8
-         a5Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:in-reply-to:to:cc:from:subject:message-id:date
-         :user-agent:mime-version:content-language:content-transfer-encoding;
-        bh=ow/YCifQJGCqqdbMI3qwBTpDZquMwyp33IWsPkh/PBk=;
-        b=f6JT+77CBLPxbkN+RGj+7ytxKJYY+oY+KbuYwq91GzrusnlVeFlw3FbgvpfyQhZVLJ
-         IifiegEH5flyacuV6ilmlx1MQIVG2cPCL+q/Vx4j8NSPgKTfE20k1voHmTLgv2HQaeHt
-         zHHa3PD55zqqOkhBwc6m7+MVjsH8zw0dc/R8lIxtsqyuVT+9+RE53PeThUk8+4UyjMr0
-         pZvC3PL7j6OXuW3H/XRuzay3FGSXB7eDQW+1jngrOWrlZQEkOfZZFIYiN8S0KLCY0Gu0
-         HMfYaQLTDR7vhCh6wAtx4Wxeujv5rPdlFLuWWYxVZ0eyiLcnOUPkqhjGpEB4vFONKO91
-         e7tA==
-X-Gm-Message-State: AOAM530lhZ5eWr9F2y5OsoFqEw3f7bazlGTvlbF/nbvD+0XLgLPdrWI5
-        2oEO72trLBuota1qfrJJMDE=
-X-Google-Smtp-Source: ABdhPJwbkvbgiTRgY5IR0dovVLsrUIQhDeHx8JeQV7DNUG5VSTN/HhalGtbn44s/F/jw8PZO1ebkzQ==
-X-Received: by 2002:a5d:6102:: with SMTP id v2mr9565416wrt.223.1628244987322;
-        Fri, 06 Aug 2021 03:16:27 -0700 (PDT)
-Received: from [192.168.0.10] (105.72.60.188.dynamic.wline.res.cust.swisscom.ch. [188.60.72.105])
-        by smtp.gmail.com with ESMTPSA id z3sm11726983wmf.6.2021.08.06.03.16.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 03:16:26 -0700 (PDT)
-In-Reply-To: <20190208132954.28166-1-andrejs.cainikovs@netmodule.com>
-To:     ezequiel@collabora.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org
-From:   Andrejs Cainikovs <andrejs.cainikovs@gmail.com>
-Subject: Re: [PATCH 0/2] D_CAN RX buffer size improvements
-Message-ID: <4da667f3-899a-459c-2cca-6514135a1918@gmail.com>
-Date:   Fri, 6 Aug 2021 12:16:26 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S244997AbhHFKSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:18:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33638 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231627AbhHFKSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 06:18:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4383960E97;
+        Fri,  6 Aug 2021 10:17:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628245077;
+        bh=D4PMGHjNpPs/GyZsSvS7gU8Z4nzRZLNfB7GArNagtkk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sao5TmBMDEqc2I1SOzrLfxqeIi8FejVp5HGNKBWtztEKbWnf783UjU1bRGtSDVBQ8
+         f9CQ5IDZUpGECCsBhvDe1KbP+89VWI5nkwXxcduxVk6EkSzJB9c1M+I/qFeXrE9p5D
+         V+TWQ3GBDB3mG6EwoJHpCzBfPy4PyHF0yrNap50A=
+Date:   Fri, 6 Aug 2021 12:17:55 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Rob Herring <robh@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>, list@opendingux.net,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 2/2] gpu/drm: ingenic: Add workaround for disabled drivers
+Message-ID: <YQ0MU/GcLkPLiy5C@kroah.com>
+References: <20210805192110.90302-1-paul@crapouillou.net>
+ <20210805192110.90302-3-paul@crapouillou.net>
+ <YQw9hjZll4QmYVLX@kroah.com>
+ <3HUDXQ.7RBGD4FUHR2F@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3HUDXQ.7RBGD4FUHR2F@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ezequiel,
+On Thu, Aug 05, 2021 at 10:05:27PM +0200, Paul Cercueil wrote:
+> Hi Greg,
+> 
+> Le jeu., août 5 2021 at 21:35:34 +0200, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> a écrit :
+> > On Thu, Aug 05, 2021 at 09:21:09PM +0200, Paul Cercueil wrote:
+> > >  When the drivers of remote devices (e.g. HDMI chip) are disabled in
+> > > the
+> > >  config, we want the ingenic-drm driver to be able to probe
+> > > nonetheless
+> > >  with the other devices (e.g. internal LCD panel) that are enabled.
+> > > 
+> > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > >  ---
+> > >   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 12 ++++++++++++
+> > >   1 file changed, 12 insertions(+)
+> > > 
+> > >  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > > b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  index d261f7a03b18..5e1fdbb0ba6b 100644
+> > >  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> > >  @@ -1058,6 +1058,18 @@ static int ingenic_drm_bind(struct device
+> > > *dev, bool has_components)
+> > >   	for (i = 0; ; i++) {
+> > >   		ret = drm_of_find_panel_or_bridge(dev->of_node, 0, i, &panel,
+> > > &bridge);
+> > >   		if (ret) {
+> > >  +			/*
+> > >  +			 * Workaround for the case where the drivers for the
+> > >  +			 * remote devices are not enabled. When that happens,
+> > >  +			 * drm_of_find_panel_or_bridge() returns -EPROBE_DEFER
+> > >  +			 * endlessly, which prevents the ingenic-drm driver from
+> > >  +			 * working at all.
+> > >  +			 */
+> > >  +			if (ret == -EPROBE_DEFER) {
+> > >  +				ret = driver_deferred_probe_check_state(dev);
+> > >  +				if (ret == -ENODEV || ret == -ETIMEDOUT)
+> > >  +					continue;
+> > >  +			}
+> > 
+> > So you are mucking around with devices on other busses within this
+> > driver?  What could go wrong?  :(
+> 
+> I'm doing the same thing as everybody else. This is the DRM driver, and
+> there is a driver for the external HDMI chip which gives us a DRM bridge
+> that we can obtain from the device tree.
 
-Sorry for a late reply. I'm the author of this patch set, and I will 
-have a look at this after I obtain the hardware. I hope this is still 
-relevant.
+But then why do you need to call this function that is there for a bus,
+not for a driver.
 
-Best regards,
-Andrejs.
+> > Please use the existing driver core functionality for this type of
+> > thing, it is not unique, no need for this function to be called.
+> 
+> I'm not sure you understand what I'm doing here. This driver calls
+> drm_of_find_panel_or_bridge(), without guarantee that the driver for the
+> remote device (connected via DT graph) has been enabled in the kernel
+> config. In that case it will always return -EPROBE_DEFER and the ingenic-drm
+> driver will never probe.
+> 
+> This patch makes sure that the driver can probe if the HDMI driver has been
+> disabled in the kernel config, nothing more.
 
-  > Hi everyone,
-  >
-  > This series was recently brought to my attention, in connection to a
-long-standing packet drop issue that we had on a Sitara-based product.
-  >
-  > I haven't tested this personally, but I've been notified that this
-was backported to the v4.19 kernel, and the packet drop was fixed.
-  >
-  > It seems the series never managed to get upstreamed, but I think this
-should be resurrected and merged (probably with after some cleanup/review).
-  >
-  > Thanks,
-  > Ezequiel
+That should not be an issue as you do not care if the config is enabled,
+you just want to do something in the future if the driver shows up,
+right?
+
+Much like the device link code, have you looked at that?
+
+thanks,
+
+greg k-h
