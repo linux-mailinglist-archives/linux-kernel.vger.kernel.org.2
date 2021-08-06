@@ -2,72 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3AE3E2E41
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE0D3E2E44
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbhHFQT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 12:19:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230479AbhHFQTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 12:19:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD0D9611BF;
-        Fri,  6 Aug 2021 16:19:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628266779;
-        bh=XuvEYYJ4kXC/cVfsfSZSGBZa6Yunv/mmUPU/BeI7C/w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OesV5SRw+7jNOOROUuHLWJa6WpW/mgP8tJUTGVy3KW/uf/qpgBqQOSO3j5xCjZ6Y9
-         344nOVp8OHatVvSA+LSgsaovIK6thfQYHbAfw2jHOAX/XLeasfZlPsj3EYPHeAX6Jv
-         RiaIh9cNZMJo0ZNqtSzg3a/r4mhJiSecKosTZkfsoECxg/GsP7v1v3J75lEEoYEQ+r
-         B6yM8miXZt6SdvqObcSbg9zOdY+SNMgq1a+D+IExwM/m+bES3vbHGavlwXN2KjVvja
-         /ourGO9OFzwPXhynFfgI6wzzvYGH+8ZYZXHXAHTl/8CRBZLWsfU2T0/K6f781wcjXS
-         ++11g+i0dkXQA==
-Date:   Fri, 6 Aug 2021 21:49:34 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] dmaengine: acpi: Check for errors from
- acpi_register_gsi() separately
-Message-ID: <YQ1hFtHRDIflENis@matsya>
-References: <20210802175532.54311-1-andriy.shevchenko@linux.intel.com>
- <YQ080pMpNcXqt1ml@matsya>
- <YQ1VU/lHIXFtjwVE@smile.fi.intel.com>
+        id S231567AbhHFQUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 12:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231453AbhHFQUa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 12:20:30 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962C6C061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 09:20:13 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id u16so7766278ple.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 09:20:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lk/rklBGJbLUUQZyoq+gs1+H5iN5EBlS7CuTTnKKDKA=;
+        b=Z3015pl6wjzFCtaiptoQofYXucCx2JNzuIpRkBDN/T/0deeTpz66FIaPsdm9qTiMAh
+         EHX6DAN50du5HC2tIEmUBFCUw/i18du9l+Sru0/uh/TUezaeTCcs1+Y7+OSUxB1gnij8
+         kINmzKoOE/QX1hReUhFX3A7UT5M2Zh0CZHY5fHNhndH2S1Rmqm3501DTrWjCYe9KP3dC
+         TWfK5RaSSpWFeaePZYkf5ZawD8wQ6eb0p7XTfViPYX9qgdIwfOgRFaSAq7FcOnfZHyIM
+         aPQvG3xBb8TG/4euCYq2rj1iOi+DrmEjSGVnkFc1uZOczxKQOErzL4/N6HwybGHw85UG
+         yl1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lk/rklBGJbLUUQZyoq+gs1+H5iN5EBlS7CuTTnKKDKA=;
+        b=nWtRkLvAYDSMAfv/6r/cPSZfH6UBrZim3FVXGWRd1SIBMhaNyqMDOQUabLXwgnigqO
+         NC0UVHcktlwiMy+7peoSrzo2fxulAnexNYClP9IEszYBdA1Z4HXanAxhs8ZwYfYaqAn2
+         I56jzQ4uqOMNlR6vQIt8C0IEEe14geNBjzDyZzPApb3RpABAGtnMnr3Embox80T2pot6
+         qlVJr4D2KcOiUWjHL7/5872Ukh/WpfTfEQ4ojkllBNsBa3oVYCjD4SS6bSMLBYYG3q9q
+         yBsF+Ebnk9uaDnep5y5EZhfIcebP4ew3LnI3xzIUaP/46ZTAsnNkwahYT7hfduGuYBEu
+         u/Sg==
+X-Gm-Message-State: AOAM533v4xdLnlIOeDH5iVn9f3OgA1bSFtl3BHyS1duAyDFMh1rWOa3p
+        aE01KBgDUenKbadzZQXfEhSqNg==
+X-Google-Smtp-Source: ABdhPJz8HLbzCuo+RUCF2uZXWWMYbgf4yJo1F05mVL/lyb/S0lk1Bc1PHwS+dR6FuMKX+2qM62ErRA==
+X-Received: by 2002:a17:902:f295:b029:12c:a253:7087 with SMTP id k21-20020a170902f295b029012ca2537087mr9252966plc.6.1628266812776;
+        Fri, 06 Aug 2021 09:20:12 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id 6sm11553582pfg.108.2021.08.06.09.20.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 09:20:12 -0700 (PDT)
+Date:   Fri, 6 Aug 2021 16:20:08 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Suleiman Souhlal <suleiman@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, ssouhlal@freebsd.org,
+        hikalium@chromium.org, senozhatsky@chromium.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kvm,x86: Use the refined tsc rate for the guest tsc.
+Message-ID: <YQ1hOJNMnD6gCRjD@google.com>
+References: <20210803075914.3070477-1-suleiman@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQ1VU/lHIXFtjwVE@smile.fi.intel.com>
+In-Reply-To: <20210803075914.3070477-1-suleiman@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06-08-21, 18:29, Andy Shevchenko wrote:
-> On Fri, Aug 06, 2021 at 07:14:50PM +0530, Vinod Koul wrote:
-> > On 02-08-21, 20:55, Andy Shevchenko wrote:
-> > > While IRQ test agaist the returned variable in practice is a good enough
-> > > there is still a room for theoretical mistake in case the vIRQ of the
-> > > device contains the same error code that acpi_register_gsi() may return.
-> > > Due to this, check for error code separately from matching the vIRQs.
-> > > 
-> > > Besides that, append documentation to tell why acpi_gsi_to_irq() can't
-> > > be used and we call acpi_register_gsi() instead.
-> > 
-> > patch fails to apply, pls rebase
-> 
-> I don't see that you applied the previous patch [1].
-> Care to apply it, please?
+"KVM: x86:" is the preferred scope.  And for whatever reason, punctuation at the
+end of the shortlog is almost always omitted.
 
-Sorry, somehow that one was pushed to queue but never got applied!
+On Tue, Aug 03, 2021, Suleiman Souhlal wrote:
+> Prior to this change,
 
-Have applied both now
+In the changelog proper, please state what change is being made before launching
+into the effects of the change.  Oftentimes that does mean restating the shortlog,
+but it's very helpful to reviewers/readers to provide a single cohesive/coherent
+explanation.
 
+> the initial tsc rate used by kvm would be the unrefined rate, instead of the
+> refined rate that is derived later at boot and used for timekeeping. This can
+> cause time to advance at different rates between the host and the guest.
+
+This needs a lot more explanation, with a clear statement of the direct effects
+of the change and with explicit references to variables and probably functions.
+Normally I prefer abstraction over explicit code references, but in this case
+there are too many ambiguous terms to understand the intended change without a
+lot of staring.  E.g. at first blush, it's not obvious that "boot" refers to the
+host kernel boot, especially for those of us that load KVM as a module.
+
+And the statement "the initial tsc rate used by kvm would be the unrefined rate"
+will not always hold true, e.g. when KVM is loaded long after boot.  That also
+confused me.
+
+IIUC, this "fixes" a race where KVM is initialized before the second call to
+tsc_refine_calibration_work() completes.  Fixes in quotes because it doesn't
+actually fix the race, it just papers over the problem to get the desired behavior.
+If the race can't be truly fixed, the changelog should explain why it can't be
+fixed, otherwise fudging our way around the race is not justifiable.
+
+Ideally, we would find a way to fix the race, e.g. by ensuring KVM can't load or
+by stalling KVM initialization until refinement completes (or fails).  tsc_khz is
+consumed by KVM in multiple paths, and initializing KVM before tsc_khz calibration
+is fully refined means some part of KVM will use the wrong tsc_khz, e.g. the VMX
+preemption timer.  Due to sanity checks in tsc_refine_calibration_work(), the delta
+won't be more than 1%, but it's still far from ideal.
+
+> Signed-off-by: Suleiman Souhlal <suleiman@google.com>
+> ---
+>  arch/x86/kvm/x86.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> [1]: https://lore.kernel.org/dmaengine/20210730202715.24375-1-andriy.shevchenko@linux.intel.com/T/#u
-> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 4116567f3d44..1e59bb326c10 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -2199,6 +2199,7 @@ static atomic_t kvm_guest_has_master_clock = ATOMIC_INIT(0);
+>  #endif
+>  
+>  static DEFINE_PER_CPU(unsigned long, cpu_tsc_khz);
+> +static DEFINE_PER_CPU(bool, cpu_tsc_khz_changed);
+>  static unsigned long max_tsc_khz;
+>  
+>  static u32 adjust_tsc_khz(u32 khz, s32 ppm)
+> @@ -2906,6 +2907,14 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
+>  		kvm_make_request(KVM_REQ_CLOCK_UPDATE, v);
+>  		return 1;
+>  	}
+> +	/*
+> +	 * Use the refined tsc_khz instead of the tsc_khz at boot (which was
+> +	 * not refined yet when we got it),
+
+As above, this does not hold true in all cases.  And for anyone that isn't familiar
+with tsc_refine_calibration_work(), the "refined tsc_khz instead of the tsc_khz"
+blurb is borderline nonsensical.
+
+> +	 * If the frequency does change, it does not get refined any further,
+> +	 * so it is safe to use the one gotten from the notifiers.
+> +	 */
+> +	if (!__this_cpu_read(cpu_tsc_khz_changed))
+> +		tgt_tsc_khz = tsc_khz;
+>  	if (!use_master_clock) {
+>  		host_tsc = rdtsc();
+>  		kernel_ns = get_kvmclock_base_ns();
+> @@ -8086,6 +8095,8 @@ static void tsc_khz_changed(void *data)
+>  		khz = freq->new;
+>  	else if (!boot_cpu_has(X86_FEATURE_CONSTANT_TSC))
+>  		khz = cpufreq_quick_get(raw_smp_processor_id());
+> +	if (khz)
+> +		__this_cpu_write(cpu_tsc_khz_changed, true);
+
+On a system with a constant TSC and KVM loaded after boot, cpu_tsc_khz_changed
+will never be true.  Ditto for the case where refinement fails.  That may not be
+a functional issue, but it's confusing.
+
+This also fails to gate other readers of kvm_guest_time_update.  In particular,
+KVM_GET_CLOCK -> get_kvmclock_ns() will use the "wrong" frequency when userspace
+is retrieving guest TSC.
+
+>  	if (!khz)
+>  		khz = tsc_khz;
+>  	__this_cpu_write(cpu_tsc_khz, khz);
 > -- 
-> With Best Regards,
-> Andy Shevchenko
+> 2.32.0.554.ge1b32706d8-goog
 > 
-
--- 
-~Vinod
