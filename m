@@ -2,117 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACA93E222E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 05:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893E33E2231
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 05:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239498AbhHFDaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 23:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
+        id S241009AbhHFDe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 23:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbhHFDaP (ORCPT
+        with ESMTP id S231173AbhHFDeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 23:30:15 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99938C061798;
-        Thu,  5 Aug 2021 20:29:57 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id mt6so14004607pjb.1;
-        Thu, 05 Aug 2021 20:29:57 -0700 (PDT)
+        Thu, 5 Aug 2021 23:34:25 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 052DDC061799
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 20:34:10 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id c5so5505012qtp.13
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 20:34:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=fS+XTOKPP/A+4Ea3Vfvk2lusfIUrsBa+uJZOXKxOTBs=;
-        b=ONTPD9LmSno01aJOy1CjhKkYK3doqsHNZJrZJypUlYU/TnSa8zfSp1hgMhRtYwTIlq
-         ffoizk7QD3R1/qUjFO1u3vDNlJFWDvgrSfY+yBrHMxgy2pPR/+1lfsCgB47FAIEBq/Z0
-         u0cijgJtcZG2L58LElWv5Dw+zz8MMtvFAIt2eur6osbqkGOV07jUP6c7sa23yruL/MP/
-         PvvaISEbIJcwiOgZQEj+pCdlMpY598g9v7h+lpjoSRYbDQtzsfOcsDxuu+6bMqCRGOwX
-         4iAzKeGCSrchlHPqDnpyZQ7NtexcrLUUPSU7XWisGSrph402NGg7B3B2OsVaIF9xGicX
-         CEtA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=y8ogEIVcPiFxpMZEeFL+iB1RVC44ARrL6FG7si/okV8=;
+        b=GtN34Q4YXatK1FMDurMfqzSx7R3KDMxupETssqL8pGpziaAyzf1nRXPdqlfpp06Gbi
+         NjER6XOHZV5MUt/Tr6ws1pXwJHYoNlOpWYuyM6cYzihK6CD4QpmjPptGUP3BognP/y5r
+         IMn+8LZvRCNaaHmv8GbKDgzSked5v5yzzQRcAGlGy8ijswcgSpc0YUVAgpRDvsZ7+yVx
+         b8lIDWO7QnJuwZA7B3nl0GdDT1FZEd7jPc7mZ7mv/BRg6fLuH3EuacGjugEuZvGSaXFv
+         pFXw1NUa4gT6YyyFR9ylK7FKqo83wUrqG+XytD5mjyBoxcvIeJkhT0ulox1y/HW5wrF4
+         etUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=fS+XTOKPP/A+4Ea3Vfvk2lusfIUrsBa+uJZOXKxOTBs=;
-        b=Yx4ex47yUmX2BnWX35pIBkLIws/51OKl5zUntq6BPVJf+16BcFOcxG4/CCxsZE1QkY
-         9gnF3pjTTlR1M6zXI7M+hTri+oLG4Hjmn6mQAYg53JCz8cGm9Nh/iJwNHSkI9HMUmgD3
-         lGn74w2MH1l9uUXd5pisTVVm27NmQUSGId5Q7ekrpn5rhkCBThWQ98YO5KL6zUzTnWSx
-         WZunY6tjBrSkcSflUKHU2+AnQ9Y2c2Jg5NBC0C1asyhUHMGo5oNEhFFbYww4TJ29ALai
-         86EoRzLZtNxOPMfYtWK/lD4rgUSJDxqAFQZdFqJfRKfIdE2M981AECxNdC+hDeUqGElb
-         xtTA==
-X-Gm-Message-State: AOAM530ts6Iii6r0MbZsRrxLdp0fT7k8w4Su+CR4MjuDrZtQh5qkS+h+
-        bIoDnjrq/aXoJj5EeIMK2+w=
-X-Google-Smtp-Source: ABdhPJwwWTURvjJ6ZonVIkYlcjFJ8ZdvWN6X+EzmB8O32dYuQDvMmXI9NMayJiB5K5hZhN3jBLnXaw==
-X-Received: by 2002:a17:90a:4204:: with SMTP id o4mr18366892pjg.199.1628220597080;
-        Thu, 05 Aug 2021 20:29:57 -0700 (PDT)
-Received: from [10.173.0.66] ([45.135.186.87])
-        by smtp.gmail.com with ESMTPSA id nr6sm962042pjb.39.2021.08.05.20.29.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Aug 2021 20:29:56 -0700 (PDT)
-Subject: Re: [BUG] power: supply: 88pm860x_battery: possible
- uninitialized-variable access in measure_vbatt()
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        baijiaju1990@gmail.com, "Jett.Zhou" <jtzhou@marvell.com>
-References: <e2080eb9-bbe2-5077-761d-b5594edb6006@gmail.com>
- <20210805174908.ctg6n5iwmg5izap3@earth.universe>
-From:   Tuo Li <islituo@gmail.com>
-Message-ID: <94bb8568-3f3b-b3af-c98f-9d9bf36528e1@gmail.com>
-Date:   Fri, 6 Aug 2021 11:29:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=y8ogEIVcPiFxpMZEeFL+iB1RVC44ARrL6FG7si/okV8=;
+        b=bpIEBT75fzCEdSMZZ0hbhpHFwA7sLSJohw4sHpGsbCIZTf7qodCYqSspLrPt6hCJR+
+         6JD5ewdUKZGXEzvbrP5nIW82vMwtqTDvOkpjo87K/BvV4gWDuqqbl0mbDtOrS/N7p2GX
+         ZRST1dxSfr2HJd29393CY01QS6w3CHvzXHX/sL/8U0uAE/ygb7RnJYTZgA62lBK5wMUY
+         yzyT86I+iCIwblAFjRLvoNnqLrjwwMd09zruD6IChCc5dyMdfa9M1RMAAuSqlFTC3AXy
+         5Umyt9KGJ3oA4OQmweX0QNKmhOEF5inIi/77bC/m+jbh0HnX4ErgDs/5j5ShRJBZjDsa
+         Q2CQ==
+X-Gm-Message-State: AOAM530GYlaJJsz5W/dTrfLS3Ea6Lwbe4FdtNNx7q0l9AwPRU7dYfs44
+        qfXZ9B1R/3u5MwCbWKiuM+vwdw==
+X-Google-Smtp-Source: ABdhPJy8OuSwStOaQYrXr5aTHo+kB9ZBtuCUXy8wngT9cE4vUh2LOYzxm50BNMMBD1AItuok2DUtOw==
+X-Received: by 2002:ac8:5ac7:: with SMTP id d7mr7294096qtd.240.1628220848602;
+        Thu, 05 Aug 2021 20:34:08 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x10sm3936003qkf.91.2021.08.05.20.34.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 20:34:07 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 20:33:21 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 07/16] memfd: memfd_create(name, MFD_HUGEPAGE) for shmem
+ huge pages
+In-Reply-To: <20210804140341.m3ptxesrxwivqjmk@box.shutemov.name>
+Message-ID: <7852f33a-bfe8-cbf6-65c8-30f7c06d5e@google.com>
+References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com> <c140f56a-1aa3-f7ae-b7d1-93da7d5a3572@google.com> <20210804140341.m3ptxesrxwivqjmk@box.shutemov.name>
 MIME-Version: 1.0
-In-Reply-To: <20210805174908.ctg6n5iwmg5izap3@earth.universe>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your feedback, and any further feedback about this problem 
-would be appreciated.
+On Wed, 4 Aug 2021, Kirill A. Shutemov wrote:
+> On Fri, Jul 30, 2021 at 12:45:49AM -0700, Hugh Dickins wrote:
+> > Commit 749df87bd7be ("mm/shmem: add hugetlbfs support to memfd_create()")
+> > in 4.14 added the MFD_HUGETLB flag to memfd_create(), to use hugetlbfs
+> > pages instead of tmpfs pages: now add the MFD_HUGEPAGE flag, to use tmpfs
+> > Transparent Huge Pages when they can be allocated (flag named to follow
+> > the precedent of madvise's MADV_HUGEPAGE for THPs).
+> 
+> I don't like the interface. THP supposed to be transparent, not yet another
+> hugetlbs.
 
-Best wishes,
-Tuo Li
+THP is transparent in the sense that it builds hugepages from the
+normal page pool, when it can (or not when it cannot), rather than
+promising hugepages from a separate pre-reserved hugetlbfs pool.
 
-On 2021/8/6 1:49, Sebastian Reichel wrote:
-> [adding Jett Zhou to Cc who introduced the driver]
->
-> Hi,
->
-> On Wed, Jul 28, 2021 at 06:24:12PM +0800, Li Tuo wrote:
->> Our static analysis tool finds a possible uninitialized-variable access in
->> the 88pm860x_battery driver in Linux 5.14.0-rc3:
->>
->> In calc_soc():
->> 369:    int ocv;
->> 376:    switch (state) {
->> 380:    case OCV_MODE_SLEEP:
->> 381:        ret = measure_vbatt(info, OCV_MODE_SLEEP, &ocv);
->>
->> In measure_vbatt(struct pm860x_battery_info *info, int state, int *data)
->> 176:    switch (state) {
->> 184:    case OCV_MODE_SLEEP:
->> 201:        *data = ((*data & 0xff) * 27 * 25) >> 9;
->>
->> If the variable state is OCV_MODE_SLEEP, the function measure_vbatt() is
->> called with the argument &ocv, and the corresponding parameter is data.
->> Thus *data is uninitialized but it is used at line 201.
->>
->> I am not quite sure whether this possible uninitialized-variable access is
->> real and how to fix it if it is real.
->> Any feedback would be appreciated, thanks!
->>
->> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> I suppose the code is suppose to look like this:
->
-> 201:        *data = ((ret & 0xff) * 27 * 25) >> 9;
->
-> Considering quite some code is spent before to setup ret, which is
-> never used. I don't have the device (nor datasheets) though. Considering
-> the driver has only seen trivial cleanups over the last 9 years, maybe
-> it can just be removed?
->
-> -- Sebastian
+Not transparent in the sense that it cannot be limited or guided.
 
+> 
+> > /sys/kernel/mm/transparent_hugepage/shmem_enabled "always" or "force"
+> > already made this possible: but that is much too blunt an instrument,
+> > affecting all the very different kinds of files on the internal shmem
+> > mount, and was intended just for ease of testing hugepage loads.
+> 
+> I wounder if your tried "always" in production? What breaks? Maybe we can
+> make it work with a heuristic? This would speed up adoption.
+
+We have not tried /sys/kernel/mm/transparent_hugepage/shmem_enabled
+"always" in production.  Is that an experiment I want to recommend for
+production?  No, I don't think so!  Why should we?
+
+I am not looking to "speed up adoption" of huge tmpfs everywhere:
+let those who find it useful use it, there is no need for it to be
+used everywhere.
+
+We have had this disagreement before: you were aiming for tmpfs on /tmp
+huge=always, I didn't see the need for that; but we have always agreed
+that it should not be broken there, and the better it works the better -
+you did the unused_huge_shrink stuff in particular to meet such cases.
+
+> 
+> If a tunable needed, I would rather go with fadvise(). It would operate on
+> a couple of bits per struct file and they get translated into VM_HUGEPAGE
+> and VM_NOHUGEPAGE on mmap().
+> 
+> Later if needed fadvise() implementation may be extended to track
+> requested ranges. But initially it can be simple.
+
+Let me shift that to the 08/16 (fcntl) response, and here answer:
+
+> Hm, But why is the MFD_* needed if the fcntl() can do the same.
+
+You're right, MFD_HUGEPAGE (and MFD_MEM_LOCK) are not strictly
+needed if there's an fcntl() or fadvise() which can do that too.
+
+But MFD_HUGEPAGE is the option which was first asked for, and is
+the most popular usage internally - I did the fcntl at the same time,
+and it has been found useful, but MFD_HUGEPAGE was the priority
+(largely because fiddling with shmem_enabled interferes with
+everyone's different usages, whereas huge=always on a mount
+can be deployed selectively).
+
+And it makes good sense for memfd_create() to offer MFD_HUGEPAGE,
+as it is already offering MFD_HUGETLB: when we document MFD_HUGEPAGE
+next to MFD_HUGETLB in the memfd_create(2) man page, that will help
+developers to make a good choice.
+
+(You said MFD_*, so I take it that you're thinking of MFD_MEM_LOCK
+too: MFD_MEM_LOCK is something I added when building this series,
+when I realized that it became possible once size change permitted.
+Nobody here is using it yet, I don't mind if it's dropped; but it's
+natural to propose it as part of the series, and it can be justified
+as offering the memlock option which MFD_HUGETLB already bundles in.)
+
+Hugh
