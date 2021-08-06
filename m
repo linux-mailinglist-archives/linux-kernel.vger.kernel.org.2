@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA103E2026
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160573E2039
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238634AbhHFAqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 20:46:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50472 "EHLO mail.kernel.org"
+        id S243045AbhHFAsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 20:48:37 -0400
+Received: from mga17.intel.com ([192.55.52.151]:16378 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229735AbhHFAqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 20:46:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 068F160725;
-        Fri,  6 Aug 2021 00:46:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628210775;
-        bh=TeFmqVyGxWQDZ/rgW2rRFKouG7Wsb42tgFD6/C9/vmc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DklIGuS4Il4+uh6iQTqCRxNxSixSuTjIfWH0IqYatKkzbYvxwtYlwocJB5+Opegjx
-         PB70yEBYyy8T2FdiOhCQ9HKSsbZloqheprxDWwr2oKKFZ0VVkgA/ReIm3pGdDygrIz
-         /hGwk7dqiJMZayWwolfFPzkoUXQAbv8opd2VvN1Opf/vtZhgs4XgnIM7cS7dcnXvha
-         PbWFHUP6NJKA6bFBInBf7ylmFalolscI6j48x2q+1LaR3e3hm74p1G7gU44E+NNmh8
-         0ikkMoDeLyjmV1XCbR2CMFhNhhrikTlonZBtAzgR/CgOwFxzvbXqlzjyCYgBFySTQB
-         zAlpyUzIzEM2w==
-Date:   Fri, 6 Aug 2021 01:45:59 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/8] ASoC: cs42l42: PLL must be running when changing
- MCLK_SRC_SEL
-Message-ID: <20210806004558.GT26252@sirena.org.uk>
-References: <20210805161111.10410-1-rf@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="X9hp/qFlD/MyfJCu"
-Content-Disposition: inline
-In-Reply-To: <20210805161111.10410-1-rf@opensource.cirrus.com>
-X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S242437AbhHFAsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 20:48:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="194555147"
+X-IronPort-AV: E=Sophos;i="5.84,299,1620716400"; 
+   d="scan'208";a="194555147"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 17:48:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,299,1620716400"; 
+   d="scan'208";a="442714638"
+Received: from aubrey-ubuntu.sh.intel.com ([10.239.53.132])
+  by fmsmga007.fm.intel.com with ESMTP; 05 Aug 2021 17:48:16 -0700
+From:   Aubrey Li <aubrey.li@intel.com>
+To:     rjw@rjwysocki.net, lenb@kernel.org
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Aubrey Li <aubrey.li@intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>
+Subject: [PATCH] ACPI/PRM: Deal with table not present or no module found
+Date:   Fri,  6 Aug 2021 08:46:24 +0800
+Message-Id: <1628210784-136676-1-git-send-email-aubrey.li@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On the system PRMT table is not present, dmesg output:
 
---X9hp/qFlD/MyfJCu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	$ dmesg | grep PRM
+	[    1.532237] ACPI: PRMT not present
+	[    1.532237] PRM: found 4294967277 modules
 
-On Thu, Aug 05, 2021 at 05:11:04PM +0100, Richard Fitzgerald wrote:
-> Both SCLK and PLL clocks must be running to drive the glitch-free mux
-> behind MCLK_SRC_SEL and complete the switchover.
+The result of acpi_table_parse_entries need to be checked and return
+immediately if PRMT table is not present or no PRM module found.
 
-Please provide a cover letter for serieses, it helps give an overview of
-what's going on and is useful for tooling.
+Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+---
+ drivers/acpi/prmt.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
---X9hp/qFlD/MyfJCu
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/drivers/acpi/prmt.c b/drivers/acpi/prmt.c
+index 31cf9ae..1f6007a 100644
+--- a/drivers/acpi/prmt.c
++++ b/drivers/acpi/prmt.c
+@@ -292,6 +292,12 @@ void __init init_prmt(void)
+ 	int mc = acpi_table_parse_entries(ACPI_SIG_PRMT, sizeof(struct acpi_table_prmt) +
+ 					  sizeof (struct acpi_table_prmt_header),
+ 					  0, acpi_parse_prmt, 0);
++	/*
++	 * Return immediately if PRMT table is not present or no PRM module found.
++	 */
++	if (mc <= 0)
++		return;
++
+ 	pr_info("PRM: found %u modules\n", mc);
+ 
+ 	status = acpi_install_address_space_handler(ACPI_ROOT_OBJECT,
+-- 
+2.7.4
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEMhkYACgkQJNaLcl1U
-h9AIpAf+Jth8Ifl65n0DvVX24GXQht7YbCgxmupcceczqyDoODTp2w3y6sEREHP2
-g1bFpkb10yaqxBupQtWVw9Gzv7QGsciHzJZuGmhnXJUQNs5l5laDsxZg5R62OLTU
-B1A9CsgwRROsDHkZwxFK8CWBTmsLFlrnNonuMHcEDRmQzbtzBolgQ9wNiMoeRlc8
-GCUPpxXOdGCprUvH24StHM6+ERFL7UrfAX6inxG29aoa5fa4dwV7cosTXLNxoYD+
-dIRZ6GMa4dezT6nUFeK1ehUpLOPGheuf1SdA6mxLiIqWHu+8nfcMgBEENOXoGWIs
-t1pQjT8w8mpARqdWF0eOxNd7KS8d3w==
-=kbc2
------END PGP SIGNATURE-----
-
---X9hp/qFlD/MyfJCu--
