@@ -2,314 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 741BE3E281C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CA73E2822
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244894AbhHFKIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244898AbhHFKIc (ORCPT
+        id S244901AbhHFKJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:09:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42842 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244906AbhHFKJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:08:32 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB534C061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:08:15 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id j3so6423089plx.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 03:08:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=M5dkFSAbBEOLClHxOjqtsNkD++Mf5LpTY0qaM47dwAA=;
-        b=ELl5wgcTQHoVhEnSceUmsGECDJ3YObRHs4J6XQdnbDr4IGtLrXvRZaZjKKizLhG9CQ
-         p7GfW5K1patbQRvWnR7aXhw3IxA4+LDu+5GMs/tQLoF4VoeefEiP2J5vT5FlXuZ5RzlA
-         UNLdjtnW9v6yCIvI/DRzhMx9qGQygoq5ZFBdc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=M5dkFSAbBEOLClHxOjqtsNkD++Mf5LpTY0qaM47dwAA=;
-        b=VmkPk+SjhcW+Q83q/FnxgT+1plguq2GFGma8yJtRGOkxRhv5Xq6+6qLNSlWca/t8F4
-         tCcS36Tckk4QrJ7bRlYGHKHKRJh2ghMQDUy1lzWT/twUUf1Te+yyVOOi6lC2R+0l1FEv
-         2ebvwJq5oKGlO4zQsO5CD2SOM3ZQUY9WASUvNeLJ2bvtr+Znq0jubrcizxdjhg/Pt671
-         pi1wl+EGNlcylw76TJPt3Nb453jETonHN0LiqK+MM7av9+kGo1TpTNNOOza6sRuWGOOs
-         BjylYe39ud2Wk0Ilo/Tmn2kfqoPxLYVRqNZ0SUSaB6xnSyL2VQXhX/LZTkqS/NNGa4FO
-         ISkA==
-X-Gm-Message-State: AOAM531q/gNimGs9BCkj/DZRuClPoVhu7E3vXQOdMA1Y/3T8SakULr33
-        FKzREhm0azFIWHOkQSZ71QkiMmuKETwtiA==
-X-Google-Smtp-Source: ABdhPJxZjbU3mkj2Xh2n8xpmyiYhU3yGXlt/V3hXH2qg+/EUU/BxKWiC04vUQjdYuYf8GYq+97DNbg==
-X-Received: by 2002:aa7:85cf:0:b029:3bc:9087:a94f with SMTP id z15-20020aa785cf0000b02903bc9087a94fmr3965343pfn.78.1628244495150;
-        Fri, 06 Aug 2021 03:08:15 -0700 (PDT)
-Received: from localhost ([2401:fa00:8f:203:b731:9e91:71e2:65e7])
-        by smtp.gmail.com with UTF8SMTPSA id y13sm12148216pjn.34.2021.08.06.03.08.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 03:08:14 -0700 (PDT)
-From:   Hikaru Nishida <hikalium@chromium.org>
-To:     linux-kernel@vger.kernel.org, dme@dme.org, tglx@linutronix.de,
-        mlevitsk@redhat.com
-Cc:     suleiman@google.com, Hikaru Nishida <hikalium@chromium.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Juergen Gross <jgross@suse.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
-        x86@kernel.org
-Subject: [v2 PATCH 4/4] x86/kvm: Add guest side support for virtual suspend time injection
-Date:   Fri,  6 Aug 2021 19:07:10 +0900
-Message-Id: <20210806190607.v2.4.I2cbcd43256eacc3c92274adff6d0458b6a9c15ee@changeid>
-X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
-In-Reply-To: <20210806100710.2425336-1-hikalium@chromium.org>
-References: <20210806100710.2425336-1-hikalium@chromium.org>
+        Fri, 6 Aug 2021 06:09:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628244540;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tDHQ9Ulm3F1gZvDZHi0UnxkFYVqUZuhtyF1seBl2e04=;
+        b=hI0adXF8EColLVHDP6+tmaYddTKmY72NI0uP7bik1i4heEYHG7P0by2xSjrNPbA62S+x0K
+        gxnnZrD0Fcdaejek9Le+Pp0EkJ2EbOVXo3A9t6ptWgjORWnqdyxz8UiyBS3ls6SsJss+xi
+        QDHEINC+k0IYMyXDGZBuZ/JTByf8wTM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-fJyrQIvZNpemSWHwaQcnZg-1; Fri, 06 Aug 2021 06:08:58 -0400
+X-MC-Unique: fJyrQIvZNpemSWHwaQcnZg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A9C087180C;
+        Fri,  6 Aug 2021 10:08:57 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.22.32.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 566597A8D7;
+        Fri,  6 Aug 2021 10:08:55 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     Jeffrey E Altman <jaltman@auristor.com>,
+        Marc Dionne <marc.dionne@auristor.com>
+cc:     dhowells@redhat.com, Benjamin Kaduk <kaduk@mit.edu>,
+        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC][PATCH] rxrpc: Support reception of extended-SACK ACK packet
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1290707.1628244534.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 06 Aug 2021 11:08:54 +0100
+Message-ID: <1290708.1628244534@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch implements virtual suspend time injection support for kvm
-guests. If this functionality is enabled and the host supports
-KVM_FEATURE_HOST_SUSPEND_TIME,
-the guest will register struct kvm_host_suspend_time through MSR to
-get how much time the guest spend during the host's suspension.
-Host will notify the update on the structure (which happens if the host
-went into suspension while the guest was running) through the irq and
-the irq will trigger the adjustment of CLOCK_BOOTTIME inside a guest.
+    =
 
-Before this patch, there was no way to adjust the CLOCK_BOOTTIME without
-actually suspending the kernel. However, some guest applications rely on
-the fact that there will be some difference between CLOCK_BOOTTIME and
-CLOCK_MONOTONIC after the suspention of the execution and they will be
-broken if we just pausing the guest instead of actually suspending them.
-Pausing the guest kernels is one solution to solve the problem, but
-if we could adjust the clocks without actually suspending them, we can
-reduce the overhead of guest's suspend/resume cycles on every host's
-suspensions. So this change will be useful for the devices which
-experience suspend/resume frequently.
+The RxRPC ACK packet supports selective ACK of up to 255 DATA packets.  It
+contains a variable length array with one octet allocated for each DATA
+packet to be ACK'd.  Each octet is either 0 or 1 depending on whether it i=
+s
+a negative or positive ACK.  7 bits in each octet are effectively unused
+and, further, there are three reserved octets following the ACK array that
+are all set to 0.
 
-Signed-off-by: Hikaru Nishida <hikalium@chromium.org>
+To extend the ACK window up to 2048 ACKs, it is proposed[1]:
+
+ (1) that the ACKs for DATA packets first+0...first+254 in the Rx window
+     are in bit 0 of the octets in the array, ie. acks[0...254], pretty
+     much as now; and
+
+ (2) that if the ACK count is >=3D256, the first reserved byte after the A=
+CK
+     table is annexed to the ACK table as acks[255] and contains the ACK
+     for packet first+255 in bit 0; and
+
+ (3) that if the ACK count is >256, horizontal striping be employed such
+     that the ACK for packet first+256 in the window is then in bit 1 of
+     acks[0], first+257 is in bit 1 of acks[1], up to first+511 being in
+     bit 1 of the borrowed reserved byte (ie. acks[255]).
+
+     first+512 is then in bit 2 of acks[0], going all the way up to
+     first+2048 being in bit 7 of acks[255].
+
+If extended SACK is employed in an ACK packet, it should have EXTENDED-SAC=
+K
+(0x08) set in the RxRPC packet header.
+
+Alter rxrpc_input_ack() to sanity check the ACK count.
+
+Alter rxrpc_input_ack() to limit the number of bytes it extracts from the
+packet for the ack array to 256.
+
+Alter rxrpc_input_soft_acks() to handle an extended SACK table.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+Link: https://gerrit.openafs.org/#/c/14693/3 [1]
 ---
+ net/rxrpc/input.c    |   21 ++++++++++++++-------
+ net/rxrpc/protocol.h |    7 +++++--
+ 2 files changed, 19 insertions(+), 9 deletions(-)
 
- arch/x86/Kconfig                    | 13 ++++++++++
- arch/x86/include/asm/idtentry.h     |  4 +++
- arch/x86/include/asm/kvm_para.h     |  9 +++++++
- arch/x86/kernel/kvmclock.c          | 40 +++++++++++++++++++++++++++++
- include/linux/timekeeper_internal.h |  4 +++
- kernel/time/timekeeping.c           | 33 ++++++++++++++++++++++++
- 6 files changed, 103 insertions(+)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 45463c65ea0a..760fe7f04170 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -822,6 +822,19 @@ config KVM_GUEST
- 	  underlying device model, the host provides the guest with
- 	  timing infrastructure such as time of day, and system time
- 
-+config KVM_VIRT_SUSPEND_TIMING_GUEST
-+	bool "Virtual suspend time injection (guest side)"
-+	depends on KVM_GUEST
-+	default n
-+	help
-+	 This option makes the host's suspension reflected on the guest's clocks.
-+	 In other words, guest's CLOCK_MONOTONIC will stop and
-+	 CLOCK_BOOTTIME keeps running during the host's suspension.
-+	 This feature will only be effective when both guest and host enable
-+	 this option.
-+
-+	 If unsure, say N.
-+
- config ARCH_CPUIDLE_HALTPOLL
- 	def_bool n
- 	prompt "Disable host haltpoll when loading haltpoll driver"
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 1345088e9902..38f37c2a6063 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -671,6 +671,10 @@ DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_WAKEUP_VECTOR,	sysvec_kvm_posted_intr_wakeup
- DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_NESTED_VECTOR,	sysvec_kvm_posted_intr_nested_ipi);
- #endif
- 
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+DECLARE_IDTENTRY_SYSVEC(VIRT_SUSPEND_TIMING_VECTOR, sysvec_virtual_suspend_time);
-+#endif
-+
- #if IS_ENABLED(CONFIG_HYPERV)
- DECLARE_IDTENTRY_SYSVEC(HYPERVISOR_CALLBACK_VECTOR,	sysvec_hyperv_callback);
- DECLARE_IDTENTRY_SYSVEC(HYPERV_REENLIGHTENMENT_VECTOR,	sysvec_hyperv_reenlightenment);
-diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
-index 69299878b200..094023687c8b 100644
---- a/arch/x86/include/asm/kvm_para.h
-+++ b/arch/x86/include/asm/kvm_para.h
-@@ -16,6 +16,15 @@ static inline bool kvm_check_and_clear_guest_paused(void)
- }
- #endif /* CONFIG_KVM_GUEST */
- 
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+u64 kvm_get_suspend_time(void);
-+#else
-+static inline u64 kvm_get_suspend_time(void)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST */
-+
- #define KVM_HYPERCALL \
-         ALTERNATIVE("vmcall", "vmmcall", X86_FEATURE_VMMCALL)
- 
-diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-index ad273e5861c1..1c92b54b1bce 100644
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -16,11 +16,15 @@
- #include <linux/mm.h>
- #include <linux/slab.h>
- #include <linux/set_memory.h>
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
- 
- #include <asm/hypervisor.h>
- #include <asm/mem_encrypt.h>
- #include <asm/x86_init.h>
- #include <asm/kvmclock.h>
-+#include <asm/desc.h>
-+#include <asm/idtentry.h>
- 
- static int kvmclock __initdata = 1;
- static int kvmclock_vsyscall __initdata = 1;
-@@ -48,6 +52,9 @@ early_param("no-kvmclock-vsyscall", parse_no_kvmclock_vsyscall);
- 
- static struct pvclock_vsyscall_time_info
- 			hv_clock_boot[HVC_BOOT_ARRAY_SIZE] __bss_decrypted __aligned(PAGE_SIZE);
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+static struct kvm_suspend_time suspend_time __bss_decrypted;
-+#endif
- static struct pvclock_wall_clock wall_clock __bss_decrypted;
- static DEFINE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
- static struct pvclock_vsyscall_time_info *hvclock_mem;
-@@ -163,6 +170,18 @@ static int kvm_cs_enable(struct clocksource *cs)
- 	return 0;
- }
- 
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+/*
-+ * kvm_get_suspend_time - This function returns total time passed during
-+ * the host was in a suspend state while this guest was running.
-+ * (Not a duration of the last host suspension but cumulative time.)
-+ */
-+u64 kvm_get_suspend_time(void)
-+{
-+	return suspend_time.suspend_time_ns;
-+}
-+#endif /* CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST */
-+
- struct clocksource kvm_clock = {
- 	.name	= "kvm-clock",
- 	.read	= kvm_clock_get_cycles,
-@@ -290,6 +309,18 @@ static int kvmclock_setup_percpu(unsigned int cpu)
- 	return p ? 0 : -ENOMEM;
- }
- 
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+void timekeeping_inject_virtual_suspend_time(void);
-+DEFINE_IDTENTRY_SYSVEC(sysvec_virtual_suspend_time)
-+{
-+	struct pt_regs *old_regs = set_irq_regs(regs);
-+
-+	timekeeping_inject_virtual_suspend_time();
-+
-+	set_irq_regs(old_regs);
-+}
-+#endif
-+
- void __init kvmclock_init(void)
+diff --git a/net/rxrpc/input.c b/net/rxrpc/input.c
+index dc201363f2c4..0a7f7462b617 100644
+--- a/net/rxrpc/input.c
++++ b/net/rxrpc/input.c
+@@ -767,15 +767,17 @@ static void rxrpc_input_soft_acks(struct rxrpc_call =
+*call, u8 *acks,
+ 				  rxrpc_seq_t seq, int nr_acks,
+ 				  struct rxrpc_ack_summary *summary)
  {
- 	u8 flags;
-@@ -304,6 +335,15 @@ void __init kvmclock_init(void)
- 		return;
+-	int ix;
+-	u8 annotation, anno_type;
++	int ix, i;
++	u8 annotation, anno_type, ack;
+ =
+
+-	for (; nr_acks > 0; nr_acks--, seq++) {
++	for (i =3D 0; i < nr_acks; i++, seq++) {
+ 		ix =3D seq & RXRPC_RXTX_BUFF_MASK;
+ 		annotation =3D call->rxtx_annotations[ix];
+ 		anno_type =3D annotation & RXRPC_TX_ANNO_MASK;
+ 		annotation &=3D ~RXRPC_TX_ANNO_MASK;
+-		switch (*acks++) {
++		ack =3D acks[i % RXRPC_EXTENDED_SACK_SIZE];
++		ack >>=3D i / RXRPC_EXTENDED_SACK_SIZE;
++		switch (ack) {
+ 		case RXRPC_ACK_TYPE_ACK:
+ 			summary->nr_acks++;
+ 			if (anno_type =3D=3D RXRPC_TX_ANNO_ACK)
+@@ -846,7 +848,7 @@ static void rxrpc_input_ack(struct rxrpc_call *call, s=
+truct sk_buff *skb)
+ 	union {
+ 		struct rxrpc_ackpacket ack;
+ 		struct rxrpc_ackinfo info;
+-		u8 acks[RXRPC_MAXACKS];
++		u8 acks[RXRPC_EXTENDED_SACK_SIZE];
+ 	} buf;
+ 	rxrpc_serial_t ack_serial, acked_serial;
+ 	rxrpc_seq_t first_soft_ack, hard_ack, prev_pkt;
+@@ -874,6 +876,10 @@ static void rxrpc_input_ack(struct rxrpc_call *call, =
+struct sk_buff *skb)
+ 			   first_soft_ack, prev_pkt,
+ 			   summary.ack_reason, nr_acks);
+ =
+
++	if ((nr_acks > RXRPC_MAXACKS && !(sp->hdr.flags & RXRPC_EXTENDED_SACK)) =
+||
++	    (nr_acks > RXRPC_MAXACKS_EXTENDED))
++		return rxrpc_proto_abort("AKC", call, 0);
++	=
+
+ 	switch (buf.ack.reason) {
+ 	case RXRPC_ACK_PING_RESPONSE:
+ 		rxrpc_input_ping_response(call, skb->tstamp, acked_serial,
+@@ -912,7 +918,7 @@ static void rxrpc_input_ack(struct rxrpc_call *call, s=
+truct sk_buff *skb)
  	}
- 
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+	if (kvm_para_has_feature(KVM_FEATURE_HOST_SUSPEND_TIME)) {
-+		alloc_intr_gate(VIRT_SUSPEND_TIMING_VECTOR, asm_sysvec_virtual_suspend_time);
-+		/* Register the suspend time structure */
-+		wrmsrl(MSR_KVM_HOST_SUSPEND_TIME,
-+		       slow_virt_to_phys(&suspend_time) | KVM_MSR_ENABLED);
-+	}
-+#endif
-+
- 	if (cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "kvmclock:setup_percpu",
- 			      kvmclock_setup_percpu, NULL) < 0) {
- 		return;
-diff --git a/include/linux/timekeeper_internal.h b/include/linux/timekeeper_internal.h
-index 84ff2844df2a..a5fd515f0a9d 100644
---- a/include/linux/timekeeper_internal.h
-+++ b/include/linux/timekeeper_internal.h
-@@ -124,6 +124,10 @@ struct timekeeper {
- 	u32			ntp_err_mult;
- 	/* Flag used to avoid updating NTP twice with same second */
- 	u32			skip_second_overflow;
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+	/* suspend_time_injected keeps the duration injected through kvm */
-+	u64			suspend_time_injected;
-+#endif
- #ifdef CONFIG_DEBUG_TIMEKEEPING
- 	long			last_warning;
- 	/*
-diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index 3ac3fb479981..424c61d38646 100644
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -2125,6 +2125,39 @@ static u64 logarithmic_accumulation(struct timekeeper *tk, u64 offset,
- 	return offset;
- }
- 
-+#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
-+/*
-+ * timekeeping_inject_virtual_suspend_time - Inject virtual suspend time
-+ * when requested by the kvm host.
-+ * This function should be called under irq context.
-+ */
-+void timekeeping_inject_virtual_suspend_time(void)
-+{
-+	/*
-+	 * Only updates shadow_timekeeper so the change will be reflected
-+	 * on the next call of timekeeping_advance().
-+	 */
-+	struct timekeeper *tk = &shadow_timekeeper;
-+	unsigned long flags;
-+	struct timespec64 delta;
-+	u64 suspend_time;
-+
-+	raw_spin_lock_irqsave(&timekeeper_lock, flags);
-+	suspend_time = kvm_get_suspend_time();
-+	if (suspend_time > tk->suspend_time_injected) {
-+		/*
-+		 * Do injection only if the time is not injected yet.
-+		 * suspend_time and tk->suspend_time_injected values are
-+		 * cummrative, so take a diff and inject the duration.
-+		 */
-+		delta = ns_to_timespec64(suspend_time - tk->suspend_time_injected);
-+		__timekeeping_inject_sleeptime(tk, &delta);
-+		tk->suspend_time_injected = suspend_time;
-+	}
-+	raw_spin_unlock_irqrestore(&timekeeper_lock, flags);
-+}
-+#endif
-+
- /*
-  * timekeeping_advance - Updates the timekeeper to the current time and
-  * current NTP tick length
--- 
-2.32.0.605.g8dce9f2422-goog
+ =
+
+ 	buf.info.rxMTU =3D 0;
+-	ioffset =3D offset + nr_acks + 3;
++	ioffset =3D offset + min(nr_acks, RXRPC_MAXACKS) + 3;
+ 	if (skb->len >=3D ioffset + sizeof(buf.info) &&
+ 	    skb_copy_bits(skb, ioffset, &buf.info, sizeof(buf.info)) < 0)
+ 		return rxrpc_proto_abort("XAI", call, 0);
+@@ -969,7 +975,8 @@ static void rxrpc_input_ack(struct rxrpc_call *call, s=
+truct sk_buff *skb)
+ 	}
+ =
+
+ 	if (nr_acks > 0) {
+-		if (skb_copy_bits(skb, offset, buf.acks, nr_acks) < 0) {
++		if (skb_copy_bits(skb, offset, buf.acks,
++				  min_t(unsigned int, nr_acks, sizeof(buf.acks))) < 0) {
+ 			rxrpc_proto_abort("XSA", call, 0);
+ 			goto out;
+ 		}
+diff --git a/net/rxrpc/protocol.h b/net/rxrpc/protocol.h
+index 49bb972539aa..287986012cd9 100644
+--- a/net/rxrpc/protocol.h
++++ b/net/rxrpc/protocol.h
+@@ -51,7 +51,8 @@ struct rxrpc_wire_header {
+ #define RXRPC_CLIENT_INITIATED	0x01		/* signifies a packet generated by a=
+ client */
+ #define RXRPC_REQUEST_ACK	0x02		/* request an unconditional ACK of this p=
+acket */
+ #define RXRPC_LAST_PACKET	0x04		/* the last packet from this side for thi=
+s call */
+-#define RXRPC_MORE_PACKETS	0x08		/* more packets to come */
++#define RXRPC_MORE_PACKETS	0x08		/* [DATA] More packets to come */
++#define RXRPC_EXTENDED_SACK	0x08		/* [ACK] Extended SACK table */
+ #define RXRPC_JUMBO_PACKET	0x20		/* [DATA] this is a jumbo packet */
+ #define RXRPC_SLOW_START_OK	0x20		/* [ACK] slow start supported */
+ =
+
+@@ -124,7 +125,9 @@ struct rxrpc_ackpacket {
+ #define RXRPC_ACK__INVALID		10	/* Representation of invalid ACK reason */
+ =
+
+ 	uint8_t		nAcks;		/* number of ACKs */
+-#define RXRPC_MAXACKS	255
++#define RXRPC_MAXACKS	255		/* Normal maximum number of ACKs */
++#define RXRPC_EXTENDED_SACK_SIZE 256	/* Size of the extended SACK table *=
+/
++#define RXRPC_MAXACKS_EXTENDED	2048	/* Maximum number of ACKs in extended=
+ SACK table */
+ =
+
+ 	uint8_t		acks[0];	/* list of ACK/NAKs */
+ #define RXRPC_ACK_TYPE_NACK		0
 
