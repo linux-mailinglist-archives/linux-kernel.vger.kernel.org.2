@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53813E3030
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 22:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66ED53E3041
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 22:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244803AbhHFUOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 16:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232908AbhHFUOm (ORCPT
+        id S244840AbhHFUSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 16:18:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49173 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244847AbhHFUSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 16:14:42 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EC9C061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 13:14:25 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so24391521pjr.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 13:14:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gPJ8NsKS+3Jw4kxc6WCHLzF/A70YlZNDecLhVvyEwVw=;
-        b=NdOURHyDJZvSh8If1c7MyBRCht7XlsW8r2HtcVAVLUUWoZmmb6rVJdGcw9CANoRI6J
-         tN4WH3v3iQv+ngKFN+eTeHi5IwsFf7MdKjVxLsRHC2An9rllNl6suYGF+oUWh3d4wM+4
-         vNb9dykCBuSZqDfOuwvYjxHcnqP+Y7CAXB+WA=
+        Fri, 6 Aug 2021 16:18:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628281069;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AKEtsVz7WfVjpfJzqxqaNsm5zdfVw1TUqK/dikMgDyg=;
+        b=OQqYZhFczGH6MYKOP8lN3nl3oacMiUftAEXLuro3l4wA0olmI5letaJw9qhkJJjVjUMby4
+        RHHF8qwq2uFZLtmp1puQb/zR+hwt2j0yHAfmYZHD1ppk5PdruJLxOXu4S0ipczUENDLsQ/
+        DeoMBhbaBGz3FCc5QQxtpZKCAetTu70=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-310-gw8WJ027NEecfzruw_vgcA-1; Fri, 06 Aug 2021 16:17:48 -0400
+X-MC-Unique: gw8WJ027NEecfzruw_vgcA-1
+Received: by mail-oi1-f198.google.com with SMTP id v128-20020aca61860000b029025c02a6228cso4694726oib.21
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 13:17:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gPJ8NsKS+3Jw4kxc6WCHLzF/A70YlZNDecLhVvyEwVw=;
-        b=PcrwO/mJODGXjkoN/9jBnlmUMXplblGm/VRG/IEyWmt72y+Kn54ELzooM1AtAbOfl0
-         udJaaKQKXe1hjbYoSJ6hN8kMTacsv1Ey0r+GLmi/JlpRmPLVWgCTOCPWhyjcy707S1Zh
-         rG9PFhaaaNXfosUdDzm3Wdk/HRDhhvJixEv+exyu3DiyvA0JxZT3AzTGlK5isiBM0Kwp
-         SLSxSIKpgfkfRoUS/NeD/PHiYlq8ArStbxFl6ZxjFdnTv3gsYMggyqwpy/DKZnqTIRX1
-         CiNGwzy5xqC6HV5/5Mn77zVwlp5Kn0HZ65y6TZbCHH7Z4g7P8Ax4dtJ/hLAQ+IcS8YQI
-         HMiw==
-X-Gm-Message-State: AOAM531D8cfMipgLMLc5lOIWWHFMKho+3NZoTUMR4/2D4kQ/fYc4iJhr
-        gePStUJXS3fOOQVjRzss67bi9g==
-X-Google-Smtp-Source: ABdhPJxxlITo6nirtimXf9fsmMsyNhsNe6iZOd6Asay/tIW2ItUL1ICQexCsZ8sZV+5aL8qA97a+yg==
-X-Received: by 2002:aa7:8246:0:b029:39a:1e0a:cd48 with SMTP id e6-20020aa782460000b029039a1e0acd48mr12338144pfn.14.1628280864501;
-        Fri, 06 Aug 2021 13:14:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a35sm12580854pgm.66.2021.08.06.13.14.23
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=AKEtsVz7WfVjpfJzqxqaNsm5zdfVw1TUqK/dikMgDyg=;
+        b=OkRA1mQP4BODsgG3ANqV19SHE+OHkMNT9h0Cui9NBR5Zutbat8QaDcQ2cYSJk3XH5U
+         2v8qOgvmHumgoToace0zeA8NPMqTw2rOrRQeP6HIcALcACRbYhHWNDi1SimSl9mt3T7/
+         VURCdBB1yTr3WlMX11LD6hU99uxrQRpEZEL7wJwi8vu8PPUzn2BDvXIXqpHwqu/OFDBG
+         HKTJeuwyXcAYVbzRIfB16emk1p1PT60vf7W4A5D9twpwGzcj4ab3jP0n8WkfmsE6Ehj9
+         yCOrrR9a6CDNUPlShgF3N6BaDYqcxLQwLZuargfdQirmqpFX5Yj2ApICM1j5RB7ojDpa
+         R0kg==
+X-Gm-Message-State: AOAM531FpIpo3os9ooOMj193FfO+QQDR7g/PYMloseS1anUycjEKZXeg
+        9p2lU8inPjpP4vjAdm3/FepzIJRuH2JRVCTYKQJ/u+YNYZensUryNu3aVfFvYxjEptpxaqelwwC
+        xIhPaSnVX3z7Ij4ENHLajDerT
+X-Received: by 2002:a05:6808:b3c:: with SMTP id t28mr8529925oij.138.1628281067382;
+        Fri, 06 Aug 2021 13:17:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwE/+radWlM0jhMSuigAQ6bd02/LEk6hSW+AqhKdTvsnB5GbjLi4CMMD+utdEDRsQXhnxTuVg==
+X-Received: by 2002:a05:6808:b3c:: with SMTP id t28mr8529912oij.138.1628281067157;
+        Fri, 06 Aug 2021 13:17:47 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id 7sm164527oth.69.2021.08.06.13.17.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 13:14:23 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Ross Schmidt <ross.schm.dev@gmail.com>,
-        Joe Perches <joe@perches.com>, devel@driverdev.osuosl.org,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] staging: rtl8723bs: Avoid field-overflowing memcpy()
-Date:   Fri,  6 Aug 2021 13:14:22 -0700
-Message-Id: <20210806201422.2871679-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Fri, 06 Aug 2021 13:17:46 -0700 (PDT)
+Date:   Fri, 6 Aug 2021 14:17:45 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        peterx@redhat.com
+Subject: Re: [PATCH 3/7] vfio/pci: Use vfio_device_unmap_mapping_range()
+Message-ID: <20210806141745.1d8c3e0a.alex.williamson@redhat.com>
+In-Reply-To: <20210806010418.GF1672295@nvidia.com>
+References: <162818167535.1511194.6614962507750594786.stgit@omen>
+        <162818325518.1511194.1243290800645603609.stgit@omen>
+        <20210806010418.GF1672295@nvidia.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1599; h=from:subject; bh=N0zJZJw4fEfLxgkALcFP9+bOoMIMACrM/hpsApeDvnI=; b=owEBbAKT/ZANAwAKAYly9N/cbcAmAcsmYgBhDZgdacn85cUJLT9+vjP4fZ1DEL36WLydwIVHYdNs rrmiePqJAjIEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYQ2YHQAKCRCJcvTf3G3AJkCGD/ iUCT4C9PmKd9Cp68qNLOPT9cs4Sq4vUB0OAch0yQGtn/cHWpgjrSWVikOFA30ueW1pejMqIGHjwEfe uv0f5pcGAL6VB4sQ9zJP71HbfTsFPcTfJexGZMln9z98VlYwY1kN3wvOacp8fENVdE+EBx8sX3RJrW 4cGwdNARI8qGoFxO3xVkM1Ct3zVLgv0jBwXLIh+aQqPZ/htj0Nsz6QPnnFrgSt+oI6cihyNMjONwFQ E0/NDE4V0ZlqJHDgZp1KgM/PJr+BokVI7vYwCSP1Y28WRcck6NGIhOBl0ICAfkz/q26rzf+/3JsC9P Moth1SRuh89E7iz3gk1sV3upvmmGIVKGajM7Cuput472O/SQ7GH3KSFSkmNB5SbpHm+CFl6gEfaKLq LwufREyQVcs4/k2tKjVu/ua9p3TpoUon2rhZxbX7t3Rwmxc4arveTZeifdY4T5xl089sRHM9Hs/0GN EpMxrG9f9mEdw2ieFjyXSghZcoZFHNhoz0YdrQgao+JN7LyLbABYxKvlxr0XorXGkbn6GCOzBVuP2Y EJgmlcjiE0iVIcAgfpgE7niA44YNoBeCjxutXzAbhWSucrlud9JXoqYXlK9VlA6679p9TBjkNyObC8 dCZQw/U/n7z64h/+6pKRjssEYzakpEDkEV9MaNOySixUsyHxruB4HHhK6V
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
+On Thu, 5 Aug 2021 22:04:18 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-Adjust memcpy() destination to be the named structure itself, rather than
-the first member, allowing memcpy() to correctly reason about the size.
+> On Thu, Aug 05, 2021 at 11:07:35AM -0600, Alex Williamson wrote:
+> > @@ -2281,15 +2143,13 @@ static int vfio_pci_try_zap_and_vma_lock_cb(struct pci_dev *pdev, void *data)
+> >  
+> >  	vdev = container_of(device, struct vfio_pci_device, vdev);
+> >  
+> > -	/*
+> > -	 * Locking multiple devices is prone to deadlock, runaway and
+> > -	 * unwind if we hit contention.
+> > -	 */
+> > -	if (!vfio_pci_zap_and_vma_lock(vdev, true)) {
+> > +	if (!down_write_trylock(&vdev->memory_lock)) {
+> >  		vfio_device_put(device);
+> >  		return -EBUSY;
+> >  	}  
+> 
+> Now that this is simplified so much, I wonder if we can drop the
+> memory_lock and just use the dev_set->lock?
+> 
+> That avoids the whole down_write_trylock thing and makes it much more
+> understandable?
 
-"objdump -d" shows no object code changes.
+Hmm, that would make this case a lot easier, but using a mutex,
+potentially shared across multiple devices, taken on every non-mmap
+read/write doesn't really feel like a good trade-off when we're
+currently using a per device rwsem to retain concurrency here.  Thanks,
 
-Cc: Ross Schmidt <ross.schm.dev@gmail.com>
-Cc: Joe Perches <joe@perches.com>
-Cc: devel@driverdev.osuosl.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-Hi Greg, since I've split out some other patches from my series, it made
-sense to send this one directly too. You originally Acked it here:
-https://lore.kernel.org/lkml/YQDvM4r2KomO9p+J@kroah.com
-But since it has no dependencies on my tree, you can take it directly. :)
-Thanks!
----
- drivers/staging/rtl8723bs/core/rtw_mlme.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-index 5ed13bf765d2..e0cee51224ff 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-@@ -2389,7 +2389,7 @@ unsigned int rtw_restructure_ht_ie(struct adapter *padapter, u8 *in_ie, u8 *out_
- 	}
- 
- 	/* fill default supported_mcs_set */
--	memcpy(ht_capie.mcs.rx_mask, pmlmeext->default_supported_mcs_set, 16);
-+	memcpy(&ht_capie.mcs, pmlmeext->default_supported_mcs_set, 16);
- 
- 	/* update default supported_mcs_set */
- 	rtw_hal_get_hwreg(padapter, HW_VAR_RF_TYPE, (u8 *)(&rf_type));
--- 
-2.30.2
+Alex
 
