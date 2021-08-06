@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE3B3E2020
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AF93E2023
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241818AbhHFAnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 20:43:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49502 "EHLO mail.kernel.org"
+        id S240412AbhHFAne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 20:43:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241490AbhHFAnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 20:43:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F13761184;
-        Fri,  6 Aug 2021 00:43:07 +0000 (UTC)
+        id S241314AbhHFAnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 20:43:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2BF361181;
+        Fri,  6 Aug 2021 00:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1628210588;
-        bh=iSyRQEsIeNF4sicG4iDdhNRNXfrtXmJBuL9zRRvHZbo=;
+        s=korg; t=1628210597;
+        bh=a8GIAZH/SrBiqNH9BfQy1X36iX6vj+iZLd00Z0SVfgE=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CI/WU5o0NXX+lpLnneSa22rzMVR5Ow+ec2rhqWWg7D6zqdz2W0uHbrQADp9o06Qge
-         D8JL9bqe1pTiEEDHdp/hYqaxLYok71uVO2CaFYGmNY486Xj9zOT0UnMj7ZCOo1L+Yl
-         vV6gkNz/0uoGaOXpYZUAjyxBx2uJLRrfYHesU+aw=
-Date:   Thu, 5 Aug 2021 17:43:04 -0700
+        b=DhlFY1lMKQ3RbhQZoE/nkYwgdmKHCGaYfF/iaIVuM08g3mg8UWNhPDXSkCebZ2yCd
+         tUEb8JFKycvqjRoVeODVekA7k9Zif/vtubqAx8UjQI465+GAkytdf2cnutDjtUK2Qb
+         FkoPdcROQhXi9A1B9oz9268OgyffP9K6SstrtnxU=
+Date:   Thu, 5 Aug 2021 17:43:16 -0700
 From:   Andrew Morton <akpm@linux-foundation.org>
 To:     SeongJae Park <sj38.park@gmail.com>
 Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
@@ -40,7 +40,7 @@ Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v34 07/13] mm/damon: Implement a debugfs-based user
  space interface
-Message-Id: <20210805174304.3c3d8c8ee971bc9ddf6988af@linux-foundation.org>
+Message-Id: <20210805174316.ff4b6eee629f9f05259058d9@linux-foundation.org>
 In-Reply-To: <20210716081449.22187-8-sj38.park@gmail.com>
 References: <20210716081449.22187-1-sj38.park@gmail.com>
         <20210716081449.22187-8-sj38.park@gmail.com>
@@ -54,57 +54,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, 16 Jul 2021 08:14:43 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
 
-> From: SeongJae Park <sjpark@amazon.de>
-> 
-> DAMON is designed to be used by kernel space code such as the memory
-> management subsystems, and therefore it provides only kernel space API.
-> That said, letting the user space control DAMON could provide some
-> benefits to them.  For example, it will allow user space to analyze
-> their specific workloads and make their own special optimizations.
-> 
-> For such cases, this commit implements a simple DAMON application kernel
-> module, namely 'damon-dbgfs', which merely wraps the DAMON api and
-> exports those to the user space via the debugfs.
-> 
-> ...
->
-> +static int __init damon_dbgfs_init(void)
-> +{
-> +	int rc;
+> +#define targetid_is_pid(ctx)	\
+> +	(ctx->primitive.target_valid == damon_va_target_valid)
 > +
-> +	dbgfs_ctxs = kmalloc(sizeof(*dbgfs_ctxs), GFP_KERNEL);
-> +	if (!dbgfs_ctxs) {
-> +		pr_err("%s: dbgfs ctxs alloc failed\n", __func__);
-> +		return -ENOMEM;
-> +	}
-> +	dbgfs_ctxs[0] = dbgfs_new_ctx();
-> +	if (!dbgfs_ctxs[0]) {
-> +		kfree(dbgfs_ctxs);
-> +		pr_err("%s: dbgfs ctx alloc failed\n", __func__);
-> +		return -ENOMEM;
-> +	}
 
-checkpatch points out that the "alloc failed" messages are unneeded -
-kmalloc(GFP_KERNEL) will have already emitted a stack trace.  Is this
-fixup OK?
+I think this can be implemented as a static inline C function?
 
---- a/mm/damon/dbgfs.c~mm-damon-implement-a-debugfs-based-user-space-interface-fix
+--- a/mm/damon/dbgfs.c~mm-damon-implement-a-debugfs-based-user-space-interface-fix-fix
 +++ a/mm/damon/dbgfs.c
-@@ -373,14 +373,11 @@ static int __init damon_dbgfs_init(void)
- 	int rc;
+@@ -97,8 +97,10 @@ out:
+ 	return ret;
+ }
  
- 	dbgfs_ctxs = kmalloc(sizeof(*dbgfs_ctxs), GFP_KERNEL);
--	if (!dbgfs_ctxs) {
--		pr_err("%s: dbgfs ctxs alloc failed\n", __func__);
-+	if (!dbgfs_ctxs)
- 		return -ENOMEM;
--	}
- 	dbgfs_ctxs[0] = dbgfs_new_ctx();
- 	if (!dbgfs_ctxs[0]) {
- 		kfree(dbgfs_ctxs);
--		pr_err("%s: dbgfs ctx alloc failed\n", __func__);
- 		return -ENOMEM;
- 	}
- 	dbgfs_nr_ctxs = 1;
-_
+-#define targetid_is_pid(ctx)	\
+-	(ctx->primitive.target_valid == damon_va_target_valid)
++static inline bool targetid_is_pid(const struct damon_ctx *ctx)
++{
++	return ctx->primitive.target_valid == damon_va_target_valid;
++}
+ 
+ static ssize_t sprint_target_ids(struct damon_ctx *ctx, char *buf, ssize_t len)
+ {
+
+We prefer this because it looks better, provides typechecking and can
+in some situations suppress unused variable warnings.
 
