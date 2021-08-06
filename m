@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA76B3E269E
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680F43E26A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244023AbhHFJAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 05:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38600 "EHLO
+        id S244087AbhHFJAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243999AbhHFJAI (ORCPT
+        with ESMTP id S244003AbhHFJAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:00:08 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC86C06179A
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 01:59:51 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id c9so10093186wri.8
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 01:59:51 -0700 (PDT)
+        Fri, 6 Aug 2021 05:00:09 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B320EC06179B
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 01:59:52 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id f9-20020a05600c1549b029025b0f5d8c6cso8346140wmg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 01:59:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vxK+zMmGDONmI7WIfXVr+8WBGLkcNBTLLe2aNcDSEh0=;
-        b=ee+ZouvgPjCHKBIKONHKjNK+HhdwZ3dfG+T8JdGJHKzyRTx+OZNy6xiGo9jZpWD1HU
-         dk7Sz+Tpe/QSvy9SS0rjN4JdO0XFqAB0N7U1ywRrDYDRs8XAyx8bdObs2cyGnlRMYbse
-         7RGIygz4FQt6Nh/z5Msobvpb5yjG4w2g9TY38DN64CcoaXoFH3lE715+sQAPTJL4y88H
-         rj07YQaMc9C427YWHdI6Kv66l36x9tvY2PI0gCFyHOCHTRnpKODqwF28v16yzp4OTYKW
-         fOsYd1fjRdnZaTzCh3RRf8XqbTss9weN+Sja2IhOHkBbZOb9YRst3kHs1QogJDXzMo+X
-         DlKg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=o+kMyfhCPzlS7skqnAcT+FomwoDNF/rh7mzm45omea4=;
+        b=XBituPdoRBD4NPkBxGHNHQKpa+mSpTG2q1H+ncPn7Qx3SpwbM+MR/UPgiMAm8hwHjG
+         bymLY6c3l9YpmVnO4K/Fo13he98ySWK2HF6lhIAvv/mgz6jP7nl3n7wVAoXSFPPOAt7u
+         hUD6cjZl/qL+AIPCfrnoYhPl7KltEatZ0aiiG2YyJfGY99cnt4sSWlGibat8Yboa6+TK
+         aOQiYK0RmPuxPKvMc+tLDMkmbiqJuUHUY4831srhhPbKnBsMv+m6Ahh8AlLCm565NXDK
+         IxDBUNUSiXxtF2btC6/QyyffOpEp1GSTMhIt5zJPtcLkd5D7Q3JsZFcZMIdE3zw1xknJ
+         L1nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vxK+zMmGDONmI7WIfXVr+8WBGLkcNBTLLe2aNcDSEh0=;
-        b=WXdmvOO99IdzyAC34t9hhZdtf86TVBgjdM5gcpF7qP3KfcP9MZIhpDp5Z2rRijJjrl
-         qUKU7EweC3OGlw+kTMIrrIkmWY59asPVMbnKaz9s9pc76b6A8FdpOLfliIXFDV3tZXRG
-         EKtoEGAVETi61LO2R9T9JHvn7lhG1eglJSgRm2sm4PSABYUVXFlYc/yekAoPAVyzxcD1
-         zt+PeHNMcPYK+GUsBk9YbMCGu9X74wSTr/K70h1FXa8RWE+NI2aTfySZhI6V/uKrGS7F
-         u/LxyCTAEt/UdUJZUAfI1z72ybEVrcdcp8GbVl3iQcBXjrE1+ayqSekMvu7iGrN4BoDw
-         8jfQ==
-X-Gm-Message-State: AOAM530yo5/1aVHZQYpZFXncs9DtOwutKRkUgSVmyiZKWV9LAd+VLN0t
-        e0AW74G85uO/C6oza/Dahc4tFA==
-X-Google-Smtp-Source: ABdhPJxQZefqzxkYiso8YGxQFPxwhTpRO+NEUTCQZ99TUphrLhJ63rt6yHq44uXS+aMzMSDFaqwiMg==
-X-Received: by 2002:a5d:6b8f:: with SMTP id n15mr9416463wrx.103.1628240390316;
-        Fri, 06 Aug 2021 01:59:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=o+kMyfhCPzlS7skqnAcT+FomwoDNF/rh7mzm45omea4=;
+        b=tqP2iQbKck0XRzJCSY8zMxnWo/o+2Q+NJUo40EcgLWcA3hgF7keVphKJL1K5uX2VDC
+         l/hBXjBvCXYiq4HScEjVvcxXX5ZMYPEnCy+UUoNiKYaFcvVCwf0TxSD7jkRUiHCbsiV0
+         A98YFhej+cqRdGK9ou6uGQy3czKVpVSVAarFrwDF5ufaiIH3n3NGiJcTMT1SdQaC4K3L
+         W7LvQg6+mGZxTNDWx7avmD0ZQG8QQ8mDONVWw+5s3jyW+DzfuOHUilovt/yV9IOPjzo+
+         nBRhb4jD9wLVfyjZ5qYUXXgWLx1jFO2qUnTHROIfWufjaWphxpN6bqlJzMft2CeKtsx0
+         eUZQ==
+X-Gm-Message-State: AOAM531ylCDlXXDifVao+dFsE/VSo2y1NypM3dt6aDm1jmala77RlDrv
+        iSDbmb+oZ3NfI7Fpa1N66dBCuA==
+X-Google-Smtp-Source: ABdhPJx3x9VcoJtYkQZ9Tpw1A3HRo8AUAmtPczxhg+VBGZzdJRhNUFsYihNI8qkUzvn5pBxWZtr6lQ==
+X-Received: by 2002:a7b:c942:: with SMTP id i2mr2102701wml.153.1628240391396;
+        Fri, 06 Aug 2021 01:59:51 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id x18sm8506144wrw.19.2021.08.06.01.59.49
+        by smtp.gmail.com with ESMTPSA id x18sm8506144wrw.19.2021.08.06.01.59.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 01:59:49 -0700 (PDT)
+        Fri, 06 Aug 2021 01:59:50 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Herring <robh@kernel.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 0/4] nvmem: patches (set 1) for 5.15
-Date:   Fri,  6 Aug 2021 09:59:43 +0100
-Message-Id: <20210806085947.22682-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/4] dt-bindings: nvmem: qfprom: Add optional power-domains property
+Date:   Fri,  6 Aug 2021 09:59:44 +0100
+Message-Id: <20210806085947.22682-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210806085947.22682-1-srinivas.kandagatla@linaro.org>
+References: <20210806085947.22682-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+From: Rajendra Nayak <rnayak@codeaurora.org>
 
-Here are some nvmem patches for 5.14 which includes
-- these are mostly qfprom provider powerdomain support patches.
-- fix in core for incorrect error handing in nvmem_register path
+qfprom devices on some SoCs need to vote on the performance state
+of a power-domain, so add the power-domains optional property to the
+bindings
 
-Can you please queue them up for 5.15.
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-thanks for you help,
-srini
-
-Rajendra Nayak (3):
-  dt-bindings: nvmem: qfprom: Add optional power-domains property
-  nvmem: qfprom: Fix up qfprom_disable_fuse_blowing() ordering
-  nvmem: qfprom: sc7280: Handle the additional power-domains vote
-
-Srinivas Kandagatla (1):
-  nvmem: core: fix error handling while validating keepout regions
-
- .../bindings/nvmem/qcom,qfprom.yaml           |  3 ++
- drivers/nvmem/core.c                          |  7 +++--
- drivers/nvmem/qfprom.c                        | 31 +++++++++++++++++--
- 3 files changed, 36 insertions(+), 5 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
+index 861b205016b1..dede8892ee01 100644
+--- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
++++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
+@@ -51,6 +51,9 @@ properties:
+   vcc-supply:
+     description: Our power supply.
+ 
++  power-domains:
++    maxItems: 1
++
+   # Needed if any child nodes are present.
+   "#address-cells":
+     const: 1
 -- 
 2.21.0
 
