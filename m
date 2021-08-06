@@ -2,59 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5E73E2BF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4436E3E2BFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234079AbhHFNxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 09:53:41 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47198 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232548AbhHFNxk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 09:53:40 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 148DF1F44A73
-Message-ID: <765dc1f100d36b90f424eeccb76ddfa7b5fdb227.camel@collabora.com>
-Subject: Re: [PATCH 0/2] D_CAN RX buffer size improvements
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Andrejs Cainikovs <andrejs.cainikovs@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, Dario Binacchi <dariobin@libero.it>,
-        fede.a.rossi@gmail.com, msonnaillon@gmail.com
-Date:   Fri, 06 Aug 2021 10:53:15 -0300
-In-Reply-To: <20210806103639.q3xim42zcispv6ak@pengutronix.de>
-References: <20190208132954.28166-1-andrejs.cainikovs@netmodule.com>
-         <4da667f3-899a-459c-2cca-6514135a1918@gmail.com>
-         <20210806103639.q3xim42zcispv6ak@pengutronix.de>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S234283AbhHFNxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 09:53:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234093AbhHFNxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 09:53:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 407C360F70;
+        Fri,  6 Aug 2021 13:53:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628258016;
+        bh=HJzP5YP4DYQESm9BV+H2EfIFsF7Mzd+YPm8A9nWkj3g=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CsVJKkRwfeUetV5oVR54+pqKArGdOHRuwQ7qYVdNFl+W0HpU5hYmBaRqz9y96UkKW
+         Dha72e8wwl+0krdrRvxPE+jl8RROAskdNCRJqfwjoHPHH0kTX4WrcAp2+cbMlm4YVc
+         Sal5XgZOVcPe14qrvvq5NdN0Bsi4voXMUB/b7L2Lot82PhS+ohSw/mr8Q3Yp0cYu7v
+         NPpXphkPUhAW+ZDgMNvunsg/jmUvu/lJScKAndgaLQpaYz6yCyZyzHpEaLbEdXVFU8
+         VN5gipq+RVLKf9Leo1UYiw/Svymz4zffsvuIQCd/qawdxoQM9VMveqEp8y33Ztd7X5
+         29C9LfINmId1g==
+Date:   Fri, 6 Aug 2021 14:53:32 +0100
+From:   Will Deacon <will@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: [GIT PULL] arm64 fixes for -rc5
+Message-ID: <20210806135331.GA2951@willie-the-truck>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Adding Federico and Max)
+Hi Linus,
 
-On Fri, 2021-08-06 at 12:36 +0200, Marc Kleine-Budde wrote:
-> On 06.08.2021 12:16:26, Andrejs Cainikovs wrote:
-> > Sorry for a late reply. I'm the author of this patch set, and I will
-> > have a look at this after I obtain the hardware. I hope this is still
-> > relevant.
-> 
-> Dario (Cc'ed) created a proper patch series to support 64 message
-> objects. The series has been mainlined in:
-> 
-> https://git.kernel.org/linus/132f2d45fb2302a582aef617ea766f3fa52a084c
-> 
+Please pull these arm64 fixes for -rc5. It's all pretty minor but the
+main fix is sorting out how we deal with return values from 32-bit system
+calls as audit expects error codes to be sign-extended to 64 bits
 
-Ah, that's really great news.
+Brief summary in the tag.
 
-Thanks a lot Marc and Dario.
--- 
-Kindly,
-Ezequiel
+Cheers,
 
+Will
+
+--->8
+
+The following changes since commit d8a719059b9dc963aa190598778ac804ff3e6a87:
+
+  Revert "mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge" (2021-07-21 11:28:09 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
+
+for you to fetch changes up to 0c32706dac1b0a72713184246952ab0f54327c21:
+
+  arm64: stacktrace: avoid tracing arch_stack_walk() (2021-08-03 10:39:35 +0100)
+
+----------------------------------------------------------------
+arm64 fixes for -rc5
+
+- Fix extension/truncation of return values from 32-bit system calls
+
+- Fix interaction between unwinding and tracing
+
+- Fix spurious toolchain warning emitted during make
+
+- Fix Kconfig help text for RANDOMIZE_MODULE_REGION_FULL
+
+----------------------------------------------------------------
+Barry Song (1):
+      arm64: fix the doc of RANDOMIZE_MODULE_REGION_FULL
+
+Mark Rutland (3):
+      arm64: fix compat syscall return truncation
+      arm64: stacktrace: fix comment
+      arm64: stacktrace: avoid tracing arch_stack_walk()
+
+Masahiro Yamada (1):
+      arm64: move warning about toolchains to archprepare
+
+ arch/arm64/Kconfig                  |  9 ++++++---
+ arch/arm64/Makefile                 | 21 ++++++++++++---------
+ arch/arm64/include/asm/ptrace.h     | 12 +++++++++++-
+ arch/arm64/include/asm/stacktrace.h |  2 +-
+ arch/arm64/include/asm/syscall.h    | 19 ++++++++++---------
+ arch/arm64/kernel/kaslr.c           |  4 +++-
+ arch/arm64/kernel/ptrace.c          |  2 +-
+ arch/arm64/kernel/signal.c          |  3 ++-
+ arch/arm64/kernel/stacktrace.c      |  2 +-
+ arch/arm64/kernel/syscall.c         |  9 +++------
+ 10 files changed, 50 insertions(+), 33 deletions(-)
