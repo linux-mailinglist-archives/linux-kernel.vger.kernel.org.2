@@ -2,305 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570C73E2426
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0EB3E245F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243774AbhHFHbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 03:31:13 -0400
-Received: from mga06.intel.com ([134.134.136.31]:38578 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243884AbhHFHa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 03:30:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="275370442"
-X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
-   d="scan'208";a="275370442"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 00:30:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
-   d="scan'208";a="523367386"
-Received: from michael-optiplex-9020.sh.intel.com ([10.239.159.182])
-  by fmsmga002.fm.intel.com with ESMTP; 06 Aug 2021 00:30:34 -0700
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     pbonzini@redhat.com, jmattson@google.com, seanjc@google.com,
-        vkuznets@redhat.com, wei.w.wang@intel.com, like.xu.linux@gmail.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Yang Weijiang <weijiang.yang@intel.com>
-Subject: [kvm-unit-tests PATCH] x86: Add Arch LBR unit-test application
-Date:   Fri,  6 Aug 2021 15:43:52 +0800
-Message-Id: <1628235832-26608-1-git-send-email-weijiang.yang@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S237995AbhHFHpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 03:45:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230513AbhHFHpC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 03:45:02 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5640C061799
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 00:44:46 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so21384898pjr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 00:44:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HLoPc1uP3W6cbVHev0+XuSTJyiY+fEhdaCUYmE93+kk=;
+        b=lYq4fiRmC6kteclmEVNZkBsF97AjsC+PJ746EbB3Go9ITSt+2udR5j/biuCNZslSig
+         MmarzGrN1NNnBIik/E0K/VvTY7qsX0372b34O8qnHvdH6e1uXaFKuXJT/sBYzWm+eb+u
+         xper1W4OpmKO6de7oMVBdZFghgF/cuODS4ofnHoVwe1rdGCMRQOvRqxPmhvqlQhJq/bg
+         Mqt7GIbkSDSsRgs3bD4qOE6xqhKxGLVSe6Ke+VM0cqkQPBHCuuBzVU5wVzczj8OmD/Fx
+         xZskcIVspC963xU3EhiF5yUsUI8AiR8rTbM07FX6TR5sYm/UMglvpUUKGNW8Q3T9qbQT
+         hQEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HLoPc1uP3W6cbVHev0+XuSTJyiY+fEhdaCUYmE93+kk=;
+        b=hsDbQZ6U2Fk5O3bWJO7NIbfk9NkZOYktybd3IO7Vf5NngkE/PPUdoj3zQZUetb6D07
+         uOcRBsYU7xneVc25MQ0hD+Q6DJBAyoMS6f+RXlsFdUFi8/ScgLmvXRsDm2i863x+EOUM
+         Lw3t2/Mc9s/RpyYj6T2EEeOw50yNs+yDptzYxuTULqs/LeJh3DG6rjwBeg2/PgtODPd+
+         SJumS8aQA4QyKCWvbcJxbf7pemHWWqQ/jIGLw+jVLQ7fChFv2mB6y0tn8GyUfV67bsvR
+         VNB1PWRRyev3p6JMTk1JU1tLOIJ/fkAkQvsLXGDhqonSBnfPQFYm+QNufeME292RYlNs
+         fzBg==
+X-Gm-Message-State: AOAM53296EFB4O2mv3noc4X5bI26n6oNBCDxZ1zr7mW5xOc4gONAXtoE
+        7PbDwPPuoDFCd8+QAOu3ZmeHfw==
+X-Google-Smtp-Source: ABdhPJyrfoYXeQrSbRRrPna+3iA3J7eBpuiUp18COesHdOnPDAz3eag54rg83K3WYN0xnCE3R1HYnw==
+X-Received: by 2002:a17:902:b282:b029:12c:4ce3:8852 with SMTP id u2-20020a170902b282b029012c4ce38852mr7566606plr.31.1628235886440;
+        Fri, 06 Aug 2021 00:44:46 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id w2sm8099623pjq.5.2021.08.06.00.44.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 00:44:45 -0700 (PDT)
+Date:   Fri, 6 Aug 2021 13:14:44 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stratos Mailing List <stratos-dev@op-lists.linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [Stratos-dev] [PATCH V4 2/2] gpio: virtio: Add IRQ support
+Message-ID: <20210806074444.zsxwb2pmgjcq2dl2@vireshk-i7>
+References: <cover.1627989586.git.viresh.kumar@linaro.org>
+ <75c8e6e5e8dfa1889938f3a6b2d991763c7a3717.1627989586.git.viresh.kumar@linaro.org>
+ <CAK8P3a29NfFWwtGHhqos1P8f_SmzPJTXvEY5BZJAEMbV2SKe-Q@mail.gmail.com>
+ <0100017b1610f711-c53c79f2-9e28-4c45-bb42-8db09688b18e-000000@email.amazonses.com>
+ <CAK8P3a0DWkfQcZpmyfKcdNt1MHf8ha6a9L2LmLt1Tv-j0HDr3w@mail.gmail.com>
+ <20210805124922.j7lts7tfmm4t2kpf@vireshk-i7>
+ <CAK8P3a0kbmPLGCBrjAv7-dW=JWq-pdSBeGUHCxUFmMKvKhCg7w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0kbmPLGCBrjAv7-dW=JWq-pdSBeGUHCxUFmMKvKhCg7w@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This unit-test app targets to check whehter Arch LBR is enabled
-for guest. XSAVES/XRSTORS are used to accelerate LBR MSR save/restore.
+On 05-08-21, 15:10, Arnd Bergmann wrote:
+> I hope this can still be simplified by working out better which state
+> transitions are needed exactly. In particular, I would expect that we
+> can get away with not sending a VIRTIO_GPIO_MSG_IRQ_TYPE
+> for 'mask' state changes at all, but use that only for forcing 'enabled'
+> state changes.
 
-Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
----
- x86/Makefile.x86_64 |   1 +
- x86/pmu_arch_lbr.c  | 221 ++++++++++++++++++++++++++++++++++++++++++++
- x86/unittests.cfg   |   6 ++
- 3 files changed, 228 insertions(+)
- create mode 100644 x86/pmu_arch_lbr.c
+Something like this ?
 
-diff --git a/x86/Makefile.x86_64 b/x86/Makefile.x86_64
-index 8134952..0727830 100644
---- a/x86/Makefile.x86_64
-+++ b/x86/Makefile.x86_64
-@@ -24,6 +24,7 @@ tests += $(TEST_DIR)/vmware_backdoors.flat
- tests += $(TEST_DIR)/rdpru.flat
- tests += $(TEST_DIR)/pks.flat
- tests += $(TEST_DIR)/pmu_lbr.flat
-+tests += $(TEST_DIR)/pmu_arch_lbr.flat
- 
- ifneq ($(fcf_protection_full),)
- tests += $(TEST_DIR)/cet.flat
-diff --git a/x86/pmu_arch_lbr.c b/x86/pmu_arch_lbr.c
-new file mode 100644
-index 0000000..9a1e562
---- /dev/null
-+++ b/x86/pmu_arch_lbr.c
-@@ -0,0 +1,221 @@
-+#include "asm-generic/page.h"
-+#include "x86/processor.h"
-+#include "x86/msr.h"
-+#include "x86/desc.h"
-+#include "bitops.h"
-+
-+#define MSR_ARCH_LBR_CTL                0x000014ce
-+#define MSR_ARCH_LBR_DEPTH              0x000014cf
-+#define MSR_ARCH_LBR_FROM_0             0x00001500
-+#define MSR_ARCH_LBR_TO_0               0x00001600
-+#define MSR_ARCH_LBR_INFO_0             0x00001200
-+
-+#define MSR_IA32_XSS                    0x00000da0
-+
-+#define IA32_XSS_ARCH_LBR               (1UL << 15)
-+#define CR4_OSXSAVE_BIT                 (1UL << 18)
-+#define CPUID_EDX_ARCH_LBR              (1UL << 19)
-+
-+#define ARCH_LBR_CTL_BITS               0x3f0003
-+#define MAX_LBR_DEPTH                   32
-+
-+#define XSAVES		".byte 0x48,0x0f,0xc7,0x2f\n\t"
-+#define XRSTORS		".byte 0x48,0x0f,0xc7,0x1f\n\t"
-+
-+struct xstate_header {
-+	u64 xfeatures;
-+	u64 xcomp_bv;
-+	u64 reserved[6];
-+} __attribute__((packed));
-+
-+struct arch_lbr_entry {
-+	u64 lbr_from;
-+	u64 lbr_to;
-+	u64 lbr_info;
-+}__attribute__((packed));
-+
-+struct arch_lbr_struct {
-+	u64 lbr_ctl;
-+	u64 lbr_depth;
-+	u64 ler_from;
-+	u64 ler_to;
-+	u64 ler_info;
-+	struct arch_lbr_entry lbr_records[MAX_LBR_DEPTH];
-+}__attribute__((packed));
-+
-+struct xsave_struct {
-+	u8 fpu_sse[512];
-+	struct xstate_header xstate_hdr;
-+	struct arch_lbr_struct records;
-+} __attribute__((packed));
-+
-+u8 __attribute__((__aligned__(64))) xsave_buffer[PAGE_SIZE];
-+
-+struct xsave_struct *test_buf = (struct xsave_struct *)xsave_buffer;
-+
-+u64 lbr_from[MAX_LBR_DEPTH], lbr_to[MAX_LBR_DEPTH], lbr_info[MAX_LBR_DEPTH];
-+
-+u64 lbr_ctl, lbr_depth;
-+
-+volatile int count;
-+
-+static __attribute__((noinline)) int compute_flag(int i)
-+{
-+	if (i % 10 < 4)
-+		return i + 1;
-+	return 0;
-+}
-+
-+static __attribute__((noinline)) int lbr_test(void)
-+{
-+	int i;
-+	int flag;
-+	volatile double x = 1212121212, y = 121212;
-+
-+	for (i = 0; i < 200000000; i++) {
-+		flag = compute_flag(i);
-+		count++;
-+		if (flag)
-+			x += x / y + y / x;
-+	}
-+	return 0;
-+}
-+
-+static inline void xrstors(struct xsave_struct *fx, unsigned long  mask)
-+{
-+        u32 lmask = mask;
-+        u32 hmask = mask >> 32;
-+
-+        asm volatile(XRSTORS
-+                     : : "D" (fx), "m" (*fx), "a" (lmask), "d" (hmask)
-+                     : "memory");
-+}
-+
-+static inline int xsaves(struct xsave_struct *fx, unsigned long mask)
-+{
-+        u32 lmask = mask;
-+        u32 hmask = mask >> 32;
-+	int err = 0;
-+
-+        asm volatile(XSAVES
-+                     : [err] "=r" (err)  : "D" (fx), "m" (*fx), "a" (lmask), "d" (hmask)
-+                     : "memory");
-+	return err;
-+}
-+
-+static void clear_lbr_records(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < lbr_depth; ++i) {
-+		wrmsr(MSR_ARCH_LBR_FROM_0 + i, 0);
-+		wrmsr(MSR_ARCH_LBR_TO_0 + i, 0);
-+		wrmsr(MSR_ARCH_LBR_INFO_0 + i, 0);
-+	}
-+}
-+
-+static bool check_xsaves_records(void)
-+{
-+	int i;
-+	struct arch_lbr_entry *records = test_buf->records.lbr_records;
-+
-+	for (i = 0; i < lbr_depth; ++i) {
-+		if (lbr_from[i] != (*(records + i)).lbr_from ||
-+		    lbr_to[i] != (*(records + i)).lbr_to ||
-+		    lbr_info[i] != (*(records + i)).lbr_info)
-+			break;
-+	}
-+
-+	return i == lbr_depth;
-+}
-+
-+static bool check_msrs_records(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < lbr_depth; ++i) {
-+		if (lbr_from[i] != rdmsr(MSR_ARCH_LBR_FROM_0 + i) ||
-+		    lbr_to[i] != rdmsr(MSR_ARCH_LBR_TO_0 + i) ||
-+		    lbr_info[i] != rdmsr(MSR_ARCH_LBR_INFO_0 + i))
-+			break;
-+	}
-+
-+	return i == lbr_depth;
-+}
-+
-+static void test_with_xsaves(void)
-+{
-+	u32 cr4;
-+
-+	/* Only test Arch LBR save/restore, ignore other features.*/
-+	wrmsr(MSR_IA32_XSS, IA32_XSS_ARCH_LBR);
-+
-+	cr4 = read_cr4();
-+	write_cr4(cr4 | CR4_OSXSAVE_BIT);
-+
-+	xsaves(test_buf, IA32_XSS_ARCH_LBR | 0x3);
-+
-+	report(check_xsaves_records(),
-+	       "The LBR records in XSAVES area match the MSR values!");
-+
-+	clear_lbr_records();
-+
-+	xrstors(test_buf, IA32_XSS_ARCH_LBR | 0x3);
-+
-+	report(check_msrs_records(),
-+	       "The restored LBR MSR values match the original ones!");
-+}
-+
-+int main(int ac, char **av)
-+{
-+	struct cpuid id;
-+	int i;
-+
-+	id = cpuid(0x7);
-+	if (!(id.d & CPUID_EDX_ARCH_LBR)) {
-+		printf("No Arch LBR is detected!\n");
-+		return report_summary();
-+	}
-+
-+	id = raw_cpuid(0xd, 1);
-+	if (!(id.a & 0x8)) {
-+		printf("XSAVES is not supported!.\n");
-+		return report_summary();
-+	}
-+
-+	setup_vm();
-+
-+	id = cpuid(0x1c);
-+	lbr_depth = (fls(id.a & 0xff) + 1)*8;
-+
-+	wrmsr(MSR_ARCH_LBR_DEPTH, lbr_depth);
-+
-+	lbr_ctl = ARCH_LBR_CTL_BITS;
-+	wrmsr(MSR_ARCH_LBR_CTL, lbr_ctl);
-+
-+	lbr_test();
-+
-+	/* Disable Arch LBR sampling before run sanity checks. */
-+	lbr_ctl &= ~0x1;
-+	wrmsr(MSR_ARCH_LBR_CTL, lbr_ctl);
-+
-+	/*
-+	 * LBR records are kept at this point, need to save them
-+	 * ASAP, otherwise they could be reset to 0s.
-+	 */
-+	for (i = 0; i < lbr_depth; ++i) {
-+		if (!(lbr_from[i] = rdmsr(MSR_ARCH_LBR_FROM_0 + i)) ||
-+		    !(lbr_to[i] = rdmsr(MSR_ARCH_LBR_TO_0 + i)) ||
-+		    !(lbr_info[i] = rdmsr(MSR_ARCH_LBR_INFO_0 + i)))
-+			break;
-+	}
-+
-+	if (i != lbr_depth) {
-+		printf("Invalid Arch LBR records.\n");
-+		return report_summary();
-+	}
-+
-+	test_with_xsaves();
-+
-+	return report_summary();
-+}
-diff --git a/x86/unittests.cfg b/x86/unittests.cfg
-index d5efab0..88b2203 100644
---- a/x86/unittests.cfg
-+++ b/x86/unittests.cfg
-@@ -185,6 +185,12 @@ extra_params = -cpu host,migratable=no
- check = /sys/module/kvm/parameters/ignore_msrs=N
- check = /proc/sys/kernel/nmi_watchdog=0
- 
-+[pmu_arch_lbr]
-+file = pmu_arch_lbr.flat
-+extra_params = -cpu host,lbr-fmt=0x3f
-+check = /sys/module/kvm/parameters/ignore_msrs=N
-+check = /proc/sys/kernel/nmi_watchdog=0
-+
- [vmware_backdoors]
- file = vmware_backdoors.flat
- extra_params = -machine vmport=on -cpu max
+struct vgpio_irq_line {
+	u8 type;
+	bool masked;
+	bool update_pending;
+	bool queued;
+
+	struct virtio_gpio_irq_request ireq ____cacheline_aligned;
+	struct virtio_gpio_irq_response ires ____cacheline_aligned;
+};
+
+static void virtio_gpio_irq_disable(struct irq_data *d)
+{
+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
+	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[d->hwirq];
+
+	irq_line->masked = true;
+	irq_line->update_pending = true;
+}
+
+static void virtio_gpio_irq_enable(struct irq_data *d)
+{
+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
+	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[d->hwirq];
+
+	irq_line->masked = false;
+	irq_line->update_pending = true;
+
+	/* Queue the buffer unconditionally on enable */
+	virtio_gpio_irq_prepare(vgpio, d->hwirq);
+}
+
+static void virtio_gpio_irq_mask(struct irq_data *d)
+{
+	/* Nothing to do here */
+}
+
+static void virtio_gpio_irq_unmask(struct irq_data *d)
+{
+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
+
+	/* Queue the buffer unconditionally on unmask */
+	virtio_gpio_irq_prepare(vgpio, d->hwirq);
+}
+
+static int virtio_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+{
+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
+	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[d->hwirq];
+
+	switch (type) {
+	case IRQ_TYPE_NONE:
+		type = VIRTIO_GPIO_IRQ_TYPE_NONE;
+		break;
+	case IRQ_TYPE_EDGE_RISING:
+		type = VIRTIO_GPIO_IRQ_TYPE_EDGE_RISING;
+		break;
+	case IRQ_TYPE_EDGE_FALLING:
+		type = VIRTIO_GPIO_IRQ_TYPE_EDGE_FALLING;
+		break;
+	case IRQ_TYPE_EDGE_BOTH:
+		type = VIRTIO_GPIO_IRQ_TYPE_EDGE_BOTH;
+		break;
+	case IRQ_TYPE_LEVEL_LOW:
+		type = VIRTIO_GPIO_IRQ_TYPE_LEVEL_LOW;
+		break;
+	case IRQ_TYPE_LEVEL_HIGH:
+		type = VIRTIO_GPIO_IRQ_TYPE_LEVEL_HIGH;
+		break;
+	default:
+		dev_err(&vgpio->vdev->dev, "unsupported irq type: %u\n", type);
+		return -EINVAL;
+	}
+
+	irq_line->type = type;
+	irq_line->update_pending = true;
+
+	return 0;
+}
+
+static void update_irq_type(struct virtio_gpio *vgpio, u16 gpio, u8 type)
+{
+	virtio_gpio_req(vgpio, VIRTIO_GPIO_MSG_IRQ_TYPE, gpio, type, NULL);
+}
+
+static void virtio_gpio_irq_bus_lock(struct irq_data *d)
+{
+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
+
+	mutex_lock(&vgpio->irq_lock);
+}
+
+static void virtio_gpio_irq_bus_sync_unlock(struct irq_data *d)
+{
+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+	struct virtio_gpio *vgpio = gpiochip_get_data(gc);
+	struct vgpio_irq_line *irq_line = &vgpio->irq_lines[d->hwirq];
+	u8 type = irq_line->masked ? VIRTIO_GPIO_IRQ_TYPE_NONE : irq_line->type;
+
+	if (irq_line->update_pending) {
+		irq_line->update_pending = false;
+		update_irq_type(vgpio, d->hwirq, type);
+	}
+
+	mutex_unlock(&vgpio->irq_lock);
+}
+
+static struct irq_chip vgpio_irq_chip = {
+	.name			= "virtio-gpio",
+	.irq_enable		= virtio_gpio_irq_enable,
+	.irq_disable		= virtio_gpio_irq_disable,
+	.irq_mask		= virtio_gpio_irq_mask,
+	.irq_unmask		= virtio_gpio_irq_unmask,
+	.irq_set_type		= virtio_gpio_irq_set_type,
+
+	/* These are required to implement irqchip for slow busses */
+	.irq_bus_lock		= virtio_gpio_irq_bus_lock,
+	.irq_bus_sync_unlock	= virtio_gpio_irq_bus_sync_unlock,
+};
+
+> One part that I think is missing though is remembering the case
+> when an eventq message came in after an interrupt got masked
+> when the message was already armed. In this case, the
+> virtio_gpio_event_vq() function would not call the irq handler,
+> but the subsequent "unmask" callback would need to arrange
+> having it called.
+
+I will come back to this.
+
 -- 
-2.25.1
-
+viresh
