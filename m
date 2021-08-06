@@ -2,96 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7DD3E268F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601113E2696
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243591AbhHFI6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhHFI6j (ORCPT
+        id S243979AbhHFI7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:59:22 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3601 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230119AbhHFI7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:58:39 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0FCC061799
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 01:58:22 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id hs10so14122059ejc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 01:58:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Iw/Qld2BXHBhuZYypT5bN2CCKgDqDnynAHMjC5IKYhw=;
-        b=bAuhZuxuGSyYxPQn5X+Har7aoOkIEccdwEP6EtLovSPxgCEtOc1Xu8fMKZ740wXuY4
-         8y2h444bZoljFnbwX5td/YoN0oYU9d+iQM2ArWXpJtbR0ZAajjYfZGt4MK5VLkkKJPon
-         n7qiFiw/n6OArpr/D8vO4mauFptmiqu9sJk3jE9lrSg2cH4naqDt7atF29DovPILkgEX
-         tAPm0vBv6ySPI2IxPGnFpeDMvSiFvRPzGLk1kbkIokGld4ot4pQGAVNAmU6g/sKwvkAx
-         l02Ocaklk5fmuT8P1yC2ib+wjgfmDct3ga28KyLUNKVxCQi+YFe80w3g3838FNNL8wCZ
-         AzFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Iw/Qld2BXHBhuZYypT5bN2CCKgDqDnynAHMjC5IKYhw=;
-        b=gsTvj57ic3wAuEsP2Z0D9gbJrEwvmnL3L6CtRNUj08ol83cQetlSz+OtLc6/0/ZTAd
-         MItHnrL8l3yy4Dxz63zUIIMXINaNlrKspmhFC17XzCWjF1kgqP3Ch2OWvwshWABHeh03
-         WZPmLnKvC2PnNKS6h4YR5O41ZwGJFGC9nWSxnBLvKaI/j13/q/xaLIbC+Bgr47V7izGR
-         9PM+lGejJzvls4Qww1D+0DpLSryyCRY2BNrp9Bz8Q4If72nZnFZ0VL+a23IQr4p97FtV
-         vupEBWi5VBSctOTTPhxf/9rsTWcfJS6Y4EhYlOq2nD9U8XJM86Yi7X0cGkFhjr81+4M2
-         8cTQ==
-X-Gm-Message-State: AOAM5326J4kVPk3wNcO9noQ6/EYbNN1bc8yS2Ni82DWeIAIIFmvk4ai/
-        mm0M9lWoV50QE+nryh9adg9s8Qr5t3Zmkr+s
-X-Google-Smtp-Source: ABdhPJwY5LT29MLFMd+DAew3TMJoytUphZsKpnjrTCeSOTD1wf0nQmwfAyslJIIt2cMFwxki8xFdWQ==
-X-Received: by 2002:a17:906:138d:: with SMTP id f13mr8998205ejc.34.1628240301420;
-        Fri, 06 Aug 2021 01:58:21 -0700 (PDT)
-Received: from tsr-lap-08.nix.tessares.net (94.105.102.61.dyn.edpnet.net. [94.105.102.61])
-        by smtp.gmail.com with ESMTPSA id mh10sm2648924ejb.32.2021.08.06.01.58.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 01:58:21 -0700 (PDT)
-To:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210806063847.21639-1-yajun.deng@linux.dev>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: Re: [PATCH net-next] net: Remove redundant if statements
-Message-ID: <4b175501-50c1-fedf-1eaf-05c0de67c3c8@tessares.net>
-Date:   Fri, 6 Aug 2021 10:58:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Fri, 6 Aug 2021 04:59:20 -0400
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Ggzsw4CHWz6H6vm;
+        Fri,  6 Aug 2021 16:58:44 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 6 Aug 2021 10:59:03 +0200
+Received: from [10.47.24.8] (10.47.24.8) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 6 Aug 2021
+ 09:59:02 +0100
+Subject: Re: [PATCH] scsi: core: Run queue first after running device.
+To:     <lijinlin3@huawei.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <bvanassche@acm.org>, <qiulaibin@huawei.com>,
+        <linfeilong@huawei.com>, <wubo40@huawei.com>
+References: <20210805143231.1713299-1-lijinlin3@huawei.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <908bb2bb-c511-06a4-e0b6-577d90bb9b57@huawei.com>
+Date:   Fri, 6 Aug 2021 09:58:29 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20210806063847.21639-1-yajun.deng@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210805143231.1713299-1-lijinlin3@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.24.8]
+X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yajun,
+On 05/08/2021 15:32, lijinlin3@huawei.com wrote:
+> From: Li Jinlin<lijinlin3@huawei.com>
+> 
+> We found a hang issue, the test steps are as follows:
+>    1. echo "blocked" >/sys/block/sda/device/state
+>    2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
+>    3. echo none > /sys/block/sda/queue/scheduler
+>    4. echo "running" >/sys/block/sda/device/state
+> 
+> Step3 and Step4 should finish this work after Step4, but them hangs.
+> 
+>    CPU#0               CPU#1                CPU#2
+>    ---------------     ----------------     ----------------
+>                                             Step1: blocking device
+> 
+>                                             Step2: dd xxxx
+>                                                    ^^^^^^ get request
+>                                                           q_usage_counter++
+> 
+>                        Step3: switching scheculer
+>                        elv_iosched_store
+>                          elevator_switch
+>                            blk_mq_freeze_queue
+>                              blk_freeze_queue
+>                                > blk_freeze_queue_start
+>                                  ^^^^^^ mq_freeze_depth++
+> 
+>                                > blk_mq_run_hw_queues
+>                                  ^^^^^^ can't run queue when dev blocked
+> 
+>                                > blk_mq_freeze_queue_wait
+>                                  ^^^^^^ Hang here!!!
+>                                         wait q_usage_counter==0
+> 
+>    Step4: running device
+>    store_state_field
+>      scsi_rescan_device
+>        scsi_attach_vpd
+>          scsi_vpd_inquiry
+>            __scsi_execute
+>              blk_get_request
+>                blk_mq_alloc_request
+>                  blk_queue_enter
+>                  ^^^^^^ Hang here!!!
+>                         wait mq_freeze_depth==0
+> 
+>      blk_mq_run_hw_queues
+>      ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
+> 
+>                              blk_mq_unfreeze_queue
+>                              ^^^^^ mq_freeze_depth--
+> 
+> Step3 and Step4 wait for each other, caused hangs.
+> 
+> This requires run queue frist to fix this issue when the device state
 
-Thank you for sharing this patch.
+frist ?
 
-On 06/08/2021 08:38, Yajun Deng wrote:
-> The if statement already move into sock_{put , hold},
-> just remove it.
+> changes to SDEV_RUNNING.
+> 
+> Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
+> Signed-off-by: Li Jinlin<lijinlin3@huawei.com>
+> Signed-off-by: Qiu Laibin<qiulaibin@huawei.com>
+> Signed-off-by: Wu Bo<wubo40@huawei.com>
 
-I was wondering in which subtree you had 'sock_put' checking the socket
-pointer but then I realised you sent another patch just before adding
-this check: "net: sock: add the case if sk is NULL"
+what kind of SoB is this?
 
-Please next time send them in the same series to clearly indicate that
-this is the 2nd patch (2/2) and it depends on patch 1/2.
+> ---
+>   drivers/scsi/scsi_sysfs.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+> index c3a710bceba0..aa701582c950 100644
+> --- a/drivers/scsi/scsi_sysfs.c
+> +++ b/drivers/scsi/scsi_sysfs.c
+> @@ -809,12 +809,12 @@ store_state_field(struct device *dev, struct device_attribute *attr,
+>   	ret = scsi_device_set_state(sdev, state);
+>   	/*
+>   	 * If the device state changes to SDEV_RUNNING, we need to
+> -	 * rescan the device to revalidate it, and run the queue to
+> -	 * avoid I/O hang.
+> +	 * run the queue to avoid I/O hang, and rescan the device
+> +	 * to revalidate it.
 
-Related to the modification in MPTCP part: it looks OK but we do a few
-other calls to 'sock_put()' where we don't need to check if the socket
-is NULL or not.
+A bit more description of the IO hang would be useful
 
-In other words, if your patch "net: sock: add the case if sk is NULL" is
-accepted, then the modification in "net/mptcp/subflow.c" is OK for us.
+>   	 */
+>   	if (ret == 0 && state == SDEV_RUNNING) {
+> -		scsi_rescan_device(dev);
+>   		blk_mq_run_hw_queues(sdev->request_queue, true);
+> +		scsi_rescan_device(dev);
 
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+This would not have happened if scsi_rescan_device() was ran outside the 
+mutex lock region, like I suggested originally.
+
+Indeed, I doubt blk_mq_run_hw_queues() needs to be run with the sdev 
+state_mutex held either.
+
+>   	}
+>   	mutex_unlock(&sdev->state_mutex);
+>   
+> -- 
+
