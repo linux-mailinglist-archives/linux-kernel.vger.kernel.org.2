@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937D03E28F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECDE3E28F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245139AbhHFKy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37156 "EHLO
+        id S245086AbhHFK5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245113AbhHFKyL (ORCPT
+        with ESMTP id S231700AbhHFK47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:54:11 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AA5C061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:53:56 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mBxU5-0002nV-4I; Fri, 06 Aug 2021 12:53:49 +0200
-Subject: Re: [RFC PATCH v1 0/4] keys: introduce key_extract_material helper
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Song Liu <song@kernel.org>, Richard Weinberger <richard@nod.at>
-Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-mtd@lists.infradead.org, kernel@pengutronix.de,
-        linux-integrity@vger.kernel.org
-References: <cover.b2fdd70b830d12853b12a12e32ceb0c8162c1346.1626945419.git-series.a.fatoum@pengutronix.de>
-Message-ID: <7bc58825-c6d8-5e6d-4e1c-c4375e19c10e@pengutronix.de>
-Date:   Fri, 6 Aug 2021 12:53:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Fri, 6 Aug 2021 06:56:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C037CC061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:56:43 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628247401;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C03BkgqLQ9ruY//c0rzNTOJoKiptzTsTimQnhDnEo40=;
+        b=FMiU0j+YGqYaWcVDgoHhfo024/sOltzqJh7K+3Hl81SoE8wMQv7b3fQjoq+bRweQdbpJ3C
+        vI5dx41nxFhchrq9yDnpR3cnd6YPhmAMSuIPAbEc6GwdimUxj5lnFgbToUT5mWBEH+CJhv
+        qhPQ3faEWEDr9ThE0MlEboBuI2om7jJ/cmg/Z4b9izqjVxMTI0SukOmpa2RfHtrpWlzTlY
+        1tc7ZZa/4tT4liKj/4sgIcmq2DzCK3TVUX+p3reI/GayF0EUbo+mc9DhIVO+AWPkswFrvm
+        YL9Avwj82Mq4iPXkS3HJogm5bjrMziaLZ3u/b4hSxvmvlDFV4Ob+cS0eww1s2Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628247401;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C03BkgqLQ9ruY//c0rzNTOJoKiptzTsTimQnhDnEo40=;
+        b=FyGc/FkcK9Xej8O9sJISb/NRjecamjdh5SRFVWyE/ewQb6+PmhVX6093fIf0dYmZnRpXSx
+        9z+NR4J/8pM8eBCg==
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Changbin Du <changbin.du@intel.com>
+Subject: Re: [PATCH printk v1 07/10] console: add write_atomic interface
+In-Reply-To: <YQlMZT1Isc1zS9A9@smile.fi.intel.com>
+References: <20210803131301.5588-1-john.ogness@linutronix.de> <20210803131301.5588-8-john.ogness@linutronix.de> <YQlMZT1Isc1zS9A9@smile.fi.intel.com>
+Date:   Fri, 06 Aug 2021 13:02:40 +0206
+Message-ID: <87tuk2j0yf.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <cover.b2fdd70b830d12853b12a12e32ceb0c8162c1346.1626945419.git-series.a.fatoum@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello everyone,
+On 2021-08-03, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+>>  #include <linux/atomic.h>
+>>  #include <linux/types.h>
+>> +#include <linux/printk.h>
+>
+> Ordered?
 
-On 22.07.21 11:17, Ahmad Fatoum wrote:
-> While keys of differing type have a common struct key definition, there is
-> no common scheme to the payload and key material extraction differs.
-> 
-> For kernel functionality that supports different key types,
-> this means duplicated code for key material extraction and because key type
-> is discriminated by a pointer to a global, users need to replicate
-> reachability checks as well, so builtin code doesn't depend on a key
-> type symbol offered by a module.
-> 
-> Make this easier by adding a common helper with initial support for
-> user, logon, encrypted and trusted keys.
-> 
-> This series contains two example of its use: dm-crypt uses it to reduce
-> boilerplate and ubifs authentication uses it to gain support for trusted
-> and encrypted keys alongside the already supported logon keys.
-> 
-> Looking forward to your feedback,
+Agreed. v2 will include printk.h first.
 
-@Mike, Aliasdair: Do you think of key_extract_material as an improvement?
+>> +			if (!(con->flags & CON_ENABLED))	\
+>> +				continue;			\
+>
+> What about
+>
+> #define console_is_enabled(con)		(!!(con->flags & CON_ENABLED))
+>
+> or inliner equivalent
+>
+> static inline bool console_is_enabled(struct console *con)
+> {
+> 	return !!(con->flags & CON_ENABLED);
+> }
 
-Does someone share the opinion that the helper is useful or should I drop
-it and just send out the ubifs auth patch seperately?
+Generally kernel code uses the console flags directly. A quick check for
+CON_ENABLED shows direct flag queries all over:
 
-Cheers,
-Ahmad
+$ git grep -l -e 'flags.*& .*CON_ENABLED' | wc -c
+16
 
-> Ahmad
-> 
-> ---
-> To: David Howells <dhowells@redhat.com>
-> To: Jarkko Sakkinen <jarkko@kernel.org>
-> To: James Morris <jmorris@namei.org>
-> To: "Serge E. Hallyn" <serge@hallyn.com>
-> To: Alasdair Kergon <agk@redhat.com>
-> To: Mike Snitzer <snitzer@redhat.com>
-> To: dm-devel@redhat.com
-> To: Song Liu <song@kernel.org>
-> To: Richard Weinberger <richard@nod.at>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-raid@vger.kernel.org
-> Cc: linux-integrity@vger.kernel.org
-> Cc: keyrings@vger.kernel.org
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-security-module@vger.kernel.org
-> 
-> Ahmad Fatoum (4):
->   keys: introduce key_extract_material helper
->   dm: crypt: use new key_extract_material helper
->   ubifs: auth: remove never hit key type error check
->   ubifs: auth: consult encrypted and trusted keys if no logon key was found
-> 
->  Documentation/filesystems/ubifs.rst |  2 +-
->  drivers/md/dm-crypt.c               | 65 ++++--------------------------
->  fs/ubifs/auth.c                     | 25 +++++-------
->  include/linux/key.h                 | 45 +++++++++++++++++++++-
->  security/keys/key.c                 | 40 ++++++++++++++++++-
->  5 files changed, 107 insertions(+), 70 deletions(-)
-> 
-> base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
-> 
+Are you suggesting I replace this usage in all of these files? Or just
+the one macro in console.h for now? And since there are 6 more console
+flags, they should probably also have equivalent wrappers?
 
+Thanks.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+John Ogness
