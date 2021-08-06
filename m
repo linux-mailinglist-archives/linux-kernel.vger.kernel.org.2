@@ -2,60 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37BA3E2CD0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5893E2CE0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240655AbhHFOlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 10:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbhHFOlR (ORCPT
+        id S241355AbhHFOnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 10:43:24 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:41306
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238046AbhHFOnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 10:41:17 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE07C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 07:41:00 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id z11so13316555edb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 07:41:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=VOm7ExjAHF0Q7BNPrWBV4i45usRmCP2ckw7/Rx668Rw=;
-        b=MLlnqBaeZBD+ktp+Rk3V/T7xwqepfI/kFgao3Zn4HcbgEZ9rSc8Lb/bVmmQHklhL3G
-         HUySNgDFsm1m2KgF8Wq1Uiz8tg9ixLGb/rrlwHFGAx7fPzm9fMmyWuBRS2ULXWHt/3eN
-         ZKaHI1t+Vot0aqd+LDly6HljTCVv5CnDAyq6aZUmInrM0XM4Ln136oYVB+bvMxv4WZBV
-         HpSQIjT/pLWjHnlL9r0dBjkmby+O9YAIXqTD53sii2QbZrnnFRJ0UzOzgo8VFuVf7QCO
-         P63e+QgIWOzrRV9x1T13l5BfD9P0iTN3A8SOJv6IesqtZ9SnJGC277Mut/YnHYkK0p4g
-         TP5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=VOm7ExjAHF0Q7BNPrWBV4i45usRmCP2ckw7/Rx668Rw=;
-        b=mE7MG6dSuq1GJawiBVQA1Pyu+pND804nQI6gDxcJcX/kIbc8XH8OwSQHv82x82K9/c
-         fLuh8GafG4lqPEFJPU1PmzZSJwKgiJoWjroSw26mVKJI+FV1zLkVt2r6LdJ0WFbqAI54
-         2i0w8kIHDENqRtCEqPcKvGQ9UtAdRRpHuWbI97i4udS9SLS8ha6u8i2+dnVnnLSLzE3V
-         +12fZ+g5BnCcMa75LmqoVNH4o1h+g4ASONyU0K9ImKj/VaKSPpg+lP4nMGHm/Mf0JM9w
-         tXNalKhiV7ThsxZdgFiVXIX9mVUqVZ4+KBGN+2krIiRRiHW1qTOLrXkpvDCdnS+yTII/
-         XEnQ==
-X-Gm-Message-State: AOAM531UpjojtOoD7smAXHLl77KmF2Nb/wKoSxrEKsgeG9PkjWqGioQ7
-        9I+pZkP6FtBXJKgpeZgCZ1d+viSdjFqRxoFouRo=
-X-Google-Smtp-Source: ABdhPJw0PqGMlpKLQvWkxvwsMt+docmSi9wPonadOpY/jslGJq//VUM7s8z7qntASKeUc6CR1sX0BG2+/7m3YOpRvio=
-X-Received: by 2002:a05:6402:42c7:: with SMTP id i7mr13266364edc.161.1628260859201;
- Fri, 06 Aug 2021 07:40:59 -0700 (PDT)
+        Fri, 6 Aug 2021 10:43:23 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id C2DDB40660;
+        Fri,  6 Aug 2021 14:43:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628260981;
+        bh=4FcsXIKOCTXdkCXO47xOoDczDuk4vb+/L+ksQUFW4os=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=cDWY6Pqb2XPx2YyXcpAFYQn209DWyKMhg+ZrWWHmKOduA7dp0NNrcRBxWaXSAN3xc
+         yxqDw9t5xjQsXaqwFjDNI+esMm8xTWI5PR6D/uLJf1X6BwwX+T5GHd8+NsuqMBZ2W8
+         UuZI+GAadjQZ1tGbeHdCFJXSrHiHB5JM3KK6auGQD8m18VWkusOqUYklT64DM4lPCw
+         1k65CkR+SuDDU/HAzPF1dzeDoihLh4TCaiAYJtuuNCK7+jKqv1LioTRcZQPQWDb7jC
+         rg5Twvo8GFVmXYHnvGd41oZ69N7FaYHDiXK1VwTer19PhFrS5nNhy/+9Ax1ydwrWlq
+         jWpx9EvGvThLg==
+From:   Colin King <colin.king@canonical.com>
+To:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        linux-scsi@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] scsi: ufs: Fix unsigned int compared with less than zero
+Date:   Fri,  6 Aug 2021 15:43:01 +0100
+Message-Id: <20210806144301.19864-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Received: by 2002:a17:906:a89a:0:0:0:0 with HTTP; Fri, 6 Aug 2021 07:40:58
- -0700 (PDT)
-Reply-To: amweber0093@gmail.com
-From:   amanda weber <commyjere@gmail.com>
-Date:   Fri, 6 Aug 2021 14:40:58 +0000
-Message-ID: <CANSXNV4Vo_Waz=aa7NRz-GqGjKoU5uPQ_jZsF5oZYLNMpPCi3w@mail.gmail.com>
-Subject: Response awaited
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, I have been waiting for your response having known you have
-read my mail. Can you please respond to me now? Regards, Amanda
+From: Colin Ian King <colin.king@canonical.com>
+
+Variable tag is currently and unsigned int and is being compared to
+less than zero, this check is always false. Fix this by making tag
+an int.
+
+Addresses-Coverity: ("Macro compares unsigned to 0")
+Fixes: 4728ab4a8e64 ("scsi: ufs: Remove ufshcd_valid_tag()")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 47a5085f16a9..21378682cb4f 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -6976,7 +6976,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+ {
+ 	struct Scsi_Host *host = cmd->device->host;
+ 	struct ufs_hba *hba = shost_priv(host);
+-	unsigned int tag = cmd->request->tag;
++	int tag = cmd->request->tag;
+ 	struct ufshcd_lrb *lrbp = &hba->lrb[tag];
+ 	unsigned long flags;
+ 	int err = FAILED;
+-- 
+2.31.1
+
