@@ -2,80 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427FF3E22B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 06:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 955163E22F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 07:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242877AbhHFErP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 00:47:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231694AbhHFErN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 00:47:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D55246054E;
-        Fri,  6 Aug 2021 04:46:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628225217;
-        bh=mcb7gbQETBywgydTIJ1NoVRpsTUfH8k0bEXnyUNFHGk=;
+        id S243197AbhHFFdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 01:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243121AbhHFFdR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 01:33:17 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FE6C061798;
+        Thu,  5 Aug 2021 22:33:02 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4GgvJT5j2qz9sW5; Fri,  6 Aug 2021 15:32:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gibson.dropbear.id.au; s=201602; t=1628227977;
+        bh=VgP74InI3Uz0qZ2/LQM1R3Ud9iWaj+wk/xGRWtN/6yY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SRlwkg3s4SyWyWEqIdLJmZcAPnDPkfs/vbQDVTryR0DEYIPTl5kqQf51rvQL+r5/q
-         hc7u6ZpDCZJbUlbf4tO+14LLeJ2AX9aS1I65oGTYTVQHs96mR8iS/JKXr5KzxFN59Q
-         bxP/MS1ORAguK+tS/Z7G5YzwecRYckDoQp4/kHpE=
-Date:   Fri, 6 Aug 2021 06:46:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "yury.norov@gmail.com" <yury.norov@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>,
-        "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
-        "sbrivio@redhat.com" <sbrivio@redhat.com>,
-        "jianpeng.ma@intel.com" <jianpeng.ma@intel.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        tangchengchang <tangchengchang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        yangyicong <yangyicong@huawei.com>,
-        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>
-Subject: Re: [PATCH v8 1/5] cpumask: introduce cpumap_print_to_buf to support
- large bitmask and list
-Message-ID: <YQy+voTd/Oknohx9@kroah.com>
-References: <20210729054208.1800-1-song.bao.hua@hisilicon.com>
- <20210729054208.1800-2-song.bao.hua@hisilicon.com>
- <YQvfD701nvqbClLd@kroah.com>
- <53c5fec4223f4c398b81362acf7441b5@hisilicon.com>
+        b=Xi+yKoqfW0FkYj+E2G8mVLF6aPdhG3HhV0yIOwgUkVBn7p4NzF/iYNdpUE7HHitZk
+         j5qfp4AdzdTAt4sE4Hivsc3v1s7U/ZIalR03kQxlOAms683p6OpZ61PFOoYxGwQzQD
+         Bgsf0Sx0ROMhpcJNioWxawsw9nT/kGNH5IKSmLtk=
+Date:   Fri, 6 Aug 2021 14:47:50 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [RFC v2] /dev/iommu uAPI proposal
+Message-ID: <YQy+9mSSzban+t/X@yekko>
+References: <BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <YP4/KJoYfbaf5U94@yekko>
+ <20210730145123.GW1721383@nvidia.com>
+ <BN9PR11MB5433C34222B3E727B3D0E5638CEF9@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210804140447.GH1721383@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xtXF0LkKM6+DEdEM"
 Content-Disposition: inline
-In-Reply-To: <53c5fec4223f4c398b81362acf7441b5@hisilicon.com>
+In-Reply-To: <20210804140447.GH1721383@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 11:05:59PM +0000, Song Bao Hua (Barry Song) wrote:
-> > > +int bitmap_print_to_buf(bool list, char *buf, const unsigned long *maskp,
-> > > +		int nmaskbits, loff_t off, size_t count)
-> > 
-> > No need to put the kernel doc for both the .h and .c file, only put it
-> > in one place please (where ever it ties into the kernel documentation)
-> > 
-> 
-> Actually they are two different modules. One is cpumap, the other one is
-> bitmap. But they do have some duplicated content.
-> I'd prefer to remove the duplicated part from cpumap.
 
-Ah, I missed that they were two different functions, sorry.  But yes,
-removing duplication is good.
+--xtXF0LkKM6+DEdEM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+On Wed, Aug 04, 2021 at 11:04:47AM -0300, Jason Gunthorpe wrote:
+> On Mon, Aug 02, 2021 at 02:49:44AM +0000, Tian, Kevin wrote:
+>=20
+> > Can you elaborate? IMO the user only cares about the label (device cook=
+ie=20
+> > plus optional vPASID) which is generated by itself when doing the attac=
+hing
+> > call, and expects this virtual label being used in various spots (inval=
+idation,
+> > page fault, etc.). How the system labels the traffic (the physical RID =
+or RID+
+> > PASID) should be completely invisible to userspace.
+>=20
+> I don't think that is true if the vIOMMU driver is also emulating
+> PASID. Presumably the same is true for other PASID-like schemes.
 
-greg k-h
+Right.  The idea for an SVA capable vIOMMU in my scheme is that the
+hypervisor would set up an IOAS of address type "PASID+address" with
+the mappings made by the guest according to its vIOMMU semantics.
+Then SVA capable devices would be plugged into that IOAS by using
+"PASID+address" type endpoints from those devices.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--xtXF0LkKM6+DEdEM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmEMvvYACgkQbDjKyiDZ
+s5J7OhAAt80UyM01hO9UcB2WUWkDFXZd5ryLChQk4nBBHH6AolfinitcVmNoHb6l
++WQQGubNPMHJa5bzSpa28cViR8hcc1frjPwqcHbUb8YS4h7ILXpk3BiEt5jIZ4Oc
+xUP6lKK8G14ZltBQvNNzjrd031aA+XHEx80bpU1q4xKMCLqJt2CFyd5bTw7aOabh
++qGukHkhcotpFTroiAkuJrHRTOy8nvbl8nAw/ult+59c0DnTao+yfdFBjf3+h9a0
+iPcnxEWS8HJ80/Fv9KpLnQ0tNtXoTY2Q/dBfS4FolPwYg9bfNqm8Xdk8t4owCfeF
+M9m0fDBDekxaM2Lsr+fGMZ2A9CdrXs8NBAaNWvU92H3EnIZBmxb95VoaJsryN7gj
+IbZVLLz4zY7BQos7pc7EJKB3uYzAOpNpvrTZKPTOb5+oTwFrr60fFbzlIe4lyg/z
+XOZ4tHtlzsYxhaFZmVRrW0taJ30aR9vHGiJSbcQlrs1W1cK8nAjO0QRkeYmVyRqA
+o0TFw1SBNIIieNzPUxHa56cNQm0M3Hi9w+RkcSmsK2aDhaovrM7l5xgSs5/HxIqI
+qT6VBd/+bqhK+y0iA2SFd3d/521yGKu41XcEvkya0k0dv2sCUwDydNC4knVGoAUc
+nlRowbhm5r9RbcHcsCcduvboA7JAEMhU2aESrQGrHwTAXn2cS+E=
+=rCVy
+-----END PGP SIGNATURE-----
+
+--xtXF0LkKM6+DEdEM--
