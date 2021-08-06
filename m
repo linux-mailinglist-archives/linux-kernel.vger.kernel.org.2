@@ -2,59 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA653E2F49
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828BD3E2F4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243014AbhHFS1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 14:27:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242913AbhHFS13 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 14:27:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0EC95611BF;
-        Fri,  6 Aug 2021 18:27:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628274433;
-        bh=pyJvlDlt78ho3RyURCHlbiW9PVQ89LaDepH1ojJfudk=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=bpMBBmo+dTOXzeXIDpTjhngIrRDj3dUTBpEPOw4a+Zc+Y5n1UpKWuGUgh6HiPND33
-         V++tB6neTU4vCMBT7XhlBg8zMnFz42GK0+fZNv6agtnQ8wdEL/6SKMcjjKIRNkOIVJ
-         ggUFa+w0/SHJLZeRDEjFvOVM6TZGyQKu5tciEpsGv0UgJN4YMdif4Xjrs8+2qxyTDh
-         l8tiZn5Ehv1X+8GKsNuvDg8J0BmsKbePoE/gp4oUZzgWpfCfhXbX+8aputTyeF2VaU
-         Y/yWDiJFkN3juwHWF9GakAkQ5v2upiYX42fqD/Wg0D+ZSLF/1QfTDt/4gzVh9x4YX6
-         vkMq97BE2PKKg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0A47B609F1;
-        Fri,  6 Aug 2021 18:27:13 +0000 (UTC)
-Subject: Re: [GIT PULL] sound fixes for 5.14-rc5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <s5h4kc3rov2.wl-tiwai@suse.de>
-References: <s5h4kc3rov2.wl-tiwai@suse.de>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <s5h4kc3rov2.wl-tiwai@suse.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.14-rc5
-X-PR-Tracked-Commit-Id: 97367c97226aab8b298ada954ce12659ee3ad2a4
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 484faec8f1dde7352ac6f3f336f3756406eadda7
-Message-Id: <162827443303.9282.4557129231287648221.pr-tracker-bot@kernel.org>
-Date:   Fri, 06 Aug 2021 18:27:13 +0000
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S242411AbhHFSaf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Aug 2021 14:30:35 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:46749 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240879AbhHFSad (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 14:30:33 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id BD8EB100002;
+        Fri,  6 Aug 2021 18:30:14 +0000 (UTC)
+Date:   Fri, 6 Aug 2021 20:30:13 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Apurva Nandan <a-nandan@ti.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+Subject: Re: [PATCH 03/13] mtd: spinand: Setup spi_mem_op for the SPI IO
+ protocol using reg_proto
+Message-ID: <20210806203013.30a41fd5@xps13>
+In-Reply-To: <20210713130538.646-4-a-nandan@ti.com>
+References: <20210713130538.646-1-a-nandan@ti.com>
+        <20210713130538.646-4-a-nandan@ti.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 06 Aug 2021 09:53:05 +0200:
+Hi Apurva,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.14-rc5
+Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:28
++0000:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/484faec8f1dde7352ac6f3f336f3756406eadda7
+> Currently, the op macros in spinand.h don't give the option to setup
+> any non-array access instructions for Dual/Quad/Octal DTR SPI bus.
+> Having a function that setups the op based on reg_proto would be
+> better than trying to write all the setup logic in op macros.
+> 
+> Create a spimem_setup_op() that would setup cmd, addr, dummy and data
+> phase of the spi_mem op, for the given spinand->reg_proto. And hence,
+> call the spimem_setup_op() before executing any spi_mem op.
+> 
+> Note: In this commit, spimem_setup_op() isn't called in the
+> read_reg_op(), write_reg_op() and wait() functions, as they need
+> modifications in address value and data nbytes when in Octal DTR mode.
+> This will be fixed in a later commit.
 
-Thank you!
+Thanks for this series!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+So far I am fine with your changes, but I don't like the setup_op()
+naming much. I don't yet have a better idea, could you propose
+something more meaningful?
+
+> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+
+Thanks,
+Miquèl
