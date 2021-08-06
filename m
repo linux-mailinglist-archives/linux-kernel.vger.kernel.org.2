@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D153E259F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3E63E2601
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244045AbhHFIVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:21:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47072 "EHLO mail.kernel.org"
+        id S244069AbhHFIZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:25:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243731AbhHFITC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:19:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CC9261181;
-        Fri,  6 Aug 2021 08:18:38 +0000 (UTC)
+        id S244220AbhHFIVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:21:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 319F561052;
+        Fri,  6 Aug 2021 08:21:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628237919;
-        bh=IBReA0ZJ7ZHnOCVbifrLy8cSCzXqtrX7JIsw4zXFL84=;
+        s=korg; t=1628238066;
+        bh=fLUtY4f+huXtYcYoyIYEvo1j3B1AhkHJ/JR08t4lg6E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rgn8UctZS7Asd/CsIYJPY+W6eElPNdFMcVJczL41h7BaKUBX06xfyKlxV3uDYAy2a
-         WaTBXgXOGMKNbncfI6CUlAq/FmDlcVf9amP7/PxmWSrSn5b7nwV+GN5EBWkcC9WjqF
-         ysAi2vvwQjY5KcLqnGbCzSSxdbOUHpnwn3pbVObo=
+        b=alsa1ESwhJkFKPEIfwVx9K19mDEUu0tZFaaGeHNaYI+DXdUjTPkU4cVj7PGAXHj2B
+         a2woK93Glr0/htD+sWzEilx16+LI9gOZ49hVk/N8K8e9bPd++uLLEzeUPUZ2HgsP4l
+         +K/+GyLqLNCIfXbGfxq5s879wrrrGyzWIXaD8LsY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pravin B Shelar <pshelar@ovn.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
+        Pavel Shilovsky <pshilovsky@samba.org>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 12/30] net: Fix zero-copy head len calculation.
+Subject: [PATCH 5.13 07/35] cifs: use helpers when parsing uid/gid mount options and validate them
 Date:   Fri,  6 Aug 2021 10:16:50 +0200
-Message-Id: <20210806081113.546372389@linuxfoundation.org>
+Message-Id: <20210806081113.951060612@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210806081113.126861800@linuxfoundation.org>
-References: <20210806081113.126861800@linuxfoundation.org>
+In-Reply-To: <20210806081113.718626745@linuxfoundation.org>
+References: <20210806081113.718626745@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,77 +41,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pravin B Shelar <pshelar@ovn.org>
+From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-[ Upstream commit a17ad0961706244dce48ec941f7e476a38c0e727 ]
+[ Upstream commit e0a3cbcd5cef00cace01546cc6eaaa3b31940da9 ]
 
-In some cases skb head could be locked and entire header
-data is pulled from skb. When skb_zerocopy() called in such cases,
-following BUG is triggered. This patch fixes it by copying entire
-skb in such cases.
-This could be optimized incase this is performance bottleneck.
+Use the nice helpers to initialize and the uid/gid/cred_uid when passed as mount arguments.
 
----8<---
-kernel BUG at net/core/skbuff.c:2961!
-invalid opcode: 0000 [#1] SMP PTI
-CPU: 2 PID: 0 Comm: swapper/2 Tainted: G           OE     5.4.0-77-generic #86-Ubuntu
-Hardware name: OpenStack Foundation OpenStack Nova, BIOS 1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:skb_zerocopy+0x37a/0x3a0
-RSP: 0018:ffffbcc70013ca38 EFLAGS: 00010246
-Call Trace:
- <IRQ>
- queue_userspace_packet+0x2af/0x5e0 [openvswitch]
- ovs_dp_upcall+0x3d/0x60 [openvswitch]
- ovs_dp_process_packet+0x125/0x150 [openvswitch]
- ovs_vport_receive+0x77/0xd0 [openvswitch]
- netdev_port_receive+0x87/0x130 [openvswitch]
- netdev_frame_hook+0x4b/0x60 [openvswitch]
- __netif_receive_skb_core+0x2b4/0xc90
- __netif_receive_skb_one_core+0x3f/0xa0
- __netif_receive_skb+0x18/0x60
- process_backlog+0xa9/0x160
- net_rx_action+0x142/0x390
- __do_softirq+0xe1/0x2d6
- irq_exit+0xae/0xb0
- do_IRQ+0x5a/0xf0
- common_interrupt+0xf/0xf
-
-Code that triggered BUG:
-int
-skb_zerocopy(struct sk_buff *to, struct sk_buff *from, int len, int hlen)
-{
-        int i, j = 0;
-        int plen = 0; /* length of skb->head fragment */
-        int ret;
-        struct page *page;
-        unsigned int offset;
-
-        BUG_ON(!from->head_frag && !hlen);
-
-Signed-off-by: Pravin B Shelar <pshelar@ovn.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Acked-by: Pavel Shilovsky <pshilovsky@samba.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/skbuff.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/cifs/fs_context.c | 24 +++++++++++++++++++-----
+ fs/cifs/fs_context.h |  1 +
+ 2 files changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 2d27aae6d36f..825e6b988003 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -2922,8 +2922,11 @@ skb_zerocopy_headlen(const struct sk_buff *from)
+diff --git a/fs/cifs/fs_context.c b/fs/cifs/fs_context.c
+index 92d4ab029c91..553adfbcc22a 100644
+--- a/fs/cifs/fs_context.c
++++ b/fs/cifs/fs_context.c
+@@ -322,7 +322,6 @@ smb3_fs_context_dup(struct smb3_fs_context *new_ctx, struct smb3_fs_context *ctx
+ 	new_ctx->UNC = NULL;
+ 	new_ctx->source = NULL;
+ 	new_ctx->iocharset = NULL;
+-
+ 	/*
+ 	 * Make sure to stay in sync with smb3_cleanup_fs_context_contents()
+ 	 */
+@@ -792,6 +791,8 @@ static int smb3_fs_context_parse_param(struct fs_context *fc,
+ 	int i, opt;
+ 	bool is_smb3 = !strcmp(fc->fs_type->name, "smb3");
+ 	bool skip_parsing = false;
++	kuid_t uid;
++	kgid_t gid;
  
- 	if (!from->head_frag ||
- 	    skb_headlen(from) < L1_CACHE_BYTES ||
--	    skb_shinfo(from)->nr_frags >= MAX_SKB_FRAGS)
-+	    skb_shinfo(from)->nr_frags >= MAX_SKB_FRAGS) {
- 		hlen = skb_headlen(from);
-+		if (!hlen)
-+			hlen = from->len;
-+	}
+ 	cifs_dbg(FYI, "CIFS: parsing cifs mount option '%s'\n", param->key);
  
- 	if (skb_has_frag_list(from))
- 		hlen = from->len;
+@@ -904,18 +905,31 @@ static int smb3_fs_context_parse_param(struct fs_context *fc,
+ 		}
+ 		break;
+ 	case Opt_uid:
+-		ctx->linux_uid.val = result.uint_32;
++		uid = make_kuid(current_user_ns(), result.uint_32);
++		if (!uid_valid(uid))
++			goto cifs_parse_mount_err;
++		ctx->linux_uid = uid;
+ 		ctx->uid_specified = true;
+ 		break;
+ 	case Opt_cruid:
+-		ctx->cred_uid.val = result.uint_32;
++		uid = make_kuid(current_user_ns(), result.uint_32);
++		if (!uid_valid(uid))
++			goto cifs_parse_mount_err;
++		ctx->cred_uid = uid;
++		ctx->cruid_specified = true;
+ 		break;
+ 	case Opt_backupgid:
+-		ctx->backupgid.val = result.uint_32;
++		gid = make_kgid(current_user_ns(), result.uint_32);
++		if (!gid_valid(gid))
++			goto cifs_parse_mount_err;
++		ctx->backupgid = gid;
+ 		ctx->backupgid_specified = true;
+ 		break;
+ 	case Opt_gid:
+-		ctx->linux_gid.val = result.uint_32;
++		gid = make_kgid(current_user_ns(), result.uint_32);
++		if (!gid_valid(gid))
++			goto cifs_parse_mount_err;
++		ctx->linux_gid = gid;
+ 		ctx->gid_specified = true;
+ 		break;
+ 	case Opt_port:
+diff --git a/fs/cifs/fs_context.h b/fs/cifs/fs_context.h
+index 2a71c8e411ac..b6243972edf3 100644
+--- a/fs/cifs/fs_context.h
++++ b/fs/cifs/fs_context.h
+@@ -155,6 +155,7 @@ enum cifs_param {
+ 
+ struct smb3_fs_context {
+ 	bool uid_specified;
++	bool cruid_specified;
+ 	bool gid_specified;
+ 	bool sloppy;
+ 	bool got_ip;
 -- 
 2.30.2
 
