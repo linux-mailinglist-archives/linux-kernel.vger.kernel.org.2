@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0349E3E203B
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C213E203C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243046AbhHFAsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 20:48:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51276 "EHLO mail.kernel.org"
+        id S243096AbhHFAsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 20:48:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243033AbhHFAsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 20:48:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66FAD60F14;
-        Fri,  6 Aug 2021 00:48:21 +0000 (UTC)
+        id S243074AbhHFAsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 20:48:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D492E61179;
+        Fri,  6 Aug 2021 00:48:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628210901;
-        bh=nY6Ap5stlXE7US4mkmA7NkZZWLmZkL9rXHZVjTtCrF8=;
+        s=k20201202; t=1628210905;
+        bh=XCKCjF9rtbkSXxfMIlWo2vEd1fgxQl2IfyYBjvxa+hI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XASCAcVNVqc1HUICtN71eEc0munM3JvTGWg3SmNRPZxN9Pe3RXLUQ9auImBcH50Bl
-         PAfJQo407GDKTdzW7sZ1/720Bxi8oXlwNrATKjj0ooHeC9AKfA+RLzl6mEKdR3IZqE
-         B0+dj6LUY1JRRJxu3CCimFjhkOGHg/+pnxrwVXpJgZA5KDPlhdNtScSYrMRV+xSJwZ
-         uAjsjdpwVl6zbjd/QmxjjzsdJh6V6kXobFwMAsxUq+izuSk3LR9h0R38q4IlAHd26F
-         eU/xPXNteFKi6QK0l4LCxqU3iDP5Rm0UJarqa+wvBOYS9ldLjg+GnP3Falw2DQvePS
-         BPoUgSUdky2Sg==
+        b=FPIx9KWHxyQ0k/Peet1kxIcywpTFGpHpIV515+nYyAD0Kqvt3ynOafhk6gcYR6E5n
+         nmrG80vYOvyXuyzhR141OV9ryDGDEwLP39QfZk1rbI5yGDcTbRCPHmJtKgZOuarVA0
+         9Deq/0fUPzN3b002dkawayfW4384ju7DpErkWzh8CQGtLvwF7jNO1md2q1aRKCQ9CS
+         TR71FkLNuY8mogaJwNuIfOb/a5zuD57cOY69kSGEHtt2Uvxxk24YrqNERjIEsyFCpc
+         +5TYikblKmXSohpJgNsAJLFDEorXDyjGv8997VyvqrHoKdguDElzmaeYQ9nNLH1mZE
+         GgS5K9cccWuuA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
 Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 1/8] ASoC: cs42l42: PLL must be running when changing MCLK_SRC_SEL
-Date:   Fri,  6 Aug 2021 01:47:48 +0100
-Message-Id: <162821054283.18754.5945284038472459595.b4-ty@kernel.org>
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v1] ASoC: rt5640: Silence warning message about missing interrupt
+Date:   Fri,  6 Aug 2021 01:47:49 +0100
+Message-Id: <162821054282.18754.14831223964648226804.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210805161111.10410-1-rf@opensource.cirrus.com>
-References: <20210805161111.10410-1-rf@opensource.cirrus.com>
+In-Reply-To: <20210802185258.1881-1-digetx@gmail.com>
+References: <20210802185258.1881-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,14 +43,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Aug 2021 17:11:04 +0100, Richard Fitzgerald wrote:
-> Both SCLK and PLL clocks must be running to drive the glitch-free mux
-> behind MCLK_SRC_SEL and complete the switchover.
+On Mon, 2 Aug 2021 21:52:58 +0300, Dmitry Osipenko wrote:
+> Interrupt is optional for the RT5640 codec. Nexus 7 doesn't use interrupt,
+> this results in a noisy warning message that looks like a error condition.
+> Make interrupt explicitly optional to silence the message, use modern
+> IRQF_NO_AUTOEN flag and correct the reg[q]uest typo in the message.
 > 
-> This patch moves the writing of MCLK_SRC_SEL to when the PLL is started
-> and stopped, so that it only transitions while the PLL is running.
-> The unconditional write MCLK_SRC_SEL=0 in cs42l42_mute_stream() is safe
-> because if the PLL is not running MCLK_SRC_SEL is already 0.
+> 
 > 
 > [...]
 
@@ -57,22 +59,8 @@ Applied to
 
 Thanks!
 
-[1/8] ASoC: cs42l42: PLL must be running when changing MCLK_SRC_SEL
-      commit: f1040e86f83b0f7d5f45724500a6a441731ff4b7
-[2/8] ASoC: cs42l42: Fix LRCLK frame start edge
-      commit: 0c2f2ad4f16a58879463d0979a54293f8f296d6f
-[3/8] ASoC: cs42l42: Constrain sample rate to prevent illegal SCLK
-      commit: 3a5d89a9c6fe306d35dce4496abbb464c1454da0
-[4/8] ASoC: cs42l42: Fix mono playback
-      commit: e5ada3f6787a4d6234adc6f2f3ae35c6d5b71ba0
-[5/8] ASoC: cs42l42: Add PLL configuration for 44.1kHz/16-bit
-      (no commit info)
-[6/8] ASoC: cs42l42: Validate dai_set_sysclk() frequency
-      (no commit info)
-[7/8] ASoC: cs42l42: Assume 24-bit samples are in 32-bit slots
-      (no commit info)
-[8/8] ASoC: cs42l42: Update module authors
-      (no commit info)
+[1/1] ASoC: rt5640: Silence warning message about missing interrupt
+      commit: 585fb31c2c3aad38a5add009171d7e3277b76d45
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
