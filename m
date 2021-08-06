@@ -2,138 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1663E2DDB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8F13E2DE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244753AbhHFPkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 11:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46920 "EHLO
+        id S242786AbhHFPoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 11:44:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244736AbhHFPkG (ORCPT
+        with ESMTP id S238790AbhHFPoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 11:40:06 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F878C0613CF;
-        Fri,  6 Aug 2021 08:39:50 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id x14so13557090edr.12;
-        Fri, 06 Aug 2021 08:39:50 -0700 (PDT)
+        Fri, 6 Aug 2021 11:44:17 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26309C0613CF;
+        Fri,  6 Aug 2021 08:44:00 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id j2so11597221wrx.9;
+        Fri, 06 Aug 2021 08:44:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eTk4yr0eN3hm7lLtT7TJ+GcZ/BI3UsKqBaJTxX9s20I=;
-        b=pe/zubRk3mozz1yIUrLLk1qW9TXvaqf1wg8raPZZYwlgaDMsBtQ5EDWfwopd9beKl4
-         USnByrcmC0Cw74780PIXSlzgIoQkiso5bHCfa/BdkLff7QVTcYcsZe3no4MRwTd3aipr
-         7Y+h8H2Ni2e6qkmhORuMQUvJCW8VZW2dfwrXQZeCrW9IwUlX4HvWMdfxBkmTHkOV54A/
-         Lb0VsTz+XP6P/gNmMQsaGMlQQ4B32Rf2qlFeryKtYndgmXoej2XSU0XWlQBbiQsHi9j/
-         kDoCZYS/MMIepYDppzIGPTiUFkj8816MtmjKrXnw+3bkVqM2BaOg8BXDzH9n3O9o3dx5
-         Txgw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lkzuyoF6aGI8g1BoWufFJUHe7Pqn5XucH2j121GW1Yg=;
+        b=Bj9YVQtN35HUg6TZ+1yrDwAgRyR0bn6f9bgwu/c4EVWuQqf54iTZV9WvUx+4cbbbzz
+         7vq90gXXqhbQUPEJGROfHymNKJDxjaXC/rRem6FuE9R1MtWZ2DT1huf4h47BjQprlcEm
+         2n2yaVvt70bcc8QSY5VKQDEYFdd7YtP4Iin2/xQrQschAXerSZ+iBUY/pYLf8o5gwuwY
+         WFm/zzqIbcUr96VCneFwru8v+5gs2EOSg6cI8uD9znyYU04JDB9112HfZN0/PU5LBXwW
+         xuO15kq7FS3NuEZkKCPaEn6Dzr4uRdN2jPtJZLSdgZAV5+ZuVXcwn2xwyJlcNcpb9e92
+         jJxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eTk4yr0eN3hm7lLtT7TJ+GcZ/BI3UsKqBaJTxX9s20I=;
-        b=rr7Cf8pHFFwagvV078n6heTwEihb8tHFFomuvndSUAtVUoo027mgo3N1YYyyQW3Yin
-         WaQB0zFHescjEzHcP3NmetYLq2w8gnYOzp9vF6JaQgOR9urPANnsdIfMvwrfYPzODoCb
-         gVCk23sQBmvnEZ8np7eG5slypAMiY/Nu0FTb4B6hZLMWlYGOVENIcdNT7W4omo176O43
-         tTXGi/TsTM+NJj5odcTaPHE7ceVNxw1EXQ+TIfY3L0jb/wdnsEM/zXRy8nX9Fqba1lI/
-         4P0ib3psmi5WqfuAd39MZaHlNGVMzvftLekEpC0IFFB5YZb9J7kJmxKgz4b1KthZ1waU
-         C+8g==
-X-Gm-Message-State: AOAM532z9ZVLJpiCINVqknbKY/qabNtcjN3QXHLXyqt1FApy7JaK+RYg
-        Yd+ZYHAWkR05Qc/4sG6pr2k=
-X-Google-Smtp-Source: ABdhPJwf+uCRRQJXeuBWe+3Hl730847C6jJePnZrXtrwCgIpfunEruQsEVRxOsUqaRz/YFxnW+J1LA==
-X-Received: by 2002:a05:6402:1ad9:: with SMTP id ba25mr13595781edb.255.1628264389312;
-        Fri, 06 Aug 2021 08:39:49 -0700 (PDT)
-Received: from jernej-laptop.localnet (89-212-178-211.dynamic.t-2.net. [89.212.178.211])
-        by smtp.gmail.com with ESMTPSA id bm1sm2997309ejb.38.2021.08.06.08.39.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 08:39:48 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     p.zabel@pengutronix.de, Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, emil.velikov@collabora.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: hantro: Fix check for single irq
-Date:   Fri, 06 Aug 2021 17:39:47 +0200
-Message-ID: <1909651.VgzLf9ffF6@jernej-laptop>
-In-Reply-To: <79673df0562db410753c90f9957125f202c5a1b2.camel@collabora.com>
-References: <20210805190416.332563-1-jernej.skrabec@gmail.com> <8101406.vZ8PxZ7URt@jernej-laptop> <79673df0562db410753c90f9957125f202c5a1b2.camel@collabora.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lkzuyoF6aGI8g1BoWufFJUHe7Pqn5XucH2j121GW1Yg=;
+        b=NhXvt+tYn0N1bzEoDXFz91Msav0zHyNiDyAkkPf7gaqu2Tlb0LM+/NYnr1yqyvLZrH
+         FcslJ0SLMPl0CjLvcK13v3UNKe+90aQiwZbuxxKDdCpzzGBEU7pJx2U5Cc/+u4Y6i7Wo
+         Bj2Xvf0qX28bmQlpu9ZFXKED11bEriMkC2XwOAbj2JOlGbhWvmD01/dVAusY+ipvVikn
+         quzSfnjHKt877Ey7z8Ah2dKX7MRGw5pkpTI/VntcqVoA4gNhAHQGOMOkP++7hQ1nRCVP
+         mYlCKAFynLq0oRsC+KCTEvyK1j+t8I6eZfle+sZ8zbMLqLD/dbgIfYaorY1t5BpeKpQ3
+         4xAQ==
+X-Gm-Message-State: AOAM530IvLLBskXaWMF3b/XGfN+VxgfYprtHciJIPTA3ud6YmYXT0kJ/
+        xNGC52THR1lzTGobsxJIHzHRGXSeNqddng==
+X-Google-Smtp-Source: ABdhPJwRsfyU547wFy5xYaSGn+gLcZuco/fmozMzfLLFtstM87IX9OcGkO1bFKMQdn1V15THbr2FGQ==
+X-Received: by 2002:a05:6000:2c6:: with SMTP id o6mr11468990wry.241.1628264638788;
+        Fri, 06 Aug 2021 08:43:58 -0700 (PDT)
+Received: from ziggy.stardust (static-55-132-6-89.ipcom.comunitel.net. [89.6.132.55])
+        by smtp.gmail.com with ESMTPSA id i5sm9887467wrs.85.2021.08.06.08.43.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Aug 2021 08:43:58 -0700 (PDT)
+Subject: Re: [PATCH v2 1/7] arm64: dts: mediatek: Move reset controller
+ constants into common location
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel@vger.kernel.org
+Cc:     chunkuang.hu@kernel.org, hsinyi@chromium.org, kernel@collabora.com,
+        drinkcat@chromium.org, eizan@chromium.org,
+        linux-mediatek@lists.infradead.org, jitao.shi@mediatek.com,
+        Crystal Guo <crystal.guo@mediatek.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-watchdog@vger.kernel.org
+References: <20210714101141.2089082-1-enric.balletbo@collabora.com>
+ <20210714121116.v2.1.I514d9aafff3a062f751b37d3fea7402f67595b86@changeid>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <1127dad2-4ee9-4e22-fb15-8412ac59a394@gmail.com>
+Date:   Fri, 6 Aug 2021 17:43:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210714121116.v2.1.I514d9aafff3a062f751b37d3fea7402f67595b86@changeid>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne petek, 06. avgust 2021 ob 16:13:46 CEST je Ezequiel Garcia napisal(a):
-> On Fri, 2021-08-06 at 06:44 +0200, Jernej =C5=A0krabec wrote:
-> > Dne petek, 06. avgust 2021 ob 00:03:36 CEST je Ezequiel Garcia napisal(=
-a):
-> > > Hi Jernej,
-> > >=20
-> > > On Thu, 2021-08-05 at 21:04 +0200, Jernej Skrabec wrote:
-> > > > Some cores use only one interrupt and in such case interrupt name in
-> > > > DT
-> > > > is not needed. Driver supposedly accounted that, but due to the wro=
-ng
-> > > > field check it never worked. Fix that.
-> > > >=20
-> > > > Fixes: 18d6c8b7b4c9 ("media: hantro: add fallback handling for sing=
-le
-> > > > irq/clk") Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> > > > ---
-> > > >  drivers/staging/media/hantro/hantro_drv.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >=20
-> > > > diff --git a/drivers/staging/media/hantro/hantro_drv.c
-> > > > b/drivers/staging/media/hantro/hantro_drv.c index
-> > > > 8a2edd67f2c6..20e508158871 100644
-> > > > --- a/drivers/staging/media/hantro/hantro_drv.c
-> > > > +++ b/drivers/staging/media/hantro/hantro_drv.c
-> > > > @@ -919,7 +919,7 @@ static int hantro_probe(struct platform_device
-> > > > *pdev)
-> > > >                 if (!vpu->variant->irqs[i].handler)
-> > > >                         continue;
-> > > > =20
-> > > > -               if (vpu->variant->num_clocks > 1) {
-> > > > +               if (vpu->variant->num_irqs > 1) {
-> > >=20
-> > > Oops, thanks for spotting this.
-> > >=20
-> > > How about this instead?
-> >=20
-> > No, original solution is more robust. With solution below, you're assum=
-ing
-> > that irq order in driver array is same as in DT. That doesn't matter if
-> > there is only one name or if names match. However, if there is a typo,
-> > either in DT node or in driver, driver will still happily assign clock
-> > based on index and that might not be correct one. Even if it works out,
-> > you can easily miss that you have a typo. Driver doesn't tell you which
-> > irq is used, if it is successfully acquired.
->=20
-> I find it odd to iterate up to num_irqs but then
-> have a case for num_irqs =3D=3D 1, and call
-> platform_get_irq(vpu->pdev, 0).
-
-True, it was also strange for me at first, but then it's robust and simple.=
-=20
-Because of that, I just fixed obvious issue.
-
->=20
-> But OTOH, your fix is correct and it's a oneliner.
->=20
-> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
->=20
-
-Thanks!
-
-Best regards,
-Jernej
-
-> Thanks,
-> Ezequiel
 
 
+On 14/07/2021 12:11, Enric Balletbo i Serra wrote:
+> The DT binding includes for reset controllers are located in
+> include/dt-bindings/reset/. Move the Mediatek reset constants in there.
+> 
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
 
+> ---
+> 
+> Changes in v2:
+> - Fix build test ERROR Reported-by: kernel test robot <lkp@intel.com>
+> 
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi                    | 2 +-
+>  drivers/watchdog/mtk_wdt.c                                  | 6 +++---
+>  .../dt-bindings/{reset-controller => reset}/mt2712-resets.h | 0
+>  .../dt-bindings/{reset-controller => reset}/mt8183-resets.h | 0
+>  .../dt-bindings/{reset-controller => reset}/mt8192-resets.h | 0
+>  5 files changed, 4 insertions(+), 4 deletions(-)
+>  rename include/dt-bindings/{reset-controller => reset}/mt2712-resets.h (100%)
+>  rename include/dt-bindings/{reset-controller => reset}/mt8183-resets.h (100%)
+>  rename include/dt-bindings/{reset-controller => reset}/mt8192-resets.h (100%)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index 96473d88f391..4ef0b5b23047 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -11,7 +11,7 @@
+>  #include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/memory/mt8183-larb-port.h>
+>  #include <dt-bindings/power/mt8183-power.h>
+> -#include <dt-bindings/reset-controller/mt8183-resets.h>
+> +#include <dt-bindings/reset/mt8183-resets.h>
+>  #include <dt-bindings/phy/phy.h>
+>  #include <dt-bindings/thermal/thermal.h>
+>  #include "mt8183-pinfunc.h"
+> diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+> index 16b6aff324a7..6986bc740465 100644
+> --- a/drivers/watchdog/mtk_wdt.c
+> +++ b/drivers/watchdog/mtk_wdt.c
+> @@ -9,9 +9,9 @@
+>   * Based on sunxi_wdt.c
+>   */
+>  
+> -#include <dt-bindings/reset-controller/mt2712-resets.h>
+> -#include <dt-bindings/reset-controller/mt8183-resets.h>
+> -#include <dt-bindings/reset-controller/mt8192-resets.h>
+> +#include <dt-bindings/reset/mt2712-resets.h>
+> +#include <dt-bindings/reset/mt8183-resets.h>
+> +#include <dt-bindings/reset/mt8192-resets.h>
+>  #include <linux/delay.h>
+>  #include <linux/err.h>
+>  #include <linux/init.h>
+> diff --git a/include/dt-bindings/reset-controller/mt2712-resets.h b/include/dt-bindings/reset/mt2712-resets.h
+> similarity index 100%
+> rename from include/dt-bindings/reset-controller/mt2712-resets.h
+> rename to include/dt-bindings/reset/mt2712-resets.h
+> diff --git a/include/dt-bindings/reset-controller/mt8183-resets.h b/include/dt-bindings/reset/mt8183-resets.h
+> similarity index 100%
+> rename from include/dt-bindings/reset-controller/mt8183-resets.h
+> rename to include/dt-bindings/reset/mt8183-resets.h
+> diff --git a/include/dt-bindings/reset-controller/mt8192-resets.h b/include/dt-bindings/reset/mt8192-resets.h
+> similarity index 100%
+> rename from include/dt-bindings/reset-controller/mt8192-resets.h
+> rename to include/dt-bindings/reset/mt8192-resets.h
+> 
