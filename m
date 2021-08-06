@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41A83E2585
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE773E259C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244185AbhHFIU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:20:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48828 "EHLO mail.kernel.org"
+        id S244332AbhHFIVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:21:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231467AbhHFISX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:18:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7A6761206;
-        Fri,  6 Aug 2021 08:18:06 +0000 (UTC)
+        id S244107AbhHFISx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:18:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD88461213;
+        Fri,  6 Aug 2021 08:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628237887;
-        bh=qSEns+MXNNVsRcQSIIG1yF3bMbjgW97SBuOSxpfLiLk=;
+        s=korg; t=1628237911;
+        bh=VhjaaJ+u9hYQFF4qt03eYhFeFqZTn+dvGvz7SmOwynE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K0p4CxYahHHE206EZiSaKjxhou0k/glWbj6qFnurVMRcW3QLTuNWmTc6mXLl4/Fqu
-         30jgFwZ6gcqMM/17/q31jMtqqZtTWifTVLbsnWuBPTGbx893iYYUnRqJ8mbtymSMsr
-         yjfUhUBWxWUZ2Kczx/+O5YOyVCU9aNOKSSy8n2Oo=
+        b=TCU/Lho9uw2Mcedh8HIlPOrL3m9X1JMvwt2Qpqh3YY1EE86UWIoVDQcmZy1xSvG55
+         bzNgNEP1xjw0C1S8MuOmiMvpRKzvoC3mGXl8hG/NsaLooU1nendAcIYsT0WYCiVUNR
+         mtObNthc/kOJzFa8MJbjua9J9gshZ1i9D6qhjnRo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Jason Ekstrand <jason@jlekstrand.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Jon Bloomfield <jon.bloomfield@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 06/23] spi: stm32h7: fix full duplex irq handler handling
-Date:   Fri,  6 Aug 2021 10:16:38 +0200
-Message-Id: <20210806081112.327880707@linuxfoundation.org>
+Subject: [PATCH 5.10 01/30] drm/i915: Revert "drm/i915/gem: Asynchronous cmdparser"
+Date:   Fri,  6 Aug 2021 10:16:39 +0200
+Message-Id: <20210806081113.176381847@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210806081112.104686873@linuxfoundation.org>
-References: <20210806081112.104686873@linuxfoundation.org>
+In-Reply-To: <20210806081113.126861800@linuxfoundation.org>
+References: <20210806081113.126861800@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,56 +44,343 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alain Volmat <alain.volmat@foss.st.com>
+From: Jason Ekstrand <jason@jlekstrand.net>
 
-[ Upstream commit e4a5c19888a5f8a9390860ca493e643be58c8791 ]
+commit c9d9fdbc108af8915d3f497bbdf3898bf8f321b8 upstream.
 
-In case of Full-Duplex mode, DXP flag is set when RXP and TXP flags are
-set. But to avoid 2 different handlings, just add TXP and RXP flag in
-the mask instead of DXP, and then keep the initial handling of TXP and
-RXP events.
-Also rephrase comment about EOTIE which is one of the interrupt enable
-bits. It is not triggered by any event.
+This reverts 686c7c35abc2 ("drm/i915/gem: Asynchronous cmdparser").  The
+justification for this commit in the git history was a vague comment
+about getting it out from under the struct_mutex.  While this may
+improve perf for some workloads on Gen7 platforms where we rely on the
+command parser for features such as indirect rendering, no numbers were
+provided to prove such an improvement.  It claims to closed two
+gitlab/bugzilla issues but with no explanation whatsoever as to why or
+what bug it's fixing.
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Reviewed-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Link: https://lore.kernel.org/r/1625042723-661-3-git-send-email-alain.volmat@foss.st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Meanwhile, by moving command parsing off to an async callback, it leaves
+us with a problem of what to do on error.  When things were synchronous,
+EXECBUFFER2 would fail with an error code if parsing failed.  When
+moving it to async, we needed another way to handle that error and the
+solution employed was to set an error on the dma_fence and then trust
+that said error gets propagated to the client eventually.  Moving back
+to synchronous will help us untangle the fence error propagation mess.
+
+This also reverts most of 0edbb9ba1bfe ("drm/i915: Move cmd parser
+pinning to execbuffer") which is a refactor of some of our allocation
+paths for asynchronous parsing.  Now that everything is synchronous, we
+don't need it.
+
+v2 (Daniel Vetter):
+ - Add stabel Cc and Fixes tag
+
+Signed-off-by: Jason Ekstrand <jason@jlekstrand.net>
+Cc: <stable@vger.kernel.org> # v5.6+
+Fixes: 9e31c1fe45d5 ("drm/i915: Propagate errors on awaiting already signaled fences")
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Reviewed-by: Jon Bloomfield <jon.bloomfield@intel.com>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210714193419.1459723-2-jason@jlekstrand.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ .../gpu/drm/i915/gem/i915_gem_execbuffer.c    | 164 +-----------------
+ drivers/gpu/drm/i915/i915_cmd_parser.c        |  28 +--
+ 2 files changed, 25 insertions(+), 167 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index e9d48e94f5ed..9ae16092206d 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -913,15 +913,18 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 	ier = readl_relaxed(spi->base + STM32H7_SPI_IER);
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
+index bd3046e5a934..e5ac0936a587 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
+@@ -24,7 +24,6 @@
+ #include "i915_gem_clflush.h"
+ #include "i915_gem_context.h"
+ #include "i915_gem_ioctls.h"
+-#include "i915_sw_fence_work.h"
+ #include "i915_trace.h"
+ #include "i915_user_extensions.h"
  
- 	mask = ier;
--	/* EOTIE is triggered on EOT, SUSP and TXC events. */
-+	/*
-+	 * EOTIE enables irq from EOT, SUSP and TXC events. We need to set
-+	 * SUSP to acknowledge it later. TXC is automatically cleared
-+	 */
+@@ -1401,6 +1400,10 @@ static u32 *reloc_gpu(struct i915_execbuffer *eb,
+ 		int err;
+ 		struct intel_engine_cs *engine = eb->engine;
+ 
++		/* If we need to copy for the cmdparser, we will stall anyway */
++		if (eb_use_cmdparser(eb))
++			return ERR_PTR(-EWOULDBLOCK);
 +
- 	mask |= STM32H7_SPI_SR_SUSP;
- 	/*
--	 * When TXTF is set, DXPIE and TXPIE are cleared. So in case of
--	 * Full-Duplex, need to poll RXP event to know if there are remaining
--	 * data, before disabling SPI.
-+	 * DXPIE is set in Full-Duplex, one IT will be raised if TXP and RXP
-+	 * are set. So in case of Full-Duplex, need to poll TXP and RXP event.
- 	 */
--	if (spi->rx_buf && !spi->cur_usedma)
--		mask |= STM32H7_SPI_SR_RXP;
-+	if ((spi->cur_comm == SPI_FULL_DUPLEX) && !spi->cur_usedma)
-+		mask |= STM32H7_SPI_SR_TXP | STM32H7_SPI_SR_RXP;
+ 		if (!reloc_can_use_engine(engine)) {
+ 			engine = engine->gt->engine_class[COPY_ENGINE_CLASS][0];
+ 			if (!engine)
+@@ -2267,152 +2270,6 @@ shadow_batch_pin(struct i915_execbuffer *eb,
+ 	return vma;
+ }
  
- 	if (!(sr & mask)) {
- 		dev_warn(spi->dev, "spurious IT (sr=0x%08x, ier=0x%08x)\n",
+-struct eb_parse_work {
+-	struct dma_fence_work base;
+-	struct intel_engine_cs *engine;
+-	struct i915_vma *batch;
+-	struct i915_vma *shadow;
+-	struct i915_vma *trampoline;
+-	unsigned long batch_offset;
+-	unsigned long batch_length;
+-};
+-
+-static int __eb_parse(struct dma_fence_work *work)
+-{
+-	struct eb_parse_work *pw = container_of(work, typeof(*pw), base);
+-
+-	return intel_engine_cmd_parser(pw->engine,
+-				       pw->batch,
+-				       pw->batch_offset,
+-				       pw->batch_length,
+-				       pw->shadow,
+-				       pw->trampoline);
+-}
+-
+-static void __eb_parse_release(struct dma_fence_work *work)
+-{
+-	struct eb_parse_work *pw = container_of(work, typeof(*pw), base);
+-
+-	if (pw->trampoline)
+-		i915_active_release(&pw->trampoline->active);
+-	i915_active_release(&pw->shadow->active);
+-	i915_active_release(&pw->batch->active);
+-}
+-
+-static const struct dma_fence_work_ops eb_parse_ops = {
+-	.name = "eb_parse",
+-	.work = __eb_parse,
+-	.release = __eb_parse_release,
+-};
+-
+-static inline int
+-__parser_mark_active(struct i915_vma *vma,
+-		     struct intel_timeline *tl,
+-		     struct dma_fence *fence)
+-{
+-	struct intel_gt_buffer_pool_node *node = vma->private;
+-
+-	return i915_active_ref(&node->active, tl->fence_context, fence);
+-}
+-
+-static int
+-parser_mark_active(struct eb_parse_work *pw, struct intel_timeline *tl)
+-{
+-	int err;
+-
+-	mutex_lock(&tl->mutex);
+-
+-	err = __parser_mark_active(pw->shadow, tl, &pw->base.dma);
+-	if (err)
+-		goto unlock;
+-
+-	if (pw->trampoline) {
+-		err = __parser_mark_active(pw->trampoline, tl, &pw->base.dma);
+-		if (err)
+-			goto unlock;
+-	}
+-
+-unlock:
+-	mutex_unlock(&tl->mutex);
+-	return err;
+-}
+-
+-static int eb_parse_pipeline(struct i915_execbuffer *eb,
+-			     struct i915_vma *shadow,
+-			     struct i915_vma *trampoline)
+-{
+-	struct eb_parse_work *pw;
+-	int err;
+-
+-	GEM_BUG_ON(overflows_type(eb->batch_start_offset, pw->batch_offset));
+-	GEM_BUG_ON(overflows_type(eb->batch_len, pw->batch_length));
+-
+-	pw = kzalloc(sizeof(*pw), GFP_KERNEL);
+-	if (!pw)
+-		return -ENOMEM;
+-
+-	err = i915_active_acquire(&eb->batch->vma->active);
+-	if (err)
+-		goto err_free;
+-
+-	err = i915_active_acquire(&shadow->active);
+-	if (err)
+-		goto err_batch;
+-
+-	if (trampoline) {
+-		err = i915_active_acquire(&trampoline->active);
+-		if (err)
+-			goto err_shadow;
+-	}
+-
+-	dma_fence_work_init(&pw->base, &eb_parse_ops);
+-
+-	pw->engine = eb->engine;
+-	pw->batch = eb->batch->vma;
+-	pw->batch_offset = eb->batch_start_offset;
+-	pw->batch_length = eb->batch_len;
+-	pw->shadow = shadow;
+-	pw->trampoline = trampoline;
+-
+-	/* Mark active refs early for this worker, in case we get interrupted */
+-	err = parser_mark_active(pw, eb->context->timeline);
+-	if (err)
+-		goto err_commit;
+-
+-	err = dma_resv_reserve_shared(pw->batch->resv, 1);
+-	if (err)
+-		goto err_commit;
+-
+-	/* Wait for all writes (and relocs) into the batch to complete */
+-	err = i915_sw_fence_await_reservation(&pw->base.chain,
+-					      pw->batch->resv, NULL, false,
+-					      0, I915_FENCE_GFP);
+-	if (err < 0)
+-		goto err_commit;
+-
+-	/* Keep the batch alive and unwritten as we parse */
+-	dma_resv_add_shared_fence(pw->batch->resv, &pw->base.dma);
+-
+-	/* Force execution to wait for completion of the parser */
+-	dma_resv_add_excl_fence(shadow->resv, &pw->base.dma);
+-
+-	dma_fence_work_commit_imm(&pw->base);
+-	return 0;
+-
+-err_commit:
+-	i915_sw_fence_set_error_once(&pw->base.chain, err);
+-	dma_fence_work_commit_imm(&pw->base);
+-	return err;
+-
+-err_shadow:
+-	i915_active_release(&shadow->active);
+-err_batch:
+-	i915_active_release(&eb->batch->vma->active);
+-err_free:
+-	kfree(pw);
+-	return err;
+-}
+-
+ static struct i915_vma *eb_dispatch_secure(struct i915_execbuffer *eb, struct i915_vma *vma)
+ {
+ 	/*
+@@ -2494,13 +2351,11 @@ static int eb_parse(struct i915_execbuffer *eb)
+ 		eb->batch_flags |= I915_DISPATCH_SECURE;
+ 	}
+ 
+-	batch = eb_dispatch_secure(eb, shadow);
+-	if (IS_ERR(batch)) {
+-		err = PTR_ERR(batch);
+-		goto err_trampoline;
+-	}
+-
+-	err = eb_parse_pipeline(eb, shadow, trampoline);
++	err = intel_engine_cmd_parser(eb->engine,
++				      eb->batch->vma,
++				      eb->batch_start_offset,
++				      eb->batch_len,
++				      shadow, trampoline);
+ 	if (err)
+ 		goto err_unpin_batch;
+ 
+@@ -2522,7 +2377,6 @@ static int eb_parse(struct i915_execbuffer *eb)
+ err_unpin_batch:
+ 	if (batch)
+ 		i915_vma_unpin(batch);
+-err_trampoline:
+ 	if (trampoline)
+ 		i915_vma_unpin(trampoline);
+ err_shadow:
+diff --git a/drivers/gpu/drm/i915/i915_cmd_parser.c b/drivers/gpu/drm/i915/i915_cmd_parser.c
+index 9ce174950340..635aae9145cb 100644
+--- a/drivers/gpu/drm/i915/i915_cmd_parser.c
++++ b/drivers/gpu/drm/i915/i915_cmd_parser.c
+@@ -1143,27 +1143,30 @@ find_reg(const struct intel_engine_cs *engine, u32 addr)
+ /* Returns a vmap'd pointer to dst_obj, which the caller must unmap */
+ static u32 *copy_batch(struct drm_i915_gem_object *dst_obj,
+ 		       struct drm_i915_gem_object *src_obj,
+-		       unsigned long offset, unsigned long length)
++		       u32 offset, u32 length)
+ {
+-	bool needs_clflush;
++	unsigned int src_needs_clflush;
++	unsigned int dst_needs_clflush;
+ 	void *dst, *src;
+ 	int ret;
+ 
++	ret = i915_gem_object_prepare_write(dst_obj, &dst_needs_clflush);
++	if (ret)
++		return ERR_PTR(ret);
++
+ 	dst = i915_gem_object_pin_map(dst_obj, I915_MAP_FORCE_WB);
++	i915_gem_object_finish_access(dst_obj);
+ 	if (IS_ERR(dst))
+ 		return dst;
+ 
+-	ret = i915_gem_object_pin_pages(src_obj);
++	ret = i915_gem_object_prepare_read(src_obj, &src_needs_clflush);
+ 	if (ret) {
+ 		i915_gem_object_unpin_map(dst_obj);
+ 		return ERR_PTR(ret);
+ 	}
+ 
+-	needs_clflush =
+-		!(src_obj->cache_coherent & I915_BO_CACHE_COHERENT_FOR_READ);
+-
+ 	src = ERR_PTR(-ENODEV);
+-	if (needs_clflush && i915_has_memcpy_from_wc()) {
++	if (src_needs_clflush && i915_has_memcpy_from_wc()) {
+ 		src = i915_gem_object_pin_map(src_obj, I915_MAP_WC);
+ 		if (!IS_ERR(src)) {
+ 			i915_unaligned_memcpy_from_wc(dst,
+@@ -1185,7 +1188,7 @@ static u32 *copy_batch(struct drm_i915_gem_object *dst_obj,
+ 		 * validate up to the end of the batch.
+ 		 */
+ 		remain = length;
+-		if (!(dst_obj->cache_coherent & I915_BO_CACHE_COHERENT_FOR_READ))
++		if (dst_needs_clflush & CLFLUSH_BEFORE)
+ 			remain = round_up(remain,
+ 					  boot_cpu_data.x86_clflush_size);
+ 
+@@ -1195,7 +1198,7 @@ static u32 *copy_batch(struct drm_i915_gem_object *dst_obj,
+ 			int len = min(remain, PAGE_SIZE - x);
+ 
+ 			src = kmap_atomic(i915_gem_object_get_page(src_obj, n));
+-			if (needs_clflush)
++			if (src_needs_clflush)
+ 				drm_clflush_virt_range(src + x, len);
+ 			memcpy(ptr, src + x, len);
+ 			kunmap_atomic(src);
+@@ -1206,11 +1209,10 @@ static u32 *copy_batch(struct drm_i915_gem_object *dst_obj,
+ 		}
+ 	}
+ 
+-	i915_gem_object_unpin_pages(src_obj);
++	i915_gem_object_finish_access(src_obj);
+ 
+ 	memset32(dst + length, 0, (dst_obj->base.size - length) / sizeof(u32));
+ 
+-	/* dst_obj is returned with vmap pinned */
+ 	return dst;
+ }
+ 
+@@ -1417,6 +1419,7 @@ static unsigned long *alloc_whitelist(u32 batch_length)
+  * Return: non-zero if the parser finds violations or otherwise fails; -EACCES
+  * if the batch appears legal but should use hardware parsing
+  */
++
+ int intel_engine_cmd_parser(struct intel_engine_cs *engine,
+ 			    struct i915_vma *batch,
+ 			    unsigned long batch_offset,
+@@ -1437,7 +1440,8 @@ int intel_engine_cmd_parser(struct intel_engine_cs *engine,
+ 				     batch->size));
+ 	GEM_BUG_ON(!batch_length);
+ 
+-	cmd = copy_batch(shadow->obj, batch->obj, batch_offset, batch_length);
++	cmd = copy_batch(shadow->obj, batch->obj,
++			 batch_offset, batch_length);
+ 	if (IS_ERR(cmd)) {
+ 		DRM_DEBUG("CMD: Failed to copy batch\n");
+ 		return PTR_ERR(cmd);
 -- 
 2.30.2
 
