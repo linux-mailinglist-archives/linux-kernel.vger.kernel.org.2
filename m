@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D633E306A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 22:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327EA3E3072
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 22:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245021AbhHFUh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 16:37:57 -0400
-Received: from mail-io1-f48.google.com ([209.85.166.48]:37597 "EHLO
-        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245005AbhHFUhz (ORCPT
+        id S245070AbhHFUlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 16:41:36 -0400
+Received: from mail-io1-f51.google.com ([209.85.166.51]:37818 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230221AbhHFUla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 16:37:55 -0400
-Received: by mail-io1-f48.google.com with SMTP id l20so11660280iom.4;
-        Fri, 06 Aug 2021 13:37:39 -0700 (PDT)
+        Fri, 6 Aug 2021 16:41:30 -0400
+Received: by mail-io1-f51.google.com with SMTP id l20so11679579iom.4;
+        Fri, 06 Aug 2021 13:41:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=TVKXYieXCB1DKiHzXxHGsFLtK6oj4KnoWI2F5Iz4p4M=;
-        b=nqO9S0lcE+cYxKtyBPVspHSJd1joB7YVE1S32akblUP0FPXvVLYyV3jAWZ3muiWXyW
-         2J40hvmZ3jxAUgA/cKyLEzbvG1LfdC24SKjsD2UINtlNL4+8kLVQ5ANOozCkZyq5jpj6
-         7fGoTvxC7EdNQ0imEirsNVqK0kK6OMP3gGJ5lsNvErr5fVqNrX6fohqd3wNsfOMek6vI
-         Nycu6vONU3b6vjSdGpQDrotVJO7hWUUQTGJBEfqpHZIfkNEN6IdRC+fJwQNXNKZIASIl
-         W35wdvVL0ID6gPk0VL0l6Ncn2Q9Q9A9j5mdHCkA7eSglqFHcHYmfwoKlRdJf5NQZTKmv
-         CyaQ==
-X-Gm-Message-State: AOAM532wAeUx6Hwj7vs5gZacWDxuduFml8I5twtPO0Vs+UO3i/S3IclG
-        4sAY9N1Js5uhDq/V95dpNw==
-X-Google-Smtp-Source: ABdhPJxZCOZE9OxcqkC1fCzq3EI+rcQGE5VzKj6Tdg7VFwKzvA8LJ/8AIBSVEFv+o1tKeKa0bdflOA==
-X-Received: by 2002:a6b:db03:: with SMTP id t3mr684509ioc.3.1628282258694;
-        Fri, 06 Aug 2021 13:37:38 -0700 (PDT)
+        bh=UvvQPmrhuL4HtRndu0q71cWkxEo1zKJex15ocyueGJ0=;
+        b=jCa84p1kkPBeN+5Ts5/jZ7tnQTVshyUTay0F5l8fB5Nm3XimBTw0E6a0JpUzuZXyyi
+         nuJxZLdmieRZVv40ZsvayhgQ6csy+NT/AyStfA5iG3omdBtZL7ET14Ha6YQOHLmaIm59
+         yJsgIsC/b6Mcyo1PNqCj1sungR3mpeUBXSjOjyM9BjwdwV8hTVqp0ZkZsqSjhNE7AU1I
+         cMokvB9t4vAJcGvxgSRKSrkRIJDDeg01c+/E6kVfEF6RKb83XLnALjNvyLqM5xBDxXt8
+         ES9RPxC+CgLGC99INQEXL6vo8nEBYHGUZjXk5i/6BufSKbMGgStyWFeccEyGB3bzWPGA
+         OUww==
+X-Gm-Message-State: AOAM533dYwxdq/Tl+c+48zLn2F2yqDsN6m9WWQR/yTN5jqI7BIyiHhHE
+        Cfu0h/DK3Sy8qQIYEMzzXA==
+X-Google-Smtp-Source: ABdhPJwtqAZpNSn8OeittrKtjsRZ9QEoOqX40BY44WtTvTgx9ajtlTLzXu/rOuwjY4Jw3gN+OtbSow==
+X-Received: by 2002:a92:cd41:: with SMTP id v1mr15140ilq.212.1628282472733;
+        Fri, 06 Aug 2021 13:41:12 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id u6sm5050320ilk.36.2021.08.06.13.37.37
+        by smtp.gmail.com with ESMTPSA id s8sm5415957ilt.1.2021.08.06.13.41.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 13:37:38 -0700 (PDT)
-Received: (nullmailer pid 1753643 invoked by uid 1000);
-        Fri, 06 Aug 2021 20:37:37 -0000
-Date:   Fri, 6 Aug 2021 14:37:37 -0600
+        Fri, 06 Aug 2021 13:41:12 -0700 (PDT)
+Received: (nullmailer pid 1759128 invoked by uid 1000);
+        Fri, 06 Aug 2021 20:41:10 -0000
+Date:   Fri, 6 Aug 2021 14:41:10 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
 Cc:     Mathias Nyman <mathias.nyman@intel.com>,
@@ -45,45 +45,44 @@ Cc:     Mathias Nyman <mathias.nyman@intel.com>,
         linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, Eddie Hung <eddie.hung@mediatek.com>
-Subject: Re: [PATCH 01/11] dt-bindings: usb: mtk-xhci: add support property
- 'tpl-support'
-Message-ID: <YQ2dkcKiXxIHLCOT@robh.at.kernel.org>
+Subject: Re: [PATCH 02/11] dt-bindings: usb: mtk-xhci: add optional property
+ to disable usb2 ports
+Message-ID: <YQ2eZkqb++K3K5NN@robh.at.kernel.org>
 References: <1627635002-24521-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1627635002-24521-2-git-send-email-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1627635002-24521-1-git-send-email-chunfeng.yun@mediatek.com>
+In-Reply-To: <1627635002-24521-2-git-send-email-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 04:49:52PM +0800, Chunfeng Yun wrote:
-> Add property 'tpl-support' to support targeted peripheral list
-> for USB-IF Embedded Host Compliance Test
-
-Given you have to configure the TPL somehow, how is this useful to be in 
-DT? And no, that's not a suggestion to put all the TPL config into DT.
-
+On Fri, Jul 30, 2021 at 04:49:53PM +0800, Chunfeng Yun wrote:
+> Add support to disable specific usb2 host ports, it's useful when
+> a usb2 port is disabled on some platforms, but enabled on others for
+> the same SoC, another case is that the different package may support
+> different number of ports.
 > 
 > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 > ---
->  Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+>  Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
 > diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
-> index 240882b12565..49729aab6d1a 100644
+> index 49729aab6d1a..61a0e550b5d6 100644
 > --- a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
 > +++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
-> @@ -115,6 +115,8 @@ properties:
+> @@ -154,6 +154,11 @@ properties:
+>      description: The mask to disable u3ports, bit0 for u3port0,
+>        bit1 for u3port1, ... etc
 >  
->    usb2-lpm-disable: true
->  
-> +  tpl-support: true
-> +
->    imod-interval-ns:
->      description:
->        Interrupt moderation interval value, it is 8 times as much as that
-> -- 
-> 2.18.0
-> 
-> 
+> +  mediatek,u2p-dis-msk:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: The mask to disable u2ports, bit0 for u2port0,
+> +      bit1 for u2port1, ... etc
+
+You already have this property in the parent node, right? Why are we 
+duplicating it in both places?
+
+Rob
