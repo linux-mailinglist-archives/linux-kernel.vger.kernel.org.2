@@ -2,237 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF483E28F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E232D3E28FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245138AbhHFK6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:58:09 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:53026 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231700AbhHFK6H (ORCPT
+        id S245168AbhHFK6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231700AbhHFK6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:58:07 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 176Avh1h003923;
-        Fri, 6 Aug 2021 10:57:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=S9nFF1giuivOBBJ2J7z6YNCSgp6kZIMrWwprzMfOLZM=;
- b=CPCD0twKl8UGyJsYJbXu3VP/tTW36hgRO6N3kOvw31oJLMuw76v2HWeW4IwsfhySdA8M
- Rr1r4/HM+g0GREXBCEAfWzjwtCSc/6syLASyF9MxzcPp03vm21uPQHG9lEBLH61jUzWv
- SHyCkM9BU7AKjoHDWN97UGU2yv4K9TlL9jh97jUakHLPlcGa+H/aqv+ex2es3D5NHsDM
- Pby1Tn5uRiNuetPjlZ1jIsXBpKe4N2hikd51rHSQ9NRCitrLpqXckTZgajpo9klbxkaG
- PPVBcf3gJcCrLxN91H3srGmjgp9W71kSNkt/Eftlp3AzNq8qECDe4zROysb2aBQ/BXMW TQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=S9nFF1giuivOBBJ2J7z6YNCSgp6kZIMrWwprzMfOLZM=;
- b=W7uD1kKiHszDwTNOpQl3cF0LjB27afUFHYS86ba/kmzK3PncDezH6bUrk1u9kqnb4VcV
- ExAiS+u+Q/yRVsOInfIfiNmHLw8ndoz0HGNlLpj2NMGIkFAOnFv2Z2sfDWkcDuBPkNoQ
- BHXg/hkXmsG5DREj/hdIADUmmlEeQ73AzArwO+zGl+rmpH8aDI/t+QcUJaSghvKtnkW+
- CRuxaVxT1nJr70LGL58uX4dceapAotZ3jEk9a+aRI82u6KeOsfd6kPoxifghOf3ukgWn
- X/DuYIRZ7BzQnm1cNUQ/EIWdvKW+bJXZBm0A73ZnFmKYS2NjukFoXCq0JpZK0yGcELcg 4w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3a7wqv4mxn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Aug 2021 10:57:48 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 176AuGgp195109;
-        Fri, 6 Aug 2021 10:57:47 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2108.outbound.protection.outlook.com [104.47.55.108])
-        by aserp3030.oracle.com with ESMTP id 3a78daatav-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Aug 2021 10:57:47 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W1lB28URtCdQZi6cqbfxOasGJ8aO3cmbI2Rw/j2o5YmKyDWbA4bUiWZxVZav5ZysrokdH50E2VkKXKwAFwpGv+umqU11zuaoJ4T6n4fmsxyWw+W1HI4J0Pf1Y4YHcS59Kp9z6Te2hLnUlAVOs5vbGwSpEd5rOkZVCagEjBVBhl5/UyDFeMW05+ve/ml2mjPZ6Kg9/TuJvu43z2uHiP5HbD+mSMEikRoG2uaneimptO8je/qYpDE8vAbKo4Z1hFjfNqlGRclBa+HTmYcMBk/KFHRsdSUItkIWcII/kzj4C27FVBK4fpNzf75GfvZzuRseerYjRULukzFC11/oL49KNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S9nFF1giuivOBBJ2J7z6YNCSgp6kZIMrWwprzMfOLZM=;
- b=ZG0TiZUV7wFCWbfN7I4EFDCMNymGf+GYEqPV42ZNGrAIv6eGGm1aNNphBAK7BfyKNE89SEuMqKzTXNlo2Tr6g1Gy8pjw6qDMCB8YnQSESmDEnlbirbAwUwNffdQpFi6ESXcfGOf3BSjUjz7bsY6PgLtb5aN9T7Na0zirth7BlSPR9MNMKiOpdlOu5wJKaqC+8mRZzzUBKGbbbD3myNTkFE4KHYSccl3hXj1KmYrA4tUkIwtxBYRPZ+m0wdSkfMeflMPADmGZsrbnaue2QpZB5AiRpPqplpPyyEoLk+FCeuHtzvPE5epNwmNJxJi0od8Yi1EpBwSimqkKPu3/zb5rPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 6 Aug 2021 06:58:18 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4957EC06179E;
+        Fri,  6 Aug 2021 03:58:02 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id s48so14391837ybi.7;
+        Fri, 06 Aug 2021 03:58:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S9nFF1giuivOBBJ2J7z6YNCSgp6kZIMrWwprzMfOLZM=;
- b=Uug892HNRfXSwxHv3LhNOy4U4iONqV54uaNbTPPZZINP7ndUr/Si+GA6vHFgpa2h+ugI8896MB7fJTtt96b5dsPeW/6bzpGygz8GRPFULFkgXp29GOPXp4x0ZziZJL/QcyewhKhvMiIydbz57H5WyAsDkCniVX07Lh9u+oXgG/c=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB4835.namprd10.prod.outlook.com (2603:10b6:208:331::11)
- by BL0PR10MB2930.namprd10.prod.outlook.com (2603:10b6:208:7b::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Fri, 6 Aug
- 2021 10:57:44 +0000
-Received: from BLAPR10MB4835.namprd10.prod.outlook.com
- ([fe80::31f7:93c3:6886:1981]) by BLAPR10MB4835.namprd10.prod.outlook.com
- ([fe80::31f7:93c3:6886:1981%4]) with mapi id 15.20.4394.018; Fri, 6 Aug 2021
- 10:57:44 +0000
-Subject: Re: [PATCH] selftests: KVM: avoid failures due to reserved
- HyperTransport region
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     stable@vger.kernel.org, David Matlack <dmatlack@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210805105423.412878-1-pbonzini@redhat.com>
-From:   Joao Martins <joao.m.martins@oracle.com>
-Message-ID: <4b530fb6-81cc-be36-aa68-92ec01c65775@oracle.com>
-Date:   Fri, 6 Aug 2021 11:57:38 +0100
-In-Reply-To: <20210805105423.412878-1-pbonzini@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR01CA0075.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:10e::16) To BLAPR10MB4835.namprd10.prod.outlook.com
- (2603:10b6:208:331::11)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fimCkEGBiMGjaGTmU7mx/grdD/CuzgdeFe6qp2UdRmE=;
+        b=RoGriHdbFfFNlZSNt+8ZCbGnskTrJKE4bihNsqVClxs+I8hLHutpiGrxxQW7uVwL34
+         IveW0hU2EsBP+GGZRIi97g01AYsTBtFcluh2GWVAQcW+g5Q9p+8h+BisUO1QNJI+KJEI
+         d9u0D8EDZOahLcCCE2yLNqb18u+Gp0Cq55Pt2wCVdkNlq0A935tJxOmIG46tcQMNLWkk
+         p7HdMN1FSKdgyx9veoTol1LuyTAi6we5f9gJ1eL5SO2OaxVrGCCIFKl37gGzue5PO7NY
+         STYZknO8olHYwEZXgguxXpZlirnr6Xxw9MAA9rpXDgdfDdU2Jwjd6/f5AH3UckRD6S92
+         H8zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fimCkEGBiMGjaGTmU7mx/grdD/CuzgdeFe6qp2UdRmE=;
+        b=iaabDtbjNv9KGHYizcp5MXu6yhddEhHkwEBopgZD73ovs2CqI4d0YKU1rHDh9z/Awo
+         qkJ2rs0cyOd+m+J2K5IpoqnsZhqvwu+MQtB5Nc+KSWm0ys/QMA8H7BVsJ0gyFr8SzWO3
+         lunmZduQqHekp7ou2L5aHPOgG7bS5yqwYD1dht8ntDLDeB8juOIcI9rS6YUFVp+NxUsr
+         uA/GNyUcEdKky9TcSFUA880v/VvRGRCbwfztj7Qfv5n0jYLFMQmw/rkykO3jpFDs9hk7
+         uRioPFs8c09Vb9/3cDZQOCGjKd7k5xwupyeu6harZg2whXfX3RYQF/5oTTVxJ4/2s6zv
+         64SA==
+X-Gm-Message-State: AOAM532YdUF7uaWPfYmJz6LraOqH2Jw0H5tWeCHs4VhqgOE1TKwWpa96
+        s5kDTlZcpLLhHudYTOkta36rMvOaBqXGQHYwJmw=
+X-Google-Smtp-Source: ABdhPJyxaZY6BQAMCEeHWXw2buvHW9C5CgHoZd8BisU824ik7C4OzPal/bCZIxD3rAMhU4jS8ytygFbK/FN51Jh0Ef8=
+X-Received: by 2002:a25:2cf:: with SMTP id 198mr12315914ybc.259.1628247481403;
+ Fri, 06 Aug 2021 03:58:01 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.67] (94.61.1.144) by AM0PR01CA0075.eurprd01.prod.exchangelabs.com (2603:10a6:208:10e::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Fri, 6 Aug 2021 10:57:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2f2a5439-2812-40c2-1ff0-08d958c90490
-X-MS-TrafficTypeDiagnostic: BL0PR10MB2930:
-X-Microsoft-Antispam-PRVS: <BL0PR10MB293030C9A0BF735280EA2A2BBBF39@BL0PR10MB2930.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TBwg4aTdu+oWqvLuHYJgIw0j2DlNC7G3Jl2e9g4SLa9Kz4fld9dKIejearKNFmdqKqkh1SNccnKiv5kiqxz3nv72l0v+q+5fYAFXVvOD4R4e/56puixYIrm4atIQ5V11F+2ftMN3iYb1R1XdeeCgjyn/fBvrLyD5jqszseDJTG1zx010eAZFSRc+u6LjAW8VIMqQr24azuHPO3dmbeuMIb4AGjnNB2HkjSMXESmC4TIpG4TzjGXKIaPuCMFP+O0aoz1F2ZIKQYZnj20qc7XqCKoDpy/T9zannXqgbhoQISmZPBQieaHKBzISeW9T/WVf1z1POQ29zlNEJVjFopAYQ4SdLJ7UwNfETkFiy5i0QgpNWF45WOPQy+iRzjcw8iws5/3/MQ9GV/8Yx2I8TtNAtdumJJb1ec+SGNKVNr+csREN6fB4A89VUJaDoka+ZIupZLAq9Y+Ph4PMqYQwIfXnHfwDVI6u9Jj9+wy7xkHjKQfZ1nFthffScJ4twJy4XmQbl239lGYI35xgrghnymZlqNxLAnQUHhNSFWNPBxd16scTyzszqFQvv4Pii+EyG/UfJ/6LrrV19kUMrcfa5XtPtH2f8DNSu7jIOEI//nsUS9voPgI2GHQ0idYGFAD5EkAQafe2Z39e9a2cF+UciCkPIhsCTXQwclpc+uIg1CuGIdx9iHxUxPHvWnFyJtI9L6TVOlIuWIMS0GKPRoAvERgsXq0qMNNWrQW221CWWI63l8Q=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB4835.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31696002)(5660300002)(2616005)(966005)(508600001)(956004)(4326008)(86362001)(66476007)(66556008)(66946007)(38100700002)(83380400001)(53546011)(26005)(16576012)(316002)(6916009)(2906002)(186003)(31686004)(6666004)(36756003)(8936002)(54906003)(6486002)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZU9HcmdZU1k5RkpDSU5hUlV1SnVSUW9nUk1TYTZPeU9SVUhuK0IwSHhSMGNO?=
- =?utf-8?B?c2NlSGVIeHdCbWN0ZUE0RWdxeE9PQVdzT200SThSeHlJUW9YYzlyS2NwRDMx?=
- =?utf-8?B?N3c2Nm1LYWRNdWdzc2Y5dVZ1a2FKRHdrTXA4L2EzNTRZT210UTJQWnRNaWsy?=
- =?utf-8?B?T0hMeERxd0x5RnpuOE5rZ1o2NmN1bTUwczlHTE53N2RmQWx6dlM0cXVjUmh0?=
- =?utf-8?B?R0NkcUF1bU1HNFIrSUc0QXI3bUNKMFBwNEhPR0xYTkl3Wkp3dHhhT3ljWm1m?=
- =?utf-8?B?ZlNZcGFiT3JJSDR4WVp2K0xqYlJZTzZRNWJUSmU1OUY0cnNFK3hBUDhkME90?=
- =?utf-8?B?RzYzbDNwZ1FFUi8vb24wUGxvN2srakU1VEthbzkzTWNvUFB5RitCVG5rYmxR?=
- =?utf-8?B?U3czbHgwLzVPYkVxcCs4WmRWczZ1b2JwRFZ2dmpMdmNCVG5WeldyWTgvVTZX?=
- =?utf-8?B?MEhyaWo4Q3hrSnlPRnd6QjFrMGRYVTNLV2xWZlRUL080WDBvdHFSNVp4TEZm?=
- =?utf-8?B?OUg0UjhDcDlZUllSL2FSVTdQanZZQnZ2Rm1INEJzV1U5MXNKcStpbmJSVkVU?=
- =?utf-8?B?Nmd6bXJYbzJ5ME5WcjQzV1kxZDJwMHl1eStZcC9nbzRHSHU4NWE4RWYvRCtD?=
- =?utf-8?B?MHd2Ym9ZdzdxNGp3dnVNaEk0eEhPSGxkRWE4K2lmTEZlMVVqb0xiVlFLMGds?=
- =?utf-8?B?cnppVW5welpNVTFVaEFZZVZqTE1OdDRmcyt2RTNQQ2FReGx6TUg3TVQ5bHEz?=
- =?utf-8?B?dHdiKzFuQXdjZWM3RW5IUmFSeXd4bUQ3TDVrb1FORzR5VytGRDVILzRobHow?=
- =?utf-8?B?YzE4MThUdTl3N2xTamJkUXpVZ0hmL1R2YTJyZktOcE5zajJ5QWtDNDEzNmRO?=
- =?utf-8?B?TzVvTVFOV1FrcjhLbjJKaEZlTlFPOE9tTmQwTUpIYy90d21PT2VmajV4MjlE?=
- =?utf-8?B?ZjlIbE1iOFprRTRIUUxOdUxnWFh0OW5PTStHZDhKcThGb3h4b0ZhN09KVk5V?=
- =?utf-8?B?UWFpZFJFOEw0UFRkRnYyN1o3dzdlMzFtZDdjMGlITERLT29wdTRTbG1zeDA0?=
- =?utf-8?B?cVR6cmlIWnZBV3ZoZFhLYmRwQjJURVBqbjdWbFRaa2s1bXMyZHIrd3RlZDN5?=
- =?utf-8?B?U0RIa0NVdkxWVXhxVzB2ZlNDRWM5cWp0R3lpalFOUzNhR1lOSU1WVW1pcDZp?=
- =?utf-8?B?ZkUvZ1JvZ00zN3JzYVF2amZ4L0U4MGwvRnhRM0ZzdmRTeDc5eWdUZlY2d3px?=
- =?utf-8?B?bmQ3d3VuQ1JIUnI4bS8yUG1OWDFLQmFCUU52TWIwL0VieFBobDl6U29odEN6?=
- =?utf-8?B?M1RUQUwvUTlaMGFwd0R4MnRSd0tsOEpLc2UzWm43UGVVUmRVcWZrU3cvTVpk?=
- =?utf-8?B?ZlhLSmZBUFpWSWpkZkRNSGJQR2JpWDJEL3daZTVFRlp1WWZjZDZRcENiVlQv?=
- =?utf-8?B?bWFhVnYzNSt3QWpMZHpoWGxucTBTdC9FRDUyUUhJODFwSHhxVzRtYW1CZUtw?=
- =?utf-8?B?UHluNGduS09PVDNDdDNlNkR4bHZyTUFjbDN3ZVpBZWlYWVZTUklLWXhxeFdP?=
- =?utf-8?B?dXR1TFZaUW9BSzdFUkUwZzY1MGx2QUt0WDVXVElLdlh0TDZGWnpzS2FHOUpa?=
- =?utf-8?B?MFlPY2t2WnlFNE40ajRZMlVOajdLdk5wRzJRTUVDSDQzeFJSNTR3WlBnaEVE?=
- =?utf-8?B?SXZZV1JoYmpmU3B5SC81WEtaRnF0U2FSSjZnYi9HWHpKMUs2cWJjUEpYRlUy?=
- =?utf-8?Q?hM7G+mfKHgpBLOz0TSFVpsATL0nJd5JW3XlXuGt?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f2a5439-2812-40c2-1ff0-08d958c90490
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB4835.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2021 10:57:43.8647
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /VtFzqXj9iXHkY9wQcMP5a0qpavI/5WK5Sokxw1spaiZ/3A/j+HOj78ReZVvb7H7IxjLgKOY5x3JBjfg+aat9czShCEPZSmpfAZbixILDxs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB2930
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10067 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
- malwarescore=0 phishscore=0 bulkscore=0 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108060078
-X-Proofpoint-GUID: 7dMN0P79KYAbbdVHSaqX-DZFJOyFpSBk
-X-Proofpoint-ORIG-GUID: 7dMN0P79KYAbbdVHSaqX-DZFJOyFpSBk
+References: <20210805120107.27007-1-michael.riesch@wolfvision.net>
+ <20210805120107.27007-3-michael.riesch@wolfvision.net> <8008800c-c518-30d4-edcf-57566e7a1251@arm.com>
+ <3206032.SvYEEZNnvj@diego> <2021080617460178513151@rock-chips.com> <41dbf032-c852-fbe4-befd-3dc89b24f4c9@arm.com>
+In-Reply-To: <41dbf032-c852-fbe4-befd-3dc89b24f4c9@arm.com>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Fri, 6 Aug 2021 06:57:49 -0400
+Message-ID: <CAMdYzYpw7RP+jbP_0HkVwAF8=b_k0oeti+h9214NtnjSfvT_ww@mail.gmail.com>
+Subject: Re: [PATCH v3 2/7] soc: rockchip: io-domain: add rk3568 support
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     "jay.xu@rock-chips.com" <jay.xu@rock-chips.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?5p2o5Yev?= <kever.yang@rock-chips.com>,
+        "robh+dt" <robh+dt@kernel.org>, cl <cl@rock-chips.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "xxm@rock-chips.com" <xxm@rock-chips.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "ulf.hansson" <ulf.hansson@linaro.org>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        Johan Jonker <jbx6244@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 6, 2021 at 6:28 AM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2021-08-06 10:46, jay.xu@rock-chips.com wrote:
+> > Hi Heiko and Robin
+> >
+> > --------------
+> > jay.xu@rock-chips.com
+> >> Hi Robin,
+> >>
+> >> Am Donnerstag, 5. August 2021, 18:27:36 CEST schrieb Robin Murphy:
+> >>> On 2021-08-05 13:01, Michael Riesch wrote:
+> >>>> From: Jianqun Xu <jay.xu@rock-chips.com>
+> >>>>
+> >>>> The io-domain registers on RK3568 SoCs have three separated bits to
+> >>>> enable/disable the 1.8v/2.5v/3.3v power.
+> >>>>
+> >>>> This patch make the write to be a operation, allow rk3568 uses a private
+> >>>> register set function.
+> >>>>
+> >>>> Since the 2.5v is not used on RK3568, so the driver only set
+> >>>
+> >>> FWIW, this seems at odds with what the first paragraph says - can anyone
+> >>> clarify what exactly "not used" means here? Is it that the I/O domain
+> >>> controller has been redesigned to support more than two logic levels on
+> >>> the new generation of SoCs, but RK3568's I/O pads still only physically
+> >>> support 1.8v and 3.3v; or is it that it *can* support 2.5v as well but
+> >>> no currently-known RK3568-based designs use that?
+> >>>
+> >>> In the former case it's just a wording issue in the commit message, but
+> >>> in the latter it's arguably worth implementing support now for the sake
+> >>> of future compatibility.
+> >>
+> >> I hadn't looked that deeply into the rk356x io-domain config, but at least
+> >> on a register level in the TRM it seems there are separate bits for
+> >> "3.3V control", "2.5V control", "1.8V control" [0] for each io-domain.
+> >>
+> >> Of course the documentation is otherwise somewhat sparse.
+> >>
+> >> Maybe Jay or Kever [added] can explain a bit more about the 3 voltage
+> >> levels.
+> >>
+> >>
+> >> In general though, I tend to find the approach good enough for now.
+> >>
+> >> Especially as the io-domain stuff is always said to "can cause damage
+> >> to the soc if used incorrectly" and it looks like nobody (including
+> >> Rockchip) seems to have actual hardware using these 2.5V levels right now.
+> >>
+> >> So having code in there that no-one ever tested doesn't feel too good ;-)
+> >>
+> > yes
+> >
+> > about the 3bit
+> >
+> > case     V33  V25  V18       result
+> > 0          0      0       0           IO safe, but cannot work
+> > 1          0      0       1           IO require 1.8V, should < 1.98V, otherwise IO may damage
+> > 2          0      1       0           IO require 2.5V, should < 2.75V, otherwise IO may damage
+> > 3          0      1       1           Invalid state, should avoid
+> > 4          1      0       0           IO require 3.3V, should < 3.63V, otherwise IO may damage
+> > 5          1      0       1           IO require 1.8V, should < 1.98V, otherwise IO may damage
+> > 6          1      1       0           IO require 2.5V, should < 2.75V, otherwise IO may damage
+> > 7          1      1       1           Invalid state, should avoid
+>
+> Thanks Jay, that's useful to know.
+>
+> Fair enough if it's the case that 2.5V mode hasn't been validated with
+> the BSP kernel either - I'd have no objection to clarifying the commit
+> message that way instead, I'm just a curious reviewer who noticed some
+> ambiguity :)
+>
+> >> Adding this later when needed should be somewhat easy, as it really only
+> >> needs adding of handling that 3rd control bit per domain.
+>
+> I'm mostly just thinking ahead a year or two when board designers have
+> ventured further away from the reference design and *are* using 2.5V
+> external components, then a user puts an older stable mainline kernel on
+> their board and starts tearing their hair out trying to figure out why
+> things are flaky. For instance I recall from my RK3328 box that if the
+> I/O domain setting for the GMAC is too high for the actual supply
+> voltage (such that it never detects MDIO responses from the external
+> phy) you end up getting an utterly nonsensical DMA error. In that case I
+> eventually figured out (by chance) that it was because I didn't have the
+> I/O domain driver enabled in my config, but it would be a whole other
+> level of frustration if the driver appeared to be working but was
+> quietly doing the wrong thing.
 
+I too have experienced the joys of io-domains breaking things.
+Perhaps the driver should warn when the voltages aren't expected,
+instead of when they are simply too high.
 
-On 8/5/21 11:54 AM, Paolo Bonzini wrote:
-> Accessing guest physical addresses at 0xFFFD_0000_0000 and above causes
-> a failure on AMD processors because those addresses are reserved by
-> HyperTransport (this is not documented).  
-
-Oh, but it's actually documented in the AMD IOMMU manual [0] (and AMD IOMMU in linux do
-mark it as a reserved IOVA region i.e. HT_RANGE_START..HT_RANGE_END). And it's usually
-marked as a reserved type in E820. At least on the machines I've seen.
-
-See manual section '2.1.2 IOMMU Logical Topology':
-
-"Special address controls in Table 3 are interpreted against untranslated guest physical
-addressess (GPA) that lack a PASID TLP prefix."
-
- Base Address   Top Address   Use
-
-  FD_0000_0000h FD_F7FF_FFFFh Reserved interrupt address space
-  FD_F800_0000h FD_F8FF_FFFFh Interrupt/EOI IntCtl
-  FD_F900_0000h FD_F90F_FFFFh Legacy PIC IACK
-  FD_F910_0000h FD_F91F_FFFFh System Management
-  FD_F920_0000h FD_FAFF_FFFFh Reserved Page Tables
-  FD_FB00_0000h FD_FBFF_FFFFh Address Translation
-  FD_FC00_0000h FD_FDFF_FFFFh I/O Space
-  FD_FE00_0000h FD_FFFF_FFFFh Configuration
-  FE_0000_0000h FE_1FFF_FFFFh Extended Configuration/Device Messages
-  FE_2000_0000h FF_FFFF_FFFFh Reserved
-
-It covers the range starting that address you fixed up ... up to 1Tb, fwiw.
-
-You mark it ~1010G as max gfn so shouldn't be a problem.
-
-[0] https://www.amd.com/system/files/TechDocs/48882_IOMMU.pdf
-
-> Avoid selftests failures
-> by reserving those guest physical addresses.
-> 
-> Fixes: ef4c9f4f6546 ("KVM: selftests: Fix 32-bit truncation of vm_get_max_gfn()")
-> Cc: stable@vger.kernel.org
-> Cc: David Matlack <dmatlack@google.com>
-> Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  tools/testing/selftests/kvm/lib/kvm_util.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index 10a8ed691c66..d995cc9836ee 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -309,6 +309,12 @@ struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
->  	/* Limit physical addresses to PA-bits. */
->  	vm->max_gfn = ((1ULL << vm->pa_bits) >> vm->page_shift) - 1;
->  
-> +#ifdef __x86_64__
-> +	/* Avoid reserved HyperTransport region on AMD processors.  */
-> +	if (vm->pa_bits == 48)
-> +		vm->max_gfn = 0xfffcfffff;
-> +#endif
-> +
-
-Not sure if it's worth the trouble having a macro with the same name as AMD iommu like:
-
-#define HT_RANGE_START                (0xfd00000000ULL)
-#define MAX_GFN			      (HT_RANGE_START - 1ULL)
-
-#ifdef __x86_64__
-	/* Avoid reserved HyperTransport region on AMD processors.  */
-	if (vm->pa_bits == 48)
-		vm->max_gfn = MAX_GFN;
-#endif
-
-It's a detail, but *perhaps* would help people grepping around it.
-
-Also, not sure if checking against AMD cpuid vendor is worth, considering this is
-a limitation only on AMD.
-
-
->  	/* Allocate and setup memory for guest. */
->  	vm->vpages_mapped = sparsebit_alloc();
->  	if (phy_pages != 0)
-> 
+>
+> Cheers,
+> Robin.
+>
+> >>
+> >>
+> >> Heiko
+> >>
+> >>
+> >>
+> >> [0] what happens if none of the 3 is active? ;-)
+> >>
+> >>
+> >>>
+> >>> Robin.
+> >>>
+> >>>> 1.8v [enable] + 3.3v [disable] for 1.8v mode
+> >>>> 1.8v [disable] + 3.3v [enable] for 3.3v mode
+> >>>>
+> >>>> There is not register order requirement which has been cleared by our IC
+> >>>> team.
+> >>>>
+> >>>> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+> >>>> ---
+> >>>>     drivers/soc/rockchip/io-domain.c | 88 +++++++++++++++++++++++++++++---
+> >>>>     1 file changed, 80 insertions(+), 8 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
+> >>>> index cf8182fc3642..13c446fd33a9 100644
+> >>>> --- a/drivers/soc/rockchip/io-domain.c
+> >>>> +++ b/drivers/soc/rockchip/io-domain.c
+> >>>> @@ -51,13 +51,11 @@
+> >>>>     #define RK3399_PMUGRF_CON0_VSEL        BIT(8)
+> >>>>     #define RK3399_PMUGRF_VSEL_SUPPLY_NUM  9
+> >>>>
+> >>>> -struct rockchip_iodomain;
+> >>>> +#define RK3568_PMU_GRF_IO_VSEL0   (0x0140)
+> >>>> +#define RK3568_PMU_GRF_IO_VSEL1   (0x0144)
+> >>>> +#define RK3568_PMU_GRF_IO_VSEL2   (0x0148)
+> >>>>
+> >>>> -struct rockchip_iodomain_soc_data {
+> >>>> -  int grf_offset;
+> >>>> -  const char *supply_names[MAX_SUPPLIES];
+> >>>> -  void (*init)(struct rockchip_iodomain *iod);
+> >>>> -};
+> >>>> +struct rockchip_iodomain;
+> >>>>
+> >>>>     struct rockchip_iodomain_supply {
+> >>>>     struct rockchip_iodomain *iod;
+> >>>> @@ -66,13 +64,62 @@ struct rockchip_iodomain_supply {
+> >>>>     int idx;
+> >>>>     };
+> >>>>
+> >>>> +struct rockchip_iodomain_soc_data {
+> >>>> +  int grf_offset;
+> >>>> +  const char *supply_names[MAX_SUPPLIES];
+> >>>> +  void (*init)(struct rockchip_iodomain *iod);
+> >>>> +  int (*write)(struct rockchip_iodomain_supply *supply, int uV);
+> >>>> +};
+> >>>> +
+> >>>>     struct rockchip_iodomain {
+> >>>>     struct device *dev;
+> >>>>     struct regmap *grf;
+> >>>>     const struct rockchip_iodomain_soc_data *soc_data;
+> >>>>     struct rockchip_iodomain_supply supplies[MAX_SUPPLIES];
+> >>>> +  int (*write)(struct rockchip_iodomain_supply *supply, int uV);
+> >>>>     };
+> >>>>
+> >>>> +static int rk3568_iodomain_write(struct rockchip_iodomain_supply *supply, int uV)
+> >>>> +{
+> >>>> +  struct rockchip_iodomain *iod = supply->iod;
+> >>>> +  u32 is_3v3 = uV > MAX_VOLTAGE_1_8;
+> >>>> +  u32 val0, val1;
+> >>>> +  int b;
+> >>>> +
+> >>>> +  switch (supply->idx) {
+> >>>> +  case 0: /* pmuio1 */
+> >>>> +  break;
+> >>>> +  case 1: /* pmuio2 */
+> >>>> +  b = supply->idx;
+> >>>> +  val0 = BIT(16 + b) | (is_3v3 ? 0 : BIT(b));
+> >>>> +  b = supply->idx + 4;
+> >>>> +  val1 = BIT(16 + b) | (is_3v3 ? BIT(b) : 0);
+> >>>> +
+> >>>> +  regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL2, val0);
+> >>>> +  regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL2, val1);
+> >>>> +  break;
+> >>>> +  case 3: /* vccio2 */
+> >>>> +  break;
+> >>>> +  case 2: /* vccio1 */
+> >>>> +  case 4: /* vccio3 */
+> >>>> +  case 5: /* vccio4 */
+> >>>> +  case 6: /* vccio5 */
+> >>>> +  case 7: /* vccio6 */
+> >>>> +  case 8: /* vccio7 */
+> >>>> +  b = supply->idx - 1;
+> >>>> +  val0 = BIT(16 + b) | (is_3v3 ? 0 : BIT(b));
+> >>>> +  val1 = BIT(16 + b) | (is_3v3 ? BIT(b) : 0);
+> >>>> +
+> >>>> +  regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL0, val0);
+> >>>> +  regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL1, val1);
+> >>>> +  break;
+> >>>> +  default:
+> >>>> +  return -EINVAL;
+> >>>> +  };
+> >>>> +
+> >>>> +  return 0;
+> >>>> +}
+> >>>> +
+> >>>>     static int rockchip_iodomain_write(struct rockchip_iodomain_supply *supply,
+> >>>>        int uV)
+> >>>>     {
+> >>>> @@ -136,7 +183,7 @@ static int rockchip_iodomain_notify(struct notifier_block *nb,
+> >>>>     return NOTIFY_BAD;
+> >>>>     }
+> >>>>
+> >>>> -  ret = rockchip_iodomain_write(supply, uV);
+> >>>> +  ret = supply->iod->write(supply, uV);
+> >>>>     if (ret && event == REGULATOR_EVENT_PRE_VOLTAGE_CHANGE)
+> >>>>     return NOTIFY_BAD;
+> >>>>
+> >>>> @@ -398,6 +445,22 @@ static const struct rockchip_iodomain_soc_data soc_data_rk3399_pmu = {
+> >>>>     .init = rk3399_pmu_iodomain_init,
+> >>>>     };
+> >>>>
+> >>>> +static const struct rockchip_iodomain_soc_data soc_data_rk3568_pmu = {
+> >>>> +  .grf_offset = 0x140,
+> >>>> +  .supply_names = {
+> >>>> +  "pmuio1",
+> >>>> +  "pmuio2",
+> >>>> +  "vccio1",
+> >>>> +  "vccio2",
+> >>>> +  "vccio3",
+> >>>> +  "vccio4",
+> >>>> +  "vccio5",
+> >>>> +  "vccio6",
+> >>>> +  "vccio7",
+> >>>> +  },
+> >>>> +  .write = rk3568_iodomain_write,
+> >>>> +};
+> >>>> +
+> >>>>     static const struct rockchip_iodomain_soc_data soc_data_rv1108 = {
+> >>>>     .grf_offset = 0x404,
+> >>>>     .supply_names = {
+> >>>> @@ -469,6 +532,10 @@ static const struct of_device_id rockchip_iodomain_match[] = {
+> >>>>     .compatible = "rockchip,rk3399-pmu-io-voltage-domain",
+> >>>>     .data = &soc_data_rk3399_pmu
+> >>>>     },
+> >>>> +  {
+> >>>> +  .compatible = "rockchip,rk3568-pmu-io-voltage-domain",
+> >>>> +  .data = &soc_data_rk3568_pmu
+> >>>> +  },
+> >>>>     {
+> >>>>     .compatible = "rockchip,rv1108-io-voltage-domain",
+> >>>>     .data = &soc_data_rv1108
+> >>>> @@ -502,6 +569,11 @@ static int rockchip_iodomain_probe(struct platform_device *pdev)
+> >>>>     match = of_match_node(rockchip_iodomain_match, np);
+> >>>>     iod->soc_data = match->data;
+> >>>>
+> >>>> +  if (iod->soc_data->write)
+> >>>> +  iod->write = iod->soc_data->write;
+> >>>> +  else
+> >>>> +  iod->write = rockchip_iodomain_write;
+> >>>> +
+> >>>>     parent = pdev->dev.parent;
+> >>>>     if (parent && parent->of_node) {
+> >>>>     iod->grf = syscon_node_to_regmap(parent->of_node);
+> >>>> @@ -562,7 +634,7 @@ static int rockchip_iodomain_probe(struct platform_device *pdev)
+> >>>>     supply->reg = reg;
+> >>>>     supply->nb.notifier_call = rockchip_iodomain_notify;
+> >>>>
+> >>>> -  ret = rockchip_iodomain_write(supply, uV);
+> >>>> +  ret = iod->write(supply, uV);
+> >>>>     if (ret) {
+> >>>>     supply->reg = NULL;
+> >>>>     goto unreg_notify;
+> >>>>
+> >>>
+> >>
+> >>
+> >>
+> >>
+> >>
+> >>
+> >>
+> >
