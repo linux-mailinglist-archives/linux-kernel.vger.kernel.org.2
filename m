@@ -2,124 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D3A3E2FF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 21:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB97B3E3000
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 21:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244259AbhHFT5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 15:57:44 -0400
-Received: from mail-pj1-f54.google.com ([209.85.216.54]:46057 "EHLO
-        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244216AbhHFT5g (ORCPT
+        id S244293AbhHFT6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 15:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232086AbhHFT6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 15:57:36 -0400
-Received: by mail-pj1-f54.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso19484833pjf.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 12:57:20 -0700 (PDT)
+        Fri, 6 Aug 2021 15:58:44 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE0EC0613CF;
+        Fri,  6 Aug 2021 12:58:27 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id e13-20020a056830200db02904f06fa2790cso10204528otp.1;
+        Fri, 06 Aug 2021 12:58:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=44uVScQ9Gw/XAJ45c0vruto85d4GkUi4W4Jmj+tsVH8=;
+        b=UlGtN2N+/E7iiZYxJKvzovkSO19giQwJd+k/KHky2IbaJkpv1Uak4W1uJn6H8BFiiU
+         G+xiGSKGeR+7ThNnHhDMmpUIROTHWo5oXjIWRUmY1IlldNyqs4V6G/GWO3ysIoNqa/wh
+         vZAarLxtlCu5ja19o3NIDmGyWxIf19NLbIbmwNmasbzJMDcsvWFSFYCy2+ClNx8Ih4Ok
+         UNa5v/n7S/SzlZ9icFqH6a/jd+XiAssHlSLipwEbvxLmhNu2dvEgmGmd3HVhMjzgP6kz
+         zIcc9/unMPkbQvBMHMGRoAJ9tPRVbr85crNJUdz8tSqqO9veN61s/GoH2EoQWrkESm3B
+         0E1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=r3vnzaT72y5e2wz7p02YKqBIGki8uRtZL1NCQSFt+Ng=;
-        b=VP8tUZITaVTpk4XdtW2CdI7OUYWBku65Tuonjgq85sZW4FU9r/qoVEkYVsDyqUjYBU
-         GjfqLxb5mFL+Rc5m+EXeF7b1NFic09HG539lFlC/wrtH4DlwitJe3vLjGZmTAykzCm1o
-         525oDXwUTvmQz6SAK7d0KNl1LtV3TEDRnr3P1REgHr0AQZSQBfemI1NRux1RoTvpt340
-         LsplLMwig3ll6TRv4EGQMw4bPJF2UbPev+IafGA7+i53lUAS9fgCq+1FU6KZ18hsuqOC
-         p+6yEMOCLEDmJAWmMiSSUcwXjOj1iwp7jr4oBL8Kc6wrs6yQzd0wLL2TiisuuTYbkKtt
-         iNrg==
-X-Gm-Message-State: AOAM533VGQvrIAZZc49UAkeUHbbflkPzHcVBDT+jSAfcQ+WHaxClWd1m
-        C15vojCwO3PIukW0reSNd0M=
-X-Google-Smtp-Source: ABdhPJztkMWl+2DyskHSTMLgY5kM8Vvrk62LRHlCrCvovXf09q08MZ8P1B/1E6KEuKIcF/HSqq8qzw==
-X-Received: by 2002:a65:51c9:: with SMTP id i9mr7444pgq.102.1628279839583;
-        Fri, 06 Aug 2021 12:57:19 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:4a77:cdda:c1bf:a6b7? ([2601:647:4802:9070:4a77:cdda:c1bf:a6b7])
-        by smtp.gmail.com with ESMTPSA id v25sm11198844pfm.202.2021.08.06.12.57.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 12:57:19 -0700 (PDT)
-Subject: Re: [PATCH v4 2/8] nvme-tcp: Update number of hardware queues before
- using them
-To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>, Hannes Reinecke <hare@suse.de>,
-        Wen Xiong <wenxiong@us.ibm.com>
-References: <20210802112658.75875-1-dwagner@suse.de>
- <20210802112658.75875-3-dwagner@suse.de>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <8373c07f-f5df-1ec6-9fda-d0262fc1b377@grimberg.me>
-Date:   Fri, 6 Aug 2021 12:57:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=44uVScQ9Gw/XAJ45c0vruto85d4GkUi4W4Jmj+tsVH8=;
+        b=HpcEuA7O8LUvbwVP7Db+pUZq8L/qtZSlIX89HV0TV2gBZon4KrgJak8z1kQd2tdkg+
+         xVBG/al7IJfTrcPnLzHqhz0lsKFyh/eVsPkeFJJgeZp8aA8qVDieVqpMeyJhKg4h4ado
+         oba8rAwvhqhlDXC1FF1ascepn/eWIYl6RZOqicT1ltSPkE4Zzn9PekHv/6CMwz5bDBze
+         25/VIPwKxGvfEIMnPqh3xsBJbnHpnYykQl63MqOx09J1ken3w8OZlApqlO3iTEJB0WpI
+         I9+04klqWAFzSoGLBWoOiC2DkoBhESXBRa1uZRuZhRDdxtoeXAW63zRdfRjb6zxNK3k+
+         78SA==
+X-Gm-Message-State: AOAM532GZhl1Dd0FNpMq8tFGxuCFq0r+n7MwL/BfuUWgBfC4HLWMrBNC
+        GoGpI5eP5NYmIfqCktHa6n52STZp//F2bAR5VIU=
+X-Google-Smtp-Source: ABdhPJzE0kiTi3tio0eqHLhmqmarjNSaTtD71nxdFJt5HsgC+bAt6RW84ZuEyZFn6YnA0ktX645N1rir1CpUrop9OAI=
+X-Received: by 2002:a9d:5a15:: with SMTP id v21mr7881368oth.132.1628279906863;
+ Fri, 06 Aug 2021 12:58:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210802112658.75875-3-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210806111615.11803-1-colin.king@canonical.com>
+In-Reply-To: <20210806111615.11803-1-colin.king@canonical.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 6 Aug 2021 15:58:15 -0400
+Message-ID: <CADnq5_Nh57mfc+aXCGxy9+V2DFCEH0wO0Lcj1B9Qk93otY_t3w@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Remove redundant initialization of
+ variable eng_id
+To:     Colin King <colin.king@canonical.com>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        xinhui pan <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Jun Lei <Jun.Lei@amd.com>,
+        Jimmy Kizito <Jimmy.Kizito@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Applied.  Thanks!
 
-> From: Hannes Reinecke <hare@suse.de>
-> 
-> When the number of hardware queues changes during resetting we should
-> update the tagset first before using it.
-> 
-> Signed-off-by: Hannes Reinecke <hare@suse.de>
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+Alex
+
+On Fri, Aug 6, 2021 at 7:16 AM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable eng_id is being initialized with a value that is never
+> read, it is being re-assigned on the next statment. The assignment
+> is redundant and can be removed.
+>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->   drivers/nvme/host/tcp.c | 14 ++++++--------
->   1 file changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-> index 0a97ba02f61e..32268f24f62a 100644
-> --- a/drivers/nvme/host/tcp.c
-> +++ b/drivers/nvme/host/tcp.c
-> @@ -1789,6 +1789,7 @@ static void nvme_tcp_destroy_io_queues(struct nvme_ctrl *ctrl, bool remove)
->   static int nvme_tcp_configure_io_queues(struct nvme_ctrl *ctrl, bool new)
->   {
->   	int ret;
-> +	u32 prior_q_cnt = ctrl->queue_count;
->   
->   	ret = nvme_tcp_alloc_io_queues(ctrl);
->   	if (ret)
-> @@ -1806,14 +1807,7 @@ static int nvme_tcp_configure_io_queues(struct nvme_ctrl *ctrl, bool new)
->   			ret = PTR_ERR(ctrl->connect_q);
->   			goto out_free_tag_set;
->   		}
-> -	}
-> -
-> -	ret = nvme_tcp_start_io_queues(ctrl);
-> -	if (ret)
-> -		goto out_cleanup_connect_q;
-> -
-> -	if (!new) {
-> -		nvme_start_queues(ctrl);
-> +	} else if (prior_q_cnt != ctrl->queue_count) {
-
-So if the queue count did not change we don't wait to make sure
-the queue g_usage_counter ref made it to zero? What guarantees that it
-did?
-
->   		if (!nvme_wait_freeze_timeout(ctrl, NVME_IO_TIMEOUT)) {
->   			/*
->   			 * If we timed out waiting for freeze we are likely to
-> @@ -1828,6 +1822,10 @@ static int nvme_tcp_configure_io_queues(struct nvme_ctrl *ctrl, bool new)
->   		nvme_unfreeze(ctrl);
->   	}
->   
-> +	ret = nvme_tcp_start_io_queues(ctrl);
-> +	if (ret)
-> +		goto out_cleanup_connect_q;
-> +
-
-Did you test this with both heavy I/O, reset loop and ifdown/ifup loop?
-
-If we unquiesce and unfreeze before we start the queues the pending I/Os
-may resume before the connect and not allow the connect to make forward
-progress.
-
->   	return 0;
->   
->   out_wait_freeze_timed_out:
-> 
+>  drivers/gpu/drm/amd/display/dc/core/dc_link_enc_cfg.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_enc_cfg.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_enc_cfg.c
+> index 1a89d565c92e..de80a9ea4cfa 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_enc_cfg.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_enc_cfg.c
+> @@ -305,7 +305,7 @@ struct link_encoder *link_enc_cfg_get_next_avail_link_enc(
+>         const struct dc_state *state)
+>  {
+>         struct link_encoder *link_enc = NULL;
+> -       enum engine_id eng_id = ENGINE_ID_UNKNOWN;
+> +       enum engine_id eng_id;
+>
+>         eng_id = find_first_avail_link_enc(dc->ctx, state);
+>         if (eng_id != ENGINE_ID_UNKNOWN)
+> --
+> 2.31.1
+>
