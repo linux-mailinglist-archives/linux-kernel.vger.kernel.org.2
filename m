@@ -2,58 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47AA23E2F56
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795753E2F57
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243135AbhHFSeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 14:34:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42570 "EHLO mail.kernel.org"
+        id S243168AbhHFSfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 14:35:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230021AbhHFSet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 14:34:49 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAB9060ED6;
-        Fri,  6 Aug 2021 18:34:32 +0000 (UTC)
-Date:   Fri, 6 Aug 2021 14:34:31 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     "Qin\, Chao" <chao.qin@intel.com>, Joe Perches <joe@perches.com>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rt-users\@vger.kernel.org" <linux-rt-users@vger.kernel.org>,
-        "bigeasy\@linutronix.de" <bigeasy@linutronix.de>,
-        "tglx\@linutronix.de" <tglx@linutronix.de>,
-        "mgross\@linux.intel.com" <mgross@linux.intel.com>,
-        "Mei\, Paul" <paul.mei@intel.com>, "Li\, Lili" <lili.li@intel.com>
-Subject: Re: [PREEMPT_RT][PATCH] printk: Enhance the condition check of
- msleep in pr_flush()
-Message-ID: <20210806143431.1ac3b4a5@oasis.local.home>
-In-Reply-To: <20210805121200.59db2104@oasis.local.home>
-References: <20210719022649.3444072-1-chao.qin@intel.com>
-        <ea6c6a2b5482d62038d7d0a1d46b87665051222f.camel@perches.com>
-        <87o8axm6ae.fsf@jogness.linutronix.de>
-        <DM6PR11MB380275B5125531E8EB9D019B92F29@DM6PR11MB3802.namprd11.prod.outlook.com>
-        <87eeb8w08q.fsf@jogness.linutronix.de>
-        <20210805121200.59db2104@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231889AbhHFSfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 14:35:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7206D60F44;
+        Fri,  6 Aug 2021 18:34:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628274896;
+        bh=q2YnuvgVCxTHSzNPiweLic+RlcZKR5+VTHAZGxVEnO4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rDA67NgCkoCLY3XiYJRxHGcDd/KYhCZ08hREGVd/lO+NK02uwtUTzCYCmyyMyD9sh
+         ESY1Lj97xMhYD2rWhnFa7SyUeM4UJOosTAnX2xriuRJmnywWQuWVqCMcLeu4iWtmtp
+         DN2F2qgupfKxIKFbnRvFoirrVA7rntpv1wcFLNpG75wn6MqWcwgX0z0dn+lpm0pefk
+         Sjw7I+/4oFJcf6Tq0Y+TjhSvr/jl+Sik1ObudF+1/nlzBUvy0ohgULHFmbPgwocKJG
+         /FVfYNR0Gva3Lj4nMnz/vMQxqYgTZHYlmMDR+amXjGTIjyFVkBTZcgy+tySErd4LL4
+         kBDdlWP9wR7Jg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0DE9B403F2; Fri,  6 Aug 2021 15:34:54 -0300 (-03)
+Date:   Fri, 6 Aug 2021 15:34:53 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Claire Jensen <cjense@google.com>
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, irogers@google.com, eranian@google.com
+Subject: Re: [PATCH 1/1] perf test: Add test for CSV output.
+Message-ID: <YQ2AzS3Az9Zfnu4I@kernel.org>
+References: <20210805171431.940897-1-cjense@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210805171431.940897-1-cjense@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Aug 2021 12:12:00 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Em Thu, Aug 05, 2021 at 05:14:31PM +0000, Claire Jensen escreveu:
+> Add field checking tests for perf stat CSV output. Counts expected
+> fields for various commands. No testing added for summary mode
+> since it is broken.
+> 
+> An example of the summary output is:
+> 
+>          summary,263831,,instructions:u,1435072,100.0,0.46,insn per cycle
+> ,,,,,1.37,stalled cycles per insn
+> 
+> This should be:
+> 
+>          summary,263831,,instructions:u,1435072,100.0,0.46,insn per cycle
+>          summary,,,,,,1.37,stalled cycles per insn
+> 
+> The output has 7 fields when it should have 8. Additionally, the newline
+> spacing is wrong, so it was excluded from testing until a fix is made.
 
-> I'll add it to my queue for tomorrow.
 
-I'm currently testing 5.10.56-rt48 which only brings the 5.10 rt branch
-up to latest stable. After that is done and pushed out, I'll backport
-this patch and do a 5.10.56-rt49-rc release.
+You forgot to add your Signed-off-by: line as described in
+Documentation/process/submitting-patches.rst.
 
-Letting you know in case you see the 5.10.56-rt48 and wonder where your
-patch is.
+Thanks for working on this, the more 'perf test' entries, the better :-)
 
--- Steve
+Some more comments below.
+
+- Arnaldo
+
+> ---
+>  .../tests/shell/lib/perf_csv_output_lint.py   |  55 ++++++++
+>  tools/perf/tests/shell/stat+csv_output.sh     | 117 ++++++++++++++++++
+>  2 files changed, 172 insertions(+)
+>  create mode 100644 tools/perf/tests/shell/lib/perf_csv_output_lint.py
+>  create mode 100644 tools/perf/tests/shell/stat+csv_output.sh
+> 
+> diff --git a/tools/perf/tests/shell/lib/perf_csv_output_lint.py b/tools/perf/tests/shell/lib/perf_csv_output_lint.py
+> new file mode 100644
+> index 000000000000..ef8a32c3523c
+> --- /dev/null
+> +++ b/tools/perf/tests/shell/lib/perf_csv_output_lint.py
+> @@ -0,0 +1,55 @@
+> +#!/usr/bin/python
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +from __future__ import print_function
+> +import argparse
+> +import sys
+> +
+> +# Basic sanity check of perf CSV output as specified in the man page.
+> +# Currently just checks the number of fields per line in output.
+> +
+> +ap = argparse.ArgumentParser()
+> +ap.add_argument('--no-args', action='store_true')
+> +ap.add_argument('--interval', action='store_true')
+> +ap.add_argument('--all-cpus-no-aggr', action='store_true')
+> +ap.add_argument('--all-cpus', action='store_true')
+> +ap.add_argument('--event', action='store_true')
+> +ap.add_argument('--per-core', action='store_true')
+> +ap.add_argument('--per-thread', action='store_true')
+> +ap.add_argument('--per-die', action='store_true')
+> +ap.add_argument('--per-node', action='store_true')
+> +ap.add_argument('--per-socket', action='store_true')
+> +ap.add_argument('--separator', const=',', nargs='?')
+> +args = ap.parse_args()
+> +
+> +Lines = sys.stdin.readlines()
+> +ch = args.separator
+> +
+> +
+> +def check_csv_output(exp):
+> +  for line in Lines:
+> +    if 'failed' not in line:
+> +      count = 0
+> +      count = line.count(args.separator)
+> +      if count != exp:
+> +        sys.stdout.write(''.join(Lines))
+> +        raise RuntimeError('wrong number of fields.'
+> +                           ' expected {0} in {1}\n'.format(exp, line))
+> +
+> +try:
+> +  if args.no_args or args.all_cpus or args.event:
+> +    check_csv_output(6)
+> +
+> +  if args.interval or args.per_thread:
+> +    check_csv_output(7)
+> +
+> +  if args.per_core or args.per_socket or args.per_node or args.per_die:
+> +    check_csv_output(8)
+> +
+> +except:
+> +  sys.stdout.write('Test failed for input: ' + ''.join(Lines))
+> +  raise
+> +
+> +
+> +
+> +
+
+Please avoid adding empty lines at the end of a file.
+
+> diff --git a/tools/perf/tests/shell/stat+csv_output.sh b/tools/perf/tests/shell/stat+csv_output.sh
+> new file mode 100644
+> index 000000000000..282f9547e7be
+> --- /dev/null
+> +++ b/tools/perf/tests/shell/stat+csv_output.sh
+> @@ -0,0 +1,117 @@
+> +#!/bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +# perf stat csv output test
+> +# Tests various perf stat CSV output commands for the
+> +# correct number of fields and the CSV separator set to ','.
+> +
+> +set -e
+> +
+> +pythonchecker=$(dirname $0)/lib/perf_csv_output_lint.py
+> +file="/proc/sys/kernel/perf_event_paranoid"
+> +paranoia=$(cat "$file" | grep -o -E '[0-9]+')
+> +echo $paranoia
+> +
+> +check_no_args()
+> +{
+> +	perf stat -x, sleep 1 2>&1 | \
+> +	python $pythonchecker --no-args --separator
+> +}
+> +
+> +if [ $paranoia -gt 0 ];
+> +then
+
+Please have the 'then' line at the end of the if one, following the
+style of pre-existing shell tests such as
+tools/perf/tests/shell/pipe_test.sh.
+
+> +	echo check_all_cpus test skipped because of paranoia level.
+> +else
+> +	check_all_cpus()
+> +	{
+> +		perf stat -x, -a 2>&1 sleep 1 | \
+> +		python $pythonchecker --all-cpus --separator
+> +	}
+> +	check_all_cpus
+> +fi
+> +
+> +check_interval()
+> +{
+> +	perf stat -x, -I 1000 2>&1 sleep 1 | \
+> +	python $pythonchecker --interval --separator
+> +}
+> +
+> +check_all_cpus_no_aggr()
+> +{
+> +	perf stat -x, -A -a --no-merge 2>&1 sleep 1 | \
+> +	python $pythonchecker --all-cpus-no-aggr --separator
+> +}
+> +
+> +check_event()
+> +{
+> +	perf stat -x, -e cpu-clock 2>&1 sleep 1 | \
+> +	python $pythonchecker --event --separator
+> +}
+> +
+> +if [ $paranoia -gt 0 ];
+> +then
+> +	echo check_all_cpus test skipped because of paranoia level.
+> +else
+> +	check_per_core()
+> +	{
+> +		perf stat -x, --per-core -a 2>&1 sleep 1 | \
+> +		python $pythonchecker --per-core --separator
+> +	}
+> +	check_per_core
+> +fi
+> +
+> +if [ $paranoia -gt 0 ];
+> +then
+> +	echo check_all_cpus test skipped because of paranoia level.
+> +else
+> +	check_per_thread()
+> +	{
+> +		perf stat -x, --per-thread -a 2>&1 sleep 1 | \
+> +		python $pythonchecker --per-thread --separator
+> +	}
+> +	check_per_thread
+> +fi
+> +
+> +if [ $paranoia -gt 0 ];
+> +then
+> +	echo check_per_die test skipped because of paranoia level.
+> +else
+> +	check_per_die()
+> +	{
+> +		perf stat -x, --per-die -a 2>&1 sleep 1 | \
+> +		python $pythonchecker --per-die --separator
+> +	}
+> +	check_per_die
+> +fi
+> +
+> +if [ $paranoia -gt 0 ];
+> +then
+> +	echo check_per_node test skipped because of paranoia level.
+> +else
+> +	check_per_node()
+> +	{
+> +		perf stat -x, --per-node -a 2>&1 sleep 1 | \
+> +		python $pythonchecker --per-node --separator
+> +	}
+> +	check_per_node
+> +fi
+> +
+> +if [ $paranoia -gt 0 ];
+> +then
+> +	echo check_per_socket test skipped because of paranoia level.
+> +else
+> +	check_per_socket()
+> +	{
+> +		perf stat -x, --per-socket -a 2>&1 sleep 1 | \
+> +		python $pythonchecker --per-socket --separator
+> +	}
+> +	check_per_socket
+> +fi
+> +
+> +check_no_args
+> +check_interval
+> +check_all_cpus_no_aggr
+> +check_event
+> +
+> +exit 0
+> +
+
+Also here, please remove this blank line at the end of the file.
+
+> -- 
+> 2.32.0.605.g8dce9f2422-goog
+> 
+
+-- 
+
+- Arnaldo
