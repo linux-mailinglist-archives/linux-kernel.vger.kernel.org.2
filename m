@@ -2,154 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72AA33E2E79
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50F43E2E7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234796AbhHFQm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 12:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhHFQmz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 12:42:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C8EC0613CF;
-        Fri,  6 Aug 2021 09:42:39 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1628268155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kk2lzokAVmZhhmkoXQnRu32luG8afaBCbXzoD+9YANs=;
-        b=pke0WyKqyLslgXt8ga5uRGMHIMozL9ODi2HhdKyMRJl/NDaTF74UXoIlbFP4kdYwnvHcCV
-        F7nZnMwmdEg36la0yAhu3/lLoM2kzV8M1c5gEWOqahvdeuAjnJ+xbYiiK2XttOXAzSfMfs
-        cwB3lAFoNnucYlXPk2WtiAJhIgUa8ctfLEKYn0CZABYM6XQIJ3SnJgNrZU6WSKb2LZkoam
-        Rwpyv3rnETO68VCM57ehWLrTyyrUPW/T4FT02VjuUF+lX8sx3N1Q4ifxSL+QLWXSynFQla
-        NaQTLXjvx+YYMZUobc/n4dFRSznQcsGLfXSmDkEEw/MJDyGXtqfZiLW4t/iqEw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1628268155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kk2lzokAVmZhhmkoXQnRu32luG8afaBCbXzoD+9YANs=;
-        b=YSd5JfAfV6IzC8uvqRz8mwPXcWjMwmovQi+0B7GjCOEKNKr6VEnkIrNTGqqxnDpHV1pUUU
-        h15SW/nRltGrgeBw==
-To:     syzbot <syzbot+66e110c312ed4ae684a8@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [syzbot] KASAN: use-after-free Read in timerfd_clock_was_set
-In-Reply-To: <000000000000fdf3e205c88fa4cf@google.com>
-References: <000000000000fdf3e205c88fa4cf@google.com>
-Date:   Fri, 06 Aug 2021 18:42:34 +0200
-Message-ID: <877dgy5xtx.ffs@tglx>
+        id S235611AbhHFQqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 12:46:52 -0400
+Received: from mga06.intel.com ([134.134.136.31]:62418 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235319AbhHFQqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 12:46:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10068"; a="275447371"
+X-IronPort-AV: E=Sophos;i="5.84,301,1620716400"; 
+   d="scan'208";a="275447371"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 09:46:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,301,1620716400"; 
+   d="scan'208";a="523560916"
+Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
+  by fmsmga002.fm.intel.com with ESMTP; 06 Aug 2021 09:46:29 -0700
+Received: from tjmaciei-mobl5.localnet (10.212.136.161) by
+ IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Fri, 6 Aug 2021 17:46:26 +0100
+From:   Thiago Macieira <thiago.macieira@intel.com>
+To:     <bp@suse.de>, <luto@kernel.org>, <tglx@linutronix.de>,
+        <mingo@kernel.org>, <x86@kernel.org>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>
+CC:     <len.brown@intel.com>, <dave.hansen@intel.com>,
+        <jing2.liu@intel.com>, <ravi.v.shankar@intel.com>,
+        <linux-kernel@vger.kernel.org>, <chang.seok.bae@intel.com>
+Subject: Re: [PATCH v9 14/26] x86/arch_prctl: Create ARCH_SET_STATE_ENABLE/ARCH_GET_STATE_ENABLE
+Date:   Fri, 6 Aug 2021 09:46:22 -0700
+Message-ID: <3718618.i2J648eyUT@tjmaciei-mobl5>
+Organization: Intel Corporation
+In-Reply-To: <20210730145957.7927-15-chang.seok.bae@intel.com>
+References: <20210730145957.7927-1-chang.seok.bae@intel.com> <20210730145957.7927-15-chang.seok.bae@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [10.212.136.161]
+X-ClientProxiedBy: orsmsx605.amr.corp.intel.com (10.22.229.18) To
+ IRSMSX605.ger.corp.intel.com (163.33.146.138)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Friday, 30 July 2021 07:59:45 PDT Chang S. Bae wrote:
+> +       for_each_thread(tsk, t) {
+> +               t->thread.fpu.dynamic_state_perm |= req_dynstate_perm;
+> +               nr_threads++;
+> +       }
+> +
+> +       if (nr_threads != tsk->signal->nr_threads) {
+> +               for_each_thread(tsk, t)
+> +                       t->thread.fpu.dynamic_state_perm =
+> old_dynstate_perm; 
+> +               pr_err("x86/fpu: ARCH_XSTATE_PERM failed
+> as thread number mismatched.\n"); 
+> +               return -EBUSY;
+> +       }
+> +       return 0;
+> +}
 
-On Mon, Aug 02 2021 at 01:49, syzbot wrote:
-> syzbot found the following issue on:
->
-> HEAD commit:    4010a528219e Merge tag 'fixes_for_v5.14-rc4' of git://git...
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13611f5c300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=1dee114394f7d2c2
-> dashboard link: https://syzkaller.appspot.com/bug?extid=66e110c312ed4ae684a8
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+66e110c312ed4ae684a8@syzkaller.appspotmail.com
->
-> ==================================================================
-> BUG: KASAN: use-after-free in timerfd_clock_was_set+0x2b8/0x2e0
-> fs/timerfd.c:104
+Hello all
 
-103	rcu_read_lock();
-104	list_for_each_entry_rcu(ctx, &cancel_list, clist) {
+As I was trying to write the matching userspace code, I think the solution 
+above had two problems. 
 
->  timerfd_clock_was_set+0x2b8/0x2e0 fs/timerfd.c:104
->  timekeeping_inject_offset+0x4af/0x620 kernel/time/timekeeping.c:1375
->  do_adjtimex+0x28f/0xa30 kernel/time/timekeeping.c:2406
->  do_clock_adjtime kernel/time/posix-timers.c:1109 [inline]
->  __do_sys_clock_adjtime+0x163/0x270 kernel/time/posix-timers.c:1121
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+First the simpler one: that EBUSY. It must go and you can do that with a lock. 
+Library code cannot ensure that it is running in single-threaded state and 
+that no other threads are started or exit while they make the system call. 
+There's nothing the library in question can do if it got an EBUSY. Do you want 
+me to try again? What if it fails again? What's the state of the dynamically 
+permitted states after an EBUSY? It's probably inconsistent. Moreover, there's 
+an ABA problem there: what happens if a thread starts and another exits while 
+this system call is running? And what happens if two threads are making this 
+system call? 
+(also, shouldn't tsk->signal->nr_threads be an atomic read?)
 
-...
+The second and bigger problem is the consequence of not issuing the 
+ARCH_SET_STATE_ENABLE call: a SIGILL. Up until now, this hasn't happened, so I 
+expect this to be a surprise to people, in the worst possible way. The Intel 
+Software Developer Manual and every single tutorial out there says that the 
+sequence of actions is:
+ 1) check that OSXSAVE is enabled
+ 2) check that the AVX, AVX512 or AMX instructions are supported with CPUID
+ 3) execute XGETBV EAX=0
+ 4) disable any instructions whose matching state is not enabled by the OS
 
-> Allocated by task 1:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track mm/kasan/common.c:46 [inline]
->  set_alloc_info mm/kasan/common.c:434 [inline]
->  ____kasan_kmalloc mm/kasan/common.c:513 [inline]
->  ____kasan_kmalloc mm/kasan/common.c:472 [inline]
->  __kasan_kmalloc+0x98/0xc0 mm/kasan/common.c:522
->  kasan_kmalloc include/linux/kasan.h:264 [inline]
->  kmem_cache_alloc_trace+0x1e4/0x480 mm/slab.c:3575
->  kmalloc include/linux/slab.h:591 [inline]
->  kzalloc include/linux/slab.h:721 [inline]
->  __do_sys_timerfd_create+0x265/0x370 fs/timerfd.c:412
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
+This is what software developers will write for AMX and any new future state, 
+until they learn better. This is also all that other OSes will require to run. 
+Moreover, until developers can actually run their software on CPUs with AMX 
+support, they will not notice any missed system calls (the Software 
+Development Emulator tool will execute the instructions whether you've issued 
+the syscall or not).
 
-...
+As a consequence, there's a large chance that a test escape like that will 
+cause software to start crashing when run on AMX-capable CPUs when those start 
+showing up and get enabled in public clouds.
 
-> Freed by task 3306:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
->  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
->  ____kasan_slab_free mm/kasan/common.c:366 [inline]
->  ____kasan_slab_free mm/kasan/common.c:328 [inline]
->  __kasan_slab_free+0xcd/0x100 mm/kasan/common.c:374
->  kasan_slab_free include/linux/kasan.h:230 [inline]
->  __cache_free mm/slab.c:3445 [inline]
->  kfree+0x106/0x2c0 mm/slab.c:3803
->  kvfree+0x42/0x50 mm/util.c:616
->  kfree_rcu_work+0x5b7/0x870 kernel/rcu/tree.c:3359
->  process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
->  worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
->  kthread+0x3e5/0x4d0 kernel/kthread.c:319
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+So I have to insist that the XGETBV instruction's result match exactly what is 
+permitted to run. That means we either enable AMX unconditionally with no need 
+for system calls (with or without XFD trapping to dynamically allocate more 
+state), or that the XCR0 register be set without the AMX bits by default, 
+until the system call is issued.
 
-So the free of the timerfd context happens while the context is
-still linked in the cancel list, which does not make sense because
+-- 
+Thiago Macieira - thiago.macieira (AT) intel.com
+  Software Architect - Intel DPG Cloud Engineering
 
-> Last potentially related work creation:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_record_aux_stack+0xa4/0xd0 mm/kasan/generic.c:348
->  kvfree_call_rcu+0x74/0x990 kernel/rcu/tree.c:3594
->  timerfd_release+0x105/0x290 fs/timerfd.c:229
-
-timerfd_release() invokes timerfd_remove_cancel(context) before invoking
-kfree_rcu().
-
->  __fput+0x288/0x920 fs/file_table.c:280
->  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
->  tracehook_notify_resume include/linux/tracehook.h:189 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
->  exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
->  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The only reason why timerfd_remove_cancel() would not remove it from the
-list is when context->might_cancel is false. But that would mean it's a
-memory corruption of some sort which went undetected. I can't spot
-anything in the timerfd code itself which would cause that.
-
-Confused.
-
-Thanks,
-
-        tglx
 
 
