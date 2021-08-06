@@ -2,82 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F1A3E2980
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60AF3E2982
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245485AbhHFLYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:24:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46034 "EHLO mail.kernel.org"
+        id S245487AbhHFLZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:25:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245465AbhHFLYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:24:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AEB461176;
-        Fri,  6 Aug 2021 11:24:09 +0000 (UTC)
+        id S245456AbhHFLZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 07:25:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0BD660EE8;
+        Fri,  6 Aug 2021 11:24:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628249050;
-        bh=dFhpkoJ7MfTkaqb3AWepwV1LJZX0iriP7IMwTHp77uI=;
+        s=k20201202; t=1628249090;
+        bh=SHO6K0c5BYBCASZfdWQKTPTx1AGWXZ8zD6+WFz4xq0o=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bcETpNsVaE6/DYkXDUj1HNemf4ajaX6LWB0jKe4nKiaMwU6y1yXOPkvWpRXE7qrtu
-         X/Xmfd62juU2QfJ+43lt8ccmKukEyl5GoGHtI8JN3IXAIJBjy8ebJqW+vuVPRlCXni
-         zzVNWY2MGml9jUSxuOl2Uobd8Mjwka0KFKkYZJfItUXy4Mw8nlhoOobpvb7YtW7jOJ
-         0y6yn3gYzoK4btegAZnQXbO4X/5l0SM+hG59q3bRzoobTr2iXicKtNdtdO7QH68Ug5
-         JsO4zKw7wboauPXoPkTBF8vuZUgzm7gGsTj1yiCt45sKWHOdaV53heEA9QjAHCVJSH
-         zgZpOkaryhO1Q==
-Date:   Fri, 6 Aug 2021 12:23:53 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: Re: linux-next: manual merge of the qcom tree with the usb tree
-Message-ID: <20210806112353.GA33586@sirena.org.uk>
-References: <20210806102138.27373-1-broonie@kernel.org>
- <YQ0YKiFVx0KrkW5s@kroah.com>
+        b=V7e/njGXRMlFQptqYHsVgoYhAlhC6pXGNLyaRpFOi5X/mYp3Wp/GxK1pcKWAqJ5Zp
+         2HFwhFTmZhsT9SPcrbKStaZ11EZTpzgqT83CpwZ8Rk1HLVs+gdKGMDeFRTzwPkvwa0
+         VonvEZC6g7F8dDRAAY6Fin15KHy6h+IXI42apvkP8YdqAaui2ryvcbBy8EAstee+04
+         WfeqHtmyNnGbYx59znSLpIMClf/x+pr6VcqvusKEhrTjjV496p3G78wzxmz7OWHUtR
+         SwEB/m/pxkCjiVElFxCvbKg61hKFybIQKQYRRbikPAhwavS2VHkocQuZEodh+Quxac
+         vaKXYjqYnsB6g==
+Date:   Fri, 6 Aug 2021 14:24:46 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 6/8] selftests/sgx: Encpsulate the test enclave
+ creation
+Message-ID: <20210806112446.vfw3azdp6uh54plg@kernel.org>
+References: <20210806001704.667889-1-jarkko@kernel.org>
+ <20210806001704.667889-7-jarkko@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQ0YKiFVx0KrkW5s@kroah.com>
-X-Cookie: if it GLISTENS, gobble it!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210806001704.667889-7-jarkko@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 06, 2021 at 03:17:02AM +0300, Jarkko Sakkinen wrote:
+> +FIXTURE_SETUP(enclave)
+> +{
+> +	if (!setup_test_encl(ENCL_HEAP_SIZE_DEFAULT, &self->encl, _metadata))
+> +		ASSERT_TRUE(false);
 
---5vNYLRcllDrimb99
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Probably would make more sense:
 
-On Fri, Aug 06, 2021 at 01:08:26PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Aug 06, 2021 at 11:21:38AM +0100, Mark Brown wrote:
+        ASSERT_TRUE(setup_test_encl(ENCL_HEAP_SIZE_DEFAULT, &self->encl, _metadata));
 
-> > diff --cc arch/arm64/boot/dts/qcom/msm8996.dtsi
-> > index 78c55ca10ba9,31686950004e..000000000000
-> > --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
->=20
-> Love the fix, did something go wrong?  :)
+Right?
 
-The fix will be whatever was in HEAD.
+[and similar remarks to 7/8 and 8/8]
 
---5vNYLRcllDrimb99
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmENG8kACgkQJNaLcl1U
-h9D6zAf+Krf2wBiZrjp3SHLH7WN1Zlx4aBn+fs/Ky3GfoHG1LF5l2XfZOY1M7iT9
-QS3UxCCbQ3MPsEM81qkByUgKaSgf4xE/lCx3vgfCsjiIGH2ZPlQQyHp47ungmCui
-/+r7WLcEwoHM6B31P4hq2JVtBCjR9enCiJ5DQfDRIgONliyrJDe01veTvSKuHzBb
-A9aadg31bFPMrkvoToexpGppL7Vmta60JVl9UFYWruwCJP+lCh2VSDYUFnifzxUj
-B5Sved8fZ83RlQgOEPD3svQRWmhNPO35Wvo6Tv8SAuan0K4+19yRJQQR9GQxHdW4
-3gFnewCj/mChhXW4GVOQoE9OAysPKw==
-=TJYa
------END PGP SIGNATURE-----
-
---5vNYLRcllDrimb99--
+/Jarkko
