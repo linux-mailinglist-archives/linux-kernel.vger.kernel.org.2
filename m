@@ -2,76 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1773E22A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 06:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054913E22AC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 06:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242841AbhHFEgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 00:36:07 -0400
-Received: from fallback20.mail.ru ([185.5.136.252]:45626 "EHLO
-        fallback20.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233838AbhHFEfy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 00:35:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail3;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=H5hpDoobmu6noWGVwtiiQgnuU9d2+5UcbTTbqT69ezs=;
-        t=1628224539;x=1628829939; 
-        b=tdAZmZQeJPu3gk/HIGKbQcCiCA9c+uBtLmCtO7o7pF6NCjYGu8vocjQKberi0oN/RZuPMM+fOoHD4jGQrFlF5TmbP2fx1bfQjUFA4mCLxnWS+2J0UerAzkqgLgDjfTtGSiccYHljEKnsjVo1acc9BrI3ImAQLPrM9yLafXpsW2E=;
-Received: from [10.161.64.39] (port=46820 helo=smtp31.i.mail.ru)
-        by fallback20.m.smailru.net with esmtp (envelope-from <fido_max@inbox.ru>)
-        id 1mBra5-0001jQ-Fd; Fri, 06 Aug 2021 07:35:37 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail3;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=H5hpDoobmu6noWGVwtiiQgnuU9d2+5UcbTTbqT69ezs=;
-        t=1628224537;x=1628829937; 
-        b=GdcLTRmhZux+BqHjLqMArFd5Zsu7T52lz85PDwPQjSgd9AnluLGb4iLaYIx14Ha0kCt4UuRN8HviMXz5Rcke/dXaXJei4sLDIpXR1kPeWx1X0S/YgtGY+FW4A5KZZy7yu8MCvygVOb2iMIy4te5+DGFvA7U2EvbOEv1Zgcg/axI=;
-Received: by smtp31.i.mail.ru with esmtpa (envelope-from <fido_max@inbox.ru>)
-        id 1mBrZw-0000jU-MN; Fri, 06 Aug 2021 07:35:29 +0300
-Subject: Re: [PATCH v4] soc: fsl: qe: convert QE interrupt controller to
- platform_device
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, qiang.zhao@nxp.com,
-        leoyang.li@nxp.com, gregkh@linuxfoundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <20210803113538.560277-1-fido_max@inbox.ru>
- <CAGETcx8QC+AMXvmk4RB=LGp00QLVVX4uCeeruAjFnGq_irMh4Q@mail.gmail.com>
-From:   Maxim Kochetkov <fido_max@inbox.ru>
-Message-ID: <dff603dc-9038-71cb-bfcb-5abc24f17109@inbox.ru>
-Date:   Fri, 6 Aug 2021 07:37:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S242702AbhHFEh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 00:37:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231694AbhHFEh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 00:37:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC19161131;
+        Fri,  6 Aug 2021 04:37:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628224662;
+        bh=mLzrJ27pG8lgA1YXqE7EYR2S72SZNKkog355x8Z3b8o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pmpN4uYko91orhbwrCPwQ6h401ec0d7gNlTotevYAly9P7zjkZkdY9yN0mFforWRM
+         235nIkAf6+pA79jo97/kCqC3mvhUyyn+S+wUhaaHXiHxzs9NuU1X5iG7xSFL7hzT+s
+         0TjQphWI4bpGicqX6CbaTs5z1WH9Jnh9kv8uDg9U=
+Date:   Fri, 6 Aug 2021 06:37:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     Michael Straube <straube.linux@gmail.com>, phil@philpotter.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: replace custom macros with
+ is_broadcast_ether_addr
+Message-ID: <YQy8kyafVi/T312y@kroah.com>
+References: <20210805205010.31192-1-straube.linux@gmail.com>
+ <32466d30-6259-4752-281b-875158ad307a@lwfinger.net>
 MIME-Version: 1.0
-In-Reply-To: <CAGETcx8QC+AMXvmk4RB=LGp00QLVVX4uCeeruAjFnGq_irMh4Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-4EC0790: 10
-X-7564579A: B8F34718100C35BD
-X-77F55803: 4F1203BC0FB41BD92087353F0EC44DD94BB7C0677F3ED9D05EB08EAFC9298EA6182A05F538085040424FDF1F140CA04FC58E9E3E940473E3B417BDE81A4354C9CCA9DD50DEBA4881
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7D77100FFB2844417EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637F28F4AF03526AA8F8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D82DC01B880DF1D20C937FADCBE42F17C66F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE7B857F55CE090FEC39FA2833FD35BB23D9E625A9149C048EE9ECD01F8117BC8BEA471835C12D1D9774AD6D5ED66289B52BA9C0B312567BB23117882F44604297287769387670735209ECD01F8117BC8BEA471835C12D1D977C4224003CC836476EB9C4185024447017B076A6E789B0E975F5C1EE8F4F765FCA7254B381AF727C63AA81AA40904B5D9CF19DD082D7633A078D18283394535A93AA81AA40904B5D98AA50765F7900637177033D41FBFE4A8D81D268191BDAD3D698AB9A7B718F8C4D1B931868CE1C5781A620F70A64A45A98AA50765F79006372E808ACE2090B5E1725E5C173C3A84C3C5EA940A35A165FF2DBA43225CD8A89F83C798A30B85E16BA91E23F1B6B78B78B5C8C57E37DE458BEDA766A37F9254B7
-X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A213B5FB47DCBC3458F0AFF96BAACF4158235E5A14AD4A4A4625E192CAD1D9E79D94463893BF8742D060F91D1CA0DBFEE1
-X-C1DE0DAB: 0D63561A33F958A535E8308DECFB38B8D7076D3B86F44C0256AC019E27C5727ED59269BC5F550898D99A6476B3ADF6B47008B74DF8BB9EF7333BD3B22AA88B938A852937E12ACA75BF6B963DD989C0FC410CA545F18667F91A7EA1CDA0B5A7A0
-X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D342B8615F5CFAD9D02FA5FE3EF0CC7A1B209A39C1CE9422835D0A5866E4242BAB762C16E02EBE50F0C1D7E09C32AA3244CB3A411169EEECC7E3DE5540041A38E4469B6CAE0477E908D27AC49D2B05FCCD8
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojFhlvmGwdUwS32l63QGN20g==
-X-Mailru-Sender: 11C2EC085EDE56FA9C10FA2967F5AB24EBB174A6A3B148F4B47D0DDBFECE33849F04B3BAF9552DA1EE9242D420CFEBFD3DDE9B364B0DF2891A624F84B2C74EDA4239CF2AF0A6D4F80DA7A0AF5A3A8387
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B4EE34287C01580B6070D21CCF350081A4B28449CA49A5441668F3CF0E9FE49B695C609E9F26DC0F053448FA89FF667CA4F5BC946DBE4C52B6F3BF51963B26E6AD
-X-7FA49CB5: 0D63561A33F958A5D1A5013007419D0FD3C604509D8D1EF9D42AA1D2E744948BCACD7DF95DA8FC8BD5E8D9A59859A8B6828616D4398AA993CC7F00164DA146DAFE8445B8C89999728AA50765F790063706C2E049600DA66E9FA2833FD35BB23D2EF20D2F80756B5F868A13BD56FB6657A471835C12D1D977725E5C173C3A84C36804EF05EF4ADF2ACC7F00164DA146DA6F5DAA56C3B73B237318B6A418E8EAB8D32BA5DBAC0009BE9E8FC8737B5C2249B0754FDCBEC41BF076E601842F6C81A12EF20D2F80756B5F7E9C4E3C761E06A7089D37D7C0E48F6C8AA50765F79006376A91CFDE938F542CEFF80C71ABB335746BA297DBC24807EABDAD6C7F3747799A
-X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A213B5FB47DCBC3458834459D11680B505EB5C1D2BA53C1C806246B31C8BC6C2BB
-X-C1DE0DAB: 0D63561A33F958A5D1A5013007419D0FD3C604509D8D1EF98B9FBBE5A4B11F17D59269BC5F550898D99A6476B3ADF6B4886A5961035A09600383DAD389E261318FB05168BE4CE3AF
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojFhlvmGwdUwQbE7g1h7f7Cg==
-X-Mailru-MI: 1000000000800
-X-Mailru-Sender: A5480F10D64C90052AA1787BB8100F83F88861B7F0F3F6CF083ECF65916F396E9069C3D0B25B82A9C099ADC76E806A99D50E20E2BC48EF5A30D242760C51EA9CEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <32466d30-6259-4752-281b-875158ad307a@lwfinger.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-03.08.2021 20:51, Saravana Kannan wrote:
->> So lets convert this driver to simple platform_device with probe().
->> Also use platform_get_ and devm_ family function to get/allocate
->> resources and drop unused .compatible = "qeic".
-> Yes, please!
+On Thu, Aug 05, 2021 at 06:47:26PM -0500, Larry Finger wrote:
+> On 8/5/21 3:50 PM, Michael Straube wrote:
+> > Replace usage of custom macros with is_broadcast_ether_addr. All buffers
+> > are properly aligned. Remove the now unsued macros MacAddr_isBcst and
+> > IS_MAC_ADDRESS_BROADCAST.
+> > 
+> > Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> > ---
+> >   drivers/staging/r8188eu/core/rtw_ioctl_set.c | 13 +++----------
+> >   drivers/staging/r8188eu/core/rtw_recv.c      |  2 +-
+> >   drivers/staging/r8188eu/include/wifi.h       |  7 -------
+> >   3 files changed, 4 insertions(+), 18 deletions(-)
+> > 
+> > diff --git a/drivers/staging/r8188eu/core/rtw_ioctl_set.c b/drivers/staging/r8188eu/core/rtw_ioctl_set.c
+> > index 3e2add5409cc..c354f720310c 100644
+> > --- a/drivers/staging/r8188eu/core/rtw_ioctl_set.c
+> > +++ b/drivers/staging/r8188eu/core/rtw_ioctl_set.c
+> > @@ -13,13 +13,6 @@
+> >   extern void indicate_wx_scan_complete_event(struct adapter *padapter);
+> > -#define IS_MAC_ADDRESS_BROADCAST(addr) \
+> > -(\
+> > -	((addr[0] == 0xff) && (addr[1] == 0xff) && \
+> > -		(addr[2] == 0xff) && (addr[3] == 0xff) && \
+> > -		(addr[4] == 0xff) && (addr[5] == 0xff))  ? true : false \
+> > -)
+> > -
+> >   u8 rtw_validate_ssid(struct ndis_802_11_ssid *ssid)
+> >   {
+> >   	u8	 i;
+> > @@ -656,8 +649,8 @@ u8 rtw_set_802_11_add_key(struct adapter *padapter, struct ndis_802_11_key *key)
+> >   		}
+> >   		/*  check BSSID */
+> > -		if (IS_MAC_ADDRESS_BROADCAST(key->BSSID) == true) {
+> > -			RT_TRACE(_module_rtl871x_ioctl_set_c_, _drv_err_, ("MacAddr_isBcst(key->BSSID)\n"));
+> > +		if (is_broadcast_ether_addr(key->BSSID)) {
+> > +			RT_TRACE(_module_rtl871x_ioctl_set_c_, _drv_err_, ("is_broadcast_ether_addr(key->BSSID)\n"));
+> >   			ret = false;
+> >   			goto exit;
+> >   		}
+> > @@ -744,7 +737,7 @@ u8 rtw_set_802_11_add_key(struct adapter *padapter, struct ndis_802_11_key *key)
+> >   				 padapter->securitypriv.dot118021XGrpPrivacy, key->KeyLength));
+> >   		}
+> > -		if ((check_fwstate(&padapter->mlmepriv, WIFI_ADHOC_STATE) == true) && (IS_MAC_ADDRESS_BROADCAST(key->BSSID) == false)) {
+> > +		if (check_fwstate(&padapter->mlmepriv, WIFI_ADHOC_STATE) && !is_broadcast_ether_addr(key->BSSID)) {
+> >   			RT_TRACE(_module_rtl871x_ioctl_set_c_, _drv_err_,
+> >   				 (" IBSS but BSSID is not Broadcast Address.\n"));
+> >   			ret = _FAIL;
+> > diff --git a/drivers/staging/r8188eu/core/rtw_recv.c b/drivers/staging/r8188eu/core/rtw_recv.c
+> > index aef32f029537..afab951d87fd 100644
+> > --- a/drivers/staging/r8188eu/core/rtw_recv.c
+> > +++ b/drivers/staging/r8188eu/core/rtw_recv.c
+> > @@ -694,7 +694,7 @@ static void count_rx_stats(struct adapter *padapter, struct recv_frame *prframe,
+> >   	padapter->mlmepriv.LinkDetectInfo.NumRxOkInPeriod++;
+> > -	if ((!MacAddr_isBcst(pattrib->dst)) && (!IS_MCAST(pattrib->dst)))
+> > +	if (!is_broadcast_ether_addr(pattrib->dst) && !IS_MCAST(pattrib->dst))
+> >   		padapter->mlmepriv.LinkDetectInfo.NumRxUnicastOkInPeriod++;
+> >   	if (sta)
+> > diff --git a/drivers/staging/r8188eu/include/wifi.h b/drivers/staging/r8188eu/include/wifi.h
+> > index 2c56d1d70d03..65fc677bf4eb 100644
+> > --- a/drivers/staging/r8188eu/include/wifi.h
+> > +++ b/drivers/staging/r8188eu/include/wifi.h
+> > @@ -368,13 +368,6 @@ enum WIFI_REG_DOMAIN {
+> >   #define GetAddr4Ptr(pbuf)	((unsigned char *)((size_t)(pbuf) + 24))
+> > -#define MacAddr_isBcst(addr) \
+> > -	( \
+> > -	((addr[0] == 0xff) && (addr[1] == 0xff) && \
+> > -	(addr[2] == 0xff) && (addr[3] == 0xff) && \
+> > -	(addr[4] == 0xff) && (addr[5] == 0xff))  ? true : false \
+> > -)
+> > -
+> >   static inline int IS_MCAST(unsigned char *da)
+> >   {
+> >   	if ((*da) & 0x01)
+> 
+> Acked-by: Larry Finger <Larry.Finger@lwfinger,net>
 
-Should I totally drop { .type = "qeic"}, or keep?
+Odd ',' use here :)
+
+
