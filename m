@@ -2,53 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493BA3E2E9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380873E2BB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237939AbhHFQxZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Aug 2021 12:53:25 -0400
-Received: from mail.maynitek.ru ([94.137.227.4]:39672 "EHLO mail.maynitek.ru"
+        id S240663AbhHFNlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 09:41:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:32956 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236878AbhHFQxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 12:53:23 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.maynitek.ru (Postfix) with ESMTP id E8C6A3870A75;
-        Fri,  6 Aug 2021 18:40:45 +0500 (+05)
-Received: from mail.maynitek.ru ([127.0.0.1])
-        by localhost (mail.maynitek.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id H80znEhCH8Bm; Fri,  6 Aug 2021 18:40:45 +0500 (+05)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.maynitek.ru (Postfix) with ESMTP id BE93B386F044;
-        Fri,  6 Aug 2021 18:40:39 +0500 (+05)
-X-Virus-Scanned: amavisd-new at maynitek.ru
-Received: from mail.maynitek.ru ([127.0.0.1])
-        by localhost (mail.maynitek.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 4EnrVoeVJSgW; Fri,  6 Aug 2021 18:40:39 +0500 (+05)
-Received: from [192.168.1.3] (unknown [91.132.136.30])
-        by mail.maynitek.ru (Postfix) with ESMTPSA id 4656C13866758;
-        Fri,  6 Aug 2021 18:39:38 +0500 (+05)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S232817AbhHFNld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 09:41:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D08F31B;
+        Fri,  6 Aug 2021 06:41:17 -0700 (PDT)
+Received: from e121896.arm.com (unknown [10.57.40.41])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BA7E23F40C;
+        Fri,  6 Aug 2021 06:41:14 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     mathieu.poirier@linaro.org, leo.yan@linaro.org,
+        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
+        mike.leach@linaro.org
+Cc:     acme@kernel.org, suzuki.poulose@arm.com,
+        James Clark <james.clark@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/9] Support ETE decoding
+Date:   Fri,  6 Aug 2021 14:41:00 +0100
+Message-Id: <20210806134109.1182235-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Spende.
-To:     Recipients <deployer@maynitek.ru>
-From:   deployer@maynitek.ru
-Date:   Fri, 06 Aug 2021 16:39:15 +0300
-Reply-To: rinatakhmeto@gmail.com
-Message-Id: <20210806133938.4656C13866758@mail.maynitek.ru>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ich, Rinat Akhmetov, bin ein ukrainischer Milliardär, Oligarch und Gründer und Präsident von System Capital Management in der Ukraine (Europa). Sie können über mich lesen auf:
+Changes since v1:
+ * Re-implement with a new magic number instead of piggybacking on ETMv4
+ * Improve comments and function name around cs_etm_decoder__get_etmv4_arch_ver()
+ * Add a warning for unrecognised magic numbers
+ * Split typo fix into new commit
+ * Add Leo's reviewed-by tags
+ * Create a new struct for ETE config (cs_ete_trace_params) instead of re-using ETMv4 config
 
-https://en.wikipedia.org/wiki/Rinat_Akhmetov
+Applies to perf/core f3c33cbd922
+Also available at https://gitlab.arm.com/linux-arm/linux-jc/-/tree/james-ete-v2
 
-Ich beabsichtige, Ihnen einen Teil (Viertel) meines Nettovermögens von jeweils 1,500.000 EURO an 4 Personen weltweit im Rahmen unseres Wohltätigkeitsprojekts zu geben, das ich überwiesen habe. Wenn Sie meine E-Mail erhalten haben, senden Sie uns bitte Ihre Daten so dass wir unsere Bank anweisen, die Überweisung der
+James Clark (9):
+  perf cs-etm: Refactor initialisation of decoder params.
+  perf cs-etm: Initialise architecture based on TRCIDR1
+  perf cs-etm: Refactor out ETMv4 header saving
+  perf cs-etm: Save TRCDEVARCH register
+  perf cs-etm: Fix typo
+  perf cs-etm: Update OpenCSD decoder for ETE
+  perf cs-etm: Create ETE decoder
+  perf cs-etm: Print the decoder name
+  perf cs-etm: Show a warning for an unknown magic number
 
-1,500.000 EURO zu finanzieren, in der Hoffnung, dass es auch Ihnen und anderen hilft.
+ tools/build/feature/test-libopencsd.c         |   4 +-
+ tools/perf/arch/arm/util/cs-etm.c             |  97 ++++++++----
+ .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 148 ++++++++----------
+ .../perf/util/cs-etm-decoder/cs-etm-decoder.h |  13 ++
+ tools/perf/util/cs-etm.c                      |  43 ++++-
+ tools/perf/util/cs-etm.h                      |  10 ++
+ 6 files changed, 200 insertions(+), 115 deletions(-)
 
-E-Mail zur Bestätigung unten.
+-- 
+2.28.0
 
-E-Mail oder Antwort an:rinatakhmeto@gmail.com
