@@ -2,141 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493553E316F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1A63E3172
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238446AbhHFVx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 17:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45500 "EHLO
+        id S245421AbhHFVxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 17:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238049AbhHFVxZ (ORCPT
+        with ESMTP id S245412AbhHFVxj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 17:53:25 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA23C061799
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 14:53:09 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id dw2-20020a17090b0942b0290177cb475142so24694236pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 14:53:09 -0700 (PDT)
+        Fri, 6 Aug 2021 17:53:39 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5ECC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 14:53:23 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id e5so8878838pld.6
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 14:53:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Fl84p+xysP6AB2l/hihiICphduq4Sq1Mlhhi22j77F0=;
-        b=fLUUzWCdWgjWzaVQtWF39lVb3u4CpbC62haKkT9QefCrNahRNB/hNVyvsoNxIwYR6A
-         y4VcIYg/Y0Pel44OEtKyqDU+CZ++YCLqYxDqGN5yYwd90cA3Uizjes5NXVUCbx797GmS
-         CPs9YpONuuf17+AcOhLbkKxAaZsPVnsX3sYsY=
+        bh=RutxsrGFq4wLvMg0gjjT3e2ZEmBLiSblhcYV8FIMQa4=;
+        b=ONO2acq/6Q1yJCbWPs3wgpqKqtjFqtwAZ55Q6DorUZGlravykkSge50US36jvOhEz0
+         emnPanf58Ogj2kiSAxbkhC7XbggLrvkGPPLGOAhmcfdUQRAcVQ091wdtQGZG6LLh9g++
+         8XCicMNewVPOPUIe9R21mbl4OAkir9rhimFscQYsyqnrqmPG2NA7yN1m3n5Tx3SPkpIn
+         RHkH54j+Et9p44rBf6m4y41vGDh8aI9wAoUXi2CVOEXA7dTtfxb03IXOLwFDMa7ZCxnF
+         vj703BhiS/oolsN5Pn9V/Fz1F4ufAZDogEHJu03XMcOfDNBhbg2QXgbYYlvV1cwh8c7p
+         T4DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Fl84p+xysP6AB2l/hihiICphduq4Sq1Mlhhi22j77F0=;
-        b=tGjJoUQ9y15RvexIM6R+D9+CWPk4eLPPlzHjEWvJsF2adPLdWUoIc1nbMlzO37nquS
-         p/4Jj3fhxqvbEKPWKDwcZbOweEz2977rmudtGzHXp4MUapQJhUAMe/O0o6BIu9Buwrsx
-         tIUvJ6keiAMSoCSk8KqAgbv7YIp8JTW2ss0R6ZqrPcDMFHadNjpu9YLyg+5ZgvD07L1G
-         B8FqL66MxS8AiC3bS9BkKADIDjEIq5mwh7kn5YjYC6joh3jRS1jsMR4YeCEqX4MLOh6m
-         os0R4+ZACDebzqyw1jx6UL2Nm6NwAkLOiRXk5gZF9BXe240bcv0hfa8lAW3Qfi24snPY
-         BBnQ==
-X-Gm-Message-State: AOAM530+U5/cLf7phdQvTNvLwEN/ePsFnuByZLyWwEcMj2g983i3BF61
-        eeewhf6qwnIRgNMoCYcaJn5J6w==
-X-Google-Smtp-Source: ABdhPJwHq7KmH6xi7My6g9FWVyFXC33n4QjGWSGUKLW13137lkqBzkcgKwjRr+vS4ysHDuw+bkP5Iw==
-X-Received: by 2002:a63:5153:: with SMTP id r19mr1218197pgl.56.1628286788954;
-        Fri, 06 Aug 2021 14:53:08 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x81sm11699524pfc.22.2021.08.06.14.53.08
+        bh=RutxsrGFq4wLvMg0gjjT3e2ZEmBLiSblhcYV8FIMQa4=;
+        b=TEC86ic73at4r9msgIy8vn99rG550vsZZxxAc1LV4liKdWwefGxmcNOYW73B4QGtRx
+         qit7MI2rBzBshwwOqogjoYV6Eu1H4GiBbwgg8/KU4q/pS9/MDOtxrjUDm0qyNblFGk8s
+         LeTKIB0Vr56aELal51JqB/NRzX+fsJ/wiQdty4bjG8Qg4DpBlewRmkcfqVm3OkvHwOjO
+         DcvCd27zlsmYlLiPjAJl5IdzV3D5qzqJmwZFPVS4ff3U0fvy4KWs6TjGWjG9JqOK9uZM
+         Aw0+dH4wUXrh8KiY5tAfas9jPzhfb2ovDDCnWEjiLrdvrVhi5FpvUYh0Qf92d0PwioVz
+         V0ZQ==
+X-Gm-Message-State: AOAM530AX4LYl5Y/VYyIdWza9qKPNgcAumpUieT1En1l60nzReOaYvEs
+        0O5gSGqdGvDurjJ+z6V14Hy8ywgNlqM=
+X-Google-Smtp-Source: ABdhPJyOWfbdzWVGUwlRdWgXxjG8k3A68KoJVGcmMT47i1YA3eR9uH06ws6OhT9JpuDZ2OkUhpyLpQ==
+X-Received: by 2002:a17:902:c404:b029:12c:4e68:ba6e with SMTP id k4-20020a170902c404b029012c4e68ba6emr8178884plk.39.1628286802172;
+        Fri, 06 Aug 2021 14:53:22 -0700 (PDT)
+Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:8903:771d:9f7c:b057])
+        by smtp.gmail.com with ESMTPSA id v16sm3718451pje.24.2021.08.06.14.53.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 14:53:08 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] mac80211: Use flex-array for radiotap header bitmap
-Date:   Fri,  6 Aug 2021 14:53:05 -0700
-Message-Id: <20210806215305.2875621-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Fri, 06 Aug 2021 14:53:21 -0700 (PDT)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH] f2fs: introduce blk_alloc_mode mount option
+Date:   Fri,  6 Aug 2021 14:53:18 -0700
+Message-Id: <20210806215318.1165945-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3027; h=from:subject; bh=nSxGvyUo7OEzP3mLXXxASonhC3Vjw4BHa0bqzCW6SeM=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhDa9A9RTUHqidNfMpH0wWsYz9M+GpIQDZS5YZ+oPS wd3imheJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYQ2vQAAKCRCJcvTf3G3AJi4MD/ wPb1AljxGZOdesdD+OlcFXZD+MpzQa76k/9wnbr0ajzpHapsWmZGOWVxwbtp1Sw3MOFp//BSGIgomr dLRE9PSoxQOt6eo1+dJ5M3CXUAAgAFvEh3OZx/3GHraMErZx5+Qq+dfHSjMM67Onlv6lK/QTovrCO7 zJXLO2yzeIkypN1+b/L6HNguWflmaXh1FS88eVN7BcBQ1zSbmxFEN7icWsNFFRZWO411yRbA8hSJfm GxZ7wvVYCUlY9jMriW7PlOVKTup09VU122TVtnHEwn+Dv3XTFAo7EtbeP4mspPqiKvIGDq9mTxzBfJ bkQaEHI5BAvWC8Z4vFi0IVlhXwK8hjitA1KLB1XKgoXVoCjHyJ/WGmoQ+qBPbHWLtaq4UtttJdtKYx 6vG9dRhJO/SGp/IbRHPIaKHe58dxbSAL+LhtonFjSgImxhSSVYwmFtVR49QQq+7jotNYqQe6BRWewt EKBki3K18PJbo3NstEuH5hqtdAB2zNY7Su/VgWEcbL2ey7dTXm3x1IETDH1pXHTJ9gGFDZWV37QoO9 gGWk++JijMalclpEwb+WedkrdYLEycJSPmVJA6ojueQJiVrLpQUUgGsmva89C5tkmyk/AS517ORWqT xVyXwn/SiyKcbU3U4JZMzluqq/uAou5KL22dlgyTwdTFpx2mxmwHpAXrctdQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
+From: Daeho Jeong <daehojeong@google.com>
 
-The it_present member of struct ieee80211_radiotap_header is treated as a
-flexible array (multiple u32s can be conditionally present). In order for
-memcpy() to reason (or really, not reason) about the size of operations
-against this struct, use of bytes beyond it_present need to be treated
-as part of the flexible array. Add a trailing flexible array and
-initialize its initial index via pointer arithmetic.
+Added a mount option to control block allocation mode for filesystem
+developer to simulate filesystem fragmentation and after-GC situation
+for experimental reasons to understand the filesystem behaviors well
+under the severe condition. This supports "normal", "seg_random" and
+"blk_random:<num>" options.
 
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-wireless@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
+"normal" (default): f2fs allocates blocks in the normal way.
+"seg_random": f2fs allocates a new segment in ramdom position.
+              With this, we can simulate the after-GC condition.
+"blk_random:<num>": We can make f2fs allocate only 1..<num> blocks
+                    in a row and forcibly change the segment randomly.
+                    With this, the newly allocated blocks will be scatter
+                    throughout the whole partition and we can simulate
+                    filesystem fragmentation condition.
+
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
 ---
- include/net/ieee80211_radiotap.h | 4 ++++
- net/mac80211/rx.c                | 7 ++++++-
- net/wireless/radiotap.c          | 5 ++---
- 3 files changed, 12 insertions(+), 4 deletions(-)
+ Documentation/filesystems/f2fs.rst | 16 ++++++++++
+ fs/f2fs/f2fs.h                     | 17 +++++++++++
+ fs/f2fs/gc.c                       |  5 +++-
+ fs/f2fs/segment.c                  | 12 ++++++++
+ fs/f2fs/super.c                    | 47 ++++++++++++++++++++++++++++++
+ 5 files changed, 96 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/ieee80211_radiotap.h b/include/net/ieee80211_radiotap.h
-index c0854933e24f..6b7274edb3c6 100644
---- a/include/net/ieee80211_radiotap.h
-+++ b/include/net/ieee80211_radiotap.h
-@@ -43,6 +43,10 @@ struct ieee80211_radiotap_header {
- 	 * @it_present: (first) present word
- 	 */
- 	__le32 it_present;
-+	/**
-+	 * @it_optional: all remaining presence bitmaps
-+	 */
-+	__le32 it_optional[];
- } __packed;
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index ff9e7cc97c65..c2d09fa98f9f 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -312,6 +312,22 @@ inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
+ 			 Documentation/block/inline-encryption.rst.
+ atgc			 Enable age-threshold garbage collection, it provides high
+ 			 effectiveness and efficiency on background GC.
++bl_alloc_mode=%s	 Control block allocation mode. This is a developer option
++			 for experiments to simulate filesystem fragmentation and
++			 after-GC situation. The developers use this mode to understand
++			 filesystem fragmentation and after-GC condition well, and
++			 eventually get the insight to handle them better.
++			 This supports "normal", "seg_random" and "blk_random:<num>" modes.
++			 In "normal" mode (default), f2fs allocates blocks in the normal way.
++			 In "seg_random", f2fs allocates a new segment in ramdom position.
++			 With this, we can simulate the after-GC condition.
++			 In "blk_random:<num>", we can make f2fs allocate only 1..<num>
++			 blocks in a segment and forcibly change the segment randomly.
++			 You can set the <num> within 1 .. <blocks per segment> number.
++			 With this, the newly allocated blocks will be scatter throughout
++			 the whole partition and we can simulate filesystem fragmentation
++			 condition. Please, use this option for your experiments and we
++			 strongly recommand a filesystem format after using this option.
+ ======================== ============================================================
  
- /* version is always 0 */
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index 3eb7b03b23c6..33c56eab07fc 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -359,7 +359,12 @@ ieee80211_add_rx_radiotap_header(struct ieee80211_local *local,
+ Debugfs Entries
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index fccee18ab776..bdd33d78d9fc 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -155,6 +155,9 @@ struct f2fs_mount_info {
+ 	int compress_mode;			/* compression mode */
+ 	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
+ 	unsigned char noextensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN]; /* extensions */
++
++	int blk_alloc_mode;		/* block allocation mode */
++	int blk_alloc_random_max;	/* the maximum chunk size for block random allocation mode */
+ };
  
- 	put_unaligned_le32(it_present_val, it_present);
+ #define F2FS_FEATURE_ENCRYPT		0x0001
+@@ -1740,6 +1743,8 @@ struct f2fs_sb_info {
  
--	pos = (void *)(it_present + 1);
-+	/* This references through an offset into it_optional[] rather
-+	 * than via it_present otherwise later uses of pos will cause
-+	 * the compiler to think we have walked past the end of the
-+	 * struct member.
-+	 */
-+	pos = (void *)&rthdr->it_optional[it_present - rthdr->it_optional];
+ 	unsigned long seq_file_ra_mul;		/* multiplier for ra_pages of seq. files in fadvise */
  
- 	/* the order of the following fields is important */
++	int blk_alloc_remained;			/* remained block count for this block allocation period */
++
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 	struct kmem_cache *page_array_slab;	/* page array entry */
+ 	unsigned int page_array_slab_size;	/* default page array slab size */
+@@ -3619,6 +3624,18 @@ unsigned int f2fs_usable_segs_in_sec(struct f2fs_sb_info *sbi,
+ unsigned int f2fs_usable_blks_in_seg(struct f2fs_sb_info *sbi,
+ 			unsigned int segno);
  
-diff --git a/net/wireless/radiotap.c b/net/wireless/radiotap.c
-index 8099c9564a59..ae2e1a896461 100644
---- a/net/wireless/radiotap.c
-+++ b/net/wireless/radiotap.c
-@@ -115,10 +115,9 @@ int ieee80211_radiotap_iterator_init(
- 	iterator->_max_length = get_unaligned_le16(&radiotap_header->it_len);
- 	iterator->_arg_index = 0;
- 	iterator->_bitmap_shifter = get_unaligned_le32(&radiotap_header->it_present);
--	iterator->_arg = (uint8_t *)radiotap_header + sizeof(*radiotap_header);
-+	iterator->_arg = (uint8_t *)radiotap_header->it_optional;
- 	iterator->_reset_on_ext = 0;
--	iterator->_next_bitmap = &radiotap_header->it_present;
--	iterator->_next_bitmap++;
-+	iterator->_next_bitmap = radiotap_header->it_optional;
- 	iterator->_vns = vns;
- 	iterator->current_namespace = &radiotap_ns;
- 	iterator->is_radiotap_ns = 1;
++enum {
++	BLK_ALLOC_MODE_NORMAL,		/* normal block allocation mode */
++	BLK_ALLOC_MODE_SEG_RANDOM,	/* make segment allocation random */
++	BLK_ALLOC_MODE_BLK_RANDOM,	/* make block allocation random */
++};
++
++static inline bool f2fs_need_seg_random(struct f2fs_sb_info *sbi)
++{
++	return F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_SEG_RANDOM ||
++		F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_BLK_RANDOM;
++}
++
+ /*
+  * checkpoint.c
+  */
+diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+index 9dce44619069..571b50322e6e 100644
+--- a/fs/f2fs/gc.c
++++ b/fs/f2fs/gc.c
+@@ -14,6 +14,7 @@
+ #include <linux/delay.h>
+ #include <linux/freezer.h>
+ #include <linux/sched/signal.h>
++#include <linux/random.h>
+ 
+ #include "f2fs.h"
+ #include "node.h"
+@@ -256,7 +257,9 @@ static void select_policy(struct f2fs_sb_info *sbi, int gc_type,
+ 		p->max_search = sbi->max_victim_search;
+ 
+ 	/* let's select beginning hot/small space first in no_heap mode*/
+-	if (test_opt(sbi, NOHEAP) &&
++	if (f2fs_need_seg_random(sbi))
++		p->offset = prandom_u32() % (MAIN_SECS(sbi) * sbi->segs_per_sec);
++	else if (test_opt(sbi, NOHEAP) &&
+ 		(type == CURSEG_HOT_DATA || IS_NODESEG(type)))
+ 		p->offset = 0;
+ 	else
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index f9b7fb785e1d..6dff2d36ad6b 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -15,6 +15,7 @@
+ #include <linux/timer.h>
+ #include <linux/freezer.h>
+ #include <linux/sched/signal.h>
++#include <linux/random.h>
+ 
+ #include "f2fs.h"
+ #include "segment.h"
+@@ -2587,6 +2588,8 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
+ 	unsigned short seg_type = curseg->seg_type;
+ 
+ 	sanity_check_seg_type(sbi, seg_type);
++	if (f2fs_need_seg_random(sbi))
++		return prandom_u32() % (MAIN_SECS(sbi) * sbi->segs_per_sec);
+ 
+ 	/* if segs_per_sec is large than 1, we need to keep original policy. */
+ 	if (__is_large_section(sbi))
+@@ -3150,6 +3153,15 @@ int f2fs_trim_fs(struct f2fs_sb_info *sbi, struct fstrim_range *range)
+ static bool __has_curseg_space(struct f2fs_sb_info *sbi,
+ 					struct curseg_info *curseg)
+ {
++	/* To allocate block chunks in different sizes, use random number */
++	if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_BLK_RANDOM) {
++		if (--sbi->blk_alloc_remained < 0) {
++			sbi->blk_alloc_remained = prandom_u32() %
++				F2FS_OPTION(sbi).blk_alloc_random_max;
++			return false;
++		}
++	}
++
+ 	return curseg->next_blkoff < f2fs_usable_blks_in_seg(sbi,
+ 							curseg->segno);
+ }
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 9ead6d2e703b..801981547fe0 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -155,6 +155,7 @@ enum {
+ 	Opt_atgc,
+ 	Opt_gc_merge,
+ 	Opt_nogc_merge,
++	Opt_blk_alloc_mode,
+ 	Opt_err,
+ };
+ 
+@@ -231,6 +232,7 @@ static match_table_t f2fs_tokens = {
+ 	{Opt_atgc, "atgc"},
+ 	{Opt_gc_merge, "gc_merge"},
+ 	{Opt_nogc_merge, "nogc_merge"},
++	{Opt_blk_alloc_mode, "blk_alloc_mode=%s"},
+ 	{Opt_err, NULL},
+ };
+ 
+@@ -1173,6 +1175,40 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 		case Opt_nogc_merge:
+ 			clear_opt(sbi, GC_MERGE);
+ 			break;
++		case Opt_blk_alloc_mode:
++			name = match_strdup(&args[0]);
++			if (!name)
++				return -ENOMEM;
++			if (!strcmp(name, "normal")) {
++				F2FS_OPTION(sbi).blk_alloc_mode =
++					BLK_ALLOC_MODE_NORMAL;
++			} else if (!strcmp(name, "seg_random")) {
++				F2FS_OPTION(sbi).blk_alloc_mode =
++					BLK_ALLOC_MODE_SEG_RANDOM;
++			} else if (!strncmp(name, "blk_random:", 11)) {
++				const char *num = name + 11;
++				long size;
++
++				ret = kstrtol(num, 10, &size);
++				if (ret) {
++					kfree(name);
++					return ret;
++				}
++				if (size < 1)
++					size = 1;
++				else if (size > sbi->blocks_per_seg)
++					size = sbi->blocks_per_seg;
++
++				F2FS_OPTION(sbi).blk_alloc_mode =
++					BLK_ALLOC_MODE_BLK_RANDOM;
++				F2FS_OPTION(sbi).blk_alloc_random_max =	size;
++				sbi->blk_alloc_remained = size;
++			} else {
++				kfree(name);
++				return -EINVAL;
++			}
++			kfree(name);
++			break;
+ 		default:
+ 			f2fs_err(sbi, "Unrecognized mount option \"%s\" or missing value",
+ 				 p);
+@@ -1919,6 +1955,14 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+ 	else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_NOBARRIER)
+ 		seq_printf(seq, ",fsync_mode=%s", "nobarrier");
+ 
++	if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_NORMAL)
++		seq_printf(seq, ",blk_alloc_mode=%s", "normal");
++	else if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_SEG_RANDOM)
++		seq_printf(seq, ",blk_alloc_mode=%s", "seg_random");
++	else if (F2FS_OPTION(sbi).blk_alloc_mode == BLK_ALLOC_MODE_BLK_RANDOM)
++		seq_printf(seq, ",blk_alloc_mode=%s:%d", "blk_random",
++				F2FS_OPTION(sbi).blk_alloc_random_max);
++
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 	f2fs_show_compress_options(seq, sbi->sb);
+ #endif
+@@ -1947,6 +1991,9 @@ static void default_options(struct f2fs_sb_info *sbi)
+ 	F2FS_OPTION(sbi).compress_ext_cnt = 0;
+ 	F2FS_OPTION(sbi).compress_mode = COMPR_MODE_FS;
+ 	F2FS_OPTION(sbi).bggc_mode = BGGC_MODE_ON;
++	F2FS_OPTION(sbi).blk_alloc_mode = BLK_ALLOC_MODE_NORMAL;
++	F2FS_OPTION(sbi).blk_alloc_random_max = sbi->blocks_per_seg;
++	sbi->blk_alloc_remained = sbi->blocks_per_seg;
+ 
+ 	sbi->sb->s_flags &= ~SB_INLINECRYPT;
+ 
 -- 
-2.30.2
+2.32.0.605.g8dce9f2422-goog
 
