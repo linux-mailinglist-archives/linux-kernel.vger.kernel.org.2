@@ -2,118 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B083E30CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456023E30CB
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245213AbhHFVOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 17:14:24 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21796 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245202AbhHFVOX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 17:14:23 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 176L5NHv056964;
-        Fri, 6 Aug 2021 17:13:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=cRkEW63PV2Y6BSJzudvoYxZko/o4YF/irIOsVhYwkiE=;
- b=KTiKrKWLPOoWxVLu6FcaPTYU8SLOuJZVuoE9YjeAK2od9ozLQ6PxpTFc85sJ0Hfo5GrC
- Bj8LThMBQS0bIt4tmgqUoW9xq8P7qiKVrNEIrlN/uuWowBezH57HIdzVm0OJ17VZb6ZO
- PXYwukHUnCnITjpPTgJsCfNziWrO2xMZPJm7RY4UOiP/fua8vKZa8R48xAkU2siCPhTR
- l/p9UPyWGHXuCqWex0/r+3jhg8Jr5Pj54rSnSrm9lE4ZbEEhzdyLFNwsrCPBc5B4/VG/
- OhV806bAh4+nOmmqE756G5dtIku8npE8n+YM+X1coBEpJfqe3AFZSIOPcs+aCCU/GJZX zg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a9bxdhc4u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Aug 2021 17:13:56 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 176L65RU061266;
-        Fri, 6 Aug 2021 17:13:56 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a9bxdhc46-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Aug 2021 17:13:56 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 176LDKTB009026;
-        Fri, 6 Aug 2021 21:13:54 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma01wdc.us.ibm.com with ESMTP id 3a8gwuqnay-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 06 Aug 2021 21:13:54 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 176LDsEk33620242
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 6 Aug 2021 21:13:54 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 13ADDAE06A;
-        Fri,  6 Aug 2021 21:13:54 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EBE9BAE066;
-        Fri,  6 Aug 2021 21:13:51 +0000 (GMT)
-Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.77.144.67])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Fri,  6 Aug 2021 21:13:51 +0000 (GMT)
-Date:   Fri, 6 Aug 2021 16:13:48 -0500
-From:   "Paul A. Clarke" <pc@us.ibm.com>
-To:     Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf script python: fix unintended underline
-Message-ID: <20210806211348.GA66379@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-References: <20210806204502.110305-1-stephen.s.brennan@oracle.com>
+        id S245195AbhHFVOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 17:14:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238752AbhHFVOT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 17:14:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71C8061167;
+        Fri,  6 Aug 2021 21:14:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628284441;
+        bh=9OiTs9pDHjt9r3hFWFQGUT4jhn3LANAYPBeoqI6UPlk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hbETkcqpXUrvYwNfIgpnAlYdgCEKB8/dbm1RXVTO1RegMnAZkAdwQXcfhX3kM2IG5
+         9MVYTLm9RZa1lNjU06oy0xwZTIgW0UZMcJDVGQlI2D1jVtg075Fc/HARUslvhcH6mm
+         qfH3eGqy2XSn7uI7G6s3oSwqKFEmrJBWQ1busJa29YUjUOMU4GRnP42T4RIjzerK2Y
+         JCjuK3AmbpwK2UR0SFPj11Ep9VffAH4r4u+o2sn6idjwFFywR7Eso+8hWAmybGQnzs
+         DQR2Fv3pvGJTZhXHcjnxYtNhiWUp7QX/4XVeJsis33O1K368geII4XzLCM7dAMskbI
+         f/HgFUtZ5lCWA==
+Received: by earth.universe (Postfix, from userid 1000)
+        id C7F013C0C99; Fri,  6 Aug 2021 23:13:59 +0200 (CEST)
+Date:   Fri, 6 Aug 2021 23:13:59 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v6 08/12] power: supply: smb347-charger: Add missing pin
+ control activation
+Message-ID: <20210806211359.lq765pzmgvviffhg@earth.universe>
+References: <20210731173842.19643-1-digetx@gmail.com>
+ <20210731173842.19643-9-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bm4r4v2elzlke47t"
 Content-Disposition: inline
-In-Reply-To: <20210806204502.110305-1-stephen.s.brennan@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: qD-FdmqpX4JZSrLVBbhJVFa1WMTZXgL4
-X-Proofpoint-ORIG-GUID: OlW__nPxS_ycWnetDraG5IadXgiXoxD4
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-06_06:2021-08-06,2021-08-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- impostorscore=0 suspectscore=0 phishscore=0 clxscore=1011 bulkscore=0
- adultscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108060138
+In-Reply-To: <20210731173842.19643-9-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 01:45:01PM -0700, Stephen Brennan wrote:
-> The text ranging from "subsystem__event_name" to
-> "raw_syscalls__sys_enter()" is interpreted by asciidoc as a pair of
-> unconstrained text formatting markers. The result is that the manual
-> page displayed this text as underlined, and the HTML pages displayed
-> this text as italicized. Escape the first double-underscore to prevent
-> this.
 
-I think it would be better to escape the second double-underscore as well,
-to prevent the same problem recurring with future changes.
+--bm4r4v2elzlke47t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> diff --git a/tools/perf/Documentation/perf-script-python.txt b/tools/perf/Documentation/perf-script-python.txt
-> index 5e43cfa5ea1e..0250dc61cf98 100644
-> --- a/tools/perf/Documentation/perf-script-python.txt
-> +++ b/tools/perf/Documentation/perf-script-python.txt
-> @@ -167,7 +167,7 @@ below).
-> 
->  Following those are the 'event handler' functions generated one for
->  every event in the 'perf record' output.  The handler functions take
-> -the form subsystem__event_name, and contain named parameters, one for
-> +the form subsystem\__event_name, and contain named parameters, one for
->  each field in the event; in this case, there's only one event,
->  raw_syscalls__sys_enter().  (see the EVENT HANDLERS section below for
+Hi,
 
-escape this    ^ , too.
+On Sat, Jul 31, 2021 at 08:38:38PM +0300, Dmitry Osipenko wrote:
+> Pin control needs to be activated by setting the enable bit, otherwise
+> hardware rejects all pin changes. Previously this stayed unnoticed on
+> Nexus 7 because pin control was enabled by default after rebooting from
+> downstream kernel, which uses driver that enables the bit and charger
+> registers are non-volatile until power supply (battery) is disconnected.
+> Configure the pin control enable bit. This fixes the potentially
+> never-enabled charging on devices that use pin control.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
 
->  more info on event handlers).
-> -- 
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-PC
+-- Sebastian
+
+>  drivers/power/supply/smb347-charger.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>=20
+> diff --git a/drivers/power/supply/smb347-charger.c b/drivers/power/supply=
+/smb347-charger.c
+> index 27254e6efdde..1c9205ca0993 100644
+> --- a/drivers/power/supply/smb347-charger.c
+> +++ b/drivers/power/supply/smb347-charger.c
+> @@ -55,6 +55,7 @@
+>  #define CFG_PIN_EN_CTRL_ACTIVE_LOW		0x60
+>  #define CFG_PIN_EN_APSD_IRQ			BIT(1)
+>  #define CFG_PIN_EN_CHARGER_ERROR		BIT(2)
+> +#define CFG_PIN_EN_CTRL				BIT(4)
+>  #define CFG_THERM				0x07
+>  #define CFG_THERM_SOFT_HOT_COMPENSATION_MASK	0x03
+>  #define CFG_THERM_SOFT_HOT_COMPENSATION_SHIFT	0
+> @@ -726,6 +727,15 @@ static int smb347_hw_init(struct smb347_charger *smb)
+>  	if (ret < 0)
+>  		goto fail;
+> =20
+> +	/* Activate pin control, making it writable. */
+> +	switch (smb->enable_control) {
+> +	case SMB3XX_CHG_ENABLE_PIN_ACTIVE_LOW:
+> +	case SMB3XX_CHG_ENABLE_PIN_ACTIVE_HIGH:
+> +		ret =3D regmap_set_bits(smb->regmap, CFG_PIN, CFG_PIN_EN_CTRL);
+> +		if (ret < 0)
+> +			goto fail;
+> +	}
+> +
+>  	/*
+>  	 * Make the charging functionality controllable by a write to the
+>  	 * command register unless pin control is specified in the platform
+> --=20
+> 2.32.0
+>=20
+
+--bm4r4v2elzlke47t
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmENphcACgkQ2O7X88g7
++pqDWw//UG5SGkUDPxPcJiiI+BIe+J/7chIvPHF0cz0qeHd0zs2G+ds8w6mVX+4t
+x7okkSU7jEpIzGwdY6P7fp+eNKksNwzLcCbBjO1pMbaZf1efKB4FJqZCfK/sqvbi
+sq9NJf+EviDX7xxvqejM1vPvFc5nH3zDGeR+A6f26QEaQOIyXHnYSehu2NNgY/O/
+ZlWI44bjSwf+Lbua4WDxyMe3S/ScyOn3A220NmTx1G1SnOgOiHoBmPmXiAbZv6HC
+KNhRXsvxClcMZE+oYCcIYzY4UGrVggsL9QfUs/rY7oZ6MIRBLGu4AQJCBj6DyKog
+9nC+YDTLpBCArzZ/3M9Yl8taTYeb0yW3Ab+SuqI7W40jrCHyWUU6m9Zar5geSl0h
+ew0Tn3A8A/bvdIL+BcSRyMs/iJ0WHqmZpYK7wsUDiWILUf6+cHORdANIsyZ3/92S
+tNpahw/YF2AowjOWgLSg/VYKAqmGyzQXrXdriwLvx0NQz5TsTprPCN67XjzNj1YD
+guVvyz1BYsMMxeJfCPit8s9T9lA1mzQwSD7SXpaX17oHAMnlP6/sftvWJwBH6iLV
+nS2VCJX6pn2K2mBZOUQJ8HyASK/pL9YaVsXf9+5ezeblZ8JKfzeLJN9vubKH868K
+MLJzTGkOQHEMcnADyoEKeF9IAMszgBpF+ChA+3ZeA5qpsTLLFfw=
+=EsjQ
+-----END PGP SIGNATURE-----
+
+--bm4r4v2elzlke47t--
