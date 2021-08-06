@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3142D3E2576
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10AA3E2595
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243504AbhHFIUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:20:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47214 "EHLO mail.kernel.org"
+        id S244304AbhHFIU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:20:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243955AbhHFISH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:18:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8788611C9;
-        Fri,  6 Aug 2021 08:17:51 +0000 (UTC)
+        id S244115AbhHFIS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:18:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46A116103B;
+        Fri,  6 Aug 2021 08:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628237872;
-        bh=r892OH2/ovPe1SZxgsBGR8AQn5jwOqOTXRdqnb3mLFI=;
+        s=korg; t=1628237916;
+        bh=B9xYAL/8m8xchTS/11Noy/LV1czP1hU/TtmNdYqMCos=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dB47lsgL8gtrGM94bzRPX5D3ItsMvKTbH5gxjcRJowKRyqAzuvPb/D8sA4b9mAEkb
-         i3XcCaBChuKKAyAAF2Qk+WXkjMEG4zdig/UOlQsN3qsC9aN8aujZHe4Y+HodkXbTbT
-         JKNitUBDsXALTj+OFvgdM8pYFmDG8cHJ7wOnRCS8=
+        b=Fln/7konMWcCcGQ6cvxe0OZFbxsO/KBiQoww4j/vDAxGZwqo4UEHVCta8mbbwhMmg
+         R8i/8A8tVeIHvQ+mT8eMP2SFaDGJGn40tq4Yrk7Q5RD5rQu0xixh2+QV7PSgn/YyKx
+         4g4iQISyKAn1CPMDYcJ5s1BW/KYOtCtP18pb4Oi8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jean Delvare <jdelvare@suse.de>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org, Oder Chiou <oder_chiou@realtek.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 17/23] Revert "watchdog: iTCO_wdt: Account for rebooting on second timeout"
+Subject: [PATCH 5.10 11/30] ASoC: rt5682: Fix the issue of garbled recording after powerd_dbus_suspend
 Date:   Fri,  6 Aug 2021 10:16:49 +0200
-Message-Id: <20210806081112.727151425@linuxfoundation.org>
+Message-Id: <20210806081113.506255283@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210806081112.104686873@linuxfoundation.org>
-References: <20210806081112.104686873@linuxfoundation.org>
+In-Reply-To: <20210806081113.126861800@linuxfoundation.org>
+References: <20210806081113.126861800@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,60 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Oder Chiou <oder_chiou@realtek.com>
 
-This reverts commit f58ab0b02ee7b095e0cae4ba706caa86fff5557b which is
-commit cb011044e34c293e139570ce5c01aed66a34345c upstream.
+[ Upstream commit 6a503e1c455316fd0bfd8188c0a62cce7c5525ca ]
 
-It is reported to cause problems with systems and probably should not
-have been backported in the first place :(
+While using the DMIC recording, the garbled data will be captured by the
+DMIC. It is caused by the critical power of PLL closed in the jack detect
+function.
 
-Link: https://lore.kernel.org/r/20210803165108.4154cd52@endymion
-Reported-by: Jean Delvare <jdelvare@suse.de>
-Cc: Jan Kiszka <jan.kiszka@siemens.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Link: https://lore.kernel.org/r/20210716085853.20170-1-oder_chiou@realtek.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/iTCO_wdt.c |   12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ sound/soc/codecs/rt5682.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/watchdog/iTCO_wdt.c
-+++ b/drivers/watchdog/iTCO_wdt.c
-@@ -72,8 +72,6 @@
- #define TCOBASE(p)	((p)->tco_res->start)
- /* SMI Control and Enable Register */
- #define SMI_EN(p)	((p)->smi_res->start)
--#define TCO_EN		(1 << 13)
--#define GBL_SMI_EN	(1 << 0)
- 
- #define TCO_RLD(p)	(TCOBASE(p) + 0x00) /* TCO Timer Reload/Curr. Value */
- #define TCOv1_TMR(p)	(TCOBASE(p) + 0x01) /* TCOv1 Timer Initial Value*/
-@@ -346,12 +344,8 @@ static int iTCO_wdt_set_timeout(struct w
- 
- 	tmrval = seconds_to_ticks(p, t);
- 
--	/*
--	 * If TCO SMIs are off, the timer counts down twice before rebooting.
--	 * Otherwise, the BIOS generally reboots when the SMI triggers.
--	 */
--	if (p->smi_res &&
--	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
-+	/* For TCO v1 the timer counts down twice before rebooting */
-+	if (p->iTCO_version == 1)
- 		tmrval /= 2;
- 
- 	/* from the specs: */
-@@ -516,7 +510,7 @@ static int iTCO_wdt_probe(struct platfor
- 		 * Disables TCO logic generating an SMI#
- 		 */
- 		val32 = inl(SMI_EN(p));
--		val32 &= ~TCO_EN;	/* Turn off SMI clearing watchdog */
-+		val32 &= 0xffffdfff;	/* Turn off SMI clearing watchdog */
- 		outl(val32, SMI_EN(p));
- 	}
- 
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index d9878173ff89..2e41b8c169e5 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -971,10 +971,14 @@ int rt5682_headset_detect(struct snd_soc_component *component, int jack_insert)
+ 		rt5682_enable_push_button_irq(component, false);
+ 		snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_1,
+ 			RT5682_TRIG_JD_MASK, RT5682_TRIG_JD_LOW);
+-		if (!snd_soc_dapm_get_pin_status(dapm, "MICBIAS"))
++		if (!snd_soc_dapm_get_pin_status(dapm, "MICBIAS") &&
++			!snd_soc_dapm_get_pin_status(dapm, "PLL1") &&
++			!snd_soc_dapm_get_pin_status(dapm, "PLL2B"))
+ 			snd_soc_component_update_bits(component,
+ 				RT5682_PWR_ANLG_1, RT5682_PWR_MB, 0);
+-		if (!snd_soc_dapm_get_pin_status(dapm, "Vref2"))
++		if (!snd_soc_dapm_get_pin_status(dapm, "Vref2") &&
++			!snd_soc_dapm_get_pin_status(dapm, "PLL1") &&
++			!snd_soc_dapm_get_pin_status(dapm, "PLL2B"))
+ 			snd_soc_component_update_bits(component,
+ 				RT5682_PWR_ANLG_1, RT5682_PWR_VREF2, 0);
+ 		snd_soc_component_update_bits(component, RT5682_PWR_ANLG_3,
+-- 
+2.30.2
+
 
 
