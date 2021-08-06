@@ -2,309 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E494B3E2E09
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45963E2E20
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244991AbhHFP4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 11:56:54 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41794 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245000AbhHFP4x (ORCPT
+        id S235633AbhHFQHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 12:07:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23406 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231778AbhHFQH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 11:56:53 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B218C21F8D;
-        Fri,  6 Aug 2021 15:56:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628265396; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Fri, 6 Aug 2021 12:07:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628266030;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=y98PhVLBzm9dgjKbFUyHIWB8M33IZsEWGkjIi3Q7n64=;
-        b=HOGRZUwEMNINVb78NTrtf9OtPkBJtzljaeTgLa/60YQ7xEKo5CUvnKSigm1D59zyrQW9eu
-        pKAzO4nTHDWco1vCS4zPYR1rD0zpFUe3r1/TuhdvPtc84/yyRNPgFFTo9YpIAqocBg8DdZ
-        slk5Y5y/nurqPyBYSRn4uiOxsql/3iM=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 66D7AA3B8B;
-        Fri,  6 Aug 2021 15:56:36 +0000 (UTC)
-Date:   Fri, 6 Aug 2021 17:56:33 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v1 06/10] printk: use seqcount_latch for
- console_seq
-Message-ID: <YQ1bsdh8PoLwBrnl@alley>
-References: <20210803131301.5588-1-john.ogness@linutronix.de>
- <20210803131301.5588-7-john.ogness@linutronix.de>
- <YQvWuzpAv1Tw/CoQ@alley>
- <87bl6bx68f.fsf@jogness.linutronix.de>
+        bh=QDMPpNAqPC6c45pDZs2yjH7PLpb9RWebANU8kuJcJMc=;
+        b=YhAl93vYm324FEnBzwDrvM2ST4GuHfXvYm7ASleSNC/wQFhlWqIONIB0NncxIS6JITX2bP
+        ScSZocnFRMIMoaWNm42o08tPLdhml7MY/KVl32aXxtMELVFTDGHoMhK7D1pbhzb9sfHLTQ
+        t2sMDOHDZcLsTxm7n+n+gkdSREE2K3k=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-294-Dlj6xao0OZCfyc3Q6W-_tQ-1; Fri, 06 Aug 2021 12:07:08 -0400
+X-MC-Unique: Dlj6xao0OZCfyc3Q6W-_tQ-1
+Received: by mail-ed1-f72.google.com with SMTP id eg53-20020a05640228b5b02903bd6e6f620cso5176371edb.23
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 09:07:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QDMPpNAqPC6c45pDZs2yjH7PLpb9RWebANU8kuJcJMc=;
+        b=pGiDPChOmnI1fjEN557aLZJTf281P6HJOGaY/ZQvYdvfBOHBOriSjNcYGMr/fdK3tM
+         Sj1PKKEV8G1RhnDSBLOmbnsGU7EiNhoAcHDO/TUS7gFn0HJvTZztZmFljyJZRYroz5nQ
+         6gUF4MXPJR4JJvKc5+6fo9VO4+JEOM5PXMgCw/Vg/fD30Q5/6ednxVrf4daCy1j9Z/US
+         s9s09f7UgUMZ6OSlY7qOiK3mwDm5caqSh71Gsiksm4fqnOgOJqRF1sA82IOSLhujdsCG
+         Ar//dYqQALgrwTJaWyX01AkqSlnn0yEx6Hrxhf7aNNQ9Re6G4efZ6pgbuFcGZQUhIRlH
+         vx6Q==
+X-Gm-Message-State: AOAM531lf0mrL9WdomG9nzZDP97SapDBzOjBULsJ5Bqu49dFV6bUTIo7
+        /LfdA5z/zKCYj42+5/zIJIQdKrqF8xvFVNVTdN+kmQ2XYmvr3wNcLGwVmyYGx2IfqzYbq9Xqr7G
+        9s9fpGPyQUoMbWXwQaHYMZiTu
+X-Received: by 2002:aa7:d6cd:: with SMTP id x13mr13924593edr.300.1628266027560;
+        Fri, 06 Aug 2021 09:07:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwNut+zkF53aMyAth4YpbAYiNqCg0tB+sVJKxD8iKoH3db7FvFgJxKcgEjHFLbV48HftTBN/g==
+X-Received: by 2002:aa7:d6cd:: with SMTP id x13mr13924568edr.300.1628266027375;
+        Fri, 06 Aug 2021 09:07:07 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id ch5sm2738049edb.61.2021.08.06.09.07.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Aug 2021 09:07:06 -0700 (PDT)
+Subject: Re: [RFC PATCH 00/10] KVM: x86/mmu: simplify argument to kvm page
+ fault handler
+To:     David Matlack <dmatlack@google.com>
+Cc:     Isaku Yamahata <isaku.yamahata@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>
+References: <cover.1618914692.git.isaku.yamahata@intel.com>
+ <YK65V++S2Kt1OLTu@google.com>
+ <936b00e2-1bcc-d5cc-5ae1-59f43ab5325f@redhat.com>
+ <20210610220056.GA642297@private.email.ne.jp>
+ <CALzav=d2m+HffSLu5e3gz0cYk=MZ2uc1a3K+vP8VRVvLRiwd9g@mail.gmail.com>
+ <92ffcffb-74c1-1876-fe86-a47553a2aa5b@redhat.com>
+ <CALzav=eSrEGt9Xn99YtmHnWE1hm7ExZ4o_wjn_Rc0ZokLpizeQ@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <97ea1a31-4763-cefd-bfb8-8eeef46931b9@redhat.com>
+Date:   Fri, 6 Aug 2021 18:07:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bl6bx68f.fsf@jogness.linutronix.de>
+In-Reply-To: <CALzav=eSrEGt9Xn99YtmHnWE1hm7ExZ4o_wjn_Rc0ZokLpizeQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-08-05 17:32:40, John Ogness wrote:
-> On 2021-08-05, Petr Mladek <pmladek@suse.com> wrote:
-> > On Tue 2021-08-03 15:18:57, John Ogness wrote:
-> >> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> >> index d07d98c1e846..f8f46d9fba9b 100644
-> >> --- a/kernel/printk/printk.c
-> >> +++ b/kernel/printk/printk.c
-> >> @@ -2912,18 +2920,19 @@ void console_unblank(void)
-> >>   */
-> >>  void console_flush_on_panic(enum con_flush_mode mode)
-> >>  {
-> >> -	/*
-> >> -	 * If someone else is holding the console lock, trylock will fail
-> >> -	 * and may_schedule may be set.  Ignore and proceed to unlock so
-> >> -	 * that messages are flushed out.  As this can be called from any
-> >> -	 * context and we don't want to get preempted while flushing,
-> >> -	 * ensure may_schedule is cleared.
-> >> -	 */
-> >> -	console_trylock();
-> >> -	console_may_schedule = 0;
-> >> -
-> >> -	if (mode == CONSOLE_REPLAY_ALL)
-> >> -		console_seq = prb_first_valid_seq(prb);
-> >> +	if (console_trylock()) {
-> >> +		if (mode == CONSOLE_REPLAY_ALL)
-> >> +			latched_seq_write(&console_seq, prb_first_valid_seq(prb));
-> >
-> > I am scratching my head about this. Of course, latched_seq_write() does
-> > not guarantee the result when the console lock it taken by another process.
-> > But console_lock(), called below, will call latched_seq_write()
-> > anyway.
-> >
-> > Also CONSOLE_REPLAY_ALL is used by panic_print_sys_info().
-> > It is called the following way:
-> >
-> > void panic(const char *fmt, ...)
-> > {
-> > [...]
-> > 	debug_locks_off();
-> > 	console_flush_on_panic(CONSOLE_FLUSH_PENDING);
-> >
-> > 	panic_print_sys_info();
-> > [...]
-> > }
-> >
-> > On one hand, console_flush_on_panic(CONSOLE_FLUSH_PENDING) will
-> > most likely take over the console lock even when it was taken
-> > by another CPU before. And the 2nd console_flush_on_panic()
-> > called from panic_print_sys_info() will not even notice.
-> >
-> > On the other hand, CONSOLE_REPLAY_ALL would not even try to
-> > reply the log when the console log was not available.
-> >
-> > The risk of broken console_seq is neglible. console_unlock()
-> > should be safe even with invalid console_seq.
-> >
-> > My opinion:
-> >
-> > I suggest to keep the original logic and maybe add some comment:
-> >
-> > void console_flush_on_panic(enum con_flush_mode mode)
-> > {
-> > 	/*
-> > 	 * If someone else is holding the console lock, trylock will fail
-> > 	 * and may_schedule may be set.  Ignore and proceed to unlock so
-> > 	 * that messages are flushed out.  As this can be called from any
-> > 	 * context and we don't want to get preempted while flushing,
-> > 	 * ensure may_schedule is cleared.
-> > 	 */
-> > 	console_trylock();
-> > 	console_may_schedule = 0;
-> >
-> > 	/*
-> > 	 * latched_seq_write() does not guarantee consistent values
-> > 	 * when console_trylock() failed. But this is the best effort.
-> > 	 * console_unlock() will update anyway console_seq. prb_read_valid()
-> > 	 * handles even invalid sequence numbers.
-> > 	 */
-> > 	if (mode == CONSOLE_REPLAY_ALL)
-> > 		latched_seq_write(&console_seq, prb_first_valid_seq(prb));
-> >
-> > 	console_unlock();
-> > }
+On 29/07/21 19:24, David Matlack wrote:
+> On Thu, Jul 29, 2021 at 10:17 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>>
+>> On 29/07/21 18:48, David Matlack wrote:
+>>> On Thu, Jun 10, 2021 at 3:05 PM Isaku Yamahata <isaku.yamahata@gmail.com> wrote:
+>>>>
+>>>> Thanks for feedback. Let me respin it.
+>>>
+>>> Hi Isaku,
+>>>
+>>> I'm working on a series to plumb the memslot backing the faulting gfn
+>>> through the page fault handling stack to avoid redundant lookups. This
+>>> would be much cleaner to implement on top of your struct
+>>> kvm_page_fault series than the existing code.
+>>>
+>>> Are you still planning to send another version of this series? Or if
+>>> you have decided to drop it or go in a different direction?
+>>
+>> I can work on this and post updated patches next week.
 > 
-> I see now that CONSOLE_REPLAY_ALL is not handled correctly. And in the
-> follow-up patch "printk: introduce kernel sync mode" the situation gets
-> worse. I am trying to find ways to handle things without blindly
-> ignoring locks and hoping for the best.
-> 
-> I need to re-evaluate how to correctly support this feature.
+> Sounds good. For the record I'm also looking at adding an per-vCPU LRU
+> slot, which *may* obviate the need to pass around the slot. (Isaku's
+> series is still a nice cleanup regardless.)
 
-A solution might be to implement a generic cycle that would use
-the right latched_seq and buffers. Something like:
+Backport done, but not tested very well yet (and it's scary :)).
 
-enum console_mode {
-	CONSOLE_MODE_NORMAL = 0,
-	CONSOLE_MODE_ATOMIC,
-	CONSOLE_MODE_ATOMIC_NMI,
-	CONSOLE_MODE_REPLAY_ALL,
-	CONSOLE_MODE_LAST
-};
+Paolo
 
-struct console_mode_info
-{
-	static char text[CONSOLE_LOG_MAX];
-	static char ext_text[CONSOLE_EXT_LOG_MAX];
-	static struct latched_seq seq;
-};
-
-struct console_mode_info[CONSOLE_MODE_LAST];
-
-void set_console_seq(u64 seq, enum console_mode mode)
-{
-	latched_seq_write(&console_mode_info[mode].seq), seq);
-}
-
-u64 get_console_seq(enum console_mode mode)
-{
-	/* Atomic console calls might be nested. Return the highest value. */
-	if (mode == CONSOLE_MODE_ATOMIC ||
-	    mode == CONSOLE_MODE_ATOMIC_NMI) {
-		u64 seq, seq_nmi;
-
-		seq = latched_seq_read_nolock(&console_mode_info[CONSOLE_MODE_ATTOMIC].seq);
-		seq_nmi = latched_seq_read_nolock(&console_mode_info[CONSOLE_MODE_ATTOMIC_NMI].seq));
-
-		if (seq_nmi > seq)
-			seq = seq_nmi;
-
-		/*
-		 * Return what has already been proceed by normal consoles
-		 * when the atomic consoles have not been used yet.
-		 */
-		if (seq > 0)
-			return seq;
-		return latched_seq_read_nolock(&console_mode_info[CONSOLE_MODE_NORMAL].seq);
-	}
-
-	return latched_seq_read_nolock(&console_mode_info[mode].seq;
-}
-
-/*
- * Generic cycle for flushing messages to the console.
- *
- * Return: the next to be proceed sequence number;
- */
-void console_write_pending_messages(enum console_mode mode);
-{
-	struct printk_info info;
-	struct printk_record r;
-	u64 seq;
-
-	prb_rec_init_rd(&r, &info, console_mode_info[mode].text,
-			    sizeof(console_mode_info[mode].text));
-
-	for (;;) {
-		/*
-		 * Stop normal console when atomic consoles got
-		 * activated in a panic mode.
-		 */
-		if (ctx == CONSOLE_MODE_NORMAL && atomic_console_used)
-			break;
-
-		seq = get_console_seq(mode);
-		if (!prb_read_valid(prb, seq, &r))
-			return;
-
-		if (suppress_message_printing(r.info->level)) {
-			set_console_seq(seq + 1, mode);
-			continue;
-		}
-
-		len = console_format_msg(r);
-		call_console_drivers(...);
-		set_console_seq(seq + 1, mode);
-	}
-}
-
-void console_unlock(void)
-
-{
-	bool retry;
-	int seq;
-
-again:
-	/* Prevent infinite loop when normal consoles were stopped */
-	if (atomic_console_used) {
-		up_console_sem();
-		return;
-	}
-
-	console_write_pending_messages(CONSOLE_MODE_NORMAL);
-	up_console_sem();
-
-	/*
-	 * Make sure that someone handles messages added in the small
-	 * race window before console_sem was released.
-	 */
-	retry = prb_read_valid(prb, get_console_seq(CONSOLE_MODE_NORMAL), NULL);
-	if (retry && console_trylock())
-		goto again;
-}
-
-void atomic_console_write_pending()
-{
-	unsinged long flags;
-
-	raw_printk_cpu_lock_irqsave(flags);
-
-	atomic_console_used = true;
-	if (in_nmi)
-		console_write_pending_messages(CONSOLE_MODE_ATOMIC_NMI);
-	else
-		console_write_pending_messages(CONSOLE_MODE_ATOMIC);
-	}
-
-	raw_printk_cpu_unlock_irqrestore(flags);
-}
-
-void replay_all_messages()
-{
-	set_console_seq(CONSOLE_MODE_REPLAY_ALL, rb_first_valid_seq(prb));
-	console_write_pending_messages(CONSOLE_MODE_REPLAY_ALL);
-}
-
-
-
-Problems:
-
-   a) The same line might be printed by more contexts.
-   b) per-console kthreads?
-
-
-Ad a) I am not sure if we could prevent duplicated lines when
-      the nested IRQ/NMI writes the same message that is just
-      being written by the outer context. But it should be
-      an acceptable corner case.
-
-Ad b) Everything will get much more complicated with per-console
-      kthreads. We will need counters and buffers for each console
-      and each context.
-
-
-This is what I was able to come up before leaving for vacation. I am
-not sure if it is the best design/naming and it if it has a chance
-to work.
-
-But it looks like a way how to re-use the same code in all modes.
-It might help to see what is the same and what is special about each
-mode.
-
-
-I would prefer to see something like this instead of the completely
-different code paths for atomic consoles that are proposed by 7th
-patch of this patchset.
-
-Best Regards,
-Petr
