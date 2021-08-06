@@ -2,84 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134483E29E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C553E29F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245511AbhHFLlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:41:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45800 "EHLO mail.kernel.org"
+        id S245661AbhHFLnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:43:39 -0400
+Received: from ip-15.mailobj.net ([213.182.54.15]:52996 "EHLO msg-4.mailo.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233299AbhHFLlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:41:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA3E060E96;
-        Fri,  6 Aug 2021 11:41:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628250080;
-        bh=VFZN0rBpppBNLUjU4jzi8gHijERiKL8ZEpIblAjfEFI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kIbH3DRTq2Yh0J8aQC6p0lG3UyMCrFt0k7rpAiM0ndNHnjsYKHVTrN1zsXHLfmQS2
-         7tVJj2nnPHe9jf1CTytZeqBuRtq0T00xT252KhG41zIFSJRL8qG8bEREUhbTuGoiKc
-         r2KoAKBhRm+w7dcePHZ3sd/Ry03/rGFU7qNwA8V1OEI5c81LKutKxxCG0eNsuoaqqg
-         4ULK7MibdtcRy/lzmvpSksKuvu1dyKKZ6lcK0HR95hRmftAbKWLyE3Bydq+Yb6MExK
-         JxoGxAULAzi64wh5k4esUAFVXlw38EzFQDaAzX6uuzDhe+C6BOttTSldrDlsQmA4Di
-         ztC0VPwcEPVBw==
-Date:   Fri, 6 Aug 2021 12:41:15 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Claire Chang <tientzu@chromium.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] of: restricted dma: Don't fail device probe on rmem init
- failure
-Message-ID: <20210806114114.GC2531@willie-the-truck>
-References: <20210805094736.902-1-will@kernel.org>
- <af998e69-671c-6d13-bd9b-da71b389575c@arm.com>
+        id S240091AbhHFLni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 07:43:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+        t=1628250147; bh=chhPzgGlHlmsI2aXic5J0cn66W0OA9yfV1Ne08AgXr4=;
+        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
+         MIME-Version:Content-Transfer-Encoding;
+        b=LftT4vEUS3JYLqt4eQZJRY2sGHsCJDr3rARelYCOU+2+1h5GOgfw0K+Z4a8IVAEmo
+         CVsYTA4cVUkgQc64ZKc4gecrJp+oIjnnM2vw84JUujR6XQGxLgMDCOlMT3CoJY5MrW
+         BWtOUhbMm3RUIL/1OzsyyEAAH2fpC+TUc77FAkog=
+Received: by b-3.in.mailobj.net [192.168.90.13] with ESMTP
+        via proxy.mailoo.org [213.182.55.207]
+        Fri,  6 Aug 2021 13:42:27 +0200 (CEST)
+X-EA-Auth: 8DhMzZZrEP2yfjEUnkrIZeRAg9eb4SA3Djlt8yEJXqLYwqs+EH5Dgaq3W/ifqIT2E9wwbfOiH+3BpMkUTz/OcJ20/nE7+CBOgyrNnk5SALA=
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     tiwai@suse.com, perex@perex.cz
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        broonie@kernel.org, lgirdwood@gmail.com, bgoswami@codeaurora.org,
+        srinivas.kandagatla@linaro.org, stephan@gerhold.net,
+        Vincent Knecht <vincent.knecht@mailoo.org>
+Subject: [PATCH v2] ASoC: qcom: apq8016_sbc: Add SEC_MI2S support
+Date:   Fri,  6 Aug 2021 13:41:16 +0200
+Message-Id: <20210806114116.895473-1-vincent.knecht@mailoo.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <af998e69-671c-6d13-bd9b-da71b389575c@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 11:26:15AM +0100, Robin Murphy wrote:
-> On 2021-08-05 10:47, Will Deacon wrote:
-> > If CONFIG_DMA_RESTRICTED_POOL=n then probing a device with a reference
-> > to a "restricted-dma-pool" will fail with a reasonably cryptic error:
-> > 
-> >    | pci-host-generic: probe of 10000.pci failed with error -22
-> > 
-> > Print a more helpful message in this case and try to continue probing
-> > the device as we do if the kernel doesn't have the restricted DMA patches
-> > applied or either CONFIG_OF_ADDRESS or CONFIG_HAS_DMA =n.
-> 
-> Makes sense to me;
-> 
-> Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+This patch adds external codec support on secondary mi2s.
+It is used for headphones on some devices, eg. alcatel-idol347.
 
-Cheers.
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+---
+v1->v2: thanks Srinivas for the review, and Stephan for guidance
+- Add _SEC suffix to defines to highlight usage for secondary mi2s
+- Clear TLMM_WS_OUT_SEL and TLMM_WS_EN_SEL fields before setting value
+---
+ sound/soc/qcom/apq8016_sbc.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-> Although if we allow probe to succeed when a pool really was there for a
-> reason, it may end up being much more fatal if the driver then tries to do a
-> DMA transfer to any old memory and the device access causes an SError, or
-> the VM to be killed, or whatever. That's not quite the same as the stubbed
-> cases where the respective platforms couldn't have a genuine pool to parse
-> either way, but as you say it is what could happen already if the user tried
-> to use an older kernel, and I think the chance of
-> of_reserved_mem_device_init_by_idx() failing without something being
-> terminally wrong anyway - invalid DT, not enough RAM, etc. - is low enough
-> that it's probably not a major concern. Plus I'd hope that the memory
-> protection schemes people do actually implement don't take such such a
-> zero-tolerance approach anyway - allowing a malicious or malfunctioning
-> device to take down the system because it tried to make a rogue access which
-> *was* already contained seems a bit silly.
+diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
+index 08a05f0ecad7..ba2a98268ee4 100644
+--- a/sound/soc/qcom/apq8016_sbc.c
++++ b/sound/soc/qcom/apq8016_sbc.c
+@@ -30,6 +30,13 @@ struct apq8016_sbc_data {
+ #define MIC_CTRL_QUA_WS_SLAVE_SEL_10	BIT(17)
+ #define MIC_CTRL_TLMM_SCLK_EN		BIT(1)
+ #define	SPKR_CTL_PRI_WS_SLAVE_SEL_11	(BIT(17) | BIT(16))
++#define SPKR_CTL_TLMM_MCLK_EN		BIT(1)
++#define SPKR_CTL_TLMM_SCLK_EN		BIT(2)
++#define SPKR_CTL_TLMM_DATA1_EN		BIT(3)
++#define SPKR_CTL_TLMM_WS_OUT_SEL_MASK	GENMASK(7, 6)
++#define SPKR_CTL_TLMM_WS_OUT_SEL_SEC	BIT(6)
++#define SPKR_CTL_TLMM_WS_EN_SEL_MASK	GENMASK(19, 18)
++#define SPKR_CTL_TLMM_WS_EN_SEL_SEC	BIT(18)
+ #define DEFAULT_MCLK_RATE		9600000
+ 
+ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
+@@ -40,6 +47,7 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct apq8016_sbc_data *pdata = snd_soc_card_get_drvdata(card);
+ 	int i, rval;
++	u32 value;
+ 
+ 	switch (cpu_dai->id) {
+ 	case MI2S_PRIMARY:
+@@ -53,6 +61,15 @@ static int apq8016_sbc_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 			MIC_CTRL_TLMM_SCLK_EN,
+ 			pdata->mic_iomux);
+ 		break;
++	case MI2S_SECONDARY:
++		/* Clear TLMM_WS_OUT_SEL and TLMM_WS_EN_SEL fields */
++		value = readl(pdata->spkr_iomux) &
++			~(SPKR_CTL_TLMM_WS_OUT_SEL_MASK | SPKR_CTL_TLMM_WS_EN_SEL_MASK);
++		/* Configure the Sec MI2S to TLMM */
++		writel(value | SPKR_CTL_TLMM_MCLK_EN | SPKR_CTL_TLMM_SCLK_EN |
++			SPKR_CTL_TLMM_DATA1_EN | SPKR_CTL_TLMM_WS_OUT_SEL_SEC |
++			SPKR_CTL_TLMM_WS_EN_SEL_SEC, pdata->spkr_iomux);
++		break;
+ 	case MI2S_TERTIARY:
+ 		writel(readl(pdata->mic_iomux) | MIC_CTRL_TER_WS_SLAVE_SEL |
+ 			MIC_CTRL_TLMM_SCLK_EN,
+-- 
+2.31.1
 
-There's also a case where swiotlb is forced (swiotlb=force) but restricted
-DMA pools have been sized and allocated for individual devices in the DT.
-In this case, having the guest fallback to the default shared swiotlb
-buffer is better than failing the probe if CONFIG_DMA_RESTRICTED_POOL=n.
 
-Will
+
