@@ -2,133 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB803E2650
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C463E2657
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243412AbhHFIpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:45:17 -0400
-Received: from outbound-smtp02.blacknight.com ([81.17.249.8]:53011 "EHLO
-        outbound-smtp02.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235812AbhHFIpQ (ORCPT
+        id S243558AbhHFIrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:47:43 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18362 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231572AbhHFIrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:45:16 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp02.blacknight.com (Postfix) with ESMTPS id 10F13BF19E
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 09:45:00 +0100 (IST)
-Received: (qmail 1452 invoked from network); 6 Aug 2021 08:44:59 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Aug 2021 08:44:59 -0000
-Date:   Fri, 6 Aug 2021 09:44:58 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Daniel Vacek <neelx.g@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] mm/vmstat: Protect per cpu variables with preempt
- disable on RT
-Message-ID: <20210806084458.GG6464@techsingularity.net>
-References: <20210805160019.1137-1-mgorman@techsingularity.net>
- <20210805160019.1137-2-mgorman@techsingularity.net>
- <20210805162206.664dfc8c090f2be5ea313d57@linux-foundation.org>
+        Fri, 6 Aug 2021 04:47:41 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1768YZLi172583;
+        Fri, 6 Aug 2021 04:47:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=ppgRYHyx08vp3ntOoPEDrsaY15wraqD6zbtQ/7JDfkk=;
+ b=SwQkIj47na9WmWdyt5DhN1PmkfoGvqmewt/JvlISvySoRM1cnAPUS2w1LP1xg1eF2pWJ
+ 5w+oFTQvPJNOtrB0lPTsjqivvut6SeGu2lyXXjyFalGyyKBTxZmywx7MEsBIuWrQhcgl
+ EFMSpLxUwdyp8jUrveoBwiIYnVPWjeWDeL5nzO/mSlY1wAfyb8zp0Pia/go1FIazIL5J
+ wPXtrnk3QHDLXjjTuPHOJm+/XEYhQ4ma595OSCb29na+2j+R7U78REmxFiL/6KFXl/3J
+ gn0P5fytsmGjAVJrYoJOuDjSHIQ6CRYm1U5v8oO44ArNSXpz4hM9LFwQBcySX52+TZNS jA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a8k45n9a2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Aug 2021 04:47:26 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1768YvV4174608;
+        Fri, 6 Aug 2021 04:47:26 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a8k45n99d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Aug 2021 04:47:25 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1768be2g025145;
+        Fri, 6 Aug 2021 08:47:23 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 3a4wshvw54-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Aug 2021 08:47:23 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1768lJjr50528652
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Aug 2021 08:47:19 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9C8FA5205A;
+        Fri,  6 Aug 2021 08:47:19 +0000 (GMT)
+Received: from osiris (unknown [9.145.14.196])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 5BC9E52052;
+        Fri,  6 Aug 2021 08:47:19 +0000 (GMT)
+Date:   Fri, 6 Aug 2021 10:47:17 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH v1] s390/mm: remove unused cmma functions
+Message-ID: <YQz3FQVRnuZuYT3+@osiris>
+References: <20210806075430.6103-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210805162206.664dfc8c090f2be5ea313d57@linux-foundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210806075430.6103-1-david@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 88DveIWrVuZQlhASRNFLsuVV0EHxwyDy
+X-Proofpoint-ORIG-GUID: 4_FU3BHFTXaTzD0GoO6RHi2ue0OQsFy9
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-06_02:2021-08-05,2021-08-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ clxscore=1015 impostorscore=0 mlxscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 suspectscore=0 malwarescore=0 mlxlogscore=815
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108060060
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 04:22:06PM -0700, Andrew Morton wrote:
-> On Thu,  5 Aug 2021 17:00:19 +0100 Mel Gorman <mgorman@techsingularity.net> wrote:
+On Fri, Aug 06, 2021 at 09:54:30AM +0200, David Hildenbrand wrote:
+> The last user of arch_set_page_states(), arch_set_page_nodat() and
+> arch_test_page_nodat() was removed in commit 394216275c7d
+> ("s390: remove broken hibernate / power management support"),
+> let's remove these functions.
 > 
-> > From: Ingo Molnar <mingo@elte.hu>
-> > 
-> > Disable preemption on -RT for the vmstat code. On vanila the code runs
-> > in IRQ-off regions while on -RT it may not when stats are updated under
-> > a local_lock. "preempt_disable" ensures that the same resources is not
-> > updated in parallel due to preemption.
-> > 
-> > This patch differs from the preempt-rt version where __count_vm_event and
-> > __count_vm_events are also protected. The counters are explicitly "allowed
-> > to be to be racy" so there is no need to protect them from preemption. Only
-> > the accurate page stats that are updated by a read-modify-write need
-> > protection. This patch also differs in that a preempt_[en|dis]able_rt
-> > helper is not used. As vmstat is the only user of the helper, it was
-> > suggested that it be open-coded in vmstat.c instead of risking the helper
-> > being used in unnecessary contexts.
-> > 
-> > ...
-> >
-> > --- a/mm/vmstat.c
-> > +++ b/mm/vmstat.c
-> > @@ -319,6 +319,16 @@ void __mod_zone_page_state(struct zone *zone, enum zone_stat_item item,
-> >  	long x;
-> >  	long t;
-> >  
-> > +	/*
-> > +	 * Accurate vmstat updates require a RMW. On !PREEMPT_RT kernels,
-> > +	 * atomicity is provided by IRQs being disabled -- either explicitly
-> > +	 * or via local_lock_irq. On PREEMPT_RT, local_lock_irq only disables
-> > +	 * CPU migrations and preemption potentially corrupts a counter so
-> > +	 * disable preemption.
-> > +	 */
-> > +	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> > +		preempt_disable();
-> 
-> This is so obvious I expect it has been discussed, but...  why not
-> 
-> static inline void preempt_disable_if_rt(void)
-> {
-> 	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-> 		preempt_disable();
-> }
-> 
-> ?
-> 
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: linux-s390@vger.kernel.org
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  arch/s390/include/asm/page.h |  3 ---
+>  arch/s390/mm/page-states.c   | 43 ------------------------------------
+>  2 files changed, 46 deletions(-)
 
-The changelog briefly mentions it "also differs in that a
-preempt_[en|dis]able_rt" helper was not used. It is preferred that the RT
-helper does not exist and potentially get reused in other contexts that
-could have a different solution. Hence, it's open-coded for mm/vmstat.c
-even though it looks awkward. Obviously the helper could be in mm/vmstat.c
-but the only name that made sense was preempt_[en|dis]able_rt and that
-would likely get promoted to a common header for some reason.
-
-The vmstat counters are "special" in that they have to be fast, an
-accurate counter must be available cheaply and they are updated from a
-mix of IRQ-disabled and local_lock_irq-disabled sections where the latter
-only disables CPU migrations (but not preemption) on PREEMPT_RT. It's
-not a special case that should be encouraged but is somewhat justified
-given how often vmstats get updated and its performance requirements.
-
-The alternative would be to convert vmstat counters to percpu_counters.
-It also takes care to protect from IRQ and preempt contexts based on
-comments in the code and functionally is very similar to vmstat. However,
-based on how it works, I think it would incur a performance regression
-as well as having a larger memory footprint. The use of raw IRQ-safe
-spinlocks risks parallel update scaling issues that vmstat avoids with
-with rmw, cmpxchg and atomics depending on context combined combined with
-workqueues to accumulate per-cpu values. Converting to percpu_counters
-and then modifying the implementation to be similar to vmstat might work
-but would also be high risk with some significant complexities such as
-dealing with vmstat shepherd.
-
-Hence, I think the open-coded is justified if somewhat clumsy so indicate
-this is a special case we're willing to tolerate but also clumsy enough
-that someone trying to copy it will be forced to think heavily about
-their problem. The only change I'd like to make to the patch is to
-
-s/See __mod_node_page_state/See __mod_zone_page_state/
-
-which is based on an stupid typo compounded by cut&paste as noted by 
-Daniel Vacek.
-
--- 
-Mel Gorman
-SUSE Labs
+Applied, thanks.
