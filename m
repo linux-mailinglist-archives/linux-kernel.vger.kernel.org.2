@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0B03E26E1
+	by mail.lfdr.de (Postfix) with ESMTP id A08EF3E26E3
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244286AbhHFJMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 05:12:10 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:49671 "EHLO
+        id S244297AbhHFJMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:12:14 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:42109 "EHLO
         out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244270AbhHFJL6 (ORCPT
+        by vger.kernel.org with ESMTP id S244128AbhHFJMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:11:58 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 073E15C00D8;
-        Fri,  6 Aug 2021 05:11:43 -0400 (EDT)
+        Fri, 6 Aug 2021 05:12:02 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id A8C625C00A5;
+        Fri,  6 Aug 2021 05:11:46 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 06 Aug 2021 05:11:43 -0400
+  by compute3.internal (MEProxy); Fri, 06 Aug 2021 05:11:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
          h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=Ak46xq3GXQE1n
-        +Zrtgy3l+N9eiZ5hizKgn/u3ZOltnE=; b=nQimZSsXwodQnXvtdIvaMcDTKAdW0
-        vEy+HxwhD0/K9bEuE9fqRMCjlNWKK+YcGHD7LkkmkzuZm/bDdH0agoJZ7xAzgtiY
-        4BK6Syx9DLv4oAZeyw+qmWznAo+aLSE/N5v33aa5nZWvgOfFwqiWzGkREvUhrw2K
-        QG94ZKmSgbQyBHpMxIJ5ZXAoz78pKKfJahH6P0ttWufo/1sT8DTsL+oG94OEU7m/
-        6H/bKUSP6g7tO5CALZYK/1MY7XJ9HVqmPY5aeJt0vMDihJjexf3ZCGBaOwbKypIZ
-        18YACb0NJvoIo+KYZFZNLnwt/0ByIJxLVp4xRts/aXhkodjBOKLP+9gwg==
+        :mime-version:content-transfer-encoding; s=fm1; bh=fBXKxTdI6gPhS
+        j9cGl0EQmbIHIygasR+Oo/pPe/tKuo=; b=gyvbhOLxhR7gbps65/uNWlBCKsqcn
+        3W0kaoX8ZUIlceMmfGTs8DU4aZwjcxX5FN8r4kuiLTtYhRlNX6TrmxXpvE+6C1Ks
+        wJOQC8/LS5QyNXm3a0OF/M6PYLbxeMCBCqqcrPV/8XlE0PPUKzP1tFb94HwJMy9m
+        VnXavM35ueDeQCg3vvHYxHKjmwr8EpfRf8RW2EcSPbQxeGmXYwVpeOY3s3BcML1w
+        4kacgyaEYKdfto2EAHcmwW1HJbEscNB0BEeW+tlhsADJSwcYRsu5Q6LVp0fd+Bw+
+        YIDFrcCtQ05hdqY/yUMrIv0aMZASsYM6hgREj3VSYt+5dl1VfdHqMUGTA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=Ak46xq3GXQE1n+Zrtgy3l+N9eiZ5hizKgn/u3ZOltnE=; b=W23dEUrv
-        KxRSlUOfrzl0CgVf1rQ1NIScwxyo6bTXx8eZFaPMJx8CFZkQKvP3uMQtdvZawdyK
-        4FO18qeQMDS88x4Tk3Ymudz3AlrXYsRRaXp58DuWxWuV61xp3CpO0bPQ26qvs1RL
-        tDXBEWqgg2d0QFyLnofuPAHYDqU3tFkcpM23nkih/17zaqhykEezSbsZ1PPVGjhJ
-        AjOIOP+YfQpckjveXY8lCtPy7H7GJTD2ha08pOF6w1Uwsd4wDxq7whHKbEWzaHA4
-        qSwNvq0eZzFotfzr8buU6EIFdPtP3jOguvH5uyaDWfLPelSAjVpO4i6kpfESqBcx
-        zZ7nFP0m1zc66Q==
-X-ME-Sender: <xms:zvwMYURJ6xepP_57kVtzJbwUSjpH57WcYiEYsmoa1O-6t0cBoeNSAQ>
-    <xme:zvwMYRxmp11pllRbOdtYlL6O9dufQQnR08m4IsXmB6D3zCPCJQxxQxRHvGu6pAUm_
-    lSdGHkPuhr28l5Wx2Y>
-X-ME-Received: <xmr:zvwMYR36M6duk_tEwN9AcNnk03ZRpKhAqHMjBtbXdFUZy-MsWMFqMfopkf44p2s8EQhjO6_g-l3XAYoPKA_U6_bid4SfVqL6rIKJTkvhMQoT7Q>
+        fm3; bh=fBXKxTdI6gPhSj9cGl0EQmbIHIygasR+Oo/pPe/tKuo=; b=QkpV2Svn
+        C/0Vl7KusH2Pl0w86RhcR+BuJLhfVv6f/Ei1TuQJiC6rw9IgRnxmZeahKodFWAOu
+        xOnkSBlmDE9pWhI5QWOGS1RnSnD4EQ+jaQiv/JgVNUshSH70Gv9OSYid1Av6XbHF
+        WgC6Dllp0U2FaiI1ilVSfT224XP12JP3Co+ZJRYH/V9WYxi4THyKfi/DMmbPN6q+
+        1dbXcH9mXpOmlby9ZikjNQyw7//ajUB+twOJ4gseAg+SVa6Cil8fA6UQZ+1tAuDr
+        cFhyDb1ehlBpg7f5pXvW86EC6YX9TAAsl5sb1gYormFKk+OB2w+2Jf3mAxPTc1CC
+        EcIJKIAPTxGNGA==
+X-ME-Sender: <xms:0vwMYbraYxoLKJoAS1D90Ll8vImar9nTGCPjfASKzSstXejPUf7AYg>
+    <xme:0vwMYVpZdSpkyPZiw0H_4r1hPGSWhU2Jg357hJExSbzxT2aiz_4LcDuDgkf065QaA
+    8Pq8qotE5Kbck2m9n8>
+X-ME-Received: <xmr:0vwMYYM_luQ404hsmlx6H0XO15ebqHZjHT0sXCJ3mL8l8SWL7l_R3oSNFtiAzJl_r7i4XStJJJy73X5-lzHqXLq1zgZjI1DAJj3NSJZSjTtZYg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjedugdduudcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
     ertddtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghi
     rhesrghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepheffjeetteetke
     ffhfdvgefhgeevvddvueejheehfeevfedufeegiedtheeujeelnecuffhomhgrihhnpehr
-    vghmrghrkhgrsghlvgdrtghomhenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmh
+    vghmrghrkhgrsghlvgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
     epmhgrihhlfhhrohhmpegrlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
-X-ME-Proxy: <xmx:zvwMYYD4duGoCPSmX6leFxX4nUVcpqsugZRD3yAAX-Tmbse0OW-uEw>
-    <xmx:zvwMYdiSLjVAHaxAAl4yqNQdZSawbcECqiBABW3gTC38zr63-vTlag>
-    <xmx:zvwMYUoyyayOnmkbRmo828vZ6o2ISKnJ55LhiwxT505-FfjWgTfmZw>
-    <xmx:z_wMYVivZs0oiMGTCXWHUnKSlx4ksqDoW4cl1T1xJyI30zJm8kWQDg>
+X-ME-Proxy: <xmx:0vwMYe4osLz-9B2T7YbdVhEJgz93a_DIhfwfKN-_9dLtms-o9SfAJw>
+    <xmx:0vwMYa4Fc_fawC-z4DdUhJXxnoMQdl9leyQJIIoKYoG_D2zQ32OBTA>
+    <xmx:0vwMYWhbYlR2uO1n25qgk0JYGSzQxFPNC76j1AlxS_dwO3lr5JJeIg>
+    <xmx:0vwMYRbur-Fgr9-ITM0IuhJjuEwNKCO5bNKSmjMhwOeMVCFUFqtliA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 6 Aug 2021 05:11:39 -0400 (EDT)
+ 6 Aug 2021 05:11:43 -0400 (EDT)
 From:   Alistair Francis <alistair@alistair23.me>
 To:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
         broonie@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         alistair23@gmail.com, Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v9 07/12] thermal: sy7636a: Add thermal driver for sy7636a
-Date:   Fri,  6 Aug 2021 19:10:53 +1000
-Message-Id: <20210806091058.141-8-alistair@alistair23.me>
+Subject: [PATCH v9 08/12] hwmon: sy7636a: Add temperature driver for sy7636a
+Date:   Fri,  6 Aug 2021 19:10:54 +1000
+Message-Id: <20210806091058.141-9-alistair@alistair23.me>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210806091058.141-1-alistair@alistair23.me>
 References: <20210806091058.141-1-alistair@alistair23.me>
@@ -72,143 +72,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add thermal driver to enable kernel based polling
-and shutdown of device for temperatures out of spec
+This is a multi-function device to interface with the sy7636a
+EPD PMIC chip from Silergy.
 
 Signed-off-by: Alistair Francis <alistair@alistair23.me>
 ---
- drivers/thermal/Kconfig           |  6 ++
- drivers/thermal/Makefile          |  1 +
- drivers/thermal/sy7636a_thermal.c | 91 +++++++++++++++++++++++++++++++
- 3 files changed, 98 insertions(+)
- create mode 100644 drivers/thermal/sy7636a_thermal.c
+ arch/arm/configs/imx_v6_v7_defconfig |  1 +
+ drivers/hwmon/Kconfig                | 10 ++++
+ drivers/hwmon/Makefile               |  1 +
+ drivers/hwmon/sy7636a-hwmon.c        | 77 ++++++++++++++++++++++++++++
+ 4 files changed, 89 insertions(+)
+ create mode 100644 drivers/hwmon/sy7636a-hwmon.c
 
-diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
-index d7f44deab5b1..6ee0e7de1b37 100644
---- a/drivers/thermal/Kconfig
-+++ b/drivers/thermal/Kconfig
-@@ -450,6 +450,12 @@ depends on (ARCH_STI || ARCH_STM32) && OF
- source "drivers/thermal/st/Kconfig"
- endmenu
+diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
+index 477dac1edc75..ef8c6dca1277 100644
+--- a/arch/arm/configs/imx_v6_v7_defconfig
++++ b/arch/arm/configs/imx_v6_v7_defconfig
+@@ -229,6 +229,7 @@ CONFIG_RN5T618_POWER=m
+ CONFIG_SENSORS_MC13783_ADC=y
+ CONFIG_SENSORS_GPIO_FAN=y
+ CONFIG_SENSORS_IIO_HWMON=y
++CONFIG_SENSORS_SY7636A=y
+ CONFIG_THERMAL_STATISTICS=y
+ CONFIG_THERMAL_WRITABLE_TRIPS=y
+ CONFIG_CPU_THERMAL=y
+diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+index e3675377bc5d..6cae12de59cd 100644
+--- a/drivers/hwmon/Kconfig
++++ b/drivers/hwmon/Kconfig
+@@ -1631,6 +1631,16 @@ config SENSORS_SIS5595
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called sis5595.
  
-+config SY7636A_THERMAL
-+	tristate "SY7636A thermal management"
++config SENSORS_SY7636A
++	tristate "Silergy SY7636A"
++	depends on I2C
 +	help
-+	  Enable the sy7636a thermal driver, which supports the
-+	  temperature sensor embedded in Silabs SY7636A IC.
++	  If you say yes here you get support for the thermistor readout of
++	  the Silergy SY7636A PMIC.
 +
- source "drivers/thermal/tegra/Kconfig"
- 
- config GENERIC_ADC_THERMAL
-diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
-index 82fc3e616e54..2e1aca8a0a09 100644
---- a/drivers/thermal/Makefile
-+++ b/drivers/thermal/Makefile
-@@ -51,6 +51,7 @@ obj-$(CONFIG_DA9062_THERMAL)	+= da9062-thermal.o
- obj-y				+= intel/
- obj-$(CONFIG_TI_SOC_THERMAL)	+= ti-soc-thermal/
- obj-y				+= st/
-+obj-$(CONFIG_SY7636A_THERMAL)	+= sy7636a_thermal.o
- obj-$(CONFIG_QCOM_TSENS)	+= qcom/
- obj-y				+= tegra/
- obj-$(CONFIG_HISI_THERMAL)     += hisi_thermal.o
-diff --git a/drivers/thermal/sy7636a_thermal.c b/drivers/thermal/sy7636a_thermal.c
++	  This driver can also be built as a module.  If so, the module
++	  will be called sy7636a-hwmon.
++
+ config SENSORS_DME1737
+ 	tristate "SMSC DME1737, SCH311x and compatibles"
+ 	depends on I2C && !PPC
+diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+index d712c61c1f5e..8b2e09e25b24 100644
+--- a/drivers/hwmon/Makefile
++++ b/drivers/hwmon/Makefile
+@@ -180,6 +180,7 @@ obj-$(CONFIG_SENSORS_SMSC47M1)	+= smsc47m1.o
+ obj-$(CONFIG_SENSORS_SMSC47M192)+= smsc47m192.o
+ obj-$(CONFIG_SENSORS_SPARX5)	+= sparx5-temp.o
+ obj-$(CONFIG_SENSORS_STTS751)	+= stts751.o
++obj-$(CONFIG_SENSORS_SY7636A)	+= sy7636a-hwmon.o
+ obj-$(CONFIG_SENSORS_AMC6821)	+= amc6821.o
+ obj-$(CONFIG_SENSORS_TC74)	+= tc74.o
+ obj-$(CONFIG_SENSORS_THMC50)	+= thmc50.o
+diff --git a/drivers/hwmon/sy7636a-hwmon.c b/drivers/hwmon/sy7636a-hwmon.c
 new file mode 100644
-index 000000000000..4e41ae78d11c
+index 000000000000..0f4618e24d71
 --- /dev/null
-+++ b/drivers/thermal/sy7636a_thermal.c
-@@ -0,0 +1,91 @@
++++ b/drivers/hwmon/sy7636a-hwmon.c
+@@ -0,0 +1,77 @@
 +// SPDX-License-Identifier: GPL-2.0+
-+//
-+// Functions to access SY3686A power management chip temperature
-+//
-+// Copyright (C) 2019 reMarkable AS - http://www.remarkable.com/
-+//
-+// Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
-+//          Alistair Francis <alistair@alistair23.me>
++/*
++ * Functions to access SY3686A power management chip temperature
++ *
++ * Copyright (C) 2019 reMarkable AS - http://www.remarkable.com/
++ *
++ * Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
++ *          Alistair Francis <alistair@alistair23.me>
++ */
 +
 +#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/slab.h>
++#include <linux/jiffies.h>
++#include <linux/hwmon.h>
++#include <linux/hwmon-sysfs.h>
++#include <linux/err.h>
++#include <linux/sysfs.h>
 +#include <linux/platform_device.h>
-+#include <linux/thermal.h>
 +
 +#include <linux/mfd/sy7636a.h>
 +
-+static int sy7636a_get_temp(void *arg, int *res)
++static ssize_t show_temp(struct device *dev,
++	struct device_attribute *attr, char *buf)
 +{
-+	unsigned int reg_val, mode_ctr;
++	unsigned int reg_val;
 +	int ret;
-+	struct regmap *regmap = arg;
-+	bool isVoltageActive;
-+
-+	ret = regmap_read(regmap,
-+			SY7636A_REG_OPERATION_MODE_CRL, &mode_ctr);
-+	if (ret)
-+		return ret;
-+
-+	isVoltageActive = mode_ctr & SY7636A_OPERATION_MODE_CRL_ONOFF;
-+
-+	if (!isVoltageActive) {
-+		ret = regmap_write(regmap,
-+				SY7636A_REG_OPERATION_MODE_CRL,
-+				mode_ctr | SY7636A_OPERATION_MODE_CRL_ONOFF);
-+		if (ret)
-+			return ret;
-+	}
++	struct regmap *regmap = dev_get_drvdata(dev);
 +
 +	ret = regmap_read(regmap,
 +			SY7636A_REG_TERMISTOR_READOUT, &reg_val);
 +	if (ret)
 +		return ret;
 +
-+	if (!isVoltageActive) {
-+		ret = regmap_write(regmap,
-+				SY7636A_REG_OPERATION_MODE_CRL,
-+				mode_ctr);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	*res = reg_val * 1000;
-+
-+	return ret;
++	return snprintf(buf, PAGE_SIZE, "%d\n", reg_val);
 +}
 +
-+static const struct thermal_zone_of_device_ops ops = {
-+	.get_temp	= sy7636a_get_temp,
++static SENSOR_DEVICE_ATTR(temp0, 0444, show_temp, NULL, 0);
++
++static struct attribute *sy7636a_attrs[] = {
++	&sensor_dev_attr_temp0.dev_attr.attr,
++	NULL
 +};
 +
-+static int sy7636a_thermal_probe(struct platform_device *pdev)
++ATTRIBUTE_GROUPS(sy7636a);
++
++static int sy7636a_sensor_probe(struct platform_device *pdev)
 +{
 +	struct regmap *regmap = dev_get_drvdata(pdev->dev.parent);
-+	struct thermal_zone_device *thermal_zone_dev;
++	struct device *hwmon_dev;
++	int err;
 +
-+	thermal_zone_dev = devm_thermal_zone_of_sensor_register(
-+			pdev->dev.parent,
-+			0,
-+			regmap,
-+			&ops);
++	if (!regmap)
++		return -EPROBE_DEFER;
 +
-+	return PTR_ERR_OR_ZERO(thermal_zone_dev);
++	hwmon_dev = devm_hwmon_device_register_with_groups(&pdev->dev,
++			"sy7636a_temperature", regmap, sy7636a_groups);
++
++	if (IS_ERR(hwmon_dev)) {
++		err = PTR_ERR(hwmon_dev);
++		dev_err(&pdev->dev, "Unable to register hwmon device, returned %d", err);
++		return err;
++	}
++
++	return 0;
 +}
 +
-+static const struct platform_device_id sy7636a_thermal_id_table[] = {
-+	{ "sy7636a-thermal", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(platform, sy7636a_thermal_id_table);
-+
-+static struct platform_driver sy7636a_thermal_driver = {
++static struct platform_driver sy7636a_sensor_driver = {
++	.probe = sy7636a_sensor_probe,
 +	.driver = {
-+		.name = "sy7636a-thermal",
++		.name = "sy7636a-temperature",
 +	},
-+	.probe = sy7636a_thermal_probe,
-+	.id_table = sy7636a_thermal_id_table,
 +};
-+module_platform_driver(sy7636a_thermal_driver);
++module_platform_driver(sy7636a_sensor_driver);
 +
-+MODULE_AUTHOR("Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>");
-+MODULE_DESCRIPTION("SY7636A thermal driver");
-+MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("SY7636A sensor driver");
++MODULE_LICENSE("GPL");
 -- 
 2.31.1
 
