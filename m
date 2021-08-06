@@ -2,76 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64C93E31C8
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 00:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09EC03E31CA
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 00:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245544AbhHFWaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 18:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
+        id S245559AbhHFWa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 18:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245534AbhHFWad (ORCPT
+        with ESMTP id S245547AbhHFWaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 18:30:33 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDF7C06179A
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 15:30:16 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id j18-20020a17090aeb12b029017737e6c349so13507084pjz.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 15:30:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6t4R3/clPInEWqQYAYEqGtfb7Px8wNaCjYlpj80+2H8=;
-        b=KzU0uWQel4rrqucZdeNEFegtyMHl2eu1JNNVShfFEqSIZQRwT9iIriyUSrEtpZic3k
-         xGxqvfScDKAIukCjdhuRPVuxXq1bn5BBIFzAWjRZHxpKhDPQbRw8G6JLb+nhuFX04iXD
-         dzpXkbjuO3UPaRbJ37MGU7vlcPgt8zRMN2W2Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6t4R3/clPInEWqQYAYEqGtfb7Px8wNaCjYlpj80+2H8=;
-        b=EFdZ+qlLx/MTjBS3kEQ7GYgNYNsZltF+37UztdK185LARgCxKDaOfrsuBXs+OKm2g5
-         xrd/K8MEn1TdU9EFvBTAbsOdURhwb0xrs8SPtdaCbQlrGw3E5P/Txz1oR/vKsvNOzt5c
-         P6rq1sKZ/BSNVnNhBBhnrIeKVnDhKavrCsoe/smiH6VVw0jcN80NFQKZFFXYHLXhYpAL
-         c+6FCRBaL/1ERbufnM4aEsULbmI9283etfqb6AqKQ3bq3gRYJsC+ocNIGlkl0JR8u3RT
-         P6i+jaXP3AAAWZAtwuOdBueCnNgSPJPDwPHYrjY8rLGkUJQzQHrVbTLkc0RMNBR7WPsc
-         +eTA==
-X-Gm-Message-State: AOAM531kFRt5urktGDUakP0tGH2jk4PTKJhQfdIa+yYhNMwT+Q6Iuplz
-        catsq2x8VeiCuolep0OkD0H1+A==
-X-Google-Smtp-Source: ABdhPJzJNM8Y2Fq8MMmxSifX6jMF7S2TiaF1k771cOv/hwziioYA+1qaKgY1XfHH80q4W3Y3DA4Nvw==
-X-Received: by 2002:a62:3342:0:b029:3b7:6395:a93 with SMTP id z63-20020a6233420000b02903b763950a93mr6951533pfz.71.1628289015923;
-        Fri, 06 Aug 2021 15:30:15 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 2sm4058945pfe.37.2021.08.06.15.30.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 15:30:15 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 15:30:14 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Stanislav Yakovlev <stas.yakovlev@gmail.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] ipw2x00: Avoid field-overflowing memcpy()
-Message-ID: <202108061529.07216CBF7@keescook>
-References: <20210806200855.2870554-1-keescook@chromium.org>
+        Fri, 6 Aug 2021 18:30:55 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1DFC0613CF;
+        Fri,  6 Aug 2021 15:30:39 -0700 (PDT)
+Received: from localhost.localdomain (unknown [IPv6:2804:14c:1a9:2434:b693:c9:5cb6:b688])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id F25A51F44DDF;
+        Fri,  6 Aug 2021 23:30:35 +0100 (BST)
+From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+Subject: [PATCH] media: ipu3.rst: Improve header formatting on tables
+Date:   Fri,  6 Aug 2021 19:30:22 -0300
+Message-Id: <20210806223022.2012984-1-nfraprado@collabora.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806200855.2870554-1-keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 01:08:55PM -0700, Kees Cook wrote:
-> -	if (element_info == NULL)
-> +	if (!element_info || info_element || info_element->len != size - 2)
->  		return -1;
-> -	if (info_element == NULL)
-> -		return -1;
+Use the header-rows option of the flat-table directive in order to have
+the first row displayed as a header. Also capitalize these headers.
+These changes make the tables easier to read.
 
-Gah, a let a typo in. (should be !info_element.) v2 coming...
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+---
+ Documentation/admin-guide/media/ipu3.rst | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
+diff --git a/Documentation/admin-guide/media/ipu3.rst b/Documentation/admin-guide/media/ipu3.rst
+index 52c1c04173da..83b3cd03b35c 100644
+--- a/Documentation/admin-guide/media/ipu3.rst
++++ b/Documentation/admin-guide/media/ipu3.rst
+@@ -51,10 +51,11 @@ to userspace as a V4L2 sub-device node and has two pads:
+ .. tabularcolumns:: |p{0.8cm}|p{4.0cm}|p{4.0cm}|
+ 
+ .. flat-table::
++    :header-rows: 1
+ 
+-    * - pad
+-      - direction
+-      - purpose
++    * - Pad
++      - Direction
++      - Purpose
+ 
+     * - 0
+       - sink
+@@ -148,10 +149,11 @@ Each pipe has two sink pads and three source pads for the following purpose:
+ .. tabularcolumns:: |p{0.8cm}|p{4.0cm}|p{4.0cm}|
+ 
+ .. flat-table::
++    :header-rows: 1
+ 
+-    * - pad
+-      - direction
+-      - purpose
++    * - Pad
++      - Direction
++      - Purpose
+ 
+     * - 0
+       - sink
 -- 
-Kees Cook
+2.32.0
+
