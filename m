@@ -2,206 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6259A3E2325
+	by mail.lfdr.de (Postfix) with ESMTP id AAFDE3E2326
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 08:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241869AbhHFGDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 02:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhHFGD3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 02:03:29 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1872BC061798
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 23:03:13 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id b128so4835244wmb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 23:03:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=6H+0hcm8l7aLIS2xe0QY8OrUwt8WXy+M0IZiWZTDT/4=;
-        b=ijo0XQNguBvEBbqPFuapHSzDKkdhBjs4bMQanuaouAtLj2nd/+YcxB6WjU+Bn82y4/
-         vf7kk4i3Sgjrb7u22jcQBE2wbsAvOjajQabWl7h2nHynd++3ZfL+XRHD6Odj1HOpMQxf
-         IGXJTXMHgDFPJGNSLjtbWJ4CwMv96GJZMaVKGc0SnY0Hu+qjQnepTByrWBxr5rJvLEfA
-         jJyRf3+vwDC1D7icTLOaGxU2Yotmgyg7FmOsWeI+B+ykp2kwPOSx3ytXCVSvK+yc8Lmd
-         9wq1n4UNG1K5kCIxVc0qqRlwOjCvf0aBR3AfaJ1coZs5ycHyZBuMj2uurpW1qvzjhO1f
-         +j6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=6H+0hcm8l7aLIS2xe0QY8OrUwt8WXy+M0IZiWZTDT/4=;
-        b=VyEl9MUdA+h9Wa8lvz4KpIe9ZmsjlZInKB/uz3VvPrRVGJMtQ1TND9vXCovtDwbTC2
-         X1EvLhg0fzUWRO6PDH2sRuneaQZGa7/bqULODye7WKAwKcNXpCV5zQ8ZCMM7WUSTZja9
-         g/Ew9NlSBSvoSYO+kA+Z8ZHorT5ku4Z691KF+nod1E6Bi8bLQZe1CT0hOclB+SIhBtpx
-         iMNEBUd2NcEq+FI4mCaeEO4wQspKh9PgVddcI4cBf84Jy1Im4lEsSrn9MHEDBLE8mFwl
-         HP5/ExfAmwSFx27CI7n9FCuLYqnT+laEFTupdZbkesle1ej3NcCoDpihJ3e0jafgFST7
-         M+Yw==
-X-Gm-Message-State: AOAM532mcgF7FqPZMx+cIEmrO1sZplqDMKsZx6cE/EhIhOlG2lBWqZTj
-        SUck6BAkYjxPROR3Q7hN6AjMEsj0d7CTYQpP0alo6dW9O7zA7Q==
-X-Google-Smtp-Source: ABdhPJype5gSl8B6cXIO8ZkqsC+9SfaYUqWVDfxpeoT5UvlPOUQsZIqgz5McybWazUHKmZTP0YNXosncKH5oDz/tGhg=
-X-Received: by 2002:a1c:a709:: with SMTP id q9mr18222417wme.23.1628229791651;
- Thu, 05 Aug 2021 23:03:11 -0700 (PDT)
+        id S242304AbhHFGLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 02:11:02 -0400
+Received: from mga07.intel.com ([134.134.136.100]:4836 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229773AbhHFGLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 02:11:01 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="278063670"
+X-IronPort-AV: E=Sophos;i="5.84,299,1620716400"; 
+   d="gz'50?scan'50,208,50";a="278063670"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2021 23:10:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,299,1620716400"; 
+   d="gz'50?scan'50,208,50";a="586574523"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 05 Aug 2021 23:10:44 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mBt47-000GaY-CM; Fri, 06 Aug 2021 06:10:43 +0000
+Date:   Fri, 6 Aug 2021 14:10:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [linux-stable-rc:linux-4.9.y 2197/2294] string.c:undefined reference
+ to `__ubsan_handle_nonnull_return_v1'
+Message-ID: <202108061458.P7GeYIkS-lkp@intel.com>
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 6 Aug 2021 16:03:00 +1000
-Message-ID: <CAPM=9txE4jnHDV9B2PWfieMJjdFv0C7=Zc=MovOtJ6sKN2AuYg@mail.gmail.com>
-Subject: [git pull] drm fixes for 5.14-rc5
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="XsQoSWH+UP9D9v3l"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-Regular weekly fixes pull, live from a Brisbane lockdown with kids at home.
+--XsQoSWH+UP9D9v3l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-A big bunch of scattered amdgpu fixes, but they are all pretty small,
-minor i915 fixes, kmb, and one vmwgfx regression fixes, all pretty
-quiet for this time.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+head:   f44373a3e7a37999a7506c79891abbb8f1318471
+commit: aeeb58019ef157459f561b5e122064a058e862f2 [2197/2294] init/Kconfig: make COMPILE_TEST depend on !S390
+config: s390-randconfig-r033-20210805 (attached as .config)
+compiler: s390-linux-gcc (GCC) 10.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=aeeb58019ef157459f561b5e122064a058e862f2
+        git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+        git fetch --no-tags linux-stable-rc linux-4.9.y
+        git checkout aeeb58019ef157459f561b5e122064a058e862f2
+        # save the attached .config to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=s390 SHELL=/bin/bash
 
-Dave.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-drm-fixes-2021-08-06:
-drm fixes for 5.14-rc5
+All errors (new ones prefixed by >>):
 
-amdgpu:
-- Fix potential out-of-bounds read when updating GPUVM mapping
-- Renoir powergating fix
-- Yellow Carp updates
-- 8K fix for navi1x
-- Beige Goby updates and new DIDs
-- Fix DMUB firmware version output
-- EDP fix
-- pmops config fix
+   s390-linux-ld: arch/s390/built-in.o: in function `ftrace_plt_init':
+   ftrace.c:(.init.text+0x5e8e): undefined reference to `module_alloc'
+   s390-linux-ld: lib/lib.a(string.o): in function `stpcpy':
+>> string.c:(.text+0x464): undefined reference to `__ubsan_handle_nonnull_return_v1'
+   s390-linux-ld: drivers/built-in.o: in function `idma64_platform_probe':
+   idma64.c:(.text+0x28c20): undefined reference to `devm_ioremap_resource'
 
-i915:
-- Call i915_globals_exit if pci_register_device fails
-- (follow on fix for section mismatch)
-- Correct SFC_DONE register offset
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-kmb:
-- DMA fix
-- driver date/version macros
+--XsQoSWH+UP9D9v3l
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
-vmwgfx:
-- Fix I/O memory access on 64-bit systems
-The following changes since commit c500bee1c5b2f1d59b1081ac879d73268ab0ff17:
+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
+S1tYlYSezBgrrjv+F+7GG92jmwAA
 
-  Linux 5.14-rc4 (2021-08-01 17:04:17 -0700)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-08-06
-
-for you to fetch changes up to d186f9c28008810d8f984d6bdd1c07757048ed63:
-
-  Merge tag 'amd-drm-fixes-5.14-2021-08-05' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes (2021-08-06
-11:22:09 +1000)
-
-----------------------------------------------------------------
-drm fixes for 5.14-rc5
-
-amdgpu:
-- Fix potential out-of-bounds read when updating GPUVM mapping
-- Renoir powergating fix
-- Yellow Carp updates
-- 8K fix for navi1x
-- Beige Goby updates and new DIDs
-- Fix DMUB firmware version output
-- EDP fix
-- pmops config fix
-
-i915:
-- Call i915_globals_exit if pci_register_device fails
-- (follow on fix for section mismatch)
-- Correct SFC_DONE register offset
-
-kmb:
-- DMA fix
-- driver date/version macros
-
-vmwgfx:
-- Fix I/O memory access on 64-bit systems
-
-----------------------------------------------------------------
-Bing Guo (2):
-      drm/amd/display: Fix Dynamic bpp issue with 8K30 with Navi 1X
-      drm/amd/display: Increase stutter watermark for dcn303
-
-Chengming Gui (1):
-      drm/amdgpu: add DID for beige goby
-
-Dave Airlie (3):
-      Merge tag 'drm-misc-fixes-2021-08-04' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
-      Merge tag 'drm-intel-fixes-2021-08-04' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
-      Merge tag 'amd-drm-fixes-5.14-2021-08-05' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
-
-Edmund Dea (2):
-      drm/kmb: Enable LCD DMA for low TVDDCV
-      drm/kmb: Define driver date and major/minor version
-
-Jason Ekstrand (1):
-      drm/i915: Call i915_globals_exit() if pci_register_device() fails
-
-Jude Shih (1):
-      drm/amd/display: Fix resetting DCN3.1 HW when resuming from S4
-
-Matt Roper (1):
-      drm/i915: Correct SFC_DONE register offset
-
-Qingqing Zhuo (1):
-      drm/amd/display: workaround for hard hang on HPD on native DP
-
-Randy Dunlap (2):
-      drm/i915: fix i915_globals_exit() section mismatch error
-      drm/amdgpu: fix checking pmops when PM_SLEEP is not enabled
-
-Shirish S (1):
-      drm/amdgpu/display: fix DMUB firmware version info
-
-Wesley Chalmers (1):
-      drm/amd/display: Assume LTTPR interop for DCN31+
-
-Xiaomeng Hou (1):
-      drm/amd/pm: update yellow carp pmfw interface version
-
-Yifan Zhang (1):
-      drm/amdgpu: fix the doorbell missing when in CGPG issue for renoir.
-
-Zack Rusin (1):
-      drm/vmwgfx: Fix a 64bit regression on svga3
-
-xinhui pan (1):
-      drm/amdgpu: Fix out-of-bounds read when update mapping
-
- drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c           |  2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c            |  7 +++++++
- drivers/gpu/drm/amd/amdgpu/amdgpu_res_cursor.h     |  3 ++-
- drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c              | 21 ++++++++++++++++++++-
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |  2 +-
- .../drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c  |  4 +++-
- drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c   | 21 ++-------------------
- drivers/gpu/drm/amd/display/dc/dc.h                |  2 ++
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_optc.c  |  2 +-
- .../gpu/drm/amd/display/dc/dcn30/dcn30_resource.c  | 20 ++++++++++++++++++++
- .../drm/amd/display/dc/dcn303/dcn303_resource.c    |  4 ++--
- .../gpu/drm/amd/display/dc/dcn31/dcn31_resource.c  | 16 ++++++++++++++++
- drivers/gpu/drm/amd/display/dmub/src/dmub_dcn31.c  |  8 +++++---
- drivers/gpu/drm/amd/pm/inc/smu_v13_0.h             |  2 +-
- drivers/gpu/drm/i915/i915_globals.c                |  4 ++--
- drivers/gpu/drm/i915/i915_pci.c                    |  1 +
- drivers/gpu/drm/i915/i915_reg.h                    |  2 +-
- drivers/gpu/drm/kmb/kmb_drv.c                      | 22 ++++++++++++++++++----
- drivers/gpu/drm/kmb/kmb_drv.h                      |  5 +++++
- drivers/gpu/drm/kmb/kmb_plane.c                    | 15 +++++++++++++--
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.h                |  2 +-
- 21 files changed, 124 insertions(+), 41 deletions(-)
+--XsQoSWH+UP9D9v3l--
