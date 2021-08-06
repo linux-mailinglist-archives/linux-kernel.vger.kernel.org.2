@@ -2,87 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E8B3E261D
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1D63E2618
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243671AbhHFI3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:29:44 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:43504 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244664AbhHFI3R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:29:17 -0400
-Received: from guri.fritz.box (unknown [IPv6:2a02:810a:880:f54:ec56:4a95:44cf:a8a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 86E691F413B3;
-        Fri,  6 Aug 2021 09:28:59 +0100 (BST)
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To:     linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        hverkuil@xs4all.nl, kernel@collabora.com, dafna3@gmail.com,
-        mchehab@kernel.org, tfiga@chromium.org, minghsiu.tsai@mediatek.com,
-        houlong.wei@mediatek.com, andrew-ct.chen@mediatek.com,
-        tiffany.lin@mediatek.com, matthias.bgg@gmail.com,
-        courbot@chromium.org, hsinyi@chromium.org, eizan@chromium.org
-Subject: [PATCH v2] media: mtk-vpu: Ensure alignment of 8 for DTCM buffer
-Date:   Fri,  6 Aug 2021 10:28:10 +0200
-Message-Id: <20210806082810.9378-1-dafna.hirschfeld@collabora.com>
-X-Mailer: git-send-email 2.17.1
+        id S244154AbhHFI2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:28:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244420AbhHFI2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:28:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D9E861040;
+        Fri,  6 Aug 2021 08:28:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628238501;
+        bh=SgcNty6vS0z4/XwjB5bDBxA3xgae0FIu7/eN7OppIrY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E4uPA3Vs0wYnRRize85Cn3UvLSTjA1xuDDrFTszaeGcKjFwKzYkpsfedIVl0q8aL7
+         15ZbDSQjB1IDfw7hfff/wxAKw+j4SimUu3CXH7WWQZ1bRj8J/6vBIH7Yzxf7EqS7Ts
+         wBUnWSSsD3LI8r8Uc0peyHLjAZe9IIpXY50mZrsKxMG8XxfdHCv8OgnaScdLN/Dw/m
+         AsApEqcM7R1sX8+q7ftmSyWK4Rf8cGAGEYkxBPiR06l/bIZqjGMxKGvbR/ZVx+SPlu
+         qIrykTUOev6TWM3f+m/sNkbnSSXtJ5y+/nizNWuNek4ga+JZ/XoWD56g0G2pitVpcx
+         J2bYULy1ODtGA==
+Received: by pali.im (Postfix)
+        id F16C2768; Fri,  6 Aug 2021 10:28:18 +0200 (CEST)
+Date:   Fri, 6 Aug 2021 10:28:18 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>, kabel@kernel.org,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 3/6] dt-bindings: mvebu-uart: document DT bindings for
+ marvell,armada-3700-uart-clock
+Message-ID: <20210806082818.k3awj72j2yb2bbhe@pali>
+References: <20210624224909.6350-1-pali@kernel.org>
+ <20210802144529.1520-1-pali@kernel.org>
+ <20210802144529.1520-4-pali@kernel.org>
+ <162820981926.19113.12529765873453602213@swboyd.mtv.corp.google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162820981926.19113.12529765873453602213@swboyd.mtv.corp.google.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Courbot <acourbot@chromium.org>
+On Thursday 05 August 2021 17:30:19 Stephen Boyd wrote:
+> > diff --git a/Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
+> > new file mode 100644
+> > index 000000000000..5ef04f3affda
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
+> > @@ -0,0 +1,49 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/clock/marvell,armada-3700-uart-clock#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +title: Marvell Armada 3720 UART clocks
+> 
+> Please add a newline here
+> 
+> > +properties:
+> > +  compatible:
+> > +    const: marvell,armada-3700-uart-clock
+> 
+> Please add a newline here
+> 
+> > +  reg:
+> > +    items:
+> > +      - description: UART Clock Control Register
+> > +      - description: UART 2 Baud Rate Divisor Register
+> 
+> Please add a newline here
+> 
+> > +  clocks:
+> > +    description: |
+> > +      List of parent clocks suitable for UART from following set:
+> > +        "TBG-A-P", "TBG-B-P", "TBG-A-S", "TBG-B-S", "xtal"
+> > +      UART clock can use one from this set and when more are provided
+> > +      then kernel would choose and configure the most suitable one.
+> > +      It is suggest to specify at least one TBG clock to achieve
+> > +      baudrates above 230400 and also to specify clock which bootloader
+> > +      used for UART (most probably xtal) for smooth boot log on UART.
+> 
+> Please use items and const like clock-names for the clocks property.
 
-When running memcpy_toio:
-memcpy_toio(send_obj->share_buf, buf, len);
-it was found that errors appear if len is not a multiple of 8:
+It is already there, see below.
 
-[58.350841] mtk-mdp 14001000.rdma: processing failed: -22
+> The description makes me feel like the DT is configuring the choices
+> available.
 
-This patch ensure copy of a multile of 8 size by calling
-round_up(len, 8) when copying
+See description. It is kernel (driver) who is choosing one clock from
+the set and then configure it a UART clock.
 
-Fixes: e6599adfad30 ("media: mtk-vpu: avoid unaligned access to DTCM buffer.")
-Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
----
-changes since v1:
-1. change sign-off-by tags
-2. change values to memset
-
- drivers/media/platform/mtk-vpu/mtk_vpu.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-index ec290dde59cf..66276c5a1bc3 100644
---- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
-+++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-@@ -316,6 +316,7 @@ int vpu_ipi_send(struct platform_device *pdev,
- {
- 	struct mtk_vpu *vpu = platform_get_drvdata(pdev);
- 	struct share_obj __iomem *send_obj = vpu->send_buf;
-+	unsigned char data[SHARE_BUF_SIZE];
- 	unsigned long timeout;
- 	int ret = 0;
- 
-@@ -349,7 +350,9 @@ int vpu_ipi_send(struct platform_device *pdev,
- 		}
- 	} while (vpu_cfg_readl(vpu, HOST_TO_VPU));
- 
--	memcpy_toio(send_obj->share_buf, buf, len);
-+	memset(data + len, 0, sizeof(data) - len);
-+	memcpy(data, buf, len);
-+	memcpy_toio(send_obj->share_buf, data, round_up(len, 8));
- 	writel(len, &send_obj->len);
- 	writel(id, &send_obj->id);
- 
--- 
-2.17.1
-
+> Ideally, the clocks and clock-names properties are fixed in
+> length and never change unless the compatible changes.
+> 
+> Please add a newline here
+> 
+> > +  clock-names:
+> > +    items:
+> > +      - const: TBG-A-P
+> > +      - const: TBG-B-P
+> > +      - const: TBG-A-S
+> > +      - const: TBG-B-S
+> > +      - const: xtal
+> > +    minItems: 1
+> > +    maxItems: 5
+> 
+> Please add a newline here
+> 
+> > +  '#clock-cells':
+> > +    const: 1
+> 
+> Please add a newline here
+> 
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - clocks
+> > +  - clock-names
+> > +  - '#clock-cells'
+> 
+> Please add a newline here
+> 
+> > +additionalProperties: false
+> 
+> Please add a newline here
+> 
+> > +examples:
+> > +  - |
+> > +    uartclk: uartclk@12000 {
+> > +      compatible = "marvell,armada-3700-uart-clock";
+> > +      reg = <0x12010 0x4>, <0x12210 0x4>;
+> > +      clocks = <&tbg 0>, <&tbg 1>, <&tbg 2>, <&tbg 3>, <&xtalclk>;
+> > +      clock-names = "TBG-A-P", "TBG-B-P", "TBG-A-S", "TBG-B-S", "xtal";
+> > +      #clock-cells = <1>;
+> > +    };
