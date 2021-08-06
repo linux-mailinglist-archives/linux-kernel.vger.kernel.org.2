@@ -2,168 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A513E2AFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCEB3E2B02
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243933AbhHFM5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 08:57:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243823AbhHFM5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 08:57:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49CA0611BF;
-        Fri,  6 Aug 2021 12:57:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628254642;
-        bh=aZUk9fKJlGFQYH0vEv5wsW5aHvypSoQlE3ROhxOIdUs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lDHOBRbyJj+w5RLpMQnDYLKE5RrACETbuKHkdnewUOvvMmXw9mXi3tRCgE6XKOgjN
-         ZUstIvBxaRrCcJg2bnx4FSbfdObUon3obhKpz017JYMKkqXUNNoIKLf7slncxxyNjk
-         /Zv6sPpEJ9EG4/iRccu0TTVvZYL6yvG/iNLWgGjggXnz5IlvAJYUFemqK2zt9X/oph
-         58f408Zw/19to4GH5ODICEvEu9e5axz6iVawULcea4da/nQNAR1bvMVM8oCQhT69aq
-         DwF/AzqeC1nDg+N7DdnqZ0QDTyquqVQgnR6Gtj2FeStAx/oaGsGPke9V7M2+mepXfE
-         uOaMgu+OEn66w==
-Date:   Fri, 6 Aug 2021 18:27:18 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Iskren Chernev <iskren.chernev@gmail.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v1 2/2] phy: qcom-qmp: Add support for SM6115 UFS phy
-Message-ID: <YQ0xrgDjxXeNecAS@matsya>
-References: <20210805091727.942471-1-iskren.chernev@gmail.com>
- <20210805091727.942471-3-iskren.chernev@gmail.com>
+        id S1343799AbhHFM6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 08:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243972AbhHFM6H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 08:58:07 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A294C061798;
+        Fri,  6 Aug 2021 05:57:52 -0700 (PDT)
+Date:   Fri, 06 Aug 2021 12:57:49 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628254670;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MXnRYru3PUT2Wn4h1hMFC8JEYKBY4GGgj5noxIzwVo0=;
+        b=RoGkc6wtChXUUMNq1vuFxFhGeU7cdO9yJupxDPwE963fD9WaORrFU7eQEP+Ll9VChds1tj
+        5wxn014vopQx1GIxS6PP/tEEwWPeX5n9OiGicJEvdc+p+mrbrfzUjJHX2S0k5StZ+ht/Up
+        Tss4S+x7Ux72OSg/s+/dJoTuvFBEl4tOQTDr+Vppf9Z2U72fV+Gk90IxBunJoovpaM9iT9
+        WjCrqPw/Zmvl38Q0utP4367zSYkam59eKtrr0rBpp9UwH1h1CyyYlmQjyVT4MAy9vNvKUm
+        AT3vIPViVgrbLKQrpsAYnr++rybKVdgv923wldsfeA9rVbWQSSMbxB8EGC4S6Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628254670;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MXnRYru3PUT2Wn4h1hMFC8JEYKBY4GGgj5noxIzwVo0=;
+        b=8T5GxpRNCQ2rL5no9RtTbBkdHMJvHaUCKYjh7Ruw8Jrj30GjwvkvwqpFXzXpk9KnamjwqN
+        3eNkNiPlG3wmMzDw==
+From:   "tip-bot2 for Quentin Perret" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched: Skip priority checks with SCHED_FLAG_KEEP_PARAMS
+Cc:     Wei Wang <wvw@google.com>, Quentin Perret <qperret@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210805102154.590709-3-qperret@google.com>
+References: <20210805102154.590709-3-qperret@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805091727.942471-3-iskren.chernev@gmail.com>
+Message-ID: <162825466988.395.169396099784504532.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05-08-21, 12:17, Iskren Chernev wrote:
+The following commit has been merged into the sched/core branch of tip:
 
-> +/* Only for QMP V3 660 PHY - QSERDES COM registers*/
-> +#define QSERDES_V3_660_COM_ATB_SEL1			0x000
-> +#define QSERDES_V3_660_COM_ATB_SEL2			0x004
-> +#define QSERDES_V3_660_COM_FREQ_UPDATE			0x008
-> +#define QSERDES_V3_660_COM_BG_TIMER			0x00c
-> +#define QSERDES_V3_660_COM_SSC_EN_CENTER		0x010
-> +#define QSERDES_V3_660_COM_SSC_ADJ_PER1			0x014
-> +#define QSERDES_V3_660_COM_SSC_ADJ_PER2			0x018
-> +#define QSERDES_V3_660_COM_SSC_PER1			0x01c
-> +#define QSERDES_V3_660_COM_SSC_PER2			0x020
-> +#define QSERDES_V3_660_COM_SSC_STEP_SIZE1		0x024
-> +#define QSERDES_V3_660_COM_SSC_STEP_SIZE2		0x028
-> +#define QSERDES_V3_660_COM_POST_DIV			0x02c
-> +#define QSERDES_V3_660_COM_POST_DIV_MUX			0x030
-> +#define QSERDES_V3_660_COM_BIAS_EN_CLKBUFLR_EN		0x034
-> +#define QSERDES_V3_660_COM_CLK_ENABLE1			0x038
-> +#define QSERDES_V3_660_COM_SYS_CLK_CTRL			0x03c
-> +#define QSERDES_V3_660_COM_SYSCLK_BUF_ENABLE		0x040
-> +#define QSERDES_V3_660_COM_PLL_EN			0x044
-> +#define QSERDES_V3_660_COM_PLL_IVCO			0x048
-> +#define QSERDES_V3_660_COM_LOCK_CMP1_MODE0		0x04c
-> +#define QSERDES_V3_660_COM_LOCK_CMP2_MODE0		0x050
-> +#define QSERDES_V3_660_COM_LOCK_CMP3_MODE0		0x054
-> +#define QSERDES_V3_660_COM_LOCK_CMP1_MODE1		0x058
-> +#define QSERDES_V3_660_COM_LOCK_CMP2_MODE1		0x05c
-> +#define QSERDES_V3_660_COM_LOCK_CMP3_MODE1		0x060
-> +#define QSERDES_V3_660_COM_CMD_RSVD0			0x064
-> +#define QSERDES_V3_660_COM_EP_CLOCK_DETECT_CTRL		0x068
-> +#define QSERDES_V3_660_COM_SYSCLK_DET_COMP_STATUS	0x06c
-> +#define QSERDES_V3_660_COM_BG_TRIM			0x070
-> +#define QSERDES_V3_660_COM_CLK_EP_DIV			0x074
-> +#define QSERDES_V3_660_COM_CP_CTRL_MODE0		0x078
-> +#define QSERDES_V3_660_COM_CP_CTRL_MODE1		0x07c
-> +#define QSERDES_V3_660_COM_CMN_RSVD1			0x080
-> +#define QSERDES_V3_660_COM_PLL_RCTRL_MODE0		0x084
-> +#define QSERDES_V3_660_COM_PLL_RCTRL_MODE1		0x088
-> +#define QSERDES_V3_660_COM_CMN_RSVD2			0x08c
-> +#define QSERDES_V3_660_COM_PLL_CCTRL_MODE0		0x090
-> +#define QSERDES_V3_660_COM_PLL_CCTRL_MODE1		0x094
-> +#define QSERDES_V3_660_COM_CMN_RSVD3			0x098
-> +#define QSERDES_V3_660_COM_PLL_CNTRL			0x09c
-> +#define QSERDES_V3_660_COM_PHASE_SEL_CTRL		0x0a0
-> +#define QSERDES_V3_660_COM_PHASE_SEL_DC			0x0a4
-> +#define QSERDES_V3_660_COM_BIAS_EN_CTRL_BY_PSM		0x0a8
-> +#define QSERDES_V3_660_COM_SYSCLK_EN_SEL		0x0ac
-> +#define QSERDES_V3_660_COM_CML_SYSCLK_SEL		0x0b0
-> +#define QSERDES_V3_660_COM_RESETSM_CNTRL		0x0b4
-> +#define QSERDES_V3_660_COM_RESETSM_CNTRL2		0x0b8
-> +#define QSERDES_V3_660_COM_RESTRIM_CTRL			0x0bc
-> +#define QSERDES_V3_660_COM_RESTRIM_CTRL2		0x0c0
-> +#define QSERDES_V3_660_COM_LOCK_CMP_EN			0x0c8
-> +#define QSERDES_V3_660_COM_LOCK_CMP_CFG			0x0cc
-> +#define QSERDES_V3_660_COM_DEC_START_MODE0		0x0d0
-> +#define QSERDES_V3_660_COM_DEC_START_MODE1		0x0d4
-> +#define QSERDES_V3_660_COM_VCOCAL_DEADMAN_CTRL		0x0d8
-> +#define QSERDES_V3_660_COM_DIV_FRAC_START1_MODE0	0x0dc
-> +#define QSERDES_V3_660_COM_DIV_FRAC_START2_MODE0	0x0e0
-> +#define QSERDES_V3_660_COM_DIV_FRAC_START3_MODE0	0x0e4
-> +#define QSERDES_V3_660_COM_DIV_FRAC_START1_MODE1	0x0e8
-> +#define QSERDES_V3_660_COM_DIV_FRAC_START2_MODE1	0x0ec
-> +#define QSERDES_V3_660_COM_DIV_FRAC_START3_MODE1	0x0f0
-> +#define QSERDES_V3_660_COM_VCO_TUNE_MINVAL1		0x0f4
-> +#define QSERDES_V3_660_COM_VCO_TUNE_MINVAL2		0x0f8
-> +#define QSERDES_V3_660_COM_CMN_RSVD4			0x0fc
-> +#define QSERDES_V3_660_COM_INTEGLOOP_INITVAL		0x100
-> +#define QSERDES_V3_660_COM_INTEGLOOP_EN			0x104
-> +#define QSERDES_V3_660_COM_INTEGLOOP_GAIN0_MODE0	0x108
-> +#define QSERDES_V3_660_COM_INTEGLOOP_GAIN1_MODE0	0x10c
-> +#define QSERDES_V3_660_COM_INTEGLOOP_GAIN0_MODE1	0x110
-> +#define QSERDES_V3_660_COM_INTEGLOOP_GAIN1_MODE1	0x114
-> +#define QSERDES_V3_660_COM_VCO_TUNE_MAXVAL1		0x118
-> +#define QSERDES_V3_660_COM_VCO_TUNE_MAXVAL2		0x11c
-> +#define QSERDES_V3_660_COM_RES_TRIM_CONTROL2		0x120
-> +#define QSERDES_V3_660_COM_VCO_TUNE_CTRL		0x124
-> +#define QSERDES_V3_660_COM_VCO_TUNE_MAP			0x128
-> +#define QSERDES_V3_660_COM_VCO_TUNE1_MODE0		0x12c
-> +#define QSERDES_V3_660_COM_VCO_TUNE2_MODE0		0x130
-> +#define QSERDES_V3_660_COM_VCO_TUNE1_MODE1		0x134
-> +#define QSERDES_V3_660_COM_VCO_TUNE2_MODE1		0x138
-> +#define QSERDES_V3_660_COM_VCO_TUNE_INITVAL1		0x13c
-> +#define QSERDES_V3_660_COM_VCO_TUNE_INITVAL2		0x140
-> +#define QSERDES_V3_660_COM_VCO_TUNE_TIMER1		0x144
-> +#define QSERDES_V3_660_COM_VCO_TUNE_TIMER2		0x148
-> +#define QSERDES_V3_660_COM_SAR				0x14c
-> +#define QSERDES_V3_660_COM_SAR_CLK			0x150
-> +#define QSERDES_V3_660_COM_SAR_CODE_OUT_STATUS		0x154
-> +#define QSERDES_V3_660_COM_SAR_CODE_READY_STATUS	0x158
-> +#define QSERDES_V3_660_COM_CMN_STATUS			0x15c
-> +#define QSERDES_V3_660_COM_RESET_SM_STATUS		0x160
-> +#define QSERDES_V3_660_COM_RESTRIM_CODE_STATUS		0x164
-> +#define QSERDES_V3_660_COM_PLLCAL_CODE1_STATUS		0x168
-> +#define QSERDES_V3_660_COM_PLLCAL_CODE2_STATUS		0x16c
-> +#define QSERDES_V3_660_COM_BG_CTRL			0x170
-> +#define QSERDES_V3_660_COM_CLK_SELECT			0x174
-> +#define QSERDES_V3_660_COM_HSCLK_SEL			0x178
-> +#define QSERDES_V3_660_COM_INTEGLOOP_BINCODE_STATUS	0x17c
-> +#define QSERDES_V3_660_COM_PLL_ANALOG			0x180
-> +#define QSERDES_V3_660_COM_CORECLK_DIV			0x184
-> +#define QSERDES_V3_660_COM_SW_RESET			0x188
-> +#define QSERDES_V3_660_COM_CORE_CLK_EN			0x18c
-> +#define QSERDES_V3_660_COM_C_READY_STATUS		0x190
-> +#define QSERDES_V3_660_COM_CMN_CONFIG			0x194
-> +#define QSERDES_V3_660_COM_CMN_RATE_OVERRIDE		0x198
-> +#define QSERDES_V3_660_COM_SVS_MODE_CLK_SEL		0x19c
-> +#define QSERDES_V3_660_COM_DEBUG_BUS0			0x1a0
-> +#define QSERDES_V3_660_COM_DEBUG_BUS1			0x1a4
-> +#define QSERDES_V3_660_COM_DEBUG_BUS2			0x1a8
-> +#define QSERDES_V3_660_COM_DEBUG_BUS3			0x1ac
-> +#define QSERDES_V3_660_COM_DEBUG_BUS_SEL		0x1b0
-> +#define QSERDES_V3_660_COM_CMN_MISC1			0x1b4
-> +#define QSERDES_V3_660_COM_CORECLK_DIV_MODE1		0x1bc
-> +#define QSERDES_V3_660_COM_CMN_RSVD5			0x1c0
+Commit-ID:     f4dddf90d58d77b48492b775868af4041a217f4c
+Gitweb:        https://git.kernel.org/tip/f4dddf90d58d77b48492b775868af4041a217f4c
+Author:        Quentin Perret <qperret@google.com>
+AuthorDate:    Thu, 05 Aug 2021 11:21:54 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 06 Aug 2021 14:25:25 +02:00
 
-why are these registers 660 specific and not V3 like we have for
-other generations..? Quick looks with V3 regs tells me that seem
-similar....
+sched: Skip priority checks with SCHED_FLAG_KEEP_PARAMS
 
--- 
-~Vinod
+SCHED_FLAG_KEEP_PARAMS can be passed to sched_setattr to specify that
+the call must not touch scheduling parameters (nice or priority). This
+is particularly handy for uclamp when used in conjunction with
+SCHED_FLAG_KEEP_POLICY as that allows to issue a syscall that only
+impacts uclamp values.
+
+However, sched_setattr always checks whether the priorities and nice
+values passed in sched_attr are valid first, even if those never get
+used down the line. This is useless at best since userspace can
+trivially bypass this check to set the uclamp values by specifying low
+priorities. However, it is cumbersome to do so as there is no single
+expression of this that skips both RT and CFS checks at once. As such,
+userspace needs to query the task policy first with e.g. sched_getattr
+and then set sched_attr.sched_priority accordingly. This is racy and
+slower than a single call.
+
+As the priority and nice checks are useless when SCHED_FLAG_KEEP_PARAMS
+is specified, simply inherit them in this case to match the policy
+inheritance of SCHED_FLAG_KEEP_POLICY.
+
+Reported-by: Wei Wang <wvw@google.com>
+Signed-off-by: Quentin Perret <qperret@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+Link: https://lore.kernel.org/r/20210805102154.590709-3-qperret@google.com
+---
+ kernel/sched/core.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index df0480a..433b400 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7328,6 +7328,16 @@ err_size:
+ 	return -E2BIG;
+ }
+ 
++static void get_params(struct task_struct *p, struct sched_attr *attr)
++{
++	if (task_has_dl_policy(p))
++		__getparam_dl(p, attr);
++	else if (task_has_rt_policy(p))
++		attr->sched_priority = p->rt_priority;
++	else
++		attr->sched_nice = task_nice(p);
++}
++
+ /**
+  * sys_sched_setscheduler - set/change the scheduler policy and RT priority
+  * @pid: the pid in question.
+@@ -7389,6 +7399,8 @@ SYSCALL_DEFINE3(sched_setattr, pid_t, pid, struct sched_attr __user *, uattr,
+ 	rcu_read_unlock();
+ 
+ 	if (likely(p)) {
++		if (attr.sched_flags & SCHED_FLAG_KEEP_PARAMS)
++			get_params(p, &attr);
+ 		retval = sched_setattr(p, &attr);
+ 		put_task_struct(p);
+ 	}
+@@ -7537,12 +7549,7 @@ SYSCALL_DEFINE4(sched_getattr, pid_t, pid, struct sched_attr __user *, uattr,
+ 	kattr.sched_policy = p->policy;
+ 	if (p->sched_reset_on_fork)
+ 		kattr.sched_flags |= SCHED_FLAG_RESET_ON_FORK;
+-	if (task_has_dl_policy(p))
+-		__getparam_dl(p, &kattr);
+-	else if (task_has_rt_policy(p))
+-		kattr.sched_priority = p->rt_priority;
+-	else
+-		kattr.sched_nice = task_nice(p);
++	get_params(p, &kattr);
+ 	kattr.sched_flags &= SCHED_FLAG_ALL;
+ 
+ #ifdef CONFIG_UCLAMP_TASK
