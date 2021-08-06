@@ -2,200 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A5E3E2369
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 08:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDAF3E236E
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 08:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243418AbhHFGnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 02:43:05 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:53363 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241760AbhHFGnD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 02:43:03 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628232168; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=d+wULbWjBRllkEa5XIMxDJfmrRItDoUDZncVMJPdisU=;
- b=Ial8fsw+oH0ycbOh5JT+n8Oh8B6KNonhoNOSN73MjZVi1Tq3XRSubCN5OA1HMLnIrtuFK8qb
- DqJjrXFPJQX6Mkkbk1pv1qT3LuzMAhGV5C0Z/5YF9QmviUT0VfGtU0ZXXSD5biQIbb40a52g
- jtLFcyxwSPwK6Ou3RTysFVJ2d9o=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 610cd9e48c78eaf808be8719 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Aug 2021 06:42:44
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BFDA8C433D3; Fri,  6 Aug 2021 06:42:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 19E5BC433F1;
-        Fri,  6 Aug 2021 06:42:43 +0000 (UTC)
+        id S243382AbhHFGnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 02:43:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232382AbhHFGnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 02:43:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20C3A611C5;
+        Fri,  6 Aug 2021 06:43:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628232215;
+        bh=h+Rb1Q5xB7nCmla3XprXg4fmKFXpU+drkAfgr8FZnA0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kJtowNA2ISDGfYL3W/9jlXnGY2/R4G/e7NXjSsndonZyMdvXp70hEtBnpF4DNcZkD
+         LBIQGbHGvoX5hq1AwyUpMMc5yIelB+iGMzYnAw0mQVvp6rK9jpll0FCert3Q4pG3xP
+         dSMiVBdd4tOtweEmHQ17Cg4o7b9IzJg0FBYi1930=
+Date:   Fri, 6 Aug 2021 08:43:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        stable@vger.kernel.org, steffen.klassert@secunet.com,
+        daniel.m.jordan@oracle.com, herbert@gondor.apana.org.au,
+        sashal@kernel.org
+Subject: Re: [PATCH 4.19 0/2] fix divide zero error in padata_do_parallel()
+Message-ID: <YQzaFHAAwr/8SEgD@kroah.com>
+References: <20210803125301.77629-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 06 Aug 2021 12:12:42 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     bjorn.andersson@linaro.org, mka@chromium.org, robh+dt@kernel.org,
-        viresh.kumar@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dianders@chromium.org, tdas@codeaurora.org
-Subject: Re: [PATCH 2/4] cpufreq: qcom: Re-arrange register offsets to support
- per core L3 DCVS
-In-Reply-To: <CAE-0n53b2M7hAw=NnUDW1_EG2N-521K=URQHmARH0DmLf7hwhA@mail.gmail.com>
-References: <1627581885-32165-1-git-send-email-sibis@codeaurora.org>
- <1627581885-32165-3-git-send-email-sibis@codeaurora.org>
- <CAE-0n53cH749NC9JPqJvMZGBQf47AZ3qY66eoqk2CiQHvuumkg@mail.gmail.com>
- <352d549f40dfa2ae51589649652d2e97@codeaurora.org>
- <CAE-0n53b2M7hAw=NnUDW1_EG2N-521K=URQHmARH0DmLf7hwhA@mail.gmail.com>
-Message-ID: <da0ea9c90d93e9e5f94e9cdb426e304b@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803125301.77629-1-yangyingliang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-05 23:55, Stephen Boyd wrote:
-> Quoting Sibi Sankar (2021-08-05 10:47:20)
->> Stephen,
->> 
->> Thanks for taking time to review
->> the series.
->> 
->> On 2021-08-05 00:31, Stephen Boyd wrote:
->> > Quoting Sibi Sankar (2021-07-29 11:04:43)
->> >> Qualcomm SoCs (starting with SM8350) support per core voting for L3
->> >> cache
->> >> frequency.
->> >
->> > And the L3 cache frequency voting code can't be put into this cpufreq
->> > driver?
->> 
->> Yes, it could have gone either into
->> the cpufreq driver or l3 interconnect
->> provider driver. Taniya/Odelu preferred
->> the latter, because of the need for other
->> clients to vote for l3 frequencies in
->> the future.
+On Tue, Aug 03, 2021 at 08:52:59PM +0800, Yang Yingliang wrote:
+> It can reproduced by the following commands:
 > 
-> What other clients are those?
-
-https://lore.kernel.org/lkml/20190814152116.GB28465@jcrouse1-lnx.qualcomm.com/
-
-GPU was supposed to be one of the
-other clients that would vote for
-l3.
-
+>   # modprobe pcrypt
+>   # echo 2 > /sys/kernel/pcrypt/pencrypt/parallel_cpumask
+>   # echo 0 > /sys/devices/system/cpu/cpu1/online
+>   # modprobe tcrypt alg="pcrypt(rfc4106(gcm(aes)))" type=3
 > 
->> The other option to prevent
->> register re-arrangement would involve
->> using syscons from the cpufreq node, which
->> really wasn't necessary since there
->> wasn't any register overlap between the
->> two drivers.
+> [  229.549005] divide error: 0000 [#1] SMP PTI
+> [  229.549130] CPU: 32 PID: 9565 Comm: cryptomgr_test Kdump: loaded Not tainted 4.19.200 #3
+> [  229.549381] Hardware name: Huawei 2288H V5/BC11SPSCB0, BIOS 0.68 05/03/2018
+> [  229.549607] RIP: 0010:padata_do_parallel+0x96/0x150
+> [  229.549750] Code: 5e 10 89 56 18 f0 0f c1 6b 20 8b 35 78 b1 24 01 48 8b 7b 28 e8 eb d6 20 00 89 c1 8d 45 01 31 d2 8b 35 62 b1 24 01 48 8b 7b 28 <f7> f1 41 89 d7 e8 d0 45 21 00 45 85 ff 41 89 c4 7e 19 31 ed 48 8b
+> [  229.550335] RSP: 0018:ffffa48b8e1cbbc8 EFLAGS: 00010246
+> [  229.550498] RAX: 0000000000000000 RBX: ffff964940883bc0 RCX: 0000000000000000
+> [  229.550720] RDX: 0000000000000000 RSI: 0000000000000038 RDI: ffff9687b6e45650
+> [  229.550943] RBP: 00000000ffffffff R08: 0000000000000000 R09: ffff96c7af6f6200
+> [  229.551165] R10: ffff9687b6e45650 R11: ffff968839629000 R12: 0000000000000010
+> [  229.551388] R13: ffff9687b6997f50 R14: ffff96c7ad84d700 R15: ffffffff9287a220
+> [  229.551610] FS:  0000000000000000(0000) GS:ffff9687bfc80000(0000) knlGS:0000000000000000
+> [  229.551863] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  229.552044] CR2: 00007fad13d47564 CR3: 000000759480a004 CR4: 00000000007606e0
+> [  229.552265] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [  229.552488] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [  229.552710] PKRU: 55555554
+> [  229.552796] Call Trace:
+> [  229.552878]  pcrypt_aead_encrypt+0xbb/0xc7 [pcrypt]
+> [  229.553028]  __test_aead+0x654/0x15d0
+> [  229.553139]  ? _cond_resched+0x15/0x40
+> [  229.553257]  ? crypto_create_tfm+0x4e/0xe0
+> [  229.553385]  ? crypto_spawn_tfm2+0x2e/0x50
+> [  229.553513]  ? _cond_resched+0x15/0x40
+> [  229.553632]  ? crypto_acomp_scomp_free_ctx+0x30/0x30
+> [  229.553786]  test_aead+0x21/0xa0
+> [  229.553889]  alg_test_aead+0x3f/0xa0
+> [  229.554001]  alg_test.part.15+0x178/0x380
+> [  229.554127]  ? __switch_to+0x8c/0x400
+> [  229.554239]  ? __switch_to_asm+0x41/0x70
+> [  229.554362]  ? __switch_to_asm+0x35/0x70
+> [  229.554486]  ? __schedule+0x25d/0x850
+> [  229.554602]  ? __wake_up_common+0x76/0x170
+> [  229.554727]  ? crypto_acomp_scomp_free_ctx+0x30/0x30
+> [  229.554884]  cryptomgr_test+0x40/0x50
+> [  229.554999]  kthread+0x113/0x130
+> [  229.555099]  ? kthread_create_worker_on_cpu+0x70/0x70
+> [  229.555255]  ret_from_fork+0x35/0x40
 > 
-> Let's not do that.
 > 
->> 
->> >
->> >> So, re-arrange the cpufreq register offsets to allow access for
->> >> the L3 interconnect to implement per core control. Also prevent
->> >> binding
->> >> breakage caused by register offset shuffling by using the
->> >> SM8250/SM8350
->> >> EPSS compatible.
->> >>
->> >> Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
->> >> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> >> ---
->> >>  drivers/cpufreq/qcom-cpufreq-hw.c | 23 +++++++++++++++++++----
->> >>  1 file changed, 19 insertions(+), 4 deletions(-)
->> >>
->> >> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c
->> >> b/drivers/cpufreq/qcom-cpufreq-hw.c
->> >> index f86859bf76f1..74ef3b38343b 100644
->> >> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
->> >> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
->> >> @@ -28,6 +28,7 @@ struct qcom_cpufreq_soc_data {
->> >>         u32 reg_volt_lut;
->> >>         u32 reg_perf_state;
->> >>         u8 lut_row_size;
->> >> +       bool skip_enable;
->> >>  };
->> >>
->> >>  struct qcom_cpufreq_data {
->> >> @@ -257,19 +258,31 @@ static const struct qcom_cpufreq_soc_data
->> >> qcom_soc_data = {
->> >>         .reg_volt_lut = 0x114,
->> >>         .reg_perf_state = 0x920,
->> >>         .lut_row_size = 32,
->> >> +       .skip_enable = false,
->> >>  };
->> >>
->> >>  static const struct qcom_cpufreq_soc_data epss_soc_data = {
->> >> +       .reg_freq_lut = 0x0,
->> >> +       .reg_volt_lut = 0x100,
->> >> +       .reg_perf_state = 0x220,
->> >> +       .lut_row_size = 4,
->> >> +       .skip_enable = true,
->> >> +};
->> >> +
->> >> +static const struct qcom_cpufreq_soc_data epss_sm8250_soc_data = {
->> >>         .reg_enable = 0x0,
->> >>         .reg_freq_lut = 0x100,
->> >>         .reg_volt_lut = 0x200,
->> >>         .reg_perf_state = 0x320,
->> >>         .lut_row_size = 4,
->> >> +       .skip_enable = false,
->> >>  };
->> >>
->> >>  static const struct of_device_id qcom_cpufreq_hw_match[] = {
->> >>         { .compatible = "qcom,cpufreq-hw", .data = &qcom_soc_data },
->> >>         { .compatible = "qcom,cpufreq-epss", .data = &epss_soc_data },
->> >> +       { .compatible = "qcom,sm8250-cpufreq-epss", .data =
->> >> &epss_sm8250_soc_data },
->> >> +       { .compatible = "qcom,sm8350-cpufreq-epss", .data =
->> >> &epss_sm8250_soc_data },
->> >>         {}
->> >>  };
->> >>  MODULE_DEVICE_TABLE(of, qcom_cpufreq_hw_match);
->> >> @@ -334,10 +347,12 @@ static int qcom_cpufreq_hw_cpu_init(struct
->> >> cpufreq_policy *policy)
->> >>         data->res = res;
->> >>
->> >>         /* HW should be in enabled state to proceed */
->> >
->> > It looks odd that we're no longer making sure that the clk domain is
->> > enabled when we probe the driver. Why is that OK?
->> 
->> On newer EPSS hw it's no longer
->> required to perform the additional
->> hw enable check. IIRC we don't do
->> that on corresponding downstream
->> kernels as well.
+> Daniel Jordan (2):
+>   padata: validate cpumask without removed CPU during offline
+>   padata: add separate cpuhp node for CPUHP_PADATA_DEAD
 > 
-> It's fairly clear that we no longer perform the additional check. The
-> question is why that's OK.
+>  include/linux/cpuhotplug.h |  1 +
+>  include/linux/padata.h     |  6 ++++--
+>  kernel/padata.c            | 28 ++++++++++++++++++++--------
+>  3 files changed, 25 insertions(+), 10 deletions(-)
 
-Taniya probably would know more
-about the history behind the change.
-I'll dig up more info regarding ^^
-and update the thread.
+All now queued up, thanks!
 
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+greg k-h
