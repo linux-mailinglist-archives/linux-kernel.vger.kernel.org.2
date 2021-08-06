@@ -2,100 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FAC3E2D26
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 962913E2D33
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 17:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243632AbhHFPF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 11:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243262AbhHFPFY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 11:05:24 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750BFC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 08:05:08 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso18160914pjf.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 08:05:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5eZrYc9DJUkTA1iAssqHy9p2WRfYMo/VyY/QvADARYY=;
-        b=scjfM2KAwvMr0J0xp0SYBnTDo3ApPj7hK5atstwmV/OGXWjEglaJS/poY5hkj1kzKz
-         VYsVd9nNWgtisBaQNXTSQrwQjwPSG0BREg5oF/i/LHX4ghsTljrBb00qTaEUqAvv7m4Q
-         wr90ti6/x0aFWJ6Ggh1coi9tpGKp4jaCPZLdTLI1zRNSCX9dfftJ4JwCCKMQ1gwO0XIA
-         0VALv7wyOrCj8xtB6rtAWhBfCxcuqS1nzuuGZvekZAEVWkUK/tUQiTFiE4NN/cyGBn9C
-         TsbWFDeNNnmAHfa49asadyj9F+VDC9m2sfk5dS1IKBtTr8lr7rahWrh3HWKmO+6Z+IvK
-         mNDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5eZrYc9DJUkTA1iAssqHy9p2WRfYMo/VyY/QvADARYY=;
-        b=XYGF9Pt3TVYjNRzU6l+a+kOhPall1tO1U9G1/XZKOvgDxj3aq71u6aGcb5Zl6aF87H
-         ByOSOEeyUdx4gVy6m3/hlkLGUm8XoLZdRknG0Ry+oD0IaPgge+R7zYjpoIvz/xsfLgIJ
-         YGoNKnW451ncB9hiE8O6Ko3fMLxfN9cmaVsfoI1gBAynp/lEuQuiES4KfLT9QxoH0k7Z
-         kUXLtdG7iCPhSImSw1MLAjVfaECNnk9P/b7NvzfwHzXis5r4jIhd7Qmq9s3Qb4ezywBo
-         qScE73QYSqtLSysKCFUxfORUSkbCwK4Gsaml8yzoOJuLCwBTvXr5AqdznMBLIiVchxzf
-         /oZA==
-X-Gm-Message-State: AOAM533Kr3BRQsRdZZhth1JAFqeaUoSHH59NY7ISzvj2Xtv8SzwVWe2g
-        uEfsvMvtqHfeiR/kHtRGNk4nGA==
-X-Google-Smtp-Source: ABdhPJywOhz85rUeq9sfYzgRc3T33E50AG7rhHUhlIZkEJYslkgHGgdx50E1SFw0y9fZ0eki4xw4sw==
-X-Received: by 2002:a63:ef45:: with SMTP id c5mr122429pgk.78.1628262307730;
-        Fri, 06 Aug 2021 08:05:07 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id dw15sm9422535pjb.42.2021.08.06.08.05.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 08:05:07 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 15:05:03 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Zeng Guang <guang.zeng@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hu, Robert" <robert.hu@intel.com>,
-        "Gao, Chao" <chao.gao@intel.com>,
-        Robert Hoo <robert.hu@linux.intel.com>
-Subject: Re: [PATCH v3 2/6] KVM: VMX: Extend BUILD_CONTROLS_SHADOW macro to
- support 64-bit variation
-Message-ID: <YQ1Pn4YwmLC5zHP3@google.com>
-References: <20210805151317.19054-1-guang.zeng@intel.com>
- <20210805151317.19054-3-guang.zeng@intel.com>
- <YQxnGIT7XLQvPkrz@google.com>
- <86b1a46b-10b7-a495-8793-26374ebc9b90@intel.com>
+        id S243726AbhHFPHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 11:07:51 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:19929 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241348AbhHFPHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 11:07:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1628262453; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=U2gWLih9uciIhm8iVL7BcWi6jOu2je6McpAae1wKTBU=;
+ b=uq2K4vVuHFSGPxcaB1Qnp0lbqrcD61HDBCnwaHM94B3DQNJNagunJTtHX1Oopv4QknpcCsRk
+ NTUk2x8w8wdotZLhBemGjDTIPxoDHGeXwQgTzTxf9mt8F5YOPPZwAPzkZhW4LEx0azC4OsaH
+ +piYZ3QEAvMTO7a4T9RCPA5B5J4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 610d50201b76afb4467b0fa6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Aug 2021 15:07:12
+ GMT
+Sender: psodagud=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E5C3EC433F1; Fri,  6 Aug 2021 15:07:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: psodagud)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D3BEDC433D3;
+        Fri,  6 Aug 2021 15:07:08 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <86b1a46b-10b7-a495-8793-26374ebc9b90@intel.com>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Fri, 06 Aug 2021 08:07:08 -0700
+From:   psodagud@codeaurora.org
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PM: sleep: core: Avoid setting power.must_resume to false
+In-Reply-To: <YQl6Bnjrnypbsz/s@kroah.com>
+References: <1627313074-436260-1-git-send-email-psodagud@codeaurora.org>
+ <YQl6Bnjrnypbsz/s@kroah.com>
+Message-ID: <0fe9a873ca77293151a61f64d355895f@codeaurora.org>
+X-Sender: psodagud@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021, Zeng Guang wrote:
-> On 8/6/2021 6:32 AM, Sean Christopherson wrote:
-> > On Thu, Aug 05, 2021, Zeng Guang wrote:
-> > > +BUILD_CONTROLS_SHADOW(tertiary_exec, TERTIARY_VM_EXEC_CONTROL, 64)
-> > This fails to compile because all the TERTIARY collateral is in a later patch.
+On 2021-08-03 10:16, Greg KH wrote:
+> On Mon, Jul 26, 2021 at 08:24:34AM -0700, Prasad Sodagudi wrote:
+>> There are variables(power.may_skip_resume and dev->power.must_resume)
+>> and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices 
+>> after
+>> a system wide suspend transition.
+>> 
+>> Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
+>> its "noirq" and "early" resume callbacks to be skipped if the device
+>> can be left in suspend after a system-wide transition into the working
+>> state. PM core determines that the driver's "noirq" and "early" resume
+>> callbacks should be skipped or not with dev_pm_skip_resume() function 
+>> by
+>> checking power.may_skip_resume variable.
+>> 
+>> power.must_resume variable is getting set to false in 
+>> __device_suspend()
+>> function without checking device's DPM_FLAG_MAY_SKIP_RESUME and
+>> dev->power.usage_count variables. This is leading to failure to call
+>> resume handler for some of the devices suspended in early suspend 
+>> phase.
+>> So check device's DPM_FLAG_MAY_SKIP_RESUME flag before
+>> setting power.must_resume variable.
+>> 
+>> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+>> ---
+>>  drivers/base/power/main.c | 6 +++++-
+>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+>> index d568772..8eebc4d 100644
+>> --- a/drivers/base/power/main.c
+>> +++ b/drivers/base/power/main.c
+>> @@ -1642,7 +1642,11 @@ static int __device_suspend(struct device *dev, 
+>> pm_message_t state, bool async)
+>>  	}
+>> 
+>>  	dev->power.may_skip_resume = true;
+>> -	dev->power.must_resume = false;
+>> +	if ((atomic_read(&dev->power.usage_count) <= 1) &&
+>> +			(dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME)))
 > 
+> What is preventing that atomic value from changing _right_ after you
+> just read this?
 > 
-> Alternative to derive relative TERTIARY collateral and prepare them in this
-> patch. Ok for that ?
+> and very odd indentation, checkpatch didn't complain about this?
+Sure. I will fix indentation problem once Rafael reviewed this patch.
 
-It'd be better to move this line to the next patch, that way all the TERTIARY
-stuff is in a single patch and isolated from controls shadow enhancement.
+> What commit does this fix?  Does it need to be backported to older
+> kernels?
+
+No. LTS - 5.4 do not have this problem.
+
+> Wait, how is your "noirq" device even getting called here?  Shouldn't
+> __device_suspend_noirq() be called instead?  Why isn't that the path 
+> for
+> your device?
+
+Hi Gregh and Rafael,
+
+This is regarding suspend/resume(s2idle) scenario of devices and 
+differences between the LTS kernel 5.4 and 5.10 with respect to devices 
+suspend and resume. Observing that devices suspended in suspend_late 
+stage are not getting resumed in resume_early stage.
+1)	LTS kernel 5.4 kernel do not have this problem but 5.10 kernel shows 
+this problem.
+2)	Commit - 6e176bf8d46194353163c2cb660808bc633b45d9 (PM: sleep: core: 
+Do not skip callbacks in the resume phase) is skipping the driver 
+early_resume callbacks.
+@@ -804,15 +793,25 @@ static int device_resume_early(struct device *dev, 
+pm_message_t state, bool asyn
+         } else if (dev->bus && dev->bus->pm) {
+                 info = "early bus ";
+                 callback = pm_late_early_op(dev->bus->pm, state);
+-       } else if (dev->driver && dev->driver->pm) {
++       }
++       if (callback)
++               goto Run;
++
++       if (dev_pm_may_skip_resume(dev))
++               goto Skip;
+In device_resume_early function dev->power.must_resume is used to skip 
+the resume call back. It looks this function is expecting that, 
+__device_suspend_noirq() would set dev->power.must_resume = true for the 
+devices which does not have DPM_FLAG_MAY_SKIP_RESUME flag set.
+
+static int __device_suspend_noirq(struct device *dev, pm_message_t 
+state, bool async)
+{
+…
+…
+         /*
+          * Skipping the resume of devices that were in use right before 
+the
+          * system suspend (as indicated by their PM-runtime usage 
+counters)
+          * would be suboptimal.  Also resume them if doing that is not 
+allowed
+          * to be skipped.
+          */
+         if (atomic_read(&dev->power.usage_count) > 1 ||
+             !(dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME) &&
+               dev->power.may_skip_resume))
+                 dev->power.must_resume = true;
+
+
+3)	Problematic scenario is as follows -  During the device 
+suspend/resume scenario all the devices in  the suspend_late stage are 
+successful and some device can fail to suspend in 
+suspend_noirq(device_suspend_noirq-> __device_suspend_noirq) phase.
+As a device failed in dpm_noirq_suspend_devices phase, dpm_resume_noirq 
+is getting called to resume devices in dpm_late_early_list in the noirq 
+phase.
+4)	During the Devices_early_resume stage 
+dpm_resume_early()-->device_resume_early() functions skipping the 
+devices early resume callbacks.
+  799         if (dev_pm_skip_resume(dev))
+800	              goto Skip;
+
+5)	Devices suspended in suspend_late stage are not getting resumed in 
+Devices_early_resume stage because of Commit - 
+6e176bf8d46194353163c2cb660808bc633b45d9 (PM: sleep: core: Do not skip 
+callbacks in the resume phase) is skipping the driver early_resume 
+callbacks when dev->power.must_resume is false.
+
+6)	Below portion of the code in __device_suspend_noirq is not getting 
+executed for some drivers successfully suspended in suspend_late stage 
+and there is no chance to set must_resume to true.  So these devices are 
+always having dev->power.must_resume=false.
+For example -
+i)	Devices A, B, C have suspend_late and resume_early handlers.
+ii)	Devices X, Y, Z  have suspend_noirq and resume_noirq handlers.
+Devices are getting suspended in this order – A, B, X , C , Y and Z and 
+device X return failure for suspend_noirq callback. In this scenario, 
+device C would never execute below portion of the code to set 
+dev->power.must_resume = true and device – C would not get resumed in 
+resume_early  stage.
+
+1192 static int __device_suspend_noirq(struct device *dev, pm_message_t 
+state, bool async)
+1193 {
+….
+….
+1245         /*
+1246          * Skipping the resume of devices that were in use right 
+before the
+1247          * system suspend (as indicated by their PM-runtime usage 
+counters)
+1248          * would be suboptimal.  Also resume them if doing that is 
+not allowed
+1249          * to be skipped.
+1250          */
+1251         if (atomic_read(&dev->power.usage_count) > 1 ||
+1252             !(dev_pm_test_driver_flags(dev, 
+DPM_FLAG_MAY_SKIP_RESUME) &&
+1253               dev->power.may_skip_resume))
+1254                 dev->power.must_resume = true;
+1255
+1256         if (dev->power.must_resume)
+1257                 dpm_superior_set_must_resume(dev);
+1258
+
+> thanks,
+> 
+> greg k-h
