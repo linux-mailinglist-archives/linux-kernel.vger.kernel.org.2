@@ -2,71 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F493E2F33
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5788D3E2F35
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242816AbhHFSVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 14:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
+        id S232144AbhHFSVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 14:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232144AbhHFSVU (ORCPT
+        with ESMTP id S237391AbhHFSVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 14:21:20 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2738EC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 11:21:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Wl5Kv86ynkllD9kxckp+jLjrVHROzccsIwB9+Ndc/Zg=; b=hVl/2faKlL84Gg7r0t9LcFcYW+
-        9vCS/Vzrs8zdIyZ4UXY/pLXJeslVpjPCZIrMG2p41SDkm/biTe5++/HjrAi//cKzVVwACbWhXhFQU
-        fhizS6+ky1YL3BwbUA9KTlZW4yExzrDYMqZ0rsAcZze9W5W3KLVIJixaZYmMwlS4CVOS41n5luuWd
-        wGRECAuTcAqhsrawqCKsNOCiQViI7ad8tetqV0OEi7hrxXn77q2MyI3UxF7b5jVJ4yjtGrSdZ5Q29
-        bkSRuPTYLFFDu1QE0H+5ai5hBks/h+L947zVX4yKfsbpiJILy0a9zL8ZmW/rA5SFlBhZKXwhW0HGt
-        2bsY/7CA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mC4Sg-006QWe-Ry; Fri, 06 Aug 2021 18:20:51 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CA22C98632E; Fri,  6 Aug 2021 20:20:49 +0200 (CEST)
-Date:   Fri, 6 Aug 2021 20:20:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH] notifier: Make atomic_notifiers use raw_spinlock
-Message-ID: <20210806182049.GC2184@worktop.programming.kicks-ass.net>
-References: <20210806140718.mxss3cbqijfebdo5@linutronix.de>
- <20210806180242.GB2184@worktop.programming.kicks-ass.net>
- <20210806180653.mohdmxgrt6h3valt@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806180653.mohdmxgrt6h3valt@linutronix.de>
+        Fri, 6 Aug 2021 14:21:48 -0400
+Received: from mail-io1-xd4a.google.com (mail-io1-xd4a.google.com [IPv6:2607:f8b0:4864:20::d4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34E4C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 11:21:31 -0700 (PDT)
+Received: by mail-io1-xd4a.google.com with SMTP id y10-20020a5e870a0000b029058d2e067004so995714ioj.9
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 11:21:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=4pt7QhWVdBAZAccNLJ7Co0Ahi/sO10ASBjVGlHUl104=;
+        b=iOseVJKC0NnJlViQEf9ujKe0W+enHRBshASSrUYDBQEeYiMxEEsSjh6cWghY77m7Fs
+         myKrirpP/Q9FqSROzg9KdcSpMfAvxQBAY+vSp2mdxP6+vCMCkbmmfORkWCXgES2q+qJG
+         FiLy8mJKbyKeqfCwg1FKwygO011g2iliFFHVn5sHsgyyI+aCFxzqv95GAyjorVG1eAzb
+         m5GsqCqOVCXiGCdK7mdFczinFqum+96KsRTGGJrlCbjHvza56yUcE7NcNnpePtGxMt2X
+         0nUakdPoFFLQzj/nyNxUXU/aFhLW4t+KAvrRMZj6ZpvALI8V1/YpouSQTgiS1wmHQ/PS
+         SCDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=4pt7QhWVdBAZAccNLJ7Co0Ahi/sO10ASBjVGlHUl104=;
+        b=hpBD5BbIiiB/f5C6xIQIcK8ZLf4nH7prgULSTL3SHHzh+vGRVVGLbH33rZoZhtR3Q2
+         6Pt8jRtbQl6N4DxncRw4xtnRMIvZs+XVB6d/JpDpRE7dy0TYkpvx2FgAtqPiE26Pi8OR
+         wlGifcqL5msZwPq1Bsvn+Y5G8JiUn8C8GdcdTJZQGxlfKLdran5Em4q/1jsOpGQmmC1K
+         RDAgUYxAn6x16O8B1g0M03+VHbYRTJSwqoLK1DTAZYmBKGayp2Yeab4WNHq9r21mO/kU
+         fuONf8pLUbi95OrEqsEde5A7C0pqitlo86x7mfIGGq90WpsZ0MWEnjsb7XnXvopEYGIe
+         yCHQ==
+X-Gm-Message-State: AOAM5300b8DFtRCzu/bXtZQcFv9SF8iR6A2I54pLgSsE1sciKPyMw4Fq
+        sfXbv6ARJ9W/cy4mOLM6aDCHY1GhvDQ=
+X-Google-Smtp-Source: ABdhPJzZJN1OOnUO8Pu1MeOD+it0odp3Lye5ixwLumhAeWiWd1owXbWALujweNLaSoQpDxdWjN1hHVD7L9A=
+X-Received: from oupton.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:404])
+ (user=oupton job=sendgmr) by 2002:a05:6602:2e11:: with SMTP id
+ o17mr183465iow.55.1628274091109; Fri, 06 Aug 2021 11:21:31 -0700 (PDT)
+Date:   Fri,  6 Aug 2021 18:21:26 +0000
+Message-Id: <20210806182126.2842876-1-oupton@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+Subject: [RESEND PATCH] clocksource/arm_arch_timer: Fix masking for high freq counters
+From:   Oliver Upton <oupton@google.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 08:06:53PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2021-08-06 20:02:42 [+0200], Peter Zijlstra wrote:
-> > On Fri, Aug 06, 2021 at 04:07:18PM +0200, Sebastian Andrzej Siewior wrote:
-> > > What do we do with this?
-> > > Do we merge this as-is, add another "robust atomic notifier" using only
-> > > raw_spinlock_t for registration and notification (for only
-> > > cpu_pm_notifier_chain) instead of switching to raw_spinlock_t for all
-> > > atomic notifier in -tree?
-> > 
-> > Right, so the problem I see with this is that
-> > notifier_chain_{,un}register() are O(n). Hardly something we should be
-> > putting under raw_spin_lock :/
-> 
-> Yup, pretty much. So we make one robust notifier for
-> cpu_pm_notifier_chain?
+Unfortunately, the architecture provides no means to determine the bit
+width of the system counter. However, we do know the following from the
+specification:
 
-Yeah, I suppose so :-( Ideally that whole pm notifier thing goes, but
-that's *far* more work and I really don't want to be responsible for the
-brain damange resulting from looking at all that 'special' idle code.
+ - the system counter is at least 56 bits wide
+ - Roll-over time of not less than 40 years
+
+To date, the arch timer driver has depended on the first property,
+assuming any system counter to be 56 bits wide and masking off the rest.
+However, combining a narrow clocksource mask with a high frequency
+counter could result in prematurely wrapping the system counter by a
+significant margin. For example, a 56 bit wide, 1GHz system counter
+would wrap in a mere 2.28 years!
+
+This is a problem for two reasons: v8.6+ implementations are required to
+provide a 64 bit, 1GHz system counter. Furthermore, before v8.6,
+implementers may select a counter frequency of their choosing.
+
+Fix the issue by deriving a valid clock mask based on the second
+property from above. Set the floor at 56 bits, since we know no system
+counter is narrower than that.
+
+Suggested-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Oliver Upton <oupton@google.com>
+---
+This patch was tested with QEMU, tweaked to provide a 1GHz system
+counter frequency, as I could not easily figure out how to tweak the
+base FVP to provide a 1GHz counter.
+
+Parent commit: 0c32706dac1b ("arm64: stacktrace: avoid tracing arch_stack_walk()")
+
+ drivers/clocksource/arm_arch_timer.c | 28 ++++++++++++++++++++++++++--
+ 1 file changed, 26 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+index be6d741d404c..8c41626a4c8a 100644
+--- a/drivers/clocksource/arm_arch_timer.c
++++ b/drivers/clocksource/arm_arch_timer.c
+@@ -52,6 +52,12 @@
+ #define CNTV_TVAL	0x38
+ #define CNTV_CTL	0x3c
+ 
++/*
++ * The minimum amount of time a generic timer is guaranteed to not roll over
++ * (40 years)
++ */
++#define MIN_ROLLOVER_SECS	(40ULL * 365 * 24 * 3600)
++
+ static unsigned arch_timers_present __initdata;
+ 
+ static void __iomem *arch_counter_base __ro_after_init;
+@@ -1004,9 +1010,24 @@ struct arch_timer_kvm_info *arch_timer_get_kvm_info(void)
+ 	return &arch_timer_kvm_info;
+ }
+ 
++/*
++ * Makes an educated guess at a valid counter width based on the Generic Timer
++ * specification. Of note:
++ *   1) the Generic Timer is at least 56 bits wide
++ *   2) a roll-over time of not less than 40 years
++ */
++static int __init arch_counter_get_width(void)
++{
++	u64 min_cycles = MIN_ROLLOVER_SECS * arch_timer_get_cntfrq();
++
++	/* guarantee the returned width is within the valid range */
++	return max(56, min(64, ilog2(min_cycles)));
++}
++
+ static void __init arch_counter_register(unsigned type)
+ {
+ 	u64 start_count;
++	int width;
+ 
+ 	/* Register the CP15 based counter if we have one */
+ 	if (type & ARCH_TIMER_TYPE_CP15) {
+@@ -1031,6 +1052,10 @@ static void __init arch_counter_register(unsigned type)
+ 		arch_timer_read_counter = arch_counter_get_cntvct_mem;
+ 	}
+ 
++	width = arch_counter_get_width();
++	clocksource_counter.mask = CLOCKSOURCE_MASK(width);
++	cyclecounter.mask = CLOCKSOURCE_MASK(width);
++
+ 	if (!arch_counter_suspend_stop)
+ 		clocksource_counter.flags |= CLOCK_SOURCE_SUSPEND_NONSTOP;
+ 	start_count = arch_timer_read_counter();
+@@ -1040,8 +1065,7 @@ static void __init arch_counter_register(unsigned type)
+ 	timecounter_init(&arch_timer_kvm_info.timecounter,
+ 			 &cyclecounter, start_count);
+ 
+-	/* 56 bits minimum, so we assume worst case rollover */
+-	sched_clock_register(arch_timer_read_counter, 56, arch_timer_rate);
++	sched_clock_register(arch_timer_read_counter, width, arch_timer_rate);
+ }
+ 
+ static void arch_timer_stop(struct clock_event_device *clk)
+-- 
+2.32.0.605.g8dce9f2422-goog
+
