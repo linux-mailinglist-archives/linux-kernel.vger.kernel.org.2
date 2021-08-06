@@ -2,173 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D53F3E1FA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 417713E1FA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 02:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242661AbhHFADP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 20:03:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39238 "EHLO mail.kernel.org"
+        id S242676AbhHFAEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 20:04:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229644AbhHFADN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 20:03:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D08D60041;
-        Fri,  6 Aug 2021 00:02:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628208178;
-        bh=w+EzrCFzoXO++utJ5paGjn1FR/ff9cpEjnMnfwT0t/c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=akZQ6u2Lb+L6bHJIqwoQfEQEBWlGgz0lZfMKdDs7ZHfpj5DjtCUeWgdHUsaH3NMC1
-         9kPfFPdbZoS4ZgGJfO6IbC2IYykgsH8bz3BrTMosfSP0WuYzJvRZdUht1ePOWQHcN4
-         Jm+9aPLOu4zOruiiENrDmfME1nQ8C1HK764bO62tR7w/ZVPPV9AEIM670+exMt5zXz
-         uRDTZ7iV8V0rCsNC7l/HPHkTQoVM2/1OAYYZIk72zTnVOAtT1Iz70UTIFSlkB5JARb
-         l30EI+5NQlH0h9UOLXJWVbtFLjUp9Vj4wrmWYb19O0w6mpYBMoHMImw6jLYApIWTGk
-         cizeNgMhPsFww==
-From:   Chao Yu <chao@kernel.org>
-To:     jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <chao.yu@linux.dev>,
-        Chao Yu <chao@kernel.org>
-Subject: [PATCH v2] f2fs: compress: do sanity check on cluster
-Date:   Fri,  6 Aug 2021 08:02:50 +0800
-Message-Id: <20210806000250.39728-1-chao@kernel.org>
-X-Mailer: git-send-email 2.22.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229644AbhHFAEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 20:04:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC15961052;
+        Fri,  6 Aug 2021 00:03:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1628208226;
+        bh=lsSE5tvNy4aTRnsD3X6OAqGqP19GDoBFiD74B70HHOg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=icNnBXX9cAIcggbi0r8XlsID4alGDeS2iayE2iY1MEDKvsFRcljBs7OvgqgVv1qzS
+         z596vKzjH7NdXyUBDtLLf/UOqQe8HwvguO+QqNZxDB53NSOsdGkGe01szexeEfTrvg
+         3nAsGvQtxKX/AIdKme4MiqzVNi4jamwYUTep2kEg=
+Date:   Thu, 5 Aug 2021 17:03:44 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     SeongJae Park <sj38.park@gmail.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@huawei.com,
+        amit@kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
+        foersleo@amazon.de, Greg Thelen <gthelen@google.com>,
+        jgowans@amazon.com, mheyne@amazon.de,
+        David Rientjes <rientjes@google.com>, sieberf@amazon.com,
+        Vlastimil Babka <vbabka@suse.cz>, linux-damon@amazon.com,
+        Linux MM <linux-mm@kvack.org>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, Wei Xu <weixugc@google.com>,
+        Paul Turner <pjt@google.com>, Yu Zhao <yuzhao@google.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Subject: Re: [PATCH v34 00/13] Introduce Data Access MONitor (DAMON)
+Message-Id: <20210805170344.afbf5f1ceb00eb212082ca7b@linux-foundation.org>
+In-Reply-To: <20210728083643.5873-1-sjpark@amazon.de>
+References: <CALvZod53+KD_F+3z3ztdx6ELFWt+jAXY6Vq-S49bq6-Y2=Cneg@mail.gmail.com>
+        <20210728083643.5873-1-sjpark@amazon.de>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds f2fs_sanity_check_cluster() to support doing
-sanity check on cluster of compressed file, it will be triggered
-from below two paths:
+On Wed, 28 Jul 2021 08:36:43 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
 
-- __f2fs_cluster_blocks()
-- f2fs_map_blocks(F2FS_GET_BLOCK_FIEMAP)
+> > DAMON does not expose stable APIs at the moment, so these can
+> > be changed later if needed. I think it is ok to merge DAMON for some
+> > exposure. However I do want to make this clear that the solution space
+> > is not complete. The solution of system level monitoring is still
+> > needed which can be a future extension to DAMON or more generalized
+> > Multigen LRU.
+> 
+> Agreed.  We have lots more works to do.  Some of those are already posted as
+> RFC patchsets[1,2,3,4].  I promise I will happily do the works.  But, how dare
+> could only I get all the fun?  I'd like to do that together with others in this
+> great community.  One major purpose of this patchset is thus providing a
+> flexible framework for such collaboration.  The virtual address space
+> monitoring, which this patchset provides in addition to the framework, is also
+> for real-world usages, though.
+> 
+> Now all the patches have at least one 'Reviewed-by:' or 'Acked-by:' tags.  We
+> didn't find serious problems since v26[5], which was posted about four months
+> ago. so I'm thinking this patchset has passed the minimum qualification.  If
+> you think there are more things to be done before this patchset is merged in
+> the -mm tree or mainline, please let me know.  If not, Andrew, I'd like you to
+> consider merging this patchset into '-mm' tree.
 
-And it can detect below three kind of cluster insanity status.
+Shall take a look.  With some trepidation.
 
-C: COMPRESS_ADDR
-N: NULL_ADDR or NEW_ADDR
-V: valid blkaddr
-*: any value
+1-2 years from now someone will pop up with a massive patchset
+implementing some monitoring scheme and we'll say "why didn't you use
+DAMON" and they'll say "it's unsuitable for <reasons>".
 
-1. [*|C|*|*]
-2. [C|*|C|*]
-3. [C|N|N|V]
-
-Signed-off-by: Chao Yu <chao@kernel.org>
----
-v2:
-- cover all map_block cases
-- give EFSCORRUPTED only when CHECK_FS is enabled for fiemap()
- fs/f2fs/compress.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/f2fs/data.c     |  9 ++++++++
- fs/f2fs/f2fs.h     |  1 +
- 3 files changed, 63 insertions(+)
-
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index 7dbfd6965b97..f25b32a6893a 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -898,6 +898,54 @@ static bool cluster_has_invalid_data(struct compress_ctx *cc)
- 	return false;
- }
- 
-+bool f2fs_sanity_check_cluster(struct dnode_of_data *dn)
-+{
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(dn->inode);
-+	unsigned int cluster_size = F2FS_I(dn->inode)->i_cluster_size;
-+	bool compressed = dn->data_blkaddr == COMPRESS_ADDR;
-+	int cluster_end = 0;
-+	int i;
-+	char *reason = "";
-+
-+	if (!compressed)
-+		return false;
-+
-+	/* [..., COMPR_ADDR, ...] */
-+	if (dn->ofs_in_node % cluster_size) {
-+		reason = "[*|C|*|*]";
-+		goto out;
-+	}
-+
-+	for (i = 1; i < cluster_size; i++) {
-+		block_t blkaddr = data_blkaddr(dn->inode, dn->node_page,
-+							dn->ofs_in_node + i);
-+
-+		/* [COMPR_ADDR, ..., COMPR_ADDR] */
-+		if (blkaddr == COMPRESS_ADDR) {
-+			reason = "[C|*|C|*]";
-+			goto out;
-+		}
-+		if (compressed) {
-+			if (!__is_valid_data_blkaddr(blkaddr)) {
-+				if (!cluster_end)
-+					cluster_end = i;
-+				continue;
-+			}
-+			/* [COMPR_ADDR, NULL_ADDR or NEW_ADDR, valid_blkaddr] */
-+			if (cluster_end) {
-+				reason = "[C|N|N|V]";
-+				goto out;
-+			}
-+		}
-+	}
-+	return false;
-+out:
-+	f2fs_warn(sbi, "access invalid cluster, ino:%lu, nid:%u, ofs_in_node:%u, reason:%s",
-+			dn->inode->i_ino, dn->nid, dn->ofs_in_node, reason);
-+	set_sbi_flag(sbi, SBI_NEED_FSCK);
-+	return true;
-+}
-+
- static int __f2fs_cluster_blocks(struct inode *inode,
- 				unsigned int cluster_idx, bool compr)
- {
-@@ -915,6 +963,11 @@ static int __f2fs_cluster_blocks(struct inode *inode,
- 		goto fail;
- 	}
- 
-+	if (f2fs_sanity_check_cluster(&dn)) {
-+		ret = -EFSCORRUPTED;
-+		goto fail;
-+	}
-+
- 	if (dn.data_blkaddr == COMPRESS_ADDR) {
- 		int i;
- 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index df5e8d8c654e..d4c9aeba0842 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -1552,6 +1552,15 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map,
- 			map->m_flags |= F2FS_MAP_NEW;
- 			blkaddr = dn.data_blkaddr;
- 		} else {
-+#ifdef CONFIG_F2FS_FS_COMPRESSION
-+			if (f2fs_compressed_file(inode) &&
-+					f2fs_sanity_check_cluster(&dn) &&
-+					(flag != F2FS_GET_BLOCK_FIEMAP ||
-+					IS_ENABLED(CONFIG_F2FS_CHECK_FS))) {
-+				err = -EFSCORRUPTED;
-+				goto sync_out;
-+			}
-+#endif
- 			if (flag == F2FS_GET_BLOCK_BMAP) {
- 				map->m_pblk = 0;
- 				goto sync_out;
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index e97b4d8c5efc..3b368bcbc4d7 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -4074,6 +4074,7 @@ void f2fs_end_read_compressed_page(struct page *page, bool failed,
- 							block_t blkaddr);
- bool f2fs_cluster_is_empty(struct compress_ctx *cc);
- bool f2fs_cluster_can_merge_page(struct compress_ctx *cc, pgoff_t index);
-+bool f2fs_sanity_check_cluster(struct dnode_of_data *dn);
- void f2fs_compress_ctx_add_page(struct compress_ctx *cc, struct page *page);
- int f2fs_write_multi_pages(struct compress_ctx *cc,
- 						int *submitted,
--- 
-2.22.1
-
+I would like to see more thought/design go into how DAMON could be
+modified to address Shakeel's other three requirements.  At least to
+the point where we can confidently say "yes, we will be able to do
+this".  Are you able to drive this discussion along please?
