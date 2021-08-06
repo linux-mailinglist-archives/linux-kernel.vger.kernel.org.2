@@ -2,158 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251733E30C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B083E30CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245188AbhHFVOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 17:14:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238715AbhHFVOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 17:14:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4862A61186;
-        Fri,  6 Aug 2021 21:13:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628284427;
-        bh=SytdQxth9CJJUgSJWz+l+8KZpRLKCpTEvxUpLGTP2iY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=linh2w8S4m5FvQPqCk/LGHdKeiP6HI5IHnDSbqknS1pObzcDK0a1ekS1w/3L4BlOi
-         8Gezu+VVJPKwlWr2M06EkHVWXf5gr0wN1nSb8CYFvInPzPvacyZjDw6xekEfKCeinX
-         HWODpwRd6ICL/c0dvyTntai4JUkF49hd1TK3MSumaNrPnxk4eCKKKnHncwNeOXYW2l
-         SVCG1MDL7H2JQhCozSg4xIfzlTZpPReVHhfiy6+oth0qo0KGYb5q/rFqogE2gEPlj1
-         AmEIt3F3KTC8vMbDADpubMa2e6XxRqZXTurGSrKPidoGXwC0OM5PGEwSpVOYWtKnnq
-         8kqLcW5EDtXXQ==
-Received: by earth.universe (Postfix, from userid 1000)
-        id 9F85E3C0C99; Fri,  6 Aug 2021 23:13:45 +0200 (CEST)
-Date:   Fri, 6 Aug 2021 23:13:45 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        David Heidelberg <david@ixit.cz>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v6 07/12] power: supply: smb347-charger: Utilize generic
- regmap caching
-Message-ID: <20210806211345.drecxf76bc6mhzmw@earth.universe>
-References: <20210731173842.19643-1-digetx@gmail.com>
- <20210731173842.19643-8-digetx@gmail.com>
+        id S245213AbhHFVOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 17:14:24 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21796 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245202AbhHFVOX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 17:14:23 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 176L5NHv056964;
+        Fri, 6 Aug 2021 17:13:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=cRkEW63PV2Y6BSJzudvoYxZko/o4YF/irIOsVhYwkiE=;
+ b=KTiKrKWLPOoWxVLu6FcaPTYU8SLOuJZVuoE9YjeAK2od9ozLQ6PxpTFc85sJ0Hfo5GrC
+ Bj8LThMBQS0bIt4tmgqUoW9xq8P7qiKVrNEIrlN/uuWowBezH57HIdzVm0OJ17VZb6ZO
+ PXYwukHUnCnITjpPTgJsCfNziWrO2xMZPJm7RY4UOiP/fua8vKZa8R48xAkU2siCPhTR
+ l/p9UPyWGHXuCqWex0/r+3jhg8Jr5Pj54rSnSrm9lE4ZbEEhzdyLFNwsrCPBc5B4/VG/
+ OhV806bAh4+nOmmqE756G5dtIku8npE8n+YM+X1coBEpJfqe3AFZSIOPcs+aCCU/GJZX zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a9bxdhc4u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Aug 2021 17:13:56 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 176L65RU061266;
+        Fri, 6 Aug 2021 17:13:56 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a9bxdhc46-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Aug 2021 17:13:56 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 176LDKTB009026;
+        Fri, 6 Aug 2021 21:13:54 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma01wdc.us.ibm.com with ESMTP id 3a8gwuqnay-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 06 Aug 2021 21:13:54 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 176LDsEk33620242
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Aug 2021 21:13:54 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 13ADDAE06A;
+        Fri,  6 Aug 2021 21:13:54 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EBE9BAE066;
+        Fri,  6 Aug 2021 21:13:51 +0000 (GMT)
+Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.77.144.67])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Fri,  6 Aug 2021 21:13:51 +0000 (GMT)
+Date:   Fri, 6 Aug 2021 16:13:48 -0500
+From:   "Paul A. Clarke" <pc@us.ibm.com>
+To:     Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf script python: fix unintended underline
+Message-ID: <20210806211348.GA66379@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+References: <20210806204502.110305-1-stephen.s.brennan@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bjxp4r5bbky4twa6"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210731173842.19643-8-digetx@gmail.com>
+In-Reply-To: <20210806204502.110305-1-stephen.s.brennan@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: qD-FdmqpX4JZSrLVBbhJVFa1WMTZXgL4
+X-Proofpoint-ORIG-GUID: OlW__nPxS_ycWnetDraG5IadXgiXoxD4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-06_06:2021-08-06,2021-08-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ impostorscore=0 suspectscore=0 phishscore=0 clxscore=1011 bulkscore=0
+ adultscore=0 mlxlogscore=999 lowpriorityscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108060138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 06, 2021 at 01:45:01PM -0700, Stephen Brennan wrote:
+> The text ranging from "subsystem__event_name" to
+> "raw_syscalls__sys_enter()" is interpreted by asciidoc as a pair of
+> unconstrained text formatting markers. The result is that the manual
+> page displayed this text as underlined, and the HTML pages displayed
+> this text as italicized. Escape the first double-underscore to prevent
+> this.
 
---bjxp4r5bbky4twa6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think it would be better to escape the second double-underscore as well,
+to prevent the same problem recurring with future changes.
 
-Hi,
+> diff --git a/tools/perf/Documentation/perf-script-python.txt b/tools/perf/Documentation/perf-script-python.txt
+> index 5e43cfa5ea1e..0250dc61cf98 100644
+> --- a/tools/perf/Documentation/perf-script-python.txt
+> +++ b/tools/perf/Documentation/perf-script-python.txt
+> @@ -167,7 +167,7 @@ below).
+> 
+>  Following those are the 'event handler' functions generated one for
+>  every event in the 'perf record' output.  The handler functions take
+> -the form subsystem__event_name, and contain named parameters, one for
+> +the form subsystem\__event_name, and contain named parameters, one for
+>  each field in the event; in this case, there's only one event,
+>  raw_syscalls__sys_enter().  (see the EVENT HANDLERS section below for
 
-On Sat, Jul 31, 2021 at 08:38:37PM +0300, Dmitry Osipenko wrote:
-> Utilize generic regmap caching in order to avoid unnecessary slow I2C
-> accesses to all constant registers each time the supply status updated
-> and remove local caching of charger state to make code cleaner.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
+escape this    ^ , too.
 
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+>  more info on event handlers).
+> -- 
 
--- Sebastian
-
->  drivers/power/supply/smb347-charger.c | 16 ++++------------
->  1 file changed, 4 insertions(+), 12 deletions(-)
->=20
-> diff --git a/drivers/power/supply/smb347-charger.c b/drivers/power/supply=
-/smb347-charger.c
-> index db1378b41f80..27254e6efdde 100644
-> --- a/drivers/power/supply/smb347-charger.c
-> +++ b/drivers/power/supply/smb347-charger.c
-> @@ -135,7 +135,6 @@
->   * @id: SMB charger ID
->   * @mains_online: is AC/DC input connected
->   * @usb_online: is USB input connected
-> - * @charging_enabled: is charging enabled
->   * @irq_unsupported: is interrupt unsupported by SMB hardware
->   * @max_charge_current: maximum current (in uA) the battery can be charg=
-ed
->   * @max_charge_voltage: maximum voltage (in uV) the battery can be charg=
-ed
-> @@ -192,7 +191,6 @@ struct smb347_charger {
->  	unsigned int		id;
->  	bool			mains_online;
->  	bool			usb_online;
-> -	bool			charging_enabled;
->  	bool			irq_unsupported;
-> =20
->  	unsigned int		max_charge_current;
-> @@ -358,21 +356,13 @@ static int smb347_charging_status(struct smb347_cha=
-rger *smb)
-> =20
->  static int smb347_charging_set(struct smb347_charger *smb, bool enable)
->  {
-> -	int ret =3D 0;
-> -
->  	if (smb->enable_control !=3D SMB3XX_CHG_ENABLE_SW) {
->  		dev_dbg(smb->dev, "charging enable/disable in SW disabled\n");
->  		return 0;
->  	}
-> =20
-> -	if (smb->charging_enabled !=3D enable) {
-> -		ret =3D regmap_update_bits(smb->regmap, CMD_A, CMD_A_CHG_ENABLED,
-> -					 enable ? CMD_A_CHG_ENABLED : 0);
-> -		if (!ret)
-> -			smb->charging_enabled =3D enable;
-> -	}
-> -
-> -	return ret;
-> +	return regmap_update_bits(smb->regmap, CMD_A, CMD_A_CHG_ENABLED,
-> +				  enable ? CMD_A_CHG_ENABLED : 0);
->  }
-> =20
->  static inline int smb347_charging_enable(struct smb347_charger *smb)
-> @@ -1310,6 +1300,8 @@ static const struct regmap_config smb347_regmap =3D=
- {
->  	.max_register	=3D SMB347_MAX_REGISTER,
->  	.volatile_reg	=3D smb347_volatile_reg,
->  	.readable_reg	=3D smb347_readable_reg,
-> +	.cache_type	=3D REGCACHE_FLAT,
-> +	.num_reg_defaults_raw =3D SMB347_MAX_REGISTER,
->  };
-> =20
->  static const struct power_supply_desc smb347_mains_desc =3D {
-> --=20
-> 2.32.0
->=20
-
---bjxp4r5bbky4twa6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmENpgkACgkQ2O7X88g7
-+pqOsBAAioDKuQX3GL++jaA5XsqRe6XxpAZKEQX+sTxLjejawelozfttPPz4ij6x
-0i9i6YvFIk9/G4BacSK8hfdtME382SEk3v2JFdgB1Ol/HrL8Rg5oqMmdgreqTpC7
-xDgOksvLHduAz6f8MHyZ+I72FC+++5D/lT71t7TQA47/Fu/GTeUO6Z5KXX9KWpP7
-oDWvEROUU72gvgUoQWwWqFjiFwz/h0dVaCMZCTH0SIAPclJakvOwjv1FQWJpBjWF
-TJAU7uf8TxVV1fUvITZrKBG/Fk/rKBEKz+k+8poqY6QleKjWbZH3aS5+yq+ypzJF
-vUO2AIH9aDDCWZMfJCv0bPmDQTVim+TUZiJS/5eSTyrsC/lJkZQbTyB0ZmfEv6Ep
-wr6wCrSe0YHBXl1++OJznztDrpbMFR+WyJmeramadcCVPkuVmadobSsIYPaAHeuy
-IzGKdr1nervM55F5Os62K5CAtE3LkjgrYk+0bqp2KMpERBPgzpL2mA14vpzf+xtZ
-Y+xqdRFzwTHRY844pto94f/ZD3rJUqgFR4PkSt07PITC2jvRUWauUCsBYy5EFkhU
-l2PHKLKW+3/awRzAMsplTnra0EPIuTX2X+mqRteHcJBUVq0KZWCvgNXiZWF//1wH
-fG8ED+08rBaX3DkkfSTvEYx7PjMvLKHxH4xYdEpySj3pjd0cF8g=
-=bbW6
------END PGP SIGNATURE-----
-
---bjxp4r5bbky4twa6--
+PC
