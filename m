@@ -2,89 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DEF3E2CCB
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2324D3E2CE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240908AbhHFOgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 10:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240655AbhHFOgw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 10:36:52 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EBCC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 07:36:36 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id a20so7401509plm.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 07:36:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZqXrxedYpNPa+pS9MJbTiWVLg/Z/EX+UpGC/w4iURC0=;
-        b=ELeGMIX6y7VBCdKUScbWJkc4XgbYUEmqZR3z+eK89xK6emOE2IW9Z2zF/rPuOCthKO
-         4foOBKtCvz1m0L998tQJzo3qLyiArIiaz951+dJ9JiDzQK68G25+hURtA0vAP1bp7ITw
-         qORY1ROxfocMro77lZiqa9doTclZwa4Fwxi8TK1KpCq5j5Z9Hl5WjBR79ju2OJDXwyqG
-         4N4L8e64/8y3X6gEsu9qEboMmRqrAjsgO8j0eXftLBEp6RfiLx84Q+3NlwJ30H2cf2iM
-         xOOw75VFMbH1or4qDNQ4PQbAAcd5BjIfmiqdyrwiUAkFpJzbIo/U//NHgys4aICVHUrl
-         Qgvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZqXrxedYpNPa+pS9MJbTiWVLg/Z/EX+UpGC/w4iURC0=;
-        b=XAz9JZoEJ8ff2VOMYGHxljbelXsePy53As/bGgU+ERBN6FSiyvEpZM0dUc9Qa+4iGu
-         eh6hJOVoYLITrl2qTDp3TsEB/XXYqlBY++vJkPQ9QbBcLe0aZjdUXusioiGsm7lTbTR/
-         nRdJDqDlTALRwv7c1I1pFmp8ZHupgVs8qm9z7vjNOeVmcpYDvc8Fd8E4QWKbVQTJ1MMD
-         JBNmWO7jXfQZ4eKtUgLG8FCOhWJByAolKhVANhzMl0MASlC6yrxKGvOcOpoT9C6TwfFR
-         79KShumDE6/nOR45ez4HIO9R3fl7cSOUwdLfBcLo74KbUSzqPQLHVJ0GpdHyQsBIN5Z2
-         Rpjw==
-X-Gm-Message-State: AOAM530wRseI66dTIFWyNMiWguFZ3IieSx34xmu6bNOMlVmyainocsnl
-        C8Mi4zkDDNXsYnE8qDgLLo/uZutYMp0JrBLVK54THg==
-X-Google-Smtp-Source: ABdhPJy+Q3BkJCryeJW9Z8KmQ8OJ6tx0sIStvtty3SBCJ+QKcdhXr8FQCmcHQKcHnPkMCpw81fjMpcibTxx3h4dqnEs=
-X-Received: by 2002:a05:6a00:16c6:b029:32d:e190:9dd0 with SMTP id
- l6-20020a056a0016c6b029032de1909dd0mr10799551pfc.70.1628260596449; Fri, 06
- Aug 2021 07:36:36 -0700 (PDT)
+        id S241422AbhHFOoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 10:44:20 -0400
+Received: from mga12.intel.com ([192.55.52.136]:45748 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241632AbhHFOoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 10:44:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10068"; a="193974201"
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="193974201"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 07:43:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
+   d="scan'208";a="459389331"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 06 Aug 2021 07:43:55 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 3B11EDE; Fri,  6 Aug 2021 17:37:40 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        hdegoede@redhat.com, Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] x86/platform: Increase maximum GPIO number for X86_64
+Date:   Fri,  6 Aug 2021 17:37:11 +0300
+Message-Id: <20210806143711.37553-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <YQuZdVuaGG/Cr62y@kroah.com> <YQuaJ78y8j1UmBoz@kroah.com>
- <fdf8b6b6-58c3-8392-2fc6-1908a314e991@linux.intel.com> <YQwlHrJBw79xhTSI@kroah.com>
- <21db8884-5aa1-3971-79ef-f173a0a95bef@linux.intel.com> <YQwpa+LAYt7YZ5dh@kroah.com>
- <1e0967ee-c41e-fd5d-f553-e4d7ab88838c@linux.intel.com> <CAPcyv4h26QmPhJKjtUB-VPc4TP95rBAer78OzkgXncg77tFWVw@mail.gmail.com>
- <9b2956f5-3acf-e798-ff0f-002d2d5254db@linux.intel.com> <CAPcyv4ju0kzUuamiuE=xC_DoEArk1KxD+n+-TUw0LLTWoSj2VA@mail.gmail.com>
- <YQzF/utgrJfbZuHh@kroah.com>
-In-Reply-To: <YQzF/utgrJfbZuHh@kroah.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 6 Aug 2021 07:36:25 -0700
-Message-ID: <CAPcyv4jXoj9_xJ9p3rfoHgZc6xsjnvbeqHwxw8Y2h+kx4-qs+Q@mail.gmail.com>
-Subject: Re: [PATCH v1] driver: base: Add driver filter support
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 10:17 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Aug 05, 2021 at 06:00:25PM -0700, Dan Williams wrote:
-> > That said, per-device authorization is a little bit different than
-> > per-driver trust. Driver trust is easy to reason about for a built-in
-> > policy, while per-device authorization is easy for userspace to reason
-> > about for "why is this device not talking to its driver?".
->
-> See my other email about how the "per driver" trust is the wrong model,
-> you need to stick to "per device" trust.  Especially given that you are
-> giving control of your kernel drivers over to third parties, you already
-> trust them to do the right thing.
+By default the 512 GPIOs is a maximum on any x86 platform.
+With, for example, Intel Tiger Lake-H the SoC based controller
+occupies up to 480 pins. This leaves only 32 available for
+GPIO expanders or other drivers, like PMIC. Hence, bump the
+maximum GPIO number to 1024 for X86_64 and leave 512 for X86_32.
 
-Andi, if the number of TDX devices is small could they grow an SPDM
-over virtio channel? Then you can measure trust from the VM to the VMM
-to the attestation server.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ arch/x86/Kconfig | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 45962aaf2b2c..495ed6229b52 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -340,6 +340,19 @@ config NEED_PER_CPU_PAGE_FIRST_CHUNK
+ config ARCH_HIBERNATION_POSSIBLE
+ 	def_bool y
+ 
++# The GPIO number here must be sorted by descending number. In case of
++# a multiplatform kernel, we just want the highest value required by the
++# selected platforms.
++config ARCH_NR_GPIO
++	int
++	default 1024 if X86_64
++	default 512 if X86_32
++	default 0
++	help
++	  Maximum number of GPIOs in the system.
++
++	  If unsure, leave the default value.
++
+ config ARCH_SUSPEND_POSSIBLE
+ 	def_bool y
+ 
+-- 
+2.30.2
+
