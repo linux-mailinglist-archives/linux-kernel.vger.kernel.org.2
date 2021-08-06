@@ -2,67 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A563E2F32
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F493E2F33
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242769AbhHFSVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 14:21:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232144AbhHFSVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 14:21:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCBF361179;
-        Fri,  6 Aug 2021 18:20:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628274048;
-        bh=4dzvj1LJ8CUwWcLu3xUW7Kz4Lrg9+BzX0Dekc45jKQg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SCL62wQ4kzQMkUSV9Ebq/cAzJHzGySUKmE13GsaVqvuI2zqNv4Qt3L4M/QdzdMfrn
-         oXHWS1C+3SSK0kjg3YhDgf0z+hh4mCuj4ggM0MO1oBwL38Ua6hDt2kdIyGDeAuwwUN
-         lP0zOSQxyX4KaDjqjYoRaZLGyyBh46O6iLA84cfRdpV+telDKqmrvsmBwO1tTi3WWy
-         HdisDQvZZwp5xRVYAXreZEjuN1bnmW2EPl6ABQz1JKyA7EIRK5XExbu5GmBRFjwCLj
-         lEfvgaMYVZndMQYo73jri/GaMc21BocFis6NYIsMsEFhudykEMiho4nAv6dKI+xVO1
-         5yv3+qPkq2XhA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C8926403F2; Fri,  6 Aug 2021 15:20:45 -0300 (-03)
-Date:   Fri, 6 Aug 2021 15:20:45 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Jin Yao <yao.jin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>
-Subject: Re: [PATCH v4] perf vendor events: Add metrics for Icelake Server
-Message-ID: <YQ19fS3NkkLkDaKz@kernel.org>
-References: <20210806075404.31209-1-yao.jin@linux.intel.com>
- <CAP-5=fVQBDtt4aDVvbB+u663QGihMcajePAMh+rTk_sRFvd32A@mail.gmail.com>
+        id S242816AbhHFSVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 14:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232144AbhHFSVU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 14:21:20 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2738EC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 11:21:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Wl5Kv86ynkllD9kxckp+jLjrVHROzccsIwB9+Ndc/Zg=; b=hVl/2faKlL84Gg7r0t9LcFcYW+
+        9vCS/Vzrs8zdIyZ4UXY/pLXJeslVpjPCZIrMG2p41SDkm/biTe5++/HjrAi//cKzVVwACbWhXhFQU
+        fhizS6+ky1YL3BwbUA9KTlZW4yExzrDYMqZ0rsAcZze9W5W3KLVIJixaZYmMwlS4CVOS41n5luuWd
+        wGRECAuTcAqhsrawqCKsNOCiQViI7ad8tetqV0OEi7hrxXn77q2MyI3UxF7b5jVJ4yjtGrSdZ5Q29
+        bkSRuPTYLFFDu1QE0H+5ai5hBks/h+L947zVX4yKfsbpiJILy0a9zL8ZmW/rA5SFlBhZKXwhW0HGt
+        2bsY/7CA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mC4Sg-006QWe-Ry; Fri, 06 Aug 2021 18:20:51 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CA22C98632E; Fri,  6 Aug 2021 20:20:49 +0200 (CEST)
+Date:   Fri, 6 Aug 2021 20:20:49 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH] notifier: Make atomic_notifiers use raw_spinlock
+Message-ID: <20210806182049.GC2184@worktop.programming.kicks-ass.net>
+References: <20210806140718.mxss3cbqijfebdo5@linutronix.de>
+ <20210806180242.GB2184@worktop.programming.kicks-ass.net>
+ <20210806180653.mohdmxgrt6h3valt@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fVQBDtt4aDVvbB+u663QGihMcajePAMh+rTk_sRFvd32A@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210806180653.mohdmxgrt6h3valt@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Aug 06, 2021 at 01:16:57AM -0700, Ian Rogers escreveu:
-> On Fri, Aug 6, 2021, 12:55 AM Jin Yao <yao.jin@linux.intel.com> wrote:
-> >
-> > Add JSON metrics for Icelake Server to perf.
-> >
-> > Based on TMA metrics 4.21 at 01.org.
-> > https://download.01.org/perfmon/
-> >
-> > Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> > Reviewed-by: Andi Kleen <ak@linux.intel.com>
+On Fri, Aug 06, 2021 at 08:06:53PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2021-08-06 20:02:42 [+0200], Peter Zijlstra wrote:
+> > On Fri, Aug 06, 2021 at 04:07:18PM +0200, Sebastian Andrzej Siewior wrote:
+> > > What do we do with this?
+> > > Do we merge this as-is, add another "robust atomic notifier" using only
+> > > raw_spinlock_t for registration and notification (for only
+> > > cpu_pm_notifier_chain) instead of switching to raw_spinlock_t for all
+> > > atomic notifier in -tree?
+> > 
+> > Right, so the problem I see with this is that
+> > notifier_chain_{,un}register() are O(n). Hardly something we should be
+> > putting under raw_spin_lock :/
 > 
-> Reviewed-by: Ian Rogers <irogers@google.com>
+> Yup, pretty much. So we make one robust notifier for
+> cpu_pm_notifier_chain?
 
-Thanks, applied.
-
-- Arnaldo
-
+Yeah, I suppose so :-( Ideally that whole pm notifier thing goes, but
+that's *far* more work and I really don't want to be responsible for the
+brain damange resulting from looking at all that 'special' idle code.
