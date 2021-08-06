@@ -2,65 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB403E2E48
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D3C3E2E4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhHFQVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 12:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231453AbhHFQVf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 12:21:35 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CC0C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 09:21:18 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id 3so5171127qvd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 09:21:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Jc4nUp8w7EGypjYo/FnADm5r4YmqkOFcB5Z5iHZ7THE=;
-        b=BZn8KRijkXSNqebl3EjTZM4KxblYh99nt1DCldxPFtLXoAfXMSjY6DxECcT++HgO7k
-         rRFAA4Mw63pCZLnvJqLapPp5As7DS3gr996sHPJ0iz6bNOOz1xL3pgUQSSFMd876U8rP
-         4DI1brvCkH/GgFYbfazhNeWYoI2I4x4PFYXYQNL5O/7D4+tP9qrLacv17hxhTimRyAX+
-         G7Q4xLR6/6WHIUsDRNb2roTllF/yFWnQsMNocSvUWkFcRodg7hEKu3wSy08B/AsCF/pD
-         xeFngtFxeKyKKUn9z2+CI/HnGzVc9/nOrLt/fcpJOB/DITJv7mXrmnW9TyoGFkj4tjb2
-         vz6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Jc4nUp8w7EGypjYo/FnADm5r4YmqkOFcB5Z5iHZ7THE=;
-        b=fQS7olx9OHpatIxLvY/qoqAvjdQRDNCwHXZZDst0wucYHlv78S6m1pIZLPS9aN+nrw
-         VxnlJMgd58sxZUUa2XwUflErT0oNi85vieijOmZ/Ocvijs50Ax1hAaFd75mqLN9CKL6d
-         saI166/9kVVOYqWTUL502M+2Fn64HMtirYW4P3EMxM3ki6wbkb4xtKE+gBynSAhY5HIq
-         OF+t+D9kjFgATRTaNCi9ce+HhcxoDbBUwcw7PNqXRNGHGTfhf94WOOBuKKSh8mW/UYB4
-         m4+4jKXLmSkhT8jP1X83DPy7VtK3cx5HxfvtonRyqpT6FVNYBBYL1s4eAPwlc/Jc8HrZ
-         4xDw==
-X-Gm-Message-State: AOAM532VW/0/Uy/XTXxWADBn8usMs5e9YoTLGvL3P1yAfB0SwVS7aqjz
-        dJuutpCR6NvZc/nmXFZz3mEy44Wi+PGdlLSRcbc=
-X-Google-Smtp-Source: ABdhPJwxlj/8H5KpuDhkKt4e8CqDiJP5YDWdh1So3tD4Z64otgnEcUP/yOsuaSyaLPrrynJhFK7ayKpU7V4uHjwdSi8=
-X-Received: by 2002:a05:6214:948:: with SMTP id dn8mr12061515qvb.30.1628266878110;
- Fri, 06 Aug 2021 09:21:18 -0700 (PDT)
+        id S231993AbhHFQYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 12:24:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231453AbhHFQYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 12:24:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A633611C6;
+        Fri,  6 Aug 2021 16:23:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628267029;
+        bh=ty09/fANA+AaGrdFgiDJV6XUc9mA5WlqFGlxLtHeCkk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nh1X7AYI2SpnDgYGEGdB308YJJC2wKemKrWUG/4GpawrksGQk/WWgEqQfsnkiIbPg
+         ni2K6Ws3qYLGZqFR7ioShg1lQufUlkX9iN74koEamayIxMgEBJ2sqENQx0YvNUGhcB
+         arkxFo/RTUWmbE2GZwHAVUH+zouylzowoHRJ6XjRtOWy403qzHIjihyyS7Slbq4xga
+         HLZ5PaVzNdCceISnS5RN/TJ4+0gidvAqEkClXY4fcUFwC5T/X26Kj35D9lE0Q11+VH
+         ahJ4aoGavzVWAOfOI9FecvaGbPNrz91ozlkvUZv8xe294IvxUcQZ/HIXWBM8kSBV18
+         Svoc4ZvFn07bw==
+Received: by mail-ej1-f50.google.com with SMTP id o5so15948577ejy.2;
+        Fri, 06 Aug 2021 09:23:49 -0700 (PDT)
+X-Gm-Message-State: AOAM532Ia08jOU2bvbGWXosaIT1FVWho7L/nXRmsF2PkGREQfX7HxnIp
+        Zo9co0j5s2bczGVe6U3H8YJ4uZhocyx1lVxOMg==
+X-Google-Smtp-Source: ABdhPJwuUx8QjZdGDDM7P5slP1wzk+qqeyMJSv+CHKKN77QK/ubEn42xQa4s0696lJ4xkH4ylKUBy7+/jIXhiQ/49jk=
+X-Received: by 2002:a17:906:d287:: with SMTP id ay7mr10250474ejb.360.1628267027568;
+ Fri, 06 Aug 2021 09:23:47 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a0c:c248:0:0:0:0:0 with HTTP; Fri, 6 Aug 2021 09:21:17 -0700 (PDT)
-Reply-To: frankedwardjnr100@gmail.com
-From:   Frank Edwardjnr <donadcurtis229@gmail.com>
-Date:   Fri, 6 Aug 2021 17:21:17 +0100
-Message-ID: <CAMCWrXGZvx00u7hxHs0RggC8kq8BO7paBYMqSObSfPeOzaECig@mail.gmail.com>
-Subject: Re
-To:     undisclosed-recipients:;
+References: <cover.1627965261.git.mchehab+huawei@kernel.org>
+ <CAL_JsqLjw=+szXWJjGe86tMc51NA-5j=jVSXUAWuKeZRuJNJUg@mail.gmail.com>
+ <20210804085045.3dddbb9c@coco.lan> <YQrARd7wgYS1nywt@robh.at.kernel.org>
+ <20210805094612.2bc2c78f@coco.lan> <20210805095848.464cf85c@coco.lan>
+In-Reply-To: <20210805095848.464cf85c@coco.lan>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 6 Aug 2021 10:23:35 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKso=z8LG3ViaggyS1k+1T2F5aAhP3_RNhumQoUUD+bbg@mail.gmail.com>
+Message-ID: <CAL_JsqKso=z8LG3ViaggyS1k+1T2F5aAhP3_RNhumQoUUD+bbg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] DT schema changes for HiKey970 PCIe hardware to work
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, linux-phy@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SEksDQpHb29kIGRheS4NCktpbmRseSBjb25maXJtIHRvIG1lIGlmIHRoaXMgaXMgeW91ciBjb3Jy
-ZWN0IGVtYWlsIEFkZHJlc3MgYW5kIGdldA0KYmFjayB0byBtZSBmb3Igb3VyIGludGVyZXN0Lg0K
-U2luY2VyZWx5LA0KRnJhbmsNCg0K7JWI64WVDQrsoovsnYAg7ZWY66OoLg0K7J20IOyYrOuwlOul
-uCDsnbTrqZTsnbwg7KO87IaM7J24IOqyveyasCDsuZzsoIjtlZjqsowg64KY7JeQ6rKMIO2Zleyd
-uO2VmOqzoCDsmrDrpqzsnZgg7J207J217J2EIOychO2VtCDrgpjsl5Dqsowg64uk7IucIOyWu+yd
-hC4NCuyGlOynge2eiA0K7IaU7KeB7ZWY64ukYw0K
+On Thu, Aug 5, 2021 at 1:58 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Em Thu, 5 Aug 2021 09:46:12 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+>
+> > Em Wed, 4 Aug 2021 10:28:53 -0600
+> > Rob Herring <robh@kernel.org> escreveu:
+> >
+> > > On Wed, Aug 04, 2021 at 08:50:45AM +0200, Mauro Carvalho Chehab wrote:
+> > > > Em Tue, 3 Aug 2021 16:11:42 -0600
+> > > > Rob Herring <robh+dt@kernel.org> escreveu:
+> > > >
+> > > > > On Mon, Aug 2, 2021 at 10:39 PM Mauro Carvalho Chehab
+> > > > > <mchehab+huawei@kernel.org> wrote:
+> > > > > >
+> > > > > > Hi Rob,
+> > > > > >
+> > > > > > That's the third version of the DT bindings for Kirin 970 PCIE and its
+> > > > > > corresponding PHY.
+> > > > > >
+> > > > > > It is identical to v2, except by:
+> > > > > >         -          pcie@7,0 { // Lane 7: Ethernet
+> > > > > >         +          pcie@7,0 { // Lane 6: Ethernet
+> > > > >
+> > > > > Can you check whether you have DT node links in sysfs for the PCI
+> > > > > devices? If you don't, then something is wrong still in the topology
+> > > > > or the PCI core is failing to set the DT node pointer in struct
+> > > > > device. Though you don't rely on that currently, we want the topology
+> > > > > to match. It's possible this never worked on arm/arm64 as mainly
+> > > > > powerpc relied on this.
+> > > > >
+> > > > > I'd like some way to validate the DT matches the PCI topology. We
+> > > > > could have a tool that generates the DT structure based on the PCI
+> > > > > topology.
+> > > >
+> > > > The of_node node link is on those places:
+> > > >
+> > > >   $ find /sys/devices/platform/soc/f4000000.pcie/ -name of_node
+> > > >   /sys/devices/platform/soc/f4000000.pcie/of_node
+> > > >   /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/of_node
+> > > >   /sys/devices/platform/soc/f4000000.pcie/pci0000:00/0000:00:00.0/pci_bus/0000:01/of_node
+> > > >   /sys/devices/platform/soc/f4000000.pcie/pci0000:00/pci_bus/0000:00/of_node
+> > >
+> > > Looks like we're missing some...
+> > >
+> > > It's not immediately obvious to me what's wrong here. Only the root
+> > > bus is getting it's DT node set. The relevant code is pci_scan_device(),
+> > > pci_set_of_node() and pci_set_bus_of_node(). Give me a few days to try
+> > > to reproduce and debug it.
+> >
+> > I added a printk on both pci_set_*of_node() functions:
+> >
+> >       [    4.872991]  (null): pci_set_bus_of_node: of_node: /soc/pcie@f4000000
+> >       [    4.913806]  (null): pci_set_of_node: of_node: /soc/pcie@f4000000
+> >       [    4.978102] pci_bus 0000:01: pci_set_bus_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
+> >       [    4.990622]  (null): pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
+> >       [    5.052383] pci_bus 0000:02: pci_set_bus_of_node: of_node: (null)
+> >       [    5.059263]  (null): pci_set_of_node: of_node: (null)
+> >       [    5.085552]  (null): pci_set_of_node: of_node: (null)
+> >       [    5.112073]  (null): pci_set_of_node: of_node: (null)
+> >       [    5.138320]  (null): pci_set_of_node: of_node: (null)
+> >       [    5.164673]  (null): pci_set_of_node: of_node: (null)
+> >       [    5.233759] pci_bus 0000:03: pci_set_bus_of_node: of_node: (null)
+> >       [    5.240539]  (null): pci_set_of_node: of_node: (null)
+> >       [    5.310545] pci_bus 0000:04: pci_set_bus_of_node: of_node: (null)
+> >       [    5.324719] pci_bus 0000:05: pci_set_bus_of_node: of_node: (null)
+> >       [    5.338914] pci_bus 0000:06: pci_set_bus_of_node: of_node: (null)
+> >       [    5.345516]  (null): pci_set_of_node: of_node: (null)
+> >       [    5.415795] pci_bus 0000:07: pci_set_bus_of_node: of_node: (null)
+>
+> The enclosed patch makes the above a clearer:
+>
+>         [    4.800975]  (null): pci_set_bus_of_node: of_node: /soc/pcie@f4000000
+>         [    4.855983] pci 0000:00:00.0: pci_set_of_node: of_node: /soc/pcie@f4000000
+>         [    4.879169] pci_bus 0000:01: pci_set_bus_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
+>         [    4.900602] pci 0000:01:00.0: pci_set_of_node: of_node: /soc/pcie@f4000000/pcie@0,0
+>         [    4.953086] pci_bus 0000:02: pci_set_bus_of_node: of_node: (null)
+
+I believe the issue is we need another bridge node in the DT
+hierarchy. What we have is:
+
+Bus 0 is node /soc/pcie@f4000000
+Bus 1 is device 0 on bus 0 is node /soc/pcie@f4000000/pcie@0,0
+Bus 2 is device 0 on bus 1 in node ... whoops, there's no device 0
+under /soc/pcie@f4000000/pcie@0,0
+
+So we need the hierarchy to be: /soc/pcie@f4000000/pcie@0/pcie@0/pcie@{1,5,7}
+
+Rob
