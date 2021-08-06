@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6071A3E25F5
+	by mail.lfdr.de (Postfix) with ESMTP id AA3F83E25F6
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244899AbhHFIYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:24:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51188 "EHLO mail.kernel.org"
+        id S244933AbhHFIY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:24:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243806AbhHFIUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:20:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D0E861209;
-        Fri,  6 Aug 2021 08:20:30 +0000 (UTC)
+        id S244076AbhHFIU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:20:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A84EC611CC;
+        Fri,  6 Aug 2021 08:20:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628238031;
-        bh=u1luN1sMFI7o5STBnQbpqlrcozJB2enfmjp0qualJQw=;
+        s=korg; t=1628238034;
+        bh=fvvgQ9NlGndbKm/lUZW+jV4hnC9sgAUudL+0moyF+wo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tpk1460rh/5pqCobcrTFfaVTLvGNBa+KmM9NQG+W9nN5/AZSRcCYjWSYCfKVtm33l
-         iDWQFYWwji8IiCND9CJMSC04MuI4hUXZxznHXpRfG9QdAfGnPLcWeZAgBwMOtgcUZf
-         LvqNuZvQOusHdDXtwFIw2aqA2mVjsLYl3D8iM8/U=
+        b=x3/mgvvUksu8yfObABRRFMzuzdxS8u/EjhQaJtnTIdOxXB8IVkA8A0ruvABJDFxR3
+         ieh/XE4XxnszVxGgHhhVR79Hl0ArTF2e6tIMMK7kTpwHbTeEWQfJaFSKjX6CLOCx2E
+         NUYelbNwLlrBn2XaJZ+l0JscUer/5IdKAtEZAWkE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 25/35] ASoC: ti: j721e-evm: Check for not initialized parent_clk_id
-Date:   Fri,  6 Aug 2021 10:17:08 +0200
-Message-Id: <20210806081114.554978326@linuxfoundation.org>
+Subject: [PATCH 5.13 26/35] efi/mokvar: Reserve the table only if it is in boot services data
+Date:   Fri,  6 Aug 2021 10:17:09 +0200
+Message-Id: <20210806081114.587320457@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210806081113.718626745@linuxfoundation.org>
 References: <20210806081113.718626745@linuxfoundation.org>
@@ -40,34 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+From: Borislav Petkov <bp@suse.de>
 
-[ Upstream commit 82d28b67f780910f816fe1cfb0f676fc38c4cbb3 ]
+[ Upstream commit 47e1e233e9d822dfda068383fb9a616451bda703 ]
 
-During probe the parent_clk_id is set to -1 which should not be used to
-array index within hsdiv_rates[].
+One of the SUSE QA tests triggered:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Link: https://lore.kernel.org/r/20210717122820.1467-3-peter.ujfalusi@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+  localhost kernel: efi: Failed to lookup EFI memory descriptor for 0x000000003dcf8000
+
+which comes from x86's version of efi_arch_mem_reserve() trying to
+reserve a memory region. Usually, that function expects
+EFI_BOOT_SERVICES_DATA memory descriptors but the above case is for the
+MOKvar table which is allocated in the EFI shim as runtime services.
+
+That lead to a fix changing the allocation of that table to boot services.
+
+However, that fix broke booting SEV guests with that shim leading to
+this kernel fix
+
+  8d651ee9c71b ("x86/ioremap: Map EFI-reserved memory as encrypted for SEV")
+
+which extended the ioremap hint to map reserved EFI boot services as
+decrypted too.
+
+However, all that wasn't needed, IMO, because that error message in
+efi_arch_mem_reserve() was innocuous in this case - if the MOKvar table
+is not in boot services, then it doesn't need to be reserved in the
+first place because it is, well, in runtime services which *should* be
+reserved anyway.
+
+So do that reservation for the MOKvar table only if it is allocated
+in boot services data. I couldn't find any requirement about where
+that table should be allocated in, unlike the ESRT which allocation is
+mandated to be done in boot services data by the UEFI spec.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/ti/j721e-evm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/efi/mokvar-table.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/ti/j721e-evm.c b/sound/soc/ti/j721e-evm.c
-index 017c4ad11ca6..265bbc5a2f96 100644
---- a/sound/soc/ti/j721e-evm.c
-+++ b/sound/soc/ti/j721e-evm.c
-@@ -197,7 +197,7 @@ static int j721e_configure_refclk(struct j721e_priv *priv,
- 		return ret;
+diff --git a/drivers/firmware/efi/mokvar-table.c b/drivers/firmware/efi/mokvar-table.c
+index d8bc01340686..38722d2009e2 100644
+--- a/drivers/firmware/efi/mokvar-table.c
++++ b/drivers/firmware/efi/mokvar-table.c
+@@ -180,7 +180,10 @@ void __init efi_mokvar_table_init(void)
+ 		pr_err("EFI MOKvar config table is not valid\n");
+ 		return;
  	}
+-	efi_mem_reserve(efi.mokvar_table, map_size_needed);
++
++	if (md.type == EFI_BOOT_SERVICES_DATA)
++		efi_mem_reserve(efi.mokvar_table, map_size_needed);
++
+ 	efi_mokvar_table_size = map_size_needed;
+ }
  
--	if (priv->hsdiv_rates[domain->parent_clk_id] != scki) {
-+	if (domain->parent_clk_id == -1 || priv->hsdiv_rates[domain->parent_clk_id] != scki) {
- 		dev_dbg(priv->dev,
- 			"%s configuration for %u Hz: %s, %dxFS (SCKI: %u Hz)\n",
- 			audio_domain == J721E_AUDIO_DOMAIN_CPB ? "CPB" : "IVI",
 -- 
 2.30.2
 
