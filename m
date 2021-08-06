@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC2B3E2514
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608C63E254F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244039AbhHFIQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:16:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45724 "EHLO mail.kernel.org"
+        id S244148AbhHFITW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:19:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243754AbhHFIPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:15:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A30A611EF;
-        Fri,  6 Aug 2021 08:15:30 +0000 (UTC)
+        id S244004AbhHFIQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:16:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBF05611CC;
+        Fri,  6 Aug 2021 08:16:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628237730;
-        bh=vL86lfOE7JC3lJEcAvz+Tt8sBvNAnOM7RLXKepKXRr4=;
+        s=korg; t=1628237784;
+        bh=oVrKdfA6ZQxpCEUMlh/V5PyuyRGyRC/s/8TGW3qsUYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jsjKYd/0V20U1LZpMT9fAJycjoBZWzTVCrlajqmp6PzOilAuSW3HybVjkyMyPaG6M
-         epfb0YyLwABFzSnO6oxiBZz9MQCY20PZrWQfal/mjLoWeFuel9N/kYH7Vz4uQq8e1f
-         G3Alq+rrKlbSLljFeESvI7WIN8Dfx0AA1ORJXT20=
+        b=cvlHBVjIKBIbSnbPEkOgSHwqUi21VdWMLvusDF3+J2R+aRvhRUoiucgpDN8yFAcjd
+         u4tCvvOCPYEfnlErs1t6PA/oPAyLnLbeLgvkBinIPArXCio4+00cgcNE9KM51rgJm+
+         lSefrZclmwIYMQ4xSrIBfCekgQIEOuAb7Z7XLNKI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jean Delvare <jdelvare@suse.de>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 11/11] Revert "watchdog: iTCO_wdt: Account for rebooting on second timeout"
-Date:   Fri,  6 Aug 2021 10:14:54 +0200
-Message-Id: <20210806081110.877458732@linuxfoundation.org>
+Subject: [PATCH 4.19 04/16] r8152: Fix potential PM refcount imbalance
+Date:   Fri,  6 Aug 2021 10:14:55 +0200
+Message-Id: <20210806081111.285007352@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210806081110.511221879@linuxfoundation.org>
-References: <20210806081110.511221879@linuxfoundation.org>
+In-Reply-To: <20210806081111.144943357@linuxfoundation.org>
+References: <20210806081111.144943357@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,60 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-This reverts commit cb1bdbfad648aa32c43bec6ef6d03e1c9d434393 which is
-commit cb011044e34c293e139570ce5c01aed66a34345c upstream.
+[ Upstream commit 9c23aa51477a37f8b56c3c40192248db0663c196 ]
 
-It is reported to cause problems with systems and probably should not
-have been backported in the first place :(
+rtl8152_close() takes the refcount via usb_autopm_get_interface() but
+it doesn't release when RTL8152_UNPLUG test hits.  This may lead to
+the imbalance of PM refcount.  This patch addresses it.
 
-Link: https://lore.kernel.org/r/20210803165108.4154cd52@endymion
-Reported-by: Jean Delvare <jdelvare@suse.de>
-Cc: Jan Kiszka <jan.kiszka@siemens.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1186194
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/iTCO_wdt.c |   12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/net/usb/r8152.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/watchdog/iTCO_wdt.c
-+++ b/drivers/watchdog/iTCO_wdt.c
-@@ -75,8 +75,6 @@
- #define TCOBASE(p)	((p)->tco_res->start)
- /* SMI Control and Enable Register */
- #define SMI_EN(p)	((p)->smi_res->start)
--#define TCO_EN		(1 << 13)
--#define GBL_SMI_EN	(1 << 0)
+diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+index 726fb5561a0f..4764e4f54cef 100644
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -3960,9 +3960,10 @@ static int rtl8152_close(struct net_device *netdev)
+ 		tp->rtl_ops.down(tp);
  
- #define TCO_RLD(p)	(TCOBASE(p) + 0x00) /* TCO Timer Reload/Curr. Value */
- #define TCOv1_TMR(p)	(TCOBASE(p) + 0x01) /* TCOv1 Timer Initial Value*/
-@@ -332,12 +330,8 @@ static int iTCO_wdt_set_timeout(struct w
+ 		mutex_unlock(&tp->control);
++	}
  
- 	tmrval = seconds_to_ticks(p, t);
++	if (!res)
+ 		usb_autopm_put_interface(tp->intf);
+-	}
  
--	/*
--	 * If TCO SMIs are off, the timer counts down twice before rebooting.
--	 * Otherwise, the BIOS generally reboots when the SMI triggers.
--	 */
--	if (p->smi_res &&
--	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
-+	/* For TCO v1 the timer counts down twice before rebooting */
-+	if (p->iTCO_version == 1)
- 		tmrval /= 2;
+ 	free_all_mem(tp);
  
- 	/* from the specs: */
-@@ -499,7 +493,7 @@ static int iTCO_wdt_probe(struct platfor
- 		 * Disables TCO logic generating an SMI#
- 		 */
- 		val32 = inl(SMI_EN(p));
--		val32 &= ~TCO_EN;	/* Turn off SMI clearing watchdog */
-+		val32 &= 0xffffdfff;	/* Turn off SMI clearing watchdog */
- 		outl(val32, SMI_EN(p));
- 	}
- 
+-- 
+2.30.2
+
 
 
