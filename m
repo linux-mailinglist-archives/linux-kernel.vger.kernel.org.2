@@ -2,172 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075043E2630
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 788263E2685
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242453AbhHFIeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:34:07 -0400
-Received: from mga18.intel.com ([134.134.136.126]:57814 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231526AbhHFIeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:34:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="201516951"
-X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
-   d="scan'208";a="201516951"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 01:33:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
-   d="scan'208";a="503928718"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 06 Aug 2021 01:33:48 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mBvIZ-000GgC-Uy; Fri, 06 Aug 2021 08:33:47 +0000
-Date:   Fri, 06 Aug 2021 16:33:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 758fa151eb378e18ce082b3c8168458bc6d6f30e
-Message-ID: <610cf3e0.067qkFQINGGUQBKB%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S243908AbhHFIzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:55:24 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:54681 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243794AbhHFIzT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 04:55:19 -0400
+Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210806085502epoutp03afcda46a551952ffe214e8349cb4b39c~Yq78kYcWn1987019870epoutp039
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 08:55:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210806085502epoutp03afcda46a551952ffe214e8349cb4b39c~Yq78kYcWn1987019870epoutp039
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1628240102;
+        bh=MQQTApWByV9FXOfpNZN2RjbAliwdWlY4BO3NC3rYsCw=;
+        h=Subject:Reply-To:From:To:Date:References:From;
+        b=Tl1B3UCkElSaEVsNsfCEIoml4TRlx9wmnV0qOKPrBcEDD6kE2Pn4eUWsXMflSQaJC
+         i86GZPa9uAEli7O7kM1cdAynb/97u3AKK92BLAxjxudT0crQhKfvA+we4pP48uDF3H
+         K/3v9jfav+BEBHYwj2Z6+YmGg7O9Y7VL3nZbt+iQ=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
+        20210806085502epcas3p36b78fd63c9d9c0c1d670ba1f240ba930~Yq78JTwEs0051900519epcas3p3B;
+        Fri,  6 Aug 2021 08:55:02 +0000 (GMT)
+Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp4.localdomain
+        (Postfix) with ESMTP id 4Ggznf1bk2z4x9QF; Fri,  6 Aug 2021 08:55:02 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: [PATCH] scsi: ufs: Remove ufshcd_variant_hba_init/exit()
+Reply-To: keosung.park@samsung.com
+Sender: Keoseong Park <keosung.park@samsung.com>
+From:   Keoseong Park <keosung.park@samsung.com>
+To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1891546521.01628240102206.JavaMail.epsvc@epcpadp3>
+Date:   Fri, 06 Aug 2021 17:33:44 +0900
+X-CMS-MailID: 20210806083344epcms2p1fd38026d07cd74438b4aa2bbd95c3f20
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210806083344epcms2p1fd38026d07cd74438b4aa2bbd95c3f20
+References: <CGME20210806083344epcms2p1fd38026d07cd74438b4aa2bbd95c3f20@epcms2p1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 758fa151eb378e18ce082b3c8168458bc6d6f30e  rcu-tasks: Fix s/instruction/instructions/ typo in comment
+Since hba->vops is checked in ufshcd_vops_init/exit(), there is no
+need to check whether hba->vops is NULL in ufshcd_variant_hba_init/exit().
 
-elapsed time: 724m
+ufshcd_variant_hba_init/exit() has only one caller and only calls vops,
+so it was removed.
 
-configs tested: 114
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210804
-i386                 randconfig-c001-20210805
-arm                         socfpga_defconfig
-csky                             alldefconfig
-powerpc                     pseries_defconfig
-m68k                         amcore_defconfig
-m68k                        mvme147_defconfig
-powerpc                     tqm8560_defconfig
-i386                             alldefconfig
-sh                   sh7724_generic_defconfig
-sh                          sdk7780_defconfig
-ia64                        generic_defconfig
-arm                            hisi_defconfig
-mips                         tb0226_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                     sequoia_defconfig
-arm                      pxa255-idp_defconfig
-powerpc                     taishan_defconfig
-mips                      loongson3_defconfig
-parisc                           alldefconfig
-m68k                         apollo_defconfig
-arm                         palmz72_defconfig
-mips                            gpr_defconfig
-powerpc                 mpc834x_mds_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-x86_64                            allnoconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210805
-x86_64               randconfig-a006-20210805
-x86_64               randconfig-a004-20210805
-x86_64               randconfig-a003-20210805
-x86_64               randconfig-a001-20210805
-x86_64               randconfig-a005-20210805
-i386                 randconfig-a005-20210805
-i386                 randconfig-a004-20210805
-i386                 randconfig-a002-20210805
-i386                 randconfig-a006-20210805
-i386                 randconfig-a003-20210805
-i386                 randconfig-a001-20210805
-x86_64               randconfig-a012-20210804
-x86_64               randconfig-a016-20210804
-x86_64               randconfig-a011-20210804
-x86_64               randconfig-a013-20210804
-x86_64               randconfig-a014-20210804
-x86_64               randconfig-a015-20210804
-i386                 randconfig-a012-20210806
-i386                 randconfig-a011-20210806
-i386                 randconfig-a015-20210806
-i386                 randconfig-a013-20210806
-i386                 randconfig-a014-20210806
-i386                 randconfig-a016-20210806
-i386                 randconfig-a012-20210804
-i386                 randconfig-a011-20210804
-i386                 randconfig-a015-20210804
-i386                 randconfig-a013-20210804
-i386                 randconfig-a014-20210804
-i386                 randconfig-a016-20210804
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-c001-20210804
-x86_64               randconfig-c001-20210805
-x86_64               randconfig-a012-20210805
-x86_64               randconfig-a016-20210805
-x86_64               randconfig-a011-20210805
-x86_64               randconfig-a013-20210805
-x86_64               randconfig-a014-20210805
-x86_64               randconfig-a015-20210805
-
+Signed-off-by: Keoseong Park <keosung.park@samsung.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/scsi/ufs/ufshcd.c | 32 ++++++--------------------------
+ 1 file changed, 6 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 05495c34a2b7..f1bd074627ff 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -8438,29 +8438,6 @@ static int ufshcd_init_clocks(struct ufs_hba *hba)
+ 	return ret;
+ }
+ 
+-static int ufshcd_variant_hba_init(struct ufs_hba *hba)
+-{
+-	int err = 0;
+-
+-	if (!hba->vops)
+-		goto out;
+-
+-	err = ufshcd_vops_init(hba);
+-	if (err)
+-		dev_err(hba->dev, "%s: variant %s init failed err %d\n",
+-			__func__, ufshcd_get_var_name(hba), err);
+-out:
+-	return err;
+-}
+-
+-static void ufshcd_variant_hba_exit(struct ufs_hba *hba)
+-{
+-	if (!hba->vops)
+-		return;
+-
+-	ufshcd_vops_exit(hba);
+-}
+-
+ static int ufshcd_hba_init(struct ufs_hba *hba)
+ {
+ 	int err;
+@@ -8496,9 +8473,12 @@ static int ufshcd_hba_init(struct ufs_hba *hba)
+ 	if (err)
+ 		goto out_disable_clks;
+ 
+-	err = ufshcd_variant_hba_init(hba);
+-	if (err)
++	err = ufshcd_vops_init(hba);
++	if (err) {
++		dev_err(hba->dev, "%s: variant %s init failed err %d\n",
++			__func__, ufshcd_get_var_name(hba), err);
+ 		goto out_disable_vreg;
++	}
+ 
+ 	ufs_debugfs_hba_init(hba);
+ 
+@@ -8523,7 +8503,7 @@ static void ufshcd_hba_exit(struct ufs_hba *hba)
+ 		if (hba->eh_wq)
+ 			destroy_workqueue(hba->eh_wq);
+ 		ufs_debugfs_hba_exit(hba);
+-		ufshcd_variant_hba_exit(hba);
++		ufshcd_vops_exit(hba);
+ 		ufshcd_setup_vreg(hba, false);
+ 		ufshcd_setup_clocks(hba, false);
+ 		ufshcd_setup_hba_vreg(hba, false);
+-- 
+2.17.1
