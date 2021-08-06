@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346453E20D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 03:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23AD13E20E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 03:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243202AbhHFBUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 21:20:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58714 "EHLO mail.kernel.org"
+        id S242224AbhHFBVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 21:21:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231159AbhHFBUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 21:20:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74D3D611BF;
-        Fri,  6 Aug 2021 01:20:07 +0000 (UTC)
+        id S241839AbhHFBVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 21:21:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0318A61184;
+        Fri,  6 Aug 2021 01:21:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628212808;
-        bh=ZQAfVXDCblHS9zVYXhszqIzMOBPQzESm3sNj2JFZmAQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NEBVC2X20n1pTKrkiETIqjfiTQA5GbK1gYJk3B2E8I6CaslJTP5/i+ESl84sDzJJ5
-         Vg6zlhTCYS/n97xxDkrR0Ay8n4XfDkjR18KJmDyqjpUN7CTZ6yK/wV/5OGtbMbBjmi
-         xyU2jS0VVqek1CiFHg2oQDkNhlHqsIhCcXMEfQW0KHBRNGsYDplc5eWgpN4102+Too
-         XibgiGPT9zDIPQz4tTroY4XyHi5Z8o1Rdcqhrn9GHPUc4I0FP7SA1WSeIZz2vzPd1R
-         SPZUBd8MzoNBoxiUs+2utdYCxvB8PGOogMgkpBwQzPYq8If4w09g7UiojWQuz4ed70
-         CzPH/ND81e+1A==
-Date:   Thu, 5 Aug 2021 18:20:06 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     <davem@davemloft.net>, <alexander.duyck@gmail.com>,
-        <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <linuxarm@openeuler.org>, <yisen.zhuang@huawei.com>,
-        <salil.mehta@huawei.com>, <thomas.petazzoni@bootlin.com>,
-        <hawk@kernel.org>, <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <chenhao288@hisilicon.com>
-Subject: Re: [PATCH net-next 4/4] net: hns3: support skb's frag page
- recycling based on page pool
-Message-ID: <20210805182006.66133c8e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1628161526-29076-5-git-send-email-linyunsheng@huawei.com>
-References: <1628161526-29076-1-git-send-email-linyunsheng@huawei.com>
-        <1628161526-29076-5-git-send-email-linyunsheng@huawei.com>
+        s=k20201202; t=1628212897;
+        bh=N4h4dBuDJ4KHxr54fi8jhhcQmz/UXhAg6jZwfPXQ9ec=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=VO+dEf6Bju4jYaQDGVfD2VqWT3T814WQ4FVXr/tAAc9AOPmM5AF9nv1+bWhMrpsAG
+         ir0QNuvYR49EzzG0yBXKsDT3oAQ8mtjkbXhYa13lsEGTJ3sqEGhKPa+cmFOQm7Uxy0
+         PTYIarVunY+JfF0qWT+GVAvhaQIaSZvC2d6YaLXtM4Ficjh47T4gJ8Jh5r7QDnDlq4
+         xImwWvnUt/NejBpa9r2LPzKVZT7nKGkxhubxVshaG+SQrfR+4raXiz0NMSUSbEebsA
+         aUV+x/H0eCzA12y6zKkqN3tpm3Hhpix/DDmmoMQbhAnnBkee06D/Utr+z9XibgnjZV
+         ChfBct1MFfQfQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210721224056.3035016-1-bjorn.andersson@linaro.org>
+References: <20210721224056.3035016-1-bjorn.andersson@linaro.org>
+Subject: Re: [PATCH v2] clk: qcom: gdsc: Ensure regulator init state matches GDSC state
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Mike Tipton <mdtipton@codeaurora.org>,
+        Taniya Das <tdas@codeaurora.org>, Vinod Koul <vkoul@kernel.org>
+Date:   Thu, 05 Aug 2021 18:21:35 -0700
+Message-ID: <162821289569.19113.17542153894487967394@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Aug 2021 19:05:26 +0800 Yunsheng Lin wrote:
-> This patch adds skb's frag page recycling support based on
-> the frag page support in page pool.
-> 
-> The performance improves above 10~20% for single thread iperf
-> TCP flow with IOMMU disabled when iperf server and irq/NAPI
-> have a different CPU.
-> 
-> The performance improves about 135%(14Gbit to 33Gbit) for single
-> thread iperf TCP flow IOMMU is in strict mode and iperf server
-> shares the same cpu with irq/NAPI.
-> 
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Quoting Bjorn Andersson (2021-07-21 15:40:56)
+> As GDSCs are registered and found to be already enabled gdsc_init()
+> ensures that 1) the kernel state matches the hardware state, and 2)
+> votable GDSCs are properly enabled from this master as well.
+>=20
+> But as the (optional) supply regulator is enabled deep into
+> gdsc_toggle_logic(), which is only executed for votable GDSCs the
+> kernel's state of the regulator might not match the hardware. The
+> regulator might be automatically turned off if no other users are
+> present or the next call to gdsc_disable() would cause an unbalanced
+> regulator_disable().
+>=20
+> But as the votable case deals with an already enabled GDSC, most of
+> gdsc_enable() and gdsc_toggle_logic() can be skipped. Reducing it to
+> just clearing the SW_COLLAPSE_MASK and enabling hardware control allow
+> us to simply call regulator_enable() in both cases.
+>=20
+> The enablement of hardware control seems to be an independent property
+> from the GDSC being enabled, so this is moved outside that conditional
+> segment.
+>=20
+> Lastly, as the propagation of ALWAY_ON to GENPD_FLAG_ALWAYS_ON needs to
+> happen regardless of the initial state this is grouped together with the
+> other sc->pd updates at the end of the function.
+>=20
+> Cc: stable@vger.kernel.org
+> Fixes: 37416e554961 ("clk: qcom: gdsc: Handle GDSC regulator supplies")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
 
-This patch does not apply cleanly to net-next, please rebase 
-if you're targeting that tree.
+Applied to clk-fixes
