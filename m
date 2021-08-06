@@ -2,496 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1823E22B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 06:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104053E22B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 06:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242876AbhHFEn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 00:43:56 -0400
-Received: from mta-05-3.privateemail.com ([68.65.122.15]:18004 "EHLO
-        MTA-05-3.privateemail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbhHFEnz (ORCPT
+        id S242926AbhHFEo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 00:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231694AbhHFEoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 00:43:55 -0400
-Received: from mta-05.privateemail.com (localhost [127.0.0.1])
-        by mta-05.privateemail.com (Postfix) with ESMTP id 6224E18001EC;
-        Fri,  6 Aug 2021 00:43:40 -0400 (EDT)
-Received: from hal-station.. (unknown [10.20.151.213])
-        by mta-05.privateemail.com (Postfix) with ESMTPA id 85E7E18001DE;
-        Fri,  6 Aug 2021 00:43:39 -0400 (EDT)
-From:   Hamza Mahfooz <someguy@effective-light.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Hamza Mahfooz <someguy@effective-light.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, wireguard@lists.zx2c4.com,
-        netdev@vger.kernel.org
-Subject: [PATCH] wireguard: convert index_hashtable and pubkey_hashtable into rhashtables
-Date:   Fri,  6 Aug 2021 00:43:14 -0400
-Message-Id: <20210806044315.169657-1-someguy@effective-light.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 6 Aug 2021 00:44:55 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B88C061798;
+        Thu,  5 Aug 2021 21:44:38 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id e25-20020a05600c4b99b0290253418ba0fbso5214690wmp.1;
+        Thu, 05 Aug 2021 21:44:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=E0jyHp/rsGyUBSc/zm3UYnSO11nUqZFB/b8HFTileso=;
+        b=ZaKaUNq4AgYnG4GdQ5eqSLqVW/wDX1bizpgI8lyRUVfSefWJR4gnOKcxUs4jO3WwR2
+         8cWBh/lUuQADuFIiTYe19Pcp+2haBCGqJPhEW1kDuZXuIOboKM8et3RREU0J0Rge3BE0
+         G2u9uF3iUEZ+s66H5z1skSMHc967llUi5zguD/vSEwG64XVsAjhyEfOil4/Myp5ziefK
+         XmExXLvlOUJJlBo+EGSsyTcgrEUOckBJNRYvLMiWuxIHLkovGMsxjPmfVhuFYS5ZZHFW
+         NeGk/Ewlr3op9jNz/21XH0REmy+elmcafRcoqQFGc3LhWPS1JE8s/ze8JrjRo0Yegc4u
+         BfGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=E0jyHp/rsGyUBSc/zm3UYnSO11nUqZFB/b8HFTileso=;
+        b=al2XMvxjSVdVhHl+l7bVu2eeNDM4xgNmBRzu7Wx1wt0+2iPMk/0OKpCTRGd63+v9G1
+         Bah4dMj2GK75uVFWdfYSz4p2oV5iOhMa81B4jJCzhKhEbeobQu8Qx+Vl406LFwOSzro8
+         UY6hmDDelZR1Ftard0PzlsXfGStF9xQh5tCWfvY9uiU8QNTOcE3eY6kzRHTrxTDWJo8G
+         d7KRpsa/ulW4BbU+6VRJvAgAquV/+ns2ST7FWMq8zdyZ+93dYj1TVjkd4twUihbLpJXu
+         E8wCbzu+ztsqUEw3PfsracmbeRzs+P0U4dYlyTr714ZmeciHQzPm8iNWqjF7z7nJfoyu
+         jkwg==
+X-Gm-Message-State: AOAM532HDwAMiLIyzwIKTQAco93zDp6kUSjTrmLwtOhGKPjoy7iRCnVe
+        FtvYZB8rk3v+iQFiMOQJLQLBwAaLWe5ydA==
+X-Google-Smtp-Source: ABdhPJxKDTpXqvSGlHpDAJS36fz0bWT2b7ZusMwx5tRfozqoV+Pq4PjSyJaVLySbfv23BEGZP0dJ2Q==
+X-Received: by 2002:a7b:c8d9:: with SMTP id f25mr1217959wml.40.1628225077496;
+        Thu, 05 Aug 2021 21:44:37 -0700 (PDT)
+Received: from jernej-laptop.localnet (cpe-86-58-46-198.static.triera.net. [86.58.46.198])
+        by smtp.gmail.com with ESMTPSA id n11sm9766446wrs.81.2021.08.05.21.44.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 21:44:36 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     p.zabel@pengutronix.de, Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, emil.velikov@collabora.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: hantro: Fix check for single irq
+Date:   Fri, 06 Aug 2021 06:44:35 +0200
+Message-ID: <8101406.vZ8PxZ7URt@jernej-laptop>
+In-Reply-To: <6761bb11f4554e9f9cbe468b5ff8f851c57515ef.camel@collabora.com>
+References: <20210805190416.332563-1-jernej.skrabec@gmail.com> <6761bb11f4554e9f9cbe468b5ff8f851c57515ef.camel@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is made mention of in commit e7096c131e516 ("net: WireGuard secure
-network tunnel"), that it is desirable to move away from the statically
-sized hash-table implementation.
+Dne petek, 06. avgust 2021 ob 00:03:36 CEST je Ezequiel Garcia napisal(a):
+> Hi Jernej,
+> 
+> On Thu, 2021-08-05 at 21:04 +0200, Jernej Skrabec wrote:
+> > Some cores use only one interrupt and in such case interrupt name in DT
+> > is not needed. Driver supposedly accounted that, but due to the wrong
+> > field check it never worked. Fix that.
+> > 
+> > Fixes: 18d6c8b7b4c9 ("media: hantro: add fallback handling for single
+> > irq/clk") Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> > ---
+> >  drivers/staging/media/hantro/hantro_drv.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/staging/media/hantro/hantro_drv.c
+> > b/drivers/staging/media/hantro/hantro_drv.c index
+> > 8a2edd67f2c6..20e508158871 100644
+> > --- a/drivers/staging/media/hantro/hantro_drv.c
+> > +++ b/drivers/staging/media/hantro/hantro_drv.c
+> > @@ -919,7 +919,7 @@ static int hantro_probe(struct platform_device *pdev)
+> >                 if (!vpu->variant->irqs[i].handler)
+> >                         continue;
+> >  
+> > -               if (vpu->variant->num_clocks > 1) {
+> > +               if (vpu->variant->num_irqs > 1) {
+> 
+> Oops, thanks for spotting this.
+> 
+> How about this instead?
 
-Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
----
- drivers/net/wireguard/device.c     |   4 +
- drivers/net/wireguard/device.h     |   2 +-
- drivers/net/wireguard/noise.c      |   1 +
- drivers/net/wireguard/noise.h      |   1 +
- drivers/net/wireguard/peer.h       |   2 +-
- drivers/net/wireguard/peerlookup.c | 190 ++++++++++++++---------------
- drivers/net/wireguard/peerlookup.h |  27 ++--
- 7 files changed, 112 insertions(+), 115 deletions(-)
+No, original solution is more robust. With solution below, you're assuming 
+that irq order in driver array is same as in DT. That doesn't matter if there 
+is only one name or if names match. However, if there is a typo, either in DT 
+node or in driver, driver will still happily assign clock based on index and 
+that might not be correct one. Even if it works out, you can easily miss that 
+you have a typo. Driver doesn't tell you which irq is used, if it is 
+successfully acquired.
 
-diff --git a/drivers/net/wireguard/device.c b/drivers/net/wireguard/device.c
-index 551ddaaaf540..3bd43c9481ef 100644
---- a/drivers/net/wireguard/device.c
-+++ b/drivers/net/wireguard/device.c
-@@ -243,7 +243,9 @@ static void wg_destruct(struct net_device *dev)
- 	skb_queue_purge(&wg->incoming_handshakes);
- 	free_percpu(dev->tstats);
- 	free_percpu(wg->incoming_handshakes_worker);
-+	wg_index_hashtable_destroy(wg->index_hashtable);
- 	kvfree(wg->index_hashtable);
-+	wg_pubkey_hashtable_destroy(wg->peer_hashtable);
- 	kvfree(wg->peer_hashtable);
- 	mutex_unlock(&wg->device_update_lock);
- 
-@@ -382,8 +384,10 @@ static int wg_newlink(struct net *src_net, struct net_device *dev,
- err_free_tstats:
- 	free_percpu(dev->tstats);
- err_free_index_hashtable:
-+	wg_index_hashtable_destroy(wg->index_hashtable);
- 	kvfree(wg->index_hashtable);
- err_free_peer_hashtable:
-+	wg_pubkey_hashtable_destroy(wg->peer_hashtable);
- 	kvfree(wg->peer_hashtable);
- 	return ret;
- }
-diff --git a/drivers/net/wireguard/device.h b/drivers/net/wireguard/device.h
-index 854bc3d97150..24980eb766af 100644
---- a/drivers/net/wireguard/device.h
-+++ b/drivers/net/wireguard/device.h
-@@ -50,7 +50,7 @@ struct wg_device {
- 	struct multicore_worker __percpu *incoming_handshakes_worker;
- 	struct cookie_checker cookie_checker;
- 	struct pubkey_hashtable *peer_hashtable;
--	struct index_hashtable *index_hashtable;
-+	struct rhashtable *index_hashtable;
- 	struct allowedips peer_allowedips;
- 	struct mutex device_update_lock, socket_update_lock;
- 	struct list_head device_list, peer_list;
-diff --git a/drivers/net/wireguard/noise.c b/drivers/net/wireguard/noise.c
-index c0cfd9b36c0b..d42a0ff2be5d 100644
---- a/drivers/net/wireguard/noise.c
-+++ b/drivers/net/wireguard/noise.c
-@@ -797,6 +797,7 @@ bool wg_noise_handshake_begin_session(struct noise_handshake *handshake,
- 	new_keypair->i_am_the_initiator = handshake->state ==
- 					  HANDSHAKE_CONSUMED_RESPONSE;
- 	new_keypair->remote_index = handshake->remote_index;
-+	new_keypair->entry.index = handshake->entry.index;
- 
- 	if (new_keypair->i_am_the_initiator)
- 		derive_keys(&new_keypair->sending, &new_keypair->receiving,
-diff --git a/drivers/net/wireguard/noise.h b/drivers/net/wireguard/noise.h
-index c527253dba80..ea705747e4e4 100644
---- a/drivers/net/wireguard/noise.h
-+++ b/drivers/net/wireguard/noise.h
-@@ -72,6 +72,7 @@ struct noise_handshake {
- 
- 	u8 ephemeral_private[NOISE_PUBLIC_KEY_LEN];
- 	u8 remote_static[NOISE_PUBLIC_KEY_LEN];
-+	siphash_key_t skey;
- 	u8 remote_ephemeral[NOISE_PUBLIC_KEY_LEN];
- 	u8 precomputed_static_static[NOISE_PUBLIC_KEY_LEN];
- 
-diff --git a/drivers/net/wireguard/peer.h b/drivers/net/wireguard/peer.h
-index 76e4d3128ad4..d5403fb7a6a0 100644
---- a/drivers/net/wireguard/peer.h
-+++ b/drivers/net/wireguard/peer.h
-@@ -48,7 +48,7 @@ struct wg_peer {
- 	atomic64_t last_sent_handshake;
- 	struct work_struct transmit_handshake_work, clear_peer_work, transmit_packet_work;
- 	struct cookie latest_cookie;
--	struct hlist_node pubkey_hash;
-+	struct rhash_head pubkey_hash;
- 	u64 rx_bytes, tx_bytes;
- 	struct timer_list timer_retransmit_handshake, timer_send_keepalive;
- 	struct timer_list timer_new_handshake, timer_zero_key_material;
-diff --git a/drivers/net/wireguard/peerlookup.c b/drivers/net/wireguard/peerlookup.c
-index f2783aa7a88f..2ea2ba85a33d 100644
---- a/drivers/net/wireguard/peerlookup.c
-+++ b/drivers/net/wireguard/peerlookup.c
-@@ -7,18 +7,29 @@
- #include "peer.h"
- #include "noise.h"
- 
--static struct hlist_head *pubkey_bucket(struct pubkey_hashtable *table,
--					const u8 pubkey[NOISE_PUBLIC_KEY_LEN])
-+struct pubkey_pair {
-+	u8 key[NOISE_PUBLIC_KEY_LEN];
-+	siphash_key_t skey;
-+};
-+
-+static u32 pubkey_hash(const void *data, u32 len, u32 seed)
- {
-+	const struct pubkey_pair *pair = data;
-+
- 	/* siphash gives us a secure 64bit number based on a random key. Since
--	 * the bits are uniformly distributed, we can then mask off to get the
--	 * bits we need.
-+	 * the bits are uniformly distributed.
- 	 */
--	const u64 hash = siphash(pubkey, NOISE_PUBLIC_KEY_LEN, &table->key);
- 
--	return &table->hashtable[hash & (HASH_SIZE(table->hashtable) - 1)];
-+	return (u32)siphash(pair->key, len, &pair->skey);
- }
- 
-+static const struct rhashtable_params wg_peer_params = {
-+	.key_len = NOISE_PUBLIC_KEY_LEN,
-+	.key_offset = offsetof(struct wg_peer, handshake.remote_static),
-+	.head_offset = offsetof(struct wg_peer, pubkey_hash),
-+	.hashfn = pubkey_hash
-+};
-+
- struct pubkey_hashtable *wg_pubkey_hashtable_alloc(void)
- {
- 	struct pubkey_hashtable *table = kvmalloc(sizeof(*table), GFP_KERNEL);
-@@ -27,26 +38,25 @@ struct pubkey_hashtable *wg_pubkey_hashtable_alloc(void)
- 		return NULL;
- 
- 	get_random_bytes(&table->key, sizeof(table->key));
--	hash_init(table->hashtable);
--	mutex_init(&table->lock);
-+	rhashtable_init(&table->hashtable, &wg_peer_params);
-+
- 	return table;
- }
- 
- void wg_pubkey_hashtable_add(struct pubkey_hashtable *table,
- 			     struct wg_peer *peer)
- {
--	mutex_lock(&table->lock);
--	hlist_add_head_rcu(&peer->pubkey_hash,
--			   pubkey_bucket(table, peer->handshake.remote_static));
--	mutex_unlock(&table->lock);
-+	memcpy(&peer->handshake.skey, &table->key, sizeof(table->key));
-+	WARN_ON(rhashtable_insert_fast(&table->hashtable, &peer->pubkey_hash,
-+				       wg_peer_params));
- }
- 
- void wg_pubkey_hashtable_remove(struct pubkey_hashtable *table,
- 				struct wg_peer *peer)
- {
--	mutex_lock(&table->lock);
--	hlist_del_init_rcu(&peer->pubkey_hash);
--	mutex_unlock(&table->lock);
-+	memcpy(&peer->handshake.skey, &table->key, sizeof(table->key));
-+	rhashtable_remove_fast(&table->hashtable, &peer->pubkey_hash,
-+			       wg_peer_params);
- }
- 
- /* Returns a strong reference to a peer */
-@@ -54,41 +64,54 @@ struct wg_peer *
- wg_pubkey_hashtable_lookup(struct pubkey_hashtable *table,
- 			   const u8 pubkey[NOISE_PUBLIC_KEY_LEN])
- {
--	struct wg_peer *iter_peer, *peer = NULL;
-+	struct wg_peer *peer = NULL;
-+	struct pubkey_pair pair;
-+
-+	memcpy(pair.key, pubkey, NOISE_PUBLIC_KEY_LEN);
-+	memcpy(&pair.skey, &table->key, sizeof(pair.skey));
- 
- 	rcu_read_lock_bh();
--	hlist_for_each_entry_rcu_bh(iter_peer, pubkey_bucket(table, pubkey),
--				    pubkey_hash) {
--		if (!memcmp(pubkey, iter_peer->handshake.remote_static,
--			    NOISE_PUBLIC_KEY_LEN)) {
--			peer = iter_peer;
--			break;
--		}
--	}
--	peer = wg_peer_get_maybe_zero(peer);
-+	peer = wg_peer_get_maybe_zero(rhashtable_lookup_fast(&table->hashtable,
-+							     &pair,
-+							     wg_peer_params));
- 	rcu_read_unlock_bh();
-+
- 	return peer;
- }
- 
--static struct hlist_head *index_bucket(struct index_hashtable *table,
--				       const __le32 index)
-+void wg_pubkey_hashtable_destroy(struct pubkey_hashtable *table)
-+{
-+	WARN_ON(atomic_read(&table->hashtable.nelems));
-+	rhashtable_destroy(&table->hashtable);
-+}
-+
-+static u32 index_hash(const void *data, u32 len, u32 seed)
- {
-+	const __le32 *index = data;
-+
- 	/* Since the indices are random and thus all bits are uniformly
--	 * distributed, we can find its bucket simply by masking.
-+	 * distributed, we can use them as the hash value.
- 	 */
--	return &table->hashtable[(__force u32)index &
--				 (HASH_SIZE(table->hashtable) - 1)];
-+
-+	return (__force u32)*index;
- }
- 
--struct index_hashtable *wg_index_hashtable_alloc(void)
-+static const struct rhashtable_params index_entry_params = {
-+	.key_len = sizeof(__le32),
-+	.key_offset = offsetof(struct index_hashtable_entry, index),
-+	.head_offset = offsetof(struct index_hashtable_entry, index_hash),
-+	.hashfn = index_hash
-+};
-+
-+struct rhashtable *wg_index_hashtable_alloc(void)
- {
--	struct index_hashtable *table = kvmalloc(sizeof(*table), GFP_KERNEL);
-+	struct rhashtable *table = kvmalloc(sizeof(*table), GFP_KERNEL);
- 
- 	if (!table)
- 		return NULL;
- 
--	hash_init(table->hashtable);
--	spin_lock_init(&table->lock);
-+	rhashtable_init(table, &index_entry_params);
-+
- 	return table;
- }
- 
-@@ -116,111 +139,86 @@ struct index_hashtable *wg_index_hashtable_alloc(void)
-  * is another thing to consider moving forward.
-  */
- 
--__le32 wg_index_hashtable_insert(struct index_hashtable *table,
-+__le32 wg_index_hashtable_insert(struct rhashtable *table,
- 				 struct index_hashtable_entry *entry)
- {
- 	struct index_hashtable_entry *existing_entry;
- 
--	spin_lock_bh(&table->lock);
--	hlist_del_init_rcu(&entry->index_hash);
--	spin_unlock_bh(&table->lock);
-+	wg_index_hashtable_remove(table, entry);
- 
- 	rcu_read_lock_bh();
- 
- search_unused_slot:
- 	/* First we try to find an unused slot, randomly, while unlocked. */
- 	entry->index = (__force __le32)get_random_u32();
--	hlist_for_each_entry_rcu_bh(existing_entry,
--				    index_bucket(table, entry->index),
--				    index_hash) {
--		if (existing_entry->index == entry->index)
--			/* If it's already in use, we continue searching. */
--			goto search_unused_slot;
--	}
- 
--	/* Once we've found an unused slot, we lock it, and then double-check
--	 * that nobody else stole it from us.
--	 */
--	spin_lock_bh(&table->lock);
--	hlist_for_each_entry_rcu_bh(existing_entry,
--				    index_bucket(table, entry->index),
--				    index_hash) {
--		if (existing_entry->index == entry->index) {
--			spin_unlock_bh(&table->lock);
--			/* If it was stolen, we start over. */
--			goto search_unused_slot;
--		}
-+	existing_entry = rhashtable_lookup_get_insert_fast(table,
-+							   &entry->index_hash,
-+							   index_entry_params);
-+
-+	if (existing_entry) {
-+		WARN_ON(IS_ERR(existing_entry));
-+
-+		/* If it's already in use, we continue searching. */
-+		goto search_unused_slot;
- 	}
--	/* Otherwise, we know we have it exclusively (since we're locked),
--	 * so we insert.
--	 */
--	hlist_add_head_rcu(&entry->index_hash,
--			   index_bucket(table, entry->index));
--	spin_unlock_bh(&table->lock);
- 
- 	rcu_read_unlock_bh();
- 
- 	return entry->index;
- }
- 
--bool wg_index_hashtable_replace(struct index_hashtable *table,
-+bool wg_index_hashtable_replace(struct rhashtable *table,
- 				struct index_hashtable_entry *old,
- 				struct index_hashtable_entry *new)
- {
--	bool ret;
-+	int ret = rhashtable_replace_fast(table, &old->index_hash,
-+					  &new->index_hash,
-+					  index_entry_params);
- 
--	spin_lock_bh(&table->lock);
--	ret = !hlist_unhashed(&old->index_hash);
--	if (unlikely(!ret))
--		goto out;
-+	WARN_ON(ret == -EINVAL);
- 
--	new->index = old->index;
--	hlist_replace_rcu(&old->index_hash, &new->index_hash);
--
--	/* Calling init here NULLs out index_hash, and in fact after this
--	 * function returns, it's theoretically possible for this to get
--	 * reinserted elsewhere. That means the RCU lookup below might either
--	 * terminate early or jump between buckets, in which case the packet
--	 * simply gets dropped, which isn't terrible.
--	 */
--	INIT_HLIST_NODE(&old->index_hash);
--out:
--	spin_unlock_bh(&table->lock);
--	return ret;
-+	return ret != -ENOENT;
- }
- 
--void wg_index_hashtable_remove(struct index_hashtable *table,
-+void wg_index_hashtable_remove(struct rhashtable *table,
- 			       struct index_hashtable_entry *entry)
- {
--	spin_lock_bh(&table->lock);
--	hlist_del_init_rcu(&entry->index_hash);
--	spin_unlock_bh(&table->lock);
-+	rhashtable_remove_fast(table, &entry->index_hash, index_entry_params);
- }
- 
- /* Returns a strong reference to a entry->peer */
- struct index_hashtable_entry *
--wg_index_hashtable_lookup(struct index_hashtable *table,
-+wg_index_hashtable_lookup(struct rhashtable *table,
- 			  const enum index_hashtable_type type_mask,
- 			  const __le32 index, struct wg_peer **peer)
- {
--	struct index_hashtable_entry *iter_entry, *entry = NULL;
-+	struct index_hashtable_entry *entry = NULL;
- 
- 	rcu_read_lock_bh();
--	hlist_for_each_entry_rcu_bh(iter_entry, index_bucket(table, index),
--				    index_hash) {
--		if (iter_entry->index == index) {
--			if (likely(iter_entry->type & type_mask))
--				entry = iter_entry;
--			break;
--		}
--	}
-+	entry = rhashtable_lookup_fast(table, &index, index_entry_params);
-+
- 	if (likely(entry)) {
-+		if (unlikely(!(entry->type & type_mask))) {
-+			entry = NULL;
-+			goto out;
-+		}
-+
- 		entry->peer = wg_peer_get_maybe_zero(entry->peer);
- 		if (likely(entry->peer))
- 			*peer = entry->peer;
- 		else
- 			entry = NULL;
- 	}
-+
-+out:
- 	rcu_read_unlock_bh();
-+
- 	return entry;
- }
-+
-+void wg_index_hashtable_destroy(struct rhashtable *table)
-+{
-+	WARN_ON(atomic_read(&table->nelems));
-+	rhashtable_destroy(table);
-+}
-diff --git a/drivers/net/wireguard/peerlookup.h b/drivers/net/wireguard/peerlookup.h
-index ced811797680..a3cef26cb733 100644
---- a/drivers/net/wireguard/peerlookup.h
-+++ b/drivers/net/wireguard/peerlookup.h
-@@ -8,17 +8,14 @@
- 
- #include "messages.h"
- 
--#include <linux/hashtable.h>
--#include <linux/mutex.h>
-+#include <linux/rhashtable.h>
- #include <linux/siphash.h>
- 
- struct wg_peer;
- 
- struct pubkey_hashtable {
--	/* TODO: move to rhashtable */
--	DECLARE_HASHTABLE(hashtable, 11);
-+	struct rhashtable hashtable;
- 	siphash_key_t key;
--	struct mutex lock;
- };
- 
- struct pubkey_hashtable *wg_pubkey_hashtable_alloc(void);
-@@ -29,12 +26,7 @@ void wg_pubkey_hashtable_remove(struct pubkey_hashtable *table,
- struct wg_peer *
- wg_pubkey_hashtable_lookup(struct pubkey_hashtable *table,
- 			   const u8 pubkey[NOISE_PUBLIC_KEY_LEN]);
--
--struct index_hashtable {
--	/* TODO: move to rhashtable */
--	DECLARE_HASHTABLE(hashtable, 13);
--	spinlock_t lock;
--};
-+void wg_pubkey_hashtable_destroy(struct pubkey_hashtable *table);
- 
- enum index_hashtable_type {
- 	INDEX_HASHTABLE_HANDSHAKE = 1U << 0,
-@@ -43,22 +35,23 @@ enum index_hashtable_type {
- 
- struct index_hashtable_entry {
- 	struct wg_peer *peer;
--	struct hlist_node index_hash;
-+	struct rhash_head index_hash;
- 	enum index_hashtable_type type;
- 	__le32 index;
- };
- 
--struct index_hashtable *wg_index_hashtable_alloc(void);
--__le32 wg_index_hashtable_insert(struct index_hashtable *table,
-+struct rhashtable *wg_index_hashtable_alloc(void);
-+__le32 wg_index_hashtable_insert(struct rhashtable *table,
- 				 struct index_hashtable_entry *entry);
--bool wg_index_hashtable_replace(struct index_hashtable *table,
-+bool wg_index_hashtable_replace(struct rhashtable *table,
- 				struct index_hashtable_entry *old,
- 				struct index_hashtable_entry *new);
--void wg_index_hashtable_remove(struct index_hashtable *table,
-+void wg_index_hashtable_remove(struct rhashtable *table,
- 			       struct index_hashtable_entry *entry);
- struct index_hashtable_entry *
--wg_index_hashtable_lookup(struct index_hashtable *table,
-+wg_index_hashtable_lookup(struct rhashtable *table,
- 			  const enum index_hashtable_type type_mask,
- 			  const __le32 index, struct wg_peer **peer);
-+void wg_index_hashtable_destroy(struct rhashtable *table);
- 
- #endif /* _WG_PEERLOOKUP_H */
--- 
-2.32.0
+Best regards,
+Jernej
+
+> 
+> diff --git a/drivers/staging/media/hantro/hantro_drv.c
+> b/drivers/staging/media/hantro/hantro_drv.c index
+> 31d8449ca1d2..af7054b04155 100644
+> --- a/drivers/staging/media/hantro/hantro_drv.c
+> +++ b/drivers/staging/media/hantro/hantro_drv.c
+> @@ -918,16 +918,15 @@ static int hantro_probe(struct platform_device *pdev)
+>                 if (!vpu->variant->irqs[i].handler)
+>                         continue;
+> 
+> -               if (vpu->variant->num_clocks > 1) {
+> -                       irq_name = vpu->variant->irqs[i].name;
+> -                       irq = platform_get_irq_byname(vpu->pdev, irq_name);
+> -               } else {
+> +               irq_name = vpu->variant->irqs[i].name;
+> +               irq = platform_get_irq_byname(vpu->pdev, irq_name);
+> +               if (irq <= 0) {
+>                         /*
+> -                        * If the driver has a single IRQ, chances are there
+> -                        * will be no actual name in the DT bindings. +    
+>                    * Missing interrupt-names property in device tree, +    
+>                    * looking up interrupts by index.
+>                          */
+>                         irq_name = "default";
+> -                       irq = platform_get_irq(vpu->pdev, 0);
+> +                       irq = platform_get_irq(vpu->pdev, i);
+>                 }
+>                 if (irq <= 0)
+>                         return -ENXIO;
+
+
+
 
