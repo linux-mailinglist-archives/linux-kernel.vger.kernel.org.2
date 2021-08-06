@@ -2,165 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA993E272A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 939EE3E272C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244495AbhHFJXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 05:23:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
+        id S244521AbhHFJXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244317AbhHFJXM (ORCPT
+        with ESMTP id S244500AbhHFJXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:23:12 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A09C061798;
-        Fri,  6 Aug 2021 02:22:55 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id az7so9194693qkb.5;
-        Fri, 06 Aug 2021 02:22:55 -0700 (PDT)
+        Fri, 6 Aug 2021 05:23:46 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E03C061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 02:23:30 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id b6so333895lff.10
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 02:23:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version:in-reply-to
-         :content-transfer-encoding;
-        bh=CMsmmLe070UmWwr4znuaFaK+prUVayJ14rPFcIrKVzs=;
-        b=NGkl4Dl/yMygd8Y2VWGA2keG/LEtrEGfTiP/5VZ9bFG2f7ETuV3fS1hVEJyUUxzxsy
-         /dQgjVennMhknl4yNtbIa4kBL4SWuxiqac2KA71a6KQDbTBu85cCZ1UdLt8/kwK5MlmU
-         76N9Js/SAt6sAa7g4LCBttRWSvBRRT2X9AM+2C2VPxCZeirDVqaNvwWIulMD97z1mOdo
-         qsFeOhaw8ExrvKdnTR8ucXoCDefrhHjx3ZVAUEVwN6lOkMQ1w/L8zuTwVWBU8qbiA+RB
-         LEoPmov53nQudg5+l0rMr6CeJuQiDPi9oX5KxMqBJPLqUkCOvNsmIUfTt/elpEIFTG+a
-         t6Sg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pz/ZNLrZ0O+ZYLO34S4orrCykgTqtG1p1sxk4AuVhP8=;
+        b=cGHj/WVq/vdRsPecp7h5K9JfcZgFhYagyOxvNOodNjPWx1ajkrEXS3JlyTiNibU3Zp
+         SwCEr2nxYnnoN/rDaQwb38GFSgdZl2Kq0S1ZixHKqp+2avGFzfRNz6/iVMXsnP13GDXH
+         RgM2ccrAp/Y1PFbzphGj/HwyUf/rf0UTzlmJOICfUXjvGmeePTEJrpD9OV4lH2mafCPY
+         EUwoVZfgNlJ5UV5dhZ/CcQ8uSISli8alXXvbGedEUPmFhOF7U0zEPU4QCO18qhf9yaxy
+         TcA08g0vlBeSatSxXBIZQVQuFf1Og0jFqjL2CJHgmHoOtEAS/Q+fp37wUoAuWgX6aBA1
+         VJjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :in-reply-to:content-transfer-encoding;
-        bh=CMsmmLe070UmWwr4znuaFaK+prUVayJ14rPFcIrKVzs=;
-        b=ZideW9ZhmRgrM5hsrvyb9dapPo4AdnMhGKCxNyhmIjWkCGd0FoZ8E2/lQ8wQuo/21T
-         AzVQOzOg5VnfRLApe/AE/juO0/ISJJgotObR6i2R85ggUpkwGT7yqrd0a+CAoN6cId14
-         qh9JPtyi1QQgcp5K56zgvB9SzyGdk/PGEFsQuLyv1TYVQtDeTjAnKjny763ZHz+DNRcs
-         ujOgQyskk1zRAjDPIxpAWQ8nyBKECqa63omZm78yhzlLwASxD7QqnxAXnJYMLeDuhXCp
-         yj1muQq5k5C1tdZC3XNbEqikqEtZjUVOb7fmrcOIDS5k5peSVBxVKHnaKFKD7P+EyuHi
-         IVqw==
-X-Gm-Message-State: AOAM5335KnFWzMs/q2i+6idNTLZVR5gpQPb88Z9NSCDaMBRpaAxS6gxu
-        S5hweIL1unZUBs5414zwN5FjP4+Puro=
-X-Google-Smtp-Source: ABdhPJyrme3xLBPC4a8NUEb8cvLc9wRMeNJl6RI/6UaUHnI853QRF1eczjBxoNx6PBui3Pr6t4I0ww==
-X-Received: by 2002:ae9:f005:: with SMTP id l5mr1738905qkg.355.1628241775125;
-        Fri, 06 Aug 2021 02:22:55 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id r202sm2106039qke.45.2021.08.06.02.22.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 02:22:54 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     akpm@linux-foundation.org, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
-        Matthew Wilcox <willy@infradead.org>,
-        SeongJae Park <sjpark@amazon.de>
-Subject: Re: mmotm 2021-08-05-19-46 uploaded (mm/filemap.c)
-Date:   Fri,  6 Aug 2021 09:22:46 +0000
-Message-Id: <20210806092246.30301-1-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pz/ZNLrZ0O+ZYLO34S4orrCykgTqtG1p1sxk4AuVhP8=;
+        b=arTjRP92trpmG+VHt0ABfsziko5n1/X8leW904+QRGYD3de7a+BlqVdiYN18p+iZ2b
+         yCMzp3Zt8OtrxFF1eCSOWgyIN54dqEnwKP+MOOVYu9/rGtPI+h9L0Fa+Do2MP1fQ0Xe9
+         bNonbazdxo2DghOsAqAAhxnX1QWbPk+iyUkKIv/0sM6dASqHgKKB5DBQ4G52gNLQxh2j
+         IrnDxa5wTRJxm/ZD1IS+0TvUXApLFWNsAEzecse0izS+FJMi8f1aXL+Qq4gqLxmFGJ7X
+         oKpYIlxuqktkwa3V8VFl6Wz+HcPK699L6TvJg8sPdgvi/A5yCTe1BgRg04kM/Fun/Y7f
+         j3zQ==
+X-Gm-Message-State: AOAM530w/cvrtEncb9sDlgNby4EOJa7R0RfNn0eZOXoZ7y+QiVrowdaV
+        /l8gGJYWCUwd4E5fidEzdssbQAQEAY191RQOlP8FFw==
+X-Google-Smtp-Source: ABdhPJxF+e96ji6+s/JU3AfUGss3Zf7f2U0jNy8HR7IhhDpf9cNHe8wRq2148ITd4iRoh3nJDaO7hsQbtRbL15dwnV8=
+X-Received: by 2002:ac2:57cd:: with SMTP id k13mr7112194lfo.117.1628241808578;
+ Fri, 06 Aug 2021 02:23:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <43bf8d13-505c-35b3-c865-a62bdcbafcf8@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210805170859.2389276-1-surenb@google.com> <YQzZSmRqYmxFJ61y@dhcp22.suse.cz>
+In-Reply-To: <YQzZSmRqYmxFJ61y@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 6 Aug 2021 02:23:17 -0700
+Message-ID: <CALvZod6k3Bm77xt4y=Mvf1Oi8XH25UJwLQaJaFNBFsBAcRuO_Q@mail.gmail.com>
+Subject: Re: [PATCH v7 1/2] mm: introduce process_mrelease system call
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
-
-Hello Randy,
-
-On Thu, 5 Aug 2021 22:00:11 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
-
+On Thu, Aug 5, 2021 at 11:40 PM Michal Hocko <mhocko@suse.com> wrote:
+>
 [...]
-> 
-> on i386, I am seeing lots of build errors due to references to
-> some PAGE_ flags that are only defined for 64BIT:
-> 
-> In file included from ../mm/filemap.c:44:0:
-> ../include/linux/page_idle.h: In function ‘folio_test_young’:
-> ../include/linux/page_idle.h:25:18: error: ‘PAGE_EXT_YOUNG’ undeclared (first use in this function); did you mean ‘PAGEOUTRUN’?
->    return test_bit(PAGE_EXT_YOUNG, &page_ext->flags);
->                    ^~~~~~~~~~~~~~
->                    PAGEOUTRUN
-[...]
-> 
-> See:
-> --- a/include/linux/page_ext.h~mm-idle_page_tracking-make-pg_idle-reusable
-> +++ a/include/linux/page_ext.h
-> @@ -19,7 +19,7 @@ struct page_ext_operations {
->   enum page_ext_flags {
->   	PAGE_EXT_OWNER,
->   	PAGE_EXT_OWNER_ALLOCATED,
-> -#if defined(CONFIG_IDLE_PAGE_TRACKING) && !defined(CONFIG_64BIT)
-> +#if defined(CONFIG_PAGE_IDLE_FLAG) && !defined(CONFIG_64BIT)
->   	PAGE_EXT_YOUNG,
->   	PAGE_EXT_IDLE,
->   #endif
+> I think you really want something like this:
+>
+>         if (flags)
+>                 return -EINVAL;
+>
+>         pid = pidfd_get_pid(fd, &f_flags);
+>         if (IS_ERR(pid))
+>                 return PTR_ERR(pid);
+>         task = get_pid_task(pid, PIDTYPE_PID);
+>         if (!task) {
+>                 ret = -ESRCH;
+>                 goto put_pid;
+>         }
+>
+>         /*
+>          * Make sure to chose a thread which still has a reference to mm
+>          * during the group exit
+>          */
+>         p = find_lock_task_mm(task);
+>         if (!p) {
+>                 ret = -ESRCH;
+>                 goto put_task;
+>         }
+>
+>         mm = task->mm;
 
-Thanks for this report!  However, the flag is not defined for only-64BIT but
-none-64BIT.
+mm = p->mm;
 
-'enum page_ext_flags' is defined when 'CONFIG_PAGE_EXTENSION' is set.  It is
-automatically set for non-64BIT when 'CONFIG_IDLE_PAGE_TRACKING' or
-'CONFIG_DAMON_VADDR' is set.  However, 'CONFIG_PAGE_IDLE_FLAG' doesn't.  So, if
-'CONFIG_PAGE_IDLE_FLAG' is set but 'CONFIG_PAGE_EXTENSION' is not, this issue
-can be reproduced.
-
-I was able to reproduce this issue with:
-
-    make ARCH=i386 allnoconfig
-    echo 'CONFIG_PAGE_IDLE_FLAG=y' >> .config
-    make olddefconfig
-    make ARCH=i386
-
-And, confirmed below change fixes it.
-
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -741,6 +741,7 @@ config DEFERRED_STRUCT_PAGE_INIT
- 
- config PAGE_IDLE_FLAG
- 	bool "Add PG_idle and PG_young flags"
-+	select PAGE_EXTENSION if !64BIT
- 	help
- 	  This feature adds PG_idle and PG_young flags in 'struct page'.  PTE
- 	  Accessed bit writers can set the state of the bit in the flags to let
-
-Also, below change would make more sense:
-
-@@ -749,7 +750,6 @@ config PAGE_IDLE_FLAG
- config IDLE_PAGE_TRACKING
- 	bool "Enable idle page tracking"
- 	depends on SYSFS && MMU && BROKEN
--	select PAGE_EXTENSION if !64BIT
- 	select PAGE_IDLE_FLAG
- 	help
- 	  This feature allows to estimate the amount of user pages that have
-diff --git a/mm/damon/Kconfig b/mm/damon/Kconfig
-index 455995152697..37024798a97c 100644
---- a/mm/damon/Kconfig
-+++ b/mm/damon/Kconfig
-@@ -27,7 +27,6 @@ config DAMON_KUNIT_TEST
- config DAMON_VADDR
- 	bool "Data access monitoring primitives for virtual address spaces"
- 	depends on DAMON && MMU
--	select PAGE_EXTENSION if !64BIT
- 	select PAGE_IDLE_FLAG
- 	help
- 	  This builds the default data access monitoring primitives for DAMON
-
-I will format these as patches and post soon.
-
-
-Thanks,
-SeongJae Park
-
-> 
-> 
-> -- 
-> ~Randy
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+>         mmgrab(mm);
+>         reap = true;
+>         /* If the work has been done already, just exit with success */
+>         if (test_bit(MMF_OOM_SKIP, &mm->flags)) {
+>                 reap = false;
+>         } else if (!task_will_free_mem(p)) {
+>                 reap = false;
+>                 ret = -EINVAL;
+>         }
+>         task_unlock(p);
+>
+>         if (!reap)
+>                 goto dropmm;;
+>
+>         /* Do the work*/
+>
+>
+> dropmm:
+>         mmdrop(mm);
+> put_task:
+>         put_task(task);
+> put_pid:
+>         put_pid(pid);
+>
+>         return ret;
+>
+> --
+> Michal Hocko
+> SUSE Labs
