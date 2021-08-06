@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60AF3E2982
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683593E2985
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245487AbhHFLZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:25:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46928 "EHLO mail.kernel.org"
+        id S245494AbhHFL0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:26:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245456AbhHFLZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:25:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0BD660EE8;
-        Fri,  6 Aug 2021 11:24:49 +0000 (UTC)
+        id S242954AbhHFL0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 07:26:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6BA0611BF;
+        Fri,  6 Aug 2021 11:25:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628249090;
-        bh=SHO6K0c5BYBCASZfdWQKTPTx1AGWXZ8zD6+WFz4xq0o=;
+        s=k20201202; t=1628249160;
+        bh=4Fo6p8+27vB10eSi5EnFr+DlDl1Kc/fpWx0M207Bmjc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V7e/njGXRMlFQptqYHsVgoYhAlhC6pXGNLyaRpFOi5X/mYp3Wp/GxK1pcKWAqJ5Zp
-         2HFwhFTmZhsT9SPcrbKStaZ11EZTpzgqT83CpwZ8Rk1HLVs+gdKGMDeFRTzwPkvwa0
-         VonvEZC6g7F8dDRAAY6Fin15KHy6h+IXI42apvkP8YdqAaui2ryvcbBy8EAstee+04
-         WfeqHtmyNnGbYx59znSLpIMClf/x+pr6VcqvusKEhrTjjV496p3G78wzxmz7OWHUtR
-         SwEB/m/pxkCjiVElFxCvbKg61hKFybIQKQYRRbikPAhwavS2VHkocQuZEodh+Quxac
-         vaKXYjqYnsB6g==
-Date:   Fri, 6 Aug 2021 14:24:46 +0300
+        b=C2ARdiL6hRUSsEC+02m54kcxLGtCPaRXnZp72wwAR72UNLgAGIY0F0WcVNGsuAjPi
+         1S9vWRmUv1otO1ftd54D+inSb5I/0CPiClkR1SRu3vD8dhAGF1MyAscamHxZnqtrfx
+         a956VO7CGzNulJSP6gScCFB4RoiJlN26ZYehTiR4rFSC9jB/ZwpwRcgw0Rf9ZMDHwP
+         u9X3eCuOuJzwx9NOXlXKUllTaq2V9dMfAb0LaDSBdaQ3yZpLbbD0zm45YdZlqRLFUa
+         cvp7D3TJYzP9g9jg1hGpRFIGskSd/OMJoAXvO4/pzgyneTDA7egk5V9APtSNxN/0aZ
+         Xv4F7wq69TKVA==
+Date:   Fri, 6 Aug 2021 14:25:57 +0300
 From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 6/8] selftests/sgx: Encpsulate the test enclave
- creation
-Message-ID: <20210806112446.vfw3azdp6uh54plg@kernel.org>
-References: <20210806001704.667889-1-jarkko@kernel.org>
- <20210806001704.667889-7-jarkko@kernel.org>
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        George Wilson <gcwilson@linux.ibm.com>
+Subject: Re: [PATCH v3 1/2] tpm: ibmvtpm: Rename tpm_process_cmd to
+ tpm_status and define flag
+Message-ID: <20210806112557.y7q2av6pk7r4xorm@kernel.org>
+References: <20210805215256.1293987-1-stefanb@linux.vnet.ibm.com>
+ <20210805215256.1293987-2-stefanb@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210806001704.667889-7-jarkko@kernel.org>
+In-Reply-To: <20210805215256.1293987-2-stefanb@linux.vnet.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 03:17:02AM +0300, Jarkko Sakkinen wrote:
-> +FIXTURE_SETUP(enclave)
-> +{
-> +	if (!setup_test_encl(ENCL_HEAP_SIZE_DEFAULT, &self->encl, _metadata))
-> +		ASSERT_TRUE(false);
+On Thu, Aug 05, 2021 at 05:52:55PM -0400, Stefan Berger wrote:
+> From: Stefan Berger <stefanb@linux.ibm.com>
+> 
+> Rename the field tpm_processing_cmd to tpm_status in ibmvtpm_dev and set
+> the TPM_STATUS_BUSY flag while the vTPM is busy processing a command.
+> 
+> Fixes: 6674ff145eef ("tpm_ibmvtpm: properly handle interrupted packet receptions")
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> Cc: Nayna Jain <nayna@linux.ibm.com>
+> Cc: George Wilson <gcwilson@linux.ibm.com>
 
-Probably would make more sense:
-
-        ASSERT_TRUE(setup_test_encl(ENCL_HEAP_SIZE_DEFAULT, &self->encl, _metadata));
-
-Right?
-
-[and similar remarks to 7/8 and 8/8]
+Please put the bug fix first because otherwise it will be dependent of this
+patch, which is bad thing when it comes to backporting.
 
 /Jarkko
