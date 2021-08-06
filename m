@@ -2,203 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60093E2EA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A31F83E2EAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239210AbhHFQ6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 12:58:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238146AbhHFQ6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 12:58:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D515611CA;
-        Fri,  6 Aug 2021 16:57:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628269071;
-        bh=Iq3JFJpe4v4uars7zwQdHHDQ5cN6JTmt9RP3MFgbTJo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Sa5Y+iW+M7ymqXw5tGZTbBJeK5UwSDhC4CdImHeRte7FAaEHEzd9VhUmqeGSoJCdk
-         0cKJRiJToy5IcGckswSD2+5IWtOr4yqsq4+MXJ9meKhBwwX0y3yPOCb7rywHCsj3I7
-         5G6ZCsy4ScfcTMvlCw9acVXlYNM0rf1NZ7ktAOUZtDEx8D/+ebr/TuzRkGk6ODZOr8
-         VP6WKP+A14yiSAWcP7GoSYwPoRjEj3YCvmymyDHf9KkJK2kGdVcnslTd9hrRrSUu0S
-         4xZAgOkW2nnO+xBUJNgU7RMW174zn06MRTJ17FgOBdYe/Jj5GOATsvTGslcE0oy0tc
-         Mp2UR2Jvz3EOw==
-Received: by mail-ed1-f47.google.com with SMTP id y7so13935101eda.5;
-        Fri, 06 Aug 2021 09:57:51 -0700 (PDT)
-X-Gm-Message-State: AOAM531baeSp1aCs8LRxnI26hPW7R2y/3tvGGIxnOfuJRrrAnWL56c/9
-        lKXgs43TTCkAaeOy0TPVpNlKnAPYHdZq9Rtg8w==
-X-Google-Smtp-Source: ABdhPJwpPAHkKVYX0mPM6GGHdCCqQFtp/LkO7Ls+T5FRP12kWP7vN85NI62JbQ33Fcq2pTG3c2S0PG+abga+IcjVHgQ=
-X-Received: by 2002:a05:6402:440e:: with SMTP id y14mr14390681eda.38.1628269070008;
- Fri, 06 Aug 2021 09:57:50 -0700 (PDT)
+        id S239576AbhHFQ6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 12:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237315AbhHFQ6N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 12:58:13 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1509AC06179C
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 09:57:57 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id b138so5646922vsd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 09:57:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jyRdCsrj1GlEr3i17zCrA/RuqWCQgwoVhsTIqjVReGU=;
+        b=nw1Ts52SCu6B1wsbHInWfDu47KHigBfQozSZLjBb5uG4y8/sFe4OzQZByR10dzSDEs
+         VpeJMGrhJ4imYXUKE407mfRV/2sXCbQdp5Xgmmh8mxxdafY5TAYqvoA7yiD/X1OBJfDv
+         L38Qz5zSW759Tlgb4Re6g7MVPiM120RfUVHS8XfxJEZdfEjK+QTf40Gx7FdUgzYvLs3O
+         7i4rU/tFT/CTMvwz2RBJem3GMzZehap/lEWlgCBkZ2F7vtXIZ4GH4O5ex6HqecyGdJYb
+         jRuiffdHUN8YpCLTZ5ryZeEVHQzo7JSv9v3Omt524ezJTQciAhiRlSJMCKZf2/Q+LwXz
+         hUXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jyRdCsrj1GlEr3i17zCrA/RuqWCQgwoVhsTIqjVReGU=;
+        b=eDokMBxWRvD7pUNsUqYGjDGFfETK4sUNl1yYCJCIk+5rz+kjlJamNeD73Ft+Luadd/
+         eW3G2PTEis56zFI7yQRMnOaCGfMrJdsY+xLLmNaFs5AKYQLYutpVr59NabHgKQlo74vR
+         YQKJdNJmtxpt5Us9TO+Ad5vJqpuphFhsZZ0W6+rWOGKU/plscJFAjcqh9mPRSSeMc+HB
+         tObcFy/6XPkflOKba2LjKoXOVpP/E8gymrBehlr/wPA9nwchYobQP5bh7BtMx+rSRqqK
+         bFsYPrN5/TH3wZINM7vDW9119GzbAPtPfoznYLTYxQCIyEjBq/6cQqMeDDrOpwYgLbkx
+         NtRg==
+X-Gm-Message-State: AOAM532hzql1a5TQJCg4KoCnjqITPDcw5uRx6MyKAjvMPNL1XNoRYUBk
+        GLIeElzy5j84sPDkgxwVheqQxr+D2udjbDzX4vGHtA==
+X-Google-Smtp-Source: ABdhPJzTq25yNSWiZXX2jLUbzoFsDlhmE5adtlQiqtv29jZT5m3Z+k1kQXXoo4aeW5KqY9IKZmmCWimAcVFI3/TcDgk=
+X-Received: by 2002:a05:6102:ecb:: with SMTP id m11mr9911739vst.34.1628269075986;
+ Fri, 06 Aug 2021 09:57:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210805205226.24880-1-jason-jh.lin@mediatek.com> <20210805205226.24880-8-jason-jh.lin@mediatek.com>
-In-Reply-To: <20210805205226.24880-8-jason-jh.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sat, 7 Aug 2021 00:57:39 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__RgqdMfE5w4VK7cdZkZNEY0=sqFsuAUeQTPQfte2fYXQ@mail.gmail.com>
-Message-ID: <CAAOTY__RgqdMfE5w4VK7cdZkZNEY0=sqFsuAUeQTPQfte2fYXQ@mail.gmail.com>
-Subject: Re: [PATCH v6 7/7] drm/mediatek: add mediatek-drm of vdosys0 support
- for mt8195
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        fshao@chromium.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Fabien Parent <fparent@baylibre.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-13-semen.protsenko@linaro.org> <455cfb5e-dff7-a5c0-3875-49abe3e900f3@canonical.com>
+ <CAPLW+4nDS0atrbUFagDA0W_Ky5MvOiY+N+NQoQ+me4pndp_iWg@mail.gmail.com>
+ <68734f6c-fc76-595c-8d34-8924dbbbb845@canonical.com> <CAPLW+4n_JKj5xeBHXONcv__vyAFvx3fhXoxJa17NTHK1RSJFJw@mail.gmail.com>
+ <b753796c-2ce6-4166-7c20-289e950237ad@canonical.com> <bb08f7a4-1da9-fb20-f091-6a3c37a1f898@canonical.com>
+In-Reply-To: <bb08f7a4-1da9-fb20-f091-6a3c37a1f898@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Fri, 6 Aug 2021 19:57:43 +0300
+Message-ID: <CAPLW+4=7n3a2FL9YHYj8dPn+2obFLHvW6DpsDjnG-bxX9--HbQ@mail.gmail.com>
+Subject: Re: [PATCH 12/12] arm64: dts: exynos: Add Exynos850 SoC support
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jason:
+On Fri, 6 Aug 2021 at 15:48, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 06/08/2021 14:32, Krzysztof Kozlowski wrote:
+> > On 06/08/2021 14:07, Sam Protsenko wrote:
+> >> On Fri, 6 Aug 2021 at 10:49, Krzysztof Kozlowski
+> >> <krzysztof.kozlowski@canonical.com> wrote:
+> >>>
+> >>> On 06/08/2021 01:06, Sam Protsenko wrote:
+> >>>> On Sat, 31 Jul 2021 at 12:03, Krzysztof Kozlowski
+> >>>> <krzysztof.kozlowski@canonical.com> wrote:
+> >>>>
+> >>>>>>
+> >>>>>> This patch adds minimal SoC support. Particular board device tree =
+files
+> >>>>>> can include exynos850.dtsi file to get SoC related nodes, and then
+> >>>>>> reference those nodes further as needed.
+> >>>>>>
+> >>>>>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> >>>>>> ---
+> >>>>>>  .../boot/dts/exynos/exynos850-pinctrl.dtsi    | 782 +++++++++++++=
++++++
+> >>>>>>  arch/arm64/boot/dts/exynos/exynos850-usi.dtsi |  30 +
+> >>>>>>  arch/arm64/boot/dts/exynos/exynos850.dtsi     | 245 ++++++
+> >>>>>
+> >>>>> Not buildable. Missing Makefile, missing DTS. Please submit with in=
+itial
+> >>>>> DTS, otherwise no one is able to verify it even compiles.
+> >>>>>
+> >>>>
+> >>>> This device is not available for purchase yet. I'll send the patch f=
+or
+> >>>> board dts once it's announced. I can do all the testing for now, if
+> >>>> you have any specific requests. Would it be possible for us to revie=
+w
+> >>>> and apply only SoC support for now? Will send v2 soon...
+> >>>
+> >>> What you propose is equal to adding a driver (C source code) without
+> >>> ability to compile it. What's the point of having it in the kernel? I=
+t's
+> >>> unverifiable, unbuildable and unusable.
+> >>>
+> >>
+> >> Yes, I understand. That's adding code with no users, and it's not a
+> >> good practice.
+> >>
+> >>> We can review the DTSI however merging has to be with a DTS. Usually =
+the
+> >>> SoC vendor adds first an evalkit (e.g. SMDK board). Maybe you have on=
+e
+> >>> for Exynos850? Otherwise if you cannot disclose the actual board, the
+> >>> DTSI will have to wait. You can submit drivers, though.
+> >>>
+> >>
+> >> Sure, let's go this way. I'll send v2 soon. Improving patches and
+> >> having Reviewed-by tag for those would good enough for me at this
+> >> point. I'll continue to prepare another Exynos850 related patches
+> >> until the actual board is announced, like proper clock driver, reset,
+> >> MMC, etc. Is it ok if I send those for a review too (so I can fix all
+> >> issues ahead)?
+> >
+> > Sure, prepare all necessary drivers earlier. I suspect clocks will be a
+> > real pain because of significant changes modeled in vendor kernel. I
+> > remember Pawe=C5=82 Chmiel (+Cc) was doing something for these:
+> > https://github.com/PabloPL/linux/tree/exynos7420
+> >
+> > I mentioned before - you should also modify the chipid driver. Check
+> > also other drivers in drivers/soc/samsung, although some are needed onl=
+y
+> > for suspend&resume.
+> >
 
-jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=886=
-=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=884:52=E5=AF=AB=E9=81=93=EF=BC=
-=9A
+Yes, in due course... There won't be much problems with chip-id
+driver. But pretty much all platform drivers depend on clk, and that
+one I'm afraid I'll have to implement from scratch. Will take me a
+while, as vendor's codebase for clk driver is huge and depend on
+another huge non-upstreamable abstraction layer framework they have,
+and also they have kind of strange home brewed composite clocks...
+Anyway, that's what I'm going to look into next.
+
+Btw, I just sent v2 :)
+
 >
-> Add driver data of mt8195 vdosys0 to mediatek-drm and the sub driver.
+> You can also take a look at Exynos8895 efforts:
+> https://github.com/ivoszbg/linux/commits/for-upstream/exynos8895
+>
+> Since knowledge, datasheets and efforts are quite spread all over, I
+> keep track of some work here:
+> https://exynos.wiki.kernel.org/community
 >
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Thanks, Krzysztof! I'm sure that info will help a lot with further
+work, like clock driver.
 
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> ---
-> This patch is base on [1]
 >
-> [1] dt-bindings: mediatek: display: add mt8195 SoC binding
-> https://patchwork.kernel.org/project/linux-mediatek/patch/20210805171346.=
-24249-5-jason-jh.lin@mediatek.com/
-> ---
->  drivers/gpu/drm/mediatek/mtk_disp_rdma.c |  6 +++++
->  drivers/gpu/drm/mediatek/mtk_drm_drv.c   | 28 ++++++++++++++++++++++++
->  2 files changed, 34 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/m=
-ediatek/mtk_disp_rdma.c
-> index 728aaadfea8c..00e9827acefe 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-> @@ -355,6 +355,10 @@ static const struct mtk_disp_rdma_data mt8183_rdma_d=
-river_data =3D {
->         .fifo_size =3D 5 * SZ_1K,
->  };
->
-> +static const struct mtk_disp_rdma_data mt8195_rdma_driver_data =3D {
-> +       .fifo_size =3D 1920,
-> +};
-> +
->  static const struct of_device_id mtk_disp_rdma_driver_dt_match[] =3D {
->         { .compatible =3D "mediatek,mt2701-disp-rdma",
->           .data =3D &mt2701_rdma_driver_data},
-> @@ -362,6 +366,8 @@ static const struct of_device_id mtk_disp_rdma_driver=
-_dt_match[] =3D {
->           .data =3D &mt8173_rdma_driver_data},
->         { .compatible =3D "mediatek,mt8183-disp-rdma",
->           .data =3D &mt8183_rdma_driver_data},
-> +       { .compatible =3D "mediatek,mt8195-disp-rdma",
-> +         .data =3D &mt8195_rdma_driver_data},
->         {},
->  };
->  MODULE_DEVICE_TABLE(of, mtk_disp_rdma_driver_dt_match);
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/med=
-iatek/mtk_drm_drv.c
-> index 5eb9c0a04447..9aebf73144c6 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> @@ -147,6 +147,19 @@ static const enum mtk_ddp_comp_id mt8183_mtk_ddp_ext=
-[] =3D {
->         DDP_COMPONENT_DPI0,
->  };
->
-> +static const enum mtk_ddp_comp_id mt8195_mtk_ddp_main[] =3D {
-> +       DDP_COMPONENT_OVL0,
-> +       DDP_COMPONENT_RDMA0,
-> +       DDP_COMPONENT_COLOR0,
-> +       DDP_COMPONENT_CCORR,
-> +       DDP_COMPONENT_AAL0,
-> +       DDP_COMPONENT_GAMMA,
-> +       DDP_COMPONENT_DITHER,
-> +       DDP_COMPONENT_DSC0,
-> +       DDP_COMPONENT_MERGE0,
-> +       DDP_COMPONENT_DP_INTF0,
-> +};
-> +
->  static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data =3D {
->         .main_path =3D mt2701_mtk_ddp_main,
->         .main_len =3D ARRAY_SIZE(mt2701_mtk_ddp_main),
-> @@ -186,6 +199,11 @@ static const struct mtk_mmsys_driver_data mt8183_mms=
-ys_driver_data =3D {
->         .ext_len =3D ARRAY_SIZE(mt8183_mtk_ddp_ext),
->  };
->
-> +static const struct mtk_mmsys_driver_data mt8195_vdosys0_driver_data =3D=
- {
-> +       .main_path =3D mt8195_mtk_ddp_main,
-> +       .main_len =3D ARRAY_SIZE(mt8195_mtk_ddp_main),
-> +};
-> +
->  static int mtk_drm_kms_init(struct drm_device *drm)
->  {
->         struct mtk_drm_private *private =3D drm->dev_private;
-> @@ -406,10 +424,14 @@ static const struct of_device_id mtk_ddp_comp_dt_id=
-s[] =3D {
->           .data =3D (void *)MTK_DISP_COLOR },
->         { .compatible =3D "mediatek,mt8183-disp-dither",
->           .data =3D (void *)MTK_DISP_DITHER },
-> +       { .compatible =3D "mediatek,mt8195-disp-dsc",
-> +         .data =3D (void *)MTK_DISP_DSC },
->         { .compatible =3D "mediatek,mt8173-disp-gamma",
->           .data =3D (void *)MTK_DISP_GAMMA, },
->         { .compatible =3D "mediatek,mt8183-disp-gamma",
->           .data =3D (void *)MTK_DISP_GAMMA, },
-> +       { .compatible =3D "mediatek,mt8195-disp-merge",
-> +         .data =3D (void *)MTK_DISP_MERGE },
->         { .compatible =3D "mediatek,mt2701-disp-mutex",
->           .data =3D (void *)MTK_DISP_MUTEX },
->         { .compatible =3D "mediatek,mt2712-disp-mutex",
-> @@ -418,6 +440,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[=
-] =3D {
->           .data =3D (void *)MTK_DISP_MUTEX },
->         { .compatible =3D "mediatek,mt8183-disp-mutex",
->           .data =3D (void *)MTK_DISP_MUTEX },
-> +       { .compatible =3D "mediatek,mt8195-disp-mutex",
-> +         .data =3D (void *)MTK_DISP_MUTEX },
->         { .compatible =3D "mediatek,mt8173-disp-od",
->           .data =3D (void *)MTK_DISP_OD },
->         { .compatible =3D "mediatek,mt2701-disp-ovl",
-> @@ -438,6 +462,8 @@ static const struct of_device_id mtk_ddp_comp_dt_ids[=
-] =3D {
->           .data =3D (void *)MTK_DISP_RDMA },
->         { .compatible =3D "mediatek,mt8183-disp-rdma",
->           .data =3D (void *)MTK_DISP_RDMA },
-> +       { .compatible =3D "mediatek,mt8195-disp-rdma",
-> +         .data =3D (void *)MTK_DISP_RDMA },
->         { .compatible =3D "mediatek,mt8173-disp-ufoe",
->           .data =3D (void *)MTK_DISP_UFOE },
->         { .compatible =3D "mediatek,mt8173-disp-wdma",
-> @@ -468,6 +494,8 @@ static const struct of_device_id mtk_drm_of_ids[] =3D=
- {
->           .data =3D &mt8173_mmsys_driver_data},
->         { .compatible =3D "mediatek,mt8183-mmsys",
->           .data =3D &mt8183_mmsys_driver_data},
-> +       {.compatible =3D "mediatek,mt8195-vdosys0",
-> +         .data =3D &mt8195_vdosys0_driver_data},
->         { }
->  };
->  MODULE_DEVICE_TABLE(of, mtk_drm_of_ids);
-> --
-> 2.18.0
->
+> Best regards,
+> Krzysztof
