@@ -2,92 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46063E2785
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBF63E2791
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244631AbhHFJlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 05:41:52 -0400
-Received: from goliath.siemens.de ([192.35.17.28]:59925 "EHLO
-        goliath.siemens.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242840AbhHFJlv (ORCPT
+        id S244637AbhHFJmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242680AbhHFJmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:41:51 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by goliath.siemens.de (8.15.2/8.15.2) with ESMTPS id 1769fSDa026920
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 6 Aug 2021 11:41:28 +0200
-Received: from [167.87.32.106] ([167.87.32.106])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 1769fRiq032085;
-        Fri, 6 Aug 2021 11:41:28 +0200
-Subject: Re: wwan/iosm vs. xmm7360
-To:     "Kumar, M Chetan" <m.chetan.kumar@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        linuxwwan@intel.com
-References: <0545a78f-63f0-f8dd-abdb-1887c65e1c79@siemens.com>
- <eb8fa6ad-10c8-e035-9bd8-1caf470e739e@linux.intel.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <bafc04de-fb2c-03b4-69c1-ac91e9e8c7ae@siemens.com>
-Date:   Fri, 6 Aug 2021 11:41:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Fri, 6 Aug 2021 05:42:53 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5312C061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 02:42:37 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id i10so6358254pla.3
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 02:42:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4HPNOHJF+FggNfCJseeN2/kUR7mznmygd2VV7qNoCFg=;
+        b=SXu8xId+7S96lozM+9jNDTE8KKNGlgx6uPoKWwz+WwXMvz1d0rTofjoV4SQCFfBnSZ
+         LTuYpkQ0CveluxulWfcAhp7m4fWmgzDpBIdavDKgZxUWtxzkDRb3q8BfjRwEcApD9YHh
+         yJGyg9XNka6qwhtKSbTE7OZ0NRcPB3y6hgI4TbrUCKYm6diWoiNap6rtWPQQ/SmhTcUm
+         BSlATxLy43GGhqInxcGTKxazNRM1Zg//uB/Jj7C4m/JnBpihK0FRyTFLTkq6UjMmbYXo
+         m3jUv43U/G6Dkbjs3xy3kvWsunCj/DdxViD6qYM+wt+FTFCXB+AR2t9X2xTnai+47F9a
+         0Nrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4HPNOHJF+FggNfCJseeN2/kUR7mznmygd2VV7qNoCFg=;
+        b=aMbxli9mvvNc+0QmU3AlP3uO1yX+MpUVmoosmAulQbs5A4B/RNsXL9pP4g/67e+Epm
+         728ZVvpfior782vSa6JKm8odHxZGmIpnWVUyK9+4bunBUZ3lupK0t4Sdahp8DYQqExU/
+         OpRCSKv/RfiKQSQc+ytCB+cCyzzkev6KTd9MujmXf2CfeAxcrFgzkdb1KFYqrhdjwzmw
+         c3f4Hd95j1THyD3127MYzzn2zgHtfI/Y5k4eAFV2uzFeuqUfM8CcGrJev6/wIj3TArxR
+         FCuCKQdsMegeEs9lyEuir3eoOjwbdwTZnxyF2CVI3tgExtG9brhaYc0I5A3bdnxKQb4E
+         tEvA==
+X-Gm-Message-State: AOAM533dNXuuuNpe3kXmBalnqnDGW4zZ7BgbjyPxzfS9GUnWSn/mDpuV
+        gLs5HTI+5Na7ytlURuuN9XYrnE/A998XcFtmnkZwCA==
+X-Google-Smtp-Source: ABdhPJx+BDp+a/3ncBTlo6vu6+TXRvbaFZ9ImUS/1LbApSXQDKjL8eqWP8K5L9x04aHKdfGndP9XdWO+I9CX1KGMutQ=
+X-Received: by 2002:aa7:90c8:0:b029:32c:935f:de5f with SMTP id
+ k8-20020aa790c80000b029032c935fde5fmr9660331pfk.79.1628242957366; Fri, 06 Aug
+ 2021 02:42:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <eb8fa6ad-10c8-e035-9bd8-1caf470e739e@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <a02c0a414bd3d0f67bf7d77c10415196743f1c0d.1628242192.git.xji@analogixsemi.com>
+In-Reply-To: <a02c0a414bd3d0f67bf7d77c10415196743f1c0d.1628242192.git.xji@analogixsemi.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 6 Aug 2021 11:42:26 +0200
+Message-ID: <CAG3jFyvTsG1ZjqS+3yqspW+DCPX4zrs02tdmqC9n9mQxmvsJEQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] drm/bridge: anx7625: Tune K value for IVO panel
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bernie Liang <bliang@analogixsemi.com>,
+        Qilin Wen <qwen@analogixsemi.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devel@driverdev.osuosl.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.08.21 11:29, Kumar, M Chetan wrote:
-> Hi Jan,
-> 
-> What is the context of this request ?
+Hey Xin,
 
-The context is that there are many folks out there (me included - Lenovo
-P52) with devices that have the xmm-7360 built-in, can't switch it to
-USB mode (prevented by OEM), and currently require [1]. That kind of
-works but is not really the final solution. So I also kicked off [2] there.
+Thanks for implementing the suggestion so quickly.
 
-> 
-> FYI, the driver upstreamed is for M.2 7560.
+Can you send this version of the patch out as v2? Versioning is
+important and both tools and processes break if different versions
+aren't submitted in different emails.
 
-I know. I'm not an expert on the details, but reading the overall
-architectures of the IOSM and what has been reverse-engineered for the
-7360, there seem to be some similarities. So, maybe you can explain to
-the community if that is a reasonable path to upstream 7360 support, or
-if at least the pattern of the 7560 could/should be transferred to the
-7360 driver.
-
-Thanks,
-Jan
-
-[2] https://github.com/xmm7360/xmm7360-pci/issues/104
-
-> 
-> Regards,
-> Chetan
-> 
-> On 8/6/2021 2:09 AM, Jan Kiszka wrote:
->> Hi Chetan,
->>
->> at the risk of having missed this being answered already:
->>
->> How close is the older xmm7360 to the now supported xmm7560 in mainline?
->>
->> There is that reverse engineered PCI driver [1] with non-standard
->> userland interface, and it would obviously be great to benefit from
->> common infrastructure and specifically the modem-manager compatible
->> interface. Is this realistic to achieve for the 7360, or is that
->> hardware or its firmware too different?
->>
->> Thanks,
->> Jan
->>
->> [1] https://github.com/xmm7360/xmm7360-pci
->>
-
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+On Fri, 6 Aug 2021 at 11:35, Xin Ji <xji@analogixsemi.com> wrote:
+>
+> IVO panel require less input video clock variation than video clock
+> variation in DP CTS spec.
+>
+> This patch decreases the K value of ANX7625 which will shrink eDP Tx
+> video clock variation to meet IVO panel's requirement.
+>
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> ---
+>  drivers/gpu/drm/bridge/analogix/anx7625.c | 24 ++++++++++++++++++++---
+>  drivers/gpu/drm/bridge/analogix/anx7625.h |  4 +++-
+>  2 files changed, 24 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> index a3d82377066b..9b9e3984dd38 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> @@ -384,6 +384,25 @@ static int anx7625_odfc_config(struct anx7625_data *ctx,
+>         return ret;
+>  }
+>
+> +/*
+> + * The MIPI source video data exist large variation (e.g. 59Hz ~ 61Hz),
+> + * anx7625 defined K ratio for matching MIPI input video clock and
+> + * DP output video clock. Increase K value can match bigger video data
+> + * variation. IVO panel has small variation than DP CTS spec, need
+> + * decrease the K value.
+> + */
+> +static int anx7625_set_k_value(struct anx7625_data *ctx)
+> +{
+> +       struct edid *edid = (struct edid *)ctx->slimport_edid_p.edid_raw_data;
+> +
+> +       if (edid->mfg_id[0] == IVO_MID0 && edid->mfg_id[1] == IVO_MID1)
+> +               return anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
+> +                                        MIPI_DIGITAL_ADJ_1, 0x3B);
+> +
+> +       return anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
+> +                                MIPI_DIGITAL_ADJ_1, 0x3D);
+> +}
+> +
+>  static int anx7625_dsi_video_timing_config(struct anx7625_data *ctx)
+>  {
+>         struct device *dev = &ctx->client->dev;
+> @@ -470,9 +489,8 @@ static int anx7625_dsi_video_timing_config(struct anx7625_data *ctx)
+>                         MIPI_PLL_N_NUM_15_8, (n >> 8) & 0xff);
+>         ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client, MIPI_PLL_N_NUM_7_0,
+>                         (n & 0xff));
+> -       /* Diff */
+> -       ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p1_client,
+> -                       MIPI_DIGITAL_ADJ_1, 0x3D);
+> +
+> +       anx7625_set_k_value(ctx);
+>
+>         ret |= anx7625_odfc_config(ctx, post_divider - 1);
+>
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
+> index 034c3840028f..6dcf64c703f9 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.h
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
+> @@ -210,7 +210,9 @@
+>  #define  MIPI_VIDEO_STABLE_CNT           0x0A
+>
+>  #define  MIPI_LANE_CTRL_10               0x0F
+> -#define  MIPI_DIGITAL_ADJ_1   0x1B
+> +#define  MIPI_DIGITAL_ADJ_1     0x1B
+> +#define  IVO_MID0               0x26
+> +#define  IVO_MID1               0xCF
+>
+>  #define  MIPI_PLL_M_NUM_23_16   0x1E
+>  #define  MIPI_PLL_M_NUM_15_8    0x1F
+> --
+> 2.25.1
+>
