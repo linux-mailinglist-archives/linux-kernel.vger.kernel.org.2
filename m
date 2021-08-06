@@ -2,184 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB0D3E2EC0
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 19:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF2A3E2EC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 19:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240423AbhHFRIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 13:08:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22405 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239852AbhHFRIb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 13:08:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628269694;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/GvUXzVqBNpTYmWX6silIAbrzIkt7NivstiUqC9NAzM=;
-        b=cxh+9k0lbP2owqF2ZaApd/sXClAPVFfuomNWGN7dCHvAgrr/M1XwyRfi7BpZ2QetDUYK+M
-        jYkD2+qE7RMyG5gCRnTTTfWk2A1GztRIpGX0qP/B16kvLGvh7JzucbS0R4ta38PH+vjeMa
-        Fk2YcV7c1/Y0R6rrEz/ZAGklaRO877Y=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416-enTQNZEIPoKx4T-Ijo5jzQ-1; Fri, 06 Aug 2021 13:08:13 -0400
-X-MC-Unique: enTQNZEIPoKx4T-Ijo5jzQ-1
-Received: by mail-wm1-f71.google.com with SMTP id o67-20020a1ca5460000b0290223be6fd23dso2209200wme.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 10:08:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=/GvUXzVqBNpTYmWX6silIAbrzIkt7NivstiUqC9NAzM=;
-        b=WKWKN2CvJ2urFSlAmY21vMRZwvmkYE/KJSiNoV107YJFYMgJM/q2/ra8NKMoxAEMrO
-         T9PphSwkXyHkQSiADvXlxuiE2BnyhJVUwVWOGcsq75o90a8ClWuZmyD8Du0HgTelDrTj
-         dlcQwMU60k+9by4svvO32tOAKf5H60YBa5iQX4m/+W67ArefDZUJ3a0HxWNXlpqChI6Q
-         GmKJgLsKiKSJ9N64Zj+ZqXwLEXy15mHO1nlzjHX6HoZzJQkFZ6cM2pSAYHN4bc0bmbZY
-         hRqwQBEF1IhhrQgUDt+4rssQqn6eti1sglq9EIetnjIFT9lwQaQw91IwKLAq59RcCCcJ
-         jaAA==
-X-Gm-Message-State: AOAM5311EsEYKdbE52G6H3xLuCTscF2coWm9P1pGdyzC8RduJe2kcIUi
-        aYfTm+9C9HAkn9DTop8lLD91WuzfMvdMOvS+rWBadiZat63H8HagyLceXpy76p/ymeyREw950aL
-        AVMEu6+hJ36J/c48dEyrG9VDQ
-X-Received: by 2002:a05:600c:293:: with SMTP id 19mr4211153wmk.179.1628269692159;
-        Fri, 06 Aug 2021 10:08:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxpG/+b2pMeozwLiwEUf9OenFHEwQndI1oxEpX71cpScaVHXoK5GX5T55V+c7A3djXlCxO+Wg==
-X-Received: by 2002:a05:600c:293:: with SMTP id 19mr4211130wmk.179.1628269691924;
-        Fri, 06 Aug 2021 10:08:11 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6104.dip0.t-ipconnect.de. [91.12.97.4])
-        by smtp.gmail.com with ESMTPSA id e3sm10296154wrw.51.2021.08.06.10.08.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 10:08:11 -0700 (PDT)
-To:     Vlastimil Babka <vbabka@suse.cz>, Zi Yan <ziy@nvidia.com>,
-        linux-mm@kvack.org
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
-References: <20210805190253.2795604-1-zi.yan@sent.com>
- <40982106-0eee-4e62-7ce0-c4787b0afac4@suse.cz>
- <72b317e5-c78a-f0bc-fe69-f82261ec252e@redhat.com>
- <3417eb98-36c8-5459-c83e-52f90e42a146@suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [RFC PATCH 00/15] Make MAX_ORDER adjustable as a kernel boot time
- parameter.
-Message-ID: <59c59a77-cf93-40a8-2ad5-b72d87b8815a@redhat.com>
-Date:   Fri, 6 Aug 2021 19:08:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S240621AbhHFRN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 13:13:57 -0400
+Received: from mail-mw2nam12on2120.outbound.protection.outlook.com ([40.107.244.120]:25761
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240060AbhHFRN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 13:13:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HIpICOrnPxU+R5Yz+rmiQwELvRYxxgQWbqxiZBWIOADwXzRwGLI9Mvv14Hu4YcZiE9Xah/BddHXn3b9gXfBo61ROx4QY/amtCkksANESu16sXh8BLstR58QS3njKaGVpFazIrbnApb145S6bT8mYql2hyM9yeOf0wFJ3/HX6QovDKo61gE1KqSYijtyir/Rr71+zFk3xiBKJ8N+bO98exTWe9oCL6T4YmS55/zjyeefTjoVOnaTYwQo95QZe45CeXetovzMvW7JDMOBiCagevDmpp8zA8vrRF3AZgE7EVwfpG0Kt5SdxU7Na4LMF7cns8p4qt0ALO/7L3ti6UEi6Og==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iMg/Ex1knzITTGLOlsQMCcuBLJO9tqAq8WapbMwJLcA=;
+ b=IX8VpcW9AB1L//Sjqhe5kK8TV3GTGCUIEYyv+WZ6TBtxaJmHC/iBbjOXSC9XL6SXUqnV2butXzYVJLtVoIHPujdLuvu+CNn/wpA186kxqMsdPh59MLHIq1NtfDH2EvkLXeew6DyQ8D9NFnMJNlvaloLDT49f6+a70pdAmp/bwTaRwxU9bKxhpJRw9J3JopOLEdIyjNAe84iWF0arChARb3B2WUMForO137KkO9PVMMy24AW86ezKhKqlkJLsU9JdThe9trdYc7s/I21n9LMpzbzj9eu/uCnV7Z0FVvugh6ceFLTjMlOnFgWS2VJwe6AnzY4hO7Bx04mv2PKApzUcNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iMg/Ex1knzITTGLOlsQMCcuBLJO9tqAq8WapbMwJLcA=;
+ b=Vj6vt9yOeaAx2P0OWb31Q/Jh0MdjY9tH+fVqERSN5o+LDMIm0Kfdmc2MmepiYHUE0okxD6wJJmJSnPVlMOVKpSk4hHFevoN9S9xVMiu6cwQg9r9eSp6b/InfKbufTQ+1dEUk96XwykETuwQuf0jmq+OkURhpYpFANsyUO0iIsSw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from DM6PR21MB1514.namprd21.prod.outlook.com (2603:10b6:5:22d::11)
+ by DM6PR21MB1273.namprd21.prod.outlook.com (2603:10b6:5:16c::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.0; Fri, 6 Aug
+ 2021 17:13:28 +0000
+Received: from DM6PR21MB1514.namprd21.prod.outlook.com
+ ([fe80::b170:236f:1f2:5670]) by DM6PR21MB1514.namprd21.prod.outlook.com
+ ([fe80::b170:236f:1f2:5670%9]) with mapi id 15.20.4415.009; Fri, 6 Aug 2021
+ 17:13:27 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     kys@microsoft.com, martin.petersen@oracle.com,
+        longli@microsoft.com, wei.liu@kernel.org, jejb@linux.ibm.com,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Cc:     mikelley@microsoft.com
+Subject: [PATCH 1/1] scsi: storvsc: Log TEST_UNIT_READY errors as warnings
+Date:   Fri,  6 Aug 2021 10:12:50 -0700
+Message-Id: <1628269970-87876-1-git-send-email-mikelley@microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR03CA0207.namprd03.prod.outlook.com
+ (2603:10b6:303:b8::32) To DM6PR21MB1514.namprd21.prod.outlook.com
+ (2603:10b6:5:22d::11)
 MIME-Version: 1.0
-In-Reply-To: <3417eb98-36c8-5459-c83e-52f90e42a146@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mhkdev.corp.microsoft.com (131.107.159.16) by MW4PR03CA0207.namprd03.prod.outlook.com (2603:10b6:303:b8::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Fri, 6 Aug 2021 17:13:27 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7b1407a4-6d10-4a7f-b46c-08d958fd81c0
+X-MS-TrafficTypeDiagnostic: DM6PR21MB1273:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR21MB1273A961557B5E37BCC9526ED7F39@DM6PR21MB1273.namprd21.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0s/24IxxNRm50mYwt9B4Tfg07S/qS/hV0ybb809upfU+TnOOGeK7JSO8u/uW+r9H9XyBiMoV6GUH2YhTXW0GtbKs1QuIxWnbnIfShTN4SCy31Onjs91OEyXfkC38Jlk8cgTNVG/eg74UDHYfeBjDNFyBHKIVth9w2mycqGc0yZhudiDoZ5uQW0l3Hm0o6V8kQuYuwL4VENwkRsaS7quRBMmjkMH/oMujz33UkIO/AtsGZlQhO5+4VW38OZHnuumnbJpBwBIWdFA+92Snm+tsDOy7zstNG161OV2Tb5eu8q8Uy3hhrHZuaDcvONTeHK6Byy84sQI5XoH8+W5UqTB3tQqOhpCZHqeBzVONFoHiZGTfvf0tOTZ2ANSnqA6xHMMlJ4/JG0LebhsrotMpmeT4bgvJmSKe/aD28ZCrlD30GEtyi4pxdDYrsY7Gfjk5tzPdrCTclObTfA0Yw3/R6w6N1svnSVttFUqDkzWMyPaDMjGgXfhb89Y9JRQsKBliyLXAY+RTMXpIdkfOG+zmx4KvEngsZyRbrRY1UofwffyLCrqWcg6ZD+f/RqIUtg8YBCkRdR5rIMBoD3Ca0NK1pXXNaJNIPQ4x1lO4caBm5Ohboopm5YvaTv8T+O0rc7YYJpjmK5cden8bHPaysqiWm48Y4ctAVFY9W/4F585cbsT8A1Xog7WIu+08LZiXK1Tush/JWO2evarI8J9f3AM4kyl3Sg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1514.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38350700002)(10290500003)(107886003)(508600001)(6666004)(36756003)(38100700002)(8936002)(2906002)(8676002)(4326008)(5660300002)(316002)(6486002)(52116002)(82950400001)(7696005)(956004)(66556008)(66946007)(66476007)(2616005)(83380400001)(186003)(82960400001)(86362001)(26005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hMznagI/wECcailEZUZENYiMOURE09F+j838oaPX9Pyc8JIo11FZNA/5KIkd?=
+ =?us-ascii?Q?+bWEYyv2zuAa7QHZfYQgxGUW9JtvWNIz+TlFXuANNQqVElaa+ocXrUYnzOmt?=
+ =?us-ascii?Q?w4ba42k+FoEdK7hFvES1jwtLPNCpFUlx8V6z/GMyVXqR8Bf9lBBb0rckW6ve?=
+ =?us-ascii?Q?heRTE9pm0+4pmGM/YZPPe4UwsRAYZI6tO/YyIONaeBfk0yD3O4vJiG4oQSLs?=
+ =?us-ascii?Q?oatcp/8SF6Hfh1ILaaWoYL0V9fTM9irxT7SCUUjnhoEcFPnT8rOCmmcpKomM?=
+ =?us-ascii?Q?74JZsuAct8rE8PB9+gEW8h73pxjbNgo+QGS4r3/UYhA1XIf/HL7UZOdczWFi?=
+ =?us-ascii?Q?NceIAjsABUtPHtj42lqRqi2u864oowfcK2ZIRXgTfpM6s8i4fxPMWHDvsqf7?=
+ =?us-ascii?Q?9HuQia+arVbVk0W4QiGmwip5P+m2rFTEiSCqFF+NkDM02IPsrFmOZNR/ggnZ?=
+ =?us-ascii?Q?AlI3Qn9as67NKK4MrMnhrb7MKvibfi8SxtS5zNfd0WyZjIIinzb4Z93Qqeox?=
+ =?us-ascii?Q?dD7Q34XAd44GIfJLtrGNn1g39jXpGmPaIgQ0gUitsYpYiB8oAgsTpgnwOfNM?=
+ =?us-ascii?Q?yTMTNMzEgjlTx12xFEVVvYuXAkMqwzahOSh59b7ClaLt9LIi9pbE6ryD5BCF?=
+ =?us-ascii?Q?JuNMg7rTYPzxCEJpPmlubcphPV3rRspiAwmuSw2gKFotoeiI6LqqcBeqDHcq?=
+ =?us-ascii?Q?3K2Ws2cy5pxfGS/cKvUPe6TZA3RMvUtX9Y9WRWW7bBeOFVAXXK4tQgiZxRfY?=
+ =?us-ascii?Q?/yG173oLgfk11S2rFCRhHHf8q7t6uaNa+OB99IdExySUg4PcaOqOTOxVtvzp?=
+ =?us-ascii?Q?VG4plXCC6PUxbzzS7vN0NuNSvDKm/OUNUlv+Dr+X6GeI1FhtPgCJmzR9sEB1?=
+ =?us-ascii?Q?vbtnn7aTrSg9Mu4ij74rNxvbI+wvZLv0fqOey2l05a1nbYpbLFMWiS2K4KJL?=
+ =?us-ascii?Q?A9VgiBflMGOUZpthoAFpeilgcfkiElZbTvIYkn1gAOcwvgNPn4L1Np0xdLPR?=
+ =?us-ascii?Q?6pbK6rgFFGwCBK1EypBmt4wntOEy3TFuxl+07/CD76IeY2crZ+406xtpg4+q?=
+ =?us-ascii?Q?WYm7aXkvOhdlIOBDSbvXV4vU6Cvd0SJ4i9Y9WeniATGMop59zZ1CwPPxWDzn?=
+ =?us-ascii?Q?xhH29P9u5gwVQdT7Ll3ZoR5ciCIMKhh+J6KYgveG4SJok1baJMSx7c37AkaU?=
+ =?us-ascii?Q?Gjt8FTLM7SEX3+igRJzsJuLceez1RqiIj5rnC1TJypkkV+NKtNnWeHOEIMPT?=
+ =?us-ascii?Q?8yzY7HZ52rCiQT6E7vifZ16Ct7V3iG7K9Ai7Ts0fA0Rz+2gK8RbCTT12db5T?=
+ =?us-ascii?Q?SQ4NSLw/hfivkkfgksge6DkQ?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b1407a4-6d10-4a7f-b46c-08d958fd81c0
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1514.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2021 17:13:27.7611
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nz1xTaqyY/jMXfWJq7KD4yiPZcGL1smXHQ6zSqXLkk0MEsouGtRjl1f5lYo1FufdOSSPwxEPUnRgRpZ6rPvn0A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR21MB1273
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.08.21 18:54, Vlastimil Babka wrote:
-> On 8/6/21 6:16 PM, David Hildenbrand wrote:
->> On 06.08.21 17:36, Vlastimil Babka wrote:
->>> On 8/5/21 9:02 PM, Zi Yan wrote:
->>>> From: Zi Yan <ziy@nvidia.com>
->>>
->>>> Patch 3 restores the pfn_valid_within() check when buddy allocator can merge
->>>> pages across memory sections. The check was removed when ARM64 gets rid of holes
->>>> in zones, but holes can appear in zones again after this patchset.
->>>
->>> To me that's most unwelcome resurrection. I kinda missed it was going away and
->>> now I can't even rejoice? I assume the systems that will be bumping max_order
->>> have a lot of memory. Are they going to have many holes? What if we just
->>> sacrificed the memory that would have a hole and don't add it to buddy at all?
->>
->> I think the old implementation was just horrible and the description we have
->> here still suffers from that old crap: "but holes can appear in zones again".
->> No, it's not related to holes in zones at all. We can have MAX_ORDER -1 pages
->> that are partially a hole.
->>
->> And to be precise, "hole" here means "there is no memmap" and not "there is a
->> hole but it has a valid memmap".
-> 
-> Yes.
-> 
->> But IIRC, we now have under SPARSEMEM always a complete memmap for a complete
->> memory sections (when talking about system RAM, ZONE_DEVICE is different but we
->> don't really care for now I think).
->>
->> So instead of introducing what we had before, I think we should look into
->> something that doesn't confuse each person that stumbles over it out there. What
->> does pfn_valid_within() even mean in the new context? pfn_valid() is most
->> probably no longer what we really want, as we're dealing with multiple sections
->> that might be online or offline; in the old world, this was different, as a
->> MAX_ORDER -1 page was completely contained in a memory section that was either
->> online or offline.
->>
->> I'd imagine something that expresses something different in the context of
->> sparsemem:
->>
->> "Some page orders, such as MAX_ORDER -1, might span multiple memory sections.
->> Each memory section has a completely valid memmap if online. Memory sections
->> might either be completely online or completely offline. pfn_to_online_page()
->> might succeed on one part of a MAX_ORDER - 1 page, but not on another part. But
->> it will certainly be consistent within one memory section."
->>
->> Further, as we know that MAX_ORDER -1 and memory sections are a power of two, we
->> can actually do a binary search to identify boundaries, instead of having to
->> check each and every page in the range.
->>
->> Is what I describe the actual reason why we introduce pfn_valid_within() ? (and
->> might better introduce something new, with a better fitting name?)
-> 
-> What I don't like is mainly the re-addition of pfn_valid_within() (or whatever
-> we'd call it) into __free_one_page() for performance reasons, and also to
-> various pfn scanners (compaction) for performance and "I must not forget to
-> check this, or do I?" confusion reasons. It would be really great if we could
-> keep a guarantee that memmap exists for MAX_ORDER blocks. I see two ways to
-> achieve that:
-> 
-> 1. we create memmap for MAX_ORDER blocks, pages in sections not online are
-> marked as reserved or some other state that allows us to do checks such as "is
-> there a buddy? no" without accessing a missing memmap
-> 2. smaller blocks than MAX_ORDER are not released to buddy allocator
-> 
-> I think 1 would be more work, but less wasteful in the end?
+Commit 08f76547f08d ("scsi: storvsc: Update error logging")
+added more robust logging of errors, particularly those reported
+as Hyper-V errors. But this change produces extra logging noise
+in that TEST_UNIT_READY may report errors during the normal
+course of detecting device adds and removes.
 
-It will end up seriously messing with memory hot(un)plug. It's not 
-sufficient if there is a memmap (pfn_valid()), it has to be online 
-(pfn_to_online_page()) to actually have a meaning.
+Fix this by logging TEST_UNIT_READY errors as warnings, so that
+log lines are produced only if the storvsc log level is changed
+to WARN level on the kernel boot line.
 
-So you'd have to  allocate a memmap for all such memory sections, 
-initialize it to all PG_Reserved ("memory hole") and mark these memory 
-sections online. Further, you need memory block devices that are 
-initialized and online.
+Fixes: 08f76547f08d ("scsi: storvsc: Update error logging")
+Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+---
+ drivers/scsi/storvsc_drv.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-So far so good, although wasteful. What happens if someone hotplugs a 
-memory block that doesn't span a complete MAX_ORDER -1 page? Broken.
-
-
-The only "workaround" would be requiring that MAX_ORDER - 1 cannot be 
-bigger than memory blocks (memory_block_size_bytes()). The memory block 
-size determines our hot(un)plug granularity and can (on some archs 
-already) be determined at runtime. As both (MAX_ORDER and 
-memory_block_size_bytes) would be determined at runtime, for example, by 
-an admin explicitly requesting it, this might be feasible.
-
-
-Memory hot(un)plug / onlining / offlining would most probably work 
-naturally (although the hot(un)plug granularity is then limited to e.g., 
-1GiB memory blocks). But if that's what an admin requests on the command 
-line, so be it.
-
-What might need some thought, though, is having overlapping 
-sections/such memory blocks with devmem. Sub-section hotadd has to 
-continue working unless we want to break some PMEM devices seriously.
-
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index 328bb96..37506b3 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -1199,14 +1199,24 @@ static void storvsc_on_io_completion(struct storvsc_device *stor_device,
+ 		vstor_packet->vm_srb.sense_info_length);
+ 
+ 	if (vstor_packet->vm_srb.scsi_status != 0 ||
+-	    vstor_packet->vm_srb.srb_status != SRB_STATUS_SUCCESS)
+-		storvsc_log(device, STORVSC_LOGGING_ERROR,
++	    vstor_packet->vm_srb.srb_status != SRB_STATUS_SUCCESS) {
++
++		/*
++		 * Log TEST_UNIT_READY errors only as warnings. Hyper-V can
++		 * return errors when detecting devices using TEST_UNIT_READY,
++		 * and logging these as errors produces unhelpful noise.
++		 */
++		int loglevel = (stor_pkt->vm_srb.cdb[0] == TEST_UNIT_READY) ?
++			STORVSC_LOGGING_WARN : STORVSC_LOGGING_ERROR;
++
++		storvsc_log(device, loglevel,
+ 			"tag#%d cmd 0x%x status: scsi 0x%x srb 0x%x hv 0x%x\n",
+ 			request->cmd->request->tag,
+ 			stor_pkt->vm_srb.cdb[0],
+ 			vstor_packet->vm_srb.scsi_status,
+ 			vstor_packet->vm_srb.srb_status,
+ 			vstor_packet->status);
++	}
+ 
+ 	if (vstor_packet->vm_srb.scsi_status == SAM_STAT_CHECK_CONDITION &&
+ 	    (vstor_packet->vm_srb.srb_status & SRB_STATUS_AUTOSENSE_VALID))
 -- 
-Thanks,
-
-David / dhildenb
+1.8.3.1
 
