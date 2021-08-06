@@ -2,81 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C36E3E2D00
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547643E2D05
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 16:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241915AbhHFO4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 10:56:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232178AbhHFO4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 10:56:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 243236105A;
-        Fri,  6 Aug 2021 14:55:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628261751;
-        bh=S+TZfXj0n4NYdVUzQNuVBdQ9fbkUOCu9yibxXu4Rgi4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dP+VngRhOPcMJKKLByh1YHKiBkOAqAziDkkcxHHt+Z637NNzSsuZ7jsrywgKv8Yn4
-         9/RvQ3KAxJRWM8/+q+LaqLMNjZTDlqEsTmjqgcvklUnbxIw65kCJ5PFoD6cMv+iA/A
-         trv76fcgMZC/4KG+Q5h34t3NIl9lhpBgIkSTtpSXT6KQBrzhHQipIAhWcgPlK6IZh4
-         Md21gSphO9L2uCa81/fR6P+czu1Md5DNd7Y41Pe2lk83xLFzBatue/S+AHohnkUsFI
-         wKj4+IHJW6wqEEslKtR/fL8eLZbYybZGn4RaI9L+jkdVo1ujUwBnhxYiCtu2AJTPsA
-         gQlmMXbKB8FRw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] SPI fixes for v5.14-rc4
-Date:   Fri, 06 Aug 2021 15:55:19 +0100
-Message-Id: <20210806145551.243236105A@mail.kernel.org>
+        id S242656AbhHFO4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 10:56:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55201 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242012AbhHFO4m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 10:56:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628261785;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gplto+9RiGLBeHt41MKFNCwZ4jJrvlaCOPaj0G5G4zY=;
+        b=hxjkrEQvU1Wwpu2MQlNexil1atmHLu8i2fRIVZQna6SY0j16arm3Vzgwv7TKxj1TN6qgUs
+        HU7puA6ZeHn0iIptw8GhPC/OIF6nBgi+5z56nikmu4X1YQnRcD1bNnCfKYQdiFwLapLfgb
+        7l/M6071roFneViMYOlg8R97cA4TPks=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-44-it3W9SgZPCGYv-HFRbyV4w-1; Fri, 06 Aug 2021 10:56:24 -0400
+X-MC-Unique: it3W9SgZPCGYv-HFRbyV4w-1
+Received: by mail-lj1-f199.google.com with SMTP id d7-20020a2e33070000b0290190289db7f9so1963967ljc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 07:56:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gplto+9RiGLBeHt41MKFNCwZ4jJrvlaCOPaj0G5G4zY=;
+        b=CcezQSIsnnE2wUDopLuU7k3K18iUa3S3WNYcXL2P9xzqIkIgWs9LpDJQbI/pehhSt6
+         gXBuElVAqYCNdiNlr2ttsnBhyLRqXUPGdDhbd+8tJ3mi+UCMLVo5cdR7kCJHE2HWohUF
+         nN7IjayD+SozujLu9NG+fdhTbUU0hE73Zf6lKNKZVqTMCNdfAa3Zx4+JstGCqrguqyCD
+         cuNoGPxYeBjto3ljzGEjg6iUIy2sh31jWqxNi3odR9U+sg+N/phnAVaOezvPEHfbJRoS
+         YBr6FGTXKr17RQODLlQnsCuc52MHr33ZWhJ7JtYYQaW9onKrOks3XWdLQ3ic8bXs3FhF
+         di2A==
+X-Gm-Message-State: AOAM533jbVPXBHroYauqNJp1SkvZNsvWeIQ7H/5e2XiAtTsuTAXUUqS6
+        CQQyqQ0N1oOXI2+nbY8p+FyLgBACkeSp3wfqdtXMk+Shb6HtUtGX4lYjjXZYktvscX1JHsMDsQ9
+        OEvb9RLfKTIrHoZNlisMnuK2A1jSXAflZVdDfCPWv
+X-Received: by 2002:a2e:a5c5:: with SMTP id n5mr6964983ljp.197.1628261783012;
+        Fri, 06 Aug 2021 07:56:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwC/7IBeDvUIpspKDafXFNaZJL39fA0LdoJUUoo9fxtc2w2X3B23dOmAeuPnaLpGXRV1mvPec3FVULqmmMy5+E=
+X-Received: by 2002:a2e:a5c5:: with SMTP id n5mr6964936ljp.197.1628261782465;
+ Fri, 06 Aug 2021 07:56:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210720232624.1493424-1-nitesh@redhat.com> <CAFki+LkNzk0ajUeuBnJZ6mp1kxB0+zZf60tw1Vfq+nPy-bvftQ@mail.gmail.com>
+ <yq11r77gtq0.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <yq11r77gtq0.fsf@ca-mkp.ca.oracle.com>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Fri, 6 Aug 2021 10:56:11 -0400
+Message-ID: <CAFki+LmgTDtbZEhJF6FMRUV_oSMPLWqvrcKvBXUfNhzodVh+aA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/14] genirq: Cleanup the abuse of irq_set_affinity_hint()
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, jassisinghbrar@gmail.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Tushar.Khandelwal@arm.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        lewis.hanly@microchip.com, ley.foon.tan@intel.com,
+        kabel@kernel.org, huangguangbin2@huawei.com, davem@davemloft.net,
+        benve@cisco.com, govind@gmx.com, kashyap.desai@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com, suganath-prabu.subramani@broadcom.com,
+        ajit.khaparde@broadcom.com, sriharsha.basavapatna@broadcom.com,
+        somnath.kotur@broadcom.com, linux-pci@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, rostedt@goodmis.org,
+        Marc Zyngier <maz@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        akpm@linuxfoundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        chris.friesen@windriver.com, Neil Horman <nhorman@tuxdriver.com>,
+        pjwaskiewicz@gmail.com, Stefan Assmann <sassmann@redhat.com>,
+        Tomas Henzl <thenzl@redhat.com>, james.smart@broadcom.com,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Ken Cox <jkc@redhat.com>, faisal.latif@intel.com,
+        shiraz.saleem@intel.com, tariqt@nvidia.com,
+        Alaa Hleihel <ahleihel@redhat.com>,
+        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
+        saeedm@nvidia.com,
+        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Al Stone <ahs3@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        bjorn.andersson@linaro.org, chunkuang.hu@kernel.org,
+        yongqiang.niu@mediatek.com, baolin.wang7@gmail.com,
+        Petr Oros <poros@redhat.com>, Ming Lei <minlei@redhat.com>,
+        Ewan Milne <emilne@redhat.com>, jejb@linux.ibm.com,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit c45c1e82bba130db4f19d9dbc1deefcf4ea994ed:
+On Thu, Aug 5, 2021 at 11:06 PM Martin K. Petersen
+<martin.petersen@oracle.com> wrote:
+>
+>
+> Nitesh,
+>
+> > Gentle ping.
+> > Any comments on the following patches:
+> >
+> >   scsi: megaraid_sas: Use irq_set_affinity_and_hint
+> >   scsi: mpt3sas: Use irq_set_affinity_and_hint
+>
+> Sumit and Sreekanth: Please review.
+>
+> Thanks!
+>
+> --
+> Martin K. Petersen      Oracle Linux Engineering
+>
 
-  spi: spi-bcm2835: Fix deadlock (2021-07-20 13:34:05 +0100)
+Thanks, Martin, Sumit & Sreekanth for the help.
 
-are available in the Git repository at:
+--
+Nitesh
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.14-rc4
-
-for you to fetch changes up to 0395be967b067d99494113d78470574e86a02ed4:
-
-  spi: cadence-quadspi: Fix check condition for DTR ops (2021-08-05 20:18:10 +0100)
-
-----------------------------------------------------------------
-spi: Fixes for v5.14
-
-A small collection of fixes for SPI, small mostly driver specific things
-plus a fix for module autoloading which hadn't been working properly for
-DT systems.
-
-----------------------------------------------------------------
-Andreas Schwab (1):
-      spi: update modalias_show after of_device_uevent_modalias support
-
-Apurva Nandan (1):
-      spi: cadence-quadspi: Fix check condition for DTR ops
-
-Dongliang Mu (1):
-      spi: meson-spicc: fix memory leak in meson_spicc_remove
-
-Guenter Roeck (1):
-      spi: mediatek: Fix fifo transfer
-
-Marek Vasut (2):
-      spi: imx: mx51-ecspi: Fix low-speed CONFIGREG delay calculation
-      spi: imx: mx51-ecspi: Fix CONFIGREG delay comment
-
-Uwe Kleine-König (1):
-      spi: spi-mux: Add module info needed for autoloading
-
- drivers/spi/spi-cadence-quadspi.c | 21 ++++++++++++++++++---
- drivers/spi/spi-imx.c             | 18 ++++++++++++++++--
- drivers/spi/spi-meson-spicc.c     |  2 ++
- drivers/spi/spi-mt65xx.c          | 19 +++++--------------
- drivers/spi/spi-mux.c             |  8 ++++++++
- drivers/spi/spi.c                 |  4 ++++
- 6 files changed, 53 insertions(+), 19 deletions(-)
