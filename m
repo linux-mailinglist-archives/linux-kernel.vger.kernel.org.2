@@ -2,294 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71483E2F1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5F93E2F1C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 20:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242486AbhHFSEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 14:04:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:37118 "EHLO foss.arm.com"
+        id S242558AbhHFSEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 14:04:41 -0400
+Received: from mga14.intel.com ([192.55.52.115]:36185 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242448AbhHFSEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 14:04:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A0CF31B;
-        Fri,  6 Aug 2021 11:04:16 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AC0423F40C;
-        Fri,  6 Aug 2021 11:04:14 -0700 (PDT)
-Subject: Re: [RFC PATCH 2/3] iommu/dma-iommu: Support iovad->granule >
- PAGE_SIZE
-To:     Sven Peter <sven@svenpeter.dev>, iommu@lists.linux-foundation.org
-Cc:     Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>,
-        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        Alexander Graf <graf@amazon.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>
-References: <20210806155523.50429-1-sven@svenpeter.dev>
- <20210806155523.50429-3-sven@svenpeter.dev>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <d289a555-9e3b-b948-1883-2ee4c915da4c@arm.com>
-Date:   Fri, 6 Aug 2021 19:04:08 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S242503AbhHFSEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 14:04:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10068"; a="214151703"
+X-IronPort-AV: E=Sophos;i="5.84,301,1620716400"; 
+   d="scan'208";a="214151703"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 11:04:19 -0700
+X-IronPort-AV: E=Sophos;i="5.84,301,1620716400"; 
+   d="scan'208";a="467954976"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 11:04:16 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mC4CX-0069y8-1T; Fri, 06 Aug 2021 21:04:09 +0300
+Date:   Fri, 6 Aug 2021 21:04:09 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     kernel test robot <lkp@intel.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Chris Zankel <chris@zankel.net>
+Cc:     Barry Song <song.bao.hua@hisilicon.com>, yury.norov@gmail.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org, akpm@linux-foundation.org,
+        dave.hansen@intel.com, linux@rasmusvillemoes.dk, rafael@kernel.org,
+        rdunlap@infradead.org, agordeev@linux.ibm.com
+Subject: Re: [PATCH v9 2/5] lib: test_bitmap: add
+ bitmap_print_bitmask/list_to_buf test cases
+Message-ID: <YQ15mVkwmeUCIZL0@smile.fi.intel.com>
+References: <20210806110251.560-3-song.bao.hua@hisilicon.com>
+ <202108070109.TQClJ7dP-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210806155523.50429-3-sven@svenpeter.dev>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202108070109.TQClJ7dP-lkp@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-06 16:55, Sven Peter via iommu wrote:
-> DMA IOMMU domains can support hardware where the IOMMU page size is
-> larger than the CPU page size.
-> Alignments need to be done with respect to both PAGE_SIZE and
-> iovad->granule. Additionally, the sg list optimization to use a single
-> IOVA allocation cannot be used in those cases since the physical
-> addresses will very likely not be aligned to the larger IOMMU page size.
+On Sat, Aug 07, 2021 at 01:51:36AM +0800, kernel test robot wrote:
+> Hi Barry,
 > 
-> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> I love your patch! Perhaps something to improve:
+
+I recall that I saw it ~1 year ago and informed Max about it.
+Don't remember what was the outcome, though.
+
+> [auto build test WARNING on driver-core/driver-core-testing]
+> [also build test WARNING on staging/staging-testing linus/master v5.14-rc4 next-20210805]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Barry-Song/use-bin_attribute-to-break-the-size-limitation-of-cpumap-ABI/20210806-190735
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git 112cedc8e600b668688eb809bf11817adec58ddc
+> config: xtensa-randconfig-r011-20210805 (attached as .config)
+> compiler: xtensa-linux-gcc (GCC) 10.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/cc67b898a0f6f1a93163c0c296cfa77b1f04f72d
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Barry-Song/use-bin_attribute-to-break-the-size-limitation-of-cpumap-ABI/20210806-190735
+>         git checkout cc67b898a0f6f1a93163c0c296cfa77b1f04f72d
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=xtensa SHELL=/bin/bash
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>, old ones prefixed by <<):
+> 
+> >> WARNING: modpost: lib/test_bitmap.o(.text.unlikely+0x58): Section mismatch in reference from the function bitmap_equal() to the variable .init.data:print_buf
+> The function bitmap_equal() references
+> the variable __initdata print_buf.
+> This is often because bitmap_equal lacks a __initdata
+> annotation or the annotation of print_buf is wrong.
+> 
 > ---
->   drivers/iommu/dma-iommu.c | 87 ++++++++++++++++++++++++++++++++++-----
->   1 file changed, 77 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index 6f0df629353f..e072d9030d9f 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -8,6 +8,7 @@
->    * Copyright (C) 2000-2004 Russell King
->    */
->   
-> +#include <linux/align.h>
->   #include <linux/acpi_iort.h>
->   #include <linux/device.h>
->   #include <linux/dma-map-ops.h>
-> @@ -51,6 +52,15 @@ struct iommu_dma_cookie {
->   	struct iommu_domain		*fq_domain;
->   };
->   
-> +/* aligns size to CPU and IOMMU page size */
-> +static inline size_t iommu_page_align(struct device *dev, size_t size)
-> +{
-> +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-> +	struct iommu_dma_cookie *cookie = domain->iova_cookie;
-> +
-> +	return iova_align(&cookie->iovad, PAGE_ALIGN(size));
-> +}
-> +
->   static DEFINE_STATIC_KEY_FALSE(iommu_deferred_attach_enabled);
->   bool iommu_dma_forcedac __read_mostly;
->   
-> @@ -647,6 +657,8 @@ static struct page **__iommu_dma_alloc_pages(struct device *dev,
->   /*
->    * If size is less than PAGE_SIZE, then a full CPU page will be allocated,
->    * but an IOMMU which supports smaller pages might not map the whole thing.
-> + * If the IOMMU page size is larger than the CPU page size, then the size
-> + * will be aligned to that granularity and some memory will be left unused.
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-Why do we need to increase the actual memory allocation? The point here 
-is that we allocate the smallest thing we can allocate and map the 
-smallest thing we can map - I think that still works the "wrong" way 
-round too, we should just need to start taking an IOVA offset into 
-account as in dma_map_page() if we can no longer assume it's 0 for a CPU 
-page. Sure we may expose some unrelated adjacent pages, but we'll 
-already be doing that to excess for streaming DMA so whoop de do.
 
->    */
->   static struct page **__iommu_dma_alloc_noncontiguous(struct device *dev,
->   		size_t size, struct sg_table *sgt, gfp_t gfp, pgprot_t prot,
-> @@ -736,7 +748,7 @@ static void *iommu_dma_alloc_remap(struct device *dev, size_t size,
->   
->   out_unmap:
->   	__iommu_dma_unmap(dev, *dma_handle, size);
-> -	__iommu_dma_free_pages(pages, PAGE_ALIGN(size) >> PAGE_SHIFT);
-> +	__iommu_dma_free_pages(pages, iommu_page_align(dev, size) >> PAGE_SHIFT);
->   	return NULL;
->   }
->   
-> @@ -766,7 +778,8 @@ static void iommu_dma_free_noncontiguous(struct device *dev, size_t size,
->   	struct dma_sgt_handle *sh = sgt_handle(sgt);
->   
->   	__iommu_dma_unmap(dev, sgt->sgl->dma_address, size);
-> -	__iommu_dma_free_pages(sh->pages, PAGE_ALIGN(size) >> PAGE_SHIFT);
-> +	__iommu_dma_free_pages(sh->pages,
-> +		iommu_page_align(dev, size) >> PAGE_SHIFT);
->   	sg_free_table(&sh->sgt);
->   	kfree(sh);
->   }
-> @@ -1006,6 +1019,31 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
->   	if (dev_is_untrusted(dev))
->   		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
->   
-> +	/*
-> +	 * If the IOMMU pagesize is larger than the CPU pagesize we will
-> +	 * very likely run into sgs with a physical address that is not aligned
-> +	 * to an IOMMU page boundary. Fall back to just mapping every entry
-> +	 * independently with __iommu_dma_map then.
 
-Scatterlist segments often don't have nicely aligned ends, which is why 
-we already align things to IOVA granules in main loop here. I think in 
-principle we'd just need to move the non-IOVA-aligned part of the 
-address from sg->page to sg->offset in the temporary transformation for 
-the rest of the assumptions to hold. I don't blame you for being timid 
-about touching that, though - it took me 3 tries to get right when I 
-first wrote it...
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> +	 */
-> +	if (iovad->granule > PAGE_SIZE) {
-> +		for_each_sg(sg, s, nents, i) {
-> +			sg_dma_address(s) = __iommu_dma_map(dev, sg_phys(s),
-> +				s->length, prot, dma_get_mask(dev));
-> +			if (sg_dma_address(s) == DMA_MAPPING_ERROR)
-> +				break;
-> +			sg_dma_len(s) = s->length;
-> +		}
-> +
-> +		if (unlikely(i != nents)) {
-> +			nents = i;
-> +			for_each_sg(sg, s, nents, i)
-> +				__iommu_dma_unmap(dev, sg_dma_address(s), sg_dma_len(s));
-> +			return 0;
-> +		}
-> +
-> +		return nents;
-> +	}
 
-Either way, NAK to having a *third* implementation of SG mapping in this 
-file which is fundamentally no different from the second one.
-
-> +
->   	/*
->   	 * Work out how much IOVA space we need, and align the segments to
->   	 * IOVA granules for the IOMMU driver to handle. With some clever
-> @@ -1068,6 +1106,9 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
->   static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
->   		int nents, enum dma_data_direction dir, unsigned long attrs)
->   {
-> +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-> +	struct iommu_dma_cookie *cookie = domain->iova_cookie;
-> +	struct iova_domain *iovad = &cookie->iovad;
->   	dma_addr_t start, end;
->   	struct scatterlist *tmp;
->   	int i;
-> @@ -1080,6 +1121,17 @@ static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
->   		return;
->   	}
->   
-> +	/*
-> +	 * If the IOMMU pagesize is larger than the CPU pagesize we mapped
-> +	 * every entry indepedently with __iommu_dma_map then. Let's do the
-> +	 * opposite here.
-> +	 */
-> +	if (iovad->granule > PAGE_SIZE) {
-> +		for_each_sg(sg, tmp, nents, i)
-> +			__iommu_dma_unmap(dev, sg_dma_address(tmp), sg_dma_len(tmp));
-> +		return;
-> +	}
-
-As above, this is just __iommu_dma_unmap_sg_swiotlb() with fewer clothes on.
-
-> +
->   	/*
->   	 * The scatterlist segments are mapped into a single
->   	 * contiguous IOVA allocation, so this is incredibly easy.
-> @@ -1110,7 +1162,7 @@ static void iommu_dma_unmap_resource(struct device *dev, dma_addr_t handle,
->   
->   static void __iommu_dma_free(struct device *dev, size_t size, void *cpu_addr)
->   {
-> -	size_t alloc_size = PAGE_ALIGN(size);
-> +	size_t alloc_size = iommu_page_align(dev, size);
->   	int count = alloc_size >> PAGE_SHIFT;
->   	struct page *page = NULL, **pages = NULL;
->   
-> @@ -1150,7 +1202,7 @@ static void *iommu_dma_alloc_pages(struct device *dev, size_t size,
->   		struct page **pagep, gfp_t gfp, unsigned long attrs)
->   {
->   	bool coherent = dev_is_dma_coherent(dev);
-> -	size_t alloc_size = PAGE_ALIGN(size);
-> +	size_t alloc_size = iommu_page_align(dev, size);
->   	int node = dev_to_node(dev);
->   	struct page *page = NULL;
->   	void *cpu_addr;
-> @@ -1201,8 +1253,8 @@ static void *iommu_dma_alloc(struct device *dev, size_t size,
->   
->   	if (IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
->   	    !gfpflags_allow_blocking(gfp) && !coherent)
-> -		page = dma_alloc_from_pool(dev, PAGE_ALIGN(size), &cpu_addr,
-> -					       gfp, NULL);
-> +		page = dma_alloc_from_pool(dev, iommu_page_align(dev, size),
-> +					       &cpu_addr, gfp, NULL);
->   	else
->   		cpu_addr = iommu_dma_alloc_pages(dev, size, &page, gfp, attrs);
->   	if (!cpu_addr)
-> @@ -1253,6 +1305,7 @@ static int iommu_dma_get_sgtable(struct device *dev, struct sg_table *sgt,
->   		void *cpu_addr, dma_addr_t dma_addr, size_t size,
->   		unsigned long attrs)
-
-Can we just not bother trying to support this? TBH I don't know exactly 
-how the interface is supposed to work - what you're doing here looks 
-like it's probably either too much or not enough, depending on whether 
-the address and size arguments are supposed to allow representing 
-partial buffers - and frankly I can't imagine you'll be needing to 
-support dma-buf exports from the USB/ethernet/wifi drivers any time soon...
-
->   {
-> +	size_t aligned_size = iommu_page_align(dev, size);
->   	struct page *page;
->   	int ret;
->   
-> @@ -1261,7 +1314,7 @@ static int iommu_dma_get_sgtable(struct device *dev, struct sg_table *sgt,
->   
->   		if (pages) {
->   			return sg_alloc_table_from_pages(sgt, pages,
-> -					PAGE_ALIGN(size) >> PAGE_SHIFT,
-> +					aligned_size >> PAGE_SHIFT,
->   					0, size, GFP_KERNEL);
->   		}
->   
-> @@ -1272,7 +1325,7 @@ static int iommu_dma_get_sgtable(struct device *dev, struct sg_table *sgt,
->   
->   	ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
->   	if (!ret)
-> -		sg_set_page(sgt->sgl, page, PAGE_ALIGN(size), 0);
-> +		sg_set_page(sgt->sgl, page, aligned_size, 0);
->   	return ret;
->   }
->   
-> @@ -1283,11 +1336,25 @@ static unsigned long iommu_dma_get_merge_boundary(struct device *dev)
->   	return (1UL << __ffs(domain->pgsize_bitmap)) - 1;
->   }
->   
-> +static struct page *iommu_dma_alloc_aligned_pages(struct device *dev, size_t size,
-> +		dma_addr_t *dma_handle, enum dma_data_direction dir, gfp_t gfp)
-> +{
-> +	size = iommu_page_align(dev, size);
-> +	return dma_common_alloc_pages(dev, size, dma_handle, dir, gfp);
-> +}
-> +
-> +static void iommu_dma_free_aligned_pages(struct device *dev, size_t size, struct page *page,
-> +		dma_addr_t dma_handle, enum dma_data_direction dir)
-> +{
-> +	size = iommu_page_align(dev, size);
-> +	return dma_common_free_pages(dev, size, page, dma_handle, dir);
-> +}
-
-Again, what's the point of these? iommu_dma_map_page() still has to cope 
-with whatever the caller provides, so there's no difference in the one 
-case when that caller happens to be dma_common_map_pages().
-
-Robin.
-
-> +
->   static const struct dma_map_ops iommu_dma_ops = {
->   	.alloc			= iommu_dma_alloc,
->   	.free			= iommu_dma_free,
-> -	.alloc_pages		= dma_common_alloc_pages,
-> -	.free_pages		= dma_common_free_pages,
-> +	.alloc_pages		= iommu_dma_alloc_aligned_pages,
-> +	.free_pages		= iommu_dma_free_aligned_pages,
->   #ifdef CONFIG_DMA_REMAP
->   	.alloc_noncontiguous	= iommu_dma_alloc_noncontiguous,
->   	.free_noncontiguous	= iommu_dma_free_noncontiguous,
-> 
