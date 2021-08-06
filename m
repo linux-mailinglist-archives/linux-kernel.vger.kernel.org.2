@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3793E3060
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 22:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F823E3067
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 22:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231971AbhHFUfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 16:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55894 "EHLO
+        id S244996AbhHFUhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 16:37:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbhHFUfD (ORCPT
+        with ESMTP id S231132AbhHFUhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 16:35:03 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53498C0613CF;
-        Fri,  6 Aug 2021 13:34:46 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id f33-20020a4a89240000b029027c19426fbeso2537708ooi.8;
-        Fri, 06 Aug 2021 13:34:46 -0700 (PDT)
+        Fri, 6 Aug 2021 16:37:50 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8AEC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 13:37:33 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id hw6so17051049ejc.10
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 13:37:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PdU525+p8u4WlJJnfxi3e93iSDWBs8v/I5isoPxGs/g=;
-        b=mLJJiYq6nWsCgdDuZsSmSx6HgFgexd5N+2N0Xp6qwwBlCq8y9/0mSHKm1Bf4JRQJ0A
-         f307s7C3tP8oVIc73N32y6V/YL0K9ebmUWBueaqpRpogl+yoZ/089xsTIyBl2+wleKmk
-         aZ3+oPPEOCBQ6HdXxRZFSoPUNb+vb5lYK5s84lQBEwg6XR5fo1DcpLXd/yXiXZUi19wt
-         mc7hDTV1To1tGpp0lxpQd+RaNxuUvpIGdpxxj/9o0b9SvpIvtrdbADjyikuNhs9fUaHQ
-         gn8Lpe9oWoTQfxlYOKfJjUf8MG2Bwj5EzfH6xK/PnH7v3V8SS3uebEUmOv3TRxkwLRpj
-         z5oQ==
+        bh=rnRuiZF4wapvbgI++n47Sa9nKibpjHl8Lh0ADOaBeYg=;
+        b=eEpzkK2dRVMf/opaWqwbLuvJtTGiaJXKGDN98t+EJ342zn+WVqt6eNMxsKTSZLbXm7
+         RVaORxR4atyRFqcAjJokFF4tnTXEsMZ/hu54tSlzvqlW9OCiTkFrW81yjfl6JTH50xL5
+         OUoJJD+Jc7YclzZH4YkXumgKS2LlDWJZC0axi3GJUADrtSZ/RoJy7EkzE03VnQU5HH3e
+         KYRkP+LvLk2RBAJtnI1DIl439EdeHFz/ECDYsr+k4OVt1DGqCmwxRQAOOwSGTvdeftT4
+         WNE1l5+VWfm/ceS6Qni4vK4I/kxKoQkjGfPT2EB7brSanD8A5TnIZpNfDwoEKLOR1Kaq
+         HpDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PdU525+p8u4WlJJnfxi3e93iSDWBs8v/I5isoPxGs/g=;
-        b=OfcmecTKI0La4RhGYvbi8s3nXuWiCl/GMh7TRi/C234QQrAfuoNgsu85q5FkjK8oOu
-         HQZ2ShH+L4hczsir2YE5hb1yoqdduoWsMsD9bcRPEphzvzrWz33kLxgPCfHxJ8vUQIjm
-         zrSOY59pmiDSd4u9hFxRDWMCvj8Z31Si0zpf2b1inlEnUcUbQ9S9Xm3WTKe0C9nP/3+z
-         g7WC3H8JWdeq5QDPffFV97bVO/M/qBI+WTbHW75otOCVKxQw56Xb6yUjJbDytB0K22qt
-         fgvqWayHlzG08XSKj6iTuZYvo8pu8UWXydtR57f/hqHG65P+oFfDA2hfzyykbOs9KKSW
-         wtdg==
-X-Gm-Message-State: AOAM532y988zU6ob/BUO8tyrbaknrCOm5Ms5xxmMdUMga7W1TyHSlOZ3
-        bifbdc6G0nUW3X4eGU2haoME2LuhzCIkMDHMFh4=
-X-Google-Smtp-Source: ABdhPJy9BJ9xeLMVu/ecPOM5rYB2iEef65Xt9WnL3i2JVuWOL/6P+VLREXcpDr8hFn3Z5fwAclheUhg0jb9RbgPye/o=
-X-Received: by 2002:a4a:cf07:: with SMTP id l7mr7893206oos.11.1628282085678;
- Fri, 06 Aug 2021 13:34:45 -0700 (PDT)
+        bh=rnRuiZF4wapvbgI++n47Sa9nKibpjHl8Lh0ADOaBeYg=;
+        b=qRucTkZ0DaE0mHoEUxtRuMpmlk7wEgpkkQUj+gsHIBYPTjafgme8MMrRuuqcdJbd9H
+         OqLPh3Xkj9hJdSmvsM5eJ8BSXsKPf0FTCnoY7ZFdv9kekhPSkTywHTEwzo7LtvHzNZPB
+         Dg0galB3BsOcODqJP6nHhTg79beCd+Q8Iu4K3b2gXxK+20p30khzn6QS/AdKPq1LbFJ0
+         WslEPfapwC/LP15PW9ia4hfiuWOD895qimo/J4wRq6yQ2uYI5JDnqdd8cFaMTBU6fWIo
+         VrQM5raAGGOJbt+QGtmzpzCArU7gHzZ7OW1VdWP66okv5EqTqHYNK3aSi4ck/hM/wq1S
+         F3Eg==
+X-Gm-Message-State: AOAM533nM1Jdp2bc0TUbLz2k/tmW4dyGzPbjZ9OGNMv1geqVpA8gWbUU
+        S5xBOk2cdpGFzt0nlpY27bfAfVzA7PStoKQYvt4=
+X-Google-Smtp-Source: ABdhPJwCI64DMpKDOlHMB7D/lwU06tFEdyqcc6roHwThIvbe/hrLvCwmmHPtT48NkvvEdb/Ad/cTWgiGTrl10MaBlqs=
+X-Received: by 2002:a17:906:c182:: with SMTP id g2mr11279686ejz.507.1628282252280;
+ Fri, 06 Aug 2021 13:37:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210806085413.61536-1-andriy.shevchenko@linux.intel.com>
- <20210806085413.61536-2-andriy.shevchenko@linux.intel.com>
- <CAHNKnsTPQp16FPuVxY+FtJVOXnSga7zt=K8bhXr2YG15M9Y0eQ@mail.gmail.com> <CAHp75VcbucQ4w1rki2NZvpS7p-z5b582HwWXDMW5G67C7C6f3w@mail.gmail.com>
-In-Reply-To: <CAHp75VcbucQ4w1rki2NZvpS7p-z5b582HwWXDMW5G67C7C6f3w@mail.gmail.com>
-From:   Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Date:   Fri, 6 Aug 2021 23:35:04 +0300
-Message-ID: <CAHNKnsQOhpwLFHLbcyLDLDOQjD7uDdsOg4ptVpdVmwWHK01NwQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] wwan: core: Unshadow error code returned by ida_alloc_range))
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>
+References: <20210723080000.93953-1-ying.huang@intel.com> <24187e5e-069-9f3f-cefe-39ac70783753@google.com>
+ <YPs6cQo7iG1JcOn8@casper.infradead.org> <8735rr54i9.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <YQkwBdpWTPjv4xIx@casper.infradead.org> <704d597-443b-32f-84eb-524a58dd8ef@google.com>
+ <CAHbLzkrShKORwU-Zrf5_5c6_o_iVwoXRTT+7ABZALLj7p0w-Ug@mail.gmail.com> <d1c768c-8b6-6a9d-ddde-39ac51286927@google.com>
+In-Reply-To: <d1c768c-8b6-6a9d-ddde-39ac51286927@google.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 6 Aug 2021 13:37:19 -0700
+Message-ID: <CAHbLzkrqY=L2bEeEfAkApkoz=sRUk-Nk_KBDWGAbsqapY+xG1Q@mail.gmail.com>
+Subject: Re: [PATCH] mm,shmem: Fix a typo in shmem_swapin_page()
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Minchan Kim <minchan@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 6, 2021 at 5:20 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Fri, Aug 6, 2021 at 5:14 PM Sergey Ryazanov <ryazanov.s.a@gmail.com> wrote:
->> On Fri, Aug 6, 2021 at 12:00 PM Andy Shevchenko
->> <andriy.shevchenko@linux.intel.com> wrote:
->>> ida_alloc_range)) may return other than -ENOMEM error code.
->>> Unshadow it in the wwan_create_port().
->>>
->>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>
->> A small nitpick, looks like "ida_alloc_range))" in the description is
->> a typo and should be "ida_alloc_range()". Besides this:
+On Thu, Aug 5, 2021 at 11:01 PM Hugh Dickins <hughd@google.com> wrote:
 >
-> Shall I resend?
+> On Thu, 5 Aug 2021, Yang Shi wrote:
+> > On Tue, Aug 3, 2021 at 10:34 PM Hugh Dickins <hughd@google.com> wrote:
+> > >
+> > > I've never seen the swapoff race claimed by Miaohe, and don't expect to;
+> > > but he's probably right, given the current code.  I just dislike adding
+> > > unnecessary complexity, and siting it in the wrong place (mm/shmem.c).
+> > >
+> > > Yang, is it possible that 5.1 commit 8fd2e0b505d1 ("mm: swap: check if
+> > > swap backing device is congested or not") was actually developed and
+> > > measured on 4.1 or earlier, which still had blk_set_queue_congested()?
+> >
+> > I forgot the exact version, but definitely not 4.1 or earlier. Maybe
+> > 4.19 or earlier. I'm not familiar with how block layer detect
+> > congestion, if the logic was changed, hence the optimization doesn't
+> > stand anymore nowadays, I'm totally fine to remove it.
+>
+> You drove me back to look more closely.  blk_set_queue_congested()
+> vanished from include/linux/blkdev.h in 4.2, but blk_set_congested()
+> appeared then in block/blk-core.c to replace it.  blk_set_congested()
+> vanished (along with all references to "congested" in blk-core.c) in
+> 5.0, then your commit (most probably tested on 4.19) went into 5.1 -
+> just after it had become redundant!
+>
+> Thanks, yes, let's revert that and Miaohe's and Huang's, later on.
 
-Yes, please. And specify the target tree in the subject, please. See
-patchwork warning [1, 2]. The first patch is a clear bug fix, so it
-should be targeted to the 'net' tree, while the second patch despite
-its usefulness could not be considered a bug fix, so it should be
-targeted to the 'net-next' tree. Subjects could be like this:
+It should be easier to revert Huang Ying's , then Miaohe's, then mine.
 
-[PATCHv3 net 1/2] wwan: core: Avoid returning NULL from wwan_create_dev()
-[PATCHv3 net-next 2/2] wwan: core: Unshadow error code returned by
-ida_alloc_range()
-
-Or since the second patch is not depends on the first one and patches
-target different trees, patches could be submitted independently:
-
-[PATCHv3 net] wwan: core: Avoid returning NULL from wwan_create_dev()
-[PATCHv3 net-next] wwan: core: Unshadow error code returned by ida_alloc_range()
-
-
-
-
-1. https://patchwork.kernel.org/project/netdevbpf/patch/20210806085413.61536-1-andriy.shevchenko@linux.intel.com/
-2. https://patchwork.kernel.org/project/netdevbpf/patch/20210806085413.61536-2-andriy.shevchenko@linux.intel.com/
-
--- 
-Sergey
+>
+> Hugh
