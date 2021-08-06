@@ -2,88 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEA33E2AA1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710EB3E2A99
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343715AbhHFMct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 08:32:49 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:43971 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343689AbhHFMcq (ORCPT
+        id S1343696AbhHFMcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 08:32:22 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:50200
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343689AbhHFMcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 08:32:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628253151; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=64u7uNH1LgCuCacOvZPPHByj6Huub6A+vuiCo061RFw=; b=KnEgSVbe7WPMO449cVlkJppfbgGmr2q/cwBRnE83F7PbD1rf+mE5kTsVf6fU61Pf8sFf9Kkq
- OTOJ4qP5EctBGHg9VNCtizjdU4xOXLYsBNSJ0sslUaa90m3WiEQwp/xnBH91BgOiG/GtW4OC
- cWrUK9P3bvFxoqZpnG8igBFaV8U=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 610d2bbfb4dfc4b0efbb0241 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 06 Aug 2021 12:31:59
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 48B99C4338A; Fri,  6 Aug 2021 12:31:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 6 Aug 2021 08:32:20 -0400
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4B1ABC4338A;
-        Fri,  6 Aug 2021 12:31:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4B1ABC4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Reto Schneider <rs@hqv.ch>
-Cc:     chris.chiu@canonical.com, code@reto-schneider.ch,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jes.sorensen@gmail.com,
-        davem@davemloft.net, kuba@kernel.org
-Subject: Re: [PATCH v2] rtl8xxxu: Fix the handling of TX A-MPDU aggregation
-References: <20210804151325.86600-1-chris.chiu@canonical.com>
-        <26f85a9f-552d-8420-0010-f5cda70d3a00@hqv.ch>
-Date:   Fri, 06 Aug 2021 15:31:52 +0300
-In-Reply-To: <26f85a9f-552d-8420-0010-f5cda70d3a00@hqv.ch> (Reto Schneider's
-        message of "Fri, 6 Aug 2021 12:03:18 +0200")
-Message-ID: <87o8aabvpj.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id EAD8A40655
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 12:32:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628253123;
+        bh=YQe/91rqxclnbWHtwO35T2bNBoJfLztQell5eud2D5g=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=iXplBf/1xTcON7DZyHUzcCaV6e1iXE6fp9kEU8i6kBVqmb8qnQ4Hzn0RjGXHTZzQS
+         J9ki6Dbspfy6U/nxEQE01qn6RgA22H0Jy9GYNSFeoNdaeEppBiQ7bI8coG5m/3sKEm
+         jw2rDqsyTKOsVPIQeXwBseIXWi3PmdDDYWwmPh221rd9f9oOkYs20cc0r+100VNyr0
+         wVU6T0Bucr2FjFTZBMlO161A6eT9qXmpfpSloNSqd82gXh1G2ExLI5jFWX5Q1pHJVa
+         y0yqZo6RipHuKHeax60RTkkMRdq7qzQnGXpegXH+JKZAxjpRPuiD+R0dpsuR+ypFKI
+         MJFCLTI4GSEZQ==
+Received: by mail-ej1-f71.google.com with SMTP id gg35-20020a17090689a3b0290580ff45a075so3050455ejc.20
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 05:32:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YQe/91rqxclnbWHtwO35T2bNBoJfLztQell5eud2D5g=;
+        b=knYzzvgAaL4Yh03UODFkWmdDUXT/HKgkfhsyk7WCR33S7QM/E6FiFOZukAFswSuF8P
+         1ZbqjXEt4bXDbqnEpndYza3+xZz7knxoVYaAvnPfW16zuzhvsb1wk21NeazQiazRlp7m
+         gzJnOo85+E1Rxo640F4x+WicV6CZs79DhmRDNy9p1mPtkhhq/aNtdFH8i5gDVdQuBCbq
+         C5Sz8CPhZObaX0LJVCjR4NcSCqL5heTFz4dsfy2X5a8bOrgqUP4YOyKF4kEJAL+GIKuU
+         HPoQvA5lFCpGWnFlLeXm5QVNwSXVdx1SK/QUj1kzbmuxs3Cz107PaoaNzarZQgQ94fsN
+         jByw==
+X-Gm-Message-State: AOAM5306/waw0c11x8dbugulQzL6uFmPCMAXnJJD0uL5kny5qaX7Vrpx
+        gixxtWQSgY9Igh5haM7nb+lsyq11ImdqI2qI+FkvBaymyAzgSeNNRiWauwz1SQ39AbIbKQ5WbBh
+        wgNs2BYzasEpc33rtDPNBh7PgL/w8+ca8ac8kzZa6+g==
+X-Received: by 2002:a05:6402:4245:: with SMTP id g5mr1726668edb.222.1628253123619;
+        Fri, 06 Aug 2021 05:32:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzPTsSpDhFkB5QZHp+lNdByTmL0W66nvl/IYvdDKIE3av+cgSJZOTy0u6WCyCiMVy5KpW0G1A==
+X-Received: by 2002:a05:6402:4245:: with SMTP id g5mr1726635edb.222.1628253123479;
+        Fri, 06 Aug 2021 05:32:03 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id h19sm3870934edt.87.2021.08.06.05.32.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Aug 2021 05:32:03 -0700 (PDT)
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+References: <20210730144922.29111-1-semen.protsenko@linaro.org>
+ <20210730144922.29111-13-semen.protsenko@linaro.org>
+ <455cfb5e-dff7-a5c0-3875-49abe3e900f3@canonical.com>
+ <CAPLW+4nDS0atrbUFagDA0W_Ky5MvOiY+N+NQoQ+me4pndp_iWg@mail.gmail.com>
+ <68734f6c-fc76-595c-8d34-8924dbbbb845@canonical.com>
+ <CAPLW+4n_JKj5xeBHXONcv__vyAFvx3fhXoxJa17NTHK1RSJFJw@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH 12/12] arm64: dts: exynos: Add Exynos850 SoC support
+Message-ID: <b753796c-2ce6-4166-7c20-289e950237ad@canonical.com>
+Date:   Fri, 6 Aug 2021 14:32:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAPLW+4n_JKj5xeBHXONcv__vyAFvx3fhXoxJa17NTHK1RSJFJw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reto Schneider <rs@hqv.ch> writes:
+On 06/08/2021 14:07, Sam Protsenko wrote:
+> On Fri, 6 Aug 2021 at 10:49, Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>>
+>> On 06/08/2021 01:06, Sam Protsenko wrote:
+>>> On Sat, 31 Jul 2021 at 12:03, Krzysztof Kozlowski
+>>> <krzysztof.kozlowski@canonical.com> wrote:
+>>>
+>>>>>
+>>>>> This patch adds minimal SoC support. Particular board device tree files
+>>>>> can include exynos850.dtsi file to get SoC related nodes, and then
+>>>>> reference those nodes further as needed.
+>>>>>
+>>>>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+>>>>> ---
+>>>>>  .../boot/dts/exynos/exynos850-pinctrl.dtsi    | 782 ++++++++++++++++++
+>>>>>  arch/arm64/boot/dts/exynos/exynos850-usi.dtsi |  30 +
+>>>>>  arch/arm64/boot/dts/exynos/exynos850.dtsi     | 245 ++++++
+>>>>
+>>>> Not buildable. Missing Makefile, missing DTS. Please submit with initial
+>>>> DTS, otherwise no one is able to verify it even compiles.
+>>>>
+>>>
+>>> This device is not available for purchase yet. I'll send the patch for
+>>> board dts once it's announced. I can do all the testing for now, if
+>>> you have any specific requests. Would it be possible for us to review
+>>> and apply only SoC support for now? Will send v2 soon...
+>>
+>> What you propose is equal to adding a driver (C source code) without
+>> ability to compile it. What's the point of having it in the kernel? It's
+>> unverifiable, unbuildable and unusable.
+>>
+> 
+> Yes, I understand. That's adding code with no users, and it's not a
+> good practice.
+> 
+>> We can review the DTSI however merging has to be with a DTS. Usually the
+>> SoC vendor adds first an evalkit (e.g. SMDK board). Maybe you have one
+>> for Exynos850? Otherwise if you cannot disclose the actual board, the
+>> DTSI will have to wait. You can submit drivers, though.
+>>
+> 
+> Sure, let's go this way. I'll send v2 soon. Improving patches and
+> having Reviewed-by tag for those would good enough for me at this
+> point. I'll continue to prepare another Exynos850 related patches
+> until the actual board is announced, like proper clock driver, reset,
+> MMC, etc. Is it ok if I send those for a review too (so I can fix all
+> issues ahead)?
 
-> On 8/4/21 17:13, chris.chiu@canonical.com wrote:
->> The TX A-MPDU aggregation is not handled in the driver since the
->> ieee80211_start_tx_ba_session has never been started properly.
->> Start and stop the TX BA session by tracking the TX aggregation
->> status of each TID. Fix the ampdu_action and the tx descriptor
->> accordingly with the given TID.
->
-> I'd like to test this but I am not sure what to look for (before and
-> after applying the patch).
+Sure, prepare all necessary drivers earlier. I suspect clocks will be a
+real pain because of significant changes modeled in vendor kernel. I
+remember Paweł Chmiel (+Cc) was doing something for these:
+https://github.com/PabloPL/linux/tree/exynos7420
 
-Thanks, testing feedback is always very much appreciated.
+I mentioned before - you should also modify the chipid driver. Check
+also other drivers in drivers/soc/samsung, although some are needed only
+for suspend&resume.
 
-> What should I look for when looking at the (sniffed) Wireshark traces?
+BTW, Paweł,
+How is your Exynos7420 progress? :)
 
-From my (maintainer) point of view most important is that there are no
-regressions visible to users, for example no data stalls, crashes or
-anything like that.
+> And should I maybe add RFC tag for those?
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+No need. Drivers can be merged before DTS users.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Best regards,
+Krzysztof
