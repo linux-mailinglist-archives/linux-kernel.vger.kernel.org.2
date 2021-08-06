@@ -2,170 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE0D3E2E44
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290E13E2E46
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 18:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231567AbhHFQUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 12:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
+        id S231698AbhHFQVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 12:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231453AbhHFQUa (ORCPT
+        with ESMTP id S231453AbhHFQVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 12:20:30 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962C6C061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 09:20:13 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id u16so7766278ple.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 09:20:13 -0700 (PDT)
+        Fri, 6 Aug 2021 12:21:24 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322FDC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 09:21:07 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id x192so16236341ybe.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 09:21:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lk/rklBGJbLUUQZyoq+gs1+H5iN5EBlS7CuTTnKKDKA=;
-        b=Z3015pl6wjzFCtaiptoQofYXucCx2JNzuIpRkBDN/T/0deeTpz66FIaPsdm9qTiMAh
-         EHX6DAN50du5HC2tIEmUBFCUw/i18du9l+Sru0/uh/TUezaeTCcs1+Y7+OSUxB1gnij8
-         kINmzKoOE/QX1hReUhFX3A7UT5M2Zh0CZHY5fHNhndH2S1Rmqm3501DTrWjCYe9KP3dC
-         TWfK5RaSSpWFeaePZYkf5ZawD8wQ6eb0p7XTfViPYX9qgdIwfOgRFaSAq7FcOnfZHyIM
-         aPQvG3xBb8TG/4euCYq2rj1iOi+DrmEjSGVnkFc1uZOczxKQOErzL4/N6HwybGHw85UG
-         yl1w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M1g7puxrm202RhqkhqVJ0jdDnj+gHqRx1Pn/TRe45VY=;
+        b=ZSgW6fw3CIWT31okDRlFQcTrFcT8l65qEdfmz3TZKXYb94+/JcN/c9JpaO+GtuN9BT
+         v5vX46xvzv2T61ua9EKXYyo+ICvK8S47xvvCFfMic4SLW6TwFIY0PfC7TDgehJppE1+D
+         BhMiHmgvU3V/kkSbwlLE3OZvVnA4Iln4mb6sGY1hdSVvYZXIy1Oax2Mv9giloYidKl7m
+         RxrVEVmfTGJzXWi5Z/jLzfPBgiBFdAUXAvjwpzH67uqyFzxX78EZtuRV9dYy0IlPvnRt
+         f6e+rRcEbvRpxL70n7j/LCzYB6BWDF7x+O/ABKm86daxV3ytn9Eef0Ang4vfy/ECsAU2
+         BgfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lk/rklBGJbLUUQZyoq+gs1+H5iN5EBlS7CuTTnKKDKA=;
-        b=nWtRkLvAYDSMAfv/6r/cPSZfH6UBrZim3FVXGWRd1SIBMhaNyqMDOQUabLXwgnigqO
-         NC0UVHcktlwiMy+7peoSrzo2fxulAnexNYClP9IEszYBdA1Z4HXanAxhs8ZwYfYaqAn2
-         I56jzQ4uqOMNlR6vQIt8C0IEEe14geNBjzDyZzPApb3RpABAGtnMnr3Embox80T2pot6
-         qlVJr4D2KcOiUWjHL7/5872Ukh/WpfTfEQ4ojkllBNsBa3oVYCjD4SS6bSMLBYYG3q9q
-         yBsF+Ebnk9uaDnep5y5EZhfIcebP4ew3LnI3xzIUaP/46ZTAsnNkwahYT7hfduGuYBEu
-         u/Sg==
-X-Gm-Message-State: AOAM533v4xdLnlIOeDH5iVn9f3OgA1bSFtl3BHyS1duAyDFMh1rWOa3p
-        aE01KBgDUenKbadzZQXfEhSqNg==
-X-Google-Smtp-Source: ABdhPJz8HLbzCuo+RUCF2uZXWWMYbgf4yJo1F05mVL/lyb/S0lk1Bc1PHwS+dR6FuMKX+2qM62ErRA==
-X-Received: by 2002:a17:902:f295:b029:12c:a253:7087 with SMTP id k21-20020a170902f295b029012ca2537087mr9252966plc.6.1628266812776;
-        Fri, 06 Aug 2021 09:20:12 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 6sm11553582pfg.108.2021.08.06.09.20.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 09:20:12 -0700 (PDT)
-Date:   Fri, 6 Aug 2021 16:20:08 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Suleiman Souhlal <suleiman@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, ssouhlal@freebsd.org,
-        hikalium@chromium.org, senozhatsky@chromium.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kvm,x86: Use the refined tsc rate for the guest tsc.
-Message-ID: <YQ1hOJNMnD6gCRjD@google.com>
-References: <20210803075914.3070477-1-suleiman@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M1g7puxrm202RhqkhqVJ0jdDnj+gHqRx1Pn/TRe45VY=;
+        b=LqjtZHTTrN5FFmMAB3ogoWce9ziwQh0zwq3i2ix5ECMHz9CK/itEjOLs31YZcYILWI
+         5vO+LCR94yrma5ktodU/sWfx+lkX2NwSeJRreO7Wfpkn4XHesTf4wyRHqLaajzozn2OT
+         mi6CTkhzf/vP9RBlQszxuWrJ2xgvgpOW076WkFgpEmv+k21TSwHTtrb5Ox+ZNhrkM0xZ
+         rZKwInGKEogs13uMtGN6jO93kTuEQCmOQQqhBGl09VcDM1xCOH4+LqM/fOtKG1Fs9gV9
+         facUMs7CojZrEs4V+PPxtufU12Dwg4VNVqjr/Gi8aufsPz2MOEGtX8IXDHHo5UKrZ/DE
+         92/A==
+X-Gm-Message-State: AOAM530sCLo4olZxmhZpAY/Xdk+eiITdnDLgd5DRlrwBnLvDAVZxJp7Q
+        faYcTs5/QyMG65rWUYd//8W9NL4SWXIgFgFVWO3tGg==
+X-Google-Smtp-Source: ABdhPJzPXWrdb3mtEhki67zexijTR+ZMXazWQvWl84DH9lHLb8Asg+p+XKn6X1aYaXFs1jSKIuBMSQjtbPJuPoof3Jw=
+X-Received: by 2002:a25:2785:: with SMTP id n127mr13814414ybn.235.1628266866064;
+ Fri, 06 Aug 2021 09:21:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210803075914.3070477-1-suleiman@google.com>
+References: <08a2e179-3f5f-639e-946f-54cd07ae12fa@kernel.org> <20210707181814.365496-1-ndesaulniers@google.com>
+In-Reply-To: <20210707181814.365496-1-ndesaulniers@google.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Fri, 6 Aug 2021 09:20:54 -0700
+Message-ID: <CABCJKue5Ay6_+8sibzh5wRh3gPzV1g72gJ9m2ot4E1ezj8bpHA@mail.gmail.com>
+Subject: Re: [PATCH v4] kallsyms: strip LTO suffixes from static functions
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Fangrui Song <maskray@google.com>, "KE . LI" <like1@oppo.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"KVM: x86:" is the preferred scope.  And for whatever reason, punctuation at the
-end of the shortlog is almost always omitted.
-
-On Tue, Aug 03, 2021, Suleiman Souhlal wrote:
-> Prior to this change,
-
-In the changelog proper, please state what change is being made before launching
-into the effects of the change.  Oftentimes that does mean restating the shortlog,
-but it's very helpful to reviewers/readers to provide a single cohesive/coherent
-explanation.
-
-> the initial tsc rate used by kvm would be the unrefined rate, instead of the
-> refined rate that is derived later at boot and used for timekeeping. This can
-> cause time to advance at different rates between the host and the guest.
-
-This needs a lot more explanation, with a clear statement of the direct effects
-of the change and with explicit references to variables and probably functions.
-Normally I prefer abstraction over explicit code references, but in this case
-there are too many ambiguous terms to understand the intended change without a
-lot of staring.  E.g. at first blush, it's not obvious that "boot" refers to the
-host kernel boot, especially for those of us that load KVM as a module.
-
-And the statement "the initial tsc rate used by kvm would be the unrefined rate"
-will not always hold true, e.g. when KVM is loaded long after boot.  That also
-confused me.
-
-IIUC, this "fixes" a race where KVM is initialized before the second call to
-tsc_refine_calibration_work() completes.  Fixes in quotes because it doesn't
-actually fix the race, it just papers over the problem to get the desired behavior.
-If the race can't be truly fixed, the changelog should explain why it can't be
-fixed, otherwise fudging our way around the race is not justifiable.
-
-Ideally, we would find a way to fix the race, e.g. by ensuring KVM can't load or
-by stalling KVM initialization until refinement completes (or fails).  tsc_khz is
-consumed by KVM in multiple paths, and initializing KVM before tsc_khz calibration
-is fully refined means some part of KVM will use the wrong tsc_khz, e.g. the VMX
-preemption timer.  Due to sanity checks in tsc_refine_calibration_work(), the delta
-won't be more than 1%, but it's still far from ideal.
-
-> Signed-off-by: Suleiman Souhlal <suleiman@google.com>
+On Wed, Jul 7, 2021 at 11:18 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Similar to:
+> commit 8b8e6b5d3b01 ("kallsyms: strip ThinLTO hashes from static
+> functions")
+>
+> It's very common for compilers to modify the symbol name for static
+> functions as part of optimizing transformations. That makes hooking
+> static functions (that weren't inlined or DCE'd) with kprobes difficult.
+>
+> LLVM has yet another name mangling scheme used by thin LTO.  Strip off
+> these suffixes so that we can continue to hook such static functions.
+>
+> Reported-by: KE.LI(Lieke) <like1@oppo.com>
+> Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 > ---
->  arch/x86/kvm/x86.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 4116567f3d44..1e59bb326c10 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -2199,6 +2199,7 @@ static atomic_t kvm_guest_has_master_clock = ATOMIC_INIT(0);
->  #endif
->  
->  static DEFINE_PER_CPU(unsigned long, cpu_tsc_khz);
-> +static DEFINE_PER_CPU(bool, cpu_tsc_khz_changed);
->  static unsigned long max_tsc_khz;
->  
->  static u32 adjust_tsc_khz(u32 khz, s32 ppm)
-> @@ -2906,6 +2907,14 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
->  		kvm_make_request(KVM_REQ_CLOCK_UPDATE, v);
->  		return 1;
->  	}
-> +	/*
-> +	 * Use the refined tsc_khz instead of the tsc_khz at boot (which was
-> +	 * not refined yet when we got it),
+> Changes v3 -> v4:
+> * Convert this function to use IS_ENABLED rather than provide multiple
+>   definitions based on preprocessor checks.
+> * Add Nathan's suggested-by.
+>
+> Changes v2 -> v3:
+> * Un-nest preprocessor checks, as per Nathan.
+>
+> Changes v1 -> v2:
+> * Both mangling schemes can occur for thinLTO + CFI, this new scheme can
+>   also occur for thinLTO without CFI. Split cleanup_symbol_name() into
+>   two function calls.
+> * Drop KE.LI's tested by tag.
+> * Do not carry Fangrui's Reviewed by tag.
+> * Drop the inline keyword; it is meaningless.
+>
+>  kernel/kallsyms.c | 43 ++++++++++++++++++++++++++++++-------------
+>  1 file changed, 30 insertions(+), 13 deletions(-)
+>
+> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> index 4067564ec59f..a10dab216f4f 100644
+> --- a/kernel/kallsyms.c
+> +++ b/kernel/kallsyms.c
+> @@ -171,26 +171,43 @@ static unsigned long kallsyms_sym_address(int idx)
+>         return kallsyms_relative_base - 1 - kallsyms_offsets[idx];
+>  }
+>
+> -#if defined(CONFIG_CFI_CLANG) && defined(CONFIG_LTO_CLANG_THIN)
+> -/*
+> - * LLVM appends a hash to static function names when ThinLTO and CFI are
+> - * both enabled, i.e. foo() becomes foo$707af9a22804d33c81801f27dcfe489b.
+> - * This causes confusion and potentially breaks user space tools, so we
+> - * strip the suffix from expanded symbol names.
+> - */
+> -static inline bool cleanup_symbol_name(char *s)
+> +static bool cleanup_symbol_name(char *s)
+>  {
+>         char *res;
+>
+> +       /*
+> +        * LLVM appends a suffix for local variables that must be promoted to
+> +        * global scope as part of ThinLTO. foo() becomes
+> +        * foo.llvm.974640843467629774. This can break hooking of static
+> +        * functions with kprobes.
+> +        */
+> +       if (!IS_ENABLED(CONFIG_LTO_CLANG_THIN))
+> +               return false;
+> +
+> +       res = strstr(s, ".llvm.");
+> +       if (res) {
+> +               *res = '\0';
+> +               return true;
+> +       }
+> +
+> +       /*
+> +        * LLVM appends a hash to static function names when ThinLTO and CFI
+> +        * are both enabled, i.e. foo() becomes
+> +        * foo$707af9a22804d33c81801f27dcfe489b. This causes confusion and
+> +        * potentially breaks user space tools, so we strip the suffix from
+> +        * expanded symbol names.
+> +        */
+> +       if (!IS_ENABLED(CONFIG_CFI_CLANG))
+> +               return false;
+> +
+>         res = strrchr(s, '$');
+> -       if (res)
+> +       if (res) {
+>                 *res = '\0';
+> +               return true;
+> +       }
 
-As above, this does not hold true in all cases.  And for anyone that isn't familiar
-with tsc_refine_calibration_work(), the "refined tsc_khz instead of the tsc_khz"
-blurb is borderline nonsensical.
+Note that starting with https://reviews.llvm.org/D97484, the hash
+separator is '.' instead of '$'. It looks like this change will be in
+Clang 13.
 
-> +	 * If the frequency does change, it does not get refined any further,
-> +	 * so it is safe to use the one gotten from the notifiers.
-> +	 */
-> +	if (!__this_cpu_read(cpu_tsc_khz_changed))
-> +		tgt_tsc_khz = tsc_khz;
->  	if (!use_master_clock) {
->  		host_tsc = rdtsc();
->  		kernel_ns = get_kvmclock_base_ns();
-> @@ -8086,6 +8095,8 @@ static void tsc_khz_changed(void *data)
->  		khz = freq->new;
->  	else if (!boot_cpu_has(X86_FEATURE_CONSTANT_TSC))
->  		khz = cpufreq_quick_get(raw_smp_processor_id());
-> +	if (khz)
-> +		__this_cpu_write(cpu_tsc_khz_changed, true);
-
-On a system with a constant TSC and KVM loaded after boot, cpu_tsc_khz_changed
-will never be true.  Ditto for the case where refinement fails.  That may not be
-a functional issue, but it's confusing.
-
-This also fails to gate other readers of kvm_guest_time_update.  In particular,
-KVM_GET_CLOCK -> get_kvmclock_ns() will use the "wrong" frequency when userspace
-is retrieving guest TSC.
-
->  	if (!khz)
->  		khz = tsc_khz;
->  	__this_cpu_write(cpu_tsc_khz, khz);
-> -- 
-> 2.32.0.554.ge1b32706d8-goog
-> 
+Sami
