@@ -2,102 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A1C3E2324
+	by mail.lfdr.de (Postfix) with ESMTP id 6259A3E2325
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 08:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240914AbhHFGBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 02:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
+        id S241869AbhHFGDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 02:03:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhHFGBq (ORCPT
+        with ESMTP id S229695AbhHFGD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 02:01:46 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4F9C061798
-        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 23:01:31 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id kl2so4334295qvb.11
-        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 23:01:31 -0700 (PDT)
+        Fri, 6 Aug 2021 02:03:29 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1872BC061798
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 23:03:13 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id b128so4835244wmb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 23:03:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=rYW2lp+YlCkYaFQsLGYV50O1Jv3vvw2P23Ygq/Hbf54=;
-        b=TyXLgnG6qOCb6hdG0un177KMfdXwg8nIhbxm0OYyTLmyhmCe4WQJfvM+wnl/ns81dT
-         jG0Ijj5xMNrXwEhYL3bihTMNtQGJt0Ykac90w5p9uJDexGUiYR1jekduXR9Zej2/t2UV
-         9UpqAph4Zm0ymxEWX/ny+02dADxgLLSZOSN66bmKKkUL836Lvw5yxS6oVLFmVMs4ss9v
-         F9pEXBpGm6B4iPdHLn9xdF6cumRuYxjg2I2beh96XYv9UUXB/D72+s4FuY5lZ/3KbDJX
-         ohN3hbzkqGw31uSZx3LXgMbTi7HrzJykHRlwxkkzxa1YBSMECfImwcLgxqacso0t06/G
-         DT5w==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=6H+0hcm8l7aLIS2xe0QY8OrUwt8WXy+M0IZiWZTDT/4=;
+        b=ijo0XQNguBvEBbqPFuapHSzDKkdhBjs4bMQanuaouAtLj2nd/+YcxB6WjU+Bn82y4/
+         vf7kk4i3Sgjrb7u22jcQBE2wbsAvOjajQabWl7h2nHynd++3ZfL+XRHD6Odj1HOpMQxf
+         IGXJTXMHgDFPJGNSLjtbWJ4CwMv96GJZMaVKGc0SnY0Hu+qjQnepTByrWBxr5rJvLEfA
+         jJyRf3+vwDC1D7icTLOaGxU2Yotmgyg7FmOsWeI+B+ykp2kwPOSx3ytXCVSvK+yc8Lmd
+         9wq1n4UNG1K5kCIxVc0qqRlwOjCvf0aBR3AfaJ1coZs5ycHyZBuMj2uurpW1qvzjhO1f
+         +j6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=rYW2lp+YlCkYaFQsLGYV50O1Jv3vvw2P23Ygq/Hbf54=;
-        b=Xhl1GADvgqBvKWf3NpgKJ9M1uKd9my+nM2zPkCedFoMIScU64+WxYRbowqcUIL/48U
-         CxIa6hQP3PpDlQfrblCIflW0/cu63RGAxbhE1F8qBdt+M39h1LSsdu5UvCo4kieVeXfl
-         7OvTTWw2SuEi169e9otQUR5uUQgOpUMqR7w5lfuANvHqasNT8Y3JaTgIwY556HZcz+RF
-         ZxfCGduSdz+H05DaKt8d3i0/nxA2KuM670gnpwabWfnOcADbYtO/5mLwvgayt0diSjuy
-         dP7AsRqd2dYf57QN1CNfbwQP+1rfCG9v+1fuqg52vorcKO+EYq7ClOGXPkQMReHupqzR
-         SUWQ==
-X-Gm-Message-State: AOAM531Ik0YtNrJUFNdOc2aJUCrzyJqQ1ngHJOz1hUiBRxOSp97JxJOA
-        AAWvyxjzKfXIZBT++g7qJ0N43A==
-X-Google-Smtp-Source: ABdhPJwchWtiDg11Sau4o6X6Q7QZuqIRXOFe3PIhO6ceFRV4TArzBIv0fYLLnnR9cBODdfaZei3Q0g==
-X-Received: by 2002:ad4:4ea8:: with SMTP id ed8mr9377522qvb.2.1628229690105;
-        Thu, 05 Aug 2021 23:01:30 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id o63sm4219675qkf.4.2021.08.05.23.01.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 23:01:29 -0700 (PDT)
-Date:   Thu, 5 Aug 2021 23:01:27 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.anvils
-To:     Yang Shi <shy828301@gmail.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH] mm,shmem: Fix a typo in shmem_swapin_page()
-In-Reply-To: <CAHbLzkrShKORwU-Zrf5_5c6_o_iVwoXRTT+7ABZALLj7p0w-Ug@mail.gmail.com>
-Message-ID: <d1c768c-8b6-6a9d-ddde-39ac51286927@google.com>
-References: <20210723080000.93953-1-ying.huang@intel.com> <24187e5e-069-9f3f-cefe-39ac70783753@google.com> <YPs6cQo7iG1JcOn8@casper.infradead.org> <8735rr54i9.fsf@yhuang6-desk2.ccr.corp.intel.com> <YQkwBdpWTPjv4xIx@casper.infradead.org>
- <704d597-443b-32f-84eb-524a58dd8ef@google.com> <CAHbLzkrShKORwU-Zrf5_5c6_o_iVwoXRTT+7ABZALLj7p0w-Ug@mail.gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=6H+0hcm8l7aLIS2xe0QY8OrUwt8WXy+M0IZiWZTDT/4=;
+        b=VyEl9MUdA+h9Wa8lvz4KpIe9ZmsjlZInKB/uz3VvPrRVGJMtQ1TND9vXCovtDwbTC2
+         X1EvLhg0fzUWRO6PDH2sRuneaQZGa7/bqULODye7WKAwKcNXpCV5zQ8ZCMM7WUSTZja9
+         g/Ew9NlSBSvoSYO+kA+Z8ZHorT5ku4Z691KF+nod1E6Bi8bLQZe1CT0hOclB+SIhBtpx
+         iMNEBUd2NcEq+FI4mCaeEO4wQspKh9PgVddcI4cBf84Jy1Im4lEsSrn9MHEDBLE8mFwl
+         HP5/ExfAmwSFx27CI7n9FCuLYqnT+laEFTupdZbkesle1ej3NcCoDpihJ3e0jafgFST7
+         M+Yw==
+X-Gm-Message-State: AOAM532mcgF7FqPZMx+cIEmrO1sZplqDMKsZx6cE/EhIhOlG2lBWqZTj
+        SUck6BAkYjxPROR3Q7hN6AjMEsj0d7CTYQpP0alo6dW9O7zA7Q==
+X-Google-Smtp-Source: ABdhPJype5gSl8B6cXIO8ZkqsC+9SfaYUqWVDfxpeoT5UvlPOUQsZIqgz5McybWazUHKmZTP0YNXosncKH5oDz/tGhg=
+X-Received: by 2002:a1c:a709:: with SMTP id q9mr18222417wme.23.1628229791651;
+ Thu, 05 Aug 2021 23:03:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 6 Aug 2021 16:03:00 +1000
+Message-ID: <CAPM=9txE4jnHDV9B2PWfieMJjdFv0C7=Zc=MovOtJ6sKN2AuYg@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.14-rc5
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 5 Aug 2021, Yang Shi wrote:
-> On Tue, Aug 3, 2021 at 10:34 PM Hugh Dickins <hughd@google.com> wrote:
-> >
-> > I've never seen the swapoff race claimed by Miaohe, and don't expect to;
-> > but he's probably right, given the current code.  I just dislike adding
-> > unnecessary complexity, and siting it in the wrong place (mm/shmem.c).
-> >
-> > Yang, is it possible that 5.1 commit 8fd2e0b505d1 ("mm: swap: check if
-> > swap backing device is congested or not") was actually developed and
-> > measured on 4.1 or earlier, which still had blk_set_queue_congested()?
-> 
-> I forgot the exact version, but definitely not 4.1 or earlier. Maybe
-> 4.19 or earlier. I'm not familiar with how block layer detect
-> congestion, if the logic was changed, hence the optimization doesn't
-> stand anymore nowadays, I'm totally fine to remove it.
+Hi Linus,
 
-You drove me back to look more closely.  blk_set_queue_congested()
-vanished from include/linux/blkdev.h in 4.2, but blk_set_congested()
-appeared then in block/blk-core.c to replace it.  blk_set_congested()
-vanished (along with all references to "congested" in blk-core.c) in
-5.0, then your commit (most probably tested on 4.19) went into 5.1 -
-just after it had become redundant!
+Regular weekly fixes pull, live from a Brisbane lockdown with kids at home.
 
-Thanks, yes, let's revert that and Miaohe's and Huang's, later on.
+A big bunch of scattered amdgpu fixes, but they are all pretty small,
+minor i915 fixes, kmb, and one vmwgfx regression fixes, all pretty
+quiet for this time.
 
-Hugh
+Dave.
+
+drm-fixes-2021-08-06:
+drm fixes for 5.14-rc5
+
+amdgpu:
+- Fix potential out-of-bounds read when updating GPUVM mapping
+- Renoir powergating fix
+- Yellow Carp updates
+- 8K fix for navi1x
+- Beige Goby updates and new DIDs
+- Fix DMUB firmware version output
+- EDP fix
+- pmops config fix
+
+i915:
+- Call i915_globals_exit if pci_register_device fails
+- (follow on fix for section mismatch)
+- Correct SFC_DONE register offset
+
+kmb:
+- DMA fix
+- driver date/version macros
+
+vmwgfx:
+- Fix I/O memory access on 64-bit systems
+The following changes since commit c500bee1c5b2f1d59b1081ac879d73268ab0ff17:
+
+  Linux 5.14-rc4 (2021-08-01 17:04:17 -0700)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-08-06
+
+for you to fetch changes up to d186f9c28008810d8f984d6bdd1c07757048ed63:
+
+  Merge tag 'amd-drm-fixes-5.14-2021-08-05' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes (2021-08-06
+11:22:09 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.14-rc5
+
+amdgpu:
+- Fix potential out-of-bounds read when updating GPUVM mapping
+- Renoir powergating fix
+- Yellow Carp updates
+- 8K fix for navi1x
+- Beige Goby updates and new DIDs
+- Fix DMUB firmware version output
+- EDP fix
+- pmops config fix
+
+i915:
+- Call i915_globals_exit if pci_register_device fails
+- (follow on fix for section mismatch)
+- Correct SFC_DONE register offset
+
+kmb:
+- DMA fix
+- driver date/version macros
+
+vmwgfx:
+- Fix I/O memory access on 64-bit systems
+
+----------------------------------------------------------------
+Bing Guo (2):
+      drm/amd/display: Fix Dynamic bpp issue with 8K30 with Navi 1X
+      drm/amd/display: Increase stutter watermark for dcn303
+
+Chengming Gui (1):
+      drm/amdgpu: add DID for beige goby
+
+Dave Airlie (3):
+      Merge tag 'drm-misc-fixes-2021-08-04' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+      Merge tag 'drm-intel-fixes-2021-08-04' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+      Merge tag 'amd-drm-fixes-5.14-2021-08-05' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+
+Edmund Dea (2):
+      drm/kmb: Enable LCD DMA for low TVDDCV
+      drm/kmb: Define driver date and major/minor version
+
+Jason Ekstrand (1):
+      drm/i915: Call i915_globals_exit() if pci_register_device() fails
+
+Jude Shih (1):
+      drm/amd/display: Fix resetting DCN3.1 HW when resuming from S4
+
+Matt Roper (1):
+      drm/i915: Correct SFC_DONE register offset
+
+Qingqing Zhuo (1):
+      drm/amd/display: workaround for hard hang on HPD on native DP
+
+Randy Dunlap (2):
+      drm/i915: fix i915_globals_exit() section mismatch error
+      drm/amdgpu: fix checking pmops when PM_SLEEP is not enabled
+
+Shirish S (1):
+      drm/amdgpu/display: fix DMUB firmware version info
+
+Wesley Chalmers (1):
+      drm/amd/display: Assume LTTPR interop for DCN31+
+
+Xiaomeng Hou (1):
+      drm/amd/pm: update yellow carp pmfw interface version
+
+Yifan Zhang (1):
+      drm/amdgpu: fix the doorbell missing when in CGPG issue for renoir.
+
+Zack Rusin (1):
+      drm/vmwgfx: Fix a 64bit regression on svga3
+
+xinhui pan (1):
+      drm/amdgpu: Fix out-of-bounds read when update mapping
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c           |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c            |  7 +++++++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_res_cursor.h     |  3 ++-
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c              | 21 ++++++++++++++++++++-
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |  2 +-
+ .../drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c  |  4 +++-
+ drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c   | 21 ++-------------------
+ drivers/gpu/drm/amd/display/dc/dc.h                |  2 ++
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_optc.c  |  2 +-
+ .../gpu/drm/amd/display/dc/dcn30/dcn30_resource.c  | 20 ++++++++++++++++++++
+ .../drm/amd/display/dc/dcn303/dcn303_resource.c    |  4 ++--
+ .../gpu/drm/amd/display/dc/dcn31/dcn31_resource.c  | 16 ++++++++++++++++
+ drivers/gpu/drm/amd/display/dmub/src/dmub_dcn31.c  |  8 +++++---
+ drivers/gpu/drm/amd/pm/inc/smu_v13_0.h             |  2 +-
+ drivers/gpu/drm/i915/i915_globals.c                |  4 ++--
+ drivers/gpu/drm/i915/i915_pci.c                    |  1 +
+ drivers/gpu/drm/i915/i915_reg.h                    |  2 +-
+ drivers/gpu/drm/kmb/kmb_drv.c                      | 22 ++++++++++++++++++----
+ drivers/gpu/drm/kmb/kmb_drv.h                      |  5 +++++
+ drivers/gpu/drm/kmb/kmb_plane.c                    | 15 +++++++++++++--
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.h                |  2 +-
+ 21 files changed, 124 insertions(+), 41 deletions(-)
