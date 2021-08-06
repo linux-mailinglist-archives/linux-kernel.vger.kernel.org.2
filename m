@@ -2,121 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75D03E28C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF873E28D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245231AbhHFKhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33490 "EHLO
+        id S245224AbhHFKm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245218AbhHFKhf (ORCPT
+        with ESMTP id S245204AbhHFKmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:37:35 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE196C061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:37:19 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id u3so14407801ejz.1
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 03:37:19 -0700 (PDT)
+        Fri, 6 Aug 2021 06:42:50 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D71C061798;
+        Fri,  6 Aug 2021 03:42:34 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id b11so10504858wrx.6;
+        Fri, 06 Aug 2021 03:42:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TVGZoE5gGRjdrzp11QJfyMJlwcXTvAtUoyy+JrT+IQA=;
-        b=tQEG6YzPxZYaUfm8emfjyn1WQFufEBobsHOf2wIgqUNzArRiVwdyJkOY9t8gOk+3IR
-         vT4VvKckYd0jrRQzATYiCfUCoy0TfUxwzzwpq1OiS3Q2AVq4m4gWgAuxZTIlEjnWwt59
-         pru94xbHnAJzrcoxhCAjzHTTkUatiOXaVXRPaBj3jlvDw59GHBlSTGPMwoAw9FgvgDPE
-         ImlV2e+CmYICx4ZkMx2AEiu4CTp7EN4OJRYRS8xKzf8vFaCKrEczCWyGFdtMOUcU2Y8p
-         xKBVtmt6XWAeTvFKPxe/ZbI+NAH/K7fa1hKIbwr16XrJzECI4N3fCdDLiTLk5l4e8CEQ
-         aVIg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/Fj67vOhz3zmXYi3Qy2zVy0So4Mw59Xgs1vAgB0E0YQ=;
+        b=KnFYoJFHiqhapmSUUGCFGUDZh0IMJPp9qJHWp3iTHyXOdfFF4OSN6Gtf4egRQ1fCw5
+         +pi5v7V4UFShrw5/hC5Mjfxuio88BndrAUh92piTUUUNY+yc/J7I+CB/PSKZz2XFU6RD
+         mAR3geycppZUM3nP+oAX/l7VdWidLunwdInVG0lcK+XX+m9By8vbp7sxmsFodSkbmrV6
+         GMXXZut9YmDc/jkBmbqlMsbu3gJ9BRAfw+79XSOxvJW7srdccSiHY2m0bjRWxSk95IR7
+         ixngMx+hNYnOJ3jzP6ST5Rz6vXDx3AxMFE+Zvub/UqP7X9sb3oeuUiE2qHHcgnR4/JOc
+         37TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TVGZoE5gGRjdrzp11QJfyMJlwcXTvAtUoyy+JrT+IQA=;
-        b=Wa7rmdL+Pp7CzHMDtBSyCw6S7Cxc3s/BVcVxNBS0h8EAjvs6dQfWn1ZxwSY4+MmXFF
-         TvRUtcD6v2MkuvebQHW/AxzNaP1KupHlaJbm9hIDamGQH+mxVk4ZQd//2dYZYVO1ea4E
-         y2Jx+CqUT31jLSPk7LF0dKWb/oLUJA5tS1msw2lVynzA4JHtozVpJC7N1TyqNmxL2Aj8
-         llHwcPA+ZmA+gC7WNyCw9brm1Mda/vX+LG/TN0HUQF/bKObkdORmcDDeRkE3PTMTNq+b
-         7Eglb4jzPmuhoGdgHvmS6jwyzZTMKOLkRi3j00niLHfHa2wJBXW4wLB/hTWp1FwW0SJ8
-         umMg==
-X-Gm-Message-State: AOAM530UTZDytopkRb9wezT9YvtyLyroXzFk4ZQ5rzpgcZP3nHlG9R+k
-        Xjvsx/lKu+OPbW10+t2RaSBvuEcTSZlMLbxZhhBlzw==
-X-Google-Smtp-Source: ABdhPJxTJcwPze+uSxEQwjciI5+zYaAJQYWtC+KmZeML3RJiEQnV0SiGzTiN96DDfWVpuQf7vTNj/fNHDmuyFMk/5Lc=
-X-Received: by 2002:a17:907:1b06:: with SMTP id mp6mr9404647ejc.188.1628246238490;
- Fri, 06 Aug 2021 03:37:18 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/Fj67vOhz3zmXYi3Qy2zVy0So4Mw59Xgs1vAgB0E0YQ=;
+        b=Q+SzWXmLLtsHaOvxEubgE8YfLlBgi3ObEKujtSxPjAuj+HZj0MAhbdTt5CM2TZBFcW
+         pSEGjXtYNPu6Cyqq+aqfsDPu7hEwtJMuBgSVjk37fhTegCsIq5z3BvRzx7ZUwAf80hfK
+         QsIUwfkbU4Hfg1uMCCx2qXPd0DSiRdNIkSLP/XZ1sC0yLKiuduhzfWrDBT+Xa47TIMBH
+         4WtSpt3YZ4RtTi8/hIPA7A+Auhc2AVSyvlJfNBUUEe22l3ALH0WRRYOhMUb3Y+W+iaqR
+         TOeVSHp5c38bmP3DPQUX8Jv5Og/vxoWlE8Qem5uZPDDglxknBVe5U+/+WLvivQmUYyU9
+         ktYA==
+X-Gm-Message-State: AOAM533q+PDMQVj5GTZA8LIhyI5vQXyGMgPLYkIRA3s52kemh5GhHxR8
+        OSerR/+f945gnmIfU9Wd90k=
+X-Google-Smtp-Source: ABdhPJxbkatffN2NdQfvVb8GL6t7oz55edCNarBDIyq8u8iv+IFT4WDTO8j5qwIv7QK0j/7lzdDVqw==
+X-Received: by 2002:adf:e0d1:: with SMTP id m17mr9870192wri.233.1628246553431;
+        Fri, 06 Aug 2021 03:42:33 -0700 (PDT)
+Received: from ziggy.stardust (static-55-132-6-89.ipcom.comunitel.net. [89.6.132.55])
+        by smtp.gmail.com with ESMTPSA id x9sm12066410wmj.41.2021.08.06.03.42.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Aug 2021 03:42:33 -0700 (PDT)
+Subject: Re: [PATCH] mmc: mediatek: add wait dma stop done flow
+To:     Derong Liu <derong.liu@mediatek.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        wsp_upstream@mediatek.com, Peng Zhou <peng.zhou@mediatek.com>
+References: <20210806023055.29524-1-derong.liu@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <dae1e028-d817-aba3-cc11-546a07865cda@gmail.com>
+Date:   Fri, 6 Aug 2021 12:42:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210323025501.1568039-1-quanyang.wang@windriver.com> <YFquZaW4JTTM7ogS@pendragon.ideasonboard.com>
-In-Reply-To: <YFquZaW4JTTM7ogS@pendragon.ideasonboard.com>
-From:   Michal Simek <monstr@monstr.eu>
-Date:   Fri, 6 Aug 2021 12:37:07 +0200
-Message-ID: <CAHTX3d+uZsqevn0+7Lo+z62mk-1+S7n7VuO-QU8Q1Y-gP0Ugyw@mail.gmail.com>
-Subject: Re: [V2][PATCH] drm: xlnx: zynqmp: release reset to DP controller
- before accessing DP registers
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Quanyang Wang <quanyang.wang@windriver.com>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210806023055.29524-1-derong.liu@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Thanks for your patch.
 
-st 24. 3. 2021 v 4:15 odes=C3=ADlatel Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> napsal:
->
-> Hi Quanyang,
->
-> Thank you for the patch.
->
-> On Tue, Mar 23, 2021 at 10:55:01AM +0800, quanyang.wang@windriver.com wro=
-te:
-> > From: Quanyang Wang <quanyang.wang@windriver.com>
-> >
-> > When insmod zynqmp-dpsub.ko after rmmod it, system will hang with the
-> > error log as below:
-> >
-> > root@xilinx-zynqmp:~# insmod zynqmp-dpsub.ko
-> > [   88.391289] [drm] Initialized zynqmp-dpsub 1.0.0 20130509 for fd4a00=
-00.display on minor 0
-> > [   88.529906] Console: switching to colour frame buffer device 128x48
-> > [   88.549402] zynqmp-dpsub fd4a0000.display: [drm] fb0: zynqmp-dpsubdr=
-m frame buffer device
-> > [   88.571624] zynqmp-dpsub fd4a0000.display: ZynqMP DisplayPort Subsys=
-tem driver probed
-> > root@xilinx-zynqmp:~# rmmod zynqmp_dpsub
-> > [   94.023404] Console: switching to colour dummy device 80x25
-> > root@xilinx-zynqmp:~# insmod zynqmp-dpsub.ko
-> >       <hang here>
-> >
-> > This is because that in zynqmp_dp_probe it tries to access some DP
-> > registers while the DP controller is still in the reset state. When
-> > running "rmmod zynqmp_dpsub", zynqmp_dp_reset(dp, true) in
-> > zynqmp_dp_phy_exit is called to force the DP controller into the reset
-> > state. Then insmod will call zynqmp_dp_probe to program the DP register=
-s,
-> > but at this moment the DP controller hasn't been brought out of the res=
-et
-> > state yet since the function zynqmp_dp_reset(dp, false) is called later=
- and
-> > this will result the system hang.
-> >
-> > Releasing the reset to DP controller before any read/write operation to=
- it
-> > will fix this issue. And for symmetry, move zynqmp_dp_reset() call from
-> > zynqmp_dp_phy_exit() to zynqmp_dp_remove().
-> >
-> > Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
->
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+On 06/08/2021 04:30, Derong Liu wrote:
+> From: mtk13858 <derong.liu@mediatek.com>
+> 
+> it needs to wait for dma stop done after set dma stop.
+> 
 
-Can someone pick this patch?
+Please provide a better commit message. Which bug do you see on which SoC? Are
+you sure you can apply that to all SoC without breaking stuff?
 
-Thanks,
-Michal
+> Signed-off-by: mtk13858 <derong.liu@mediatek.com>
+
+Full name please.
+
+Regards,
+Matthias
+
+> ---
+>  drivers/mmc/host/mtk-sd.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> index 4dfc246c5f95..1dfd2842471b 100644
+> --- a/drivers/mmc/host/mtk-sd.c
+> +++ b/drivers/mmc/host/mtk-sd.c
+> @@ -2339,6 +2339,8 @@ static void msdc_cqe_disable(struct mmc_host *mmc, bool recovery)
+>  	if (recovery) {
+>  		sdr_set_field(host->base + MSDC_DMA_CTRL,
+>  			      MSDC_DMA_CTRL_STOP, 1);
+> +		while (readl(host->base + MSDC_DMA_CFG) & MSDC_DMA_CFG_STS)
+> +			cpu_relax();
+>  		msdc_reset_hw(host);
+>  	}
+>  }
+> 
