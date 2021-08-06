@@ -2,157 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1213E23A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1B43E23A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 09:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243500AbhHFHBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 03:01:35 -0400
-Received: from mga05.intel.com ([192.55.52.43]:13959 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243487AbhHFHBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 03:01:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10067"; a="299909292"
-X-IronPort-AV: E=Sophos;i="5.84,299,1620716400"; 
-   d="scan'208";a="299909292"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 00:01:14 -0700
-X-IronPort-AV: E=Sophos;i="5.84,299,1620716400"; 
-   d="scan'208";a="481378284"
-Received: from zengguan-mobl.ccr.corp.intel.com (HELO [10.238.0.133]) ([10.238.0.133])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 00:01:09 -0700
-Subject: Re: [PATCH v3 2/6] KVM: VMX: Extend BUILD_CONTROLS_SHADOW macro to
- support 64-bit variation
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hu, Robert" <robert.hu@intel.com>,
-        "Gao, Chao" <chao.gao@intel.com>,
-        Robert Hoo <robert.hu@linux.intel.com>
-References: <20210805151317.19054-1-guang.zeng@intel.com>
- <20210805151317.19054-3-guang.zeng@intel.com> <YQxnGIT7XLQvPkrz@google.com>
-From:   Zeng Guang <guang.zeng@intel.com>
-Message-ID: <86b1a46b-10b7-a495-8793-26374ebc9b90@intel.com>
-Date:   Fri, 6 Aug 2021 15:01:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S243503AbhHFHCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 03:02:37 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:48890 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242730AbhHFHCe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 03:02:34 -0400
+Received: by mail-il1-f200.google.com with SMTP id p6-20020a056e021446b0290205af2e2342so4080731ilo.15
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 00:02:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=YOruhbXjknj07TqBsDd0ivPVwgxxq4P/kYOSASbx7Ew=;
+        b=mkCJ9RA3+y8cYeKXUJx4wBWCxbuxflu8BdyzyWA7L3xOYKBd8H2arDCSajCgu0w+Tk
+         cwPe0NownzcNk7mHWQuYbWNRfgySkbNyqXsnSXU9Y40+Ehia37Xjp76SNQPteDZipZxV
+         TQc1Qz4sCZ88c5cfDzL+HdhUpRHP1g7t2/dtQ50svdtogs1DToGwP4zk5Z61F8apsqPl
+         J8qtVw3WQVkyFzHCxXz6SQ3okP79v2XuD/1g2zdKVQ2lXSbZgfOjkOnLrn/I19nqhyuG
+         ra3kyHrfkNFMdliKkytqVeThWHfRwOOJn2C99ObN2epLOLyjiCAGyiWA4XhRi1GhZ7Rn
+         v+1w==
+X-Gm-Message-State: AOAM533j83KvsD5h8QJ7PBzp+Zwid/MHTOa93b2uxJYQ4+WwVAwCkZTR
+        tmZJRaSOzjDI/rj1z8pxIbSAxiBQAmt4q6LcJ5swpPhuaSKU
+X-Google-Smtp-Source: ABdhPJwswUO3MfN3mtN9XHnSiTVAxxfoMmn5e49ROfk1F6/xPYpe19YzKWLf6TrZX7Om0L9nzSglH0wT1EeozMwF0UeZuO9oJOif
 MIME-Version: 1.0
-In-Reply-To: <YQxnGIT7XLQvPkrz@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Received: by 2002:a05:6602:2e8a:: with SMTP id m10mr233364iow.45.1628233339292;
+ Fri, 06 Aug 2021 00:02:19 -0700 (PDT)
+Date:   Fri, 06 Aug 2021 00:02:19 -0700
+In-Reply-To: <0000000000005225a605bd97fa64@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cccfe405c8de9d1c@google.com>
+Subject: Re: [syzbot] WARNING in io_ring_exit_work
+From:   syzbot <syzbot+00e15cda746c5bc70e24@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, hdanton@sina.com,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/2021 6:32 AM, Sean Christopherson wrote:
-> On Thu, Aug 05, 2021, Zeng Guang wrote:
->> From: Robert Hoo <robert.hu@linux.intel.com>
->>
->> The Tertiary VM-Exec Control, different from previous control fields, is 64
->> bit. So extend BUILD_CONTROLS_SHADOW() by adding a 'bit' parameter, to
->> support both 32 bit and 64 bit fields' auxiliary functions building.
->> Also, define the auxiliary functions for Tertiary control field here, using
->> the new BUILD_CONTROLS_SHADOW().
->>
->> Suggested-by: Sean Christopherson <seanjc@google.com>
->> Signed-off-by: Robert Hoo <robert.hu@linux.intel.com>
->> ---
->>   arch/x86/kvm/vmx/vmx.h | 23 ++++++++++++-----------
->>   1 file changed, 12 insertions(+), 11 deletions(-)
->>
->> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
->> index 3979a947933a..945c6639ce24 100644
->> --- a/arch/x86/kvm/vmx/vmx.h
->> +++ b/arch/x86/kvm/vmx/vmx.h
->> @@ -413,31 +413,32 @@ static inline u8 vmx_get_rvi(void)
->>   	return vmcs_read16(GUEST_INTR_STATUS) & 0xff;
->>   }
->>   
->> -#define BUILD_CONTROLS_SHADOW(lname, uname)				    \
->> -static inline void lname##_controls_set(struct vcpu_vmx *vmx, u32 val)	    \
->> +#define BUILD_CONTROLS_SHADOW(lname, uname, bits)			    \
->> +static inline void lname##_controls_set(struct vcpu_vmx *vmx, u##bits val) \
-> Align the trailing backslashes (with tabs when possible).  It's a lot of unfortunate
-> churn, but it really does make the code easier to read.  An alternative is to split
-> "static inline" to a separate line.
->
->>   {									    \
->>   	if (vmx->loaded_vmcs->controls_shadow.lname != val) {		    \
->> -		vmcs_write32(uname, val);				    \
->> +		vmcs_write##bits(uname, val);				    \
->>   		vmx->loaded_vmcs->controls_shadow.lname = val;		    \
->>   	}								    \
->>   }									    \
->> -static inline u32 lname##_controls_get(struct vcpu_vmx *vmx)		    \
->> +static inline u##bits lname##_controls_get(struct vcpu_vmx *vmx)	    \
->>   {									    \
->>   	return vmx->loaded_vmcs->controls_shadow.lname;			    \
->>   }									    \
->> -static inline void lname##_controls_setbit(struct vcpu_vmx *vmx, u32 val)   \
->> +static inline void lname##_controls_setbit(struct vcpu_vmx *vmx, u##bits val)   \
->>   {									    \
->>   	lname##_controls_set(vmx, lname##_controls_get(vmx) | val);	    \
->>   }									    \
->> -static inline void lname##_controls_clearbit(struct vcpu_vmx *vmx, u32 val) \
->> +static inline void lname##_controls_clearbit(struct vcpu_vmx *vmx, u##bits val) \
->>   {									    \
->>   	lname##_controls_set(vmx, lname##_controls_get(vmx) & ~val);	    \
->>   }
->> -BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS)
->> -BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS)
->> -BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL)
->> -BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL)
->> -BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL)
->> +BUILD_CONTROLS_SHADOW(vm_entry, VM_ENTRY_CONTROLS, 32)
->> +BUILD_CONTROLS_SHADOW(vm_exit, VM_EXIT_CONTROLS, 32)
->> +BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL, 32)
->> +BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL, 32)
->> +BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL, 32)
->> +BUILD_CONTROLS_SHADOW(tertiary_exec, TERTIARY_VM_EXEC_CONTROL, 64)
-> This fails to compile because all the TERTIARY collateral is in a later patch.
+syzbot has found a reproducer for the following issue on:
 
+HEAD commit:    8d4b477da1a8 Add linux-next specific files for 20210730
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1478e4fa300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4adf4987f875c210
+dashboard link: https://syzkaller.appspot.com/bug?extid=00e15cda746c5bc70e24
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d5cd96300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1798471e300000
 
-Alternative to derive relative TERTIARY collateral and prepare them in 
-this patch. Ok for that ?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+00e15cda746c5bc70e24@syzkaller.appspotmail.com
 
->
-> I think I'd also prefer hiding the 32/64 param via more macros, e.g.
->
-> #define __BUILD_CONTROLS_SHADOW(lname, uname, bits)				\
-> static inline void lname##_controls_set(struct vcpu_vmx *vmx, u##bits val)	\
-> {										\
-> 	if (vmx->loaded_vmcs->controls_shadow.lname != val) {			\
-> 		vmcs_write##bits(uname, val);					\
-> 		vmx->loaded_vmcs->controls_shadow.lname = val;			\
-> 	}									\
-> }										\
-> static inline u##bits lname##_controls_get(struct vcpu_vmx *vmx)		\
-> {										\
-> 	return vmx->loaded_vmcs->controls_shadow.lname;				\
-> }										\
-> static inline void lname##_controls_setbit(struct vcpu_vmx *vmx, u##bits val)	\
-> {										\
-> 	lname##_controls_set(vmx, lname##_controls_get(vmx) | val);		\
-> }										\
-> static inline void lname##_controls_clearbit(struct vcpu_vmx *vmx, u##bits val)	\
-> {										\
-> 	lname##_controls_set(vmx, lname##_controls_get(vmx) & ~val);		\
-> }
-> #define BUILD_CONTROLS_SHADOW(lname, uname)   __BUILD_CONTROLS_SHADOW(lname, uname, 32)
-> #define BUILD_CONTROLS_SHADOW64(lname, uname) __BUILD_CONTROLS_SHADOW(lname, uname, 64)
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 1182 at fs/io_uring.c:8802 io_ring_exit_work+0x24e/0x1600 fs/io_uring.c:8802
+Modules linked in:
+CPU: 1 PID: 1182 Comm: kworker/u4:5 Not tainted 5.14.0-rc3-next-20210730-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events_unbound io_ring_exit_work
+RIP: 0010:io_ring_exit_work+0x24e/0x1600 fs/io_uring.c:8802
+Code: 30 11 00 00 48 8b 05 c1 dc 80 09 31 ff 48 8b 2c 24 48 29 c5 48 89 ee e8 c0 a8 95 ff 48 85 ed 0f 89 a8 fe ff ff e8 52 a3 95 ff <0f> 0b e9 9c fe ff ff e8 46 a3 95 ff 48 c7 c2 c0 25 2a 90 48 c7 c6
+RSP: 0018:ffffc90004ed7b98 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: ffff88801c921c80 RSI: ffffffff81e014de RDI: 0000000000000003
+RBP: ffffffffffffffff R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81e014d0 R11: 0000000000000000 R12: fffffbfff16c1e30
+R13: ffffed100e3f4894 R14: ffff888071fa4920 R15: ffff888071fa4000
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000488 CR3: 00000001c82cf000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
