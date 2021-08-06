@@ -2,122 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955163E22F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 07:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3013E22BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 07:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243197AbhHFFdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 01:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243121AbhHFFdR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 01:33:17 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FE6C061798;
-        Thu,  5 Aug 2021 22:33:02 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4GgvJT5j2qz9sW5; Fri,  6 Aug 2021 15:32:57 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1628227977;
-        bh=VgP74InI3Uz0qZ2/LQM1R3Ud9iWaj+wk/xGRWtN/6yY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xi+yKoqfW0FkYj+E2G8mVLF6aPdhG3HhV0yIOwgUkVBn7p4NzF/iYNdpUE7HHitZk
-         j5qfp4AdzdTAt4sE4Hivsc3v1s7U/ZIalR03kQxlOAms683p6OpZ61PFOoYxGwQzQD
-         Bgsf0Sx0ROMhpcJNioWxawsw9nT/kGNH5IKSmLtk=
-Date:   Fri, 6 Aug 2021 14:47:50 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [RFC v2] /dev/iommu uAPI proposal
-Message-ID: <YQy+9mSSzban+t/X@yekko>
-References: <BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com>
- <YP4/KJoYfbaf5U94@yekko>
- <20210730145123.GW1721383@nvidia.com>
- <BN9PR11MB5433C34222B3E727B3D0E5638CEF9@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210804140447.GH1721383@nvidia.com>
+        id S242935AbhHFEyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 00:54:14 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:59243 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231694AbhHFEyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 00:54:12 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GgtRQ4Drfz9sV2;
+        Fri,  6 Aug 2021 06:53:54 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id VObFj0xlKBw1; Fri,  6 Aug 2021 06:53:54 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GgtRQ31z0z9sSt;
+        Fri,  6 Aug 2021 06:53:54 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D0DFC8B7FE;
+        Fri,  6 Aug 2021 06:53:53 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 343h2AQwUROS; Fri,  6 Aug 2021 06:53:53 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E4C8A8B7FD;
+        Fri,  6 Aug 2021 06:53:49 +0200 (CEST)
+Subject: Re: [PATCH v4] soc: fsl: qe: convert QE interrupt controller to
+ platform_device
+To:     Saravana Kannan <saravanak@google.com>,
+        Maxim Kochetkov <fido_max@inbox.ru>
+Cc:     kernel test robot <lkp@intel.com>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, leoyang.li@nxp.com,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, qiang.zhao@nxp.com
+References: <20210803113538.560277-1-fido_max@inbox.ru>
+ <CAGETcx8QC+AMXvmk4RB=LGp00QLVVX4uCeeruAjFnGq_irMh4Q@mail.gmail.com>
+ <dff603dc-9038-71cb-bfcb-5abc24f17109@inbox.ru>
+ <CAGETcx-evuv-A+A5v3-ubFZNvn_i+QSvg+tSW0OOgAd82-pytg@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <dc3411e9-d1e0-8a23-5d9b-1aee3880b4f7@csgroup.eu>
+Date:   Fri, 6 Aug 2021 06:53:47 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xtXF0LkKM6+DEdEM"
-Content-Disposition: inline
-In-Reply-To: <20210804140447.GH1721383@nvidia.com>
+In-Reply-To: <CAGETcx-evuv-A+A5v3-ubFZNvn_i+QSvg+tSW0OOgAd82-pytg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---xtXF0LkKM6+DEdEM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 04, 2021 at 11:04:47AM -0300, Jason Gunthorpe wrote:
-> On Mon, Aug 02, 2021 at 02:49:44AM +0000, Tian, Kevin wrote:
->=20
-> > Can you elaborate? IMO the user only cares about the label (device cook=
-ie=20
-> > plus optional vPASID) which is generated by itself when doing the attac=
-hing
-> > call, and expects this virtual label being used in various spots (inval=
-idation,
-> > page fault, etc.). How the system labels the traffic (the physical RID =
-or RID+
-> > PASID) should be completely invisible to userspace.
->=20
-> I don't think that is true if the vIOMMU driver is also emulating
-> PASID. Presumably the same is true for other PASID-like schemes.
+Le 06/08/2021 à 06:39, Saravana Kannan a écrit :
+> On Thu, Aug 5, 2021 at 9:35 PM Maxim Kochetkov <fido_max@inbox.ru> wrote:
+>>
+>> 03.08.2021 20:51, Saravana Kannan wrote:
+>>>> So lets convert this driver to simple platform_device with probe().
+>>>> Also use platform_get_ and devm_ family function to get/allocate
+>>>> resources and drop unused .compatible = "qeic".
+>>> Yes, please!
+>>
+>> Should I totally drop { .type = "qeic"}, or keep?
+> 
+> Sorry for the confusion. My "Yes, please"!" was a show of support for
+> switching this to a proper platform driver. Not a response to that
+> specific question.
+> 
+> I didn't look at the code/DT close enough to know/care about the "type" part.
+> 
 
-Right.  The idea for an SVA capable vIOMMU in my scheme is that the
-hypervisor would set up an IOAS of address type "PASID+address" with
-the mappings made by the guest according to its vIOMMU semantics.
-Then SVA capable devices would be plugged into that IOAS by using
-"PASID+address" type endpoints from those devices.
+As far as I understand, Leo told it needs to remain, based on his answer below:
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+"From the original code, this should be type = "qeic".  It is not
+defined in current binding but probably needed for backward
+compatibility."
 
---xtXF0LkKM6+DEdEM
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmEMvvYACgkQbDjKyiDZ
-s5J7OhAAt80UyM01hO9UcB2WUWkDFXZd5ryLChQk4nBBHH6AolfinitcVmNoHb6l
-+WQQGubNPMHJa5bzSpa28cViR8hcc1frjPwqcHbUb8YS4h7ILXpk3BiEt5jIZ4Oc
-xUP6lKK8G14ZltBQvNNzjrd031aA+XHEx80bpU1q4xKMCLqJt2CFyd5bTw7aOabh
-+qGukHkhcotpFTroiAkuJrHRTOy8nvbl8nAw/ult+59c0DnTao+yfdFBjf3+h9a0
-iPcnxEWS8HJ80/Fv9KpLnQ0tNtXoTY2Q/dBfS4FolPwYg9bfNqm8Xdk8t4owCfeF
-M9m0fDBDekxaM2Lsr+fGMZ2A9CdrXs8NBAaNWvU92H3EnIZBmxb95VoaJsryN7gj
-IbZVLLz4zY7BQos7pc7EJKB3uYzAOpNpvrTZKPTOb5+oTwFrr60fFbzlIe4lyg/z
-XOZ4tHtlzsYxhaFZmVRrW0taJ30aR9vHGiJSbcQlrs1W1cK8nAjO0QRkeYmVyRqA
-o0TFw1SBNIIieNzPUxHa56cNQm0M3Hi9w+RkcSmsK2aDhaovrM7l5xgSs5/HxIqI
-qT6VBd/+bqhK+y0iA2SFd3d/521yGKu41XcEvkya0k0dv2sCUwDydNC4knVGoAUc
-nlRowbhm5r9RbcHcsCcduvboA7JAEMhU2aESrQGrHwTAXn2cS+E=
-=rCVy
------END PGP SIGNATURE-----
-
---xtXF0LkKM6+DEdEM--
+Christophe
