@@ -2,73 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5690C3E2745
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 382913E274F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 11:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244556AbhHFJa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 05:30:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231553AbhHFJa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 05:30:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0F8F861164;
-        Fri,  6 Aug 2021 09:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628242206;
-        bh=BmFFvRbhkRMBT1AROh0Lvw35ncy0VbHfmyiRMh4UMak=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=HsRne+DSe6cK6Fbkd+KMh6LHSAmw5qm1LfSIL7tD6d0iMippbPDxn7FKL4TrzkkzP
-         fF2a6sSvddfQByjTq/OHhrQ+X/d3BSau+3NeLVYKH0G7BzBG7PkfuR5Ou83BiTWAOg
-         vwv6xRp4SmOrSBjfE4Ezo4YFdrpOkdGJ+78wU/r71OBeIUiBJsU/NEQT9eRPxN4Kcs
-         62g6+U+tcePmuLpkr80OJAO33XEv2wbVPbomAoK5QH5CWkYzh8WCz1UZRnxoevy7U8
-         rejy/5CLcu794wrwX38lbPCO/O6tMpISXiGD/n/mQXFLzLvSf0y77CSopgv0gkOUIg
-         +MlDOw5js9c9A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 06CF560A7C;
-        Fri,  6 Aug 2021 09:30:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S244500AbhHFJc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 05:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244184AbhHFJcz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 05:32:55 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7796DC061799
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 02:32:40 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id b138so4838382vsd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 02:32:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hG7ad08wIaDvmaneskOxS98xzOuakO0shjMfqcJhf/0=;
+        b=hMu6wdmsIydv5n9UioqGMhi3NdWSB/gd114kREAS+K9yylruPgSJndFExuw8ozfeGO
+         GdtAjzm8rBOTxnmkHvqbu7kIjYoIlQVlFMcJu6gZwcMsEnTfAgWtR5bOCu8ULScBXQJJ
+         VcVw53SwVoCGiEySclc/39VPhrTmkILFH5aNXYcXbTYJcXc84+XPdsNGt04gU3EXEknv
+         987It+qBSY6m5j60ObfZ1xEocKkPVA3EMrVmgLpNOp2DRns9mVHCVAA1aakeRdTw5JoO
+         Z4/7cRQBAk228VIIWMTo+Wx8N4HchVa6WWVCZYoGpKP+CER9LgvANl5oVUC3K7A2/y04
+         5OPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hG7ad08wIaDvmaneskOxS98xzOuakO0shjMfqcJhf/0=;
+        b=pDYUfHL7MPlZoVT+Q5/myaeZTev4YITbtMQtDuTzc1PYbcNzcOUesRkH1laTZAms3b
+         Kh5Pnr4+hOBQCMtjahVKSV8HWem8g6U8TJgStzAQ+0kTxGlXBoQyRIyrAcYiuz7/iwVm
+         brG6FPeObVmWSkdF4rMCUoKr1kp+1pN4ePRGGdslKRiBvhYZyLut6CHVMne0rJbWHFoo
+         q1BYgcFPVkAxu+mmgu0B3wCDVXcoJVBpAX+drq4OCRlymrwlshyF4tTyCDy9Yn9/rcU7
+         QIv/hyujBMoSTuw1oZOaht1uBm9uSJ9S0+/2okr40773dPrzjYzobTh2Rkc2JAjzc0OA
+         O+eQ==
+X-Gm-Message-State: AOAM532TC8pv0dn0zWIx9+LmuWPk4CjG5PB/soSfkP80WLeqKMjEKYpH
+        MDZtDhzzWFKTp9lASvnrmZKkqqvEqciupfDObnUNvA==
+X-Google-Smtp-Source: ABdhPJynKc93n6ipIB8hMXdJbwfMvreyYjrVW9QsyI+/iIksqcj/6XpbRPGThpwYkyD6MPj4X1c9cqd6zqik6xU3kn8=
+X-Received: by 2002:a67:7c14:: with SMTP id x20mr8347304vsc.42.1628242359627;
+ Fri, 06 Aug 2021 02:32:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/3] net: ethernet: ti: cpsw/emac: switch to use
- skb_put_padto()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162824220602.18289.6086651097784470216.git-patchwork-notify@kernel.org>
-Date:   Fri, 06 Aug 2021 09:30:06 +0000
-References: <20210805145555.12182-1-grygorii.strashko@ti.com>
-In-Reply-To: <20210805145555.12182-1-grygorii.strashko@ti.com>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, ben.hutchings@essensium.com,
-        vigneshr@ti.com, linux-omap@vger.kernel.org, lokeshvutla@ti.com
+References: <1628074696-7979-1-git-send-email-rnayak@codeaurora.org> <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
+In-Reply-To: <1628074696-7979-2-git-send-email-rnayak@codeaurora.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 6 Aug 2021 11:32:03 +0200
+Message-ID: <CAPDyKFrebwt5=S7hqXvcqRvt+-EXLcVmRSRZt1uPf-9n7_pRDg@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] PM / Domains: Add support for 'required-opps' to
+ set default perf state
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, 4 Aug 2021 at 12:58, Rajendra Nayak <rnayak@codeaurora.org> wrote:
+>
+> Some devices within power domains with performance states do not
+> support DVFS, but still need to vote on a default/static state
+> while they are active. They can express this using the 'required-opps'
+> property in device tree, which points to the phandle of the OPP
+> supported by the corresponding power-domains.
+>
+> Add support to parse this information from DT and then set the
+> specified performance state during attach and drop it on detach.
+> runtime suspend/resume callbacks already have logic to drop/set
+> the vote as needed and should take care of dropping the default
+> perf state vote on runtime suspend and restore it back on runtime
+> resume.
+>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> ---
+>  drivers/base/power/domain.c | 28 ++++++++++++++++++++++++++--
+>  include/linux/pm_domain.h   |  1 +
+>  2 files changed, 27 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index a934c67..b9b5a9b 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -2598,6 +2598,12 @@ static void genpd_dev_pm_detach(struct device *dev, bool power_off)
+>
+>         dev_dbg(dev, "removing from PM domain %s\n", pd->name);
+>
+> +       /* Drop the default performance state */
+> +       if (dev_gpd_data(dev)->default_pstate) {
+> +               dev_pm_genpd_set_performance_state(dev, 0);
+> +               dev_gpd_data(dev)->default_pstate = 0;
+> +       }
+> +
+>         for (i = 1; i < GENPD_RETRY_MAX_MS; i <<= 1) {
+>                 ret = genpd_remove_device(pd, dev);
+>                 if (ret != -EAGAIN)
+> @@ -2637,6 +2643,8 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>  {
+>         struct of_phandle_args pd_args;
+>         struct generic_pm_domain *pd;
+> +       struct device_node *np;
+> +       int pstate;
+>         int ret;
+>
+>         ret = of_parse_phandle_with_args(dev->of_node, "power-domains",
+> @@ -2675,10 +2683,26 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>                 genpd_unlock(pd);
+>         }
+>
+> -       if (ret)
+> +       if (ret) {
+>                 genpd_remove_device(pd, dev);
+> +               return -EPROBE_DEFER;
+> +       }
+> +
+> +       /* Set the default performance state */
+> +       np = dev->of_node;
+> +       if (of_parse_phandle(np, "required-opps", index)) {
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+Looks like Viresh thinks it's a good idea to drop the error print in
+of_get_required_opp_performance_state() when there is no
+"required-opps" specifier.
 
-On Thu, 5 Aug 2021 17:55:52 +0300 you wrote:
-> hi
-> 
-> Now frame padding in TI TI CPSW/EMAC is implemented in a bit of entangled way as
-> frame SKB padded in drivers (without skb->len) while frame length fixed in CPDMA.
-> Things became even more confusing hence CPSW switcdev driver need to perform min
-> TX frame length correction in switch mode [1].
-> 
-> [...]
+Would you mind folding in a patch for that in the series, so this code
+can be simplified according to our earlier discussions?
 
-Here is the summary with links:
-  - [net-next,1/3] net: ethernet: ti: cpsw: switch to use skb_put_padto()
-    https://git.kernel.org/netdev/net-next/c/1f88d5d566b8
-  - [net-next,2/3] net: ethernet: ti: davinci_emac: switch to use skb_put_padto()
-    https://git.kernel.org/netdev/net-next/c/61e7a22da75b
-  - [net-next,3/3] net: ethernet: ti: davinci_cpdma: drop frame padding
-    https://git.kernel.org/netdev/net-next/c/9ffc513f95ee
+> +               pstate = of_get_required_opp_performance_state(np, index);
+> +               if (pstate < 0) {
+> +                       ret = pstate;
+> +                       dev_err(dev, "failed to set required performance state for power-domain %s: %d\n",
+> +                               pd->name, ret);
+> +               } else {
+> +                       dev_pm_genpd_set_performance_state(dev, pstate);
+> +                       dev_gpd_data(dev)->default_pstate = pstate;
+> +               }
+> +       }
+>
+> -       return ret ? -EPROBE_DEFER : 1;
+> +       return ret ? ret : 1;
+>  }
+>
+>  /**
+> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+> index 21a0577..67017c9 100644
+> --- a/include/linux/pm_domain.h
+> +++ b/include/linux/pm_domain.h
+> @@ -198,6 +198,7 @@ struct generic_pm_domain_data {
+>         struct notifier_block *power_nb;
+>         int cpu;
+>         unsigned int performance_state;
+> +       unsigned int default_pstate;
+>         unsigned int rpm_pstate;
+>         ktime_t next_wakeup;
+>         void *data;
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Other than the above, this looks good to me!
 
-
+Kind regards
+Uffe
