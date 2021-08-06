@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74423E2902
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0120C3E2905
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245242AbhHFLBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38694 "EHLO
+        id S245271AbhHFLB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231700AbhHFLA5 (ORCPT
+        with ESMTP id S245261AbhHFLBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:00:57 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799F4C061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 04:00:41 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id cl16-20020a17090af690b02901782c35c4ccso13331637pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 04:00:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bqezZ2/HwBTxC4hfR4A8RkBTbm8B6r0iUtltdIvH/WQ=;
-        b=wPfCjiqa1MALuiJUaKW5iy1FtNfG6I7bAdM+tcLUlHzl2neknstN3PG01WGezIG4Wn
-         AX67+2Wo1cV03hBdnAJyve/wr3U++Sv2+IO4fFRMwBMjg3MlY4LMXxnv9cUYr0J/w8ME
-         l0Btb8iRsW/UikCqCHgTYoJAbfIOOSYrxH6UeL81fCtnPOMXF1pOCqAmkKk5chBEiw6Z
-         yaTEYJbWUNoVt4HmP/4ut1Oa6QtRxGJUZVSJkrVVIiTdIOwLidoVSJUVDDptJehoEaTE
-         KjoaWncKZEYbCPNeDiBQIxq744EGlx7PnATR24qZV2yaDdvpXGHuLHdVuLaLwuvlgthS
-         ag0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bqezZ2/HwBTxC4hfR4A8RkBTbm8B6r0iUtltdIvH/WQ=;
-        b=alCO9MJMLhLrFiGrHUXN4rhWlRtCsYIgyI04jqX1L5RftLti1TewGmJMBl3A+PeyBA
-         31WGUfYFM54wzAqzBNhrKFZlgFUWDNNhlL20SVGA2GL6jjG1FSDOnsk0M4K/H5NopFCe
-         7kh9U8jkQB7thU5d7qqoEcmlKdQmnHJi69brpoGedroqvQzXBtvQtFmYp/ZVbngyV0/j
-         LHS9bnZHvFwC+PuFVBiJdWLHX/rXG9sMZVLa0Q99dJH6bgrQGg8gDfMi80kY1OZbztcY
-         bE49pyi+PeJsGxRkcfLCxQRO+/bhQbVFU3JmKuMIOQMOMUFwfo41cf/KNrz45D/CDfwb
-         eDeA==
-X-Gm-Message-State: AOAM53134IavF5+xENRWchDWJKC39LoppH5+oeHQONEa/VidC3mTMbFZ
-        eGnf4hafvEM7fiWe/mzfTSF9PD5iwdmx+WdXFmtA1w==
-X-Google-Smtp-Source: ABdhPJx2mx/FDsh5/262RxdOPkT6ydnEP3Uh2S21vtAYPtUS+Wn/DcQtgQAbZX/mXgpJQMdt+fMf5UfYoS3PcG5G/uw=
-X-Received: by 2002:a63:494f:: with SMTP id y15mr876560pgk.185.1628247641017;
- Fri, 06 Aug 2021 04:00:41 -0700 (PDT)
+        Fri, 6 Aug 2021 07:01:24 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E216C061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 04:01:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=REQ1W8sNJktjIPpaOp5ow7XK6buM4/6cGVuTXRlaEIU=; b=EPNGLjamYhabcCG2UgujoxkcIA
+        5C4CI6dfC2sfJg59jFnWBnQfwgrZdonWlawskbclRHtO11db150rO1qlLVxWPrKRjqoonQ9MPEuu7
+        CARlUqlfsLzXiFMtlIMXB3O51rvBz2Xwdm5nXVK1K/7vKfFypUJhjQ0v+TrRjC248sRH8AgXd27mn
+        1I4Mm8b3EIWNHfpLBb1KEFWJsBs2IS/X5dUXsK3Vp+YC7u/cV5bwq/mqMdso2+1XtqCUYsFmFH0jh
+        8z2aZNXrQ9/ZDtzHVIhybxx1gsUCPnUeF5jRY7T6FAGfGf1Y5lBuu2jIEn641Qa4Yfa2nz4Rfd24M
+        1K5wvI5w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mBxau-006LPB-TX; Fri, 06 Aug 2021 11:00:53 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E85A6980F93; Fri,  6 Aug 2021 13:00:51 +0200 (CEST)
+Date:   Fri, 6 Aug 2021 13:00:51 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: [patch V3 50/64] locking/rtmutex: Extend the rtmutex core to
+ support ww_mutex
+Message-ID: <20210806110051.GF22037@worktop.programming.kicks-ass.net>
+References: <20210805151300.330412127@linutronix.de>
+ <20210805153955.709189588@linutronix.de>
 MIME-Version: 1.0
-References: <20210806104407.2208538-1-xji@analogixsemi.com>
-In-Reply-To: <20210806104407.2208538-1-xji@analogixsemi.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 6 Aug 2021 13:00:30 +0200
-Message-ID: <CAG3jFyuB-PJc5S+jPiBH8_shyWR_05JTBiO802+tg+8RvBQUcg@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/bridge: anx7625: Tune K value for IVO panel
-To:     Xin Ji <xji@analogixsemi.com>
-Cc:     Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bernie Liang <bliang@analogixsemi.com>,
-        Qilin Wen <qwen@analogixsemi.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devel@driverdev.osuosl.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210805153955.709189588@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied to drm-misc-next
+On Thu, Aug 05, 2021 at 05:13:50PM +0200, Thomas Gleixner wrote:
+>  static __always_inline bool __waiter_less(struct rb_node *a, const struct rb_node *b)
+>  {
+> -	return rt_mutex_waiter_less(__node_2_waiter(a), __node_2_waiter(b));
+
+Given ^
+
+> +	struct rt_mutex_waiter *aw = __node_2_waiter(a);
+> +	struct rt_mutex_waiter *bw = __node_2_waiter(b);
+> +
+> +	if (rt_mutex_waiter_less(aw, bw))
+> +		return 1;
+
+We can, with this new build_ww_mutex(), do:
+
+	if (!build_ww_mutex())
+		return 0;
+
+here, to preserve the old behaviour.
+
+> +	if (rt_mutex_waiter_less(bw, aw))
+> +		return 0;
+> +
+> +	/* NOTE: relies on waiter->ww_ctx being set before insertion */
+> +	if (build_ww_mutex() && aw->ww_ctx) {
+
+Then it can go away here.
+
+> +		if (!bw->ww_ctx)
+> +			return 1;
+> +
+> +		return (signed long)(aw->ww_ctx->stamp -
+> +				     bw->ww_ctx->stamp) < 0;
+> +	}
+> +
+> +	return 0;
+>  }
+
+Also, I found a note that said I had to check what this code does for
+!RT tasks, lemme go do that now.
