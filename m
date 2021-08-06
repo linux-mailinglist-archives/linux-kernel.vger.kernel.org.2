@@ -2,189 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF26B3E2615
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEF43E2621
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 10:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244382AbhHFI2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 04:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244354AbhHFI2b (ORCPT
+        id S241954AbhHFIaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 04:30:14 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:33700
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244370AbhHFI2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 04:28:31 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D43EC00F7B2
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 01:23:31 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id gs8so13813596ejc.13
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 01:23:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bPpVwfXKyJ8nNQmnXadv/Kw1IpulMAFBz7mWmxslOEo=;
-        b=nkWTak2PFWnIb+oJeDC3piekjd+tI+8dYlftQcWBHVTgDrdBUmfqKO+HOpwnuC/Zkv
-         GWacANRJ160tspWCMJT26Gr0UKkltta2Eqt8y0NrIDGDTA9GuzJ+uolo744Wg3h886OY
-         x2OwhMPpBs8Mi7x7OFCvXoc76jRuB6+MnUz/pvNUhTFQjJtNM3L1MH1CwD57rtWpJPSt
-         JKNhh4TClC50OrvGZa1TfIyw+BAHw7HPk6bkcTrCYl3j3sb5sOHgRZVe9ttayTf5PQ0M
-         oHRto1zJZylkBXv0eRCVwAz+yTmyZzf1IuKTpZOVhCv2RC8L+tr96Jj/2BI1mFoboWna
-         i9QQ==
+        Fri, 6 Aug 2021 04:28:47 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 04F2C3F349
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 08:28:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1628238511;
+        bh=MnUaf5AkYg+Ni/0LSttCAcjbb55nUmFOJYj+n4i9K3w=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=P4oGF6+WmPMHoW/+Nvp6PeSgJeqm0idCwLiRZH6mtMz5jIQKGE7xI4xfBGhay3Oio
+         PGvjqxTWfvlzwRUUAWQgKj6iUAT5WxELQZb4tshMU2UQL8yqOokAUwtju25Qz7Dxhh
+         772QSTn594PVybrOUpZn3j/NKOmkQmEAOk84B7vFIY8l4y5oQiWOqbuWnGdSit8WTj
+         rO7oOVKqDR12FIiWr3h/DshcpQ5EVqB9xDo9+e0fAhCYhz/dTlSAN/hzbqaP1l3nSG
+         ouWYlZ6QeTKnppdm41chhK8yHBD2MwnyJdcQwZFZUW+dk4Rne0uPj99ZguoVxNCZsn
+         G0pSM81772DLA==
+Received: by mail-ed1-f69.google.com with SMTP id eg53-20020a05640228b5b02903bd6e6f620cso4535041edb.23
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 01:28:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=bPpVwfXKyJ8nNQmnXadv/Kw1IpulMAFBz7mWmxslOEo=;
-        b=qiQ4uGhG2fZMluxcsAzV552W7dDb/knUMXzTkz53mdIZCGPnfiFZ5ospvj6fAckyBb
-         kNu32JHfsFQuS9NZduSujgA//PA5wT3nQKboJWy10RODqsfnkWSclmZe3cJIM3LiQY/l
-         JzA/Ffsof1rek0hh2BeuufZVwnmZ2DjBEhVnuP+F/8isZ79tP4vucDvHWDcU+C78K8qZ
-         REbpCYKrns0BsFOPi2tHfXlpzhVRrajF9PLygOqnjWMN0Q+24SUlMNB8OlEsnNgY+xc+
-         1nNYPg1jL/NgnnBcRc320Q0r/Z6wVTfBDsXoR9wyBLu7dFO8oUeNwlL9orKZNbJtG+44
-         MgOg==
-X-Gm-Message-State: AOAM533vtoxpvfcMoIQPZRP92cxcPn25unocLMON5Aidg5pU2PUOg7Gp
-        8wbeduZEEqudiLJcK8DWK1KN1w==
-X-Google-Smtp-Source: ABdhPJxASobp9Q07krVdlvt3g2iYoOFnpP26CLycDvW6oq2OinajoPrDGgdLBL8WsPqK0BNZCB8pqg==
-X-Received: by 2002:a17:906:d7b2:: with SMTP id pk18mr8721287ejb.541.1628238209969;
-        Fri, 06 Aug 2021 01:23:29 -0700 (PDT)
-Received: from [192.168.0.105] (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id k20sm2605200ejr.93.2021.08.06.01.23.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 01:23:29 -0700 (PDT)
-Subject: Re: [PATCH v2 00/33] arm64: zynqmp: Extend board description
-To:     Michal Simek <michal.simek@xilinx.com>,
-        linux-kernel@vger.kernel.org, git@xilinx.com,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Michael Walle <michael@walle.cc>,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        bh=MnUaf5AkYg+Ni/0LSttCAcjbb55nUmFOJYj+n4i9K3w=;
+        b=bd9Z2IZ5IOG78YlY232XUWyU9zl0NqYTYQoWTKbpO8sWha0k9kw/sE6OVdQ/X0RA2g
+         0VsVbCF7+JmF67Dk9zqZe63MoSTG7oVbNVGXE3jJ5VgXc/Sc2xvtxBI1vHkpZ3/UqWcU
+         A0bEM/hBWb5OIO6foKYUw1K1IYMBvBFDTUBJbWfgOZ9rrDJPSgIP6m4bMc+tANRPkZRv
+         bppjSswKyhv1LYGVVvYugvhCoKydEIasiF2BWQmOfRINX1EZhmKn67WaLJO6NjoODfQO
+         t6KuXJynb/rtdFL9Voqq8tY1z7h+a+1MfgilXnEkp/U1QVCGukHUjFM7Dw7yzRFbKcTV
+         cuHA==
+X-Gm-Message-State: AOAM53041Gv94aoAF3wn8Q2tVDrR81io0aEihDTFFhHlB/2yTEQYDucl
+        DFUy838GEsDCpRiXOr6XCLY4RnZKWBHUwtBH/yRDgG0RH8PuVfh5zXusAnUnFFhwo74y+2ycXSz
+        zDH+YHnApyGSifdY6anoFytJ+S+KaDekCEoo7SjWFPw==
+X-Received: by 2002:aa7:d90f:: with SMTP id a15mr899449edr.9.1628238510740;
+        Fri, 06 Aug 2021 01:28:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzJfUgycduAl52oYXnvteqO8ZoEY3A8RvIKImSCxuG3Bnh0eITIFZhFGLfKLRGPgCkiNekYVg==
+X-Received: by 2002:aa7:d90f:: with SMTP id a15mr899433edr.9.1628238510602;
+        Fri, 06 Aug 2021 01:28:30 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id ee11sm763943edb.26.2021.08.06.01.28.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 01:28:30 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-References: <cover.1623684253.git.michal.simek@xilinx.com>
-From:   Michal Simek <monstr@monstr.eu>
-Message-ID: <4380bec9-a451-52fe-a49f-e305821f7ee9@monstr.eu>
-Date:   Fri, 6 Aug 2021 10:23:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH] arm64: dts: synaptics: remove unused DTSI for AS370
+Date:   Fri,  6 Aug 2021 10:26:35 +0200
+Message-Id: <20210806082635.20239-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <cover.1623684253.git.michal.simek@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The as370.dtsi for Synaptics AS370 SoC does not have a user (DTS board
+file), is uncompilable and untestable.  It was added back in 2018.  No
+user appeared since that time, so assume it won't be added.
 
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ .../devicetree/bindings/arm/syna.txt          |   4 -
+ arch/arm64/boot/dts/synaptics/as370.dtsi      | 173 ------------------
+ 2 files changed, 177 deletions(-)
+ delete mode 100644 arch/arm64/boot/dts/synaptics/as370.dtsi
 
-On 6/14/21 5:25 PM, Michal Simek wrote:
-> Hi,
-> 
-> over years couple of drivers were upstream and it is time to sync it up.
-> On the top of it also adding new Kria boards which are using new overlay
-> infrastructure which check if that overlays can be applied to base DT file.
-> 
-> Thanks,
-> Michal
-> 
-> Changes in v2:
-> - Add reviewed-by from Laurent
-> - New patch in the series
-> - New patch in the series
-> - Use sugar syntax - reported by Geert
-> - Update copyright years
-> - Fix SD3.0 comment alignment
-> - Remove one newline from Makefile
-> 
-> Amit Kumar Mahapatra (1):
->   arm64: zynqmp: Do not duplicate flash partition label property
-> 
-> Michal Simek (29):
->   arm64: zynqmp: Disable CCI by default
->   arm64: zynqmp: Enable fpd_dma for zcu104 platforms
->   arm64: zynqmp: Fix irps5401 device nodes
->   arm64: zynqmp: Add pinctrl description for all boards
->   arm64: zynqmp: Correct zcu111 psgtr description
->   arm64: zynqmp: Wire psgtr for zc1751-xm015
->   arm64: zynqmp: Correct psgtr description for zcu100-revC
->   arm64: zynqmp: Add phy description for usb3.0
->   arm64: zynqmp: Disable WP on zcu111
->   arm64: zynqmp: Add missing mio-bank properties to dc1 and dc5
->   arm64: zynqmp: Wire DP and DPDMA for dc1/dc4
->   arm64: zynqmp: Enable nand driver for dc2 and dc3
->   arm64: zynqmp: Remove additional newline
->   arm64: zynqmp: Move clock node to zynqmp-clk-ccf.dtsi
->   arm64: zynqmp: Add nvmem alises for eeproms
->   arm64: zynqmp: List reset property for ethernet phy
->   arm64: zynqmp: Remove can aliases from zc1751
->   arm64: zynqmp: Move DP nodes to the end of file on zcu106
->   arm64: zynqmp: Add note about UHS mode on some boards
->   arm64: zynqmp: Remove information about dma clock on zcu106
->   arm64: zynqmp: Wire qspi on multiple boards
->   arm64: zynqmp: Move rtc to different location on zcu104-revA
->   arm64: zynqmp: Add reset description for sata
->   arm64: zynqmp: Sync psgtr node location with zcu104-revA
->   arm64: zynqmp: Remove description for 8T49N287 and si5382 chips
->   arm64: zynqmp: Add support for zcu102-rev1.1 board
->   arm64: zynqmp: Enable xlnx,zynqmp-dwc3 driver for xilinx boards
->   arm64: zynqmp: Add psgtr description to zc1751 dc1 board
->   arm64: zynqmp: Add support for Xilinx Kria SOM board
-> 
-> Mounika Grace Akula (1):
->   arm64: zynqmp: Add reset-on-timeout to all boards and modify default
->     timeout value
-> 
-> Srinivas Neeli (1):
->   arm64: zynqmp: Update rtc calibration value
-> 
-> Stefano Stabellini (1):
->   arm64: zynqmp: Add missing SMID for pcie to zynqmp.dtsi
-> 
->  .../devicetree/bindings/arm/xilinx.yaml       |  32 ++
->  arch/arm64/boot/dts/xilinx/Makefile           |  11 +
->  .../arm64/boot/dts/xilinx/zynqmp-clk-ccf.dtsi |  13 +-
->  .../boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts  | 335 +++++++++++++++++
->  .../boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts  | 318 ++++++++++++++++
->  .../boot/dts/xilinx/zynqmp-sm-k26-revA.dts    | 289 +++++++++++++++
->  .../boot/dts/xilinx/zynqmp-smk-k26-revA.dts   |  21 ++
->  .../boot/dts/xilinx/zynqmp-zc1232-revA.dts    |  16 +-
->  .../boot/dts/xilinx/zynqmp-zc1254-revA.dts    |  16 +-
->  .../dts/xilinx/zynqmp-zc1751-xm015-dc1.dts    | 298 ++++++++++++++-
->  .../dts/xilinx/zynqmp-zc1751-xm016-dc2.dts    | 342 +++++++++++++++++-
->  .../dts/xilinx/zynqmp-zc1751-xm017-dc3.dts    |  23 +-
->  .../dts/xilinx/zynqmp-zc1751-xm018-dc4.dts    |  24 +-
->  .../dts/xilinx/zynqmp-zc1751-xm019-dc5.dts    | 330 ++++++++++++++++-
->  .../boot/dts/xilinx/zynqmp-zcu100-revC.dts    | 264 +++++++++++++-
->  .../boot/dts/xilinx/zynqmp-zcu102-rev1.1.dts  |  15 +
->  .../boot/dts/xilinx/zynqmp-zcu102-revA.dts    | 321 +++++++++++++++-
->  .../boot/dts/xilinx/zynqmp-zcu102-revB.dts    |   3 +-
->  .../boot/dts/xilinx/zynqmp-zcu104-revA.dts    | 292 ++++++++++++++-
->  .../boot/dts/xilinx/zynqmp-zcu104-revC.dts    | 250 ++++++++++++-
->  .../boot/dts/xilinx/zynqmp-zcu106-revA.dts    | 341 ++++++++++++++++-
->  .../boot/dts/xilinx/zynqmp-zcu111-revA.dts    | 275 +++++++++++++-
->  arch/arm64/boot/dts/xilinx/zynqmp.dtsi        |  99 +++--
->  23 files changed, 3833 insertions(+), 95 deletions(-)
->  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
->  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
->  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
->  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
->  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-zcu102-rev1.1.dts
-> 
-
-Applied 1-30, 32.
-
-31 and 33 requires newer version.
-
-Thanks,
-Michal
-
+diff --git a/Documentation/devicetree/bindings/arm/syna.txt b/Documentation/devicetree/bindings/arm/syna.txt
+index d8b48f2edf1b..851f48ead927 100644
+--- a/Documentation/devicetree/bindings/arm/syna.txt
++++ b/Documentation/devicetree/bindings/arm/syna.txt
+@@ -18,10 +18,6 @@ stable binding/ABI.
+ 
+ ---------------------------------------------------------------
+ 
+-Boards with the Synaptics AS370 SoC shall have the following properties:
+-  Required root node property:
+-    compatible: "syna,as370"
+-
+ Boards with a SoC of the Marvell Berlin family, e.g. Armada 1500
+ shall have the following properties:
+ 
+diff --git a/arch/arm64/boot/dts/synaptics/as370.dtsi b/arch/arm64/boot/dts/synaptics/as370.dtsi
+deleted file mode 100644
+index 4bb5d650df9c..000000000000
+--- a/arch/arm64/boot/dts/synaptics/as370.dtsi
++++ /dev/null
+@@ -1,173 +0,0 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+-/*
+- * Copyright (C) 2018 Synaptics Incorporated
+- *
+- * Author: Jisheng Zhang <jszhang@kernel.org>
+- */
+-
+-#include <dt-bindings/interrupt-controller/arm-gic.h>
+-
+-/ {
+-	compatible = "syna,as370";
+-	interrupt-parent = <&gic>;
+-	#address-cells = <2>;
+-	#size-cells = <2>;
+-
+-	psci {
+-		compatible = "arm,psci-1.0";
+-		method = "smc";
+-	};
+-
+-	cpus {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		cpu0: cpu@0 {
+-			compatible = "arm,cortex-a53";
+-			device_type = "cpu";
+-			reg = <0x0>;
+-			enable-method = "psci";
+-			next-level-cache = <&l2>;
+-			cpu-idle-states = <&CPU_SLEEP_0>;
+-		};
+-
+-		cpu1: cpu@1 {
+-			compatible = "arm,cortex-a53";
+-			device_type = "cpu";
+-			reg = <0x1>;
+-			enable-method = "psci";
+-			next-level-cache = <&l2>;
+-			cpu-idle-states = <&CPU_SLEEP_0>;
+-		};
+-
+-		cpu2: cpu@2 {
+-			compatible = "arm,cortex-a53";
+-			device_type = "cpu";
+-			reg = <0x2>;
+-			enable-method = "psci";
+-			next-level-cache = <&l2>;
+-			cpu-idle-states = <&CPU_SLEEP_0>;
+-		};
+-
+-		cpu3: cpu@3 {
+-			compatible = "arm,cortex-a53";
+-			device_type = "cpu";
+-			reg = <0x3>;
+-			enable-method = "psci";
+-			next-level-cache = <&l2>;
+-			cpu-idle-states = <&CPU_SLEEP_0>;
+-		};
+-
+-		l2: cache {
+-			compatible = "cache";
+-		};
+-
+-		idle-states {
+-			entry-method = "psci";
+-			CPU_SLEEP_0: cpu-sleep-0 {
+-				compatible = "arm,idle-state";
+-				local-timer-stop;
+-				arm,psci-suspend-param = <0x0010000>;
+-				entry-latency-us = <75>;
+-				exit-latency-us = <155>;
+-				min-residency-us = <1000>;
+-			};
+-		};
+-	};
+-
+-	osc: osc {
+-		compatible = "fixed-clock";
+-		#clock-cells = <0>;
+-		clock-frequency = <25000000>;
+-	};
+-
+-	pmu {
+-		compatible = "arm,cortex-a53-pmu";
+-		interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
+-			     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
+-			     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
+-			     <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+-		interrupt-affinity = <&cpu0>,
+-				     <&cpu1>,
+-				     <&cpu2>,
+-				     <&cpu3>;
+-	};
+-
+-	timer {
+-		compatible = "arm,armv8-timer";
+-		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+-			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+-			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+-			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
+-	};
+-
+-	soc@f7000000 {
+-		compatible = "simple-bus";
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-		ranges = <0 0 0xf7000000 0x1000000>;
+-
+-		gic: interrupt-controller@901000 {
+-			compatible = "arm,gic-400";
+-			#interrupt-cells = <3>;
+-			interrupt-controller;
+-			reg = <0x901000 0x1000>,
+-			      <0x902000 0x2000>,
+-			      <0x904000 0x2000>,
+-			      <0x906000 0x2000>;
+-			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+-		};
+-
+-		apb@e80000 {
+-			compatible = "simple-bus";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			ranges = <0 0xe80000 0x10000>;
+-
+-			uart0: serial@c00 {
+-				compatible = "snps,dw-apb-uart";
+-				reg = <0xc00 0x100>;
+-				interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+-				clocks = <&osc>;
+-				reg-shift = <2>;
+-				status = "disabled";
+-			};
+-
+-			gpio0: gpio@1800 {
+-				compatible = "snps,dw-apb-gpio";
+-				reg = <0x1800 0x400>;
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-
+-				porta: gpio-port@0 {
+-					compatible = "snps,dw-apb-gpio-port";
+-					gpio-controller;
+-					#gpio-cells = <2>;
+-					ngpios = <32>;
+-					reg = <0>;
+-					interrupt-controller;
+-					#interrupt-cells = <2>;
+-					interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
+-				};
+-			};
+-
+-			gpio1: gpio@2000 {
+-				compatible = "snps,dw-apb-gpio";
+-				reg = <0x2000 0x400>;
+-				#address-cells = <1>;
+-				#size-cells = <0>;
+-
+-				portb: gpio-port@1 {
+-					compatible = "snps,dw-apb-gpio-port";
+-					gpio-controller;
+-					#gpio-cells = <2>;
+-					ngpios = <32>;
+-					reg = <0>;
+-					interrupt-controller;
+-					#interrupt-cells = <2>;
+-					interrupts = <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+-				};
+-			};
+-		};
+-	};
+-};
 -- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
-
-
+2.30.2
 
