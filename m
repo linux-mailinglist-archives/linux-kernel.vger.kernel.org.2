@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9407B3E2B0C
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5343E2B0F
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343884AbhHFNAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 09:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343864AbhHFNAH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 09:00:07 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E086C061798;
-        Fri,  6 Aug 2021 05:59:51 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id nh14so16541136pjb.2;
-        Fri, 06 Aug 2021 05:59:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=QV8+3vxOb9JThgWsgTPyy60jjUFyxGwn5YBsNirDpJ4=;
-        b=V2aQmuI1Li4HyKLsJmJAy3RB1WEgkNcZ0PpvmsniElHeDuF3uCPHnjfJRBmYNrgYpl
-         0z2jwMiC2gd5806n2k/A/wkbS8qDKeLQIr+83g3oPuh4RQXcyJT7I0kvAH8xBvuJyn6X
-         Nqc+kJd6//RJf/6N6P2wk6G/sakmbsdCkaGx1Hz/Ah2IhVu692rxAxW6wg6MELJaFzAM
-         CWnWhIl3COKnAdERmHw1zRh6pWYK312Egg96aCSmY9wFDXe+nZ9MbYI8pqJaB2CoZezY
-         SVxfV5J/9nO8UCrFBOlYr6HZRe9+nVjmHbxNJ/quDEp/9SlTTGj4eNpoy59ECrfhDTlm
-         ZLvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=QV8+3vxOb9JThgWsgTPyy60jjUFyxGwn5YBsNirDpJ4=;
-        b=MNUmp2YXQZxEJTc/jY2XVuKWcXsxFr1eS3BrlbALr4c+kiJ+NTpIpgctDtpE/I/QxV
-         OtyzcLEGysdK/gc7xcQOy0pUhS1Vwkelq/zo8c8H6BzM0VuqDJtBcNRzvU1xdGbu7BLg
-         rn9UPLIblKGsYJl6Lcuff18hoJEazaLlcMnWyQEMYJDuTSr0wi6GNt2B3peA/6A04Tof
-         ZSZD1YI/z+AIwRJZ+K6jZ4EdeAnuWEVya0pEFI1mCW87+rMZF+ow/BptJqTKQMf4qE44
-         n2IAENji6n/EMomkSb76EfZmHmLajYhMyiA6HcXW0le7ikakAEFzreMsBCUOW02XzHPH
-         ctEw==
-X-Gm-Message-State: AOAM530h/8nCCW8zASphxRMb24RZKJYdi4iydIt8sEutUHZ7x9Nagd3d
-        3B4sdbJNsHBUxZHIDCs/d3W5fDWt7lKRwlYhAzU=
-X-Google-Smtp-Source: ABdhPJzVEYLb9xsccjSNAw5fPzp3ODozg0bM2b0LChJm1rRb1E4dIWMZXnAiYHfQ7dI0KBo1OOdaKg==
-X-Received: by 2002:a65:63d0:: with SMTP id n16mr737682pgv.432.1628254790482;
-        Fri, 06 Aug 2021 05:59:50 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
-        by smtp.gmail.com with ESMTPSA id d17sm10347201pfn.110.2021.08.06.05.59.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 05:59:49 -0700 (PDT)
-Message-ID: <610d3245.1c69fb81.5c341.f18c@mx.google.com>
-Date:   Fri, 06 Aug 2021 05:59:49 -0700 (PDT)
-X-Google-Original-Date: Fri, 06 Aug 2021 12:59:43 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210806081113.126861800@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 00/30] 5.10.57-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
+        id S1343912AbhHFNAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 09:00:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343900AbhHFNAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 09:00:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20F2B611C6;
+        Fri,  6 Aug 2021 13:00:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628254800;
+        bh=ZQUudtF0X8VZucm2a0aCFIgc5GwN+06NNws+XZzlUVU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Oek7skYNw8UyDiUGhbWoUu/PzYo+hJVlX9slHl/ifM32RWJBI+Qa3u24OUGw39KK/
+         /ZN8MV52NPuGJClVx4NtNGpZsOXHe30P6xd75Ry1oORKQ6mOiALHJer4Oq0u4nCX5X
+         YUSLbBY3E8cgV7NcWOCvrwK9WHqmcCS7+wL5Fuaft0UsLTVJsGzHZ2VeZiKxfXa/im
+         P9EfnC6xe1o6f+IPyV4muCVNBcg1VtDCWDDOCR32i/neqC9dh1x/qq2p1uqsUlCfJs
+         n+pt99PA6CEyyhu4LLNqI2rq9SnP6m32k7CSwpZnZfqRn0cZPTJBgTiFvhiC2Gajb8
+         0C8sq3QTogeJA==
+Date:   Fri, 6 Aug 2021 05:59:59 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/6] net: ipa: don't suspend/resume modem if
+ not up
+Message-ID: <20210806055959.51245c90@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <9aedc291-c424-9a9b-eac2-052d404ba0ad@linaro.org>
+References: <20210804153626.1549001-1-elder@linaro.org>
+        <20210804153626.1549001-2-elder@linaro.org>
+        <20210805182628.02ebf355@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <9aedc291-c424-9a9b-eac2-052d404ba0ad@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  6 Aug 2021 10:16:38 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.57 release.
-> There are 30 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, 6 Aug 2021 06:39:46 -0500 Alex Elder wrote:
+> On 8/5/21 8:26 PM, Jakub Kicinski wrote:
+> > On Wed,  4 Aug 2021 10:36:21 -0500 Alex Elder wrote:  
+> >> The modem network device is set up by ipa_modem_start().  But its
+> >> TX queue is not actually started and endpoints enabled until it is
+> >> opened.
+> >>
+> >> So avoid stopping the modem network device TX queue and disabling
+> >> endpoints on suspend or stop unless the netdev is marked UP.  And
+> >> skip attempting to resume unless it is UP.
+> >>
+> >> Signed-off-by: Alex Elder <elder@linaro.org>  
+> > 
+> > You said in the cover letter that in practice this fix doesn't matter.  
 > 
-> Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
-> Anything received after that time might be too late.
+> I don't think we've seen this problem with system suspend, but
+> with runtime suspend we could get a forced suspend request at
+> any time (and frequently), so if there is a problem, it will be
+> much more likely to occur.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.57-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+> For suspend, I don't think it's actually a "problem".  Disabling
+> the TX queue if it wasn't open is harmless--it just sets the
+> DRV_XOFF bit in the TX queue state field.  And we have a
+> separate "enabled endpoints" mask that prevents stopping or
+> suspending the endpoint if it wasn't opened.
 > 
-> thanks,
+> But for resume, waking the queue schedules it.  I'm not sure
+> what exactly ensues in that case, but it's not correct if the
+> network device hasn't been opened.  For endpoints, again, they
+> won't be resumed if they weren't enabled, so that part's OK.
 > 
-> greg k-h
+> > It seems trivial to test so perhaps it doesn't and we should leave the
+> > code be? Looking at dev->flags without holding rtnl_lock() seems
+> > suspicious, drivers commonly put the relevant portion of suspend/resume
+> > routines under rtnl_lock()/rtnl_unlock() (although to be completely  
 > 
+> I don't use rtnl_lock()/rtnl_unlock() *anywhere* in the driver.
+> It has no netlink interface (yet), and therefore I didn't even
+> think about using rtnl_lock().  Do I need it?
 
-5.10.57-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Runtime PM interactions with rtnl_lock get really tricky, if there are
+callers which will wake the device up while holding rtnl then taking
+rtnl in .resume will cause an obvious deadlock, right?
 
+I'm starting to feel like driver's RPM-related code has to be under it's
+own lock, and interrogating higher layer's (e.g. network stack's) state
+from RPM code should be avoided...
+
+Long story short I don't think we have a good handle on this, 
+I certainly don't so maybe let's leave your code be, for now.
+
+> > frank IDK if it's actually possible for concurrent suspend +
+> > open/close to happen).  
+> 
+> I think it isn't possible, but I'm less than 100% sure.  I've
+> been thinking a lot about exactly this sort of question lately...
+> 
+> > Are there any callers of ipa_modem_stop() which don't hold rtnl_lock()?  
+> 
+> None of them take that lock.  It is called in the driver ->remove
+> callback, and is called during cleanup if the modem crashes.
+> 
+> I think this fix is good, but as I said in the cover letter I'm
+> not aware of ever having hit it to date.
+> 
+> Thank you very much for your review and comments.
