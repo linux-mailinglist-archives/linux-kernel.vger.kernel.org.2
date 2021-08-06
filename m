@@ -2,115 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373D13E22A2
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8B33E22A4
 	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 06:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242727AbhHFEew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 00:34:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230353AbhHFEei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 00:34:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCAEF611C5;
-        Fri,  6 Aug 2021 04:34:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628224459;
-        bh=EolTbqTcuTIUW+jVDkYB935Z3TTEyaZ+u+VLSLIrw4A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iKcNBC8pCGifMlS34e3N+o69+5grs5j3qwjvkyWi3u/WpmY2c/gB/Dg+wG9fBSS8R
-         ulrU65e7Y/hN6ZOqJ6dzvRKS+DNsjCN3Uub9ljeFBZ8woiJwY8A9K8UqwudSSb8bK7
-         m09yXczF2L3ZiBZL8LAuamIlu7KNKkICwmLkR+Dw=
-Date:   Fri, 6 Aug 2021 06:34:17 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Sasha Levin <sashal@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
+        id S242773AbhHFEey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 00:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233838AbhHFEek (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 00:34:40 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC48DC06179A
+        for <linux-kernel@vger.kernel.org>; Thu,  5 Aug 2021 21:34:24 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id w6so10422163oiv.11
+        for <linux-kernel@vger.kernel.org>; Thu, 05 Aug 2021 21:34:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=zoxn86tI0OeId1+HsMFj7XfTnI0a8mb/MBGQLX/EXMQ=;
+        b=vHJ6XPyUZn6HJNpOvReBw9udckcsYokef5di4Syl6LKnkAactsc4UI9tj9lhQKRc0p
+         i/+4HPQobOZvRyjNn4Zebf2F1yOcSKsOn5V8tBuYKsk+PFIOtt1jrMEl8xd9Ztx5wzIT
+         n1MAnsVD+YiW8TTm0+g7+a2VsbVcGvGNym6KWmauxtV7zjI5v3XCM763w7dEODDSFNa4
+         uQvcfkiiE2EZApZ+s4qyMeJUKiqubOkwcYJT9ybNscj3gYQHSv5qHjzvedj9jcAMlbI6
+         Hf1bmO06V/2hWuag9tcb5QyIhNQNwLNAoczuTesYJsa7F0HDtlZdIRlHkTJLI4nHQAol
+         9/kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=zoxn86tI0OeId1+HsMFj7XfTnI0a8mb/MBGQLX/EXMQ=;
+        b=kiRZjRmxbP6gVBRyxTrBhh8mLNfFAdtMg7QHPMP0jnyZCUb75QlGZ9R06niPZRr6Aq
+         A9IPyL1f36eZbFUTH8o1u80ERMGBTI4E4OnVqsZY0Hwz3L0f3m9XXfTJns1fa7Ot6erI
+         I+oO/t7AtvoGl3gRGft+QzCJdyp2nj5/4wMnf9IAQzjquUaydcDIfbTfcmcrLDeO5KDi
+         dG0IJosDaM+3Gi3u4KWXoigR+jdcbtpX1P9R56otMf1LAg+Pf1Aesc5lzQO3lqFmimLE
+         rY9k/zrelHB4jCgrrYpc9Jkj+ELraCnJtXda5+XWi1ToiqWQdVbz8aa9XGUwIDC96TfX
+         8Mng==
+X-Gm-Message-State: AOAM533LdFsMD+tNbvjtRiQ84g2jqNMVH2/2YAXnfew3mPQJzBrnOy2h
+        cvtt7vu1vzoDlHj3IiKGQIfe9g==
+X-Google-Smtp-Source: ABdhPJy5u56QxNQUqymSFnehqcKPsPChropjc6cHc2YkxdrkZ0dZqTbexTDkIM8YqLF7bAvQLHej5w==
+X-Received: by 2002:aca:b909:: with SMTP id j9mr13116203oif.9.1628224463623;
+        Thu, 05 Aug 2021 21:34:23 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id n1sm1358979otk.34.2021.08.05.21.34.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 21:34:22 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 21:34:20 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.anvils
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+cc:     Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        stable@vger.kernel.org
-Subject: Re: [linux-stable-rc:linux-4.19.y 1181/1498] ERROR:
- "__compiletime_assert_491" [drivers/gpu/drm/i915/i915.ko] undefined!
-Message-ID: <YQy7yY+/+r4X/5v6@kroah.com>
-References: <202108060412.oMqAe0rc-lkp@intel.com>
- <CAKwvOdk6PNK1unJ2Yym4WHV=AXjdYwEyfWf_fPxO013ZtJa6Yw@mail.gmail.com>
- <YQx+HjjUrzIEkG/O@Ryzen-9-3900X.localdomain>
+        Shakeel Butt <shakeelb@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 08/16] huge tmpfs: fcntl(fd, F_HUGEPAGE) and fcntl(fd,
+ F_NOHUGEPAGE)
+In-Reply-To: <20210804140805.vpuerwaiqtcvc5or@box.shutemov.name>
+Message-ID: <caf82af1-1412-c8d7-e622-4f391689f8fe@google.com>
+References: <2862852d-badd-7486-3a8e-c5ea9666d6fb@google.com> <1c32c75b-095-22f0-aee3-30a44d4a4744@google.com> <20210804140805.vpuerwaiqtcvc5or@box.shutemov.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQx+HjjUrzIEkG/O@Ryzen-9-3900X.localdomain>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 05:11:10PM -0700, Nathan Chancellor wrote:
-> On Thu, Aug 05, 2021 at 04:23:40PM -0700, Nick Desaulniers wrote:
-> > On Thu, Aug 5, 2021 at 1:24 PM kernel test robot <lkp@intel.com> wrote:
-> > >
-> > > Hi Nick,
-> > >
-> > > First bad commit (maybe != root cause):
-> > >
-> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> > > head:   7457eed4b647560ae1b1800c295efc5f1db22e4b
-> > > commit: 7c29fd831799d09474dfdae556207b7102647a45 [1181/1498] lib/string.c: implement stpcpy
-> > > config: x86_64-randconfig-r024-20210805 (attached as .config)
-> > > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 31a71a393f65d9e07b5b0756fef9dd16690950ee)
-> > > reproduce (this is a W=1 build):
-> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> > >         chmod +x ~/bin/make.cross
-> > >         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=7c29fd831799d09474dfdae556207b7102647a45
-> > >         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > >         git fetch --no-tags linux-stable-rc linux-4.19.y
-> > >         git checkout 7c29fd831799d09474dfdae556207b7102647a45
-> > >         # save the attached .config to linux build tree
-> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
-> > >
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > >
-> > > All errors (new ones prefixed by >>):
-> > >
-> > > >> ERROR: "__compiletime_assert_491" [drivers/gpu/drm/i915/i915.ko] undefined!
+On Wed, 4 Aug 2021, Kirill A. Shutemov wrote:
+> On Fri, Jul 30, 2021 at 12:48:33AM -0700, Hugh Dickins wrote:
+> > Add support for fcntl(fd, F_HUGEPAGE) and fcntl(fd, F_NOHUGEPAGE), to
+> > select hugeness per file: useful to override the default hugeness of the
+> > shmem mount, when occasionally needing to store a hugepage file in a
+> > smallpage mount or vice versa.
+> 
+> Hm. But why is the new MFD_* needed if the fcntl() can do the same.
+
+That I've just addressed in the MFD_HUGEPAGE 07/16 thread.
+
+> 
+> > These fcntls just specify whether or not to try for huge pages when
+> > allocating to the object later: F_HUGEPAGE does not touch small pages
+> > already allocated (though khugepaged may do so when the file is mapped
+> > afterwards), F_NOHUGEPAGE does not split huge pages already allocated.
 > > 
-> > ^ I'm actively trying to improve these diagnostics in LLVM at the
-> > moment. Hopefully that will make this report clearer!
-> > https://reviews.llvm.org/D106030
+> > Why fcntl?  Because it's already in use (for sealing) on memfds; and I'm
+> > anxious to keep this simple, just applying it to whole files: fallocate,
+> > madvise and posix_fadvise each involve a range, which would need a new
+> > kind of tree attached to the inode for proper support.
 > 
-> It does help :)
-> 
-> drivers/gpu/drm/i915/intel_engine_cs.c:466:2: error: call to '__compiletime_assert_491' declared with attribute error: BUILD_BUG_ON failed: (execlists_num_ports(execlists)) == 0 || (((execlists_num_ports(execlists)) & ((execlists_num_ports(execlists)) - 1)) != 0)
->         BUILD_BUG_ON_NOT_POWER_OF_2(execlists_num_ports(execlists));
->         ^
-> include/linux/build_bug.h:21:2: note: expanded from macro 'BUILD_BUG_ON_NOT_POWER_OF_2'
->         BUILD_BUG_ON((n) == 0 || (((n) & ((n) - 1)) != 0))
->         ^
-> include/linux/build_bug.h:69:2: note: expanded from macro 'BUILD_BUG_ON'
->         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
->         ^
-> include/linux/build_bug.h:45:37: note: expanded from macro 'BUILD_BUG_ON_MSG'
-> #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->                                     ^
-> note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-> include/linux/compiler.h:336:2: note: expanded from macro '_compiletime_assert'
->         __compiletime_assert(condition, msg, prefix, suffix)
->         ^
-> include/linux/compiler.h:329:4: note: expanded from macro '__compiletime_assert'
->                         prefix ## suffix();                             \
->                         ^
-> <scratch space>:83:1: note: expanded from here
-> __compiletime_assert_491
-> ^
-> 4 warnings and 1 error generated.
-> 
-> As it turns out, this has come up before and it was fixed by commit
-> 410ed5731a65 ("drm/i915: Ensure intel_engine_init_execlist() builds with
-> Clang").
-> 
-> Greg and Sasha, could this be picked up for 4.19?
+> Most of fadvise() operations ignore the range. I like fadvise() because
+> it's less prescriptive: kernel is free to ignore it.
 
-Now queued up, thanks.
+As to ignoring the range, yes, I see now that some do; and I'm relieved
+to see "Len == 0 means as much as possible", that's great, I was afraid
+of compat bugs over 0xffy numbers for the len.  And we would want, not
+to ignore the range, but insist on offset 0, len 0 for now, if there's
+any intention (not mine) of extending it to ranges in the future.
 
-greg k-h
+As to ignoring the prescription, that's just a matter of how we describe
+it in the manpage, no matter whether it's fadvise() or fcntl().
+
+And in the 07/16 thread you also said:
+
+> 
+> If a tunable needed, I would rather go with fadvise(). It would operate on
+> a couple of bits per struct file and they get translated into VM_HUGEPAGE
+> and VM_NOHUGEPAGE on mmap().
+
+Not so sure about that detail: the point here is to decide what kind
+of allocations to try for, before the file is mmap()ed; and it is the
+file (the underlying object) that I want to condition here, rather than
+the struct file of who has it open at the time, or their mmap()s.
+
+But adding the flags into the vm_flags on mmap(): that's an interesting
+idea, I haven't played with that at all.  Offhand, I don't think it will
+give different allocation results from what I'm already doing, but might
+affect what is shown by default in /proc/<pid>/smaps.
+
+> 
+> Later if needed fadvise() implementation may be extended to track
+> requested ranges. But initially it can be simple.
+
+I still prefer fcntl() myself, but we can go with either: what I'd
+like to hear is the preference of linux-fsdevel and linux-api people.
+
+Aside from the unused offset+len, my main problem with fadvise()
+is that... it doesn't exist.  It's posix_fadvise() or fadvise64() or
+fadvise64_64(), and all its good advices are POSIX_MADV_whatever.
+
+Are we comfortable now adding LINUX_MADV_HUGEPAGE, LINUX_MADV_NOHUGEPAGE?
+
+I find myself singing 64 64 Zoo Lane.
+
+Hugh
