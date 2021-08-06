@@ -2,94 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1663E2252
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 06:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4D83E225C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 06:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236742AbhHFEF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 00:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233048AbhHFEFy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 00:05:54 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90634C061798;
-        Thu,  5 Aug 2021 21:05:38 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id a8so14143445pjk.4;
-        Thu, 05 Aug 2021 21:05:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8xTUSIk0PEm8dgw5EgzCWiooT9Ptt7rnMynSDDHrUL4=;
-        b=P9QyDwPfaCBusnlXTuu8jpSN8khInXlLCQ/da6NCgEyS3nN+rpE75pUJmpr4/XwEMv
-         aErgvi+ExObcztUeWzsK4JDkhIoDldjw8/RLiiNFPwlFk3XrV4IYne/UmWpGRRgu74Q9
-         xyUYCgY39kEhZep5et8zywvCTZ4Nh3hyVEkppRQuY/igndPb30C30qHWBuZZSSonNlm2
-         6QAF397lUIAqDlg9Di+bOhvCOtOcOJhcMShMwto4tOykNPjdNAktEd09F+0wbgUOKMGM
-         5T7DCvODfVxCfTZavL+NbxOwDa9EUIiDY4QJBLj9n3+66jvOmYyqrFAOuFjh19QhF29Y
-         x1fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8xTUSIk0PEm8dgw5EgzCWiooT9Ptt7rnMynSDDHrUL4=;
-        b=FkJd+jD9rs43K67VZP7B23HS1g7vF2dt6sfZvQB4iM+FwzYxA7N6lY1bugxUVsUWGj
-         TrHOZRuPirUHNVTwo58MihIDuQXnnc/3xICv/ZAMl2kY2we/0UC4YjxCYDu3EyDmivft
-         YqkbDWosqc1cPWwnu7+dZXJA7+osRwct7tTRFAwBJkma++L5LCNzeVvzEiWqxDm+fLB8
-         ajsh346hgvOWu7gQuo8udR3lP00HcG39sUlJ76J7zHMJhlvzEUh+H1S1yClcDVjwzw0I
-         Sf+QDibtINqS9PsXq8ra8DqzbxbP7vOzIZrsUxnyDzyYXXQXhcfY1/XgnBToeh1Wk+Fx
-         nrMQ==
-X-Gm-Message-State: AOAM533NPBPz2wKuF6/aAs8x+35zL8K50n2j6EPfo/MYF4CHoqrvf3GU
-        DY8GArgHoAb5ixPxjLYtBCs=
-X-Google-Smtp-Source: ABdhPJy2+Gv/lUqLi0cu47cWtSKJ+epXlw5mBn6fJYrYzFKdgAssRpEufHv2GHAmie5Vs+J8jK4bLg==
-X-Received: by 2002:a63:5619:: with SMTP id k25mr286282pgb.92.1628222738170;
-        Thu, 05 Aug 2021 21:05:38 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id 186sm8597505pfg.11.2021.08.05.21.05.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 21:05:37 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net] net: dsa: mt7530: add the missing RxUnicast MIB counter
-Date:   Fri,  6 Aug 2021 12:05:27 +0800
-Message-Id: <20210806040528.735606-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S242280AbhHFEPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 00:15:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229836AbhHFEPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 00:15:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DD9860EBC;
+        Fri,  6 Aug 2021 04:15:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628223303;
+        bh=iOjc/0/HUU3pEtEtet4Pzyq7t3h6ygOVDXTBFLZaatg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=hvzWNnPqmGH4WsnZwgRgRIkOvZyglo8QxliWthkiCx+bdBcFZDgMFPebLtOGOdcUn
+         sh6hZbTT8E2TaLPqByA9yx2KTleUDf7pBdsamhqMU+Cgq/Pc5FvFXy2nvEbjEuoiDE
+         msWOxH1A6b9Cv/sbhMB/P11HW6E8Ve1DKaczfXdk1yzaZC7u8z6GijYQuqPqcUR6b5
+         +ULCULAC6vCuXeJFQQjk0DMrGStaksRv8yfzXV8CM66qxEpOWKGL8anFVaPtg3CvUU
+         SAFGpEPCk9XfYAXbCHy2+bcALpeQ1XDXRrbRWDDOfPYtV3MLK47iB5JMSOgK97/Ti/
+         6yZlRRYao97Jg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2239A5C1722; Thu,  5 Aug 2021 21:15:03 -0700 (PDT)
+Date:   Thu, 5 Aug 2021 21:15:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Chao Gao <chao.gao@intel.com>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [clocksource]  8901ecc231:  stress-ng.lockbus.ops_per_sec -9.5%
+ regression
+Message-ID: <20210806041503.GO4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
+ <20210802062008.GA24720@gao-cwp>
+ <20210802170257.GL4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210803085759.GA31621@gao-cwp>
+ <20210803134816.GO4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210805021646.GA11629@gao-cwp>
+ <20210805040349.GD4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210805053938.GA12593@gao-cwp>
+ <20210805153727.GG4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210806020958.GA18104@gao-cwp>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806020958.GA18104@gao-cwp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing RxUnicast counter.
+On Fri, Aug 06, 2021 at 10:10:00AM +0800, Chao Gao wrote:
+> On Thu, Aug 05, 2021 at 08:37:27AM -0700, Paul E. McKenney wrote:
+> >On Thu, Aug 05, 2021 at 01:39:40PM +0800, Chao Gao wrote:
+> >> [snip]
+> >> >> This patch works well; no false-positive (marking TSC unstable) in a
+> >> >> 10hr stress test.
+> >> >
+> >> >Very good, thank you!  May I add your Tested-by?
+> >> 
+> >> sure.
+> >> Tested-by: Chao Gao <chao.gao@intel.com>
+> >
+> >Very good, thank you!  I will apply this on the next rebase.
+> >
+> >> >I expect that I will need to modify the patch a bit more to check for
+> >> >a system where it is -never- able to get a good fine-grained read from
+> >> >the clock.
+> >> 
+> >> Agreed.
+> >> 
+> >> >And it might be that your test run ended up in that state.
+> >> 
+> >> Not that case judging from kernel logs. Coarse-grained check happened 6475
+> >> times in 43k seconds (by grep "coarse-grained skew check" in kernel logs).
+> >> So, still many checks were fine-grained.
+> >
+> >Whew!  ;-)
+> >
+> >So about once per 13 clocksource watchdog checks.
+> >
+> >To Andi's point, do you have enough information in your console log to
+> >work out the longest run of course-grained clocksource checks?
+> 
+> Yes. 5 consecutive course-grained clocksource checks. Note that
+> considering the reinitialization after course-grained check, in my
+> calculation, two course-grained checks are considered consecutive if
+> they happens in 1s(+/- 0.3s).
 
-Fixes: b8f126a8d543 ("net-next: dsa: add dsa support for Mediatek MT7530 switch")
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
----
- drivers/net/dsa/mt7530.c | 1 +
- 1 file changed, 1 insertion(+)
+Very good, thank you!
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 385e169080d9..9d7c52172af5 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -47,6 +47,7 @@ static const struct mt7530_mib_desc mt7530_mib[] = {
- 	MIB_DESC(2, 0x48, "TxBytes"),
- 	MIB_DESC(1, 0x60, "RxDrop"),
- 	MIB_DESC(1, 0x64, "RxFiltering"),
-+	MIB_DESC(1, 0x68, "RxUnicast"),
- 	MIB_DESC(1, 0x6c, "RxMulticast"),
- 	MIB_DESC(1, 0x70, "RxBroadcast"),
- 	MIB_DESC(1, 0x74, "RxAlignErr"),
--- 
-2.25.1
+So it seems eminently reasonable to have the clocksource watchdog complain
+bitterly for more than (say) 100 consecutive course-grained checks.
 
+I am thinking in terms of a separate patch for this purpose.
+
+Thoughts?
+
+							Thanx, Paul
