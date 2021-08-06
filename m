@@ -2,171 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71A43E29BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF793E2996
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245552AbhHFLd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:33:29 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:1563 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245541AbhHFLdW (ORCPT
+        id S245499AbhHFLao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:30:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55891 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236130AbhHFLal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:33:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1628249588; x=1659785588;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=uQOYpWS7Qrcgkx+VH2ts2v8g+61j0yRDKNU96qalLg4=;
-  b=Rnm9vVU5D4m8Qf489qC5xnKgVPQshdxz7UuHBE3QzbqHh7BpcQxGsmT/
-   LX0kev5uJVJXtqM130zGBvBOQWqPEQvZX+4eB3Rxwk+6wh5caAlPJ1DLZ
-   HRrn1+OVaFouaCr9z5KK2YUDBKImECLEatD9aIqxYVq6MlmOcdb2goE99
-   QrIyttTcnxdeF6Wf8o3fZT2m5wrKT4I7NllzEyVlrmRG2fEfltnivv6XT
-   94Oy7UCSnUXroBSAwfYOrsUWel4xS5zil3oSMFw+9sQbfZ2ZqwaXi2w/J
-   7+O3QebU6nRwJpkEJpA6VVGKGp4rWGd8UkyBBgF6BBSSrt5q12OegLgYG
-   A==;
-IronPort-SDR: N9C65RxcqZ5RibRA/eC5z1L/pV/gBDNOXlTzOYwpwpNylUaCJ3ylAAuoEdKVouZqPp4Vselt0P
- MJ6I92rqREF/8FpbNcqfE42jxt/mf/g/8SXuASVY0le5hSmWoblXXybnPCXG+IR8FCp8e3aEta
- mu7+SBZssYCxwVfwV/bOnOYuecFjhWjmfMJR3rBUyKFa5EF1StPR42VxSPfA9+qmk4jyC8C2ua
- dfWeoKyUFvVflXXwDZTSYMvTq2r6B8MbWGbZNCUZWcmwJneYD8YaxqoE+xYCXmjfdm3i17Wr49
- ATbysUABDpGKTeuoQyDN7edy
-X-IronPort-AV: E=Sophos;i="5.84,300,1620716400"; 
-   d="scan'208";a="131292938"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 06 Aug 2021 04:33:06 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 6 Aug 2021 04:33:04 -0700
-Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Fri, 6 Aug 2021 04:32:59 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <ulf.hansson@linaro.org>, <robh+dt@kernel.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>
-CC:     <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        "Eugen Hristev" <eugen.hristev@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 4/4] ARM: dts: at91: sama5d27_wlsom1: add wifi device
-Date:   Fri, 6 Aug 2021 14:30:01 +0300
-Message-ID: <20210806113001.821660-5-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210806113001.821660-1-claudiu.beznea@microchip.com>
-References: <20210806113001.821660-1-claudiu.beznea@microchip.com>
+        Fri, 6 Aug 2021 07:30:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628249425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pTlr3c52TlrPZjNn01B9Yc2TW1zR2QrXNrx8DpDtl0g=;
+        b=E2uvy+4WL8l239yELwfUIApCyrHtre5koeThEh2jqZqdsVQJ0SPgb2ws6Hz98ABcqOPt6J
+        3xC2AMM0vk3ZsIkIBqnLtQE79fqS8gU9Le6o9XVP9orp1QNsFWfJUfwi2wt6lWTbBFnL3g
+        kplW+dY4uxWX71jSsubv2SzYFDImoo0=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-292-XDUsfhOOM1ucs_1sc2UfWw-1; Fri, 06 Aug 2021 07:30:24 -0400
+X-MC-Unique: XDUsfhOOM1ucs_1sc2UfWw-1
+Received: by mail-wm1-f71.google.com with SMTP id e21-20020a05600c4b95b029025b007a168dso3751514wmp.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 04:30:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=pTlr3c52TlrPZjNn01B9Yc2TW1zR2QrXNrx8DpDtl0g=;
+        b=VgaRN3yPNyeSjWHqYbV+GbKwmri0JNpa3/RKz3Mmb2wj2ZsSG3ww12ctTyrQvKmavE
+         47hL4hOLbJcS19DEf7QikWHgy58RlB0KeybzH8LR2SyMf3juGAZ51SloWHhDfwt6GPcR
+         4z+SdYdiP+NvA+lA7lB1WW/xajk68Ptm7G0z18SgI1gezZIRDYlTO9VYYM6/PKFrnsIH
+         Mr75BybdqtiZfdmnSdwokfvJINRGBPmenBkeOUSMRDE9ekrqXbHpLOIERiOVhLU3ZEqC
+         l3Y9Hf6p9R7xPrkqMt7keWBTbis/4742XpwEZRHuvjGa076Rt8AH0I2cAW3XJ5FCIICt
+         Vimg==
+X-Gm-Message-State: AOAM530kK/iP6Ns4Jk7ji+eta1LETpPdZ3rjunp8fp09qsheFxvgotYd
+        irC6HboqapQdZKaCZxBQFkGu+jTx/pS2JJCx69bFZ5VElmraGTnFBuyEDPiO3SuEQ74P3KbpsSo
+        d0atz7fCP23VZwKWlWnPkarIQ
+X-Received: by 2002:adf:f602:: with SMTP id t2mr10044868wrp.232.1628249423141;
+        Fri, 06 Aug 2021 04:30:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwNmG6xkSFgJJKLpxPSZOuyPxqiv5NEnXFWCst9foFZeSqgWcwPEuP2Q12L+fDdVGB/UHUOnQ==
+X-Received: by 2002:adf:f602:: with SMTP id t2mr10044849wrp.232.1628249422950;
+        Fri, 06 Aug 2021 04:30:22 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6104.dip0.t-ipconnect.de. [91.12.97.4])
+        by smtp.gmail.com with ESMTPSA id x15sm8944899wrs.57.2021.08.06.04.30.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Aug 2021 04:30:22 -0700 (PDT)
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     kvm@vger.kernel.org, cohuck@redhat.com, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, thuth@redhat.com, pasic@linux.ibm.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulrich.Weigand@de.ibm.com,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Michal Hocko <mhocko@kernel.org>
+References: <20210804154046.88552-1-imbrenda@linux.ibm.com>
+ <86b114ef-41ea-04b6-327c-4a036f784fad@redhat.com>
+ <20210806113005.0259d53c@p-imbrenda>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v3 00/14] KVM: s390: pv: implement lazy destroy
+Message-ID: <ada27c6d-4dc9-04c3-d5b9-566e65359701@redhat.com>
+Date:   Fri, 6 Aug 2021 13:30:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210806113005.0259d53c@p-imbrenda>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eugen Hristev <eugen.hristev@microchip.com>
+>>> This means that the same address space can have memory belonging to
+>>> more than one protected guest, although only one will be running,
+>>> the others will in fact not even have any CPUs.
+>>
+>> ... this ...
+> 
+> this ^ is exactly the reboot case.
 
-SAMA5D27 WLSOM1 boards has a WILC3000 device soldered. Add proper
-device tree nodes for this.
+Ah, right, we're having more than one protected guest per process, so 
+it's all handled within the same process.
 
-[eugen.hristev: original author of this code]
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-[nicolas.ferre: original author of this code]
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-[claudiu.beznea: adapt for mmc-pwrseq-sd8787, commit message]
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi | 72 +++++++++++++++++++++
- 1 file changed, 72 insertions(+)
+> 
+>>> When a guest is destroyed, its memory still counts towards its
+>>> memory control group until it's actually freed (I tested this
+>>> experimentally)
+>>>
+>>> When the system runs out of memory, if a guest has terminated and
+>>> its memory is being cleaned asynchronously, the OOM killer will
+>>> wait a little and then see if memory has been freed. This has the
+>>> practical effect of slowing down memory allocations when the system
+>>> is out of memory to give the cleanup thread time to cleanup and
+>>> free memory, and avoid an actual OOM situation.
+>>
+>> ... and this sound like the kind of arch MM hacks that will bite us
+>> in the long run. Of course, I might be wrong, but already doing
+>> excessive GFP_ATOMIC allocations or messing with the OOM killer that
+> 
+> they are GFP_ATOMIC but they should not put too much weight on the
+> memory and can also fail without consequences, I used:
+> 
+> GFP_ATOMIC | __GFP_NOMEMALLOC | __GFP_NOWARN
+> 
+> also notice that after every page allocation a page gets freed, so this
+> is only temporary.
 
-diff --git a/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi b/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi
-index 025a78310e3a..de8bb3439aef 100644
---- a/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi
-+++ b/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi
-@@ -30,6 +30,16 @@ main_xtal {
- 			clock-frequency = <24000000>;
- 		};
- 	};
-+
-+	wifi_pwrseq: wifi_pwrseq {
-+		compatible = "mmc-pwrseq-sd8787";
-+		reset-gpios = <&pioA PIN_PA27 GPIO_ACTIVE_HIGH>;
-+		powerdown-gpios = <&pioA PIN_PA29 GPIO_ACTIVE_HIGH>;
-+		reset-power-delay-ms = <5>;
-+		pinctrl-0 = <&pinctrl_wilc_pwrseq>;
-+		pinctrl-names = "default";
-+		status = "okay";
-+	};
- };
- 
- &flx1 {
-@@ -310,5 +320,67 @@ pinctrl_qspi1_default: qspi1_default {
- 			 <PIN_PB10__QSPI1_IO3>;
- 		bias-pull-up;
- 	};
-+
-+	pinctrl_sdmmc1_default: sdmmc1_default {
-+		cmd-data {
-+			pinmux = <PIN_PA28__SDMMC1_CMD>,
-+				 <PIN_PA18__SDMMC1_DAT0>,
-+				 <PIN_PA19__SDMMC1_DAT1>,
-+				 <PIN_PA20__SDMMC1_DAT2>,
-+				 <PIN_PA21__SDMMC1_DAT3>;
-+			bias-disable;
-+		};
-+
-+		conf-ck {
-+			pinmux = <PIN_PA22__SDMMC1_CK>;
-+			bias-disable;
-+		};
-+	};
-+
-+	pinctrl_wilc_default: wilc_default {
-+		conf-irq {
-+			pinmux = <PIN_PB25__GPIO>;
-+			bias-disable;
-+		};
-+	};
-+
-+	pinctrl_wilc_pwrseq: wilc_pwrseq {
-+		conf-ce-nrst {
-+			pinmux = <PIN_PA27__GPIO>,
-+				 <PIN_PA29__GPIO>;
-+			bias-disable;
-+		};
-+
-+		conf-rtcclk {
-+			pinmux = <PIN_PB13__PCK1>;
-+			bias-disable;
-+		};
-+	};
-+};
-+
-+&sdmmc1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	bus-width = <4>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sdmmc1_default>;
-+	mmc-pwrseq = <&wifi_pwrseq>;
-+	no-1-8-v;
-+	non-removable;
-+	status = "okay";
-+
-+	wilc: wilc@0 {
-+		reg = <0>;
-+		bus-width = <4>;
-+		compatible = "microchip,wilc3000", "microchip,wilc1000";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_wilc_default>;
-+		irq-gpios = <&pioA PIN_PB25 GPIO_ACTIVE_LOW>;
-+		clocks = <&pmc PMC_TYPE_SYSTEM 9>;
-+		clock-names = "rtc";
-+		assigned-clocks = <&pmc PMC_TYPE_SYSTEM 9>;
-+		assigned-clock-rates = <32768>;
-+		status = "okay";
-+	};
- };
- 
+Correct me if I'm wrong: you're allocating unmovable pages for tracking 
+(e.g., ZONE_DMA, ZONE_NORMAL) from atomic reserves and will free a 
+movable process page, correct? Or which page will you be freeing?
+
+> 
+> I would not call it "messing with the OOM killer", I'm using the same
+> interface used by virtio-baloon
+
+Right, and for virtio-balloon it's actually a workaround to restore the 
+original behavior of a rarely used feature: deflate-on-oom. Commit 
+da10329cb057 ("virtio-balloon: switch back to OOM handler for 
+VIRTIO_BALLOON_F_DEFLATE_ON_OOM") tried to document why we switched back 
+from a shrinker to VIRTIO_BALLOON_F_DEFLATE_ON_OOM:
+
+"The name "deflate on OOM" makes it pretty clear when deflation should
+  happen - after other approaches to reclaim memory failed, not while
+  reclaiming. This allows to minimize the footprint of a guest - memory
+  will only be taken out of the balloon when really needed."
+
+Note some subtle differences:
+
+a) IIRC, before running into the OOM killer, will try reclaiming
+    anything  else. This is what we want for deflate-on-oom, it might not
+    be what you want for your feature (e.g., flushing other processes/VMs
+    to disk/swap instead of waiting for a single process to stop).
+
+b) Migration of movable balloon inflated pages continues working because
+    we are dealing with non-lru page migration.
+
+Will page reclaim, page migration, compaction, ... of these movable LRU 
+pages still continue working while they are sitting around waiting to be 
+cleaned up? I can see that we're grabbing an extra reference when we put 
+them onto the list, that might be a problem: for example, we can most 
+certainly not swap out these pages or write them back to disk on memory 
+pressure.
+
+> 
+>> way for a pure (shutdown) optimization is an alarm signal. Of course,
+>> I might be wrong.
+>>
+>> You should at least CC linux-mm. I'll do that right now and also CC
+>> Michal. He might have time to have a quick glimpse at patch #11 and
+>> #13.
+>>
+>> https://lkml.kernel.org/r/20210804154046.88552-12-imbrenda@linux.ibm.com
+>> https://lkml.kernel.org/r/20210804154046.88552-14-imbrenda@linux.ibm.com
+>>
+>> IMHO, we should proceed with patch 1-10, as they solve a really
+>> important problem ("slow reboots") in a nice way, whereby patch 11
+>> handles a case that can be worked around comparatively easily by
+>> management tools -- my 2 cents.
+> 
+> how would management tools work around the issue that a shutdown can
+> take very long?
+
+The traditional approach is to wait starting a new VM on another 
+hypervisor instead until memory has been freed up, or start it on 
+another hypervisor. That raises the question about the target use case.
+
+What I don't get is that we have to pay the price for freeing up that 
+memory. Why isn't it sufficient to keep the process running and let 
+ordinary MM do it's thing?
+
+Maybe you should clearly spell out what the target use case for the fast 
+shutdown (fast quitting of the process?) is?. I assume it is, starting a 
+new VM / process / whatsoever on the same host immediately, and then
+
+a) Eventually slowing down other processes due heavy reclaim.
+b) Slowing down the new process because you have to pay the price of 
+cleaning up memory.
+
+I think I am missing why we need the lazy destroy at all when killing a 
+process. Couldn't you instead teach the OOM killer "hey, we're currently 
+quitting a heavy process that is just *very* slow to free up memory, 
+please wait for that before starting shooting around" ?
+
 -- 
-2.25.1
+Thanks,
+
+David / dhildenb
 
