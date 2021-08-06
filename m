@@ -2,82 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A483E280F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741BE3E281C
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 12:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244839AbhHFKHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 06:07:35 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:33164 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244807AbhHFKHc (ORCPT
+        id S244894AbhHFKIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 06:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244898AbhHFKIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 06:07:32 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 176A7EkG111096;
-        Fri, 6 Aug 2021 05:07:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1628244434;
-        bh=1LIVV0FOPPHH49OPrMa5dNbSXfrReLd+bC9KO8MpyhQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=wfxNkdtyN420Z2jGH8la4QoUdbRljW4SChH65dYFDyw0+sRK7Bk8BrxzjiMlB6UQE
-         +LwS1+FNBhVq9eA/lnmUf3YH0kqlvh0nzX6kOSUmrX/fi0dS08HuaHHsqxcaL1vH8v
-         aeGawkGO7mPgzkLnyAPCnHHk5/jtnHBxUNsO1y1I=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 176A7ETT010820
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 6 Aug 2021 05:07:14 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 6 Aug
- 2021 05:07:14 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 6 Aug 2021 05:07:14 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 176A7BXs038129;
-        Fri, 6 Aug 2021 05:07:12 -0500
-Subject: Re: [PATCH net-next 0/3] net: ethernet: ti: cpsw/emac: switch to use
- skb_put_padto()
-To:     David Miller <davem@davemloft.net>
-CC:     <patchwork-bot+netdevbpf@kernel.org>, <netdev@vger.kernel.org>,
-        <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <ben.hutchings@essensium.com>, <vigneshr@ti.com>,
-        <linux-omap@vger.kernel.org>, <lokeshvutla@ti.com>
-References: <20210805145555.12182-1-grygorii.strashko@ti.com>
- <162824220602.18289.6086651097784470216.git-patchwork-notify@kernel.org>
- <49dbe558-cf18-484b-9167-e43ad1c83db5@ti.com>
- <20210806.110444.1042687466668709790.davem@davemloft.net>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <cd881a8e-e137-13a6-7a5d-a543e49cfbd1@ti.com>
-Date:   Fri, 6 Aug 2021 13:07:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 6 Aug 2021 06:08:32 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB534C061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 03:08:15 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id j3so6423089plx.4
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 03:08:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=M5dkFSAbBEOLClHxOjqtsNkD++Mf5LpTY0qaM47dwAA=;
+        b=ELl5wgcTQHoVhEnSceUmsGECDJ3YObRHs4J6XQdnbDr4IGtLrXvRZaZjKKizLhG9CQ
+         p7GfW5K1patbQRvWnR7aXhw3IxA4+LDu+5GMs/tQLoF4VoeefEiP2J5vT5FlXuZ5RzlA
+         UNLdjtnW9v6yCIvI/DRzhMx9qGQygoq5ZFBdc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=M5dkFSAbBEOLClHxOjqtsNkD++Mf5LpTY0qaM47dwAA=;
+        b=VmkPk+SjhcW+Q83q/FnxgT+1plguq2GFGma8yJtRGOkxRhv5Xq6+6qLNSlWca/t8F4
+         tCcS36Tckk4QrJ7bRlYGHKHKRJh2ghMQDUy1lzWT/twUUf1Te+yyVOOi6lC2R+0l1FEv
+         2ebvwJq5oKGlO4zQsO5CD2SOM3ZQUY9WASUvNeLJ2bvtr+Znq0jubrcizxdjhg/Pt671
+         pi1wl+EGNlcylw76TJPt3Nb453jETonHN0LiqK+MM7av9+kGo1TpTNNOOza6sRuWGOOs
+         BjylYe39ud2Wk0Ilo/Tmn2kfqoPxLYVRqNZ0SUSaB6xnSyL2VQXhX/LZTkqS/NNGa4FO
+         ISkA==
+X-Gm-Message-State: AOAM531q/gNimGs9BCkj/DZRuClPoVhu7E3vXQOdMA1Y/3T8SakULr33
+        FKzREhm0azFIWHOkQSZ71QkiMmuKETwtiA==
+X-Google-Smtp-Source: ABdhPJxZjbU3mkj2Xh2n8xpmyiYhU3yGXlt/V3hXH2qg+/EUU/BxKWiC04vUQjdYuYf8GYq+97DNbg==
+X-Received: by 2002:aa7:85cf:0:b029:3bc:9087:a94f with SMTP id z15-20020aa785cf0000b02903bc9087a94fmr3965343pfn.78.1628244495150;
+        Fri, 06 Aug 2021 03:08:15 -0700 (PDT)
+Received: from localhost ([2401:fa00:8f:203:b731:9e91:71e2:65e7])
+        by smtp.gmail.com with UTF8SMTPSA id y13sm12148216pjn.34.2021.08.06.03.08.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Aug 2021 03:08:14 -0700 (PDT)
+From:   Hikaru Nishida <hikalium@chromium.org>
+To:     linux-kernel@vger.kernel.org, dme@dme.org, tglx@linutronix.de,
+        mlevitsk@redhat.com
+Cc:     suleiman@google.com, Hikaru Nishida <hikalium@chromium.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Juergen Gross <jgross@suse.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        x86@kernel.org
+Subject: [v2 PATCH 4/4] x86/kvm: Add guest side support for virtual suspend time injection
+Date:   Fri,  6 Aug 2021 19:07:10 +0900
+Message-Id: <20210806190607.v2.4.I2cbcd43256eacc3c92274adff6d0458b6a9c15ee@changeid>
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+In-Reply-To: <20210806100710.2425336-1-hikalium@chromium.org>
+References: <20210806100710.2425336-1-hikalium@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20210806.110444.1042687466668709790.davem@davemloft.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch implements virtual suspend time injection support for kvm
+guests. If this functionality is enabled and the host supports
+KVM_FEATURE_HOST_SUSPEND_TIME,
+the guest will register struct kvm_host_suspend_time through MSR to
+get how much time the guest spend during the host's suspension.
+Host will notify the update on the structure (which happens if the host
+went into suspension while the guest was running) through the irq and
+the irq will trigger the adjustment of CLOCK_BOOTTIME inside a guest.
 
+Before this patch, there was no way to adjust the CLOCK_BOOTTIME without
+actually suspending the kernel. However, some guest applications rely on
+the fact that there will be some difference between CLOCK_BOOTTIME and
+CLOCK_MONOTONIC after the suspention of the execution and they will be
+broken if we just pausing the guest instead of actually suspending them.
+Pausing the guest kernels is one solution to solve the problem, but
+if we could adjust the clocks without actually suspending them, we can
+reduce the overhead of guest's suspend/resume cycles on every host's
+suspensions. So this change will be useful for the devices which
+experience suspend/resume frequently.
 
-On 06/08/2021 13:04, David Miller wrote:
-> From: Grygorii Strashko <grygorii.strashko@ti.com>
-> Date: Fri, 6 Aug 2021 13:00:30 +0300
-> 
->>
->> I'm very sorry again - can it be dropped?
-> 
-> Easiest is for you to send a fixup or a revert to the list, thanks.
-> 
-> 
+Signed-off-by: Hikaru Nishida <hikalium@chromium.org>
+---
 
-Only Patch 3 need to be reverted - i'll send revert. Thank you.
+ arch/x86/Kconfig                    | 13 ++++++++++
+ arch/x86/include/asm/idtentry.h     |  4 +++
+ arch/x86/include/asm/kvm_para.h     |  9 +++++++
+ arch/x86/kernel/kvmclock.c          | 40 +++++++++++++++++++++++++++++
+ include/linux/timekeeper_internal.h |  4 +++
+ kernel/time/timekeeping.c           | 33 ++++++++++++++++++++++++
+ 6 files changed, 103 insertions(+)
 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 45463c65ea0a..760fe7f04170 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -822,6 +822,19 @@ config KVM_GUEST
+ 	  underlying device model, the host provides the guest with
+ 	  timing infrastructure such as time of day, and system time
+ 
++config KVM_VIRT_SUSPEND_TIMING_GUEST
++	bool "Virtual suspend time injection (guest side)"
++	depends on KVM_GUEST
++	default n
++	help
++	 This option makes the host's suspension reflected on the guest's clocks.
++	 In other words, guest's CLOCK_MONOTONIC will stop and
++	 CLOCK_BOOTTIME keeps running during the host's suspension.
++	 This feature will only be effective when both guest and host enable
++	 this option.
++
++	 If unsure, say N.
++
+ config ARCH_CPUIDLE_HALTPOLL
+ 	def_bool n
+ 	prompt "Disable host haltpoll when loading haltpoll driver"
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index 1345088e9902..38f37c2a6063 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -671,6 +671,10 @@ DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_WAKEUP_VECTOR,	sysvec_kvm_posted_intr_wakeup
+ DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_NESTED_VECTOR,	sysvec_kvm_posted_intr_nested_ipi);
+ #endif
+ 
++#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
++DECLARE_IDTENTRY_SYSVEC(VIRT_SUSPEND_TIMING_VECTOR, sysvec_virtual_suspend_time);
++#endif
++
+ #if IS_ENABLED(CONFIG_HYPERV)
+ DECLARE_IDTENTRY_SYSVEC(HYPERVISOR_CALLBACK_VECTOR,	sysvec_hyperv_callback);
+ DECLARE_IDTENTRY_SYSVEC(HYPERV_REENLIGHTENMENT_VECTOR,	sysvec_hyperv_reenlightenment);
+diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
+index 69299878b200..094023687c8b 100644
+--- a/arch/x86/include/asm/kvm_para.h
++++ b/arch/x86/include/asm/kvm_para.h
+@@ -16,6 +16,15 @@ static inline bool kvm_check_and_clear_guest_paused(void)
+ }
+ #endif /* CONFIG_KVM_GUEST */
+ 
++#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
++u64 kvm_get_suspend_time(void);
++#else
++static inline u64 kvm_get_suspend_time(void)
++{
++	return 0;
++}
++#endif /* CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST */
++
+ #define KVM_HYPERCALL \
+         ALTERNATIVE("vmcall", "vmmcall", X86_FEATURE_VMMCALL)
+ 
+diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
+index ad273e5861c1..1c92b54b1bce 100644
+--- a/arch/x86/kernel/kvmclock.c
++++ b/arch/x86/kernel/kvmclock.c
+@@ -16,11 +16,15 @@
+ #include <linux/mm.h>
+ #include <linux/slab.h>
+ #include <linux/set_memory.h>
++#include <linux/interrupt.h>
++#include <linux/irq.h>
+ 
+ #include <asm/hypervisor.h>
+ #include <asm/mem_encrypt.h>
+ #include <asm/x86_init.h>
+ #include <asm/kvmclock.h>
++#include <asm/desc.h>
++#include <asm/idtentry.h>
+ 
+ static int kvmclock __initdata = 1;
+ static int kvmclock_vsyscall __initdata = 1;
+@@ -48,6 +52,9 @@ early_param("no-kvmclock-vsyscall", parse_no_kvmclock_vsyscall);
+ 
+ static struct pvclock_vsyscall_time_info
+ 			hv_clock_boot[HVC_BOOT_ARRAY_SIZE] __bss_decrypted __aligned(PAGE_SIZE);
++#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
++static struct kvm_suspend_time suspend_time __bss_decrypted;
++#endif
+ static struct pvclock_wall_clock wall_clock __bss_decrypted;
+ static DEFINE_PER_CPU(struct pvclock_vsyscall_time_info *, hv_clock_per_cpu);
+ static struct pvclock_vsyscall_time_info *hvclock_mem;
+@@ -163,6 +170,18 @@ static int kvm_cs_enable(struct clocksource *cs)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
++/*
++ * kvm_get_suspend_time - This function returns total time passed during
++ * the host was in a suspend state while this guest was running.
++ * (Not a duration of the last host suspension but cumulative time.)
++ */
++u64 kvm_get_suspend_time(void)
++{
++	return suspend_time.suspend_time_ns;
++}
++#endif /* CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST */
++
+ struct clocksource kvm_clock = {
+ 	.name	= "kvm-clock",
+ 	.read	= kvm_clock_get_cycles,
+@@ -290,6 +309,18 @@ static int kvmclock_setup_percpu(unsigned int cpu)
+ 	return p ? 0 : -ENOMEM;
+ }
+ 
++#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
++void timekeeping_inject_virtual_suspend_time(void);
++DEFINE_IDTENTRY_SYSVEC(sysvec_virtual_suspend_time)
++{
++	struct pt_regs *old_regs = set_irq_regs(regs);
++
++	timekeeping_inject_virtual_suspend_time();
++
++	set_irq_regs(old_regs);
++}
++#endif
++
+ void __init kvmclock_init(void)
+ {
+ 	u8 flags;
+@@ -304,6 +335,15 @@ void __init kvmclock_init(void)
+ 		return;
+ 	}
+ 
++#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
++	if (kvm_para_has_feature(KVM_FEATURE_HOST_SUSPEND_TIME)) {
++		alloc_intr_gate(VIRT_SUSPEND_TIMING_VECTOR, asm_sysvec_virtual_suspend_time);
++		/* Register the suspend time structure */
++		wrmsrl(MSR_KVM_HOST_SUSPEND_TIME,
++		       slow_virt_to_phys(&suspend_time) | KVM_MSR_ENABLED);
++	}
++#endif
++
+ 	if (cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "kvmclock:setup_percpu",
+ 			      kvmclock_setup_percpu, NULL) < 0) {
+ 		return;
+diff --git a/include/linux/timekeeper_internal.h b/include/linux/timekeeper_internal.h
+index 84ff2844df2a..a5fd515f0a9d 100644
+--- a/include/linux/timekeeper_internal.h
++++ b/include/linux/timekeeper_internal.h
+@@ -124,6 +124,10 @@ struct timekeeper {
+ 	u32			ntp_err_mult;
+ 	/* Flag used to avoid updating NTP twice with same second */
+ 	u32			skip_second_overflow;
++#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
++	/* suspend_time_injected keeps the duration injected through kvm */
++	u64			suspend_time_injected;
++#endif
+ #ifdef CONFIG_DEBUG_TIMEKEEPING
+ 	long			last_warning;
+ 	/*
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 3ac3fb479981..424c61d38646 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -2125,6 +2125,39 @@ static u64 logarithmic_accumulation(struct timekeeper *tk, u64 offset,
+ 	return offset;
+ }
+ 
++#ifdef CONFIG_KVM_VIRT_SUSPEND_TIMING_GUEST
++/*
++ * timekeeping_inject_virtual_suspend_time - Inject virtual suspend time
++ * when requested by the kvm host.
++ * This function should be called under irq context.
++ */
++void timekeeping_inject_virtual_suspend_time(void)
++{
++	/*
++	 * Only updates shadow_timekeeper so the change will be reflected
++	 * on the next call of timekeeping_advance().
++	 */
++	struct timekeeper *tk = &shadow_timekeeper;
++	unsigned long flags;
++	struct timespec64 delta;
++	u64 suspend_time;
++
++	raw_spin_lock_irqsave(&timekeeper_lock, flags);
++	suspend_time = kvm_get_suspend_time();
++	if (suspend_time > tk->suspend_time_injected) {
++		/*
++		 * Do injection only if the time is not injected yet.
++		 * suspend_time and tk->suspend_time_injected values are
++		 * cummrative, so take a diff and inject the duration.
++		 */
++		delta = ns_to_timespec64(suspend_time - tk->suspend_time_injected);
++		__timekeeping_inject_sleeptime(tk, &delta);
++		tk->suspend_time_injected = suspend_time;
++	}
++	raw_spin_unlock_irqrestore(&timekeeper_lock, flags);
++}
++#endif
++
+ /*
+  * timekeeping_advance - Updates the timekeeper to the current time and
+  * current NTP tick length
 -- 
-Best regards,
-grygorii
+2.32.0.605.g8dce9f2422-goog
+
