@@ -2,110 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E333E2A6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B9C3E2A7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 14:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343651AbhHFMPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 08:15:43 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:59656 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343589AbhHFMPl (ORCPT
+        id S243762AbhHFMWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 08:22:06 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7802 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243653AbhHFMWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 08:15:41 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Ui8W5Kx_1628252123;
-Received: from localhost(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Ui8W5Kx_1628252123)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 06 Aug 2021 20:15:24 +0800
-From:   Xianting Tian <xianting.tian@linux.alibaba.com>
-To:     jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org, guoren@kernel.org,
-        Xianting Tian <xianting.tian@linux.alibaba.com>
-Subject: [PATCH] mailbox: fix a UAF bug in msg_submit()
-Date:   Fri,  6 Aug 2021 20:15:21 +0800
-Message-Id: <20210806121521.124365-1-xianting.tian@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 6 Aug 2021 08:22:05 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gh4N14mJXzYlPK;
+        Fri,  6 Aug 2021 20:21:37 +0800 (CST)
+Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 6 Aug 2021 20:21:43 +0800
+Received: from [10.174.179.2] (10.174.179.2) by dggema773-chm.china.huawei.com
+ (10.1.198.217) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 6 Aug
+ 2021 20:21:42 +0800
+Subject: Re: [PATCH] scsi: core: Run queue first after running device
+To:     John Garry <john.garry@huawei.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <bvanassche@acm.org>, <qiulaibin@huawei.com>,
+        <linfeilong@huawei.com>, <wubo40@huawei.com>
+References: <20210805143231.1713299-1-lijinlin3@huawei.com>
+ <908bb2bb-c511-06a4-e0b6-577d90bb9b57@huawei.com>
+ <0d27db3f-4236-4a30-97a0-ad1dcbf4bcfa@huawei.com>
+From:   lijinlin <lijinlin3@huawei.com>
+Message-ID: <b9894e12-c214-8cea-7f02-96ad99aca2f8@huawei.com>
+Date:   Fri, 6 Aug 2021 20:21:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <0d27db3f-4236-4a30-97a0-ad1dcbf4bcfa@huawei.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.2]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema773-chm.china.huawei.com (10.1.198.217)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We met a UAF issue during our mailbox testing.
+On 2021/8/6 17:00, John Garry wrote:
+> On 06/08/2021 09:58, John Garry wrote:
+> 
+> And the patch subject is ambiguous
+>
 
-In synchronous mailbox, we use mbox_send_message() to send a message
-and wait for completion. mbox_send_message() calls msg_submit() to
-send the message for the first time, if timeout, it will send the
-message in tx_tick() for the second time.
-
-We assume message sending failed for both two times,  then the message
-will be still in the internal buffer of a chan(chan->msg_data[idx]).
-It will be send again in the same way when mbox_send_message() is
-called next time. But, at this time this message (chan->msg_data[idx])
-may be a UAF pointer, as the message is passed to mailbox core by user.
-User may free it after last calling of mbox_send_message() returned
-or not. Who knows!!!
-
-In this patch, if the first time sending timeout, we pass timeout
-info(-ETIME) to msg_submit() when do the second time sending by
-tx_tick(). If it still send failed (chan->mbox->ops->send_data()
-returned non-zero value) in the second time, we will give up this
-message(chan->msg_count--) sending. It doesn't matter, user can chose
-to send it again.
-
-Actually, the issue I described above doesn't exist if
-'chan->mbox->ops->send_data()' always return 0. Because if it always
-returns 0, we will always do 'chan->msg_count—' regardless of message
-sending success or failure. We have such mailbox driver, for example,
-hi6220_mbox_send_data() always return 0. But we still have mailbox
-drivers, which don't always return 0, for example, flexrm_send_data()
-of drivers/mailbox/bcm-flexrm-mailbox.c.
-
-Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
----
- drivers/mailbox/mailbox.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
-index 3e7d4b20a..3e010aafa 100644
---- a/drivers/mailbox/mailbox.c
-+++ b/drivers/mailbox/mailbox.c
-@@ -50,7 +50,7 @@ static int add_to_rbuf(struct mbox_chan *chan, void *mssg)
- 	return idx;
- }
+Thanks.
+I will modify the patch subject and message in patch v2.
  
--static void msg_submit(struct mbox_chan *chan)
-+static void msg_submit(struct mbox_chan *chan, int last_submit)
- {
- 	unsigned count, idx;
- 	unsigned long flags;
-@@ -75,7 +75,7 @@ static void msg_submit(struct mbox_chan *chan)
- 		chan->cl->tx_prepare(chan->cl, data);
- 	/* Try to submit a message to the MBOX controller */
- 	err = chan->mbox->ops->send_data(chan, data);
--	if (!err) {
-+	if (!err || last_submit == -ETIME) {
- 		chan->active_req = data;
- 		chan->msg_count--;
- 	}
-@@ -101,7 +101,7 @@ static void tx_tick(struct mbox_chan *chan, int r)
- 	spin_unlock_irqrestore(&chan->lock, flags);
- 
- 	/* Submit next message */
--	msg_submit(chan);
-+	msg_submit(chan, r);
- 
- 	if (!mssg)
- 		return;
-@@ -260,7 +260,7 @@ int mbox_send_message(struct mbox_chan *chan, void *mssg)
- 		return t;
- 	}
- 
--	msg_submit(chan);
-+	msg_submit(chan, 0);
- 
- 	if (chan->cl->tx_block) {
- 		unsigned long wait;
--- 
-2.17.1
+>> On 05/08/2021 15:32, lijinlin3@huawei.com wrote:
+>>> From: Li Jinlin<lijinlin3@huawei.com>
+>>>
+>>> We found a hang issue, the test steps are as follows:
+>>>    1. echo "blocked" >/sys/block/sda/device/state
+>>>    2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
+>>>    3. echo none > /sys/block/sda/queue/scheduler
+>>>    4. echo "running" >/sys/block/sda/device/state
+>>>
+>>> Step3 and Step4 should finish this work after Step4, but them hangs.
+>>>
+>>>  CPU#0               CPU#1                CPU#2
+>>>  ---------------     ----------------     ----------------
+>>>                                           Step1: blocking device
+>>>
+>>>                                           Step2: dd xxxx
+>>>                                                  ^^^^^^ get request
+>>>                                                         q_usage_counter++
+>>>
+>>>                      Step3: switching scheculer
+>>>                      elv_iosched_store
+>>>                        elevator_switch
+>>>                          blk_mq_freeze_queue
+>>>                            blk_freeze_queue
+>>>                              > blk_freeze_queue_start
+>>>                                ^^^^^^ mq_freeze_depth++
+>>>
+>>>                              > blk_mq_run_hw_queues
+>>>                                ^^^^^^ can't run queue when dev blocked
+>>>
+>>>                              > blk_mq_freeze_queue_wait
+>>>                                ^^^^^^ Hang here!!! 
+>>>                                       wait q_usage_counter==0
+>>>
+>>>  Step4: running device
+>>>  store_state_field
+>>>    scsi_rescan_device
+>>>      scsi_attach_vpd
+>>>        scsi_vpd_inquiry
+>>>          __scsi_execute
+>>>            blk_get_request
+>>>              blk_mq_alloc_request
+>>>                blk_queue_enter
+>>>                ^^^^^^ Hang here!!!
+>>>                       wait mq_freeze_depth==0 
+>>>
+>>>    blk_mq_run_hw_queues
+>>>    ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
+>>>
+>>>                            blk_mq_unfreeze_queue
+>>>                            ^^^^^ mq_freeze_depth--
+>>>
+>>> Step3 and Step4 wait for each other, caused hangs.
+>>>
+>>> This requires run queue frist to fix this issue when the device state
+>>
+>> frist>>
+>>> changes to SDEV_RUNNING.
+>>>
+>>> Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
+>>> Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
+>>> Signed-off-by: Qiu Laibin <qiulaibin@huawei.com>
+>>> Signed-off-by: Wu Bo <wubo40@huawei.com>
+>>
+>> what kind of SoB is this?
+>>
+>>> ---
+>>>   drivers/scsi/scsi_sysfs.c | 6 +++---
+>>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+>>> index c3a710bceba0..aa701582c950 100644
+>>> --- a/drivers/scsi/scsi_sysfs.c
+>>> +++ b/drivers/scsi/scsi_sysfs.c
+>>> @@ -809,12 +809,12 @@ store_state_field(struct device *dev, struct device_attribute *attr,
+>>>       ret = scsi_device_set_state(sdev, state);
+>>>       /*
+>>>        * If the device state changes to SDEV_RUNNING, we need to
+>>> -     * rescan the device to revalidate it, and run the queue to
+>>> -     * avoid I/O hang.
+>>> +     * run the queue to avoid I/O hang, and rescan the device
+>>> +     * to revalidate it.
+>>
+>> A bit more description of the IO hang would be useful
+>>
+>>>        */
+>>>       if (ret == 0 && state == SDEV_RUNNING) {
+>>> -        scsi_rescan_device(dev);
+>>>                 blk_mq_run_hw_queues(sdev->request_queue, true);
+>>> +        scsi_rescan_device(dev);
+>>
+>> This would not have happened if scsi_rescan_device() was ran outside the mutex lock region, like I suggested originally.
+>>
+>> Indeed, I doubt blk_mq_run_hw_queues() needs to be run with the sdev state_mutex held either.
 
+I think blk_mq_run_hw_queues() and scsi_rescan_device() needs to be run with the sdev state_mutex held.
+Otherwise, Step4 will hang in the following situations.
+
+  CPU#0               CPU#1                CPU#2                  CPU#3
+  ---------------     ----------------     -----------------      ----------------
+                                           Step1: blocking device
+
+                                           Step2: dd xxxx
+                                                  ^^^^^^ get request
+                                                         q_usage_counter++
+
+                      Step3: switching scheculer
+                      elv_iosched_store
+                        elevator_switch
+                          blk_mq_freeze_queue
+                            blk_freeze_queue
+                              > blk_freeze_queue_start
+                                ^^^^^^ mq_freeze_depth++
+
+                              > blk_mq_run_hw_queues
+                                ^^^^^^ can't run queue when dev blocked
+
+                              > blk_mq_freeze_queue_wait
+                                ^^^^^^ Hang here!!! 
+                                       wait q_usage_counter==0
+
+  Step4: running device  
+  store_state_field
+    mutex_lock(&sdev->state_mutex);
+    scsi_device_set_state(sdev, state);
+    mutex_unlock(&sdev->state_mutex);
+                                                                  Step5: blocking device
+                                                                  store_state_field
+                                                                     mutex_lock(&sdev->state_mutex);
+                                                                     scsi_device_set_state(sdev, state);                                                             
+    blk_mq_run_hw_queues 
+    ^^^^^^ can't run queue when dev blocked
+                                                                     mutex_unlock(&sdev->state_mutex);
+    scsi_rescan_device
+      scsi_attach_vpd
+        scsi_vpd_inquiry
+          __scsi_execute
+            blk_get_request
+              blk_mq_alloc_request
+                blk_queue_enter
+                ^^^^^^ Hang here!!!
+                       wait mq_freeze_depth==0 
+
+>>
+>>>       }
+>>>       mutex_unlock(&sdev->state_mutex);
+>>> -- 
+>>
+>> .
+> 
+> .
