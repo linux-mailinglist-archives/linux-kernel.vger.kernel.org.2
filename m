@@ -2,57 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26C43E2138
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 03:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0443E213B
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 03:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243276AbhHFBu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 21:50:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230437AbhHFBuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 21:50:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAA0A60EB9;
-        Fri,  6 Aug 2021 01:50:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628214610;
-        bh=4yY2f3P6xCyFtufN8S21ZwHcak1iKypQJ0UMXKwRhiA=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=IjqQx1ICQF9kEdmFfW4OevvP7WW8WGfZTkZGuBbwXPLBZuAbIOiFrKnqgOQbFbANZ
-         4XofeuTTzwMjHfjFGT9LLlVk/Sqa3seW2Rg7qP5Ic2jy/jJXbBLoMvACbAmLsqeMfy
-         o3Yzyzg/mlDvHJ4oklGXgbryvktgu3/P3qKihgzOm37PE52dp+rfz3L4GJpzCyCDiN
-         TeaE9buNLWKwmdhyiGfsrYKaVE2+6iVhmqL0+DLSOCQBdiDxtFtkV//C5DMX5sjJXZ
-         BZ1/rIs6IzaS7gZorRibU49rIMuu3G8VE7QkGbU/prnnKG8Dyh2G0pvfBo9JRREBdB
-         MOPAtRuydNabg==
-Content-Type: text/plain; charset="utf-8"
+        id S243287AbhHFBut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 21:50:49 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16052 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230437AbhHFBur (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 5 Aug 2021 21:50:47 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GgpHZ3pxKzZxm6;
+        Fri,  6 Aug 2021 09:46:50 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 6 Aug 2021 09:50:25 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 6 Aug 2021 09:50:24 +0800
+Subject: Re: [PATCH] blk-mq: allow hardware queue to get more tag while
+ sharing a tag set
+To:     Bart Van Assche <bvanassche@acm.org>, <axboe@kernel.dk>,
+        <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20210712031818.31918-1-yukuai3@huawei.com>
+ <ade72519-5e16-1cc5-9a77-cb9ead42035e@acm.org>
+ <5ab07cf8-a2a5-a60e-c86a-ab6ea53990bb@huawei.com>
+ <e587c572-bcd7-87c4-5eea-30ccdc7455db@acm.org>
+ <b124b91b-7474-fa27-b78c-01b7e7396a17@huawei.com>
+ <07d2e6ba-d016-458a-a2ce-877fd7b72ed0@acm.org>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <a63fbd36-5a43-e412-c0a2-a06730945a13@huawei.com>
+Date:   Fri, 6 Aug 2021 09:50:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210805222400.39027-2-konrad.dybcio@somainline.org>
-References: <20210805222400.39027-1-konrad.dybcio@somainline.org> <20210805222400.39027-2-konrad.dybcio@somainline.org>
-Subject: Re: [PATCH 2/2] clk: qcom: smd-rpm: Add mdm9607 clocks
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Date:   Thu, 05 Aug 2021 18:50:09 -0700
-Message-ID: <162821460959.19113.12052330278621244298@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <07d2e6ba-d016-458a-a2ce-877fd7b72ed0@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Konrad Dybcio (2021-08-05 15:24:00)
-> Add support for RPM-managed clocks on the MDM9607 platform.
->=20
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
+On 2021/08/04 2:38, Bart Van Assche wrote:
+> On 8/2/21 7:57 PM, yukuai (C) wrote:
+>> The cpu I'm testing is Intel(R) Xeon(R) Gold 6140 CPU @ 2.30GHz, and
+>> after switching to io_uring with "--thread --gtod_reduce=1
+>> --ioscheduler=none", the numbers can increase to 330k, yet still
+>> far behind 6000k.
+> 
+> On 
+> https://ark.intel.com/content/www/us/en/ark/products/120485/intel-xeon-gold-6140-processor-24-75m-cache-2-30-ghz.html 
+> I found the following information about that CPU:
+> 18 CPU cores
+> 36 hyperthreads
+> 
+> so 36 fio jobs should be sufficient. Maybe IOPS are lower than expected 
+> because of how null_blk has been configured? This is the configuration 
+> that I used in my test:
+> 
+> modprobe null_blk nr_devices=0 &&
+>      udevadm settle &&
+>      cd /sys/kernel/config/nullb &&
+>      mkdir nullb0 &&
+>      cd nullb0 &&
+>      echo 0 > completion_nsec &&
+>      echo 512 > blocksize &&
+>      echo 0 > home_node &&
+>      echo 0 > irqmode &&
+>      echo 1024 > size &&
+>      echo 0 > memory_backed &&
+>      echo 2 > queue_mode &&
+>      echo 1 > power ||
+>      exit $?
 
-Applied to clk-next
+hi Bart,
+
+After applying this configuration, the number of null_blk in my
+machine is about 650k(330k before). Is this still too low?
+
+By the way, there are no performance degradation.
+
+Thanks
+Kuai
+> 
+>> The new atomic operations in the hot path is atomic_read() from
+>> hctx_may_queue(), and the atomic variable will change in two
+>> situations:
+>>
+>> a. fail to get driver tag with dbusy not set, increase and set dbusy.
+>> b. if dbusy is set when queue switch from busy to dile, decrease and
+>> clear dbusy.
+>>
+>> During the period a device "idle -> busy -> idle", the new atomic
+>> variable can be writen twice at most, which means this is almost
+>> readonly in the above test situation. So I guess the impact on
+>> performance is minimal ?
+> 
+> Please measure the performance impact of your patch.
+> 
+> Thanks,
+> 
+> Bart.
+> 
+> .
+> 
