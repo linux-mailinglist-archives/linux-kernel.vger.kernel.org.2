@@ -2,388 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FEF3E31E8
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 00:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8A23E31ED
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 00:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245589AbhHFWsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 18:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243453AbhHFWso (ORCPT
+        id S244233AbhHFWvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 18:51:45 -0400
+Received: from mail-io1-f43.google.com ([209.85.166.43]:34534 "EHLO
+        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232090AbhHFWvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 18:48:44 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA38C0613CF;
-        Fri,  6 Aug 2021 15:48:26 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id x15-20020a05683000cfb02904d1f8b9db81so10610658oto.12;
-        Fri, 06 Aug 2021 15:48:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=dDhujAAi9xv/Ki6TBy+nRgWNbHfTuu7FQeQAN7ptZkY=;
-        b=G+ux3JK20ym8OG88MWJ4ucz1dQjuOfeJccYiOadHryrtRX0I4OaJy3QxWSQOpB7EOC
-         E0RcO+KhMh7/AHHtJ59q8TOarrH12KrChDM4Fg7PBxn+0HmNgEAUDsq8VfFOzCBNO6nj
-         u+LiVcl2eCRnuPqIAAoOfS+DKCGS1oRBWifmki9aZZ5yX0bZIqRp4816jbGwINOMxl/3
-         Wtv+xvhqhNIuHTbUxQS8AQDF8xGNL6s+CaeBNdT9CjcbuuSOKGHIyskDBQZP+GkFeN91
-         6MvI5Om5x3uSK4y8a9Iq23Eb/2UDch2Dzn5gneLfwJ2A6kDWkOK1v2yavMStpg1SfBd8
-         dWUg==
+        Fri, 6 Aug 2021 18:51:44 -0400
+Received: by mail-io1-f43.google.com with SMTP id i7so8296853iow.1;
+        Fri, 06 Aug 2021 15:51:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=dDhujAAi9xv/Ki6TBy+nRgWNbHfTuu7FQeQAN7ptZkY=;
-        b=Nx19YYJJ+8mH7Ra1g624DqOmnw02+PTtoQw7/fsO2fY7zxbZDQFxH+N1TRjx/WGJ1o
-         s7URvOWTXsCw0mM6lz2efUcS2bVqMoD9S1oLGd8oXb3JD/FVpXftDjyYQmocmuFtdHRP
-         sfMZ3xZjRBDE25f46mc8qfcmmFQdPRPZs0TG2dScg+xhyCfgTe07sKYypFV6o0u2I2Ub
-         eCituNhfNi4SiJ+h9RiB+EB3IsL4RdQLP1lK0wC/LrPa1MCvmRGQOVsca3Ikee44ueFk
-         s6+x9/22gZzqR/OlkQlITSFrzt1QJe59e474/O0/6yQ018MepwUfw+Gn/V0SR+e+YpBM
-         fnRA==
-X-Gm-Message-State: AOAM5326p+MRTCdcqFDrWBfOylFKFkrBpATZ1w50COeVgnXeHZRQ70YF
-        KTNSodsLyk670kLEbsQbnqOS8+W2p7Nslcgkqvs=
-X-Google-Smtp-Source: ABdhPJxRg9X2HXtj2eP8hUDkX/w30xssnie8MqsjPc6F8JfHQzJTVsfQY3MhNbe2ZR1vWQ95rYcff2tvOY8GF00s9Aw=
-X-Received: by 2002:a9d:7a52:: with SMTP id z18mr9255310otm.299.1628290106210;
- Fri, 06 Aug 2021 15:48:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8oTOX5UKRcKwRtyxPU4JY7BhGYOImlGPViKIREQZZ9E=;
+        b=osb9lxwTyTqTmnyYueVyb586q6xgQ1oDayo8BBuhIo2H1L3zTLKiq0zESHB9rbWOCB
+         gsyBPkZt8bbVCJg7Xx9fnMfTeR9vDtb7gRjzM/zxzw0V8GVo/wvYY8GbkL8+iED3+diw
+         W3lpu6WEmDX94D/XjZpSMyzdDaXusP7FokN4J9CscijhYGLE5NiX37ttErVd16dkTqNu
+         BDD7MqbhJux3h7ue/Vwx437VgFmFX6FBFGB9B54wP3MN26BESZqtMUEiCLhuJoaKhyM8
+         y2CqDW2wYIgNM8WezBvzZZAK/UuDIT2mo7fuxhDNOwqohh/6MUFrFKSqMGXmNILy7ebm
+         ydLg==
+X-Gm-Message-State: AOAM530frLw9GnngEocqNierkfkIy1kxPOr5LJjTe0xHG3G/hQujaMyU
+        R0G6a+t+lZBEnn/zov2M9g==
+X-Google-Smtp-Source: ABdhPJz6kn3RnAeRpdhNsQ8o4BoGB7NWJk3dP9MjIMaRLvX6Y1KGDoNPus+S9DKBkoGD2fBI+YSv8g==
+X-Received: by 2002:a5e:924a:: with SMTP id z10mr58037iop.35.1628290286591;
+        Fri, 06 Aug 2021 15:51:26 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.248])
+        by smtp.googlemail.com with ESMTPSA id x11sm5670338ilu.3.2021.08.06.15.51.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 15:51:26 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
+        Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        linux-perf-users@vger.kernel.org
+Subject: [PATCH v9 0/3] arm64 userspace counter support
+Date:   Fri,  6 Aug 2021 16:51:20 -0600
+Message-Id: <20210806225123.1958497-1-robh@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-From:   Jafar Akhondali <jafar.akhoondali@gmail.com>
-Date:   Sat, 7 Aug 2021 03:18:14 +0430
-Message-ID: <CAMW3L+3hxZAazcq-Je=EH=aCAWuzhBRGsDHDfSy349OG0QLNbQ@mail.gmail.com>
-Subject: [PATCH v3] platform/x86: acer-wmi: Add Turbo Mode support for Acer PH315-53
-To:     Hans de Goede <hdegoede@redhat.com>, jlee@suse.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        mgross@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Will, Mark,
 
-The Acer Predator Helios series (usually denoted by PHxxx-yy) features
-a special key above the keyboard named "TURBO". The turbo key does 3
-things:
-1. Set all fan's speeds to TURBO mode
-2. Overclocks the CPU and GPU in the safe range
-3. Turn on an LED just below the turbo button
+This depends on:
 
-All of these actions are done by WMI function calls, and there is no
-custom OC level for turbo. It acts as a flag for enabling turbo
-mode instead of telling processors to use 1.3x of power.
+https://lore.kernel.org/lkml/20210728230230.1911468-1-robh@kernel.org/
 
-I've run some benchmark tests and it worked fine:
+Go review that first, thanks!
 
-GpuTest 0.7.0
-http://www.geeks3d.com
+Another version of arm64 userspace counter access support. This is just the
+Arm bits as Arnaldo asked to send the tools bits separately.
 
-Module: FurMark
-Normal mode Score: 7289 points (FPS: 121)
-Turbo mode Score: 7675 points (FPS: 127)
-Settings:
-- 1920x1080 fullscreen
-- antialiasing: Off
-- duration: 60000 ms
+The Arm implementation departs from the x86 implementation by requiring
+the user to always explicitly request user access (via attr.config1) and
+only enables access for task bound events. Rather than trying to lock
+down the access as the x86 implementation has been doing, we can start
+with only a limited use case enabled and later expand it if needed.
 
-Renderer:
-- GeForce RTX 2060/PCIe/SSE2
-- OpenGL: 4.6.0 NVIDIA 460.32.03
+This originally resurrected Raphael's series[1] to enable userspace counter
+access on arm64. My previous versions are here[2][3][4][5][6][7][8][9].
 
-This feature is presented by Acer officially and should not harm
-hardware in any case.
+Changes in v9:
+ - Reworked x86 and perf core to handle user access tracking and call
+   .event_mapped() and .event_unmapped() on the CPU with the event like
+   other changes to events.
+ - Use sysctl instead of sysfs to disable user access.
 
-A challenging part of implementing this feature is that calling overclocking
-the function requires knowing the exact count of fans for CPU and GPU
-for each model, which to the best of my knowledge is not available in
-the kernel.
+Changes in v8:
+ - Restrict user access to thread bound events which simplifies the
+   implementation. A couple of perf core changes (patches 1 and 2) are
+   needed to do this.
+ - Always require the user to request userspace access.
 
-So after checking the official PredatorSense application methods, it
-turned out they have provided the software the list of fans in each model.
-I have access to the mentioned list, and all similar PH-iii-jj can be
-added easily by matching "DMI_PRODUCT_NAME".
+Changes in v7:
+ - Handling of dirty counter leakage and reworking of context switch and
+   user access enabling. The .sched_task hook and undef instruction handler
+   are now utilized. (Patch 3)
+ - Add a userspace disable switch like x86. (Patch 5)
 
-Creating a separate file for the gaming interface was not possible because
-the current WMI event GUID is needed for the turbo button, and it's not possible
-to register multiple functions on the same event GUID.
+Changes in v6:
+ - Reworking of the handling of 64-bit counters and user access. There's
+   a new config1 flag to request user access. This takes priority over
+   the 64-bit flag and the user will get the maximum size the h/w
+   supports without chaining.
+ - The libperf evsel mmap struct is stored in its own xyarray
+ - New tests for user 64-bit and 32-bit counters
+ - Rebase to v5.12-rc2
 
+Changes in v5:
+ - Limit enabling/disabling access to CPUs associated with the PMU
+   (supported_cpus) and with the mm_struct matching current->active_mm.
+   The x86 method of using mm_cpumask doesn't work for arm64 as it is not
+   updated.
+ - Only set cap_user_rdpmc if event is on current cpu. See patch 2.
+ - Create an mmap for every event in an evsel. This results in some changes
+   to the libperf mmap API from the last version.
+ - Rebase to v5.11-rc2
 
-Signed-off-by: JafarAkhondali <jafar.akhoondali@gmail.com>
+Changes in v4:
+ - Dropped 'arm64: pmu: Add hook to handle pmu-related undefined instructions'.
+   The onus is on userspace to pin itself to a homogeneous subset of CPUs
+   and avoid any aborts on heterogeneous systems, so the hook is not needed.
+ - Make perf_evsel__mmap() take pages rather than bytes for size
+ - Fix building arm64 heterogeneous test.
 
+Changes in v3:
+ - Dropped removing x86 rdpmc test until libperf tests can run via 'perf test'
+ - Added verbose prints for tests
+ - Split adding perf_evsel__mmap() to separate patch
 
----
- Changes in v3:
- - Remove usages of gaming_interface
- - Add ACPI output for u32 buffer length
- - Remove set_u64 and get_u64 functions
- - Remove unrelated whitespace changes for to this patch
+The following changes to the arm64 support have been made compared to
+Raphael's last version:
 
- Changes in v2:
- - Fix formatting problems
+The major change is support for heterogeneous systems with some
+restrictions. Specifically, userspace must pin itself to like CPUs, open
+a specific PMU by type, and use h/w specific events. The tests have been
+reworked to demonstrate this.
 
- drivers/platform/x86/acer-wmi.c | 181 ++++++++++++++++++++++++++++++++
- 1 file changed, 181 insertions(+)
+Chained events are not supported. The problem with supporting chained
+events was there's no way to distinguish between a chained event and a
+native 64-bit counter. We could add some flag, but do self monitoring
+processes really need that? Native 64-bit counters are supported if the
+PMU h/w has support. As there's already an explicit ABI to request 64-bit
+counters, userspace can request 64-bit counters and if user
+access is not enabled, then it must retry with 32-bit counters.
 
-diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-index 85db9403cc14..3952d15fbd0b 100644
---- a/drivers/platform/x86/acer-wmi.c
-+++ b/drivers/platform/x86/acer-wmi.c
-@@ -60,6 +60,11 @@ MODULE_LICENSE("GPL");
- #define ACER_WMID_GET_THREEG_METHODID        10
- #define ACER_WMID_SET_THREEG_METHODID        11
+Prior versions broke the build on arm32 (surprisingly never caught by
+0-day). As a result, event_mapped and event_unmapped implementations have
+been moved into the arm64 code.
 
-+#define ACER_WMID_SET_GAMING_LED_METHODID 2
-+#define ACER_WMID_GET_GAMING_LED_METHODID 4
-+#define ACER_WMID_SET_GAMING_FAN_BEHAVIOR 14
-+#define ACER_WMID_SET_GAMING_MISC_SETTING_METHODID 22
-+
- /*
-  * Acer ACPI method GUIDs
-  */
-@@ -68,6 +73,7 @@ MODULE_LICENSE("GPL");
- #define WMID_GUID1        "6AF4F258-B401-42FD-BE91-3D4AC2D7C0D3"
- #define WMID_GUID2        "95764E09-FB56-4E83-B31A-37761F60994A"
- #define WMID_GUID3        "61EF69EA-865C-4BC3-A502-A0DEBA0CB531"
-+#define WMID_GUID4        "7A4DDFE7-5B5D-40B4-8595-4408E0CC7F56"
+There was a bug in that pmc_width was not set in the user page. The tests
+now check for this.
 
- /*
-  * Acer ACPI event GUIDs
-@@ -81,6 +87,7 @@ MODULE_ALIAS("wmi:676AA15E-6A47-4D9F-A2CC-1E6D18D14026");
- enum acer_wmi_event_ids {
-     WMID_HOTKEY_EVENT = 0x1,
-     WMID_ACCEL_OR_KBD_DOCK_EVENT = 0x5,
-+    WMID_GAMING_TURBO_KEY_EVENT = 0x7,
- };
+The documentation has been converted to rST. I've added sections on
+chained events and heterogeneous.
 
- static const struct key_entry acer_wmi_keymap[] __initconst = {
-@@ -215,6 +222,9 @@ struct hotkey_function_type_aa {
- #define ACER_CAP_THREEG            BIT(4)
- #define ACER_CAP_SET_FUNCTION_MODE    BIT(5)
- #define ACER_CAP_KBD_DOCK        BIT(6)
-+#define ACER_CAP_TURBO_OC     BIT(7)
-+#define ACER_CAP_TURBO_LED     BIT(8)
-+#define ACER_CAP_TURBO_FAN     BIT(9)
+Rob
 
- /*
-  * Interface type flags
-@@ -301,6 +311,9 @@ struct quirk_entry {
-     u8 mailled;
-     s8 brightness;
-     u8 bluetooth;
-+    u8 turbo;
-+    u8 cpu_fans;
-+    u8 gpu_fans;
- };
+[1] https://lore.kernel.org/r/20190822144220.27860-1-raphael.gault@arm.com/
+[2] https://lore.kernel.org/r/20200707205333.624938-1-robh@kernel.org/
+[3] https://lore.kernel.org/r/20200828205614.3391252-1-robh@kernel.org/
+[4] https://lore.kernel.org/r/20200911215118.2887710-1-robh@kernel.org/
+[5] https://lore.kernel.org/r/20201001140116.651970-1-robh@kernel.org/
+[6] https://lore.kernel.org/r/20210114020605.3943992-1-robh@kernel.org/
+[7] https://lore.kernel.org/r/20210311000837.3630499-1-robh@kernel.org/
+[8] https://lore.kernel.org/r/20210420031511.2348977-1-robh@kernel.org/
+[9] https://lore.kernel.org/r/20210517195405.3079458-1-robh@kernel.org/
 
- static struct quirk_entry *quirks;
-@@ -312,6 +325,10 @@ static void __init set_quirks(void)
+Raphael Gault (1):
+  Documentation: arm64: Document PMU counters access from userspace
 
-     if (quirks->brightness)
-         interface->capability |= ACER_CAP_BRIGHTNESS;
-+
-+    if (quirks->turbo)
-+        interface->capability |= ACER_CAP_TURBO_OC | ACER_CAP_TURBO_LED
-+                        | ACER_CAP_TURBO_FAN;
- }
+Rob Herring (2):
+  arm64: perf: Add userspace counter access disable switch
+  arm64: perf: Enable PMU counter userspace access for perf event
 
- static int __init dmi_matched(const struct dmi_system_id *dmi)
-@@ -340,6 +357,12 @@ static struct quirk_entry quirk_acer_travelmate_2490 = {
-     .mailled = 1,
- };
+ Documentation/arm64/perf.rst   |  68 ++++++++++++++-
+ arch/arm64/kernel/perf_event.c | 154 +++++++++++++++++++++++++++++++--
+ include/linux/perf/arm_pmu.h   |   6 ++
+ 3 files changed, 219 insertions(+), 9 deletions(-)
 
-+static struct quirk_entry quirk_acer_predator_ph315_53 = {
-+    .turbo = 1,
-+    .cpu_fans = 1,
-+    .gpu_fans = 1,
-+};
-+
- /* This AMW0 laptop has no bluetooth */
- static struct quirk_entry quirk_medion_md_98300 = {
-     .wireless = 1,
-@@ -507,6 +530,15 @@ static const struct dmi_system_id acer_quirks[]
-__initconst = {
-         },
-         .driver_data = &quirk_acer_travelmate_2490,
-     },
-+    {
-+        .callback = dmi_matched,
-+        .ident = "Acer Predator PH315-53",
-+        .matches = {
-+            DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+            DMI_MATCH(DMI_PRODUCT_NAME, "Predator PH315-53"),
-+        },
-+        .driver_data = &quirk_acer_predator_ph315_53,
-+    },
-     {
-         .callback = set_force_caps,
-         .ident = "Acer Aspire Switch 10E SW3-016",
-@@ -1344,6 +1376,91 @@ static struct wmi_interface wmid_v2_interface = {
-     .type = ACER_WMID_v2,
- };
-
-+/*
-+ * WMID Gaming interface
-+ */
-+
-+static acpi_status
-+WMI_gaming_execute_u64(u32 method_id, u64 in, u64 *out)
-+{
-+    struct acpi_buffer input = { (acpi_size) sizeof(u64), (void *)(&in) };
-+    struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };
-+    union acpi_object *obj;
-+    u32 tmp = 0;
-+    acpi_status status;
-+
-+    status = wmi_evaluate_method(WMID_GUID4, 0, method_id, &input, &result);
-+
-+    if (ACPI_FAILURE(status))
-+        return status;
-+    obj = (union acpi_object *) result.pointer;
-+
-+    if (obj) {
-+        if (obj->type == ACPI_TYPE_BUFFER) {
-+            if (obj->buffer.length == sizeof(u32))
-+                tmp = *((u32 *) obj->buffer.pointer);
-+            else if (obj->buffer.length == sizeof(u64))
-+                tmp = *((u64 *) obj->buffer.pointer);
-+        } else if (obj->type == ACPI_TYPE_INTEGER) {
-+            tmp = (u64) obj->integer.value;
-+        }
-+    }
-+
-+    if (out)
-+        *out = tmp;
-+
-+    kfree(result.pointer);
-+
-+    return status;
-+}
-+
-+static acpi_status WMID_gaming_set_u64(u64 value, u32 cap)
-+{
-+    u32 method_id = 0;
-+    if (interface->capability & cap){
-+        switch (cap) {
-+        case ACER_CAP_TURBO_LED:
-+            method_id = ACER_WMID_SET_GAMING_LED_METHODID;
-+            break;
-+        case ACER_CAP_TURBO_FAN:
-+            method_id = ACER_WMID_SET_GAMING_FAN_BEHAVIOR;
-+            break;
-+        case ACER_CAP_TURBO_OC:
-+            method_id = ACER_WMID_SET_GAMING_MISC_SETTING_METHODID;
-+            break;
-+        default:
-+            return AE_BAD_PARAMETER;
-+        }
-+        return WMI_gaming_execute_u64(method_id, value, NULL);
-+    }
-+    return AE_BAD_PARAMETER;
-+}
-+
-+static acpi_status WMID_gaming_get_u64(u64 *value, u32 cap)
-+{
-+    acpi_status status;
-+    u64 result;
-+    u64 input;
-+    u32 method_id;
-+
-+    if (interface->capability & cap) {
-+        switch (cap) {
-+        case ACER_CAP_TURBO_LED:
-+            method_id = ACER_WMID_GET_GAMING_LED_METHODID;
-+            input = 0x1;
-+            break;
-+        default:
-+            return AE_BAD_PARAMETER;
-+        }
-+        status = WMI_gaming_execute_u64(method_id, input, &result);
-+        if (ACPI_SUCCESS(status))
-+            *value = (u64) result;
-+
-+        return status;
-+    }
-+    return AE_BAD_PARAMETER;
-+}
-+
- /*
-  * Generic Device (interface-independent)
-  */
-@@ -1575,6 +1692,66 @@ static int acer_gsensor_event(void)
-     return 0;
- }
-
-+/*
-+ *  Predator series turbo button
-+ */
-+static int acer_toggle_turbo(void)
-+{
-+    /* Get current state from turbo button */
-+    u64 turbo_led_state, gpu_fan_config1, gpu_fan_config2;
-+    u8 i;
-+
-+    if (ACPI_FAILURE(WMID_gaming_get_u64(&turbo_led_state,
-ACER_CAP_TURBO_LED)))
-+        return -1;
-+
-+    if (turbo_led_state) {
-+        // turns off turbo led
-+        WMID_gaming_set_u64(0x1, ACER_CAP_TURBO_LED);
-+
-+        // set FAN mode to auto
-+        if (quirks->cpu_fans > 0)
-+            gpu_fan_config2 |= 1;
-+        for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
-+            gpu_fan_config2 |= 1 << (i + 1);
-+        for (i = 0; i < quirks->gpu_fans; ++i)
-+            gpu_fan_config2 |= 1 << (i + 3);
-+        if (quirks->cpu_fans > 0)
-+            gpu_fan_config1 |= 1;
-+        for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
-+            gpu_fan_config1 |= 1 << (2 * i + 2);
-+        for (i = 0; i < quirks->gpu_fans; ++i)
-+            gpu_fan_config1 |= 1 << (2 * i + 6);
-+        WMID_gaming_set_u64(gpu_fan_config2 | gpu_fan_config1 << 16,
-ACER_CAP_TURBO_FAN);
-+
-+        // set OC to normal
-+        WMID_gaming_set_u64(0x5, ACER_CAP_TURBO_OC);
-+        WMID_gaming_set_u64(0x7, ACER_CAP_TURBO_OC);
-+    } else {
-+        // turn on turbo led
-+        WMID_gaming_set_u64(0x10001, ACER_CAP_TURBO_LED);
-+
-+        // set FAN to turbo mode
-+        if (quirks->cpu_fans > 0)
-+            gpu_fan_config2 |= 1;
-+        for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
-+            gpu_fan_config2 |= 1 << (i + 1);
-+        for (i = 0; i < quirks->gpu_fans; ++i)
-+            gpu_fan_config2 |= 1 << (i + 3);
-+        if (quirks->cpu_fans > 0)
-+            gpu_fan_config1 |= 2;
-+        for (i = 0; i < (quirks->cpu_fans + quirks->gpu_fans); ++i)
-+            gpu_fan_config1 |= 2 << (2 * i + 2);
-+        for (i = 0; i < quirks->gpu_fans; ++i)
-+            gpu_fan_config1 |= 2 << (2 * i + 6);
-+        WMID_gaming_set_u64(gpu_fan_config2 | gpu_fan_config1 << 16,
-ACER_CAP_TURBO_FAN);
-+
-+        // set OC to turbo mode
-+        WMID_gaming_set_u64(0x205, ACER_CAP_TURBO_OC);
-+        WMID_gaming_set_u64(0x207, ACER_CAP_TURBO_OC);
-+    }
-+    return turbo_led_state;
-+}
-+
- /*
-  * Switch series keyboard dock status
-  */
-@@ -1872,6 +2049,10 @@ static void acer_wmi_notify(u32 value, void *context)
-         acer_gsensor_event();
-         acer_kbd_dock_event(&return_value);
-         break;
-+    case WMID_GAMING_TURBO_KEY_EVENT:
-+        if (return_value.key_num == 0x4)
-+            acer_toggle_turbo();
-+        break;
-     default:
-         pr_warn("Unknown function number - %d - %d\n",
-             return_value.function, return_value.key_num);
 -- 
 2.30.2
+
