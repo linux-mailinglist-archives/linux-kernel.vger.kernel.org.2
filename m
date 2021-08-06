@@ -2,125 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377783E2BEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4913E2BF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 15:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhHFNuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 09:50:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48184 "EHLO mail.kernel.org"
+        id S232647AbhHFNvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 09:51:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231636AbhHFNt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 09:49:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67A6261181;
-        Fri,  6 Aug 2021 13:49:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628257784;
-        bh=88aH7vwRZR57VNS2gSeb3nCVZl5AOjF3DDyAIdp5Osg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CLZFUN4+Ma5Ta2YVgdBbjtnobCA0heaTVbi+1qZmXg8zbCdyZHeJbaxdfP0e+hWoE
-         dhJVDRKvWgGwBPMrEtxeFLKyYLdOnaCBKnYYEt8Wr7iFxXHwEHZY/niMeIR/b8EKQB
-         nIWBz6H8yiGT2LRKzbW+aAWYC4PPRBIXWBmAbb2+ie2j55udWLjAc19GtP4YaQ3zGO
-         3rrJLPKP25aP3JyYrz0y+VJnwO/S7s9n6ox22wHU7Qg2mL2zYSvBKHX1XumltMSihI
-         cu5nPebyT2EYeGStgS140BxJOeFoSFvNf5PTQ7RzquTeDX6vs5UnJIWojqvOc7Fanj
-         cwLSQlcZxjUzA==
-Date:   Fri, 6 Aug 2021 22:49:41 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH] init: Suppress wrong warning for bootconfig cmdline
- parameter
-Message-Id: <20210806224941.6e28a3f8854f595f171b717d@kernel.org>
-In-Reply-To: <20210805152221.33ssjh6qvgbj2pt5@halaneylaptop>
-References: <162812945097.77369.1849780946468010448.stgit@devnote2>
-        <20210805152221.33ssjh6qvgbj2pt5@halaneylaptop>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230057AbhHFNvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 09:51:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFE1061158;
+        Fri,  6 Aug 2021 13:51:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628257894;
+        bh=k2Y9aipZPPlCNLObLR0DkEodjX0SsKq8KVYfy4+SmJ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CSTD0cUbb7/rlh/ckG9AvuJUOVMY2C4ZT11OSwYwyDHS+2bR1DWwXJvOXaXFmE4MT
+         /oeNPTshZlVHgw6vOVBXRtBwVEtUfz0AtH5NsSZppxwLEXQSJsb8p6WtPnq4JXyWtg
+         24RMczCMIfGnM1abNyFPSFU3Xi9buuUDDhxBDqYA=
+Date:   Fri, 6 Aug 2021 15:51:31 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        hannes@stressinduktion.org, davem@davemloft.net,
+        akpm@linux-foundation.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Minmin chen <chenmingmin@huawei.com>
+Subject: Re: [PATCH v2] once: Fix panic when module unload
+Message-ID: <YQ0+Yz+cWC0nh4uB@kroah.com>
+References: <20210806082124.96607-1-wangkefeng.wang@huawei.com>
+ <20210806064328.1b54a7f0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806064328.1b54a7f0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
-
-On Thu, 5 Aug 2021 10:22:21 -0500
-Andrew Halaney <ahalaney@redhat.com> wrote:
-
-> On Thu, Aug 05, 2021 at 11:10:51AM +0900, Masami Hiramatsu wrote:
-> > Since the 'bootconfig' command line parameter is handled before
-> > parsing the command line, it doesn't use early_param(). But in
-> > this case, kernel shows a wrong warning message about it.
+On Fri, Aug 06, 2021 at 06:43:28AM -0700, Jakub Kicinski wrote:
+> On Fri, 6 Aug 2021 16:21:24 +0800 Kefeng Wang wrote:
+> > DO_ONCE
+> > DEFINE_STATIC_KEY_TRUE(___once_key);
+> > __do_once_done
+> >   once_disable_jump(once_key);
+> >     INIT_WORK(&w->work, once_deferred);
+> >     struct once_work *w;
+> >     w->key = key;
+> >     schedule_work(&w->work);                     module unload
+> >                                                    //*the key is
+> > destroy*
+> > process_one_work
+> >   once_deferred
+> >     BUG_ON(!static_key_enabled(work->key));
+> >        static_key_count((struct static_key *)x)    //*access key, crash*
 > > 
-> > [    0.013714] Kernel command line: ro console=ttyS0  bootconfig console=tty0
-> > [    0.013741] Unknown command line parameters: bootconfig
+> > When module uses DO_ONCE mechanism, it could crash due to the above
+> > concurrency problem, we could reproduce it with link[1].
 > > 
-> > To suppress this message, add a dummy handler for 'bootconfig'.
+> > Fix it by add/put module refcount in the once work process.
 > > 
-> > Fixes: 86d1919a4fb0 ("init: print out unknown kernel parameters")
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > ---
-> >  init/main.c |    9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/init/main.c b/init/main.c
-> > index f5b8246e8aa1..8d97aba78c3a 100644
-> > --- a/init/main.c
-> > +++ b/init/main.c
-> > @@ -397,6 +397,12 @@ static int __init bootconfig_params(char *param, char *val,
-> >  	return 0;
-> >  }
-> >  
-> > +static int __init warn_bootconfig(char *str)
-> > +{
-> > +	/* The 'bootconfig' has been handled by bootconfig_params(). */
-> > +	return 0;
-> > +}
-> > +
-> >  static void __init setup_boot_config(void)
-> >  {
-> >  	static char tmp_cmdline[COMMAND_LINE_SIZE] __initdata;
-> > @@ -475,9 +481,8 @@ static int __init warn_bootconfig(char *str)
-> >  	pr_warn("WARNING: 'bootconfig' found on the kernel command line but CONFIG_BOOT_CONFIG is not set.\n");
-> >  	return 0;
-> >  }
-> > -early_param("bootconfig", warn_bootconfig);
-> > -
-> >  #endif
-> > +early_param("bootconfig", warn_bootconfig);
-> >  
-> >  /* Change NUL term back to "=", to make "param" the whole string. */
-> >  static void __init repair_env_string(char *param, char *val)
-> > 
+> > [1] https://lore.kernel.org/netdev/eaa6c371-465e-57eb-6be9-f4b16b9d7cbf@huawei.com/
 > 
-> Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-> 
-> Thanks Masami, this is one of the corner case command line parameters
-> that I was trying to highlight when I made the original commit (but I
-> didn't catch this one).
+> Seems reasonable. Greg does it look good to you?
 
-But if there are other parameters which also depends on kconfig?
-This actually depends on CONFIG_BOOT_CONFIG=y. I guess there are
-other parameters which are also depends on kconfig.
-(and usually, developers doesn't change their grub.conf when he install
- a new kernel)
+Me?  I was not paying attention to this at all, sorry...
 
-> 
-> I _think_ the only other one is dyndbg based on some grepping. I'm
-> debating if it makes sense to do something similar there or to actually
-> use a callback to do some of the work it needs in stealing from the CLI.
-> 
-> For this case though I don't see how you could do anything other than
-> what you've done here -- you can't modify the params once we've started
-> processing, and that's what bootconfig needs to do.
+> I think we can take it thru networking since nobody cared to pick up v1.
 
-Actually, if CONFIG_BOOT_CONFIG=y, "bootconfig" is handled before preparing
-cmdline strings, because it will copy (append) additional cmdline args
-from the bootconfig to the cmdline.
-I can remove the "bootconfig" string too. But I think it is better to keep
-it in the cmdline so that users can ensure what he passed to the kernel.
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Sure, I trust you :)
