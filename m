@@ -2,93 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0593E220F
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 05:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6AA3E2212
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 05:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241485AbhHFDHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 5 Aug 2021 23:07:06 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:50697 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230127AbhHFDHD (ORCPT
+        id S241463AbhHFDL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 5 Aug 2021 23:11:57 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:41646 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232709AbhHFDLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 5 Aug 2021 23:07:03 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Ui5guSV_1628219206;
-Received: from 30.21.164.16(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Ui5guSV_1628219206)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 06 Aug 2021 11:06:47 +0800
-Subject: Re: [PATCH 1/5] mm: migrate: Move the page count validation to the
- proper place
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1628174413.git.baolin.wang@linux.alibaba.com>
- <1f7e1d083864fbb17a20a9c8349d2e8b427e20a3.1628174413.git.baolin.wang@linux.alibaba.com>
- <YQwBD55FZyoY+C5D@casper.infradead.org>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <a02346d7-1a79-eb92-cb1f-033e6b58fa3f@linux.alibaba.com>
-Date:   Fri, 6 Aug 2021 11:07:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 5 Aug 2021 23:11:55 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17638v6O010265;
+        Fri, 6 Aug 2021 03:11:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=tfLmQjTUBgYCB2GAHE3VgDPhYNfUxaSMZD9rUnmmgFo=;
+ b=0A4XRcD/pRFzpG7qbi0fFZK6tRaR/o59ffU0eFsW5/4F/M+jZWmSqkk8juUC7XGXz+tJ
+ FaEH/bHgx63xUizNWrh9GyeIAMlv6aYBleEbhIXqbRJbavCN7x2lIEvcfWugrDIYFW/u
+ CrxYWpeVzoKxB+9wyess96MBbwRu7+DTJH0tJOEQiOnu0zNXAvCJKfdgL7knsKRo6ERp
+ 5OZ2vEdgMzvnnpVxvXZ9Mj4whsE42CIuqj7JEDut+Qa5xGwD7q88ftIoYTBB08juLJBv
+ KaPFV1J5OrWQDE2vlW42K9iq4TcX8PkwpjmRhuuPycSMtdW0jSMBB56xaTTcE+ddOBr+ BQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=tfLmQjTUBgYCB2GAHE3VgDPhYNfUxaSMZD9rUnmmgFo=;
+ b=CoJb6wDbYTIijoF3CmT2e6b+xVqU8a0zSyq5WVevPiZFz1yWHuR+Fl+eGcVYJtWhc+OK
+ jFeL8qWpme7GuGr7dB4AdjGKnii/OYgYHl2v/2R7UrzuoH5k4yeyNhy7vpIPk3FCQewg
+ CbT5SD7STWId8SpQwcWz/xMEmifzshGnun0xSwzg0uCbZnkIQYNTFSiWA44ayKkxnv0D
+ gp+xWX8pXLmvL4I9YAWoE6mPKuWzZ1XiY7fhnU6cAXhz4k6P37mVTna3SO00fyYpzYbF
+ Z9q/LhOOB8dt566+sMb3x5/p+TlR0ziO7hctCOhMgznjpta57TOvMO4hn2j8235AVPCM tA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3a7hxpnkak-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Aug 2021 03:11:30 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17639gW7048115;
+        Fri, 6 Aug 2021 03:11:28 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2175.outbound.protection.outlook.com [104.47.59.175])
+        by userp3030.oracle.com with ESMTP id 3a4un4yaxn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Aug 2021 03:11:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U2+evnKNxHfksR6kBlTHnuMAPmXgpzQd2cX/cmmvq01zaTUgj4Ye8WvRfjsYRhz/8PNZUvTGqovk7Y3VYy8sGLlCEGwooHQYkkNuwJTRBx2Rwlj7+tc/iYfqRiEYA98k26ntpiG6V48StZ9N9KEDtlG7bfsHF9+aAr9Sa7kBawLGYO8bCJjehmtCWcpvnjxwBYflawJROGXddApxH8Qt8FkbesIMooVkLct3PrKNFgPMsX3xB/7yd+zdJgwa9bgy7vStspeSHpwbud51vQlITsMbD4QgzZjW1WewkLzg3gnsMbUbvpxLVnU+pqN8dJyAxr5SJCgBRWfXEb8kKGyd9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tfLmQjTUBgYCB2GAHE3VgDPhYNfUxaSMZD9rUnmmgFo=;
+ b=bbYswZ4Whz/NWOfHuKM510NJzHsdG7k1hwnIp4lADpmgaChVSWhnRA8F4778hSLhMXvXKUF6MJLFSaUTrLWCfgal43PHxmgwleZQOEYdynsqTBhPjadh2rVfk6+s68Sd58pFEousW2aGI50yJAqTK8VbvihNw3HQNc0bWJlS4CHGaNfjjtJ2nfNNCoF3T6ZymPGMBx/rS38qJpibjOTJhqL6uwVIubJVPYkgpWkpwK/x1SlYXEWsglJWux0PFDwJYcE0CFU6gDW01ubNeJIaoj9qxDCB5GhJf4RD70Fjk9sLx8U6SV/Hoa1DLEKEO/14XnRNbtVw0I9/GcKlIuah9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tfLmQjTUBgYCB2GAHE3VgDPhYNfUxaSMZD9rUnmmgFo=;
+ b=SpRdc5unoHrfGa5qpWXYuvtgTYXQJKQtZYcFwJzqFLPgWDtPmAwP0aTWMK1VqEDe4Hvh6PuHort7UJt1ArvRE6Ywq01HuQn5FhyHv+skiTPnEDSc0Jk4rHYT6sTR+aSEKgcTR5kOOogM8sA6sO1ofF3rNecbJi1sdVLY05Yofl0=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB5401.namprd10.prod.outlook.com (2603:10b6:510:e8::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.20; Fri, 6 Aug
+ 2021 03:11:26 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::153e:22d1:d177:d4f1]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::153e:22d1:d177:d4f1%8]) with mapi id 15.20.4373.026; Fri, 6 Aug 2021
+ 03:11:26 +0000
+To:     Bean Huo <huobean@gmail.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, cang@codeaurora.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: ufs: Remove useless if-state in
+ ufshcd_add_command_trace
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1v94jfeuy.fsf@ca-mkp.ca.oracle.com>
+References: <20210802180803.100033-1-huobean@gmail.com>
+Date:   Thu, 05 Aug 2021 23:11:23 -0400
+In-Reply-To: <20210802180803.100033-1-huobean@gmail.com> (Bean Huo's message
+        of "Mon, 2 Aug 2021 20:08:03 +0200")
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR13CA0062.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c4::7) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-In-Reply-To: <YQwBD55FZyoY+C5D@casper.infradead.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR13CA0062.namprd13.prod.outlook.com (2603:10b6:a03:2c4::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.4 via Frontend Transport; Fri, 6 Aug 2021 03:11:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a7663865-4856-45b4-575e-08d95887e0dd
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5401:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB540122AB31D9D19CF8214AE48EF39@PH0PR10MB5401.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1YG+fhZey5uEIDGXgxqOE4V9m5YyV6M9sh3g/w1reh1Wr+ZLoKHGSB9A3l19DIeKPfzKWGWeflxoG50fgIwVdrqQyzEDbRPGvE8aYSw/a+rmMmBxg14rU9BKtfR/pLgs0fCN4Pb/qB+sr7RZMPLhqFFJx3ERzQAmxS6rPZCQut7BU94H9Gt0eMt1xb67b5ookOmtVcAyk9BEmGf4J54KpFvRlEyn4fnfcGTNPOACXwKo48N4Hpy8DgM3hZWMBNOSULvnNlsolusNhfGitUOwgOg1emAc1iik0rJX2vlCeEoFYymY0trbVIEfajAi4FKX3pMRXGUv0Ylqr0UKgFoh8hgjo2EhInwnATF1IpWgzLMeKtcNpgSfJNmE2y274xPIj/FcGQeb75LGFLPCJcoyOw5tX/e6/VzdD4GFlPyUd15PTDg8xzPgB1QJke48a+tySz2T9oBoQBAmiiVva7hGSiq40G7umDBmr8tgGrq+AZywe3BhA5+ZLXykajOy3WPb5t2E2qd2+ihkPSpHZT/tWDeqkBlEZ6KZgSIUYxk0tWPjWBsbq13l1TZhDzHirSDeHU4DmSYGF1A1EMTm1ra3ZKKmn8fHU6rY8vs62lts58azncXHlOAZd89P4eNLLVI6Ux+0l9H6aoPyGXYJ4FHUmPZwA0uI/cEsfbKTFMQ4zl5UTOlwCqb7eq5wjCcdSQ15UlLCmepNgJF3M0wGEMPy0A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(366004)(136003)(346002)(39860400002)(956004)(66556008)(52116002)(7696005)(66476007)(316002)(8936002)(6916009)(478600001)(2906002)(66946007)(36916002)(86362001)(5660300002)(8676002)(4326008)(26005)(558084003)(186003)(55016002)(38100700002)(38350700002)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?btRPdV8AMv+ibqKZxRGWzBu8Ca9yYwxNXXq33DblhekitSGqKiV/IxufxP7R?=
+ =?us-ascii?Q?dEaj5rVI/P1vl7ar+fTlkKEpMBpOR7DEPbKz90rDFujsFK6PPneKX9lcrH2x?=
+ =?us-ascii?Q?Bqkr2iKfw8u7zRu1qGKNnupq2EvbWAHd22+DB6+AjvVgrRhgZsQn27T8DSgO?=
+ =?us-ascii?Q?rw2tsWN1bUOueLRXQb3jfIWjzuMCAdZTmGbWukPRZP3mpToaJyM2pf1ricUx?=
+ =?us-ascii?Q?uZMBhuoFXWWcgx6azEsMMS3c0u251dsya06iILB9UKOkxWDFxIJSmtBB+sqs?=
+ =?us-ascii?Q?2QN9IosarWfYrwzIbSVWOysRCh9jYM6/BmMAxwl/bBECpUxjsNFO7KVBqNtg?=
+ =?us-ascii?Q?BEnIgdFwGiqb2ahyNr1P9nOOXS9pQpZRheUawUCf0KWJJ+014hvzGrZbVN00?=
+ =?us-ascii?Q?KkS5L3dnBSPPPrScxJlLSpjaaOpA9JsSoH5fzUXG1j/V5nXemu00vNxkqcaH?=
+ =?us-ascii?Q?i65cN2Se4lHs9+yk5ZaE/+egJa73xeZm6gFyT20oF/if2iRrixFffqpPQAXs?=
+ =?us-ascii?Q?IGkEOtoli2tMWjke0fukUZ43iPDuKucgaCOBVuIb70CeMyR117dzbbDSErGx?=
+ =?us-ascii?Q?nlE1n8SXCOyHhmjBqgcQdexWSuHpu5bbqkT/xbH/Hoomc27lf9w+rcUuXyas?=
+ =?us-ascii?Q?8Clt0z7EoNHbfi89nGDCLJeql1ShAr2OL0orxwIvp2X9JalkaegUV5rZFY4v?=
+ =?us-ascii?Q?lS2QvLEteCjQz0PoNK+ag/blare9S0FLiV52acwrV4+ArseMy9Kgl/T2lb5Z?=
+ =?us-ascii?Q?zqutQg7nUuNm6xNR5lRer9GiYofuG7xOHS6iQe959+DP3eJtOKJAq+cbp5AS?=
+ =?us-ascii?Q?Ud/cgfp7/Tloc8undjdwk+420LCrWrLgVxdL4/Lq2E/14dVdOSAiLVj05yox?=
+ =?us-ascii?Q?KHyOdzLzrJZnMBpBgPOZGD4uj8fjsbbNen5vDOkHYhbS25E4STTRwWgiZ+tX?=
+ =?us-ascii?Q?8ygfRzAWUyjKvjBR0w6fld/yIwostnccLQ5CN/y+O2CpxPVBqhk+G71aC1dr?=
+ =?us-ascii?Q?5T0aW5WmOnAV7NLAD8FDBTp2JrFmdhnzBIm6GuQ9nL1cWIJIfMPTDfs0JgZ5?=
+ =?us-ascii?Q?/u1j4rWVsAm1yLtqHiQQOzYsHgcjZ7WKtaurQ+G7dRngFG/Imh2KANGzO5rt?=
+ =?us-ascii?Q?rKVlzLgekK4pgSB4srv1LgZGusOZWeKCdb+Xh05KiWqAME0u1pq36T9BmGeV?=
+ =?us-ascii?Q?mxmjByPogyq8pmHtZP/fOOx8yhZ+Qvko6/itnCjCWylLRMwqynohO5/l6yuy?=
+ =?us-ascii?Q?HXy9m5dy1Tyw9iOCtXBOP26u2TCZfvko1caaG3z/MrZS1uqiAl1we6uwPFHG?=
+ =?us-ascii?Q?hlqJ+y3jEKp94KTklUiAwZj/?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7663865-4856-45b4-575e-08d95887e0dd
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2021 03:11:26.7351
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pucCdhtzdQVihvkGZAUqwsdC1z8/WpxR1+D2FJb+W51lli5Q8VxuS8cwUD6Pl55B1rTsXmj7kO4cBEcmJc/NLb5guanIk2C9kGaZJ5rkzJo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5401
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10067 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 malwarescore=0
+ suspectscore=0 mlxscore=0 adultscore=0 mlxlogscore=999 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108060018
+X-Proofpoint-GUID: 9by0wuzJQ_PO-g63McnnONN2poMl6xH5
+X-Proofpoint-ORIG-GUID: 9by0wuzJQ_PO-g63McnnONN2poMl6xH5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
 
-> On Thu, Aug 05, 2021 at 11:05:56PM +0800, Baolin Wang wrote:
->> We've got the expected count for anonymous page or file page by
->> expected_page_refs() at the beginning of migrate_page_move_mapping(),
->> thus we should move the page count validation a little forward to
->> reduce duplicated code.
-> 
-> Please add an explanation to the changelog for why it's safe to pull
-> this out from under the i_pages lock.
+Bean,
 
-Sure. In folio_migrate_mapping(), we are sure that the migration page 
-was isolated from lru list and locked, so I think there are no race to 
-get the page count without i_pages lock. Please correct me if I missed 
-something else. Thanks.
+> ufshcd_add_cmd_upiu_trace() will be called anyway, so move if-state
+> down, make code simpler.
 
-> 
->> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->> ---
->>   mm/migrate.c | 10 ++++------
->>   1 file changed, 4 insertions(+), 6 deletions(-)
->>
->> diff --git a/mm/migrate.c b/mm/migrate.c
->> index 239b238..5559571 100644
->> --- a/mm/migrate.c
->> +++ b/mm/migrate.c
->> @@ -386,11 +386,10 @@ int folio_migrate_mapping(struct address_space *mapping,
->>   	int expected_count = expected_page_refs(mapping, &folio->page) + extra_count;
->>   	long nr = folio_nr_pages(folio);
->>   
->> -	if (!mapping) {
->> -		/* Anonymous page without mapping */
->> -		if (folio_ref_count(folio) != expected_count)
->> -			return -EAGAIN;
->> +	if (folio_ref_count(folio) != expected_count)
->> +		return -EAGAIN;
->>   
->> +	if (!mapping) {
->>   		/* No turning back from here */
->>   		newfolio->index = folio->index;
->>   		newfolio->mapping = folio->mapping;
->> @@ -404,8 +403,7 @@ int folio_migrate_mapping(struct address_space *mapping,
->>   	newzone = folio_zone(newfolio);
->>   
->>   	xas_lock_irq(&xas);
->> -	if (folio_ref_count(folio) != expected_count ||
->> -	    xas_load(&xas) != folio) {
->> +	if (xas_load(&xas) != folio) {
->>   		xas_unlock_irq(&xas);
->>   		return -EAGAIN;
->>   	}
->> -- 
->> 1.8.3.1
->>
->>
+Applied to 5.15/scsi-staging, thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
