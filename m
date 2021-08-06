@@ -2,114 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D2B3E2A04
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6655A3E2A06
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 13:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245597AbhHFLrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 07:47:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
+        id S245610AbhHFLr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 07:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhHFLri (ORCPT
+        with ESMTP id S229819AbhHFLry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 07:47:38 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B53C061798;
-        Fri,  6 Aug 2021 04:47:21 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id f12so8370429qkh.10;
-        Fri, 06 Aug 2021 04:47:21 -0700 (PDT)
+        Fri, 6 Aug 2021 07:47:54 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E5CC061798;
+        Fri,  6 Aug 2021 04:47:39 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id 188so9210435ioa.8;
+        Fri, 06 Aug 2021 04:47:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to;
-        bh=BBUaoNE0IbHV53qO+WAxQddu4xQPBbh8BMh0jZwcruA=;
-        b=UGYO8XflIKFBzKPQvL5rqM7+axUVT0po1AxTt2C4qGE+KPSHPthDNX6hu8Ywj2b1Fc
-         2mTnzrrTVl3qTIWjHz1ICttPxpVRWwuizsKCcH7qmjZokEjezNVgRh7m1SAx2ojSSHDY
-         bUNyBMNKY01vnHeWM4jooGkcngDeZMfNRaXYfYgXH08b3NQsSCsguvGuq/vGccKK48z6
-         31QO3ZtnS7Jpk8p+xvg6xLbPH1eaHYno2RL5iJPKNZ2RhWsJpPyJIcoH3uzLor6i0C5C
-         Riq40Oljh1sn81k4efcTLcXasGU0BAKyADiEq65HiA7oKJVb9ByKDZZIP8eYx0j24Apg
-         /iFw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zLpVKTCFA11+OnC1v/3aHjajQo+lN8JISFoIQ0gJsWw=;
+        b=hu9A7sDTQ5CTLyXUMb5kB1I1W1H5EZNTuovyxktDPPEAO5OnPRdeBrMpZCZeLbJOlc
+         /Zu4TAyQPSo1dTrgbymhgLaW2AwBi9vu6dFJPOnet17QVukPhOjRVussRd6MNrdmMbVO
+         cyr3ZQe5UdsvJCQCAXGiPWPz8AKUq6ZMk9YWP9DOCUOqdwnue5hicnxVZe5oNc8pDUTt
+         Bor14wUM2ozGZcSTXm29zchCH2xImMpLps8RncD1TR5WLsY6V1D769l5hRCwJWL/n21p
+         5xq4/gANiiC/3GkvgylENzuJLJQsPeqO/cU9TDdw1QkixzxjHLCS9esRaHkpacXHk+GG
+         bqeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
-        bh=BBUaoNE0IbHV53qO+WAxQddu4xQPBbh8BMh0jZwcruA=;
-        b=oHEidDrIslUkefgAsuyqLR//rgnBxYkB19zGTgL/0AZmyreM8x0R73r7FcnZ0jC6ar
-         uDNaLuc2d4toYntyZNRieh5rFX7LOj+y+ESKBAGfE5bVYxfcSaaheaAy7FOYnuXujozR
-         pOBvkqoP8J533Mv+/Oq2KyBmsR0reeZ6Ulu49eQPje42a9Hyku/PFKbso680dLRgNDgP
-         O/hsxxgxrd5w+a9qdixGRgXCGWb8Fg3mfmyVk2jtwoh2OOgpICsScX+SIvZ42l3Xd8Ws
-         5su/vdf6TvWbQ4/6IXXo2Oa7bg0k6WlXTA3ObV+49xZ7iR3YEj0i/e9ROGtB/US25x74
-         jMqw==
-X-Gm-Message-State: AOAM531eqU8lNOYpYR9qvc4Pdo0TFFa+Sn3/T6RCPjGWEJ1gw4ckAQ2c
-        nG5fbF6vhHPyGZlRVITz6mQ=
-X-Google-Smtp-Source: ABdhPJyhv24ae9e6dk5V3IsNxW8zC0bYA3lE8SkGc9QVE5QigRf7J/3V1pQknD4O+oPZgN+H/KUJIw==
-X-Received: by 2002:a05:620a:1022:: with SMTP id a2mr9988723qkk.136.1628250440395;
-        Fri, 06 Aug 2021 04:47:20 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id n190sm2340521qke.134.2021.08.06.04.47.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 04:47:20 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj38.park@gmail.com>,
-        SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        amit@kernel.org, benh@kernel.crashing.org,
-        brendanhiggins@google.com, corbet@lwn.net, david@redhat.com,
-        dwmw@amazon.com, elver@google.com, fan.du@intel.com,
-        foersleo@amazon.de, greg@kroah.com, gthelen@google.com,
-        guoju.fgj@alibaba-inc.com, jgowans@amazon.com, joe@perches.com,
-        mgorman@suse.de, mheyne@amazon.de, minchan@kernel.org,
-        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
-        riel@surriel.com, rientjes@google.com, rostedt@goodmis.org,
-        rppt@kernel.org, shakeelb@google.com, shuah@kernel.org,
-        sieberf@amazon.com, snu@zelle79.org, vbabka@suse.cz,
-        vdavydov.dev@gmail.com, zgf574564920@gmail.com,
-        linux-damon@amazon.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v34 07/13] mm/damon: Implement a debugfs-based user space interface
-Date:   Fri,  6 Aug 2021 11:47:11 +0000
-Message-Id: <20210806114711.6900-1-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210805174316.ff4b6eee629f9f05259058d9@linux-foundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zLpVKTCFA11+OnC1v/3aHjajQo+lN8JISFoIQ0gJsWw=;
+        b=boOGfMSQJYkz3FOtBHxknox3Js8DQ65JvLGft+YIxZTvnFe3zmmOOY3M2+QI0X6M48
+         SzsWq6Jrqr7oSOg4CEWEU3o8drWhQL7SBNfS8lq9i7wkbpd2d4ZAGH3VFSbm/mVmb+/G
+         cgdf8WREAijMbYiHqweVD1bhRjjLMgk3UkooEtDwqoS50NqTBNCB0VuofEC0e+eTAHZt
+         sedOC6OzRvhLURL364F5bBJ7xdwS1tZYWaZuNmk9puriVHj9nkvUnPPWAhIe1ryoBigj
+         0wZ0jRBPvsIIe7DuEd8igO5eKH6tgV068J7tm6l4XmnRauoCYCzpF3ZHqMj0sz0o+Xmj
+         IFVw==
+X-Gm-Message-State: AOAM532R/hMWMkPYqUCn16Lje3CeE/QqmohScHJQKWAeSxbCXQ1mJf5Z
+        gxH+P1P0kX5p6y6rNcT9o6huQkhR8BhuxoWF4H0=
+X-Google-Smtp-Source: ABdhPJzhZNlw9cWh7E098WLU6XWzjiUzPFJygP7XHy5Y/EnBmPJyrPMNj9BJYH5dgtffBynVPF4A+9oJ8woXfoCYzz4=
+X-Received: by 2002:a02:cc22:: with SMTP id o2mr9334421jap.26.1628250458544;
+ Fri, 06 Aug 2021 04:47:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210806091058.141-1-alistair@alistair23.me> <20210806091058.141-3-alistair@alistair23.me>
+ <YQ0fi8pV1DNZd4nP@google.com>
+In-Reply-To: <YQ0fi8pV1DNZd4nP@google.com>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Fri, 6 Aug 2021 21:47:12 +1000
+Message-ID: <CAKmqyKN6PJR6CiyZ-DVFf7FJVh2B36RGmHBrd+9owABzw8p_iQ@mail.gmail.com>
+Subject: Re: [PATCH v9 02/12] mfd: simple-mfd-i2c: Add a Kconfig name
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
+        Mark Brown <broonie@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Fri, Aug 6, 2021 at 9:39 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Fri, 06 Aug 2021, Alistair Francis wrote:
+>
+> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> > ---
+> >  drivers/mfd/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > index 6a3fd2d75f96..09a939f8b7ff 100644
+> > --- a/drivers/mfd/Kconfig
+> > +++ b/drivers/mfd/Kconfig
+> > @@ -1176,7 +1176,7 @@ config MFD_SI476X_CORE
+> >         module will be called si476x-core.
+> >
+> >  config MFD_SIMPLE_MFD_I2C
+> > -     tristate
+> > +     tristate "Simple MFD device"
+> >       depends on I2C
+> >       select REGMAP_I2C
+> >       help
+>
+> For what purpose?
 
-On Thu, 5 Aug 2021 17:43:16 -0700 Andrew Morton <akpm@linux-foundation.org> wrote:
+It makes it easier to enable in menuconfig. That's the main reason :)
 
-> On Fri, 16 Jul 2021 08:14:43 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
-> 
-> > +#define targetid_is_pid(ctx)	\
-> > +	(ctx->primitive.target_valid == damon_va_target_valid)
-> > +
-> 
-> I think this can be implemented as a static inline C function?
-> 
-> --- a/mm/damon/dbgfs.c~mm-damon-implement-a-debugfs-based-user-space-interface-fix-fix
-> +++ a/mm/damon/dbgfs.c
-> @@ -97,8 +97,10 @@ out:
->  	return ret;
->  }
->  
-> -#define targetid_is_pid(ctx)	\
-> -	(ctx->primitive.target_valid == damon_va_target_valid)
-> +static inline bool targetid_is_pid(const struct damon_ctx *ctx)
-> +{
-> +	return ctx->primitive.target_valid == damon_va_target_valid;
-> +}
->  
->  static ssize_t sprint_target_ids(struct damon_ctx *ctx, char *buf, ssize_t len)
->  {
-> 
-> We prefer this because it looks better, provides typechecking and can
-> in some situations suppress unused variable warnings.
+Alistair
 
-Agreed, I will keep that preference in my mind.  I also found that you already
-nicely made the change in the the -mm tree[1], appreciate!
-
-[1] https://www.ozlabs.org/~akpm/mmotm/broken-out/mm-damon-implement-a-debugfs-based-user-space-interface-fix-fix.patch
-
-
-Thanks,
-SeongJae Park
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
