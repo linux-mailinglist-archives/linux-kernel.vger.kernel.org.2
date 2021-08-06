@@ -2,108 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDBCF3E2FB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 21:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3173E2FB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 21:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243689AbhHFTMx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Aug 2021 15:12:53 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:54441 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbhHFTMw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 15:12:52 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id BA6AF1C0005;
-        Fri,  6 Aug 2021 19:12:32 +0000 (UTC)
-Date:   Fri, 6 Aug 2021 21:12:31 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Apurva Nandan <a-nandan@ti.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
-Subject: Re: [PATCH 12/13] mtd: spinand: Perform Power-on-Reset when
- runtime_pm suspend is issued
-Message-ID: <20210806211231.5c569939@xps13>
-In-Reply-To: <20210713130538.646-13-a-nandan@ti.com>
-References: <20210713130538.646-1-a-nandan@ti.com>
-        <20210713130538.646-13-a-nandan@ti.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S243815AbhHFTOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 15:14:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243651AbhHFTOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 15:14:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95D5C60FE7;
+        Fri,  6 Aug 2021 19:14:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628277255;
+        bh=S0NLSVNOkPnCNQLU6WMZArQYHq84pOpdEHa4pG7usZU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Qk58ppStHuW1QItokiGwD2dv9tPrfG82EjokWbtulDZHWjyN4xpd5gzUINZwfc9lk
+         n9ZtvQ2C/t1wQ6MYtRuXQeToMpm+id1Iq6b69X+1tbh0qFcWyKmJBj6wO6LE2ilGpS
+         2TnKK7bHXBQPdrrzMdywL4nFe9YoeJixgMt6aXQm0HZuzaTFstq0ntOXNruaVH31I5
+         cO3xjlhksGFPQqMd4EugsDyDIYCzZGEoOWpHAxh8YTdQg0eAX1VX7LF3W9cBfTk/Vh
+         di6ll2TqnF6+u3KOTLJNcxY0lBlA04/CiATc/uMhTsbr3uHPPq8jzPnslQC8umM2Rk
+         hw1TW1kfPE78Q==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: [PATCH] net: ethernet: stmmac: Do not use unreachable() in ipq806x_gmac_probe()
+Date:   Fri,  6 Aug 2021 12:13:40 -0700
+Message-Id: <20210806191339.576318-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.0.rc0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Apurva,
+When compiling with clang in certain configurations, an objtool warning
+appears:
 
-Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:37
-+0000:
+drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.o: warning: objtool:
+ipq806x_gmac_probe() falls through to next function phy_modes()
 
-> A soft reset using FFh command doesn't erase the flash's configuration
-> and doesn't reset the SPI IO mode also. This can result in the flash
-> being in a different SPI IO mode, e.g. Octal DTR, when resuming from
-> sleep. This would render the flash in an unusable state.
+This happens because the unreachable annotation in the third switch
+statement is not eliminated. The compiler should know that the first
+default case would prevent the second and third from being reached as
+the comment notes but sanitizer options can make it harder for the
+compiler to reason this out.
 
-              could put the falsh in?
+Help the compiler out by eliminating the unreachable() annotation and
+unifying the default case error handling so that there is no objtool
+warning, the meaning of the code stays the same, and there is less
+duplication.
 
-> Perform a Power-on-Reset (PoR), if available in the flash, when
-> suspending the device by runtime_pm. This would set the flash to clean
+Reported-by: Sami Tolvanen <samitolvanen@google.com>
+Tested-by: Sami Tolvanen <samitolvanen@google.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ .../ethernet/stmicro/stmmac/dwmac-ipq806x.c    | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-I think runtime_pm is something else.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+index 28dd0ed85a82..f7dc8458cde8 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+@@ -289,10 +289,7 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
+ 		val &= ~NSS_COMMON_GMAC_CTL_PHY_IFACE_SEL;
+ 		break;
+ 	default:
+-		dev_err(&pdev->dev, "Unsupported PHY mode: \"%s\"\n",
+-			phy_modes(gmac->phy_mode));
+-		err = -EINVAL;
+-		goto err_remove_config_dt;
++		goto err_unsupported_phy;
+ 	}
+ 	regmap_write(gmac->nss_common, NSS_COMMON_GMAC_CTL(gmac->id), val);
+ 
+@@ -309,10 +306,7 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
+ 			NSS_COMMON_CLK_SRC_CTRL_OFFSET(gmac->id);
+ 		break;
+ 	default:
+-		dev_err(&pdev->dev, "Unsupported PHY mode: \"%s\"\n",
+-			phy_modes(gmac->phy_mode));
+-		err = -EINVAL;
+-		goto err_remove_config_dt;
++		goto err_unsupported_phy;
+ 	}
+ 	regmap_write(gmac->nss_common, NSS_COMMON_CLK_SRC_CTRL, val);
+ 
+@@ -329,8 +323,7 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
+ 				NSS_COMMON_CLK_GATE_GMII_TX_EN(gmac->id);
+ 		break;
+ 	default:
+-		/* We don't get here; the switch above will have errored out */
+-		unreachable();
++		goto err_unsupported_phy;
+ 	}
+ 	regmap_write(gmac->nss_common, NSS_COMMON_CLK_GATE, val);
+ 
+@@ -361,6 +354,11 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ 
++err_unsupported_phy:
++	dev_err(&pdev->dev, "Unsupported PHY mode: \"%s\"\n",
++		phy_modes(gmac->phy_mode));
++	err = -EINVAL;
++
+ err_remove_config_dt:
+ 	stmmac_remove_config_dt(pdev, plat_dat);
+ 
 
-> state for reinitialization during resume and would also ensure that it
-> is in standard SPI IO mode (1S-1S-1S) before the resume begins.
+base-commit: 8fbebef80107d779b8e356cf60323454a4099d76
+-- 
+2.33.0.rc0
 
-Please add a comment about this to explain why we don't do this reset
-at resume time.
-
-> 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  drivers/mtd/nand/spi/core.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 608f4eb85b0a..6fb3aa6af540 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -1329,6 +1329,21 @@ static void spinand_mtd_resume(struct mtd_info *mtd)
->  	spinand_ecc_enable(spinand, false);
->  }
->  
-> +static int spinand_mtd_suspend(struct mtd_info *mtd)
-> +{
-> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
-> +	int ret;
-> +
-> +	if (!(spinand->flags & SPINAND_HAS_POR_CMD_BIT))
-> +		return 0;
-> +
-> +	ret = spinand_power_on_rst_op(spinand);
-> +	if (ret)
-> +		dev_err(&spinand->spimem->spi->dev, "suspend() failed\n");
-> +
-> +	return ret;
-> +}
-> +
->  static int spinand_init(struct spinand_device *spinand)
->  {
->  	struct device *dev = &spinand->spimem->spi->dev;
-> @@ -1401,6 +1416,7 @@ static int spinand_init(struct spinand_device *spinand)
->  	mtd->_erase = spinand_mtd_erase;
->  	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
->  	mtd->_resume = spinand_mtd_resume;
-> +	mtd->_suspend = spinand_mtd_suspend;
->  
->  	if (nand->ecc.engine) {
->  		ret = mtd_ooblayout_count_freebytes(mtd);
-
-
-Thanks,
-Miquèl
