@@ -2,124 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1423E22EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 07:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373D13E22A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 06:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243128AbhHFFdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 01:33:18 -0400
-Received: from ozlabs.org ([203.11.71.1]:34203 "EHLO ozlabs.org"
+        id S242727AbhHFEew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 00:34:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243069AbhHFFdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 01:33:14 -0400
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4GgvJT5CmJz9sWl; Fri,  6 Aug 2021 15:32:57 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1628227977;
-        bh=H07A1vmsG7/hmEZvTTKfG6W1Nqbvj1job+oTNmVUUFA=;
+        id S230353AbhHFEei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 00:34:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCAEF611C5;
+        Fri,  6 Aug 2021 04:34:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628224459;
+        bh=EolTbqTcuTIUW+jVDkYB935Z3TTEyaZ+u+VLSLIrw4A=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PwL5ZJgISfrA9Ti81rxOUK7eS71N98wp2QENeeQcD3uBMmUdAWCKV3aqowF6NZOXh
-         XI8W9HWfT1skRy4PZRx6ZQAUDg0g2DIbGv5UrWp94sJS7NqcsU7UAViaxcPyoHHi0b
-         L+XALLz8KF0a+k3IWu0mPt0P9+s9QVX4yrejWGZE=
-Date:   Fri, 6 Aug 2021 14:24:28 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [RFC v2] /dev/iommu uAPI proposal
-Message-ID: <YQy5fBJkKHhuNUuP@yekko>
-References: <BN9PR11MB5433B1E4AE5B0480369F97178C189@BN9PR11MB5433.namprd11.prod.outlook.com>
- <YP4/KJoYfbaf5U94@yekko>
- <20210730145123.GW1721383@nvidia.com>
- <YQii3g3plte4gT5Z@yekko>
- <20210804140742.GI1721383@nvidia.com>
+        b=iKcNBC8pCGifMlS34e3N+o69+5grs5j3qwjvkyWi3u/WpmY2c/gB/Dg+wG9fBSS8R
+         ulrU65e7Y/hN6ZOqJ6dzvRKS+DNsjCN3Uub9ljeFBZ8woiJwY8A9K8UqwudSSb8bK7
+         m09yXczF2L3ZiBZL8LAuamIlu7KNKkICwmLkR+Dw=
+Date:   Fri, 6 Aug 2021 06:34:17 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Sasha Levin <sashal@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        stable@vger.kernel.org
+Subject: Re: [linux-stable-rc:linux-4.19.y 1181/1498] ERROR:
+ "__compiletime_assert_491" [drivers/gpu/drm/i915/i915.ko] undefined!
+Message-ID: <YQy7yY+/+r4X/5v6@kroah.com>
+References: <202108060412.oMqAe0rc-lkp@intel.com>
+ <CAKwvOdk6PNK1unJ2Yym4WHV=AXjdYwEyfWf_fPxO013ZtJa6Yw@mail.gmail.com>
+ <YQx+HjjUrzIEkG/O@Ryzen-9-3900X.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="waHxV1qIfKEUr127"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210804140742.GI1721383@nvidia.com>
+In-Reply-To: <YQx+HjjUrzIEkG/O@Ryzen-9-3900X.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 05, 2021 at 05:11:10PM -0700, Nathan Chancellor wrote:
+> On Thu, Aug 05, 2021 at 04:23:40PM -0700, Nick Desaulniers wrote:
+> > On Thu, Aug 5, 2021 at 1:24 PM kernel test robot <lkp@intel.com> wrote:
+> > >
+> > > Hi Nick,
+> > >
+> > > First bad commit (maybe != root cause):
+> > >
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> > > head:   7457eed4b647560ae1b1800c295efc5f1db22e4b
+> > > commit: 7c29fd831799d09474dfdae556207b7102647a45 [1181/1498] lib/string.c: implement stpcpy
+> > > config: x86_64-randconfig-r024-20210805 (attached as .config)
+> > > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 31a71a393f65d9e07b5b0756fef9dd16690950ee)
+> > > reproduce (this is a W=1 build):
+> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=7c29fd831799d09474dfdae556207b7102647a45
+> > >         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> > >         git fetch --no-tags linux-stable-rc linux-4.19.y
+> > >         git checkout 7c29fd831799d09474dfdae556207b7102647a45
+> > >         # save the attached .config to linux build tree
+> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
+> > >
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > >
+> > > All errors (new ones prefixed by >>):
+> > >
+> > > >> ERROR: "__compiletime_assert_491" [drivers/gpu/drm/i915/i915.ko] undefined!
+> > 
+> > ^ I'm actively trying to improve these diagnostics in LLVM at the
+> > moment. Hopefully that will make this report clearer!
+> > https://reviews.llvm.org/D106030
+> 
+> It does help :)
+> 
+> drivers/gpu/drm/i915/intel_engine_cs.c:466:2: error: call to '__compiletime_assert_491' declared with attribute error: BUILD_BUG_ON failed: (execlists_num_ports(execlists)) == 0 || (((execlists_num_ports(execlists)) & ((execlists_num_ports(execlists)) - 1)) != 0)
+>         BUILD_BUG_ON_NOT_POWER_OF_2(execlists_num_ports(execlists));
+>         ^
+> include/linux/build_bug.h:21:2: note: expanded from macro 'BUILD_BUG_ON_NOT_POWER_OF_2'
+>         BUILD_BUG_ON((n) == 0 || (((n) & ((n) - 1)) != 0))
+>         ^
+> include/linux/build_bug.h:69:2: note: expanded from macro 'BUILD_BUG_ON'
+>         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+>         ^
+> include/linux/build_bug.h:45:37: note: expanded from macro 'BUILD_BUG_ON_MSG'
+> #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>                                     ^
+> note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+> include/linux/compiler.h:336:2: note: expanded from macro '_compiletime_assert'
+>         __compiletime_assert(condition, msg, prefix, suffix)
+>         ^
+> include/linux/compiler.h:329:4: note: expanded from macro '__compiletime_assert'
+>                         prefix ## suffix();                             \
+>                         ^
+> <scratch space>:83:1: note: expanded from here
+> __compiletime_assert_491
+> ^
+> 4 warnings and 1 error generated.
+> 
+> As it turns out, this has come up before and it was fixed by commit
+> 410ed5731a65 ("drm/i915: Ensure intel_engine_init_execlist() builds with
+> Clang").
+> 
+> Greg and Sasha, could this be picked up for 4.19?
 
---waHxV1qIfKEUr127
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Now queued up, thanks.
 
-On Wed, Aug 04, 2021 at 11:07:42AM -0300, Jason Gunthorpe wrote:
-> On Tue, Aug 03, 2021 at 11:58:54AM +1000, David Gibson wrote:
-> > > I'd rather deduce the endpoint from a collection of devices than the
-> > > other way around...
-> >=20
-> > Which I think is confusing, and in any case doesn't cover the case of
-> > one "device" with multiple endpoints.
->=20
-> Well they are both confusing, and I'd prefer to focus on the common
-> case without extra mandatory steps. Exposing optional endpoint sharing
-> information seems more in line with where everything is going than
-> making endpoint sharing a first class object.
->=20
-> AFAIK a device with multiple endpoints where those endpoints are
-> shared with other devices doesn't really exist/or is useful? Eg PASID
-> has multiple RIDs by they are not shared.
-
-No, I can't think of a (non-contrived) example where a device would
-have *both* multiple endpoints and those endpoints are shared amongst
-multiple devices.  I can easily think of examples where a device has
-multiple (non shared) endpoints and where multiple devices share a
-single endpoint.
-
-The point is that making endpoints explicit separates the various
-options here from the logic of the IOMMU layer itself.  New device
-types with new possibilities here means new interfaces *on those
-devices*, but not new interfaces on /dev/iommu.
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---waHxV1qIfKEUr127
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmEMuXoACgkQbDjKyiDZ
-s5Ll7RAAw19Bgqx4KAD/OEJN+VYXQEI6yg6Y78rk14ks5bjzQJ9Asq3t+HhsxCyx
-EddzGgfqFGfkql9wXDEDbYFBVRMEZdcD0Zf0zFWVDqmoexXPQxCHQGTK87T1hb0f
-qKbD3EP2dSv4cGNDejyHGghBcPK4PB+1DbRccJ0WV2a5FHeJ1dP4T3PF7ybRQps5
-fHidQxDNkkv1b9AocsxpjXJ2c3LxXDbWGBN+5s/MmCP3ueYoH64MZEbM5EGZEo/g
-8/XIDlrrCe3CXYvAxCjjafAw8+3dgrdLvkqmvtUVGb2vDWJgnFRrYP+KU89yT7H1
-vZPKxV52nVaO7aM9EuN5bLatSQNgyiQwa02hXz6RbFPTQf5XOpja0Nm/TyNb1aol
-7YxUWQpfiCydQdW+lzfa/7Em7rXZldwihDD/69VpKkinppathe2DoqzAr8hVkTFl
-rwJyEWU5220p5tby5N9QHIQkajx7PvigbhmtLx/t7l3sgGb4wB3Lw2zSd0f739Kh
-m6Qru1FOEVAW7ELEyD8b75upcT4tRnlDZfjbl5eHu/AyWt/lZoCVT8l9Syblrrl6
-nYuzjCbzKGvkeD2wRfAuro7j3dh9VE+PIfUbGDvqmoKH27lJtWMLS2ek3zTEh95k
-pvi1vc27W18oJ8bUdlpe9G5d6au5U/AhKuRFKkgNqltYjuTHwvU=
-=o8eD
------END PGP SIGNATURE-----
-
---waHxV1qIfKEUr127--
+greg k-h
