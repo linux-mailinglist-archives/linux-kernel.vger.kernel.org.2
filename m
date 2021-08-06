@@ -2,107 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71C13E3178
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 23:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C55AF3E317D
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 00:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245432AbhHFV5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 17:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242102AbhHFV5x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 17:57:53 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A24DC0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 14:57:36 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id j3so8887206plx.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 14:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AY970ncUJAZ3XFO8vIsQqriyIPN/r8JHpDac7fWieeM=;
-        b=GRldI1oetU6ItCaJ5fQcboBOkS3kNm2NJPpnSaaazigE6TM8n6i0NiIJP8y33/Xxwa
-         X1jAnVhjjyuIS90Qp8RPwxHhAgqIXbZqVgNoEV0eule5rbSNSOwhCx8kbtPOAu5r+kt7
-         l/iGkMkrDTQIRoGctxtnHVFRWFZ5GSeRqK0SQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AY970ncUJAZ3XFO8vIsQqriyIPN/r8JHpDac7fWieeM=;
-        b=McMlqwJY4IsRvlS+GuGmcwsxI6kR9rubRmEEGFi9nuB82NGOQ43xTNN37K12JIcaop
-         7H4FqDDAvcOurODKkrEElHkyFhlxjV/Rz9AUwcoOd1iOYEMf3OKy4tg5wDot5oBljJ7W
-         C+M+L7+KCavvk2FGUGh1mZBqYwM6j9X2lwgHrhAk8K5RpxEFRBJB2cOqFGJjXGjZ/yNy
-         vCxRwNCnadQ2MkvSiD6teJ8wyQauP4rEd/iZRS6KiDHKSu0TnDfqsgcsV3uJUnSrQoMd
-         05vttRqi/VXpXRy5llnucRHJ+83WctivgwakBirHxizf071bs/OVpAXEZibMwygjz2Wa
-         SMGg==
-X-Gm-Message-State: AOAM530VUgrlj+Lqq63+QVXRL9Qud437kRXxTdHDu3c1Z634yBM/+wd3
-        PCVhmRrUn4WaeQ1RPPxsVrtPDg==
-X-Google-Smtp-Source: ABdhPJzl6uHhzenJtj16rXyHOXA9lloApy8P+OInYnPj3mA9JONQ+nAAQl57sYQLIY6HcAjxwW1oJg==
-X-Received: by 2002:a63:d607:: with SMTP id q7mr347628pgg.268.1628287055799;
-        Fri, 06 Aug 2021 14:57:35 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v7sm9814110pjk.37.2021.08.06.14.57.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 14:57:35 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] pcmcia: ray_cs: Split memcpy() to avoid bounds check warning
-Date:   Fri,  6 Aug 2021 14:57:33 -0700
-Message-Id: <20210806215733.2875927-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1806; h=from:subject; bh=MoN9sZmmdDw0lR5vW36Fdr39zzqTtcOilmLJ144gA30=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhDbBMeJZHHO3+hbAJbiz+YaA05/E7kfaAlhhB+qwX bgM8lUWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYQ2wTAAKCRCJcvTf3G3AJhexD/ kB913c39c5/NcFF+4Bg7joDZ0bnRbO13Ww9Wcn2hoK3sgl3q35x2wuzAdruejBJR/7gKFmzHIor4am aQJFNLZmnb6GPsvPww07WjJfTTEL2aIlKw6+RWECbMmIYaZ37VzT15AZWr7/vFYGDiK3mdL9xbL/me Cqo5qkyChQRNlo/+/yNVveUiJl+1pMkhAmiBJtqpSbz/wsuhbUHV6CTpAr0QbVgJ016V/YJq7thei/ Cxa0BcbWyYKVWQLlUIX5ZHYSD/jLrNRFd6//Q/VIQDxOYsOmsi+CpByAkVxj+lZSZY6tKX8r3nNlOn 7QP7eGd/6oYfB2vi/QzQi0xblqs/V0+YUydIQl82RZVXNrZ4lt2XuUWH0jDHKJA4FFWzIhxEU2zzqO u6boGH1JLSgNFuIqvxpAz2jC0jdOgJzEv7J1/ixrvO2YX1Qwn7wkEuZF1CPlnqb/kbIwhw9xROvpaJ UbKIBV6X3neOI7A6xFItNCs1/NMdpia3JLKGL1rOlEAa+4LJvYDTOk8P64wH6mXxcNW2BfXIMdCM1K 7uSnblp9J+MeWF5KAkfhocRvIvvSLERrXvxiHUeewIlTIZr4emNWe5kaN3svEFMY98VTx6nZI6VQd9 EEqmYPMVOmWup8WfcCrwxyCI6XU8OI1DxJN9glwcxMBWsW1g9DqqZnU9uh1g==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+        id S245433AbhHFWAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 18:00:30 -0400
+Received: from mga01.intel.com ([192.55.52.88]:19696 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241755AbhHFWA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 18:00:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10068"; a="236433226"
+X-IronPort-AV: E=Sophos;i="5.84,301,1620716400"; 
+   d="scan'208";a="236433226"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 15:00:11 -0700
+X-IronPort-AV: E=Sophos;i="5.84,301,1620716400"; 
+   d="scan'208";a="481944226"
+Received: from alsoller-mobl1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.254.16.75])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 15:00:08 -0700
+Date:   Sat, 7 Aug 2021 10:00:06 +1200
+From:   Kai Huang <kai.huang@intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        isaku.yamahata@gmail.com,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>
+Subject: Re: [RFC PATCH v2 41/69] KVM: x86: Add infrastructure for stolen
+ GPA bits
+Message-Id: <20210807100006.3518bf9fbdecf13006030c22@intel.com>
+In-Reply-To: <YQ2HT3dL/bFjdEdS@google.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+        <c958a131ded780808a687b0f25c02127ca14418a.1625186503.git.isaku.yamahata@intel.com>
+        <20210805234424.d14386b79413845b990a18ac@intel.com>
+        <YQwMkbBFUuNGnGFw@google.com>
+        <20210806095922.6e2ca6587dc6f5b4fe8d52e7@intel.com>
+        <YQ2HT3dL/bFjdEdS@google.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
+On Fri, 6 Aug 2021 19:02:39 +0000 Sean Christopherson wrote:
+> On Fri, Aug 06, 2021, Kai Huang wrote:
+> > On Thu, 5 Aug 2021 16:06:41 +0000 Sean Christopherson wrote:
+> > > On Thu, Aug 05, 2021, Kai Huang wrote:
+> > > > On Fri, 2 Jul 2021 15:04:47 -0700 isaku.yamahata@intel.com wrote:
+> > > > > From: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> > > > > @@ -2020,6 +2032,7 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+> > > > >  	sp = kvm_mmu_alloc_page(vcpu, direct);
+> > > > >  
+> > > > >  	sp->gfn = gfn;
+> > > > > +	sp->gfn_stolen_bits = gfn_stolen_bits;
+> > > > >  	sp->role = role;
+> > > > >  	hlist_add_head(&sp->hash_link, sp_list);
+> > > > >  	if (!direct) {
+> > > > > @@ -2044,6 +2057,13 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+> > > > >  	return sp;
+> > > > >  }
+> > > > 
+> > > > 
+> > > > Sorry for replying old thread,
+> > > 
+> > > Ha, one month isn't old, it's barely even mature.
+> > > 
+> > > > but to me it looks weird to have gfn_stolen_bits
+> > > > in 'struct kvm_mmu_page'.  If I understand correctly, above code basically
+> > > > means that GFN with different stolen bit will have different 'struct
+> > > > kvm_mmu_page', but in the context of this patch, mappings with different
+> > > > stolen bits still use the same root,
+> > > 
+> > > You're conflating "mapping" with "PTE".  The GFN is a per-PTE value.  Yes, there
+> > > is a final GFN that is representative of the mapping, but more directly the final
+> > > GFN is associated with the leaf PTE.
+> > > 
+> > > TDX effectively adds the restriction that all PTEs used for a mapping must have
+> > > the same shared/private status, so mapping and PTE are somewhat interchangeable
+> > > when talking about stolen bits (the shared bit), but in the context of this patch,
+> > > the stolen bits are a property of the PTE.
+> > 
+> > Yes it is a property of PTE, this is the reason that I think it's weird to have
+> > stolen bits in 'struct kvm_mmu_page'. Shouldn't stolen bits in 'struct
+> > kvm_mmu_page' imply that all PTEs (whether leaf or not) share the same
+> > stolen bit?
+> 
+> No, the stolen bits are the property of the shadow page.  I'm using "PTE" above
+> to mean "PTE for this shadow page", not PTEs within the shadow page, if that makes
+> sense.
 
-Split memcpy() for each address range to help memcpy() correctly reason
-about the bounds checking. Avoids the future warning:
+I see.
 
-In function 'fortify_memcpy_chk',
-    inlined from 'memcpy_toio' at ./include/asm-generic/io.h:1204:2,
-    inlined from 'ray_build_header.constprop' at drivers/net/wireless/ray_cs.c:984:3:
-./include/linux/fortify-string.h:285:4: warning: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
-  285 |    __write_overflow_field(p_size_field, size);
-      |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> > > Back to your statement, it's incorrect.  PTEs (effectively mappings in TDX) with
+> > > different stolen bits will _not_ use the same root.  kvm_mmu_get_page() includes
+> > > the stolen bits in both the hash lookup and in the comparison, i.e. restores the
+> > > stolen bits when looking for an existing shadow page at the target GFN.
+> > > 
+> > > @@ -1978,9 +1990,9 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+> > >                 role.quadrant = quadrant;
+> > >         }
+> > > 
+> > > -       sp_list = &vcpu->kvm->arch.mmu_page_hash[kvm_page_table_hashfn(gfn)];
+> > > +       sp_list = &vcpu->kvm->arch.mmu_page_hash[kvm_page_table_hashfn(gfn_and_stolen)];
+> > >         for_each_valid_sp(vcpu->kvm, sp, sp_list) {
+> > > -               if (sp->gfn != gfn) {
+> > > +               if ((sp->gfn | sp->gfn_stolen_bits) != gfn_and_stolen) {
+> > >                         collisions++;
+> > >                         continue;
+> > >                 }
+> > > 
+> > 
+> > This only works for non-root table, but there's only one single
+> > vcpu->arch.mmu->root_hpa, we don't have an array to have one root for each
+> > stolen bit, i.e. do a loop in mmu_alloc_direct_roots(), so effectively all
+> > stolen bits share one single root.
+> 
+> Yes, and that's absolutely the required behavior for everything except for TDX
+> with its two EPTPs.  E.g. any other implement _must_ reject CR3s that set stolen
+> gfn bits.
 
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-wireless@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/net/wireless/ray_cs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+OK.  I was thinking gfn_stolen_bits for 'struct kvm_mmu_page' for the table
+pointed by CR3 should still make sense.
 
-diff --git a/drivers/net/wireless/ray_cs.c b/drivers/net/wireless/ray_cs.c
-index 590bd974d94f..d57bbe551630 100644
---- a/drivers/net/wireless/ray_cs.c
-+++ b/drivers/net/wireless/ray_cs.c
-@@ -982,7 +982,9 @@ AP to AP	1	1	dest AP		src AP		dest	source
- 	if (local->net_type == ADHOC) {
- 		writeb(0, &ptx->mac.frame_ctl_2);
- 		memcpy_toio(ptx->mac.addr_1, ((struct ethhdr *)data)->h_dest,
--			    2 * ADDRLEN);
-+			    ADDRLEN);
-+		memcpy_toio(ptx->mac.addr_2, ((struct ethhdr *)data)->h_source,
-+			    ADDRLEN);
- 		memcpy_toio(ptx->mac.addr_3, local->bss_id, ADDRLEN);
- 	} else { /* infrastructure */
- 
--- 
-2.30.2
+> 
+> > > > which means gfn_stolen_bits doesn't make a lot of sense at least for root
+> > > > page table. 
+> > > 
+> > > It does make sense, even without a follow-up patch.  In Rick's original series,
+> > > stealing a bit for execute-only guest memory, there was only a single root.  And
+> > > except for TDX, there can only ever be a single root because the shared EPTP isn't
+> > > usable, i.e. there's only the regular/private EPTP.
+> > > 
+> > > > Instead, having gfn_stolen_bits in 'struct kvm_mmu_page' only makes sense in
+> > > > the context of TDX, since TDX requires two separate roots for private and
+> > > > shared mappings.
+> > > 
+> > > > So given we cannot tell whether the same root, or different roots should be
+> > > > used for different stolen bits, I think we should not add 'gfn_stolen_bits' to
+> > > > 'struct kvm_mmu_page' and use it to determine whether to allocate a new table
+> > > > for the same GFN, but should use a new role (i.e role.private) to determine.
+> > > 
+> > > A new role would work, too, but it has the disadvantage of not automagically
+> > > working for all uses of stolen bits, e.g. XO support would have to add another
+> > > role bit.
+> > 
+> > For each purpose of particular stolen bit, a new role can be defined.  For
+> > instance, in __direct_map(), if you see stolen bit is TDX shared bit, you don't
+> > set role.private (otherwise set role.private).  For XO, if you see the stolen
+> > bit is XO, you set role.xo.
+> > 
+> > We already have info of 'gfn_stolen_mask' in vcpu, so we just need to make sure
+> > all code paths can find the actual stolen bit based on sp->role and vcpu (I
+> > haven't gone through all though, assuming the annoying part is rmap).
+> 
+> Yes, and I'm not totally against the idea, but I'm also not 100% sold on it either,
+> yet...  The idea of a 'private' flag is growing on me.
+> 
+> If we're treating the shared bit as an attribute bit, which we are, then it's
+> effectively an extension of role.access.  Ditto for XO.
+> 
+> And looking at the code, I think it would be an improvement for TDX, as all of
+> the is_private_gfn() calls that operate on a shadow page would be simplified and
+> optimized as they wouldn't have to lookup both gfn_stolen_bits and the vcpu->kvm
+> mask of the shared bit.
+> 
+> Actually, the more I think about it, the more I like it.  For TDX, there's no
+> risk of increased hash collisions, as we've already done messed up if there's a
+> shared vs. private collision.
+> 
+> And for XO, if it ever makes it way upstream, I think we should flat out disallow
+> referencing XO addresses in non-leaf PTEs, i.e. make the XO permission bit reserved
+> in non-leaf PTEs.  That would avoid any theoretical problems with the guest doing
+> something stupid by polluting all its upper level PxEs with XO.  Collisions would
+> be purely limited to the case where the guest is intentionally creating an alternate
+> mapping, which should be a rare event (or the guest is comprosied, which is also
+> hopefully a rare event).
+> 
+> 
 
+My main motivation is 'gfn_stolen_bits' doesn't quite make sense for 'struct
+kvm_mmu_page' for root, plus it seems it's a little bit redundant at first
+glance.
+
+So could we have your final suggestion? :)
+
+Thanks,
+-Kai
