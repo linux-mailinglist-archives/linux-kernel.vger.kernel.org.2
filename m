@@ -2,121 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144CB3E2EDA
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 19:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D7E3E2EDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 19:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241147AbhHFRZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 13:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
+        id S241228AbhHFR1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 13:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240927AbhHFRZc (ORCPT
+        with ESMTP id S241152AbhHFR1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 13:25:32 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96FDC061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 10:25:15 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id g30so15057309lfv.4
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 10:25:15 -0700 (PDT)
+        Fri, 6 Aug 2021 13:27:23 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E5CC061799
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 10:27:07 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id h18-20020ac856920000b029025eb726dd9bso4625008qta.8
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 10:27:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZEV2xzdFoPsyTOxL8t4/rUKDR02bQVEVN3guKtT+wRY=;
-        b=STFv+5RzBr6aFH1qe0BeaS395jREDWeGc143CKC9CxIAt6DkCl51f8Q3Nvu4J8NhyS
-         TiYGIfWqfI8kYjv16tWiF9bp/xD7cvjUfW+Bs1W5G+Z4ZC5B6t8LXXqUNf8JJsNHLA2k
-         rNV0pEpEgtWI+P4ICAUdt3eihcvAuwK1Zd7xxFxKqdmyIn9PgL9aVm7o967H7wMYL+xV
-         gA7bgHkaVLHq9+Sh8p+ppFDweRf9v3zDBvfoGpRkz91UnrSVrtyqY3brAh+RzHfxPEph
-         pTmQv/HmDMWIKnUhWJcXDbnJ/0AxRxh2IcZT+NSNioEsiyD+/2/tpF2ii4Dk+ChD6nD1
-         Zm8g==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=DsQFy/CzTnQXNoNOJwZLuGXsmdWykdOYnmIA1IAJYnI=;
+        b=SLKP8QT3UTFB+yk0MpS4S2ZYQEJh0gnI+gyTWPJzp356nk7gk9IXC4JqccWo2rsf3/
+         mxbffoWg83nR9QH0xUW3c93TAvFZeiOCwFnyBppdGNWSrkzG4zWhh3dKLn5YLuKXJbd9
+         Kxr9PqtKr7EAId4nMlv5kRVsG6V7G9nSeERVDXcCQeZGUpph8uOjFZYcZeihdrdHZ7sG
+         Wijn7xnJJl2Uy1HwettgBfYqHN77gB3BnC3iKU7w8yZgCR0AKo4d/SJOJ/1AHNxoUB8h
+         aEdlTKnQOo9Lyw3ZOZN+g7g29CTXQ76o0jFNXoZOkn8apGIHsDOeY6g/YqPyc8JegjGB
+         qyfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZEV2xzdFoPsyTOxL8t4/rUKDR02bQVEVN3guKtT+wRY=;
-        b=fhW1mbLCMzqRBN4rbLTrEGbHfkHToaZ23+cHM/1Sz6YEmcIhqKpY//nIVj680pGMjq
-         vtcxuG7dyYjoRhozma/yxdZiYoUVAIRQGUqZFDtE5V+zqe/fZQ6LDd7EsKBaq/h/JqG8
-         d1c/uDD/cUfmF/6Nj5VpcEYabKmhJGHnZI3cBfyRtb7Q/E3jnVmwOCL9W1Bs6Q7Hx5AZ
-         RnnRmnhR5uehiVaKzpRCUFwbFUMIzvjzud9F11desIPhLvYbus5JONNaK5LQLp8SU+9U
-         FQzaUR4jRsGDHAtCkCNMlOosCDgyZ14LEB6ncxVZgUBv3pGS9Ep019yJXEmlVlWHaeS1
-         s6bA==
-X-Gm-Message-State: AOAM530v4hdmMtP51pgG5Dh9LYYaVpvuunnXEcyhIVYAvuTg+sq4KkgY
-        Mr5svrOjYznDpqRxxxs+mAayhj7sj6lKrz70ID/Crw==
-X-Google-Smtp-Source: ABdhPJwdQMa2JrnIgVb4J+HDtNdMe0fAH9eX50oJdkzi/3lXJLp7cD3AUneoendLBZDhVCogyImaBTTE6WJrg/KTlFg=
-X-Received: by 2002:ac2:46fb:: with SMTP id q27mr8012789lfo.209.1628270713989;
- Fri, 06 Aug 2021 10:25:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAPNVh5fjcJHKJOuQP+UebpYf+GBMDkj5me1c=EzS9cpDSTbzfA@mail.gmail.com>
- <1dc64d75-da9b-272a-a9ab-7d2ae7a85764@uwaterloo.ca>
-In-Reply-To: <1dc64d75-da9b-272a-a9ab-7d2ae7a85764@uwaterloo.ca>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Fri, 6 Aug 2021 10:25:02 -0700
-Message-ID: <CAPNVh5cQG8WjRryYXhrApNmV-7ybJ7ePpjXqtS6RUdguXO4e=A@mail.gmail.com>
-Subject: Re: [PATCH 3/4 v0.4] sched/umcg: add Documentation/userspace-api/umcg.rst
-To:     Thierry Delisle <tdelisle@uwaterloo.ca>
-Cc:     avagin@google.com, bsegall@google.com, jannh@google.com,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, pabuhr@uwaterloo.ca, peterz@infradead.org,
-        pjt@google.com, posk@posk.io, tglx@linutronix.de
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=DsQFy/CzTnQXNoNOJwZLuGXsmdWykdOYnmIA1IAJYnI=;
+        b=FqE7KQR1EqxoZmh7vVY/Ec8bqaWG2kkM5hYp70JY4FaOFoMdcawNdv5H/nPIZS/P5j
+         3ObcVwPCTFXdQQZrBcBkdFpZZTo5XlXQJbgDiL9LW2RymwAwzSs8MX4CxgrIOGhSVztN
+         Wpt7l8Ug2bCrTRpWQ2cbF1D03/cehCgrUI9FqQ+IezrwvhW/pPQ5TwoJFKLDZuK1ZDcT
+         rsqkmoSOHJQaP4kxKaTPQckxHxi2nh8U5q5HFqZwb1Dzp5P9RqeBdJcb380mQwVqkqnO
+         n0g/JvULwvSXjv5bBKUAgIU5++jQobR/vuz9J7qIeP66MTkE85woPRKHq10D0YBinmdH
+         j8Ww==
+X-Gm-Message-State: AOAM530WS+iON3S9yBz1jYkotwSI+FRFfmJMLIemEXhkEDaOPPPIBwol
+        SpIREWUSY9c3nJyFOK21BMsO4hOOhHZHV69Np6c=
+X-Google-Smtp-Source: ABdhPJxlVebXFVl1DX68O2az9jnUDVOkZsun/wYx/gJq/Ne5YY7RqIBz45lXfXNMiZy//yphthHXxKGwM9UXhBISE9s=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:d20b:bb87:51cd:edc3])
+ (user=ndesaulniers job=sendgmr) by 2002:a05:6214:27e4:: with SMTP id
+ jt4mr1006501qvb.45.1628270826503; Fri, 06 Aug 2021 10:27:06 -0700 (PDT)
+Date:   Fri,  6 Aug 2021 10:27:01 -0700
+Message-Id: <20210806172701.3993843-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+Subject: [PATCH v2] scripts/Makefile.clang: default to LLVM_IAS=1
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     Khem Raj <raj.khem@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 6, 2021 at 9:52 AM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
->
->   > All _umcg_ state changes here happen in the userspace before
->   > sys_umcg_wait() is called. So:
->   >
->   > W1: cmpxchg W1:RUNNING => W1:IDLE
->   >  - if OK, call sys_umcg_wait()
->   >  - if failed, do something else (notes below)
->   >
->   > W2: cmpxchg W1:IDLE => W1:RUNNING
->   >  - if OK, lock itself, set W2:next_tid to W1, call sys_umcg_wait()
->   > (will not block nor spin), restore next_tid and state/unlock upon
->   > syscall return
->   >  - if failed, do something else
->
-> I am talking about the case where both cmpxchg() succeed and W2 sets
-> *both* UMCG_WAIT_WAKE_ONLY and UMCG_WAIT_WF_CURRENT_CPU.  More
-> specifically, if things are ordered like so: (ideally use monospace font)
->
->           - w1 -                     - w2 -
->
-> w1:RUNNING => w1:IDLE|L   |
-> S:IDLE => S:RUNNING       |
-> sys_umcg_wait():          |
->       set ~UMCG_TF_LOCKED  |
->                            |   w1:IDLE => w1:RUNNING|L
->                            |   w2:RUNNING => w2:IDLE|L
->                            |   w2:next_tid := W1.tid
->                            |   w1:RUNNING|L => w1:RUNNING
->                            |   sys_umcg_wait():
->                            |       set ~UMCG_TF_LOCKED
->                            |       do_context_switch()
->       idle_loop()          |
->
-> What does ttwu() do with w1 if it has not reached idle_loop yet?
+LLVM_IAS=1 controls enabling clang's integrated assembler via
+-integrated-as. This was an explicit opt in until we could enable
+assembler support in Clang for more architecures. Now we have support
+and CI coverage of LLVM_IAS=1 for all architecures except a few more
+bugs affecting s390 and powerpc.
 
-If both cmpxchg() succeeded, but W1 was never put to sleep, ttwu()
-will do nothing and W1 will continue running on its initial CPU, while
-W2 will continue running on its own CPU. WF_CURRENT_CPU is an advisory
-flag, and in this situation it will not do anything.
+This commit flips the default from opt in via LLVM_IAS=1 to opt out via
+LLVM_IAS=0.  CI systems or developers that were previously doing builds
+with CC=clang or LLVM=1 without explicitly setting LLVM_IAS must now
+explicitly opt out via LLVM_IAS=0, otherwise they will be implicitly
+opted-in.
 
->
-> I am not familiar with the details of kernel context-switching, but in
-> user-level threading, more specifically Cforall, this would be a problem.
-> Between the call to do_context_switch() and and idle_loop(), there is a
-> window where 2 CPUs run the same thread at the same time. One thread is
-> performing the front side of the context switch and the other threads
-> wakes up on the backside of the context switch. This behaviour invariably
-> corrupts the program stack of that thread. Again, I do not know if that
-> applies here. I am not exactly sure how the program stack is handled when
-> inside a system call.
+This finally shortens the command line invocation when cross compiling
+with LLVM to simply:
 
-This is a wake, not a context switch, right? I'm not sure why you are
-concerned with context switching here. And even if it were a context
-switch, the kernel manages thread stacks properly, there's nothing to
-worry about.
+$ make ARCH=arm64 LLVM=1
 
-Am I missing something?
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+Changes v1 -> v2:
+* Drop "Currently" from Documentation/, as per Matthew.
+* Drop Makefile and riscv Makefile, rebase on
+  https://lore.kernel.org/lkml/20210805150102.131008-1-masahiroy@kernel.org/
+  as per Masahiro.
+* Base is kbuild/for-next, plus
+  https://lore.kernel.org/lkml/20210802183910.1802120-1-ndesaulniers@google.com/
+  https://lore.kernel.org/lkml/20210805150102.131008-1-masahiroy@kernel.org/.
+
+ Documentation/kbuild/llvm.rst | 14 ++++++++------
+ scripts/Makefile.clang        |  6 +++---
+ 2 files changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+index f8a360958f4c..e87ed5479963 100644
+--- a/Documentation/kbuild/llvm.rst
++++ b/Documentation/kbuild/llvm.rst
+@@ -60,17 +60,14 @@ They can be enabled individually. The full list of the parameters: ::
+ 	  OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump READELF=llvm-readelf \
+ 	  HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld
+ 
+-Currently, the integrated assembler is disabled by default. You can pass
+-``LLVM_IAS=1`` to enable it.
++The integrated assembler is enabled by default. You can pass ``LLVM_IAS=0`` to
++disable it.
+ 
+ Omitting CROSS_COMPILE
+ ----------------------
+ 
+ As explained above, ``CROSS_COMPILE`` is used to set ``--target=<triple>``.
+ 
+-Unless ``LLVM_IAS=1`` is specified, ``CROSS_COMPILE`` is also used to derive
+-``--prefix=<path>`` to search for the GNU assembler and linker.
+-
+ If ``CROSS_COMPILE`` is not specified, the ``--target=<triple>`` is inferred
+ from ``ARCH``.
+ 
+@@ -78,7 +75,12 @@ That means if you use only LLVM tools, ``CROSS_COMPILE`` becomes unnecessary.
+ 
+ For example, to cross-compile the arm64 kernel::
+ 
+-	make ARCH=arm64 LLVM=1 LLVM_IAS=1
++	make ARCH=arm64 LLVM=1
++
++If ``LLVM_IAS=0`` is specified, ``CROSS_COMPILE`` is also used to derive
++``--prefix=<path>`` to search for the GNU assembler and linker. ::
++
++	make ARCH=arm64 LLVM=1 LLVM_IAS=0 CROSS_COMPILE=aarch64-linux-gnu-
+ 
+ Supported Architectures
+ -----------------------
+diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
+index 1f4e3eb70f88..3ae63bd35582 100644
+--- a/scripts/Makefile.clang
++++ b/scripts/Makefile.clang
+@@ -22,12 +22,12 @@ else
+ CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
+ endif # CROSS_COMPILE
+ 
+-ifeq ($(LLVM_IAS),1)
+-CLANG_FLAGS	+= -integrated-as
+-else
++ifeq ($(LLVM_IAS),0)
+ CLANG_FLAGS	+= -no-integrated-as
+ GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+ CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
++else
++CLANG_FLAGS	+= -integrated-as
+ endif
+ CLANG_FLAGS	+= -Werror=unknown-warning-option
+ KBUILD_CFLAGS	+= $(CLANG_FLAGS)
+
+base-commit: d7a86429dbc691bf540688fcc8542cc20246a85b
+prerequisite-patch-id: 0d3072ecb5fd06ff6fd6ea81fe601f6c54c23910
+prerequisite-patch-id: 2654829756eb8a094a0ffad1679caa75a4d86619
+prerequisite-patch-id: a51e7885ca2376d008bbf146a5589da247806f7b
+prerequisite-patch-id: 6a0342755115ec459610657edac1075f069faa3d
+-- 
+2.32.0.605.g8dce9f2422-goog
+
