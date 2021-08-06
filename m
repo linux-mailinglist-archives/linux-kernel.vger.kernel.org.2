@@ -2,222 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06E33E2FCD
-	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 21:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57C13E2FCF
+	for <lists+linux-kernel@lfdr.de>; Fri,  6 Aug 2021 21:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232347AbhHFTjy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 6 Aug 2021 15:39:54 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7803 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbhHFTjx (ORCPT
+        id S243961AbhHFTmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 15:42:20 -0400
+Received: from mail-pl1-f178.google.com ([209.85.214.178]:46063 "EHLO
+        mail-pl1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229748AbhHFTmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 15:39:53 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GhG5B0hd9zYlFQ;
-        Sat,  7 Aug 2021 03:39:26 +0800 (CST)
-Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 7 Aug 2021 03:39:35 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggpemm000001.china.huawei.com (7.185.36.245) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 7 Aug 2021 03:39:34 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
- Sat, 7 Aug 2021 03:39:34 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "yury.norov@gmail.com" <yury.norov@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>,
-        "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
-        "sbrivio@redhat.com" <sbrivio@redhat.com>,
-        "jianpeng.ma@intel.com" <jianpeng.ma@intel.com>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        tangchengchang <tangchengchang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        yangyicong <yangyicong@huawei.com>,
-        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>,
-        "Jonathan Cameron" <jonathan.cameron@huawei.com>
-Subject: RE: [PATCH v9 1/5] cpumask: introduce
- cpumap_print_list/bitmask_to_buf to support large bitmask and list
-Thread-Topic: [PATCH v9 1/5] cpumask: introduce
- cpumap_print_list/bitmask_to_buf to support large bitmask and list
-Thread-Index: AQHXirK6LfP8uGs3C0uIGivdv2MjYqtl8KiAgADt/kA=
-Date:   Fri, 6 Aug 2021 19:39:34 +0000
-Message-ID: <a4114c72bc9a476092358210311441cd@hisilicon.com>
-References: <20210806110251.560-1-song.bao.hua@hisilicon.com>
- <20210806110251.560-2-song.bao.hua@hisilicon.com>
- <YQ03ixksDJyVwCEv@kroah.com>
-In-Reply-To: <YQ03ixksDJyVwCEv@kroah.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.202.213]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 6 Aug 2021 15:42:19 -0400
+Received: by mail-pl1-f178.google.com with SMTP id d17so8425422plr.12
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 12:42:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TpLObiiQLd5hw3nNKqOroEB/FSEufNd2Kqe0wsHzpa4=;
+        b=POPKNHAftDmb3mwkNa+/gbjtiIiC0yBQyUGtQQhkPH+zqbIQAv3Dj2Kcv8lG3hHk9l
+         /N9ugnNIh89ir5v8jwfUy3m8uh/sWVV6vyF19ylRdlHQrnsT/zFi1oNJks7QaF7Ah/Vp
+         7/A0VfUBEk5fujGNtON/WpDx8lhFR/57qKzx/ic6finTnlNjbZnBqZ8kuMpPFT7KsFmS
+         qdtELd/Bsj+x6dmoY6lorrhhBuOQY4jiaM+FPkl9GNtqBxyFv/OXNl7v+RHUPMT7XenW
+         QDaGIu1Csub1d4FkCQ86a3Bvz++4e+O9qi6FBX2cNxmnmZ8N0mLWY99qQgQt7dSBlZOK
+         ZJnw==
+X-Gm-Message-State: AOAM533jwPw55evyiN1m32+aQQMS3gMNQzFwJOswbJRF4qTIqd3q2M/2
+        Bp1fdyXLKykaI3ylCE9izmw=
+X-Google-Smtp-Source: ABdhPJyEJ03tBxCW8K04znwjFoXvo/hL/lg+XnsGBoy0m5j8M/NpYf/BBkwhicKTfFjDqcs/xTm5uA==
+X-Received: by 2002:a17:90a:ce05:: with SMTP id f5mr22649696pju.93.1628278922237;
+        Fri, 06 Aug 2021 12:42:02 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:4a77:cdda:c1bf:a6b7? ([2601:647:4802:9070:4a77:cdda:c1bf:a6b7])
+        by smtp.gmail.com with ESMTPSA id f10sm11636313pfa.17.2021.08.06.12.42.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Aug 2021 12:42:01 -0700 (PDT)
+Subject: Re: [PATCH] nvme-tcp: Do not reset transport on data digest errors
+To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        yi.he@emc.com
+References: <20210805121541.77613-1-dwagner@suse.de>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <47ef76c6-4430-ca24-405e-a226d4303a39@grimberg.me>
+Date:   Fri, 6 Aug 2021 12:42:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210805121541.77613-1-dwagner@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-> -----Original Message-----
-> From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> Sent: Saturday, August 7, 2021 1:22 AM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: andriy.shevchenko@linux.intel.com; yury.norov@gmail.com;
-> linux-kernel@vger.kernel.org; akpm@linux-foundation.org;
-> dave.hansen@intel.com; linux@rasmusvillemoes.dk; rafael@kernel.org;
-> rdunlap@infradead.org; agordeev@linux.ibm.com; sbrivio@redhat.com;
-> jianpeng.ma@intel.com; valentin.schneider@arm.com; peterz@infradead.org;
-> bristot@redhat.com; guodong.xu@linaro.org; tangchengchang
-> <tangchengchang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
-> yangyicong <yangyicong@huawei.com>; tim.c.chen@linux.intel.com; Linuxarm
-> <linuxarm@huawei.com>; tiantao (H) <tiantao6@hisilicon.com>; Jonathan Cameron
-> <jonathan.cameron@huawei.com>
-> Subject: Re: [PATCH v9 1/5] cpumask: introduce
-> cpumap_print_list/bitmask_to_buf to support large bitmask and list
+> The spec says
 > 
-> On Fri, Aug 06, 2021 at 11:02:47PM +1200, Barry Song wrote:
-> > From: Tian Tao <tiantao6@hisilicon.com>
-> >
-> > The existing cpumap_print_to_pagebuf() is used by cpu topology and other
-> > drivers to export hexadecimal bitmask and decimal list to userspace by
-> > sysfs ABI.
-> >
-> > Right now, those drivers are using a normal attribute for this kind of
-> > ABIs. A normal attribute typically has show entry as below:
-> >
-> > static ssize_t example_dev_show(struct device *dev,
-> >                 struct device_attribute *attr, char *buf)
-> > {
-> > 	...
-> > 	return cpumap_print_to_pagebuf(true, buf, &pmu_mmdc->cpu);
-> > }
-> > show entry of attribute has no offset and count parameters and this
-> > means the file is limited to one page only.
-> >
-> > cpumap_print_to_pagebuf() API works terribly well for this kind of
-> > normal attribute with buf parameter and without offset, count:
-> >
-> > static inline ssize_t
-> > cpumap_print_to_pagebuf(bool list, char *buf, const struct cpumask *mask)
-> > {
-> > 	return bitmap_print_to_pagebuf(list, buf, cpumask_bits(mask),
-> > 				       nr_cpu_ids);
-> > }
-> >
-> > The problem is once we have many cpus, we have a chance to make bitmask
-> > or list more than one page. Especially for list, it could be as complex
-> > as 0,3,5,7,9,...... We have no simple way to know it exact size.
-> >
-> > It turns out bin_attribute is a way to break this limit. bin_attribute
-> > has show entry as below:
-> > static ssize_t
-> > example_bin_attribute_show(struct file *filp, struct kobject *kobj,
-> >              struct bin_attribute *attr, char *buf,
-> >              loff_t offset, size_t count)
-> > {
-> > 	...
-> > }
-> >
-> > With the new offset and count parameters, this makes sysfs ABI be able
-> > to support file size more than one page. For example, offset could be
-> > >= 4096.
-> >
-> > This patch introduces cpumap_print_bitmask/list_to_buf() and their bitmap
-> > infrastructure bitmap_print_bitmask/list_to_buf() so that those drivers
-> > can move to bin_attribute to support large bitmask and list. At the same
-> > time, we have to pass those corresponding parameters such as offset, count
-> > from bin_attribute to this new API.
-> >
-> > Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Cc: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Stefano Brivio <sbrivio@redhat.com>
-> > Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-> > Cc: "Ma, Jianpeng" <jianpeng.ma@intel.com>
-> > Cc: Yury Norov <yury.norov@gmail.com>
-> > Cc: Valentin Schneider <valentin.schneider@arm.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> > ---
-> >  include/linux/bitmap.h  |   6 +++
-> >  include/linux/cpumask.h |  38 +++++++++++++++
-> >  lib/bitmap.c            | 103 ++++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 147 insertions(+)
-> >
-> > diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> > index a36cfcec4e77..37f36dad18bd 100644
-> > --- a/include/linux/bitmap.h
-> > +++ b/include/linux/bitmap.h
-> > @@ -227,6 +227,12 @@ unsigned int bitmap_ord_to_pos(const unsigned long
-> *bitmap, unsigned int ord, un
-> >  int bitmap_print_to_pagebuf(bool list, char *buf,
-> >  				   const unsigned long *maskp, int nmaskbits);
-> >
-> > +extern int bitmap_print_bitmask_to_buf(char *buf, const unsigned long
-> *maskp,
-> > +				      int nmaskbits, loff_t off, size_t count);
-> > +
-> > +extern int bitmap_print_list_to_buf(char *buf, const unsigned long *maskp,
-> > +				      int nmaskbits, loff_t off, size_t count);
-> > +
+>    7.4.6.1 Digest Error handling
 > 
-> Why are you adding bitmap_print_list_to_buf() when no one uses it in
-> this patch series?
+>    When a host detects a data digest error in a C2HData PDU, that host
+>    shall continue processing C2HData PDUs associated with the command and
+>    when the command processing has completed, if a successful status was
+>    returned by the controller, the host shall fail the command with a
+>    non-fatal transport error.
 > 
-> Did I miss it somewhere?
-
-Yes. It is used in every patch except the last one from Yury
-which is only extending comment.
-
-drivers/base/topology.c:
-+static ssize_t name##_list_read(struct file *file, struct kobject *kobj,	\
-+				struct bin_attribute *attr, char *buf,		\
-+				loff_t off, size_t count)			\
-+{										\
-+	struct device *dev = kobj_to_dev(kobj);					\
-+										\
-+	return cpumap_print_list_to_buf(buf, topology_##mask(dev->id),		\
-+					off, count);				\
- }
-
-
-drivers/base/node.c:
-+static inline ssize_t cpulist_read(struct file *file, struct kobject *kobj,
-+				   struct bin_attribute *attr, char *buf,
-+				   loff_t off, size_t count)
- {
--	...
-+	cpumask_and(mask, cpumask_of_node(node_dev->dev.id), cpu_online_mask);
-+	n = cpumap_print_list_to_buf(buf, mask, off, count);
-+	free_cpumask_var(mask);
-
+> Currently the transport is reseted when a data digest error is
+> detected. To fix this, keep track of the final status in the queue
+> object and use it when completing the request.
 > 
-> thanks,
+> The new member can be placed adjacent to the receive related members and
+> fits in the cacheline as there is a 4 byte hole.
 > 
-> greg k-h
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+> 
+> Hi,
+> 
+> I've tested this by modifying the receive path. Via the fault_inject
+> interface I injecting wrong hash values. The request would then be
+> completed with status != 0 and nvme_decide_disposition decices to
+> retry the request. So this seems be in more sync with what the spec
+> says on this topic.
+> 
+> Daniel
+> 
+>   drivers/nvme/host/tcp.c | 11 +++++++----
+>   1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+> index 097f7dd10ed3..5253147df4c7 100644
+> --- a/drivers/nvme/host/tcp.c
+> +++ b/drivers/nvme/host/tcp.c
+> @@ -89,6 +89,7 @@ struct nvme_tcp_queue {
+>   	size_t			data_remaining;
+>   	size_t			ddgst_remaining;
+>   	unsigned int		nr_cqe;
+> +	u16			status;
 
-Thanks
-Barry
+Why is this a queue member and not a request member?
 
+>   
+>   	/* send state */
+>   	struct nvme_tcp_request *request;
+> @@ -496,7 +497,8 @@ static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
+>   		return -EINVAL;
+>   	}
+>   
+> -	if (!nvme_try_complete_req(rq, cqe->status, cqe->result))
+> +	if (!nvme_try_complete_req(rq, queue->status ?
+> +			queue->status : cqe->status, cqe->result))
+>   		nvme_complete_rq(rq);
+>   	queue->nr_cqe++;
+>   
+> @@ -676,6 +678,7 @@ static int nvme_tcp_recv_pdu(struct nvme_tcp_queue *queue, struct sk_buff *skb,
+>   
+>   	switch (hdr->type) {
+>   	case nvme_tcp_c2h_data:
+> +		queue->status = NVME_SC_SUCCESS;
+>   		return nvme_tcp_handle_c2h_data(queue, (void *)queue->pdu);
+>   	case nvme_tcp_rsp:
+>   		nvme_tcp_init_recv_ctx(queue);
+> @@ -758,7 +761,7 @@ static int nvme_tcp_recv_data(struct nvme_tcp_queue *queue, struct sk_buff *skb,
+>   			queue->ddgst_remaining = NVME_TCP_DIGEST_LENGTH;
+>   		} else {
+>   			if (pdu->hdr.flags & NVME_TCP_F_DATA_SUCCESS) {
+> -				nvme_tcp_end_request(rq, NVME_SC_SUCCESS);
+> +				nvme_tcp_end_request(rq, queue->status);
+>   				queue->nr_cqe++;
+>   			}
+>   			nvme_tcp_init_recv_ctx(queue);
+> @@ -792,14 +795,14 @@ static int nvme_tcp_recv_ddgst(struct nvme_tcp_queue *queue,
+>   			"data digest error: recv %#x expected %#x\n",
+>   			le32_to_cpu(queue->recv_ddgst),
+>   			le32_to_cpu(queue->exp_ddgst));
+> -		return -EIO;
+> +		queue->status = NVME_SC_DATA_XFER_ERROR;
+>   	}
+>   
+>   	if (pdu->hdr.flags & NVME_TCP_F_DATA_SUCCESS) {
+>   		struct request *rq = nvme_cid_to_rq(nvme_tcp_tagset(queue),
+>   					pdu->command_id);
+>   
+> -		nvme_tcp_end_request(rq, NVME_SC_SUCCESS);
+> +		nvme_tcp_end_request(rq, queue->status);
+>   		queue->nr_cqe++;
+>   	}
+>   
+> 
