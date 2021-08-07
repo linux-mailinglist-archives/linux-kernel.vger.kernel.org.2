@@ -2,103 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCED3E3714
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 23:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF193E3717
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 23:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhHGU5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 16:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
+        id S229839AbhHGVYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 17:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhHGU5H (ORCPT
+        with ESMTP id S229517AbhHGVYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 16:57:07 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF318C0613CF;
-        Sat,  7 Aug 2021 13:56:48 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id k11-20020a17090a62cbb02901786a5edc9aso4314106pjs.5;
-        Sat, 07 Aug 2021 13:56:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=aDPS+XgQ7hE35dLkgpgBaogFW2sWOGSB2/ljVEyiaXE=;
-        b=QkN+d27NFol80qPk1x1PjEoadt867p+EnfVJEqQr3mIcvz03YJ3gO1J6bUhpUlgSBC
-         HRu9ZMDPANHSGwqKlJ8kkTfoUCwVQ4k10powPrORmLPwjpXjciqPdQz3SjKEG3GbQJL9
-         YeQwJOzEDSrDTavXdi928gnCdhu0CmelWuE5FttBfOeYNG+J2R91b5yAniGIQlJt1Tf8
-         69Ha4VqwQtHl1irko2AgAAuQcTISDnNRWJKbMrj3qOu+uK//g4/psooaxzmqYYUXISXO
-         5tS6uCo4XXLB91hv981M3AsXAqYVdHscQrx5l55M9tn4kj1LoQriaQdO9y0afbLI881u
-         JC9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=aDPS+XgQ7hE35dLkgpgBaogFW2sWOGSB2/ljVEyiaXE=;
-        b=ZETXojj/0+HQc5IqooKnxTJRAN0Che09uc4ENaKtK8Tjyl28jwbzRZ/Y7IogHqmlJC
-         MxmzQXcR4ZpPOAe8ehn8lRh0uNYXr7rzj/FO68Pf0S923AmplAiUIc8Yiw1gpkM+2vfG
-         QFPLtFFlrGjvdXK87U2K0/Gpj6kY3wWuiR/ckONZjz3aUoZOrfE809TIGT6+dcosJ/o5
-         94uny19yAKD4RaFXoVDYVPHd3jtm3kP3ZTZ2pKjhju1vjYpyW7INv1/5qOimkRR05q6o
-         oiFFauVJWxosijLE9JIsofXEHigyS92VdFj8dht97z72DurYE5lKoWKyY18M86lBV0qD
-         /mnA==
-X-Gm-Message-State: AOAM530qgFKZFqV6NRF4OiLYE7XemDkyzyCX5NKut4CYrVFUvTtCZipG
-        uSUoqHKyUF4tyu6XTngdx2g=
-X-Google-Smtp-Source: ABdhPJwYep8tTUVrpoNuljGQS+T87KcHeKmlJQ8E1VasglxRR6sopaSE2SP5GJqcCuWgm1dBo0iYFA==
-X-Received: by 2002:a17:90a:5982:: with SMTP id l2mr17279489pji.18.1628369807552;
-        Sat, 07 Aug 2021 13:56:47 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id b15sm16955974pgm.15.2021.08.07.13.56.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Aug 2021 13:56:47 -0700 (PDT)
-Date:   Sat, 7 Aug 2021 13:56:44 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Yangbo Lu <yangbo.lu@nxp.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        mptcp@lists.linux.dev, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, Rui Sousa <rui.sousa@nxp.com>,
-        Sebastien Laveze <sebastien.laveze@nxp.com>
-Subject: Re: [net-next, v5, 02/11] ptp: support ptp physical/virtual clocks
- conversion
-Message-ID: <20210807205644.GD22362@hoboy.vegasvil.org>
-References: <20210630081202.4423-1-yangbo.lu@nxp.com>
- <20210630081202.4423-3-yangbo.lu@nxp.com>
- <87r1f6kqby.fsf@vcostago-mobl2.amr.corp.intel.com>
- <20210807142259.GB22362@hoboy.vegasvil.org>
- <20210807144332.szyazdfl42abwzmd@skbuf>
+        Sat, 7 Aug 2021 17:24:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B5AC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 14:24:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aA5HS3VKpHetp3gEzc9iEc7bj1aIHq24Bb+xq3Es5LU=; b=ZANN2lpGFk3nRvYarK5XIJERCS
+        +NWy2JNCxNY8Xi5VPTrnA35PD3MBwN1VX1/TbeotRkLWlnE9uGyLrEOAms1Uj+oQrn7pFH2b//W9q
+        pCO1iHwG8qo4Kh5SstGa3R6JtvKOXW3mZhNjtWW0tRJ3VHP4nvelHc3CxVpboE5tVqK+94MPyo6iz
+        ARzIkO/WcEkruk+OoNSXvfG5pdzyj7PFkOg3nOXp4xU+m3lQavDI7OaUtAsAtj0Ml8WlJX00dNnm6
+        OKXvflohBcntsuD/TJCGb0oivj3nXcoHSORrezQhpl4j1tJOTk6eWTKmlTibiU4nXfYOdVQWwjxZk
+        mu9nrYOA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mCTmj-009Smd-Tl; Sat, 07 Aug 2021 21:23:17 +0000
+Date:   Sat, 7 Aug 2021 22:23:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Zi Yan <ziy@nvidia.com>, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 00/15] Make MAX_ORDER adjustable as a kernel boot
+ time parameter.
+Message-ID: <YQ75wVUXPO6yRx7T@casper.infradead.org>
+References: <20210805190253.2795604-1-zi.yan@sent.com>
+ <0d374eed-cc52-a656-b338-1156782bdf7e@suse.cz>
+ <F34DBD0A-22DE-4CF2-B784-BBDD80A8E85A@nvidia.com>
+ <6ae6cd92-3ff4-7ed3-b337-a4dfe33da1c@google.com>
+ <YQ3dn1oR2d0sO5jl@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210807144332.szyazdfl42abwzmd@skbuf>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YQ3dn1oR2d0sO5jl@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 07, 2021 at 05:43:32PM +0300, Vladimir Oltean wrote:
-> >  3. Let the vclocks hold a reference to the underlying posix dynamic clock.
-> 
-> So even if the vclock holds a reference to the underlying POSIX clock,
-> that won't prevent the hardware driver from unbinding, and further
-> gettime() calls on the vclock from faulting, will it?
+On Sat, Aug 07, 2021 at 02:10:55AM +0100, Matthew Wilcox wrote:
+> This hasn't been helped by the scarce number of 1GB TLB entries in Intel
+> CPUs until very recently (and even those are hard to come by today).
 
-Oh, your are right.  The vclocks call the real PHC clock's methods
-directly, not through the posix dynamic clock layer.
+Minor correction to this.  I just fixed x86info to work on my Core
+i7-1165G7 (Tiger Lake, launched about a year ago) and discovered it has:
 
-> What about:
-> 
-> 4. Create a device link with the vclock being a consumer and the parent
->    clock being a supplier? This way, ptp_vclock_unregister() is
->    automatically called whenever (and before) ptp_clock_unregister() is.
-> 
-> https://www.kernel.org/doc/html/latest/driver-api/device_link.html
+ L1 Store Only TLB: 1GB/4MB/2MB/4KB pages, fully associative, 16 entries
+ L1 Load Only TLB: 1GB pages, fully associative, 8 entries
+ L2 Unified TLB: 1GB/4KB pages, 8-way associative, 1024 entries
 
-Sounds promising.
+My prior laptop (i7-7500U, Kaby Lake, 2016) has only 4x 1GB TLB entries at
+the L1 level, and no support for L2 1GB pages.  So this speaks to Intel
+finally taking performance of 1GB TLB entries seriously.  Perhaps more
+seriously than they need to for a laptop with 16GB of memory!  There are
+Xeon-W versions of this CPU, so I imagine that there are versions which
+can support 1TB or more memory.
 
-Thanks,
-Richard
+I still think that 1GB pages are too big for anything but specialist
+use cases, but those do exist.
