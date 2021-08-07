@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A633E3600
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 16:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12D43E3602
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 17:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhHGO7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 10:59:54 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:43052 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229869AbhHGO6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 10:58:12 -0400
-Received: from BC-Mail-Ex12.internal.baidu.com (unknown [172.31.51.52])
-        by Forcepoint Email with ESMTPS id 779334BCAD628CC7823F;
-        Sat,  7 Aug 2021 22:57:42 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex12.internal.baidu.com (172.31.51.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Sat, 7 Aug 2021 22:57:42 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.62.18) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Sat, 7 Aug 2021 22:57:41 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <arnd@arndb.de>,
-        <geert@linux-m68k.org>, <jgg@ziepe.ca>, <schmitzmic@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Cai Huoqing <caihuoqing@baidu.com>
-Subject: [PATCH 2/2] MAINTAINERS: Remove the 8390 network drivers info
-Date:   Sat, 7 Aug 2021 22:57:32 +0800
-Message-ID: <20210807145732.211-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.32.0.windows.2
+        id S230022AbhHGPAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 11:00:54 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:50886 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229503AbhHGPAx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 11:00:53 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UiE-spl_1628348428;
+Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UiE-spl_1628348428)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 07 Aug 2021 23:00:32 +0800
+Subject: Re: [PATCH v4 1/2] tty: hvc: pass DMA capable memory to put_chars()
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     gregkh <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Amit Shah <amit@kernel.org>,
+        Omar Sandoval <osandov@fb.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@kernel.org>
+References: <20210806030138.123479-1-xianting.tian@linux.alibaba.com>
+ <20210806030138.123479-2-xianting.tian@linux.alibaba.com>
+ <CAK8P3a2=BmVv0tvUKaca+LYxuAussAJtAJW9O3fRN2CbV2-9aw@mail.gmail.com>
+From:   Xianting Tian <xianting.tian@linux.alibaba.com>
+Message-ID: <0b689760-6da4-f796-633a-059fa758bbf3@linux.alibaba.com>
+Date:   Sat, 7 Aug 2021 23:00:27 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.31.62.18]
-X-ClientProxiedBy: BJHW-Mail-Ex14.internal.baidu.com (10.127.64.37) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+In-Reply-To: <CAK8P3a2=BmVv0tvUKaca+LYxuAussAJtAJW9O3fRN2CbV2-9aw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit <0cf445ceaf43> ("<netdev: Update status of 8390 based drivers>")
-indicated the 8390 network drivers as orphan/obsolete in Jan 2011,
-updated in the MAINTAINERS file.
 
-now, after being exposed for 10 years to refactoring,
-and no one has become its maintainer for the past 10 years,
-so to remove the 8390 network drivers info from MAINTAINERS.
+在 2021/8/6 下午10:51, Arnd Bergmann 写道:
+> On Fri, Aug 6, 2021 at 5:01 AM Xianting Tian
+> <xianting.tian@linux.alibaba.com> wrote:
+>> @@ -163,6 +155,13 @@ static void hvc_console_print(struct console *co, const char *b,
+>>          if (vtermnos[index] == -1)
+>>                  return;
+>>
+>> +       list_for_each_entry(hp, &hvc_structs, next)
+>> +               if (hp->vtermno == vtermnos[index])
+>> +                       break;
+>> +
+>> +       c = hp->c;
+>> +
+>> +       spin_lock_irqsave(&hp->c_lock, flags);
+> The loop looks like it might race against changes to the list. It seems strange
+> that the print function has to actually search for the structure here.
+>
+> It may be better to have yet another array for the buffer pointers next to
+> the cons_ops[] and vtermnos[] arrays.
+I will make the change in v5, thanks.
+>
+>> +/*
+>> + * These sizes are most efficient for vio, because they are the
+>> + * native transfer size. We could make them selectable in the
+>> + * future to better deal with backends that want other buffer sizes.
+>> + */
+>> +#define N_OUTBUF       16
+>> +#define N_INBUF                16
+>> +
+>> +#define __ALIGNED__ __attribute__((__aligned__(sizeof(long))))
+> I think you need a higher alignment for DMA buffers, instead of sizeof(long),
+> I would suggest ARCH_DMA_MINALIGN.
 
-additionally, 8390 is a kind of old ethernet chip based on
-ISA interface which is hard to find in the market. 
+thanks, I will fix it in v5:
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- MAINTAINERS | 6 ------
- 1 file changed, 6 deletions(-)
+#define __ALIGNED__ __attribute__((__aligned__(ARCH_DMA_MINALIGN)))
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c2eb088b996c..6ef4c65f9e8e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -217,11 +217,6 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git
- F:	drivers/tty/serial/8250*
- F:	include/linux/serial_8250.h
- 
--8390 NETWORK DRIVERS [WD80x3/SMC-ELITE, SMC-ULTRA, NE2000, 3C503, etc.]
--L:	netdev@vger.kernel.org
--S:	Orphan / Obsolete
--F:	drivers/net/ethernet/8390/
--
- 9P FILE SYSTEM
- M:	Eric Van Hensbergen <ericvh@gmail.com>
- M:	Latchesar Ionkov <lucho@ionkov.net>
-@@ -2440,7 +2435,6 @@ F:	arch/arm/include/asm/hardware/ioc.h
- F:	arch/arm/include/asm/hardware/iomd.h
- F:	arch/arm/include/asm/hardware/memc.h
- F:	arch/arm/mach-rpc/
--F:	drivers/net/ethernet/8390/etherh.c
- F:	drivers/net/ethernet/i825xx/ether1*
- F:	drivers/net/ethernet/seeq/ether3*
- F:	drivers/scsi/arm/
--- 
-2.25.1
-
+>
+>         Arnd
