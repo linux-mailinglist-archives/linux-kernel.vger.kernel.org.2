@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9A73E342E
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 10:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B492C3E3431
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 10:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbhHGIu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 04:50:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231558AbhHGIuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 04:50:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2777B60EC0;
-        Sat,  7 Aug 2021 08:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628326207;
-        bh=L03Kf59/VG57iU49qSzYSwXV02Uek8uVwPIGgByYm8Q=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=DXy0hgpBuabZhcZziSBIvvEk+2Iu8Y0q9LCl7kLAIgCeXesyKkbPlPyWwC/krgHqo
-         h+WYVwaHSSGDFos/QslVBKrlXGu+exFMAedKLupGObbI5XD0j0C560//WCT3qflbCr
-         3LN16IeQfGqzCVhFGI4oJckAXwdBh0c8zY/MvN/LaT2AAG6puKiYKwSuu+v5CxTux8
-         yeNsuFH/XSgy2pDRWJnLsuyvHMuyv1jeoNigDJkxb+U8S1lfldkPT2dpKeKRzFrufW
-         FOpw+NIYuaK/Lkq0dQk+UATlTBhh+LLcRm0WAiq5h0QDH4T4fYB1e5azEhQ7dUR3Uq
-         LUMBkLVkH51Dw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0EFDE609F1;
-        Sat,  7 Aug 2021 08:50:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: ethernet: stmmac: Do not use unreachable() in
- ipq806x_gmac_probe()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162832620705.3915.11584546852979312079.git-patchwork-notify@kernel.org>
-Date:   Sat, 07 Aug 2021 08:50:07 +0000
-References: <20210806191339.576318-1-nathan@kernel.org>
-In-Reply-To: <20210806191339.576318-1-nathan@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, ndesaulniers@google.com,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, samitolvanen@google.com
+        id S231656AbhHGIxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 04:53:04 -0400
+Received: from mail-m17655.qiye.163.com ([59.111.176.55]:45036 "EHLO
+        mail-m17655.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231558AbhHGIxD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 04:53:03 -0400
+Received: from ubuntu.localdomain (unknown [36.152.145.182])
+        by mail-m17655.qiye.163.com (Hmail) with ESMTPA id 25623400B8;
+        Sat,  7 Aug 2021 16:52:42 +0800 (CST)
+From:   zhouchuangao <zhouchuangao@vivo.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        CQ Tang <cq.tang@intel.com>, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     zhouchuangao <zhouchuangao@vivo.com>
+Subject: [PATCH] gpu/drm/i915: Remove duplicated include of intel_region_lmem.h
+Date:   Sat,  7 Aug 2021 01:52:31 -0700
+Message-Id: <1628326354-96951-1-git-send-email-zhouchuangao@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRlDGR1WQ04eTxodHh5LGk
+        NLVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6M0k6HSo5Hj8MISo2SRJOED0D
+        SAowFDVVSlVKTUlDSElNSE1JQ0hOVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
+        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUlPTkM3Bg++
+X-HM-Tid: 0a7b1fd07d50da01kuws25623400b8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Duplicate include header file "intel_region_lmem.h"
+line 8: #include "intel_region_lmem.h"
+line 13: #include "intel_region_lmem.h"
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+---
+ drivers/gpu/drm/i915/gt/intel_region_lmem.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Fri,  6 Aug 2021 12:13:40 -0700 you wrote:
-> When compiling with clang in certain configurations, an objtool warning
-> appears:
-> 
-> drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.o: warning: objtool:
-> ipq806x_gmac_probe() falls through to next function phy_modes()
-> 
-> This happens because the unreachable annotation in the third switch
-> statement is not eliminated. The compiler should know that the first
-> default case would prevent the second and third from being reached as
-> the comment notes but sanitizer options can make it harder for the
-> compiler to reason this out.
-> 
-> [...]
-
-Here is the summary with links:
-  - net: ethernet: stmmac: Do not use unreachable() in ipq806x_gmac_probe()
-    https://git.kernel.org/netdev/net-next/c/4367355dd909
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/drivers/gpu/drm/i915/gt/intel_region_lmem.c b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
+index 58a3cf7..50d11a8 100644
+--- a/drivers/gpu/drm/i915/gt/intel_region_lmem.c
++++ b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
+@@ -10,7 +10,6 @@
+ #include "gem/i915_gem_lmem.h"
+ #include "gem/i915_gem_region.h"
+ #include "gem/i915_gem_ttm.h"
+-#include "intel_region_lmem.h"
+ 
+ static int init_fake_lmem_bar(struct intel_memory_region *mem)
+ {
+-- 
+2.7.4
 
