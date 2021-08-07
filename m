@@ -2,140 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791B93E36E9
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 21:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4243E36EB
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 21:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhHGTFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 15:05:36 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:38408 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhHGTFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 15:05:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=kn6cL09Y4NMxxmqQnsrVBNiHMYyVkK31PINrCIN33Ng=; b=uQiZf+RdEytsY/zD0ZsCeJSOBS
-        5DpjrN8NCiQ0zTiJosZEaRGs2PbJo5j5Dv4PpxQA/S2/0TxRn5VeCbsxDh/9PEe/DiqLacgSFQ76h
-        12Xj4W9GulTn4OIlxpmdS47M+fwriBIiG3LIgvSCl6DnE0V2h+TIfdp03XnAgoyKOTGE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mCRd0-00GVy6-CR; Sat, 07 Aug 2021 21:05:02 +0200
-Date:   Sat, 7 Aug 2021 21:05:02 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Gabriel Somlo <gsomlo@gmail.com>, David Shah <dave@ds0.me>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: net: Add bindings for LiteETH
-Message-ID: <YQ7ZXu7hHTCNBwNz@lunn.ch>
-References: <20210806054904.534315-1-joel@jms.id.au>
- <20210806054904.534315-2-joel@jms.id.au>
+        id S229912AbhHGTFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 15:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhHGTFi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 15:05:38 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F5CC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 12:05:19 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so24557699pji.5
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 12:05:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LDzr9j6jDQymvAZrQvh0mEZMgeOS0DQq/WzD3far9AM=;
+        b=J2fkjjsuWNeHerOTcP8G/YG86fcP61VGCTe67t+htJCPDhbK4SpXkO8uXCozE3UU8z
+         pZ/y/GDU1jdoV+vx3geGIb4nwo+yUe9S5Y+jlzxN46DUb/Wx9m/mqJ40h61hYUEnDWOG
+         5rLAhFNVsOH0mrGF8/0ztqDQeMi3urRXLQsQokYzNDYs9FqkgAiELj/+zNRIYxXF0FRS
+         x0Kb5rtMpUsegprUY0SWWuhBUA8IGwlzDYJdcPmZaBmf9uQq1MR+WXr5RplKS9EXhL+F
+         gU0zvgOEE25YwjsjveGRNtktbH7RGCZd1L3BNYv4OsThvYQWNM4w5ZZnOoPUKj284dpy
+         l9xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LDzr9j6jDQymvAZrQvh0mEZMgeOS0DQq/WzD3far9AM=;
+        b=MWul6tg38VWfRQrYgoT7stJJ+WfI1InHR/szLYj8+onqpeDDH32Zy8JPrw8pB6UHLP
+         u3pg89Eeyd0RJ/0Im+xDS9dSpj0b0RVkP91tXwv/wPJvY7n//MepnlaLsu4rWenwvYwD
+         B1ukfsi0d9LBi6kHV1DfHlYRv81T+n+k3DZ0k0S8g9brwVQMqrqFxCmtJImPg7IkOB6E
+         QF+x7/Tv2zNowjsiUBB/STYRt2jmnmefTZcceFq/br57Okk3ZR8UcUsfHuMQ5VDvCMiJ
+         TNTNBAtc8W5kUEtCOckzPPad2fslJqO6dY5u4hhXWN6D7IYR4kcMkbPCShzyYklGtzte
+         yiIg==
+X-Gm-Message-State: AOAM531Qaq9uzhET3/fWeKDVh9gBdn3OQrt+pVYJ5nGjLEKQNpmgl15p
+        JnKBo2YgbFC895xaM69vJ6o=
+X-Google-Smtp-Source: ABdhPJwLpYFtek7YvpqTwxl/4Qq+Nuz2NdUl0gVBdSJPakAfLwkU4B3FHdFl7I8X6nr0bt8E4YLdHA==
+X-Received: by 2002:a17:90a:ce05:: with SMTP id f5mr27351733pju.93.1628363118743;
+        Sat, 07 Aug 2021 12:05:18 -0700 (PDT)
+Received: from localhost.localdomain (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
+        by smtp.gmail.com with ESMTPSA id i13sm14859090pfr.79.2021.08.07.12.05.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Aug 2021 12:05:18 -0700 (PDT)
+From:   Nguyen Dinh Phi <phind.uet@gmail.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+Subject: [PATCH] tty: Fix data race between tiocsti() and flush_to_ldisc()
+Date:   Sun,  8 Aug 2021 03:05:13 +0800
+Message-Id: <20210807190513.3810821-1-phind.uet@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806054904.534315-2-joel@jms.id.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 03:19:03PM +0930, Joel Stanley wrote:
-> LiteETH is a small footprint and configurable Ethernet core for FPGA
-> based system on chips.
-> 
-> Signed-off-by: Joel Stanley <joel@jms.id.au>
-> ---
->  .../bindings/net/litex,liteeth.yaml           | 62 +++++++++++++++++++
->  1 file changed, 62 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/litex,liteeth.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/net/litex,liteeth.yaml b/Documentation/devicetree/bindings/net/litex,liteeth.yaml
-> new file mode 100644
-> index 000000000000..e2a837dbfdaa
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/litex,liteeth.yaml
-> @@ -0,0 +1,62 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/litex,liteeth.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: LiteX LiteETH ethernet device
-> +
-> +maintainers:
-> +  - Joel Stanley <joel@jms.id.au>
-> +
-> +description: |
-> +  LiteETH is a small footprint and configurable Ethernet core for FPGA based
-> +  system on chips.
-> +
-> +  The hardware source is Open Source and can be found on at
-> +  https://github.com/enjoy-digital/liteeth/.
-> +
-> +properties:
-> +  compatible:
-> +    const: litex,liteeth
-> +
-> +  reg:
-> +    minItems: 3
-> +    items:
-> +      - description: MAC registers
-> +      - description: MDIO registers
-> +      - description: Packet buffer
+The ops->receive_buf() may be accessed concurrently from these two
+functions.  If the driver flushes data to the line discipline
+receive_buf() method while tiocsti() is using the ops->receive_buf(),
+the data race will happen.
 
-Hi Joel
+For example:
+tty_ioctl                       |tty_ldisc_receive_buf
+ ->tioctsi                      | ->tty_port_default_receive_buf
+                                |  ->tty_ldisc_receive_buf
+   ->hci_uart_tty_receive       |   ->hci_uart_tty_receive
+    ->h4_recv                   |    ->h4_recv
 
-How configurable is the synthesis? Can the MDIO bus be left out? You
-can have only the MDIO bus and no MAC?
+In this case, the h4 receive buffer will be overwritten by the
+latecomer, and it cause a memory leak.
 
-I've not looked at the driver yet, but if the MDIO bus has its own
-address space, you could consider making it a standalone
-device. Somebody including two or more LiteETH blocks could then have
-one shared MDIO bus. That is a supported Linux architecture.
+Hence, change tioctsi() function to use the exclusive lock interface
+from tty_buffer to avoid the data race.
 
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  rx-fifo-depth:
-> +    description: Receive FIFO size, in units of 2048 bytes
-> +
-> +  tx-fifo-depth:
-> +    description: Transmit FIFO size, in units of 2048 bytes
-> +
-> +  mac-address:
-> +    description: MAC address to use
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    mac: ethernet@8020000 {
-> +        compatible = "litex,liteeth";
-> +        reg = <0x8021000 0x100
-> +               0x8020800 0x100
-> +               0x8030000 0x2000>;
-> +        rx-fifo-depth = <2>;
-> +        tx-fifo-depth = <2>;
-> +        interrupts = <0x11 0x1>;
-> +    };
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Reported-by: syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+---
+ drivers/tty/tty_io.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-You would normally expect to see some MDIO properties here, a link to
-the standard MDIO yaml, etc.
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index e8532006e960..746fe13a2054 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -2307,8 +2307,10 @@ static int tiocsti(struct tty_struct *tty, char __user *p)
+ 	ld = tty_ldisc_ref_wait(tty);
+ 	if (!ld)
+ 		return -EIO;
++	tty_buffer_lock_exclusive(tty->port);
+ 	if (ld->ops->receive_buf)
+ 		ld->ops->receive_buf(tty, &ch, &mbz, 1);
++	tty_buffer_unlock_exclusive(tty->port);
+ 	tty_ldisc_deref(ld);
+ 	return 0;
+ }
+--
+2.25.1
 
-    Andrew
