@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641023E329A
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 03:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BCA3E329D
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 03:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhHGBoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 21:44:00 -0400
-Received: from mout.gmx.net ([212.227.17.20]:53367 "EHLO mout.gmx.net"
+        id S230021AbhHGBrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 21:47:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229749AbhHGBn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 21:43:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628300551;
-        bh=F4bbSXyjHIN1BGUeLpaEx8mOppLBhHGK/+Ms07Fv+wg=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=OTXNBwmrCrz385A/QKCFxzvv8LJBv0Rsmu8brx8RuAzT07gCJLouSwxrgmkAxAI/x
-         Q+vF1I55sfrWvQLTMWp1Q94M0zEAbAzBl38hA2KcgT4cdCWf+eg1qZlW1e1r0aNVUe
-         KzvLqqEWMO0USS+MzbWzjRomQlD8it27LTbe4XA4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.218.160]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MTzb8-1md1uf0mhu-00QxYw; Sat, 07
- Aug 2021 03:42:31 +0200
-Message-ID: <800ff941e3ec86ea1397cddf8ecea3d4a17c55dc.camel@gmx.de>
-Subject: Re: [PATCH v2 2/4] sched: Introduce is_pcpu_safe()
-From:   Mike Galbraith <efault@gmx.de>
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 07 Aug 2021 03:42:28 +0200
-In-Reply-To: <20210807005807.1083943-3-valentin.schneider@arm.com>
-References: <20210807005807.1083943-1-valentin.schneider@arm.com>
-         <20210807005807.1083943-3-valentin.schneider@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 
+        id S229749AbhHGBre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 21:47:34 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C041161186;
+        Sat,  7 Aug 2021 01:47:17 +0000 (UTC)
+Date:   Fri, 6 Aug 2021 21:47:10 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>
+Subject: Re: [PATCH v2 1/9] tracing/boot: Fix a hist trigger dependency for
+ boot time tracing
+Message-ID: <20210806214710.015aa5d3@oasis.local.home>
+In-Reply-To: <162818072887.226227.1489690774195740861.stgit@devnote2>
+References: <162818072104.226227.18088999222035270055.stgit@devnote2>
+        <162818072887.226227.1489690774195740861.stgit@devnote2>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7IREJpazqVFoymZlSqnbvmojHa+lnVsdP2PzWl3dtLW58icJX8s
- JgJUFsj4wgy7wr8QtZUI/vFW4mR9w2E31PuFtRvj7hkcsKmpHUZgA+scftFcijFvvr6DXxh
- 95RWdUc0BOTY+kBVXigE1yn8ESnjNnRC+WcXS2iXAk0Qp/k2o4R14M2S2Uel3nIcrCyYPcH
- XAyDuRzL1gjrdlPt16Dow==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ziS+D4sSvLI=:WbksQVBOYKr+mWLdbgRvMi
- HkBtpSEWdVSq3U2tMNWKwGchuz1LatjO4v6Tnj1sNFa7sww6eYzp3vy+qwsa5b57HOdHWVjJ6
- kSlG37cppGDOqg3pVHVY6mYAYbODhmfXgQJfgrLOFdXoD1yi4DpmOtjalpsYDzFmlpgRMSm4S
- r+gKe+2FpsTlojglASxGW2Jrh4luHMM9E0GUAIsqZJVROb4+0Vq9auqLL3q2D9MGua6JnfTeV
- nX3xl00+Jt+rqaOvyoR6Dt1n+814Qzjqm/NB00QtxuytXgMduAOq4pM+F9w4wmdJSPcpJOICf
- rlcMaJbIrPZbRkk6GPApFsdCZFqaQX6NPFWhAV3U+MF6hN11FODtCZmH0DvxSDzKu4cojh4Mh
- Aar+fH3oK5+kWYD+SukFFq1fgNN77zf09JcC2awznynBa3kZtV2tD7x20fSshH+j15dyZJJfk
- UOIy99JVZQ0SLf0EpSM25/TZKtWEDqqw537dGpBak8f+NmwJQR3PxDEjFv9SA3HF6PawDwZbV
- lXbS4OYQktEqi8d12tgUi/GJU67C6lTGKWStFv6VfeIDZiogsFUVAc3CTuVWXo16ZDmbsldCD
- 8E7xF4znYZQSPGHDgNT6GQ6lQTchYkbI1DQdKHCNv2keYBumzdzfk8WK8zX1a1IdFw1bwnviM
- l2iL22FIHbyFBB/ilL0p2fytmILNKiTM8pWTTjuWCkAi27AR047x3t1ptbBUobete9E02ViAx
- BLzEr/fVRfgesFMldr3eTtp8OqRdUb9IKpmCkRSEw2lvv4UIhwEEPMrDCavi1z1UmM2w9miHW
- MuO5geGOhFQXcafngB++KYKvQOpTEa8cXIOtnV3RgPvWf5GWiiVsQR3RwxUOSt3LcCAHD0aoQ
- MNWah5vgxZwRp9ulbj8Kh/BU9ZNx4/015EHIsTm9h2yF3KzBdNrSxD/IfJi/Qg1ucr2JL6Fsu
- d0y4c4JI56h7rbA+W4/FVa6PGpT+VlvoDBvuVZQX51KifTTJ4Sxc3wQUc2Gcxqd6+dQL/XYrq
- g7W/d4MAHgTQRwGPqcuUySdsnanpv2bAOvthZEcoiGEGtnFsdFlNdyiNvPQqmmh2/qTtnnj8y
- 4gON1KfzFnu//WSZfsXdTwaXaRCjtJSvloq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-08-07 at 01:58 +0100, Valentin Schneider wrote:
->
-> +static inline bool is_pcpu_safe(void)
+On Fri,  6 Aug 2021 01:25:29 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Nit: seems odd to avoid spelling it out to save two characters, percpu
-is word like, rolls off the ole tongue better than p-c-p-u.
+> Fixes a build error when CONFIG_HIST_TRIGGERS=n with boot-time
+> tracing. Since the trigger_process_regex() is defined only
+> when CONFIG_HIST_TRIGGERS=y, if it is disabled, the 'actions'
+> event option also must be disabled.
+> 
+> Fixes: 81a59555ff15 ("tracing/boot: Add per-event settings")
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  0 files changed
+> 
+> diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+> index 94ef2d099e32..e6dc9269ad75 100644
+> --- a/kernel/trace/trace_boot.c
+> +++ b/kernel/trace/trace_boot.c
+> @@ -204,13 +204,14 @@ trace_boot_init_one_event(struct trace_array *tr, struct xbc_node *gnode,
+>  		else if (apply_event_filter(file, buf) < 0)
+>  			pr_err("Failed to apply filter: %s\n", buf);
+>  	}
+> -
+> +#ifdef CONFIG_HIST_TRIGGERS
 
-	-Mike
+Hi Masamai,
+
+Can we instead define trigger_process_regex() in trace.h to be:
+
+static inline int trigger_process_regex(struct trace_event_file *file, char *buff)
+{
+	return -1;
+}
+
+When this config is not set?
+
+This makes the code a bit cleaner, and you get the "Failed to apply an
+action" error as well.
+
+-- Steve
+
+
+
+>  	xbc_node_for_each_array_value(enode, "actions", anode, p) {
+>  		if (strlcpy(buf, p, ARRAY_SIZE(buf)) >= ARRAY_SIZE(buf))
+>  			pr_err("action string is too long: %s\n", p);
+>  		else if (trigger_process_regex(file, buf) < 0)
+>  			pr_err("Failed to apply an action: %s\n", buf);
+>  	}
+> +#endif
+>  
+>  	if (xbc_node_find_value(enode, "enable", NULL)) {
+>  		if (trace_event_enable_disable(file, 1, 0) < 0)
 
