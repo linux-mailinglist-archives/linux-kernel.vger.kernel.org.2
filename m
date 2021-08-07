@@ -2,174 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2983E36F5
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 21:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2003E36F8
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 21:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbhHGTVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 15:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhHGTVp (ORCPT
+        id S229722AbhHGTbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 15:31:46 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:59569 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhHGTbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 15:21:45 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66657C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 12:21:26 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id k29so2874166wrd.7
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 12:21:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zC7y0PTScHH/ipa0plXxkGuFfW8aO4YnqDt5Y1MGCY0=;
-        b=g3dFNgA7i0iE8E6mG+gjMhuM9jRtxcDw0QINW0Nsofw2sWRnJ31YxvzY7TPAvJGQRL
-         m3S6eM8ljhIuOIxlVHvfjnVOR2NhRWEfhIvcY1gx/HX9z6/w64bX6A/xOSTx84k5AORF
-         wBTUiYZJId0XcrNNwLsmoI2eZ40kbvSyYrA+wd/nV5R82vQifnxiyAcRXkqDFkvgCMKG
-         r+NTnigaiyTlWiITnSk/zPdI1bCwHYfXcOV1KFpu/GHSr+HDWmzgbJK0S+Bk35DbzjKZ
-         HrXRhu4D5WWtaGB7Cvy5shGwYLYmLFecYgejryXtHNOVgWvZeCB/1wIrnWK/4L8sqs8F
-         Itbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zC7y0PTScHH/ipa0plXxkGuFfW8aO4YnqDt5Y1MGCY0=;
-        b=LpMplsOJYLIX3Po/0ouljL7va+fZPhP3MWlrewNGBsdbJx0Gv48/3pns6a06qfD9vs
-         1MxnnNpCY5cVYKUGIzkrvLwxrbIjJees7MhAPVUhXbM0PzTxb8YlKrqRlcAuG2cDan2i
-         kpfsvasYBOaKM5IShf4vQ94eFZnp7JRRJjhCIBEsqG9GG/+2KKUcXcFn3WuFLcb+Gbyt
-         D1f9tsq16bUyg8OqWt2TNOb9HXYh9zsMcndZn+ZuB0SB+OhLvp9WrxHXVuz0WtGazatJ
-         P3wvAOLEdyzZGZp1t2KKeiz9xQ5a9ab503OxYDHO3useU0RglKTBeDvUu8+sP+FX/0Ab
-         PnqA==
-X-Gm-Message-State: AOAM5323spgct3xEEJSD91zpFhcoFrBkYOSh4p+qgcympujWyYcLiME7
-        zVzCAWTxC3VQ0OAA7qb1d+So9Q==
-X-Google-Smtp-Source: ABdhPJwiBDzwzKcPs4zWy4oXDjCpfq+MNG7C4K4L/MMLUf73Bu+Rx6T3sDCJusA6dSg21VQ09tviVw==
-X-Received: by 2002:a05:6000:1241:: with SMTP id j1mr3531000wrx.338.1628364085060;
-        Sat, 07 Aug 2021 12:21:25 -0700 (PDT)
-Received: from [192.168.1.12] (host-92-17-52-101.as13285.net. [92.17.52.101])
-        by smtp.gmail.com with ESMTPSA id i10sm16041196wmq.21.2021.08.07.12.21.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 07 Aug 2021 12:21:24 -0700 (PDT)
-Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
-To:     Rob Clark <robdclark@gmail.com>,
-        Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-References: <20210729183942.2839925-1-robdclark@gmail.com>
- <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
- <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
- <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org>
- <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
-From:   Caleb Connolly <caleb.connolly@linaro.org>
-Message-ID: <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org>
-Date:   Sat, 7 Aug 2021 20:21:23 +0100
+        Sat, 7 Aug 2021 15:31:46 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 2366C200002;
+        Sat,  7 Aug 2021 19:31:24 +0000 (UTC)
+Subject: Re: [PATCH -fixes 3/3] riscv: Optimize kernel virtual address
+ conversion macro
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <mhng-163d949e-5efc-46d4-a5b7-c90e4745a7a3@palmerdabbelt-glaptop>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <39a1fa85-1885-effe-1670-ec9cf34099f5@ghiti.fr>
+Date:   Sat, 7 Aug 2021 21:31:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <mhng-163d949e-5efc-46d4-a5b7-c90e4745a7a3@palmerdabbelt-glaptop>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob, Akhil,
-
-On 29/07/2021 21:53, Rob Clark wrote:
-> On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
-> <caleb.connolly@linaro.org> wrote:
+Le 7/08/2021 à 18:36, Palmer Dabbelt a écrit :
+> On Wed, 21 Jul 2021 00:59:37 PDT (-0700), alex@ghiti.fr wrote:
+>> The current test in kernel_mapping_va_to_pa only applies when
+>> CONFIG_XIP_KERNEL is set, so use IS_ENABLED to optimize this macro at
+>> compile-time in standard kernels that do not require this test.
 >>
+>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+>> ---
+>>  arch/riscv/include/asm/page.h | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
 >>
->>
->> On 29/07/2021 21:24, Rob Clark wrote:
->>> On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
->>> <caleb.connolly@linaro.org> wrote:
->>>>
->>>> Hi Rob,
->>>>
->>>> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
->>>> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
->>>> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
->>>
->>> *ohh*, yeah, ok, that would explain it
->>>
->>>> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
->>>> at the higher frequencies.
->>>>
->>>> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
->>>> glxgear.
->>>>
->>>> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
->>>> at the voltage the hardware needs to be stable.
->>>>
->>>> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
->>>> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
->>>>
->>>
->>> tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
->>> on CC and I added sboyd, maybe one of them knows better.
->>>
->>> In the short term, removing the higher problematic OPPs from dts might
->>> be a better option than this patch (which I'm dropping), since there
->>> is nothing stopping other workloads from hitting higher OPPs.
->> Oh yeah that sounds like a more sensible workaround than mine .
->>>
->>> I'm slightly curious why I didn't have problems at higher OPPs on my
->>> c630 laptop (sdm850)
->> Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
->>
->> Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
->> crash where yours doesn't?
+>> diff --git a/arch/riscv/include/asm/page.h 
+>> b/arch/riscv/include/asm/page.h
+>> index b0ca5058e7ae..10dc063868f6 100644
+>> --- a/arch/riscv/include/asm/page.h
+>> +++ b/arch/riscv/include/asm/page.h
+>> @@ -123,7 +123,7 @@ extern phys_addr_t phys_ram_base;
+>>  #define linear_mapping_va_to_pa(x)    ((unsigned long)(x) - 
+>> kernel_map.va_pa_offset)
+>>  #define kernel_mapping_va_to_pa(y) ({                        \
+>>      unsigned long _y = y;                            \
+>> -    (_y < kernel_map.virt_addr + XIP_OFFSET) ?                    \
+>> +    (IS_ENABLED(CONFIG_XIP_KERNEL) && _y < kernel_map.virt_addr + 
+>> XIP_OFFSET) ?    \
+>>          ((unsigned long)(_y) - kernel_map.va_kernel_xip_pa_offset) 
+>> :        \
+>>          ((unsigned long)(_y) - kernel_map.va_kernel_pa_offset - 
+>> XIP_OFFSET);    \
+>>      })
 > 
-> I've not heard any reports of similar issues from the handful of other
-> folks with c630's on #aarch64-laptops.. but I can't really say if that
-> is luck or not.
-It looks like this affects at least the OnePlus 6 and PocoPhone F1, I've done some more poking and the following diff 
-seems to fix the stability issues completely, it seems the delay is required to let the update propagate.
+> IIUC this isn't actually a fix?  The other two are, though, so they're 
+> on fixes.
 
-This doesn't feel like the right fix, but hopefully it's enough to come up with a better solution than disabling the new 
-devfreq behaviour on a630.
+Indeed this is not a fix, this is symmetrical to what I have done in 
+patch 1 so that seemed natural to land in the same patchset. Let me know 
+if you want me to resend it on its own.
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-index d7cec7f0dde0..69e2a5e84dae 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-@@ -139,6 +139,10 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
-                 return;
-         }
+Thanks,
 
-+       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
-+
-+       usleep_range(300, 500);
-+
-         gmu_write(gmu, REG_A6XX_GMU_DCVS_ACK_OPTION, 0);
+Alex
 
-         gmu_write(gmu, REG_A6XX_GMU_DCVS_PERF_SETTING,
-@@ -158,7 +162,6 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
-         if (ret)
-                 dev_err(gmu->dev, "GMU set GPU frequency error: %d\n", ret);
-
--       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
-         pm_runtime_put(gmu->dev);
-  }
 > 
-> Maybe just remove it for affected devices?  But I'll defer to Bjorn.
+> Thanks!
 > 
-> BR,
-> -R
-> 
-
--- 
-Kind Regards,
-Caleb (they/them)
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
