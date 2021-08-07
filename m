@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329F53E3394
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 07:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9093E339E
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 07:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhHGFYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 01:24:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbhHGFYT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 01:24:19 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58140C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 22:24:02 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id g13so22228291lfj.12
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 22:24:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZqLuhYgeKsDqWSkoQoYju4RuNI8asvlPSwM2IzFO9Fo=;
-        b=svcPRaGPcibReGcJQX+H6QEohG/XfPy6C4LUhMRFPhJh96e9BmeeibzkJRw4ZjY1mR
-         bj9zeWWjVelGDg2HjiK8364mXmS4h6JPB4cXYUp+FTRFDt/ywfQa8Tw3qhwR9oB86ikQ
-         Q9YcR8ZLzyhR/pjuyuCwKwByfJ5VhiVidPbQrqoWHUl3v3qgAJhuKUxhYDvYanGMRtAu
-         dMLO7ngzUxE8krTsaofMQrH2Rk9SgoHmNijDRCWnj2miXffPDAMJquWYU7ZwFz1iEqFS
-         OHUVf2vYXMXpVT8jYC39Opw57CIMRXDkBmubvdpA3mq0AD3DLxJTKK2c0eojcu0qgIxV
-         WaQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZqLuhYgeKsDqWSkoQoYju4RuNI8asvlPSwM2IzFO9Fo=;
-        b=RNEr+hkeXJJ0PYdPApmG+Y2Qg5Ub2btMpQfTTYmvm15f1nC9N8zLWKmB/rJezSDYaq
-         cua4mpkCcb8pyTztHnc/5M2HNeLZCX0Z6uhyl5JsfSLr5H9GOt7FqRv8rK4FDdGA6R2R
-         bWquig7aD8dMiQUOQDwYG0aBXAgXb/iTMc0I0AAlac95/9Oes9/8yqbqj8ZNM1src8kC
-         zVz1czzwIhpA9/ytKOC3gxx/XPyBjZ4mjcGD397sKT+jaXyV4qz3TZ6B+aiz385eutVw
-         SmSU270dVpRqAT3CYA6dFPGqK3PVn1X6sNianSVqry3Q/WaCILL46Mq+cBn5OpcfzAGe
-         wP/A==
-X-Gm-Message-State: AOAM5316QaUJ2tV2IrG1oLq4QFiqkX6xEVLO9gRxSLZ/OMHdQSUENI9D
-        ZShKlryuHR19s0AxlOvdoVNw3BKvz/vcKSilo/P1mw==
-X-Google-Smtp-Source: ABdhPJxdoadSOx3CDgngRPDA+viNO0fADRiTs6/EPBW/zvuM5Awj/9LY2isJL4+CnvMx//QCQNg+7EYunVVFPZ1FF6E=
-X-Received: by 2002:a05:6512:376d:: with SMTP id z13mr5726308lft.347.1628313840113;
- Fri, 06 Aug 2021 22:24:00 -0700 (PDT)
+        id S231215AbhHGFdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 01:33:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230377AbhHGFdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 01:33:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F25261050;
+        Sat,  7 Aug 2021 05:33:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628314409;
+        bh=HNt1FmbyVPf6HRrgnnW4+/eZ4HV+Da68T9WAMEWLK3M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ys9/0zUkuvZinfMRS6ci6qvNyzySEyediZANpXqbzYr/+QWF0VUNmEEiol0cqBz0E
+         QWJTcubDIqtjEo3A6le8bL9H5DcaQtkwwBoaEQgq31ZZHnr/3Z/ec+3MJVYvUuNtzI
+         UUfvrBLaCOkySARDvGOeTnRsJJjirvsAU4xL6+/+P2iuExk5PaIiqber+FZ3yJB4XF
+         gzfQ4jG93YtRK8CmLjNVX9CwKj3SwOBJtCsmj1Gg107ZqdbQrDX26gZaYHQX3eVBzt
+         bgymv2ZejYFrSRx0x7ukoAiw4moGzZfmFTj3MUH6YdscaTVJ0r3nOpdQCalApdMh5g
+         GbB5ajJLTNyvQ==
+Date:   Fri, 6 Aug 2021 22:33:27 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chen Li <chenli@uniontech.com>
+Cc:     herbert <herbert@gondor.apana.org.au>, davem <davem@davemloft.net>,
+        linux-crypto <linux-crypto@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] crypto: lib/sha256 - add sha256_value function
+Message-ID: <YQ4bJ56Ow1hY79Lf@sol.localdomain>
+References: <tencent_458D0EFD76ABAEB726882C2D@qq.com>
 MIME-Version: 1.0
-References: <20210806231701.106980-1-npache@redhat.com> <CALvZod6gCof1bhVwdU7vYYKBRCn_HZBFi4BjSYoSK-dyrmswMA@mail.gmail.com>
- <91605888-e343-2712-c097-bcade4cb389d@redhat.com>
-In-Reply-To: <91605888-e343-2712-c097-bcade4cb389d@redhat.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 6 Aug 2021 22:23:48 -0700
-Message-ID: <CALvZod6Kv_eZcZeJOvypXe_XVzkvLDau7faiDQ2mrqV8kOqq3g@mail.gmail.com>
-Subject: Re: [PATCH] vm_swappiness=0 should still try to avoid swapping anon memory
-To:     Nico Pache <npache@redhat.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Rafael Aquini <aquini@redhat.com>,
-        Waiman Long <longman@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_458D0EFD76ABAEB726882C2D@qq.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 6, 2021 at 6:37 PM Nico Pache <npache@redhat.com> wrote:
->
->
-> On 8/6/21 9:00 PM, Shakeel Butt wrote:
-[...]
-> > If you are really seeing the said behavior then why will this fix it.
-> > This is just about deactivating active anon LRU. I would rather look
-> > at get_scan_count() to check why swappiness = 0 is still letting the
-> > kernel to scan anon LRU. BTW in cgroup v1, the memcg can overwrite
-> > their swappiness which will be preferred over system vm_swappiness.
-> > Did you set system level swappiness or memcg one?
->
-> This fixes the issue because shrink_list() uses the may_deactivate field
-> to determine if it should shrink the active list.
+On Sat, Aug 07, 2021 at 11:06:39AM +0800, Chen Li wrote:
+> Add a function sha256_value() which accepts a string and store SHA256 hash
+> of this string into dest.
+> 
+> Signed-off-by: Chen Li <chenli@uniontech.com>
+> ---
+>  include/crypto/sha2.h |  1 +
+>  lib/crypto/sha256.c   | 23 +++++++++++++++++++++++
+>  2 files changed, 24 insertions(+)
+> 
+> diff --git a/include/crypto/sha2.h b/include/crypto/sha2.h
+> index 2838f529f31e..ce17954cab38 100644
+> --- a/include/crypto/sha2.h
+> +++ b/include/crypto/sha2.h
+> @@ -115,6 +115,7 @@ static inline void sha256_init(struct sha256_state *sctx)
+>  void sha256_update(struct sha256_state *sctx, const u8 *data, unsigned int len);
+>  void sha256_final(struct sha256_state *sctx, u8 *out);
+>  void sha256(const u8 *data, unsigned int len, u8 *out);
+> +int  sha256_value(u8 **dest, const u8 *src);
+>  
+>  static inline void sha224_init(struct sha256_state *sctx)
+>  {
+> diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
+> index 72a4b0b1df28..ce1de7a3e32e 100644
+> --- a/lib/crypto/sha256.c
+> +++ b/lib/crypto/sha256.c
+> @@ -13,6 +13,8 @@
+>  
+>  #include <linux/bitops.h>
+>  #include <linux/export.h>
+> +#include <linux/mm.h>
+> +#include <linux/slab.h>
+>  #include <linux/module.h>
+>  #include <linux/string.h>
+>  #include <crypto/sha2.h>
+> @@ -206,4 +208,25 @@ void sha256(const u8 *data, unsigned int len, u8 *out)
+>  }
+>  EXPORT_SYMBOL(sha256);
+>  
+> +int sha256_value(u8 **dest, const u8 *src)
+> +{
+> +	u8 out[SHA256_DIGEST_SIZE];
+> +	int i, k;
+> +	unsigned char hex[2];
+> +
+> +	*dest = kvmalloc(sizeof(u8) * (SHA256_BLOCK_SIZE + 1), GFP_KERNEL);
+> +	if (ZERO_OR_NULL_PTR(*dest))
+> +		return -ENOMEM;
+> +	sha256(src, strlen(src), out);
+> +
+> +	for (i = 0, k = 0; i < SHA256_DIGEST_SIZE; i++) {
+> +		sprintf(hex, "%02x", out[i]);
+> +		(*dest)[k++] = hex[0];
+> +		(*dest)[k++] = hex[1];
+> +	}
+> +	(*dest)[k] = '\0';
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(sha256_value);
 
-First, the shrink_list() will not be called for anon LRU if get_scan_count()
-has decided to not scan the anon LRU.
+You forgot to include something that actually calls this function.
 
-Second, I would like to get your attention to the following comment in
-get_scan_count():
+Anyway, there should be no need for this.  If you're trying to convert a SHA-256
+hash value to a string, just use the %*phN printk format specifier which
+converts bytes to hex.
 
-"Global reclaim will swap to prevent OOM even with no swappiness"
-
-It seems like the behavior you are seeing is actually working as intended.
-You may decide to change that behavior but you will need to motivate the
-change.
+- Eric
