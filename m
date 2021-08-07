@@ -2,74 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF193E3717
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 23:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326D13E3718
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 23:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhHGVYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 17:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhHGVYb (ORCPT
+        id S229517AbhHGV04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 17:26:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31775 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229578AbhHGV0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 17:24:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B5AC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 14:24:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aA5HS3VKpHetp3gEzc9iEc7bj1aIHq24Bb+xq3Es5LU=; b=ZANN2lpGFk3nRvYarK5XIJERCS
-        +NWy2JNCxNY8Xi5VPTrnA35PD3MBwN1VX1/TbeotRkLWlnE9uGyLrEOAms1Uj+oQrn7pFH2b//W9q
-        pCO1iHwG8qo4Kh5SstGa3R6JtvKOXW3mZhNjtWW0tRJ3VHP4nvelHc3CxVpboE5tVqK+94MPyo6iz
-        ARzIkO/WcEkruk+OoNSXvfG5pdzyj7PFkOg3nOXp4xU+m3lQavDI7OaUtAsAtj0Ml8WlJX00dNnm6
-        OKXvflohBcntsuD/TJCGb0oivj3nXcoHSORrezQhpl4j1tJOTk6eWTKmlTibiU4nXfYOdVQWwjxZk
-        mu9nrYOA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mCTmj-009Smd-Tl; Sat, 07 Aug 2021 21:23:17 +0000
-Date:   Sat, 7 Aug 2021 22:23:13 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Zi Yan <ziy@nvidia.com>, Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 00/15] Make MAX_ORDER adjustable as a kernel boot
- time parameter.
-Message-ID: <YQ75wVUXPO6yRx7T@casper.infradead.org>
-References: <20210805190253.2795604-1-zi.yan@sent.com>
- <0d374eed-cc52-a656-b338-1156782bdf7e@suse.cz>
- <F34DBD0A-22DE-4CF2-B784-BBDD80A8E85A@nvidia.com>
- <6ae6cd92-3ff4-7ed3-b337-a4dfe33da1c@google.com>
- <YQ3dn1oR2d0sO5jl@casper.infradead.org>
+        Sat, 7 Aug 2021 17:26:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628371597;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Ql473xDetlxsytlL7rANAqL7UeihJd6f7EVjv1H0164=;
+        b=MrEILaE/GqYRS9lpXX/ga5I1eKz3qrR0rCgyZohAvG+FeGQNynjcrNrb3ucAmm/Xf5n2AS
+        poGPbSmiumfuJ2tBzkIjV0inELuTGITNKTCW6b3IBqkat9ud4RsPDNSSpuqHSLFdt2wUiF
+        AKzGHBDriNeNv/b9cECrKyV+vqi0TYc=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-Vx_3igS9MaeU2Ih7EWXxOA-1; Sat, 07 Aug 2021 17:26:36 -0400
+X-MC-Unique: Vx_3igS9MaeU2Ih7EWXxOA-1
+Received: by mail-qv1-f70.google.com with SMTP id z25-20020a0ca9590000b029033ba243ffa1so9127046qva.0
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 14:26:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=Ql473xDetlxsytlL7rANAqL7UeihJd6f7EVjv1H0164=;
+        b=ApQPizWCeNUy8BpCuwhSehc5gWPwj6E0IWXNVNJCiwDIATGrdb0ewAOsyCIqgkCMVA
+         vknUOslfS8gU0/sYNGMSqdm/XcCOwt96KqFL/HgA6qobYOaewJPe1yJVfTbTAtOypBou
+         skpcjnjAD7ZX+/YUMI4XDgP8vQIlY25d/r7o5vdstoMiC7rUTukhQmqhAlSJhjazBPq3
+         C1bBNuJt6ThvFAIyKdY3zrqCjVNflrLFr6MbAU0GlucF2K0fsIlL8NkL0Seyi4c6jBBC
+         Lq6x/VxnmchHiEbkiTjpYvJWUbWdT31ueUxWazQ9X7NiARkOFWouEfdugZvOkzrkdO97
+         kN6A==
+X-Gm-Message-State: AOAM532Xb3Xnx3Na4ruzIgCL5dstXmiABZjMvhUDw6vOwnvizJu1PFfk
+        nDSrAptgmfI/2R5o5L/8bjEAEiY6RBebDF5LOl1a9kBt5y/E1YF5hyd2we/wfafDx2tT5UX3clG
+        o0m0tFzYzX8hkWKjLIgZTfKFQBz1CimW4LSUacvUhp/dp2/zwQAY7VzawZH1Zq+DJeG/VMFmwhP
+        ia
+X-Received: by 2002:ad4:54ae:: with SMTP id r14mr17350059qvy.1.1628371595757;
+        Sat, 07 Aug 2021 14:26:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzC5zDGpPjn1+I+DTLwfT/IPU19lPrvDGE5/skNWFSqRPsdfvGiv3FS3SsFxZZvPeAxWUEudg==
+X-Received: by 2002:ad4:54ae:: with SMTP id r14mr17350041qvy.1.1628371595547;
+        Sat, 07 Aug 2021 14:26:35 -0700 (PDT)
+Received: from jtoppins.rdu.csb ([107.15.110.69])
+        by smtp.gmail.com with ESMTPSA id c1sm5164245qtj.36.2021.08.07.14.26.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 07 Aug 2021 14:26:35 -0700 (PDT)
+To:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc:     Veaceslav Falico <vfalico@gmail.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Jonathan Toppins <jtoppins@redhat.com>
+Subject: bonding: link state question
+Message-ID: <020577f3-763d-48fd-73ce-db38c3c7fdf9@redhat.com>
+Date:   Sat, 7 Aug 2021 17:26:34 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQ3dn1oR2d0sO5jl@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 07, 2021 at 02:10:55AM +0100, Matthew Wilcox wrote:
-> This hasn't been helped by the scarce number of 1GB TLB entries in Intel
-> CPUs until very recently (and even those are hard to come by today).
+Is there any reason why bonding should have an operstate of up when none 
+of its slaves are in an up state? In this particular scenario it seems 
+like the bonding device should at least assert NO-CARRIER, thoughts?
 
-Minor correction to this.  I just fixed x86info to work on my Core
-i7-1165G7 (Tiger Lake, launched about a year ago) and discovered it has:
+$ ip -o -d link show | grep "bond5"
+2: enp0s31f6: <NO-CARRIER,BROADCAST,MULTICAST,SLAVE,UP> mtu 1500 qdisc 
+fq_codel master bond5 state DOWN mode DEFAULT group default qlen 1000\ 
+  link/ether 8c:8c:aa:f8:62:16 brd ff:ff:ff:ff:ff:ff promiscuity 0 
+minmtu 68 maxmtu 9000 \    bond_slave state ACTIVE mii_status UP 
+link_failure_count 0 perm_hwaddr 8c:8c:aa:f8:62:16 queue_id 0 
+numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+41: bond5: <BROADCAST,MULTICAST,MASTER,UP,LOWER_UP> mtu 1500 qdisc 
+noqueue state UP mode DEFAULT group default qlen 1000\    link/ether 
+8c:8c:aa:f8:62:16 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 68 maxmtu 
+65535 \    bond mode balance-xor miimon 0 updelay 0 downdelay 0 
+peer_notify_delay 0 use_carrier 1 arp_interval 0 arp_validate none 
+arp_all_targets any primary_reselect always fail_over_mac none 
+xmit_hash_policy layer2 resend_igmp 1 num_grat_arp 1 all_slaves_active 0 
+min_links 0 lp_interval 1 packets_per_slave 1 lacp_rate slow ad_select 
+stable tlb_dynamic_lb 1 numtxqueues 16 numrxqueues 16 gso_max_size 65536 
+gso_max_segs 65535
 
- L1 Store Only TLB: 1GB/4MB/2MB/4KB pages, fully associative, 16 entries
- L1 Load Only TLB: 1GB pages, fully associative, 8 entries
- L2 Unified TLB: 1GB/4KB pages, 8-way associative, 1024 entries
+$ cat /sys/class/net/enp0s31f6/operstate
+down
 
-My prior laptop (i7-7500U, Kaby Lake, 2016) has only 4x 1GB TLB entries at
-the L1 level, and no support for L2 1GB pages.  So this speaks to Intel
-finally taking performance of 1GB TLB entries seriously.  Perhaps more
-seriously than they need to for a laptop with 16GB of memory!  There are
-Xeon-W versions of this CPU, so I imagine that there are versions which
-can support 1TB or more memory.
+$ cat /sys/class/net/bond5/operstate
+up
 
-I still think that 1GB pages are too big for anything but specialist
-use cases, but those do exist.
+This is an older kernel (4.18.0-305.7.1.el8_4.x86_64) but I do not see 
+any changes upstream that would indicate a change in this operation.
+
+Thanks,
+-Jon
+
