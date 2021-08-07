@@ -2,136 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F453E35C6
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 16:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11963E35CA
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 16:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232355AbhHGODh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 10:03:37 -0400
-Received: from mout.gmx.net ([212.227.15.18]:48217 "EHLO mout.gmx.net"
+        id S232385AbhHGOGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 10:06:05 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:18975 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232315AbhHGODe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 10:03:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628344979;
-        bh=k2GBgCmqU8bcXXxwqYT8+wy/dE6s67X00p5yc0rN0OU=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=AXsiYcIHZyY5fRJDsGzDyoay2LWSj2JUR/QgIoGUZGhFdJatRsatPBafTtCS423/B
-         tlNRVLflnI1AODFzskSUFzSnwzmrvFOFzeMMcwe8sG5VleBXruRsC+YGozCCJUDkyC
-         6eJDCoysQL0M1e/m1DQhDq8KokFmEbgwa+DnLvI8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MtfJd-1mzX7l3fDT-00vASB; Sat, 07
- Aug 2021 16:02:59 +0200
-Date:   Sat, 7 Aug 2021 16:02:45 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-hardening@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] drivers/input: Remove all strcpy() uses in favor of
- strscpy()
-Message-ID: <20210807140245.GA2688@titan>
-References: <20210801144316.12841-1-len.baker@gmx.com>
- <20210801145959.GI22278@shell.armlinux.org.uk>
- <20210801155732.GA16547@titan>
- <202108010934.FA668DEB28@keescook>
+        id S232408AbhHGOFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 10:05:39 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Ghkd15NhXzv0;
+        Sat,  7 Aug 2021 16:05:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1628345111; bh=yjEq3HV2DfPBHVHG9IY7O5ScXbWFrd1ZqcOnaYQKWV0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OANZhYoXnB0pxZk0VWPlKQyIOVxzdHKgKP+u1Of1W71Wsb6O7r+LkIGqm/KGZFXDQ
+         TnnYn38eLB3xzp8FiUAlbszgaoLwVuynjrjoebtUIoZ8gxzBn4In5uPLmQhlNlZTXD
+         6yh+5fH8FdyQZVPLd51yePtL9ceCegcLmI0a9uTdxOnszzwfsZop+KesUdJZKboi1c
+         k3VdDoeBDXsPvvqGJCPftJjhkJ/WhwQPbE7C8mLCqNC77sbBM1fRrBWuxj1VsHc8xj
+         adEqcrmjAwTQCT13H1a4HCB5utjAtdGCD5MT6i33Us0HzP2l9o6Dy3Anb27wswzIoy
+         bIk4PGdOQtc4g==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.2 at mail
+Date:   Sat, 7 Aug 2021 16:05:06 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Kevin Liu <kliu5@marvell.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Suneel Garapati <suneel.garapati@xilinx.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Cooper <alcooperx@gmail.com>
+Subject: Re: [PATCH v4 2/5] mmc: sdhci: always obey programmable clock config
+ in preset value
+Message-ID: <YQ6TEhMLXH/4r4BS@qmqm.qmqm.pl>
+References: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
+ <e65dc96eb24caf8baa5431a51fe694b969e2d51f.1627204633.git.mirq-linux@rere.qmqm.pl>
+ <fe01b20d-779b-1e2c-7702-5a4702900d84@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-In-Reply-To: <202108010934.FA668DEB28@keescook>
-X-Provags-ID: V03:K1:amRQlmS54gZGkHnWWCdXUYB3d9D2joe3Nw3fVBvlzuvomE/U182
- fbj7U6CE+xYDWDdbvGcDAZTIPBN6HTjOWjdKkWWI0WejGewvXI2j0lLMe0UvrJ3GpoQmIJH
- 97/nCOVcvLQpOXygEJSCRJoCmvKo5/QZcb0s12M0fRbNqmBSRb+NF5GrWeDvb12X6lnYeBn
- jMLvVXF5zVzCdr5q682gg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Sgos5+f0fYQ=:JjX6QYB9fgrvcGWpoc/vzv
- OVtkQ0XC/IMZtQJanushKADSO8HD0xdDs8vr3ViRh4WKXZC8rWp5pnXuZLQZnitp5YIstK0nd
- LivNQnhTtRToPkETh9fbl7BnnWGY1fKpEI/0JuZzFPRo+l9sLZFtFBi/fJBHzwh0zuM3PkSSz
- jYQsElRMy4NzEFVkv2tM+fP0YTaKfrkCqVVAcRPnoXyXzybz/JShtQLk1yVvJlbVoWK0X3Jnq
- MRJgncadwl1gaSYTvrZwfYd6erqV4zkICb8l1l1Dl+fcOw3YJUnLKgd9hCRm+bvHxqVEORVCI
- X5q274xyuGEtuMzKDLP5AxS4MN04kLyVZ8eSPLzLlW1pbJmPA5K7br1Qs6QAOAhg+17RG3yKP
- Zma5I/11/e/Vs/y79hcW0fT0twbFfBLJIT4a601w8bUjj6IDfXFSdh6fnDMtQErrjttgMRQmR
- XS43Bsdf03wWfdDVpm2o1JepaIs6gxc+yh+fLawv4OGTGQclc21vhLM8pDWnXTuf4IamwpS71
- lHPol9fpGxCYzqDPQjchy5PHTp3T+sp73otBKiMAbeFACBee/y25Rfh/8wENJuQuIpuV8bISN
- JxA6s+F5IgzKenuUYDUS9enn16wtClSkhAE52sz0sISA+hGSywyU+teDeo1A+v5o7a1CVYtcH
- W3ZpXB94UxmRGK6xBivGAh9Ohf1LhOqQS/fEv2JzL/6vyLNN8yB9POiIOfgTYAvYLc2DSatN5
- PVgEHbkUGJipXPHE4SW7PJpqujOAdT2xW7LsA8GN5zovI65xPymwfuMWdQe69pWjRvalQzpaE
- jfQkjj5IPORo4zyaYGiLhDyz90VSlFy62SD2GrHiWCc3coPVS7GiGn1nVHKTwhoWBcnYXO/ae
- 8fGxtKzvw66AYSWUzHxZ5nhe+6cIal1KyCM8naISewCRurLjG0VMK6nfuZZ9I4zUWETXwSqJ0
- xrYrlxWqM6j0azPkvckimLYk+I7xSsbhnVSjX+kCkm2l3oZrQrkKoOwGVgoOKK0xE62YMTsbV
- A1frs5n8CMvurOZIyAPvMVlsPrWRedVN+jHeeWZKfahUcnQYChfYL8qyLEv+dFpQQbyPd7kyQ
- jYC1pNEZ5j21F/MC0nYFuGq/0WjA1aNzgHyOPeQjbELKHBWRCxtamC3Zg==
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fe01b20d-779b-1e2c-7702-5a4702900d84@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Aug 04, 2021 at 01:52:21PM +0300, Adrian Hunter wrote:
+> On 25/07/21 12:20 pm, Micha³ Miros³aw wrote:
+> > When host controller uses programmable clock presets but doesn't
+> > advertise programmable clock support, we can only guess what frequency
+> > it generates. Let's at least return correct SDHCI_PROG_CLOCK_MODE bit
+> > value in this case.
+> If the preset value doesn't make sense, why use it at all?
 
-On Sun, Aug 01, 2021 at 09:44:33AM -0700, Kees Cook wrote:
-> On Sun, Aug 01, 2021 at 05:57:32PM +0200, Len Baker wrote:
-> > Hi,
-> >
-> > On Sun, Aug 01, 2021 at 04:00:00PM +0100, Russell King (Oracle) wrote:
-> > > Rather than converting every single strcpy() in the kernel to
-> > > strscpy(), maybe there should be some consideration given to how the
-> > > issue of a strcpy() that overflows the buffer should be handled.
-> > > E.g. in the case of a known string such as the above, if it's longer
-> > > than the destination, should we find a way to make the compiler issu=
-e
-> > > a warning at compile time?
-> >
-> > Good point. I am a kernel newbie and have no experience. So this
-> > question should be answered by some kernel hacker :) But I agree
-> > with your proposals.
-> >
-> > Kees and folks: Any comments?
-> >
-> > Note: Kees is asked the same question in [2]
-> >
-> > [2] https://lore.kernel.org/lkml/20210731135957.GB1979@titan/
->
-> Hi!
->
-> Sorry for the delay at looking into this. It didn't use to be a problem
-> (there would always have been a compile-time warning generated for
-> known-too-small cases), but that appears to have regressed when,
-> ironically, strscpy() coverage was added. I've detailed it in the bug
-> report:
-> https://github.com/KSPP/linux/issues/88
->
-> So, bottom line: we need to fix the missing compile-time warnings for
-> strcpy() and strscpy() under CONFIG_FORTIFY_SOURCE=3Dy.
->
-> In the past we'd tried to add a stracpy()[1] that would only work with
-> const string sources. Linus got angry[2] about API explosion, though,
-> so we're mostly faced with doing the strscpy() replacements.
->
-> Another idea might be to have strcpy() do the "constant strings only"
-> thing, leaving strscpy() for the dynamic lengths.
->
-> One thing is clear: replacing strlcpy() with strscpy() is probably the
-> easiest and best first step to cleaning up the proliferation of str*()
-> functions.
+If I understand the spec correctly, when the preset value is used the
+values in Clock Control register are ignored by the module and so the
+module can also actually use a different clock source than the ones
+available to the driver directly. So either way the driver can't be
+sure of the exact frequencu used. This is a cleanup to remove a case
+when the code ignores a bit's value based on other unspecified assumptions.
 
-Thanks for all this info. I will work on it (clean up the proliferation
-of str*() functions).
-
-Regards,
-Len
-
->
-> -Kees
->
-> [1] https://lore.kernel.org/lkml/ed4611a4a96057bf8076856560bfbf9b5e95d39=
-0.1563889130.git.joe@perches.com/
-> [2] https://lore.kernel.org/lkml/CAHk-=3DwgqQKoAnhmhGE-2PBFt7oQs9LLAATKb=
-Ya573UO=3DDPBE0Q@mail.gmail.com/
->
-> --
-> Kees Cook
+[...]
+> > --- a/drivers/mmc/host/sdhci.c
+> > +++ b/drivers/mmc/host/sdhci.c
+> > @@ -1859,11 +1859,14 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+> >  
+> >  			pre_val = sdhci_get_preset_value(host);
+> >  			div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
+> > -			if (host->clk_mul &&
+> > -				(pre_val & SDHCI_PRESET_CLKGEN_SEL)) {
+> > +			if (pre_val & SDHCI_PRESET_CLKGEN_SEL) {
+> >  				clk = SDHCI_PROG_CLOCK_MODE;
+> >  				real_div = div + 1;
+> >  				clk_mul = host->clk_mul;
+> > +				if (!clk_mul) {
+> > +					/* The clock frequency is unknown. Assume undivided base. */
+> > +					clk_mul = 1;
+> > +				}
+> >  			} else {
+> >  				real_div = max_t(int, 1, div << 1);
+> >  			}
