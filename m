@@ -2,100 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB3E3E33AA
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 07:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB663E33AB
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 07:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbhHGFrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 01:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35464 "EHLO
+        id S231278AbhHGFrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 01:47:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhHGFqs (ORCPT
+        with ESMTP id S230379AbhHGFqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 01:46:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC44C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 22:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=bhmknDdBMJ24cCVf7fBkpiX+meZ4BJIZdJLH2jZ7A8I=; b=rJjTpoPw/bGawWn5h3ywvUg8ng
-        +nDEhO5q6nbp/srhlHOGElTRCMTINKg3AAJvzIJryiFCDNJ/JXTRTbJgN2UJgwFTk1V/0/KpBFyIQ
-        c6setj8BM08HKd3IG+3pBUvIIC451sLYWJEWyFSmUN2mQBFsZ0Liy2tVAG0Vi7d2vsvkGWbhps1TD
-        RkHO50VC9kjEQnLh7wTzTZgzxqiWvAQDNbEKcGk8RU8HNan8RPvA6VtBts6/xZha+CPlfkE4Q4zTt
-        kPozSQWLUWUtInnKFD68JYmxvfSscPmOqCZJUS4FoqPG0I8lfvHfWw5+zFMFuv4mMqkGvqqqIpsek
-        rOJlq2+w==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mCFA5-008sWM-79; Sat, 07 Aug 2021 05:46:23 +0000
-Subject: Re: [openrisc:for-next 3/3] arch/openrisc/include/asm/setup.h:11:13:
- error: expected '=', ',', ';', 'asm' or '__attribute__' before
- 'or1k_early_setup'
-To:     kernel test robot <lkp@intel.com>,
-        Stafford Horne <shorne@gmail.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-References: <202108052040.jEu76XzR-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <50c8f758-91de-8f0a-57e1-07e71afcdbde@infradead.org>
-Date:   Fri, 6 Aug 2021 22:46:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Sat, 7 Aug 2021 01:46:53 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B94DC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 22:46:35 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id qk33so18852074ejc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 22:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=vQ3kHVuFAj5FIcPD5ssdGRpDo9Im9JHsG3+fGJwkUJk=;
+        b=RCJW4/WXlW7MI1i9H4i+cNsq3S1RwPV/+ZkVzlhO/EWdYxQpPLVnRRWY7XsQr337Tk
+         EJhsfT/ioPx1DbWaLvRAozZsia08cxNO+R/lRN+oVIp1HA5vIotWYAjEkQOvPnSQi5mt
+         mQPONlrlGqLtQ0vO+owwY6JozL0yC4OXDp9eWOb9Xmc3lmZiOePxMLERaqqIZpPILLaq
+         R3m/UfIuis0EofPC5MEBKUdBLIdYy0SrztRw0LoHnPR+KKjuJXQLPLR+o4V2yMqaRXJN
+         X2Nq6ouimDRLdJLANRw/tXjJWrg9X3nwLWQ7HFh7lVewSdctrTWnPYRbYUmfVDaMgHZs
+         JWlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=vQ3kHVuFAj5FIcPD5ssdGRpDo9Im9JHsG3+fGJwkUJk=;
+        b=KUpoJYqQSfy5tjqQPtm/7+c+u1iTgDkMXDfL2fU7CaFBdwhBahW1l2+CGHn4E5fIdk
+         URJloolRWwcQpMWIuFxSgIDx4YbWLB7YcYqdFXkCR+dRyRbRA+sghZSlzlFYgao1ocOM
+         pbdvzLaIlVfX4/61yzDDngd33NatIP3Lc35kIwbsY6nEe6e58Ub9Dw8HLPwnJcUsVdMd
+         nfddhy0lXyiTlPW/Xt4mP3M4ljod8dgNPGyxRIPgIXp5OhE7yGF4U3jrgQh7mKwwm6NH
+         l/E7jrsmIsvpNx4jVCHh2386OI1+uXPA64JadL6F6D4QwYNQ53gDf7HhOUMCjxm8wSvG
+         6sag==
+X-Gm-Message-State: AOAM530bH9g6t4N8+jG3DzxIr3F85WYGZSF51amTJuRtrwEUxRKFCyav
+        lRHL9eSTFMx8Z95XKxAdUfM8GlPXf7a8hmRZI+U=
+X-Google-Smtp-Source: ABdhPJzKGQx2Gz87en7D5NhjXGnZG8FOYX7wNvHVhBBYB0LEnkxjwkC/dag+ppGNZa2qsZU1JqwTlyMfzG8dBlDwg20=
+X-Received: by 2002:a17:906:1901:: with SMTP id a1mr13036064eje.129.1628315193895;
+ Fri, 06 Aug 2021 22:46:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <202108052040.jEu76XzR-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Reply-To: elizabethhedw@gmail.com
+Sender: gisharbiie@gmail.com
+Received: by 2002:a05:6402:758:0:0:0:0 with HTTP; Fri, 6 Aug 2021 22:46:33
+ -0700 (PDT)
+From:   "Mrs. Elizabeth Edward" <elizabethhedw@gmail.com>
+Date:   Fri, 6 Aug 2021 22:46:33 -0700
+X-Google-Sender-Auth: J3Va_c3XvlJeYpyT001dkJKuxcU
+Message-ID: <CANZkQ=S_iCSxA8MGJr5FQD7msYB9B3Lg==ehhMufs5Wb5bHV8w@mail.gmail.com>
+Subject: I NEED YOUR URGENT ASSISTANCE
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/21 5:04 AM, kernel test robot wrote:
-> tree:   https://github.com/openrisc/linux.git for-next
-> head:   19e14f3a81d227f1c8b8d5371de28b3ab3deb556
-> commit: 19e14f3a81d227f1c8b8d5371de28b3ab3deb556 [3/3] openrisc: Fix compiler warnings in setup
-> config: openrisc-randconfig-r005-20210804 (attached as .config)
-> compiler: or1k-linux-gcc (GCC) 10.3.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://github.com/openrisc/linux/commit/19e14f3a81d227f1c8b8d5371de28b3ab3deb556
->          git remote add openrisc https://github.com/openrisc/linux.git
->          git fetch --no-tags openrisc for-next
->          git checkout 19e14f3a81d227f1c8b8d5371de28b3ab3deb556
->          # save the attached .config to linux build tree
->          mkdir build_dir
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=openrisc SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->     In file included from arch/openrisc/include/asm/page.h:35,
->                      from drivers/usb/atm/speedtch.c:12:
->>> arch/openrisc/include/asm/setup.h:11:13: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'or1k_early_setup'
->        11 | void __init or1k_early_setup(void *fdt);
->           |             ^~~~~~~~~~~~~~~~
-> 
-> 
-> vim +11 arch/openrisc/include/asm/setup.h
+My Dear Friend,
 
-Hi Stafford-
+Please forgive me for stressing you with my predicaments and am  sorry
+to approach you through this media, it is because it serves the
+fastest means of communication. I came across your E-mail from my
+personal search and I decided to contact you believing you will be
+honest to fulfill my final wish before I die.
 
-#include <linux/init.h>
+I am Mrs. Elizabeth Edward, 63 years, from USA, I am childless and I
+am suffering from a pro-long critical cancer, my doctors confirmed I
+may not live beyond two months from now as my ill health has defiled
+all forms of medical treatment.
 
-and where is this file?
+Since my days are numbered, I=E2=80=99ve decided, willingly to fulfill my
+long-time promise to donate you the sum ($5.000.000.00) million
+dollars I inherited from my late husband Mr. Edward Herbart, foreign
+bank account over years. I need a very honest person who can assist in
+transfer of this money to his or her account and use the funds for
+charities work of God while you use 50% for yourself. I want you to
+know there are no risk involved, it is 100% hitch free & safe. If you
+will be interesting to assist in getting this fund into your account
+for charity project to fulfill my promise before I die please let me
+know immediately. I will appreciate your utmost confidentiality as I
+wait for your reply.
 
-#include <asm-generic/setup.h>
+Best Regards.
 
->       9	
->      10	#ifndef __ASSEMBLY__
->    > 11	void __init or1k_early_setup(void *fdt);
->      12	#endif
->      13	
-> 
-> ---
-
--- 
-~Randy
-
+Mrs. Elizabeth Edward.
