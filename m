@@ -2,202 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4153E36C9
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 20:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F003E36AD
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 20:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhHGSfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 14:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33208 "EHLO
+        id S229918AbhHGSeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 14:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhHGSfx (ORCPT
+        with ESMTP id S229471AbhHGSeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 14:35:53 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F565C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 11:35:35 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id g13so25026946lfj.12
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 11:35:35 -0700 (PDT)
+        Sat, 7 Aug 2021 14:34:11 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C7AC0613CF;
+        Sat,  7 Aug 2021 11:33:54 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id ca5so21550510pjb.5;
+        Sat, 07 Aug 2021 11:33:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zMQAIZcGPoAZR0d005NxFzAT1cH+2rezexuQq2s5Nmg=;
-        b=WnqZF1wEg6hyBHE1RzeEjFG5+hzHVSxSnAZMpPbOlBMQooBO0RA5IbY8DNrVoN9RWx
-         YpbjI/bV25mEJ/9jHY/aJAmGRxNv2Fk5za8qj3d0cwtcZLzU/kQmlEg0ynbgZbHQBtAJ
-         SyMK7xg17VCUnLo4AJBAdxelTzmhVa5HpGVB9ZPDtKsbaHae2XHB6P6SMU6vlxd21Ze6
-         yl2hzxQ0FM1OL+qomTp3V3CFT0G5MeoHCssKqTVTXbwk+DrVHQdjJgtrO0vOm6AMYGwZ
-         amrH2P+NRNa1ElDrLw6fk3cP4rU/v89a2cXFCXEOT4pcdePV4qAe33rNYeLyTIneOY3W
-         yZBg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F+e3SooHzk+LlYQaG9v32P5P5RuC1GzjFNDE7bWnXxU=;
+        b=YfI6lxfAOG2OET1bh5zLHcADMAbiMkPadAy7+H7riBVXl5spMBcXo/HISjFdEUQtYB
+         3JrS0bUFUY5TgelVHFfCnfpSPIDWIeFgO8Un0u+dCCpfWSvvWUo5dWu6PZn3eL673Xmu
+         0fVtGhMcoTjJ8CjS5oT3j2x3quVjSFLOssCTIL62/ZZPwYeQb6RYiOkcJOJeU9sVJxhf
+         fMq+Dx8Ni0k6gRoxgfYw/IyqUGE5shZ105uPamGO7/y/uILu6ztFAtavZb8UVRcn16Lr
+         OCeGpxYtLmS+Je8nCGmlplld7jrDcgNIyOI65SDgDW0MdLDfatAxyaOrZFl0XiIoiqkH
+         jADQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zMQAIZcGPoAZR0d005NxFzAT1cH+2rezexuQq2s5Nmg=;
-        b=r6zNuiM7hHUwsxyZU35jlFm6ZW9FVXfzURLkTSjtILBW9n2rnjGrrgvntjEHfO3NJQ
-         VsCQ5vJia2qHKlXSdQY4Ui/odInyVwHVyuPaK5i4VohVuwUO+ekg9EShkcJcRjm/qi3s
-         M8okH0V/oIHMC0XwDKpYVoVCjnJT3nJ+yYPj5gBDcb1Nd5cZLeJn+1OONmpeLPr3Vbnu
-         IQUW5LV4oo2lji93z7Us0eU+AFSKIEENmm6jQ8/Z8ge7jwSyjtR+OOshNXRZWEWMw3aQ
-         bq5zdJ6UwvMyUgLfBnSVNFzKs9xhW59WGllKHjpH1kZby5oIi9OKamVXDFbjYHVzwprI
-         mWEQ==
-X-Gm-Message-State: AOAM530KRJFivScNEpQLckjkPLPfvtg+xJIi49JA0CBBqhhZhFzbwA/L
-        nwvsqqmKhT5G4dh+KEyqsvYQcHZFS4D4hKWGkaUzcw==
-X-Google-Smtp-Source: ABdhPJzOv04ncKyacNrhyQgJgqiSy+AvgRyUtCA5QAtEfwBgWImBkmB4nfJXNJ0odR6ERj4vD1/Vyii3qz+IV/OlMpg=
-X-Received: by 2002:a05:6512:6c9:: with SMTP id u9mr9486675lff.411.1628361333155;
- Sat, 07 Aug 2021 11:35:33 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F+e3SooHzk+LlYQaG9v32P5P5RuC1GzjFNDE7bWnXxU=;
+        b=gKJBKH8L/epQnzKCVZmjyb3rJTatdWilAej+d4xyusxPygWnhuxJA2jRhcHQKlpQhL
+         od8YVpiMUQGV2v2gjp2lNsVQxELg6X7dgGnV51tQzJylSOEsvzTRNnqSs8+8lXTesBSF
+         E+DNlYRbVdE0GuL6O+PvSdfktpwWbANNGFO0AH/RF59lLGB1aEFcTTsm12e4YCZIQ+Ig
+         GEzDGmXZcFJdskoCxDjLxOO/9BWHS1fW8PHqq4xb24pZRgRK8WFzajF15s5eOamVbX55
+         SSWAMSoVmixNM3b4Beu2i6/xtmAESTfVbgiG18NS9VpZ+prNsnkLTkkUJRPg+62I+1+f
+         p8jw==
+X-Gm-Message-State: AOAM5321cILnMQgdMy7tx/lTmouoaxsbp4dv7CBRfgBLUZ9xxU0Drdyz
+        MUYWERkSNJE/p3EHdugcEwU=
+X-Google-Smtp-Source: ABdhPJzS73oVEfLet7XYlKo2tM804kuGxGgyBQG8GiyiEdJG6r6bk27S0ruQMTqD/d+FDHRA4bcakw==
+X-Received: by 2002:a63:4f51:: with SMTP id p17mr139787pgl.29.1628361233656;
+        Sat, 07 Aug 2021 11:33:53 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id n33sm16516858pgm.55.2021.08.07.11.33.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Aug 2021 11:33:52 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linaro-mm-sig@lists.linaro.org (moderated list:DMA BUFFER SHARING
+        FRAMEWORK), linux-kernel@vger.kernel.org (open list),
+        linux-media@vger.kernel.org (open list:DMA BUFFER SHARING FRAMEWORK),
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Steven Price <steven.price@arm.com>,
+        Tian Tao <tiantao6@hisilicon.com>
+Subject: [PATCH v2 0/5] dma-fence: Deadline awareness
+Date:   Sat,  7 Aug 2021 11:37:54 -0700
+Message-Id: <20210807183804.459850-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210806182126.2842876-1-oupton@google.com> <87pmup1q8w.wl-maz@kernel.org>
-In-Reply-To: <87pmup1q8w.wl-maz@kernel.org>
-From:   Oliver Upton <oupton@google.com>
-Date:   Sat, 7 Aug 2021 11:35:21 -0700
-Message-ID: <CAOQ_QsiZgpHsLGF8Fp7+oiKPZXuW-vGsjPdpwKhJ06XZAxDfVQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH] clocksource/arm_arch_timer: Fix masking for high
- freq counters
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Shier <pshier@google.com>,
-        Raghavendra Rao Ananta <rananta@google.com>,
-        Ricardo Koller <ricarkol@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+From: Rob Clark <robdclark@chromium.org>
 
-On Sat, Aug 7, 2021 at 3:52 AM Marc Zyngier <maz@kernel.org> wrote:
->
-> Hi Oliver,
->
-> On Fri, 06 Aug 2021 19:21:26 +0100,
-> Oliver Upton <oupton@google.com> wrote:
-> >
-> > Unfortunately, the architecture provides no means to determine the bit
-> > width of the system counter. However, we do know the following from the
-> > specification:
-> >
-> >  - the system counter is at least 56 bits wide
-> >  - Roll-over time of not less than 40 years
-> >
-> > To date, the arch timer driver has depended on the first property,
-> > assuming any system counter to be 56 bits wide and masking off the rest.
-> > However, combining a narrow clocksource mask with a high frequency
-> > counter could result in prematurely wrapping the system counter by a
-> > significant margin. For example, a 56 bit wide, 1GHz system counter
-> > would wrap in a mere 2.28 years!
-> >
-> > This is a problem for two reasons: v8.6+ implementations are required to
-> > provide a 64 bit, 1GHz system counter. Furthermore, before v8.6,
-> > implementers may select a counter frequency of their choosing.
-> >
-> > Fix the issue by deriving a valid clock mask based on the second
-> > property from above. Set the floor at 56 bits, since we know no system
-> > counter is narrower than that.
-> >
-> > Suggested-by: Marc Zyngier <maz@kernel.org>
-> > Signed-off-by: Oliver Upton <oupton@google.com>
-> > ---
-> > This patch was tested with QEMU, tweaked to provide a 1GHz system
-> > counter frequency, as I could not easily figure out how to tweak the
-> > base FVP to provide a 1GHz counter.
->
-> <FVP>
-> "bp.refcounter.base_frequency" is the property you are looking for. In
-> general, passing --list-params to the model reveals a treasure trove
-> of weird and wonderful options that can be used to configure the model
-> to your liking.
-> </FVP>
+Based on discussion from a previous series[1] to add a "boost" mechanism
+when, for example, vblank deadlines are missed.  Instead of a boost
+callback, this approach adds a way to set a deadline on the fence, by
+which the waiter would like to see the fence signalled.
 
-Ah! Thanks for the tip. I didn't find the fast models documentation to
-be too terribly helpful.
-> >
-> > +/*
-> > + * The minimum amount of time a generic timer is guaranteed to not roll over
->
-> nit: s/timer/counter/
->
+I've not yet had a chance to re-work the drm/msm part of this, but
+wanted to send this out as an RFC in case I don't have a chance to
+finish the drm/msm part this week.
 
-Ack.
+Original description:
 
-> > + * (40 years)
->
-> For later reference, could you add the section of the ARMv8 ARM where
-> this is mentioned? Something like 'ARM DDI 0487G.a D11.1.2 ("The
-> system counter")', either here or in the comment further down.
->
+In some cases, like double-buffered rendering, missing vblanks can
+trick the GPU into running at a lower frequence, when really we
+want to be running at a higher frequency to not miss the vblanks
+in the first place.
 
-Sure thing. I think I'll drop it on the function below since we depend
-on two properties of the system counter there.
+This is partially inspired by a trick i915 does, but implemented
+via dma-fence for a couple of reasons:
 
-> > +static int __init arch_counter_get_width(void)
-> > +{
-> > +     u64 min_cycles = MIN_ROLLOVER_SECS * arch_timer_get_cntfrq();
->
-> That's unfortunately wishful thinking. We have stupidly broken systems
-> out there that do not set CNTFRQ_EL0, and instead rely on DT
-> properties to describe the counter frequency. You're likely to end up
-> with a glorious zero as a result, with interesting consequences...
+1) To continue to be able to use the atomic helpers
+2) To support cases where display and gpu are different drivers
 
-Blech. I didn't read the DT hooks for the driver.  That's awful.
+[1] https://patchwork.freedesktop.org/series/90331/
 
-> Use arch_timer_rate instead, which will be set as by the time you
-> register the counter.
+v1: https://patchwork.freedesktop.org/series/93035/
+v2: Move filtering out of later deadlines to fence implementation
+    to avoid increasing the size of dma_fence
 
-Ack.
+Rob Clark (5):
+  dma-fence: Add deadline awareness
+  drm/vblank: Add helper to get next vblank time
+  drm/atomic-helper: Set fence deadline for vblank
+  drm/scheduler: Add fence deadline support
+  drm/msm: Add deadline based boost support
 
->
-> > +
-> > +     /* guarantee the returned width is within the valid range */
-> > +     return max(56, min(64, ilog2(min_cycles)));
->
-> Maybe better written as "clamp_val(ilog2(min_cycles), 56, 64);".
->
+ drivers/dma-buf/dma-fence.c             | 20 +++++++
+ drivers/gpu/drm/drm_atomic_helper.c     | 36 ++++++++++++
+ drivers/gpu/drm/drm_vblank.c            | 31 ++++++++++
+ drivers/gpu/drm/msm/msm_fence.c         | 76 +++++++++++++++++++++++++
+ drivers/gpu/drm/msm/msm_fence.h         | 20 +++++++
+ drivers/gpu/drm/msm/msm_gpu.h           |  1 +
+ drivers/gpu/drm/msm/msm_gpu_devfreq.c   | 20 +++++++
+ drivers/gpu/drm/scheduler/sched_fence.c | 25 ++++++++
+ drivers/gpu/drm/scheduler/sched_main.c  |  3 +
+ include/drm/drm_vblank.h                |  1 +
+ include/drm/gpu_scheduler.h             |  6 ++
+ include/linux/dma-fence.h               | 16 ++++++
+ 12 files changed, 255 insertions(+)
 
-Agreed.
+-- 
+2.31.1
 
-> > +     width = arch_counter_get_width();
-> > +     clocksource_counter.mask = CLOCKSOURCE_MASK(width);
-> > +     cyclecounter.mask = CLOCKSOURCE_MASK(width);
->
-> Since you move this to be computed at runtime, how about dropping the
-> static initialisation of the mask fields?
->
-
-Yep, already made the change locally after mailing out :)
-
-> > +
-> >       if (!arch_counter_suspend_stop)
-> >               clocksource_counter.flags |= CLOCK_SOURCE_SUSPEND_NONSTOP;
-> >       start_count = arch_timer_read_counter();
-> > @@ -1040,8 +1065,7 @@ static void __init arch_counter_register(unsigned type)
-> >       timecounter_init(&arch_timer_kvm_info.timecounter,
-> >                        &cyclecounter, start_count);
-> >
-> > -     /* 56 bits minimum, so we assume worst case rollover */
-> > -     sched_clock_register(arch_timer_read_counter, 56, arch_timer_rate);
-> > +     sched_clock_register(arch_timer_read_counter, width, arch_timer_rate);
-> >  }
-> >
-> >  static void arch_timer_stop(struct clock_event_device *clk)
->
-> Another thing that needs addressing for high frequency counter support
-> is to move away from TVAL programming and switch to CVAL, as the
-> maximum deadline we can currently program is 4.2s at 1GHz.
->
-> Fun fact: it has the interesting consequence of breaking XGene-1,
-> which implemented CVAL in terms of TVAL instead of the other way
-> around (what were these guys thinking?)
-
-Yikes!
-
-> , though I don't think anyone
-> will notice in practice. I have a preliminary patch on a branch
-> somewhere that I'll try to dust up and post in the coming days.
-
-Sounds good, I'll clean this one up and send it out too.
-
---
-Thanks,
-Oliver
