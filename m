@@ -2,52 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A9C3E35F5
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 16:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA353E35F9
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 16:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbhHGO4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 10:56:01 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:43167 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229503AbhHGOz7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 10:55:59 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UiE-sLH_1628348139;
-Received: from localhost(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UiE-sLH_1628348139)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 07 Aug 2021 22:55:39 +0800
-From:   Xianting Tian <xianting.tian@linux.alibaba.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Xianting Tian <xianting.tian@linux.alibaba.com>
-Subject: [PATCH] riscv: add ARCH_DMA_MINALIGN support
-Date:   Sat,  7 Aug 2021 22:55:37 +0800
-Message-Id: <20210807145537.124744-1-xianting.tian@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
+        id S231181AbhHGO4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 10:56:53 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:42174 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229503AbhHGO4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 10:56:49 -0400
+Received: from Bc-Mail-Ex13.internal.baidu.com (unknown [172.31.51.53])
+        by Forcepoint Email with ESMTPS id 27C55EFB590501808A9E;
+        Sat,  7 Aug 2021 22:56:29 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ Bc-Mail-Ex13.internal.baidu.com (172.31.51.53) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Sat, 7 Aug 2021 22:56:28 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.62.19) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Sat, 7 Aug 2021 22:56:28 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <arnd@arndb.de>,
+        <geert@linux-m68k.org>, <jgg@ziepe.ca>, <schmitzmic@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Cai Huoqing <caihuoqing@baidu.com>
+Subject: [PATCH 0/2] net: ethernet: Remove the 8390 network drivers
+Date:   Sat, 7 Aug 2021 22:56:19 +0800
+Message-ID: <20210807145619.832-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.32.0.windows.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.31.62.19]
+X-ClientProxiedBy: BJHW-Mail-Ex14.internal.baidu.com (10.127.64.37) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce ARCH_DMA_MINALIGN to riscv arch.
+commit <0cf445ceaf43> ("<netdev: Update status of 8390 based drivers>")
+indicated the 8390 network drivers as orphan/obsolete in Jan 2011,
+updated in the MAINTAINERS file.
 
-Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
----
- arch/riscv/include/asm/cache.h | 2 ++
- 1 file changed, 2 insertions(+)
+now, after being exposed for 10 years to refactoring and
+no one has become its maintainer for the past 10 years,
+so to remove the 8390 network drivers for good.
 
-diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
-index 9b58b1045..2945bbe2b 100644
---- a/arch/riscv/include/asm/cache.h
-+++ b/arch/riscv/include/asm/cache.h
-@@ -11,6 +11,8 @@
- 
- #define L1_CACHE_BYTES		(1 << L1_CACHE_SHIFT)
- 
-+#define ARCH_DMA_MINALIGN	L1_CACHE_BYTES
-+
- /*
-  * RISC-V requires the stack pointer to be 16-byte aligned, so ensure that
-  * the flat loader aligns it accordingly.
+additionally, 8390 is a kind of old ethernet chip based on
+ISA interface which is hard to find in the market. 
+
+Cai Huoqing (2):
+  net: ethernet: Remove the 8390 network drivers
+  MAINTAINERS: Remove the 8390 network drivers info
+
+ MAINTAINERS                           |    6 -
+ drivers/net/ethernet/8390/8390.c      |  103 --
+ drivers/net/ethernet/8390/8390.h      |  236 ----
+ drivers/net/ethernet/8390/8390p.c     |  105 --
+ drivers/net/ethernet/8390/Kconfig     |  212 ---
+ drivers/net/ethernet/8390/Makefile    |   20 -
+ drivers/net/ethernet/8390/apne.c      |  619 ---------
+ drivers/net/ethernet/8390/ax88796.c   | 1022 ---------------
+ drivers/net/ethernet/8390/axnet_cs.c  | 1707 ------------------------
+ drivers/net/ethernet/8390/etherh.c    |  856 -------------
+ drivers/net/ethernet/8390/hydra.c     |  273 ----
+ drivers/net/ethernet/8390/lib8390.c   | 1092 ----------------
+ drivers/net/ethernet/8390/mac8390.c   |  848 ------------
+ drivers/net/ethernet/8390/mcf8390.c   |  475 -------
+ drivers/net/ethernet/8390/ne.c        | 1004 ---------------
+ drivers/net/ethernet/8390/ne2k-pci.c  |  747 -----------
+ drivers/net/ethernet/8390/pcnet_cs.c  | 1708 -------------------------
+ drivers/net/ethernet/8390/smc-ultra.c |  629 ---------
+ drivers/net/ethernet/8390/stnic.c     |  303 -----
+ drivers/net/ethernet/8390/wd.c        |  574 ---------
+ drivers/net/ethernet/8390/xsurf100.c  |  377 ------
+ drivers/net/ethernet/8390/zorro8390.c |  452 -------
+ drivers/net/ethernet/Kconfig          |    1 -
+ drivers/net/ethernet/Makefile         |    1 -
+ 24 files changed, 13370 deletions(-)
+ delete mode 100644 drivers/net/ethernet/8390/8390.c
+ delete mode 100644 drivers/net/ethernet/8390/8390.h
+ delete mode 100644 drivers/net/ethernet/8390/8390p.c
+ delete mode 100644 drivers/net/ethernet/8390/Kconfig
+ delete mode 100644 drivers/net/ethernet/8390/Makefile
+ delete mode 100644 drivers/net/ethernet/8390/apne.c
+ delete mode 100644 drivers/net/ethernet/8390/ax88796.c
+ delete mode 100644 drivers/net/ethernet/8390/axnet_cs.c
+ delete mode 100644 drivers/net/ethernet/8390/etherh.c
+ delete mode 100644 drivers/net/ethernet/8390/hydra.c
+ delete mode 100644 drivers/net/ethernet/8390/lib8390.c
+ delete mode 100644 drivers/net/ethernet/8390/mac8390.c
+ delete mode 100644 drivers/net/ethernet/8390/mcf8390.c
+ delete mode 100644 drivers/net/ethernet/8390/ne.c
+ delete mode 100644 drivers/net/ethernet/8390/ne2k-pci.c
+ delete mode 100644 drivers/net/ethernet/8390/pcnet_cs.c
+ delete mode 100644 drivers/net/ethernet/8390/smc-ultra.c
+ delete mode 100644 drivers/net/ethernet/8390/stnic.c
+ delete mode 100644 drivers/net/ethernet/8390/wd.c
+ delete mode 100644 drivers/net/ethernet/8390/xsurf100.c
+ delete mode 100644 drivers/net/ethernet/8390/zorro8390.c
+
 -- 
-2.17.1
+2.25.1
 
