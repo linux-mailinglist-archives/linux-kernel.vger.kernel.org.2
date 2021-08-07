@@ -2,145 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716B03E3584
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 15:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3153E3587
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 15:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbhHGN0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 09:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbhHGN0d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 09:26:33 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6B4C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 06:26:16 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id b11so14887329wrx.6
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 06:26:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Etnoc6nnWfJcIYwslUL+Pe0oROfutBM969yB6Z48UhI=;
-        b=wBT0htqPdfYlPutk1soRDIinGh1NPljgTyFjB17PxtFMvdydl/sQISSvK+tLbmiQhS
-         +M+wWYW0ivNN0ZOsddfOy4Eljv7ibUu9xG6mu1jbkh8FezbzRX7Vumwj5iVabv85eAgc
-         er9HzeSWbFNSNUson7aB76I0F0qpJAwCuJ7o65qnvf/8sqpGdki7d3uxUv7vvmlgM7er
-         jgyfR90TAYT9hLTnN5FjPlm8SRixCYSweqPKQwygdqDw+36cJkpH9PiEgZ7kaCwsD+7/
-         0+GUSB7FbGIMCkiNmFnFXROyjR+fLjMSGIfXXYuyatlDiI4sd5dvJ9tXbPkepf4lm4kd
-         p+LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Etnoc6nnWfJcIYwslUL+Pe0oROfutBM969yB6Z48UhI=;
-        b=RXZ16b3K7ZY+xkwL0C/XUZyPd5PF+bp7kmU1zqW5iMB4bX6Hr1VKLu6qwHaUn953NE
-         dKp/kSqVq2aACrXM5vD0m34vLwAbwc7iZGJttzfVTFAROV0cuH64ZXeX6yBGQkgQMGRJ
-         1cbeDTpuJBX1sXuZJnzh2P+X1hheNjdXyQ0z2UO91GF4E5EdBiXwfnt3LN4IGLkbdoaA
-         j92GW2fUlIS9yGqWrvY4MSBGb7CUkWkVZxvlInaizV4VlY+3iF90oGYeMrWnFqWTlxR+
-         W4vivFlYNMGqzeRntuuiAtaA7iZWMMdTaegbDlsNsav0ozis44x4RjpEqBYsmxXGJlqh
-         A4kQ==
-X-Gm-Message-State: AOAM530B4U66/5zXHrGS7sKS43xBZAORAdhTwVy9ga8gooxtNfe3rPRF
-        DwT1NndoG4P1d1HrBpyy6UT6ElWjYgE9DA==
-X-Google-Smtp-Source: ABdhPJxbcfJsM/vEXxGvVrnfh1kzkUzSWX75m1jkwbPfsq8yAVXxwI4t+tY0oqZuMkQO4tHyv3+N+A==
-X-Received: by 2002:a05:6000:1ce:: with SMTP id t14mr16032228wrx.83.1628342773286;
-        Sat, 07 Aug 2021 06:26:13 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id w3sm11369936wmi.44.2021.08.07.06.26.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 07 Aug 2021 06:26:12 -0700 (PDT)
-Subject: Re: [PATCH 0/4] slimbus: patches (set 1) for 5.15
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210806091639.532-1-srinivas.kandagatla@linaro.org>
- <YQ03FPyxF8DFlwI7@kroah.com>
- <71200533-db05-157f-480a-d64812e1d9c2@linaro.org>
- <YQ6EMKD0gOIJn+FL@kroah.com>
- <e737f324-400e-824b-3865-017d2d2a5543@linaro.org>
- <YQ6F3GFJZClaF+QE@kroah.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <97b911ff-3fd6-45eb-81ec-01971e4c2741@linaro.org>
-Date:   Sat, 7 Aug 2021 14:26:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232318AbhHGN3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 09:29:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232286AbhHGN3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 09:29:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1476D610FB;
+        Sat,  7 Aug 2021 13:28:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628342931;
+        bh=UC7Y+bKIfxbXggliQGmWxQhW3dM7xZsPS/HEcNc9Esc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mf/j8G4vtHQCytTURcwIew+p60imE1a1QcqnFdQLPod5OPz5c+zRH5wwYOuwdPD1v
+         hsIJS2xKSvucpvY0Kjdl3H3cks7keBtsOyezoi6WC+gIJakWHpj+64fhbeXbxhvVRO
+         u1mE3Gf8mg6omGhctlP2rWjjvPbh7RBbe8ikSRgkgQ0bm1Ox2NYVrzQQearPZuqo5a
+         7UstWAKFNkcdirMIeC39IFCxEsVidr3sy2+VrX5h/DyLRx7TZ2za36Uxvt6FTapI/q
+         gF/CSFg8E2iUhLKCcpdJJ2jz2741IMpWvGN0Czu1Lk1M14t7CrgeBiA6ZHHw3VH0MP
+         g+Dd3+61r1Qlw==
+Received: by pali.im (Postfix)
+        id B4FE3A52; Sat,  7 Aug 2021 15:28:48 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Guillaume Nault <g.nault@alphalink.fr>
+Cc:     linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ppp: Fix generating ifname when empty IFLA_IFNAME is specified
+Date:   Sat,  7 Aug 2021 15:27:03 +0200
+Message-Id: <20210807132703.26303-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <YQ6F3GFJZClaF+QE@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+IFLA_IFNAME is nul-term string which means that IFLA_IFNAME buffer can be
+larger than length of string which contains.
 
+Function __rtnl_newlink() generates new own ifname if either IFLA_IFNAME
+was not specified at all or userspace passed empty nul-term string.
 
-On 07/08/2021 14:08, Greg KH wrote:
-> On Sat, Aug 07, 2021 at 02:04:39PM +0100, Srinivas Kandagatla wrote:
->>
->>
->> On 07/08/2021 14:01, Greg KH wrote:
->>> On Sat, Aug 07, 2021 at 11:48:48AM +0100, Srinivas Kandagatla wrote:
->>>>
->>>>
->>>> On 06/08/2021 14:20, Greg KH wrote:
->>>>> On Fri, Aug 06, 2021 at 10:16:35AM +0100, Srinivas Kandagatla wrote:
->>>>>> Hi Greg,
->>>>>>
->>>>>> Recently runtime pm testing on slimbus reveled that its
->>>>>> totally broken on SlimBus ngd drivers.
->>>>>>
->>>>>> Below are the fixes to get it back working.
->>>>>>
->>>>>> - One of the reason begin incorrect device pointer used for
->>>>>> runtime pm and in some places
->>>>>>
->>>>>> - Second one was to do with unable to validate transaction id
->>>>>>     which resulted in negative runtime pm count.
->>>>>>
->>>>>> - Other fix was to do with resetting dma addresses once ngd
->>>>>> controller is power-cycled.
->>>>>>
->>>>>> With all these fixed runtime pm is now fully functional on NGD
->>>>>> controllers.
->>>>>>
->>>>>> Currently I marked them all with Cc: <stable@vger.kernel.org>
->>>>>> as these all patches are required to fix runtime pm on SlimBus
->>>>>> NGD controller.
->>>>>>
->>>>>> Can you please queue them up for 5.15.
->>>>>
->>>>> Why do you want these for 5.15-rc1 when you need them to fix problems in
->>>>> 5.14?  Shouldn't they go into 5.14-final?
->>>>
->>>> Yes, these should go to other stable trees aswell.
->>>> I assumed that Fixes tag will automatically backport those patches.
->>>
->>> Yes, but that can not happen until they hit Linus's tree, which would
->>> not be until 5.15-rc1.  Do you want to delay until that long from now?
->>>
->>> How about splitting this into 2 patch series, one that you want to see
->>> get into 5.14-final, and one for 5.15-rc1.
->>
->> All the patches in these series are fixes so the can go to 5.14-final.
-> 
-> Then why did you say originally that you wanted them in 5.15?
+It is expected that if userspace does not specify ifname for new ppp netdev
+then kernel generates one in format "ppp<id>" where id matches to the ppp
+unit id which can be later obtained by PPPIOCGUNIT ioctl.
 
-TBH, I tend to send out SlimBus and nvmem patches only once around 
-rc5-rc6 time which also includes some minor fixes, and you normally 
-apply them for next rc1 release.
+And it works in this way if IFLA_IFNAME is not specified at all. But it
+does not work when IFLA_IFNAME is specified with empty string.
 
-In this particular case I should have explicitly said to pick them up 
-for 5.14 next rc.
+So fix this logic also for empty IFLA_IFNAME in ppp_nl_newlink() function
+and correctly generates ifname based on ppp unit identifier if userspace
+did not provided preferred ifname.
 
-Do you want me to resend them with proper cover letter? or are you okay 
-to take them as they are?
+Without this patch when IFLA_IFNAME was specified with empty string then
+kernel created a new ppp interface in format "ppp<id>" but id did not
+match ppp unit id returned by PPPIOCGUNIT ioctl. In this case id was some
+number generated by __rtnl_newlink() function.
 
->  > confused,
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: bb8082f69138 ("ppp: build ifname using unit identifier for rtnl based devices")
+---
+ drivers/net/ppp/ppp_generic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-My Bad, I will be careful with my wording next time around.
+diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
+index d445ecb1d0c7..1c6ba5a5e081 100644
+--- a/drivers/net/ppp/ppp_generic.c
++++ b/drivers/net/ppp/ppp_generic.c
+@@ -1306,7 +1306,7 @@ static int ppp_nl_newlink(struct net *src_net, struct net_device *dev,
+ 	 * the PPP unit identifer as suffix (i.e. ppp<unit_id>). This allows
+ 	 * userspace to infer the device name using to the PPPIOCGUNIT ioctl.
+ 	 */
+-	if (!tb[IFLA_IFNAME])
++	if (!tb[IFLA_IFNAME] || !nla_len(tb[IFLA_IFNAME]) || !*(char *)nla_data(tb[IFLA_IFNAME]))
+ 		conf.ifname_is_set = false;
+ 
+ 	err = ppp_dev_configure(src_net, dev, &conf);
+-- 
+2.20.1
 
-thanks,
---srini
-> 
-> greg k-h
-> 
