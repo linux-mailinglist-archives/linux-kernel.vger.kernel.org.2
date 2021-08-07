@@ -2,180 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216033E3702
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 22:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFD53E3704
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 22:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbhHGUAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 16:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
+        id S229847AbhHGUHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 16:07:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhHGUAj (ORCPT
+        with ESMTP id S229517AbhHGUHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 16:00:39 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE6EC0613CF;
-        Sat,  7 Aug 2021 13:00:21 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id l18so15767374wrv.5;
-        Sat, 07 Aug 2021 13:00:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RzbhyLykkfoaT/kVYaDJ7ejBhY0DKubqMfb6PVkLHwo=;
-        b=dtyMR6K6WMSClGZdiIO+A2bSsCtz41/bZGVsE0fHqJonOZmyOtTqWzakEWc4iTX7Yg
-         8Btq/F1D+VibmvuorDpQte1c9HD85wHtQGjHcae/4Vio17uqRW1qGHNeB9iWhCTqu6iS
-         vqAsLNP80bKlJZz+pRvg4iwD5EL7KvAyxXTxIfc5EQDGucBEzEPL63IvFlyBgnDNavBB
-         MTU4XuooVWbW6xLwVlQegO48FO1EzZWBzDDXbG7gd2qDx9goIhMqXDFZd1DC74VpClfq
-         aGUtWe/KMk+30sbQ3AkAbqUrH2G0cluI3fUAEQzKD//pSqR7q9HrA7WX1KWwZHT3yTFN
-         YlNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RzbhyLykkfoaT/kVYaDJ7ejBhY0DKubqMfb6PVkLHwo=;
-        b=C2s+XDBkxmxoluwE+oBGSUYpjiGkKir+W3gf27FLNaJ+zkpKl68Lvb/06MVOMVYrDk
-         ukY58sqQBmd4js6gmX7mXX+jU9cGSogWtdG5WMtQAi4tv1lLpuDvvXAzHLoNAfFQ/q9q
-         sulQwprOPh66naVKoau50JVkIhb5cmKEg7K8Df7gSG7dF2sAU0cb3zEQ58PYtjAcauNO
-         loAlcTlRzWPMhHZcUXVOrxthudRFMhltDP64L7jFs1Kw5BcNHCzcLKs/bzGfpxIjsZbF
-         AINduj08Gx3SuArXFBeLrCrdKoe3EPJFyudzlxee2yDipFg8h4N1mL/JdhhH3nrDL/Ka
-         07aQ==
-X-Gm-Message-State: AOAM530TIaPbCjduEI09vJlm/wzfeA2/Fs+PGVAthW6N4h8Gy3nUtq7h
-        d5QWfUPj0Qz28XEVjJ7wYK7ffIeGJPkiTl4kKzU=
-X-Google-Smtp-Source: ABdhPJw3itfVhrolUsDScP9mY22q/fczJJfWu0DuI+q8JKjDZ4YAOgv3i6wKnisXGPZV678zcmlYGHsT/2Bs4cXtsNA=
-X-Received: by 2002:adf:ea41:: with SMTP id j1mr16929204wrn.147.1628366419990;
- Sat, 07 Aug 2021 13:00:19 -0700 (PDT)
+        Sat, 7 Aug 2021 16:07:42 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3969C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 13:07:24 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1628366841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rouqJ6YQEHtzrLXwBbMfbCJhwqiFnVmjZ19r7KAZp7w=;
+        b=j+mBlyyVhwj6RJB7skbqjcfFkfb6hNO32e1bDiaHu03r+MvXzqXv3Kdr6uOsWVGEOOMAam
+        lNvc3+OowgaIgbAf7nMEfz8Fq7L08LNYcu4D0ex5ckG/Vb8EBqw/9RR4rfN1KL5OH6JQqM
+        BnwMAxOB3ovolJM+2WevloM8nfnGo+7WQdZzKaU7S2ICI4Z31BNR9Ssx1zb83mq+/H17dr
+        9OubrvdDHeAENaPFOpBlSzELJc9mK7Lz40qmaeScww7HlfzfpXpyh5QPsdTyu9d4DqtPMa
+        MtowbWkLZORTmzfha+ZlphyBUszs3iahjy4Lw+CCrAoCfBCj9wP4tcKUQgiZ0g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1628366841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rouqJ6YQEHtzrLXwBbMfbCJhwqiFnVmjZ19r7KAZp7w=;
+        b=EL3sSLesPCX8PVGrY7aYKGnf1w2fIt5vcSCHOg9qg2qPCknYgfgor0hsJVW8+QRL+0ucuA
+        RL6LDJeYMYTLwiDw==
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: [patch V3 50/64] locking/rtmutex: Extend the rtmutex core to
+ support ww_mutex
+In-Reply-To: <YQ09mREYoqt6YunQ@hirez.programming.kicks-ass.net>
+References: <20210805151300.330412127@linutronix.de>
+ <20210805153955.709189588@linutronix.de>
+ <20210806110051.GF22037@worktop.programming.kicks-ass.net>
+ <YQ09mREYoqt6YunQ@hirez.programming.kicks-ass.net>
+Date:   Sat, 07 Aug 2021 22:07:19 +0200
+Message-ID: <8735rl5894.ffs@tglx>
 MIME-Version: 1.0
-References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
- <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
- <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org> <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
- <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org>
-In-Reply-To: <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Sat, 7 Aug 2021 13:04:34 -0700
-Message-ID: <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
-To:     Caleb Connolly <caleb.connolly@linaro.org>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 7, 2021 at 12:21 PM Caleb Connolly
-<caleb.connolly@linaro.org> wrote:
->
-> Hi Rob, Akhil,
->
-> On 29/07/2021 21:53, Rob Clark wrote:
-> > On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
-> > <caleb.connolly@linaro.org> wrote:
-> >>
-> >>
-> >>
-> >> On 29/07/2021 21:24, Rob Clark wrote:
-> >>> On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
-> >>> <caleb.connolly@linaro.org> wrote:
-> >>>>
-> >>>> Hi Rob,
-> >>>>
-> >>>> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
-> >>>> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
-> >>>> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
-> >>>
-> >>> *ohh*, yeah, ok, that would explain it
-> >>>
-> >>>> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
-> >>>> at the higher frequencies.
-> >>>>
-> >>>> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
-> >>>> glxgear.
-> >>>>
-> >>>> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
-> >>>> at the voltage the hardware needs to be stable.
-> >>>>
-> >>>> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
-> >>>> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
-> >>>>
-> >>>
-> >>> tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
-> >>> on CC and I added sboyd, maybe one of them knows better.
-> >>>
-> >>> In the short term, removing the higher problematic OPPs from dts might
-> >>> be a better option than this patch (which I'm dropping), since there
-> >>> is nothing stopping other workloads from hitting higher OPPs.
-> >> Oh yeah that sounds like a more sensible workaround than mine .
-> >>>
-> >>> I'm slightly curious why I didn't have problems at higher OPPs on my
-> >>> c630 laptop (sdm850)
-> >> Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
-> >>
-> >> Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
-> >> crash where yours doesn't?
-> >
-> > I've not heard any reports of similar issues from the handful of other
-> > folks with c630's on #aarch64-laptops.. but I can't really say if that
-> > is luck or not.
-> It looks like this affects at least the OnePlus 6 and PocoPhone F1, I've done some more poking and the following diff
-> seems to fix the stability issues completely, it seems the delay is required to let the update propagate.
->
-> This doesn't feel like the right fix, but hopefully it's enough to come up with a better solution than disabling the new
-> devfreq behaviour on a630.
->
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> index d7cec7f0dde0..69e2a5e84dae 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-> @@ -139,6 +139,10 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
->                  return;
->          }
->
-> +       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
-> +
-> +       usleep_range(300, 500);
-> +
+On Fri, Aug 06 2021 at 15:48, Peter Zijlstra wrote:
 
-Hmm, this is going to be in the critical path on idle -> active
-transition (ie. think response time to user-input).. so we defn don't
-want to do this unconditionally..
-
-If I understand the problem, we just want to limit how far we jump the
-gpu freq in one go.. maybe deleting the lowest (and perhaps highest)
-OPP would accomplish that?  Could that be done in the board(s)'s
-toplevel dts files?
-
-BR,
--R
-
->          gmu_write(gmu, REG_A6XX_GMU_DCVS_ACK_OPTION, 0);
+> On Fri, Aug 06, 2021 at 01:00:51PM +0200, Peter Zijlstra wrote:
+>> Also, I found a note that said I had to check what this code does for
+>> !RT tasks, lemme go do that now.
 >
->          gmu_write(gmu, REG_A6XX_GMU_DCVS_PERF_SETTING,
-> @@ -158,7 +162,6 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
->          if (ret)
->                  dev_err(gmu->dev, "GMU set GPU frequency error: %d\n", ret);
+> Do we want something like the below?
+
+I think so.
+
+> AFAICT the existing RB-tree actually does FIFO for equal prio right. Per
+> rb_add_cached() we only go left for less, therefore equal goes right,
+> giving a tail-add for equal prio.
 >
-> -       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
->          pm_runtime_put(gmu->dev);
->   }
-> >
-> > Maybe just remove it for affected devices?  But I'll defer to Bjorn.
-> >
-> > BR,
-> > -R
-> >
+> Furthermore, rt_mutex_adjust_prio_chain() is careful not to requeue when
+> the priority doesn't change, preserving this FIFO order (as is mandated
+> by SCHED_FIFO semantics IIRC).
 >
-> --
-> Kind Regards,
-> Caleb (they/them)
+> Therefore, all that seems to be missing is to squash all !RT tasks to
+> the same prio to make sure they're all FIFO ordered.
+
+The reason why the nice value is accounted for today is that it gave
+more exposure to the PI code. But yes, we can squash all !RT tasks and
+let them queue in FIFO order.
+
+Let me add that to the series.
+
+Thanks,
+
+        tglx
