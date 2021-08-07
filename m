@@ -2,85 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477043E33DF
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 09:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BCC13E33E6
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 09:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbhHGHGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 03:06:43 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:53274 "EHLO
+        id S231453AbhHGHRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 03:17:17 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54436 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhHGHGl (ORCPT
+        with ESMTP id S231405AbhHGHRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 03:06:41 -0400
+        Sat, 7 Aug 2021 03:17:15 -0400
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 0DAB81C0B7C; Sat,  7 Aug 2021 09:06:23 +0200 (CEST)
-Date:   Sat, 7 Aug 2021 09:06:22 +0200
+        id D5C141C0B7C; Sat,  7 Aug 2021 09:16:57 +0200 (CEST)
+Date:   Sat, 7 Aug 2021 09:16:57 +0200
 From:   Pavel Machek <pavel@ucw.cz>
-To:     Guido =?iso-8859-1?Q?G=FCnther?= <guido.gunther@puri.sm>
-Cc:     Sakari Ailus <sakari.ailus@iki.fi>,
-        Martin Kepplinger <martin.kepplinger@puri.sm>,
-        krzysztof.kozlowski@canonical.com,
-        laurent.pinchart@ideasonboard.com, devicetree@vger.kernel.org,
-        kernel@puri.sm, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        paul.kocialkowski@bootlin.com, phone-devel@vger.kernel.org,
-        robh@kernel.org, shawnx.tu@intel.com
-Subject: Re: [PATCH v6 5/5] arm64: defconfig: enable VIDEO_HI846
-Message-ID: <20210807070622.GA25211@amd>
-References: <20210628101054.828579-1-martin.kepplinger@puri.sm>
- <20210628101054.828579-6-martin.kepplinger@puri.sm>
- <20210708130003.GA3@valkosipuli.retiisi.eu>
- <YOcWCVSXfV+cKJ6H@qwark.sigxcpu.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v1 1/1] leds: lgm-sso: Propagate error codes from callee
+ to caller
+Message-ID: <20210807071656.GB25211@amd>
+References: <20210805112619.65116-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="vtzGhvizbBRQ85DL"
+        protocol="application/pgp-signature"; boundary="EuxKj2iCbKjpUGkD"
 Content-Disposition: inline
-In-Reply-To: <YOcWCVSXfV+cKJ6H@qwark.sigxcpu.org>
+In-Reply-To: <20210805112619.65116-1-andriy.shevchenko@linux.intel.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---vtzGhvizbBRQ85DL
+--EuxKj2iCbKjpUGkD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi!
 
-> > > Build the driver for the Hi-846 camera by default on arm64 where it's
-> > > going to be used on at least the imx8mq-librem5 board.
-> > >=20
-> > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-=2E.
-> > There appear to be a other sensor drivers though.
-> >=20
-> > Is there a defconfig for the librem5 board?
+> The one of the latest change to the driver reveals the problem that
+> the error codes from callee aren't propagated to the caller of
+> __sso_led_dt_parse(). Fix this accordingly.
 >=20
-> arm64 has a single defconfig, there are no board specific ones (and
-> afaik they're not wanted either) so I think enabling it as a module is
-> the only way.
+> Fixes: 9999908ca1ab ("leds: lgm-sso: Put fwnode in any case during ->prob=
+e()")
+> Fixes: c3987cd2bca3 ("leds: lgm: Add LED controller driver for LGM SoC")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Given that other arm64 machines are basically devboards, and librem5
-is a phone... where you expect tighter sw/hw configuration, maybe it
-should have a separate defconfig.
-
-Best regards,
+Thank you, applied.
 								Pavel
+							=09
 --=20
 http://www.livejournal.com/~pavelmachek
 
---vtzGhvizbBRQ85DL
+--EuxKj2iCbKjpUGkD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAmEOMO0ACgkQMOfwapXb+vK77gCgpYzyL9RXKKjc2f7cfW+IWz+B
-gWsAoKsV7p8tytKZYBFKu61kVHuaFkWs
-=ngWb
+iEYEARECAAYFAmEOM2gACgkQMOfwapXb+vKZFQCgnFbou3kuO9HcC7i0jYUS1BiD
+9L4AnRlYQyCHrnINiQJ/lZ/97DCJx4c6
+=BrKj
 -----END PGP SIGNATURE-----
 
---vtzGhvizbBRQ85DL--
+--EuxKj2iCbKjpUGkD--
