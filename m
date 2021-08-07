@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF24C3E34A5
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A683E34A6
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhHGKNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 06:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36802 "EHLO
+        id S231982AbhHGKNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 06:13:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231810AbhHGKMq (ORCPT
+        with ESMTP id S231820AbhHGKMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 06:12:46 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89730C0613D3
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 03:12:08 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id w5so197583ejq.2
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 03:12:08 -0700 (PDT)
+        Sat, 7 Aug 2021 06:12:47 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B804C061798
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 03:12:09 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id y12so16834881edo.6
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 03:12:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=58u2FJuWuA47ZDrh35oXOeGJPX+yKzsfZ5B6RjigtYs=;
-        b=ircHYuxOC5cizSUJsQAVrYLKEKO3VTFNl7eVP203RDQGtolG1hf7ARi8alTNvMLH8x
-         aDWxWJ4ZebJPhT53wigzOGXEOLzKzuZlWHVaKb17awqmz1mf+9MlkDNCCOC65J17+G0R
-         eQqwC2HtUPme6kweppf3XQNyB6PJeE47EZZr6aTdP150A7Cj/dY3eOCRy9Dw0c/NdZzh
-         0jJOy1ohY7bhhO+ncaVmhq2ZRNG/jlUcTtc2hSLdiZib/m7BYJnfleL+0gXkz8igFQv/
-         nYH+K6NSxetMCy7BAc33ST3OLp3NJj4P9CLVKeAOt4DTVBVKdXKZI6MSOmQekHgs7YHU
-         F1wg==
+        bh=fXi2HDmb/lkdzR+59uW066wb/DPjrIXx/F/3Td9PBkU=;
+        b=k9RClwkQ+GCMJwH9E+cZEyTjVv+XAYhmWQ3NOl6rQQbjoL5RGCekmUO5LWXconmBPt
+         Bczosam+wqQ+WgBL2IKxKNrc9Mf/g6PP6AwNRhdBmez2dbmyZFZKj1LSkvcMn8cxwMOU
+         5EsvEc7wXTLmTHGzb7Lm9o5o5J7GMLe41J+F+20oeGSsrbbya312yd9y2gJgtsN+SEX8
+         Sl3PR7tVjYC+Gv3ATS40qz4o9szaF0gb8OAHmWZsdqcqJbUw2JthwxSdYftPn6fjbgQw
+         rvcPXw5ayGaLYm+FAbSZMNoix3OO8XLnaw9pjRC6PhcB5gz2D41bP7YTdnaCiD2krFcF
+         fLTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=58u2FJuWuA47ZDrh35oXOeGJPX+yKzsfZ5B6RjigtYs=;
-        b=Hl+NEjMxKw0Io43pheAbYz8kp5hK5ghy4XDB5LdO2BogzJxt7wTBBTWHwLyuCrc3XY
-         BFVJQSKJKmO2IGwS3B+J5aWeI3tYn9ISyPHlPy7vior9FrTirqk98L2bSki7BPy1JvaL
-         To46C+LQ/USTBpH9pGkwNOWsezWvhF8zXtI57FB/z6kRzRtR0R85ramfYdiASmDWgY8H
-         7DHNhqzvQo9oPRp5AfG4r1s+C8dMAAQDpDmQQ7O6+lSqi1U+5RM11jT1xhPYpOCYMupY
-         EOjYdz+Yz+lpR4VnkQGOCc8kXVkH4/6H1f+7zzZvnVImk10m7M2PDWP5bp4EZ/XiVwkk
-         70mA==
-X-Gm-Message-State: AOAM5300bsnDWc6YVJ6dPTcqcXrXBGy67XGm/qC48QGOiC5yaaf5l6L8
-        V3nly73bnqrcYd7VuycPDR8=
-X-Google-Smtp-Source: ABdhPJyR083oBqrcIuWhvP+bGQGI/nhok6h95tOEP6nu3txsxeWW1xiXrzglp+6+3oNnvPPZ69pGWA==
-X-Received: by 2002:a17:907:1c9f:: with SMTP id nb31mr14255091ejc.114.1628331127018;
+        bh=fXi2HDmb/lkdzR+59uW066wb/DPjrIXx/F/3Td9PBkU=;
+        b=ZrEIlX0HSgqBZvjLbMIuoFbt8Pe0m03hlxLFmhhei1Wh9Zj+mvsg6sXI0IQLHlIAbg
+         dOFE+X1FlA6BKd3Jso5rqU/IYUk7O42XGfKgBzt5eweVqWobYiSx3346kxFTp7Tw+SxA
+         moVJ+Yo7i1pzS2wjjDFbmLLpeVFWxtQYc9pAnTiQvHbHYgGG8uR283x+8JDPBQZSB439
+         8yZ3av8fRYbFjQONZEKMxNmTao/fKMR3+F9OuPDBHHImbEExuxSBRgNm21cUaKK2352+
+         4G8mCNMgMLcq5Q4c2aSnJhILvOe9OuinIFptWBmYemGTkNThrF8VH3Q41uMEThVTSQmw
+         VlcQ==
+X-Gm-Message-State: AOAM530VSaeL6NMJxETsoDqpZBN/m6q8HsftJzxdsK7i9AtSX/wX+vEu
+        NDRDFdStgQDg9IMzbfTlXK8=
+X-Google-Smtp-Source: ABdhPJylRvTYP8+Bh/7hJfJSJuvwfgV695zqZrllR8Dgyf6pmekreuyh7eBfUWzaAiLa/m0iPvnupw==
+X-Received: by 2002:a05:6402:95c:: with SMTP id h28mr18734796edz.199.1628331127830;
         Sat, 07 Aug 2021 03:12:07 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::a83e])
-        by smtp.gmail.com with ESMTPSA id u4sm3662514eje.81.2021.08.07.03.12.06
+        by smtp.gmail.com with ESMTPSA id u4sm3662514eje.81.2021.08.07.03.12.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Aug 2021 03:12:06 -0700 (PDT)
+        Sat, 07 Aug 2021 03:12:07 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 01/17] staging: r8188eu: remove unnecessary parentheses in os_dep dir
-Date:   Sat,  7 Aug 2021 12:11:03 +0200
-Message-Id: <20210807101119.16085-2-straube.linux@gmail.com>
+Subject: [PATCH 02/17] staging: r8188eu: remove unnecessary parentheses in hal dir
+Date:   Sat,  7 Aug 2021 12:11:04 +0200
+Message-Id: <20210807101119.16085-3-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210807101119.16085-1-straube.linux@gmail.com>
 References: <20210807101119.16085-1-straube.linux@gmail.com>
@@ -65,719 +65,835 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary parentheses in the os_dep directory reported by
+Remove unnecessary parentheses in the hal directory reported by
 checkpatch.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/os_dep/ioctl_linux.c  | 162 +++++++++---------
- drivers/staging/r8188eu/os_dep/os_intfs.c     |   4 +-
- .../staging/r8188eu/os_dep/osdep_service.c    |   4 +-
- drivers/staging/r8188eu/os_dep/recv_linux.c   |   4 +-
- drivers/staging/r8188eu/os_dep/rtw_android.c  |   2 +-
- drivers/staging/r8188eu/os_dep/usb_intf.c     |   2 +-
- 6 files changed, 89 insertions(+), 89 deletions(-)
+ .../r8188eu/hal/Hal8188ERateAdaptive.c        |  8 +--
+ drivers/staging/r8188eu/hal/HalPhyRf_8188e.c  | 16 +++---
+ drivers/staging/r8188eu/hal/hal_intf.c        |  2 +-
+ drivers/staging/r8188eu/hal/odm.c             | 44 +++++++--------
+ drivers/staging/r8188eu/hal/odm_RTL8188E.c    | 10 ++--
+ drivers/staging/r8188eu/hal/rtl8188e_cmd.c    | 56 +++++++++----------
+ drivers/staging/r8188eu/hal/rtl8188e_dm.c     | 30 +++++-----
+ drivers/staging/r8188eu/hal/rtl8188e_mp.c     |  8 +--
+ drivers/staging/r8188eu/hal/rtl8188e_rf6052.c |  2 +-
+ drivers/staging/r8188eu/hal/rtl8188eu_led.c   | 12 ++--
+ drivers/staging/r8188eu/hal/rtl8188eu_xmit.c  | 10 ++--
+ drivers/staging/r8188eu/hal/usb_halinit.c     | 32 +++++------
+ drivers/staging/r8188eu/hal/usb_ops_linux.c   |  6 +-
+ 13 files changed, 118 insertions(+), 118 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index 34dce01e469c..83529ff1fd5d 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -168,7 +168,7 @@ static char *translate_scan(struct adapter *padapter,
- 			    struct wlan_network *pnetwork,
- 			    char *start, char *stop)
- {
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	struct iw_event iwe;
- 	u16 cap;
- 	__le16 le_tmp;
-@@ -551,7 +551,7 @@ static int wpa_set_encryption(struct net_device *dev, struct ieee_param *param,
- 				ret = -EOPNOTSUPP;
- 				goto exit;
- 			}
--		      memcpy(&(psecuritypriv->dot11DefKey[wep_key_idx].skey[0]), pwep->KeyMaterial, pwep->KeyLength);
-+		      memcpy(&psecuritypriv->dot11DefKey[wep_key_idx].skey[0], pwep->KeyMaterial, pwep->KeyLength);
- 			psecuritypriv->dot11DefKeylen[wep_key_idx] = pwep->KeyLength;
- 			rtw_set_key(padapter, psecuritypriv, wep_key_idx, 0);
- 		}
-@@ -578,8 +578,8 @@ static int wpa_set_encryption(struct net_device *dev, struct ieee_param *param,
- 					memcpy(psta->dot118021x_UncstKey.skey,  param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
- 
- 					if (strcmp(param->u.crypt.alg, "TKIP") == 0) { /* set mic key */
--						memcpy(psta->dot11tkiptxmickey.skey, &(param->u.crypt.key[16]), 8);
--						memcpy(psta->dot11tkiprxmickey.skey, &(param->u.crypt.key[24]), 8);
-+						memcpy(psta->dot11tkiptxmickey.skey, &param->u.crypt.key[16], 8);
-+						memcpy(psta->dot11tkiprxmickey.skey, &param->u.crypt.key[24], 8);
- 						padapter->securitypriv.busetkipkey = false;
- 					}
- 
-@@ -588,8 +588,8 @@ static int wpa_set_encryption(struct net_device *dev, struct ieee_param *param,
- 					rtw_setstakey_cmd(padapter, (unsigned char *)psta, true);
- 				} else { /* group key */
- 					memcpy(padapter->securitypriv.dot118021XGrpKey[param->u.crypt.idx].skey,  param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
--					memcpy(padapter->securitypriv.dot118021XGrptxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[16]), 8);
--					memcpy(padapter->securitypriv.dot118021XGrprxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[24]), 8);
-+					memcpy(padapter->securitypriv.dot118021XGrptxmickey[param->u.crypt.idx].skey, &param->u.crypt.key[16], 8);
-+					memcpy(padapter->securitypriv.dot118021XGrprxmickey[param->u.crypt.idx].skey, &param->u.crypt.key[24], 8);
- 					padapter->securitypriv.binstallGrpkey = true;
- 					DBG_88E(" ~~~~set sta key:groupkey\n");
- 
-@@ -768,7 +768,7 @@ static int rtw_wx_get_name(struct net_device *dev,
- 	u32 ht_ielen = 0;
- 	char *p;
- 	u8 ht_cap = false;
--	struct	mlme_priv	*pmlmepriv = &(padapter->mlmepriv);
-+	struct	mlme_priv	*pmlmepriv = &padapter->mlmepriv;
- 	struct wlan_bssid_ex  *pcur_bss = &pmlmepriv->cur_network.network;
- 	NDIS_802_11_RATES_EX *prates = NULL;
- 
-@@ -834,7 +834,7 @@ static int rtw_wx_get_freq(struct net_device *dev,
- 			     union iwreq_data *wrqu, char *extra)
- {
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct	mlme_priv	*pmlmepriv = &(padapter->mlmepriv);
-+	struct	mlme_priv	*pmlmepriv = &padapter->mlmepriv;
- 	struct wlan_bssid_ex  *pcur_bss = &pmlmepriv->cur_network.network;
- 
- 	if (check_fwstate(pmlmepriv, _FW_LINKED)) {
-@@ -906,7 +906,7 @@ static int rtw_wx_get_mode(struct net_device *dev, struct iw_request_info *a,
- 			     union iwreq_data *wrqu, char *b)
- {
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct	mlme_priv	*pmlmepriv = &(padapter->mlmepriv);
-+	struct	mlme_priv	*pmlmepriv = &padapter->mlmepriv;
- 
- 	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, (" rtw_wx_get_mode\n"));
- 
-@@ -1115,10 +1115,10 @@ static int rtw_wx_set_wap(struct net_device *dev,
- 	uint ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
- 	struct sockaddr *temp = (struct sockaddr *)awrq;
--	struct	mlme_priv	*pmlmepriv = &(padapter->mlmepriv);
-+	struct	mlme_priv	*pmlmepriv = &padapter->mlmepriv;
- 	struct list_head *phead;
- 	u8 *dst_bssid, *src_bssid;
--	struct __queue *queue	= &(pmlmepriv->scanned_queue);
-+	struct __queue *queue	= &pmlmepriv->scanned_queue;
- 	struct	wlan_network	*pnetwork = NULL;
- 	enum ndis_802_11_auth_mode	authmode;
- 
-@@ -1185,7 +1185,7 @@ static int rtw_wx_get_wap(struct net_device *dev,
- 			    union iwreq_data *wrqu, char *extra)
- {
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct	mlme_priv	*pmlmepriv = &(padapter->mlmepriv);
-+	struct	mlme_priv	*pmlmepriv = &padapter->mlmepriv;
- 	struct wlan_bssid_ex  *pcur_bss = &pmlmepriv->cur_network.network;
- 
- 	wrqu->ap_addr.sa_family = ARPHRD_ETHER;
-@@ -1250,7 +1250,7 @@ static int rtw_wx_set_scan(struct net_device *dev, struct iw_request_info *a,
- 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	struct ndis_802_11_ssid ssid[RTW_SSID_SCAN_AMOUNT];
- #ifdef CONFIG_88EU_P2P
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- #endif /* CONFIG_88EU_P2P */
- 	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_wx_set_scan\n"));
- 
-@@ -1392,8 +1392,8 @@ static int rtw_wx_get_scan(struct net_device *dev, struct iw_request_info *a,
- {
- 	struct list_head *plist, *phead;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct	mlme_priv	*pmlmepriv = &(padapter->mlmepriv);
--	struct __queue *queue	= &(pmlmepriv->scanned_queue);
-+	struct	mlme_priv	*pmlmepriv = &padapter->mlmepriv;
-+	struct __queue *queue	= &pmlmepriv->scanned_queue;
- 	struct	wlan_network	*pnetwork = NULL;
- 	char *ev = extra;
- 	char *stop = ev + wrqu->data.length;
-@@ -1584,7 +1584,7 @@ static int rtw_wx_get_essid(struct net_device *dev,
- {
- 	u32 len, ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct	mlme_priv	*pmlmepriv = &(padapter->mlmepriv);
-+	struct	mlme_priv	*pmlmepriv = &padapter->mlmepriv;
- 	struct wlan_bssid_ex  *pcur_bss = &pmlmepriv->cur_network.network;
- 
- 	RT_TRACE(_module_rtl871x_mlme_c_, _drv_info_, ("rtw_wx_get_essid\n"));
-@@ -1815,7 +1815,7 @@ static int rtw_wx_set_enc(struct net_device *dev,
- 	struct ndis_802_11_wep	 wep;
- 	enum ndis_802_11_auth_mode authmode;
- 
--	struct iw_point *erq = &(wrqu->encoding);
-+	struct iw_point *erq = &wrqu->encoding;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
- 	struct pwrctrl_priv *pwrpriv = &padapter->pwrctrlpriv;
- 	DBG_88E("+rtw_wx_set_enc, flags = 0x%x\n", erq->flags);
-@@ -1930,8 +1930,8 @@ static int rtw_wx_get_enc(struct net_device *dev,
- {
- 	uint key, ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct iw_point *erq = &(wrqu->encoding);
--	struct	mlme_priv	*pmlmepriv = &(padapter->mlmepriv);
-+	struct iw_point *erq = &wrqu->encoding;
-+	struct	mlme_priv	*pmlmepriv = &padapter->mlmepriv;
- 
- 
- 
-@@ -2019,7 +2019,7 @@ static int rtw_wx_set_auth(struct net_device *dev,
- 			     union iwreq_data *wrqu, char *extra)
- {
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct iw_param *param = (struct iw_param *)&(wrqu->param);
-+	struct iw_param *param = (struct iw_param *)&wrqu->param;
- 	int ret = 0;
- 
- 	switch (param->flags & IW_AUTH_INDEX) {
-@@ -2554,8 +2554,8 @@ static int rtw_get_ap_info(struct net_device *dev,
- 	char data[32];
- 	struct wlan_network *pnetwork = NULL;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
--	struct __queue *queue = &(pmlmepriv->scanned_queue);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
-+	struct __queue *queue = &pmlmepriv->scanned_queue;
- 	struct iw_point *pdata = &wrqu->data;
- 
- 	DBG_88E("+rtw_get_aplist_info\n");
-@@ -2699,7 +2699,7 @@ static int rtw_wext_p2p_enable(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
- 	enum P2P_ROLE init_role = P2P_ROLE_DISABLE;
- 
-@@ -2749,7 +2749,7 @@ static int rtw_p2p_set_go_nego_ssid(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
- 	DBG_88E("[%s] ssid = %s, len = %zu\n", __func__, extra, strlen(extra));
- 	memcpy(pwdinfo->nego_ssid, extra, strlen(extra));
-@@ -2764,7 +2764,7 @@ static int rtw_p2p_set_intent(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 	u8 intent = pwdinfo->intent;
- 
- 	switch (wrqu->data.length) {
-@@ -2789,7 +2789,7 @@ static int rtw_p2p_set_listen_ch(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 	u8 listen_ch = pwdinfo->listen_channel;	/*	Listen channel number */
- 
- 	switch (wrqu->data.length) {
-@@ -2822,7 +2822,7 @@ static int rtw_p2p_set_op_ch(struct net_device *dev,
- 
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 	u8 op_ch = pwdinfo->operating_channel;	/*	Operating channel number */
- 
- 	switch (wrqu->data.length) {
-@@ -2850,7 +2850,7 @@ static int rtw_p2p_profilefound(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
- 	/*	Comment by Albert 2010/10/13 */
- 	/*	Input data format: */
-@@ -2897,7 +2897,7 @@ static int rtw_p2p_setDN(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
- 	DBG_88E("[%s] %s %d\n", __func__, extra, wrqu->data.length - 1);
- 	memset(pwdinfo->device_name, 0x00, WPS_MAX_DEVICE_NAME_LEN);
-@@ -2913,7 +2913,7 @@ static int rtw_p2p_get_status(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
- 	if (padapter->bShowGetP2PState)
- 		DBG_88E("[%s] Role = %d, Status = %d, peer addr = %.2X:%.2X:%.2X:%.2X:%.2X:%.2X\n", __func__, rtw_p2p_role(pwdinfo), rtw_p2p_state(pwdinfo),
-@@ -2940,7 +2940,7 @@ static int rtw_p2p_get_req_cm(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
- 	sprintf(extra, "\n\nCM =%s\n", pwdinfo->rx_prov_disc_info.strconfig_method_desc_of_prov_disc_req);
- 	wrqu->data.length = strlen(extra);
-@@ -2953,7 +2953,7 @@ static int rtw_p2p_get_role(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
- 	DBG_88E("[%s] Role = %d, Status = %d, peer addr = %.2X:%.2X:%.2X:%.2X:%.2X:%.2X\n", __func__, rtw_p2p_role(pwdinfo), rtw_p2p_state(pwdinfo),
- 			pwdinfo->p2p_peer_interface_addr[0], pwdinfo->p2p_peer_interface_addr[1], pwdinfo->p2p_peer_interface_addr[2],
-@@ -2970,7 +2970,7 @@ static int rtw_p2p_get_peer_ifaddr(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
- 	DBG_88E("[%s] Role = %d, Status = %d, peer addr = %pM\n", __func__,
- 		rtw_p2p_role(pwdinfo), rtw_p2p_state(pwdinfo),
-@@ -2988,7 +2988,7 @@ static int rtw_p2p_get_peer_devaddr(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
- 	DBG_88E("[%s] Role = %d, Status = %d, peer addr = %pM\n", __func__,
- 		rtw_p2p_role(pwdinfo), rtw_p2p_state(pwdinfo),
-@@ -3006,7 +3006,7 @@ static int rtw_p2p_get_peer_devaddr_by_invitation(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
- 	DBG_88E("[%s] Role = %d, Status = %d, peer addr = %pM\n",
- 		__func__, rtw_p2p_role(pwdinfo), rtw_p2p_state(pwdinfo),
-@@ -3024,7 +3024,7 @@ static int rtw_p2p_get_groupid(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
- 	sprintf(extra, "\n%.2X:%.2X:%.2X:%.2X:%.2X:%.2X %s",
- 		pwdinfo->groupid_info.go_device_addr[0], pwdinfo->groupid_info.go_device_addr[1],
-@@ -3042,7 +3042,7 @@ static int rtw_p2p_get_op_ch(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
- 	DBG_88E("[%s] Op_ch = %02x\n", __func__, pwdinfo->operating_channel);
- 
-@@ -3062,7 +3062,7 @@ static int rtw_p2p_get_wps_configmethod(struct net_device *dev,
- 	u8 peerMACStr[17] = {0x00};
- 	struct mlme_priv		*pmlmepriv = &padapter->mlmepriv;
- 	struct list_head *plist, *phead;
--	struct __queue *queue	= &(pmlmepriv->scanned_queue);
-+	struct __queue *queue	= &pmlmepriv->scanned_queue;
- 	struct	wlan_network	*pnetwork = NULL;
- 	u8 blnMatch = 0;
- 	u16	attr_content = 0;
-@@ -3130,7 +3130,7 @@ static int rtw_p2p_get_go_device_address(struct net_device *dev,
- 	u8 peerMACStr[17] = {0x00};
- 	struct mlme_priv		*pmlmepriv = &padapter->mlmepriv;
- 	struct list_head *plist, *phead;
--	struct __queue *queue	= &(pmlmepriv->scanned_queue);
-+	struct __queue *queue	= &pmlmepriv->scanned_queue;
- 	struct	wlan_network	*pnetwork = NULL;
- 	u8 blnMatch = 0;
- 	u8 *p2pie;
-@@ -3213,7 +3213,7 @@ static int rtw_p2p_get_device_type(struct net_device *dev,
- 	u8 peerMACStr[17] = {0x00};
- 	struct mlme_priv		*pmlmepriv = &padapter->mlmepriv;
- 	struct list_head *plist, *phead;
--	struct __queue *queue	= &(pmlmepriv->scanned_queue);
-+	struct __queue *queue	= &pmlmepriv->scanned_queue;
- 	struct	wlan_network	*pnetwork = NULL;
- 	u8 blnMatch = 0;
- 	u8 dev_type[8] = {0x00};
-@@ -3289,7 +3289,7 @@ static int rtw_p2p_get_device_name(struct net_device *dev,
- 	u8 peerMACStr[17] = {0x00};
- 	struct mlme_priv		*pmlmepriv = &padapter->mlmepriv;
- 	struct list_head *plist, *phead;
--	struct __queue *queue	= &(pmlmepriv->scanned_queue);
-+	struct __queue *queue	= &pmlmepriv->scanned_queue;
- 	struct	wlan_network	*pnetwork = NULL;
- 	u8 blnMatch = 0;
- 	u8 dev_name[WPS_MAX_DEVICE_NAME_LEN] = {0x00};
-@@ -3355,7 +3355,7 @@ static int rtw_p2p_get_invitation_procedure(struct net_device *dev,
- 	u8 peerMACStr[17] = {0x00};
- 	struct mlme_priv		*pmlmepriv = &padapter->mlmepriv;
- 	struct list_head *plist, *phead;
--	struct __queue *queue	= &(pmlmepriv->scanned_queue);
-+	struct __queue *queue	= &pmlmepriv->scanned_queue;
- 	struct	wlan_network	*pnetwork = NULL;
- 	u8 blnMatch = 0;
- 	u8 *p2pie;
-@@ -3426,12 +3426,12 @@ static int rtw_p2p_connect(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 	u8 peerMAC[ETH_ALEN] = {0x00};
- 	int jj, kk;
- 	struct mlme_priv		*pmlmepriv = &padapter->mlmepriv;
- 	struct list_head *plist, *phead;
--	struct __queue *queue	= &(pmlmepriv->scanned_queue);
-+	struct __queue *queue	= &pmlmepriv->scanned_queue;
- 	struct	wlan_network	*pnetwork = NULL;
- 	uint uintPeerChannel = 0;
- 
-@@ -3505,11 +3505,11 @@ static int rtw_p2p_invite_req(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 	int jj, kk;
- 	struct mlme_priv	*pmlmepriv = &padapter->mlmepriv;
- 	struct list_head *plist, *phead;
--	struct __queue *queue	= &(pmlmepriv->scanned_queue);
-+	struct __queue *queue	= &pmlmepriv->scanned_queue;
- 	struct	wlan_network	*pnetwork = NULL;
- 	uint uintPeerChannel = 0;
- 	u8 attr_content[50] = {0x00};
-@@ -3614,7 +3614,7 @@ static int rtw_p2p_set_persistent(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
- 	/*	The input data is 0 or 1 */
- 	/*	0: disable persistent group functionality */
-@@ -3643,12 +3643,12 @@ static int rtw_p2p_prov_disc(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 	u8 peerMAC[ETH_ALEN] = {0x00};
- 	int jj, kk;
- 	struct mlme_priv		*pmlmepriv = &padapter->mlmepriv;
- 	struct list_head *plist, *phead;
--	struct __queue *queue	= &(pmlmepriv->scanned_queue);
-+	struct __queue *queue	= &pmlmepriv->scanned_queue;
- 	struct	wlan_network	*pnetwork = NULL;
- 	uint uintPeerChannel = 0;
- 	u8 attr_content[100] = {0x00};
-@@ -3775,7 +3775,7 @@ static int rtw_p2p_got_wpsinfo(struct net_device *dev,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
-+	struct wifidirect_info *pwdinfo = &padapter->wdinfo;
- 
- 	DBG_88E("[%s] data = %s\n", __func__, extra);
- 	/*	Added by Albert 20110328 */
-@@ -4077,11 +4077,11 @@ static int rtw_dbg_port(struct net_device *dev,
- 	u32 *pdata, val32;
- 	struct sta_info *psta;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
--	struct mlme_ext_info *pmlmeinfo = &(pmlmeext->mlmext_info);
-+	struct mlme_ext_info *pmlmeinfo = &pmlmeext->mlmext_info;
- 	struct security_priv *psecuritypriv = &padapter->securitypriv;
--	struct wlan_network *cur_network = &(pmlmepriv->cur_network);
-+	struct wlan_network *cur_network = &pmlmepriv->cur_network;
- 	struct sta_priv *pstapriv = &padapter->stapriv;
- 
- 	pdata = (u32 *)&wrqu->data;
-@@ -4388,7 +4388,7 @@ static int rtw_dbg_port(struct net_device *dev,
- 				spin_lock_bh(&pstapriv->sta_hash_lock);
- 
- 				for (i = 0; i < NUM_STA; i++) {
--					phead = &(pstapriv->sta_hash[i]);
-+					phead = &pstapriv->sta_hash[i];
- 					plist = phead->next;
- 
- 					while (phead != plist) {
-@@ -4759,7 +4759,7 @@ static int set_group_key(struct adapter *padapter, u8 *key, u8 alg, int keyid)
- 	u8 keylen;
- 	struct cmd_obj *pcmd;
- 	struct setkey_parm *psetkeyparm;
--	struct cmd_priv	*pcmdpriv = &(padapter->cmdpriv);
-+	struct cmd_priv	*pcmdpriv = &padapter->cmdpriv;
- 	int res = _SUCCESS;
- 
- 	DBG_88E("%s\n", __func__);
-@@ -4798,7 +4798,7 @@ static int set_group_key(struct adapter *padapter, u8 *key, u8 alg, int keyid)
- 		keylen = 16;
- 	}
- 
--	memcpy(&(psetkeyparm->key[0]), key, keylen);
-+	memcpy(&psetkeyparm->key[0], key, keylen);
- 
- 	pcmd->cmdcode = _SetKey_CMD_;
- 	pcmd->parmbuf = (u8 *)psetkeyparm;
-@@ -4841,7 +4841,7 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
- 	struct sta_info *psta = NULL, *pbcmc_sta = NULL;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
- 	struct mlme_priv	*pmlmepriv = &padapter->mlmepriv;
--	struct security_priv *psecuritypriv = &(padapter->securitypriv);
-+	struct security_priv *psecuritypriv = &padapter->securitypriv;
- 	struct sta_priv *pstapriv = &padapter->stapriv;
- 
- 	DBG_88E("%s\n", __func__);
-@@ -4912,7 +4912,7 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
- 
- 			psecuritypriv->dot11PrivacyKeyIndex = wep_key_idx;
- 
--			memcpy(&(psecuritypriv->dot11DefKey[wep_key_idx].skey[0]), pwep->KeyMaterial, pwep->KeyLength);
-+			memcpy(&psecuritypriv->dot11DefKey[wep_key_idx].skey[0], pwep->KeyMaterial, pwep->KeyLength);
- 
- 			psecuritypriv->dot11DefKeylen[wep_key_idx] = pwep->KeyLength;
- 
-@@ -4923,7 +4923,7 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
- 			/* don't update "psecuritypriv->dot11PrivacyAlgrthm" and */
- 			/* psecuritypriv->dot11PrivacyKeyIndex = keyid", but can rtw_set_key to cam */
- 
--		      memcpy(&(psecuritypriv->dot11DefKey[wep_key_idx].skey[0]), pwep->KeyMaterial, pwep->KeyLength);
-+		      memcpy(&psecuritypriv->dot11DefKey[wep_key_idx].skey[0], pwep->KeyMaterial, pwep->KeyLength);
- 
- 			psecuritypriv->dot11DefKeylen[wep_key_idx] = pwep->KeyLength;
- 
-@@ -4950,8 +4950,8 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
- 				memcpy(psecuritypriv->dot118021XGrpKey[param->u.crypt.idx].skey,
- 					    param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
- 				/* set mic key */
--				memcpy(psecuritypriv->dot118021XGrptxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[16]), 8);
--				memcpy(psecuritypriv->dot118021XGrprxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[24]), 8);
-+				memcpy(psecuritypriv->dot118021XGrptxmickey[param->u.crypt.idx].skey, &param->u.crypt.key[16], 8);
-+				memcpy(psecuritypriv->dot118021XGrprxmickey[param->u.crypt.idx].skey, &param->u.crypt.key[24], 8);
- 
- 				psecuritypriv->busetkipkey = true;
- 			} else if (strcmp(param->u.crypt.alg, "CCMP") == 0) {
-@@ -4993,8 +4993,8 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
- 					psta->dot118021XPrivacy = _TKIP_;
- 
- 					/* set mic key */
--					memcpy(psta->dot11tkiptxmickey.skey, &(param->u.crypt.key[16]), 8);
--					memcpy(psta->dot11tkiprxmickey.skey, &(param->u.crypt.key[24]), 8);
-+					memcpy(psta->dot11tkiptxmickey.skey, &param->u.crypt.key[16], 8);
-+					memcpy(psta->dot11tkiprxmickey.skey, &param->u.crypt.key[24], 8);
- 
- 					psecuritypriv->busetkipkey = true;
- 				} else if (strcmp(param->u.crypt.alg, "CCMP") == 0) {
-@@ -5024,8 +5024,8 @@ static int rtw_set_encryption(struct net_device *dev, struct ieee_param *param,
- 						    param->u.crypt.key, (param->u.crypt.key_len > 16 ? 16 : param->u.crypt.key_len));
- 
- 					/* set mic key */
--					memcpy(psecuritypriv->dot118021XGrptxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[16]), 8);
--					memcpy(psecuritypriv->dot118021XGrprxmickey[param->u.crypt.idx].skey, &(param->u.crypt.key[24]), 8);
-+					memcpy(psecuritypriv->dot118021XGrptxmickey[param->u.crypt.idx].skey, &param->u.crypt.key[16], 8);
-+					memcpy(psecuritypriv->dot118021XGrprxmickey[param->u.crypt.idx].skey, &param->u.crypt.key[24], 8);
- 
- 					psecuritypriv->busetkipkey = true;
- 				} else if (strcmp(param->u.crypt.alg, "CCMP") == 0) {
-@@ -5065,7 +5065,7 @@ static int rtw_set_beacon(struct net_device *dev, struct ieee_param *param, int
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	struct sta_priv *pstapriv = &padapter->stapriv;
- 	unsigned char *pbuf = param->u.bcn_ie.buf;
- 
-@@ -5106,7 +5106,7 @@ static int rtw_add_sta(struct net_device *dev, struct ieee_param *param)
- 	int ret = 0;
- 	struct sta_info *psta = NULL;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	struct sta_priv *pstapriv = &padapter->stapriv;
- 
- 	DBG_88E("rtw_add_sta(aid =%d) =%pM\n", param->u.add_sta.aid, (param->sta_addr));
-@@ -5161,7 +5161,7 @@ static int rtw_del_sta(struct net_device *dev, struct ieee_param *param)
- 	int ret = 0;
- 	struct sta_info *psta = NULL;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	struct sta_priv *pstapriv = &padapter->stapriv;
- 	int updated = 0;
- 
-@@ -5198,7 +5198,7 @@ static int rtw_ioctl_get_sta_data(struct net_device *dev, struct ieee_param *par
- 	int ret = 0;
- 	struct sta_info *psta = NULL;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	struct sta_priv *pstapriv = &padapter->stapriv;
- 	struct ieee_param_ex *param_ex = (struct ieee_param_ex *)param;
- 	struct sta_data *psta_data = (struct sta_data *)param_ex->data;
-@@ -5255,7 +5255,7 @@ static int rtw_get_sta_wpaie(struct net_device *dev, struct ieee_param *param)
- 	int ret = 0;
- 	struct sta_info *psta = NULL;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	struct sta_priv *pstapriv = &padapter->stapriv;
- 
- 	DBG_88E("rtw_get_sta_wpaie, sta_addr: %pM\n", (param->sta_addr));
-@@ -5293,8 +5293,8 @@ static int rtw_set_wps_beacon(struct net_device *dev, struct ieee_param *param,
- 	int ret = 0;
- 	unsigned char wps_oui[4] = {0x0, 0x50, 0xf2, 0x04};
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
--	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
-+	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
- 	int ie_len;
- 
- 	DBG_88E("%s, len =%d\n", __func__, len);
-@@ -5331,7 +5331,7 @@ static int rtw_set_wps_probe_resp(struct net_device *dev, struct ieee_param *par
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	int ie_len;
- 
- 	DBG_88E("%s, len =%d\n", __func__, len);
-@@ -5363,7 +5363,7 @@ static int rtw_set_wps_assoc_resp(struct net_device *dev, struct ieee_param *par
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	int ie_len;
- 
- 	DBG_88E("%s, len =%d\n", __func__, len);
-@@ -5396,9 +5396,9 @@ static int rtw_set_hidden_ssid(struct net_device *dev, struct ieee_param *param,
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
--	struct mlme_ext_priv	*pmlmeext = &(padapter->mlmeextpriv);
--	struct mlme_ext_info *pmlmeinfo = &(pmlmeext->mlmext_info);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
-+	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
-+	struct mlme_ext_info *pmlmeinfo = &pmlmeext->mlmext_info;
- 
- 	u8 value;
- 
-@@ -5421,7 +5421,7 @@ static int rtw_ioctl_acl_remove_sta(struct net_device *dev, struct ieee_param *p
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 
- 	if (check_fwstate(pmlmepriv, WIFI_AP_STATE) != true)
- 		return -EINVAL;
-@@ -5438,7 +5438,7 @@ static int rtw_ioctl_acl_add_sta(struct net_device *dev, struct ieee_param *para
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 
- 	if (check_fwstate(pmlmepriv, WIFI_AP_STATE) != true)
- 		return -EINVAL;
-@@ -5455,7 +5455,7 @@ static int rtw_ioctl_set_macaddr_acl(struct net_device *dev, struct ieee_param *
- {
- 	int ret = 0;
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(dev);
--	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 
- 	if (check_fwstate(pmlmepriv, WIFI_AP_STATE) != true)
- 		return -EINVAL;
-@@ -5582,7 +5582,7 @@ static int rtw_wx_set_priv(struct net_device *dev,
- 	/* added for wps2.0 @20110524 */
- 	if (dwrq->flags == 0x8766 && len > 8) {
- 		u32 cp_sz;
--		struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
-+		struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 		u8 *probereq_wpsie = ext;
- 		int probereq_wpsie_len = len;
- 		u8 wps_oui[4] = {0x0, 0x50, 0xf2, 0x04};
-diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
-index 935e35c82666..9de31d0e7800 100644
---- a/drivers/staging/r8188eu/os_dep/os_intfs.c
-+++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
-@@ -591,8 +591,8 @@ static int rtw_net_set_mac_address(struct net_device *pnetdev, void *p)
- static struct net_device_stats *rtw_net_get_stats(struct net_device *pnetdev)
- {
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(pnetdev);
--	struct xmit_priv *pxmitpriv = &(padapter->xmitpriv);
--	struct recv_priv *precvpriv = &(padapter->recvpriv);
-+	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
-+	struct recv_priv *precvpriv = &padapter->recvpriv;
- 
- 	padapter->stats.tx_packets = pxmitpriv->tx_pkts;/* pxmitpriv->tx_pkts++; */
- 	padapter->stats.rx_packets = precvpriv->rx_pkts;/* precvpriv->rx_pkts++; */
-diff --git a/drivers/staging/r8188eu/os_dep/osdep_service.c b/drivers/staging/r8188eu/os_dep/osdep_service.c
-index 9f097f2b3ddd..22e22924948e 100644
---- a/drivers/staging/r8188eu/os_dep/osdep_service.c
-+++ b/drivers/staging/r8188eu/os_dep/osdep_service.c
-@@ -96,8 +96,8 @@ void	_rtw_mutex_free(struct mutex *pmutex)
- 
- void	_rtw_init_queue(struct __queue *pqueue)
- {
--	INIT_LIST_HEAD(&(pqueue->queue));
--	spin_lock_init(&(pqueue->lock));
-+	INIT_LIST_HEAD(&pqueue->queue);
-+	spin_lock_init(&pqueue->lock);
+diff --git a/drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c b/drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c
+index 5307b10c1bc3..57839f8629ac 100644
+--- a/drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c
++++ b/drivers/staging/r8188eu/hal/Hal8188ERateAdaptive.c
+@@ -487,7 +487,7 @@ int ODM_RAInfo_Init(struct odm_dm_struct *dm_odm, u8 macid)
+ 	u8 WirelessMode = 0xFF; /* invalid value */
+ 	u8 max_rate_idx = 0x13; /* MCS7 */
+ 	if (dm_odm->pWirelessMode)
+-		WirelessMode = *(dm_odm->pWirelessMode);
++		WirelessMode = *dm_odm->pWirelessMode;
+ 
+ 	if (WirelessMode != 0xFF) {
+ 		if (WirelessMode & ODM_WM_N24G)
+@@ -580,7 +580,7 @@ void ODM_RA_UpdateRateInfo_8188E(struct odm_dm_struct *dm_odm, u8 macid, u8 Rate
+ 	if ((NULL == dm_odm) || (macid >= ASSOCIATE_ENTRY_NUM))
+ 		return;
+ 
+-	pRaInfo = &(dm_odm->RAInfo[macid]);
++	pRaInfo = &dm_odm->RAInfo[macid];
+ 	pRaInfo->RateID = RateID;
+ 	pRaInfo->RateMask = RateMask;
+ 	pRaInfo->SGIEnable = SGIEnable;
+@@ -594,7 +594,7 @@ void ODM_RA_SetRSSI_8188E(struct odm_dm_struct *dm_odm, u8 macid, u8 Rssi)
+ 	if ((NULL == dm_odm) || (macid >= ASSOCIATE_ENTRY_NUM))
+ 		return;
+ 
+-	pRaInfo = &(dm_odm->RAInfo[macid]);
++	pRaInfo = &dm_odm->RAInfo[macid];
+ 	pRaInfo->RssiStaRA = Rssi;
  }
  
- inline u32 rtw_systime_to_ms(u32 systime)
-diff --git a/drivers/staging/r8188eu/os_dep/recv_linux.c b/drivers/staging/r8188eu/os_dep/recv_linux.c
-index 1fd3f1bf1fe5..7c3299fb1c1a 100644
---- a/drivers/staging/r8188eu/os_dep/recv_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/recv_linux.c
-@@ -114,8 +114,8 @@ int rtw_recv_indicatepkt(struct adapter *padapter,
- 	struct sk_buff *skb;
- 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+@@ -622,7 +622,7 @@ void ODM_RA_TxRPT2Handle_8188E(struct odm_dm_struct *dm_odm, u8 *TxRPT_Buf, u16
+ 		else
+ 			valid = (1 << MacId) & macid_entry0;
  
--	precvpriv = &(padapter->recvpriv);
--	pfree_recv_queue = &(precvpriv->free_recv_queue);
-+	precvpriv = &padapter->recvpriv;
-+	pfree_recv_queue = &precvpriv->free_recv_queue;
- 
- 	skb = precv_frame->pkt;
- 	if (!skb) {
-diff --git a/drivers/staging/r8188eu/os_dep/rtw_android.c b/drivers/staging/r8188eu/os_dep/rtw_android.c
-index b55c86131dc7..d666feb87a7a 100644
---- a/drivers/staging/r8188eu/os_dep/rtw_android.c
-+++ b/drivers/staging/r8188eu/os_dep/rtw_android.c
-@@ -78,7 +78,7 @@ static int rtw_android_get_rssi(struct net_device *net, char *command,
- 				int total_len)
+-		pRAInfo = &(dm_odm->RAInfo[MacId]);
++		pRAInfo = &dm_odm->RAInfo[MacId];
+ 		if (valid) {
+ 			pRAInfo->RTY[0] = (u16)GET_TX_REPORT_TYPE1_RERTY_0(pBuffer);
+ 			pRAInfo->RTY[1] = (u16)GET_TX_REPORT_TYPE1_RERTY_1(pBuffer);
+diff --git a/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c b/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
+index 166adaac371a..68e7c31cc720 100644
+--- a/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
++++ b/drivers/staging/r8188eu/hal/HalPhyRf_8188e.c
+@@ -86,7 +86,7 @@ void ODM_TxPwrTrackAdjust88E(struct odm_dm_struct *dm_odm, u8 Type,/*  0 = OFDM,
+ static void odm_TxPwrTrackSetPwr88E(struct odm_dm_struct *dm_odm)
  {
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(net);
--	struct	mlme_priv	*pmlmepriv = &(padapter->mlmepriv);
-+	struct	mlme_priv	*pmlmepriv = &padapter->mlmepriv;
- 	struct	wlan_network	*pcur_network = &pmlmepriv->cur_network;
- 	int bytes_written = 0;
+ 	if (dm_odm->BbSwingFlagOfdm || dm_odm->BbSwingFlagCck) {
+-		PHY_SetTxPowerLevel8188E(dm_odm->Adapter, *(dm_odm->pChannel));
++		PHY_SetTxPowerLevel8188E(dm_odm->Adapter, *dm_odm->pChannel);
+ 		dm_odm->BbSwingFlagOfdm = false;
+ 		dm_odm->BbSwingFlagCck	= false;
+ 	}
+@@ -318,7 +318,7 @@ odm_TXPowerTrackingCallback_ThermalMeter_8188E(
+ 					X = dm_odm->RFCalibrateInfo.IQKMatrixRegSetting[Indexforchannel].Value[0][4];
+ 					Y = dm_odm->RFCalibrateInfo.IQKMatrixRegSetting[Indexforchannel].Value[0][5];
  
-diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-index b1184c36ddfc..e1af4e05ba93 100644
---- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-+++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-@@ -207,7 +207,7 @@ static struct dvobj_priv *usb_dvobj_init(struct usb_interface *usb_intf)
+-					if ((X != 0) && (*(dm_odm->pBandType) == ODM_BAND_2_4G)) {
++					if ((X != 0) && (*dm_odm->pBandType == ODM_BAND_2_4G)) {
+ 						if ((X & 0x00000200) != 0)	/* consider minus */
+ 							X = X | 0xFFFFFC00;
+ 						ele_A = ((X * ele_D)>>8)&0x000003FF;
+@@ -883,7 +883,7 @@ static void phy_IQCalibrate_8188E(struct adapter *adapt, s32 result[][8], u8 t,
+ 							};
+ 
+ 	u32 retryCount = 9;
+-	if (*(dm_odm->mp_mode) == 1)
++	if (*dm_odm->mp_mode == 1)
+ 		retryCount = 9;
+ 	else
+ 		retryCount = 2;
+@@ -1086,7 +1086,7 @@ void PHY_IQCalibrate_8188E(struct adapter *adapt, bool recovery)
+ {
+ 	struct hal_data_8188e	*pHalData = GET_HAL_DATA(adapt);
+ 	struct odm_dm_struct *dm_odm = &pHalData->odmpriv;
+-	struct mpt_context *pMptCtx = &(adapt->mppriv.MptCtx);
++	struct mpt_context *pMptCtx = &adapt->mppriv.MptCtx;
+ 	s32 result[4][8];	/* last is final result */
+ 	u8 i, final_candidate, Indexforchannel;
+ 	bool pathaok, pathbok;
+@@ -1108,7 +1108,7 @@ void PHY_IQCalibrate_8188E(struct adapter *adapt, bool recovery)
+ 	if (!(dm_odm->SupportAbility & ODM_RF_CALIBRATION))
+ 		return;
+ 
+-	if (*(dm_odm->mp_mode) == 1) {
++	if (*dm_odm->mp_mode == 1) {
+ 		singletone = pMptCtx->bSingleTone;
+ 		carrier_sup = pMptCtx->bCarrierSuppression;
+ 	}
+@@ -1219,9 +1219,9 @@ void PHY_LCCalibrate_8188E(struct adapter *adapt)
+ 	u32 timeout = 2000, timecount = 0;
+ 	struct hal_data_8188e *pHalData = GET_HAL_DATA(adapt);
+ 	struct odm_dm_struct *dm_odm = &pHalData->odmpriv;
+-	struct mpt_context *pMptCtx = &(adapt->mppriv.MptCtx);
++	struct mpt_context *pMptCtx = &adapt->mppriv.MptCtx;
+ 
+-	if (*(dm_odm->mp_mode) == 1) {
++	if (*dm_odm->mp_mode == 1) {
+ 		singletone = pMptCtx->bSingleTone;
+ 		carrier_sup = pMptCtx->bCarrierSuppression;
+ 	}
+@@ -1231,7 +1231,7 @@ void PHY_LCCalibrate_8188E(struct adapter *adapt)
+ 	if (singletone || carrier_sup)
+ 		return;
+ 
+-	while (*(dm_odm->pbScanInProcess) && timecount < timeout) {
++	while (*dm_odm->pbScanInProcess && timecount < timeout) {
+ 		ODM_delay_ms(50);
+ 		timecount += 50;
+ 	}
+diff --git a/drivers/staging/r8188eu/hal/hal_intf.c b/drivers/staging/r8188eu/hal/hal_intf.c
+index e07d430dc7ba..87c3bd58b63b 100644
+--- a/drivers/staging/r8188eu/hal/hal_intf.c
++++ b/drivers/staging/r8188eu/hal/hal_intf.c
+@@ -248,7 +248,7 @@ void rtw_hal_free_recv_priv(struct adapter *adapt)
+ 
+ void rtw_hal_update_ra_mask(struct adapter *adapt, u32 mac_id, u8 rssi_level)
+ {
+-	struct mlme_priv *pmlmepriv = &(adapt->mlmepriv);
++	struct mlme_priv *pmlmepriv = &adapt->mlmepriv;
+ 
+ 	if (check_fwstate(pmlmepriv, WIFI_AP_STATE) == true) {
+ #ifdef CONFIG_88EU_AP_MODE
+diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
+index 0deeb21c8006..99b61a6c3a7a 100644
+--- a/drivers/staging/r8188eu/hal/odm.c
++++ b/drivers/staging/r8188eu/hal/odm.c
+@@ -205,7 +205,7 @@ void ODM_DMWatchdog(struct odm_dm_struct *pDM_Odm)
+ 		odm_DIG(pDM_Odm);
+ 	odm_CCKPacketDetectionThresh(pDM_Odm);
+ 
+-	if (*(pDM_Odm->pbPowerSaving))
++	if (*pDM_Odm->pbPowerSaving)
+ 		return;
+ 
+ 	odm_RefreshRateAdaptiveMask(pDM_Odm);
+@@ -440,13 +440,13 @@ void odm_CommonInfoSelfUpdate(struct odm_dm_struct *pDM_Odm)
+ 	u8 i;
+ 	struct sta_info *pEntry;
+ 
+-	if (*(pDM_Odm->pBandWidth) == ODM_BW40M) {
+-		if (*(pDM_Odm->pSecChOffset) == 1)
+-			pDM_Odm->ControlChannel = *(pDM_Odm->pChannel) - 2;
+-		else if (*(pDM_Odm->pSecChOffset) == 2)
+-			pDM_Odm->ControlChannel = *(pDM_Odm->pChannel) + 2;
++	if (*pDM_Odm->pBandWidth == ODM_BW40M) {
++		if (*pDM_Odm->pSecChOffset == 1)
++			pDM_Odm->ControlChannel = *pDM_Odm->pChannel - 2;
++		else if (*pDM_Odm->pSecChOffset == 2)
++			pDM_Odm->ControlChannel = *pDM_Odm->pChannel + 2;
+ 	} else {
+-		pDM_Odm->ControlChannel = *(pDM_Odm->pChannel);
++		pDM_Odm->ControlChannel = *pDM_Odm->pChannel;
  	}
  
- 	/* 3 misc */
--	sema_init(&(pdvobjpriv->usb_suspend_sema), 0);
-+	sema_init(&pdvobjpriv->usb_suspend_sema, 0);
- 	rtw_reset_continual_urb_error(pdvobjpriv);
+ 	for (i = 0; i < ODM_ASSOCIATE_ENTRY_NUM; i++) {
+@@ -485,7 +485,7 @@ void ODM_Write_DIG(struct odm_dm_struct *pDM_Odm, u8 CurrentIGI)
+ 				if (pDM_Odm->SupportICType != ODM_RTL8188E)
+ 				ODM_SetBBReg(pDM_Odm, ODM_REG(IGI_B, pDM_Odm), ODM_BIT(IGI, pDM_Odm), CurrentIGI);
+ 		} else if (pDM_Odm->SupportPlatform & (ODM_AP|ODM_ADSL)) {
+-			switch (*(pDM_Odm->pOnePathCCA)) {
++			switch (*pDM_Odm->pOnePathCCA) {
+ 			case ODM_CCA_2R:
+ 				ODM_SetBBReg(pDM_Odm, ODM_REG(IGI_A, pDM_Odm), ODM_BIT(IGI, pDM_Odm), CurrentIGI);
+ 					if (pDM_Odm->SupportICType != ODM_RTL8188E)
+@@ -602,7 +602,7 @@ void odm_DIG(struct odm_dm_struct *pDM_Odm)
+ 	if ((!(pDM_Odm->SupportAbility&ODM_BB_DIG)) || (!(pDM_Odm->SupportAbility&ODM_BB_FA_CNT)))
+ 		return;
  
- 	usb_get_dev(pusbd);
+-	if (*(pDM_Odm->pbScanInProcess))
++	if (*pDM_Odm->pbScanInProcess)
+ 		return;
+ 
+ 	/* add by Neil Chen to avoid PSD is processing */
+@@ -610,8 +610,8 @@ void odm_DIG(struct odm_dm_struct *pDM_Odm)
+ 		return;
+ 
+ 	if (pDM_Odm->SupportICType == ODM_RTL8192D) {
+-		if (*(pDM_Odm->pMacPhyMode) == ODM_DMSP) {
+-			if (*(pDM_Odm->pbMasterOfDMSP)) {
++		if (*pDM_Odm->pMacPhyMode == ODM_DMSP) {
++			if (*pDM_Odm->pbMasterOfDMSP) {
+ 				DIG_Dynamic_MIN = pDM_DigTable->DIG_Dynamic_MIN_0;
+ 				FirstConnect = (pDM_Odm->bLinked) && (!pDM_DigTable->bMediaConnect_0);
+ 				FirstDisConnect = (!pDM_Odm->bLinked) && (pDM_DigTable->bMediaConnect_0);
+@@ -621,7 +621,7 @@ void odm_DIG(struct odm_dm_struct *pDM_Odm)
+ 				FirstDisConnect = (!pDM_Odm->bLinked) && (pDM_DigTable->bMediaConnect_1);
+ 			}
+ 		} else {
+-			if (*(pDM_Odm->pBandType) == ODM_BAND_5G) {
++			if (*pDM_Odm->pBandType == ODM_BAND_5G) {
+ 				DIG_Dynamic_MIN = pDM_DigTable->DIG_Dynamic_MIN_0;
+ 				FirstConnect = (pDM_Odm->bLinked) && (!pDM_DigTable->bMediaConnect_0);
+ 				FirstDisConnect = (!pDM_Odm->bLinked) && (pDM_DigTable->bMediaConnect_0);
+@@ -791,7 +791,7 @@ void odm_DIG(struct odm_dm_struct *pDM_Odm)
+ void odm_FalseAlarmCounterStatistics(struct odm_dm_struct *pDM_Odm)
+ {
+ 	u32 ret_value;
+-	struct false_alarm_stats *FalseAlmCnt = &(pDM_Odm->FalseAlmCnt);
++	struct false_alarm_stats *FalseAlmCnt = &pDM_Odm->FalseAlmCnt;
+ 
+ 	if (!(pDM_Odm->SupportAbility & ODM_BB_FA_CNT))
+ 		return;
+@@ -884,7 +884,7 @@ void odm_FalseAlarmCounterStatistics(struct odm_dm_struct *pDM_Odm)
+ void odm_CCKPacketDetectionThresh(struct odm_dm_struct *pDM_Odm)
+ {
+ 	u8 CurCCK_CCAThres;
+-	struct false_alarm_stats *FalseAlmCnt = &(pDM_Odm->FalseAlmCnt);
++	struct false_alarm_stats *FalseAlmCnt = &pDM_Odm->FalseAlmCnt;
+ 
+ 	if (!(pDM_Odm->SupportAbility & (ODM_BB_CCK_PD|ODM_BB_FA_CNT)))
+ 		return;
+@@ -1116,7 +1116,7 @@ u32 ODM_Get_Rate_Bitmap(struct odm_dm_struct *pDM_Odm, u32 macid, u32 ra_mask, u
+ 			} else if (rssi_level == DM_RATR_STA_MIDDLE) {
+ 				rate_bitmap = 0x000ff000;
+ 			} else {
+-				if (*(pDM_Odm->pBandWidth) == ODM_BW40M)
++				if (*pDM_Odm->pBandWidth == ODM_BW40M)
+ 					rate_bitmap = 0x000ff015;
+ 				else
+ 					rate_bitmap = 0x000ff005;
+@@ -1127,7 +1127,7 @@ u32 ODM_Get_Rate_Bitmap(struct odm_dm_struct *pDM_Odm, u32 macid, u32 ra_mask, u
+ 			} else if (rssi_level == DM_RATR_STA_MIDDLE) {
+ 				rate_bitmap = 0x0f8ff000;
+ 			} else {
+-				if (*(pDM_Odm->pBandWidth) == ODM_BW40M)
++				if (*pDM_Odm->pBandWidth == ODM_BW40M)
+ 					rate_bitmap = 0x0f8ff015;
+ 				else
+ 					rate_bitmap = 0x0f8ff005;
+@@ -1402,7 +1402,7 @@ void odm_RSSIMonitorCheckCE(struct odm_dm_struct *pDM_Odm)
+ 				/*  Report every sta's RSSI to FW */
+ 			} else {
+ 				ODM_RA_SetRSSI_8188E(
+-				&(pHalData->odmpriv), (PWDB_rssi[i]&0xFF), (u8)((PWDB_rssi[i]>>16) & 0xFF));
++				&pHalData->odmpriv, (PWDB_rssi[i]&0xFF), (u8)((PWDB_rssi[i]>>16) & 0xFF));
+ 			}
+ 		}
+ 	}
+@@ -1456,7 +1456,7 @@ void odm_TXPowerTrackingThermalMeterInit(struct odm_dm_struct *pDM_Odm)
+ 	pDM_Odm->RFCalibrateInfo.bTXPowerTracking = true;
+ 	pDM_Odm->RFCalibrateInfo.TXPowercount = 0;
+ 	pDM_Odm->RFCalibrateInfo.bTXPowerTrackingInit = false;
+-	if (*(pDM_Odm->mp_mode) != 1)
++	if (*pDM_Odm->mp_mode != 1)
+ 		pDM_Odm->RFCalibrateInfo.TxPowerTrackControl = true;
+ 	MSG_88E("pDM_Odm TxPowerTrackControl = %d\n", pDM_Odm->RFCalibrateInfo.TxPowerTrackControl);
+ 
+@@ -1624,11 +1624,11 @@ void odm_EdcaTurboCheckCE(struct odm_dm_struct *pDM_Odm)
+ 	u64	cur_rx_bytes = 0;
+ 	u8	bbtchange = false;
+ 	struct hal_data_8188e		*pHalData = GET_HAL_DATA(Adapter);
+-	struct xmit_priv		*pxmitpriv = &(Adapter->xmitpriv);
+-	struct recv_priv		*precvpriv = &(Adapter->recvpriv);
++	struct xmit_priv		*pxmitpriv = &Adapter->xmitpriv;
++	struct recv_priv		*precvpriv = &Adapter->recvpriv;
+ 	struct registry_priv	*pregpriv = &Adapter->registrypriv;
+-	struct mlme_ext_priv	*pmlmeext = &(Adapter->mlmeextpriv);
+-	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
++	struct mlme_ext_priv	*pmlmeext = &Adapter->mlmeextpriv;
++	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
+ 
+ 	if (pregpriv->wifi_spec == 1)
+ 		goto dm_CheckEdcaTurbo_EXIT;
+diff --git a/drivers/staging/r8188eu/hal/odm_RTL8188E.c b/drivers/staging/r8188eu/hal/odm_RTL8188E.c
+index 792284eac01f..02e44403fd31 100644
+--- a/drivers/staging/r8188eu/hal/odm_RTL8188E.c
++++ b/drivers/staging/r8188eu/hal/odm_RTL8188E.c
+@@ -16,7 +16,7 @@ static void odm_RX_HWAntDivInit(struct odm_dm_struct *dm_odm)
+ {
+ 	u32	value32;
+ 
+-	if (*(dm_odm->mp_mode) == 1) {
++	if (*dm_odm->mp_mode == 1) {
+ 		dm_odm->AntDivType = CGCS_RX_SW_ANTDIV;
+ 		ODM_SetBBReg(dm_odm, ODM_REG_IGI_A_11N, BIT7, 0); /*  disable HW AntDiv */
+ 		ODM_SetBBReg(dm_odm, ODM_REG_LNA_SWITCH_11N, BIT31, 1);  /*  1:CG, 0:CS */
+@@ -44,7 +44,7 @@ static void odm_TRX_HWAntDivInit(struct odm_dm_struct *dm_odm)
+ {
+ 	u32	value32;
+ 
+-	if (*(dm_odm->mp_mode) == 1) {
++	if (*dm_odm->mp_mode == 1) {
+ 		dm_odm->AntDivType = CGCS_RX_SW_ANTDIV;
+ 		ODM_SetBBReg(dm_odm, ODM_REG_IGI_A_11N, BIT7, 0); /*  disable HW AntDiv */
+ 		ODM_SetBBReg(dm_odm, ODM_REG_RX_ANT_CTRL_11N, BIT5|BIT4|BIT3, 0); /* Default RX   (0/1) */
+@@ -83,7 +83,7 @@ static void odm_FastAntTrainingInit(struct odm_dm_struct *dm_odm)
+ 	struct fast_ant_train *dm_fat_tbl = &dm_odm->DM_FatTable;
+ 	u32	AntCombination = 2;
+ 
+-	if (*(dm_odm->mp_mode) == 1)
++	if (*dm_odm->mp_mode == 1)
+ 		return;
+ 
+ 	for (i = 0; i < 6; i++) {
+@@ -327,7 +327,7 @@ void ODM_AntennaDiversity_88E(struct odm_dm_struct *dm_odm)
+ 
+ void odm_PrimaryCCA_Init(struct odm_dm_struct *dm_odm)
+ {
+-	struct dyn_primary_cca *PrimaryCCA = &(dm_odm->DM_PriCCA);
++	struct dyn_primary_cca *PrimaryCCA = &dm_odm->DM_PriCCA;
+ 
+ 	PrimaryCCA->DupRTS_flag = 0;
+ 	PrimaryCCA->intf_flag = 0;
+@@ -338,7 +338,7 @@ void odm_PrimaryCCA_Init(struct odm_dm_struct *dm_odm)
+ 
+ bool ODM_DynamicPrimaryCCA_DupRTS(struct odm_dm_struct *dm_odm)
+ {
+-	struct dyn_primary_cca *PrimaryCCA = &(dm_odm->DM_PriCCA);
++	struct dyn_primary_cca *PrimaryCCA = &dm_odm->DM_PriCCA;
+ 
+ 	return	PrimaryCCA->DupRTS_flag;
+ }
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
+index 712307bc674f..02eda8fae25c 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
+@@ -181,7 +181,7 @@ void rtl8188e_Add_RateATid(struct adapter *pAdapter, u32 bitmap, u8 arg, u8 rssi
+ 	DBG_88E("%s=> mac_id:%d, raid:%d, ra_bitmap=0x%x, shortGIrate=0x%02x\n",
+ 		__func__, macid, raid, bitmap, shortGIrate);
+ 
+-	ODM_RA_UpdateRateInfo_8188E(&(haldata->odmpriv), macid, raid, bitmap, shortGIrate);
++	ODM_RA_UpdateRateInfo_8188E(&haldata->odmpriv, macid, raid, bitmap, shortGIrate);
+ }
+ 
+ void rtl8188e_set_FwPwrMode_cmd(struct adapter *adapt, u8 Mode)
+@@ -247,18 +247,18 @@ static void ConstructBeacon(struct adapter *adapt, u8 *pframe, u32 *pLength)
+ 	struct rtw_ieee80211_hdr	*pwlanhdr;
+ 	__le16 *fctrl;
+ 	u32 rate_len, pktlen;
+-	struct mlme_ext_priv *pmlmeext = &(adapt->mlmeextpriv);
+-	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
+-	struct wlan_bssid_ex		*cur_network = &(pmlmeinfo->network);
++	struct mlme_ext_priv *pmlmeext = &adapt->mlmeextpriv;
++	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
++	struct wlan_bssid_ex		*cur_network = &pmlmeinfo->network;
+ 	u8 bc_addr[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+ 
+ 	pwlanhdr = (struct rtw_ieee80211_hdr *)pframe;
+ 
+-	fctrl = &(pwlanhdr->frame_ctl);
++	fctrl = &pwlanhdr->frame_ctl;
+ 	*(fctrl) = 0;
+ 
+ 	memcpy(pwlanhdr->addr1, bc_addr, ETH_ALEN);
+-	memcpy(pwlanhdr->addr2, myid(&(adapt->eeprompriv)), ETH_ALEN);
++	memcpy(pwlanhdr->addr2, myid(&adapt->eeprompriv), ETH_ALEN);
+ 	memcpy(pwlanhdr->addr3, get_my_bssid(cur_network), ETH_ALEN);
+ 
+ 	SetSeqNum(pwlanhdr, 0/*pmlmeext->mgnt_seq*/);
+@@ -300,7 +300,7 @@ static void ConstructBeacon(struct adapter *adapt, u8 *pframe, u32 *pLength)
+ 	pframe = rtw_set_ie(pframe, _SUPPORTEDRATES_IE_, ((rate_len > 8) ? 8 : rate_len), cur_network->SupportedRates, &pktlen);
+ 
+ 	/*  DS parameter set */
+-	pframe = rtw_set_ie(pframe, _DSSET_IE_, 1, (unsigned char *)&(cur_network->Configuration.DSConfig), &pktlen);
++	pframe = rtw_set_ie(pframe, _DSSET_IE_, 1, (unsigned char *)&cur_network->Configuration.DSConfig, &pktlen);
+ 
+ 	if ((pmlmeinfo->state&0x03) == WIFI_FW_ADHOC_STATE) {
+ 		u32 ATIMWindow;
+@@ -330,14 +330,14 @@ static void ConstructBeacon(struct adapter *adapt, u8 *pframe, u32 *pLength)
+ static void ConstructPSPoll(struct adapter *adapt, u8 *pframe, u32 *pLength)
+ {
+ 	struct rtw_ieee80211_hdr	*pwlanhdr;
+-	struct mlme_ext_priv *pmlmeext = &(adapt->mlmeextpriv);
+-	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
++	struct mlme_ext_priv *pmlmeext = &adapt->mlmeextpriv;
++	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
+ 	__le16 *fctrl;
+ 
+ 	pwlanhdr = (struct rtw_ieee80211_hdr *)pframe;
+ 
+ 	/*  Frame control. */
+-	fctrl = &(pwlanhdr->frame_ctl);
++	fctrl = &pwlanhdr->frame_ctl;
+ 	*(fctrl) = 0;
+ 	SetPwrMgt(fctrl);
+ 	SetFrameSubType(pframe, WIFI_PSPOLL);
+@@ -346,10 +346,10 @@ static void ConstructPSPoll(struct adapter *adapt, u8 *pframe, u32 *pLength)
+ 	SetDuration(pframe, (pmlmeinfo->aid | 0xc000));
+ 
+ 	/*  BSSID. */
+-	memcpy(pwlanhdr->addr1, get_my_bssid(&(pmlmeinfo->network)), ETH_ALEN);
++	memcpy(pwlanhdr->addr1, get_my_bssid(&pmlmeinfo->network), ETH_ALEN);
+ 
+ 	/*  TA. */
+-	memcpy(pwlanhdr->addr2, myid(&(adapt->eeprompriv)), ETH_ALEN);
++	memcpy(pwlanhdr->addr2, myid(&adapt->eeprompriv), ETH_ALEN);
+ 
+ 	*pLength = 16;
+ }
+@@ -367,8 +367,8 @@ static void ConstructNullFunctionData(struct adapter *adapt, u8 *pframe,
+ 	u32 pktlen;
+ 	struct mlme_priv *pmlmepriv = &adapt->mlmepriv;
+ 	struct wlan_network		*cur_network = &pmlmepriv->cur_network;
+-	struct mlme_ext_priv *pmlmeext = &(adapt->mlmeextpriv);
+-	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
++	struct mlme_ext_priv *pmlmeext = &adapt->mlmeextpriv;
++	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
+ 
+ 	pwlanhdr = (struct rtw_ieee80211_hdr *)pframe;
+ 
+@@ -380,21 +380,21 @@ static void ConstructNullFunctionData(struct adapter *adapt, u8 *pframe,
+ 	switch (cur_network->network.InfrastructureMode) {
+ 	case Ndis802_11Infrastructure:
+ 		SetToDs(fctrl);
+-		memcpy(pwlanhdr->addr1, get_my_bssid(&(pmlmeinfo->network)), ETH_ALEN);
+-		memcpy(pwlanhdr->addr2, myid(&(adapt->eeprompriv)), ETH_ALEN);
++		memcpy(pwlanhdr->addr1, get_my_bssid(&pmlmeinfo->network), ETH_ALEN);
++		memcpy(pwlanhdr->addr2, myid(&adapt->eeprompriv), ETH_ALEN);
+ 		memcpy(pwlanhdr->addr3, StaAddr, ETH_ALEN);
+ 		break;
+ 	case Ndis802_11APMode:
+ 		SetFrDs(fctrl);
+ 		memcpy(pwlanhdr->addr1, StaAddr, ETH_ALEN);
+-		memcpy(pwlanhdr->addr2, get_my_bssid(&(pmlmeinfo->network)), ETH_ALEN);
+-		memcpy(pwlanhdr->addr3, myid(&(adapt->eeprompriv)), ETH_ALEN);
++		memcpy(pwlanhdr->addr2, get_my_bssid(&pmlmeinfo->network), ETH_ALEN);
++		memcpy(pwlanhdr->addr3, myid(&adapt->eeprompriv), ETH_ALEN);
+ 		break;
+ 	case Ndis802_11IBSS:
+ 	default:
+ 		memcpy(pwlanhdr->addr1, StaAddr, ETH_ALEN);
+-		memcpy(pwlanhdr->addr2, myid(&(adapt->eeprompriv)), ETH_ALEN);
+-		memcpy(pwlanhdr->addr3, get_my_bssid(&(pmlmeinfo->network)), ETH_ALEN);
++		memcpy(pwlanhdr->addr2, myid(&adapt->eeprompriv), ETH_ALEN);
++		memcpy(pwlanhdr->addr3, get_my_bssid(&pmlmeinfo->network), ETH_ALEN);
+ 		break;
+ 	}
+ 
+@@ -425,16 +425,16 @@ static void ConstructProbeRsp(struct adapter *adapt, u8 *pframe, u32 *pLength, u
+ 	__le16 *fctrl;
+ 	u8 *mac, *bssid;
+ 	u32 pktlen;
+-	struct mlme_ext_priv *pmlmeext = &(adapt->mlmeextpriv);
+-	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
+-	struct wlan_bssid_ex	*cur_network = &(pmlmeinfo->network);
++	struct mlme_ext_priv *pmlmeext = &adapt->mlmeextpriv;
++	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
++	struct wlan_bssid_ex	*cur_network = &pmlmeinfo->network;
+ 
+ 	pwlanhdr = (struct rtw_ieee80211_hdr *)pframe;
+ 
+-	mac = myid(&(adapt->eeprompriv));
++	mac = myid(&adapt->eeprompriv);
+ 	bssid = cur_network->MacAddress;
+ 
+-	fctrl = &(pwlanhdr->frame_ctl);
++	fctrl = &pwlanhdr->frame_ctl;
+ 	*(fctrl) = 0;
+ 	memcpy(pwlanhdr->addr1, StaAddr, ETH_ALEN);
+ 	memcpy(pwlanhdr->addr2, mac, ETH_ALEN);
+@@ -582,8 +582,8 @@ static void SetFwRsvdPagePkt(struct adapter *adapt, bool bDLFinished)
+ void rtl8188e_set_FwJoinBssReport_cmd(struct adapter *adapt, u8 mstatus)
+ {
+ 	struct hal_data_8188e *haldata = GET_HAL_DATA(adapt);
+-	struct mlme_ext_priv *pmlmeext = &(adapt->mlmeextpriv);
+-	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
++	struct mlme_ext_priv *pmlmeext = &adapt->mlmeextpriv;
++	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
+ 	bool	bSendBeacon = false;
+ 	bool	bcn_valid = false;
+ 	u8 DLBcnCount = 0;
+@@ -678,7 +678,7 @@ void rtl8188e_set_p2p_ps_offload_cmd(struct adapter *adapt, u8 p2p_ps_state)
+ {
+ #ifdef CONFIG_88EU_P2P
+ 	struct hal_data_8188e *haldata = GET_HAL_DATA(adapt);
+-	struct wifidirect_info	*pwdinfo = &(adapt->wdinfo);
++	struct wifidirect_info	*pwdinfo = &adapt->wdinfo;
+ 	struct P2P_PS_Offload_t	*p2p_ps_offload = &haldata->p2p_ps_offload;
+ 	u8 i;
+ 
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_dm.c b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+index 7ac4257d7ebe..fab385774400 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_dm.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_dm.c
+@@ -30,7 +30,7 @@ static void Init_ODM_ComInfo_88E(struct adapter *Adapter)
+ {
+ 	struct hal_data_8188e *hal_data = GET_HAL_DATA(Adapter);
+ 	struct dm_priv	*pdmpriv = &hal_data->dmpriv;
+-	struct odm_dm_struct *dm_odm = &(hal_data->odmpriv);
++	struct odm_dm_struct *dm_odm = &hal_data->odmpriv;
+ 	u8 cut_ver, fab_ver;
+ 
+ 	/*  Init Value */
+@@ -79,7 +79,7 @@ static void Update_ODM_ComInfo_88E(struct adapter *Adapter)
+ 	struct mlme_priv	*pmlmepriv = &Adapter->mlmepriv;
+ 	struct pwrctrl_priv *pwrctrlpriv = &Adapter->pwrctrlpriv;
+ 	struct hal_data_8188e *hal_data = GET_HAL_DATA(Adapter);
+-	struct odm_dm_struct *dm_odm = &(hal_data->odmpriv);
++	struct odm_dm_struct *dm_odm = &hal_data->odmpriv;
+ 	struct dm_priv	*pdmpriv = &hal_data->dmpriv;
+ 	int i;
+ 
+@@ -103,17 +103,17 @@ static void Update_ODM_ComInfo_88E(struct adapter *Adapter)
+ 
+ 	ODM_CmnInfoUpdate(dm_odm, ODM_CMNINFO_ABILITY, pdmpriv->InitODMFlag);
+ 
+-	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_TX_UNI, &(Adapter->xmitpriv.tx_bytes));
+-	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_RX_UNI, &(Adapter->recvpriv.rx_bytes));
+-	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_WM_MODE, &(pmlmeext->cur_wireless_mode));
+-	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_SEC_CHNL_OFFSET, &(hal_data->nCur40MhzPrimeSC));
+-	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_SEC_MODE, &(Adapter->securitypriv.dot11PrivacyAlgrthm));
+-	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_BW, &(hal_data->CurrentChannelBW));
+-	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_CHNL, &(hal_data->CurrentChannel));
+-	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_NET_CLOSED, &(Adapter->net_closed));
+-	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_MP_MODE, &(Adapter->registrypriv.mp_mode));
+-	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_SCAN, &(pmlmepriv->bScanInProcess));
+-	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_POWER_SAVING, &(pwrctrlpriv->bpower_saving));
++	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_TX_UNI, &Adapter->xmitpriv.tx_bytes);
++	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_RX_UNI, &Adapter->recvpriv.rx_bytes);
++	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_WM_MODE, &pmlmeext->cur_wireless_mode);
++	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_SEC_CHNL_OFFSET, &hal_data->nCur40MhzPrimeSC);
++	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_SEC_MODE, &Adapter->securitypriv.dot11PrivacyAlgrthm);
++	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_BW, &hal_data->CurrentChannelBW);
++	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_CHNL, &hal_data->CurrentChannel);
++	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_NET_CLOSED, &Adapter->net_closed);
++	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_MP_MODE, &Adapter->registrypriv.mp_mode);
++	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_SCAN, &pmlmepriv->bScanInProcess);
++	ODM_CmnInfoHook(dm_odm, ODM_CMNINFO_POWER_SAVING, &pwrctrlpriv->bpower_saving);
+ 	ODM_CmnInfoInit(dm_odm, ODM_CMNINFO_RF_ANTENNA_TYPE, hal_data->TRxAntDivType);
+ 
+ 	for (i = 0; i < NUM_STA; i++)
+@@ -124,7 +124,7 @@ void rtl8188e_InitHalDm(struct adapter *Adapter)
+ {
+ 	struct hal_data_8188e *hal_data = GET_HAL_DATA(Adapter);
+ 	struct dm_priv	*pdmpriv = &hal_data->dmpriv;
+-	struct odm_dm_struct *dm_odm = &(hal_data->odmpriv);
++	struct odm_dm_struct *dm_odm = &hal_data->odmpriv;
+ 
+ 	dm_InitGPIOSetting(Adapter);
+ 	pdmpriv->DM_Type = DM_Type_ByDriver;
+@@ -216,7 +216,7 @@ u8 AntDivBeforeLink8188E(struct adapter *Adapter)
+ 	struct hal_data_8188e *hal_data = GET_HAL_DATA(Adapter);
+ 	struct odm_dm_struct *dm_odm = &hal_data->odmpriv;
+ 	struct sw_ant_switch *dm_swat_tbl = &dm_odm->DM_SWAT_Table;
+-	struct mlme_priv *pmlmepriv = &(Adapter->mlmepriv);
++	struct mlme_priv *pmlmepriv = &Adapter->mlmepriv;
+ 
+ 	/*  Condition that does not need to use antenna diversity. */
+ 	if (hal_data->AntDivCfg == 0)
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_mp.c b/drivers/staging/r8188eu/hal/rtl8188e_mp.c
+index cc24684945ef..f6d4029eae22 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_mp.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_mp.c
+@@ -11,7 +11,7 @@
+ s32 Hal_SetPowerTracking(struct adapter *padapter, u8 enable)
+ {
+ 	struct hal_data_8188e	*pHalData = GET_HAL_DATA(padapter);
+-	struct odm_dm_struct *pDM_Odm = &(pHalData->odmpriv);
++	struct odm_dm_struct *pDM_Odm = &pHalData->odmpriv;
+ 
+ 	if (!netif_running(padapter->pnetdev))
+ 		return _FAIL;
+@@ -30,7 +30,7 @@ s32 Hal_SetPowerTracking(struct adapter *padapter, u8 enable)
+ void Hal_GetPowerTracking(struct adapter *padapter, u8 *enable)
+ {
+ 	struct hal_data_8188e	*pHalData = GET_HAL_DATA(padapter);
+-	struct odm_dm_struct *pDM_Odm = &(pHalData->odmpriv);
++	struct odm_dm_struct *pDM_Odm = &pHalData->odmpriv;
+ 
+ 	*enable = pDM_Odm->RFCalibrateInfo.TxPowerTrackControl;
+ }
+@@ -135,7 +135,7 @@ void Hal_MPT_CCKTxPowerAdjustbyIndex(struct adapter *pAdapter, bool beven)
+ {
+ 	struct hal_data_8188e	*pHalData = GET_HAL_DATA(pAdapter);
+ 	struct mpt_context *pMptCtx = &pAdapter->mppriv.MptCtx;
+-	struct odm_dm_struct *pDM_Odm = &(pHalData->odmpriv);
++	struct odm_dm_struct *pDM_Odm = &pHalData->odmpriv;
+ 	s32		TempCCk;
+ 	u8		CCK_index, CCK_index_old = 0;
+ 	u8		Action = 0;	/* 0: no action, 1: even->odd, 2:odd->even */
+@@ -209,7 +209,7 @@ void Hal_SetChannel(struct adapter *pAdapter)
+ {
+ 	struct hal_data_8188e	*pHalData = GET_HAL_DATA(pAdapter);
+ 	struct mp_priv	*pmp = &pAdapter->mppriv;
+-	struct odm_dm_struct *pDM_Odm = &(pHalData->odmpriv);
++	struct odm_dm_struct *pDM_Odm = &pHalData->odmpriv;
+ 	u8		eRFPath;
+ 	u8		channel = pmp->channel;
+ 
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c b/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c
+index 6628ad1eb1bb..60fa7e4f5f2c 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_rf6052.c
+@@ -186,7 +186,7 @@ i		 *  Currently, we cannot fully disable driver dynamic
+ 		}
+ 	}
+ 	for (idx1 = RF_PATH_A; idx1 <= RF_PATH_B; idx1++) {
+-		ptr = (u8 *)(&(TxAGC[idx1]));
++		ptr = (u8 *)(&TxAGC[idx1]);
+ 		for (idx2 = 0; idx2 < 4; idx2++) {
+ 			if (*ptr > RF6052_MAX_TX_PWR)
+ 				*ptr = RF6052_MAX_TX_PWR;
+diff --git a/drivers/staging/r8188eu/hal/rtl8188eu_led.c b/drivers/staging/r8188eu/hal/rtl8188eu_led.c
+index 51fd30b25a5f..2c573e86d3f8 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188eu_led.c
++++ b/drivers/staging/r8188eu/hal/rtl8188eu_led.c
+@@ -74,21 +74,21 @@ void SwLedOff(struct adapter *padapter, struct LED_871x *pLed)
+ /*		Initialize all LED_871x objects. */
+ void rtl8188eu_InitSwLeds(struct adapter *padapter)
+ {
+-	struct led_priv *pledpriv = &(padapter->ledpriv);
++	struct led_priv *pledpriv = &padapter->ledpriv;
+ 
+ 	pledpriv->LedControlHandler = LedControl8188eu;
+ 
+-	InitLed871x(padapter, &(pledpriv->SwLed0), LED_PIN_LED0);
++	InitLed871x(padapter, &pledpriv->SwLed0, LED_PIN_LED0);
+ 
+-	InitLed871x(padapter, &(pledpriv->SwLed1), LED_PIN_LED1);
++	InitLed871x(padapter, &pledpriv->SwLed1, LED_PIN_LED1);
+ }
+ 
+ /*	Description: */
+ /*		DeInitialize all LED_819xUsb objects. */
+ void rtl8188eu_DeInitSwLeds(struct adapter *padapter)
+ {
+-	struct led_priv	*ledpriv = &(padapter->ledpriv);
++	struct led_priv	*ledpriv = &padapter->ledpriv;
+ 
+-	DeInitLed871x(&(ledpriv->SwLed0));
+-	DeInitLed871x(&(ledpriv->SwLed1));
++	DeInitLed871x(&ledpriv->SwLed0);
++	DeInitLed871x(&ledpriv->SwLed1);
+ }
+diff --git a/drivers/staging/r8188eu/hal/rtl8188eu_xmit.c b/drivers/staging/r8188eu/hal/rtl8188eu_xmit.c
+index e4aa0b3bc7b7..a38e10b16233 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188eu_xmit.c
++++ b/drivers/staging/r8188eu/hal/rtl8188eu_xmit.c
+@@ -170,7 +170,7 @@ static s32 update_txdesc(struct xmit_frame *pxmitframe, u8 *pmem, s32 sz, u8 bag
+ 	struct hal_data_8188e	*haldata = GET_HAL_DATA(adapt);
+ 	struct tx_desc	*ptxdesc = (struct tx_desc *)pmem;
+ 	struct mlme_ext_priv	*pmlmeext = &adapt->mlmeextpriv;
+-	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
++	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
+ 	int	bmcst = IS_MCAST(pattrib->ra);
+ 
+ 	if (adapt->registrypriv.mp_mode == 0) {
+@@ -489,23 +489,23 @@ s32 rtl8188eu_xmitframe_complete(struct adapter *adapt, struct xmit_priv *pxmitp
+ 	switch (pfirstframe->attrib.priority) {
+ 	case 1:
+ 	case 2:
+-		ptxservq = &(psta->sta_xmitpriv.bk_q);
++		ptxservq = &psta->sta_xmitpriv.bk_q;
+ 		phwxmit = pxmitpriv->hwxmits + 3;
+ 		break;
+ 	case 4:
+ 	case 5:
+-		ptxservq = &(psta->sta_xmitpriv.vi_q);
++		ptxservq = &psta->sta_xmitpriv.vi_q;
+ 		phwxmit = pxmitpriv->hwxmits + 1;
+ 		break;
+ 	case 6:
+ 	case 7:
+-		ptxservq = &(psta->sta_xmitpriv.vo_q);
++		ptxservq = &psta->sta_xmitpriv.vo_q;
+ 		phwxmit = pxmitpriv->hwxmits;
+ 		break;
+ 	case 0:
+ 	case 3:
+ 	default:
+-		ptxservq = &(psta->sta_xmitpriv.be_q);
++		ptxservq = &psta->sta_xmitpriv.be_q;
+ 		phwxmit = pxmitpriv->hwxmits + 2;
+ 		break;
+ 	}
+diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
+index 6ecadba17963..2bce4334ba68 100644
+--- a/drivers/staging/r8188eu/hal/usb_halinit.c
++++ b/drivers/staging/r8188eu/hal/usb_halinit.c
+@@ -409,7 +409,7 @@ static void _InitBeaconMaxError(struct adapter *Adapter, bool		InfraMode)
+ 
+ static void _InitHWLed(struct adapter *Adapter)
+ {
+-	struct led_priv *pledpriv = &(Adapter->ledpriv);
++	struct led_priv *pledpriv = &Adapter->ledpriv;
+ 
+ 	if (pledpriv->LedStrategy != HW_LED)
+ 		return;
+@@ -1053,7 +1053,7 @@ static unsigned int rtl8188eu_inirp_init(struct adapter *Adapter)
+ 	struct recv_buf *precvbuf;
+ 	uint	status;
+ 	struct intf_hdl *pintfhdl = &Adapter->iopriv.intf;
+-	struct recv_priv *precvpriv = &(Adapter->recvpriv);
++	struct recv_priv *precvpriv = &Adapter->recvpriv;
+ 	u32 (*_read_port)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pmem);
+ 
+ 	_read_port = pintfhdl->io_ops._read_port;
+@@ -1092,7 +1092,7 @@ static unsigned int rtl8188eu_inirp_deinit(struct adapter *Adapter)
+ /*  */
+ static void _ReadLEDSetting(struct adapter *Adapter, u8 *PROMContent, bool AutoloadFail)
+ {
+-	struct led_priv *pledpriv = &(Adapter->ledpriv);
++	struct led_priv *pledpriv = &Adapter->ledpriv;
+ 	struct hal_data_8188e	*haldata = GET_HAL_DATA(Adapter);
+ 
+ 	pledpriv->bRegUseLed = true;
+@@ -1428,7 +1428,7 @@ static void SetHwReg8188EU(struct adapter *Adapter, u8 variable, u8 *val)
+ 		{
+ 			u64	tsf;
+ 			struct mlme_ext_priv	*pmlmeext = &Adapter->mlmeextpriv;
+-			struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
++			struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
+ 
+ 			tsf = pmlmeext->TSFValue - do_div(pmlmeext->TSFValue,
+ 							  pmlmeinfo->bcn_interval * 1024) - 1024; /* us */
+@@ -1486,7 +1486,7 @@ static void SetHwReg8188EU(struct adapter *Adapter, u8 variable, u8 *val)
+ 			rtw_write8(Adapter, REG_BCN_CTRL, rtw_read8(Adapter, REG_BCN_CTRL)|BIT(4));
+ 		} else { /* sitesurvey done */
+ 			struct mlme_ext_priv	*pmlmeext = &Adapter->mlmeextpriv;
+-			struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
++			struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
+ 
+ 			if ((is_client_associated_to_ap(Adapter)) ||
+ 			    ((pmlmeinfo->state&0x03) == WIFI_FW_ADHOC_STATE)) {
+@@ -1556,7 +1556,7 @@ static void SetHwReg8188EU(struct adapter *Adapter, u8 variable, u8 *val)
+ 		{
+ 			u8 u1bAIFS, aSifsTime;
+ 			struct mlme_ext_priv	*pmlmeext = &Adapter->mlmeextpriv;
+-			struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
++			struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
+ 
+ 			rtw_write8(Adapter, REG_SLOT, val[0]);
+ 
+@@ -1980,19 +1980,19 @@ GetHalDefVar8188EUsb(
+ 	case HAL_DEF_RA_DECISION_RATE:
+ 		{
+ 			u8 MacID = *((u8 *)pValue);
+-			*((u8 *)pValue) = ODM_RA_GetDecisionRate_8188E(&(haldata->odmpriv), MacID);
++			*((u8 *)pValue) = ODM_RA_GetDecisionRate_8188E(&haldata->odmpriv, MacID);
+ 		}
+ 		break;
+ 	case HAL_DEF_RA_SGI:
+ 		{
+ 			u8 MacID = *((u8 *)pValue);
+-			*((u8 *)pValue) = ODM_RA_GetShortGI_8188E(&(haldata->odmpriv), MacID);
++			*((u8 *)pValue) = ODM_RA_GetShortGI_8188E(&haldata->odmpriv, MacID);
+ 		}
+ 		break;
+ 	case HAL_DEF_PT_PWR_STATUS:
+ 		{
+ 			u8 MacID = *((u8 *)pValue);
+-			*((u8 *)pValue) = ODM_RA_GetHwPwrStatus_8188E(&(haldata->odmpriv), MacID);
++			*((u8 *)pValue) = ODM_RA_GetHwPwrStatus_8188E(&haldata->odmpriv, MacID);
+ 		}
+ 		break;
+ 	case HW_VAR_MAX_RX_AMPDU_FACTOR:
+@@ -2089,8 +2089,8 @@ static void UpdateHalRAMask8188EUsb(struct adapter *adapt, u32 mac_id, u8 rssi_l
+ 	struct sta_info	*psta;
+ 	struct hal_data_8188e	*haldata = GET_HAL_DATA(adapt);
+ 	struct mlme_ext_priv	*pmlmeext = &adapt->mlmeextpriv;
+-	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
+-	struct wlan_bssid_ex	*cur_network = &(pmlmeinfo->network);
++	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
++	struct wlan_bssid_ex	*cur_network = &pmlmeinfo->network;
+ 
+ 	if (mac_id >= NUM_STA) /* CAM_SIZE */
+ 		return;
+@@ -2103,8 +2103,8 @@ static void UpdateHalRAMask8188EUsb(struct adapter *adapt, u32 mac_id, u8 rssi_l
+ 		networkType = judge_network_type(adapt, cur_network->SupportedRates, supportRateNum) & 0xf;
+ 		raid = networktype_to_raid(networkType);
+ 		mask = update_supported_rate(cur_network->SupportedRates, supportRateNum);
+-		mask |= (pmlmeinfo->HT_enable) ? update_MSC_rate(&(pmlmeinfo->HT_caps)) : 0;
+-		if (support_short_GI(adapt, &(pmlmeinfo->HT_caps)))
++		mask |= (pmlmeinfo->HT_enable) ? update_MSC_rate(&pmlmeinfo->HT_caps) : 0;
++		if (support_short_GI(adapt, &pmlmeinfo->HT_caps))
+ 			shortGIrate = true;
+ 		break;
+ 	case 1:/* for broadcast/multicast */
+@@ -2150,7 +2150,7 @@ static void UpdateHalRAMask8188EUsb(struct adapter *adapt, u32 mac_id, u8 rssi_l
+ 		/* to do ,for 8188E-SMIC */
+ 		rtl8188e_set_raid_cmd(adapt, mask);
+ 	} else {
+-		ODM_RA_UpdateRateInfo_8188E(&(haldata->odmpriv),
++		ODM_RA_UpdateRateInfo_8188E(&haldata->odmpriv,
+ 				mac_id,
+ 				raid,
+ 				mask,
+@@ -2165,8 +2165,8 @@ static void UpdateHalRAMask8188EUsb(struct adapter *adapt, u32 mac_id, u8 rssi_l
+ static void SetBeaconRelatedRegisters8188EUsb(struct adapter *adapt)
+ {
+ 	u32 value32;
+-	struct mlme_ext_priv	*pmlmeext = &(adapt->mlmeextpriv);
+-	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
++	struct mlme_ext_priv	*pmlmeext = &adapt->mlmeextpriv;
++	struct mlme_ext_info	*pmlmeinfo = &pmlmeext->mlmext_info;
+ 	u32 bcn_ctrl_reg			= REG_BCN_CTRL;
+ 	/* reset TSF, enable update TSF, correcting TSF On Beacon */
+ 
+diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+index 80d44aafd8ea..012846ea8263 100644
+--- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
++++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+@@ -279,12 +279,12 @@ static void interrupt_handler_8188eu(struct adapter *adapt, u16 pkt_len, u8 *pbu
+ 	}
+ 
+ 	/*  HISR */
+-	memcpy(&(haldata->IntArray[0]), &(pbuf[USB_INTR_CONTENT_HISR_OFFSET]), 4);
+-	memcpy(&(haldata->IntArray[1]), &(pbuf[USB_INTR_CONTENT_HISRE_OFFSET]), 4);
++	memcpy(&haldata->IntArray[0], &pbuf[USB_INTR_CONTENT_HISR_OFFSET], 4);
++	memcpy(&haldata->IntArray[1], &pbuf[USB_INTR_CONTENT_HISRE_OFFSET], 4);
+ 
+ 	/*  C2H Event */
+ 	if (pbuf[0] != 0)
+-		memcpy(&(haldata->C2hArray[0]), &(pbuf[USB_INTR_CONTENT_C2H_OFFSET]), 16);
++		memcpy(&haldata->C2hArray[0], &pbuf[USB_INTR_CONTENT_C2H_OFFSET], 16);
+ }
+ 
+ static int recvbuf2recvframe(struct adapter *adapt, struct sk_buff *pskb)
 -- 
 2.32.0
 
