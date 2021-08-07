@@ -2,107 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16F23E33AD
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 07:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE4B3E33B1
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 08:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbhHGFvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 01:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbhHGFvl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 01:51:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE439C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 22:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=Ykyesqpa4JO1NvFqTxgiNWjE2F02tCDu86tfvqTqp5I=; b=dcxAIEdxlcHNVRsfon7rL611he
-        iOOcHOMwcoxeTT2kjeFWEng08Ari8+liWepmhnzvI10RCwYhWOvQlhIZyL5bNR9ZoEHs+VMh6zton
-        tsgVAhzvsm0uzInPpGdTQEGQXhOC0RJyaqh+L6BocP+Giznb/wVUH940E9umBfutZrkB8guaK1qop
-        7vhd9jzxUuyyPngM01qo942bLozfP/kmkW9nMGj2cuEN+Q4h9cLSQsWyDvMUkt/gaCEp6VXnXwNSA
-        3UxXlS7lk/VRqjR9tvs3sZJyX0zuChKidVo6iIWtNdccdiLrqhW7ACycfTGJf3TbTQoBg9XH1k7IP
-        fhK94X/Q==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mCFEo-008sfu-Cl; Sat, 07 Aug 2021 05:51:17 +0000
-Subject: Re: [openrisc:for-next 3/3] arch/openrisc/include/asm/setup.h:11:13:
- error: expected '=', ',', ';', 'asm' or '__attribute__' before
- 'or1k_early_setup'
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     kernel test robot <lkp@intel.com>,
-        Stafford Horne <shorne@gmail.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-References: <202108052040.jEu76XzR-lkp@intel.com>
- <50c8f758-91de-8f0a-57e1-07e71afcdbde@infradead.org>
-Message-ID: <251bc79f-7703-4a1c-bb8e-0c61bbcefc4c@infradead.org>
-Date:   Fri, 6 Aug 2021 22:51:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S231261AbhHGGBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 02:01:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230510AbhHGGBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 02:01:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DED87601FC;
+        Sat,  7 Aug 2021 06:00:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628316056;
+        bh=pRCXQbSDfKcbCDcb5diYxUIXtPmRe8UAf8/jepZ7dR0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZDoLQYkcUIS/GwPs8PbjZ2MuextlFpPFK7mt2bGCOMP81NbCFR8R0b1BRcw4/OGOc
+         uM+YFl8Nr0B/+9+RL/c2Phz9TDm/3pY7beGaYdDS9/Vgd/KGq/Cnc9wsTZ7Vx05paN
+         sMZKkx7KLleRR/PhB/6xJNN5FE3l51ldRe2wP6cg=
+Date:   Sat, 7 Aug 2021 08:00:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     psodagud@codeaurora.org
+Cc:     rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PM: sleep: core: Avoid setting power.must_resume to false
+Message-ID: <YQ4hj+blYxHdUl79@kroah.com>
+References: <1627313074-436260-1-git-send-email-psodagud@codeaurora.org>
+ <YQl6Bnjrnypbsz/s@kroah.com>
+ <0fe9a873ca77293151a61f64d355895f@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <50c8f758-91de-8f0a-57e1-07e71afcdbde@infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <0fe9a873ca77293151a61f64d355895f@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/21 10:46 PM, Randy Dunlap wrote:
-> On 8/5/21 5:04 AM, kernel test robot wrote:
->> tree:   https://github.com/openrisc/linux.git for-next
->> head:   19e14f3a81d227f1c8b8d5371de28b3ab3deb556
->> commit: 19e14f3a81d227f1c8b8d5371de28b3ab3deb556 [3/3] openrisc: Fix compiler warnings in setup
->> config: openrisc-randconfig-r005-20210804 (attached as .config)
->> compiler: or1k-linux-gcc (GCC) 10.3.0
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # https://github.com/openrisc/linux/commit/19e14f3a81d227f1c8b8d5371de28b3ab3deb556
->>          git remote add openrisc https://github.com/openrisc/linux.git
->>          git fetch --no-tags openrisc for-next
->>          git checkout 19e14f3a81d227f1c8b8d5371de28b3ab3deb556
->>          # save the attached .config to linux build tree
->>          mkdir build_dir
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=openrisc SHELL=/bin/bash
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>     In file included from arch/openrisc/include/asm/page.h:35,
->>                      from drivers/usb/atm/speedtch.c:12:
->>>> arch/openrisc/include/asm/setup.h:11:13: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'or1k_early_setup'
->>        11 | void __init or1k_early_setup(void *fdt);
->>           |             ^~~~~~~~~~~~~~~~
->>
->>
->> vim +11 arch/openrisc/include/asm/setup.h
+On Fri, Aug 06, 2021 at 08:07:08AM -0700, psodagud@codeaurora.org wrote:
+> On 2021-08-03 10:16, Greg KH wrote:
+> > On Mon, Jul 26, 2021 at 08:24:34AM -0700, Prasad Sodagudi wrote:
+> > > There are variables(power.may_skip_resume and dev->power.must_resume)
+> > > and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices
+> > > after
+> > > a system wide suspend transition.
+> > > 
+> > > Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
+> > > its "noirq" and "early" resume callbacks to be skipped if the device
+> > > can be left in suspend after a system-wide transition into the working
+> > > state. PM core determines that the driver's "noirq" and "early" resume
+> > > callbacks should be skipped or not with dev_pm_skip_resume()
+> > > function by
+> > > checking power.may_skip_resume variable.
+> > > 
+> > > power.must_resume variable is getting set to false in
+> > > __device_suspend()
+> > > function without checking device's DPM_FLAG_MAY_SKIP_RESUME and
+> > > dev->power.usage_count variables. This is leading to failure to call
+> > > resume handler for some of the devices suspended in early suspend
+> > > phase.
+> > > So check device's DPM_FLAG_MAY_SKIP_RESUME flag before
+> > > setting power.must_resume variable.
+> > > 
+> > > Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+> > > ---
+> > >  drivers/base/power/main.c | 6 +++++-
+> > >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> > > index d568772..8eebc4d 100644
+> > > --- a/drivers/base/power/main.c
+> > > +++ b/drivers/base/power/main.c
+> > > @@ -1642,7 +1642,11 @@ static int __device_suspend(struct device
+> > > *dev, pm_message_t state, bool async)
+> > >  	}
+> > > 
+> > >  	dev->power.may_skip_resume = true;
+> > > -	dev->power.must_resume = false;
+> > > +	if ((atomic_read(&dev->power.usage_count) <= 1) &&
+> > > +			(dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME)))
+> > 
+> > What is preventing that atomic value from changing _right_ after you
+> > just read this?
+> > 
+> > and very odd indentation, checkpatch didn't complain about this?
+> Sure. I will fix indentation problem once Rafael reviewed this patch.
 > 
-> Hi Stafford-
+> > What commit does this fix?  Does it need to be backported to older
+> > kernels?
 > 
-> #include <linux/init.h>
+> No. LTS - 5.4 do not have this problem.
 > 
-> and where is this file?
+> > Wait, how is your "noirq" device even getting called here?  Shouldn't
+> > __device_suspend_noirq() be called instead?  Why isn't that the path for
+> > your device?
 > 
-> #include <asm-generic/setup.h>
+> Hi Gregh and Rafael,
+> 
+> This is regarding suspend/resume(s2idle) scenario of devices and differences
+> between the LTS kernel 5.4 and 5.10 with respect to devices suspend and
+> resume. Observing that devices suspended in suspend_late stage are not
+> getting resumed in resume_early stage.
+> 1)	LTS kernel 5.4 kernel do not have this problem but 5.10 kernel shows this
+> problem.
+> 2)	Commit - 6e176bf8d46194353163c2cb660808bc633b45d9 (PM: sleep: core: Do
+> not skip callbacks in the resume phase) is skipping the driver early_resume
+> callbacks.
+> @@ -804,15 +793,25 @@ static int device_resume_early(struct device *dev,
+> pm_message_t state, bool asyn
+>         } else if (dev->bus && dev->bus->pm) {
+>                 info = "early bus ";
+>                 callback = pm_late_early_op(dev->bus->pm, state);
+> -       } else if (dev->driver && dev->driver->pm) {
+> +       }
+> +       if (callback)
+> +               goto Run;
+> +
+> +       if (dev_pm_may_skip_resume(dev))
+> +               goto Skip;
+> In device_resume_early function dev->power.must_resume is used to skip the
+> resume call back. It looks this function is expecting that,
+> __device_suspend_noirq() would set dev->power.must_resume = true for the
+> devices which does not have DPM_FLAG_MAY_SKIP_RESUME flag set.
+> 
+> static int __device_suspend_noirq(struct device *dev, pm_message_t state,
+> bool async)
+> {
+> â€¦
+> â€¦
+>         /*
+>          * Skipping the resume of devices that were in use right before the
+>          * system suspend (as indicated by their PM-runtime usage counters)
+>          * would be suboptimal.  Also resume them if doing that is not
+> allowed
+>          * to be skipped.
+>          */
+>         if (atomic_read(&dev->power.usage_count) > 1 ||
+>             !(dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME) &&
+>               dev->power.may_skip_resume))
+>                 dev->power.must_resume = true;
+> 
+> 
+> 3)	Problematic scenario is as follows -  During the device suspend/resume
+> scenario all the devices in  the suspend_late stage are successful and some
+> device can fail to suspend in suspend_noirq(device_suspend_noirq->
+> __device_suspend_noirq) phase.
+> As a device failed in dpm_noirq_suspend_devices phase, dpm_resume_noirq is
+> getting called to resume devices in dpm_late_early_list in the noirq phase.
+> 4)	During the Devices_early_resume stage
+> dpm_resume_early()-->device_resume_early() functions skipping the devices
+> early resume callbacks.
+>  799         if (dev_pm_skip_resume(dev))
+> 800	              goto Skip;
+> 
+> 5)	Devices suspended in suspend_late stage are not getting resumed in
+> Devices_early_resume stage because of Commit -
+> 6e176bf8d46194353163c2cb660808bc633b45d9 (PM: sleep: core: Do not skip
+> callbacks in the resume phase) is skipping the driver early_resume callbacks
+> when dev->power.must_resume is false.
+> 
+> 6)	Below portion of the code in __device_suspend_noirq is not getting
+> executed for some drivers successfully suspended in suspend_late stage and
+> there is no chance to set must_resume to true.  So these devices are always
+> having dev->power.must_resume=false.
+> For example -
+> i)	Devices A, B, C have suspend_late and resume_early handlers.
+> ii)	Devices X, Y, Z  have suspend_noirq and resume_noirq handlers.
+> Devices are getting suspended in this order â€“ A, B, X , C , Y and Z and
+> device X return failure for suspend_noirq callback. In this scenario, device
+> C would never execute below portion of the code to set
+> dev->power.must_resume = true and device â€“ C would not get resumed in
+> resume_early  stage.
+> 
+> 1192 static int __device_suspend_noirq(struct device *dev, pm_message_t
+> state, bool async)
+> 1193 {
+> â€¦.
+> â€¦.
+> 1245         /*
+> 1246          * Skipping the resume of devices that were in use right before
+> the
+> 1247          * system suspend (as indicated by their PM-runtime usage
+> counters)
+> 1248          * would be suboptimal.  Also resume them if doing that is not
+> allowed
+> 1249          * to be skipped.
+> 1250          */
+> 1251         if (atomic_read(&dev->power.usage_count) > 1 ||
+> 1252             !(dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME)
+> &&
+> 1253               dev->power.may_skip_resume))
+> 1254                 dev->power.must_resume = true;
+> 1255
+> 1256         if (dev->power.must_resume)
+> 1257                 dpm_superior_set_must_resume(dev);
+> 1258
 
-Found it.
+Ok, that explains it a bit better, thank you.  Can you please try to
+expand on your changelog text when you resubmit this to include this
+information and properly identify what commit caused this problem to
+happen by adding a Fixes: tag?
 
-> 
->>       9
->>      10    #ifndef __ASSEMBLY__
->>    > 11    void __init or1k_early_setup(void *fdt);
->>      12    #endif
->>      13
->>
->> ---
-> 
+thanks,
 
-
--- 
-~Randy
-
+greg k-h
