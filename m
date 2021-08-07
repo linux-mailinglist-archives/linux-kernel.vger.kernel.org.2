@@ -2,81 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA6F3E36FD
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 21:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216033E3702
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 22:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbhHGTvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 15:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49586 "EHLO
+        id S229780AbhHGUAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 16:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhHGTvn (ORCPT
+        with ESMTP id S229517AbhHGUAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 15:51:43 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4250EC0613CF;
-        Sat,  7 Aug 2021 12:51:25 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id a8so21692308pjk.4;
-        Sat, 07 Aug 2021 12:51:25 -0700 (PDT)
+        Sat, 7 Aug 2021 16:00:39 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE6EC0613CF;
+        Sat,  7 Aug 2021 13:00:21 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id l18so15767374wrv.5;
+        Sat, 07 Aug 2021 13:00:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PUpPOWxL045CKRo2uxohAQk+V9FMO9Xk1/XrIbM1nk8=;
-        b=YfsqI6kzLUEA/4W0wphMzZIcGh5p9MLUcmNr2h6AhMxbpb5iVfpNtJIG0tqG2YLClp
-         Iog/Z8FiFRROrW6pNwKlS/tsFCKX/DFEFVPOyrAzBvBU2cxvPLP394rHTYiU8Rhzt2Rt
-         kuJhMCv582ziAd5xgeDEpiSZkMGq3Q5jt9PliwJzSdWYCTjDLb8lnJD1xUwUCmSNRSx/
-         Xs4CMRagEjkr7k7MWYYy5/SvKXvbbxNiEmgIxI2e766vD4Rt78Jf6D8gEUq+5c12ye/L
-         Tl6nys2V2YvqaVGQ8NNkP8tNOe+SMOExbuIDcOPjthRevYnPHDmtGkMR/70njK73cf2l
-         NCmA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RzbhyLykkfoaT/kVYaDJ7ejBhY0DKubqMfb6PVkLHwo=;
+        b=dtyMR6K6WMSClGZdiIO+A2bSsCtz41/bZGVsE0fHqJonOZmyOtTqWzakEWc4iTX7Yg
+         8Btq/F1D+VibmvuorDpQte1c9HD85wHtQGjHcae/4Vio17uqRW1qGHNeB9iWhCTqu6iS
+         vqAsLNP80bKlJZz+pRvg4iwD5EL7KvAyxXTxIfc5EQDGucBEzEPL63IvFlyBgnDNavBB
+         MTU4XuooVWbW6xLwVlQegO48FO1EzZWBzDDXbG7gd2qDx9goIhMqXDFZd1DC74VpClfq
+         aGUtWe/KMk+30sbQ3AkAbqUrH2G0cluI3fUAEQzKD//pSqR7q9HrA7WX1KWwZHT3yTFN
+         YlNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PUpPOWxL045CKRo2uxohAQk+V9FMO9Xk1/XrIbM1nk8=;
-        b=HqX42K3MzO+fE61L7atc7EAIMw9D+3zP2XTfRWpExcxWIztKSHDwNed/z/ZfEQT46o
-         RTsldVqA6ymb6fYlTFEJM4AOWFH2HVHywI8vGNm9G6NLRp0yr0eRFrxpzBdrVLj2ahOh
-         eIaMTt7AptpQLhgr3NFSc+aejXD6oaOn2c0Tc49Rir+tr9eAWnwTEB3LVMatcJC7iaUP
-         haF71eKHgnwt+faIF7NICsnLzx+/ZiHaLp/g3Jiof4m3SHBW/yLgIFnIjI/vDSdcIZxV
-         Sx9WU1Z/oaxhHemGa5CtX8Z4CjLxFO+uIQD7FuB8XzbOHVTSbapMrwfV4jbtFbxzZEMI
-         N+jQ==
-X-Gm-Message-State: AOAM531cEMwAoX8yfI7aNSnW2BQDIN7qCyByGWNDPt03X6NAMtq8Wdps
-        LDlTzWirUdi3ZhVKilRNJzcEkYs29OS87Uta
-X-Google-Smtp-Source: ABdhPJz0Q8RaphBE6dk6xq2EXZ71TGra3pL/ru35t+5Vcw7avkuLgY965olotCMD9AOmKeO0qFIVXw==
-X-Received: by 2002:a63:4b1c:: with SMTP id y28mr179565pga.219.1628365884602;
-        Sat, 07 Aug 2021 12:51:24 -0700 (PDT)
-Received: from localhost ([49.207.135.150])
-        by smtp.gmail.com with ESMTPSA id s23sm9126989pfg.208.2021.08.07.12.51.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Aug 2021 12:51:24 -0700 (PDT)
-Date:   Sun, 8 Aug 2021 01:21:21 +0530
-From:   Aakash Hemadri <aakashhemadri123@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/30] 5.10.57-rc1 review
-Message-ID: <20210807195121.ezbazpq3xacmuuab@xps.yggdrail>
-References: <20210806081113.126861800@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RzbhyLykkfoaT/kVYaDJ7ejBhY0DKubqMfb6PVkLHwo=;
+        b=C2s+XDBkxmxoluwE+oBGSUYpjiGkKir+W3gf27FLNaJ+zkpKl68Lvb/06MVOMVYrDk
+         ukY58sqQBmd4js6gmX7mXX+jU9cGSogWtdG5WMtQAi4tv1lLpuDvvXAzHLoNAfFQ/q9q
+         sulQwprOPh66naVKoau50JVkIhb5cmKEg7K8Df7gSG7dF2sAU0cb3zEQ58PYtjAcauNO
+         loAlcTlRzWPMhHZcUXVOrxthudRFMhltDP64L7jFs1Kw5BcNHCzcLKs/bzGfpxIjsZbF
+         AINduj08Gx3SuArXFBeLrCrdKoe3EPJFyudzlxee2yDipFg8h4N1mL/JdhhH3nrDL/Ka
+         07aQ==
+X-Gm-Message-State: AOAM530TIaPbCjduEI09vJlm/wzfeA2/Fs+PGVAthW6N4h8Gy3nUtq7h
+        d5QWfUPj0Qz28XEVjJ7wYK7ffIeGJPkiTl4kKzU=
+X-Google-Smtp-Source: ABdhPJw3itfVhrolUsDScP9mY22q/fczJJfWu0DuI+q8JKjDZ4YAOgv3i6wKnisXGPZV678zcmlYGHsT/2Bs4cXtsNA=
+X-Received: by 2002:adf:ea41:: with SMTP id j1mr16929204wrn.147.1628366419990;
+ Sat, 07 Aug 2021 13:00:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806081113.126861800@linuxfoundation.org>
+References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
+ <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
+ <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org> <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+ <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org>
+In-Reply-To: <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Sat, 7 Aug 2021 13:04:34 -0700
+Message-ID: <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     Caleb Connolly <caleb.connolly@linaro.org>
+Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/06 10:16AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.57 release.
-> There are 30 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
-> Anything received after that time might be too late.
+On Sat, Aug 7, 2021 at 12:21 PM Caleb Connolly
+<caleb.connolly@linaro.org> wrote:
+>
+> Hi Rob, Akhil,
+>
+> On 29/07/2021 21:53, Rob Clark wrote:
+> > On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
+> > <caleb.connolly@linaro.org> wrote:
+> >>
+> >>
+> >>
+> >> On 29/07/2021 21:24, Rob Clark wrote:
+> >>> On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
+> >>> <caleb.connolly@linaro.org> wrote:
+> >>>>
+> >>>> Hi Rob,
+> >>>>
+> >>>> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
+> >>>> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
+> >>>> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
+> >>>
+> >>> *ohh*, yeah, ok, that would explain it
+> >>>
+> >>>> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
+> >>>> at the higher frequencies.
+> >>>>
+> >>>> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
+> >>>> glxgear.
+> >>>>
+> >>>> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
+> >>>> at the voltage the hardware needs to be stable.
+> >>>>
+> >>>> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
+> >>>> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
+> >>>>
+> >>>
+> >>> tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
+> >>> on CC and I added sboyd, maybe one of them knows better.
+> >>>
+> >>> In the short term, removing the higher problematic OPPs from dts might
+> >>> be a better option than this patch (which I'm dropping), since there
+> >>> is nothing stopping other workloads from hitting higher OPPs.
+> >> Oh yeah that sounds like a more sensible workaround than mine .
+> >>>
+> >>> I'm slightly curious why I didn't have problems at higher OPPs on my
+> >>> c630 laptop (sdm850)
+> >> Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
+> >>
+> >> Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
+> >> crash where yours doesn't?
+> >
+> > I've not heard any reports of similar issues from the handful of other
+> > folks with c630's on #aarch64-laptops.. but I can't really say if that
+> > is luck or not.
+> It looks like this affects at least the OnePlus 6 and PocoPhone F1, I've done some more poking and the following diff
+> seems to fix the stability issues completely, it seems the delay is required to let the update propagate.
+>
+> This doesn't feel like the right fix, but hopefully it's enough to come up with a better solution than disabling the new
+> devfreq behaviour on a630.
+>
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> index d7cec7f0dde0..69e2a5e84dae 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> @@ -139,6 +139,10 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
+>                  return;
+>          }
+>
+> +       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
+> +
+> +       usleep_range(300, 500);
+> +
 
-Compiled, booted, with no regressions on arm, x86_64
+Hmm, this is going to be in the critical path on idle -> active
+transition (ie. think response time to user-input).. so we defn don't
+want to do this unconditionally..
 
-Tested-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+If I understand the problem, we just want to limit how far we jump the
+gpu freq in one go.. maybe deleting the lowest (and perhaps highest)
+OPP would accomplish that?  Could that be done in the board(s)'s
+toplevel dts files?
 
-Aakash Hemadri
+BR,
+-R
+
+>          gmu_write(gmu, REG_A6XX_GMU_DCVS_ACK_OPTION, 0);
+>
+>          gmu_write(gmu, REG_A6XX_GMU_DCVS_PERF_SETTING,
+> @@ -158,7 +162,6 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, struct dev_pm_opp *opp)
+>          if (ret)
+>                  dev_err(gmu->dev, "GMU set GPU frequency error: %d\n", ret);
+>
+> -       dev_pm_opp_set_opp(&gpu->pdev->dev, opp);
+>          pm_runtime_put(gmu->dev);
+>   }
+> >
+> > Maybe just remove it for affected devices?  But I'll defer to Bjorn.
+> >
+> > BR,
+> > -R
+> >
+>
+> --
+> Kind Regards,
+> Caleb (they/them)
