@@ -2,157 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9363E3639
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 18:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BEB3E363B
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 18:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhHGQAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 12:00:53 -0400
-Received: from mout.gmx.net ([212.227.15.18]:42673 "EHLO mout.gmx.net"
+        id S232517AbhHGQBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 12:01:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230332AbhHGQAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 12:00:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628352012;
-        bh=2ti2yxVR7eGU9gsi3/G84Kbo5FGNC3s1wKPVeeD9hR4=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=WKuTI4cpaUXrlSiKZUQCvTksGS9NSb6T2n/3B/l4D/+p4t0X62Lv5MaCJHHcWYF0H
-         IcSvrXEvI5P/7QOOFFnEj5veUIOZfUzl0O7zO5fP+eGJex9henjoqTjP2y/ZgFoRMR
-         SEZwjshHrKXimekV4h6Vm/EEp8KNAjYuYpvASltg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MZCb5-1mhWYs32AL-00VA1H; Sat, 07 Aug 2021 18:00:11 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        id S230332AbhHGQBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 12:01:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2124460E93;
+        Sat,  7 Aug 2021 16:01:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628352078;
+        bh=917vbVCJXDxDQWlScnrHlQPR9z35WOCIibIa/BrFdXk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ENfiSdB0YnZ3mKmzaURt6FQTJzF4idehwLIvZD0ltEofw2tR+D+xZCivfD3XUiuRs
+         8lZXzO7NxwG08K+nuVweDSgU7yiKqsjZ6rzsEX6NKJ/7j0j0EutapKsqP3TJPgb1J6
+         yMb8OvASumdOSSCkcn8kmpAlNJAaOFbzUs6T2IWGmJLJQKJHcnjjLk1B5xDiZdUC9V
+         QGLZ602rpG9HoHA8ZnGXGz7ZWW35Vo7OgQg3RCb6U/vlkv/WEEThU1piOaDPjfdZDx
+         yz1JEG0J4XQzQJSy0Ci3FrQn7CkMLX6uhpGYUcZszhkCTAG565Vf1Q6XnN52pEihMC
+         lkF9D8SO3/baQ==
+Received: by pali.im (Postfix)
+        id C9230A52; Sat,  7 Aug 2021 18:01:15 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Guillaume Nault <g.nault@alphalink.fr>
+Cc:     linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3] drivers/edac/edac_mc: Remove all strcpy() uses
-Date:   Sat,  7 Aug 2021 17:59:57 +0200
-Message-Id: <20210807155957.10069-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+Subject: [PATCH] ppp: Fix generating ppp unit id when ifname is not specified
+Date:   Sat,  7 Aug 2021 18:00:50 +0200
+Message-Id: <20210807160050.17687-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vPhsX4qcrwNVuGiLz6ovSR1AIIzaIr5pTe5P5tLUSytoH1sDb+f
- HGw0nc6yYSQMsX9gei/2Aax1cN6bC/lAJvdJy2kLsQFkkqRDz960w+JyzD5QSGHS7n0jBZR
- 4LzqBeetm6kDtJGNIlwyO6soSBtkYsd0nRLIdR21Wi3TurtZFmWurLai82u5wTm20nuk7ID
- vG294ocgQmLZfK1+tb8nQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:h7M3H6W0ww8=:HCsiqgamO4sSLT3l4nO3Hg
- zmqGIXBHgHJZfwHnJql7KqnJfqTiTLwPdPLmjEkIkc2em9YGOpqAXhW31zGvjJqHRZYXxm4Qc
- pgj4gUUIViEgxRntbHAv1wHaNfvMHVIRAKUtkLqGvVBpZ3XH5juD3ax86x8AHk0dJVyUgjOA3
- uT+agLv/ejjv6bSpFZvX3vzjTSrLWB7EBAZ8Xnw1TZec8dCibb6ZyV+Ko/4QNwScvCDqx3KVe
- xsN39EVjJokM43++YsIpeVXsA6LSSaB2ucWlPXSUaYiRXdJUGRjppGUuV8TUrvnsNHplhIHs5
- F8HojC6SoXDlXKIUpcUXeVsBFBEG214szSaReRy4K5/PVf6cLav5Ps/oL1ZoUdcuwpPfZhvNG
- BNZvNPzNks/mzLm5Rjh1mR+c8JMpJopS1agcMMhcnwf5tsUSofbM1vVQbXwZyX/opcg8NKzru
- t2v7jZY25Nu3thh84HicEYBCVABjERcfOcjf6dr1q+aDo+2HCiHOIwA6zUiVHb+kwqUFq1LO8
- ZGglcnugkrHbxMjvYRd3yhcEsmR8FeK4P8DT3AkbA4DZDD/vdCfn8TvzsgiI9RCUZ5tLRyi7L
- gu4NwXwpm9Q4mcQv5qSo1+CXFg2/OtK4CxyCAYdDJ5lSv435i1ToaKyLcvOwWZn1RGHZlJKaS
- NF0VnCEZW71j+WQ2kLrNoL2yCR4mPehTMdgjEhV92sj38MWG3Jmym+0X9Xz+4DVbaSCnpFtgC
- 0FwETzBbVUSp+g1x+1ETEcbtpPGfYsdDMkJAw65/twSVQ7rW0i7Z2mT1ccn1vdlCVxnhAK2EK
- rxq6YPNPioupTWykgJ1PHl0gTA3qnhOgYhCXS+XQDnA+BJyJTlBeaMWYSq5f7SbL6NctSt2ev
- Pv1l/oY/XISgXJovVeRYlMeDwAGcMXoyhtAMfk+D/tZ/8PtUzeCIdtvqIKhECXU8tXmnEE8FH
- q4AD5jJcztiftxUd84HCogK7NAMj5gn1cD54pYAQQ+gna+zM33E0EX9CwANRqc0ii/KuLtn/G
- cCHY2mc7Ill5PoS0Qjrq2KDQ/wQsNwlwm6/RzBUJp/kR1S4W4C2KGGcisVlAWQ4400Sg71goK
- UEXhB/3RDOm90ekoJngZfGin155tldQba+ajtSr8mAMi3NXVrLD+dT3VA==
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strcpy() performs no bounds checking on the destination buffer. This
-could result in linear overflows beyond the end of the buffer, leading
-to all kinds of misbehaviors. The safe replacement is strscpy().
+When registering new ppp interface via PPPIOCNEWUNIT ioctl then kernel has
+to choose interface name as this ioctl API does not support specifying it.
 
-This is a previous step in the path to remove the strcpy() function
-entirely from the kernel.
+Kernel in this case register new interface with name "ppp<id>" where <id>
+is the ppp unit id, which can be obtained via PPPIOCGUNIT ioctl. This
+applies also in the case when registering new ppp interface via rtnl
+without supplying IFLA_IFNAME.
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-This is a task of the KSPP [1]
+PPPIOCNEWUNIT ioctl allows to specify own ppp unit id which will kernel
+assign to ppp interface, in case this ppp id is not already used by other
+ppp interface.
 
-[1] https://github.com/KSPP/linux/issues/88
+In case user does not specify ppp unit id then kernel choose the first free
+ppp unit id. This applies also for case when creating ppp interface via
+rtnl method as it does not provide a way for specifying own ppp unit id.
 
-Changelog v1 -> v2
-- Use the strscpy() instead of scnprintf() to add labels and follow a
-  code pattern more similar to the current one (advance "p" and
-  decrement "left") (Robert Richter).
+If some network interface (does not have to be ppp) has name "ppp<id>"
+with this first free ppp id then PPPIOCNEWUNIT ioctl or rtnl call fails.
 
-Changelog v2 -> v3
-- Rename the "left" variable to "len" (Robert Richter).
-- Use strlen(p) instead of strlen(OTHER_LABEL) to decrement "len" and
-  increment "p" as otherwise "left" could underflow and p overflow
-  (Robert Richter).
+And registering new ppp interface is not possible anymore, until interface
+which holds conflicting name is renamed. Or when using rtnl method with
+custom interface name in IFLA_IFNAME.
 
-Previous versions:
+As list of allocated / used ppp unit ids is not possible to retrieve from
+kernel to userspace, userspace has no idea what happens nor which interface
+is doing this conflict.
 
-v1
-https://lore.kernel.org/linux-hardening/20210725162954.9861-1-len.baker@gm=
-x.com/
+So change the algorithm how ppp unit id is generated. And choose the first
+number which is not neither used as ppp unit id nor in some network
+interface with pattern "ppp<id>".
 
-v2
-https://lore.kernel.org/linux-hardening/20210801143558.12674-1-len.baker@g=
-mx.com/
+This issue can be simply reproduced by following pppd call when there is no
+ppp interface registered and also no interface with name pattern "ppp<id>":
 
- drivers/edac/edac_mc.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+    pppd ifname ppp1 +ipv6 noip noauth nolock local nodetach pty "pppd +ipv6 noip noauth nolock local nodetach notty"
 
-diff --git a/drivers/edac/edac_mc.c b/drivers/edac/edac_mc.c
-index f6d462d0be2d..0cdb1e9320ba 100644
-=2D-- a/drivers/edac/edac_mc.c
-+++ b/drivers/edac/edac_mc.c
-@@ -1032,6 +1032,7 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
-_type type,
- 	int i, n_labels =3D 0;
- 	struct edac_raw_error_desc *e =3D &mci->error_desc;
- 	bool any_memory =3D true;
-+	size_t len;
+Or by creating the one ppp interface (which gets assigned ppp unit id 0),
+renaming it to "ppp1" and then trying to create a new ppp interface (which
+will always fails as next free ppp unit id is 1, but network interface with
+name "ppp1" exists).
 
- 	edac_dbg(3, "MC%d\n", mci->mc_idx);
+This patch fixes above described issue by generating new and new ppp unit
+id until some non-conflicting id with network interfaces is generated.
 
-@@ -1086,6 +1087,7 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
-_type type,
- 	 */
- 	p =3D e->label;
- 	*p =3D '\0';
-+	len =3D sizeof(e->label);
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ drivers/net/ppp/ppp_generic.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
- 	mci_for_each_dimm(mci, dimm) {
- 		if (top_layer >=3D 0 && top_layer !=3D dimm->location[0])
-@@ -1113,11 +1115,11 @@ void edac_mc_handle_error(const enum hw_event_mc_e=
-rr_type type,
- 			p =3D e->label;
- 			*p =3D '\0';
- 		} else {
--			if (p !=3D e->label) {
--				strcpy(p, OTHER_LABEL);
--				p +=3D strlen(OTHER_LABEL);
--			}
--			strcpy(p, dimm->label);
-+			const char *text =3D (p !=3D e->label) ? OTHER_LABEL :
-+				dimm->label;
-+
-+			strscpy(p, text, len);
-+			len -=3D strlen(p);
- 			p +=3D strlen(p);
- 		}
-
-@@ -1140,9 +1142,9 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
-_type type,
- 	}
-
- 	if (any_memory)
--		strcpy(e->label, "any memory");
-+		strscpy(e->label, "any memory", sizeof(e->label));
- 	else if (!*e->label)
--		strcpy(e->label, "unknown memory");
-+		strscpy(e->label, "unknown memory", sizeof(e->label));
-
- 	edac_inc_csrow(e, row, chan);
-
-=2D-
-2.25.1
+diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
+index 1c6ba5a5e081..9506abd8d7e1 100644
+--- a/drivers/net/ppp/ppp_generic.c
++++ b/drivers/net/ppp/ppp_generic.c
+@@ -284,7 +284,7 @@ static struct channel *ppp_find_channel(struct ppp_net *pn, int unit);
+ static int ppp_connect_channel(struct channel *pch, int unit);
+ static int ppp_disconnect_channel(struct channel *pch);
+ static void ppp_destroy_channel(struct channel *pch);
+-static int unit_get(struct idr *p, void *ptr);
++static int unit_get(struct idr *p, void *ptr, int min);
+ static int unit_set(struct idr *p, void *ptr, int n);
+ static void unit_put(struct idr *p, int n);
+ static void *unit_find(struct idr *p, int n);
+@@ -1155,9 +1155,20 @@ static int ppp_unit_register(struct ppp *ppp, int unit, bool ifname_is_set)
+ 	mutex_lock(&pn->all_ppp_mutex);
+ 
+ 	if (unit < 0) {
+-		ret = unit_get(&pn->units_idr, ppp);
++		ret = unit_get(&pn->units_idr, ppp, 0);
+ 		if (ret < 0)
+ 			goto err;
++		if (!ifname_is_set) {
++			while (1) {
++				snprintf(ppp->dev->name, IFNAMSIZ, "ppp%i", ret);
++				if (!__dev_get_by_name(ppp->ppp_net, ppp->dev->name))
++					break;
++				unit_put(&pn->units_idr, ret);
++				ret = unit_get(&pn->units_idr, ppp, ret + 1);
++				if (ret < 0)
++					goto err;
++			}
++		}
+ 	} else {
+ 		/* Caller asked for a specific unit number. Fail with -EEXIST
+ 		 * if unavailable. For backward compatibility, return -EEXIST
+@@ -3530,9 +3541,9 @@ static int unit_set(struct idr *p, void *ptr, int n)
+ }
+ 
+ /* get new free unit number and associate pointer with it */
+-static int unit_get(struct idr *p, void *ptr)
++static int unit_get(struct idr *p, void *ptr, int min)
+ {
+-	return idr_alloc(p, ptr, 0, 0, GFP_KERNEL);
++	return idr_alloc(p, ptr, min, 0, GFP_KERNEL);
+ }
+ 
+ /* put unit number back to a pool */
+-- 
+2.20.1
 
