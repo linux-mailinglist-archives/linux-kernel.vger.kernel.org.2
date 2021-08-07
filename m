@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720823E34E5
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83ABF3E34E7
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbhHGKkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 06:40:25 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:58187 "EHLO
+        id S232153AbhHGKkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 06:40:32 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:48927 "EHLO
         out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232050AbhHGKkX (ORCPT
+        by vger.kernel.org with ESMTP id S232057AbhHGKk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 06:40:23 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 74C4C5C00E4;
-        Sat,  7 Aug 2021 06:40:06 -0400 (EDT)
+        Sat, 7 Aug 2021 06:40:27 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7AFE75C00C2;
+        Sat,  7 Aug 2021 06:40:10 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sat, 07 Aug 2021 06:40:06 -0400
+  by compute1.internal (MEProxy); Sat, 07 Aug 2021 06:40:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
          h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=Y+R86tHeDAExu
-        pHL82StJkBXeuy0hLrNl1PAhb3tmnQ=; b=Vvpp7ryRq90TjFSFoUpKr03LH0bcR
-        Z2DW/ooxF7+LZJvu4F+cEtmMLnDojdtZw/8OkMBRoNXixN4XJFLOeplGlXLIn0Ru
-        j0gWZM1ViU4wB9/q2XBDub+oylZIliVkIKwxFwClv16C9J+HvdfWdHBLDMrV/kms
-        im5qsMGt1+m7lONTXMMNL2rZA68nNPU+02/G3YmQ1F3r9fmJVp0qIqJ7DSEoY+XS
-        FN8BssMfazcHnFlHvX4ksM9E4j+aJfJfCPirkC7A1Ah4PKPY6c6LuaoSvOyXqCgG
-        +msd08GZKtOlIbdIzz87/NmoiyKhASbtFpui14IL5O6q73Zmm7xBN4/Fw==
+        :mime-version:content-transfer-encoding; s=fm1; bh=tmsLsa/eRaufF
+        J8jRKvAmHCUqfWGYVXTYZw+tCYDWos=; b=hwMQKj39aHvYJor4Hv0WxCr9YbpZA
+        VCTmXQZ18ehWgIQrscHgliXLT6n54VyU75ZOBFOhVDHyXMQoNk12pyZbfWnZslVO
+        +B/mHrxtbfeHI84gZHttJAJM707aFM/1q3a3ii7gMJz2Cbo6IZaCFjuz9PhoqQfo
+        2SAZjRwguSz4kge1cnUEGDYFBXLAYKC/nAFMybgzWDA2VVOZwKVLMeJnnu8tsFy8
+        +NeK4ZXVeiFFHSPOQI4dtn/H1rpqdDzFs9P63p/caaLtmrqkcZxcpleB/mK2WRv+
+        SVmYoc4emISXw4eoPw25DoTJ8ve/+9buDF0jWU5NY2FGjtSgkq3dSd3Ag==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=Y+R86tHeDAExupHL82StJkBXeuy0hLrNl1PAhb3tmnQ=; b=TO/OLZdB
-        FDaqy+o6Ol+wMwTPxFG8b65YfKCJ7idNGFIw42w8XiYlF2y4L7pQuF0Ls9hvHtvJ
-        luh5ryGAAD8cMLz/gQyAXL7HZuBjNvJ1rK2JArsB5A/C8AjeAVTRKvjshwoGjrtF
-        Sl6eL90pAn6rspVlnLwGixyEn7r+0FIjeNv8qIkbW2PsqTm5O16Q+DxDZIVOJN0e
-        AsXA/dYKpQYLaEvdgFB31etMvHD/aUxOkjZki9j/Esh40al7whvxrwi7OYUD3hg4
-        xflJA2mZAbDZjSxKhbrLzA6xalYZ0dMzzXt+NoTQxuihaXWxG8lX3mJ7CrjH4lX4
-        9vh4501IIB556A==
-X-ME-Sender: <xms:BmMOYaeoQOYbRFK1holFX0kLMwkQbrN___xAn6wZCEJJ52EdEwWTag>
-    <xme:BmMOYUP197QUS28IHj0fykfklbNNX2V79tp3r5RGGIF10kFpT6GWocYc-GJJm6UFT
-    F0Z_3ynf6X5W3pPVRg>
-X-ME-Received: <xmr:BmMOYbj3Ef_WXPfBVIyUaCpI91AMLz-JuL_Ohz7EWBVOJEpjHXI4S1Jt5160sM4_QhNr97AeTU_H17DI4cCYjOG5CEizE_dNj-mT_qM_ycT_83oCCQ>
+        fm3; bh=tmsLsa/eRaufFJ8jRKvAmHCUqfWGYVXTYZw+tCYDWos=; b=wxXRI6iL
+        FwISmxM5Imiah6ghMNCTI0UyjHApIiS+CbWWI/AysIZ431yJJGL2Uj2tEX2G0ct5
+        4kO8n31Cq47RzCAeORs3h7awz+qK9wxbOL7l/YhaBHyhvJeOt+k9hC0HDD6bV1jq
+        Axq1NkPPNHjtYuTDhRug+Mw+/oblgJKIDGxwWACbKMNZaPSAWGZnCSbHTdV3iDxa
+        jmufqI8R4/XrrmB5pz8whWJDG+krGWEnbRkLusmHsQo+xWe9Stz8rAZdgw08dcPi
+        9C0TEdZqMl5MkBD/j2MbVvPmidPf4GsKgo19FIn+I19YGq4QW/a3g9kNlfeLeMzN
+        Gcg2x8gv5TSsqQ==
+X-ME-Sender: <xms:CmMOYdk4Ix4AFXuf48HVamPm_ETMy69lH8FO2Wr6MpTV70mcbD4rQA>
+    <xme:CmMOYY1GFFizimsyKA3qiaynGhfBOKGZ5jYTwwcdcKoquKHCrWIfRtnzb7zdPRWlc
+    o3gELAyOW-AZ2IlcsA>
+X-ME-Received: <xmr:CmMOYToQYf_zYT6NuBcM5GYDZnkzvxHY7wvuBpk2IYmREdiJZ5_afyRvFuVu7vVrteHJuLSVnV7cTjFeXKBmtS2KGssmiKsuNQWaB6QUR2BuRZ3DRA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeefgdefudcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
     ertddtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghi
-    rhesrghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepheffjeetteetke
-    ffhfdvgefhgeevvddvueejheehfeevfedufeegiedtheeujeelnecuffhomhgrihhnpehr
-    vghmrghrkhgrsghlvgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpegrlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
-X-ME-Proxy: <xmx:BmMOYX81ufG3h7kW-SjzwftJ2DbOgmcS-6Tt0KHmYPqXllETjEPvdw>
-    <xmx:BmMOYWulQwGaZdXji8wxbbB9PAIL6aoMvl3Y25oipHoKWjVUr2GI_A>
-    <xmx:BmMOYeEs9hm3DkkVc8tpHXwCces4eQ3CQpqYpIE6X7h5ZcGGxHLq0g>
-    <xmx:BmMOYT9WpRc3gX3zsg-MGvZntNWTMtycqN_7jnQIslElU5xEvx3FBQ>
+    rhesrghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepgeegtdetjeekge
+    eguefgheeuvedugedvteejveeiudegvddtkeffkeehtdetudfhnecuvehluhhsthgvrhfu
+    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegrlhhish
+    htrghirhdvfedrmhgv
+X-ME-Proxy: <xmx:CmMOYdlwQ3chZgL-g9DYHobJE7V4HOrFBPNUBqWnonRM9MLWKujOQQ>
+    <xmx:CmMOYb3GadFXCiQu6Wv-MyWmfOPMn5BSxy8JVKObhL42oe5KUbfVyA>
+    <xmx:CmMOYcsIus_1887dfguNQyYDbILxEECrdIDB91QY8IXSv0kJZhbH3w>
+    <xmx:CmMOYQmOAFCrTgzqWT3vW_XSwlOYlJJDNPY4b2hnx5B5UuiVgZQzGw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 7 Aug 2021 06:40:02 -0400 (EDT)
+ 7 Aug 2021 06:40:06 -0400 (EDT)
 From:   Alistair Francis <alistair@alistair23.me>
 To:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
         broonie@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         alistair23@gmail.com, Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v10 03/11] mfd: simple-mfd-i2c: Enable support for the silergy,sy7636a
-Date:   Sat,  7 Aug 2021 20:39:32 +1000
-Message-Id: <20210807103940.152-4-alistair@alistair23.me>
+Subject: [PATCH v10 04/11] regulator: sy7636a: Use the regmap directly
+Date:   Sat,  7 Aug 2021 20:39:33 +1000
+Message-Id: <20210807103940.152-5-alistair@alistair23.me>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210807103940.152-1-alistair@alistair23.me>
 References: <20210807103940.152-1-alistair@alistair23.me>
@@ -73,85 +73,65 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Alistair Francis <alistair@alistair23.me>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mfd/simple-mfd-i2c.c | 12 +++++++++++
- include/linux/mfd/sy7636a.h  | 41 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 53 insertions(+)
- create mode 100644 include/linux/mfd/sy7636a.h
+ drivers/regulator/sy7636a-regulator.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.c
-index 583e8c7924af..ce213c68b8cf 100644
---- a/drivers/mfd/simple-mfd-i2c.c
-+++ b/drivers/mfd/simple-mfd-i2c.c
-@@ -62,8 +62,20 @@ static int simple_mfd_i2c_probe(struct i2c_client *i2c)
- 	return ret;
- }
+diff --git a/drivers/regulator/sy7636a-regulator.c b/drivers/regulator/sy7636a-regulator.c
+index 37bf2a3c06b7..8360b3947ead 100644
+--- a/drivers/regulator/sy7636a-regulator.c
++++ b/drivers/regulator/sy7636a-regulator.c
+@@ -14,7 +14,7 @@
+ #include <linux/mfd/sy7636a.h>
  
-+static const struct mfd_cell sy7636a_cells[] = {
-+	{ .name = "sy7636a-regulator", },
-+	{ .name = "sy7636a-temperature", },
-+	{ .name = "sy7636a-thermal", },
-+};
-+
-+static const struct simple_mfd_data silergy_sy7636a = {
-+	.mfd_cell = sy7636a_cells,
-+	.mfd_cell_size = ARRAY_SIZE(sy7636a_cells),
-+};
-+
- static const struct of_device_id simple_mfd_i2c_of_match[] = {
- 	{ .compatible = "kontron,sl28cpld" },
-+	{ .compatible = "silergy,sy7636a", .data = &silergy_sy7636a},
- 	{}
+ struct sy7636a_data {
+-	struct sy7636a *sy7636a;
++	struct regmap *regmap;
+ 	struct gpio_desc *pgood_gpio;
  };
- MODULE_DEVICE_TABLE(of, simple_mfd_i2c_of_match);
-diff --git a/include/linux/mfd/sy7636a.h b/include/linux/mfd/sy7636a.h
-new file mode 100644
-index 000000000000..15caa54f0432
---- /dev/null
-+++ b/include/linux/mfd/sy7636a.h
-@@ -0,0 +1,41 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Functions to access SY3686A power management chip.
-+ *
-+ * Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
-+ */
-+
-+#ifndef __MFD_SY7636A_H
-+#define __MFD_SY7636A_H
-+
-+#include <linux/i2c.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/driver.h>
-+#include <linux/regulator/machine.h>
-+
-+#define SY7636A_REG_OPERATION_MODE_CRL		0x00
-+#define SY7636A_OPERATION_MODE_CRL_VCOMCTL	BIT(6)
-+#define SY7636A_OPERATION_MODE_CRL_ONOFF	BIT(7)
-+#define SY7636A_REG_VCOM_ADJUST_CTRL_L		0x01
-+#define SY7636A_REG_VCOM_ADJUST_CTRL_H		0x02
-+#define SY7636A_REG_VCOM_ADJUST_CTRL_MASK	0x01ff
-+#define SY7636A_REG_VLDO_VOLTAGE_ADJULST_CTRL	0x03
-+#define SY7636A_REG_POWER_ON_DELAY_TIME		0x06
-+#define SY7636A_REG_FAULT_FLAG			0x07
-+#define SY7636A_FAULT_FLAG_PG			BIT(0)
-+#define SY7636A_REG_TERMISTOR_READOUT		0x08
-+
-+#define SY7636A_REG_MAX				0x08
-+
-+#define VCOM_MIN		0
-+#define VCOM_MAX		5000
-+
-+#define VCOM_ADJUST_CTRL_MASK	0x1ff
-+// Used to shift the high byte
-+#define VCOM_ADJUST_CTRL_SHIFT	8
-+// Used to scale from VCOM_ADJUST_CTRL to mv
-+#define VCOM_ADJUST_CTRL_SCAL	10000
-+
-+#define FAULT_FLAG_SHIFT	1
-+
-+#endif /* __LINUX_MFD_SY7636A_H */
+ 
+@@ -70,14 +70,14 @@ static const struct regulator_desc desc = {
+ 
+ static int sy7636a_regulator_probe(struct platform_device *pdev)
+ {
+-	struct sy7636a *sy7636a = dev_get_drvdata(pdev->dev.parent);
++	struct regmap *regmap = dev_get_drvdata(pdev->dev.parent);
+ 	struct regulator_config config = { };
+ 	struct regulator_dev *rdev;
+ 	struct gpio_desc *gdp;
+ 	struct sy7636a_data *data;
+ 	int ret;
+ 
+-	if (!sy7636a)
++	if (!regmap)
+ 		return -EPROBE_DEFER;
+ 
+ 	gdp = devm_gpiod_get(pdev->dev.parent, "epd-pwr-good", GPIOD_IN);
+@@ -90,12 +90,12 @@ static int sy7636a_regulator_probe(struct platform_device *pdev)
+ 	if (!data)
+ 		return -ENOMEM;
+ 
+-	data->sy7636a = sy7636a;
++	data->regmap = regmap;
+ 	data->pgood_gpio = gdp;
+ 
+ 	platform_set_drvdata(pdev, data);
+ 
+-	ret = regmap_write(sy7636a->regmap, SY7636A_REG_POWER_ON_DELAY_TIME, 0x0);
++	ret = regmap_write(regmap, SY7636A_REG_POWER_ON_DELAY_TIME, 0x0);
+ 	if (ret) {
+ 		dev_err(pdev->dev.parent, "Failed to initialize regulator: %d\n", ret);
+ 		return ret;
+@@ -103,8 +103,7 @@ static int sy7636a_regulator_probe(struct platform_device *pdev)
+ 
+ 	config.dev = &pdev->dev;
+ 	config.dev->of_node = pdev->dev.parent->of_node;
+-	config.driver_data = sy7636a;
+-	config.regmap = sy7636a->regmap;
++	config.regmap = regmap;
+ 
+ 	rdev = devm_regulator_register(&pdev->dev, &desc, &config);
+ 	if (IS_ERR(rdev)) {
 -- 
 2.31.1
 
