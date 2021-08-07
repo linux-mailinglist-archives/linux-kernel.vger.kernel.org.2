@@ -2,136 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50643E3261
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 02:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1DD3E3267
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 02:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbhHGAfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 20:35:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:42446 "EHLO foss.arm.com"
+        id S229644AbhHGAnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 20:43:08 -0400
+Received: from mga09.intel.com ([134.134.136.24]:25985 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229379AbhHGAfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 20:35:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 870E731B;
-        Fri,  6 Aug 2021 17:35:02 -0700 (PDT)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A37FA3F66F;
-        Fri,  6 Aug 2021 17:35:01 -0700 (PDT)
-Subject: Re: [PATCH 3/3] PCI/ACPI: Add new quirk detection, enable bcm2711
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
-        nsaenz@kernel.org, bhelgaas@google.com, rjw@rjwysocki.net,
-        lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210806221256.GA1891371@bjorn-Precision-5520>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <5f4f484b-9eef-2722-405d-a7ff6259aa0f@arm.com>
-Date:   Fri, 6 Aug 2021 19:34:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S229577AbhHGAnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 20:43:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10068"; a="214448786"
+X-IronPort-AV: E=Sophos;i="5.84,301,1620716400"; 
+   d="scan'208";a="214448786"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2021 17:42:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,301,1620716400"; 
+   d="scan'208";a="669713569"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 06 Aug 2021 17:42:49 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mCAQK-000HNu-9r; Sat, 07 Aug 2021 00:42:48 +0000
+Date:   Sat, 07 Aug 2021 08:42:24 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:perf/urgent] BUILD SUCCESS
+ acade6379930dfa7987f4bd9b26d1a701cc1b542
+Message-ID: <610dd6f0.c0OoIjVEjfUMoB/E%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210806221256.GA1891371@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git perf/urgent
+branch HEAD: acade6379930dfa7987f4bd9b26d1a701cc1b542  perf/x86/intel: Apply mid ACK for small core
 
-Thanks for looking at this.
+elapsed time: 722m
 
-On 8/6/21 5:12 PM, Bjorn Helgaas wrote:
-> In subject, this or similar would match history:
-> 
->    PCI/ACPI: Add Broadcom bcm2711 MCFG quirk
-> 
-> On Thu, Aug 05, 2021 at 04:12:00PM -0500, Jeremy Linton wrote:
->> Now that we have a bcm2711 quirk, we need to be able to
->> detect it when the MCFG is missing. Use a namespace
->> property as an alternative to the MCFG OEM.
-> 
-> Rewrap to use ~75 columns.
-> 
-> Mention the DT namespace property here.
-> 
->> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
->> ---
->>   drivers/acpi/pci_mcfg.c | 14 ++++++++++++++
->>   1 file changed, 14 insertions(+)
->>
->> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
->> index 53cab975f612..7d77fc72c2a4 100644
->> --- a/drivers/acpi/pci_mcfg.c
->> +++ b/drivers/acpi/pci_mcfg.c
->> @@ -169,6 +169,9 @@ static struct mcfg_fixup mcfg_quirks[] = {
->>   	ALTRA_ECAM_QUIRK(1, 13),
->>   	ALTRA_ECAM_QUIRK(1, 14),
->>   	ALTRA_ECAM_QUIRK(1, 15),
->> +
->> +	{ "bcm2711", "", 0, 0, MCFG_BUS_ANY, &bcm2711_pcie_ops,
->> +	  DEFINE_RES_MEM(0xFD500000, 0xA000) },
->>   };
->>   
->>   static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
->> @@ -198,8 +201,19 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
->>   	u16 segment = root->segment;
->>   	struct resource *bus_range = &root->secondary;
->>   	struct mcfg_fixup *f;
->> +	const char *soc;
->>   	int i;
->>   
->> +	/*
->> +	 * This could be a machine with a PCI/SMC conduit,
->> +	 * which means it doens't have MCFG. Get the machineid from
->> +	 * the namespace definition instead.
-> 
-> s/SMC/SMCCC/ ?  Cover letter uses SMCCC (not sure it's relevant anyway)
-> s/doens't/doesn't/
-> 
-> Rewrap comment to use ~80 columns.
-> 
-> Seems pretty reasonable that a platform without standard ECAM might
-> not have MCFG, since MCFG basically implies ECAM.
+configs tested: 171
+configs skipped: 3
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Sure, on all the above comments.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210804
+i386                 randconfig-c001-20210805
+h8300                       h8s-sim_defconfig
+arm                            pleb_defconfig
+powerpc                 mpc832x_mds_defconfig
+sh                            titan_defconfig
+arc                     haps_hs_smp_defconfig
+m68k                        m5307c3_defconfig
+arm                          pcm027_defconfig
+arm                         lpc32xx_defconfig
+sh                           sh2007_defconfig
+mips                        nlm_xlp_defconfig
+ia64                             allmodconfig
+arc                                 defconfig
+mips                     loongson1b_defconfig
+arm                           sama5_defconfig
+sh                     sh7710voipgw_defconfig
+arm                     eseries_pxa_defconfig
+sh                   sh7724_generic_defconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                         wii_defconfig
+arm                        cerfcube_defconfig
+mips                      loongson3_defconfig
+mips                         tb0219_defconfig
+arm                       mainstone_defconfig
+powerpc                     mpc512x_defconfig
+um                                  defconfig
+sh                ecovec24-romimage_defconfig
+powerpc                   microwatt_defconfig
+sh                        dreamcast_defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc                     mpc5200_defconfig
+mips                           mtx1_defconfig
+mips                          rb532_defconfig
+m68k                            mac_defconfig
+powerpc                 mpc836x_mds_defconfig
+parisc                generic-32bit_defconfig
+arm                        mvebu_v7_defconfig
+sh                           se7343_defconfig
+arm                        multi_v7_defconfig
+powerpc                    sam440ep_defconfig
+powerpc                      mgcoge_defconfig
+powerpc                       ebony_defconfig
+sh                   secureedge5410_defconfig
+mips                        jmr3927_defconfig
+powerpc                        fsp2_defconfig
+arm                      footbridge_defconfig
+arm                           spitz_defconfig
+powerpc                     stx_gp3_defconfig
+openrisc                  or1klitex_defconfig
+powerpc                    adder875_defconfig
+m68k                          amiga_defconfig
+powerpc                     taishan_defconfig
+arm                        oxnas_v6_defconfig
+sh                          sdk7786_defconfig
+sh                            hp6xx_defconfig
+xtensa                         virt_defconfig
+arm                         axm55xx_defconfig
+sh                        apsh4ad0a_defconfig
+h8300                               defconfig
+parisc                           alldefconfig
+m68k                         apollo_defconfig
+arm                         palmz72_defconfig
+mips                            gpr_defconfig
+powerpc                 mpc834x_mds_defconfig
+ia64                                defconfig
+ia64                             allyesconfig
+x86_64                            allnoconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20210805
+x86_64               randconfig-a006-20210805
+x86_64               randconfig-a004-20210805
+x86_64               randconfig-a003-20210805
+x86_64               randconfig-a001-20210805
+x86_64               randconfig-a005-20210805
+i386                 randconfig-a005-20210804
+i386                 randconfig-a004-20210804
+i386                 randconfig-a002-20210804
+i386                 randconfig-a006-20210804
+i386                 randconfig-a003-20210804
+i386                 randconfig-a001-20210804
+i386                 randconfig-a005-20210806
+i386                 randconfig-a004-20210806
+i386                 randconfig-a002-20210806
+i386                 randconfig-a006-20210806
+i386                 randconfig-a003-20210806
+i386                 randconfig-a001-20210806
+x86_64               randconfig-a012-20210804
+x86_64               randconfig-a016-20210804
+x86_64               randconfig-a011-20210804
+x86_64               randconfig-a013-20210804
+x86_64               randconfig-a014-20210804
+x86_64               randconfig-a015-20210804
+i386                 randconfig-a012-20210806
+i386                 randconfig-a011-20210806
+i386                 randconfig-a015-20210806
+i386                 randconfig-a013-20210806
+i386                 randconfig-a014-20210806
+i386                 randconfig-a016-20210806
+i386                 randconfig-a012-20210805
+i386                 randconfig-a011-20210805
+i386                 randconfig-a015-20210805
+i386                 randconfig-a013-20210805
+i386                 randconfig-a014-20210805
+i386                 randconfig-a016-20210805
+i386                 randconfig-a012-20210804
+i386                 randconfig-a011-20210804
+i386                 randconfig-a015-20210804
+i386                 randconfig-a013-20210804
+i386                 randconfig-a014-20210804
+i386                 randconfig-a016-20210804
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-> 
-> Is "linux,pcie-quirk" the right property to look for?  It doesn't
-> sound very generic, and it doesn't sound like anything related to
-> ECAM.  Is it new?  I don't see it in the tree yet.  Should it be in
-> Documentation/devicetree/bindings/pci/pci.txt so we don't get a
-> different property name for every new platform?
+clang tested configs:
+x86_64               randconfig-c001-20210805
+x86_64               randconfig-c001-20210804
+x86_64               randconfig-a002-20210804
+x86_64               randconfig-a006-20210804
+x86_64               randconfig-a004-20210804
+x86_64               randconfig-a003-20210804
+x86_64               randconfig-a001-20210804
+x86_64               randconfig-a005-20210804
+x86_64               randconfig-a012-20210805
+x86_64               randconfig-a016-20210805
+x86_64               randconfig-a011-20210805
+x86_64               randconfig-a013-20210805
+x86_64               randconfig-a014-20210805
+x86_64               randconfig-a015-20210805
 
-Yes, I made it up. Someone else commented about the "linux," partially 
-because it should be "linux-" to conform with 
-https://github.com/UEFI/DSD-Guide. But also in the same context of it 
-being linux specific.  I think that guide is where it should end up, 
-rather than the devicetree bindings.
-
-I guess we can request addition to the uefi- but that seems like a 
-mistake this is really (hopefully?) a Linux specific properly as other 
-OS's will simply use the SMC. I think we could request another prefix if 
-we come up with a good one and think it belongs in that guide.
-
-
-
-
-> 
->> +	 */
->> +	if (!fwnode_property_read_string(acpi_fwnode_handle(root->device),
->> +					 "linux,pcie-quirk", &soc)) {
->> +		memcpy(mcfg_oem_id, soc, ACPI_OEM_ID_SIZE);
->> +	}
->> +
->>   	for (i = 0, f = mcfg_quirks; i < ARRAY_SIZE(mcfg_quirks); i++, f++) {
->>   		if (pci_mcfg_quirk_matches(f, segment, bus_range)) {
->>   			if (f->cfgres.start)
->> -- 
->> 2.31.1
->>
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
