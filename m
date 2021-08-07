@@ -2,240 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE143E36AC
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 20:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4153E36C9
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 20:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbhHGSeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 14:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32772 "EHLO
+        id S229769AbhHGSfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 14:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbhHGSeJ (ORCPT
+        with ESMTP id S229464AbhHGSfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 14:34:09 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83ADC0613D3
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 11:33:51 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id u3so21291455ejz.1
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 11:33:51 -0700 (PDT)
+        Sat, 7 Aug 2021 14:35:53 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F565C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 11:35:35 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id g13so25026946lfj.12
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 11:35:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+7Y/msCH4+WIghRoGpXzbcxGPWNGmLe0ipJxsgxzH0c=;
-        b=cAphF3tkOxEFQor5LaVL/4+3spdO4T0ncUJOi/OWWY2Y9n2TEsQYccagcx6PiwUZXx
-         HIB9yC9vA7PTluySAhTxIzPUhF7MOcFgrijxX+aCJlrbj6nZ37aIYh3npmEP31V0Kpiw
-         ijE88gjlij/0Dh8SYXqJXnZxaKMESxWgFlbKWlqoiuS370oNQSQ7wPQx7niFiaV9C8FQ
-         TU8HfLnoj3EDvq1Ykfl64YFRmCnlB1bGLUy7L/iCSHCGIZrTepvZjCyvVEPqL7u8Sf5O
-         c3AXGQiyiEskrPQrRAtqZuquMPQdKraOwFalS1F46nQeb/BJj8X/PuaIT5p9AcUVZk6V
-         WusA==
+         :cc;
+        bh=zMQAIZcGPoAZR0d005NxFzAT1cH+2rezexuQq2s5Nmg=;
+        b=WnqZF1wEg6hyBHE1RzeEjFG5+hzHVSxSnAZMpPbOlBMQooBO0RA5IbY8DNrVoN9RWx
+         YpbjI/bV25mEJ/9jHY/aJAmGRxNv2Fk5za8qj3d0cwtcZLzU/kQmlEg0ynbgZbHQBtAJ
+         SyMK7xg17VCUnLo4AJBAdxelTzmhVa5HpGVB9ZPDtKsbaHae2XHB6P6SMU6vlxd21Ze6
+         yl2hzxQ0FM1OL+qomTp3V3CFT0G5MeoHCssKqTVTXbwk+DrVHQdjJgtrO0vOm6AMYGwZ
+         amrH2P+NRNa1ElDrLw6fk3cP4rU/v89a2cXFCXEOT4pcdePV4qAe33rNYeLyTIneOY3W
+         yZBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+7Y/msCH4+WIghRoGpXzbcxGPWNGmLe0ipJxsgxzH0c=;
-        b=eVQ6mfAzyOySSuvyyQY1qzDnZkI7utxvha3WoBZ6I1qSiksr7iA8OaZp7V/e19ltia
-         2BagK2ynja440yA5TEXK0sUtiKcgFXiBVKm12R9y1LAyogeTXYCcip6bJ2H11/yrwuBq
-         J3UdC2crKC06FHdsAfnYgvHQHozo8FFFv9F8cF/9KJ5ww9Z0HaLgbKUmP03pEU7ERkkL
-         R1klm5AoDivq0f8gCW1g9VtBs3U3JI+iJ7AiTcqYoDLDODVYhwj4aV2iZwKUzr2X79Rv
-         yKNzbOPJ4skVR9SoIOuggNLKDVPyZnSIHr6PNCO/IB30ixYvRnvwoeoX9BM7rgfuR2Nr
-         dGow==
-X-Gm-Message-State: AOAM530+tzNXd9vtCR39qijhW5opL0cBR7UOG/Xxlz/Oyw38ExUoqZ6b
-        WPKGnh3amwcrGXDCGJCtfdo5YVgZpGq4n7/1XK0u9A==
-X-Google-Smtp-Source: ABdhPJwhIvpQPJU0jhFjtYDbwQfjWedcjmzLkpNKmNapc4l78Kd0rf1o0gNCa9JcWSI3heit12oXoMzGlD54vRL17SQ=
-X-Received: by 2002:a17:907:94c6:: with SMTP id dn6mr15825189ejc.287.1628361230043;
- Sat, 07 Aug 2021 11:33:50 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=zMQAIZcGPoAZR0d005NxFzAT1cH+2rezexuQq2s5Nmg=;
+        b=r6zNuiM7hHUwsxyZU35jlFm6ZW9FVXfzURLkTSjtILBW9n2rnjGrrgvntjEHfO3NJQ
+         VsCQ5vJia2qHKlXSdQY4Ui/odInyVwHVyuPaK5i4VohVuwUO+ekg9EShkcJcRjm/qi3s
+         M8okH0V/oIHMC0XwDKpYVoVCjnJT3nJ+yYPj5gBDcb1Nd5cZLeJn+1OONmpeLPr3Vbnu
+         IQUW5LV4oo2lji93z7Us0eU+AFSKIEENmm6jQ8/Z8ge7jwSyjtR+OOshNXRZWEWMw3aQ
+         bq5zdJ6UwvMyUgLfBnSVNFzKs9xhW59WGllKHjpH1kZby5oIi9OKamVXDFbjYHVzwprI
+         mWEQ==
+X-Gm-Message-State: AOAM530KRJFivScNEpQLckjkPLPfvtg+xJIi49JA0CBBqhhZhFzbwA/L
+        nwvsqqmKhT5G4dh+KEyqsvYQcHZFS4D4hKWGkaUzcw==
+X-Google-Smtp-Source: ABdhPJzOv04ncKyacNrhyQgJgqiSy+AvgRyUtCA5QAtEfwBgWImBkmB4nfJXNJ0odR6ERj4vD1/Vyii3qz+IV/OlMpg=
+X-Received: by 2002:a05:6512:6c9:: with SMTP id u9mr9486675lff.411.1628361333155;
+ Sat, 07 Aug 2021 11:35:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210806081113.126861800@linuxfoundation.org>
-In-Reply-To: <20210806081113.126861800@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 8 Aug 2021 00:03:38 +0530
-Message-ID: <CA+G9fYvNi5utM44pC6kJ5Ym2LCFHKi=pfSXXNHb3+ND=tOjy8Q@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/30] 5.10.57-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <20210806182126.2842876-1-oupton@google.com> <87pmup1q8w.wl-maz@kernel.org>
+In-Reply-To: <87pmup1q8w.wl-maz@kernel.org>
+From:   Oliver Upton <oupton@google.com>
+Date:   Sat, 7 Aug 2021 11:35:21 -0700
+Message-ID: <CAOQ_QsiZgpHsLGF8Fp7+oiKPZXuW-vGsjPdpwKhJ06XZAxDfVQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH] clocksource/arm_arch_timer: Fix masking for high
+ freq counters
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Aug 2021 at 13:49, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Hi Marc,
+
+On Sat, Aug 7, 2021 at 3:52 AM Marc Zyngier <maz@kernel.org> wrote:
 >
-> This is the start of the stable review cycle for the 5.10.57 release.
-> There are 30 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Hi Oliver,
 >
-> Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
-> Anything received after that time might be too late.
+> On Fri, 06 Aug 2021 19:21:26 +0100,
+> Oliver Upton <oupton@google.com> wrote:
+> >
+> > Unfortunately, the architecture provides no means to determine the bit
+> > width of the system counter. However, we do know the following from the
+> > specification:
+> >
+> >  - the system counter is at least 56 bits wide
+> >  - Roll-over time of not less than 40 years
+> >
+> > To date, the arch timer driver has depended on the first property,
+> > assuming any system counter to be 56 bits wide and masking off the rest.
+> > However, combining a narrow clocksource mask with a high frequency
+> > counter could result in prematurely wrapping the system counter by a
+> > significant margin. For example, a 56 bit wide, 1GHz system counter
+> > would wrap in a mere 2.28 years!
+> >
+> > This is a problem for two reasons: v8.6+ implementations are required to
+> > provide a 64 bit, 1GHz system counter. Furthermore, before v8.6,
+> > implementers may select a counter frequency of their choosing.
+> >
+> > Fix the issue by deriving a valid clock mask based on the second
+> > property from above. Set the floor at 56 bits, since we know no system
+> > counter is narrower than that.
+> >
+> > Suggested-by: Marc Zyngier <maz@kernel.org>
+> > Signed-off-by: Oliver Upton <oupton@google.com>
+> > ---
+> > This patch was tested with QEMU, tweaked to provide a 1GHz system
+> > counter frequency, as I could not easily figure out how to tweak the
+> > base FVP to provide a 1GHz counter.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.57-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
+> <FVP>
+> "bp.refcounter.base_frequency" is the property you are looking for. In
+> general, passing --list-params to the model reveals a treasure trove
+> of weird and wonderful options that can be used to configure the model
+> to your liking.
+> </FVP>
+
+Ah! Thanks for the tip. I didn't find the fast models documentation to
+be too terribly helpful.
+> >
+> > +/*
+> > + * The minimum amount of time a generic timer is guaranteed to not roll over
 >
-> thanks,
+> nit: s/timer/counter/
 >
-> greg k-h
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Ack.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > + * (40 years)
+>
+> For later reference, could you add the section of the ARMv8 ARM where
+> this is mentioned? Something like 'ARM DDI 0487G.a D11.1.2 ("The
+> system counter")', either here or in the comment further down.
+>
 
-## Build
-* kernel: 5.10.57-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.10.y
-* git commit: 2966d5d5122963b08200afc8de1d4f284cd6c31d
-* git describe: v5.10.56-31-g2966d5d51229
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.56-31-g2966d5d51229
+Sure thing. I think I'll drop it on the function below since we depend
+on two properties of the system counter there.
 
-## No regressions (compared to v5.10.56)
+> > +static int __init arch_counter_get_width(void)
+> > +{
+> > +     u64 min_cycles = MIN_ROLLOVER_SECS * arch_timer_get_cntfrq();
+>
+> That's unfortunately wishful thinking. We have stupidly broken systems
+> out there that do not set CNTFRQ_EL0, and instead rely on DT
+> properties to describe the counter frequency. You're likely to end up
+> with a glorious zero as a result, with interesting consequences...
 
-## No fixes (compared to v5.10.56)
+Blech. I didn't read the DT hooks for the driver.  That's awful.
 
-## Test result summary
-total: 89683, pass: 71939, fail: 3437, skip: 12726, xfail: 1581
+> Use arch_timer_rate instead, which will be set as by the time you
+> register the counter.
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 2 total, 2 passed, 0 failed
-* hi6220-hikey: 2 total, 2 passed, 0 failed
-* i386: 27 total, 27 passed, 0 failed
-* juno-r2: 2 total, 2 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 2 total, 2 passed, 0 failed
-* x86: 2 total, 2 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
+Ack.
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* timesync-off
-* v4l2-compliance
+>
+> > +
+> > +     /* guarantee the returned width is within the valid range */
+> > +     return max(56, min(64, ilog2(min_cycles)));
+>
+> Maybe better written as "clamp_val(ilog2(min_cycles), 56, 64);".
+>
+
+Agreed.
+
+> > +     width = arch_counter_get_width();
+> > +     clocksource_counter.mask = CLOCKSOURCE_MASK(width);
+> > +     cyclecounter.mask = CLOCKSOURCE_MASK(width);
+>
+> Since you move this to be computed at runtime, how about dropping the
+> static initialisation of the mask fields?
+>
+
+Yep, already made the change locally after mailing out :)
+
+> > +
+> >       if (!arch_counter_suspend_stop)
+> >               clocksource_counter.flags |= CLOCK_SOURCE_SUSPEND_NONSTOP;
+> >       start_count = arch_timer_read_counter();
+> > @@ -1040,8 +1065,7 @@ static void __init arch_counter_register(unsigned type)
+> >       timecounter_init(&arch_timer_kvm_info.timecounter,
+> >                        &cyclecounter, start_count);
+> >
+> > -     /* 56 bits minimum, so we assume worst case rollover */
+> > -     sched_clock_register(arch_timer_read_counter, 56, arch_timer_rate);
+> > +     sched_clock_register(arch_timer_read_counter, width, arch_timer_rate);
+> >  }
+> >
+> >  static void arch_timer_stop(struct clock_event_device *clk)
+>
+> Another thing that needs addressing for high frequency counter support
+> is to move away from TVAL programming and switch to CVAL, as the
+> maximum deadline we can currently program is 4.2s at 1GHz.
+>
+> Fun fact: it has the interesting consequence of breaking XGene-1,
+> which implemented CVAL in terms of TVAL instead of the other way
+> around (what were these guys thinking?)
+
+Yikes!
+
+> , though I don't think anyone
+> will notice in practice. I have a preliminary patch on a branch
+> somewhere that I'll try to dust up and post in the coming days.
+
+Sounds good, I'll clean this one up and send it out too.
 
 --
-Linaro LKFT
-https://lkft.linaro.org
+Thanks,
+Oliver
