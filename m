@@ -2,114 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D997F3E32A6
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 04:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D4E3E32A8
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 04:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhHGCCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 22:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
+        id S230122AbhHGCDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 22:03:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhHGCCS (ORCPT
+        with ESMTP id S229749AbhHGCDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 22:02:18 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A758C0613CF;
-        Fri,  6 Aug 2021 19:02:01 -0700 (PDT)
+        Fri, 6 Aug 2021 22:03:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF67C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 19:03:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=/J4tKVW+an4YqzZpky0ZZI9/CoT+k+T+4SM/TLT14Ks=; b=djzqCUGdiuQ7yW/bbum4/iEbAT
-        Bh0d4iDEKBYoSS8UM04tMXI4KVuc/fiCHnCF0WmugjOb2yB9cGbWf5MIgNisdsYYmA2QfrzSi6Ega
-        otKvCQffVBhuaJUTbYiAHMQWiV4jSizZwPtO3rq6wLgvkRihEaCoxPX/wdcGrYIReArbmNI2ndSHL
-        NoZ8CF+pI2IC8NXLzcK1pSONNmvrNGAisiJWpR9EQqWdFt3mvaQld/Mp4Ty6WrNH4b7AQ3ovfwhCp
-        jgw/4P43b3/E9gBerehP8JMdVNW0+YChXbbFPXxRa0mms0XIiNnKquVr8OkV4qVCOXxe+82vZ6ua3
-        Epe4zUvg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mCBeo-006VPk-B9; Sat, 07 Aug 2021 02:01:50 +0000
-Subject: Re: [PATCH 1/2] mm/PAGE_IDLE_FLAG: Set PAGE_EXTENSION for none-64BIT
-To:     SeongJae Park <sj38.park@gmail.com>, akpm@linux-foundation.org
-Cc:     SeongJae Park <sjpark@amazon.de>, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
-        willy@infradead.org, linux-damon@amazon.com
-References: <20210806092246.30301-1-sjpark@amazon.de>
- <20210806095153.6444-1-sj38.park@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <829fd5ac-4761-9861-0517-4293bf9344cf@infradead.org>
-Date:   Fri, 6 Aug 2021 19:01:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=w9N8Ou48Y2LFVsV0kIh2BGeXdTIG63Sn+jN5i3pEhAw=; b=EkD06ErMt8LCsJv+sA6F2x0MRG
+        GSAvw4jk71oNuw//OcjExjulPEF7NOAc08+bDZQJWORiX9WSOGPZRl5BZVspOfe55axgP+vTCJj92
+        SH1iX/JPxZobF97Nfpg/1LouHMGysLjk6Mt8Gw/EuE38n55bNxyKnwVtf3nC+8BZLgtX6Lws3Bpqv
+        P3iDwTKF35sj1JHnSROYyDuHZqC7ME0RPUWHFT6gWrOIwgwYfqxbDdFBvstKJGdN/XRskxMUBkZ4t
+        pHbYL0+e03gaOJu2a9hV0XdsryZqo9jdhaaxEBlpKD/WDfKchVk51sV489zxAKiqcxdF3l2EuRqOJ
+        1JOoiz1Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mCBfV-008mWL-Cp; Sat, 07 Aug 2021 02:02:45 +0000
+Date:   Sat, 7 Aug 2021 03:02:33 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] mm: migrate: Move the page count validation to the
+ proper place
+Message-ID: <YQ3puWSgUvfvIYjv@casper.infradead.org>
+References: <cover.1628174413.git.baolin.wang@linux.alibaba.com>
+ <1f7e1d083864fbb17a20a9c8349d2e8b427e20a3.1628174413.git.baolin.wang@linux.alibaba.com>
+ <YQwBD55FZyoY+C5D@casper.infradead.org>
+ <a02346d7-1a79-eb92-cb1f-033e6b58fa3f@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20210806095153.6444-1-sj38.park@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a02346d7-1a79-eb92-cb1f-033e6b58fa3f@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/21 2:51 AM, SeongJae Park wrote:
-> From: SeongJae Park <sjpark@amazon.de>
+On Fri, Aug 06, 2021 at 11:07:18AM +0800, Baolin Wang wrote:
+> Hi Matthew,
 > 
-> Commit 128fd80c4c07 ("mm/idle_page_tracking: Make PG_idle reusable") of
-> linux-mm[1] allows PAGE_IDLE_FLAG to be set without PAGE_EXTENSION
-> while 64BIT is not set.  This makes 'enum page_ext_flags' undefined, so
-> build fails as below for the config (!64BIT, !PAGE_EXTENSION, and
-> IDLE_PAGE_FLAG).
+> > On Thu, Aug 05, 2021 at 11:05:56PM +0800, Baolin Wang wrote:
+> > > We've got the expected count for anonymous page or file page by
+> > > expected_page_refs() at the beginning of migrate_page_move_mapping(),
+> > > thus we should move the page count validation a little forward to
+> > > reduce duplicated code.
+> > 
+> > Please add an explanation to the changelog for why it's safe to pull
+> > this out from under the i_pages lock.
 > 
->      $ make ARCH=i386 allnoconfig
->      $ echo 'CONFIG_PAGE_IDLE_FLAG=y' >> .config
->      $ make olddefconfig
->      $ make ARCH=i386
->      [...]
->      ../include/linux/page_idle.h: In function ‘folio_test_young’:
->      ../include/linux/page_idle.h:25:18: error: ‘PAGE_EXT_YOUNG’ undeclared (first use in this function); did you mean ‘PAGEOUTRUN’?
->         return test_bit(PAGE_EXT_YOUNG, &page_ext->flags);
->      [...]
-> 
-> This commit fixes this issue by making PAGE_EXTENSION to be set when
-> 64BIT is not set and PAGE_IDLE_FLAG is set.
-> 
-> [1] https://github.com/hnaz/linux-mm/commit/128fd80c4c07
-> 
-> Fixes: 128fd80c4c07 ("mm/idle_page_tracking: Make PG_idle reusable")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> Sure. In folio_migrate_mapping(), we are sure that the migration page was
+> isolated from lru list and locked, so I think there are no race to get the
+> page count without i_pages lock. Please correct me if I missed something
+> else. Thanks.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-Thanks.
-
-> ---
->   mm/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index d0b85dc12429..50ca602edeb6 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -741,6 +741,7 @@ config DEFERRED_STRUCT_PAGE_INIT
->   
->   config PAGE_IDLE_FLAG
->   	bool "Add PG_idle and PG_young flags"
-> +	select PAGE_EXTENSION if !64BIT
->   	help
->   	  This feature adds PG_idle and PG_young flags in 'struct page'.  PTE
->   	  Accessed bit writers can set the state of the bit in the flags to let
-> @@ -749,7 +750,6 @@ config PAGE_IDLE_FLAG
->   config IDLE_PAGE_TRACKING
->   	bool "Enable idle page tracking"
->   	depends on SYSFS && MMU && BROKEN
-> -	select PAGE_EXTENSION if !64BIT
->   	select PAGE_IDLE_FLAG
->   	help
->   	  This feature allows to estimate the amount of user pages that have
-> 
-
-
--- 
-~Randy
-
+Unless the page has been removed from i_pages, this isn't a correct
+explanation.  Even if it has been removed from i_pages, unless an
+RCU grace period has passed, another CPU may still be able to inc the
+refcount on it (temporarily).  The same is true for the page tables,
+by the way; if someone is using get_user_pages_fast(), they may still
+be able to see the page.
