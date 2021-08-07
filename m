@@ -2,103 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110B43E3636
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 17:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9363E3639
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 18:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhHGP5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 11:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbhHGP5D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 11:57:03 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B523C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 08:56:45 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id b133so21022329ybg.4
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 08:56:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=e4pW9vKIOzMq5Gn3WkxjAuwkMIg/8cleIxXl8R08Qj4=;
-        b=bRrneVWDriMmGGD6RnJYUOEOIVAv4bRR73wM68mseC9/I7p/zh3YG6FgfZXNkefXY9
-         CrkFM/mDe5Rvbutm93s2RWhTbzn1uiHXRVcRxGPJghfToNT4ji2KEsM1ZevDOgIju7FB
-         Vj5yCnfG1jcbmHc48yzVprA1A8R5Ilxnlapt2eSs/voCB+gyplFTSILEJrS5bR+9TOhW
-         FqXCwmcVt9mtWS8OYL+VHyaoXCz+QsfXI2OzdtnCnIDAb7xMEg4Eh49J6LMBPy1rfJhD
-         aRSTWO+0yEhuXwREm5OIt6tybIRgT+5k7KfrljbSf07oiwIQw8DJRnNhNN4H67IW5HAV
-         xHRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=e4pW9vKIOzMq5Gn3WkxjAuwkMIg/8cleIxXl8R08Qj4=;
-        b=qlOWDxG4oBIiendJTr+K38aks5quDjcUa0rjVCCih1/QYKSdDgQ1GW9kPbcqdHNxiG
-         VOj1oNURMuLX6CvKDVk/5zanfRZ0epFZ9D+Vcu4xUEASdTjfcxepUsq1PCWfxJEkc0YN
-         4tDpTT09kDeaFXm46AMWj4xg3Wb/FnxtJIoOCNsMuAagFqbJrgP2Nz8YwNCOM2t6Z3Cz
-         c7zzcYvtypd6E36dNDd4OLKOIN+16p8Q3ebckvtARACPvFbWLiPlouhh536Cs00HL1VL
-         xdM5DoU9fkWhsEL1rl+3PlATlnFaD9RfNGnnvaqaJJ98dQHYrw3qLrZbFgpA6iPTtCkH
-         h72A==
-X-Gm-Message-State: AOAM532hdzfJ2nANTmE+brFBJ44JwOshzE+/b5FZQ6fh5exFTDNRQ6HU
-        NcIxZhIrjVGgdErXPDpPdPH5NzoQL975WRy9wU4=
-X-Google-Smtp-Source: ABdhPJzYuRJeH7mNUo8Rw4fmZwRVQjx77eroGp2Vyb/SzntYX2AEZ42q/08apyeUOrOm7MTjjtkXsKHt9Ya78oubTPI=
-X-Received: by 2002:a25:8010:: with SMTP id m16mr19938223ybk.210.1628351804703;
- Sat, 07 Aug 2021 08:56:44 -0700 (PDT)
+        id S232067AbhHGQAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 12:00:53 -0400
+Received: from mout.gmx.net ([212.227.15.18]:42673 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230332AbhHGQAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 12:00:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628352012;
+        bh=2ti2yxVR7eGU9gsi3/G84Kbo5FGNC3s1wKPVeeD9hR4=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=WKuTI4cpaUXrlSiKZUQCvTksGS9NSb6T2n/3B/l4D/+p4t0X62Lv5MaCJHHcWYF0H
+         IcSvrXEvI5P/7QOOFFnEj5veUIOZfUzl0O7zO5fP+eGJex9henjoqTjP2y/ZgFoRMR
+         SEZwjshHrKXimekV4h6Vm/EEp8KNAjYuYpvASltg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MZCb5-1mhWYs32AL-00VA1H; Sat, 07 Aug 2021 18:00:11 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] drivers/edac/edac_mc: Remove all strcpy() uses
+Date:   Sat,  7 Aug 2021 17:59:57 +0200
+Message-Id: <20210807155957.10069-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a05:7108:4092:0:0:0:0 with HTTP; Sat, 7 Aug 2021 08:56:44
- -0700 (PDT)
-From:   phot akachi <photakachi@gmail.com>
-Date:   Sat, 7 Aug 2021 08:56:44 -0700
-Message-ID: <CAKTgzwytjT8sKi4xaGS00aauafa5k7_5rqhnNb4H6srJcmb65g@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vPhsX4qcrwNVuGiLz6ovSR1AIIzaIr5pTe5P5tLUSytoH1sDb+f
+ HGw0nc6yYSQMsX9gei/2Aax1cN6bC/lAJvdJy2kLsQFkkqRDz960w+JyzD5QSGHS7n0jBZR
+ 4LzqBeetm6kDtJGNIlwyO6soSBtkYsd0nRLIdR21Wi3TurtZFmWurLai82u5wTm20nuk7ID
+ vG294ocgQmLZfK1+tb8nQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:h7M3H6W0ww8=:HCsiqgamO4sSLT3l4nO3Hg
+ zmqGIXBHgHJZfwHnJql7KqnJfqTiTLwPdPLmjEkIkc2em9YGOpqAXhW31zGvjJqHRZYXxm4Qc
+ pgj4gUUIViEgxRntbHAv1wHaNfvMHVIRAKUtkLqGvVBpZ3XH5juD3ax86x8AHk0dJVyUgjOA3
+ uT+agLv/ejjv6bSpFZvX3vzjTSrLWB7EBAZ8Xnw1TZec8dCibb6ZyV+Ko/4QNwScvCDqx3KVe
+ xsN39EVjJokM43++YsIpeVXsA6LSSaB2ucWlPXSUaYiRXdJUGRjppGUuV8TUrvnsNHplhIHs5
+ F8HojC6SoXDlXKIUpcUXeVsBFBEG214szSaReRy4K5/PVf6cLav5Ps/oL1ZoUdcuwpPfZhvNG
+ BNZvNPzNks/mzLm5Rjh1mR+c8JMpJopS1agcMMhcnwf5tsUSofbM1vVQbXwZyX/opcg8NKzru
+ t2v7jZY25Nu3thh84HicEYBCVABjERcfOcjf6dr1q+aDo+2HCiHOIwA6zUiVHb+kwqUFq1LO8
+ ZGglcnugkrHbxMjvYRd3yhcEsmR8FeK4P8DT3AkbA4DZDD/vdCfn8TvzsgiI9RCUZ5tLRyi7L
+ gu4NwXwpm9Q4mcQv5qSo1+CXFg2/OtK4CxyCAYdDJ5lSv435i1ToaKyLcvOwWZn1RGHZlJKaS
+ NF0VnCEZW71j+WQ2kLrNoL2yCR4mPehTMdgjEhV92sj38MWG3Jmym+0X9Xz+4DVbaSCnpFtgC
+ 0FwETzBbVUSp+g1x+1ETEcbtpPGfYsdDMkJAw65/twSVQ7rW0i7Z2mT1ccn1vdlCVxnhAK2EK
+ rxq6YPNPioupTWykgJ1PHl0gTA3qnhOgYhCXS+XQDnA+BJyJTlBeaMWYSq5f7SbL6NctSt2ev
+ Pv1l/oY/XISgXJovVeRYlMeDwAGcMXoyhtAMfk+D/tZ/8PtUzeCIdtvqIKhECXU8tXmnEE8FH
+ q4AD5jJcztiftxUd84HCogK7NAMj5gn1cD54pYAQQ+gna+zM33E0EX9CwANRqc0ii/KuLtn/G
+ cCHY2mc7Ill5PoS0Qjrq2KDQ/wQsNwlwm6/RzBUJp/kR1S4W4C2KGGcisVlAWQ4400Sg71goK
+ UEXhB/3RDOm90ekoJngZfGin155tldQba+ajtSr8mAMi3NXVrLD+dT3VA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-0JLQvdC40LzQsNC90LjQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsDQoNCtCvINCR0LDRgC4gdWNo
-ZW5uYSBpbG9iaSwg0LrQsNC6INC00LXQu9CwLCDQvdCw0LTQtdGO0YHRjCDRgyDRgtC10LHRjyDQ
-stGB0LUg0YXQvtGA0L7RiNC+INC4INC30LTQvtGA0L7QstC+Pw0K0KHQvtC+0LHRidCw0LXQvCDQ
-stCw0LwsINGH0YLQviDRjyDRg9GB0L/QtdGI0L3QviDQt9Cw0LLQtdGA0YjQuNC7INGB0LTQtdC7
-0LrRgyDRgSDQv9C+0LzQvtGJ0YzRjiDQvdC+0LLQvtCz0L4g0L/QsNGA0YLQvdC10YDQsA0K0LjQ
-tyDQktC10L3QtdGB0YPRjdC70YssINC4INGC0LXQv9C10YDRjCDRgdGA0LXQtNGB0YLQstCwINCx
-0YvQu9C4INC/0LXRgNC10LLQtdC00LXQvdGLINCyINCS0LXQvdC10YHRg9GN0LvRgyDQvdCwDQrQ
-sdCw0L3QutC+0LLRgdC60LjQuSDRgdGH0LXRgiDQvdC+0LLQvtCz0L4g0L/QsNGA0YLQvdC10YDQ
-sC4NCg0K0KLQtdC8INCy0YDQtdC80LXQvdC10Lwg0Y8g0YDQtdGI0LjQuyDQutC+0LzQv9C10L3R
-gdC40YDQvtCy0LDRgtGMINCy0LDQvCDRgdGD0LzQvNGDINCyIDM1MCAwMDAg0LTQvtC70LvQsNGA
-0L7QsiDQodCo0JANCijRgtGA0Lgg0YHQvtGC0L3QuCDQv9GP0YLRjNC00LXRgdGP0YIg0YLRi9GB
-0Y/RhyDQtNC+0LvQu9Cw0YDQvtCyINCh0KjQkCkg0LjQty3Qt9CwINCy0LDRiNC40YUg0L/RgNC+
-0YjQu9GL0YUg0YPRgdC40LvQuNC5LA0K0YXQvtGC0Y8g0LLRiyDQvNC10L3RjyDRgNCw0LfQvtGH
-0LDRgNC+0LLQsNC70LguINCd0L4sINGC0LXQvCDQvdC1INC80LXQvdC10LUsINGPINC+0YfQtdC9
-0Ywg0YDQsNC0INGD0YHQv9C10YjQvdC+0LzRgw0K0LfQsNCy0LXRgNGI0LXQvdC40Y4g0YLRgNCw
-0L3Qt9Cw0LrRhtC40Lgg0LHQtdC3INC60LDQutC40YUt0LvQuNCx0L4g0L/RgNC+0LHQu9C10Lws
-INC4INC/0L7RjdGC0L7QvNGDINGPINGA0LXRiNC40LsNCtC60L7QvNC/0LXQvdGB0LjRgNC+0LLQ
-sNGC0Ywg0LLQsNC8INGB0YPQvNC80YMg0LIg0YDQsNC30LzQtdGA0LUgMzUwIDAwMCwwMCDQtNC+
-0LvQu9Cw0YDQvtCyINCh0KjQkCwg0YfRgtC+0LHRiyDQstGLDQrRgNCw0LfQtNC10LvQuNC70Lgg
-0YHQviDQvNC90L7QuSDRgNCw0LTQvtGB0YLRjC4NCg0K0K8g0YHQvtCy0LXRgtGD0Y4g0LLQsNC8
-INC+0LHRgNCw0YLQuNGC0YzRgdGPINC6INC80L7QtdC80YMg0YHQtdC60YDQtdGC0LDRgNGOINC3
-0LAg0LHQsNC90LrQvtC80LDRgtC90L7QuSDQutCw0YDRgtC+0Lkg0L3QsA0KMzUwIDAwMCDQtNC+
-0LvQu9Cw0YDQvtCyINCh0KjQkCwg0LrQvtGC0L7RgNGD0Y4g0Y8g0L7RgdGC0LDQstC40Lsg0LTQ
-u9GPINCy0LDRgS4g0KHQstGP0LbQuNGC0LXRgdGMINGBINC90LjQvA0K0YHQtdC50YfQsNGBINCx
-0LXQtyDQv9GA0L7QvNC10LTQu9C10L3QuNGPLg0KDQrQndCw0LfQstCw0L3QuNC1OiDQsdGA0LXQ
-vdC00Lgg0YHQvtC70L7QvNC+0L0NCg0K0K3Qu9C10LrRgtGA0L7QvdC90LDRjyDQv9C+0YfRgtCw
-OiBzb2xvbW9uYnJhbmR5Zml2ZW9uZUBnbWFpbC5jb20NCg0K0KPQsdC10LTQuNGC0LXQu9GM0L3Q
-viDQv9C+0LTRgtCy0LXRgNC00LjRgtC1INC10LzRgyDRgdC70LXQtNGD0Y7RidGD0Y4g0LjQvdGE
-0L7RgNC80LDRhtC40Y46DQoNCtCS0LDRiNC1INC/0L7Qu9C90L7QtSDQuNC80Y9fX19fX19fX19f
-X19fX19fX19fX19fX19fDQrQktCw0Ygg0LDQtNGA0LXRgdGBX19fX19fX19fX19fX19fX19fX19f
-X19fX18NCtCi0LLQvtGPINGB0YLRgNCw0L3QsF9fX19fX19fX19fX19fX19fX19fX19fX19fXw0K
-0KLQstC+0Lkg0LLQvtC30YDQsNGB0YJfX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCtCS
-0LDRiCDRgNC+0LQg0LfQsNC90Y/RgtC40LlfX19fX19fX19fX19fX19fX19fX19fX18NCtCS0LDR
-iCDQvdC+0LzQtdGAINC80L7QsdC40LvRjNC90L7Qs9C+INGC0LXQu9C10YTQvtC90LAgX19fX19f
-X19fX19fX19fX19fX19fXw0KDQrQntCx0YDQsNGC0LjRgtC1INCy0L3QuNC80LDQvdC40LU6INC1
-0YHQu9C4INCy0Ysg0L3QtSDQvtGC0L/RgNCw0LLQuNC70Lgg0LXQvNGDINC/0L7Qu9C90YPRjiDQ
-uNC90YTQvtGA0LzQsNGG0LjRjiwg0L7QvSDQvdC1DQrQstGL0LTQsNGB0YIg0LLQsNC8INC60LDR
-gNGC0YMg0LHQsNC90LrQvtC80LDRgtCwLCDQv9C+0YLQvtC80YMg0YfRgtC+INC+0L0g0LTQvtC7
-0LbQtdC9INCx0YvRgtGMINGD0LLQtdGA0LXQvSwg0YfRgtC+INGN0YLQvg0K0LLRiy4g0J/QvtC/
-0YDQvtGB0LjRgtC1INC10LPQviDQstGL0YHQu9Cw0YLRjCDQstCw0Lwg0LrQsNGA0YLRgyDQsdCw
-0L3QutC+0LzQsNGC0LAg0L3QsCDQvtCx0YnRg9GOINGB0YPQvNC80YMgKDM1MCAwMDANCtC00L7Q
-u9C70LDRgNC+0LIg0KHQqNCQKSwg0LrQvtGC0L7RgNGD0Y4g0Y8g0L7RgdGC0LDQstC40Lsg0LTQ
-u9GPINCy0LDRgS4NCg0K0KEg0YPQstCw0LbQtdC90LjQtdC8LA0KDQrQky3QvSDRg9GH0LXQvdC9
-0LAg0LjQu9C+0LHQuA0K
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. The safe replacement is strscpy().
+
+This is a previous step in the path to remove the strcpy() function
+entirely from the kernel.
+
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+This is a task of the KSPP [1]
+
+[1] https://github.com/KSPP/linux/issues/88
+
+Changelog v1 -> v2
+- Use the strscpy() instead of scnprintf() to add labels and follow a
+  code pattern more similar to the current one (advance "p" and
+  decrement "left") (Robert Richter).
+
+Changelog v2 -> v3
+- Rename the "left" variable to "len" (Robert Richter).
+- Use strlen(p) instead of strlen(OTHER_LABEL) to decrement "len" and
+  increment "p" as otherwise "left" could underflow and p overflow
+  (Robert Richter).
+
+Previous versions:
+
+v1
+https://lore.kernel.org/linux-hardening/20210725162954.9861-1-len.baker@gm=
+x.com/
+
+v2
+https://lore.kernel.org/linux-hardening/20210801143558.12674-1-len.baker@g=
+mx.com/
+
+ drivers/edac/edac_mc.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/edac/edac_mc.c b/drivers/edac/edac_mc.c
+index f6d462d0be2d..0cdb1e9320ba 100644
+=2D-- a/drivers/edac/edac_mc.c
++++ b/drivers/edac/edac_mc.c
+@@ -1032,6 +1032,7 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
+_type type,
+ 	int i, n_labels =3D 0;
+ 	struct edac_raw_error_desc *e =3D &mci->error_desc;
+ 	bool any_memory =3D true;
++	size_t len;
+
+ 	edac_dbg(3, "MC%d\n", mci->mc_idx);
+
+@@ -1086,6 +1087,7 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
+_type type,
+ 	 */
+ 	p =3D e->label;
+ 	*p =3D '\0';
++	len =3D sizeof(e->label);
+
+ 	mci_for_each_dimm(mci, dimm) {
+ 		if (top_layer >=3D 0 && top_layer !=3D dimm->location[0])
+@@ -1113,11 +1115,11 @@ void edac_mc_handle_error(const enum hw_event_mc_e=
+rr_type type,
+ 			p =3D e->label;
+ 			*p =3D '\0';
+ 		} else {
+-			if (p !=3D e->label) {
+-				strcpy(p, OTHER_LABEL);
+-				p +=3D strlen(OTHER_LABEL);
+-			}
+-			strcpy(p, dimm->label);
++			const char *text =3D (p !=3D e->label) ? OTHER_LABEL :
++				dimm->label;
++
++			strscpy(p, text, len);
++			len -=3D strlen(p);
+ 			p +=3D strlen(p);
+ 		}
+
+@@ -1140,9 +1142,9 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
+_type type,
+ 	}
+
+ 	if (any_memory)
+-		strcpy(e->label, "any memory");
++		strscpy(e->label, "any memory", sizeof(e->label));
+ 	else if (!*e->label)
+-		strcpy(e->label, "unknown memory");
++		strscpy(e->label, "unknown memory", sizeof(e->label));
+
+ 	edac_inc_csrow(e, row, chan);
+
+=2D-
+2.25.1
+
