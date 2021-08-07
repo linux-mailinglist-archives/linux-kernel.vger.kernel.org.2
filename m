@@ -2,129 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 920583E3297
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 03:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFA33E3299
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 03:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhHGBhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 21:37:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58627 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229749AbhHGBhd (ORCPT
+        id S230040AbhHGBjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 21:39:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229749AbhHGBj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 21:37:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628300236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iFTgxVqFqggRkC0Q/K2gaTe9Bsal3TVpnvpZS5yDXGw=;
-        b=Rnxb+lA/TcgQb6OrP4HxKpxsv/lgRQTqOYxN1SzeKbQcJr6VZFRlit7341aHb4VDMbUXaO
-        Iih0Ru8/l0+zwLPNVm6ss5geov7Zlw+d/6NNquU5da+XSeXsY6wi9kE2mGi77LNaUUoVyS
-        4GKq4LK0IMLTU6BHwSvFWc/vEPQY7os=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-Q0xt2diIMeuLdJugl0oAwA-1; Fri, 06 Aug 2021 21:37:15 -0400
-X-MC-Unique: Q0xt2diIMeuLdJugl0oAwA-1
-Received: by mail-qv1-f72.google.com with SMTP id z25-20020a0ca9590000b029033ba243ffa1so7662621qva.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 18:37:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=iFTgxVqFqggRkC0Q/K2gaTe9Bsal3TVpnvpZS5yDXGw=;
-        b=jGJv1e9gXkaSnpaLEg/9tO9jdzmV95E78CjWlR1mVZxMJKB5v4Txid/hrZ42Qj//By
-         24Ca6+ssyzSO0J4iv3g12cMh+wxLME6a1zOaIKWK7/JcOZrhOKXbX4aGuaw5qK70i++P
-         +K8qrI6B7j5ku5/e8IbBYd+aIgB62MOF5PCtRuPEdPd2ZwePURSKpvIZoxxeJ4JkqyJo
-         YVG2921098b9hAyzsoyCWbUMZAI6+wVaK3ZBjNJCkilFsHWf65Eb+VamVwqwUsDGzKcI
-         ITRrZcI9TKs/Tuh/kXwRLfBT3aNUSc+YPVRMrFTaLTrb0xZWgOBMNgB95c1ZPjWDmWQ1
-         bRjg==
-X-Gm-Message-State: AOAM530bFzX82mfkYh5s7XSN4wcQB/SjkELJ92+x3Ob3p5AVmmeCA8ke
-        oZaxm59082NKAl4Mqu6ejJ4rQmhOgzIMNzDxcbf17h9oneQTo+9hfx14W2PyxoSTgAaj9ANisFj
-        8rcBEkMbbx21xvyIjnR1DHoS0
-X-Received: by 2002:ac8:58d3:: with SMTP id u19mr11655105qta.306.1628300234985;
-        Fri, 06 Aug 2021 18:37:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyio54RO4lKJEISxBN0ISWIhJ8pL76foRv8ZsxvUzEKBOcdR92OA6qObAVFSkHCxb4tetZaHg==
-X-Received: by 2002:ac8:58d3:: with SMTP id u19mr11655097qta.306.1628300234809;
-        Fri, 06 Aug 2021 18:37:14 -0700 (PDT)
-Received: from localhost.localdomain ([2601:184:4180:af10::8eb3])
-        by smtp.gmail.com with ESMTPSA id n189sm2002998qka.69.2021.08.06.18.37.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 18:37:14 -0700 (PDT)
-Subject: Re: [PATCH] vm_swappiness=0 should still try to avoid swapping anon
- memory
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Rafael Aquini <aquini@redhat.com>, longman@redhat.com
-References: <20210806231701.106980-1-npache@redhat.com>
- <CALvZod6gCof1bhVwdU7vYYKBRCn_HZBFi4BjSYoSK-dyrmswMA@mail.gmail.com>
-From:   Nico Pache <npache@redhat.com>
-Message-ID: <91605888-e343-2712-c097-bcade4cb389d@redhat.com>
-Date:   Fri, 6 Aug 2021 21:37:13 -0400
+        Fri, 6 Aug 2021 21:39:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F299BC0613CF;
+        Fri,  6 Aug 2021 18:39:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=J0f4OaPE35/KHAcoMTr1PIVu/Y71deIk870EQYRu6rk=; b=cmZIF4js4K08N9YSEq+3fK7gVm
+        z+DNGeSHPeiHfVD6QY2BHj54TEH4ZSmWgxrN4iDtrAExQ0rF2l0w+lzff2T73glIlNbgkT+NDARky
+        wvASdGEfpaEeuOObkAii8KUAxPE50Vk+9uBNO1W3KHErCb1sBcgeQWxFZEExkTop2yPScxd9foSgD
+        NwyIAymzSRishXlwe+7keFbpnDGqq18nrurcm/Yx/hWkClHKaooi4LIVenjyFH3SjJtbabU3P64kU
+        zPR9pFsQy+hx6sGjPL07kUvd16skW6p4g4gyWnjGOt7450Y0QKjp140UvnjXncR+HbrdaGB0UEfKG
+        h4El8dxg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mCBIJ-008lqv-MV; Sat, 07 Aug 2021 01:38:45 +0000
+Subject: Re: [PATCH] s390/crypto: fix all kernel-doc warnings in vfio_ap_ops.c
+To:     Tony Krowiak <akrowiak@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
+Cc:     kernel test robot <lkp@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        linux-s390@vger.kernel.org
+References: <20210806050149.9614-1-rdunlap@infradead.org>
+ <d8f1b065-f7b2-a0f3-f87a-ffdd2f7f2781@linux.ibm.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1ad57c8d-c0d1-88d9-bcce-3d3501455d8e@infradead.org>
+Date:   Fri, 6 Aug 2021 18:38:32 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <CALvZod6gCof1bhVwdU7vYYKBRCn_HZBFi4BjSYoSK-dyrmswMA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <d8f1b065-f7b2-a0f3-f87a-ffdd2f7f2781@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/6/21 6:26 AM, Tony Krowiak wrote:
+> Reviewed-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> 
+> Pardon my ignorance, but this is the first I've seen of kernel-doc warnings.
+> Is there a flag I can set when I build to get kernel-doc warnings? Is there a tool I can run?
+> Where is the kernel-doc format documented? I'd like to avoid this in the future.
 
-On 8/6/21 9:00 PM, Shakeel Butt wrote:
-> On Fri, Aug 6, 2021 at 4:17 PM Nico Pache <npache@redhat.com> wrote:
->> Since commit b91ac374346b ("mm: vmscan: enforce inactive:active ratio at the
->> reclaim root") swappiness can start prematurely swapping anon memory.
->> This is due to the assumption that refaulting anon should always allow
->> the shrinker to target anon memory. Add a check for vm_swappiness being
->>> 0 before indiscriminately targeting Anon.
-> Did you actually observe this behavior?
-Yes, and I've successfully tested this patch. It does solve the issue.
->
->> Signed-off-by: Nico Pache <npache@redhat.com>
+Hi,
+
+Here is the 0day bot report:
+https://lore.kernel.org/lkml/202108010650.DLRzJOtm-lkp@intel.com/
+(not sent to any of your group, sadly).
+
+kernel-doc format is documented in Documentation/doc-guide/kernel-doc.rst.
+
+The 0day bot lists the reproduction steps. It used clang but I used
+gcc. Shouldn't matter in this case. The main point from the 0day bot
+is that "this is a W=1 build".  Using W=1 causes checks for extra
+C compiler warnings and also it causes checks for documentation build
+errors/warnings.
+
+In your build environment, using "make W=1 ARCH=s390 allmodconfig all"
+will produce lots of output (both compiler and kernel-doc output).
+I suppose that is the expected way to do it.
+
+AFAIK there is no support for something like "make W=1 htmldocs"
+to just check for kernel-doc errors/warnings in source files, so what
+I do when I am targeting only one source file is something like what
+is documented in the file referenced above:
+
+"Running the ``kernel-doc`` tool with increased verbosity and without actual
+output generation may be used to verify proper formatting of the
+documentation comments. For example::
+
+	scripts/kernel-doc -v -none drivers/foo/bar.c
+"
+and then I script that for ease of use.
+Using the latter command reports lots more kernel-doc warnings than
+the 0day bot reported, so I fixed all of them that it found.
+
+
+HTH.
+
+
+> On 8/6/21 1:01 AM, Randy Dunlap wrote:
+>> The 0day bot reported some kernel-doc warnings in this file so clean up
+>> all of the kernel-doc and use proper kernel-doc formatting.
+>> There are no more kernel-doc errors or warnings reported in this file.
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Cc: Jason Gunthorpe <jgg@nvidia.com>
+>> Cc: Tony Krowiak <akrowiak@linux.ibm.com>
+>> Cc: Halil Pasic <pasic@linux.ibm.com>
+>> Cc: Jason Herne <jjherne@linux.ibm.com>
+>> Cc: Harald Freudenberger <freude@linux.ibm.com>
+>> Cc: linux-s390@vger.kernel.org
 >> ---
->>  mm/vmscan.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> index 4620df62f0ff..8b932ff72e37 100644
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -2909,8 +2909,8 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
->>
->>                 refaults = lruvec_page_state(target_lruvec,
->>                                 WORKINGSET_ACTIVATE_ANON);
->> -               if (refaults != target_lruvec->refaults[0] ||
->> -                       inactive_is_low(target_lruvec, LRU_INACTIVE_ANON))
->> +               if (vm_swappiness && (refaults != target_lruvec->refaults[0] ||
->> +                       inactive_is_low(target_lruvec, LRU_INACTIVE_ANON)))
-> If you are really seeing the said behavior then why will this fix it.
-> This is just about deactivating active anon LRU. I would rather look
-> at get_scan_count() to check why swappiness = 0 is still letting the
-> kernel to scan anon LRU. BTW in cgroup v1, the memcg can overwrite
-> their swappiness which will be preferred over system vm_swappiness.
-> Did you set system level swappiness or memcg one?
-
-This fixes the issue because shrink_list() uses the may_deactivate field to determine if it should shrink the active list. This is not the only place that can cause the may_deactivate to deactivate anon, but it is the common path of kswapd/balance_pgdat. I can look into a get_scan_count() solution however this line is the ultimate cause of telling scan controller to go for anon so i figured this is the best spot ( stop the problem at the root, not all the way down in the call path). The get_scan_count balance can also be further modified after some shrinking occurs in shrink_lruvec. 
-
-This is only the system level swappiness. As far as cgroups, I will also take a look into that to make sure we can generalize the solution for that as well. I dont think it should be too hard. 
+>>   drivers/s390/crypto/vfio_ap_ops.c |  116 ++++++++++++----------------
+>>   1 file changed, 52 insertions(+), 64 deletions(-)
 
 
-Thanks for the review!
-
--- Nico
-
-
->>                         sc->may_deactivate |= DEACTIVATE_ANON;
->>                 else
->>                         sc->may_deactivate &= ~DEACTIVATE_ANON;
->> --
->> 2.31.1
->>
+-- 
+~Randy
 
