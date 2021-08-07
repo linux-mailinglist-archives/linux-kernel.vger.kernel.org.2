@@ -2,134 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4C93E3280
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 03:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08523E327A
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 03:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhHGBED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 21:04:03 -0400
-Received: from pv50p00im-zteg10011501.me.com ([17.58.6.42]:60316 "EHLO
-        pv50p00im-zteg10011501.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230023AbhHGBEB (ORCPT
+        id S229833AbhHGBDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 21:03:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhHGBDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 21:04:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1628298224; bh=o4KbhPghRaFvtnL6R0pnWWU/e4yDdHIWSmM7oMiG7Ac=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=mlJaXcDHXCrYt/vJiNMhyIwIijirS32OSo8d7lCzBbEP3K1ZXjS8uL19XEnmgdPti
-         Ri0t8ZM5Y5QEtBrAc8aTYwBhoQ4K/tULjPh4/FeerOTIhwFrvAEDvHTqmQfdcyTf93
-         YOAB6qLFgAGdwvphX0izvC9cOQd9raau9r/CQ7ouG1QT1CNZr4gYAXfgGdXujZxz63
-         UGkIIowV/VAwcwqYLugMCvnbbruGdloAskrwW2SvxOXnmGhPc8jMs1NzBs+sfHlIxx
-         d57+0F5NoCvJdwyN6ckYs23KoRas35wTaZ1YZV8OcHFdXvNaWQloKIjZib34zIRlZk
-         Cmgvu8WJ8FHlg==
-Received: from xiongwei.. (unknown [120.245.2.134])
-        by pv50p00im-zteg10011501.me.com (Postfix) with ESMTPSA id B7368B003C3;
-        Sat,  7 Aug 2021 01:03:38 +0000 (UTC)
-From:   sxwjean@me.com
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     oleg@redhat.com, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, christophe.leroy@csgroup.eu, npiggin@gmail.com,
-        ravi.bangoria@linux.ibm.com, aneesh.kumar@linux.ibm.com,
-        efremov@linux.com, linux-kernel@vger.kernel.org,
-        Xiongwei Song <sxwjean@gmail.com>
-Subject: [PATCH v2 4/4] powerpc/64e: Get dear offset with _DEAR macro
-Date:   Sat,  7 Aug 2021 09:02:39 +0800
-Message-Id: <20210807010239.416055-5-sxwjean@me.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210807010239.416055-1-sxwjean@me.com>
-References: <20210807010239.416055-1-sxwjean@me.com>
+        Fri, 6 Aug 2021 21:03:12 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33EBC0613CF;
+        Fri,  6 Aug 2021 18:02:55 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GhPGN1gKhz9sCD;
+        Sat,  7 Aug 2021 11:02:52 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1628298172;
+        bh=32xOiu5FOTXbpADsYguSP7iK8YL5NBGhYQdglWE59bQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SwwRleemeugGwupF+K5c9CcbqxtwuUXEjUJsiQuA5UsPDLsHvhfbsiUATxUvk+OBf
+         FvqrSJGBnUHDm/Ps2/6S5bF+aBEjjkM/GJvZX7La+O4OWYEKi/ey1u7ZsciOLxEaXg
+         yV8KGjrO9n1pqWGwrt6Xg9g1Mb/mO7WYm8IScDNtACXsX5IQcyA5VJx9FiBhN3sntg
+         LvJuxFa/gmUvW80L1dfoDw6KVna6Uj/x21YuK1iB5ER+B4TC8Dc6oe0YXFJO2r2vCP
+         EJBK+gIvhoGPWlG5ryI0tOoTsgf6G/oKcWoXx9KHOU3Ns2FKHNCRRHgjkZ6TwN3S0Y
+         /M4vfltFaQQfg==
+Date:   Sat, 7 Aug 2021 11:02:50 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: Tree for Aug 6
+Message-ID: <20210807110250.365b18a8@canb.auug.org.au>
+In-Reply-To: <20210806165351.10621-1-broonie@kernel.org>
+References: <20210806165351.10621-1-broonie@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-06_08:2021-08-06,2021-08-06 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=948 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2108070004
+Content-Type: multipart/signed; boundary="Sig_/NVbySHXs7K+OJvq79hK4sZm";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongwei Song <sxwjean@gmail.com>
+--Sig_/NVbySHXs7K+OJvq79hK4sZm
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Use _DEAR to get the offset of dear register in pr_regs for 64e cpus.
+Hi Mark,
 
-Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
----
- arch/powerpc/kernel/asm-offsets.c    | 13 +++----------
- arch/powerpc/kernel/exceptions-64e.S |  8 ++++----
- 2 files changed, 7 insertions(+), 14 deletions(-)
+On Fri,  6 Aug 2021 17:53:51 +0100 Mark Brown <broonie@kernel.org> wrote:
+>
+> Stephen should be back on Monday and normal service resumed.
 
-diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
-index f4ebc435fd78..8357d5fcd09e 100644
---- a/arch/powerpc/kernel/asm-offsets.c
-+++ b/arch/powerpc/kernel/asm-offsets.c
-@@ -286,23 +286,16 @@ int main(void)
- 	STACK_PT_REGS_OFFSET(_CCR, ccr);
- 	STACK_PT_REGS_OFFSET(_XER, xer);
- 	STACK_PT_REGS_OFFSET(_DAR, dar);
-+	STACK_PT_REGS_OFFSET(_DEAR, dear);
- 	STACK_PT_REGS_OFFSET(_DSISR, dsisr);
- 	STACK_PT_REGS_OFFSET(_ESR, esr);
- 	STACK_PT_REGS_OFFSET(ORIG_GPR3, orig_gpr3);
- 	STACK_PT_REGS_OFFSET(RESULT, result);
- 	STACK_PT_REGS_OFFSET(_TRAP, trap);
--#ifndef CONFIG_PPC64
--	/*
--	 * The PowerPC 400-class & Book-E processors have neither the DAR
--	 * nor the DSISR SPRs. Hence, we overload them to hold the similar
--	 * DEAR and ESR SPRs for such processors.  For critical interrupts
--	 * we use them to hold SRR0 and SRR1.
--	 */
--	STACK_PT_REGS_OFFSET(_DEAR, dar);
--#else /* CONFIG_PPC64 */
-+#ifdef CONFIG_PPC64
- 	STACK_PT_REGS_OFFSET(SOFTE, softe);
- 	STACK_PT_REGS_OFFSET(_PPR, ppr);
--#endif /* CONFIG_PPC64 */
-+#endif
- 
- #ifdef CONFIG_PPC_PKEY
- 	STACK_PT_REGS_OFFSET(STACK_REGS_AMR, amr);
-diff --git a/arch/powerpc/kernel/exceptions-64e.S b/arch/powerpc/kernel/exceptions-64e.S
-index bf8c4c2f98ea..221e085e8c8c 100644
---- a/arch/powerpc/kernel/exceptions-64e.S
-+++ b/arch/powerpc/kernel/exceptions-64e.S
-@@ -545,7 +545,7 @@ __end_interrupts:
- 				PROLOG_ADDITION_2REGS)
- 	mfspr	r14,SPRN_DEAR
- 	mfspr	r15,SPRN_ESR
--	std	r14,_DAR(r1)
-+	std	r14,_DEAR(r1)
- 	std	r15,_ESR(r1)
- 	ld	r14,PACA_EXGEN+EX_R14(r13)
- 	ld	r15,PACA_EXGEN+EX_R15(r13)
-@@ -558,7 +558,7 @@ __end_interrupts:
- 				PROLOG_ADDITION_2REGS)
- 	li	r15,0
- 	mr	r14,r10
--	std	r14,_DAR(r1)
-+	std	r14,_DEAR(r1)
- 	std	r15,_ESR(r1)
- 	ld	r14,PACA_EXGEN+EX_R14(r13)
- 	ld	r15,PACA_EXGEN+EX_R15(r13)
-@@ -575,7 +575,7 @@ __end_interrupts:
- 				PROLOG_ADDITION_2REGS)
- 	mfspr	r14,SPRN_DEAR
- 	mfspr	r15,SPRN_ESR
--	std	r14,_DAR(r1)
-+	std	r14,_DEAR(r1)
- 	std	r15,_ESR(r1)
- 	ld	r14,PACA_EXGEN+EX_R14(r13)
- 	ld	r15,PACA_EXGEN+EX_R15(r13)
-@@ -1057,7 +1057,7 @@ bad_stack_book3e:
- 	std	r11,_CCR(r1)
- 	mfspr	r10,SPRN_DEAR
- 	mfspr	r11,SPRN_ESR
--	std	r10,_DAR(r1)
-+	std	r10,_DEAR(r1)
- 	std	r11,_ESR(r1)
- 	std	r0,GPR0(r1);		/* save r0 in stackframe */	    \
- 	std	r2,GPR2(r1);		/* save r2 in stackframe */	    \
--- 
-2.30.2
+Yep, hopefully :-)
 
+I just want to thank you publicly for taking linux-next on again.  It
+is very much appreciated.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/NVbySHXs7K+OJvq79hK4sZm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEN27oACgkQAVBC80lX
+0GwYFggAnetwvKcN/68aqZ0k7nzDfD7vlmT0bll+1KjGU263cQpqy47mCt4Yj84Y
+yiQ8vDhCf1Jlj99LmVWyt4LOkyYBIPsokUEvXRGhRswLCtuA4MTHGXLs4012kNuS
+WO23E2bv6AIgFIw+zgLmUP+rJyI2nJAee9m8ucWcXMMct6HJW7wHb4HKUtn/EsSK
+j8AqgTyf/S3EAHord0gvPbf+SVhp6boYVK8F7qRcFoxJ9uKoDzYSEi4hUK+MyUd3
+sgPIXGaWo3YMrrBLJP/7lueosRhZuNr5vDW8urXfqmXPhz4qYyRftosQkxRplja0
+8B+rJFpJtUzfGPAtYTqDaW+ZOQ5bQw==
+=Pjow
+-----END PGP SIGNATURE-----
+
+--Sig_/NVbySHXs7K+OJvq79hK4sZm--
