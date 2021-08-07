@@ -2,242 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E4A3E3629
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 17:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D5E3E362C
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 17:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232698AbhHGPk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 11:40:27 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:2675 "EHLO rere.qmqm.pl"
+        id S232601AbhHGPlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 11:41:05 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:38236 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232062AbhHGPkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 11:40:25 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4GhmkZ203Qz64;
-        Sat,  7 Aug 2021 17:40:05 +0200 (CEST)
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.2 at mail
-Date:   Sat, 7 Aug 2021 17:39:57 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Kevin Liu <kliu5@marvell.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Suneel Garapati <suneel.garapati@xilinx.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Al Cooper <alcooperx@gmail.com>
-Subject: Re: [PATCH v4 5/5] mmc: sdhci: simplify v2/v3+ clock calculation
-Message-ID: <YQ6pTYL15xEEzoCy@qmqm.qmqm.pl>
-References: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
- <a8a677659b27244be865a730f6a7f2b7805a4390.1627204633.git.mirq-linux@rere.qmqm.pl>
- <9a6b8e4a-b944-c1d7-f310-fea1e1269e6d@intel.com>
+        id S229828AbhHGPlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 11:41:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=ljG+gOgPhLlIz+lF+PzNSjVAdj+ITrjpHY3qF3K40KI=; b=g46H/LDkYQ6QABx6TRj66BCzfk
+        tD2triw69MSMuR0BVTahWTRFR2XuOtxStoGwARv5iEStVYURGkVIuoChIy47fid58dtnu29l9iVvK
+        gNzi8D1IHKfGhen1wvFe8Akp3XPyUc4ZLW4O39DtYexQFz0UTu6eUvM/X0fLODy5Izl8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mCOR9-00GVPH-Ra; Sat, 07 Aug 2021 17:40:35 +0200
+Date:   Sat, 7 Aug 2021 17:40:35 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
+        netdev@vger.kernel.org, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
+        hkallweit1@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 05/10] net: dsa: microchip: add DSA support
+ for microchip lan937x
+Message-ID: <YQ6pc6EZRLftmRh3@lunn.ch>
+References: <20210723173108.459770-6-prasanna.vengateshan@microchip.com>
+ <20210731150416.upe5nwkwvwajhwgg@skbuf>
+ <49678cce02ac03edc6bbbd1afb5f67606ac3efc2.camel@microchip.com>
+ <20210802121550.gqgbipqdvp5x76ii@skbuf>
+ <YQfvXTEbyYFMLH5u@lunn.ch>
+ <20210802135911.inpu6khavvwsfjsp@skbuf>
+ <50eb24a1e407b651eda7aeeff26d82d3805a6a41.camel@microchip.com>
+ <20210803235401.rctfylazg47cjah5@skbuf>
+ <20210804095954.GN22278@shell.armlinux.org.uk>
+ <20210804104625.d2qw3gr7algzppz5@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9a6b8e4a-b944-c1d7-f310-fea1e1269e6d@intel.com>
+In-Reply-To: <20210804104625.d2qw3gr7algzppz5@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 03:40:38PM +0300, Adrian Hunter wrote:
-> On 25/07/21 12:20 pm, Micha³ Miros³aw wrote:
-> > For base clock setting, SDHCI V2 differs from V3+ only in allowed divisor
-> > values.  Remove the duplicate version of code and reduce indentation
-> > levels.  We can see now, that 'real_div' can't be zero, so the check is
-> > removed.  While at it, replace divisor search loops with divide-and-clamp
-> > to make the code even more readable.
-> 
-> It doesn't seem simpler to me, just different.
-> 
-> Simpler would mean broken into separate logical functions, getting rid of
-> the gotos, and above all having the changes broken into separate patches
-> for easy review.
+> I am not even clear what is the expected canonical behavior for a MAC
+> driver. It parses rx-internal-delay-ps and tx-internal-delay-ps, and
+> then what?
 
-I've extracted part of the function. It does look better I think, but it
-can be improved. Please take a look.
+So best practices are based around a MAC-PHY link. phy-mode is passed
+to the PHY, and the MAC does not act upon it. MAC rx-internal-delay-ps
+and tx-internal-delay-ps can be used to fine tune the link. You can
+use them to add and sometimes subtract small amounts of delay.
 
---->8<---
+> It treats all "rgmii*" phy-mode strings identically? Or is it an
+> error to have "rgmii-rxid" for phy-mode and non-zero
+> rx-internal-delay-ps?
 
-    mmc: sdhci: rework clock calculation
-    
-    Rework the code by extracting register value and real clock rate
-    calculations to a separate function.  This also removes duplicated
-    calculations of real_div and divisor search loops.
+I would say the first is correct, the second statement is false. You
+should always be able to fine tune the link, independent of the PHY
+mode.
 
-diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index cfa314e659bc..9822903841f1 100644
---- a/drivers/mmc/host/sdhci.c
-+++ b/drivers/mmc/host/sdhci.c
-@@ -1845,97 +1845,79 @@ static u16 sdhci_get_preset_value(struct sdhci_host *host)
- 	return preset;
- }
- 
--u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
-+static u16 sdhci_calc_clk_mode(struct sdhci_host *host, int div, bool prog_mode,
- 		   unsigned int *actual_clock)
- {
--	int div = 0; /* Initialized for compiler warning */
--	int real_div = div, clk_mul = 1;
-+	unsigned int clk_mul, real_div;
- 	u16 clk = 0;
--	bool switch_base_clk = false;
--
--	if (host->version >= SDHCI_SPEC_300) {
--		if (host->preset_enabled) {
--			u16 pre_val;
--
--			pre_val = sdhci_get_preset_value(host);
--			div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
--			if (pre_val & SDHCI_PRESET_CLKGEN_SEL) {
--				clk = SDHCI_PROG_CLOCK_MODE;
--				real_div = div + 1;
--				clk_mul = host->clk_mul;
--				if (!clk_mul) {
--					/* The clock frequency is unknown. Assume undivided base. */
--					clk_mul = 1;
--				}
--			} else {
--				real_div = max_t(int, 1, div << 1);
--			}
--			goto clock_set;
--		}
--
--		/*
--		 * Check if the Host Controller supports Programmable Clock
--		 * Mode.
--		 */
--		if (host->clk_mul) {
--			for (div = 1; div <= 1024; div++) {
--				if ((host->max_clk * host->clk_mul / div)
--					<= clock)
--					break;
--			}
--			if ((host->max_clk * host->clk_mul / div) <= clock) {
--				/*
--				 * Set Programmable Clock Mode in the Clock
--				 * Control register.
--				 */
--				clk = SDHCI_PROG_CLOCK_MODE;
--				real_div = div;
--				clk_mul = host->clk_mul;
--				div--;
--			} else {
--				/*
--				 * Divisor can be too small to reach clock
--				 * speed requirement. Then use the base clock.
--				 */
--				switch_base_clk = true;
--			}
--		}
- 
--		if (!host->clk_mul || switch_base_clk) {
--			/* Version 3.00 divisors must be a multiple of 2. */
--			if (host->max_clk <= clock) {
--				div = 1;
--				if (host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
--					div = 2;
--			} else {
--				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
--				     div += 2) {
--					if ((host->max_clk / div) <= clock)
--						break;
--				}
--			}
--			real_div = div;
--			div >>= 1;
--		}
-+	if (prog_mode) {
-+		clk = SDHCI_PROG_CLOCK_MODE;
-+		clk_mul = host->max_clk ?: 1;
-+		real_div = div + 1;
- 	} else {
--		/* Version 2.00 divisors must be a power of 2. */
--		for (div = 1; div < SDHCI_MAX_DIV_SPEC_200; div *= 2) {
--			if ((host->max_clk / div) <= clock)
--				break;
--		}
--		real_div = div;
--		div >>= 1;
-+		clk_mul = 1;
-+		real_div = div * 2 + !div;
- 	}
- 
--clock_set:
--	if (real_div)
--		*actual_clock = (host->max_clk * clk_mul) / real_div;
-+	*actual_clock = (host->max_clk * clk_mul) / real_div;
-+
- 	clk |= (div & SDHCI_DIV_MASK) << SDHCI_DIVIDER_SHIFT;
- 	clk |= ((div & SDHCI_DIV_HI_MASK) >> SDHCI_DIV_MASK_LEN)
- 		<< SDHCI_DIVIDER_HI_SHIFT;
- 
- 	return clk;
- }
-+
-+u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
-+		   unsigned int *actual_clock)
-+{
-+	unsigned int div;
-+
-+	if (clock == 0)
-+		return 0;
-+
-+	if (host->preset_enabled) {
-+		/* Note: Only version 3.00+ can have preset_enabled. */
-+
-+		u16 pre_val = sdhci_get_preset_value(host);
-+		bool prog_mode = !!(pre_val & SDHCI_PRESET_CLKGEN_SEL);
-+		div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
-+
-+		return sdhci_calc_clk_mode(host, div, prog_mode, actual_clock);
-+	}
-+
-+	if (host->version >= SDHCI_SPEC_300 && host->clk_mul) {
-+		/* Programmable Clock Mode is supported. */
-+
-+		div = DIV_ROUND_UP(host->max_clk * host->clk_mul, clock) - 1;
-+		if (div <= SDHCI_MAX_DIV_SPEC_300 / 2)
-+			return sdhci_calc_clk_mode(host, div, true, actual_clock);
-+
-+		/*
-+		 * Divisor is too big for requested clock rate.
-+		 * Fall back to the base clock.
-+		 */
-+	}
-+
-+	div = DIV_ROUND_UP(host->max_clk, clock);
-+
-+	if (div == 1 && (host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN))
-+		div = 2;
-+
-+	if (host->version >= SDHCI_SPEC_300) {
-+		/* Version 3.00 divisor must be 1 or a multiple of 2. */
-+		if (div != 1)
-+			div += div & 1;
-+		div = min(div, SDHCI_MAX_DIV_SPEC_300);
-+	} else {
-+		/* Version 2.00 divisor must be a power of 2. */
-+		div = roundup_pow_of_two(div);
-+		div = min(div, SDHCI_MAX_DIV_SPEC_200);
-+	}
-+
-+	return sdhci_calc_clk_mode(host, div / 2, false, actual_clock);
-+}
- EXPORT_SYMBOL_GPL(sdhci_calc_clk);
- 
- void sdhci_enable_clk(struct sdhci_host *host, u16 clk)
-diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-index 074dc182b184..a3fa70d91410 100644
---- a/drivers/mmc/host/sdhci.h
-+++ b/drivers/mmc/host/sdhci.h
-@@ -284,8 +284,8 @@
-  * End of controller registers.
-  */
- 
--#define SDHCI_MAX_DIV_SPEC_200	256
--#define SDHCI_MAX_DIV_SPEC_300	2046
-+#define SDHCI_MAX_DIV_SPEC_200	256u
-+#define SDHCI_MAX_DIV_SPEC_300	2046u
- 
- /*
-  * Host SDMA buffer boundary. Valid values from 4K to 512K in powers of 2.
+We also have to consider the case when the PHY is not actually able to
+implement the delay. It hopefully returns -EOPNOTSUPP for anything
+other than "rgmii". You can then put the full 2ns delay into
+tx-internal-delay-ps nd rx-internal-delay-ps.
+
+And lastly there is one MAC driver which mostly ignores these best
+practices because the vendor crap tree always did the delay in the
+MAC. It correctly masks the phy-mode, so the PHY does not add delays.
+
+For MAC-MAC and fixed link best practices are very fuzzily defined.
+It is not something we have much of in the kernel. We might also want
+to narrow the discussion down to MACs within a switch. MACs within in
+NIC should probably follow the best practices for a MAC-PHY link, even
+if it is actually a switch on the other end.
+
+I also agree with Russell that mv88e6xxx is probably broken for a
+MAC-PHY link. It is known to work for a Marvell DSA in MAC-MAC link,
+we have boards doing that.
+
+It seems like a switch MAC should parse rx-internal-delay-ps and
+tx-internal-delay-ps and apply them independent of the phy-mode. That
+keeps it consistent with MAC-PHY. And if there is a PHY connected,
+pass the phy-mode on unmasked.
+
+So that we don't break mv88e6xxx, for a CPU or DSA port, we probably
+should continue to locally implement the delay, with the assumption
+there is no PHY, it is a MAC-MAC link. We probably want to patch
+mv88e6xxx to do nothing for user ports.
+
+I suspect it is a 50/50 roll of a dice what rx and tx actually
+mean. Is it from the perspective of the MAC or the PHY? Luckily,
+rgmii-rxid and rgmii-txid don't appear in DT very often.
+
+   Andrew
