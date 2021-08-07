@@ -2,118 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BFB3E33F9
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 09:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6703E3411
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 10:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbhHGH0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 03:26:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40926 "EHLO mail.kernel.org"
+        id S231602AbhHGIV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 04:21:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231375AbhHGH0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 03:26:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C78C610A1;
-        Sat,  7 Aug 2021 07:26:21 +0000 (UTC)
+        id S229636AbhHGIV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 04:21:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC61C60F14;
+        Sat,  7 Aug 2021 08:21:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628321182;
-        bh=IMpk0o1hS1Y/l+HPxA2D6QVy28dpg16VfLfqbilGAdM=;
-        h=Date:From:To:Subject:From;
-        b=LzskHGcyTIxa4dSUluOVMceoyA56cmOXbee1mhI0SjUZ6+Ggw3hqth537S3AzSEVh
-         HXCNHEYh3L6Gkfsbt5f53hOZJD5a4vmKKQPViE+HuFiM52mT24livNSuFaUE8zqn9R
-         J74iDpm3e7Ez7wSewI5M/utFbxA/U4K2CXH/aang=
-Date:   Sat, 7 Aug 2021 09:26:19 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: usbutils 014 release
-Message-ID: <YQ41m+9JMSzt69fM@kroah.com>
+        s=korg; t=1628324470;
+        bh=ovbC15Az+Wo/7HGwNTt6ory4JqD2E5Iq6p1PUYzMeFc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qg+MsoRFdcgJR6B0xMQD/ADFxRMdz7XObH3MINhKHwnbJHhRfGTHBHLwneGSJfVF9
+         0AuQXst3d48zocMo/a3YeO8Fn9+ISwTDkAieznC/Y8xf+XF5kAmLcV1EXVNZJX5qis
+         fHY2MvPmFWuepbrk+vkmzwNdHzOAT4Cz/SVPRMd0=
+Date:   Sat, 7 Aug 2021 10:20:59 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Peter Hess <peter.hess@ph-home.de>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.13 32/35] Revert "spi: mediatek: fix fifo rx mode"
+Message-ID: <YQ5Ca/SouyQy9sSB@kroah.com>
+References: <20210806081113.718626745@linuxfoundation.org>
+ <20210806081114.781183194@linuxfoundation.org>
+ <1be93ec0-43cd-f86b-aeb8-64971b4fcedd@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1be93ec0-43cd-f86b-aeb8-64971b4fcedd@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'd like to announce the usbutils 014 release.  There have been a number
-of small changes in it over the past 8 months, so it's time to finally
-bundle it together and do an "official" release so that the distros can
-take advantage of the update.
+On Fri, Aug 06, 2021 at 11:54:08AM -0700, Guenter Roeck wrote:
+> On 8/6/21 1:17 AM, Greg Kroah-Hartman wrote:
+> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > 
+> > This reverts commit 09b8cc7810587257e5f82080884001301e1a1ba9 which is
+> > commit 3a70dd2d050331ee4cf5ad9d5c0a32d83ead9a43 upstream.
+> > 
+> > It has been found to have problems.
+> > 
+> > Reported-by: Guenter Roeck <linux@roeck-us.net>
+> > Cc: Peter Hess <peter.hess@ph-home.de>
+> > Cc: Frank Wunderlich <frank-w@public-files.de>
+> > Cc: Mark Brown <broonie@kernel.org>
+> > Cc: Sasha Levin <sashal@kernel.org>
+> > Link: https://lore.kernel.org/r/efee3a58-a4d2-af22-0931-e81b877ab539@roeck-us.net
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> The problem with the reverted patch has now been fixed in the mainline
+> kernel with commit 0d5c3954b35e ("spi: mediatek: Fix fifo transfer").
+> So an alternative to this revert might be to apply commit 0d5c3954b35e
+> instead.
 
-One nice new thing is that the project is now REUSE compliant, to make
-it easier for users to verify the license and copyright information of
-all files in the release.
-
-Full details of the changes are found below in the shortlog.
-
-Tarballs can be found on kernel.org here:
-	https://www.kernel.org/pub/linux/utils/usb/usbutils/
-
-Or you can pull from the following git locations as well:
-	https://github.com/gregkh/usbutils
-	https://github.com/linux-usb/usbutils
-	https://git.sr.ht/~gregkh/usbutils
-	https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usbutils.git
-
+Good idea, I'll go drop this revert and add that change instead.
 
 thanks,
 
 greg k-h
-
-------------
-
-usbutils 014
-============
-
-Adrian Kalazi (1):
-      Add Tx+Rx lanes to tree mode
-
-Aurelien Jarno (1):
-      lsusb(8): mention the udev's hardware database
-
-Benson Leung (1):
-      lsusb: Fix typo in string output for iAdditionalInfoURL
-
-Bui Quang Minh (1):
-      lsusb-t: Add lower bound checks in read_sysfs_file_string
-
-Grant Grundler (2):
-      lsusb: remove unused RETRIES constant
-      lsusb: don't complain on EAGAIN
-
-Greg Kroah-Hartman (10):
-      sysfs: add copyright notice taken from name.*
-      LICENSES: add symlink to handle "or-later" issue for GPL-2.0
-      LICENSES: put spdx headers on the license files
-      rename "GPL-2.0+" to "GPL-2.0-or-later"
-      LICENSE: rename GPL-3.0.txt -> GPL-3.0-only.txt
-      usbhid-dump.8.in: add copyright information
-      .gitignore: add copyright and SPDX info
-      usbhid-dump: add copyright and SPDX info
-      SPDX header cleanups from GPL-2.0 -> GPL-2.0-only
-      usbutils.spdx: update with output of latest reuse tool
-
-Jonathan Neuschäfer (2):
-      lsusb: Fix spelling of bEndpointAddress in UVC
-      lsusb: Decode endpoint addresses in UVC
-
-Lukas Zaoral (3):
-      lsusb.c: fix leak in dump_printer_device
-      usb-devices: do not use `local` in a POSIX shell script
-      desc-defs.c: fix possible out-of-bound read
-
-Matthias Braun (1):
-      Fix typos in lsusb.8.in
-
-Ruslan Kabatsayev (5):
-      Fix locating endpoint when it's a directory rather than a symlink
-      Fix formatting of interface descriptors to match /sys/kernel/debug/usb/devices
-      Fix formatting of endpoint direction to match /sys/kernel/debug/usb/devices
-      Fix formatting of endpoint type to match /sys/kernel/debug/usb/devices
-      Fix formatting of max endpoint packet size to match /sys/kernel/debug/usb/devices
-
-Thomas Hebb (1):
-      lsusb: Fix buffer size copy/paste error
-
-Tormod Volden (1):
-      Makefile.am: Remove unused DATADIR
-
-
