@@ -2,89 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEABE3E326C
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 02:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDE23E326D
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 02:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhHGAvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 20:51:48 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:45171 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229589AbhHGAvs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 20:51:48 -0400
-Received: (qmail 476927 invoked by uid 1000); 6 Aug 2021 20:51:30 -0400
-Date:   Fri, 6 Aug 2021 20:51:30 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Jade Alglave <j.alglave@ucl.ac.uk>
-Cc:     Will Deacon <will@kernel.org>,
+        id S229750AbhHGA6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 20:58:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:42730 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229589AbhHGA6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 20:58:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0B236D;
+        Fri,  6 Aug 2021 17:58:29 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 077CA3F66F;
+        Fri,  6 Aug 2021 17:58:26 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [RFC] LKMM: Add volatile_if()
-Message-ID: <20210807005130.GA476712@rowland.harvard.edu>
-References: <20210605145739.GB1712909@rowland.harvard.edu>
- <20210606001418.GH4397@paulmck-ThinkPad-P17-Gen-1>
- <20210606012903.GA1723421@rowland.harvard.edu>
- <20210606115336.GS18427@gate.crashing.org>
- <CAHk-=wjgzAn9DfR9DpU-yKdg74v=fvyzTJMD8jNjzoX4kaUBHQ@mail.gmail.com>
- <20210606182213.GA1741684@rowland.harvard.edu>
- <CAHk-=whDrTbYT6Y=9+XUuSd5EAHWtB9NBUvQLMFxooHjxtzEGA@mail.gmail.com>
- <YL34NZ12mKoiSLvu@hirez.programming.kicks-ass.net>
- <20210607115234.GA7205@willie-the-truck>
- <20210730172020.GA32396@knuckles.cs.ucl.ac.uk>
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH v2 0/4] rcu, arm64: PREEMPT_RT fixlets
+Date:   Sat,  7 Aug 2021 01:58:03 +0100
+Message-Id: <20210807005807.1083943-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730172020.GA32396@knuckles.cs.ucl.ac.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 06:20:22PM +0100, Jade Alglave wrote:
-> I hope this material can help inform this conversation and I would love
-> to hear your thoughts.
+Hi folks,
 
-Thoughts on section 4...
+this is v2 of:
 
-The definition of Pick Basic dependency is phrased incorrectly.  The 
-"all of the following apply" in the first paragraph refers only to first 
-bullet point, which in turn refers to the following two bullet points.  
-The "all of the following apply" phrase should be removed and the first 
-bullet point should be merged into the main text.
+  https://lore.kernel.org/lkml/20210721115118.729943-1-valentin.schneider@arm.com/
 
-The definition of Pick dependency is redundant, because each Pick 
-Address and Pick Data dependency is itself already a Pick Basic 
-dependency.  The same is true of the cat formalization.
+respun from Frederic and Paul's helpful feedback. Tested atop v5.14-rc4-rt6 with
+the v1 patches reverted. There, commit 
 
-In the cat code, the definition of Reg looks wrong.  It is:
+  d76e0926d835 ("rcu/nocb: Use the rcuog CPU's ->nocb_timer")
 
-	let Reg=~M | ~BR
+prevents the NOCB offload warning from firing if there are no NOCB CPUs (which
+is sensible). Adding a single NOCB CPU brings the warning back, which patch 3
+fixes.
 
-Since (I presume) no event falls into both the M and BR classes, this 
-definition includes all events.  It probably should be:
+Note that patches 2 & 4 are already in v5.14-rc4-rt6, but still apply against
+mainline.
 
-	let Reg=~(M | BR)
+Revisions
+=========
 
-or
+v1 -> v2
+++++++++
 
-	let Reg=~M & ~BR
+o Rebased and tested against v5.14-rc4-rt6
+o Picked rcutorture patch from
+  https://lore.kernel.org/lkml/20210803225437.3612591-2-valentin.schneider@arm.com/
+o Added a local_lock to protect NOCB offload state under PREEMPT_RT (Frederic,
+  Paul)
 
-It's now clear that my original understanding of the underlying basis of 
-Intrinsic control dependencies was wrong.  They aren't separated out 
-because CPUs can speculate through conditional branches; rather they are 
-separated out because they are the things which give rise to Pick 
-dependencies.  It would have been nice if the text had explained this at 
-the start instead of leaving it up to me to figure out for myself.
+Valentin Schneider (4):
+  rcutorture: Don't disable softirqs with preemption disabled when
+    PREEMPT_RT
+  sched: Introduce is_pcpu_safe()
+  rcu/nocb: Protect NOCB state via local_lock() under PREEMPT_RT
+  arm64: mm: Make arch_faults_on_old_pte() check for migratability
 
-Alan
+ arch/arm64/include/asm/pgtable.h |  2 +-
+ include/linux/sched.h            | 10 ++++
+ kernel/rcu/rcutorture.c          |  2 +
+ kernel/rcu/tree.c                |  4 ++
+ kernel/rcu/tree.h                |  4 ++
+ kernel/rcu/tree_plugin.h         | 82 ++++++++++++++++++++++++++++----
+ 6 files changed, 94 insertions(+), 10 deletions(-)
+
+--
+2.25.1
+
