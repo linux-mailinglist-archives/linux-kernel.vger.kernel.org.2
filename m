@@ -2,190 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17653E3272
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 02:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2DB3E3275
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 03:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhHGA7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 20:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
+        id S229725AbhHGBBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 21:01:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbhHGA7w (ORCPT
+        with ESMTP id S229512AbhHGBBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 20:59:52 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4AEC061798
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 17:59:35 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id dw2-20020a17090b0942b0290177cb475142so25128371pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 17:59:35 -0700 (PDT)
+        Fri, 6 Aug 2021 21:01:22 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F23BC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 18:01:04 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id m18so3052747ljo.1
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 18:01:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5HyZHfS8AsBy90XkNLPe774IDKkn3JiMkd3PeFjVH38=;
-        b=MJ1S085DR5XA13X7bAsyITgXfu4dTx3O8g0KeRsFJBLLVYFoCGkBdPCdIlepJHCMbG
-         qITAgD31mYuPEghA2MzWqNntVShRpPmDkuw3I7kdKNZMb3Mq/4PcUS3vmxoe/MDTCloy
-         oIo+ihyECgBxnmZWlMkwRCUrAAV7wmGrYPLztXmf00pcIqYYqSxFk9ZyC2dlQFzRTXng
-         qhT0vz/98aheiW2ujBpzFSw7NYPjLkCyd8i4Uohp4ebrCKhMQ1yrzBiWY/CUwmZ4RfWh
-         SrnIe8oh2hnPIDoaYNohQdrPp6f6xwSLMHQrpLH690fPdfUtRg4ZmQT9ZHwFeBeeWIvX
-         aIwQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lFDTbK4kGubvDTyFFXN3Ym+4Q093+Na93/G8Bi3cS7Y=;
+        b=mCJbnKvLyEzDA6Cn+iY7Em+qPhsjpXa35c4YZ3tPOVSxV8PBNCDEp4UZYCkweIEP1w
+         ZCiqocBVjnSqOXDak709uHM3k1oeHnIDr0E4MJtV9MWGOdhm4L3sPfbzyZT3X+D1eEMQ
+         Dxgh4Ob3VChTev2EhE5PWaNjti+LKd0x1bHcdtR5mDFQUBjsXdJd8kzFhIf835E2W6av
+         hpEhXS96oZSr9Z172xksyL2DOk8TcorIyBgrTuCbQiMssxzqdSUtisFEsMyNQ+3Vzz7o
+         tFEs21rmI2n8WycYzqP4N3lVNolh4ZhiEUJ8xMw+tOGLSVwEeLTok/D/r5iJDkaDW6sl
+         7cbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5HyZHfS8AsBy90XkNLPe774IDKkn3JiMkd3PeFjVH38=;
-        b=fRq7en0lkil072FyquPOK/TFTLZvH1+6XEtfyQN0SDD3BDrR1I62r0Rmv4B4BObZ+8
-         QUucxW1NmXD+pvd3Y9U/PMuxjz2VkuLSSR8ofC5VeteyXQE6oUnsIjWoDnGPBOkwUJco
-         PfIYHCyXWdP+BjJhFXshigVd5uSO4MPg+izag2RCIjzHLCCdAsgJbOwwIiiyEFtOGZPw
-         4uN7d9vQ+QkSNUUgDje+3rshFb5mRpUPMhRVCTILnO6AYVAhu7auFkkeSj0pjN5OU7cs
-         ZvpRBXPPGYvxy65NhoabKxSbY+xCd+2baAc4MGpgEIMBDTVlyQ/g3CfFTM218MADbLgW
-         K8SQ==
-X-Gm-Message-State: AOAM531KTo0c3VcooPgaI0pT1fnox1ENFFKX1b2KYd5KZl3xKmoSp4ep
-        hnZAS0tHIVDjVYybMfpxiqg2zA==
-X-Google-Smtp-Source: ABdhPJx8YkCQw5Bxh0ffWbQ3C1WTQM8vAknR2uwesgVRQKvdoDW5JjioeBgQsKRfKc6U5Nk5c/vYgA==
-X-Received: by 2002:aa7:8387:0:b029:395:a683:a0e6 with SMTP id u7-20020aa783870000b0290395a683a0e6mr13448620pfm.12.1628297974299;
-        Fri, 06 Aug 2021 17:59:34 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g11sm717226pfo.166.2021.08.06.17.59.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 17:59:33 -0700 (PDT)
-Date:   Sat, 7 Aug 2021 00:59:30 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Edmondson <david.edmondson@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        David Matlack <dmatlack@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v3 2/3] KVM: x86: On emulation failure, convey the exit
- reason, etc. to userspace
-Message-ID: <YQ3a8jb2+3dj/PlE@google.com>
-References: <20210729133931.1129696-1-david.edmondson@oracle.com>
- <20210729133931.1129696-3-david.edmondson@oracle.com>
- <YQR52JRv8jgj+Dv8@google.com>
- <cunk0l4mhjc.fsf@oracle.com>
- <YQgkGwGkrleO7I2A@google.com>
- <cunbl6fn4l6.fsf@oracle.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lFDTbK4kGubvDTyFFXN3Ym+4Q093+Na93/G8Bi3cS7Y=;
+        b=RxDCnrYB2qFeNDp9VbH9UH5W6x1+6gL9Jxb1nDSR1iPoItEgyaPpAvdsv0dkOaGO/c
+         E/D1BRPtMHijJTJZkAk/GOfDc+YOekr5nSQ9OAU40CDgOSeUtaEds/CFPIpp8uTy1PSE
+         rThv3LTyg00GX7cw6oX0DfkJGm9m+PBLxg5HC5k7azcSWz7IoQ4ZqXm2CP13zhvA2QXd
+         1fr1EoHr6q5P9H33mKfNl6V9/Cs9+yFVog/0UApj0JBJVG4pVjpY22TTn0HEfQEU3nRw
+         DFkTNdaWq790Eae/kKjFkIga9YKaD9wzNYQw1x23e+nVd/loUBaE6zMVQ4GJ473F4ntF
+         urKA==
+X-Gm-Message-State: AOAM532DKcnF64I5X50F3YgejolNoBEA9j/ZZWZCxhWwNg/qOh/oEDA/
+        MrkVT2TJcbdpkxCASxno+SPXlEe8rFuhZEFt89T9aQ==
+X-Google-Smtp-Source: ABdhPJzjxlGMC3Z5dtOugUnvqGp5PUm36eDXO4XwC+zCsv6WV6IB0+TnX5ciL+7ETNK8DJefYv5a2mxkTufwBOa3B8o=
+X-Received: by 2002:a05:651c:906:: with SMTP id e6mr8043153ljq.160.1628298062735;
+ Fri, 06 Aug 2021 18:01:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cunbl6fn4l6.fsf@oracle.com>
+References: <20210806231701.106980-1-npache@redhat.com>
+In-Reply-To: <20210806231701.106980-1-npache@redhat.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 6 Aug 2021 18:00:51 -0700
+Message-ID: <CALvZod6gCof1bhVwdU7vYYKBRCn_HZBFi4BjSYoSK-dyrmswMA@mail.gmail.com>
+Subject: Re: [PATCH] vm_swappiness=0 should still try to avoid swapping anon memory
+To:     Nico Pache <npache@redhat.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Rafael Aquini <aquini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021, David Edmondson wrote:
-> On Monday, 2021-08-02 at 16:58:03 GMT, Sean Christopherson wrote:
-> 
-> > On Mon, Aug 02, 2021, David Edmondson wrote:
-> >> On Friday, 2021-07-30 at 22:14:48 GMT, Sean Christopherson wrote:
-> >> When we add another flag (presuming that we do, because if not there was
-> >> not much point in the flags) this will have to be restructured again. Is
-> >> there an objection to the original style? (prime ndata=1, flags=0, OR in
-> >> flags and adjust ndata as we go.)
-> >
-> > No objection, though if you OR in flags then you should truly _adjust_ ndata, not
-> > set it, e.g.
-> 
-> My understanding of Aaron's intent is that this would not be the case.
-> 
-> That is, if we add another flag with payload and set that flag, we would
-> still have space for the instruction stream in data[] even if
-> KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES is not set.
+On Fri, Aug 6, 2021 at 4:17 PM Nico Pache <npache@redhat.com> wrote:
+>
+> Since commit b91ac374346b ("mm: vmscan: enforce inactive:active ratio at the
+> reclaim root") swappiness can start prematurely swapping anon memory.
+> This is due to the assumption that refaulting anon should always allow
+> the shrinker to target anon memory. Add a check for vm_swappiness being
+> >0 before indiscriminately targeting Anon.
 
-Hmm, I don't think we have to make that decision yet.  Userspace must check the
-flag before consuming run->emulation_failure, so we haven't fully commited one
-way or the other.
+Did you actually observe this behavior?
 
-I believe the original thought was indeed to skip unused fields, but I don't think
-that's actually the behavior we want for completely unrelated fields, i.e. flag
-combinations that will _never_ be valid together.  The only reason to skip fields
-would be to keep the offset of a particular field constant, so I think the rule
-can be that if fields that can coexist but are controlled by different flags, they
-must be in the same anonymous struct, but in general a union is ok.
+>
+> Signed-off-by: Nico Pache <npache@redhat.com>
+> ---
+>  mm/vmscan.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 4620df62f0ff..8b932ff72e37 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -2909,8 +2909,8 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+>
+>                 refaults = lruvec_page_state(target_lruvec,
+>                                 WORKINGSET_ACTIVATE_ANON);
+> -               if (refaults != target_lruvec->refaults[0] ||
+> -                       inactive_is_low(target_lruvec, LRU_INACTIVE_ANON))
+> +               if (vm_swappiness && (refaults != target_lruvec->refaults[0] ||
+> +                       inactive_is_low(target_lruvec, LRU_INACTIVE_ANON)))
 
-It seems rather unlikely that we'll gain many more flags, but it would be really
-unfortunate if we commit to skipping fields and then run out of space because of
-that decision.
+If you are really seeing the said behavior then why will this fix it.
+This is just about deactivating active anon LRU. I would rather look
+at get_scan_count() to check why swappiness = 0 is still letting the
+kernel to scan anon LRU. BTW in cgroup v1, the memcg can overwrite
+their swappiness which will be preferred over system vm_swappiness.
+Did you set system level swappiness or memcg one?
 
-> Given that, we must *set* ndata each time we add in a flag
-
-Technically we wouldn't have to (being more than a bit pedantic), we could keep
-the same flow and just do the ndata_start bump outside of the OR path, e.g.
-
-        /* Always include the flags as a 'data' entry. */
-        ndata_start = 1;
-        run->emulation_failure.flags = 0;
-
-        /* Skip unused fields instead of overloading them when they're not used. */
-        ndata_start += 2;
-        if (insn_size) {
-                run->emulation_failure.flags |=
-                        KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES;
-                run->emulation_failure.insn_size = insn_size;
-                memset(run->emulation_failure.insn_bytes, 0x90,
-                       sizeof(run->emulation_failure.insn_bytes));
-                memcpy(run->emulation_failure.insn_bytes, insn_bytes, insn_size);
-        }
-
-so that it's easier to understand the magic numbers used to adjust ndata_start.
-
-But a better solution would be to have no magic numbers at all and set ndata_start
-via sizeof(run->emulation_failure).  E.g.
-
-	/*
-	 * There's currently space for 13 entries, but 5 are used for the exit
-	 * reason and info.  Restrict to 4 to reduce the maintenance burden
-	 * when expanding kvm_run.emulation_failure in the future.
-	 */
-	if (WARN_ON_ONCE(ndata > 4))
-		ndata = 4;
-
-	ndata_start = sizeof(run->emulation_failure);
-	memcpy(&run->internal.data[], info, ARRAY_SIZE(info));
-	memcpy(&run->internal.data[ndata_start + ARRAY_SIZE(info)], data, ndata);
-
-	run->internal.ndata = ndata_start + ARRAY_SIZE(info) + ndata;
-
-Though I'd prefer we not skip fields, at least not yet, e.g. to condition userspace
-to do the right thing if we decide to not skip when adding a second flag (if that
-even ever happens).
-
-> with the value being the extent of data[] used by the payload corresponding
-> to that flag, and the flags must be considered in ascending order (or we
-> remember a "max" along the way).
-> 
-> Dumping the arbitray debug data after the defined fields would require
-> adjusting ndata, of course.
-> 
-> If this is not the case, and the flag indicated payloads are packed at
-> the head of data[], then the current structure definition is misleading
-> and we should perhaps revise it.
-
-Ah, because there's no wrapping union.  I wouldn't object to something like this
-to hint to userpace that the struct layout may not be purely additive in the
-future.
-
-diff --git a/tools/include/uapi/linux/kvm.h b/tools/include/uapi/linux/kvm.h
-index d9e4aabcb31a..6c79c1ce3703 100644
---- a/tools/include/uapi/linux/kvm.h
-+++ b/tools/include/uapi/linux/kvm.h
-@@ -402,8 +402,12 @@ struct kvm_run {
-                        __u32 suberror;
-                        __u32 ndata;
-                        __u64 flags;
--                       __u8  insn_size;
--                       __u8  insn_bytes[15];
-+                       union {
-+                               struct {
-+                                       __u8  insn_size;
-+                                       __u8  insn_bytes[15];
-+                               };
-+                       };
-                } emulation_failure;
-                /* KVM_EXIT_OSI */
-                struct {
+>                         sc->may_deactivate |= DEACTIVATE_ANON;
+>                 else
+>                         sc->may_deactivate &= ~DEACTIVATE_ANON;
+> --
+> 2.31.1
+>
