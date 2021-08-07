@@ -2,97 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5415D3E347F
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 11:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94363E3482
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 11:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbhHGJtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 05:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59692 "EHLO
+        id S232285AbhHGJtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 05:49:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231937AbhHGJtD (ORCPT
+        with ESMTP id S232034AbhHGJt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 05:49:03 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4598C061799
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 02:48:44 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id z4so14323386wrv.11
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 02:48:44 -0700 (PDT)
+        Sat, 7 Aug 2021 05:49:28 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8655EC0617A5;
+        Sat,  7 Aug 2021 02:48:53 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id a20so10597705plm.0;
+        Sat, 07 Aug 2021 02:48:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2aWYRmpVXXmfCzc0hGXLln/sWneJEQ0/P7zXh3U4+pM=;
-        b=Zru0D7EX4YflMhBX95pCSQbZQMsezC5CFExQ6KVQvW0G77g7U72gqzD2R3GKONI3Zc
-         Xe1/sIsxSNaQ/HYA2yT8BShZtG+5V2LjyW9TyyD3F2A5C46TpxY7cG0j/S/v3G1NklQ4
-         MA9poRvOHwBZ0XvqQnXZsFDJCR1vz6Fqy+2K3d/Xe7cXBhlYbwff6jHXrIGfFv0pAIix
-         kaL16l1W+FavoWQYNpeUyFpZ5058Q9Z+mE8j+aDLj8QnY+HD8jvQ3/IH+1oyCOZsU2kb
-         1CCffOpXORbLuanZ0465ttJU+TCPmk99NCDEhacOnYG4VDgjFWq+ynXmQjRNHQpWgEYX
-         uw3w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GskZaT13YlJGqejg2eU7t7TuDiL9laCdLiuZ6B45MEo=;
+        b=BRgknVKbLaTZu80X5rAzn1+wbFGDw4Hwq4MDZQ7g2WXLLRokE46T5TVYJvWj64Jxqp
+         ps/9sEMaCNsNPccl9jCVMI/6hTvaV3vbvOuV82ouay3mZ1js+VvEd2hC3dsYMvOhCNWU
+         +wYPtf+lu+Lz56JBW60uREif0i+f4dqg31hPT1tsUFs0sE33DBk1A3arUYRUY5pFVnes
+         e63J3I2vxngefGgHu4rUt/39NJmcvxSES+Xs/1icWOk7j8poJZ+F32qoLHhKJc9DpiJw
+         9D8/XCRuPn4AbxspE6D5hcxuN8tudhKmddx17XEr38oA0K1rQqyo8RAjVeBprf87GFZ3
+         Ox7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2aWYRmpVXXmfCzc0hGXLln/sWneJEQ0/P7zXh3U4+pM=;
-        b=c/q05UHNcfAhGY71IzDZTu2IDANBNCbXauHE0jBO7ctadMVsb4FgRI3pYYYk6plXv5
-         0H85YfRJvjIUpb121SQ272Mw8tRMTJH52puBPYLfIbNkjId11KNKLJUDHHnovsvM+Wlg
-         PKjfSX990K1M8ABQMpBRisJD34wIMGjB6REA7lm+ylckQkbO3+rc/+wC9RITv2wzF5E9
-         TeOkctXeaMd9qtlXEmmvOxt89x24NziB16V6H+izX4Gy9iecbXvEVYpKLTd9nlB+KfAp
-         aOA+JgueM9EpdPZKgXT5mWMcIYGwt5zCEiKcn/xbsRWqDtGWhkvbRZstc4yQT6fPHG87
-         prLg==
-X-Gm-Message-State: AOAM533dH0vvUpCqb7MIFEIHniBbqpXhm6CDdGC3UGiY/4K1iL1nw3c7
-        cv/vWyvtE47DxW0cMJTF0CYy5i2nYCc=
-X-Google-Smtp-Source: ABdhPJzRGXKifkn8+7Zc4MzQYDICoV2uQ3OOL/kgODoErz8+VC8FREiXB0MkbHsA1T6hkQrYSENLXg==
-X-Received: by 2002:a5d:4562:: with SMTP id a2mr14825092wrc.347.1628329723336;
-        Sat, 07 Aug 2021 02:48:43 -0700 (PDT)
-Received: from agape ([5.171.80.112])
-        by smtp.gmail.com with ESMTPSA id g16sm14699013wro.63.2021.08.07.02.48.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Aug 2021 02:48:43 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 21/21] staging: rtl8723bs: remove unused RF_*T*R enum
-Date:   Sat,  7 Aug 2021 11:48:13 +0200
-Message-Id: <2f2f185a80fbec71af4a165180ed0156d194c96e.1628329348.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1628329348.git.fabioaiuto83@gmail.com>
-References: <cover.1628329348.git.fabioaiuto83@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GskZaT13YlJGqejg2eU7t7TuDiL9laCdLiuZ6B45MEo=;
+        b=CpoaMPfOK+Qnh4cdmHdmr2iJVqncl/TKD4wIx6O5jG8XKfhxUy1UfLj5N6q+n/tRJ9
+         57xWVng98E1wtC8mS3Ri4I9Q+XF9OnW38sRShF4djdkHjwRfd9elLfAJi4bQY6tXzNLv
+         EF8XSDuTqOOo2jz4qBchFlhGAjUTUS7bj2hD33LqK22DQQNY9YbULKpWPG3all+NdNZh
+         upGjgy0Syh5tgA0LenGS3KsfjrTwD+QnftdteUVG2VsIqXDhuctf0RhOu6VDEuGafR7w
+         b1mBJ/3zBKVXRtpKHO2PxFNFxM9exc1rLJ1Bh0jagdLzxy6aKUcP5OcoEPpZEHO3piv/
+         Yv1g==
+X-Gm-Message-State: AOAM533oH3nIDGEnipZPfgdoFzDqWdiQuF/SLRWCLISf8wGemsiM6/Hr
+        plGTwEMmcno2md13dMV5ul4YCpqJVavkA75Kxv4=
+X-Google-Smtp-Source: ABdhPJxNYWSO61ooNmT0K7y0xYS0BzlXcIn2/K/RTbf7QSAoQJNpvDaAf/5wrEFoK0wWGZUmhTmO19U7FCx33V1CTnM=
+X-Received: by 2002:a17:902:b713:b029:12b:b249:693f with SMTP id
+ d19-20020a170902b713b029012bb249693fmr2296771pls.17.1628329733511; Sat, 07
+ Aug 2021 02:48:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210806154951.4564-1-andriy.shevchenko@linux.intel.com>
+ <fdf5b050-2c8d-f3f1-f8bd-0dbc616c9bc6@gmail.com> <CAHp75VfNkinQn1SsTU24THA=0XQZUX1KeAW42TvsCYO0DfadRQ@mail.gmail.com>
+In-Reply-To: <CAHp75VfNkinQn1SsTU24THA=0XQZUX1KeAW42TvsCYO0DfadRQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 7 Aug 2021 12:48:17 +0300
+Message-ID: <CAHp75VchB=gfKfmg7yQW0wpJUAjVRH=8C1aY2gc=NWne5KOqpg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] platform/x86/intel: int3472: Use y instead of objs
+ in Makefile
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove unused RF_*T*R enum, for rtl8723bs is
-only capable of 1T1R rf path so selection is not needed.
+On Sat, Aug 7, 2021 at 12:46 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Sat, Aug 7, 2021 at 3:20 AM Daniel Scally <djrscally@gmail.com> wrote:
+> > On 06/08/2021 16:49, Andy Shevchenko wrote:
+> > > The 'objs' is for user space tools, for the kernel modules
+> > > we should use 'y'.
+> >
+> > Oops, now you mention it I remember you saying that for the cio2-bridge
+> > code too - thanks.
+>
+> Just for the sake of reference (I spent some time to realize from
+> where I have got this):
+> https://www.kernel.org/doc/html/latest/kbuild/makefiles.html#composite-userspace-programs
+> (Note, that there is the first section with the first "objs" mention)
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/include/rtw_rf.h | 10 ----------
- 1 file changed, 10 deletions(-)
+Actually this one
+https://www.kernel.org/doc/html/latest/kbuild/makefiles.html#composite-host-programs
+But it doesn't change the point.
 
-diff --git a/drivers/staging/rtl8723bs/include/rtw_rf.h b/drivers/staging/rtl8723bs/include/rtw_rf.h
-index 6c25707f4ec8..718275ee4500 100644
---- a/drivers/staging/rtl8723bs/include/rtw_rf.h
-+++ b/drivers/staging/rtl8723bs/include/rtw_rf.h
-@@ -97,16 +97,6 @@ enum {
- 	HT_DATA_SC_20_LOWER_OF_40MHZ = 2,
- };
- 
--/* 2007/11/15 MH Define different RF type. */
--enum {
--	RF_1T2R = 0,
--	RF_2T4R = 1,
--	RF_2T2R = 2,
--	RF_1T1R = 3,
--	RF_2T2R_GREEN = 4,
--	RF_MAX_TYPE = 5,
--};
--
- u32 rtw_ch2freq(u32 ch);
- 
- #endif /* _RTL8711_RF_H_ */
 -- 
-2.20.1
-
+With Best Regards,
+Andy Shevchenko
