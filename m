@@ -2,89 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051E13E32DA
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 05:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C34F3E32E0
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 05:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhHGDFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 23:05:24 -0400
-Received: from smtpbguseast1.qq.com ([54.204.34.129]:45460 "EHLO
-        smtpbguseast1.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbhHGDFW (ORCPT
+        id S230325AbhHGDGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 23:06:39 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:43887 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230053AbhHGDGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 23:05:22 -0400
-X-QQ-GoodBg: 1
-X-QQ-SSF: 0040000000000010
-X-QQ-FEAT: UXxRjkAwy+gwVJOAPjIy1knZ6BHCIfF/CdFgbbt/cBkpKikAE3SjX7VjyQnMG
-        kS2oMu03FEWrvYDHMUdgeUG440N1M7ui3mDgjp8fqSLLeotFmlc7aUSU7cxxjMnx63qtSrP
-        5p7KM73Juqa5aqw/oJLCfrq7HT3FnVmltcBpIoC5InnvQV144vp2qDUANiW9dK9CV9qWTAl
-        NGPO39vSUc68hAgs88Hm5FhqYsMPYSTJqnID+tl8zmjCW4TLvV6SFQyfiKJlnWaZymNrXds
-        4ONM6R9hp8MZG8DGz5SxKW5SXvfpJ//2aqoEus6pFhVkpLUPdnYt7f/idTy3du6UAuLI7iu
-        YCLGFYV
-X-QQ-BUSINESS-ORIGIN: 2
-X-Originating-IP: 139.226.39.251
-X-QQ-STYLE: 
-X-QQ-mid: logic626t1628305491t481666
-From:   "=?ISO-8859-1?B?Q2hlbiBMaQ==?=" <chenli@uniontech.com>
-To:     "=?ISO-8859-1?B?aGVyYmVydA==?=" <herbert@gondor.apana.org.au>,
-        "=?ISO-8859-1?B?ZGF2ZW0=?=" <davem@davemloft.net>,
-        "=?ISO-8859-1?B?bGludXgtY3J5cHRv?=" <linux-crypto@vger.kernel.org>,
-        "=?ISO-8859-1?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>
-Subject: [PATCH] crypto: lib/sha256 - add sha256_value function
-Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="ISO-8859-1"
-Content-Transfer-Encoding: base64
-Date:   Sat, 7 Aug 2021 11:04:51 +0800
-X-Priority: 1
-Message-ID: <tencent_68FC194846DCFC8653D8D915@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-X-QQ-SENDSIZE: 520
-Received: from qq.com (unknown [127.0.0.1])
-        by smtp.qq.com (ESMTP) with SMTP
-        id ; Sat, 07 Aug 2021 11:04:53 +0800 (CST)
-Feedback-ID: logic:uniontech.com:qybgforeign:qybgforeign5
-X-QQ-Bgrelay: 1
+        Fri, 6 Aug 2021 23:06:38 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id DAFAE580BAE;
+        Fri,  6 Aug 2021 23:06:20 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 06 Aug 2021 23:06:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=l
+        5p2iTVXgItyA1T83tXDocQvr6XRmME6ifZj532EGj0=; b=ljQo8afraSpQx/8id
+        7CfoqpVwr8D62kyoo+MmGoVRUnd7/sVr39no7ZD9FxDbScJUYMDGilPpIYuoeGRE
+        iViJVfbVuJKClJbc70CdAd0Pm4Q44wngl36n8hmh37pPVHmCYNkONNEEQ7ziQpTI
+        Fy9yEX42caoqcnF+WaK6B0Roead9Bah5qBw/eBadsFvdbwgNjMrC7ELdaAi4FMho
+        tkBEtqbhDgWIUqb6ncXXqWTVd2NkVAUxVZuX6r9u9+xpGcGAi/oLiAa9jx5d4szu
+        biGrYy2p3ZizaZ8nInGLezYBQQ3Q4ISWs+MX6SGqe8fP2pYeBUykmOYXfNev2wFI
+        9FHmA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=l5p2iTVXgItyA1T83tXDocQvr6XRmME6ifZj532EG
+        j0=; b=MAEjfhjWn1aASr/8ov+9UITytKgDUETYzwVTeyrVRxcghYJZVFked+5Xe
+        DPdIY+uNqUnb8vc+FkoeMalFSigI56uKsJneK1USC4coefv7enUjqiOyFGhPxl7d
+        apeOTAlJ5dIIQoBHXPwc1j6I6AFjJo3uNokf56XDguP7vAVP3l6JLqm90KrqWwyP
+        ptmBucuPiesKznlC2iBXkZAmwzcas8JIvha/3VA2gv0quYES1Cd09DIqba+p8IGf
+        GiD1Uh1nXiIbOZ+yiRaDsatg1A7Keap3+ZV0WqI3AquKY0nHZvZeFOmxuNpAq6+m
+        Tp1ThMWa4YcFEc9QmEMkKo6IB55xw==
+X-ME-Sender: <xms:q_gNYXcRaawms8kHh0Fhufa6Rg_lbEyhojb71ihthde-eDRrb1yzxQ>
+    <xme:q_gNYdN1F2Lg1rO_Me241_I9Ht2Ng7LokAo4dw_6ll_-x7np0wvFRlSKGxrCy-kzH
+    kuOtEDq-nI4bBoQkB0>
+X-ME-Received: <xmr:q_gNYQgVvWe-sUDHlTZgTw9w7iWEW1ZeG-bI_ko2LxWpOO35NeOKQRRxDzVfmdSMUlDxTUSKh08L6XB7Qpw4a1HmayXH>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjedvgdeifecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepuffvfhfhkffffgggjggtgfesthekre
+    dttdeftfenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhg
+    sehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeefheefudeugfeugeejtd
+    fhuedujeekvddvhfeludfhvdektdeileeikefghfetvdenucffohhmrghinheptddurdho
+    rhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjh
+    hirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:q_gNYY-QqqTmDgQMAnUiOh5h1mz-9gtQT3SStK--fIjPSwwq-Y2bOA>
+    <xmx:q_gNYTvLl9zeL7EGfx2USxvw7Fxk4rr9vLeUC1e18cTYilUhcqhUZg>
+    <xmx:q_gNYXEmg1J142dHKaUE_wPP8ilpddMI_uTDpVNVqWELobG5_IbvDg>
+    <xmx:rPgNYRLzUGI2CGhop4vWf8WG9tid9-nQmmjW6SgEsD80URuttonnJA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 6 Aug 2021 23:06:15 -0400 (EDT)
+Subject: Re: [PATCH v4 0/9] MIPS: Migrate pistachio to generic kernel
+To:     linux-mips@vger.kernel.org
+Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
+        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
+        vkoul@kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org
+References: <20210723022543.4095-1-jiaxun.yang@flygoat.com>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <1bb80cdf-f7d5-f99f-a4f3-635552df916b@flygoat.com>
+Date:   Sat, 7 Aug 2021 11:06:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210723022543.4095-1-jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIGEgZnVuY3Rpb24gc2hhMjU2X3ZhbHVlKCkgd2hpY2ggYWNjZXB0cyBhIHN0cmluZyBh
-bmQgc3RvcmUgU0hBMjU2IGhhc2gNCm9mIHRoaXMgc3RyaW5nIGludG8gZGVzdC4NCg0KU2ln
-bmVkLW9mZi1ieTogQ2hlbiBMaSA8Y2hlbmxpQHVuaW9udGVjaC5jb20+DQotLS0NCiBpbmNs
-dWRlL2NyeXB0by9zaGEyLmggfCAgMSArDQogbGliL2NyeXB0by9zaGEyNTYuYyAgIHwgMjMg
-KysrKysrKysrKysrKysrKysrKysrKysNCiAyIGZpbGVzIGNoYW5nZWQsIDI0IGluc2VydGlv
-bnMoKykNCg0KZGlmZiAtLWdpdCBhL2luY2x1ZGUvY3J5cHRvL3NoYTIuaCBiL2luY2x1ZGUv
-Y3J5cHRvL3NoYTIuaA0KaW5kZXggMjgzOGY1MjlmMzFlLi5jZTE3OTU0Y2FiMzggMTAwNjQ0
-DQotLS0gYS9pbmNsdWRlL2NyeXB0by9zaGEyLmgNCisrKyBiL2luY2x1ZGUvY3J5cHRvL3No
-YTIuaA0KQEAgLTExNSw2ICsxMTUsNyBAQCBzdGF0aWMgaW5saW5lIHZvaWQgc2hhMjU2X2lu
-aXQoc3RydWN0IHNoYTI1Nl9zdGF0ZSAqc2N0eCkNCiB2b2lkIHNoYTI1Nl91cGRhdGUoc3Ry
-dWN0IHNoYTI1Nl9zdGF0ZSAqc2N0eCwgY29uc3QgdTggKmRhdGEsIHVuc2lnbmVkIGludCBs
-ZW4pOw0KIHZvaWQgc2hhMjU2X2ZpbmFsKHN0cnVjdCBzaGEyNTZfc3RhdGUgKnNjdHgsIHU4
-ICpvdXQpOw0KIHZvaWQgc2hhMjU2KGNvbnN0IHU4ICpkYXRhLCB1bnNpZ25lZCBpbnQgbGVu
-LCB1OCAqb3V0KTsNCitpbnQgIHNoYTI1Nl92YWx1ZSh1OCAqKmRlc3QsIGNvbnN0IHU4ICpz
-cmMpOw0KIA0KIHN0YXRpYyBpbmxpbmUgdm9pZCBzaGEyMjRfaW5pdChzdHJ1Y3Qgc2hhMjU2
-X3N0YXRlICpzY3R4KQ0KIHsNCmRpZmYgLS1naXQgYS9saWIvY3J5cHRvL3NoYTI1Ni5jIGIv
-bGliL2NyeXB0by9zaGEyNTYuYw0KaW5kZXggNzJhNGIwYjFkZjI4Li5jZTFkZTdhM2UzMmUg
-MTAwNjQ0DQotLS0gYS9saWIvY3J5cHRvL3NoYTI1Ni5jDQorKysgYi9saWIvY3J5cHRvL3No
-YTI1Ni5jDQpAQCAtMTMsNiArMTMsOCBAQA0KIA0KICNpbmNsdWRlIDxsaW51eC9iaXRvcHMu
-aD4NCiAjaW5jbHVkZSA8bGludXgvZXhwb3J0Lmg+DQorI2luY2x1ZGUgPGxpbnV4L21tLmg+
-DQorI2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4NCiAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+
-DQogI2luY2x1ZGUgPGxpbnV4L3N0cmluZy5oPg0KICNpbmNsdWRlIDxjcnlwdG8vc2hhMi5o
-Pg0KQEAgLTIwNiw0ICsyMDgsMjUgQEAgdm9pZCBzaGEyNTYoY29uc3QgdTggKmRhdGEsIHVu
-c2lnbmVkIGludCBsZW4sIHU4ICpvdXQpDQogfQ0KIEVYUE9SVF9TWU1CT0woc2hhMjU2KTsN
-CiANCitpbnQgc2hhMjU2X3ZhbHVlKHU4ICoqZGVzdCwgY29uc3QgdTggKnNyYykNCit7DQor
-CXU4IG91dFtTSEEyNTZfRElHRVNUX1NJWkVdOw0KKwlpbnQgaSwgazsNCisJdW5zaWduZWQg
-Y2hhciBoZXhbMl07DQorDQorCSpkZXN0ID0ga3ZtYWxsb2Moc2l6ZW9mKHU4KSAqIChTSEEy
-NTZfQkxPQ0tfU0laRSArIDEpLCBHRlBfS0VSTkVMKTsNCisJaWYgKFpFUk9fT1JfTlVMTF9Q
-VFIoKmRlc3QpKQ0KKwkJcmV0dXJuIC1FTk9NRU07DQorCXNoYTI1NihzcmMsIHN0cmxlbihz
-cmMpLCBvdXQpOw0KKw0KKwlmb3IgKGkgPSAwLCBrID0gMDsgaSA8IFNIQTI1Nl9ESUdFU1Rf
-U0laRTsgaSsrKSB7DQorCQlzcHJpbnRmKGhleCwgIiUwMngiLCBvdXRbaV0pOw0KKwkJKCpk
-ZXN0KVtrKytdID0gaGV4WzBdOw0KKwkJKCpkZXN0KVtrKytdID0gaGV4WzFdOw0KKwl9DQor
-CSgqZGVzdClba10gPSAnXDAnOw0KKwlyZXR1cm4gMDsNCit9DQorRVhQT1JUX1NZTUJPTChz
-aGEyNTZfdmFsdWUpOw0KKw0KIE1PRFVMRV9MSUNFTlNFKCJHUEwiKTsNCi0tIA0KMi4zMi4w
-LjkzLmc2NzBiODFhODkw
 
 
+ÔÚ 2021/7/23 ÉÏÎç10:25, Jiaxun Yang Ð´µÀ:
+> I'm lucky enough to get a Creator CI40 board from dusts.
+> This patchset move it to gerneic kernel to reduce maintenance burden.
+> It have been tested with SD Card boot.
+
+Hi Thomas,
+
+For the series, the pinctrl one have been applied by subsystem 
+maintainer and
+rests have been acked by subsystem maintainers, could you please apply them
+to MIPS tree?
+
+Thanks.
+
+- Jiaxun
+
+>
+> --
+> v2: Minor fixes
+> v3: Typo fixes and 0day testbot warning fix (Thanks to Sergei!)
+> v4: 01.org warning fix
+>
+> Jiaxun Yang (9):
+>    MIPS: generic: Allow generating FIT image for Marduk board
+>    MIPS: DTS: Pistachio add missing cpc and cdmm
+>    clk: pistachio: Make it selectable for generic MIPS kernel
+>    clocksource/drivers/pistachio: Make it selectable for MIPS
+>    phy: pistachio-usb: Depend on MIPS || COMPILE_TEST
+>    pinctrl: pistachio: Make it as an option
+>    MIPS: config: generic: Add config for Marduk board
+>    MIPS: Retire MACH_PISTACHIO
+>    MIPS: Make a alias for pistachio_defconfig
+>
+>   arch/mips/Kbuild.platforms                    |   1 -
+>   arch/mips/Kconfig                             |  30 --
+>   arch/mips/Makefile                            |   3 +
+>   arch/mips/boot/dts/Makefile                   |   2 +-
+>   arch/mips/boot/dts/img/Makefile               |   3 +-
+>   arch/mips/boot/dts/img/pistachio.dtsi         |  10 +
+>   arch/mips/configs/generic/board-marduk.config |  53 +++
+>   arch/mips/configs/pistachio_defconfig         | 316 ------------------
+>   arch/mips/generic/Kconfig                     |   6 +
+>   arch/mips/generic/Platform                    |   1 +
+>   arch/mips/generic/board-marduk.its.S          |  22 ++
+>   arch/mips/pistachio/Kconfig                   |  14 -
+>   arch/mips/pistachio/Makefile                  |   2 -
+>   arch/mips/pistachio/Platform                  |   6 -
+>   arch/mips/pistachio/init.c                    | 125 -------
+>   arch/mips/pistachio/irq.c                     |  24 --
+>   arch/mips/pistachio/time.c                    |  55 ---
+>   drivers/clk/Kconfig                           |   1 +
+>   drivers/clk/Makefile                          |   2 +-
+>   drivers/clk/pistachio/Kconfig                 |   8 +
+>   drivers/clocksource/Kconfig                   |   3 +-
+>   drivers/phy/Kconfig                           |   2 +-
+>   drivers/pinctrl/Kconfig                       |   5 +-
+>   23 files changed, 114 insertions(+), 580 deletions(-)
+>   create mode 100644 arch/mips/configs/generic/board-marduk.config
+>   delete mode 100644 arch/mips/configs/pistachio_defconfig
+>   create mode 100644 arch/mips/generic/board-marduk.its.S
+>   delete mode 100644 arch/mips/pistachio/Kconfig
+>   delete mode 100644 arch/mips/pistachio/Makefile
+>   delete mode 100644 arch/mips/pistachio/Platform
+>   delete mode 100644 arch/mips/pistachio/init.c
+>   delete mode 100644 arch/mips/pistachio/irq.c
+>   delete mode 100644 arch/mips/pistachio/time.c
+>   create mode 100644 drivers/clk/pistachio/Kconfig
+>
 
