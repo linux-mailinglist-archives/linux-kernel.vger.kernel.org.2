@@ -2,119 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFA33E3299
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 03:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 641023E329A
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 03:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhHGBjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 21:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhHGBj3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 21:39:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F299BC0613CF;
-        Fri,  6 Aug 2021 18:39:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=J0f4OaPE35/KHAcoMTr1PIVu/Y71deIk870EQYRu6rk=; b=cmZIF4js4K08N9YSEq+3fK7gVm
-        z+DNGeSHPeiHfVD6QY2BHj54TEH4ZSmWgxrN4iDtrAExQ0rF2l0w+lzff2T73glIlNbgkT+NDARky
-        wvASdGEfpaEeuOObkAii8KUAxPE50Vk+9uBNO1W3KHErCb1sBcgeQWxFZEExkTop2yPScxd9foSgD
-        NwyIAymzSRishXlwe+7keFbpnDGqq18nrurcm/Yx/hWkClHKaooi4LIVenjyFH3SjJtbabU3P64kU
-        zPR9pFsQy+hx6sGjPL07kUvd16skW6p4g4gyWnjGOt7450Y0QKjp140UvnjXncR+HbrdaGB0UEfKG
-        h4El8dxg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mCBIJ-008lqv-MV; Sat, 07 Aug 2021 01:38:45 +0000
-Subject: Re: [PATCH] s390/crypto: fix all kernel-doc warnings in vfio_ap_ops.c
-To:     Tony Krowiak <akrowiak@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        linux-s390@vger.kernel.org
-References: <20210806050149.9614-1-rdunlap@infradead.org>
- <d8f1b065-f7b2-a0f3-f87a-ffdd2f7f2781@linux.ibm.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1ad57c8d-c0d1-88d9-bcce-3d3501455d8e@infradead.org>
-Date:   Fri, 6 Aug 2021 18:38:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S230051AbhHGBoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 21:44:00 -0400
+Received: from mout.gmx.net ([212.227.17.20]:53367 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229749AbhHGBn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 21:43:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628300551;
+        bh=F4bbSXyjHIN1BGUeLpaEx8mOppLBhHGK/+Ms07Fv+wg=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=OTXNBwmrCrz385A/QKCFxzvv8LJBv0Rsmu8brx8RuAzT07gCJLouSwxrgmkAxAI/x
+         Q+vF1I55sfrWvQLTMWp1Q94M0zEAbAzBl38hA2KcgT4cdCWf+eg1qZlW1e1r0aNVUe
+         KzvLqqEWMO0USS+MzbWzjRomQlD8it27LTbe4XA4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.218.160]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MTzb8-1md1uf0mhu-00QxYw; Sat, 07
+ Aug 2021 03:42:31 +0200
+Message-ID: <800ff941e3ec86ea1397cddf8ecea3d4a17c55dc.camel@gmx.de>
+Subject: Re: [PATCH v2 2/4] sched: Introduce is_pcpu_safe()
+From:   Mike Galbraith <efault@gmx.de>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Date:   Sat, 07 Aug 2021 03:42:28 +0200
+In-Reply-To: <20210807005807.1083943-3-valentin.schneider@arm.com>
+References: <20210807005807.1083943-1-valentin.schneider@arm.com>
+         <20210807005807.1083943-3-valentin.schneider@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 
 MIME-Version: 1.0
-In-Reply-To: <d8f1b065-f7b2-a0f3-f87a-ffdd2f7f2781@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7IREJpazqVFoymZlSqnbvmojHa+lnVsdP2PzWl3dtLW58icJX8s
+ JgJUFsj4wgy7wr8QtZUI/vFW4mR9w2E31PuFtRvj7hkcsKmpHUZgA+scftFcijFvvr6DXxh
+ 95RWdUc0BOTY+kBVXigE1yn8ESnjNnRC+WcXS2iXAk0Qp/k2o4R14M2S2Uel3nIcrCyYPcH
+ XAyDuRzL1gjrdlPt16Dow==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ziS+D4sSvLI=:WbksQVBOYKr+mWLdbgRvMi
+ HkBtpSEWdVSq3U2tMNWKwGchuz1LatjO4v6Tnj1sNFa7sww6eYzp3vy+qwsa5b57HOdHWVjJ6
+ kSlG37cppGDOqg3pVHVY6mYAYbODhmfXgQJfgrLOFdXoD1yi4DpmOtjalpsYDzFmlpgRMSm4S
+ r+gKe+2FpsTlojglASxGW2Jrh4luHMM9E0GUAIsqZJVROb4+0Vq9auqLL3q2D9MGua6JnfTeV
+ nX3xl00+Jt+rqaOvyoR6Dt1n+814Qzjqm/NB00QtxuytXgMduAOq4pM+F9w4wmdJSPcpJOICf
+ rlcMaJbIrPZbRkk6GPApFsdCZFqaQX6NPFWhAV3U+MF6hN11FODtCZmH0DvxSDzKu4cojh4Mh
+ Aar+fH3oK5+kWYD+SukFFq1fgNN77zf09JcC2awznynBa3kZtV2tD7x20fSshH+j15dyZJJfk
+ UOIy99JVZQ0SLf0EpSM25/TZKtWEDqqw537dGpBak8f+NmwJQR3PxDEjFv9SA3HF6PawDwZbV
+ lXbS4OYQktEqi8d12tgUi/GJU67C6lTGKWStFv6VfeIDZiogsFUVAc3CTuVWXo16ZDmbsldCD
+ 8E7xF4znYZQSPGHDgNT6GQ6lQTchYkbI1DQdKHCNv2keYBumzdzfk8WK8zX1a1IdFw1bwnviM
+ l2iL22FIHbyFBB/ilL0p2fytmILNKiTM8pWTTjuWCkAi27AR047x3t1ptbBUobete9E02ViAx
+ BLzEr/fVRfgesFMldr3eTtp8OqRdUb9IKpmCkRSEw2lvv4UIhwEEPMrDCavi1z1UmM2w9miHW
+ MuO5geGOhFQXcafngB++KYKvQOpTEa8cXIOtnV3RgPvWf5GWiiVsQR3RwxUOSt3LcCAHD0aoQ
+ MNWah5vgxZwRp9ulbj8Kh/BU9ZNx4/015EHIsTm9h2yF3KzBdNrSxD/IfJi/Qg1ucr2JL6Fsu
+ d0y4c4JI56h7rbA+W4/FVa6PGpT+VlvoDBvuVZQX51KifTTJ4Sxc3wQUc2Gcxqd6+dQL/XYrq
+ g7W/d4MAHgTQRwGPqcuUySdsnanpv2bAOvthZEcoiGEGtnFsdFlNdyiNvPQqmmh2/qTtnnj8y
+ 4gON1KfzFnu//WSZfsXdTwaXaRCjtJSvloq
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/21 6:26 AM, Tony Krowiak wrote:
-> Reviewed-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> 
-> Pardon my ignorance, but this is the first I've seen of kernel-doc warnings.
-> Is there a flag I can set when I build to get kernel-doc warnings? Is there a tool I can run?
-> Where is the kernel-doc format documented? I'd like to avoid this in the future.
+On Sat, 2021-08-07 at 01:58 +0100, Valentin Schneider wrote:
+>
+> +static inline bool is_pcpu_safe(void)
 
-Hi,
+Nit: seems odd to avoid spelling it out to save two characters, percpu
+is word like, rolls off the ole tongue better than p-c-p-u.
 
-Here is the 0day bot report:
-https://lore.kernel.org/lkml/202108010650.DLRzJOtm-lkp@intel.com/
-(not sent to any of your group, sadly).
-
-kernel-doc format is documented in Documentation/doc-guide/kernel-doc.rst.
-
-The 0day bot lists the reproduction steps. It used clang but I used
-gcc. Shouldn't matter in this case. The main point from the 0day bot
-is that "this is a W=1 build".  Using W=1 causes checks for extra
-C compiler warnings and also it causes checks for documentation build
-errors/warnings.
-
-In your build environment, using "make W=1 ARCH=s390 allmodconfig all"
-will produce lots of output (both compiler and kernel-doc output).
-I suppose that is the expected way to do it.
-
-AFAIK there is no support for something like "make W=1 htmldocs"
-to just check for kernel-doc errors/warnings in source files, so what
-I do when I am targeting only one source file is something like what
-is documented in the file referenced above:
-
-"Running the ``kernel-doc`` tool with increased verbosity and without actual
-output generation may be used to verify proper formatting of the
-documentation comments. For example::
-
-	scripts/kernel-doc -v -none drivers/foo/bar.c
-"
-and then I script that for ease of use.
-Using the latter command reports lots more kernel-doc warnings than
-the 0day bot reported, so I fixed all of them that it found.
-
-
-HTH.
-
-
-> On 8/6/21 1:01 AM, Randy Dunlap wrote:
->> The 0day bot reported some kernel-doc warnings in this file so clean up
->> all of the kernel-doc and use proper kernel-doc formatting.
->> There are no more kernel-doc errors or warnings reported in this file.
->>
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Cc: Jason Gunthorpe <jgg@nvidia.com>
->> Cc: Tony Krowiak <akrowiak@linux.ibm.com>
->> Cc: Halil Pasic <pasic@linux.ibm.com>
->> Cc: Jason Herne <jjherne@linux.ibm.com>
->> Cc: Harald Freudenberger <freude@linux.ibm.com>
->> Cc: linux-s390@vger.kernel.org
->> ---
->>   drivers/s390/crypto/vfio_ap_ops.c |  116 ++++++++++++----------------
->>   1 file changed, 52 insertions(+), 64 deletions(-)
-
-
--- 
-~Randy
+	-Mike
 
