@@ -2,112 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4283E3271
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 02:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17653E3272
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 02:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhHGA7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 20:59:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:42830 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229758AbhHGA67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 20:58:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3CCE013D5;
-        Fri,  6 Aug 2021 17:58:42 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5FF8D3F66F;
-        Fri,  6 Aug 2021 17:58:39 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH v2 4/4] arm64: mm: Make arch_faults_on_old_pte() check for migratability
-Date:   Sat,  7 Aug 2021 01:58:07 +0100
-Message-Id: <20210807005807.1083943-5-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210807005807.1083943-1-valentin.schneider@arm.com>
-References: <20210807005807.1083943-1-valentin.schneider@arm.com>
+        id S229996AbhHGA7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 20:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhHGA7w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 6 Aug 2021 20:59:52 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4AEC061798
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 17:59:35 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id dw2-20020a17090b0942b0290177cb475142so25128371pjb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 17:59:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5HyZHfS8AsBy90XkNLPe774IDKkn3JiMkd3PeFjVH38=;
+        b=MJ1S085DR5XA13X7bAsyITgXfu4dTx3O8g0KeRsFJBLLVYFoCGkBdPCdIlepJHCMbG
+         qITAgD31mYuPEghA2MzWqNntVShRpPmDkuw3I7kdKNZMb3Mq/4PcUS3vmxoe/MDTCloy
+         oIo+ihyECgBxnmZWlMkwRCUrAAV7wmGrYPLztXmf00pcIqYYqSxFk9ZyC2dlQFzRTXng
+         qhT0vz/98aheiW2ujBpzFSw7NYPjLkCyd8i4Uohp4ebrCKhMQ1yrzBiWY/CUwmZ4RfWh
+         SrnIe8oh2hnPIDoaYNohQdrPp6f6xwSLMHQrpLH690fPdfUtRg4ZmQT9ZHwFeBeeWIvX
+         aIwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5HyZHfS8AsBy90XkNLPe774IDKkn3JiMkd3PeFjVH38=;
+        b=fRq7en0lkil072FyquPOK/TFTLZvH1+6XEtfyQN0SDD3BDrR1I62r0Rmv4B4BObZ+8
+         QUucxW1NmXD+pvd3Y9U/PMuxjz2VkuLSSR8ofC5VeteyXQE6oUnsIjWoDnGPBOkwUJco
+         PfIYHCyXWdP+BjJhFXshigVd5uSO4MPg+izag2RCIjzHLCCdAsgJbOwwIiiyEFtOGZPw
+         4uN7d9vQ+QkSNUUgDje+3rshFb5mRpUPMhRVCTILnO6AYVAhu7auFkkeSj0pjN5OU7cs
+         ZvpRBXPPGYvxy65NhoabKxSbY+xCd+2baAc4MGpgEIMBDTVlyQ/g3CfFTM218MADbLgW
+         K8SQ==
+X-Gm-Message-State: AOAM531KTo0c3VcooPgaI0pT1fnox1ENFFKX1b2KYd5KZl3xKmoSp4ep
+        hnZAS0tHIVDjVYybMfpxiqg2zA==
+X-Google-Smtp-Source: ABdhPJx8YkCQw5Bxh0ffWbQ3C1WTQM8vAknR2uwesgVRQKvdoDW5JjioeBgQsKRfKc6U5Nk5c/vYgA==
+X-Received: by 2002:aa7:8387:0:b029:395:a683:a0e6 with SMTP id u7-20020aa783870000b0290395a683a0e6mr13448620pfm.12.1628297974299;
+        Fri, 06 Aug 2021 17:59:34 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id g11sm717226pfo.166.2021.08.06.17.59.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 17:59:33 -0700 (PDT)
+Date:   Sat, 7 Aug 2021 00:59:30 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Edmondson <david.edmondson@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        David Matlack <dmatlack@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>
+Subject: Re: [PATCH v3 2/3] KVM: x86: On emulation failure, convey the exit
+ reason, etc. to userspace
+Message-ID: <YQ3a8jb2+3dj/PlE@google.com>
+References: <20210729133931.1129696-1-david.edmondson@oracle.com>
+ <20210729133931.1129696-3-david.edmondson@oracle.com>
+ <YQR52JRv8jgj+Dv8@google.com>
+ <cunk0l4mhjc.fsf@oracle.com>
+ <YQgkGwGkrleO7I2A@google.com>
+ <cunbl6fn4l6.fsf@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cunbl6fn4l6.fsf@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running v5.13-rt1 on my arm64 Juno board triggers:
+On Mon, Aug 02, 2021, David Edmondson wrote:
+> On Monday, 2021-08-02 at 16:58:03 GMT, Sean Christopherson wrote:
+> 
+> > On Mon, Aug 02, 2021, David Edmondson wrote:
+> >> On Friday, 2021-07-30 at 22:14:48 GMT, Sean Christopherson wrote:
+> >> When we add another flag (presuming that we do, because if not there was
+> >> not much point in the flags) this will have to be restructured again. Is
+> >> there an objection to the original style? (prime ndata=1, flags=0, OR in
+> >> flags and adjust ndata as we go.)
+> >
+> > No objection, though if you OR in flags then you should truly _adjust_ ndata, not
+> > set it, e.g.
+> 
+> My understanding of Aaron's intent is that this would not be the case.
+> 
+> That is, if we add another flag with payload and set that flag, we would
+> still have space for the instruction stream in data[] even if
+> KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES is not set.
 
-[   30.430643] WARNING: CPU: 4 PID: 1 at arch/arm64/include/asm/pgtable.h:985 do_set_pte (./arch/arm64/include/asm/pgtable.h:985 ./arch/arm64/include/asm/pgtable.h:997 mm/memory.c:3830)
-[   30.430669] Modules linked in:
-[   30.430679] CPU: 4 PID: 1 Comm: init Tainted: G        W         5.13.0-rt1-00002-gcb994ad7c570 #35
-[   30.430690] Hardware name: ARM Juno development board (r0) (DT)
-[   30.430695] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-[   30.430874] Call trace:
-[   30.430878] do_set_pte (./arch/arm64/include/asm/pgtable.h:985 ./arch/arm64/include/asm/pgtable.h:997 mm/memory.c:3830)
-[   30.430886] filemap_map_pages (mm/filemap.c:3222)
-[   30.430895] __handle_mm_fault (mm/memory.c:4006 mm/memory.c:4020 mm/memory.c:4153 mm/memory.c:4412 mm/memory.c:4547)
-[   30.430904] handle_mm_fault (mm/memory.c:4645)
-[   30.430912] do_page_fault (arch/arm64/mm/fault.c:507 arch/arm64/mm/fault.c:607)
-[   30.430925] do_translation_fault (arch/arm64/mm/fault.c:692)
-[   30.430936] do_mem_abort (arch/arm64/mm/fault.c:821)
-[   30.430946] el0_ia (arch/arm64/kernel/entry-common.c:324)
-[   30.430959] el0_sync_handler (arch/arm64/kernel/entry-common.c:431)
-[   30.430967] el0_sync (arch/arm64/kernel/entry.S:744)
-[   30.430977] irq event stamp: 1228384
-[   30.430981] hardirqs last enabled at (1228383): lock_page_memcg (mm/memcontrol.c:2005 (discriminator 1))
-[   30.430993] hardirqs last disabled at (1228384): el1_dbg (arch/arm64/kernel/entry-common.c:144 arch/arm64/kernel/entry-common.c:234)
-[   30.431007] softirqs last enabled at (1228260): __local_bh_enable_ip (./arch/arm64/include/asm/irqflags.h:85 kernel/softirq.c:262)
-[   30.431022] softirqs last disabled at (1228232): fpsimd_restore_current_state (./include/linux/bottom_half.h:19 arch/arm64/kernel/fpsimd.c:183 arch/arm64/kernel/fpsimd.c:1182)
+Hmm, I don't think we have to make that decision yet.  Userspace must check the
+flag before consuming run->emulation_failure, so we haven't fully commited one
+way or the other.
 
-CONFIG_PREEMPT_RT turns the PTE lock into a sleepable spinlock. Since
-acquiring such a lock also disables migration, any per-CPU access done
-under the lock remains safe even if preemptible.
+I believe the original thought was indeed to skip unused fields, but I don't think
+that's actually the behavior we want for completely unrelated fields, i.e. flag
+combinations that will _never_ be valid together.  The only reason to skip fields
+would be to keep the offset of a particular field constant, so I think the rule
+can be that if fields that can coexist but are controlled by different flags, they
+must be in the same anonymous struct, but in general a union is ok.
 
-This affects:
+It seems rather unlikely that we'll gain many more flags, but it would be really
+unfortunate if we commit to skipping fields and then run out of space because of
+that decision.
 
-  filemap_map_pages()
-  `\
-    do_set_pte()
-    `\
-      arch_wants_old_prefaulted_pte()
+> Given that, we must *set* ndata each time we add in a flag
 
-which checks preemptible() to figure out if the output of
-cpu_has_hw_af() (IOW the underlying CPU) will remain stable for the
-subsequent operations. Make it use is_pcpu_safe() instead.
+Technically we wouldn't have to (being more than a bit pedantic), we could keep
+the same flow and just do the ndata_start bump outside of the OR path, e.g.
 
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- arch/arm64/include/asm/pgtable.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+        /* Always include the flags as a 'data' entry. */
+        ndata_start = 1;
+        run->emulation_failure.flags = 0;
 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index f09bf5c02891..767a064bedde 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -995,7 +995,7 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
-  */
- static inline bool arch_faults_on_old_pte(void)
- {
--	WARN_ON(preemptible());
-+	WARN_ON(!is_pcpu_safe());
- 
- 	return !cpu_has_hw_af();
- }
--- 
-2.25.1
+        /* Skip unused fields instead of overloading them when they're not used. */
+        ndata_start += 2;
+        if (insn_size) {
+                run->emulation_failure.flags |=
+                        KVM_INTERNAL_ERROR_EMULATION_FLAG_INSTRUCTION_BYTES;
+                run->emulation_failure.insn_size = insn_size;
+                memset(run->emulation_failure.insn_bytes, 0x90,
+                       sizeof(run->emulation_failure.insn_bytes));
+                memcpy(run->emulation_failure.insn_bytes, insn_bytes, insn_size);
+        }
 
+so that it's easier to understand the magic numbers used to adjust ndata_start.
+
+But a better solution would be to have no magic numbers at all and set ndata_start
+via sizeof(run->emulation_failure).  E.g.
+
+	/*
+	 * There's currently space for 13 entries, but 5 are used for the exit
+	 * reason and info.  Restrict to 4 to reduce the maintenance burden
+	 * when expanding kvm_run.emulation_failure in the future.
+	 */
+	if (WARN_ON_ONCE(ndata > 4))
+		ndata = 4;
+
+	ndata_start = sizeof(run->emulation_failure);
+	memcpy(&run->internal.data[], info, ARRAY_SIZE(info));
+	memcpy(&run->internal.data[ndata_start + ARRAY_SIZE(info)], data, ndata);
+
+	run->internal.ndata = ndata_start + ARRAY_SIZE(info) + ndata;
+
+Though I'd prefer we not skip fields, at least not yet, e.g. to condition userspace
+to do the right thing if we decide to not skip when adding a second flag (if that
+even ever happens).
+
+> with the value being the extent of data[] used by the payload corresponding
+> to that flag, and the flags must be considered in ascending order (or we
+> remember a "max" along the way).
+> 
+> Dumping the arbitray debug data after the defined fields would require
+> adjusting ndata, of course.
+> 
+> If this is not the case, and the flag indicated payloads are packed at
+> the head of data[], then the current structure definition is misleading
+> and we should perhaps revise it.
+
+Ah, because there's no wrapping union.  I wouldn't object to something like this
+to hint to userpace that the struct layout may not be purely additive in the
+future.
+
+diff --git a/tools/include/uapi/linux/kvm.h b/tools/include/uapi/linux/kvm.h
+index d9e4aabcb31a..6c79c1ce3703 100644
+--- a/tools/include/uapi/linux/kvm.h
++++ b/tools/include/uapi/linux/kvm.h
+@@ -402,8 +402,12 @@ struct kvm_run {
+                        __u32 suberror;
+                        __u32 ndata;
+                        __u64 flags;
+-                       __u8  insn_size;
+-                       __u8  insn_bytes[15];
++                       union {
++                               struct {
++                                       __u8  insn_size;
++                                       __u8  insn_bytes[15];
++                               };
++                       };
+                } emulation_failure;
+                /* KVM_EXIT_OSI */
+                struct {
