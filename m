@@ -2,83 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E733E3685
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 19:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CD83E3689
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 19:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbhHGRcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 13:32:07 -0400
-Received: from mga04.intel.com ([192.55.52.120]:2277 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhHGRcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 13:32:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10069"; a="212659726"
-X-IronPort-AV: E=Sophos;i="5.84,303,1620716400"; 
-   d="scan'208";a="212659726"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2021 10:31:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,303,1620716400"; 
-   d="scan'208";a="443743143"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 07 Aug 2021 10:31:47 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mCQAk-000I2o-MG; Sat, 07 Aug 2021 17:31:46 +0000
-Date:   Sun, 8 Aug 2021 01:31:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Igor Skalkin <igor.skalkin@opensynergy.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Peter Hilber <peter.hilber@opensynergy.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] firmware: arm_scmi: fix boolconv.cocci warnings
-Message-ID: <20210807173127.GA43248@a24dbc127934>
-References: <202108080108.k5pHZ040-lkp@intel.com>
+        id S229894AbhHGRes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 13:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhHGRer (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 13:34:47 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1203DC0613CF;
+        Sat,  7 Aug 2021 10:34:29 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id mt6so21465002pjb.1;
+        Sat, 07 Aug 2021 10:34:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=t7bTmWC+qKcdA7NLxNga3iR1jXOFJu4plAdNWHvCPVI=;
+        b=F8BNco+mhTQsTGtrOwf56Dhl9Vt8RVfkmraKHXekG9wIj0hmPapd2zIY97e7bXKnCH
+         1+teFvBrR3KxrUKV6B3Lgo8p8LSvIEt49BmyXgTkabSv9oRg9h4drIrYIa+o9uPZBjwm
+         oYwIrpsBL5XFUtRcORlGfvQjclvOVPw5skljRFQVG9tmpxHY0Sj6ZPJnyY6hyrnYLQVF
+         4VxOSBfba+AfKR0FbcgrkKeoeq9S2RyTt0BkI9NP/Nte66X0GZtNbf/vQACHFvTCvohG
+         vj72MILcMOx1KKdCFAnEpVgUqtc5+RoxtE+Q+9p0qH1FvIqyOniRp5z47gr9R7hagp+5
+         2GrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=t7bTmWC+qKcdA7NLxNga3iR1jXOFJu4plAdNWHvCPVI=;
+        b=I0H4O3lKMAV/rkcrQYPLEWFOhRY9IGOUIj+29O2GlzQdvebbjMoTXR33vrmXS8VRNc
+         1Mvzbrl6xy23deT2ZPoMxoYkPnVVCIN/Q/V7GiQUu9lzJr4OrmPm9sJdWoyEPEJPIQng
+         +68Gg4efqDUUreo9fxzeN8XqR7IsAi/0UjeelpJku6fjEIHUoz0df6Wtzu6v/zVylg5e
+         AWLX0QxT4d3WAe9J1a63QaYwetfnAxbN2hRjTDyFLfyfWQhmP+xqc/b4NDgYGIs57nfX
+         paOkzelCJ41fs4P/mVLs5L0T2q2cKw4t/wPuHXdT03wFttd6lKYuwcI8kPIqKp1RmFoO
+         bgEw==
+X-Gm-Message-State: AOAM532dYuQh86VBL9d5IuOidTeGcAreacJfiwYPsIEGy+vw9SxHCZjd
+        ChcJTRl14RnnIBX2l8AIimt6o4Shzq+W6UKo
+X-Google-Smtp-Source: ABdhPJzWwkIRetrjWGd8ubnR9rtch5yOyR+TTkBMXWEmVLnHgSM5Q5E2wF+RI//MFaY/KCtdyhTdOQ==
+X-Received: by 2002:a17:90a:9b13:: with SMTP id f19mr26345668pjp.224.1628357668107;
+        Sat, 07 Aug 2021 10:34:28 -0700 (PDT)
+Received: from ?IPv6:2409:4072:92:61e9:38ed:54e8:b166:da11? ([2409:4072:92:61e9:38ed:54e8:b166:da11])
+        by smtp.gmail.com with ESMTPSA id j128sm15255123pfd.38.2021.08.07.10.34.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 07 Aug 2021 10:34:27 -0700 (PDT)
+Subject: Re: [PATCH 2/2] iio: potentiometer: Add driver support for AD5110
+From:   Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+To:     Lars-Peter Clausen <lars@metafoo.de>, Dragos.Bogdan@analog.com,
+        Darius.Berghe@analog.com, Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org
+References: <20210807050900.10075-1-dmugil2000@gmail.com>
+ <20210807050900.10075-3-dmugil2000@gmail.com>
+ <53306463-668e-e291-4539-caca2352ea05@metafoo.de>
+ <9b58fb0c-245d-795f-2124-6cc2020bc8c5@gmail.com>
+Message-ID: <66d670d6-0374-88ae-c4c1-efd60b54bbd2@gmail.com>
+Date:   Sat, 7 Aug 2021 23:04:18 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202108080108.k5pHZ040-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <9b58fb0c-245d-795f-2124-6cc2020bc8c5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+Sorry some formatting issues happened in my previous mail.
 
-drivers/firmware/arm_scmi/virtio.c:225:40-45: WARNING: conversion to bool not needed here
+On 07/08/21 10:56 pm, Mugilraj Dhavachelvan wrote:
+> 
+> 
+> On 07/08/21 5:41 pm, Lars-Peter Clausen wrote:
+>> On 8/7/21 7:08 AM, Mugilraj Dhavachelvan wrote:
+>>> The AD5110/AD5112/AD5114 provide a nonvolatile solution
+>>> for 128-/64-/32-position adjustment applications, offering
+>>> guaranteed low resistor tolerance errors of ±8% and up to
+>>> ±6 mA current density.
+>>>
+>>> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/AD5110_5112_5114.pdf
+>>> Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+>>
+>> Thanks for the patch. This looks really good> 
+>>
+>>> [...]
+>>>
+>>> +static int ad5110_write(struct ad5110_data *data, u8 cmd, u8 val)
+>>> +{
+>>> +    int ret;
+>>> +
+>>> +    mutex_lock(&data->lock);
+>>> +    data->buf[0] = cmd;
+>>> +    data->buf[1] = val;
+>>> +
+>>> +    ret = i2c_master_send_dmasafe(data->client, data->buf, sizeof(data->buf));
+>>> +    mutex_unlock(&data->lock);
+>>
+>> This returns the number of bytes written, which can be less then the number of bytes requested if there was an error. This should check if the right amount of bytes was written and return -EIO otherwise. Same for the other places that read/write from I2C.
+> 
+> Fixed in v2.
+>>
+>>> +
+>>> +    return ret < 0 ? ret : 0;
+>>> +}
+>>> +
+>>> +static int ad5110_resistor_tol(struct ad5110_data *data, u8 cmd, int val)
+>>> +{
+>>> +    int ret;
+>>> +
+>>> +    ret = ad5110_read(data, cmd, &val);
+>>> +    if (ret)
+>>> +        return ret;
+>>> +
+>>> +    data->tol = FIELD_GET(GENMASK(6, 3), val);
+>>> +    data->tol = ((val & GENMASK(2, 0)) * 1000 / 8) + data->tol * 1000;
+>>> +    data->tol = data->cfg->kohms * data->tol / 100;
+>>
+>> This is not wrong, but it can be implemented a bit simpler. The tolerance is encoded as a fixed point number, you don't have to treat them as two independent fields, but can treat it as one fixed point number.
+>>
+>>     data->tol = data->cfg->kohms * (val & GENMASK(6, 0)) * 1000 / 100 / 8;
+>>
+> Great, Fixed in v2.
+>>
+>>> +    if (!(val & BIT(7)))
+>>> +        data->tol *= -1;
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static ssize_t ad5110_eeprom_read(struct device *dev,
+>>> +                      struct device_attribute *attr,
+>>> +                      char *buf)
+>>> +{
+>>> +    struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>> +    struct ad5110_data *data = iio_priv(indio_dev);
+>>> +    int val = AD5110_WIPER_POS;
+>>> +    int ret;
+>>> +
+>>> +    ret = ad5110_read(data, AD5110_EEPROM_RD, &val);
+>>> +    if (ret)
+>>> +        return ret;
+>> Maybe apply shift to get consistent behavior with `raw`.
+> Fixed in v2.
+>>> +
+>>> +    return iio_format_value(buf, IIO_VAL_INT, 1, &val);
+>>> +}
+>>> +
+>>> +static ssize_t ad5110_eeprom_write(struct device *dev,
+>>> +                       struct device_attribute *attr,
+>>> +                       const char *buf, size_t len)
+>>> +{
+>>> +    struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>> +    struct ad5110_data *data = iio_priv(indio_dev);
+>>> +    int ret;
+>>> +
+>>> +    ret = ad5110_write(data, AD5110_EEPROM_WR, 0);
+>>> +    if (ret) {
+>>> +        dev_err(&data->client->dev, "RDAC to EEPROM write failed\n");
+>>> +        return ret;
+>>> +    }
+>>> +    msleep(20);
+>>> +
+>>> +    return len;
+>>> +}
+>>> +
+>>> +static IIO_DEVICE_ATTR(wiper_pos_eeprom, 0644,
+>>> +               ad5110_eeprom_read,
+>>> +               ad5110_eeprom_write, 0);
+>> This is new custom ABI and needs to be documented
 
- Remove unneeded conversion to bool
+> I'm not aware of this, fixed in v2.
+>>> +static int ad5110_write_raw(struct iio_dev *indio_dev,
+>>> +                struct iio_chan_spec const *chan,
+>>> +                int val, int val2, long mask)
+>>> +{
+>>> +    struct ad5110_data *data = iio_priv(indio_dev);
+>>> +    int ret;
+>>> +
+>>> +    switch (mask) {
+>>> +    case IIO_CHAN_INFO_RAW:
+>>> +        if (val >= data->cfg->max_pos || val < 0)
+>> val == data->cfg->max_pos is a valid setting. Writing max_pos puts it in top-scale mode which gives maximum resistance.
+> Fixed in v2.
+>>> +            return -EINVAL;
+>>> +
+>>> +        return ad5110_write(data, AD5110_RDAC_WR, val << data->cfg->shift);
+>>> +    case IIO_CHAN_INFO_ENABLE:
+>>> +        if (val < 0 || val > 1)
+>>> +            return -EINVAL;
+>>> +        if (data->enable == val)
+>>> +            return 0;
+>>> +        ret = ad5110_write(data, AD5110_SHUTDOWN, val);
+>> Doesn't val have to be inverted to get the right behavior
 
-Semantic patch information:
- Relational and logical operators evaluate to bool,
- explicit conversion is overly verbose and unneeded.
-
-Generated by: scripts/coccinelle/misc/boolconv.cocci
-
-CC: Igor Skalkin <igor.skalkin@opensynergy.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git for-next/scmi
-head:   1e7cbfaa66d39e78bd24df0c78b55df68176b59e
-commit: 46abe13b5e3db187e52cd0de06c07bbce010726c [23/24] firmware: arm_scmi: Add virtio transport
-:::::: branch date: 2 days ago
-:::::: commit date: 2 days ago
-
- virtio.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/drivers/firmware/arm_scmi/virtio.c
-+++ b/drivers/firmware/arm_scmi/virtio.c
-@@ -222,7 +222,7 @@ static bool virtio_chan_available(struct
- 		return false;
- 	}
- 
--	return vioch && !vioch->cinfo ? true : false;
-+	return vioch && !vioch->cinfo;
- }
- 
- static int virtio_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
+> I just replicated the datasheet operation. 
+> You mean,
+>  1 - shutdown off
+>  0 - shutdown on
+> If yes, then the user won't get confused with the datasheet and the behavior of the driver?
+> Or Is it work like this? But yeah even I like this change it's more convenient.
+>>> +        if (ret)
+>>> +            return ret;
+>>> +        data->enable = val;
+>>> +        return 0;
+>>> +    default:
+>>> +        return -EINVAL;
+>>> +    }
+>>> +}
+>> [...]
+> Thanks for feedback!!
+> 
