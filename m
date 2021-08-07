@@ -2,100 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC8F3E3796
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 01:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05B03E379F
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 01:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhHGXjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 19:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41758 "EHLO
+        id S229945AbhHGXyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 19:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhHGXjE (ORCPT
+        with ESMTP id S229578AbhHGXyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 19:39:04 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E50C061760
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 16:38:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=mi1wUIUriQLxRPB3k06DSpLuLSdOL9Du9D9ZElPFQIk=; b=xm3MRgt2UfWjsugdvTPkxsCOe3
-        Y8OlIL7DBy83Wjcq+K6+xRZ3gmZ8mwf35XAOYCtmGcnRpOgxGRaD4bfGMVkUzlNv4ug7xjWAWVDef
-        I785yp9IhyC0Uar+c2lyBBtMKPSqWzp8MmL4NGFqpAy3G7hawnGJwqqoLzdObCs3Fw8hl2l1ZqKtl
-        xBjd9a/rz0thnZG0gfrjOiigkf6iUr+dZxTeNtRZQ16nLVWN+R/xpka8wP1eu+kPws+26wLdMDpPB
-        sMP8en3KvtXIHSkLLaasPD+q5a5G50WgofjxTWXkF0Fut4A//ApCHdYFriXX57h5ojJo0CAqiPebD
-        svejTQ9Q==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mCVtr-00FJdd-3N; Sat, 07 Aug 2021 23:38:43 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>, Dennis Li <Dennis.Li@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH] drm/amdgpu: fix kernel-doc warnings on non-kernel-doc comments
-Date:   Sat,  7 Aug 2021 16:38:42 -0700
-Message-Id: <20210807233842.13545-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Sat, 7 Aug 2021 19:54:35 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56ECC061760
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 16:54:16 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id f11so20358786ioj.3
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 16:54:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=/LDp7GSSeFaaTRDz1GDYG69zHj8ItTIFpiTHChizLMA=;
+        b=SzbGuTauf+y86z5FFGb2grsZW4KpIj5K2sZPKg+0F9mreDg03kVpVdCIvKuyb4nLks
+         tss7igKgWLhbraUzZRuO/Gt+NtJyopXJpYsUSMaJ2BAxWsL4HcwHG1sXU9MJfakfcX+v
+         DjruqwSD+lmr0HxY8C2hM/XXnIoI9sWg9gi9Wxw4+mMh3Nyq/oZmrLBuPgwkoDOqrpvD
+         OWvPjF8AqMwk43x4hhgqk8TDIaP6Gg4ftt/fcRHjB5OHEArcKQT+fWYYlbseNo1d1Hhq
+         uxjea5YK8EytVOEhuArO5dTtLN3skVj4d8IoN/zrzDIWeKqjkLEHlx+AFADmcfPG59au
+         RYZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=/LDp7GSSeFaaTRDz1GDYG69zHj8ItTIFpiTHChizLMA=;
+        b=CItBEPsp+YvMyYaUDtg4q/aiGLZ2Yvx2587WxKrd2TcUECzQyn+yc6amllKoHxxlgK
+         eJtDc5b6ppQgzzMENooQKqUjd6xdxr4o4LOcRpoASnT/Qj7hZjjtco5Q4Nt4GBAZcnjd
+         1Em0ItlBoK5lugfgnH+Ps+hVUZ9olADnvpEkfL1i3cNyGupKLPLl5oZLz9bYvN48P548
+         7VENQzMrwf71zx4n7pjrvXOIgg+/R0i/G2XsEMtdRL2L8jIF8XrZbFjxTPcXWFQ2tyGR
+         02YefMhl//D2QlGo+ta7NurIUgUucgBGEfDZkwUGhSslKjAOzBF3dOGnLtyMLol9wH7x
+         j4Gg==
+X-Gm-Message-State: AOAM5318AIbQb7eyCzJCDXVu4QjHsi+E2TFyDDavbkJisaFwuwBHJ8Ke
+        AqfS9klaksZML08Gw4D+sKqXi04kFmsH6x9dmmM=
+X-Google-Smtp-Source: ABdhPJyNTaIH7nPwevdvq5H1OPDGb2kHz5F7aZv8nlNx6/6+TI3Upe+FlrHq6UdbLrf6+45O/A2Dhte9Y9ARrWnpKTc=
+X-Received: by 2002:a92:cac2:: with SMTP id m2mr83209ilq.75.1628380456177;
+ Sat, 07 Aug 2021 16:54:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6e02:154b:0:0:0:0 with HTTP; Sat, 7 Aug 2021 16:54:15
+ -0700 (PDT)
+From:   Diplomatic Service <diplomtcservice@gmail.com>
+Date:   Sat, 7 Aug 2021 16:54:15 -0700
+Message-ID: <CAD6Hsc80PvOWQxE4AUpbvQ1+Du926fjpz7MkSiObtHiEZ0+e6w@mail.gmail.com>
+Subject: CASH PAYMENT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't use "begin kernel-doc notation" (/**) for comments that are
-not kernel-doc. This eliminates warnings reported by the 0day bot.
+Fund Beneficiary
+It was Resolved and Agreed that your Inheritance/Contract Fund would
+be released to you on a special method of payment which tag"HOME
+DELIVERY AT YOUR DOOR STEP" you are Advised to Re-confirm YOUR
+NAME,ADDRESS,NEXT OF KIN, MEANS OF IDENTIFICATION AND PHONE NUMBER TO
+CLAIM YOUR FUND (USD$10.5Million).
 
-drivers/gpu/drm/amd/amdgpu/gfx_v9_4_2.c:89: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * This shader is used to clear VGPRS and LDS, and also write the input
-drivers/gpu/drm/amd/amdgpu/gfx_v9_4_2.c:209: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * The below shaders are used to clear SGPRS, and also write the input
-drivers/gpu/drm/amd/amdgpu/gfx_v9_4_2.c:301: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * This shader is used to clear the uninitiated sgprs after the above
-
-Fixes: 0e0036c7d13b ("drm/amdgpu: fix no full coverage issue for gprs initialization")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: Christian König <christian.koenig@amd.com>
-Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-Cc: Dennis Li <Dennis.Li@amd.com>
-Cc: amd-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org
----
- drivers/gpu/drm/amd/amdgpu/gfx_v9_4_2.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
---- linux-next-20210806.orig/drivers/gpu/drm/amd/amdgpu/gfx_v9_4_2.c
-+++ linux-next-20210806/drivers/gpu/drm/amd/amdgpu/gfx_v9_4_2.c
-@@ -85,7 +85,7 @@ static const struct soc15_reg_golden gol
- 	SOC15_REG_GOLDEN_VALUE(GC, 0, regTCI_CNTL_3, 0xff, 0x20),
- };
- 
--/**
-+/*
-  * This shader is used to clear VGPRS and LDS, and also write the input
-  * pattern into the write back buffer, which will be used by driver to
-  * check whether all SIMDs have been covered.
-@@ -206,7 +206,7 @@ const struct soc15_reg_entry vgpr_init_r
- 	{ SOC15_REG_ENTRY(GC, 0, regCOMPUTE_STATIC_THREAD_MGMT_SE7), 0xffffffff },
- };
- 
--/**
-+/*
-  * The below shaders are used to clear SGPRS, and also write the input
-  * pattern into the write back buffer. The first two dispatch should be
-  * scheduled simultaneously which make sure that all SGPRS could be
-@@ -302,7 +302,7 @@ const struct soc15_reg_entry sgpr96_init
- 	{ SOC15_REG_ENTRY(GC, 0, regCOMPUTE_STATIC_THREAD_MGMT_SE7), 0xffffffff },
- };
- 
--/**
-+/*
-  * This shader is used to clear the uninitiated sgprs after the above
-  * two dispatches, because of hardware feature, dispath 0 couldn't clear
-  * top hole sgprs. Therefore need 4 waves per SIMD to cover these sgprs
+Yours faithfully,
+Dr. Tony Amadi
+Call Me +234-9068387985
