@@ -2,110 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98343E3690
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 19:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836373E3692
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 19:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhHGRtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 13:49:19 -0400
-Received: from mout.gmx.net ([212.227.17.22]:41247 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhHGRtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 13:49:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628358523;
-        bh=JJSHP/SdyExme0NaevFjy1P55tXLU82CZtEw25UPlO0=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=GcAa82DL5j17xfotu5mSvAOQ36wVc7eS8rqsSD6fJnsHl0+C57/ut3SlTS0f6QpvG
-         baCt+oMZ+rDIa/l72gCynx/8KzryhsIEsMMMfN9vVWXppQ2aRktpaM9peh0qcQ/9+7
-         2+ORaw++yffaJVrBYZ+CpaePy1vJm1Mz5ZUxxICQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MK3Rm-1mQ6jc3qVK-00LVuT; Sat, 07
- Aug 2021 19:48:43 +0200
-Date:   Sat, 7 Aug 2021 19:48:39 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-hardening@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3] drivers/soc: Remove all strcpy() uses
-Message-ID: <20210807174839.GF2688@titan>
-References: <20210801131958.6144-1-len.baker@gmx.com>
- <YQsTesvLfAwd8z5B@builder.lan>
+        id S229632AbhHGR4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 13:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhHGR4R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 13:56:17 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79931C0613D3
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 10:55:59 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id x14so3096394edr.12
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 10:55:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=V6t/mWhJLB/H0xUxdHXenggFzdpuNv7D8Vjt/MBUyTc=;
+        b=kLlPHHFnT7+viWSVJatPDeaH+6UDz/1KLiYpIFveJ8tapRk4GvC9549CXOlPRq3Qp9
+         1eCcuL8mFkOEfCfYz+U/ZdcCneDp46s5lpLRZA2GvZf5UWmLasHvfbPQXRhrgzq/VE9s
+         qh9lidfRZ+HP2E22Xwu/0pWkGVEks/xHwUhDp51YazOIkkJsxEiJbbRgN8UlMiIZCMqv
+         4yqFR3bNVLLcTVnBAb2AXczNbS1+c59yUKvutyQsGqQf4bLzUdzBEBxCy9RXpQ3lFp3q
+         k93ASrNfFTDlbm6zKaNJYHR6bh9HsaH9mn27AaRcEpfs31B12CtHvOvCSyzZ0yEi7a96
+         S5CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=V6t/mWhJLB/H0xUxdHXenggFzdpuNv7D8Vjt/MBUyTc=;
+        b=FHIc3KwdDI4mG2LlQxtClz41lz8HUT9FWaXqaknFEcMttS4LGCf6RQgNl1C4gsSNl9
+         q4OXYQZa0rHz64XJu5cgdoeeu4GsSpccmtjo+SEDKA7kPyUvXPZ3OAGLNWzubOQWbLB+
+         Z/CoMsKoYHlYnyJkBwDDHYQTZ0CxwPPfMFOQ+AQBFLMw84figZQUP3lldZdyOOlOjQgZ
+         z9pJ0ko4oC350VF364Dj4z8p2BpOnJLm0F20bjBzyTFzrOat0NEuSfHpTO6S5hYg0eds
+         h8WvzVQ5KIU4d4cQqqNeM3tewk6sNy2TguFriqHMlFDc2I8pmXQQFnSJj5I8dXXEKv6h
+         sOAg==
+X-Gm-Message-State: AOAM5304jj5vba4x+cC6y6v7f4pqRsxKKTqV7l1ldbuv8aCQXCzHiwbQ
+        ztJaZkIJizK9guV2q0WRukz668m4c5DBCgJ1s3iLqw==
+X-Google-Smtp-Source: ABdhPJzsY4knyfCzjf+anzDhNQNZYInovNMWclAT4l4r29qOWUvKbnPNn8nPEYVhoU1cOQrzz3kxGu4wfFyn8iUlPoQ=
+X-Received: by 2002:aa7:c647:: with SMTP id z7mr19962545edr.52.1628358957393;
+ Sat, 07 Aug 2021 10:55:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQsTesvLfAwd8z5B@builder.lan>
-X-Provags-ID: V03:K1:ibq2iY1OVPtXJXA90nfe7VgIltTU0d8zES6xGdkS/S7U2a1PQsx
- 07IW8mm0FJiw8PVUcy/k9QVImRuTPSC1Fze3ATJQiFdV24yOOOxb8wk+mK9P13DChuCDH7K
- 7Wdizg7hNJEpdS4Mc1nv9KjrEr/ieSt9K37yRQdxIUpo4TtB9I/Bb1TExtD/X2ypDSGG3Fk
- rHFrMjh5mSNxJETfpH/bQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aQ4Hlf9VXTY=:TZksHNLrZdBrpgwFgz6DsB
- kyCiDeHyUTyRovwft7gJILumsJCgNQ93yRw22LHxw+EV8Lo/5fAPp7KsGTCHN5FqjYGc4h2q3
- NxNpw0R4duRVXqfS5smAkLVovBJ6aB/KJmALyTFZmGb7IvsP1IFHEqX/OXyQZ+1r43P4I3dUH
- NWnI2UYovfEruMu3Pj9moYXkekaZfb9ByawBc978zIcMum8i0thn+usquBR6YHqT+Vp1QgnXK
- BhB9R64bTJjnOdPs4CzZhP6kR5dZRUy+2+s2GaJMmMQw6y9LgzFcR4UsVJ0pm0GtR1XMpXc2M
- Xr8w1hvsaDIpOg0Dln9EeDnJI+amuX8oESNe70lZ37EYHxm1YAl4gd+0hFr21mDUe+Y87DIlb
- udXejYRPK0ovlCEixs9fnbsDjcFBaBQsrNAoEkonyNXjrmM1eT9xcNfuoRZv+5AEHQQfjwYqS
- l/rxHj8K0hPj4sPUoxTIjyWuddGUOHQ9a8d/OQv0YPr7+naOiNgU+1AoyAUXOWCt7q5eDvgpY
- 12BJXNtKLqgWhLyVeVO5Zp40NFr4su4nnXD2uC/ZDe427Qj4nBg0bKP+sD3eKiRZ+/k6MYW5J
- q2lFyTSHXnDUARrKIbz4n0zZF32DomIG/4s3g5beEgWzek98cghQmXY/cTU2eQ+ky5NzW8HPP
- E1AgmwLxgnzFaIKIjYOHEAyTP78/YOeX9x0IXpgcCf6wRpIXWNLfQRh8HDA+SYiqVaZ/+hHLn
- BE3Qz+fkpoRnX+v8+hx3DtL4nTnH1N09ttQdk27uOxhItuP2N/fT2cY5q99PL0g6rx4/F1llc
- TTi9QyTQYFxTtkpnBrihnnh4L0kcY50dCN9NfOhnQk0hWPExXHqnZJqmUqG1JJXsR66JhR3hm
- 1+kRnB2EJrNESi5882sgDoXzeAsAZCh1ZjtlHqN4PklZ8ziDI2MUgF2Cx+scZDcAbwnRGcNon
- QGB7QCdBlplKQYITdGgtHJ5Y7aNFj1J1YTd2at4s16GJJPyJR4TS7wMeKH+1jflXi9tv32pUW
- tWciPCbjvYhQL4gUUV7tiIr/aEm24/nrmf/15iHENW0idgFvoH3tOWpwcz/jSeLRfdrr07E/R
- OvtFS86M/ujgiOU8jWdARZBrjFPbna9KQ/8yLe0/YTM3yB21A/iM9toUA==
+References: <20210806081113.718626745@linuxfoundation.org>
+In-Reply-To: <20210806081113.718626745@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 7 Aug 2021 23:25:45 +0530
+Message-ID: <CA+G9fYs2CPfO-+TWLOYEiMqKWY9Pt+Oo8_6HSL6WRi58uoAqzQ@mail.gmail.com>
+Subject: Re: [PATCH 5.13 00/35] 5.13.9-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Aug 04, 2021 at 05:23:54PM -0500, Bjorn Andersson wrote:
-> On Sun 01 Aug 08:19 CDT 2021, Len Baker wrote:
+On Fri, 6 Aug 2021 at 13:51, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> > strcpy() performs no bounds checking on the destination buffer. This
-> > could result in linear overflows beyond the end of the buffer, leading
-> > to all kinds of misbehaviors. The safe replacement is strscpy().
-> >
+> This is the start of the stable review cycle for the 5.13.9 release.
+> There are 35 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> While this is true, are any of these uses of strcpy affected by its
-> shortcomings?
-
-No, this patch is only an effort to clean up the proliferation of str*()
-functions in the kernel.
-
-> > Moreover, when the size of the destination buffer cannot be obtained
-> > using "sizeof", use the memcpy function instead of strscpy.
-> >
+> Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
+> Anything received after that time might be too late.
 >
-> This is not why you're using memcpy, you're using it because you _know_
-> how many bytes should be copied - because you just did a strlen() and
-> allocated that amount of space.
-
-Understood, I will change the commit message.
-
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.13.9-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.13.y
+> and the diffstat can be found below.
 >
-> > [...]
-> >  		/* Prepare req message */
-> > -		strcpy(req.service_path, pds->service_path);
-> > +		strscpy(req.service_path, pds->service_path,
-> > +			sizeof(req.service_path));
+> thanks,
 >
-> There's no need to break this line.
+> greg k-h
 
-Ok, thanks.
 
-Regards,
-Len
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+NOTE: Found an intermittent warning on qemu aarch64 and reported.
+https://lore.kernel.org/stable/CA+G9fYuH=3DKQaCpbBuYV0EEXtVcF7hTr+x6C5zmyUe=
+NqVwLneYQ@mail.gmail.com/
+
+## Build
+* kernel: 5.13.9-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.13.y
+* git commit: 1eb1590ab470d5f73dd2d20a7196bca35fa3d3e7
+* git describe: v5.13.8-36-g1eb1590ab470
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13=
+.8-36-g1eb1590ab470
+
+## No regressions (compared to v5.13.8)
+
+
+## No fixes (compared to v5.13.8)
+
+
+## Test result summary
+total: 84738, pass: 69760, fail: 1654, skip: 12066, xfail: 1258
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
