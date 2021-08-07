@@ -2,72 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCC13E33E6
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 09:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423193E33E9
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 09:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbhHGHRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 03:17:17 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:54436 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231405AbhHGHRP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 03:17:15 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D5C141C0B7C; Sat,  7 Aug 2021 09:16:57 +0200 (CEST)
-Date:   Sat, 7 Aug 2021 09:16:57 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v1 1/1] leds: lgm-sso: Propagate error codes from callee
- to caller
-Message-ID: <20210807071656.GB25211@amd>
-References: <20210805112619.65116-1-andriy.shevchenko@linux.intel.com>
+        id S231436AbhHGHXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 03:23:32 -0400
+Received: from smtpbg127.qq.com ([109.244.180.96]:43394 "EHLO smtpbg.qq.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231317AbhHGHXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 03:23:30 -0400
+X-QQ-mid: bizesmtp46t1628320958tjmcxxi0
+Received: from localhost.localdomain (unknown [125.69.42.194])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Sat, 07 Aug 2021 15:22:36 +0800 (CST)
+X-QQ-SSF: 01000000002000B0C000B00A0000000
+X-QQ-FEAT: Cjrn31CahfWgDw7UMKXdHlRwa6tXiaeZj606PdrsMAHJvFwTr0Ol7tAVgd2t8
+        8UQrp4Od/ZW3X5HNjCgZFyNBvEbu9AafqzaF99RZi+ml2VeAYkbD7ps6SEejQPt3ujh/POt
+        DnmqPAWay4LJ405EYx/Q2B6R32YTkLL7cfXmULMmWM8k+mB7j5GX3BlgLNtX5bbFKUzhMRc
+        LcOdf4GZqbUdeHMjDZdMUEVRN7ILm9Nuy84E6fQq9/iD4FT+SJa4Egus2qLMfxzwNHL0vb8
+        PaJSpLQmJw1g1FBgJpkg40ic34WVJ1QG+y81CR+1XCc/A3NkDtCUVVqsw5sEpF0MMJIdXOU
+        aLLtFZw1qbGWCmoRNc=
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     mpe@ellerman.id.au
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        christophe.leroy@csgroup.eu, wangborong@cdjrlc.com,
+        wangkefeng.wang@huawei.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] powerpc: use strscpy to replace strlcpy
+Date:   Sat,  7 Aug 2021 15:21:54 +0800
+Message-Id: <20210807072154.64512-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="EuxKj2iCbKjpUGkD"
-Content-Disposition: inline
-In-Reply-To: <20210805112619.65116-1-andriy.shevchenko@linux.intel.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The strlcpy should not be used because it doesn't limit the source
+length. As linus says, it's a completely useless function if you
+can't implicitly trust the source string - but that is almost always
+why people think they should use it! All in all the BSD function
+will lead some potential bugs.
 
---EuxKj2iCbKjpUGkD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+But the strscpy doesn't require reading memory from the src string
+beyond the specified "count" bytes, and since the return value is
+easier to error-check than strlcpy()'s. In addition, the implementation
+is robust to the string changing out from underneath it, unlike the
+current strlcpy() implementation.
 
-Hi!
+Thus, We prefer using strscpy instead of strlcpy.
 
-> The one of the latest change to the driver reveals the problem that
-> the error codes from callee aren't propagated to the caller of
-> __sso_led_dt_parse(). Fix this accordingly.
->=20
-> Fixes: 9999908ca1ab ("leds: lgm-sso: Put fwnode in any case during ->prob=
-e()")
-> Fixes: c3987cd2bca3 ("leds: lgm: Add LED controller driver for LGM SoC")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+---
+ arch/powerpc/platforms/powermac/bootx_init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you, applied.
-								Pavel
-							=09
---=20
-http://www.livejournal.com/~pavelmachek
+diff --git a/arch/powerpc/platforms/powermac/bootx_init.c b/arch/powerpc/platforms/powermac/bootx_init.c
+index d20ef35e6d9d..741aa5b89e55 100644
+--- a/arch/powerpc/platforms/powermac/bootx_init.c
++++ b/arch/powerpc/platforms/powermac/bootx_init.c
+@@ -243,7 +243,7 @@ static void __init bootx_scan_dt_build_strings(unsigned long base,
+ 		DBG(" detected display ! adding properties names !\n");
+ 		bootx_dt_add_string("linux,boot-display", mem_end);
+ 		bootx_dt_add_string("linux,opened", mem_end);
+-		strlcpy(bootx_disp_path, namep, sizeof(bootx_disp_path));
++		strscpy(bootx_disp_path, namep, sizeof(bootx_disp_path));
+ 	}
+ 
+ 	/* get and store all property names */
+-- 
+2.32.0
 
---EuxKj2iCbKjpUGkD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmEOM2gACgkQMOfwapXb+vKZFQCgnFbou3kuO9HcC7i0jYUS1BiD
-9L4AnRlYQyCHrnINiQJ/lZ/97DCJx4c6
-=BrKj
------END PGP SIGNATURE-----
-
---EuxKj2iCbKjpUGkD--
