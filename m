@@ -2,89 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B046B3E35F4
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 16:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E343E35F7
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 16:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhHGOvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 10:51:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41008 "EHLO
+        id S230422AbhHGO4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 10:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhHGOvF (ORCPT
+        with ESMTP id S229503AbhHGO43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 10:51:05 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A4CC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 07:50:47 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id c16so15045288wrp.13
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 07:50:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9hn67tJt2X1HPMWoBjQTop2rYNzqOcgRwZWoGVS2Fr0=;
-        b=qQ7q7kbLiOq0y+zSYTXgcu38Vz9+ADTLdxdQTwLWXKFPeZ/iNFjPB5QxKifmwUFS+C
-         de8b+cr/cTxcsn2Xcb3JR8iwN05NdMMBsHMmLw5JE6gZxpZtEkkaWwVUBsanjOQcQrR0
-         rziijtStCcuyD4bJay/jGhlOd41F5x0AxnmvSeuABsIroukgN8wTxW00fd3r3+Ag+GcN
-         wYeVO+PonOy0DL7IZGYbqK6CkbZgG3xXKwyPJllOnuR1/gqW9PFen7dM9JAK+ZwfcwF4
-         uDgh5oFidZuRWss38yhWzA4qZpq8RaEalc3ZTw0yuUzTENWuijVz+qYBYq2rAu3nJ1rS
-         GZBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9hn67tJt2X1HPMWoBjQTop2rYNzqOcgRwZWoGVS2Fr0=;
-        b=bbv8QA53/FqSpIW4BNFKylWwqrKLcqRsL1sCtmbWEvowT9rwX30ygTisc6zLI51LCc
-         1EIfzFb8Zc/TIYcGzrLs1Om6/kzt1KZhkGzd6ElT87l7xyMxYy7XkSqqPQ6yZ+95ghf8
-         ssG2QVmBS/ZxlFeHM2vMA+33aWg/O1u+NtSCsSWJ/WY5RNpr5hph4sIf1qg7Hg4F+QIU
-         5bHFFOmLAD7IuUZbW5TG2TBBAifWEc/470Oko1O0pttOmNWv8feadjig6BCLtd8w5/Z9
-         fAVz+3Rbw13K+5X/KUaGU8kplLqQ/O6GMEFLdzzvzZ6DtFr1oL89jzME35ooYFDAXoiF
-         UsEQ==
-X-Gm-Message-State: AOAM532TQ2wpGjpSh9GC0/JlxGKwBPGBRX84dUyeWGLEJ2WwevfLr4tc
-        gR2f8zo0W5IhoUvbhTbXTZw=
-X-Google-Smtp-Source: ABdhPJznosRzvxBcRhbfL9RupXi4erQbhUVgXv9oQcXlBupwT29tuTt94TfgjfNXC08e6tOThohNyw==
-X-Received: by 2002:a5d:684a:: with SMTP id o10mr15912822wrw.384.1628347845701;
-        Sat, 07 Aug 2021 07:50:45 -0700 (PDT)
-Received: from agape.jhs ([5.171.80.175])
-        by smtp.gmail.com with ESMTPSA id e17sm2531296wru.7.2021.08.07.07.50.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Aug 2021 07:50:45 -0700 (PDT)
-Date:   Sat, 7 Aug 2021 16:50:42 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        insafonov@gmail.com, straube.linux@gmail.com, martin@kaiser.cx,
-        will+git@drnd.me, dan.carpenter@oracle.com,
-        apais@linux.microsoft.com, yashsri421@gmail.com,
-        marcocesati@gmail.com, ross.schm.dev@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] staging: rtl8188eu: os_dep: Remove unused variable
-Message-ID: <20210807145042.GC1425@agape.jhs>
-References: <20210807102232.6674-1-saurav.girepunje@gmail.com>
- <20210807102232.6674-2-saurav.girepunje@gmail.com>
+        Sat, 7 Aug 2021 10:56:29 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C188CC0613CF;
+        Sat,  7 Aug 2021 07:56:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=NMz/26uT2WRA5zyrDgg3yIeUQzzboyU0k+N1bjM2MZM=; b=cPZ15ULomfdRX2fu5rlpG0qu3i
+        mRzqYnOPSL2JH4cHh9uaamsjMfXT1UeA4ANq+FkpgMcIirnS7YSyeYNYFgRDPuNYK/IUF52QJBHCK
+        p/R7CNivssfZmXD86NPwuy/akez7R0VsvuhfOnF03M6pGW6ITu5q+U/0D56XvKaxx1m0oW0Lynd+W
+        FXuAUP/DKhd9B/5G8kUfovTTZYpIXpUdYoOfk4X/gs/EzMH20wmvmH8S2C1n5GluP/UsIyve5uFZr
+        mT8TVBgHAUiiLJEFrhSXCmqfrDDF5OUrdS4DmHDFpJRYz3Hpgsgkv9nKEtvicllVbrr/bx7som5wJ
+        cmPm4yPA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mCNj4-006i7G-GC; Sat, 07 Aug 2021 14:55:31 +0000
+Subject: Re: Embedded USB Debug(EUD) driver
+To:     Subhashini Rao Beerisetty <subhashbeerisetty@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CAPY=qRS0F0iv15w34w13xutoUThbDqFtYniM=eLLmqaMdXya3g@mail.gmail.com>
+ <YQTitrc49G7RxYi2@kroah.com>
+ <CAPY=qRTx+V_P1390b09wyBwMqDOJ2MBH8=5iBgfLCz6t_mBKwQ@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1cd59c72-2221-ec3a-da8d-ca377530db80@infradead.org>
+Date:   Sat, 7 Aug 2021 07:54:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210807102232.6674-2-saurav.girepunje@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAPY=qRTx+V_P1390b09wyBwMqDOJ2MBH8=5iBgfLCz6t_mBKwQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Saurav,
+On 8/7/21 7:23 AM, Subhashini Rao Beerisetty wrote:
+> On Sat, Jul 31, 2021 at 11:12 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>>
+>> On Fri, Jul 30, 2021 at 11:33:09PM +0530, Subhashini Rao Beerisetty wrote:
+>>> Hi All,
+>>>
+>>> I'm currently looking for the Embedded USB Debug (EUD) interface driver.
+>>
+>> For what specific hardware?  Do you have the needed "special" cable?  We
+>> have support in the kernel for some types of these cables, what kernel
+>> versions have you tried that did not work for this?
 
-On Sat, Aug 07, 2021 at 03:52:29PM +0530, Saurav Girepunje wrote:
-> Remove unused variable data and data_len from mon_recv_decrypted() in mon.c
-> 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
->  drivers/staging/rtl8188eu/os_dep/mon.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8188eu/os_dep/mon.c b/drivers/staging/rtl8188eu/os_dep/mon.c
+> It's for MSM hardware and yes we have the "special" cable.
+> I could not find the device driver for this in the mainline tree. It
+> would be helpful if you could point me to the kernel tree which
+> supports this feature. We will compile this suggested kernel and
+> necessary drivers and then will give a try on our hardware
 
-did you rebase you local tree on current staging-testing?
-rtl8188eu has been deleted... now there's r8188eu.
+Hi,
+See USB_SERIAL_DEBUG in drivers/usb/serial/.
+That symbol builds usb_debug.c in that same directory.
 
-thank you,
+It may help to read Documentation/x86/earlyprintk.rst.
 
-fabio
+My own cheat sheet (quick reference) says this: (it may or
+may not help you) (it might need some updating for XHCI):
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Using USB debug port (on a USB EHCI controller)
+
+On the system under test:
+
+CONFIG_USB_EHCI_HCD=y
+
+kernel command line:
+	earlyprintk=dbgpN,keep
+
+With an XHCI controller, use:
+	earlyprintk=xdbcN,keep
+
+Also add:
+	console=tty0
+or	console=ttyUSB0
+for console output to go to the serial port.
+
+Make sure that USB_SERIAL=y, USB_SERIAL_CONSOLE=y,
+and USB_SERIAL_DEBUG=y.
+
+------
+On the logging system:
+(requires CONFIG_USB_SERIAL_DEBUG=y)
+
+Run minicom and tell it to connect to /dev/ttyUSB#.
+Optionally have it log all messages to a file.
+
+#####
+
+-- 
+~Randy
+
