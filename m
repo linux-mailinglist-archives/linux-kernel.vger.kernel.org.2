@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125DA3E32F3
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6723E32F4
 	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 05:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhHGDZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 23:25:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42582 "EHLO
+        id S230471AbhHGD0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 23:26:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42940 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230232AbhHGDZo (ORCPT
+        by vger.kernel.org with ESMTP id S230337AbhHGDZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 23:25:44 -0400
+        Fri, 6 Aug 2021 23:25:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628306727;
+        s=mimecast20190719; t=1628306729;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=M89IpDmqpLb2E2sKYTfviaRjvA8qgBHjWuv99Q1xOu4=;
-        b=en9Soz2BWBLUZI6eKo7OXvaY9RvpL7ELntwXVmK0KAtQHXSceQHYEKSWDcZguAdVJIcDvy
-        PbzHeODpiVeN6U/0+PHvNXprdA9ncVnwtsudWt9lv3Qtard7dK2uLfLhADgoZOLNKTPWg1
-        jo1NdtbllRDbCMX9b26PwHaW19/4l00=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-219-BJMo-Cu_Mqm2_oWwNnBpFQ-1; Fri, 06 Aug 2021 23:25:26 -0400
-X-MC-Unique: BJMo-Cu_Mqm2_oWwNnBpFQ-1
-Received: by mail-qv1-f72.google.com with SMTP id b8-20020a0562141148b02902f1474ce8b7so7739530qvt.20
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 20:25:26 -0700 (PDT)
+        bh=L/1RwXysWQ1sqglJySJDDwULyThf17AJDB9rf0b/YTw=;
+        b=H8mT2rM4KxunE/pA1SzaMGRGeVFYZyOj8Ukio/JJPXS8MzzWTrfr/ManxJWgjp1/vPON3N
+        nUuiJjKgvGNAKQ5M5XFbN3b+0j1fhzrg5jEwadhzcp6eLMayBjWyHo/YZQa7wr2oV5YkiW
+        GxXHG41NjMeHpadhuo31KTYI13TY/Ow=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-kdMD-nKkM36s1vFp-wKEow-1; Fri, 06 Aug 2021 23:25:28 -0400
+X-MC-Unique: kdMD-nKkM36s1vFp-wKEow-1
+Received: by mail-qk1-f200.google.com with SMTP id x12-20020a05620a14acb02903b8f9d28c19so7688615qkj.23
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 20:25:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=M89IpDmqpLb2E2sKYTfviaRjvA8qgBHjWuv99Q1xOu4=;
-        b=Uo+in0qgSCU1MX3ORJtUOJ/pglti/YnWwIBtvkZNj8JQXwJL1aYkiDBkaRMxpdgzss
-         C/sIRm/GulBHOdgNFirfpSh0fNl90hSmsqko+4S1MYyKDLC63t7/hSeVi/oK+dTn0JXX
-         2KeJVvFx4hknwMXxisnGiBXmyNzfsGxc3OLESyC6qQA2AIgmmtmlFnHOtaE1yrLGmd9J
-         YtRSpP6I5Cl/cLlmFC9LKooO9Beg8EhcW6LDaO+WddkFJED7vULmiUhfNTMlAY/wb4Kp
-         zloU824RzMkw1B7mi0Eh9P8Ee7Aw5GvWzMNSaZDtbpFI1yIgIsEi7fj2OOUvHGacqCe5
-         AS9g==
-X-Gm-Message-State: AOAM531oKGNoALim1FyyAHnMkaf6VRtICCaxdsyg9MwUUkxeWcDaq5Qv
-        7Ro5s1x8HTg10pcGYnVp02x6UI7Ne3tZ+kyOADXzK4CEDtWrCqCmw+72JVXMxEc3TZjP3lKY5y4
-        OCET3i9uSWOhEuCGNJurlnZEJsimstUEyqcwW598/aZ31+4zS9QKgodHQgRdAL3BFPIPp/ImrOg
+        bh=L/1RwXysWQ1sqglJySJDDwULyThf17AJDB9rf0b/YTw=;
+        b=ZFFej4KAcZZHB/68XsU5b167saFezMWhoWHdLeKCjjUX56+MccSW8/OiAtHsQwZuHd
+         VWzCCr02s7qeevtggxSBiRr6phi3V3ZbXLHI6fZZh+IClzi2yO23E7efuAwG/ZjDmbIl
+         g74rSjHBb8x9paz5xJqiz78tGjAyXlW2Iz9nMn7TgUcD/iqvdtu4LrzFQFeZ8ctuPtPg
+         p66Z2wlzoDxpDzGNQEOsU8a0XQuTp7Ee/+RHEZwysyjTcsO8S2bRNfBdrw89BahkXwit
+         Lf3O+LaD74Pq1OzbngpfjrcwfJARveclLZJlno94bEC/Fhx7166ZsLOHZD4edDDqJGlx
+         atww==
+X-Gm-Message-State: AOAM532/41Qi8zlp0hN8z0vrScmRfhoy2jq7TquLttqz6TizZFkD2kAR
+        IZeXsZJXPr7JG9VQr42vM4njPSZu2hmGL/JR9uZVTEx+Z802u6sAN1gYA9JKD4rrP3eSIpMZBhh
+        qmu+5iw9UGCuJscX+I/VVP/Sxw36O7XrFhzbfUKxKzIUpy7AkurVlDZiGTvoPXF+VtIgoXpi0eA
         ==
-X-Received: by 2002:a05:620a:20d3:: with SMTP id f19mr13477931qka.304.1628306725829;
-        Fri, 06 Aug 2021 20:25:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwudqdogHpREEXwWEO5+43wkxQbUYyM7tOd7/XM0TXNcdPIMwjzcLULEbq1V0TujbxiOXrmmw==
-X-Received: by 2002:a05:620a:20d3:: with SMTP id f19mr13477901qka.304.1628306725555;
-        Fri, 06 Aug 2021 20:25:25 -0700 (PDT)
+X-Received: by 2002:ac8:7292:: with SMTP id v18mr11780652qto.301.1628306727561;
+        Fri, 06 Aug 2021 20:25:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyV9N7QxwGCkDas76nsjjYHmx//9jTApLA8tn9+Vvt7uhtdjfAKM+aH0uMld3+bwGot4UtMDA==
+X-Received: by 2002:ac8:7292:: with SMTP id v18mr11780632qto.301.1628306727286;
+        Fri, 06 Aug 2021 20:25:27 -0700 (PDT)
 Received: from localhost.localdomain (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
-        by smtp.gmail.com with ESMTPSA id a5sm5514875qkk.92.2021.08.06.20.25.24
+        by smtp.gmail.com with ESMTPSA id a5sm5514875qkk.92.2021.08.06.20.25.25
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 06 Aug 2021 20:25:25 -0700 (PDT)
+        Fri, 06 Aug 2021 20:25:26 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Alistair Popple <apopple@nvidia.com>,
@@ -65,9 +65,9 @@ Cc:     Alistair Popple <apopple@nvidia.com>,
         "Kirill A . Shutemov" <kirill@shutemov.name>,
         Andrew Morton <akpm@linux-foundation.org>,
         Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH RFC 1/4] mm: Introduce PTE_MARKER swap entry
-Date:   Fri,  6 Aug 2021 23:25:18 -0400
-Message-Id: <20210807032521.7591-2-peterx@redhat.com>
+Subject: [PATCH RFC 2/4] mm: Check against orig_pte for finish_fault()
+Date:   Fri,  6 Aug 2021 23:25:19 -0400
+Message-Id: <20210807032521.7591-3-peterx@redhat.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210807032521.7591-1-peterx@redhat.com>
 References: <20210807032521.7591-1-peterx@redhat.com>
@@ -77,143 +77,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces a new swap entry type called PTE_MARKER.  It can be
-installed for any pte that maps a file-backed memory when the pte is
-temporarily zapped, so as to maintain per-pte information.
+We used to check against none pte and in those cases orig_pte should always be
+none pte anyway.
 
-The information that kept in the pte is called a "marker".  Here we define the
-marker as "unsigned long" just to match pgoff_t, however it will only work if
-it still fits in swp_offset(), which is e.g. currently 58 bits on x86_64.
-
-The first marker bit that is introduced together with the new swap pte is the
-PAGEOUT marker.  When that bit is set, it means this pte used to point to a
-page which got swapped out.  It's mostly a definition so the swap type is not
-totally nothing, however the functions are not implemented yet to handle the
-new swap type.
-
-A new config CONFIG_PTE_MARKER is introduced too; it's by default off.
+This change prepares us to be able to call do_fault() on !none ptes.  For
+example, we should allow that to happen for pte marker that has PAGEOUT set.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- include/linux/swap.h    | 14 ++++++++++++-
- include/linux/swapops.h | 45 +++++++++++++++++++++++++++++++++++++++++
- mm/Kconfig              | 17 ++++++++++++++++
- 3 files changed, 75 insertions(+), 1 deletion(-)
+ mm/memory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 6f5a43251593..545dc8e0b0fb 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -55,6 +55,18 @@ static inline int current_is_kswapd(void)
-  * actions on faults.
-  */
- 
-+/*
-+ * PTE markers are used to persist information onto PTEs that are mapped with
-+ * file-backed memories.
-+ */
-+#ifdef CONFIG_PTE_MARKER
-+#define SWP_PTE_MARKER_NUM 1
-+#define SWP_PTE_MARKER     (MAX_SWAPFILES + SWP_HWPOISON_NUM + \
-+			    SWP_MIGRATION_NUM + SWP_DEVICE_NUM)
-+#else
-+#define SWP_PTE_MARKER_NUM 0
-+#endif
-+
- /*
-  * Unaddressable device memory support. See include/linux/hmm.h and
-  * Documentation/vm/hmm.rst. Short description is we need struct pages for
-@@ -100,7 +112,7 @@ static inline int current_is_kswapd(void)
- 
- #define MAX_SWAPFILES \
- 	((1 << MAX_SWAPFILES_SHIFT) - SWP_DEVICE_NUM - \
--	SWP_MIGRATION_NUM - SWP_HWPOISON_NUM)
-+	SWP_MIGRATION_NUM - SWP_HWPOISON_NUM - SWP_PTE_MARKER_NUM)
- 
- /*
-  * Magic header for a swap area. The first part of the union is
-diff --git a/include/linux/swapops.h b/include/linux/swapops.h
-index d356ab4047f7..3fec83449e1e 100644
---- a/include/linux/swapops.h
-+++ b/include/linux/swapops.h
-@@ -247,6 +247,51 @@ static inline int is_writable_migration_entry(swp_entry_t entry)
- 
- #endif
- 
-+#ifdef CONFIG_PTE_MARKER
-+
-+#ifdef CONFIG_PTE_MARKER_PAGEOUT
-+/* When this bit is set, it means this page is swapped out previously */
-+#define  PTE_MARKER_PAGEOUT  (1UL << 0)
-+#else
-+#define  PTE_MARKER_PAGEOUT  0
-+#endif
-+
-+#define  PTE_MARKER_MASK     (PTE_MARKER_PAGEOUT)
-+
-+static inline swp_entry_t make_pte_marker_entry(unsigned long marker)
-+{
-+	return swp_entry(SWP_PTE_MARKER, marker);
-+}
-+
-+static inline bool is_pte_marker_entry(swp_entry_t entry)
-+{
-+	return swp_type(entry) == SWP_PTE_MARKER;
-+}
-+
-+static inline unsigned long pte_marker_get(swp_entry_t entry)
-+{
-+	return swp_offset(entry) & PTE_MARKER_MASK;
-+}
-+
-+#else /* CONFIG_PTE_MARKER */
-+
-+static inline swp_entry_t make_pte_marker_entry(unsigned long marker)
-+{
-+	return swp_entry(0, 0);
-+}
-+
-+static inline bool is_pte_marker_entry(swp_entry_t entry)
-+{
-+	return false;
-+}
-+
-+static inline unsigned long pte_marker_get(swp_entry_t entry)
-+{
-+	return 0;
-+}
-+
-+#endif /* CONFIG_PTE_MARKER */
-+
- static inline struct page *pfn_swap_entry_to_page(swp_entry_t entry)
- {
- 	struct page *p = pfn_to_page(swp_offset(entry));
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 40a9bfcd5062..6043d8f1c066 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -889,4 +889,21 @@ config IO_MAPPING
- config SECRETMEM
- 	def_bool ARCH_HAS_SET_DIRECT_MAP && !EMBEDDED
- 
-+config PTE_MARKER
-+        def_bool n
-+        bool "Marker PTEs support"
-+
-+	help
-+	  Allows to create marker PTEs for file-backed memory.
-+
-+config PTE_MARKER_PAGEOUT
-+        def_bool n
-+        depends on PTE_MARKER
-+        bool "Shmem pagemap PM_SWAP support"
-+
-+	help
-+	  Allows to create marker PTEs for file-backed memory when the page is
-+	  swapped out.  It's required for pagemap to work correctly with shmem
-+	  on page swapping.
-+
- endmenu
+diff --git a/mm/memory.c b/mm/memory.c
+index 25fc46e87214..7288f585544a 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4047,7 +4047,7 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+ 				      vmf->address, &vmf->ptl);
+ 	ret = 0;
+ 	/* Re-check under ptl */
+-	if (likely(pte_none(*vmf->pte)))
++	if (likely(pte_same(*vmf->pte, vmf->orig_pte)))
+ 		do_set_pte(vmf, page, vmf->address);
+ 	else
+ 		ret = VM_FAULT_NOPAGE;
 -- 
 2.32.0
 
