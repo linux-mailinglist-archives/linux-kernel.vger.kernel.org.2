@@ -2,113 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB643E35D4
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 16:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F083E35D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 16:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbhHGORL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 10:17:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43312 "EHLO mail.kernel.org"
+        id S232395AbhHGOUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 10:20:33 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:38142 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232313AbhHGORK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 10:17:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC986601FC;
-        Sat,  7 Aug 2021 14:16:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628345813;
-        bh=UO/S0BNDJ46tAsgC34ngmjgwmXiwnfwCmQCVBrXe3oo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xzJnwLHE9x1+b3Ar6bdpEmozs3+7mGoMxVHZTY3vjgw4NcAPWS+D/rGfXOPxSxR2l
-         Z9Ua6S+/DGye2eeOSETk166IPkK+Yp15BRxdE9UMK+TrT8Hn5d15giFrNRXRnREzBO
-         IUs85+P7SmqXoFSXB3OcY0v5JbQMT9YoUtRNiP/8=
-Date:   Sat, 7 Aug 2021 16:16:50 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] slimbus: patches (set 1) for 5.15
-Message-ID: <YQ6V0oPrLDTNo6cb@kroah.com>
-References: <20210806091639.532-1-srinivas.kandagatla@linaro.org>
- <YQ03FPyxF8DFlwI7@kroah.com>
- <71200533-db05-157f-480a-d64812e1d9c2@linaro.org>
- <YQ6EMKD0gOIJn+FL@kroah.com>
- <e737f324-400e-824b-3865-017d2d2a5543@linaro.org>
- <YQ6F3GFJZClaF+QE@kroah.com>
- <97b911ff-3fd6-45eb-81ec-01971e4c2741@linaro.org>
+        id S232372AbhHGOTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 10:19:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Xk437ZK+XzJVD1Kge5a4sgFw8KUmaw3G46w6ax86i/I=; b=GmyXZz2H5ziYlbr6jxmAVr9z2Y
+        P7ytkcrsbv2z6cjobDfvcCyFvs77S64MsD3oo7tOiBy/uKsiiKRMcuxf7dP+QyrZfg3IWz3iTqiuf
+        3VFAviN9Pn7cGIe/ozCzi0ZLdkJNqR++0M3v0zqsWxJslY2hI2EwSxMdAk37Zty48D1E=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mCN8y-00GVAU-RT; Sat, 07 Aug 2021 16:17:44 +0200
+Date:   Sat, 7 Aug 2021 16:17:44 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Daniel Golle <daniel@makrotopia.org>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH] ARM: kirkwood: add missing <linux/if_ether.h> for
+ ETH_ALEN
+Message-ID: <YQ6WCK0Sytb0nxj9@lunn.ch>
+References: <YQxk4jrbm31NM1US@makrotopia.org>
+ <cde9de20efd3a75561080751766edbec@walle.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <97b911ff-3fd6-45eb-81ec-01971e4c2741@linaro.org>
+In-Reply-To: <cde9de20efd3a75561080751766edbec@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 07, 2021 at 02:26:11PM +0100, Srinivas Kandagatla wrote:
+> What kernel is this? I've just tested with this exact commit as
+> base and it compiles just fine.
 > 
-> 
-> On 07/08/2021 14:08, Greg KH wrote:
-> > On Sat, Aug 07, 2021 at 02:04:39PM +0100, Srinivas Kandagatla wrote:
-> > > 
-> > > 
-> > > On 07/08/2021 14:01, Greg KH wrote:
-> > > > On Sat, Aug 07, 2021 at 11:48:48AM +0100, Srinivas Kandagatla wrote:
-> > > > > 
-> > > > > 
-> > > > > On 06/08/2021 14:20, Greg KH wrote:
-> > > > > > On Fri, Aug 06, 2021 at 10:16:35AM +0100, Srinivas Kandagatla wrote:
-> > > > > > > Hi Greg,
-> > > > > > > 
-> > > > > > > Recently runtime pm testing on slimbus reveled that its
-> > > > > > > totally broken on SlimBus ngd drivers.
-> > > > > > > 
-> > > > > > > Below are the fixes to get it back working.
-> > > > > > > 
-> > > > > > > - One of the reason begin incorrect device pointer used for
-> > > > > > > runtime pm and in some places
-> > > > > > > 
-> > > > > > > - Second one was to do with unable to validate transaction id
-> > > > > > >     which resulted in negative runtime pm count.
-> > > > > > > 
-> > > > > > > - Other fix was to do with resetting dma addresses once ngd
-> > > > > > > controller is power-cycled.
-> > > > > > > 
-> > > > > > > With all these fixed runtime pm is now fully functional on NGD
-> > > > > > > controllers.
-> > > > > > > 
-> > > > > > > Currently I marked them all with Cc: <stable@vger.kernel.org>
-> > > > > > > as these all patches are required to fix runtime pm on SlimBus
-> > > > > > > NGD controller.
-> > > > > > > 
-> > > > > > > Can you please queue them up for 5.15.
-> > > > > > 
-> > > > > > Why do you want these for 5.15-rc1 when you need them to fix problems in
-> > > > > > 5.14?  Shouldn't they go into 5.14-final?
-> > > > > 
-> > > > > Yes, these should go to other stable trees aswell.
-> > > > > I assumed that Fixes tag will automatically backport those patches.
-> > > > 
-> > > > Yes, but that can not happen until they hit Linus's tree, which would
-> > > > not be until 5.15-rc1.  Do you want to delay until that long from now?
-> > > > 
-> > > > How about splitting this into 2 patch series, one that you want to see
-> > > > get into 5.14-final, and one for 5.15-rc1.
-> > > 
-> > > All the patches in these series are fixes so the can go to 5.14-final.
-> > 
-> > Then why did you say originally that you wanted them in 5.15?
-> 
-> TBH, I tend to send out SlimBus and nvmem patches only once around rc5-rc6
-> time which also includes some minor fixes, and you normally apply them for
-> next rc1 release.
-> 
-> In this particular case I should have explicitly said to pick them up for
-> 5.14 next rc.
-> 
-> Do you want me to resend them with proper cover letter? or are you okay to
-> take them as they are?
+> I'm not saying including the file is wrong, but it seems it isn't
+> needed in the upstream kernel and I don't know if it qualifies for
+> the stable queue therefore.
 
-Yes, please resend the series, for some reason I didn't think the first
-one needed to go to 5.14-final, but I might have been thinking of a
-different patch series...
+I would like to see a reproducer for mainline. Do you have a kernel
+config which generates the problem.
 
-thanks,
+The change itself does seems reasonable, so if we can reproduce it, i
+would be happy to merge it for stable.
 
-greg k-h
+      Andrew
