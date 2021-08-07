@@ -2,107 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4243E36EB
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 21:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7783E36EC
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 21:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhHGTFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 15:05:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
+        id S229693AbhHGTOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 15:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhHGTFi (ORCPT
+        with ESMTP id S229464AbhHGTOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 15:05:38 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F5CC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 12:05:19 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id t7-20020a17090a5d87b029017807007f23so24557699pji.5
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 12:05:19 -0700 (PDT)
+        Sat, 7 Aug 2021 15:14:51 -0400
+Received: from mail-io1-xd4a.google.com (mail-io1-xd4a.google.com [IPv6:2607:f8b0:4864:20::d4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4118C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 12:14:33 -0700 (PDT)
+Received: by mail-io1-xd4a.google.com with SMTP id x13-20020a5eda0d0000b02905976d643e4cso887664ioj.3
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 12:14:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LDzr9j6jDQymvAZrQvh0mEZMgeOS0DQq/WzD3far9AM=;
-        b=J2fkjjsuWNeHerOTcP8G/YG86fcP61VGCTe67t+htJCPDhbK4SpXkO8uXCozE3UU8z
-         pZ/y/GDU1jdoV+vx3geGIb4nwo+yUe9S5Y+jlzxN46DUb/Wx9m/mqJ40h61hYUEnDWOG
-         5rLAhFNVsOH0mrGF8/0ztqDQeMi3urRXLQsQokYzNDYs9FqkgAiELj/+zNRIYxXF0FRS
-         x0Kb5rtMpUsegprUY0SWWuhBUA8IGwlzDYJdcPmZaBmf9uQq1MR+WXr5RplKS9EXhL+F
-         gU0zvgOEE25YwjsjveGRNtktbH7RGCZd1L3BNYv4OsThvYQWNM4w5ZZnOoPUKj284dpy
-         l9xQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ch4+rbPUJmHH8DosrW567IDIn+nflyhDIsZ9mYXBdfs=;
+        b=dVkBm548MK64m+dZUmust+2D2P6VZffiXHvIVy21engZx2i11OHGA6reT9H64M/t8g
+         ib5euvY/t40m1kMFSyGtmDKKHN1hdTw+/FjiU0zYSf598mikoZuTUu1XVy/wMnaENxej
+         NO8gtaaDvld2an6mwTvC9BjiRW01Qmv4RU/P0xy+U2vf8OHVecx/7mCzGJ8kOFf6WRAr
+         4EDqcB21FE2lxKk/BECqujPr+fdHJQ3pWMNZtYfV+KBE1H+AYYV6kRJENU6fnF++LeDk
+         5VAWQi0bnI5n3yz0gR23NNNQ2bGkwJa+iEt8EXZnnjaOrxAHvq/BBLfGmHbVbVxeHORU
+         C+NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LDzr9j6jDQymvAZrQvh0mEZMgeOS0DQq/WzD3far9AM=;
-        b=MWul6tg38VWfRQrYgoT7stJJ+WfI1InHR/szLYj8+onqpeDDH32Zy8JPrw8pB6UHLP
-         u3pg89Eeyd0RJ/0Im+xDS9dSpj0b0RVkP91tXwv/wPJvY7n//MepnlaLsu4rWenwvYwD
-         B1ukfsi0d9LBi6kHV1DfHlYRv81T+n+k3DZ0k0S8g9brwVQMqrqFxCmtJImPg7IkOB6E
-         QF+x7/Tv2zNowjsiUBB/STYRt2jmnmefTZcceFq/br57Okk3ZR8UcUsfHuMQ5VDvCMiJ
-         TNTNBAtc8W5kUEtCOckzPPad2fslJqO6dY5u4hhXWN6D7IYR4kcMkbPCShzyYklGtzte
-         yiIg==
-X-Gm-Message-State: AOAM531Qaq9uzhET3/fWeKDVh9gBdn3OQrt+pVYJ5nGjLEKQNpmgl15p
-        JnKBo2YgbFC895xaM69vJ6o=
-X-Google-Smtp-Source: ABdhPJwLpYFtek7YvpqTwxl/4Qq+Nuz2NdUl0gVBdSJPakAfLwkU4B3FHdFl7I8X6nr0bt8E4YLdHA==
-X-Received: by 2002:a17:90a:ce05:: with SMTP id f5mr27351733pju.93.1628363118743;
-        Sat, 07 Aug 2021 12:05:18 -0700 (PDT)
-Received: from localhost.localdomain (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
-        by smtp.gmail.com with ESMTPSA id i13sm14859090pfr.79.2021.08.07.12.05.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Aug 2021 12:05:18 -0700 (PDT)
-From:   Nguyen Dinh Phi <phind.uet@gmail.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
-Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
-Subject: [PATCH] tty: Fix data race between tiocsti() and flush_to_ldisc()
-Date:   Sun,  8 Aug 2021 03:05:13 +0800
-Message-Id: <20210807190513.3810821-1-phind.uet@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ch4+rbPUJmHH8DosrW567IDIn+nflyhDIsZ9mYXBdfs=;
+        b=BaXznmp7lR7eN0ONq7rqMhK3vz3Z4ELZuzEjKRr5K0aDyLUpu24vjQJNGyM2sBQe2V
+         ywa+7kjKOIsSxDYtP7taK+O8Wv/Q9hTqMOsRxUCzNKSxWIFJpLdnc4I0z5NAKlhvN/rz
+         iKqInyjL0n586BNaImeeU4wIUV+tq5KXM+/0cv7MZlqM3xJEMHISuk8z9koQHnZXchzk
+         bL5TwzQeUTEjvjYy9osenH0CoQyvtG095jC/xcC/HAZXI2DgaGojp++63Im9/RK6+Ek9
+         5ODeradxFHP1iTLjzx40pUhJ2tOr5g+L+uy6ItN/Slw+CmYgY4sFmIXrCcgqoG6loPib
+         9vPQ==
+X-Gm-Message-State: AOAM532ekQVpWef749Jm0UrnbEoRI3716ZbByWri8kacSne9gZY6OKeH
+        vE0dgXFHOUsrviV/FLns5MZWCraI/e4=
+X-Google-Smtp-Source: ABdhPJysNcmmYAybHutaRNHL/WX6BYvD9prOvInMPt5PUjzVNf9xbVLalvZK9ut97lcWGPngcmNzX7bkNoI=
+X-Received: from oupton.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:404])
+ (user=oupton job=sendgmr) by 2002:a5e:a914:: with SMTP id c20mr175366iod.188.1628363673010;
+ Sat, 07 Aug 2021 12:14:33 -0700 (PDT)
+Date:   Sat,  7 Aug 2021 19:14:28 +0000
+Message-Id: <20210807191428.3488948-1-oupton@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+Subject: [PATCH v2] clocksource/arm_arch_timer: Fix masking for high freq counters
+From:   Oliver Upton <oupton@google.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ops->receive_buf() may be accessed concurrently from these two
-functions.  If the driver flushes data to the line discipline
-receive_buf() method while tiocsti() is using the ops->receive_buf(),
-the data race will happen.
+Unfortunately, the architecture provides no means to determine the bit
+width of the system counter. However, we do know the following from the
+specification:
 
-For example:
-tty_ioctl                       |tty_ldisc_receive_buf
- ->tioctsi                      | ->tty_port_default_receive_buf
-                                |  ->tty_ldisc_receive_buf
-   ->hci_uart_tty_receive       |   ->hci_uart_tty_receive
-    ->h4_recv                   |    ->h4_recv
+ - the system counter is at least 56 bits wide
+ - Roll-over time of not less than 40 years
 
-In this case, the h4 receive buffer will be overwritten by the
-latecomer, and it cause a memory leak.
+To date, the arch timer driver has depended on the first property,
+assuming any system counter to be 56 bits wide and masking off the rest.
+However, combining a narrow clocksource mask with a high frequency
+counter could result in prematurely wrapping the system counter by a
+significant margin. For example, a 56 bit wide, 1GHz system counter
+would wrap in a mere 2.28 years!
 
-Hence, change tioctsi() function to use the exclusive lock interface
-from tty_buffer to avoid the data race.
+This is a problem for two reasons: v8.6+ implementations are required to
+provide a 64 bit, 1GHz system counter. Furthermore, before v8.6,
+implementers may select a counter frequency of their choosing.
 
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-Reported-by: syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+Fix the issue by deriving a valid clock mask based on the second
+property from above. Set the floor at 56 bits, since we know no system
+counter is narrower than that.
+
+Suggested-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Oliver Upton <oupton@google.com>
 ---
- drivers/tty/tty_io.c | 2 ++
- 1 file changed, 2 insertions(+)
+This patch was tested on QEMU, tweaked to provide a 1GHz system counter
+frequency. The 'bp.refcounter.base_frequency' property does not seem to
+have any affect on the 'ARMvA Base RevC AEM FVP', and instead provides a
+100MHz counter.
 
-diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-index e8532006e960..746fe13a2054 100644
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -2307,8 +2307,10 @@ static int tiocsti(struct tty_struct *tty, char __user *p)
- 	ld = tty_ldisc_ref_wait(tty);
- 	if (!ld)
- 		return -EIO;
-+	tty_buffer_lock_exclusive(tty->port);
- 	if (ld->ops->receive_buf)
- 		ld->ops->receive_buf(tty, &ch, &mbz, 1);
-+	tty_buffer_unlock_exclusive(tty->port);
- 	tty_ldisc_deref(ld);
- 	return 0;
+Parent commit: 0c32706dac1b ("arm64: stacktrace: avoid tracing arch_stack_walk()")
+
+ drivers/clocksource/arm_arch_timer.c | 32 ++++++++++++++++++++++++----
+ 1 file changed, 28 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+index be6d741d404c..f4816b22213c 100644
+--- a/drivers/clocksource/arm_arch_timer.c
++++ b/drivers/clocksource/arm_arch_timer.c
+@@ -52,6 +52,12 @@
+ #define CNTV_TVAL	0x38
+ #define CNTV_CTL	0x3c
+ 
++/*
++ * The minimum amount of time a generic counter is guaranteed to not roll over
++ * (40 years)
++ */
++#define MIN_ROLLOVER_SECS	(40ULL * 365 * 24 * 3600)
++
+ static unsigned arch_timers_present __initdata;
+ 
+ static void __iomem *arch_counter_base __ro_after_init;
+@@ -205,13 +211,11 @@ static struct clocksource clocksource_counter = {
+ 	.id	= CSID_ARM_ARCH_COUNTER,
+ 	.rating	= 400,
+ 	.read	= arch_counter_read,
+-	.mask	= CLOCKSOURCE_MASK(56),
+ 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
+ };
+ 
+ static struct cyclecounter cyclecounter __ro_after_init = {
+ 	.read	= arch_counter_read_cc,
+-	.mask	= CLOCKSOURCE_MASK(56),
+ };
+ 
+ struct ate_acpi_oem_info {
+@@ -1004,9 +1008,26 @@ struct arch_timer_kvm_info *arch_timer_get_kvm_info(void)
+ 	return &arch_timer_kvm_info;
  }
---
-2.25.1
+ 
++/*
++ * Makes an educated guess at a valid counter width based on the Generic Timer
++ * specification. Of note:
++ *   1) the system counter is at least 56 bits wide
++ *   2) a roll-over time of not less than 40 years
++ *
++ * See 'ARM DDI 0487G.a D11.1.2 ("The system counter")' for more details.
++ */
++static int __init arch_counter_get_width(void)
++{
++	u64 min_cycles = MIN_ROLLOVER_SECS * arch_timer_rate;
++
++	/* guarantee the returned width is within the valid range */
++	return clamp_val(ilog2(min_cycles), 56, 64);
++}
++
+ static void __init arch_counter_register(unsigned type)
+ {
+ 	u64 start_count;
++	int width;
+ 
+ 	/* Register the CP15 based counter if we have one */
+ 	if (type & ARCH_TIMER_TYPE_CP15) {
+@@ -1031,6 +1052,10 @@ static void __init arch_counter_register(unsigned type)
+ 		arch_timer_read_counter = arch_counter_get_cntvct_mem;
+ 	}
+ 
++	width = arch_counter_get_width();
++	clocksource_counter.mask = CLOCKSOURCE_MASK(width);
++	cyclecounter.mask = CLOCKSOURCE_MASK(width);
++
+ 	if (!arch_counter_suspend_stop)
+ 		clocksource_counter.flags |= CLOCK_SOURCE_SUSPEND_NONSTOP;
+ 	start_count = arch_timer_read_counter();
+@@ -1040,8 +1065,7 @@ static void __init arch_counter_register(unsigned type)
+ 	timecounter_init(&arch_timer_kvm_info.timecounter,
+ 			 &cyclecounter, start_count);
+ 
+-	/* 56 bits minimum, so we assume worst case rollover */
+-	sched_clock_register(arch_timer_read_counter, 56, arch_timer_rate);
++	sched_clock_register(arch_timer_read_counter, width, arch_timer_rate);
+ }
+ 
+ static void arch_timer_stop(struct clock_event_device *clk)
+-- 
+2.32.0.605.g8dce9f2422-goog
 
