@@ -2,147 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D173E33C9
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 08:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E44C3E33CC
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 08:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231529AbhHGGdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 02:33:23 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7804 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhHGGdP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 02:33:15 -0400
-Received: from dggeme768-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GhXb304QZzYlgB;
-        Sat,  7 Aug 2021 14:32:47 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- dggeme768-chm.china.huawei.com (10.3.19.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sat, 7 Aug 2021 14:32:56 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <liulongfang@huawei.com>,
-        Weili Qian <qianweili@huawei.com>
-Subject: [PATCH 3/3] crypto: hisilicon - enable hpre device clock gating
-Date:   Sat, 7 Aug 2021 14:29:11 +0800
-Message-ID: <1628317751-3396-4-git-send-email-qianweili@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1628317751-3396-1-git-send-email-qianweili@huawei.com>
-References: <1628317751-3396-1-git-send-email-qianweili@huawei.com>
+        id S231373AbhHGGmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 02:42:03 -0400
+Received: from relay.sw.ru ([185.231.240.75]:48474 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230297AbhHGGmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 02:42:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=Y0aAjMVRc2eMCd5br2aos6hJsJXTCYbOLMiB+Wn43ow=; b=mweOF5glY4Bj4Go5i
+        Jm0sx5N4aSZowSnbwDmH49ln3HofW+0xGQyxHl8sMrlBphr9ILU1+h0OE3+scf81O9xYR4/nl73Xs
+        cnveq2wTplnJ5r91kPqWq9202QD7CeKyuqvDU9C4mfB/KlYmMjd+Hm1PCDQM9CZqA0X5Q2rP8Hc+U
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mCG1b-006hh6-BY; Sat, 07 Aug 2021 09:41:39 +0300
+Subject: Re: [PATCH NET] vrf: fix null pointer dereference in
+ vrf_finish_output()
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org,
+        Julian Wiedmann <jwi@linux.ibm.com>
+References: <20210806.111412.1329682129695306949.davem@davemloft.net>
+ <5ba67c28-1056-e24d-cad3-4b7aaac01111@virtuozzo.com>
+ <20210806154227.49ac089d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <11bb7d25-71e2-c49a-4754-8daa52150adb@virtuozzo.com>
+Date:   Sat, 7 Aug 2021 09:41:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme768-chm.china.huawei.com (10.3.19.114)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210806154227.49ac089d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kunpeng930 hpre device supports dynamic clock gating. When doing tasks,
-the algorithm core is opened, and when idle, the algorithm core is closed.
-This patch enables hpre dynamic clock gating by writing hardware registers.
+On 8/7/21 1:42 AM, Jakub Kicinski wrote:
+> On Fri, 6 Aug 2021 15:53:00 +0300 Vasily Averin wrote:
+>> After 14ee70ca89e6 ("vrf: use skb_expand_head in vrf_finish_output")
+>> skb->dev  is accessed after skb free.
+>> Let's replace skb->dev by dev = skb_dst(skb)->dev:
+>> vrf_finish_output() is only called from vrf_output(),
+>> it set skb->dev to skb_dst(skb)->dev and calls POSTROUTING netfilter
+>> hooks, where output device should not be changed.
+>>
+>> Fixes: 14ee70ca89e6 ("vrf: use skb_expand_head in vrf_finish_output")
+>> Reported-by: Julian Wiedmann <jwi@linux.ibm.com>
+>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> 
+> Thanks for following up! I decided to pick a similar patch from Dan
+> Carpenter [1] because the chunk quoted below is not really necessary.
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre_main.c | 63 +++++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+I still think that my patch version is preferable.
+It's better to use vrf_tx_error(dev, skb) because:
+a) both rollbacks can use the same net device
+b) probably using 'dev' allows to avoid an extra pointer dereference.
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 8b0640f..6a5de30 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -81,6 +81,16 @@
- #define HPRE_PREFETCH_DISABLE		BIT(30)
- #define HPRE_SVA_DISABLE_READY		(BIT(4) | BIT(8))
- 
-+/* clock gate */
-+#define HPRE_CLKGATE_CTL		0x301a10
-+#define HPRE_PEH_CFG_AUTO_GATE		0x301a2c
-+#define HPRE_CLUSTER_DYN_CTL		0x302010
-+#define HPRE_CORE_SHB_CFG		0x302088
-+#define HPRE_CLKGATE_CTL_EN		BIT(0)
-+#define HPRE_PEH_CFG_AUTO_GATE_EN	BIT(0)
-+#define HPRE_CLUSTER_DYN_CTL_EN		BIT(0)
-+#define HPRE_CORE_GATE_EN		(BIT(30) | BIT(31))
-+
- #define HPRE_AM_OOO_SHUTDOWN_ENB	0x301044
- #define HPRE_AM_OOO_SHUTDOWN_ENABLE	BIT(0)
- #define HPRE_WR_MSI_PORT		BIT(2)
-@@ -417,12 +427,63 @@ static void hpre_close_sva_prefetch(struct hisi_qm *qm)
- 		pci_err(qm->pdev, "failed to close sva prefetch\n");
- }
- 
-+static void hpre_enable_clock_gate(struct hisi_qm *qm)
-+{
-+	u32 val;
-+
-+	if (qm->ver < QM_HW_V3)
-+		return;
-+
-+	val = readl(qm->io_base + HPRE_CLKGATE_CTL);
-+	val |= HPRE_CLKGATE_CTL_EN;
-+	writel(val, qm->io_base + HPRE_CLKGATE_CTL);
-+
-+	val = readl(qm->io_base + HPRE_PEH_CFG_AUTO_GATE);
-+	val |= HPRE_PEH_CFG_AUTO_GATE_EN;
-+	writel(val, qm->io_base + HPRE_PEH_CFG_AUTO_GATE);
-+
-+	val = readl(qm->io_base + HPRE_CLUSTER_DYN_CTL);
-+	val |= HPRE_CLUSTER_DYN_CTL_EN;
-+	writel(val, qm->io_base + HPRE_CLUSTER_DYN_CTL);
-+
-+	val = readl_relaxed(qm->io_base + HPRE_CORE_SHB_CFG);
-+	val |= HPRE_CORE_GATE_EN;
-+	writel(val, qm->io_base + HPRE_CORE_SHB_CFG);
-+}
-+
-+static void hpre_disable_clock_gate(struct hisi_qm *qm)
-+{
-+	u32 val;
-+
-+	if (qm->ver < QM_HW_V3)
-+		return;
-+
-+	val = readl(qm->io_base + HPRE_CLKGATE_CTL);
-+	val &= ~HPRE_CLKGATE_CTL_EN;
-+	writel(val, qm->io_base + HPRE_CLKGATE_CTL);
-+
-+	val = readl(qm->io_base + HPRE_PEH_CFG_AUTO_GATE);
-+	val &= ~HPRE_PEH_CFG_AUTO_GATE_EN;
-+	writel(val, qm->io_base + HPRE_PEH_CFG_AUTO_GATE);
-+
-+	val = readl(qm->io_base + HPRE_CLUSTER_DYN_CTL);
-+	val &= ~HPRE_CLUSTER_DYN_CTL_EN;
-+	writel(val, qm->io_base + HPRE_CLUSTER_DYN_CTL);
-+
-+	val = readl_relaxed(qm->io_base + HPRE_CORE_SHB_CFG);
-+	val &= ~HPRE_CORE_GATE_EN;
-+	writel(val, qm->io_base + HPRE_CORE_SHB_CFG);
-+}
-+
- static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
- {
- 	struct device *dev = &qm->pdev->dev;
- 	u32 val;
- 	int ret;
- 
-+	/* disabel dynamic clock gate before sram init */
-+	hpre_disable_clock_gate(qm);
-+
- 	writel(HPRE_QM_USR_CFG_MASK, qm->io_base + QM_ARUSER_M_CFG_ENABLE);
- 	writel(HPRE_QM_USR_CFG_MASK, qm->io_base + QM_AWUSER_M_CFG_ENABLE);
- 	writel_relaxed(HPRE_QM_AXI_CFG_MASK, qm->io_base + QM_AXI_M_CFG);
-@@ -473,6 +534,8 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
- 	/* Config data buffer pasid needed by Kunpeng 920 */
- 	hpre_config_pasid(qm);
- 
-+	hpre_enable_clock_gate(qm);
-+
- 	return ret;
- }
- 
--- 
-2.8.1
+Originally, i.e. before fixed patch 14ee70ca89e6, rollback after failed header expand
+called the save vrf_tx_error() call. This function does 2 things:  
+- increments stats.tx_errors on specified network device
+- frees provided skb.
+
+Commit 14ee70ca89e6 replaced skb_realloc_headroom() by skb_expand_head() that frees skb inside,
+So vrf_tx_error() call on rollback was replaced with direct increment of  stats.tx_errors.
+We cannot use now original skb->dev so our fixup patches replaces it with dev variable already
+used in this function.
+Though, if we should use the same net device in both rollbacks. It's illogical for me
+to change one place and do not change another one. 
+
+If we follow to your decision -- it isn't a problem. skb->dev and skb should be identical.
+Though 'skb->dev' does an extra dereference, while dev was used in function and probably
+was saved to register.
+
+Thank you,
+	Vasily Averin
+
+> [1] https://lore.kernel.org/kernel-janitors/20210806150435.GB15586@kili/
+> 
+>> @@ -883,7 +883,7 @@ static int vrf_finish_output(struct net *net, struct sock *sk, struct sk_buff *s
+>>  	}
+>>  
+>>  	rcu_read_unlock_bh();
+>> -	vrf_tx_error(skb->dev, skb);
+>> +	vrf_tx_error(dev, skb);
+>>  	return -EINVAL;
+>>  }
+>>  
+> 
 
