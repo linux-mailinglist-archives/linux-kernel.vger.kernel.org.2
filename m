@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAA23E35D3
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 16:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB643E35D4
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 16:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhHGONO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 10:13:14 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:49321 "EHLO rere.qmqm.pl"
+        id S232378AbhHGORL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 10:17:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232313AbhHGONN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 10:13:13 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Ghkny2kDXz64;
-        Sat,  7 Aug 2021 16:12:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1628345574; bh=n9RHvgmwO10yV+8X1TQ8vGLq8GhTf/p7Tzeh2jxUSzc=;
+        id S232313AbhHGORK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 10:17:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC986601FC;
+        Sat,  7 Aug 2021 14:16:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628345813;
+        bh=UO/S0BNDJ46tAsgC34ngmjgwmXiwnfwCmQCVBrXe3oo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l5hp8JWxEvD+QSJfDmhc0TLdpdonbMHTGAAMYpnzH/O8IavaORIg1Zpz7rkxty5UO
-         nvWUbX0J7+xQFDdW8z32zbu6kMYHS87IBY6oJrEx9jHIPf9wgM4gAVcBHnG39n7Bt/
-         HGPK+CkYn89939fqjZs21QjlKzkYDUG7EEzwP8xvVCxxuYHvukcV+VfCpsJDs98mIh
-         jCw9/eb3RUSquX+O7YfroCVx1X49Lcw7F1lyGmchLMa0ywoCCuH7GqBLCf6Z9rcQGC
-         EQXwmzrAGwEuBgI1sWd185MdOlRwLgSyJ+egBOad3RuQ7JUVYxwd5lBMZ+y/IRGGke
-         gZa1T+12AhOPA==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.2 at mail
-Date:   Sat, 7 Aug 2021 16:12:52 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        Kevin Liu <kliu5@marvell.com>,
-        Suneel Garapati <suneel.garapati@xilinx.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Al Cooper <alcooperx@gmail.com>
-Subject: Re: [PATCH v4 4/5] mmc: sdhci: move
- SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN frequency limit
-Message-ID: <YQ6U5EeOPzCvLT8z@qmqm.qmqm.pl>
-References: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
- <ff3907df3aa91f83a4a0a22b63d51bfe491ed039.1627204633.git.mirq-linux@rere.qmqm.pl>
- <2cdb95f3-8943-715a-d3d7-804953e49786@intel.com>
+        b=xzJnwLHE9x1+b3Ar6bdpEmozs3+7mGoMxVHZTY3vjgw4NcAPWS+D/rGfXOPxSxR2l
+         Z9Ua6S+/DGye2eeOSETk166IPkK+Yp15BRxdE9UMK+TrT8Hn5d15giFrNRXRnREzBO
+         IUs85+P7SmqXoFSXB3OcY0v5JbQMT9YoUtRNiP/8=
+Date:   Sat, 7 Aug 2021 16:16:50 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] slimbus: patches (set 1) for 5.15
+Message-ID: <YQ6V0oPrLDTNo6cb@kroah.com>
+References: <20210806091639.532-1-srinivas.kandagatla@linaro.org>
+ <YQ03FPyxF8DFlwI7@kroah.com>
+ <71200533-db05-157f-480a-d64812e1d9c2@linaro.org>
+ <YQ6EMKD0gOIJn+FL@kroah.com>
+ <e737f324-400e-824b-3865-017d2d2a5543@linaro.org>
+ <YQ6F3GFJZClaF+QE@kroah.com>
+ <97b911ff-3fd6-45eb-81ec-01971e4c2741@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2cdb95f3-8943-715a-d3d7-804953e49786@intel.com>
+In-Reply-To: <97b911ff-3fd6-45eb-81ec-01971e4c2741@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 03:33:56PM +0300, Adrian Hunter wrote:
-> On 25/07/21 12:20 pm, Micha³ Miros³aw wrote:
-> > Push handling of clock frequency dependence for
-> > SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN quirk to the drivers that use it.
-> What is the max_clk dependency for, and why push it down?
+On Sat, Aug 07, 2021 at 02:26:11PM +0100, Srinivas Kandagatla wrote:
+> 
+> 
+> On 07/08/2021 14:08, Greg KH wrote:
+> > On Sat, Aug 07, 2021 at 02:04:39PM +0100, Srinivas Kandagatla wrote:
+> > > 
+> > > 
+> > > On 07/08/2021 14:01, Greg KH wrote:
+> > > > On Sat, Aug 07, 2021 at 11:48:48AM +0100, Srinivas Kandagatla wrote:
+> > > > > 
+> > > > > 
+> > > > > On 06/08/2021 14:20, Greg KH wrote:
+> > > > > > On Fri, Aug 06, 2021 at 10:16:35AM +0100, Srinivas Kandagatla wrote:
+> > > > > > > Hi Greg,
+> > > > > > > 
+> > > > > > > Recently runtime pm testing on slimbus reveled that its
+> > > > > > > totally broken on SlimBus ngd drivers.
+> > > > > > > 
+> > > > > > > Below are the fixes to get it back working.
+> > > > > > > 
+> > > > > > > - One of the reason begin incorrect device pointer used for
+> > > > > > > runtime pm and in some places
+> > > > > > > 
+> > > > > > > - Second one was to do with unable to validate transaction id
+> > > > > > >     which resulted in negative runtime pm count.
+> > > > > > > 
+> > > > > > > - Other fix was to do with resetting dma addresses once ngd
+> > > > > > > controller is power-cycled.
+> > > > > > > 
+> > > > > > > With all these fixed runtime pm is now fully functional on NGD
+> > > > > > > controllers.
+> > > > > > > 
+> > > > > > > Currently I marked them all with Cc: <stable@vger.kernel.org>
+> > > > > > > as these all patches are required to fix runtime pm on SlimBus
+> > > > > > > NGD controller.
+> > > > > > > 
+> > > > > > > Can you please queue them up for 5.15.
+> > > > > > 
+> > > > > > Why do you want these for 5.15-rc1 when you need them to fix problems in
+> > > > > > 5.14?  Shouldn't they go into 5.14-final?
+> > > > > 
+> > > > > Yes, these should go to other stable trees aswell.
+> > > > > I assumed that Fixes tag will automatically backport those patches.
+> > > > 
+> > > > Yes, but that can not happen until they hit Linus's tree, which would
+> > > > not be until 5.15-rc1.  Do you want to delay until that long from now?
+> > > > 
+> > > > How about splitting this into 2 patch series, one that you want to see
+> > > > get into 5.14-final, and one for 5.15-rc1.
+> > > 
+> > > All the patches in these series are fixes so the can go to 5.14-final.
+> > 
+> > Then why did you say originally that you wanted them in 5.15?
+> 
+> TBH, I tend to send out SlimBus and nvmem patches only once around rc5-rc6
+> time which also includes some minor fixes, and you normally apply them for
+> next rc1 release.
+> 
+> In this particular case I should have explicitly said to pick them up for
+> 5.14 next rc.
+> 
+> Do you want me to resend them with proper cover letter? or are you okay to
+> take them as they are?
 
-I guess this is a workaround for a hardware issue. When I wrote this,
-there was only a single user. Now I don't know if the second user got
-the limit by accident or just uses the flag not knowing it doesn't work
-as the quirk name suggests. IOW this makes it easier to fix in drivers
-if the limit is wrong or irrelevant. The dependency doesn't feel like
-it belongs to the generic driver anyway.
+Yes, please resend the series, for some reason I didn't think the first
+one needed to go to 5.14-final, but I might have been thinking of a
+different patch series...
 
-[...]
-> > @@ -318,6 +317,9 @@ static int dwcmshc_rk3568_init(struct sdhci_host *host, struct dwcmshc_priv *dwc
-> >  	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_TXCLK);
-> >  	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_STRBIN);
-> >  
-> > +	if (sdhci_pltfm_clk_get_max_clock(host) <= 25000000)
-> > +		host->quirks2 |= SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN;
-> > +
-> >  	return 0;
-> >  }
-> >  
-> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> > index 0993f7d0ce8e..cfa314e659bc 100644
-> > --- a/drivers/mmc/host/sdhci.c
-> > +++ b/drivers/mmc/host/sdhci.c
-> > @@ -1905,8 +1905,7 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
-> >  			/* Version 3.00 divisors must be a multiple of 2. */
-> >  			if (host->max_clk <= clock) {
-> >  				div = 1;
-> > -				if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
-> > -					&& host->max_clk <= 25000000)
-> > +				if (host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
-> >  					div = 2;
-> >  			} else {
-> >  				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
+thanks,
+
+greg k-h
