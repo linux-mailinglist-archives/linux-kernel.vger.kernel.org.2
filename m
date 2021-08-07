@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7713E33F6
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 09:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98BFB3E33F9
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 09:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhHGHZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 03:25:33 -0400
-Received: from smtpbg511.qq.com ([203.205.250.109]:43487 "EHLO
-        smtpbg511.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbhHGHZc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 03:25:32 -0400
-X-Greylist: delayed 610 seconds by postgrey-1.27 at vger.kernel.org; Sat, 07 Aug 2021 03:25:31 EDT
-X-QQ-mid: bizesmtp33t1628321103t79kuz7l
-Received: from localhost.localdomain (unknown [125.69.42.194])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Sat, 07 Aug 2021 15:25:02 +0800 (CST)
-X-QQ-SSF: 01000000002000B0C000B00A0000000
-X-QQ-FEAT: FsG0r2mBeluv3Zd9YWfYoh+AeeQRy3mwRvhGF/vi0SQ8PvrFHvtPsenqipt2u
-        nQYQ+mvnRsp2/+RsuU7KsxD8TtXzL8kT+dqidTfLRsmt1rX95RGtB+NEiGUglWXK9n16Rhu
-        OQfdZE/gWhHz9bJ0HRmy6nxoeU4+bBKiHmoeuezT9zzJNtmJx8SI/3KUmWu9nDhnMR0z9EF
-        0i6USB7MTzzX9TapcAP9dqZCCpK0vxbCruZzhEFH8Hugwj1E9hC2ikRbcKarFxppoAj92ec
-        KKyjCMDeIRV7pdT7FwboFQUHLzJXP29NxEsPvbZ7dFJBMbvhgUm+gdfljv55DCegSwVd7gl
-        8/LEMVK
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     ley.foon.tan@intel.com
-Cc:     akpm@linux-foundation.org, wangkefeng.wang@huawei.com,
-        wangborong@cdjrlc.com, andreas.oetken@siemens.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] nios2: use strscpy to replace strlcpy
-Date:   Sat,  7 Aug 2021 15:24:31 +0800
-Message-Id: <20210807072431.66478-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
+        id S231560AbhHGH0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 03:26:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231375AbhHGH0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 03:26:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C78C610A1;
+        Sat,  7 Aug 2021 07:26:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628321182;
+        bh=IMpk0o1hS1Y/l+HPxA2D6QVy28dpg16VfLfqbilGAdM=;
+        h=Date:From:To:Subject:From;
+        b=LzskHGcyTIxa4dSUluOVMceoyA56cmOXbee1mhI0SjUZ6+Ggw3hqth537S3AzSEVh
+         HXCNHEYh3L6Gkfsbt5f53hOZJD5a4vmKKQPViE+HuFiM52mT24livNSuFaUE8zqn9R
+         J74iDpm3e7Ez7wSewI5M/utFbxA/U4K2CXH/aang=
+Date:   Sat, 7 Aug 2021 09:26:19 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: usbutils 014 release
+Message-ID: <YQ41m+9JMSzt69fM@kroah.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgforeign:qybgforeign7
-X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The strlcpy should not be used because it doesn't limit the source
-length. As linus says, it's a completely useless function if you
-can't implicitly trust the source string - but that is almost always
-why people think they should use it! All in all the BSD function
-will lead some potential bugs.
+I'd like to announce the usbutils 014 release.  There have been a number
+of small changes in it over the past 8 months, so it's time to finally
+bundle it together and do an "official" release so that the distros can
+take advantage of the update.
 
-But the strscpy doesn't require reading memory from the src string
-beyond the specified "count" bytes, and since the return value is
-easier to error-check than strlcpy()'s. In addition, the implementation
-is robust to the string changing out from underneath it, unlike the
-current strlcpy() implementation.
+One nice new thing is that the project is now REUSE compliant, to make
+it easier for users to verify the license and copyright information of
+all files in the release.
 
-Thus, We prefer using strscpy instead of strlcpy.
+Full details of the changes are found below in the shortlog.
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- arch/nios2/kernel/setup.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Tarballs can be found on kernel.org here:
+	https://www.kernel.org/pub/linux/utils/usb/usbutils/
 
-diff --git a/arch/nios2/kernel/setup.c b/arch/nios2/kernel/setup.c
-index cf8d687a2644..02fe70b6d78e 100644
---- a/arch/nios2/kernel/setup.c
-+++ b/arch/nios2/kernel/setup.c
-@@ -121,7 +121,7 @@ asmlinkage void __init nios2_boot_init(unsigned r4, unsigned r5, unsigned r6,
- 		dtb_passed = r6;
- 
- 		if (r7)
--			strlcpy(cmdline_passed, (char *)r7, COMMAND_LINE_SIZE);
-+			strscpy(cmdline_passed, (char *)r7, COMMAND_LINE_SIZE);
- 	}
- #endif
- 
-@@ -129,10 +129,10 @@ asmlinkage void __init nios2_boot_init(unsigned r4, unsigned r5, unsigned r6,
- 
- #ifndef CONFIG_CMDLINE_FORCE
- 	if (cmdline_passed[0])
--		strlcpy(boot_command_line, cmdline_passed, COMMAND_LINE_SIZE);
-+		strscpy(boot_command_line, cmdline_passed, COMMAND_LINE_SIZE);
- #ifdef CONFIG_NIOS2_CMDLINE_IGNORE_DTB
- 	else
--		strlcpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
-+		strscpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
- #endif
- #endif
- 
--- 
-2.32.0
+Or you can pull from the following git locations as well:
+	https://github.com/gregkh/usbutils
+	https://github.com/linux-usb/usbutils
+	https://git.sr.ht/~gregkh/usbutils
+	https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usbutils.git
 
+
+thanks,
+
+greg k-h
+
+------------
+
+usbutils 014
+============
+
+Adrian Kalazi (1):
+      Add Tx+Rx lanes to tree mode
+
+Aurelien Jarno (1):
+      lsusb(8): mention the udev's hardware database
+
+Benson Leung (1):
+      lsusb: Fix typo in string output for iAdditionalInfoURL
+
+Bui Quang Minh (1):
+      lsusb-t: Add lower bound checks in read_sysfs_file_string
+
+Grant Grundler (2):
+      lsusb: remove unused RETRIES constant
+      lsusb: don't complain on EAGAIN
+
+Greg Kroah-Hartman (10):
+      sysfs: add copyright notice taken from name.*
+      LICENSES: add symlink to handle "or-later" issue for GPL-2.0
+      LICENSES: put spdx headers on the license files
+      rename "GPL-2.0+" to "GPL-2.0-or-later"
+      LICENSE: rename GPL-3.0.txt -> GPL-3.0-only.txt
+      usbhid-dump.8.in: add copyright information
+      .gitignore: add copyright and SPDX info
+      usbhid-dump: add copyright and SPDX info
+      SPDX header cleanups from GPL-2.0 -> GPL-2.0-only
+      usbutils.spdx: update with output of latest reuse tool
+
+Jonathan Neuschäfer (2):
+      lsusb: Fix spelling of bEndpointAddress in UVC
+      lsusb: Decode endpoint addresses in UVC
+
+Lukas Zaoral (3):
+      lsusb.c: fix leak in dump_printer_device
+      usb-devices: do not use `local` in a POSIX shell script
+      desc-defs.c: fix possible out-of-bound read
+
+Matthias Braun (1):
+      Fix typos in lsusb.8.in
+
+Ruslan Kabatsayev (5):
+      Fix locating endpoint when it's a directory rather than a symlink
+      Fix formatting of interface descriptors to match /sys/kernel/debug/usb/devices
+      Fix formatting of endpoint direction to match /sys/kernel/debug/usb/devices
+      Fix formatting of endpoint type to match /sys/kernel/debug/usb/devices
+      Fix formatting of max endpoint packet size to match /sys/kernel/debug/usb/devices
+
+Thomas Hebb (1):
+      lsusb: Fix buffer size copy/paste error
+
+Tormod Volden (1):
+      Makefile.am: Remove unused DATADIR
 
 
