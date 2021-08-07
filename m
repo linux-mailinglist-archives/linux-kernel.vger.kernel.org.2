@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1FB3E35CF
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 16:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAA23E35D3
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 16:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbhHGOKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 10:10:42 -0400
-Received: from mout.gmx.net ([212.227.15.18]:55143 "EHLO mout.gmx.net"
+        id S232370AbhHGONO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 10:13:14 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:49321 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232313AbhHGOKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 10:10:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628345415;
-        bh=2XyimEmEYl/lKBquM6tBAeYoKZJpmmbSuZhTtFJNPfQ=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=JAEdCpjTpcvxUtqH9t5WGPE93ZpRSGN77jaBFcDDpn3AQ9nSK+8dO/nFrsHU4iyDH
-         Dy0Roz/TZKSe3GTw8viANuw8LMGDDjqdO7sRvrb111Ss6YBeVIFqz4OMv4qoVr7CDc
-         jyoumrYrV29Dm+7EqgVMvJYVQpyGGHsSGw0C9+ug=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MHXFr-1mPrZH2nZ3-00DTpV; Sat, 07
- Aug 2021 16:10:14 +0200
-Date:   Sat, 7 Aug 2021 16:10:09 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Len Baker <len.baker@gmx.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-hardening@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/input: Remove all strcpy() uses in favor of
- strscpy()
-Message-ID: <20210807141009.GB2688@titan>
-References: <20210801144316.12841-1-len.baker@gmx.com>
- <20210801145959.GI22278@shell.armlinux.org.uk>
- <922b0d99b6397adc44761abaed12c019dc0b9e88.camel@perches.com>
- <4962ac72a94bc5826960dab855b5e2f47a4d1b9a.camel@perches.com>
- <202108020912.3807510B4B@keescook>
- <30984a540fb8e340c12e52054cdf7d6478b8b960.camel@perches.com>
+        id S232313AbhHGONN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 10:13:13 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Ghkny2kDXz64;
+        Sat,  7 Aug 2021 16:12:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1628345574; bh=n9RHvgmwO10yV+8X1TQ8vGLq8GhTf/p7Tzeh2jxUSzc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l5hp8JWxEvD+QSJfDmhc0TLdpdonbMHTGAAMYpnzH/O8IavaORIg1Zpz7rkxty5UO
+         nvWUbX0J7+xQFDdW8z32zbu6kMYHS87IBY6oJrEx9jHIPf9wgM4gAVcBHnG39n7Bt/
+         HGPK+CkYn89939fqjZs21QjlKzkYDUG7EEzwP8xvVCxxuYHvukcV+VfCpsJDs98mIh
+         jCw9/eb3RUSquX+O7YfroCVx1X49Lcw7F1lyGmchLMa0ywoCCuH7GqBLCf6Z9rcQGC
+         EQXwmzrAGwEuBgI1sWd185MdOlRwLgSyJ+egBOad3RuQ7JUVYxwd5lBMZ+y/IRGGke
+         gZa1T+12AhOPA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.2 at mail
+Date:   Sat, 7 Aug 2021 16:12:52 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        Kevin Liu <kliu5@marvell.com>,
+        Suneel Garapati <suneel.garapati@xilinx.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Al Cooper <alcooperx@gmail.com>
+Subject: Re: [PATCH v4 4/5] mmc: sdhci: move
+ SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN frequency limit
+Message-ID: <YQ6U5EeOPzCvLT8z@qmqm.qmqm.pl>
+References: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
+ <ff3907df3aa91f83a4a0a22b63d51bfe491ed039.1627204633.git.mirq-linux@rere.qmqm.pl>
+ <2cdb95f3-8943-715a-d3d7-804953e49786@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-In-Reply-To: <30984a540fb8e340c12e52054cdf7d6478b8b960.camel@perches.com>
-X-Provags-ID: V03:K1:ZDyRuhCSgMs++8d5awfaqKJBTxJVs4wIK4CaVmZFFcgvZo3+JNH
- JVsTnL949m6zxijXU+WNWKKhSkOXAB+0m1UvrdXOezJZ56WJJkkMuVE6r8UFebu918XBpoC
- 7a3lJ1m60uKxhKZhVapCdhBKfeTo9HsPpS68ibikj1+RNhKQ/1i4sITVUJ5/jHoIbyJ5DTQ
- YsW+ZuPBQBKB704ol1mcg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Apm4scjDcJ8=:expUrFCzODpmgOcIy7HXlX
- XpdnE0c/36E5WcocYptWAnyY2l2HZCr9A2ybzLvTHWNg8f7c69uUmEMJEUw6uIOoqDNF0pcm4
- Z8rhPzti5TjjV3KL7F2KaAereLZc+crt0ak8L8T49YmHbDGGLFR0hjpwmJ0nGRsFBHMKwM7MR
- cgJ6jvNUw+EP39Jvrge0rQU8MXlIO2t4DeUKVho8pWUcD9NwQURbbq6MghGLMhmCHEXevIVWS
- IHeCgBQ+/pme3H4kKsBiDFA4j3GgeO7YKzv5HEq+MZabcseseS+My0pcfKaR1RkodblDEleZY
- 3GEwhWHuXLkVHSyn1EpB47hrwUSmoHI6q5dE4bIhhYLo4bAOC7+DisXV2/xW1Qh2U9Gc9WhO8
- p21r4bGF3SbvbYBUtK++ZIwX4kjJqT4lajxHKbpRaDGXYRcu5dSD96Q5gVlyJxAU2z6trpv5+
- DWupr8dUbGALL6wofLUpMFsQRw7EKKAywYlshcrbkLWhEbZvdlD7q1tYRZdAuuo4Y1kSflPv0
- kfEFqKBqNvryPE1Uv3XnCOk2GYTY9IBPTDAiz+V9fIDM6GuIqIWZe7UGxXey117iOiZqpRqC6
- hphM7L6HDPfs3W1ItlN6DRO1Y/ZIetyw5hZkHWgjOZtVwYaq0Mj3xJYtGmDJJEiocaAHGuccw
- wWSkqmaQ4Zo7xLhwDZQvJH5W7wScLY1580nGeLlKK1gq+5IBL+q4bIIE0qL5f8OJ7m1yIN6QR
- KMgdzkesMiLP++RcwszuKwK4j+3lNMyGnxRdAcPLsR8qgjUQKEMKjVSXUi63wRbq4UqJW3XK8
- PTWRwpBHdhlsSMoomRYF1WXYTEyBnAviRjAx8rjLhBVkLQYgX/kh8toXB1LGH08iewdqaGYR4
- UZRXy1ZNcARW/orxvU1y3tc8cJku5waOzcyIYMA0VRiBKKf1PYeJy7UKzOJrxo2pAvp2IRyQe
- exuf8MvbbJhQqtlZ43fkb3/1aRsxQPsaaEW+EWgGJIHyk+eoMvqIYVG0PtmJ+VqYhlzCs/3bA
- XULSNCqC2Kp4BVAIZnQCfT7pRFO8qTX5mBpE7rE/RPEVFL74+Ak6Or5w+iBwc/GAJxAW2q+Fz
- Icpzed3X4xTE8PkdLZeKZH2g57h3sNe7vZlaQ8Pze/nb3U1KU3IT81TiA==
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2cdb95f3-8943-715a-d3d7-804953e49786@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe,
+On Wed, Aug 04, 2021 at 03:33:56PM +0300, Adrian Hunter wrote:
+> On 25/07/21 12:20 pm, Micha³ Miros³aw wrote:
+> > Push handling of clock frequency dependence for
+> > SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN quirk to the drivers that use it.
+> What is the max_clk dependency for, and why push it down?
 
-On Mon, Aug 02, 2021 at 11:57:40AM -0700, Joe Perches wrote:
-> On Mon, 2021-08-02 at 09:13 -0700, Kees Cook wrote:
-> > I'm wondering, instead, if we could convert strcpy() into this instead
-> > of adding another API? I.e. convert all the places that warn (if this
-> > were strcpy), and then land the conversion.
->
-> Perhaps not as strcpy is a builtin.
->
-> It might be easier as a cocci script.  Something like:
->
-> @@
-> char [] dest;
-> constant char [] src;
-> @@
->
-> *	strcpy(dest, src)
->
-> There are some additional test that needs to be added so that
-> only length(src) > length(dest) is reported.
->
-Thanks for the ideas. I will think on this.
+I guess this is a workaround for a hardware issue. When I wrote this,
+there was only a single user. Now I don't know if the second user got
+the limit by accident or just uses the flag not knowing it doesn't work
+as the quirk name suggests. IOW this makes it easier to fix in drivers
+if the limit is wrong or irrelevant. The dependency doesn't feel like
+it belongs to the generic driver anyway.
 
-Regards,
-Len
+[...]
+> > @@ -318,6 +317,9 @@ static int dwcmshc_rk3568_init(struct sdhci_host *host, struct dwcmshc_priv *dwc
+> >  	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_TXCLK);
+> >  	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_STRBIN);
+> >  
+> > +	if (sdhci_pltfm_clk_get_max_clock(host) <= 25000000)
+> > +		host->quirks2 |= SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN;
+> > +
+> >  	return 0;
+> >  }
+> >  
+> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> > index 0993f7d0ce8e..cfa314e659bc 100644
+> > --- a/drivers/mmc/host/sdhci.c
+> > +++ b/drivers/mmc/host/sdhci.c
+> > @@ -1905,8 +1905,7 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+> >  			/* Version 3.00 divisors must be a multiple of 2. */
+> >  			if (host->max_clk <= clock) {
+> >  				div = 1;
+> > -				if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
+> > -					&& host->max_clk <= 25000000)
+> > +				if (host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
+> >  					div = 2;
+> >  			} else {
+> >  				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
