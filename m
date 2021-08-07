@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10063E32F0
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 05:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579413E32F1
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 05:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhHGDSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 23:18:18 -0400
-Received: from mail-pl1-f173.google.com ([209.85.214.173]:41667 "EHLO
-        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230183AbhHGDSR (ORCPT
+        id S230340AbhHGDWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 23:22:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230183AbhHGDWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 23:18:17 -0400
-Received: by mail-pl1-f173.google.com with SMTP id z3so9665849plg.8
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 20:17:59 -0700 (PDT)
+        Fri, 6 Aug 2021 23:22:37 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EFDC0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 20:22:19 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id a20so9751303plm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 20:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Uh+LyNoJn+/C2qxN/x3CP3dUbi+uecXz/MsGDySkhoA=;
+        b=ezLH8i5/yWdbUs21lSN0rKfxHZB7O7tAd5eQJQRyAobRiL66KcFjnL2ZBGXl8YWgv7
+         PXBk6Ycu0WMVWrKYmXQ3nbaI5JuPCWaRNxpw69i4fCdhMW0oBaL0R3WJDDSbCesgT0MJ
+         KoDluNQr2axDHrchi654p8etEwXWUkUQgWoGq4cV51KW9zz+3V3GgEtHVWVtCACj3R3N
+         L0JsaoafAt2PKsHwkDfRSzOUbB068bK6Y692e7e/o/PFLfVoRMyHnyf/kqM/F7VuSkIj
+         Hk+Q7p4qV+a2zyYHwUoIENDULn7l1DL8z10Pw2E7FbM8RtGv4+7VFlejmUa6ZqGVmW08
+         vHlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=cpusoSOd4NknFaIppIZ9J2xjSzLfMAllzc1fhTnTH88=;
-        b=aesFGbXZtlrN3Bcn0cGSEq6WmlkDhxHwUWQvKyay2ulITcYm3JiRqUbEkaTieTg9l7
-         W1+ktz4sPrHPlSYOC6/16oOe2KsKnzuVka/y2fYEZHKHwOT8m1RCBWVbb/wRsbtaneqx
-         Bc39cW9gmgfULfkhI6G2UBr+nHfCUQW+35ypAFgyr4qGu+oQd+rds7XyU+k8NA03jKkK
-         T/BEw4Udkys3CPkKav63cwf2KpUFnPJdQBAZqhinyZ89nCaOotdqa9Rp8BXc/xL5+ltk
-         207xsKC8E9i7X1cMuiGPbduUrIwJN0Vwshqy6lWWc60pnslcFIIcqN/bkD1z5r7pSaxN
-         nUMw==
-X-Gm-Message-State: AOAM5328Ni7SdhUVWqq7Z5cDYRmkkfVWku7uxzmmr92sAvf2f/0h63UD
-        V+M+eHJlOatW7cscmDVGooeMxQepnEs=
-X-Google-Smtp-Source: ABdhPJwMsZxfX38sOMvnpOBG7SHArX3Jk6MChL1njYAf0axsREL1V2JqQdni+2L5zKIbzwYdqKUh1A==
-X-Received: by 2002:a05:6a00:1305:b029:347:676:d38f with SMTP id j5-20020a056a001305b02903470676d38fmr7912268pfu.39.1628306278737;
-        Fri, 06 Aug 2021 20:17:58 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:8305:dc99:b3ea:1aa2? ([2601:647:4000:d7:8305:dc99:b3ea:1aa2])
-        by smtp.gmail.com with ESMTPSA id v1sm14124799pgj.40.2021.08.06.20.17.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Aug 2021 20:17:58 -0700 (PDT)
-Subject: Re: [PATCH] lkdtm: move SCSI_DISPATCH_CMD to scsi_queue_rq
-To:     Kevin Mitchell <kevmitch@arista.com>
-Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hannes Reinecke <hare@suse.de>, linux-kernel@vger.kernel.org
-References: <20210806225905.417649-1-kevmitch@arista.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <b3c621ee-1729-e631-3dd5-3b4792dd1927@acm.org>
-Date:   Fri, 6 Aug 2021 20:17:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        bh=Uh+LyNoJn+/C2qxN/x3CP3dUbi+uecXz/MsGDySkhoA=;
+        b=XIrrULrCkOkOzOBoA4DLpF4fkFTEYCp4dffYD39EEvYJqmucGDZ/HE9XzpgOrgEdGF
+         fYap1s5TIBGlEcx5014j9o2fNjv5KH9+eZaoWVzQL86Az9lVkl8Tud/kGtyRmaZVXid1
+         liTlYbGnMckhOijZreek2LujmlcuT6cdpmz+pAvo4xxXlE6Kzb3xVG9lVU5YOJashVB4
+         sp5n6nhtDXJfxWdnLtYHyWiTuLPfTyNhxhIPGKdnkbzoRw1D/7kpQELIGc9rLT/ArrQj
+         dN2/jSQu3qoE7eQ3MgQtfrj9y76LtExo+D/cCrEHQCl7Us3ZQHXwkPUR5+YcfQH2C8Oe
+         LHdQ==
+X-Gm-Message-State: AOAM532D6UIU6xcKXVS8jXTe/q8zYnroPyq+9tUqCMoTSL1fwZTuFWAW
+        Szl16/pxn3+3cwLB3/L/vyY=
+X-Google-Smtp-Source: ABdhPJxYlV/B6KQ8XIFc8KckV2s869t7rvEHWhyHYWJ9BNBFNeTGgIQEAzTbbrEFuEuK4aEgh7D6Zg==
+X-Received: by 2002:a63:62c7:: with SMTP id w190mr626970pgb.55.1628306539357;
+        Fri, 06 Aug 2021 20:22:19 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id t8sm13950866pgh.18.2021.08.06.20.22.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Aug 2021 20:22:19 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yong.yiran@zte.com.cn
+To:     bskeggs@redhat.com
+Cc:     yong.yiran@zte.com.cn, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] drm/nouveau/nvenc: remove duplicate include in base.c
+Date:   Fri,  6 Aug 2021 20:20:54 -0700
+Message-Id: <20210807032054.642867-1-yong.yiran@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210806225905.417649-1-kevmitch@arista.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/6/21 3:59 PM, Kevin Mitchell wrote:
-> When scsi_dispatch_cmd was moved to scsi_lib.c and made static, some
-> compilers (i.e., at least gcc 8.4.0) decided to compile this
-> inline. This is a problem for lkdtm.ko, which needs to insert a kprobe
-> on this function for the SCSI_DISPATCH_CMD crashpoint.
-> 
-> Move this crashpoint one function up the call chain to
-> scsi_queue_rq. Though this is also a static function, it should never be
-> inlined because it is assigned as a structure entry. Therefore,
-> kprobe_register should always be able to find it. Since there is already
-> precedent for crashpoint names not exactly matching their probed
-> functions, keep the name of the crashpoint the same for backwards
-> compatibility.
-> 
-> Fixes: 82042a2cdb55 ("scsi: move scsi_dispatch_cmd to scsi_lib.c")
-> Signed-off-by: Kevin Mitchell <kevmitch@arista.com>
-> ---
->  drivers/misc/lkdtm/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
-> index 97803f213..2612f214d 100644
-> --- a/drivers/misc/lkdtm/core.c
-> +++ b/drivers/misc/lkdtm/core.c
-> @@ -81,7 +81,7 @@ static struct crashpoint crashpoints[] = {
->  	CRASHPOINT("FS_DEVRW",		 "ll_rw_block"),
->  	CRASHPOINT("MEM_SWAPOUT",	 "shrink_inactive_list"),
->  	CRASHPOINT("TIMERADD",		 "hrtimer_start"),
-> -	CRASHPOINT("SCSI_DISPATCH_CMD",	 "scsi_dispatch_cmd"),
-> +	CRASHPOINT("SCSI_DISPATCH_CMD",	 "scsi_queue_rq"),
->  	CRASHPOINT("IDE_CORE_CP",	 "generic_ide_ioctl"),
->  #endif
->  };
+From: yong yiran <yong.yiran@zte.com.cn>
 
-Please send SCSI patches to the linux-scsi mailing list. See also the
-MAINTAINERS file.
+'priv.h' included in 'base.c' is duplicated.
+Remove all but the first include of priv.h from base.c.
 
-Thanks,
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: yong yiran <yong.yiran@zte.com.cn>
+---
+ drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Bart.
-
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c b/drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c
+index c39e797dc7c9..cf5dcfda7b25 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/nvenc/base.c
+@@ -21,7 +21,6 @@
+  */
+ #include "priv.h"
+ 
+-#include "priv.h"
+ #include <core/firmware.h>
+ 
+ static void *
+-- 
+2.25.1
 
