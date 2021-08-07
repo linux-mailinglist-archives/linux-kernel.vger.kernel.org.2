@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863663E32D4
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 04:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4AC33E32D6
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 04:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhHGC4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 22:56:43 -0400
-Received: from mail-lf1-f53.google.com ([209.85.167.53]:41532 "EHLO
-        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhHGC4m (ORCPT
+        id S230212AbhHGC6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 22:58:35 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:50827 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230053AbhHGC6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 22:56:42 -0400
-Received: by mail-lf1-f53.google.com with SMTP id y34so21694844lfa.8;
-        Fri, 06 Aug 2021 19:56:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SZA1Bl+ATZQNgry7pTGV5hph7QyuNHAexwAUe0LexzI=;
-        b=MrBd715sDF9tIz5p1LZDDzMRxAgEiDGtwFI5jigm2+2u4QnCyglvVMzAcg2I+nIKM5
-         P63mU04ldG4g7n3NBlIWe/H2E2MhylTczHGk+fvbiBVKDP+7Aqz3eceoI4N7N0bpbQEO
-         8f5A1F2JK89iOjwz6fDJiVYFJcXNaPAO+T8F5aK3MCh8RwsSLA4zwwLhCam/FDe288Bl
-         +BroqvPj7EffdonQdx4LR3IkYW51JCJcnh8cbadWXCOg/fGsHQtLfMMjRypogktni9W4
-         F8GfUsE7Y9CvQIdhpZpOckGG0xkqei+dRFZic69sGzSv6AoXMkP8Xi89NlCA9AsVz152
-         DbGQ==
-X-Gm-Message-State: AOAM532AsHrxHDigrBdThl5pFkWtEIpJtTP0GxgA+9a19b9uutngejM3
-        AfQxyMKgD7+OBpi4jU2OTXT6xtsdsRTQipz3cBs=
-X-Google-Smtp-Source: ABdhPJz/t91QTCZCzTWtWAcjHFEIzJup0lUfnN7hVKllPSdszu2/NKGVQCpjd7pUDk+5nOMqL1NLHYkyCVTHclQYQMs=
-X-Received: by 2002:a05:6512:3456:: with SMTP id j22mr9411396lfr.635.1628304984230;
- Fri, 06 Aug 2021 19:56:24 -0700 (PDT)
+        Fri, 6 Aug 2021 22:58:34 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 14F2B5C0113;
+        Fri,  6 Aug 2021 22:58:18 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 06 Aug 2021 22:58:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=njDtMWRM16AJBu880
+        tPSeIqZ+blh8ZeYRYFeHbMBJM0=; b=IVi0R4gvN+iAOy0dn4tM5v9C3kak8VyaF
+        w56ao26LboMStQYVgPXWWPZ+hsXlC8w/4q8raTVTSMz43Y2s2PQzgUWGe+fn1GS6
+        aZYEXLQymZcodMZHB+eMXrdusz10i0nkV0Nl9fhYDS69ZtJbpWVHMhGAqhEpkjIA
+        tyeo0fORU7WFsW27vzmhdvOcVDHLrPUHVFI1zN11Psxe66FPAlGBybiqrxB7mUWI
+        jEy4OdmY2TU5DqAfpMORYIh6dysuGd91hQmRlLwSRow/2WQ/0WzoGye11KoNGsTS
+        stsuApc47+eiPU2LhKG34MI4BFEVQdVowjIyc9waAbElLL6Pp68VA==
+X-ME-Sender: <xms:yfYNYVqcj9KlzsqQZ0ATL4fJhTkRwdmFgRAfUoDR-jH05J97HGDFuw>
+    <xme:yfYNYXqKjCTPqajHeGbJzWJ21lGteQ_GTxdl7wsmQavIM2FruBOjzbeCoWpoQNuRV
+    ipWMMaf5nipF0MQJRo>
+X-ME-Received: <xmr:yfYNYSPqGECJIH05WgfbtOpGujvBA-xcr94TZhht7MmP6GQumv1riN96f0SH>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjedvgdeiudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehljhhonhgv
+    shdruggvvheqnecuggftrfgrthhtvghrnheplefflefhledthfdtveeugfevueeukeegte
+    eigfeihffgjedvtedvueevtdfhvdeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
+    rghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:yfYNYQ6PHiSGqcNg29qUbTEFsDdtGJLxpDyiGg-xm6ukufhwTaREPA>
+    <xmx:yfYNYU5BtRaVIWeZsg-ZUi5sgmmL1uZTay5MLIp6TsUCwKQ5Zc-7nw>
+    <xmx:yfYNYYh-p9xF6uaYJ5sizlgR623oH7XEV_Ah3vyn5iZ9y_-CshC6tg>
+    <xmx:yvYNYZgI_nhKQXBDnybyuDoG4s8-WewFcBP8QCd0wPsZx1XWVohadQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 6 Aug 2021 22:58:15 -0400 (EDT)
+From:   "Luke D. Jones" <luke@ljones.dev>
+To:     tiwai@suse.com
+Cc:     linux-kernel@vger.kernel.org, "Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH] ALSA: hda: Add quirk for ASUS Flow x13
+Date:   Sat,  7 Aug 2021 14:58:05 +1200
+Message-Id: <20210807025805.27321-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <cover.1627657061.git.rickyman7@gmail.com> <2b55c73f1c1738361d80349f1c67e5fe9cce7174.1627657061.git.rickyman7@gmail.com>
-In-Reply-To: <2b55c73f1c1738361d80349f1c67e5fe9cce7174.1627657061.git.rickyman7@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 6 Aug 2021 19:56:12 -0700
-Message-ID: <CAM9d7chTQG0QxntYArWdAOz1aCqyaxZecYszo2YTgS1yVC2NdA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 04/10] perf workqueue: add threadpool execute and
- wait functions
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 8:34 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
->
-> This patch adds:
->  - threadpool__execute: assigns a task to the threads to execute
->    asynchronously.
->  - threadpool__wait: waits for the task to complete on all threads.
-> Furthermore, testing for these new functions is added.
->
-> This patch completes the threadpool.
->
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-> ---
+The ASUS GV301QH sound appears to work well with the quirk for
+ALC294_FIXUP_ASUS_DUAL_SPK.
 
-[SNIP]
-> +/**
-> + * threadpool__wake_thread - send wake msg to @thread
-> + *
-> + * This function does not wait for the thread to actually wake
-> + * NB: call only from main thread!
-> + */
-> +static int threadpool__wake_thread(struct threadpool_entry *thread)
+Signed-off-by: Luke D Jones <luke@ljones.dev>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Same here.  You can pass pool and idx instead.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index ab5113cccffa..34f007946ad6 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8369,6 +8369,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x16e3, "ASUS UX50", ALC269_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1740, "ASUS UX430UA", ALC295_FIXUP_ASUS_DACS),
+ 	SND_PCI_QUIRK(0x1043, 0x17d1, "ASUS UX431FL", ALC294_FIXUP_ASUS_DUAL_SPK),
++	SND_PCI_QUIRK(0x1043, 0x1662, "ASUS GV301QH", ALC294_FIXUP_ASUS_DUAL_SPK),
+ 	SND_PCI_QUIRK(0x1043, 0x1881, "ASUS Zephyrus S/M", ALC294_FIXUP_ASUS_GX502_PINS),
+ 	SND_PCI_QUIRK(0x1043, 0x18b1, "Asus MJ401TA", ALC256_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x18f1, "Asus FX505DT", ALC256_FIXUP_ASUS_HEADSET_MIC),
+-- 
+2.31.1
 
-Thanks,
-Namhyung
-
-
-> +{
-> +       int res;
-> +       enum threadpool_msg msg = THREADPOOL_MSG__WAKE;
-> +
-> +       res = writen(thread->pipes.cmd[1], &msg, sizeof(msg));
-> +       if (res < 0) {
-> +               pr_debug2("threadpool: error sending wake msg: %s\n", strerror(errno));
-> +               return -THREADPOOL_ERROR__WRITEPIPE;
-> +       }
-> +
-> +       pr_debug2("threadpool: sent wake msg %s to tid=%d\n",
-> +               threadpool_msg_tags[msg], thread->tid);
-> +       return 0;
-> +}
-> +
