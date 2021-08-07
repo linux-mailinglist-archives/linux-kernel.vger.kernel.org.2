@@ -2,189 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3349E3E34F5
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A0E3E34DD
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbhHGKlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 06:41:07 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:42885 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232168AbhHGKkz (ORCPT
+        id S231970AbhHGKkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 06:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231810AbhHGKkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 06:40:55 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 27B4C5C00C2;
-        Sat,  7 Aug 2021 06:40:38 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sat, 07 Aug 2021 06:40:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=Qp4VJj+NKIDSj
-        eZFw5JMaaO480IDZOWJ/rCbso9rZuM=; b=n8n1OENGFMM1ISGNuNcKwEbG8abZS
-        lf55xNEoeMegxfTCU15BVplWRYaNb9Ob3yvgJhaTnazmL9KNvNHj9DFdsJHzqose
-        OxioFdc+LATtVJb2Icp843dpo762Q29lPrHcbvqgL0Mn6g5qftT4GDvLM79H7ABG
-        rNgYynfB2ngV/9UhUcZIwf67KpODj8foAf7B9tS9XkvRXQhbdC+aaGgRNdqAUSzL
-        BwkZADWaZIXpmU2nj5LSuJGdeQgp9Nu7zB9SNY1yMlGhjVopwswKxeMB5uRC27qi
-        DvT10tOENuQlI4evGb8BEFwYZxhTAPA27+m3c2IFXIRsR1CpFd7fM4Ytw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=Qp4VJj+NKIDSjeZFw5JMaaO480IDZOWJ/rCbso9rZuM=; b=POhy9Ilw
-        7zebkjLsSCxketXYd+mCSqIbBqQpc9QmhBwkbDhsesPgOR9rqI/zeTE8gAk8n8ie
-        V7N3SMmqnbratUlfNf6LDdvo1vqpcbEhpeaplACi/AM27qYYzysaTE9ZVON6zeh3
-        rPhGQ77VJMx/FiKuklLsma5g85YtcJeo5KKJ/rmCml5Pn+Lo13wsYwjQG39PXtGt
-        o4Yt2MkdCLppmCx58BJeJ0CCXTvmddNY3bbNBFugrUiOowj5KXA1MceIVRVFplD5
-        V6bVi11vMbdQQDjnE6TGFW9Y76cTNzg7dNTbRQxi0bvNiwlzp0jUwS0YHOnybrj0
-        kX5YnY2nrVraFg==
-X-ME-Sender: <xms:JmMOYfOxNYSoLTnwvaKNKEDp-sqG-hzWdMtzzc9o1ejxV25lsRa4Cw>
-    <xme:JmMOYZ8yt5Z_hmOVIulu_dz7XJod-RE3aC0Qvv_2ZFaIJi1Fl89ISU51h3VheXf1M
-    6NH8SiNS2VPnNJ1mpM>
-X-ME-Received: <xmr:JmMOYeS_b0fcwbcEDEURLlxg7guMds0pZ0zGfllDBixZl_l4HvRpZkzVHDCTojogv_48lja82QsXdQ4foDYBurv9hZl9cFkBldRjrNahmL0SEaoksw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeefgdefudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghi
-    rhesrghlihhsthgrihhrvdefrdhmvgeqnecuggftrfgrthhtvghrnhepgeegtdetjeekge
-    eguefgheeuvedugedvteejveeiudegvddtkeffkeehtdetudfhnecuvehluhhsthgvrhfu
-    ihiivgepudenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhrsegrlhhish
-    htrghirhdvfedrmhgv
-X-ME-Proxy: <xmx:JmMOYTv4DrQHhcHmKvbkFdlMx06bMOL4XGXxylgZ4CdQWBIwR3YXyQ>
-    <xmx:JmMOYXd3DFr8_97Bs1_JDboDbRdhl53mdvYn-oQn36-4nHd_58DjkA>
-    <xmx:JmMOYf1jPl8KqpC6yQLd3p3IHB1uC5UXNg9-lQ-gHKR1V0KQXxqd5Q>
-    <xmx:JmMOYZuiXjVcY8Q0CphtIY00AX4lsCXqGyJX84ylPEEvzRr5RMq7ig>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 7 Aug 2021 06:40:34 -0400 (EDT)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
-        broonie@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com, Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v10 11/11] ARM: dts: imx7d: remarkable2: Enable lcdif
-Date:   Sat,  7 Aug 2021 20:39:40 +1000
-Message-Id: <20210807103940.152-12-alistair@alistair23.me>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210807103940.152-1-alistair@alistair23.me>
-References: <20210807103940.152-1-alistair@alistair23.me>
+        Sat, 7 Aug 2021 06:40:03 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B537C0613CF;
+        Sat,  7 Aug 2021 03:39:46 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id n12-20020a05600c3b8cb029025a67bbd40aso10734696wms.0;
+        Sat, 07 Aug 2021 03:39:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rgT6F9Fb18vVOl521OU7qV6azJtURIM1TZ+H3/GGY1E=;
+        b=QRLIoEnBBGgIfVi3wYGMzXZVQEHFOUO/PmbETx4KldYY+Ow6vbiHefeizZMnYBJiQv
+         JmjDu/bNRuhzFbyCK1ISfBRV5TA9SseXomzKxsbUytT/gknKsqnXumNz/1Ozhx/JyhnF
+         iz1dnLW5BC03lEtLBcgV5Hyyy/AWc1K/2JQvI0Nn9n8QlNmvY3r24jeqSgsmyTd4z+Ol
+         BKFVNaw/yHObRw8maVcDlckUkaRJMPbSzJGwqJZDRZVCMDop0Is3QI4/dVJeUPco3YWk
+         FEkq+rcKAH1hUlfIen5EFmJIu60SRSN43RiyblJ0+BfGKGzNVn4AhIKzSTnyBbPOt6tt
+         d+Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rgT6F9Fb18vVOl521OU7qV6azJtURIM1TZ+H3/GGY1E=;
+        b=tJq7neB10XJMlHr6dGLZ1Dbw+HbKRR0gddQEU9LCjlOfGdXeb+6f4lEeUFwbxBqhPS
+         8fjUOe4n4dZKmA8chfT84bpnbiMO58Wnmh1P7ooiEAEOtDghycpPUVbCdbhXd/tMTmvv
+         wKPOWHWFnJTOMgktLZ8SbvAXEogz/zFMF8WRRxefDZB3D0T+CHyN7XGrnW/bgEXjosbU
+         u8/a79M6kYS1lJeeAmlXbtvk5Na1kH61N8U5GKoojJZMxuD+5Fm8cDu3SjHFJ02iTKJF
+         bKjiAvaKRbXigxbk9es6BQnpCUgY+LMWHPFX2B8RVFCp+ljzytQRDkt/TidLekTuVj8K
+         w6Cg==
+X-Gm-Message-State: AOAM531TkSJ9x15XvAz4xuX8ccXCNfrPmDQ5fkNrg7E9RmDaarwibIQ3
+        vM16ZVnWIMYV2rLcRdd4dCahiRFAlxxCVA==
+X-Google-Smtp-Source: ABdhPJykQ9Wb/QIEl/zUMSAdDXFlp2DHuRaiUrv5o16YXSZBU2NJ22rmyf+S/nV9SokIhmW9V48W0A==
+X-Received: by 2002:a05:600c:1ca4:: with SMTP id k36mr24526647wms.107.1628332785101;
+        Sat, 07 Aug 2021 03:39:45 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id l18sm2180461wmc.30.2021.08.07.03.39.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Aug 2021 03:39:44 -0700 (PDT)
+Date:   Sat, 7 Aug 2021 11:39:42 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/30] 5.10.57-rc1 review
+Message-ID: <YQ5i7uc3nZ19giKi@debian>
+References: <20210806081113.126861800@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806081113.126861800@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Connect the dispaly on the reMarkable2.
+Hi Greg,
 
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
----
- arch/arm/boot/dts/imx7d-remarkable2.dts | 74 +++++++++++++++++++++++++
- 1 file changed, 74 insertions(+)
+On Fri, Aug 06, 2021 at 10:16:38AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.57 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
+> Anything received after that time might be too late.
 
-diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts b/arch/arm/boot/dts/imx7d-remarkable2.dts
-index 2f0c4fda38a3..f89945dfd541 100644
---- a/arch/arm/boot/dts/imx7d-remarkable2.dts
-+++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
-@@ -47,6 +47,16 @@ reg_digitizer: regulator-digitizer {
- 		startup-delay-us = <100000>; /* 100 ms */
- 	};
- 
-+	reg_sdoe: regulator-sdoe {
-+		compatible = "regulator-fixed";
-+		regulator-name = "SDOE";
-+		pinctrl-names = "default", "sleep";
-+		pinctrl-0 = <&pinctrl_sdoe_reg>;
-+		pinctrl-1 = <&pinctrl_sdoe_reg>;
-+		gpio = <&gpio3 27 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
- 	wifi_pwrseq: wifi_pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		pinctrl-names = "default";
-@@ -55,6 +65,16 @@ wifi_pwrseq: wifi_pwrseq {
- 		clocks = <&clks IMX7D_CLKO2_ROOT_DIV>;
- 		clock-names = "ext_clock";
- 	};
-+
-+	panel {
-+		compatible = "eink,vb3300-kca";
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&display_out>;
-+			};
-+		};
-+	};
- };
- 
- &clks {
-@@ -113,6 +133,20 @@ reg_epdpmic: vcom {
- 	};
- };
- 
-+&lcdif {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_lcdif>;
-+	lcd-supply = <&reg_epdpmic>;
-+	lcd2-supply = <&reg_sdoe>;
-+	status = "okay";
-+
-+	port {
-+		display_out: endpoint {
-+			remote-endpoint = <&panel_in>;
-+		};
-+	};
-+};
-+
- &snvs_pwrkey {
- 	status = "okay";
- };
-@@ -227,6 +261,46 @@ MX7D_PAD_I2C4_SCL__I2C4_SCL		0x4000007f
- 		>;
- 	};
- 
-+	pinctrl_lcdif: lcdifgrp {
-+		fsl,pins = <
-+			MX7D_PAD_LCD_DATA00__LCD_DATA0		0x79
-+			MX7D_PAD_LCD_DATA01__LCD_DATA1		0x79
-+			MX7D_PAD_LCD_DATA02__LCD_DATA2		0x79
-+			MX7D_PAD_LCD_DATA03__LCD_DATA3		0x79
-+			MX7D_PAD_LCD_DATA04__LCD_DATA4		0x79
-+			MX7D_PAD_LCD_DATA05__LCD_DATA5		0x79
-+			MX7D_PAD_LCD_DATA06__LCD_DATA6		0x79
-+			MX7D_PAD_LCD_DATA07__LCD_DATA7		0x79
-+			MX7D_PAD_LCD_DATA08__LCD_DATA8		0x79
-+			MX7D_PAD_LCD_DATA09__LCD_DATA9		0x79
-+			MX7D_PAD_LCD_DATA10__LCD_DATA10		0x79
-+			MX7D_PAD_LCD_DATA11__LCD_DATA11		0x79
-+			MX7D_PAD_LCD_DATA12__LCD_DATA12		0x79
-+			MX7D_PAD_LCD_DATA13__LCD_DATA13		0x79
-+			MX7D_PAD_LCD_DATA14__LCD_DATA14		0x79
-+			MX7D_PAD_LCD_DATA15__LCD_DATA15		0x79
-+
-+			MX7D_PAD_LCD_DATA17__LCD_DATA17		0x79
-+			MX7D_PAD_LCD_DATA18__LCD_DATA18		0x79
-+			MX7D_PAD_LCD_DATA19__LCD_DATA19		0x79
-+			MX7D_PAD_LCD_DATA20__LCD_DATA20		0x79
-+			MX7D_PAD_LCD_DATA21__LCD_DATA21		0x79
-+
-+			MX7D_PAD_LCD_DATA23__LCD_DATA23		0x79
-+			MX7D_PAD_LCD_CLK__LCD_CLK		0x79
-+			MX7D_PAD_LCD_ENABLE__LCD_ENABLE		0x79
-+			MX7D_PAD_LCD_VSYNC__LCD_VSYNC		0x79
-+			MX7D_PAD_LCD_HSYNC__LCD_HSYNC		0x79
-+			MX7D_PAD_LCD_RESET__LCD_RESET		0x79
-+		>;
-+	};
-+
-+	pinctrl_sdoe_reg: sdoereggrp {
-+		fsl,pins = <
-+			MX7D_PAD_LCD_DATA22__GPIO3_IO27		0x74
-+		>;
-+	};
-+
- 	pinctrl_uart1: uart1grp {
- 		fsl,pins = <
- 			MX7D_PAD_UART1_TX_DATA__UART1_DCE_TX	0x79
--- 
-2.31.1
+Build test:
+mips (gcc version 11.1.1 20210723): 63 configs -> no failure
+arm (gcc version 11.1.1 20210723): 105 configs -> no new failure
+arm64 (gcc version 11.1.1 20210723): 3 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
 
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+arm64: Booted on rpi4b (4GB model). No regression. [2]
+
+[1]. https://openqa.qa.codethink.co.uk/tests/11
+[2]. https://openqa.qa.codethink.co.uk/tests/12
+
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
