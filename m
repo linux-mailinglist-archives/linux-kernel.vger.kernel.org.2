@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F3E3E33F4
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 09:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7713E33F6
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 09:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhHGHYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 03:24:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbhHGHYg (ORCPT
+        id S231553AbhHGHZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 03:25:33 -0400
+Received: from smtpbg511.qq.com ([203.205.250.109]:43487 "EHLO
+        smtpbg511.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231375AbhHGHZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 03:24:36 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AFAC061799;
-        Sat,  7 Aug 2021 00:24:16 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id h14so13955479wrx.10;
-        Sat, 07 Aug 2021 00:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=R7ftxM96YAq/VWL5+bWMfsnR3bh1EBHc546zzPpFbiU=;
-        b=sZLLxwEWV9J5yunhWg5//rALHj1gZZePQ7WsHujX4g9G03lxTND/mt4PkF5sMPYH+Q
-         hrgWKrSW1DcTIfVsl9klcZlPu6SEvoffobF9yNgm6Irnj44wOP42jOqSb5bPnac+BZnN
-         IRjOIDOKn71LkpnDNl0UW224yDmIxUMxp6xzQ2027jrwrKGbknmOXkMmXHM1qDQ5e6f6
-         Rhc/XiJO1j6Ftsx+WQU6RG9WcVRJZ9xnPcOW09YrDiKXmYjDr/Z6QswQVVjs1k2Vhs4n
-         ttQMkVrb1tTGHBJENXW4N1QwKjQ0uRedyOxjyFohwu5uoxsFKLQ/rTIpceY8vFlM/ch+
-         pi/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=R7ftxM96YAq/VWL5+bWMfsnR3bh1EBHc546zzPpFbiU=;
-        b=Hi0MAPTk7bO2IZK8YeGzVSuVjTTMFTPRa+0KMbJq+cvnHqoXCbz8mXpFOuib6amN+j
-         d+X5IHH8UQmbs3WPrAILYfzfk5gHNm2sNheiPzkekdLtZ9/2E5RRvMe3BhyBASML7QED
-         91pi7vUycVQeHt4BgzwK+LNhOzTGpULE8kThOByPjHbqOa5cjyJoENOr3oGPj//ycoom
-         ZjSdR6rAWv0pW7C/u6MPJJ7+N6QT4octdYoQDHyPNqbm9d481ca8UwxdUxuGm3OKdg8G
-         oZ0XkUkdsAiAey3FOMLbGZ2Ysvp0RoTq54kVQvQ7ZlWcR8zSEoi/QNoVzp8dZRQRtuQi
-         i8gA==
-X-Gm-Message-State: AOAM530K7DRAKXZZJ4aV0KTVjm0/ZPOa9+32bHLL1k9eqAcLraAYremk
-        NJXinMWze+zE1eBYiZdYpGc=
-X-Google-Smtp-Source: ABdhPJwNGEq+ZFP/ntg1NMH8/P4Ab2bebvv/2QrPdAwubsH8gqoIAFfnziwWMZ31+U5xcL5/IR4Xtw==
-X-Received: by 2002:a5d:5147:: with SMTP id u7mr14634265wrt.181.1628321054751;
-        Sat, 07 Aug 2021 00:24:14 -0700 (PDT)
-Received: from localhost.localdomain (10.red-83-57-27.dynamicip.rima-tde.net. [83.57.27.10])
-        by smtp.gmail.com with ESMTPSA id g5sm13915017wmh.31.2021.08.07.00.24.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 07 Aug 2021 00:24:14 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     tsbogend@alpha.franken.de
-Cc:     bhelgaas@google.com, matthias.bgg@gmail.com,
-        gregkh@linuxfoundation.org, linux-mips@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-staging@lists.linux.dev,
-        neil@brown.name, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] staging: mt7621-pci: set end limit for 'ioport_resource'
-Date:   Sat,  7 Aug 2021 09:24:09 +0200
-Message-Id: <20210807072409.9018-4-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210807072409.9018-1-sergio.paracuellos@gmail.com>
-References: <20210807072409.9018-1-sergio.paracuellos@gmail.com>
+        Sat, 7 Aug 2021 03:25:32 -0400
+X-Greylist: delayed 610 seconds by postgrey-1.27 at vger.kernel.org; Sat, 07 Aug 2021 03:25:31 EDT
+X-QQ-mid: bizesmtp33t1628321103t79kuz7l
+Received: from localhost.localdomain (unknown [125.69.42.194])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Sat, 07 Aug 2021 15:25:02 +0800 (CST)
+X-QQ-SSF: 01000000002000B0C000B00A0000000
+X-QQ-FEAT: FsG0r2mBeluv3Zd9YWfYoh+AeeQRy3mwRvhGF/vi0SQ8PvrFHvtPsenqipt2u
+        nQYQ+mvnRsp2/+RsuU7KsxD8TtXzL8kT+dqidTfLRsmt1rX95RGtB+NEiGUglWXK9n16Rhu
+        OQfdZE/gWhHz9bJ0HRmy6nxoeU4+bBKiHmoeuezT9zzJNtmJx8SI/3KUmWu9nDhnMR0z9EF
+        0i6USB7MTzzX9TapcAP9dqZCCpK0vxbCruZzhEFH8Hugwj1E9hC2ikRbcKarFxppoAj92ec
+        KKyjCMDeIRV7pdT7FwboFQUHLzJXP29NxEsPvbZ7dFJBMbvhgUm+gdfljv55DCegSwVd7gl
+        8/LEMVK
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     ley.foon.tan@intel.com
+Cc:     akpm@linux-foundation.org, wangkefeng.wang@huawei.com,
+        wangborong@cdjrlc.com, andreas.oetken@siemens.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] nios2: use strscpy to replace strlcpy
+Date:   Sat,  7 Aug 2021 15:24:31 +0800
+Message-Id: <20210807072431.66478-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgforeign:qybgforeign7
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have increase IO_SPACE_LIMIT for ralink platform to get PCI IO resources
-properly handled using PCI core APIs. To align those changes with driver
-code we have to set 'ioport_resource' end limit to IO_SPACE_LIMIT to avoid
-errors.
+The strlcpy should not be used because it doesn't limit the source
+length. As linus says, it's a completely useless function if you
+can't implicitly trust the source string - but that is almost always
+why people think they should use it! All in all the BSD function
+will lead some potential bugs.
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+But the strscpy doesn't require reading memory from the src string
+beyond the specified "count" bytes, and since the return value is
+easier to error-check than strlcpy()'s. In addition, the implementation
+is robust to the string changing out from underneath it, unlike the
+current strlcpy() implementation.
+
+Thus, We prefer using strscpy instead of strlcpy.
+
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 ---
- drivers/staging/mt7621-pci/pci-mt7621.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/nios2/kernel/setup.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/mt7621-pci/pci-mt7621.c b/drivers/staging/mt7621-pci/pci-mt7621.c
-index 691030e1a5ed..6301397c3987 100644
---- a/drivers/staging/mt7621-pci/pci-mt7621.c
-+++ b/drivers/staging/mt7621-pci/pci-mt7621.c
-@@ -522,6 +522,8 @@ static int mt7621_pci_probe(struct platform_device *pdev)
- 	if (!dev->of_node)
- 		return -ENODEV;
+diff --git a/arch/nios2/kernel/setup.c b/arch/nios2/kernel/setup.c
+index cf8d687a2644..02fe70b6d78e 100644
+--- a/arch/nios2/kernel/setup.c
++++ b/arch/nios2/kernel/setup.c
+@@ -121,7 +121,7 @@ asmlinkage void __init nios2_boot_init(unsigned r4, unsigned r5, unsigned r6,
+ 		dtb_passed = r6;
  
-+	ioport_resource.end = IO_SPACE_LIMIT;
-+
- 	bridge = devm_pci_alloc_host_bridge(dev, sizeof(*pcie));
- 	if (!bridge)
- 		return -ENOMEM;
+ 		if (r7)
+-			strlcpy(cmdline_passed, (char *)r7, COMMAND_LINE_SIZE);
++			strscpy(cmdline_passed, (char *)r7, COMMAND_LINE_SIZE);
+ 	}
+ #endif
+ 
+@@ -129,10 +129,10 @@ asmlinkage void __init nios2_boot_init(unsigned r4, unsigned r5, unsigned r6,
+ 
+ #ifndef CONFIG_CMDLINE_FORCE
+ 	if (cmdline_passed[0])
+-		strlcpy(boot_command_line, cmdline_passed, COMMAND_LINE_SIZE);
++		strscpy(boot_command_line, cmdline_passed, COMMAND_LINE_SIZE);
+ #ifdef CONFIG_NIOS2_CMDLINE_IGNORE_DTB
+ 	else
+-		strlcpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
++		strscpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+ #endif
+ #endif
+ 
 -- 
-2.25.1
+2.32.0
+
+
 
