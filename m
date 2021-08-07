@@ -2,162 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934E33E3278
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 03:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482C23E327B
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 03:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhHGBB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 21:01:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59326 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229713AbhHGBBx (ORCPT
+        id S229863AbhHGBDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 21:03:39 -0400
+Received: from pv50p00im-zteg10011501.me.com ([17.58.6.42]:59288 "EHLO
+        pv50p00im-zteg10011501.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229512AbhHGBDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 21:01:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628298096;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=ZHKTu8mLlmvqP5/EG23Ge70ypLYDuqHlMFMJ1YrpXI0=;
-        b=NTprtnqJq+rMGbrwcQYM/coCLmchoEE+z3qsS8UUbdI79QpvchaPnV0hkToNvlRtjNDOfn
-        QH4Ut5+M6RLzZ9NkrvGOw0boyzLgR7O45W2Cq2D6BBqTK5xKH6qxB0V1Z3YKaOtf+DaBgg
-        elsFRPVnUJhLGUjlMuCKf+vfcrNumWM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-364-MLtUEOIENFu489mkHhdK6w-1; Fri, 06 Aug 2021 21:01:32 -0400
-X-MC-Unique: MLtUEOIENFu489mkHhdK6w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7374F801AE7;
-        Sat,  7 Aug 2021 01:01:30 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C8EF119CBA;
-        Sat,  7 Aug 2021 01:01:23 +0000 (UTC)
-Date:   Sat, 7 Aug 2021 03:01:23 +0200
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Josh Don <joshdon@google.com>, Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Dmitry V. Levin" <ldv@strace.io>, linux-doc@vger.kernel.org,
-        linux-api@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH] uapi: expose enum pid_type
-Message-ID: <20210807010123.GA5174@asgard.redhat.com>
+        Fri, 6 Aug 2021 21:03:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1628298202; bh=32oK1hrFCRUgWXFrkZdy+s7tZTvaBZCtulRTSPPphyo=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=twrXvJZSQyvONOmxI623LS+G1LNIgReTAfIgwDBkiBAmGSiZjTDIT60vKs5BlPD/Z
+         NLIGdr5iYaKSLI0f/ApTzomgP4ZwOn4Oz9DN7/dLYZM2dtuHnZod8FFPkYqdhmD0zU
+         OaA8AVgZsY0ZwEpEdVSBR00H9ELrus9kkmpKjomqS30neefHytW8oan/CIT38PrBhg
+         o0MCzsUTmcv5OONvD1k6XJou0Wd71DBlFhKEYfc9xJkr8UvEpqL8R9/1G4pNHPaGHE
+         Em6HxqODAY+p2hcadK626+gQs+iX6dQWkmLEKvt/0u7MZ89EPitb7roaFuAMfdQMeF
+         F/K666fueZk6w==
+Received: from xiongwei.. (unknown [120.245.2.134])
+        by pv50p00im-zteg10011501.me.com (Postfix) with ESMTPSA id 268B5B003BD;
+        Sat,  7 Aug 2021 01:03:17 +0000 (UTC)
+From:   sxwjean@me.com
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     oleg@redhat.com, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, christophe.leroy@csgroup.eu, npiggin@gmail.com,
+        ravi.bangoria@linux.ibm.com, aneesh.kumar@linux.ibm.com,
+        efremov@linux.com, linux-kernel@vger.kernel.org,
+        Xiongwei Song <sxwjean@gmail.com>
+Subject: [PATCH v2 0/4] Some improvements on regs usage
+Date:   Sat,  7 Aug 2021 09:02:35 +0800
+Message-Id: <20210807010239.416055-1-sxwjean@me.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-06_08:2021-08-06,2021-08-06 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=787 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2108070004
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 7ac592aa35a684ff ("sched: prctl() core-scheduling interface")
-made use of enum pid_type in prctl's arg4; this type and the associated
-enumeration definitions are not exposed to userspace.  Try to fix that
-by providing enum _kernel_pid_type and tying in-kernel enum pid_type
-definitions to it.  Note that enum pid_type cannot be exposed as is,
-since "enum pid_type" is already exists in various projects [1] (notably
-gcc and strace), and "enum __pid_type" is defined by glibc and uclibc
-for fcntl(F_SETOWN_EX) owner ID type.
+From: Xiongwei Song <sxwjean@gmail.com>
 
-[1] https://codesearch.debian.net/search?q=enum+pid_type
+When CONFIG_4xx=y or CONFIG_BOOKE=y, currently in code we reference dsisr
+to get interrupt reasons and reference dar to get excepiton address.
+However, in reference manuals, esr is used for interrupt reasons and dear
+is used for excepiton address, so the patchset changes dsisr -> esr,
+dar -> dear for CONFIG_4xx=y or CONFIG_BOOKE=y.
 
-Complements: 7ac592aa35a684ff ("sched: prctl() core-scheduling interface")
-Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
----
- .../admin-guide/hw-vuln/core-scheduling.rst          |  7 ++++---
- include/linux/pid.h                                  | 12 +++++++-----
- include/uapi/linux/pid.h                             | 20 ++++++++++++++++++++
- include/uapi/linux/prctl.h                           |  1 +
- 4 files changed, 32 insertions(+), 8 deletions(-)
- create mode 100644 include/uapi/linux/pid.h
+Meanwhile, we use _ESR and _DEAR to get offsets of esr and dear on stack.
 
-diff --git a/Documentation/admin-guide/hw-vuln/core-scheduling.rst b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
-index 7b410ae..3eb2b7c 100644
---- a/Documentation/admin-guide/hw-vuln/core-scheduling.rst
-+++ b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
-@@ -61,9 +61,10 @@ arg3:
-     ``pid`` of the task for which the operation applies.
- 
- arg4:
--    ``pid_type`` for which the operation applies. It is of type ``enum pid_type``.
--    For example, if arg4 is ``PIDTYPE_TGID``, then the operation of this command
--    will be performed for all tasks in the task group of ``pid``.
-+    ``pid_type`` for which the operation applies. It is of type
-+    ``enum __kernel_pid_type``.  For example, if arg4 is ``__PIDTYPE_TGID``,
-+    then the operation of this command will be performed for all tasks
-+    in the task group of ``pid``.
- 
- arg5:
-     userspace pointer to an unsigned long for storing the cookie returned by
-diff --git a/include/linux/pid.h b/include/linux/pid.h
-index fa10acb..f8ca4c9 100644
---- a/include/linux/pid.h
-+++ b/include/linux/pid.h
-@@ -5,14 +5,16 @@
- #include <linux/rculist.h>
- #include <linux/wait.h>
- #include <linux/refcount.h>
-+#include <uapi/linux/pid.h>
- 
- enum pid_type
- {
--	PIDTYPE_PID,
--	PIDTYPE_TGID,
--	PIDTYPE_PGID,
--	PIDTYPE_SID,
--	PIDTYPE_MAX,
-+	PIDTYPE_PID = __PIDTYPE_PID,
-+	PIDTYPE_TGID = __PIDTYPE_TGID,
-+	PIDTYPE_PGID = __PIDTYPE_PGID,
-+	PIDTYPE_SID = __PIDTYPE_SID,
-+
-+	PIDTYPE_MAX = __PIDTYPE_MAX
- };
- 
- /*
-diff --git a/include/uapi/linux/pid.h b/include/uapi/linux/pid.h
-new file mode 100644
-index 0000000..91d08e4
---- /dev/null
-+++ b/include/uapi/linux/pid.h
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _UAPI_LINUX_PID_H
-+#define _UAPI_LINUX_PID_H
-+
-+/*
-+ * Type of process-related ID.  So far, it is used only for prctl(PR_SCHED_CORE);
-+ * not to be confused with type field of f_owner_ex structure argument
-+ * of fcntl(F_SETOWN_EX).
-+ */
-+enum __kernel_pid_type
-+{
-+	__PIDTYPE_PID,
-+	__PIDTYPE_TGID,
-+	__PIDTYPE_PGID,
-+	__PIDTYPE_SID,
-+
-+	__PIDTYPE_MAX /* Non-UAPI */
-+};
-+
-+#endif /* _UAPI_LINUX_PID_H */
-diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-index 967d9c5..4e794aa 100644
---- a/include/uapi/linux/prctl.h
-+++ b/include/uapi/linux/prctl.h
-@@ -3,6 +3,7 @@
- #define _LINUX_PRCTL_H
- 
- #include <linux/types.h>
-+#include <linux/pid.h> /* enum __kernel_pid_type */
- 
- /* Values to pass as first argument to prctl() */
- 
+v2:
+ - Discard changes in arch/powerpc/mm/fault.c as Christophe and Michael
+   suggested.
+ - Discard changes in UAPI headers to avoid possible compile issue.
+
+v1:
+ - https://lkml.org/lkml/2021/8/6/57
+ - https://lkml.org/lkml/2021/7/26/533
+ - https://lkml.org/lkml/2021/7/26/534
+ - https://lkml.org/lkml/2021/7/26/535
+
+Xiongwei Song (4):
+  powerpc: Optimize register usage for esr register
+  powerpc/64e: Get esr offset with _ESR macro
+  powerpc: Optimize register usage for dear register
+  powerpc/64e: Get dear offset with _DEAR macro
+
+ arch/powerpc/include/asm/ptrace.h          | 10 ++++++++--
+ arch/powerpc/kernel/asm-offsets.c          | 15 ++++-----------
+ arch/powerpc/kernel/exceptions-64e.S       | 18 +++++++++---------
+ arch/powerpc/kernel/process.c              |  2 +-
+ arch/powerpc/kernel/ptrace/ptrace.c        |  4 ++++
+ arch/powerpc/kernel/traps.c                |  2 +-
+ arch/powerpc/platforms/44x/machine_check.c |  4 ++--
+ arch/powerpc/platforms/4xx/machine_check.c |  2 +-
+ 8 files changed, 30 insertions(+), 27 deletions(-)
+
 -- 
-2.1.4
+2.30.2
 
