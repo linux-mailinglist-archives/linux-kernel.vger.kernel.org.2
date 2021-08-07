@@ -2,68 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA783E34D3
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC9C3E34CB
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbhHGKhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 06:37:17 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7806 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbhHGKgg (ORCPT
+        id S231962AbhHGKdG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 7 Aug 2021 06:33:06 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:54603 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231931AbhHGKdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 06:36:36 -0400
-Received: from dggeme768-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ghdzr0N6dzYhPP;
-        Sat,  7 Aug 2021 18:36:08 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- dggeme768-chm.china.huawei.com (10.3.19.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sat, 7 Aug 2021 18:36:17 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <liulongfang@huawei.com>
-Subject: [PATCH 5/5] crypto: hisilicon - check _PS0 and _PR0 method
-Date:   Sat, 7 Aug 2021 18:32:36 +0800
-Message-ID: <1628332356-33278-6-git-send-email-qianweili@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1628332356-33278-1-git-send-email-qianweili@huawei.com>
-References: <1628332356-33278-1-git-send-email-qianweili@huawei.com>
+        Sat, 7 Aug 2021 06:33:03 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id C80EB60002;
+        Sat,  7 Aug 2021 10:32:44 +0000 (UTC)
+Date:   Sat, 7 Aug 2021 12:32:43 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     <richard@nod.at>, <vigneshr@ti.com>, <bbrezillon@kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>
+Subject: Re: [PATCH 1/2] mtd: mtdconcat: Judge callback function existence
+ getting from master for each partition
+Message-ID: <20210807123243.7661e4e3@xps13>
+In-Reply-To: <27c67e42-f275-fc50-64e5-d80233130f7e@huawei.com>
+References: <20210731023243.3977104-1-chengzhihao1@huawei.com>
+        <20210731023243.3977104-2-chengzhihao1@huawei.com>
+        <20210806212857.240e0c1f@xps13>
+        <27c67e42-f275-fc50-64e5-d80233130f7e@huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme768-chm.china.huawei.com (10.3.19.114)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To support runtime PM, use the function 'pci_set_power_state' to change
-the power state. Therefore, method _PS0 or _PR0 needs to be filled by
-platform. So check whether the method is supported, if not, print a
-prompt information.
+Hi Zhihao,
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Zhihao Cheng <chengzhihao1@huawei.com> wrote on Sat, 7 Aug 2021
+10:15:46 +0800:
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index e29ff97..369562d 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -3282,6 +3282,10 @@ static void hisi_qm_pre_init(struct hisi_qm *qm)
- 	init_rwsem(&qm->qps_lock);
- 	qm->qp_in_used = 0;
- 	qm->misc_ctl = false;
-+	if (qm->fun_type == QM_HW_PF && qm->ver > QM_HW_V2) {
-+		if (!acpi_device_power_manageable(ACPI_COMPANION(&pdev->dev)))
-+			dev_info(&pdev->dev, "_PS0 and _PR0 are not defined");
-+	}
- }
- 
- static void qm_cmd_uninit(struct hisi_qm *qm)
--- 
-2.8.1
+> 在 2021/8/7 3:28, Miquel Raynal 写道:
+> Hi Miquel,
+> > Hi Zhihao,
+> >
+> > Zhihao Cheng <chengzhihao1@huawei.com> wrote on Sat, 31 Jul 2021
+> > 10:32:42 +0800:
+> > @@ -721,14 +724,15 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+> >   				    subdev[i]->flags & MTD_WRITEABLE;
+> >   		}  
+> >   > +		subdev_master = mtd_get_master(subdev[i]);  
+> >   		concat->mtd.size += subdev[i]->size;
+> >   		concat->mtd.ecc_stats.badblocks +=
+> >   			subdev[i]->ecc_stats.badblocks;
+> >   		if (concat->mtd.writesize   !=  subdev[i]->writesize ||
+> >   		    concat->mtd.subpage_sft != subdev[i]->subpage_sft ||
+> >   		    concat->mtd.oobsize    !=  subdev[i]->oobsize ||
+> > -		    !concat->mtd._read_oob  != !subdev[i]->_read_oob ||
+> > -		    !concat->mtd._write_oob != !subdev[i]->_write_oob) {
+> > +		    !concat->mtd._read_oob  != !subdev_master->_read_oob ||
+> > +		    !concat->mtd._write_oob != !subdev_master->_write_oob) {
+> > Do you really need this change?  
+> 
+> I think both "!concat->mtd._read_oob != !subdev[i]->_read_oob" and "!concat->mtd._write_oob != !subdev[i]->_write_oob" need to be modified otherwise concatenating goes failure.
+> 
+> I thought there exists two problems:
+> 
+>    1. Wrong callback fetching in mtd partition device
+> 
+>    2. Warning for existence of _read and _read_oob at the same time
+> 
+> so I solved them in two steps to make history commit logs a bit clear.
+> 
+> Though these two patches can be combined to one.
 
+No please keep the split.
+
+What I mean here is that I don't think your fix is valid. Maybe we
+should propagate these callbacks as well instead of trying to hack into
+this condition. I don't see why you should check against subdev[i] for
+half of the callbacks and check for subdev_master for the last two.
+
+
+Thanks,
+Miquèl
