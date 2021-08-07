@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 583C03E3789
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 01:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457253E378F
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 01:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbhHGXIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 19:08:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhHGXIv (ORCPT
+        id S229904AbhHGXU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 19:20:58 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:34213 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229797AbhHGXU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 19:08:51 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824C9C061760;
-        Sat,  7 Aug 2021 16:08:32 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id oz16so5864525ejc.7;
-        Sat, 07 Aug 2021 16:08:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=blzJOizjsPK/xLHnGPayAC6ZePiXUNZMaLQXscMfUtI=;
-        b=YUUvoZracUWO6JaLAKHvZzf+ENOGTLjRKI+Ac2+XSDun+ReWYIqKE7sr7QuHrgUpns
-         jhoCvOf82vGK8kB1IiuSoFrkF0c5BFQFRNzH9nzd2Fx6U/idyt1LOX0ouGmwy44XKu8t
-         c8u1luBO61/7Wwezg2mdvB60kO1u+9CWBfw1gc79TbbzRE/g8ZxinPz3AmTmtI9/Xd8g
-         SOK4rjez+GshOZJmorE8jeBovYHrRTwIlOYvZpy99E7K0U5yY3mGRO/0IGJKxOPhnkzb
-         qKmk7j67TFLL/Bnik3mbEaVUf9l1tFdu880hOCtu0XnumBGYZcOFxUo5PtXHBRTJHFYn
-         wfGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=blzJOizjsPK/xLHnGPayAC6ZePiXUNZMaLQXscMfUtI=;
-        b=QFCRgF8Us41a+BbLDj5FqGaTaReBl0f+FFocqKapNyFeBeQY4yBj65jbyVC/EqjqLr
-         Wl+4RVArniZaiot1QsVJroXJyYXzCezzEejqOzmKFXvWZ+7Uqayhjsx9OqKjZ5TGHpcE
-         GAFcKn38Z+eTqHYz6PkqslG93Fpc83DKTLfyEbbZVSBhxTtYPbM3qe134Ly8E57zLJwD
-         PakBD2rVZ6Vd9CX3kPz4o/07r+P5EF0QFvdFCMi4ZMdX8RUAQXciG5UXGl/+H0ZAld0K
-         6pCo+bThcgAPH7BoaQdBEgS914gL2DHCgtLxbCBfTGrFyhbiL6DfsuHdC7MpyRoSkwRL
-         1fWg==
-X-Gm-Message-State: AOAM532VJoncig3h4GD2+p5t5/mfnzhfm9a8esS0dWduq/CseMPT1O5n
-        bxDlfyxw1TkMgGO1l+6TMYs=
-X-Google-Smtp-Source: ABdhPJz9tOJeddhC9/Iv/oIDZ5V/HZpoEgCQKHCsFS8O6WSA8A9/e9hFCnPpkXEX6e2he6zoR/v0fw==
-X-Received: by 2002:a17:907:3e1b:: with SMTP id hp27mr16254693ejc.116.1628377710897;
-        Sat, 07 Aug 2021 16:08:30 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id v20sm4212798ejq.17.2021.08.07.16.08.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Aug 2021 16:08:30 -0700 (PDT)
-Date:   Sun, 8 Aug 2021 02:08:29 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH net-next v3 5/6] net: dsa: qca: ar9331: add bridge support
-Message-ID: <20210807230829.m3eymcwucjtyrgew@skbuf>
-References: <20210802131037.32326-1-o.rempel@pengutronix.de>
- <20210802131037.32326-6-o.rempel@pengutronix.de>
+        Sat, 7 Aug 2021 19:20:57 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id DAA295C00EE;
+        Sat,  7 Aug 2021 19:20:38 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sat, 07 Aug 2021 19:20:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=C2Kr+e
+        Eh5+xzHcKB01XFOXm7GGyi4YjtCJ20uK8zVjw=; b=M6P9BUvJeg/pne9wVqPnuR
+        qFXn7X0S2HLePU6EkRDnRngSGlqs46ZE1rRa3o96umGb4JHhnoYUkV3tGt9kDg5t
+        4eGlRWMkLbEdLA2G9ZvITB62hPfJKOLp6l+XO40ACZhVQS1hgb8bo+zQgnntK8js
+        t6eagLpw7kdtvYYiWEE0zTBcJUT2qh90xpMOzH9GmXfQ4TIScMDLiU1GT1GFri7j
+        OuKz8vTvb51n0WhovuGyKoMDVJOLmo//xMxgJfI4AQnuE1pfA7FeiJVGy5W08X6Y
+        JjCtkVrP8oFrj8U4K1f2pIBfFu8WztDBROz/kFL8Cp58OII0MbBmo5wqY57Oa+BA
+        ==
+X-ME-Sender: <xms:RhUPYWadBmDSxSlhf6p4B9eF3f6dERkePmaN7E0W-1IHrvJbbPBUTw>
+    <xme:RhUPYZbEOKo1Lju6h7gNmb6MnQQ0hViKv6OZY-TNFnud35eLHHkj8QIchKyyQ0cEq
+    YXZ6CFOV3TOts_rW2c>
+X-ME-Received: <xmr:RhUPYQ_QcsChYD9j0CYi-T3MGulSaeXgBSc68RQZ0hZlxJy4sTaD-B3aIYzX3ufkRuC0Mu05AFCo8m3RHu9R7rRfS8eC1-03h1o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeeggdduvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeekgeejkeffhfefgeelieffueethfeludduhfdtteduvddthedtteeftdevfefh
+    jeenucffohhmrghinhepudegqdhrtgdurdhishenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdho
+    rhhg
+X-ME-Proxy: <xmx:RhUPYYp8hyyk09FjHO52slj9iHEsmeMMJmNu3B-yNjhPoVx0shWXIg>
+    <xmx:RhUPYRrHD2ewLRKpa4B5d_Rs7YqGpPPOXVVHB-1TyVbAf9I9rohneQ>
+    <xmx:RhUPYWS-d6f-rIlBVSFfyq0czLW0ms7ASCv4EqXnF6-97wjeywrKrA>
+    <xmx:RhUPYSDPGbX0vTOUByHmu4l5A6KTf5ieElk4JjRuzGwIB22UYtwTiQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 7 Aug 2021 19:20:35 -0400 (EDT)
+Date:   Sun, 8 Aug 2021 09:19:54 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Mikael Pettersson <mikpelinux@gmail.com>
+cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
+        linux-m68k@lists.linux-m68k.org, stable@vger.kernel.org
+Subject: Re: [BISECTED][REGRESSION] 5.10.56 longterm kernel breakage on
+ m68k/aranym
+In-Reply-To: <CAM43=SM4KFE8C1ekwiw_kBYZKSwycnTYcbBXfw5OhUn4h=r9YA@mail.gmail.com>
+Message-ID: <31298797-f791-4ac5-cfda-c95d7c7958a4@linux-m68k.org>
+References: <CAM43=SM4KFE8C1ekwiw_kBYZKSwycnTYcbBXfw5OhUn4h=r9YA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210802131037.32326-6-o.rempel@pengutronix.de>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksij,
+On Sat, 7 Aug 2021, Mikael Pettersson wrote:
 
-On Mon, Aug 02, 2021 at 03:10:36PM +0200, Oleksij Rempel wrote:
-> This switch is providing forwarding matrix, with it we can configure
-> individual bridges. Potentially we can configure more than one not VLAN
-> based bridge on this HW.
+> I updated the 5.10 longterm kernel on one of my m68k/aranym VMs from
+> 5.10.47 to 5.10.56, and the new kernel failed to boot:
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
+> ARAnyM 1.1.0
+> Using config file: 'aranym1.headless.config'
+> Could not open joystick 0
+> ARAnyM RTC Timer: /dev/rtc: Permission denied
+> ARAnyM LILO: Error loading ramdisk 'root.bin'
+> Blitter tried to read byte from register ff8a00 at 0077ee
+> 
+> At this point it kept running, but produced no output to the console,
+> and would never get to the point of starting user-space. Attaching gdb
+> to aranym showed nothing interesting, i.e. it seemed to be executing
+> normally.
+> 
+> A git bisect identified the following commit between 5.10.52 and
+> 5.10.53 as the culprit:
+> # first bad commit: [9e1cf2d1ed37c934c9935f2c0b2f8b15d9355654]
+> mm/userfaultfd: fix uffd-wp special cases for fork()
+> 
 
-I don't see anywhere in this patch or in this series that the
-tag_ar9331.c file is being patched to set skb->offload_fwd_mark to true
-for packets sent (flooded) to the CPU that have already been forwarded
-by the hardware switch. If the software bridge sees a broadcast packet
-coming from your driver and it has offload_fwd_mark = false, it will
-forward it a second time and the other nodes in your network will see
-duplicates.
+That commit appeared in mainline between v5.13 and v5.14-rc1. Is mainline 
+also affected? e.g. v5.14-rc4.
+
+> 5.10.52, 5.11.22, 5.12.19, and 5.13.8 all boot fine. 5.10.53 to
+> 5.10.56 all fail as described above.
+> 
+> grep ^CONFIG .config below, everything omitted is of course disabled,
+> including I might add CONFIG_USERFAULTFD.
+> 
+> /Mikael
+> 
