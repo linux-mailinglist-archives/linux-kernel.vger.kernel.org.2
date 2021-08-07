@@ -2,108 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DEA3E34BE
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 013083E34C0
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232118AbhHGKY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 06:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231935AbhHGKYW (ORCPT
+        id S231819AbhHGK2h convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 7 Aug 2021 06:28:37 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:37613 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231608AbhHGK2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 06:24:22 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F6EC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 03:24:04 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id ca5so20440700pjb.5
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 03:24:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=n0WYjDn/Hk7WnWbcRBK4RMrec6sKgFH/C1TYM3Ko0Rs=;
-        b=YQu96Z3cdLcwtD5NV1Whhw/XHd03p2upsUo6L2om93ajP/gv0cY40pyphLgnNsYEkN
-         Qa4K0eDk5mL00leLuZP5kPbciZABvr4RAVj1PhOUqqh40hGn2lDUk+g2dJY8tONl9B4p
-         E1xchr588myR1z//LqrY2jNwaMtWxnO9/fK9uObVEITHgER5yw6Xb16m4Meqn32Auwcv
-         gg0DiwqSh2op0XeYJivNpAiIXAixdRsYIXecJne/KUVRMN5AZlFfEvybGpC/JQBQsEL0
-         zeihF3ZMAmWwfLdf5B5TEnzrPxvChuEM8O1zowDn9amlDD3uEXDzW5nHilrMg8bd2pcn
-         RjcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=n0WYjDn/Hk7WnWbcRBK4RMrec6sKgFH/C1TYM3Ko0Rs=;
-        b=QAui4Sz/qU6C3xHEZ0womF9CMIpqN45Ilh3l1jcfZ6iMYhHo4XpahPwl8nxwvnP7FS
-         gTekBcADe/q7q4WO+6/FzSXSPA9DbqmbJlA5Ko6xDoFP1M7Xxvhozobs1w7VA3o5+cWp
-         shhh9bk07jql2B2FkGHVmpYcZqsf91a8RaV/rUuXZmR509pWDXbfTh18Yx0rWNqTgRoJ
-         bi7Lm+0ezWbQ0jgKJSld03XM1neBW6jvwC6zkItvG5owE7RPI+kFjHE19xV32wplxu6I
-         5GtpUoU2XDLfx93phxWrVv+8/P+558s83nu+zW+5CDF7ldfpYoxyr7RJPqtIT1mWGGWO
-         2cAA==
-X-Gm-Message-State: AOAM532B0Sulrq6NH3joaVCzQCygiuItcggW4Xq8kR4UNTGDo/qWgRPQ
-        aCaI26CT1es/6bQHDXXVdwk=
-X-Google-Smtp-Source: ABdhPJwRlehCl6FzdeBvXbmFqv96ruoIj62UME0I6LJA6sSDLywjo2ywXjD4Moo2VCAClsMAvbl7uA==
-X-Received: by 2002:a17:903:181:b029:12c:e578:5a4e with SMTP id z1-20020a1709030181b029012ce5785a4emr10570478plg.12.1628331843823;
-        Sat, 07 Aug 2021 03:24:03 -0700 (PDT)
-Received: from user.. ([106.212.234.168])
-        by smtp.gmail.com with ESMTPSA id d17sm13290717pfn.110.2021.08.07.03.23.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Aug 2021 03:24:03 -0700 (PDT)
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        saurav.girepunje@gmail.com, insafonov@gmail.com,
-        straube.linux@gmail.com, martin@kaiser.cx, will+git@drnd.me,
-        dan.carpenter@oracle.com, apais@linux.microsoft.com,
-        yashsri421@gmail.com, fabioaiuto83@gmail.com,
-        marcocesati@gmail.com, ross.schm.dev@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] staging: rtl8723bs: os_dep: remove unused variable
-Date:   Sat,  7 Aug 2021 15:52:32 +0530
-Message-Id: <20210807102232.6674-5-saurav.girepunje@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210807102232.6674-1-saurav.girepunje@gmail.com>
-References: <20210807102232.6674-1-saurav.girepunje@gmail.com>
+        Sat, 7 Aug 2021 06:28:36 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id B41F9C0004;
+        Sat,  7 Aug 2021 10:28:15 +0000 (UTC)
+Date:   Sat, 7 Aug 2021 12:28:14 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     <richard@nod.at>, <vigneshr@ti.com>, <bbrezillon@kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>
+Subject: Re: [PATCH 2/2] mtd: mtdconcat: Remove concat_{read|write}_oob
+Message-ID: <20210807122814.109ec082@xps13>
+In-Reply-To: <83cb21c4-0140-40d5-e0f8-7f2a7e781a5f@huawei.com>
+References: <20210731023243.3977104-1-chengzhihao1@huawei.com>
+        <20210731023243.3977104-3-chengzhihao1@huawei.com>
+        <20210806212655.16e4d03d@xps13>
+        <83cb21c4-0140-40d5-e0f8-7f2a7e781a5f@huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove below unused static variable from os_intfs.c
-rtw_enusbss
-rtw_hwpdn_mode
-rtw_hwpwrp_detect
+Hi Zhihao,
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/rtl8723bs/os_dep/os_intfs.c | 8 --------
- 1 file changed, 8 deletions(-)
+Zhihao Cheng <chengzhihao1@huawei.com> wrote on Sat, 7 Aug 2021
+10:59:32 +0800:
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/os_intfs.c b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-index 724909078d80..71c9e7eec206 100644
---- a/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-+++ b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-@@ -109,11 +109,6 @@ static int rtw_antdiv_cfg = 1; /*  0:OFF , 1:ON, 2:decide by Efuse config */
- static int rtw_antdiv_type; /* 0:decide by efuse  1: for 88EE, 1Tx and 1RxCG are diversity.(2 Ant with SPDT), 2:  for 88EE, 1Tx and 2Rx are diversity.(2 Ant, Tx and RxCG are both on aux port, RxCS is on main port), 3: for 88EE, 1Tx and 1RxCG are fixed.(1Ant, Tx and RxCG are both on aux port) */
- 
- 
--static int rtw_enusbss;/* 0:disable, 1:enable */
--
--static int rtw_hwpdn_mode = 2;/* 0:disable, 1:enable, 2: by EFUSE config */
--
--static int rtw_hwpwrp_detect; /* HW power  ping detect 0:disable , 1:enable */
- 
- static int rtw_hw_wps_pbc;
- 
-@@ -159,9 +154,6 @@ module_param(rtw_wifi_spec, int, 0644);
- module_param(rtw_antdiv_cfg, int, 0644);
- module_param(rtw_antdiv_type, int, 0644);
- 
--module_param(rtw_enusbss, int, 0644);
--module_param(rtw_hwpdn_mode, int, 0644);
--module_param(rtw_hwpwrp_detect, int, 0644);
- 
- module_param(rtw_hw_wps_pbc, int, 0644);
- 
--- 
-2.30.2
+> 在 2021/8/7 3:26, Miquel Raynal 写道:
+> Hi Miquel,
+> >>   static int concat_erase(struct mtd_info *mtd, struct erase_info *instr)
+> >>   {
+> >>   	struct mtd_concat *concat = CONCAT(mtd);
+> >> @@ -684,10 +580,6 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+> >>   	subdev_master = mtd_get_master(subdev[0]);
+> >>   	if (subdev_master->_writev)
+> >>   		concat->mtd._writev = concat_writev;
+> >> -	if (subdev_master->_read_oob)
+> >> -		concat->mtd._read_oob = concat_read_oob;
+> >> -	if (subdev_master->_write_oob)
+> >> -		concat->mtd._write_oob = concat_write_oob;  
+> > Actually I am not sure _read|write_oob() is the right callback to
+> > remove.
+> >
+> > Richard, what is your input on this? Shall we remove _read|write()
+> > instead? I don't remember the exact rationale behind these two helpers.  
+> 
+> Oh, I guess I made a mistake. It looks like that reserving _{read|write}_oob is a better method in my limited knowledge to nand driver. For example, nand_do_read_oob() behaves different from nand_do_read_ops(), and calling which function is decided by mtd_oob_ops.databuf.
+> Callback _read_oobs() can support both functions, but callback _read() don't support nand_do_read_oob(). So mtd_read_oobs() covers mtd_read()?
+> Is my understand right?
+> 
 
+Yes please let's drop _read|write() instead.
+
+Thanks,
+Miquèl
