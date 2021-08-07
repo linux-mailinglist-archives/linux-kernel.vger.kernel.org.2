@@ -2,147 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454BB3E367D
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 19:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 928763E3680
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 19:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbhHGRVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 13:21:11 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:51811 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229464AbhHGRVH (ORCPT
+        id S229761AbhHGR1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 13:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhHGR1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 13:21:07 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UiEXaLV_1628356842;
-Received: from localhost(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UiEXaLV_1628356842)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 08 Aug 2021 01:20:47 +0800
-From:   Wen Yang <wenyang@linux.alibaba.com>
-To:     davem@davemloft.net, David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Cc:     Wen Yang <wenyang@linux.alibaba.com>,
-        Baoyou Xie <baoyou.xie@alibaba-inc.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ipv4: return early for possible invalid uaddr
-Date:   Sun,  8 Aug 2021 01:19:38 +0800
-Message-Id: <20210807171938.38501-1-wenyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.23.0
+        Sat, 7 Aug 2021 13:27:06 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF97C0613CF;
+        Sat,  7 Aug 2021 10:26:49 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id j3so11582528plx.4;
+        Sat, 07 Aug 2021 10:26:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=0d5C7EFr+pHAYEI9Rz32IM1KwO3F7Q5NLKcNkQW4LNo=;
+        b=qh8JnBJKrlOUh0tE+D+6FZNRQDtrQLGh8taf+5wyD0tUVcuRci6T+lXC0SuQ8IdPya
+         DFX0UYmAO2zIkk7xLj6jjTZk+c41DamW/DkbmbAgvScwBy7z9tx7qpO9cyQ62fcRdK+m
+         K3Kbk8rVOise3+xH331zy9sJSewdkzQjZFTBeqpzAmvnCkDW5qgDO77yrZVSZqxN4CaB
+         CSVy2Hqic3Vr+LJ8YHUdFXCfPDVapyHa8+4bq+GuxGEJrvmz+XtP+u6Q2pIJpTd8w5Z6
+         jVSJAcXIVEmAEk9Qmmj/gbxb2hq8FijdLinPSDv7rgGJ3DYCOD0MKaYryjybQaF/HixO
+         UHZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0d5C7EFr+pHAYEI9Rz32IM1KwO3F7Q5NLKcNkQW4LNo=;
+        b=oWAwItTU+VuHHU+LdNn7D0U0xmst5fgm3N3sfURjVXggJqj6LObd9Awxo6zKDmOjKV
+         famsBzCCCuK2LxHcvcdhwKZOlzuGl0wPwNOGDg9GFkFRRM4qUwrnGun1xraYspPzNRBh
+         O57YzLmx3kyuFw3aa3g3PkfTJP1hgFebeSDYyQvRIBw5ksJEgMl663WElmfHQBocLJEw
+         iGu07ElTwvo5Vnek7fIhpmAO3KRPC7a+jHUrXlC1R2+G3LL0FPLfiorxNH7u/40oZPL+
+         Yu914COmrCnslsXriABOyHJ5VbdRZtOwHuLht4PVefyI1ybK5CsR7mZC6ttMb0jnu/wR
+         /VtA==
+X-Gm-Message-State: AOAM530vgrmldjk8c7/nQaOOtUBHfEM9Kof/L4l2PFl6tXK9eTmVsZ36
+        EJtD7qEH6qA5hcy3Z6wHD9vBEL9o89pJGaOo
+X-Google-Smtp-Source: ABdhPJw+YJRRF/wF+ZDUlRzpS4uKxwRE6k7Il63IwY5tcpF2OTJNuWFse5bxv78jwgoFMoaUaOg8Jw==
+X-Received: by 2002:a05:6a00:721:b029:3c7:623e:a871 with SMTP id 1-20020a056a000721b02903c7623ea871mr10703947pfm.9.1628357208219;
+        Sat, 07 Aug 2021 10:26:48 -0700 (PDT)
+Received: from ?IPv6:2409:4072:92:61e9:38ed:54e8:b166:da11? ([2409:4072:92:61e9:38ed:54e8:b166:da11])
+        by smtp.gmail.com with ESMTPSA id w67sm14773160pfc.31.2021.08.07.10.26.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 07 Aug 2021 10:26:47 -0700 (PDT)
+Subject: Re: [PATCH 2/2] iio: potentiometer: Add driver support for AD5110
+To:     Lars-Peter Clausen <lars@metafoo.de>, Dragos.Bogdan@analog.com,
+        Darius.Berghe@analog.com, Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org
+References: <20210807050900.10075-1-dmugil2000@gmail.com>
+ <20210807050900.10075-3-dmugil2000@gmail.com>
+ <53306463-668e-e291-4539-caca2352ea05@metafoo.de>
+From:   Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+Message-ID: <9b58fb0c-245d-795f-2124-6cc2020bc8c5@gmail.com>
+Date:   Sat, 7 Aug 2021 22:56:32 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <53306463-668e-e291-4539-caca2352ea05@metafoo.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The inet_dgram_connect() first calls inet_autobind() to select an
-ephemeral port, then checks uaddr in udp_pre_connect() or
-__ip4_datagram_connect(), but the port is not released until the socket
-is closed.
 
-We should return early for invalid uaddr to improve performance and
-simplify the code a bit, and also switch from a mix of tabs and spaces
-to just tabs.
 
-Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
-Cc: Baoyou Xie <baoyou.xie@alibaba-inc.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Cc: David Ahern <dsahern@kernel.org>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- net/ipv4/af_inet.c  | 27 ++++++++++++++++-----------
- net/ipv4/datagram.c |  7 -------
- net/ipv4/udp.c      |  7 -------
- 3 files changed, 16 insertions(+), 25 deletions(-)
+On 07/08/21 5:41 pm, Lars-Peter Clausen wrote:
+> On 8/7/21 7:08 AM, Mugilraj Dhavachelvan wrote:
+>> The AD5110/AD5112/AD5114 provide a nonvolatile solution
+>> for 128-/64-/32-position adjustment applications, offering
+>> guaranteed low resistor tolerance errors of ±8% and up to
+>> ±6 mA current density.
+>>
+>> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/AD5110_5112_5114.pdf
+>> Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
+> 
+> Thanks for the patch. This looks really good> 
+> 
+>> [...]
+>>
+>> +static int ad5110_write(struct ad5110_data *data, u8 cmd, u8 val)
+>> +{
+>> +    int ret;
+>> +
+>> +    mutex_lock(&data->lock);
+>> +    data->buf[0] = cmd;
+>> +    data->buf[1] = val;
+>> +
+>> +    ret = i2c_master_send_dmasafe(data->client, data->buf, sizeof(data->buf));
+>> +    mutex_unlock(&data->lock);
+> 
+> This returns the number of bytes written, which can be less then the number of bytes requested if there was an error. This should check if the right amount of bytes was written and return -EIO otherwise. Same for the other places that read/write from I2C.
 
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index 5464818..97b6fc4 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -569,6 +569,11 @@ int inet_dgram_connect(struct socket *sock, struct sockaddr *uaddr,
- 	if (uaddr->sa_family == AF_UNSPEC)
- 		return sk->sk_prot->disconnect(sk, flags);
- 
-+	if (uaddr->sa_family != AF_INET)
-+		return -EAFNOSUPPORT;
-+	if (addr_len < sizeof(struct sockaddr_in))
-+		return -EINVAL;
-+
- 	if (BPF_CGROUP_PRE_CONNECT_ENABLED(sk)) {
- 		err = sk->sk_prot->pre_connect(sk, uaddr, addr_len);
- 		if (err)
-@@ -1136,23 +1141,23 @@ static int inet_compat_ioctl(struct socket *sock, unsigned int cmd, unsigned lon
- 		.prot =       &udp_prot,
- 		.ops =        &inet_dgram_ops,
- 		.flags =      INET_PROTOSW_PERMANENT,
--       },
-+	},
- 
--       {
-+	{
- 		.type =       SOCK_DGRAM,
- 		.protocol =   IPPROTO_ICMP,
- 		.prot =       &ping_prot,
- 		.ops =        &inet_sockraw_ops,
- 		.flags =      INET_PROTOSW_REUSE,
--       },
--
--       {
--	       .type =       SOCK_RAW,
--	       .protocol =   IPPROTO_IP,	/* wild card */
--	       .prot =       &raw_prot,
--	       .ops =        &inet_sockraw_ops,
--	       .flags =      INET_PROTOSW_REUSE,
--       }
-+	},
-+
-+	{
-+		.type =       SOCK_RAW,
-+		.protocol =   IPPROTO_IP,	/* wild card */
-+		.prot =       &raw_prot,
-+		.ops =        &inet_sockraw_ops,
-+		.flags =      INET_PROTOSW_REUSE,
-+	}
- };
- 
- #define INETSW_ARRAY_LEN ARRAY_SIZE(inetsw_array)
-diff --git a/net/ipv4/datagram.c b/net/ipv4/datagram.c
-index 4a8550c..81aae1d 100644
---- a/net/ipv4/datagram.c
-+++ b/net/ipv4/datagram.c
-@@ -27,13 +27,6 @@ int __ip4_datagram_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len
- 	int oif;
- 	int err;
- 
--
--	if (addr_len < sizeof(*usin))
--		return -EINVAL;
--
--	if (usin->sin_family != AF_INET)
--		return -EAFNOSUPPORT;
--
- 	sk_dst_reset(sk);
- 
- 	oif = sk->sk_bound_dev_if;
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 62cd4cd..1ef0770 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -1928,13 +1928,6 @@ int udp_recvmsg(struct sock *sk, struct msghdr *msg, size_t len, int noblock,
- 
- int udp_pre_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
- {
--	/* This check is replicated from __ip4_datagram_connect() and
--	 * intended to prevent BPF program called below from accessing bytes
--	 * that are out of the bound specified by user in addr_len.
--	 */
--	if (addr_len < sizeof(struct sockaddr_in))
--		return -EINVAL;
--
- 	return BPF_CGROUP_RUN_PROG_INET4_CONNECT_LOCK(sk, uaddr);
- }
- EXPORT_SYMBOL(udp_pre_connect);
--- 
-1.8.3.1
-
+Fixed in v2.
+> 
+>> +
+>> +    return ret < 0 ? ret : 0;
+>> +}
+>> +
+>> +static int ad5110_resistor_tol(struct ad5110_data *data, u8 cmd, int val)
+>> +{
+>> +    int ret;
+>> +
+>> +    ret = ad5110_read(data, cmd, &val);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    data->tol = FIELD_GET(GENMASK(6, 3), val);
+>> +    data->tol = ((val & GENMASK(2, 0)) * 1000 / 8) + data->tol * 1000;
+>> +    data->tol = data->cfg->kohms * data->tol / 100;
+> 
+> This is not wrong, but it can be implemented a bit simpler. The tolerance is encoded as a fixed point number, you don't have to treat them as two independent fields, but can treat it as one fixed point number.
+> 
+>     data->tol = data->cfg->kohms * (val & GENMASK(6, 0)) * 1000 / 100 / 8;
+> 
+Great, Fixed in v2.
+> 
+>> +    if (!(val & BIT(7)))
+>> +        data->tol *= -1;
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static ssize_t ad5110_eeprom_read(struct device *dev,
+>> +                      struct device_attribute *attr,
+>> +                      char *buf)
+>> +{
+>> +    struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>> +    struct ad5110_data *data = iio_priv(indio_dev);
+>> +    int val = AD5110_WIPER_POS;
+>> +    int ret;
+>> +
+>> +    ret = ad5110_read(data, AD5110_EEPROM_RD, &val);
+>> +    if (ret)
+>> +        return ret;
+> Maybe apply shift to get consistent behavior with `raw`.
+Fixed in v2.
+>> +
+>> +    return iio_format_value(buf, IIO_VAL_INT, 1, &val);
+>> +}
+>> +
+>> +static ssize_t ad5110_eeprom_write(struct device *dev,
+>> +                       struct device_attribute *attr,
+>> +                       const char *buf, size_t len)
+>> +{
+>> +    struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>> +    struct ad5110_data *data = iio_priv(indio_dev);
+>> +    int ret;
+>> +
+>> +    ret = ad5110_write(data, AD5110_EEPROM_WR, 0);
+>> +    if (ret) {
+>> +        dev_err(&data->client->dev, "RDAC to EEPROM write failed\n");
+>> +        return ret;
+>> +    }
+>> +    msleep(20);
+>> +
+>> +    return len;
+>> +}
+>> +
+>> +static IIO_DEVICE_ATTR(wiper_pos_eeprom, 0644,
+>> +               ad5110_eeprom_read,
+>> +               ad5110_eeprom_write, 0);
+> This is new custom ABI and needs to be documentedI'm not aware of this, fixed in v2.
+>> +static int ad5110_write_raw(struct iio_dev *indio_dev,
+>> +                struct iio_chan_spec const *chan,
+>> +                int val, int val2, long mask)
+>> +{
+>> +    struct ad5110_data *data = iio_priv(indio_dev);
+>> +    int ret;
+>> +
+>> +    switch (mask) {
+>> +    case IIO_CHAN_INFO_RAW:
+>> +        if (val >= data->cfg->max_pos || val < 0)
+> val == data->cfg->max_pos is a valid setting. Writing max_pos puts it in top-scale mode which gives maximum resistance.
+Fixed in v2.
+>> +            return -EINVAL;
+>> +
+>> +        return ad5110_write(data, AD5110_RDAC_WR, val << data->cfg->shift);
+>> +    case IIO_CHAN_INFO_ENABLE:
+>> +        if (val < 0 || val > 1)
+>> +            return -EINVAL;
+>> +        if (data->enable == val)
+>> +            return 0;
+>> +        ret = ad5110_write(data, AD5110_SHUTDOWN, val);
+> Doesn't val have to be inverted to get the right behaviorI just replicated the datasheet operation. 
+You mean,
+ 1 - shutdown off
+ 0 - shutdown on
+If yes, then the user won't get confused with the datasheet and the behavior of the driver?
+Or Is it work like this? But yeah even I like this change it's more convenient.
+>> +        if (ret)
+>> +            return ret;
+>> +        data->enable = val;
+>> +        return 0;
+>> +    default:
+>> +        return -EINVAL;
+>> +    }
+>> +}
+> [...]
+Thanks for feedback!!
