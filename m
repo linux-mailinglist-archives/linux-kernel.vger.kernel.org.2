@@ -2,97 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC2D3E33CF
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 08:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFC63E33D4
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 08:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbhHGGml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 02:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhHGGmj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 02:42:39 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC15C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 23:42:20 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so21326280pjh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 23:42:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=heitbaum.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dWtD7lWvg6ukiwjgEZEx22lskT3PyFWcdyyNdMYnx0o=;
-        b=DhWa8crZziO2TlIBywaSyi6P3fiRzRiCx81AXFfUlBmsJrYOOaNHwX7DmWnb9P/1gu
-         mwQ2+iJqKLTkXVWjBQfAU1BZt4jYwMQdc2Ud3uMrvOQiSOVwwByHp5CiXvGZt6T3fl8H
-         iNipw0G3W9xNCHcIaA9vkLVykLQ5do7RGzqnc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dWtD7lWvg6ukiwjgEZEx22lskT3PyFWcdyyNdMYnx0o=;
-        b=Anu2xros6DSmewR63NxmOIJODUpCNyogTLb1Af17xewuI5PcsBi+Pj4mXBixJ1E0ss
-         9N9eYoLB2E/qdZAzGgMNSsPP+1PmJkeQsRd/fv6e3Vp8bpaDIx5rhox81Bdd4C81cRQk
-         MDXIAZGnYXGyU9EZxNkvxLeG2VlctLjMlYZF8jOr1+0MqQiBgZpzS8U8sYKR8FrOTB6/
-         ya37PtsYuA6Sfed7rtt3ppojVZhoh3oA7AjYx9QBIaX1HCtgB5ksvTP+abhdHIkLJrp8
-         bNQ0sJxHzkFMNfz2Z44mEaAjp5L3OZUxSXFNk/Nqf9xJ9YebGHDv0mTzDUdQpKFsmpYR
-         oM5Q==
-X-Gm-Message-State: AOAM530FK734jcoqKsAsWSfdeNufYbBkDxA6nT0i02y2C1vfEYzfHzLX
-        id4BU5NOaS/gDfWU4Vj5e9IhZw==
-X-Google-Smtp-Source: ABdhPJxcNREsbU1DMDK5mJy0lETd6o+p1t9Os0mLrT+itxLEhJvlZH2+ErJ79gZRR4QBQVL1rYeC9Q==
-X-Received: by 2002:a17:902:7208:b029:12c:9c9d:e0bb with SMTP id ba8-20020a1709027208b029012c9c9de0bbmr12144627plb.44.1628318539669;
-        Fri, 06 Aug 2021 23:42:19 -0700 (PDT)
-Received: from 1d975be6a764 (194-193-55-226.tpgi.com.au. [194.193.55.226])
-        by smtp.gmail.com with ESMTPSA id g1sm14315943pgs.23.2021.08.06.23.42.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 06 Aug 2021 23:42:19 -0700 (PDT)
-Date:   Sat, 7 Aug 2021 16:42:12 +1000
-From:   Rudi Heitbaum <rudi@heitbaum.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/30] 5.10.57-rc1 review
-Message-ID: <20210807064207.GA3991@1d975be6a764>
-References: <20210806081113.126861800@linuxfoundation.org>
+        id S231342AbhHGG6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 02:58:04 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:42455 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230297AbhHGG6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 02:58:02 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GhY7r0XKFz9sTr;
+        Sat,  7 Aug 2021 08:57:44 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id D2RQ1Ao3thCU; Sat,  7 Aug 2021 08:57:43 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GhY7q6W8kz9sTq;
+        Sat,  7 Aug 2021 08:57:43 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BBB248B76D;
+        Sat,  7 Aug 2021 08:57:43 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id fQtPJIfsPKYH; Sat,  7 Aug 2021 08:57:43 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2AF9B8B766;
+        Sat,  7 Aug 2021 08:57:42 +0200 (CEST)
+Subject: Re: [PATCH v2 1/4] powerpc: Optimize register usage for esr register
+To:     sxwjean@me.com, linuxppc-dev@lists.ozlabs.org
+Cc:     oleg@redhat.com, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, npiggin@gmail.com, ravi.bangoria@linux.ibm.com,
+        aneesh.kumar@linux.ibm.com, efremov@linux.com,
+        linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
+References: <20210807010239.416055-1-sxwjean@me.com>
+ <20210807010239.416055-2-sxwjean@me.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <127de0c7-5e30-6797-1e72-6414d4a60119@csgroup.eu>
+Date:   Sat, 7 Aug 2021 08:56:52 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806081113.126861800@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210807010239.416055-2-sxwjean@me.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 10:16:38AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.57 release.
-> There are 30 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+
+
+Le 07/08/2021 à 03:02, sxwjean@me.com a écrit :
+> From: Xiongwei Song <sxwjean@gmail.com>
 > 
-> Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
-> Anything received after that time might be too late.
+> Create an anonymous union for dsisr and esr regsiters, we can reference
+> esr to get the exception detail when CONFIG_4xx=y or CONFIG_BOOKE=y.
+> Otherwise, reference dsisr. This makes code more clear.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.57-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+> ---
+>   arch/powerpc/include/asm/ptrace.h          | 5 ++++-
+>   arch/powerpc/kernel/process.c              | 2 +-
+>   arch/powerpc/kernel/ptrace/ptrace.c        | 2 ++
+>   arch/powerpc/kernel/traps.c                | 2 +-
+>   arch/powerpc/platforms/44x/machine_check.c | 4 ++--
+>   arch/powerpc/platforms/4xx/machine_check.c | 2 +-
+>   6 files changed, 11 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
+> index 3e5d470a6155..c252d04b1206 100644
+> --- a/arch/powerpc/include/asm/ptrace.h
+> +++ b/arch/powerpc/include/asm/ptrace.h
+> @@ -44,7 +44,10 @@ struct pt_regs
+>   #endif
+>   			unsigned long trap;
+>   			unsigned long dar;
+> -			unsigned long dsisr;
+> +			union {
+> +				unsigned long dsisr;
+> +				unsigned long esr;
+> +			};
+>   			unsigned long result;
+>   		};
+>   	};
+> diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+> index 185beb290580..f74af8f9133c 100644
+> --- a/arch/powerpc/kernel/process.c
+> +++ b/arch/powerpc/kernel/process.c
+> @@ -1499,7 +1499,7 @@ static void __show_regs(struct pt_regs *regs)
+>   	    trap == INTERRUPT_DATA_STORAGE ||
+>   	    trap == INTERRUPT_ALIGNMENT) {
+>   		if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
+> -			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, regs->dsisr);
+> +			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, regs->esr);
+>   		else
+>   			pr_cont("DAR: "REG" DSISR: %08lx ", regs->dar, regs->dsisr);
+>   	}
+> diff --git a/arch/powerpc/kernel/ptrace/ptrace.c b/arch/powerpc/kernel/ptrace/ptrace.c
+> index 0a0a33eb0d28..a222fd4d6334 100644
+> --- a/arch/powerpc/kernel/ptrace/ptrace.c
+> +++ b/arch/powerpc/kernel/ptrace/ptrace.c
+> @@ -375,6 +375,8 @@ void __init pt_regs_check(void)
+>   		     offsetof(struct user_pt_regs, dar));
+>   	BUILD_BUG_ON(offsetof(struct pt_regs, dsisr) !=
+>   		     offsetof(struct user_pt_regs, dsisr));
+> +	BUILD_BUG_ON(offsetof(struct pt_regs, esr) !=
+> +		     offsetof(struct user_pt_regs, dsisr));
 
-Run tested on:
-- Tiger Lake x86_64
-- Radxa ROCK Pi N10 (rk3399pro)
+esr and dsisr are the same, so checking the same thing a second time is pointless.
 
-In addition build tested on:
-- Allwinner H3
-- Allwinner H6
-- NXP iMX6
-- NXP iMX8
-- Qualcomm Dragonboard
-- Rockchip RK3288
-- Rockchip RK3328
-- Samsung Exynos
-
-Tested-by: Rudi Heitbaum <rudi@heitbaum.com>
--- 
-Rudi
+>   	BUILD_BUG_ON(offsetof(struct pt_regs, result) !=
+>   		     offsetof(struct user_pt_regs, result));
+>   
+> diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+> index dfbce527c98e..2164f5705a0b 100644
+> --- a/arch/powerpc/kernel/traps.c
+> +++ b/arch/powerpc/kernel/traps.c
+> @@ -562,7 +562,7 @@ static inline int check_io_access(struct pt_regs *regs)
+>   #ifdef CONFIG_PPC_ADV_DEBUG_REGS
+>   /* On 4xx, the reason for the machine check or program exception
+>      is in the ESR. */
+> -#define get_reason(regs)	((regs)->dsisr)
+> +#define get_reason(regs)	((regs)->esr)
+>   #define REASON_FP		ESR_FP
+>   #define REASON_ILLEGAL		(ESR_PIL | ESR_PUO)
+>   #define REASON_PRIVILEGED	ESR_PPR
+> diff --git a/arch/powerpc/platforms/44x/machine_check.c b/arch/powerpc/platforms/44x/machine_check.c
+> index a5c898bb9bab..5d19daacd78a 100644
+> --- a/arch/powerpc/platforms/44x/machine_check.c
+> +++ b/arch/powerpc/platforms/44x/machine_check.c
+> @@ -11,7 +11,7 @@
+>   
+>   int machine_check_440A(struct pt_regs *regs)
+>   {
+> -	unsigned long reason = regs->dsisr;
+> +	unsigned long reason = regs->esr;
+>   
+>   	printk("Machine check in kernel mode.\n");
+>   	if (reason & ESR_IMCP){
+> @@ -48,7 +48,7 @@ int machine_check_440A(struct pt_regs *regs)
+>   #ifdef CONFIG_PPC_47x
+>   int machine_check_47x(struct pt_regs *regs)
+>   {
+> -	unsigned long reason = regs->dsisr;
+> +	unsigned long reason = regs->esr;
+>   	u32 mcsr;
+>   
+>   	printk(KERN_ERR "Machine check in kernel mode.\n");
+> diff --git a/arch/powerpc/platforms/4xx/machine_check.c b/arch/powerpc/platforms/4xx/machine_check.c
+> index a71c29892a91..a905da1d6f41 100644
+> --- a/arch/powerpc/platforms/4xx/machine_check.c
+> +++ b/arch/powerpc/platforms/4xx/machine_check.c
+> @@ -10,7 +10,7 @@
+>   
+>   int machine_check_4xx(struct pt_regs *regs)
+>   {
+> -	unsigned long reason = regs->dsisr;
+> +	unsigned long reason = regs->esr;
+>   
+>   	if (reason & ESR_IMCP) {
+>   		printk("Instruction");
+> 
