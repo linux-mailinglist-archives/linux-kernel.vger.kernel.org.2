@@ -2,211 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73543E352D
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 13:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D7A3E352F
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 13:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232122AbhHGLf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 07:35:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230012AbhHGLf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 07:35:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D89661058;
-        Sat,  7 Aug 2021 11:35:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628336139;
-        bh=geblf3fX8PJQFl8H5UntTROSiNmSEU1F1HpzgQX/MBk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vQcYX1HCrkOJB6JwHhUhF6Y2/Z9CPhJJDNX2xQ10dmmtTl2uv1PvHg+dKBeg5MGm3
-         rjUvjIe1aHJ+AnREgbmTBAU6tgcfObFfW3ZLecWfx9+CQWmSnOD0o7Hbmp7mZRESfS
-         cHAISAuiJWS2b1v1Lj75pZTvFRlf5Ce/bdGO500pBL0Bygk35B2WPh0lZxaAbdhxGe
-         Ybw9T28a0M8rShfk7wH8v7QknxOYOWATy/h4V7km6txgK+e81x5YGXZgI6Y01ockU4
-         nJQ/b/duUxCMw7m/yM9zF8f6ga8uyq2BXb41tyeMq8S1mhsIwjO6h3K+sGjwjvDaXB
-         zJRTUvZibBlUw==
-Received: by pali.im (Postfix)
-        id CEE77A52; Sat,  7 Aug 2021 13:35:36 +0200 (CEST)
-Date:   Sat, 7 Aug 2021 13:35:36 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     robh@kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] arm64: dts: marvell: armada-37xx: Extend PCIe MEM
- space
-Message-ID: <20210807113536.24ik7m7uonebwox2@pali>
-References: <20210624215546.4015-1-pali@kernel.org>
- <20210624215546.4015-3-pali@kernel.org>
- <87pmv919bq.fsf@BL-laptop>
- <20210723141204.waiipazikhzzloj7@pali>
- <20210723155247.GB4103@lpieralisi>
- <20210723164512.vo3scpzoodff2j33@pali>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210723164512.vo3scpzoodff2j33@pali>
-User-Agent: NeoMutt/20180716
+        id S232172AbhHGLsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 07:48:02 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:40669 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230012AbhHGLsB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 07:48:01 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 838265C0091;
+        Sat,  7 Aug 2021 07:47:43 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute1.internal (MEProxy); Sat, 07 Aug 2021 07:47:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm2; bh=fncGE/jKcnIvD//YI2Vm09vsvIlS
+        YjnkVB8PpClLEPw=; b=gMk07UHoNUvfJMHru4HWm+9da7Pv3lETc88hDNtUmkSH
+        WdcuslNF4DAWkco0dBjeb/hfBgb8bWCkJk+sdcgsHOaCZfWPp4BsuJ2IV9EHASOY
+        LdM/P8AmloUs3wDaoal9WtIA6jlyA/xhPgNzNcn6KgSySXFbmYDE1kscKqd2hiPy
+        ZBJsBVZymlrPzy8E0zVCAa59lpUuLi2GKlca4+hX40cLkFu4bFBPJZUIKZzSw/G5
+        3jHYEu0H0pv5bbNjMeo161WGqHWFrtsayRnSOgKhA9B78dPuQfbNJAtjr6CrN7YB
+        WCOY5ggJ4L0cfwWPYDVp+0SMaro4AcX7R1YiI0F4xw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=fncGE/
+        jKcnIvD//YI2Vm09vsvIlSYjnkVB8PpClLEPw=; b=VviLQjtmqZXNPKscQL7Maa
+        PkQC3LR+vXF1CarCQEmY8SHTbwL2bIjbMN2lVJg5g1zij9sk3LBVG4bOBV+fm+Ai
+        oIrQvtrpKNC8zYvnHdgTu0MtFUnV4/mQXCkXc/ju54YygSHmzo7c8EbqAEvtumhx
+        mtRFDlKfJMdjbnCtgnqBMECnRo8CI+fj2ohgqFHuevuMLpvxI1Eg9a7JpuvkmEw/
+        Vscqfl4EzgFXgcR4+d7r5ck4yMp4zErSPRYdzsouIW500hKbe1gUHbx+xYP+kUa3
+        rJmCQ+R0w5XL9dHltM0HnIQuSrwF/AANE+bw5bQeli3yAM9g7vMv2h8XfSdUODeg
+        ==
+X-ME-Sender: <xms:3nIOYVdAr-2ggG7DyzEyWjrhHqNAz71JlZ0eKdqNqDdYDIN566-3uw>
+    <xme:3nIOYTOrlrF7KGmYqnPP6IhQ14fog6YWkWVKFExodPIbnmf5IuWvOT16hTRVyBTVT
+    _R_opBMiEOaKT31SZ0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeefgdeggecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedfufhvvghn
+    ucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrth
+    htvghrnhepheejgfdttdefleefteejieefudeuheelkedtgedtjeehieetueelheeuhfeg
+    heegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsh
+    hvvghnsehsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:3nIOYegOW_8hdHquGep4k1vxFI2tlddXqKcmtGUlH7cBeCncWeSMow>
+    <xmx:3nIOYe807bstWQO-YgerHiZuZXDm7WXFaF9AQMgDHqMAUgIJkgEcLg>
+    <xmx:3nIOYRsIJmy7xeLHTmbP560CsRzvZghcE6SHkLj2a2OB6q2pFTu70w>
+    <xmx:33IOYfXCSIkr908gpcYCbC5Xm-NoORAubxt8W8CNE2LvN-a14eEwIw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 378E151C04D7; Sat,  7 Aug 2021 07:47:42 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-552-g2afffd2709-fm-20210805.001-g2afffd27
+Mime-Version: 1.0
+Message-Id: <dadbd8b0-171a-4008-8a2e-f68abfed9285@www.fastmail.com>
+In-Reply-To: <d289a555-9e3b-b948-1883-2ee4c915da4c@arm.com>
+References: <20210806155523.50429-1-sven@svenpeter.dev>
+ <20210806155523.50429-3-sven@svenpeter.dev>
+ <d289a555-9e3b-b948-1883-2ee4c915da4c@arm.com>
+Date:   Sat, 07 Aug 2021 13:47:21 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Robin Murphy" <robin.murphy@arm.com>,
+        "Sven Peter" <iommu@lists.linux-foundation.org>
+Cc:     "Arnd Bergmann" <arnd@kernel.org>, "Will Deacon" <will@kernel.org>,
+        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        "Alexander Graf" <graf@amazon.com>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>
+Subject: =?UTF-8?Q?Re:_[RFC_PATCH_2/3]_iommu/dma-iommu:_Support_iovad->granule_>_?=
+ =?UTF-8?Q?PAGE=5FSIZE?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 23 July 2021 18:45:12 Pali Rohár wrote:
-> On Friday 23 July 2021 16:52:47 Lorenzo Pieralisi wrote:
-> > On Fri, Jul 23, 2021 at 04:12:04PM +0200, Pali Rohár wrote:
-> > > On Friday 23 July 2021 14:52:25 Gregory CLEMENT wrote:
-> > > > Hello Pali,
-> > > > 
-> > > > > Current PCIe MEM space of size 16 MB is not enough for some combination
-> > > > > of PCIe cards (e.g. NVMe disk together with ath11k wifi card). ARM Trusted
-> > > > > Firmware for Armada 3700 platform already assigns 128 MB for PCIe window,
-> > > > > so extend PCIe MEM space to the end of 128 MB PCIe window which allows to
-> > > > > allocate more PCIe BARs for more PCIe cards.
-> > > > >
-> > > > > Without this change some combination of PCIe cards cannot be used and
-> > > > > kernel show error messages in dmesg during initialization:
-> > > > >
-> > > > >     pci 0000:00:00.0: BAR 8: no space for [mem size 0x01800000]
-> > > > >     pci 0000:00:00.0: BAR 8: failed to assign [mem size 0x01800000]
-> > > > >     pci 0000:00:00.0: BAR 6: assigned [mem 0xe8000000-0xe80007ff pref]
-> > > > >     pci 0000:01:00.0: BAR 8: no space for [mem size 0x01800000]
-> > > > >     pci 0000:01:00.0: BAR 8: failed to assign [mem size 0x01800000]
-> > > > >     pci 0000:02:03.0: BAR 8: no space for [mem size 0x01000000]
-> > > > >     pci 0000:02:03.0: BAR 8: failed to assign [mem size 0x01000000]
-> > > > >     pci 0000:02:07.0: BAR 8: no space for [mem size 0x00100000]
-> > > > >     pci 0000:02:07.0: BAR 8: failed to assign [mem size 0x00100000]
-> > > > >     pci 0000:03:00.0: BAR 0: no space for [mem size 0x01000000 64bit]
-> > > > >     pci 0000:03:00.0: BAR 0: failed to assign [mem size 0x01000000 64bit]
-> > > > >
-> > > > > Due to bugs in U-Boot port for Turris Mox, the second range in Turris Mox
-> > > > > kernel DTS file for PCIe must start at 16 MB offset. Otherwise U-Boot
-> > > > > crashes during loading of kernel DTB file. This bug is present only in
-> > > > > U-Boot code for Turris Mox and therefore other Armada 3700 devices are not
-> > > > > affected by this bug. Bug is fixed in U-Boot version 2021.07.
-> > > > >
-> > > > > To not break booting new kernels on existing versions of U-Boot on Turris
-> > > > > Mox, use first 16 MB range for IO and second range with rest of PCIe window
-> > > > > for MEM.
-> > > > 
-> > > > Is there any depencey with the firs patch of this series ?
-> > > > 
-> > > > What happend if this patch is applied without the other ?
-> > > 
-> > > First patch is fixing reading and setting ranges configuration from DTS.
-> > > Without first patch memory windows stays as they were in bootloader or
-> > > in its default configuration. Which is that all 128 MB are transparently
-> > > mapped to PCIe MEM space.
-> > > 
-> > > Therefore this second DTS patch does not fixes issue with IO space
-> > > (kernel still crashes when accessing it). But allows to use all PCIe MEM
-> > > space (due to bootloader / default configuration) and therefore allows
-> > > to use more PCIe cards (which needs more PCIe MEM space).
-> > 
-> > So, the two patches are decoupled then ? We are not taking dts changes
-> > through the PCI tree.
-> 
-> Well, both patches are required to fix setup and use of PCIe ranges on
-> A3720 platforms. But I would say they are independent and you can apply
-> them in any order. So Gregory, feel free to take DTS change in your tree
-> and Lorenzo can review other patch.
 
-Lorenzo, so will you take driver change via PCI tree?
 
-And Gregory, DTS change via DTS tree?
+On Fri, Aug 6, 2021, at 20:04, Robin Murphy wrote:
+> On 2021-08-06 16:55, Sven Peter via iommu wrote:
+> > @@ -1006,6 +1019,31 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+> >   	if (dev_is_untrusted(dev))
+> >   		return iommu_dma_map_sg_swiotlb(dev, sg, nents, dir, attrs);
+> >   
+> > +	/*
+> > +	 * If the IOMMU pagesize is larger than the CPU pagesize we will
+> > +	 * very likely run into sgs with a physical address that is not aligned
+> > +	 * to an IOMMU page boundary. Fall back to just mapping every entry
+> > +	 * independently with __iommu_dma_map then.
+> 
+> Scatterlist segments often don't have nicely aligned ends, which is why 
+> we already align things to IOVA granules in main loop here. I think in 
+> principle we'd just need to move the non-IOVA-aligned part of the 
+> address from sg->page to sg->offset in the temporary transformation for 
+> the rest of the assumptions to hold. I don't blame you for being timid 
+> about touching that, though - it took me 3 tries to get right when I 
+> first wrote it...
+> 
 
-> I sent these two patches in one series as they are fixing one common
-> issue. It is common that for fixing one common issue it is required to
-> touch more subsystems / trees.
-> 
-> > Besides: these dts patches are a nightmare for backward compatibility,
-> > hopefully Rob can shed some light on whether what you are doing here
-> > is advisable and how to sync the changes with kernel changes.
-> 
-> As written in comment for armada-3720-turris-mox.dts file, there are
-> specific requirements what needs to be put into ranges section. And
-> version of this file without applying this patch and also version of
-> this file with applied patch matches these requirements.
-> 
-> So I would say that this DTS change is backward and also forward
-> compatible.
-> 
-> But I agree that DTS changes are lot of time nightmare...
-> 
-> > Lorenzo
-> > 
-> > > > Could you test it to see if any regression occure ?
-> > > > 
-> > > > Thanks,
-> > > > 
-> > > > Grégory
-> > > > 
-> > > > >
-> > > > > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > > > > Fixes: 76f6386b25cc ("arm64: dts: marvell: Add Aardvark PCIe support for Armada 3700")
-> > > > > ---
-> > > > >  .../boot/dts/marvell/armada-3720-turris-mox.dts | 17 +++++++++++++++++
-> > > > >  arch/arm64/boot/dts/marvell/armada-37xx.dtsi    | 11 +++++++++--
-> > > > >  2 files changed, 26 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> > > > > index 53e817c5f6f3..86b3025f174b 100644
-> > > > > --- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> > > > > +++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> > > > > @@ -134,6 +134,23 @@
-> > > > >  	pinctrl-0 = <&pcie_reset_pins &pcie_clkreq_pins>;
-> > > > >  	status = "okay";
-> > > > >  	reset-gpios = <&gpiosb 3 GPIO_ACTIVE_LOW>;
-> > > > > +	/*
-> > > > > +	 * U-Boot port for Turris Mox has a bug which always expects that "ranges" DT property
-> > > > > +	 * contains exactly 2 ranges with 3 (child) address cells, 2 (parent) address cells and
-> > > > > +	 * 2 size cells and also expects that the second range starts at 16 MB offset. If these
-> > > > > +	 * conditions are not met then U-Boot crashes during loading kernel DTB file. PCIe address
-> > > > > +	 * space is 128 MB long, so the best split between MEM and IO is to use fixed 16 MB window
-> > > > > +	 * for IO and the rest 112 MB (64+32+16) for MEM, despite that maximal IO size is just 64 kB.
-> > > > > +	 * This bug is not present in U-Boot ports for other Armada 3700 devices and is fixed in
-> > > > > +	 * U-Boot version 2021.07. See relevant U-Boot commits (the last one contains fix):
-> > > > > +	 * https://source.denx.de/u-boot/u-boot/-/commit/cb2ddb291ee6fcbddd6d8f4ff49089dfe580f5d7
-> > > > > +	 * https://source.denx.de/u-boot/u-boot/-/commit/c64ac3b3185aeb3846297ad7391fc6df8ecd73bf
-> > > > > +	 * https://source.denx.de/u-boot/u-boot/-/commit/4a82fca8e330157081fc132a591ebd99ba02ee33
-> > > > > +	 */
-> > > > > +	#address-cells = <3>;
-> > > > > +	#size-cells = <2>;
-> > > > > +	ranges = <0x81000000 0 0xe8000000   0 0xe8000000   0 0x01000000   /* Port 0 IO */
-> > > > > +		  0x82000000 0 0xe9000000   0 0xe9000000   0 0x07000000>; /* Port 0 MEM */
-> > > > >  
-> > > > >  	/* enabled by U-Boot if PCIe module is present */
-> > > > >  	status = "disabled";
-> > > > > diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> > > > > index 7a2df148c6a3..dac3007f2ac1 100644
-> > > > > --- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> > > > > +++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> > > > > @@ -488,8 +488,15 @@
-> > > > >  			#interrupt-cells = <1>;
-> > > > >  			msi-parent = <&pcie0>;
-> > > > >  			msi-controller;
-> > > > > -			ranges = <0x82000000 0 0xe8000000   0 0xe8000000 0 0x1000000 /* Port 0 MEM */
-> > > > > -				  0x81000000 0 0xe9000000   0 0xe9000000 0 0x10000>; /* Port 0 IO*/
-> > > > > +			/*
-> > > > > +			 * The 128 MiB address range [0xe8000000-0xf0000000] is
-> > > > > +			 * dedicated for PCIe and can be assigned to 8 windows
-> > > > > +			 * with size a power of two. Use one 64 KiB window for
-> > > > > +			 * IO at the end and the remaining seven windows
-> > > > > +			 * (totaling 127 MiB) for MEM.
-> > > > > +			 */
-> > > > > +			ranges = <0x82000000 0 0xe8000000   0 0xe8000000   0 0x07f00000   /* Port 0 MEM */
-> > > > > +				  0x81000000 0 0xefff0000   0 0xefff0000   0 0x00010000>; /* Port 0 IO */
-> > > > >  			interrupt-map-mask = <0 0 0 7>;
-> > > > >  			interrupt-map = <0 0 0 1 &pcie_intc 0>,
-> > > > >  					<0 0 0 2 &pcie_intc 1>,
-> > > > > -- 
-> > > > > 2.20.1
-> > > > >
-> > > > 
-> > > > -- 
-> > > > Gregory Clement, Bootlin
-> > > > Embedded Linux and Kernel engineering
-> > > > http://bootlin.com
+
+I've spent some time with that code now and I think we cannot use it
+but have to fall back to iommu_dma_map_sg_swiotlb (even though that swiotlb
+part is a lie then):
+
+When we have sg_phys(s) = 0x802e65000 with s->offset = 0 the paddr
+is aligned to PAGE_SIZE but has an offset of 0x1000 from something
+the IOMMU can map.
+Now this would result in s->offset = -0x1000 which is already weird
+enough.
+Offset is unsigned (and 32bit) so this will actually look like
+s->offset = 0xfffff000 then, which isn't much better.
+And then sg_phys(s) = 0x902e64000 (instead of 0x802e64000) and
+we'll map some random memory in iommu_map_sg_atomic and a little bit later
+everything explodes.
+
+Now I could probably adjust the phys addr backwards and make sure offset is
+always positive (and possibly larger than PAGE_SIZE) and later restore it
+in __finalise_sg then but I feel like that's pushing this a little bit too far.
+
+
+
+Sven
