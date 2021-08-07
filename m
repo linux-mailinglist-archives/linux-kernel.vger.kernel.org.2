@@ -2,101 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661043E3656
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 18:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5AB3E365E
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 18:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbhHGQkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 12:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhHGQkJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 12:40:09 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4C9C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 09:39:51 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id u2so11465284plg.10
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 09:39:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:cc:from:to:message-id;
-        bh=grhFZWxTWMmC2nk3rV2w/FHZSjI97u/vyUnDNsG5W9M=;
-        b=XrkliiU5S+vfR/+wxmgI/3TIBaZ6HY2Fsy/6/i+FMVC5WUr5HeFYXlD2AAdJQVl3tJ
-         E+2EOamHW9BPOWUk7yCfIrf7jDeOAxGa0doHnl9m94NzYhkKypiSd3HEe+RgvIapvKEg
-         FQbpKqTm5gr2zim5i/olvJdo7leV21sdYSeyDaiG/a7AvYhLLPrjn4gCCAr1mBp6/oHf
-         ibbTFTbi9iQE+BD54rm14U2AwN/2VT53ZPSPJZ/tUCDQv+4Ksiy0bw/zGkirbk2n2+my
-         9yjmHgyGrWGgypbokB53SPxsB2eq935GRM+yByOcVd9NjGue9RpyKCnelfT/yDn4KLJY
-         J3tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:cc:from:to:message-id;
-        bh=grhFZWxTWMmC2nk3rV2w/FHZSjI97u/vyUnDNsG5W9M=;
-        b=XtOrRpbb4sYi4Vk7RZSnevKP3IZ9RyZh1/0ViO33kU+Qx8vtRj5WNZUldx2n8dWyPm
-         hpyG+fV8vOuRg/grJit522NCUn8PcxOfBKmhpQHgkHo8uRxChpEOR00md2dblkuW/xSM
-         20pidg2ayf8PMmacT1Ung1v4PM42UYPlkONkcILTKZuX+E4Rr5A61bwge4NFp+h6bf09
-         abTOgVyYcEpo/0lpfkAIy2QHFwVmzs3T62ucsz0Rid+5TyD+UfY5oFFAbg59bXckLVK2
-         SbtKnzlVC84XJwp9yn8LmqSyTv/JHclq5NK31wC+OiWLIYWpdvi+GVdjL28Oe9SBEZQp
-         D1fw==
-X-Gm-Message-State: AOAM532DGSf1U3U1XCz0GCNje8Y4r2pOS+omQPBLzL1jnhg1NPPZyru8
-        Xp6FY9ALwI+rB5IWvvcny+y7yw==
-X-Google-Smtp-Source: ABdhPJxD/zozsaYYd4McHQ1wf+eJJ1Tb0yRRbC4NRCqa6TfwodEcUeE1yuhQyMZx1m80QSml4bvebQ==
-X-Received: by 2002:a63:f145:: with SMTP id o5mr138042pgk.273.1628354390553;
-        Sat, 07 Aug 2021 09:39:50 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id j22sm16340647pgb.62.2021.08.07.09.39.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Aug 2021 09:39:50 -0700 (PDT)
-Date:   Sat, 07 Aug 2021 09:39:50 -0700 (PDT)
-X-Google-Original-Date: Sat, 07 Aug 2021 09:39:47 PDT (-0700)
-Subject: [GIT PULL] RISC-V Fixes for 5.14-rc5
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-bafc6421-186d-4f3b-b5bd-7c7f15bf94fe@palmerdabbelt-glaptop>
+        id S229589AbhHGQ4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 12:56:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229437AbhHGQ4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 12:56:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E104C61058;
+        Sat,  7 Aug 2021 16:55:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628355353;
+        bh=xneXCef3FRjBCnaNoY9tPBcNVJGns+i3iXDMrVO58mU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U9cRwDNoB6btRNhwTev/FroT9STOvybHbTC5Wd7HQsfk7sHA/LRv2Jz4Ob60iTCW/
+         vzmIgNeKI+7hn91QKZPej+HhOnQebH/rf3tl/mjl57NIoOFNGY0CORfAKiMPACjmOS
+         PZ8VqjW4lyOC4Mq70yCjJYJ9QiLjZdhFC3ajV3x5onW0x0XJI7TsbOBEwAyLd9asNw
+         rO6BXHol6p6s0N0TjMuwKbdmtEIaGSBS9maUDC6DR57GirE9fV2eiZb3XL2C7qchwY
+         vPdsVBfmdSL7eRL002qBnjdFbCj9AoyZDEX8PCp1YzK9i1qlOyJhaQGb9W6K7rFY4f
+         hmJrE1sa3JyxA==
+Date:   Sat, 7 Aug 2021 09:55:51 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     krisman@collabora.com, tytso@mit.edu, adilger.kernel@dilger.ca,
+        jaegeuk@kernel.org, chao@kernel.org, drosen@google.com,
+        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH] fs: unicode: Add utf8-data module
+Message-ID: <YQ67FxJRlfTj5EGy@sol.localdomain>
+References: <20210730124333.6744-1-shreeya.patel@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730124333.6744-1-shreeya.patel@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit ea196c548c0ac407afd31d142712b6da8bd00244:
+On Fri, Jul 30, 2021 at 06:13:33PM +0530, Shreeya Patel wrote:
+> diff --git a/fs/unicode/utf8n.h b/fs/unicode/utf8n.h
+> index 0acd530c2c79..6843229bcb2b 100644
+> --- a/fs/unicode/utf8n.h
+> +++ b/fs/unicode/utf8n.h
+> @@ -11,6 +11,7 @@
+>  #include <linux/export.h>
+>  #include <linux/string.h>
+>  #include <linux/module.h>
+> +#include <linux/spinlock.h>
+>  
+>  /* Encoding a unicode version number as a single unsigned int. */
+>  #define UNICODE_MAJ_SHIFT		(16)
+> @@ -21,6 +22,11 @@
+>  	 ((unsigned int)(MIN) << UNICODE_MIN_SHIFT) |	\
+>  	 ((unsigned int)(REV)))
+>  
+> +extern spinlock_t utf8_lock;
+> +
+> +extern struct utf8_data *utf8_ops;
+> +extern bool utf8data_loaded;
 
-  riscv: __asm_copy_to-from_user: Fix: Typos in comments (2021-07-23 17:49:12 -0700)
+The 'utf8data_loaded' variable is unnecessary, since it's equivalent to
+'utf8_ops != NULL'.
 
-are available in the Git repository at:
+Also, there are no function pointer fields anymore, so this really should be
+called utf8_data, not utf8_ops.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.14-rc5
-
-for you to fetch changes up to 867432bec1c6e7df21a361d7f12022a8c5f54022:
-
-  Revert "riscv: Remove CONFIG_PHYS_RAM_BASE_FIXED" (2021-08-06 22:41:39 -0700)
-
-----------------------------------------------------------------
-RISC-V Fixes for 5.14-rc5
-
-* A fix to avoid dereferencing a null task pointer while walking the
-  stack.
-* A fix to the memory size in the HiFive Unleashed device tree.
-* A fix to disable stack protectors when randstruct is enabled, which
-  results in non-deterministic offsets during module builds.
-* A pair of fixes to avoid relying on a constant physical memory base
-  for the non-XIP builds.
-
-----------------------------------------------------------------
-Alexandre Ghiti (2):
-      riscv: Get rid of CONFIG_PHYS_RAM_BASE in kernel physical address conversion
-      Revert "riscv: Remove CONFIG_PHYS_RAM_BASE_FIXED"
-
-Guenter Roeck (1):
-      riscv: Disable STACKPROTECTOR_PER_TASK if GCC_PLUGIN_RANDSTRUCT is enabled
-
-Jisheng Zhang (1):
-      riscv: stacktrace: Fix NULL pointer dereference
-
-Qiu Wenbo (1):
-      riscv: dts: fix memory size for the SiFive HiFive Unmatched
-
- arch/riscv/Kconfig                                  |  7 +++++++
- arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts |  2 +-
- arch/riscv/include/asm/page.h                       |  7 ++++---
- arch/riscv/kernel/stacktrace.c                      |  2 +-
- arch/riscv/mm/init.c                                | 17 ++++++++++++-----
- 5 files changed, 25 insertions(+), 10 deletions(-)
+- Eric
