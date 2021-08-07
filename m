@@ -2,96 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B7E3E34C9
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066793E34D0
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbhHGKct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 06:32:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231687AbhHGKc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 06:32:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18487610FC;
-        Sat,  7 Aug 2021 10:32:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628332329;
-        bh=q0JbSC4fX4Crhi1HrqSNaN67de1iCkzSUaCVowYclWc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fsKTwecZe161gdAJQQnyQfzWRCWKtSI17t3EW2r28Gew517Y3JIG85wSBnFhNDI3r
-         yGBQpyi7/ih3s7Q+f6DT0xIKDfvkzFbjVbBY1WK/mbWYGJRxJlsh1y9LX+FbBh46eV
-         JYiIs0+AXJ/mjkz1PkHvHD7P5i2Wc3h8ZZeelre82v6V3CC02Rqs7WmF2gIZ/IVtuw
-         zxAknc/fQcFuL0DLvtfzYQiaYcoRw1xmG91FwgwYzfzPa2zb9zFs777Tla0VmvJ1WT
-         cXAViWgi2TVIv/pUNGCJZmG8JasYImcSxG/g01QJcscEsR0FzAKD8eTLbclBkET1uh
-         xGUmkqO6QNU9Q==
-Date:   Sat, 7 Aug 2021 13:32:00 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>,
-        Ying Chen <chenying.kernel@bytedance.com>,
-        Feng Zhou <zhoufeng.zf@bytedance.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH 08/15] fs: proc: use PAGES_PER_SECTION for page
- offline checking period.
-Message-ID: <YQ5hIFZX02BMS+Yb@kernel.org>
-References: <20210805190253.2795604-1-zi.yan@sent.com>
- <20210805190253.2795604-9-zi.yan@sent.com>
+        id S231934AbhHGKgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 06:36:46 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16991 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231687AbhHGKgf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 06:36:35 -0400
+Received: from dggeme768-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ghdvs1M17zZxjW;
+        Sat,  7 Aug 2021 18:32:41 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ dggeme768-chm.china.huawei.com (10.3.19.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 7 Aug 2021 18:36:17 +0800
+From:   Weili Qian <qianweili@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <wangzhou1@hisilicon.com>, <liulongfang@huawei.com>
+Subject: [PATCH 0/5] crypto: hisilicon - support runtime PM for accelerator devices
+Date:   Sat, 7 Aug 2021 18:32:31 +0800
+Message-ID: <1628332356-33278-1-git-send-email-qianweili@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805190253.2795604-9-zi.yan@sent.com>
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme768-chm.china.huawei.com (10.3.19.114)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 03:02:46PM -0400, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> It keeps the existing behavior after MAX_ORDER is increased beyond
-> a section size.
-> 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Ying Chen <chenying.kernel@bytedance.com>
-> Cc: Feng Zhou <zhoufeng.zf@bytedance.com>
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  fs/proc/kcore.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-> index 3f148759a5fd..77b7ba48fb44 100644
-> --- a/fs/proc/kcore.c
-> +++ b/fs/proc/kcore.c
-> @@ -486,7 +486,7 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
->  			}
->  		}
->  
-> -		if (page_offline_frozen++ % MAX_ORDER_NR_PAGES == 0) {
-> +		if (page_offline_frozen++ % PAGES_PER_SECTION == 0) {
+Kunpeng930 accelerator devices support runtime power management, this
+patchset enables runtime PM for accelerator devices.
 
-The behavior changes here. E.g. with default configuration on x86 instead
-of cond_resched() every 2M we get cond_resched() every 128M.
+Weili Qian (5):
+  crypto: hisilicon - using 'debugfs_create_file' instead of
+    'debugfs_create_regset32'
+  crypto: hisilicon - add runtime PM ops
+  crypto: hisilicon - support runtime PM for accelerator device
+  crypto: hisilicon - change parameter passing of debugfs function
+  crypto: hisilicon - check _PS0 and _PR0 method
 
-I'm not saying it's wrong but at least it deserves an explanation why.
-
->  			page_offline_thaw();
->  			cond_resched();
->  			page_offline_freeze();
-> -- 
-> 2.30.2
-> 
+ drivers/crypto/hisilicon/hpre/hpre_main.c |  60 ++++-
+ drivers/crypto/hisilicon/qm.c             | 430 +++++++++++++++++++++++++-----
+ drivers/crypto/hisilicon/qm.h             |   8 +
+ drivers/crypto/hisilicon/sec2/sec_main.c  |  58 +++-
+ drivers/crypto/hisilicon/zip/zip_main.c   |  57 +++-
+ 5 files changed, 521 insertions(+), 92 deletions(-)
 
 -- 
-Sincerely yours,
-Mike.
+2.8.1
+
