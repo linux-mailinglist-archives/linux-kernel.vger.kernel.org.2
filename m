@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E16C3E347C
+	by mail.lfdr.de (Postfix) with ESMTP id AAFE03E347D
 	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 11:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbhHGJte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 05:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59628 "EHLO
+        id S232125AbhHGJth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 05:49:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231928AbhHGJsz (ORCPT
+        with ESMTP id S231916AbhHGJs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 05:48:55 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FC6C0613D3
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 02:48:38 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id h14so14290420wrx.10
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 02:48:38 -0700 (PDT)
+        Sat, 7 Aug 2021 05:48:56 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7249DC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 02:48:39 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id m28-20020a05600c3b1cb02902b5a8c22575so7554484wms.0
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 02:48:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=i4txUbUiM72tg9+taxP8c210NgRR0U+ErnpmNqbMHEI=;
-        b=iEPWkQ/dnS265W7fBT/TEgqIIRyyMIliV/GBBFJWxkM6ogZnTVA7OptaFtIoBQutWL
-         VkugHFefYY8AzTppMkuc8QQmdhiPIBJyF87UM0FfnpZBVNWR/jnPRimt133kcXw+Y5nu
-         q1Ry6oJc0ZjBqk2fqreB6zjmztiRDR4PC4ARnr29nLoMzR1qDDw9XxhQcVhcFxb8lADX
-         2cEQfo/pAfK0ZQEH4573FBkg+S6DT6YonAJlI1HE28UPPQSsj+CxWeXrX80JVJiWFTUd
-         VRSkUZEMWt7kdRGmdxgaaXI3GopgZMc3LXHDOsudevwxoAjBEIFAPzRY8xcPKL0qce6i
-         +FLg==
+        bh=6SDVwAxo8MuHClJKgaVJAPWUKlCJYuiKpUSio+EsXf4=;
+        b=gMS6SctLHDCRPcwWmcR+TmjFJveV434CNMBCOi9q71OTUw3SiaCW0MEAGoGSEDxw5f
+         XYo1zIQ4HKaUVmBQvJxPmw256xes8VIzViUfnppzEhoo4+gYmyCLcdZLx3IAUrRQMTIP
+         NZOUt9L9CSpvKEsm+kry1stXCbOdnZYZh0RYyiqymlS1yhSsBvmAcuBam+/2PUFWGiAi
+         eGULh3aCHeQm6u9kGE1a29RNjTHLLGjBPYrLxNAY2i8jvFXWxGdQDcUPOOSpgaBnib+A
+         EK4gxPIFTff9yCOuGuXvHO/vE+wR7XNt/SfCBYRJ/iWASeky1ECoH/dZIXLxqj0gVho8
+         lPdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=i4txUbUiM72tg9+taxP8c210NgRR0U+ErnpmNqbMHEI=;
-        b=EeAmRAXwvW+BXJqSXrMo0fq4mxaMgG2/rkUVDPgFl9qhld4eeF2F/bo2heatUndMzM
-         PnmcRZ5MjkBiYfCgOHTd/f39pGhl6bSUdmyZpveujqSJYXIIgDOubqTSJXxBk1jD/vNT
-         lkwctMdorr6X2IWitH/IFIZQQhef6lgtO55TygM3nw5DuEriN1/Ag0vS/LsEsg1yVUyz
-         sEcfA3r25fFuXnqH8zAXiaLgTNvQw5eFfMNZ/Vlybhq/8wGY/SfSXX/q8PjFu2fS6uMz
-         tW0zoCE8HoYCAPvUAO4aFphiSpmTF95uArG4sqG7YeaSdjU351seh4yhP1BUb3NR5p68
-         qY8w==
-X-Gm-Message-State: AOAM531IoF1ifPGkXZM/EmIx4Qk9ZE7ZjciaauKHkU9CM9r5WIqyOjMD
-        uO55xqPNmOe0noJkHxl0QZhAPVrrBdo=
-X-Google-Smtp-Source: ABdhPJyhei1pjYm7I3WMqJNUc7CB23dSmOuCDVOnXcKnm3Yp4eGbtn7LNHQb956N3JyRESoBBrgI2A==
-X-Received: by 2002:adf:f112:: with SMTP id r18mr14538107wro.160.1628329716716;
-        Sat, 07 Aug 2021 02:48:36 -0700 (PDT)
+        bh=6SDVwAxo8MuHClJKgaVJAPWUKlCJYuiKpUSio+EsXf4=;
+        b=I/5nsbPZTQogVHo54Hks2WX6RWnhidruF/HOe5hQcBGl2GFy4blQmfiZLn7ngHjpxm
+         38e/ugSpAuKwJ7O3XOSjIIvkoMEbxveq6HGkFtm4GP3ZqoN9At1HhhHVaQ6YyjitgaUJ
+         7Pm5TO8MSoG9Fdo8KGt7mRjKqzXII+JdB1kE8bViE/76wmqP8eOxbzjEyZddi7L54kPz
+         xvoYEu+gHJ2EpsUeXuT85KRKlBYxI2KMHicwcTPtSBkPeXIGUrnSHuKLyfuE0VSSeEA8
+         gX94Ikzc6nSFFMpOa7xs0YvZbr/zbzuIkF/2EctnBY3CpVMEmr5A6H6jJHOEdtafDAZ3
+         xFWA==
+X-Gm-Message-State: AOAM5318mM/YmxUdRAyYnnGOYoAxFP3xWtpFb8yygXwYqUuKLdMiqSed
+        JqvLwwbIEPcj2gBZ33rV84IyGlhWiZ0=
+X-Google-Smtp-Source: ABdhPJxmJLXuCSsatnpHPIZpX4tl0hFbZodDj/NY74F7Lw0zONQN3VAoXEbdBdeLKLToRH5t9Afinw==
+X-Received: by 2002:a05:600c:4b86:: with SMTP id e6mr24184388wmp.110.1628329718022;
+        Sat, 07 Aug 2021 02:48:38 -0700 (PDT)
 Received: from agape ([5.171.80.112])
-        by smtp.gmail.com with ESMTPSA id c190sm11252174wma.21.2021.08.07.02.48.36
+        by smtp.gmail.com with ESMTPSA id d9sm1809720wrw.26.2021.08.07.02.48.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Aug 2021 02:48:36 -0700 (PDT)
+        Sat, 07 Aug 2021 02:48:37 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 16/21] staging: rtl8723bs: remove unused rtw_rf_config module param
-Date:   Sat,  7 Aug 2021 11:48:08 +0200
-Message-Id: <a83eaa9b2350d3d16f5b1dddc40870e0f0a6df06.1628329348.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 17/21] staging: rtl8723bs: remove unused macro in include/hal_data.h
+Date:   Sat,  7 Aug 2021 11:48:09 +0200
+Message-Id: <13b4f41247d1b8bc10f0576d82e4dc9a285d88e1.1628329348.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1628329348.git.fabioaiuto83@gmail.com>
 References: <cover.1628329348.git.fabioaiuto83@gmail.com>
@@ -64,56 +64,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove unused rtw_rf_config module param and struct field
-used to store the param value.
+remove unused macro in include/hal_data.h
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/include/drv_types.h | 1 -
- drivers/staging/rtl8723bs/os_dep/os_intfs.c   | 4 ----
- 2 files changed, 5 deletions(-)
+ drivers/staging/rtl8723bs/include/hal_data.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8723bs/include/drv_types.h b/drivers/staging/rtl8723bs/include/drv_types.h
-index d49009c75d2e..580028d28c42 100644
---- a/drivers/staging/rtl8723bs/include/drv_types.h
-+++ b/drivers/staging/rtl8723bs/include/drv_types.h
-@@ -132,7 +132,6 @@ struct registry_priv {
+diff --git a/drivers/staging/rtl8723bs/include/hal_data.h b/drivers/staging/rtl8723bs/include/hal_data.h
+index f0b26e44f9b9..2bd7a7151db1 100644
+--- a/drivers/staging/rtl8723bs/include/hal_data.h
++++ b/drivers/staging/rtl8723bs/include/hal_data.h
+@@ -404,6 +404,5 @@ struct hal_com_data {
+ #define GET_HAL_DATA(__padapter)	((struct hal_com_data *)((__padapter)->HalData))
+ #define GET_HAL_RFPATH_NUM(__padapter) (((struct hal_com_data *)((__padapter)->HalData))->NumTotalRFPath)
+ #define RT_GetInterfaceSelection(_Adapter)	(GET_HAL_DATA(_Adapter)->InterfaceSel)
+-#define GET_RF_TYPE(__padapter)		(GET_HAL_DATA(__padapter)->rf_type)
  
- 	u8 lowrate_two_xmit;
- 
--	u8 rf_config;
- 	u8 low_power;
- 
- 	u8 wifi_spec;/*  !turbo_mode */
-diff --git a/drivers/staging/rtl8723bs/os_dep/os_intfs.c b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-index 128c64e0f0ab..7728eabdfe48 100644
---- a/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-+++ b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-@@ -89,8 +89,6 @@ static int rtw_beamform_cap = 0x2;
- 
- static int rtw_lowrate_two_xmit = 1;/* Use 2 path Tx to transmit MCS0~7 and legacy mode */
- 
--/* int rf_config = RF_1T2R;  1T2R */
--static int rtw_rf_config = RF_MAX_TYPE;  /* auto */
- static int rtw_low_power;
- static int rtw_wifi_spec;
- static int rtw_channel_plan = RT_CHANNEL_DOMAIN_MAX;
-@@ -144,7 +142,6 @@ module_param(rtw_ampdu_amsdu, int, 0644);
- 
- module_param(rtw_lowrate_two_xmit, int, 0644);
- 
--module_param(rtw_rf_config, int, 0644);
- module_param(rtw_power_mgnt, int, 0644);
- module_param(rtw_smart_ps, int, 0644);
- module_param(rtw_low_power, int, 0644);
-@@ -249,7 +246,6 @@ static void loadparam(struct adapter *padapter, struct net_device *pnetdev)
- 	registry_par->beamform_cap = (u8)rtw_beamform_cap;
- 
- 	registry_par->lowrate_two_xmit = (u8)rtw_lowrate_two_xmit;
--	registry_par->rf_config = (u8)rtw_rf_config;
- 	registry_par->low_power = (u8)rtw_low_power;
- 
- 
+ #endif /* __HAL_DATA_H__ */
 -- 
 2.20.1
 
