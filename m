@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011053E346A
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 11:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8393E3468
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 11:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbhHGJrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 05:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
+        id S231747AbhHGJrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 05:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbhHGJrM (ORCPT
+        with ESMTP id S231615AbhHGJrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 05:47:12 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9303FC0613CF;
-        Sat,  7 Aug 2021 02:46:54 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id e5so10535927pld.6;
-        Sat, 07 Aug 2021 02:46:54 -0700 (PDT)
+        Sat, 7 Aug 2021 05:47:02 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99ABC0613D3
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 02:46:44 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so26376535pjr.1
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 02:46:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8koQuKZyEuJuuWYSxYvN0Gjl34pe9vlL2qfZoDPh0Ns=;
-        b=Dios3hd8a12b1cXhtDjftT88MfewDJh5k/izGvn9T5CqyAgH0R6+sZdKjFyyXFhD8d
-         7SAsh711ApmdnQ6Dhpe5v+XSFTfnK4WTlaqHVyxfLMPaLYVTUN0mQvdk88EwFSUjB7lm
-         DI15XVEal3F2rObq2DvH842wBv0FD6xAIrWZVy8gYWbrBy4kBDE/ZVdw6T/JUtqABXJL
-         4FIP52NGlXnNIo1CaQNTF/3TypPi/w9ikUGUYJebDKdyC5r5JyTwYM9p71UX1xa6/Xg1
-         sMFIOPp6gFfytS1nlBW9vXC6IMIU5wXIutK2yUzJUsTxQzoo/UAc1TjK9UjMManEJ3h8
-         p0ug==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Mozi9talEt/mI/l6KvxWbDISyLan2Xy8GUlPURIr5DU=;
+        b=aMQO+4gcdWmQkXxeuKofbMTIHowkfCM0OYTabnI+bi5wV6Y05CPxWRDSD0Brczn1I8
+         WaRxuqZFqxcRmzDk0Te72bzjpbEOxF+qsFXAn9W6SC+Izi/kZO77dhLqqqpYkD3mw69q
+         39YBy4MbyzPh+mUTKHVreBsq+MpXSOyldB2nVqGi0BrhYNTGAbYa3jxNRhzHB4m50czU
+         off+fqzjgZMOmGeHBUCTYIcbASXzOrGSFTZrySn5WZ/C5ZWoZ41FhasgVpbb+k826yJm
+         D0pq19UiQ+11dmg4bUOdt3o6f0200tT93Mv19Vo9D8Y2C5/e9eka9O5cu5TIZeLGSAa9
+         /0Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8koQuKZyEuJuuWYSxYvN0Gjl34pe9vlL2qfZoDPh0Ns=;
-        b=iA6Diaq+KOf9qphYzrAM6fXZNOdoY9GHE4zwB5qql4dZVu1V/Wc+7hO2KuNRK2orwq
-         Sb2qemm+5O/KNIORhLBv7NWskhFclUIqBxmr/iFm553Tgv7zH0biclynlrBUZ9REnQ/3
-         CU3E5h9L7mkq8W/4WNB/ZWaoayAb6Tvvaqm9RbU1aSnOr7lNlewm6GIlh/pR5nCipgYA
-         CiCFEYYEmkl98Tmi+4Y/96u/3ppA126MWywtnGnDGMbjejSn5qqd8HZhR3I9mi1fkpx7
-         GtMHqNWYozqEC1iJTn847Lse+YUy3wnapef46XYurfyZFDVyfzEHAFLbzApvhtBh2B2t
-         alug==
-X-Gm-Message-State: AOAM533JRGVynshLH38XfdWKC+Ivg90rMt0xF8Ak2LUeYQkACwJ7DyH/
-        /A/XbX+G1Lxo9FEL7nYzCdNvLDImZWXgIu4qHrA=
-X-Google-Smtp-Source: ABdhPJwTt6zim+bQC84iWCETJCA1dqlH1S6Gg1WguqiXW0lAEH+AUw44b5A4uoAscePs6cVO0JutXOMjiWerr/lw40U=
-X-Received: by 2002:a65:5ccd:: with SMTP id b13mr165535pgt.203.1628329614039;
- Sat, 07 Aug 2021 02:46:54 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=Mozi9talEt/mI/l6KvxWbDISyLan2Xy8GUlPURIr5DU=;
+        b=T3+UG8Rx6ipPf9DmzQW/c+F1fiFOifXV3+zPBFOGAPxVtOctbyGZPOHhgpPAJPnTP5
+         f3NlMf1VfzFBVRGbcO1DRbC2ZFa5uBTisSRlQmGv8k+5oR2N7AgF/x/sW4ObgWvFkxXS
+         4J+l+rnRcmRZ44RuYS9OE7eNi0uYbTy+8ny0Zo+6wrTqAgYA0lbazmNNdJluj/HO0Ov/
+         BEEm4bc137FJ8UNLAd0BinmTd4dTT51ZYDctnImkZ8bXJnU2Mx+Ipwl/PUi2l2O/J3sn
+         Lb09iqk3S4E8wAtdv2hXaM7WzE4JKyIKbGaVvQzE1kjQ4KMzeEj6ysYxEvT41BFQA79p
+         Y/Uw==
+X-Gm-Message-State: AOAM533ArW/kxKW66F2QRDMDG+seHKZjTbAyyCrFAQRcfVOU0d4G9B9J
+        S5VXmBSpyoLE1R6diHTYMbdgR9Cu4HphaWMXmRY=
+X-Google-Smtp-Source: ABdhPJyBZrmHcxTp8EiZ/N6O/K5k88k1ZX4EENwDNdagborpzR1O1KIzFkpZrcs9MpGApGeYmIQBHfPrh6T4lTHb+7o=
+X-Received: by 2002:a63:211c:: with SMTP id h28mr744025pgh.83.1628329604234;
+ Sat, 07 Aug 2021 02:46:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210806154951.4564-1-andriy.shevchenko@linux.intel.com> <fdf5b050-2c8d-f3f1-f8bd-0dbc616c9bc6@gmail.com>
-In-Reply-To: <fdf5b050-2c8d-f3f1-f8bd-0dbc616c9bc6@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 7 Aug 2021 12:46:17 +0300
-Message-ID: <CAHp75VfNkinQn1SsTU24THA=0XQZUX1KeAW42TvsCYO0DfadRQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] platform/x86/intel: int3472: Use y instead of objs
- in Makefile
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>
+Received: by 2002:a05:6a10:fa91:0:0:0:0 with HTTP; Sat, 7 Aug 2021 02:46:43
+ -0700 (PDT)
+Reply-To: georgemike7031@gmail.com
+From:   george mike <eddywilliam0002@gmail.com>
+Date:   Sat, 7 Aug 2021 11:46:43 +0200
+Message-ID: <CAP8JzxKv2CDJdmGL3n2=5qxi38qxHKCwJXZt-eBcBsPM5vdFUw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 7, 2021 at 3:20 AM Daniel Scally <djrscally@gmail.com> wrote:
-> On 06/08/2021 16:49, Andy Shevchenko wrote:
-> > The 'objs' is for user space tools, for the kernel modules
-> > we should use 'y'.
->
-> Oops, now you mention it I remember you saying that for the cio2-bridge
-> code too - thanks.
+Hallo
 
-Just for the sake of reference (I spent some time to realize from
-where I have got this):
-https://www.kernel.org/doc/html/latest/kbuild/makefiles.html#composite-userspace-programs
-(Note, that there is the first section with the first "objs" mention)
+Mein Name ist George Mike, ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
+dir anbieten
+der n=C3=A4chste Angeh=C3=B6rige meines Klienten. Sie erben die Summe von (=
+8,5
+Millionen US-Dollar)
+Dollar, die mein Mandant vor seinem Tod auf der Bank hinterlie=C3=9F.
 
-...
+Mein Mandant ist ein B=C3=BCrger Ihres Landes, der mit seiner Frau bei
+einem Autounfall gestorben ist
+und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, w=C3=A4hrend
+50% dies tun werden
+sein f=C3=BCr dich.
+Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
+Details:georgemike7031@gmail.com
 
-> Reviewed-by: Daniel Scally <djrscally@gmail.com>
-
-Thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
+Vielen Dank im Voraus,
+Herr George Mike,
