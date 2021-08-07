@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5AB3E365E
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 18:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6923E3664
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 19:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbhHGQ4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 12:56:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229437AbhHGQ4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 12:56:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E104C61058;
-        Sat,  7 Aug 2021 16:55:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628355353;
-        bh=xneXCef3FRjBCnaNoY9tPBcNVJGns+i3iXDMrVO58mU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U9cRwDNoB6btRNhwTev/FroT9STOvybHbTC5Wd7HQsfk7sHA/LRv2Jz4Ob60iTCW/
-         vzmIgNeKI+7hn91QKZPej+HhOnQebH/rf3tl/mjl57NIoOFNGY0CORfAKiMPACjmOS
-         PZ8VqjW4lyOC4Mq70yCjJYJ9QiLjZdhFC3ajV3x5onW0x0XJI7TsbOBEwAyLd9asNw
-         rO6BXHol6p6s0N0TjMuwKbdmtEIaGSBS9maUDC6DR57GirE9fV2eiZb3XL2C7qchwY
-         vPdsVBfmdSL7eRL002qBnjdFbCj9AoyZDEX8PCp1YzK9i1qlOyJhaQGb9W6K7rFY4f
-         hmJrE1sa3JyxA==
-Date:   Sat, 7 Aug 2021 09:55:51 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     krisman@collabora.com, tytso@mit.edu, adilger.kernel@dilger.ca,
-        jaegeuk@kernel.org, chao@kernel.org, drosen@google.com,
-        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-Subject: Re: [PATCH] fs: unicode: Add utf8-data module
-Message-ID: <YQ67FxJRlfTj5EGy@sol.localdomain>
-References: <20210730124333.6744-1-shreeya.patel@collabora.com>
+        id S229972AbhHGRBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 13:01:11 -0400
+Received: from smtprelay0173.hostedemail.com ([216.40.44.173]:37650 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229622AbhHGRA4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 13:00:56 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave07.hostedemail.com (Postfix) with ESMTP id 0E8E4180D0F8A;
+        Sat,  7 Aug 2021 17:00:17 +0000 (UTC)
+Received: from omf05.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 377F219478;
+        Sat,  7 Aug 2021 16:58:16 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id 494B0B2794;
+        Sat,  7 Aug 2021 16:58:15 +0000 (UTC)
+Message-ID: <7afa073ece002f84f4f2c28b3ac3032ded94bf43.camel@perches.com>
+Subject: Re: [V2][PATCH] atm: horizon: Fix spelling mistakes in TX comment
+From:   Joe Perches <joe@perches.com>
+To:     Jun Miao <jun.miao@windriver.com>, 3chas3@gmail.com
+Cc:     linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Sat, 07 Aug 2021 09:58:14 -0700
+In-Reply-To: <20210807153830.1293760-1-jun.miao@windriver.com>
+References: <20210807153830.1293760-1-jun.miao@windriver.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210730124333.6744-1-shreeya.patel@collabora.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.11
+X-Stat-Signature: bsrdfkk7u7f9wndwikex4j4but6fbxem
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 494B0B2794
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18CJGDPYaoC+RPaCCYosPaoxTfRnMIQ484=
+X-HE-Tag: 1628355495-985621
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 06:13:33PM +0530, Shreeya Patel wrote:
-> diff --git a/fs/unicode/utf8n.h b/fs/unicode/utf8n.h
-> index 0acd530c2c79..6843229bcb2b 100644
-> --- a/fs/unicode/utf8n.h
-> +++ b/fs/unicode/utf8n.h
-> @@ -11,6 +11,7 @@
->  #include <linux/export.h>
->  #include <linux/string.h>
->  #include <linux/module.h>
-> +#include <linux/spinlock.h>
->  
->  /* Encoding a unicode version number as a single unsigned int. */
->  #define UNICODE_MAJ_SHIFT		(16)
-> @@ -21,6 +22,11 @@
->  	 ((unsigned int)(MIN) << UNICODE_MIN_SHIFT) |	\
->  	 ((unsigned int)(REV)))
->  
-> +extern spinlock_t utf8_lock;
-> +
-> +extern struct utf8_data *utf8_ops;
-> +extern bool utf8data_loaded;
+On Sat, 2021-08-07 at 23:38 +0800, Jun Miao wrote:
+> It's "must not", not "musn't", meaning "shall not".
+> Let's fix that.
+> 
+> Suggested-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Jun Miao <jun.miao@windriver.com>
+> ---
+>  drivers/atm/horizon.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/atm/horizon.c b/drivers/atm/horizon.c
+> index 4f2951cbe69c..9ee494bc5c51 100644
+> --- a/drivers/atm/horizon.c
+> +++ b/drivers/atm/horizon.c
+> @@ -2167,10 +2167,10 @@ static int hrz_open (struct atm_vcc *atm_vcc)
+>    
+> 
+>    // Part of the job is done by atm_pcr_goal which gives us a PCR
+>    // specification which says: EITHER grab the maximum available PCR
+> -  // (and perhaps a lower bound which we musn't pass), OR grab this
+> +  // (and perhaps a lower bound which we mustn't pass), OR grab this
 
-The 'utf8data_loaded' variable is unnecessary, since it's equivalent to
-'utf8_ops != NULL'.
+I meant to suggest you change the patch to use "must not" not
+the commit message.
 
-Also, there are no function pointer fields anymore, so this really should be
-called utf8_data, not utf8_ops.
+>    // amount, rounding down if you have to (and perhaps a lower bound
+> -  // which we musn't pass) OR grab this amount, rounding up if you
+> -  // have to (and perhaps an upper bound which we musn't pass). If any
+> +  // which we mustn't pass) OR grab this amount, rounding up if you
+> +  // have to (and perhaps an upper bound which we mustn't pass). If any
+>    // bounds ARE passed we fail. Note that rounding is only rounding to
+>    // match device limitations, we do not round down to satisfy
+>    // bandwidth availability even if this would not violate any given
 
-- Eric
+
