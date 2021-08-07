@@ -2,175 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B613E32F5
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 05:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F328B3E32F8
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 05:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhHGD0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 23:26:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50078 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230398AbhHGDZt (ORCPT
+        id S230383AbhHGD3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 23:29:13 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:51222 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230236AbhHGD3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 23:25:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628306732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OK+bQTiUipxL6Jk7xja/DmcKUDIieuX4Ee7RUXkwoH4=;
-        b=MxGj6GCWZEImAV6N249Gfr7A05BwEAPnH1JZ/kaBDVQbLz1kwDxA+zlufKOA6SPnRaIkF6
-        BDqingXoOQKWway8hSdHRXHeVtTfM3V/+smI6zk1qEWUKaIj40Uz30DW86oi71TRyRAJ05
-        23lBW1kKy6P6892E/S8pCpf390JaOOY=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-279-vaQgol2KMBuewB14T-oPWg-1; Fri, 06 Aug 2021 23:25:31 -0400
-X-MC-Unique: vaQgol2KMBuewB14T-oPWg-1
-Received: by mail-qk1-f199.google.com with SMTP id w2-20020a3794020000b02903b54f40b442so7768383qkd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 06 Aug 2021 20:25:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OK+bQTiUipxL6Jk7xja/DmcKUDIieuX4Ee7RUXkwoH4=;
-        b=NcDc4LcCoebSMd6q6LdghOymz5O0ITTBi8rMDBvnloLq7jw32GFxzuV92qWuvc+/N9
-         9BgKaLnSkqWU4sOVNN3EOR4290aHZZIclFx7Bb+5F+p2rEHqactm2EF6VIeAIXrk4YGB
-         3c33jA+gj2pBn3b5x7fvzmPs0KFv0+zDcGqJWXOohhVYTFPHkqUFsri8aMhFP2K1j6WV
-         Q72Y05neM+ub1eIzZjk7XEZhz/cIDm/IIxDjQGbSxwdiEbXiuPYnYc0CS65qTYitIhQG
-         N9aQDw58j4lSXHDYGEBI2gEoD/orXAULIXYguKb9tiefHTGh1HaQ8UJP8+5JU/tambAl
-         gRmg==
-X-Gm-Message-State: AOAM530IWZzwb4cMkLZol9W7Lpvr3Dv22CoqDm0DNhqPKl1RpkYxYOuX
-        uQJcTlidme3vjjVHAZbTiI2VnR+0R1DaJAQhX0xSGpGdNUcNTG43s8i3gcD1XADwhGpK55HPgFG
-        FjDlFI0x5rut0NptREB9Ea4uxGc5ywM65cP/FT8Puwpj7J7GHkmoaXQE7Oo/jmydLNmHxoP99iA
-        ==
-X-Received: by 2002:aed:2163:: with SMTP id 90mr11658380qtc.186.1628306730437;
-        Fri, 06 Aug 2021 20:25:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzCK0I1XtqNK7P9nzzv0g1D1B3S1najqoV6hQLfL5gLFgAFA6yE5Kw0DBDbjYav/08UMiA3oA==
-X-Received: by 2002:aed:2163:: with SMTP id 90mr11658356qtc.186.1628306730149;
-        Fri, 06 Aug 2021 20:25:30 -0700 (PDT)
-Received: from localhost.localdomain (bras-base-toroon474qw-grc-92-76-70-75-133.dsl.bell.ca. [76.70.75.133])
-        by smtp.gmail.com with ESMTPSA id a5sm5514875qkk.92.2021.08.06.20.25.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 06 Aug 2021 20:25:29 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Alistair Popple <apopple@nvidia.com>,
-        Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>,
-        ivan.teterevkov@nutanix.com,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Hugh Dickins <hughd@google.com>, peterx@redhat.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH RFC 4/4] mm: Install marker pte when page out for shmem pages
-Date:   Fri,  6 Aug 2021 23:25:21 -0400
-Message-Id: <20210807032521.7591-5-peterx@redhat.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210807032521.7591-1-peterx@redhat.com>
-References: <20210807032521.7591-1-peterx@redhat.com>
+        Fri, 6 Aug 2021 23:29:11 -0400
+X-UUID: d19d9935f1cd465da03a7f1738c18c11-20210807
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=BmNE7y7NrgqM2Smwx4znez/paXuFyhXlFjgphUZwtrM=;
+        b=kJW9NCfRc2FGgqvn73VZXjzPGV3vYmZYiM1g5SsiQMY5jf14WhohV6m0vqUEFacrsZvJxC/Gg85w0wjAsjDe7CE0zICGFlxfQGHNbRRxAoWPcwj+8+ms0dCLe1VLzOf2A7IwQcbPrWjgcs0wN8P3pb/lGMW7OD480ZZqyNEWyGA=;
+X-UUID: d19d9935f1cd465da03a7f1738c18c11-20210807
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 843724746; Sat, 07 Aug 2021 11:28:52 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 7 Aug 2021 11:28:51 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 7 Aug 2021 11:28:51 +0800
+Message-ID: <1628306931.11590.0.camel@mtksdaap41>
+Subject: Re: [PATCH v10 4/5] spmi: mediatek: Add support for MT8195
+From:   Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Henry Chen <henryc.chen@mediatek.com>
+Date:   Sat, 7 Aug 2021 11:28:51 +0800
+In-Reply-To: <162827215909.1975443.852277412377742323@swboyd.mtv.corp.google.com>
+References: <1627972461-2627-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <1627972461-2627-5-git-send-email-hsin-hsiung.wang@mediatek.com>
+         <162827215909.1975443.852277412377742323@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When shmem pages are swapped out, instead of clearing the pte entry, we leave a
-marker pte showing that this page is swapped out as a hint for pagemap.  A new
-TTU flag is introduced to identify this case.
-
-This can be useful for detecting swapped out cold shmem pages.  Then after some
-memory background scanning work (which will fault in the shmem page and
-confusing page reclaim), we can do MADV_PAGEOUT explicitly on this page to swap
-it out again as we know it was cold.
-
-For pagemap, we don't need to explicitly set PM_SWAP bit, because by nature
-SWP_PTE_MARKER ptes are already counted as PM_SWAP due to it's format as swap.
-
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- fs/proc/task_mmu.c   |  1 +
- include/linux/rmap.h |  1 +
- mm/rmap.c            | 19 +++++++++++++++++++
- mm/vmscan.c          |  2 +-
- 4 files changed, 22 insertions(+), 1 deletion(-)
-
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index eb97468dfe4c..21b8594abc1d 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1384,6 +1384,7 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
- 		if (pm->show_pfn)
- 			frame = swp_type(entry) |
- 				(swp_offset(entry) << MAX_SWAPFILES_SHIFT);
-+		/* NOTE: this covers PTE_MARKER_PAGEOUT too */
- 		flags |= PM_SWAP;
- 		if (is_pfn_swap_entry(entry))
- 			page = pfn_swap_entry_to_page(entry);
-diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-index c976cc6de257..318a0e95c7fb 100644
---- a/include/linux/rmap.h
-+++ b/include/linux/rmap.h
-@@ -95,6 +95,7 @@ enum ttu_flags {
- 					 * do a final flush if necessary */
- 	TTU_RMAP_LOCKED		= 0x80,	/* do not grab rmap lock:
- 					 * caller holds it */
-+	TTU_HINT_PAGEOUT	= 0x100, /* Hint for pageout operation */
- };
- 
- #ifdef CONFIG_MMU
-diff --git a/mm/rmap.c b/mm/rmap.c
-index b9eb5c12f3fe..24a70b36b6da 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1384,6 +1384,22 @@ void page_remove_rmap(struct page *page, bool compound)
- 	unlock_page_memcg(page);
- }
- 
-+static inline void
-+pte_marker_install(struct vm_area_struct *vma, pte_t *pte,
-+		   struct page *page, unsigned long address)
-+{
-+#ifdef CONFIG_PTE_MARKER_PAGEOUT
-+	swp_entry_t entry;
-+	pte_t pteval;
-+
-+	if (vma_is_shmem(vma) && !PageAnon(page) && pte_none(*pte)) {
-+		entry = make_pte_marker_entry(PTE_MARKER_PAGEOUT);
-+		pteval = swp_entry_to_pte(entry);
-+		set_pte_at(vma->vm_mm, address, pte, pteval);
-+	}
-+#endif
-+}
-+
- /*
-  * @arg: enum ttu_flags will be passed to this argument
-  */
-@@ -1628,6 +1644,9 @@ static bool try_to_unmap_one(struct page *page, struct vm_area_struct *vma,
- 			 */
- 			dec_mm_counter(mm, mm_counter_file(page));
- 		}
-+
-+		if (flags & TTU_HINT_PAGEOUT)
-+			pte_marker_install(vma, pvmw.pte, page, address);
- discard:
- 		/*
- 		 * No need to call mmu_notifier_invalidate_range() it has be
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 4620df62f0ff..4754af6fa24b 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1493,7 +1493,7 @@ static unsigned int shrink_page_list(struct list_head *page_list,
- 		 * processes. Try to unmap it here.
- 		 */
- 		if (page_mapped(page)) {
--			enum ttu_flags flags = TTU_BATCH_FLUSH;
-+			enum ttu_flags flags = TTU_BATCH_FLUSH | TTU_HINT_PAGEOUT;
- 			bool was_swapbacked = PageSwapBacked(page);
- 
- 			if (unlikely(PageTransHuge(page)))
--- 
-2.32.0
+SGksDQoNCk9uIEZyaSwgMjAyMS0wOC0wNiBhdCAxMDo0OSAtMDcwMCwgU3RlcGhlbiBCb3lkIHdy
+b3RlOg0KPiBRdW90aW5nIEhzaW4tSHNpdW5nIFdhbmcgKDIwMjEtMDgtMDIgMjM6MzQ6MjApDQo+
+ID4gRnJvbTogSGVucnkgQ2hlbiA8aGVucnljLmNoZW5AbWVkaWF0ZWsuY29tPg0KPiA+IA0KPiA+
+IEFkZCBzcG1pIHN1cHBvcnQgZm9yIE1UODE5NS4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBI
+ZW5yeSBDaGVuIDxoZW5yeWMuY2hlbkBtZWRpYXRlay5jb20+DQo+IA0KPiBNaXNzaW5nIFNpZ25l
+ZC1vZmYtYnkgZnJvbSBoc2luLWhzaXVuZy53YW5nIGhlcmUNCj4gDQoNClNvcnJ5IGZvciB0aGUg
+bWlzc2luZy4gSSB3aWxsIGFkZCBpdCBpbiB0aGUgbmV4dCBwYXRjaC4NCg0KVGhhbmtzLg0KDQo+
+ID4gLS0tDQo+ID4gY2hhbmdlcyBzaW5jZSB2OToNCj4gPiAtIE5vIGNoYW5nZS4NCj4gPiAtLS0N
+Cj4gPiAgZHJpdmVycy9zcG1pL3NwbWktbXRrLXBtaWYuYyB8IDkwICsrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgOTAgaW5zZXJ0aW9ucygr
+KQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NwbWkvc3BtaS1tdGstcG1pZi5jIGIv
+ZHJpdmVycy9zcG1pL3NwbWktbXRrLXBtaWYuYw0KPiA+IGluZGV4IDk0YzQ1ZDQ2YWIwYy4uMGMz
+MjA4MDFjOWQ1IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvc3BtaS9zcG1pLW10ay1wbWlmLmMN
+Cj4gPiArKysgYi9kcml2ZXJzL3NwbWkvc3BtaS1tdGstcG1pZi5jDQo+ID4gQEAgLTM0OCw2ICs0
+MjcsMTQgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBwbWlmX2RhdGEgbXQ2ODczX3BtaWZfYXJiID0g
+ew0KPiA+ICAgICAgICAgLnNvY19jaGFuID0gMiwNCj4gPiAgfTsNCj4gPiAgDQo+ID4gK3N0YXRp
+YyBjb25zdCBzdHJ1Y3QgcG1pZl9kYXRhIG10ODE5NV9wbWlmX2FyYltdID0gew0KPiANCj4gVGhp
+cyBpcyBhbiBhcnJheSBvZiB0eXBlIHBtaWZfZGF0YS4NCj4gDQo+ID4gKyAgICAgICB7DQo+ID4g
+KyAgICAgICAgICAgICAgIC5yZWdzID0gbXQ4MTk1X3JlZ3MsDQo+ID4gKyAgICAgICAgICAgICAg
+IC5zcG1pbXN0X3JlZ3MgPSBtdDgxOTVfc3BtaV9yZWdzLA0KPiA+ICsgICAgICAgICAgICAgICAu
+c29jX2NoYW4gPSAyLA0KPiA+ICsgICAgICAgfSwNCj4gPiArfTsNCj4gPiArDQo+ID4gIHN0YXRp
+YyBpbnQgbXRrX3NwbWlfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiAg
+ew0KPiA+ICAgICAgICAgc3RydWN0IHBtaWYgKmFyYjsNCj4gPiBAQCAtNDQ0LDYgKzUzMSw5IEBA
+IHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIG10a19zcG1pX21hdGNoX3RhYmxlW10g
+PSB7DQo+ID4gICAgICAgICB7DQo+ID4gICAgICAgICAgICAgICAgIC5jb21wYXRpYmxlID0gIm1l
+ZGlhdGVrLG10Njg3My1zcG1pIiwNCj4gPiAgICAgICAgICAgICAgICAgLmRhdGEgPSAmbXQ2ODcz
+X3BtaWZfYXJiLA0KPiANCj4gbXQ2ODczX3BtaWZfYXJiIGlzIG5vdCBhbiBhcnJheSwgc2VlIHRo
+ZSBjb250ZXh0IGhlYWRlciBhYm92ZS4NCj4gDQo+IEhvdyBkb2VzIHRoaXMgd29yaz8gSGFzIHRo
+aXMgYmVlbiB0ZXN0ZWQ/DQo+IA0KPiA+ICsgICAgICAgfSwgew0KPiA+ICsgICAgICAgICAgICAg
+ICAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTUtc3BtaSIsDQo+ID4gKyAgICAgICAgICAg
+ICAgIC5kYXRhID0gJm10ODE5NV9wbWlmX2FyYiwNCj4gPiAgICAgICAgIH0sIHsNCj4gPiAgICAg
+ICAgICAgICAgICAgLyogc2VudGluZWwgKi8NCj4gPiAgICAgICAgIH0sDQo+ID4gLS0gDQo+ID4g
+Mi4xOC4wDQo+ID4NCg0K
 
