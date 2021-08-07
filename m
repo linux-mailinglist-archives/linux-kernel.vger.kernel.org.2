@@ -2,124 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3705E3E3543
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 14:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B32323E3546
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 14:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232276AbhHGMIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 08:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232243AbhHGMIW (ORCPT
+        id S232163AbhHGMJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 08:09:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49291 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232049AbhHGMJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 08:08:22 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A4CC0613CF;
-        Sat,  7 Aug 2021 05:08:03 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id u2so10837666plg.10;
-        Sat, 07 Aug 2021 05:08:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Fe+Qj13L2fpPtbQOlPpWUWp2MGqwowpxswIvzZUFPvw=;
-        b=pwxgEYD4YDmvPKT65ehV5p9rq2kaMo1WsBdQc0LPMOsK1ocpIMQExH6S9dM+nWEIUJ
-         NeD9P1sVLAAoZLx1pH33AZzFQ8FI5u+ob9GqsJEJjfWvDcB5BEa84neHewUlfLIgzmhb
-         Q1AqIEtcRcbi2LNjRE3k8egJj2XClxNeqyLseB3clw6RpNRoCdPEFW98HyaxqWyNpZSE
-         hsSzo+T7tDsvO8kzAuxsP8e78zoyx4Ht3deLvxZkiLDC5EIxAw488igkkvwbMHyR8UV7
-         BxOVfPwSdCxmbcFVq9ViT/PBRb3dN88DaIiO+nzuG1RnCg96karkTqlwRxKqPuvFSD/u
-         PgbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Fe+Qj13L2fpPtbQOlPpWUWp2MGqwowpxswIvzZUFPvw=;
-        b=HIuUgCzZHJ/gYh//5AeaGG7ZN1ynA9xZMnXStmH4i/Gl0beGnN9TC2V5GSiIt8QuAc
-         tU7ePlnEsRqceERLCWool8DBjPGaDoB5t+VpyEbq5QTfIuhhFhk5qhAU0HpkQaRsvTyk
-         +tpESWPmgGChSrMUcFQAJAZCGojGYIwZU43L81RiKD/rJAEYjLsQTU9mwDPDL7mOFqOf
-         VOOvYli4hlDaIzFHMId04m9iXGILTANWhomCCk6T2riOorqbmAJPZ8ScXyhcK+eThX07
-         t7JaCvsnbYfmoAd8Ao2YLtZwqKgu45LP6HSVmvFAAEPIsxHtgENm6LNqlF/2pWhgPlrb
-         Ge3g==
-X-Gm-Message-State: AOAM530pVNXC71GmM+9qr1EQ/ARFSEV0UkY7KsEAlCAS+OHbfaG/thBF
-        M+5Vl+p6pzAtUFPhGtOk43I=
-X-Google-Smtp-Source: ABdhPJxzlYppj5h2KdgEpEL+dwojRRtBt/bO/LqjU8q0P/dgmC+3e1Vcm8yjwm+DTIahIHNxOtigvw==
-X-Received: by 2002:a62:9709:0:b029:3b2:ef36:6872 with SMTP id n9-20020a6297090000b02903b2ef366872mr15186759pfe.34.1628338083415;
-        Sat, 07 Aug 2021 05:08:03 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id b15sm16471035pgj.60.2021.08.07.05.07.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Aug 2021 05:08:02 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Jonathan McDowell <noodles@earth.li>,
-        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <vokac.m@gmail.com>,
-        Christian Lamparter <chunkeey@gmail.com>,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        Xiaofei Shen <xiaofeis@codeaurora.org>,
-        John Crispin <john@phrozen.org>,
-        Stefan Lippers-Hollmann <s.l-h@gmx.de>,
-        Hannu Nyman <hannu.nyman@iki.fi>,
-        Imran Khan <gururug@gmail.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Nick Lowe <nick.lowe@gmail.com>,
-        =?UTF-8?q?Andr=C3=A9=20Valentin?= <avalentin@vmh.kalnet.hooya.de>
-Subject: [RFC net-next 3/3] net: dsa: tag_qca: set offload_fwd_mark
-Date:   Sat,  7 Aug 2021 20:07:26 +0800
-Message-Id: <20210807120726.1063225-4-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210807120726.1063225-1-dqfext@gmail.com>
-References: <20210807120726.1063225-1-dqfext@gmail.com>
+        Sat, 7 Aug 2021 08:09:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1628338158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=d4TYSd02mzRf2TIB1Frp8TU56Sr3Vj8VyK7Z22hB08c=;
+        b=bA4uPMMagZ4Uq3+61ELaIQFZab9Toffp4X8hycYjODuDbY2W6rFAoctAAxHVwL52im04+Z
+        MD3hYYxJujnFoMoIGwQKMY/6VZqQECvd11deoYfpYtqTC0bLV/Icv6M4XJPN7q/yQzHoeJ
+        4WJv3wCICdaDpCAjyag+16PZpV549tc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-600-3UeGjiDeNNGt-XnzFrDjow-1; Sat, 07 Aug 2021 08:09:14 -0400
+X-MC-Unique: 3UeGjiDeNNGt-XnzFrDjow-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0342871805;
+        Sat,  7 Aug 2021 12:09:12 +0000 (UTC)
+Received: from asgard.redhat.com (unknown [10.36.110.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 057CA60C59;
+        Sat,  7 Aug 2021 12:09:05 +0000 (UTC)
+Date:   Sat, 7 Aug 2021 14:09:05 +0200
+From:   Eugene Syromiatnikov <esyr@redhat.com>
+To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Josh Don <joshdon@google.com>, Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Dmitry V. Levin" <ldv@strace.io>, linux-doc@vger.kernel.org,
+        linux-api@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH v3] uapi: expose enum pid_type as enum __kernel_pidtype
+Message-ID: <20210807120905.GA14706@asgard.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As we offload flooding and forwarding, set offload_fwd_mark according to
-Atheros header's type.
+Commit 7ac592aa35a684ff ("sched: prctl() core-scheduling interface")
+made use of enum pid_type in prctl's arg4;  however, this type
+and the associated enumeration definitions are not exposed to userspace.
+Try to fix that by providing enum __kernel_pidtype and tying in-kernel
+enum pid_type definitions to it.  Note that enum pid_type cannot be exposed
+as is, since "enum pid_type" is already exists in various projects [1]
+(notably gcc and strace), and "enum __pid_type" is defined by glibc and uclibc
+for fcntl(F_SETOWN_EX) owner ID type;  there is also __kernel_pid_t,
+that looks too similar to __kernel_pid_type.
 
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+[1] https://codesearch.debian.net/search?q=enum+pid_type
+
+Complements: 7ac592aa35a684ff ("sched: prctl() core-scheduling interface")
+Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
 ---
- net/dsa/tag_qca.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+v3:
+  - Fixed header guard macro: s/_UAPI_LINUX_PID_H/_UAPI_LINUX_PIDTYPE_H/,
+    as noted by Dmitry Levin.
 
-diff --git a/net/dsa/tag_qca.c b/net/dsa/tag_qca.c
-index 6e3136990491..ee5c1fdfef47 100644
---- a/net/dsa/tag_qca.c
-+++ b/net/dsa/tag_qca.c
-@@ -50,7 +50,7 @@ static struct sk_buff *qca_tag_xmit(struct sk_buff *skb, struct net_device *dev)
+v2: https://lore.kernel.org/lkml/20210807104800.GA22620@asgard.redhat.com/
+  - Header file is renamed from pid.h to pidtype.h to avoid collisions
+    with include/linux/pid.h when included from uapi headers;
+  - The enum type has renamed from __kernel_pid_type to __kernel_pidtype
+    to avoid possible confusion with __kernel_pid_t.
+
+v1: https://lore.kernel.org/lkml/20210807010123.GA5174@asgard.redhat.com/
+---
+ .../admin-guide/hw-vuln/core-scheduling.rst          |  7 ++++---
+ include/linux/pid.h                                  | 12 +++++++-----
+ include/uapi/linux/pidtype.h                         | 20 ++++++++++++++++++++
+ include/uapi/linux/prctl.h                           |  1 +
+ 4 files changed, 32 insertions(+), 8 deletions(-)
+ create mode 100644 include/uapi/linux/pidtype.h
+
+diff --git a/Documentation/admin-guide/hw-vuln/core-scheduling.rst b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+index 7b410ae..0989c48 100644
+--- a/Documentation/admin-guide/hw-vuln/core-scheduling.rst
++++ b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+@@ -61,9 +61,10 @@ arg3:
+     ``pid`` of the task for which the operation applies.
  
- static struct sk_buff *qca_tag_rcv(struct sk_buff *skb, struct net_device *dev)
+ arg4:
+-    ``pid_type`` for which the operation applies. It is of type ``enum pid_type``.
+-    For example, if arg4 is ``PIDTYPE_TGID``, then the operation of this command
+-    will be performed for all tasks in the task group of ``pid``.
++    ``pid_type`` for which the operation applies. It is of type
++    ``enum __kernel_pidtype``.  For example, if arg4 is ``__PIDTYPE_TGID``,
++    then the operation of this command will be performed for all tasks
++    in the task group of ``pid``.
+ 
+ arg5:
+     userspace pointer to an unsigned long for storing the cookie returned by
+diff --git a/include/linux/pid.h b/include/linux/pid.h
+index fa10acb..57cce71 100644
+--- a/include/linux/pid.h
++++ b/include/linux/pid.h
+@@ -5,14 +5,16 @@
+ #include <linux/rculist.h>
+ #include <linux/wait.h>
+ #include <linux/refcount.h>
++#include <uapi/linux/pidtype.h>
+ 
+ enum pid_type
  {
--	u8 ver;
-+	u8 ver, type;
- 	u16  hdr;
- 	int port;
- 	__be16 *phdr;
-@@ -82,6 +82,15 @@ static struct sk_buff *qca_tag_rcv(struct sk_buff *skb, struct net_device *dev)
- 	if (!skb->dev)
- 		return NULL;
- 
-+	type = (hdr & QCA_HDR_RECV_TYPE_MASK) >> QCA_HDR_RECV_TYPE_S;
-+	switch (type) {
-+	case 0x00: /* Normal packet */
-+	case 0x19: /* Flooding to CPU */
-+	case 0x1a: /* Forwarding to CPU */
-+		dsa_default_offload_fwd_mark(skb);
-+		break;
-+	}
+-	PIDTYPE_PID,
+-	PIDTYPE_TGID,
+-	PIDTYPE_PGID,
+-	PIDTYPE_SID,
+-	PIDTYPE_MAX,
++	PIDTYPE_PID = __PIDTYPE_PID,
++	PIDTYPE_TGID = __PIDTYPE_TGID,
++	PIDTYPE_PGID = __PIDTYPE_PGID,
++	PIDTYPE_SID = __PIDTYPE_SID,
 +
- 	return skb;
- }
++	PIDTYPE_MAX = __PIDTYPE_MAX
+ };
+ 
+ /*
+diff --git a/include/uapi/linux/pidtype.h b/include/uapi/linux/pidtype.h
+new file mode 100644
+index 0000000..759aa29
+--- /dev/null
++++ b/include/uapi/linux/pidtype.h
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _UAPI_LINUX_PIDTYPE_H
++#define _UAPI_LINUX_PIDTYPE_H
++
++/*
++ * Type of a process-related ID.  So far, it is used only
++ * for prctl(PR_SCHED_CORE);  not to be confused with type field
++ * of f_owner_ex structure argument of fcntl(F_SETOWN_EX).
++ */
++enum __kernel_pidtype
++{
++	__PIDTYPE_PID,
++	__PIDTYPE_TGID,
++	__PIDTYPE_PGID,
++	__PIDTYPE_SID,
++
++	__PIDTYPE_MAX /* Non-UAPI */
++};
++
++#endif /* _UAPI_LINUX_PIDTYPE_H */
+diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+index 967d9c5..0af570b 100644
+--- a/include/uapi/linux/prctl.h
++++ b/include/uapi/linux/prctl.h
+@@ -3,6 +3,7 @@
+ #define _LINUX_PRCTL_H
+ 
+ #include <linux/types.h>
++#include <linux/pidtype.h> /* enum __kernel_pidtype */
+ 
+ /* Values to pass as first argument to prctl() */
  
 -- 
-2.25.1
+2.1.4
 
