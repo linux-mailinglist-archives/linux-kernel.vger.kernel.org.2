@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081BD3E3606
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 17:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9823E3607
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 17:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhHGPCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 11:02:40 -0400
-Received: from mout.gmx.net ([212.227.15.19]:37737 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhHGPCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 11:02:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628348528;
-        bh=WjUBEM/wpIWu8FjBSrx8sFw9ILP0DGVrd76lOgEqG9g=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=SfYv+F8ftbmpCxr/HiEK/vkitTJ9F+GgT6Iz3HtRWNtJBdVlbdkeahbGrAt0JrSbJ
-         mbeUZveFycVt2VAe+DOWvT7BA0MyWR/rsr5pbzw4jU+LFntd12zt4eg//hBV01OgmO
-         tErPbpQDmRcU7UzHM6OwVbagno6tIRUtGB4N8HPM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvbBk-1n1T5a0AJ4-00shje; Sat, 07
- Aug 2021 17:02:08 +0200
-Date:   Sat, 7 Aug 2021 17:02:06 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-hardening@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/iio: Remove all strcpy() uses in favor of
- strscpy()
-Message-ID: <20210807141711.GC2688@titan>
-References: <20210801171157.17858-1-len.baker@gmx.com>
- <20210801205528.211c4e9c@jic23-huawei>
+        id S231303AbhHGPLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 11:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230513AbhHGPL3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 11:11:29 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E70C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 08:11:12 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id h9so16585740ljq.8
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 08:11:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9f7ghUXtHQ5rDYMyBLLCh4R9WR+dNTHwc7IlpM9D23o=;
+        b=CTVyN5wLrHKEspU84x3YdGLOn+ke577EFIBOHWCXsSM55RpUL1vOVaXARFWvygapcF
+         iQWHWrEqhA/UGjUZbxIQ+r88leyykBaN++pA1uhH+uaJXS8MnP8wLaKBYKheFHoNdaAS
+         3oIx+CfoYgirxSnqwzjWxDV3yW/5b8fnqYhI8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9f7ghUXtHQ5rDYMyBLLCh4R9WR+dNTHwc7IlpM9D23o=;
+        b=X1iKlE5R5niDjBWxfrq+avSTkAc6vkol/6jtSrY0b6nuaoL49TDe7RnJvHmIba8rCi
+         gLWbMTPzAEqI5qeXPeIcFz6Eo5ZHZ60DNKMZHMbH6GlQ3FxichaLQvB8A20Ck1MAGxyg
+         4OMdWSA1ZOY+8vPuBaqYJJR8vPNcff+Eh7/OPSiIFYFaPRaB4R2NXO+vUBML7/XTRo69
+         wd6YeucngnSx1NAy2fmcdiQVUFay79BlUH7XHjxS98Ft04zYQn0OLyKA55LDwH7buHz+
+         wy0vRbMH5ArucN7B2sRpYhueUNqXPyjevftYxitW/9vUlS1mUoBWSfqfxznGyZuyUpNh
+         PW5w==
+X-Gm-Message-State: AOAM531MeKFCibULZmffl3odILBLKryxDMs6oYAx2JPAOFi9up0bg+oa
+        XIFQQfKCbiA8lcdKye02mP4K5oVk/nqahTDr
+X-Google-Smtp-Source: ABdhPJzQtmUVS52mEYepdAdPacXBOFX07PIBjDeYLlo6T34wcR51JIaI4H/mKnwk6/tXr18iAnN4+A==
+X-Received: by 2002:a2e:8ec3:: with SMTP id e3mr6009924ljl.278.1628349070221;
+        Sat, 07 Aug 2021 08:11:10 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id t21sm737375lfg.74.2021.08.07.08.11.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 07 Aug 2021 08:11:09 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id g30so20073429lfv.4
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 08:11:09 -0700 (PDT)
+X-Received: by 2002:ac2:4885:: with SMTP id x5mr10932945lfc.487.1628349069409;
+ Sat, 07 Aug 2021 08:11:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210801205528.211c4e9c@jic23-huawei>
-X-Provags-ID: V03:K1:SY41mXTtN/r5p3fUCAB+dCcVU5Tm70F9SpAn4XVE0g04UNgcE/h
- Oz55/MbIMuD8PMKkXuF8Di9lokw7mpm5VftC+Bymex4o/gPQkrPxJd3d8uEtacTZt8Qkh7Y
- 9H9E2kml5jZMUzznHnyK4T8RWRu+a0PudtFKvRRN+zCVUsopdWIIctkKe3h6dRsy9qawnpp
- 6eQpIOddwGSO3yCyTodtA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zXPRmHOLj3I=:CzhTGpn/r4cYLdYBEw9KDb
- PiHuwbpH8BhpFC5C0fo9VDvcwcrlM/xYZbVJ7MtuJVPNuflVVjj4lwBMayGB/VRwFt1q3BbBA
- r95xmL3C0HVvXQmxv5zFabKUTjTMmKehByjQo3cq3YIguZNbpRmrpnr7mq1N+v1NnvCHiNkyC
- Je45zzhVrcwIjBfCx2A8EQpqeseHitvTk5OvsVrdIEfbpIy8rw/vsahM5JCadbdM03tV05Llr
- 7DMEfZKbiro96hNzRhFGbqyMWNMB0sSzyiDAo1+p1Dyyn/QMukfyNE/hryxx3Qr5kyeWmPgOc
- 7YN5ecDHdMOPC8ptl8KdevcHVMfqUo9PGXXNopUqCyItQj1BCRLHUqqZnd1SrVnH1EjajyKYT
- NFTcuQ1ggfJQxByGYQg/ZOWJIzm8+XN+cidbOeVSVQDGusq+8kQyzyM9HX2q/8th2LZ326qkD
- 5qKLN3uowGWPZp/El2jMFL4SoEV8FtXc8RUVuGWHfAZ34R5k7vPT/WCgnQqCLqL9Wc6scTLeL
- jHRoCsJX+VkYElRfV9CPa3WgMadWQG+t/sVDW3eckf3chb2fpWUPhOSfJclFlEltVFrthHijG
- Jsvk+gWiqDimFtfdaGgYzQqKxR3oSheNUks5CMA+U1PWuBRKnbeW6FOROjijiHQdwkixOfG8x
- 57hKPrvsscArvNHMGDDfmdwNPc+h99f4QjgrgiaVd0aa6DZ4JzYGTdXwvxzgbP2haYdtieXwb
- Qky1GmkgazJgqdfOaRZwLgRjT9m4UY3HKQwFvB5X907lmM/GMEQCJUp15tOxPwmASZ/va+hzI
- W6oxKht6wZiotxkTsyAthAhWSO77xGv8b01urPFroiXHPpFDZl7k5XBEtqUZrzdcik16k1lKS
- iHjd0uKkbiAa2Y5r6bG+/urLXufKUUukH80Hhw+XeRXi4QG+CpCds7P48KWbO6+q+0r6tPMPh
- CvKJKstIY9TiuSQiY159WBL+oficEYVvmSmHM50VZSP0vqhU7G+yPCQNxgPXoUbBoIYcljbPm
- q5KObz1hLMg1IaqqHYKJfbwqcVWlL3JsAQa/KSBRaIzy6Sc8tWYpqtt6qkU9CrsSkCMosMS95
- ouRbz7zuru2KJ40aAsqdgNqXdgIOpAcfcBPz2K6gQNDijont9dof/LlYw==
-Content-Transfer-Encoding: quoted-printable
+References: <87a6lvak43.fsf@disp2133> <20210806021052.3013-1-hdanton@sina.com>
+ <87r1f7450i.fsf@disp2133> <20210806061458.3075-1-hdanton@sina.com>
+ <CAHk-=wjdfLQ+z=uM3qUPSb1wgnugeN5+wyH11kmatUXskYqrCA@mail.gmail.com>
+ <20210807050314.1807-1-hdanton@sina.com> <CAHk-=whyqY=1cAOXTE1o=w2jm8CKcM47=iOR2o2aNundzUpa_g@mail.gmail.com>
+ <20210807091128.1862-1-hdanton@sina.com>
+In-Reply-To: <20210807091128.1862-1-hdanton@sina.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 7 Aug 2021 08:10:53 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh+z6ePDWhCX-EfypR-9VyHf8j_cQyOETOHtSzC6LPNAQ@mail.gmail.com>
+Message-ID: <CAHk-=wh+z6ePDWhCX-EfypR-9VyHf8j_cQyOETOHtSzC6LPNAQ@mail.gmail.com>
+Subject: Re: [GIT PULL] ucount fix for v5.14-rc
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <legion@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, Aug 7, 2021 at 2:11 AM Hillf Danton <hdanton@sina.com> wrote:
+>
+>
+>         CPU0                    CPU1    CPU2
+>         ----                    ----    ----
+>         given count == 2
+>                                         put uc
+>                                 put uc
+>         get uc
+>         UAF
 
-On Sun, Aug 01, 2021 at 08:55:28PM +0100, Jonathan Cameron wrote:
-> On Sun,  1 Aug 2021 19:11:57 +0200
-> Len Baker <len.baker@gmx.com> wrote:
->
-> > strcpy() performs no bounds checking on the destination buffer. This
-> > could result in linear overflows beyond the end of the buffer, leading
-> > to all kinds of misbehaviors. The safe replacement is strscpy().
-> >
-> > Signed-off-by: Len Baker <len.baker@gmx.com>
->
-> Hi Len,
->
-> I'm not convinced this is terribly useful in this particular case.
-> As the code stands today, it is easy to verify that the buffer is
-> large enough by looking up a few lines. As you need to do that
-> anyway to check that n, n -1 in the strscpy is correct, what do we gain?
->
-> I don't mind this if it's part of a general removal of strcpy(), but
-> if so the patch description should state that.
+No.
 
-Ok, I will send a new version with the commit changelog updated.
+The thread on CPU0 must have had a reference to the ucount.
 
-Regards,
-Len
+So if CPU1 and CPU2 are doing a put at the same time (and they held a
+ref to it too), then the starting count must have been at least 3.
+
+In other words, the above would be a bug - and not because of the UAF,
+but because somebody had screwed up their reference counts.
+
+You might as well had said "given count = 2, do 99x put_ucounts() ->
+UAF". True, but immaterial from the standpoint of "put_ucounts()"
+correctness.
+
+Get it? You can't do a "get_ucounts()" on something that you don't
+already have a reference to (and similarly, you obviously cannot do a
+"put_ucounts()" on something you don't hold a reference to).
+
+You *can* do a "find_ucount()" to find a ucount that you don't yet
+have a reference to, but that's why you have to hold the lock (and why
+anybody who does that has to increment the reference to it after
+finding it before they drop the lock).
+
+           Linus
