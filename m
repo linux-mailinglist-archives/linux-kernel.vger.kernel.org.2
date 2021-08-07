@@ -2,171 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6C63E34FD
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B24B3E34FF
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232041AbhHGKu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 06:50:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21894 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231922AbhHGKsj (ORCPT
+        id S232277AbhHGKvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 06:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231899AbhHGKtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 06:48:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628333293;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=rD53y3M8gRwdW1E2OajxMKr3Gxdf8xsFUcTgR6uJvrc=;
-        b=eBPLfgzFDmmWzmNMJK2Vu2DNh6u3JdQFU1q0y13wguzmdFg4KC8Xo6TVYMXbYRBAU88K1N
-        FDlNXKSSW01UMB5xIQJHqzHSIt0bNad5d4YtpfTB6XY6f6vLxIfY1fBh24ISoH06qZE3Gp
-        4jmUlmS8oZOgSzDlhaVSQPiMfexMG14=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-254-VZa_Zis9NGeirEZjEfUrIA-1; Sat, 07 Aug 2021 06:48:10 -0400
-X-MC-Unique: VZa_Zis9NGeirEZjEfUrIA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C714D363A4;
-        Sat,  7 Aug 2021 10:48:07 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6355A60BF4;
-        Sat,  7 Aug 2021 10:48:01 +0000 (UTC)
-Date:   Sat, 7 Aug 2021 12:48:00 +0200
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Josh Don <joshdon@google.com>, Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Dmitry V. Levin" <ldv@strace.io>, linux-doc@vger.kernel.org,
-        linux-api@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v2] uapi: expose enum pid_type as enum __kernel_pidtype
-Message-ID: <20210807104800.GA22620@asgard.redhat.com>
+        Sat, 7 Aug 2021 06:49:09 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2214EC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 03:48:52 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id b128so7194048wmb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 03:48:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NH7LZiVsTX4jYfg6zE84YTrVG+vR/4RBWt0hrJzYcu8=;
+        b=x3hiRGrxj1KkJpxMXDI1Ey2aFvy6P1y1DTovvoKtuvxLN44xrcXbEoPjFiQy2har3o
+         PG7kJSvRU6QEEZcTih51py/s4wfNkSPoglm7yVj3qjrkKuiy2Ob7hA/uu45GR1GzY/PA
+         RmVLNpmIHTm4EnnJnr/wX9NAjBgqE/lOSTmiUC9RyS66+5AT1rx3mNxCTjCod8OESsuO
+         ju0VSGAVbdTOCcrp1JmQVJWgveXlS6kjW9y4AcvGy0HVMgCjtefjad67rligyc2jClgR
+         pxYuJFEz/0q9q6+u35CSIUGnrfwE7/rQvD3n0fIlURir9IkPOtt1/dAcsaEKV6U2RNyr
+         xcng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NH7LZiVsTX4jYfg6zE84YTrVG+vR/4RBWt0hrJzYcu8=;
+        b=TvdgHjmR15yJkdmTVg/9ZQZ8/hZX5rTISOM/TQ5DNT4W8wCwVpiGZxrXFehMkGPl+2
+         r6u+EKazvSpBFoujqBPY/XIdWf7reoLL423MhJrfc+abmD89tn0JEEJK+myA9NJci0xH
+         1PZ/FBH0cqjHNEP79CgAo4A7I1RIRLR8UBcraRbw+AMgtnv/6EJ7CRnorgA0m3p5bdEi
+         pcjFW/xy+RG20L7Gmo/ljDyHKQVTLd/VgrPMkVxr4HT/LO0wSmv8p1ConDvfecky0K7A
+         FDc9FRzHvL68k0B5hjtx/yItNF8bJdB5NU4lA2BD2hChXJ8L70Mf8hnwRGYwXd/z4/BB
+         0Z6w==
+X-Gm-Message-State: AOAM533syIeKE39on6OXbWzU87c1EWcHP23bL0X2J6mHunoa/IRDDUBj
+        nEltvEkQqpIj1Jk3qUx3wmtFgKfyui3FTQ==
+X-Google-Smtp-Source: ABdhPJzAJXV4KNvd7otU83voBOJTAwUvFo7CmtSdep2rWfRmXzrElnbWN+JymVM5Kr7iGylhbUQUWQ==
+X-Received: by 2002:a05:600c:1986:: with SMTP id t6mr2242031wmq.49.1628333330322;
+        Sat, 07 Aug 2021 03:48:50 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id i18sm8510366wmb.17.2021.08.07.03.48.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 07 Aug 2021 03:48:49 -0700 (PDT)
+Subject: Re: [PATCH 0/4] slimbus: patches (set 1) for 5.15
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20210806091639.532-1-srinivas.kandagatla@linaro.org>
+ <YQ03FPyxF8DFlwI7@kroah.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <71200533-db05-157f-480a-d64812e1d9c2@linaro.org>
+Date:   Sat, 7 Aug 2021 11:48:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <YQ03FPyxF8DFlwI7@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 7ac592aa35a684ff ("sched: prctl() core-scheduling interface")
-made use of enum pid_type in prctl's arg4; this type and the associated
-enumeration definitions are not exposed to userspace.  Try to fix that
-by providing enum __kernel_pidtype and tying in-kernel enum pid_type
-definitions to it.  Note that enum pid_type cannot be exposed as is,
-since "enum pid_type" is already exists in various projects [1] (notably
-gcc and strace), and "enum __pid_type" is defined by glibc and uclibc
-for fcntl(F_SETOWN_EX) owner ID type;  there is also __kernel_pid_t,
-that looks too similar to __kernel_pid_type.
 
-[1] https://codesearch.debian.net/search?q=enum+pid_type
 
-Complements: 7ac592aa35a684ff ("sched: prctl() core-scheduling interface")
-Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
----
-v2:
-  - Header file is renamed from pid.h to pidtype.h to avoid collisions
-    with include/linux/pid.h when included from uapi headers;
-  - The enum type has renamed from __kernel_pid_type to __kernel_pidtype
-    to avoid possible confusion with __kernel_pid_t.
+On 06/08/2021 14:20, Greg KH wrote:
+> On Fri, Aug 06, 2021 at 10:16:35AM +0100, Srinivas Kandagatla wrote:
+>> Hi Greg,
+>>
+>> Recently runtime pm testing on slimbus reveled that its
+>> totally broken on SlimBus ngd drivers.
+>>
+>> Below are the fixes to get it back working.
+>>
+>> - One of the reason begin incorrect device pointer used for
+>> runtime pm and in some places
+>>
+>> - Second one was to do with unable to validate transaction id
+>>   which resulted in negative runtime pm count.
+>>
+>> - Other fix was to do with resetting dma addresses once ngd
+>> controller is power-cycled.
+>>
+>> With all these fixed runtime pm is now fully functional on NGD
+>> controllers.
+>>
+>> Currently I marked them all with Cc: <stable@vger.kernel.org>
+>> as these all patches are required to fix runtime pm on SlimBus
+>> NGD controller.
+>>
+>> Can you please queue them up for 5.15.
+> 
+> Why do you want these for 5.15-rc1 when you need them to fix problems in
+> 5.14?  Shouldn't they go into 5.14-final?
 
-v1: https://lore.kernel.org/lkml/20210807010123.GA5174@asgard.redhat.com/
----
- .../admin-guide/hw-vuln/core-scheduling.rst          |  7 ++++---
- include/linux/pid.h                                  | 12 +++++++-----
- include/uapi/linux/pidtype.h                         | 20 ++++++++++++++++++++
- include/uapi/linux/prctl.h                           |  1 +
- 4 files changed, 32 insertions(+), 8 deletions(-)
- create mode 100644 include/uapi/linux/pidtype.h
+Yes, these should go to other stable trees aswell.
+I assumed that Fixes tag will automatically backport those patches.
 
-diff --git a/Documentation/admin-guide/hw-vuln/core-scheduling.rst b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
-index 7b410ae..0989c48 100644
---- a/Documentation/admin-guide/hw-vuln/core-scheduling.rst
-+++ b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
-@@ -61,9 +61,10 @@ arg3:
-     ``pid`` of the task for which the operation applies.
- 
- arg4:
--    ``pid_type`` for which the operation applies. It is of type ``enum pid_type``.
--    For example, if arg4 is ``PIDTYPE_TGID``, then the operation of this command
--    will be performed for all tasks in the task group of ``pid``.
-+    ``pid_type`` for which the operation applies. It is of type
-+    ``enum __kernel_pidtype``.  For example, if arg4 is ``__PIDTYPE_TGID``,
-+    then the operation of this command will be performed for all tasks
-+    in the task group of ``pid``.
- 
- arg5:
-     userspace pointer to an unsigned long for storing the cookie returned by
-diff --git a/include/linux/pid.h b/include/linux/pid.h
-index fa10acb..57cce71 100644
---- a/include/linux/pid.h
-+++ b/include/linux/pid.h
-@@ -5,14 +5,16 @@
- #include <linux/rculist.h>
- #include <linux/wait.h>
- #include <linux/refcount.h>
-+#include <uapi/linux/pidtype.h>
- 
- enum pid_type
- {
--	PIDTYPE_PID,
--	PIDTYPE_TGID,
--	PIDTYPE_PGID,
--	PIDTYPE_SID,
--	PIDTYPE_MAX,
-+	PIDTYPE_PID = __PIDTYPE_PID,
-+	PIDTYPE_TGID = __PIDTYPE_TGID,
-+	PIDTYPE_PGID = __PIDTYPE_PGID,
-+	PIDTYPE_SID = __PIDTYPE_SID,
-+
-+	PIDTYPE_MAX = __PIDTYPE_MAX
- };
- 
- /*
-diff --git a/include/uapi/linux/pidtype.h b/include/uapi/linux/pidtype.h
-new file mode 100644
-index 0000000..2105ae3
---- /dev/null
-+++ b/include/uapi/linux/pidtype.h
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _UAPI_LINUX_PID_H
-+#define _UAPI_LINUX_PID_H
-+
-+/*
-+ * Type of a process-related ID.  So far, it is used only
-+ * for prctl(PR_SCHED_CORE);  not to be confused with type field
-+ * of f_owner_ex structure argument of fcntl(F_SETOWN_EX).
-+ */
-+enum __kernel_pidtype
-+{
-+	__PIDTYPE_PID,
-+	__PIDTYPE_TGID,
-+	__PIDTYPE_PGID,
-+	__PIDTYPE_SID,
-+
-+	__PIDTYPE_MAX /* Non-UAPI */
-+};
-+
-+#endif /* _UAPI_LINUX_PID_H */
-diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-index 967d9c5..0af570b 100644
---- a/include/uapi/linux/prctl.h
-+++ b/include/uapi/linux/prctl.h
-@@ -3,6 +3,7 @@
- #define _LINUX_PRCTL_H
- 
- #include <linux/types.h>
-+#include <linux/pidtype.h> /* enum __kernel_pidtype */
- 
- /* Values to pass as first argument to prctl() */
- 
--- 
-2.1.4
+> 
+> confused,
+Sorry if I confused you.
 
+--srini
+
+> 
+> greg k-h
+> 
