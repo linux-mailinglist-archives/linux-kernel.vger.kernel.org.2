@@ -2,63 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D693E3634
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 17:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110B43E3636
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 17:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232518AbhHGPuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 11:50:01 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:38282 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229828AbhHGPtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 11:49:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=hMRkLC9sX1iRCwMgCksqyJpH2Qs6Prl5IMtksM3Msb0=; b=a+Kv9/L2NlWb5RJtcVgT0AdPYB
-        esCRXzwCdwjzZzonljtfHsyoWjPcKPZJC7jzTG1rSqUuPCpHoBjBZmz4AUU2ewPQbCYqLoAbut1E7
-        FnoEUcjLYQS5f5kAk4b6r2XCngmb1ayYX9e3xm2JrTAvzcGneoXOT9DZGCaHhXpvJ6z0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mCOZg-00GVS5-Op; Sat, 07 Aug 2021 17:49:24 +0200
-Date:   Sat, 7 Aug 2021 17:49:24 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>, kernel-team@android.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] net: mdio-mux: Handle -EPROBE_DEFER correctly
-Message-ID: <YQ6rhOq7/eBqxBYB@lunn.ch>
-References: <20210804214333.927985-1-saravanak@google.com>
- <20210804214333.927985-4-saravanak@google.com>
+        id S231991AbhHGP5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 11:57:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230332AbhHGP5D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 11:57:03 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B523C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 08:56:45 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id b133so21022329ybg.4
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 08:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=e4pW9vKIOzMq5Gn3WkxjAuwkMIg/8cleIxXl8R08Qj4=;
+        b=bRrneVWDriMmGGD6RnJYUOEOIVAv4bRR73wM68mseC9/I7p/zh3YG6FgfZXNkefXY9
+         CrkFM/mDe5Rvbutm93s2RWhTbzn1uiHXRVcRxGPJghfToNT4ji2KEsM1ZevDOgIju7FB
+         Vj5yCnfG1jcbmHc48yzVprA1A8R5Ilxnlapt2eSs/voCB+gyplFTSILEJrS5bR+9TOhW
+         FqXCwmcVt9mtWS8OYL+VHyaoXCz+QsfXI2OzdtnCnIDAb7xMEg4Eh49J6LMBPy1rfJhD
+         aRSTWO+0yEhuXwREm5OIt6tybIRgT+5k7KfrljbSf07oiwIQw8DJRnNhNN4H67IW5HAV
+         xHRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=e4pW9vKIOzMq5Gn3WkxjAuwkMIg/8cleIxXl8R08Qj4=;
+        b=qlOWDxG4oBIiendJTr+K38aks5quDjcUa0rjVCCih1/QYKSdDgQ1GW9kPbcqdHNxiG
+         VOj1oNURMuLX6CvKDVk/5zanfRZ0epFZ9D+Vcu4xUEASdTjfcxepUsq1PCWfxJEkc0YN
+         4tDpTT09kDeaFXm46AMWj4xg3Wb/FnxtJIoOCNsMuAagFqbJrgP2Nz8YwNCOM2t6Z3Cz
+         c7zzcYvtypd6E36dNDd4OLKOIN+16p8Q3ebckvtARACPvFbWLiPlouhh536Cs00HL1VL
+         xdM5DoU9fkWhsEL1rl+3PlATlnFaD9RfNGnnvaqaJJ98dQHYrw3qLrZbFgpA6iPTtCkH
+         h72A==
+X-Gm-Message-State: AOAM532hdzfJ2nANTmE+brFBJ44JwOshzE+/b5FZQ6fh5exFTDNRQ6HU
+        NcIxZhIrjVGgdErXPDpPdPH5NzoQL975WRy9wU4=
+X-Google-Smtp-Source: ABdhPJzYuRJeH7mNUo8Rw4fmZwRVQjx77eroGp2Vyb/SzntYX2AEZ42q/08apyeUOrOm7MTjjtkXsKHt9Ya78oubTPI=
+X-Received: by 2002:a25:8010:: with SMTP id m16mr19938223ybk.210.1628351804703;
+ Sat, 07 Aug 2021 08:56:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210804214333.927985-4-saravanak@google.com>
+Received: by 2002:a05:7108:4092:0:0:0:0 with HTTP; Sat, 7 Aug 2021 08:56:44
+ -0700 (PDT)
+From:   phot akachi <photakachi@gmail.com>
+Date:   Sat, 7 Aug 2021 08:56:44 -0700
+Message-ID: <CAKTgzwytjT8sKi4xaGS00aauafa5k7_5rqhnNb4H6srJcmb65g@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 02:43:32PM -0700, Saravana Kannan wrote:
-> When registering mdiobus children, if we get an -EPROBE_DEFER, we shouldn't
-> ignore it and continue registering the rest of the mdiobus children. This
-> would permanently prevent the deferring child mdiobus from working instead
-> of reattempting it in the future. So, if a child mdiobus needs to be
-> reattempted in the future, defer the entire mdio-mux initialization.
-> 
-> This fixes the issue where PHYs sitting under the mdio-mux aren't
-> initialized correctly if the PHY's interrupt controller is not yet ready
-> when the mdio-mux is being probed. Additional context in the link below.
-> 
-> Link: https://lore.kernel.org/lkml/CAGETcx95kHrv8wA-O+-JtfH7H9biJEGJtijuPVN0V5dUKUAB3A@mail.gmail.com/#t
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
-    Andrew
+0JLQvdC40LzQsNC90LjQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsDQoNCtCvINCR0LDRgC4gdWNo
+ZW5uYSBpbG9iaSwg0LrQsNC6INC00LXQu9CwLCDQvdCw0LTQtdGO0YHRjCDRgyDRgtC10LHRjyDQ
+stGB0LUg0YXQvtGA0L7RiNC+INC4INC30LTQvtGA0L7QstC+Pw0K0KHQvtC+0LHRidCw0LXQvCDQ
+stCw0LwsINGH0YLQviDRjyDRg9GB0L/QtdGI0L3QviDQt9Cw0LLQtdGA0YjQuNC7INGB0LTQtdC7
+0LrRgyDRgSDQv9C+0LzQvtGJ0YzRjiDQvdC+0LLQvtCz0L4g0L/QsNGA0YLQvdC10YDQsA0K0LjQ
+tyDQktC10L3QtdGB0YPRjdC70YssINC4INGC0LXQv9C10YDRjCDRgdGA0LXQtNGB0YLQstCwINCx
+0YvQu9C4INC/0LXRgNC10LLQtdC00LXQvdGLINCyINCS0LXQvdC10YHRg9GN0LvRgyDQvdCwDQrQ
+sdCw0L3QutC+0LLRgdC60LjQuSDRgdGH0LXRgiDQvdC+0LLQvtCz0L4g0L/QsNGA0YLQvdC10YDQ
+sC4NCg0K0KLQtdC8INCy0YDQtdC80LXQvdC10Lwg0Y8g0YDQtdGI0LjQuyDQutC+0LzQv9C10L3R
+gdC40YDQvtCy0LDRgtGMINCy0LDQvCDRgdGD0LzQvNGDINCyIDM1MCAwMDAg0LTQvtC70LvQsNGA
+0L7QsiDQodCo0JANCijRgtGA0Lgg0YHQvtGC0L3QuCDQv9GP0YLRjNC00LXRgdGP0YIg0YLRi9GB
+0Y/RhyDQtNC+0LvQu9Cw0YDQvtCyINCh0KjQkCkg0LjQty3Qt9CwINCy0LDRiNC40YUg0L/RgNC+
+0YjQu9GL0YUg0YPRgdC40LvQuNC5LA0K0YXQvtGC0Y8g0LLRiyDQvNC10L3RjyDRgNCw0LfQvtGH
+0LDRgNC+0LLQsNC70LguINCd0L4sINGC0LXQvCDQvdC1INC80LXQvdC10LUsINGPINC+0YfQtdC9
+0Ywg0YDQsNC0INGD0YHQv9C10YjQvdC+0LzRgw0K0LfQsNCy0LXRgNGI0LXQvdC40Y4g0YLRgNCw
+0L3Qt9Cw0LrRhtC40Lgg0LHQtdC3INC60LDQutC40YUt0LvQuNCx0L4g0L/RgNC+0LHQu9C10Lws
+INC4INC/0L7RjdGC0L7QvNGDINGPINGA0LXRiNC40LsNCtC60L7QvNC/0LXQvdGB0LjRgNC+0LLQ
+sNGC0Ywg0LLQsNC8INGB0YPQvNC80YMg0LIg0YDQsNC30LzQtdGA0LUgMzUwIDAwMCwwMCDQtNC+
+0LvQu9Cw0YDQvtCyINCh0KjQkCwg0YfRgtC+0LHRiyDQstGLDQrRgNCw0LfQtNC10LvQuNC70Lgg
+0YHQviDQvNC90L7QuSDRgNCw0LTQvtGB0YLRjC4NCg0K0K8g0YHQvtCy0LXRgtGD0Y4g0LLQsNC8
+INC+0LHRgNCw0YLQuNGC0YzRgdGPINC6INC80L7QtdC80YMg0YHQtdC60YDQtdGC0LDRgNGOINC3
+0LAg0LHQsNC90LrQvtC80LDRgtC90L7QuSDQutCw0YDRgtC+0Lkg0L3QsA0KMzUwIDAwMCDQtNC+
+0LvQu9Cw0YDQvtCyINCh0KjQkCwg0LrQvtGC0L7RgNGD0Y4g0Y8g0L7RgdGC0LDQstC40Lsg0LTQ
+u9GPINCy0LDRgS4g0KHQstGP0LbQuNGC0LXRgdGMINGBINC90LjQvA0K0YHQtdC50YfQsNGBINCx
+0LXQtyDQv9GA0L7QvNC10LTQu9C10L3QuNGPLg0KDQrQndCw0LfQstCw0L3QuNC1OiDQsdGA0LXQ
+vdC00Lgg0YHQvtC70L7QvNC+0L0NCg0K0K3Qu9C10LrRgtGA0L7QvdC90LDRjyDQv9C+0YfRgtCw
+OiBzb2xvbW9uYnJhbmR5Zml2ZW9uZUBnbWFpbC5jb20NCg0K0KPQsdC10LTQuNGC0LXQu9GM0L3Q
+viDQv9C+0LTRgtCy0LXRgNC00LjRgtC1INC10LzRgyDRgdC70LXQtNGD0Y7RidGD0Y4g0LjQvdGE
+0L7RgNC80LDRhtC40Y46DQoNCtCS0LDRiNC1INC/0L7Qu9C90L7QtSDQuNC80Y9fX19fX19fX19f
+X19fX19fX19fX19fX19fDQrQktCw0Ygg0LDQtNGA0LXRgdGBX19fX19fX19fX19fX19fX19fX19f
+X19fX18NCtCi0LLQvtGPINGB0YLRgNCw0L3QsF9fX19fX19fX19fX19fX19fX19fX19fX19fXw0K
+0KLQstC+0Lkg0LLQvtC30YDQsNGB0YJfX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCtCS
+0LDRiCDRgNC+0LQg0LfQsNC90Y/RgtC40LlfX19fX19fX19fX19fX19fX19fX19fX18NCtCS0LDR
+iCDQvdC+0LzQtdGAINC80L7QsdC40LvRjNC90L7Qs9C+INGC0LXQu9C10YTQvtC90LAgX19fX19f
+X19fX19fX19fX19fX19fXw0KDQrQntCx0YDQsNGC0LjRgtC1INCy0L3QuNC80LDQvdC40LU6INC1
+0YHQu9C4INCy0Ysg0L3QtSDQvtGC0L/RgNCw0LLQuNC70Lgg0LXQvNGDINC/0L7Qu9C90YPRjiDQ
+uNC90YTQvtGA0LzQsNGG0LjRjiwg0L7QvSDQvdC1DQrQstGL0LTQsNGB0YIg0LLQsNC8INC60LDR
+gNGC0YMg0LHQsNC90LrQvtC80LDRgtCwLCDQv9C+0YLQvtC80YMg0YfRgtC+INC+0L0g0LTQvtC7
+0LbQtdC9INCx0YvRgtGMINGD0LLQtdGA0LXQvSwg0YfRgtC+INGN0YLQvg0K0LLRiy4g0J/QvtC/
+0YDQvtGB0LjRgtC1INC10LPQviDQstGL0YHQu9Cw0YLRjCDQstCw0Lwg0LrQsNGA0YLRgyDQsdCw
+0L3QutC+0LzQsNGC0LAg0L3QsCDQvtCx0YnRg9GOINGB0YPQvNC80YMgKDM1MCAwMDANCtC00L7Q
+u9C70LDRgNC+0LIg0KHQqNCQKSwg0LrQvtGC0L7RgNGD0Y4g0Y8g0L7RgdGC0LDQstC40Lsg0LTQ
+u9GPINCy0LDRgS4NCg0K0KEg0YPQstCw0LbQtdC90LjQtdC8LA0KDQrQky3QvSDRg9GH0LXQvdC9
+0LAg0LjQu9C+0LHQuA0K
