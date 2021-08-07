@@ -2,94 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33253E3651
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 18:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786953E3654
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 18:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbhHGQhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 12:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhHGQg7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 12:36:59 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC4EC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 09:36:42 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id z3so11471425plg.8
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 09:36:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4ySF7t3f9IXZ9xCWYkjQadycnruU0kjHVud70QqSUeE=;
-        b=02sy5q+gMNcB1jVOaqvUWMAySDDMU725SZ9iyRDOqgbRqzbAULDiNwyuRgNnh6R5UJ
-         Na9nfm5QFDU8GS3x234s4z1+/KdtCQgkcaVWes+F3kVXw0moYOelkY2mJyxg6taIxx19
-         AZOfhtim8SqpwH6PLmshrXaraHumMz6XDucxWJxg3MlbbGxFLcPkmjw0OvcTecWyQSRk
-         D4GPOUB4adkzUHsqr41h7e4lEvwCXE2AEZ7X3Q7uqEVGr0MoK57KMZVntHISlk1rXCPe
-         jx6KFOpvE/oG75RKrfX05/mJY4Vr76sqbBsiQ6CRcCp+SHw2LTxnqtNR7VeYXm3BWZre
-         vCHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=4ySF7t3f9IXZ9xCWYkjQadycnruU0kjHVud70QqSUeE=;
-        b=hfioSWWu6biL0UL7ba6fhErc0WTMgOVMa7VQ/XjEMkaJZX0fvjV/xt72iu/g3YMse+
-         svnNBISSSFnyEUShXBs8cDFcYxuGB9CxEpBcYlUbADKtJ/8TmR+K0ZqIO2L4orq/zVKg
-         vibsq7XV1d/TFwkp2GXuBNsrNi7vFotKNeWifG4g7GqYhfOB74LTsoDJa3+JO2fTcdDF
-         RaLVielUB7YVNMrErkS94FtrHuYe70R4cqJz8kfPf7A3zGj1e4hePdQ3tqpQHiJzX7Wa
-         1YYVor4ihYRWBYpRa2f5StNVkUDFu8YjrEa3RL7106Pp4sqdIq9ufHE1IwIzvY0E5Thv
-         qBjQ==
-X-Gm-Message-State: AOAM531v/HvuAOrtz6hjkCmE/PqMX9hooU4/IDL3FXmUiHfDSRT6KQjb
-        VPsfcPl6SB2mpwESrmFtZnTuaA==
-X-Google-Smtp-Source: ABdhPJx1raKBqfmBr7+x9BmuR8aifXvMifS5f2Rv15DZIAwdpV5b8Kf3DA4pPAK5KJ5nMWIUlrwZWA==
-X-Received: by 2002:a17:902:6904:b029:fb:42b6:e952 with SMTP id j4-20020a1709026904b02900fb42b6e952mr12653078plk.16.1628354201654;
-        Sat, 07 Aug 2021 09:36:41 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id x189sm16658823pfx.99.2021.08.07.09.36.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Aug 2021 09:36:41 -0700 (PDT)
-Date:   Sat, 07 Aug 2021 09:36:41 -0700 (PDT)
-X-Google-Original-Date: Fri, 06 Aug 2021 22:37:17 PDT (-0700)
-Subject:     Re: [PATCH -fixes 3/3] riscv: Optimize kernel virtual address conversion macro
-In-Reply-To: <20210721075937.696811-4-alex@ghiti.fr>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        alex@ghiti.fr
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     alex@ghiti.fr
-Message-ID: <mhng-163d949e-5efc-46d4-a5b7-c90e4745a7a3@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S229699AbhHGQjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 12:39:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229437AbhHGQjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 12:39:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EB3D61042;
+        Sat,  7 Aug 2021 16:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628354366;
+        bh=skQ44EeCvUTK6aFuERpR2Su54PZapXqg2oxWaco+578=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Tin4ZdQi9PjZUhoJ0cECQLmjvN0ZLYByrUgGIL6Qlrh+qLpA/2Qn6T7Xf8uQ35Skz
+         FjvMB9GQPbfQ3I1sXPOJx5tOSIu6Ssz8f+dRg0DgzHUNKhqRo16riGNMkTwBHA4BaA
+         qQDHhypiLDTqwjl1FwM4p4wkdtX0KMgZf8JlxvBjMyK5YBf79nDG8Jq8W3n86EXdod
+         6nU8u4c+EF1nERcx9w+7+LhdZZJ981V7VyF5C0w/9t+23wNjSuEpNLiEmf9FzBDkGW
+         c8y5zbWWXq0RLf/XqHYlazep1+FwwQSn0aqGfGL7RRKNaScGCmULwGbPhMznp4jeHJ
+         KolZ+OXRuPX6Q==
+Received: by pali.im (Postfix)
+        id 9BAD0A52; Sat,  7 Aug 2021 18:39:23 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Guillaume Nault <gnault@redhat.com>
+Cc:     linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ppp: Add rtnl attribute IFLA_PPP_UNIT_ID for specifying ppp unit id
+Date:   Sat,  7 Aug 2021 18:37:49 +0200
+Message-Id: <20210807163749.18316-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Jul 2021 00:59:37 PDT (-0700), alex@ghiti.fr wrote:
-> The current test in kernel_mapping_va_to_pa only applies when
-> CONFIG_XIP_KERNEL is set, so use IS_ENABLED to optimize this macro at
-> compile-time in standard kernels that do not require this test.
->
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> ---
->  arch/riscv/include/asm/page.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-> index b0ca5058e7ae..10dc063868f6 100644
-> --- a/arch/riscv/include/asm/page.h
-> +++ b/arch/riscv/include/asm/page.h
-> @@ -123,7 +123,7 @@ extern phys_addr_t phys_ram_base;
->  #define linear_mapping_va_to_pa(x)	((unsigned long)(x) - kernel_map.va_pa_offset)
->  #define kernel_mapping_va_to_pa(y) ({						\
->  	unsigned long _y = y;							\
-> -	(_y < kernel_map.virt_addr + XIP_OFFSET) ?					\
-> +	(IS_ENABLED(CONFIG_XIP_KERNEL) && _y < kernel_map.virt_addr + XIP_OFFSET) ?	\
->  		((unsigned long)(_y) - kernel_map.va_kernel_xip_pa_offset) :		\
->  		((unsigned long)(_y) - kernel_map.va_kernel_pa_offset - XIP_OFFSET);	\
->  	})
+Currently there are two ways how to create a new ppp interface. Old method
+via ioctl(PPPIOCNEWUNIT) and new method via rtnl RTM_NEWLINK/NLM_F_CREATE
+which was introduced in v4.7 by commit 96d934c70db6 ("ppp: add rtnetlink
+device creation support").
 
-IIUC this isn't actually a fix?  The other two are, though, so 
-they're on fixes.
+Old method allows userspace to specify preferred ppp unit id or let kernel
+to choose some free ppp unit id. Newly created interface by the old method
+will always have name composed of string "ppp" followed by ppp unit id.
+Userspace later can rename interface via ioctl(SIOCSIFNAME).
 
-Thanks!
+New method via rtnl does not allow to specify ppp unit id and kernel always
+choose some free one. But allows to specify interface name and therefore
+atomically create interface with preferred name.
+
+So based on requirement userspace needs to use either old method or new
+method as none currently supports all options.
+
+This change adds a new rtnl attribute IFLA_PPP_UNIT_ID which can be used
+for specifying preferred ppp unit id during rtnl RTM_NEWLINK/NLM_F_CREATE
+call. And therefore implements missing functionality which is already
+provided by old ioctl(PPPIOCNEWUNIT) method.
+
+By default kernel ignores unknown rtnl attributes, so userspace cannot
+easily check if kernel understand this new IFLA_PPP_UNIT_ID or if will
+ignore it.
+
+Therefore in ppp_nl_validate() first validates content of IFLA_PPP_UNIT_ID
+attribute and returns -EINVAL when ppp unit id is invalid. And after that
+validates IFLA_PPP_DEV_FD (which returns -EBADFD on error).
+
+This allows userspace to send RTM_NEWLINK/NLM_F_CREATE request with
+negative IFLA_PPP_DEV_FD and non-negative IFLA_PPP_UNIT_ID to detect if
+kernel supports IFLA_PPP_DEV_FD or not (based on -EINVAL / -EBADFD error
+value).
+
+Like in old ioctl(PPPIOCNEWUNIT) method treat special IFLA_PPP_UNIT_ID
+value -1 to let kernel choose some free ppp unit id. It is same behavior
+like when IFLA_PPP_UNIT_ID is not specified at all. Later userspace can use
+ioctl(PPPIOCGUNIT) to query which ppp unit id kernel chose.
+
+As this is a new code kernel does not have to overwrite and hide error code
+from ppp_unit_register() when using new rtnl method. So overwrite error
+code to -EEXIST only when creating a new interface via old ioctl method.
+
+With this change rtnl RTM_NEWLINK/NLM_F_CREATE can be finally full-feature
+replacement for the old ioctl(PPPIOCNEWUNIT) method for creating new ppp
+network interface.
+
+Signed-off-by: Pali Rohár <pali@kernel.org>
+---
+ drivers/net/ppp/ppp_generic.c      | 29 ++++++++++++++++++++++-------
+ include/uapi/linux/if_link.h       |  2 ++
+ tools/include/uapi/linux/if_link.h |  2 ++
+ 3 files changed, 26 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
+index 9506abd8d7e1..bb122ff9d5cf 100644
+--- a/drivers/net/ppp/ppp_generic.c
++++ b/drivers/net/ppp/ppp_generic.c
+@@ -1147,7 +1147,7 @@ static struct pernet_operations ppp_net_ops = {
+ 	.size = sizeof(struct ppp_net),
+ };
+ 
+-static int ppp_unit_register(struct ppp *ppp, int unit, bool ifname_is_set)
++static int ppp_unit_register(struct ppp *ppp, int unit, bool ifname_is_set, bool rewrite_error)
+ {
+ 	struct ppp_net *pn = ppp_pernet(ppp->ppp_net);
+ 	int ret;
+@@ -1181,8 +1181,10 @@ static int ppp_unit_register(struct ppp *ppp, int unit, bool ifname_is_set)
+ 		}
+ 		ret = unit_set(&pn->units_idr, ppp, unit);
+ 		if (ret < 0) {
+-			/* Rewrite error for backward compatibility */
+-			ret = -EEXIST;
++			if (rewrite_error) {
++				/* Rewrite error for backward compatibility */
++				ret = -EEXIST;
++			}
+ 			goto err;
+ 		}
+ 	}
+@@ -1211,7 +1213,7 @@ static int ppp_unit_register(struct ppp *ppp, int unit, bool ifname_is_set)
+ }
+ 
+ static int ppp_dev_configure(struct net *src_net, struct net_device *dev,
+-			     const struct ppp_config *conf)
++			     const struct ppp_config *conf, bool rewrite_error)
+ {
+ 	struct ppp *ppp = netdev_priv(dev);
+ 	int indx;
+@@ -1249,7 +1251,7 @@ static int ppp_dev_configure(struct net *src_net, struct net_device *dev,
+ 	ppp->active_filter = NULL;
+ #endif /* CONFIG_PPP_FILTER */
+ 
+-	err = ppp_unit_register(ppp, conf->unit, conf->ifname_is_set);
++	err = ppp_unit_register(ppp, conf->unit, conf->ifname_is_set, rewrite_error);
+ 	if (err < 0)
+ 		goto err2;
+ 
+@@ -1264,6 +1266,7 @@ static int ppp_dev_configure(struct net *src_net, struct net_device *dev,
+ 
+ static const struct nla_policy ppp_nl_policy[IFLA_PPP_MAX + 1] = {
+ 	[IFLA_PPP_DEV_FD]	= { .type = NLA_S32 },
++	[IFLA_PPP_UNIT_ID]	= { .type = NLA_S32 },
+ };
+ 
+ static int ppp_nl_validate(struct nlattr *tb[], struct nlattr *data[],
+@@ -1274,6 +1277,15 @@ static int ppp_nl_validate(struct nlattr *tb[], struct nlattr *data[],
+ 
+ 	if (!data[IFLA_PPP_DEV_FD])
+ 		return -EINVAL;
++
++	/* Check for IFLA_PPP_UNIT_ID before IFLA_PPP_DEV_FD to allow userspace
++	 * detect if kernel supports IFLA_PPP_UNIT_ID or not by specifying
++	 * negative IFLA_PPP_DEV_FD. Previous kernel versions ignored
++	 * IFLA_PPP_UNIT_ID attribute.
++	 */
++	if (data[IFLA_PPP_UNIT_ID] && nla_get_s32(data[IFLA_PPP_UNIT_ID]) < -1)
++		return -EINVAL;
++
+ 	if (nla_get_s32(data[IFLA_PPP_DEV_FD]) < 0)
+ 		return -EBADF;
+ 
+@@ -1295,6 +1307,9 @@ static int ppp_nl_newlink(struct net *src_net, struct net_device *dev,
+ 	if (!file)
+ 		return -EBADF;
+ 
++	if (data[IFLA_PPP_UNIT_ID])
++		conf.unit = nla_get_s32(data[IFLA_PPP_UNIT_ID]);
++
+ 	/* rtnl_lock is already held here, but ppp_create_interface() locks
+ 	 * ppp_mutex before holding rtnl_lock. Using mutex_trylock() avoids
+ 	 * possible deadlock due to lock order inversion, at the cost of
+@@ -1320,7 +1335,7 @@ static int ppp_nl_newlink(struct net *src_net, struct net_device *dev,
+ 	if (!tb[IFLA_IFNAME] || !nla_len(tb[IFLA_IFNAME]) || !*(char *)nla_data(tb[IFLA_IFNAME]))
+ 		conf.ifname_is_set = false;
+ 
+-	err = ppp_dev_configure(src_net, dev, &conf);
++	err = ppp_dev_configure(src_net, dev, &conf, false);
+ 
+ out_unlock:
+ 	mutex_unlock(&ppp_mutex);
+@@ -3300,7 +3315,7 @@ static int ppp_create_interface(struct net *net, struct file *file, int *unit)
+ 
+ 	rtnl_lock();
+ 
+-	err = ppp_dev_configure(net, dev, &conf);
++	err = ppp_dev_configure(net, dev, &conf, true);
+ 	if (err < 0)
+ 		goto err_dev;
+ 	ppp = netdev_priv(dev);
+diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+index 91c8dda6d95d..6767bd7f39b9 100644
+--- a/include/uapi/linux/if_link.h
++++ b/include/uapi/linux/if_link.h
+@@ -794,6 +794,8 @@ enum {
+ enum {
+ 	IFLA_PPP_UNSPEC,
+ 	IFLA_PPP_DEV_FD,
++	IFLA_PPP_UNIT_ID,
++#define IFLA_PPP_UNIT_ID IFLA_PPP_UNIT_ID
+ 	__IFLA_PPP_MAX
+ };
+ #define IFLA_PPP_MAX (__IFLA_PPP_MAX - 1)
+diff --git a/tools/include/uapi/linux/if_link.h b/tools/include/uapi/linux/if_link.h
+index d208b2af697f..53a4d7d632f1 100644
+--- a/tools/include/uapi/linux/if_link.h
++++ b/tools/include/uapi/linux/if_link.h
+@@ -600,6 +600,8 @@ enum ifla_geneve_df {
+ enum {
+ 	IFLA_PPP_UNSPEC,
+ 	IFLA_PPP_DEV_FD,
++	IFLA_PPP_UNIT_ID,
++#define IFLA_PPP_UNIT_ID IFLA_PPP_UNIT_ID
+ 	__IFLA_PPP_MAX
+ };
+ #define IFLA_PPP_MAX (__IFLA_PPP_MAX - 1)
+-- 
+2.20.1
+
