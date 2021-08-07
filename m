@@ -2,71 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D4E3E32A8
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 04:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AD93E32AC
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 04:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhHGCDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 6 Aug 2021 22:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhHGCDq (ORCPT
+        id S230059AbhHGCQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 6 Aug 2021 22:16:07 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16056 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229510AbhHGCQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 6 Aug 2021 22:03:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF67C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 19:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=w9N8Ou48Y2LFVsV0kIh2BGeXdTIG63Sn+jN5i3pEhAw=; b=EkD06ErMt8LCsJv+sA6F2x0MRG
-        GSAvw4jk71oNuw//OcjExjulPEF7NOAc08+bDZQJWORiX9WSOGPZRl5BZVspOfe55axgP+vTCJj92
-        SH1iX/JPxZobF97Nfpg/1LouHMGysLjk6Mt8Gw/EuE38n55bNxyKnwVtf3nC+8BZLgtX6Lws3Bpqv
-        P3iDwTKF35sj1JHnSROYyDuHZqC7ME0RPUWHFT6gWrOIwgwYfqxbDdFBvstKJGdN/XRskxMUBkZ4t
-        pHbYL0+e03gaOJu2a9hV0XdsryZqo9jdhaaxEBlpKD/WDfKchVk51sV489zxAKiqcxdF3l2EuRqOJ
-        1JOoiz1Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mCBfV-008mWL-Cp; Sat, 07 Aug 2021 02:02:45 +0000
-Date:   Sat, 7 Aug 2021 03:02:33 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] mm: migrate: Move the page count validation to the
- proper place
-Message-ID: <YQ3puWSgUvfvIYjv@casper.infradead.org>
-References: <cover.1628174413.git.baolin.wang@linux.alibaba.com>
- <1f7e1d083864fbb17a20a9c8349d2e8b427e20a3.1628174413.git.baolin.wang@linux.alibaba.com>
- <YQwBD55FZyoY+C5D@casper.infradead.org>
- <a02346d7-1a79-eb92-cb1f-033e6b58fa3f@linux.alibaba.com>
+        Fri, 6 Aug 2021 22:16:06 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GhQpM61nXzZyJr;
+        Sat,  7 Aug 2021 10:12:11 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 7 Aug 2021 10:15:47 +0800
+Received: from [10.174.178.46] (10.174.178.46) by
+ dggema761-chm.china.huawei.com (10.1.198.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 7 Aug 2021 10:15:46 +0800
+Subject: Re: [PATCH 1/2] mtd: mtdconcat: Judge callback function existence
+ getting from master for each partition
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     <richard@nod.at>, <vigneshr@ti.com>, <bbrezillon@kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>
+References: <20210731023243.3977104-1-chengzhihao1@huawei.com>
+ <20210731023243.3977104-2-chengzhihao1@huawei.com>
+ <20210806212857.240e0c1f@xps13>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <27c67e42-f275-fc50-64e5-d80233130f7e@huawei.com>
+Date:   Sat, 7 Aug 2021 10:15:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a02346d7-1a79-eb92-cb1f-033e6b58fa3f@linux.alibaba.com>
+In-Reply-To: <20210806212857.240e0c1f@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 11:07:18AM +0800, Baolin Wang wrote:
-> Hi Matthew,
-> 
-> > On Thu, Aug 05, 2021 at 11:05:56PM +0800, Baolin Wang wrote:
-> > > We've got the expected count for anonymous page or file page by
-> > > expected_page_refs() at the beginning of migrate_page_move_mapping(),
-> > > thus we should move the page count validation a little forward to
-> > > reduce duplicated code.
-> > 
-> > Please add an explanation to the changelog for why it's safe to pull
-> > this out from under the i_pages lock.
-> 
-> Sure. In folio_migrate_mapping(), we are sure that the migration page was
-> isolated from lru list and locked, so I think there are no race to get the
-> page count without i_pages lock. Please correct me if I missed something
-> else. Thanks.
+在 2021/8/7 3:28, Miquel Raynal 写道:
+Hi Miquel,
+> Hi Zhihao,
+>
+> Zhihao Cheng <chengzhihao1@huawei.com> wrote on Sat, 31 Jul 2021
+> 10:32:42 +0800:
+> @@ -721,14 +724,15 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
+>   				    subdev[i]->flags & MTD_WRITEABLE;
+>   		}
+>   
+> +		subdev_master = mtd_get_master(subdev[i]);
+>   		concat->mtd.size += subdev[i]->size;
+>   		concat->mtd.ecc_stats.badblocks +=
+>   			subdev[i]->ecc_stats.badblocks;
+>   		if (concat->mtd.writesize   !=  subdev[i]->writesize ||
+>   		    concat->mtd.subpage_sft != subdev[i]->subpage_sft ||
+>   		    concat->mtd.oobsize    !=  subdev[i]->oobsize ||
+> -		    !concat->mtd._read_oob  != !subdev[i]->_read_oob ||
+> -		    !concat->mtd._write_oob != !subdev[i]->_write_oob) {
+> +		    !concat->mtd._read_oob  != !subdev_master->_read_oob ||
+> +		    !concat->mtd._write_oob != !subdev_master->_write_oob) {
+> Do you really need this change?
 
-Unless the page has been removed from i_pages, this isn't a correct
-explanation.  Even if it has been removed from i_pages, unless an
-RCU grace period has passed, another CPU may still be able to inc the
-refcount on it (temporarily).  The same is true for the page tables,
-by the way; if someone is using get_user_pages_fast(), they may still
-be able to see the page.
+I think both "!concat->mtd._read_oob != !subdev[i]->_read_oob" and 
+"!concat->mtd._write_oob != !subdev[i]->_write_oob" need to be modified 
+otherwise concatenating goes failure.
+
+I thought there exists two problems:
+
+   1. Wrong callback fetching in mtd partition device
+
+   2. Warning for existence of _read and _read_oob at the same time
+
+so I solved them in two steps to make history commit logs a bit clear.
+
+Though these two patches can be combined to one.
+
