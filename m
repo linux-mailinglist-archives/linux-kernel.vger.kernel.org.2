@@ -2,149 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7855B3E33A8
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 07:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB3E3E33AA
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 07:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbhHGFmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 01:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34530 "EHLO
+        id S231183AbhHGFrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 01:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhHGFmh (ORCPT
+        with ESMTP id S230377AbhHGFqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 01:42:37 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FCEC0613CF;
-        Fri,  6 Aug 2021 22:42:19 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id k2so9952668plk.13;
-        Fri, 06 Aug 2021 22:42:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=h3Id8M67EDYA4oftmPt0MF1yxlKi4SAv+ZwAi66z1h0=;
-        b=IxnCXHoKkR+Av77wnIM3ZpSCpu6fUNWfPJuD4gm+L0PAmGaKxbGoFOQW4u7Y4tBJGX
-         IpeOtCette2U9I0N1Y8uJVjjkbTUczX9S4DD+f37zdGfUSXQAJwXPC//ppiNlo4Z5Xay
-         wkR/Nuq4KkOMyHYfqnJSlx0/XqSQKzt7JmgWLfdKIFwybhBulYrIO9HNMA74K2hulD92
-         lH9V0nOrsF/z7JRGqmt6RzMR/TkP0KSZAxEnCgO/Rp+zKJQvjmIiSB7d4/QmbB3Te1co
-         +5tmF1F1BeJQdBQZtz4IdHMIru54aXv77IgO15EzSRhJLMMGWN+Qi5e4WJpwZjjTlpzD
-         6CqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=h3Id8M67EDYA4oftmPt0MF1yxlKi4SAv+ZwAi66z1h0=;
-        b=ryj95+GpIXGBhua7G5NuirqkTBqb3SBpYbPZFSmnmkRyhS6JlW4GBP3k9reVxjchD9
-         vp68SjEN/hmVOn4eQf6x3GfhAKegNNZ/enMEzYm7S7VQ+GTA32a28MrcShcrqBSjuvcN
-         Uvu/p/gSWqPRrX5wEwVWPGQ/US2wdjJfy6WoZkPyqdOi5HgJ75wY/Ysg5w3q3dh+3A7w
-         ddc7liz321ajUDtrWcZSaS73pbpFRrVSHkQqwNRtKGUFAWGtbPgfDuOFH4HOGvP/xWIL
-         gLi4TCHhkJNvAJ1qPBHjyrBN6hepS7NhO8R8xt5Kb5K4y+SACulzdVJyOfTgkmijqwxx
-         yMtw==
-X-Gm-Message-State: AOAM531BrVE9b5cPOyFv6Yeqd2eTxYzWMuXy8CL8bM50zIOYBTtFQFlb
-        p5nDpyCX/GUV0E8gPU4jR2o=
-X-Google-Smtp-Source: ABdhPJyzrF+tgC9Wbm12wjUmhBB+JbW7ppgrwCGpjq81d7/agN2NEHw5koO9dr3kkJR5gUGy/IlDGw==
-X-Received: by 2002:a63:5641:: with SMTP id g1mr84757pgm.33.1628314939371;
-        Fri, 06 Aug 2021 22:42:19 -0700 (PDT)
-Received: from sol (106-69-178-229.dyn.iinet.net.au. [106.69.178.229])
-        by smtp.gmail.com with ESMTPSA id h24sm12747632pfn.180.2021.08.06.22.42.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Aug 2021 22:42:18 -0700 (PDT)
-Date:   Sat, 7 Aug 2021 13:42:12 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Dipen Patel <dipenp@nvidia.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, devicetree@vger.kernel.org,
-        linux-doc@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [RFC 03/11] hte: Add tegra194 HTE kernel provider
-Message-ID: <20210807054212.GA15085@sol>
-References: <20210625235532.19575-1-dipenp@nvidia.com>
- <20210625235532.19575-4-dipenp@nvidia.com>
- <20210701142156.GA34285@sol>
- <52768891-6c01-7588-e557-5c9eae5375b6@nvidia.com>
- <20210731154323.GA24906@sol>
- <1ff6df66-9895-bd42-322a-515327f30366@nvidia.com>
- <20210807030746.GA9850@sol>
- <91a173b3-18dc-5d6b-002f-893e7478717b@nvidia.com>
- <20210807045116.GA13675@sol>
- <7f6a2591-c264-e005-18ae-242320d4a22e@nvidia.com>
+        Sat, 7 Aug 2021 01:46:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC44C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri,  6 Aug 2021 22:46:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=bhmknDdBMJ24cCVf7fBkpiX+meZ4BJIZdJLH2jZ7A8I=; b=rJjTpoPw/bGawWn5h3ywvUg8ng
+        +nDEhO5q6nbp/srhlHOGElTRCMTINKg3AAJvzIJryiFCDNJ/JXTRTbJgN2UJgwFTk1V/0/KpBFyIQ
+        c6setj8BM08HKd3IG+3pBUvIIC451sLYWJEWyFSmUN2mQBFsZ0Liy2tVAG0Vi7d2vsvkGWbhps1TD
+        RkHO50VC9kjEQnLh7wTzTZgzxqiWvAQDNbEKcGk8RU8HNan8RPvA6VtBts6/xZha+CPlfkE4Q4zTt
+        kPozSQWLUWUtInnKFD68JYmxvfSscPmOqCZJUS4FoqPG0I8lfvHfWw5+zFMFuv4mMqkGvqqqIpsek
+        rOJlq2+w==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mCFA5-008sWM-79; Sat, 07 Aug 2021 05:46:23 +0000
+Subject: Re: [openrisc:for-next 3/3] arch/openrisc/include/asm/setup.h:11:13:
+ error: expected '=', ',', ';', 'asm' or '__attribute__' before
+ 'or1k_early_setup'
+To:     kernel test robot <lkp@intel.com>,
+        Stafford Horne <shorne@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+References: <202108052040.jEu76XzR-lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <50c8f758-91de-8f0a-57e1-07e71afcdbde@infradead.org>
+Date:   Fri, 6 Aug 2021 22:46:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7f6a2591-c264-e005-18ae-242320d4a22e@nvidia.com>
+In-Reply-To: <202108052040.jEu76XzR-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 10:35:10PM -0700, Dipen Patel wrote:
+On 8/5/21 5:04 AM, kernel test robot wrote:
+> tree:   https://github.com/openrisc/linux.git for-next
+> head:   19e14f3a81d227f1c8b8d5371de28b3ab3deb556
+> commit: 19e14f3a81d227f1c8b8d5371de28b3ab3deb556 [3/3] openrisc: Fix compiler warnings in setup
+> config: openrisc-randconfig-r005-20210804 (attached as .config)
+> compiler: or1k-linux-gcc (GCC) 10.3.0
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # https://github.com/openrisc/linux/commit/19e14f3a81d227f1c8b8d5371de28b3ab3deb556
+>          git remote add openrisc https://github.com/openrisc/linux.git
+>          git fetch --no-tags openrisc for-next
+>          git checkout 19e14f3a81d227f1c8b8d5371de28b3ab3deb556
+>          # save the attached .config to linux build tree
+>          mkdir build_dir
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=openrisc SHELL=/bin/bash
 > 
-> On 8/6/21 9:51 PM, Kent Gibson wrote:
-> > On Fri, Aug 06, 2021 at 09:52:54PM -0700, Dipen Patel wrote:
-> >> On 8/6/21 8:07 PM, Kent Gibson wrote:
-> >>> On Fri, Aug 06, 2021 at 07:41:09PM -0700, Dipen Patel wrote:
-> >>>> On 7/31/21 8:43 AM, Kent Gibson wrote:
-> >>>>> On Wed, Jul 28, 2021 at 04:59:08PM -0700, Dipen Patel wrote:
-> >>>>>> Thanks Kent for the review comment. My responses inline.
-> >>>>>>
-> > <snip>
-> >
-> >>>> 2. Does hte handler solution create race between two handlers? i.e. edge_irq_handler and
-> >>>>
-> >>>> hte_handler, for the worst case scenario as below?
-> >>>>
-> >>> No.  If hardware timestamp is selected then no irq is requested from the
-> >>> irq subsystem for that line - only from the hte subsystem instead.
-> >>> So there will be no edge_irq_handler call for that line, so no possible race.
-> >> That is not possible for certain providers, for example the one I am dealing
-> >>
-> >> with which requires GPIO line to be requested as input and IRQ needs to
-> >>
-> >> be enabled on them.
-> >>
-> > So, for your hte subsystem to work, the consumer has to also request
-> > a line from the irq subsystem?
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> Yes
+> All errors (new ones prefixed by >>):
 > 
-> >   That makes sense to you?
-> Its not me, its peculiarity of the hardware that I am dealing with.
+>     In file included from arch/openrisc/include/asm/page.h:35,
+>                      from drivers/usb/atm/speedtch.c:12:
+>>> arch/openrisc/include/asm/setup.h:11:13: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'or1k_early_setup'
+>        11 | void __init or1k_early_setup(void *fdt);
+>           |             ^~~~~~~~~~~~~~~~
+> 
+> 
+> vim +11 arch/openrisc/include/asm/setup.h
 
-My point is that the peculiarities of the hardware should be hidden from
-the hte API user, especially if it is only necessary for some hardware.
+Hi Stafford-
 
-> > Have hte do that, rather than the consumer.
-> 
-> Sure, for cdev it would mean to duplicate (most of) the edge* or line_create
-> 
-> code in HTE.
+#include <linux/init.h>
 
-And your current way every other hte user will have to duplicate the
-gpiolib-cdev code....
+and where is this file?
 
-> For such hardware, my initial doubt remains the same about
-> 
-> the worst case scenario between two handlers, but perhaps that's
-> 
-> implementation details for hte to handle.
-> 
+#include <asm-generic/setup.h>
 
-Indeed.
+>       9	
+>      10	#ifndef __ASSEMBLY__
+>    > 11	void __init or1k_early_setup(void *fdt);
+>      12	#endif
+>      13	
+> 
+> ---
 
-Cheers,
-Kent.
+-- 
+~Randy
 
-> >
-> > And another reason it makes sense to integrate this with irq...
-> 
-> Alright, will explore this route as well. I remember both Thierry[1] and
-> 
-> Marc[2] raised some doubts (time to revive that discussion).
-> 
-> 
-> [1]: https://lore.kernel.org/lkml/YFm9r%2FtFkzVlYDEp@orome.fritz.box/
-> 
-> [2]: https://lore.kernel.org/lkml/87h7l1k9yi.wl-maz@kernel.org/
-> 
-> >
-> > Cheers,
-> > Kent.
