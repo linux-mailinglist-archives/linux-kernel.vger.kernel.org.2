@@ -2,113 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B24B3E34FF
-	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3103E3500
+	for <lists+linux-kernel@lfdr.de>; Sat,  7 Aug 2021 12:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhHGKvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 06:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231899AbhHGKtJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 06:49:09 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2214EC0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 03:48:52 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id b128so7194048wmb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 03:48:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NH7LZiVsTX4jYfg6zE84YTrVG+vR/4RBWt0hrJzYcu8=;
-        b=x3hiRGrxj1KkJpxMXDI1Ey2aFvy6P1y1DTovvoKtuvxLN44xrcXbEoPjFiQy2har3o
-         PG7kJSvRU6QEEZcTih51py/s4wfNkSPoglm7yVj3qjrkKuiy2Ob7hA/uu45GR1GzY/PA
-         RmVLNpmIHTm4EnnJnr/wX9NAjBgqE/lOSTmiUC9RyS66+5AT1rx3mNxCTjCod8OESsuO
-         ju0VSGAVbdTOCcrp1JmQVJWgveXlS6kjW9y4AcvGy0HVMgCjtefjad67rligyc2jClgR
-         pxYuJFEz/0q9q6+u35CSIUGnrfwE7/rQvD3n0fIlURir9IkPOtt1/dAcsaEKV6U2RNyr
-         xcng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NH7LZiVsTX4jYfg6zE84YTrVG+vR/4RBWt0hrJzYcu8=;
-        b=TvdgHjmR15yJkdmTVg/9ZQZ8/hZX5rTISOM/TQ5DNT4W8wCwVpiGZxrXFehMkGPl+2
-         r6u+EKazvSpBFoujqBPY/XIdWf7reoLL423MhJrfc+abmD89tn0JEEJK+myA9NJci0xH
-         1PZ/FBH0cqjHNEP79CgAo4A7I1RIRLR8UBcraRbw+AMgtnv/6EJ7CRnorgA0m3p5bdEi
-         pcjFW/xy+RG20L7Gmo/ljDyHKQVTLd/VgrPMkVxr4HT/LO0wSmv8p1ConDvfecky0K7A
-         FDc9FRzHvL68k0B5hjtx/yItNF8bJdB5NU4lA2BD2hChXJ8L70Mf8hnwRGYwXd/z4/BB
-         0Z6w==
-X-Gm-Message-State: AOAM533syIeKE39on6OXbWzU87c1EWcHP23bL0X2J6mHunoa/IRDDUBj
-        nEltvEkQqpIj1Jk3qUx3wmtFgKfyui3FTQ==
-X-Google-Smtp-Source: ABdhPJzAJXV4KNvd7otU83voBOJTAwUvFo7CmtSdep2rWfRmXzrElnbWN+JymVM5Kr7iGylhbUQUWQ==
-X-Received: by 2002:a05:600c:1986:: with SMTP id t6mr2242031wmq.49.1628333330322;
-        Sat, 07 Aug 2021 03:48:50 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id i18sm8510366wmb.17.2021.08.07.03.48.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 07 Aug 2021 03:48:49 -0700 (PDT)
-Subject: Re: [PATCH 0/4] slimbus: patches (set 1) for 5.15
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210806091639.532-1-srinivas.kandagatla@linaro.org>
- <YQ03FPyxF8DFlwI7@kroah.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <71200533-db05-157f-480a-d64812e1d9c2@linaro.org>
-Date:   Sat, 7 Aug 2021 11:48:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YQ03FPyxF8DFlwI7@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S232026AbhHGKwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 06:52:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231687AbhHGKwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 7 Aug 2021 06:52:35 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6A5A60F70;
+        Sat,  7 Aug 2021 10:52:18 +0000 (UTC)
+Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mCJw8-003VVW-La; Sat, 07 Aug 2021 11:52:16 +0100
+Date:   Sat, 07 Aug 2021 11:52:15 +0100
+Message-ID: <87pmup1q8w.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Oliver Upton <oupton@google.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>
+Subject: Re: [RESEND PATCH] clocksource/arm_arch_timer: Fix masking for high freq counters
+In-Reply-To: <20210806182126.2842876-1-oupton@google.com>
+References: <20210806182126.2842876-1-oupton@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.104.136.29
+X-SA-Exim-Rcpt-To: oupton@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, daniel.lezcano@linaro.org, tglx@linutronix.de, pshier@google.com, rananta@google.com, ricarkol@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Oliver,
 
-
-On 06/08/2021 14:20, Greg KH wrote:
-> On Fri, Aug 06, 2021 at 10:16:35AM +0100, Srinivas Kandagatla wrote:
->> Hi Greg,
->>
->> Recently runtime pm testing on slimbus reveled that its
->> totally broken on SlimBus ngd drivers.
->>
->> Below are the fixes to get it back working.
->>
->> - One of the reason begin incorrect device pointer used for
->> runtime pm and in some places
->>
->> - Second one was to do with unable to validate transaction id
->>   which resulted in negative runtime pm count.
->>
->> - Other fix was to do with resetting dma addresses once ngd
->> controller is power-cycled.
->>
->> With all these fixed runtime pm is now fully functional on NGD
->> controllers.
->>
->> Currently I marked them all with Cc: <stable@vger.kernel.org>
->> as these all patches are required to fix runtime pm on SlimBus
->> NGD controller.
->>
->> Can you please queue them up for 5.15.
+On Fri, 06 Aug 2021 19:21:26 +0100,
+Oliver Upton <oupton@google.com> wrote:
 > 
-> Why do you want these for 5.15-rc1 when you need them to fix problems in
-> 5.14?  Shouldn't they go into 5.14-final?
+> Unfortunately, the architecture provides no means to determine the bit
+> width of the system counter. However, we do know the following from the
+> specification:
+> 
+>  - the system counter is at least 56 bits wide
+>  - Roll-over time of not less than 40 years
+> 
+> To date, the arch timer driver has depended on the first property,
+> assuming any system counter to be 56 bits wide and masking off the rest.
+> However, combining a narrow clocksource mask with a high frequency
+> counter could result in prematurely wrapping the system counter by a
+> significant margin. For example, a 56 bit wide, 1GHz system counter
+> would wrap in a mere 2.28 years!
+> 
+> This is a problem for two reasons: v8.6+ implementations are required to
+> provide a 64 bit, 1GHz system counter. Furthermore, before v8.6,
+> implementers may select a counter frequency of their choosing.
+> 
+> Fix the issue by deriving a valid clock mask based on the second
+> property from above. Set the floor at 56 bits, since we know no system
+> counter is narrower than that.
+> 
+> Suggested-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Oliver Upton <oupton@google.com>
+> ---
+> This patch was tested with QEMU, tweaked to provide a 1GHz system
+> counter frequency, as I could not easily figure out how to tweak the
+> base FVP to provide a 1GHz counter.
 
-Yes, these should go to other stable trees aswell.
-I assumed that Fixes tag will automatically backport those patches.
+<FVP>
+"bp.refcounter.base_frequency" is the property you are looking for. In
+general, passing --list-params to the model reveals a treasure trove
+of weird and wonderful options that can be used to configure the model
+to your liking.
+</FVP>
 
 > 
-> confused,
-Sorry if I confused you.
-
---srini
-
+> Parent commit: 0c32706dac1b ("arm64: stacktrace: avoid tracing arch_stack_walk()")
 > 
-> greg k-h
+>  drivers/clocksource/arm_arch_timer.c | 28 ++++++++++++++++++++++++++--
+>  1 file changed, 26 insertions(+), 2 deletions(-)
 > 
+> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+> index be6d741d404c..8c41626a4c8a 100644
+> --- a/drivers/clocksource/arm_arch_timer.c
+> +++ b/drivers/clocksource/arm_arch_timer.c
+> @@ -52,6 +52,12 @@
+>  #define CNTV_TVAL	0x38
+>  #define CNTV_CTL	0x3c
+>  
+> +/*
+> + * The minimum amount of time a generic timer is guaranteed to not roll over
+
+nit: s/timer/counter/
+
+> + * (40 years)
+
+For later reference, could you add the section of the ARMv8 ARM where
+this is mentioned? Something like 'ARM DDI 0487G.a D11.1.2 ("The
+system counter")', either here or in the comment further down.
+
+> + */
+> +#define MIN_ROLLOVER_SECS	(40ULL * 365 * 24 * 3600)
+> +
+>  static unsigned arch_timers_present __initdata;
+>  
+>  static void __iomem *arch_counter_base __ro_after_init;
+> @@ -1004,9 +1010,24 @@ struct arch_timer_kvm_info *arch_timer_get_kvm_info(void)
+>  	return &arch_timer_kvm_info;
+>  }
+>  
+> +/*
+> + * Makes an educated guess at a valid counter width based on the Generic Timer
+> + * specification. Of note:
+> + *   1) the Generic Timer is at least 56 bits wide
+> + *   2) a roll-over time of not less than 40 years
+> + */
+> +static int __init arch_counter_get_width(void)
+> +{
+> +	u64 min_cycles = MIN_ROLLOVER_SECS * arch_timer_get_cntfrq();
+
+That's unfortunately wishful thinking. We have stupidly broken systems
+out there that do not set CNTFRQ_EL0, and instead rely on DT
+properties to describe the counter frequency. You're likely to end up
+with a glorious zero as a result, with interesting consequences...
+
+Use arch_timer_rate instead, which will be set as by the time you
+register the counter.
+
+> +
+> +	/* guarantee the returned width is within the valid range */
+> +	return max(56, min(64, ilog2(min_cycles)));
+
+Maybe better written as "clamp_val(ilog2(min_cycles), 56, 64);".
+
+> +}
+> +
+>  static void __init arch_counter_register(unsigned type)
+>  {
+>  	u64 start_count;
+> +	int width;
+>  
+>  	/* Register the CP15 based counter if we have one */
+>  	if (type & ARCH_TIMER_TYPE_CP15) {
+> @@ -1031,6 +1052,10 @@ static void __init arch_counter_register(unsigned type)
+>  		arch_timer_read_counter = arch_counter_get_cntvct_mem;
+>  	}
+>  
+> +	width = arch_counter_get_width();
+> +	clocksource_counter.mask = CLOCKSOURCE_MASK(width);
+> +	cyclecounter.mask = CLOCKSOURCE_MASK(width);
+
+Since you move this to be computed at runtime, how about dropping the
+static initialisation of the mask fields?
+
+> +
+>  	if (!arch_counter_suspend_stop)
+>  		clocksource_counter.flags |= CLOCK_SOURCE_SUSPEND_NONSTOP;
+>  	start_count = arch_timer_read_counter();
+> @@ -1040,8 +1065,7 @@ static void __init arch_counter_register(unsigned type)
+>  	timecounter_init(&arch_timer_kvm_info.timecounter,
+>  			 &cyclecounter, start_count);
+>  
+> -	/* 56 bits minimum, so we assume worst case rollover */
+> -	sched_clock_register(arch_timer_read_counter, 56, arch_timer_rate);
+> +	sched_clock_register(arch_timer_read_counter, width, arch_timer_rate);
+>  }
+>  
+>  static void arch_timer_stop(struct clock_event_device *clk)
+
+Another thing that needs addressing for high frequency counter support
+is to move away from TVAL programming and switch to CVAL, as the
+maximum deadline we can currently program is 4.2s at 1GHz.
+
+Fun fact: it has the interesting consequence of breaking XGene-1,
+which implemented CVAL in terms of TVAL instead of the other way
+around (what were these guys thinking?), though I don't think anyone
+will notice in practice. I have a preliminary patch on a branch
+somewhere that I'll try to dust up and post in the coming days.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
