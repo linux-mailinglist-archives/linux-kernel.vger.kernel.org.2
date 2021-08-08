@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FC13E3A2F
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 14:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278603E3A30
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 14:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhHHMZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 08:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
+        id S231175AbhHHM15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 08:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhHHMZJ (ORCPT
+        with ESMTP id S229608AbhHHM15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 08:25:09 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44641C061760;
-        Sun,  8 Aug 2021 05:24:50 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id cp15-20020a17090afb8fb029017891959dcbso2199627pjb.2;
-        Sun, 08 Aug 2021 05:24:50 -0700 (PDT)
+        Sun, 8 Aug 2021 08:27:57 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8340DC061760
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 05:27:37 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id k65so24210065yba.13
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 05:27:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=cfuHJ0F5XUnbjLf/uGbQtchTlybquzNv2LjZvYHovaU=;
-        b=USsNlW4N/ExtU2nKQ4XI1T/tWdGVpfGd0v58FTAoW/DhWZTLmU1N9c+TiWuyGugLq0
-         1vaqoVZ43ZGQGphih8FHD70uMGWesDs5su5/vBu6/H7neXnpw88ecy7G3aQ/sEBtOwGt
-         IlTxmVK6bzxwD1ZPnYQGThFLZqnWrF/DOTgWA5Qk+5qVGY/g2ZM0xJPSlctHQu9Uov0o
-         9eyxSGc+SKcErqwnorLd2M5NTRDWO3iOWoMPJa2jvtf53JCq0q04Cud3g/r4E/Hxo3Vq
-         7pZqjIilhqDpHhUDrVQsrOg+LAKDRGNR4hXL1zkr6+6PPANaJoJrMU3pJZKHyTyP/RzS
-         xobA==
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=phMNIVj2qh5Du4B6LD+6E2MJYFQ9Q1V0OB1WzMXLNFU=;
+        b=Jjrqo0/3RbtObZC7WL8AdwOuloACp+IvdwQwoWlUJ2BEcbiqhiF52mnRn3vori6fcR
+         tLI6wo1l9tXONSW9culbVNy2ImUe5+k68c2YpGKxJ6aABynNsqDz2mSH8bPp/BLC5XU8
+         Nz7anivszhrH5HUwc1iB/Oo62hDH22fVKaElg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=cfuHJ0F5XUnbjLf/uGbQtchTlybquzNv2LjZvYHovaU=;
-        b=S1rVKGr+3acdjmV5n9vWNAE/d0/sZsGln0Py/eUpXT9v8wNQLb0htfqyEaw8qIImpN
-         MSg/+d14zpxXPJwPgxhB1VzoyHDY/h6Z0550weos9wmpkm/US47qdBBBtwbdxCxXjHrp
-         h1ZZxnvyEacoQ7kMoZILAQLeMYx9kGroLBr1PLK4+3YEniU6Ox+VmdkY7Ov2Dj1Ub9By
-         CuTmGCY74nAgIvFFjg0UKrEr5FeIgcnR343kU8g0cO5zOf6pFpvtdrdAldawucFgaBdd
-         468bYcKcj3vkhjOipeE/b92l39kRJCJ+bPxAmf1fFCSAmN0EmaUeuTz7WKM0ek0ty/ZK
-         A6Xw==
-X-Gm-Message-State: AOAM531Z3V+a7K3+6DfUaSJ0ltvRk/oFTPVojxkpKwmV5uNbAlYp1/2h
-        XGabAGP65Et2IfRFSphAOm8=
-X-Google-Smtp-Source: ABdhPJw5LKdxwqi9Lfzyt8FsJnFMBTOUX7sv3rKsPTpja/4BnQnUTBy+yntloS7peZkV6sYGP/1Few==
-X-Received: by 2002:a17:902:ced0:b029:12c:bebd:1efb with SMTP id d16-20020a170902ced0b029012cbebd1efbmr16803253plg.56.1628425489515;
-        Sun, 08 Aug 2021 05:24:49 -0700 (PDT)
-Received: from u18.mshome.net ([167.220.238.196])
-        by smtp.gmail.com with ESMTPSA id y8sm17346925pfe.162.2021.08.08.05.24.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Aug 2021 05:24:49 -0700 (PDT)
-From:   Muhammad Falak R Wani <falakreyaz@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Muhammad Falak R Wani <falakreyaz@gmail.com>
-Subject: [PATCH] samples: bpf: xdp1: remove duplicate code to find protocol
-Date:   Sun,  8 Aug 2021 17:54:11 +0530
-Message-Id: <20210808122411.10980-1-falakreyaz@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=phMNIVj2qh5Du4B6LD+6E2MJYFQ9Q1V0OB1WzMXLNFU=;
+        b=cRN5ov7b6XDVvvUgYcOMShakZvx8QPu1x0z8YkGbqxy58dDgwCCCGzZ8PnMzQYAiKv
+         kVhNUbueNs6/Yb9cYmoVR0mImMPNuV22q015mUSa2JrlhwO+HtvgMM7/ZWqppa5n1yB7
+         SqEXZG1z1CJnh/i/Koy5h34dp5z4EY9OZUpjO/a3m7tcx7LOj7w9jxQTrG5aMmAf8rE3
+         xeKbUSOH68/sNQlmB5lHSGAB3Ox8mpRcJzRrPc1dW7KXwvP1U1hkwFBf/uxu9g3fizDL
+         bHo+YYZpC9RTtERLfjJUm2SdUqy/4/lqSig++J7Bs/rtLtVZe4pqP8sw5clLwPAMWvQZ
+         EziQ==
+X-Gm-Message-State: AOAM531twALzAEdv0nIvylcR7IjYbt3SDp7wZU7LEkHULR3FIDaYc5vU
+        cyIju/4eXucw9ZA+PJUiWcL8idvB105AEqgQy0ydbQ==
+X-Google-Smtp-Source: ABdhPJw+tMVd0eSGz+SyKmTaXzXcQaC8wPqbpS5lM1+UR5o7T8opjWH2YU9GIg6BOef3NCSdqDuK8Oi2NW7cd2X9emg=
+X-Received: by 2002:a25:1f46:: with SMTP id f67mr24752430ybf.421.1628425656723;
+ Sun, 08 Aug 2021 05:27:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210721075937.696811-1-alex@ghiti.fr> <20210721075937.696811-4-alex@ghiti.fr>
+In-Reply-To: <20210721075937.696811-4-alex@ghiti.fr>
+From:   Vitaly Wool <vitaly.wool@konsulko.com>
+Date:   Sun, 8 Aug 2021 14:27:25 +0200
+Message-ID: <CAM4kBBKEU4zKkRJKe27Y0uvt7SN=K6HsyNMdPu7Y+WWyh7QRHg@mail.gmail.com>
+Subject: Re: [PATCH -fixes 3/3] riscv: Optimize kernel virtual address
+ conversion macro
+To:     Alexandre Ghiti <alex@ghiti.fr>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code to find h_vlan_encapsulated_proto is duplicated.
-Remove the extra block.
+On Wed, Jul 21, 2021 at 10:04 AM Alexandre Ghiti <alex@ghiti.fr> wrote:
+>
+> The current test in kernel_mapping_va_to_pa only applies when
+> CONFIG_XIP_KERNEL is set, so use IS_ENABLED to optimize this macro at
+> compile-time in standard kernels that do not require this test.
+>
+> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
 
-Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
----
- samples/bpf/xdp1_kern.c | 9 ---------
- 1 file changed, 9 deletions(-)
+Just in case you need it, here comes
 
-diff --git a/samples/bpf/xdp1_kern.c b/samples/bpf/xdp1_kern.c
-index 34b64394ed9c..a35e064d7726 100644
---- a/samples/bpf/xdp1_kern.c
-+++ b/samples/bpf/xdp1_kern.c
-@@ -57,15 +57,6 @@ int xdp_prog1(struct xdp_md *ctx)
- 
- 	h_proto = eth->h_proto;
- 
--	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
--		struct vlan_hdr *vhdr;
--
--		vhdr = data + nh_off;
--		nh_off += sizeof(struct vlan_hdr);
--		if (data + nh_off > data_end)
--			return rc;
--		h_proto = vhdr->h_vlan_encapsulated_proto;
--	}
- 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
- 		struct vlan_hdr *vhdr;
- 
--- 
-2.17.1
+Reviewed-By: Vitaly Wool <vitaly.wool@konsulko.com>
 
+> ---
+>  arch/riscv/include/asm/page.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+> index b0ca5058e7ae..10dc063868f6 100644
+> --- a/arch/riscv/include/asm/page.h
+> +++ b/arch/riscv/include/asm/page.h
+> @@ -123,7 +123,7 @@ extern phys_addr_t phys_ram_base;
+>  #define linear_mapping_va_to_pa(x)     ((unsigned long)(x) - kernel_map.va_pa_offset)
+>  #define kernel_mapping_va_to_pa(y) ({                                          \
+>         unsigned long _y = y;                                                   \
+> -       (_y < kernel_map.virt_addr + XIP_OFFSET) ?                                      \
+> +       (IS_ENABLED(CONFIG_XIP_KERNEL) && _y < kernel_map.virt_addr + XIP_OFFSET) ?     \
+>                 ((unsigned long)(_y) - kernel_map.va_kernel_xip_pa_offset) :            \
+>                 ((unsigned long)(_y) - kernel_map.va_kernel_pa_offset - XIP_OFFSET);    \
+>         })
+> --
+> 2.30.2
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
