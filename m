@@ -2,133 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398013E3AB1
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 15:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78683E3AB6
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 16:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231736AbhHHNzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 09:55:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229923AbhHHNzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 09:55:40 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 216746101E;
-        Sun,  8 Aug 2021 13:55:19 +0000 (UTC)
-Date:   Sun, 8 Aug 2021 14:58:09 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/7] iio: ep93xx: Prepare clock before using it
-Message-ID: <20210808145809.5797c590@jic23-huawei>
-In-Reply-To: <24f29bc6-311c-4f96-2e1b-1a5df936bb3a@gmail.com>
-References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
-        <20210613233041.128961-2-alexander.sverdlin@gmail.com>
-        <20210614115043.07ea0ae1@jic23-huawei>
-        <24f29bc6-311c-4f96-2e1b-1a5df936bb3a@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231660AbhHHODy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 10:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229923AbhHHODx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 10:03:53 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A23E6C061760
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 07:03:33 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id m12so7673139qvt.1
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 07:03:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yLrzj4bh0HvDcreSxDwqdh6zSSMVd/PhihKI8dZnQho=;
+        b=UGybWrWE5J4OQ5KN0DSLGisLJPt/qmPgSwBvNaq5kXQ2noAkKLfXf/n0fduFYUjS4v
+         lFufWIF9oHFntxrg93jxlWyZQgzDA+W/G77qWe9LdS+Wbp1ZfBxLSmcNonaVlqdR5RF6
+         R9Ghy9JGwpzOgvhBA3mhrdw5UdkGO6A/IfT2oNSKPDLS3BEBGepJqcIx1FxoRaZbk9MY
+         Eu2B031sIOhZL0Jn+Zr5vXEwTCpQN+FtWC2Q7E9QbKDeK/NPx4LkI/I8uqIIY46hzBQd
+         hSMM4sBLSrWegv0KmJ8aQ2NsDLUz1gI8xPoMRFbiK6itcAsNt4pCevOTC3aZGqCWmJxj
+         wkXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=yLrzj4bh0HvDcreSxDwqdh6zSSMVd/PhihKI8dZnQho=;
+        b=j729TJu3ORwkfg05X0VlgU4p42tsiqQVUmhNjSn3ptFbcm2lenIus2wMcfOYL1I5s3
+         JyEMar0A6tGuSMrGjIN3IDYWPPNihMPxgcQQM4eDocbhD2T+glejCb828XvAv7GO8e/t
+         FkznNg9aPnY25QV+MtY8ShEl66MZIfRXw8DQuzWEYXj9X4WTD16Z6X7GEdncG4ndy4QV
+         A4PE7amccyUAeMkqtahps5TDoz+wK9ph6x/1MMUT9Ec2kafRlfIW8KQ/UkNdwEOkrS53
+         rKYWweR3Mq7onNNJuq0Jv6SLQRmO0f0rJHetqYZlV1+tbAAHbon/Iuo6MKVac7BmFZh8
+         cMzQ==
+X-Gm-Message-State: AOAM532wy+QcKm1h/rb6GzMq1MpHWnZ/zof/wUV3tAH94Hj3oMajEgU0
+        DLbxJSMmmFGwBOvcxC8J90o=
+X-Google-Smtp-Source: ABdhPJxU0ovkSKs4L2mxlJiLM7t4VMJjj2lq46ukxj2eGxJukFGbNzL6fwSnRcg7Y2mF7HeGz/77KA==
+X-Received: by 2002:a05:6214:965:: with SMTP id do5mr6055236qvb.0.1628431412582;
+        Sun, 08 Aug 2021 07:03:32 -0700 (PDT)
+Received: from localhost.localdomain ([67.8.38.84])
+        by smtp.gmail.com with ESMTPSA id d19sm7509840qkj.40.2021.08.08.07.03.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Aug 2021 07:03:32 -0700 (PDT)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     thierry.reding@gmail.com, airlied@linux.ie, sam@ravnborg.org,
+        daniel@ffwll.ch
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm/panel/tianma-tl057fvxp01: add panel for Motorola Moto G6
+Date:   Sun,  8 Aug 2021 10:03:24 -0400
+Message-Id: <20210808140324.14495-1-julianbraha@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Aug 2021 09:30:23 +0200
-Alexander Sverdlin <alexander.sverdlin@gmail.com> wrote:
+This is a 5.7" 2160x1080 panel found on the Motorola Moto G6.
+There may be other smartphones using it, as well.
 
-> Hello Jonathan!
-> 
-> On 14/06/2021 12:50, Jonathan Cameron wrote:
-> > On Mon, 14 Jun 2021 01:30:35 +0200
-> > Alexander Sverdlin <alexander.sverdlin@gmail.com> wrote:
-> >   
-> >> Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
-> >> to Common Clock Framework, otherwise the following is visible:
-> >>
-> >> WARNING: CPU: 0 PID: 1 at drivers/clk/clk.c:1011 clk_core_enable+0x9c/0xbc
-> >> Enabling unprepared ep93xx-adc
-> >> CPU: 0 PID: 1 Comm: swapper Not tainted 5.13.0-rc5-... #1
-> >> Hardware name: Cirrus Logic EDB9302 Evaluation Board
-> >> [<c000d5b0>] (unwind_backtrace) from [<c000c590>] (show_stack+0x10/0x18)
-> >> [<c000c590>] (show_stack) from [<c03a5f38>] (dump_stack+0x20/0x2c)
-> >> [<c03a5f38>] (dump_stack) from [<c03a2098>] (__warn+0x98/0xc0)
-> >> [<c03a2098>] (__warn) from [<c03a2150>] (warn_slowpath_fmt+0x90/0xc0)
-> >> [<c03a2150>] (warn_slowpath_fmt) from [<c01d8358>] (clk_core_enable+0x9c/0xbc)
-> >> [<c01d8358>] (clk_core_enable) from [<c01d8698>] (clk_core_enable_lock+0x18/0x30)
-> >> [<c01d8698>] (clk_core_enable_lock) from [<c0266560>] (ep93xx_adc_probe+0xe4/0x1a0)
-> >> [<c0266560>] (ep93xx_adc_probe) from [<c02126e0>] (platform_probe+0x34/0x80)
-> >> [<c02126e0>] (platform_probe) from [<c0210bf8>] (really_probe+0xe8/0x394)
-> >> [<c0210bf8>] (really_probe) from [<c0211464>] (device_driver_attach+0x5c/0x64)
-> >> [<c0211464>] (device_driver_attach) from [<c02114e8>] (__driver_attach+0x7c/0xec)
-> >> [<c02114e8>] (__driver_attach) from [<c020f1b4>] (bus_for_each_dev+0x78/0xc4)
-> >> [<c020f1b4>] (bus_for_each_dev) from [<c0211570>] (driver_attach+0x18/0x24)
-> >> [<c0211570>] (driver_attach) from [<c020fab4>] (bus_add_driver+0x140/0x1cc)
-> >> [<c020fab4>] (bus_add_driver) from [<c0211c44>] (driver_register+0x74/0x114)
-> >> [<c0211c44>] (driver_register) from [<c02134f8>] (__platform_driver_register+0x18/0x24)
-> >> [<c02134f8>] (__platform_driver_register) from [<c0470148>] (ep93xx_adc_driver_init+0x10/0x1c)
-> >> [<c0470148>] (ep93xx_adc_driver_init) from [<c045ce88>] (do_one_initcall+0x7c/0x1a4)
-> >> [<c045ce88>] (do_one_initcall) from [<c045d184>] (kernel_init_freeable+0x17c/0x1fc)
-> >> [<c045d184>] (kernel_init_freeable) from [<c03a64d0>] (kernel_init+0x8/0xf8)
-> >> [<c03a64d0>] (kernel_init) from [<c00082d8>] (ret_from_fork+0x14/0x3c)
-> >> ...
-> >> ep93xx-adc ep93xx-adc: Cannot enable clock
-> >> ep93xx-adc: probe of ep93xx-adc failed with error -108
-> >>
-> >> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>  
-> > Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > 
-> > From cover letter I'm assuming you want these to go through same route as
-> > the common clock conversion?  If not shout and I can pick this one up.  
-> 
-> We didn't manage to consolidate the delivery path for this series, could
-> you please take this patch alone, as you proposed initially?
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ drivers/gpu/drm/panel/Kconfig                 |  7 ++
+ drivers/gpu/drm/panel/Makefile                |  1 +
+ .../gpu/drm/panel/panel-tianma-tl057fvxp01.c  | 92 +++++++++++++++++++
+ 3 files changed, 100 insertions(+)
+ create mode 100644 drivers/gpu/drm/panel/panel-tianma-tl057fvxp01.c
 
-Sure. Applied to the togreg branch of iio.git and pushed out as testing for
-0-day to see if it can find anything we missed.
-
-Thanks,
-
-Jonathan
-> 
-> >> ---
-> >>  drivers/iio/adc/ep93xx_adc.c | 6 +++---
-> >>  1 file changed, 3 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/drivers/iio/adc/ep93xx_adc.c b/drivers/iio/adc/ep93xx_adc.c
-> >> index c08ab3c6dfaf..5c85257b814c 100644
-> >> --- a/drivers/iio/adc/ep93xx_adc.c
-> >> +++ b/drivers/iio/adc/ep93xx_adc.c
-> >> @@ -207,7 +207,7 @@ static int ep93xx_adc_probe(struct platform_device *pdev)
-> >>  		 */
-> >>  	}
-> >>  
-> >> -	ret = clk_enable(priv->clk);
-> >> +	ret = clk_prepare_enable(priv->clk);
-> >>  	if (ret) {
-> >>  		dev_err(&pdev->dev, "Cannot enable clock\n");
-> >>  		return ret;
-> >> @@ -215,7 +215,7 @@ static int ep93xx_adc_probe(struct platform_device *pdev)
-> >>  
-> >>  	ret = iio_device_register(iiodev);
-> >>  	if (ret)
-> >> -		clk_disable(priv->clk);
-> >> +		clk_disable_unprepare(priv->clk);
-> >>  
-> >>  	return ret;
-> >>  }
-> >> @@ -226,7 +226,7 @@ static int ep93xx_adc_remove(struct platform_device *pdev)
-> >>  	struct ep93xx_adc_priv *priv = iio_priv(iiodev);
-> >>  
-> >>  	iio_device_unregister(iiodev);
-> >> -	clk_disable(priv->clk);
-> >> +	clk_disable_unprepare(priv->clk);
-> >>  
-> >>  	return 0;
-> >>  }  
-> >   
+diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+index beb581b96ecd..9e8a5fffa626 100644
+--- a/drivers/gpu/drm/panel/Kconfig
++++ b/drivers/gpu/drm/panel/Kconfig
+@@ -557,6 +557,13 @@ config DRM_PANEL_TDO_TL070WSH30
+ 	  24 bit RGB per pixel. It provides a MIPI DSI interface to
+ 	  the host, a built-in LED backlight and touch controller.
+ 
++config DRM_PANEL_TIANMA_TL057FVXP01
++	tristate "Tianma TL057FVXP01 panel"
++	select DRM_PANEL_MIPI_DSI_COMMON
++	help
++	  Say Y here if you want to enable support for the Tianma TL057FVXP01
++	  2160x1080 5.7" panel (found on the Motorola Moto G6).
++
+ config DRM_PANEL_TPO_TD028TTEC1
+ 	tristate "Toppoly (TPO) TD028TTEC1 panel driver"
+ 	depends on OF && SPI
+diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+index c8132050bcec..9bdc2a12e719 100644
+--- a/drivers/gpu/drm/panel/Makefile
++++ b/drivers/gpu/drm/panel/Makefile
+@@ -57,6 +57,7 @@ obj-$(CONFIG_DRM_PANEL_SITRONIX_ST7789V) += panel-sitronix-st7789v.o
+ obj-$(CONFIG_DRM_PANEL_SONY_ACX424AKP) += panel-sony-acx424akp.o
+ obj-$(CONFIG_DRM_PANEL_SONY_ACX565AKM) += panel-sony-acx565akm.o
+ obj-$(CONFIG_DRM_PANEL_TDO_TL070WSH30) += panel-tdo-tl070wsh30.o
++obj-$(CONFIG_DRM_PANEL_TIANMA_TL057FVXP01) += panel-tianma-tl057fvxp01.o
+ obj-$(CONFIG_DRM_PANEL_TPO_TD028TTEC1) += panel-tpo-td028ttec1.o
+ obj-$(CONFIG_DRM_PANEL_TPO_TD043MTEA1) += panel-tpo-td043mtea1.o
+ obj-$(CONFIG_DRM_PANEL_TPO_TPG110) += panel-tpo-tpg110.o
+diff --git a/drivers/gpu/drm/panel/panel-tianma-tl057fvxp01.c b/drivers/gpu/drm/panel/panel-tianma-tl057fvxp01.c
+new file mode 100644
+index 000000000000..903ce8f35b75
+--- /dev/null
++++ b/drivers/gpu/drm/panel/panel-tianma-tl057fvxp01.c
+@@ -0,0 +1,92 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2021 Julian Braha <julianbraha@gmail.com>
++ * Copyright (c) 2021, The Linux Foundation. All rights reserved.
++ * Generated with linux-mdss-dsi-panel-driver-generator from vendor device tree
++ */
++
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/of.h>
++
++#include <video/mipi_display.h>
++
++#include "panel-mipi-dsi-common.h"
++
++static void tianma_tl057fvxp01_reset(struct gpio_desc *reset_gpio)
++{
++	gpiod_set_value_cansleep(reset_gpio, 0);
++	usleep_range(5000, 6000);
++	gpiod_set_value_cansleep(reset_gpio, 1);
++	usleep_range(1000, 2000);
++	gpiod_set_value_cansleep(reset_gpio, 0);
++	usleep_range(10000, 11000);
++}
++
++static int tianma_tl057fvxp01_on(struct mipi_dsi_device *dsi)
++{
++	struct device *dev = &dsi->dev;
++	int ret;
++
++	dsi_dcs_write_seq(dsi, 0x00, 0x00);
++	dsi_dcs_write_seq(dsi, 0xff, 0x19, 0x11, 0x01);
++	dsi_dcs_write_seq(dsi, 0x00, 0x80);
++	dsi_dcs_write_seq(dsi, 0xff, 0x19, 0x11);
++	dsi_dcs_write_seq(dsi, 0x00, 0xb0);
++	dsi_dcs_write_seq(dsi, 0xb3, 0x04, 0x38, 0x08, 0x70);
++	dsi_dcs_write_seq(dsi, 0x00, 0x00);
++	dsi_dcs_write_seq(dsi, 0xff, 0xff, 0xff, 0xff);
++	dsi_dcs_write_seq(dsi, 0x35, 0x00);
++	dsi_dcs_write_seq(dsi, 0x51, 0xcc, 0x08);
++	dsi_dcs_write_seq(dsi, 0x53, 0x2c);
++	dsi_dcs_write_seq(dsi, 0x55, 0x01);
++
++	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
++	if (ret < 0) {
++		dev_err(dev, "Failed to exit sleep mode: %d\n", ret);
++		return ret;
++	}
++	msleep(120);
++
++	ret = mipi_dsi_dcs_set_display_on(dsi);
++	if (ret < 0) {
++		dev_err(dev, "Failed to set display on: %d\n", ret);
++		return ret;
++	}
++	usleep_range(10000, 11000);
++
++	return 0;
++}
++
++static const struct panel_mipi_dsi_info tianma_tl057fvxp01_info = {
++	.mode = {
++		.clock = (1080 + 53 + 4 + 53) * (2160 + 14 + 1 + 11) * 60 / 1000,
++		.hdisplay = 1080,
++		.hsync_start = 1080 + 53,
++		.hsync_end = 1080 + 53 + 4,
++		.htotal = 1080 + 53 + 4 + 53,
++		.vdisplay = 2160,
++		.vsync_start = 2160 + 14,
++		.vsync_end = 2160 + 14 + 1,
++		.vtotal = 2160 + 14 + 1 + 11,
++		.width_mm = 62,
++		.height_mm = 110,
++	},
++
++	.reset = tianma_tl057fvxp01_reset,
++	.power_on = tianma_tl057fvxp01_on,
++
++	.lanes = 4,
++	.format = MIPI_DSI_FMT_RGB888,
++	.mode_flags = MIPI_DSI_MODE_VIDEO
++		    | MIPI_DSI_MODE_VIDEO_BURST
++		    | MIPI_DSI_CLOCK_NON_CONTINUOUS
++		    | MIPI_DSI_MODE_LPM
++};
++
++MIPI_DSI_PANEL_DRIVER(tianma_tl057fvxp01, "tianma-tl057fvxp01", "tianma,tl057fvxp01");
++
++MODULE_AUTHOR("Julian Braha <julianbraha@gmail.com>");
++MODULE_DESCRIPTION("Tianma TL057FVXP01 panel driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.25.1
 
