@@ -2,194 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAD23E3B51
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4E23E3B52
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbhHHQOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 12:14:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230448AbhHHQOF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 12:14:05 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9492CC061760
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 09:13:42 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id j77so24933820ybj.3
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 09:13:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TCK5nBQQabIUN0WbQjXhg9KlErctfVr7limBHCaiG+A=;
-        b=P09Mz/mILYaoYE3EajDRpkc8akaY7fTBsUTWh/DDjvyIVcbgMaZWzI+LtlcoWEveOD
-         rhx8918aHZb+O4eacyH9xJ39yZ0R0Ijqpx/MepcAKa8/2gZ5+AVf01MP0FU5rtgj0aaI
-         ZOn+r2ameWRT7D0AaL+uSp1MMJV6BIO04kwUPuwtrDbWxbL86dxGwXjCh8J+AwMkozcs
-         y1mHfPiyIhI4iox17HTcyNBHoFvdDSpVFAZKWamRg7qw92Jqi0wzk6fCPKC2Ilmft8gc
-         6xtZM6GOlAFZn84PTqwvcOz6XFlG9JONgTvDHC8swDsPKC28qv4jvo5Vx9VKEuRlASq2
-         T1rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TCK5nBQQabIUN0WbQjXhg9KlErctfVr7limBHCaiG+A=;
-        b=pyYrAGne4obM5OYu7PKdttmq4Rd5FyONryIz2wbUG8FZfAMuCKs4rJjTey8HZjsgeb
-         x3yNRzQVR6jYs3Kc4pEMSiqEEKnYK8dSVlPYKBOAQ95e6uxmHTfnfp+uNu7rauATgiEF
-         HpFHpMbsdpPEZoUwnGPZhCOYuK+WRml4JNYHzmgM2IyJkQURprVqj68Jv+2uivkTBsxg
-         wdJDsdZrtF8YBUJXp85h3JLd6jbwDzwhEIxJ6Ior3hpSX4TmaEGOS78k3bcXP/DT8I56
-         EHkBldnyQTSCmHegyHMkhqBSHJYLEEj3/xiJolk1uBSrsgP4lXFEPZWILGONOdfDKoyC
-         ys5A==
-X-Gm-Message-State: AOAM533KvrIXpz51gSNUQa61vEEwdDC+cohl8ZonuzitXpTS2vKZyyDg
-        VBqa5WArlBnw+5QdroOjxVMvnnoSjDKSAq9Rv3/WWg==
-X-Google-Smtp-Source: ABdhPJx0dWjYkHDsO+8kSP89UPL2BlSOBVWTieqq/F7t4NM8YSZ1slbEbkxEHATJiigRfMb9++IRuvn6g9kCzcz5GpU=
-X-Received: by 2002:a25:49c2:: with SMTP id w185mr23459074yba.294.1628439221480;
- Sun, 08 Aug 2021 09:13:41 -0700 (PDT)
+        id S231799AbhHHQPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 12:15:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:43358 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230049AbhHHQPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 12:15:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4C6E31B;
+        Sun,  8 Aug 2021 09:15:25 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF8023F718;
+        Sun,  8 Aug 2021 09:15:22 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Mike Galbraith <efault@gmx.de>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
+        linux-rt-users@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH v2 2/4] sched: Introduce is_pcpu_safe()
+In-Reply-To: <800ff941e3ec86ea1397cddf8ecea3d4a17c55dc.camel@gmx.de>
+References: <20210807005807.1083943-1-valentin.schneider@arm.com> <20210807005807.1083943-3-valentin.schneider@arm.com> <800ff941e3ec86ea1397cddf8ecea3d4a17c55dc.camel@gmx.de>
+Date:   Sun, 08 Aug 2021 17:15:20 +0100
+Message-ID: <87a6lrap5z.mognet@arm.com>
 MIME-Version: 1.0
-References: <20210805170859.2389276-1-surenb@google.com> <YQzZSmRqYmxFJ61y@dhcp22.suse.cz>
- <CAJuCfpFL_7Zk4Nk5E_kCSnsCsXgmWGW9R3AnXW-T5EH7URUkRg@mail.gmail.com>
-In-Reply-To: <CAJuCfpFL_7Zk4Nk5E_kCSnsCsXgmWGW9R3AnXW-T5EH7URUkRg@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Sun, 8 Aug 2021 09:13:30 -0700
-Message-ID: <CAJuCfpFeup+rppM7mbJWJeaCbTdbp=1=r24CjmLWWv4Vsydd2A@mail.gmail.com>
-Subject: Re: [PATCH v7 1/2] mm: introduce process_mrelease system call
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 6, 2021 at 9:07 AM Suren Baghdasaryan <surenb@google.com> wrote:
+On 07/08/21 03:42, Mike Galbraith wrote:
+> On Sat, 2021-08-07 at 01:58 +0100, Valentin Schneider wrote:
+>>
+>> +static inline bool is_pcpu_safe(void)
 >
-> On Thu, Aug 5, 2021 at 11:40 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Thu 05-08-21 10:08:58, Suren Baghdasaryan wrote:
-> > [...]
-> > > +     /*
-> > > +      * If the task is dying and in the process of releasing its memory
-> > > +      * then get its mm.
-> > > +      */
-> > > +     p = find_lock_task_mm(task);
-> > > +     if (!p) {
-> > > +             ret = -ESRCH;
-> > > +             goto put_pid;
-> > > +     }
-> > > +     if (task != p) {
-> > > +             get_task_struct(p);
-> > > +             put_task_struct(task);
-> > > +             task = p;
-> > > +     }
-> >
-> > Why do you need to take a reference to the p here? You are under
-> > task_lock so this will not go away and you only need p to get your mm.
+> Nit: seems odd to avoid spelling it out to save two characters, percpu
+> is word like, rolls off the ole tongue better than p-c-p-u.
 >
-> True.
->
-> >
-> > > +
-> > > +     /* If the work has been done already, just exit with success */
-> > > +     if (test_bit(MMF_OOM_SKIP, &task->mm->flags))
-> > > +             goto put_task;
-> >
-> > You want to release the task_lock
->
-> Missed it again :(
->
-> >
-> > > +
-> > > +     if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
-> >
-> > you want task_will_free_mem(p) and what is the point of the PF_KTHREAD
-> > check?
->
-> Yeah, looks like task_will_free_mem() covers that case already.
->
-> >
-> > > +             mm = task->mm;
-> > > +             mmget(mm);
-> >
-> > All you need is to make sure mm will not get released under your feet
-> > once task_lock is released so mmgrab is the right thing to do here. The
-> > address space can be torn down in parallel and that is OK and desirable.
-> >
-> > I think you really want something like this:
-> >
-> >         if (flags)
-> >                 return -EINVAL;
-> >
-> >         pid = pidfd_get_pid(fd, &f_flags);
-> >         if (IS_ERR(pid))
-> >                 return PTR_ERR(pid);
-> >         task = get_pid_task(pid, PIDTYPE_PID);
-> >         if (!task) {
-> >                 ret = -ESRCH;
-> >                 goto put_pid;
-> >         }
-> >
-> >         /*
-> >          * Make sure to chose a thread which still has a reference to mm
-> >          * during the group exit
-> >          */
-> >         p = find_lock_task_mm(task);
-> >         if (!p) {
-> >                 ret = -ESRCH;
-> >                 goto put_task;
-> >         }
-> >
-> >         mm = task->mm;
-> >         mmgrab(mm);
-> >         reap = true;
-> >         /* If the work has been done already, just exit with success */
-> >         if (test_bit(MMF_OOM_SKIP, &mm->flags)) {
-> >                 reap = false;
-> >         } else if (!task_will_free_mem(p)) {
-> >                 reap = false;
-> >                 ret = -EINVAL;
-> >         }
-> >         task_unlock(p);
-> >
-> >         if (!reap)
-> >                 goto dropmm;;
-> >
-> >         /* Do the work*/
-> >
-> >
-> > dropmm:
-> >         mmdrop(mm);
-> > put_task:
-> >         put_task(task);
-> > put_pid:
-> >         put_pid(pid);
-> >
-> >         return ret;
-> >
->
-> This is indeed simpler to follow. I'll adopt your version. Thanks!
+>       -Mike
 
-v8 is posted at https://lore.kernel.org/patchwork/patch/1473697/
-Testing shows performance improvement from replacing mmget with mmgrab.
-
->
-> > --
-> > Michal Hocko
-> > SUSE Labs
+True. A quick grep says both versions are used, though "percpu" wins by
+about a factor of 2. I'll tweak that for a v3.
