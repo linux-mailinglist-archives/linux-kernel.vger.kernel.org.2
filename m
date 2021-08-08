@@ -2,112 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6435C3E3BCC
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 19:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6D53E3BC7
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 19:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbhHHRGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 13:06:03 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37856 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhHHRGC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 13:06:02 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S231948AbhHHRDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 13:03:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230169AbhHHRDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 13:03:42 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4C7261FFE9;
-        Sun,  8 Aug 2021 17:05:42 +0000 (UTC)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6BC1B13398;
-        Sun,  8 Aug 2021 17:05:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id IT3FB+MOEGH8DQAAMHmgww
-        (envelope-from <dave@stgolabs.net>); Sun, 08 Aug 2021 17:05:39 +0000
-Date:   Sun, 8 Aug 2021 10:05:35 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [patch V3 56/64] futex: Correct the number of requeued waiters
- for PI
-Message-ID: <20210808170535.kotqd5t677tijh4o@offworld>
-References: <20210805151300.330412127@linutronix.de>
- <20210805153956.051961951@linutronix.de>
+        by mail.kernel.org (Postfix) with ESMTPSA id 65C2D60C3E;
+        Sun,  8 Aug 2021 17:03:18 +0000 (UTC)
+Date:   Sun, 8 Aug 2021 18:06:08 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        jarkko.nikula@linux.intel.com
+Subject: Re: [PATCH v14 01/17] counter: 104-quad-8: Return error when
+ invalid mode during ceiling_write
+Message-ID: <20210808180608.2925961b@jic23-huawei>
+In-Reply-To: <a2147f022829b66839a1db5530a7fada47856847.1627990337.git.vilhelm.gray@gmail.com>
+References: <cover.1627990337.git.vilhelm.gray@gmail.com>
+        <a2147f022829b66839a1db5530a7fada47856847.1627990337.git.vilhelm.gray@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210805153956.051961951@linutronix.de>
-User-Agent: NeoMutt/20201120
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 05 Aug 2021, Thomas Gleixner wrote:
+On Tue,  3 Aug 2021 21:06:11 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
->From: Thomas Gleixner <tglx@linutronix.de>
->
->The accounting is wrong when either the PI sanity check or the
->requeue PI operation fails. Adjust it in the failure path.
+> The 104-QUAD-8 only has two count modes where a ceiling value makes
+> sense: Range Limit and Modulo-N. Outside of these two modes, setting a
+> ceiling value is an invalid operation -- so let's report it as such by
+> returning -EINVAL.
+> 
+> Fixes: fc069262261c ("counter: 104-quad-8: Add lock guards - generic interface")
+> Acked-by: Syed Nayyar Waris <syednwaris@gmail.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Applied to the togreg branch of iio.git and pushed out as testing for 0-day to have
+fun.
 
-Ok fortunately these accounting errors are benign considering they
-are in error paths. This also made me wonder about the requeue PI
-top-waiter wakeup from futex_proxy_trylock_atomic(), which is always
-required with nr_wakers == 1. We account for it on the successful
-case we acquired the lock on it's behalf (and thus requeue_pi_wake_futex
-was called), but if the corresponding lookup_pi_state fails, we'll retry.
-So, shouldn't the task_count++ only be considered when we know the
-requeueing is next (a successful top_waiter acquiring the lock+pi state)?
+As an aside, I got the warning:
+  CHECK   drivers/counter/104-quad-8.c
+drivers/counter/104-quad-8.c:58: warning: Function parameter or member 'lock' not described in 'quad8'
 
-@@ -2260,7 +2260,6 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
-		 */
-		if (ret > 0) {
-			WARN_ON(pi_state);
--                       task_count++;
-			/*
-			 * If we acquired the lock, then the user space value
-			 * of uaddr2 should be vpid. It cannot be changed by
-@@ -2275,6 +2274,8 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
-			 */
-			ret = lookup_pi_state(uaddr2, ret, hb2, &key2,
-					      &pi_state, &exiting);
-+                       if (!ret)
-+                               task_count++;
-		}
+Which might be nice to clean up, but has nothing much to do with this patch.
 
-		switch (ret) {
+J
 
-Also, looking at the code, I think we can use the goto retry_private
-optimization for private futexes upon futex_proxy_trylock_atomic
-lookup_pi_state errors:
+> ---
+>  drivers/counter/104-quad-8.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
+> index 09a9a77cce06..81f9642777fb 100644
+> --- a/drivers/counter/104-quad-8.c
+> +++ b/drivers/counter/104-quad-8.c
+> @@ -715,12 +715,13 @@ static ssize_t quad8_count_ceiling_write(struct counter_device *counter,
+>  	case 1:
+>  	case 3:
+>  		quad8_preset_register_set(priv, count->id, ceiling);
+> -		break;
+> +		mutex_unlock(&priv->lock);
+> +		return len;
+>  	}
+>  
+>  	mutex_unlock(&priv->lock);
+>  
+> -	return len;
+> +	return -EINVAL;
+>  }
+>  
+>  static ssize_t quad8_count_preset_enable_read(struct counter_device *counter,
 
-@@ -2290,8 +2290,11 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
-			double_unlock_hb(hb1, hb2);
-			hb_waiters_dec(hb2);
-			ret = fault_in_user_writeable(uaddr2);
--                       if (!ret)
-+                       if (!ret) {
-+                               if (!(flags & FLAGS_SHARED))
-+                                       goto retry_private;
-				goto retry;
-+                       }
-			return ret;
-		case -EBUSY:
-		case -EAGAIN:
-
-
-Thanks,
-Davidlohr
