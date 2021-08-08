@@ -2,121 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D0D3E39F3
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 13:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD3E3E39F8
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 13:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhHHL1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 07:27:09 -0400
-Received: from mout.gmx.net ([212.227.15.18]:33771 "EHLO mout.gmx.net"
+        id S230360AbhHHLbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 07:31:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229473AbhHHL1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 07:27:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628421990;
-        bh=KmUIUjc/SMPMYj9TExyPq3vQb0YAHTrk48Epwl7WfNw=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=NhRkGU9VqsJP5ckK4Q/2+stSYMRJGtiExrNFQnWRWUyxYSgitdl0ldpZoFWxEy60A
-         8NNouudzVwlooXPudODpGhmcIGbO/i/AtYOpvyEng0BgYsjl1+na9SJW83FKJgqGC/
-         JtnzOKkkKPalmPFjLvXfQOZ6RbZjCIjVfuhvklMA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N3siA-1nCBW92icC-00zoTX; Sun, 08
- Aug 2021 13:26:29 +0200
-Date:   Sun, 8 Aug 2021 13:26:17 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Joe Perches <joe@perches.com>, Robert Richter <rric@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Len Baker <len.baker@gmx.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] drivers/edac/edac_mc: Remove all strcpy() uses
-Message-ID: <20210808112617.GA1927@titan>
-References: <20210807155957.10069-1-len.baker@gmx.com>
- <ff02ffffdc130a772c01ec0edbf8d1e684b0730a.camel@perches.com>
+        id S229473AbhHHLbE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 07:31:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8C8E60F9E;
+        Sun,  8 Aug 2021 11:30:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628422244;
+        bh=zy73ATk0gUClhvKF91vC+jx4QIns/T1Il9uBoVlX41I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aEFRbgSSJDSbyJda+n+GcFa+Wr8avXnk0WmQnmAWIKeDcJhtSXpqUtlNy1BqLM4rS
+         99rbmRsRECrkUO41UudsphMwgtsWD2HYIhvb3C7PqYkRW7jVRPdG2f1tc+PAZzKga3
+         XgGpSiDAnA2iwdbtqyXTTYA71psUX8b5ugG/HiaU=
+Date:   Sun, 8 Aug 2021 13:30:41 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [GIT PULL] USB fixes for 5.14-rc5
+Message-ID: <YQ/AYY7G/5Dq8wRh@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <ff02ffffdc130a772c01ec0edbf8d1e684b0730a.camel@perches.com>
-X-Provags-ID: V03:K1:3hHWG/tuZZeXkjU7eXoxWLV7rDk8fAeGSgNunmZLLqyFENuj5Do
- LJRKd3uHOhBfKjaEnPLmSR+BXIXXHdzocywXWl2cLSdI+urIPqaPKKY3bHYXPlCTJOcje6R
- ZnnTHw77X6b0sg6AlRcjxNEpVmbVeCp9PpMVriGtrECQrhrB7t+uSKdly6WoG9Ic2iN80zs
- T40773XKAENZUVlxOHHnw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mflkk1dmBT8=:wI7FHju9wMLs7LdKcggpc8
- T7Uf61/gbrpNZ09vrHUwrKFfP02yxCnHP1krx3mcnU1v1jnM0mrZM1IO+uCQQRveMbC9SoNVF
- d0kavCiT/YPfk5vDmygu+mgQbTw52T0LbMO3AxHIsXqvQL5YcIrEGjqBovZqZmGq1BA3WKqMc
- qmZ/2XWFMMFjqjWK4MIK07B2juyGJd4ARK+PYm1JVjZVvk6dv/+iGoQX+naFBfg+9kGSUknBC
- /mptbhtYwzlq5h1GjWjfNLx2f19MXlIuyLsquOUJMi4cFKVBwCujRkWhAHxS478oZGie4OUu/
- f8z4g6nInGcWBshLskkLqQ7jK0TtEwHncx0y+t4+Z1HMqA4lFl6+FXbMRQH/TVx6hdeQjswNF
- khn7O3R10VlGMXwRSWLVytCcNgVY0jK45Hz77tUbtv01gBW7aVIKJ2dubdbE4eCvXLq0JXPAc
- 8Fq7sFmMUD1BcxZ3ttpRIvxvKuhtSMhy2ggGvJ+ZRPqgDqy8BBLR7l5pAhM+MDG4QWnf24SFB
- T8nkera6YXyE1We2v+wXJ6oFH2ES0zhPQnIMvbIpcRm/dbVpsy6GoPfZc+i1bZbwwQZyVlMST
- dZ8i3PZGSLSH0cX7ZY37CugMyxgYoYzzmcTROvf/BbPxmgCrl/WbjG5szjchXK9Ke91PfQUm3
- FUrV2CKW5OhhLeIiTLbbq2e9I7V4rZ2ZxiYs/EA5h9nCPPX9mE2PUzqfUrryivw9sqB/IfHyK
- HzJ2Q8TAQzEN6c3fV52nEwDihSKR5j+hh9V6eG4WfQdFf8kNY0MVQeE0ycFu/hJaJ5Hz73est
- bWczc4vnKollzNx63SL3OVM1YRw2+2BJBJUcNeQGIaPv4HBiXzzRX0zlxi3AvNIfFe3JOIhGZ
- /RRM3QsQr8PI3hV/lxBK3ioWFaM8MaTyvxYBXD64tFMsq7lxcecWEZOslVsRJU5Nk1HqFE0VE
- F9+ZeQj1n99FYCB9yXwjuE80ob5n0BGQru7gYTV7ht0oEHNamtSi+tDsHBNJv/GhsS3NuMA/m
- JkG01ZGN9AbbE6JRbNgWjSyzS6QzoeBnBC8GmkKlXZtQfzyeuIf2l6pAxO9E09cRnkMDil2xq
- dAmfuMW83CJRlURxPaufDWULDg4fte0Ig64yH0/9YCl8MB1jkFd2faoVQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The following changes since commit ff1176468d368232b684f75e82563369208bc371:
 
-On Sat, Aug 07, 2021 at 10:09:35AM -0700, Joe Perches wrote:
-> On Sat, 2021-08-07 at 17:59 +0200, Len Baker wrote:
-> > strcpy() performs no bounds checking on the destination buffer. This
-> > could result in linear overflows beyond the end of the buffer, leading
-> > to all kinds of misbehaviors. The safe replacement is strscpy().
->
-> Probably better to change the commit subject to something like
-> what is generally used by the subsystem.
->
-> Maybe:
-> 	EDAC/mc: Convert strcpy to strscpy
-> or
-> 	EDAC/mc: Prefer strscpy over strcpy
+  Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
 
-Ok, no problem. I like the second one.
+are available in the Git repository at:
 
-> and also:
->
-> > diff --git a/drivers/edac/edac_mc.c b/drivers/edac/edac_mc.c
-> []
-> > @@ -1113,11 +1115,11 @@ void edac_mc_handle_error(const enum hw_event_=
-mc_err_type type,
-> > =A0			p =3D e->label;
-> > =A0			*p =3D '\0';
-> > =A0		} else {
-> > -			if (p !=3D e->label) {
-> > -				strcpy(p, OTHER_LABEL);
-> > -				p +=3D strlen(OTHER_LABEL);
-> > -			}
-> > -			strcpy(p, dimm->label);
-> > +			const char *text =3D (p !=3D e->label) ? OTHER_LABEL :
-> > +				dimm->label;
-> > +
-> > +			strscpy(p, text, len);
-> > +			len -=3D strlen(p);
-> > =A0			p +=3D strlen(p);
->
-> Perhaps this should use scnprintf rather than strscpy
-> Something like:
-> 			n +=3D scnprintf(buf + n, len - n, "%s",
-> 				       p =3D=3D e->label ? dim->label : OTHER_LABEL);
->
-In the first version [1] the scnprintf was used but Robert Richter don't
-see any benefit compared with the current implementation.
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.14-rc5
 
-[1] https://lore.kernel.org/linux-hardening/20210725162954.9861-1-len.bake=
-r@gmx.com/
+for you to fetch changes up to 43ad944cd73f2360ec8ff31d29ea44830b3119af:
 
-Regards,
-Len
+  usb: typec: tcpm: Keep other events when receiving FRS and Sourcing_vbus events (2021-08-05 12:27:43 +0200)
+
+----------------------------------------------------------------
+USB driver fixes for 5.14-rc5
+
+Here are some small USB driver fixes for 5.14-rc5.  They resolve a
+number of small reported issues, including:
+	- cdnsp driver fixes
+	- usb serial driver fixes and device id updates
+	- usb gadget hid fixes
+	- usb host driver fixes
+	- usb dwc3 driver fixes
+	- other usb gadget driver fixes
+
+All of these have been in linux-next for a while with no reported
+issues.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Christophe JAILLET (1):
+      usb: cdnsp: Fix the IMAN_IE_SET and IMAN_IE_CLEAR macro
+
+Claudiu Beznea (1):
+      usb: host: ohci-at91: suspend/resume ports after/before OHCI accesses
+
+Daniele Palmas (1):
+      USB: serial: option: add Telit FD980 composition 0x1056
+
+David Bauer (1):
+      USB: serial: ftdi_sio: add device ID for Auto-M3 OP-COM v2
+
+Dmitry Osipenko (1):
+      usb: otg-fsm: Fix hrtimer list corruption
+
+Greg Kroah-Hartman (2):
+      Merge tag 'usb-v5.14-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/peter.chen/usb into usb-linus
+      Merge tag 'usb-serial-5.14-rc5' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus
+
+Johan Hovold (2):
+      USB: serial: pl2303: fix HX type detection
+      USB: serial: pl2303: fix GT type detection
+
+Kyle Tso (1):
+      usb: typec: tcpm: Keep other events when receiving FRS and Sourcing_vbus events
+
+Maxim Devaev (2):
+      usb: gadget: f_hid: added GET_IDLE and SET_IDLE handlers
+      usb: gadget: f_hid: idle uses the highest byte for duration
+
+Mika Westerberg (1):
+      Revert "thunderbolt: Hide authorized attribute if router does not support PCIe tunnels"
+
+Pawel Laszczak (3):
+      usb: cdns3: Fixed incorrect gadget state
+      usb: cdnsp: Fix incorrect supported maximum speed
+      usb: cdnsp: Fixed issue with ZLP
+
+Phil Elwell (1):
+      usb: gadget: f_hid: fixed NULL pointer dereference
+
+Qiang.zhang (1):
+      USB: usbtmc: Fix RCU stall warning
+
+Tony Lindgren (1):
+      usb: musb: Fix suspend and resume issues for PHYs on I2C and SPI
+
+Wesley Cheng (2):
+      usb: dwc3: gadget: Use list_replace_init() before traversing lists
+      usb: dwc3: gadget: Avoid runtime resume if disabling pullup
+
+Willy Tarreau (1):
+      USB: serial: ch341: fix character loss at high transfer rates
+
+Zhang Qilong (1):
+      usb: gadget: remove leaked entry from udc driver list
+
+ drivers/thunderbolt/switch.c         | 15 +-----------
+ drivers/usb/cdns3/cdns3-ep0.c        |  1 +
+ drivers/usb/cdns3/cdnsp-gadget.c     |  2 +-
+ drivers/usb/cdns3/cdnsp-gadget.h     |  4 ++--
+ drivers/usb/cdns3/cdnsp-ring.c       | 18 +++++++--------
+ drivers/usb/class/usbtmc.c           |  9 +-------
+ drivers/usb/common/usb-otg-fsm.c     |  6 ++++-
+ drivers/usb/dwc3/gadget.c            | 29 ++++++++++++++++++++++--
+ drivers/usb/gadget/function/f_hid.c  | 44 +++++++++++++++++++++++++++++++-----
+ drivers/usb/gadget/udc/max3420_udc.c | 14 ++++++++----
+ drivers/usb/host/ohci-at91.c         |  9 ++++----
+ drivers/usb/musb/omap2430.c          | 43 +++++++++++++++++++++++++++++++----
+ drivers/usb/serial/ch341.c           |  1 +
+ drivers/usb/serial/ftdi_sio.c        |  1 +
+ drivers/usb/serial/ftdi_sio_ids.h    |  3 +++
+ drivers/usb/serial/option.c          |  2 ++
+ drivers/usb/serial/pl2303.c          | 42 +++++++++++++++++++++-------------
+ drivers/usb/typec/tcpm/tcpm.c        |  4 ++--
+ include/linux/usb/otg-fsm.h          |  1 +
+ 19 files changed, 173 insertions(+), 75 deletions(-)
