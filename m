@@ -2,100 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B028E3E397E
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 09:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBC63E3980
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 09:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbhHHH1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 03:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbhHHH1F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 03:27:05 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5491C061760
-        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 00:26:45 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id o1-20020a05600c5101b02902e676fe1f04so1333852wms.1
-        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 00:26:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=vQGEpzFTHdiNMrj1IbLwx7ugk+DGqp8L3qv1oj8hD5g=;
-        b=DtU5r9zVXntBuZSdHA6FnR+0AKscgfFfZOq2IHsQWipCUnwXWAZA2ohzu5H3+ZYo8s
-         Plt283LNlbdNpERvVnwgb9S05dkSb9SEu34kp+BlrVd2pPeo2/409+1Y20+KG01mpTNU
-         HD2e3N0RjIGsJA3wEXPv9lk5tcb+KbD/8RUcH6LO5x4lKNkA/mw+TJ7+g2+Nu5zlYGol
-         ajEFCB3AbyNdH6V9d73+Ge3oZTSG0PvIIok0E88gAhszE3zKYS5gr3rdn44dbiiUmGSd
-         vbrdS+vGvU6uco1R9wfr3wTifs/Mt0Qp3uzoTqbM/1bF5CB6YcZnFT1bvZgx73TJAiC+
-         JpLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=vQGEpzFTHdiNMrj1IbLwx7ugk+DGqp8L3qv1oj8hD5g=;
-        b=aVzHoSZXD13AXJmz+0NiirBLQB5r5FocLZMoiNWcEy3SCU+qjZFyXz5e/oSBYd96A2
-         Xq3XxE86RXwDSmwZAl6mn9JX450zKhEcjZ/FJaPnySeqIUnuUWn5B5L3SdciPouE4nXY
-         LKc1DpUY0VqU9z4YMVt5fLbmbX4/UqcpdQ8BR4JJBStlZtA1YOa0mNnh+lEQPBh8OTZS
-         WPxDF5s2O4wnhYWsuzjXr8hSGQ2gf07gFAlvp4vdor5LczfjYbbfIa8CDe+rM7PF8G6F
-         adP1coUc8hw+vbObKlEuCi0tPWsBx01/EeufSpaIc4P9JGApxJemnbHcTeKSYT/mJK0+
-         u5cw==
-X-Gm-Message-State: AOAM532l9qz6d37o7R/h7pcst+gMDJKgnvYLfTC8CAFcAkF7/QXU6cbj
-        q2fYjNkcgbYbnIr/qTNXCvw=
-X-Google-Smtp-Source: ABdhPJzff5Y98YpXQZTZOV86JynYtLA2tQaUfwWAqrpGuZ1e2BHqrq8hPzTKZQ2KVi3Zy/vFhga3NA==
-X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr28240065wmp.165.1628407604320;
-        Sun, 08 Aug 2021 00:26:44 -0700 (PDT)
-Received: from ubuntu ([155.133.219.250])
-        by smtp.gmail.com with ESMTPSA id i5sm15072205wrw.13.2021.08.08.00.26.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Aug 2021 00:26:44 -0700 (PDT)
-Date:   Sun, 8 Aug 2021 09:26:43 +0200
-From:   Daniel Kestrel <kestrelseventyfour@gmail.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Daniel Kestrel <kestrelseventyfour@gmail.com>
-Subject: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use device
- tree setting
-Message-ID: <20210808072643.GA5084@ubuntu>
+        id S230454AbhHHHmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 03:42:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230237AbhHHHmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 03:42:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D66C60F39;
+        Sun,  8 Aug 2021 07:41:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628408507;
+        bh=CYMKqE1+7fxAlSAmnYrtevdQ1lCY0IuaT2V+KxsI/e4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CSyDJFZqgH/M7RRbu8mmRrfyUy1GbApjnXeu7seD538P69tYX1Umz5DKse88X4qb9
+         U5ZHOGWmWV339ajJk0QmFhV8xzFsIXqbgsnb0yGRjqfn3FMQ6NS7kdcqUyQ3q7X1VB
+         w5i+Ec4xbIIjhThBmGg0CcuMcSzEH5TSkMIAoHRqxmp7s1VbhRXfDU00qfSVm8Mdtv
+         fDaR799fK9k+a4ZYdCLMQPFIFc0P/71Bmx95ZqG29Gv3Q3dWIuuSb184X9E8wGuYjp
+         BY7ln5lmgBS8gvYbH24KJ0KYFUucbKM8pnUX/iVLU8VXnj3Yr8+vrHGyBl7idZ7y+N
+         Ib5VMCtSDVvfw==
+Date:   Sun, 8 Aug 2021 10:41:40 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Hildenbrand <david@redhat.com>, Zi Yan <ziy@nvidia.com>,
+        linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [RFC PATCH 00/15] Make MAX_ORDER adjustable as a kernel boot
+ time parameter.
+Message-ID: <YQ+KtEuGswi5VYH2@kernel.org>
+References: <20210805190253.2795604-1-zi.yan@sent.com>
+ <40982106-0eee-4e62-7ce0-c4787b0afac4@suse.cz>
+ <72b317e5-c78a-f0bc-fe69-f82261ec252e@redhat.com>
+ <3417eb98-36c8-5459-c83e-52f90e42a146@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <3417eb98-36c8-5459-c83e-52f90e42a146@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some devices use Micron NAND chips, which use on-die ECC. The hardcoded
-setting of NAND_ECC_ENGINE_TYPE_SOFT makes them unusable, because the
-software ECC on top of the hardware ECC produces errors for every read
-and write access, not to mention that booting does not work, because
-the boot loader uses the correct ECC when trying to load the kernel
-and stops loading on severe ECC errors.
-This patch requires the devices that currently work with the hard coded
-setting to set the nand-ecc-mode property to soft in their device
-tree.
+On Fri, Aug 06, 2021 at 06:54:14PM +0200, Vlastimil Babka wrote:
+> On 8/6/21 6:16 PM, David Hildenbrand wrote:
+> > On 06.08.21 17:36, Vlastimil Babka wrote:
+> >> On 8/5/21 9:02 PM, Zi Yan wrote:
+> >>> From: Zi Yan <ziy@nvidia.com>
+> >>
+> >>> Patch 3 restores the pfn_valid_within() check when buddy allocator can merge
+> >>> pages across memory sections. The check was removed when ARM64 gets rid of holes
+> >>> in zones, but holes can appear in zones again after this patchset.
+> >>
+> >> To me that's most unwelcome resurrection. I kinda missed it was going away and
+> >> now I can't even rejoice? I assume the systems that will be bumping max_order
+> >> have a lot of memory. Are they going to have many holes? What if we just
+> >> sacrificed the memory that would have a hole and don't add it to buddy at all?
+> > 
+> > I think the old implementation was just horrible and the description we have
+> > here still suffers from that old crap: "but holes can appear in zones again".
+> > No, it's not related to holes in zones at all. We can have MAX_ORDER -1 pages
+> > that are partially a hole.
+> > 
+> > And to be precise, "hole" here means "there is no memmap" and not "there is a
+> > hole but it has a valid memmap".
+> 
+> Yes.
+> 
+> > But IIRC, we now have under SPARSEMEM always a complete memmap for a complete
+> > memory sections (when talking about system RAM, ZONE_DEVICE is different but we
+> > don't really care for now I think).
+> > 
+> > So instead of introducing what we had before, I think we should look into
+> > something that doesn't confuse each person that stumbles over it out there. What
+> > does pfn_valid_within() even mean in the new context? pfn_valid() is most
+> > probably no longer what we really want, as we're dealing with multiple sections
+> > that might be online or offline; in the old world, this was different, as a
+> > MAX_ORDER -1 page was completely contained in a memory section that was either
+> > online or offline.
+> > 
+> > I'd imagine something that expresses something different in the context of
+> > sparsemem:
+> > 
+> > "Some page orders, such as MAX_ORDER -1, might span multiple memory sections.
+> > Each memory section has a completely valid memmap if online. Memory sections
+> > might either be completely online or completely offline. pfn_to_online_page()
+> > might succeed on one part of a MAX_ORDER - 1 page, but not on another part. But
+> > it will certainly be consistent within one memory section."
+> > 
+> > Further, as we know that MAX_ORDER -1 and memory sections are a power of two, we
+> > can actually do a binary search to identify boundaries, instead of having to
+> > check each and every page in the range.
+> > 
+> > Is what I describe the actual reason why we introduce pfn_valid_within() ? (and
+> > might better introduce something new, with a better fitting name?)
+> 
+> What I don't like is mainly the re-addition of pfn_valid_within() (or whatever
+> we'd call it) into __free_one_page() for performance reasons, and also to
+> various pfn scanners (compaction) for performance and "I must not forget to
+> check this, or do I?" confusion reasons. It would be really great if we could
+> keep a guarantee that memmap exists for MAX_ORDER blocks.
 
-Signed-off-by: Daniel Kestrel <kestrelseventyfour@gmail.com>
-Tested-by: Aleksander Jan Bajkowski <olek2@wp.pl> # tested on BT Home Hub 5A
----
- drivers/mtd/nand/raw/xway_nand.c | 2 --
- 1 file changed, 2 deletions(-)
+Maybe I'm missing something, but what if we use different constants to
+define maximal allocation order buddy can handle and maximal size of
+reasonable physically contiguous chunk?
+I've skimmed through the uses of MAX_ORDER and it seems that many of those
+could use, say, pageblock_order of several megabytes rather than MAX_ORDER.
 
-diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
-index 26751976e502..0a4b0aa7dd4c 100644
---- a/drivers/mtd/nand/raw/xway_nand.c
-+++ b/drivers/mtd/nand/raw/xway_nand.c
-@@ -148,8 +148,6 @@ static void xway_write_buf(struct nand_chip *chip, const u_char *buf, int len)
- 
- static int xway_attach_chip(struct nand_chip *chip)
- {
--	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
--
- 	if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
- 		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
- 
+If we only use MAX_ORDER to denote the maximal allocation order and keep
+PFN walkers to use smaller pageblock order that we'll be able to have valid
+memory map in all the cases. 
+
+Then we can work out how to make migration/compaction etc to process 1G
+pages.
+
+> I see two ways to achieve that:
+> 
+> 1. we create memmap for MAX_ORDER blocks, pages in sections not online are
+> marked as reserved or some other state that allows us to do checks such as "is
+> there a buddy? no" without accessing a missing memmap
+> 2. smaller blocks than MAX_ORDER are not released to buddy allocator
+> 
+> I think 1 would be more work, but less wasteful in the end?
+
 -- 
-2.17.1
-
+Sincerely yours,
+Mike.
