@@ -2,100 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0300A3E3A36
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 14:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17DF3E3A3B
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 14:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbhHHMfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 08:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
+        id S230426AbhHHMj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 08:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhHHMe7 (ORCPT
+        with ESMTP id S229504AbhHHMj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 08:34:59 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0285AC061760;
-        Sun,  8 Aug 2021 05:34:39 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso25375259pjf.4;
-        Sun, 08 Aug 2021 05:34:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=kZTCEpO46weGKXlGlV/kVDBT/mA13JjacOVJ1zjYzdA=;
-        b=HBsvAWFtwd97kkuj4vSYoLEYqSixtYX/+29nW7D1ZWOkC0q3qz3Zx7c/sqY54y/qOO
-         oKBGlkvVirxmm7C37vYesEH6BCge9W7JTt2oD07abPOy9xy0Y06ULxv6ZvlqGc+3QS9T
-         xwr2Q6B7s77K7mVthktfSRKIP4e/LE+pV8H0h5IwIlC5d9oUItyrLv95e/N5zWZhN8Cl
-         6DsmxTYfwzNjcvNA8JzqfZ5pseiJaW4kzJZb2k/NtsSAnYOikZa+AnnKzS628mgcgS65
-         735nQZXUon/SBEHQ3LeNnOK2FnXp7U+M6hQ3tUlJpfChSSuW6SUAE+MhG64Jj0WtQe8a
-         cIhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=kZTCEpO46weGKXlGlV/kVDBT/mA13JjacOVJ1zjYzdA=;
-        b=CKvZzAzBU3z6ybg0rW61B4adKfgfjBAzxXQtqoG+MF+eJHqt+N1R+g8rzlqzENc3Dz
-         +FsDwi/gh3ItC0Y0qTXR+feWDE37Wq/JJwOABtbNZ8QrC6CShRKJjL6H69hq3Wfx9bn5
-         SrbWdNznYqTV8KX9IV9LtEm82UwI73xmffolfS1MNGvBb0MZX9HXvO/65x1Ouj8Bpdv2
-         7uhv6apBb+IHVaAqU1SR0raWg07ZP68hTqunHRAWwlnABD8LvDJzGhBrIBVsjqw2ZNNn
-         D3J+hUq2XAkRYnhJhGYSLGBnZQHHVJqCmMYLnivQxR48tiwJSbRa5oecu5Fc3J/0G4oG
-         5G+w==
-X-Gm-Message-State: AOAM533MaFtosA5uYpqgBEIPSA4erKFqdXP/yCAtStZ02hIKV8rjRY2J
-        iuDJiwLCc6q81acvjbR4YYw=
-X-Google-Smtp-Source: ABdhPJy/SspUG28+VcrTiiMl2wB1Bdyl7KY3P83lMOOKRlz5Slz1RooGU54stiPjaYzZIQKSDG/H0w==
-X-Received: by 2002:a63:f959:: with SMTP id q25mr278841pgk.52.1628426079425;
-        Sun, 08 Aug 2021 05:34:39 -0700 (PDT)
-Received: from u18.mshome.net ([167.220.238.132])
-        by smtp.gmail.com with ESMTPSA id h7sm14881710pjs.38.2021.08.08.05.34.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Aug 2021 05:34:39 -0700 (PDT)
-From:   Muhammad Falak R Wani <falakreyaz@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Muhammad Falak R Wani <falakreyaz@gmail.com>
-Subject: [PATCH] samples: bpf: xdp2: remove duplicate code to find protocol
-Date:   Sun,  8 Aug 2021 18:04:28 +0530
-Message-Id: <20210808123428.12796-1-falakreyaz@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 8 Aug 2021 08:39:57 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C34C061760;
+        Sun,  8 Aug 2021 05:39:38 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4GjJgq43NfzQk22;
+        Sun,  8 Aug 2021 14:39:35 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gorani.run; s=MBO0001;
+        t=1628426373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BNkho6kEYucAS56T6bDbZFEUffzkZUASAaEQ6TytiPI=;
+        b=D9GRjbSNhqCNkMwYnMjsSl+PYAv9LKmRhGCUk/3/8ZhrS+bRg3Il4ESA3IcXnPxbCf5Q8X
+        ru782uxEBeXWbPP2cAkjS6h4jWkIYuQ73/daemWpWOkeqCKW0XbgwaYZM79cRx32HNp42a
+        2zXISb81Ffrwj8qdsoQcen1c6bq4ld9exBOVYDxZVMCj0spfn8dnQbHaE2zKZ88Y21nav+
+        KT1PtD2cMhv6AseQYWO9jnwqh3u5XTklT8ZfyPrn8B1E0aMf5QHYqFdV+6yBy4+iIXYD6v
+        dzBOKo0NXYc/wTgQbhe/xqM4MbPcS37tsFEtiaMXvyqadxF/1PULYyW647DQPQ==
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
+        with ESMTP id IvuHFhvsFGqQ; Sun,  8 Aug 2021 14:39:31 +0200 (CEST)
+From:   Sungbo Eo <mans0n@gorani.run>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Min Guo <min.guo@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sungbo Eo <mans0n@gorani.run>
+Subject: [PATCH v2 0/2] Add MUSB for MT7623
+Date:   Sun,  8 Aug 2021 21:38:38 +0900
+Message-Id: <20210808123840.176738-1-mans0n@gorani.run>
+In-Reply-To: <20210803151320.71531-1-mans0n@gorani.run>
+References: <20210803151320.71531-1-mans0n@gorani.run>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 9AAA31898
+X-Rspamd-UID: d9b34f
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code to find h_vlan_encapsulated_proto is duplicated.
-Remove the extra block.
+These patches add support for the MUSB controller on Mediatek MT7623.
+Tested on Mercury RUSH-318AC Wi-Fi router.
 
-Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
----
- samples/bpf/xdp2_kern.c | 9 ---------
- 1 file changed, 9 deletions(-)
+v2:
+* dt-bindings
+  * add reviewed by Matthias
+* DTS
+  * rename usb3 label to usb0
+  * move usb0 & u2phy1 nodes to the right sorted place
+  * disable u2phy1 by default
+  * correct u2port2 node name to match its reg address
 
-diff --git a/samples/bpf/xdp2_kern.c b/samples/bpf/xdp2_kern.c
-index c787f4b49646..be4b0c642a6b 100644
---- a/samples/bpf/xdp2_kern.c
-+++ b/samples/bpf/xdp2_kern.c
-@@ -73,15 +73,6 @@ int xdp_prog1(struct xdp_md *ctx)
- 
- 	h_proto = eth->h_proto;
- 
--	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
--		struct vlan_hdr *vhdr;
--
--		vhdr = data + nh_off;
--		nh_off += sizeof(struct vlan_hdr);
--		if (data + nh_off > data_end)
--			return rc;
--		h_proto = vhdr->h_vlan_encapsulated_proto;
--	}
- 	if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
- 		struct vlan_hdr *vhdr;
- 
+Sungbo Eo (2):
+  dt-bindings: usb: mtk-musb: add MT7623 compatible
+  arm: dts: mt7623: add musb device nodes
+
+ .../bindings/usb/mediatek,musb.yaml           |  1 +
+ arch/arm/boot/dts/mt7623.dtsi                 | 34 +++++++++++++++++++
+ arch/arm/boot/dts/mt7623a.dtsi                |  4 +++
+ 3 files changed, 39 insertions(+)
+
 -- 
-2.17.1
+2.32.0
 
