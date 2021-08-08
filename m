@@ -2,142 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD3E3E39F8
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 13:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7773E39FA
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 13:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhHHLbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 07:31:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43790 "EHLO mail.kernel.org"
+        id S229817AbhHHLbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 07:31:25 -0400
+Received: from mout.gmx.net ([212.227.15.15]:52729 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229473AbhHHLbE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 07:31:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8C8E60F9E;
-        Sun,  8 Aug 2021 11:30:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628422244;
-        bh=zy73ATk0gUClhvKF91vC+jx4QIns/T1Il9uBoVlX41I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=aEFRbgSSJDSbyJda+n+GcFa+Wr8avXnk0WmQnmAWIKeDcJhtSXpqUtlNy1BqLM4rS
-         99rbmRsRECrkUO41UudsphMwgtsWD2HYIhvb3C7PqYkRW7jVRPdG2f1tc+PAZzKga3
-         XgGpSiDAnA2iwdbtqyXTTYA71psUX8b5ugG/HiaU=
-Date:   Sun, 8 Aug 2021 13:30:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB fixes for 5.14-rc5
-Message-ID: <YQ/AYY7G/5Dq8wRh@kroah.com>
+        id S229473AbhHHLbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 07:31:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628422255;
+        bh=W5chU5//YfU3n5/LhSUUVSldCLiEe1+cMgrkYXazda0=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=C9NVFolz1ZsuztP7hj7CJh6tZUOPaGkLRIeA11yOMplKcp81SspAM4UApgNIyzct0
+         tM8nRFXsYv5+bS9hjP+tDhl3VE1QcY+h+xUO5jQcyD1h7EZOiI11dzIzTCpRKTzhkE
+         N27zc9Typcu5BRft/5MU7uZdmw/zIGmLeyxn1Tog=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MiaY9-1moFlA2Fl9-00fitP; Sun, 08
+ Aug 2021 13:30:55 +0200
+Date:   Sun, 8 Aug 2021 13:30:43 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-hardening@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers/input: Remove all strcpy() uses in favor of
+ strscpy()
+Message-ID: <20210808113043.GA3042@titan>
+References: <20210801144316.12841-1-len.baker@gmx.com>
+ <20210801145959.GI22278@shell.armlinux.org.uk>
+ <20210801155732.GA16547@titan>
+ <202108010934.FA668DEB28@keescook>
+ <20210807140245.GA2688@titan>
+ <0c1d7c01821f1f0891fd8f13c1e8f9a68bb21717.camel@perches.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <0c1d7c01821f1f0891fd8f13c1e8f9a68bb21717.camel@perches.com>
+X-Provags-ID: V03:K1:yhtkYHOcv/CHfzZdfq4WcAMbmVNEMTMq971wsGS9ywr1epjn7nE
+ 1anGABKOQFM/27iH0g27l/ljraDexB9IRu9iidvy8X/LpM2joGccUuJYn98zRJNpxcwF1hH
+ 4kVyEgb9uCeY8Onw6RSereN+/KNXvT3RnXvdOJrUxK7RXnDvSFgiQIMNPInOon9nvXKypme
+ +cp9kDx3Wn2kEYwZssgJA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wbeyWHOiozo=:5WOgHNeL5Q45hm6gMdYeBG
+ WtTe2QQjS0HdeW5zyT6ibXFFhDJc3tdwylJNHtEWpt2TyFEj5WYb3YrzrxD08eg3Xy/woBHn9
+ yEe1nYJtrqknaCyOdbpw6Ki0gGFcNG2smWJdumrE43lrtiX+Pn8oKoDEMPdrraXIVNACGBTLU
+ ZX4j1OlOKccvxSoq5KOOEgl92gufFkfZoUE7yXeQwgxWVwr4OkeZToan0kvPPoy1kcaTEDQCm
+ ZYsqxGKLO8iB5mbi56GDECJsbkq+a8FLK+arZMRQ8qpQ4jMpxfbWKl1p56zZNGwGJm9OBHs8Y
+ fogIgg+H5dXs8bryCTlR4klKFQYyl8CQiR4VFBaZMWnvnRYHDjSRrmB6y0mCY8xyn8mbXO9EQ
+ 9+YCfUODUW3PDoDCkBfr5faMTYYAZuLsJOBDVwVNbuGJ95SB4ztfyzmj+0DO4Wonl4YySCgkm
+ LBnLG/DRJv5Xp7pmaji6AFQcXMYk/PEi4QMs09WOTkWMbJeQqwh0a51+z1asCisPBjIVSSnYB
+ eu8v3PywFRBhwHQjENl/7d68Yp4qeJOw1n/LiO2ELjdGzbzRO/ewiv9cm2+Yk1f26WtCwKrIv
+ 1yhCRyvPiVVjFimBFkybHI4UMqqv7wNftFul18QJttS0jVxkAsuPme4ou5oxtWqyk6dkQSjP9
+ FsQPmhnghB5J+nyJgFFx0TuzMonxdVMtiw+kBv8WsE4W8JOYdHXqAXP8WxRLWsi6BbDF0uKTb
+ Sbr95zUO9WW1qwlCrUra+4VfJ4rI3ei0d39mkC+R46YRW98TD7jIrcfWIjjmqIhkGN/ZaVYCJ
+ gZExeTTDL7cj6JlpXQVNdapx7yXQSRCw2ncdAt6RRBSyMksIh019QOQZ+yVRTe8zGj0LEcuvV
+ j9flNdLJojegbi1BK7m8lNh3oJBdw7MM/Sy5af/Nn78vGMR0HlDgXat6OnZ7Z0IYSn4di8YjS
+ swWD/W23RYRBHgPJN8h2mEQ18S73GveQDcdvVFQYzSOfR1qXm+9nPtyBaBTkP0rVKqgCFihl5
+ J3PM0ngze9EgpdyGDO7AlXxDKGymZXvGntpxQxu7PL416mv5Hw+M82DbL1BJvVbVK9lfxMjhO
+ o1GyuBOQ00Q4wiHnSiH9k3kJqWAGTpT/WL0OoH3iTaFhGOnTgXXMOKYUA==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit ff1176468d368232b684f75e82563369208bc371:
+Hi,
 
-  Linux 5.14-rc3 (2021-07-25 15:35:14 -0700)
+On Sat, Aug 07, 2021 at 08:17:39AM -0700, Joe Perches wrote:
+> On Sat, 2021-08-07 at 16:02 +0200, Len Baker wrote:
+> > On Sun, Aug 01, 2021 at 09:44:33AM -0700, Kees Cook wrote:
+> []
+> > > One thing is clear: replacing strlcpy() with strscpy() is probably t=
+he
+> > > easiest and best first step to cleaning up the proliferation of str*=
+()
+> > > functions.
+> >
+> > Thanks for all this info. I will work on it (clean up the proliferatio=
+n
+> > of str*() functions).
+>
+> btw:
+>
+> It's not possible to sed as the return value is different,
+> but here is a cocci script that converts strlcpy to strscpy
+> when the return value is unused.
+>
+>     @@
+>     expression e1, e2, e3;
+>     @@
+>
+>     -       strlcpy(
+>     +       strscpy(
+>             e1, e2, e3);
+>
+> This cocci script was used on sound/ awhile back.
+> see commit 75b1a8f9d62e.
 
-are available in the Git repository at:
+Thanks a lot for your help on this. I will take into account all this info=
+.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.14-rc5
-
-for you to fetch changes up to 43ad944cd73f2360ec8ff31d29ea44830b3119af:
-
-  usb: typec: tcpm: Keep other events when receiving FRS and Sourcing_vbus events (2021-08-05 12:27:43 +0200)
-
-----------------------------------------------------------------
-USB driver fixes for 5.14-rc5
-
-Here are some small USB driver fixes for 5.14-rc5.  They resolve a
-number of small reported issues, including:
-	- cdnsp driver fixes
-	- usb serial driver fixes and device id updates
-	- usb gadget hid fixes
-	- usb host driver fixes
-	- usb dwc3 driver fixes
-	- other usb gadget driver fixes
-
-All of these have been in linux-next for a while with no reported
-issues.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Christophe JAILLET (1):
-      usb: cdnsp: Fix the IMAN_IE_SET and IMAN_IE_CLEAR macro
-
-Claudiu Beznea (1):
-      usb: host: ohci-at91: suspend/resume ports after/before OHCI accesses
-
-Daniele Palmas (1):
-      USB: serial: option: add Telit FD980 composition 0x1056
-
-David Bauer (1):
-      USB: serial: ftdi_sio: add device ID for Auto-M3 OP-COM v2
-
-Dmitry Osipenko (1):
-      usb: otg-fsm: Fix hrtimer list corruption
-
-Greg Kroah-Hartman (2):
-      Merge tag 'usb-v5.14-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/peter.chen/usb into usb-linus
-      Merge tag 'usb-serial-5.14-rc5' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus
-
-Johan Hovold (2):
-      USB: serial: pl2303: fix HX type detection
-      USB: serial: pl2303: fix GT type detection
-
-Kyle Tso (1):
-      usb: typec: tcpm: Keep other events when receiving FRS and Sourcing_vbus events
-
-Maxim Devaev (2):
-      usb: gadget: f_hid: added GET_IDLE and SET_IDLE handlers
-      usb: gadget: f_hid: idle uses the highest byte for duration
-
-Mika Westerberg (1):
-      Revert "thunderbolt: Hide authorized attribute if router does not support PCIe tunnels"
-
-Pawel Laszczak (3):
-      usb: cdns3: Fixed incorrect gadget state
-      usb: cdnsp: Fix incorrect supported maximum speed
-      usb: cdnsp: Fixed issue with ZLP
-
-Phil Elwell (1):
-      usb: gadget: f_hid: fixed NULL pointer dereference
-
-Qiang.zhang (1):
-      USB: usbtmc: Fix RCU stall warning
-
-Tony Lindgren (1):
-      usb: musb: Fix suspend and resume issues for PHYs on I2C and SPI
-
-Wesley Cheng (2):
-      usb: dwc3: gadget: Use list_replace_init() before traversing lists
-      usb: dwc3: gadget: Avoid runtime resume if disabling pullup
-
-Willy Tarreau (1):
-      USB: serial: ch341: fix character loss at high transfer rates
-
-Zhang Qilong (1):
-      usb: gadget: remove leaked entry from udc driver list
-
- drivers/thunderbolt/switch.c         | 15 +-----------
- drivers/usb/cdns3/cdns3-ep0.c        |  1 +
- drivers/usb/cdns3/cdnsp-gadget.c     |  2 +-
- drivers/usb/cdns3/cdnsp-gadget.h     |  4 ++--
- drivers/usb/cdns3/cdnsp-ring.c       | 18 +++++++--------
- drivers/usb/class/usbtmc.c           |  9 +-------
- drivers/usb/common/usb-otg-fsm.c     |  6 ++++-
- drivers/usb/dwc3/gadget.c            | 29 ++++++++++++++++++++++--
- drivers/usb/gadget/function/f_hid.c  | 44 +++++++++++++++++++++++++++++++-----
- drivers/usb/gadget/udc/max3420_udc.c | 14 ++++++++----
- drivers/usb/host/ohci-at91.c         |  9 ++++----
- drivers/usb/musb/omap2430.c          | 43 +++++++++++++++++++++++++++++++----
- drivers/usb/serial/ch341.c           |  1 +
- drivers/usb/serial/ftdi_sio.c        |  1 +
- drivers/usb/serial/ftdi_sio_ids.h    |  3 +++
- drivers/usb/serial/option.c          |  2 ++
- drivers/usb/serial/pl2303.c          | 42 +++++++++++++++++++++-------------
- drivers/usb/typec/tcpm/tcpm.c        |  4 ++--
- include/linux/usb/otg-fsm.h          |  1 +
- 19 files changed, 173 insertions(+), 75 deletions(-)
+Regards,
+Len
