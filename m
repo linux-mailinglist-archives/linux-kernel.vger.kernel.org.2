@@ -2,75 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131413E3942
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 08:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE1E3E3948
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 09:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbhHHGxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 02:53:08 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:16994 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230348AbhHHGxG (ORCPT
+        id S230307AbhHHHG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 03:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229504AbhHHHGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 02:53:06 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gj8vT0z80zZydk;
-        Sun,  8 Aug 2021 14:49:09 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sun, 8 Aug 2021 14:52:45 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 8 Aug
- 2021 14:52:45 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH] block: don't decrement flush request refcount if it's state is idle in flush_end_io()
-Date:   Sun, 8 Aug 2021 15:03:30 +0800
-Message-ID: <20210808070330.763177-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Sun, 8 Aug 2021 03:06:22 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4920C061760;
+        Sun,  8 Aug 2021 00:06:03 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso24638279pjf.4;
+        Sun, 08 Aug 2021 00:06:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Id49AvJlsrukCQw2aVHFU3JVesZ+nmFVyp5cZUBrgDk=;
+        b=D5WO1UksA4807jR59fpOkdeRfaH4f597Fbf6r1/Bf/LCSUNRgnRcQ+xad5STftxJrI
+         e3k05T2Hu5lAVsA79FCb/+8H18V29oIOkNmy0xLxoBaCNFAEbKJIp9vPq78hkPDm6I2M
+         kRUSBrjchX+dUYdZTcUxk18IFlcf0cdfYzI+LoJ3PcpOtXN8bNthdqUD/xfqOU1dMQS2
+         LaAKsSf80f2+PcUconldVR5prEurpdK64wez0zyMgzg5n1v+OxjgcExZ2+I/Mj6viJD3
+         QzdXlZro5sHOJDcYwpF6iGcqGiibZzniVH7FV6Hgb9+JjbymOhH0sOoe8XYvgLl4+cGo
+         h1/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Id49AvJlsrukCQw2aVHFU3JVesZ+nmFVyp5cZUBrgDk=;
+        b=ZigzGeMgBFkOcYpzqlf+JrM8PKmrkYRzt2OXfbsjHBbpheXxN4OypapYl3XfwfLxD9
+         5lkIFcwyqRhGK7Tla1FoHbYLaPV/+fPeIN9W3qURN8pXw55DX8ZaJM9y65PjIfn1ZieR
+         PRR4e6cD21e6NCVKQGYdzaHobNoOoDHt/G81pHPcgh8oFKW8WZg84yc3xzrPYwviK3Zx
+         ZuhIQYlg4saYsdVQl/yS7dkm/h+3Sy0Sl9joGf6BJzQTzBGJjMh24tNUVNRx4WQwNlE7
+         m8ZO1x3MUtdiU9x9ChopJh7EZWFj16rk3od62MOa3lfkrXm39mrcjrRt2d6xs1z3wgKc
+         7BTg==
+X-Gm-Message-State: AOAM530c72jbSjtHNL0Jxo5x28hD2z/w/qZjRiDkTSeddEitO25Y4mzr
+        WX+IrTlPJcmyBgUT3i3ULdKAYp+1f0U4zI/CD8M=
+X-Google-Smtp-Source: ABdhPJwO5zgXyH9DLPdlzB4IcPfBeyPOT2uAJcJz7eySfvO8B3PjLZ0EZWOelMryhPwm+RmEP8MMcA==
+X-Received: by 2002:a17:90b:4ac8:: with SMTP id mh8mr18104180pjb.5.1628406363398;
+        Sun, 08 Aug 2021 00:06:03 -0700 (PDT)
+Received: from localhost.localdomain ([1.240.193.107])
+        by smtp.googlemail.com with ESMTPSA id 37sm17672490pgt.28.2021.08.08.00.06.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Aug 2021 00:06:02 -0700 (PDT)
+From:   Kangmin Park <l4stpr0gr4m@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 net] ipv4: fix error path in fou_create()
+Date:   Sun,  8 Aug 2021 16:05:57 +0900
+Message-Id: <20210808070557.17858-1-l4stpr0gr4m@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-flush_end_io() currently decrement request refcount unconditionally.
-However, it's possible that the request is already idle and it's
-refcount is zero since that flush_end_io() can be called concurrently.
+sock is always NULL when udp_sock_create() is failed and fou is
+always NULL when kzalloc() is failed in error label.
 
-For example, nbd_clear_que() can be called concurrently with normal
-io completion or io timeout.
+So, add error_sock and error_alloc label and fix the error path
+in those cases.
 
-Thus check idle before decrement to avoid refcount_t underflow
-warning.
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
 ---
- block/blk-flush.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+v3:
+ - change commit message
+ - fix error path
+---
+ net/ipv4/fou.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/block/blk-flush.c b/block/blk-flush.c
-index 1002f6c58181..9b65dc43702c 100644
---- a/block/blk-flush.c
-+++ b/block/blk-flush.c
-@@ -222,7 +222,8 @@ static void flush_end_io(struct request *flush_rq, blk_status_t error)
- 	/* release the tag's ownership to the req cloned from */
- 	spin_lock_irqsave(&fq->mq_flush_lock, flags);
+diff --git a/net/ipv4/fou.c b/net/ipv4/fou.c
+index e5f69b0bf3df..f1d99e776bb8 100644
+--- a/net/ipv4/fou.c
++++ b/net/ipv4/fou.c
+@@ -572,13 +572,13 @@ static int fou_create(struct net *net, struct fou_cfg *cfg,
+ 	/* Open UDP socket */
+ 	err = udp_sock_create(net, &cfg->udp_config, &sock);
+ 	if (err < 0)
+-		goto error;
++		goto error_sock;
  
--	if (!refcount_dec_and_test(&flush_rq->ref)) {
-+	if (blk_mq_rq_state(flush_rq) == MQ_RQ_IDLE ||
-+	    !refcount_dec_and_test(&flush_rq->ref)) {
- 		fq->rq_status = error;
- 		spin_unlock_irqrestore(&fq->mq_flush_lock, flags);
- 		return;
+ 	/* Allocate FOU port structure */
+ 	fou = kzalloc(sizeof(*fou), GFP_KERNEL);
+ 	if (!fou) {
+ 		err = -ENOMEM;
+-		goto error;
++		goto error_alloc;
+ 	}
+ 
+ 	sk = sock->sk;
+@@ -627,9 +627,10 @@ static int fou_create(struct net *net, struct fou_cfg *cfg,
+ 
+ error:
+ 	kfree(fou);
++error_alloc:
+ 	if (sock)
+ 		udp_tunnel_sock_release(sock);
+-
++error_sock:
+ 	return err;
+ }
+ 
 -- 
-2.31.1
+2.26.2
 
