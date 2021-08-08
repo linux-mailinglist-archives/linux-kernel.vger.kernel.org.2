@@ -2,121 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AC93E3BC5
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 19:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBB53E3BC0
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232016AbhHHRA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 13:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhHHRAy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 13:00:54 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19C8C061760;
-        Sun,  8 Aug 2021 10:00:34 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id j3so13883242plx.4;
-        Sun, 08 Aug 2021 10:00:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=+2IKb4s8fLaRZamykzK5nK7Y6dvXALlvgfnoRe+HK/Y=;
-        b=V7i3FJXi/sN/dE+EzN/zCtN1Ty5SXScTHTYaqSD8NMxo9IGHF4rxb2kjRpQu1WpJjm
-         jdNqqrLLQOgojgaMnANSNHJ4S/MVy8H6I8CatnefIBLVU3GPvalJTkZiBxH1aDNNKhIR
-         huMpeQiXkxsmqHa9bqg0qi28cT3Nvy8T3NEqt8JwmV5djH6Wkx01iDgfWe1PJunrCbcr
-         frwhGcqaJLnb/sTuyxgx4muiXlfSbX76J+Bk20eZ8GkU56qzA/FtSHQiTy91p1RYXkXh
-         w2r1zogUW3f3m0K610hXcLajdvE9UAKrmeVLfMkQ6VR47uEALFHU1HVhet67KLZq/7eL
-         24Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=+2IKb4s8fLaRZamykzK5nK7Y6dvXALlvgfnoRe+HK/Y=;
-        b=beCV3Iwy970jBYU+T08ZkucQSqMSW6YgINE3sdy8W1/aSDuCvYqHifxte1zR9PBqMX
-         oDoa+cA34SdIFws7nlf2ptz+NTgOK60Gq1r32+uWtZRcyAfN+J9596VEdMo8XTyo1wbY
-         cnxlzFG7PDaXnLiTjrFFD8FhJ1nnO9vXVwdcROWNRFCZ5/8WIEG4z1ljO4O/uwg0GPlD
-         Q/fSj4b5zcO0ZlcY/cvAmqF/ZstN83n4g60kg1HZWStrk+QWtrJgJGZfKssxc0wY1Ty+
-         bY5DxQrhYajbI0NdLMkup5G3MKXW5NVIE9psmzfiesJvXXE8FSG7uCmD7iYOa9947/Hy
-         fixg==
-X-Gm-Message-State: AOAM533v/TIjjqLpGSeR413+TF+QHmViTpmjYCSGclosNFU+O7EtQ047
-        soARgTd7m3u/9+OVi9kWGc8=
-X-Google-Smtp-Source: ABdhPJzI6b4wFZ9s//pHD6eCbcos1ptHiqYy/HRV5zh3u+BW1GPVZvtWLyGfb1QM/JFtvRYk9ArgIg==
-X-Received: by 2002:a63:3e05:: with SMTP id l5mr31867pga.403.1628442033404;
-        Sun, 08 Aug 2021 10:00:33 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id q5sm15251889pjo.7.2021.08.08.10.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Aug 2021 10:00:32 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Eric Woudstra <ericwouds@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mt7530 fix mt7530_fdb_write vid missing ivl bit
-Date:   Mon,  9 Aug 2021 01:00:24 +0800
-Message-Id: <20210808170024.228363-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210716152213.4213-1-ericwouds@gmail.com>
-References: <20210716152213.4213-1-ericwouds@gmail.com>
+        id S231932AbhHHQ7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 12:59:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230169AbhHHQ7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 12:59:16 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35D34601FC;
+        Sun,  8 Aug 2021 16:58:53 +0000 (UTC)
+Date:   Sun, 8 Aug 2021 18:01:43 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH v4 0/3] Renesas RZ/G2L ADC driver support
+Message-ID: <20210808180143.6b3dc882@jic23-huawei>
+In-Reply-To: <20210804202118.25745-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20210804202118.25745-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 05:22:11PM +0200, ericwouds@gmail.com wrote:
-> From: Eric Woudstra <37153012+ericwoud@users.noreply.github.com>
-> 
-> According to reference guides mt7530 (mt7620) and mt7531:
-> 
-> NOTE: When IVL is reset, MAC[47:0] and FID[2:0] will be used to 
-> read/write the address table. When IVL is set, MAC[47:0] and CVID[11:0] 
-> will be used to read/write the address table.
-> 
-> Since the function only fills in CVID and no FID, we need to set the
-> IVL bit. The existing code does not set it.
-> 
-> This is a fix for the issue I dropped here earlier:
-> 
-> http://lists.infradead.org/pipermail/linux-mediatek/2021-June/025697.html
-> 
-> With this patch, it is now possible to delete the 'self' fdb entry
-> manually. However, wifi roaming still has the same issue, the entry
-> does not get deleted automatically. Wifi roaming also needs a fix
-> somewhere else to function correctly in combination with vlan.
+On Wed,  4 Aug 2021 21:21:15 +0100
+Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
 
-Sorry to bump this up, but I think I identified the issue:
+> Hi All,
+> 
+> This patch series adds ADC support for Renesas RZ/G2L family.
+> 
+> Patches apply on top of v5.14-rc2.
+Hi Lad, I'm fine with this, but need to pull my tree forwards
+to include the header that is only in rc2.
 
-Consider a VLAN-aware bridge br0, with two ports set to different PVIDs:
+I'll probably do that later in the week then pick up patches 1 and 2.
 
-> bridge vlan
-> port         vlan-id
-> swp0         1 PVID Egress Untagged
-> swp1         2 PVID Egress Untagged
+Thanks,
 
-When the bridge core sends a packet to swp1, the packet will be sent to
-the CPU port of the switch as untagged because swp1 is set as "Egress
-Untagged". However if the switch uses independent VLAN learning, the CPU
-port PVID will be used to update the FDB. As we don't change its PVID
-(not reasonable to change it anyway), hardware learning may not update
-the correct FDB.
+Jonathan
+> 
+> Cheers,
+> Prabhakar
+> 
+> Changes for v4:
+> * Fixed registering action to assert resets on failure/remove
+>   as reported by Philip.
+> * Fixed review comments suggested by Jonathan.
+> * Included RB tag from Rob for patch 1/3
+> * Note DTS patch applies on top of https://git.kernel.org/pub/scm/
+>   linux/kernel/git/geert/renesas-devel.git/log/
+>   ?h=renesas-arm-dt-for-v5.15
+> 
+> Changes for v3 (as requested by Jonathan):
+> * Made use of FIELD_PREP()
+> * Renamed _CLEAR to _MASK and inverted inline as required
+> * Moved |= pair's on same lines
+> * Made use of sysfs_emit() while reading the labels
+> * Used for_each_bit_set() in rzg2l_adc_isr()
+> * Renamed rzg2l_adc_parse_of() -> rzg2l_adc_parse_properties()
+> * Used devm_add_action_or_reset() for asserting the reset signals and
+>   disabling pm_runtime and eventually removing remove() callback
+> * Added comments in isr handler for channel select interrupt
+> * Moved enabling/disabling of pclk during hw init in rzg2l_adc_hw_init()
+> * Dropped clock patch 3/4 (https://lore.kernel.org/patchwork/patch/1462152/)
+>   from previous series as its queued up in renesas-clk-for-v5.15
+> 
+> Changes for v2:
+> * Update binding doc, dropped gpios/renesas-rzg2l,adc-trigger-mode
+>   properties included channel property to represent each wired channel.
+> * Fixed review comments pointed by Alexandru, implemented pm runtime
+>   support, dropped mlock usage
+> * Fixed review comments pointed by Jonathan, renamed the macros,
+>   simplified the code.
+> * Included clock and DT patches
+> 
+> v1: https://patchwork.kernel.org/project/linux-renesas-soc/cover/
+>     20210629220328.13366-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+> 
+> Lad Prabhakar (3):
+>   dt-bindings: iio: adc: Add binding documentation for Renesas RZ/G2L
+>     A/D converter
+>   iio: adc: Add driver for Renesas RZ/G2L A/D converter
+>   arm64: dts: renesas: r9a07g044: Add ADC node
+> 
+>  .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 134 ++++
+>  MAINTAINERS                                   |   8 +
+>  arch/arm64/boot/dts/renesas/r9a07g044.dtsi    |  42 ++
+>  drivers/iio/adc/Kconfig                       |  10 +
+>  drivers/iio/adc/Makefile                      |   1 +
+>  drivers/iio/adc/rzg2l_adc.c                   | 600 ++++++++++++++++++
+>  6 files changed, 795 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
+>  create mode 100644 drivers/iio/adc/rzg2l_adc.c
+> 
 
-A possible solution is always send packets as tagged when serving a
-VLAN-aware bridge.
-
-mv88e6xxx has been using hardware learning on CPU port since commit
-d82f8ab0d874 ("net: dsa: tag_dsa: offload the bridge forwarding process"),
-does it have the same issue?
