@@ -2,79 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEB93E381D
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 05:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2933E3827
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 05:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhHHD22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 23:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
+        id S230213AbhHHDyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 23:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhHHD21 (ORCPT
+        with ESMTP id S230030AbhHHDyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 23:28:27 -0400
-Received: from fudo.makrotopia.org (fudo.makrotopia.org [IPv6:2a07:2ec0:3002::71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FE0C061760;
-        Sat,  7 Aug 2021 20:28:08 -0700 (PDT)
-Received: from local
-        by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.94.2)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1mCZTk-0000zx-Ny; Sun, 08 Aug 2021 05:28:00 +0200
-Date:   Sun, 8 Aug 2021 04:27:49 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Michael Walle <michael@walle.cc>,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] ARM: kirkwood: add missing <linux/if_ether.h> for
- ETH_ALEN
-Message-ID: <YQ9PNeka8VhZqxGR@makrotopia.org>
-References: <YQxk4jrbm31NM1US@makrotopia.org>
- <cde9de20efd3a75561080751766edbec@walle.cc>
- <YQ6WCK0Sytb0nxj9@lunn.ch>
+        Sat, 7 Aug 2021 23:54:06 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03BFC061760;
+        Sat,  7 Aug 2021 20:53:47 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id u5-20020a17090ae005b029017842fe8f82so15089651pjy.0;
+        Sat, 07 Aug 2021 20:53:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mJCzvgG17lDIrPVUXi3Q36FAL+nZMzi8syW3cWaF/28=;
+        b=DFjyMlNiJhu+rvkBzvFde/2g0HmPd6knViZBvTLAWhfcp3BXNS6beo9J13yf4i18Cj
+         yVDbL95ZEEJrlyG9VfjDu2aDMIAf5vt8U6VQQ0gaIDQOtWqozv3MCLmlL8g/1RZfOO6/
+         a1HgdtfsiDUaiFnBxGW2Q0ORRXyh6hrRSJrRpSdGnICBXSmcuuwXW2lm9IY5xn2aOaQZ
+         CWVDAuWapV4C5Lmj7c8wObNFJXNIjQiZkjvgeCOKQJ6L8eSTGvLXtCWInm8sea8simLj
+         LLfalKpRnmHFx9dJrluhIvm/HQMa7hTThXzheFAFgAkRaWBgtIJSuYKtGPdzTl/pH2Mh
+         7K/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mJCzvgG17lDIrPVUXi3Q36FAL+nZMzi8syW3cWaF/28=;
+        b=JagKi631NNKiLqIfq5cNHppSMcepAUlVYq+jgcZyH7B491zKTOlP6IcB2HS13iTHW7
+         8plHgFvq2tIBFMiqdXNFyMpKKczCCrY7LednP5EhN7NtB6e/Dbp72zbeHmGZFmkQzPtR
+         8I4d5yL/bUa6a8maFAvQXfzbBA2JeKFcxYcGj0apoOYPnIKdmLCr96YRIG3m48SH6HHz
+         vJ+uh2GcxtV49L6kIoX6tSGqUM0y9sjv2XCeH37tMo+OjeT11C6zsGR/dNEd9nDTkdL7
+         P4p5Le4HU12Vg7brKTBFPILh11xMyV4v2yFANlaTHjVd9hohQBYwORe4VFgd5Ljf6wmO
+         Erdw==
+X-Gm-Message-State: AOAM530HQbvyBpxjzBcllhjeyn6rr6lZqvZnoW6u6yCDNsxHh6+A+SB/
+        Zr/2+/0/h4gUpLrIHCylcPA=
+X-Google-Smtp-Source: ABdhPJyzYc0VSp1iw09YIr5eKAXmqOajXuR8ynvhj4oPhBmWzk5ih95NadTh5o+tNERzBIAIF3xGpA==
+X-Received: by 2002:a63:f341:: with SMTP id t1mr238565pgj.149.1628394827249;
+        Sat, 07 Aug 2021 20:53:47 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id a22sm15641180pfa.137.2021.08.07.20.53.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 07 Aug 2021 20:53:46 -0700 (PDT)
+Subject: Re: [PATCH v3 6/9] docs: pdfdocs: One-half spacing for CJK
+ translations
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>,
+        Hu Haowen <src.res@email.cn>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
+References: <eb8184ab-cfab-680b-f180-1157a7f709b3@gmail.com>
+ <a1c19fe1-2960-1c4b-b355-7e6da13b9630@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <8e70e5ed-c0d9-a0f0-6640-a0f1ebdda6d4@gmail.com>
+Date:   Sun, 8 Aug 2021 12:53:43 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQ6WCK0Sytb0nxj9@lunn.ch>
+In-Reply-To: <a1c19fe1-2960-1c4b-b355-7e6da13b9630@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Mon, 2 Aug 2021 18:56:16 +0900, Akira Yokosawa wrote:
+> CJK documents are much easier to read with a wider baseline stretch.
+> Applying the onehalfspacing option of "setspace" package looks
+> reasonable.
+>=20
+> Note: \usepackage{setspace} needs to be before that of hyperref in the
+> preamble.  The 'extrapackages' key (available since Sphinx 2.3) is for
+> this purpose.
 
-On Sat, Aug 07, 2021 at 04:17:44PM +0200, Andrew Lunn wrote:
-> > What kernel is this? I've just tested with this exact commit as
-> > base and it compiles just fine.
-> > 
-> > I'm not saying including the file is wrong, but it seems it isn't
-> > needed in the upstream kernel and I don't know if it qualifies for
-> > the stable queue therefore.
-> 
-> I would like to see a reproducer for mainline. Do you have a kernel
-> config which generates the problem.
+Sphinx versions < 2.3 ignore 'extrapackages' and generate LaTeX
+sources without setspace package.
+Obviously, building such LaTeX sources will end up in the error of:
 
-I encountered the problem when building the 'kirkwood' target in
-OpenWrt. I have now tried building vanilla, and the problem indeed
-doesn't exist. After tracing the header includes with the precompiler
-for some time I concluded that <linux/of_net.h> included in kirkwood.c
-includes <linux/phy.h> which includes <linux/ethtool.h> which includes
-<uapi/linux/ethtool.h> which includes <uapi/linux/if_ether.h> which
-includes <linux/if_ether.h> which defined ETH_ALEN.
+    ! Undefined control sequence.
+    \kerneldocCJKoff ...exeCJKinactive \singlespacing
 
-When building OpenWrt kernel which includes a backport of
-"of: net: pass the dst buffer to of_get_mac_address()", this is not the
-same as <linux/of_net.h> doesn't include <linux/phy.h> yet. This is
-because we miss commit 0c65b2b90d13c1 ("net: of_get_phy_mode: Change
-API to solve int/unit warnings") which has been in mainline for a long
-time.
+Current requirement to build pdfdocs is Sphinx 2.4.4, but LaTeX
+sources generated by 1.7.9 can at least be built prior to this change.
 
-> The change itself does seems reasonable, so if we can reproduce it, i
-> would be happy to merge it for stable.
+Jon, Mauro, do you think this is a regression?
 
-Sorry for the noise caused, I'm not sure what the policy is in this
-case, but certainly this is *not* a regression which should make it to
-stable asap. The long and confusing chain of includes which lead to the
-ETH_ALEN macro being defined in arch/arm/mach-mvebu/kirkwood.c is
-certainly not ideal, and in case you still consider this patch worth
-merging, I will post v2 with re-written commit description.
+You can skip 6/9 if you'd like.=20
+
+I'll see what can be done for compatibility with Sphinx < 2.3.
+
+        Thanks, Akira
+
+>=20
+> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+> ---
+>  Documentation/conf.py                      | 9 +++++++--
+>  Documentation/translations/ja_JP/howto.rst | 8 ++++++++
+>  Documentation/translations/ko_KR/howto.rst | 8 ++++++++
+>  3 files changed, 23 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/conf.py b/Documentation/conf.py
+> index 2ccfe4442acc..2e54488e2480 100644
+> --- a/Documentation/conf.py
+> +++ b/Documentation/conf.py
+> @@ -341,6 +341,9 @@ latex_elements =3D {
+>          verbatimhintsturnover=3Dfalse,
+>      ''',
+> =20
+> +    # For CJK One-half spacing, need to be in front of hyperref
+> +    'extrapackages': r'\usepackage{setspace}',
+> +
+>      # Additional stuff for the LaTeX preamble.
+>      'preamble': '''
+>  	% Prevent column squeezing of tabulary.
+> @@ -405,8 +408,8 @@ latex_elements['preamble']  +=3D '''
+>  	\\newCJKfontfamily[JPsans]\\jpsans{Noto Sans CJK JP}
+>  	\\newCJKfontfamily[JPmono]\\jpmono{Noto Sans Mono CJK JP}
+>  	% Define custom macros to on/off CJK
+> -	\\newcommand{\\kerneldocCJKon}{\\makexeCJKactive}
+> -	\\newcommand{\\kerneldocCJKoff}{\\makexeCJKinactive}
+> +	\\newcommand{\\kerneldocCJKon}{\\makexeCJKactive\\onehalfspacing}
+> +	\\newcommand{\\kerneldocCJKoff}{\\makexeCJKinactive\\singlespacing}
+>  	\\newcommand{\\kerneldocBeginSC}{%
+>  	    \\begingroup%
+>  	    \\scmain%
+> @@ -437,6 +440,8 @@ latex_elements['preamble']  +=3D '''
+>  	    \\renewcommand{\\CJKttdefault}{JPmono}%
+>  	}
+>  	\\newcommand{\\kerneldocEndJP}{\\endgroup}
+> +	% Single spacing in literal blocks
+> +	\\fvset{baselinestretch=3D1}
+>  	% To customize \\sphinxtableofcontents
+>  	\\usepackage{etoolbox}
+>  	% Inactivate CJK after tableofcontents
+> diff --git a/Documentation/translations/ja_JP/howto.rst b/Documentation=
+/translations/ja_JP/howto.rst
+> index 73ebdab4ced7..d667f9d8a02a 100644
+> --- a/Documentation/translations/ja_JP/howto.rst
+> +++ b/Documentation/translations/ja_JP/howto.rst
+> @@ -1,3 +1,7 @@
+> +.. raw:: latex
+> +
+> +	\kerneldocCJKoff
+> +
+>  NOTE:
+>  This is a version of Documentation/process/howto.rst translated into J=
+apanese.
+>  This document is maintained by Tsugikazu Shibata <tshibata@ab.jp.nec.c=
+om>
+> @@ -11,6 +15,10 @@ try to update the original English file first.
+> =20
+>  ----------------------------------
+> =20
+> +.. raw:: latex
+> +
+> +	\kerneldocCJKon
+> +
+>  =E3=81=93=E3=81=AE=E6=96=87=E6=9B=B8=E3=81=AF=E3=80=81
+>  Documentation/process/howto.rst
+>  =E3=81=AE=E5=92=8C=E8=A8=B3=E3=81=A7=E3=81=99=E3=80=82
+> diff --git a/Documentation/translations/ko_KR/howto.rst b/Documentation=
+/translations/ko_KR/howto.rst
+> index a2bdd564c907..e3cdf0c84892 100644
+> --- a/Documentation/translations/ko_KR/howto.rst
+> +++ b/Documentation/translations/ko_KR/howto.rst
+> @@ -1,3 +1,7 @@
+> +.. raw:: latex
+> +
+> +	\kerneldocCJKoff
+> +
+>  NOTE:
+>  This is a version of Documentation/process/howto.rst translated into k=
+orean
+>  This document is maintained by Minchan Kim <minchan@kernel.org>
+> @@ -11,6 +15,10 @@ try to update the original English file first.
+> =20
+>  ----------------------------------
+> =20
+> +.. raw:: latex
+> +
+> +	\kerneldocCJKon
+> +
+>  =EC=9D=B4 =EB=AC=B8=EC=84=9C=EB=8A=94
+>  Documentation/process/howto.rst
+>  =EC=9D=98 =ED=95=9C=EA=B8=80 =EB=B2=88=EC=97=AD=EC=9E=85=EB=8B=88=EB=8B=
+=A4.
+>=20
+
