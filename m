@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE893E3A3E
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 14:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82CA3E3A41
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 14:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhHHMkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 08:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
+        id S231438AbhHHMkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 08:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhHHMkG (ORCPT
+        with ESMTP id S231414AbhHHMkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 08:40:06 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C970C061760;
-        Sun,  8 Aug 2021 05:39:47 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        Sun, 8 Aug 2021 08:40:12 -0400
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078EEC0613CF;
+        Sun,  8 Aug 2021 05:39:52 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4GjJh12yzGzQk21;
-        Sun,  8 Aug 2021 14:39:45 +0200 (CEST)
+        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4GjJh65nz2zQk9y;
+        Sun,  8 Aug 2021 14:39:50 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at heinlein-support.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gorani.run; s=MBO0001;
-        t=1628426383;
+        t=1628426389;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vSXYURrU3J7OncJl8RWnabghsuEIsLwm4iQPOfAaK6M=;
-        b=SymtR4QvMovDV0m1yXQIi7vVmjljQEmTnS2GYPqk7fcuZ+Sj1bpBUDKH1ECxLrFSUtACsW
-        quEINsmIjVgSOENUd9Vg32JGGDWQrK9Ys3ZnEKJFVZB01xd67Ac8ZTo4od6kOkgjAzdgOM
-        kXVFx6+eOh1OK+SK9ZPS3Zkan+dG2Q3qn5gfZDFKRZ72ETTabgI2iAqN+7Kr/nui98wZgt
-        dChaTTEozzJU9zno6/j8V2t+NklVw5sejJee9XxuTmsPefDntzNNFBk8No6MxVhbX6/gTd
-        x2uyCXJpm2tBSbVH3RtyPDS1pItiJJwT528w/slibjILK0GT9xwcXns68sIbqw==
+        bh=wTDEWTY6DFnkW7Rjxxj/CcZyJlPojb5t/pJtInOE9bs=;
+        b=njzXrk+pIxdCL4wWJkaLLZ7UkjSIqw58a948hlA7vJXsx1fXdyYfPuYfqA3A5fOwUMsudv
+        2/SXoW2Ao3FLxzoMnzk1+pHyO9NaGObsnmKMQ8r4RPK9LC75FLqu37MBBvem9cMeFQqq6c
+        P7P3miV9eFghBfBmQ/DefIfX7fHd0hNimdAogouTxbcrI4OYPXG865iOYhbQ1SCUaWGO/l
+        hbZA+LalU5vkTtPaLi8D7+QTQ7fp5zEcfZna0g3ABEEw3Hr8ZKWDWyrCelP/dl3+ZlM1sc
+        A+CJtlQlA73sYSJ8JZ/rtIQYoVgpNglmygYDmW2yDid5JFxivu7HLN4ncqahdw==
 Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter03.heinlein-hosting.de (spamfilter03.heinlein-hosting.de [80.241.56.117]) (amavisd-new, port 10030)
-        with ESMTP id VZg91b7EB8Ws; Sun,  8 Aug 2021 14:39:42 +0200 (CEST)
+        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
+        with ESMTP id uGsJQJGVLIxf; Sun,  8 Aug 2021 14:39:47 +0200 (CEST)
 From:   Sungbo Eo <mans0n@gorani.run>
 To:     linux-mediatek@lists.infradead.org
 Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
@@ -48,43 +48,94 @@ Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
         devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Sungbo Eo <mans0n@gorani.run>
-Subject: [PATCH v2 1/2] dt-bindings: usb: mtk-musb: add MT7623 compatible
-Date:   Sun,  8 Aug 2021 21:38:39 +0900
-Message-Id: <20210808123840.176738-2-mans0n@gorani.run>
+Subject: [PATCH v2 2/2] arm: dts: mt7623: add musb device nodes
+Date:   Sun,  8 Aug 2021 21:38:40 +0900
+Message-Id: <20210808123840.176738-3-mans0n@gorani.run>
 In-Reply-To: <20210808123840.176738-1-mans0n@gorani.run>
 References: <20210803151320.71531-1-mans0n@gorani.run>
  <20210808123840.176738-1-mans0n@gorani.run>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 72E40189C
-X-Rspamd-UID: 07e247
+X-Rspamd-Queue-Id: ECECD189C
+X-Rspamd-UID: 492da4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document MT7623 compatible for mtk-musb.
+MT7623 has an musb controller that is compatible with the one from MT2701.
 
 Signed-off-by: Sungbo Eo <mans0n@gorani.run>
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
 ---
 v2:
-* add reviewed by Matthias
+* rename usb3 label to usb0
+* move usb0 & u2phy1 nodes to the right sorted place
+* disable u2phy1 by default
+* correct u2port2 node name to match its reg address
 ---
- Documentation/devicetree/bindings/usb/mediatek,musb.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/mt7623.dtsi  | 34 ++++++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/mt7623a.dtsi |  4 ++++
+ 2 files changed, 38 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/mediatek,musb.yaml b/Documentation/devicetree/bindings/usb/mediatek,musb.yaml
-index 84ddacfdbe9b..03d62d60ce5f 100644
---- a/Documentation/devicetree/bindings/usb/mediatek,musb.yaml
-+++ b/Documentation/devicetree/bindings/usb/mediatek,musb.yaml
-@@ -19,6 +19,7 @@ properties:
-       - enum:
-           - mediatek,mt8516-musb
-           - mediatek,mt2701-musb
-+          - mediatek,mt7623-musb
-       - const: mediatek,mtk-musb
+diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dtsi
+index 3c11f7cfcc40..790d74439cc6 100644
+--- a/arch/arm/boot/dts/mt7623.dtsi
++++ b/arch/arm/boot/dts/mt7623.dtsi
+@@ -585,6 +585,40 @@ spi2: spi@11017000 {
+ 		status = "disabled";
+ 	};
  
-   reg:
++	usb0: usb@11200000 {
++		compatible = "mediatek,mt7623-musb",
++			     "mediatek,mtk-musb";
++		reg = <0 0x11200000 0 0x1000>;
++		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
++		interrupt-names = "mc";
++		phys = <&u2port2 PHY_TYPE_USB2>;
++		dr_mode = "otg";
++		clocks = <&pericfg CLK_PERI_USB0>,
++			 <&pericfg CLK_PERI_USB0_MCU>,
++			 <&pericfg CLK_PERI_USB_SLV>;
++		clock-names = "main","mcu","univpll";
++		power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
++		status = "disabled";
++	};
++
++	u2phy1: t-phy@11210000 {
++		compatible = "mediatek,mt7623-tphy",
++			     "mediatek,generic-tphy-v1";
++		reg = <0 0x11210000 0 0x0800>;
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++		status = "disabled";
++
++		u2port2: usb-phy@11210800 {
++			reg = <0 0x11210800 0 0x0100>;
++			clocks = <&topckgen CLK_TOP_USB_PHY48M>;
++			clock-names = "ref";
++			#phy-cells = <1>;
++			status = "okay";
++		};
++	};
++
+ 	audsys: clock-controller@11220000 {
+ 		compatible = "mediatek,mt7623-audsys",
+ 			     "mediatek,mt2701-audsys",
+diff --git a/arch/arm/boot/dts/mt7623a.dtsi b/arch/arm/boot/dts/mt7623a.dtsi
+index 0735a1fb8ad9..d304b62d24b5 100644
+--- a/arch/arm/boot/dts/mt7623a.dtsi
++++ b/arch/arm/boot/dts/mt7623a.dtsi
+@@ -35,6 +35,10 @@ &scpsys {
+ 	clock-names = "ethif";
+ };
+ 
++&usb0 {
++	power-domains = <&scpsys MT7623A_POWER_DOMAIN_IFR_MSC>;
++};
++
+ &usb1 {
+ 	power-domains = <&scpsys MT7623A_POWER_DOMAIN_HIF>;
+ };
 -- 
 2.32.0
 
