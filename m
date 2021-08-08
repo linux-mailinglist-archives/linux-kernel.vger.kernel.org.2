@@ -2,95 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528C73E3A7A
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 15:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D073E3A7C
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 15:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhHHNle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 09:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhHHNld (ORCPT
+        id S231467AbhHHNls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 09:41:48 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:64359 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231398AbhHHNlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 09:41:33 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3546C061760;
-        Sun,  8 Aug 2021 06:41:14 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so30302546pjs.0;
-        Sun, 08 Aug 2021 06:41:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2fnPDPXB4C5Fls4CoYQWzLSj7vIe2Wd6gpTYWENlVIo=;
-        b=OBWIdhzxbLwAwUNfBiW1nJ0ZEjrD9vu4TVEsV1k8exMalhuRvLLXvP/d0wpzhJIpaW
-         tJmeIUimwTrcs5VEHNnIUE9dZ8m1JFwgTIwzbe/dUIoNCDIASgnxNXcWTrf08zmvErXj
-         wqLEnClt2LEaADCIBGP3OFFHIWLJqQqKq2nDRkOA64bdBhyGYtg6meLzS3B5ViKiLjkk
-         aRaW2+8OieOfKvMrNPaos+stl5/64PA4ADufC/htx7T9JdGiPy4agTlMHG/ZEg7j4jyU
-         N3sCH4SvqN0hskSZGvskeCcmeYI4C5NTz+C8K5R/cdEl0Aajjd69GwZv/pKYtnu5y0Ue
-         NSWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2fnPDPXB4C5Fls4CoYQWzLSj7vIe2Wd6gpTYWENlVIo=;
-        b=sYzfdVuS4I+HPm37fCexQZtdp5R9y8GXWhzMalt3Lyoqa0UdfTOBr+G70nfLG6kbEZ
-         egfJqoZ+d4zbTsDagiInivfIm+dWJLYTBAzUSWB5rWUb6YvRCjSe6CDb4dhFplsrVbUa
-         UX1w8GYt7wHZXSkQFtE3cNt34/8ORi0oPEcPaJQJpSdPURnCZJvZr3ygnRT12kbhIAD4
-         /pBWnT0kN6GyhMu5xTUEMyP2HhoYbhBqYisekrT9tDCWBF67RFpKWIcWRAl4oTSd/ihf
-         83DXeOIWbex2brXNGt/3jBh7J7NeuNXAkFhMHn3tv2AO7o2A9oSXEzrfJL/byQ2OQuNd
-         n1pA==
-X-Gm-Message-State: AOAM5339jAxCCBHE4BMa7XfpisM9QY7cCncbkGmh1SQYD8fbrHgXUio2
-        u8VbzhgJaX+Qr/7ztY007uA=
-X-Google-Smtp-Source: ABdhPJyNvlNH7SowjdQfuSJUuUsFjIduVZ588cXmIKrJRwKCOhFIRFGjJd8lsqeAivCPORqAWivtJw==
-X-Received: by 2002:a17:90b:3442:: with SMTP id lj2mr526181pjb.81.1628430074456;
-        Sun, 08 Aug 2021 06:41:14 -0700 (PDT)
-Received: from [192.168.1.5] ([159.192.228.166])
-        by smtp.googlemail.com with ESMTPSA id l14sm17545501pfd.58.2021.08.08.06.41.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Aug 2021 06:41:14 -0700 (PDT)
-Subject: Re: [PATCH] Add new VID/PID to support Fibocom FG150 5G module
-To:     Zhengjun Zhang <zhangzhengjun@aicrobo.com>, johan@kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-References: <20210807151144.11227-1-zhangzhengjun@aicrobo.com>
-From:   Lars Melin <larsm17@gmail.com>
-Message-ID: <b3285ae0-8b1f-fc9c-3662-634264d704d5@gmail.com>
-Date:   Sun, 8 Aug 2021 20:41:10 +0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Sun, 8 Aug 2021 09:41:47 -0400
+X-UUID: e320f5f0132546dcb3a06609724e702b-20210808
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=zgXBVMkErYtlndRrYAcIE2/ctnIm3RbnsXLRy22+1gE=;
+        b=K+PYnk2yOOkfzVsWTAy/Gje6uJKwCuOl0vipnP9nWYvTW+HWJbZTqTSJWFuIaCid4uUPrCJ3ekivtuo+W/iaAbJ/Dfz8Lomyyaa/PP7H6G/aw2cSjmNY/LOjjujwckPsPkt0rItvbvtcbBtQMfc6Gq2tlV8BDL2l1o3ptVlLcA8=;
+X-UUID: e320f5f0132546dcb3a06609724e702b-20210808
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <jitao.shi@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 218762132; Sun, 08 Aug 2021 21:41:24 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
+ (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 8 Aug
+ 2021 21:41:21 +0800
+Received: from mszsdclx1018.gcn.mediatek.inc (10.16.6.18) by
+ MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Sun, 8 Aug 2021 21:41:20 +0800
+From:   Jitao Shi <jitao.shi@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <ck.hu@mediatek.com>,
+        <stonea168@163.com>, <huijuan.xie@mediatek.com>,
+        <rex-bc.chen@mediatek.com>, <shuijing.li@mediatek.com>,
+        <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        Jitao Shi <jitao.shi@mediatek.com>
+Subject: [PATCH v6 0/1] force hsa hbp hfp packets multiple of lanenum to avoid screen shift
+Date:   Sun, 8 Aug 2021 21:41:16 +0800
+Message-ID: <20210808134117.66798-1-jitao.shi@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210807151144.11227-1-zhangzhengjun@aicrobo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 1EDDD48C2312284FBB3B3188A14DEC3EE95249394A56DDF90C90160F206A21302000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/2021 22:11, Zhengjun Zhang wrote:
-> Fibocom FG150 is a 5G module based on Qualcomm SDX55 platform,
-> support Sub-6G band.
+Q2hhbmdlcyBzaW5jZSB2NToNCiAtIFJlbXZvZSB0aGUgYW54NzYyNSBkZXZpY2V0cmVlIGNoYW5n
+ZS4gVXNlIHRoZSBjb21wYXRpYmxlIHN0cmluZyBpbnRlYWQuDQoNCkNoYW5nZXMgc2luY2UgdjQ6
+DQogLSBNb3ZlICJkdC1iaW5kaW5nczogZHJtL2JyaWRnZTogYW54NzYyNTogYWRkIGZvcmNlX2Rz
+aV9lbmRfd2l0aG91dF9udWxsIiBiZWZvcmUNCiAgICJkcm0vbWVkaWF0ZWs6IGZvcmNlIGhzYSBo
+YnAgaGZwIHBhY2tldHMgbXVsdGlwbGUgb2YgbGFuZW51bSB0byBhdm9pZCIuDQoNCiAtIFJldGl0
+bGUgImR0LWJpbmRpbmdzOiBkcm0vYnJpZGdlOiBhbng3NjI1OiBhZGQgZm9yY2VfZHNpX2VuZF93
+aXRob3V0X251bGwiLg0KDQpKaXRhbyBTaGkgKDEpOg0KICBkcm0vbWVkaWF0ZWs6IGZvcmNlIGhz
+YSBoYnAgaGZwIHBhY2tldHMgbXVsdGlwbGUgb2YgbGFuZW51bSB0byBhdm9pZA0KICAgIHNjcmVl
+biBzaGlmdA0KDQogZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kc2kuYyB8IDEzICsrKysr
+KysrKysrKysNCiAxIGZpbGUgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKQ0KDQotLSANCjIuMjUu
+MQ0K
 
-> +/* Fibocom products */
-> +#define FIBOCOM_VENDOR_ID			0x2cb7
-> +#define FIBOCOM_PRODUCT_FG150			0x010b
->   
->   /* Device flags */
->   
-> @@ -2077,6 +2080,8 @@ static const struct usb_device_id option_ids[] = {
->   	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff) },			/* GosunCn GM500 RNDIS */
->   	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff) },			/* GosunCn GM500 MBIM */
->   	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1406, 0xff) },			/* GosunCn GM500 ECM/NCM */
-> +	{ USB_DEVICE_AND_INTERFACE_INFO(FIBOCOM_VENDOR_ID, FIBOCOM_PRODUCT_FG150, 0xff, 0xff, 0x30) },
-> +	{ USB_DEVICE_AND_INTERFACE_INFO(FIBOCOM_VENDOR_ID, FIBOCOM_PRODUCT_FG150, 0xff, 0, 0) },
->   	{ } /* Terminating entry */
->   };
->   MODULE_DEVICE_TABLE(usb, option_ids); >
-
-Please don't do the defines for Fibocom VID and PID, just add them by 
-their numerical value after 2cb7:0105 in the
-MODULE_DEVICE_TABLE.
-
-thanks
-Lars
