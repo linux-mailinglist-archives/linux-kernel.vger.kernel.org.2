@@ -2,118 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F883E3B4D
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAD23E3B51
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhHHQMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 12:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
+        id S231864AbhHHQOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 12:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhHHQMy (ORCPT
+        with ESMTP id S230448AbhHHQOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 12:12:54 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF764C061760;
-        Sun,  8 Aug 2021 09:12:35 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id u5-20020a17090ae005b029017842fe8f82so16750514pjy.0;
-        Sun, 08 Aug 2021 09:12:35 -0700 (PDT)
+        Sun, 8 Aug 2021 12:14:05 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9492CC061760
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 09:13:42 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id j77so24933820ybj.3
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 09:13:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=f5fFjNuLaESLtt6NpxalDxQH6QXq4SR6rkuDvkhfkdY=;
-        b=kZ1Y8YHhslgLJBNqqU0v9tleoLWjAmdqD+tYyymu2xJB62MfxAqZRHmZkkr1rU7ZVi
-         ePkUaDXmYH74LuIaIn8fAIJmaIxbQjyYnbeknS/kYcgiTZ4oll7oLajDkSiMDmqkrjFU
-         0GusmTLlMKK4Fo23xLj429nTEvj+hA46gYFamO5RuWZth4jVV4fv79rDRJLKh+TBHMu1
-         Ovp36p3+7vLSIDse+TnTIpYxoGV+IUguVw/NJcGMjk8/75hBXAUR4BidPZbcQBaIuwOu
-         2Jl9n6nxsBeALQm8ehek3v+iHbNfDrLPaqIn+pjBFaUjcxQGKqOw5J/U/BYxuN8XAuMC
-         fYzg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TCK5nBQQabIUN0WbQjXhg9KlErctfVr7limBHCaiG+A=;
+        b=P09Mz/mILYaoYE3EajDRpkc8akaY7fTBsUTWh/DDjvyIVcbgMaZWzI+LtlcoWEveOD
+         rhx8918aHZb+O4eacyH9xJ39yZ0R0Ijqpx/MepcAKa8/2gZ5+AVf01MP0FU5rtgj0aaI
+         ZOn+r2ameWRT7D0AaL+uSp1MMJV6BIO04kwUPuwtrDbWxbL86dxGwXjCh8J+AwMkozcs
+         y1mHfPiyIhI4iox17HTcyNBHoFvdDSpVFAZKWamRg7qw92Jqi0wzk6fCPKC2Ilmft8gc
+         6xtZM6GOlAFZn84PTqwvcOz6XFlG9JONgTvDHC8swDsPKC28qv4jvo5Vx9VKEuRlASq2
+         T1rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=f5fFjNuLaESLtt6NpxalDxQH6QXq4SR6rkuDvkhfkdY=;
-        b=WR7QTvxdxoQm1Rj0QPUU7QXvodklTucJPGjbK+DM6RWfu+iefHx5V6bc2UUZg+s6bG
-         sgSKbU/7WmXT1sFkTP/I+8COjFKfoZfxejXC9XTVhxOqoVbfpl2d+uFcmfSRItVXfQ0m
-         E66WKKQIqTNfNGx3gOgEJMU64xmrCZnjirodnFJIpxM3F6Q0u0mAXZaTcENO4lPsWdxm
-         epzXUpVAX5Oa87qre9av8IG7PytDkbvK6OgufwUJXmAOrKi1qkC9AGJiu/muCGV8hIqJ
-         WgWA954C9sUrHfWgzL+y0yxws0+VtLRiUgzcRhfPpDhGka/od9FY+HVizl1Ps+E3dNDm
-         8rKQ==
-X-Gm-Message-State: AOAM5332Z34xvTyuf/WmUilcfY+Oo6MnxkAq0W8TCpGLfx7j7Wit2ySm
-        qkOnwl8PIPSJUP8d1ZCF3X0=
-X-Google-Smtp-Source: ABdhPJxpHd7sA+xj/K264Oysk9odcZnnHttjMMytkovw4nHImrjX41umo5G/CyvxRFzEZwTxDoOzLg==
-X-Received: by 2002:a17:90b:20b:: with SMTP id fy11mr30703033pjb.79.1628439155383;
-        Sun, 08 Aug 2021 09:12:35 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id x7sm16760227pfn.70.2021.08.08.09.12.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Aug 2021 09:12:34 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Hauke Mehrtens <hauke@hauke-m.de>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Jonathan McDowell <noodles@earth.li>,
-        Michal =?utf-8?B?Vm9rw6HEjQ==?= <vokac.m@gmail.com>,
-        Christian Lamparter <chunkeey@gmail.com>,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Stefan Lippers-Hollmann <s.l-h@gmx.de>,
-        Hannu Nyman <hannu.nyman@iki.fi>,
-        Imran Khan <gururug@gmail.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Nick Lowe <nick.lowe@gmail.com>,
-        =?iso-8859-1?Q?Andr=E9?= Valentin <avalentin@marcant.net>
-Subject: Re: [RFC net-next 3/3] net: dsa: tag_qca: set offload_fwd_mark
-Date:   Mon,  9 Aug 2021 00:12:24 +0800
-Message-Id: <20210808161224.228001-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210807225721.xk5q6osyqoqjmhmp@skbuf>
-References: <20210807120726.1063225-1-dqfext@gmail.com> <20210807120726.1063225-4-dqfext@gmail.com> <20210807225721.xk5q6osyqoqjmhmp@skbuf>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TCK5nBQQabIUN0WbQjXhg9KlErctfVr7limBHCaiG+A=;
+        b=pyYrAGne4obM5OYu7PKdttmq4Rd5FyONryIz2wbUG8FZfAMuCKs4rJjTey8HZjsgeb
+         x3yNRzQVR6jYs3Kc4pEMSiqEEKnYK8dSVlPYKBOAQ95e6uxmHTfnfp+uNu7rauATgiEF
+         HpFHpMbsdpPEZoUwnGPZhCOYuK+WRml4JNYHzmgM2IyJkQURprVqj68Jv+2uivkTBsxg
+         wdJDsdZrtF8YBUJXp85h3JLd6jbwDzwhEIxJ6Ior3hpSX4TmaEGOS78k3bcXP/DT8I56
+         EHkBldnyQTSCmHegyHMkhqBSHJYLEEj3/xiJolk1uBSrsgP4lXFEPZWILGONOdfDKoyC
+         ys5A==
+X-Gm-Message-State: AOAM533KvrIXpz51gSNUQa61vEEwdDC+cohl8ZonuzitXpTS2vKZyyDg
+        VBqa5WArlBnw+5QdroOjxVMvnnoSjDKSAq9Rv3/WWg==
+X-Google-Smtp-Source: ABdhPJx0dWjYkHDsO+8kSP89UPL2BlSOBVWTieqq/F7t4NM8YSZ1slbEbkxEHATJiigRfMb9++IRuvn6g9kCzcz5GpU=
+X-Received: by 2002:a25:49c2:: with SMTP id w185mr23459074yba.294.1628439221480;
+ Sun, 08 Aug 2021 09:13:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20210805170859.2389276-1-surenb@google.com> <YQzZSmRqYmxFJ61y@dhcp22.suse.cz>
+ <CAJuCfpFL_7Zk4Nk5E_kCSnsCsXgmWGW9R3AnXW-T5EH7URUkRg@mail.gmail.com>
+In-Reply-To: <CAJuCfpFL_7Zk4Nk5E_kCSnsCsXgmWGW9R3AnXW-T5EH7URUkRg@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Sun, 8 Aug 2021 09:13:30 -0700
+Message-ID: <CAJuCfpFeup+rppM7mbJWJeaCbTdbp=1=r24CjmLWWv4Vsydd2A@mail.gmail.com>
+Subject: Re: [PATCH v7 1/2] mm: introduce process_mrelease system call
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 08, 2021 at 01:57:21AM +0300, Vladimir Oltean wrote:
-> In this day and age, I consider this commit to be a bug fix, since the
-> software bridge, seeing an skb with offload_fwd_mark = false on an
-> offloaded port, will think it hasn't been forwarded and do that job
-> itself. So all broadcast and multicast traffic flooded to the CPU will
-> end up being transmitted with duplicates on the other bridge ports.
-> 
-> When the qca8k tagger was added in 2016 in commit cafdc45c949b
-> ("net-next: dsa: add Qualcomm tag RX/TX handler"), the offload_fwd_mark
-> framework was already there, but no DSA driver was using it - the first
-> commit I can find that uses offload_fwd_mark in DSA is f849772915e5
-> ("net: dsa: lan9303: lan9303_rcv set skb->offload_fwd_mark") in 2017,
-> and then quite a few more followed suit. But you could still blame
-> commit cafdc45c949b.
+On Fri, Aug 6, 2021 at 9:07 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Thu, Aug 5, 2021 at 11:40 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 05-08-21 10:08:58, Suren Baghdasaryan wrote:
+> > [...]
+> > > +     /*
+> > > +      * If the task is dying and in the process of releasing its memory
+> > > +      * then get its mm.
+> > > +      */
+> > > +     p = find_lock_task_mm(task);
+> > > +     if (!p) {
+> > > +             ret = -ESRCH;
+> > > +             goto put_pid;
+> > > +     }
+> > > +     if (task != p) {
+> > > +             get_task_struct(p);
+> > > +             put_task_struct(task);
+> > > +             task = p;
+> > > +     }
+> >
+> > Why do you need to take a reference to the p here? You are under
+> > task_lock so this will not go away and you only need p to get your mm.
+>
+> True.
+>
+> >
+> > > +
+> > > +     /* If the work has been done already, just exit with success */
+> > > +     if (test_bit(MMF_OOM_SKIP, &task->mm->flags))
+> > > +             goto put_task;
+> >
+> > You want to release the task_lock
+>
+> Missed it again :(
+>
+> >
+> > > +
+> > > +     if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
+> >
+> > you want task_will_free_mem(p) and what is the point of the PF_KTHREAD
+> > check?
+>
+> Yeah, looks like task_will_free_mem() covers that case already.
+>
+> >
+> > > +             mm = task->mm;
+> > > +             mmget(mm);
+> >
+> > All you need is to make sure mm will not get released under your feet
+> > once task_lock is released so mmgrab is the right thing to do here. The
+> > address space can be torn down in parallel and that is OK and desirable.
+> >
+> > I think you really want something like this:
+> >
+> >         if (flags)
+> >                 return -EINVAL;
+> >
+> >         pid = pidfd_get_pid(fd, &f_flags);
+> >         if (IS_ERR(pid))
+> >                 return PTR_ERR(pid);
+> >         task = get_pid_task(pid, PIDTYPE_PID);
+> >         if (!task) {
+> >                 ret = -ESRCH;
+> >                 goto put_pid;
+> >         }
+> >
+> >         /*
+> >          * Make sure to chose a thread which still has a reference to mm
+> >          * during the group exit
+> >          */
+> >         p = find_lock_task_mm(task);
+> >         if (!p) {
+> >                 ret = -ESRCH;
+> >                 goto put_task;
+> >         }
+> >
+> >         mm = task->mm;
+> >         mmgrab(mm);
+> >         reap = true;
+> >         /* If the work has been done already, just exit with success */
+> >         if (test_bit(MMF_OOM_SKIP, &mm->flags)) {
+> >                 reap = false;
+> >         } else if (!task_will_free_mem(p)) {
+> >                 reap = false;
+> >                 ret = -EINVAL;
+> >         }
+> >         task_unlock(p);
+> >
+> >         if (!reap)
+> >                 goto dropmm;;
+> >
+> >         /* Do the work*/
+> >
+> >
+> > dropmm:
+> >         mmdrop(mm);
+> > put_task:
+> >         put_task(task);
+> > put_pid:
+> >         put_pid(pid);
+> >
+> >         return ret;
+> >
+>
+> This is indeed simpler to follow. I'll adopt your version. Thanks!
 
-The driver currently only enables flooding to the CPU port (like MT7530
-back then), so offload_fwd_mark should NOT be set until bridge flags
-offload is supported.
+v8 is posted at https://lore.kernel.org/patchwork/patch/1473697/
+Testing shows performance improvement from replacing mmget with mmgrab.
 
-> 
-> Curious, I also see that the gswip driver is in the same situation: it
-> implements .port_bridge_join but does not set skb->offload_fwd_mark.
-> I've copied Hauke Mehrtens to make him aware. I would rather not send
-> the patch myself because I would do a rather lousy job and set it
-> unconditionally to 'true', but the hardware can probably do better in
-> informing the tagger about whether a frame was received only by the host
-> or not, since it has an 8 byte header on RX.
-> 
-> For the record, I've checked the other tagging drivers too, to see who
-> else does not set skb->offload_fwd_mark, and they all correspond to
-> switch drivers which don't implement .port_bridge_join, which in that
-> case would be the correct thing to do.
+>
+> > --
+> > Michal Hocko
+> > SUSE Labs
