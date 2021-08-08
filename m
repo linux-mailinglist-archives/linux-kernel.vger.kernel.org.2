@@ -2,90 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B6D53E3BC7
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 19:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96333E3BD2
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 19:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhHHRDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 13:03:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230169AbhHHRDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 13:03:42 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65C2D60C3E;
-        Sun,  8 Aug 2021 17:03:18 +0000 (UTC)
-Date:   Sun, 8 Aug 2021 18:06:08 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v14 01/17] counter: 104-quad-8: Return error when
- invalid mode during ceiling_write
-Message-ID: <20210808180608.2925961b@jic23-huawei>
-In-Reply-To: <a2147f022829b66839a1db5530a7fada47856847.1627990337.git.vilhelm.gray@gmail.com>
-References: <cover.1627990337.git.vilhelm.gray@gmail.com>
-        <a2147f022829b66839a1db5530a7fada47856847.1627990337.git.vilhelm.gray@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S232165AbhHHRHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 13:07:02 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:39793 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232113AbhHHRHB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 13:07:01 -0400
+Received: from [192.168.1.18] ([90.126.253.178])
+        by mwinf5d75 with ME
+        id f56W250073riaq20356WZB; Sun, 08 Aug 2021 19:06:40 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 08 Aug 2021 19:06:40 +0200
+X-ME-IP: 90.126.253.178
+Subject: Re: [PATCH v4 2/3] drivers/soc/renesas: Prefer memcpy over strcpy
+To:     Bernd Petrovitsch <bernd@petrovitsch.priv.at>,
+        Len Baker <len.baker@gmx.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-hardening@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210808125012.4715-1-len.baker@gmx.com>
+ <20210808125012.4715-3-len.baker@gmx.com>
+ <39485c0e-511c-50a0-83be-f9ce6fc47e67@petrovitsch.priv.at>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <c33adb9e-9604-3d89-5a5b-152eb03e5b54@wanadoo.fr>
+Date:   Sun, 8 Aug 2021 19:06:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <39485c0e-511c-50a0-83be-f9ce6fc47e67@petrovitsch.priv.at>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  3 Aug 2021 21:06:11 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+Hi,
 
-> The 104-QUAD-8 only has two count modes where a ceiling value makes
-> sense: Range Limit and Modulo-N. Outside of these two modes, setting a
-> ceiling value is an invalid operation -- so let's report it as such by
-> returning -EINVAL.
+Le 08/08/2021 à 17:35, Bernd Petrovitsch a écrit :
+> Hi all!
 > 
-> Fixes: fc069262261c ("counter: 104-quad-8: Add lock guards - generic interface")
-> Acked-by: Syed Nayyar Waris <syednwaris@gmail.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-Applied to the togreg branch of iio.git and pushed out as testing for 0-day to have
-fun.
+> On 08/08/2021 14:50, Len Baker wrote:
+>> strcpy() performs no bounds checking on the destination buffer. This
+>> could result in linear overflows beyond the end of the buffer, leading
+>> to all kinds of misbehaviors. So, use memcpy() as a safe replacement.
+>>
+>> This is a previous step in the path to remove the strcpy() function
+>> entirely from the kernel.
+>>
+>> Signed-off-by: Len Baker <len.baker@gmx.com>
+>> ---
+>>   drivers/soc/renesas/r8a779a0-sysc.c | 6 ++++--
+>>   drivers/soc/renesas/rcar-sysc.c     | 6 ++++--
+>>   2 files changed, 8 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/soc/renesas/r8a779a0-sysc.c b/drivers/soc/renesas/r8a779a0-sysc.c
+>> index d464ffa1be33..7410b9fa9846 100644
+>> --- a/drivers/soc/renesas/r8a779a0-sysc.c
+>> +++ b/drivers/soc/renesas/r8a779a0-sysc.c
+>> @@ -404,19 +404,21 @@ static int __init r8a779a0_sysc_pd_init(void)
+>>   	for (i = 0; i < info->num_areas; i++) {
+>>   		const struct r8a779a0_sysc_area *area = &info->areas[i];
+>>   		struct r8a779a0_sysc_pd *pd;
+>> +		size_t n;
+>>
+>>   		if (!area->name) {
+>>   			/* Skip NULLified area */
+>>   			continue;
+>>   		}
+>>
+>> -		pd = kzalloc(sizeof(*pd) + strlen(area->name) + 1, GFP_KERNEL);
+>> +		n = strlen(area->name) + 1;
+>> +		pd = kzalloc(sizeof(*pd) + n, GFP_KERNEL);
+> Zeroing the allocated bytes is not needed since it's completly
+> overwritten with the strcpy()/memcpy().
 
-As an aside, I got the warning:
-  CHECK   drivers/counter/104-quad-8.c
-drivers/counter/104-quad-8.c:58: warning: Function parameter or member 'lock' not described in 'quad8'
+The strcpy()/memcpy() only overwrites the pd->name field, not the whole 
+pd structure.
+I think that it is needed to keep the kzalloc.
 
-Which might be nice to clean up, but has nothing much to do with this patch.
+Just my 2c,
+CJ
 
-J
-
-> ---
->  drivers/counter/104-quad-8.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>>   		if (!pd) {
+>>   			error = -ENOMEM;
+>>   			goto out_put;
+>>   		}
+>>
+>> -		strcpy(pd->name, area->name);
+>> +		memcpy(pd->name, area->name, n);
+>>   		pd->genpd.name = pd->name;
+>>   		pd->pdr = area->pdr;
+>>   		pd->flags = area->flags;
 > 
-> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
-> index 09a9a77cce06..81f9642777fb 100644
-> --- a/drivers/counter/104-quad-8.c
-> +++ b/drivers/counter/104-quad-8.c
-> @@ -715,12 +715,13 @@ static ssize_t quad8_count_ceiling_write(struct counter_device *counter,
->  	case 1:
->  	case 3:
->  		quad8_preset_register_set(priv, count->id, ceiling);
-> -		break;
-> +		mutex_unlock(&priv->lock);
-> +		return len;
->  	}
->  
->  	mutex_unlock(&priv->lock);
->  
-> -	return len;
-> +	return -EINVAL;
->  }
->  
->  static ssize_t quad8_count_preset_enable_read(struct counter_device *counter,
+> And similar for the second hunk.
+> 
+> MfG,
+> 	Bernd
+> 
 
