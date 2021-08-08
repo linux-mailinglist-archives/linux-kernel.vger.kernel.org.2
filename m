@@ -2,62 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB4B3E3C38
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 20:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BD23E3C3E
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 20:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbhHHSgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 14:36:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231607AbhHHSgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 14:36:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9196560F55;
-        Sun,  8 Aug 2021 18:35:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628447754;
-        bh=nCSnbrDLnSyAr31z4DkHY/c3Wd4a/iyIffjfbWLDSXw=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=vOEKVb3jthqKyMhRr0UN7ZsVieO9JwnC7nfQBLE0TKQa6bI6JGUV1Ho3kwLVtjkhw
-         3BOGBD7/pX8ysdQQkSrP9U3NTfwDWaoUCWWL1dxqGwiZdp9nf6dpz1+smKAM5l7fXR
-         KgWzpSLy4xvx1cInsjudHNPTtZp+3uadAa8UXwizaSzIk+1fyKbwg099hlOsMsz7w4
-         8GdNovJJr0A08FtNxpF8iVT+sxlxNILkne4IgHRtq04jpi382AzYkxF0TI133X6nV9
-         3Hjez4phg58OBTNmFccvFbJrGcXtcteBZp0GIeDnVHVDmUe+txP9Yy91zSESu61voI
-         2P+VyKx1ecyxQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 889F86096D;
-        Sun,  8 Aug 2021 18:35:54 +0000 (UTC)
-Subject: Re: [GIT PULL] Staging driver fixes for 5.14-rc5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YQ/AjpNS3y41k/uT@kroah.com>
-References: <YQ/AjpNS3y41k/uT@kroah.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YQ/AjpNS3y41k/uT@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.14-rc5
-X-PR-Tracked-Commit-Id: c7b65650c7f41d3946c4e2f0bb56dfdb92cfe127
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 911c3c5e01516a1339eb54d9ca478a789002936b
-Message-Id: <162844775455.32600.2059164090152550632.pr-tracker-bot@kernel.org>
-Date:   Sun, 08 Aug 2021 18:35:54 +0000
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        devel@linuxdriverproject.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
+        id S231537AbhHHSnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 14:43:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44358 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229977AbhHHSnO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 14:43:14 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9B37A21E6E;
+        Sun,  8 Aug 2021 18:42:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1628448174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yAneBX2ifa9idv2tzCtk4vc7R0rq+I/WwkTNonukM5I=;
+        b=WtXPsrFwg1uNS3MEZq5G6STWwwgUg6j0XXScuHndr4Jh5nISmlpNzlmaicGguJyICsWCMi
+        NQ8DLEzE1i2+TvmMAQyXpZNzC9WMflM+DarYRL1CNjJYgRIFZaBwQ1mjs8p4snjk6meyvn
+        rXu6NOYBZeHkJX3NDCMCDPxXz/5oh0c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1628448174;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yAneBX2ifa9idv2tzCtk4vc7R0rq+I/WwkTNonukM5I=;
+        b=Rxq2PvJ8UcrzquuKxywoWajaAeA4JWsxP35ixHlKozD/+dFKiMzTZ7Yd7W3K6mz/3HotZU
+        y5iEHTuQ6t79fcDQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 4C023133DE;
+        Sun,  8 Aug 2021 18:42:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id HGOHEK4lEGEZNwAAGKfGzw
+        (envelope-from <tzimmermann@suse.de>); Sun, 08 Aug 2021 18:42:54 +0000
+To:     Paul Cercueil <paul@crapouillou.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Paul Boddie <paul@boddie.org.uk>, list@opendingux.net,
+        Sam Ravnborg <sam@ravnborg.org>, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210808134526.119198-1-paul@crapouillou.net>
+ <20210808134526.119198-3-paul@crapouillou.net>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH 2/8] drm/ingenic: Simplify code by using hwdescs array
+Message-ID: <d6db6de0-dcc8-b0f0-439d-7a5f69ac4c62@suse.de>
+Date:   Sun, 8 Aug 2021 20:42:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210808134526.119198-3-paul@crapouillou.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="UHDex8pElFNk3d29OTwSKiYKAG7Pk9sBO"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 8 Aug 2021 13:31:26 +0200:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--UHDex8pElFNk3d29OTwSKiYKAG7Pk9sBO
+Content-Type: multipart/mixed; boundary="aRtmIhlJ56y8QEkJga1Yt8VG0iCIJngB0";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Paul Cercueil <paul@crapouillou.net>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>
+Cc: "H . Nikolaus Schaller" <hns@goldelico.com>,
+ Paul Boddie <paul@boddie.org.uk>, list@opendingux.net,
+ Sam Ravnborg <sam@ravnborg.org>, linux-mips@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Message-ID: <d6db6de0-dcc8-b0f0-439d-7a5f69ac4c62@suse.de>
+Subject: Re: [PATCH 2/8] drm/ingenic: Simplify code by using hwdescs array
+References: <20210808134526.119198-1-paul@crapouillou.net>
+ <20210808134526.119198-3-paul@crapouillou.net>
+In-Reply-To: <20210808134526.119198-3-paul@crapouillou.net>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.14-rc5
+--aRtmIhlJ56y8QEkJga1Yt8VG0iCIJngB0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/911c3c5e01516a1339eb54d9ca478a789002936b
+Hi
 
-Thank you!
+Am 08.08.21 um 15:45 schrieb Paul Cercueil:
+> Instead of having one 'hwdesc' variable for the plane #0 and one for th=
+e
+> plane #1, use a 'hwdesc[2]' array, where the DMA hardware descriptors
+> are indexed by the plane's number.
+>=20
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 38 ++++++++++++----------=
+-
+>   1 file changed, 20 insertions(+), 18 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/dr=
+m/ingenic/ingenic-drm-drv.c
+> index e42eb43d8020..bc71ba44ccf4 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -49,8 +49,7 @@ struct ingenic_dma_hwdesc {
+>   } __aligned(16);
+>  =20
+>   struct ingenic_dma_hwdescs {
+> -	struct ingenic_dma_hwdesc hwdesc_f0;
+> -	struct ingenic_dma_hwdesc hwdesc_f1;
+> +	struct ingenic_dma_hwdesc hwdesc[2];
+>   	struct ingenic_dma_hwdesc hwdesc_pal;
+>   	u16 palette[256] __aligned(16);
+>   };
+> @@ -141,6 +140,13 @@ static inline struct ingenic_drm *drm_nb_get_priv(=
+struct notifier_block *nb)
+>   	return container_of(nb, struct ingenic_drm, clock_nb);
+>   }
+>  =20
+> +static inline dma_addr_t dma_hwdesc_addr(const struct ingenic_drm *pri=
+v, bool use_f1)
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Using the plane index instead of a boolean would be more aligned to the=20
+way this function is being used.
+
+> +{
+> +	u32 offset =3D offsetof(struct ingenic_dma_hwdescs, hwdesc[use_f1]);
+
+use_f1 is a function parameter. Is offsetof guaranteed to be evaluated=20
+at runtime?
+
+> +
+> +	return priv->dma_hwdescs_phys + offset;
+> +}
+> +
+>   static int ingenic_drm_update_pixclk(struct notifier_block *nb,
+>   				     unsigned long action,
+>   				     void *data)
+> @@ -562,6 +568,7 @@ static void ingenic_drm_plane_atomic_update(struct =
+drm_plane *plane,
+>   	struct ingenic_dma_hwdesc *hwdesc;
+>   	unsigned int width, height, cpp, offset;
+>   	dma_addr_t addr;
+> +	bool use_f1;
+>   	u32 fourcc;
+>  =20
+>   	if (newstate && newstate->fb) {
+> @@ -569,16 +576,14 @@ static void ingenic_drm_plane_atomic_update(struc=
+t drm_plane *plane,
+>   			drm_fb_cma_sync_non_coherent(&priv->drm, oldstate, newstate);
+>  =20
+>   		crtc_state =3D newstate->crtc->state;
+> +		use_f1 =3D priv->soc_info->has_osd && plane !=3D &priv->f0;
+>  =20
+>   		addr =3D drm_fb_cma_get_gem_addr(newstate->fb, newstate, 0);
+>   		width =3D newstate->src_w >> 16;
+>   		height =3D newstate->src_h >> 16;
+>   		cpp =3D newstate->fb->format->cpp[0];
+>  =20
+> -		if (!priv->soc_info->has_osd || plane =3D=3D &priv->f0)
+> -			hwdesc =3D &priv->dma_hwdescs->hwdesc_f0;
+> -		else
+> -			hwdesc =3D &priv->dma_hwdescs->hwdesc_f1;
+> +		hwdesc =3D &priv->dma_hwdescs->hwdesc[use_f1];
+
+Maybe add a helper that looks up the hwdesc field for a given plane?
+
+>  =20
+>   		hwdesc->addr =3D addr;
+>   		hwdesc->cmd =3D JZ_LCD_CMD_EOF_IRQ | (width * height * cpp / 4);
+> @@ -591,9 +596,9 @@ static void ingenic_drm_plane_atomic_update(struct =
+drm_plane *plane,
+>   			if (fourcc =3D=3D DRM_FORMAT_C8)
+>   				offset =3D offsetof(struct ingenic_dma_hwdescs, hwdesc_pal);
+>   			else
+> -				offset =3D offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
+> +				offset =3D offsetof(struct ingenic_dma_hwdescs, hwdesc[0]);
+>  =20
+> -			priv->dma_hwdescs->hwdesc_f0.next =3D priv->dma_hwdescs_phys + offs=
+et;
+> +			priv->dma_hwdescs->hwdesc[0].next =3D priv->dma_hwdescs_phys + offs=
+et;
+
+Maybe priv->dma_hwdescs_phys + offset could be computed in a more=20
+flexible helper than dma_hwdesc_addr().
+
+>  =20
+>   			crtc_state->color_mgmt_changed =3D fourcc =3D=3D DRM_FORMAT_C8;
+>   		}
+> @@ -964,20 +969,17 @@ static int ingenic_drm_bind(struct device *dev, b=
+ool has_components)
+>  =20
+>  =20
+>   	/* Configure DMA hwdesc for foreground0 plane */
+> -	dma_hwdesc_phys_f0 =3D priv->dma_hwdescs_phys
+> -		+ offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
+> -	priv->dma_hwdescs->hwdesc_f0.next =3D dma_hwdesc_phys_f0;
+> -	priv->dma_hwdescs->hwdesc_f0.id =3D 0xf0;
+> +	dma_hwdesc_phys_f0 =3D dma_hwdesc_addr(priv, 0);
+> +	priv->dma_hwdescs->hwdesc[0].next =3D dma_hwdesc_phys_f0;
+> +	priv->dma_hwdescs->hwdesc[0].id =3D 0xf0;
+>  =20
+>   	/* Configure DMA hwdesc for foreground1 plane */
+> -	dma_hwdesc_phys_f1 =3D priv->dma_hwdescs_phys
+> -		+ offsetof(struct ingenic_dma_hwdescs, hwdesc_f1);
+> -	priv->dma_hwdescs->hwdesc_f1.next =3D dma_hwdesc_phys_f1;
+> -	priv->dma_hwdescs->hwdesc_f1.id =3D 0xf1;
+> +	dma_hwdesc_phys_f1 =3D dma_hwdesc_addr(priv, 1);
+> +	priv->dma_hwdescs->hwdesc[1].next =3D dma_hwdesc_phys_f1;
+> +	priv->dma_hwdescs->hwdesc[1].id =3D 0xf1;
+>  =20
+>   	/* Configure DMA hwdesc for palette */
+> -	priv->dma_hwdescs->hwdesc_pal.next =3D priv->dma_hwdescs_phys
+> -		+ offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
+> +	priv->dma_hwdescs->hwdesc_pal.next =3D dma_hwdesc_phys_f0;
+>   	priv->dma_hwdescs->hwdesc_pal.id =3D 0xc0;
+>   	priv->dma_hwdescs->hwdesc_pal.addr =3D priv->dma_hwdescs_phys
+>   		+ offsetof(struct ingenic_dma_hwdescs, palette);
+>=20
+
+Could the setup in these three blocks be moved into a common helper?
+
+Best regards
+Thomas
+
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--aRtmIhlJ56y8QEkJga1Yt8VG0iCIJngB0--
+
+--UHDex8pElFNk3d29OTwSKiYKAG7Pk9sBO
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmEQJa0FAwAAAAAACgkQlh/E3EQov+Bn
+1g//cmuBfyoOkW9mB/G31JxjqITPFPE1X94zMOBWNarfs20Y1P1cf8LLhMLRbiGpxsPw0D4MY01r
+VMtb7dL+Br+YE4snWlxe+Ll/mMK1qgqgkIrOJPBU1vK9Blkn3GSKu1pLkOvVf7QswL8awAbDGaOR
+Q9wpxulumhXuEjKYBs98/tzMREYnC6zRsguo8xsCRHesD4FMtDsKdKHKiQFibZVbJ7fa+ndbbSHe
+wqDazoU+cPGudtknE3vy/CIlsjHVxLYbZlbgVbRsL+qVX+NbD6cwG2EEC/c4cfICnBzc+hSv+I7b
+pj6ZaihHBqm6AqD0APpKKeq02S1nnOK2w9s52arcMUgQE26W+pl4kgHRldDCE6e3oeN1NnMesxUk
+9/WxYOBVFLrW9pSaC77+baZa/kDWRxhXI70+tOejSPnOfSIEf6luGKAFLPp59FuemSVNOxbACIlz
+BVTOp52c05HzY3evhwBWdJlOiP3HpIDIC01GZ55lR2k4n+xM2B0+7WNIhuk5zB+MEwFbR5sj3a9j
+uB0AXIHUrDmLoPD+7ziecDV/xTlGnGHkF19ZXC4Bgjx9bd8zTcr6uouJiiHIKZPPielYCPkrqNvR
+hRmMfs2JFYIPd1xk44lXMbyvwXY3IFoJzgI4/uiI0ntud3h9a17fI6K5fiI3DxjDfnk0T/wQpAMW
+Z3w=
+=sxUw
+-----END PGP SIGNATURE-----
+
+--UHDex8pElFNk3d29OTwSKiYKAG7Pk9sBO--
