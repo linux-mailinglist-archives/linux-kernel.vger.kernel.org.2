@@ -2,195 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DA03E38FE
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 07:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 158993E3906
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 07:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhHHFVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 01:21:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
+        id S230170AbhHHFZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 01:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhHHFVK (ORCPT
+        with ESMTP id S229473AbhHHFZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 01:21:10 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C923C061760;
-        Sat,  7 Aug 2021 22:20:51 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id h17so3271718vsu.0;
-        Sat, 07 Aug 2021 22:20:51 -0700 (PDT)
+        Sun, 8 Aug 2021 01:25:21 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23594C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 22:25:03 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id e19so22946264ejs.9
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 22:25:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=vamzk//toKdkNjCyAGnqe5q3gRuSTfvs1CUX5Gt5Yfs=;
-        b=ZooxQ9Rp3rn7r3+lkjFs3W8kEOMXAwN89FWfSR5bsl3+TOGpu1/X+M4Hd2rEIOgy1i
-         W4nMRYkhq+HDgaFss8zD/fWqk6ZUZT8ZFgn4NTqp3oshpAQfwRse8XZmbnz87bkA73Rj
-         TdlG9ueRlYyciaW+AAyhKoFqV4yuZe4L1O45WfXX/tWQc+SaaXecemSotY8sZeNKndF+
-         K4M2S4USlMyvGXWvSby8I71EyzgFz71+o1ZwZKZkgFnIJmalELAEkxk9BE4FqIJHiJVx
-         /ZXqAb1ldH9VWvrnm6c8dyVcztguVUDOHKrjpiV7I8cFYHTxF6x4OdEK4d+NaszZQyfg
-         UYtQ==
+        bh=k/8s96HCe18/eoglPW9pZsmNfYl8igMHuGmdNpfUBaE=;
+        b=sikGcX4llhELl7jgeuNaD7/h98+zDpua/NMk6ZqqEkmgDLfjds8yX9LtEsXTpkrMnm
+         oyKglZLOppQMsMaRo/UsP9roBbPTi40fyyLMnXWgbLb1nFzWeEyVcNUt506i6Ia5O2ne
+         y2/i0zA2c4wMPDQ1UZ5OLRXP50QkICm60z0n0ofRCrJpa3Dr9Q0u5Czh7oafOBF/17j6
+         wp8dKfIi6fjNEvTqauwLQA83n5TNxnNzhUe94me7yVbQqE1JYNZ1ST6at9rYe8Ugk+u7
+         2gpC5pJFXs4KOMVw1fgzRiCDF9TLimzlylT3yGWHtW3myhYeCAWHRbaLgZ0tP5/bhWRS
+         Cohw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vamzk//toKdkNjCyAGnqe5q3gRuSTfvs1CUX5Gt5Yfs=;
-        b=tcS2UCCtI5a7L6MkvPolh6vOhrR/l1RbRfgMmTEfA77meFZAMDsTXuUW9vWCOHYJUD
-         SA5yECaOpN4Ha2ZbtmtV4OiCblWtIfC13IfkR5884aNvZHHV4P/gLo0HBt28o6XRz2LY
-         HIklrdPA6vmkZJvGMeXoUQC3NvsyIkWzRyZqXG1eDLClggGC693346yiO+9ZXJtTqjGZ
-         kxQlc0/YU7xtUgi6fRgsT4/AhsiprZQ+dP6sRMTAFrNL6BV8R/IKowS58oC6dYv8bPaZ
-         CltoT3oxe3KeOl7N6FfmP4nI94s0Uqh0Af/Pks/gy4Utwb6Jgj1gLJngYrnsXpSFZaT5
-         pXZQ==
-X-Gm-Message-State: AOAM532lhRsPLBnujot29VlMbLUUBlhjsTmethxTGplIfq3VLtonwlVj
-        vVMA32QUvmIM1rMuQZGEhXXHkTvE2k+IIOheJsk=
-X-Google-Smtp-Source: ABdhPJzwpRmJgU5mR/oJ21UlVx3ITeMDRnrpJRZ8dwJKuKSsnYpIz/cDHcgpFISAzKt2LTVhuKvQTYi/p7hLJ54ACz8=
-X-Received: by 2002:a67:70c4:: with SMTP id l187mr13719259vsc.30.1628400050076;
- Sat, 07 Aug 2021 22:20:50 -0700 (PDT)
+        bh=k/8s96HCe18/eoglPW9pZsmNfYl8igMHuGmdNpfUBaE=;
+        b=ik0FSfgLjCXZF7ccyFe/ikUS9QqdSItVGafETdszyFvToriFWTQTh6zVwOaGvFX5JU
+         QnAxq8+Ae/XelsKZAf1o2Vkkz6U56Vulr3SZemKB5iPSyU9+av1WxiGuAu1gI11C9UIm
+         BmhSbv5ykjXa9aJ3LK+CDqOWq7Zk0QM3fch/Glrw+/zOUpLunB6e4ifrfO5sMp6HQRLm
+         msKOV0xszR91dKb654yhnEXf/zKnPM3IIUhDbxHCSzJQ8gwQRItE8pCOviwekzs6TXTZ
+         5fwYK3U8cif5ZfVrEYQAVb3jXP5SzU2KInW0H0mnOibWl+SuTuiDm+nGonOjKixbtVyK
+         qLKg==
+X-Gm-Message-State: AOAM532anJ5rEJaFqbAeGauGmXCvyhM40HhZ6qnA1ssDGx7pvCTOx1ST
+        OKb9zT8+136UjC/ij9s1lmCVPJYq315jT80X6HNeUkqi1LFYidwo
+X-Google-Smtp-Source: ABdhPJxrauaZsx+2t9Y5fusw1eBRDsCLJMQqsd5lAdSWqTMwr2voeLiTRroRTG1YhCIjchMZ+XMKWfK/zU6sYwLvqOI=
+X-Received: by 2002:a17:906:45b:: with SMTP id e27mr16783768eja.375.1628400301558;
+ Sat, 07 Aug 2021 22:25:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210807072409.9018-1-sergio.paracuellos@gmail.com>
- <20210807072409.9018-3-sergio.paracuellos@gmail.com> <7f0d48a6-d4ae-4e8d-aaa8-4b0bb4ad8e35@www.fastmail.com>
-In-Reply-To: <7f0d48a6-d4ae-4e8d-aaa8-4b0bb4ad8e35@www.fastmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sun, 8 Aug 2021 07:20:38 +0200
-Message-ID: <CAMhs-H-FcZmxZircJB6m2yi8Vmz8zy4gCBNYTWMsTS5=MstF9g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] PCI: of: avoid 'devm_pci_remap_iospace' if PCI_IOBASE
- is not defined
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210806081108.939164003@linuxfoundation.org>
+In-Reply-To: <20210806081108.939164003@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sun, 8 Aug 2021 10:54:50 +0530
+Message-ID: <CA+G9fYt=6NUXw+x4YbRE6a83OJWjzugG-=F4F0OHi=ZyYX1UeQ@mail.gmail.com>
+Subject: Re: [PATCH 4.4 0/6] 4.4.279-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiaxun,
+On Fri, 6 Aug 2021 at 13:44, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.279 release.
+> There are 6 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.279-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On Sun, Aug 8, 2021 at 3:41 AM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
->
->
->
-> =E5=9C=A82021=E5=B9=B48=E6=9C=887=E6=97=A5=E5=85=AB=E6=9C=88 =E4=B8=8B=E5=
-=8D=883:24=EF=BC=8CSergio Paracuellos=E5=86=99=E9=81=93=EF=BC=9A
-> > Defining PCI_IOBASE for MIPS ralink in expected addresses results in
-> > PCI IO
-> > resources being assigned but the addresses generated for IO accesses
-> > are wrong
-> > since the ioremap in the PCI core function
-> > 'pci_parse_request_of_pci_ranges'
-> > tries to remap to a fixed virtual address (PC_IOBASE) which can't work
-> > for KSEG1
-> > addresses. To get it working this way, we would need to put PCI_IOBASE
-> > somewhere
-> > into KSEG2 which will result in creating TLB entries for IO addresses,
-> > which most
-> > of the time isn't needed on MIPS because of access via KSEG1. To allow
->
-> It was designed to allow multiple PCI bridge with sparse IO space pattern=
-.
-> So for ralink it's not going to happen?
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Sorry, I don't understand your question. Can you please clarify it for me?
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Thanks,
-    Sergio Paracuellos
->
-> Thanks.
-> - Jiaxun
->
->
-> > MIPS PCI
-> > drivers to properly use the PCI generic core we need to increase
-> > IO_SPACE_LIMIT
-> > since IO addresses are in addresses higher that 0xffff. We also need to
-> > avoid
-> > the call 'devm_pci_remap_iospace' when
-> > 'pci_parse_request_of_pci_ranges' is
-> > called to avoid the following problem:
-> >
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 2 PID: 1 at ../drivers/pci/pci.c:4066 pci_remap_iospace+0=
-x3c/0x54
-> > This architecture does not support memory mapped I/O
-> > Modules linked in:
-> > CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.10.1+ #1228
-> > Stack : 00000000 00000000 807fa974 00000000 827ffa80 80066b48 80710000 =
-0000000b
-> >         00000000 00000000 81c59aac 7d06ddec 80850000 00000001 81c59a40 =
-7d06ddec
-> >         00000000 00000000 807c909c 81c598f0 00000001 81c59904 00000000 =
-0000000a
-> >         203a6d6d 80708880 0000000f 70617773 80850000 00000000 00000000 =
-807d0000
-> >         807ffecc 1e160000 00000001 00000200 00000000 8054e920 00000008 =
-815e0008
-> >         ...
-> > Call Trace:
-> > [<80008efc>] show_stack+0x8c/0x130
-> > [<806e1674>] dump_stack+0x9c/0xc8
-> > [<80024a3c>] __warn+0xc0/0xe8
-> > [<80024ad0>] warn_slowpath_fmt+0x6c/0xbc
-> > [<80410ca8>] pci_remap_iospace+0x3c/0x54
-> > [<80410d20>] devm_pci_remap_iospace+0x58/0xa4
-> > [<8042019c>] devm_of_pci_bridge_init+0x4dc/0x55c
-> > [<80408de8>] devm_pci_alloc_host_bridge+0x78/0x88
-> > [<80424e44>] mt7621_pci_probe+0x68/0x9a4
-> > [<80464804>] platform_drv_probe+0x40/0x7c
-> > [<804628bc>] really_probe+0x2fc/0x4e4
-> > [<80463214>] device_driver_attach+0x4c/0x74
-> > [<80463384>] __driver_attach+0x148/0x150
-> > [<8046047c>] bus_for_each_dev+0x6c/0xb0
-> > [<804614dc>] bus_add_driver+0x1b4/0x1fc
-> > [<80463aa0>] driver_register+0xd0/0x110
-> > [<80001714>] do_one_initcall+0x84/0x1c0
-> > [<808e7fd0>] kernel_init_freeable+0x214/0x24c
-> > [<806e4164>] kernel_init+0x14/0x118
-> > [<80003358>] ret_from_kernel_thread+0x14/0x1c
-> >
-> > ---[ end trace 1c9d4412bd51b53c ]---
-> > mt7621-pci 1e140000.pcie: error -19: failed to map resource [io
-> > 0x1e160000-0x1e16ffff]
-> >
-> > Hence don't call 'devm_pci_remap_iospace' if PCI_IOBASE is not defined =
-to get
-> > a working PCI core APIs for MIPS ralink platforms.
-> >
-> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > ---
-> >  drivers/pci/of.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-> > index a143b02b2dcd..657aef39bf63 100644
-> > --- a/drivers/pci/of.c
-> > +++ b/drivers/pci/of.c
-> > @@ -564,12 +564,14 @@ static int pci_parse_request_of_pci_ranges(struct
-> > device *dev,
-> >
-> >               switch (resource_type(res)) {
-> >               case IORESOURCE_IO:
-> > +#ifdef PCI_IOBASE
-> >                       err =3D devm_pci_remap_iospace(dev, res, iobase);
-> >                       if (err) {
-> >                               dev_warn(dev, "error %d: failed to map re=
-source %pR\n",
-> >                                        err, res);
-> >                               resource_list_destroy_entry(win);
-> >                       }
-> > +#endif
-> >                       break;
-> >               case IORESOURCE_MEM:
-> >                       res_valid |=3D !(res->flags & IORESOURCE_PREFETCH=
-);
-> > --
-> > 2.25.1
-> >
-> >
->
->
-> --
-> - Jiaxun
+## Build
+* kernel: 4.4.279-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.4.y
+* git commit: 155338eca25e98640866913820fbb3c0d3efed49
+* git describe: v4.4.278-7-g155338eca25e
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
+78-7-g155338eca25e
+
+## Regressions (compared to v4.4.278)
+
+## Fixes (compared to v4.4.278)
+
+
+## Test result summary
+total: 44119, pass: 34594, fail: 366, skip: 7880, xfail: 1279
+
+## Build Summary
+* arm: 96 total, 96 passed, 0 failed
+* arm64: 23 total, 23 passed, 0 failed
+* i386: 13 total, 13 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 13 total, 13 passed, 0 failed
+
+## Test suites summary
+* fwts
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
