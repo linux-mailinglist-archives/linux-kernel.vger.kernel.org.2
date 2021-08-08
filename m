@@ -2,124 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0B43E3C55
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 21:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02223E3C53
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 21:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbhHHTBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 15:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232284AbhHHTBc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 15:01:32 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EA5C061760;
-        Sun,  8 Aug 2021 12:01:11 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d1so14077924pll.1;
-        Sun, 08 Aug 2021 12:01:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qBu5iUaSAxxZpgJfxNDAcC/Wp2BLXG1BK3fHE7DMi70=;
-        b=tUpEbBFwt/yi6jWl+lS2T/oX8Km8JAD2DIZeIPuoQE+MF/+EOx8nBPFbudEB0WXd29
-         JEZaNCk960Jpgqn6/b1alTqcbP/Cfx3WAdeksY4clk0CWQMgyFwrkhAAkIrP/QpVJ3hY
-         VqyppylTuz1BsMOSUcvSeEoE6g5hgcMOsFT1d2nMtMmqV68DFBwNX+5UJEls1B7h2LB2
-         eJhNoiw3WpqgrUTb2gk7k4/Qx9+fuVaUh/hLmSnzC2gkjREh83ugtKKBIPJJqP/ytFIN
-         4t1/mGZn51/qpeqpFy7Kv9c78nazmY16RyKg22OTxUtC3Qz8gkpwOi98Ka5JwVe4uV/z
-         TuGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qBu5iUaSAxxZpgJfxNDAcC/Wp2BLXG1BK3fHE7DMi70=;
-        b=EMlynxhvMrcii04RBgzrQbQ0J52GqmfscOEhRVo3voLJH1Zg0w5oIMfq4U7wJvF9nx
-         toj5XNunx7hCl+mN5E2qpt5+FR2mb5FpH5/ZtoC48tEsIVlvo+i3q9bVq2B4CdgN9Fcs
-         +45JJYTAZbI6J7k79NnX+XsP0EmMnK4NBFfoEervxtohgSzDT0kI12LrHPX/XUBPZ5kb
-         vUSKrc8/kIsv8h8fvB9q7BvM82mOAsvCnd6/scdDkzG/+B4+PtSgF3ceueGvVF1IdpZn
-         z1tsEYJDxkRyJoOjV995M7FUYmiSd+NwxjJ4cJ5Rc/tgj1BdcdlPrTuYfJXq6xcVX0AR
-         pDYA==
-X-Gm-Message-State: AOAM5319Dq+hi4zXVQqJGj+zS6jhs/YoBKJvOks4mnHNZVI93WMZ5Hjm
-        c6vh+QSbg27PthF6ML0w08i/BqD8FQRfoG0pbUI=
-X-Google-Smtp-Source: ABdhPJy3lvTMhfLmQ3Z7rH5Zo4CSzjyA+DTg6zkmpCfBaSEixGQ4U1+Ng6BfzOIGfyuiMgVCyRSwpLzOm5cqKOnkV8U=
-X-Received: by 2002:a17:90a:b10b:: with SMTP id z11mr32121963pjq.181.1628449270967;
- Sun, 08 Aug 2021 12:01:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210807152225.9403-1-len.baker@gmx.com> <20210808172503.5187cd24@jic23-huawei>
-In-Reply-To: <20210808172503.5187cd24@jic23-huawei>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 8 Aug 2021 22:00:34 +0300
-Message-ID: <CAHp75VfSX-7UqH9Lbr_GxQRY3dGjGo7H8++kBdrrSds1p6nB1Q@mail.gmail.com>
-Subject: Re: [PATCH v2] drivers/iio: Remove all strcpy() uses in favor of strscpy()
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S232426AbhHHTBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 15:01:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232340AbhHHTBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 15:01:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id CDFEB60F92;
+        Sun,  8 Aug 2021 19:00:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628449254;
+        bh=SBnOx8yOLXbhDJVlG0gHNxTWQqNjqVdY8HgvBljGFAw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=TbtrhVFsx1ovwiVq88Vzd8AOpKUtDXMAix2/HAh16JF5QrqZlfq3lyS3X7l0XCS2W
+         7enNGNtPMB+vubhiMFKDNG7ZvMTRmy6v6RRr1be6wphNxnAxx5/xNBKIig13MSQ/aC
+         WwlxF1O1Zv1UUTnaC5orf1dxo7+1dm/68GtBup6MvaduFvbxmikT+aYRzIyvbRtqI8
+         oYn6P1hsjtItDvFU8mYAInDlKVi5LDpStEyAGeIzVFKePC6aGhBEVarjhf6xdsOPTT
+         tFRDy6Phy0C65uPc3KA03xk9t0RuwdADwxJYPzF6jjWjsNd6iFoR209Wi987OnOHee
+         PRC6P3DWk1Rag==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C62D560726;
+        Sun,  8 Aug 2021 19:00:54 +0000 (UTC)
+Subject: Re: [GIT pull] timers/urgent for 5.14-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <162842243782.9524.4044852683603062793.tglx@xen13>
+References: <162842243492.9524.2294192686333344509.tglx@xen13> <162842243782.9524.4044852683603062793.tglx@xen13>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <162842243782.9524.4044852683603062793.tglx@xen13>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-urgent-2021-08-08
+X-PR-Tracked-Commit-Id: bb7262b295472eb6858b5c49893954794027cd84
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: cceb634774efca60f8cc57041234f00faf97f22d
+Message-Id: <162844925480.12585.325311415353212342.pr-tracker-bot@kernel.org>
+Date:   Sun, 08 Aug 2021 19:00:54 +0000
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 8, 2021 at 7:25 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Sat,  7 Aug 2021 17:22:25 +0200
-> Len Baker <len.baker@gmx.com> wrote:
->
-> > strcpy() performs no bounds checking on the destination buffer. This
-> > could result in linear overflows beyond the end of the buffer, leading
-> > to all kinds of misbehaviors. The safe replacement is strscpy().
-> >
-> > This patch is an effort to clean up the proliferation of str*()
-> > functions in the kernel and a previous step in the path to remove
-> > the strcpy function from the kernel entirely [1].
-> >
-> > [1] https://github.com/KSPP/linux/issues/88
-> >
-> > Signed-off-by: Len Baker <len.baker@gmx.com>
-> Applied to the togreg branch of iio.git and pushed out as testing
-> so 0-day can poke at it and see if we missed anything.
+The pull request you sent on Sun, 08 Aug 2021 11:33:57 -0000:
 
-Isn't it too early? Or am I missing something (see below)?
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-urgent-2021-08-08
 
-...
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/cceb634774efca60f8cc57041234f00faf97f22d
 
-> >                       /* use length + 2 for adding minus sign if needed */
-> > -                     str = devm_kzalloc(regmap_get_device(st->map),
-> > -                                        strlen(orient) + 2, GFP_KERNEL);
-> > +                     n = strlen(orient) + 2;
-> > +                     str = devm_kzalloc(regmap_get_device(st->map), n,
-> > +                                        GFP_KERNEL);
-> >                       if (str == NULL)
-> >                               return -ENOMEM;
-> >                       if (strcmp(orient, "0") == 0) {
-> > -                             strcpy(str, orient);
-> > +                             strscpy(str, orient, n);
-> >                       } else if (orient[0] == '-') {
-> > -                             strcpy(str, &orient[1]);
-> > +                             strscpy(str, &orient[1], n);
-> >                       } else {
-> >                               str[0] = '-';
-> > -                             strcpy(&str[1], orient);
-> > +                             strscpy(&str[1], orient, n - 1);
-
-Why n-1?
-
-> >                       }
-
-As far as I understood the logic, it  inverts the sign except the case
-when it equals 0.
-
-I have a question here, why can't we always use +/-?
-Why can't 0 be prefixed with a sign?
-
-If the above can be used, we may simplify this code.
-
-Len, I think this task may be considered simple, but I recommend
-thinking about each case and finding a way to simplify it more.
+Thank you!
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
