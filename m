@@ -2,128 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9663E3B02
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 17:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBD93E3B0A
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 17:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhHHPNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 11:13:20 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:32883 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229923AbhHHPNT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 11:13:19 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UiJ9buX_1628435578;
-Received: from 30.0.167.218(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UiJ9buX_1628435578)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 08 Aug 2021 23:12:58 +0800
-Subject: Re: [PATCH 1/5] mm: migrate: Move the page count validation to the
- proper place
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1628174413.git.baolin.wang@linux.alibaba.com>
- <1f7e1d083864fbb17a20a9c8349d2e8b427e20a3.1628174413.git.baolin.wang@linux.alibaba.com>
- <YQwBD55FZyoY+C5D@casper.infradead.org>
- <a02346d7-1a79-eb92-cb1f-033e6b58fa3f@linux.alibaba.com>
- <YQ3puWSgUvfvIYjv@casper.infradead.org>
- <36956352-246a-b3c2-3ade-2a6c22e2cd5a@linux.alibaba.com>
- <YQ+xQDFdU2SVSo5M@casper.infradead.org>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <4f25b4e9-0069-1749-32cf-d4644f13be4e@linux.alibaba.com>
-Date:   Sun, 8 Aug 2021 23:13:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S231983AbhHHPSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 11:18:37 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:38792 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229923AbhHHPSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 11:18:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=IX6iXJR0gdOvuN0kjkDx8GxE+mezPMmx72SsWSZD468=; b=Xz7KwTC+TkeF0IbjWDSRYb02dp
+        AzBo0pJjr+W43TgQ2ELghz2eGhoPWcZPiOKEmJmRjyGw+d8DXzAx2nGxOoghaS+iOns1R4FJZXsBM
+        5XcRdOGOuPEuX4A2hZhdzPVDyF5KfWo5ccORIMjZ/lbGcxfvxOlG56+tI5HyiNXIEzHA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mCkYq-00Gaij-Qa; Sun, 08 Aug 2021 17:18:00 +0200
+Date:   Sun, 8 Aug 2021 17:18:00 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     Michael Walle <michael@walle.cc>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH] ARM: kirkwood: add missing <linux/if_ether.h> for
+ ETH_ALEN
+Message-ID: <YQ/1qBum6BxRE6l6@lunn.ch>
+References: <YQxk4jrbm31NM1US@makrotopia.org>
+ <cde9de20efd3a75561080751766edbec@walle.cc>
+ <YQ6WCK0Sytb0nxj9@lunn.ch>
+ <YQ9PNeka8VhZqxGR@makrotopia.org>
 MIME-Version: 1.0
-In-Reply-To: <YQ+xQDFdU2SVSo5M@casper.infradead.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YQ9PNeka8VhZqxGR@makrotopia.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> When building OpenWrt kernel which includes a backport of
+> "of: net: pass the dst buffer to of_get_mac_address()", this is not the
+> same as <linux/of_net.h> doesn't include <linux/phy.h> yet. This is
+> because we miss commit 0c65b2b90d13c1 ("net: of_get_phy_mode: Change
+> API to solve int/unit warnings") which has been in mainline for a long
+> time.
 
+That is quiet a big invasive patch, so i can understand it not being
+backported. But on the flip side, it will make it harder getting
+drivers upstream to mainline. And there are is one other big change,
+how the MAC address is fetches from EEPROM, DT, etc.
 
-On 2021/8/8 18:26, Matthew Wilcox wrote:
-> On Sun, Aug 08, 2021 at 10:55:30AM +0800, Baolin Wang wrote:
->> Hi,
->>
->>> On Fri, Aug 06, 2021 at 11:07:18AM +0800, Baolin Wang wrote:
->>>> Hi Matthew,
->>>>
->>>>> On Thu, Aug 05, 2021 at 11:05:56PM +0800, Baolin Wang wrote:
->>>>>> We've got the expected count for anonymous page or file page by
->>>>>> expected_page_refs() at the beginning of migrate_page_move_mapping(),
->>>>>> thus we should move the page count validation a little forward to
->>>>>> reduce duplicated code.
->>>>>
->>>>> Please add an explanation to the changelog for why it's safe to pull
->>>>> this out from under the i_pages lock.
->>>>
->>>> Sure. In folio_migrate_mapping(), we are sure that the migration page was
->>>> isolated from lru list and locked, so I think there are no race to get the
->>>> page count without i_pages lock. Please correct me if I missed something
->>>> else. Thanks.
->>>
->>> Unless the page has been removed from i_pages, this isn't a correct
->>> explanation.  Even if it has been removed from i_pages, unless an
->>> RCU grace period has passed, another CPU may still be able to inc the
->>> refcount on it (temporarily).  The same is true for the page tables,
->>> by the way; if someone is using get_user_pages_fast(), they may still
->>> be able to see the page.
->>
->> I don't think this is an issue, cause now we've established a migration pte
->> for this migration page under page lock. If the user want to get page by
->> get_user_pages_fast(), it will wait for the page miggration finished by
->> migration_entry_wait(). So I still think there is no need to check the
->> migration page count under the i_pages lock.
-> 
-> I don't know whether the patch is correct or not, but you aren't nearly
-> paranoid enough.  Consider this sequence of events:
+> Sorry for the noise caused, I'm not sure what the policy is in this
+> case
 
-Thanks for describing this scenario.
+There is nothing in the coding style that all headers must be directly
+included in the .c file. And it slows down the compiler having to pull
+in a header file multiple times. You do see patches removing unused
+includes. So i think OpenWRT should add yet another patch do deal with
+its own breakage.
 
-> 
-> CPU 0:				CPU 1:
-> get_user_pages_fast()
-> lockless_pages_from_mm()
-> local_irq_save()
-> gup_pgd_range()
-> gup_p4d_range()
-> gup_pud_range()
-> gup_pmd_range()
-> gup_pte_range()
-> pte_t pte = ptep_get_lockless(ptep);
-> 				migrate_vma_collect_pmd()
-> 				ptep = pte_offset_map_lock(mm, pmdp, addr, &ptl)
-> 				ptep_get_and_clear(mm, addr, ptep);
-> page = pte_page(pte);
-> 				set_pte_at(mm, addr, ptep, swp_pte);
-> 				migrate_page_move_mapping()
-> head = try_grab_compound_head(page, 1, flags);
+If you have more kirkwood, or Marvell boards in general in OpenWRT
+which you want merged to mainline, i'm happy to review them.
 
-On CPU0, after grab the page count, it will validate the PTE again. If 
-swap PTE has been established for this page, it will drop the count and 
-go to the slow path.
-if (unlikely(pte_val(pte) != pte_val(*ptep))) {
-	put_compound_head(head, 1, flags);
-	goto pte_unmap;
-}
-
-So CPU1 can not observe the abnormal higher refcount in this case if I 
-did not miss anything.
-
-> ... now page's refcount is temporarily higher than it should be.  CPU 0
-> will notice the PTE is no longer the PTE that it used to be and drop
-> the reference, but in the meantime, CPU 1 can observe the higher refcount. >
-> None of this has anything to do with the i_pages lock.  Holding it does
-
-Yes, the i_pages lock can not guarantee anything related getting page 
-count, so I think we can move this out of the i_pages lock.
-
-> not protect from this race, but you need to know this kind of thing to
-> decide if changing how we test a page's refcount is safe or not.
-
-Yes, I will continue to check if there are some races when validating 
-the page count.
-
-Any suggestion are welcome.
+      Andrew
