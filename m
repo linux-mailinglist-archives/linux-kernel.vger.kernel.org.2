@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FBCD3E3BDF
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 19:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8053E3BE5
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 19:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231963AbhHHRUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 13:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44896 "EHLO
+        id S232131AbhHHRWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 13:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbhHHRUE (ORCPT
+        with ESMTP id S231199AbhHHRWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 13:20:04 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FE1C061760;
-        Sun,  8 Aug 2021 10:19:44 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id k24so8633641vsg.9;
-        Sun, 08 Aug 2021 10:19:44 -0700 (PDT)
+        Sun, 8 Aug 2021 13:22:21 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B798C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 10:22:01 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id c9so18160977wri.8
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 10:22:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vtiBarJA2O3XYt1tUFE/I5LovrEOojrmK31AlVK6Ol0=;
-        b=a/kOWvI/nFqESMGbUxe4awyrXxSG9AUxnJLkwfbc/53URjXKXCluX48sji/6H+xGRd
-         go6ijFKp4j0Dx9F3qi9p8TmQHMlAskeJJV/v323S6EjPrEgR2IU7FxoJNQdb6VMXADdD
-         x575/rsA2+xNVEsrIBBvOQrl/Yi0Fxz15Xj0RC+mMfKNwcNGSlmb+uzf6te3FedrfZmP
-         5ffwidlhwiLn3LWYC+jJz+9GL5T8s/kGftz+7xQTeAjrkCPrwH2ZeBbwZXCMWvErQp4n
-         77VtXTH8740S2reUZN9dPLuLv9ebuFTU+Fq17YzJA+BqPfd/+ybuBo7cGMChpfuuKdlE
-         vJrQ==
+        bh=Xr4kzAIVCjF5FWTWh8J9rcezZE9QmpHisTh5XpSTVq4=;
+        b=mDxynq6Jq//Ri1glX3u9qsjJ6/u+r4M7lt2FY7TsRKMyANRxSlDVUuJ/LIYWwITwG/
+         VLOKicPlQtys7CtvUq+IPzuOKYqpYuhDFfWD8hXMvNuCuXW2qXfhgQqv+sYPddsu3Gn3
+         Zlp4ewD8HXuQipWBBhIcXhYfyzGBwD/iZLi2uH16SBGvfmmmpokOMIV9VUp+/xzj3YPZ
+         30qs1UPhU6JYsD72FfCVMgyELf+UfY9oEja3Y8fbCwm/HW3ZjqFYaOCTdMxF1jYlqkNi
+         bMkAgXbiJdzXqMWd/N3b7dRtHUkTSK49XyKPqhTx8p5lWbL1DtLxId0We8gZ/DJLWGgp
+         0UaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vtiBarJA2O3XYt1tUFE/I5LovrEOojrmK31AlVK6Ol0=;
-        b=kOffy/+xBxbFyF0ICDv2qRvvriOl0dyUkPXLzIGV1sOFje2CR73EBLxgJSZCEfR4bp
-         eS6mymN18xupINcy2ho0Gdt2JpJZkG/d0iPOZa6AHgF0USQYJRQZ8fKRMRC1C6pZ8+1Z
-         1G20AzwsEN3FPnoGJni7EyVKjuPdFqP149sLha/I9NQwzjtDmVEIfd8yWJA2KLFTWYim
-         QfOCKWqLG92tESZ9K9TFULBUflWGFVwabg3L10xZrzhFNXq59tLJQa30AhDYrOObDIQa
-         xOa2+ujpKsfzvz8uM8RCdT3cVZBGs3ONUpQqjpqSKulquyPD4KHmVVzfbhyJhaR18Dvv
-         c5LA==
-X-Gm-Message-State: AOAM530DeMAjws9OydGiaak/jKZVHKtQcH8v8vaa+JWssJTBuIoN/GWM
-        dDPtRVWp/JDG+iXSzjrj5tUjbomkoAcdNodJjOE=
-X-Google-Smtp-Source: ABdhPJxhh2JbB4V5du3GdOf5QgIqy4FLdeN4oyYjSTKkP/oHzfFW7y7jtyugIiNqZVzh0/OJMlCSGT/Yqg+RZhz524s=
-X-Received: by 2002:a67:16c1:: with SMTP id 184mr14134320vsw.14.1628443183656;
- Sun, 08 Aug 2021 10:19:43 -0700 (PDT)
+        bh=Xr4kzAIVCjF5FWTWh8J9rcezZE9QmpHisTh5XpSTVq4=;
+        b=WHtSZVxHhpzCUrVTPYep5FMTEFSRf1UywTfQjC1VpbvacxcFdRsU8W9S1kgBXKd7k/
+         7N/++INRe5Ydnh+rCBkkW9yG1ffAVCHXmQEEOpbSBotWc8KHIkeEdUcViqSm1WjpvqfI
+         LwG5MS6ywtHrk87Jy7wkmPy69ptDFTPt66ZDeILyblCNG9RVIOQcYo8K9+4DE5o0wteg
+         04DLSsIFXRBhPf0ulYuEuGyLxPTnwr7bofwU83OOlg44iaoK1A7tpboB5IiXq75UBavK
+         bFFHhir19Z07pspc654OHnbkOtfYoCcmTsbF3DQXZIM2i9Ou6SQ0b3DipyZQUAE0hSYN
+         CFgQ==
+X-Gm-Message-State: AOAM533TWbaWdFRm3Ekwx+QSPth0CrGsPwYrcTOPl0IqSQURfuYpBx8G
+        dNjStZj+sCrmVhY2g5HVgOIpN9ROwQXP1IVB5snf/g==
+X-Google-Smtp-Source: ABdhPJyFFefuLsnyCCaoulIxQ4VUhijEdFZCwn+kZxl577A90oqK14aJQG1mV/gJhdfOQAr7zs2QlK2gH0l5krIEYnk=
+X-Received: by 2002:adf:f68d:: with SMTP id v13mr2877761wrp.358.1628443319773;
+ Sun, 08 Aug 2021 10:21:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210808122411.10980-1-falakreyaz@gmail.com> <be9121ef-cea7-d3f9-b1cf-edd9e4e1a756@fb.com>
-In-Reply-To: <be9121ef-cea7-d3f9-b1cf-edd9e4e1a756@fb.com>
-From:   Muhammad Falak Reyaz <falakreyaz@gmail.com>
-Date:   Sun, 8 Aug 2021 22:49:32 +0530
-Message-ID: <CAOmbKqkYDXvMQntk39Ud-63G3ju+Kti2A8UFNodgJ6y1+4=AeA@mail.gmail.com>
-Subject: Re: [PATCH] samples: bpf: xdp1: remove duplicate code to find protocol
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210731063938.1391602-1-yuzhao@google.com> <20210731063938.1391602-4-yuzhao@google.com>
+ <YQkqMhGsra8YCVoU@casper.infradead.org>
+In-Reply-To: <YQkqMhGsra8YCVoU@casper.infradead.org>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Sun, 8 Aug 2021 11:21:48 -0600
+Message-ID: <CAOUHufZYt+QbOmhrjXiwOAWXAXMYAzHy8gUas8MtzxJGNWqxAA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm: don't remap clean subpages when splitting
+ isolated thp
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Shuang Zhai <zhais@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 8, 2021 at 10:23 PM Yonghong Song <yhs@fb.com> wrote:
+On Tue, Aug 3, 2021 at 5:38 AM Matthew Wilcox <willy@infradead.org> wrote:
 >
+> On Sat, Jul 31, 2021 at 12:39:38AM -0600, Yu Zhao wrote:
+> > +++ b/include/linux/rmap.h
+> > @@ -243,7 +243,7 @@ int page_mkclean(struct page *);
+> >   */
+> >  void page_mlock(struct page *page);
+> >
+> > -void remove_migration_ptes(struct page *old, struct page *new, bool locked);
+> > +void remove_migration_ptes(struct page *old, struct page *new, bool locked, bool unmap_clean);
 >
+> I'm not a big fan of 'bool, bool'.  Could we use a flag word instead?
 >
-> On 8/8/21 5:24 AM, Muhammad Falak R Wani wrote:
-> > The code to find h_vlan_encapsulated_proto is duplicated.
-> > Remove the extra block.
-> >
-> > Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
-> > ---
-> >   samples/bpf/xdp1_kern.c | 9 ---------
-> >   1 file changed, 9 deletions(-)
-> >
-> > diff --git a/samples/bpf/xdp1_kern.c b/samples/bpf/xdp1_kern.c
-> > index 34b64394ed9c..a35e064d7726 100644
-> > --- a/samples/bpf/xdp1_kern.c
-> > +++ b/samples/bpf/xdp1_kern.c
-> > @@ -57,15 +57,6 @@ int xdp_prog1(struct xdp_md *ctx)
-> >
-> >       h_proto = eth->h_proto;
-> >
-> > -     if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
-> > -             struct vlan_hdr *vhdr;
-> > -
-> > -             vhdr = data + nh_off;
-> > -             nh_off += sizeof(struct vlan_hdr);
-> > -             if (data + nh_off > data_end)
-> > -                     return rc;
-> > -             h_proto = vhdr->h_vlan_encapsulated_proto;
->
-> No. This is not a duplicate. The h_proto in the above line will be used
-> in the below "if" condition.
->
-> > -     }
-> >       if (h_proto == htons(ETH_P_8021Q) || h_proto == htons(ETH_P_8021AD)) {
-> >               struct vlan_hdr *vhdr;
-> >
-> >
-Apologies :(
-I now realize, it could be double vlan encapsulated.
-Would it make sense to add an explicit comment for newbies like me ?
-I can send a patch, if it is okay.
+> #define MIGRATE_REMOVE_LOCKED   1
+> #define MIGRATE_UNMAP_CLEAN     2
 
--mfrw
+Will do. Thanks.
