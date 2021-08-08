@@ -2,86 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745BB3E3ADA
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 16:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C033E3AE0
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 16:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbhHHOli convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 8 Aug 2021 10:41:38 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:45885 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229923AbhHHOlh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 10:41:37 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-230-4gOXD3bKO7GKpbzy2TrY7g-1; Sun, 08 Aug 2021 15:41:15 +0100
-X-MC-Unique: 4gOXD3bKO7GKpbzy2TrY7g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Sun, 8 Aug 2021 15:41:13 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Sun, 8 Aug 2021 15:41:13 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Matthew Wilcox' <willy@infradead.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
-CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] fs: optimise generic_write_check_limits()
-Thread-Topic: [PATCH] fs: optimise generic_write_check_limits()
-Thread-Index: AQHXiscVgxiDCvywqEuIzni6Qp/HSatpr+8g
-Date:   Sun, 8 Aug 2021 14:41:13 +0000
-Message-ID: <567d7e15f59a45f6ab94428261b3e473@AcuMS.aculab.com>
-References: <dc92d8ac746eaa95e5c22ca5e366b824c210a3f4.1628248828.git.asml.silence@gmail.com>
- <YQ04/NFn8b6cykPQ@casper.infradead.org>
-In-Reply-To: <YQ04/NFn8b6cykPQ@casper.infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S231841AbhHHOnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 10:43:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229923AbhHHOnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 10:43:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A5FF60560;
+        Sun,  8 Aug 2021 14:43:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628433810;
+        bh=hVGKMgsMy/zamnFEQCraJVSiNCfpKgxZd7kkoLlLgso=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YkSsB7l1I1zpEs04HaYKgSyc8JoO9KK1XbRRJ9qto40bdy396h9LJgW6v2HI2ZQOQ
+         x5hJxLsC/uQJbpzcO0q+df/5Xw/by/f8rSO+sSkhimmSXwRIfkcCAjZZD+1Wg3aEvI
+         9EbppCPgVQkHODB7rQ4h7MNb2ZYi2NbnqhDNetuF0g0wE3SKQH7aihF+g3p8l8L+ZR
+         If37NN8NE1zfaKKkKydDMA8M1wkamrzctsnBhCNTO+Xx4+FFtm4J7X09SIM7O5vYET
+         lW5RS6v/gdDwx/SrWR62pc2HQSxdMZUL/MTEkKfCbqLsrn5i4XnA5Aa7d6N/6IKRaZ
+         5QaLNJLj4IUww==
+Date:   Sun, 8 Aug 2021 23:43:27 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>
+Subject: Re: [PATCH v2 1/9] tracing/boot: Fix a hist trigger dependency for
+ boot time tracing
+Message-Id: <20210808234327.262621be9cc5fa66734f3f6b@kernel.org>
+In-Reply-To: <20210806214710.015aa5d3@oasis.local.home>
+References: <162818072104.226227.18088999222035270055.stgit@devnote2>
+        <162818072887.226227.1489690774195740861.stgit@devnote2>
+        <20210806214710.015aa5d3@oasis.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox
-> Sent: 06 August 2021 14:28
+On Fri, 6 Aug 2021 21:47:10 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Fri,  6 Aug 2021 01:25:29 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
 > 
-> On Fri, Aug 06, 2021 at 12:22:10PM +0100, Pavel Begunkov wrote:
-> > Even though ->s_maxbytes is used by generic_write_check_limits() only in
-> > case of O_LARGEFILE, the value is loaded unconditionally, which is heavy
-> > and takes 4 indirect loads. Optimise it by not touching ->s_maxbytes,
-> > if it's not going to be used.
+> > Fixes a build error when CONFIG_HIST_TRIGGERS=n with boot-time
+> > tracing. Since the trigger_process_regex() is defined only
+> > when CONFIG_HIST_TRIGGERS=y, if it is disabled, the 'actions'
+> > event option also must be disabled.
+> > 
+> > Fixes: 81a59555ff15 ("tracing/boot: Add per-event settings")
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > ---
+> >  0 files changed
+> > 
+> > diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+> > index 94ef2d099e32..e6dc9269ad75 100644
+> > --- a/kernel/trace/trace_boot.c
+> > +++ b/kernel/trace/trace_boot.c
+> > @@ -204,13 +204,14 @@ trace_boot_init_one_event(struct trace_array *tr, struct xbc_node *gnode,
+> >  		else if (apply_event_filter(file, buf) < 0)
+> >  			pr_err("Failed to apply filter: %s\n", buf);
+> >  	}
+> > -
+> > +#ifdef CONFIG_HIST_TRIGGERS
 > 
-> Is this "optimisation" actually worth anything?  Look at how
-> force_o_largefile() is used.  I would suggest that on the vast majority
-> of machines, O_LARGEFILE is always set.
+> Hi Masamai,
+> 
+> Can we instead define trigger_process_regex() in trace.h to be:
+> 
+> static inline int trigger_process_regex(struct trace_event_file *file, char *buff)
+> {
+> 	return -1;
+> }
+> 
+> When this config is not set?
+> 
+> This makes the code a bit cleaner, and you get the "Failed to apply an
+> action" error as well.
 
-An option would be to only determine ->s_maxbytes when the size
-if larger than MAX_NON_LFS.
+Ah, OK.
+But it seems that the error message should be changed a bit in that
+case, because the actions string is correct, but the kernel
+just doesn't support it. Moreover, it loops on the array, so, it will
+show same error repeatedly.
 
-So you'd end up with something like:
+I think it should be ignored, or just warn once with correct reason.
+(for example, if the kernel supports hist-trigger, the error will
+be shown in 'error_log' file.)
 
-	if (pos >= max_size) {
-		if (!(file->f_flags & O_LARGEFILE))
-			return -EFBIG;
-		inode = file->f_mapping->host;
-		if (pos >= inode->i_sb->s_maxbytes)
-			return -EFBIG;
-	}
+Thank you,
 
-	David
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+> 
+> -- Steve
+> 
+> 
+> 
+> >  	xbc_node_for_each_array_value(enode, "actions", anode, p) {
+> >  		if (strlcpy(buf, p, ARRAY_SIZE(buf)) >= ARRAY_SIZE(buf))
+> >  			pr_err("action string is too long: %s\n", p);
+> >  		else if (trigger_process_regex(file, buf) < 0)
+> >  			pr_err("Failed to apply an action: %s\n", buf);
+> >  	}
+> > +#endif
+> >  
+> >  	if (xbc_node_find_value(enode, "enable", NULL)) {
+> >  		if (trace_event_enable_disable(file, 1, 0) < 0)
+> 
 
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
