@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BCB3E380D
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 05:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF4D3E3813
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 05:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbhHHDHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 23:07:37 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8376 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhHHDHc (ORCPT
+        id S230216AbhHHDWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 23:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229977AbhHHDWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 23:07:32 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gj3tq4MLNz8477;
-        Sun,  8 Aug 2021 11:03:15 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sun, 8 Aug 2021 11:07:09 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 8 Aug
- 2021 11:07:09 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <axboe@kernel.dk>, <josef@toxicpanda.com>, <ming.lei@redhat.com>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nbd@other.debian.org>, <yukuai3@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH 2/2] nbd: hold tags->lock to prevent access freed request through blk_mq_tag_to_rq()
-Date:   Sun, 8 Aug 2021 11:17:52 +0800
-Message-ID: <20210808031752.579882-3-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210808031752.579882-1-yukuai3@huawei.com>
-References: <20210808031752.579882-1-yukuai3@huawei.com>
+        Sat, 7 Aug 2021 23:22:22 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F9DC061760;
+        Sat,  7 Aug 2021 20:22:03 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id j3so12685873plx.4;
+        Sat, 07 Aug 2021 20:22:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b4+eN9bpiKnHX7lu+xFEi0IU4TCXd8H9JxiJveHTsSw=;
+        b=dEtmzyC5kAP2AaQ8rVpxMNpb98KMTvXG4fr83hlbj+7cgOMCZr5GG8evKsqcnaNU+a
+         eLJDai3kjOOtSZ0t7SDspn/ZmTHYVyMFgqfvUv8VuizHzm7m3V4M940ob4wlp8eo3OYG
+         N3KTQ0+JkF2i+mfFvhwB6sOk/xQgdaPdqeDplLzvuoy1XFygvJjWMN8rtkhdeBeGBS6h
+         /3jexKGhBcgd8iHgnvexKwSYm2pFTAEHri3Uvsq807TukqOjH2qA2mtJnkAudioOUf5W
+         2CKdpYfh408PvXGd1D/haQ8sAyVWKKSZ+6OodJmTk9DhhLYRfjcgJIhqLoe+eVFZIq0D
+         2a6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b4+eN9bpiKnHX7lu+xFEi0IU4TCXd8H9JxiJveHTsSw=;
+        b=ATb5d/XHcjVei65av7gDYCxUi3dXZlNqf3Nmp+3mEds1umtaZ+yi6i72eFAs3lP5JN
+         ScKe/BscCSXy6YNh1HGFmv3a9vXaFzvyzH7Wzj9N7aL7uper1jQN4UwBkTYXGhR3AVvP
+         na1zQB5OLzh3ioklF+QntwHDAeXu8uGQhzPzMk0oQBS0Rs+o0Vi6w5xDeevvharuyDKh
+         IV5365U6jHmBDFzb9So2x/I9KQ+vQamZkad6Nm31eDG25to94/oBxfexhVivi3tGFfEj
+         ee6iEvrXRO18uBQABSRGWll6EuiEHYWFBSy13e26hRu9HMivHx7YNziR3LkpHtAPwI8g
+         5i2A==
+X-Gm-Message-State: AOAM533GM9quiPHjHmh9E8YU+sMwyGl2n6UbFzi1bId7qvc18uz7LHVN
+        Ly8QQq/Wg7Al1c6ePk/Cu7g=
+X-Google-Smtp-Source: ABdhPJwjoDLiT4fHUYwUMvUXtEVKOQY0BPXm6hBkgOtP8vVtAbR+r9QfbRhF2ZdWad3QEiXNKx5Bjg==
+X-Received: by 2002:a17:90a:150d:: with SMTP id l13mr17919388pja.93.1628392922521;
+        Sat, 07 Aug 2021 20:22:02 -0700 (PDT)
+Received: from localhost.localdomain ([1.240.193.107])
+        by smtp.googlemail.com with ESMTPSA id bj6sm16961198pjb.53.2021.08.07.20.22.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Aug 2021 20:22:02 -0700 (PDT)
+From:   Kangmin Park <l4stpr0gr4m@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ipv4: fix error path in fou_create()
+Date:   Sun,  8 Aug 2021 12:21:57 +0900
+Message-Id: <20210808032157.2439-1-l4stpr0gr4m@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Our test reported a uaf problem:
+kzalloc() to allocate fou is never called when udp_sock_create()
+is failed. So, fou is always NULL in error label in this case.
 
-Read of size 4 at addr ffff80036b790b54 by task kworker/u9:1/31105
+Therefore, add a error_sock label and goto this label when
+udp_sock_screate() is failed.
 
-Workqueue: knbd0-recv recv_work
-Call trace:
- dump_backtrace+0x0/0x310 arch/arm64/kernel/time.c:78
- show_stack+0x28/0x38 arch/arm64/kernel/traps.c:158
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x144/0x1b4 lib/dump_stack.c:118
- print_address_description+0x68/0x2d0 mm/kasan/report.c:253
- kasan_report_error mm/kasan/report.c:351 [inline]
- kasan_report+0x134/0x2f0 mm/kasan/report.c:409
- check_memory_region_inline mm/kasan/kasan.c:260 [inline]
- __asan_load4+0x88/0xb0 mm/kasan/kasan.c:699
- __read_once_size include/linux/compiler.h:193 [inline]
- blk_mq_rq_state block/blk-mq.h:106 [inline]
- blk_mq_request_started+0x24/0x40 block/blk-mq.c:644
- nbd_read_stat drivers/block/nbd.c:670 [inline]
- recv_work+0x1bc/0x890 drivers/block/nbd.c:749
- process_one_work+0x3ec/0x9e0 kernel/workqueue.c:2147
- worker_thread+0x80/0x9d0 kernel/workqueue.c:2302
- kthread+0x1d8/0x1e0 kernel/kthread.c:255
- ret_from_fork+0x10/0x18 arch/arm64/kernel/entry.S:1174
-
-This is because tags->static_rq can be freed without clearing tags->rq,
-Ming Lei had fixed the problem while itering tags, howerver, the problem
-still exist in blk_mq_tag_to_rq().
-
-Thus fix the problem by holding tags->lock, so that tags->rq can be
-cleared before tags->static_rq is freed.
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
 ---
- drivers/block/nbd.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ net/ipv4/fou.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index c38317979f74..c7ca16f0adbd 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -712,12 +712,22 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
- 	memcpy(&handle, reply.handle, sizeof(handle));
- 	tag = nbd_handle_to_tag(handle);
- 	hwq = blk_mq_unique_tag_to_hwq(tag);
--	if (hwq < nbd->tag_set.nr_hw_queues)
--		req = blk_mq_tag_to_rq(nbd->tag_set.tags[hwq],
--				       blk_mq_unique_tag_to_tag(tag));
--	if (!req || !blk_mq_request_started(req)) {
--		dev_err(disk_to_dev(nbd->disk), "Unexpected reply (%d) %p\n",
--			tag, req);
-+	if (hwq < nbd->tag_set.nr_hw_queues) {
-+		unsigned long flags;
-+		struct blk_mq_tags *tags = nbd->tag_set.tags[hwq];
-+
-+		blk_mq_tags_lock(tags, &flags);
-+		req = blk_mq_tag_to_rq(tags, blk_mq_unique_tag_to_tag(tag));
-+		if (!blk_mq_request_started(req)) {
-+			dev_err(disk_to_dev(nbd->disk), "Request not started (%d) %p\n",
-+				tag, req);
-+			req = NULL;
-+		}
-+		blk_mq_tags_unlock(tags, &flags);
-+	}
-+
-+	if (!req) {
-+		dev_err(disk_to_dev(nbd->disk), "Unexpected reply (%d)\n", tag);
- 		return ERR_PTR(-ENOENT);
- 	}
- 	trace_nbd_header_received(req, handle);
+diff --git a/net/ipv4/fou.c b/net/ipv4/fou.c
+index e5f69b0bf3df..60d67ae76880 100644
+--- a/net/ipv4/fou.c
++++ b/net/ipv4/fou.c
+@@ -572,7 +572,7 @@ static int fou_create(struct net *net, struct fou_cfg *cfg,
+ 	/* Open UDP socket */
+ 	err = udp_sock_create(net, &cfg->udp_config, &sock);
+ 	if (err < 0)
+-		goto error;
++		goto error_sock;
+ 
+ 	/* Allocate FOU port structure */
+ 	fou = kzalloc(sizeof(*fou), GFP_KERNEL);
+@@ -627,9 +627,9 @@ static int fou_create(struct net *net, struct fou_cfg *cfg,
+ 
+ error:
+ 	kfree(fou);
++error_sock:
+ 	if (sock)
+ 		udp_tunnel_sock_release(sock);
+-
+ 	return err;
+ }
+ 
 -- 
-2.31.1
+2.26.2
 
