@@ -2,108 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED693E3B4C
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F883E3B4D
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbhHHQK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 12:10:57 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:26603 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhHHQK4 (ORCPT
+        id S231823AbhHHQMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 12:12:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhHHQMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 12:10:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1628439037; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=TUtG/7v31EHpzEaehYylLLyrFo1D7qT/4XBaE92PLG8=; b=ukROZYvvwaBz2hjfh7LZ8gcfUCLzZ7PNIby0ujgY+iv84Waij2Nc7LBRHdxfcebTTgNiuWpB
- qiEMoz4EuXDBpMD5rfuK1+2JXLSkQmTYZK0gTqA/GIiqK7t/yQdoEdGjSGyjFumsgDPPF4wN
- CeSNdk/tiqCY18pE2NS321IaBNY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 611001fcb4dfc4b0efad5e36 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 08 Aug 2021 16:10:36
- GMT
-Sender: psodagud=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 30EC4C4323A; Sun,  8 Aug 2021 16:10:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from th-lint-038.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: psodagud)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CA2BEC433D3;
-        Sun,  8 Aug 2021 16:10:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CA2BEC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=psodagud@codeaurora.org
-From:   Prasad Sodagudi <psodagud@codeaurora.org>
-To:     gregkh@linuxfoundation.org, rjw@rjwysocki.net
-Cc:     len.brown@intel.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, pavel@ucw.cz, psodagud@codeaurora.org
-Subject: [PATCH v2] PM: sleep: core: Avoid setting power.must_resume to false
-Date:   Sun,  8 Aug 2021 09:10:27 -0700
-Message-Id: <1628439027-345496-1-git-send-email-psodagud@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <YQ4hj+blYxHdUl79@kroah.com>
-References: <YQ4hj+blYxHdUl79@kroah.com>
+        Sun, 8 Aug 2021 12:12:54 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF764C061760;
+        Sun,  8 Aug 2021 09:12:35 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id u5-20020a17090ae005b029017842fe8f82so16750514pjy.0;
+        Sun, 08 Aug 2021 09:12:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=f5fFjNuLaESLtt6NpxalDxQH6QXq4SR6rkuDvkhfkdY=;
+        b=kZ1Y8YHhslgLJBNqqU0v9tleoLWjAmdqD+tYyymu2xJB62MfxAqZRHmZkkr1rU7ZVi
+         ePkUaDXmYH74LuIaIn8fAIJmaIxbQjyYnbeknS/kYcgiTZ4oll7oLajDkSiMDmqkrjFU
+         0GusmTLlMKK4Fo23xLj429nTEvj+hA46gYFamO5RuWZth4jVV4fv79rDRJLKh+TBHMu1
+         Ovp36p3+7vLSIDse+TnTIpYxoGV+IUguVw/NJcGMjk8/75hBXAUR4BidPZbcQBaIuwOu
+         2Jl9n6nxsBeALQm8ehek3v+iHbNfDrLPaqIn+pjBFaUjcxQGKqOw5J/U/BYxuN8XAuMC
+         fYzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=f5fFjNuLaESLtt6NpxalDxQH6QXq4SR6rkuDvkhfkdY=;
+        b=WR7QTvxdxoQm1Rj0QPUU7QXvodklTucJPGjbK+DM6RWfu+iefHx5V6bc2UUZg+s6bG
+         sgSKbU/7WmXT1sFkTP/I+8COjFKfoZfxejXC9XTVhxOqoVbfpl2d+uFcmfSRItVXfQ0m
+         E66WKKQIqTNfNGx3gOgEJMU64xmrCZnjirodnFJIpxM3F6Q0u0mAXZaTcENO4lPsWdxm
+         epzXUpVAX5Oa87qre9av8IG7PytDkbvK6OgufwUJXmAOrKi1qkC9AGJiu/muCGV8hIqJ
+         WgWA954C9sUrHfWgzL+y0yxws0+VtLRiUgzcRhfPpDhGka/od9FY+HVizl1Ps+E3dNDm
+         8rKQ==
+X-Gm-Message-State: AOAM5332Z34xvTyuf/WmUilcfY+Oo6MnxkAq0W8TCpGLfx7j7Wit2ySm
+        qkOnwl8PIPSJUP8d1ZCF3X0=
+X-Google-Smtp-Source: ABdhPJxpHd7sA+xj/K264Oysk9odcZnnHttjMMytkovw4nHImrjX41umo5G/CyvxRFzEZwTxDoOzLg==
+X-Received: by 2002:a17:90b:20b:: with SMTP id fy11mr30703033pjb.79.1628439155383;
+        Sun, 08 Aug 2021 09:12:35 -0700 (PDT)
+Received: from haswell-ubuntu20.lan ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id x7sm16760227pfn.70.2021.08.08.09.12.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 08 Aug 2021 09:12:34 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Hauke Mehrtens <hauke@hauke-m.de>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Jonathan McDowell <noodles@earth.li>,
+        Michal =?utf-8?B?Vm9rw6HEjQ==?= <vokac.m@gmail.com>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Nishka Dasgupta <nishkadg.linux@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Stefan Lippers-Hollmann <s.l-h@gmx.de>,
+        Hannu Nyman <hannu.nyman@iki.fi>,
+        Imran Khan <gururug@gmail.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Nick Lowe <nick.lowe@gmail.com>,
+        =?iso-8859-1?Q?Andr=E9?= Valentin <avalentin@marcant.net>
+Subject: Re: [RFC net-next 3/3] net: dsa: tag_qca: set offload_fwd_mark
+Date:   Mon,  9 Aug 2021 00:12:24 +0800
+Message-Id: <20210808161224.228001-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210807225721.xk5q6osyqoqjmhmp@skbuf>
+References: <20210807120726.1063225-1-dqfext@gmail.com> <20210807120726.1063225-4-dqfext@gmail.com> <20210807225721.xk5q6osyqoqjmhmp@skbuf>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are variables(power.may_skip_resume and dev->power.must_resume)
-and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices after
-a system wide suspend transition.
+On Sun, Aug 08, 2021 at 01:57:21AM +0300, Vladimir Oltean wrote:
+> In this day and age, I consider this commit to be a bug fix, since the
+> software bridge, seeing an skb with offload_fwd_mark = false on an
+> offloaded port, will think it hasn't been forwarded and do that job
+> itself. So all broadcast and multicast traffic flooded to the CPU will
+> end up being transmitted with duplicates on the other bridge ports.
+> 
+> When the qca8k tagger was added in 2016 in commit cafdc45c949b
+> ("net-next: dsa: add Qualcomm tag RX/TX handler"), the offload_fwd_mark
+> framework was already there, but no DSA driver was using it - the first
+> commit I can find that uses offload_fwd_mark in DSA is f849772915e5
+> ("net: dsa: lan9303: lan9303_rcv set skb->offload_fwd_mark") in 2017,
+> and then quite a few more followed suit. But you could still blame
+> commit cafdc45c949b.
 
-Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
-its "noirq" and "early" resume callbacks to be skipped if the device
-can be left in suspend after a system-wide transition into the working
-state. PM core determines that the driver's "noirq" and "early" resume
-callbacks should be skipped or not with dev_pm_skip_resume() function by
-checking power.may_skip_resume variable.
+The driver currently only enables flooding to the CPU port (like MT7530
+back then), so offload_fwd_mark should NOT be set until bridge flags
+offload is supported.
 
-power.must_resume variable is getting set to false in __device_suspend()
-function without checking device's DPM_FLAG_MAY_SKIP_RESUME and
-dev->power.usage_count variables. In problematic scenario, where
-all the devices in the suspend_late stage are successful and some
-device can fail to suspend in suspend_noirq phase. So some devices
-successfully suspended in suspend_late stage are not getting chance
-to execute __device_suspend_noirq() to set dev->power.must_resume
-variable to true and not getting resumed in early_resume phase.
-
-Add a check for device's DPM_FLAG_MAY_SKIP_RESUME flag before
-setting power.must_resume variable in __device_suspend function.
-
-Fixes: 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")
-Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
----
- drivers/base/power/main.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-index d568772..9ee6987 100644
---- a/drivers/base/power/main.c
-+++ b/drivers/base/power/main.c
-@@ -1642,7 +1642,11 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
- 	}
- 
- 	dev->power.may_skip_resume = true;
--	dev->power.must_resume = false;
-+	if ((atomic_read(&dev->power.usage_count) <= 1) &&
-+	     (dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME)))
-+		dev->power.must_resume = false;
-+	else
-+		dev->power.must_resume = true;
- 
- 	dpm_watchdog_set(&wd, dev);
- 	device_lock(dev);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+> 
+> Curious, I also see that the gswip driver is in the same situation: it
+> implements .port_bridge_join but does not set skb->offload_fwd_mark.
+> I've copied Hauke Mehrtens to make him aware. I would rather not send
+> the patch myself because I would do a rather lousy job and set it
+> unconditionally to 'true', but the hardware can probably do better in
+> informing the tagger about whether a frame was received only by the host
+> or not, since it has an 8 byte header on RX.
+> 
+> For the record, I've checked the other tagging drivers too, to see who
+> else does not set skb->offload_fwd_mark, and they all correspond to
+> switch drivers which don't implement .port_bridge_join, which in that
+> case would be the correct thing to do.
