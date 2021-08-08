@@ -2,164 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705EC3E3D3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 01:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD273E3AE3
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 16:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231447AbhHHXwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 19:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhHHXwX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 19:52:23 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C021C061760;
-        Sun,  8 Aug 2021 16:52:04 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id bo19so2609503edb.9;
-        Sun, 08 Aug 2021 16:52:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g+mMde5qqc4uqYbMYLo0oM6z7/xWv3oSIgHXhyEzI18=;
-        b=HG3IPM1H6BKAhnp9qibICBx63Uwux2bThByqPA/ojs6WFDEThJtqm+A82+7yz1knMT
-         n1Bh794jpjjyeqMlOQnMCLfj30tuJ/stefGVB0HV/aUH6h7cDeX6rMxvINcrzQbuPtsC
-         VQmmlya7O7WdPHTSyxJfCrGVsqXA4dDSLohHO3GMItkSVYCnf9mRP/vtUgLTWovcRdJR
-         wvT+Zx2QM8Do9ZqGZ8HTR3KtOqiORh4WN666q1ADedsufn0R3RFd1G6PqbilDRgBFtR4
-         PLoOvUxOzGFGziNHgfvwn0A6gpeCtoyc3MFQsD1lF+xk6W137aSByQWIGlCRXNKRUfqa
-         BwOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g+mMde5qqc4uqYbMYLo0oM6z7/xWv3oSIgHXhyEzI18=;
-        b=FVm3WEyKn88ZgM2/1JY3CjJpLPEtK/c4OnBGEaLsgc1sAO620QWx6rM1psENKqkmQa
-         u6MWglypeEg9JJt8HHwM4R8sfZQO6hVQ/egWnrdELQUhMGgaljdRIuZU+Ff1yM1UHpPS
-         WtIB+iO6HS205IAn/bFEdTn9yjgyuv5Nxxo0TUffkHDwOxqcLffCEl6fl8hEM8af2FXH
-         ogkC93TJNLi9rWvMPRVrwgJKt3xcQsokxHlBvbwFAHT2QT6fZJV2ryssFMsqHjuQKVR3
-         SmGXZqft10IEIlhuAUKX5mM0eSjO10QvUDlZ4gq2C2E1Z+yzPb/ADh5GrLdXwhK+7qm9
-         sqsQ==
-X-Gm-Message-State: AOAM533YCtXNoytZ8C2YsLBXiD/fiYI44HA2MNmrABQxiIh751Tu4xjp
-        ZhD7wO9qqqbQamM/SvHyNsQ=
-X-Google-Smtp-Source: ABdhPJylExpK6vSu0VFC4Y40mLv8hd5y8/R6uN6ZHtpGeCgyB23L+D+b0vxQY52+4Tz75Gunuig9xg==
-X-Received: by 2002:a05:6402:31a4:: with SMTP id dj4mr26352070edb.350.1628466722891;
-        Sun, 08 Aug 2021 16:52:02 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id v12sm1572958ejq.36.2021.08.08.16.52.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Aug 2021 16:52:02 -0700 (PDT)
-Date:   Mon, 9 Aug 2021 02:52:01 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Eric Woudstra <ericwouds@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mt7530 fix mt7530_fdb_write vid missing ivl bit
-Message-ID: <20210808235201.wvw6mjzyvcpumxgk@skbuf>
-References: <20210716152213.4213-1-ericwouds@gmail.com>
- <20210808170024.228363-1-dqfext@gmail.com>
+        id S231837AbhHHOqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 10:46:22 -0400
+Received: from mga14.intel.com ([192.55.52.115]:32812 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231218AbhHHOqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 10:46:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10070"; a="214305466"
+X-IronPort-AV: E=Sophos;i="5.84,305,1620716400"; 
+   d="scan'208";a="214305466"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2021 07:46:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,305,1620716400"; 
+   d="scan'208";a="673563101"
+Received: from aubrey-app.sh.intel.com (HELO [10.239.53.25]) ([10.239.53.25])
+  by fmsmga005.fm.intel.com with ESMTP; 08 Aug 2021 07:46:01 -0700
+Subject: Re: [PATCH] ACPI/PRM: Deal with table not present or no module found
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Aubrey Li <aubrey.li@intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1628210784-136676-1-git-send-email-aubrey.li@intel.com>
+ <CAJZ5v0hYVMnQFBkQ_yhF83q-CEJuQ7-TN_Hh2P6b2bM9K--xFQ@mail.gmail.com>
+From:   Aubrey Li <aubrey.li@linux.intel.com>
+Message-ID: <2728924f-25cf-25dc-df0f-d02bbc959b9f@linux.intel.com>
+Date:   Mon, 9 Aug 2021 07:53:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210808170024.228363-1-dqfext@gmail.com>
+In-Reply-To: <CAJZ5v0hYVMnQFBkQ_yhF83q-CEJuQ7-TN_Hh2P6b2bM9K--xFQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 01:00:24AM +0800, DENG Qingfang wrote:
-> On Fri, Jul 16, 2021 at 05:22:11PM +0200, ericwouds@gmail.com wrote:
-> > From: Eric Woudstra <37153012+ericwoud@users.noreply.github.com>
-> >
-> > According to reference guides mt7530 (mt7620) and mt7531:
-> >
-> > NOTE: When IVL is reset, MAC[47:0] and FID[2:0] will be used to
-> > read/write the address table. When IVL is set, MAC[47:0] and CVID[11:0]
-> > will be used to read/write the address table.
-> >
-> > Since the function only fills in CVID and no FID, we need to set the
-> > IVL bit. The existing code does not set it.
-> >
-> > This is a fix for the issue I dropped here earlier:
-> >
-> > http://lists.infradead.org/pipermail/linux-mediatek/2021-June/025697.html
-> >
-> > With this patch, it is now possible to delete the 'self' fdb entry
-> > manually. However, wifi roaming still has the same issue, the entry
-> > does not get deleted automatically. Wifi roaming also needs a fix
-> > somewhere else to function correctly in combination with vlan.
->
-> Sorry to bump this up, but I think I identified the issue:
->
-> Consider a VLAN-aware bridge br0, with two ports set to different PVIDs:
->
-> > bridge vlan
-> > port         vlan-id
-> > swp0         1 PVID Egress Untagged
-> > swp1         2 PVID Egress Untagged
->
-> When the bridge core sends a packet to swp1, the packet will be sent to
-> the CPU port of the switch as untagged because swp1 is set as "Egress
-> Untagged". However if the switch uses independent VLAN learning, the CPU
-> port PVID will be used to update the FDB.
+On 8/6/21 9:23 PM, Rafael J. Wysocki wrote:
+> On Fri, Aug 6, 2021 at 2:48 AM Aubrey Li <aubrey.li@intel.com> wrote:
+>>
+>> On the system PRMT table is not present, dmesg output:
+>>
+>>         $ dmesg | grep PRM
+>>         [    1.532237] ACPI: PRMT not present
+>>         [    1.532237] PRM: found 4294967277 modules
+>>
+>> The result of acpi_table_parse_entries need to be checked and return
+>> immediately if PRMT table is not present or no PRM module found.
+>>
+>> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+>> ---
+>>  drivers/acpi/prmt.c | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>>
+>> diff --git a/drivers/acpi/prmt.c b/drivers/acpi/prmt.c
+>> index 31cf9ae..1f6007a 100644
+>> --- a/drivers/acpi/prmt.c
+>> +++ b/drivers/acpi/prmt.c
+>> @@ -292,6 +292,12 @@ void __init init_prmt(void)
+>>         int mc = acpi_table_parse_entries(ACPI_SIG_PRMT, sizeof(struct acpi_table_prmt) +
+>>                                           sizeof (struct acpi_table_prmt_header),
+>>                                           0, acpi_parse_prmt, 0);
+>> +       /*
+>> +        * Return immediately if PRMT table is not present or no PRM module found.
+>> +        */
+>> +       if (mc <= 0)
+>> +               return;
+>> +
+>>         pr_info("PRM: found %u modules\n", mc);
+>>
+>>         status = acpi_install_address_space_handler(ACPI_ROOT_OBJECT,
+>> --
+> 
+> Applied as 5.14-rc material, thanks!
+> 
+> However, since I'm on vacation next week, it will get into linux-next
+> after -rc6.
+> 
 
-Sadly the Banana Pi MT7531 reference manual I have does not appear to
-cover the DSA tagging header, so I am not actually clear what
-MTK_HDR_XMIT_SA_DIS does when not set. Does it default to the CPU port's
-value from the PSC register?
-
-If it does, then I expect that your patch 0b69c54c74bc ("net: dsa:
-mt7530: enable assisted learning on CPU port") fixes the issue Eric was
-seeing, which in turn was caused by your other patch 5e5502e012b8 ("net:
-dsa: mt7530: fix roaming from DSA user ports").
-
-> As we don't change its PVID
-> (not reasonable to change it anyway), hardware learning may not update
-> the correct FDB.
->
-> A possible solution is always send packets as tagged when serving a
-> VLAN-aware bridge.
-
-So as usual, VLANs put the "hard" in "hardware learning on the CPU port".
-I would say "a possible solution is to not attempt to learn from
-CPU-injected frames unless they are sent using the tx_fwd_offload
-framework"....
-
->
-> mv88e6xxx has been using hardware learning on CPU port since commit
-> d82f8ab0d874 ("net: dsa: tag_dsa: offload the bridge forwarding process"),
-> does it have the same issue?
-
-...which ensures that bridge data plane packets are always sent to the
-CPU port as VLAN-tagged:
-
-br_handle_vlan:
-
-	/* If the skb will be sent using forwarding offload, the assumption is
-	 * that the switchdev will inject the packet into hardware together
-	 * with the bridge VLAN, so that it can be forwarded according to that
-	 * VLAN. The switchdev should deal with popping the VLAN header in
-	 * hardware on each egress port as appropriate. So only strip the VLAN
-	 * header if forwarding offload is not being used.
-	 */
-	if (v->flags & BRIDGE_VLAN_INFO_UNTAGGED &&
-	    !br_switchdev_frame_uses_tx_fwd_offload(skb))
-		__vlan_hwaccel_clear_tag(skb);
-
-Seriously, I expect that a packet injected through the CPU port will,
-under normal circumstances, not default not look up the FDB, not update
-the FDB, etc etc.
-
-As long as you let the frame analyzer look in depth at the packet you do
-need to ensure that it has a valid VLAN ID. Otherwise it is an actual
-forwarding correctness issue and not just a "learn in wrong VLAN" issue:
-
-https://patchwork.kernel.org/project/netdevbpf/patch/20210426170411.1789186-6-tobias@waldekranz.com/
+Thanks Rafael!
