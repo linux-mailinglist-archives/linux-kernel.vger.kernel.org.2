@@ -2,93 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A013E39BF
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 11:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579913E39C4
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 11:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbhHHJBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 05:01:41 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:59571 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231130AbhHHJBk (ORCPT
+        id S231186AbhHHJJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 05:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230301AbhHHJJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 05:01:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1628413281; x=1659949281;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=bjgGRXxjJDNLHzEfzuNKdyk/I6//YiMoxvenotPsMHA=;
-  b=chq0CCd2+dy8PTMMG+WrxC6g+2ATXbOd78f3EsUlCKeFdlc4t63uGXZW
-   lsVgPljKp9tdxnZYVxh7pjEgX6+xvyuSSldLE0lRcKFF3Z56npu6FWi+m
-   1JkPE4f9GHtAN22X4BNJk67awgzA3oioYApobmbpIhWMfFROWtXWEQmlC
-   1M8eXyGODR4tZyGtMAUetwCf7KxFhF5RCB07x8FbrQwF/zIZcyF8NV4gF
-   55FQUqDvjld0LcisakJNa7joIYF5pMsj+e6eeQeXofOdDTR75YtJv2bg6
-   5FCot8nmCq8BR9FVjyM6lX4Nb7u0ukLOaWTKmTcH23OTFvqjFugFB3q5m
-   A==;
-X-IronPort-AV: E=Sophos;i="5.84,305,1620662400"; 
-   d="scan'208";a="280449782"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 08 Aug 2021 17:01:21 +0800
-IronPort-SDR: fJaxbcIW++bYCTtmNWhuc3GRBvQE4JfjebWgsmJKzsSxIRwgVeOgPmrnpWS8XD2XeGsw8oGSep
- uVg/QLPX2e0ULpeGMbYF3ymPgVxv557bb2sWPIoSsSqsBl0lc7330kGjuIIlFkSxUWx1yBx8ww
- cfIKgMbYGBQK7hWzx+ZhiGytuW2HsNkp4dyB+o3hA4UZQiICnuEGBT7HlMrlA+crssB/8QX/tA
- ONjkKClXBawQtRK8Vor9uMPa+DDGrVuymehtAsys5kI3tKJ6zcqJWNDdZ3n4SnC4P6EwiC2gko
- Yp0FKtNjhBuiZey7swp5PHD7
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2021 01:36:56 -0700
-IronPort-SDR: lPE7UCqk6qeiVobRoFkeWH+ksh8W4hROFo5RGGkKM71ycIe8DqVLg//RTI76zsRLo2co6DlP3t
- q8MLY3qUtbN7prth2t08xKQmGPpEhp0z33jEjoVILevtBzNxbnvglZwQZcpKKIVIdSVlfJ3ffT
- dqiB2BLmjTjxO976EEK94ipktntTVLoXMlEWO+sWsGTln1lF+Bzs6ik69cfj4L7jUIopJiAy2B
- 9mJfktIjNB/xDswzDRDXbB66qYsz8ReDBd38r/KQoSwa4HhE2y3ltMbKOWr7ptjAWobPg8StT4
- wJE=
-WDCIronportException: Internal
-Received: from bxygm33.sdcorp.global.sandisk.com (HELO BXYGM33.ad.shared) ([10.0.231.247])
-  by uls-op-cesaip02.wdc.com with ESMTP; 08 Aug 2021 02:01:19 -0700
-From:   Avri Altman <avri.altman@wdc.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH 4/4] scsi: ufshpb: Do not report victim error in HCM
-Date:   Sun,  8 Aug 2021 12:00:24 +0300
-Message-Id: <20210808090024.21721-5-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210808090024.21721-1-avri.altman@wdc.com>
-References: <20210808090024.21721-1-avri.altman@wdc.com>
+        Sun, 8 Aug 2021 05:09:54 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1637EC061760;
+        Sun,  8 Aug 2021 02:09:36 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so24930047pjh.3;
+        Sun, 08 Aug 2021 02:09:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=vp+J4V9l3LFTS0jqtNCjIc1QlhwFicvyNcSGzXJshgs=;
+        b=YD8DfYorrcdEatdQxxCOpG6B2lewhovoeYQYPUf82QYKJ5sQ+YAMQGxnMFPIUs0GeT
+         N7thCT40cWOtMVAkZ/mWl3l+5dns4H+aJxDUHYmreDxwETZi8e1GJ3FZn7Ia7yM6felA
+         aov+dZeqSSvM6lRLwgKWSjrj0hPvGmDfLkXxz9rsaDU+zcmVnm4+Fyr4wDu4HKpOLsEI
+         dnxB9uw5tznCgSSM8FZ9oXzq7/9jIW3SJm9JPKxTRrrWxe3wMoDh+XqJHF8hCRENmgxo
+         IzxO5GdSHCTMCGHshtsum4BjgsagRpAYnn8bVQch1wC1MdzpI12hygr5cN2JPI15JG9k
+         v55A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=vp+J4V9l3LFTS0jqtNCjIc1QlhwFicvyNcSGzXJshgs=;
+        b=mFM88f3GezYNJWMMaoAzMGBQRdpBn9dljkjDxnlEJIk7QpZC8Ti5sBjrkhSMQ4vAqj
+         Fnd652dBNkSMQDbZMyhfVqcbLHHK9m2wSotjLd4rqdPQKRusF4N4fJ7ZuzSRXPMgB7At
+         7gZdo7QmVMD/9Tg+Nxw5hnozIWF39U3FuiqZjgF88M1LP2tjfyXNYUvXJiXOnAGn+33t
+         SCotR+FJtjj73l2euaJJVDu1F6yPUBuLlfN2exShx5/0GtBB1Yi2KMJLyR0rBvBoNw8p
+         V94YqT+InEC4L5Dj/X6j1HYg9hky79IzDXFUEFpyM2mzM3/XM5qKxEst33MGM3Sb8rk2
+         uEJA==
+X-Gm-Message-State: AOAM533M4Eq2TWUvcoSaVg7TyiCpMQ/1psJj8OvVtedgDcK7uZbq31M8
+        PjGIl7LLRRCl7ODOgQ/eS3GvKCBQLM0=
+X-Google-Smtp-Source: ABdhPJynv2x6ElMPs+z0HGH87bRIsNE7TdgVFVuta56WptbNORt9IAGfqM0hXCKBZ8EXxIh7XYc1ag==
+X-Received: by 2002:a17:902:db08:b029:12c:4619:c643 with SMTP id m8-20020a170902db08b029012c4619c643mr15901773plx.26.1628413775390;
+        Sun, 08 Aug 2021 02:09:35 -0700 (PDT)
+Received: from [192.168.1.71] (122-61-176-117-fibre.sparkbb.co.nz. [122.61.176.117])
+        by smtp.gmail.com with ESMTPSA id i13sm16309491pfr.79.2021.08.08.02.09.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Aug 2021 02:09:34 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        Kir Kolyshkin <kolyshkin@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>
+To:     "Serge E. Hallyn" <serge@hallyn.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Subject: Documenting the requirement of CAP_SETFCAP to map UID 0
+Message-ID: <14cbab6f-19f6-a28c-05d8-453ecca62180@gmail.com>
+Date:   Sun, 8 Aug 2021 11:09:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In host control mode, eviction is perceived as an extreme measure.
-There are several conditions that both the entering and exiting regions
-should meet, so that eviction will take place.
+Hello Serge,
 
-The common case however, is that those conditions are rarely met, so it
-is normal that the act of eviction fails.  Therefore, Do not report an
-error in host control mode if eviction fails.
+Your commit:
 
-Fixes: 6c59cb501b86 (scsi: ufs: ufshpb: Make eviction depend on region's reads)
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
----
- drivers/scsi/ufs/ufshpb.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+[[
+commit db2e718a47984b9d71ed890eb2ea36ecf150de18
+Author: Serge E. Hallyn <serge@hallyn.com>
+Date:   Tue Apr 20 08:43:34 2021 -0500
 
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index cd48367f94cc..aafb55136c7e 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -1385,7 +1385,8 @@ static int ufshpb_add_region(struct ufshpb_lu *hpb, struct ufshpb_region *rgn)
- 			victim_rgn = ufshpb_victim_lru_info(hpb);
- 			if (!victim_rgn) {
- 				dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
--				    "cannot get victim region error\n");
-+				    "cannot get victim region %s\n",
-+				    hpb->is_hcm ? "" : "error");
- 				ret = -ENOMEM;
- 				goto out;
- 			}
+    capabilities: require CAP_SETFCAP to map uid 0
+]]
+
+added a new requirement when updating a UID map a user namespace
+with a value of '0 0 *'.
+
+Kir sent a patch to briefly document this change, but I think much more
+should be written. I've attempted to do so. Could you tell me whether the
+following text (to be added in user_namespaces(7)) is accurate please:
+
+[[
+      In  order  for  a  process  to  write  to  the /proc/[pid]/uid_map
+       (/proc/[pid]/gid_map) file, all of the following requirements must
+       be met:
+
+       [...]
+
+       4. If  updating  /proc/[pid]/uid_map to create a mapping that maps
+          UID 0 in the parent namespace, then one of the  following  must
+          be true:
+
+          *  if  writing process is in the parent user namespace, then it
+             must have the CAP_SETFCAP capability in that user namespace;
+             or
+
+          *  if  the writing process is in the child user namespace, then
+             the process that created the user namespace  must  have  had
+             the CAP_SETFCAP capability when the namespace was created.
+
+          This rule has been in place since Linux 5.12.  It eliminates an
+          earlier security bug whereby a UID 0  process  that  lacks  the
+          CAP_SETFCAP capability, which is needed to create a binary with
+          namespaced file capabilities (as described in capabilities(7)),
+          could  nevertheless  create  such  a  binary,  by the following
+          steps:
+
+          *  Create a new user namespace with the identity mapping (i.e.,
+             UID  0 in the new user namespace maps to UID 0 in the parent
+             namespace), so that UID 0 in both namespaces  is  equivalent
+             to the same root user ID.
+
+          *  Since  the  child process has the CAP_SETFCAP capability, it
+             could create a binary with namespaced file capabilities that
+             would  then  be  effective in the parent user namespace (be‐
+             cause the root user IDs are the same in the two namespaces).
+
+       [...]
+]]
+
+Thanks,
+
+Michael
+
 -- 
-2.17.1
-
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
