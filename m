@@ -2,128 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFEA3E3AE7
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 16:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF743E3AF1
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 17:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhHHOtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 10:49:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45456 "EHLO mail.kernel.org"
+        id S231953AbhHHPBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 11:01:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:42314 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231932AbhHHOtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 10:49:21 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 217B360560;
-        Sun,  8 Aug 2021 14:48:59 +0000 (UTC)
-Date:   Sun, 8 Aug 2021 15:51:49 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Michael.Hennerich@analog.com" <Michael.Hennerich@analog.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "Dragos.Bogdan@analog.com" <Dragos.Bogdan@analog.com>,
-        "Darius.Berghe@analog.com" <Darius.Berghe@analog.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] iio: accel: Add driver support for ADXL313
-Message-ID: <20210808155149.1c435b88@jic23-huawei>
-In-Reply-To: <CACKVXZB5Fo02ZT58swZKoz9DxNUR9Mmx717nf1OiB+g6+T7hJw@mail.gmail.com>
-References: <cover.1628143857.git.lucas.p.stankus@gmail.com>
-        <22ad63af54e6cfc9486d44d05ba3d2f7482c7b1e.1628143857.git.lucas.p.stankus@gmail.com>
-        <CAHp75Ve7avWpdnCioW6qdT21NqjK1TTW-nwFsz6x+0JLXsQH3Q@mail.gmail.com>
-        <CACKVXZB5Fo02ZT58swZKoz9DxNUR9Mmx717nf1OiB+g6+T7hJw@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231414AbhHHPBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 11:01:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 799446D;
+        Sun,  8 Aug 2021 08:00:41 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 68E3C3F718;
+        Sun,  8 Aug 2021 08:00:40 -0700 (PDT)
+Date:   Sun, 8 Aug 2021 16:00:33 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [skn:for-next/scmi 16/24] include/linux/compiler_types.h:328:38:
+ error: call to '__compiletime_assert_382' declared with attribute error:
+ BUILD_BUG_ON failed: !IS_ENABLED(CONFIG_ARM_SCMI_HAVE_TRANSPORT)
+Message-ID: <20210808150033.GV6592@e120937-lin>
+References: <202108080642.jLO69nNZ-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202108080642.jLO69nNZ-lkp@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Aug 2021 21:22:46 -0300
-Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
-
-> On Fri, Aug 6, 2021 at 9:35 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> >
-> >
-> > On Thursday, August 5, 2021, Lucas Stankus <lucas.p.stankus@gmail.com> wrote:  
-> >>
-> >> ADXL313 is a small, thin, low power, 3-axis accelerometer with high
-> >> resolution measurement up to +/-4g. It includes an integrated 32-level
-> >> FIFO and has activity and inactivity sensing capabilities.
-> >>
-> >> Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL313.pdf
-> >> Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
-> >> ---
-> >>  MAINTAINERS                      |   9 +
-> >>  drivers/iio/accel/Kconfig        |  29 +++
-> >>  drivers/iio/accel/Makefile       |   3 +
-> >>  drivers/iio/accel/adxl313.h      |  63 ++++++
-> >>  drivers/iio/accel/adxl313_core.c | 321 +++++++++++++++++++++++++++++++
-> >>  drivers/iio/accel/adxl313_i2c.c  |  65 +++++++
-> >>  drivers/iio/accel/adxl313_spi.c  |  85 ++++++++
-> >>  7 files changed, 575 insertions(+)
-> >>  create mode 100644 drivers/iio/accel/adxl313.h
-> >>  create mode 100644 drivers/iio/accel/adxl313_core.c
-> >>  create mode 100644 drivers/iio/accel/adxl313_i2c.c
-> >>  create mode 100644 drivers/iio/accel/adxl313_spi.c
-> >>
-> >> diff --git a/MAINTAINERS b/MAINTAINERS
-> >> index a61f4f3b78a9..566055450b6b 100644
-> >> --- a/MAINTAINERS
-> >> +++ b/MAINTAINERS
-> >> @@ -585,6 +585,15 @@ L: platform-driver-x86@vger.kernel.org
-> >>  S:     Maintained
-> >>  F:     drivers/platform/x86/adv_swbutton.c
-> >>
-> >> +ADXL313 THREE-AXIS DIGITAL ACCELEROMETER DRIVER
-> >> +M:     Lucas Stankus <lucas.p.stankus@gmail.com>
-> >> +S:     Supported
-> >> +F:     Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
-> >> +F:     drivers/iio/accel/adxl313.h
-> >> +F:     drivers/iio/accel/adxl313_core.c
-> >> +F:     drivers/iio/accel/adxl313_i2c.c
-> >> +F:     drivers/iio/accel/adxl313_spi.c  
-> >
-> >
-> >
-> > adxl313*?
-> >  
+On Sun, Aug 08, 2021 at 06:01:49AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git for-next/scmi
+> head:   1e7cbfaa66d39e78bd24df0c78b55df68176b59e
+> commit: e8419c24bacee45bfe3504814e91fc89ff8c23de [16/24] firmware: arm_scmi: Make SCMI transports configurable
+> config: arm64-randconfig-r021-20210808 (attached as .config)
+> compiler: aarch64-linux-gcc (GCC) 10.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/commit/?id=e8419c24bacee45bfe3504814e91fc89ff8c23de
+>         git remote add skn https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git
+>         git fetch --no-tags skn for-next/scmi
+>         git checkout e8419c24bacee45bfe3504814e91fc89ff8c23de
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/firmware/arm_scmi/
 > 
-> Didn't know this would work, but I think I prefer the way it is now.
-> Are you proposing this as a suggestion or more of a change request?
-
-It's a bit neater and very unlikely we'll get a clash on that wild card
-in the long run, so I'd 'slightly' prefer this as well.
-
-
-...
-
->> +/*
-> >> + * Scale for any g range is given in datasheet as
-> >> + * 1024 LSB/g = 0.0009765625 * 9.80665 = 0.009576806640625 m/s^2
-> >> + */
-> >> +#define ADXL313_NSCALE 9576806  
-> >
-> >
-> >
-> > Is it in nanonewtons? Perhaps add a suffix _nN?
-> >  
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> It's actually in meters per second squared, so I couldn't come up with
-> a good suffix. Do you have any suggestions?
+> All errors (new ones prefixed by >>):
+> 
+>    In file included from <command-line>:
+>    drivers/firmware/arm_scmi/driver.c: In function 'scmi_driver_init':
+> >> include/linux/compiler_types.h:328:38: error: call to '__compiletime_assert_382' declared with attribute error: BUILD_BUG_ON failed: !IS_ENABLED(CONFIG_ARM_SCMI_HAVE_TRANSPORT)
+>      328 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>          |                                      ^
+>    include/linux/compiler_types.h:309:4: note: in definition of macro '__compiletime_assert'
+>      309 |    prefix ## suffix();    \
+>          |    ^~~~~~
+>    include/linux/compiler_types.h:328:2: note: in expansion of macro '_compiletime_assert'
+>      328 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>          |  ^~~~~~~~~~~~~~~~~~~
+>    include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+>       39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>          |                                     ^~~~~~~~~~~~~~~~~~
+>    include/linux/build_bug.h:50:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+>       50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+>          |  ^~~~~~~~~~~~~~~~
+>    drivers/firmware/arm_scmi/driver.c:2011:2: note: in expansion of macro 'BUILD_BUG_ON'
+>     2011 |  BUILD_BUG_ON(!IS_ENABLED(CONFIG_ARM_SCMI_HAVE_TRANSPORT));
+>          |  ^~~~~~~~~~~~
+> 
+> 
+> vim +/__compiletime_assert_382 +328 include/linux/compiler_types.h
+> 
 
-Easy. Don't have a #define :)
+Hi,
 
-In all seriousness it isn't a 'magic' number, it's an actual real world
-value, so move the comment down to where it's used and put the number
-directly were it is needed.
+so the attached/used random configuration (SCMI snippet) is:
 
+# ARM System Control and Management Interface Protocol
+#
+CONFIG_ARM_SCMI_PROTOCOL=y
+# CONFIG_ARM_SCMI_TRANSPORT_MAILBOX is not set
+# CONFIG_ARM_SCMI_TRANSPORT_SMC is not set
+CONFIG_ARM_SCMI_POWER_DOMAIN=y
+# end of ARM System Control and Management Interface Protocol
 
-Jonathan
+and it's just the kind of situation which
+
+BUILD_BUG_ON(!IS_ENABLED(CONFIG_ARM_SCMI_HAVE_TRANSPORT))
+
+was meant to trap: you should not build an SCMI stack without at least
+one transport configured; I could not put this constraint into the Kconfig
+due to circular dependencies so I used BUILD_BUG_ON() (thinking it was
+a legit use case...wrong ?)
+
+Removing the BUILD_BUG_ON() above and allowing compilation of an SCMI stack
+without any transport defined leads to an SCMI stack silently not working:
+it builds and boots fine but no SCMI stack will be ever initialized since
+not a single compatible from the DT will be matched.
+
+Thanks,
+Cristian
+
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  314  
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  315  #define _compiletime_assert(condition, msg, prefix, suffix) \
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  316  	__compiletime_assert(condition, msg, prefix, suffix)
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  317  
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  318  /**
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  319   * compiletime_assert - break build and emit msg if condition is false
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  320   * @condition: a compile-time constant condition to check
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  321   * @msg:       a message to emit if condition is false
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  322   *
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  323   * In tradition of POSIX assert, this macro will break the build if the
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  324   * supplied condition is *false*, emitting the supplied error message if the
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  325   * compiler has support to do so.
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  326   */
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  327  #define compiletime_assert(condition, msg) \
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21 @328  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+> eb5c2d4b45e3d2 Will Deacon 2020-07-21  329  
+> 
+> :::::: The code at line 328 was first introduced by commit
+> :::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
+> 
+> :::::: TO: Will Deacon <will@kernel.org>
+> :::::: CC: Will Deacon <will@kernel.org>
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
 
