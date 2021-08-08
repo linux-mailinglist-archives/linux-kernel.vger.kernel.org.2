@@ -2,81 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59323E39D8
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 12:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F323E39DB
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 12:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhHHKRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 06:17:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41678 "EHLO mail.kernel.org"
+        id S230224AbhHHKTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 06:19:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229613AbhHHKRJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 06:17:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 566D261002;
-        Sun,  8 Aug 2021 10:16:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628417811;
-        bh=X9dnTD0xyKMIdTIRG+oJBdvfJeZaP8irwsirpacwiZ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wa1neRgs6ZQchJmGvV2//Z3KqL0LzwQa2fSBU2jlLzqJ3o1SxAXyj76TV32RtoeNK
-         E8tPA1RBLqZJskjm/0VitWGAZD1elaq6cgm0IokCgaCjaaWQbgEo+1gGp9ZHmrCVBr
-         luRZQ4+4vgnmk2M0zjHENrcQJbjS9WO5p1dl8IeflUZRlfZBxNh4DDCRt8LIHFSd1Q
-         cC154kLyWE63rE4vtbWY63KCmLvdS0iK6USw9Dx8YkGJbDw6WTluIVzZIzDw1uOEOP
-         JAaiz8yNg56rcZccmt/wvewDjTTbxWgC2UI5xl3HoDOGf8EaYmOVjQLmsRbjLxfTJT
-         rQygtY0KjZjKw==
-Date:   Sun, 8 Aug 2021 13:16:46 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jonathan Toppins <jtoppins@redhat.com>
-Cc:     netdev@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/2] bonding: combine netlink and console error
- messages
-Message-ID: <YQ+vDtXPV5DHqruU@unreal>
-References: <cover.1628306392.git.jtoppins@redhat.com>
- <a36c7639a13963883f49c272ed7993c9625a712a.1628306392.git.jtoppins@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a36c7639a13963883f49c272ed7993c9625a712a.1628306392.git.jtoppins@redhat.com>
+        id S229613AbhHHKTa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 06:19:30 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2576361004;
+        Sun,  8 Aug 2021 10:19:12 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mCfte-003cJ1-5e; Sun, 08 Aug 2021 11:19:10 +0100
+Date:   Sun, 08 Aug 2021 11:19:09 +0100
+Message-ID: <87o8a81boi.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sunil Muthuswamy <sunilmut@microsoft.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Boqun Feng <Boqun.Feng@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: Re: [EXTERNAL] Re: [RFC 1/1] irqchip/gic-v3-its: Add irq domain and chip for Direct LPI without ITS
+In-Reply-To: <MW4PR21MB2002ABD170CC9786CDF5D493C0F39@MW4PR21MB2002.namprd21.prod.outlook.com>
+References: <MW4PR21MB2002BA20FA4A8DAA1C27F4C6C0199@MW4PR21MB2002.namprd21.prod.outlook.com>
+        <87a6mt2jke.wl-maz@kernel.org>
+        <MW4PR21MB2002E51429F7E13B61A34FFEC0E89@MW4PR21MB2002.namprd21.prod.outlook.com>
+        <87tuka24kj.wl-maz@kernel.org>
+        <MW4PR21MB20027EAC23E8053210364E2BC0F09@MW4PR21MB2002.namprd21.prod.outlook.com>
+        <b2dea108-9166-dc9d-abd0-d22491f78568@arm.com>
+        <87r1f9wooc.wl-maz@kernel.org>
+        <MW4PR21MB2002860BAED850B2B52D6E2BC0F19@MW4PR21MB2002.namprd21.prod.outlook.com>
+        <87wnp0b86y.wl-maz@kernel.org>
+        <MW4PR21MB2002ABD170CC9786CDF5D493C0F39@MW4PR21MB2002.namprd21.prod.outlook.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: sunilmut@microsoft.com, robin.murphy@arm.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, will@kernel.org, mikelley@microsoft.com, Boqun.Feng@microsoft.com, kys@microsoft.com, arnd@arndb.de, lorenzo.pieralisi@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 11:30:55PM -0400, Jonathan Toppins wrote:
-> There seems to be no reason to have different error messages between
-> netlink and printk. It also cleans up the function slightly.
+On Fri, 06 Aug 2021 20:14:13 +0100,
+Sunil Muthuswamy <sunilmut@microsoft.com> wrote:
 > 
-> Signed-off-by: Jonathan Toppins <jtoppins@redhat.com>
-> ---
->  drivers/net/bonding/bond_main.c | 45 ++++++++++++++++++---------------
->  1 file changed, 25 insertions(+), 20 deletions(-)
+> On Thursday, August 5, 2021 1:35 AM,
+> Marc Zyngier <maz@kernel.org> wrote:
+> [...]
+> > > Hey Mark
+> > 
+> > I assume this is for me?
+> > 
+> Yes, sorry.
 > 
-> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> index 3ba5f4871162..46b95175690b 100644
-> --- a/drivers/net/bonding/bond_main.c
-> +++ b/drivers/net/bonding/bond_main.c
-> @@ -1712,6 +1712,16 @@ void bond_lower_state_changed(struct slave *slave)
->  	netdev_lower_state_changed(slave->dev, &info);
->  }
->  
-> +#define BOND_NL_ERR(bond_dev, extack, errmsg) do {		\
-> +	NL_SET_ERR_MSG(extack, errmsg);				\
-> +	netdev_err(bond_dev, "Error: " errmsg "\n");		\
-> +} while (0)
-> +
-> +#define SLAVE_NL_ERR(bond_dev, slave_dev, extack, errmsg) do {	\
-> +	NL_SET_ERR_MSG(extack, errmsg);				\
-> +	slave_err(bond_dev, slave_dev, "Error: " errmsg "\n");	\
-> +} while (0)
+> > > would you be willing to consider a scoped down implementation of GIC
+> > > Direct LPI with just an IRQ chip implementation and no Direct LPI
+> > > PCI-MSI IRQ chip.
+> > 
+> > Could you please clarify? If you are not implementing MSIs, how can a
+> > device signal LPIs? At the end of the day, something has to write into
+> > the RD, and it isn't going to happen by sheer magic.
+> > 
+> > > This will allow a MSI provider (such as Hyper-V vPCI) to provide a
+> > > PCI-MSI IRQ chip on top of the Direct LPI IRQ chip and enable
+> > > PCI-MSI scenarios, and avoid building in assumptions in other cases
+> > > (like PCI) where firmware specification is not available.
+> > 
+> > I really don't get what you are suggesting. Could you please describe
+> > what you have in mind?
+> > 
+> The suggestion was to *not* implement the PCI-MSI IRQ chip in the
+> Direct LPI GIC implementation, but let the endpoint/specific
+> implementation provide for the MSI IRQ chip.
+> 
+> For example, the Hyper-V vPCI module does implement a PCI-MSI IRQ
+> chip (refer to 'hv_pcie_init_irq_domain'). Microsoft Hypervisor
+> provides/virtualizes the MSI address to be used for Hyper-V vPCI. The
+> Hypervisor might be using the ITS in the background, but it expects
+> the device to be programmed with the MSI address that it provides.
+> And, the Hypervisor takes care of routing the interrupt to the guest.
+> This is done by the Hyper-V vPCI MSI IRQ chip (refer to
+> hv_msi_irq_chip) compose MSI message.
+> 
+> Today, for X64, Hyper-V vPCI PCI-MSI irq chip parents itself to the
+> architectural 'x86_vector_domain'. The suggestion here was to see
+> if we can support a similar setup for ARM, where the Hyper-V vPCI
+> PCI-MSI irq chip can parent itself to the 'Direct LPI arch IRQ chip'
+> (to be implemented).
+> 
+> The arch Direct LPI arch IRQ chip is needed to enable LPIs, invalidate
+> the LPI configuration (GICR_INVLPIR et. al. ) and allocate LPI IRQs from
+> the LPI interrupt namespace (i.e. 8192-<num LPIS>).
+> 
+> Happy to expand on this further, if the above is not clear.
 
-I don't think that both extack messages and dmesg prints are needed.
+[+Lorenzo, as he deals with both PCI and ACPI]
 
-They both will be caused by the same source, and both will be seen by
-the caller, but duplicated.
+I think it is clear enough, but I don't see what this buys us other
+than turning DirectLPI into something that is essentially private to
+Hyper-V, just for the sake of sidestepping a firmware description.
+Furthermore, the Hyper-V "single MSI address" model doesn't match the
+way DirectLPI works (after all, this is one of the many reasons why we
+have the ITS).
 
-IMHO, errors that came from the netlink, should be printed with NL_SET_ERR_MSG(),
-other errors should use netdev_err/slave_err prints.
+The architecture already gives you everything you need to make things
+work in Hyper-V. You can easily implement the DirectLPI support (you
+definitely need most of it anyway), and the PCI-MSI layer is
+*free*. All you need is a firmware description. Which I don't believe
+is the end of the world, given that DT is freely hackable and that
+IORT is an ARM-private extension to ACPI. I'm sure you know who to
+reach out to in order to start a draft (and if you don't, I can give
+you names offline).
 
-Thanks
+I am not interested in expanding the GICv3 architecture support if it
+cannot be generally used in a way that is *compliant with the
+architecture*. If you think DirectLPIs can make the hypervisor
+simpler, I'm fine with it. But let's fully embrace the concept instead
+of hiding it behind a layer of PV muck. It will even have a chance of
+working on bare metal (such as on the machine that is humming behind
+me, or even the Fast Model).
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
