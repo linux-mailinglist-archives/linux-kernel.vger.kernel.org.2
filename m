@@ -2,209 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158993E3906
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 07:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850553E3921
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 07:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhHHFZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 01:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59448 "EHLO
+        id S230206AbhHHFtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 01:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhHHFZV (ORCPT
+        with ESMTP id S229473AbhHHFtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 01:25:21 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23594C0613CF
-        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 22:25:03 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id e19so22946264ejs.9
-        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 22:25:03 -0700 (PDT)
+        Sun, 8 Aug 2021 01:49:41 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C64C061760;
+        Sat,  7 Aug 2021 22:49:23 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d1so12936614pll.1;
+        Sat, 07 Aug 2021 22:49:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=k/8s96HCe18/eoglPW9pZsmNfYl8igMHuGmdNpfUBaE=;
-        b=sikGcX4llhELl7jgeuNaD7/h98+zDpua/NMk6ZqqEkmgDLfjds8yX9LtEsXTpkrMnm
-         oyKglZLOppQMsMaRo/UsP9roBbPTi40fyyLMnXWgbLb1nFzWeEyVcNUt506i6Ia5O2ne
-         y2/i0zA2c4wMPDQ1UZ5OLRXP50QkICm60z0n0ofRCrJpa3Dr9Q0u5Czh7oafOBF/17j6
-         wp8dKfIi6fjNEvTqauwLQA83n5TNxnNzhUe94me7yVbQqE1JYNZ1ST6at9rYe8Ugk+u7
-         2gpC5pJFXs4KOMVw1fgzRiCDF9TLimzlylT3yGWHtW3myhYeCAWHRbaLgZ0tP5/bhWRS
-         Cohw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6BZAJwNVxh7BBq5KJRh3cIe1IxGdTWQfrAqveunfQ9A=;
+        b=X282WwyX2+xa2GLcX2oWX4NRxg3Ys39kcIzAVStrLh1r24CkmQsLruZtJ2vvtPYp76
+         yfkF8V1hKwnk0OZs//Tdil6kbp0+u0dYnKejgmVnLWYVlvKecrLotYyCFYJ9ZlMi0l7A
+         wVNVULhVeYahsS+6AtAFItxKKtZWxtknHuI0e3XsL8jG6pCTUtYsBz/P1v09XcYK+RL2
+         8wHjXWJseisLxQAvb8r2MIrpS/T22OcbQlYbZbV6aD8phd7OSURg76KS37ULX2xgP1JN
+         9Gaby/AVM2bVr2AWJPcz+u4fa744t2aeubQwuGISzn/KCMcsZifhVE1BwlFvsI4pMwks
+         ussg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=k/8s96HCe18/eoglPW9pZsmNfYl8igMHuGmdNpfUBaE=;
-        b=ik0FSfgLjCXZF7ccyFe/ikUS9QqdSItVGafETdszyFvToriFWTQTh6zVwOaGvFX5JU
-         QnAxq8+Ae/XelsKZAf1o2Vkkz6U56Vulr3SZemKB5iPSyU9+av1WxiGuAu1gI11C9UIm
-         BmhSbv5ykjXa9aJ3LK+CDqOWq7Zk0QM3fch/Glrw+/zOUpLunB6e4ifrfO5sMp6HQRLm
-         msKOV0xszR91dKb654yhnEXf/zKnPM3IIUhDbxHCSzJQ8gwQRItE8pCOviwekzs6TXTZ
-         5fwYK3U8cif5ZfVrEYQAVb3jXP5SzU2KInW0H0mnOibWl+SuTuiDm+nGonOjKixbtVyK
-         qLKg==
-X-Gm-Message-State: AOAM532anJ5rEJaFqbAeGauGmXCvyhM40HhZ6qnA1ssDGx7pvCTOx1ST
-        OKb9zT8+136UjC/ij9s1lmCVPJYq315jT80X6HNeUkqi1LFYidwo
-X-Google-Smtp-Source: ABdhPJxrauaZsx+2t9Y5fusw1eBRDsCLJMQqsd5lAdSWqTMwr2voeLiTRroRTG1YhCIjchMZ+XMKWfK/zU6sYwLvqOI=
-X-Received: by 2002:a17:906:45b:: with SMTP id e27mr16783768eja.375.1628400301558;
- Sat, 07 Aug 2021 22:25:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6BZAJwNVxh7BBq5KJRh3cIe1IxGdTWQfrAqveunfQ9A=;
+        b=Ato1EbExa00KaOmma35Q6pxhRJFw0PloJtzubf176EPz6asXtcf+mXj1/XiYVDvdEE
+         e5vpLGqJUlREHKvf7rtNWdTFDXhrJzZVsT7n/ugZLkkvl/oLSSsZFjERttg02YByGjxu
+         lR3A1N0KUUamhD8ol+2Fh11uuJlxgHDAMcZobkafuLDPcb+AcgUZ9kEmBcAaHyBfXVOI
+         6ycKGZJm5CqUma4QA8RNDvyvUHuOP8oCKsmfp6SLhGyR49PinNDWd+nOU/lJxhV82zK/
+         9JMjGOlSYR6i+uJI4IVNZBy4H9J1WgZZFFwy3DpR+iAKjMZdC0Jszl3/kXqHiLCgTBsR
+         EMCA==
+X-Gm-Message-State: AOAM530IN6rLnYP6+UKkdmSUkt2tcJTtfgny7S2xPHjRx9Gi7VA7PXv6
+        N2zeBtvBVmxt5L5nojVR+T4=
+X-Google-Smtp-Source: ABdhPJyfiVBRK91EqgPnTh4dRdUKDMgLtniNBWtoEBxeDUjehqtCy70im+rX1IfJMcqe6zslv14lUw==
+X-Received: by 2002:a62:7d84:0:b029:3b8:49bb:4c3f with SMTP id y126-20020a627d840000b02903b849bb4c3fmr12642251pfc.49.1628401762761;
+        Sat, 07 Aug 2021 22:49:22 -0700 (PDT)
+Received: from localhost.localdomain ([1.240.193.107])
+        by smtp.googlemail.com with ESMTPSA id o10sm12842849pjg.34.2021.08.07.22.49.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Aug 2021 22:49:22 -0700 (PDT)
+From:   Kangmin Park <l4stpr0gr4m@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ipv4: fix error path in fou_create()
+Date:   Sun,  8 Aug 2021 14:49:17 +0900
+Message-Id: <20210808054917.5418-1-l4stpr0gr4m@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210806081108.939164003@linuxfoundation.org>
-In-Reply-To: <20210806081108.939164003@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 8 Aug 2021 10:54:50 +0530
-Message-ID: <CA+G9fYt=6NUXw+x4YbRE6a83OJWjzugG-=F4F0OHi=ZyYX1UeQ@mail.gmail.com>
-Subject: Re: [PATCH 4.4 0/6] 4.4.279-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Aug 2021 at 13:44, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.279 release.
-> There are 6 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.279-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+sock is always NULL when udp_sock_create() is failed and fou is
+always NULL when kzalloc() is failed.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+So, add error_sock and error_alloc label and fix the error path
+in those cases.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
+---
+v2:
+ - change commit message
+ - fix error path
 
-## Build
-* kernel: 4.4.279-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.4.y
-* git commit: 155338eca25e98640866913820fbb3c0d3efed49
-* git describe: v4.4.278-7-g155338eca25e
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
-78-7-g155338eca25e
+ net/ipv4/fou.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-## Regressions (compared to v4.4.278)
+diff --git a/net/ipv4/fou.c b/net/ipv4/fou.c
+index 60d67ae76880..f1d99e776bb8 100644
+--- a/net/ipv4/fou.c
++++ b/net/ipv4/fou.c
+@@ -578,7 +578,7 @@ static int fou_create(struct net *net, struct fou_cfg *cfg,
+ 	fou = kzalloc(sizeof(*fou), GFP_KERNEL);
+ 	if (!fou) {
+ 		err = -ENOMEM;
+-		goto error;
++		goto error_alloc;
+ 	}
+ 
+ 	sk = sock->sk;
+@@ -627,9 +627,10 @@ static int fou_create(struct net *net, struct fou_cfg *cfg,
+ 
+ error:
+ 	kfree(fou);
+-error_sock:
++error_alloc:
+ 	if (sock)
+ 		udp_tunnel_sock_release(sock);
++error_sock:
+ 	return err;
+ }
+ 
+-- 
+2.26.2
 
-## Fixes (compared to v4.4.278)
-
-
-## Test result summary
-total: 44119, pass: 34594, fail: 366, skip: 7880, xfail: 1279
-
-## Build Summary
-* arm: 96 total, 96 passed, 0 failed
-* arm64: 23 total, 23 passed, 0 failed
-* i386: 13 total, 13 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 13 total, 13 passed, 0 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
