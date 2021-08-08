@@ -2,117 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C033E3AE0
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 16:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1284E3E3ADD
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 16:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbhHHOnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 10:43:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45062 "EHLO mail.kernel.org"
+        id S231769AbhHHOnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 10:43:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229923AbhHHOnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 10:43:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A5FF60560;
-        Sun,  8 Aug 2021 14:43:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628433810;
-        bh=hVGKMgsMy/zamnFEQCraJVSiNCfpKgxZd7kkoLlLgso=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YkSsB7l1I1zpEs04HaYKgSyc8JoO9KK1XbRRJ9qto40bdy396h9LJgW6v2HI2ZQOQ
-         x5hJxLsC/uQJbpzcO0q+df/5Xw/by/f8rSO+sSkhimmSXwRIfkcCAjZZD+1Wg3aEvI
-         9EbppCPgVQkHODB7rQ4h7MNb2ZYi2NbnqhDNetuF0g0wE3SKQH7aihF+g3p8l8L+ZR
-         If37NN8NE1zfaKKkKydDMA8M1wkamrzctsnBhCNTO+Xx4+FFtm4J7X09SIM7O5vYET
-         lW5RS6v/gdDwx/SrWR62pc2HQSxdMZUL/MTEkKfCbqLsrn5i4XnA5Aa7d6N/6IKRaZ
-         5QaLNJLj4IUww==
-Date:   Sun, 8 Aug 2021 23:43:27 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [PATCH v2 1/9] tracing/boot: Fix a hist trigger dependency for
- boot time tracing
-Message-Id: <20210808234327.262621be9cc5fa66734f3f6b@kernel.org>
-In-Reply-To: <20210806214710.015aa5d3@oasis.local.home>
-References: <162818072104.226227.18088999222035270055.stgit@devnote2>
-        <162818072887.226227.1489690774195740861.stgit@devnote2>
-        <20210806214710.015aa5d3@oasis.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        id S229923AbhHHOnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 10:43:13 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7ED1760F0F;
+        Sun,  8 Aug 2021 14:42:52 +0000 (UTC)
+Date:   Sun, 8 Aug 2021 15:45:41 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Lucas Stankus <lucas.p.stankus@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        "Berghe, Darius" <Darius.Berghe@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: accel: Add binding
+ documentation for ADXL313
+Message-ID: <20210808154541.276e6685@jic23-huawei>
+In-Reply-To: <CACKVXZB-XVYA8FSEucwktH88PBUUBXXjuARWOC02r8TzCzU8Mw@mail.gmail.com>
+References: <cover.1628143857.git.lucas.p.stankus@gmail.com>
+        <ad64c93df8c43c66dcb64fe8ec0c0f6b91b3c697.1628143857.git.lucas.p.stankus@gmail.com>
+        <YQ16+AlpmxhVIBhE@robh.at.kernel.org>
+        <CACKVXZB-XVYA8FSEucwktH88PBUUBXXjuARWOC02r8TzCzU8Mw@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 6 Aug 2021 21:47:10 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, 6 Aug 2021 21:33:44 -0300
+Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
 
-> On Fri,  6 Aug 2021 01:25:29 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > Fixes a build error when CONFIG_HIST_TRIGGERS=n with boot-time
-> > tracing. Since the trigger_process_regex() is defined only
-> > when CONFIG_HIST_TRIGGERS=y, if it is disabled, the 'actions'
-> > event option also must be disabled.
-> > 
-> > Fixes: 81a59555ff15 ("tracing/boot: Add per-event settings")
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > ---
-> >  0 files changed
-> > 
-> > diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
-> > index 94ef2d099e32..e6dc9269ad75 100644
-> > --- a/kernel/trace/trace_boot.c
-> > +++ b/kernel/trace/trace_boot.c
-> > @@ -204,13 +204,14 @@ trace_boot_init_one_event(struct trace_array *tr, struct xbc_node *gnode,
-> >  		else if (apply_event_filter(file, buf) < 0)
-> >  			pr_err("Failed to apply filter: %s\n", buf);
-> >  	}
-> > -
-> > +#ifdef CONFIG_HIST_TRIGGERS
-> 
-> Hi Masamai,
-> 
-> Can we instead define trigger_process_regex() in trace.h to be:
-> 
-> static inline int trigger_process_regex(struct trace_event_file *file, char *buff)
-> {
-> 	return -1;
-> }
-> 
-> When this config is not set?
-> 
-> This makes the code a bit cleaner, and you get the "Failed to apply an
-> action" error as well.
-
-Ah, OK.
-But it seems that the error message should be changed a bit in that
-case, because the actions string is correct, but the kernel
-just doesn't support it. Moreover, it loops on the array, so, it will
-show same error repeatedly.
-
-I think it should be ignored, or just warn once with correct reason.
-(for example, if the kernel supports hist-trigger, the error will
-be shown in 'error_log' file.)
-
-Thank you,
-
-
-> 
-> -- Steve
-> 
-> 
-> 
-> >  	xbc_node_for_each_array_value(enode, "actions", anode, p) {
-> >  		if (strlcpy(buf, p, ARRAY_SIZE(buf)) >= ARRAY_SIZE(buf))
-> >  			pr_err("action string is too long: %s\n", p);
-> >  		else if (trigger_process_regex(file, buf) < 0)
-> >  			pr_err("Failed to apply an action: %s\n", buf);
-> >  	}
-> > +#endif
+> On Fri, Aug 6, 2021 at 3:10 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Thu, Aug 05, 2021 at 03:29:37AM -0300, Lucas Stankus wrote:  
+> > > Add device tree binding documentation for ADXL313 3-axis accelerometer.
+> > >
+> > > Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+> > > ---
+> > >  .../bindings/iio/accel/adi,adxl313.yaml       | 90 +++++++++++++++++++
+> > >  1 file changed, 90 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml b/Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
+> > > new file mode 100644
+> > > index 000000000000..fea03b6790f3
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/iio/accel/adi,adxl313.yaml
+> > > @@ -0,0 +1,90 @@
+> > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/iio/accel/adi,adxl313.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Analog Devices ADXL313 3-Axis Digital Accelerometer
+> > > +
+> > > +maintainers:
+> > > +  - Lucas Stankus <lucas.p.stankus@gmail.com>
+> > > +
+> > > +description: |
+> > > +  Analog Devices ADXL313 3-Axis Digital Accelerometer that supports
+> > > +  both I2C & SPI interfaces.
+> > > +    https://www.analog.com/en/products/adxl313.html
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - adi,adxl313
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  spi-3wire: true
+> > > +
+> > > +  spi-cpha: true
+> > > +
+> > > +  spi-cpol: true  
+> >
+> > These 3 generally shouldn't be needed, but can be set from the driver.
+> > If they are valid, is any combination of them really valid?
 > >  
-> >  	if (xbc_node_find_value(enode, "enable", NULL)) {
-> >  		if (trace_event_enable_disable(file, 1, 0) < 0)
 > 
+> Only the 3wire is optional, both cpha and cpol are required for proper
+> spi connection.
+
+We've been round this one a few time, and last time we discussed the
+cases where you'd need these in DT (because of inverters on the bus)
+https://lore.kernel.org/linux-iio/20191204111231.GO1998@sirena.org.uk/
+conclusion was, that we don't want to put the burden on the dt files
+for those odd cases.  The equivalent for interrupt lines is interestingly
+different because in those cases the two-cell version includes the
+type of interrupt, so it makes little sense to push that down into the
+drivers as well.
+
+Mind you I'm not 100% sure how we would retrofit a binding if necessary
+for the inverted cases.  Hope we don't hit one here :)
+
+As you note, 3wire is needed in the binding because it's optional.
+
+Jonathan
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> 
+> > > +
+> > > +  spi-max-frequency: true
+> > > +
+> > > +  vs-supply:
+> > > +    description: Regulator that supplies power to the accelerometer
+> > > +
+> > > +  vdd-supply:
+> > > +    description: Regulator that supplies the digital interface supply voltage
+> > > +
+> > > +  interrupts:
+> > > +    maxItems: 2  
+> >
+> > This means there must be 2 entries. If 1 is valid, you need 'minItems'.
+> >  
+> 
+> I'll add 'minItems' for the v3 then, thanks!
+> 
+> > > +
+> > > +  interrupt-names:
+> > > +    maxItems: 2  
+> >
+> > You need 'minItems' too to fix the error.
+> >  
+> 
+> Thank you again and sorry for not catching that error before submitting.
+> 
+> > > +    items:
+> > > +      enum:
+> > > +        - INT1
+> > > +        - INT2
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    #include <dt-bindings/gpio/gpio.h>
+> > > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > > +    i2c0 {
+> > > +        #address-cells = <1>;
+> > > +        #size-cells = <0>;
+> > > +
+> > > +        /* Example for a I2C device node */
+> > > +        accelerometer@53 {
+> > > +            compatible = "adi,adxl313";
+> > > +            reg = <0x53>;
+> > > +            interrupt-parent = <&gpio0>;
+> > > +            interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
+> > > +            interrupt-names = "INT1";
+> > > +        };
+> > > +    };
+> > > +  - |
+> > > +    #include <dt-bindings/gpio/gpio.h>
+> > > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > > +    spi {
+> > > +        #address-cells = <1>;
+> > > +        #size-cells = <0>;
+> > > +
+> > > +        /* Example for a SPI device node */
+> > > +        accelerometer@0 {
+> > > +            compatible = "adi,adxl313";
+> > > +            reg = <0>;
+> > > +            spi-max-frequency = <5000000>;
+> > > +            spi-cpol;
+> > > +            spi-cpha;
+> > > +            interrupt-parent = <&gpio0>;
+> > > +            interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
+> > > +            interrupt-names = "INT1";
+> > > +        };
+> > > +    };
+> > > --
+> > > 2.32.0
+> > >
+> > >  
+
