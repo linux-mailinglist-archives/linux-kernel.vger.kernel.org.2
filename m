@@ -2,59 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0B93E3B25
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 17:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C4B3E3B28
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 17:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232136AbhHHPkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 11:40:19 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:38858 "EHLO vps0.lunn.ch"
+        id S232152AbhHHPlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 11:41:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229923AbhHHPkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 11:40:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=CETo8NjZMwKXksccsf2bL/g9DbtIS4iyesheXI7oxOY=; b=1mhfKsKHTrBhqB7XjBZBqtRTbu
-        uuMoMCgDuWghEKWrCEWLCtQQJzHNbf6Oz+KlwkOZwudZpevwZ7yAh6EzSfr2uuVAbFnA7mZ+/fDjX
-        DOkTD3AjS9fGMO+ht3yi2hFyPBFaRj0QChkL4RWmZ4FefgRww5oiTQme2Kcv5qF9N2o8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mCkty-00Gapj-H7; Sun, 08 Aug 2021 17:39:50 +0200
-Date:   Sun, 8 Aug 2021 17:39:50 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Luo Jie <luoj@codeaurora.org>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org
-Subject: Re: [Resend v1 0/2] net: mdio: Add IPQ MDIO reset related function
-Message-ID: <YQ/6xmRplrWUUQB/@lunn.ch>
-References: <20210808120018.2480-1-luoj@codeaurora.org>
+        id S229923AbhHHPlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 11:41:17 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37CFC60EB5;
+        Sun,  8 Aug 2021 15:40:56 +0000 (UTC)
+Date:   Sun, 8 Aug 2021 16:43:45 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Michael.Hennerich@analog.com, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lars@metafoo.de, Dragos.Bogdan@analog.com,
+        Darius.Berghe@analog.com, robh+dt@kernel.org
+Subject: Re: [PATCH v8 1/3] dt-bindings: iio: accel: Add DT binding doc for
+ ADXL355
+Message-ID: <20210808164345.799b8568@jic23-huawei>
+In-Reply-To: <20210808160628.7b031948@jic23-huawei>
+References: <20210804140309.31468-1-puranjay12@gmail.com>
+        <20210804140309.31468-2-puranjay12@gmail.com>
+        <20210808160628.7b031948@jic23-huawei>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210808120018.2480-1-luoj@codeaurora.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 08, 2021 at 08:00:16PM +0800, Luo Jie wrote:
-> This patch series add the MDIO reset features, which includes
-> configuring MDIO clock source frequency and indicating CMN_PLL that
-> ethernet LDO has been ready, this ethernet LDO is dedicated in the
-> IPQ5018 platform.
+On Sun, 8 Aug 2021 16:06:28 +0100
+Jonathan Cameron <jic23@kernel.org> wrote:
+
+> On Wed,  4 Aug 2021 19:33:07 +0530
+> Puranjay Mohan <puranjay12@gmail.com> wrote:
 > 
-> Specify more chipset IPQ40xx, IPQ807x, IPQ60xx and IPQ50xx supported by
-> this MDIO driver.
+> > Add devicetree binding document for ADXL355, a 3-Axis MEMS Accelerometer.
+> > 
+> > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>  
 > 
-> The PHY reset with GPIO and PHY reset with reset controller are covered
-> by the phylib code, so remove the PHY reset related code from the
-> initial patch series. 
+> Looks good to me. I'll pick this up once Rob and anyone else interested
+> has had time to take a look assuming they don't ask for any changes.
+> 
+> Thanks,
+> 
+> Jonathan
+> 
+> 
+> > ---
+> >  .../bindings/iio/accel/adi,adxl355.yaml       | 88 +++++++++++++++++++
+> >  1 file changed, 88 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml b/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+> > new file mode 100644
+> > index 000000000..5da3fd5ad
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+> > @@ -0,0 +1,88 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/iio/accel/adi,adxl355.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Analog Devices ADXL355 3-Axis, Low noise MEMS Accelerometer
+> > +
+> > +maintainers:
+> > +  - Puranjay Mohan <puranjay12@gmail.com>
+> > +
+> > +description: |
+> > +  Analog Devices ADXL355 3-Axis, Low noise MEMS Accelerometer that supports
+> > +  both I2C & SPI interfaces
+> > +    https://www.analog.com/en/products/adxl355.html
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - adi,adxl355
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    minItems: 1
+> > +    maxItems: 3
+> > +    description: |
+> > +      Type should be IRQ_TYPE_LEVEL_HIGH.
+> > +      Three configurable interrupt lines exist.
 
-Why did you resend?
+I just noticed from the datasheet, that INT1 and INT2 have controllable
+polarity on the device.  We should look to support that rather than
+stating all 3 interrupts are LEVEL_HIGH.  For now, I'd just not
+state the type here, or make that statement only for the dataready pin.
 
-To the patchbot: I replied with comments on the first send. Do not
-merge.
+Once you enable these interrupts, you will want to handle the polarity setting
+in a similar fashion to the bmi160.
 
-	Andrew
+It is a bit messy to combine the interrupt polarity at the interrupt controller
+with that at the device, but that is how we've handled these in the past.
+
+Jonathan
+
+> > +
+> > +  interrupt-names:
+> > +    description: Specify which interrupt line is in use.
+> > +    items:
+> > +      enum:
+> > +        - INT1
+> > +        - INT2
+> > +        - DRDY
+> > +    minItems: 1
+> > +    maxItems: 3
+> > +
+> > +  vdd-supply:
+> > +    description: Regulator that provides power to the sensor
+> > +
+> > +  vddio-supply:
+> > +    description: Regulator that provides power to the bus
+> > +
+> > +  spi-max-frequency: true
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +        #include <dt-bindings/gpio/gpio.h>
+> > +        #include <dt-bindings/interrupt-controller/irq.h>
+> > +        i2c {
+> > +                #address-cells = <1>;
+> > +                #size-cells = <0>;
+> > +
+> > +                /* Example for a I2C device node */
+> > +                accelerometer@1d {
+> > +                        compatible = "adi,adxl355";
+> > +                        reg = <0x1d>;
+> > +                        interrupt-parent = <&gpio>;
+> > +                        interrupts = <25 IRQ_TYPE_EDGE_RISING>;
+> > +                        interrupt-names = "DRDY";
+> > +                };
+> > +        };
+> > +  - |
+> > +        #include <dt-bindings/gpio/gpio.h>
+> > +        #include <dt-bindings/interrupt-controller/irq.h>
+> > +        spi {
+> > +                #address-cells = <1>;
+> > +                #size-cells = <0>;
+> > +
+> > +                accelerometer@0 {
+> > +                        compatible = "adi,adxl355";
+> > +                        reg = <0>;
+> > +                        spi-max-frequency = <1000000>;
+> > +                        interrupt-parent = <&gpio>;
+> > +                        interrupts = <25 IRQ_TYPE_EDGE_RISING>;
+> > +                        interrupt-names = "DRDY";
+> > +                };
+> > +        };  
+> 
+
