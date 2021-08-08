@@ -2,78 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194233E3B21
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 17:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6C63E3B2C
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 17:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232058AbhHHPft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 11:35:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhHHPfs (ORCPT
+        id S232157AbhHHPqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 11:46:55 -0400
+Received: from esgaroth.petrovitsch.at ([78.47.184.11]:54950 "EHLO
+        esgaroth.petrovitsch.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229923AbhHHPqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 11:35:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61CBC061760;
-        Sun,  8 Aug 2021 08:35:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+6AA0NxjMhZgnwgqTpBVqlB3Q6+197HzgumUBQ6qcrw=; b=XmuC5TKVtFDgjjrbI2ao6t8Tsi
-        cNFzUy9H6cRJ1i/K+ZzhjFrYQMTAj5UosnmHIVAfXdYcLFq11WRWtq3BiOWRCen7VvTpDacsPKwop
-        G8fnQ4OKH8rmFJn59GtUJ0QXQmY7G+iiq3EYr0BBk+F27naeOTDiYquJNjUOj/ywAYw+t67gAJ/HV
-        Kj8WYoRN2FUSnLCAossMwPOuqGON0vwCEpW77xBQIVl0JEF3DHx9nl9sXnNc6hC1pn+dCNEhMm0lA
-        SaWVYYVW0ZMCvObZDVMARLOUWamAfUoxIGtJuagr0k/8sMf0waMKGNCfkyAl84Os4lxNmBEdhVBGU
-        E3YbcsLA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mCkp6-00A5da-DD; Sun, 08 Aug 2021 15:34:54 +0000
-Date:   Sun, 8 Aug 2021 16:34:48 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] fs: optimise generic_write_check_limits()
-Message-ID: <YQ/5mCUBmfCWoyVs@casper.infradead.org>
-References: <dc92d8ac746eaa95e5c22ca5e366b824c210a3f4.1628248828.git.asml.silence@gmail.com>
- <YQ04/NFn8b6cykPQ@casper.infradead.org>
- <567d7e15f59a45f6ab94428261b3e473@AcuMS.aculab.com>
+        Sun, 8 Aug 2021 11:46:53 -0400
+X-Greylist: delayed 617 seconds by postgrey-1.27 at vger.kernel.org; Sun, 08 Aug 2021 11:46:52 EDT
+Received: from thorin.petrovitsch.priv.at (84-115-219-158.cable.dynamic.surfer.at [84.115.219.158])
+        (authenticated bits=0)
+        by esgaroth.petrovitsch.at (8.16.1/8.16.1) with ESMTPSA id 178Fa0Qk284153
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
+        Sun, 8 Aug 2021 17:36:01 +0200
+DKIM-Filter: OpenDKIM Filter v2.11.0 esgaroth.petrovitsch.at 178Fa0Qk284153
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=petrovitsch.priv.at;
+        s=default; t=1628436962;
+        bh=ldKn0U8KvfBvOVhOmCB8P8LDLYD3v1sH4Y5QxM2Or08=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=jlp8OYhCcgpbUgtRgz/L7FIczgPQ+g4OgnEh7AhtKPiWSF8VoqdjJFGNmnypEW7i/
+         uVeji1HYskG3nbB0DTBTROFDGzvNvA4IugFL/e66UPrmgnTrYGJb2fQ09zX5NLLPrB
+         xQsA8R/8ExCfmCPDFzdGvWfSgsPTdIcrUBvfzx+U=
+X-Info-sendmail: I was here
+Subject: Re: [PATCH v4 2/3] drivers/soc/renesas: Prefer memcpy over strcpy
+To:     Len Baker <len.baker@gmx.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-hardening@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210808125012.4715-1-len.baker@gmx.com>
+ <20210808125012.4715-3-len.baker@gmx.com>
+From:   Bernd Petrovitsch <bernd@petrovitsch.priv.at>
+Bimi-Selector: v=BIMI1; s=default
+Message-ID: <39485c0e-511c-50a0-83be-f9ce6fc47e67@petrovitsch.priv.at>
+Date:   Sun, 8 Aug 2021 17:35:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <567d7e15f59a45f6ab94428261b3e473@AcuMS.aculab.com>
+In-Reply-To: <20210808125012.4715-3-len.baker@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-DCC-wuwien-Metrics: esgaroth.petrovitsch.priv.at 1290; Body=14 Fuz1=14
+        Fuz2=14
+X-Spam-Status: No, score=-1.2 required=5.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A
+        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.0 NICE_REPLY_A Looks like a legit reply (A)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        esgaroth.petrovitsch.priv.at
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 08, 2021 at 02:41:13PM +0000, David Laight wrote:
-> From: Matthew Wilcox
-> > Sent: 06 August 2021 14:28
-> > 
-> > On Fri, Aug 06, 2021 at 12:22:10PM +0100, Pavel Begunkov wrote:
-> > > Even though ->s_maxbytes is used by generic_write_check_limits() only in
-> > > case of O_LARGEFILE, the value is loaded unconditionally, which is heavy
-> > > and takes 4 indirect loads. Optimise it by not touching ->s_maxbytes,
-> > > if it's not going to be used.
-> > 
-> > Is this "optimisation" actually worth anything?  Look at how
-> > force_o_largefile() is used.  I would suggest that on the vast majority
-> > of machines, O_LARGEFILE is always set.
-> 
-> An option would be to only determine ->s_maxbytes when the size
-> if larger than MAX_NON_LFS.
-> 
-> So you'd end up with something like:
-> 
-> 	if (pos >= max_size) {
-> 		if (!(file->f_flags & O_LARGEFILE))
-> 			return -EFBIG;
-> 		inode = file->f_mapping->host;
-> 		if (pos >= inode->i_sb->s_maxbytes)
-> 			return -EFBIG;
-> 	}
+Hi all!
 
-You're optimising the part of the function that you can see in the
-diff instead of the whole function.  And there's no evidence that
-there's much win to be had here ...
+On 08/08/2021 14:50, Len Baker wrote:
+> strcpy() performs no bounds checking on the destination buffer. This
+> could result in linear overflows beyond the end of the buffer, leading
+> to all kinds of misbehaviors. So, use memcpy() as a safe replacement.
+> 
+> This is a previous step in the path to remove the strcpy() function
+> entirely from the kernel.
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+> ---
+>  drivers/soc/renesas/r8a779a0-sysc.c | 6 ++++--
+>  drivers/soc/renesas/rcar-sysc.c     | 6 ++++--
+>  2 files changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/soc/renesas/r8a779a0-sysc.c b/drivers/soc/renesas/r8a779a0-sysc.c
+> index d464ffa1be33..7410b9fa9846 100644
+> --- a/drivers/soc/renesas/r8a779a0-sysc.c
+> +++ b/drivers/soc/renesas/r8a779a0-sysc.c
+> @@ -404,19 +404,21 @@ static int __init r8a779a0_sysc_pd_init(void)
+>  	for (i = 0; i < info->num_areas; i++) {
+>  		const struct r8a779a0_sysc_area *area = &info->areas[i];
+>  		struct r8a779a0_sysc_pd *pd;
+> +		size_t n;
+> 
+>  		if (!area->name) {
+>  			/* Skip NULLified area */
+>  			continue;
+>  		}
+> 
+> -		pd = kzalloc(sizeof(*pd) + strlen(area->name) + 1, GFP_KERNEL)> +		n = strlen(area->name) + 1;
+> +		pd = kzalloc(sizeof(*pd) + n, GFP_KERNEL);
+Zeroing the allocated bytes is not needed since it's completly
+overwritten with the strcpy()/memcpy().
+>  		if (!pd) {
+>  			error = -ENOMEM;
+>  			goto out_put;
+>  		}
+> 
+> -		strcpy(pd->name, area->name);
+> +		memcpy(pd->name, area->name, n);
+>  		pd->genpd.name = pd->name;
+>  		pd->pdr = area->pdr;
+>  		pd->flags = area->flags;
+
+And similar for the second hunk.
+
+MfG,
+	Bernd
+-- 
+Bernd Petrovitsch                  Email : bernd@petrovitsch.priv.at
+     There is NO CLOUD, just other people's computers. - FSFE
+                     LUGA : http://www.luga.at
