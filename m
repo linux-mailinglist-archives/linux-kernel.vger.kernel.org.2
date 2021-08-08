@@ -2,96 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93A83E38F3
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 07:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6483E38FB
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 07:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbhHHFPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 01:15:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229473AbhHHFPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 01:15:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD2ED60F38;
-        Sun,  8 Aug 2021 05:15:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1628399703;
-        bh=r409KvyNgLbyfYI1tePdR3Fn6jngjHs4GuZ52QDGYW0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BXaZWx+jEEFDknjNvDH/ZpiTRbEA+YwNxqFY6NSHsrrXBX26RK2hiL6lej1aHNrBm
-         U/tyz+1uA3ldYaa5lHZ945pr1Anh+tqG/mGG0hdP156kvDb0CQjPjQlxOcOB6LD6Sv
-         Ogm4uQtfoY8H9qTf40aoJS4CD0PpeCVeZdzY8Kls=
-Date:   Sun, 8 Aug 2021 07:14:52 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Long Li <longli@microsoft.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [Patch v5 0/3] Introduce a driver to support host accelerated
- access to Microsoft Azure Blob for Azure VM
-Message-ID: <YQ9oTBSRyHCffC2k@kroah.com>
-References: <1628146812-29798-1-git-send-email-longli@linuxonhyperv.com>
- <e249d88b-6ca2-623f-6f6e-9547e2b36f1f@acm.org>
- <BY5PR21MB15060F1B9CDB078189B76404CEF29@BY5PR21MB1506.namprd21.prod.outlook.com>
- <YQwvL2N6JpzI+hc8@kroah.com>
- <BY5PR21MB1506A93E865A8D6972DD0AAECEF49@BY5PR21MB1506.namprd21.prod.outlook.com>
+        id S229823AbhHHFUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 01:20:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229473AbhHHFUT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 01:20:19 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3F2C061760
+        for <linux-kernel@vger.kernel.org>; Sat,  7 Aug 2021 22:19:51 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id g21so19521608edb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 07 Aug 2021 22:19:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=szE9GFRCIHuxvVJhNeFP3Xehlnf1RTGGoQA9iVKN3rA=;
+        b=tYf0wVjShWa20hsZNWJkVIc3BewnTkYlPaANvnoIanBWROd51qMVAfx4tSS1zWAkSl
+         qbpXwDkrw2DdplpnXrLWSFQHb0DGhBIhax2hAVon/N1z6Jw/bs1SeV5BNCSt9YOPRdun
+         5szke7ye98HVQOOsBg4m9eMZHGOFYxuQ55mYdzV31QEroff6KDpxS3JlVDzlQS/lNeh2
+         KLacLoVDWS+BBq2x4EnH9Aic9kJsV+LRUB+KfzUYkEtLjMkoQG5DI8WKaMKYKIz7/g92
+         4nVgJqCmzlx7028+/+MzVQBkiVAl7ZKcSidcMLXDXWHpvhvrCSNzC4SkeNLnKZFSDc6J
+         iRtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=szE9GFRCIHuxvVJhNeFP3Xehlnf1RTGGoQA9iVKN3rA=;
+        b=AFwDze7Jc+ihzddeOOshiCRHYIILf4qBlZRwcgMx1wAJQrUv39F0vh53qG7Qw4bYlF
+         xDQqcyRkTdPN1XjtaS1l92HFJCIEuQiKV+4ffWGNiKijDg/sF+ofnIu/JpNainDtx7DD
+         jd/DbAqc+YSOCCeIJdnQJAKgz2kt8QHVdt1j2ROSCWAArUSpkmsY/2PeglczzEytNLAm
+         VktfrHtgB48v/eUNs2zr83bIXD5M/GcVZ/hgZ42lf6nLU8CoRuINFzTML1h5DyVmSmOU
+         TFP0OPhCbeAwdRIkc4a5ni0GBS+I+P6ldrsHdUxXHtJn2wGvI5pWp0C2r7PfWyEAoWjJ
+         mOVQ==
+X-Gm-Message-State: AOAM530dsDgMhdsPK3qNjHetkjEqBtEjWtLd7xMIWRSttNqm9UOkzBso
+        NOGADGKNWMcxh5O56oJa1Uu9gofZX4KXpMaS1VeB7Q==
+X-Google-Smtp-Source: ABdhPJz4lkrOiyCGk8pst8p3Iy11JyIH0qsqE8ujjPBarj+HK7x5PC7GQ29VtJRri6B66gmniv0TRb4zQTrSHey1vu8=
+X-Received: by 2002:aa7:cb9a:: with SMTP id r26mr22449656edt.78.1628399989813;
+ Sat, 07 Aug 2021 22:19:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BY5PR21MB1506A93E865A8D6972DD0AAECEF49@BY5PR21MB1506.namprd21.prod.outlook.com>
+References: <20210806081109.324409899@linuxfoundation.org>
+In-Reply-To: <20210806081109.324409899@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sun, 8 Aug 2021 10:49:38 +0530
+Message-ID: <CA+G9fYuAWacnee28FEBZ3nPqmQJf_Eo7KpRQRu=RUnDipuM1jQ@mail.gmail.com>
+Subject: Re: [PATCH 4.9 0/7] 4.9.279-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 07, 2021 at 06:29:06PM +0000, Long Li wrote:
-> > I still think this "model" is totally broken and wrong overall.  Again, you are
-> > creating a custom "block" layer with a character device, forcing all userspace
-> > programs to use a custom library (where is it at?) just to get their data.
-> 
-> The Azure Blob library (with source code) is available in the following languages:
-> Java: https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/storage/azure-storage-blob
-> JavaScript: https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/storage/storage-blob
-> Python: https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/storage/azure-storage-blob
-> Go: https://github.com/Azure/azure-storage-blob-go
-> .NET: https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/storage/Azure.Storage.Blobs
-> PHP: https://github.com/Azure/azure-storage-php/tree/master/azure-storage-blob
-> Ruby: https://github.com/azure/azure-storage-ruby/tree/master/blob
-> C++: https://github.com/Azure/azure-sdk-for-cpp/tree/main/sdk/storage#azure-storage-client-library-for-c
+On Fri, 6 Aug 2021 at 13:45, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.279 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.279-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-And why wasn't this linked to in the changelog here?
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-In looking at the C code above, where is the interaction with this Linux
-driver?  I can't seem to find it...
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> > There's a reason the POSIX model is there, why are you all ignoring it?
-> 
-> The Azure Blob APIs are not designed to be POSIX compatible. This driver is used
-> to accelerate Blob access for a Blob client running in an Azure VM. It doesn't attempt
-> to modify the Blob APIs. Changing the Blob APIs will break the existing Blob clients.
+## Build
+* kernel: 4.9.279-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.9.y
+* git commit: 36c4ea3b072f93b011cbb5d863808049e393bdff
+* git describe: v4.9.278-8-g36c4ea3b072f
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+78-8-g36c4ea3b072f
 
-There are no Blob clients today on Linux given that this code is not
-merged into the kernel yet, so there is nothing to "break".
+## No regressions (compared to v4.9.278)
 
-I still don't see a good reason why this can't just be a block device,
-or a filesystem interface and why you need to make this a custom
-character device ioctl.
 
-thanks,
+## No fixes (compared to v4.9.278)
 
-greg k-h
+
+## Test result summary
+total: 64266, pass: 50078, fail: 611, skip: 11601, xfail: 1976
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
