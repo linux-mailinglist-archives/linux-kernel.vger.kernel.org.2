@@ -2,131 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB393E3BA1
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF83C3E3BA7
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbhHHQi3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 8 Aug 2021 12:38:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231466AbhHHQi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 12:38:28 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 418F860EB9;
-        Sun,  8 Aug 2021 16:38:07 +0000 (UTC)
-Date:   Sun, 8 Aug 2021 17:40:56 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     =?UTF-8?B?VGjDqW8gQm9yw6lt?= Fabris <theobf@usp.br>
-Cc:     lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH] iio: pressure: hp03: update device probe to register
- with devm functions
-Message-ID: <20210808174056.63158f33@jic23-huawei>
-In-Reply-To: <20210808122335.4895-1-theobf@usp.br>
-References: <20210808122335.4895-1-theobf@usp.br>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231811AbhHHQpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 12:45:04 -0400
+Received: from mail-pj1-f47.google.com ([209.85.216.47]:41491 "EHLO
+        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231357AbhHHQpD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 12:45:03 -0400
+Received: by mail-pj1-f47.google.com with SMTP id u5-20020a17090ae005b029017842fe8f82so16833649pjy.0;
+        Sun, 08 Aug 2021 09:44:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x86zqrZwK8I05NlyS2GLyhKTx+s5Y6a+1HCAxehwg2w=;
+        b=huAsC1oiHmE6PxLdChA/kf/K3bRUENftR34/n//t04J9nag+XicVpZHAh/pZCtB8Qu
+         mMyzXlFHjiYqHKf3C4qtM6kB9g0tyEPxSL4tIiI8caWH+RmfnMJVT3RiyiZRFR1G//hN
+         x4qAOtwgr8+Fwam99BWkvD4tSwaHMEc8OrC4auqhyDsab2V+yeOqQz6rD9ffGjG26eCu
+         CexoiSpUJhjJ7eaFGgulFnECHmZh/No2Onl4YJQfiwZeMdSu2Mg+6Y0zLafpVjL5ybTM
+         kh2yzYYpzSjRW7nHMRLmEJeb+p5bTqrTrtjVgmJsBiaQwq3+4uAk6cmDIY1dFKNeQ/0+
+         ATdA==
+X-Gm-Message-State: AOAM532JRcb3oOtRkmVVtPC3TCbmnrXLag1uCrJgnY8crZS0RKY3wWZG
+        zTLoaT8AESSSOAPzvX9xiRQ=
+X-Google-Smtp-Source: ABdhPJwvbbi5JS3KyD8WVO0nXH9edgpsA9afRMG70uzrlKFAWrm/QmKeLtxu9UFauTgeoXXDJW1gpw==
+X-Received: by 2002:aa7:9828:0:b029:3bd:dc3d:de5f with SMTP id q8-20020aa798280000b02903bddc3dde5fmr20227411pfl.47.1628441083293;
+        Sun, 08 Aug 2021 09:44:43 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:b494:57cd:2ed2:765? ([2601:647:4000:d7:b494:57cd:2ed2:765])
+        by smtp.gmail.com with ESMTPSA id v10sm4105622pfu.100.2021.08.08.09.44.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Aug 2021 09:44:42 -0700 (PDT)
+Subject: Re: [PATCH 1/2] blk-mq: add two interfaces to lock/unlock
+ blk_mq_tags->lock
+To:     Yu Kuai <yukuai3@huawei.com>, axboe@kernel.dk,
+        josef@toxicpanda.com, ming.lei@redhat.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nbd@other.debian.org, yi.zhang@huawei.com
+References: <20210808031752.579882-1-yukuai3@huawei.com>
+ <20210808031752.579882-2-yukuai3@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <1e6b1a1e-eb45-f6c7-a8ce-e534b8cda710@acm.org>
+Date:   Sun, 8 Aug 2021 09:44:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210808031752.579882-2-yukuai3@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  8 Aug 2021 09:23:36 -0300
-Théo Borém Fabris <theobf@usp.br> wrote:
+On 8/7/21 8:17 PM, Yu Kuai wrote:
+> +void blk_mq_tags_lock(struct blk_mq_tags *tags, unsigned long *flags)
+> +{
+> +	spin_lock_irqsave(&tags->lock, *flags);
+> +}
+> +EXPORT_SYMBOL(blk_mq_tags_lock);
+> +
+> +void blk_mq_tags_unlock(struct blk_mq_tags *tags, unsigned long *flags)
+> +{
+> +	spin_unlock_irqrestore(&tags->lock, *flags);
+> +}
+> +EXPORT_SYMBOL(blk_mq_tags_unlock);
 
-> Update device probe to register resources with device-managed functions.
-> Further, get rid of device-specific remove callback which is no longer
-> needed.
-> 
-> Signed-off-by: Théo Borém Fabris <theobf@usp.br>
+The tag map lock is an implementation detail and hence this lock must
+not be used directly by block drivers. I propose to introduce and export
+a new function to block drivers that does the following:
+* Lock tags->lock.
+* Call blk_mq_tag_to_rq().
+* Check whether the request is in the started state. If so, increment
+its reference count.
+* Unlock tags->lock.
 
-+Cc Marek on a couple of addresses as not sure which currently work.
+Thanks,
 
-One tiny cleanup inline, otherwise looks good to me.
-
-> ---
-> Could the dev_err() messages be improved? In particular, I don't know if
-> it is important to express the usage of the device-managed functions.
-
-I'd leave them as is.  Chance of a devm causing a failure that wouldn't
-otherwise happen is nearly 0 as it only requires a tiny allocation extra.
-
-> 
->  drivers/iio/pressure/hp03.c | 35 +++++++----------------------------
->  1 file changed, 7 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/iio/pressure/hp03.c b/drivers/iio/pressure/hp03.c
-> index e40b1d7dc12..78ea95d9f99 100644
-> --- a/drivers/iio/pressure/hp03.c
-> +++ b/drivers/iio/pressure/hp03.c
-> @@ -242,47 +242,27 @@ static int hp03_probe(struct i2c_client *client,
->  	 * which has it's dedicated I2C address and contains
->  	 * the calibration constants for the sensor.
->  	 */
-> -	priv->eeprom_client = i2c_new_dummy_device(client->adapter, HP03_EEPROM_ADDR);
-> +	priv->eeprom_client = devm_i2c_new_dummy_device(dev, client->adapter,
-> +							HP03_EEPROM_ADDR);
->  	if (IS_ERR(priv->eeprom_client)) {
->  		dev_err(dev, "New EEPROM I2C device failed\n");
->  		return PTR_ERR(priv->eeprom_client);
->  	}
->  
-> -	priv->eeprom_regmap = regmap_init_i2c(priv->eeprom_client,
-> -					      &hp03_regmap_config);
-> +	priv->eeprom_regmap = devm_regmap_init_i2c(priv->eeprom_client,
-> +						   &hp03_regmap_config);
->  	if (IS_ERR(priv->eeprom_regmap)) {
->  		dev_err(dev, "Failed to allocate EEPROM regmap\n");
->  		ret = PTR_ERR(priv->eeprom_regmap);
-> -		goto err_cleanup_eeprom_client;
-> +		return ret;
-
-return PTR_ERR(priv->eeprom_regmap);
-
->  	}
->  
-> -	ret = iio_device_register(indio_dev);
-> +	ret = devm_iio_device_register(dev, indio_dev);
->  	if (ret) {
->  		dev_err(dev, "Failed to register IIO device\n");
-> -		goto err_cleanup_eeprom_regmap;
-> +		return ret;
->  	}
->  
-> -	i2c_set_clientdata(client, indio_dev);
-> -
-> -	return 0;
-> -
-> -err_cleanup_eeprom_regmap:
-> -	regmap_exit(priv->eeprom_regmap);
-> -
-> -err_cleanup_eeprom_client:
-> -	i2c_unregister_device(priv->eeprom_client);
-> -	return ret;
-> -}
-> -
-> -static int hp03_remove(struct i2c_client *client)
-> -{
-> -	struct iio_dev *indio_dev = i2c_get_clientdata(client);
-> -	struct hp03_priv *priv = iio_priv(indio_dev);
-> -
-> -	iio_device_unregister(indio_dev);
-> -	regmap_exit(priv->eeprom_regmap);
-> -	i2c_unregister_device(priv->eeprom_client);
-> -
->  	return 0;
->  }
->  
-> @@ -304,7 +284,6 @@ static struct i2c_driver hp03_driver = {
->  		.of_match_table = hp03_of_match,
->  	},
->  	.probe		= hp03_probe,
-> -	.remove		= hp03_remove,
->  	.id_table	= hp03_id,
->  };
->  module_i2c_driver(hp03_driver);
-
+Bart.
