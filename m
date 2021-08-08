@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBB53E3BC0
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6435C3E3BCC
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 19:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231932AbhHHQ7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 12:59:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230169AbhHHQ7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 12:59:16 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S232234AbhHHRGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 13:06:03 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37856 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhHHRGC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 13:06:02 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35D34601FC;
-        Sun,  8 Aug 2021 16:58:53 +0000 (UTC)
-Date:   Sun, 8 Aug 2021 18:01:43 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH v4 0/3] Renesas RZ/G2L ADC driver support
-Message-ID: <20210808180143.6b3dc882@jic23-huawei>
-In-Reply-To: <20210804202118.25745-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20210804202118.25745-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4C7261FFE9;
+        Sun,  8 Aug 2021 17:05:42 +0000 (UTC)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6BC1B13398;
+        Sun,  8 Aug 2021 17:05:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IT3FB+MOEGH8DQAAMHmgww
+        (envelope-from <dave@stgolabs.net>); Sun, 08 Aug 2021 17:05:39 +0000
+Date:   Sun, 8 Aug 2021 10:05:35 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: [patch V3 56/64] futex: Correct the number of requeued waiters
+ for PI
+Message-ID: <20210808170535.kotqd5t677tijh4o@offworld>
+References: <20210805151300.330412127@linutronix.de>
+ <20210805153956.051961951@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210805153956.051961951@linutronix.de>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  4 Aug 2021 21:21:15 +0100
-Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+On Thu, 05 Aug 2021, Thomas Gleixner wrote:
 
-> Hi All,
-> 
-> This patch series adds ADC support for Renesas RZ/G2L family.
-> 
-> Patches apply on top of v5.14-rc2.
-Hi Lad, I'm fine with this, but need to pull my tree forwards
-to include the header that is only in rc2.
+>From: Thomas Gleixner <tglx@linutronix.de>
+>
+>The accounting is wrong when either the PI sanity check or the
+>requeue PI operation fails. Adjust it in the failure path.
 
-I'll probably do that later in the week then pick up patches 1 and 2.
+Ok fortunately these accounting errors are benign considering they
+are in error paths. This also made me wonder about the requeue PI
+top-waiter wakeup from futex_proxy_trylock_atomic(), which is always
+required with nr_wakers == 1. We account for it on the successful
+case we acquired the lock on it's behalf (and thus requeue_pi_wake_futex
+was called), but if the corresponding lookup_pi_state fails, we'll retry.
+So, shouldn't the task_count++ only be considered when we know the
+requeueing is next (a successful top_waiter acquiring the lock+pi state)?
+
+@@ -2260,7 +2260,6 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
+		 */
+		if (ret > 0) {
+			WARN_ON(pi_state);
+-                       task_count++;
+			/*
+			 * If we acquired the lock, then the user space value
+			 * of uaddr2 should be vpid. It cannot be changed by
+@@ -2275,6 +2274,8 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
+			 */
+			ret = lookup_pi_state(uaddr2, ret, hb2, &key2,
+					      &pi_state, &exiting);
++                       if (!ret)
++                               task_count++;
+		}
+
+		switch (ret) {
+
+Also, looking at the code, I think we can use the goto retry_private
+optimization for private futexes upon futex_proxy_trylock_atomic
+lookup_pi_state errors:
+
+@@ -2290,8 +2290,11 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
+			double_unlock_hb(hb1, hb2);
+			hb_waiters_dec(hb2);
+			ret = fault_in_user_writeable(uaddr2);
+-                       if (!ret)
++                       if (!ret) {
++                               if (!(flags & FLAGS_SHARED))
++                                       goto retry_private;
+				goto retry;
++                       }
+			return ret;
+		case -EBUSY:
+		case -EAGAIN:
+
 
 Thanks,
-
-Jonathan
-> 
-> Cheers,
-> Prabhakar
-> 
-> Changes for v4:
-> * Fixed registering action to assert resets on failure/remove
->   as reported by Philip.
-> * Fixed review comments suggested by Jonathan.
-> * Included RB tag from Rob for patch 1/3
-> * Note DTS patch applies on top of https://git.kernel.org/pub/scm/
->   linux/kernel/git/geert/renesas-devel.git/log/
->   ?h=renesas-arm-dt-for-v5.15
-> 
-> Changes for v3 (as requested by Jonathan):
-> * Made use of FIELD_PREP()
-> * Renamed _CLEAR to _MASK and inverted inline as required
-> * Moved |= pair's on same lines
-> * Made use of sysfs_emit() while reading the labels
-> * Used for_each_bit_set() in rzg2l_adc_isr()
-> * Renamed rzg2l_adc_parse_of() -> rzg2l_adc_parse_properties()
-> * Used devm_add_action_or_reset() for asserting the reset signals and
->   disabling pm_runtime and eventually removing remove() callback
-> * Added comments in isr handler for channel select interrupt
-> * Moved enabling/disabling of pclk during hw init in rzg2l_adc_hw_init()
-> * Dropped clock patch 3/4 (https://lore.kernel.org/patchwork/patch/1462152/)
->   from previous series as its queued up in renesas-clk-for-v5.15
-> 
-> Changes for v2:
-> * Update binding doc, dropped gpios/renesas-rzg2l,adc-trigger-mode
->   properties included channel property to represent each wired channel.
-> * Fixed review comments pointed by Alexandru, implemented pm runtime
->   support, dropped mlock usage
-> * Fixed review comments pointed by Jonathan, renamed the macros,
->   simplified the code.
-> * Included clock and DT patches
-> 
-> v1: https://patchwork.kernel.org/project/linux-renesas-soc/cover/
->     20210629220328.13366-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
-> 
-> Lad Prabhakar (3):
->   dt-bindings: iio: adc: Add binding documentation for Renesas RZ/G2L
->     A/D converter
->   iio: adc: Add driver for Renesas RZ/G2L A/D converter
->   arm64: dts: renesas: r9a07g044: Add ADC node
-> 
->  .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 134 ++++
->  MAINTAINERS                                   |   8 +
->  arch/arm64/boot/dts/renesas/r9a07g044.dtsi    |  42 ++
->  drivers/iio/adc/Kconfig                       |  10 +
->  drivers/iio/adc/Makefile                      |   1 +
->  drivers/iio/adc/rzg2l_adc.c                   | 600 ++++++++++++++++++
->  6 files changed, 795 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
->  create mode 100644 drivers/iio/adc/rzg2l_adc.c
-> 
-
+Davidlohr
