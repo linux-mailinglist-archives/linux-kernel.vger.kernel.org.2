@@ -2,140 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82CA3E3A41
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 14:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A7B3E3A43
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 14:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbhHHMkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 08:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
+        id S230270AbhHHMpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 08:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231414AbhHHMkM (ORCPT
+        with ESMTP id S229504AbhHHMpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 08:40:12 -0400
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078EEC0613CF;
-        Sun,  8 Aug 2021 05:39:52 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4GjJh65nz2zQk9y;
-        Sun,  8 Aug 2021 14:39:50 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gorani.run; s=MBO0001;
-        t=1628426389;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wTDEWTY6DFnkW7Rjxxj/CcZyJlPojb5t/pJtInOE9bs=;
-        b=njzXrk+pIxdCL4wWJkaLLZ7UkjSIqw58a948hlA7vJXsx1fXdyYfPuYfqA3A5fOwUMsudv
-        2/SXoW2Ao3FLxzoMnzk1+pHyO9NaGObsnmKMQ8r4RPK9LC75FLqu37MBBvem9cMeFQqq6c
-        P7P3miV9eFghBfBmQ/DefIfX7fHd0hNimdAogouTxbcrI4OYPXG865iOYhbQ1SCUaWGO/l
-        hbZA+LalU5vkTtPaLi8D7+QTQ7fp5zEcfZna0g3ABEEw3Hr8ZKWDWyrCelP/dl3+ZlM1sc
-        A+CJtlQlA73sYSJ8JZ/rtIQYoVgpNglmygYDmW2yDid5JFxivu7HLN4ncqahdw==
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
-        with ESMTP id uGsJQJGVLIxf; Sun,  8 Aug 2021 14:39:47 +0200 (CEST)
-From:   Sungbo Eo <mans0n@gorani.run>
-To:     linux-mediatek@lists.infradead.org
-Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Min Guo <min.guo@mediatek.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sungbo Eo <mans0n@gorani.run>
-Subject: [PATCH v2 2/2] arm: dts: mt7623: add musb device nodes
-Date:   Sun,  8 Aug 2021 21:38:40 +0900
-Message-Id: <20210808123840.176738-3-mans0n@gorani.run>
-In-Reply-To: <20210808123840.176738-1-mans0n@gorani.run>
-References: <20210803151320.71531-1-mans0n@gorani.run>
- <20210808123840.176738-1-mans0n@gorani.run>
+        Sun, 8 Aug 2021 08:45:07 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD645C061760
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 05:44:47 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id u3so24052832ejz.1
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 05:44:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=jG+pcJ3dtW2bjqUjAdY5ktZ6p/MMjDNZqNMg9Jebb8g=;
+        b=kMTe32Jhg+RMw9UucgxZjer3PNIxx1n3WfXMp0z/UfJLQiYakZ4MQNsAu1B21DnJ/0
+         UesHEnjoC/OWlIeZvUYtVFoq2zdsNyj3xP4DOQlLHyagoRfFFADEOJXUoLOftYb1TjLH
+         Jmibvccs+/in8OtN/H8DLc3sqRN1QH2hRRQD6nsD/ONv6gVu1MUSXyJSLMII4ufn+jrE
+         58SsAupRxW1eEtRmuBmgMpOMYI+QGef1pPogrd+AqnTiPvhAE4hTlbYtNdIFNuko6hJm
+         zZS2gVex/s8NfZLTmQH18+0G1CtUh5H0EwbBg5gxy7ulte5Dy/5XcWPKG7NszLFCSy5b
+         Gp5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=jG+pcJ3dtW2bjqUjAdY5ktZ6p/MMjDNZqNMg9Jebb8g=;
+        b=npw+qX1prWu4e37Uat9oYID+m01ENRuuLLj4i4aec23tfLrSf7gwDbTQvgbriDQUuO
+         Pu2URsiYlPJrHfG3aFu1vlik7wMzD4zp1fQF/1KNPkniIGSzay37q9rVIfcXXlbQCkqa
+         eyWakNSrJG+GAPPEPBppN87Fnr11+HQFpiNtr43qeHgt24Oxbum0irtWNC1yU9hWpkmE
+         VqDMdYhESwnvRMBPuO1tlwICymqxJYa75NK2gjXfIYvMvXv2noS9r8yTE695U6/R9mOV
+         n5ntpoiKhB8amvhQV6k75vLJ2moXSf7dENcYmvv9errS8SBxjoapKwDjmS3v4gI+lTvB
+         AnQg==
+X-Gm-Message-State: AOAM533OKF9cirt2O5tQBgLbGz8p3GtURa3Uc2+mgzqHSRkAuQoVtA4F
+        glAjjnH6Xp9SyhICp4CkCkc3iKcKsisk6AWeH34=
+X-Google-Smtp-Source: ABdhPJwzTqk1DToyFrILQkiNpYDo+giZ2W9QJ6Oi6pkkhFDFcseGt/1CcBpH0VMAn4oXUnvkB/EkqIch3C5QY03NBYo=
+X-Received: by 2002:a17:906:34c8:: with SMTP id h8mr4610148ejb.124.1628426686339;
+ Sun, 08 Aug 2021 05:44:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: ECECD189C
-X-Rspamd-UID: 492da4
+Received: by 2002:a50:9e6e:0:0:0:0:0 with HTTP; Sun, 8 Aug 2021 05:44:45 -0700 (PDT)
+From:   "Mrs. Judith Moris" <mrsjudithmoris@gmail.com>
+Date:   Sun, 8 Aug 2021 12:44:45 +0000
+Message-ID: <CAMP+kx6y+GfXsG7zaFL_4_nKca15DDpeX4Z7e1FUu1YnU0Jvgw@mail.gmail.com>
+Subject: Compensation.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MT7623 has an musb controller that is compatible with the one from MT2701.
+Hello,
 
-Signed-off-by: Sungbo Eo <mans0n@gorani.run>
----
-v2:
-* rename usb3 label to usb0
-* move usb0 & u2phy1 nodes to the right sorted place
-* disable u2phy1 by default
-* correct u2port2 node name to match its reg address
----
- arch/arm/boot/dts/mt7623.dtsi  | 34 ++++++++++++++++++++++++++++++++++
- arch/arm/boot/dts/mt7623a.dtsi |  4 ++++
- 2 files changed, 38 insertions(+)
+I am Mrs Judith Morris, Sorry for contacting you this late, but am
+happy to inform you about my success in getting those fund transferred
+to Japan through the help of a new partner who assisted me make sure
+the fund was transferred with the help of his company, As we speak
+right now i have moved to Japan to meet him for sharing according to
+the percentage as agreed, right now i am having a good time here with
+him as we are planing to use the fund to set up a new company here in
+Tokyo where both of us will manage it together.
 
-diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dtsi
-index 3c11f7cfcc40..790d74439cc6 100644
---- a/arch/arm/boot/dts/mt7623.dtsi
-+++ b/arch/arm/boot/dts/mt7623.dtsi
-@@ -585,6 +585,40 @@ spi2: spi@11017000 {
- 		status = "disabled";
- 	};
- 
-+	usb0: usb@11200000 {
-+		compatible = "mediatek,mt7623-musb",
-+			     "mediatek,mtk-musb";
-+		reg = <0 0x11200000 0 0x1000>;
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
-+		interrupt-names = "mc";
-+		phys = <&u2port2 PHY_TYPE_USB2>;
-+		dr_mode = "otg";
-+		clocks = <&pericfg CLK_PERI_USB0>,
-+			 <&pericfg CLK_PERI_USB0_MCU>,
-+			 <&pericfg CLK_PERI_USB_SLV>;
-+		clock-names = "main","mcu","univpll";
-+		power-domains = <&scpsys MT2701_POWER_DOMAIN_IFR_MSC>;
-+		status = "disabled";
-+	};
-+
-+	u2phy1: t-phy@11210000 {
-+		compatible = "mediatek,mt7623-tphy",
-+			     "mediatek,generic-tphy-v1";
-+		reg = <0 0x11210000 0 0x0800>;
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+		status = "disabled";
-+
-+		u2port2: usb-phy@11210800 {
-+			reg = <0 0x11210800 0 0x0100>;
-+			clocks = <&topckgen CLK_TOP_USB_PHY48M>;
-+			clock-names = "ref";
-+			#phy-cells = <1>;
-+			status = "okay";
-+		};
-+	};
-+
- 	audsys: clock-controller@11220000 {
- 		compatible = "mediatek,mt7623-audsys",
- 			     "mediatek,mt2701-audsys",
-diff --git a/arch/arm/boot/dts/mt7623a.dtsi b/arch/arm/boot/dts/mt7623a.dtsi
-index 0735a1fb8ad9..d304b62d24b5 100644
---- a/arch/arm/boot/dts/mt7623a.dtsi
-+++ b/arch/arm/boot/dts/mt7623a.dtsi
-@@ -35,6 +35,10 @@ &scpsys {
- 	clock-names = "ethif";
- };
- 
-+&usb0 {
-+	power-domains = <&scpsys MT7623A_POWER_DOMAIN_IFR_MSC>;
-+};
-+
- &usb1 {
- 	power-domains = <&scpsys MT7623A_POWER_DOMAIN_HIF>;
- };
--- 
-2.32.0
+Though i did not forget all your past effort to support me get the
+fund which failed us somehow, So for this reason i have decided to
+compensate you with the sum of USD$800,000.00 for your past effort,
+and i like to inform you that i have left an instruction to my lawyer
+Barr. Henry to send your bank cheque to you without delay so that once
+you receive the amount we can now share the joy together as part of
+the good relationship we shared at that time.
 
+Like i said i have instructed my lawyer Hon. Barr. Henry to quickly
+send your bank cashier cheque to you once you contact him which i left
+for your compensation, So quickly contact my lawyer vie her email
+contacts as indicated herein below.
+
+Name: Hon Barr. Henry
+Email: henrylawchambers1@gmail.com
+
+Contact him immediately as he will be waiting for you to contact him
+as instructed and do well to inform me once you receive your cheque
+from my lawyer and cash your money so that we can share the joy
+together, Once again am sorry that i did not contact you again since
+then as i have been busy searching for a solution to get the fund
+transferred through the help of the new partner, So am in Tokyo Japan
+right now for business investment, I wish you good luck and hoping to
+hear good news from you as soon as you receive your cheque from my
+lawyer and cash your money so we can be happy together.
+
+Your friend
+Mrs Judith Morris
+Responding From Tokyo, Japan.
