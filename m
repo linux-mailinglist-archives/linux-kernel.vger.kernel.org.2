@@ -2,114 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8203E3879
+	by mail.lfdr.de (Postfix) with ESMTP id B22233E387B
 	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 06:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbhHHEad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 00:30:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50696 "EHLO mail.kernel.org"
+        id S229617AbhHHEqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 00:46:17 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:52032 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229473AbhHHEac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 00:30:32 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B615C60EE4;
-        Sun,  8 Aug 2021 04:30:13 +0000 (UTC)
-Date:   Sun, 8 Aug 2021 00:30:11 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH] tracing / histogram: Fix NULL pointer dereference on
- strcmp() on NULL event name
-Message-ID: <20210808003011.4037f8d0@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229473AbhHHEqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 00:46:15 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1mCah5-0002dm-28; Sun, 08 Aug 2021 12:45:51 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1mCagk-0007tW-Sv; Sun, 08 Aug 2021 12:45:30 +0800
+Date:   Sun, 8 Aug 2021 12:45:30 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Byungchul Park <byungchul.park@lge.com>
+Cc:     torvalds@linux-foundation.org, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, rostedt@goodmis.org, joel@joelfernandes.org,
+        alexander.levin@microsoft.com, daniel.vetter@ffwll.ch,
+        chris@chris-wilson.co.uk, duyuyang@gmail.com,
+        johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+        willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+        bfields@fieldses.org, gregkh@linuxfoundation.org,
+        kernel-team@lge.com
+Subject: Re: [REPORT] Request for reviewing crypto code wrt
+ wait_for_completion()
+Message-ID: <20210808044530.GA30313@gondor.apana.org.au>
+References: <20210803021611.GA28236@X58A-UD3R>
+ <20210806080344.GA5788@X58A-UD3R>
+ <20210806114058.GA13896@gondor.apana.org.au>
+ <20210807034639.GA8726@X58A-UD3R>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210807034639.GA8726@X58A-UD3R>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Sat, Aug 07, 2021 at 12:46:39PM +0900, Byungchul Park wrote:
+>
+> > > THREAD C
+> > > --------
+> > > C1 cryptomgr_test()
+> > > C2    crypto_alg_tested()
+> > > C3       complete_all(c)
+> > > 
+> > > For example, in this situation, I think C3 could wake up both A6 and B9
+> > > before THREAD B reaches B10 which is not desired by A6. Say, is it okay
+> > > to wake up A6 with B7 ~ B9 having yet to complete?
+> > 
+> > AFAICS thread C only wakes up test larvals, not instantiation larvals.
+> > Please let me know if you have any further issues.
+> 
+> The both cases looks like to get the larvals from the same list,
+> crypto_alg_list, one from crypto_larval_lookup() and the other from
+> __crypto_register_alg(). So I thought a single larval can be used at the
+> same time both at crypto_wait_for_test() and crypto_alg_mod_lookup() by
+> any chance. It would be great if the code ensures it never happens :-)
 
-The following commands:
+Perhaps it's not obvious but the distinguishing feature between test
+larvals and the other kind of larvals is that test larvals have a
+non-null cra_driver_name field.
 
- # echo 'read_max u64 size;' > synthetic_events
- # echo 'hist:keys=common_pid:count=count:onmax($count).trace(read_max,count)' > events/syscalls/sys_enter_read/trigger
+In crypto_alg_tested we specifically exclude non-test larvals
+when doing the lookup.
 
-Causes:
+> The problematic scenario I wanted to ask you looks like - I was
+> wondering if it's okay to nest requesting CRYPTO_MSG_ALG_REQUEST and
+> CRYPTO_MSG_ALG_REGISTER in a single stack, in other words, if it's okay
+> to try CRYPTO_MSG_ALG_REGISTER before completing CRYPTO_MSG_ALG_REQUEST.
+> 
+> A1 crypto_alg_mod_lookup()
+> A2    crypto_probing_notify(CRYPTO_MSG_ALG_REQUEST)
+> A3       cryptomgr_schedule_probe()
+> A4          kthread_run(cyptomgr_probe) ---> Start THREAD B
+> 
+> B1 cryptomgr_probe()
+> B2    pkcslpad_create()
+> B3       crypto_wait_for_test()
+> B4          crypto_probing_notify(CRYPTO_MSG_ALG_REGISTER)
+> B5             cryptomgr_schedule_test()
+> B6                kthread_run(cyptomgr_test) ---> Start THREAD C
+> 
+> C1 cryptomgr_test()
+> C2    crypto_alg_tested()
+> C3       complete_all(c) <- *the point* that I'd like to ask you.
 
- BUG: kernel NULL pointer dereference, address: 0000000000000000
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 0 P4D 0
- Oops: 0000 [#1] PREEMPT SMP
- CPU: 4 PID: 1763 Comm: bash Not tainted 5.14.0-rc2-test+ #155
- Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01
-v03.03 07/14/2016
- RIP: 0010:strcmp+0xc/0x20
- Code: 75 f7 31 c0 0f b6 0c 06 88 0c 02 48 83 c0 01 84 c9 75 f1 4c 89 c0
-c3 0f 1f 80 00 00 00 00 31 c0 eb 08 48 83 c0 01 84 d2 74 0f <0f> b6 14 07
-3a 14 06 74 ef 19 c0 83 c8 01 c3 31 c0 c3 66 90 48 89
- RSP: 0018:ffffb5fdc0963ca8 EFLAGS: 00010246
- RAX: 0000000000000000 RBX: ffffffffb3a4e040 RCX: 0000000000000000
- RDX: 0000000000000000 RSI: ffff9714c0d0b640 RDI: 0000000000000000
- RBP: 0000000000000000 R08: 00000022986b7cde R09: ffffffffb3a4dff8
- R10: 0000000000000000 R11: 0000000000000000 R12: ffff9714c50603c8
- R13: 0000000000000000 R14: ffff97143fdf9e48 R15: ffff9714c01a2210
- FS:  00007f1fa6785740(0000) GS:ffff9714da400000(0000)
-knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000000 CR3: 000000002d863004 CR4: 00000000001706e0
- Call Trace:
-  __find_event_file+0x4e/0x80
-  action_create+0x6b7/0xeb0
-  ? kstrdup+0x44/0x60
-  event_hist_trigger_func+0x1a07/0x2130
-  trigger_process_regex+0xbd/0x110
-  event_trigger_write+0x71/0xd0
-  vfs_write+0xe9/0x310
-  ksys_write+0x68/0xe0
-  do_syscall_64+0x3b/0x90
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
- RIP: 0033:0x7f1fa6879e87
+Well c in this case can only be a test larval so it cannot wake
+up thread A which is waiting on a non-test larval.
 
-The problem was the "trace(read_max,count)" where the "count" should be
-"$count" as "onmax()" only handles variables (although it really should be
-able to figure out that "count" is a field of sys_enter_read). But there's
-a path that does not find the variable and ends up passing a NULL for the
-event, which ends up getting passed to "strcmp()".
+> A5    crypto_larval_wait()
+> A6       wait_for_completion_killable_timeout(c) /* waiting for B10 */
+>          (wake up and go)
+> 
+> Bx          wait_for_completion_killable(c) /* waiting for C3 */
+>             (wake up and go)
+> Bx    tmpl->alloc()
+> Bx    crupto_register_instance()
+> B10   complete_all(c)
 
-Add a check for NULL to return and error on the command with:
-
- # cat error_log
-  hist:syscalls:sys_enter_read: error: Couldn't create or find variable
-  Command: hist:keys=common_pid:count=count:onmax($count).trace(read_max,count)
-                                ^
-Cc: stable@vger.kernel.org
-Fixes: 50450603ec9cb tracing: Add 'onmax' hist trigger action support
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/trace_events_hist.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 949ef09dc537..a48aa2a2875b 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -3430,6 +3430,8 @@ trace_action_create_field_var(struct hist_trigger_data *hist_data,
- 			event = data->match_data.event;
- 		}
- 
-+		if (!event)
-+			goto free;
- 		/*
- 		 * At this point, we're looking at a field on another
- 		 * event.  Because we can't modify a hist trigger on
+Cheers,
 -- 
-2.31.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
