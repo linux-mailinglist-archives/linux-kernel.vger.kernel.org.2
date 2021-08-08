@@ -2,176 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575BC3E423E
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 11:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545C63E3D2B
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 01:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhHIJOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 9 Aug 2021 05:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234085AbhHIJOb (ORCPT
+        id S230024AbhHHXik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 19:38:40 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:55059 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229942AbhHHXij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 9 Aug 2021 05:14:31 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F22C0613CF;
-        Mon,  9 Aug 2021 02:14:11 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id f3so5040926plg.3;
-        Mon, 09 Aug 2021 02:14:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U9+lePBuSqGbHWb7b9q5oyrUY4RW0y6COAp8Vm5hWWA=;
-        b=o8UBzIGNDTZsevHxmWwA3WBb89p0jwDO1lHlqeiwBcM1ugNsdBGxf1RJWyLXCpFqjB
-         W5ln2eG/mRL+yPvSDn/tyw7U0KP6bevUxRsx4XFrXCzUnCYjN0IYdw151LVZ3VN5/XLK
-         6TiV9pcsVDUsWcSgfbWy2sqXaxKKEA4J4laKWS4mHIXXTNGOxAdazyoYGRAAL8N/sJW7
-         PG1gpCN41Tw+LwB+W2O0lUmBidnQHy1Ttu6gl6KpOR4Sj9rqvD/Far3kjXAxc6xY3mHr
-         Am+0+hG4CATnZro2xDA6EzOEj7ivV3sCSqVMG+ocm57I+6NBVrFbhdM/xK81p26Q257x
-         i6eA==
+        Sun, 8 Aug 2021 19:38:39 -0400
+Received: by mail-io1-f69.google.com with SMTP id 81-20020a6b02540000b02905824a68848bso10927664ioc.21
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 16:38:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U9+lePBuSqGbHWb7b9q5oyrUY4RW0y6COAp8Vm5hWWA=;
-        b=RANLm9knY2h/ohzGKp8t9Y74GPHy7pgZYrchIC9ire7iuXEdrDZdxDJatp4F3katg/
-         9sQ/4nyPk147RKKSx+QjTD3Bdf9wqOpR7xbMSutZ/qRSH+/pVTf19LPFngejpP8vWv+p
-         hXjNpbXJ7O4ZRwvx6dJVOkPyLpOazB0Pv+zSoJb0+yAcSFZ98fZa0d27a1tRlARjrb4i
-         s9Mx702rBEGDZo+L2x/idNiMwNvS6FZLsc2h7XzeBN03priNTmvYp5iMe6Xr5J1JJp5A
-         B2WcqnjD/rszrIVaeQ736Bnr8bkyfeHAZQ7LiJKD1LbFuoWYEb8OKY2mPbgu4yL5/VPr
-         a8vA==
-X-Gm-Message-State: AOAM533DSvHu8CnhX0DddRFnNp8eaBNWatii1aFxWOWY7fvBRl9etVw1
-        0+u8dbgw45jkFT075nIFvlQDRFx1x/A=
-X-Google-Smtp-Source: ABdhPJwcZy4LkWv84hU5BIzfGMBWQfnbLuErD9eHQ/sOHXJ06SLTnvMKnw0MmM3oa8VJOCDTqTA7bQ==
-X-Received: by 2002:a05:6a00:188e:b029:3c3:1142:15f2 with SMTP id x14-20020a056a00188eb02903c3114215f2mr23050720pfh.36.1628500450924;
-        Mon, 09 Aug 2021 02:14:10 -0700 (PDT)
-Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id fa21sm1179426pjb.20.2021.08.09.02.14.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 09 Aug 2021 02:14:10 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: [PATCH] KVM: X86: Don't reset dr6 unconditionally when the vcpu being scheduled out
-Date:   Mon,  9 Aug 2021 07:29:19 +0800
-Message-Id: <20210808232919.862835-1-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=6Sls2ZePO2B7rK1frbRgJ99vGjzszT5eqt0ie+TyZh4=;
+        b=g8283tMTk219jSz5hIZfQgj7EBGZKBbzYKRrtGGzqESS0bVSiHDmH5OpHPuStKMWFO
+         Kk4uljQmZBafcfY4/jMniAgjPxDQIEaxGcf+Zi7nf4FFP0ajPJoEh9t0LIUCAhx68c7e
+         6Qakz7PV7iqYsAcIz2NyrEscHC72J2BJEnSoQjWGPVsdKgiJDBniOK8JF4xioQX/ev2e
+         Pe8R+EXLRfTrq2Bjvlo5e/ZYHG7VprKx4cRbSfESAjokyGgUhTxl5qM1N2i6/zltZqOk
+         +lO59VjGF8lRuSYhkEvACD+tAMSfwdcw1DHMZX3a9d3t1KcJYu7bz5X1Er/mfs/XrBd/
+         eX8w==
+X-Gm-Message-State: AOAM5333/QRyzUM4h5/L6VMuJYHi/Ej/IgbQ0MoctU4FMmO0LmcsdDER
+        c6jtJ7aBkAbBNIHPOr3A6uGCU8vsIPjkGSbPij/+9CrgeNRb
+X-Google-Smtp-Source: ABdhPJzDq0KkjK6Hn7ioKuW9SGjXRihEUKOaipf9eMWxxIETGIhosE/xhsxde+AokRZJxSiizlG2oXwC7MMWm60zZs2yAHMtKZYd
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1aa3:: with SMTP id l3mr453617ilv.299.1628465898703;
+ Sun, 08 Aug 2021 16:38:18 -0700 (PDT)
+Date:   Sun, 08 Aug 2021 16:38:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006bd0b305c914c3dc@google.com>
+Subject: [syzbot] BUG: sleeping function called from invalid context in _copy_to_iter
+From:   syzbot <syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        christian.brauner@ubuntu.com, cong.wang@bytedance.com,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        jamorris@linux.microsoft.com, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, rao.shoaib@oracle.com, shuah@kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+Hello,
 
-The commit efdab992813fb ("KVM: x86: fix escape of guest dr6 to the host")
-fixed a bug.  It did a great job and reset dr6 unconditionally when the
-vcpu being scheduled out since the linux kernel only activates breakpoints
-in rescheduling (perf events).
+syzbot found the following issue on:
 
-But writing to debug registers is slow, and it can be shown in perf results
-sometimes even neither the host nor the guest activate breakpoints.
+HEAD commit:    c2eecaa193ff pktgen: Remove redundant clone_skb override
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12e3a69e300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aba0c23f8230e048
+dashboard link: https://syzkaller.appspot.com/bug?extid=8760ca6c1ee783ac4abd
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15c5b104300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10062aaa300000
 
-It'd be better to reset it conditionally and this patch moves the code of
-reseting dr6 to the path of VM-exit where we can check the related
-conditions.  And the comment is also updated.
+The issue was bisected to:
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+commit 314001f0bf927015e459c9d387d62a231fe93af3
+Author: Rao Shoaib <rao.shoaib@oracle.com>
+Date:   Sun Aug 1 07:57:07 2021 +0000
+
+    af_unix: Add OOB support
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10765f8e300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12765f8e300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14765f8e300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8760ca6c1ee783ac4abd@syzkaller.appspotmail.com
+Fixes: 314001f0bf92 ("af_unix: Add OOB support")
+
+BUG: sleeping function called from invalid context at lib/iov_iter.c:619
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 8443, name: syz-executor700
+2 locks held by syz-executor700/8443:
+ #0: ffff888028fa0d00 (&u->iolock){+.+.}-{3:3}, at: unix_stream_read_generic+0x16c6/0x2190 net/unix/af_unix.c:2501
+ #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: unix_stream_read_generic+0x16d0/0x2190 net/unix/af_unix.c:2502
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 1 PID: 8443 Comm: syz-executor700 Not tainted 5.14.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9154
+ __might_fault+0x6e/0x180 mm/memory.c:5258
+ _copy_to_iter+0x199/0x1600 lib/iov_iter.c:619
+ copy_to_iter include/linux/uio.h:139 [inline]
+ simple_copy_to_iter+0x4c/0x70 net/core/datagram.c:519
+ __skb_datagram_iter+0x10f/0x770 net/core/datagram.c:425
+ skb_copy_datagram_iter+0x40/0x50 net/core/datagram.c:533
+ skb_copy_datagram_msg include/linux/skbuff.h:3620 [inline]
+ unix_stream_read_actor+0x78/0xc0 net/unix/af_unix.c:2701
+ unix_stream_recv_urg net/unix/af_unix.c:2433 [inline]
+ unix_stream_read_generic+0x17cd/0x2190 net/unix/af_unix.c:2504
+ unix_stream_recvmsg+0xb1/0xf0 net/unix/af_unix.c:2717
+ sock_recvmsg_nosec net/socket.c:944 [inline]
+ sock_recvmsg net/socket.c:962 [inline]
+ sock_recvmsg net/socket.c:958 [inline]
+ ____sys_recvmsg+0x2c4/0x600 net/socket.c:2622
+ ___sys_recvmsg+0x127/0x200 net/socket.c:2664
+ do_recvmmsg+0x24d/0x6d0 net/socket.c:2758
+ __sys_recvmmsg net/socket.c:2837 [inline]
+ __do_sys_recvmmsg net/socket.c:2860 [inline]
+ __se_sys_recvmmsg net/socket.c:2853 [inline]
+ __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2853
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43ef39
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffca8776d68 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ef39
+RDX: 0000000000000700 RSI: 0000000020001140 RDI: 0000000000000004
+RBP: 0000000000402f20 R08: 0000000000000000 R09: 0000000000400488
+R10: 0000000000000007 R11: 0000000000000246 R12: 0000000000402fb0
+R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
+
+=============================
+[ BUG: Invalid wait context ]
+5.14.0-rc3-syzkaller #0 Tainted: G        W        
+-----------------------------
+syz-executor700/8443 is trying to lock:
+ffff8880212b6a28 (&mm->mmap_lock#2){++++}-{3:3}, at: __might_fault+0xa3/0x180 mm/memory.c:5260
+other info that might help us debug this:
+context-{4:4}
+2 locks held by syz-executor700/8443:
+ #0: ffff888028fa0d00 (&u->iolock){+.+.}-{3:3}, at: unix_stream_read_generic+0x16c6/0x2190 net/unix/af_unix.c:2501
+ #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ #1: ffff888028fa0df0 (&u->lock){+.+.}-{2:2}, at: unix_stream_read_generic+0x16d0/0x2190 net/unix/af_unix.c:2502
+stack backtrace:
+CPU: 1 PID: 8443 Comm: syz-executor700 Tainted: G        W         5.14.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ print_lock_invalid_wait_context kernel/locking/lockdep.c:4666 [inline]
+ check_wait_context kernel/locking/lockdep.c:4727 [inline]
+ __lock_acquire.cold+0x213/0x3ab kernel/locking/lockdep.c:4965
+ lock_acquire kernel/locking/lockdep.c:5625 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
+ __might_fault mm/memory.c:5261 [inline]
+ __might_fault+0x106/0x180 mm/memory.c:5246
+ _copy_to_iter+0x199/0x1600 lib/iov_iter.c:619
+ copy_to_iter include/linux/uio.h:139 [inline]
+ simple_copy_to_iter+0x4c/0x70 net/core/datagram.c:519
+ __skb_datagram_iter+0x10f/0x770 net/core/datagram.c:425
+ skb_copy_datagram_iter+0x40/0x50 net/core/datagram.c:533
+ skb_copy_datagram_msg include/linux/skbuff.h:3620 [inline]
+ unix_stream_read_actor+0x78/0xc0 net/unix/af_unix.c:2701
+ unix_stream_recv_urg net/unix/af_unix.c:2433 [inline]
+ unix_stream_read_generic+0x17cd/0x2190 net/unix/af_unix.c:2504
+ unix_stream_recvmsg+0xb1/0xf0 net/unix/af_unix.c:2717
+ sock_recvmsg_nosec net/socket.c:944 [inline]
+ sock_recvmsg net/socket.c:962 [inline]
+ sock_recvmsg net/socket.c:958 [inline]
+ ____sys_recvmsg+0x2c4/0x600 net/socket.c:2622
+ ___sys_recvmsg+0x127/0x200 net/socket.c:2664
+ do_recvmmsg+0x24d/0x6d0 net/socket.c:2758
+ __sys_recvmmsg net/socket.c:2837 [inline]
+ __do_sys_recvmmsg net/socket.c:2860 [inline]
+ __se_sys_recvmmsg net/socket.c:2853 [inline]
+ __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2853
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43ef39
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffca8776d68 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ef39
+RDX: 0000000000000700 RSI: 0000000020001140 RDI: 0000000000000004
+RBP: 0000000000402f20 R08: 0000000000000000 R09: 0000000000400488
+R10: 0000000000000007 R11: 0000000000000246 R12: 0000
+
+
 ---
-And even in the future, the linux kernel might activate breakpoint
-in interrupts (rather than in rescheduling only),  the host would
-not be confused by the stale dr6 after this patch.  The possible future
-author who would implement it wouldn't need to care about how the kvm
-mananges debug registers since it sticks to the host's expectations.
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Another solution is changing breakpoint.c and make the linux kernel
-always reset dr6 in activating breakpoints.  So that dr6 is allowed
-to be stale when host breakpoints is not enabled and we don't need
-to reset dr6 in this case. But it would be no harm to reset it even in
-both places and killing stale states is good in programing.
-
- arch/x86/kvm/x86.c | 29 +++++++++++++++++++++--------
- 1 file changed, 21 insertions(+), 8 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 4116567f3d44..39b5dad2dd19 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4310,12 +4310,6 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
- 
- 	static_call(kvm_x86_vcpu_put)(vcpu);
- 	vcpu->arch.last_host_tsc = rdtsc();
--	/*
--	 * If userspace has set any breakpoints or watchpoints, dr6 is restored
--	 * on every vmexit, but if not, we might have a stale dr6 from the
--	 * guest. do_debug expects dr6 to be cleared after it runs, do the same.
--	 */
--	set_debugreg(0, 6);
- }
- 
- static int kvm_vcpu_ioctl_get_lapic(struct kvm_vcpu *vcpu,
-@@ -9375,6 +9369,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 	fastpath_t exit_fastpath;
- 
- 	bool req_immediate_exit = false;
-+	bool reset_dr6 = false;
- 
- 	/* Forbid vmenter if vcpu dirty ring is soft-full */
- 	if (unlikely(vcpu->kvm->dirty_ring_size &&
-@@ -9601,6 +9596,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 		set_debugreg(vcpu->arch.eff_db[3], 3);
- 		set_debugreg(vcpu->arch.dr6, 6);
- 		vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
-+		reset_dr6 = true;
- 	} else if (unlikely(hw_breakpoint_active())) {
- 		set_debugreg(0, 7);
- 	}
-@@ -9631,17 +9627,34 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 		kvm_update_dr0123(vcpu);
- 		kvm_update_dr7(vcpu);
- 		vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
-+		reset_dr6 = true;
- 	}
- 
- 	/*
- 	 * If the guest has used debug registers, at least dr7
- 	 * will be disabled while returning to the host.
-+	 *
-+	 * If we have active breakpoints in the host, restore the old state.
-+	 *
- 	 * If we don't have active breakpoints in the host, we don't
--	 * care about the messed up debug address registers. But if
--	 * we have some of them active, restore the old state.
-+	 * care about the messed up debug address registers but dr6
-+	 * which is expected to be cleared normally.  Otherwise we might
-+	 * leak a stale dr6 from the guest and confuse the host since
-+	 * neither the host reset dr6 on activating next breakpoints nor
-+	 * the hardware clear it on dilivering #DB.  The Intel SDM says:
-+	 *
-+	 *   Certain debug exceptions may clear bits 0-3. The remaining
-+	 *   contents of the DR6 register are never cleared by the
-+	 *   processor. To avoid confusion in identifying debug
-+	 *   exceptions, debug handlers should clear the register before
-+	 *   returning to the interrupted task.
-+	 *
-+	 * Keep it simple and live up to expectations: clear DR6 immediately.
- 	 */
- 	if (hw_breakpoint_active())
- 		hw_breakpoint_restore();
-+	else if (unlikely(reset_dr6))
-+		set_debugreg(DR6_RESERVED, 6);
- 
- 	vcpu->arch.last_vmentry_cpu = vcpu->cpu;
- 	vcpu->arch.last_guest_tsc = kvm_read_l1_tsc(vcpu, rdtsc());
--- 
-2.19.1.6.gb485710b
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
