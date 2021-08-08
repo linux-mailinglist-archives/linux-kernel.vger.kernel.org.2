@@ -2,123 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD803E3B42
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CA73E3B44
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 18:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhHHQFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 12:05:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56846 "EHLO
+        id S229923AbhHHQIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 12:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231199AbhHHQFf (ORCPT
+        with ESMTP id S229882AbhHHQIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 12:05:35 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98143C061760;
-        Sun,  8 Aug 2021 09:05:15 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id b1-20020a17090a8001b029017700de3903so17051606pjn.1;
-        Sun, 08 Aug 2021 09:05:15 -0700 (PDT)
+        Sun, 8 Aug 2021 12:08:46 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5FDC0613CF
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 09:08:27 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id n200-20020a25d6d10000b02905935ac4154aso4253729ybg.23
+        for <linux-kernel@vger.kernel.org>; Sun, 08 Aug 2021 09:08:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=Du89aQgKZdsGf+sWEx87Fhx9ntqBcSvAio1IQ5nV5Kw=;
-        b=YCPjiQssqj1+/fIwxKO9r0VHUJxXQgTBGdFbLqB8AUsz1Y2sKHwBHI/jYVN9RK9Xnk
-         GghOK1qqjUUfTjKwwd86cmehmj8AxDxt2TmO/xDTitkfcZR8xJMa+VjBv3yK2GFHlm31
-         DQ8FweiwpJo7g3s/ogH3YervMwbY39kLp6CvodvsSZ5pcjGB+pyWilH8lSC+ukZ74wGO
-         KWnWTr6UQf/1iGTIoDet2kOMExfIzKW6GJzG0seAPsI3gp1XBtJZX604Llzj+/Mxo0f4
-         dcnlYuPVUvhnQZlZrp1vGN/0GfzivL7OuoMCP2RNDZG8eNzNQvyq/mfYJSU5PzWVPTfg
-         O8pA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=L0Uwt6aQVn6oCqr0wcgwrO21cHc++7sRbVmBO4SXG1I=;
+        b=s3dgGmM+iGKhdSUGeERXwP1nS3yy3tu3ZVhJaMxAzrZ6KZpc4YYMtpMyq5HyPVSxuC
+         2us/Vq0FvGTmJmW8xheeHHq7180460RM5HRwekMWKtdMfeUHDDbPv0Z898IykmWAnnAe
+         dPo19jcuexX8gQj8oNgdAIZawDK5Ztm3oqub9Btf0G6LY4JDsyZNII2VpHlEs96mNqku
+         SsSAqRlcSno8EBIl+kAAp7MwsNxOlKxtdEUtj3DX/nk+BQ2eSRfH3DP3eU47Oi8tk/XE
+         zkXA4AhfAFcH4ibSKtFPtkSxJtwYSByRMUXCiFRZJ9c1aJK2uQc0gl6lx8kHNpwS8U2S
+         zEwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=Du89aQgKZdsGf+sWEx87Fhx9ntqBcSvAio1IQ5nV5Kw=;
-        b=L2nzXg3Afx5Y9KaB+GIJ4ZLdIh1oyGb3jwYZ6MximziqfR0tUn1eBwhgSfVPezciKP
-         qRdrFv68oqVbTmRZhyTM7adlp7NfkNOr27RluzJ7kWsZsH4uJ3ffHOWskL9FSL9EFy8K
-         MtKjU5wDKSWRB435N8ptR9D/nzNB20qxrLKB2WBUhSNIiVOCVcMIQWumcJp9BcL5DVAb
-         yIKaaoRAi0YvzXwDqJKchQnXftf0r4C04WOkqhy13lwTn6aTCir7tNpeaY6qWyYHolKB
-         ikRwEZqLwTao+AkAGxXkj4sQoSgnwtV/vKyCqjrFc8sr7bEavUxUxEC80ffmx6UZCl4f
-         6iJA==
-X-Gm-Message-State: AOAM532naYPPCWvJS871tFGljtyVCc8yfc9jGDJrP6y5rxOZFxSSqyKl
-        940vsnvt3tgpCgQtRBa3PFE=
-X-Google-Smtp-Source: ABdhPJxKr0EJyFEAtze/6AJOQonXdnPx4XCIxEBZcnGzmhgP8yeHyMyvFgot4h5xBoVq7fs6I09+EQ==
-X-Received: by 2002:a65:6088:: with SMTP id t8mr326413pgu.371.1628438715034;
-        Sun, 08 Aug 2021 09:05:15 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id c4sm16623042pfd.102.2021.08.08.09.05.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Aug 2021 09:05:14 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Jonathan McDowell <noodles@earth.li>,
-        Michal =?utf-8?B?Vm9rw6HEjQ==?= <vokac.m@gmail.com>,
-        Christian Lamparter <chunkeey@gmail.com>,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Stefan Lippers-Hollmann <s.l-h@gmx.de>,
-        Hannu Nyman <hannu.nyman@iki.fi>,
-        Imran Khan <gururug@gmail.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Nick Lowe <nick.lowe@gmail.com>,
-        =?iso-8859-1?Q?Andr=E9?= Valentin <avalentin@marcant.net>
-Subject: Re: [RFC net-next 2/3] net: dsa: qca8k: enable assisted learning on CPU port
-Date:   Mon,  9 Aug 2021 00:05:03 +0800
-Message-Id: <20210808160503.227880-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210807222555.y6r7qxhdyy6d3esx@skbuf>
-References: <20210807120726.1063225-1-dqfext@gmail.com> <20210807120726.1063225-3-dqfext@gmail.com> <20210807222555.y6r7qxhdyy6d3esx@skbuf>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=L0Uwt6aQVn6oCqr0wcgwrO21cHc++7sRbVmBO4SXG1I=;
+        b=Q7SULPqHjiLOIX5HfIF/9dW8tzQURND90hUHjtGen1ngvc0movjlMR6TB3C5mx1Dt6
+         9gKpKXKpYI7KN6WlSBWznALXSf6zUJoXIwnKPhi4MRzvzkxN/F7U77fPyZhM+JfFTRL6
+         xZX6ltYywit33jRzpGcA0AcoxZW9FUe9U8cE7j+sUJPJxLc/5pkGR8m5QvIjU4C5+6jf
+         rqVWzHQgQYYKfLUoYVM5IAwSPnz8wtov+zyUotmtrAgz2ppPldkN+v0gPWFefySIH7LQ
+         gdczno0TOp48E4siCbRNplHUtkT5qMAAF2qyZJLDiPgQG5IlYBAMMRHGjm/UQS2IZY1O
+         WRaQ==
+X-Gm-Message-State: AOAM530eCQ1H7XSc9GVzVTJPx7fP4313AsNwJRhZX5aFERSo9TL91oLc
+        X3U75U4f9+iGLT17r6r20LqfrxOkWig=
+X-Google-Smtp-Source: ABdhPJwEn5+tkNQT95/gXM1hjJF8w7UFxUuw/9aklMQdoC4vu59seQzRMgmzfK37SButDmGOIwraHedl8TQ=
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:55a4:b9af:f5da:997e])
+ (user=surenb job=sendgmr) by 2002:a25:764e:: with SMTP id r75mr7581963ybc.263.1628438906646;
+ Sun, 08 Aug 2021 09:08:26 -0700 (PDT)
+Date:   Sun,  8 Aug 2021 09:08:22 -0700
+Message-Id: <20210808160823.3553954-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.605.g8dce9f2422-goog
+Subject: [PATCH v8 1/2] mm: introduce process_mrelease system call
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
+        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
+        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
+        hch@infradead.org, oleg@redhat.com, david@redhat.com,
+        jannh@google.com, shakeelb@google.com, luto@kernel.org,
+        christian.brauner@ubuntu.com, fweimer@redhat.com, jengelh@inai.de,
+        timmurray@google.com, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 08, 2021 at 01:25:55AM +0300, Vladimir Oltean wrote:
-> On Sat, Aug 07, 2021 at 08:07:25PM +0800, DENG Qingfang wrote:
-> > Enable assisted learning on CPU port to fix roaming issues.
-> 
-> 'roaming issues' implies to me it suffered from blindness to MAC
-> addresses learned on foreign interfaces, which appears to not be true
-> since your previous patch removes hardware learning on the CPU port
-> (=> hardware learning on the CPU port was supported, so there were no
-> roaming issues)
+In modern systems it's not unusual to have a system component monitoring
+memory conditions of the system and tasked with keeping system memory
+pressure under control. One way to accomplish that is to kill
+non-essential processes to free up memory for more important ones.
+Examples of this are Facebook's OOM killer daemon called oomd and
+Android's low memory killer daemon called lmkd.
+For such system component it's important to be able to free memory
+quickly and efficiently. Unfortunately the time process takes to free
+up its memory after receiving a SIGKILL might vary based on the state
+of the process (uninterruptible sleep), size and OPP level of the core
+the process is running. A mechanism to free resources of the target
+process in a more predictable way would improve system's ability to
+control its memory pressure.
+Introduce process_mrelease system call that releases memory of a dying
+process from the context of the caller. This way the memory is freed in
+a more controllable way with CPU affinity and priority of the caller.
+The workload of freeing the memory will also be charged to the caller.
+The operation is allowed only on a dying process.
 
-The datasheet says learning is enabled by default, but if that's true,
-the driver won't have to enable it manually.
+After previous discussions [1, 2, 3] the decision was made [4] to introduce
+a dedicated system call to cover this use case.
 
-Others have reported roaming issues as well:
-https://github.com/Ansuel/openwrt/pull/3
+The API is as follows,
 
-As I don't have the hardware to test, I don't know what the default
-value really is, so I just disable learning to make sure.
+          int process_mrelease(int pidfd, unsigned int flags);
 
-> 
-> > 
-> > Although hardware learning is available, it won't work well with
-> > software bridging fallback or multiple CPU ports.
-> 
-> This part is potentially true however, but it would need proof. I am not
-> familiar enough with the qca8k driver to say for sure that it suffers
-> from the typical problem with bridging with software LAG uppers (no FDB
-> isolation for standalone ports => attempt to shortcircuit the forwarding
-> through the CPU port and go directly towards the bridged port, which
-> would result in drops), and I also can't say anything about its support
-> for multiple CPU ports.
+        DESCRIPTION
+          The process_mrelease() system call is used to free the memory of
+          an exiting process.
 
-QCA8337 supports disabling learning and FDB lookup on a per-VLAN basis,
-so we could assign all standalone ports to a reserved VLAN (ID 0 or 4095)
-with learning and FDB lookup disabled.
+          The pidfd selects the process referred to by the PID file
+          descriptor.
+          (See pidfd_open(2) for further information)
 
-Ansuel has a patch set for multiple CPU ports.
+          The flags argument is reserved for future use; currently, this
+          argument must be specified as 0.
+
+        RETURN VALUE
+          On success, process_mrelease() returns 0. On error, -1 is
+          returned and errno is set to indicate the error.
+
+        ERRORS
+          EBADF  pidfd is not a valid PID file descriptor.
+
+          EAGAIN Failed to release part of the address space.
+
+          EINTR  The call was interrupted by a signal; see signal(7).
+
+          EINVAL flags is not 0.
+
+          EINVAL The memory of the task cannot be released because the
+                 process is not exiting, the address space is shared
+                 with another live process or there is a core dump in
+                 progress.
+
+          ENOSYS This system call is not supported, for example, without
+                 MMU support built into Linux.
+
+          ESRCH  The target process does not exist (i.e., it has terminated
+                 and been waited on).
+
+[1] https://lore.kernel.org/lkml/20190411014353.113252-3-surenb@google.com/
+[2] https://lore.kernel.org/linux-api/20201113173448.1863419-1-surenb@google.com/
+[3] https://lore.kernel.org/linux-api/20201124053943.1684874-3-surenb@google.com/
+[4] https://lore.kernel.org/linux-api/20201223075712.GA4719@lst.de/
+
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+---
+changes in v8:
+- Replaced mmget with mmgrab, per Shakeel Butt
+- Refactored the code to simplify and fix the task_lock release issue,
+per Michal Hocko
+
+ mm/oom_kill.c | 70 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
+
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index c729a4c4a1ac..f8acc26f7300 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -28,6 +28,7 @@
+ #include <linux/sched/task.h>
+ #include <linux/sched/debug.h>
+ #include <linux/swap.h>
++#include <linux/syscalls.h>
+ #include <linux/timex.h>
+ #include <linux/jiffies.h>
+ #include <linux/cpuset.h>
+@@ -1141,3 +1142,72 @@ void pagefault_out_of_memory(void)
+ 	out_of_memory(&oc);
+ 	mutex_unlock(&oom_lock);
+ }
++
++SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
++{
++#ifdef CONFIG_MMU
++	struct mm_struct *mm = NULL;
++	struct task_struct *task;
++	struct task_struct *p;
++	unsigned int f_flags;
++	bool reap = true;
++	struct pid *pid;
++	long ret = 0;
++
++	if (flags)
++		return -EINVAL;
++
++	pid = pidfd_get_pid(pidfd, &f_flags);
++	if (IS_ERR(pid))
++		return PTR_ERR(pid);
++
++	task = get_pid_task(pid, PIDTYPE_PID);
++	if (!task) {
++		ret = -ESRCH;
++		goto put_pid;
++	}
++
++	/*
++	 * Make sure to choose a thread which still has a reference to mm
++	 * during the group exit
++	 */
++	p = find_lock_task_mm(task);
++	if (!p) {
++		ret = -ESRCH;
++		goto put_task;
++	}
++
++	mm = p->mm;
++	mmgrab(mm);
++
++	/* If the work has been done already, just exit with success */
++	if (test_bit(MMF_OOM_SKIP, &mm->flags))
++		reap = false;
++	else if (!task_will_free_mem(p)) {
++		reap = false;
++		ret = -EINVAL;
++	}
++	task_unlock(p);
++
++	if (!reap)
++		goto drop_mm;
++
++	if (mmap_read_lock_killable(mm)) {
++		ret = -EINTR;
++		goto drop_mm;
++	}
++	if (!__oom_reap_task_mm(mm))
++		ret = -EAGAIN;
++	mmap_read_unlock(mm);
++
++drop_mm:
++	mmdrop(mm);
++put_task:
++	put_task_struct(task);
++put_pid:
++	put_pid(pid);
++	return ret;
++#else
++	return -ENOSYS;
++#endif /* CONFIG_MMU */
++}
+-- 
+2.32.0.605.g8dce9f2422-goog
+
