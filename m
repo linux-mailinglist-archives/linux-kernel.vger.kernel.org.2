@@ -2,113 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D28D3E3D1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 01:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CAB3E3D22
+	for <lists+linux-kernel@lfdr.de>; Mon,  9 Aug 2021 01:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbhHHXDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 19:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229942AbhHHXDY (ORCPT
+        id S232462AbhHHXI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 19:08:57 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:14759 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231168AbhHHXIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 19:03:24 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FC6C061760;
-        Sun,  8 Aug 2021 16:03:00 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GjZW25BD9z9s5R;
-        Mon,  9 Aug 2021 09:02:54 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1628463776;
-        bh=FdPjKZIYMQXQ+oBXEBzVzpzieXyHd8DHXvzoDOSQYQQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hLEbmd6Fc0JZcPtHVRj6erCeOJBlv+jqri2owYQlF3bHQbdlJTXagJ1DQSgPZpF+w
-         /TZqKylF+DXJwywk93SmwxMmMKdu4pJPmc715y8ZMDgzrLaU1WuE9w+8mkhHcsdtFs
-         27SEkVXu4++fiMkh5DBcQ8vi8fgxUGNQ3P/XB4Y5qM6bYrPpy0wW1j0zZmSaU39PCk
-         IL3vt3xGjukMS9HCWiMLLPojb5ysmEepQEtlBnuoao3FJKigAuBfttK5p+arTgVQOB
-         2Pa+aYgMrfD3JkX8IYVlSBHoTzXPdOP3vM8oafW2ODmHv/QMXF8za075WK20QE//e4
-         ArRNO1wwpUUrQ==
-Date:   Mon, 9 Aug 2021 09:02:52 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: Re: linux-next: manual merge of the qcom tree with the usb tree
-Message-ID: <20210809090252.477dd77b@canb.auug.org.au>
-In-Reply-To: <20210806112353.GA33586@sirena.org.uk>
-References: <20210806102138.27373-1-broonie@kernel.org>
-        <YQ0YKiFVx0KrkW5s@kroah.com>
-        <20210806112353.GA33586@sirena.org.uk>
+        Sun, 8 Aug 2021 19:08:54 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210808230833epoutp02642082081996903628d7c0fbe91286d2~Zd3ueQFDn2709827098epoutp02G
+        for <linux-kernel@vger.kernel.org>; Sun,  8 Aug 2021 23:08:33 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210808230833epoutp02642082081996903628d7c0fbe91286d2~Zd3ueQFDn2709827098epoutp02G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1628464113;
+        bh=jvL3UYfe1fnogHMOYPJzMx9xpzgagoS4gyTCYbeMpBw=;
+        h=Subject:To:From:Date:In-Reply-To:References:From;
+        b=S1ADDSUB0BbuPrqoyvJ5/JSwFGqNadkOLAYnToz4V5Z1lxpst7nYnLi5iqoztEw6i
+         rRfOl3eRwhYMz0OgtEz8EHjn63LMv3IoHsy5CVoFsWdqtfIsl9WZvtNBwd1KqCOvQf
+         fy2Tsm4Bszm6ABtB5gHs5hCFBVLIauXZgfojclmA=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210808230832epcas1p2a51ccbdd1dde25963e707fa23c685015~Zd3txeD6M3036730367epcas1p2S;
+        Sun,  8 Aug 2021 23:08:32 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4GjZdT0TB8z4x9QD; Sun,  8 Aug
+        2021 23:08:29 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        31.38.10119.CE360116; Mon,  9 Aug 2021 08:08:28 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210808230828epcas1p17835a0574e65e9c41d853cfa8d5bf1ce~Zd3pwQrEt0136301363epcas1p1M;
+        Sun,  8 Aug 2021 23:08:28 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210808230828epsmtrp1ce1171943a869376c5c1ef6382c7d1ce~Zd3pvIOLV2793027930epsmtrp1C;
+        Sun,  8 Aug 2021 23:08:28 +0000 (GMT)
+X-AuditID: b6c32a38-965ff70000002787-db-611063eccdc2
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C8.2C.08394.BE360116; Mon,  9 Aug 2021 08:08:27 +0900 (KST)
+Received: from [10.113.113.235] (unknown [10.113.113.235]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210808230827epsmtip2e25de7e5d2324b984c47152384feffcf~Zd3pYtg1B1773317733epsmtip2D;
+        Sun,  8 Aug 2021 23:08:27 +0000 (GMT)
+Subject: Re: [PATCH] iwlwifi Add support for ax201 in Samsung Galaxy Book
+ Flex2 Alpha
+To:     Justin Forbes <jmforbes@linuxtx.org>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matti Gottlieb <matti.gottlieb@intel.com>,
+        ybaruch <yaara.baruch@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Ihab Zhaika <ihab.zhaika@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        linux-wireless@vger.kernel.org,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        yj99.shin@samsung.com
+From:   Jaehoon Chung <jh80.chung@samsung.com>
+Message-ID: <8c55c7c9-a5ae-3b0e-8a0f-8954a8da7e7b@samsung.com>
+Date:   Mon, 9 Aug 2021 08:09:13 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/L_kmg7AJqdtdaKEkVzx4f0d";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAFxkdApGUeGdg4=rH=iC2SK58FO6yzbFiq3uSFMFTyZsDQ5j5w@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEJsWRmVeSWpSXmKPExsWy7bCmvu6bZIFEgwOdlhZzzrewWLRuu8tq
+        8ej1NmaLB5vvMlk8WjGL3eLCtj5Wi0UrF7JZXN41h83izYo77BaHty5gspjTco7Z4tgCMYv5
+        2x4xWhy6s5DZgc/jcl8vk8eWlTeZPBbvecnksWlVJ5vH9B0OHn1bVjF6fN4kF8AelW2TkZqY
+        klqkkJqXnJ+SmZduq+QdHO8cb2pmYKhraGlhrqSQl5ibaqvk4hOg65aZA3SxkkJZYk4pUCgg
+        sbhYSd/Opii/tCRVISO/uMRWKbUgJafAskCvODG3uDQvXS85P9fK0MDAyBSoMCE7Y9efxWwF
+        39kqDt2dz9LAuIW1i5GTQ0LARKL73A2WLkYuDiGBHYwS+3deZAZJCAl8YpR4f1QNIvGNUeLu
+        0nNMXYwcYB0LJ7tBxPcySjQd6WWCcN4zSvy7P5MJpFtYIFzi0vsrLCC2iMAhFomFb7NBbDYB
+        HYnt346D1fAK2EkcWnQOrIZFQEXi2vV+dhBbVCBS4vzuBSwQNYISJ2c+AbM5BQIljuz4BNbL
+        LCAucevJfChbXmL72znMEO8c4JB4czkBwnaR2HL9FDuELSzx6vgWKFtK4mV/G5RdLbGr+Qwz
+        yAMSAh2MEre2NTFBJIwl9i+dDPYxs4CmxPpd+hBhRYmdv+cyQuzlk3j3tYcVEii8Eh1tQhAl
+        KhKXXr9kgll198l/aEh7SMyZtxka0rcZJZZ29LNOYFSYheTNWUhem4XktVkIVyxgZFnFKJZa
+        UJybnlpsWGCCHNmbGMGJWctiB+Pctx/0DjEycTAeYpTgYFYS4V0/gy9RiDclsbIqtSg/vqg0
+        J7X4EKMpMOAnMkuJJucDc0NeSbyhqZGxsbGFiaGZqaGhkjjvt9ivCUIC6YklqdmpqQWpRTB9
+        TBycUg1MhRvMpvt3Lnn4dmHbEfew8rUTCvxqvnvOvPHe9r6PDeeLjJarwgH7+sRzT4isC81l
+        2li+NefYAYkVk3ZFP7zz5Y37HueboY3fk358Zc7pCM9KEP0YqnqFy10h6tz75U3B/U2zP02a
+        Iul9at7znGbdyb3r1p5Zu6s+vdCy+Kb89t/+/lfXTlS6d2ODpOS5354Hr79a8fFvRN6Ktled
+        s6S+tXfryAYtTlPhnyP+dJJOt4sxp/RToxusnI+ebLij4la6W0xp44KnIpxW866pBK3171qq
+        M1v/48f8qxuYLp8S9V2/chqD7YMc9V3Hqje6b5O6EX39RS6D1RvmnVtz+9cvn/Pw9KLXWz6t
+        UuIJ1dG69k+JpTgj0VCLuag4EQAKG+FmVQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKIsWRmVeSWpSXmKPExsWy7bCSvO7rZIFEgyN3jSzmnG9hsWjddpfV
+        4tHrbcwWDzbfZbJ4tGIWu8WFbX2sFotWLmSzuLxrDpvFmxV32C0Ob13AZDGn5RyzxbEFYhbz
+        tz1itDh0ZyGzA5/H5b5eJo8tK28yeSze85LJY9OqTjaP6TscPPq2rGL0+LxJLoA9issmJTUn
+        syy1SN8ugStj15/FbAXf2SoO3Z3P0sC4hbWLkYNDQsBEYuFkty5GLg4hgd2MEp9f7GLrYuQE
+        iktJfH46lQ2iRlji8OFiiJq3jBI3Ph5lBqkRFgiXuPT+CgtIQkTgEIvEy19PwBJCArcZJSa3
+        eoDYbAI6Etu/HWcCsXkF7CQOLTrHAmKzCKhIXLvezw5iiwpESnxe8IoVokZQ4uTMJ2A1nAKB
+        Ekd2fALrZRZQl/gz7xIzhC0ucevJfKi4vMT2t3OYJzAKzkLSPgtJyywkLbOQtCxgZFnFKJla
+        UJybnltsWGCYl1quV5yYW1yal66XnJ+7iREcc1qaOxi3r/qgd4iRiYPxEKMEB7OSCO/6GXyJ
+        QrwpiZVVqUX58UWlOanFhxilOViUxHkvdJ2MFxJITyxJzU5NLUgtgskycXBKNTCt+e6y3dLv
+        ModTL/e6y42HuLg4jXlsdh/ocjC6VRr79WVymDFbboBPEVPt7O9Kh/Tzlrwzz319mPfIiUNb
+        CkK6L545GdqRKmqm4eNU6VGuovp6nqzgSsajMT3L/+m9s0tct+9XkJXv33rJjz7Zu1ImnZf5
+        X22/vWRhIrvXQq843nYRqaIvG208mNo9WE/Zl32J2rZ76XLnPuWWcu69hZl1e/eul+zeMmfp
+        vW61D9b1q4v+sc1IWNS37OJKoXMtGx8sW/vz2QH9H5Fqk3idVLcxmK5SvXbEk50n9tf7guRH
+        zFVlW6x4Va7zLi3Ibamo+fjk+m4zTq4mjRnpF+9r741f8u22Y9nt0GXMsVudo5VYijMSDbWY
+        i4oTAQFCeSIoAwAA
+X-CMS-MailID: 20210808230828epcas1p17835a0574e65e9c41d853cfa8d5bf1ce
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210709173244epcas1p3ea6488202595e182d45f59fcba695e0a
+References: <20210702223155.1981510-1-jforbes@fedoraproject.org>
+        <CGME20210709173244epcas1p3ea6488202595e182d45f59fcba695e0a@epcas1p3.samsung.com>
+        <CAFxkdApGUeGdg4=rH=iC2SK58FO6yzbFiq3uSFMFTyZsDQ5j5w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/L_kmg7AJqdtdaKEkVzx4f0d
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi
 
-Hi Mark,
+On 7/10/21 2:32 AM, Justin Forbes wrote:
+> On Fri, Jul 2, 2021 at 5:32 PM Justin M. Forbes
+> <jforbes@fedoraproject.org> wrote:
+>>
+>> The Samsung Galaxy Book Flex2 Alpha uses an ax201 with the ID a0f0/6074.
+>> This works fine with the existing driver once it knows to claim it.
+>> Simple patch to add the device.
+>>
+>> Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
 
-On Fri, 6 Aug 2021 12:23:53 +0100 Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, Aug 06, 2021 at 01:08:26PM +0200, Greg Kroah-Hartman wrote:
-> > On Fri, Aug 06, 2021 at 11:21:38AM +0100, Mark Brown wrote: =20
->=20
-> > > diff --cc arch/arm64/boot/dts/qcom/msm8996.dtsi
-> > > index 78c55ca10ba9,31686950004e..000000000000
-> > > --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> > > +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi =20
-> >=20
-> > Love the fix, did something go wrong?  :) =20
->=20
-> The fix will be whatever was in HEAD.
 
-I used the following instead.  Is that wrong?
+Before sending patch, I have found same patch to solve the Wifi problem.
+Is there any progress about this patch? 
 
---=20
-Cheers,
-Stephen Rothwell
+I hope that this patch will be applied.
 
-diff --cc arch/arm64/boot/dts/qcom/msm8996.dtsi
-index 78c55ca10ba9,31686950004e..000000000000
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@@ -2566,7 -2572,7 +2572,7 @@@
-  			power-domains =3D <&gcc USB30_GDSC>;
-  			status =3D "disabled";
- =20
-- 			dwc3@6a00000 {
- -			usb3_dwc3: usb@6a00000 {
-++			usb3_dwc3: dwc3@6a00000 {
-  				compatible =3D "snps,dwc3";
-  				reg =3D <0x06a00000 0xcc00>;
-  				interrupts =3D <0 131 IRQ_TYPE_LEVEL_HIGH>;
+Reviewed-by: Jaehoon Chung <jh80.chung@samsung.com>
 
---Sig_/L_kmg7AJqdtdaKEkVzx4f0d
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Best Regards,
+Jaehoon Chung
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEQYpwACgkQAVBC80lX
-0GyHlAf/W9uSTM/OYgp2jMw9MfpMLzaJW1bF/LlALFksD5+89ZeRM6xPZCVufZDx
-fpkIG6CUWc7tcZHMc+0JA/91FGz+tCny1TYgHnQDnLoSw9SGc92NN5zfUtE/gWhH
-WyT+DHCr6UB425hTQRSLjc7idwJ5D31D2j+sjWUIJ/i9Krrcn1yx/eKoZJpJzFT2
-n4zMsdYNVCp15oggIAKsU9vcGkk5hv5QirqZx7yb3k6U50/KsalUYPXsj4C6dgsy
-cwBQKZXVR3c1GstGTqaSb/vuQxg57Y/tbspBimQG9Ij4uRAEr84VL/rtKX5YzWNZ
-De3E1KSBm87Su1sZO9Ue3xUzsDzhcw==
-=0F9S
------END PGP SIGNATURE-----
+>> ---
+> 
+> Just an update from the user with this hardware that I built a test kernel for:
+> "Still going strong w/ AX201, speed OK, on par w/ speeds on windows,
+> no crashes, no weird messages about the driver."
+> 
+> Justin
+> 
 
---Sig_/L_kmg7AJqdtdaKEkVzx4f0d--
