@@ -2,179 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949123E38EE
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 07:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A93A83E38F3
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 07:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbhHHFLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 01:11:49 -0400
-Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.177]:13929 "EHLO
-        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbhHHFL1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 01:11:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628399450;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=AgNhKnnrM28zue4mAUQn3VQlXQfVMSZE6+Kj8AD2hck=;
-    b=paUoKBoTD+FnyOT6CdORWc51RHSRQjKeW3qR+eKbCchtmlj8HFs74GpMvt+j5qYTMi
-    05kutkVU+SuDO6tSEbW15Tcb9KroPve7+Qv2piDev6l7wXUBPnTvFQAcLMTWdY8nvqNh
-    PJUiXEsMui/FlWS95bjZkWfkY0cS595qqao+u4OAegUQdqNUvfy50hTs7Ax7nSt9wIQf
-    NzifeEGG7XbM29Xhi66QjK5ttNnf95U/A45VH2/1orplGBZGK15hUP43T7VXY6Tse8FQ
-    WCRB0XQiou+mduAPe+qnmRWko8uWeWo9Y0a7JSCvKpzHDjiOjlg7jAo8hQizkLtBDgcn
-    zqiQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdcKVX0"
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 47.31.0 DYNA|AUTH)
-    with ESMTPSA id Q02727x785AnEyk
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Sun, 8 Aug 2021 07:10:49 +0200 (CEST)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        Paul Boddie <paul@boddie.org.uk>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v3 9/9] drm/ingenic: add some jz4780 specific features
-Date:   Sun,  8 Aug 2021 07:10:43 +0200
-Message-Id: <aebcc6c5340f755268af268725939b1e59a83472.1628399442.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1628399442.git.hns@goldelico.com>
-References: <cover.1628399442.git.hns@goldelico.com>
+        id S229779AbhHHFPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 01:15:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229473AbhHHFPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 01:15:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD2ED60F38;
+        Sun,  8 Aug 2021 05:15:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1628399703;
+        bh=r409KvyNgLbyfYI1tePdR3Fn6jngjHs4GuZ52QDGYW0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BXaZWx+jEEFDknjNvDH/ZpiTRbEA+YwNxqFY6NSHsrrXBX26RK2hiL6lej1aHNrBm
+         U/tyz+1uA3ldYaa5lHZ945pr1Anh+tqG/mGG0hdP156kvDb0CQjPjQlxOcOB6LD6Sv
+         Ogm4uQtfoY8H9qTf40aoJS4CD0PpeCVeZdzY8Kls=
+Date:   Sun, 8 Aug 2021 07:14:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Long Li <longli@microsoft.com>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [Patch v5 0/3] Introduce a driver to support host accelerated
+ access to Microsoft Azure Blob for Azure VM
+Message-ID: <YQ9oTBSRyHCffC2k@kroah.com>
+References: <1628146812-29798-1-git-send-email-longli@linuxonhyperv.com>
+ <e249d88b-6ca2-623f-6f6e-9547e2b36f1f@acm.org>
+ <BY5PR21MB15060F1B9CDB078189B76404CEF29@BY5PR21MB1506.namprd21.prod.outlook.com>
+ <YQwvL2N6JpzI+hc8@kroah.com>
+ <BY5PR21MB1506A93E865A8D6972DD0AAECEF49@BY5PR21MB1506.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BY5PR21MB1506A93E865A8D6972DD0AAECEF49@BY5PR21MB1506.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Boddie <paul@boddie.org.uk>
+On Sat, Aug 07, 2021 at 06:29:06PM +0000, Long Li wrote:
+> > I still think this "model" is totally broken and wrong overall.  Again, you are
+> > creating a custom "block" layer with a character device, forcing all userspace
+> > programs to use a custom library (where is it at?) just to get their data.
+> 
+> The Azure Blob library (with source code) is available in the following languages:
+> Java: https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/storage/azure-storage-blob
+> JavaScript: https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/storage/storage-blob
+> Python: https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/storage/azure-storage-blob
+> Go: https://github.com/Azure/azure-storage-blob-go
+> .NET: https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/storage/Azure.Storage.Blobs
+> PHP: https://github.com/Azure/azure-storage-php/tree/master/azure-storage-blob
+> Ruby: https://github.com/azure/azure-storage-ruby/tree/master/blob
+> C++: https://github.com/Azure/azure-sdk-for-cpp/tree/main/sdk/storage#azure-storage-client-library-for-c
 
-The jz4780 has some features which need initialization
-according to the vendor kernel.
+And why wasn't this linked to in the changelog here?
 
-Signed-off-by: Paul Boddie <paul@boddie.org.uk>
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 39 +++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+In looking at the C code above, where is the interaction with this Linux
+driver?  I can't seem to find it...
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 33ce3794aa126..f3b1b10bc079b 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -69,6 +69,10 @@ struct jz_soc_info {
- 	bool needs_dev_clk;
- 	bool has_osd;
- 	bool map_noncoherent;
-+	bool has_alpha;
-+	bool has_pcfg;
-+	bool has_recover;
-+	bool has_rgbc;
- 	bool use_extended_hwdesc;
- 	unsigned int hwdesc_size;
- 	unsigned int max_width, max_height;
-@@ -671,6 +675,9 @@ static void ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
- 		    | JZ_LCD_CFG_SPL_DISABLE | JZ_LCD_CFG_REV_DISABLE;
- 	}
- 
-+	if (priv->soc_info->has_recover)
-+		cfg |= JZ_LCD_CFG_RECOVER_FIFO_UNDERRUN;
-+
- 	/* set use of the 8-word descriptor and OSD foreground usage. */
- 	if (priv->soc_info->use_extended_hwdesc)
- 		cfg |= JZ_LCD_CFG_DESCRIPTOR_8;
-@@ -1208,6 +1215,25 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 	if (soc_info->has_osd)
- 		regmap_set_bits(priv->map, JZ_REG_LCD_OSDC, JZ_LCD_OSDC_OSDEN);
- 
-+	if (soc_info->has_alpha)
-+		regmap_set_bits(priv->map, JZ_REG_LCD_OSDC, JZ_LCD_OSDC_ALPHAEN);
-+
-+	/* Magic values from the vendor kernel for the priority thresholds. */
-+	if (soc_info->has_pcfg)
-+		regmap_write(priv->map, JZ_REG_LCD_PCFG,
-+			     JZ_LCD_PCFG_PRI_MODE |
-+			     JZ_LCD_PCFG_HP_BST_16 |
-+			     (511 << JZ_LCD_PCFG_THRESHOLD2_OFFSET) |
-+			     (400 << JZ_LCD_PCFG_THRESHOLD1_OFFSET) |
-+			     (256 << JZ_LCD_PCFG_THRESHOLD0_OFFSET));
-+
-+	/* RGB output control may be superfluous. */
-+	if (soc_info->has_rgbc)
-+		regmap_write(priv->map, JZ_REG_LCD_RGBC,
-+			     JZ_LCD_RGBC_RGB_FORMAT_ENABLE |
-+			     JZ_LCD_RGBC_ODD_RGB |
-+			     JZ_LCD_RGBC_EVEN_RGB);
-+
- 	mutex_init(&priv->clk_mutex);
- 	priv->clock_nb.notifier_call = ingenic_drm_update_pixclk;
- 
-@@ -1355,6 +1381,9 @@ static const struct jz_soc_info jz4740_soc_info = {
- 	.needs_dev_clk = true,
- 	.has_osd = false,
- 	.map_noncoherent = false,
-+	.has_pcfg = false,
-+	.has_recover = false,
-+	.has_rgbc = false,
- 	.hwdesc_size = sizeof(struct ingenic_dma_hwdesc),
- 	.max_width = 800,
- 	.max_height = 600,
-@@ -1368,6 +1397,9 @@ static const struct jz_soc_info jz4725b_soc_info = {
- 	.needs_dev_clk = false,
- 	.has_osd = true,
- 	.map_noncoherent = false,
-+	.has_pcfg = false,
-+	.has_recover = false,
-+	.has_rgbc = false,
- 	.hwdesc_size = sizeof(struct ingenic_dma_hwdesc),
- 	.max_width = 800,
- 	.max_height = 600,
-@@ -1382,6 +1414,9 @@ static const struct jz_soc_info jz4770_soc_info = {
- 	.needs_dev_clk = false,
- 	.has_osd = true,
- 	.map_noncoherent = true,
-+	.has_pcfg = false,
-+	.has_recover = false,
-+	.has_rgbc = false,
- 	.hwdesc_size = sizeof(struct ingenic_dma_hwdesc),
- 	.max_width = 1280,
- 	.max_height = 720,
-@@ -1395,6 +1430,10 @@ static const struct jz_soc_info jz4770_soc_info = {
- static const struct jz_soc_info jz4780_soc_info = {
- 	.needs_dev_clk = true,
- 	.has_osd = true,
-+	.has_alpha = true,
-+	.has_pcfg = true,
-+	.has_recover = true,
-+	.has_rgbc = true,
- 	.use_extended_hwdesc = true,
- 	.hwdesc_size = sizeof(struct ingenic_dma_hwdesc_ext),
- 	.max_width = 4096,
--- 
-2.31.1
+> > There's a reason the POSIX model is there, why are you all ignoring it?
+> 
+> The Azure Blob APIs are not designed to be POSIX compatible. This driver is used
+> to accelerate Blob access for a Blob client running in an Azure VM. It doesn't attempt
+> to modify the Blob APIs. Changing the Blob APIs will break the existing Blob clients.
 
+There are no Blob clients today on Linux given that this code is not
+merged into the kernel yet, so there is nothing to "break".
+
+I still don't see a good reason why this can't just be a block device,
+or a filesystem interface and why you need to make this a custom
+character device ioctl.
+
+thanks,
+
+greg k-h
