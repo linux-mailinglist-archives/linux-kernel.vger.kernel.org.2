@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B243E3A16
+	by mail.lfdr.de (Postfix) with ESMTP id 0AED83E3A14
 	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 14:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhHHMA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 08:00:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48726 "EHLO mail.kernel.org"
+        id S231258AbhHHMA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 08:00:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230270AbhHHMAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 08:00:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 28FD461056;
+        id S230337AbhHHMAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 8 Aug 2021 08:00:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3867161057;
         Sun,  8 Aug 2021 12:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1628424006;
-        bh=iYTrV9QESJfVuxWpMo57RWko8EE5TF5De0b1jivUQIg=;
+        bh=BnYQCLacPE3KGBLzagVrThjZy7IhddeegWummxpuJJ0=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=VDm3dIhXVPMlX8vcV8KgfH1QMVH93c66Vkl/blaF6N9IJrrh+kQeol2/m0AsayXCG
-         d/VUwEorb+p0trae06H1PdTcbogFrmUL5kiU6a1lMbLDXyo+4Fcel8PWzC0ujH0VMI
-         l/aRrsCFwxW3jvOS2knf9q9X8F+djeWLMxgKynBwDH2Un/YoLchy4axeGL/9gvR3Yj
-         n0R6zYGwah9gKDeK/xofyWIbU0IuGbZ6r95BdVqJPWsr30LB1W0RUt351IM1O4mK7Z
-         KUbmEKYx6VU38olmpAxkjWCq6joJe2gMfDN1jKQRMtDGqLdQvDVJ5EcLeczvQQA5Oz
-         7oFedGjK/nMHA==
+        b=Ca/dnqcoD91hU/DdEFSvGreOArmknMcOBAGLWUaAKc+GIOVt5GKchIxWbN7YgD2QH
+         LVOBqN26UXEJQnp6cYGoY3sKac/9NAeytbvsPiX3DWfiZZNOBLWQZu0wrNBRqcw1w9
+         MvIfH0Dlq8gUYLPfru3SBxdWAe/BAVumKhxP1cFpV3rjgKfZwDCGl3WSFMJurmQTJl
+         PxWqy1XZ41Cyogu60LXdoajgQ/h9QJKIzKhGwd1lAf/tF9yf4FFggeEaXBZ51SEOaT
+         y0vLX9viQR8OUB9glw9kDi7i3j2o5aUayc6ipqj2W2AsM+uO2oPRacy7gd8K0DoP2t
+         NnIsqVxknve/Q==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2396660726;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2DBC9609B3;
         Sun,  8 Aug 2021 12:00:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [V2][PATCH] atm: horizon: Fix spelling mistakes in TX comment
+Subject: Re: [PATCH net-next] devlink: Simplify devlink port API calls
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162842400614.17847.3821752720470977425.git-patchwork-notify@kernel.org>
+Message-Id: <162842400618.17847.5783406967029624966.git-patchwork-notify@kernel.org>
 Date:   Sun, 08 Aug 2021 12:00:06 +0000
-References: <20210807154140.1294779-1-jun.miao@windriver.com>
-In-Reply-To: <20210807154140.1294779-1-jun.miao@windriver.com>
-To:     Jun Miao <jun.miao@windriver.com>
-Cc:     3chas3@gmail.com, linux-atm-general@lists.sourceforge.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <c9f15f122181f05f09fffd2380365b9925dd6427.1628422645.git.leonro@nvidia.com>
+In-Reply-To: <c9f15f122181f05f09fffd2380365b9925dd6427.1628422645.git.leonro@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, leonro@nvidia.com,
+        jiri@nvidia.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, saeedm@nvidia.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -46,19 +47,22 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Sat,  7 Aug 2021 23:41:40 +0800 you wrote:
-> It's "must not", not "musn't", meaning "shall not".
-> Let's fix that.
+On Sun,  8 Aug 2021 14:41:21 +0300 you wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> Suggested-by: Joe Perches <joe@perches.com>
-> Signed-off-by: Jun Miao <jun.miao@windriver.com>
-> ---
->  drivers/atm/horizon.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> Devlink port already has pointer to the devlink instance and all API
+> calls that forward these devlink ports to the drivers perform same
+> "devlink_port->devlink" assignment before actual call.
+> 
+> This patch removes useless parameter and allows us in the future
+> to create specific devlink_port_ops to manage user space access with
+> reliable ops assignment.
+> 
+> [...]
 
 Here is the summary with links:
-  - [V2] atm: horizon: Fix spelling mistakes in TX comment
-    https://git.kernel.org/netdev/net-next/c/64ec13ec92d5
+  - [net-next] devlink: Simplify devlink port API calls
+    https://git.kernel.org/netdev/net-next/c/82564f6c706a
 
 You are awesome, thank you!
 --
