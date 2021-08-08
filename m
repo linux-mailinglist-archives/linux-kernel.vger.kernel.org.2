@@ -2,79 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C8D3E381B
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 05:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEB93E381D
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 05:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhHHD1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 7 Aug 2021 23:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
+        id S230265AbhHHD22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 7 Aug 2021 23:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhHHD1h (ORCPT
+        with ESMTP id S229977AbhHHD21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 7 Aug 2021 23:27:37 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D301C061760;
-        Sat,  7 Aug 2021 20:27:18 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id a20so12755462plm.0;
-        Sat, 07 Aug 2021 20:27:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yMsySU8w8pIhBHUGM8yN4HEOCL9Tb335sGcRBukT2lA=;
-        b=AeCoJsWZq8w5z80BOHqJvCynMoNbIVCYtlwmv/lsYPHmt+C2GsBa9OstsVA5Kp83cN
-         9a11AM2Rc3fnaUpoC+Q8ZkDgQWiMca0D9Xy1w0SqkVMFDYfYxcYc78H9N2aX88lvJf9r
-         hcTflhpuosl3wGmHjAFW3da77HIcCAvG8tRuVd+KJRBvf4TVKNmCXqSGAqfIrLIt8AaZ
-         KwyEtbqLlC2/Zz8wu81TSivOZycHIKdaeVxhHm6KWNYNNux8P1SVeQJ+1q83sGsg3Y7X
-         5T2aZenL0C22gVVNytsbqRRiLDqJVDxoQpDg9ArNF+++r6yzOrRJcgwPDJfPLJShbofO
-         MphA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yMsySU8w8pIhBHUGM8yN4HEOCL9Tb335sGcRBukT2lA=;
-        b=PP4oaoO79m05xxVm08gLLZre0y6GV16fcDlPcGzuLz17jQ7doYz4ZqBwdUR3l7qhmm
-         rNe6oIHlcZTQB/iYmMl+Ql8UHLY9+i30QkpSHY4GSjSQoKMNjBWLbp0bI0vMU/2xpn0J
-         rvO0Hbyq4/O+/ocB799LDsuWw3ednEAhTjjP6w+l7jjhM7qoZwzvPQSd+CoXSy9KP30U
-         muk03lbgz69tnmrgZ9/EPsNhQVeQzgLMj4TAbUyrd8D6rkRxU0XuRlkwiHIIRqpVk1bk
-         jbpH7i/6xUFPwVxJeCIbf1KgYr3MZL+2KRofQT0XD9JG4+mpktbc3wXFDlCyxaa71iix
-         homg==
-X-Gm-Message-State: AOAM532G8S9OhgqfAeuXhC96iHVvq4XEGJfV2xAupJLxybpKmIxyCTaS
-        /XA6G40x2JcmTr2UzjIeVts=
-X-Google-Smtp-Source: ABdhPJysrm+FYpS6kH5RI30lyko5gpEazUjqJ/D84TklJY/w2qMfC1Fum/cIaHAsC11/i4iUCUzoow==
-X-Received: by 2002:a63:f4c:: with SMTP id 12mr17024pgp.304.1628393237666;
-        Sat, 07 Aug 2021 20:27:17 -0700 (PDT)
-Received: from localhost ([49.207.135.150])
-        by smtp.gmail.com with ESMTPSA id c26sm9235207pfo.3.2021.08.07.20.27.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Aug 2021 20:27:17 -0700 (PDT)
-Date:   Sun, 8 Aug 2021 08:57:14 +0530
-From:   Aakash Hemadri <aakashhemadri123@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 00/23] 5.4.139-rc1 review
-Message-ID: <20210808032714.3gdxbizqs56h2wqd@xps.yggdrail>
-References: <20210806081112.104686873@linuxfoundation.org>
+        Sat, 7 Aug 2021 23:28:27 -0400
+Received: from fudo.makrotopia.org (fudo.makrotopia.org [IPv6:2a07:2ec0:3002::71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FE0C061760;
+        Sat,  7 Aug 2021 20:28:08 -0700 (PDT)
+Received: from local
+        by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.94.2)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1mCZTk-0000zx-Ny; Sun, 08 Aug 2021 05:28:00 +0200
+Date:   Sun, 8 Aug 2021 04:27:49 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Michael Walle <michael@walle.cc>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH] ARM: kirkwood: add missing <linux/if_ether.h> for
+ ETH_ALEN
+Message-ID: <YQ9PNeka8VhZqxGR@makrotopia.org>
+References: <YQxk4jrbm31NM1US@makrotopia.org>
+ <cde9de20efd3a75561080751766edbec@walle.cc>
+ <YQ6WCK0Sytb0nxj9@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210806081112.104686873@linuxfoundation.org>
+In-Reply-To: <YQ6WCK0Sytb0nxj9@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/06 10:16AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.139 release.
-> There are 23 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Hi Andrew,
+
+On Sat, Aug 07, 2021 at 04:17:44PM +0200, Andrew Lunn wrote:
+> > What kernel is this? I've just tested with this exact commit as
+> > base and it compiles just fine.
+> > 
+> > I'm not saying including the file is wrong, but it seems it isn't
+> > needed in the upstream kernel and I don't know if it qualifies for
+> > the stable queue therefore.
 > 
-> Responses should be made by Sun, 08 Aug 2021 08:11:03 +0000.
-> Anything received after that time might be too late.
+> I would like to see a reproducer for mainline. Do you have a kernel
+> config which generates the problem.
 
-Compiled, booted, with no regressions on x86_64
+I encountered the problem when building the 'kirkwood' target in
+OpenWrt. I have now tried building vanilla, and the problem indeed
+doesn't exist. After tracing the header includes with the precompiler
+for some time I concluded that <linux/of_net.h> included in kirkwood.c
+includes <linux/phy.h> which includes <linux/ethtool.h> which includes
+<uapi/linux/ethtool.h> which includes <uapi/linux/if_ether.h> which
+includes <linux/if_ether.h> which defined ETH_ALEN.
 
-Tested-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+When building OpenWrt kernel which includes a backport of
+"of: net: pass the dst buffer to of_get_mac_address()", this is not the
+same as <linux/of_net.h> doesn't include <linux/phy.h> yet. This is
+because we miss commit 0c65b2b90d13c1 ("net: of_get_phy_mode: Change
+API to solve int/unit warnings") which has been in mainline for a long
+time.
+
+> The change itself does seems reasonable, so if we can reproduce it, i
+> would be happy to merge it for stable.
+
+Sorry for the noise caused, I'm not sure what the policy is in this
+case, but certainly this is *not* a regression which should make it to
+stable asap. The long and confusing chain of includes which lead to the
+ETH_ALEN macro being defined in arch/arm/mach-mvebu/kirkwood.c is
+certainly not ideal, and in case you still consider this patch worth
+merging, I will post v2 with re-written commit description.
