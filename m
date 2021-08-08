@@ -2,100 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9879B3E3C94
-	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 21:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0523E3C9B
+	for <lists+linux-kernel@lfdr.de>; Sun,  8 Aug 2021 22:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbhHHTua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 8 Aug 2021 15:50:30 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:24268 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232468AbhHHTu3 (ORCPT
+        id S232274AbhHHUCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 8 Aug 2021 16:02:54 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:50909
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229977AbhHHUCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 8 Aug 2021 15:50:29 -0400
-Received: from [192.168.1.18] ([90.126.253.178])
-        by mwinf5d25 with ME
-        id f7q42500E3riaq2037q5nP; Sun, 08 Aug 2021 21:50:08 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 08 Aug 2021 21:50:08 +0200
-X-ME-IP: 90.126.253.178
-Subject: Re: [PATCH 3/8] drm/ingenic: Use standard
- drm_atomic_helper_commit_tail
-To:     Paul Cercueil <paul@crapouillou.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     "H . Nikolaus Schaller" <hns@goldelico.com>,
-        Paul Boddie <paul@boddie.org.uk>, list@opendingux.net,
-        Sam Ravnborg <sam@ravnborg.org>, linux-mips@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210808134526.119198-1-paul@crapouillou.net>
- <20210808134526.119198-4-paul@crapouillou.net>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <f3b761ed-4e71-e8b8-f2b5-f4f7f1547fed@wanadoo.fr>
-Date:   Sun, 8 Aug 2021 21:50:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 8 Aug 2021 16:02:53 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Ac78dvq8XcAmcKH/WlMBuk+DfI+orL9Y04lQ7?=
+ =?us-ascii?q?vn2ZKCYlFvBw+PrEoB1273XJYXMqOU3I+urwXZVoI0m9yXcd2+B4AV7hZniEhI?=
+ =?us-ascii?q?LCFu9fBOXZrwEIVxeOlNJ15ONQN5JzD9D9FjFB4PrS6gPQKbkd/OU=3D?=
+X-IronPort-AV: E=Sophos;i="5.84,305,1620684000"; 
+   d="scan'208";a="389930998"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Aug 2021 22:02:33 +0200
+Date:   Sun, 8 Aug 2021 22:02:32 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+cc:     Gilles Muller <Gilles.Muller@inria.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scripts: coccinelle: allow list_entry_is_head() to use
+ pos
+In-Reply-To: <20210730095856.2038286-1-daniel.thompson@linaro.org>
+Message-ID: <alpine.DEB.2.22.394.2108082201160.3101@hadrien>
+References: <20210730095856.2038286-1-daniel.thompson@linaro.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <20210808134526.119198-4-paul@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 08/08/2021 à 15:45, Paul Cercueil a écrit :
-> By making the CRTC's .vblank_enable() function return an error when it
-> is known that the hardware won't deliver a VBLANK, we can drop the
-> ingenic_drm_atomic_helper_commit_tail() function and use the standard
-> drm_atomic_helper_commit_tail() function instead.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+
+
+On Fri, 30 Jul 2021, Daniel Thompson wrote:
+
+> Currently use_after_iter.cocci generates false positives for code of the
+> following form:
+> ~~~
+> 	list_for_each_entry(d, &ddata->irq_list, node) {
+> 		if (irq == d->irq)
+> 			break;
+> 	}
+>
+> 	if (list_entry_is_head(d, &ddata->irq_list, node))
+> 		return IRQ_NONE;
+> ~~~
+> [This specific example comes from drivers/power/supply/cpcap-battery.c]
+>
+> Most list macros use list_entry_is_head() as loop exit condition meaning it
+> is not unsafe to reuse pos (a.k.a. d) in the code above.
+>
+> Let's avoid reporting these cases.
+
+Applied.
+
+The function is really nice.  The use_after_iter.cocci rule gives a lot of
+false positives where people have used random variables as flags to
+indicate how the loop was executed...
+
+thanks,
+julia
+
+>
+> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 > ---
->   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 28 ++++-------------------
->   1 file changed, 4 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index bc71ba44ccf4..3ed7c27a8dde 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -706,29 +706,6 @@ static int ingenic_drm_encoder_atomic_check(struct drm_encoder *encoder,
->   	}
->   }
->   
-> -static void ingenic_drm_atomic_helper_commit_tail(struct drm_atomic_state *old_state)
-> -{
-> -	/*
-> -	 * Just your regular drm_atomic_helper_commit_tail(), but only calls
-> -	 * drm_atomic_helper_wait_for_vblanks() if priv->no_vblank.
-> -	 */
-> -	struct drm_device *dev = old_state->dev;
-> -	struct ingenic_drm *priv = drm_device_get_priv(dev);
-> -
-> -	drm_atomic_helper_commit_modeset_disables(dev, old_state);
-> -
-> -	drm_atomic_helper_commit_planes(dev, old_state, 0);
-> -
-> -	drm_atomic_helper_commit_modeset_enables(dev, old_state);
-> -
-> -	drm_atomic_helper_commit_hw_done(old_state);
-> -
-> -	if (!priv->no_vblank)
-> -		drm_atomic_helper_wait_for_vblanks(dev, old_state);
-> -
-> -	drm_atomic_helper_cleanup_planes(dev, old_state);
-> -}
-> 
-
-Hi,
-if this function is removed, shouldn't:
-   static struct drm_mode_config_helper_funcs 
-ingenic_drm_mode_config_helpers = {
-   	.atomic_commit_tail = ingenic_drm_atomic_helper_commit_tail,
-   };
-be updated as well?
-
-I've not seen it in the serie.
-
-Just my 2v.
-CJ
+>
+> Notes:
+>     I'm pretty much a complete beginner w.r.t. SmPL. This is written
+>     entirely by finding previous fixes and emulating them!
+>
+>     However I did test it by running the checker across the current kernel
+>     tree. The changes reduced the error count by four... which was small
+>     enough for me to eyeball each one and check they match the pattern I
+>     was targetting.
+>
+>  scripts/coccinelle/iterators/use_after_iter.cocci | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/scripts/coccinelle/iterators/use_after_iter.cocci b/scripts/coccinelle/iterators/use_after_iter.cocci
+> index 9be48b520879..676edd562eef 100644
+> --- a/scripts/coccinelle/iterators/use_after_iter.cocci
+> +++ b/scripts/coccinelle/iterators/use_after_iter.cocci
+> @@ -123,6 +123,8 @@ hlist_for_each_entry_safe(c,...) S
+>  |
+>  list_remove_head(x,c,...)
+>  |
+> +list_entry_is_head(c,...)
+> +|
+>  sizeof(<+...c...+>)
+>  |
+>   &c->member
+>
+> base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
+> --
+> 2.30.2
+>
+>
